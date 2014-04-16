@@ -5,7 +5,7 @@ import net.sf.samtools.{CigarElement, Cigar, CigarOperator, TextCigarCodec}
 import org.bdgenomics.adam.util.MdTag
 import scala.collection.parallel.mutable
 
-case class Pileup(elements: Seq[PileupElement]) {
+case class Pileup(elements: Seq[Pileup.Element]) {
   lazy val head = elements.head
   lazy val locus: Long = head.locus
   lazy val referenceName: String = head.read.record.referenceName.toString
@@ -21,16 +21,16 @@ case class Pileup(elements: Seq[PileupElement]) {
     elements.groupBy(_.read.record.recordGroupSample.toString).map({case (sample, elements) => (sample, Pileup(elements))})
   }
 
-  def atGreaterLocus(newLocus: Long, newReads: Seq[DecadentRead]) = {
+  def atGreaterLocus(newLocus: Long, newReads: Iterator[DecadentRead]) = {
     val reusableElements = elements.filter(_.read.record.overlapsReferencePosition(newLocus).getOrElse(false))
     val updatedElements = reusableElements.map(_.atGreaterLocus(locus))
-    val newElements = newReads.map(PileupElement(_, newLocus))
+    val newElements = newReads.map(Pileup.Element(_, newLocus))
     Pileup(updatedElements ++ newElements)
   }
 
 }
 object Pileup {
-  def pileupsAtLoci[T](loci: Iterator[Long], readSource: Long => Seq[DecadentRead]): Iterator[Pileup] = {
+  def pileupsAtLoci[T](loci: Iterator[Long], readSource: Long => Iterator[DecadentRead]): Iterator[Pileup] = {
     val initialEmpty = Pileup(Seq.empty)
     val iterator = loci.scanLeft(initialEmpty)((pileup: Pileup, locus: Long) => {
       val newReads = readSource(locus)
@@ -40,91 +40,90 @@ object Pileup {
     iterator
   }
   def apply(reads: Seq[DecadentRead], locus: Long): Pileup = {
-    val elements = reads.filter(_.record.overlapsReferencePosition(locus).getOrElse(false)).map(PileupElement(_, locus))
+    val elements = reads.filter(_.record.overlapsReferencePosition(locus).getOrElse(false)).map(Element(_, locus))
     Pileup(elements)
   }
-}
 
+  case class Element(
+    read: DecadentRead,
+    locus: Long,
+    readPosition: Long,
+    cigar: Cigar,
+    indexInCigarElements: Long,
+    indexWithinCigarElement: Long) {
 
-case class PileupElement(
-  read: DecadentRead,
-  locus: Long,
-  readPosition: Long,
-  cigar: Cigar,
-  indexInCigarElements: Long,
-  indexWithinCigarElement: Long) {
-  
-  assume(locus >= read.record.getStart)
-  assume(locus <= read.record.end.get)
-  assume(read.record.mdTag.isDefined)
+    assume(locus >= read.record.getStart)
+    assume(locus <= read.record.end.get)
+    assume(read.record.mdTag.isDefined)
 
-  lazy val sequenceRead: String = {
-    if (isDeletion)
-      ""
-    else if (isMatch || isMismatch)
-      read.record.getSequence.charAt(readPosition.toInt).toString
-    else if (isInsertion)
-      read.record.getSequence.toString.subSequence(
-        readPosition.toInt,
-        readPosition.toInt + cigarElement.getLength - indexWithinCigarElement.toInt).toString
-    else
-      throw new AssertionError("Not a match, mismatch, deletion, or insertion")
-  }
+    lazy val sequenceRead: String = {
+      if (isDeletion)
+        ""
+      else if (isMatch || isMismatch)
+        read.record.getSequence.charAt(readPosition.toInt).toString
+      else if (isInsertion)
+        read.record.getSequence.toString.subSequence(
+          readPosition.toInt,
+          readPosition.toInt + cigarElement.getLength - indexWithinCigarElement.toInt).toString
+      else
+        throw new AssertionError("Not a match, mismatch, deletion, or insertion")
+    }
 
-  lazy val cigarElement = cigar.getCigarElement(indexInCigarElements.toInt)
-  lazy val isInsertion = cigarElement == CigarOperator.INSERTION
-  lazy val isDeletion = cigarElement == CigarOperator.DELETION
-  lazy val isMismatch = cigarElement == CigarOperator.MATCH_OR_MISMATCH && !read.record.mdTag.get.isMatch(locus)
-  lazy val isMatch = cigarElement == CigarOperator.MATCH_OR_MISMATCH && read.record.mdTag.get.isMatch(locus)
+    lazy val cigarElement = cigar.getCigarElement(indexInCigarElements.toInt)
+    lazy val isInsertion = cigarElement == CigarOperator.INSERTION
+    lazy val isDeletion = cigarElement == CigarOperator.DELETION
+    lazy val isMismatch = cigarElement == CigarOperator.MATCH_OR_MISMATCH && !read.record.mdTag.get.isMatch(locus)
+    lazy val isMatch = cigarElement == CigarOperator.MATCH_OR_MISMATCH && read.record.mdTag.get.isMatch(locus)
 
-  def atGreaterLocus(newLocus: Long): PileupElement = {
-    if (newLocus == locus)
-      this
-    else {
-      assume(newLocus > locus)
-      assume(newLocus <= read.record.end.get)
-      val desiredReferenceOffset = newLocus - read.record.getStart
+    def atGreaterLocus(newLocus: Long): Element = {
+      if (newLocus == locus)
+        this
+      else {
+        assume(newLocus > locus)
+        assume(newLocus <= read.record.end.get)
+        val desiredReferenceOffset = newLocus - read.record.getStart
 
-      var currentReadPosition = readPosition - indexWithinCigarElement
-      var currentReferenceOffset = locus - read.record.start - indexWithinCigarElement
-      var cigarIndex = indexInCigarElements
-      var prevReadPosition: Long = -1
-      var prevReferenceOffset: Long = -1
-      while (currentReferenceOffset < desiredReferenceOffset) {
-        prevReadPosition = currentReadPosition
-        prevReferenceOffset = currentReferenceOffset
-        val element = cigar.getCigarElement(cigarIndex.toInt)
-        if (element.getOperator.consumesReadBases) currentReadPosition += element.getLength
-        if (element.getOperator.consumesReferenceBases) currentReferenceOffset += element.getLength
-        cigarIndex += 1
+        var currentReadPosition = readPosition - indexWithinCigarElement
+        var currentReferenceOffset = locus - read.record.start - indexWithinCigarElement
+        var cigarIndex = indexInCigarElements
+        var prevReadPosition: Long = -1
+        var prevReferenceOffset: Long = -1
+        while (currentReferenceOffset < desiredReferenceOffset) {
+          prevReadPosition = currentReadPosition
+          prevReferenceOffset = currentReferenceOffset
+          val element = cigar.getCigarElement(cigarIndex.toInt)
+          if (element.getOperator.consumesReadBases) currentReadPosition += element.getLength
+          if (element.getOperator.consumesReferenceBases) currentReferenceOffset += element.getLength
+          cigarIndex += 1
+        }
+        assert(desiredReferenceOffset < currentReferenceOffset)
+        assert(desiredReferenceOffset >= prevReferenceOffset)
+        val newIndexInCigarElements = cigarIndex - 1
+        val newIndexWithinCigarElement = desiredReferenceOffset - prevReferenceOffset
+        val newReadPosition = prevReadPosition + newIndexWithinCigarElement
+        Element(
+          read,
+          newLocus,
+          newReadPosition,
+          cigar,
+          newIndexInCigarElements,
+          newIndexWithinCigarElement
+        )
       }
-      assert(desiredReferenceOffset < currentReferenceOffset)
-      assert(desiredReferenceOffset >= prevReferenceOffset)
-      val newIndexInCigarElements = cigarIndex - 1
-      val newIndexWithinCigarElement = desiredReferenceOffset - prevReferenceOffset
-      val newReadPosition = prevReadPosition + newIndexWithinCigarElement
-      PileupElement(
-        read,
-        newLocus,
-        newReadPosition,
-        cigar,
-        newIndexInCigarElements,
-        newIndexWithinCigarElement
-      )
     }
   }
-}
-object PileupElement {
-  def apply(read: DecadentRead, locus: Long): PileupElement = {
-    val cigar = TextCigarCodec.getSingleton.decode(read.record.getCigar.toString)
-    val mdTag = MdTag(read.record.getMismatchingPositions.toString, read.record.getStart)
-    PileupElement(
-      read = read,
-      locus = read.record.getStart,
-      readPosition = 0,
-      cigar = cigar,
-      indexInCigarElements = 0,
-      indexWithinCigarElement = 0).atGreaterLocus(locus)
+  object Element {
+    def apply(read: DecadentRead, locus: Long): Element = {
+      val cigar = TextCigarCodec.getSingleton.decode(read.record.getCigar.toString)
+      val mdTag = MdTag(read.record.getMismatchingPositions.toString, read.record.getStart)
+      Element(
+        read = read,
+        locus = read.record.getStart,
+        readPosition = 0,
+        cigar = cigar,
+        indexInCigarElements = 0,
+        indexWithinCigarElement = 0).atGreaterLocus(locus)
+    }
   }
 }
 
