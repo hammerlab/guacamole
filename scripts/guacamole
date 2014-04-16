@@ -1,0 +1,4 @@
+#! /bin/bash
+# Executes the most recently modified guacamole jar. Run this from the guacamole root directory.
+
+exec java -jar $(ls -tc guacamole-core/target/guacamole-?.*.jar | head -n 1) "$@"
