@@ -5,6 +5,6 @@ import scala.collection.immutable.NumericRange
 import org.bdgenomics.adam.avro.ADAMGenotype
 
 trait VariantCaller {
-  def windowSize(): Long
+  val windowSize: Long
   def callVariants(reads: SlidingReadWindow, sortedLociToCall: Seq[NumericRange[Long]]): Seq[ADAMGenotype]
 }

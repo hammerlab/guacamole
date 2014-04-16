@@ -56,6 +56,9 @@ class guacamoleArgs extends Args4jBase with ParquetArgs with SparkArgs {
   @option(required = false, name="reference", usage = "ADAM or FASTA reference genome data")
   var referenceInput: String = _
 
+  @option(name = "-parallelism", usage = "Number of variant calling tasks to use. Set to 0 (currently the default) to call variants on the Spark master node, with no parallelism.")
+  var parallelism: Int = 0
+
   @option(name = "-loci", usage = "Loci at which to call variants. Format: contig:start-end,contig:start-end,...")
   var loci: String = _
 
@@ -90,23 +93,32 @@ class guacamole(protected val args: guacamoleArgs) extends ADAMSparkCommand[guac
 
     val reads: RDD[ADAMRecord] = sc.adamLoad(args.readInput, Some(classOf[LocusPredicate]))
 
-    log.info("Loaded %d reference fragments (%d total bases) and %d reads".format(
-      reference.count(), reference.map(_.getContigLength).fold(0)(_ + _), reads.count()))
+    log.info("Loaded %d reference fragments and %d reads".format(
+      reference.map(_.count).getOrElse(0),
+      reads.count))
 
-    val samples = Set(reads.map(_.getRecordGroupSample).distinct)
+    val samples = reads.map(_.getRecordGroupSample).distinct.collect.map(_.toString).toSet
     val caller = new AbsurdlyAggressiveVariantCaller(samples)
+    val loci: LociRanges = {
+      if (args.loci.isEmpty) {
+        // Call at all loci.
+        val contigsAndLengths = reads.map(read => (read.getReferenceName.toString, read.getReferenceLength)).distinct.collect
+        assume(contigsAndLengths.map(_._1).distinct.length == contigsAndLengths.length,
+          "Some contigs have different lengths in reads: " + contigsAndLengths.toString)
+        LociRanges(contigsAndLengths.toSeq.map({case (contig, length) => (contig, 0.toLong, length.toLong)}))
+      } else {
+        // Call at specified loci.
+        LociRanges.parse(args.loci)
+      }
+    }
+    val genotypes = InvokeVariantCaller.usingSpark(reads, caller, loci, args.parallelism)
 
-
-
-
-    /*
     // save variants to output file
     log.info("Writing calls to disk.")
-    processedVariants.adamSave(args.variantOutput,
+    genotypes.adamSave(args.variantOutput,
       args.blockSize,
       args.pageSize,
       args.compressionCodec,
       args.disableDictionary)
-     */
   }
 }
