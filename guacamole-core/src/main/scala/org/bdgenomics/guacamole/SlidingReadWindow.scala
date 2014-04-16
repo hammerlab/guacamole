@@ -20,10 +20,10 @@ case class SlidingReadWindow(windowSize: Long, rawSortedReads: Iterator[ADAMReco
 
   val currentReads = {
     // Order reads by end locus, increasing.
-    def orderedRead(read: DecadentRead): Ordered[DecadentRead] = new Ordered[DecadentRead] {
-      def compare(other: DecadentRead) = other.record.end.get.compare(read.record.end.get)
+    def readOrdering = new Ordering[DecadentRead] {
+      def compare(first: DecadentRead, second: DecadentRead) = second.record.end.get.compare(first.record.end.get)
     }
-    mutable.PriorityQueue[DecadentRead]()(orderedRead _)
+    new mutable.PriorityQueue[DecadentRead]()(readOrdering)
   }
 
   def setCurrentLocus(locus: Long): Iterator[DecadentRead] = {

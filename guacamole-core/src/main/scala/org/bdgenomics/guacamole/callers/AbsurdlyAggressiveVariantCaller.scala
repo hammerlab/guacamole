@@ -7,9 +7,9 @@ import scala.collection.JavaConversions
 
 class AbsurdlyAggressiveVariantCaller(samples: Set[String]) extends VariantCaller {
 
-  val windowSize = 0
+  override val windowSize: Long = 0
 
-  def callVariants(reads: SlidingReadWindow, sortedLociToCall: Seq[NumericRange[Long]]): Iterator[ADAMGenotype] = {
+  override def callVariants(reads: SlidingReadWindow, sortedLociToCall: Seq[NumericRange[Long]]): Iterator[ADAMGenotype] = {
     val lociIterator = sortedLociToCall.iterator.flatMap(_.toIterator)
     val pileupsIterator = Pileup.pileupsAtLoci(lociIterator, reads.setCurrentLocus _)
     pileupsIterator.flatMap(callVariantsAtLocus _)
@@ -27,11 +27,12 @@ class AbsurdlyAggressiveVariantCaller(samples: Set[String]) extends VariantCalle
           .setAlleles(JavaConversions.seqAsJavaList(List(ADAMGenotypeAllele.Alt, ADAMGenotypeAllele.Alt)))
           .setSampleId(sampleName.toCharArray)
           .setVariant(ADAMVariant.newBuilder
-          .setPosition(pileup.locus)
-          .setReferenceAllele(CharSequence(pileup.referenceBase))
-          .setVariantAllele(base)
-          .setContig(ADAMContig.newBuilder.setContigName(pileup.referenceName).build)
-          ).build)
+            .setPosition(pileup.locus)
+            .setReferenceAllele(pileup.referenceBase.toString)
+            .setVariantAllele(base)
+            .setContig(ADAMContig.newBuilder.setContigName(pileup.referenceName).build)
+            .build)
+          .build)
       }
     })
  }
