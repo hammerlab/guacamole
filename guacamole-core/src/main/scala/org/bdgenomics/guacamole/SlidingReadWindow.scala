@@ -4,8 +4,29 @@ import org.bdgenomics.adam.avro.ADAMRecord
 import scala.collection.mutable
 import org.bdgenomics.adam.rich.{ DecadentRead, RichADAMRecord }
 
+/**
+ * Suppose we have a set of loci on a given contig and some reads that are mapped to that contig, and at each locus we
+ * want to look at the reads that overlap a window of a certain number of bases surrounding that locus. This class
+ * implements this "sliding window" functionality.
+ *
+ * After instantiating this class, the user should call [[SlidingReadWindow.setCurrentLocus()]] repeatedly for each
+ * locus being considered. After calling this method, the [[SlidingReadWindow.currentReads]] property will contain the
+ * reads that overlap the current locus.
+ *
+ * To enable an efficient implementation, we require that both the sequence of loci to be considered and the iterator
+ * of reads are sorted.
+ *
+ * @param windowSize Number of nucleotide bases to either side of the specified locus to provide reads for. For example,
+ *                   if windowSize=5, and our currentLocus=100, then currentReads will include reads that map to anywhere
+ *                   between 95 and 105, inclusive. Set to 0 to consider only reads that overlap the exact locus being
+ *                   considered, with no surrounding window.
+ *
+ * @param rawSortedReads Iterator of aligned reads, sorted by the aligned start locus.
+ */
 case class SlidingReadWindow(windowSize: Long, rawSortedReads: Iterator[ADAMRecord]) {
+  /** The locus currently under consideration. */
   var currentLocus = -1
+
   private var referenceName: Option[String] = None
   private var mostRecentReadStart: Long = 0
   private val sortedReads: Iterator[DecadentRead] = rawSortedReads.map(read => {
@@ -16,8 +37,7 @@ case class SlidingReadWindow(windowSize: Long, rawSortedReads: Iterator[ADAMReco
     require(read.getCigar.length > 1, "Reads must have a CIGAR string")
     DecadentRead(read)
   })
-
-  val currentReads = {
+  private val currentReadsPriorityQueue = {
     // Order reads by end locus, increasing.
     def readOrdering = new Ordering[DecadentRead] {
       def compare(first: DecadentRead, second: DecadentRead) = second.record.end.get.compare(first.record.end.get)
@@ -25,6 +45,19 @@ case class SlidingReadWindow(windowSize: Long, rawSortedReads: Iterator[ADAMReco
     new mutable.PriorityQueue[DecadentRead]()(readOrdering)
   }
 
+  /** The reads that overlap the window surrounding [[currentLocus]]. */
+  def currentReads(): Seq[DecadentRead] = {
+    currentReadsPriorityQueue.toSeq
+  }
+
+  /**
+   * Advance to the specified locus, which must be greater than the current locus. After calling this, the
+   * [[currentReads]] method will give the overlapping reads at the new locus.
+   *
+   * @param locus Locus to advance to.
+   * @return An iterator over the *new reads* that were added as a result of this call. Note that this is not the full
+   *         set of reads in the window: you must call [[currentReads]] for that.
+   */
   def setCurrentLocus(locus: Long): Iterator[DecadentRead] = {
     assume(locus >= currentLocus, "Pileup window can only move forward in locus")
 
@@ -34,17 +67,14 @@ case class SlidingReadWindow(windowSize: Long, rawSortedReads: Iterator[ADAMReco
     }
 
     // Remove reads that are no longer in the window.
-    while (!currentReads.isEmpty && currentReads.head.record.end.get < locus - windowSize) {
-      val dropped = currentReads.dequeue()
+    while (!currentReadsPriorityQueue.isEmpty && currentReadsPriorityQueue.head.record.end.get < locus - windowSize) {
+      val dropped = currentReadsPriorityQueue.dequeue()
       assert(!overlaps(dropped))
     }
     // Add new reads that are now in the window.
     val newReads = sortedReads.takeWhile(_.record.getStart <= locus + windowSize).filter(overlaps)
-    currentReads.enqueue(newReads.toSeq: _*)
-    assert(currentReads.forall(overlaps)) // Correctness check.
+    currentReadsPriorityQueue.enqueue(newReads.toSeq: _*)
+    assert(currentReadsPriorityQueue.forall(overlaps)) // Correctness check.
     newReads // We return the newly added reads.
   }
-}
-object SlidingReadWindow {
-
 }
