@@ -1,6 +1,6 @@
 package org.bdgenomics.guacamole.callers
 
-import org.bdgenomics.guacamole.{Pileup, SlidingReadWindow}
+import org.bdgenomics.guacamole.{ Pileup, SlidingReadWindow }
 import scala.collection.immutable.NumericRange
 import org.bdgenomics.adam.avro.ADAMGenotype
 

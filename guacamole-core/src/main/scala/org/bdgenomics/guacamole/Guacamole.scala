@@ -39,7 +39,7 @@ import org.bdgenomics.guacamole.callers.AbsurdlyAggressiveVariantCaller
 object guacamole extends ADAMCommandCompanion {
 
   val commandName = "guacamole"
-  val commandDescription = "Call variants using guacamole and the ADAM preprocessing pipeline."
+  val commandDescription = "Call variants using guacamole."
 
   def apply(args: Array[String]) = {
     new guacamole(Args4j[guacamoleArgs](args))
@@ -48,19 +48,19 @@ object guacamole extends ADAMCommandCompanion {
 
 class guacamoleArgs extends Args4jBase with ParquetArgs with SparkArgs {
   @Argument(metaVar = "READS", required = true, usage = "ADAM read-oriented data", index = 0)
-  var readInput: String = _
+  var readInput: String = ""
 
-  @Argument(metaVar = "VARIANTS_OUT", required = true, usage = "ADAM variant output", index = 2)
-  var variantOutput: String = _
+  @Argument(metaVar = "VARIANTS_OUT", required = true, usage = "ADAM variant output", index = 1)
+  var variantOutput: String = ""
 
-  @option(required = false, name="reference", usage = "ADAM or FASTA reference genome data")
-  var referenceInput: String = _
+  @option(required = false, name = "reference", usage = "ADAM or FASTA reference genome data")
+  var referenceInput: String = ""
 
   @option(name = "-parallelism", usage = "Number of variant calling tasks to use. Set to 0 (currently the default) to call variants on the Spark master node, with no parallelism.")
   var parallelism: Int = 0
 
   @option(name = "-loci", usage = "Loci at which to call variants. Format: contig:start-end,contig:start-end,...")
-  var loci: String = _
+  var loci: String = ""
 
   @option(name = "-sort", usage = "Sort reads: use if reads are not already stored sorted.")
   var sort = true
@@ -105,7 +105,7 @@ class guacamole(protected val args: guacamoleArgs) extends ADAMSparkCommand[guac
         val contigsAndLengths = reads.map(read => (read.getReferenceName.toString, read.getReferenceLength)).distinct.collect
         assume(contigsAndLengths.map(_._1).distinct.length == contigsAndLengths.length,
           "Some contigs have different lengths in reads: " + contigsAndLengths.toString)
-        LociRanges(contigsAndLengths.toSeq.map({case (contig, length) => (contig, 0.toLong, length.toLong)}))
+        LociRanges(contigsAndLengths.toSeq.map({ case (contig, length) => (contig, 0.toLong, length.toLong) }))
       } else {
         // Call at specified loci.
         LociRanges.parse(args.loci)

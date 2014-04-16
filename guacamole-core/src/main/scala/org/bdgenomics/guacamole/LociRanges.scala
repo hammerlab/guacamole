@@ -1,10 +1,10 @@
 package org.bdgenomics.guacamole
 
-import com.google.common.collect.{ImmutableRangeSet, RangeSet, Range}
+import com.google.common.collect.{ ImmutableRangeSet, RangeSet, Range }
 import scala.collection.immutable.NumericRange
 import scala.collection.JavaConverters._
 import scala.collection.JavaConversions
-import org.bdgenomics.guacamole.LociRanges.{JLong, LongRangeSet, emptyRangeSet}
+import org.bdgenomics.guacamole.LociRanges.{ JLong, LongRangeSet, emptyRangeSet }
 
 case class LociRanges(ranges: Map[String, LongRangeSet]) {
 
@@ -12,7 +12,7 @@ case class LociRanges(ranges: Map[String, LongRangeSet]) {
 
   def at(contig: String): Seq[NumericRange[Long]] = ranges.get(contig) match {
     case Some(rangeSet) => JavaConversions.asScalaIterator(rangeSet.asRanges.iterator).map(raw =>
-        NumericRange[Long](raw.lowerEndpoint, raw.upperEndpoint, 1)).toSeq.sortBy(_.start)
+      NumericRange[Long](raw.lowerEndpoint, raw.upperEndpoint, 1)).toSeq.sortBy(_.start)
     case None => Seq.empty
   }
 
@@ -21,9 +21,9 @@ case class LociRanges(ranges: Map[String, LongRangeSet]) {
     val pairs = keys.map(key => {
       key ->
         ImmutableRangeSet.builder[JLong]()
-          .addAll(ranges.getOrElse(key, emptyRangeSet))
-          .addAll(other.ranges.getOrElse(key, emptyRangeSet))
-          .build
+        .addAll(ranges.getOrElse(key, emptyRangeSet))
+        .addAll(other.ranges.getOrElse(key, emptyRangeSet))
+        .build
     })
     LociRanges(pairs.toMap)
   }
@@ -54,7 +54,7 @@ object LociRanges {
     val syntax = "([A-z]+):([0-9]+)-([0-9]+)".r
     loci.split(',').map({
       case syntax(name, start, end) => LociRanges(Seq[(String, Long, Long)]((name, start.toLong, end.toLong)))
-      case other => throw new IllegalArgumentException("Couldn't parse loci range: %s".format(other))
+      case other                    => throw new IllegalArgumentException("Couldn't parse loci range: %s".format(other))
     }).reduce(_.combine(_))
   }
 }

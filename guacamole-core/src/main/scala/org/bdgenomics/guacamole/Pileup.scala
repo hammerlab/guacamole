@@ -1,7 +1,7 @@
 package org.bdgenomics.guacamole
 
 import org.bdgenomics.adam.rich.DecadentRead
-import net.sf.samtools.{CigarElement, Cigar, CigarOperator, TextCigarCodec}
+import net.sf.samtools.{ CigarElement, Cigar, CigarOperator, TextCigarCodec }
 import org.bdgenomics.adam.util.MdTag
 import scala.collection.parallel.mutable
 
@@ -18,7 +18,7 @@ case class Pileup(elements: Seq[Pileup.Element]) {
   }
 
   lazy val bySample: Map[String, Pileup] = {
-    elements.groupBy(_.read.record.recordGroupSample.toString).map({case (sample, elements) => (sample, Pileup(elements))})
+    elements.groupBy(_.read.record.recordGroupSample.toString).map({ case (sample, elements) => (sample, Pileup(elements)) })
   }
 
   def atGreaterLocus(newLocus: Long, newReads: Iterator[DecadentRead]) = {
@@ -36,7 +36,7 @@ object Pileup {
       val newReads = readSource(locus)
       pileup.atGreaterLocus(locus, newReads)
     })
-    iterator.next()  // Discard first element, the initial empty pileup.
+    iterator.next() // Discard first element, the initial empty pileup.
     iterator
   }
   def apply(reads: Seq[DecadentRead], locus: Long): Pileup = {
@@ -45,12 +45,12 @@ object Pileup {
   }
 
   case class Element(
-    read: DecadentRead,
-    locus: Long,
-    readPosition: Long,
-    cigar: Cigar,
-    indexInCigarElements: Long,
-    indexWithinCigarElement: Long) {
+      read: DecadentRead,
+      locus: Long,
+      readPosition: Long,
+      cigar: Cigar,
+      indexInCigarElements: Long,
+      indexWithinCigarElement: Long) {
 
     assume(locus >= read.record.getStart)
     assume(locus <= read.record.end.get)
@@ -107,8 +107,7 @@ object Pileup {
           newReadPosition,
           cigar,
           newIndexInCigarElements,
-          newIndexWithinCigarElement
-        )
+          newIndexWithinCigarElement)
       }
     }
   }
@@ -126,5 +125,4 @@ object Pileup {
     }
   }
 }
-
 

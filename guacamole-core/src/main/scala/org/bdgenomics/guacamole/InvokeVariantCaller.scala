@@ -1,6 +1,6 @@
 package org.bdgenomics.guacamole
 
-import org.bdgenomics.adam.avro.{ADAMGenotype, ADAMRecord}
+import org.bdgenomics.adam.avro.{ ADAMGenotype, ADAMRecord }
 import org.apache.spark.rdd.RDD
 import org.apache.spark.Logging
 import org.apache.spark.SparkContext._
@@ -9,7 +9,7 @@ import org.bdgenomics.guacamole.callers.VariantCaller
 import org.bdgenomics.adam.rich.RichADAMRecord._
 
 object InvokeVariantCaller extends Logging {
-  
+
   def usingSpark(reads: RDD[ADAMRecord], caller: VariantCaller, loci: LociRanges, parallelism: Int = 100): RDD[ADAMGenotype] = {
     val includedReads = reads.filter(overlaps(_, loci, caller.windowSize))
     log.info("Filtered: %d reads total -> %d mapped and relevant reads".format(reads.count, includedReads.count))
@@ -34,13 +34,13 @@ object InvokeVariantCaller extends Logging {
     }
   }
 
- private def splitReadsByContig(readIterator: Iterator[ADAMRecord], contigs: Seq[String]): Map[String, Iterator[ADAMRecord]] = {
-   var currentIterator: Iterator[ADAMRecord] = readIterator
-   contigs.map(contig => {
-     val (withContig, withoutContig) = currentIterator.partition(_.getReferenceName == contig)
-     currentIterator = withoutContig
-     (contig, withContig)
-   }).toMap + ("" -> currentIterator)
+  private def splitReadsByContig(readIterator: Iterator[ADAMRecord], contigs: Seq[String]): Map[String, Iterator[ADAMRecord]] = {
+    var currentIterator: Iterator[ADAMRecord] = readIterator
+    contigs.map(contig => {
+      val (withContig, withoutContig) = currentIterator.partition(_.getReferenceName == contig)
+      currentIterator = withoutContig
+      (contig, withContig)
+    }).toMap + ("" -> currentIterator)
   }
 
   // Does a read overlap any of the loci we are calling variants at, with windowSize padding?
