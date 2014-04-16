@@ -10,7 +10,7 @@ import org.bdgenomics.adam.rich.RichADAMRecord._
 
 object InvokeVariantCaller extends Logging {
 
-  def usingSpark(reads: RDD[ADAMRecord], caller: VariantCaller, loci: LociRanges, parallelism: Int = 100): RDD[ADAMGenotype] = {
+  def usingSpark(reads: RDD[ADAMRecord], caller: VariantCaller, loci: LociSet, parallelism: Int = 100): RDD[ADAMGenotype] = {
     val includedReads = reads.filter(overlaps(_, loci, caller.windowSize))
     log.info("Filtered: %d reads total -> %d mapped and relevant reads".format(reads.count, includedReads.count))
 
@@ -44,7 +44,7 @@ object InvokeVariantCaller extends Logging {
   }
 
   // Does a read overlap any of the loci we are calling variants at, with windowSize padding?
-  def overlaps(read: ADAMRecord, loci: LociRanges, windowSize: Long = 0): Boolean = {
+  def overlaps(read: ADAMRecord, loci: LociSet, windowSize: Long = 0): Boolean = {
     read.getReadMapped && loci.intersects(
       read.getReferenceName.toString, math.min(0, read.getStart - windowSize), read.end.get + windowSize)
   }

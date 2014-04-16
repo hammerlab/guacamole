@@ -99,16 +99,16 @@ class guacamole(protected val args: guacamoleArgs) extends ADAMSparkCommand[guac
 
     val samples = reads.map(_.getRecordGroupSample).distinct.collect.map(_.toString).toSet
     val caller = new AbsurdlyAggressiveVariantCaller(samples)
-    val loci: LociRanges = {
+    val loci: LociSet = {
       if (args.loci.isEmpty) {
         // Call at all loci.
         val contigsAndLengths = reads.map(read => (read.getReferenceName.toString, read.getReferenceLength)).distinct.collect
         assume(contigsAndLengths.map(_._1).distinct.length == contigsAndLengths.length,
           "Some contigs have different lengths in reads: " + contigsAndLengths.toString)
-        LociRanges(contigsAndLengths.toSeq.map({ case (contig, length) => (contig, 0.toLong, length.toLong) }))
+        LociSet(contigsAndLengths.toSeq.map({ case (contig, length) => (contig, 0.toLong, length.toLong) }))
       } else {
         // Call at specified loci.
-        LociRanges.parse(args.loci)
+        LociSet.parse(args.loci)
       }
     }
     val genotypes = InvokeVariantCaller.usingSpark(reads, caller, loci, args.parallelism)
