@@ -6,5 +6,5 @@ import org.bdgenomics.adam.avro.ADAMGenotype
 
 trait VariantCaller {
   val windowSize: Long
-  def callVariants(reads: SlidingReadWindow, sortedLociToCall: Seq[NumericRange[Long]]): Seq[ADAMGenotype]
+  def callVariants(reads: SlidingReadWindow, sortedLociToCall: Seq[NumericRange[Long]]): Iterator[ADAMGenotype]
 }
