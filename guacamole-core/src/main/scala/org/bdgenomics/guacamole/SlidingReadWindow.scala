@@ -26,7 +26,7 @@ case class SlidingReadWindow(windowSize: Long, rawSortedReads: Iterator[ADAMReco
     mutable.PriorityQueue[DecadentRead]()(orderedRead _)
   }
 
-  def setCurrentLocus(locus: Long): Seq[DecadentRead] = {
+  def setCurrentLocus(locus: Long): Iterator[DecadentRead] = {
     assume(locus >= currentLocus, "Pileup window can only move forward in locus")
 
     def overlaps(read: DecadentRead) = {
@@ -40,8 +40,8 @@ case class SlidingReadWindow(windowSize: Long, rawSortedReads: Iterator[ADAMReco
       assert(!overlaps(dropped))
     }
     // Add new reads that are now in the window.
-    val newReads = rawSortedReads.takeWhile(_.record.start <= locus + windowSize).filter(overlaps)
-    currentReads.enqueue(newReads)
+    val newReads = sortedReads.takeWhile(_.record.getStart <= locus + windowSize).filter(overlaps)
+    currentReads.enqueue(newReads.toSeq :_*)
     assert(currentReads.forall(overlaps))  // Correctness check.
     newReads // We return the newly added reads.
   }
