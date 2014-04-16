@@ -2,8 +2,7 @@ package org.bdgenomics.guacamole
 
 import org.bdgenomics.adam.avro.ADAMRecord
 import scala.collection.mutable
-import org.bdgenomics.adam.rich.{DecadentRead, RichADAMRecord}
-
+import org.bdgenomics.adam.rich.{ DecadentRead, RichADAMRecord }
 
 case class SlidingReadWindow(windowSize: Long, rawSortedReads: Iterator[ADAMRecord]) {
   var currentLocus = -1
@@ -31,7 +30,7 @@ case class SlidingReadWindow(windowSize: Long, rawSortedReads: Iterator[ADAMReco
 
     def overlaps(read: DecadentRead) = {
       (read.record.getStart >= locus - windowSize && read.record.getStart <= locus + windowSize) ||
-      (read.record.end.get >= locus - windowSize && read.record.end.get <= locus + windowSize)
+        (read.record.end.get >= locus - windowSize && read.record.end.get <= locus + windowSize)
     }
 
     // Remove reads that are no longer in the window.
@@ -41,12 +40,11 @@ case class SlidingReadWindow(windowSize: Long, rawSortedReads: Iterator[ADAMReco
     }
     // Add new reads that are now in the window.
     val newReads = sortedReads.takeWhile(_.record.getStart <= locus + windowSize).filter(overlaps)
-    currentReads.enqueue(newReads.toSeq :_*)
-    assert(currentReads.forall(overlaps))  // Correctness check.
+    currentReads.enqueue(newReads.toSeq: _*)
+    assert(currentReads.forall(overlaps)) // Correctness check.
     newReads // We return the newly added reads.
   }
 }
 object SlidingReadWindow {
-  
 
 }
