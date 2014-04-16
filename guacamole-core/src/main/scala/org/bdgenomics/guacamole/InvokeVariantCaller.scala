@@ -2,42 +2,51 @@ package org.bdgenomics.guacamole
 
 import org.bdgenomics.adam.avro.{ADAMGenotype, ADAMRecord}
 import org.apache.spark.rdd.RDD
+import org.apache.spark.Logging
 import org.apache.spark.SparkContext._
-import org.apache.spark.RangePartitioner
+import org.apache.spark.rdd._
 import org.bdgenomics.guacamole.callers.VariantCaller
+import org.bdgenomics.adam.rich.RichADAMRecord._
 
-object InvokeVariantCaller {
+object InvokeVariantCaller extends Logging {
   
-  def usingSpark(reads: RDD[ADAMRecord], caller: VariantCaller, numPartitions: Int = 100): Seq[ADAMGenotype] = {
-    val mappedReads = reads.filter(_.getReadMapped)
-    log.info("Filtered: %d reads total -> %d mapped reads".format(reads.count, mappedReads.count))
+  def usingSpark(reads: RDD[ADAMRecord], caller: VariantCaller, loci: LociRanges, parallelism: Int = 100): RDD[ADAMGenotype] = {
+    val includedReads = reads.filter(overlaps(_, loci, caller.windowSize))
+    log.info("Filtered: %d reads total -> %d mapped and relevant reads".format(reads.count, includedReads.count))
 
-    val keyed = mappedReads.keyBy(read => (read.getReferenceName, read.getStart))
-    val sorted = keyed.sortByKey()
-    sorted.partitionBy(new RangePartitioner(100, sorted))
-    sorted.m
+    // Sort reads by start.
+    val keyed = includedReads.keyBy(read => (read.getReferenceName.toString, read.getStart))
+    val sorted = keyed.sortByKey(true)
 
+    if (parallelism == 0) {
+      // Serial implementation on Spark master.
+      val allReads = sorted.map(_._2).collect.iterator
+      val readsSplitByContig = splitReadsByContig(allReads, loci.contigs)
+      val slidingWindows = readsSplitByContig.mapValues(SlidingReadWindow(caller.windowSize, _))
 
-    val sortedReads = if (sort) {
-      .sortByKey().map(_._2)
+      // Reads are coming in sorted by contig, so we process one contig at a time, in order.
+      val genotypes = slidingWindows.toSeq.sortBy(_._1).flatMap({
+        case (contig, window) => caller.callVariants(window, loci.at(contig))
+      })
+      reads.sparkContext.parallelize(genotypes)
     } else {
-      mappedReads
+      throw new NotImplementedError("Distributed variant calling not yet supported.")
     }
+  }
 
-    mappedReads.
+ private def splitReadsByContig(readIterator: Iterator[ADAMRecord], contigs: Seq[String]): Map[String, Iterator[ADAMRecord]] = {
+   var currentIterator: Iterator[ADAMRecord] = readIterator
+   contigs.map(contig => {
+     val (withContig, withoutContig) = currentIterator.partition(_.getReferenceName == contig)
+     currentIterator = withoutContig
+     (contig, withContig)
+   }).toMap + ("" -> currentIterator)
+  }
 
-    mappedReads
-
-    val genotypes = sortedReads.mapPartitions(sortedReadIterator => {
-      val window = new SlidingReadWindow()
-
-    }
-
-    val window = SlidingReadWindow
-
-
-
-    reads.
+  // Does a read overlap any of the loci we are calling variants at, with windowSize padding?
+  def overlaps(read: ADAMRecord, loci: LociRanges, windowSize: Long = 0): Boolean = {
+    read.getReadMapped && loci.intersects(
+      read.getReferenceName.toString, math.min(0, read.getStart - windowSize), read.end.get + windowSize)
   }
 
 }

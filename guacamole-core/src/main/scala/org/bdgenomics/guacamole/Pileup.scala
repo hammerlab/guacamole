@@ -8,13 +8,13 @@ import scala.collection.parallel.mutable
 case class Pileup(elements: Seq[PileupElement]) {
   lazy val head = elements.head
   lazy val locus: Long = head.locus
-  lazy val referenceName: String = head.read.record.referenceName
+  lazy val referenceName: String = head.read.record.referenceName.toString
 
   assume(elements.forall(_.read.record.referenceName == referenceName), "Reads in pileup have mismatching reference names")
   assume(elements.forall(_.locus == locus), "Reads in pileup have mismatching loci")
 
-  lazy val referenceBase: String = {
-    head.read.record.mdTag.get.getReference(head.read.record).charAt(head.locus - head.read.record.start)
+  lazy val referenceBase: Char = {
+    head.read.record.mdTag.get.getReference(head.read.record).charAt((head.locus - head.read.record.start).toInt)
   }
 
   lazy val bySample: Map[String, Pileup] = {
@@ -22,7 +22,7 @@ case class Pileup(elements: Seq[PileupElement]) {
   }
 
   def atGreaterLocus(newLocus: Long, newReads: Seq[DecadentRead]) = {
-    val reusableElements = elements.filter(_.read.record.overlapsReferencePosition(newLocus))
+    val reusableElements = elements.filter(_.read.record.overlapsReferencePosition(newLocus).getOrElse(false))
     val updatedElements = reusableElements.map(_.atGreaterLocus(locus))
     val newElements = newReads.map(PileupElement(_, newLocus))
     Pileup(updatedElements ++ newElements)
@@ -40,7 +40,7 @@ object Pileup {
     iterator
   }
   def apply(reads: Seq[DecadentRead], locus: Long): Pileup = {
-    val elements = reads.filter(_.record.overlapsReferencePosition(locus)).map(PileupElement(_, locus))
+    val elements = reads.filter(_.record.overlapsReferencePosition(locus).getOrElse(false)).map(PileupElement(_, locus))
     Pileup(elements)
   }
 }
@@ -54,44 +54,46 @@ case class PileupElement(
   indexInCigarElements: Long,
   indexWithinCigarElement: Long) {
   
-  assume(locus >= read.record.start)
-  assume(locus <= read.record.end)
+  assume(locus >= read.record.getStart)
+  assume(locus <= read.record.end.get)
   assume(read.record.mdTag.isDefined)
 
   lazy val sequenceRead: String = {
     if (isDeletion)
       ""
     else if (isMatch || isMismatch)
-      read.record.getSequence.charAt(readPosition).toString
+      read.record.getSequence.charAt(readPosition.toInt).toString
     else if (isInsertion)
-      read.record.getSequence.subSequence(readPosition, readPosition + cigarElement.getLength - indexWithinCigarElement)
+      read.record.getSequence.toString.subSequence(
+        readPosition.toInt,
+        readPosition.toInt + cigarElement.getLength - indexWithinCigarElement.toInt).toString
     else
       throw new AssertionError("Not a match, mismatch, deletion, or insertion")
   }
 
-  lazy val cigarElement = cigar.getCigarElement(indexInCigarElements)
+  lazy val cigarElement = cigar.getCigarElement(indexInCigarElements.toInt)
   lazy val isInsertion = cigarElement == CigarOperator.INSERTION
   lazy val isDeletion = cigarElement == CigarOperator.DELETION
-  lazy val isMismatch = CigarOperator.MATCH_OR_MISMATCH && !read.record.mdTag.get.isMatch(locus)
-  lazy val isMatch = CigarOperator.MATCH_OR_MISMATCH && read.record.mdTag.get.isMatch(locus)
+  lazy val isMismatch = cigarElement == CigarOperator.MATCH_OR_MISMATCH && !read.record.mdTag.get.isMatch(locus)
+  lazy val isMatch = cigarElement == CigarOperator.MATCH_OR_MISMATCH && read.record.mdTag.get.isMatch(locus)
 
   def atGreaterLocus(newLocus: Long): PileupElement = {
     if (newLocus == locus)
       this
     else {
       assume(newLocus > locus)
-      assume(newLocus <= read.record.end)
+      assume(newLocus <= read.record.end.get)
       val desiredReferenceOffset = newLocus - read.record.getStart
 
       var currentReadPosition = readPosition - indexWithinCigarElement
       var currentReferenceOffset = locus - read.record.start - indexWithinCigarElement
       var cigarIndex = indexInCigarElements
-      var prevReadPosition = -1
-      var prevReferenceOffset = -1
+      var prevReadPosition: Long = -1
+      var prevReferenceOffset: Long = -1
       while (currentReferenceOffset < desiredReferenceOffset) {
         prevReadPosition = currentReadPosition
         prevReferenceOffset = currentReferenceOffset
-        val element = cigar.getCigarElement(cigarIndex)
+        val element = cigar.getCigarElement(cigarIndex.toInt)
         if (element.getOperator.consumesReadBases) currentReadPosition += element.getLength
         if (element.getOperator.consumesReferenceBases) currentReferenceOffset += element.getLength
         cigarIndex += 1
@@ -101,7 +103,7 @@ case class PileupElement(
       val newIndexInCigarElements = cigarIndex - 1
       val newIndexWithinCigarElement = desiredReferenceOffset - prevReferenceOffset
       val newReadPosition = prevReadPosition + newIndexWithinCigarElement
-      Pileup(
+      PileupElement(
         read,
         newLocus,
         newReadPosition,
@@ -113,8 +115,8 @@ case class PileupElement(
   }
 }
 object PileupElement {
-  def apply(read: DecadentRead, locus: Long) = {
-    val cigar = TextCigarCodec.getSingleton.decode(read.record.getCigar)
+  def apply(read: DecadentRead, locus: Long): PileupElement = {
+    val cigar = TextCigarCodec.getSingleton.decode(read.record.getCigar.toString)
     val mdTag = MdTag(read.record.getMismatchingPositions.toString, read.record.getStart)
     PileupElement(
       read = read,
@@ -122,7 +124,7 @@ object PileupElement {
       readPosition = 0,
       cigar = cigar,
       indexInCigarElements = 0,
-      indexWithinCigarElement = 0).atGreaterLocus(locus))
+      indexWithinCigarElement = 0).atGreaterLocus(locus)
   }
 }
 

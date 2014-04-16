@@ -8,34 +8,26 @@ class AbsurdlyAggressiveVariantCaller(samples: Set[String]) extends VariantCalle
 
   val windowSize = 0
 
-  def callVariants(reads: SlidingReadWindow, sortedLociToCall: Seq[NumericRange[Long]]): Seq[ADAMGenotype] = {)
+  def callVariants(reads: SlidingReadWindow, sortedLociToCall: Seq[NumericRange[Long]]): Seq[ADAMGenotype] = {
     val lociIterator = sortedLociToCall.iterator.flatMap(_.toIterator)
     val pileupsIterator = Pileup.pileupsAtLoci(lociIterator, reads.setCurrentLocus _)
     pileupsIterator.flatMap(callVariantsAtLocus _)
   }
 
   private def callVariantsAtLocus(pileup: Pileup): Seq[ADAMGenotype] = {
-    for ((sampleName, samplePileup) <- pileup.bySample) {
-      val mismatches: Seq[PileupElement] = samplePileup.elements.filter(_.isMismatch)
-      if (!mismatches.isEmpty) {
-        val (base: String, elements: Seq[PileupElement]) = mismatches.groupBy(_.sequenceRead).toSeq.sortBy(_._2.length).last
-        assert(base.length == 1)
-        yield ADAMGenotype.newBuilder
-          .setAlleles(List(ADAMGenotypeAllele.Alt, ADAMGenotypeAllele.Alt))
-          .setSampleId(sampleName.toCharArray)
-          .setVariant(ADAMVariant.newBuilder
-            .setPosition(pileup.locus)
-            .setReferenceAllele(pileup.referenceBase)
-            .setVariantAllele(base)
-            .setContig(ADAMContig.newBuilder.setContigName(pileup.referenceName).build)
-          ).build
-      }
-    }
+    for {
+      (sampleName, samplePileup) <- pileup.bySample
+      mismatches: Seq[PileupElement] = samplePileup.elements.filter(_.isMismatch)
+      if (!mismatches.isEmpty)
+      (base: String, elements: Seq[PileupElement]) = mismatches.groupBy(_.sequenceRead).toSeq.sortBy(_._2.length).last
+    } yield ADAMGenotype.newBuilder
+      .setAlleles(List(ADAMGenotypeAllele.Alt, ADAMGenotypeAllele.Alt))
+      .setSampleId(sampleName.toCharArray)
+      .setVariant(ADAMVariant.newBuilder
+        .setPosition(pileup.locus)
+        .setReferenceAllele(pileup.referenceBase)
+        .setVariantAllele(base)
+        .setContig(ADAMContig.newBuilder.setContigName(pileup.referenceName).build)
+      ).build
  }
-
 }
-object AbsurdlyAggressiveVariantCaller {
-
-
-}
-
