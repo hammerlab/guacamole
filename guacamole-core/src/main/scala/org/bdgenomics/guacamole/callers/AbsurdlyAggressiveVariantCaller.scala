@@ -5,13 +5,20 @@ import org.bdgenomics.guacamole.{ SlidingReadWindow, Pileup }
 import scala.collection.immutable.NumericRange
 import scala.collection.JavaConversions
 
+/**
+ * Example variant caller implementation.
+ *
+ * Eschews math, and calls a variant whenever there is any evidence at all for it.
+ *
+ * @param samples The sample names to call variants for.
+ */
 class AbsurdlyAggressiveVariantCaller(samples: Set[String]) extends VariantCaller {
 
   override val windowSize: Long = 0
 
   override def callVariants(reads: SlidingReadWindow, sortedLociToCall: Seq[NumericRange[Long]]): Iterator[ADAMGenotype] = {
-    val lociIterator = sortedLociToCall.iterator.flatMap(_.toIterator)
-    val pileupsIterator = Pileup.pileupsAtLoci(lociIterator, reads.setCurrentLocus _)
+    val lociAndReads = sortedLociToCall.iterator.flatMap(_.map(locus => (locus, reads.setCurrentLocus(locus))))
+    val pileupsIterator = Pileup.pileupsAtLoci(lociAndReads)
     pileupsIterator.flatMap(callVariantsAtLocus _)
   }
 

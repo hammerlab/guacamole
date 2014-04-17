@@ -8,8 +8,21 @@ import org.apache.spark.rdd._
 import org.bdgenomics.guacamole.callers.VariantCaller
 import org.bdgenomics.adam.rich.RichADAMRecord._
 
+/**
+ * Functions to invoke variant calling.
+ */
 object InvokeVariantCaller extends Logging {
 
+  /**
+   * Call variants using reads stored in a Spark RDD.
+   *
+   * @param reads Spark RDD of ADAM reads. May be in any order.
+   * @param caller Variant calling implementation to use.
+   * @param loci Loci to call variants at.
+   * @param parallelism Number of spark workers to use to call variants. Set to 0 to stream reads to the spark master
+   *                    and run the variant calling locally.
+   * @return An RDD of the called variants.
+   */
   def usingSpark(reads: RDD[ADAMRecord], caller: VariantCaller, loci: LociSet, parallelism: Int = 100): RDD[ADAMGenotype] = {
     val includedReads = reads.filter(overlaps(_, loci, caller.windowSize))
     log.info("Filtered: %d reads total -> %d mapped and relevant reads".format(reads.count, includedReads.count))
@@ -34,6 +47,18 @@ object InvokeVariantCaller extends Logging {
     }
   }
 
+  /**
+   * Given an iterator of reads and the contig names found in these reads, return a Map where each contig name maps to
+   * an iterator of reads that align to that contig. The map will additionally have an empty string element ("") that
+   * maps to an iterator over reads that did not map to any contig specified.
+   *
+   * We are going out of our way here to use iterators everywhere so we don't force loading all the reads in at once.
+   * Whether we in fact load in all the reads at once, however, depends on how the result of this function is used.
+   * For example, if reads for some contig are found only at the end of the reads iterator, then advancing through the
+   * iterator for that contig first will actually load all the reads into memory. Callers should pay attention to the sort
+   * order of the reads if they want to avoid this.
+   *
+   */
   private def splitReadsByContig(readIterator: Iterator[ADAMRecord], contigs: Seq[String]): Map[String, Iterator[ADAMRecord]] = {
     var currentIterator: Iterator[ADAMRecord] = readIterator
     contigs.map(contig => {
@@ -43,8 +68,10 @@ object InvokeVariantCaller extends Logging {
     }).toMap + ("" -> currentIterator)
   }
 
-  // Does a read overlap any of the loci we are calling variants at, with windowSize padding?
-  def overlaps(read: ADAMRecord, loci: LociSet, windowSize: Long = 0): Boolean = {
+  /**
+   * Does the given read overlap any of the given loci, with windowSize padding?
+   */
+  private def overlaps(read: ADAMRecord, loci: LociSet, windowSize: Long = 0): Boolean = {
     read.getReadMapped && loci.intersects(
       read.getReferenceName.toString, math.min(0, read.getStart - windowSize), read.end.get + windowSize)
   }

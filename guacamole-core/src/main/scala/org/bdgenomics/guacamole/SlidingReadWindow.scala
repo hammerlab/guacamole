@@ -9,7 +9,7 @@ import org.bdgenomics.adam.rich.{ DecadentRead, RichADAMRecord }
  * want to look at the reads that overlap a window of a certain number of bases surrounding that locus. This class
  * implements this "sliding window" functionality.
  *
- * After instantiating this class, the user should call [[SlidingReadWindow.setCurrentLocus()]] repeatedly for each
+ * After instantiating this class, call [[SlidingReadWindow.setCurrentLocus( )]] repeatedly for each
  * locus being considered. After calling this method, the [[SlidingReadWindow.currentReads]] property will contain the
  * reads that overlap the current locus.
  *
@@ -56,7 +56,7 @@ case class SlidingReadWindow(windowSize: Long, rawSortedReads: Iterator[ADAMReco
    *
    * @param locus Locus to advance to.
    * @return An iterator over the *new reads* that were added as a result of this call. Note that this is not the full
-   *         set of reads in the window: you must call [[currentReads]] for that.
+   *         set of reads in the window: you must examine [[currentReads]] for that.
    */
   def setCurrentLocus(locus: Long): Iterator[DecadentRead] = {
     assume(locus >= currentLocus, "Pileup window can only move forward in locus")
