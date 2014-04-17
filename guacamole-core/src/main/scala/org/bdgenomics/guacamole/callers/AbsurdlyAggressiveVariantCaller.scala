@@ -1,7 +1,7 @@
 package org.bdgenomics.guacamole.callers
 
 import org.bdgenomics.adam.avro.{ ADAMContig, ADAMVariant, ADAMGenotypeAllele, ADAMGenotype }
-import org.bdgenomics.guacamole.{ SlidingReadWindow, Pileup }
+import org.bdgenomics.guacamole.{ LociSet, SlidingReadWindow, Pileup }
 import scala.collection.immutable.NumericRange
 import scala.collection.JavaConversions
 
@@ -16,8 +16,8 @@ class AbsurdlyAggressiveVariantCaller(samples: Set[String]) extends VariantCalle
 
   override val windowSize: Long = 0
 
-  override def callVariants(reads: SlidingReadWindow, sortedLociToCall: Seq[NumericRange[Long]]): Iterator[ADAMGenotype] = {
-    val lociAndReads = sortedLociToCall.iterator.flatMap(_.map(locus => (locus, reads.setCurrentLocus(locus))))
+  override def callVariants(reads: SlidingReadWindow, loci: LociSet.SingleContig): Iterator[ADAMGenotype] = {
+    val lociAndReads = loci.individually.map(locus => (locus, reads.setCurrentLocus(locus)))
     val pileupsIterator = Pileup.pileupsAtLoci(lociAndReads)
     pileupsIterator.flatMap(callVariantsAtLocus _)
   }
