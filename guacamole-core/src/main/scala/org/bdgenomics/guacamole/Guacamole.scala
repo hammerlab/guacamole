@@ -16,11 +16,10 @@
 
 package org.bdgenomics.guacamole
 
-import org.apache.commons.configuration.HierarchicalConfiguration
-import org.apache.commons.configuration.plist.PropertyListConfiguration
 import org.apache.hadoop.mapreduce.Job
 import org.apache.spark.rdd.RDD
 import org.apache.spark.{ SparkContext, Logging }
+import java.util.logging.Level
 import org.kohsuke.args4j.{ Option => option, Argument }
 import org.bdgenomics.adam.avro.{ ADAMVariant, ADAMRecord, ADAMNucleotideContigFragment }
 import org.bdgenomics.adam.cli.{
@@ -35,6 +34,8 @@ import org.bdgenomics.adam.models.{ ADAMVariantContext, ReferenceRegion }
 import org.bdgenomics.adam.rdd.ADAMContext._
 import org.bdgenomics.adam.predicates.LocusPredicate
 import org.bdgenomics.guacamole.callers.AbsurdlyAggressiveVariantCaller
+import org.bdgenomics.adam.util.ParquetLogger
+import org.bdgenomics.guacamole.Util.progress
 
 object guacamole extends ADAMCommandCompanion {
 
@@ -47,10 +48,10 @@ object guacamole extends ADAMCommandCompanion {
 }
 
 class guacamoleArgs extends Args4jBase with ParquetArgs with SparkArgs {
-  @Argument(metaVar = "READS", required = true, usage = "ADAM read-oriented data", index = 0)
+  @Argument(metaVar = "READS", required = true, usage = "Aligned reads", index = 0)
   var readInput: String = ""
 
-  @Argument(metaVar = "VARIANTS_OUT", required = true, usage = "ADAM variant output", index = 1)
+  @Argument(metaVar = "VARIANTS_OUT", required = true, usage = "Variant output", index = 1)
   var variantOutput: String = ""
 
   @option(required = false, name = "reference", usage = "ADAM or FASTA reference genome data")
@@ -84,7 +85,8 @@ class guacamole(protected val args: guacamoleArgs) extends ADAMSparkCommand[guac
    * @param job Hadoop Job container for file I/O.
    */
   def run(sc: SparkContext, job: Job) {
-    log.info("Starting.")
+    ParquetLogger.hadoopLoggerLevel(Level.SEVERE) // Quiet parquet logging.
+    progress("Starting.")
 
     val reference = {
       if (args.referenceInput.isEmpty) None
@@ -93,7 +95,7 @@ class guacamole(protected val args: guacamoleArgs) extends ADAMSparkCommand[guac
 
     val reads: RDD[ADAMRecord] = sc.adamLoad(args.readInput, Some(classOf[LocusPredicate]))
 
-    log.info("Loaded %d reference fragments and %d reads".format(
+    progress("Loaded %d reference fragments and %d reads".format(
       reference.map(_.count).getOrElse(0),
       reads.count))
 
