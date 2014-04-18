@@ -16,19 +16,90 @@
 package org.bdgenomics.guacamole
 
 import org.bdgenomics.adam.avro.{ ADAMContig, ADAMGenotype, ADAMPileup, ADAMRecord, ADAMVariant }
+import org.bdgenomics.adam.util
 import org.scalatest._
-import org.scalatest.matchers.{ ShouldMatchers, Matchers }
+import org.scalatest.matchers.{ ShouldMatchers }
+import org.apache.spark.SparkContext
 
-class LociSetSuite extends FunSuite with ShouldMatchers {
+class LociSetSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
 
-  test("basic operations on a loci set") {
+  test("properties of empty LociSet") {
     LociSet.empty.contigs should have length (0)
+    LociSet.empty.count should equal(0)
+    LociSet.empty should equal(LociSet.parse(""))
+    LociSet.empty should equal(LociSet.parse("empty1:30-30,empty2:40-40"))
+  }
 
-    val set = LociSet.parse("chr21:100-200,chr20:0-10,chr20:8-15,chr20:100-120")
+  test("count, containment, intersection testing of a loci set") {
+    val set = LociSet.parse("chr21:100-200,chr20:0-10,chr20:8-15,chr20:100-120,empty:10-10")
     set.contigs should equal(List("chr20", "chr21"))
+    set.count should equal(135)
     set.onContig("chr20").contains(110) should be(true)
+    set.onContig("chr20").contains(100) should be(true)
+    set.onContig("chr20").contains(99) should be(false)
+    set.onContig("chr20").contains(120) should be(false)
+    set.onContig("chr20").contains(119) should be(true)
+    set.onContig("chr20").count should be(35)
+    set.onContig("chr20").intersects(0, 5) should be(true)
+    set.onContig("chr20").intersects(0, 1) should be(true)
+    set.onContig("chr20").intersects(0, 0) should be(false)
+    set.onContig("chr20").intersects(7, 8) should be(true)
+    set.onContig("chr20").intersects(9, 11) should be(true)
+    set.onContig("chr20").intersects(11, 18) should be(true)
+    set.onContig("chr20").intersects(18, 19) should be(false)
+    set.onContig("chr20").intersects(14, 80) should be(true)
+    set.onContig("chr20").intersects(15, 80) should be(false)
+    set.onContig("chr20").intersects(120, 130) should be(false)
+    set.onContig("chr20").intersects(119, 130) should be(true)
 
-    //set.intersects()
+    set.onContig("chr21").contains(99) should be(false)
+    set.onContig("chr21").contains(100) should be(true)
+    set.onContig("chr21").contains(200) should be(false)
+    set.onContig("chr21").count should be(100)
+    set.onContig("chr21").intersects(110, 120) should be(true)
+    set.onContig("chr21").intersects(90, 120) should be(true)
+    set.onContig("chr21").intersects(150, 200) should be(true)
+    set.onContig("chr21").intersects(150, 210) should be(true)
+    set.onContig("chr21").intersects(200, 210) should be(false)
+    set.onContig("chr21").intersects(201, 210) should be(false)
+    set.onContig("chr21").intersects(90, 100) should be(false)
+    set.onContig("chr21").intersects(90, 101) should be(true)
+    set.onContig("chr21").intersects(90, 95) should be(false)
+    set.onContig("chr21").individually.toSeq should equal(100 until 200)
+  }
 
+  sparkTest("loci set invariants") {
+    val sets = List(
+      "",
+      "empty:20-20,empty2:30-30",
+      "20:100-200",
+      "21:300-400",
+      "X:5-17,X:19-22,Y:50-60",
+      "chr21:100-200,chr20:0-10,chr20:8-15,chr20:100-120").map(LociSet.parse)
+
+    def check_invariants(set: LociSet): Unit = {
+      set should not be (null)
+      set.toString should not be (null)
+      withClue("invariants for: '%s'".format(set.toString)) {
+        LociSet.parse(set.toString) should equal(set)
+        LociSet.parse(set.toString).toString should equal(set.toString)
+        set should equal(set)
+        set should not equal (set.union(LociSet.parse("abc123:30-40")))
+        set should equal(set.union(LociSet.parse("empty:99-99")))
+
+        // Test serialization. We hit all sorts of null pointer exceptions here at once point, so we are paranoid about
+        // checking every pointer.
+        assert(sc != null)
+        val parallelized = sc.parallelize(List(set))
+        assert(parallelized != null)
+        val collected = parallelized.collect()
+        assert(collected != null)
+        assert(collected.length == 1)
+        val result = collected(0)
+        result should equal(set)
+      }
+    }
+    sets.foreach(check_invariants)
+    check_invariants(LociSet.union(sets: _*))
   }
 }
