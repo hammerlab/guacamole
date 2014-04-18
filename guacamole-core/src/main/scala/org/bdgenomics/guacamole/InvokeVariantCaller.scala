@@ -24,7 +24,7 @@ object InvokeVariantCaller extends Logging {
    * @return An RDD of the called variants.
    */
   def usingSpark(reads: RDD[ADAMRecord], caller: VariantCaller, loci: LociSet, parallelism: Int = 100): RDD[ADAMGenotype] = {
-    val includedReads = reads.filter(overlaps(_, loci, caller.windowSize))
+    val includedReads = reads.filter(overlaps(_, loci, caller.halfWindowSize))
     progress("Filtered: %d reads total -> %d mapped and relevant reads".format(reads.count, includedReads.count))
 
     // Sort reads by start.
@@ -36,7 +36,7 @@ object InvokeVariantCaller extends Logging {
       val allReads = sorted.map(_._2).collect.iterator
       progress("Collected reads.")
       val readsSplitByContig = splitReadsByContig(allReads, loci.contigs)
-      val slidingWindows = readsSplitByContig.mapValues(SlidingReadWindow(caller.windowSize, _))
+      val slidingWindows = readsSplitByContig.mapValues(SlidingReadWindow(caller.halfWindowSize, _))
 
       // Reads are coming in sorted by contig, so we process one contig at a time, in order.
       val genotypes = slidingWindows.toSeq.sortBy(_._1).flatMap({
@@ -70,12 +70,12 @@ object InvokeVariantCaller extends Logging {
   }
 
   /**
-   * Does the given read overlap any of the given loci, with windowSize padding?
+   * Does the given read overlap any of the given loci, with halfWindowSize padding?
    */
-  private def overlaps(read: ADAMRecord, loci: LociSet, windowSize: Long = 0): Boolean = {
+  private def overlaps(read: ADAMRecord, loci: LociSet, halfWindowSize: Long = 0): Boolean = {
     read.getReadMapped && loci.onContig(read.getReferenceName.toString).intersects(
-      math.min(0, read.getStart - windowSize),
-      read.end.get + windowSize)
+      math.min(0, read.getStart - halfWindowSize),
+      read.end.get + halfWindowSize)
   }
 
 }

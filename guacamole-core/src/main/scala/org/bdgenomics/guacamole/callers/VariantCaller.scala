@@ -16,7 +16,7 @@ trait VariantCaller extends Serializable {
    * Implementations must override this.
    *
    */
-  val windowSize: Long
+  val halfWindowSize: Long
 
   /**
    * Given a [[SlidingReadWindow]] and loci on one contig to call variants at, returns an iterator of
