@@ -1,10 +1,13 @@
 package org.bdgenomics.guacamole
 
 import com.google.common.collect.{ TreeRangeSet, ImmutableRangeSet, RangeSet, Range }
-import scala.collection.immutable.NumericRange
+import scala.collection.immutable.{ SortedMap, NumericRange }
 import scala.collection.JavaConverters._
 import scala.collection.JavaConversions
-import org.bdgenomics.guacamole.LociSet.{ SingleContig, JLong, emptyRangeSet }
+import org.bdgenomics.guacamole.LociSet.{ JLong, emptyRangeSet }
+import com.esotericsoftware.kryo.{ Serializer, Kryo }
+import com.esotericsoftware.kryo.io.{ Input, Output }
+import org.apache.spark.serializer.KryoRegistrator
 
 /**
  * A collection of genomic regions. Maps reference names (contig names) to a set of loci on that contig.
@@ -15,12 +18,17 @@ import org.bdgenomics.guacamole.LociSet.{ SingleContig, JLong, emptyRangeSet }
  *
  * All intervals are half open: inclusive on start, exclusive on end.
  *
- * @param ranges Map from contig names to the range set giving the loci under consideration on that contig.
+ * @param map Map from contig names to the range set giving the loci under consideration on that contig.
  */
-case class LociSet(ranges: Map[String, SingleContig]) {
+case class LociSet(private val map: Map[String, LociSet.SingleContig]) {
+
+  private val sortedMap = SortedMap[String, LociSet.SingleContig](map.filter(!_._2.isEmpty).toArray: _*)
 
   /** The contigs included in this LociSet with a nonempty set of loci. */
-  lazy val contigs: Seq[String] = ranges.filter(!_._2.isEmpty).keys.toSeq.sorted
+  lazy val contigs: Seq[String] = sortedMap.keys.toSeq
+
+  /** The number of loci in this LociSet. */
+  lazy val count: Long = sortedMap.valuesIterator.map(_.count).sum
 
   /**
    * Returns the loci on the specified contig.
@@ -28,20 +36,27 @@ case class LociSet(ranges: Map[String, SingleContig]) {
    * @param contig The contig name
    * @return A [[LociSet.SingleContig]] instance giving the loci on the specified contig.
    */
-  def onContig(contig: String): SingleContig = ranges.get(contig) match {
-    case Some(singleContigLociSet) => singleContigLociSet
-    case None                      => SingleContig(contig, emptyRangeSet)
+  def onContig(contig: String): LociSet.SingleContig = sortedMap.get(contig) match {
+    case Some(result) => result
+    case None         => LociSet.SingleContig(contig, emptyRangeSet)
   }
 
   /** Returns the union of this LociSet with another. */
   def union(other: LociSet): LociSet = {
-    val keys = (ranges ++ other.ranges).keys
-    val pairs = keys.map(key => key -> onContig(key).union(other.onContig(key)))
+    val keys = Set[String](contigs: _*).union(Set[String](other.contigs: _*))
+    val pairs = keys.map(contig => contig -> onContig(contig).union(other.onContig(contig)))
     LociSet(pairs.toMap)
   }
 
   /** Returns a string representation of this LociSet, in the same format that LociSet.parse expects. */
-  override def toString(): String = contigs.flatMap(_.toString).mkString(",")
+  override def toString(): String = contigs.map(onContig(_).toString).mkString(",")
+
+  override def equals(other: Any) = other match {
+    case that: LociSet => sortedMap.equals(that.sortedMap)
+    case _             => false
+  }
+  override def hashCode = sortedMap.hashCode
+
 }
 object LociSet {
   private type JLong = java.lang.Long
@@ -73,12 +88,17 @@ object LociSet {
    */
   def parse(loci: String): LociSet = {
     val syntax = """^([\pL\pN]+):(\pN+)-(\pN+)""".r
-    //val syntax = "([A-z]+):([0-9]+)-([0-9]+)".r
     val sets = loci.replace(" ", "").split(',').map({
+      case ""                       => LociSet.empty
       case syntax(name, start, end) => LociSet(Seq[(String, Long, Long)]((name, start.toLong, end.toLong)))
       case other                    => throw new IllegalArgumentException("Couldn't parse loci range: %s".format(other))
     })
-    sets.reduce(_.union(_))
+    union(sets: _*)
+  }
+
+  /** Returns union of specified [[LociSet]] instances. */
+  def union(lociSets: LociSet*): LociSet = {
+    lociSets.reduce(_.union(_))
   }
 
   /**
@@ -116,13 +136,44 @@ object LociSet {
     /** Returns whether a given genomic region overlaps with any loci in this LociSet. */
     def intersects(start: Long, end: Long) = {
       val range = Range.closedOpen[JLong](start, end)
-      rangeSet.subRangeSet(range).isEmpty
+      !rangeSet.subRangeSet(range).isEmpty
     }
 
     override def toString(): String = {
-      ranges.map(range => "%s:%l-%l".format(contig, range.start, range.end)).mkString(",")
+      ranges.map(range => "%s:%d-%d".format(contig, range.start, range.end)).mkString(",")
     }
 
     private def rawIterator() = JavaConversions.asScalaIterator(rangeSet.asRanges.iterator)
   }
 }
+
+// Serialization
+// TODO: use a more efficient serialization format than strings.
+class LociSetSerializer extends Serializer[LociSet] {
+  def write(kyro: Kryo, output: Output, obj: LociSet) = {
+    output.writeString(obj.toString)
+  }
+  def read(kryo: Kryo, input: Input, klass: Class[LociSet]): LociSet = {
+    LociSet.parse(input.readString())
+  }
+}
+class LociSetSingleContigSerializer extends Serializer[LociSet.SingleContig] {
+  def write(kyro: Kryo, output: Output, obj: LociSet.SingleContig) = {
+    assert(kyro != null)
+    assert(output != null)
+    assert(obj != null)
+    output.writeString(obj.toString)
+  }
+  def read(kryo: Kryo, input: Input, klass: Class[LociSet.SingleContig]): LociSet.SingleContig = {
+    assert(kryo != null)
+    assert(input != null)
+    assert(klass != null)
+    val string = input.readString()
+    assert(string != null)
+    val set = LociSet.parse(string)
+    assert(set != null)
+    assert(set.contigs.length == 1)
+    set.onContig(set.contigs(0))
+  }
+}
+
