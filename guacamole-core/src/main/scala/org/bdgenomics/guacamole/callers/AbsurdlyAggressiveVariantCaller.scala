@@ -14,7 +14,7 @@ import scala.collection.JavaConversions
  */
 class AbsurdlyAggressiveVariantCaller(samples: Set[String]) extends VariantCaller {
 
-  override val windowSize: Long = 0
+  override val halfWindowSize: Long = 0
 
   override def callVariants(reads: SlidingReadWindow, loci: LociSet.SingleContig): Iterator[ADAMGenotype] = {
     val lociAndReads = loci.individually.map(locus => (locus, reads.setCurrentLocus(locus)))

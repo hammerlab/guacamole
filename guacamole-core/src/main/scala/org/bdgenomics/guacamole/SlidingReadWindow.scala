@@ -16,14 +16,14 @@ import org.bdgenomics.adam.rich.{ DecadentRead, RichADAMRecord }
  * To enable an efficient implementation, we require that both the sequence of loci to be considered and the iterator
  * of reads are sorted.
  *
- * @param windowSize Number of nucleotide bases to either side of the specified locus to provide reads for. For example,
- *                   if windowSize=5, and our currentLocus=100, then currentReads will include reads that map to anywhere
- *                   between 95 and 105, inclusive. Set to 0 to consider only reads that overlap the exact locus being
- *                   considered, with no surrounding window.
+ * @param halfWindowSize Number of nucleotide bases to either side of the specified locus to provide reads for. For
+ *                       example, if halfWindowSize=5, and our currentLocus=100, then currentReads will include reads
+ *                       that map to anywhere between 95 and 105, inclusive. Set to 0 to consider only reads that
+ *                       overlap the exact locus being considered, with no surrounding window.
  *
  * @param rawSortedReads Iterator of aligned reads, sorted by the aligned start locus.
  */
-case class SlidingReadWindow(windowSize: Long, rawSortedReads: Iterator[ADAMRecord]) {
+case class SlidingReadWindow(halfWindowSize: Long, rawSortedReads: Iterator[ADAMRecord]) {
   /** The locus currently under consideration. */
   var currentLocus = -1
 
@@ -62,17 +62,17 @@ case class SlidingReadWindow(windowSize: Long, rawSortedReads: Iterator[ADAMReco
     assume(locus >= currentLocus, "Pileup window can only move forward in locus")
 
     def overlaps(read: DecadentRead) = {
-      (read.record.getStart >= locus - windowSize && read.record.getStart <= locus + windowSize) ||
-        (read.record.end.get >= locus - windowSize && read.record.end.get <= locus + windowSize)
+      (read.record.getStart >= locus - halfWindowSize && read.record.getStart <= locus + halfWindowSize) ||
+        (read.record.end.get >= locus - halfWindowSize && read.record.end.get <= locus + halfWindowSize)
     }
 
     // Remove reads that are no longer in the window.
-    while (!currentReadsPriorityQueue.isEmpty && currentReadsPriorityQueue.head.record.end.get < locus - windowSize) {
+    while (!currentReadsPriorityQueue.isEmpty && currentReadsPriorityQueue.head.record.end.get < locus - halfWindowSize) {
       val dropped = currentReadsPriorityQueue.dequeue()
       assert(!overlaps(dropped))
     }
     // Add new reads that are now in the window.
-    val newReads = sortedReads.takeWhile(_.record.getStart <= locus + windowSize).filter(overlaps)
+    val newReads = sortedReads.takeWhile(_.record.getStart <= locus + halfWindowSize).filter(overlaps)
     currentReadsPriorityQueue.enqueue(newReads.toSeq: _*)
     assert(currentReadsPriorityQueue.forall(overlaps)) // Correctness check.
     newReads // We return the newly added reads.
