@@ -128,6 +128,10 @@ object Pileup {
       else
         throw new AssertionError("Not a match, mismatch, deletion, or insertion")
     }
+    lazy val singleBaseRead: Char = {
+      assume(sequenceRead.length == 1)
+      sequenceRead.charAt(0)
+    }
 
     lazy val cigarElement = cigar.getCigarElement(indexInCigarElements.toInt)
     lazy val isInsertion = cigarElement == CigarOperator.INSERTION

@@ -25,7 +25,10 @@ object InvokeVariantCaller extends Logging {
    */
   def usingSpark(reads: RDD[ADAMRecord], caller: VariantCaller, loci: LociSet, parallelism: Int = 100): RDD[ADAMGenotype] = {
     val includedReads = reads.filter(overlaps(_, loci, caller.halfWindowSize))
-    progress("Filtered: %d reads total -> %d mapped and relevant reads".format(reads.count, includedReads.count))
+    progress("Filtered to %d reads that overlap loci of interest.".format(includedReads.count))
+
+    val samples = reads.map(read => Option(read.recordGroupSample).map(_.toString).getOrElse("default")).distinct.collect
+    progress("Reads contain %d sample(s).".format(samples.length))
 
     // Sort reads by start.
     val keyed = includedReads.keyBy(read => (read.getReferenceName.toString, read.getStart))
@@ -40,7 +43,7 @@ object InvokeVariantCaller extends Logging {
 
       // Reads are coming in sorted by contig, so we process one contig at a time, in order.
       val genotypes = slidingWindows.toSeq.sortBy(_._1).flatMap({
-        case (contig, window) => caller.callVariants(window, loci.onContig(contig))
+        case (contig, window) => caller.callVariants(samples, window, loci.onContig(contig))
       })
       reads.sparkContext.parallelize(genotypes)
     } else {

@@ -20,91 +20,125 @@ import org.apache.hadoop.mapreduce.Job
 import org.apache.spark.rdd.RDD
 import org.apache.spark.{ SparkContext, Logging }
 import java.util.logging.Level
-import org.kohsuke.args4j.{ Option => option, Argument }
+import org.kohsuke.args4j.{ CmdLineException, Option, CmdLineParser, Argument }
 import org.bdgenomics.adam.avro.{ ADAMVariant, ADAMRecord, ADAMNucleotideContigFragment }
-import org.bdgenomics.adam.cli.{
-  ADAMSparkCommand,
-  ADAMCommandCompanion,
-  ParquetArgs,
-  SparkArgs,
-  Args4j,
-  Args4jBase
-}
+import org.bdgenomics.adam.cli._
 import org.bdgenomics.adam.models.{ ADAMVariantContext, ReferenceRegion }
 import org.bdgenomics.adam.rdd.ADAMContext._
 import org.bdgenomics.adam.predicates.LocusPredicate
-import org.bdgenomics.guacamole.callers.AbsurdlyAggressiveVariantCaller
-import org.bdgenomics.adam.util.ParquetLogger
+import org.bdgenomics.guacamole.callers.{ VariantCallerFactory, VariantCaller, ThresholdVariantCaller }
+import org.bdgenomics.adam.util.{ HadoopUtil, ParquetLogger }
 import org.bdgenomics.guacamole.Util.progress
+import scala.Some
+import scala.util.control.Exception._
+import scala.Some
+import org.bdgenomics.adam.rdd.ADAMContext
 
-object guacamole extends ADAMCommandCompanion {
-
-  val commandName = "guacamole"
-  val commandDescription = "Call variants using guacamole."
-
-  def apply(args: Array[String]) = {
-    new guacamole(Args4j[guacamoleArgs](args))
-  }
-}
-
-class guacamoleArgs extends Args4jBase with ParquetArgs with SparkArgs {
+/**
+ * These arguments are common to all variant callers.
+ */
+class GuacamoleCommonArguments extends Args4jBase with ParquetArgs with SparkArgs {
   @Argument(metaVar = "READS", required = true, usage = "Aligned reads", index = 0)
   var readInput: String = ""
 
   @Argument(metaVar = "VARIANTS_OUT", required = true, usage = "Variant output", index = 1)
   var variantOutput: String = ""
 
-  @option(required = false, name = "reference", usage = "ADAM or FASTA reference genome data")
+  @Option(required = false, name = "-reference", usage = "ADAM or FASTA reference genome data")
   var referenceInput: String = ""
 
-  @option(name = "-parallelism", usage = "Number of variant calling tasks to use. Set to 0 (currently the default) to call variants on the Spark master node, with no parallelism.")
+  @Option(name = "-parallelism", usage = "Number of variant calling tasks to use. Set to 0 (currently the default) to call variants on the Spark master node, with no parallelism.")
   var parallelism: Int = 0
 
-  @option(name = "-loci", usage = "Loci at which to call variants. Format: contig:start-end,contig:start-end,...")
+  @Option(name = "-loci", usage = "Loci at which to call variants. Format: contig:start-end,contig:start-end,...")
   var loci: String = ""
 
-  @option(name = "-sort", usage = "Sort reads: use if reads are not already stored sorted.")
+  @Option(name = "-sort", usage = "Sort reads: use if reads are not already stored sorted.")
   var sort = true
 
-  @option(required = false, name = "-fragment_length", usage = "Sets maximum fragment length. Default value is 10,000. Values greater than 1e9 should be avoided.")
+  @Option(required = false, name = "-fragment_length", usage = "Sets maximum fragment length. Default value is 10,000. Values greater than 1e9 should be avoided.")
   var fragmentLength: Long = 10000L
 
-  @option(name = "-debug", usage = "If set, prints a higher level of debug output.")
+  @Option(name = "-debug", usage = "If set, prints a higher level of debug output.")
   var debug = false
 }
 
-class guacamole(protected val args: guacamoleArgs) extends ADAMSparkCommand[guacamoleArgs] with Logging {
+/**
+ * Guacamole main class.
+ */
+object Guacamole extends Logging {
 
-  // companion object to this class - needed for ADAMCommand framework
-  val companion = guacamole
+  private val variantCallers: Seq[VariantCallerFactory] = List(
+    ThresholdVariantCaller)
+
+  private def printUsage() = {
+    println("Usage: java ... <variant-caller> <reads.align.adam> <output.gt.adam> [other args]\n")
+    println("Available variant callers:")
+    variantCallers.foreach(caller => {
+      println("%10s: %s".format(caller.name, caller.description))
+    })
+    println("\nTry java ... <variant-caller> -h for help on a particular variant caller.")
+  }
+
+  private def createSparkContext(args: SparkArgs): SparkContext = {
+    ADAMContext.createSparkContext(
+      "guacamole",
+      args.spark_master,
+      args.spark_home,
+      args.spark_jars,
+      args.spark_env_vars,
+      args.spark_add_stats_listener,
+      args.spark_kryo_buffer_size)
+  }
 
   /**
-   * Main method. SparkContext and Hadoop Job are provided by the ADAMSparkCommand shell.
-   *
-   * @param sc SparkContext for RDDs.
-   * @param job Hadoop Job container for file I/O.
+   * Entry point into Guacamole.
+   * @param args command line arguments
    */
-  def run(sc: SparkContext, job: Job) {
-    ParquetLogger.hadoopLoggerLevel(Level.SEVERE) // Quiet parquet logging.
-    progress("Starting.")
+  def main(args: Array[String]): Unit = {
+    if (args.length < 1) {
+      printUsage()
+      System.exit(1)
+    } else {
+      val callerName = args(0)
+      val rest = args.drop(1)
+      val (parsedArgs: GuacamoleCommonArguments, instance: VariantCaller) = variantCallers.find(_.name == callerName) match {
+        case Some(callerFactory) => callerFactory.fromCommandLineArguments(rest)
+        case None => {
+          println("Unknown variant caller: %s".format(callerName))
+          printUsage()
+          System.exit(1)
+        }
+      }
+      ParquetLogger.hadoopLoggerLevel(Level.SEVERE) // Quiet parquet logging.
+      val sparkContext = createSparkContext(parsedArgs)
+      val job = HadoopUtil.newJob()
+      run(sparkContext, job, parsedArgs, instance)
+    }
+  }
+
+  private def run(sc: SparkContext, job: Job, args: GuacamoleCommonArguments, caller: VariantCaller) = {
+    progress("Guacamole starting.")
 
     val reference = {
       if (args.referenceInput.isEmpty) None
       else Some(sc.adamSequenceLoad(args.referenceInput, args.fragmentLength))
     }
 
-    val reads: RDD[ADAMRecord] = sc.adamLoad(args.readInput, Some(classOf[LocusPredicate]))
+    val rawReads: RDD[ADAMRecord] = sc.adamLoad(args.readInput, Some(classOf[LocusPredicate]))
+    progress("Loaded %d reads and %d reference fragments.".format(rawReads.count, reference.map(_.count).getOrElse(0)))
 
-    progress("Loaded %d reference fragments and %d reads".format(
-      reference.map(_.count).getOrElse(0),
-      reads.count))
+    val reads = rawReads.filter(read =>
+      read.readMapped &&
+        !read.duplicateRead &&
+        read.referenceName != null &&
+        read.referenceLength > 0)
+    progress("Filtered to %d valid, non-duplicate, mapped reads.".format(reads.count))
 
-    val samples = reads.map(_.getRecordGroupSample).distinct.collect.map(_.toString).toSet
-    val caller = new AbsurdlyAggressiveVariantCaller(samples)
     val loci: LociSet = {
       if (args.loci.isEmpty) {
         // Call at all loci.
-        val contigsAndLengths = reads.map(read => (read.getReferenceName.toString, read.getReferenceLength)).distinct.collect
+        val contigsAndLengths = reads.map(read => (read.referenceName.toString, read.referenceLength)).distinct.collect
         assume(contigsAndLengths.map(_._1).distinct.length == contigsAndLengths.length,
           "Some contigs have different lengths in reads: " + contigsAndLengths.toString)
         LociSet(contigsAndLengths.toSeq.map({ case (contig, length) => (contig, 0.toLong, length.toLong) }))
@@ -113,6 +147,7 @@ class guacamole(protected val args: guacamoleArgs) extends ADAMSparkCommand[guac
         LociSet.parse(args.loci)
       }
     }
+    progress("Considering %d loci across %d contig(s).".format(loci.count, loci.contigs.length))
     val genotypes = InvokeVariantCaller.usingSpark(reads, caller, loci, args.parallelism)
 
     // save variants to output file
