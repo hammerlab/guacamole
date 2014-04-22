@@ -81,6 +81,7 @@ object Guacamole extends Logging {
   }
 
   private def createSparkContext(args: SparkArgs): SparkContext = {
+    SerializationUtil.setupContextProperties()
     ADAMContext.createSparkContext(
       "guacamole",
       args.spark_master,
