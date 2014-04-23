@@ -8,24 +8,17 @@ import scala.collection.JavaConversions
 import org.kohsuke.args4j.{ Option, Argument }
 import org.bdgenomics.adam.cli.Args4j
 import org.bdgenomics.guacamole.SlidingReadWindow
+import org.bdgenomics.guacamole.Common.Arguments._
+import org.bdgenomics.guacamole.SlidingReadWindow
 
 /**
- * Example variant caller implementation.
+ * Simple variant caller implementation.
  *
  * Instead of a bayesian approach, just uses thresholds on read counts to call variants (similar to Varscan).
  *
  */
-class ThresholdVariantCaller(threshold_percent: Int) extends VariantCaller {
-
-  override val halfWindowSize: Long = 0
-
-  override def callVariants(samples: Seq[String], reads: SlidingReadWindow, loci: LociSet.SingleContig): Iterator[ADAMGenotype] = {
-    val lociAndReads = loci.individually.map(locus => (locus, reads.setCurrentLocus(locus)))
-    val pileupsIterator = Pileup.pileupsAtLoci(lociAndReads)
-    pileupsIterator.flatMap(callVariantsAtLocus _)
-  }
-
-  private def callVariantsAtLocus(pileup: Pileup): Seq[ADAMGenotype] = {
+class ThresholdVariantCaller(threshold_percent: Int) extends PileupVariantCaller with Serializable {
+  def callVariantsAtLocus(pileup: Pileup): Seq[ADAMGenotype] = {
     val refBase = pileup.referenceBase
     pileup.bySample.toSeq.flatMap({
       case (sampleName, samplePileup) =>
@@ -74,17 +67,21 @@ class ThresholdVariantCaller(threshold_percent: Int) extends VariantCaller {
     })
   }
 }
-object ThresholdVariantCaller extends VariantCallerFactory {
-  val name = "threshold"
-  val description = "call variants using a simple threshold"
+object ThresholdVariantCaller extends Command {
+  override val name = "threshold"
+  override val description = "call variants using a simple threshold"
 
-  override def fromCommandLineArguments(args: Array[String]): (GuacamoleCommonArguments, ThresholdVariantCaller) = {
-    class Arguments extends GuacamoleCommonArguments {
-      @Option(name = "-threshold", metaVar = "X (percent)", usage = "Make a call if at least X percent of reads support it")
-      var threshold: Int = 8
-    }
-    val parsedArgs = Args4j[Arguments](args)
-    val instance = new ThresholdVariantCaller(parsedArgs.threshold)
-    (parsedArgs, instance)
+  private class Arguments extends Base with Output with Reads with SlidingWindowVariantCaller.Arguments {
+    @Option(name = "-threshold", metaVar = "X (percent)", usage = "Make a call if at least X percent of reads support it")
+    var threshold: Int = 8
+  }
+
+  override def run(rawArgs: Array[String]): Unit = {
+    val args = Args4j[Arguments](rawArgs)
+    val sc = Common.createSparkContext(args)
+
+    val reads = Common.loadReads(args, sc, mapped = true, nonDuplicate = true)
+    val caller = new ThresholdVariantCaller(args.threshold)
+    SlidingWindowVariantCaller.invoke(args, caller, reads)
   }
 }
