@@ -1,42 +1,82 @@
-package org.bdgenomics.guacamole
+package org.bdgenomics.guacamole.callers
 
-import org.bdgenomics.adam.avro.{ ADAMGenotype, ADAMRecord }
-import org.apache.spark.rdd.RDD
-import org.apache.spark.Logging
-import org.apache.spark.SparkContext._
-import org.apache.spark.rdd._
-import org.bdgenomics.guacamole.callers.VariantCaller
+import org.bdgenomics.guacamole.{ Common, LociSet, SlidingReadWindow }
 import org.bdgenomics.adam.rich.RichADAMRecord._
-import org.bdgenomics.guacamole.Util.progress
+import org.bdgenomics.adam.avro.{ ADAMRecord, ADAMGenotype }
+import org.bdgenomics.adam.rdd._
+import org.apache.spark.rdd._
+import org.apache.spark.SparkContext._
+import org.bdgenomics.guacamole.Util._
+import org.kohsuke.args4j.{ Option => Opt }
+import scala.Option
+import org.bdgenomics.guacamole.Common.Arguments.{ Loci, Base }
+import org.bdgenomics.adam.rdd.ADAMContext._
+import org.bdgenomics.adam.rich.RichADAMRecord
 
-/**
- * Functions to invoke variant calling.
- */
-object InvokeVariantCaller extends Logging {
+trait SlidingWindowVariantCaller {
+  /**
+   * The size of the sliding window (number of bases to either side of a locus) requested by this variant caller
+   * implementation.
+   *
+   * Implementations must override this.
+   *
+   */
+  val halfWindowSize: Long
+
+  /**
+   * Given a the samples to call variants for, a [[SlidingReadWindow]], and loci on one contig to call variants at, returns an iterator of
+   * genotypes giving the result of variant calling. The [[SlidingReadWindow]] will have the window size requested
+   * by this variant caller implementation.
+   *
+   * Implementations must override this.
+   *
+   */
+  def callVariants(samples: Seq[String], reads: SlidingReadWindow, loci: LociSet.SingleContig): Iterator[ADAMGenotype]
+}
+object SlidingWindowVariantCaller {
+  trait Arguments extends Base with Loci {
+    @Opt(name = "-sort", usage = "Sort reads: use if reads are not already stored sorted.")
+    var sort: Boolean = true
+
+    @Opt(name = "-parallelism", usage = "Number of variant calling tasks to use. Set to 0 (currently the default) to call variants on the Spark master node, with no parallelism.")
+    var parallelism: Int = 0
+  }
+
   /**
    * Call variants using reads stored in a Spark RDD.
    *
-   * @param reads Spark RDD of ADAM reads. May be in any order.
+   *
+   * @param reads Spark RDD of ADAM reads. May be in any order if sorting is enabled
    * @param caller Variant calling implementation to use.
    * @param loci Loci to call variants at.
    * @param parallelism Number of spark workers to use to call variants. Set to 0 to stream reads to the spark master
    *                    and run the variant calling locally.
    * @return An RDD of the called variants.
    */
-  def usingSpark(reads: RDD[ADAMRecord], caller: VariantCaller, loci: LociSet, parallelism: Int = 100): RDD[ADAMGenotype] = {
+
+  /**
+   * Call variants using the given SlidingWindowVariantCaller.
+   *
+   * @param args parsed commandline arguments
+   * @param caller a variant caller instance
+   * @param reads reads to use to call variants
+   * @return the variants
+   */
+  def invoke(args: Arguments, caller: SlidingWindowVariantCaller, reads: RDD[ADAMRecord]): RDD[ADAMGenotype] = {
+    val loci = Common.loci(args, reads)
+
     val includedReads = reads.filter(overlaps(_, loci, caller.halfWindowSize))
-    progress("Filtered to %d reads that overlap loci of interest.".format(includedReads.count))
+    progress("Filtered to %d reads that overlap loci of interest: %s.".format(includedReads.count, loci.toString))
 
     val samples = reads.map(read => Option(read.recordGroupSample).map(_.toString).getOrElse("default")).distinct.collect
     progress("Reads contain %d sample(s).".format(samples.length))
 
     // Sort reads by start.
-    val keyed = includedReads.keyBy(read => (read.getReferenceName.toString, read.getStart))
-    val sorted = keyed.sortByKey(true)
+    val sorted = if (args.sort) includedReads.adamSortReadsByReferencePosition else includedReads
 
-    if (parallelism == 0) {
+    if (args.parallelism == 0) {
       // Serial implementation on Spark master.
-      val allReads = sorted.map(_._2).collect.iterator
+      val allReads = sorted.collect.iterator
       progress("Collected reads.")
       val readsSplitByContig = splitReadsByContig(allReads, loci.contigs)
       val slidingWindows = readsSplitByContig.mapValues(SlidingReadWindow(caller.halfWindowSize, _))
@@ -75,7 +115,7 @@ object InvokeVariantCaller extends Logging {
   /**
    * Does the given read overlap any of the given loci, with halfWindowSize padding?
    */
-  private def overlaps(read: ADAMRecord, loci: LociSet, halfWindowSize: Long = 0): Boolean = {
+  private def overlaps(read: RichADAMRecord, loci: LociSet, halfWindowSize: Long = 0): Boolean = {
     read.getReadMapped && loci.onContig(read.getReferenceName.toString).intersects(
       math.min(0, read.getStart - halfWindowSize),
       read.end.get + halfWindowSize)
