@@ -1,12 +1,12 @@
 package org.bdgenomics.guacamole.callers
 
 import org.bdgenomics.guacamole.{ Common, LociSet, SlidingReadWindow }
+import org.bdgenomics.guacamole.Common.progress
 import org.bdgenomics.adam.rich.RichADAMRecord._
 import org.bdgenomics.adam.avro.{ ADAMRecord, ADAMGenotype }
 import org.bdgenomics.adam.rdd._
 import org.apache.spark.rdd._
 import org.apache.spark.SparkContext._
-import org.bdgenomics.guacamole.Util._
 import org.kohsuke.args4j.{ Option => Opt }
 import scala.Option
 import org.bdgenomics.guacamole.Common.Arguments.{ Loci, Base }
