@@ -24,6 +24,7 @@ import org.apache.spark.rdd.RDD
 import org.apache.spark.SparkContext
 
 class PileupSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
+
   def loadPileup(filename: String, locus: Long = 0): Pileup = {
     /* grab the path to the SAM file we've stashed in the resources subdirectory */
     val path = ClassLoader.getSystemClassLoader.getResource(filename).getFile
@@ -31,36 +32,36 @@ class PileupSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
     assert(sc.hadoopConfiguration != null)
     val records: RDD[ADAMRecord] = sc.adamLoad(path)
     val localReads = records.collect.map(DecadentRead(_))
-    sc.stop()
     Pileup(localReads, locus)
   }
 
-  val pileup = loadPileup("same_start_reads.sam", 0)
-
-  test("Load pileup from SAM file") {
+  sparkTest("Load pileup from SAM file") {
+    val pileup = loadPileup("same_start_reads.sam", 0)
     pileup.elements.length should be(10)
   }
 
-  val emptyReadSeq = Seq()
-
-  test("First 60 loci should have all 10 reads") {
+  sparkTest("First 60 loci should have all 10 reads") {
+    val pileup = loadPileup("same_start_reads.sam", 0)
     for (i <- 1 to 59) {
-      val nextPileup = pileup.atGreaterLocus(i, emptyReadSeq.iterator)
+      val nextPileup = pileup.atGreaterLocus(i, Seq.empty.iterator)
       nextPileup.elements.length should be(10)
     }
   }
 
-  test("Loci 10-19 deleted from half of the reads") {
+  sparkTest("Loci 10-19 deleted from half of the reads") {
+    val pileup = loadPileup("same_start_reads.sam", 0)
     for (i <- 10 to 19) {
-      val nextPileup = pileup.atGreaterLocus(i, emptyReadSeq.iterator)
+      val nextPileup = pileup.atGreaterLocus(i, Seq.empty.iterator)
       nextPileup.elements.filter(_.isDeletion).length should be(5)
     }
   }
 
-  test("Loci 60-69 have 5 reads") {
+  sparkTest("Loci 60-69 have 5 reads") {
+    val pileup = loadPileup("same_start_reads.sam", 0)
     for (i <- 60 to 69) {
-      val nextPileup = pileup.atGreaterLocus(i, emptyReadSeq.iterator)
+      val nextPileup = pileup.atGreaterLocus(i, Seq.empty.iterator)
       nextPileup.elements.length should be(5)
     }
   }
 }
+
