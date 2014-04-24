@@ -4,7 +4,6 @@ import org.bdgenomics.adam.cli.{ SparkArgs, ParquetArgs, Args4jBase }
 import org.kohsuke.args4j.{ Option => Opt }
 import org.bdgenomics.adam.avro.{ ADAMGenotype, ADAMRecord }
 import org.apache.spark.rdd.RDD
-import org.bdgenomics.guacamole.Util._
 import org.bdgenomics.adam.predicates.LocusPredicate
 import org.apache.spark.{ Logging, SparkContext }
 import org.bdgenomics.adam.rdd.ADAMContext._
@@ -123,7 +122,7 @@ object Common extends Logging {
    * @param args parsed arguments
    */
   def createSparkContext(args: SparkArgs): SparkContext = {
-    SerializationUtil.setupContextProperties()
+    Serialization.setupContextProperties()
     ADAMContext.createSparkContext(
       "guacamole",
       args.spark_master,
@@ -132,5 +131,15 @@ object Common extends Logging {
       args.spark_env_vars,
       args.spark_add_stats_listener,
       args.spark_kryo_buffer_size)
+  }
+
+  /**
+   * Print or log a progress message. For now, we just print to standard out, since ADAM's logging setup makes it
+   * difficult to see log messages at the INFO level without flooding ourselves with parquet messages.
+   * @param message String to print or log.
+   */
+  def progress(message: String): Unit = {
+    println("--> " + message)
+    System.out.flush()
   }
 }

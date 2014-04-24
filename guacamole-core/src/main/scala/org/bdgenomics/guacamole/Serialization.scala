@@ -3,7 +3,7 @@ package org.bdgenomics.guacamole
 import com.esotericsoftware.kryo.Kryo
 import org.bdgenomics.adam.serialization.{ ADAMKryoProperties, ADAMKryoRegistrator }
 
-object SerializationUtil {
+object Serialization {
   /**
    * Sets up serialization properties for ADAM and Guacamole.
    *

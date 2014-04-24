@@ -47,7 +47,7 @@ object TestUtil {
 
     def createSpark(sparkName: String, silenceSpark: Boolean = true): SparkContext = {
       // Use the same context properties as ADAM commands
-      SerializationUtil.setupContextProperties()
+      Serialization.setupContextProperties()
       // Silence the Spark logs if requested
       maybeLevels = if (silenceSpark) Some(SparkLogUtil.silenceSpark()) else None
       synchronized {

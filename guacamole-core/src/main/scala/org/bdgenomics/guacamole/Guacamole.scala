@@ -20,7 +20,7 @@ import org.apache.spark.Logging
 import java.util.logging.Level
 import org.bdgenomics.guacamole.callers.ThresholdVariantCaller
 import org.bdgenomics.adam.util.ParquetLogger
-import org.bdgenomics.guacamole.Util.progress
+import org.bdgenomics.guacamole.Common.progress
 import scala.Some
 
 /**
