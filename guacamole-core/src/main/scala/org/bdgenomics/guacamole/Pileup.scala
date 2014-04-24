@@ -1,7 +1,7 @@
 package org.bdgenomics.guacamole
 
 import org.bdgenomics.adam.rich.DecadentRead
-import net.sf.samtools.{CigarElement, Cigar, CigarOperator, TextCigarCodec}
+import net.sf.samtools.{ CigarElement, Cigar, CigarOperator, TextCigarCodec }
 import org.bdgenomics.adam.util.MdTag
 
 /**
@@ -73,7 +73,7 @@ object Pileup {
    */
   def pileupsAtLoci(locusAndReads: Iterator[(Long, Iterator[DecadentRead])]): Iterator[Pileup] = {
 
-    val empty : Seq[Pileup.Element] = Seq()
+    val empty: Seq[Pileup.Element] = Seq()
     val initialEmpty = Pileup(empty)
 
     val iterator = locusAndReads.scanLeft(initialEmpty)((prevPileup: Pileup, pair) => {
@@ -142,27 +142,24 @@ object Pileup {
       sequenceRead.charAt(0)
     }
 
-    lazy val cigarElement : CigarElement = cigar.getCigarElement(indexInCigarElements.toInt)
+    lazy val cigarElement: CigarElement = cigar.getCigarElement(indexInCigarElements.toInt)
     lazy val cigarOperator = cigarElement.getOperator
     lazy val isInsertion = cigarOperator == CigarOperator.INSERTION
     lazy val isDeletion = cigarOperator == CigarOperator.DELETION
     lazy val isMismatch = cigarOperator == CigarOperator.MATCH_OR_MISMATCH && !read.record.mdTag.get.isMatch(locus)
     lazy val isMatch = cigarOperator == CigarOperator.MATCH_OR_MISMATCH && read.record.mdTag.get.isMatch(locus)
 
-
     /**
+     * Determine the read position, cigar element index, and offset into that cigar element for a given locus.
      *
      * @param newLocus The desired locus of the new [[Pileup.Element]]. It must be greater than the current locus, and
      *                 not past the end of the current read.
      *
      *
-     * @return A tuple with following elements:
-     *  - read position
-     *  - cigar element index
-     *  - an offset into that cigar element
+     * @return A tuple of (read position, cigar element index, an offset into that cigar element)
      *
      */
-    def findNextCigarElement(newLocus : Long) : (Long,Long,Long) = {
+    private def findNextCigarElement(newLocus: Long): (Long, Long, Long) = {
       var currReadPos = readPosition
       var currReferencePos = locus
       for (i <- indexInCigarElements until cigar.numCigarElements()) {
@@ -170,7 +167,6 @@ object Pileup {
         val cigarEltLen = cigarElt.getLength
         val currEltEnd = currReferencePos + cigarEltLen
         val cigarOp = cigarElt.getOperator
-
         if (currEltEnd > newLocus) {
           val offset = newLocus - currReferencePos
           val finalReadPos = if (cigarOp.consumesReadBases) currReadPos + offset else currReadPos
@@ -180,10 +176,8 @@ object Pileup {
         if (cigarOp.consumesReferenceBases) { currReferencePos += cigarEltLen }
       }
       throw new RuntimeException(
-        "Couldn't find cigar element for locus %d, cigar string only extends to %d".format(newLocus, currReferencePos)
-      )
+        "Couldn't find cigar element for locus %d, cigar string only extends to %d".format(newLocus, currReferencePos))
     }
-
 
     /**
      * Returns a new [[Pileup.Element]] of the same read at a different locus.
@@ -204,10 +198,9 @@ object Pileup {
       assume(newLocus <= readEndPos,
         "This read stops at position %d, can't advance to %d".format(readEndPos, newLocus))
 
-
       val (newReadPosition, newIndexInCigarElements, newIndexWithinCigarElement) = findNextCigarElement(newLocus)
 
-      assert (newIndexInCigarElements < cigar.numCigarElements(),
+      assert(newIndexInCigarElements < cigar.numCigarElements(),
         "Invalid cigar element index %d".format(newIndexInCigarElements))
 
       Element(
