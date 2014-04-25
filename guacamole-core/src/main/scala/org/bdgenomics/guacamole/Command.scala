@@ -4,11 +4,10 @@ package org.bdgenomics.guacamole
  *
  * Interface for running a variant caller from command line arguments.
  *
- * Instead of structuring Guacamole as a "framework" that e.g. feeds reads to variant callers, we instead give the
- * variant callers control of execution and let them do anything they want. We provide a library of common functions
- * for them to use as appropriate.
+ * We give the variant callers control of execution. Guacamole is just a toolbox of common functionality for the variant
+ * callers to use as appropriate.
  *
- * If you add a new command, you should also update the [[Guacamole.variantCallers]] list in Guacamole.scala to
+ * If you add a new command, you should also update the [[Guacamole.commands]] list in Guacamole.scala to
  * include it.
  *
  */

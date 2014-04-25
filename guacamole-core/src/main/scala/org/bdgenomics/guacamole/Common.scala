@@ -129,6 +129,8 @@ object Common extends Logging {
   }
 
   /**
+   * Parse spark environment variables from commandline. Copied from ADAM.
+   *
    * Commandline format is -spark_env foo=1 -spark_env bar=2
    * @param envVariables The variables found on the commandline
    * @return
@@ -145,14 +147,12 @@ object Common extends Logging {
   }
 
   /**
-   * Return a spark context.
+   * Return a spark context. Copied from ADAM so we can set the Kryo serializer.
    * @param args parsed arguments
    * @param loadSystemValues
    * @param sparkDriverPort
    */
   def createSparkContext(args: SparkArgs, loadSystemValues: Boolean = true, sparkDriverPort: Option[Int] = None): SparkContext = {
-    //Serialization.setupContextProperties()
-
     val config: SparkConf = new SparkConf(loadSystemValues).setAppName("guacamole").setMaster(args.spark_master)
     if (args.spark_home != null) config.setSparkHome(args.spark_home)
     if (args.spark_jars != Nil) config.setJars(args.spark_jars)
@@ -178,7 +178,9 @@ object Common extends Logging {
     sc
   }
 
+  /** Time in milliseconds of last progress message. */
   var lastProgressTime: Long = 0
+
   /**
    * Print or log a progress message. For now, we just print to standard out, since ADAM's logging setup makes it
    * difficult to see log messages at the INFO level without flooding ourselves with parquet messages.

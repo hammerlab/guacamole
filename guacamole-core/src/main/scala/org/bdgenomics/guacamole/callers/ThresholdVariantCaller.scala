@@ -21,8 +21,7 @@ import org.apache.spark.Logging
  */
 class ThresholdVariantCaller(threshold_percent: Int) extends PileupVariantCaller with Serializable with Logging {
   def callVariantsAtLocus(pileup: Pileup): Seq[ADAMGenotype] = {
-    // For now, we skip loci that have no reads mapped. In the future, may want to emit NoCall
-    // in this case.
+    // For now, we skip loci that have no reads mapped. We may instead want to emit NoCall in this case.
     if (pileup.elements.isEmpty) {
       log.warn("Skipping empty pileup at locus: %d".format(pileup.locus))
       return Seq.empty

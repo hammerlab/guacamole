@@ -132,5 +132,4 @@ object SlidingWindowVariantCaller extends Logging {
       math.max(0, read.start - halfWindowSize),
       read.end.get + halfWindowSize)
   }
-
 }
