@@ -31,8 +31,8 @@ case class SlidingReadWindow(halfWindowSize: Long, rawSortedReads: Iterator[ADAM
   private var mostRecentReadStart: Long = 0
   private val sortedReads: Iterator[DecadentRead] = rawSortedReads.map(read => {
     require(read.getReadMapped, "Reads must be mapped")
-    if (referenceName.isEmpty) referenceName = Some(read.getReferenceName.toString)
-    require(read.getReferenceName == referenceName.get, "Reads must have the same reference name")
+    if (referenceName.isEmpty) referenceName = Some(read.contig.contigName.toString)
+    require(read.contig.contigName == referenceName.get, "Reads must have the same reference name")
     require(read.getStart >= mostRecentReadStart, "Reads must be sorted by start locus")
     require(read.getCigar.length > 1, "Reads must have a CIGAR string")
     DecadentRead(read)

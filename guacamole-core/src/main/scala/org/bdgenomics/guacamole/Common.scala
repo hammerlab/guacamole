@@ -5,9 +5,11 @@ import org.kohsuke.args4j.{ Option => Opt }
 import org.bdgenomics.adam.avro.{ ADAMGenotype, ADAMRecord }
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.predicates.LocusPredicate
-import org.apache.spark.{ Logging, SparkContext }
+import org.apache.spark.{ SparkConf, Logging, SparkContext }
 import org.bdgenomics.adam.rdd.ADAMContext._
 import org.bdgenomics.adam.rdd.ADAMContext
+import org.apache.spark.scheduler.StatsReportListener
+import java.util
 
 /**
  * Collection of functions that are useful to multiple variant calling implementations, and specifications of command-
@@ -71,7 +73,7 @@ object Common extends Logging {
   def loadReads(args: Arguments.Reads, sc: SparkContext, mapped: Boolean = true, nonDuplicate: Boolean = true): RDD[ADAMRecord] = {
     var reads: RDD[ADAMRecord] = sc.adamLoad(args.reads, Some(classOf[LocusPredicate]))
     progress("Loaded %d reads.".format(reads.count))
-    if (mapped) reads = reads.filter(read => read.readMapped && read.referenceName != null && read.referenceLength > 0)
+    if (mapped) reads = reads.filter(read => read.readMapped && read.contig.contigName != null && read.contig.contigLength > 0)
     if (nonDuplicate) reads = reads.filter(read => !read.duplicateRead)
     if (mapped || nonDuplicate) {
       progress("Filtered to %d %s reads".format(
@@ -90,7 +92,7 @@ object Common extends Logging {
     val result = {
       if (args.loci.isEmpty) {
         // Call at all loci.
-        val contigsAndLengths = reads.map(read => (read.referenceName.toString, read.referenceLength)).distinct.collect
+        val contigsAndLengths = reads.map(read => (read.contig.contigName.toString, read.contig.contigLength)).distinct.collect.toSeq
         assume(contigsAndLengths.map(_._1).distinct.length == contigsAndLengths.length,
           "Some contigs have different lengths in reads: " + contigsAndLengths.toString)
         LociSet(contigsAndLengths.toSeq.map({ case (contig, length) => (contig, 0.toLong, length.toLong) }))
@@ -118,19 +120,53 @@ object Common extends Logging {
   }
 
   /**
+   * Commandline format is -spark_env foo=1 -spark_env bar=2
+   * @param envVariables The variables found on the commandline
+   * @return
+   */
+  def parseEnvVariables(envVariables: util.ArrayList[String]): Array[(String, String)] = {
+    envVariables.foldLeft(Array[(String, String)]()) {
+      (a, kv) =>
+        val kvSplit = kv.split("=")
+        if (kvSplit.size != 2) {
+          throw new IllegalArgumentException("Env variables should be key=value syntax, e.g. -spark_env foo=bar")
+        }
+        a :+ (kvSplit(0), kvSplit(1))
+    }
+  }
+
+  /**
    * Return a spark context.
    * @param args parsed arguments
+   * @param loadSystemValues
+   * @param sparkDriverPort
    */
-  def createSparkContext(args: SparkArgs): SparkContext = {
-    Serialization.setupContextProperties()
-    ADAMContext.createSparkContext(
-      "guacamole",
-      args.spark_master,
-      args.spark_home,
-      args.spark_jars,
-      args.spark_env_vars,
-      args.spark_add_stats_listener,
-      args.spark_kryo_buffer_size)
+  def createSparkContext(args: SparkArgs, loadSystemValues: Boolean = true, sparkDriverPort: Option[Int] = None): SparkContext = {
+    //Serialization.setupContextProperties()
+
+    val config: SparkConf = new SparkConf(loadSystemValues).setAppName("guacamole").setMaster(args.spark_master)
+    if (args.spark_home != null) config.setSparkHome(args.spark_home)
+    if (args.spark_jars != Nil) config.setJars(args.spark_jars)
+    if (args.spark_env_vars != Nil) config.setExecutorEnv(parseEnvVariables(args.spark_env_vars))
+
+    // Optionally set the spark driver port
+    sparkDriverPort match {
+      case Some(port) => config.set("spark.driver.port", port.toString)
+      case None       =>
+    }
+
+    // Setup the Kryo settings
+    // The spark.kryo.registrator setting below is our only modification from ADAM's version of this function.
+    config.setAll(Array[(String, String)](("spark.serializer", "org.apache.spark.serializer.KryoSerializer"),
+      ("spark.kryo.registrator", "org.bdgenomics.guacamole.GuacamoleKryoRegistrator"),
+      ("spark.kryoserializer.buffer.mb", args.spark_kryo_buffer_size.toString),
+      ("spark.kryo.referenceTracking", "false")))
+
+    val sc = new SparkContext(config)
+    if (args.spark_add_stats_listener) {
+      sc.addSparkListener(new StatsReportListener)
+    }
+    sc
   }
 
   /**

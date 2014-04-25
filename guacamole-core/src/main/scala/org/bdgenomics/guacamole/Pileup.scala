@@ -22,9 +22,9 @@ case class Pileup(elements: Seq[Pileup.Element]) {
   //lazy val locus: Long = head.locus
 
   /** The contig name for all elements in this pileup. */
-  lazy val referenceName: String = head.read.record.referenceName.toString
+  lazy val referenceName: String = head.read.record.contig.contigName.toString
 
-  assume(elements.forall(_.read.record.referenceName.toString == referenceName),
+  assume(elements.forall(_.read.record.contig.contigName.toString == referenceName),
     "Reads in pileup have mismatching reference names")
   assume(elements.forall(_.locus == locus), "Reads in pileup have mismatching loci")
 

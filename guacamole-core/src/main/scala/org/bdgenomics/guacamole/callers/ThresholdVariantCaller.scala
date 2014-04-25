@@ -72,7 +72,7 @@ object ThresholdVariantCaller extends Command {
   override val description = "call variants using a simple threshold"
 
   private class Arguments extends Base with Output with Reads with SlidingWindowVariantCaller.Arguments {
-    @Option(name = "-threshold", metaVar = "X (percent)", usage = "Make a call if at least X percent of reads support it")
+    @Option(name = "-threshold", metaVar = "X", usage = "Make a call if at least X% of reads support it. Default: 8")
     var threshold: Int = 8
   }
 
