@@ -2,12 +2,14 @@ package org.bdgenomics.guacamole
 
 import org.bdgenomics.adam.rich.DecadentRead
 import net.sf.samtools.{ CigarElement, Cigar, CigarOperator, TextCigarCodec }
-import org.bdgenomics.adam.util.MdTag
 
 /**
  * A [[Pileup]] at a locus contains a sequence of [[Pileup.Element]] instances, one for every read that overlaps that
  * locus. Each [[Pileup.Element]] specifies the base read at the given locus in a particular read. It also keeps track
  * of the read itself and the offset of the base in the read.
+ *
+ *
+ * @param locus The locus on the reference genome
  *
  * @param elements Sequence of [[Pileup.Element]] instances giving the sequenced bases that align to a particular
  *                 reference locus, in arbitrary order.
@@ -18,9 +20,6 @@ case class Pileup(locus: Long, elements: Seq[Pileup.Element]) {
     assume(!elements.isEmpty, "Empty pileup")
     elements.head
   }
-
-  /** The reference locus that all the elements in this pileup align at. */
-  //lazy val locus: Long = head.locus
 
   /** The contig name for all elements in this pileup. */
   lazy val referenceName: String = head.read.record.contig.contigName.toString
