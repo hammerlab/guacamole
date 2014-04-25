@@ -10,6 +10,8 @@ import org.bdgenomics.adam.rdd.ADAMContext._
 import org.bdgenomics.adam.rdd.ADAMContext
 import org.apache.spark.scheduler.StatsReportListener
 import java.util
+import scala.compat.Platform
+import java.util.Calendar
 
 /**
  * Collection of functions that are useful to multiple variant calling implementations, and specifications of command-
@@ -26,8 +28,8 @@ object Common extends Logging {
 
     /** Argument for accepting a set of loci. */
     trait Loci extends Base {
-      @Opt(name = "-loci", usage = "Loci at which to call variants. Format: contig:start-end,contig:start-end,...")
-      var loci: String = ""
+      @Opt(name = "-loci", usage = "Loci at which to call variants. One of 'all', 'mapped', or contig:start-end,contig:start-end,...")
+      var loci: String = "mapped"
     }
 
     /** Argument for accepting a single set of reads (for non-somatic variant calling). */
@@ -90,18 +92,24 @@ object Common extends Logging {
    */
   def loci(args: Arguments.Loci, reads: RDD[ADAMRecord]): LociSet = {
     val result = {
-      if (args.loci.isEmpty) {
+      if (args.loci == "all") {
         // Call at all loci.
         val contigsAndLengths = reads.map(read => (read.contig.contigName.toString, read.contig.contigLength)).distinct.collect.toSeq
         assume(contigsAndLengths.map(_._1).distinct.length == contigsAndLengths.length,
           "Some contigs have different lengths in reads: " + contigsAndLengths.toString)
-        LociSet(contigsAndLengths.toSeq.map({ case (contig, length) => (contig, 0.toLong, length.toLong) }))
+        LociSet(contigsAndLengths.toSeq.map({ case (contig, length) => (contig, 0L, length.toLong) }))
+      } else if (args.loci == "mapped") {
+        val regions: RDD[LociSet] = reads.map(read => LociSet(read.contig.contigName, read.start, read.end.get))
+        regions.reduce(LociSet.union(_, _))
       } else {
         // Call at specified loci.
         LociSet.parse(args.loci)
       }
     }
-    progress("Considering %d loci across %d contig(s).".format(result.count, result.contigs.length))
+    progress("Considering %d loci across %d contig(s): %s".format(
+      result.count,
+      result.contigs.length,
+      result.truncatedString()))
     result
   }
 
@@ -111,15 +119,18 @@ object Common extends Logging {
    * @param genotypes ADAM genotypes (i.e. the variants)
    */
   def writeVariants(args: Arguments.Output, genotypes: RDD[ADAMGenotype]): Unit = {
-    log.info("Writing calls to disk.")
+    progress("Writing %d genotypes to: %s.".format(genotypes.count, args.variantOutput))
     genotypes.adamSave(args.variantOutput,
       args.blockSize,
       args.pageSize,
       args.compressionCodec,
       args.disableDictionary)
+    progress("Done writing.")
   }
 
   /**
+   * Parse spark environment variables from commandline. Copied from ADAM.
+   *
    * Commandline format is -spark_env foo=1 -spark_env bar=2
    * @param envVariables The variables found on the commandline
    * @return
@@ -136,14 +147,12 @@ object Common extends Logging {
   }
 
   /**
-   * Return a spark context.
+   * Return a spark context. Copied from ADAM so we can set the Kryo serializer.
    * @param args parsed arguments
    * @param loadSystemValues
    * @param sparkDriverPort
    */
   def createSparkContext(args: SparkArgs, loadSystemValues: Boolean = true, sparkDriverPort: Option[Int] = None): SparkContext = {
-    //Serialization.setupContextProperties()
-
     val config: SparkConf = new SparkConf(loadSystemValues).setAppName("guacamole").setMaster(args.spark_master)
     if (args.spark_home != null) config.setSparkHome(args.spark_home)
     if (args.spark_jars != Nil) config.setJars(args.spark_jars)
@@ -169,13 +178,23 @@ object Common extends Logging {
     sc
   }
 
+  /** Time in milliseconds of last progress message. */
+  var lastProgressTime: Long = 0
+
   /**
    * Print or log a progress message. For now, we just print to standard out, since ADAM's logging setup makes it
    * difficult to see log messages at the INFO level without flooding ourselves with parquet messages.
    * @param message String to print or log.
    */
   def progress(message: String): Unit = {
-    println("--> " + message)
+    val current = System.currentTimeMillis
+    val time = if (lastProgressTime == 0)
+      Calendar.getInstance.getTime.toString
+    else
+      "%.2f sec. later".format((current - lastProgressTime) / 1000.0)
+    println("--> [%15s]: %s".format(time, message))
     System.out.flush()
+    lastProgressTime = current
   }
+
 }

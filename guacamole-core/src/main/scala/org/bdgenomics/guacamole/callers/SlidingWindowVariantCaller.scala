@@ -12,6 +12,7 @@ import scala.Option
 import org.bdgenomics.guacamole.Common.Arguments.{ Loci, Base }
 import org.bdgenomics.adam.rdd.ADAMContext._
 import org.bdgenomics.adam.rich.RichADAMRecord
+import org.apache.spark.Logging
 
 trait SlidingWindowVariantCaller {
   /**
@@ -33,9 +34,9 @@ trait SlidingWindowVariantCaller {
    */
   def callVariants(samples: Seq[String], reads: SlidingReadWindow, loci: LociSet.SingleContig): Iterator[ADAMGenotype]
 }
-object SlidingWindowVariantCaller {
+object SlidingWindowVariantCaller extends Logging {
   trait Arguments extends Base with Loci {
-    @Opt(name = "-no-sort", usage = "Don't sort reads: use if reads ar already stored sorted.")
+    @Opt(name = "-no-sort", usage = "Don't sort reads. Use if reads are already stored sorted.")
     var noSort: Boolean = false
 
     @Opt(name = "-parallelism", usage = "Num variant calling tasks. Set to 0 (default) to call variants on the Spark master")
@@ -66,19 +67,30 @@ object SlidingWindowVariantCaller {
     val loci = Common.loci(args, reads)
 
     val includedReads = reads.filter(overlaps(_, loci, caller.halfWindowSize))
-    progress("Filtered to %d reads that overlap loci of interest: %s.".format(includedReads.count, loci.toString))
+    progress("Filtered to %d reads that overlap loci of interest.".format(includedReads.count))
 
     val samples = reads.map(read => Option(read.recordGroupSample).map(_.toString).getOrElse("default")).distinct.collect
-    progress("Reads contain %d sample(s).".format(samples.length))
+    progress("Reads contain %d sample(s): %s".format(samples.length, samples.mkString(",")))
 
     // Sort reads by start.
     val sorted = if (!args.noSort) includedReads.adamSortReadsByReferencePosition else includedReads
 
     if (args.parallelism == 0) {
       // Serial implementation on Spark master.
+      progress("Calling variants serially on spark master: collecting reads.")
       val allReads = sorted.collect.iterator
-      progress("Collected reads.")
+      progress("Done collecting reads.")
+      assume(allReads.hasNext, "No reads")
       val readsSplitByContig = splitReadsByContig(allReads, loci.contigs)
+
+      // TODO: this check may cause us to load all reads into memory. In production we wouldn't want to do this.
+      readsSplitByContig.foreach({
+        case ("", iterator) if iterator.hasNext =>
+          log.warn("Some reads have unexpected contigs.")
+        case (contig, iterator) if !contig.isEmpty && !iterator.hasNext =>
+          log.warn("No reads for contig %s.".format(contig))
+        case _ =>
+      })
       val slidingWindows = readsSplitByContig.mapValues(SlidingReadWindow(caller.halfWindowSize, _))
 
       // Reads are coming in sorted by contig, so we process one contig at a time, in order.
@@ -106,7 +118,7 @@ object SlidingWindowVariantCaller {
   private def splitReadsByContig(readIterator: Iterator[ADAMRecord], contigs: Seq[String]): Map[String, Iterator[ADAMRecord]] = {
     var currentIterator: Iterator[ADAMRecord] = readIterator
     contigs.map(contig => {
-      val (withContig, withoutContig) = currentIterator.partition(_.contig.contigName == contig)
+      val (withContig, withoutContig) = currentIterator.partition(_.contig.contigName.toString == contig)
       currentIterator = withoutContig
       (contig, withContig)
     }).toMap + ("" -> currentIterator)
@@ -116,9 +128,8 @@ object SlidingWindowVariantCaller {
    * Does the given read overlap any of the given loci, with halfWindowSize padding?
    */
   private def overlaps(read: RichADAMRecord, loci: LociSet, halfWindowSize: Long = 0): Boolean = {
-    read.getReadMapped && loci.onContig(read.contig.contigName.toString).intersects(
-      math.min(0, read.getStart - halfWindowSize),
+    read.readMapped && loci.onContig(read.contig.contigName.toString).intersects(
+      math.max(0, read.start - halfWindowSize),
       read.end.get + halfWindowSize)
   }
-
 }
