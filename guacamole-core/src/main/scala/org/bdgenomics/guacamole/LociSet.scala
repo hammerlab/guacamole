@@ -51,6 +51,15 @@ case class LociSet(private val map: Map[String, LociSet.SingleContig]) {
   /** Returns a string representation of this LociSet, in the same format that LociSet.parse expects. */
   override def toString(): String = contigs.map(onContig(_).toString).mkString(",")
 
+  def truncatedString(maxLength: Int = 100): String = {
+    // TODO: make this efficient, instead of geneating the full string first.
+    val full = toString()
+    if (full.length > maxLength)
+      full.substring(0, maxLength) + " [...]"
+    else
+      full
+  }
+
   override def equals(other: Any) = other match {
     case that: LociSet => sortedMap.equals(that.sortedMap)
     case _             => false

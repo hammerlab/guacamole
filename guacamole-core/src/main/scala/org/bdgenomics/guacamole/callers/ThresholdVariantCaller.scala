@@ -10,6 +10,8 @@ import org.bdgenomics.adam.cli.Args4j
 import org.bdgenomics.guacamole.SlidingReadWindow
 import org.bdgenomics.guacamole.Common.Arguments._
 import org.bdgenomics.guacamole.SlidingReadWindow
+import org.apache.spark.rdd.RDD
+import org.apache.spark.Logging
 
 /**
  * Simple variant caller implementation.
@@ -17,8 +19,15 @@ import org.bdgenomics.guacamole.SlidingReadWindow
  * Instead of a bayesian approach, just uses thresholds on read counts to call variants (similar to Varscan).
  *
  */
-class ThresholdVariantCaller(threshold_percent: Int) extends PileupVariantCaller with Serializable {
+class ThresholdVariantCaller(threshold_percent: Int) extends PileupVariantCaller with Serializable with Logging {
   def callVariantsAtLocus(pileup: Pileup): Seq[ADAMGenotype] = {
+    // For now, we skip loci that have no reads mapped. In the future, may want to emit NoCall
+    // in this case.
+    if (pileup.elements.isEmpty) {
+      log.warn("Skipping empty pileup at locus: %d".format(pileup.locus))
+      return Seq.empty
+    }
+
     val refBase = pileup.referenceBase
     pileup.bySample.toSeq.flatMap({
       case (sampleName, samplePileup) =>
@@ -82,6 +91,7 @@ object ThresholdVariantCaller extends Command {
 
     val reads = Common.loadReads(args, sc, mapped = true, nonDuplicate = true)
     val caller = new ThresholdVariantCaller(args.threshold)
-    SlidingWindowVariantCaller.invoke(args, caller, reads)
+    val genotypes: RDD[ADAMGenotype] = SlidingWindowVariantCaller.invoke(args, caller, reads)
+    Common.writeVariants(args, genotypes)
   }
 }
