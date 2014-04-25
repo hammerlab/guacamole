@@ -1,4 +1,4 @@
 #! /bin/bash
 # Executes the most recently modified guacamole jar. Run this from the guacamole root directory.
 
-exec time java -jar $(ls -tc guacamole-core/target/guacamole-?.*.jar | head -n 1) "$@"
+exec time java -Xmx513m -XX:MaxPermSize=129m -jar $(ls -tc guacamole-core/target/guacamole-?.*.jar | head -n 1) "$@"

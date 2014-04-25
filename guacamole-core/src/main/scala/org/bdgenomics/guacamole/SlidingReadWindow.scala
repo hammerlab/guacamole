@@ -3,6 +3,7 @@ package org.bdgenomics.guacamole
 import org.bdgenomics.adam.avro.ADAMRecord
 import scala.collection.mutable
 import org.bdgenomics.adam.rich.{ DecadentRead, RichADAMRecord }
+import org.apache.spark.Logging
 
 /**
  * Suppose we have a set of loci on a given contig and some reads that are mapped to that contig, and at each locus we
@@ -23,16 +24,16 @@ import org.bdgenomics.adam.rich.{ DecadentRead, RichADAMRecord }
  *
  * @param rawSortedReads Iterator of aligned reads, sorted by the aligned start locus.
  */
-case class SlidingReadWindow(halfWindowSize: Long, rawSortedReads: Iterator[ADAMRecord]) {
+case class SlidingReadWindow(halfWindowSize: Long, rawSortedReads: Iterator[ADAMRecord]) extends Logging {
   /** The locus currently under consideration. */
-  var currentLocus = -1
+  var currentLocus = -1L
 
   private var referenceName: Option[String] = None
   private var mostRecentReadStart: Long = 0
   private val sortedReads: Iterator[DecadentRead] = rawSortedReads.map(read => {
     require(read.getReadMapped, "Reads must be mapped")
     if (referenceName.isEmpty) referenceName = Some(read.contig.contigName.toString)
-    require(read.contig.contigName == referenceName.get, "Reads must have the same reference name")
+    require(read.contig.contigName.toString == referenceName.get, "Reads must have the same reference name")
     require(read.getStart >= mostRecentReadStart, "Reads must be sorted by start locus")
     require(read.getCigar.length > 1, "Reads must have a CIGAR string")
     DecadentRead(read)
@@ -58,12 +59,11 @@ case class SlidingReadWindow(halfWindowSize: Long, rawSortedReads: Iterator[ADAM
    * @return An iterator over the *new reads* that were added as a result of this call. Note that this is not the full
    *         set of reads in the window: you must examine [[currentReads]] for that.
    */
-  def setCurrentLocus(locus: Long): Iterator[DecadentRead] = {
+  def setCurrentLocus(locus: Long): Seq[DecadentRead] = {
     assume(locus >= currentLocus, "Pileup window can only move forward in locus")
 
     def overlaps(read: DecadentRead) = {
-      (read.record.getStart >= locus - halfWindowSize && read.record.getStart <= locus + halfWindowSize) ||
-        (read.record.end.get >= locus - halfWindowSize && read.record.end.get <= locus + halfWindowSize)
+      read.record.start <= locus + halfWindowSize && read.record.end.get >= locus - halfWindowSize
     }
 
     // Remove reads that are no longer in the window.
@@ -72,9 +72,14 @@ case class SlidingReadWindow(halfWindowSize: Long, rawSortedReads: Iterator[ADAM
       assert(!overlaps(dropped))
     }
     // Add new reads that are now in the window.
-    val newReads = sortedReads.takeWhile(_.record.getStart <= locus + halfWindowSize).filter(overlaps)
-    currentReadsPriorityQueue.enqueue(newReads.toSeq: _*)
+    val newReads = sortedReads.takeWhile(_.record.start <= locus + halfWindowSize).filter(overlaps).toSeq
+    currentReadsPriorityQueue.enqueue(newReads: _*)
     assert(currentReadsPriorityQueue.forall(overlaps)) // Correctness check.
+    if (currentReadsPriorityQueue.isEmpty) {
+      log.warn("No reads overlap locus %d with half window size %d.".format(locus, halfWindowSize))
+      if (!sortedReads.hasNext) log.warn("Iterator of sorted reads is empty.")
+    }
+    currentLocus = locus
     newReads // We return the newly added reads.
   }
 }
