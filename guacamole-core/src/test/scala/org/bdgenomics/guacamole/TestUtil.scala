@@ -8,6 +8,7 @@ import org.scalatest._
 import java.net.ServerSocket
 import org.apache.spark.SparkContext
 import org.apache.log4j.{ Logger, Level }
+import org.bdgenomics.adam.cli.SparkArgs
 
 object TestUtil {
   object SparkTest extends org.scalatest.Tag("org.bdgenomics.guacamole.SparkScalaTestFunSuite")
@@ -46,19 +47,19 @@ object TestUtil {
     var maybeLevels: Option[Map[String, Level]] = None
 
     def createSpark(sparkName: String, silenceSpark: Boolean = true): SparkContext = {
-      // Use the same context properties as ADAM commands
-      Serialization.setupContextProperties()
       // Silence the Spark logs if requested
       maybeLevels = if (silenceSpark) Some(SparkLogUtil.silenceSpark()) else None
       synchronized {
         // Find an unused port
         val s = new ServerSocket(0)
-        System.setProperty(sparkPortProperty, s.getLocalPort.toString)
-        // Allow Spark to take the port we just discovered
+        val port = s.getLocalPort
         s.close()
 
+        object args extends SparkArgs {
+          spark_master = "local[4]"
+        }
         // Create a spark context
-        new SparkContext("local[4]", sparkName)
+        Common.createSparkContext(args, false, Some(port))
       }
     }
 

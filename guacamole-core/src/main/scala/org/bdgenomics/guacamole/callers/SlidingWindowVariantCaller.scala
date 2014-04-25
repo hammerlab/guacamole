@@ -35,10 +35,10 @@ trait SlidingWindowVariantCaller {
 }
 object SlidingWindowVariantCaller {
   trait Arguments extends Base with Loci {
-    @Opt(name = "-sort", usage = "Sort reads: use if reads are not already stored sorted.")
-    var sort: Boolean = true
+    @Opt(name = "-no-sort", usage = "Don't sort reads: use if reads ar already stored sorted.")
+    var noSort: Boolean = false
 
-    @Opt(name = "-parallelism", usage = "Number of variant calling tasks to use. Set to 0 (currently the default) to call variants on the Spark master node, with no parallelism.")
+    @Opt(name = "-parallelism", usage = "Num variant calling tasks. Set to 0 (default) to call variants on the Spark master")
     var parallelism: Int = 0
   }
 
@@ -72,7 +72,7 @@ object SlidingWindowVariantCaller {
     progress("Reads contain %d sample(s).".format(samples.length))
 
     // Sort reads by start.
-    val sorted = if (args.sort) includedReads.adamSortReadsByReferencePosition else includedReads
+    val sorted = if (!args.noSort) includedReads.adamSortReadsByReferencePosition else includedReads
 
     if (args.parallelism == 0) {
       // Serial implementation on Spark master.
@@ -106,7 +106,7 @@ object SlidingWindowVariantCaller {
   private def splitReadsByContig(readIterator: Iterator[ADAMRecord], contigs: Seq[String]): Map[String, Iterator[ADAMRecord]] = {
     var currentIterator: Iterator[ADAMRecord] = readIterator
     contigs.map(contig => {
-      val (withContig, withoutContig) = currentIterator.partition(_.getReferenceName == contig)
+      val (withContig, withoutContig) = currentIterator.partition(_.contig.contigName == contig)
       currentIterator = withoutContig
       (contig, withContig)
     }).toMap + ("" -> currentIterator)
@@ -116,7 +116,7 @@ object SlidingWindowVariantCaller {
    * Does the given read overlap any of the given loci, with halfWindowSize padding?
    */
   private def overlaps(read: RichADAMRecord, loci: LociSet, halfWindowSize: Long = 0): Boolean = {
-    read.getReadMapped && loci.onContig(read.getReferenceName.toString).intersects(
+    read.getReadMapped && loci.onContig(read.contig.contigName.toString).intersects(
       math.min(0, read.getStart - halfWindowSize),
       read.end.get + halfWindowSize)
   }
