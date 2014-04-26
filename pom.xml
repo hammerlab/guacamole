@@ -10,7 +10,6 @@
 
   <properties>
     <adam.version>0.9.1-SNAPSHOT</adam.version>
-    <avro.version>1.7.4</avro.version>
     <java.version>1.6</java.version>
     <scala.version>2.10.3</scala.version>
     <scala.version.prefix>2.10</scala.version.prefix>
@@ -119,7 +118,7 @@
         <configuration>
           <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
           <junitxml>.</junitxml>
-          <filereports>ADAMTestSuite.txt</filereports>
+          <filereports>GuacamoleTestSuite.txt</filereports>
           <argLine>-Xmx1024m</argLine>
         </configuration>
         <executions>
@@ -158,10 +157,6 @@
       <url>http://oss.sonatype.org/content/repositories/snapshots/</url>
     </repository>
     <repository>
-      <id>hadoop-bam</id>
-      <url>http://hadoop-bam.sourceforge.net/maven/</url>
-    </repository>
-    <repository>
       <id>Apache</id>
       <url>http://people.apache.org/repo/m2-snapshot-repository</url>
     </repository>
@@ -188,11 +183,6 @@
       <artifactId>scalatest_${scala.version.prefix}</artifactId>
       <version>1.9.2</version>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>commons-configuration</groupId>
-      <artifactId>commons-configuration</artifactId>
-      <version>1.10</version>
     </dependency>
     <dependency>
       <groupId>args4j</groupId>
