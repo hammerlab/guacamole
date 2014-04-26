@@ -132,7 +132,7 @@
         <configuration>
           <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
           <junitxml>.</junitxml>
-          <filereports>ADAMTestSuite.txt</filereports>
+          <filereports>GuacamoleTestSuite.txt</filereports>
           <argLine>-Xmx1024m</argLine>
         </configuration>
         <executions>
