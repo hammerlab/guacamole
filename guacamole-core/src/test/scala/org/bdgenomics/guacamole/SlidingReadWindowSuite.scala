@@ -50,7 +50,9 @@ class SlidingReadWindowSuite extends FunSuite {
 
   test("test sliding read window, duplicate reads") {
 
-    val reads = Seq(makeRead("TCGATCGA", "8M", "8", 1), makeRead("TCGATCGA", "8M", "8", 1), makeRead("TCGATCGA", "8M", "8", 1))
+    val reads = Seq(makeRead("TCGATCGA", "8M", "8", 1),
+      makeRead("TCGATCGA", "8M", "8", 1),
+      makeRead("TCGATCGA", "8M", "8", 1))
     val window = SlidingReadWindow(2, reads.iterator)
     window.setCurrentLocus(0)
     assert(window.currentReads.size === 3)
@@ -59,7 +61,9 @@ class SlidingReadWindowSuite extends FunSuite {
 
   test("test sliding read window, diff contigs") {
 
-    val reads = Seq(makeRead("TCGATCGA", "8M", "8", 1, "chr1"), makeRead("TCGATCGA", "8M", "8", 1, "chr2"), makeRead("TCGATCGA", "8M", "8", 1, "chr3"))
+    val reads = Seq(makeRead("TCGATCGA", "8M", "8", 1, "chr1"),
+      makeRead("TCGATCGA", "8M", "8", 1, "chr2"),
+      makeRead("TCGATCGA", "8M", "8", 1, "chr3"))
     val window = SlidingReadWindow(2, reads.iterator)
     evaluating { window.setCurrentLocus(0) } should produce[IllegalArgumentException]
 
@@ -67,7 +71,9 @@ class SlidingReadWindowSuite extends FunSuite {
 
   test("test sliding read window, offset reads") {
 
-    val reads = Seq(makeRead("TCGATCGA", "8M", "8", 1), makeRead("TCGATCGA", "8M", "8", 4), makeRead("TCGATCGA", "8M", "8", 8))
+    val reads = Seq(makeRead("TCGATCGA", "8M", "8", 1),
+      makeRead("TCGATCGA", "8M", "8", 4),
+      makeRead("TCGATCGA", "8M", "8", 8))
     val window = SlidingReadWindow(2, reads.iterator)
 
     window.setCurrentLocus(0)
@@ -77,5 +83,21 @@ class SlidingReadWindowSuite extends FunSuite {
     assert(window.currentReads.size === 2)
 
   }
+
+  test("test sliding read window, reads are not sorted") {
+
+    val reads = Seq(makeRead("TCGATCGA", "8M", "8", 1),
+      makeRead("TCGATCGA", "8M", "8", 8),
+      makeRead("TCGATCGA", "8M", "8", 4))
+    val window = SlidingReadWindow(8, reads.iterator)
+    evaluating { window.setCurrentLocus(0) } should produce[IllegalArgumentException]
+
+  }
+
+  // Tests to write:
+  // - Moving current locus backwards throws exception.
+  // - Sequence of loci to be considered are not sorted.
+  // - Iterator of reads is not sorted.
+  // - halfWindowSize=0
 
 }
