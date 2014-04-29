@@ -239,7 +239,7 @@ object Pileup {
       assume(read.isAligned)
       assume(locus >= read.record.start)
       assume(read.record.end.isDefined)
-      assume(locus <= read.record.end.get)
+      assume(locus < read.record.end.get)
 
       val cigar = TextCigarCodec.getSingleton.decode(read.record.getCigar.toString)
       val startElement = Element(
