@@ -36,39 +36,25 @@ import com.esotericsoftware.kryo.io.{ Input, Output }
  *
  * @param map Map from contig names to the range set giving the loci under consideration on that contig.
  */
-case class LociSet(private val map: Map[String, LociSet.SingleContig]) {
-
-  private val sortedMap = SortedMap[String, LociSet.SingleContig](map.filter(!_._2.isEmpty).toArray: _*)
+case class LociSet(private val map: LociMap[Unit]) {
 
   /** The contigs included in this LociSet with a nonempty set of loci. */
-  lazy val contigs: Seq[String] = sortedMap.keys.toSeq
+  lazy val contigs: Seq[String] = map.contigs
 
   /** The number of loci in this LociSet. */
-  lazy val count: Long = sortedMap.valuesIterator.map(_.count).sum
+  lazy val count: Long = map.count
 
-  /**
-   * Returns the loci on the specified contig.
-   *
-   * @param contig The contig name
-   * @return A [[LociSet.SingleContig]] instance giving the loci on the specified contig.
-   */
-  def onContig(contig: String): LociSet.SingleContig = sortedMap.get(contig) match {
-    case Some(result) => result
-    case None         => LociSet.SingleContig(contig, emptyRangeSet)
-  }
+  /** Given a contig name, returns a [[LociSet.SingleContig]] giving the loci on that contig. */
+  def onContig(contig: String): LociSet.SingleContig = LociSet.SingleContig(map.onContig(contig))
 
   /** Returns the union of this LociSet with another. */
-  def union(other: LociSet): LociSet = {
-    val keys = Set[String](contigs: _*).union(Set[String](other.contigs: _*))
-    val pairs = keys.map(contig => contig -> onContig(contig).union(other.onContig(contig)))
-    LociSet(pairs.toMap)
-  }
+  def union(other: LociSet): LociSet = LociSet(map.union(other.map))
 
   /** Returns a string representation of this LociSet, in the same format that LociSet.parse expects. */
   override def toString(): String = contigs.map(onContig(_).toString).mkString(",")
 
   def truncatedString(maxLength: Int = 100): String = {
-    // TODO: make this efficient, instead of geneating the full string first.
+    // TODO: make this efficient, instead of generating the full string first.
     val full = toString()
     if (full.length > maxLength)
       full.substring(0, maxLength) + " [...]"
@@ -77,10 +63,10 @@ case class LociSet(private val map: Map[String, LociSet.SingleContig]) {
   }
 
   override def equals(other: Any) = other match {
-    case that: LociSet => sortedMap.equals(that.sortedMap)
+    case that: LociSet => map.equals(that.map)
     case _             => false
   }
-  override def hashCode = sortedMap.hashCode
+  override def hashCode = map.hashCode
 
 }
 object LociSet {
@@ -88,12 +74,12 @@ object LociSet {
   private val emptyRangeSet = ImmutableRangeSet.of[JLong]()
 
   /** An empty LociSet. */
-  val empty = LociSet(Map[String, SingleContig]())
+  val empty = LociSet(LociMap[Unit]())
 
   /** Return a LociSet of a single genomic interval. */
   def apply(contig: String, start: Long, end: Long): LociSet = {
-    LociSet(Map[String, SingleContig](
-      contig -> SingleContig(contig, ImmutableRangeSet.of(Range.closedOpen[JLong](start, end)))))
+    val unitValue = ()
+    LociSet(LociMap[Unit](contig, start, end, unitValue))
   }
 
   /**
@@ -131,44 +117,32 @@ object LociSet {
    * @param contig The contig name
    * @param rangeSet The range set of loci on this contig.
    */
-  case class SingleContig(contig: String, rangeSet: RangeSet[JLong]) {
+  case class SingleContig(map: LociMap.SingleContig[Unit]) {
 
     /** Is the given locus contained in this set? */
-    def contains(locus: Long): Boolean = rangeSet.contains(locus)
+    def contains(locus: Long): Boolean = map.contains(locus)
 
     /** Returns a sequence of ranges giving the intervals of this set. */
-    lazy val ranges: Seq[NumericRange[Long]] =
-      rawIterator.map(raw => NumericRange[Long](raw.lowerEndpoint, raw.upperEndpoint, 1)).toSeq.sortBy(_.start)
+    def ranges(): Iterable[NumericRange[Long]] = map.ranges
 
     /** Number of loci in this set. */
-    lazy val count: Long = rawIterator.map(raw => raw.upperEndpoint - raw.lowerEndpoint).sum
+    def count(): Long = map.count
 
     /** Is this set empty? */
-    lazy val isEmpty: Boolean = count == 0
+    def isEmpty(): Boolean = map.isEmpty
 
     /** Iterator through loci in this set, sorted. */
-    def individually(): Iterator[Long] = ranges.iterator.flatMap(_.iterator)
+    def lociIndividually(): Iterator[Long] = map.lociIndividually()
 
     /** Returns the union of this set with another. Both must be on the same contig. */
-    def union(other: SingleContig): SingleContig = {
-      assume(contig == other.contig)
-      val both = TreeRangeSet.create[JLong]()
-      both.addAll(rangeSet)
-      both.addAll(other.rangeSet)
-      SingleContig(contig, both)
-    }
+    def union(other: SingleContig): SingleContig = SingleContig(map.union(other.map))
 
     /** Returns whether a given genomic region overlaps with any loci in this LociSet. */
-    def intersects(start: Long, end: Long) = {
-      val range = Range.closedOpen[JLong](start, end)
-      !rangeSet.subRangeSet(range).isEmpty
-    }
+    def intersects(start: Long, end: Long) = !map.getAll(start, end).isEmpty
 
     override def toString(): String = {
-      ranges.map(range => "%s:%d-%d".format(contig, range.start, range.end)).mkString(",")
+      ranges.map(range => "%s:%d-%d".format(map.contig, range.start, range.end)).mkString(",")
     }
-
-    private def rawIterator() = JavaConversions.asScalaIterator(rangeSet.asRanges.iterator)
   }
 }
 

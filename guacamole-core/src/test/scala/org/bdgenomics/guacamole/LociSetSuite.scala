@@ -64,7 +64,7 @@ class LociSetSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
     set.onContig("chr21").intersects(90, 100) should be(false)
     set.onContig("chr21").intersects(90, 101) should be(true)
     set.onContig("chr21").intersects(90, 95) should be(false)
-    set.onContig("chr21").individually.toSeq should equal(100 until 200)
+    set.onContig("chr21").lociIndividually.toSeq should equal(100 until 200)
   }
 
   sparkTest("loci set invariants") {
