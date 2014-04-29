@@ -30,14 +30,15 @@ case class SlidingReadWindow(halfWindowSize: Long, rawSortedReads: Iterator[ADAM
 
   private var referenceName: Option[String] = None
   private var mostRecentReadStart: Long = 0
-  private val sortedReads: Iterator[DecadentRead] = rawSortedReads.map(read => {
+  private val sortedReads: BufferedIterator[DecadentRead] = rawSortedReads.map(read => {
     require(read.getReadMapped, "Reads must be mapped")
     if (referenceName.isEmpty) referenceName = Some(read.contig.contigName.toString)
     require(read.contig.contigName.toString == referenceName.get, "Reads must have the same reference name")
     require(read.getStart >= mostRecentReadStart, "Reads must be sorted by start locus")
     require(read.getCigar.length > 1, "Reads must have a CIGAR string")
     DecadentRead(read)
-  })
+  }).buffered
+
   private val currentReadsPriorityQueue = {
     // Order reads by end locus, increasing.
     def readOrdering = new Ordering[DecadentRead] {
@@ -71,8 +72,15 @@ case class SlidingReadWindow(halfWindowSize: Long, rawSortedReads: Iterator[ADAM
       val dropped = currentReadsPriorityQueue.dequeue()
       assert(!overlaps(dropped))
     }
-    // Add new reads that are now in the window.
-    val newReads = sortedReads.takeWhile(_.record.start <= locus + halfWindowSize).filter(overlaps).toSeq
+
+    // Build up a list of new reads that are now in the window.
+    val newReadsBuilder = mutable.LinkedList.newBuilder[DecadentRead]
+    while (sortedReads.nonEmpty && sortedReads.head.record.start <= locus + halfWindowSize) {
+      val read = sortedReads.next()
+      if (overlaps(read)) newReadsBuilder += read
+    }
+    val newReads = newReadsBuilder.result
+
     currentReadsPriorityQueue.enqueue(newReads: _*)
     assert(currentReadsPriorityQueue.forall(overlaps)) // Correctness check.
     if (currentReadsPriorityQueue.isEmpty) {
