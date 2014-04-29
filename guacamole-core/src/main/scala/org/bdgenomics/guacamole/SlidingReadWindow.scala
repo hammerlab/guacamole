@@ -53,6 +53,7 @@ case class SlidingReadWindow(halfWindowSize: Long, rawSortedReads: Iterator[ADAM
     if (referenceName.isEmpty) referenceName = Some(read.contig.contigName.toString)
     require(read.contig.contigName.toString == referenceName.get, "Reads must have the same reference name")
     require(read.getStart >= mostRecentReadStart, "Reads must be sorted by start locus")
+    mostRecentReadStart = read.getStart
     require(read.getCigar.length > 1, "Reads must have a CIGAR string")
     DecadentRead(read)
   }).buffered
