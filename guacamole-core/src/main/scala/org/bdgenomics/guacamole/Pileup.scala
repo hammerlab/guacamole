@@ -136,7 +136,7 @@ object Pileup {
       indexWithinCigarElement: Long) {
 
     assume(locus >= read.record.getStart)
-    assume(locus <= read.record.end.get)
+    assume(locus < read.record.end.get)
     assume(read.record.mdTag.isDefined)
 
     /**
@@ -217,7 +217,7 @@ object Pileup {
       assume(newLocus > locus,
         "Can't rewind to locus %d from %d, Pileups only advance forward".format(newLocus, locus))
       val readEndPos = read.record.end.get
-      assume(newLocus <= readEndPos,
+      assume(newLocus < readEndPos,
         "This read stops at position %d, can't advance to %d".format(readEndPos, newLocus))
 
       val (newReadPosition, newIndexInCigarElements, newIndexWithinCigarElement) = findNextCigarElement(newLocus)
