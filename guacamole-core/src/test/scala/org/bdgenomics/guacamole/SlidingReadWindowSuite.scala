@@ -95,9 +95,6 @@ class SlidingReadWindowSuite extends FunSuite {
   }
 
   // Tests to write:
-  // - Moving current locus backwards throws exception.
-  // - Sequence of loci to be considered are not sorted.
-  // - Iterator of reads is not sorted.
   // - halfWindowSize=0
 
 }
