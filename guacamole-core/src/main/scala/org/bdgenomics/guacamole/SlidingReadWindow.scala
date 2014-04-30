@@ -83,11 +83,11 @@ case class SlidingReadWindow(halfWindowSize: Long, rawSortedReads: Iterator[ADAM
     assume(locus >= currentLocus, "Pileup window can only move forward in locus")
 
     def overlaps(read: DecadentRead) = {
-      read.record.start <= locus + halfWindowSize && read.record.end.get >= locus - halfWindowSize
+      read.record.start <= locus + halfWindowSize && (read.record.end.get - 1) >= locus - halfWindowSize
     }
 
     // Remove reads that are no longer in the window.
-    while (!currentReadsPriorityQueue.isEmpty && currentReadsPriorityQueue.head.record.end.get < locus - halfWindowSize) {
+    while (!currentReadsPriorityQueue.isEmpty && (currentReadsPriorityQueue.head.record.end.get - 1) < locus - halfWindowSize) {
       val dropped = currentReadsPriorityQueue.dequeue()
       assert(!overlaps(dropped))
     }
