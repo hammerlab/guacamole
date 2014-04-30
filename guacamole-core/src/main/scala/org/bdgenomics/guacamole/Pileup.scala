@@ -141,7 +141,7 @@ object Pileup {
 
     /**
      * The sequenced nucleotides at this element.
-     * 
+     *
      * If the current element is a deletion, then is the empty string. If it's
      * an insertion, then this will be a string of length >= 1: the contents of
      * the inserted sequence starting at the current locus. Otherwise, this is
