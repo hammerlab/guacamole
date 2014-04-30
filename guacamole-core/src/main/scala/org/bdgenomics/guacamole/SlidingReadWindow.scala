@@ -83,12 +83,19 @@ case class SlidingReadWindow(halfWindowSize: Long, rawSortedReads: Iterator[ADAM
     assume(locus >= currentLocus, "Pileup window can only move forward in locus")
 
     def overlaps(read: DecadentRead) = {
-      read.record.start <= locus + halfWindowSize && read.record.end.get >= locus - halfWindowSize
+      read.record.start <= locus + halfWindowSize && (read.record.end.get - 1) >= locus - halfWindowSize
     }
 
+    // if (!currentReadsPriorityQueue.isEmpty) {
+    //   printf("(%d) currentReadsPriorityQueue.head.record.end.get = %d\n",
+    //     locus, currentReadsPriorityQueue.head.record.end.get)
+    // }
+
     // Remove reads that are no longer in the window.
-    while (!currentReadsPriorityQueue.isEmpty && currentReadsPriorityQueue.head.record.end.get < locus - halfWindowSize) {
+    while (!currentReadsPriorityQueue.isEmpty && (currentReadsPriorityQueue.head.record.end.get - 1) < locus - halfWindowSize) {
       val dropped = currentReadsPriorityQueue.dequeue()
+      // logger.debug("(locus=%d) Dropping %s", locus, dropped)
+      printf("(locus=%d) dropping %s\n", locus, dropped.record.sequence)
       assert(!overlaps(dropped))
     }
 
@@ -99,6 +106,9 @@ case class SlidingReadWindow(halfWindowSize: Long, rawSortedReads: Iterator[ADAM
       if (overlaps(read)) newReadsBuilder += read
     }
     val newReads = newReadsBuilder.result
+    newReads.foreach {
+      read => printf("(locus=%d) adding %s\n", locus, read.record.sequence)
+    }
 
     currentReadsPriorityQueue.enqueue(newReads: _*)
     assert(currentReadsPriorityQueue.forall(overlaps)) // Correctness check.
@@ -107,6 +117,7 @@ case class SlidingReadWindow(halfWindowSize: Long, rawSortedReads: Iterator[ADAM
       if (!sortedReads.hasNext) log.warn("Iterator of sorted reads is empty.")
     }
     currentLocus = locus
+    printf("(locus=%d) currentReadsPriorityQueue %s\n", locus, currentReadsPriorityQueue.map(r => r.record.sequence).mkString(", "))
     newReads // We return the newly added reads.
   }
 }
