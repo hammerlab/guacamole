@@ -177,7 +177,7 @@ object Common extends Logging {
     // Optionally set the spark driver port
     sparkDriverPort match {
       case Some(port) => config.set("spark.driver.port", port.toString)
-      case None       =>
+      case None =>
     }
 
     // Setup the Kryo settings

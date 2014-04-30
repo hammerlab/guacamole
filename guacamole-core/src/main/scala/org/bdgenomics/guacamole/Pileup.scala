@@ -140,43 +140,71 @@ object Pileup {
     assume(read.record.mdTag.isDefined)
 
     /**
+     * The alignment of a read combines the underlying Cigar operator
+     * (match/mismatch/deletion/insertion) with the characters which were used from the read.
+     */
+
+    abstract class Alignment
+    case class Insertion(bases: String) extends Alignment
+    case class Deletion() extends Alignment
+    case class Match(base: Char) extends Alignment
+    case class Mismatch(base: Char) extends Alignment
+
+    lazy val alignment: Alignment = {
+      val cigarElement: CigarElement = cigar.getCigarElement(indexInCigarElements.toInt)
+      val cigarOperator = cigarElement.getOperator
+      cigarOperator match {
+        case CigarOperator.INSERTION =>
+          val startPos: Int = readPosition.toInt
+          val endPos: Int = startPos + cigarElement.getLength - indexWithinCigarElement.toInt
+          val bases = read.record.getSequence.toString.subSequence(startPos, endPos).toString
+          Insertion(bases)
+        case CigarOperator.MATCH_OR_MISMATCH =>
+          val base: Char = read.record.getSequence.charAt(readPosition.toInt)
+          if (read.record.mdTag.get.isMatch(locus)) { Match(base) }
+          else { Mismatch(base) }
+        case CigarOperator.DELETION => Deletion()
+        case other =>
+          throw new AssertionError("Not a match, mismatch, deletion, or insertion: " + other.toString)
+      }
+    }
+
+    /* If you only care about what the CigarOperator was at this position, but not its
+     * associated sequence, then you can just one of these state variables.
+     */
+    lazy val isInsertion = alignment match { case Insertion(_) => true; case _ => false }
+    lazy val isDeletion = alignment match { case Deletion() => true; case _ => false }
+    lazy val isMismatch = alignment match { case Mismatch(_) => true; case _ => false }
+    lazy val isMatch = alignment match { case Match(_) => true; case _ => false }
+
+    /**
      * The sequenced nucleotides at this element.
-     * 
-     * If the current element is a deletion, then is the empty string. If it's
+     *
+     * If the current element is a deletion, then return the empty string. If it's
      * an insertion, then this will be a string of length >= 1: the contents of
      * the inserted sequence starting at the current locus. Otherwise, this is
      * a string of length 1.
      */
-    lazy val sequenceRead: String = {
-      if (isDeletion)
-        ""
-      else if (isMatch || isMismatch)
-        read.record.getSequence.charAt(readPosition.toInt).toString
-      else if (isInsertion)
-        read.record.getSequence.toString.subSequence(
-          readPosition.toInt,
-          readPosition.toInt + cigarElement.getLength - indexWithinCigarElement.toInt).toString
-      else
-        throw new AssertionError("Not a match, mismatch, deletion, or insertion")
-    }
-    lazy val singleBaseRead: Char = {
-      assume(sequenceRead.length == 1)
-      sequenceRead.charAt(0)
+    lazy val sequenceRead: String = alignment match {
+      case Deletion() => ""
+      case Match(base) => base.toString
+      case Mismatch(base) => base.toString
+      case Insertion(bases) => bases
     }
 
-    lazy val cigarElement: CigarElement = cigar.getCigarElement(indexInCigarElements.toInt)
-    lazy val cigarOperator = cigarElement.getOperator
-    lazy val isInsertion = cigarOperator == CigarOperator.INSERTION
-    lazy val isDeletion = cigarOperator == CigarOperator.DELETION
-    lazy val isMismatch = cigarOperator == CigarOperator.MATCH_OR_MISMATCH && !read.record.mdTag.get.isMatch(locus)
-    lazy val isMatch = cigarOperator == CigarOperator.MATCH_OR_MISMATCH && read.record.mdTag.get.isMatch(locus)
+    lazy val singleBaseRead: Char = alignment match {
+      case Match(base) => base
+      case Mismatch(base) => base
+      case Insertion(bases) if bases.length == 1 => bases.charAt(0)
+      case other =>
+        throw new AssertionError("Not a match, mismatch, or single nucleotide insertion: " + other.toString)
+    }
 
     /**
      * Determine the read position, cigar element index, and offset into that cigar element for a given locus.
      *
      * @param newLocus The desired locus of the new [[Pileup.Element]]. It must be greater than the current locus, and
      *                 not past the end of the current read.
-     *
      *
      * @return A tuple of (read position, cigar element index, an offset into that cigar element)
      *
