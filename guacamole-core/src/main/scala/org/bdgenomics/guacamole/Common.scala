@@ -29,6 +29,7 @@ import org.apache.spark.scheduler.StatsReportListener
 import java.util
 import java.util.Calendar
 import org.bdgenomics.adam.rich.RichADAMRecord
+import org.bdgenomics.adam.rdd.ADAMContext
 
 /**
  * Collection of functions that are useful to multiple variant calling implementations, and specifications of command-
@@ -57,11 +58,11 @@ object Common extends Logging {
 
     /** Arguments for accepting two sets of reads (tumor + normal). */
     trait TumorNormalReads extends Base {
-      @Opt(name = "-reads-normal", metaVar = "X", required = true, usage = "Aligned reads: normal")
-      var readsNormal: String = ""
+      @Opt(name = "-normal-reads", metaVar = "X", required = true, usage = "Aligned reads: normal")
+      var normalReads: String = ""
 
-      @Opt(name = "-reads-tumor", metaVar = "X", required = true, usage = "Aligned reads: tumor")
-      var readTumor: String = ""
+      @Opt(name = "-tumor-reads", metaVar = "X", required = true, usage = "Aligned reads: tumor")
+      var tumorReads: String = ""
     }
 
     /** Argument for writing output genotypes. */
@@ -81,6 +82,33 @@ object Common extends Logging {
   }
 
   /**
+   * Given a filename and a spark context, return an RDD of reads.
+   *
+   * @param filename name of file containing reads
+   * @param sc spark context
+   * @param mapped if true, will filter out non-mapped reads
+   * @param nonDuplicate if true, will filter out duplicate reads.
+   * @return
+   */
+  def loadFile(filename: String, sc: ADAMContext, mapped: Boolean, nonDuplicate: Boolean): RDD[ADAMRecord] = {
+    val reads: RDD[ADAMRecord] = if (mapped && nonDuplicate) {
+      sc.adamLoad(filename, Some(classOf[UniqueMappedReadPredicate]))
+    } else {
+      var raw: RDD[ADAMRecord] = sc.adamLoad(filename)
+      def isMapped(read: ADAMRecord) = {
+        read.readMapped && read.contig.contigName != null && read.contig.contigLength > 0
+      }
+      if (mapped) raw = raw.filter(isMapped _)
+      if (nonDuplicate) raw = raw.filter(read => !read.duplicateRead)
+      raw
+    }
+    reads.persist()
+    val description = (if (mapped) "mapped " else "") + (if (nonDuplicate) "non-duplicate" else "")
+    progress("Loaded %,d %s reads into %,d partitions.".format(reads.count, description, reads.partitions.length))
+    reads
+  }
+
+  /**
    * Given arguments for a single set of reads, and a spark context, return an RDD of reads.
    *
    * @param args parsed arguments
@@ -89,19 +117,30 @@ object Common extends Logging {
    * @param nonDuplicate if true, will filter out duplicate reads.
    * @return
    */
-  def loadReads(args: Arguments.Reads, sc: SparkContext, mapped: Boolean = true, nonDuplicate: Boolean = true): RDD[ADAMRecord] = {
-    val reads: RDD[ADAMRecord] = if (mapped && nonDuplicate) {
-      sc.adamLoad(args.reads, Some(classOf[UniqueMappedReadPredicate]))
-    } else {
-      var raw: RDD[ADAMRecord] = sc.adamLoad(args.reads)
-      if (mapped) raw = raw.filter(read => read.readMapped && read.contig.contigName != null && read.contig.contigLength > 0)
-      if (nonDuplicate) raw = raw.filter(read => !read.duplicateRead)
-      raw
-    }
-    reads.persist()
-    val description = (if (mapped) "mapped " else "") + (if (nonDuplicate) "non-duplicate" else "")
-    progress("Loaded %,d %s reads into %,d partitions.".format(reads.count, description, reads.partitions.length))
-    reads
+  def loadReads(args: Arguments.Reads,
+                sc: ADAMContext,
+                mapped: Boolean = true,
+                nonDuplicate: Boolean = true): RDD[ADAMRecord] = {
+    loadFile(args.reads, sc, mapped, nonDuplicate)
+  }
+
+  /**
+   * Given arguments for a single set of reads, and a spark context, return an RDD of reads.
+   *
+   * @param args parsed arguments
+   * @param sc spark context
+   * @param mapped if true, will filter out non-mapped reads
+   * @param nonDuplicate if true, will filter out duplicate reads.
+   * @return
+   */
+  def loadTumorNormalReads(args: Arguments.TumorNormalReads,
+                           sc: ADAMContext,
+                           mapped: Boolean = true,
+                           nonDuplicate: Boolean = true): (RDD[ADAMRecord], RDD[ADAMRecord]) = {
+
+    val tumorReads: RDD[ADAMRecord] = loadFile(args.tumorReads, sc, mapped, nonDuplicate)
+    val normalReads: RDD[ADAMRecord] = loadFile(args.normalReads, sc, mapped, nonDuplicate)
+    (tumorReads, normalReads)
   }
 
   /**
