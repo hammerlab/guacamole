@@ -186,15 +186,15 @@ object Pileup {
      * a string of length 1.
      */
     lazy val sequenceRead: String = alignment match {
-      case Deletion() => ""
-      case Match(base) => base.toString
-      case Mismatch(base) => base.toString
+      case Deletion()       => ""
+      case Match(base)      => base.toString
+      case Mismatch(base)   => base.toString
       case Insertion(bases) => bases
     }
 
     lazy val singleBaseRead: Char = alignment match {
-      case Match(base) => base
-      case Mismatch(base) => base
+      case Match(base)                           => base
+      case Mismatch(base)                        => base
       case Insertion(bases) if bases.length == 1 => bases.charAt(0)
       case other =>
         throw new AssertionError("Not a match, mismatch, or single nucleotide insertion: " + other.toString)

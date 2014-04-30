@@ -54,7 +54,7 @@ case class LociSet(private val map: Map[String, LociSet.SingleContig]) {
    */
   def onContig(contig: String): LociSet.SingleContig = sortedMap.get(contig) match {
     case Some(result) => result
-    case None => LociSet.SingleContig(contig, emptyRangeSet)
+    case None         => LociSet.SingleContig(contig, emptyRangeSet)
   }
 
   /** Returns the union of this LociSet with another. */
@@ -78,7 +78,7 @@ case class LociSet(private val map: Map[String, LociSet.SingleContig]) {
 
   override def equals(other: Any) = other match {
     case that: LociSet => sortedMap.equals(that.sortedMap)
-    case _ => false
+    case _             => false
   }
   override def hashCode = sortedMap.hashCode
 
@@ -114,9 +114,9 @@ object LociSet {
   def parse(loci: String): LociSet = {
     val syntax = """^([\pL\pN]+):(\pN+)-(\pN+)""".r
     val sets = loci.replace(" ", "").split(',').map({
-      case "" => LociSet.empty
+      case ""                       => LociSet.empty
       case syntax(name, start, end) => LociSet(Seq[(String, Long, Long)]((name, start.toLong, end.toLong)))
-      case other => throw new IllegalArgumentException("Couldn't parse loci range: %s".format(other))
+      case other                    => throw new IllegalArgumentException("Couldn't parse loci range: %s".format(other))
     })
     union(sets: _*)
   }
