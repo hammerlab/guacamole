@@ -21,6 +21,7 @@ package org.bdgenomics.guacamole
 import org.scalatest.FunSuite
 import org.bdgenomics.adam.avro.{ ADAMRecord, ADAMContig }
 import org.scalatest.matchers.ShouldMatchers._
+import org.scalatest.matchers._
 
 class SlidingReadWindowSuite extends FunSuite {
 
@@ -65,7 +66,8 @@ class SlidingReadWindowSuite extends FunSuite {
       makeRead("TCGATCGA", "8M", "8", 1, "chr2"),
       makeRead("TCGATCGA", "8M", "8", 1, "chr3"))
     val window = SlidingReadWindow(2, reads.iterator)
-    evaluating { window.setCurrentLocus(0) } should produce[IllegalArgumentException]
+    val caught = evaluating { window.setCurrentLocus(0) } should produce[IllegalArgumentException]
+    caught.getMessage should include("must have the same reference name")
 
   }
 
@@ -91,7 +93,7 @@ class SlidingReadWindowSuite extends FunSuite {
       makeRead("TCGATCGA", "8M", "8", 4))
     val window = SlidingReadWindow(8, reads.iterator)
     val caught = evaluating { window.setCurrentLocus(0) } should produce[IllegalArgumentException]
-    assert(caught.getMessage === "requirement failed: Reads must be sorted by start locus")
+    caught.getMessage should include("Reads must be sorted by start locus")
 
   }
 
