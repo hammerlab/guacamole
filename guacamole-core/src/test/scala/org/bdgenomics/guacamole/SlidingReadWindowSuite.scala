@@ -97,7 +97,52 @@ class SlidingReadWindowSuite extends FunSuite {
 
   }
 
+  test("test sliding read window, halfWindowSize=0") {
+    // 01234567890 position
+    // .TCGATCGA.. #1
+    // ..CGATCGAT. #2
+    // .....TCG... #3
+    // 01222333210 count
+    val reads = Seq(makeRead("TCGATCGA", "8M", "8", 1),
+      makeRead("CGATCGAT", "8M", "8", 2),
+      makeRead("TCG", "3M", "3", 5))
+    val window = SlidingReadWindow(0, reads.iterator)
+
+    window.setCurrentLocus(0)
+    assert(window.currentReads.size === 0)
+
+    window.setCurrentLocus(1)
+    assert(window.currentReads.size === 1)
+
+    window.setCurrentLocus(2)
+    assert(window.currentReads.size === 2)
+
+    window.setCurrentLocus(3)
+    assert(window.currentReads.size === 2)
+
+    window.setCurrentLocus(4)
+    assert(window.currentReads.size === 2)
+
+    window.setCurrentLocus(5)
+    assert(window.currentReads.size === 3)
+
+    window.setCurrentLocus(6)
+    assert(window.currentReads.size === 3)
+
+    window.setCurrentLocus(7)
+    assert(window.currentReads.size === 3)
+
+    window.setCurrentLocus(8)
+    assert(window.currentReads.size === 2)
+
+    window.setCurrentLocus(9)
+    assert(window.currentReads.size === 1)
+
+    window.setCurrentLocus(10)
+    assert(window.currentReads.size === 0)
+  }
+
   // Tests to write:
-  // - halfWindowSize=0
+  // - Slow walk through with halfWindowSize=1
 
 }
