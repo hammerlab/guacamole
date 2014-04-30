@@ -21,14 +21,15 @@ package org.bdgenomics.guacamole
 import org.scalatest.FunSuite
 import org.bdgenomics.adam.avro.{ ADAMRecord, ADAMContig }
 import org.scalatest.matchers.ShouldMatchers._
+import org.scalatest.matchers._
 
 class SlidingReadWindowSuite extends FunSuite {
 
   def makeRead(sequence: String,
-    cigar: String,
-    mdtag: String,
-    start: Long = 1,
-    chr: String = "chr1"): ADAMRecord = {
+               cigar: String,
+               mdtag: String,
+               start: Long = 1,
+               chr: String = "chr1"): ADAMRecord = {
 
     val contig = ADAMContig.newBuilder()
       .setContigName(chr)
@@ -65,7 +66,8 @@ class SlidingReadWindowSuite extends FunSuite {
       makeRead("TCGATCGA", "8M", "8", 1, "chr2"),
       makeRead("TCGATCGA", "8M", "8", 1, "chr3"))
     val window = SlidingReadWindow(2, reads.iterator)
-    evaluating { window.setCurrentLocus(0) } should produce[IllegalArgumentException]
+    val caught = evaluating { window.setCurrentLocus(0) } should produce[IllegalArgumentException]
+    caught.getMessage should include("must have the same reference name")
 
   }
 
@@ -90,11 +92,105 @@ class SlidingReadWindowSuite extends FunSuite {
       makeRead("TCGATCGA", "8M", "8", 8),
       makeRead("TCGATCGA", "8M", "8", 4))
     val window = SlidingReadWindow(8, reads.iterator)
-    evaluating { window.setCurrentLocus(0) } should produce[IllegalArgumentException]
+    val caught = evaluating { window.setCurrentLocus(0) } should produce[IllegalArgumentException]
+    caught.getMessage should include("Reads must be sorted by start locus")
 
   }
 
-  // Tests to write:
-  // - halfWindowSize=0
+  test("test sliding read window, slow walk with halfWindowSize=0") {
+    // 01234567890 position
+    // .TCGATCGA.. #1
+    // ..CGATCGAT. #2
+    // .....TCG... #3
+    // 01222333210 count
+    val reads = Seq(makeRead("TCGATCGA", "8M", "8", 1),
+      makeRead("CGATCGAT", "8M", "8", 2),
+      makeRead("TCG", "3M", "3", 5))
+    val window = SlidingReadWindow(0, reads.iterator)
+
+    window.setCurrentLocus(0)
+    assert(window.currentReads.size === 0)
+
+    window.setCurrentLocus(1)
+    assert(window.currentReads.size === 1)
+
+    window.setCurrentLocus(2)
+    assert(window.currentReads.size === 2)
+
+    window.setCurrentLocus(3)
+    assert(window.currentReads.size === 2)
+
+    window.setCurrentLocus(4)
+    assert(window.currentReads.size === 2)
+
+    window.setCurrentLocus(5)
+    assert(window.currentReads.size === 3)
+
+    window.setCurrentLocus(6)
+    assert(window.currentReads.size === 3)
+
+    window.setCurrentLocus(7)
+    assert(window.currentReads.size === 3)
+
+    window.setCurrentLocus(8)
+    assert(window.currentReads.size === 2)
+
+    window.setCurrentLocus(9)
+    assert(window.currentReads.size === 1)
+
+    window.setCurrentLocus(10)
+    assert(window.currentReads.size === 0)
+  }
+
+  test("test sliding read window, slow walk with halfWindowSize=1") {
+    // 0123456789012 position
+    // ..TCGATCGA... #1
+    // ...CGATCGAT.. #2
+    // ......TCG.... #3
+    // 0122233333210 count w/ hfS=1
+    val reads = Seq(makeRead("TCGATCGA", "8M", "8", 2),
+      makeRead("CGATCGAT", "8M", "8", 3),
+      makeRead("TCG", "3M", "3", 6))
+    val window = SlidingReadWindow(1, reads.iterator)
+
+    window.setCurrentLocus(0)
+    assert(window.currentReads.size === 0)
+
+    window.setCurrentLocus(1)
+    assert(window.currentReads.size === 1)
+
+    window.setCurrentLocus(2)
+    assert(window.currentReads.size === 2)
+
+    window.setCurrentLocus(3)
+    assert(window.currentReads.size === 2)
+
+    window.setCurrentLocus(4)
+    assert(window.currentReads.size === 2)
+
+    window.setCurrentLocus(5)
+    assert(window.currentReads.size === 3)
+
+    window.setCurrentLocus(6)
+    assert(window.currentReads.size === 3)
+
+    window.setCurrentLocus(7)
+    assert(window.currentReads.size === 3)
+
+    window.setCurrentLocus(8)
+    assert(window.currentReads.size === 3)
+
+    window.setCurrentLocus(9)
+    assert(window.currentReads.size === 3)
+
+    window.setCurrentLocus(10)
+    assert(window.currentReads.size === 2)
+
+    window.setCurrentLocus(11)
+    assert(window.currentReads.size === 1)
+
+    window.setCurrentLocus(12)
+    assert(window.currentReads.size === 0)
+  }
 
 }
