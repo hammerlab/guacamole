@@ -31,7 +31,7 @@ trait PileupVariantCaller extends SlidingWindowVariantCaller {
   override val halfWindowSize = 0L
 
   override def callVariants(samples: Seq[String], reads: SlidingReadWindow, loci: LociSet.SingleContig): Iterator[ADAMGenotype] = {
-    val lociAndReads = loci.lociIndividually.map(locus => (locus, reads.setCurrentLocus(locus)))
+    val lociAndReads = loci.individually.map(locus => (locus, reads.setCurrentLocus(locus)))
     val pileupsIterator = Pileup.pileupsAtLoci(lociAndReads)
     pileupsIterator.flatMap(callVariantsAtLocus _)
   }

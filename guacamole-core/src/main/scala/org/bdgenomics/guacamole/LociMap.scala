@@ -29,15 +29,13 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException
 import scala.collection.mutable.ArrayBuffer
 
 /**
- * A collection of genomic regions. Maps reference names (contig names) to a set of loci on that contig.
- *
- * Used, for example, to keep track of what loci to call variants at.
+ * An immutable map from loci to a instances of an arbitrary type T.
  *
  * Since contiguous genomic intervals are a common case, this is implemented with sets of (start, end) intervals.
  *
  * All intervals are half open: inclusive on start, exclusive on end.
  *
- * @param map Map from contig names to the range set giving the loci under consideration on that contig.
+ * @param map Map from contig names to [[LociMap.SingleContig]] instances giving the regions and values on that contig.
  */
 case class LociMap[T](private val map: Map[String, LociMap.SingleContig[T]]) {
 
@@ -49,6 +47,7 @@ case class LociMap[T](private val map: Map[String, LociMap.SingleContig[T]]) {
   /** The number of loci in this LociMap. */
   lazy val count: Long = sortedMap.valuesIterator.map(_.count).sum
 
+  /** The "inverse map", i.e. a T -> LociSet map that gives the loci that mapping to each value. */
   lazy val asInverseMap: Map[T, LociSet] = {
     val mapOfBuilders = new mutable.HashMap[T, LociSet.Builder]()
     contigs.foreach(contig => {
@@ -62,10 +61,10 @@ case class LociMap[T](private val map: Map[String, LociMap.SingleContig[T]]) {
   }
 
   /**
-   * Returns the loci on the specified contig.
+   * Returns the loci map on the specified contig.
    *
    * @param contig The contig name
-   * @return A [[LociSet.SingleContig]] instance giving the loci on the specified contig.
+   * @return A [[LociSet.SingleContig]] instance giving the loci mapping on the specified contig.
    */
   def onContig(contig: String): LociMap.SingleContig[T] = sortedMap.get(contig) match {
     case Some(result) => result
@@ -86,23 +85,30 @@ case class LociMap[T](private val map: Map[String, LociMap.SingleContig[T]]) {
     case _                => false
   }
   override def hashCode = sortedMap.hashCode
-
 }
 object LociMap {
+  // Make NumericRange instances comparable.
   private implicit object RangeOrdering extends Ordering[NumericRange.Exclusive[Long]] {
     def compare(o1: NumericRange.Exclusive[Long], o2: NumericRange.Exclusive[Long]) = (o1.start - o2.start).toInt
   }
   private type JLong = java.lang.Long
   private def emptyRangeMap[T]() = ImmutableRangeMap.of[JLong, T]()
 
+  /** Returns a new Builder instance for constructing a LociMap. */
   def newBuilder[T](): Builder[T] = new Builder[T]()
+
+  /** Class for building a LociMap */
   class Builder[T] {
     val data = new mutable.HashMap[String, mutable.ArrayBuffer[(Long, Long, T)]]()
+
+    /** Set the value at the given locus range in the LociMap under construction. */
     def put(contig: String, start: Long, end: Long, value: T): Builder[T] = {
       assume(end >= start)
       if (end > start) data.getOrElseUpdate(contig, new ArrayBuffer[(Long, Long, T)]) += ((start, end, value))
       this
     }
+
+    /** Build the result. */
     def result(): LociMap[T] = {
       LociMap[T](data.map({
         case (contig, array) => {
@@ -116,6 +122,7 @@ object LociMap {
     }
   }
 
+  /** Construct an empty LociMap. */
   def apply[T](): LociMap[T] = LociMap[T](Map[String, SingleContig[T]]())
 
   /** Return a LociMap of a single genomic interval. */
@@ -123,46 +130,57 @@ object LociMap {
     (new Builder[T]).put(contig, start, end, value).result
   }
 
-  /** Returns union of specified [[LociSet]] instances. */
+  /** Returns union of specified [[LociMap]] instances. */
   def union[T](lociMaps: LociMap[T]*): LociMap[T] = {
     lociMaps.reduce(_.union(_))
   }
 
   /**
-   * A set of loci on a single contig.
+   * A map from loci to a instances of an arbitrary type where the loci are all on the same contig.
    * @param contig The contig name
-   * @param rangeMap The range set of loci on this contig.
+   * @param rangeMap The range map of loci intervals -> values.
    */
-  case class SingleContig[T](contig: String, rangeMap: RangeMap[JLong, T]) {
+  case class SingleContig[T](contig: String, private val rangeMap: RangeMap[JLong, T]) {
 
+    /**
+     * Get the value associated with the given locus. Returns Some(value) if the given locus is in this map, None
+     * otherwise.
+     */
     def get(locus: Long): Option[T] = {
       Option(rangeMap.get(locus))
     }
+
+    /**
+     * Given a loci interval, return the set of all values mapped to by any loci in the interval.
+     */
     def getAll(start: Long, end: Long): Set[T] = {
       val range = Range.closedOpen[JLong](start, end)
       JavaConversions.asScalaIterator(rangeMap.subRangeMap(range).asMapOfRanges.values.iterator).toSet
     }
 
+    /** Does this map contain the given locus? */
     def contains(locus: Long): Boolean = get(locus).isDefined
 
+    /** This map as a regular scala immutable map from exclusive numeric ranges to values. */
     lazy val asMap: SortedMap[Exclusive[Long], T] = {
       val result = JavaConversions.mapAsScalaMap(rangeMap.asMapOfRanges).map(
         pair => (NumericRange[Long](pair._1.lowerEndpoint, pair._1.upperEndpoint, 1), pair._2))
       scala.collection.immutable.TreeMap[Exclusive[Long], T](result.toSeq: _*)
     }
 
+    /** Number of loci in this map. */
     lazy val count: Long = ranges.map(_.length).sum
 
-    /** Returns a sequence of ranges giving the intervals of this set. */
+    /** Returns a sequence of ranges giving the intervals of this map. */
     lazy val ranges: Iterable[NumericRange[Long]] = asMap.keys
 
-    /** Is this set empty? */
+    /** Is this map empty? */
     lazy val isEmpty: Boolean = asMap.isEmpty
 
     /** Iterator through loci in this map, sorted. */
     def lociIndividually(): Iterator[Long] = ranges.iterator.flatMap(_.iterator)
 
-    /** Returns the union of this set with another. Both must be on the same contig. */
+    /** Returns the union of this map with another. Both must be on the same contig. */
     def union(other: SingleContig[T]): SingleContig[T] = {
       assume(contig == other.contig)
       val both = TreeRangeMap.create[JLong, T]()

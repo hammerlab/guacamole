@@ -63,20 +63,6 @@ object SlidingWindowVariantCaller extends Logging {
   }
 
   /**
-   * Call variants using reads stored in a Spark RDD.
-   *
-   *
-   * @param reads Spark RDD of ADAM reads. May be in any order if sorting is enabled
-   * @param caller Variant calling implementation to use.
-   * @param loci Loci to call variants at.
-   * @param parallelism Number of spark workers to use to call variants. Set to 0 to stream reads to the spark master
-   *                    and run the variant calling locally.
-   * @return An RDD of the called variants.
-   */
-
-
-
-  /**
    * Call variants using the given SlidingWindowVariantCaller.
    *
    * @param args parsed commandline arguments
@@ -87,7 +73,7 @@ object SlidingWindowVariantCaller extends Logging {
   def invoke(args: Arguments, caller: SlidingWindowVariantCaller, reads: RDD[ADAMRecord]): RDD[ADAMGenotype] = {
     val loci = Common.loci(args, reads)
 
-    val includedReads = reads.filter(overlaps(_, loci, caller.halfWindowSize))
+    val includedReads = reads.filter(read => DistributedUtil.overlaps(RichADAMRecord(read), loci, caller.halfWindowSize))
     progress("Filtered to %d reads that overlap loci of interest.".format(includedReads.count))
 
     val samples = reads.map(read => Option(read.recordGroupSample).map(_.toString).getOrElse("default")).distinct.collect
@@ -96,8 +82,8 @@ object SlidingWindowVariantCaller extends Logging {
     // Sort reads by start.
     val sorted = if (!args.noSort) includedReads.adamSortReadsByReferencePosition else includedReads
 
-    def runVariantCallingTask(taskLoci: LociSet, reads: Iterator[ADAMRecord]): Seq[ADAMGenotype] = {
-      val readsSplitByContig = splitReadsByContig(reads, taskLoci.contigs)
+    DistributedUtil.windowTaskFlatMap(sorted, loci, caller.halfWindowSize, args.parallelism, (task, taskLoci, taskReads) => {
+      val readsSplitByContig = DistributedUtil.splitReadsByContig(taskReads.iterator, taskLoci.contigs)
       val slidingWindows = readsSplitByContig.mapValues(SlidingReadWindow(caller.halfWindowSize, _))
 
       // Reads are coming in sorted by contig, so we process one contig at a time, in order.
@@ -105,42 +91,6 @@ object SlidingWindowVariantCaller extends Logging {
         case (contig, window) => caller.callVariants(samples, window, taskLoci.onContig(contig))
       })
       genotypes
-    }
-    DistributedUtil.slidingWindowFlatMap(sorted, loci, caller.halfWindowSize, args.parallelism, window => {
-      window.currentLocus
-
-
     })
-
-    if (args.parallelism == 0) {
-      // Serial implementation on Spark master.
-      progress("Calling variants serially on spark master: collecting reads.")
-      val allReads = sorted.collect.iterator
-      progress("Done collecting reads.")
-      assume(allReads.hasNext, "No reads")
-      val genotypes = runVariantCallingTask(loci, allReads)
-      reads.sparkContext.parallelize(genotypes)
-    } else {
-      val taskMap = partitionLociUniformlyAmongTasks(args, loci)
-      val tasksAndReads = sorted.map(RichADAMRecord(_)).flatMap(read => {
-        val singleContig = taskMap.onContig(read.getContig.getContigName.toString)
-        val tasks = singleContig.getAll(read.start - caller.halfWindowSize, read.end.get + caller.halfWindowSize)
-        tasks.map(task => (task, read.record))
-      })
-      progress("Expanded reads from %d to %d to handle overlaps between tasks".format(sorted.count, tasksAndReads.count))
-      val readsGroupedByTask = tasksAndReads.groupByKey(args.parallelism)
-      val genotypes = readsGroupedByTask.flatMap({
-        case (task, reads) => {
-          val taskLoci = taskMap.asInverseMap(task)
-          log.info("Task %d calling loci: %s".format(task, taskLoci))
-          runVariantCallingTask(taskLoci, reads.iterator)
-        }
-      })
-      genotypes
-    }
   }
-
-
-
-
 }
