@@ -23,7 +23,7 @@ import scala.collection.immutable.{ SortedMap, NumericRange }
 import scala.collection.{ mutable, JavaConversions }
 import com.esotericsoftware.kryo.{ Serializer, Kryo }
 import com.esotericsoftware.kryo.io.{ Input, Output }
-import scala.{ collection, Some }
+import scala.Some
 import scala.collection.immutable.NumericRange.Exclusive
 import sun.reflect.generics.reflectiveObjects.NotImplementedException
 import scala.collection.mutable.ArrayBuffer
@@ -91,6 +91,8 @@ object LociMap {
   private implicit object RangeOrdering extends Ordering[NumericRange.Exclusive[Long]] {
     def compare(o1: NumericRange.Exclusive[Long], o2: NumericRange.Exclusive[Long]) = (o1.start - o2.start).toInt
   }
+
+  // We're using Google's guava library, which is Java. We have to use java integer's instead of Scala's.
   private type JLong = java.lang.Long
   private def emptyRangeMap[T]() = ImmutableRangeMap.of[JLong, T]()
 

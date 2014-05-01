@@ -18,10 +18,7 @@
 
 package org.bdgenomics.guacamole
 
-import com.google.common.collect.{ TreeRangeSet, ImmutableRangeSet, RangeSet, Range }
-import scala.collection.immutable.{ SortedMap, NumericRange }
-import scala.collection.JavaConversions
-import org.bdgenomics.guacamole.LociSet.emptyRangeSet
+import scala.collection.immutable.NumericRange
 import com.esotericsoftware.kryo.{ Serializer, Kryo }
 import com.esotericsoftware.kryo.io.{ Input, Output }
 
@@ -72,9 +69,6 @@ case class LociSet(private val map: LociMap[Unit]) {
 
 }
 object LociSet {
-  private type JLong = java.lang.Long
-  private val emptyRangeSet = ImmutableRangeSet.of[JLong]()
-
   /** An empty LociSet. */
   val empty = LociSet(LociMap[Unit]())
 
