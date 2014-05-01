@@ -1,16 +1,28 @@
 package org.bdgenomics.guacamole
 
 import org.bdgenomics.guacamole.Common._
-import org.bdgenomics.guacamole.SlidingReadWindow
 import scala.collection.immutable.NumericRange
 import org.apache.spark.rdd._
 import org.apache.spark.SparkContext._
 import org.bdgenomics.adam.avro.ADAMRecord
 import org.bdgenomics.adam.rich.RichADAMRecord
-import org.apache.spark.{Logging, SparkContext}
+import org.apache.spark.{ Logging, SparkContext }
+import scala.reflect.ClassTag
 
 object DistributedUtil extends Logging {
 
+  /**
+   * Assign loci from a LociSet to partitions. Contiguous intervals of loci will tend to get assigned to the same
+   * partition.
+   *
+   * This implementation assigns loci uniformly, i.e. each task gets about the same number of loci. A smarter
+   * implementation would know about the reads (depth of coverage), and try to assign each task loci corresponding to
+   * about the same number of reads.
+   *
+   * @param tasks number of partitions
+   * @param loci loci to partition
+   * @return LociMap of locus -> task assignments
+   */
   def partitionLociUniformlyAmongTasks(tasks: Long, loci: LociSet): LociMap[Long] = {
     // TODO: read-aware partitioning.
     assume(tasks >= 1)
@@ -36,19 +48,77 @@ object DistributedUtil extends Logging {
     builder.result
   }
 
-  def slidingWindowFlatMap[T](reads: RDD[ADAMRecord], loci: LociSet, halfWindowSize: Long, tasks: Long, function: (LociSet, SlidingReadWindow) => Seq[T]): RDD[T] = {
+  /**
+   * FlatMap across loci, where at locus the provided function is given a SlidingWindow instance containing reads
+   * overlapping that locus.
+   *
+   * Currently unused, but here for demonstration.
+   *
+   * See [[windowTaskFlatMap()]] for argument descriptions.
+   *
+   */
+  def windowFlatMap[T: ClassTag](reads: RDD[ADAMRecord],
+                                 loci: LociSet,
+                                 halfWindowSize: Long,
+                                 tasks: Long,
+                                 function: SlidingReadWindow => Seq[T]): RDD[T] = {
+    windowTaskFlatMap(reads, loci, halfWindowSize, tasks, (task, taskLoci, taskReads) => {
+      val readsSplitByContig = splitReadsByContig(taskReads.iterator, taskLoci.contigs)
+      val slidingWindows = readsSplitByContig.mapValues(SlidingReadWindow(halfWindowSize, _))
+      slidingWindows.toSeq.sortBy(_._1).flatMap({
+        case (contig, window) => {
+          loci.onContig(contig).individually.flatMap(locus => {
+            window.setCurrentLocus(locus)
+            function(window)
+          })
+        }
+      })
+    })
+  }
 
-
-  def slidingWindowMapPartitions[T](reads: RDD[ADAMRecord], loci: LociSet, halfWindowSize: Long, tasks: Long, function: (LociSet, SlidingReadWindow) => Seq[T]): RDD[T] = {
+  /**
+   * FlatMap across sets of reads overlapping genomic partitions.
+   *
+   * Results for each partition can be computed in parallel. The degree of parallelism (i.e. the number of partitions) is
+   * set by the tasks parameter.
+   *
+   * If tasks=0, then the result is computed on the spark master using one interval. For tasks > 0, the results are
+   * computed on spark workers.
+   *
+   * This function works as follows:
+   *
+   *  - Partition the loci, num partitions = tasks.
+   *
+   *  - Assign reads to partitions. A read may overlap multiple partitions, and therefore be assigned to multiple
+   *    partitions.
+   *
+   *  - For each partition, call the provided function. The arguments to this function are the task number, the loci
+   *    assigned to this task, and the reads overlapping those loci (within the specified halfWindowSize). The loci
+   *    assigned to this task are always unique to this task, but the same reads may be provided to multiple tasks,
+   *    since reads may overlap loci partition boundaries.
+   *
+   *  - The results of the provided function are concatenated into an RDD, which is returned.
+   *
+   * @param reads sorted mapped reads
+   * @param loci loci to consider. Reads that don't overlap these loci are discarded.
+   * @param halfWindowSize if a read overlaps a region of halfWindowSize to either side of a locus under consideration,
+   *                       then it is included.
+   * @param tasks number of genomic partitions; degree of parallelism
+   * @param function function to flatMap: (task number, loci, reads that overlap a window around these loci) -> T
+   * @tparam T type of value returned by function
+   * @return flatMap results, RDD[T]
+   */
+  def windowTaskFlatMap[T: ClassTag](reads: RDD[ADAMRecord],
+                                     loci: LociSet,
+                                     halfWindowSize: Long,
+                                     tasks: Long,
+                                     function: (Long, LociSet, Iterable[ADAMRecord]) => Seq[T]): RDD[T] = {
     if (tasks == 0) {
       progress("Collecting reads onto spark master.")
       val allReads = reads.collect.iterator
       progress("Done collecting reads.")
       assume(allReads.hasNext, "No reads")
-      val readsSplitByContig = splitReadsByContig(allReads, loci.contigs)
-      val slidingWindows = readsSplitByContig.mapValues(SlidingReadWindow(halfWindowSize, _))
-      // Reads are coming in sorted by contig, so we process one contig at a time, in order.
-      val results = slidingWindows.toSeq.sortBy(_._1).flatMap(pair => function(pair._2))
+      val results: Seq[T] = function(0L, loci, allReads.toIterable)
       reads.sparkContext.parallelize(results)
     } else {
       val taskMap = partitionLociUniformlyAmongTasks(tasks, loci)
@@ -63,13 +133,11 @@ object DistributedUtil extends Logging {
         case (task, taskReads) => {
           val taskLoci = taskMap.asInverseMap(task)
           log.info("Task %d handling %d reads for loci: %s".format(task, taskReads.length, taskLoci))
-          val readsSplitByContig = splitReadsByContig(taskReads.iterator, taskLoci.contigs)
-          val slidingWindows = readsSplitByContig.mapValues(SlidingReadWindow(halfWindowSize, _))
-          slidingWindows.toSeq.sortBy(_._1).flatMap(pair => function(pair._2))
+          function(task, taskLoci, taskReads)
         }
       })
       results
-     }
+    }
   }
 
   /**
@@ -84,7 +152,7 @@ object DistributedUtil extends Logging {
    * order of the reads if they want to avoid this.
    *
    */
-  private def splitReadsByContig(readIterator: Iterator[ADAMRecord], contigs: Seq[String]): Map[String, Iterator[ADAMRecord]] = {
+  def splitReadsByContig(readIterator: Iterator[ADAMRecord], contigs: Seq[String]): Map[String, Iterator[ADAMRecord]] = {
     var currentIterator: Iterator[ADAMRecord] = readIterator
     contigs.map(contig => {
       val (withContig, withoutContig) = currentIterator.partition(_.contig.contigName.toString == contig)
@@ -96,12 +164,10 @@ object DistributedUtil extends Logging {
   /**
    * Does the given read overlap any of the given loci, with halfWindowSize padding?
    */
-  private def overlaps(read: RichADAMRecord, loci: LociSet, halfWindowSize: Long = 0): Boolean = {
+  def overlaps(read: RichADAMRecord, loci: LociSet, halfWindowSize: Long = 0): Boolean = {
     read.readMapped && loci.onContig(read.contig.contigName.toString).intersects(
       math.max(0, read.start - halfWindowSize),
       read.end.get + halfWindowSize)
   }
-
-
 
 }

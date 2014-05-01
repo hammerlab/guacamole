@@ -26,7 +26,7 @@ import com.esotericsoftware.kryo.{ Serializer, Kryo }
 import com.esotericsoftware.kryo.io.{ Input, Output }
 
 /**
- * A collection of genomic regions. Maps reference names (contig names) to a set of loci on that contig.
+ * An immutable collection of genomic regions on any number of contigs.
  *
  * Used, for example, to keep track of what loci to call variants at.
  *
@@ -34,7 +34,9 @@ import com.esotericsoftware.kryo.io.{ Input, Output }
  *
  * All intervals are half open: inclusive on start, exclusive on end.
  *
- * @param map Map from contig names to the range set giving the loci under consideration on that contig.
+ * We implement a set by wrapping a LociMap that maps to Unit.
+ *
+ * @param map LociMap[Unit] instance
  */
 case class LociSet(private val map: LociMap[Unit]) {
 
@@ -77,16 +79,27 @@ object LociSet {
   val empty = LociSet(LociMap[Unit]())
 
   /**
-   * Given a sequence of (contig name, start locus, end locus) triples, returns a LociSet of the specified
-   * loci. The intervals supplied are allowed to overlap.
+   * Return a new builder instance for constructing a LociSet.
    */
   def newBuilder(): Builder = new Builder()
+
+  /**
+   * Class for constructing a LociSet.
+   */
   class Builder {
     val wrapped = new LociMap.Builder[Unit]
+
+    /**
+     * Add an interval to the LociSet under construction.
+     */
     def put(contig: String, start: Long, end: Long): Builder = {
       wrapped.put(contig, start, end, Unit)
       this
     }
+
+    /**
+     * Build the result.
+     */
     def result(): LociSet = LociSet(wrapped.result)
   }
 
@@ -118,8 +131,6 @@ object LociSet {
 
   /**
    * A set of loci on a single contig.
-   * @param contig The contig name
-   * @param rangeSet The range set of loci on this contig.
    */
   case class SingleContig(map: LociMap.SingleContig[Unit]) {
 
@@ -136,7 +147,7 @@ object LociSet {
     def isEmpty(): Boolean = map.isEmpty
 
     /** Iterator through loci in this set, sorted. */
-    def lociIndividually(): Iterator[Long] = map.lociIndividually()
+    def individually(): Iterator[Long] = map.lociIndividually()
 
     /** Returns the union of this set with another. Both must be on the same contig. */
     def union(other: SingleContig): SingleContig = SingleContig(map.union(other.map))
