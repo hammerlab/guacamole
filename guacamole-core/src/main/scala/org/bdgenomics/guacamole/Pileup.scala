@@ -143,7 +143,6 @@ object Pileup {
      * The alignment of a read combines the underlying Cigar operator
      * (match/mismatch/deletion/insertion) with the characters which were used from the read.
      */
-
     abstract class Alignment
     case class Insertion(bases: String) extends Alignment
     case class Deletion() extends Alignment
@@ -242,16 +241,14 @@ object Pileup {
     def elementAtGreaterLocus(newLocus: Long): Element = {
       if (newLocus == locus) { return this }
 
-      assume(newLocus > locus,
-        "Can't rewind to locus %d from %d, Pileups only advance forward".format(newLocus, locus))
+      assume(newLocus > locus, "Can't rewind to locus %d from %d. Pileups only advance.".format(newLocus, locus))
       val readEndPos = read.record.end.get
-      assume(newLocus < readEndPos,
-        "This read stops at position %d, can't advance to %d".format(readEndPos, newLocus))
+      assume(newLocus < readEndPos, "This read stops at position %d. Can't advance to %d".format(readEndPos, newLocus))
 
       val (newReadPosition, newIndexInCigarElements, newIndexWithinCigarElement) = findNextCigarElement(newLocus)
 
       assert(newIndexInCigarElements < cigar.numCigarElements(),
-        "Invalid cigar element index %d".format(newIndexInCigarElements))
+        "Invalid cigar element index: %d".format(newIndexInCigarElements))
 
       Element(
         read,
