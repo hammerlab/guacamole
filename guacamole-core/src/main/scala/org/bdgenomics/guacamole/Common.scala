@@ -113,7 +113,9 @@ object Common extends Logging {
         val contigsAndLengths = reads.map(read => (read.contig.contigName.toString, read.contig.contigLength)).distinct.collect.toSeq
         assume(contigsAndLengths.map(_._1).distinct.length == contigsAndLengths.length,
           "Some contigs have different lengths in reads: " + contigsAndLengths.toString)
-        LociSet(contigsAndLengths.toSeq.map({ case (contig, length) => (contig, 0L, length.toLong) }))
+        val builder = LociSet.newBuilder
+        contigsAndLengths.foreach({ case (contig, length) => builder.put(contig, 0L, length.toLong) })
+        builder.result
       } else if (args.loci == "mapped") {
         val regions: RDD[LociSet] = reads.map(read => LociSet(read.contig.contigName, read.start, read.end.get))
         regions.reduce(LociSet.union(_, _))
