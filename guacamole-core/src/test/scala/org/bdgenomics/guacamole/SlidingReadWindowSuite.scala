@@ -51,7 +51,8 @@ class SlidingReadWindowSuite extends FunSuite {
 
   test("test sliding read window, duplicate reads") {
 
-    val reads = Seq(makeRead("TCGATCGA", "8M", "8", 1),
+    val reads = Seq(
+      makeRead("TCGATCGA", "8M", "8", 1),
       makeRead("TCGATCGA", "8M", "8", 1),
       makeRead("TCGATCGA", "8M", "8", 1))
     val window = SlidingReadWindow(2, reads.iterator)
@@ -62,7 +63,8 @@ class SlidingReadWindowSuite extends FunSuite {
 
   test("test sliding read window, diff contigs") {
 
-    val reads = Seq(makeRead("TCGATCGA", "8M", "8", 1, "chr1"),
+    val reads = Seq(
+      makeRead("TCGATCGA", "8M", "8", 1, "chr1"),
       makeRead("TCGATCGA", "8M", "8", 1, "chr2"),
       makeRead("TCGATCGA", "8M", "8", 1, "chr3"))
     val window = SlidingReadWindow(2, reads.iterator)
@@ -73,7 +75,8 @@ class SlidingReadWindowSuite extends FunSuite {
 
   test("test sliding read window, offset reads") {
 
-    val reads = Seq(makeRead("TCGATCGA", "8M", "8", 1),
+    val reads = Seq(
+      makeRead("TCGATCGA", "8M", "8", 1),
       makeRead("TCGATCGA", "8M", "8", 4),
       makeRead("TCGATCGA", "8M", "8", 8))
     val window = SlidingReadWindow(2, reads.iterator)
@@ -88,7 +91,8 @@ class SlidingReadWindowSuite extends FunSuite {
 
   test("test sliding read window, reads are not sorted") {
 
-    val reads = Seq(makeRead("TCGATCGA", "8M", "8", 1),
+    val reads = Seq(
+      makeRead("TCGATCGA", "8M", "8", 1),
       makeRead("TCGATCGA", "8M", "8", 8),
       makeRead("TCGATCGA", "8M", "8", 4))
     val window = SlidingReadWindow(8, reads.iterator)
@@ -103,7 +107,8 @@ class SlidingReadWindowSuite extends FunSuite {
     // ..CGATCGAT. #2
     // .....TCG... #3
     // 01222333210 count
-    val reads = Seq(makeRead("TCGATCGA", "8M", "8", 1),
+    val reads = Seq(
+      makeRead("TCGATCGA", "8M", "8", 1),
       makeRead("CGATCGAT", "8M", "8", 2),
       makeRead("TCG", "3M", "3", 5))
     val window = SlidingReadWindow(0, reads.iterator)
@@ -148,7 +153,8 @@ class SlidingReadWindowSuite extends FunSuite {
     // ...CGATCGAT.. #2
     // ......TCG.... #3
     // 0122233333210 count w/ hfS=1
-    val reads = Seq(makeRead("TCGATCGA", "8M", "8", 2),
+    val reads = Seq(
+      makeRead("TCGATCGA", "8M", "8", 2),
       makeRead("CGATCGAT", "8M", "8", 3),
       makeRead("TCG", "3M", "3", 6))
     val window = SlidingReadWindow(1, reads.iterator)

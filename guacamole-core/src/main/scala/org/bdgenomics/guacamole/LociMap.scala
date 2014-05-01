@@ -47,7 +47,7 @@ case class LociMap[T](private val map: Map[String, LociMap.SingleContig[T]]) {
   /** The number of loci in this LociMap. */
   lazy val count: Long = sortedMap.valuesIterator.map(_.count).sum
 
-  /** The "inverse map", i.e. a T -> LociSet map that gives the loci that mapping to each value. */
+  /** The "inverse map", i.e. a T -> LociSet map that gives the loci that map to each value. */
   lazy val asInverseMap: Map[T, LociSet] = {
     val mapOfBuilders = new mutable.HashMap[T, LociSet.Builder]()
     contigs.foreach(contig => {
@@ -136,7 +136,7 @@ object LociMap {
   }
 
   /**
-   * A map from loci to a instances of an arbitrary type where the loci are all on the same contig.
+   * A map from loci to instances of an arbitrary type where the loci are all on the same contig.
    * @param contig The contig name
    * @param rangeMap The range map of loci intervals -> values.
    */
