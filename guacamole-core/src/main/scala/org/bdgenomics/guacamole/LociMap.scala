@@ -23,9 +23,10 @@ import scala.collection.immutable.{ SortedMap, NumericRange }
 import scala.collection.{ mutable, JavaConversions }
 import com.esotericsoftware.kryo.{ Serializer, Kryo }
 import com.esotericsoftware.kryo.io.{ Input, Output }
-import scala.Some
+import scala.{ collection, Some }
 import scala.collection.immutable.NumericRange.Exclusive
 import sun.reflect.generics.reflectiveObjects.NotImplementedException
+import scala.collection.mutable.ArrayBuffer
 
 /**
  * A collection of genomic regions. Maps reference names (contig names) to a set of loci on that contig.
@@ -47,6 +48,18 @@ case class LociMap[T](private val map: Map[String, LociMap.SingleContig[T]]) {
 
   /** The number of loci in this LociMap. */
   lazy val count: Long = sortedMap.valuesIterator.map(_.count).sum
+
+  lazy val asInverseMap: Map[T, LociSet] = {
+    val mapOfBuilders = new mutable.HashMap[T, LociSet.Builder]()
+    contigs.foreach(contig => {
+      onContig(contig).asMap.foreach({
+        case (range, value) => {
+          mapOfBuilders.getOrElseUpdate(value, LociSet.newBuilder).put(contig, range.start, range.end)
+        }
+      })
+    })
+    mapOfBuilders.mapValues(_.result).toMap
+  }
 
   /**
    * Returns the loci on the specified contig.
@@ -79,25 +92,35 @@ object LociMap {
   private implicit object RangeOrdering extends Ordering[NumericRange.Exclusive[Long]] {
     def compare(o1: NumericRange.Exclusive[Long], o2: NumericRange.Exclusive[Long]) = (o1.start - o2.start).toInt
   }
-
   private type JLong = java.lang.Long
   private def emptyRangeMap[T]() = ImmutableRangeMap.of[JLong, T]()
+
+  def newBuilder[T](): Builder[T] = new Builder[T]()
+  class Builder[T] {
+    val data = new mutable.HashMap[String, mutable.ArrayBuffer[(Long, Long, T)]]()
+    def put(contig: String, start: Long, end: Long, value: T): Builder[T] = {
+      assume(end >= start)
+      if (end > start) data.getOrElseUpdate(contig, new ArrayBuffer[(Long, Long, T)]) += ((start, end, value))
+      this
+    }
+    def result(): LociMap[T] = {
+      LociMap[T](data.map({
+        case (contig, array) => {
+          val rangeMapBuilder = ImmutableRangeMap.builder[JLong, T]()
+          for ((start, end, value) <- array) {
+            rangeMapBuilder.put(Range.closedOpen[JLong](start, end), value)
+          }
+          contig -> SingleContig(contig, rangeMapBuilder.build)
+        }
+      }).toMap)
+    }
+  }
 
   def apply[T](): LociMap[T] = LociMap[T](Map[String, SingleContig[T]]())
 
   /** Return a LociMap of a single genomic interval. */
   def apply[T](contig: String, start: Long, end: Long, value: T): LociMap[T] = {
-    LociMap[T](Map[String, SingleContig[T]](
-      contig -> SingleContig[T](contig, ImmutableRangeMap.of[JLong, T](Range.closedOpen[JLong](start, end), value))))
-  }
-
-  /**
-   * Given a sequence of (contig name, start locus, end locus) triples, returns a LociSet of the specified
-   * loci. The intervals supplied are allowed to overlap.
-   */
-  def apply[T](contigStartEnd: Seq[(String, Long, Long, T)]): LociMap[T] = {
-    val sets = for ((contig, start, end, value) <- contigStartEnd) yield LociMap(contig, start, end, value)
-    sets.reduce(_.union(_))
+    (new Builder[T]).put(contig, start, end, value).result
   }
 
   /** Returns union of specified [[LociSet]] instances. */
