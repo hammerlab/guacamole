@@ -76,19 +76,23 @@ object LociSet {
   /** An empty LociSet. */
   val empty = LociSet(LociMap[Unit]())
 
-  /** Return a LociSet of a single genomic interval. */
-  def apply(contig: String, start: Long, end: Long): LociSet = {
-    val unitValue = ()
-    LociSet(LociMap[Unit](contig, start, end, unitValue))
-  }
-
   /**
    * Given a sequence of (contig name, start locus, end locus) triples, returns a LociSet of the specified
    * loci. The intervals supplied are allowed to overlap.
    */
-  def apply(contigStartEnd: Seq[(String, Long, Long)]): LociSet = {
-    val sets = for ((contig, start, end) <- contigStartEnd) yield LociSet(contig, start, end)
-    sets.reduce(_.union(_))
+  def newBuilder(): Builder = new Builder()
+  class Builder {
+    val wrapped = new LociMap.Builder[Unit]
+    def put(contig: String, start: Long, end: Long): Builder = {
+      wrapped.put(contig, start, end, Unit)
+      this
+    }
+    def result(): LociSet = LociSet(wrapped.result)
+  }
+
+  /** Return a LociSet of a single genomic interval. */
+  def apply(contig: String, start: Long, end: Long): LociSet = {
+    (new Builder).put(contig, start, end).result
   }
 
   /**
@@ -101,7 +105,7 @@ object LociSet {
     val syntax = """^([\pL\pN]+):(\pN+)-(\pN+)""".r
     val sets = loci.replace(" ", "").split(',').map({
       case ""                       => LociSet.empty
-      case syntax(name, start, end) => LociSet(Seq[(String, Long, Long)]((name, start.toLong, end.toLong)))
+      case syntax(name, start, end) => LociSet(name, start.toLong, end.toLong)
       case other                    => throw new IllegalArgumentException("Couldn't parse loci range: %s".format(other))
     })
     union(sets: _*)
