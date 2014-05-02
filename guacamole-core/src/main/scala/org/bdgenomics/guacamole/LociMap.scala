@@ -207,7 +207,7 @@ class LociMapSerializer extends Serializer[LociMap[Long]] {
   def write(kryo: Kryo, output: Output, obj: LociMap[Long]) = {
     output.writeLong(obj.contigs.length)
     obj.contigs.foreach(contig => {
-      kryo.writeObject(output, obj.onContig(contig))
+      kryo.writeClassAndObject(output, obj.onContig(contig))
     })
   }
   def read(kryo: Kryo, input: Input, klass: Class[LociMap[Long]]): LociMap[Long] = {
