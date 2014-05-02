@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -34,8 +34,31 @@ import org.apache.spark.Logging
  * Instead of a bayesian approach, just uses thresholds on read counts to call variants (similar to Varscan).
  *
  */
-class ThresholdVariantCaller(threshold_percent: Int) extends PileupVariantCaller with Serializable with Logging {
-  def callVariantsAtLocus(pileup: Pileup): Seq[ADAMGenotype] = {
+object ThresholdVariantCaller extends Command with Serializable with Logging {
+  override val name = "threshold"
+  override val description = "call variants using a simple threshold"
+
+  private class Arguments extends Base with Output with Reads with DistributedUtil.Arguments {
+    @Option(name = "-threshold", metaVar = "X", usage = "Make a call if at least X% of reads support it. Default: 8")
+    var threshold: Int = 8
+  }
+
+  override def run(rawArgs: Array[String]): Unit = {
+    val args = Args4j[Arguments](rawArgs)
+    val sc = Common.createSparkContext(args)
+
+    val threshold = args.threshold
+    val reads = Common.loadReads(args, sc, mapped = true, nonDuplicate = true)
+    val loci = Common.loci(args, reads)
+    val genotypes: RDD[ADAMGenotype] = DistributedUtil.pileupFlatMap[ADAMGenotype](
+      reads,
+      loci,
+      args.parallelism,
+      callVariantsAtLocus(threshold, _))
+    Common.writeVariants(args, genotypes)
+  }
+
+  private def callVariantsAtLocus(threshold_percent: Int, pileup: Pileup): Seq[ADAMGenotype] = {
     // For now, we skip loci that have no reads mapped. We may instead want to emit NoCall in this case.
     if (pileup.elements.isEmpty) {
       log.warn("Skipping empty pileup at locus: %d".format(pileup.locus))
@@ -88,24 +111,5 @@ class ThresholdVariantCaller(threshold_percent: Int) extends PileupVariantCaller
             variant(base1, Alt :: Alt :: Nil) :: variant(base2, Alt :: Alt :: Nil) :: Nil
         }
     })
-  }
-}
-object ThresholdVariantCaller extends Command {
-  override val name = "threshold"
-  override val description = "call variants using a simple threshold"
-
-  private class Arguments extends Base with Output with Reads with SlidingWindowVariantCaller.Arguments {
-    @Option(name = "-threshold", metaVar = "X", usage = "Make a call if at least X% of reads support it. Default: 8")
-    var threshold: Int = 8
-  }
-
-  override def run(rawArgs: Array[String]): Unit = {
-    val args = Args4j[Arguments](rawArgs)
-    val sc = Common.createSparkContext(args)
-
-    val reads = Common.loadReads(args, sc, mapped = true, nonDuplicate = true)
-    val caller = new ThresholdVariantCaller(args.threshold)
-    val genotypes: RDD[ADAMGenotype] = SlidingWindowVariantCaller.invoke(args, caller, reads)
-    Common.writeVariants(args, genotypes)
   }
 }
