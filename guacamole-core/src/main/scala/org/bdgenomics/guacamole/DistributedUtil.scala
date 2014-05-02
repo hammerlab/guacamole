@@ -8,8 +8,14 @@ import org.bdgenomics.adam.avro.ADAMRecord
 import org.bdgenomics.adam.rich.RichADAMRecord
 import org.apache.spark.{ Logging, SparkContext }
 import scala.reflect.ClassTag
+import org.bdgenomics.guacamole.Common.Arguments.{ Loci, Base }
+import org.kohsuke.args4j.{ Option => Opt }
 
 object DistributedUtil extends Logging {
+  trait Arguments extends Base with Loci {
+    @Opt(name = "-parallelism", usage = "Num variant calling tasks. Set to 0 (default) to call variants on the Spark master")
+    var parallelism: Int = 0
+  }
 
   /**
    * Assign loci from a LociSet to partitions. Contiguous intervals of loci will tend to get assigned to the same
@@ -23,11 +29,10 @@ object DistributedUtil extends Logging {
    * @param loci loci to partition
    * @return LociMap of locus -> task assignments
    */
-  def partitionLociUniformlyAmongTasks(tasks: Long, loci: LociSet): LociMap[Long] = {
-    // TODO: read-aware partitioning.
+  def partitionLociUniformly(tasks: Long, loci: LociSet): LociMap[Long] = {
     assume(tasks >= 1)
     val lociPerTask = loci.count.toDouble / tasks.toDouble
-    progress("Splitting loci evenly among %d tasks = ~%.2f loci per task".format(tasks, lociPerTask))
+    progress("Splitting loci evenly among %d tasks = ~%.0f loci per task".format(tasks, lociPerTask))
     val builder = LociMap.newBuilder[Long]
     var lociAssigned = 0L
     loci.contigs.foreach(contig => {
@@ -46,6 +51,40 @@ object DistributedUtil extends Logging {
       }
     })
     builder.result
+  }
+
+  /**
+   * Flatmap across loci, where at each locus the provided function is given a Pileup instance.
+   *
+   * See [[windowTaskFlatMap()]] for argument descriptions.
+   *
+   */
+  def pileupFlatMap[T: ClassTag](reads: RDD[ADAMRecord],
+                                 loci: LociSet,
+                                 tasks: Long,
+                                 function: Pileup => Seq[T]): RDD[T] = {
+    windowTaskFlatMap(reads, loci, 0L, tasks, (task, taskLoci, taskReads) => {
+      // The code here is running in parallel in each task.
+
+      // A map from contig to iterator over reads that are in that contig:
+      val readsSplitByContig = splitReadsByContig(taskReads.iterator, taskLoci.contigs)
+
+      // Our result is the flatmap over both contigs and loci of the user function.
+      readsSplitByContig.toSeq.sortBy(_._1).flatMap({
+        case (contig, reads) => {
+          val window = SlidingReadWindow(0L, reads)
+          var maybePileup: Option[Pileup] = None
+          loci.onContig(contig).individually.flatMap(locus => {
+            val newReads = window.setCurrentLocus(locus)
+            maybePileup = Some(maybePileup match {
+              case None         => Pileup(newReads, locus)
+              case Some(pileup) => pileup.atGreaterLocus(locus, newReads.iterator)
+            })
+            function(maybePileup.get)
+          })
+        }
+      })
+    })
   }
 
   /**
@@ -121,7 +160,7 @@ object DistributedUtil extends Logging {
       val results: Seq[T] = function(0L, loci, allReads.toIterable)
       reads.sparkContext.parallelize(results)
     } else {
-      val taskMap = partitionLociUniformlyAmongTasks(tasks, loci)
+      val taskMap = partitionLociUniformly(tasks, loci)
       val tasksAndReads = reads.map(RichADAMRecord(_)).flatMap(read => {
         val singleContig = taskMap.onContig(read.getContig.getContigName.toString)
         val tasks = singleContig.getAll(read.start - halfWindowSize, read.end.get + halfWindowSize)
