@@ -21,7 +21,6 @@ package org.bdgenomics.guacamole
 import org.scalatest.matchers.ShouldMatchers
 import com.google.common.collect._
 import org.scalatest.matchers.ShouldMatchers._
-import scala.Some
 
 class LociMapSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
 
