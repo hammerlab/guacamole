@@ -115,6 +115,23 @@ class LociSetSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
     result should equal(sets.map(_.toString).toSeq)
   }
 
+  sparkTest("serialization: make an RDD[LociSet], and an RDD[LociSet.SingleContig]") {
+    val sets = List(
+      "",
+      "empty:20-20,empty2:30-30",
+      "20:100-200",
+      "21:300-400",
+      "X:5-17,X:19-22,Y:50-60",
+      "chr21:100-200,chr20:0-10,chr20:8-15,chr20:100-120").map(LociSet.parse)
+    val rdd = sc.parallelize(sets)
+    val result = rdd.map(set => {
+      set.onContig("21").contains(5) // no op
+      val ranges = set.onContig("21").ranges // no op
+      set.onContig("20").toString
+    }).collect.toSeq
+    result should equal(sets.map(_.onContig("20").toString).toSeq)
+  }
+
   sparkTest("serialization: a closure that includes a LociSet") {
     val set = LociSet.parse("chr21:100-200,chr20:0-10,chr20:8-15,chr20:100-120,empty:10-10")
     val rdd = sc.parallelize(0L until 1000L)
