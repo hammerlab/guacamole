@@ -80,7 +80,7 @@ class LociMapSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
 
   test("SingleContig, empty") {
     type JLong = java.lang.Long
-    val contigMap = LociMap.SingleContig("chr1", ImmutableRangeMap.builder[JLong, String]().build())
+    val contigMap = new LociMap.SingleContig("chr1", ImmutableRangeMap.builder[JLong, String]().build())
 
     contigMap.get(100) should be(None)
     contigMap.getAll(0, 10000) should equal(Set())
@@ -97,7 +97,7 @@ class LociMapSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
     val range100to200 = ImmutableRangeMap.of[JLong, String](Range.closedOpen[JLong](100, 200), "A")
     val range200to300 = ImmutableRangeMap.of[JLong, String](Range.closedOpen[JLong](200, 300), "B")
 
-    val contigMap = LociMap.SingleContig("chr1",
+    val contigMap = new LociMap.SingleContig("chr1",
       ImmutableRangeMap.builder[JLong, String]().putAll(range100to200).putAll(range200to300).build())
 
     contigMap.get(99) should be(None)
@@ -125,11 +125,11 @@ class LociMapSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
     contigMap.isEmpty should be(false)
     contigMap.toString should be("chr1:100-200=A,chr1:200-300=B")
 
-    val emptyMap = LociMap.SingleContig("chr1", ImmutableRangeMap.builder[JLong, String]().build())
+    val emptyMap = new LociMap.SingleContig("chr1", ImmutableRangeMap.builder[JLong, String]().build())
     contigMap.union(contigMap) should equal(contigMap)
     contigMap.union(emptyMap) should equal(contigMap)
 
-    val emptyMapWrongContig = LociMap.SingleContig("chr2", ImmutableRangeMap.builder[JLong, String]().build())
+    val emptyMapWrongContig = new LociMap.SingleContig("chr2", ImmutableRangeMap.builder[JLong, String]().build())
     val caught = evaluating { contigMap.union(emptyMapWrongContig) } should produce[AssertionError]
     caught.getMessage should include("different contigs: chr1 and chr2")
   }
