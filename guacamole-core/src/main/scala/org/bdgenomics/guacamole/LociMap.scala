@@ -171,7 +171,7 @@ object LociMap {
     }
 
     /** Number of loci in this map. */
-    lazy val count: Long = ranges.map(_.length).sum
+    lazy val count: Long = ranges.toList.map(_.length).sum
 
     /** Returns a sequence of ranges giving the intervals of this map. */
     lazy val ranges: Iterable[NumericRange[Long]] = asMap.keys
@@ -187,7 +187,8 @@ object LociMap {
 
     /** Returns the union of this map with another. Both must be on the same contig. */
     def union(other: SingleContig[T]): SingleContig[T] = {
-      assume(contig == other.contig)
+      assume(contig == other.contig,
+        "Tried to union two LociMap.SingleContig on different contigs: %s and %s".format(contig, other.contig))
       val both = TreeRangeMap.create[JLong, T]()
       both.putAll(rangeMap)
       both.putAll(other.rangeMap)
