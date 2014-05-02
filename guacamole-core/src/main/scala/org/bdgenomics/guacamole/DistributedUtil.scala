@@ -5,8 +5,9 @@ import scala.collection.immutable.NumericRange
 import org.apache.spark.rdd._
 import org.apache.spark.SparkContext._
 import org.bdgenomics.adam.avro.ADAMRecord
+import org.apache.spark.broadcast.Broadcast
 import org.bdgenomics.adam.rich.RichADAMRecord
-import org.apache.spark.{ Logging, SparkContext }
+import org.apache.spark.Logging
 import scala.reflect.ClassTag
 import org.bdgenomics.guacamole.Common.Arguments.{ Loci, Base }
 import org.kohsuke.args4j.{ Option => Opt }
@@ -74,7 +75,7 @@ object DistributedUtil extends Logging {
         case (contig, reads) => {
           val window = SlidingReadWindow(0L, reads)
           var maybePileup: Option[Pileup] = None
-          loci.onContig(contig).individually.flatMap(locus => {
+          taskLoci.onContig(contig).individually.flatMap(locus => {
             val newReads = window.setCurrentLocus(locus)
             maybePileup = Some(maybePileup match {
               case None         => Pileup(newReads, locus)
@@ -160,9 +161,9 @@ object DistributedUtil extends Logging {
       val results: Seq[T] = function(0L, loci, allReads.toIterable)
       reads.sparkContext.parallelize(results)
     } else {
-      val taskMap = partitionLociUniformly(tasks, loci)
+      val taskMap: Broadcast[LociMap[Long]] = reads.sparkContext.broadcast(partitionLociUniformly(tasks, loci))
       val tasksAndReads = reads.map(RichADAMRecord(_)).flatMap(read => {
-        val singleContig = taskMap.onContig(read.getContig.getContigName.toString)
+        val singleContig = taskMap.value.onContig(read.getContig.getContigName.toString)
         val tasks = singleContig.getAll(read.start - halfWindowSize, read.end.get + halfWindowSize)
         tasks.map(task => (task, read.record))
       })
@@ -170,7 +171,7 @@ object DistributedUtil extends Logging {
       val readsGroupedByTask = tasksAndReads.groupByKey(tasks.toInt)
       val results = readsGroupedByTask.flatMap({
         case (task, taskReads) => {
-          val taskLoci = taskMap.asInverseMap(task)
+          val taskLoci = taskMap.value.asInverseMap(task)
           log.info("Task %d handling %d reads for loci: %s".format(task, taskReads.length, taskLoci))
           function(task, taskLoci, taskReads)
         }

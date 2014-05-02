@@ -101,4 +101,5 @@ class LociSetSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
     sets.foreach(check_invariants)
     check_invariants(LociSet.union(sets: _*))
   }
+
 }

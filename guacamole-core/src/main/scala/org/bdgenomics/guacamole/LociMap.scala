@@ -25,7 +25,6 @@ import com.esotericsoftware.kryo.{ Serializer, Kryo }
 import com.esotericsoftware.kryo.io.{ Input, Output }
 import scala.Some
 import scala.collection.immutable.NumericRange.Exclusive
-import sun.reflect.generics.reflectiveObjects.NotImplementedException
 import scala.collection.mutable.ArrayBuffer
 
 /**
@@ -86,9 +85,10 @@ case class LociMap[T](private val map: Map[String, LociMap.SingleContig[T]]) {
   }
   override def hashCode = sortedMap.hashCode
 }
+
 object LociMap {
   // Make NumericRange instances comparable.
-  private implicit object RangeOrdering extends Ordering[NumericRange.Exclusive[Long]] {
+  private implicit object RangeOrdering extends Ordering[NumericRange.Exclusive[Long]] with Serializable {
     def compare(o1: NumericRange.Exclusive[Long], o2: NumericRange.Exclusive[Long]) = (o1.start - o2.start).toInt
   }
 
