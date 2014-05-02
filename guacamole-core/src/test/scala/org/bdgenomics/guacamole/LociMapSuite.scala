@@ -32,17 +32,17 @@ class LociMapSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
 
   test("basic map operations") {
     val lociMap = LociMap.newBuilder[String]
-        .put("chr1", 100, 200, "A")
-        .put("chr20", 200, 201, "B")
-        .result
+      .put("chr1", 100, 200, "A")
+      .put("chr20", 200, 201, "B")
+      .result
 
     lociMap.count should be(101)
     lociMap.toString should be("chr1:100-200=A,chr20:200-201=B")
 
     lociMap should equal(LociMap.union(LociMap("chr1", 100, 200, "A"), LociMap("chr20", 200, 201, "B")))
-    lociMap should not equal(
+    lociMap should not equal (
       LociMap.union(LociMap("chr1", 100, 200, "A"), LociMap("chr20", 200, 201, "C")))
-    lociMap should not equal(LociMap[String]())
+    lociMap should not equal (LociMap[String]())
 
     lociMap.asInverseMap should equal(
       List("A" -> LociSet.parse("chr1:100-200"), "B" -> LociSet.parse("chr20:200-201")).toMap)

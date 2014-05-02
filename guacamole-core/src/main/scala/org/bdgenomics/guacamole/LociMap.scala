@@ -176,6 +176,9 @@ object LociMap {
     /** Returns a sequence of ranges giving the intervals of this map. */
     lazy val ranges: Iterable[NumericRange[Long]] = asMap.keys
 
+    /** Number of ranges in this map. */
+    lazy val numRanges: Long = rangeMap.asMapOfRanges.size.toLong
+
     /** Is this map empty? */
     lazy val isEmpty: Boolean = asMap.isEmpty
 
@@ -198,23 +201,47 @@ object LociMap {
 }
 
 // Serialization
-// TODO
-/*
-class LociMapSerializer extends Serializer[LociMap] {
-  def write(kyro: Kryo, output: Output, obj: LociMap) = {
-    throw new NotImplementedException
+// TODO: support serialization of non-Long LociMaps?
+class LociMapSerializer extends Serializer[LociMap[Long]] {
+  def write(kryo: Kryo, output: Output, obj: LociMap[Long]) = {
+    output.writeLong(obj.contigs.length)
+    obj.contigs.foreach(contig => {
+      kryo.writeObject(output, obj.onContig(contig))
+    })
   }
-  def read(kryo: Kryo, input: Input, klass: Class[LociMap]): LociMap = {
-    throw new NotImplementedException
+  def read(kryo: Kryo, input: Input, klass: Class[LociMap[Long]]): LociMap[Long] = {
+    val count: Long = input.readLong()
+    val pairs = (0L until count).map(i => {
+      val obj = kryo.readClassAndObject(input).asInstanceOf[LociMap.SingleContig[Long]]
+      obj.contig -> obj
+    })
+    assert(input.eof)
+    LociMap[Long](Map[String, LociMap.SingleContig[Long]](pairs: _*))
   }
 }
-class LociMapSingleContigSerializer extends Serializer[LociMap.SingleContig] {
-  def write(kyro: Kryo, output: Output, obj: LociMap.SingleContig) = {
-    throw new NotImplementedException
+class LociMapSingleContigSerializer extends Serializer[LociMap.SingleContig[Long]] {
+  def write(kryo: Kryo, output: Output, obj: LociMap.SingleContig[Long]) = {
+    output.writeString(obj.contig.toCharArray)
+    output.writeLong(obj.asMap.size)
+    obj.asMap.foreach({
+      case (range, value) => {
+        output.writeLong(range.start)
+        output.writeLong(range.end)
+        output.writeLong(value)
+      }
+    })
   }
-  def read(kryo: Kryo, input: Input, klass: Class[LociMap.SingleContig]): LociMap.SingleContig = {
-    throw new NotImplementedException
+  def read(kryo: Kryo, input: Input, klass: Class[LociMap.SingleContig[Long]]): LociMap.SingleContig[Long] = {
+    val builder = LociMap.newBuilder[Long]()
+    val contig = input.readString()
+    val count = input.readLong()
+    (0L until count).foreach(i => {
+      val start = input.readLong()
+      val end = input.readLong()
+      val value = input.readLong()
+      builder.put(contig, start, end, value)
+    })
+    builder.result.onContig(contig)
   }
 }
-*/
 
