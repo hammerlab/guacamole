@@ -102,4 +102,23 @@ class LociSetSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
     check_invariants(LociSet.union(sets: _*))
   }
 
+  sparkTest("serialization: make an RDD[LociSet]") {
+    val sets = List(
+      "",
+      "empty:20-20,empty2:30-30",
+      "20:100-200",
+      "21:300-400",
+      "X:5-17,X:19-22,Y:50-60",
+      "chr21:100-200,chr20:0-10,chr20:8-15,chr20:100-120").map(LociSet.parse)
+    val rdd = sc.parallelize(sets)
+    val result = rdd.map(_.toString).collect.toSeq
+    result should equal(sets.map(_.toString).toSeq)
+  }
+
+  sparkTest("serialization: a closure that includes a LociSet") {
+    val set = LociSet.parse("chr21:100-200,chr20:0-10,chr20:8-15,chr20:100-120,empty:10-10")
+    val rdd = sc.parallelize(0L until 1000L)
+    val result = rdd.filter(i => set.onContig("chr21").contains(i)).collect
+    result should equal(100L until 200)
+  }
 }
