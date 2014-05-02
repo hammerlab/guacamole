@@ -102,4 +102,46 @@ class LociSetSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
     check_invariants(LociSet.union(sets: _*))
   }
 
+  sparkTest("serialization: make an RDD[LociSet]") {
+    val sets = List(
+      "",
+      "empty:20-20,empty2:30-30",
+      "20:100-200",
+      "21:300-400",
+      "X:5-17,X:19-22,Y:50-60",
+      "chr21:100-200,chr20:0-10,chr20:8-15,chr20:100-120").map(LociSet.parse)
+    val rdd = sc.parallelize(sets)
+    val result = rdd.map(_.toString).collect.toSeq
+    result should equal(sets.map(_.toString).toSeq)
+  }
+
+  sparkTest("serialization: make an RDD[LociSet], and an RDD[LociSet.SingleContig]") {
+    val sets = List(
+      "",
+      "empty:20-20,empty2:30-30",
+      "20:100-200",
+      "21:300-400",
+      "X:5-17,X:19-22,Y:50-60",
+      "chr21:100-200,chr20:0-10,chr20:8-15,chr20:100-120").map(LociSet.parse)
+    val rdd = sc.parallelize(sets)
+    val result = rdd.map(set => {
+      set.onContig("21").contains(5) // no op
+      val ranges = set.onContig("21").ranges // no op
+      set.onContig("20").toString
+    }).collect.toSeq
+    result should equal(sets.map(_.onContig("20").toString).toSeq)
+  }
+
+  // This test currently fails, because we do not provide java serialization for LociSet. Instead of 
+  // including LociSet instances in closures, we are currently getting around it by broadcasting
+  // these objects, which will use Kryo serialization (which we implement for LociSet). This approach
+  // may actually be more efficient anyway.
+  /*
+  sparkTest("serialization: a closure that includes a LociSet") {
+    val set = LociSet.parse("chr21:100-200,chr20:0-10,chr20:8-15,chr20:100-120,empty:10-10")
+    val rdd = sc.parallelize(0L until 1000L)
+    val result = rdd.filter(i => set.onContig("chr21").contains(i)).collect
+    result should equal(100L until 200)
+  }
+  */
 }
