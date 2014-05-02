@@ -165,6 +165,7 @@ class LociSetSerializer extends Serializer[LociSet] {
     LociSet.parse(input.readString())
   }
 }
+
 class LociSetSingleContigSerializer extends Serializer[LociSet.SingleContig] {
   def write(kyro: Kryo, output: Output, obj: LociSet.SingleContig) = {
     assert(kyro != null)
@@ -172,6 +173,7 @@ class LociSetSingleContigSerializer extends Serializer[LociSet.SingleContig] {
     assert(obj != null)
     output.writeString(obj.toString)
   }
+
   def read(kryo: Kryo, input: Input, klass: Class[LociSet.SingleContig]): LociSet.SingleContig = {
     assert(kryo != null)
     assert(input != null)
