@@ -75,7 +75,7 @@ class LociMapSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
       LociMap("chr3", 400, 500, "B"))
 
     lociMap.union(lociMap) should equal(lociMap)
-    lociMap.union(LociMap[String]()) should equal(lociMap)  // union with empty map
+    lociMap.union(LociMap[String]()) should equal(lociMap) // union with empty map
   }
 
   test("SingleContig, empty") {

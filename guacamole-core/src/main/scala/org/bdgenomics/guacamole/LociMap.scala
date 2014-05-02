@@ -171,7 +171,7 @@ object LociMap {
     }
 
     /** Number of loci in this map. */
-    lazy val count: Long = ranges.toList.map(_.length).sum
+    lazy val count: Long = ranges.toIterator.map(_.length).sum
 
     /** Returns a sequence of ranges giving the intervals of this map. */
     lazy val ranges: Iterable[NumericRange[Long]] = asMap.keys
