@@ -55,7 +55,7 @@ object DistributedUtil extends Logging {
   }
 
   /**
-   * Flatmap across loci, where at each locus the provided function is given a Pileup instance.
+   * Flatmap across loci, where at each locus the provided function is passed a Pileup instance.
    *
    * See [[windowTaskFlatMap()]] for argument descriptions.
    *
@@ -89,8 +89,8 @@ object DistributedUtil extends Logging {
   }
 
   /**
-   * FlatMap across loci, where at locus the provided function is given a SlidingWindow instance containing reads
-   * overlapping that locus.
+   * FlatMap across loci, where at each locus the provided function is passed a SlidingWindow instance containing reads
+   * overlapping that locus with the specified halfWindowSize.
    *
    * Currently unused, but here for demonstration.
    *
