@@ -38,6 +38,7 @@ class LociMapSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
 
     lociMap.count should be(101)
     lociMap.toString should be("chr1:100-200=A,chr20:200-201=B")
+    lociMap.contigs should be(List("chr1", "chr20"))
 
     lociMap should equal(LociMap.union(LociMap("chr1", 100, 200, "A"), LociMap("chr20", 200, 201, "B")))
     lociMap should not equal (
@@ -54,6 +55,26 @@ class LociMapSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
     lociMap.union(LociMap("chr1", 100, 140, "X")).toString should be("chr1:100-140=X,chr1:140-200=A,chr20:200-201=B")
   }
 
-  // test("asInverseMap with duplicate values")
+  test("asInverseMap with duplicate values") {
+    val lociMap = LociMap.union(
+      LociMap("chr1", 100, 200, "A"),
+      LociMap("chr2", 200, 300, "A"),
+      LociMap("chr3", 400, 500, "B"))
+
+    // asInverseMap stuffs all Loci with the same value into a LociSet.
+    lociMap.asInverseMap should equal(
+      List("A" -> LociSet.parse("chr1:100-200,chr2:200-300"), "B" -> LociSet.parse("chr3:400-500")).toMap)
+  }
+
+  test("union invariants") {
+    val lociMap = LociMap.union(
+      LociMap("chr1", 100, 200, "A"),
+      LociMap("chr2", 200, 300, "A"),
+      LociMap("chr3", 400, 500, "B"))
+
+    lociMap.union(lociMap) should equal(lociMap)
+    lociMap.union(LociMap[String]()) should equal(lociMap)  // union with empty map
+  }
+
   // test("SingleContig")
 }
