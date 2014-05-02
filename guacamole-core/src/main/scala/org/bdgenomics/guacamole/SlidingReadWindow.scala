@@ -71,9 +71,6 @@ case class SlidingReadWindow(halfWindowSize: Long, rawSortedReads: Iterator[ADAM
     currentReadsPriorityQueue.toSeq
   }
 
-  /** The *new reads* that were added to currentReads() as a result of the most recent call to setCurrentLocus(). */
-  var newReads: Seq[DecadentRead] = Seq.empty
-
   /**
    * Advance to the specified locus, which must be greater than the current locus. After calling this, the
    * [[currentReads]] method will give the overlapping reads at the new locus.
@@ -101,7 +98,7 @@ case class SlidingReadWindow(halfWindowSize: Long, rawSortedReads: Iterator[ADAM
       val read = sortedReads.next()
       if (overlaps(read)) newReadsBuilder += read
     }
-    newReads = newReadsBuilder.result
+    val newReads = newReadsBuilder.result
 
     currentReadsPriorityQueue.enqueue(newReads: _*)
     assert(currentReadsPriorityQueue.forall(overlaps)) // Correctness check.
