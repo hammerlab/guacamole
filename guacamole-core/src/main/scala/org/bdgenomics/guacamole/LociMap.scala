@@ -72,9 +72,7 @@ case class LociMap[T](private val map: Map[String, LociMap.SingleContig[T]]) {
 
   /** Returns the union of this LociMap with another. */
   def union(other: LociMap[T]): LociMap[T] = {
-    val keys = Set[String](contigs: _*).union(Set[String](other.contigs: _*))
-    val pairs = keys.map(contig => contig -> onContig(contig).union(other.onContig(contig)))
-    LociMap[T](pairs.toMap)
+    LociMap.union(this, other)
   }
 
   override def toString(): String = contigs.map(onContig(_).toString).mkString(",")
@@ -114,11 +112,17 @@ object LociMap {
     def result(): LociMap[T] = {
       LociMap[T](data.map({
         case (contig, array) => {
-          val rangeMapBuilder = ImmutableRangeMap.builder[JLong, T]()
-          for ((start, end, value) <- array) {
-            rangeMapBuilder.put(Range.closedOpen[JLong](start, end), value)
+          val mutableRangeMap = TreeRangeMap.create[JLong, T]()
+          // We combine adjacent or overlapping intervals with the same value into one interval.
+          val iterator = array.sortBy(_._1).iterator.buffered
+          while (iterator.hasNext) {
+            var (start: Long, end: Long, value) = iterator.next()
+            while (iterator.hasNext && iterator.head._3 == value && iterator.head._1 <= end) {
+              end = iterator.next()._2
+            }
+            mutableRangeMap.put(Range.closedOpen[JLong](start, end), value)
           }
-          contig -> SingleContig(contig, rangeMapBuilder.build)
+          contig -> SingleContig(contig, mutableRangeMap)
         }
       }).toMap)
     }
@@ -134,7 +138,15 @@ object LociMap {
 
   /** Returns union of specified [[LociMap]] instances. */
   def union[T](lociMaps: LociMap[T]*): LociMap[T] = {
-    lociMaps.reduce(_.union(_))
+    val builder = LociMap.newBuilder[T]
+    lociMaps.foreach(lociMap => {
+      lociMap.contigs.foreach(contig => {
+        lociMap.onContig(contig).asMap.foreach(pair => {
+          builder.put(contig, pair._1.start, pair._1.end, pair._2)
+        })
+      })
+    })
+    builder.result
   }
 
   /**
