@@ -32,6 +32,7 @@ class DistributedUtilSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
     val result2 = DistributedUtil.partitionLociUniformly(2, set).asInverseMap
     result2(0).count should equal(set.count / 2)
     result2(1).count should equal(set.count / 2)
+    result2(0) should not equal (result2(1))
     result2(0).union(result2(1)) should equal(set)
   }
 
