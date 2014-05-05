@@ -13,6 +13,7 @@
     <java.version>1.6</java.version>
     <scala.version>2.10.3</scala.version>
     <scala.version.prefix>2.10</scala.version.prefix>
+    <hadoop.version>2.3.0</hadoop.version>
   </properties>
 
   <modules>
@@ -163,6 +164,29 @@
   </repositories>
 
   <dependencies>
+    <dependency>
+      <groupId>org.apache.hadoop</groupId>
+        <artifactId>hadoop-client</artifactId>
+        <version>${hadoop.version}</version>
+        <exclusions>
+            <exclusion>
+              <groupId>asm</groupId>
+              <artifactId>asm</artifactId>
+              </exclusion>
+              <exclusion>
+                <groupId>org.jboss.netty</groupId>
+                <artifactId>netty</artifactId>
+              </exclusion>
+              <exclusion>
+                <groupId>org.codehaus.jackson</groupId>
+                <artifactId>*</artifactId>
+              </exclusion>
+              <exclusion>
+                <groupId>org.sonatype.sisu.inject</groupId>
+                <artifactId>*</artifactId>
+              </exclusion>
+          </exclusions>
+      </dependency>
     <dependency>
       <groupId>org.bdgenomics.adam</groupId>
       <artifactId>adam-format</artifactId>
