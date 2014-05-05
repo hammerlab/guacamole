@@ -69,7 +69,6 @@ class PileupSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
     }
   }
 
-
   sparkTest("Pileup.Element basic test") {
     intercept[NullPointerException] {
       val e = Pileup.Element(null, 42)

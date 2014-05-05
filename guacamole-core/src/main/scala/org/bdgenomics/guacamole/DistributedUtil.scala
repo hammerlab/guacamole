@@ -14,8 +14,8 @@ import org.kohsuke.args4j.{ Option => Opt }
 
 object DistributedUtil extends Logging {
   trait Arguments extends Base with Loci {
-    @Opt(name = "-parallelism", usage = "Num variant calling tasks. Set to 0 (default) to call variants on the Spark master")
-    var parallelism: Int = 0
+    @Opt(name = "-parallelism", usage = "Num variant calling tasks.")
+    var parallelism: Int = 1
   }
 
   /**
@@ -153,31 +153,33 @@ object DistributedUtil extends Logging {
                                      halfWindowSize: Long,
                                      tasks: Long,
                                      function: (Long, LociSet, Iterable[ADAMRecord]) => Seq[T]): RDD[T] = {
-    if (tasks == 0) {
-      progress("Collecting reads onto spark master.")
-      val allReads = reads.collect.iterator
-      progress("Done collecting reads.")
-      assume(allReads.hasNext, "No reads")
-      val results: Seq[T] = function(0L, loci, allReads.toIterable)
-      reads.sparkContext.parallelize(results)
-    } else {
-      val taskMap: Broadcast[LociMap[Long]] = reads.sparkContext.broadcast(partitionLociUniformly(tasks, loci))
-      val tasksAndReads = reads.map(RichADAMRecord(_)).flatMap(read => {
-        val singleContig = taskMap.value.onContig(read.getContig.getContigName.toString)
-        val tasks = singleContig.getAll(read.start - halfWindowSize, read.end.get + halfWindowSize)
-        tasks.map(task => (task, read.record))
-      })
-      progress("Expanded reads from %d to %d to handle overlaps between tasks".format(reads.count, tasksAndReads.count))
-      val readsGroupedByTask = tasksAndReads.groupByKey(tasks.toInt)
-      val results = readsGroupedByTask.flatMap({
-        case (task, taskReads) => {
-          val taskLoci = taskMap.value.asInverseMap(task)
-          log.info("Task %d handling %d reads for loci: %s".format(task, taskReads.length, taskLoci))
-          function(task, taskLoci, taskReads)
-        }
-      })
-      results
-    }
+    val taskMap: Broadcast[LociMap[Long]] = reads.sparkContext.broadcast(partitionLociUniformly(tasks, loci))
+    progress("Loci partitioning: %s".format(taskMap.value.toString))
+    val uniqueReads = reads.sparkContext.accumulator(0)
+    val tasksAndReads = reads.map(RichADAMRecord(_)).flatMap(read => {
+      val singleContig = taskMap.value.onContig(read.getContig.getContigName.toString)
+      val tasks = singleContig.getAll(read.start - halfWindowSize, read.end.get + halfWindowSize)
+      if (tasks.nonEmpty) {
+        uniqueReads += 1
+      }
+      tasks.map(task => (task, read.record))
+    })
+    // For some reason, the uniqueReads accumulator above isn't incremented -- any ideas?
+    // When it's made to work, we should print a message like this:
+    // progress("%d mapped reads -> %d relevant for loci -> %d expanded for task overlaps".format(
+    //  reads.count, uniqueReads.value, tasksAndReads.count))
+    // Instead of:
+    progress("Filtered %d mapped reads -> %d relevant reads (expanded for task overlaps)".format(
+      reads.count, tasksAndReads.count))
+    val readsGroupedByTask = tasksAndReads.groupByKey(tasks.toInt)
+    val results = readsGroupedByTask.flatMap({
+      case (task, taskReads) => {
+        val taskLoci = taskMap.value.asInverseMap(task)
+        log.info("Task %d handling %d reads for loci: %s".format(task, taskReads.length, taskLoci))
+        function(task, taskLoci, taskReads)
+      }
+    })
+    results
   }
 
   /**
