@@ -89,14 +89,16 @@ object Common extends Logging {
    * @return
    */
   def loadReads(args: Arguments.Reads, sc: SparkContext, mapped: Boolean = true, nonDuplicate: Boolean = true): RDD[ADAMRecord] = {
-    var reads: RDD[ADAMRecord] = sc.adamLoad(args.reads, Some(classOf[UniqueMappedReadPredicate]))
-    progress("Loaded %d reads.".format(reads.count))
-    if (mapped) reads = reads.filter(read => read.readMapped && read.contig.contigName != null && read.contig.contigLength > 0)
-    if (nonDuplicate) reads = reads.filter(read => !read.duplicateRead)
-    if (mapped || nonDuplicate) {
-      progress("Filtered to %d %s reads".format(
-        reads.count, (if (mapped) "mapped " else "") + (if (nonDuplicate) "non-duplicate" else "")))
+    val reads: RDD[ADAMRecord] = if (mapped && nonDuplicate) {
+      sc.adamLoad(args.reads, Some(classOf[UniqueMappedReadPredicate]))
+    } else {
+      var raw: RDD[ADAMRecord] = sc.adamLoad(args.reads)
+      if (mapped) raw = raw.filter(read => read.readMapped && read.contig.contigName != null && read.contig.contigLength > 0)
+      if (nonDuplicate) raw = raw.filter(read => !read.duplicateRead)
+      raw
     }
+    val description = (if (mapped) "mapped " else "") + (if (nonDuplicate) "non-duplicate" else "")
+    progress("Loaded %d %s reads.".format(reads.count, description))
     reads
   }
 
