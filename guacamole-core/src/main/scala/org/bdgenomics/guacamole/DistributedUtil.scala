@@ -14,7 +14,7 @@ import org.kohsuke.args4j.{ Option => Opt }
 
 object DistributedUtil extends Logging {
   trait Arguments extends Base with Loci {
-    @Opt(name = "-parallelism", usage = "Num variant calling tasks.")
+    @Opt(name = "-parallelism", usage = "Num variant calling tasks. Default: 1.")
     var parallelism: Int = 1
   }
 

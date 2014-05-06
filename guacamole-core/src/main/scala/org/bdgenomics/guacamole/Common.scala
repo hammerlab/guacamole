@@ -110,6 +110,7 @@ object Common extends Logging {
     val result = {
       if (args.loci == "all") {
         // Call at all loci.
+        progress("Considering all loci on all contigs.")
         val contigsAndLengths = reads.map(read => (read.contig.contigName.toString, read.contig.contigLength)).distinct.collect.toSeq
         assume(contigsAndLengths.map(_._1).distinct.length == contigsAndLengths.length,
           "Some contigs have different lengths in reads: " + contigsAndLengths.toString)
@@ -117,14 +118,18 @@ object Common extends Logging {
         contigsAndLengths.foreach({ case (contig, length) => builder.put(contig, 0L, length.toLong) })
         builder.result
       } else if (args.loci == "mapped") {
-        val regions: RDD[LociSet] = reads.map(read => LociSet(read.contig.contigName, read.start, read.end.get))
-        regions.reduce(LociSet.union(_, _))
+        progress("Considering all loci with mapped reads.")
+        reads.mapPartitions(iterator => {
+          val builder = LociSet.newBuilder
+          iterator.foreach(read => builder.put(read.contig.contigName.toString, read.start, read.end.get))
+          Seq(builder.result).iterator
+        }).reduce(LociSet.union(_, _))
       } else {
         // Call at specified loci.
         LociSet.parse(args.loci)
       }
     }
-    progress("Considering %d loci across %d contig(s): %s".format(
+    progress("Including %d loci across %d contig(s): %s".format(
       result.count,
       result.contigs.length,
       result.truncatedString()))
