@@ -33,7 +33,7 @@ object DistributedUtil extends Logging {
   def partitionLociUniformly(tasks: Long, loci: LociSet): LociMap[Long] = {
     assume(tasks >= 1)
     val lociPerTask = loci.count.toDouble / tasks.toDouble
-    progress("Splitting loci evenly among %d tasks = ~%.0f loci per task".format(tasks, lociPerTask))
+    progress("Splitting loci evenly among %,d tasks = ~%,.0f loci per task".format(tasks, lociPerTask))
     val builder = LociMap.newBuilder[Long]
     var lociAssigned = 0L
     loci.contigs.foreach(contig => {
@@ -165,13 +165,16 @@ object DistributedUtil extends Logging {
       }
       tasks.map(task => (task, read.record))
     })
+    tasksAndReads.persist()
+
     // For some reason, the uniqueReads accumulator above isn't incremented -- any ideas?
     // When it's made to work, we should print a message like this:
     // progress("%d mapped reads -> %d relevant for loci -> %d expanded for task overlaps".format(
     //  reads.count, uniqueReads.value, tasksAndReads.count))
     // Instead of:
-    progress("Filtered %d mapped reads -> %d relevant reads (expanded for task overlaps)".format(
+    progress("Filtered %,d mapped reads -> %,d relevant reads (expanded for task overlaps)".format(
       reads.count, tasksAndReads.count))
+    reads.unpersist()
     val readsGroupedByTask = tasksAndReads.groupByKey(numTasks.toInt)
     val results = readsGroupedByTask.flatMap({
       case (task, taskReads) => {
