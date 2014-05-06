@@ -50,15 +50,11 @@ case class LociSet(val map: LociMap[Unit]) {
   def union(other: LociSet): LociSet = LociSet(map.union(other.map))
 
   /** Returns a string representation of this LociSet, in the same format that LociSet.parse expects. */
-  override def toString(): String = contigs.map(onContig(_).toString).mkString(",")
+  override def toString(): String = truncatedString(Int.MaxValue)
 
+  /** String representation, truncated to maxLength characters. Set maxLength=0 to disable truncation. */
   def truncatedString(maxLength: Int = 100): String = {
-    // TODO: make this efficient, instead of generating the full string first.
-    val full = toString()
-    if (full.length > maxLength)
-      full.substring(0, maxLength) + " [...]"
-    else
-      full
+    map.truncatedString(maxLength, false)
   }
 
   override def equals(other: Any) = other match {
@@ -149,8 +145,11 @@ object LociSet {
     /** Returns whether a given genomic region overlaps with any loci in this LociSet. */
     def intersects(start: Long, end: Long) = !map.getAll(start, end).isEmpty
 
-    override def toString(): String = {
-      ranges.map(range => "%s:%d-%d".format(map.contig, range.start, range.end)).mkString(",")
+    override def toString(): String = truncatedString(Int.MaxValue)
+
+    /** String representation, truncated to maxLength characters. Set maxLength=0 to disable truncation. */
+    def truncatedString(maxLength: Int = 100): String = {
+      map.truncatedString(maxLength, false)
     }
   }
 }

@@ -75,15 +75,26 @@ case class LociMap[T](private val map: Map[String, LociMap.SingleContig[T]]) {
     LociMap.union(this, other)
   }
 
-  override def toString(): String = contigs.map(onContig(_).toString).mkString(",")
+  override def toString(): String = truncatedString(Int.MaxValue)
 
-  def truncatedString(maxLength: Int = 100): String = {
-    // TODO: make this efficient, instead of generating the full string first.
-    val full = toString()
-    if (full.length > maxLength)
-      full.substring(0, maxLength) + " [...]"
-    else
-      full
+  /**
+   * String representation, truncated to maxLength characters.
+   *
+   * If includeValues is true (default), then also include the values mapped to by this LociMap. If it's false,
+   * then only the keys are included.
+   */
+  def truncatedString(maxLength: Int = 100, includeValues: Boolean = true): String = {
+    val iterator = contigs.iterator
+    val builder = StringBuilder.newBuilder
+    var remaining: Int = maxLength
+    while (iterator.hasNext && remaining > 5) {
+      val string = onContig(iterator.next()).truncatedString(remaining, includeValues)
+      builder.append(string)
+      if (iterator.hasNext) builder.append(",")
+      remaining -= string.length
+    }
+    if (iterator.hasNext) builder.append(" [...]")
+    builder.result
   }
 
   override def equals(other: Any) = other match {
@@ -216,14 +227,36 @@ object LociMap {
       SingleContig(contig, both)
     }
 
-    override def toString(): String = {
-      asMap.map(pair => "%s:%d-%d=%s".format(contig, pair._1.start, pair._1.end, pair._2.toString)).mkString(",")
+    /**
+     * String representation, truncated to maxLength characters.
+     *
+     * If includeValues is true (default), then also include the values mapped to by this LociMap. If it's false,
+     * then only the keys are included.
+     */
+    def truncatedString(maxLength: Int = 100, includeValues: Boolean = true): String = {
+      def format(pair: (Exclusive[Long], T)): String = {
+        if (includeValues) "%s:%d-%d=%s".format(contig, pair._1.start, pair._1.end, pair._2.toString)
+        else "%s:%d-%d".format(contig, pair._1.start, pair._1.end)
+      }
+      val iterator = asMap.iterator
+      val builder = StringBuilder.newBuilder
+      var remaining: Int = maxLength
+      while (iterator.hasNext && remaining > 5) {
+        val pair = iterator.next()
+        val string = format(pair)
+        builder.append(string)
+        if (iterator.hasNext) builder.append(",")
+        remaining -= string.length
+      }
+      if (iterator.hasNext) builder.append(" [...]")
+      builder.result
     }
+
+    override def toString(): String = truncatedString(Int.MaxValue)
   }
 }
 
-// Serialization
-// TODO: support serialization of general LociMaps, not just LociMap[Long], and LociMap[Unit].
+// Serialization: currently only support LociMap[Long] and LociMap[Unit.
 class LociMapLongSerializer extends Serializer[LociMap[Long]] {
   def write(kryo: Kryo, output: Output, obj: LociMap[Long]) = {
     output.writeLong(obj.contigs.length)
