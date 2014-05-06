@@ -35,7 +35,7 @@ import com.esotericsoftware.kryo.io.{ Input, Output }
  *
  * @param map LociMap[Unit] instance
  */
-case class LociSet(private val map: LociMap[Unit]) {
+case class LociSet(val map: LociMap[Unit]) {
 
   /** The contigs included in this LociSet with a nonempty set of loci. */
   lazy val contigs: Seq[String] = map.contigs
@@ -155,35 +155,22 @@ object LociSet {
   }
 }
 
-// Serialization
-// TODO: use a more efficient serialization format than strings.
+// Serialization: just delegate to LociMap[Unit].
 class LociSetSerializer extends Serializer[LociSet] {
-  def write(kyro: Kryo, output: Output, obj: LociSet) = {
-    output.writeString(obj.toString)
+  def write(kryo: Kryo, output: Output, obj: LociSet) = {
+    kryo.writeClassAndObject(output, obj.map)
   }
   def read(kryo: Kryo, input: Input, klass: Class[LociSet]): LociSet = {
-    LociSet.parse(input.readString())
+    LociSet(kryo.readClassAndObject(input).asInstanceOf[LociMap[Unit]])
   }
 }
 
 class LociSetSingleContigSerializer extends Serializer[LociSet.SingleContig] {
-  def write(kyro: Kryo, output: Output, obj: LociSet.SingleContig) = {
-    assert(kyro != null)
-    assert(output != null)
-    assert(obj != null)
-    output.writeString(obj.toString)
+  def write(kryo: Kryo, output: Output, obj: LociSet.SingleContig) = {
+    kryo.writeClassAndObject(output, obj.map)
   }
-
   def read(kryo: Kryo, input: Input, klass: Class[LociSet.SingleContig]): LociSet.SingleContig = {
-    assert(kryo != null)
-    assert(input != null)
-    assert(klass != null)
-    val string = input.readString()
-    assert(string != null)
-    val set = LociSet.parse(string)
-    assert(set != null)
-    assert(set.contigs.length == 1)
-    set.onContig(set.contigs(0))
+    LociSet.SingleContig(kryo.readClassAndObject(input).asInstanceOf[LociMap.SingleContig[Unit]])
   }
 }
 
