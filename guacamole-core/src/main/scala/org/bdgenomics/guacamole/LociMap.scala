@@ -77,6 +77,15 @@ case class LociMap[T](private val map: Map[String, LociMap.SingleContig[T]]) {
 
   override def toString(): String = contigs.map(onContig(_).toString).mkString(",")
 
+  def truncatedString(maxLength: Int = 100): String = {
+    // TODO: make this efficient, instead of generating the full string first.
+    val full = toString()
+    if (full.length > maxLength)
+      full.substring(0, maxLength) + " [...]"
+    else
+      full
+  }
+
   override def equals(other: Any) = other match {
     case that: LociMap[T] => sortedMap.equals(that.sortedMap)
     case _                => false
