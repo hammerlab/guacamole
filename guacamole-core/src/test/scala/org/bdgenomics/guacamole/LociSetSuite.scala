@@ -72,6 +72,7 @@ class LociSetSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
       "",
       "empty:20-20,empty2:30-30",
       "20:100-200",
+      "with_dots.and_underscores..2:100-200",
       "21:300-400",
       "X:5-17,X:19-22,Y:50-60",
       "chr21:100-200,chr20:0-10,chr20:8-15,chr20:100-120").map(LociSet.parse)
@@ -108,6 +109,7 @@ class LociSetSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
       "empty:20-20,empty2:30-30",
       "20:100-200",
       "21:300-400",
+      "with_dots._and_..underscores11:900-1000",
       "X:5-17,X:19-22,Y:50-60",
       "chr21:100-200,chr20:0-10,chr20:8-15,chr20:100-120").map(LociSet.parse)
     val rdd = sc.parallelize(sets)

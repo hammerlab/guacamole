@@ -109,7 +109,7 @@ object LociSet {
    *             contig name, and START and END are integers. Spaces are ignored.
    */
   def parse(loci: String): LociSet = {
-    val syntax = """^([\pL\pN]+):(\pN+)-(\pN+)""".r
+    val syntax = """^([\pL\pN._]+):(\pN+)-(\pN+)""".r
     val sets = loci.replace(" ", "").split(',').map({
       case ""                       => LociSet.empty
       case syntax(name, start, end) => LociSet(name, start.toLong, end.toLong)
