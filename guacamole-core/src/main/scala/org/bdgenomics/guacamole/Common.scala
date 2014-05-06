@@ -97,8 +97,9 @@ object Common extends Logging {
       if (nonDuplicate) raw = raw.filter(read => !read.duplicateRead)
       raw
     }
+    reads.persist()
     val description = (if (mapped) "mapped " else "") + (if (nonDuplicate) "non-duplicate" else "")
-    progress("Loaded %d %s reads.".format(reads.count, description))
+    progress("Loaded %,d %s reads into %,d partitions.".format(reads.count, description, reads.partitions.length))
     reads
   }
 
@@ -131,7 +132,7 @@ object Common extends Logging {
         LociSet.parse(args.loci)
       }
     }
-    progress("Including %d loci across %d contig(s): %s".format(
+    progress("Including %,d loci across %,d contig(s): %s".format(
       result.count,
       result.contigs.length,
       result.truncatedString()))
@@ -144,7 +145,7 @@ object Common extends Logging {
    * @param genotypes ADAM genotypes (i.e. the variants)
    */
   def writeVariants(args: Arguments.Output, genotypes: RDD[ADAMGenotype]): Unit = {
-    progress("Writing %d genotypes to: %s.".format(genotypes.count, args.variantOutput))
+    progress("Writing %,d genotypes to: %s.".format(genotypes.count, args.variantOutput))
     genotypes.adamSave(args.variantOutput,
       args.blockSize,
       args.pageSize,
@@ -221,5 +222,4 @@ object Common extends Logging {
     System.out.flush()
     lastProgressTime = current
   }
-
 }
