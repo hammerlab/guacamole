@@ -14,7 +14,7 @@ import org.kohsuke.args4j.{ Option => Opt }
 
 object DistributedUtil extends Logging {
   trait Arguments extends Base with Loci {
-    @Opt(name = "-parallelism", usage = "Num variant calling tasks. Default: 1.")
+    @Opt(name = "-parallelism", usage = "Num variant calling tasks. Set to 0 (default) to use the number of Spark partitions.")
     var parallelism: Int = 1
   }
 
@@ -143,7 +143,7 @@ object DistributedUtil extends Logging {
    * @param loci loci to consider. Reads that don't overlap these loci are discarded.
    * @param halfWindowSize if a read overlaps a region of halfWindowSize to either side of a locus under consideration,
    *                       then it is included.
-   * @param tasks number of genomic partitions; degree of parallelism
+   * @param tasks number of loci partitions to run in parallel. Set to 0 to use number of partitions in the read RDD.
    * @param function function to flatMap: (task number, loci, reads that overlap a window around these loci) -> T
    * @tparam T type of value returned by function
    * @return flatMap results, RDD[T]
@@ -153,8 +153,9 @@ object DistributedUtil extends Logging {
                                      halfWindowSize: Long,
                                      tasks: Long,
                                      function: (Long, LociSet, Iterable[ADAMRecord]) => Seq[T]): RDD[T] = {
-    val taskMap: Broadcast[LociMap[Long]] = reads.sparkContext.broadcast(partitionLociUniformly(tasks, loci))
-    progress("Loci partitioning: %s".format(taskMap.value.toString))
+    val numTasks = if (tasks == 0) reads.partitions.length else tasks
+    val taskMap: Broadcast[LociMap[Long]] = reads.sparkContext.broadcast(partitionLociUniformly(numTasks, loci))
+    progress("Loci partitioning: %s".format(taskMap.value.truncatedString()))
     val uniqueReads = reads.sparkContext.accumulator(0)
     val tasksAndReads = reads.map(RichADAMRecord(_)).flatMap(read => {
       val singleContig = taskMap.value.onContig(read.getContig.getContigName.toString)
@@ -171,7 +172,7 @@ object DistributedUtil extends Logging {
     // Instead of:
     progress("Filtered %d mapped reads -> %d relevant reads (expanded for task overlaps)".format(
       reads.count, tasksAndReads.count))
-    val readsGroupedByTask = tasksAndReads.groupByKey(tasks.toInt)
+    val readsGroupedByTask = tasksAndReads.groupByKey(numTasks.toInt)
     val results = readsGroupedByTask.flatMap({
       case (task, taskReads) => {
         val taskLoci = taskMap.value.asInverseMap(task)
