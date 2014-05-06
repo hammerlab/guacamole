@@ -156,19 +156,17 @@ class PileupSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
 
     // Read5: ACGTACGTACGTACG, 5M4=1X5=, [10; 25[
     //        MMMMM====G=====
-    if (false) { // This test fails because of issue #30
-      val decadentRead5 = new DecadentRead(adamRecords(4))
-      val read5At10 = Pileup.Element(decadentRead5, 10)
-      assert(read5At10 != null)
-      assert(read5At10.elementAtGreaterLocus(10).sequenceRead === "A")
-      assert(read5At10.elementAtGreaterLocus(14).sequenceRead === "A")
-      assert(read5At10.elementAtGreaterLocus(18).sequenceRead === "A")
-      assert(read5At10.elementAtGreaterLocus(19).sequenceRead === "C")
-      assert(read5At10.elementAtGreaterLocus(20).sequenceRead === "G")
-      assert(read5At10.elementAtGreaterLocus(21).sequenceRead === "T")
-      assert(read5At10.elementAtGreaterLocus(22).sequenceRead === "A")
-      assert(read5At10.elementAtGreaterLocus(24).sequenceRead === "G")
-    }
+    val decadentRead5 = new DecadentRead(adamRecords(4))
+    val read5At10 = Pileup.Element(decadentRead5, 10)
+    assert(read5At10 != null)
+    assert(read5At10.elementAtGreaterLocus(10).sequenceRead === "A")
+    assert(read5At10.elementAtGreaterLocus(14).sequenceRead === "A")
+    assert(read5At10.elementAtGreaterLocus(18).sequenceRead === "A")
+    assert(read5At10.elementAtGreaterLocus(19).sequenceRead === "C")
+    assert(read5At10.elementAtGreaterLocus(20).sequenceRead === "G")
+    assert(read5At10.elementAtGreaterLocus(21).sequenceRead === "T")
+    assert(read5At10.elementAtGreaterLocus(22).sequenceRead === "A")
+    assert(read5At10.elementAtGreaterLocus(24).sequenceRead === "G")
   }
 }
 
