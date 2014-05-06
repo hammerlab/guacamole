@@ -158,19 +158,18 @@ object LociSet {
 // Serialization: just delegate to LociMap[Unit].
 class LociSetSerializer extends Serializer[LociSet] {
   def write(kryo: Kryo, output: Output, obj: LociSet) = {
-    kryo.writeClassAndObject(output, obj.map)
+    kryo.writeObject(output, obj.map)
   }
   def read(kryo: Kryo, input: Input, klass: Class[LociSet]): LociSet = {
-    LociSet(kryo.readClassAndObject(input).asInstanceOf[LociMap[Unit]])
+    LociSet(kryo.readObject(input, classOf[LociMap[Unit]]))
   }
 }
 
 class LociSetSingleContigSerializer extends Serializer[LociSet.SingleContig] {
   def write(kryo: Kryo, output: Output, obj: LociSet.SingleContig) = {
-    kryo.writeClassAndObject(output, obj.map)
+    kryo.writeObject(output, obj.map)
   }
   def read(kryo: Kryo, input: Input, klass: Class[LociSet.SingleContig]): LociSet.SingleContig = {
-    LociSet.SingleContig(kryo.readClassAndObject(input).asInstanceOf[LociMap.SingleContig[Unit]])
+    LociSet.SingleContig(kryo.readObject(input, classOf[LociMap.SingleContig[Unit]]))
   }
 }
-
