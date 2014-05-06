@@ -58,7 +58,7 @@ object ThresholdVariantCaller extends Command with Serializable with Logging {
     Common.writeVariants(args, genotypes)
   }
 
-  private def callVariantsAtLocus(threshold_percent: Int, pileup: Pileup): Seq[ADAMGenotype] = {
+  def callVariantsAtLocus(threshold_percent: Int, pileup: Pileup): Seq[ADAMGenotype] = {
     // For now, we skip loci that have no reads mapped. We may instead want to emit NoCall in this case.
     if (pileup.elements.isEmpty) {
       log.warn("Skipping empty pileup at locus: %d".format(pileup.locus))

@@ -25,36 +25,14 @@ import org.scalatest.matchers._
 
 class SlidingReadWindowSuite extends FunSuite {
 
-  def makeRead(sequence: String,
-               cigar: String,
-               mdtag: String,
-               start: Long = 1,
-               chr: String = "chr1"): ADAMRecord = {
 
-    val contig = ADAMContig.newBuilder()
-      .setContigName(chr)
-      .build()
-
-    ADAMRecord.newBuilder()
-      .setReadName("read")
-      .setStart(start)
-      .setReadMapped(true)
-      .setCigar(cigar)
-      .setSequence(sequence)
-      .setMapq(60)
-      .setQual(sequence.map(x => 'F').toString)
-      .setMismatchingPositions(mdtag)
-      .setRecordGroupSample("sample")
-      .setContig(contig)
-      .build()
-  }
 
   test("test sliding read window, duplicate reads") {
 
     val reads = Seq(
-      makeRead("TCGATCGA", "8M", "8", 1),
-      makeRead("TCGATCGA", "8M", "8", 1),
-      makeRead("TCGATCGA", "8M", "8", 1))
+      TestUtil.makeRead("TCGATCGA", "8M", "8", 1),
+      TestUtil.makeRead("TCGATCGA", "8M", "8", 1),
+      TestUtil.makeRead("TCGATCGA", "8M", "8", 1))
     val window = SlidingReadWindow(2, reads.iterator)
     window.setCurrentLocus(0)
     assert(window.currentReads.size === 3)
@@ -64,9 +42,9 @@ class SlidingReadWindowSuite extends FunSuite {
   test("test sliding read window, diff contigs") {
 
     val reads = Seq(
-      makeRead("TCGATCGA", "8M", "8", 1, "chr1"),
-      makeRead("TCGATCGA", "8M", "8", 1, "chr2"),
-      makeRead("TCGATCGA", "8M", "8", 1, "chr3"))
+      TestUtil.makeRead("TCGATCGA", "8M", "8", 1, "chr1"),
+      TestUtil.makeRead("TCGATCGA", "8M", "8", 1, "chr2"),
+      TestUtil.makeRead("TCGATCGA", "8M", "8", 1, "chr3"))
     val window = SlidingReadWindow(2, reads.iterator)
     val caught = evaluating { window.setCurrentLocus(0) } should produce[IllegalArgumentException]
     caught.getMessage should include("must have the same reference name")
@@ -76,9 +54,9 @@ class SlidingReadWindowSuite extends FunSuite {
   test("test sliding read window, offset reads") {
 
     val reads = Seq(
-      makeRead("TCGATCGA", "8M", "8", 1),
-      makeRead("TCGATCGA", "8M", "8", 4),
-      makeRead("TCGATCGA", "8M", "8", 8))
+      TestUtil.makeRead("TCGATCGA", "8M", "8", 1),
+      TestUtil.makeRead("TCGATCGA", "8M", "8", 4),
+      TestUtil.makeRead("TCGATCGA", "8M", "8", 8))
     val window = SlidingReadWindow(2, reads.iterator)
 
     window.setCurrentLocus(0)
@@ -92,9 +70,9 @@ class SlidingReadWindowSuite extends FunSuite {
   test("test sliding read window, reads are not sorted") {
 
     val reads = Seq(
-      makeRead("TCGATCGA", "8M", "8", 1),
-      makeRead("TCGATCGA", "8M", "8", 8),
-      makeRead("TCGATCGA", "8M", "8", 4))
+      TestUtil.makeRead("TCGATCGA", "8M", "8", 1),
+      TestUtil.makeRead("TCGATCGA", "8M", "8", 8),
+      TestUtil.makeRead("TCGATCGA", "8M", "8", 4))
     val window = SlidingReadWindow(8, reads.iterator)
     val caught = evaluating { window.setCurrentLocus(0) } should produce[IllegalArgumentException]
     caught.getMessage should include("Reads must be sorted by start locus")
@@ -108,9 +86,9 @@ class SlidingReadWindowSuite extends FunSuite {
     // .....TCG... #3
     // 01222333210 count
     val reads = Seq(
-      makeRead("TCGATCGA", "8M", "8", 1),
-      makeRead("CGATCGAT", "8M", "8", 2),
-      makeRead("TCG", "3M", "3", 5))
+      TestUtil.makeRead("TCGATCGA", "8M", "8", 1),
+      TestUtil.makeRead("CGATCGAT", "8M", "8", 2),
+      TestUtil.makeRead("TCG", "3M", "3", 5))
     val window = SlidingReadWindow(0, reads.iterator)
 
     window.setCurrentLocus(0)
@@ -154,9 +132,9 @@ class SlidingReadWindowSuite extends FunSuite {
     // ......TCG.... #3
     // 0122233333210 count w/ hfS=1
     val reads = Seq(
-      makeRead("TCGATCGA", "8M", "8", 2),
-      makeRead("CGATCGAT", "8M", "8", 3),
-      makeRead("TCG", "3M", "3", 6))
+      TestUtil.makeRead("TCGATCGA", "8M", "8", 2),
+      TestUtil.makeRead("CGATCGAT", "8M", "8", 3),
+      TestUtil.makeRead("TCG", "3M", "3", 6))
     val window = SlidingReadWindow(1, reads.iterator)
 
     window.setCurrentLocus(0)
