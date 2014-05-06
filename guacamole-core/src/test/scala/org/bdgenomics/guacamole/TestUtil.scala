@@ -9,8 +9,43 @@ import java.net.ServerSocket
 import org.apache.spark.SparkContext
 import org.apache.log4j.{ Logger, Level }
 import org.bdgenomics.adam.cli.SparkArgs
+import org.bdgenomics.adam.avro.{ADAMContig, ADAMRecord}
+import org.bdgenomics.adam.rich.DecadentRead
 
 object TestUtil {
+
+  def makeRead(sequence: String,
+               cigar: String,
+               mdtag: String,
+               start: Long = 1,
+               chr: String = "chr1"): ADAMRecord = {
+
+    val contig = ADAMContig.newBuilder()
+      .setContigName(chr)
+      .build()
+
+    ADAMRecord.newBuilder()
+      .setReadName("read")
+      .setStart(start)
+      .setReadMapped(true)
+      .setCigar(cigar)
+      .setSequence(sequence)
+      .setMapq(60)
+      .setQual(sequence.map(x => 'F').toString)
+      .setMismatchingPositions(mdtag)
+      .setRecordGroupSample("sample")
+      .setContig(contig)
+      .build()
+  }
+
+  def makeDecadentRead(sequence: String,
+                       cigar: String,
+                       mdtag: String,
+                       start: Long = 1,
+                       chr: String = "chr1"): DecadentRead = {
+    DecadentRead(makeRead(sequence, cigar, mdtag, start, chr))
+  }
+
   object SparkTest extends org.scalatest.Tag("org.bdgenomics.guacamole.SparkScalaTestFunSuite")
 
   object SparkLogUtil {
