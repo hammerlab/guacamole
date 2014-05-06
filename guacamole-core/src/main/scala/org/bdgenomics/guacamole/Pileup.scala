@@ -153,18 +153,17 @@ object Pileup {
       val cigarElement: CigarElement = cigar.getCigarElement(indexInCigarElements.toInt)
       val cigarOperator = cigarElement.getOperator
       cigarOperator match {
-        case CigarOperator.INSERTION =>
+        case CigarOperator.I =>
           val startPos: Int = readPosition.toInt
           val endPos: Int = startPos + cigarElement.getLength - indexWithinCigarElement.toInt
           val bases = read.record.getSequence.toString.subSequence(startPos, endPos).toString
           Insertion(bases)
-        case CigarOperator.MATCH_OR_MISMATCH =>
+        case CigarOperator.M | CigarOperator.EQ | CigarOperator.X =>
           val base: Char = read.record.getSequence.charAt(readPosition.toInt)
           if (read.record.mdTag.get.isMatch(locus)) { Match(base) }
           else { Mismatch(base) }
-        case CigarOperator.DELETION => Deletion()
-        case other =>
-          throw new AssertionError("Not a match, mismatch, deletion, or insertion: " + other.toString)
+        case CigarOperator.D | CigarOperator.S | CigarOperator.N |
+          CigarOperator.H | CigarOperator.P => Deletion()
       }
     }
 
