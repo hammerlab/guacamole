@@ -221,6 +221,7 @@ class LociMapSerializer extends Serializer[LociMap[Long]] {
     obj.contigs.foreach(contig => {
       kryo.writeClassAndObject(output, obj.onContig(contig))
     })
+    output.writeLong(0xBEEF) // magic sentinel to indicate end of stream (input.eof seems to not do what we want)
   }
   def read(kryo: Kryo, input: Input, klass: Class[LociMap[Long]]): LociMap[Long] = {
     val count: Long = input.readLong()
@@ -228,7 +229,8 @@ class LociMapSerializer extends Serializer[LociMap[Long]] {
       val obj = kryo.readClassAndObject(input).asInstanceOf[LociMap.SingleContig[Long]]
       obj.contig -> obj
     })
-    assert(input.eof)
+    val sentinel = input.readLong()
+    assert(sentinel == 0xBEEF)
     LociMap[Long](Map[String, LociMap.SingleContig[Long]](pairs: _*))
   }
 }
@@ -243,6 +245,7 @@ class LociMapSingleContigSerializer extends Serializer[LociMap.SingleContig[Long
         output.writeLong(value)
       }
     })
+    output.writeLong(0xBEEF) // magic sentinel to indicate end of stream
   }
   def read(kryo: Kryo, input: Input, klass: Class[LociMap.SingleContig[Long]]): LociMap.SingleContig[Long] = {
     val builder = LociMap.newBuilder[Long]()
@@ -254,6 +257,8 @@ class LociMapSingleContigSerializer extends Serializer[LociMap.SingleContig[Long
       val value = input.readLong()
       builder.put(contig, start, end, value)
     })
+    val sentinel = input.readLong()
+    assert(sentinel == 0xBEEF)
     builder.result.onContig(contig)
   }
 }
