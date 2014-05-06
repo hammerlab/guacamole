@@ -154,11 +154,12 @@ object DistributedUtil extends Logging {
                                      tasks: Long,
                                      function: (Long, LociSet, Iterable[ADAMRecord]) => Seq[T]): RDD[T] = {
     val numTasks = if (tasks == 0) reads.partitions.length else tasks
-    val taskMap: Broadcast[LociMap[Long]] = reads.sparkContext.broadcast(partitionLociUniformly(numTasks, loci))
-    progress("Loci partitioning: %s".format(taskMap.value.truncatedString()))
+    val taskMap = partitionLociUniformly(numTasks, loci)
+    progress("Loci partitioning: %s".format(taskMap.truncatedString()))
+    val taskMapBoxed: Broadcast[LociMap[Long]] = reads.sparkContext.broadcast(taskMap)
     val uniqueReads = reads.sparkContext.accumulator(0)
     val tasksAndReads = reads.map(RichADAMRecord(_)).flatMap(read => {
-      val singleContig = taskMap.value.onContig(read.getContig.getContigName.toString)
+      val singleContig = taskMapBoxed.value.onContig(read.getContig.getContigName.toString)
       val tasks = singleContig.getAll(read.start - halfWindowSize, read.end.get + halfWindowSize)
       if (tasks.nonEmpty) {
         uniqueReads += 1
@@ -178,7 +179,7 @@ object DistributedUtil extends Logging {
     val readsGroupedByTask = tasksAndReads.groupByKey(numTasks.toInt)
     val results = readsGroupedByTask.flatMap({
       case (task, taskReads) => {
-        val taskLoci = taskMap.value.asInverseMap(task)
+        val taskLoci = taskMapBoxed.value.asInverseMap(task)
         log.info("Task %d handling %d reads for loci: %s".format(task, taskReads.length, taskLoci))
         function(task, taskLoci, taskReads)
       }
