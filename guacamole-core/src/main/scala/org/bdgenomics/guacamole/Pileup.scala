@@ -137,7 +137,7 @@ object Pileup {
 
     assume(locus >= read.record.getStart)
     assume(locus < read.record.end.get)
-    assume(read.record.mdTag.isDefined)
+    assume(read.record.mdTag.isDefined, "Record has no MDTag.")
 
     /**
      * The alignment of a read combines the underlying Cigar operator
