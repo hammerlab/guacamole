@@ -22,7 +22,7 @@ import org.bdgenomics.adam.cli.{ SparkArgs, ParquetArgs, Args4jBase }
 import org.kohsuke.args4j.{ Option => Opt }
 import org.bdgenomics.adam.avro.{ ADAMGenotype, ADAMRecord }
 import org.apache.spark.rdd.RDD
-import org.bdgenomics.adam.predicates.LocusPredicate
+import org.bdgenomics.adam.predicates.UniqueMappedReadPredicate
 import org.apache.spark.{ SparkConf, Logging, SparkContext }
 import org.bdgenomics.adam.rdd.ADAMContext._
 import org.apache.spark.scheduler.StatsReportListener
@@ -89,7 +89,7 @@ object Common extends Logging {
    * @return
    */
   def loadReads(args: Arguments.Reads, sc: SparkContext, mapped: Boolean = true, nonDuplicate: Boolean = true): RDD[ADAMRecord] = {
-    var reads: RDD[ADAMRecord] = sc.adamLoad(args.reads, Some(classOf[LocusPredicate]))
+    var reads: RDD[ADAMRecord] = sc.adamLoad(args.reads, Some(classOf[UniqueMappedReadPredicate]))
     progress("Loaded %d reads.".format(reads.count))
     if (mapped) reads = reads.filter(read => read.readMapped && read.contig.contigName != null && read.contig.contigLength > 0)
     if (nonDuplicate) reads = reads.filter(read => !read.duplicateRead)
