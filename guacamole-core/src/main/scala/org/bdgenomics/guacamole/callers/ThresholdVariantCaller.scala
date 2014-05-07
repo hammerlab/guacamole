@@ -19,7 +19,7 @@
 package org.bdgenomics.guacamole.callers
 
 import org.bdgenomics.adam.avro.{ ADAMContig, ADAMVariant, ADAMGenotypeAllele, ADAMGenotype }
-import org.bdgenomics.adam.avro.ADAMGenotypeAllele.{ NoCall, Ref, Alt }
+import org.bdgenomics.adam.avro.ADAMGenotypeAllele.{ NoCall, Ref, Alt, OtherAlt }
 import org.bdgenomics.guacamole._
 import scala.collection.JavaConversions
 import org.kohsuke.args4j.Option
@@ -54,7 +54,7 @@ object ThresholdVariantCaller extends Command with Serializable with Logging {
       reads,
       loci,
       args.parallelism,
-      callVariantsAtLocus(threshold, _))
+      pileup => callVariantsAtLocus(threshold, pileup).iterator)
     Common.writeVariants(args, genotypes)
   }
 
@@ -106,9 +106,8 @@ object ThresholdVariantCaller extends Command with Serializable with Logging {
             variant(if (base1 != refBase) base1 else base2, Ref :: Alt :: Nil) :: Nil
 
           // Compound alt
-          // TODO: ADAM needs to have an "OtherAlt" allele for this case!
           case (base1, count1) :: (base2, count2) :: rest =>
-            variant(base1, Alt :: Alt :: Nil) :: variant(base2, Alt :: Alt :: Nil) :: Nil
+            variant(base1, Alt :: OtherAlt :: Nil) :: variant(base2, Alt :: OtherAlt :: Nil) :: Nil
         }
     })
   }
