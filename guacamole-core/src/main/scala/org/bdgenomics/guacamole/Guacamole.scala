@@ -21,6 +21,7 @@ package org.bdgenomics.guacamole
 import org.apache.spark.Logging
 import java.util.logging.Level
 import org.bdgenomics.guacamole.callers.ThresholdVariantCaller
+import org.bdgenomics.guacamole.callers.SimpleSomaticVariantCaller
 import org.bdgenomics.adam.util.ParquetLogger
 import org.bdgenomics.guacamole.Common.progress
 import scala.Some
@@ -35,7 +36,8 @@ object Guacamole extends Logging {
    * this list.
    */
   private val commands: Seq[Command] = List(
-    ThresholdVariantCaller)
+    ThresholdVariantCaller,
+    SimpleSomaticVariantCaller)
 
   private def printUsage() = {
     println("Usage: java ... <command> [other args]\n")
