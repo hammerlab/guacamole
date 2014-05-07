@@ -25,8 +25,6 @@ import org.scalatest.matchers._
 
 class SlidingReadWindowSuite extends FunSuite {
 
-
-
   test("test sliding read window, duplicate reads") {
 
     val reads = Seq(
