@@ -9,7 +9,7 @@ import java.net.ServerSocket
 import org.apache.spark.SparkContext
 import org.apache.log4j.{ Logger, Level }
 import org.bdgenomics.adam.cli.SparkArgs
-import org.bdgenomics.adam.avro.{ADAMContig, ADAMRecord}
+import org.bdgenomics.adam.avro.{ ADAMContig, ADAMRecord }
 import org.bdgenomics.adam.rich.DecadentRead
 
 object TestUtil {
