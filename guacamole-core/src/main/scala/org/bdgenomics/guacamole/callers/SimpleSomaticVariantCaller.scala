@@ -71,8 +71,6 @@ object SimpleSomaticVariantCaller extends Command {
    * Instead of building explicit pileups, we're splitting apart the bases into their own
    * data structure and grouping them by the positions they occur at. Thus, Seq[BaseRead] acts
    * implicitly like a pileup at a locus.
-   *
-   * Type parameter T corresponds to locus type.
    */
   case class BaseRead(
     val locus: Long,
@@ -88,11 +86,16 @@ object SimpleSomaticVariantCaller extends Command {
    *
    *  @param cigarOp
    *  @param record
+   *  @param refPos
    *  @param readPos
    *  @param alignmentQuality
    *
    */
-  def makeBaseReads(cigarOp: CigarOperator, record: RichADAMRecord, readPos: Int, alignmentQuality: Int) = {
+  def makeBaseReads(cigarOp: CigarOperator,
+                    record: RichADAMRecord,
+                    refPos: Int,
+                    readPos: Int,
+                    alignmentQuality: Int) = {
 
     /**
      * Table of cigar operators
@@ -115,7 +118,7 @@ object SimpleSomaticVariantCaller extends Command {
         val readQuality = record.qualityScores(readPos)
         Some(BaseRead(
           alignment = Match(base),
-          locus = readPos,
+          locus = refPos,
           readQuality = Some(readQuality),
           alignmentQuality = alignmentQuality))
       // mismatch
@@ -124,23 +127,23 @@ object SimpleSomaticVariantCaller extends Command {
         val readQuality = record.qualityScores(readPos)
         Some(BaseRead(
           alignment = Mismatch(base),
-          locus = readPos,
+          locus = refPos,
           readQuality = Some(readQuality),
           alignmentQuality = alignmentQuality))
       case CigarOperator.MATCH_OR_MISMATCH =>
         val base: Char = record.sequence(readPos)
         val readQuality = record.qualityScores(readPos)
-        val alignment = if (record.mdTag.get.isMatch(readPos)) Match(base) else Mismatch(base)
+        val alignment = if (record.mdTag.get.isMatch(refPos)) Match(base) else Mismatch(base)
         Some(BaseRead(
           alignment = alignment,
-          locus = readPos,
+          locus = refPos,
           readQuality = Some(readQuality),
           alignmentQuality = alignmentQuality))
       case CigarOperator.DELETION =>
         Some(BaseRead(
           alignment = Deletion(),
           readQuality = None,
-          locus = readPos,
+          locus = refPos,
           alignmentQuality = alignmentQuality))
       // insertion (code I)
       case CigarOperator.INSERTION      => None
@@ -163,15 +166,22 @@ object SimpleSomaticVariantCaller extends Command {
   def expandBaseReads(record: ADAMRecord): Pileup = {
     val richRecord = RichADAMRecord(record)
     val alignmentQuality = record.mapq
+    assume(alignmentQuality >= 0)
+    // using unclipped start since we're considering
+    // soft clipping as one of the possible CIGAR operators
+    // in makeBaseReads (which returns None for clipped positions)
+    var refPos = richRecord.unclippedStart.get.toInt
+    assume(refPos >= 0)
+    var readPos = 0
     val baseReads = mutable.MutableList[BaseRead]()
-    var refPos = richRecord.start.toInt
-    var readPos = refPos - richRecord.unclippedStart.get.toInt
     for (cigarElt <- richRecord.samtoolsCigar.getCigarElements) {
       val cigarOp = cigarElt.getOperator
-      val nBases = cigarElt.getLength
-      baseReads ++= makeBaseReads(cigarOp, record, readPos, alignmentQuality)
-      if (cigarOp.consumesReferenceBases) { refPos += nBases }
-      if (cigarOp.consumesReadBases) { readPos += nBases }
+      // emit one BaseRead per position in the cigar element
+      for (i <- 1 to cigarElt.getLength) {
+        baseReads ++= makeBaseReads(cigarOp, record, refPos, readPos, alignmentQuality)
+        if (cigarOp.consumesReferenceBases) { refPos += 1 }
+        if (cigarOp.consumesReadBases) { readPos += 1 }
+      }
     }
     baseReads
   }
@@ -181,11 +191,17 @@ object SimpleSomaticVariantCaller extends Command {
    * whose values are a collection of BaseReads at that position.
    *
    * @param reads Aligned reads
+   * @param minBaseQuality Discard bases whose read quality falls below this threshold.
+   * @param minDepth Discard pileups of size smaller than this parameter.
    * @return RDD of position, pileup pairs
    */
-  def buildPileups(reads: RDD[ADAMRecord]): RDD[(Long, Seq[BaseRead])] = {
+  def buildPileups(reads: RDD[ADAMRecord],
+                   minBaseQuality: Int = 0,
+                   minDepth: Int = 0): RDD[(Long, Pileup)] = {
     val baseReadsAtPos: RDD[BaseRead] = reads.flatMap(expandBaseReads _)
-    baseReadsAtPos.groupBy(_.locus)
+    val filteredBaseReads = baseReadsAtPos.filter(_.readQuality.getOrElse(minBaseQuality) >= minBaseQuality)
+    val pileups = filteredBaseReads.groupBy(_.locus)
+    pileups.filter(_._2.length >= minDepth)
   }
 
   /**
@@ -214,7 +230,6 @@ object SimpleSomaticVariantCaller extends Command {
     val alleles = List(ADAMGenotypeAllele.Alt, ADAMGenotypeAllele.Alt)
 
     ADAMGenotype.newBuilder()
-      .setAlleles(List(ADAMGenotypeAllele.Alt))
       .setVariant(variant)
       .setAlleles(JavaConversions.seqAsJavaList(alleles))
       .setSampleId("sample".toCharArray)
@@ -267,9 +282,13 @@ object SimpleSomaticVariantCaller extends Command {
    * @param tumorReads Short reads from tumor tissue.
    * @return An RDD of genotypes representing the somatic variants discovered.
    */
-  def callVariants(normalReads: RDD[ADAMRecord], tumorReads: RDD[ADAMRecord]): RDD[ADAMGenotype] = {
-    val normalPileups: RDD[(Long, Pileup)] = buildPileups(normalReads)
-    val tumorPileups: RDD[(Long, Pileup)] = buildPileups(tumorReads)
+  def callVariants(normalReads: RDD[ADAMRecord],
+                   tumorReads: RDD[ADAMRecord],
+                   minBaseQuality: Int = 20,
+                   minNormalCoverage: Int = 10,
+                   minTumorCoverage: Int = 10): RDD[ADAMGenotype] = {
+    val normalPileups: RDD[(Long, Pileup)] = buildPileups(normalReads, minBaseQuality, minNormalCoverage)
+    val tumorPileups: RDD[(Long, Pileup)] = buildPileups(tumorReads, minBaseQuality, minNormalCoverage)
     val joinedPileups: RDD[(Long, (Pileup, Pileup))] = normalPileups.join(tumorPileups)
     val sortedPileups = joinedPileups.sortByKey()
     sortedPileups.flatMap({
