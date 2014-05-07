@@ -52,10 +52,8 @@ case class LociSet(val map: LociMap[Unit]) {
   /** Returns a string representation of this LociSet, in the same format that LociSet.parse expects. */
   override def toString(): String = truncatedString(Int.MaxValue)
 
-  /** String representation, truncated to maxLength characters. Set maxLength=0 to disable truncation. */
-  def truncatedString(maxLength: Int = 100): String = {
-    map.truncatedString(maxLength, false)
-  }
+  /** String representation, truncated to maxLength characters. */
+  def truncatedString(maxLength: Int = 100): String = map.truncatedString(maxLength, false)
 
   override def equals(other: Any) = other match {
     case that: LociSet => map.equals(that.map)
@@ -147,10 +145,8 @@ object LociSet {
 
     override def toString(): String = truncatedString(Int.MaxValue)
 
-    /** String representation, truncated to maxLength characters. Set maxLength=0 to disable truncation. */
-    def truncatedString(maxLength: Int = 100): String = {
-      map.truncatedString(maxLength, false)
-    }
+    /** String representation, truncated to maxLength characters. */
+    def truncatedString(maxLength: Int = 100): String = map.truncatedString(maxLength, false)
   }
 }
 
