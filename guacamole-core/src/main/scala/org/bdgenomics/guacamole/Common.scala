@@ -28,6 +28,7 @@ import org.bdgenomics.adam.rdd.ADAMContext._
 import org.apache.spark.scheduler.StatsReportListener
 import java.util
 import java.util.Calendar
+import org.bdgenomics.adam.rich.RichADAMRecord
 
 /**
  * Collection of functions that are useful to multiple variant calling implementations, and specifications of command-
@@ -89,14 +90,17 @@ object Common extends Logging {
    * @return
    */
   def loadReads(args: Arguments.Reads, sc: SparkContext, mapped: Boolean = true, nonDuplicate: Boolean = true): RDD[ADAMRecord] = {
-    var reads: RDD[ADAMRecord] = sc.adamLoad(args.reads, Some(classOf[UniqueMappedReadPredicate]))
-    progress("Loaded %d reads.".format(reads.count))
-    if (mapped) reads = reads.filter(read => read.readMapped && read.contig.contigName != null && read.contig.contigLength > 0)
-    if (nonDuplicate) reads = reads.filter(read => !read.duplicateRead)
-    if (mapped || nonDuplicate) {
-      progress("Filtered to %d %s reads".format(
-        reads.count, (if (mapped) "mapped " else "") + (if (nonDuplicate) "non-duplicate" else "")))
+    val reads: RDD[ADAMRecord] = if (mapped && nonDuplicate) {
+      sc.adamLoad(args.reads, Some(classOf[UniqueMappedReadPredicate]))
+    } else {
+      var raw: RDD[ADAMRecord] = sc.adamLoad(args.reads)
+      if (mapped) raw = raw.filter(read => read.readMapped && read.contig.contigName != null && read.contig.contigLength > 0)
+      if (nonDuplicate) raw = raw.filter(read => !read.duplicateRead)
+      raw
     }
+    reads.persist()
+    val description = (if (mapped) "mapped " else "") + (if (nonDuplicate) "non-duplicate" else "")
+    progress("Loaded %,d %s reads into %,d partitions.".format(reads.count, description, reads.partitions.length))
     reads
   }
 
@@ -129,7 +133,7 @@ object Common extends Logging {
         LociSet.parse(args.loci)
       }
     }
-    progress("Including %d loci across %d contig(s): %s".format(
+    progress("Including %,d loci across %,d contig(s): %s".format(
       result.count,
       result.contigs.length,
       result.truncatedString()))
@@ -142,7 +146,7 @@ object Common extends Logging {
    * @param genotypes ADAM genotypes (i.e. the variants)
    */
   def writeVariants(args: Arguments.Output, genotypes: RDD[ADAMGenotype]): Unit = {
-    progress("Writing %d genotypes to: %s.".format(genotypes.count, args.variantOutput))
+    progress("Writing %,d genotypes to: %s.".format(genotypes.count, args.variantOutput))
     genotypes.adamSave(args.variantOutput,
       args.blockSize,
       args.pageSize,
@@ -220,4 +224,42 @@ object Common extends Logging {
     lastProgressTime = current
   }
 
+  /**
+   * Does the given read overlap any of the given loci, with halfWindowSize padding?
+   */
+  def overlapsLociSet(read: RichADAMRecord, loci: LociSet, halfWindowSize: Long = 0): Boolean = {
+    read.readMapped && loci.onContig(read.contig.contigName.toString).intersects(
+      math.max(0, read.start - halfWindowSize),
+      read.end.get + halfWindowSize)
+  }
+
+  /**
+   * Does the given read overlap the given locus, with halfWindowSize padding?
+   */
+  def overlapsLocus(read: RichADAMRecord, locus: Long, halfWindowSize: Long = 0): Boolean = {
+    read.readMapped && read.start - halfWindowSize <= locus && read.end.get + halfWindowSize > locus
+  }
+
+  /**
+   * Like Scala's List.mkString method, but supports truncation.
+   *
+   * Return the concatenation of an iterator over strings, separated by separator, truncated to at most maxLength
+   * characters. If truncation occurs, the string is terminated with ellipses.
+   */
+  def assembleTruncatedString(
+    pieces: Iterator[String],
+    maxLength: Int,
+    separator: String = ",",
+    ellipses: String = " [...]"): String = {
+    val builder = StringBuilder.newBuilder
+    var remaining: Int = maxLength
+    while (pieces.hasNext && remaining > ellipses.length) {
+      val string = pieces.next()
+      builder.append(string)
+      if (pieces.hasNext) builder.append(separator)
+      remaining -= string.length + separator.length
+    }
+    if (pieces.hasNext) builder.append(ellipses)
+    builder.result
+  }
 }

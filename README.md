@@ -18,11 +18,8 @@ Run:
 
 ```
 scripts/guacamole threshold \
-	-loci chrM:2000-2050 \
 	-reads guacamole-core/src/test/resources/chrM.sorted.bam \
-	-threshold 0 \
 	-out /tmp/OUT.gt.adam \
-	-spark_kryo_buffer_size 64
 ```
 
 You can then inspect the results, for example, using ADAM's summarize genotypes command:
@@ -30,4 +27,16 @@ You can then inspect the results, for example, using ADAM's summarize genotypes 
 ```
 adam summarize_genotypes /tmp/OUT.gt.adam
 ```
+
+Try 
+```
+scripts/guacamole -h
+```
+for a list of implemented variant callers, or
+
+```
+scripts/guacamole <caller> -h
+```
+for help on a particular variant caller.
+
 

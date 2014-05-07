@@ -73,7 +73,7 @@ case class Pileup(locus: Long, elements: Seq[Pileup.Element]) {
    */
   def atGreaterLocus(newLocus: Long, newReads: Iterator[DecadentRead]) = {
     assume(elements.isEmpty || newLocus > locus, "New locus (%d) must be greater than current locus (%d)".format(newLocus, locus))
-    val reusableElements = elements.filter(_.read.record.overlapsReferencePosition(newLocus).getOrElse(false))
+    val reusableElements = elements.filter(element => Common.overlapsLocus(element.read.record, newLocus))
     val updatedElements = reusableElements.map(_.elementAtGreaterLocus(newLocus))
     val newElements = newReads.map(Pileup.Element(_, newLocus))
     Pileup(newLocus, updatedElements ++ newElements)
@@ -110,7 +110,7 @@ object Pileup {
    * @return A [[Pileup]] at the given locus.
    */
   def apply(reads: Seq[DecadentRead], locus: Long): Pileup = {
-    val elements = reads.filter(_.record.overlapsReferencePosition(locus).getOrElse(false)).map(Element(_, locus))
+    val elements = reads.filter(read => Common.overlapsLocus(read.record, locus)).map(Element(_, locus))
     val pileup = Pileup(locus, elements)
     assert(pileup.locus == locus, "New pileup has locus %d but exepcted %d".format(pileup.locus, locus))
     pileup
@@ -137,7 +137,7 @@ object Pileup {
 
     assume(locus >= read.record.getStart)
     assume(locus < read.record.end.get)
-    assume(read.record.mdTag.isDefined)
+    assume(read.record.mdTag.isDefined, "Record has no MDTag.")
 
     /**
      * The alignment of a read combines the underlying Cigar operator

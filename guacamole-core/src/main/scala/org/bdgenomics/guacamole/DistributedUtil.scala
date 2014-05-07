@@ -14,8 +14,8 @@ import org.kohsuke.args4j.{ Option => Opt }
 
 object DistributedUtil extends Logging {
   trait Arguments extends Base with Loci {
-    @Opt(name = "-parallelism", usage = "Num variant calling tasks. Default: 1.")
-    var parallelism: Int = 1
+    @Opt(name = "-parallelism", usage = "Num variant calling tasks. Set to 0 (default) to use the number of Spark partitions.")
+    var parallelism: Int = 0
   }
 
   /**
@@ -33,7 +33,7 @@ object DistributedUtil extends Logging {
   def partitionLociUniformly(tasks: Long, loci: LociSet): LociMap[Long] = {
     assume(tasks >= 1)
     val lociPerTask = loci.count.toDouble / tasks.toDouble
-    progress("Splitting loci evenly among %d tasks = ~%.0f loci per task".format(tasks, lociPerTask))
+    progress("Splitting loci evenly among %,d tasks = ~%,.0f loci per task".format(tasks, lociPerTask))
     val builder = LociMap.newBuilder[Long]
     var lociAssigned = 0L
     loci.contigs.foreach(contig => {
@@ -143,7 +143,7 @@ object DistributedUtil extends Logging {
    * @param loci loci to consider. Reads that don't overlap these loci are discarded.
    * @param halfWindowSize if a read overlaps a region of halfWindowSize to either side of a locus under consideration,
    *                       then it is included.
-   * @param tasks number of genomic partitions; degree of parallelism
+   * @param tasks number of loci partitions to run in parallel. Set to 0 to use number of partitions in the read RDD.
    * @param function function to flatMap: (task number, loci, reads that overlap a window around these loci) -> T
    * @tparam T type of value returned by function
    * @return flatMap results, RDD[T]
@@ -153,28 +153,33 @@ object DistributedUtil extends Logging {
                                      halfWindowSize: Long,
                                      tasks: Long,
                                      function: (Long, LociSet, Iterable[ADAMRecord]) => Seq[T]): RDD[T] = {
-    val taskMap: Broadcast[LociMap[Long]] = reads.sparkContext.broadcast(partitionLociUniformly(tasks, loci))
-    progress("Loci partitioning: %s".format(taskMap.value.toString))
+    val numTasks = if (tasks == 0) reads.partitions.length else tasks
+    val taskMap = partitionLociUniformly(numTasks, loci)
+    progress("Loci partitioning: %s".format(taskMap.truncatedString()))
+    val taskMapBoxed: Broadcast[LociMap[Long]] = reads.sparkContext.broadcast(taskMap)
     val uniqueReads = reads.sparkContext.accumulator(0)
     val tasksAndReads = reads.map(RichADAMRecord(_)).flatMap(read => {
-      val singleContig = taskMap.value.onContig(read.getContig.getContigName.toString)
+      val singleContig = taskMapBoxed.value.onContig(read.getContig.getContigName.toString)
       val tasks = singleContig.getAll(read.start - halfWindowSize, read.end.get + halfWindowSize)
       if (tasks.nonEmpty) {
         uniqueReads += 1
       }
       tasks.map(task => (task, read.record))
     })
+    tasksAndReads.persist()
+
     // For some reason, the uniqueReads accumulator above isn't incremented -- any ideas?
     // When it's made to work, we should print a message like this:
     // progress("%d mapped reads -> %d relevant for loci -> %d expanded for task overlaps".format(
     //  reads.count, uniqueReads.value, tasksAndReads.count))
     // Instead of:
-    progress("Filtered %d mapped reads -> %d relevant reads (expanded for task overlaps)".format(
+    progress("Filtered %,d mapped reads -> %,d relevant reads (expanded for task overlaps)".format(
       reads.count, tasksAndReads.count))
-    val readsGroupedByTask = tasksAndReads.groupByKey(tasks.toInt)
+    reads.unpersist()
+    val readsGroupedByTask = tasksAndReads.groupByKey(numTasks.toInt)
     val results = readsGroupedByTask.flatMap({
       case (task, taskReads) => {
-        val taskLoci = taskMap.value.asInverseMap(task)
+        val taskLoci = taskMapBoxed.value.asInverseMap(task)
         log.info("Task %d handling %d reads for loci: %s".format(task, taskReads.length, taskLoci))
         function(task, taskLoci, taskReads)
       }
@@ -202,14 +207,4 @@ object DistributedUtil extends Logging {
       (contig, withContig)
     }).toMap + ("" -> currentIterator)
   }
-
-  /**
-   * Does the given read overlap any of the given loci, with halfWindowSize padding?
-   */
-  def overlaps(read: RichADAMRecord, loci: LociSet, halfWindowSize: Long = 0): Boolean = {
-    read.readMapped && loci.onContig(read.contig.contigName.toString).intersects(
-      math.max(0, read.start - halfWindowSize),
-      read.end.get + halfWindowSize)
-  }
-
 }
