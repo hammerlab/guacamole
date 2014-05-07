@@ -72,7 +72,8 @@ case class Pileup(locus: Long, elements: Seq[Pileup.Element]) {
    * @return A new [[Pileup]] at the given locus.
    */
   def atGreaterLocus(newLocus: Long, newReads: Iterator[DecadentRead]) = {
-    assume(elements.isEmpty || newLocus > locus, "New locus (%d) must be greater than current locus (%d)".format(newLocus, locus))
+    assume(elements.isEmpty || newLocus > locus,
+      "New locus (%d) must be greater than current locus (%d)".format(newLocus, locus))
     val reusableElements = elements.filter(element => Common.overlapsLocus(element.read.record, newLocus))
     val updatedElements = reusableElements.map(_.elementAtGreaterLocus(newLocus))
     val newElements = newReads.map(Pileup.Element(_, newLocus))
