@@ -28,6 +28,7 @@ import org.bdgenomics.adam.rdd.ADAMContext._
 import org.apache.spark.scheduler.StatsReportListener
 import java.util
 import java.util.Calendar
+import org.bdgenomics.adam.rich.RichADAMRecord
 
 /**
  * Collection of functions that are useful to multiple variant calling implementations, and specifications of command-
@@ -221,5 +222,21 @@ object Common extends Logging {
     println("--> [%15s]: %s".format(time, message))
     System.out.flush()
     lastProgressTime = current
+  }
+
+  /**
+   * Does the given read overlap any of the given loci, with halfWindowSize padding?
+   */
+  def overlapsLociSet(read: RichADAMRecord, loci: LociSet, halfWindowSize: Long = 0): Boolean = {
+    read.readMapped && loci.onContig(read.contig.contigName.toString).intersects(
+      math.max(0, read.start - halfWindowSize),
+      read.end.get + halfWindowSize)
+  }
+
+  /**
+   * Does the given read overlap the given locus, with halfWindowSize padding?
+   */
+  def overlapsLocus(read: RichADAMRecord, locus: Long, halfWindowSize: Long = 0): Boolean = {
+    read.readMapped && read.start - halfWindowSize <= locus && read.end.get + halfWindowSize > locus
   }
 }

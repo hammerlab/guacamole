@@ -207,14 +207,4 @@ object DistributedUtil extends Logging {
       (contig, withContig)
     }).toMap + ("" -> currentIterator)
   }
-
-  /**
-   * Does the given read overlap any of the given loci, with halfWindowSize padding?
-   */
-  def overlaps(read: RichADAMRecord, loci: LociSet, halfWindowSize: Long = 0): Boolean = {
-    read.readMapped && loci.onContig(read.contig.contigName.toString).intersects(
-      math.max(0, read.start - halfWindowSize),
-      read.end.get + halfWindowSize)
-  }
-
 }
