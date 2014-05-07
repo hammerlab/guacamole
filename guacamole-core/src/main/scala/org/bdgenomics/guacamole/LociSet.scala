@@ -35,7 +35,7 @@ import com.esotericsoftware.kryo.io.{ Input, Output }
  *
  * @param map LociMap[Unit] instance
  */
-case class LociSet(private val map: LociMap[Unit]) {
+case class LociSet(val map: LociMap[Unit]) {
 
   /** The contigs included in this LociSet with a nonempty set of loci. */
   lazy val contigs: Seq[String] = map.contigs
@@ -50,16 +50,10 @@ case class LociSet(private val map: LociMap[Unit]) {
   def union(other: LociSet): LociSet = LociSet(map.union(other.map))
 
   /** Returns a string representation of this LociSet, in the same format that LociSet.parse expects. */
-  override def toString(): String = contigs.map(onContig(_).toString).mkString(",")
+  override def toString(): String = truncatedString(Int.MaxValue)
 
-  def truncatedString(maxLength: Int = 100): String = {
-    // TODO: make this efficient, instead of generating the full string first.
-    val full = toString()
-    if (full.length > maxLength)
-      full.substring(0, maxLength) + " [...]"
-    else
-      full
-  }
+  /** String representation, truncated to maxLength characters. */
+  def truncatedString(maxLength: Int = 100): String = map.truncatedString(maxLength, false)
 
   override def equals(other: Any) = other match {
     case that: LociSet => map.equals(that.map)
@@ -109,7 +103,7 @@ object LociSet {
    *             contig name, and START and END are integers. Spaces are ignored.
    */
   def parse(loci: String): LociSet = {
-    val syntax = """^([\pL\pN]+):(\pN+)-(\pN+)""".r
+    val syntax = """^([\pL\pN._]+):(\pN+)-(\pN+)""".r
     val sets = loci.replace(" ", "").split(',').map({
       case ""                       => LociSet.empty
       case syntax(name, start, end) => LociSet(name, start.toLong, end.toLong)
@@ -149,41 +143,28 @@ object LociSet {
     /** Returns whether a given genomic region overlaps with any loci in this LociSet. */
     def intersects(start: Long, end: Long) = !map.getAll(start, end).isEmpty
 
-    override def toString(): String = {
-      ranges.map(range => "%s:%d-%d".format(map.contig, range.start, range.end)).mkString(",")
-    }
+    override def toString(): String = truncatedString(Int.MaxValue)
+
+    /** String representation, truncated to maxLength characters. */
+    def truncatedString(maxLength: Int = 100): String = map.truncatedString(maxLength, false)
   }
 }
 
-// Serialization
-// TODO: use a more efficient serialization format than strings.
+// Serialization: just delegate to LociMap[Unit].
 class LociSetSerializer extends Serializer[LociSet] {
-  def write(kyro: Kryo, output: Output, obj: LociSet) = {
-    output.writeString(obj.toString)
+  def write(kryo: Kryo, output: Output, obj: LociSet) = {
+    kryo.writeObject(output, obj.map)
   }
   def read(kryo: Kryo, input: Input, klass: Class[LociSet]): LociSet = {
-    LociSet.parse(input.readString())
+    LociSet(kryo.readObject(input, classOf[LociMap[Unit]]))
   }
 }
 
 class LociSetSingleContigSerializer extends Serializer[LociSet.SingleContig] {
-  def write(kyro: Kryo, output: Output, obj: LociSet.SingleContig) = {
-    assert(kyro != null)
-    assert(output != null)
-    assert(obj != null)
-    output.writeString(obj.toString)
+  def write(kryo: Kryo, output: Output, obj: LociSet.SingleContig) = {
+    kryo.writeObject(output, obj.map)
   }
-
   def read(kryo: Kryo, input: Input, klass: Class[LociSet.SingleContig]): LociSet.SingleContig = {
-    assert(kryo != null)
-    assert(input != null)
-    assert(klass != null)
-    val string = input.readString()
-    assert(string != null)
-    val set = LociSet.parse(string)
-    assert(set != null)
-    assert(set.contigs.length == 1)
-    set.onContig(set.contigs(0))
+    LociSet.SingleContig(kryo.readObject(input, classOf[LociMap.SingleContig[Unit]]))
   }
 }
-
