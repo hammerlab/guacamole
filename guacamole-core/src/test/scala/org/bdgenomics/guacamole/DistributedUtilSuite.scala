@@ -56,7 +56,8 @@ class DistributedUtilSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
   }
 
   test("partitionLociUniformly performance") {
+    // This should not take a noticeable amount of time.
     val bigSet = LociSet.parse("chr21:0-3000000000")
-    val result1 = DistributedUtil.partitionLociUniformly(2000, bigSet).asInverseMap
+    DistributedUtil.partitionLociUniformly(2000, bigSet).asInverseMap
   }
 }
