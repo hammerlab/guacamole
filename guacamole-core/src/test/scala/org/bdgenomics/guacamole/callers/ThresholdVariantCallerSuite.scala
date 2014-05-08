@@ -8,7 +8,6 @@ import scala.collection.JavaConversions._
 class ThresholdVariantCallerSuite extends FunSuite {
 
   test("no variants, threshold 0") {
-
     val reads = Seq(
       TestUtil.makeDecadentRead("TCGATCGA", "8M", "8", 1),
       TestUtil.makeDecadentRead("TCGATCGA", "8M", "8", 1),
@@ -19,7 +18,6 @@ class ThresholdVariantCallerSuite extends FunSuite {
   }
 
   test("het variant, threshold 0") {
-
     val reads = Seq(
       TestUtil.makeDecadentRead("TCGATCGA", "8M", "8", 1),
       TestUtil.makeDecadentRead("TCGATCGA", "8M", "8", 1),
@@ -31,7 +29,6 @@ class ThresholdVariantCallerSuite extends FunSuite {
   }
 
   test("het variant, threshold 30") {
-
     val reads = Seq(
       TestUtil.makeDecadentRead("TCGATCGA", "8M", "8", 1),
       TestUtil.makeDecadentRead("TCGATCGA", "8M", "8", 1),
@@ -43,7 +40,6 @@ class ThresholdVariantCallerSuite extends FunSuite {
   }
 
   test("het variant, threshold 50, not enough evidence") {
-
     val reads = Seq(
       TestUtil.makeDecadentRead("TCGATCGA", "8M", "8", 1),
       TestUtil.makeDecadentRead("TCGATCGA", "8M", "8", 1),
@@ -54,7 +50,6 @@ class ThresholdVariantCallerSuite extends FunSuite {
   }
 
   test("homozygous alt variant, threshold 50") {
-
     val reads = Seq(
       TestUtil.makeDecadentRead("TCGATCGA", "8M", "8", 1),
       TestUtil.makeDecadentRead("GCGATCGA", "8M", "0G7", 1),

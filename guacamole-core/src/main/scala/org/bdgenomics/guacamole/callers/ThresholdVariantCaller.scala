@@ -53,8 +53,6 @@ object ThresholdVariantCaller extends Command with Serializable with Logging {
     val args = Args4j[Arguments](rawArgs)
     val sc = Common.createSparkContext(args)
 
-    Counters.initDefault(sc)
-
     val reads = Common.loadReads(args, sc, mapped = true, nonDuplicate = true)
     val loci = Common.loci(args, reads)
     val (threshold, emitRef, emitNoCall) = (args.threshold, args.emitRef, args.emitNoCall)
@@ -65,7 +63,7 @@ object ThresholdVariantCaller extends Command with Serializable with Logging {
       pileup => callVariantsAtLocus(pileup, threshold, emitRef, emitNoCall).iterator)
     reads.unpersist()
     Common.writeVariants(args, genotypes)
-    Counters.default.print()
+    DelayedMessages.default.print()
   }
 
   def callVariantsAtLocus(
