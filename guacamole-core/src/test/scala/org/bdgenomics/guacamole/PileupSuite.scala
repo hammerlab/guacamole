@@ -167,6 +167,62 @@ class PileupSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
     assert(read5At10.elementAtGreaterLocus(21).sequenceRead === "T")
     assert(read5At10.elementAtGreaterLocus(22).sequenceRead === "A")
     assert(read5At10.elementAtGreaterLocus(24).sequenceRead === "G")
+
+    // Read6: ACGTACGTACGT 4=1N4=4S
+    // one `N` and soft-clipping at the end
+    val decadentRead6 = new DecadentRead(adamRecords(5))
+    val read6At40 = Pileup.Element(decadentRead6, 40)
+    assert(read6At40 != null)
+    assert(read6At40.elementAtGreaterLocus(40).sequenceRead === "A")
+    assert(read6At40.elementAtGreaterLocus(41).sequenceRead === "C")
+    assert(read6At40.elementAtGreaterLocus(42).sequenceRead === "G")
+    assert(read6At40.elementAtGreaterLocus(43).sequenceRead === "T")
+    assert(read6At40.elementAtGreaterLocus(44).sequenceRead === "")
+    assert(read6At40.elementAtGreaterLocus(45).sequenceRead === "A")
+    assert(read6At40.elementAtGreaterLocus(48).sequenceRead === "T")
+    // The code uses RichADAMRecord.end which treats hard and soft-clipping
+    // identically, so we cannot access, the rest of the read after the soft
+    // clipping (which could have been dealt with as a “Deletion”).
+    intercept[AssertionError] {
+      read6At40.elementAtGreaterLocus(49).sequenceRead
+    }
+    // assert(read6At40.elementAtGreaterLocus(49).sequenceRead === "")
+
+    // Read7: ACGTACGT 4=1N4=4H
+    // one `N` and hard-clipping at the end
+    val decadentRead7 = new DecadentRead(adamRecords(6))
+    val read7At40 = Pileup.Element(decadentRead7, 40)
+    assert(read7At40 != null)
+    assert(read7At40.elementAtGreaterLocus(40).sequenceRead === "A")
+    assert(read7At40.elementAtGreaterLocus(41).sequenceRead === "C")
+    assert(read7At40.elementAtGreaterLocus(42).sequenceRead === "G")
+    assert(read7At40.elementAtGreaterLocus(43).sequenceRead === "T")
+    assert(read7At40.elementAtGreaterLocus(44).sequenceRead === "")
+    assert(read7At40.elementAtGreaterLocus(45).sequenceRead === "A")
+    assert(read7At40.elementAtGreaterLocus(48).sequenceRead === "T")
+    intercept[AssertionError] {
+      read7At40.elementAtGreaterLocus(49).sequenceRead
+    }
+
+    // Read8: ACGTACGT 4=1P4=
+    // one `P`, a silent deletion (i.e. a deletion from a reference with a
+    // virtual insertion)
+    // 4=1P4= should be equivalent to 8=
+    val decadentRead8 = new DecadentRead(adamRecords(7))
+    val read8At40 = Pileup.Element(decadentRead8, 40)
+    assert(read8At40 != null)
+    assert(read8At40.elementAtGreaterLocus(40).sequenceRead === "A")
+    assert(read8At40.elementAtGreaterLocus(41).sequenceRead === "C")
+    assert(read8At40.elementAtGreaterLocus(42).sequenceRead === "G")
+    assert(read8At40.elementAtGreaterLocus(43).sequenceRead === "T")
+    assert(read8At40.elementAtGreaterLocus(44).sequenceRead === "A")
+    assert(read8At40.elementAtGreaterLocus(45).sequenceRead === "C")
+    assert(read8At40.elementAtGreaterLocus(46).sequenceRead === "G")
+    assert(read8At40.elementAtGreaterLocus(47).sequenceRead === "T")
+    intercept[AssertionError] {
+      read8At40.elementAtGreaterLocus(48).sequenceRead
+    }
+
   }
 }
 

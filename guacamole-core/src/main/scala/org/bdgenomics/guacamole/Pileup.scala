@@ -164,7 +164,11 @@ object Pileup {
           if (read.record.mdTag.get.isMatch(locus)) { Match(base) }
           else { Mismatch(base) }
         case CigarOperator.D | CigarOperator.S | CigarOperator.N |
-          CigarOperator.H | CigarOperator.P => Deletion()
+          CigarOperator.H => Deletion()
+        case CigarOperator.P =>
+          // `P` CIGAR-ops should have been ignored earlier: 
+          // in `findNextCigarElement`
+          throw new AssertionError("Cannot deal with CIGAR-operator 'P'")
       }
     }
 
@@ -209,23 +213,31 @@ object Pileup {
      *
      */
     private def findNextCigarElement(newLocus: Long): (Long, Long, Long) = {
-      var currReadPos = readPosition
-      var currReferencePos = locus
+      var currentReadPosition = readPosition
+      var currentReferencePosition = locus
       for (i <- indexInCigarElements until cigar.numCigarElements()) {
-        val cigarElt = cigar.getCigarElement(i.toInt)
-        val cigarEltLen = cigarElt.getLength
-        val currEltEnd = currReferencePos + cigarEltLen
-        val cigarOp = cigarElt.getOperator
-        if (currEltEnd > newLocus) {
-          val offset = newLocus - currReferencePos
-          val finalReadPos = if (cigarOp.consumesReadBases) currReadPos + offset else currReadPos
-          return (finalReadPos, i, offset)
+        val cigarElement = cigar.getCigarElement(i.toInt)
+        val cigarOperator = cigarElement.getOperator
+        // The `P` can be ignored: http://davetang.org/wiki/tiki-index.php?page=SAM
+        // and it is the simplest way of dealing with it correctly (if we want to
+        // keep the padding information in the future, we will need a more complex
+        // `Alignment` case class).
+        // It does not consume bases since the reference sequence is “virtually
+        // padded”.
+        if (cigarOperator != CigarOperator.P) {
+          val cigarElementLength = cigarElement.getLength
+          val currentElementEnd = currentReferencePosition + cigarElementLength
+          if (currentElementEnd > newLocus) {
+            val offset = newLocus - currentReferencePosition
+            val finalReadPos = if (cigarOperator.consumesReadBases) currentReadPosition + offset else currentReadPosition
+            return (finalReadPos, i, offset)
+          }
+          if (cigarOperator.consumesReadBases) { currentReadPosition += cigarElementLength }
+          if (cigarOperator.consumesReferenceBases) { currentReferencePosition += cigarElementLength }
         }
-        if (cigarOp.consumesReadBases) { currReadPos += cigarEltLen }
-        if (cigarOp.consumesReferenceBases) { currReferencePos += cigarEltLen }
       }
       throw new RuntimeException(
-        "Couldn't find cigar element for locus %d, cigar string only extends to %d".format(newLocus, currReferencePos))
+        "Couldn't find cigar element for locus %d, cigar string only extends to %d".format(newLocus, currentReferencePosition))
     }
 
     /**
