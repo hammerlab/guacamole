@@ -51,8 +51,9 @@ case class LociMap[T](private val map: Map[String, LociMap.SingleContig[T]]) {
     val mapOfBuilders = new mutable.HashMap[T, LociSet.Builder]()
     contigs.foreach(contig => {
       onContig(contig).asMap.foreach({
-        case (range, value) => {
-          mapOfBuilders.getOrElseUpdate(value, LociSet.newBuilder).put(contig, range.start, range.end)
+        case (range, value) => mapOfBuilders.get(value) match {
+          case None          => mapOfBuilders.put(value, LociSet.newBuilder.put(contig, range.start, range.end))
+          case Some(builder) => builder.put(contig, range.start, range.end)
         }
       })
     })
@@ -116,7 +117,10 @@ object LociMap {
     /** Set the value at the given locus range in the LociMap under construction. */
     def put(contig: String, start: Long, end: Long, value: T): Builder[T] = {
       assume(end >= start)
-      if (end > start) data.getOrElseUpdate(contig, new ArrayBuffer[(Long, Long, T)]) += ((start, end, value))
+      if (end > start) data.get(contig) match {
+        case None              => data.put(contig, ArrayBuffer[(Long, Long, T)]((start, end, value)))
+        case Some(arrayBuffer) => arrayBuffer += ((start, end, value))
+      }
       this
     }
 
