@@ -1,17 +1,15 @@
 package org.bdgenomics.guacamole
 
 import org.bdgenomics.guacamole.Common._
-import scala.collection.immutable.NumericRange
 import org.apache.spark.rdd._
 import org.apache.spark.SparkContext._
 import org.bdgenomics.adam.avro.ADAMRecord
 import org.apache.spark.broadcast.Broadcast
 import org.bdgenomics.adam.rich.RichADAMRecord
-import org.apache.spark.{ HashPartitioner, Partitioner, Logging }
+import org.apache.spark.{ Partitioner, Logging }
 import scala.reflect.ClassTag
 import org.bdgenomics.guacamole.Common.Arguments.{ Loci, Base }
 import org.kohsuke.args4j.{ Option => Opt }
-import org.apache.spark.util.{ StatCounter, Utils }
 
 object DistributedUtil extends Logging {
   trait Arguments extends Base with Loci {
@@ -189,7 +187,7 @@ object DistributedUtil extends Logging {
         expandedReads.value)
     }
 
-    // Expand reads into (task, read) pairs.)
+    // Expand reads into (task, read) pairs.
     val taskNumberReadPairs = reads.map(RichADAMRecord(_)).flatMap(read => {
       val singleContig = taskMapBoxed.value.onContig(read.getContig.getContigName.toString)
       val thisReadsTasks = singleContig.getAll(read.start - halfWindowSize, read.end.get + halfWindowSize)
