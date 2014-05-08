@@ -118,6 +118,12 @@ object DistributedUtil extends Logging {
     })
   }
 
+  /**
+   * Spark partitioner for keyed RDDs that assigns each unique key its own partition.
+   * Used to partition an RDD of (task number: Long, read: ADAMRecord) pairs, giving each task its own partition.
+   *
+   * @param partitions total number of partitions
+   */
   class PartitionByKey(partitions: Int) extends Partitioner {
     def numPartitions = partitions
     def getPartition(key: Any): Int = key match {
@@ -171,14 +177,31 @@ object DistributedUtil extends Logging {
     val taskMap = partitionLociUniformly(numTasks, loci)
     progress("Loci partitioning: %s".format(taskMap.truncatedString()))
     val taskMapBoxed: Broadcast[LociMap[Long]] = reads.sparkContext.broadcast(taskMap)
-    val uniqueReads = reads.sparkContext.accumulator(0)
-    val readsGroupedByTask = reads.map(RichADAMRecord(_)).flatMap(read => {
+
+    // Counters)
+    val totalReads = Counters.default.counter("Total reads")
+    val relevantReads = Counters.default.counter("Relevant reads")
+    val expandedReads = Counters.default.counter("Reads after task-overlap expansion")
+
+    // Expand reads into (task, read) pairs.)
+    val taskNumberReadPairs = reads.map(RichADAMRecord(_)).flatMap(read => {
       val singleContig = taskMapBoxed.value.onContig(read.getContig.getContigName.toString)
       val thisReadsTasks = singleContig.getAll(read.start - halfWindowSize, read.end.get + halfWindowSize)
-      if (thisReadsTasks.nonEmpty) uniqueReads += 1
+
+      // Update counters
+      totalReads += 1
+      if (thisReadsTasks.nonEmpty) relevantReads += 1
+      expandedReads += thisReadsTasks.size
+
+      // Return this read, duplicated for each task it is assigned to.1
       thisReadsTasks.map(task => (task, read.record))
-    }).partitionBy(new PartitionByKey(numTasks.toInt))
-    val results = readsGroupedByTask.mapPartitionsWithIndex((taskNum: Int, taskNumAndReads) => {
+    })
+
+    // Each key (i.e. task) gets its own partition.
+    val partitioned = taskNumberReadPairs.partitionBy(new PartitionByKey(numTasks.toInt))
+
+    // Run the task on each partition.)
+    val results = partitioned.mapPartitionsWithIndex((taskNum: Int, taskNumAndReads) => {
       val taskLoci = taskMapBoxed.value.asInverseMap(taskNum.toLong)
       val taskReads = taskNumAndReads.map(pair => {
         assert(pair._1 == taskNum)
