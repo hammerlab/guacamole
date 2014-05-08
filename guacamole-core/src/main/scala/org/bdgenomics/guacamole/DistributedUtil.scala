@@ -11,7 +11,7 @@ import org.apache.spark.{ HashPartitioner, Partitioner, Logging }
 import scala.reflect.ClassTag
 import org.bdgenomics.guacamole.Common.Arguments.{ Loci, Base }
 import org.kohsuke.args4j.{ Option => Opt }
-import org.apache.spark.util.Utils
+import org.apache.spark.util.{ StatCounter, Utils }
 
 object DistributedUtil extends Logging {
   trait Arguments extends Base with Loci {
@@ -179,9 +179,15 @@ object DistributedUtil extends Logging {
     val taskMapBoxed: Broadcast[LociMap[Long]] = reads.sparkContext.broadcast(taskMap)
 
     // Counters)
-    val totalReads = Counters.default.counter("Total reads")
-    val relevantReads = Counters.default.counter("Relevant reads")
-    val expandedReads = Counters.default.counter("Reads after task-overlap expansion")
+    val totalReads = reads.sparkContext.accumulator(0L)
+    val relevantReads = reads.sparkContext.accumulator(0L)
+    val expandedReads = reads.sparkContext.accumulator(0L)
+    DelayedMessages.default.say { () =>
+      "Read counts: filtered %,d total reads to %,d relevant reads, expanded for overlaps to %,d".format(
+        totalReads.value,
+        relevantReads.value,
+        expandedReads.value)
+    }
 
     // Expand reads into (task, read) pairs.)
     val taskNumberReadPairs = reads.map(RichADAMRecord(_)).flatMap(read => {
