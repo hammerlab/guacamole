@@ -166,9 +166,7 @@ object Pileup {
         case CigarOperator.D | CigarOperator.S | CigarOperator.N |
           CigarOperator.H => Deletion()
         case CigarOperator.P =>
-          // `P` CIGAR-ops should have been ignored earlier: 
-          // in `findNextCigarElement`
-          throw new AssertionError("Cannot deal with CIGAR-operator 'P'")
+          throw new AssertionError("`P` CIGAR-ops should have been ignored earlier in `findNextCigarElement`")
       }
     }
 
@@ -218,12 +216,11 @@ object Pileup {
       for (i <- indexInCigarElements until cigar.numCigarElements()) {
         val cigarElement = cigar.getCigarElement(i.toInt)
         val cigarOperator = cigarElement.getOperator
-        // The `P` can be ignored: http://davetang.org/wiki/tiki-index.php?page=SAM
-        // and it is the simplest way of dealing with it correctly (if we want to
-        // keep the padding information in the future, we will need a more complex
-        // `Alignment` case class).
-        // It does not consume bases since the reference sequence is “virtually
-        // padded”.
+        // The 'P' (padding) operator is used to indicate a deletion-in-an-insertion. This only comes up when the
+        // aligner attempted not only only to align reads to the reference, but also to align inserted sequences within reads
+        // to each other. In particular, a de novo assembler would automatically be doing this.
+        // We ignore this operator, since our simple Aligment handling code does not expose within-insertion alignments.
+        // See: http://davetang.org/wiki/tiki-index.php?page=SAM
         if (cigarOperator != CigarOperator.P) {
           val cigarElementLength = cigarElement.getLength
           val currentElementEnd = currentReferencePosition + cigarElementLength
@@ -232,8 +229,12 @@ object Pileup {
             val finalReadPos = if (cigarOperator.consumesReadBases) currentReadPosition + offset else currentReadPosition
             return (finalReadPos, i, offset)
           }
-          if (cigarOperator.consumesReadBases) { currentReadPosition += cigarElementLength }
-          if (cigarOperator.consumesReferenceBases) { currentReferencePosition += cigarElementLength }
+          if (cigarOperator.consumesReadBases) {
+            currentReadPosition += cigarElementLength
+          }
+          if (cigarOperator.consumesReferenceBases) {
+            currentReferencePosition += cigarElementLength
+          }
         }
       }
       throw new RuntimeException(
