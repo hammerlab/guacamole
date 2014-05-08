@@ -41,29 +41,39 @@ object ThresholdVariantCaller extends Command with Serializable with Logging {
   private class Arguments extends Base with Output with Reads with DistributedUtil.Arguments {
     @Option(name = "-threshold", metaVar = "X", usage = "Make a call if at least X% of reads support it. Default: 8")
     var threshold: Int = 8
+
+    @Option(name = "-emit-ref", usage = "Output homozygous reference calls.")
+    var emitRef: Boolean = false
+
+    @Option(name = "-emit-no-call", usage = "Output no call calls.")
+    var emitNoCall: Boolean = false
   }
 
   override def run(rawArgs: Array[String]): Unit = {
     val args = Args4j[Arguments](rawArgs)
     val sc = Common.createSparkContext(args)
 
-    val threshold = args.threshold
     val reads = Common.loadReads(args, sc, mapped = true, nonDuplicate = true)
     val loci = Common.loci(args, reads)
+    val (threshold, emitRef, emitNoCall) = (args.threshold, args.emitRef, args.emitNoCall)
     val genotypes: RDD[ADAMGenotype] = DistributedUtil.pileupFlatMap[ADAMGenotype](
       reads,
       loci,
       args.parallelism,
-      pileup => callVariantsAtLocus(threshold, pileup).iterator)
+      pileup => callVariantsAtLocus(pileup, threshold, emitRef, emitNoCall).iterator)
+    reads.unpersist()
     Common.writeVariants(args, genotypes)
   }
 
-  def callVariantsAtLocus(threshold_percent: Int, pileup: Pileup): Seq[ADAMGenotype] = {
+  def callVariantsAtLocus(
+    pileup: Pileup,
+    threshold_percent: Int,
+    emitRef: Boolean = true,
+    emitNoCall: Boolean = true): Seq[ADAMGenotype] = {
+
     // For now, we skip loci that have no reads mapped. We may instead want to emit NoCall in this case.
-    if (pileup.elements.isEmpty) {
-      log.warn("Skipping empty pileup at locus: %d".format(pileup.locus))
+    if (pileup.elements.isEmpty)
       return Seq.empty
-    }
 
     val refBase = pileup.referenceBase
     pileup.bySample.toSeq.flatMap({
@@ -91,11 +101,11 @@ object ThresholdVariantCaller extends Command with Serializable with Logging {
            * as the variant allele.
            */
           case Nil =>
-            variant(refBase, NoCall :: NoCall :: Nil) :: Nil
+            if (emitNoCall) (variant(refBase, NoCall :: NoCall :: Nil) :: Nil) else Nil
 
           // Hom Ref.
           case (base, count) :: Nil if base == refBase =>
-            variant(refBase, Ref :: Ref :: Nil) :: Nil
+            if (emitRef) (variant(refBase, Ref :: Ref :: Nil) :: Nil) else Nil
 
           // Hom alt.
           case (base: Char, count) :: Nil =>
