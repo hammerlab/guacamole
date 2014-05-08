@@ -164,7 +164,11 @@ object Pileup {
           if (read.record.mdTag.get.isMatch(locus)) { Match(base) }
           else { Mismatch(base) }
         case CigarOperator.D | CigarOperator.S | CigarOperator.N |
-          CigarOperator.H | CigarOperator.P => Deletion()
+          CigarOperator.H => Deletion()
+        case CigarOperator.P =>
+          // `P` CIGAR-ops should have been ignored earlier: 
+          // in `findNextCigarElement`
+          throw new AssertionError("Cannot deal with CIGAR-operator 'P'")
       }
     }
 
@@ -213,16 +217,18 @@ object Pileup {
       var currReferencePos = locus
       for (i <- indexInCigarElements until cigar.numCigarElements()) {
         val cigarElt = cigar.getCigarElement(i.toInt)
-        val cigarEltLen = cigarElt.getLength
-        val currEltEnd = currReferencePos + cigarEltLen
         val cigarOp = cigarElt.getOperator
-        if (currEltEnd > newLocus) {
-          val offset = newLocus - currReferencePos
-          val finalReadPos = if (cigarOp.consumesReadBases) currReadPos + offset else currReadPos
-          return (finalReadPos, i, offset)
+        if (cigarOp != CigarOperator.P) {
+          val cigarEltLen = cigarElt.getLength
+          val currEltEnd = currReferencePos + cigarEltLen
+          if (currEltEnd > newLocus) {
+            val offset = newLocus - currReferencePos
+            val finalReadPos = if (cigarOp.consumesReadBases) currReadPos + offset else currReadPos
+            return (finalReadPos, i, offset)
+          }
+          if (cigarOp.consumesReadBases) { currReadPos += cigarEltLen }
+          if (cigarOp.consumesReferenceBases) { currReferencePos += cigarEltLen }
         }
-        if (cigarOp.consumesReadBases) { currReadPos += cigarEltLen }
-        if (cigarOp.consumesReferenceBases) { currReferencePos += cigarEltLen }
       }
       throw new RuntimeException(
         "Couldn't find cigar element for locus %d, cigar string only extends to %d".format(newLocus, currReferencePos))
