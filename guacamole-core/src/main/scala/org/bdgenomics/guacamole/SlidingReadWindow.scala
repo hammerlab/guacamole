@@ -102,10 +102,6 @@ case class SlidingReadWindow(halfWindowSize: Long, rawSortedReads: Iterator[ADAM
 
     currentReadsPriorityQueue.enqueue(newReads: _*)
     assert(currentReadsPriorityQueue.forall(overlaps)) // Correctness check.
-    if (currentReadsPriorityQueue.isEmpty) {
-      log.warn("No reads overlap locus %d with half window size %d.".format(locus, halfWindowSize))
-      if (!sortedReads.hasNext) log.warn("Iterator of sorted reads is empty.")
-    }
     currentLocus = locus
     newReads // We return the newly added reads.
   }
