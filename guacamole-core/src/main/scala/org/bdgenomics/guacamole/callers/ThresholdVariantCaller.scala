@@ -19,7 +19,7 @@
 package org.bdgenomics.guacamole.callers
 
 import org.bdgenomics.adam.avro.{ ADAMContig, ADAMVariant, ADAMGenotypeAllele, ADAMGenotype }
-import org.bdgenomics.adam.avro.ADAMGenotypeAllele.{ NoCall, Ref, Alt }
+import org.bdgenomics.adam.avro.ADAMGenotypeAllele.{ NoCall, Ref, Alt, OtherAlt }
 import org.bdgenomics.guacamole._
 import scala.collection.JavaConversions
 import org.kohsuke.args4j.Option
@@ -41,29 +41,40 @@ object ThresholdVariantCaller extends Command with Serializable with Logging {
   private class Arguments extends Base with Output with Reads with DistributedUtil.Arguments {
     @Option(name = "-threshold", metaVar = "X", usage = "Make a call if at least X% of reads support it. Default: 8")
     var threshold: Int = 8
+
+    @Option(name = "-emit-ref", usage = "Output homozygous reference calls.")
+    var emitRef: Boolean = false
+
+    @Option(name = "-emit-no-call", usage = "Output no call calls.")
+    var emitNoCall: Boolean = false
   }
 
   override def run(rawArgs: Array[String]): Unit = {
     val args = Args4j[Arguments](rawArgs)
     val sc = Common.createSparkContext(args)
 
-    val threshold = args.threshold
     val reads = Common.loadReads(args, sc, mapped = true, nonDuplicate = true)
     val loci = Common.loci(args, reads)
+    val (threshold, emitRef, emitNoCall) = (args.threshold, args.emitRef, args.emitNoCall)
     val genotypes: RDD[ADAMGenotype] = DistributedUtil.pileupFlatMap[ADAMGenotype](
       reads,
       loci,
       args.parallelism,
-      callVariantsAtLocus(threshold, _))
+      pileup => callVariantsAtLocus(pileup, threshold, emitRef, emitNoCall).iterator)
+    reads.unpersist()
     Common.writeVariants(args, genotypes)
+    DelayedMessages.default.print()
   }
 
-  def callVariantsAtLocus(threshold_percent: Int, pileup: Pileup): Seq[ADAMGenotype] = {
+  def callVariantsAtLocus(
+    pileup: Pileup,
+    threshold_percent: Int,
+    emitRef: Boolean = true,
+    emitNoCall: Boolean = true): Seq[ADAMGenotype] = {
+
     // For now, we skip loci that have no reads mapped. We may instead want to emit NoCall in this case.
-    if (pileup.elements.isEmpty) {
-      log.warn("Skipping empty pileup at locus: %d".format(pileup.locus))
+    if (pileup.elements.isEmpty)
       return Seq.empty
-    }
 
     val refBase = pileup.referenceBase
     pileup.bySample.toSeq.flatMap({
@@ -91,11 +102,11 @@ object ThresholdVariantCaller extends Command with Serializable with Logging {
            * as the variant allele.
            */
           case Nil =>
-            variant(refBase, NoCall :: NoCall :: Nil) :: Nil
+            if (emitNoCall) (variant(refBase, NoCall :: NoCall :: Nil) :: Nil) else Nil
 
           // Hom Ref.
           case (base, count) :: Nil if base == refBase =>
-            variant(refBase, Ref :: Ref :: Nil) :: Nil
+            if (emitRef) (variant(refBase, Ref :: Ref :: Nil) :: Nil) else Nil
 
           // Hom alt.
           case (base: Char, count) :: Nil =>
@@ -106,9 +117,8 @@ object ThresholdVariantCaller extends Command with Serializable with Logging {
             variant(if (base1 != refBase) base1 else base2, Ref :: Alt :: Nil) :: Nil
 
           // Compound alt
-          // TODO: ADAM needs to have an "OtherAlt" allele for this case!
           case (base1, count1) :: (base2, count2) :: rest =>
-            variant(base1, Alt :: Alt :: Nil) :: variant(base2, Alt :: Alt :: Nil) :: Nil
+            variant(base1, Alt :: OtherAlt :: Nil) :: variant(base2, Alt :: OtherAlt :: Nil) :: Nil
         }
     })
   }

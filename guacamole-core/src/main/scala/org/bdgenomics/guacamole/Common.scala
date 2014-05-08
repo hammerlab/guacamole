@@ -47,7 +47,7 @@ object Common extends Logging {
     /** Argument for accepting a set of loci. */
     trait Loci extends Base {
       @Opt(name = "-loci", usage = "Loci at which to call variants. One of 'all', 'mapped', or contig:start-end,contig:start-end,...")
-      var loci: String = "mapped"
+      var loci: String = "all"
     }
 
     /** Argument for accepting a single set of reads (for non-somatic variant calling). */

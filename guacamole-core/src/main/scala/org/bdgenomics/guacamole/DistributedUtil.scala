@@ -1,13 +1,12 @@
 package org.bdgenomics.guacamole
 
 import org.bdgenomics.guacamole.Common._
-import scala.collection.immutable.NumericRange
 import org.apache.spark.rdd._
 import org.apache.spark.SparkContext._
 import org.bdgenomics.adam.avro.ADAMRecord
 import org.apache.spark.broadcast.Broadcast
 import org.bdgenomics.adam.rich.RichADAMRecord
-import org.apache.spark.Logging
+import org.apache.spark.{ Partitioner, Logging }
 import scala.reflect.ClassTag
 import org.bdgenomics.guacamole.Common.Arguments.{ Loci, Base }
 import org.kohsuke.args4j.{ Option => Opt }
@@ -32,26 +31,27 @@ object DistributedUtil extends Logging {
    */
   def partitionLociUniformly(tasks: Long, loci: LociSet): LociMap[Long] = {
     assume(tasks >= 1)
-    val lociPerTask = loci.count.toDouble / tasks.toDouble
+    val lociPerTask = math.max(1, loci.count.toDouble / tasks.toDouble)
     progress("Splitting loci evenly among %,d tasks = ~%,.0f loci per task".format(tasks, lociPerTask))
     val builder = LociMap.newBuilder[Long]
     var lociAssigned = 0L
-    loci.contigs.foreach(contig => {
-      val queue = scala.collection.mutable.Stack[NumericRange[Long]]()
-      queue.pushAll(loci.onContig(contig).ranges)
-      while (!queue.isEmpty) {
-        val range = queue.pop()
-        val task = math.floor(lociAssigned / lociPerTask).toLong
-        val remaining = math.round(((task + 1) * lociPerTask) - lociAssigned).toLong
-        val length: Long = math.min(remaining, range.length)
-        builder.put(contig, range.start, range.start + length, task)
+    var task = 0L
+    def remainingForThisTask = math.round(((task + 1) * lociPerTask) - lociAssigned).toLong
+    for (contig <- loci.contigs; range <- loci.onContig(contig).ranges) {
+      var start = range.start
+      val end = range.end
+      while (start < end) {
+        val length: Long = math.min(remainingForThisTask, end - start)
+        builder.put(contig, start, start + length, task)
+        start += length
         lociAssigned += length
-        if (length < range.length) {
-          queue.push(NumericRange[Long](range.start + length, range.end, 1))
-        }
+        if (remainingForThisTask == 0) task += 1
       }
-    })
-    builder.result
+    }
+    val result = builder.result
+    assert(lociAssigned == loci.count)
+    assert(result.count == loci.count)
+    result
   }
 
   /**
@@ -63,15 +63,15 @@ object DistributedUtil extends Logging {
   def pileupFlatMap[T: ClassTag](reads: RDD[ADAMRecord],
                                  loci: LociSet,
                                  tasks: Long,
-                                 function: Pileup => Seq[T]): RDD[T] = {
+                                 function: Pileup => Iterator[T]): RDD[T] = {
     windowTaskFlatMap(reads, loci, 0L, tasks, (task, taskLoci, taskReads) => {
       // The code here is running in parallel in each task.
 
       // A map from contig to iterator over reads that are in that contig:
-      val readsSplitByContig = splitReadsByContig(taskReads.iterator, taskLoci.contigs)
+      val readsSplitByContig = splitReadsByContig(taskReads, taskLoci.contigs)
 
       // Our result is the flatmap over both contigs and loci of the user function.
-      readsSplitByContig.toSeq.sortBy(_._1).flatMap({
+      readsSplitByContig.toSeq.sortBy(_._1).iterator.flatMap({
         case (contig, reads) => {
           val window = SlidingReadWindow(0L, reads)
           var maybePileup: Option[Pileup] = None
@@ -101,11 +101,11 @@ object DistributedUtil extends Logging {
                                  loci: LociSet,
                                  halfWindowSize: Long,
                                  tasks: Long,
-                                 function: SlidingReadWindow => Seq[T]): RDD[T] = {
+                                 function: SlidingReadWindow => Iterator[T]): RDD[T] = {
     windowTaskFlatMap(reads, loci, halfWindowSize, tasks, (task, taskLoci, taskReads) => {
-      val readsSplitByContig = splitReadsByContig(taskReads.iterator, taskLoci.contigs)
+      val readsSplitByContig = splitReadsByContig(taskReads, taskLoci.contigs)
       val slidingWindows = readsSplitByContig.mapValues(SlidingReadWindow(halfWindowSize, _))
-      slidingWindows.toSeq.sortBy(_._1).flatMap({
+      slidingWindows.toSeq.sortBy(_._1).iterator.flatMap({
         case (contig, window) => {
           loci.onContig(contig).individually.flatMap(locus => {
             window.setCurrentLocus(locus)
@@ -114,6 +114,24 @@ object DistributedUtil extends Logging {
         }
       })
     })
+  }
+
+  /**
+   * Spark partitioner for keyed RDDs that assigns each unique key its own partition.
+   * Used to partition an RDD of (task number: Long, read: ADAMRecord) pairs, giving each task its own partition.
+   *
+   * @param partitions total number of partitions
+   */
+  class PartitionByKey(partitions: Int) extends Partitioner {
+    def numPartitions = partitions
+    def getPartition(key: Any): Int = key match {
+      case value: Long => value.toInt
+      case _           => throw new AssertionError("Unexpected key in PartitionByTask")
+    }
+    override def equals(other: Any): Boolean = other match {
+      case h: PartitionByKey => h.numPartitions == numPartitions
+      case _                 => false
+    }
   }
 
   /**
@@ -152,37 +170,48 @@ object DistributedUtil extends Logging {
                                      loci: LociSet,
                                      halfWindowSize: Long,
                                      tasks: Long,
-                                     function: (Long, LociSet, Iterable[ADAMRecord]) => Seq[T]): RDD[T] = {
+                                     function: (Long, LociSet, Iterator[ADAMRecord]) => Iterator[T]): RDD[T] = {
     val numTasks = if (tasks == 0) reads.partitions.length else tasks
     val taskMap = partitionLociUniformly(numTasks, loci)
     progress("Loci partitioning: %s".format(taskMap.truncatedString()))
     val taskMapBoxed: Broadcast[LociMap[Long]] = reads.sparkContext.broadcast(taskMap)
-    val uniqueReads = reads.sparkContext.accumulator(0)
-    val tasksAndReads = reads.map(RichADAMRecord(_)).flatMap(read => {
-      val singleContig = taskMapBoxed.value.onContig(read.getContig.getContigName.toString)
-      val tasks = singleContig.getAll(read.start - halfWindowSize, read.end.get + halfWindowSize)
-      if (tasks.nonEmpty) {
-        uniqueReads += 1
-      }
-      tasks.map(task => (task, read.record))
-    })
-    tasksAndReads.persist()
 
-    // For some reason, the uniqueReads accumulator above isn't incremented -- any ideas?
-    // When it's made to work, we should print a message like this:
-    // progress("%d mapped reads -> %d relevant for loci -> %d expanded for task overlaps".format(
-    //  reads.count, uniqueReads.value, tasksAndReads.count))
-    // Instead of:
-    progress("Filtered %,d mapped reads -> %,d relevant reads (expanded for task overlaps)".format(
-      reads.count, tasksAndReads.count))
-    reads.unpersist()
-    val readsGroupedByTask = tasksAndReads.groupByKey(numTasks.toInt)
-    val results = readsGroupedByTask.flatMap({
-      case (task, taskReads) => {
-        val taskLoci = taskMapBoxed.value.asInverseMap(task)
-        log.info("Task %d handling %d reads for loci: %s".format(task, taskReads.length, taskLoci))
-        function(task, taskLoci, taskReads)
-      }
+    // Counters)
+    val totalReads = reads.sparkContext.accumulator(0L)
+    val relevantReads = reads.sparkContext.accumulator(0L)
+    val expandedReads = reads.sparkContext.accumulator(0L)
+    DelayedMessages.default.say { () =>
+      "Read counts: filtered %,d total reads to %,d relevant reads, expanded for overlaps to %,d".format(
+        totalReads.value,
+        relevantReads.value,
+        expandedReads.value)
+    }
+
+    // Expand reads into (task, read) pairs.
+    val taskNumberReadPairs = reads.map(RichADAMRecord(_)).flatMap(read => {
+      val singleContig = taskMapBoxed.value.onContig(read.getContig.getContigName.toString)
+      val thisReadsTasks = singleContig.getAll(read.start - halfWindowSize, read.end.get + halfWindowSize)
+
+      // Update counters
+      totalReads += 1
+      if (thisReadsTasks.nonEmpty) relevantReads += 1
+      expandedReads += thisReadsTasks.size
+
+      // Return this read, duplicated for each task it is assigned to.1
+      thisReadsTasks.map(task => (task, read.record))
+    })
+
+    // Each key (i.e. task) gets its own partition.
+    val partitioned = taskNumberReadPairs.partitionBy(new PartitionByKey(numTasks.toInt))
+
+    // Run the task on each partition.)
+    val results = partitioned.mapPartitionsWithIndex((taskNum: Int, taskNumAndReads) => {
+      val taskLoci = taskMapBoxed.value.asInverseMap(taskNum.toLong)
+      val taskReads = taskNumAndReads.map(pair => {
+        assert(pair._1 == taskNum)
+        pair._2
+      })
+      function(taskNum, taskLoci, taskReads)
     })
     results
   }
