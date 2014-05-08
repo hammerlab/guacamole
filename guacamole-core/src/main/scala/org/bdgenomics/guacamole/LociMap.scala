@@ -19,12 +19,11 @@
 package org.bdgenomics.guacamole
 
 import com.google.common.collect._
-import scala.collection.immutable.{ SortedMap, NumericRange }
-import scala.collection.{ mutable, JavaConversions }
+import scala.collection.immutable.{ SortedMap }
+import scala.collection.{AbstractIterator, Iterator, mutable, JavaConversions}
 import com.esotericsoftware.kryo.{ Serializer, Kryo }
 import com.esotericsoftware.kryo.io.{ Input, Output }
 import scala.Some
-import scala.collection.immutable.NumericRange.Exclusive
 import scala.collection.mutable.ArrayBuffer
 
 /**
@@ -98,9 +97,23 @@ case class LociMap[T](private val map: Map[String, LociMap.SingleContig[T]]) {
 }
 
 object LociMap {
-  // Make NumericRange instances comparable.
-  private implicit object RangeOrdering extends Ordering[NumericRange.Exclusive[Long]] with Serializable {
-    def compare(o1: NumericRange.Exclusive[Long], o2: NumericRange.Exclusive[Long]) = (o1.start - o2.start).toInt
+  case class SimpleRange(start: Long, end: Long) extends Ordered[SimpleRange] {
+    def iterator(): Iterator[Long] = new Iterator[Long] {
+      private var i = start
+      override def hasNext: Boolean = i < end
+      override def next(): Long =
+        if (hasNext) { val result = i; i += 1; result }
+        else Iterator.empty.next()
+    }
+    def length: Long = end - start
+
+    // Order is DESCENDING (i.e. reversed) from by start.
+    def compare(other: SimpleRange): Int = {
+      val diff = start - other.start
+      if (diff < 0) -1
+      else if (diff == 0) 0
+      else 1
+    }
   }
 
   // We're using Google's guava library, which is Java. We have to use java integer's instead of Scala's.
@@ -192,17 +205,17 @@ object LociMap {
     def contains(locus: Long): Boolean = get(locus).isDefined
 
     /** This map as a regular scala immutable map from exclusive numeric ranges to values. */
-    lazy val asMap: SortedMap[Exclusive[Long], T] = {
+    lazy val asMap: SortedMap[SimpleRange, T] = {
       val result = JavaConversions.mapAsScalaMap(rangeMap.asMapOfRanges).map(
-        pair => (NumericRange[Long](pair._1.lowerEndpoint, pair._1.upperEndpoint, 1), pair._2))
-      scala.collection.immutable.TreeMap[Exclusive[Long], T](result.toSeq: _*)
+        pair => (SimpleRange(pair._1.lowerEndpoint, pair._1.upperEndpoint), pair._2))
+      scala.collection.immutable.TreeMap[SimpleRange, T](result.toSeq: _*)
     }
 
     /** Number of loci in this map. */
     lazy val count: Long = ranges.toIterator.map(_.length).sum
 
     /** Returns a sequence of ranges giving the intervals of this map. */
-    lazy val ranges: Iterable[NumericRange[Long]] = asMap.keys
+    lazy val ranges: Iterable[SimpleRange] = asMap.keys
 
     /** Number of ranges in this map. */
     lazy val numRanges: Long = rangeMap.asMapOfRanges.size.toLong
