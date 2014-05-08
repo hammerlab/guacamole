@@ -54,4 +54,9 @@ class DistributedUtilSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
     val result7 = DistributedUtil.partitionLociUniformly(4, LociSet.parse("empty:10-10"))
     result7.toString should equal("")
   }
+
+  test("partitionLociUniformly performance") {
+    val bigSet = LociSet.parse("chr21:0-3000000000")
+    val result1 = DistributedUtil.partitionLociUniformly(2000, bigSet).asInverseMap
+  }
 }

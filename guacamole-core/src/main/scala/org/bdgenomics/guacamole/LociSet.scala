@@ -18,9 +18,9 @@
 
 package org.bdgenomics.guacamole
 
-import scala.collection.immutable.NumericRange
 import com.esotericsoftware.kryo.{ Serializer, Kryo }
 import com.esotericsoftware.kryo.io.{ Input, Output }
+import org.bdgenomics.guacamole.LociMap.SimpleRange
 
 /**
  * An immutable collection of genomic regions on any number of contigs.
@@ -126,7 +126,7 @@ object LociSet {
     def contains(locus: Long): Boolean = map.contains(locus)
 
     /** Returns a sequence of ranges giving the intervals of this set. */
-    def ranges(): Iterable[NumericRange[Long]] = map.ranges
+    def ranges(): Iterable[SimpleRange] = map.ranges
 
     /** Number of loci in this set. */
     def count(): Long = map.count
