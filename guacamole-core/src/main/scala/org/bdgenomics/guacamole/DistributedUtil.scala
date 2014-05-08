@@ -33,7 +33,7 @@ object DistributedUtil extends Logging {
    */
   def partitionLociUniformly(tasks: Long, loci: LociSet): LociMap[Long] = {
     assume(tasks >= 1)
-    val lociPerTask = loci.count.toDouble / tasks.toDouble
+    val lociPerTask = math.max(1, loci.count.toDouble / tasks.toDouble)
     progress("Splitting loci evenly among %,d tasks = ~%,.0f loci per task".format(tasks, lociPerTask))
     val builder = LociMap.newBuilder[Long]
     var lociAssigned = 0L

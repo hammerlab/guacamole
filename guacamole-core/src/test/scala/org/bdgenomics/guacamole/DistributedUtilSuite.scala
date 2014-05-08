@@ -44,5 +44,14 @@ class DistributedUtilSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
       expectedBuilder4.put("chrM", i + 1000, i + 1001, i)
     }
     result4 should equal(expectedBuilder4.result)
+
+    val result5 = DistributedUtil.partitionLociUniformly(3, LociSet.parse("chrM:0-10"))
+    result5.toString should equal("chrM:0-3=0,chrM:3-7=1,chrM:7-10=2")
+
+    val result6 = DistributedUtil.partitionLociUniformly(4, LociSet.parse("chrM:0-3"))
+    result6.toString should equal("chrM:0-1=0,chrM:1-2=1,chrM:2-3=2")
+
+    val result7 = DistributedUtil.partitionLociUniformly(4, LociSet.parse("empty:10-10"))
+    result7.toString should equal("")
   }
 }
