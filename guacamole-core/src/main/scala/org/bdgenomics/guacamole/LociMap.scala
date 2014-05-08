@@ -20,7 +20,7 @@ package org.bdgenomics.guacamole
 
 import com.google.common.collect._
 import scala.collection.immutable.{ SortedMap }
-import scala.collection.{AbstractIterator, Iterator, mutable, JavaConversions}
+import scala.collection.{ AbstractIterator, Iterator, mutable, JavaConversions }
 import com.esotericsoftware.kryo.{ Serializer, Kryo }
 import com.esotericsoftware.kryo.io.{ Input, Output }
 import scala.Some
@@ -97,7 +97,12 @@ case class LociMap[T](private val map: Map[String, LociMap.SingleContig[T]]) {
 }
 
 object LociMap {
+
+  /**
+   * A range of Longs. Inclusive on start, exclusive on end.
+   */
   case class SimpleRange(start: Long, end: Long) extends Ordered[SimpleRange] {
+    /** Iterate through elements in the range. */
     def iterator(): Iterator[Long] = new Iterator[Long] {
       private var i = start
       override def hasNext: Boolean = i < end
@@ -105,9 +110,10 @@ object LociMap {
         if (hasNext) { val result = i; i += 1; result }
         else Iterator.empty.next()
     }
+    /** Number of elements in the range. */
     def length: Long = end - start
 
-    // Order is DESCENDING (i.e. reversed) from by start.
+    /** Comparisons between ranges. Order is DESCENDING (i.e. reversed) from by start. */
     def compare(other: SimpleRange): Int = {
       val diff = start - other.start
       if (diff < 0) -1
