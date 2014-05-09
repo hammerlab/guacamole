@@ -217,9 +217,9 @@ object Pileup {
         val cigarElement = cigar.getCigarElement(i.toInt)
         val cigarOperator = cigarElement.getOperator
         // The 'P' (padding) operator is used to indicate a deletion-in-an-insertion. This only comes up when the
-        // aligner attempted not only only to align reads to the reference, but also to align inserted sequences within reads
+        // aligner attempted not only to align reads to the reference, but also to align inserted sequences within reads
         // to each other. In particular, a de novo assembler would automatically be doing this.
-        // We ignore this operator, since our simple Aligment handling code does not expose within-insertion alignments.
+        // We ignore this operator, since our simple Alignment handling code does not expose within-insertion alignments.
         // See: http://davetang.org/wiki/tiki-index.php?page=SAM
         if (cigarOperator != CigarOperator.P) {
           val cigarElementLength = cigarElement.getLength
