@@ -31,9 +31,9 @@ import org.bdgenomics.guacamole.LociMap.SimpleRange
  *
  * All intervals are half open: inclusive on start, exclusive on end.
  *
- * We implement a set by wrapping a LociMap that maps to Unit.
+ * We implement a set by wrapping a LociMap[Long], and ignoring the values of the map.
  *
- * @param map LociMap[Unit] instance
+ * @param map LociMap[Long] instance. The values are ignored, and the keys are the members of the LociSet.
  */
 case class LociSet(val map: LociMap[Long]) {
 
