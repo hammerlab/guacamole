@@ -269,7 +269,7 @@ object LociMap {
   }
 }
 
-// Serialization: currently only support LociMap[Long] and LociMap[Unit.
+// Serialization: currently only support LociMap[Long].
 class LociMapLongSerializer extends Serializer[LociMap[Long]] {
   def write(kryo: Kryo, output: Output, obj: LociMap[Long]) = {
     output.writeLong(obj.contigs.length)
