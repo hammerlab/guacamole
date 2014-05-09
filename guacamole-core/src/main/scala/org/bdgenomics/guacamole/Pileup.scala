@@ -19,7 +19,9 @@
 package org.bdgenomics.guacamole
 
 import org.bdgenomics.adam.rich.DecadentRead
+import scala.collection.JavaConversions._
 import net.sf.samtools.{ CigarElement, Cigar, CigarOperator, TextCigarCodec }
+import scala.annotation.tailrec
 
 /**
  * A [[Pileup]] at a locus contains a sequence of [[Pileup.Element]] instances, one for every read that overlaps that
@@ -124,7 +126,7 @@ object Pileup {
    * @param read The read this [[Element]] is coming from.
    * @param locus The reference locus.
    * @param readPosition The offset into the sequence of bases in the read that this element corresponds to.
-   * @param cigar The parsed cigar object of this read.
+   * @param remainingReadCigar A list of remaining parsed cigar elements of this read.
    * @param cigarElementLocus The reference START position of the cigar element.
    *                          If the element is an INSERTION this the PRECEDING reference base
    * @param indexInCigarElements Which cigar element in the read this element belongs to.
@@ -134,7 +136,7 @@ object Pileup {
       read: DecadentRead,
       locus: Long,
       readPosition: Long,
-      cigar: Cigar,
+      remainingReadCigar: List[CigarElement],
       cigarElementLocus: Long,
       indexInCigarElements: Long,
       indexWithinCigarElement: Long) {
@@ -142,6 +144,14 @@ object Pileup {
     assume(locus >= read.record.getStart)
     assume(locus < read.record.end.get)
     assume(read.record.mdTag.isDefined, "Record has no MDTag.")
+
+    lazy val cigarElement = remainingReadCigar.head
+    lazy val nextCigarElement = if (remainingReadCigar.tail.isEmpty) None else Some(remainingReadCigar.tail.head)
+
+    /*
+     * True if last base of the current cigar element
+     */
+    def isFinalCigarBase: Boolean = indexWithinCigarElement == cigarElement.getLength - 1
 
     /**
      * The alignment of a read combines the underlying Cigar operator
@@ -154,21 +164,24 @@ object Pileup {
     case class Mismatch(base: Char) extends Alignment
 
     lazy val alignment: Alignment = {
-      val cigarElement: CigarElement = cigar.getCigarElement(indexInCigarElements.toInt)
       val cigarOperator = cigarElement.getOperator
-      cigarOperator match {
-        case CigarOperator.I =>
-          val startPos: Int = readPosition.toInt
-          val endPos: Int = startPos + cigarElement.getLength - indexWithinCigarElement.toInt
-          val bases = read.record.getSequence.toString.subSequence(startPos, endPos).toString
+      val nextBaseCigarElement = if (isFinalCigarBase) nextCigarElement.map(_.getOperator) else cigarOperator
+      (cigarOperator, nextBaseCigarElement) match {
+        //To process insertions we connect the final base of a match to the rest of the insertion
+        case (CigarOperator.M, Some(CigarOperator.I)) | (CigarOperator.EQ, Some(CigarOperator.I)) | (CigarOperator.I, _) =>
+          val startReadOffset: Int = readPosition.toInt
+          val endReadOffset: Int = cigarElementLocus.toInt + cigarElement.getLength
+          val bases = read.record.getSequence.subSequence(startReadOffset, endReadOffset).toString
           Insertion(bases)
-        case CigarOperator.M | CigarOperator.EQ | CigarOperator.X =>
+        case (CigarOperator.M, _) | (CigarOperator.EQ, _) | (CigarOperator.X, _) =>
           val base: Char = read.record.getSequence.charAt(readPosition.toInt)
-          if (read.record.mdTag.get.isMatch(locus)) { Match(base) }
-          else { Mismatch(base) }
-        case CigarOperator.D | CigarOperator.S | CigarOperator.N |
-          CigarOperator.H => Deletion()
-        case CigarOperator.P =>
+          if (read.record.mdTag.get.isMatch(locus)) {
+            Match(base)
+          } else {
+            Mismatch(base)
+          }
+        case (CigarOperator.D, _) | (CigarOperator.S, _) | (CigarOperator.N, _) | (CigarOperator.H, _) => Deletion()
+        case (CigarOperator.P, _) =>
           throw new AssertionError("`P` CIGAR-ops should have been ignored earlier in `findNextCigarElement`")
       }
     }
@@ -221,47 +234,46 @@ object Pileup {
       val readEndPos = read.record.end.get
       assume(newLocus < readEndPos, "This read stops at position %d. Can't advance to %d".format(readEndPos, newLocus))
 
-      var currentReadPosition = if (cigar.getCigarElement(indexInCigarElements.toInt).getOperator.consumesReadBases()) {
+      val currentCigarReadPosition = if (cigarElement.getOperator.consumesReadBases()) {
         readPosition - indexWithinCigarElement
       } else {
         readPosition
       }
-
-      var currentCigarPosition = cigarElementLocus
       // Iterate through the remaining cigar elements to find one overlapping the current position
-      for (i <- indexInCigarElements until cigar.numCigarElements()) {
-        val cigarElement = cigar.getCigarElement(i.toInt)
-        val cigarOperator = cigarElement.getOperator
+      @tailrec
+      def getCurrentElement(remainingCigarElements: List[CigarElement], cigarReadPosition: Long, cigarReferencePosition: Long, cigarElementIndex: Long): Element = {
+        if (remainingCigarElements.isEmpty) {
+          throw new RuntimeException(
+            "Couldn't find cigar element for locus %d, cigar string only extends to %d".format(newLocus, cigarReferencePosition))
+        }
+        val nextCigarElement = remainingCigarElements.head
+        val cigarOperator = nextCigarElement.getOperator
+        val cigarElementReadLength = CigarUtils.getReadLength(nextCigarElement)
+        val cigarElementReferenceLength = CigarUtils.getReferenceLength(nextCigarElement)
         // The 'P' (padding) operator is used to indicate a deletion-in-an-insertion. This only comes up when the
         // aligner attempted not only to align reads to the reference, but also to align inserted sequences within reads
         // to each other. In particular, a de novo assembler would automatically be doing this.
         // We ignore this operator, since our simple Alignment handling code does not expose within-insertion alignments.
         // See: http://davetang.org/wiki/tiki-index.php?page=SAM
         if (cigarOperator != CigarOperator.P) {
-          val cigarElementLength = cigarElement.getLength
-          val currentElementEnd = currentCigarPosition + cigarElementLength
+          val currentElementEnd = cigarReferencePosition + cigarElementReferenceLength
           if (currentElementEnd > newLocus) {
-            val offset = newLocus - currentCigarPosition
-            val finalReadPos = if (cigarOperator.consumesReadBases) currentReadPosition + offset else currentReadPosition
+            val offset = newLocus - cigarReferencePosition
+            val finalReadPos = if (cigarOperator.consumesReadBases) cigarReadPosition + offset else cigarReadPosition
             return Element(
               read,
               newLocus,
               finalReadPos,
-              cigar,
-              currentCigarPosition,
-              i,
+              remainingCigarElements,
+              cigarReferencePosition,
+              cigarElementIndex,
               offset)
           }
-          if (cigarOperator.consumesReadBases) {
-            currentReadPosition += cigarElementLength
-          }
-          if (cigarOperator.consumesReferenceBases) {
-            currentCigarPosition += cigarElementLength
-          }
         }
+        getCurrentElement(remainingCigarElements.tail, cigarReadPosition + cigarElementReadLength, cigarReferencePosition + cigarElementReferenceLength, cigarElementIndex + 1)
       }
-      throw new RuntimeException(
-        "Couldn't find cigar element for locus %d, cigar string only extends to %d".format(newLocus, currentCigarPosition))
+
+      getCurrentElement(remainingReadCigar, currentCigarReadPosition, cigarElementLocus, indexInCigarElements)
     }
   }
 
@@ -276,15 +288,16 @@ object Pileup {
       assume(read.record.end.isDefined)
       assume(locus < read.record.end.get)
 
-      val cigar = TextCigarCodec.getSingleton.decode(read.record.getCigar.toString)
+      val cigar = TextCigarCodec.getSingleton.decode(read.record.getCigar.toString).getCigarElements.toList
       val startElement = Element(
         read = read,
         locus = read.record.getStart,
         readPosition = 0,
-        cigar = cigar,
+        remainingReadCigar = cigar,
         cigarElementLocus = read.record.getStart,
         indexInCigarElements = 0,
         indexWithinCigarElement = 0)
+
       startElement.elementAtGreaterLocus(locus)
     }
   }
