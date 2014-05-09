@@ -31,11 +31,11 @@ import org.bdgenomics.guacamole.LociMap.SimpleRange
  *
  * All intervals are half open: inclusive on start, exclusive on end.
  *
- * We implement a set by wrapping a LociMap that maps to Unit.
+ * We implement a set by wrapping a LociMap[Long], and ignoring the values of the map.
  *
- * @param map LociMap[Unit] instance
+ * @param map LociMap[Long] instance. The values are ignored, and the keys are the members of the LociSet.
  */
-case class LociSet(val map: LociMap[Unit]) {
+case class LociSet(val map: LociMap[Long]) {
 
   /** The contigs included in this LociSet with a nonempty set of loci. */
   lazy val contigs: Seq[String] = map.contigs
@@ -64,7 +64,7 @@ case class LociSet(val map: LociMap[Unit]) {
 }
 object LociSet {
   /** An empty LociSet. */
-  val empty = LociSet(LociMap[Unit]())
+  val empty = LociSet(LociMap[Long]())
 
   /**
    * Return a new builder instance for constructing a LociSet.
@@ -75,13 +75,13 @@ object LociSet {
    * Class for constructing a LociSet.
    */
   class Builder {
-    val wrapped = new LociMap.Builder[Unit]
+    val wrapped = new LociMap.Builder[Long]
 
     /**
      * Add an interval to the LociSet under construction.
      */
     def put(contig: String, start: Long, end: Long): Builder = {
-      wrapped.put(contig, start, end, Unit)
+      wrapped.put(contig, start, end, 0)
       this
     }
 
@@ -120,7 +120,7 @@ object LociSet {
   /**
    * A set of loci on a single contig.
    */
-  case class SingleContig(map: LociMap.SingleContig[Unit]) {
+  case class SingleContig(map: LociMap.SingleContig[Long]) {
 
     /** Is the given locus contained in this set? */
     def contains(locus: Long): Boolean = map.contains(locus)
@@ -150,13 +150,13 @@ object LociSet {
   }
 }
 
-// Serialization: just delegate to LociMap[Unit].
+// Serialization: just delegate to LociMap[Long].
 class LociSetSerializer extends Serializer[LociSet] {
   def write(kryo: Kryo, output: Output, obj: LociSet) = {
     kryo.writeObject(output, obj.map)
   }
   def read(kryo: Kryo, input: Input, klass: Class[LociSet]): LociSet = {
-    LociSet(kryo.readObject(input, classOf[LociMap[Unit]]))
+    LociSet(kryo.readObject(input, classOf[LociMap[Long]]))
   }
 }
 
@@ -165,6 +165,6 @@ class LociSetSingleContigSerializer extends Serializer[LociSet.SingleContig] {
     kryo.writeObject(output, obj.map)
   }
   def read(kryo: Kryo, input: Input, klass: Class[LociSet.SingleContig]): LociSet.SingleContig = {
-    LociSet.SingleContig(kryo.readObject(input, classOf[LociMap.SingleContig[Unit]]))
+    LociSet.SingleContig(kryo.readObject(input, classOf[LociMap.SingleContig[Long]]))
   }
 }

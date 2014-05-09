@@ -269,7 +269,7 @@ object LociMap {
   }
 }
 
-// Serialization: currently only support LociMap[Long] and LociMap[Unit.
+// Serialization: currently only support LociMap[Long].
 class LociMapLongSerializer extends Serializer[LociMap[Long]] {
   def write(kryo: Kryo, output: Output, obj: LociMap[Long]) = {
     output.writeLong(obj.contigs.length)
@@ -307,45 +307,6 @@ class LociMapLongSingleContigSerializer extends Serializer[LociMap.SingleContig[
       val end = input.readLong()
       val value = input.readLong()
       builder.put(contig, start, end, value)
-    })
-    builder.result.onContig(contig)
-  }
-}
-class LociMapUnitSerializer extends Serializer[LociMap[Unit]] {
-  def write(kryo: Kryo, output: Output, obj: LociMap[Unit]) = {
-    output.writeLong(obj.contigs.length)
-    obj.contigs.foreach(contig => {
-      kryo.writeObject(output, obj.onContig(contig))
-    })
-  }
-  def read(kryo: Kryo, input: Input, klass: Class[LociMap[Unit]]): LociMap[Unit] = {
-    val count: Long = input.readLong()
-    val pairs = (0L until count).map(i => {
-      val obj = kryo.readObject(input, classOf[LociMap.SingleContig[Unit]])
-      obj.contig -> obj
-    })
-    LociMap[Unit](Map[String, LociMap.SingleContig[Unit]](pairs: _*))
-  }
-}
-class LociMapUnitSingleContigSerializer extends Serializer[LociMap.SingleContig[Unit]] {
-  def write(kryo: Kryo, output: Output, obj: LociMap.SingleContig[Unit]) = {
-    output.writeString(obj.contig.toCharArray)
-    output.writeLong(obj.asMap.size)
-    obj.asMap.foreach({
-      case (range, value) => {
-        output.writeLong(range.start)
-        output.writeLong(range.end)
-      }
-    })
-  }
-  def read(kryo: Kryo, input: Input, klass: Class[LociMap.SingleContig[Unit]]): LociMap.SingleContig[Unit] = {
-    val builder = LociMap.newBuilder[Unit]()
-    val contig = input.readString()
-    val count = input.readLong()
-    (0L until count).foreach(i => {
-      val start = input.readLong()
-      val end = input.readLong()
-      builder.put(contig, start, end, Unit)
     })
     builder.result.onContig(contig)
   }
