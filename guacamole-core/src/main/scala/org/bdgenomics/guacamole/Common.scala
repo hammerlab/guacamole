@@ -30,6 +30,17 @@ import java.util
 import java.util.Calendar
 import org.bdgenomics.adam.rich.RichADAMRecord
 import org.bdgenomics.adam.rdd.ADAMContext
+import fi.tkk.ics.hadoop.bam.{ SAMRecordWritable, AnySAMInputFormat }
+import fi.tkk.ics.hadoop.bam.util.SAMHeaderReader
+import java.util.regex.Pattern
+import net.sf.samtools.SAMFileHeader
+import net.sf.samtools.SAMRecord
+import org.apache.hadoop.fs.Path
+import org.bdgenomics.adam.util.HadoopUtil
+import org.apache.hadoop.io.LongWritable
+import parquet.hadoop.util.ContextUtil
+import org.bdgenomics.adam.models.{ RecordGroupDictionary, SequenceDictionary }
+import org.apache.hadoop.conf.Configuration
 
 /**
  * Collection of functions that are useful to multiple variant calling implementations, and specifications of command-
@@ -67,7 +78,15 @@ object Common extends Logging {
 
     /** Argument for writing output genotypes. */
     trait Output extends Base {
-      @Opt(name = "-out", metaVar = "VARIANTS_OUT", required = true, usage = "Variant output")
+      @Opt(name = "-out", metaVar = "VARIANTS_OUT", required = true, usage = "Variant output path")
+      var variantOutput: String = ""
+    }
+
+    trait OptionalOutput extends Base {
+      @Opt(name = "-out",
+        metaVar = "VARIANTS_OUT",
+        required = false,
+        usage = "Variant output path (if missing, print to screen)")
       var variantOutput: String = ""
     }
 
@@ -193,6 +212,21 @@ object Common extends Logging {
 
   /**
    * Write out an RDD of ADAMGenotype instances to a file.
+   * @param path path to output file
+   * @param genotypes ADAM genotypes (i.e. the variants)
+   */
+  def writeVariantsToPath(path: String, args: ParquetArgs, genotypes: RDD[ADAMGenotype]): Unit = {
+    progress("Writing %,d genotypes to: %s.".format(genotypes.count, path))
+    genotypes.adamSave(path,
+      args.blockSize,
+      args.pageSize,
+      args.compressionCodec,
+      args.disableDictionary)
+    progress("Done writing.")
+  }
+
+  /**
+   * Write out an RDD of ADAMGenotype instances to a file.
    * @param args parsed arguments
    * @param genotypes ADAM genotypes (i.e. the variants)
    */
@@ -229,7 +263,10 @@ object Common extends Logging {
    * @param loadSystemValues
    * @param sparkDriverPort
    */
-  def createSparkContext(args: SparkArgs, loadSystemValues: Boolean = true, sparkDriverPort: Option[Int] = None, appName: Option[String] = None): SparkContext = {
+  def createSparkContext(args: SparkArgs,
+                         loadSystemValues: Boolean = true,
+                         sparkDriverPort: Option[Int] = None,
+                         appName: Option[String] = None): SparkContext = {
     val config: SparkConf = new SparkConf(loadSystemValues).setMaster(args.spark_master)
     appName match {
       case Some(name) => config.setAppName("guacamole: %s".format(name))
@@ -247,10 +284,12 @@ object Common extends Logging {
 
     // Setup the Kryo settings
     // The spark.kryo.registrator setting below is our only modification from ADAM's version of this function.
-    config.setAll(Array[(String, String)](("spark.serializer", "org.apache.spark.serializer.KryoSerializer"),
-      ("spark.kryo.registrator", "org.bdgenomics.guacamole.GuacamoleKryoRegistrator"),
-      ("spark.kryoserializer.buffer.mb", args.spark_kryo_buffer_size.toString),
-      ("spark.kryo.referenceTracking", "false")))
+    config.setAll(
+      Seq(
+        ("spark.serializer", "org.apache.spark.serializer.KryoSerializer"),
+        ("spark.kryo.registrator", "org.bdgenomics.guacamole.GuacamoleKryoRegistrator"),
+        ("spark.kryoserializer.buffer.mb", args.spark_kryo_buffer_size.toString),
+        ("spark.kryo.referenceTracking", "false")))
 
     val sc = new SparkContext(config)
     if (args.spark_add_stats_listener) {
