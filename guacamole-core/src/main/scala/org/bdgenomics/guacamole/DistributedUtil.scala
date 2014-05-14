@@ -177,7 +177,7 @@ object DistributedUtil extends Logging {
     progress("Loci partitioning: %s".format(taskMap.truncatedString()))
     val taskMapBoxed: Broadcast[LociMap[Long]] = reads.sparkContext.broadcast(taskMap)
 
-    // Counters)
+    // Counters
     val totalReads = reads.sparkContext.accumulator(0L)
     val relevantReads = reads.sparkContext.accumulator(0L)
     val expandedReads = reads.sparkContext.accumulator(0L)
@@ -198,7 +198,7 @@ object DistributedUtil extends Logging {
       if (thisReadsTasks.nonEmpty) relevantReads += 1
       expandedReads += thisReadsTasks.size
 
-      // Return this read, duplicated for each task it is assigned to.1
+      // Return this read, duplicated for each task it is assigned to.
       thisReadsTasks.map(task => (task, read.record))
     })
 
@@ -212,7 +212,13 @@ object DistributedUtil extends Logging {
         assert(pair._1 == taskNum)
         pair._2
       })
-      function(taskNum, taskLoci, taskReads)
+
+      // We need to invoke the function on an iterator of sorted reads. For now, we just load the reads into memory,
+      // sort them by start position, and use an iterator of this. This of course means we load all the reads into memory,
+      // which obviates the advantages of using iterators everywhere else. A better solution would be to somehow have
+      // the data already sorted on each partition. Note that sorting the whole RDD of reads is unnecessary, so we're
+      // avoiding it -- we just need that the reads on each task are sorted, no need to merge them across tasks.
+      function(taskNum, taskLoci, taskReads.toSeq.sortBy(_.start).iterator)
     })
     results
   }
