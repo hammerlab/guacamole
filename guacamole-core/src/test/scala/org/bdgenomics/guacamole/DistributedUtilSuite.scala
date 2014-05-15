@@ -22,7 +22,7 @@ import org.scalatest.matchers.ShouldMatchers
 import org.bdgenomics.adam.avro.{ ADAMGenotypeAllele, ADAMGenotype }
 import org.bdgenomics.guacamole.callers.ThresholdVariantCaller
 import scala.collection.JavaConversions._
-import org.bdgenomics.guacamole.pileup.Pileup
+import org.bdgenomics.guacamole.pileup.{ PileupElement, Pileup }
 
 class DistributedUtilSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
 
@@ -120,7 +120,7 @@ class DistributedUtilSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
       TestUtil.makeRead("TCGATCGA", "8M", "8", 1),
       TestUtil.makeRead("TCGATCGA", "8M", "8", 1)))
 
-    val pileups = DistributedUtil.pileupFlatMap[Pileup.Element](
+    val pileups = DistributedUtil.pileupFlatMap[PileupElement](
       reads,
       LociSet.parse("chr1:1-9"),
       5,
@@ -139,7 +139,7 @@ class DistributedUtilSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
       TestUtil.makeRead("TCGATCGA", "8M", "8", 1),
       TestUtil.makeRead("TCGACCCTCGA", "4M3I4M", "8", 1)))
 
-    val pileups = DistributedUtil.pileupFlatMap[Pileup.Element](
+    val pileups = DistributedUtil.pileupFlatMap[PileupElement](
       reads,
       LociSet.parse("chr1:1-12"),
       5,
