@@ -48,7 +48,7 @@ case class LociMap[T](private val map: Map[String, LociMap.SingleContig[T]]) {
   /** Does the LociMap contain any loci? */
   lazy val nonEmpty = count > 0
   lazy val empty = count == 0
-  
+
   /** The "inverse map", i.e. a T -> LociSet map that gives the loci that map to each value. */
   lazy val asInverseMap: Map[T, LociSet] = {
     val mapOfBuilders = new mutable.HashMap[T, LociSet.Builder]()
