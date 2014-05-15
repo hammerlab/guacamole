@@ -16,14 +16,14 @@
  * limitations under the License.
  */
 
-package org.bdgenomics.guacamole
+package org.bdgenomics.guacamole.pileup
 
 import org.bdgenomics.adam.avro.ADAMRecord
 import org.scalatest.matchers.ShouldMatchers
 import org.bdgenomics.adam.rich.DecadentRead
 import org.bdgenomics.adam.rdd.ADAMContext._
 import org.apache.spark.rdd.RDD
-import org.bdgenomics.guacamole.pileup.{ Mismatch, Match, Insertion, Pileup }
+import org.bdgenomics.guacamole.TestUtil
 
 class PileupSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
 
@@ -144,7 +144,7 @@ class PileupSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
 
   test("test pileup element creation") {
     val read = TestUtil.makeDecadentRead("AATTG", "5M", "5", 0, "chr1")
-    val firstElement = Pileup.Element(read, 0)
+    val firstElement = PileupElement(read, 0)
 
     firstElement.isMatch should be(true)
     firstElement.indexInCigarElements should be(0L)
@@ -165,12 +165,12 @@ class PileupSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
   test("test pileup element creation with multiple cigar elements") {
     val read = TestUtil.makeDecadentRead("AAATTT", "3M3M", "6", 0, "chr1")
 
-    val secondMatch = Pileup.Element(read, 3)
+    val secondMatch = PileupElement(read, 3)
     secondMatch.isMatch should be(true)
     secondMatch.indexInCigarElements should be(1L)
     secondMatch.indexWithinCigarElement should be(0L)
 
-    val secondMatchSecondElement = Pileup.Element(read, 4)
+    val secondMatchSecondElement = PileupElement(read, 4)
     secondMatchSecondElement.isMatch should be(true)
     secondMatchSecondElement.indexInCigarElements should be(1L)
     secondMatchSecondElement.indexWithinCigarElement should be(1L)
@@ -179,7 +179,7 @@ class PileupSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
 
   test("test pileup element creation with deletion cigar elements") {
     val read = TestUtil.makeDecadentRead("AATTGAATTG", "5M1D5M", "5^C5", 0, "chr1")
-    val firstElement = Pileup.Element(read, 0)
+    val firstElement = PileupElement(read, 0)
 
     firstElement.isMatch should be(true)
     firstElement.indexInCigarElements should be(0L)
@@ -225,7 +225,7 @@ class PileupSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
 
   sparkTest("Pileup.Element basic test") {
     intercept[NullPointerException] {
-      val e = Pileup.Element(null, 42)
+      val e = PileupElement(null, 42)
     }
 
     val read1Record = testAdamRecords(0)
@@ -234,45 +234,45 @@ class PileupSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
     // read1 starts at SAM:6 → 0-based 5
     // and has CIGAR: 29M10D31M
     // so, the length is 70
-    intercept[AssertionError] { Pileup.Element(decadentRead1, 0) }
-    intercept[AssertionError] { Pileup.Element(decadentRead1, 4) }
-    intercept[AssertionError] { Pileup.Element(decadentRead1, 5 + 70) }
-    val at5 = Pileup.Element(decadentRead1, 5)
+    intercept[AssertionError] { PileupElement(decadentRead1, 0) }
+    intercept[AssertionError] { PileupElement(decadentRead1, 4) }
+    intercept[AssertionError] { PileupElement(decadentRead1, 5 + 70) }
+    val at5 = PileupElement(decadentRead1, 5)
     assert(at5 != null)
     assert(at5.sequenceRead == "A")
     assert(at5.singleBaseRead == 'A')
 
     // At the end of the read:
-    assert(Pileup.Element(decadentRead1, 74) != null)
-    intercept[AssertionError] { Pileup.Element(decadentRead1, 75) }
+    assert(PileupElement(decadentRead1, 74) != null)
+    intercept[AssertionError] { PileupElement(decadentRead1, 75) }
 
     // Just before the deletion
-    val at28 = Pileup.Element(decadentRead1, 5 + 28)
+    val at28 = PileupElement(decadentRead1, 5 + 28)
     assert(at28.sequenceRead === "A")
     // Inside the deletion
-    val at29 = Pileup.Element(decadentRead1, 5 + 29)
+    val at29 = PileupElement(decadentRead1, 5 + 29)
     assert(at29.sequenceRead === "")
-    val at38 = Pileup.Element(decadentRead1, 5 + 38)
+    val at38 = PileupElement(decadentRead1, 5 + 38)
     assert(at38.sequenceRead === "")
     // Just after the deletion
-    val at39 = Pileup.Element(decadentRead1, 5 + 39)
+    val at39 = PileupElement(decadentRead1, 5 + 39)
     assert(at39.sequenceRead === "A")
 
     //  `read2` has an insertion: 5M5I34M10D16M
     val read2Record = testAdamRecords(1) // read2
     val decadentRead2 = new DecadentRead(read2Record)
-    val read2At10 = Pileup.Element(decadentRead2, 10)
+    val read2At10 = PileupElement(decadentRead2, 10)
     assert(read2At10 != null)
     assert(read2At10.sequenceRead === "A")
     // right after the insert
-    val read2At20 = Pileup.Element(decadentRead2, 20)
+    val read2At20 = PileupElement(decadentRead2, 20)
     assert(read2At20.sequenceRead === "A")
 
     // elementAtGreaterLocus is a no-op on the same locus, 
     // and fails in lower loci
     val loci = Seq(5, 33, 34, 43, 44, 74)
     loci.map({ l =>
-      val elt = Pileup.Element(decadentRead1, l)
+      val elt = PileupElement(decadentRead1, l)
       assert(elt.elementAtGreaterLocus(l) === elt)
       intercept[AssertionError] { elt.elementAtGreaterLocus(l - 1) }
       intercept[AssertionError] { elt.elementAtGreaterLocus(75) }
@@ -280,7 +280,7 @@ class PileupSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
 
     val read3Record = testAdamRecords(2) // read3
     val decadentRead3 = new DecadentRead(read3Record)
-    val read3At15 = Pileup.Element(decadentRead3, 15)
+    val read3At15 = PileupElement(decadentRead3, 15)
     assert(read3At15 != null)
     assert(read3At15.sequenceRead == "A")
     assert(read3At15.elementAtGreaterLocus(16).sequenceRead == "T")
@@ -293,7 +293,7 @@ class PileupSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
     // Read4 has CIGAR: 10M10I10D40M
     // It's ACGT repeated 15 times
     val decadentRead4 = new DecadentRead(testAdamRecords(3))
-    val read4At20 = Pileup.Element(decadentRead4, 20)
+    val read4At20 = PileupElement(decadentRead4, 20)
     assert(read4At20 != null)
     for (i <- 0 until 2) {
       assert(read4At20.elementAtGreaterLocus(20 + i * 4 + 0).sequenceRead(0) == 'A')
@@ -308,7 +308,7 @@ class PileupSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
     // Read5: ACGTACGTACGTACG, 5M4=1X5=, [10; 25[
     //        MMMMM====G=====
     val decadentRead5 = new DecadentRead(testAdamRecords(4))
-    val read5At10 = Pileup.Element(decadentRead5, 10)
+    val read5At10 = PileupElement(decadentRead5, 10)
     assert(read5At10 != null)
     assert(read5At10.elementAtGreaterLocus(10).sequenceRead === "A")
     assert(read5At10.elementAtGreaterLocus(14).sequenceRead === "A")
@@ -324,7 +324,7 @@ class PileupSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
     // Read6: ACGTACGTACGT 4=1N4=4S
     // one `N` and soft-clipping at the end
     val decadentRead6 = new DecadentRead(testAdamRecords(5))
-    val read6At40 = Pileup.Element(decadentRead6, 40)
+    val read6At40 = PileupElement(decadentRead6, 40)
     assert(read6At40 != null)
     assert(read6At40.elementAtGreaterLocus(40).sequenceRead === "A")
     assert(read6At40.elementAtGreaterLocus(41).sequenceRead === "C")
@@ -343,7 +343,7 @@ class PileupSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
 
   test("read7: ACGTACGT 4=1N4=4H, one `N` and hard-clipping at the end") {
     val decadentRead7 = new DecadentRead(testAdamRecords(6))
-    val read7At40 = Pileup.Element(decadentRead7, 40)
+    val read7At40 = PileupElement(decadentRead7, 40)
     assert(read7At40 != null)
     assert(read7At40.elementAtGreaterLocus(40).sequenceRead === "A")
     assert(read7At40.elementAtGreaterLocus(41).sequenceRead === "C")
@@ -364,7 +364,7 @@ class PileupSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
     // virtual insertion)
     // 4=1P4= should be equivalent to 8=
     val decadentRead8 = new DecadentRead(testAdamRecords(7))
-    val read8At40 = Pileup.Element(decadentRead8, 40)
+    val read8At40 = PileupElement(decadentRead8, 40)
     assert(read8At40 != null)
     assert(read8At40.elementAtGreaterLocus(40).sequenceRead === "A")
     assert(read8At40.elementAtGreaterLocus(41).sequenceRead === "C")
