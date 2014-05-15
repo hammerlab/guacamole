@@ -23,6 +23,7 @@ import org.scalatest.matchers.ShouldMatchers
 import org.bdgenomics.adam.rich.DecadentRead
 import org.bdgenomics.adam.rdd.ADAMContext._
 import org.apache.spark.rdd.RDD
+import org.bdgenomics.guacamole.pileup.{ Mismatch, Match, Insertion, Pileup }
 
 class PileupSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
 
@@ -53,26 +54,52 @@ class PileupSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
     assert(noPileup.size === 0)
 
     val firstPileup = Pileup(reads, 1)
-    assert(firstPileup.elements.forall(_.isMatch == true))
+    firstPileup.elements.forall(_.isMatch) should be(true)
+    firstPileup.elements.forall(_.qualityScore == 31) should be(true)
 
     val insertPileup = Pileup(reads, 4)
-    assert(insertPileup.elements.exists(_.isInsertion == true))
+    insertPileup.elements.exists(_.isInsertion) should be(true)
+    insertPileup.elements.forall(_.qualityScore == 31) should be(true)
 
+    insertPileup.elements.forall(
+      _.alignment match {
+        case Match(_, quality)       => quality == 31
+        case Insertion(_, qualities) => qualities.sameElements(Array(31, 31, 31, 31))
+        case _                       => false
+      }) should be(true)
   }
 
-  test("create pileup from long insert reads; middle of insertion") {
+  test("create pileup from long insert reads; different qualities in insertion") {
     val reads = Seq(
-      TestUtil.makeDecadentRead("TCGATCGA", "8M", "8", 1),
-      TestUtil.makeDecadentRead("TCGATCGA", "8M", "8", 1),
-      TestUtil.makeDecadentRead("TCGACCCTCGA", "4M3I4M", "8", 1))
+      TestUtil.makeDecadentRead("TCGATCGA", "8M", "8", 1, "chr1", Some(Array(10, 15, 20, 25, 10, 15, 20, 25))),
+      TestUtil.makeDecadentRead("TCGATCGA", "8M", "8", 1, "chr1", Some(Array(10, 15, 20, 25, 10, 15, 20, 25))),
+      TestUtil.makeDecadentRead("TCGACCCTCGA", "4M3I4M", "8", 1, "chr1", Some(Array(10, 15, 20, 25, 5, 5, 5, 10, 15, 20, 25))))
+
+    val insertPileup = Pileup(reads, 4)
+    insertPileup.elements.exists(_.isInsertion) should be(true)
+    insertPileup.elements.exists(_.qualityScore == 5) should be(true)
+
+    insertPileup.elements.forall(
+      _.alignment match {
+        case Match(_, quality)       => quality == 25
+        case Insertion(_, qualities) => qualities.sameElements(Array(25, 5, 5, 5))
+        case _                       => false
+      }) should be(true)
+  }
+
+  test("create pileup from long insert reads; right after insertion") {
+    val reads = Seq(
+      TestUtil.makeDecadentRead("TCGATCGA", "8M", "8", 1, "chr1", Some(Array(10, 15, 20, 25, 10, 15, 20, 25))),
+      TestUtil.makeDecadentRead("TCGATCGA", "8M", "8", 1, "chr1", Some(Array(10, 15, 20, 25, 10, 15, 20, 25))),
+      TestUtil.makeDecadentRead("TCGACCCTCGA", "4M3I4M", "8", 1, "chr1", Some(Array(10, 15, 20, 25, 5, 5, 5, 10, 15, 20, 25))))
 
     val noPileup = Pileup(reads, 0).elements
-    assert(noPileup.size === 0)
+    noPileup.size should be(0)
 
-    val insertPileup = Pileup(reads, 6)
-    println(insertPileup.elements.map(_.sequenceRead))
+    val pastInsertPileup = Pileup(reads, 5)
+    pastInsertPileup.elements.forall(_.isMatch) should be(true)
 
-    assert(insertPileup.elements.forall(_.isMatch == true))
+    pastInsertPileup.elements.forall(_.qualityScore == 10) should be(true)
 
   }
 
@@ -81,26 +108,25 @@ class PileupSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
       TestUtil.makeDecadentRead("TCGATCGA", "8M", "8", 1),
       TestUtil.makeDecadentRead("TCGATCGA", "8M", "8", 1),
       TestUtil.makeDecadentRead("TCGACCCTCGA", "4M3I4M", "8", 1))
-
     val lastPileup = Pileup(reads, 7)
-    assert(lastPileup.elements.forall(_.sequenceRead == "G"))
+    lastPileup.elements.forall(_.sequenceRead == "G") should be(true)
 
-    assert(lastPileup.elements.forall(_.isMatch == true))
-
+    lastPileup.elements.forall(_.isMatch) should be(true)
   }
 
   test("create pileup from long insert reads; end of read") {
+
     val reads = Seq(
-      TestUtil.makeDecadentRead("TCGATCGA", "8M", "8", 1),
-      TestUtil.makeDecadentRead("TCGATCGA", "8M", "8", 1),
-      TestUtil.makeDecadentRead("TCGACCCTCGA", "4M3I4M", "8", 1))
+      TestUtil.makeDecadentRead("TCGATCGA", "8M", "8", 1, "chr1", Some(Array(10, 15, 20, 25, 10, 15, 20, 25))),
+      TestUtil.makeDecadentRead("TCGATCGA", "8M", "8", 1, "chr1", Some(Array(10, 15, 20, 25, 10, 15, 20, 25))),
+      TestUtil.makeDecadentRead("TCGACCCTCGA", "4M3I4M", "8", 1, "chr1", Some(Array(10, 15, 20, 25, 5, 5, 5, 10, 15, 20, 25))))
 
     val lastPileup = Pileup(reads, 8)
-    assert(lastPileup.elements.forall(_.sequenceRead == "A"))
-    assert(lastPileup.elements.forall(_.singleBaseRead == 'A'))
+    lastPileup.elements.forall(_.sequenceRead == "A") should be(true)
+    lastPileup.elements.forall(_.singleBaseRead == 'A') should be(true)
 
-    assert(lastPileup.elements.forall(_.isMatch == true))
-
+    lastPileup.elements.forall(_.isMatch) should be(true)
+    lastPileup.elements.forall(_.qualityScore == 25) should be(true)
   }
 
   sparkTest("Load pileup from SAM file") {

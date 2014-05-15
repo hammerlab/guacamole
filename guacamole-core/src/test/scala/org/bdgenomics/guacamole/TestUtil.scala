@@ -19,6 +19,7 @@ object TestUtil {
                mdtag: String,
                start: Long = 1,
                chr: String = "chr1",
+               qualityScores: Option[Array[Int]] = None,
                contigLength: Int = 1000): ADAMRecord = {
 
     val contig = ADAMContig.newBuilder()
@@ -26,26 +27,33 @@ object TestUtil {
       .setContigLength(contigLength)
       .build()
 
-    ADAMRecord.newBuilder()
+    val record = ADAMRecord.newBuilder()
       .setReadName("read")
       .setStart(start)
       .setReadMapped(true)
       .setCigar(cigar)
       .setSequence(sequence)
       .setMapq(60)
-      .setQual(sequence.map(x => 'F').toString)
       .setMismatchingPositions(mdtag)
       .setRecordGroupSample("sample")
       .setContig(contig)
-      .build()
+
+    val qualityScoreString = if (qualityScores.isDefined) {
+      qualityScores.get.map(q => q + 33).map(_.toChar).mkString
+    } else {
+      sequence.map(x => '@').toString
+    }
+    record.setQual(qualityScoreString)
+    record.build()
   }
 
   def makeDecadentRead(sequence: String,
                        cigar: String,
                        mdtag: String,
                        start: Long = 1,
-                       chr: String = "chr1"): DecadentRead = {
-    DecadentRead(makeRead(sequence, cigar, mdtag, start, chr))
+                       chr: String = "chr1",
+                       qualityScores: Option[Array[Int]] = None): DecadentRead = {
+    DecadentRead(makeRead(sequence, cigar, mdtag, start, chr, qualityScores))
   }
 
   object SparkTest extends org.scalatest.Tag("org.bdgenomics.guacamole.SparkScalaTestFunSuite")

@@ -10,6 +10,7 @@ import org.apache.spark.{ Partitioner, Logging }
 import scala.reflect.ClassTag
 import org.bdgenomics.guacamole.Common.Arguments.{ Loci, Base }
 import org.kohsuke.args4j.{ Option => Opt }
+import org.bdgenomics.guacamole.pileup.Pileup
 
 object DistributedUtil extends Logging {
   trait Arguments extends Base with Loci {
