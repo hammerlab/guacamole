@@ -27,6 +27,7 @@ import org.bdgenomics.adam.cli.Args4j
 import org.bdgenomics.guacamole.Common.Arguments._
 import org.apache.spark.rdd.RDD
 import org.apache.spark.Logging
+import org.bdgenomics.guacamole.pileup.Pileup
 
 /**
  * Simple variant caller implementation.
