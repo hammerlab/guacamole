@@ -153,13 +153,7 @@ object Common extends Logging {
     val result = {
       if (args.loci == "all") {
         // Call at all loci.
-        progress("Considering all loci on all contigs.")
-        val contigsAndLengths = reads.map(read => (read.contig.contigName.toString, read.contig.contigLength)).distinct.collect.toSeq
-        assume(contigsAndLengths.map(_._1).distinct.length == contigsAndLengths.length,
-          "Some contigs have different lengths in reads: " + contigsAndLengths.toString)
-        val builder = LociSet.newBuilder
-        contigsAndLengths.foreach({ case (contig, length) => builder.put(contig, 0L, length.toLong) })
-        builder.result
+        getLociFromAllContigs(reads)
       } else if (args.loci == "mapped") {
         progress("Considering all loci with mapped reads.")
         reads.mapPartitions(iterator => {
@@ -177,6 +171,24 @@ object Common extends Logging {
       result.contigs.length,
       result.truncatedString()))
     result
+  }
+
+  /**
+   * Collects the full set of loci on all contigs covered by particular set of reads
+   *
+   * @param reads RDD of ADAMRecords
+   * @return LociSet of loci covered by those reads
+   */
+  def getLociFromAllContigs(reads: RDD[ADAMRecord]): LociSet = {
+    progress("Considering all loci on all contigs.")
+    val contigsAndLengths = reads.map(read => (read.contig.contigName.toString, read.contig.contigLength)).distinct.collect.toSeq
+    assume(contigsAndLengths.map(_._1).distinct.length == contigsAndLengths.length,
+      "Some contigs have different lengths in reads: " + contigsAndLengths.toString)
+    val builder = LociSet.newBuilder
+    contigsAndLengths.foreach({
+      case (contig, length) => builder.put(contig, 0L, length.toLong)
+    })
+    builder.result
   }
 
   /**

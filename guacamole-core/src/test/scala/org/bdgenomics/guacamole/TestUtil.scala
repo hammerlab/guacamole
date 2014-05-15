@@ -18,10 +18,12 @@ object TestUtil {
                cigar: String,
                mdtag: String,
                start: Long = 1,
-               chr: String = "chr1"): ADAMRecord = {
+               chr: String = "chr1",
+               contigLength: Int = 1000): ADAMRecord = {
 
     val contig = ADAMContig.newBuilder()
       .setContigName(chr)
+      .setContigLength(contigLength)
       .build()
 
     ADAMRecord.newBuilder()
