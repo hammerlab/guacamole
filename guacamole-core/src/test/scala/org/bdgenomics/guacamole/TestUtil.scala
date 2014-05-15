@@ -11,6 +11,8 @@ import org.apache.log4j.{ Logger, Level }
 import org.bdgenomics.adam.cli.SparkArgs
 import org.bdgenomics.adam.avro.{ ADAMContig, ADAMRecord }
 import org.bdgenomics.adam.rich.DecadentRead
+import scala.math._
+import scala.Some
 
 object TestUtil {
 
@@ -54,6 +56,10 @@ object TestUtil {
                        chr: String = "chr1",
                        qualityScores: Option[Array[Int]] = None): DecadentRead = {
     DecadentRead(makeRead(sequence, cigar, mdtag, start, chr, qualityScores))
+  }
+
+  def assertAlmostEqual(a: Double, b: Double, epsilon: Double = 1e-6) {
+    assert(abs(a - b) < epsilon)
   }
 
   object SparkTest extends org.scalatest.Tag("org.bdgenomics.guacamole.SparkScalaTestFunSuite")
