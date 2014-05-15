@@ -173,6 +173,12 @@ object Common extends Logging {
     result
   }
 
+  /**
+   * Collects the full set of loci on all contigs covered by particular set of reads
+   *
+   * @param reads RDD of ADAMRecords
+   * @return LociSet of loci covered by those reads
+   */
   def getLociFromAllContigs(reads: RDD[ADAMRecord]): LociSet = {
     progress("Considering all loci on all contigs.")
     val contigsAndLengths = reads.map(read => (read.contig.contigName.toString, read.contig.contigLength)).distinct.collect.toSeq
