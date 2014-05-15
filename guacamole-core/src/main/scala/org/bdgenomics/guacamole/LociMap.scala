@@ -45,6 +45,10 @@ case class LociMap[T](private val map: Map[String, LociMap.SingleContig[T]]) {
   /** The number of loci in this LociMap. */
   lazy val count: Long = sortedMap.valuesIterator.map(_.count).sum
 
+  /** Does the LociMap contain any loci? */
+  lazy val nonEmpty = count > 0
+  lazy val empty = count == 0
+  
   /** The "inverse map", i.e. a T -> LociSet map that gives the loci that map to each value. */
   lazy val asInverseMap: Map[T, LociSet] = {
     val mapOfBuilders = new mutable.HashMap[T, LociSet.Builder]()
@@ -94,6 +98,42 @@ case class LociMap[T](private val map: Map[String, LociMap.SingleContig[T]]) {
     case _                => false
   }
   override def hashCode = sortedMap.hashCode
+
+  /**
+   * Split the LociMap into two maps, where the first one has exactly `numToTake` elements, and the second one has the
+   * remaining elements.
+   */
+  def take(numToTake: Long): (LociMap[T], LociMap[T]) = {
+    // Optimize for taking none or all:
+    if (numToTake == 0) return (LociMap.empty[T](), this)
+    if (numToTake >= count) return (this, LociMap.empty[T]())
+
+    /* TODO: may want to optimize this to not fully construct two new maps. Could share singleContig instances between
+     * the current map and the split maps, for example.
+     */
+    val first = LociMap.newBuilder[T]()
+    val second = LociMap.newBuilder[T]()
+    var remaining = numToTake
+    var doneTaking = false
+    for (contig <- contigs; (range, value) <- onContig(contig).asMap) {
+      if (doneTaking) {
+        second.put(contig, range.start, range.end, value)
+      } else {
+        if (remaining >= range.length) {
+          first.put(contig, range.start, range.end, value)
+          remaining -= range.length
+        } else {
+          first.put(contig, range.start, range.start + remaining, value)
+          second.put(contig, range.start + remaining, range.end, value)
+          doneTaking = true
+        }
+      }
+    }
+    val (firstResult, secondResult) = (first.result, second.result)
+    assert(firstResult.count == numToTake)
+    assert(firstResult.count + secondResult.count == count)
+    (firstResult, secondResult)
+  }
 }
 
 object LociMap {
@@ -122,6 +162,9 @@ object LociMap {
     }
   }
 
+  /** Make an empty RangeMap of the given type. */
+  def empty[T](): LociMap[T] = newBuilder[T]().result
+
   // We're using Google's guava library, which is Java. We have to use java integer's instead of Scala's.
   private type JLong = java.lang.Long
   private def emptyRangeMap[T]() = ImmutableRangeMap.of[JLong, T]()
@@ -139,6 +182,14 @@ object LociMap {
       if (end > start) data.get(contig) match {
         case None              => data.put(contig, ArrayBuffer[(Long, Long, T)]((start, end, value)))
         case Some(arrayBuffer) => arrayBuffer += ((start, end, value))
+      }
+      this
+    }
+
+    /** Set the value for all loci in the given LociSet to the specified value in the LociMap under construction. */
+    def put(loci: LociSet, value: T): Builder[T] = {
+      for (contig <- loci.contigs; range <- loci.onContig(contig).ranges) {
+        put(contig, range.start, range.end, value)
       }
       this
     }

@@ -43,6 +43,10 @@ case class LociSet(val map: LociMap[Long]) {
   /** The number of loci in this LociSet. */
   lazy val count: Long = map.count
 
+  /** Does the LociSet contain any loci? */
+  lazy val nonEmpty = map.nonEmpty
+  lazy val empty = map.empty
+
   /** Given a contig name, returns a [[LociSet.SingleContig]] giving the loci on that contig. */
   def onContig(contig: String): LociSet.SingleContig = LociSet.SingleContig(map.onContig(contig))
 
@@ -61,6 +65,21 @@ case class LociSet(val map: LociMap[Long]) {
   }
   override def hashCode = map.hashCode
 
+  /**
+   * Split the LociSet into two sets, where the first one has exactly `numToTake` elements, and the second one has the
+   * remaining elements.
+   */
+  def take(numToTake: Long): (LociSet, LociSet) = {
+    // Optimize for taking none or all:
+    if (numToTake == 0) {
+      (LociSet.empty, this)
+    } else if (numToTake >= count) {
+      (this, LociSet.empty)
+    } else {
+      val mapTake = map.take(numToTake)
+      (LociSet(mapTake._1), LociSet(mapTake._2))
+    }
+  }
 }
 object LociSet {
   /** An empty LociSet. */
