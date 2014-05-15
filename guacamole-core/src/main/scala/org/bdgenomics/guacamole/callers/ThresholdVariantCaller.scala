@@ -59,11 +59,11 @@ object ThresholdVariantCaller extends Command with Serializable with Logging {
     val loci = Common.loci(args, reads)
     val (threshold, emitRef, emitNoCall) = (args.threshold, args.emitRef, args.emitNoCall)
     val numGenotypes = sc.accumulator(0L)
-    DelayedMessages.default.say { () => "Called %d genotypes.".format(numGenotypes.value) }
+    DelayedMessages.default.say { () => "Called %,d genotypes.".format(numGenotypes.value) }
+    val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(args, reads, loci)
     val genotypes: RDD[ADAMGenotype] = DistributedUtil.pileupFlatMap[ADAMGenotype](
       reads,
-      loci,
-      args.parallelism,
+      lociPartitions,
       pileup => {
         val genotypes = callVariantsAtLocus(pileup, threshold, emitRef, emitNoCall)
         numGenotypes += genotypes.length
