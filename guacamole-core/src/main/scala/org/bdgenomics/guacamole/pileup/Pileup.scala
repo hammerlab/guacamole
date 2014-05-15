@@ -16,12 +16,13 @@
  * limitations under the License.
  */
 
-package org.bdgenomics.guacamole
+package org.bdgenomics.guacamole.pileup
 
 import org.bdgenomics.adam.rich.DecadentRead
 import scala.collection.JavaConversions._
-import net.sf.samtools.{ CigarElement, Cigar, CigarOperator, TextCigarCodec }
+import net.sf.samtools.{ CigarElement, CigarOperator, TextCigarCodec }
 import scala.annotation.tailrec
+import org.bdgenomics.guacamole.{ CigarUtils, Common }
 
 /**
  * A [[Pileup]] at a locus contains a sequence of [[Pileup.Element]] instances, one for every read that overlaps that
@@ -153,32 +154,25 @@ object Pileup {
      */
     def isFinalCigarBase: Boolean = indexWithinCigarElement == cigarElement.getLength - 1
 
-    /**
-     * The alignment of a read combines the underlying Cigar operator
-     * (match/mismatch/deletion/insertion) with the characters which were used from the read.
-     */
-    abstract class Alignment
-    case class Insertion(bases: String) extends Alignment
-    case class Deletion() extends Alignment
-    case class Match(base: Char) extends Alignment
-    case class Mismatch(base: Char) extends Alignment
-
     lazy val alignment: Alignment = {
       val cigarOperator = cigarElement.getOperator
-      val nextBaseCigarElement = if (isFinalCigarBase) nextCigarElement.map(_.getOperator) else cigarOperator
-      (cigarOperator, nextBaseCigarElement) match {
+      val nextBaseCigarElement = if (isFinalCigarBase) nextCigarElement else Some(cigarElement)
+      val nextBaseCigarOperator = nextBaseCigarElement.map(_.getOperator)
+      (cigarOperator, nextBaseCigarOperator) match {
         //To process insertions we connect the final base of a match to the rest of the insertion
         case (CigarOperator.M, Some(CigarOperator.I)) | (CigarOperator.EQ, Some(CigarOperator.I)) | (CigarOperator.I, _) =>
           val startReadOffset: Int = readPosition.toInt
-          val endReadOffset: Int = cigarElementLocus.toInt + cigarElement.getLength
+          val endReadOffset: Int = readPosition.toInt + CigarUtils.getReadLength(nextBaseCigarElement.get) + 1
           val bases = read.record.getSequence.subSequence(startReadOffset, endReadOffset).toString
-          Insertion(bases)
+          val qualities = read.record.qualityScores.slice(startReadOffset, endReadOffset)
+          Insertion(bases, qualities)
         case (CigarOperator.M, _) | (CigarOperator.EQ, _) | (CigarOperator.X, _) =>
           val base: Char = read.record.getSequence.charAt(readPosition.toInt)
+          val quality = read.record.qualityScores(readPosition.toInt)
           if (read.record.mdTag.get.isMatch(locus)) {
-            Match(base)
+            Match(base, quality)
           } else {
-            Mismatch(base)
+            Mismatch(base, quality)
           }
         case (CigarOperator.D, _) | (CigarOperator.S, _) | (CigarOperator.N, _) | (CigarOperator.H, _) => Deletion()
         case (CigarOperator.P, _) =>
@@ -189,10 +183,10 @@ object Pileup {
     /* If you only care about what the CigarOperator was at this position, but not its
      * associated sequence, then you can just one of these state variables.
      */
-    lazy val isInsertion = alignment match { case Insertion(_) => true; case _ => false }
+    lazy val isInsertion = alignment match { case Insertion(_, _) => true; case _ => false }
     lazy val isDeletion = alignment match { case Deletion() => true; case _ => false }
-    lazy val isMismatch = alignment match { case Mismatch(_) => true; case _ => false }
-    lazy val isMatch = alignment match { case Match(_) => true; case _ => false }
+    lazy val isMismatch = alignment match { case Mismatch(_, _) => true; case _ => false }
+    lazy val isMatch = alignment match { case Match(_, _) => true; case _ => false }
 
     /**
      * The sequenced nucleotides at this element.
@@ -203,18 +197,33 @@ object Pileup {
      * a string of length 1.
      */
     lazy val sequenceRead: String = alignment match {
-      case Deletion()       => ""
-      case Match(base)      => base.toString
-      case Mismatch(base)   => base.toString
-      case Insertion(bases) => bases
+      case Deletion()          => ""
+      case Match(base, _)      => base.toString
+      case Mismatch(base, _)   => base.toString
+      case Insertion(bases, _) => bases
     }
 
     lazy val singleBaseRead: Char = alignment match {
-      case Match(base)                           => base
-      case Mismatch(base)                        => base
-      case Insertion(bases) if bases.length == 1 => bases.charAt(0)
+      case Match(base, _)                           => base
+      case Mismatch(base, _)                        => base
+      case Insertion(bases, _) if bases.length == 1 => bases.charAt(0)
       case other =>
         throw new AssertionError("Not a match, mismatch, or single nucleotide insertion: " + other.toString)
+    }
+
+    /*
+     * Phred-scaled base quality score
+     * For indels this uses a specific heuristic
+     * Deletion quality is equivalent to the mapping quality
+     * Insertion quality is equivalent to worse base quality in the read (alternatively override and use average)
+     */
+    lazy val qualityScore: Int = alignment match {
+      case Deletion()              => read.record.getMapq //Heuristic for deletion quality,
+      // in the lack of other evidence it is the mapping quality
+      case Match(_, quality)       => quality
+      case Mismatch(_, quality)    => quality
+      case Insertion(_, qualities) => qualities.min // Heuristic for insertion quality,
+      // In the lack of other evidence, it is the quality of the worst base
     }
 
     /**

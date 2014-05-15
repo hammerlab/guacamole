@@ -1,9 +1,10 @@
 package org.bdgenomics.guacamole.callers
 
 import org.scalatest.FunSuite
-import org.bdgenomics.guacamole.{ Pileup, TestUtil }
+import org.bdgenomics.guacamole.{ TestUtil }
 import org.bdgenomics.adam.avro.ADAMGenotypeAllele
 import scala.collection.JavaConversions._
+import org.bdgenomics.guacamole.pileup.Pileup
 
 class ThresholdVariantCallerSuite extends FunSuite {
 
