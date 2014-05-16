@@ -133,4 +133,10 @@ class LociMapSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
     val caught = evaluating { contigMap.union(emptyMapWrongContig) } should produce[AssertionError]
     caught.getMessage should include("different contigs: chr1 and chr2")
   }
+
+  test("SingleContig getAll") {
+    val lociMap = LociMap.newBuilder[Long]().put("chrM", 0, 8286, 0L).put("chrM", 8286, 16571, 1L).result
+    lociMap.onContig("chrM").getAll(5, 10) should equal(Set[Long](0L))
+    lociMap.onContig("chrM").getAll(10000, 11000) should equal(Set[Long](1L))
+  }
 }

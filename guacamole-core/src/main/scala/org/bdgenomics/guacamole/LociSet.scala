@@ -43,9 +43,8 @@ case class LociSet(val map: LociMap[Long]) {
   /** The number of loci in this LociSet. */
   lazy val count: Long = map.count
 
-  /** Does the LociSet contain any loci? */
-  lazy val nonEmpty = map.nonEmpty
-  lazy val empty = map.empty
+  /** Does count == 0? */
+  lazy val isEmpty = map.isEmpty
 
   /** Given a contig name, returns a [[LociSet.SingleContig]] giving the loci on that contig. */
   def onContig(contig: String): LociSet.SingleContig = LociSet.SingleContig(map.onContig(contig))
