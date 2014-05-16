@@ -229,8 +229,7 @@ class DistributedUtilSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
     val lociToUse = Common.getLociFromAllContigs(reads)
     val genotypes = DistributedUtil.pileupFlatMap[ADAMGenotype](
       reads,
-      lociToUse,
-      3,
+      DistributedUtil.partitionLociUniformly(3, lociToUse),
       pileup => ThresholdVariantCaller.callVariantsAtLocus(pileup, 0, false, false).iterator).collect()
 
     genotypes.length should be(1)
