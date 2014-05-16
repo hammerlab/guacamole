@@ -12,6 +12,8 @@ import org.apache.hadoop.fs.Path
 import scala.collection.JavaConversions
 import scala.Some
 import org.bdgenomics.adam.util.MdTag
+import com.esotericsoftware.kryo.{ Kryo, Serializer }
+import com.esotericsoftware.kryo.io.{ Output, Input }
 
 /**
  * The fields in the Read trait are common to any read, whether mapped (aligned) or not.
