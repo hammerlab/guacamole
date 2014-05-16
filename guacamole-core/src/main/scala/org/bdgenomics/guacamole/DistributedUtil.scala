@@ -17,9 +17,9 @@ object DistributedUtil extends Logging {
     @Opt(name = "-parallelism", usage = "Num variant calling tasks. Set to 0 (default) to use the number of Spark partitions.")
     var parallelism: Int = 0
 
-    @Opt(name = "-partition-microtasks",
-      usage = "Num micro partitions to use in loci partitioning. Set to 1 to partition loci uniformly. Default: 1e6.")
-    var partitioningMicrotasks: Int = 1000000
+    @Opt(name = "-partition-accuracy",
+      usage = "Num micro partitions to use per task in loci partitioning. Set to 0 to partition loci uniformly. Default: 1000.")
+    var partitioningMicrotasks: Int = 1000
   }
 
   /**
@@ -27,7 +27,7 @@ object DistributedUtil extends Logging {
    */
   def partitionLociAccordingToArgs(args: Arguments, reads: RDD[ADAMRecord], loci: LociSet): LociMap[Long] = {
     val tasks = if (args.parallelism > 0) args.parallelism else reads.partitions.length
-    if (args.partitioningMicrotasks == 1)
+    if (args.partitioningMicrotasks == 0)
       partitionLociUniformly(tasks, loci)
     else
       partitionLociByApproximateReadDepth(reads, tasks, loci, args.partitioningMicrotasks)
@@ -96,28 +96,29 @@ object DistributedUtil extends Logging {
    * @param reads RDD of reads
    * @param tasks number of partitions
    * @param loci loci to partition
-   * @param numMicroPartitions number of micro partitions. Higher values of this will result in a more exact but also more
-   *                   expensive computation. In the extreme case, setting this to greater than or equal the number of
-   *                   loci will give an exact solution.
+   * @param accuracy integer >= 1. Higher values of this will result in a more exact but also more expensive computation.
+   *                 Specifically, this is the number of micro partitions to use per task to estimate the read depth.
+   *                 In the extreme case, setting this to greater than the number of loci per task will result in an
+   *                 exact calculation.
    * @return LociMap of locus -> task assignments.
    */
-  def partitionLociByApproximateReadDepth(reads: RDD[ADAMRecord], tasks: Long, loci: LociSet, numMicroPartitions: Int = 1000000): LociMap[Long] = {
-    // Step (1)
+  def partitionLociByApproximateReadDepth(reads: RDD[ADAMRecord], tasks: Int, loci: LociSet, accuracy: Int = 1000): LociMap[Long] = {
+    // Step (1). Split loci uniformly into micro partitions.
     assume(tasks >= 1)
     assume(loci.count > 0)
-    val effectiveMicroPartitions: Int = if (numMicroPartitions < loci.count) numMicroPartitions else loci.count.toInt
-    progress("Splitting loci by read depth among %,d tasks using %,d micro partitions.".format(tasks, effectiveMicroPartitions))
-    val microPartitions = partitionLociUniformly(effectiveMicroPartitions, loci)
-
+    val numMicroPartitions: Int = if (accuracy * tasks < loci.count) accuracy * tasks else loci.count.toInt
+    progress("Splitting loci by read depth among %,d tasks using %,d micro partitions.".format(tasks, numMicroPartitions))
+    val microPartitions = partitionLociUniformly(numMicroPartitions, loci)
     progress("Done calculating micro partitions.")
     val broadcastMicroPartitions = reads.sparkContext.broadcast(microPartitions)
 
     // Step (2)
+    // Total up reads overlapping each micro partition. We keep the totals as an array of Longs.
     progress("Collecting read counts.")
     val counts = reads.mapPartitions(readIterator => {
       val microPartitions = broadcastMicroPartitions.value
       assert(microPartitions.count > 0)
-      val counts = new Array[Long](effectiveMicroPartitions)
+      val counts = new Array[Long](numMicroPartitions)
       for (read <- readIterator) {
         val contigMap = microPartitions.onContig(read.getContig.getContigName.toString)
         val indices: Set[Long] = contigMap.getAll(read.start, RichADAMRecord(read).end.get)
@@ -136,15 +137,18 @@ object DistributedUtil extends Logging {
     })
 
     // Step (3)
+    // Assign loci to tasks, taking into account read depth in each micro partition.
     val totalReads = counts.sum
     val readsPerTask = math.max(1, totalReads.toDouble / tasks.toDouble)
     progress("Done collecting read counts. Total reads with micro partition overlaps: %,d = ~%,.0f reads per task."
       .format(totalReads, readsPerTask))
+    progress("Reads per micro partition: min=%,d mean=%,.0f max=%,d.".format(
+      counts.min, counts.sum.toDouble / counts.length, counts.max))
     val builder = LociMap.newBuilder[Long]
-    var readsAssigned = 0L
+    var readsAssigned = 0.0
     var task = 0L
     def readsRemainingForThisTask = math.round(((task + 1) * readsPerTask) - readsAssigned).toLong
-    for (microTask <- 0 until effectiveMicroPartitions) {
+    for (microTask <- 0 until numMicroPartitions) {
       var set = microPartitions.asInverseMap(microTask)
       var readsInSet = counts(microTask)
       while (!set.isEmpty) {
@@ -153,16 +157,31 @@ object DistributedUtil extends Logging {
           builder.put(set, task)
           set = LociSet.empty
         } else {
-          if (readsRemainingForThisTask == 0) task += 1
+          // If we've allocated all reads for this task, move on to the next task.
+          if (readsRemainingForThisTask == 0)
+            task += 1
           assert(readsRemainingForThisTask > 0)
           assert(task < tasks)
+
+          // Making the approximation of uniform depth within each micro partition, we assign a proportional number of
+          // loci and reads to the current task. The proportion of loci we assign is the ratio of how many reads we have
+          // remaining to allocate for the current task vs. how many reads are remaining in the current micro partition.
+
+          // Here we calculate the fraction of the current micro partition we are going to assign to the current task.
+          // May be 1.0, in which case all loci (and therefore reads) for this micro partition will be assigned to the
+          // current task.
           val fractionToTake = math.min(1.0, readsRemainingForThisTask.toDouble / readsInSet.toDouble)
+
+          // Based on fractionToTake, we set the number of loci and reads to assign.
+          // We always take at least 1 locus to ensure we continue ot make progress.
           val lociToTake = math.max(1, (fractionToTake * set.count).toLong)
           val readsToTake = (fractionToTake * readsInSet).toLong
+
+          // Add the new task assignment to the builder, and update bookkeeping info.
           val (currentSet, remainingSet) = set.take(lociToTake)
           builder.put(currentSet, task)
-          readsAssigned += readsToTake
-          readsInSet -= readsToTake
+          readsAssigned += math.round(readsToTake).toLong
+          readsInSet -= math.round(readsToTake).toLong
           set = remainingSet
         }
       }
