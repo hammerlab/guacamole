@@ -96,10 +96,10 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
 
     val reads = Common.loadReads(args, sc, mapped = true, nonDuplicate = true)
     val loci = Common.loci(args, reads)
+    val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(args, reads, loci)
     val genotypes: RDD[ADAMGenotype] = DistributedUtil.pileupFlatMap[ADAMGenotype](
       reads,
-      loci,
-      args.parallelism,
+      lociPartitions,
       pileup => callVariantsAtLocus(pileup).iterator)
     reads.unpersist()
     Common.writeVariants(args, genotypes)
