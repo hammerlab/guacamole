@@ -197,13 +197,12 @@ object Common extends Logging {
    * @param genotypes ADAM genotypes (i.e. the variants)
    */
   def writeVariants(args: Arguments.Output, genotypes: RDD[ADAMGenotype]): Unit = {
-    progress("Writing %,d genotypes to: %s.".format(genotypes.count, args.variantOutput))
+    progress("Writing genotypes to: %s.".format(args.variantOutput))
     genotypes.adamSave(args.variantOutput,
       args.blockSize,
       args.pageSize,
       args.compressionCodec,
       args.disableDictionary)
-    progress("Done writing.")
   }
 
   /**
