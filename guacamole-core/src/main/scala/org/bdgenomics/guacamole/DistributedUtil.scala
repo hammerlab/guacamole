@@ -19,7 +19,7 @@ object DistributedUtil extends Logging {
 
     @Opt(name = "-partition-accuracy",
       usage = "Num micro partitions to use per task in loci partitioning. Set to 0 to partition loci uniformly. Default: 1000.")
-    var partitioningMicrotasks: Int = 1000
+    var partitioningAccuracy: Int = 250
   }
 
   /**
@@ -27,10 +27,10 @@ object DistributedUtil extends Logging {
    */
   def partitionLociAccordingToArgs(args: Arguments, reads: RDD[ADAMRecord], loci: LociSet): LociMap[Long] = {
     val tasks = if (args.parallelism > 0) args.parallelism else reads.partitions.length
-    if (args.partitioningMicrotasks == 0)
+    if (args.partitioningAccuracy == 0)
       partitionLociUniformly(tasks, loci)
     else
-      partitionLociByApproximateReadDepth(reads, tasks, loci, args.partitioningMicrotasks)
+      partitionLociByApproximateReadDepth(reads, tasks, loci, args.partitioningAccuracy)
   }
 
   /**
@@ -102,7 +102,7 @@ object DistributedUtil extends Logging {
    *                 exact calculation.
    * @return LociMap of locus -> task assignments.
    */
-  def partitionLociByApproximateReadDepth(reads: RDD[ADAMRecord], tasks: Int, loci: LociSet, accuracy: Int = 1000): LociMap[Long] = {
+  def partitionLociByApproximateReadDepth(reads: RDD[ADAMRecord], tasks: Int, loci: LociSet, accuracy: Int = 250): LociMap[Long] = {
     // Step (1). Split loci uniformly into micro partitions.
     assume(tasks >= 1)
     assume(loci.count > 0)
