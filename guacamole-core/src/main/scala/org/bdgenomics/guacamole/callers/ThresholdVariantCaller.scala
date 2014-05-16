@@ -21,6 +21,7 @@ package org.bdgenomics.guacamole.callers
 import org.bdgenomics.adam.avro.{ ADAMContig, ADAMVariant, ADAMGenotypeAllele, ADAMGenotype }
 import org.bdgenomics.adam.avro.ADAMGenotypeAllele.{ NoCall, Ref, Alt, OtherAlt }
 import org.bdgenomics.guacamole._
+import org.apache.spark.SparkContext._
 import scala.collection.JavaConversions
 import org.kohsuke.args4j.Option
 import org.bdgenomics.adam.cli.Args4j
@@ -57,11 +58,17 @@ object ThresholdVariantCaller extends Command with Serializable with Logging {
     val reads = Common.loadReads(args, sc, mapped = true, nonDuplicate = true)
     val loci = Common.loci(args, reads)
     val (threshold, emitRef, emitNoCall) = (args.threshold, args.emitRef, args.emitNoCall)
+    val numGenotypes = sc.accumulator(0L)
+    DelayedMessages.default.say { () => "Called %,d genotypes.".format(numGenotypes.value) }
+    val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(args, reads, loci)
     val genotypes: RDD[ADAMGenotype] = DistributedUtil.pileupFlatMap[ADAMGenotype](
       reads,
-      loci,
-      args.parallelism,
-      pileup => callVariantsAtLocus(pileup, threshold, emitRef, emitNoCall).iterator)
+      lociPartitions,
+      pileup => {
+        val genotypes = callVariantsAtLocus(pileup, threshold, emitRef, emitNoCall)
+        numGenotypes += genotypes.length
+        genotypes.iterator
+      })
     reads.unpersist()
     Common.writeVariants(args, genotypes)
     DelayedMessages.default.print()
