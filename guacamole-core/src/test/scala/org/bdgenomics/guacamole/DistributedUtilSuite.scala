@@ -203,8 +203,8 @@ class DistributedUtilSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
 
     val reads = sc.parallelize(Seq(
       TestUtil.makeRead("TCGATCGA", "8M", "8", 1),
-      TestUtil.makeRead("TCGGTCGA", "8M", "8", 1),
-      TestUtil.makeRead("TCGGTCGA", "8M", "8", 1)))
+      TestUtil.makeRead("TCGGTCGA", "8M", "3A4", 1),
+      TestUtil.makeRead("TCGGTCGA", "8M", "3A4", 1)))
 
     val genotypes = DistributedUtil.pileupFlatMap[ADAMGenotype](
       reads,
@@ -212,8 +212,31 @@ class DistributedUtilSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
       pileup => ThresholdVariantCaller.callVariantsAtLocus(pileup, 0, false, false).iterator).collect()
 
     genotypes.length should be(1)
+    genotypes.head.variant.position should be(4)
+    genotypes.head.variant.referenceAllele.toString should be("A")
+    genotypes.head.variant.variantAllele.toString should be("G")
 
     genotypes.head.alleles.toList should be(List(ADAMGenotypeAllele.Ref, ADAMGenotypeAllele.Alt))
+  }
 
+  sparkTest("test pileup flatmap parallelism 3; thresholdvariant caller; no reference bases observerd") {
+
+    val reads = sc.parallelize(Seq(
+      TestUtil.makeRead("CCGATCGA", "8M", "0T7", 1),
+      TestUtil.makeRead("CCGATCGA", "8M", "0T7", 1),
+      TestUtil.makeRead("CCGATCGA", "8M", "0T7", 1)))
+
+    val lociToUse = Common.getLociFromAllContigs(reads)
+    val genotypes = DistributedUtil.pileupFlatMap[ADAMGenotype](
+      reads,
+      lociToUse,
+      3,
+      pileup => ThresholdVariantCaller.callVariantsAtLocus(pileup, 0, false, false).iterator).collect()
+
+    genotypes.length should be(1)
+    genotypes.head.variant.position should be(1)
+    genotypes.head.variant.referenceAllele.toString should be("T")
+    genotypes.head.variant.variantAllele.toString should be("C")
+    genotypes.head.alleles.toList should be(List(ADAMGenotypeAllele.Alt, ADAMGenotypeAllele.Alt))
   }
 }
