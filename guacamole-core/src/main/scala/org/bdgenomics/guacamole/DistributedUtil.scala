@@ -6,7 +6,7 @@ import org.apache.spark.SparkContext._
 import org.bdgenomics.adam.avro.ADAMRecord
 import org.apache.spark.broadcast.Broadcast
 import org.bdgenomics.adam.rich.RichADAMRecord
-import org.apache.spark.{ Partitioner, Logging }
+import org.apache.spark.{ Accumulable, Partitioner, Logging }
 import scala.reflect.ClassTag
 import org.bdgenomics.guacamole.Common.Arguments.{ Loci, Base }
 import org.kohsuke.args4j.{ Option => Opt }
@@ -18,7 +18,7 @@ object DistributedUtil extends Logging {
     var parallelism: Int = 0
 
     @Opt(name = "-partition-microtasks",
-         usage = "Num micro partitions to use in loci partitioning. Set to 1 to partition loci uniformly. Default: 1e6.")
+      usage = "Num micro partitions to use in loci partitioning. Set to 1 to partition loci uniformly. Default: 1e6.")
     var partitioningMicrotasks: Int = 1000000
   }
 
@@ -26,10 +26,11 @@ object DistributedUtil extends Logging {
    * Partition a LociSet among tasks according to the strategy specified in args.
    */
   def partitionLociAccordingToArgs(args: Arguments, reads: RDD[ADAMRecord], loci: LociSet): LociMap[Long] = {
+    val tasks = if (args.parallelism > 0) args.parallelism else reads.partitions.length
     if (args.partitioningMicrotasks == 1)
-      partitionLociUniformly(args.parallelism, loci)
+      partitionLociUniformly(tasks, loci)
     else
-      partitionLociByApproximateReadDepth(reads, args.parallelism, loci, args.partitioningMicrotasks)
+      partitionLociByApproximateReadDepth(reads, tasks, loci, args.partitioningMicrotasks)
   }
 
   /**
@@ -74,12 +75,12 @@ object DistributedUtil extends Logging {
    *
    * There are many ways we could do this. The approach we take here is:
    *
-   *  (1) chop up the loci uniformly into many "micro partitions."
+   *  (1) chop up the loci uniformly into many genomic "micro partitions."
    *
    *  (2) for each micro partition, calculate the number of reads that overlap it.
    *
    *  (3) using these counts, assign loci to real ("macro") partitions, making the approximation of uniform depth within
-   *      the micro partition.
+   *      each micro partition.
    *
    *  Some advantages of this approach are:
    *
@@ -95,25 +96,30 @@ object DistributedUtil extends Logging {
    * @param reads RDD of reads
    * @param tasks number of partitions
    * @param loci loci to partition
-   * @param microPartitions number of micro partitions. Higher values of this will result in a more exact but also more
+   * @param numMicroPartitions number of micro partitions. Higher values of this will result in a more exact but also more
    *                   expensive computation. In the extreme case, setting this to greater than or equal the number of
-   *                   loci will give an exact optimal partitioning.
-   *@return LociMap of locus -> task assignments.
+   *                   loci will give an exact solution.
+   * @return LociMap of locus -> task assignments.
    */
-  def partitionLociByApproximateReadDepth(reads: RDD[ADAMRecord], tasks: Long, loci: LociSet, microPartitions: Int = 1000000): LociMap[Long] = {
+  def partitionLociByApproximateReadDepth(reads: RDD[ADAMRecord], tasks: Long, loci: LociSet, numMicroPartitions: Int = 1000000): LociMap[Long] = {
     // Step (1)
     assume(tasks >= 1)
-    progress("Splitting loci by read depth among %,d tasks using %,d micro partitions.".format(tasks, microPartitions))
-    val chunks = partitionLociUniformly(microPartitions, loci)
+    assume(loci.count > 0)
+    val effectiveMicroPartitions: Int = if (numMicroPartitions < loci.count) numMicroPartitions else loci.count.toInt
+    progress("Splitting loci by read depth among %,d tasks using %,d micro partitions.".format(tasks, effectiveMicroPartitions))
+    val microPartitions = partitionLociUniformly(effectiveMicroPartitions, loci)
+
     progress("Done calculating micro partitions.")
-    val broadcastChunks = reads.sparkContext.broadcast(chunks)
+    val broadcastMicroPartitions = reads.sparkContext.broadcast(microPartitions)
 
     // Step (2)
     progress("Collecting read counts.")
     val counts = reads.mapPartitions(readIterator => {
-      val counts = new Array[Long](microPartitions)
+      val microPartitions = broadcastMicroPartitions.value
+      assert(microPartitions.count > 0)
+      val counts = new Array[Long](effectiveMicroPartitions)
       for (read <- readIterator) {
-        val contigMap = broadcastChunks.value.onContig(read.getContig.toString)
+        val contigMap = microPartitions.onContig(read.getContig.getContigName.toString)
         val indices: Set[Long] = contigMap.getAll(read.start, RichADAMRecord(read).end.get)
         for (index: Long <- indices) {
           counts(index.toInt) += 1
@@ -132,21 +138,33 @@ object DistributedUtil extends Logging {
     // Step (3)
     val totalReads = counts.sum
     val readsPerTask = math.max(1, totalReads.toDouble / tasks.toDouble)
-    progress("Done collecting read counts. Total reads with micro partition overlaps: %,d = ~%,d reads per task."
+    progress("Done collecting read counts. Total reads with micro partition overlaps: %,d = ~%,.0f reads per task."
       .format(totalReads, readsPerTask))
     val builder = LociMap.newBuilder[Long]
     var readsAssigned = 0L
     var task = 0L
-    def remainingForThisTask = math.round(((task + 1) * readsPerTask) - readsAssigned).toLong
-    for (microTask <- 0 until microPartitions) {
-      var set = chunks.asInverseMap(microTask)
+    def readsRemainingForThisTask = math.round(((task + 1) * readsPerTask) - readsAssigned).toLong
+    for (microTask <- 0 until effectiveMicroPartitions) {
+      var set = microPartitions.asInverseMap(microTask)
       var readsInSet = counts(microTask)
-      while (set.nonEmpty) {
-        val numToTake = math.max(1, ((remainingForThisTask / readsInSet) * set.count).toInt)
-        val (currentSet, remainingSet) = set.take(numToTake)
-        builder.put(currentSet, task)
-        readsAssigned += currentSet.count
-        set = remainingSet
+      while (!set.isEmpty) {
+        if (readsInSet == 0) {
+          // Take the whole set if there are no reads assigned to it.
+          builder.put(set, task)
+          set = LociSet.empty
+        } else {
+          if (readsRemainingForThisTask == 0) task += 1
+          assert(readsRemainingForThisTask > 0)
+          assert(task < tasks)
+          val fractionToTake = math.min(1.0, readsRemainingForThisTask.toDouble / readsInSet.toDouble)
+          val lociToTake = math.max(1, (fractionToTake * set.count).toLong)
+          val readsToTake = (fractionToTake * readsInSet).toLong
+          val (currentSet, remainingSet) = set.take(lociToTake)
+          builder.put(currentSet, task)
+          readsAssigned += readsToTake
+          readsInSet -= readsToTake
+          set = remainingSet
+        }
       }
     }
     val result = builder.result
@@ -235,15 +253,7 @@ object DistributedUtil extends Logging {
   /**
    * FlatMap across sets of reads overlapping genomic partitions.
    *
-   * Results for each partition can be computed in parallel. The degree of parallelism (i.e. the number of partitions) is
-   * set by the tasks parameter.
-   *
-   * If tasks=0, then the result is computed on the spark master using one interval. For tasks > 0, the results are
-   * computed on spark workers.
-   *
    * This function works as follows:
-   *
-   *  - Partition the loci, num partitions = tasks.
    *
    *  - Assign reads to partitions. A read may overlap multiple partitions, and therefore be assigned to multiple
    *    partitions.
@@ -256,10 +266,10 @@ object DistributedUtil extends Logging {
    *  - The results of the provided function are concatenated into an RDD, which is returned.
    *
    * @param reads sorted mapped reads
-   * @param loci loci to consider. Reads that don't overlap these loci are discarded.
+   * @param lociPartitions map from locus -> task number. This argument specifies both the loci to be considered and how
+   *                       they should be split among tasks. Reads that don't overlap these loci are discarded.
    * @param halfWindowSize if a read overlaps a region of halfWindowSize to either side of a locus under consideration,
    *                       then it is included.
-   * @param tasks number of loci partitions to run in parallel. Set to 0 to use number of partitions in the read RDD.
    * @param function function to flatMap: (task number, loci, reads that overlap a window around these loci) -> T
    * @tparam T type of value returned by function
    * @return flatMap results, RDD[T]
@@ -270,16 +280,17 @@ object DistributedUtil extends Logging {
                                      function: (Long, LociSet, Iterator[ADAMRecord]) => Iterator[T]): RDD[T] = {
     progress("Loci partitioning: %s".format(lociPartitions.truncatedString()))
     val lociPartitionsBoxed: Broadcast[LociMap[Long]] = reads.sparkContext.broadcast(lociPartitions)
-    val numTasks = lociPartitions.asInverseMap.map(_._1).max
+    val numTasks = lociPartitions.asInverseMap.map(_._1).max + 1
 
     // Counters
     val totalReads = reads.sparkContext.accumulator(0L)
     val relevantReads = reads.sparkContext.accumulator(0L)
     val expandedReads = reads.sparkContext.accumulator(0L)
     DelayedMessages.default.say { () =>
-      "Read counts: filtered %,d total reads to %,d relevant reads, expanded for overlaps to %,d".format(
+      "Read counts: filtered %,d total reads to %,d relevant reads, expanded for overlaps by %,.2f%% to %,d".format(
         totalReads.value,
         relevantReads.value,
+        (expandedReads.value - relevantReads.value) * 100.0 / relevantReads.value,
         expandedReads.value)
     }
 
@@ -300,7 +311,7 @@ object DistributedUtil extends Logging {
     // Each key (i.e. task) gets its own partition.
     val partitioned = taskNumberReadPairs.partitionBy(new PartitionByKey(numTasks.toInt))
 
-    // Run the task on each partition.)
+    // Run the task on each partition.
     val results = partitioned.mapPartitionsWithIndex((taskNum: Int, taskNumAndReads) => {
       val taskLoci = lociPartitionsBoxed.value.asInverseMap(taskNum.toLong)
       val taskReads = taskNumAndReads.map(pair => {
@@ -313,7 +324,8 @@ object DistributedUtil extends Logging {
       // which obviates the advantages of using iterators everywhere else. A better solution would be to somehow have
       // the data already sorted on each partition. Note that sorting the whole RDD of reads is unnecessary, so we're
       // avoiding it -- we just need that the reads on each task are sorted, no need to merge them across tasks.
-      function(taskNum, taskLoci, taskReads.toSeq.sortBy(_.start).iterator)
+      val taskReadsSeq = taskReads.toSeq.sortBy(_.start)
+      function(taskNum, taskLoci, taskReadsSeq.iterator)
     })
     results
   }
