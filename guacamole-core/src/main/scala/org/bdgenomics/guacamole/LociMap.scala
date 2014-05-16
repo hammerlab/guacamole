@@ -99,13 +99,17 @@ case class LociMap[T](private val map: Map[String, LociMap.SingleContig[T]]) {
   override def hashCode = sortedMap.hashCode
 
   /**
-   * Split the LociMap into two maps, where the first one has exactly `numToTake` elements, and the second one has the
+   * Split the LociMap into two maps, where the first one has `numToTake` elements, and the second one has the
    * remaining elements.
+   *
+   * @param numToTake number of elements to take. Must be <= number of elements in the map.
    */
   def take(numToTake: Long): (LociMap[T], LociMap[T]) = {
+    assume(numToTake <= count, "Can't take %d loci from a map of size %d.".format(numToTake, count))
+
     // Optimize for taking none or all:
     if (numToTake == 0) return (LociMap.empty[T](), this)
-    if (numToTake >= count) return (this, LociMap.empty[T]())
+    if (numToTake == count) return (this, LociMap.empty[T]())
 
     /* TODO: may want to optimize this to not fully construct two new maps. Could share singleContig instances between
      * the current map and the split maps, for example.
