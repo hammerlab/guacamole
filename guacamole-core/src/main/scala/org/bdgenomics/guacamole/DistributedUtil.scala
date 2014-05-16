@@ -5,12 +5,17 @@ import org.apache.spark.rdd._
 import org.apache.spark.SparkContext._
 import org.bdgenomics.adam.avro.ADAMRecord
 import org.apache.spark.broadcast.Broadcast
+import org.apache.commons.math3
 import org.bdgenomics.adam.rich.RichADAMRecord
-import org.apache.spark.{ Accumulable, Partitioner, Logging }
+import org.apache.spark._
 import scala.reflect.ClassTag
 import org.bdgenomics.guacamole.Common.Arguments.{ Loci, Base }
 import org.kohsuke.args4j.{ Option => Opt }
 import org.bdgenomics.guacamole.pileup.Pileup
+import scala.Some
+import org.apache.spark.serializer.JavaSerializer
+import scala.collection.mutable.{ HashMap => MutableHashMap }
+import scala.collection.mutable
 
 object DistributedUtil extends Logging {
   trait Arguments extends Base with Loci {
@@ -330,7 +335,24 @@ object DistributedUtil extends Logging {
     // Each key (i.e. task) gets its own partition.
     val partitioned = taskNumberReadPairs.partitionBy(new PartitionByKey(numTasks.toInt))
 
-    // Run the task on each partition.
+    // Run the task on each partition. Keep track of the number of reads assigned to each task in an accumulator, so
+    // we can print out a summary of the skew.
+    val readsByTask = reads.sparkContext.accumulator(MutableHashMap.empty[String, Long])(new HashMapAccumulatorParam)
+    DelayedMessages.default.say { () =>
+      {
+        assert(readsByTask.value.size == numTasks)
+        val stats = new math3.stat.descriptive.DescriptiveStatistics()
+        readsByTask.value.valuesIterator.foreach(stats.addValue(_))
+        "Reads per task: min=%,.0f 25%%=%,.0f median=%,.0f (mean=%,.0f) 75%%=%,.0f max=%,.0f. Max is %,.2f%% more than mean.".format(
+          stats.getMin,
+          stats.getPercentile(25),
+          stats.getPercentile(50),
+          stats.getMean,
+          stats.getPercentile(75),
+          stats.getMax,
+          ((stats.getMax - stats.getMean) * 100.0) / stats.getMean)
+      }
+    }
     val results = partitioned.mapPartitionsWithIndex((taskNum: Int, taskNumAndReads) => {
       val taskLoci = lociPartitionsBoxed.value.asInverseMap(taskNum.toLong)
       val taskReads = taskNumAndReads.map(pair => {
@@ -344,6 +366,7 @@ object DistributedUtil extends Logging {
       // the data already sorted on each partition. Note that sorting the whole RDD of reads is unnecessary, so we're
       // avoiding it -- we just need that the reads on each task are sorted, no need to merge them across tasks.
       val taskReadsSeq = taskReads.toSeq.sortBy(_.start)
+      readsByTask.add(MutableHashMap(taskNum.toString -> taskReadsSeq.length))
       function(taskNum, taskLoci, taskReadsSeq.iterator)
     })
     results
@@ -368,5 +391,45 @@ object DistributedUtil extends Logging {
       currentIterator = withoutContig
       (contig, withContig)
     }).toMap + ("" -> currentIterator)
+  }
+
+  /**
+   * Allows a mutable HashMap[String, Long] to be used as an accumulator in Spark.
+   *
+   * When we put (k, v2) into an accumulator that already contains (k, v1), the result will be a HashMap containing
+   * (k, v1 + v2).
+   *
+   */
+  class HashMapAccumulatorParam extends AccumulatorParam[MutableHashMap[String, Long]] {
+    /**
+     * Combine two accumulators. Adds the values in each hash map.
+     *
+     * This method is allowed to modify and return the first value for efficiency.
+     *
+     * @see org.apache.spark.GrowableAccumulableParam.addInPlace(r1: R, r2: R): R
+     *
+     */
+    def addInPlace(first: MutableHashMap[String, Long], second: MutableHashMap[String, Long]): MutableHashMap[String, Long] = {
+      second.foreach(pair => {
+        if (!first.contains(pair._1))
+          first(pair._1) = pair._2
+        else
+          first(pair._1) += pair._2
+      })
+      first
+    }
+
+    /**
+     * Zero value for the accumulator: the empty hash map.
+     *
+     * @see org.apache.spark.GrowableAccumulableParam.zero(initialValue: R): R
+     *
+     */
+    def zero(initialValue: MutableHashMap[String, Long]): MutableHashMap[String, Long] = {
+      val ser = new JavaSerializer(new SparkConf(false)).newInstance()
+      val copy = ser.deserialize[MutableHashMap[String, Long]](ser.serialize(initialValue))
+      copy.clear()
+      copy
+    }
   }
 }
