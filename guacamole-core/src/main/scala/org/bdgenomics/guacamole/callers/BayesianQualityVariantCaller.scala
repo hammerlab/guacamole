@@ -193,11 +193,10 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
         val errorProbability = PhredUtils.phredToErrorProbability(element.qualityScore)
         if (element.sequenceRead == referenceAllele) (1 - errorProbability) else errorProbability
       }
-
-      genotype.alleles.map(referenceBase => computeBaseLikelihood(element, referenceBase)).sum / genotype.ploidy
+      genotype.alleles.map(referenceAllele => computeBaseLikelihood(element, referenceAllele)).sum
     }
-
-    pileup.elements.map(computeBaseGenotypeLikelihood(_, genotype)).reduce(_ * _)
+    val depth = pileup.elements.size
+    pileup.elements.map(computeBaseGenotypeLikelihood(_, genotype)).reduce(_ * _) / math.pow(genotype.ploidy, depth)
   }
 
   /**
