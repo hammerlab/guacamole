@@ -53,7 +53,7 @@ object ThresholdVariantCaller extends Command with Serializable with Logging {
 
   override def run(rawArgs: Array[String]): Unit = {
     val args = Args4j[Arguments](rawArgs)
-    val sc = Common.createSparkContext(args)
+    val sc = Common.createSparkContext(args, appName = Some(name))
 
     val reads = Common.loadReads(args, sc, mapped = true, nonDuplicate = true)
     val loci = Common.loci(args, reads)
