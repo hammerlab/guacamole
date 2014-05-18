@@ -229,8 +229,12 @@ object Common extends Logging {
    * @param loadSystemValues
    * @param sparkDriverPort
    */
-  def createSparkContext(args: SparkArgs, loadSystemValues: Boolean = true, sparkDriverPort: Option[Int] = None): SparkContext = {
-    val config: SparkConf = new SparkConf(loadSystemValues).setAppName("guacamole").setMaster(args.spark_master)
+  def createSparkContext(args: SparkArgs, loadSystemValues: Boolean = true, sparkDriverPort: Option[Int] = None, appName: Option[String] = None): SparkContext = {
+    val config: SparkConf = new SparkConf(loadSystemValues).setMaster(args.spark_master)
+    appName match {
+      case Some(name) => config.setAppName("guacamole: %s".format(name))
+      case _          => config.setAppName("guacamole")
+    }
     if (args.spark_home != null) config.setSparkHome(args.spark_home)
     if (args.spark_jars != Nil) config.setJars(args.spark_jars)
     if (args.spark_env_vars != Nil) config.setExecutorEnv(parseEnvVariables(args.spark_env_vars))
