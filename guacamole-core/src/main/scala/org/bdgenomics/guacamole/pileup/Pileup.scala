@@ -26,7 +26,6 @@ import org.bdgenomics.guacamole.Common
  * locus. Each [[PileupElement]] specifies the base read at the given locus in a particular read. It also keeps track
  * of the read itself and the offset of the base in the read.
  *
- *
  * @param locus The locus on the reference genome
  *
  * @param elements Sequence of [[PileupElement]] instances giving the sequenced bases that align to a particular
@@ -73,7 +72,7 @@ case class Pileup(locus: Long, elements: Seq[PileupElement]) {
    */
   def atGreaterLocus(newLocus: Long, newReads: Iterator[DecadentRead]) = {
     assume(elements.isEmpty || newLocus > locus,
-      "New locus (%d) must be greater than current locus (%d)".format(newLocus, locus))
+      "New locus (%d) not greater than current locus (%d)".format(newLocus, locus))
     val reusableElements = elements.filter(element => Common.overlapsLocus(element.read.record, newLocus))
     val updatedElements = reusableElements.map(_.elementAtGreaterLocus(newLocus))
     val newElements = newReads.map(PileupElement(_, newLocus))
@@ -82,27 +81,6 @@ case class Pileup(locus: Long, elements: Seq[PileupElement]) {
 
 }
 object Pileup {
-  /**
-   * Given an iterator over (locus, new reads) pairs, returns an iterator of [[Pileup]] instances at the given loci.
-   *
-   * @param locusAndReads Iterator of (locus, new reads) pairs, where "new reads" are those that overlap the current
-   *                      locus, but not the previous locus.
-   *
-   * @return An iterator of [[Pileup]] instances at the given loci.
-   */
-  def pileupsAtLoci(locusAndReads: Iterator[(Long, Iterable[DecadentRead])]): Iterator[Pileup] = {
-
-    val empty: Seq[PileupElement] = Seq()
-    val initialEmpty = Pileup(0, empty)
-
-    val iterator = locusAndReads.scanLeft(initialEmpty)((prevPileup: Pileup, pair) => {
-      val (locus, newReads) = pair
-      prevPileup.atGreaterLocus(locus, newReads.iterator)
-    })
-    iterator.next() // Discard first element, the initial empty pileup.
-    iterator
-  }
-
   /**
    * Given reads and a locus, returns a [[Pileup]] at the specified locus.
    *
@@ -113,7 +91,6 @@ object Pileup {
   def apply(reads: Seq[DecadentRead], locus: Long): Pileup = {
     val elements = reads.filter(read => Common.overlapsLocus(read.record, locus)).map(PileupElement(_, locus))
     val pileup = Pileup(locus, elements)
-    assert(pileup.locus == locus, "New pileup has locus %d but exepcted %d".format(pileup.locus, locus))
     pileup
   }
 }
