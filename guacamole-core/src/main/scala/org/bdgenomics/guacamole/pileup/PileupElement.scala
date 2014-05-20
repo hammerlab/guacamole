@@ -7,8 +7,7 @@ import scala.annotation.tailrec
 import scala.collection.JavaConversions._
 
 /**
- * A [[PileupElement]] represents a particular nucleotide sequenced by a particular read at a particular
- * reference locus.
+ * A [[PileupElement]] represents the bases  sequenced by a particular read at a particular reference locus.
  *
  * @param read The read this [[PileupElement]] is coming from.
  * @param locus The reference locus.
@@ -17,7 +16,7 @@ import scala.collection.JavaConversions._
  * @param cigarElementLocus The reference START position of the cigar element.
  *                          If the element is an INSERTION this the PRECEDING reference base
  * @param indexInCigarElements Which cigar element in the read this element belongs to.
- * @param indexWithinCigarElement The offset of this element within the current cigar element
+ * @param indexWithinCigarElement The offset of this element within the current cigar element.
  */
 case class PileupElement(
     read: DecadentRead,
@@ -36,7 +35,7 @@ case class PileupElement(
   lazy val nextCigarElement = if (remainingReadCigar.tail.isEmpty) None else Some(remainingReadCigar.tail.head)
 
   /*
-   * True if last base of the current cigar element
+   * True if this is the last base of the current cigar element.
    */
   def isFinalCigarBase: Boolean = indexWithinCigarElement == cigarElement.getLength - 1
 
@@ -45,7 +44,10 @@ case class PileupElement(
     val nextBaseCigarElement = if (isFinalCigarBase) nextCigarElement else Some(cigarElement)
     val nextBaseCigarOperator = nextBaseCigarElement.map(_.getOperator)
     (cigarOperator, nextBaseCigarOperator) match {
-      //To process insertions we connect the final base of a match to the rest of the insertion
+      // Since insertions by definition have no corresponding reference loci, there is a choice in whether we "attach"
+      // them to the preceding or following locus. Here we attach them to the preceding base, since that seems to be the
+      // conventional choice. That is, if we have a match followed by an insertion, the final base of the match will
+      // get combined with the insertion into one Alignment, at the match's reference locus.
       case (CigarOperator.M, Some(CigarOperator.I)) | (CigarOperator.EQ, Some(CigarOperator.I)) | (CigarOperator.I, _) =>
         val startReadOffset: Int = readPosition.toInt
         val endReadOffset: Int = readPosition.toInt + CigarUtils.getReadLength(nextBaseCigarElement.get) + 1
@@ -66,8 +68,8 @@ case class PileupElement(
     }
   }
 
-  /* If you only care about what the CigarOperator was at this position, but not its
-   * associated sequence, then you can just one of these state variables.
+  /* If you only care about what kind of CigarOperator is at this position, but not its associated sequence, then you
+   * can use these state variables.
    */
   lazy val isInsertion = alignment match { case Insertion(_, _) => true; case _ => false }
   lazy val isDeletion = alignment match { case Deletion() => true; case _ => false }
@@ -77,19 +79,23 @@ case class PileupElement(
   /**
    * The sequenced nucleotides at this element.
    *
-   * If the current element is a deletion, then return the empty string. If it's
+   * If the current element is a deletion, then this is the empty string. If it's
    * an insertion, then this will be a string of length >= 1: the contents of
    * the inserted sequence starting at the current locus. Otherwise, this is
    * a string of length 1.
    */
-  lazy val sequenceRead: String = alignment match {
+  lazy val sequencedBases: String = alignment match {
     case Deletion()          => ""
     case Match(base, _)      => base.toString
     case Mismatch(base, _)   => base.toString
     case Insertion(bases, _) => bases
   }
 
-  lazy val singleBaseRead: Char = alignment match {
+  /**
+   * For matches, mismatches, and single base insertions, this is the base sequenced at this locus, as a char. For
+   * all other cases, this throws an insertion error.
+   */
+  lazy val sequencedSingleBase: Char = alignment match {
     case Match(base, _)                           => base
     case Mismatch(base, _)                        => base
     case Insertion(bases, _) if bases.length == 1 => bases.charAt(0)
@@ -98,10 +104,11 @@ case class PileupElement(
   }
 
   /*
-   * Phred-scaled base quality score
-   * For matches and mismatches this is the base read quality score
-   * For insertions this the minimum base read quality score of all the bases in the insertion
-   * For deletions this is the mapping quality as there are no base quality scores available
+   * Base quality score, phred-scaled.
+   *
+   * For matches and mismatches this is the base quality score of the current base.
+   * For insertions this the minimum base quality score of all the bases in the insertion.
+   * For deletions this is the mapping quality as there are no base quality scores available.
    */
   lazy val qualityScore: Int = alignment match {
     case Deletion()                  => read.record.getMapq
@@ -132,7 +139,7 @@ case class PileupElement(
     } else {
       readPosition
     }
-    // Iterate through the remaining cigar elements to find one overlapping the current position
+    // Iterate through the remaining cigar elements to find one overlapping the current position.
     @tailrec
     def getCurrentElement(remainingCigarElements: List[CigarElement], cigarReadPosition: Long, cigarReferencePosition: Long, cigarElementIndex: Long): PileupElement = {
       if (remainingCigarElements.isEmpty) {
@@ -173,7 +180,6 @@ case class PileupElement(
 object PileupElement {
   /**
    * Create a new [[PileupElement]] backed by the given read at the specified locus. The read must overlap the locus.
-   *
    */
   def apply(read: DecadentRead, locus: Long): PileupElement = {
     assume(read.isAligned)
@@ -190,7 +196,6 @@ object PileupElement {
       cigarElementLocus = read.record.getStart,
       indexInCigarElements = 0,
       indexWithinCigarElement = 0)
-
     startElement.elementAtGreaterLocus(locus)
   }
 }

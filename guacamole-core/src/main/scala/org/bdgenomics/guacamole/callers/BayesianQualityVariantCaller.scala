@@ -12,19 +12,19 @@ import org.bdgenomics.guacamole.Common.Arguments._
 import org.bdgenomics.adam.util.PhredUtils
 
 /**
- * A genotype is an n-ploidy sequence of alleles
- * Each allele represents the possible base (or sequence of bases) on a chromosome
- * i.e. DiploidGenotypes would be represented as Seq('A', 'A'), Seq('A', 'T') ... Seq('T', 'G') ... Seq('T', 'T')
- * Alleles can also be multiple characters as well i.e. Seq("AAA", "T")
+ * A Genotype is a sequence of alleles of length equal to the ploidy of the organism.
  *
- * The ploidy is the number of alleles in a set (this should be equal to the number of chromosomes under consideration)
+ * A Genotype is for a particular reference locus. Each allele gives the base(s) present on a chromosome at that
+ * locus.
+ *
+ * For example, the possible single-base diploid genotypes are Seq('A', 'A'), Seq('A', 'T') ... Seq('T', 'T').
+ * Alleles can also be multiple bases as well, e.g. Seq("AAA", "T")
  *
  */
 case class Genotype(alleles: String*) {
 
   /**
-   * ploidy is the number of alleles in the genotype
-   * should be same as the number of chromosomes in the species
+   * The ploidy of the organism is the number of alleles in the genotype.
    */
   val ploidy = alleles.size
 
@@ -35,8 +35,7 @@ case class Genotype(alleles: String*) {
   }
 
   /**
-   *
-   * Counts alleles in this genotype that are not the same as the reference allele
+   * Counts alleles in this genotype that are not the same as the specified reference allele.
    *
    * @param referenceAllele Reference allele to compare against
    * @return Count of non reference alleles
@@ -46,8 +45,7 @@ case class Genotype(alleles: String*) {
   }
 
   /**
-   *
-   * Check whether this genotype contains any non-reference alleles for a given reference sequence
+   * Returns whether this genotype contains any non-reference alleles for a given reference sequence.
    *
    * @param referenceAllele Reference allele to compare against
    * @return True if at least one allele is not the reference
@@ -57,13 +55,14 @@ case class Genotype(alleles: String*) {
   }
 
   /**
-   * Transform the alleles in this genotype to the allele enumeration
-   * Classifies alleles as Reference or Alternate
+   * Transform the alleles in this genotype to the ADAM allele enumeration.
+   * Classifies alleles as Reference or Alternate.
    *
    * @param referenceAllele Reference allele to compare against
-   * @return Sequence of GenotypeAlleles which are reference, alternate or otheralt
+   * @return Sequence of GenotypeAlleles which are Ref, Alt or OtherAlt.
    */
   def getGenotypeAlleles(referenceAllele: String): Seq[ADAMGenotypeAllele] = {
+    assume(ploidy == 2)
     val numVariants = numberOfVariants(referenceAllele)
     if (numVariants == 0) {
       Seq(ADAMGenotypeAllele.Ref, ADAMGenotypeAllele.Ref)
@@ -94,7 +93,7 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
     val args = Args4j[Arguments](rawArgs)
     val sc = Common.createSparkContext(args, appName = Some(name))
 
-    val reads = Common.loadReads(args, sc, mapped = true, nonDuplicate = true)
+    val reads = Common.loadReadsFromArguments(args, sc, mapped = true, nonDuplicate = true)
     val loci = Common.loci(args, reads)
     val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(args, reads, loci)
     val genotypes: RDD[ADAMGenotype] = DistributedUtil.pileupFlatMap[ADAMGenotype](
@@ -152,12 +151,12 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
 
   /**
    * Generate possible genotypes from a pileup
-   * Possible genotypes are all unique n-tuples of sequenceRead that appear in the pileup
+   * Possible genotypes are all unique n-tuples of sequencedBases that appear in the pileup.
    *
    * @return Sequence of possible genotypes
    */
   def getPossibleGenotypes(pileup: Pileup): Seq[Genotype] = {
-    val possibleAlleles = pileup.elements.map(_.sequenceRead).distinct
+    val possibleAlleles = pileup.elements.map(_.sequencedBases).distinct
     val possibleGenotypes =
       for (i <- 0 until possibleAlleles.size; j <- i until possibleAlleles.size)
         yield Genotype(possibleAlleles(i), possibleAlleles(j))
@@ -165,7 +164,7 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
   }
 
   /**
-   * For each possible genotype based on the pileup sequenceRead compute the likelihood
+   * For each possible genotype based on the pileup sequencedBases, compute the likelihood.
    *
    * @return Sequence of (Genotype, Likelihood)
    */
@@ -191,7 +190,7 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
     def computeBaseGenotypeLikelihood(element: PileupElement, genotype: Genotype): Double = {
       def computeBaseLikelihood(element: PileupElement, referenceAllele: String): Double = {
         val errorProbability = PhredUtils.phredToErrorProbability(element.qualityScore)
-        if (element.sequenceRead == referenceAllele) (1 - errorProbability) else errorProbability
+        if (element.sequencedBases == referenceAllele) (1 - errorProbability) else errorProbability
       }
       genotype.alleles.map(referenceAllele => computeBaseLikelihood(element, referenceAllele)).sum
     }
