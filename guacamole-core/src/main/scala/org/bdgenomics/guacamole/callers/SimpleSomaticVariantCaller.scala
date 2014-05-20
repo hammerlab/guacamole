@@ -305,7 +305,7 @@ object SimpleSomaticVariantCaller extends Command {
    */
   def callVariantsFromArgs(context: ADAMContext, args: TumorNormalReads): RDD[ADAMGenotype] = {
     val (tumorReads, normalReads) =
-      Common.loadTumorNormalReads(args, context, mapped = true, nonDuplicate = true)
+      Common.loadTumorNormalReadsFromArguments(args, context, mapped = true, nonDuplicate = true)
     callVariants(normalReads, tumorReads)
   }
 

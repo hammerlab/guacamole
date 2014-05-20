@@ -109,7 +109,7 @@ class PileupSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
       TestUtil.makeDecadentRead("TCGATCGA", "8M", "8", 1),
       TestUtil.makeDecadentRead("TCGACCCTCGA", "4M3I4M", "8", 1))
     val lastPileup = Pileup(reads, 7)
-    lastPileup.elements.forall(_.sequenceRead == "G") should be(true)
+    lastPileup.elements.forall(_.sequencedBases == "G") should be(true)
 
     lastPileup.elements.forall(_.isMatch) should be(true)
   }
@@ -122,8 +122,8 @@ class PileupSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
       TestUtil.makeDecadentRead("TCGACCCTCGA", "4M3I4M", "8", 1, "chr1", Some(Array(10, 15, 20, 25, 5, 5, 5, 10, 15, 20, 25))))
 
     val lastPileup = Pileup(reads, 8)
-    lastPileup.elements.forall(_.sequenceRead == "A") should be(true)
-    lastPileup.elements.forall(_.singleBaseRead == 'A') should be(true)
+    lastPileup.elements.forall(_.sequencedBases == "A") should be(true)
+    lastPileup.elements.forall(_.sequencedSingleBase == 'A') should be(true)
 
     lastPileup.elements.forall(_.isMatch) should be(true)
     lastPileup.elements.forall(_.qualityScore == 25) should be(true)
@@ -239,8 +239,8 @@ class PileupSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
     intercept[AssertionError] { PileupElement(decadentRead1, 5 + 70) }
     val at5 = PileupElement(decadentRead1, 5)
     assert(at5 != null)
-    assert(at5.sequenceRead == "A")
-    assert(at5.singleBaseRead == 'A')
+    assert(at5.sequencedBases == "A")
+    assert(at5.sequencedSingleBase == 'A')
 
     // At the end of the read:
     assert(PileupElement(decadentRead1, 74) != null)
@@ -248,25 +248,25 @@ class PileupSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
 
     // Just before the deletion
     val at28 = PileupElement(decadentRead1, 5 + 28)
-    assert(at28.sequenceRead === "A")
+    assert(at28.sequencedBases === "A")
     // Inside the deletion
     val at29 = PileupElement(decadentRead1, 5 + 29)
-    assert(at29.sequenceRead === "")
+    assert(at29.sequencedBases === "")
     val at38 = PileupElement(decadentRead1, 5 + 38)
-    assert(at38.sequenceRead === "")
+    assert(at38.sequencedBases === "")
     // Just after the deletion
     val at39 = PileupElement(decadentRead1, 5 + 39)
-    assert(at39.sequenceRead === "A")
+    assert(at39.sequencedBases === "A")
 
     //  `read2` has an insertion: 5M5I34M10D16M
     val read2Record = testAdamRecords(1) // read2
     val decadentRead2 = new DecadentRead(read2Record)
     val read2At10 = PileupElement(decadentRead2, 10)
     assert(read2At10 != null)
-    assert(read2At10.sequenceRead === "A")
+    assert(read2At10.sequencedBases === "A")
     // right after the insert
     val read2At20 = PileupElement(decadentRead2, 20)
-    assert(read2At20.sequenceRead === "A")
+    assert(read2At20.sequencedBases === "A")
 
     // elementAtGreaterLocus is a no-op on the same locus, 
     // and fails in lower loci
@@ -282,11 +282,11 @@ class PileupSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
     val decadentRead3 = new DecadentRead(read3Record)
     val read3At15 = PileupElement(decadentRead3, 15)
     assert(read3At15 != null)
-    assert(read3At15.sequenceRead == "A")
-    assert(read3At15.elementAtGreaterLocus(16).sequenceRead == "T")
-    assert(read3At15.elementAtGreaterLocus(17).sequenceRead == "C")
-    assert(read3At15.elementAtGreaterLocus(16).elementAtGreaterLocus(17).sequenceRead == "C")
-    assert(read3At15.elementAtGreaterLocus(18).sequenceRead == "G")
+    assert(read3At15.sequencedBases == "A")
+    assert(read3At15.elementAtGreaterLocus(16).sequencedBases == "T")
+    assert(read3At15.elementAtGreaterLocus(17).sequencedBases == "C")
+    assert(read3At15.elementAtGreaterLocus(16).elementAtGreaterLocus(17).sequencedBases == "C")
+    assert(read3At15.elementAtGreaterLocus(18).sequencedBases == "G")
   }
 
   test("Read4 has CIGAR: 10M10I10D40M; ACGT repeated 15 times") {
@@ -296,10 +296,10 @@ class PileupSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
     val read4At20 = PileupElement(decadentRead4, 20)
     assert(read4At20 != null)
     for (i <- 0 until 2) {
-      assert(read4At20.elementAtGreaterLocus(20 + i * 4 + 0).sequenceRead(0) == 'A')
-      assert(read4At20.elementAtGreaterLocus(20 + i * 4 + 1).sequenceRead(0) == 'C')
-      assert(read4At20.elementAtGreaterLocus(20 + i * 4 + 2).sequenceRead(0) == 'G')
-      assert(read4At20.elementAtGreaterLocus(20 + i * 4 + 3).sequenceRead(0) == 'T')
+      assert(read4At20.elementAtGreaterLocus(20 + i * 4 + 0).sequencedBases(0) == 'A')
+      assert(read4At20.elementAtGreaterLocus(20 + i * 4 + 1).sequencedBases(0) == 'C')
+      assert(read4At20.elementAtGreaterLocus(20 + i * 4 + 2).sequencedBases(0) == 'G')
+      assert(read4At20.elementAtGreaterLocus(20 + i * 4 + 3).sequencedBases(0) == 'T')
     }
   }
 
@@ -310,14 +310,14 @@ class PileupSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
     val decadentRead5 = new DecadentRead(testAdamRecords(4))
     val read5At10 = PileupElement(decadentRead5, 10)
     assert(read5At10 != null)
-    assert(read5At10.elementAtGreaterLocus(10).sequenceRead === "A")
-    assert(read5At10.elementAtGreaterLocus(14).sequenceRead === "A")
-    assert(read5At10.elementAtGreaterLocus(18).sequenceRead === "A")
-    assert(read5At10.elementAtGreaterLocus(19).sequenceRead === "C")
-    assert(read5At10.elementAtGreaterLocus(20).sequenceRead === "G")
-    assert(read5At10.elementAtGreaterLocus(21).sequenceRead === "T")
-    assert(read5At10.elementAtGreaterLocus(22).sequenceRead === "A")
-    assert(read5At10.elementAtGreaterLocus(24).sequenceRead === "G")
+    assert(read5At10.elementAtGreaterLocus(10).sequencedBases === "A")
+    assert(read5At10.elementAtGreaterLocus(14).sequencedBases === "A")
+    assert(read5At10.elementAtGreaterLocus(18).sequencedBases === "A")
+    assert(read5At10.elementAtGreaterLocus(19).sequencedBases === "C")
+    assert(read5At10.elementAtGreaterLocus(20).sequencedBases === "G")
+    assert(read5At10.elementAtGreaterLocus(21).sequencedBases === "T")
+    assert(read5At10.elementAtGreaterLocus(22).sequencedBases === "A")
+    assert(read5At10.elementAtGreaterLocus(24).sequencedBases === "G")
   }
 
   test("read6: ACGTACGTACGT 4=1N4=4S") {
@@ -326,18 +326,18 @@ class PileupSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
     val decadentRead6 = new DecadentRead(testAdamRecords(5))
     val read6At40 = PileupElement(decadentRead6, 40)
     assert(read6At40 != null)
-    assert(read6At40.elementAtGreaterLocus(40).sequenceRead === "A")
-    assert(read6At40.elementAtGreaterLocus(41).sequenceRead === "C")
-    assert(read6At40.elementAtGreaterLocus(42).sequenceRead === "G")
-    assert(read6At40.elementAtGreaterLocus(43).sequenceRead === "T")
-    assert(read6At40.elementAtGreaterLocus(44).sequenceRead === "")
-    assert(read6At40.elementAtGreaterLocus(45).sequenceRead === "A")
-    assert(read6At40.elementAtGreaterLocus(48).sequenceRead === "T")
+    assert(read6At40.elementAtGreaterLocus(40).sequencedBases === "A")
+    assert(read6At40.elementAtGreaterLocus(41).sequencedBases === "C")
+    assert(read6At40.elementAtGreaterLocus(42).sequencedBases === "G")
+    assert(read6At40.elementAtGreaterLocus(43).sequencedBases === "T")
+    assert(read6At40.elementAtGreaterLocus(44).sequencedBases === "")
+    assert(read6At40.elementAtGreaterLocus(45).sequencedBases === "A")
+    assert(read6At40.elementAtGreaterLocus(48).sequencedBases === "T")
     // The code uses RichADAMRecord.end which treats hard and soft-clipping
     // identically, so we cannot access, the rest of the read after the soft
     // clipping (which could have been dealt with as a “Deletion”).
     intercept[AssertionError] {
-      read6At40.elementAtGreaterLocus(49).sequenceRead
+      read6At40.elementAtGreaterLocus(49).sequencedBases
     }
   }
 
@@ -345,15 +345,15 @@ class PileupSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
     val decadentRead7 = new DecadentRead(testAdamRecords(6))
     val read7At40 = PileupElement(decadentRead7, 40)
     assert(read7At40 != null)
-    assert(read7At40.elementAtGreaterLocus(40).sequenceRead === "A")
-    assert(read7At40.elementAtGreaterLocus(41).sequenceRead === "C")
-    assert(read7At40.elementAtGreaterLocus(42).sequenceRead === "G")
-    assert(read7At40.elementAtGreaterLocus(43).sequenceRead === "T")
-    assert(read7At40.elementAtGreaterLocus(44).sequenceRead === "")
-    assert(read7At40.elementAtGreaterLocus(45).sequenceRead === "A")
-    assert(read7At40.elementAtGreaterLocus(48).sequenceRead === "T")
+    assert(read7At40.elementAtGreaterLocus(40).sequencedBases === "A")
+    assert(read7At40.elementAtGreaterLocus(41).sequencedBases === "C")
+    assert(read7At40.elementAtGreaterLocus(42).sequencedBases === "G")
+    assert(read7At40.elementAtGreaterLocus(43).sequencedBases === "T")
+    assert(read7At40.elementAtGreaterLocus(44).sequencedBases === "")
+    assert(read7At40.elementAtGreaterLocus(45).sequencedBases === "A")
+    assert(read7At40.elementAtGreaterLocus(48).sequencedBases === "T")
     intercept[AssertionError] {
-      read7At40.elementAtGreaterLocus(49).sequenceRead
+      read7At40.elementAtGreaterLocus(49).sequencedBases
     }
   }
 
@@ -366,16 +366,16 @@ class PileupSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
     val decadentRead8 = new DecadentRead(testAdamRecords(7))
     val read8At40 = PileupElement(decadentRead8, 40)
     assert(read8At40 != null)
-    assert(read8At40.elementAtGreaterLocus(40).sequenceRead === "A")
-    assert(read8At40.elementAtGreaterLocus(41).sequenceRead === "C")
-    assert(read8At40.elementAtGreaterLocus(42).sequenceRead === "G")
-    assert(read8At40.elementAtGreaterLocus(43).sequenceRead === "T")
-    assert(read8At40.elementAtGreaterLocus(44).sequenceRead === "A")
-    assert(read8At40.elementAtGreaterLocus(45).sequenceRead === "C")
-    assert(read8At40.elementAtGreaterLocus(46).sequenceRead === "G")
-    assert(read8At40.elementAtGreaterLocus(47).sequenceRead === "T")
+    assert(read8At40.elementAtGreaterLocus(40).sequencedBases === "A")
+    assert(read8At40.elementAtGreaterLocus(41).sequencedBases === "C")
+    assert(read8At40.elementAtGreaterLocus(42).sequencedBases === "G")
+    assert(read8At40.elementAtGreaterLocus(43).sequencedBases === "T")
+    assert(read8At40.elementAtGreaterLocus(44).sequencedBases === "A")
+    assert(read8At40.elementAtGreaterLocus(45).sequencedBases === "C")
+    assert(read8At40.elementAtGreaterLocus(46).sequencedBases === "G")
+    assert(read8At40.elementAtGreaterLocus(47).sequencedBases === "T")
     intercept[AssertionError] {
-      read8At40.elementAtGreaterLocus(48).sequenceRead
+      read8At40.elementAtGreaterLocus(48).sequencedBases
     }
   }
 

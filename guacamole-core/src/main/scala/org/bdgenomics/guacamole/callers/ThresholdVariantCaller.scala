@@ -31,9 +31,9 @@ import org.apache.spark.Logging
 import org.bdgenomics.guacamole.pileup.Pileup
 
 /**
- * Simple variant caller implementation.
+ * Simple variant caller.
  *
- * Instead of a bayesian approach, just uses thresholds on read counts to call variants (similar to Varscan).
+ * Calls variants when the percent of reads supporting a variant at a locus exceeds a threshold.
  *
  */
 object ThresholdVariantCaller extends Command with Serializable with Logging {
@@ -55,7 +55,7 @@ object ThresholdVariantCaller extends Command with Serializable with Logging {
     val args = Args4j[Arguments](rawArgs)
     val sc = Common.createSparkContext(args, appName = Some(name))
 
-    val reads = Common.loadReads(args, sc, mapped = true, nonDuplicate = true)
+    val reads = Common.loadReadsFromArguments(args, sc, mapped = true, nonDuplicate = true)
     val loci = Common.loci(args, reads)
     val (threshold, emitRef, emitNoCall) = (args.threshold, args.emitRef, args.emitNoCall)
     val numGenotypes = sc.accumulator(0L)
@@ -89,7 +89,7 @@ object ThresholdVariantCaller extends Command with Serializable with Logging {
       case (sampleName, samplePileup) =>
         val totalReads = samplePileup.elements.length
         val matchesOrMismatches = samplePileup.elements.filter(e => e.isMatch || e.isMismatch)
-        val counts = matchesOrMismatches.map(_.singleBaseRead).groupBy(char => char).mapValues(_.length)
+        val counts = matchesOrMismatches.map(_.sequencedSingleBase).groupBy(char => char).mapValues(_.length)
         val sortedAlleles = counts.toList.filter(_._2 * 100 / totalReads > threshold_percent).sortBy(-1 * _._2)
 
         def variant(alternateBase: Char, allelesList: List[ADAMGenotypeAllele]): ADAMGenotype = {

@@ -90,7 +90,7 @@ object Common extends Logging {
    * @param nonDuplicate if true, will filter out duplicate reads.
    * @return
    */
-  def loadFile(filename: String, sc: ADAMContext, mapped: Boolean, nonDuplicate: Boolean): RDD[ADAMRecord] = {
+  def loadReads(filename: String, sc: ADAMContext, mapped: Boolean, nonDuplicate: Boolean): RDD[ADAMRecord] = {
     val reads: RDD[ADAMRecord] = if (mapped && nonDuplicate) {
       sc.adamLoad(filename, Some(classOf[UniqueMappedReadPredicate]))
     } else {
@@ -113,33 +113,33 @@ object Common extends Logging {
    *
    * @param args parsed arguments
    * @param sc spark context
-   * @param mapped if true, will filter out non-mapped reads
-   * @param nonDuplicate if true, will filter out duplicate reads.
+   * @param mapped if true (default), will filter out non-mapped reads
+   * @param nonDuplicate if true (default), will filter out duplicate reads.
    * @return
    */
-  def loadReads(args: Arguments.Reads,
-                sc: ADAMContext,
-                mapped: Boolean = true,
-                nonDuplicate: Boolean = true): RDD[ADAMRecord] = {
-    loadFile(args.reads, sc, mapped, nonDuplicate)
+  def loadReadsFromArguments(
+    args: Arguments.Reads,
+    sc: ADAMContext,
+    mapped: Boolean = true,
+    nonDuplicate: Boolean = true): RDD[ADAMRecord] = {
+    loadReads(args.reads, sc, mapped, nonDuplicate)
   }
 
   /**
-   * Given arguments for a single set of reads, and a spark context, return an RDD of reads.
+   * Given arguments for two sets of reads (tumor and normal), return a pair of RDDs of reads: (tumor, normal).
    *
    * @param args parsed arguments
    * @param sc spark context
-   * @param mapped if true, will filter out non-mapped reads
-   * @param nonDuplicate if true, will filter out duplicate reads.
-   * @return
+   * @param mapped if true, filter out non-mapped reads
+   * @param nonDuplicate if true, filter out duplicate reads.
    */
-  def loadTumorNormalReads(args: Arguments.TumorNormalReads,
-                           sc: ADAMContext,
-                           mapped: Boolean = true,
-                           nonDuplicate: Boolean = true): (RDD[ADAMRecord], RDD[ADAMRecord]) = {
-
-    val tumorReads: RDD[ADAMRecord] = loadFile(args.tumorReads, sc, mapped, nonDuplicate)
-    val normalReads: RDD[ADAMRecord] = loadFile(args.normalReads, sc, mapped, nonDuplicate)
+  def loadTumorNormalReadsFromArguments(
+    args: Arguments.TumorNormalReads,
+    sc: ADAMContext,
+    mapped: Boolean = true,
+    nonDuplicate: Boolean = true): (RDD[ADAMRecord], RDD[ADAMRecord]) = {
+    val tumorReads: RDD[ADAMRecord] = loadReads(args.tumorReads, sc, mapped, nonDuplicate)
+    val normalReads: RDD[ADAMRecord] = loadReads(args.normalReads, sc, mapped, nonDuplicate)
     (tumorReads, normalReads)
   }
 
@@ -174,7 +174,7 @@ object Common extends Logging {
   }
 
   /**
-   * Collects the full set of loci on all contigs covered by particular set of reads
+   * Collects the full set of loci (i.e. [0, length of contig]) on all contigs with reads in an RDD.
    *
    * @param reads RDD of ADAMRecords
    * @return LociSet of loci covered by those reads
@@ -210,7 +210,7 @@ object Common extends Logging {
    *
    * Commandline format is -spark_env foo=1 -spark_env bar=2
    * @param envVariables The variables found on the commandline
-   * @return
+   * @return array of (key, value) pairs parsed from the command line.
    */
   def parseEnvVariables(envVariables: util.ArrayList[String]): Array[(String, String)] = {
     envVariables.foldLeft(Array[(String, String)]()) {
