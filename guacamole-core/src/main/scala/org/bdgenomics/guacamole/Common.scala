@@ -113,8 +113,8 @@ object Common extends Logging {
    *
    * @param args parsed arguments
    * @param sc spark context
-   * @param mapped if true, will filter out non-mapped reads
-   * @param nonDuplicate if true, will filter out duplicate reads.
+   * @param mapped if true (default), will filter out non-mapped reads
+   * @param nonDuplicate if true (default), will filter out duplicate reads.
    * @return
    */
   def loadReadsFromArguments(
