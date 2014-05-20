@@ -1,6 +1,6 @@
 guacamole
 =========
-
+[![Build Status](https://travis-ci.org/hammerlab/guacamole.svg?branch=master)](https://travis-ci.org/hammerlab/guacamole)
 Guacamole is an ADAM-based variant calling framework inspired by Avocado.
 
 The goal is a small, readable codebase that can be understood quickly and adapted for experimentation.
