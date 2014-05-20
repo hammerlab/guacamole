@@ -108,6 +108,7 @@ object TestUtil {
 
         object args extends SparkArgs {
           spark_master = "local[4]"
+          spark_kryo_buffer_size = 256
         }
         // Create a spark context
         Common.createSparkContext(args, false, Some(port))
