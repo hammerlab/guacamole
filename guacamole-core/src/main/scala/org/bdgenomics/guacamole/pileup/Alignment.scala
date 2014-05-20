@@ -1,8 +1,13 @@
 package org.bdgenomics.guacamole.pileup
 
 /**
- * The alignment of a read combines the underlying Cigar operator
- * (match/mismatch/deletion/insertion) with the characters which were used from the read.
+ * The Alignment of a read at a particular locus specifies:
+ *
+ *  - the Cigar operator for this read and locus.
+ *
+ *  - the base(s) read at the corresponding offset in the read.
+ *
+ *  - the base quality scores of the bases read.
  */
 private[pileup] sealed abstract class Alignment
 case class Insertion(bases: String, baseQualities: Array[Int]) extends Alignment
