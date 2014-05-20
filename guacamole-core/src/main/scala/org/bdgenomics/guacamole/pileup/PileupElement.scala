@@ -93,7 +93,7 @@ case class PileupElement(
 
   /**
    * For matches, mismatches, and single base insertions, this is the base sequenced at this locus, as a char. For
-   * all other cases, this throws an insertion error.
+   * all other cases, this throws an assertion error.
    */
   lazy val sequencedSingleBase: Char = alignment match {
     case Match(base, _)                           => base
