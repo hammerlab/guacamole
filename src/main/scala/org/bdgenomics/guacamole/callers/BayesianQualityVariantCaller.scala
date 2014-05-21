@@ -84,7 +84,7 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
   override val name = "uniformbayes"
   override val description = "call variants using a simple quality based probability"
 
-  private class Arguments extends Base with Output with Reads with DistributedUtil.Arguments {
+  private class Arguments extends Base with Output with Reads with VariantConcordance with DistributedUtil.Arguments {
 
     @Option(name = "-emit-ref", usage = "Output homozygous reference calls.")
     var emitRef: Boolean = false
@@ -108,6 +108,9 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
       pileup => callVariantsAtLocus(pileup).iterator)
     mappedReads.unpersist()
     Common.writeVariants(args, genotypes)
+
+    if (args.truthGenotypesFile != null) Common.evaluateVariants(args, genotypes, sc)
+
     DelayedMessages.default.print()
   }
 

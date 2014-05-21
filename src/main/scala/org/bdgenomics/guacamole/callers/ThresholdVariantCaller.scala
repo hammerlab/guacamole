@@ -40,7 +40,7 @@ object ThresholdVariantCaller extends Command with Serializable with Logging {
   override val name = "threshold"
   override val description = "call variants using a simple threshold"
 
-  private class Arguments extends Base with Output with Reads with DistributedUtil.Arguments {
+  private class Arguments extends Base with Output with Reads with VariantConcordance with DistributedUtil.Arguments {
     @Option(name = "-threshold", metaVar = "X", usage = "Make a call if at least X% of reads support it. Default: 8")
     var threshold: Int = 8
 
@@ -78,6 +78,9 @@ object ThresholdVariantCaller extends Command with Serializable with Logging {
       })
     mappedReads.unpersist()
     Common.writeVariants(args, genotypes)
+
+    if (args.truthGenotypesFile != null) Common.evaluateVariants(args, genotypes, sc)
+
     DelayedMessages.default.print()
   }
 
