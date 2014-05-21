@@ -30,17 +30,7 @@ import java.util
 import java.util.Calendar
 import org.bdgenomics.adam.rich.RichADAMRecord
 import org.bdgenomics.adam.rdd.ADAMContext
-import fi.tkk.ics.hadoop.bam.{ SAMRecordWritable, AnySAMInputFormat }
-import fi.tkk.ics.hadoop.bam.util.SAMHeaderReader
-import java.util.regex.Pattern
-import net.sf.samtools.SAMFileHeader
-import net.sf.samtools.SAMRecord
-import org.apache.hadoop.fs.Path
-import org.bdgenomics.adam.util.HadoopUtil
-import org.apache.hadoop.io.LongWritable
-import parquet.hadoop.util.ContextUtil
-import org.bdgenomics.adam.models.{ RecordGroupDictionary, SequenceDictionary }
-import org.apache.hadoop.conf.Configuration
+import org.bdgenomics.adam.rdd.variation.ADAMVariationContext._
 
 /**
  * Collection of functions that are useful to multiple variant calling implementations, and specifications of command-
@@ -231,12 +221,18 @@ object Common extends Logging {
    * @param genotypes ADAM genotypes (i.e. the variants)
    */
   def writeVariants(args: Arguments.Output, genotypes: RDD[ADAMGenotype]): Unit = {
+
     progress("Writing genotypes to: %s.".format(args.variantOutput))
-    genotypes.adamSave(args.variantOutput,
-      args.blockSize,
-      args.pageSize,
-      args.compressionCodec,
-      args.disableDictionary)
+    if (args.variantOutput.endsWith(".vcf")) {
+      val sc = genotypes.sparkContext
+      sc.adamVCFSave(args.variantOutput, genotypes.toADAMVariantContext.coalesce(1))
+    } else {
+      genotypes.adamSave(args.variantOutput,
+        args.blockSize,
+        args.pageSize,
+        args.compressionCodec,
+        args.disableDictionary)
+    }
   }
 
   /**
