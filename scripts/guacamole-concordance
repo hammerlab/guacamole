@@ -1,0 +1,11 @@
+#! /bin/bash
+# Executes the most recently modified guacamole jar. Run this from the guacamole root directory.
+# Sample invocation:
+#
+# scripts/guacamole-concordance -truth src/test/resources/truth.chr20.vcf -test src/test/resources/truth.chr20.vcf
+#
+# Output: 
+# Precision   Recall  F1Score
+# 1.000000    1.000000    1.000000
+
+exec time java -Xmx2g -XX:MaxPermSize=512m -jar $(ls -tc target/guacamole-?.*.jar | head -n 1) varianteval "$@"
