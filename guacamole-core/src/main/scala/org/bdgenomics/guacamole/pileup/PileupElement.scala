@@ -1,8 +1,7 @@
 package org.bdgenomics.guacamole.pileup
 
-import org.bdgenomics.adam.rich.DecadentRead
 import net.sf.samtools.{ TextCigarCodec, CigarOperator, CigarElement }
-import org.bdgenomics.guacamole.CigarUtils
+import org.bdgenomics.guacamole.{ MappedRead, Read, CigarUtils }
 import scala.annotation.tailrec
 import scala.collection.JavaConversions._
 
@@ -19,7 +18,7 @@ import scala.collection.JavaConversions._
  * @param indexWithinCigarElement The offset of this element within the current cigar element.
  */
 case class PileupElement(
-    read: DecadentRead,
+    read: MappedRead,
     locus: Long,
     readPosition: Long,
     remainingReadCigar: List[CigarElement],
@@ -27,9 +26,9 @@ case class PileupElement(
     indexInCigarElements: Long,
     indexWithinCigarElement: Long) {
 
-  assume(locus >= read.record.getStart)
-  assume(locus < read.record.end.get)
-  assume(read.record.mdTag.isDefined, "Record has no MDTag.")
+  assume(locus >= read.start)
+  assume(locus < read.end)
+  assume(read.mdTag.isDefined, "Record has no MDTag.")
 
   lazy val cigarElement = remainingReadCigar.head
   lazy val nextCigarElement = if (remainingReadCigar.tail.isEmpty) None else Some(remainingReadCigar.tail.head)
@@ -51,13 +50,13 @@ case class PileupElement(
       case (CigarOperator.M, Some(CigarOperator.I)) | (CigarOperator.EQ, Some(CigarOperator.I)) | (CigarOperator.I, _) =>
         val startReadOffset: Int = readPosition.toInt
         val endReadOffset: Int = readPosition.toInt + CigarUtils.getReadLength(nextBaseCigarElement.get) + 1
-        val bases = read.record.getSequence.subSequence(startReadOffset, endReadOffset).toString
-        val qualities = read.record.qualityScores.slice(startReadOffset, endReadOffset)
+        val bases = read.sequence.slice(startReadOffset, endReadOffset)
+        val qualities = read.baseQualities.slice(startReadOffset, endReadOffset)
         Insertion(bases, qualities)
       case (CigarOperator.M, _) | (CigarOperator.EQ, _) | (CigarOperator.X, _) =>
-        val base: Char = read.record.getSequence.charAt(readPosition.toInt)
-        val quality = read.record.qualityScores(readPosition.toInt)
-        if (read.record.mdTag.get.isMatch(locus)) {
+        val base: Byte = read.sequence(readPosition.toInt)
+        val quality = read.baseQualities(readPosition.toInt)
+        if (read.mdTag.get.isMatch(locus)) {
           Match(base, quality)
         } else {
           Mismatch(base, quality)
@@ -79,26 +78,26 @@ case class PileupElement(
   /**
    * The sequenced nucleotides at this element.
    *
-   * If the current element is a deletion, then this is the empty string. If it's
-   * an insertion, then this will be a string of length >= 1: the contents of
+   * If the current element is a deletion, then this is the empty array. If it's
+   * an insertion, then this will be an array of length >= 1: the contents of
    * the inserted sequence starting at the current locus. Otherwise, this is
-   * a string of length 1.
+   * an array of length 1.
    */
-  lazy val sequencedBases: String = alignment match {
-    case Deletion()          => ""
-    case Match(base, _)      => base.toString
-    case Mismatch(base, _)   => base.toString
+  lazy val sequencedBases: Array[Byte] = alignment match {
+    case Deletion()          => Array[Byte]()
+    case Match(base, _)      => Array[Byte](base)
+    case Mismatch(base, _)   => Array[Byte](base)
     case Insertion(bases, _) => bases
   }
 
   /**
-   * For matches, mismatches, and single base insertions, this is the base sequenced at this locus, as a char. For
+   * For matches, mismatches, and single base insertions, this is the base sequenced at this locus, as a byte. For
    * all other cases, this throws an assertion error.
    */
-  lazy val sequencedSingleBase: Char = alignment match {
+  lazy val sequencedSingleBase: Byte = alignment match {
     case Match(base, _)                           => base
     case Mismatch(base, _)                        => base
-    case Insertion(bases, _) if bases.length == 1 => bases.charAt(0)
+    case Insertion(bases, _) if bases.length == 1 => bases(0)
     case other =>
       throw new AssertionError("Not a match, mismatch, or single nucleotide insertion: " + other.toString)
   }
@@ -111,7 +110,7 @@ case class PileupElement(
    * For deletions this is the mapping quality as there are no base quality scores available.
    */
   lazy val qualityScore: Int = alignment match {
-    case Deletion()                  => read.record.getMapq
+    case Deletion()                  => read.alignmentQuality
     case Match(_, qualityScore)      => qualityScore
     case Mismatch(_, qualityScore)   => qualityScore
     case Insertion(_, qualityScores) => qualityScores.min
@@ -131,8 +130,7 @@ case class PileupElement(
     if (newLocus == locus) { return this }
 
     assume(newLocus > locus, "Can't rewind to locus %d from %d. Pileups only advance.".format(newLocus, locus))
-    val readEndPos = read.record.end.get
-    assume(newLocus < readEndPos, "This read stops at position %d. Can't advance to %d".format(readEndPos, newLocus))
+    assume(newLocus < read.end, "This read stops at position %d. Can't advance to %d".format(read.end, newLocus))
 
     val currentCigarReadPosition = if (cigarElement.getOperator.consumesReadBases()) {
       readPosition - indexWithinCigarElement
@@ -181,19 +179,15 @@ object PileupElement {
   /**
    * Create a new [[PileupElement]] backed by the given read at the specified locus. The read must overlap the locus.
    */
-  def apply(read: DecadentRead, locus: Long): PileupElement = {
-    assume(read.isAligned)
-    assume(locus >= read.record.start)
-    assume(read.record.end.isDefined)
-    assume(locus < read.record.end.get)
-
-    val cigar = TextCigarCodec.getSingleton.decode(read.record.getCigar.toString).getCigarElements.toList
+  def apply(read: MappedRead, locus: Long): PileupElement = {
+    assume(locus >= read.start)
+    assume(locus < read.end)
     val startElement = PileupElement(
       read = read,
-      locus = read.record.getStart,
+      locus = read.start,
       readPosition = 0,
-      remainingReadCigar = cigar,
-      cigarElementLocus = read.record.getStart,
+      remainingReadCigar = read.cigarElements.toList,
+      cigarElementLocus = read.start,
       indexInCigarElements = 0,
       indexWithinCigarElement = 0)
     startElement.elementAtGreaterLocus(locus)

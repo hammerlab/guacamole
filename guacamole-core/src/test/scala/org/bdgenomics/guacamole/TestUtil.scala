@@ -21,41 +21,20 @@ object TestUtil {
                mdtag: String,
                start: Long = 1,
                chr: String = "chr1",
-               qualityScores: Option[Array[Int]] = None,
-               contigLength: Int = 1000): ADAMRecord = {
-
-    val contig = ADAMContig.newBuilder()
-      .setContigName(chr)
-      .setContigLength(contigLength)
-      .build()
-
-    val record = ADAMRecord.newBuilder()
-      .setReadName("read")
-      .setStart(start)
-      .setReadMapped(true)
-      .setCigar(cigar)
-      .setSequence(sequence)
-      .setMapq(60)
-      .setMismatchingPositions(mdtag)
-      .setRecordGroupSample("sample")
-      .setContig(contig)
+               qualityScores: Option[Array[Int]] = None): MappedRead = {
 
     val qualityScoreString = if (qualityScores.isDefined) {
       qualityScores.get.map(q => q + 33).map(_.toChar).mkString
     } else {
-      sequence.map(x => '@').toString
+      sequence.map(x => '@').mkString
     }
-    record.setQual(qualityScoreString)
-    record.build()
-  }
 
-  def makeDecadentRead(sequence: String,
-                       cigar: String,
-                       mdtag: String,
-                       start: Long = 1,
-                       chr: String = "chr1",
-                       qualityScores: Option[Array[Int]] = None): DecadentRead = {
-    DecadentRead(makeRead(sequence, cigar, mdtag, start, chr, qualityScores))
+    Read(sequence,
+      cigarString = cigar,
+      mdTagString = mdtag,
+      start = start,
+      referenceContig = chr,
+      baseQualities = qualityScoreString).getMappedRead
   }
 
   def assertAlmostEqual(a: Double, b: Double, epsilon: Double = 1e-6) {
