@@ -19,7 +19,7 @@
 
 package org.bdgenomics.guacamole
 
-import org.bdgenomics.adam.avro.{ ADAMGenotype, ADAMRecord }
+import org.bdgenomics.adam.avro.{ ADAMGenotype }
 import org.scalatest.matchers.ShouldMatchers
 import org.bdgenomics.adam.rdd.ADAMContext._
 import org.apache.spark.SparkContext._

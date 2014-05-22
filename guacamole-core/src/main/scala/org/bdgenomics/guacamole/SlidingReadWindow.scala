@@ -18,9 +18,7 @@
 
 package org.bdgenomics.guacamole
 
-import org.bdgenomics.adam.avro.ADAMRecord
 import scala.collection.mutable
-import org.bdgenomics.adam.rich.DecadentRead
 import org.apache.spark.Logging
 
 /**
@@ -42,32 +40,31 @@ import org.apache.spark.Logging
  *
  * @param rawSortedReads Iterator of aligned reads, sorted by the aligned start locus.
  */
-case class SlidingReadWindow(halfWindowSize: Long, rawSortedReads: Iterator[ADAMRecord]) extends Logging {
+case class SlidingReadWindow(halfWindowSize: Long, rawSortedReads: Iterator[MappedRead]) extends Logging {
   /** The locus currently under consideration. */
   var currentLocus = -1L
 
   private var referenceName: Option[String] = None
   private var mostRecentReadStart: Long = 0
-  private val sortedReads: BufferedIterator[DecadentRead] = rawSortedReads.map(read => {
-    require(read.getReadMapped, "Reads must be mapped")
-    if (referenceName.isEmpty) referenceName = Some(read.contig.contigName.toString)
-    require(read.contig.contigName.toString == referenceName.get, "Reads must have the same reference name")
-    require(read.getStart >= mostRecentReadStart, "Reads must be sorted by start locus")
-    mostRecentReadStart = read.getStart
-    require(read.getCigar.length > 1, "Reads must have a CIGAR string")
-    DecadentRead(read)
+  private val sortedReads: BufferedIterator[MappedRead] = rawSortedReads.map(read => {
+    if (referenceName.isEmpty) referenceName = Some(read.referenceContig)
+    require(read.referenceContig == referenceName.get, "Reads must have the same reference name")
+    require(read.start >= mostRecentReadStart, "Reads must be sorted by start locus")
+    mostRecentReadStart = read.start
+    require(read.cigar != null, "Reads must have a CIGAR")
+    read
   }).buffered
 
   private val currentReadsPriorityQueue = {
     // Order reads by end locus, increasing.
-    def readOrdering = new Ordering[DecadentRead] {
-      def compare(first: DecadentRead, second: DecadentRead) = second.record.end.get.compare(first.record.end.get)
+    def readOrdering = new Ordering[MappedRead] {
+      def compare(first: MappedRead, second: MappedRead) = second.end.compare(first.end)
     }
-    new mutable.PriorityQueue[DecadentRead]()(readOrdering)
+    new mutable.PriorityQueue[MappedRead]()(readOrdering)
   }
 
   /** The reads that overlap the window surrounding [[currentLocus]]. */
-  def currentReads(): Seq[DecadentRead] = {
+  def currentReads(): Seq[MappedRead] = {
     currentReadsPriorityQueue.toSeq
   }
 
@@ -79,22 +76,22 @@ case class SlidingReadWindow(halfWindowSize: Long, rawSortedReads: Iterator[ADAM
    * @return The *new reads* that were added as a result of this call. Note that this is not the full set of reads in
    *         the window: you must examine [[currentReads]] for that.
    */
-  def setCurrentLocus(locus: Long): Seq[DecadentRead] = {
+  def setCurrentLocus(locus: Long): Seq[MappedRead] = {
     assume(locus >= currentLocus, "Pileup window can only move forward in locus")
 
-    def overlaps(read: DecadentRead) = {
-      read.record.start <= locus + halfWindowSize && (read.record.end.get - 1) >= locus - halfWindowSize
+    def overlaps(read: MappedRead) = {
+      read.start <= locus + halfWindowSize && (read.end - 1) >= locus - halfWindowSize
     }
 
     // Remove reads that are no longer in the window.
-    while (!currentReadsPriorityQueue.isEmpty && (currentReadsPriorityQueue.head.record.end.get - 1) < locus - halfWindowSize) {
+    while (!currentReadsPriorityQueue.isEmpty && (currentReadsPriorityQueue.head.end - 1) < locus - halfWindowSize) {
       val dropped = currentReadsPriorityQueue.dequeue()
       assert(!overlaps(dropped))
     }
 
     // Build up a list of new reads that are now in the window.
-    val newReadsBuilder = mutable.LinkedList.newBuilder[DecadentRead]
-    while (sortedReads.nonEmpty && sortedReads.head.record.start <= locus + halfWindowSize) {
+    val newReadsBuilder = mutable.LinkedList.newBuilder[MappedRead]
+    while (sortedReads.nonEmpty && sortedReads.head.start <= locus + halfWindowSize) {
       val read = sortedReads.next()
       if (overlaps(read)) newReadsBuilder += read
     }
