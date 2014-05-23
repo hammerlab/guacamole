@@ -20,7 +20,7 @@ package org.bdgenomics.guacamole
 
 import org.bdgenomics.adam.cli.{ SparkArgs, ParquetArgs, Args4jBase }
 import org.kohsuke.args4j.{ Option => Opt }
-import org.bdgenomics.adam.avro.{ ADAMGenotype, ADAMRecord }
+import org.bdgenomics.adam.avro.{ ADAMGenotype }
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.predicates.UniqueMappedReadPredicate
 import org.apache.spark.{ SparkConf, Logging, SparkContext }
@@ -28,9 +28,9 @@ import org.bdgenomics.adam.rdd.ADAMContext._
 import org.apache.spark.scheduler.StatsReportListener
 import java.util
 import java.util.Calendar
-import org.bdgenomics.adam.rich.RichADAMRecord
 import org.bdgenomics.adam.rdd.ADAMContext
 import org.bdgenomics.adam.rdd.variation.ADAMVariationContext._
+import org.bdgenomics.adam.models.SequenceDictionary
 
 /**
  * Collection of functions that are useful to multiple variant calling implementations, and specifications of command-
@@ -47,7 +47,7 @@ object Common extends Logging {
 
     /** Argument for accepting a set of loci. */
     trait Loci extends Base {
-      @Opt(name = "-loci", usage = "Loci at which to call variants. One of 'all', 'mapped', or contig:start-end,contig:start-end,...")
+      @Opt(name = "-loci", usage = "Loci at which to call variants. Either 'all' or contig:start-end,contig:start-end,...")
       var loci: String = "all"
     }
 
@@ -91,33 +91,6 @@ object Common extends Logging {
   }
 
   /**
-   * Given a filename and a spark context, return an RDD of reads.
-   *
-   * @param filename name of file containing reads
-   * @param sc spark context
-   * @param mapped if true, will filter out non-mapped reads
-   * @param nonDuplicate if true, will filter out duplicate reads.
-   * @return
-   */
-  def loadReads(filename: String, sc: ADAMContext, mapped: Boolean, nonDuplicate: Boolean): RDD[ADAMRecord] = {
-    val reads: RDD[ADAMRecord] = if (mapped && nonDuplicate) {
-      sc.adamLoad(filename, Some(classOf[UniqueMappedReadPredicate]))
-    } else {
-      var raw: RDD[ADAMRecord] = sc.adamLoad(filename)
-      def isMapped(read: ADAMRecord) = {
-        read.readMapped && read.contig.contigName != null && read.contig.contigLength > 0
-      }
-      if (mapped) raw = raw.filter(isMapped _)
-      if (nonDuplicate) raw = raw.filter(read => !read.duplicateRead)
-      raw
-    }
-    reads.persist()
-    val description = (if (mapped) "mapped " else "") + (if (nonDuplicate) "non-duplicate" else "")
-    progress("Loaded %,d %s reads into %,d partitions.".format(reads.count, description, reads.partitions.length))
-    reads
-  }
-
-  /**
    * Given arguments for a single set of reads, and a spark context, return an RDD of reads.
    *
    * @param args parsed arguments
@@ -128,14 +101,16 @@ object Common extends Logging {
    */
   def loadReadsFromArguments(
     args: Arguments.Reads,
-    sc: ADAMContext,
+    sc: SparkContext,
     mapped: Boolean = true,
-    nonDuplicate: Boolean = true): RDD[ADAMRecord] = {
-    loadReads(args.reads, sc, mapped, nonDuplicate)
+    nonDuplicate: Boolean = true): (RDD[Read], SequenceDictionary) = {
+
+    Read.loadReadRDDAndSequenceDictionaryFromBAM(args.reads, sc, mapped, nonDuplicate)
   }
 
   /**
-   * Given arguments for two sets of reads (tumor and normal), return a pair of RDDs of reads: (tumor, normal).
+   * Given arguments for two sets of reads (tumor and normal), return a 4-tuple of RDDs of reads and Sequence
+   * Dictionaries: (Tumor RDD, Tumor Sequence Dictionary, Normal RDD, Normal Sequence Dictionary).
    *
    * @param args parsed arguments
    * @param sc spark context
@@ -144,32 +119,25 @@ object Common extends Logging {
    */
   def loadTumorNormalReadsFromArguments(
     args: Arguments.TumorNormalReads,
-    sc: ADAMContext,
+    sc: SparkContext,
     mapped: Boolean = true,
-    nonDuplicate: Boolean = true): (RDD[ADAMRecord], RDD[ADAMRecord]) = {
-    val tumorReads: RDD[ADAMRecord] = loadReads(args.tumorReads, sc, mapped, nonDuplicate)
-    val normalReads: RDD[ADAMRecord] = loadReads(args.normalReads, sc, mapped, nonDuplicate)
-    (tumorReads, normalReads)
+    nonDuplicate: Boolean = true): (RDD[Read], SequenceDictionary, RDD[Read], SequenceDictionary) = {
+    val (tumorReads, tumorDictionary) = Read.loadReadRDDAndSequenceDictionaryFromBAM(args.tumorReads, sc, mapped, nonDuplicate)
+    val (normalReads, normalDictionary) = Read.loadReadRDDAndSequenceDictionaryFromBAM(args.normalReads, sc, mapped, nonDuplicate)
+    (tumorReads, tumorDictionary, normalReads, normalDictionary)
   }
 
   /**
    * If the user specifies a -loci argument, parse it out and return the LociSet. Otherwise, construct a LociSet that
    * includes all the loci spanned by the reads.
    * @param args parsed arguments
-   * @param reads RDD of ADAM reads to use if the user didn't specify loci in the arguments.
+   * @param sequenceDictionary Sequence Dictionary giving contig names and lengths.
    */
-  def loci(args: Arguments.Loci, reads: RDD[ADAMRecord]): LociSet = {
+  def loci(args: Arguments.Loci, sequenceDictionary: SequenceDictionary): LociSet = {
     val result = {
       if (args.loci == "all") {
         // Call at all loci.
-        getLociFromAllContigs(reads)
-      } else if (args.loci == "mapped") {
-        progress("Considering all loci with mapped reads.")
-        reads.mapPartitions(iterator => {
-          val builder = LociSet.newBuilder
-          iterator.foreach(read => builder.put(read.contig.contigName.toString, read.start, read.end.get))
-          Seq(builder.result).iterator
-        }).reduce(LociSet.union(_, _))
+        getLociFromAllContigs(sequenceDictionary)
       } else {
         // Call at specified loci.
         LociSet.parse(args.loci)
@@ -183,20 +151,26 @@ object Common extends Logging {
   }
 
   /**
-   * Collects the full set of loci (i.e. [0, length of contig]) on all contigs with reads in an RDD.
+   * Collects the full set of loci (i.e. [0, length of contig]) on all contigs in the SequenceDictonary.
    *
-   * @param reads RDD of ADAMRecords
-   * @return LociSet of loci covered by those reads
+   * @param sequenceDictionary ADAM sequence dictionary.
+   * @return LociSet of loci included in the sequence dictionary.
    */
-  def getLociFromAllContigs(reads: RDD[ADAMRecord]): LociSet = {
-    progress("Considering all loci on all contigs.")
-    val contigsAndLengths = reads.map(read => (read.contig.contigName.toString, read.contig.contigLength)).distinct.collect.toSeq
-    assume(contigsAndLengths.map(_._1).distinct.length == contigsAndLengths.length,
-      "Some contigs have different lengths in reads: " + contigsAndLengths.toString)
+  def getLociFromAllContigs(sequenceDictionary: SequenceDictionary): LociSet = {
     val builder = LociSet.newBuilder
-    contigsAndLengths.foreach({
-      case (contig, length) => builder.put(contig, 0L, length.toLong)
+    sequenceDictionary.records.foreach(record => {
+      builder.put(record.name.toString, 0L, record.length)
     })
+    builder.result
+  }
+
+  def getLociFromReads(reads: RDD[MappedRead]): LociSet = {
+    val contigs = reads.map(read => Map(read.referenceContig -> read.end)).reduce((map1, map2) => {
+      val keys = map1.keySet.union(map2.keySet).toSeq
+      keys.map(key => key -> math.max(map1.getOrElse(key, 0L), map2.getOrElse(key, 0L))).toMap
+    })
+    val builder = LociSet.newBuilder
+    contigs.foreach(pair => builder.put(pair._1, 0L, pair._2))
     builder.result
   }
 
@@ -314,22 +288,6 @@ object Common extends Logging {
   }
 
   /**
-   * Does the given read overlap any of the given loci, with halfWindowSize padding?
-   */
-  def overlapsLociSet(read: RichADAMRecord, loci: LociSet, halfWindowSize: Long = 0): Boolean = {
-    read.readMapped && loci.onContig(read.contig.contigName.toString).intersects(
-      math.max(0, read.start - halfWindowSize),
-      read.end.get + halfWindowSize)
-  }
-
-  /**
-   * Does the given read overlap the given locus, with halfWindowSize padding?
-   */
-  def overlapsLocus(read: RichADAMRecord, locus: Long, halfWindowSize: Long = 0): Boolean = {
-    read.readMapped && read.start - halfWindowSize <= locus && read.end.get + halfWindowSize > locus
-  }
-
-  /**
    * Like Scala's List.mkString method, but supports truncation.
    *
    * Return the concatenation of an iterator over strings, separated by separator, truncated to at most maxLength
@@ -351,4 +309,5 @@ object Common extends Logging {
     if (pieces.hasNext) builder.append(ellipses)
     builder.result
   }
+
 }

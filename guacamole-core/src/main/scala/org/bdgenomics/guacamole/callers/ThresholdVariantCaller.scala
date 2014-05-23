@@ -55,21 +55,28 @@ object ThresholdVariantCaller extends Command with Serializable with Logging {
     val args = Args4j[Arguments](rawArgs)
     val sc = Common.createSparkContext(args, appName = Some(name))
 
-    val reads = Common.loadReadsFromArguments(args, sc, mapped = true, nonDuplicate = true)
-    val loci = Common.loci(args, reads)
+    val (rawReads, sequenceDictionary) = Common.loadReadsFromArguments(args, sc, mapped = true, nonDuplicate = true)
+
+    // Convert Read -> MappedRead, and keep only reads with defined MdTags.
+    val mappedReads = rawReads.map(_.getMappedRead).filter(_.mdTag.isDefined)
+    mappedReads.persist()
+    Common.progress("Loaded %,d mapped non-duplicate MdTag-containing reads into %,d partitions.".format(
+      mappedReads.count, mappedReads.partitions.length))
+
+    val loci = Common.loci(args, sequenceDictionary)
     val (threshold, emitRef, emitNoCall) = (args.threshold, args.emitRef, args.emitNoCall)
     val numGenotypes = sc.accumulator(0L)
     DelayedMessages.default.say { () => "Called %,d genotypes.".format(numGenotypes.value) }
-    val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(args, reads, loci)
+    val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(args, mappedReads, loci)
     val genotypes: RDD[ADAMGenotype] = DistributedUtil.pileupFlatMap[ADAMGenotype](
-      reads,
+      mappedReads,
       lociPartitions,
       pileup => {
         val genotypes = callVariantsAtLocus(pileup, threshold, emitRef, emitNoCall)
         numGenotypes += genotypes.length
         genotypes.iterator
       })
-    reads.unpersist()
+    mappedReads.unpersist()
     Common.writeVariants(args, genotypes)
     DelayedMessages.default.print()
   }
@@ -92,14 +99,14 @@ object ThresholdVariantCaller extends Command with Serializable with Logging {
         val counts = matchesOrMismatches.map(_.sequencedSingleBase).groupBy(char => char).mapValues(_.length)
         val sortedAlleles = counts.toList.filter(_._2 * 100 / totalReads > threshold_percent).sortBy(-1 * _._2)
 
-        def variant(alternateBase: Char, allelesList: List[ADAMGenotypeAllele]): ADAMGenotype = {
+        def variant(alternateBase: Byte, allelesList: List[ADAMGenotypeAllele]): ADAMGenotype = {
           ADAMGenotype.newBuilder
             .setAlleles(JavaConversions.seqAsJavaList(allelesList))
             .setSampleId(sampleName.toCharArray)
             .setVariant(ADAMVariant.newBuilder
               .setPosition(pileup.locus)
-              .setReferenceAllele(pileup.referenceBase.toString)
-              .setVariantAllele(alternateBase.toString.toCharArray)
+              .setReferenceAllele(Bases.baseToString(pileup.referenceBase))
+              .setVariantAllele(Bases.baseToString(alternateBase))
               .setContig(ADAMContig.newBuilder.setContigName(pileup.referenceName).build)
               .build)
             .build
@@ -117,7 +124,7 @@ object ThresholdVariantCaller extends Command with Serializable with Logging {
             if (emitRef) (variant(refBase, Ref :: Ref :: Nil) :: Nil) else Nil
 
           // Hom alt.
-          case (base: Char, count) :: Nil =>
+          case (base: Byte, count) :: Nil =>
             variant(base, Alt :: Alt :: Nil) :: Nil
 
           // Het alt.
