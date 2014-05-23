@@ -1,7 +1,7 @@
 guacamole
 =========
 [![Build Status](https://travis-ci.org/hammerlab/guacamole.svg?branch=master)](https://travis-ci.org/hammerlab/guacamole)
-Guacamole is an ADAM-based variant calling framework inspired by Avocado.
+Guacamole is a Spark-based variant calling framework inspired by Avocado.
 
 The goal is a small, readable codebase that can be understood quickly and adapted for experimentation.
 
@@ -18,8 +18,8 @@ Run:
 
 ```
 scripts/guacamole threshold \
-	-reads guacamole-core/src/test/resources/chrM.sorted.bam \
-	-out /tmp/OUT.gt.adam \
+	-reads src/test/resources/chrM.sorted.bam \
+	-out /tmp/OUT.gt.adam
 ```
 
 You can then inspect the results, for example, using ADAM's summarize genotypes command:
