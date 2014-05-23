@@ -169,8 +169,47 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.scalariform</groupId>
+        <artifactId>scalariform-maven-plugin</artifactId>
+        <version>0.1.4</version>
+        <executions>
+          <execution>
+            <phase>process-sources</phase>
+            <goals>
+              <goal>format</goal>
+            </goals>
+            <configuration>
+              <alignParameters>true</alignParameters>
+              <alignSingleLineCaseStatements>true</alignSingleLineCaseStatements>
+              <doubleIndentClassDeclaration>true</doubleIndentClassDeclaration>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
+
+  <repositories>
+      <repository>
+          <id>sonatype-nexus-snapshots</id>
+          <name>Sonatype Nexus Snapshots</name>
+          <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+          <releases>
+              <enabled>false</enabled>
+          </releases>
+          <snapshots>
+              <enabled>true</enabled>
+          </snapshots>
+      </repository>
+      <repository>
+          <snapshots>
+              <enabled>false</enabled>
+          </snapshots>
+          <id>central</id>
+          <url>http://repo1.maven.org/maven2</url>
+      </repository>
+  </repositories>
 
   <dependencies>
     <dependency>
