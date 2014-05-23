@@ -97,8 +97,8 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
     val (rawReads, sequenceDictionary) = Common.loadReadsFromArguments(args, sc, mapped = true, nonDuplicate = true)
     val mappedReads = rawReads.map(_.getMappedRead)
     mappedReads.persist()
-    Common.progress(
-      "Loaded %,d mapped non-duplicate reads into %,d partitions.".format(mappedReads.count, mappedReads.partitions.length))
+    //    Common.progress(
+    //      "Loaded %,d mapped non-duplicate reads into %,d partitions.".format(mappedReads.count, mappedReads.partitions.length))
 
     val loci = Common.loci(args, sequenceDictionary)
     val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(args, mappedReads, loci)
