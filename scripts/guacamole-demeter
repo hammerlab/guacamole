@@ -12,7 +12,7 @@ set -e
 set -x
 export SPARK_MEM=36G
 export SPARK_JAVA_OPTS="-Dspark.default.parallelism=1024 -Dspark.shuffle.consolidateFiles=true -Xmx8g -Dspark.speculation=true"
-jar=$(ls -tc guacamole-core/target/guacamole-?.*.jar | head -n 1)
+jar=$(ls -tc target/guacamole-?.*.jar | head -n 1)
 jar_abs=$(pwd)/$jar
 exec time java $SPARK_JAVA_OPTS -XX:MaxPermSize=4g -jar $jar_abs \
 	"$@" \
