@@ -19,7 +19,7 @@
 package org.bdgenomics.guacamole
 
 import org.scalatest.FunSuite
-import org.bdgenomics.adam.avro.{ ADAMRecord, ADAMContig }
+import org.bdgenomics.adam.avro.{ ADAMContig }
 import org.scalatest.matchers.ShouldMatchers._
 import org.scalatest.matchers._
 

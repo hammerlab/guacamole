@@ -1,6 +1,6 @@
 package org.bdgenomics.guacamole.callers
 
-import org.bdgenomics.guacamole.{ DelayedMessages, DistributedUtil, Common, Command }
+import org.bdgenomics.guacamole._
 import org.apache.spark.Logging
 import org.bdgenomics.adam.cli.Args4j
 import org.bdgenomics.guacamole.pileup.{ PileupElement, Pileup }
@@ -10,6 +10,7 @@ import org.apache.spark.rdd.RDD
 import org.kohsuke.args4j.Option
 import org.bdgenomics.guacamole.Common.Arguments._
 import org.bdgenomics.adam.util.PhredUtils
+import scala.Some
 
 /**
  * A Genotype is a sequence of alleles of length equal to the ploidy of the organism.
@@ -93,14 +94,19 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
     val args = Args4j[Arguments](rawArgs)
     val sc = Common.createSparkContext(args, appName = Some(name))
 
-    val reads = Common.loadReadsFromArguments(args, sc, mapped = true, nonDuplicate = true)
-    val loci = Common.loci(args, reads)
-    val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(args, reads, loci)
+    val (rawReads, sequenceDictionary) = Common.loadReadsFromArguments(args, sc, mapped = true, nonDuplicate = true)
+    val mappedReads = rawReads.map(_.getMappedRead)
+    mappedReads.persist()
+    Common.progress(
+      "Loaded %,d mapped non-duplicate reads into %,d partitions.".format(mappedReads.count, mappedReads.partitions.length))
+
+    val loci = Common.loci(args, sequenceDictionary)
+    val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(args, mappedReads, loci)
     val genotypes: RDD[ADAMGenotype] = DistributedUtil.pileupFlatMap[ADAMGenotype](
-      reads,
+      mappedReads,
       lociPartitions,
       pileup => callVariantsAtLocus(pileup).iterator)
-    reads.unpersist()
+    mappedReads.unpersist()
     Common.writeVariants(args, genotypes)
     DelayedMessages.default.print()
   }
@@ -129,12 +135,12 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
         val mostLikelyGenotype = genotypePosteriorEstimate.maxBy(_._2)
 
         def buildVariants(genotype: Genotype, probability: Double): Seq[ADAMGenotype] = {
-          val genotypeAlleles = JavaConversions.seqAsJavaList(genotype.getGenotypeAlleles(pileup.referenceBase.toString))
-          genotype.getNonReferenceAlleles(pileup.referenceBase.toString).map(
+          val genotypeAlleles = JavaConversions.seqAsJavaList(genotype.getGenotypeAlleles(Bases.baseToString(pileup.referenceBase)))
+          genotype.getNonReferenceAlleles(Bases.baseToString(pileup.referenceBase)).map(
             variantAllele => {
               val variant = ADAMVariant.newBuilder
                 .setPosition(pileup.locus)
-                .setReferenceAllele(pileup.referenceBase.toString)
+                .setReferenceAllele(Bases.baseToString(pileup.referenceBase))
                 .setVariantAllele(variantAllele)
                 .setContig(ADAMContig.newBuilder.setContigName(pileup.referenceName).build)
                 .build
@@ -156,7 +162,10 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
    * @return Sequence of possible genotypes
    */
   def getPossibleGenotypes(pileup: Pileup): Seq[Genotype] = {
-    val possibleAlleles = pileup.elements.map(_.sequencedBases).distinct
+    // We prefer to work with Strings than with Array[Byte] for nucleotide sequences, so we convert to Strings as we
+    // extract sequences from the Pileup. If this turns into a production variant caller, we may want to use the more
+    // efficient Array[Byte] type everywhere.
+    val possibleAlleles = pileup.elements.map(e => Bases.basesToString(e.sequencedBases)).distinct
     val possibleGenotypes =
       for (i <- 0 until possibleAlleles.size; j <- i until possibleAlleles.size)
         yield Genotype(possibleAlleles(i), possibleAlleles(j))
@@ -190,7 +199,7 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
     def computeBaseGenotypeLikelihood(element: PileupElement, genotype: Genotype): Double = {
       def computeBaseLikelihood(element: PileupElement, referenceAllele: String): Double = {
         val errorProbability = PhredUtils.phredToErrorProbability(element.qualityScore)
-        if (element.sequencedBases == referenceAllele) (1 - errorProbability) else errorProbability
+        if (Bases.basesToString(element.sequencedBases) == referenceAllele) (1 - errorProbability) else errorProbability
       }
       genotype.alleles.map(referenceAllele => computeBaseLikelihood(element, referenceAllele)).sum
     }

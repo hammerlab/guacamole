@@ -3,10 +3,8 @@ package org.bdgenomics.guacamole
 import org.bdgenomics.guacamole.Common._
 import org.apache.spark.rdd._
 import org.apache.spark.SparkContext._
-import org.bdgenomics.adam.avro.ADAMRecord
 import org.apache.spark.broadcast.Broadcast
 import org.apache.commons.math3
-import org.bdgenomics.adam.rich.RichADAMRecord
 import org.apache.spark._
 import scala.reflect.ClassTag
 import org.bdgenomics.guacamole.Common.Arguments.{ Loci, Base }
@@ -23,14 +21,14 @@ object DistributedUtil extends Logging {
     var parallelism: Int = 0
 
     @Opt(name = "-partition-accuracy",
-      usage = "Num micro partitions to use per task in loci partitioning. Set to 0 to partition loci uniformly. Default: 1000.")
+      usage = "Num micro partitions to use per task in loci partitioning. Set to 0 to partition loci uniformly. Default: 250.")
     var partitioningAccuracy: Int = 250
   }
 
   /**
    * Partition a LociSet among tasks according to the strategy specified in args.
    */
-  def partitionLociAccordingToArgs(args: Arguments, reads: RDD[ADAMRecord], loci: LociSet): LociMap[Long] = {
+  def partitionLociAccordingToArgs(args: Arguments, reads: RDD[MappedRead], loci: LociSet): LociMap[Long] = {
     val tasks = if (args.parallelism > 0) args.parallelism else reads.partitions.length
     if (args.partitioningAccuracy == 0)
       partitionLociUniformly(tasks, loci)
@@ -78,7 +76,7 @@ object DistributedUtil extends Logging {
   /**
    * Assign loci from a LociSet to partitions, where each partition overlaps about the same number of reads.
    *
-   * There are many ways we could do this. The approach we take here is:
+   * The approach we take is:
    *
    *  (1) chop up the loci uniformly into many genomic "micro partitions."
    *
@@ -107,7 +105,7 @@ object DistributedUtil extends Logging {
    *                 exact calculation.
    * @return LociMap of locus -> task assignments.
    */
-  def partitionLociByApproximateReadDepth(reads: RDD[ADAMRecord], tasks: Int, loci: LociSet, accuracy: Int = 250): LociMap[Long] = {
+  def partitionLociByApproximateReadDepth(reads: RDD[MappedRead], tasks: Int, loci: LociSet, accuracy: Int = 250): LociMap[Long] = {
     // Step (1). Split loci uniformly into micro partitions.
     assume(tasks >= 1)
     assume(loci.count > 0)
@@ -125,8 +123,8 @@ object DistributedUtil extends Logging {
       assert(microPartitions.count > 0)
       val counts = new Array[Long](numMicroPartitions)
       for (read <- readIterator) {
-        val contigMap = microPartitions.onContig(read.getContig.getContigName.toString)
-        val indices: Set[Long] = contigMap.getAll(read.start, RichADAMRecord(read).end.get)
+        val contigMap = microPartitions.onContig(read.referenceContig)
+        val indices: Set[Long] = contigMap.getAll(read.start, read.end)
         for (index: Long <- indices) {
           counts(index.toInt) += 1
         }
@@ -202,7 +200,7 @@ object DistributedUtil extends Logging {
    * See [[windowTaskFlatMap()]] for argument descriptions.
    *
    */
-  def pileupFlatMap[T: ClassTag](reads: RDD[ADAMRecord],
+  def pileupFlatMap[T: ClassTag](reads: RDD[MappedRead],
                                  lociPartitions: LociMap[Long],
                                  function: Pileup => Iterator[T]): RDD[T] = {
     windowTaskFlatMap(reads, lociPartitions, 0L, (task, taskLoci, taskReads) => {
@@ -238,7 +236,7 @@ object DistributedUtil extends Logging {
    * See [[windowTaskFlatMap()]] for argument descriptions.
    *
    */
-  def windowFlatMap[T: ClassTag](reads: RDD[ADAMRecord],
+  def windowFlatMap[T: ClassTag](reads: RDD[MappedRead],
                                  lociPartitions: LociMap[Long],
                                  halfWindowSize: Long,
                                  function: SlidingReadWindow => Iterator[T]): RDD[T] = {
@@ -258,7 +256,7 @@ object DistributedUtil extends Logging {
 
   /**
    * Spark partitioner for keyed RDDs that assigns each unique key its own partition.
-   * Used to partition an RDD of (task number: Long, read: ADAMRecord) pairs, giving each task its own partition.
+   * Used to partition an RDD of (task number: Long, read: MappedRead) pairs, giving each task its own partition.
    *
    * @param partitions total number of partitions
    */
@@ -298,10 +296,10 @@ object DistributedUtil extends Logging {
    * @tparam T type of value returned by function
    * @return flatMap results, RDD[T]
    */
-  def windowTaskFlatMap[T: ClassTag](reads: RDD[ADAMRecord],
+  def windowTaskFlatMap[T: ClassTag](reads: RDD[MappedRead],
                                      lociPartitions: LociMap[Long],
                                      halfWindowSize: Long,
-                                     function: (Long, LociSet, Iterator[ADAMRecord]) => Iterator[T]): RDD[T] = {
+                                     function: (Long, LociSet, Iterator[MappedRead]) => Iterator[T]): RDD[T] = {
     progress("Loci partitioning: %s".format(lociPartitions.truncatedString()))
     val lociPartitionsBoxed: Broadcast[LociMap[Long]] = reads.sparkContext.broadcast(lociPartitions)
     val numTasks = lociPartitions.asInverseMap.map(_._1).max + 1
@@ -319,8 +317,8 @@ object DistributedUtil extends Logging {
     }
 
     // Expand reads into (task, read) pairs.
-    val taskNumberReadPairs = reads.map(RichADAMRecord(_)).flatMap(read => {
-      val singleContig = lociPartitionsBoxed.value.onContig(read.getContig.getContigName.toString)
+    val taskNumberReadPairs = reads.flatMap(read => {
+      val singleContig = lociPartitionsBoxed.value.onContig(read.referenceContig)
       val thisReadsTasks = singleContig.getAll(read.start - halfWindowSize, read.end.get + halfWindowSize)
 
       // Update counters
@@ -329,7 +327,7 @@ object DistributedUtil extends Logging {
       expandedReads += thisReadsTasks.size
 
       // Return this read, duplicated for each task it is assigned to.
-      thisReadsTasks.map(task => (task, read.record))
+      thisReadsTasks.map(task => (task, read))
     })
 
     // Each key (i.e. task) gets its own partition.
@@ -384,10 +382,10 @@ object DistributedUtil extends Logging {
    * order of the reads if they want to avoid this.
    *
    */
-  def splitReadsByContig(readIterator: Iterator[ADAMRecord], contigs: Seq[String]): Map[String, Iterator[ADAMRecord]] = {
-    var currentIterator: Iterator[ADAMRecord] = readIterator
+  def splitReadsByContig(readIterator: Iterator[MappedRead], contigs: Seq[String]): Map[String, Iterator[MappedRead]] = {
+    var currentIterator: Iterator[MappedRead] = readIterator
     contigs.map(contig => {
-      val (withContig, withoutContig) = currentIterator.partition(_.contig.contigName.toString == contig)
+      val (withContig, withoutContig) = currentIterator.partition(_.referenceContig == contig)
       currentIterator = withoutContig
       (contig, withContig)
     }).toMap + ("" -> currentIterator)

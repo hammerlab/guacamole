@@ -18,8 +18,7 @@
 
 package org.bdgenomics.guacamole.pileup
 
-import org.bdgenomics.adam.rich.DecadentRead
-import org.bdgenomics.guacamole.Common
+import org.bdgenomics.guacamole.{ Bases, MappedRead, Read, Common }
 
 /**
  * A [[Pileup]] at a locus contains a sequence of [[PileupElement]] instances, one for every read that overlaps that
@@ -39,16 +38,16 @@ case class Pileup(locus: Long, elements: Seq[PileupElement]) {
   }
 
   /** The contig name for all elements in this pileup. */
-  lazy val referenceName: String = head.read.record.contig.contigName.toString
+  lazy val referenceName: String = head.read.referenceContig
 
-  assume(elements.forall(_.read.record.contig.contigName.toString == referenceName),
+  assume(elements.forall(_.read.referenceContig == referenceName),
     "Reads in pileup have mismatching reference names")
   assume(elements.forall(_.locus == locus), "Reads in pileup have mismatching loci")
 
   /** The reference nucleotide base at this pileup's locus. */
-  lazy val referenceBase: Char = {
-    val mdTag = head.read.record.mdTag.get.getReference(head.read.record)
-    mdTag.charAt((head.locus - head.read.record.start).toInt)
+  lazy val referenceBase: Byte = {
+    val reference = head.read.mdTag.get.getReference(Bases.basesToString(head.read.sequence), head.read.cigar, head.read.start)
+    reference.charAt((head.locus - head.read.start).toInt).toByte
   }
 
   /**
@@ -56,7 +55,7 @@ case class Pileup(locus: Long, elements: Seq[PileupElement]) {
    * from that sample.
    */
   lazy val bySample: Map[String, Pileup] = {
-    elements.groupBy(element => Option(element.read.record.recordGroupSample).map(_.toString).getOrElse("default")).map({
+    elements.groupBy(element => Option(element.read.sampleName).map(_.toString).getOrElse("default")).map({
       case (sample, elements) => (sample, Pileup(locus, elements))
     })
   }
@@ -70,10 +69,10 @@ case class Pileup(locus: Long, elements: Seq[PileupElement]) {
    * @param newReads The *new* reads, i.e. those that overlap the new locus, but not the current locus.
    * @return A new [[Pileup]] at the given locus.
    */
-  def atGreaterLocus(newLocus: Long, newReads: Iterator[DecadentRead]) = {
+  def atGreaterLocus(newLocus: Long, newReads: Iterator[MappedRead]) = {
     assume(elements.isEmpty || newLocus > locus,
       "New locus (%d) not greater than current locus (%d)".format(newLocus, locus))
-    val reusableElements = elements.filter(element => Common.overlapsLocus(element.read.record, newLocus))
+    val reusableElements = elements.filter(element => element.read.overlapsLocus(newLocus))
     val updatedElements = reusableElements.map(_.elementAtGreaterLocus(newLocus))
     val newElements = newReads.map(PileupElement(_, newLocus))
     Pileup(newLocus, updatedElements ++ newElements)
@@ -88,8 +87,8 @@ object Pileup {
    * @param locus The locus to return a [[Pileup]] at.
    * @return A [[Pileup]] at the given locus.
    */
-  def apply(reads: Seq[DecadentRead], locus: Long): Pileup = {
-    val elements = reads.filter(read => Common.overlapsLocus(read.record, locus)).map(PileupElement(_, locus))
+  def apply(reads: Seq[MappedRead], locus: Long): Pileup = {
+    val elements = reads.filter(read => read.overlapsLocus(locus)).map(PileupElement(_, locus))
     val pileup = Pileup(locus, elements)
     pileup
   }
