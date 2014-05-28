@@ -24,12 +24,12 @@ import org.bdgenomics.adam.avro.ADAMGenotype
 import org.apache.spark.rdd.RDD
 import org.apache.spark.{ SparkConf, Logging, SparkContext }
 import org.bdgenomics.adam.rdd.ADAMContext._
-import org.apache.spark.scheduler.StatsReportListener
 import java.util
-import java.util.Calendar
 import org.bdgenomics.adam.rdd.variation.ADAMVariationContext._
 import org.bdgenomics.adam.models.SequenceDictionary
-import org.bdgenomics.guacamole.concordance.VariantEvaluator
+import org.apache.spark.scheduler.StatsReportListener
+import java.util.Calendar
+
 /**
  * Collection of functions that are useful to multiple variant calling implementations, and specifications of command-
  * line arguments that they use.
@@ -68,19 +68,6 @@ object Common extends Logging {
     trait Output extends Base {
       @Opt(name = "-out", metaVar = "VARIANTS_OUT", required = true, usage = "Variant output path")
       var variantOutput: String = ""
-    }
-
-    trait VariantConcordance extends Base {
-
-      @Opt(name = "-truth", metaVar = "truth", usage = "The truth ADAM or VCF genotypes file")
-      var truthGenotypesFile: String = _
-
-      @Opt(name = "-eval-snp", usage = "Evaluate SNP variants")
-      var evaluateSNPs: Boolean = true
-      @Opt(name = "-eval-indel", usage = "Evaluate indel variants")
-      var evaluateINDELs: Boolean = false
-      @Opt(name = "-chr", usage = "Chromosome to filter to")
-      var chromosome: String = null
     }
 
     trait OptionalOutput extends Base {
@@ -127,29 +114,12 @@ object Common extends Logging {
    * @param sc spark context
    * @return RDD of ADAM Genotypes
    */
-  def loadVariants(path: String, sc: SparkContext): RDD[ADAMGenotype] = {
+  def loadGenotypes(path: String, sc: SparkContext): RDD[ADAMGenotype] = {
     if (path.endsWith(".vcf")) {
       sc.adamVCFLoad(path).flatMap(_.genotypes)
     } else {
       sc.adamLoad(path)
     }
-  }
-
-  /**
-   *
-   * Evaluate a set of called variants by computing precision, recall and F1-Score
-   *
-   * @param args parsed arguments
-   * @param genotypes ADAM genotypes (i.e. the variants)
-   * @param sc spark context
-   * @return tuple of precision, recall and f1score
-   */
-  def evaluateVariants(args: Arguments.VariantConcordance, genotypes: RDD[ADAMGenotype], sc: SparkContext) = {
-    val truthVariants = loadVariants(args.truthGenotypesFile, sc)
-
-    val (precision, recall, f1score) = VariantEvaluator.compareVariants(genotypes, truthVariants, args.evaluateSNPs, args.evaluateINDELs, args.chromosome)
-    println("Precision\tRecall\tF1Score")
-    println("%f\t%f\t%f".format(precision, recall, f1score))
   }
 
   /**
