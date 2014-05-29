@@ -11,6 +11,8 @@ import org.kohsuke.args4j.Option
 import org.bdgenomics.guacamole.Common.Arguments._
 import org.bdgenomics.adam.util.PhredUtils
 import scala.Some
+import org.bdgenomics.guacamole.concordance.GenotypesEvaluator
+import org.bdgenomics.guacamole.concordance.GenotypesEvaluator.GenotypeConcordance
 
 /**
  * A Genotype is a sequence of alleles of length equal to the ploidy of the organism.
@@ -84,7 +86,7 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
   override val name = "uniformbayes"
   override val description = "call variants using a simple quality based probability"
 
-  private class Arguments extends Base with Output with Reads with DistributedUtil.Arguments {
+  private class Arguments extends Base with Output with Reads with GenotypeConcordance with DistributedUtil.Arguments {
 
     @Option(name = "-emit-ref", usage = "Output homozygous reference calls.")
     var emitRef: Boolean = false
@@ -108,6 +110,9 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
       pileup => callVariantsAtLocus(pileup).iterator)
     mappedReads.unpersist()
     Common.writeVariants(args, genotypes)
+
+    if (args.truthGenotypesFile != "") GenotypesEvaluator.printGenotypeConcordance(args, genotypes, sc)
+
     DelayedMessages.default.print()
   }
 
