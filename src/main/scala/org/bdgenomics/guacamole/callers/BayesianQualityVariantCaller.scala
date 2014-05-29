@@ -135,8 +135,8 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
     pileup.bySample.toSeq.flatMap({
       case (sampleName, samplePileup) =>
 
-        val genotypeLikelihoods = computeLikelihoods(pileup)
-        val genotypePosteriorEstimate = genotypeLikelihoods.map(kv => (kv._1, kv._2 * computeGenotypePrior(kv._1)))
+        val genotypeLikelihoods = computeLogLikelihoods(pileup)
+        val genotypePosteriorEstimate = genotypeLikelihoods.map(kv => (kv._1, kv._2 + computeGenotypeLogPrior(kv._1)))
         val mostLikelyGenotype = genotypePosteriorEstimate.maxBy(_._2)
 
         def buildVariants(genotype: Genotype, probability: Double): Seq[ADAMGenotype] = {
@@ -188,6 +188,16 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
   }
 
   /**
+   * See computeLikelihoods, same computation in log-space
+   *
+   * @return Sequence of (Genotype, LogLikelihood)
+   */
+  def computeLogLikelihoods(pileup: Pileup): Seq[(Genotype, Double)] = {
+    val possibleGenotypes = getPossibleGenotypes(pileup)
+    possibleGenotypes.map(g => (g, computeGenotypeLogLikelihoods(pileup, g, possibleGenotypes.size - 1)))
+  }
+
+  /**
    *  Compute likelihood for given genotype
    *
    *  Probability of observing bases given the underlying genotype
@@ -197,26 +207,53 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
    *  = \product_bases [ \sum_alleles P( base | allele) / num_alleles (aka ploidy) ]
    *  = \product_bases [ \sum_alleles 1 - error_probability if base == allele else error_probability ]  / num_alleles (aka ploidy)
    *
-   *  @return likelihood for genotype based P( bases in pileup | genotype )
+   *  @return likelihood for genotype based on P( bases in pileup | genotype )
    */
   protected def computeGenotypeLikelihoods(pileup: Pileup, genotype: Genotype, numAlternateAlleles: Int): Double = {
 
-    def computeBaseGenotypeLikelihood(element: PileupElement, genotype: Genotype): Double = {
-      def computeBaseLikelihood(element: PileupElement, referenceAllele: String): Double = {
-        val errorProbability = PhredUtils.phredToErrorProbability(element.qualityScore)
-        if (Bases.basesToString(element.sequencedBases) == referenceAllele) (1 - errorProbability) else errorProbability
-      }
-      genotype.alleles.map(referenceAllele => computeBaseLikelihood(element, referenceAllele)).sum
-    }
     val depth = pileup.elements.size
     pileup.elements.map(computeBaseGenotypeLikelihood(_, genotype)).reduce(_ * _) / math.pow(genotype.ploidy, depth)
   }
 
   /**
-   * Compute prior probability for given genotype
+   * See computeGenotypeLikelihoods, same computation in log-space
    *
-   * @return 1.0 (default uniform prior)
+   *  @return log likelihood for genotype based P( bases in pileup | genotype )
    */
-  protected def computeGenotypePrior(genotype: Genotype): Double = 1.0
+  protected def computeGenotypeLogLikelihoods(pileup: Pileup, genotype: Genotype, numAlternateAlleles: Int): Double = {
+
+    val depth = pileup.elements.size
+    val unnormalizedLikelihood = pileup.elements.map(el => math.log(computeBaseGenotypeLikelihood(el, genotype))).reduce(_ + _)
+    if (genotype.ploidy == 2) {
+      unnormalizedLikelihood - depth
+    } else {
+      unnormalizedLikelihood - math.log(math.pow(genotype.ploidy, depth))
+    }
+  }
+
+  /**
+   *
+   * Computes the likelihood of a pileup element and genoty
+   *
+   * \sum_alleles P( base | allele)
+   *
+   * @param element pileup element
+   * @param genotype genotype to evaluate
+   * @return likelihood for genotype based on P( bases in pileup element | genotype )
+   */
+  private def computeBaseGenotypeLikelihood(element: PileupElement, genotype: Genotype): Double = {
+    def computeBaseLikelihood(element: PileupElement, referenceAllele: String): Double = {
+      val errorProbability = PhredUtils.phredToErrorProbability(element.qualityScore)
+      if (Bases.basesToString(element.sequencedBases) == referenceAllele) 1 - errorProbability else errorProbability
+    }
+    genotype.alleles.map(referenceAllele => computeBaseLikelihood(element, referenceAllele)).sum
+  }
+
+  /**
+   * Compute prior probability for given genotype, in log-space
+   *
+   * @return 0.0 (default uniform prior)
+   */
+  protected def computeGenotypeLogPrior(genotype: Genotype): Double = 0.0
 
 }
