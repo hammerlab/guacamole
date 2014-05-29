@@ -38,7 +38,7 @@ import org.bdgenomics.guacamole.pileup.Pileup
  *    - MORE than a threshold ("threshold-tumor") in the tumor sample.
  *
  */
-object  SomaticThresholdVariantCaller extends Command with Serializable with Logging {
+object SomaticThresholdVariantCaller extends Command with Serializable with Logging {
   override val name = "somatic-threshold"
   override val description = "call somatic variants using a two-threshold criterion"
 
