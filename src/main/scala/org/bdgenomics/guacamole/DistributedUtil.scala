@@ -122,8 +122,10 @@ object DistributedUtil extends Logging {
     def addArray(first: Array[Long], second: Array[Long]): Array[Long] = {
       assert(first.length == second.length)
       val result = new Array[Long](first.length)
-      for (i <- 0 until first.length) {
+      var i = 0
+      while (i < first.length) {
         result(i) = first(i) + second(i)
+        i += 1
       }
       result
     }
