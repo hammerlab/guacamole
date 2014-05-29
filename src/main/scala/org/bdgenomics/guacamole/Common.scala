@@ -70,14 +70,6 @@ object Common extends Logging {
       var variantOutput: String = ""
     }
 
-    trait OptionalOutput extends Base {
-      @Opt(name = "-out",
-        metaVar = "VARIANTS_OUT",
-        required = false,
-        usage = "Variant output path (if missing, print to screen)")
-      var variantOutput: String = ""
-    }
-
     /** Arguments for accepting a reference genome. */
     trait Reference extends Base {
       @Opt(required = false, name = "-reference", usage = "ADAM or FASTA reference genome data")
@@ -190,32 +182,17 @@ object Common extends Logging {
 
   /**
    * Write out an RDD of ADAMGenotype instances to a file.
-   * @param path path to output file
-   * @param genotypes ADAM genotypes (i.e. the variants)
-   */
-  def writeVariantsToPath(path: String, args: ParquetArgs, genotypes: RDD[ADAMGenotype]): Unit = {
-    progress("Writing %,d genotypes to: %s.".format(genotypes.count, path))
-    genotypes.adamSave(path,
-      args.blockSize,
-      args.pageSize,
-      args.compressionCodec,
-      args.disableDictionary)
-    progress("Done writing.")
-  }
-
-  /**
-   * Write out an RDD of ADAMGenotype instances to a file.
    * @param args parsed arguments
    * @param genotypes ADAM genotypes (i.e. the variants)
    */
-  def writeVariants(args: Arguments.Output, genotypes: RDD[ADAMGenotype]): Unit = {
-
+  def writeVariantsFromArguments(args: Arguments.Output, genotypes: RDD[ADAMGenotype]): Unit = {
     progress("Writing genotypes to: %s.".format(args.variantOutput))
-    if (args.variantOutput.endsWith(".vcf")) {
+    val outputPath = args.variantOutput.stripMargin
+    if (outputPath.endsWith(".vcf")) {
       val sc = genotypes.sparkContext
-      sc.adamVCFSave(args.variantOutput, genotypes.toADAMVariantContext.coalesce(1))
+      sc.adamVCFSave(outputPath, genotypes.toADAMVariantContext.coalesce(1))
     } else {
-      genotypes.adamSave(args.variantOutput,
+      genotypes.adamSave(outputPath,
         args.blockSize,
         args.pageSize,
         args.compressionCodec,
@@ -323,5 +300,5 @@ object Common extends Logging {
     if (pieces.hasNext) builder.append(ellipses)
     builder.result
   }
-
 }
+

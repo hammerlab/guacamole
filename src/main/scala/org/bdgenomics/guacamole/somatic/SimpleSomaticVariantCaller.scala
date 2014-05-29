@@ -20,7 +20,7 @@ package org.bdgenomics.guacamole.somatic
 
 import org.bdgenomics.adam.avro._
 import org.bdgenomics.guacamole.{ Common, Command }
-import org.bdgenomics.guacamole.Common.Arguments.{ OptionalOutput, Base }
+import org.bdgenomics.guacamole.Common.Arguments.{ Base }
 import org.bdgenomics.adam.cli.Args4j
 import org.apache.spark.rdd.RDD
 import org.apache.spark.SparkContext._
@@ -46,7 +46,7 @@ object SimpleSomaticVariantCaller extends Command {
   override val description = "somatic (cancer) variant calling from tumor and normal reads, using simple thresholds"
 
   private class Arguments extends Base
-    with OptionalOutput
+    with Common.Arguments.Output
     with Common.Arguments.TumorNormalReads
     with Common.Arguments.Reference {}
 
@@ -362,10 +362,9 @@ object SimpleSomaticVariantCaller extends Command {
     val args = Args4j[Arguments](rawArgs)
     val context: SparkContext = Common.createSparkContext(args)
     val genotypes: RDD[ADAMGenotype] = callVariantsFromArgs(context, args)
-    val path = args.variantOutput.stripMargin
     Common.progress("Found %d variants".format(genotypes.count))
-    if (path.length > 0) {
-      Common.writeVariantsToPath(path, args, genotypes)
+    if (args.variantOutput.stripMargin.length > 0) {
+      Common.writeVariantsFromArguments(args, genotypes)
     } else {
       val localGenotypes = genotypes.collect
       localGenotypes.foreach(println _)
