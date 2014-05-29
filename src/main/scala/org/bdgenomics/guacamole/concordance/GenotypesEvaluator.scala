@@ -19,12 +19,12 @@ object GenotypesEvaluator extends Command with Logging {
   trait GenotypeConcordance extends Common.Arguments.Base {
 
     @Option(name = "-truth", metaVar = "truth", usage = "The truth ADAM or VCF genotypes file")
-    var truthGenotypesFile: String = _
+    var truthGenotypesFile: String = ""
 
-    @Option(name = "-include-snv", usage = "Include SNV variants in comparison")
-    var includeSNVs: Boolean = false
-    @Option(name = "-include-indel", usage = "Include indel variants in comparison")
-    var includeIndels: Boolean = false
+    @Option(name = "-exclude-snv", usage = "Exclude SNV variants in comparison")
+    var excludeSNVs: Boolean = false
+    @Option(name = "-exclude-indel", usage = "Exclude indel variants in comparison")
+    var excludeIndels: Boolean = false
     @Option(name = "-chr", usage = "Chromosome to filter to")
     var chromosome: String = ""
   }
@@ -32,7 +32,7 @@ object GenotypesEvaluator extends Command with Logging {
   private class Arguments extends GenotypeConcordance {
 
     @Option(name = "-test", required = true, usage = "The test ADAM genotypes file")
-    var testGenotypesFile: String = _
+    var testGenotypesFile: String = ""
   }
 
   override def run(rawArgs: Array[String]): Unit = {
@@ -40,7 +40,7 @@ object GenotypesEvaluator extends Command with Logging {
     val sc = Common.createSparkContext(args, appName = Some(name))
 
     val calledGenotypes = Common.loadGenotypes(args.testGenotypesFile, sc)
-    evaluateGenotypes(args, calledGenotypes, sc)
+    printGenotypeConcordance(args, calledGenotypes, sc)
   }
 
   /**
@@ -56,20 +56,20 @@ object GenotypesEvaluator extends Command with Logging {
    *
    * @param calledGenotypes Genotypes to test
    * @param trueGenotypes Known-set of validated genotypes
-   * @param includeSNVs true if want to include single nucleotides polymorphism in the evaluation (default: true)
-   * @param includeIndels true if want to include insertions in the evaluation in the evaluation (default: false)
+   * @param excludeSNVs true if want to exclude single nucleotides polymorphism in the evaluation (default: false)
+   * @param excludeIndels true if want to exclude insertions in the evaluation in the evaluation (default: true)
    * @param chromosome name of a chromosome, if any, to filter to (default: null)
    * @return  precision, recall and f1score
    */
   def computePrecisionAndRecall(calledGenotypes: RDD[ADAMGenotype],
                                 trueGenotypes: RDD[ADAMGenotype],
-                                includeSNVs: Boolean = true,
-                                includeIndels: Boolean = false,
+                                excludeSNVs: Boolean = false,
+                                excludeIndels: Boolean = true,
                                 chromosome: String = null): (Double, Double, Double) = {
     val chromosomeFilter: (ADAMGenotype => Boolean) = chromosome == "" || _.variant.contig.contigName.toString == chromosome
     val variantTypeFilter: (ADAMGenotype => Boolean) = genotype => {
       val variant = new RichADAMVariant(genotype.variant)
-      (includeSNVs && variant.isSingleNucleotideVariant()) || (includeIndels && (variant.isInsertion() || variant.isDeletion()))
+      (!excludeSNVs && variant.isSingleNucleotideVariant()) || (!excludeIndels && (variant.isInsertion() || variant.isDeletion()))
     }
 
     val relevantVariants: (ADAMGenotype => Boolean) = v => chromosomeFilter(v) && variantTypeFilter(v)
@@ -112,10 +112,10 @@ object GenotypesEvaluator extends Command with Logging {
    * @param sc spark context
    */
 
-  def evaluateGenotypes(args: GenotypeConcordance, genotypes: RDD[ADAMGenotype], sc: SparkContext) = {
+  def printGenotypeConcordance(args: GenotypeConcordance, genotypes: RDD[ADAMGenotype], sc: SparkContext) = {
     val trueGenotypes = Common.loadGenotypes(args.truthGenotypesFile, sc)
 
-    val (precision, recall, f1score) = computePrecisionAndRecall(genotypes, trueGenotypes, args.includeSNVs, args.includeIndels, args.chromosome)
+    val (precision, recall, f1score) = computePrecisionAndRecall(genotypes, trueGenotypes, args.excludeSNVs, args.excludeIndels, args.chromosome)
     println("Precision\tRecall\tF1Score")
     println("%f\t%f\t%f".format(precision, recall, f1score))
   }
