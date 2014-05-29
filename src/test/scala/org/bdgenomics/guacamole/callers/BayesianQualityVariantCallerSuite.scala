@@ -46,16 +46,6 @@ class BayesianQualityVariantCallerSuite extends SparkFunSuite {
     genotypes.foreach(gt => assert(gt.getAlleles.toList === List(ADAMGenotypeAllele.Ref, ADAMGenotypeAllele.Alt)))
   }
 
-  //  test("het variant, low quality") {
-  //    val reads = Seq(
-  //      TestUtil.makeRead("TCGATCGA", "8M", "8", 1),
-  //      TestUtil.makeRead("TCGATCGA", "8M", "8", 1),
-  //      TestUtil.makeRead("GCGATCGA", "8M", "0G7", 1))
-  //    val pileup = Pileup(reads, 1)
-  //    val genotypes = BayesianQualityVariantCaller.callVariantsAtLocus(pileup)
-  //    genotypes.foreach(gt => assert(gt.getAlleles.toList === List(ADAMGenotypeAllele.Ref, ADAMGenotypeAllele.Ref)))
-  //  }
-
   val floatingPointingThreshold = 1e-6
   val errorPhred30 = PhredUtils.phredToErrorProbability(30)
   val errorPhred40 = PhredUtils.phredToErrorProbability(40)
@@ -131,6 +121,79 @@ class BayesianQualityVariantCallerSuite extends SparkFunSuite {
 
     val scored = BayesianQualityVariantCaller.computeLikelihoods(pileup).toMap
     scored.foreach(l => TestUtil.assertAlmostEqual(l._2, expectedLikelihoods(l._1)))
+  }
+
+  test("log score genotype for single sample, all bases ref") {
+
+    val reads = Seq(
+      TestUtil.makeRead("C", "1M", "1", 1, "chr1", Some(Array(30))),
+      TestUtil.makeRead("C", "1M", "1", 1, "chr1", Some(Array(40))),
+      TestUtil.makeRead("C", "1M", "1", 1, "chr1", Some(Array(30))))
+
+    val pileup = Pileup(reads, 1)
+    val hetLikelihood =  math.log((1 - errorPhred30) + errorPhred30 / 3) + math.log((1 - errorPhred40) + errorPhred40 / 3) + math.log((1 - errorPhred30) + errorPhred30 / 3) - 3.0
+    val altLikelihood = math.log(2 * errorPhred30 / 3) +  math.log(2 * errorPhred40 / 3) +  math.log(2 * errorPhred30 / 3) - 3.0
+    val expectedLikelihoods = scala.collection.mutable.Map.empty[Genotype, Double]
+
+    expectedLikelihoods += makeGenotype("C", "C") -> (math.log(2 * (1 - errorPhred30)) + math.log(2 * (1 - errorPhred40)) + math.log(2 * (1 - errorPhred30)) - 3)
+
+    expectedLikelihoods += makeGenotype("A", "C") -> hetLikelihood
+    expectedLikelihoods += makeGenotype("C", "G") -> hetLikelihood
+    expectedLikelihoods += makeGenotype("T", "C") -> hetLikelihood
+
+    expectedLikelihoods += makeGenotype("A", "A") -> altLikelihood
+    expectedLikelihoods += makeGenotype("G", "G") -> altLikelihood
+    expectedLikelihoods += makeGenotype("T", "G") -> altLikelihood
+
+    val scored = BayesianQualityVariantCaller.computeLogLikelihoods(pileup).toMap
+    scored.foreach(l => TestUtil.assertAlmostEqual(l._2, expectedLikelihoods(l._1)))
+  }
+
+  test("log score genotype for single sample, mix of ref/non-ref bases") {
+    val reads = Seq(
+      TestUtil.makeRead("C", "1M", "1", 1, "chr1", Some(Array(30))),
+      TestUtil.makeRead("C", "1M", "1", 1, "chr1", Some(Array(40))),
+      TestUtil.makeRead("A", "1M", "0A0", 1, "chr1", Some(Array(30))))
+
+    val pileup = Pileup(reads, 1)
+
+    val hetLikelihood = math.log((1 - errorPhred30) + errorPhred30 / 3) + math.log((1 - errorPhred40) + errorPhred40 / 3) + math.log((1 - errorPhred30) + errorPhred30 / 3) - 3.0
+    val expectedLikelihoods = scala.collection.mutable.Map.empty[Genotype, Double]
+
+    expectedLikelihoods += makeGenotype("C", "C") -> (math.log(2 * (1 - errorPhred30)) + math.log(2 * (1 - errorPhred40)) + math.log(2 * errorPhred30) - 3.0)
+    expectedLikelihoods += makeGenotype("C", "A") -> hetLikelihood
+    expectedLikelihoods += makeGenotype("A", "A") -> (math.log(2 * errorPhred30) +  math.log(2 * errorPhred40) + math.log(2 * (1 - errorPhred30)) - 3.0)
+
+    val scored = BayesianQualityVariantCaller.computeLogLikelihoods(pileup).toMap
+    scored.foreach(l => TestUtil.assertAlmostEqual(l._2, expectedLikelihoods(l._1), 1e-2))
+  }
+
+  test("log score genotype for single sample, all bases non-ref") {
+
+    val reads = Seq(
+      TestUtil.makeRead("A", "1M", "0A0", 1, "chr1", Some(Array(30))),
+      TestUtil.makeRead("A", "1M", "0A0", 1, "chr1", Some(Array(40))),
+      TestUtil.makeRead("A", "1M", "0A0", 1, "chr1", Some(Array(30))))
+
+    val pileup = Pileup(reads, 1)
+
+    val hetLikelihood = math.log((1 - errorPhred30) + errorPhred30 / 3) + math.log((1 - errorPhred40) + errorPhred40 / 3) + math.log((1 - errorPhred30) + errorPhred30 / 3) - 3.0
+    val allErrorLikelihood =  math.log(2 * errorPhred30 / 3) +  math.log(2 * errorPhred40 / 3) +  math.log(2 * errorPhred30 / 3) - 3.0
+    val expectedLikelihoods = scala.collection.mutable.Map.empty[Genotype, Double]
+
+    expectedLikelihoods += makeGenotype("A", "A") ->  (math.log(2 * (1 - errorPhred30)) +  math.log(2.0 * (1 - errorPhred30)) + math.log(2 * (1 - errorPhred30)) - 3.0)
+
+    expectedLikelihoods += makeGenotype("A", "C") -> hetLikelihood
+    expectedLikelihoods += makeGenotype("A", "G") -> hetLikelihood
+    expectedLikelihoods += makeGenotype("A", "T") -> hetLikelihood
+
+    expectedLikelihoods += makeGenotype("T", "T") -> hetLikelihood
+    expectedLikelihoods += makeGenotype("G", "G") -> hetLikelihood
+
+    expectedLikelihoods += makeGenotype("C", "C") -> allErrorLikelihood
+
+    val scored = BayesianQualityVariantCaller.computeLogLikelihoods(pileup).toMap
+    scored.foreach(l => TestUtil.assertAlmostEqual(l._2, expectedLikelihoods(l._1), 1e-2))
   }
 
 }
