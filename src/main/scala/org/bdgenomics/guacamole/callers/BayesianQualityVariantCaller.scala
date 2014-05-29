@@ -111,7 +111,7 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
     mappedReads.unpersist()
     Common.writeVariants(args, genotypes)
 
-    if (args.truthGenotypesFile != "") GenotypesEvaluator.evaluateGenotypes(args, genotypes, sc)
+    if (args.truthGenotypesFile != "") GenotypesEvaluator.printGenotypeConcordance(args, genotypes, sc)
 
     DelayedMessages.default.print()
   }
