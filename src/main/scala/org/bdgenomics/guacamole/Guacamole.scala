@@ -25,6 +25,7 @@ import org.bdgenomics.guacamole.somatic.SimpleSomaticVariantCaller
 import org.bdgenomics.adam.util.ParquetLogger
 import org.bdgenomics.guacamole.Common.progress
 import scala.Some
+import org.bdgenomics.guacamole.concordance.GenotypesEvaluator
 
 /**
  * Guacamole main class.
@@ -38,7 +39,8 @@ object Guacamole extends Logging {
   private val commands: Seq[Command] = List(
     ThresholdVariantCaller,
     SimpleSomaticVariantCaller,
-    BayesianQualityVariantCaller)
+    BayesianQualityVariantCaller,
+    GenotypesEvaluator)
 
   private def printUsage() = {
     println("Usage: java ... <command> [other args]\n")

@@ -20,17 +20,15 @@ package org.bdgenomics.guacamole
 
 import org.bdgenomics.adam.cli.{ SparkArgs, ParquetArgs, Args4jBase }
 import org.kohsuke.args4j.{ Option => Opt }
-import org.bdgenomics.adam.avro.{ ADAMGenotype }
+import org.bdgenomics.adam.avro.ADAMGenotype
 import org.apache.spark.rdd.RDD
-import org.bdgenomics.adam.predicates.UniqueMappedReadPredicate
 import org.apache.spark.{ SparkConf, Logging, SparkContext }
 import org.bdgenomics.adam.rdd.ADAMContext._
-import org.apache.spark.scheduler.StatsReportListener
 import java.util
-import java.util.Calendar
-import org.bdgenomics.adam.rdd.ADAMContext
 import org.bdgenomics.adam.rdd.variation.ADAMVariationContext._
 import org.bdgenomics.adam.models.SequenceDictionary
+import org.apache.spark.scheduler.StatsReportListener
+import java.util.Calendar
 
 /**
  * Collection of functions that are useful to multiple variant calling implementations, and specifications of command-
@@ -106,6 +104,22 @@ object Common extends Logging {
     nonDuplicate: Boolean = true): (RDD[Read], SequenceDictionary) = {
 
     Read.loadReadRDDAndSequenceDictionaryFromBAM(args.reads, sc, mapped, nonDuplicate)
+  }
+
+  /**
+   *
+   * Load genotypes from ADAM Parquet or VCF file
+   *
+   * @param path path to VCF or ADAM genotypes
+   * @param sc spark context
+   * @return RDD of ADAM Genotypes
+   */
+  def loadGenotypes(path: String, sc: SparkContext): RDD[ADAMGenotype] = {
+    if (path.endsWith(".vcf")) {
+      sc.adamVCFLoad(path).flatMap(_.genotypes)
+    } else {
+      sc.adamLoad(path)
+    }
   }
 
   /**

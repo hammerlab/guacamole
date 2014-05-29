@@ -29,6 +29,8 @@ import org.bdgenomics.guacamole.Common.Arguments._
 import org.apache.spark.rdd.RDD
 import org.apache.spark.Logging
 import org.bdgenomics.guacamole.pileup.Pileup
+import org.bdgenomics.guacamole.concordance.GenotypesEvaluator
+import org.bdgenomics.guacamole.concordance.GenotypesEvaluator.GenotypeConcordance
 
 /**
  * Simple variant caller.
@@ -40,7 +42,7 @@ object ThresholdVariantCaller extends Command with Serializable with Logging {
   override val name = "threshold"
   override val description = "call variants using a simple threshold"
 
-  private class Arguments extends Base with Output with Reads with DistributedUtil.Arguments {
+  private class Arguments extends Base with Output with Reads with GenotypeConcordance with DistributedUtil.Arguments {
     @Option(name = "-threshold", metaVar = "X", usage = "Make a call if at least X% of reads support it. Default: 8")
     var threshold: Int = 8
 
@@ -78,6 +80,9 @@ object ThresholdVariantCaller extends Command with Serializable with Logging {
       })
     mappedReads.unpersist()
     Common.writeVariants(args, genotypes)
+
+    if (args.truthGenotypesFile != "") GenotypesEvaluator.printGenotypeConcordance(args, genotypes, sc)
+
     DelayedMessages.default.print()
   }
 
