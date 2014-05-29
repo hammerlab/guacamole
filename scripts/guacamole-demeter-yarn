@@ -1,6 +1,8 @@
 #! /bin/bash
 # Convenience script for users of Mount Sinai's demeter cluster.
-# Executes the most recently modified guacamole jar with arguments for running on demeter.
+# Executes the most recently modified guacamole jar with arguments for running on demeter through yarn.
+#
+# $GUACAMOLE_JAR is defined, then will execute that jar. 
 #
 # Example invocation:
 #
@@ -11,9 +13,21 @@
 set -e
 set -x
 
+echo "$@" >> ~/.guacamole.invocations.log
+
+if [ -z "${GUACAMOLE_JAR}" ]; then
+    jar=$(ls -tc target/guacamole-?.*.jar | head -n 1)
+    echo "Using most recently modified jar: $jar"
+else
+    jar=${GUACAMOLE_JAR}
+    echo "Using GUACAMOLE_JAR=$jar"
+fi
+
+# Function to get the absolute path of a file:
+abspath () { case "$1" in /*)printf "%s\n" "$1";; *)printf "%s\n" "$PWD/$1";; esac; }
+jar_abs=$(abspath $jar)
+
 export SPARK_JAVA_OPTS="-Dspark.default.parallelism=1024 -Dspark.shuffle.consolidateFiles=true -Xmx8g -Dspark.speculation=true"
-jar=$(ls -tc target/guacamole-?.*.jar | head -n 1)
-jar_abs=$(pwd)/$jar
 
 #Set SPARK_HOME
 source /etc/spark/conf/spark-env.sh

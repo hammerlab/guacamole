@@ -1,4 +1,16 @@
 #! /bin/bash
 # Executes the most recently modified guacamole jar. Run this from the guacamole root directory.
+#
+# If $GUACAMOLE_JAR is defined, then will execute that jar. 
+#
+echo "$@" >> ~/.guacamole.invocations.log
 
-exec time java -Xmx2g -XX:MaxPermSize=512m -jar $(ls -tc target/guacamole-?.*.jar | head -n 1) "$@"
+if [ -z "${GUACAMOLE_JAR}" ]; then
+    jar=$(ls -tc target/guacamole-?.*.jar | head -n 1)
+    echo "Using most recently modified jar: $jar"
+else
+    jar=${GUACAMOLE_JAR}
+    echo "Using GUACAMOLE_JAR=$jar"
+fi
+
+exec time java -Xmx2g -XX:MaxPermSize=512m -jar $jar "$@"
