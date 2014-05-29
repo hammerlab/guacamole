@@ -131,8 +131,8 @@ class BayesianQualityVariantCallerSuite extends SparkFunSuite {
       TestUtil.makeRead("C", "1M", "1", 1, "chr1", Some(Array(30))))
 
     val pileup = Pileup(reads, 1)
-    val hetLikelihood =  math.log((1 - errorPhred30) + errorPhred30 / 3) + math.log((1 - errorPhred40) + errorPhred40 / 3) + math.log((1 - errorPhred30) + errorPhred30 / 3) - 3.0
-    val altLikelihood = math.log(2 * errorPhred30 / 3) +  math.log(2 * errorPhred40 / 3) +  math.log(2 * errorPhred30 / 3) - 3.0
+    val hetLikelihood = math.log((1 - errorPhred30) + errorPhred30 / 3) + math.log((1 - errorPhred40) + errorPhred40 / 3) + math.log((1 - errorPhred30) + errorPhred30 / 3) - 3.0
+    val altLikelihood = math.log(2 * errorPhred30 / 3) + math.log(2 * errorPhred40 / 3) + math.log(2 * errorPhred30 / 3) - 3.0
     val expectedLikelihoods = scala.collection.mutable.Map.empty[Genotype, Double]
 
     expectedLikelihoods += makeGenotype("C", "C") -> (math.log(2 * (1 - errorPhred30)) + math.log(2 * (1 - errorPhred40)) + math.log(2 * (1 - errorPhred30)) - 3)
@@ -162,7 +162,7 @@ class BayesianQualityVariantCallerSuite extends SparkFunSuite {
 
     expectedLikelihoods += makeGenotype("C", "C") -> (math.log(2 * (1 - errorPhred30)) + math.log(2 * (1 - errorPhred40)) + math.log(2 * errorPhred30) - 3.0)
     expectedLikelihoods += makeGenotype("C", "A") -> hetLikelihood
-    expectedLikelihoods += makeGenotype("A", "A") -> (math.log(2 * errorPhred30) +  math.log(2 * errorPhred40) + math.log(2 * (1 - errorPhred30)) - 3.0)
+    expectedLikelihoods += makeGenotype("A", "A") -> (math.log(2 * errorPhred30) + math.log(2 * errorPhred40) + math.log(2 * (1 - errorPhred30)) - 3.0)
 
     val scored = BayesianQualityVariantCaller.computeLogLikelihoods(pileup).toMap
     scored.foreach(l => TestUtil.assertAlmostEqual(l._2, expectedLikelihoods(l._1), 1e-2))
@@ -178,10 +178,10 @@ class BayesianQualityVariantCallerSuite extends SparkFunSuite {
     val pileup = Pileup(reads, 1)
 
     val hetLikelihood = math.log((1 - errorPhred30) + errorPhred30 / 3) + math.log((1 - errorPhred40) + errorPhred40 / 3) + math.log((1 - errorPhred30) + errorPhred30 / 3) - 3.0
-    val allErrorLikelihood =  math.log(2 * errorPhred30 / 3) +  math.log(2 * errorPhred40 / 3) +  math.log(2 * errorPhred30 / 3) - 3.0
+    val allErrorLikelihood = math.log(2 * errorPhred30 / 3) + math.log(2 * errorPhred40 / 3) + math.log(2 * errorPhred30 / 3) - 3.0
     val expectedLikelihoods = scala.collection.mutable.Map.empty[Genotype, Double]
 
-    expectedLikelihoods += makeGenotype("A", "A") ->  (math.log(2 * (1 - errorPhred30)) +  math.log(2.0 * (1 - errorPhred30)) + math.log(2 * (1 - errorPhred30)) - 3.0)
+    expectedLikelihoods += makeGenotype("A", "A") -> (math.log(2 * (1 - errorPhred30)) + math.log(2.0 * (1 - errorPhred30)) + math.log(2 * (1 - errorPhred30)) - 3.0)
 
     expectedLikelihoods += makeGenotype("A", "C") -> hetLikelihood
     expectedLikelihoods += makeGenotype("A", "G") -> hetLikelihood

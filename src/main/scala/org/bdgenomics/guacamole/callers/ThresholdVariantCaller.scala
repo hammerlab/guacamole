@@ -69,7 +69,7 @@ object ThresholdVariantCaller extends Command with Serializable with Logging {
     val (threshold, emitRef, emitNoCall) = (args.threshold, args.emitRef, args.emitNoCall)
     val numGenotypes = sc.accumulator(0L)
     DelayedMessages.default.say { () => "Called %,d genotypes.".format(numGenotypes.value) }
-    val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(args, mappedReads, loci)
+    val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(args, loci, mappedReads)
     val genotypes: RDD[ADAMGenotype] = DistributedUtil.pileupFlatMap[ADAMGenotype](
       mappedReads,
       lociPartitions,
@@ -79,16 +79,16 @@ object ThresholdVariantCaller extends Command with Serializable with Logging {
         genotypes.iterator
       })
     mappedReads.unpersist()
-    Common.writeVariants(args, genotypes)
-
-    if (args.truthGenotypesFile != "") GenotypesEvaluator.printGenotypeConcordance(args, genotypes, sc)
+    Common.writeVariantsFromArguments(args, genotypes)
+    if (args.truthGenotypesFile != "")
+      GenotypesEvaluator.printGenotypeConcordance(args, genotypes, sc)
 
     DelayedMessages.default.print()
   }
 
   def callVariantsAtLocus(
     pileup: Pileup,
-    threshold_percent: Int,
+    thresholdPercent: Int,
     emitRef: Boolean = true,
     emitNoCall: Boolean = true): Seq[ADAMGenotype] = {
 
@@ -102,7 +102,7 @@ object ThresholdVariantCaller extends Command with Serializable with Logging {
         val totalReads = samplePileup.elements.length
         val matchesOrMismatches = samplePileup.elements.filter(e => e.isMatch || e.isMismatch)
         val counts = matchesOrMismatches.map(_.sequencedSingleBase).groupBy(char => char).mapValues(_.length)
-        val sortedAlleles = counts.toList.filter(_._2 * 100 / totalReads > threshold_percent).sortBy(-1 * _._2)
+        val sortedAlleles = counts.toList.filter(_._2 * 100 / totalReads > thresholdPercent).sortBy(-1 * _._2)
 
         def variant(alternateBase: Byte, allelesList: List[ADAMGenotypeAllele]): ADAMGenotype = {
           ADAMGenotype.newBuilder
