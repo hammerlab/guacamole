@@ -66,7 +66,8 @@ object Common extends Logging {
 
     /** Argument for writing output genotypes. */
     trait Output extends Base {
-      @Opt(name = "-out", metaVar = "VARIANTS_OUT", required = true, usage = "Variant output path")
+      @Opt(name = "-out", metaVar = "VARIANTS_OUT", required = false,
+        usage = "Variant output path. If not specified, print to screen.")
       var variantOutput: String = ""
     }
 
@@ -75,7 +76,8 @@ object Common extends Logging {
       @Opt(required = false, name = "-reference", usage = "ADAM or FASTA reference genome data")
       var referenceInput: String = ""
 
-      @Opt(required = false, name = "-fragment_length", usage = "Sets maximum fragment length. Default value is 10,000. Values greater than 1e9 should be avoided.")
+      @Opt(required = false, name = "-fragment_length",
+        usage = "Sets maximum fragment length. Default value is 10,000. Values greater than 1e9 should be avoided.")
       var fragmentLength: Long = 10000L
     }
   }
@@ -186,12 +188,17 @@ object Common extends Logging {
    * @param genotypes ADAM genotypes (i.e. the variants)
    */
   def writeVariantsFromArguments(args: Arguments.Output, genotypes: RDD[ADAMGenotype]): Unit = {
-    progress("Writing genotypes to: %s.".format(args.variantOutput))
     val outputPath = args.variantOutput.stripMargin
-    if (outputPath.endsWith(".vcf")) {
+    if (outputPath.isEmpty) {
+      progress("Writing genotypes to stdout.")
+      val localGenotypes = genotypes.collect
+      localGenotypes.foreach(println _)
+    } else if (outputPath.toLowerCase.endsWith(".vcf")) {
+      progress("Writing genotypes to VCF file: %s.".format(outputPath))
       val sc = genotypes.sparkContext
       sc.adamVCFSave(outputPath, genotypes.toADAMVariantContext.coalesce(1))
     } else {
+      progress("Writing genotypes to: %s.".format(outputPath))
       genotypes.adamSave(outputPath,
         args.blockSize,
         args.pageSize,
