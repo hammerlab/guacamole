@@ -363,12 +363,6 @@ object SimpleSomaticVariantCaller extends Command {
     val context: SparkContext = Common.createSparkContext(args)
     val genotypes: RDD[ADAMGenotype] = callVariantsFromArgs(context, args)
     Common.progress("Found %d variants".format(genotypes.count))
-    if (args.variantOutput.stripMargin.length > 0) {
-      Common.writeVariantsFromArguments(args, genotypes)
-    } else {
-      val localGenotypes = genotypes.collect
-      localGenotypes.foreach(println _)
-    }
-
+    Common.writeVariantsFromArguments(args, genotypes)
   }
 }
