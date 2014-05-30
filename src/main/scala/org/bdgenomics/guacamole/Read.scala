@@ -179,13 +179,10 @@ object Read extends Logging {
 
     if (isMapped) {
       val mdTagString = record.getStringAttribute("MD")
-      val mdTag = if (mdTagString == null || mdTagString.isEmpty) {
-        log.warn("No mdtag on mapped read. Fields are: %s".format(
-          JavaConversions.asScalaIterator(record.getAttributes.iterator).map(_.tag).mkString(" ")))
+      val mdTag = if (mdTagString == null || mdTagString.isEmpty)
         None
-      } else {
+      else
         Some(MdTag(mdTagString, record.getAlignmentStart - 1))
-      }
       val result = MappedRead(
         record.getReadString.getBytes,
         record.getBaseQualities,
@@ -197,17 +194,10 @@ object Read extends Logging {
         cigar = record.getCigar,
         mdTag = mdTag)
 
-      // Compare our computed values with samtools, and log warnings where they differ.
-      // We subtract 1 from starts, since samtools is 1-based and we're 0-based. For ends, we don't subtract anything,
-      // since samtools is 1-based and inclusive, and we're 0-based and exclusive on ends.
-      if (result.end != record.getAlignmentEnd)
-        log.warn("Computed read 'end' %d != samtools read end %d.".format(result.end, record.getAlignmentEnd))
+      // We subtract 1 from start, since samtools is 1-based and we're 0-based.
       if (result.unclippedStart != record.getUnclippedStart - 1)
         log.warn("Computed read 'unclippedStart' %d != samtools read end %d.".format(
           result.unclippedStart, record.getUnclippedStart - 1))
-      if (result.unclippedEnd != record.getUnclippedEnd)
-        log.warn("Computed read 'unclippedEnd' %d != samtools read end %d.".format(
-          result.unclippedEnd, record.getUnclippedEnd))
       result
     } else {
       val result = UnmappedRead(
