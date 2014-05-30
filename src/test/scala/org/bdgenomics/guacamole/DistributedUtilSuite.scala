@@ -81,7 +81,7 @@ class DistributedUtilSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
         (7, 1),
         (8, 1)))
       val loci = LociSet.parse("chr1:0-100")
-      val result = DistributedUtil.partitionLociByApproximateReadDepth(reads, 2, loci, 100)
+      val result = DistributedUtil.partitionLociByApproximateReadDepth(2, loci, 100, reads)
       result.toString should equal("chr1:0-7=0,chr1:7-100=1")
     }
   }

@@ -103,15 +103,16 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
       "Loaded %,d mapped non-duplicate reads into %,d partitions.".format(mappedReads.count, mappedReads.partitions.length))
 
     val loci = Common.loci(args, sequenceDictionary)
-    val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(args, mappedReads, loci)
+    val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(args, loci, mappedReads)
     val genotypes: RDD[ADAMGenotype] = DistributedUtil.pileupFlatMap[ADAMGenotype](
       mappedReads,
       lociPartitions,
       pileup => callVariantsAtLocus(pileup).iterator)
     mappedReads.unpersist()
-    Common.writeVariants(args, genotypes)
 
-    if (args.truthGenotypesFile != "") GenotypesEvaluator.printGenotypeConcordance(args, genotypes, sc)
+    Common.writeVariantsFromArguments(args, genotypes)
+    if (args.truthGenotypesFile != "")
+      GenotypesEvaluator.printGenotypeConcordance(args, genotypes, sc)
 
     DelayedMessages.default.print()
   }
@@ -255,5 +256,5 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
    * @return 0.0 (default uniform prior)
    */
   protected def computeGenotypeLogPrior(genotype: Genotype): Double = 0.0
-
 }
+

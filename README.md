@@ -5,6 +5,9 @@ Guacamole is a Spark-based variant calling framework inspired by Avocado.
 
 The goal is a small, readable codebase that can be understood quickly and adapted for experimentation.
 
+Currently, the variant callers included are toy implementations for understanding Spark performance, and are not suitable
+for production use.
+
 
 ## Running Guacamole
 
