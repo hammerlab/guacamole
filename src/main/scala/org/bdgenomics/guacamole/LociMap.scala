@@ -86,7 +86,7 @@ case class LociMap[T](private val map: Map[String, LociMap.SingleContig[T]]) {
    * If includeValues is true (default), then also include the values mapped to by this LociMap. If it's false,
    * then only the keys are included.
    */
-  def truncatedString(maxLength: Int = 100, includeValues: Boolean = true): String = {
+  def truncatedString(maxLength: Int = 500, includeValues: Boolean = true): String = {
     Common.assembleTruncatedString(
       contigs.iterator.flatMap(contig => onContig(contig).stringPieces(includeValues)),
       maxLength)
