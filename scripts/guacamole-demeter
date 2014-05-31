@@ -27,8 +27,10 @@ fi
 abspath () { case "$1" in /*)printf "%s\n" "$1";; *)printf "%s\n" "$PWD/$1";; esac; }
 jar_abs=$(abspath $jar)
 
+# To turn on debugging on the driver, uncomment this:
+# DEBUGGER_JAVA_OPTS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=1044"
 export SPARK_MEM=36G
-export SPARK_JAVA_OPTS="-Dspark.default.parallelism=1024 -Dspark.shuffle.consolidateFiles=true -Xmx8g -Dspark.speculation=true"
+export SPARK_JAVA_OPTS="$DEBUGGER_JAVA_OPTS -Dspark.default.parallelism=1024 -Dspark.shuffle.consolidateFiles=true -Xmx8g -Dspark.speculation=true"
 exec time java $SPARK_JAVA_OPTS -XX:MaxPermSize=4g -jar $jar_abs \
 	"$@" \
 	-spark_master spark://demeter-mgmt1.demeter.hpc.mssm.edu:7077 \

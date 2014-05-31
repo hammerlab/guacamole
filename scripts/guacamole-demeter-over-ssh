@@ -1,4 +1,4 @@
-m #! /bin/bash
+#! /bin/bash
 # Convenience script for users of Mount Sinai's demeter cluster.
 #
 # Intended to make it convenient to work locally and run on demeter.
