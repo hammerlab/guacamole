@@ -24,6 +24,7 @@ import org.bdgenomics.guacamole.callers.ThresholdVariantCaller
 import scala.collection.JavaConversions._
 import org.bdgenomics.guacamole.pileup.{ PileupElement, Pileup }
 import org.apache.spark.rdd.RDD
+import org.bdgenomics.guacamole.TestUtil
 
 class DistributedUtilSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
 
@@ -143,9 +144,36 @@ class DistributedUtilSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
       pileup => pileup.elements.toIterator).collect()
 
     pileups.length should be(24)
-
     pileups.forall(_.isMatch) should be(true)
+  }
 
+  sparkTest("test two-rdd pileup flatmap; create pileup elements") {
+
+    val reads1 = sc.parallelize(Seq(
+      TestUtil.makeRead("TCGATCGA", "8M", "8", 1),
+      TestUtil.makeRead("TCGATCGA", "8M", "8", 1),
+      TestUtil.makeRead("TCGATCGA", "8M", "8", 1),
+      TestUtil.makeRead("GGGGGGGG", "8M", "8", 100),
+      TestUtil.makeRead("GGGGGGGG", "8M", "8", 100),
+      TestUtil.makeRead("GGGGGGGG", "8M", "8", 100))
+    )
+
+    val reads2 = sc.parallelize(Seq(
+      TestUtil.makeRead("AAAAAAAA", "8M", "8", 1),
+      TestUtil.makeRead("CCCCCCCC", "8M", "8", 1),
+      TestUtil.makeRead("TTTTTTTT", "8M", "8", 1),
+      TestUtil.makeRead("XXX", "8M", "8", 99)))
+
+    val pileups = DistributedUtil.pileupFlatMapTwoRDDs[PileupElement](
+      reads1,
+      reads2,
+      DistributedUtil.partitionLociUniformly(1000, LociSet.parse("chr1:1-500")),
+      (pileup1, pileup2) => (pileup1.elements ++ pileup2.elements).toIterator).collect()
+
+    pileups.length should be(72)
+    pileups.forall(_.isMatch) should be(true)
+    val concatenated = Bases.basesToString(pileups.map(_.sequencedSingleBase))
+    concatenated should equal("TTTACTCCCACTGGGACTAAAACTTTTACTCCCACTGGGACTAAAACTXGGGGGGXGGGXGGGGGGGGGGGGGGG")
   }
 
   sparkTest("test pileup flatmap parallelism 5; create pileup elements; with indel") {
@@ -163,7 +191,6 @@ class DistributedUtilSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
     pileups.length should be(24)
     val insertionPileups = pileups.filter(_.isInsertion)
     insertionPileups.size should be(1)
-
   }
 
   sparkTest("test pileup flatmap parallelism 0; thresholdvariant caller; no variant") {
@@ -179,7 +206,6 @@ class DistributedUtilSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
       pileup => ThresholdVariantCaller.callVariantsAtLocus(pileup, 0, false, false).iterator).collect()
 
     genotypes.length should be(0)
-
   }
 
   sparkTest("test pileup flatmap parallelism 3; thresholdvariant caller; no variant") {
@@ -195,7 +221,6 @@ class DistributedUtilSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
       pileup => ThresholdVariantCaller.callVariantsAtLocus(pileup, 0, false, false).iterator).collect()
 
     genotypes.length should be(0)
-
   }
 
   sparkTest("test pileup flatmap parallelism 3; thresholdvariant caller; one het variant") {
@@ -218,7 +243,7 @@ class DistributedUtilSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
     genotypes.head.alleles.toList should be(List(ADAMGenotypeAllele.Ref, ADAMGenotypeAllele.Alt))
   }
 
-  sparkTest("test pileup flatmap parallelism 3; thresholdvariant caller; no reference bases observerd") {
+  sparkTest("test pileup flatmap parallelism 3; thresholdvariant caller; no reference bases observed") {
 
     val reads = sc.parallelize(Seq(
       TestUtil.makeRead("CCGATCGA", "8M", "0T7", 1),
