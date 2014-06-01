@@ -452,7 +452,6 @@ object DistributedUtil extends Logging {
     val readsByTask = sc.accumulator(MutableHashMap.empty[String, Long])(new HashMapAccumulatorParam)
     DelayedMessages.default.say { () =>
       {
-        println(readsByTask.toString)
         assert(readsByTask.value.size == numTasks)
         val stats = new math3.stat.descriptive.DescriptiveStatistics()
         readsByTask.value.valuesIterator.foreach(stats.addValue(_))
