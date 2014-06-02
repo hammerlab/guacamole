@@ -95,9 +95,10 @@ object Common extends Logging {
     args: Arguments.Reads,
     sc: SparkContext,
     mapped: Boolean = true,
-    nonDuplicate: Boolean = true): (RDD[Read], SequenceDictionary) = {
+    nonDuplicate: Boolean = true,
+    passedQualityChecks: Boolean = true): (RDD[Read], SequenceDictionary) = {
 
-    Read.loadReadRDDAndSequenceDictionaryFromBAM(args.reads, sc, mapped, nonDuplicate)
+    Read.loadReadRDDAndSequenceDictionaryFromBAM(args.reads, sc, mapped, nonDuplicate, passedQualityChecks)
   }
 
   /**
