@@ -155,25 +155,23 @@ class DistributedUtilSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
       TestUtil.makeRead("TCGATCGA", "8M", "8", 1),
       TestUtil.makeRead("GGGGGGGG", "8M", "8", 100),
       TestUtil.makeRead("GGGGGGGG", "8M", "8", 100),
-      TestUtil.makeRead("GGGGGGGG", "8M", "8", 100))
-    )
+      TestUtil.makeRead("GGGGGGGG", "8M", "8", 100)))
 
     val reads2 = sc.parallelize(Seq(
       TestUtil.makeRead("AAAAAAAA", "8M", "8", 1),
       TestUtil.makeRead("CCCCCCCC", "8M", "8", 1),
       TestUtil.makeRead("TTTTTTTT", "8M", "8", 1),
-      TestUtil.makeRead("XXX", "8M", "8", 99)))
+      TestUtil.makeRead("XXX", "3M", "8", 99)))
 
-    val pileups = DistributedUtil.pileupFlatMapTwoRDDs[PileupElement](
+    val elements = DistributedUtil.pileupFlatMapTwoRDDs[PileupElement](
       reads1,
       reads2,
       DistributedUtil.partitionLociUniformly(1000, LociSet.parse("chr1:1-500")),
       (pileup1, pileup2) => (pileup1.elements ++ pileup2.elements).toIterator).collect()
 
-    pileups.length should be(72)
-    pileups.forall(_.isMatch) should be(true)
-    val concatenated = Bases.basesToString(pileups.map(_.sequencedSingleBase))
-    concatenated should equal("TTTACTCCCACTGGGACTAAAACTTTTACTCCCACTGGGACTAAAACTXGGGGGGXGGGXGGGGGGGGGGGGGGG")
+    elements.forall(_.isMatch) should be(true)
+    val concatenated = Bases.basesToString(elements.map(_.sequencedSingleBase))
+    concatenated should equal("TTTACTCCCACTGGGACTAAAACTTTTACTCCCACTGGGACTAAAACTXGGGXGGGXGGGGGGGGGGGGGGGGGG")
   }
 
   sparkTest("test pileup flatmap parallelism 5; create pileup elements; with indel") {
