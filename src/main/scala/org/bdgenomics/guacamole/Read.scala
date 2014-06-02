@@ -34,6 +34,9 @@ trait Read {
 
   /** If isMapped=true, will return the corresponding MappedRead. Otherwise, throws an error. */
   def getMappedRead(): MappedRead
+
+  /** Whether the read failed predefined vendor checks for quality */
+  val failedVendorQualityChecks: Boolean
 }
 
 /**
@@ -44,7 +47,8 @@ case class UnmappedRead(
     sequence: Array[Byte],
     baseQualities: Array[Byte],
     isDuplicate: Boolean,
-    sampleName: String) extends Read {
+    sampleName: String,
+    failedVendorQualityChecks: Boolean) extends Read {
 
   assert(baseQualities.length == sequence.length)
 
@@ -70,7 +74,8 @@ case class MappedRead(
     alignmentQuality: Int,
     start: Long,
     cigar: Cigar,
-    mdTag: Option[MdTag]) extends Read {
+    mdTag: Option[MdTag],
+    failedVendorQualityChecks: Boolean) extends Read {
 
   assert(baseQualities.length == sequence.length)
 
@@ -128,7 +133,8 @@ object Read extends Logging {
     alignmentQuality: Int = -1,
     start: Long = -1L,
     cigarString: String = "",
-    mdTagString: String = ""): Read = {
+    mdTagString: String = "",
+    failedVendorQualityChecks: Boolean = false): Read = {
 
     val sequenceArray = sequence.map(_.toByte).toArray
     val qualityScoresArray = {
@@ -140,7 +146,7 @@ object Read extends Logging {
     }
 
     if (referenceContig.isEmpty) {
-      UnmappedRead(sequenceArray, qualityScoresArray, isDuplicate, sampleName.intern)
+      UnmappedRead(sequenceArray, qualityScoresArray, isDuplicate, sampleName.intern, failedVendorQualityChecks)
     } else {
       val cigar = TextCigarCodec.getSingleton.decode(cigarString)
       val mdTag = if (mdTagString.isEmpty) None else Some(MdTag(mdTagString, start))
@@ -153,7 +159,8 @@ object Read extends Logging {
         alignmentQuality,
         start,
         cigar,
-        mdTag)
+        mdTag,
+        failedVendorQualityChecks)
     }
   }
 
@@ -192,7 +199,8 @@ object Read extends Logging {
         record.getMappingQuality,
         record.getAlignmentStart - 1,
         cigar = record.getCigar,
-        mdTag = mdTag)
+        mdTag = mdTag,
+        failedVendorQualityChecks = record.getReadFailsVendorQualityCheckFlag)
 
       // We subtract 1 from start, since samtools is 1-based and we're 0-based.
       if (result.unclippedStart != record.getUnclippedStart - 1)
@@ -204,7 +212,8 @@ object Read extends Logging {
         record.getReadString.getBytes,
         record.getBaseQualities,
         record.getDuplicateReadFlag,
-        sampleName)
+        sampleName,
+        record.getReadFailsVendorQualityCheckFlag)
       result
     }
   }
@@ -243,7 +252,8 @@ object Read extends Logging {
     filename: String,
     sc: SparkContext,
     mapped: Boolean = true,
-    nonDuplicate: Boolean = true): (RDD[Read], SequenceDictionary) = {
+    nonDuplicate: Boolean = true,
+    passedQualityChecks: Boolean = true): (RDD[Read], SequenceDictionary) = {
 
     val samHeader = SAMHeaderReader.readSAMHeaderFrom(new Path(filename), sc.hadoopConfiguration)
     val sequenceDictionary = SequenceDictionary.fromSAMHeader(samHeader)
@@ -253,6 +263,7 @@ object Read extends Logging {
     var reads: RDD[Read] = samRecords.map({ case (k, v) => fromSAMRecord(v.get) })
     if (mapped) reads = reads.filter(_.isMapped)
     if (nonDuplicate) reads = reads.filter(read => !read.isDuplicate)
+    if (passedQualityChecks) reads = reads.filter(read => !read.failedVendorQualityChecks)
     (reads, sequenceDictionary)
   }
 
@@ -261,4 +272,3 @@ object Read extends Logging {
     element.getOperator == CigarOperator.SOFT_CLIP || element.getOperator == CigarOperator.HARD_CLIP
   }
 }
-
