@@ -23,7 +23,16 @@ import org.bdgenomics.adam.serialization.{ ADAMKryoRegistrator }
 
 class GuacamoleKryoRegistrator extends ADAMKryoRegistrator {
   override def registerClasses(kryo: Kryo) {
+    // For debugging, it can be helpful to uncomment the following line. This will raise an error if we try to serialize
+    // anything without a registered Kryo serializer.
+    // kryo.setRegistrationRequired(true)
+
+    // Register ADAM serializers.
     super.registerClasses(kryo)
+
+    // Register Guacamole serializers.
+    kryo.register(classOf[MappedRead], new MappedReadSerializer)
+    kryo.register(classOf[UnmappedRead], new UnmappedReadSerializer)
     kryo.register(classOf[LociSet], new LociSetSerializer)
     kryo.register(classOf[LociSet.SingleContig], new LociSetSingleContigSerializer)
     kryo.register(classOf[LociMap[Long]], new LociMapLongSerializer)
