@@ -37,7 +37,8 @@ class ReadSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
       325352323,
       TextCigarCodec.getSingleton.decode(""),
       None, // mdtag
-      false)
+      false,
+      true)
 
     val serialized = TestUtil.serialize(read)
     val deserialized = TestUtil.deserialize[MappedRead](serialized)
@@ -58,6 +59,7 @@ class ReadSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
     deserialized.cigar should equal(read.cigar)
     deserialized.mdTag should equal(read.mdTag)
     deserialized.failedVendorQualityChecks should equal(read.failedVendorQualityChecks)
+    deserialized.isPositiveStrand should equal(read.isPositiveStrand)
   }
 
   test("serialize / deserialize unmapped read") {
@@ -66,7 +68,8 @@ class ReadSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
       Array[Byte]((10 to 20).map(_.toByte): _*),
       true,
       "some sample name",
-      false)
+      false,
+      true)
 
     val serialized = TestUtil.serialize(read)
     val deserialized = TestUtil.deserialize[UnmappedRead](serialized)
@@ -82,5 +85,6 @@ class ReadSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
     deserialized.isDuplicate should equal(read.isDuplicate)
     deserialized.sampleName should equal(read.sampleName)
     deserialized.failedVendorQualityChecks should equal(read.failedVendorQualityChecks)
+    deserialized.isPositiveStrand should equal(read.isPositiveStrand)
   }
 }
