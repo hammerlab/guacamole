@@ -138,13 +138,13 @@ object DistributedUtil extends Logging {
         val microPartitions = broadcastMicroPartitions.value
         assert(microPartitions.count > 0)
         val counts = new Array[Long](numMicroPartitions)
-        for (read <- readIterator) {
+        readIterator.foreach(read => {
           val contigMap = microPartitions.onContig(read.referenceContig)
           val indices: Set[Long] = contigMap.getAll(read.start, read.end)
-          for (index: Long <- indices) {
+          indices.foreach(index => {
             counts(index.toInt) += 1
-          }
-        }
+          })
+        })
         Seq(counts).iterator
       }).reduce(addArray _)
     }).reduce(addArray _)
