@@ -69,6 +69,10 @@ object Common extends Logging {
       @Opt(name = "-out", metaVar = "VARIANTS_OUT", required = false,
         usage = "Variant output path. If not specified, print to screen.")
       var variantOutput: String = ""
+
+      @Opt(name = "-max-genotypes", metaVar = "X", required = false,
+        usage = "Maximum number of genotypes to output.")
+      var maxGenotypes: Int = 0
     }
 
     /** Arguments for accepting a reference genome. */
@@ -189,18 +193,34 @@ object Common extends Logging {
    * @param genotypes ADAM genotypes (i.e. the variants)
    */
   def writeVariantsFromArguments(args: Arguments.Output, genotypes: RDD[ADAMGenotype]): Unit = {
+    val subsetGenotypes = if (args.maxGenotypes > 0) {
+      progress("Subsetting to %d genotypes.".format(args.maxGenotypes))
+      genotypes.sample(false, args.maxGenotypes, 0)
+    } else {
+      genotypes
+    }
     val outputPath = args.variantOutput.stripMargin
     if (outputPath.isEmpty) {
       progress("Writing genotypes to stdout.")
-      val localGenotypes = genotypes.collect
-      localGenotypes.foreach(println _)
+      subsetGenotypes.persist()
+      var partitionNum = 0
+      val numPartitions = subsetGenotypes.partitions.length
+      while (partitionNum < numPartitions) {
+        progress("Collecting partition %d of %d.".format(partitionNum + 1, numPartitions))
+        val chunk = subsetGenotypes.mapPartitionsWithIndex((num, genotypes) => {
+          if (num == partitionNum) genotypes else Iterator.empty
+        }).collect
+        chunk.foreach(println _)
+        partitionNum += 1
+      }
+      subsetGenotypes.unpersist()
     } else if (outputPath.toLowerCase.endsWith(".vcf")) {
       progress("Writing genotypes to VCF file: %s.".format(outputPath))
       val sc = genotypes.sparkContext
-      sc.adamVCFSave(outputPath, genotypes.toADAMVariantContext.coalesce(1))
+      sc.adamVCFSave(outputPath, subsetGenotypes.toADAMVariantContext.coalesce(1))
     } else {
       progress("Writing genotypes to: %s.".format(outputPath))
-      genotypes.adamSave(outputPath,
+      subsetGenotypes.adamSave(outputPath,
         args.blockSize,
         args.pageSize,
         args.compressionCodec,

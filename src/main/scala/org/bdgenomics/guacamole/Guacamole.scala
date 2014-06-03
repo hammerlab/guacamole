@@ -45,9 +45,9 @@ object Guacamole extends Logging {
 
   private def printUsage() = {
     println("Usage: java ... <command> [other args]\n")
-    println("Available variant calling commands:")
+    println("Available commands:")
     commands.foreach(caller => {
-      println("%10s: %s".format(caller.name, caller.description))
+      println("%25s: %s".format(caller.name, caller.description))
     })
     println("\nTry java ... <command> -h for help on a particular variant caller.")
   }

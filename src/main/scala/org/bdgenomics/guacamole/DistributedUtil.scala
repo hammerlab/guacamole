@@ -493,16 +493,47 @@ object DistributedUtil extends Logging {
 
       // Two RDDs.
       case taskNumberReadPairs1 :: taskNumberReadPairs2 :: Nil => {
+        // Union-based implementation.
+        /*
+        val expanded1 = taskNumberReadPairs1.map(pair => (pair._1, (0, pair._2)))
+        val expanded2 = taskNumberReadPairs1.map(pair => (pair._1, (1, pair._2)))
+        val partitioned = expanded1.union(expanded2).partitionBy(new PartitionByKey(numTasks.toInt))
+        partitioned.mapPartitionsWithIndex((taskNum: Int, pairOfPairs) => {
+          val taskLoci = lociPartitionsBoxed.value.asInverseMap(taskNum.toLong)
+          val (rawTaskReads1, rawTaskReads2) = pairOfPairs.partition(taskNumLabelRead => taskNumLabelRead._2._1 == 0)
+          val taskReads1 = rawTaskReads1.map(taskNumLabelRead => {
+            assert(taskNumLabelRead._1 == taskNum)
+            assert(taskNumLabelRead._2._1 == 0)
+            taskNumLabelRead._2._2
+          })
+          val taskReads2 = rawTaskReads2.map(taskNumLabelRead => {
+            assert(taskNumLabelRead._1 == taskNum)
+            assert(taskNumLabelRead._2._1 == 1)
+            taskNumLabelRead._2._2
+          })
+          val sortedTaskReads1 = taskReads1.toSeq.sortBy(_.start)
+          val sortedTaskReads2 = taskReads2.toSeq.sortBy(_.start)
+          readsByTask.add(MutableHashMap(taskNum.toString -> (taskReads1.length + taskReads2.length)))
+          function(taskNum, taskLoci, Seq(sortedTaskReads1.iterator, sortedTaskReads2.iterator))
+        })
+        */
+
+        // Cogroup-based implementation.
         val partitioned = taskNumberReadPairs1.cogroup(taskNumberReadPairs2, new PartitionByKey(numTasks.toInt))
         partitioned.mapPartitionsWithIndex((taskNum: Int, taskNumAndReadsPairs) => {
-          val taskLoci = lociPartitionsBoxed.value.asInverseMap(taskNum.toLong)
-          val taskNumAndPair = taskNumAndReadsPairs.next()
-          assert(taskNumAndReadsPairs.isEmpty)
-          assert(taskNumAndPair._1 == taskNum)
-          val taskReads1 = taskNumAndPair._2._1.sortBy(_.start)
-          val taskReads2 = taskNumAndPair._2._2.sortBy(_.start)
-          readsByTask.add(MutableHashMap(taskNum.toString -> (taskReads1.length + taskReads2.length)))
-          function(taskNum, taskLoci, Seq(taskReads1.iterator, taskReads2.iterator))
+          if (taskNumAndReadsPairs.isEmpty) {
+            Iterator.empty
+          } else {
+            val taskLoci = lociPartitionsBoxed.value.asInverseMap(taskNum.toLong)
+            val taskNumAndPair = taskNumAndReadsPairs.next()
+            assert(taskNumAndReadsPairs.isEmpty)
+            assert(taskNumAndPair._1 == taskNum)
+            val taskReads1 = taskNumAndPair._2._1.sortBy(_.start)
+            val taskReads2 = taskNumAndPair._2._2.sortBy(_.start)
+            readsByTask.add(MutableHashMap(taskNum.toString -> (taskReads1.length + taskReads2.length)))
+            val result = function(taskNum, taskLoci, Seq(taskReads1.iterator, taskReads2.iterator))
+            result
+          }
         })
       }
 
