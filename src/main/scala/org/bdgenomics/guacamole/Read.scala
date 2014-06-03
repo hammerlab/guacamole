@@ -19,6 +19,19 @@ import com.esotericsoftware.kryo.io.{ Input, Output }
  * The fields in the Read trait are common to any read, whether mapped (aligned) or not.
  */
 trait Read {
+  /**
+   * Each read has a "token", which is an arbitrary integer for use by the application. Unlike the other fields,
+   * a read's token does NOT correspond to any underlying column in e.g. the BAM file.
+   *
+   * It's used, for example, to differentiate tumor/normal pairs in some somatic callers.
+   *
+   * This field can be set when reading in the reads, or modified at any point by the application.
+   *
+   * Many applications just ignore this.
+   *
+   */
+  val token: Int
+
   /** The nucleotide sequence. */
   val sequence: Array[Byte]
 
@@ -50,6 +63,7 @@ trait Read {
  *
  */
 case class UnmappedRead(
+    token: Int,
     sequence: Array[Byte],
     baseQualities: Array[Byte],
     isDuplicate: Boolean,
@@ -75,6 +89,7 @@ case class UnmappedRead(
  * @param isPositiveStrand read is on the forward or positive strand
  */
 case class MappedRead(
+    token: Int,
     sequence: Array[Byte],
     baseQualities: Array[Byte],
     isDuplicate: Boolean,
@@ -137,6 +152,7 @@ object Read extends Logging {
    */
   def apply(
     sequence: String,
+    token: Int = 0,
     baseQualities: String = "",
     isDuplicate: Boolean = false,
     sampleName: String = "",
@@ -158,11 +174,12 @@ object Read extends Logging {
     }
 
     if (referenceContig.isEmpty) {
-      UnmappedRead(sequenceArray, qualityScoresArray, isDuplicate, sampleName.intern, failedVendorQualityChecks, isPositiveStrand)
+      UnmappedRead(token, sequenceArray, qualityScoresArray, isDuplicate, sampleName.intern, failedVendorQualityChecks, isPositiveStrand)
     } else {
       val cigar = TextCigarCodec.getSingleton.decode(cigarString)
       val mdTag = if (mdTagString.isEmpty) None else Some(MdTag(mdTagString, start))
       MappedRead(
+        token,
         sequenceArray,
         qualityScoresArray,
         isDuplicate,
@@ -183,7 +200,7 @@ object Read extends Logging {
    * @param record
    * @return
    */
-  def fromSAMRecord(record: SAMRecord): Read = {
+  def fromSAMRecord(record: SAMRecord, token: Int = 0): Read = {
     val isMapped = (
       record.getMappingQuality != SAMRecord.UNKNOWN_MAPPING_QUALITY &&
       record.getReferenceName != null &&
@@ -204,6 +221,7 @@ object Read extends Logging {
       else
         Some(MdTag(mdTagString, record.getAlignmentStart - 1))
       val result = MappedRead(
+        token,
         record.getReadString.getBytes,
         record.getBaseQualities,
         record.getDuplicateReadFlag,
@@ -223,6 +241,7 @@ object Read extends Logging {
       result
     } else {
       val result = UnmappedRead(
+        token,
         record.getReadString.getBytes,
         record.getBaseQualities,
         record.getDuplicateReadFlag,
@@ -239,6 +258,7 @@ object Read extends Logging {
    */
   def loadReadArrayAndSequenceDictionaryFromBAM(
     filename: String,
+    token: Int = 0,
     mapped: Boolean = true,
     nonDuplicate: Boolean = true): (ArrayBuffer[Read], SequenceDictionary) = {
     val reader = new SAMFileReader(new java.io.File(filename))
@@ -259,6 +279,7 @@ object Read extends Logging {
    *
    * @param filename name of file containing reads
    * @param sc spark context
+   * @param token value to set the "token" field to in all the reads (default 0)
    * @param mapped if true, will filter out non-mapped reads
    * @param nonDuplicate if true, will filter out duplicate reads.
    * @return
@@ -266,6 +287,7 @@ object Read extends Logging {
   def loadReadRDDAndSequenceDictionaryFromBAM(
     filename: String,
     sc: SparkContext,
+    token: Int = 0,
     mapped: Boolean = true,
     nonDuplicate: Boolean = true,
     passedQualityChecks: Boolean = true): (RDD[Read], SequenceDictionary) = {
@@ -291,6 +313,7 @@ object Read extends Logging {
 // Serialization: MappedRead
 class MappedReadSerializer extends Serializer[MappedRead] {
   def write(kryo: Kryo, output: Output, obj: MappedRead) = {
+    output.writeInt(obj.token)
     assert(obj.sequence.length == obj.baseQualities.length)
     output.writeInt(obj.sequence.length, true)
     output.writeBytes(obj.sequence)
@@ -306,6 +329,7 @@ class MappedReadSerializer extends Serializer[MappedRead] {
     output.writeBoolean(obj.isPositiveStrand)
   }
   def read(kryo: Kryo, input: Input, klass: Class[MappedRead]): MappedRead = {
+    val token = input.readInt()
     val count: Int = input.readInt(true)
     val sequenceArray: Array[Byte] = input.readBytes(count)
     val qualityScoresArray = input.readBytes(count)
@@ -322,6 +346,7 @@ class MappedReadSerializer extends Serializer[MappedRead] {
     val cigar = TextCigarCodec.getSingleton.decode(cigarString)
     val mdTag = if (mdTagString.isEmpty) None else Some(MdTag(mdTagString, start))
     MappedRead(
+      token,
       sequenceArray,
       qualityScoresArray,
       isDuplicate,
@@ -339,6 +364,7 @@ class MappedReadSerializer extends Serializer[MappedRead] {
 // Serialization: UnmappedRead
 class UnmappedReadSerializer extends Serializer[UnmappedRead] {
   def write(kryo: Kryo, output: Output, obj: UnmappedRead) = {
+    output.writeInt(obj.token)
     assert(obj.sequence.length == obj.baseQualities.length)
     output.writeInt(obj.sequence.length, true)
     output.writeBytes(obj.sequence)
@@ -349,6 +375,7 @@ class UnmappedReadSerializer extends Serializer[UnmappedRead] {
     output.writeBoolean(obj.isPositiveStrand)
   }
   def read(kryo: Kryo, input: Input, klass: Class[UnmappedRead]): UnmappedRead = {
+    val token = input.readInt()
     val count: Int = input.readInt(true)
     val sequenceArray: Array[Byte] = input.readBytes(count)
     val qualityScoresArray = input.readBytes(count)
@@ -358,6 +385,7 @@ class UnmappedReadSerializer extends Serializer[UnmappedRead] {
     val isPositiveStrand = input.readBoolean()
 
     UnmappedRead(
+      token,
       sequenceArray,
       qualityScoresArray,
       isDuplicate,

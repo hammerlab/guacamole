@@ -61,6 +61,16 @@ case class Pileup(locus: Long, elements: Seq[PileupElement]) {
   }
 
   /**
+   * Split this [[Pileup]] by the read token. Returns a map from token to [[Pileup]] instances that use only reads
+   * with that token.
+   */
+  lazy val byToken: Map[Int, Pileup] = {
+    elements.groupBy(element => element.read.token).map({
+      case (token, elements) => (token, Pileup(locus, elements))
+    })
+  }
+
+  /**
    * Returns a new [[Pileup]] at a different locus on the same contig.
    *
    * To enable an efficient implementation, the new locus must be greater than the current locus.
