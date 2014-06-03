@@ -39,6 +39,10 @@ trait Read {
 
   /** Whether the read failed predefined vendor checks for quality */
   val failedVendorQualityChecks: Boolean
+
+  /** Whether the read was on the positive or forward strand */
+  val isPositiveStrand: Boolean
+
 }
 
 /**
@@ -50,7 +54,8 @@ case class UnmappedRead(
     baseQualities: Array[Byte],
     isDuplicate: Boolean,
     sampleName: String,
-    failedVendorQualityChecks: Boolean) extends Read {
+    failedVendorQualityChecks: Boolean,
+    isPositiveStrand: Boolean) extends Read {
 
   assert(baseQualities.length == sequence.length)
 
@@ -66,6 +71,8 @@ case class UnmappedRead(
  * @param start the reference locus that the first base in this read aligns to.
  * @param cigar parsed samtools CIGAR object.
  * @param mdTag parsed ADAM MdTag object.
+ * @param failedVendorQualityChecks read failed sequencing quality checks
+ * @param isPositiveStrand read is on the forward or positive strand
  */
 case class MappedRead(
     sequence: Array[Byte],
@@ -77,7 +84,8 @@ case class MappedRead(
     start: Long,
     cigar: Cigar,
     mdTag: Option[MdTag],
-    failedVendorQualityChecks: Boolean) extends Read {
+    failedVendorQualityChecks: Boolean,
+    isPositiveStrand: Boolean) extends Read {
 
   assert(baseQualities.length == sequence.length,
     "Base qualities have length %d but sequence has length %d".format(baseQualities.length, sequence.length))
@@ -137,7 +145,8 @@ object Read extends Logging {
     start: Long = -1L,
     cigarString: String = "",
     mdTagString: String = "",
-    failedVendorQualityChecks: Boolean = false): Read = {
+    failedVendorQualityChecks: Boolean = false,
+    isPositiveStrand: Boolean = true): Read = {
 
     val sequenceArray = sequence.map(_.toByte).toArray
     val qualityScoresArray = {
@@ -149,7 +158,7 @@ object Read extends Logging {
     }
 
     if (referenceContig.isEmpty) {
-      UnmappedRead(sequenceArray, qualityScoresArray, isDuplicate, sampleName.intern, failedVendorQualityChecks)
+      UnmappedRead(sequenceArray, qualityScoresArray, isDuplicate, sampleName.intern, failedVendorQualityChecks, isPositiveStrand)
     } else {
       val cigar = TextCigarCodec.getSingleton.decode(cigarString)
       val mdTag = if (mdTagString.isEmpty) None else Some(MdTag(mdTagString, start))
@@ -163,7 +172,8 @@ object Read extends Logging {
         start,
         cigar,
         mdTag,
-        failedVendorQualityChecks)
+        failedVendorQualityChecks,
+        isPositiveStrand)
     }
   }
 
@@ -203,7 +213,8 @@ object Read extends Logging {
         record.getAlignmentStart - 1,
         cigar = record.getCigar,
         mdTag = mdTag,
-        failedVendorQualityChecks = record.getReadFailsVendorQualityCheckFlag)
+        failedVendorQualityChecks = record.getReadFailsVendorQualityCheckFlag,
+        isPositiveStrand = !record.getReadNegativeStrandFlag)
 
       // We subtract 1 from start, since samtools is 1-based and we're 0-based.
       if (result.unclippedStart != record.getUnclippedStart - 1)
@@ -216,7 +227,8 @@ object Read extends Logging {
         record.getBaseQualities,
         record.getDuplicateReadFlag,
         sampleName,
-        record.getReadFailsVendorQualityCheckFlag)
+        record.getReadFailsVendorQualityCheckFlag,
+        !record.getReadNegativeStrandFlag)
       result
     }
   }
@@ -291,6 +303,7 @@ class MappedReadSerializer extends Serializer[MappedRead] {
     output.writeString(obj.cigar.toString)
     output.writeString(obj.mdTag.map(_.toString).getOrElse(""))
     output.writeBoolean(obj.failedVendorQualityChecks)
+    output.writeBoolean(obj.isPositiveStrand)
   }
   def read(kryo: Kryo, input: Input, klass: Class[MappedRead]): MappedRead = {
     val count: Int = input.readInt(true)
@@ -304,6 +317,7 @@ class MappedReadSerializer extends Serializer[MappedRead] {
     val cigarString = input.readString()
     val mdTagString = input.readString()
     val failedVendorQualityChecks = input.readBoolean()
+    val isPositiveStrand = input.readBoolean()
 
     val cigar = TextCigarCodec.getSingleton.decode(cigarString)
     val mdTag = if (mdTagString.isEmpty) None else Some(MdTag(mdTagString, start))
@@ -317,7 +331,8 @@ class MappedReadSerializer extends Serializer[MappedRead] {
       start,
       cigar,
       mdTag,
-      failedVendorQualityChecks)
+      failedVendorQualityChecks,
+      isPositiveStrand)
   }
 }
 
@@ -331,6 +346,7 @@ class UnmappedReadSerializer extends Serializer[UnmappedRead] {
     output.writeBoolean(obj.isDuplicate)
     output.writeString(obj.sampleName)
     output.writeBoolean(obj.failedVendorQualityChecks)
+    output.writeBoolean(obj.isPositiveStrand)
   }
   def read(kryo: Kryo, input: Input, klass: Class[UnmappedRead]): UnmappedRead = {
     val count: Int = input.readInt(true)
@@ -339,11 +355,14 @@ class UnmappedReadSerializer extends Serializer[UnmappedRead] {
     val isDuplicate = input.readBoolean()
     val sampleName = input.readString().intern()
     val failedVendorQualityChecks = input.readBoolean()
+    val isPositiveStrand = input.readBoolean()
+
     UnmappedRead(
       sequenceArray,
       qualityScoresArray,
       isDuplicate,
       sampleName.intern,
-      failedVendorQualityChecks)
+      failedVendorQualityChecks,
+      isPositiveStrand)
   }
 }
