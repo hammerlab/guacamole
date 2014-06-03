@@ -12,6 +12,8 @@ import org.apache.hadoop.fs.Path
 import scala.collection.JavaConversions
 import scala.Some
 import org.bdgenomics.adam.util.MdTag
+import com.esotericsoftware.kryo.{ Kryo, Serializer }
+import com.esotericsoftware.kryo.io.{ Input, Output }
 
 /**
  * The fields in the Read trait are common to any read, whether mapped (aligned) or not.
@@ -77,7 +79,8 @@ case class MappedRead(
     mdTag: Option[MdTag],
     failedVendorQualityChecks: Boolean) extends Read {
 
-  assert(baseQualities.length == sequence.length)
+  assert(baseQualities.length == sequence.length,
+    "Base qualities have length %d but sequence has length %d".format(baseQualities.length, sequence.length))
 
   override val isMapped = true
   override def getMappedRead(): MappedRead = this
@@ -270,5 +273,80 @@ object Read extends Logging {
   /** Is the given samtools CigarElement a (hard/soft) clip? */
   def cigarElementIsClipped(element: CigarElement): Boolean = {
     element.getOperator == CigarOperator.SOFT_CLIP || element.getOperator == CigarOperator.HARD_CLIP
+  }
+}
+
+// Serialization: MappedRead
+class MappedReadSerializer extends Serializer[MappedRead] {
+  def write(kryo: Kryo, output: Output, obj: MappedRead) = {
+    output.writeInt(obj.sequence.length, true)
+    output.writeBytes(obj.sequence)
+    output.writeInt(obj.baseQualities.length, true)
+    output.writeBytes(obj.baseQualities)
+    output.writeBoolean(obj.isDuplicate)
+    output.writeString(obj.sampleName)
+    output.writeString(obj.referenceContig)
+    output.writeInt(obj.alignmentQuality, true)
+    output.writeLong(obj.start, true)
+    output.writeString(obj.cigar.toString)
+    output.writeString(obj.mdTag.map(_.toString).getOrElse(""))
+    output.writeBoolean(obj.failedVendorQualityChecks)
+  }
+  def read(kryo: Kryo, input: Input, klass: Class[MappedRead]): MappedRead = {
+    val sequenceCount: Int = input.readInt(true)
+    val sequenceArray: Array[Byte] = input.readBytes(sequenceCount)
+    val qualitiesCount: Int = input.readInt(true)
+    val qualityScoresArray = input.readBytes(qualitiesCount)
+    val isDuplicate = input.readBoolean()
+    val sampleName = input.readString().intern()
+    val referenceContig = input.readString().intern()
+    val alignmentQuality = input.readInt(true)
+    val start = input.readLong(true)
+    val cigarString = input.readString()
+    val mdTagString = input.readString()
+    val failedVendorQualityChecks = input.readBoolean()
+
+    val cigar = TextCigarCodec.getSingleton.decode(cigarString)
+    val mdTag = if (mdTagString.isEmpty) None else Some(MdTag(mdTagString, start))
+    MappedRead(
+      sequenceArray,
+      qualityScoresArray,
+      isDuplicate,
+      sampleName.intern,
+      referenceContig,
+      alignmentQuality,
+      start,
+      cigar,
+      mdTag,
+      failedVendorQualityChecks)
+  }
+}
+
+// Serialization: UnmappedRead
+class UnmappedReadSerializer extends Serializer[UnmappedRead] {
+  def write(kryo: Kryo, output: Output, obj: UnmappedRead) = {
+    output.writeInt(obj.sequence.length, true)
+    output.writeBytes(obj.sequence)
+    output.writeInt(obj.baseQualities.length, true)
+    output.writeBytes(obj.baseQualities)
+    output.writeBoolean(obj.isDuplicate)
+    output.writeString(obj.sampleName)
+    output.writeBoolean(obj.failedVendorQualityChecks)
+  }
+  def read(kryo: Kryo, input: Input, klass: Class[UnmappedRead]): UnmappedRead = {
+    val sequenceCount: Int = input.readInt(true)
+    val sequenceArray: Array[Byte] = input.readBytes(sequenceCount)
+    val qualitiesCount: Int = input.readInt(true)
+    val qualityScoresArray = input.readBytes(qualitiesCount)
+    val isDuplicate = input.readBoolean()
+    val sampleName = input.readString().intern()
+    val failedVendorQualityChecks = input.readBoolean()
+
+    UnmappedRead(
+      sequenceArray,
+      qualityScoresArray,
+      isDuplicate,
+      sampleName.intern,
+      failedVendorQualityChecks)
   }
 }

@@ -24,7 +24,6 @@ import org.bdgenomics.guacamole.callers.ThresholdVariantCaller
 import scala.collection.JavaConversions._
 import org.bdgenomics.guacamole.pileup.{ PileupElement, Pileup }
 import org.apache.spark.rdd.RDD
-import org.bdgenomics.guacamole.TestUtil
 
 class DistributedUtilSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
 
