@@ -28,6 +28,7 @@ import org.bdgenomics.adam.util.MdTag
 class ReadSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
   test("serialize / deserialize mapped read") {
     val read = MappedRead(
+      5, // token
       Bases.stringToBases("TCGACCCTCGA"),
       Array[Byte]((10 to 20).map(_.toByte): _*),
       true,
@@ -49,6 +50,7 @@ class ReadSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
     // deserialized should equal(read)
 
     // So, instead, we'll compare each field ourselves:
+    deserialized.token should equal(read.token)
     deserialized.sequence should equal(read.sequence)
     deserialized.baseQualities should equal(read.baseQualities)
     deserialized.isDuplicate should equal(read.isDuplicate)
@@ -64,6 +66,7 @@ class ReadSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
 
   test("serialize / deserialize unmapped read") {
     val read = UnmappedRead(
+      22, // token
       Bases.stringToBases("TCGACCCTCGA"),
       Array[Byte]((10 to 20).map(_.toByte): _*),
       true,
@@ -80,6 +83,7 @@ class ReadSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
     // deserialized should equal(read)
 
     // So, instead, we'll compare each field ourselves:
+    deserialized.token should equal(read.token)
     deserialized.sequence should equal(read.sequence)
     deserialized.baseQualities should equal(read.baseQualities)
     deserialized.isDuplicate should equal(read.isDuplicate)

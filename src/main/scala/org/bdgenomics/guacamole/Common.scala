@@ -102,7 +102,8 @@ object Common extends Logging {
     nonDuplicate: Boolean = true,
     passedQualityChecks: Boolean = true): (RDD[Read], SequenceDictionary) = {
 
-    Read.loadReadRDDAndSequenceDictionaryFromBAM(args.reads, sc, mapped, nonDuplicate, passedQualityChecks)
+    Read.loadReadRDDAndSequenceDictionaryFromBAM(
+      args.reads, sc, mapped = mapped, nonDuplicate = nonDuplicate, passedQualityChecks = passedQualityChecks)
   }
 
   /**
@@ -135,8 +136,10 @@ object Common extends Logging {
     sc: SparkContext,
     mapped: Boolean = true,
     nonDuplicate: Boolean = true): (RDD[Read], SequenceDictionary, RDD[Read], SequenceDictionary) = {
-    val (tumorReads, tumorDictionary) = Read.loadReadRDDAndSequenceDictionaryFromBAM(args.tumorReads, sc, mapped, nonDuplicate)
-    val (normalReads, normalDictionary) = Read.loadReadRDDAndSequenceDictionaryFromBAM(args.normalReads, sc, mapped, nonDuplicate)
+    val (tumorReads, tumorDictionary) = Read.loadReadRDDAndSequenceDictionaryFromBAM(
+      args.tumorReads, sc, token = 1, mapped = mapped, nonDuplicate = nonDuplicate)
+    val (normalReads, normalDictionary) = Read.loadReadRDDAndSequenceDictionaryFromBAM(
+      args.normalReads, sc, token = 2, mapped = mapped, nonDuplicate = nonDuplicate)
     (tumorReads, tumorDictionary, normalReads, normalDictionary)
   }
 
