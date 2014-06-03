@@ -13,8 +13,30 @@ import org.bdgenomics.adam.avro.{ ADAMContig, ADAMRecord }
 import org.bdgenomics.adam.rich.DecadentRead
 import scala.math._
 import scala.Some
+import com.twitter.chill.{ KryoPool, IKryoRegistrar, KryoInstantiator }
+import com.esotericsoftware.kryo.Kryo
+import org.scalatest.matchers.ShouldMatchers
 
-object TestUtil {
+object TestUtil extends ShouldMatchers {
+
+  // Serialization helper functions.
+  lazy val kryoPool = {
+    val instantiator = new KryoInstantiator().setRegistrationRequired(true).withRegistrar(new IKryoRegistrar {
+      override def apply(kryo: Kryo): Unit = new GuacamoleKryoRegistrator().registerClasses(kryo)
+    })
+    KryoPool.withByteArrayOutputStream(1, instantiator)
+  }
+  def serialize(item: Any): Array[Byte] = {
+    kryoPool.toBytesWithClass(item)
+  }
+  def deserialize[T](bytes: Array[Byte]): T = {
+    kryoPool.fromBytes(bytes).asInstanceOf[T]
+  }
+  def testSerialization[T](item: T): Unit = {
+    val serialized = serialize(item)
+    val deserialized = deserialize[T](serialized)
+    deserialized should equal(item)
+  }
 
   def makeRead(sequence: String,
                cigar: String,
