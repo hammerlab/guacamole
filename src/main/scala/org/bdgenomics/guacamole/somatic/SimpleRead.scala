@@ -24,12 +24,30 @@ import org.apache.spark.rdd.RDD
 import org.apache.hadoop.io.LongWritable
 import fi.tkk.ics.hadoop.bam.{ AnySAMInputFormat, SAMRecordWritable }
 import org.bdgenomics.guacamole.Common
+import org.apache.spark.broadcast.Broadcast
+import scala.collection.mutable.ArrayBuffer
 
+/**
+ *
+ * @param baseSequence
+ * @param referenceContig Used to be string but this causes a lot of serialization overhead, so replaced with
+ *                        position of the contigName in the reference index's
+ *
+ * @param baseQualities
+ * @param alignmentQuality
+ * @param start
+ * @param end
+ * @param unclippedStart
+ * @param unclippedEnd
+ * @param cigar
+ * @param isMapped
+ * @param isDuplicate
+ */
 case class SimpleRead(
   baseSequence: Array[Byte],
-  referenceContig: String,
+  referenceContig: Int,
   baseQualities: Array[Byte],
-  alignmentQuality: Int,
+  alignmentQuality: Byte,
   start: Int,
   end: Int,
   unclippedStart: Int,
@@ -46,9 +64,14 @@ object SimpleRead {
    * @param record
    * @return
    */
-  def fromSAM(record: SAMRecord): SimpleRead = {
+  def fromSAM(record: SAMRecord, contigIndices: Broadcast[Map[String, Int]]): SimpleRead = {
+    val contigName = if (record.getReferenceName != null) Reference.normalizeContigName(record.getReferenceName) else ""
+    val contigIndex: Int = contigIndices.value.getOrElse(contigName, -1)
+    // consider the read unmapped if its reference is not in our index
     val isMapped =
-      record.getMappingQuality != SAMRecord.UNKNOWN_MAPPING_QUALITY &&
+      contigName.length > 0 &&
+        contigIndex >= 0 &&
+        record.getMappingQuality != SAMRecord.UNKNOWN_MAPPING_QUALITY &&
         record.getReferenceName != null &&
         record.getReferenceIndex >= SAMRecord.NO_ALIGNMENT_REFERENCE_INDEX &&
         record.getAlignmentStart > 0 &&
@@ -62,9 +85,9 @@ object SimpleRead {
     val cigar = record.getCigar
     SimpleRead(
       baseSequence = record.getReadString.getBytes,
-      referenceContig = Reference.normalizeContigName(record.getReferenceName),
+      referenceContig = contigIndex,
       baseQualities = record.getBaseQualities,
-      alignmentQuality = record.getMappingQuality,
+      alignmentQuality = record.getMappingQuality.toByte,
       start = start,
       end = end,
       unclippedStart = unclippedStart,
@@ -79,23 +102,34 @@ object SimpleRead {
    *
    * @param filename name of file containing reads
    * @param sc spark context
+   * @param referenceIndex
    * @param mapped if true, will filter out non-mapped reads
    * @param nonDuplicate if true, will filter out duplicate reads.
    * @return
    */
   def loadFile(filename: String,
                sc: SparkContext,
+               referenceIndex: Reference.Index,
                mapped: Boolean = true,
                nonDuplicate: Boolean = true): RDD[SimpleRead] = {
     val samRecords: RDD[(LongWritable, SAMRecordWritable)] =
       sc.newAPIHadoopFile[LongWritable, SAMRecordWritable, AnySAMInputFormat](filename)
-    var reads: RDD[SimpleRead] = samRecords.map({ case (k, v) => fromSAM(v.get) })
-    if (mapped) reads = reads.filter(_.isMapped)
-    if (nonDuplicate) reads = reads.filter(read => !read.isDuplicate)
-    reads.persist()
+    val broadcastContigIndices = sc.broadcast(referenceIndex.contigIndices)
+    val reads: RDD[SimpleRead] = samRecords.mapPartitions({
+      iter =>
+        val result = ArrayBuffer[SimpleRead]()
+        while (iter.hasNext) {
+          val samRecord = iter.next._2.get
+          val read = fromSAM(samRecord, broadcastContigIndices)
+          if ((!mapped || read.isMapped) && (!nonDuplicate || !read.isDuplicate)) {
+            result += read
+          }
+        }
+        result.iterator
+    })
     val description = (if (mapped) "mapped " else "") + (if (nonDuplicate) "non-duplicate" else "")
     Common.progress(
-      "Loaded %,d %s reads into %,d partitions.".format(reads.count, description, reads.partitions.length))
+      "Loaded %s reads into %,d partitions.".format(description, reads.partitions.length))
     reads
   }
 }
