@@ -13,6 +13,9 @@ import org.bdgenomics.adam.util.PhredUtils
 import scala.Some
 import org.bdgenomics.guacamole.concordance.GenotypesEvaluator
 import org.bdgenomics.guacamole.concordance.GenotypesEvaluator.GenotypeConcordance
+import org.bdgenomics.guacamole.filters.GenotypeFilter.GenotypeFilterArguments
+import org.bdgenomics.guacamole.filters.PileupFilter.PileupFilterArguments
+import org.bdgenomics.guacamole.filters.{ QualityAlignedReadsFilter, MinimumReadDepthFilter, GenotypeFilter }
 
 /**
  * A Genotype is a sequence of alleles of length equal to the ploidy of the organism.
@@ -86,7 +89,8 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
   override val name = "uniformbayes"
   override val description = "call variants using a simple quality based probability"
 
-  private class Arguments extends Base with Output with Reads with GenotypeConcordance with DistributedUtil.Arguments {
+  private class Arguments extends Base
+      with Output with Reads with GenotypeConcordance with GenotypeFilterArguments with PileupFilterArguments with DistributedUtil.Arguments {
 
     @Option(name = "-emit-ref", usage = "Output homozygous reference calls.")
     var emitRef: Boolean = false
@@ -104,15 +108,19 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
 
     val loci = Common.loci(args, sequenceDictionary)
     val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(args, loci, mappedReads)
+
+    val minAlignmentQuality = args.minAlignmentQuality
+
     val genotypes: RDD[ADAMGenotype] = DistributedUtil.pileupFlatMap[ADAMGenotype](
       mappedReads,
       lociPartitions,
-      pileup => callVariantsAtLocus(pileup).iterator)
+      pileup => callVariantsAtLocus(pileup, minAlignmentQuality).iterator)
     mappedReads.unpersist()
 
-    Common.writeVariantsFromArguments(args, genotypes)
+    val filteredGenotypes = GenotypeFilter(genotypes, args)
+    Common.writeVariantsFromArguments(args, filteredGenotypes)
     if (args.truthGenotypesFile != "")
-      GenotypesEvaluator.printGenotypeConcordance(args, genotypes, sc)
+      GenotypesEvaluator.printGenotypeConcordance(args, filteredGenotypes, sc)
 
     DelayedMessages.default.print()
   }
@@ -121,12 +129,14 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
    * Computes the genotype and probability at a given locus
    *
    * @param pileup Collection of pileup elements at align to the locus
+   * @param minAlignmentQuality minimum alignment quality for reads to consider (default: 0)
    * @param emitRef Also return all reference genotypes (default: false)
    *
    * @return Sequence of possible called genotypes for all samples
    */
   def callVariantsAtLocus(
     pileup: Pileup,
+    minAlignmentQuality: Int = 0,
     emitRef: Boolean = false): Seq[ADAMGenotype] = {
 
     // For now, we skip loci that have no reads mapped. We may instead want to emit NoCall in this case.
@@ -135,8 +145,8 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
 
     pileup.bySample.toSeq.flatMap({
       case (sampleName, samplePileup) =>
-
-        val genotypeLikelihoods = computeLogLikelihoods(pileup)
+        val filteredPileupElements = QualityAlignedReadsFilter(samplePileup.elements, minAlignmentQuality)
+        val genotypeLikelihoods = computeLogLikelihoods(Pileup(samplePileup.locus, filteredPileupElements))
         val genotypePosteriorEstimate = genotypeLikelihoods.map(kv => (kv._1, kv._2 + computeGenotypeLogPrior(kv._1)))
         val mostLikelyGenotype = genotypePosteriorEstimate.maxBy(_._2)
 
