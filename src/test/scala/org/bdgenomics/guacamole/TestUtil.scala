@@ -43,7 +43,8 @@ object TestUtil extends ShouldMatchers {
                mdtag: String,
                start: Long = 1,
                chr: String = "chr1",
-               qualityScores: Option[Array[Int]] = None): MappedRead = {
+               qualityScores: Option[Array[Int]] = None,
+               alignmentQuality: Int = 30): MappedRead = {
 
     val qualityScoreString = if (qualityScores.isDefined) {
       qualityScores.get.map(q => q + 33).map(_.toChar).mkString
@@ -56,7 +57,8 @@ object TestUtil extends ShouldMatchers {
       mdTagString = mdtag,
       start = start,
       referenceContig = chr,
-      baseQualities = qualityScoreString).getMappedRead
+      baseQualities = qualityScoreString,
+      alignmentQuality = alignmentQuality).getMappedRead
   }
 
   def assertAlmostEqual(a: Double, b: Double, epsilon: Double = 1e-6) {
