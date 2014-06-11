@@ -29,6 +29,9 @@ import org.bdgenomics.adam.rdd.variation.ADAMVariationContext._
 import org.bdgenomics.adam.models.SequenceDictionary
 import org.apache.spark.scheduler.StatsReportListener
 import java.util.Calendar
+import org.apache.avro.generic.GenericDatumWriter
+import org.apache.avro.io.EncoderFactory
+import org.codehaus.jackson.JsonFactory
 
 /**
  * Collection of functions that are useful to multiple variant calling implementations, and specifications of command-
@@ -208,14 +211,28 @@ object Common extends Logging {
       subsetGenotypes.persist()
       var partitionNum = 0
       val numPartitions = subsetGenotypes.partitions.length
+
+      // (Pretty) print to stdout by writing each ADAMGenotype with a JsonEncoder, if we are not writing to a file
+      val out = System.out
+      val schema = ADAMGenotype.getClassSchema
+      val writer = new GenericDatumWriter[Object](schema)
+      val encoder = EncoderFactory.get().jsonEncoder(schema, out)
+      val jg = new JsonFactory().createJsonGenerator(out)
+      jg.useDefaultPrettyPrinter()
+      encoder.configure(jg)
+
       while (partitionNum < numPartitions) {
         progress("Collecting partition %d of %d.".format(partitionNum + 1, numPartitions))
         val chunk = subsetGenotypes.mapPartitionsWithIndex((num, genotypes) => {
           if (num == partitionNum) genotypes else Iterator.empty
         }).collect
-        chunk.foreach(println _)
+        chunk.foreach(genotype => {
+          writer.write(genotype, encoder)
+          encoder.flush()
+        })
         partitionNum += 1
       }
+      jg.close()
       subsetGenotypes.unpersist()
     } else if (outputPath.toLowerCase.endsWith(".vcf")) {
       progress("Writing genotypes to VCF file: %s.".format(outputPath))
