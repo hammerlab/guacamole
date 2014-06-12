@@ -216,7 +216,7 @@ object Common extends Logging {
       val out = System.out
       val schema = ADAMGenotype.getClassSchema
       val writer = new GenericDatumWriter[Object](schema)
-      val encoder = EncoderFactory.get().jsonEncoder(schema, out)
+      val encoder = EncoderFactory.get.jsonEncoder(schema, out)
       val jg = new JsonFactory().createJsonGenerator(out)
       jg.useDefaultPrettyPrinter()
       encoder.configure(jg)
@@ -232,6 +232,7 @@ object Common extends Logging {
         })
         partitionNum += 1
       }
+      System.out.println()
       jg.close()
       subsetGenotypes.unpersist()
     } else if (outputPath.toLowerCase.endsWith(".vcf")) {
