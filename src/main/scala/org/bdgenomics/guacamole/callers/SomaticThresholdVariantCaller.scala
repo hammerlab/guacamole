@@ -133,6 +133,9 @@ object SomaticThresholdVariantCaller extends Command with Serializable with Logg
     val possibleAllelesNormal = possibleSNVAllelePercents(pileupNormal)
     val possibleAlleles = possibleAllelesTumor.keySet.union(possibleAllelesNormal.keySet).toSeq.sortBy(-1 * possibleAllelesTumor(_))
 
+    // A variant allele is, by definition, not equal to the reference base. Filter non-variants out.
+    val possibleVariantAlles = possibleAlleles.filter(_ != refBase)
+
     val thresholdSatisfyingAlleles = possibleAlleles.filter(
       base => possibleAllelesNormal(base) < thresholdNormal && possibleAllelesTumor(base) > thresholdTumor)
 
