@@ -18,7 +18,7 @@ import com.esotericsoftware.kryo.Kryo
 import org.scalatest.matchers.ShouldMatchers
 import org.apache.spark.rdd.RDD
 import org.apache.commons.io.FileUtils
-import java.io.{ IOError, File }
+import java.io.{FileNotFoundException, IOError, File}
 
 object TestUtil extends ShouldMatchers {
 
@@ -122,7 +122,7 @@ object TestUtil extends ShouldMatchers {
     try {
       FileUtils.forceDelete(file)
     } catch {
-      case e: IOError => {}
+      case e: FileNotFoundException => {}
     }
   }
 
