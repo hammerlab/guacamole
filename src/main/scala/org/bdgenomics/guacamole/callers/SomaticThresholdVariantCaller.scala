@@ -133,7 +133,10 @@ object SomaticThresholdVariantCaller extends Command with Serializable with Logg
     val possibleAllelesNormal = possibleSNVAllelePercents(pileupNormal)
     val possibleAlleles = possibleAllelesTumor.keySet.union(possibleAllelesNormal.keySet).toSeq.sortBy(-1 * possibleAllelesTumor(_))
 
-    val thresholdSatisfyingAlleles = possibleAlleles.filter(
+    // A variant allele is, by definition, not equal to the reference base. Filter non-variants out.
+    val possibleVariantAlles = possibleAlleles.filter(_ != refBase)
+
+    val thresholdSatisfyingAlleles = possibleVariantAlles.filter(
       base => possibleAllelesNormal(base) < thresholdNormal && possibleAllelesTumor(base) > thresholdTumor)
 
     // For now, we call a het when we have one somatic variant, and a compound alt when we have two. This is not really
