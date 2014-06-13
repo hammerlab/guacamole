@@ -27,6 +27,9 @@ import org.apache.spark.rdd.RDD
 
 class DistributedUtilSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
 
+  // You can use a line like the following to turn on only a particular unit test for debugging.
+  // TestUtil.runOnly = "partitionLociByApproximateReadDepth chr20 synth1 subset"
+
   test("partitionLociUniformly") {
     val set = LociSet.parse("chr21:100-200,chr20:0-10,chr20:8-15,chr20:100-121,empty:10-10")
     val result1 = DistributedUtil.partitionLociUniformly(1, set).asInverseMap
@@ -86,6 +89,37 @@ class DistributedUtilSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
     }
   }
 
+  sparkTest("partitionLociByApproximateReadDepth empty chromosomes") {
+    def makeRead(start: Long, length: Long) = {
+      TestUtil.makeRead("A" * length.toInt, "%sM".format(length), "%s".format(length), start, "chr5")
+    }
+    def pairsToReads(pairs: Seq[(Long, Long)]): RDD[MappedRead] = {
+      sc.parallelize(pairs.map(pair => makeRead(pair._1, pair._2)))
+    }
+    {
+      val reads = pairsToReads(Seq(
+        (5, 1),
+        (6, 1),
+        (7, 1),
+        (8, 1)))
+      val loci = LociSet.parse("chr1:0-1000000,chr5:0-100")
+      val result = DistributedUtil.partitionLociByApproximateReadDepth(2, loci, 100, reads)
+      result.toString should equal("chr1:0-1000000=0,chr5:0-7=0,chr5:7-100=1")
+    }
+  }
+
+  sparkTest("partitionLociByApproximateReadDepth chr20 synth1 subset") {
+    val tumorReads = TestUtil.loadReads(sc, "dream_training.chr20.mdTagged.loci0-150k.tumor.sam")
+    val normalReads = TestUtil.loadReads(sc, "dream_training.chr20.mdTagged.loci0-150k.normal.sam")
+
+    val loci = LociSet.parse("1:0-249250621,20:0-100000")
+    val partitioned = DistributedUtil.partitionLociByApproximateReadDepth(2, loci, 250, tumorReads.mappedReads, normalReads.mappedReads)
+    println(partitioned)
+
+    // The entire chromosome 1, which has no reads, should be assigned to task 0.
+    partitioned.filterContigs(_ == "1").toString should equal("1:0-249250621=0")
+  }
+
   sparkTest("test pileup flatmap parallelism 0; create pileups") {
 
     val reads = sc.parallelize(Seq(
@@ -96,6 +130,7 @@ class DistributedUtilSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
     val pileups = DistributedUtil.pileupFlatMap[Pileup](
       reads,
       DistributedUtil.partitionLociUniformly(reads.partitions.length, LociSet.parse("chr1:1-9")),
+      false, // don't skip empty pileups
       pileup => Seq(pileup).iterator).collect()
 
     pileups.length should be(8)
@@ -120,6 +155,7 @@ class DistributedUtilSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
     val pileups = DistributedUtil.pileupFlatMap[Pileup](
       reads,
       DistributedUtil.partitionLociUniformly(5, LociSet.parse("chr1:1-9")),
+      false, // don't skip empty pileups
       pileup => Seq(pileup).iterator).collect()
 
     val firstPileup = pileups.head
@@ -127,7 +163,46 @@ class DistributedUtilSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
     firstPileup.referenceBase should be(Bases.T)
 
     pileups.forall(p => p.head.isMatch) should be(true)
+  }
 
+  sparkTest("test pileup flatmap parallelism 5; skip empty pileups") {
+    val reads = sc.parallelize(Seq(
+      TestUtil.makeRead("TCGATCGA", "8M", "8", 1),
+      TestUtil.makeRead("TCGATCGA", "8M", "8", 1),
+      TestUtil.makeRead("TCGATCGA", "8M", "8", 1)))
+
+    val pileups = DistributedUtil.pileupFlatMap[Long](
+      reads,
+      DistributedUtil.partitionLociUniformly(5, LociSet.parse("chr0:5-10,chr1:0-100,chr2:0-1000,chr2:5000-6000")),
+      true, // skip empty pileups
+      pileup => {
+        Iterator(pileup.locus)
+      }).collect.toSeq
+    pileups should equal(Seq(1, 2, 3, 4, 5, 6, 7, 8))
+  }
+
+  sparkTest("test pileup flatmap two rdds; skip empty pileups") {
+    val reads1 = sc.parallelize(Seq(
+      TestUtil.makeRead("TCGATCGA", "8M", "8", 1),
+      TestUtil.makeRead("TCGATCGA", "8M", "8", 1),
+      TestUtil.makeRead("TCGATCGA", "8M", "8", 1),
+      TestUtil.makeRead("GGGGGGGG", "8M", "8", 100),
+      TestUtil.makeRead("GGGGGGGG", "8M", "8", 100),
+      TestUtil.makeRead("GGGGGGGG", "8M", "8", 100)))
+
+    val reads2 = sc.parallelize(Seq(
+      TestUtil.makeRead("AAAAAAAA", "8M", "8", 1),
+      TestUtil.makeRead("CCCCCCCC", "8M", "8", 1),
+      TestUtil.makeRead("TTTTTTTT", "8M", "8", 1),
+      TestUtil.makeRead("XXX", "3M", "8", 99)))
+
+    val loci = DistributedUtil.pileupFlatMapTwoRDDs[Long](
+      reads1,
+      reads2,
+      DistributedUtil.partitionLociUniformly(1, LociSet.parse("chr0:0-1000,chr1:1-500,chr2:10-20")),
+      true, // skip empty pileups
+      (pileup1, pileup2) => Iterator(pileup1.locus)).collect
+    loci.toSeq should equal(Seq(1, 2, 3, 4, 5, 6, 7, 8, 99, 100, 101, 102, 103, 104, 105, 106, 107))
   }
 
   sparkTest("test pileup flatmap parallelism 5; create pileup elements") {
@@ -140,6 +215,7 @@ class DistributedUtilSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
     val pileups = DistributedUtil.pileupFlatMap[PileupElement](
       reads,
       DistributedUtil.partitionLociUniformly(5, LociSet.parse("chr1:1-9")),
+      false, // don't skip empty pileups
       pileup => pileup.elements.toIterator).collect()
 
     pileups.length should be(24)
@@ -166,6 +242,7 @@ class DistributedUtilSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
       reads1,
       reads2,
       DistributedUtil.partitionLociUniformly(1000, LociSet.parse("chr1:1-500")),
+      false, // don't skip empty pileups
       (pileup1, pileup2) => (pileup1.elements ++ pileup2.elements).toIterator).collect()
 
     elements.forall(_.isMatch) should be(true)
@@ -183,6 +260,7 @@ class DistributedUtilSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
     val pileups = DistributedUtil.pileupFlatMap[PileupElement](
       reads,
       DistributedUtil.partitionLociUniformly(5, LociSet.parse("chr1:1-12")),
+      false, // don't skip empty pileups
       pileup => pileup.elements.toIterator).collect()
 
     pileups.length should be(24)
@@ -199,7 +277,8 @@ class DistributedUtilSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
 
     val genotypes = DistributedUtil.pileupFlatMap[ADAMGenotype](
       reads,
-      DistributedUtil.partitionLociUniformly(reads.partitions.length, Common.getLociFromReads(reads)),
+      DistributedUtil.partitionLociUniformly(reads.partitions.length, LociSet.parse("chr1:1-100")),
+      false, // don't skip empty pileups
       pileup => ThresholdVariantCaller.callVariantsAtLocus(pileup, 0, false, false).iterator).collect()
 
     genotypes.length should be(0)
@@ -214,7 +293,8 @@ class DistributedUtilSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
 
     val genotypes = DistributedUtil.pileupFlatMap[ADAMGenotype](
       reads,
-      DistributedUtil.partitionLociUniformly(3, Common.getLociFromReads(reads)),
+      DistributedUtil.partitionLociUniformly(3, LociSet.parse("chr1:1-100")),
+      false, // don't skip empty pileups
       pileup => ThresholdVariantCaller.callVariantsAtLocus(pileup, 0, false, false).iterator).collect()
 
     genotypes.length should be(0)
@@ -229,7 +309,8 @@ class DistributedUtilSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
 
     val genotypes = DistributedUtil.pileupFlatMap[ADAMGenotype](
       reads,
-      DistributedUtil.partitionLociUniformly(3, Common.getLociFromReads(reads)),
+      DistributedUtil.partitionLociUniformly(3, LociSet.parse("chr1:1-100")),
+      false, // don't skip empty pileups
       pileup => ThresholdVariantCaller.callVariantsAtLocus(pileup, 0, false, false).iterator).collect()
 
     genotypes.length should be(1)
@@ -247,10 +328,10 @@ class DistributedUtilSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
       TestUtil.makeRead("CCGATCGA", "8M", "0T7", 1),
       TestUtil.makeRead("CCGATCGA", "8M", "0T7", 1)))
 
-    val lociToUse = Common.getLociFromReads(reads)
     val genotypes = DistributedUtil.pileupFlatMap[ADAMGenotype](
       reads,
-      DistributedUtil.partitionLociUniformly(3, lociToUse),
+      DistributedUtil.partitionLociUniformly(3, LociSet.parse("chr1:1-100")),
+      false, // don't skip empty pileups
       pileup => ThresholdVariantCaller.callVariantsAtLocus(pileup, 0, false, false).iterator).collect()
 
     genotypes.length should be(1)

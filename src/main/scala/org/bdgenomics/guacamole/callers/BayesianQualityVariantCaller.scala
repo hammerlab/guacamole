@@ -100,22 +100,22 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
     val args = Args4j[Arguments](rawArgs)
     val sc = Common.createSparkContext(args, appName = Some(name))
 
-    val (rawReads, sequenceDictionary) = Common.loadReadsFromArguments(args, sc, mapped = true, nonDuplicate = true)
-    val mappedReads = rawReads.map(_.getMappedRead)
-    mappedReads.persist()
+    val readSet = Common.loadReadsFromArguments(args, sc, Read.InputFilters(mapped = true, nonDuplicate = true))
+    readSet.mappedReads.persist()
     Common.progress(
-      "Loaded %,d mapped non-duplicate reads into %,d partitions.".format(mappedReads.count, mappedReads.partitions.length))
+      "Loaded %,d mapped non-duplicate reads into %,d partitions.".format(readSet.mappedReads.count, readSet.mappedReads.partitions.length))
 
-    val loci = Common.loci(args, sequenceDictionary)
-    val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(args, loci, mappedReads)
+    val loci = Common.loci(args, readSet)
+    val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(args, loci, readSet.mappedReads)
 
     val minAlignmentQuality = args.minAlignmentQuality
 
     val genotypes: RDD[ADAMGenotype] = DistributedUtil.pileupFlatMap[ADAMGenotype](
-      mappedReads,
+      readSet.mappedReads,
       lociPartitions,
+      true, // skip empty pileups
       pileup => callVariantsAtLocus(pileup, minAlignmentQuality).iterator)
-    mappedReads.unpersist()
+    readSet.mappedReads.unpersist()
 
     val filteredGenotypes = GenotypeFilter(genotypes, args)
     Common.writeVariantsFromArguments(args, filteredGenotypes)

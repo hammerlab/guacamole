@@ -99,12 +99,18 @@ object StrandBiasFilter {
                              highStrandBiasLimit: Int,
                              maxStrandBiasReadDepth: Int,
                              includeNull: Boolean = true): Boolean = {
+
+    // TODO! fix this for current ADAM version
+    throw new NotImplementedError("implement this for new ADAM")
+    /*
     if (genotype.readsMappedForwardStrand != null && genotype.readDepth != null && genotype.alternateReadDepth != null) {
       val strandRatio = genotype.readsMappedForwardStrand / genotype.readDepth
       strandRatio < highStrandBiasLimit && strandRatio > lowStrandBiasLimit && genotype.alternateReadDepth < maxStrandBiasReadDepth
     } else {
       includeNull
     }
+    */
+    false
   }
 
   /**

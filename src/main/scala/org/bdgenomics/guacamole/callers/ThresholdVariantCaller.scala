@@ -57,28 +57,27 @@ object ThresholdVariantCaller extends Command with Serializable with Logging {
     val args = Args4j[Arguments](rawArgs)
     val sc = Common.createSparkContext(args, appName = Some(name))
 
-    val (rawReads, sequenceDictionary) = Common.loadReadsFromArguments(args, sc, mapped = true, nonDuplicate = true)
+    val readSet = Common.loadReadsFromArguments(args, sc, Read.InputFilters(mapped = true, nonDuplicate = true, hasMdTag = true))
 
-    // Convert Read -> MappedRead, and keep only reads with defined MdTags.
-    val mappedReads = rawReads.map(_.getMappedRead).filter(_.mdTag.isDefined)
-    mappedReads.persist()
+    readSet.mappedReads.persist()
     Common.progress("Loaded %,d mapped non-duplicate MdTag-containing reads into %,d partitions.".format(
-      mappedReads.count, mappedReads.partitions.length))
+      readSet.mappedReads.count, readSet.mappedReads.partitions.length))
 
-    val loci = Common.loci(args, sequenceDictionary)
+    val loci = Common.loci(args, readSet)
     val (threshold, emitRef, emitNoCall) = (args.threshold, args.emitRef, args.emitNoCall)
     val numGenotypes = sc.accumulator(0L)
     DelayedMessages.default.say { () => "Called %,d genotypes.".format(numGenotypes.value) }
-    val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(args, loci, mappedReads)
+    val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(args, loci, readSet.mappedReads)
     val genotypes: RDD[ADAMGenotype] = DistributedUtil.pileupFlatMap[ADAMGenotype](
-      mappedReads,
+      readSet.mappedReads,
       lociPartitions,
+      true, // skip empty pileups
       pileup => {
         val genotypes = callVariantsAtLocus(pileup, threshold, emitRef, emitNoCall)
         numGenotypes += genotypes.length
         genotypes.iterator
       })
-    mappedReads.unpersist()
+    readSet.mappedReads.unpersist()
     Common.writeVariantsFromArguments(args, genotypes)
     if (args.truthGenotypesFile != "")
       GenotypesEvaluator.printGenotypeConcordance(args, genotypes, sc)

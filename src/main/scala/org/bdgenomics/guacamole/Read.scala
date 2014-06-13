@@ -55,7 +55,6 @@ trait Read {
 
   /** Whether the read was on the positive or forward strand */
   val isPositiveStrand: Boolean
-
 }
 
 /**
@@ -147,6 +146,26 @@ case class MappedRead(
   }
 }
 object Read extends Logging {
+  /**
+   * Filtering reads while they are loaded can be an important optimization.
+   *
+   * These fields are commonly used filters. Setting a field to True will result in filtering on that field. If multiple
+   * fields are set, the result is the intersection of the filters (i.e. reads must satisfy ALL filters).
+   *
+   * @param mapped include only mapped reads
+   * @param nonDuplicate include only reads that do not have the duplicate bit set
+   * @param passedVendorQualityChecks include only reads that do not have the failedVendorQualityChecks bit set
+   * @param hasMdTag include only reads that are both mapped and have md tags defined.
+   */
+  case class InputFilters(
+    mapped: Boolean = false,
+    nonDuplicate: Boolean = false,
+    passedVendorQualityChecks: Boolean = false,
+    hasMdTag: Boolean = false) {}
+  object InputFilters {
+    val empty = InputFilters()
+  }
+
   /**
    * Convenience function (intended for test cases), to construct a Read from unparsed values.
    */
@@ -259,17 +278,20 @@ object Read extends Logging {
   def loadReadArrayAndSequenceDictionaryFromBAM(
     filename: String,
     token: Int = 0,
-    mapped: Boolean = true,
-    nonDuplicate: Boolean = true): (ArrayBuffer[Read], SequenceDictionary) = {
+    filters: InputFilters): (ArrayBuffer[Read], SequenceDictionary) = {
     val reader = new SAMFileReader(new java.io.File(filename))
     val sequenceDictionary = SequenceDictionary.fromSAMReader(reader)
     val result = new ArrayBuffer[Read]
-    for (item: SAMRecord <- JavaConversions.asScalaIterator(reader.iterator)) {
-      if (!nonDuplicate || !item.getDuplicateReadFlag) {
+
+    JavaConversions.asScalaIterator(reader.iterator).foreach(item => {
+      if (!filters.nonDuplicate || !item.getDuplicateReadFlag) {
         val read = fromSAMRecord(item)
-        if (!mapped || read.isMapped) result += read
+        if ((!filters.mapped || read.isMapped) &&
+          (!filters.passedVendorQualityChecks || !read.failedVendorQualityChecks) &&
+          (!filters.hasMdTag || read.isMapped && read.getMappedRead.mdTag.isDefined))
+          result += read
       }
-    }
+    })
     (result, sequenceDictionary)
   }
 
@@ -280,17 +302,14 @@ object Read extends Logging {
    * @param filename name of file containing reads
    * @param sc spark context
    * @param token value to set the "token" field to in all the reads (default 0)
-   * @param mapped if true, will filter out non-mapped reads
-   * @param nonDuplicate if true, will filter out duplicate reads.
+   * @param filters filters to apply
    * @return
    */
   def loadReadRDDAndSequenceDictionaryFromBAM(
     filename: String,
     sc: SparkContext,
     token: Int = 0,
-    mapped: Boolean = true,
-    nonDuplicate: Boolean = true,
-    passedQualityChecks: Boolean = true): (RDD[Read], SequenceDictionary) = {
+    filters: InputFilters): (RDD[Read], SequenceDictionary) = {
 
     val samHeader = SAMHeaderReader.readSAMHeaderFrom(new Path(filename), sc.hadoopConfiguration)
     val sequenceDictionary = SequenceDictionary.fromSAMHeader(samHeader)
@@ -298,9 +317,10 @@ object Read extends Logging {
     val samRecords: RDD[(LongWritable, SAMRecordWritable)] =
       sc.newAPIHadoopFile[LongWritable, SAMRecordWritable, AnySAMInputFormat](filename)
     var reads: RDD[Read] = samRecords.map({ case (k, v) => fromSAMRecord(v.get) })
-    if (mapped) reads = reads.filter(_.isMapped)
-    if (nonDuplicate) reads = reads.filter(read => !read.isDuplicate)
-    if (passedQualityChecks) reads = reads.filter(read => !read.failedVendorQualityChecks)
+    if (filters.mapped) reads = reads.filter(_.isMapped)
+    if (filters.nonDuplicate) reads = reads.filter(read => !read.isDuplicate)
+    if (filters.passedVendorQualityChecks) reads = reads.filter(read => !read.failedVendorQualityChecks)
+    if (filters.hasMdTag) reads = reads.filter(read => read.isMapped && read.getMappedRead.mdTag.isDefined)
     (reads, sequenceDictionary)
   }
 

@@ -25,14 +25,6 @@ scripts/guacamole threshold \
 	-out /tmp/OUT.vcf
 ```
 
-If you'd like to use ADAM to inspect the results, convert to the ADAM format. 
-You can then, for example, use ADAM's summarize genotypes command:
-
-```
-adam vcf2adam /tmp/OUT.vcf /tmp/OUT.gt.adam
-adam summarize_genotypes /tmp/OUT.gt.adam
-```
-
 Try 
 ```
 scripts/guacamole -h
