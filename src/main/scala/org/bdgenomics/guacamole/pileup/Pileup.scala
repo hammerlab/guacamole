@@ -82,12 +82,16 @@ case class Pileup(locus: Long, elements: Seq[PileupElement]) {
   def atGreaterLocus(newLocus: Long, newReads: Iterator[MappedRead]) = {
     assume(elements.isEmpty || newLocus > locus,
       "New locus (%d) not greater than current locus (%d)".format(newLocus, locus))
-    val reusableElements = elements.filter(element => element.read.overlapsLocus(newLocus))
-    val updatedElements = reusableElements.map(_.elementAtGreaterLocus(newLocus))
-    val newElements = newReads.map(PileupElement(_, newLocus))
-    Pileup(newLocus, updatedElements ++ newElements)
+    if (elements.isEmpty && newReads.isEmpty) {
+      // Optimization for common case.
+      Pileup(newLocus, Seq.empty[PileupElement])
+    } else {
+      val reusableElements = elements.filter(element => element.read.overlapsLocus(newLocus))
+      val updatedElements = reusableElements.map(_.elementAtGreaterLocus(newLocus))
+      val newElements = newReads.map(PileupElement(_, newLocus))
+      Pileup(newLocus, updatedElements ++ newElements)
+    }
   }
-
 }
 object Pileup {
   /**

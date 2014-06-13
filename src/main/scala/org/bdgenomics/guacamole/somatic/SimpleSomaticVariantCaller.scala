@@ -192,7 +192,7 @@ object SimpleSomaticVariantCaller extends Command {
     val baseReadsAtPos: RDD[(Locus, BaseRead)] = reads.flatMap(expandBaseReads _)
     val filteredBaseReads = baseReadsAtPos.filter(_._2.readQuality.getOrElse(minBaseQuality) >= minBaseQuality)
     val pileups = filteredBaseReads.groupByKey()
-    pileups.filter(_._2.length >= minDepth)
+    pileups.filter(_._2.toSeq.length >= minDepth).map(pair => (pair._1, pair._2.toSeq))
   }
 
   /**

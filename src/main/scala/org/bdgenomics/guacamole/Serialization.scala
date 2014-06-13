@@ -27,6 +27,10 @@ class GuacamoleKryoRegistrator extends ADAMKryoRegistrator {
     // anything without a registered Kryo serializer.
     // kryo.setRegistrationRequired(true)
 
+    // This allows us to serialize object graphs with cycles. It should default to true, so kind of strange that we have
+    // to set it, but without this line we see infinite recursion.
+    kryo.setReferences(true)
+
     // Register ADAM serializers.
     super.registerClasses(kryo)
 

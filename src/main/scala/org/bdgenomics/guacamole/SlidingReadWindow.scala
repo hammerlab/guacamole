@@ -44,7 +44,7 @@ case class SlidingReadWindow(halfWindowSize: Long, rawSortedReads: Iterator[Mapp
   /** The locus currently under consideration. */
   var currentLocus = -1L
 
-  private var referenceName: Option[String] = None
+  var referenceName: Option[String] = None
   private var mostRecentReadStart: Long = 0
   private val sortedReads: BufferedIterator[MappedRead] = rawSortedReads.map(read => {
     if (referenceName.isEmpty) referenceName = Some(read.referenceContig)
@@ -78,6 +78,7 @@ case class SlidingReadWindow(halfWindowSize: Long, rawSortedReads: Iterator[Mapp
    */
   def setCurrentLocus(locus: Long): Seq[MappedRead] = {
     assume(locus >= currentLocus, "Pileup window can only move forward in locus")
+    currentLocus = locus
 
     def overlaps(read: MappedRead) = {
       read.start <= locus + halfWindowSize && (read.end - 1) >= locus - halfWindowSize
@@ -89,17 +90,27 @@ case class SlidingReadWindow(halfWindowSize: Long, rawSortedReads: Iterator[Mapp
       assert(!overlaps(dropped))
     }
 
-    // Build up a list of new reads that are now in the window.
-    val newReadsBuilder = mutable.LinkedList.newBuilder[MappedRead]
-    while (sortedReads.nonEmpty && sortedReads.head.start <= locus + halfWindowSize) {
-      val read = sortedReads.next()
-      if (overlaps(read)) newReadsBuilder += read
-    }
-    val newReads = newReadsBuilder.result
+    if (sortedReads.isEmpty) {
+      Seq.empty
+    } else {
+      // Build up a list of new reads that are now in the window.
+      val newReadsBuilder = mutable.ArrayBuffer.newBuilder[MappedRead]
+      while (sortedReads.nonEmpty && sortedReads.head.start <= locus + halfWindowSize) {
+        val read = sortedReads.next()
+        if (overlaps(read)) newReadsBuilder += read
+      }
+      val newReads = newReadsBuilder.result
 
-    currentReadsPriorityQueue.enqueue(newReads: _*)
-    assert(currentReadsPriorityQueue.forall(overlaps)) // Correctness check.
-    currentLocus = locus
-    newReads // We return the newly added reads.
+      currentReadsPriorityQueue.enqueue(newReads: _*)
+      assert(currentReadsPriorityQueue.forall(overlaps)) // Correctness check.
+      newReads // We return the newly added reads.
+    }
+  }
+
+  def nextStartLocus(): Option[Long] = {
+    if (sortedReads.hasNext)
+      Some(sortedReads.head.start)
+    else
+      None
   }
 }

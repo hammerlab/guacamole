@@ -58,6 +58,11 @@ case class LociSet(val map: LociMap[Long]) {
   /** String representation, truncated to maxLength characters. */
   def truncatedString(maxLength: Int = 100): String = map.truncatedString(maxLength, false)
 
+  /** Returns a LociSet containing only those contigs TODO*/
+  def filterContigs(function: String => Boolean): LociSet = {
+    LociSet(map.filterContigs(function))
+  }
+
   override def equals(other: Any) = other match {
     case that: LociSet => map.equals(that.map)
     case _             => false
@@ -105,6 +110,14 @@ object LociSet {
      */
     def put(contig: String, start: Long, end: Long): Builder = {
       wrapped.put(contig, start, end, 0)
+      this
+    }
+
+    /**
+     * Add an entire other LociSet to the LociSet under construction.
+     */
+    def put(lociSet: LociSet): Builder = {
+      wrapped.put(lociSet, 0)
       this
     }
 

@@ -16,8 +16,15 @@ import scala.Some
 import com.twitter.chill.{ KryoPool, IKryoRegistrar, KryoInstantiator }
 import com.esotericsoftware.kryo.Kryo
 import org.scalatest.matchers.ShouldMatchers
+import org.apache.spark.rdd.RDD
+import org.apache.commons.io.FileUtils
+import java.io.{ IOError, File }
 
 object TestUtil extends ShouldMatchers {
+
+  // As a hack to run a single unit test, you can set this to the name of a test to run only it. See the top of
+  // DistributedUtilSuite for an example.
+  var runOnly: String = ""
 
   // Serialization helper functions.
   lazy val kryoPool = {
@@ -61,6 +68,20 @@ object TestUtil extends ShouldMatchers {
       alignmentQuality = alignmentQuality).getMappedRead
   }
 
+  def testDataPath(filename: String): String = {
+    val resource = ClassLoader.getSystemClassLoader.getResource(filename)
+    if (resource == null) throw new RuntimeException("No such test data file: %s".format(filename))
+    resource.getFile
+  }
+
+  def loadReads(sc: SparkContext, filename: String): ReadSet = {
+    /* grab the path to the SAM file we've stashed in the resources subdirectory */
+    val path = testDataPath(filename)
+    assert(sc != null)
+    assert(sc.hadoopConfiguration != null)
+    ReadSet(sc, path)
+  }
+
   def assertAlmostEqual(a: Double, b: Double, epsilon: Double = 1e-6) {
     assert(abs(a - b) < epsilon)
   }
@@ -90,6 +111,18 @@ object TestUtil extends ShouldMatchers {
      */
     def silenceSpark() = {
       setLogLevels(Level.WARN, Seq("spark", "org.eclipse.jetty", "akka"))
+    }
+  }
+
+  /**
+   * Delete a file or directory (recursively) if it exists.
+   */
+  def deleteIfExists(filename: String) = {
+    val file = new File(filename)
+    try {
+      FileUtils.forceDelete(file)
+    } catch {
+      case e: IOError => {}
     }
   }
 
@@ -164,13 +197,15 @@ object TestUtil extends ShouldMatchers {
     }
 
     def sparkTest(name: String, silenceSpark: Boolean = true)(body: => Unit) {
-      test(name, SparkTest) {
-        sc = createSpark(name, silenceSpark)
-        try {
-          // Run the test
-          body
-        } finally {
-          destroySpark()
+      if (runOnly.isEmpty || runOnly == name) {
+        test(name, SparkTest) {
+          sc = createSpark(name, silenceSpark)
+          try {
+            // Run the test
+            body
+          } finally {
+            destroySpark()
+          }
         }
       }
     }
