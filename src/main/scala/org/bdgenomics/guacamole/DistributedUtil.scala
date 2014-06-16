@@ -80,6 +80,24 @@ object DistributedUtil extends Logging {
   }
 
   /**
+   * Given a LociSet and an RDD of reads, returns the same LociSet but with any contigs that don't have any reads
+   * mapped to them removed. Also prints out progress info on the number of reads assigned to each contig.
+   */
+  def filterLociWhoseContigsHaveNoReads(loci: LociSet, reads: RDD[MappedRead]): LociSet = {
+    val contigsAndCounts = reads.map(_.referenceContig).countByValue.toMap.withDefaultValue(0L)
+    Common.progress("Read counts per contig: %s".format(
+      contigsAndCounts.toSeq.sorted.map(pair => "%s=%,d".format(pair._1, pair._2)).mkString(" ")))
+    val contigsWithoutReads = loci.contigs.filter(contigsAndCounts(_) == 0L).toSet
+    if (contigsWithoutReads.nonEmpty) {
+      Common.progress("Filtering out these contigs, since they have no reads: %s".format(
+        contigsWithoutReads.toSeq.sorted.mkString(", ")))
+      loci.filterContigs(!contigsWithoutReads.contains(_))
+    } else {
+      loci
+    }
+  }
+
+  /**
    * Assign loci from a LociSet to partitions, where each partition overlaps about the same number of reads.
    *
    * The approach we take is:
@@ -115,18 +133,8 @@ object DistributedUtil extends Logging {
   def partitionLociByApproximateReadDepth(tasks: Int, loci: LociSet, accuracy: Int, readRDDs: RDD[MappedRead]*): LociMap[Long] = {
     val sc = readRDDs(0).sparkContext
 
-    // Optimization for the case where some contigs have no reads.
-    val contigsAndCounts = sc.union(readRDDs).map(_.referenceContig).countByValue.toMap.withDefaultValue(0L)
-    Common.progress("Partitioning by read depth: read counts per contig: %s".format(
-      contigsAndCounts.toSeq.sorted.map(pair => "%s=%,d".format(pair._1, pair._2)).mkString(" ")))
-    val contigsWithoutReads = loci.contigs.filter(contigsAndCounts(_) == 0L).toSet
-    val lociUsed = if (contigsWithoutReads.nonEmpty) {
-      Common.progress(("Partitioning by read depth: skipping these contigs, since they have no reads: %s".format(
-        contigsWithoutReads.toSeq.sorted.mkString(", "))))
-      loci.filterContigs(!contigsWithoutReads.contains(_))
-    } else {
-      loci
-    }
+    // As an optimization for the case where some contigs have no reads, we remove contigs without reads first.
+    val lociUsed = filterLociWhoseContigsHaveNoReads(loci, sc.union(readRDDs))
 
     // Step (1). Split loci uniformly into micro partitions.
     assume(tasks >= 1)
@@ -180,7 +188,7 @@ object DistributedUtil extends Logging {
       counts.min, counts.sum.toDouble / counts.length, counts.max))
 
     val builder = LociMap.newBuilder[Long]
-    builder.put(loci.filterContigs(contigsWithoutReads.contains(_)), 0) // Empty contigs get assigned to task 0.
+    builder.put(loci.filterContigs(!lociUsed.contigs.contains(_)), 0) // Empty contigs get assigned to task 0.
     var readsAssigned = 0.0
     var task = 0L
     def readsRemainingForThisTask = math.round(((task + 1) * readsPerTask) - readsAssigned).toLong
@@ -234,6 +242,8 @@ object DistributedUtil extends Logging {
    *   - advance the window to the new locus.
    *   - return a new Pileup at the given locus. If an existing Pileup is given as input, then the result will share
    *     elements with that Pileup for efficiency.
+   *
+   *  If an existing Pileup is provided, then its locus must be <= the new locus.
    */
   private def initOrMovePileup(existing: Option[Pileup], window: SlidingReadWindow, locus: Long): Pileup = {
     val newReads = window.setCurrentLocus(locus)
@@ -276,7 +286,7 @@ object DistributedUtil extends Logging {
       // If skipEmpty=True and the pileup is empty at a locus, then we fast forward to the next locus with a mapped read.
       val result = new ArrayBuffer[T]
       taskLoci.contigs.foreach(contig => {
-        val readsIterator = readsSplitByContig.take(contig)
+        val readsIterator = readsSplitByContig.next(contig)
         val window = SlidingReadWindow(0L, readsIterator)
         var maybePileup: Option[Pileup] = None
         def pileupEmpty = maybePileup.forall(_.elements.isEmpty)
@@ -326,8 +336,8 @@ object DistributedUtil extends Logging {
 
       val result = new ArrayBuffer[T]
       taskLoci.contigs.foreach(contig => {
-        val readsIterator1 = readsSplitByContig1.take(contig)
-        val readsIterator2 = readsSplitByContig2.take(contig)
+        val readsIterator1 = readsSplitByContig1.next(contig)
+        val readsIterator2 = readsSplitByContig2.next(contig)
         val window1 = SlidingReadWindow(0L, readsIterator1)
         val window2 = SlidingReadWindow(0L, readsIterator2)
         var maybePileup1: Option[Pileup] = None
@@ -377,7 +387,7 @@ object DistributedUtil extends Logging {
       val readsSplitByContig = new ReadsByContig(taskReads)
       val result = new ArrayBuffer[T]
       taskLoci.contigs.foreach(contig => {
-        val readsIterator = readsSplitByContig.take(contig)
+        val readsIterator = readsSplitByContig.next(contig)
         val window = SlidingReadWindow(halfWindowSize, readsIterator)
         val ranges = taskLoci.onContig(contig).ranges.iterator
         while (ranges.hasNext) {
@@ -612,13 +622,13 @@ object DistributedUtil extends Logging {
    * For example, given these reads (written as contig:start locus):
    *    chr20:1000,chr20:1500,chr21:200
    *
-   * Calling take("chr20") will return an iterator of two reads (chr20:1000 and chr20:1500). After that, calling
-   * take("chr21") will give an iterator of one read (chr21:200).
+   * Calling next("chr20") will return an iterator of two reads (chr20:1000 and chr20:1500). After that, calling
+   * next("chr21") will give an iterator of one read (chr21:200).
    *
-   * Note that you must call take("chr20") before calling take("chr21") in this example. That is, this class does not
+   * Note that you must call next("chr20") before calling next("chr21") in this example. That is, this class does not
    * buffer anything -- it just walks forward in the reads using the iterator you gave it.
    *
-   * Also note that after calling take("chr21"), the iterator returned by our previous call to take() is invalidated.
+   * Also note that after calling next("chr21"), the iterator returned by our previous call to next() is invalidated.
    *
    * @param readIterator reads, sorted by contig and start locus.
    */
@@ -626,7 +636,7 @@ object DistributedUtil extends Logging {
     private val buffered = readIterator.buffered
     private var seenContigs = List.empty[String]
     private var prevIterator: Option[SingleContigReadsIterator] = None
-    def take(contig: String): Iterator[MappedRead] = {
+    def next(contig: String): Iterator[MappedRead] = {
       // We must first march the previous iterator we returned to the end.
       while (prevIterator.exists(_.hasNext)) prevIterator.get.next()
 
