@@ -5,10 +5,8 @@ guacamole*.jar
 build
 *~
 #*
-*.bam*
-*.adam*
-*.vcf*
 *.log
 *.swp
+*.swo
 .DS_Store
 dependency-reduced-pom.xml

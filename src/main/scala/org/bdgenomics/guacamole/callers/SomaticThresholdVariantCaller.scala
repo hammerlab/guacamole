@@ -56,40 +56,38 @@ object SomaticThresholdVariantCaller extends Command with Serializable with Logg
     val args = Args4j[Arguments](rawArgs)
     val sc = Common.createSparkContext(args, appName = Some(name))
 
-    val (rawTumorReads, tumorDictionary, rawNormalReads, normalDictionary) =
-      Common.loadTumorNormalReadsFromArguments(args, sc, mapped = true, nonDuplicate = true)
+    val filters = Read.InputFilters(mapped = true, nonDuplicate = true, hasMdTag = true)
+    val (tumorReads, normalReads) = Common.loadTumorNormalReadsFromArguments(args, sc, filters)
 
-    assert(tumorDictionary == normalDictionary,
+    assert(tumorReads.sequenceDictionary == normalReads.sequenceDictionary,
       "Tumor and normal samples have different sequence dictionaries. Tumor dictionary: %s.\nNormal dictionary: %s."
-        .format(tumorDictionary, normalDictionary))
+        .format(tumorReads.sequenceDictionary, normalReads.sequenceDictionary))
 
-    val mappedTumorReads = rawTumorReads.map(_.getMappedRead).filter(_.mdTag.isDefined)
-    val mappedNormalReads = rawNormalReads.map(_.getMappedRead).filter(_.mdTag.isDefined)
-
-    mappedTumorReads.persist()
-    mappedNormalReads.persist()
+    tumorReads.mappedReads.persist()
+    normalReads.mappedReads.persist()
 
     Common.progress("Loaded %,d tumor mapped non-duplicate MdTag-containing reads into %,d partitions.".format(
-      mappedTumorReads.count, mappedTumorReads.partitions.length))
+      tumorReads.mappedReads.count, tumorReads.mappedReads.partitions.length))
     Common.progress("Loaded %,d normal mapped non-duplicate MdTag-containing reads into %,d partitions.".format(
-      mappedNormalReads.count, mappedNormalReads.partitions.length))
+      normalReads.mappedReads.count, normalReads.mappedReads.partitions.length))
 
-    val loci = Common.loci(args, normalDictionary)
+    val loci = Common.loci(args, normalReads)
     val (thresholdNormal, thresholdTumor) = (args.thresholdNormal, args.thresholdTumor)
     val numGenotypes = sc.accumulator(0L)
     DelayedMessages.default.say { () => "Called %,d genotypes.".format(numGenotypes.value) }
-    val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(args, loci, mappedTumorReads, mappedNormalReads)
+    val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(args, loci, tumorReads.mappedReads, normalReads.mappedReads)
     val genotypes: RDD[ADAMGenotype] = DistributedUtil.pileupFlatMapTwoRDDs[ADAMGenotype](
-      mappedTumorReads,
-      mappedNormalReads,
+      tumorReads.mappedReads,
+      normalReads.mappedReads,
       lociPartitions,
+      true, // skip empty pileups
       (pileupTumor, pileupNormal) => {
         val genotypes = callVariantsAtLocus(pileupTumor, pileupNormal, thresholdTumor, thresholdNormal)
         numGenotypes += genotypes.length
         genotypes.iterator
       })
-    mappedTumorReads.unpersist()
-    mappedNormalReads.unpersist()
+    tumorReads.mappedReads.unpersist()
+    normalReads.mappedReads.unpersist()
     Common.writeVariantsFromArguments(args, genotypes)
     DelayedMessages.default.print()
   }
@@ -145,8 +143,9 @@ object SomaticThresholdVariantCaller extends Command with Serializable with Logg
     thresholdSatisfyingAlleles.toList match {
       case Nil         => Nil
       case base :: Nil => variant(base, Alt :: Ref :: Nil) :: Nil
-      case base1 :: base2 :: rest =>
+      case base1 :: base2 :: rest => {
         variant(base1, Alt :: OtherAlt :: Nil) :: variant(base2, Alt :: OtherAlt :: Nil) :: Nil
+      }
     }
   }
 }
