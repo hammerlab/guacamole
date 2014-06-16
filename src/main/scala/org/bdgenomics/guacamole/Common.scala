@@ -87,7 +87,7 @@ object Common extends Logging {
       var outChunks: Int = 1
 
       @Opt(name = "-max-genotypes", metaVar = "X", required = false,
-        usage = "Maximum number of genotypes to output.")
+        usage = "Maximum number of genotypes to output. 0 (default) means output all genotypes.")
       var maxGenotypes: Int = 0
     }
 
@@ -164,6 +164,7 @@ object Common extends Logging {
       if (args.loci == "all") {
         // Call at all loci.
         val builder = LociSet.newBuilder
+        // Here, pair is (contig name, contig length).
         readSet.contigLengths.foreach(pair => builder.put(pair._1, 0L, pair._2))
         builder.result
       } else {
@@ -171,13 +172,7 @@ object Common extends Logging {
         val parsed = LociSet.parse(args.loci)
         parsed.contigs.foreach(contig => {
           if (!readSet.contigLengths.contains(contig))
-            throw new IllegalArgumentException(
-              "Specified contig '%s' is not found in the sequence dictionary.".format(contig))
-          val parsedMax = parsed.onContig(contig).ranges.map(_.end).max
-          if (parsedMax > readSet.contigLengths(contig))
-            throw new IllegalArgumentException(
-              "Contig %s in sequence dictionary has length %,d, but specified loci includes locus %,d.".format(
-                contig, readSet.contigLengths(contig), parsedMax - 1))
+            throw new IllegalArgumentException("No such contig: '%s'.".format(contig))
         })
         parsed
       }

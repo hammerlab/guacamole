@@ -44,7 +44,7 @@ case class SlidingReadWindow(halfWindowSize: Long, rawSortedReads: Iterator[Mapp
   /** The locus currently under consideration. */
   var currentLocus = -1L
 
-  var referenceName: Option[String] = None
+  private var referenceName: Option[String] = None
   private var mostRecentReadStart: Long = 0
   private val sortedReads: BufferedIterator[MappedRead] = rawSortedReads.map(read => {
     if (referenceName.isEmpty) referenceName = Some(read.referenceContig)
