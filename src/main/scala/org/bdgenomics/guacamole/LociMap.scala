@@ -62,6 +62,10 @@ case class LociMap[T](private val map: Map[String, LociMap.SingleContig[T]]) {
     mapOfBuilders.mapValues(_.result).toMap
   }
 
+  def filterContigs(function: String => Boolean): LociMap[T] = {
+    LociMap(map.filterKeys(function))
+  }
+
   /**
    * Returns the loci map on the specified contig.
    *
@@ -118,20 +122,24 @@ case class LociMap[T](private val map: Map[String, LociMap.SingleContig[T]]) {
     val second = LociMap.newBuilder[T]()
     var remaining = numToTake
     var doneTaking = false
-    for (contig <- contigs; (range, value) <- onContig(contig).asMap) {
-      if (doneTaking) {
-        second.put(contig, range.start, range.end, value)
-      } else {
-        if (remaining >= range.length) {
-          first.put(contig, range.start, range.end, value)
-          remaining -= range.length
-        } else {
-          first.put(contig, range.start, range.start + remaining, value)
-          second.put(contig, range.start + remaining, range.end, value)
-          doneTaking = true
+    contigs.foreach(contig => {
+      onContig(contig).asMap.foreach({
+        case (range, value) => {
+          if (doneTaking) {
+            second.put(contig, range.start, range.end, value)
+          } else {
+            if (remaining >= range.length) {
+              first.put(contig, range.start, range.end, value)
+              remaining -= range.length
+            } else {
+              first.put(contig, range.start, range.start + remaining, value)
+              second.put(contig, range.start + remaining, range.end, value)
+              doneTaking = true
+            }
+          }
         }
-      }
-    }
+      })
+    })
     val (firstResult, secondResult) = (first.result, second.result)
     assert(firstResult.count == numToTake)
     assert(firstResult.count + secondResult.count == count)
@@ -191,9 +199,11 @@ object LociMap {
 
     /** Set the value for all loci in the given LociSet to the specified value in the LociMap under construction. */
     def put(loci: LociSet, value: T): Builder[T] = {
-      for (contig <- loci.contigs; range <- loci.onContig(contig).ranges) {
-        put(contig, range.start, range.end, value)
-      }
+      loci.contigs.foreach(contig => {
+        loci.onContig(contig).ranges.foreach(range => {
+          put(contig, range.start, range.end, value)
+        })
+      })
       this
     }
 

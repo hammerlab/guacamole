@@ -9,12 +9,12 @@
   <name>guacamole: variant caller</name>
   
   <properties>
-    <adam.version>0.10.0</adam.version>
-    <java.version>1.6</java.version>
+    <adam.version>0.11.1-SNAPSHOT</adam.version>
+    <java.version>1.7.4</java.version>
     <scala.version>2.10.3</scala.version>
     <scala.version.prefix>2.10</scala.version.prefix>
     <hadoop.version>2.3.0</hadoop.version>
-    <spark.version>0.9.1</spark.version>
+    <spark.version>1.0.0</spark.version>
   </properties>
   
   <licenses>
@@ -213,11 +213,6 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.apache.hadoop</groupId>
-      <artifactId>hadoop-client</artifactId>
-      <version>${hadoop.version}</version>
-    </dependency>
-    <dependency>
       <groupId>org.bdgenomics.adam</groupId>
       <artifactId>adam-format</artifactId>
       <version>${adam.version}</version>
@@ -242,6 +237,11 @@
       <artifactId>scalatest_${scala.version.prefix}</artifactId>
       <version>1.9.2</version>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hadoop</groupId>
+      <artifactId>hadoop-client</artifactId>
+      <version>${hadoop.version}</version>
     </dependency>
   </dependencies>
 </project>
