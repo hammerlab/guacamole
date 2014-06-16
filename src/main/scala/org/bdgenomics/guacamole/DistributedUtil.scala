@@ -139,9 +139,9 @@ object DistributedUtil extends Logging {
     val lociUsed = filterLociWhoseContigsHaveNoReads(loci, sc.union(readRDDs))
     assume(lociUsed.count > 0)
 
-    val (microPartitions, numMicroPartitions, broadcastMicroPartitions) = splitIntoMicroPartitions(sc, tasks, loci, lociUsed, accuracy, readRDDs: _*)
-    val counts = calculateOverlapsPerMicroPartition(microPartitions, numMicroPartitions, broadcastMicroPartitions, readRDDs: _*)
-    val result = assignLociToRealPartitions(tasks, microPartitions, numMicroPartitions, loci, lociUsed, counts)
+    val (numMicroPartitions, broadcastMicroPartitions) = splitIntoMicroPartitions(sc, tasks, lociUsed, accuracy, readRDDs: _*)
+    val counts = calculateOverlapsPerMicroPartition(numMicroPartitions, broadcastMicroPartitions, readRDDs: _*)
+    val result = assignLociToRealPartitions(tasks, broadcastMicroPartitions.value, numMicroPartitions, loci, lociUsed, counts)
 
     result
   }
@@ -149,20 +149,20 @@ object DistributedUtil extends Logging {
   /**
    * Split loci uniformly into micro partitions.
    */
-  private def splitIntoMicroPartitions(sc: SparkContext, tasks: Int, loci: LociSet, lociUsed: LociSet, accuracy: Int, readRDDs: RDD[MappedRead]*): (LociMap[Long], Int, Broadcast[LociMap[Long]]) = {
+  private def splitIntoMicroPartitions(sc: SparkContext, tasks: Int, lociUsed: LociSet, accuracy: Int, readRDDs: RDD[MappedRead]*): (Int, Broadcast[LociMap[Long]]) = {
     val numMicroPartitions: Int = if (accuracy * tasks < lociUsed.count) accuracy * tasks else lociUsed.count.toInt
     progress("Splitting loci by read depth among %,d tasks using %,d micro partitions.".format(tasks, numMicroPartitions))
     val microPartitions = partitionLociUniformly(numMicroPartitions, lociUsed)
     progress("Done calculating micro partitions.")
     val broadcastMicroPartitions = sc.broadcast(microPartitions)
 
-    (microPartitions, numMicroPartitions, broadcastMicroPartitions)
+    (numMicroPartitions, broadcastMicroPartitions)
   }
 
   /**
    * Total up reads overlapping each micro partition. We keep the totals as an array of Longs.
    */
-  private def calculateOverlapsPerMicroPartition(microPartitions: LociMap[Long], numMicroPartitions: Int, broadcastMicroPartitions: Broadcast[LociMap[Long]], readRDDs: RDD[MappedRead]*) = {
+  private def calculateOverlapsPerMicroPartition(numMicroPartitions: Int, broadcastMicroPartitions: Broadcast[LociMap[Long]], readRDDs: RDD[MappedRead]*) = {
     def addArray(first: Array[Long], second: Array[Long]): Array[Long] = {
       assert(first.length == second.length)
       val result = new Array[Long](first.length)
