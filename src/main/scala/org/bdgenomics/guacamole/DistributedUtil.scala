@@ -238,18 +238,17 @@ object DistributedUtil extends Logging {
   }
 
   /**
-   * Helper function. Given optionally an existing Pileup, a sliding read window, and a locus:
-   *   - advance the window to the new locus.
+   * Helper function. Given optionally an existing Pileup, and a sliding read window
    *   - return a new Pileup at the given locus. If an existing Pileup is given as input, then the result will share
    *     elements with that Pileup for efficiency.
    *
    *  If an existing Pileup is provided, then its locus must be <= the new locus.
    */
-  private def initOrMovePileup(existing: Option[Pileup], window: SlidingReadWindow, locus: Long): Pileup = {
-    val newReads = window.setCurrentLocus(locus)
+  private def initOrMovePileup(existing: Option[Pileup], window: SlidingReadWindow): Pileup = {
+    val locus = window.currentLocus
     existing match {
-      case None         => Pileup(newReads, locus)
-      case Some(pileup) => pileup.atGreaterLocus(locus, newReads.iterator)
+      case None         => Pileup(window.newReads, locus)
+      case Some(pileup) => pileup.atGreaterLocus(locus, window.newReads.iterator)
     }
   }
 
@@ -277,40 +276,10 @@ object DistributedUtil extends Logging {
                                  lociPartitions: LociMap[Long],
                                  skipEmpty: Boolean,
                                  function: Pileup => Iterator[T]): RDD[T] = {
-    windowTaskFlatMap(reads, lociPartitions, 0L, (task, taskLoci, taskReads) => {
-      // The code here is running in parallel in each task.
-
-      val readsSplitByContig = new ReadsByContig(taskReads)
-
-      // For each contig, we loop over its ranges, and accumulate the results of calling the user's function.
-      // If skipEmpty=True and the pileup is empty at a locus, then we fast forward to the next locus with a mapped read.
-      val result = new ArrayBuffer[T]
-      taskLoci.contigs.foreach(contig => {
-        val readsIterator = readsSplitByContig.next(contig)
-        val window = SlidingReadWindow(0L, readsIterator)
-        var maybePileup: Option[Pileup] = None
-        def pileupEmpty = maybePileup.forall(_.elements.isEmpty)
-        var locus: Long = 0L
-        val ranges = taskLoci.onContig(contig).ranges.iterator
-        while (ranges.hasNext && locus < Long.MaxValue) {
-          val range = ranges.next()
-          locus = math.max(locus, range.start)
-          while (locus < range.end) {
-            lazy val nextLocusWithReads = firstStartLocus(window)
-            if (skipEmpty && pileupEmpty && nextLocusWithReads > locus) {
-              // Fast forward.
-              locus = nextLocusWithReads
-            } else {
-              // Run at this locus.
-              maybePileup = Some(initOrMovePileup(maybePileup, window, locus))
-              if (!(skipEmpty && pileupEmpty))
-                result ++= function(maybePileup.get)
-              locus += 1
-            }
-          }
-        }
-      })
-      result.iterator
+    windowFlatMapWithState(Seq(reads), lociPartitions, skipEmpty, 0, None, (maybePileup: Option[Pileup], windows) => {
+      assert(windows.length == 1)
+      val pileup = initOrMovePileup(maybePileup, windows(0))
+      (Some(pileup), function(pileup))
     })
   }
   /**
@@ -327,76 +296,76 @@ object DistributedUtil extends Logging {
                                         lociPartitions: LociMap[Long],
                                         skipEmpty: Boolean,
                                         function: (Pileup, Pileup) => Iterator[T]): RDD[T] = {
-    windowTaskFlatMapTwoRDDs(reads1, reads2, lociPartitions, 0L, (task, taskLoci, taskReads1, taskReads2) => {
-      // The code here is running in parallel in each task.
-
-      // A map from contig to iterator over reads that are in that contig:
-      val readsSplitByContig1 = new ReadsByContig(taskReads1)
-      val readsSplitByContig2 = new ReadsByContig(taskReads2)
-
-      val result = new ArrayBuffer[T]
-      taskLoci.contigs.foreach(contig => {
-        val readsIterator1 = readsSplitByContig1.next(contig)
-        val readsIterator2 = readsSplitByContig2.next(contig)
-        val window1 = SlidingReadWindow(0L, readsIterator1)
-        val window2 = SlidingReadWindow(0L, readsIterator2)
-        var maybePileup1: Option[Pileup] = None
-        var maybePileup2: Option[Pileup] = None
-        def pileupsEmpty = maybePileup1.forall(_.elements.isEmpty) && maybePileup2.forall(_.elements.isEmpty)
-        var locus: Long = 0L
-        val ranges = taskLoci.onContig(contig).ranges.iterator
-        while (ranges.hasNext && locus < Long.MaxValue) {
-          val range = ranges.next()
-          locus = math.max(locus, range.start)
-          while (locus < range.end) {
-            lazy val nextLocusWithReads = firstStartLocus(window1, window2)
-            if (skipEmpty && pileupsEmpty && nextLocusWithReads > locus) {
-              // Fast forward.
-              locus = nextLocusWithReads
-            } else {
-              // Run at this locus.
-              maybePileup1 = Some(initOrMovePileup(maybePileup1, window1, locus))
-              maybePileup2 = Some(initOrMovePileup(maybePileup2, window2, locus))
-              if (!(skipEmpty && pileupsEmpty))
-                result ++= function(maybePileup1.get, maybePileup2.get)
-              locus += 1
-            }
-          }
-        }
-        while (readsIterator1.hasNext) readsIterator1.next()
-        while (readsIterator2.hasNext) readsIterator2.next()
+    windowFlatMapWithState(
+      Seq(reads1, reads2),
+      lociPartitions,
+      skipEmpty,
+      0L, // half window size
+      None,
+      (maybePileups: Option[(Pileup, Pileup)], windows) => {
+        assert(windows.length == 2)
+        val pileup1 = initOrMovePileup(maybePileups.map(_._1), windows(0))
+        val pileup2 = initOrMovePileup(maybePileups.map(_._2), windows(1))
+        (Some((pileup1, pileup2)), function(pileup1, pileup2))
       })
-      result.iterator
-    })
   }
 
   /**
-   * FlatMap across loci, where at each locus the provided function is passed a SlidingWindow instance containing reads
-   * overlapping that locus with the specified halfWindowSize.
+   * FlatMap across loci, and any number of RDDs of reads, where at each locus the provided function is passed a
+   * sliding window instance for each RDD containing the reads overlapping an interval of halfWindowSize to either side
+   * of a locus.
    *
-   * Currently unused, but here for demonstration.
+   * This function supports maintaining some state from locus to another within a task. The state maintained is of type
+   * S. The user function will receive the current state in addition to the sliding windows, and returns a pair of
+   * (new state, result data). The state is initialized to initialState for each task, and for each new contig handled
+   * by a single task.
    *
-   * See [[windowTaskFlatMapMultipleRDDs()]] for argument descriptions.
-   *
+   * @param readsRDDs sequence of read RDDs
+   * @param lociPartitions loci to consider, partitioned into tasks
+   * @param skipEmpty If True, then the function will only be called on loci where at least one read maps within a
+   *                  window around the locus. If False, then the function will be called at all loci in lociPartitions.
+   * @param halfWindowSize if a read overlaps a region of halfWindowSize to either side of a locus under consideration,
+   *                       then it is included.
+   * @param initialState initial state to use for each task and each contig analyzed within a task.
+   * @param function function to flatmap, of type (state, sliding windows) -> (new state, result data)
+   * @tparam T result data type
+   * @tparam S state type
+   * @return RDD[T] of flatmap results
    */
-  def windowFlatMap[T: ClassTag](reads: RDD[MappedRead],
-                                 lociPartitions: LociMap[Long],
-                                 halfWindowSize: Long,
-                                 function: SlidingReadWindow => Iterator[T]): RDD[T] = {
-    windowTaskFlatMap(reads, lociPartitions, halfWindowSize, (task, taskLoci, taskReads) => {
-      val readsSplitByContig = new ReadsByContig(taskReads)
+  def windowFlatMapWithState[T: ClassTag, S: ClassTag](
+    readsRDDs: Seq[RDD[MappedRead]],
+    lociPartitions: LociMap[Long],
+    skipEmpty: Boolean,
+    halfWindowSize: Long,
+    initialState: S,
+    function: (S, Seq[SlidingReadWindow]) => (S, Iterator[T])): RDD[T] = {
+    windowTaskFlatMapMultipleRDDs(readsRDDs, lociPartitions, halfWindowSize, (task, taskLoci, taskReadsSeq) => {
+      val readsSplitByContigSeq = taskReadsSeq.map(taskReads => new ReadsByContig(taskReads))
       val result = new ArrayBuffer[T]
       taskLoci.contigs.foreach(contig => {
-        val readsIterator = readsSplitByContig.next(contig)
-        val window = SlidingReadWindow(halfWindowSize, readsIterator)
+        val readsIterators = readsSplitByContigSeq.map(_.next(contig))
+        val windows = readsIterators.map(SlidingReadWindow(halfWindowSize, _))
+        def windowsEmpty = windows.forall(_.currentReads.isEmpty)
         val ranges = taskLoci.onContig(contig).ranges.iterator
+        var state = initialState
         while (ranges.hasNext) {
           val range = ranges.next()
           var locus = range.start
           while (locus < range.end) {
-            window.setCurrentLocus(locus)
-            result ++= function(window)
-            locus += 1
+            lazy val nextLocusWithReads = firstStartLocus(windows: _*)
+            if (skipEmpty && windowsEmpty && nextLocusWithReads - halfWindowSize > locus) {
+              // Fast forward.
+              locus = nextLocusWithReads - halfWindowSize
+            } else {
+              // Run at this locus.
+              windows.foreach(_.setCurrentLocus(locus))
+              if (!(skipEmpty && windowsEmpty)) {
+                val (newState, newElements) = function(state, windows)
+                state = newState
+                result ++= newElements
+              }
+              locus += 1
+            }
           }
         }
       })
@@ -420,60 +389,6 @@ object DistributedUtil extends Logging {
       case h: PartitionByKey => h.numPartitions == numPartitions
       case _                 => false
     }
-  }
-
-  /**
-   * FlatMap across sets of reads overlapping genomic partitions.
-   *
-   * The provided function will be called once per task, and passed the following arguments:
-   *  - the task number
-   *  - the loci assigned to this task
-   *  - an iterator over reads that overlap these loci (within some window size)
-   *
-   * The results of the function are concatenated into an RDD, which is returned.
-   *
-   * See [[windowTaskFlatMapMultipleRDDs]] for more details.
-   *
-   * @param reads sorted mapped reads
-   * @param lociPartitions map from locus -> task number. This argument specifies both the loci to be considered and how
-   *                       they should be split among tasks. Reads that don't overlap these loci are ignored.
-   * @param halfWindowSize if a read overlaps a region of halfWindowSize to either side of a locus under consideration,
-   *                       then it is included.
-   * @param function function to flatMap: (task number, loci, reads that overlap a window around these loci) -> T
-   * @tparam T type of value returned by function
-   * @return flatMap results, RDD[T]
-   */
-  def windowTaskFlatMap[T: ClassTag](reads: RDD[MappedRead],
-                                     lociPartitions: LociMap[Long],
-                                     halfWindowSize: Long,
-                                     function: (Long, LociSet, Iterator[MappedRead]) => Iterator[T]): RDD[T] = {
-    windowTaskFlatMapMultipleRDDs(Seq(reads), lociPartitions, halfWindowSize, (locus, loci, iterators) => {
-      assert(iterators.length == 1)
-      val reads = iterators(0)
-      function(locus, loci, reads)
-    })
-  }
-
-  /**
-   * Same as [[windowTaskFlatMap]], except works with two RDDs of reads.
-   *
-   * The function will be passed two iterators of reads, one for each RDD.
-   *
-   * See [[windowTaskFlatMap]] for more details.
-   */
-
-  def windowTaskFlatMapTwoRDDs[T: ClassTag](
-    reads1: RDD[MappedRead],
-    reads2: RDD[MappedRead],
-    lociPartitions: LociMap[Long],
-    halfWindowSize: Long,
-    function: (Long, LociSet, Iterator[MappedRead], Iterator[MappedRead]) => Iterator[T]): RDD[T] = {
-    windowTaskFlatMapMultipleRDDs(Seq(reads1, reads2), lociPartitions, halfWindowSize, (locus, loci, readsPair) => {
-      assert(readsPair.length == 2)
-      val reads1 = readsPair(0)
-      val reads2 = readsPair(1)
-      function(locus, loci, reads1, reads2)
-    })
   }
 
   /**
