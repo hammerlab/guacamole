@@ -44,6 +44,9 @@ case class SlidingReadWindow(halfWindowSize: Long, rawSortedReads: Iterator[Mapp
   /** The locus currently under consideration. */
   var currentLocus = -1L
 
+  /** The new reads that were added to currentReads as a result of the most recent call to setCurrentLocus. */
+  var newReads: Seq[MappedRead] = Seq.empty
+
   private var referenceName: Option[String] = None
   private var mostRecentReadStart: Long = 0
   private val sortedReads: BufferedIterator[MappedRead] = rawSortedReads.map(read => {
@@ -90,7 +93,7 @@ case class SlidingReadWindow(halfWindowSize: Long, rawSortedReads: Iterator[Mapp
       assert(!overlaps(dropped))
     }
 
-    if (sortedReads.isEmpty) {
+    newReads = if (sortedReads.isEmpty) {
       Seq.empty
     } else {
       // Build up a list of new reads that are now in the window.
@@ -99,18 +102,17 @@ case class SlidingReadWindow(halfWindowSize: Long, rawSortedReads: Iterator[Mapp
         val read = sortedReads.next()
         if (overlaps(read)) newReadsBuilder += read
       }
-      val newReads = newReadsBuilder.result
-
-      currentReadsPriorityQueue.enqueue(newReads: _*)
-      assert(currentReadsPriorityQueue.forall(overlaps)) // Correctness check.
-      newReads // We return the newly added reads.
+      newReadsBuilder.result
     }
+    currentReadsPriorityQueue.enqueue(newReads: _*)
+    assert(currentReadsPriorityQueue.forall(overlaps)) // Correctness check.
+    newReads // We return the newly added reads.
   }
 
+  /**
+   * The start locus of the next read in the (sorted) iterator.
+   */
   def nextStartLocus(): Option[Long] = {
-    if (sortedReads.hasNext)
-      Some(sortedReads.head.start)
-    else
-      None
+    if (sortedReads.hasNext) Some(sortedReads.head.start) else None
   }
 }
