@@ -33,8 +33,8 @@ object MinimumReadDepthFilter {
    */
   def apply(genotypes: RDD[ADAMGenotype],
             minReadDepth: Int,
-            includeNull: Boolean = true,
-            debug: Boolean = false): RDD[ADAMGenotype] = {
+            debug: Boolean = false,
+            includeNull: Boolean = true): RDD[ADAMGenotype] = {
     val filteredGenotypes = genotypes.filter(hasMinimumReadDepth(_, minReadDepth, includeNull))
     if (debug) GenotypeFilter.printFilterProgress(filteredGenotypes)
     filteredGenotypes
@@ -58,8 +58,8 @@ object MinimumAlternateReadDepthFilter {
    */
   def apply(genotypes: RDD[ADAMGenotype],
             minAlternateReadDepth: Int,
-            includeNull: Boolean = true,
-            debug: Boolean = false): RDD[ADAMGenotype] = {
+            debug: Boolean = false,
+            includeNull: Boolean = true): RDD[ADAMGenotype] = {
     val filteredGenotypes = genotypes.filter(hasMinimumAlternateReadDepth(_, minAlternateReadDepth, includeNull))
     if (debug) GenotypeFilter.printFilterProgress(filteredGenotypes)
     filteredGenotypes
@@ -89,7 +89,7 @@ object StrandBiasFilter {
    * of reads (maxStrandBiasReadDepth)
    *
    * @param genotype Genotype to evaluate
-   * @param lowStrandBiasLimit Minimum alloweed percent of reads on the forward strand
+   * @param lowStrandBiasLimit Minimum allowed percent of reads on the forward strand
    * @param highStrandBiasLimit Maximum allowed percent of reads on the forward strand
    * @param maxStrandBiasReadDepth maximum depth at which to apply filter
    * @return
@@ -127,8 +127,8 @@ object StrandBiasFilter {
   def apply(genotypes: RDD[ADAMGenotype], lowStrandBiasLimit: Int,
             highStrandBiasLimit: Int,
             maxStrandBiasReadDepth: Int,
-            includeNull: Boolean = true,
-            debug: Boolean = false): RDD[ADAMGenotype] = {
+            debug: Boolean = false,
+            includeNull: Boolean = true): RDD[ADAMGenotype] = {
     val filteredGenotypes = genotypes.filter(isBiasedToSingleStrand(_, lowStrandBiasLimit, highStrandBiasLimit, maxStrandBiasReadDepth, includeNull))
     if (debug) GenotypeFilter.printFilterProgress(filteredGenotypes)
     filteredGenotypes
@@ -159,21 +159,24 @@ object GenotypeFilter {
     @Option(name = "-highStrandBiasLimit", usage = "Maximum allowed % of reads on the forward strand. (To prevent strand bias)")
     var highStrandBiasLimit: Int = 100
 
+    @Option(name = "-debug-genotype-filters", usage = "Print count of genotypes after each filtering step")
+    var debugGenotypeFilters = false
+
   }
 
   def apply(genotypes: RDD[ADAMGenotype], args: GenotypeFilterArguments): RDD[ADAMGenotype] = {
     var filteredGenotypes = genotypes
 
     if (args.minReadDepth > 0) {
-      filteredGenotypes = MinimumReadDepthFilter(genotypes, args.minReadDepth)
+      filteredGenotypes = MinimumReadDepthFilter(genotypes, args.minReadDepth, args.debugGenotypeFilters)
     }
 
     if (args.minAlternateReadDepth > 0) {
-      filteredGenotypes = MinimumReadDepthFilter(genotypes, args.minAlternateReadDepth)
+      filteredGenotypes = MinimumAlternateReadDepthFilter(genotypes, args.minAlternateReadDepth, args.debugGenotypeFilters)
     }
 
     if (args.lowStrandBiasLimit >= 0 || args.highStrandBiasLimit <= 100) {
-      filteredGenotypes = StrandBiasFilter(genotypes, args.lowStrandBiasLimit, args.highStrandBiasLimit, args.maxStrandBiasAltReadDepth)
+      filteredGenotypes = StrandBiasFilter(genotypes, args.lowStrandBiasLimit, args.highStrandBiasLimit, args.maxStrandBiasAltReadDepth, args.debugGenotypeFilters)
     }
 
     filteredGenotypes
