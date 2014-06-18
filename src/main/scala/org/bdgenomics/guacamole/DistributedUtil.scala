@@ -272,10 +272,11 @@ object DistributedUtil extends Logging {
    * See [[windowTaskFlatMapMultipleRDDs()]] for other argument descriptions.
    *
    */
-  def pileupFlatMap[T: ClassTag](reads: RDD[MappedRead],
-                                 lociPartitions: LociMap[Long],
-                                 skipEmpty: Boolean,
-                                 function: Pileup => Iterator[T]): RDD[T] = {
+  def pileupFlatMap[T: ClassTag](
+      reads: RDD[MappedRead],
+      lociPartitions: LociMap[Long],
+      skipEmpty: Boolean,
+      function: Pileup => Iterator[T]): RDD[T] = {
     windowFlatMapWithState(Seq(reads), lociPartitions, skipEmpty, 0, None, (maybePileup: Option[Pileup], windows) => {
       assert(windows.length == 1)
       val pileup = initOrMovePileup(maybePileup, windows(0))
@@ -291,11 +292,12 @@ object DistributedUtil extends Logging {
    * See [[windowTaskFlatMapMultipleRDDs()]] for other argument descriptions.
    *
    */
-  def pileupFlatMapTwoRDDs[T: ClassTag](reads1: RDD[MappedRead],
-                                        reads2: RDD[MappedRead],
-                                        lociPartitions: LociMap[Long],
-                                        skipEmpty: Boolean,
-                                        function: (Pileup, Pileup) => Iterator[T]): RDD[T] = {
+  def pileupFlatMapTwoRDDs[T: ClassTag](
+      reads1: RDD[MappedRead],
+      reads2: RDD[MappedRead],
+      lociPartitions: LociMap[Long],
+      skipEmpty: Boolean,
+      function: (Pileup, Pileup) => Iterator[T]): RDD[T] = {
     windowFlatMapWithState(
       Seq(reads1, reads2),
       lociPartitions,
@@ -348,9 +350,10 @@ object DistributedUtil extends Logging {
         def windowsEmpty = windows.forall(_.currentReads.isEmpty)
         val ranges = taskLoci.onContig(contig).ranges.iterator
         var state = initialState
+        var locus = 0L
         while (ranges.hasNext) {
           val range = ranges.next()
-          var locus = range.start
+          locus = math.max(range.start, locus)
           while (locus < range.end) {
             lazy val nextLocusWithReads = firstStartLocus(windows: _*)
             if (skipEmpty && windowsEmpty && nextLocusWithReads - halfWindowSize > locus) {
