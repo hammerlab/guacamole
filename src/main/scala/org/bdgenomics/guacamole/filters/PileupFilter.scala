@@ -39,7 +39,7 @@ object RegionComplexityFilter {
   def apply(elements: Seq[PileupElement], maximumAlignmentComplexity: Int, minimumAlignmentQuality: Int): Seq[PileupElement] = {
     val depth = elements.length
     val qualityMappedReads = elements.filter(_.read.alignmentQuality > minimumAlignmentQuality).length
-    if ((depth - qualityMappedReads).toFloat / depth > maximumAlignmentComplexity) {
+    if ((depth - qualityMappedReads) * 100.0 / depth > maximumAlignmentComplexity) {
       Seq.empty
     } else {
       elements
