@@ -315,7 +315,7 @@ object DistributedUtil extends Logging {
    * sliding window instance for each RDD containing the reads overlapping an interval of halfWindowSize to either side
    * of a locus.
    *
-   * This function supports maintaining some state from locus to another within a task. The state maintained is of type
+   * This function supports maintaining some state from one locus to another within a task. The state maintained is of type
    * S. The user function will receive the current state in addition to the sliding windows, and returns a pair of
    * (new state, result data). The state is initialized to initialState for each task, and for each new contig handled
    * by a single task.
@@ -332,7 +332,7 @@ object DistributedUtil extends Logging {
    * @tparam S state type
    * @return RDD[T] of flatmap results
    */
-  def windowFlatMapWithState[T: ClassTag, S: ClassTag](
+  def windowFlatMapWithState[T: ClassTag, S](
     readsRDDs: Seq[RDD[MappedRead]],
     lociPartitions: LociMap[Long],
     skipEmpty: Boolean,
