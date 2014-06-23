@@ -3,3 +3,8 @@ cache:
   directories:
   - .autoconf
   - $HOME/.m2
+after_success:
+- .travis/public_docs.sh
+env:
+  global:
+    secure: ffCremJXhnrGEaP0nRgChQiaZrfDJpG8yyMckri/dcTYZsESa0qcyyu9gNXwtW3UkEZpmwFbMSUqkMHgIsYBMDMD9zZLHUpMLswN6VDl3/WrE+4o7tJq8PGDB/idPnM+vr4YPO8uopUGGIhEiAHsvBGqybYsHdGQa1TKmbH0x+k=
