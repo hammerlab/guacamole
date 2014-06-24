@@ -274,6 +274,7 @@ object Common extends Logging {
   def createSparkContext(args: SparkArgs,
                          loadSystemValues: Boolean = true,
                          sparkDriverPort: Option[Int] = None,
+                         sparkUIPort: Option[Int] = None,
                          appName: Option[String] = None): SparkContext = {
     val config: SparkConf = new SparkConf(loadSystemValues).setMaster(args.spark_master)
     appName match {
@@ -281,14 +282,12 @@ object Common extends Logging {
       case _          => config.setAppName("guacamole")
     }
     if (args.spark_home != null) config.setSparkHome(args.spark_home)
-    if (args.spark_jars != Nil) config.setJars(args.spark_jars)
-    if (args.spark_env_vars != Nil) config.setExecutorEnv(parseEnvVariables(args.spark_env_vars))
+    if (args.spark_jars.nonEmpty) config.setJars(args.spark_jars)
+    if (args.spark_env_vars.nonEmpty) config.setExecutorEnv(parseEnvVariables(args.spark_env_vars))
 
-    // Optionally set the spark driver port
-    sparkDriverPort match {
-      case Some(port) => config.set("spark.driver.port", port.toString)
-      case None       =>
-    }
+    // Optionally set the spark driver and UI ports
+    sparkDriverPort.foreach(port => config.set("spark.driver.port", port.toString))
+    sparkUIPort.foreach(port => config.set("spark.ui.port", port.toString))
 
     // Setup the Kryo settings
     // The spark.kryo.registrator setting below is our only modification from ADAM's version of this function.
