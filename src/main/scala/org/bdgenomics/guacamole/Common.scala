@@ -223,7 +223,7 @@ object Common extends Logging {
         progress("Collecting partition %d of %d.".format(partitionNum + 1, numPartitions))
         val chunk = coalescedSubsetGenotypes.mapPartitionsWithIndex((num, genotypes) => {
           if (num == partitionNum) genotypes else Iterator.empty
-        }).collect()
+        }).collect
         chunk.foreach(genotype => {
           writer.write(genotype, encoder)
           encoder.flush()
@@ -236,7 +236,7 @@ object Common extends Logging {
     } else if (outputPath.toLowerCase.endsWith(".vcf")) {
       progress("Writing genotypes to VCF file: %s.".format(outputPath))
       val sc = subsetGenotypes.sparkContext
-      sc.adamVCFSave(outputPath, subsetGenotypes.toADAMVariantContext().coalesce(1))
+      sc.adamVCFSave(outputPath, subsetGenotypes.toADAMVariantContext.coalesce(1))
     } else {
       progress("Writing genotypes to: %s.".format(outputPath))
       subsetGenotypes.adamSave(outputPath,
@@ -344,7 +344,7 @@ object Common extends Logging {
       remaining -= string.length + separator.length
     }
     if (pieces.hasNext) builder.append(ellipses)
-    builder.result()
+    builder.result
   }
 }
 
