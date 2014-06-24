@@ -137,17 +137,23 @@ object TestUtil extends ShouldMatchers {
       // Silence the Spark logs if requested
       maybeLevels = if (silenceSpark) Some(SparkLogUtil.silenceSpark()) else None
       synchronized {
-        // Find an unused port
-        val s = new ServerSocket(0)
-        val port = s.getLocalPort
-        s.close()
+        // Find two unused ports
+        val driverSocket = new ServerSocket(0)
+        val uiSocket = new ServerSocket(0)
+
+        val driverPort = driverSocket.getLocalPort
+        val uiPort = uiSocket.getLocalPort
+
+        uiSocket.close()
+        driverSocket.close()
 
         object args extends SparkArgs {
           spark_master = "local[4]"
           spark_kryo_buffer_size = 256
         }
         // Create a spark context
-        Common.createSparkContext(args, false, Some(port))
+        Common.createSparkContext(
+          args, loadSystemValues = false, sparkDriverPort = Some(driverPort), sparkUIPort = Some(uiPort))
       }
     }
 
