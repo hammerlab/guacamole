@@ -273,10 +273,10 @@ object DistributedUtil extends Logging {
    *
    */
   def pileupFlatMap[T: ClassTag](
-      reads: RDD[MappedRead],
-      lociPartitions: LociMap[Long],
-      skipEmpty: Boolean,
-      function: Pileup => Iterator[T]): RDD[T] = {
+    reads: RDD[MappedRead],
+    lociPartitions: LociMap[Long],
+    skipEmpty: Boolean,
+    function: Pileup => Iterator[T]): RDD[T] = {
     windowFlatMapWithState(Seq(reads), lociPartitions, skipEmpty, 0, None, (maybePileup: Option[Pileup], windows) => {
       assert(windows.length == 1)
       val pileup = initOrMovePileup(maybePileup, windows(0))
@@ -293,11 +293,11 @@ object DistributedUtil extends Logging {
    *
    */
   def pileupFlatMapTwoRDDs[T: ClassTag](
-      reads1: RDD[MappedRead],
-      reads2: RDD[MappedRead],
-      lociPartitions: LociMap[Long],
-      skipEmpty: Boolean,
-      function: (Pileup, Pileup) => Iterator[T]): RDD[T] = {
+    reads1: RDD[MappedRead],
+    reads2: RDD[MappedRead],
+    lociPartitions: LociMap[Long],
+    skipEmpty: Boolean,
+    function: (Pileup, Pileup) => Iterator[T]): RDD[T] = {
     windowFlatMapWithState(
       Seq(reads1, reads2),
       lociPartitions,
