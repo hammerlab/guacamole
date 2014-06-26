@@ -39,7 +39,9 @@ class ReadSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
       TextCigarCodec.getSingleton.decode(""),
       None, // mdtag
       false,
-      true)
+      true,
+      true,
+      Some(300))
 
     val serialized = TestUtil.serialize(read)
     val deserialized = TestUtil.deserialize[MappedRead](serialized)
@@ -72,7 +74,9 @@ class ReadSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
       true,
       "some sample name",
       false,
-      true)
+      true,
+      true,
+      Some(300))
 
     val serialized = TestUtil.serialize(read)
     val deserialized = TestUtil.deserialize[UnmappedRead](serialized)

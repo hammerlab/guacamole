@@ -48,9 +48,10 @@ object RegionComplexityFilter {
 }
 
 /**
- *
+ * Filter pileups where there are any non-uniquely mapped reads
  */
 object AmbiguousMappingPileupFilter {
+
   /**
    *
    * @param elements sequence of pileup elements to filter
@@ -70,14 +71,40 @@ object AmbiguousMappingPileupFilter {
  * These are generally more complex and more difficult to call
  */
 object MultiAllelicPileupFilter {
+
   /**
    *
    * @param elements sequence of pileup elements to filter
-   * @param maxPloidy pumber of alleles to expect (> maxPloidy would mean multiple possible alternates) default: 2
+   * @param maxPloidy number of alleles to expect (> maxPloidy would mean multiple possible alternates) default: 2
    * @return Empty sequence if there are > maxPloidy possible allelee, otherwise original set of elements
    */
   def apply(elements: Seq[PileupElement], maxPloidy: Int = 2): Seq[PileupElement] = {
     if (elements.map(el => Bases.basesToString(el.sequencedBases)).distinct.length > maxPloidy) {
+      Seq.empty
+    } else {
+      elements
+    }
+  }
+}
+
+/**
+ * Filter to remove pileups where there are many reads with abnormal insert size
+ */
+object AbnormalInsertSizePileupFilter {
+
+  /**
+   *
+   * @param elements sequence of pileup elements to filter
+   * @param maxAbnormalInsertSizeReadsThreshold maximum allowed percent of reads that have an abnormal insert size
+   * @param minInsertSize smallest insert size considered normal (default: 5)
+   * @param maxInsertSize largest insert size considered normal (default: 1000)
+   * @return Empty sequence if there are more than maxAbnormalInsertSizeReadsThreshold % reads with insert size out of the specified range
+   */
+  def apply(elements: Seq[PileupElement], maxAbnormalInsertSizeReadsThreshold: Int, minInsertSize: Int = 5, maxInsertSize: Int = 1000): Seq[PileupElement] = {
+    val abnormalInsertSizeReads = elements.filter(el => {
+      el.read.inferredInsertSize.isDefined && (el.read.inferredInsertSize.get < minInsertSize || el.read.inferredInsertSize.get > maxInsertSize)
+    }).length
+    if (100.0 * abnormalInsertSizeReads / elements.length > maxAbnormalInsertSizeReadsThreshold) {
       Seq.empty
     } else {
       elements
@@ -101,6 +128,9 @@ object PileupFilter {
     @Option(name = "-filterMultiAllelic", usage = "Filter any pileups > 2 bases considered")
     var filterMultiAllelic: Boolean = false
 
+    @Option(name = "-maxPercentAbnormalInsertSize", usage = "Filter pileups where % of reads with abnormal insert size is greater than specified")
+    var maxPercentAbnormalInsertSize: Int = 0
+
   }
 
   def apply(p: Pileup, args: PileupFilterArguments): Pileup = {
@@ -108,6 +138,10 @@ object PileupFilter {
     var elements: Seq[PileupElement] = p.elements
     if (args.filterAmbiguousMapped) {
       elements = AmbiguousMappingPileupFilter(elements)
+    }
+
+    if (args.maxPercentAbnormalInsertSize > 0) {
+      elements = AbnormalInsertSizePileupFilter(elements, args.maxPercentAbnormalInsertSize)
     }
 
     if (args.filterMultiAllelic) {
