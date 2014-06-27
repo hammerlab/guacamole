@@ -4,7 +4,6 @@ import org.bdgenomics.guacamole.pileup.{ PileupElement, Pileup }
 import org.bdgenomics.guacamole.Common.Arguments.Base
 import org.kohsuke.args4j.Option
 import org.bdgenomics.guacamole.Bases
-import org.bdgenomics.guacamole.filters.QualityAlignedReadsFilter
 
 /**
  * This is a cheap computation for a region's complexity
