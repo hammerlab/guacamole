@@ -4,21 +4,7 @@ import org.bdgenomics.guacamole.pileup.{ PileupElement, Pileup }
 import org.bdgenomics.guacamole.Common.Arguments.Base
 import org.kohsuke.args4j.Option
 import org.bdgenomics.guacamole.Bases
-
-/**
- * Filter to remove pileup elements with low alignment quality
- */
-object QualityAlignedReadsFilter {
-  /**
-   *
-   * @param elements sequence of pileup elements to filter
-   * @param minimumAlignmentQuality Threshold to define whether a read was poorly aligned
-   * @return filtered sequence of elements - those who had higher than minimumAlignmentQuality alignmentQuality
-   */
-  def apply(elements: Seq[PileupElement], minimumAlignmentQuality: Int): Seq[PileupElement] = {
-    elements.filter(_.read.alignmentQuality > minimumAlignmentQuality)
-  }
-}
+import org.bdgenomics.guacamole.filters.QualityAlignedReadsFilter
 
 /**
  * This is a cheap computation for a region's complexity
@@ -102,9 +88,24 @@ object AbnormalInsertSizePileupFilter {
    */
   def apply(elements: Seq[PileupElement], maxAbnormalInsertSizeReadsThreshold: Int, minInsertSize: Int = 5, maxInsertSize: Int = 1000): Seq[PileupElement] = {
     val abnormalInsertSizeReads = elements.filter(el => {
-      el.read.inferredInsertSize.isDefined && (el.read.inferredInsertSize.get < minInsertSize || el.read.inferredInsertSize.get > maxInsertSize)
+      el.read.inferredInsertSize.isDefined && (math.abs(el.read.inferredInsertSize.get) < minInsertSize || math.abs(el.read.inferredInsertSize.get) > maxInsertSize)
     }).length
     if (100.0 * abnormalInsertSizeReads / elements.length > maxAbnormalInsertSizeReadsThreshold) {
+      Seq.empty
+    } else {
+      elements
+    }
+  }
+}
+
+object DeletionEvidencePileupFilter {
+  /**
+   *
+   * @param elements sequence of pileup elements to filter
+   * @return Empty sequence if they overlap deletion
+   */
+  def apply(elements: Seq[PileupElement]): Seq[PileupElement] = {
+    if (elements.filter(_.isDeletion).length > 0) {
       Seq.empty
     } else {
       elements
@@ -120,7 +121,10 @@ object PileupFilter {
     var minAlignmentQuality: Int = 30
 
     @Option(name = "-maxMappingComplexity", usage = "Maximum percent of reads that can be mapped with low quality (indicative of a complex region")
-    var maxMappingComplexity: Int = 25
+    var maxMappingComplexity: Int = 20
+
+    @Option(name = "-minAlignmentForComplexity", usage = "Minimum read mapping quality for a read (Phred-scaled) that counts towards poorly mapped for complexity")
+    var minAlignmentForComplexity: Int = 25
 
     @Option(name = "-filterAmbiguousMapped", usage = "Filter any reads with duplicate mapping or alignment quality = 0")
     var filterAmbiguousMapped: Boolean = false
@@ -131,31 +135,52 @@ object PileupFilter {
     @Option(name = "-maxPercentAbnormalInsertSize", usage = "Filter pileups where % of reads with abnormal insert size is greater than specified")
     var maxPercentAbnormalInsertSize: Int = 0
 
+    @Option(name = "-filterDeletionOverlap", usage = "Filter any that overlaps a deletion")
+    var filterDeletionOverlap: Boolean = false
+
   }
 
-  def apply(p: Pileup, args: PileupFilterArguments): Pileup = {
+  def apply(pileup: Pileup, args: PileupFilterArguments): Pileup = {
+    apply(pileup, args.filterAmbiguousMapped, args.filterMultiAllelic, args.maxMappingComplexity, args.minAlignmentForComplexity, args.minAlignmentQuality, args.maxPercentAbnormalInsertSize, args.filterDeletionOverlap)
+  }
 
-    var elements: Seq[PileupElement] = p.elements
-    if (args.filterAmbiguousMapped) {
+  def apply(pileup: Pileup,
+            filterAmbiguousMapped: Boolean,
+            filterMultiAllelic: Boolean,
+            maxMappingComplexity: Int,
+            minAlignmentForComplexity: Int,
+            minAlignmentQuality: Int,
+            maxPercentAbnormalInsertSize: Int,
+            filterDeletionOverlap: Boolean): Pileup = {
+
+    var elements: Seq[PileupElement] = pileup.elements
+
+    if (filterDeletionOverlap) {
+      elements = DeletionEvidencePileupFilter(elements)
+    } else {
+      elements = elements.filter(!_.isDeletion)
+    }
+
+    if (filterAmbiguousMapped) {
       elements = AmbiguousMappingPileupFilter(elements)
     }
 
-    if (args.maxPercentAbnormalInsertSize > 0) {
-      elements = AbnormalInsertSizePileupFilter(elements, args.maxPercentAbnormalInsertSize)
+    if (maxPercentAbnormalInsertSize > 0) {
+      elements = AbnormalInsertSizePileupFilter(elements, maxPercentAbnormalInsertSize)
     }
 
-    if (args.filterMultiAllelic) {
+    if (filterMultiAllelic) {
       elements = MultiAllelicPileupFilter(elements)
     }
 
-    if (args.maxMappingComplexity < 100) {
-      elements = RegionComplexityFilter(elements, args.maxMappingComplexity, args.minAlignmentQuality)
+    if (maxMappingComplexity < 100) {
+      elements = RegionComplexityFilter(elements, maxMappingComplexity, minAlignmentForComplexity)
     }
 
-    if (args.minAlignmentQuality > 0) {
-      elements = QualityAlignedReadsFilter(elements, args.minAlignmentQuality)
+    if (minAlignmentQuality > 0) {
+      elements = QualityAlignedReadsFilter(elements, minAlignmentQuality)
     }
 
-    Pileup(p.locus, elements)
+    Pileup(pileup.locus, elements)
   }
 }
