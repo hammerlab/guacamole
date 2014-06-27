@@ -33,15 +33,20 @@ class ReadSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
       Array[Byte]((10 to 20).map(_.toByte): _*),
       true,
       "some sample name",
-      "some reference contig",
+      "chr5",
       50,
       325352323,
       TextCigarCodec.getSingleton.decode(""),
       None, // mdtag
       false,
-      true,
-      true,
-      Some(300))
+      isPositiveStrand = true,
+      isPaired = true,
+      isFirstInPair = true,
+      inferredInsertSize = Some(300),
+      isMateMapped = true,
+      Some("chr5"),
+      Some(100L),
+      false)
 
     val serialized = TestUtil.serialize(read)
     val deserialized = TestUtil.deserialize[MappedRead](serialized)
@@ -64,6 +69,57 @@ class ReadSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
     deserialized.mdTag should equal(read.mdTag)
     deserialized.failedVendorQualityChecks should equal(read.failedVendorQualityChecks)
     deserialized.isPositiveStrand should equal(read.isPositiveStrand)
+    deserialized.isMateMapped should equal(true)
+    deserialized.mateReferenceContig should equal(Some("chr5"))
+    deserialized.mateStart should equal(Some(100L))
+  }
+
+  test("serialize / deserialize mapped read with unmapped pair") {
+    val read = MappedRead(
+      5, // token
+      Bases.stringToBases("TCGACCCTCGA"),
+      Array[Byte]((10 to 20).map(_.toByte): _*),
+      true,
+      "some sample name",
+      "chr5",
+      50,
+      325352323,
+      TextCigarCodec.getSingleton.decode(""),
+      None, // mdtag
+      false,
+      isPositiveStrand = true,
+      isPaired = true,
+      isFirstInPair = true,
+      inferredInsertSize = Some(300),
+      isMateMapped = false,
+      None,
+      None,
+      false)
+
+    val serialized = TestUtil.serialize(read)
+    val deserialized = TestUtil.deserialize[MappedRead](serialized)
+
+    // We *should* be able to just use MappedRead's equality implementation, since Scala should implement the equals
+    // method for case classes. Somehow, something goes wrong though, and this fails:
+
+    // deserialized should equal(read)
+
+    // So, instead, we'll compare each field ourselves:
+    deserialized.token should equal(read.token)
+    deserialized.sequence should equal(read.sequence)
+    deserialized.baseQualities should equal(read.baseQualities)
+    deserialized.isDuplicate should equal(read.isDuplicate)
+    deserialized.sampleName should equal(read.sampleName)
+    deserialized.referenceContig should equal(read.referenceContig)
+    deserialized.alignmentQuality should equal(read.alignmentQuality)
+    deserialized.start should equal(read.start)
+    deserialized.cigar should equal(read.cigar)
+    deserialized.mdTag should equal(read.mdTag)
+    deserialized.failedVendorQualityChecks should equal(read.failedVendorQualityChecks)
+    deserialized.isPositiveStrand should equal(read.isPositiveStrand)
+    deserialized.isMateMapped should equal(false)
+    deserialized.mateReferenceContig should equal(None)
+    deserialized.mateStart should equal(None)
   }
 
   test("serialize / deserialize unmapped read") {
@@ -74,9 +130,14 @@ class ReadSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
       true,
       "some sample name",
       false,
-      true,
-      true,
-      Some(300))
+      isPositiveStrand = true,
+      isPaired = true,
+      isFirstInPair = true,
+      inferredInsertSize = Some(300),
+      isMateMapped = true,
+      Some("chr5"),
+      Some(100L),
+      false)
 
     val serialized = TestUtil.serialize(read)
     val deserialized = TestUtil.deserialize[UnmappedRead](serialized)
@@ -94,5 +155,8 @@ class ReadSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
     deserialized.sampleName should equal(read.sampleName)
     deserialized.failedVendorQualityChecks should equal(read.failedVendorQualityChecks)
     deserialized.isPositiveStrand should equal(read.isPositiveStrand)
+    deserialized.isMateMapped should equal(true)
+    deserialized.mateReferenceContig should equal(Some("chr5"))
+    deserialized.mateStart should equal(Some(100L))
   }
 }
