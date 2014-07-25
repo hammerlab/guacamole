@@ -18,11 +18,8 @@
 
 package org.bdgenomics.guacamole.pileup
 
-import org.bdgenomics.adam.avro.ADAMRecord
 import org.scalatest.matchers.ShouldMatchers
-import org.bdgenomics.adam.rdd.ADAMContext._
-import org.apache.spark.rdd.RDD
-import org.bdgenomics.guacamole.{ Bases, MappedRead, Read, TestUtil }
+import org.bdgenomics.guacamole.{ Bases, TestUtil }
 
 class PileupSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
 

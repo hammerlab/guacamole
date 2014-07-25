@@ -2,8 +2,6 @@ package org.bdgenomics.guacamole.callers
 
 import org.bdgenomics.guacamole.TestUtil.SparkFunSuite
 import org.bdgenomics.guacamole.TestUtil
-import org.apache.commons.io.FileUtils
-import java.io.{ IOError, File }
 
 class SomaticThresholdVariantCallerSuite extends SparkFunSuite {
   val output = "/tmp/somatic.threshold.chr20.vcf"
