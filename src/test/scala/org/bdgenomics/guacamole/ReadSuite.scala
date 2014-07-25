@@ -19,11 +19,7 @@
 package org.bdgenomics.guacamole
 
 import org.scalatest.matchers.ShouldMatchers
-import com.google.common.collect._
-import com.esotericsoftware.kryo.Kryo
-import com.twitter.chill.{ IKryoRegistrar, KryoInstantiator, KryoPool }
-import net.sf.samtools.{ Cigar, TextCigarCodec }
-import org.bdgenomics.adam.util.MdTag
+import net.sf.samtools.TextCigarCodec
 
 class ReadSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
   test("serialize / deserialize mapped read") {

@@ -20,7 +20,7 @@ package org.bdgenomics.guacamole
 
 import org.bdgenomics.adam.cli.{ SparkArgs, ParquetArgs, Args4jBase }
 import org.kohsuke.args4j.{ Option => Opt }
-import org.bdgenomics.adam.avro.ADAMGenotype
+import org.bdgenomics.formats.avro.ADAMGenotype
 import org.apache.spark.rdd.RDD
 import org.apache.spark.{ SparkConf, Logging, SparkContext }
 import org.bdgenomics.adam.rdd.ADAMContext._

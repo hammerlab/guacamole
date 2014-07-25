@@ -18,19 +18,17 @@
 
 package org.bdgenomics.guacamole.somatic
 
-import org.bdgenomics.adam.avro._
+import org.bdgenomics.formats.avro._
 import org.bdgenomics.guacamole.{ Common, Command }
-import org.bdgenomics.guacamole.Common.Arguments.{ Base }
+import org.bdgenomics.guacamole.Common.Arguments.Base
 import org.bdgenomics.adam.cli.Args4j
 import org.apache.spark.rdd.RDD
 import org.apache.spark.SparkContext._
 import org.apache.spark.SparkContext.rddToPairRDDFunctions
 import scala.collection.{ mutable, JavaConversions }
 import org.bdgenomics.adam.rdd.ADAMContext._
-import net.sf.samtools.{ CigarOperator }
+import net.sf.samtools.CigarOperator
 import org.apache.spark.SparkContext
-import org.apache.hadoop.io.{ Text, LongWritable }
-import org.apache.hadoop.mapred.TextInputFormat
 
 /**
  * Simple somatic variant caller implementation.
