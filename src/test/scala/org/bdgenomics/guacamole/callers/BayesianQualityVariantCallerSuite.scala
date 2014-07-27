@@ -73,7 +73,7 @@ class BayesianQualityVariantCallerSuite extends SparkFunSuite {
     expectedLikelihoods += makeGenotype("T", "G") -> altLikelihood
 
     val scored = BayesianQualityVariantCaller.computeLikelihoods(pileup).toMap
-    scored.foreach(l => TestUtil.assertAlmostEqual(l._2, expectedLikelihoods(l._1)))
+    scored.foreach(l => TestUtil.assertAlmostEqual(l._2, expectedLikelihoods(l._1), 1e-2))
   }
 
   test("score genotype for single sample, mix of ref/non-ref bases") {
@@ -88,7 +88,7 @@ class BayesianQualityVariantCallerSuite extends SparkFunSuite {
     val expectedLikelihoods = scala.collection.mutable.Map.empty[Genotype, Double]
 
     expectedLikelihoods += makeGenotype("C", "C") -> (2 * ((1 - errorPhred30) * 2 * (1 - errorPhred40) * 2 * errorPhred30)) / 8.0
-    expectedLikelihoods += makeGenotype("C", "A") -> hetLikelihood
+    expectedLikelihoods += makeGenotype("A", "C") -> hetLikelihood
     expectedLikelihoods += makeGenotype("A", "A") -> (2 * errorPhred30 * 2 * errorPhred40 * 2 * (1 - errorPhred30)) / 8.0
 
     val scored = BayesianQualityVariantCaller.computeLikelihoods(pileup).toMap
@@ -120,7 +120,7 @@ class BayesianQualityVariantCallerSuite extends SparkFunSuite {
     expectedLikelihoods += makeGenotype("C", "C") -> allErrorLikelihood
 
     val scored = BayesianQualityVariantCaller.computeLikelihoods(pileup).toMap
-    scored.foreach(l => TestUtil.assertAlmostEqual(l._2, expectedLikelihoods(l._1)))
+    scored.foreach(l => TestUtil.assertAlmostEqual(l._2, expectedLikelihoods(l._1), 1e-2))
   }
 
   test("log score genotype for single sample, all bases ref") {
@@ -161,7 +161,7 @@ class BayesianQualityVariantCallerSuite extends SparkFunSuite {
     val expectedLikelihoods = scala.collection.mutable.Map.empty[Genotype, Double]
 
     expectedLikelihoods += makeGenotype("C", "C") -> (math.log(2 * (1 - errorPhred30)) + math.log(2 * (1 - errorPhred40)) + math.log(2 * errorPhred30) - 3.0)
-    expectedLikelihoods += makeGenotype("C", "A") -> hetLikelihood
+    expectedLikelihoods += makeGenotype("A", "C") -> hetLikelihood
     expectedLikelihoods += makeGenotype("A", "A") -> (math.log(2 * errorPhred30) + math.log(2 * errorPhred40) + math.log(2 * (1 - errorPhred30)) - 3.0)
 
     val scored = BayesianQualityVariantCaller.computeLogLikelihoods(pileup).toMap
