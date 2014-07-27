@@ -9,16 +9,13 @@ import java.net.ServerSocket
 import org.apache.spark.SparkContext
 import org.apache.log4j.{ Logger, Level }
 import org.bdgenomics.adam.cli.SparkArgs
-import org.bdgenomics.adam.avro.{ ADAMContig, ADAMRecord }
-import org.bdgenomics.adam.rich.DecadentRead
 import scala.math._
 import scala.Some
 import com.twitter.chill.{ KryoPool, IKryoRegistrar, KryoInstantiator }
 import com.esotericsoftware.kryo.Kryo
 import org.scalatest.matchers.ShouldMatchers
-import org.apache.spark.rdd.RDD
 import org.apache.commons.io.FileUtils
-import java.io.{ FileNotFoundException, IOError, File }
+import java.io.{ FileNotFoundException, File }
 
 object TestUtil extends ShouldMatchers {
 

@@ -3,12 +3,12 @@ package org.bdgenomics.guacamole.concordance
 import org.bdgenomics.guacamole.{ Common, Command }
 import org.apache.spark.{ SparkContext, Logging }
 import org.kohsuke.args4j.Option
-import org.bdgenomics.adam.cli.{ GenotypeConcordance, Args4j }
+import org.bdgenomics.adam.cli.Args4j
 import org.bdgenomics.adam.rdd.variation.ADAMVariationContext._
 import org.apache.spark.SparkContext._
 import org.bdgenomics.adam.rdd.variation.ConcordanceTable
 import java.util.EnumSet
-import org.bdgenomics.adam.avro.{ ADAMGenotype, ADAMGenotypeType }
+import org.bdgenomics.formats.avro.{ ADAMGenotype, ADAMGenotypeType }
 import org.bdgenomics.adam.rich.RichADAMVariant
 import org.apache.spark.rdd.RDD
 

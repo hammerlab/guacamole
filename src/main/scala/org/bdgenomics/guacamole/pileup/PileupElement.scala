@@ -1,9 +1,8 @@
 package org.bdgenomics.guacamole.pileup
 
-import net.sf.samtools.{ TextCigarCodec, CigarOperator, CigarElement }
-import org.bdgenomics.guacamole.{ MappedRead, Read, CigarUtils }
+import net.sf.samtools.{ CigarOperator, CigarElement }
+import org.bdgenomics.guacamole.{ MappedRead, CigarUtils }
 import scala.annotation.tailrec
-import scala.collection.JavaConversions._
 
 /**
  * A [[PileupElement]] represents the bases  sequenced by a particular read at a particular reference locus.

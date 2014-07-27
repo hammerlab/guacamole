@@ -18,8 +18,8 @@
 
 package org.bdgenomics.guacamole.callers
 
-import org.bdgenomics.adam.avro.{ ADAMContig, ADAMVariant, ADAMGenotypeAllele, ADAMGenotype }
-import org.bdgenomics.adam.avro.ADAMGenotypeAllele.{ NoCall, Ref, Alt, OtherAlt }
+import org.bdgenomics.formats.avro.{ ADAMContig, ADAMVariant, ADAMGenotypeAllele, ADAMGenotype }
+import org.bdgenomics.formats.avro.ADAMGenotypeAllele.{ NoCall, Ref, Alt, OtherAlt }
 import org.bdgenomics.guacamole._
 import org.apache.spark.SparkContext._
 import scala.collection.JavaConversions
