@@ -1,7 +1,7 @@
 package org.bdgenomics.guacamole.filters
 
 import org.apache.spark.rdd.RDD
-import org.bdgenomics.adam.avro.ADAMGenotype
+import org.bdgenomics.formats.avro.ADAMGenotype
 import org.bdgenomics.guacamole.Common.Arguments.Base
 import org.kohsuke.args4j.Option
 import org.bdgenomics.guacamole.Common

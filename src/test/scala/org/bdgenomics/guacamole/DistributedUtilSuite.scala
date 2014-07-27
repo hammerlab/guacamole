@@ -19,7 +19,7 @@
 package org.bdgenomics.guacamole
 
 import org.scalatest.matchers.ShouldMatchers
-import org.bdgenomics.adam.avro.{ ADAMGenotypeAllele, ADAMGenotype }
+import org.bdgenomics.formats.avro.{ ADAMGenotypeAllele, ADAMGenotype }
 import org.bdgenomics.guacamole.callers.ThresholdVariantCaller
 import scala.collection.JavaConversions._
 import org.bdgenomics.guacamole.pileup.{ PileupElement, Pileup }
