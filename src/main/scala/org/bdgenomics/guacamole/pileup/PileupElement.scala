@@ -3,6 +3,7 @@ package org.bdgenomics.guacamole.pileup
 import net.sf.samtools.{ CigarOperator, CigarElement }
 import org.bdgenomics.guacamole.{ MappedRead, CigarUtils }
 import scala.annotation.tailrec
+import scala.math
 
 /**
  * A [[PileupElement]] represents the bases  sequenced by a particular read at a particular reference locus.
@@ -172,6 +173,27 @@ case class PileupElement(
 
     getCurrentElement(remainingReadCigar, currentCigarReadPosition, cigarElementLocus, indexInCigarElements)
   }
+
+  /**
+   * Distance from the end of the reading frame
+   * If the read was positive then the sequencing end also corresponds to the read end positions
+   * If the read was negative, the sequencing end is the mapped start position
+   */
+  lazy val distanceFromSequencingEnd = if (read.isPositiveStrand) read.end - locus else locus - read.start
+
+  /**
+   * Count of mismatches within window of size k
+   * @param k window of bases around to check for mismatches on the read
+   */
+  def nearbyMismatches(k: Int): Int = {
+
+    def isNearbyMismatch(mismatch: Long) = {
+      mismatch != locus && math.abs((locus - mismatch).toInt) <= k
+    }
+
+    read.mdTag.map(_.mismatches.keys.filter(isNearbyMismatch).size).getOrElse(0)
+  }
+
 }
 
 object PileupElement {
