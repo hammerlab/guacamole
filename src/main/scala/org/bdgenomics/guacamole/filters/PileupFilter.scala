@@ -137,10 +137,23 @@ object PileupFilter {
     @Option(name = "-filterDeletionOverlap", usage = "Filter any that overlaps a deletion")
     var filterDeletionOverlap: Boolean = false
 
+    @Option(name = "-minEdgeDistance", usage = "Filter reads where the base in the pileup is closer than " +
+      "minEdgeDistance to the sequencing end of the read")
+    var minEdgeDistance: Int = 0
+
   }
 
   def apply(pileup: Pileup, args: PileupFilterArguments): Pileup = {
-    apply(pileup, args.filterAmbiguousMapped, args.filterMultiAllelic, args.maxMappingComplexity, args.minAlignmentForComplexity, args.minAlignmentQuality, args.maxPercentAbnormalInsertSize, args.filterDeletionOverlap)
+    apply(pileup,
+      args.filterAmbiguousMapped,
+      args.filterMultiAllelic,
+      args.maxMappingComplexity,
+      args.minAlignmentForComplexity,
+      args.minAlignmentQuality,
+      args.maxPercentAbnormalInsertSize,
+      args.filterDeletionOverlap,
+      args.minEdgeDistance)
+
   }
 
   def apply(pileup: Pileup,
@@ -150,26 +163,25 @@ object PileupFilter {
             minAlignmentForComplexity: Int,
             minAlignmentQuality: Int,
             maxPercentAbnormalInsertSize: Int,
-            filterDeletionOverlap: Boolean): Pileup = {
+            filterDeletionOverlap: Boolean,
+            minEdgeDistance: Int): Pileup = {
 
     var elements: Seq[PileupElement] = pileup.elements
 
     if (filterDeletionOverlap) {
       elements = DeletionEvidencePileupFilter(elements)
-    } else {
-      elements = elements.filter(!_.isDeletion)
     }
 
     if (filterAmbiguousMapped) {
       elements = AmbiguousMappingPileupFilter(elements)
     }
 
-    if (maxPercentAbnormalInsertSize > 0) {
-      elements = AbnormalInsertSizePileupFilter(elements, maxPercentAbnormalInsertSize)
-    }
-
     if (filterMultiAllelic) {
       elements = MultiAllelicPileupFilter(elements)
+    }
+
+    if (maxPercentAbnormalInsertSize > 0) {
+      elements = AbnormalInsertSizePileupFilter(elements, maxPercentAbnormalInsertSize)
     }
 
     if (maxMappingComplexity < 100) {
@@ -178,6 +190,10 @@ object PileupFilter {
 
     if (minAlignmentQuality > 0) {
       elements = QualityAlignedReadsFilter(elements, minAlignmentQuality)
+    }
+
+    if (minEdgeDistance > 0) {
+      elements = EdgeBaseFilter(elements, minEdgeDistance)
     }
 
     Pileup(pileup.locus, elements)
