@@ -288,7 +288,7 @@ object Read extends Logging {
    * @param record
    * @return
    */
-  def fromSAMRecord(record: SAMRecord, token: Int = 0): Read = {
+  def fromSAMRecord(record: SAMRecord, token: Int): Read = {
     val isMapped = (
       record.getMappingQuality != SAMRecord.UNKNOWN_MAPPING_QUALITY &&
       record.getReferenceName != null &&
@@ -304,7 +304,7 @@ object Read extends Logging {
 
     if (isMapped) {
       val mdTagString = record.getStringAttribute("MD")
-      val mdTag = if (mdTagString == null || mdTagString.isEmpty)
+      val mdTag = if (mdTagString == null || mdTagString.isEmpty || mdTagString.equals("0"))
         None
       else
         Some(MdTag(mdTagString, record.getAlignmentStart - 1))
@@ -361,7 +361,7 @@ object Read extends Logging {
    */
   def loadReadArrayAndSequenceDictionaryFromBAM(
     filename: String,
-    token: Int = 0,
+    token: Int,
     filters: InputFilters): (ArrayBuffer[Read], SequenceDictionary) = {
     val reader = new SAMFileReader(new java.io.File(filename))
     val sequenceDictionary = SequenceDictionary.fromSAMReader(reader)
@@ -369,7 +369,7 @@ object Read extends Logging {
 
     JavaConversions.asScalaIterator(reader.iterator).foreach(item => {
       if (!filters.nonDuplicate || !item.getDuplicateReadFlag) {
-        val read = fromSAMRecord(item)
+        val read = fromSAMRecord(item, token)
         if ((!filters.mapped || read.isMapped) &&
           (!filters.passedVendorQualityChecks || !read.failedVendorQualityChecks) &&
           (!filters.hasMdTag || read.isMapped && read.getMappedRead.mdTag.isDefined) &&
@@ -393,7 +393,7 @@ object Read extends Logging {
   def loadReadRDDAndSequenceDictionaryFromBAM(
     filename: String,
     sc: SparkContext,
-    token: Int = 0,
+    token: Int,
     filters: InputFilters): (RDD[Read], SequenceDictionary) = {
 
     val samHeader = SAMHeaderReader.readSAMHeaderFrom(new Path(filename), sc.hadoopConfiguration)
@@ -401,7 +401,7 @@ object Read extends Logging {
 
     val samRecords: RDD[(LongWritable, SAMRecordWritable)] =
       sc.newAPIHadoopFile[LongWritable, SAMRecordWritable, AnySAMInputFormat](filename)
-    var reads: RDD[Read] = samRecords.map({ case (k, v) => fromSAMRecord(v.get) })
+    var reads: RDD[Read] = samRecords.map({ case (k, v) => fromSAMRecord(v.get, token) })
     if (filters.mapped) reads = reads.filter(_.isMapped)
     if (filters.nonDuplicate) reads = reads.filter(read => !read.isDuplicate)
     if (filters.passedVendorQualityChecks) reads = reads.filter(read => !read.failedVendorQualityChecks)
