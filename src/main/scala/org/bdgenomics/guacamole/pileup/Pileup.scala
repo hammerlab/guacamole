@@ -71,6 +71,26 @@ case class Pileup(locus: Long, elements: Seq[PileupElement]) {
   }
 
   /**
+   * Depth of pileup - number of reads at locus
+   */
+  lazy val depth: Int = elements.length
+
+  /**
+   * Number of positively stranded reads
+   */
+  lazy val positiveDepth: Int = elements.view.filter(_.read.isPositiveStrand).size
+
+  /**
+   * PileupElements that match the reference base
+   */
+  lazy val referenceElements = elements.filter(_.isMatch)
+
+  /**
+   * PileupElements that match the reference base
+   */
+  lazy val referenceDepth = referenceElements.size
+
+  /**
    * Returns a new [[Pileup]] at a different locus on the same contig.
    *
    * To enable an efficient implementation, the new locus must be greater than the current locus.
