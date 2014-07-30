@@ -130,7 +130,7 @@ object Common extends Logging {
     args: Arguments.Reads,
     sc: SparkContext,
     filters: Read.InputFilters): ReadSet = {
-    ReadSet(sc, args.reads, token = 0, filters = filters, contigLengthsFromDictionary = !args.noSequenceDictionary)
+    ReadSet(sc, args.reads, filters, token = 0, contigLengthsFromDictionary = !args.noSequenceDictionary)
   }
 
   /**

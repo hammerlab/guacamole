@@ -16,6 +16,7 @@ import com.esotericsoftware.kryo.Kryo
 import org.scalatest.matchers.ShouldMatchers
 import org.apache.commons.io.FileUtils
 import java.io.{ FileNotFoundException, File }
+import org.bdgenomics.guacamole.pileup.Pileup
 
 object TestUtil extends ShouldMatchers {
 
@@ -65,6 +66,35 @@ object TestUtil extends ShouldMatchers {
       alignmentQuality = alignmentQuality).getMappedRead
   }
 
+  def makePairedRead(
+    chr: String = "chr1",
+    start: Long = 1,
+    alignmentQuality: Int = 30,
+    isPositiveStrand: Boolean = true,
+    isMateMapped: Boolean = false,
+    mateReferenceContig: Option[String] = None,
+    mateStart: Option[Long] = None,
+    isMatePositiveStrand: Boolean = false,
+    sequence: String = "ACTGACTGACTG",
+    cigar: String = "12M",
+    mdTag: String = "12"): MappedRead = {
+
+    val qualityScoreString = sequence.map(x => '@').mkString
+
+    Read(sequence,
+      cigarString = cigar,
+      start = start,
+      referenceContig = chr,
+      mdTagString = mdTag,
+      isPositiveStrand = isPositiveStrand,
+      baseQualities = qualityScoreString,
+      alignmentQuality = alignmentQuality,
+      isMateMapped = isMateMapped,
+      mateReferenceContig = mateReferenceContig,
+      mateStart = mateStart,
+      isMatePositiveStrand = isMatePositiveStrand).getMappedRead
+  }
+
   def testDataPath(filename: String): String = {
     val resource = ClassLoader.getSystemClassLoader.getResource(filename)
     if (resource == null) throw new RuntimeException("No such test data file: %s".format(filename))
@@ -77,6 +107,29 @@ object TestUtil extends ShouldMatchers {
     assert(sc != null)
     assert(sc.hadoopConfiguration != null)
     ReadSet(sc, path)
+  }
+
+  def loadTumorNormalReads(sc: SparkContext,
+                           tumorFile: String,
+                           normalFile: String): (Seq[MappedRead], Seq[MappedRead]) = {
+    val filters = Read.InputFilters(mapped = true, nonDuplicate = true, hasMdTag = true, passedVendorQualityChecks = true)
+    (loadReads(sc, tumorFile, filters = filters).mappedReads.collect(), loadReads(sc, normalFile, filters = filters).mappedReads.collect())
+  }
+
+  def loadReads(sc: SparkContext,
+                filename: String,
+                filters: Read.InputFilters = Read.InputFilters.empty): ReadSet = {
+    /* grab the path to the SAM file we've stashed in the resources subdirectory */
+    val path = testDataPath(filename)
+    assert(sc != null)
+    assert(sc.hadoopConfiguration != null)
+    ReadSet(sc, path, filters = filters)
+  }
+
+  def loadTumorNormalPileup(tumorReads: Seq[MappedRead],
+                            normalReads: Seq[MappedRead],
+                            locus: Long): (Pileup, Pileup) = {
+    (Pileup(tumorReads, locus), Pileup(normalReads, locus))
   }
 
   def assertAlmostEqual(a: Double, b: Double, epsilon: Double = 1e-6) {
