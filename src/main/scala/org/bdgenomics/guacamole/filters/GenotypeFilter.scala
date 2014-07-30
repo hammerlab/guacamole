@@ -9,13 +9,48 @@ import org.bdgenomics.guacamole.Common
 /**
  * Filter to remove genotypes where the number of reads at the locus is low
  */
+object MinimumLikelihoodFilter {
+
+  def hasMinimumLikelihood(genotype: ADAMGenotype,
+                           minLikelihood: Int,
+                           includeNull: Boolean = true): Boolean = {
+    if (genotype.getGenotypeQuality != null) {
+      genotype.getGenotypeQuality >= minLikelihood
+    } else {
+      includeNull
+    }
+  }
+
+  /**
+   *
+   *  Apply the filter to an RDD of genotypes
+   *
+   * @param genotypes RDD of genotypes to filter
+   * @param minLikelihood minimum quality score for this genotype
+   * @param includeNull include the genotype if the required fields are null
+   * @param debug if true, compute the count of genotypes after filtering
+   * @return Genotypes with quality >= minLikelihood
+   */
+  def apply(genotypes: RDD[ADAMGenotype],
+            minLikelihood: Int,
+            debug: Boolean = false,
+            includeNull: Boolean = true): RDD[ADAMGenotype] = {
+    val filteredGenotypes = genotypes.filter(hasMinimumLikelihood(_, minLikelihood, includeNull))
+    if (debug) GenotypeFilter.printFilterProgress(filteredGenotypes)
+    filteredGenotypes
+  }
+}
+
+/**
+ * Filter to remove genotypes where the number of reads at the locus is low
+ */
 object MinimumReadDepthFilter {
 
   def hasMinimumReadDepth(genotype: ADAMGenotype,
                           minReadDepth: Int,
                           includeNull: Boolean = true): Boolean = {
     if (genotype.readDepth != null) {
-      genotype.readDepth > minReadDepth
+      genotype.readDepth >= minReadDepth
     } else {
       includeNull
     }
@@ -27,9 +62,9 @@ object MinimumReadDepthFilter {
    *
    * @param genotypes RDD of genotypes to filter
    * @param minReadDepth minimum number of reads at locus for this genotype
-   * @param includeNull include the genotype if the required fields are nu
+   * @param includeNull include the genotype if the required fields are null
    * @param debug if true, compute the count of genotypes after filtering
-   * @return Genotypes with read depth > minReadDepth
+   * @return Genotypes with read depth >= minReadDepth
    */
   def apply(genotypes: RDD[ADAMGenotype],
             minReadDepth: Int,
@@ -54,7 +89,7 @@ object MinimumAlternateReadDepthFilter {
    * @param minAlternateReadDepth minimum number of reads with alternate allele at locus for this genotype
    * @param includeNull include the genotype if the required fields are null
    * @param debug if true, compute the count of genotypes after filtering
-   * @return Genotypes with read depth > minAlternateReadDepth
+   * @return Genotypes with read depth >= minAlternateReadDepth
    */
   def apply(genotypes: RDD[ADAMGenotype],
             minAlternateReadDepth: Int,
@@ -69,7 +104,7 @@ object MinimumAlternateReadDepthFilter {
                                    minAlternateReadDepth: Int,
                                    includeNull: Boolean = true): Boolean = {
     if (genotype.alternateReadDepth != null) {
-      genotype.alternateReadDepth > minAlternateReadDepth
+      genotype.alternateReadDepth >= minAlternateReadDepth
     } else {
       includeNull
     }
@@ -144,6 +179,9 @@ object GenotypeFilter {
 
   trait GenotypeFilterArguments extends Base {
 
+    @Option(name = "-minLikelihood", usage = "Minimum Phred-scaled likelihood. Default: 0 (off)")
+    var minLikelihood: Int = 0
+
     @Option(name = "-minReadDepth", usage = "Minimum number of reads for a genotype call")
     var minReadDepth: Int = 0
 
@@ -175,8 +213,8 @@ object GenotypeFilter {
       filteredGenotypes = MinimumAlternateReadDepthFilter(genotypes, args.minAlternateReadDepth, args.debugGenotypeFilters)
     }
 
-    if (args.lowStrandBiasLimit >= 0 || args.highStrandBiasLimit <= 100) {
-      filteredGenotypes = StrandBiasFilter(genotypes, args.lowStrandBiasLimit, args.highStrandBiasLimit, args.maxStrandBiasAltReadDepth, args.debugGenotypeFilters)
+    if (args.minLikelihood > 0) {
+      filteredGenotypes = MinimumLikelihoodFilter(filteredGenotypes, args.minLikelihood, args.debugGenotypeFilters)
     }
 
     filteredGenotypes
