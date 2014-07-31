@@ -325,7 +325,7 @@ class ReadSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
     val reads = TestUtil.loadReads(sc, "mdtagissue.sam", Read.InputFilters(mapped = true)).mappedReads.collect()
     val serializedReads = reads.map(TestUtil.serialize)
     val deserializedReads: Seq[MappedRead] = serializedReads.map(TestUtil.deserialize[MappedRead](_))
-    for ( (read, deserialized) <- reads.zip(deserializedReads)) {
+    for ((read, deserialized) <- reads.zip(deserializedReads)) {
       deserialized.token should equal(read.token)
       deserialized.referenceContig should equal(read.referenceContig)
       deserialized.alignmentQuality should equal(read.alignmentQuality)
