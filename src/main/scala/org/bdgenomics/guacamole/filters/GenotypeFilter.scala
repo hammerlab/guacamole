@@ -46,7 +46,7 @@ object MinimumLikelihoodFilter {
  */
 object ReadDepthFilter {
 
-  def hasMinimumReadDepth(genotype: ADAMGenotype,
+  def withinReadDepthRange(genotype: ADAMGenotype,
                           minReadDepth: Int,
                           maxReadDepth: Int,
                           includeNull: Boolean = true): Boolean = {
@@ -64,16 +64,16 @@ object ReadDepthFilter {
    * @param genotypes RDD of genotypes to filter
    * @param minReadDepth minimum number of reads at locus for this genotype
    * @param maxReadDepth maximum number of reads at locus for this genotype
-   * @param includeNull include the genotype if the required fields are nu
+   * @param includeNull include the genotype if the required fields are null
    * @param debug if true, compute the count of genotypes after filtering
-   * @return Genotypes with read depth > minReadDepth
+   * @return Genotypes with read depth >= minReadDepth and < maxReadDepth
    */
   def apply(genotypes: RDD[ADAMGenotype],
             minReadDepth: Int,
             maxReadDepth: Int,
             debug: Boolean = false,
             includeNull: Boolean = true): RDD[ADAMGenotype] = {
-    val filteredGenotypes = genotypes.filter(hasMinimumReadDepth(_, minReadDepth, maxReadDepth, includeNull))
+    val filteredGenotypes = genotypes.filter(withinReadDepthRange(_, minReadDepth, maxReadDepth, includeNull))
     if (debug) GenotypeFilter.printFilterProgress(filteredGenotypes)
     filteredGenotypes
   }
@@ -165,7 +165,7 @@ object GenotypeFilter {
     var filteredGenotypes = genotypes
 
     if (minReadDepth > 0) {
-      filteredGenotypes = filteredGenotypes.filter(ReadDepthFilter.hasMinimumReadDepth(_, minReadDepth, maxReadDepth))
+      filteredGenotypes = filteredGenotypes.filter(ReadDepthFilter.withinReadDepthRange(_, minReadDepth, maxReadDepth))
     }
 
     if (minAlternateReadDepth > 0) {
