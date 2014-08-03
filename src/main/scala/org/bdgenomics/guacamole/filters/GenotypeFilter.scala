@@ -47,9 +47,9 @@ object MinimumLikelihoodFilter {
 object ReadDepthFilter {
 
   def withinReadDepthRange(genotype: ADAMGenotype,
-                          minReadDepth: Int,
-                          maxReadDepth: Int,
-                          includeNull: Boolean = true): Boolean = {
+                           minReadDepth: Int,
+                           maxReadDepth: Int,
+                           includeNull: Boolean = true): Boolean = {
     if (genotype.readDepth != null) {
       genotype.readDepth >= minReadDepth && genotype.readDepth < maxReadDepth
     } else {
@@ -160,8 +160,7 @@ object GenotypeFilter {
             minReadDepth: Int,
             minAlternateReadDepth: Int,
             minLikelihood: Int,
-            maxReadDepth: Int,
-            alleleBalance: Int): Seq[ADAMGenotype] = {
+            maxReadDepth: Int = Int.MaxValue): Seq[ADAMGenotype] = {
     var filteredGenotypes = genotypes
 
     if (minReadDepth > 0) {
