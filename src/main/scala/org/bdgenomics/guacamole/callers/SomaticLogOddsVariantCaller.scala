@@ -147,6 +147,9 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
     alternateBase match {
       case None => Seq.empty
       case Some(alternate) => {
+
+        if (alternate == "") return Seq.empty
+
         val (alternateReadDepth, alternateForwardReadDepth) = computeDepthAndForwardDepth(filteredTumorPileup, alternate)
         val (referenceReadDepth, referenceForwardReadDepth) = computeDepthAndForwardDepth(filteredTumorPileup, referenceBase)
 
