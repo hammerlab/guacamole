@@ -135,7 +135,7 @@ case class MappedRead(
     isMateMapped: Boolean,
     mateReferenceContig: Option[String],
     mateStart: Option[Long],
-    isMatePositiveStrand: Boolean) extends Read with GenomicMapping with MateProperties {
+    isMatePositiveStrand: Boolean) extends Read with ReferenceRegion with MateProperties {
 
   assert(baseQualities.length == sequence.length,
     "Base qualities have length %d but sequence has length %d".format(baseQualities.length, sequence.length))
