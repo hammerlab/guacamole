@@ -75,6 +75,7 @@ object TestUtil extends ShouldMatchers {
     mateReferenceContig: Option[String] = None,
     mateStart: Option[Long] = None,
     isMatePositiveStrand: Boolean = false,
+    isFirstInPair: Boolean = true,
     sequence: String = "ACTGACTGACTG",
     cigar: String = "12M",
     mdTag: String = "12"): MappedRead = {
@@ -90,6 +91,7 @@ object TestUtil extends ShouldMatchers {
       baseQualities = qualityScoreString,
       alignmentQuality = alignmentQuality,
       isMateMapped = isMateMapped,
+      isFirstInPair = isFirstInPair,
       mateReferenceContig = mateReferenceContig,
       mateStart = mateStart,
       isMatePositiveStrand = isMatePositiveStrand).getMappedRead

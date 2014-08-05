@@ -70,6 +70,6 @@ object ReadSet {
       sc,
       token = token,
       filters = filters)
-    new ReadSet(reads, Some(sequenceDictionary), filename, filters, token, contigLengthsFromDictionary)
+    ReadSet(reads, Some(sequenceDictionary), filename, filters, token, contigLengthsFromDictionary)
   }
 }

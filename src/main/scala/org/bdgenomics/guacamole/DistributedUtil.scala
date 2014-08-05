@@ -283,6 +283,7 @@ object DistributedUtil extends Logging {
       (Some(pileup), function(pileup))
     })
   }
+
   /**
    * Flatmap across loci on two RDDs of MappedReads. At each locus the provided function is passed two Pileup instances,
    * giving the pileup for the reads in each RDD at that locus.

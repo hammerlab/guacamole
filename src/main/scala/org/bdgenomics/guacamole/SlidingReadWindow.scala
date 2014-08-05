@@ -47,7 +47,8 @@ case class SlidingReadWindow(halfWindowSize: Long, rawSortedReads: Iterator[Mapp
   /** The new reads that were added to currentReads as a result of the most recent call to setCurrentLocus. */
   var newReads: Seq[MappedRead] = Seq.empty
 
-  private var referenceName: Option[String] = None
+  var referenceName: Option[String] = None
+
   private var mostRecentReadStart: Long = 0
   private val sortedReads: BufferedIterator[MappedRead] = rawSortedReads.map(read => {
     if (referenceName.isEmpty) referenceName = Some(read.referenceContig)
@@ -114,5 +115,14 @@ case class SlidingReadWindow(halfWindowSize: Long, rawSortedReads: Iterator[Mapp
    */
   def nextStartLocus(): Option[Long] = {
     if (sortedReads.hasNext) Some(sortedReads.head.start) else None
+  }
+}
+
+object SlidingReadWindow {
+
+  def apply(halfWindowSize: Long, rawSortedReads: Iterator[MappedRead], locus: Long): SlidingReadWindow = {
+    val window = SlidingReadWindow(halfWindowSize, rawSortedReads)
+    window.setCurrentLocus(locus)
+    window
   }
 }
