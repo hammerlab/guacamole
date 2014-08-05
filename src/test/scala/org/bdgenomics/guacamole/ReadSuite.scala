@@ -187,7 +187,7 @@ class ReadSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
       50,
       325352323,
       TextCigarCodec.getSingleton.decode(""),
-      Some(MdTag("6", 325352323)), // mdtag
+      Some("6"), // mdtag
       false,
       isPositiveStrand = true,
       isPaired = true,
@@ -315,7 +315,7 @@ class ReadSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
     allReads.reads.count() should be(8)
 
     val mdTagReads = TestUtil.loadReads(sc, "mdtagissue.sam", Read.InputFilters(mapped = true, hasMdTag = true))
-    mdTagReads.reads.count() should be(5)
+    mdTagReads.reads.count() should be(6)
 
     val nonDuplicateReads = TestUtil.loadReads(sc, "mdtagissue.sam", Read.InputFilters(mapped = true, nonDuplicate = true))
     nonDuplicateReads.reads.count() should be(6)
@@ -331,7 +331,7 @@ class ReadSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
       deserialized.alignmentQuality should equal(read.alignmentQuality)
       deserialized.start should equal(read.start)
       deserialized.cigar should equal(read.cigar)
-      deserialized.mdTag should equal(read.mdTag)
+      deserialized.mdTagString should equal(read.mdTagString)
       deserialized.failedVendorQualityChecks should equal(read.failedVendorQualityChecks)
       deserialized.isPositiveStrand should equal(read.isPositiveStrand)
       deserialized.isMateMapped should equal(read.isMateMapped)
