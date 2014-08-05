@@ -40,34 +40,34 @@ import org.apache.spark.Logging
  *
  * @param rawSortedReads Iterator of aligned reads, sorted by the aligned start locus.
  */
-case class SlidingReadWindow(halfWindowSize: Long, rawSortedReads: Iterator[MappedRead]) extends Logging {
+case class SlidingReadWindow[Mapped <: GenomicMapping](halfWindowSize: Long, rawSortedReads: Iterator[Mapped]) extends Logging {
   /** The locus currently under consideration. */
   var currentLocus = -1L
 
   /** The new reads that were added to currentReads as a result of the most recent call to setCurrentLocus. */
-  var newReads: Seq[MappedRead] = Seq.empty
+  var newReads: Seq[Mapped] = Seq.empty
 
   private var referenceName: Option[String] = None
   private var mostRecentReadStart: Long = 0
-  private val sortedReads: BufferedIterator[MappedRead] = rawSortedReads.map(read => {
+  private val sortedReads: BufferedIterator[Mapped] = rawSortedReads.map(read => {
     if (referenceName.isEmpty) referenceName = Some(read.referenceContig)
     require(read.referenceContig == referenceName.get, "Reads must have the same reference name")
     require(read.start >= mostRecentReadStart, "Reads must be sorted by start locus")
     mostRecentReadStart = read.start
-    require(read.cigar != null, "Reads must have a CIGAR")
+    //require(read.cigar != null, "Reads must have a CIGAR")
     read
   }).buffered
 
   private val currentReadsPriorityQueue = {
     // Order reads by end locus, increasing.
-    def readOrdering = new Ordering[MappedRead] {
-      def compare(first: MappedRead, second: MappedRead) = second.end.compare(first.end)
+    def readOrdering = new Ordering[Mapped] {
+      def compare(first: Mapped, second: Mapped) = second.end.compare(first.end)
     }
-    new mutable.PriorityQueue[MappedRead]()(readOrdering)
+    new mutable.PriorityQueue[Mapped]()(readOrdering)
   }
 
   /** The reads that overlap the window surrounding [[currentLocus]]. */
-  def currentReads(): Seq[MappedRead] = {
+  def currentReads(): Seq[Mapped] = {
     currentReadsPriorityQueue.toSeq
   }
 
@@ -79,11 +79,11 @@ case class SlidingReadWindow(halfWindowSize: Long, rawSortedReads: Iterator[Mapp
    * @return The *new reads* that were added as a result of this call. Note that this is not the full set of reads in
    *         the window: you must examine [[currentReads]] for that.
    */
-  def setCurrentLocus(locus: Long): Seq[MappedRead] = {
+  def setCurrentLocus(locus: Long): Seq[Mapped] = {
     assume(locus >= currentLocus, "Pileup window can only move forward in locus")
     currentLocus = locus
 
-    def overlaps(read: MappedRead) = {
+    def overlaps(read: Mapped) = {
       read.start <= locus + halfWindowSize && (read.end - 1) >= locus - halfWindowSize
     }
 
@@ -97,7 +97,7 @@ case class SlidingReadWindow(halfWindowSize: Long, rawSortedReads: Iterator[Mapp
       Seq.empty
     } else {
       // Build up a list of new reads that are now in the window.
-      val newReadsBuilder = mutable.ArrayBuffer.newBuilder[MappedRead]
+      val newReadsBuilder = mutable.ArrayBuffer.newBuilder[Mapped]
       while (sortedReads.nonEmpty && sortedReads.head.start <= locus + halfWindowSize) {
         val read = sortedReads.next()
         if (overlaps(read)) newReadsBuilder += read
