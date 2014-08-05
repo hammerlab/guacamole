@@ -27,7 +27,7 @@ object DistributedUtil extends Logging {
   /**
    * Partition a LociSet among tasks according to the strategy specified in args.
    */
-  def partitionLociAccordingToArgs(args: Arguments, loci: LociSet, readsRDDs: RDD[MappedRead]*): LociMap[Long] = {
+  def partitionLociAccordingToArgs[M <: GenomicMapping: ClassTag](args: Arguments, loci: LociSet, readsRDDs: RDD[M]*): LociMap[Long] = {
     val tasks = if (args.parallelism > 0) args.parallelism else readsRDDs(0).partitions.length
     if (args.partitioningAccuracy == 0) {
       partitionLociUniformly(tasks, loci)
@@ -83,7 +83,7 @@ object DistributedUtil extends Logging {
    * Given a LociSet and an RDD of reads, returns the same LociSet but with any contigs that don't have any reads
    * mapped to them removed. Also prints out progress info on the number of reads assigned to each contig.
    */
-  def filterLociWhoseContigsHaveNoReads(loci: LociSet, reads: RDD[MappedRead]): LociSet = {
+  def filterLociWhoseContigsHaveNoReads[M <: GenomicMapping](loci: LociSet, reads: RDD[M]): LociSet = {
     val contigsAndCounts = reads.map(_.referenceContig).countByValue.toMap.withDefaultValue(0L)
     Common.progress("Read counts per contig: %s".format(
       contigsAndCounts.toSeq.sorted.map(pair => "%s=%,d".format(pair._1, pair._2)).mkString(" ")))
@@ -130,7 +130,7 @@ object DistributedUtil extends Logging {
    *                Any number RDD[MappedRead] arguments giving the reads to base the partitioning on.
    * @return LociMap of locus -> task assignments.
    */
-  def partitionLociByApproximateReadDepth(tasks: Int, loci: LociSet, accuracy: Int, readRDDs: RDD[MappedRead]*): LociMap[Long] = {
+  def partitionLociByApproximateReadDepth[M <: GenomicMapping: ClassTag](tasks: Int, loci: LociSet, accuracy: Int, readRDDs: RDD[M]*): LociMap[Long] = {
     val sc = readRDDs(0).sparkContext
 
     // As an optimization for the case where some contigs have no reads, we remove contigs without reads first.
@@ -244,7 +244,7 @@ object DistributedUtil extends Logging {
    *
    *  If an existing Pileup is provided, then its locus must be <= the new locus.
    */
-  private def initOrMovePileup(existing: Option[Pileup], window: SlidingReadWindow): Pileup = {
+  private def initOrMovePileup(existing: Option[Pileup], window: SlidingReadWindow[MappedRead]): Pileup = {
     val locus = window.currentLocus
     existing match {
       case None         => Pileup(window.newReads, locus)
@@ -256,7 +256,7 @@ object DistributedUtil extends Logging {
    * Helper function. Given some sliding window instances, return the lowest nextStartLocus from any of them. If all of
    * the sliding windows are at the end of the read iterators, return Long.MaxValue.
    */
-  def firstStartLocus(windows: SlidingReadWindow*) = {
+  def firstStartLocus[M <: GenomicMapping](windows: SlidingReadWindow[M]*) = {
     windows.map(_.nextStartLocus.getOrElse(Long.MaxValue)).min
   }
 
@@ -277,7 +277,7 @@ object DistributedUtil extends Logging {
     lociPartitions: LociMap[Long],
     skipEmpty: Boolean,
     function: Pileup => Iterator[T]): RDD[T] = {
-    windowFlatMapWithState(Seq(reads), lociPartitions, skipEmpty, 0, None, (maybePileup: Option[Pileup], windows) => {
+    windowFlatMapWithState(Seq(reads), lociPartitions, skipEmpty, 0, None, (maybePileup: Option[Pileup], windows: Seq[SlidingReadWindow[MappedRead]]) => {
       assert(windows.length == 1)
       val pileup = initOrMovePileup(maybePileup, windows(0))
       (Some(pileup), function(pileup))
@@ -304,7 +304,7 @@ object DistributedUtil extends Logging {
       skipEmpty,
       0L, // half window size
       None,
-      (maybePileups: Option[(Pileup, Pileup)], windows) => {
+      (maybePileups: Option[(Pileup, Pileup)], windows: Seq[SlidingReadWindow[MappedRead]]) => {
         assert(windows.length == 2)
         val pileup1 = initOrMovePileup(maybePileups.map(_._1), windows(0))
         val pileup2 = initOrMovePileup(maybePileups.map(_._2), windows(1))
@@ -334,19 +334,19 @@ object DistributedUtil extends Logging {
    * @tparam S state type
    * @return RDD[T] of flatmap results
    */
-  def windowFlatMapWithState[T: ClassTag, S](
-    readsRDDs: Seq[RDD[MappedRead]],
+  def windowFlatMapWithState[M <: GenomicMapping: ClassTag, T: ClassTag, S](
+    readsRDDs: Seq[RDD[M]],
     lociPartitions: LociMap[Long],
     skipEmpty: Boolean,
     halfWindowSize: Long,
     initialState: S,
-    function: (S, Seq[SlidingReadWindow]) => (S, Iterator[T])): RDD[T] = {
-    windowTaskFlatMapMultipleRDDs(readsRDDs, lociPartitions, halfWindowSize, (task, taskLoci, taskReadsSeq) => {
+    function: (S, Seq[SlidingReadWindow[M]]) => (S, Iterator[T])): RDD[T] = {
+    windowTaskFlatMapMultipleRDDs(readsRDDs, lociPartitions, halfWindowSize, (task, taskLoci, taskReadsSeq: Seq[Iterator[M]]) => {
       val readsSplitByContigSeq = taskReadsSeq.map(taskReads => new ReadsByContig(taskReads))
       val result = new ArrayBuffer[T]
       taskLoci.contigs.foreach(contig => {
         val readsIterators = readsSplitByContigSeq.map(_.next(contig))
-        val windows = readsIterators.map(SlidingReadWindow(halfWindowSize, _))
+        val windows = readsIterators.map(SlidingReadWindow[M](halfWindowSize, _))
         def windowsEmpty = windows.forall(_.currentReads.isEmpty)
         val ranges = taskLoci.onContig(contig).ranges.iterator
         var state = initialState
@@ -423,11 +423,11 @@ object DistributedUtil extends Logging {
    * @tparam T type of value returned by function
    * @return flatMap results, RDD[T]
    */
-  private def windowTaskFlatMapMultipleRDDs[T: ClassTag](
-    readsRDDs: Seq[RDD[MappedRead]],
+  private def windowTaskFlatMapMultipleRDDs[M <: GenomicMapping: ClassTag, T: ClassTag](
+    readsRDDs: Seq[RDD[M]],
     lociPartitions: LociMap[Long],
     halfWindowSize: Long,
-    function: (Long, LociSet, Seq[Iterator[MappedRead]]) => Iterator[T]): RDD[T] = {
+    function: (Long, LociSet, Seq[Iterator[M]]) => Iterator[T]): RDD[T] = {
 
     assume(readsRDDs.length > 0)
     val sc = readsRDDs(0).sparkContext
@@ -550,11 +550,11 @@ object DistributedUtil extends Logging {
    *
    * @param readIterator reads, sorted by contig and start locus.
    */
-  class ReadsByContig(readIterator: Iterator[MappedRead]) {
+  class ReadsByContig[Mapped <: GenomicMapping](readIterator: Iterator[Mapped]) {
     private val buffered = readIterator.buffered
     private var seenContigs = List.empty[String]
-    private var prevIterator: Option[SingleContigReadsIterator] = None
-    def next(contig: String): Iterator[MappedRead] = {
+    private var prevIterator: Option[SingleContigReadsIterator[Mapped]] = None
+    def next(contig: String): Iterator[Mapped] = {
       // We must first march the previous iterator we returned to the end.
       while (prevIterator.exists(_.hasNext)) prevIterator.get.next()
 
@@ -574,7 +574,7 @@ object DistributedUtil extends Logging {
    * Wraps an iterator of reads sorted by contig name. Implements an iterator that gives reads only for the specified
    * contig name, then stops.
    */
-  class SingleContigReadsIterator(contig: String, iterator: BufferedIterator[MappedRead]) extends Iterator[MappedRead] {
+  class SingleContigReadsIterator[Mapped <: GenomicMapping](contig: String, iterator: BufferedIterator[Mapped]) extends Iterator[Mapped] {
     def hasNext = iterator.hasNext && iterator.head.referenceContig == contig
     def next() = if (hasNext) iterator.next() else throw new NoSuchElementException
   }
