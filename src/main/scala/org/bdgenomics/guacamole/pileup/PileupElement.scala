@@ -181,19 +181,6 @@ case class PileupElement(
    */
   lazy val distanceFromSequencingEnd = if (read.isPositiveStrand) read.end - locus else locus - read.start
 
-  /**
-   * Count of mismatches within window of size k
-   * @param k window of bases around to check for mismatches on the read
-   */
-  def nearbyMismatches(k: Int): Int = {
-
-    def isNearbyMismatch(mismatch: Long) = {
-      mismatch != locus && math.abs((locus - mismatch).toInt) <= k
-    }
-
-    read.mdTag.map(_.mismatches.keys.filter(isNearbyMismatch).size).getOrElse(0)
-  }
-
 }
 
 object PileupElement {
