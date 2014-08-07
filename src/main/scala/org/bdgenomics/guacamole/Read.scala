@@ -114,7 +114,6 @@ case class UnmappedRead(
  * @param alignmentQuality the mapping quality, phred scaled.
  * @param start the reference locus that the first base in this read aligns to.
  * @param cigar parsed samtools CIGAR object.
- * @param mdTag parsed ADAM MdTag object.
  */
 case class MappedRead(
     token: Int,
@@ -126,7 +125,7 @@ case class MappedRead(
     alignmentQuality: Int,
     start: Long,
     cigar: Cigar,
-    mdTag: Option[MdTag],
+    mdTagString: Option[String],
     failedVendorQualityChecks: Boolean,
     isPositiveStrand: Boolean,
     isPaired: Boolean,
@@ -145,6 +144,8 @@ case class MappedRead(
 
   final override val isMapped = true
   override def getMappedRead(): MappedRead = this
+
+  lazy val mdTag = mdTagString.map(MdTag(_, start))
 
   /** Individual components of the CIGAR string (e.g. "10M"), parsed, and as a Scala buffer. */
   val cigarElements = JavaConversions.asScalaBuffer(cigar.getCigarElements)
@@ -258,7 +259,6 @@ object Read extends Logging {
         isMatePositiveStrand)
     } else {
       val cigar = TextCigarCodec.getSingleton.decode(cigarString)
-      val mdTag = if (mdTagString.isEmpty) None else Some(MdTag(mdTagString, start))
       MappedRead(
         token,
         sequenceArray,
@@ -269,7 +269,7 @@ object Read extends Logging {
         alignmentQuality,
         start,
         cigar,
-        mdTag,
+        Some(mdTagString),
         failedVendorQualityChecks,
         isPositiveStrand,
         isPaired,
@@ -303,11 +303,7 @@ object Read extends Logging {
     }).intern
 
     if (isMapped) {
-      val mdTagString = record.getStringAttribute("MD")
-      val mdTag = if (mdTagString == null || mdTagString.isEmpty || mdTagString.equals("0"))
-        None
-      else
-        Some(MdTag(mdTagString, record.getAlignmentStart - 1))
+      val mdTagString = Option(record.getStringAttribute("MD"))
       val result = MappedRead(
         token,
         record.getReadString.getBytes,
@@ -318,7 +314,7 @@ object Read extends Logging {
         record.getMappingQuality,
         record.getAlignmentStart - 1,
         cigar = record.getCigar,
-        mdTag = mdTag,
+        mdTagString = mdTagString,
         failedVendorQualityChecks = record.getReadFailsVendorQualityCheckFlag,
         isPositiveStrand = !record.getReadNegativeStrandFlag,
         isPaired = record.getReadPairedFlag,
@@ -372,7 +368,7 @@ object Read extends Logging {
         val read = fromSAMRecord(item, token)
         if ((!filters.mapped || read.isMapped) &&
           (!filters.passedVendorQualityChecks || !read.failedVendorQualityChecks) &&
-          (!filters.hasMdTag || read.isMapped && read.getMappedRead.mdTag.isDefined) &&
+          (!filters.hasMdTag || read.isMapped && read.getMappedRead.mdTagString.isDefined) &&
           (!filters.isPaired || read.isPaired))
           result += read
       }
@@ -405,7 +401,7 @@ object Read extends Logging {
     if (filters.mapped) reads = reads.filter(_.isMapped)
     if (filters.nonDuplicate) reads = reads.filter(read => !read.isDuplicate)
     if (filters.passedVendorQualityChecks) reads = reads.filter(read => !read.failedVendorQualityChecks)
-    if (filters.hasMdTag) reads = reads.filter(read => read.isMapped && read.getMappedRead.mdTag.isDefined)
+    if (filters.hasMdTag) reads = reads.filter(read => read.isMapped && read.getMappedRead.mdTagString.isDefined)
     (reads, sequenceDictionary)
   }
 
@@ -429,7 +425,13 @@ class MappedReadSerializer extends Serializer[MappedRead] {
     output.writeInt(obj.alignmentQuality, true)
     output.writeLong(obj.start, true)
     output.writeString(obj.cigar.toString)
-    output.writeString(obj.mdTag.map(_.toString).getOrElse(""))
+    obj.mdTagString match {
+      case None =>
+        output.writeBoolean(false)
+      case Some(tag) =>
+        output.writeBoolean(true)
+        output.writeString(tag)
+    }
     output.writeBoolean(obj.failedVendorQualityChecks)
     output.writeBoolean(obj.isPositiveStrand)
     output.writeBoolean(obj.isPaired)
@@ -462,7 +464,8 @@ class MappedReadSerializer extends Serializer[MappedRead] {
     val alignmentQuality = input.readInt(true)
     val start = input.readLong(true)
     val cigarString = input.readString()
-    val mdTagString = input.readString()
+    val hasMdTag = input.readBoolean()
+    val mdTagString = if (hasMdTag) Some(input.readString()) else None
     val failedVendorQualityChecks = input.readBoolean()
     val isPositiveStrand = input.readBoolean()
     val isPairedRead = input.readBoolean()
@@ -475,7 +478,6 @@ class MappedReadSerializer extends Serializer[MappedRead] {
     val isMatePositiveStrand = input.readBoolean()
 
     val cigar = TextCigarCodec.getSingleton.decode(cigarString)
-    val mdTag = if (mdTagString.isEmpty) None else Some(MdTag(mdTagString, start))
     MappedRead(
       token,
       sequenceArray,
@@ -486,7 +488,7 @@ class MappedReadSerializer extends Serializer[MappedRead] {
       alignmentQuality,
       start,
       cigar,
-      mdTag,
+      mdTagString,
       failedVendorQualityChecks,
       isPositiveStrand,
       isPairedRead,
