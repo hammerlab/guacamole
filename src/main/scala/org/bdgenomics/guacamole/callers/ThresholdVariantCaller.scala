@@ -18,8 +18,8 @@
 
 package org.bdgenomics.guacamole.callers
 
-import org.bdgenomics.formats.avro.{ ADAMContig, ADAMVariant, ADAMGenotypeAllele, ADAMGenotype }
-import org.bdgenomics.formats.avro.ADAMGenotypeAllele.{ NoCall, Ref, Alt, OtherAlt }
+import org.bdgenomics.formats.avro.{ Contig, Variant, GenotypeAllele, Genotype }
+import org.bdgenomics.formats.avro.GenotypeAllele.{ NoCall, Ref, Alt, OtherAlt }
 import org.bdgenomics.guacamole._
 import org.apache.spark.SparkContext._
 import org.bdgenomics.guacamole.reads.Read
@@ -69,7 +69,7 @@ object ThresholdVariantCaller extends Command with Serializable with Logging {
     val numGenotypes = sc.accumulator(0L)
     DelayedMessages.default.say { () => "Called %,d genotypes.".format(numGenotypes.value) }
     val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(args, loci, readSet.mappedReads)
-    val genotypes: RDD[ADAMGenotype] = DistributedUtil.pileupFlatMap[ADAMGenotype](
+    val genotypes: RDD[Genotype] = DistributedUtil.pileupFlatMap[Genotype](
       readSet.mappedReads,
       lociPartitions,
       true, // skip empty pileups
@@ -90,7 +90,7 @@ object ThresholdVariantCaller extends Command with Serializable with Logging {
     pileup: Pileup,
     thresholdPercent: Int,
     emitRef: Boolean = true,
-    emitNoCall: Boolean = true): Seq[ADAMGenotype] = {
+    emitNoCall: Boolean = true): Seq[Genotype] = {
 
     // For now, we skip loci that have no reads mapped. We may instead want to emit NoCall in this case.
     if (pileup.elements.isEmpty)
@@ -104,15 +104,15 @@ object ThresholdVariantCaller extends Command with Serializable with Logging {
         val counts = matchesOrMismatches.flatMap(_.sequencedSingleBaseOpt).groupBy(char => char).mapValues(_.length)
         val sortedAlleles = counts.toList.filter(_._2 * 100 / totalReads > thresholdPercent).sortBy(-1 * _._2)
 
-        def variant(alternateBase: Byte, allelesList: List[ADAMGenotypeAllele]): ADAMGenotype = {
-          ADAMGenotype.newBuilder
+        def variant(alternateBase: Byte, allelesList: List[GenotypeAllele]): Genotype = {
+          Genotype.newBuilder
             .setAlleles(JavaConversions.seqAsJavaList(allelesList))
             .setSampleId(sampleName.toCharArray)
-            .setVariant(ADAMVariant.newBuilder
-              .setPosition(pileup.locus)
+            .setVariant(Variant.newBuilder
+              .setStart(pileup.locus)
               .setReferenceAllele(Bases.baseToString(pileup.referenceBase))
-              .setVariantAllele(Bases.baseToString(alternateBase))
-              .setContig(ADAMContig.newBuilder.setContigName(pileup.referenceName).build)
+              .setAlternateAllele(Bases.baseToString(alternateBase))
+              .setContig(Contig.newBuilder.setContigName(pileup.referenceName).build)
               .build)
             .build
         }

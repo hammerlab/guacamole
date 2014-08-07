@@ -19,7 +19,7 @@
 package org.bdgenomics.guacamole
 
 import org.apache.spark.rdd.RDD
-import org.bdgenomics.formats.avro.{ ADAMGenotype, ADAMGenotypeAllele }
+import org.bdgenomics.formats.avro.{ GenotypeAllele, Genotype }
 import org.bdgenomics.guacamole.callers.ThresholdVariantCaller
 import org.bdgenomics.guacamole.pileup.{ Pileup, PileupElement }
 import org.bdgenomics.guacamole.reads.MappedRead
@@ -277,7 +277,7 @@ class DistributedUtilSuite extends TestUtil.SparkFunSuite with Matchers {
       TestUtil.makeRead("TCGATCGA", "8M", "8", 1),
       TestUtil.makeRead("TCGATCGA", "8M", "8", 1)))
 
-    val genotypes = DistributedUtil.pileupFlatMap[ADAMGenotype](
+    val genotypes = DistributedUtil.pileupFlatMap[Genotype](
       reads,
       DistributedUtil.partitionLociUniformly(reads.partitions.length, LociSet.parse("chr1:1-100")),
       false, // don't skip empty pileups
@@ -293,7 +293,7 @@ class DistributedUtilSuite extends TestUtil.SparkFunSuite with Matchers {
       TestUtil.makeRead("TCGATCGA", "8M", "8", 1),
       TestUtil.makeRead("TCGATCGA", "8M", "8", 1)))
 
-    val genotypes = DistributedUtil.pileupFlatMap[ADAMGenotype](
+    val genotypes = DistributedUtil.pileupFlatMap[Genotype](
       reads,
       DistributedUtil.partitionLociUniformly(3, LociSet.parse("chr1:1-100")),
       false, // don't skip empty pileups
@@ -309,18 +309,18 @@ class DistributedUtilSuite extends TestUtil.SparkFunSuite with Matchers {
       TestUtil.makeRead("TCGGTCGA", "8M", "3A4", 1),
       TestUtil.makeRead("TCGGTCGA", "8M", "3A4", 1)))
 
-    val genotypes = DistributedUtil.pileupFlatMap[ADAMGenotype](
+    val genotypes = DistributedUtil.pileupFlatMap[Genotype](
       reads,
       DistributedUtil.partitionLociUniformly(3, LociSet.parse("chr1:1-100")),
       false, // don't skip empty pileups
       pileup => ThresholdVariantCaller.callVariantsAtLocus(pileup, 0, false, false).iterator).collect()
 
     genotypes.length should be(1)
-    genotypes.head.variant.position should be(4)
+    genotypes.head.variant.start should be(4)
     genotypes.head.variant.referenceAllele.toString should be("A")
-    genotypes.head.variant.variantAllele.toString should be("G")
+    genotypes.head.variant.alternateAllele.toString should be("G")
 
-    genotypes.head.alleles.toList should be(List(ADAMGenotypeAllele.Ref, ADAMGenotypeAllele.Alt))
+    genotypes.head.alleles.toList should be(List(GenotypeAllele.Ref, GenotypeAllele.Alt))
   }
 
   sparkTest("test pileup flatmap parallelism 3; thresholdvariant caller; no reference bases observed") {
@@ -330,16 +330,16 @@ class DistributedUtilSuite extends TestUtil.SparkFunSuite with Matchers {
       TestUtil.makeRead("CCGATCGA", "8M", "0T7", 1),
       TestUtil.makeRead("CCGATCGA", "8M", "0T7", 1)))
 
-    val genotypes = DistributedUtil.pileupFlatMap[ADAMGenotype](
+    val genotypes = DistributedUtil.pileupFlatMap[Genotype](
       reads,
       DistributedUtil.partitionLociUniformly(3, LociSet.parse("chr1:1-100")),
       false, // don't skip empty pileups
       pileup => ThresholdVariantCaller.callVariantsAtLocus(pileup, 0, false, false).iterator).collect()
 
     genotypes.length should be(1)
-    genotypes.head.variant.position should be(1)
+    genotypes.head.variant.start should be(1)
     genotypes.head.variant.referenceAllele.toString should be("T")
-    genotypes.head.variant.variantAllele.toString should be("C")
-    genotypes.head.alleles.toList should be(List(ADAMGenotypeAllele.Alt, ADAMGenotypeAllele.Alt))
+    genotypes.head.variant.alternateAllele.toString should be("C")
+    genotypes.head.alleles.toList should be(List(GenotypeAllele.Alt, GenotypeAllele.Alt))
   }
 }
