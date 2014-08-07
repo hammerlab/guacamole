@@ -71,7 +71,7 @@ class SlidingWindowSuite extends FunSuite {
       TestUtil.makeRead("TCGATCGA", "8M", "8", 4))
     val window = SlidingWindow(8, reads.iterator)
     val caught = evaluating { window.setCurrentLocus(0) } should produce[IllegalArgumentException]
-    caught.getMessage should include("Reads must be sorted by start locus")
+    caught.getMessage should include("Regions must be sorted by start locus")
 
   }
 
