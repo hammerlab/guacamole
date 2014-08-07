@@ -206,20 +206,20 @@ object SimpleSomaticVariantCaller extends Command {
    * @param locus Position on a chromosome
    * @return ADAM Genotype object corresponding to this variant.
    */
-  def buildGenotype(ref: Byte, alt: Byte, locus: Locus): ADAMGenotype = {
+  def buildGenotype(ref: Byte, alt: Byte, locus: Locus): Genotype = {
     val (contigName, pos) = locus
-    val contig: ADAMContig = ADAMContig.newBuilder.setContigName(contigName).build
-    val variant: ADAMVariant =
-      ADAMVariant.newBuilder
-        .setPosition(pos)
+    val contig: Contig = Contig.newBuilder.setContigName(contigName).build
+    val variant: Variant =
+      Variant.newBuilder
+        .setStart(pos)
         .setReferenceAllele(ref.toChar.toString)
-        .setVariantAllele(alt.toChar.toString)
+        .setAlternateAllele(alt.toChar.toString)
         .setContig(contig)
         .build
 
-    val alleles = List(ADAMGenotypeAllele.Alt, ADAMGenotypeAllele.Alt)
+    val alleles = List(GenotypeAllele.Alt, GenotypeAllele.Alt)
 
-    ADAMGenotype.newBuilder()
+    Genotype.newBuilder()
       .setVariant(variant)
       .setAlleles(JavaConversions.seqAsJavaList(alleles))
       .setSampleId("sample".toCharArray)
@@ -283,12 +283,12 @@ object SimpleSomaticVariantCaller extends Command {
    * @param locus Location on the chromosome.
    * @param normalPileup Collection of bases read from normal sample which align to this locus.
    * @param tumorPileup Collection of bases read from tumor sample which to this locus.
-   * @return An optional ADAMGenotype denoting the variant called, or None if there is no variant.
+   * @return An optional Genotype denoting the variant called, or None if there is no variant.
    */
   def callVariantGenotype(locus: Locus,
                           normalPileup: Pileup,
                           tumorPileup: Pileup,
-                          ref: Byte): Option[ADAMGenotype] = {
+                          ref: Byte): Option[Genotype] = {
     // which matched bases, insertions, and deletions, cover 90% of the reads?
     val normalBases: Set[Option[Byte]] = topBases(normalPileup, 90)
     val tumorBaseCounts = baseCounts(tumorPileup)
@@ -316,7 +316,7 @@ object SimpleSomaticVariantCaller extends Command {
                    reference: RDD[(Locus, Byte)],
                    minBaseQuality: Int = 20,
                    minNormalCoverage: Int = 10,
-                   minTumorCoverage: Int = 10): RDD[ADAMGenotype] = {
+                   minTumorCoverage: Int = 10): RDD[Genotype] = {
 
     Common.progress("Entered callVariants")
     val normalPileups: RDD[(Locus, Pileup)] =
@@ -334,7 +334,7 @@ object SimpleSomaticVariantCaller extends Command {
         callVariantGenotype(locus, normalPileup, tumorPileup, ref)
     })
     Common.progress("Done calling genotypes (count = %d)".format(genotypes.count))
-    val sorted = genotypes.keyBy(_.getVariant.getPosition).sortByKey().map(_._2)
+    val sorted = genotypes.keyBy(_.getVariant.getStart).sortByKey().map(_._2)
     Common.progress("Done sorting genotypes")
     sorted
   }
@@ -347,7 +347,7 @@ object SimpleSomaticVariantCaller extends Command {
    * @return Somatic variants in an RDD of genotypes.
    */
 
-  def callVariantsFromArgs(sc: SparkContext, args: Arguments): RDD[ADAMGenotype] = {
+  def callVariantsFromArgs(sc: SparkContext, args: Arguments): RDD[Genotype] = {
     val normalReads: RDD[SimpleRead] = SimpleRead.loadFile(args.normalReads, sc, true, true)
     val tumorReads: RDD[SimpleRead] = SimpleRead.loadFile(args.tumorReads, sc, true, true)
     val referencePath = args.referenceInput
@@ -359,7 +359,7 @@ object SimpleSomaticVariantCaller extends Command {
   override def run(rawArgs: Array[String]): Unit = {
     val args = Args4j[Arguments](rawArgs)
     val context: SparkContext = Common.createSparkContext(args)
-    val genotypes: RDD[ADAMGenotype] = callVariantsFromArgs(context, args)
+    val genotypes: RDD[Genotype] = callVariantsFromArgs(context, args)
     Common.progress("Found %d variants".format(genotypes.count))
     Common.writeVariantsFromArguments(args, genotypes)
   }

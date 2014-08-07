@@ -9,7 +9,7 @@
   <name>guacamole: variant caller</name>
   
   <properties>
-    <adam.version>0.12.1</adam.version>
+    <adam.version>0.13.0</adam.version>
     <java.version>1.7.4</java.version>
     <scala.version>2.10.3</scala.version>
     <scala.version.prefix>2.10</scala.version.prefix>
