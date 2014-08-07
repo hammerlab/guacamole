@@ -84,18 +84,6 @@ class SomaticLogOddsVariantCallerSuite extends SparkFunSuite with ShouldMatchers
     testVariants(tumorReads, normalReads, positivePositions, isTrue = true)
   }
 
-  sparkTest("testing correlated mismatches negative variants on syn1") {
-    val (tumorReads, normalReads) = TestUtil.loadTumorNormalReads(sc,
-      "synthetic.challenge.set1.tumor.v2.withMDTags.chr2.csnp.sam",
-      "synthetic.challenge.set1.normal.v2.withMDTags.chr2.csnp.sam")
-
-    val negativePositions = Array[Long](629817, 142480348, 16050085, 41093029, 106566442, 110447062, 233662198, 228956939)
-    testVariants(tumorReads, normalReads, negativePositions, isTrue = false)
-
-    val positivePositions = Array[Long](114997115, 41247486, 6379768, 44211559, 49570084)
-    testVariants(tumorReads, normalReads, positivePositions, isTrue = true)
-  }
-
   sparkTest("difficult negative variants") {
 
     val (tumorReads, normalReads) = TestUtil.loadTumorNormalReads(sc, "tumor.chr20.simplefp.sam", "normal.chr20.simplefp.sam")

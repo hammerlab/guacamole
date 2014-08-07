@@ -6,14 +6,13 @@ import org.bdgenomics.guacamole.Common.Arguments.{ TumorNormalReads, Output }
 import org.kohsuke.args4j.{ Option => Opt }
 import org.bdgenomics.adam.cli.Args4j
 import org.apache.spark.rdd.RDD
-import org.bdgenomics.guacamole.concordance.GenotypesEvaluator
 import org.bdgenomics.guacamole.concordance.GenotypesEvaluator.GenotypeConcordance
 import org.bdgenomics.guacamole.pileup.Pileup
 import scala.collection.JavaConversions
 import org.bdgenomics.adam.util.PhredUtils
 import org.bdgenomics.guacamole.filters.GenotypeFilter.GenotypeFilterArguments
 import org.bdgenomics.guacamole.filters.PileupFilter.PileupFilterArguments
-import org.bdgenomics.guacamole.filters.{ FishersExactTest, PileupFilter, GenotypeFilter }
+import org.bdgenomics.guacamole.filters.{ PileupFilter, GenotypeFilter }
 import org.bdgenomics.formats.avro.{ ADAMGenotypeAllele, ADAMVariant, ADAMContig, ADAMGenotype }
 
 /**
@@ -151,16 +150,6 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
         if (alternate == "") return Seq.empty
 
         val (alternateReadDepth, alternateForwardReadDepth) = computeDepthAndForwardDepth(filteredTumorPileup, alternate)
-        val (referenceReadDepth, referenceForwardReadDepth) = computeDepthAndForwardDepth(filteredTumorPileup, referenceBase)
-
-        val isCorrelated = checkCorrelatedVariation(filteredTumorPileup,
-          filteredNormalPileup,
-          alternate,
-          alternateReadDepth,
-          snvWindowRange,
-          snvCorrelationPercent)
-
-        if (isCorrelated) return Seq.empty
 
         val normalLikelihoods =
           BayesianQualityVariantCaller.computeLikelihoods(filteredNormalPileup,
@@ -219,53 +208,6 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
     } else {
       (None, 1 - tumorMostLikelyGenotype._2)
     }
-
-  }
-
-  /**
-   *
-   * Filter variant calls that contain many nearby SNVs or Deletions nearby
-   *
-   * If there are many spurious changes from the reference nearby, the reads at this locus are more likely to contain
-   * errors
-   *
-   * @param tumorPileup The pileup of reads at the current locus in the tumor sample
-   * @param normalPileup The pileup of reads at the current locus in the normal sample
-   * @param alternateBase The alternate base in the tumor genotype
-   * @param alternateReadDepth Number of reads that support the alternate base
-   * @param snvWindowRange The number of bases to check before and after the current locus
-   * @param maxCorrelatedSNVPercent The maximum amount of reads that can have other variants
-   * @return True if the number reads with additional variation exceed the minimum
-   */
-  def checkCorrelatedVariation(tumorPileup: Pileup,
-                               normalPileup: Pileup,
-                               alternateBase: String,
-                               alternateReadDepth: Int,
-                               snvWindowRange: Int,
-                               maxCorrelatedSNVPercent: Int): Boolean = {
-
-    val normalCorrelatedSNVPositions: Seq[Long] = normalPileup.elements.flatMap(_.nearbyMismatches(snvWindowRange))
-
-    val normalSNVPositionCounts: Map[Long, Double] = normalCorrelatedSNVPositions
-      .groupBy(p => p)
-      .map(v => (v._1, (100.0 * v._2.size / normalPileup.depth)))
-      .filter(_._2 > maxCorrelatedSNVPercent)
-
-    val correlatedSNVPositions: Seq[Long] = tumorPileup.elements.flatMap(el =>
-      el.nearbyMismatches(snvWindowRange) ++ el.nearbyDeletions(snvWindowRange))
-    val tumorSNVPositionCounts: Map[Long, Double] = correlatedSNVPositions
-      .groupBy(p => p)
-      .map(v => (v._1, (100.0 * v._2.size / tumorPileup.depth)))
-      .filter(v => v._2 > maxCorrelatedSNVPercent && !normalSNVPositionCounts.contains(v._1))
-
-    val tumorSNVPositionCountsOnAltReads: Map[Long, Double] =
-      tumorPileup.elements.filter(el => Bases.basesToString(el.sequencedBases) == alternateBase)
-        .flatMap(el => el.nearbyMismatches(snvWindowRange) ++ el.nearbyDeletions(snvWindowRange))
-        .groupBy(p => p)
-        .map(v => (v._1, (100.0 * v._2.size / alternateReadDepth)))
-        .filter(v => v._2 > maxCorrelatedSNVPercent && !normalSNVPositionCounts.contains(v._1))
-
-    tumorSNVPositionCountsOnAltReads.size > 0 || tumorSNVPositionCounts.size > 0
 
   }
 
