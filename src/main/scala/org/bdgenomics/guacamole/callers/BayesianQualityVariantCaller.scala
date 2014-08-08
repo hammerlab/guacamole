@@ -86,7 +86,7 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
 
         def buildVariants(genotype: Genotype, probability: Double): Seq[CalledGenotype] = {
           genotype.getNonReferenceAlleles(Bases.baseToString(pileup.referenceBase)).map(alternate => {
-            val (alternateReadDepth, alternatePositiveReadDepth) = samplePileup.alternateReadDepthAndPositiveDepth(Bases.stringToBases(alternate)(0))
+            val (alternateReadDepth, alternatePositiveReadDepth) = samplePileup.alternateReadDepthAndPositiveDepth(alternate)
 
             CalledGenotype(sampleName,
               samplePileup.referenceName,

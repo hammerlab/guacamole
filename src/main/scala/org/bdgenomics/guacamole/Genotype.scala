@@ -134,8 +134,8 @@ case class CalledSomaticGenotype(sampleName: String,
                                  referenceBase: Byte,
                                  alternateBase: String,
                                  alleles: Genotype,
-                                 normalEvidence: GenotypeEvidence,
                                  tumorEvidence: GenotypeEvidence,
+                                 normalEvidence: GenotypeEvidence,
                                  length: Int = 1) extends HasReferenceRegion {
   val end = start + length
 }
