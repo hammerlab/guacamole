@@ -1,10 +1,9 @@
 package org.bdgenomics.guacamole.callers
 
 import org.bdgenomics.guacamole.TestUtil.SparkFunSuite
-import org.bdgenomics.guacamole.TestUtil
+import org.bdgenomics.guacamole.{ Genotype, TestUtil }
 import org.bdgenomics.guacamole.pileup.Pileup
 import org.bdgenomics.formats.avro.ADAMGenotypeAllele
-import scala.collection.JavaConversions._
 import org.bdgenomics.adam.util.PhredUtils
 
 class BayesianQualityVariantCallerSuite extends SparkFunSuite {
@@ -22,7 +21,7 @@ class BayesianQualityVariantCallerSuite extends SparkFunSuite {
       TestUtil.makeRead("TCGATCGA", "8M", "8", 1))
     val pileup = Pileup(reads, 1)
     val genotypes = BayesianQualityVariantCaller.callVariantsAtLocus(pileup)
-    genotypes.foreach(gt => assert(gt.getAlleles.toList === List(ADAMGenotypeAllele.Ref, ADAMGenotypeAllele.Ref)))
+    genotypes.foreach(gt => assert(gt.alleles.getGenotypeAlleles("T").toList === List(ADAMGenotypeAllele.Ref, ADAMGenotypeAllele.Ref)))
   }
 
   test("het variant; single alternate base") {
@@ -32,7 +31,7 @@ class BayesianQualityVariantCallerSuite extends SparkFunSuite {
       TestUtil.makeRead("GCGATCGA", "8M", "0G7", 1))
     val pileup = Pileup(reads, 1)
     val genotypes = BayesianQualityVariantCaller.callVariantsAtLocus(pileup)
-    genotypes.foreach(gt => assert(gt.getAlleles.toList === List(ADAMGenotypeAllele.Ref, ADAMGenotypeAllele.Alt)))
+    genotypes.foreach(gt => assert(gt.alleles.getGenotypeAlleles("T").toList === List(ADAMGenotypeAllele.Ref, ADAMGenotypeAllele.Alt)))
 
   }
 
@@ -43,7 +42,7 @@ class BayesianQualityVariantCallerSuite extends SparkFunSuite {
       TestUtil.makeRead("GCGATCGA", "8M", "0G7", 1))
     val pileup = Pileup(reads, 1)
     val genotypes = BayesianQualityVariantCaller.callVariantsAtLocus(pileup)
-    genotypes.foreach(gt => assert(gt.getAlleles.toList === List(ADAMGenotypeAllele.Ref, ADAMGenotypeAllele.Alt)))
+    genotypes.foreach(gt => assert(gt.alleles.getGenotypeAlleles("T").toList === List(ADAMGenotypeAllele.Ref, ADAMGenotypeAllele.Alt)))
   }
 
   val floatingPointingThreshold = 1e-6

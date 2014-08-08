@@ -90,6 +90,15 @@ case class Pileup(locus: Long, elements: Seq[PileupElement]) {
    */
   lazy val referenceDepth = referenceElements.size
 
+  def alternateReadDepthAndPositiveDepth(alternateBase: Byte): (Int, Int) = {
+
+    val alternateElements = elements.view.filter(_.sequencedSingleBase == alternateBase)
+    val alternatePositiveElements = alternateElements.view.filter(_.read.isPositiveStrand)
+
+    (alternateElements.size, alternatePositiveElements.size)
+
+  }
+
   /**
    * Returns a new [[Pileup]] at a different locus on the same contig.
    *

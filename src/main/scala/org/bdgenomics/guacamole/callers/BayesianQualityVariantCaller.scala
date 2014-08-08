@@ -4,8 +4,6 @@ import org.bdgenomics.guacamole._
 import org.apache.spark.Logging
 import org.bdgenomics.adam.cli.Args4j
 import org.bdgenomics.guacamole.pileup.{ PileupElement, Pileup }
-import org.bdgenomics.formats.avro.{ ADAMVariant, ADAMContig, ADAMGenotypeAllele, ADAMGenotype }
-import scala.collection.JavaConversions
 import org.apache.spark.rdd.RDD
 import org.kohsuke.args4j.Option
 import org.bdgenomics.guacamole.Common.Arguments._
@@ -16,72 +14,6 @@ import org.bdgenomics.guacamole.concordance.GenotypesEvaluator.GenotypeConcordan
 import org.bdgenomics.guacamole.filters.GenotypeFilter.GenotypeFilterArguments
 import org.bdgenomics.guacamole.filters.PileupFilter.PileupFilterArguments
 import org.bdgenomics.guacamole.filters.{ QualityAlignedReadsFilter, GenotypeFilter }
-
-/**
- * A Genotype is a sequence of alleles of length equal to the ploidy of the organism.
- *
- * A Genotype is for a particular reference locus. Each allele gives the base(s) present on a chromosome at that
- * locus.
- *
- * For example, the possible single-base diploid genotypes are Seq('A', 'A'), Seq('A', 'T') ... Seq('T', 'T').
- * Alleles can also be multiple bases as well, e.g. Seq("AAA", "T")
- *
- */
-case class Genotype(alleles: String*) {
-
-  /**
-   * The ploidy of the organism is the number of alleles in the genotype.
-   */
-  val ploidy = alleles.size
-
-  lazy val uniqueAllelesCount = alleles.toSet.size
-
-  def getNonReferenceAlleles(referenceAllele: String): Seq[String] = {
-    alleles.filter(_ != referenceAllele)
-  }
-
-  /**
-   * Counts alleles in this genotype that are not the same as the specified reference allele.
-   *
-   * @param referenceAllele Reference allele to compare against
-   * @return Count of non reference alleles
-   */
-  def numberOfVariants(referenceAllele: String): Int = {
-    getNonReferenceAlleles(referenceAllele).size
-  }
-
-  /**
-   * Returns whether this genotype contains any non-reference alleles for a given reference sequence.
-   *
-   * @param referenceAllele Reference allele to compare against
-   * @return True if at least one allele is not the reference
-   */
-  def isVariant(referenceAllele: String): Boolean = {
-    numberOfVariants(referenceAllele) > 0
-  }
-
-  /**
-   * Transform the alleles in this genotype to the ADAM allele enumeration.
-   * Classifies alleles as Reference or Alternate.
-   *
-   * @param referenceAllele Reference allele to compare against
-   * @return Sequence of GenotypeAlleles which are Ref, Alt or OtherAlt.
-   */
-  def getGenotypeAlleles(referenceAllele: String): Seq[ADAMGenotypeAllele] = {
-    assume(ploidy == 2)
-    val numVariants = numberOfVariants(referenceAllele)
-    if (numVariants == 0) {
-      Seq(ADAMGenotypeAllele.Ref, ADAMGenotypeAllele.Ref)
-    } else if (numVariants > 0 && uniqueAllelesCount == 1) {
-      Seq(ADAMGenotypeAllele.Alt, ADAMGenotypeAllele.Alt)
-    } else if (numVariants >= 2 && uniqueAllelesCount > 1) {
-      Seq(ADAMGenotypeAllele.Alt, ADAMGenotypeAllele.OtherAlt)
-    } else {
-      Seq(ADAMGenotypeAllele.Ref, ADAMGenotypeAllele.Alt)
-    }
-  }
-
-}
 
 /**
  * Simple Bayesian variant caller implementation that uses the base and read quality score
@@ -111,14 +43,14 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
 
     val minAlignmentQuality = args.minAlignmentQuality
 
-    val genotypes: RDD[ADAMGenotype] = DistributedUtil.pileupFlatMap[ADAMGenotype](
+    val genotypes: RDD[CalledGenotype] = DistributedUtil.pileupFlatMap[CalledGenotype](
       readSet.mappedReads,
       lociPartitions,
       skipEmpty = true, // skip empty pileups
       pileup => callVariantsAtLocus(pileup, minAlignmentQuality).iterator)
     readSet.mappedReads.unpersist()
 
-    val filteredGenotypes = GenotypeFilter(genotypes, args)
+    val filteredGenotypes = GenotypeFilter(genotypes, args).flatMap(CalledGenotype.calledGenotypeToADAMGenotype(_))
     Common.writeVariantsFromArguments(args, filteredGenotypes)
     if (args.truthGenotypesFile != "")
       GenotypesEvaluator.printGenotypeConcordance(args, filteredGenotypes, sc)
@@ -138,7 +70,7 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
   def callVariantsAtLocus(
     pileup: Pileup,
     minAlignmentQuality: Int = 0,
-    emitRef: Boolean = false): Seq[ADAMGenotype] = {
+    emitRef: Boolean = false): Seq[CalledGenotype] = {
 
     // For now, we skip loci that have no reads mapped. We may instead want to emit NoCall in this case.
     if (pileup.elements.isEmpty)
@@ -150,22 +82,27 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
         val genotypeLikelihoods = computeLogLikelihoods(Pileup(samplePileup.locus, filteredPileupElements))
         val mostLikelyGenotype = genotypeLikelihoods.maxBy(_._2)
 
-        def buildVariants(genotype: Genotype, probability: Double): Seq[ADAMGenotype] = {
-          val genotypeAlleles = JavaConversions.seqAsJavaList(genotype.getGenotypeAlleles(Bases.baseToString(pileup.referenceBase)))
-          genotype.getNonReferenceAlleles(Bases.baseToString(pileup.referenceBase)).map(
-            variantAllele => {
-              val variant = ADAMVariant.newBuilder
-                .setPosition(pileup.locus)
-                .setReferenceAllele(Bases.baseToString(pileup.referenceBase))
-                .setVariantAllele(variantAllele)
-                .setContig(ADAMContig.newBuilder.setContigName(pileup.referenceName).build)
-                .build
-              ADAMGenotype.newBuilder
-                .setAlleles(genotypeAlleles)
-                .setSampleId(sampleName.toCharArray)
-                .setVariant(variant)
-                .build
-            })
+        val referenceBase = Bases.baseToString(samplePileup.referenceBase)
+
+        def buildVariants(genotype: Genotype, probability: Double): Seq[CalledGenotype] = {
+          genotype.getNonReferenceAlleles(Bases.baseToString(pileup.referenceBase)).map(alternate => {
+            val (alternateReadDepth, alternatePositiveReadDepth) = samplePileup.alternateReadDepthAndPositiveDepth(Bases.stringToBases(alternate)(0))
+
+            CalledGenotype(sampleName,
+              samplePileup.referenceName,
+              samplePileup.locus,
+              samplePileup.referenceBase,
+              alternate,
+              Genotype(referenceBase, alternate),
+              GenotypeEvidence(probability,
+                samplePileup.depth,
+                alternateReadDepth,
+                samplePileup.positiveDepth,
+                alternatePositiveReadDepth)
+            )
+          }
+          )
+
         }
         buildVariants(mostLikelyGenotype._1, mostLikelyGenotype._2)
     })
