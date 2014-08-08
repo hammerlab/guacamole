@@ -27,7 +27,7 @@ object DistributedUtil extends Logging {
   /**
    * Partition a LociSet among tasks according to the strategy specified in args.
    */
-  def partitionLociAccordingToArgs[M <: ReferenceRegion: ClassTag](args: Arguments, loci: LociSet, regionRDDs: RDD[M]*): LociMap[Long] = {
+  def partitionLociAccordingToArgs[M <: HasReferenceRegion: ClassTag](args: Arguments, loci: LociSet, regionRDDs: RDD[M]*): LociMap[Long] = {
     val tasks = if (args.parallelism > 0) args.parallelism else regionRDDs(0).partitions.length
     if (args.partitioningAccuracy == 0) {
       partitionLociUniformly(tasks, loci)
@@ -83,7 +83,7 @@ object DistributedUtil extends Logging {
    * Given a LociSet and an RDD of regions, returns the same LociSet but with any contigs that don't have any regions
    * mapped to them removed. Also prints out progress info on the number of regions assigned to each contig.
    */
-  def filterLociWhoseContigsHaveNoRegions[M <: ReferenceRegion](loci: LociSet, regions: RDD[M]): LociSet = {
+  def filterLociWhoseContigsHaveNoRegions[M <: HasReferenceRegion](loci: LociSet, regions: RDD[M]): LociSet = {
     val contigsAndCounts = regions.map(_.referenceContig).countByValue.toMap.withDefaultValue(0L)
     Common.progress("Region counts per contig: %s".format(
       contigsAndCounts.toSeq.sorted.map(pair => "%s=%,d".format(pair._1, pair._2)).mkString(" ")))
@@ -130,7 +130,7 @@ object DistributedUtil extends Logging {
    *                Any number RDD[ReferenceRegion] arguments giving the regions to base the partitioning on.
    * @return LociMap of locus -> task assignments.
    */
-  def partitionLociByApproximateDepth[M <: ReferenceRegion: ClassTag](tasks: Int, loci: LociSet, accuracy: Int, regionRDDs: RDD[M]*): LociMap[Long] = {
+  def partitionLociByApproximateDepth[M <: HasReferenceRegion: ClassTag](tasks: Int, loci: LociSet, accuracy: Int, regionRDDs: RDD[M]*): LociMap[Long] = {
     val sc = regionRDDs(0).sparkContext
 
     // As an optimization for the case where some contigs have no overlapping regions, we remove contigs without coverage first.
@@ -256,7 +256,7 @@ object DistributedUtil extends Logging {
    * Helper function. Given some sliding window instances, return the lowest nextStartLocus from any of them. If all of
    * the sliding windows are at the end of the region iterators, return Long.MaxValue.
    */
-  def firstStartLocus[M <: ReferenceRegion](windows: SlidingWindow[M]*) = {
+  def firstStartLocus[M <: HasReferenceRegion](windows: SlidingWindow[M]*) = {
     windows.map(_.nextStartLocus.getOrElse(Long.MaxValue)).min
   }
 
@@ -334,7 +334,7 @@ object DistributedUtil extends Logging {
    * @tparam S state type
    * @return RDD[T] of flatmap results
    */
-  def windowFlatMapWithState[M <: ReferenceRegion: ClassTag, T: ClassTag, S](
+  def windowFlatMapWithState[M <: HasReferenceRegion: ClassTag, T: ClassTag, S](
     regionRDDs: Seq[RDD[M]],
     lociPartitions: LociMap[Long],
     skipEmpty: Boolean,
@@ -423,7 +423,7 @@ object DistributedUtil extends Logging {
    * @tparam T type of value returned by function
    * @return flatMap results, RDD[T]
    */
-  private def windowTaskFlatMapMultipleRDDs[M <: ReferenceRegion: ClassTag, T: ClassTag](
+  private def windowTaskFlatMapMultipleRDDs[M <: HasReferenceRegion: ClassTag, T: ClassTag](
     regionRDDs: Seq[RDD[M]],
     lociPartitions: LociMap[Long],
     halfWindowSize: Long,
@@ -550,7 +550,7 @@ object DistributedUtil extends Logging {
    *
    * @param regionIterator regions, sorted by contig and start locus.
    */
-  class RegionsByContig[Mapped <: ReferenceRegion](regionIterator: Iterator[Mapped]) {
+  class RegionsByContig[Mapped <: HasReferenceRegion](regionIterator: Iterator[Mapped]) {
     private val buffered = regionIterator.buffered
     private var seenContigs = List.empty[String]
     private var prevIterator: Option[SingleContigRegionIterator[Mapped]] = None
@@ -574,7 +574,7 @@ object DistributedUtil extends Logging {
    * Wraps an iterator of regions sorted by contig name. Implements an iterator that gives regions only for the specified
    * contig name, then stops.
    */
-  class SingleContigRegionIterator[Mapped <: ReferenceRegion](contig: String, iterator: BufferedIterator[Mapped]) extends Iterator[Mapped] {
+  class SingleContigRegionIterator[Mapped <: HasReferenceRegion](contig: String, iterator: BufferedIterator[Mapped]) extends Iterator[Mapped] {
     def hasNext = iterator.hasNext && iterator.head.referenceContig == contig
     def next() = if (hasNext) iterator.next() else throw new NoSuchElementException
   }

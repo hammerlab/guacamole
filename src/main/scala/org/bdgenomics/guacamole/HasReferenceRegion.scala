@@ -3,7 +3,7 @@ package org.bdgenomics.guacamole
 /**
  *    TODO: replace with ReferenceRegion base class in ADAM
  */
-trait ReferenceRegion {
+trait HasReferenceRegion {
 
   /* Name of the reference contig */
   val referenceContig: String
