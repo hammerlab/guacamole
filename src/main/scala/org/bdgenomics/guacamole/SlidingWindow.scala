@@ -40,7 +40,7 @@ import org.apache.spark.Logging
  *
  * @param rawSortedRegions Iterator of regions, sorted by the aligned start locus.
  */
-case class SlidingWindow[Region <: ReferenceRegion](halfWindowSize: Long, rawSortedRegions: Iterator[Region]) extends Logging {
+case class SlidingWindow[Region <: HasReferenceRegion](halfWindowSize: Long, rawSortedRegions: Iterator[Region]) extends Logging {
   /** The locus currently under consideration. */
   var currentLocus = -1L
 
