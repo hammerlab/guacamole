@@ -160,8 +160,7 @@ object GenotypeFilter {
             minReadDepth: Int,
             minAlternateReadDepth: Int,
             minLikelihood: Int,
-            maxReadDepth: Int,
-            alleleBalance: Int): Seq[ADAMGenotype] = {
+            maxReadDepth: Int = Int.MaxValue): Seq[ADAMGenotype] = {
     var filteredGenotypes = genotypes
 
     if (minReadDepth > 0) {
