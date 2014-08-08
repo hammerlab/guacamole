@@ -21,7 +21,7 @@ package org.bdgenomics.guacamole
 import org.scalatest.FunSuite
 import org.scalatest.matchers.ShouldMatchers._
 
-class SlidingReadWindowSuite extends FunSuite {
+class SlidingWindowSuite extends FunSuite {
 
   test("test sliding read window, duplicate reads") {
 
@@ -29,9 +29,9 @@ class SlidingReadWindowSuite extends FunSuite {
       TestUtil.makeRead("TCGATCGA", "8M", "8", 1),
       TestUtil.makeRead("TCGATCGA", "8M", "8", 1),
       TestUtil.makeRead("TCGATCGA", "8M", "8", 1))
-    val window = SlidingReadWindow(2, reads.iterator)
+    val window = SlidingWindow(2, reads.iterator)
     window.setCurrentLocus(0)
-    assert(window.currentReads.size === 3)
+    assert(window.currentRegions.size === 3)
 
   }
 
@@ -41,7 +41,7 @@ class SlidingReadWindowSuite extends FunSuite {
       TestUtil.makeRead("TCGATCGA", "8M", "8", 1, "chr1"),
       TestUtil.makeRead("TCGATCGA", "8M", "8", 1, "chr2"),
       TestUtil.makeRead("TCGATCGA", "8M", "8", 1, "chr3"))
-    val window = SlidingReadWindow(2, reads.iterator)
+    val window = SlidingWindow(2, reads.iterator)
     val caught = evaluating { window.setCurrentLocus(0) } should produce[IllegalArgumentException]
     caught.getMessage should include("must have the same reference name")
 
@@ -53,13 +53,13 @@ class SlidingReadWindowSuite extends FunSuite {
       TestUtil.makeRead("TCGATCGA", "8M", "8", 1),
       TestUtil.makeRead("TCGATCGA", "8M", "8", 4),
       TestUtil.makeRead("TCGATCGA", "8M", "8", 8))
-    val window = SlidingReadWindow(2, reads.iterator)
+    val window = SlidingWindow(2, reads.iterator)
 
     window.setCurrentLocus(0)
-    assert(window.currentReads.size === 1)
+    assert(window.currentRegions.size === 1)
 
     window.setCurrentLocus(4)
-    assert(window.currentReads.size === 2)
+    assert(window.currentRegions.size === 2)
 
   }
 
@@ -69,9 +69,9 @@ class SlidingReadWindowSuite extends FunSuite {
       TestUtil.makeRead("TCGATCGA", "8M", "8", 1),
       TestUtil.makeRead("TCGATCGA", "8M", "8", 8),
       TestUtil.makeRead("TCGATCGA", "8M", "8", 4))
-    val window = SlidingReadWindow(8, reads.iterator)
+    val window = SlidingWindow(8, reads.iterator)
     val caught = evaluating { window.setCurrentLocus(0) } should produce[IllegalArgumentException]
-    caught.getMessage should include("Reads must be sorted by start locus")
+    caught.getMessage should include("Regions must be sorted by start locus")
 
   }
 
@@ -85,40 +85,40 @@ class SlidingReadWindowSuite extends FunSuite {
       TestUtil.makeRead("TCGATCGA", "8M", "8", 1),
       TestUtil.makeRead("CGATCGAT", "8M", "8", 2),
       TestUtil.makeRead("TCG", "3M", "3", 5))
-    val window = SlidingReadWindow(0, reads.iterator)
+    val window = SlidingWindow(0, reads.iterator)
 
     window.setCurrentLocus(0)
-    assert(window.currentReads.size === 0)
+    assert(window.currentRegions.size === 0)
 
     window.setCurrentLocus(1)
-    assert(window.currentReads.size === 1)
+    assert(window.currentRegions.size === 1)
 
     window.setCurrentLocus(2)
-    assert(window.currentReads.size === 2)
+    assert(window.currentRegions.size === 2)
 
     window.setCurrentLocus(3)
-    assert(window.currentReads.size === 2)
+    assert(window.currentRegions.size === 2)
 
     window.setCurrentLocus(4)
-    assert(window.currentReads.size === 2)
+    assert(window.currentRegions.size === 2)
 
     window.setCurrentLocus(5)
-    assert(window.currentReads.size === 3)
+    assert(window.currentRegions.size === 3)
 
     window.setCurrentLocus(6)
-    assert(window.currentReads.size === 3)
+    assert(window.currentRegions.size === 3)
 
     window.setCurrentLocus(7)
-    assert(window.currentReads.size === 3)
+    assert(window.currentRegions.size === 3)
 
     window.setCurrentLocus(8)
-    assert(window.currentReads.size === 2)
+    assert(window.currentRegions.size === 2)
 
     window.setCurrentLocus(9)
-    assert(window.currentReads.size === 1)
+    assert(window.currentRegions.size === 1)
 
     window.setCurrentLocus(10)
-    assert(window.currentReads.size === 0)
+    assert(window.currentRegions.size === 0)
   }
 
   test("test sliding read window, slow walk with halfWindowSize=1") {
@@ -131,46 +131,46 @@ class SlidingReadWindowSuite extends FunSuite {
       TestUtil.makeRead("TCGATCGA", "8M", "8", 2),
       TestUtil.makeRead("CGATCGAT", "8M", "8", 3),
       TestUtil.makeRead("TCG", "3M", "3", 6))
-    val window = SlidingReadWindow(1, reads.iterator)
+    val window = SlidingWindow(1, reads.iterator)
 
     window.setCurrentLocus(0)
-    assert(window.currentReads.size === 0)
+    assert(window.currentRegions.size === 0)
 
     window.setCurrentLocus(1)
-    assert(window.currentReads.size === 1)
+    assert(window.currentRegions.size === 1)
 
     window.setCurrentLocus(2)
-    assert(window.currentReads.size === 2)
+    assert(window.currentRegions.size === 2)
 
     window.setCurrentLocus(3)
-    assert(window.currentReads.size === 2)
+    assert(window.currentRegions.size === 2)
 
     window.setCurrentLocus(4)
-    assert(window.currentReads.size === 2)
+    assert(window.currentRegions.size === 2)
 
     window.setCurrentLocus(5)
-    assert(window.currentReads.size === 3)
+    assert(window.currentRegions.size === 3)
 
     window.setCurrentLocus(6)
-    assert(window.currentReads.size === 3)
+    assert(window.currentRegions.size === 3)
 
     window.setCurrentLocus(7)
-    assert(window.currentReads.size === 3)
+    assert(window.currentRegions.size === 3)
 
     window.setCurrentLocus(8)
-    assert(window.currentReads.size === 3)
+    assert(window.currentRegions.size === 3)
 
     window.setCurrentLocus(9)
-    assert(window.currentReads.size === 3)
+    assert(window.currentRegions.size === 3)
 
     window.setCurrentLocus(10)
-    assert(window.currentReads.size === 2)
+    assert(window.currentRegions.size === 2)
 
     window.setCurrentLocus(11)
-    assert(window.currentReads.size === 1)
+    assert(window.currentRegions.size === 1)
 
     window.setCurrentLocus(12)
-    assert(window.currentReads.size === 0)
+    assert(window.currentRegions.size === 0)
   }
 
 }

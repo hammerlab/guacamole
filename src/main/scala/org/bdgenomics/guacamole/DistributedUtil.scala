@@ -27,16 +27,16 @@ object DistributedUtil extends Logging {
   /**
    * Partition a LociSet among tasks according to the strategy specified in args.
    */
-  def partitionLociAccordingToArgs(args: Arguments, loci: LociSet, readsRDDs: RDD[MappedRead]*): LociMap[Long] = {
-    val tasks = if (args.parallelism > 0) args.parallelism else readsRDDs(0).partitions.length
+  def partitionLociAccordingToArgs[M <: HasReferenceRegion: ClassTag](args: Arguments, loci: LociSet, regionRDDs: RDD[M]*): LociMap[Long] = {
+    val tasks = if (args.parallelism > 0) args.parallelism else regionRDDs(0).partitions.length
     if (args.partitioningAccuracy == 0) {
       partitionLociUniformly(tasks, loci)
     } else {
-      partitionLociByApproximateReadDepth(
+      partitionLociByApproximateDepth(
         tasks,
         loci,
         args.partitioningAccuracy,
-        readsRDDs: _*)
+        regionRDDs: _*)
     }
   }
 
@@ -45,8 +45,8 @@ object DistributedUtil extends Logging {
    * partition.
    *
    * This implementation assigns loci uniformly, i.e. each task gets about the same number of loci. A smarter
-   * implementation would know about the reads (depth of coverage), and try to assign each task loci corresponding to
-   * about the same number of reads.
+   * implementation would know about the regions (depth of coverage), and try to assign each task loci corresponding to
+   * about the same number of regions.
    *
    * @param tasks number of partitions
    * @param loci loci to partition
@@ -80,31 +80,31 @@ object DistributedUtil extends Logging {
   }
 
   /**
-   * Given a LociSet and an RDD of reads, returns the same LociSet but with any contigs that don't have any reads
-   * mapped to them removed. Also prints out progress info on the number of reads assigned to each contig.
+   * Given a LociSet and an RDD of regions, returns the same LociSet but with any contigs that don't have any regions
+   * mapped to them removed. Also prints out progress info on the number of regions assigned to each contig.
    */
-  def filterLociWhoseContigsHaveNoReads(loci: LociSet, reads: RDD[MappedRead]): LociSet = {
-    val contigsAndCounts = reads.map(_.referenceContig).countByValue.toMap.withDefaultValue(0L)
-    Common.progress("Read counts per contig: %s".format(
+  def filterLociWhoseContigsHaveNoRegions[M <: HasReferenceRegion](loci: LociSet, regions: RDD[M]): LociSet = {
+    val contigsAndCounts = regions.map(_.referenceContig).countByValue.toMap.withDefaultValue(0L)
+    Common.progress("Region counts per contig: %s".format(
       contigsAndCounts.toSeq.sorted.map(pair => "%s=%,d".format(pair._1, pair._2)).mkString(" ")))
-    val contigsWithoutReads = loci.contigs.filter(contigsAndCounts(_) == 0L).toSet
-    if (contigsWithoutReads.nonEmpty) {
-      Common.progress("Filtering out these contigs, since they have no reads: %s".format(
-        contigsWithoutReads.toSeq.sorted.mkString(", ")))
-      loci.filterContigs(!contigsWithoutReads.contains(_))
+    val contigsWithoutRegions = loci.contigs.filter(contigsAndCounts(_) == 0L).toSet
+    if (contigsWithoutRegions.nonEmpty) {
+      Common.progress("Filtering out these contigs, since they have no overlapping regions: %s".format(
+        contigsWithoutRegions.toSeq.sorted.mkString(", ")))
+      loci.filterContigs(!contigsWithoutRegions.contains(_))
     } else {
       loci
     }
   }
 
   /**
-   * Assign loci from a LociSet to partitions, where each partition overlaps about the same number of reads.
+   * Assign loci from a LociSet to partitions, where each partition overlaps about the same number of regions.
    *
    * The approach we take is:
    *
    *  (1) chop up the loci uniformly into many genomic "micro partitions."
    *
-   *  (2) for each micro partition, calculate the number of reads that overlap it.
+   *  (2) for each micro partition, calculate the number of regions that overlap it.
    *
    *  (3) using these counts, assign loci to real ("macro") partitions, making the approximation of uniform depth within
    *      each micro partition.
@@ -112,9 +112,9 @@ object DistributedUtil extends Logging {
    *  Some advantages of this approach are:
    *
    *  - Stages (1) and (3), which are done locally by the Spark master, are constant time with respect to the number
-   *    of reads.
+   *    of regions.
    *
-   *  - Stage (2), where runtime does depend on the number of reads, is done in parallel with Spark.
+   *  - Stage (2), where runtime does depend on the number of regions, is done in parallel with Spark.
    *
    *  - We can tune the accuracy vs. performance trade off by setting `microTasks`.
    *
@@ -123,31 +123,31 @@ object DistributedUtil extends Logging {
    * @param tasks number of partitions
    * @param loci loci to partition
    * @param accuracy integer >= 1. Higher values of this will result in a more exact but also more expensive computation.
-   *                 Specifically, this is the number of micro partitions to use per task to estimate the read depth.
+   *                 Specifically, this is the number of micro partitions to use per task to estimate the region depth.
    *                 In the extreme case, setting this to greater than the number of loci per task will result in an
    *                 exact calculation.
-   * @param readRDDs: reads RDD 1, reads RDD 2, ...
-   *                Any number RDD[MappedRead] arguments giving the reads to base the partitioning on.
+   * @param regionRDDs: region RDD 1, region RDD 2, ...
+   *                Any number RDD[ReferenceRegion] arguments giving the regions to base the partitioning on.
    * @return LociMap of locus -> task assignments.
    */
-  def partitionLociByApproximateReadDepth(tasks: Int, loci: LociSet, accuracy: Int, readRDDs: RDD[MappedRead]*): LociMap[Long] = {
-    val sc = readRDDs(0).sparkContext
+  def partitionLociByApproximateDepth[M <: HasReferenceRegion: ClassTag](tasks: Int, loci: LociSet, accuracy: Int, regionRDDs: RDD[M]*): LociMap[Long] = {
+    val sc = regionRDDs(0).sparkContext
 
-    // As an optimization for the case where some contigs have no reads, we remove contigs without reads first.
-    val lociUsed = filterLociWhoseContigsHaveNoReads(loci, sc.union(readRDDs))
+    // As an optimization for the case where some contigs have no overlapping regions, we remove contigs without coverage first.
+    val lociUsed = filterLociWhoseContigsHaveNoRegions(loci, sc.union(regionRDDs))
 
     // Step (1). Split loci uniformly into micro partitions.
     assume(tasks >= 1)
     assume(lociUsed.count > 0)
-    assume(readRDDs.length > 0)
+    assume(regionRDDs.length > 0)
     val numMicroPartitions: Int = if (accuracy * tasks < lociUsed.count) accuracy * tasks else lociUsed.count.toInt
-    progress("Splitting loci by read depth among %,d tasks using %,d micro partitions.".format(tasks, numMicroPartitions))
+    progress("Splitting loci by region depth among %,d tasks using %,d micro partitions.".format(tasks, numMicroPartitions))
     val microPartitions = partitionLociUniformly(numMicroPartitions, lociUsed)
     progress("Done calculating micro partitions.")
     val broadcastMicroPartitions = sc.broadcast(microPartitions)
 
     // Step (2)
-    // Total up reads overlapping each micro partition. We keep the totals as an array of Longs.
+    // Total up regions overlapping each micro partition. We keep the totals as an array of Longs.
     def addArray(first: Array[Long], second: Array[Long]): Array[Long] = {
       assert(first.length == second.length)
       val result = new Array[Long](first.length)
@@ -160,16 +160,16 @@ object DistributedUtil extends Logging {
     }
 
     var num = 1
-    val counts = readRDDs.map(reads => {
-      progress("Collecting read counts for RDD %d of %d.".format(num, readRDDs.length))
+    val counts = regionRDDs.map(regions => {
+      progress("Collecting region counts for RDD %d of %d.".format(num, regionRDDs.length))
       num += 1
-      reads.mapPartitions(readIterator => {
+      regions.mapPartitions(regionIterator => {
         val microPartitions = broadcastMicroPartitions.value
         assert(microPartitions.count > 0)
         val counts = new Array[Long](numMicroPartitions)
-        readIterator.foreach(read => {
-          val contigMap = microPartitions.onContig(read.referenceContig)
-          val indices: Set[Long] = contigMap.getAll(read.start, read.end)
+        regionIterator.foreach(region => {
+          val contigMap = microPartitions.onContig(region.referenceContig)
+          val indices: Set[Long] = contigMap.getAll(region.start, region.end)
           indices.foreach(index => {
             counts(index.toInt) += 1
           })
@@ -179,54 +179,54 @@ object DistributedUtil extends Logging {
     }).reduce(addArray _)
 
     // Step (3)
-    // Assign loci to tasks, taking into account read depth in each micro partition.
-    val totalReads = counts.sum
-    val readsPerTask = math.max(1, totalReads.toDouble / tasks.toDouble)
-    progress("Done collecting read counts. Total reads with micro partition overlaps: %,d = ~%,.0f reads per task."
-      .format(totalReads, readsPerTask))
-    progress("Reads per micro partition: min=%,d mean=%,.0f max=%,d.".format(
+    // Assign loci to tasks, taking into account region depth in each micro partition.
+    val totalRegions = counts.sum
+    val regionsPerTask = math.max(1, totalRegions.toDouble / tasks.toDouble)
+    progress("Done collecting region counts. Total regions with micro partition overlaps: %,d = ~%,.0f regions per task."
+      .format(totalRegions, regionsPerTask))
+    progress("Regions per micro partition: min=%,d mean=%,.0f max=%,d.".format(
       counts.min, counts.sum.toDouble / counts.length, counts.max))
 
     val builder = LociMap.newBuilder[Long]
     builder.put(loci.filterContigs(!lociUsed.contigs.contains(_)), 0) // Empty contigs get assigned to task 0.
-    var readsAssigned = 0.0
+    var regionsAssigned = 0.0
     var task = 0L
-    def readsRemainingForThisTask = math.round(((task + 1) * readsPerTask) - readsAssigned).toLong
+    def regionsRemainingForThisTask = math.round(((task + 1) * regionsPerTask) - regionsAssigned).toLong
     var microTask = 0
     while (microTask < numMicroPartitions) {
       var set = microPartitions.asInverseMap(microTask)
-      var readsInSet = counts(microTask)
+      var regionsInSet = counts(microTask)
       while (!set.isEmpty) {
-        if (readsInSet == 0) {
-          // Take the whole set if there are no reads assigned to it.
+        if (regionsInSet == 0) {
+          // Take the whole set if there are no regions assigned to it.
           builder.put(set, task)
           set = LociSet.empty
         } else {
-          // If we've allocated all reads for this task, move on to the next task.
-          if (readsRemainingForThisTask == 0)
+          // If we've allocated all regions for this task, move on to the next task.
+          if (regionsRemainingForThisTask == 0)
             task += 1
-          assert(readsRemainingForThisTask > 0)
+          assert(regionsRemainingForThisTask > 0)
           assert(task < tasks)
 
           // Making the approximation of uniform depth within each micro partition, we assign a proportional number of
-          // loci and reads to the current task. The proportion of loci we assign is the ratio of how many reads we have
-          // remaining to allocate for the current task vs. how many reads are remaining in the current micro partition.
+          // loci and regions to the current task. The proportion of loci we assign is the ratio of how many regions we have
+          // remaining to allocate for the current task vs. how many regions are remaining in the current micro partition.
 
           // Here we calculate the fraction of the current micro partition we are going to assign to the current task.
-          // May be 1.0, in which case all loci (and therefore reads) for this micro partition will be assigned to the
+          // May be 1.0, in which case all loci (and therefore regions) for this micro partition will be assigned to the
           // current task.
-          val fractionToTake = math.min(1.0, readsRemainingForThisTask.toDouble / readsInSet.toDouble)
+          val fractionToTake = math.min(1.0, regionsRemainingForThisTask.toDouble / regionsInSet.toDouble)
 
-          // Based on fractionToTake, we set the number of loci and reads to assign.
+          // Based on fractionToTake, we set the number of loci and regions to assign.
           // We always take at least 1 locus to ensure we continue to make progress.
           val lociToTake = math.max(1, (fractionToTake * set.count).toLong)
-          val readsToTake = (fractionToTake * readsInSet).toLong
+          val regionsToTake = (fractionToTake * regionsInSet).toLong
 
           // Add the new task assignment to the builder, and update bookkeeping info.
           val (currentSet, remainingSet) = set.take(lociToTake)
           builder.put(currentSet, task)
-          readsAssigned += math.round(readsToTake).toLong
-          readsInSet -= math.round(readsToTake).toLong
+          regionsAssigned += math.round(regionsToTake).toLong
+          regionsInSet -= math.round(regionsToTake).toLong
           set = remainingSet
         }
       }
@@ -244,19 +244,19 @@ object DistributedUtil extends Logging {
    *
    *  If an existing Pileup is provided, then its locus must be <= the new locus.
    */
-  private def initOrMovePileup(existing: Option[Pileup], window: SlidingReadWindow): Pileup = {
+  private def initOrMovePileup(existing: Option[Pileup], window: SlidingWindow[MappedRead]): Pileup = {
     val locus = window.currentLocus
     existing match {
-      case None         => Pileup(window.newReads, locus)
-      case Some(pileup) => pileup.atGreaterLocus(locus, window.newReads.iterator)
+      case None         => Pileup(window.newRegions, locus)
+      case Some(pileup) => pileup.atGreaterLocus(locus, window.newRegions.iterator)
     }
   }
 
   /**
    * Helper function. Given some sliding window instances, return the lowest nextStartLocus from any of them. If all of
-   * the sliding windows are at the end of the read iterators, return Long.MaxValue.
+   * the sliding windows are at the end of the region iterators, return Long.MaxValue.
    */
-  def firstStartLocus(windows: SlidingReadWindow*) = {
+  def firstStartLocus[M <: HasReferenceRegion](windows: SlidingWindow[M]*) = {
     windows.map(_.nextStartLocus.getOrElse(Long.MaxValue)).min
   }
 
@@ -277,7 +277,7 @@ object DistributedUtil extends Logging {
     lociPartitions: LociMap[Long],
     skipEmpty: Boolean,
     function: Pileup => Iterator[T]): RDD[T] = {
-    windowFlatMapWithState(Seq(reads), lociPartitions, skipEmpty, 0, None, (maybePileup: Option[Pileup], windows) => {
+    windowFlatMapWithState(Seq(reads), lociPartitions, skipEmpty, 0, None, (maybePileup: Option[Pileup], windows: Seq[SlidingWindow[MappedRead]]) => {
       assert(windows.length == 1)
       val pileup = initOrMovePileup(maybePileup, windows(0))
       (Some(pileup), function(pileup))
@@ -304,7 +304,7 @@ object DistributedUtil extends Logging {
       skipEmpty,
       0L, // half window size
       None,
-      (maybePileups: Option[(Pileup, Pileup)], windows) => {
+      (maybePileups: Option[(Pileup, Pileup)], windows: Seq[SlidingWindow[MappedRead]]) => {
         assert(windows.length == 2)
         val pileup1 = initOrMovePileup(maybePileups.map(_._1), windows(0))
         val pileup2 = initOrMovePileup(maybePileups.map(_._2), windows(1))
@@ -313,8 +313,8 @@ object DistributedUtil extends Logging {
   }
 
   /**
-   * FlatMap across loci, and any number of RDDs of reads, where at each locus the provided function is passed a
-   * sliding window instance for each RDD containing the reads overlapping an interval of halfWindowSize to either side
+   * FlatMap across loci, and any number of RDDs of regions, where at each locus the provided function is passed a
+   * sliding window instance for each RDD containing the regions overlapping an interval of halfWindowSize to either side
    * of a locus.
    *
    * This function supports maintaining some state from one locus to another within a task. The state maintained is of type
@@ -322,11 +322,11 @@ object DistributedUtil extends Logging {
    * (new state, result data). The state is initialized to initialState for each task, and for each new contig handled
    * by a single task.
    *
-   * @param readsRDDs sequence of read RDDs
+   * @param regionRDDs sequence of region RDDs
    * @param lociPartitions loci to consider, partitioned into tasks
-   * @param skipEmpty If True, then the function will only be called on loci where at least one read maps within a
+   * @param skipEmpty If True, then the function will only be called on loci where at least one region maps within a
    *                  window around the locus. If False, then the function will be called at all loci in lociPartitions.
-   * @param halfWindowSize if a read overlaps a region of halfWindowSize to either side of a locus under consideration,
+   * @param halfWindowSize if another region overlaps a halfWindowSize to either side of a locus under consideration,
    *                       then it is included.
    * @param initialState initial state to use for each task and each contig analyzed within a task.
    * @param function function to flatmap, of type (state, sliding windows) -> (new state, result data)
@@ -334,20 +334,20 @@ object DistributedUtil extends Logging {
    * @tparam S state type
    * @return RDD[T] of flatmap results
    */
-  def windowFlatMapWithState[T: ClassTag, S](
-    readsRDDs: Seq[RDD[MappedRead]],
+  def windowFlatMapWithState[M <: HasReferenceRegion: ClassTag, T: ClassTag, S](
+    regionRDDs: Seq[RDD[M]],
     lociPartitions: LociMap[Long],
     skipEmpty: Boolean,
     halfWindowSize: Long,
     initialState: S,
-    function: (S, Seq[SlidingReadWindow]) => (S, Iterator[T])): RDD[T] = {
-    windowTaskFlatMapMultipleRDDs(readsRDDs, lociPartitions, halfWindowSize, (task, taskLoci, taskReadsSeq) => {
-      val readsSplitByContigSeq = taskReadsSeq.map(taskReads => new ReadsByContig(taskReads))
+    function: (S, Seq[SlidingWindow[M]]) => (S, Iterator[T])): RDD[T] = {
+    windowTaskFlatMapMultipleRDDs(regionRDDs, lociPartitions, halfWindowSize, (task, taskLoci, taskRegionsSeq: Seq[Iterator[M]]) => {
+      val regionSplitByContigSeq = taskRegionsSeq.map(taskRegions => new RegionsByContig(taskRegions))
       val result = new ArrayBuffer[T]
       taskLoci.contigs.foreach(contig => {
-        val readsIterators = readsSplitByContigSeq.map(_.next(contig))
-        val windows = readsIterators.map(SlidingReadWindow(halfWindowSize, _))
-        def windowsEmpty = windows.forall(_.currentReads.isEmpty)
+        val regionIterator = regionSplitByContigSeq.map(_.next(contig))
+        val windows = regionIterator.map(SlidingWindow[M](halfWindowSize, _))
+        def windowsEmpty = windows.forall(_.currentRegions.isEmpty)
         val ranges = taskLoci.onContig(contig).ranges.iterator
         var state = initialState
         var locus = 0L
@@ -355,10 +355,10 @@ object DistributedUtil extends Logging {
           val range = ranges.next()
           locus = math.max(range.start, locus)
           while (locus < range.end) {
-            lazy val nextLocusWithReads = firstStartLocus(windows: _*)
-            if (skipEmpty && windowsEmpty && nextLocusWithReads - halfWindowSize > locus) {
+            lazy val nextLocusWithRegions = firstStartLocus(windows: _*)
+            if (skipEmpty && windowsEmpty && nextLocusWithRegions - halfWindowSize > locus) {
               // Fast forward.
-              locus = nextLocusWithReads - halfWindowSize
+              locus = nextLocusWithRegions - halfWindowSize
             } else {
               // Run at this locus.
               windows.foreach(_.setCurrentLocus(locus))
@@ -395,81 +395,81 @@ object DistributedUtil extends Logging {
   }
 
   /**
-   * FlatMap across sets of reads overlapping genomic partitions, on multiple RDDs.
+   * FlatMap across sets of regions overlapping genomic partitions, on multiple RDDs.
    *
    * Although this function would from its interface appear to support any number of RDDs, as a matter of implementation
-   * we currently only support working with 1 or 2 read RDDs. That is, the readRDDs param must currently be length 1 or 2.
+   * we currently only support working with 1 or 2 region RDDs. That is, the regionRDDs param must currently be length 1 or 2.
    *
    * This function works as follows:
    *
-   *  (1) Assign reads to partitions. A read may overlap multiple partitions, and therefore be assigned to multiple
+   *  (1) Assign regions to partitions. A region may overlap multiple partitions, and therefore be assigned to multiple
    *      partitions.
    *
    *  (2) For each partition, call the provided function. The arguments to this function are the task number, the loci
-   *      assigned to this task, and a sequence of iterators giving the reads overlapping those loci (within the
+   *      assigned to this task, and a sequence of iterators giving the regions overlapping those loci (within the
    *      specified halfWindowSize) from each corresponding input RDD. The loci assigned to this task are always unique
-   *      to this task, but the same reads may be provided to multiple tasks, since reads may overlap loci partition
+   *      to this task, but the same regions may be provided to multiple tasks, since regions may overlap loci partition
    *      boundaries.
    *
    *  (3) The results of the provided function are concatenated into an RDD, which is returned.
    *
-   * @param readsRDDs sequence of RDD[MappedRead].
+   * @param regionRDDs sequence of RDD[].
    * @param lociPartitions map from locus -> task number. This argument specifies both the loci to be considered and how
-   *                       they should be split among tasks. Reads that don't overlap these loci are discarded.
-   * @param halfWindowSize if a read overlaps a region of halfWindowSize to either side of a locus under consideration,
+   *                       they should be split among tasks. regions that don't overlap these loci are discarded.
+   * @param halfWindowSize if a region overlaps a region of halfWindowSize to either side of a locus under consideration,
    *                       then it is included.
-   * @param function function to flatMap: (task number, loci, sequence of iterators of reads that overlap a window
+   * @param function function to flatMap: (task number, loci, sequence of iterators of regions that overlap a window
    *                 around these loci) -> T
    * @tparam T type of value returned by function
    * @return flatMap results, RDD[T]
    */
-  private def windowTaskFlatMapMultipleRDDs[T: ClassTag](
-    readsRDDs: Seq[RDD[MappedRead]],
+  private def windowTaskFlatMapMultipleRDDs[M <: HasReferenceRegion: ClassTag, T: ClassTag](
+    regionRDDs: Seq[RDD[M]],
     lociPartitions: LociMap[Long],
     halfWindowSize: Long,
-    function: (Long, LociSet, Seq[Iterator[MappedRead]]) => Iterator[T]): RDD[T] = {
+    function: (Long, LociSet, Seq[Iterator[M]]) => Iterator[T]): RDD[T] = {
 
-    assume(readsRDDs.length > 0)
-    val sc = readsRDDs(0).sparkContext
+    assume(regionRDDs.length > 0)
+    val sc = regionRDDs(0).sparkContext
     progress("Loci partitioning: %s".format(lociPartitions.truncatedString()))
     val lociPartitionsBoxed: Broadcast[LociMap[Long]] = sc.broadcast(lociPartitions)
     val numTasks = lociPartitions.asInverseMap.map(_._1).max + 1
 
     // Counters
-    val totalReads = sc.accumulator(0L)
-    val relevantReads = sc.accumulator(0L)
-    val expandedReads = sc.accumulator(0L)
+    val totalRegions = sc.accumulator(0L)
+    val relevantRegions = sc.accumulator(0L)
+    val expandedRegions = sc.accumulator(0L)
     DelayedMessages.default.say { () =>
-      "Read counts: filtered %,d total reads to %,d relevant reads, expanded for overlaps by %,.2f%% to %,d".format(
-        totalReads.value,
-        relevantReads.value,
-        (expandedReads.value - relevantReads.value) * 100.0 / relevantReads.value,
-        expandedReads.value)
+      "Region counts: filtered %,d total regions to %,d relevant regions, expanded for overlaps by %,.2f%% to %,d".format(
+        totalRegions.value,
+        relevantRegions.value,
+        (expandedRegions.value - relevantRegions.value) * 100.0 / relevantRegions.value,
+        expandedRegions.value)
     }
 
-    // Expand reads into (task, read) pairs for each read RDD.
-    val taskNumberReadPairsRDDs = readsRDDs.map(reads => reads.flatMap(read => {
-      val singleContig = lociPartitionsBoxed.value.onContig(read.referenceContig)
-      val thisReadsTasks = singleContig.getAll(read.start - halfWindowSize, read.end.get + halfWindowSize)
+    // Expand regions into (task, region) pairs for each region RDD.
+    val taskNumberRegionPairsRDDs = regionRDDs.map(regions => regions.flatMap(region => {
+      val singleContig = lociPartitionsBoxed.value.onContig(region.referenceContig)
+      val thisRegionsTasks = singleContig.getAll(region.start - halfWindowSize, region.end.get + halfWindowSize)
 
       // Update counters
-      totalReads += 1
-      if (thisReadsTasks.nonEmpty) relevantReads += 1
-      expandedReads += thisReadsTasks.size
+      totalRegions += 1
+      if (thisRegionsTasks.nonEmpty) relevantRegions += 1
+      expandedRegions += thisRegionsTasks.size
 
-      // Return this read, duplicated for each task it is assigned to.
-      thisReadsTasks.map(task => (task, read))
+      // Return this region, duplicated for each task it is assigned to.
+      thisRegionsTasks.map(task => (task, region))
     }))
 
-    // Run the task on each partition. Keep track of the number of reads assigned to each task in an accumulator, so
+    // Run the task on each partition. Keep track of the number of regions assigned to each task in an accumulator, so
     // we can print out a summary of the skew.
-    val readsByTask = sc.accumulator(MutableHashMap.empty[String, Long])(new HashMapAccumulatorParam)
+    val regionsByTask = sc.accumulator(MutableHashMap.empty[String, Long])(new HashMapAccumulatorParam)
     DelayedMessages.default.say { () =>
       {
-        assert(readsByTask.value.size == numTasks)
+        assert(regionsByTask.value.size == numTasks)
         val stats = new math3.stat.descriptive.DescriptiveStatistics()
-        readsByTask.value.valuesIterator.foreach(stats.addValue(_))
-        "Reads per task: min=%,.0f 25%%=%,.0f median=%,.0f (mean=%,.0f) 75%%=%,.0f max=%,.0f. Max is %,.2f%% more than mean.".format(
+        regionsByTask.value.valuesIterator.foreach(stats.addValue(_))
+        "Regions per task: min=%,.0f 25%%=%,.0f median=%,.0f (mean=%,.0f) 75%%=%,.0f max=%,.0f. Max is %,.2f%% more than mean.".format(
           stats.getMin,
           stats.getPercentile(25),
           stats.getPercentile(50),
@@ -481,100 +481,100 @@ object DistributedUtil extends Logging {
     }
 
     // Here, we special case for different numbers of RDDs.
-    val results = taskNumberReadPairsRDDs match {
+    val results = taskNumberRegionPairsRDDs match {
 
       // One RDD.
-      case taskNumberReadPairs :: Nil => {
+      case taskNumberRegionPairs :: Nil => {
         // Each key (i.e. task) gets its own partition.
-        val partitioned = taskNumberReadPairs.partitionBy(new PartitionByKey(numTasks.toInt))
-        partitioned.mapPartitionsWithIndex((taskNum: Int, taskNumAndReads) => {
+        val partitioned = taskNumberRegionPairs.partitionBy(new PartitionByKey(numTasks.toInt))
+        partitioned.mapPartitionsWithIndex((taskNum: Int, taskNumAndRegions) => {
           val taskLoci = lociPartitionsBoxed.value.asInverseMap(taskNum.toLong)
-          val taskReads = taskNumAndReads.map(pair => {
+          val taskRegions = taskNumAndRegions.map(pair => {
             assert(pair._1 == taskNum)
             pair._2
           })
 
-          // We need to invoke the function on an iterator of sorted reads. For now, we just load the reads into memory,
-          // sort them by start position, and use an iterator of this. This of course means we load all the reads into memory,
+          // We need to invoke the function on an iterator of sorted regions. For now, we just load the regions into memory,
+          // sort them by start position, and use an iterator of this. This of course means we load all the regions into memory,
           // which obviates the advantages of using iterators everywhere else. A better solution would be to somehow have
-          // the data already sorted on each partition. Note that sorting the whole RDD of reads is unnecessary, so we're
-          // avoiding it -- we just need that the reads on each task are sorted, no need to merge them across tasks.
-          val allReads = taskReads.toSeq.sortBy(read => (read.referenceContig, read.start))
+          // the data already sorted on each partition. Note that sorting the whole RDD of regions is unnecessary, so we're
+          // avoiding it -- we just need that the regions on each task are sorted, no need to merge them across tasks.
+          val allRegions = taskRegions.toSeq.sortBy(region => (region.referenceContig, region.start))
 
-          readsByTask.add(MutableHashMap(taskNum.toString -> allReads.length))
-          function(taskNum, taskLoci, Seq(allReads.iterator))
+          regionsByTask.add(MutableHashMap(taskNum.toString -> allRegions.length))
+          function(taskNum, taskLoci, Seq(allRegions.iterator))
         })
       }
 
       // Two RDDs.
-      case taskNumberReadPairs1 :: taskNumberReadPairs2 :: Nil => {
+      case taskNumberRegionPairs1 :: taskNumberRegionPairs2 :: Nil => {
         // Cogroup-based implementation.
-        val partitioned = taskNumberReadPairs1.cogroup(taskNumberReadPairs2, new PartitionByKey(numTasks.toInt))
-        partitioned.mapPartitionsWithIndex((taskNum: Int, taskNumAndReadsPairs) => {
-          if (taskNumAndReadsPairs.isEmpty) {
+        val partitioned = taskNumberRegionPairs1.cogroup(taskNumberRegionPairs2, new PartitionByKey(numTasks.toInt))
+        partitioned.mapPartitionsWithIndex((taskNum: Int, taskNumAndRegionPairs) => {
+          if (taskNumAndRegionPairs.isEmpty) {
             Iterator.empty
           } else {
             val taskLoci = lociPartitionsBoxed.value.asInverseMap(taskNum.toLong)
-            val taskNumAndPair = taskNumAndReadsPairs.next()
-            assert(taskNumAndReadsPairs.isEmpty)
+            val taskNumAndPair = taskNumAndRegionPairs.next()
+            assert(taskNumAndRegionPairs.isEmpty)
             assert(taskNumAndPair._1 == taskNum)
-            val taskReads1 = taskNumAndPair._2._1.toSeq.sortBy(read => (read.referenceContig, read.start))
-            val taskReads2 = taskNumAndPair._2._2.toSeq.sortBy(read => (read.referenceContig, read.start))
-            readsByTask.add(MutableHashMap(taskNum.toString -> (taskReads1.length + taskReads2.length)))
-            val result = function(taskNum, taskLoci, Seq(taskReads1.iterator, taskReads2.iterator))
+            val taskRegions1 = taskNumAndPair._2._1.toSeq.sortBy(region => (region.referenceContig, region.start))
+            val taskRegions2 = taskNumAndPair._2._2.toSeq.sortBy(region => (region.referenceContig, region.start))
+            regionsByTask.add(MutableHashMap(taskNum.toString -> (taskRegions1.length + taskRegions2.length)))
+            val result = function(taskNum, taskLoci, Seq(taskRegions1.iterator, taskRegions2.iterator))
             result
           }
         })
       }
 
       // We currently do not support the general case.
-      case _ => throw new AssertionError("Unsupported number of RDDs: %d".format(taskNumberReadPairsRDDs.length))
+      case _ => throw new AssertionError("Unsupported number of RDDs: %d".format(taskNumberRegionPairsRDDs.length))
     }
     results
   }
 
   /**
-   * Using an iterator of reads sorted by (contig, start locus), this class exposes a way to get separate iterators
-   * over the reads in each contig.
+   * Using an iterator of regions sorted by (contig, start locus), this class exposes a way to get separate iterators
+   * over the regions in each contig.
    *
-   * For example, given these reads (written as contig:start locus):
+   * For example, given these regions (written as contig:start locus):
    *    chr20:1000,chr20:1500,chr21:200
    *
-   * Calling next("chr20") will return an iterator of two reads (chr20:1000 and chr20:1500). After that, calling
-   * next("chr21") will give an iterator of one read (chr21:200).
+   * Calling next("chr20") will return an iterator of two regions (chr20:1000 and chr20:1500). After that, calling
+   * next("chr21") will give an iterator of one region (chr21:200).
    *
    * Note that you must call next("chr20") before calling next("chr21") in this example. That is, this class does not
-   * buffer anything -- it just walks forward in the reads using the iterator you gave it.
+   * buffer anything -- it just walks forward in the regions using the iterator you gave it.
    *
    * Also note that after calling next("chr21"), the iterator returned by our previous call to next() is invalidated.
    *
-   * @param readIterator reads, sorted by contig and start locus.
+   * @param regionIterator regions, sorted by contig and start locus.
    */
-  class ReadsByContig(readIterator: Iterator[MappedRead]) {
-    private val buffered = readIterator.buffered
+  class RegionsByContig[Mapped <: HasReferenceRegion](regionIterator: Iterator[Mapped]) {
+    private val buffered = regionIterator.buffered
     private var seenContigs = List.empty[String]
-    private var prevIterator: Option[SingleContigReadsIterator] = None
-    def next(contig: String): Iterator[MappedRead] = {
+    private var prevIterator: Option[SingleContigRegionIterator[Mapped]] = None
+    def next(contig: String): Iterator[Mapped] = {
       // We must first march the previous iterator we returned to the end.
       while (prevIterator.exists(_.hasNext)) prevIterator.get.next()
 
       // The next element from the iterator should have a contig we haven't seen so far.
       assert(buffered.isEmpty || !seenContigs.contains(buffered.head.referenceContig),
-        "Reads are not sorted by contig. Contigs requested so far: %s. Next read's contig: %s.".format(
+        "Regions are not sorted by contig. Contigs requested so far: %s. Next regions's contig: %s.".format(
           seenContigs.reverse.toString, buffered.head.referenceContig))
       seenContigs ::= contig
 
       // Wrap our iterator and return it.
-      prevIterator = Some(new SingleContigReadsIterator(contig, buffered))
+      prevIterator = Some(new SingleContigRegionIterator(contig, buffered))
       prevIterator.get
     }
   }
 
   /**
-   * Wraps an iterator of reads sorted by contig name. Implements an iterator that gives reads only for the specified
+   * Wraps an iterator of regions sorted by contig name. Implements an iterator that gives regions only for the specified
    * contig name, then stops.
    */
-  class SingleContigReadsIterator(contig: String, iterator: BufferedIterator[MappedRead]) extends Iterator[MappedRead] {
+  class SingleContigRegionIterator[Mapped <: HasReferenceRegion](contig: String, iterator: BufferedIterator[Mapped]) extends Iterator[Mapped] {
     def hasNext = iterator.hasNext && iterator.head.referenceContig == contig
     def next() = if (hasNext) iterator.next() else throw new NoSuchElementException
   }
