@@ -84,7 +84,7 @@ class DistributedUtilSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
         (7, 1),
         (8, 1)))
       val loci = LociSet.parse("chr1:0-100")
-      val result = DistributedUtil.partitionLociByApproximateReadDepth(2, loci, 100, reads)
+      val result = DistributedUtil.partitionLociByApproximateDepth(2, loci, 100, reads)
       result.toString should equal("chr1:0-7=0,chr1:7-100=1")
     }
   }
@@ -103,7 +103,7 @@ class DistributedUtilSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
         (7, 1),
         (8, 1)))
       val loci = LociSet.parse("chr1:0-1000000,chr5:0-100")
-      val result = DistributedUtil.partitionLociByApproximateReadDepth(2, loci, 100, reads)
+      val result = DistributedUtil.partitionLociByApproximateDepth(2, loci, 100, reads)
       result.toString should equal("chr1:0-1000000=0,chr5:0-7=0,chr5:7-100=1")
     }
   }
@@ -113,7 +113,7 @@ class DistributedUtilSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
     val normalReads = TestUtil.loadReads(sc, "dream_training.chr20.mdTagged.loci0-150k.normal.sam")
 
     val loci = LociSet.parse("1:0-249250621,20:0-100000")
-    val partitioned = DistributedUtil.partitionLociByApproximateReadDepth(2, loci, 250, tumorReads.mappedReads, normalReads.mappedReads)
+    val partitioned = DistributedUtil.partitionLociByApproximateDepth(2, loci, 250, tumorReads.mappedReads, normalReads.mappedReads)
     println(partitioned)
 
     // The entire chromosome 1, which has no reads, should be assigned to task 0.
