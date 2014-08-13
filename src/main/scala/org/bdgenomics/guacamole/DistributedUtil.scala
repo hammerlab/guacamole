@@ -302,9 +302,9 @@ object DistributedUtil extends Logging {
       Seq(reads1, reads2),
       lociPartitions,
       skipEmpty,
-      0L, // half window size
-      None,
-      (maybePileups: Option[(Pileup, Pileup)], windows: Seq[SlidingWindow[MappedRead]]) => {
+      halfWindowSize = 0L,
+      initialState = None,
+      function = (maybePileups: Option[(Pileup, Pileup)], windows: Seq[SlidingWindow[MappedRead]]) => {
         assert(windows.length == 2)
         val pileup1 = initOrMovePileup(maybePileups.map(_._1), windows(0))
         val pileup2 = initOrMovePileup(maybePileups.map(_._2), windows(1))
