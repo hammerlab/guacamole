@@ -56,7 +56,7 @@ case class Pileup(locus: Long, elements: Seq[PileupElement]) {
    */
   lazy val bySample: Map[String, Pileup] = {
     elements.groupBy(element => Option(element.read.sampleName).map(_.toString).getOrElse("default")).map({
-      case (sample, elements) => (sample, Pileup(locus, elements))
+      case (sample, elems) => (sample, Pileup(locus, elems))
     })
   }
 
@@ -66,7 +66,7 @@ case class Pileup(locus: Long, elements: Seq[PileupElement]) {
    */
   lazy val byToken: Map[Int, Pileup] = {
     elements.groupBy(element => element.read.token).map({
-      case (token, elements) => (token, Pileup(locus, elements))
+      case (token, elems) => (token, Pileup(locus, elems))
     })
   }
 
