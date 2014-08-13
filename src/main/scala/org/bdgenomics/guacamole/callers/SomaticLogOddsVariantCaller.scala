@@ -29,7 +29,13 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
   override val name = "logodds-somatic"
   override val description = "call somatic variants using a two independent caller on tumor and normal"
 
-  private class Arguments extends DistributedUtil.Arguments with Output with GenotypeConcordance with GenotypeFilterArguments with PileupFilterArguments with TumorNormalReads {
+  private class Arguments
+      extends DistributedUtil.Arguments
+      with Output
+      with GenotypeConcordance
+      with GenotypeFilterArguments
+      with PileupFilterArguments
+      with TumorNormalReads {
     @Opt(name = "-log-odds", metaVar = "X", usage = "Make a call if the probability of variant is greater than this value (Phred-scaled)")
     var logOdds: Int = 35
 
