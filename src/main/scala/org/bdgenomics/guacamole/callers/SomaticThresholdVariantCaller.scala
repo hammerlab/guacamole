@@ -82,7 +82,7 @@ object SomaticThresholdVariantCaller extends Command with Serializable with Logg
       tumorReads.mappedReads,
       normalReads.mappedReads,
       lociPartitions,
-      true, // skip empty pileups
+      skipEmpty = true, // skip empty pileups
       (pileupTumor, pileupNormal) => {
         val genotypes = callVariantsAtLocus(pileupTumor, pileupNormal, thresholdTumor, thresholdNormal)
         numGenotypes += genotypes.length
