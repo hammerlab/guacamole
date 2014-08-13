@@ -33,7 +33,7 @@ import org.bdgenomics.guacamole.{ Bases, MappedRead }
 case class Pileup(locus: Long, elements: Seq[PileupElement]) {
   /** The first element in the pileup. */
   lazy val head = {
-    assume(!elements.isEmpty, "Empty pileup")
+    assume(elements.nonEmpty, "Empty pileup")
     elements.head
   }
 
