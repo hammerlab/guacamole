@@ -78,7 +78,7 @@ case class Pileup(locus: Long, elements: Seq[PileupElement]) {
   /**
    * Number of positively stranded reads
    */
-  lazy val positiveDepth: Int = elements.view.filter(_.read.isPositiveStrand).size
+  lazy val positiveDepth: Int = elements.view.count(_.read.isPositiveStrand)
 
   /**
    * PileupElements that match the reference base

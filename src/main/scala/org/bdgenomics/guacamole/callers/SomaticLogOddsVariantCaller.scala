@@ -222,7 +222,7 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
   def computeDepthAndForwardDepth(pileup: Pileup, base: String): (Int, Int) = {
     val baseElements = pileup.elements.view.filter(el => Bases.basesToString(el.sequencedBases) == base)
     val readDepth = baseElements.length
-    val baseForwardReadDepth = baseElements.view.filter(_.read.isPositiveStrand).length
+    val baseForwardReadDepth = baseElements.view.count(_.read.isPositiveStrand)
     (readDepth, baseForwardReadDepth)
   }
 
