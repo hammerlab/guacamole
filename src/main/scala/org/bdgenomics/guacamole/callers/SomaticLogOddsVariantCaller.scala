@@ -150,10 +150,8 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
 
     val (alternateBase, tumorVariantLikelihood): (Option[String], Double) = callVariantInTumor(referenceBase, filteredTumorPileup)
     alternateBase match {
-      case None => Seq.empty
+      case None | Some("") => Seq.empty
       case Some(alternate) => {
-
-        if (alternate == "") return Seq.empty
 
         val (alternateReadDepth, alternateForwardReadDepth) = computeDepthAndForwardDepth(filteredTumorPileup, alternate)
 
