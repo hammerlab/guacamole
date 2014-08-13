@@ -72,10 +72,12 @@ object SomaticThresholdVariantCaller extends Command with Serializable with Logg
       normalReads.mappedReads.count, normalReads.mappedReads.partitions.length))
 
     val loci = Common.loci(args, normalReads)
+    val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(args, loci, tumorReads.mappedReads, normalReads.mappedReads)
+
     val (thresholdNormal, thresholdTumor) = (args.thresholdNormal, args.thresholdTumor)
     val numGenotypes = sc.accumulator(0L)
     DelayedMessages.default.say { () => "Called %,d genotypes.".format(numGenotypes.value) }
-    val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(args, loci, tumorReads.mappedReads, normalReads.mappedReads)
+
     val genotypes: RDD[ADAMGenotype] = DistributedUtil.pileupFlatMapTwoRDDs[ADAMGenotype](
       tumorReads.mappedReads,
       normalReads.mappedReads,
