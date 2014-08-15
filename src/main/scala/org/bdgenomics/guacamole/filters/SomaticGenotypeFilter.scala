@@ -4,6 +4,7 @@ import org.bdgenomics.guacamole._
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.guacamole.Common.Arguments.Base
 import org.kohsuke.args4j.Option
+import org.bdgenomics.adam.util.PhredUtils
 
 /**
  * Filter to remove genotypes where the number of reads at the locus is too low or too high
@@ -66,6 +67,32 @@ object SomaticAlternateReadDepthFilter {
   }
 }
 
+object SomaticLikelihoodFilter {
+
+  def hasMinimumLikelihood(somaticGenotype: CalledSomaticGenotype,
+                           minLikelihood: Int): Boolean = {
+
+    somaticGenotype.tumorEvidence.phredScaledLikelihood > minLikelihood //|| somaticGenotype.somaticLogOdds.isInfinite
+  }
+
+  /**
+   *
+   *  Apply the filter to an RDD of genotypes
+   *
+   * @param genotypes RDD of genotypes to filter
+   * @param minLikelihood minimum likelihood
+   * @param debug if true, compute the count of genotypes after filtering
+   * @return  Genotypes with tumor alternate read depth >= minAlternateReadDepth
+   */
+  def apply(genotypes: RDD[CalledSomaticGenotype],
+            minLikelihood: Int,
+            debug: Boolean = false): RDD[CalledSomaticGenotype] = {
+    val filteredGenotypes = genotypes.filter(hasMinimumLikelihood(_, minLikelihood))
+    if (debug) SomaticGenotypeFilter.printFilterProgress(filteredGenotypes)
+    filteredGenotypes
+  }
+}
+
 object SomaticGenotypeFilter {
 
   def printFilterProgress(filteredGenotypes: RDD[CalledSomaticGenotype]) = {
@@ -74,6 +101,12 @@ object SomaticGenotypeFilter {
   }
 
   trait SomaticGenotypeFilterArguments extends Base {
+
+    @Option(name = "-minLikelihood", usage = "Minimum likelihood")
+    var minLikelihood: Int = 0
+
+    @Option(name = "-log-odds", metaVar = "X", usage = "Make a call if the probability of variant is greater than this value (Phred-scaled)")
+    var logOdds: Int = 35
 
     @Option(name = "-minTumorReadDepth", usage = "Minimum number of reads for a genotype call")
     var minTumorReadDepth: Int = 0
@@ -97,6 +130,8 @@ object SomaticGenotypeFilter {
 
     filteredGenotypes = SomaticReadDepthFilter(filteredGenotypes, args.minTumorReadDepth, args.maxTumorReadDepth, args.minNormalReadDepth, args.debugGenotypeFilters)
 
+    filteredGenotypes = SomaticLikelihoodFilter(filteredGenotypes, args.minLikelihood, args.debugGenotypeFilters)
+
     if (args.minTumorAlternateReadDepth > 0) {
       filteredGenotypes = SomaticAlternateReadDepthFilter(filteredGenotypes, args.minTumorAlternateReadDepth, args.debugGenotypeFilters)
     }
@@ -108,11 +143,15 @@ object SomaticGenotypeFilter {
             minTumorReadDepth: Int,
             maxTumorReadDepth: Int,
             minNormalReadDepth: Int,
-            minTumorAlternateReadDepth: Int): Seq[CalledSomaticGenotype] = {
+            minTumorAlternateReadDepth: Int,
+            logOddsThreshold: Int,
+            minLikelihood: Int): Seq[CalledSomaticGenotype] = {
 
     var filteredGenotypes = genotypes
 
     filteredGenotypes = filteredGenotypes.filter(SomaticReadDepthFilter.withinReadDepthRange(_, minTumorReadDepth, maxTumorReadDepth, minNormalReadDepth))
+
+    filteredGenotypes = filteredGenotypes.filter(SomaticLikelihoodFilter.hasMinimumLikelihood(_, minLikelihood))
 
     if (minTumorAlternateReadDepth > 0) {
       filteredGenotypes = filteredGenotypes.filter(SomaticAlternateReadDepthFilter.hasMinimumAlternateReadDepth(_, minTumorAlternateReadDepth))

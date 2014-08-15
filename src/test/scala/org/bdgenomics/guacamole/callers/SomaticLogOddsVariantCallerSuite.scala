@@ -30,30 +30,27 @@ class SomaticLogOddsVariantCallerSuite extends SparkFunSuite with ShouldMatchers
   val filterMultiAllelic = false
 
   val snvCorrelationPercent = 20
-  val snvWindowRange = 25
+  val minLikelihood = 15
 
   def testVariants(tumorReads: Seq[MappedRead], normalReads: Seq[MappedRead], positions: Array[Long], isTrue: Boolean = false) = {
     val positionsTable = Table("locus", positions: _*)
     forAll(positionsTable) {
       (locus: Long) =>
         val (tumorPileup, normalPileup) = TestUtil.loadTumorNormalPileup(tumorReads, normalReads, locus)
-        val calledGenotypes = SomaticLogOddsVariantCaller.callSomaticVariantsAtLocus(
+        val calledGenotypes = SomaticLogOddsVariantCaller.findPotentialVariantAtLocus(
           tumorPileup,
           normalPileup,
           logOddsThreshold,
-          snvWindowRange,
-          snvCorrelationPercent,
           maxMappingComplexity,
           minAlignmentForComplexity,
           minAlignmentQuality,
           filterMultiAllelic)
-        val hasVariant = SomaticGenotypeFilter(calledGenotypes, minTumorReadDepth, maxTumorReadDepth, minNormalReadDepth, minTumorAlternateReadDepth).size > 0
+        val hasVariant = SomaticGenotypeFilter(calledGenotypes, minTumorReadDepth, maxTumorReadDepth, minNormalReadDepth, minTumorAlternateReadDepth, logOddsThreshold, minLikelihood).size > 0
         hasVariant should be(isTrue)
     }
   }
 
   sparkTest("testing simple positive variants") {
-    //39083205
     val (tumorReads, normalReads) = TestUtil.loadTumorNormalReads(sc, "tumor.chr20.tough.sam", "normal.chr20.tough.sam")
     val positivePositions = Array[Long](42999694, 25031215, 44061033, 45175149, 755754, 1843813,
       3555766, 3868620, 9896926, 14017900, 17054263, 35951019, 50472935, 51858471, 58201903, 7087895,

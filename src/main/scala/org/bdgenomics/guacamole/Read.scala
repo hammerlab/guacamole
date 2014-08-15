@@ -1,19 +1,19 @@
 package org.bdgenomics.guacamole
 
-import net.sf.samtools._
-import org.apache.spark.{ Logging, SparkContext }
-import org.apache.spark.rdd.RDD
-import org.apache.hadoop.io.LongWritable
-import fi.tkk.ics.hadoop.bam.{ AnySAMInputFormat, SAMRecordWritable }
-import scala.collection.mutable.ArrayBuffer
-import org.bdgenomics.adam.models.SequenceDictionary
-import fi.tkk.ics.hadoop.bam.util.SAMHeaderReader
-import org.apache.hadoop.fs.Path
-import scala.collection.JavaConversions
-import scala.Some
-import org.bdgenomics.adam.util.MdTag
-import com.esotericsoftware.kryo.{ Kryo, Serializer }
 import com.esotericsoftware.kryo.io.{ Input, Output }
+import com.esotericsoftware.kryo.{ Kryo, Serializer }
+import fi.tkk.ics.hadoop.bam.util.SAMHeaderReader
+import fi.tkk.ics.hadoop.bam.{ AnySAMInputFormat, SAMRecordWritable }
+import net.sf.samtools._
+import org.apache.hadoop.fs.Path
+import org.apache.hadoop.io.LongWritable
+import org.apache.spark.rdd.RDD
+import org.apache.spark.{ Logging, SparkContext }
+import org.bdgenomics.adam.models.SequenceDictionary
+import org.bdgenomics.adam.util.{ MdTag, PhredUtils }
+
+import scala.collection.JavaConversions
+import scala.collection.mutable.ArrayBuffer
 
 /**
  * The fields in the Read trait are common to any read, whether mapped (aligned) or not.
@@ -33,10 +33,10 @@ trait Read {
   val token: Int
 
   /** The nucleotide sequence. */
-  val sequence: Array[Byte]
+  val sequence: Seq[Byte]
 
   /** The base qualities, phred scaled.  These are numbers, and are NOT character encoded. */
-  val baseQualities: Array[Byte]
+  val baseQualities: Seq[Byte]
 
   /** Is this read a duplicate of another? */
   val isDuplicate: Boolean
@@ -87,8 +87,8 @@ trait MateProperties {
  */
 case class UnmappedRead(
     token: Int,
-    sequence: Array[Byte],
-    baseQualities: Array[Byte],
+    sequence: Seq[Byte],
+    baseQualities: Seq[Byte],
     isDuplicate: Boolean,
     sampleName: String,
     failedVendorQualityChecks: Boolean,
@@ -117,8 +117,8 @@ case class UnmappedRead(
  */
 case class MappedRead(
     token: Int,
-    sequence: Array[Byte],
-    baseQualities: Array[Byte],
+    sequence: Seq[Byte],
+    baseQualities: Seq[Byte],
     isDuplicate: Boolean,
     sampleName: String,
     referenceContig: String,
@@ -146,6 +146,8 @@ case class MappedRead(
   override def getMappedRead(): MappedRead = this
 
   lazy val mdTag = mdTagString.map(MdTag(_, start))
+
+  lazy val alignmentLikelihood = PhredUtils.phredToSuccessProbability(alignmentQuality)
 
   /** Individual components of the CIGAR string (e.g. "10M"), parsed, and as a Scala buffer. */
   val cigarElements = JavaConversions.asScalaBuffer(cigar.getCigarElements)
@@ -251,7 +253,7 @@ object Read extends Logging {
         qualityScoresArray,
         isDuplicate,
         sampleName.intern,
-        referenceContig,
+        referenceContig.intern,
         alignmentQuality,
         start,
         cigar,
@@ -322,7 +324,7 @@ object Read extends Logging {
         record.getReadString.getBytes,
         record.getBaseQualities,
         record.getDuplicateReadFlag,
-        sampleName,
+        sampleName.intern,
         record.getReadFailsVendorQualityCheckFlag,
         !record.getReadNegativeStrandFlag,
         isPaired = record.getReadPairedFlag,
@@ -403,8 +405,8 @@ class MappedReadSerializer extends Serializer[MappedRead] {
     output.writeInt(obj.token)
     assert(obj.sequence.length == obj.baseQualities.length)
     output.writeInt(obj.sequence.length, true)
-    output.writeBytes(obj.sequence)
-    output.writeBytes(obj.baseQualities)
+    output.writeBytes(obj.sequence.toArray)
+    output.writeBytes(obj.baseQualities.toArray)
     output.writeBoolean(obj.isDuplicate)
     output.writeString(obj.sampleName)
     output.writeString(obj.referenceContig)
@@ -445,8 +447,8 @@ class MappedReadSerializer extends Serializer[MappedRead] {
     val sequenceArray: Array[Byte] = input.readBytes(count)
     val qualityScoresArray = input.readBytes(count)
     val isDuplicate = input.readBoolean()
-    val sampleName = input.readString().intern()
-    val referenceContig = input.readString().intern()
+    val sampleName = input.readString().intern
+    val referenceContig = input.readString().intern
     val alignmentQuality = input.readInt(true)
     val start = input.readLong(true)
     val cigarString = input.readString()
@@ -493,8 +495,8 @@ class UnmappedReadSerializer extends Serializer[UnmappedRead] {
     output.writeInt(obj.token)
     assert(obj.sequence.length == obj.baseQualities.length)
     output.writeInt(obj.sequence.length, true)
-    output.writeBytes(obj.sequence)
-    output.writeBytes(obj.baseQualities)
+    output.writeBytes(obj.sequence.toArray)
+    output.writeBytes(obj.baseQualities.toArray)
     output.writeBoolean(obj.isDuplicate)
     output.writeString(obj.sampleName)
     output.writeBoolean(obj.failedVendorQualityChecks)
@@ -523,10 +525,10 @@ class UnmappedReadSerializer extends Serializer[UnmappedRead] {
   def read(kryo: Kryo, input: Input, klass: Class[UnmappedRead]): UnmappedRead = {
     val token = input.readInt()
     val count: Int = input.readInt(true)
-    val sequenceArray: Array[Byte] = input.readBytes(count)
-    val qualityScoresArray = input.readBytes(count)
+    val sequenceArray: Seq[Byte] = input.readBytes(count).toSeq
+    val qualityScoresArray = input.readBytes(count).toSeq
     val isDuplicate = input.readBoolean()
-    val sampleName = input.readString().intern()
+    val sampleName = input.readString().intern
     val failedVendorQualityChecks = input.readBoolean()
     val isPositiveStrand = input.readBoolean()
     val isPairedRead = input.readBoolean()

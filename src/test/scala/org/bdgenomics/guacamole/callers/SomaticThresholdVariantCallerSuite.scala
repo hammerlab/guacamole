@@ -11,6 +11,7 @@ class SomaticThresholdVariantCallerSuite extends SparkFunSuite {
     Array[String](
       "-tumor-reads", TestUtil.testDataPath("synth1.tumor.100k-200k.withmd.bam"),
       "-normal-reads", TestUtil.testDataPath("synth1.normal.100k-200k.withmd.bam"),
+      "-loci", "20:100000-200000",
       "-parallelism", "20",
       "-out", output))
 }

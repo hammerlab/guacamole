@@ -83,7 +83,7 @@ case class PileupElement(
    * the inserted sequence starting at the current locus. Otherwise, this is
    * an array of length 1.
    */
-  lazy val sequencedBases: Array[Byte] = alignment match {
+  lazy val sequencedBases: Seq[Byte] = alignment match {
     case Deletion()          => Array[Byte]()
     case Match(base, _)      => Array[Byte](base)
     case Mismatch(base, _)   => Array[Byte](base)
