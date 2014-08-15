@@ -92,7 +92,7 @@ object DeletionEvidencePileupFilter {
    * @return Empty sequence if they overlap deletion
    */
   def apply(elements: Seq[PileupElement]): Seq[PileupElement] = {
-    if (elements.count(_.isDeletion) > 0) {
+    if (elements.exists(_.isDeletion)) {
       Seq.empty
     } else {
       elements
