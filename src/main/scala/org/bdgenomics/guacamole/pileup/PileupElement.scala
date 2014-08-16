@@ -110,10 +110,10 @@ case class PileupElement(
    * For deletions this is the mapping quality as there are no base quality scores available.
    */
   lazy val qualityScore: Int = alignment match {
-    case Deletion()                  => read.alignmentQuality
-    case Match(_, qualityScore)      => qualityScore
-    case Mismatch(_, qualityScore)   => qualityScore
-    case Insertion(_, qualityScores) => qualityScores.min
+    case Deletion()        => read.alignmentQuality
+    case Match(_, qs)      => qs
+    case Mismatch(_, qs)   => qs
+    case Insertion(_, qss) => qss.min
   }
 
   /**

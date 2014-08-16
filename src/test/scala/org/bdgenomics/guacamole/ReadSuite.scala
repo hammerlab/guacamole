@@ -21,7 +21,6 @@ package org.bdgenomics.guacamole
 import org.scalatest.matchers.ShouldMatchers
 import net.sf.samtools.TextCigarCodec
 import org.bdgenomics.adam.util.MdTag
-import org.bdgenomics.guacamole.Read
 
 class ReadSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
 

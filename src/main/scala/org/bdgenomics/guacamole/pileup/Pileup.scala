@@ -33,7 +33,7 @@ import org.bdgenomics.guacamole.{ Bases, MappedRead }
 case class Pileup(locus: Long, elements: Seq[PileupElement]) {
   /** The first element in the pileup. */
   lazy val head = {
-    assume(!elements.isEmpty, "Empty pileup")
+    assume(elements.nonEmpty, "Empty pileup")
     elements.head
   }
 
@@ -56,7 +56,7 @@ case class Pileup(locus: Long, elements: Seq[PileupElement]) {
    */
   lazy val bySample: Map[String, Pileup] = {
     elements.groupBy(element => Option(element.read.sampleName).map(_.toString).getOrElse("default")).map({
-      case (sample, elements) => (sample, Pileup(locus, elements))
+      case (sample, elems) => (sample, Pileup(locus, elems))
     })
   }
 
@@ -66,7 +66,7 @@ case class Pileup(locus: Long, elements: Seq[PileupElement]) {
    */
   lazy val byToken: Map[Int, Pileup] = {
     elements.groupBy(element => element.read.token).map({
-      case (token, elements) => (token, Pileup(locus, elements))
+      case (token, elems) => (token, Pileup(locus, elems))
     })
   }
 
@@ -78,7 +78,7 @@ case class Pileup(locus: Long, elements: Seq[PileupElement]) {
   /**
    * Number of positively stranded reads
    */
-  lazy val positiveDepth: Int = elements.view.filter(_.read.isPositiveStrand).size
+  lazy val positiveDepth: Int = elements.count(_.read.isPositiveStrand)
 
   /**
    * PileupElements that match the reference base
