@@ -72,9 +72,11 @@ object AbnormalInsertSizePileupFilter {
    * @return Empty sequence if there are more than maxAbnormalInsertSizeReadsThreshold % reads with insert size out of the specified range
    */
   def apply(elements: Seq[PileupElement], maxAbnormalInsertSizeReadsThreshold: Int, minInsertSize: Int = 5, maxInsertSize: Int = 1000): Seq[PileupElement] = {
-    val abnormalInsertSizeReads = elements.filter(el => {
-      el.read.inferredInsertSize.isDefined && (math.abs(el.read.inferredInsertSize.get) < minInsertSize || math.abs(el.read.inferredInsertSize.get) > maxInsertSize)
-    }).length
+    val abnormalInsertSizeReads = elements.count(el => {
+      el.read.inferredInsertSize.isDefined &&
+        (math.abs(el.read.inferredInsertSize.get) < minInsertSize ||
+          math.abs(el.read.inferredInsertSize.get) > maxInsertSize)
+    })
     if (100.0 * abnormalInsertSizeReads / elements.length > maxAbnormalInsertSizeReadsThreshold) {
       Seq.empty
     } else {
@@ -90,7 +92,7 @@ object DeletionEvidencePileupFilter {
    * @return Empty sequence if they overlap deletion
    */
   def apply(elements: Seq[PileupElement]): Seq[PileupElement] = {
-    if (elements.filter(_.isDeletion).length > 0) {
+    if (elements.exists(_.isDeletion)) {
       Seq.empty
     } else {
       elements

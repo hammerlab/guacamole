@@ -35,7 +35,7 @@ import org.bdgenomics.guacamole.LociMap.SimpleRange
  *
  * @param map LociMap[Long] instance. The values are ignored, and the keys are the members of the LociSet.
  */
-case class LociSet(val map: LociMap[Long]) {
+case class LociSet(map: LociMap[Long]) {
 
   /** The contigs included in this LociSet with a nonempty set of loci. */
   lazy val contigs: Seq[String] = map.contigs

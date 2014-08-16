@@ -72,15 +72,17 @@ object SomaticThresholdVariantCaller extends Command with Serializable with Logg
       normalReads.mappedReads.count, normalReads.mappedReads.partitions.length))
 
     val loci = Common.loci(args, normalReads)
+    val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(args, loci, tumorReads.mappedReads, normalReads.mappedReads)
+
     val (thresholdNormal, thresholdTumor) = (args.thresholdNormal, args.thresholdTumor)
     val numGenotypes = sc.accumulator(0L)
     DelayedMessages.default.say { () => "Called %,d genotypes.".format(numGenotypes.value) }
-    val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(args, loci, tumorReads.mappedReads, normalReads.mappedReads)
+
     val genotypes: RDD[ADAMGenotype] = DistributedUtil.pileupFlatMapTwoRDDs[ADAMGenotype](
       tumorReads.mappedReads,
       normalReads.mappedReads,
       lociPartitions,
-      true, // skip empty pileups
+      skipEmpty = true, // skip empty pileups
       (pileupTumor, pileupNormal) => {
         val genotypes = callVariantsAtLocus(pileupTumor, pileupNormal, thresholdTumor, thresholdNormal)
         numGenotypes += genotypes.length
@@ -129,7 +131,13 @@ object SomaticThresholdVariantCaller extends Command with Serializable with Logg
 
     val possibleAllelesTumor = possibleSNVAllelePercents(pileupTumor)
     val possibleAllelesNormal = possibleSNVAllelePercents(pileupNormal)
-    val possibleAlleles = possibleAllelesTumor.keySet.union(possibleAllelesNormal.keySet).toSeq.sortBy(-1 * possibleAllelesTumor(_))
+    val possibleAlleles =
+      possibleAllelesTumor
+        .keySet
+        .union(possibleAllelesNormal.keySet)
+        .toSeq
+        .sortBy(possibleAllelesTumor(_))
+        .reverse
 
     // A variant allele is, by definition, not equal to the reference base. Filter non-variants out.
     val possibleVariantAlles = possibleAlleles.filter(_ != refBase)

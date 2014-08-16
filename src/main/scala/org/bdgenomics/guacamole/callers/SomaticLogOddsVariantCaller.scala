@@ -29,7 +29,13 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
   override val name = "logodds-somatic"
   override val description = "call somatic variants using a two independent caller on tumor and normal"
 
-  private class Arguments extends DistributedUtil.Arguments with Output with GenotypeConcordance with GenotypeFilterArguments with PileupFilterArguments with TumorNormalReads {
+  private class Arguments
+      extends DistributedUtil.Arguments
+      with Output
+      with GenotypeConcordance
+      with GenotypeFilterArguments
+      with PileupFilterArguments
+      with TumorNormalReads {
     @Opt(name = "-log-odds", metaVar = "X", usage = "Make a call if the probability of variant is greater than this value (Phred-scaled)")
     var logOdds: Int = 35
 
@@ -82,7 +88,7 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
       tumorReads.mappedReads,
       normalReads.mappedReads,
       lociPartitions,
-      true, // skip empty pileups
+      skipEmpty = true, // skip empty pileups
       (pileupTumor, pileupNormal) => callSomaticVariantsAtLocus(
         pileupTumor,
         pileupNormal,
@@ -144,10 +150,8 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
 
     val (alternateBase, tumorVariantLikelihood): (Option[String], Double) = callVariantInTumor(referenceBase, filteredTumorPileup)
     alternateBase match {
-      case None => Seq.empty
+      case None | Some("") => Seq.empty
       case Some(alternate) => {
-
-        if (alternate == "") return Seq.empty
 
         val (alternateReadDepth, alternateForwardReadDepth) = computeDepthAndForwardDepth(filteredTumorPileup, alternate)
 
@@ -222,7 +226,7 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
   def computeDepthAndForwardDepth(pileup: Pileup, base: String): (Int, Int) = {
     val baseElements = pileup.elements.view.filter(el => Bases.basesToString(el.sequencedBases) == base)
     val readDepth = baseElements.length
-    val baseForwardReadDepth = baseElements.view.filter(_.read.isPositiveStrand).length
+    val baseForwardReadDepth = baseElements.count(_.read.isPositiveStrand)
     (readDepth, baseForwardReadDepth)
   }
 
