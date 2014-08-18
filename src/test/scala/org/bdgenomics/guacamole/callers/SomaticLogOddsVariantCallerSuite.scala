@@ -3,11 +3,11 @@ package org.bdgenomics.guacamole.callers
 import org.bdgenomics.guacamole.{ MappedRead, TestUtil }
 import org.bdgenomics.guacamole.TestUtil.SparkFunSuite
 import org.bdgenomics.guacamole.pileup.Pileup
-import org.scalatest.matchers.ShouldMatchers
+import org.scalatest.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks
 import org.bdgenomics.guacamole.filters.GenotypeFilter
 
-class SomaticLogOddsVariantCallerSuite extends SparkFunSuite with ShouldMatchers with TableDrivenPropertyChecks {
+class SomaticLogOddsVariantCallerSuite extends SparkFunSuite with Matchers with TableDrivenPropertyChecks {
 
   def loadPileup(filename: String, locus: Long = 0): Pileup = {
     val records = TestUtil.loadReads(sc, filename).mappedReads
