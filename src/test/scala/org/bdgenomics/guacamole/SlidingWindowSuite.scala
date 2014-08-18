@@ -18,10 +18,9 @@
 
 package org.bdgenomics.guacamole
 
-import org.scalatest.FunSuite
-import org.scalatest.matchers.ShouldMatchers._
+import org.scalatest.{ Matchers, FunSuite }
 
-class SlidingWindowSuite extends FunSuite {
+class SlidingWindowSuite extends FunSuite with Matchers {
 
   test("test sliding read window, duplicate reads") {
 
@@ -42,7 +41,7 @@ class SlidingWindowSuite extends FunSuite {
       TestUtil.makeRead("TCGATCGA", "8M", "8", 1, "chr2"),
       TestUtil.makeRead("TCGATCGA", "8M", "8", 1, "chr3"))
     val window = SlidingWindow(2, reads.iterator)
-    val caught = evaluating { window.setCurrentLocus(0) } should produce[IllegalArgumentException]
+    val caught = the[IllegalArgumentException] thrownBy { window.setCurrentLocus(0) }
     caught.getMessage should include("must have the same reference name")
 
   }
@@ -70,7 +69,7 @@ class SlidingWindowSuite extends FunSuite {
       TestUtil.makeRead("TCGATCGA", "8M", "8", 8),
       TestUtil.makeRead("TCGATCGA", "8M", "8", 4))
     val window = SlidingWindow(8, reads.iterator)
-    val caught = evaluating { window.setCurrentLocus(0) } should produce[IllegalArgumentException]
+    val caught = the[IllegalArgumentException] thrownBy { window.setCurrentLocus(0) }
     caught.getMessage should include("Regions must be sorted by start locus")
 
   }
