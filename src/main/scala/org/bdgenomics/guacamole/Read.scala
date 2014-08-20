@@ -400,7 +400,7 @@ object Read extends Logging {
     if (filters.mapped) reads = reads.filter(_.isMapped)
     if (filters.nonDuplicate) reads = reads.filter(!_.isDuplicate)
     if (filters.passedVendorQualityChecks) reads = reads.filter(!_.failedVendorQualityChecks)
-    if (filters.hasMdTag) reads = reads.filter(read => read.isMapped && read.getMappedRead.mdTagString.isDefined)
+    if (filters.hasMdTag) reads = reads.filter(_.getMappedReadOpt.exists(_.mdTagString.isDefined))
     (reads, sequenceDictionary)
   }
 
