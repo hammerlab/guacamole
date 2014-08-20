@@ -111,7 +111,7 @@ object SomaticThresholdVariantCaller extends Command with Serializable with Logg
     def possibleSNVAllelePercents(pileup: Pileup): Map[Byte, Double] = {
       val totalReads = pileup.elements.length
       val matchesOrMismatches = pileup.elements.filter(e => e.isMatch || e.isMismatch)
-      val counts = matchesOrMismatches.map(_.sequencedSingleBase).groupBy(char => char).mapValues(_.length)
+      val counts = matchesOrMismatches.flatMap(_.sequencedSingleBaseOpt).groupBy(char => char).mapValues(_.length)
       val percents = counts.mapValues(_ * 100.0 / totalReads.toDouble)
       percents.withDefaultValue(0.0)
     }

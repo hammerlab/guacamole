@@ -100,7 +100,7 @@ object ThresholdVariantCaller extends Command with Serializable with Logging {
       case (sampleName, samplePileup) =>
         val totalReads = samplePileup.elements.length
         val matchesOrMismatches = samplePileup.elements.filter(e => e.isMatch || e.isMismatch)
-        val counts = matchesOrMismatches.map(_.sequencedSingleBase).groupBy(char => char).mapValues(_.length)
+        val counts = matchesOrMismatches.flatMap(_.sequencedSingleBaseOpt).groupBy(char => char).mapValues(_.length)
         val sortedAlleles = counts.toList.filter(_._2 * 100 / totalReads > thresholdPercent).sortBy(-1 * _._2)
 
         def variant(alternateBase: Byte, allelesList: List[ADAMGenotypeAllele]): ADAMGenotype = {
