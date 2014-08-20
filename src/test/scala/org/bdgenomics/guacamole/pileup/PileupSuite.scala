@@ -286,6 +286,10 @@ class PileupSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
       assert(read4At20.elementAtGreaterLocus(20 + i * 4 + 2).sequencedBases(0) == 'G')
       assert(read4At20.elementAtGreaterLocus(20 + i * 4 + 3).sequencedBases(0) == 'T')
     }
+
+    val read4At30 = read4At20.elementAtGreaterLocus(20 + 9)
+    read4At30.isInsertion should be(true)
+    Bases.basesToString(read4At30.sequencedBases) should equal("CGTACGTACGT")
   }
 
   sparkTest("Read5: ACGTACGTACGTACG, 5M4=1X5=") {
