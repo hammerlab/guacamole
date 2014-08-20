@@ -399,8 +399,8 @@ object Read extends Logging {
       sc.newAPIHadoopFile[LongWritable, SAMRecordWritable, AnySAMInputFormat](filename)
     var reads: RDD[Read] = samRecords.map({ case (k, v) => fromSAMRecord(v.get, token) })
     if (filters.mapped) reads = reads.filter(_.isMapped)
-    if (filters.nonDuplicate) reads = reads.filter(read => !read.isDuplicate)
-    if (filters.passedVendorQualityChecks) reads = reads.filter(read => !read.failedVendorQualityChecks)
+    if (filters.nonDuplicate) reads = reads.filter(!_.isDuplicate)
+    if (filters.passedVendorQualityChecks) reads = reads.filter(!_.failedVendorQualityChecks)
     if (filters.hasMdTag) reads = reads.filter(read => read.isMapped && read.getMappedRead.mdTagString.isDefined)
     (reads, sequenceDictionary)
   }
