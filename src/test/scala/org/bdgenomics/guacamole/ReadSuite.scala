@@ -49,12 +49,7 @@ class ReadSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
     read.isMapped should be(true)
     read.asInstanceOf[Read].isMapped should be(true)
 
-    val mappedRead = read.asInstanceOf[Read].getMappedRead()
-    mappedRead.isMapped should be(true)
-
-    val collectionMappedReads: Seq[Read] = Seq(read, mappedRead)
-    collectionMappedReads(0).isMapped should be(true)
-    collectionMappedReads(1).isMapped should be(true)
+    read.getMappedReadOpt.exists(_.isMapped) should be(true)
 
   }
 
@@ -77,8 +72,7 @@ class ReadSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
 
     read.isMapped should be(false)
     read.asInstanceOf[Read].isMapped should be(false)
-
-    intercept[AssertionError] { read.getMappedRead }
+    read.getMappedReadOpt should be(None)
 
     val collectionMappedReads: Seq[Read] = Seq(read)
     collectionMappedReads(0).isMapped should be(false)

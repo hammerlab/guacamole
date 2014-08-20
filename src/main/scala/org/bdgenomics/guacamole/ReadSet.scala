@@ -23,8 +23,8 @@ case class ReadSet(
     token: Int,
     contigLengthsFromDictionary: Boolean) {
 
-  /** The reads, filtered to only mapped, and downcasted to MappedRead instances. */
-  lazy val mappedReads = reads.filter(_.isMapped).map(_.getMappedRead())
+  /** Only mapped reads. */
+  lazy val mappedReads = reads.flatMap(_.getMappedReadOpt)
 
   /**
    * A map from contig name -> length of contig.

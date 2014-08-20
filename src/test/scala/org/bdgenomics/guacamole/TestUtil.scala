@@ -63,7 +63,7 @@ object TestUtil extends ShouldMatchers {
       start = start,
       referenceContig = chr,
       baseQualities = qualityScoreString,
-      alignmentQuality = alignmentQuality).getMappedRead
+      alignmentQuality = alignmentQuality).getMappedReadOpt.get
   }
 
   def makePairedRead(
@@ -92,7 +92,7 @@ object TestUtil extends ShouldMatchers {
       isMateMapped = isMateMapped,
       mateReferenceContig = mateReferenceContig,
       mateStart = mateStart,
-      isMatePositiveStrand = isMatePositiveStrand).getMappedRead
+      isMatePositiveStrand = isMatePositiveStrand).getMappedReadOpt.get
   }
 
   def testDataPath(filename: String): String = {
