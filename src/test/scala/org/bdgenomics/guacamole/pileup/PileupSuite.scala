@@ -51,9 +51,9 @@ class PileupSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
 
     insertPileup.elements.forall(
       _.alignment match {
-        case Match(_, quality)       => quality == 31
-        case Insertion(_, qualities) => qualities.sameElements(Array(31, 31, 31, 31))
-        case _                       => false
+        case Match('A', quality) => quality == 31
+        case Insertion(Array('A', 'C', 'C', 'C'), qualities) => qualities.sameElements(Array(31, 31, 31, 31))
+        case _ => false
       }) should be(true)
   }
 
