@@ -47,8 +47,8 @@ trait Read {
   /** The sample (e.g. "tumor" or "patient3636") name. */
   val sampleName: String
 
-  /** If isMapped=true, will return the corresponding MappedRead. Otherwise, throws an error. */
-  def getMappedRead(): MappedRead
+  /** Returns this Read as a MappedRead iff isMapped=true, otherwise None. */
+  def getMappedReadOpt: Option[MappedRead] = None
 
   /** Whether the read failed predefined vendor checks for quality */
   val failedVendorQualityChecks: Boolean
@@ -104,7 +104,6 @@ case class UnmappedRead(
   assert(baseQualities.length == sequence.length)
 
   final override val isMapped = false
-  override def getMappedRead(): MappedRead = throw new AssertionError("Not a mapped read.")
 }
 
 /**
@@ -143,7 +142,7 @@ case class MappedRead(
   assert(!isMateMapped || (mateReferenceContig.isDefined && mateStart.isDefined))
 
   final override val isMapped = true
-  override def getMappedRead(): MappedRead = this
+  final override lazy val getMappedReadOpt = Some(this)
 
   lazy val mdTag = mdTagString.map(MdTag(_, start))
 
@@ -368,7 +367,7 @@ object Read extends Logging {
         val read = fromSAMRecord(item, token)
         if ((!filters.mapped || read.isMapped) &&
           (!filters.passedVendorQualityChecks || !read.failedVendorQualityChecks) &&
-          (!filters.hasMdTag || read.isMapped && read.getMappedRead.mdTagString.isDefined) &&
+          (!filters.hasMdTag || read.getMappedReadOpt.exists(_.mdTagString.isDefined)) &&
           (!filters.isPaired || read.isPaired))
           result += read
       }
@@ -399,8 +398,8 @@ object Read extends Logging {
       sc.newAPIHadoopFile[LongWritable, SAMRecordWritable, AnySAMInputFormat](filename)
     var reads: RDD[Read] = samRecords.map({ case (k, v) => fromSAMRecord(v.get, token) })
     if (filters.mapped) reads = reads.filter(_.isMapped)
-    if (filters.nonDuplicate) reads = reads.filter(read => !read.isDuplicate)
-    if (filters.passedVendorQualityChecks) reads = reads.filter(read => !read.failedVendorQualityChecks)
+    if (filters.nonDuplicate) reads = reads.filter(!_.isDuplicate)
+    if (filters.passedVendorQualityChecks) reads = reads.filter(!_.failedVendorQualityChecks)
     if (filters.hasMdTag) reads = reads.filter(read => read.isMapped && read.getMappedRead.mdTagString.isDefined)
     (reads, sequenceDictionary)
   }
