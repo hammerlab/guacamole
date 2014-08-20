@@ -37,17 +37,17 @@ object Bases {
   }
 
   /** Are all the given bases standard? */
-  def allStandardBases(bases: Array[Byte]) = {
+  def allStandardBases(bases: Seq[Byte]) = {
     assert(bases.forall(b => isStandardBase(b)), "Invalid base array: %s".format(bases.map(_.toChar).mkString))
   }
 
   /** Throw an error if any of the given bases are not standard. */
-  def assertAllStandardBases(bases: Array[Byte]) = {
+  def assertAllStandardBases(bases: Seq[Byte]) = {
     assert(bases.forall(b => isStandardBase(b)), "Invalid base array: %s".format(bases.map(_.toChar).mkString))
   }
 
   /** Convert a string (e.g. "AAAGGC") to a byte array. */
-  def stringToBases(string: String): Array[Byte] = {
+  def stringToBases(string: String): Seq[Byte] = {
     string.toUpperCase.getBytes
   }
 
@@ -57,17 +57,17 @@ object Bases {
   }
 
   /** Convert a base sequence to a String. */
-  def basesToString(bases: Array[Byte]): String = {
+  def basesToString(bases: Seq[Byte]): String = {
     bases.map(_.toChar).mkString
   }
 
   /** Are the two given base sequences equal? */
-  def equal(bases1: Array[Byte], bases2: Array[Byte]): Boolean = {
+  def equal(bases1: Seq[Byte], bases2: Seq[Byte]): Boolean = {
     bases1.sameElements(bases2)
   }
 
   /* Is the first base sequence equal to the second string? */
-  def equalString(bases1: Array[Byte], bases2: String): Boolean = {
+  def equalString(bases1: Seq[Byte], bases2: String): Boolean = {
     bases1.sameElements(stringToBases(bases2))
   }
 }

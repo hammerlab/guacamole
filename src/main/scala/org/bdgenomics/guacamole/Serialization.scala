@@ -41,5 +41,8 @@ class GuacamoleKryoRegistrator extends ADAMKryoRegistrator {
     kryo.register(classOf[LociSet.SingleContig], new LociSetSingleContigSerializer)
     kryo.register(classOf[LociMap[Long]], new LociMapLongSerializer)
     kryo.register(classOf[LociMap.SingleContig[Long]], new LociMapLongSingleContigSerializer)
+    kryo.register(classOf[CalledGenotype], new CalledGenotypeSerializer)
+    kryo.register(classOf[CalledSomaticGenotype], new CalledSomaticGenotypeSerializer)
+    kryo.register(classOf[GenotypeEvidence], new GenotypeEvidenceSerializer)
   }
 }
