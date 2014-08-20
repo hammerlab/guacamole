@@ -112,7 +112,7 @@ case class UnmappedRead(
  *
  * @param referenceContig the contig name (e.g. "chr12") that this read was mapped to.
  * @param alignmentQuality the mapping quality, phred scaled.
- * @param start the reference locus that the first base in this read aligns to.
+ * @param start the (0-based) reference locus that the first base in this read aligns to.
  * @param cigar parsed samtools CIGAR object.
  */
 case class MappedRead(
