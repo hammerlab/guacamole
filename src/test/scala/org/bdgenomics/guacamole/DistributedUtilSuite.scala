@@ -246,7 +246,7 @@ class DistributedUtilSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
       (pileup1, pileup2) => (pileup1.elements ++ pileup2.elements).toIterator).collect()
 
     elements.forall(_.isMatch) should be(true)
-    val concatenated = Bases.basesToString(elements.map(_.sequencedSingleBase))
+    val concatenated = Bases.basesToString(elements.flatMap(_.sequencedSingleBaseOpt))
     concatenated should equal("TTTACTCCCACTGGGACTAAAACTTTTACTCCCACTGGGACTAAAACTXGGGXGGGXGGGGGGGGGGGGGGGGGG")
   }
 

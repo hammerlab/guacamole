@@ -92,14 +92,13 @@ case class PileupElement(
 
   /**
    * For matches, mismatches, and single base insertions, this is the base sequenced at this locus, as a byte. For
-   * all other cases, this throws an assertion error.
+   * all other cases, return None.
    */
-  lazy val sequencedSingleBase: Byte = alignment match {
-    case Match(base, _)                           => base
-    case Mismatch(base, _)                        => base
-    case Insertion(bases, _) if bases.length == 1 => bases(0)
-    case other =>
-      throw new AssertionError("Not a match, mismatch, or single nucleotide insertion: " + other.toString)
+  lazy val sequencedSingleBaseOpt: Option[Byte] = alignment match {
+    case Match(base, _)      => Some(base)
+    case Mismatch(base, _)   => Some(base)
+    case Insertion(bases, _) => bases.headOption
+    case _                   => None
   }
 
   /*
