@@ -1,7 +1,8 @@
 package org.bdgenomics.guacamole.pileup
 
 import net.sf.samtools.{ CigarOperator, CigarElement }
-import org.bdgenomics.guacamole.{ MappedRead, CigarUtils }
+import org.bdgenomics.guacamole.CigarUtils
+import org.bdgenomics.guacamole.reads.MappedRead
 import scala.annotation.tailrec
 import scala.math
 

@@ -20,6 +20,7 @@ package org.bdgenomics.guacamole
 
 import com.esotericsoftware.kryo.Kryo
 import org.bdgenomics.adam.serialization.{ ADAMKryoRegistrator }
+import org.bdgenomics.guacamole.reads.{ UnmappedReadSerializer, MappedReadSerializer, MappedRead, UnmappedRead }
 
 class GuacamoleKryoRegistrator extends ADAMKryoRegistrator {
   override def registerClasses(kryo: Kryo) {

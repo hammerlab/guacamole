@@ -1,8 +1,9 @@
 package org.bdgenomics.guacamole.callers
 
-import org.bdgenomics.guacamole.{ MappedRead, TestUtil }
+import org.bdgenomics.guacamole.TestUtil
 import org.bdgenomics.guacamole.TestUtil.SparkFunSuite
 import org.bdgenomics.guacamole.pileup.Pileup
+import org.bdgenomics.guacamole.reads.MappedRead
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.prop.TableDrivenPropertyChecks
 import org.bdgenomics.guacamole.filters.GenotypeFilter

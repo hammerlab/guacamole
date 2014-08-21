@@ -18,6 +18,7 @@
 
 package org.bdgenomics.guacamole
 
+import org.bdgenomics.guacamole.reads.{ MappedRead, UnmappedRead, Read }
 import org.scalatest.matchers.ShouldMatchers
 import net.sf.samtools.TextCigarCodec
 import org.bdgenomics.adam.util.MdTag

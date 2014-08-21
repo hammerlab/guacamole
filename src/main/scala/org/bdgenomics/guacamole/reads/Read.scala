@@ -1,19 +1,20 @@
-package org.bdgenomics.guacamole
+package org.bdgenomics.guacamole.reads
 
-import net.sf.samtools._
-import org.apache.spark.{ Logging, SparkContext }
-import org.apache.spark.rdd.RDD
-import org.apache.hadoop.io.LongWritable
-import fi.tkk.ics.hadoop.bam.{ AnySAMInputFormat, SAMRecordWritable }
-import scala.collection.mutable.ArrayBuffer
-import org.bdgenomics.adam.models.SequenceDictionary
-import fi.tkk.ics.hadoop.bam.util.SAMHeaderReader
-import org.apache.hadoop.fs.Path
-import scala.collection.JavaConversions
-import scala.Some
-import org.bdgenomics.adam.util.MdTag
-import com.esotericsoftware.kryo.{ Kryo, Serializer }
 import com.esotericsoftware.kryo.io.{ Input, Output }
+import com.esotericsoftware.kryo.{ Kryo, Serializer }
+import fi.tkk.ics.hadoop.bam.util.SAMHeaderReader
+import fi.tkk.ics.hadoop.bam.{ AnySAMInputFormat, SAMRecordWritable }
+import net.sf.samtools._
+import org.apache.hadoop.fs.Path
+import org.apache.hadoop.io.LongWritable
+import org.apache.spark.rdd.RDD
+import org.apache.spark.{ Logging, SparkContext }
+import org.bdgenomics.adam.models.SequenceDictionary
+import org.bdgenomics.adam.util.MdTag
+import org.bdgenomics.guacamole.{ LociSet, HasReferenceRegion }
+
+import scala.collection.JavaConversions
+import scala.collection.mutable.ArrayBuffer
 
 /**
  * The fields in the Read trait are common to any read, whether mapped (aligned) or not.

@@ -22,6 +22,7 @@ import org.bdgenomics.formats.avro.{ ADAMContig, ADAMVariant, ADAMGenotypeAllele
 import org.bdgenomics.formats.avro.ADAMGenotypeAllele.{ Ref, Alt, OtherAlt }
 import org.bdgenomics.guacamole._
 import org.apache.spark.SparkContext._
+import org.bdgenomics.guacamole.reads.Read
 import scala.collection.JavaConversions
 import org.kohsuke.args4j.Option
 import org.bdgenomics.adam.cli.Args4j

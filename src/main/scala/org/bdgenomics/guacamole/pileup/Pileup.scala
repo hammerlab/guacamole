@@ -18,7 +18,8 @@
 
 package org.bdgenomics.guacamole.pileup
 
-import org.bdgenomics.guacamole.{ Bases, MappedRead }
+import org.bdgenomics.guacamole.Bases
+import org.bdgenomics.guacamole.reads.MappedRead
 
 /**
  * A [[Pileup]] at a locus contains a sequence of [[PileupElement]] instances, one for every read that overlaps that

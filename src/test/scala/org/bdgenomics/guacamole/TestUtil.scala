@@ -4,6 +4,8 @@ package org.bdgenomics.guacamole
  * This is copied from SparkFunSuite in ADAM, which is for some reason not exposed.
  *
  */
+
+import org.bdgenomics.guacamole.reads.{ Read, MappedRead }
 import org.scalatest._
 import java.net.ServerSocket
 import org.apache.spark.SparkContext
