@@ -18,9 +18,9 @@
 
 package org.bdgenomics.guacamole
 
-import org.scalatest.matchers.ShouldMatchers
+import org.scalatest.Matchers
 
-class LociSetSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
+class LociSetSuite extends TestUtil.SparkFunSuite with Matchers {
 
   test("properties of empty LociSet") {
     LociSet.empty.contigs should have length (0)

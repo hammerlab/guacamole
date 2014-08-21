@@ -4,21 +4,21 @@ package org.bdgenomics.guacamole
  * This is copied from SparkFunSuite in ADAM, which is for some reason not exposed.
  *
  */
-import org.scalatest._
+import java.io.{ File, FileNotFoundException }
 import java.net.ServerSocket
-import org.apache.spark.SparkContext
-import org.apache.log4j.{ Logger, Level }
-import org.bdgenomics.adam.cli.SparkArgs
-import scala.math._
-import scala.Some
-import com.twitter.chill.{ KryoPool, IKryoRegistrar, KryoInstantiator }
-import com.esotericsoftware.kryo.Kryo
-import org.scalatest.matchers.ShouldMatchers
-import org.apache.commons.io.FileUtils
-import java.io.{ FileNotFoundException, File }
-import org.bdgenomics.guacamole.pileup.Pileup
 
-object TestUtil extends ShouldMatchers {
+import com.esotericsoftware.kryo.Kryo
+import com.twitter.chill.{ IKryoRegistrar, KryoInstantiator, KryoPool }
+import org.apache.commons.io.FileUtils
+import org.apache.log4j.{ Level, Logger }
+import org.apache.spark.SparkContext
+import org.bdgenomics.adam.cli.SparkArgs
+import org.bdgenomics.guacamole.pileup.Pileup
+import org.scalatest._
+
+import scala.math._
+
+object TestUtil extends Matchers {
 
   // As a hack to run a single unit test, you can set this to the name of a test to run only it. See the top of
   // DistributedUtilSuite for an example.
