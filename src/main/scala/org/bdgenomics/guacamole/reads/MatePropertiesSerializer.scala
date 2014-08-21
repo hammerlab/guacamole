@@ -17,10 +17,11 @@ trait CanSerializeMatePropertiesOption {
   }
 
   def read(kryo: Kryo, input: Input): Option[MateProperties] = {
-    if (input.readBoolean())
+    if (input.readBoolean()) {
       Some(matePropertiesSerializer.read(kryo, input, classOf[MateProperties]))
-    else
+    } else {
       None
+    }
   }
 }
 
