@@ -277,11 +277,18 @@ object DistributedUtil extends Logging {
     lociPartitions: LociMap[Long],
     skipEmpty: Boolean,
     function: Pileup => Iterator[T]): RDD[T] = {
-    windowFlatMapWithState(Seq(reads), lociPartitions, skipEmpty, 0, None, (maybePileup: Option[Pileup], windows: Seq[SlidingWindow[MappedRead]]) => {
-      assert(windows.length == 1)
-      val pileup = initOrMovePileup(maybePileup, windows(0))
-      (Some(pileup), function(pileup))
-    })
+    windowFlatMapWithState(
+      Seq(reads),
+      lociPartitions,
+      skipEmpty,
+      0,
+      None,
+      (maybePileup: Option[Pileup], windows: Seq[SlidingWindow[MappedRead]]) => {
+        assert(windows.length == 1)
+        val pileup = initOrMovePileup(maybePileup, windows(0))
+        (Some(pileup), function(pileup))
+      }
+    )
   }
   /**
    * Flatmap across loci on two RDDs of MappedReads. At each locus the provided function is passed two Pileup instances,
