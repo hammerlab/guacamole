@@ -46,7 +46,7 @@ case class Pileup(locus: Long, elements: Seq[PileupElement]) {
 
   /** The reference nucleotide base at this pileup's locus. */
   lazy val referenceBase: Byte = {
-    val reference = head.read.mdTag.get.getReference(Bases.basesToString(head.read.sequence), head.read.cigar, head.read.start)
+    val reference = head.read.mdTagOpt.get.getReference(Bases.basesToString(head.read.sequence), head.read.cigar, head.read.start)
     reference.charAt((head.locus - head.read.start).toInt).toByte
   }
 
