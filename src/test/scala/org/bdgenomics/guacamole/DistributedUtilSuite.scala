@@ -18,14 +18,15 @@
 
 package org.bdgenomics.guacamole
 
-import org.scalatest.matchers.ShouldMatchers
-import org.bdgenomics.formats.avro.{ ADAMGenotypeAllele, ADAMGenotype }
-import org.bdgenomics.guacamole.callers.ThresholdVariantCaller
-import scala.collection.JavaConversions._
-import org.bdgenomics.guacamole.pileup.{ PileupElement, Pileup }
 import org.apache.spark.rdd.RDD
+import org.bdgenomics.formats.avro.{ ADAMGenotype, ADAMGenotypeAllele }
+import org.bdgenomics.guacamole.callers.ThresholdVariantCaller
+import org.bdgenomics.guacamole.pileup.{ Pileup, PileupElement }
+import org.scalatest.Matchers
 
-class DistributedUtilSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
+import scala.collection.JavaConversions._
+
+class DistributedUtilSuite extends TestUtil.SparkFunSuite with Matchers {
 
   // You can use a line like the following to turn on only a particular unit test for debugging.
   // TestUtil.runOnly = "partitionLociByApproximateReadDepth chr20 synth1 subset"
