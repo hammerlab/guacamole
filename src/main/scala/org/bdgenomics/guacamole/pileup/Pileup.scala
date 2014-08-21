@@ -123,7 +123,7 @@ object Pileup {
    * @return A [[Pileup]] at the given locus.
    */
   def apply(reads: Seq[MappedRead], locus: Long): Pileup = {
-    val elements = reads.filter(read => read.overlapsLocus(locus)).map(PileupElement(_, locus))
+    val elements = reads.filter(_.overlapsLocus(locus)).map(PileupElement(_, locus))
     val pileup = Pileup(locus, elements)
     pileup
   }

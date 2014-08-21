@@ -193,7 +193,7 @@ object Common extends Logging {
   def writeVariantsFromArguments(args: Arguments.Output, genotypes: RDD[ADAMGenotype]): Unit = {
     val subsetGenotypes = if (args.maxGenotypes > 0) {
       progress("Subsetting to %d genotypes.".format(args.maxGenotypes))
-      genotypes.sample(false, args.maxGenotypes, 0)
+      genotypes.sample(withReplacement = false, args.maxGenotypes, 0)
     } else {
       genotypes
     }
