@@ -3,6 +3,9 @@ package org.bdgenomics.guacamole.reads
 import com.esotericsoftware.kryo.io.{ Input, Output }
 import com.esotericsoftware.kryo.{ Kryo, Serializer }
 
+/**
+ * Mix-in for {de,}serializing MateProperties objects in other Serializers.
+ */
 trait CanSerializeMatePropertiesOption {
   lazy val matePropertiesSerializer = new MatePropertiesSerializer
 
