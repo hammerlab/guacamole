@@ -57,6 +57,7 @@ trait Read {
 
   val matePropertiesOpt: Option[MateProperties]
 
+  // A couple of accessors, for convenience.
   def isPaired = matePropertiesOpt.isDefined
   def inferredInsertSize = matePropertiesOpt.flatMap(_.inferredInsertSize)
 
@@ -68,7 +69,7 @@ case class MateProperties(isFirstInPair: Boolean,
                           mateReferenceContig: Option[String],
                           mateStart: Option[Long],
                           isMatePositiveStrand: Boolean) {
-  // If the mate is mapped, assert that know it's mapping
+  // If the mate is mapped check that we also know where it is mapped
   assert(!isMateMapped || (mateReferenceContig.isDefined && mateStart.isDefined))
 }
 
