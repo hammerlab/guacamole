@@ -18,7 +18,7 @@
 
 package org.bdgenomics.guacamole
 
-import org.bdgenomics.guacamole.reads.{ MappedRead, UnmappedRead, Read }
+import org.bdgenomics.guacamole.reads.{ MateProperties, MappedRead, UnmappedRead, Read }
 import org.scalatest.matchers.ShouldMatchers
 import net.sf.samtools.TextCigarCodec
 import org.bdgenomics.adam.util.MdTag
@@ -39,13 +39,17 @@ class ReadSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
       None, // mdtag
       false,
       isPositiveStrand = true,
-      isPaired = true,
-      isFirstInPair = true,
-      inferredInsertSize = Some(300),
-      isMateMapped = true,
-      Some("chr5"),
-      Some(100L),
-      false)
+      matePropertiesOpt = Some(
+        MateProperties(
+          isFirstInPair = true,
+          inferredInsertSize = Some(300),
+          isMateMapped = true,
+          Some("chr5"),
+          Some(100L),
+          false
+        )
+      )
+    )
 
     read.isMapped should be(true)
     read.asInstanceOf[Read].isMapped should be(true)
@@ -63,13 +67,17 @@ class ReadSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
       "some sample name",
       false,
       isPositiveStrand = true,
-      isPaired = true,
-      isFirstInPair = true,
-      inferredInsertSize = Some(300),
-      isMateMapped = true,
-      Some("chr5"),
-      Some(100L),
-      false)
+      matePropertiesOpt = Some(
+        MateProperties(
+          isFirstInPair = true,
+          inferredInsertSize = Some(300),
+          isMateMapped = true,
+          Some("chr5"),
+          Some(100L),
+          false
+        )
+      )
+    )
 
     read.isMapped should be(false)
     read.asInstanceOf[Read].isMapped should be(false)
@@ -88,13 +96,17 @@ class ReadSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
       "some sample name",
       false,
       isPositiveStrand = true,
-      isPaired = true,
-      isFirstInPair = true,
-      inferredInsertSize = Some(300),
-      isMateMapped = true,
-      Some("chr5"),
-      Some(100L),
-      false)
+      matePropertiesOpt = Some(
+        MateProperties(
+          isFirstInPair = true,
+          inferredInsertSize = Some(300),
+          isMateMapped = true,
+          Some("chr5"),
+          Some(100L),
+          false
+        )
+      )
+    )
 
     val mread = MappedRead(
       5, // token
@@ -109,13 +121,17 @@ class ReadSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
       None, // mdtag
       false,
       isPositiveStrand = true,
-      isPaired = true,
-      isFirstInPair = true,
-      inferredInsertSize = Some(300),
-      isMateMapped = true,
-      Some("chr5"),
-      Some(100L),
-      false)
+      matePropertiesOpt = Some(
+        MateProperties(
+          isFirstInPair = true,
+          inferredInsertSize = Some(300),
+          isMateMapped = true,
+          Some("chr5"),
+          Some(100L),
+          false
+        )
+      )
+    )
 
     val collectionMappedReads: Seq[Read] = Seq(uread, mread)
     collectionMappedReads(0).isMapped should be(false)
@@ -136,13 +152,17 @@ class ReadSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
       None, // mdtag
       false,
       isPositiveStrand = true,
-      isPaired = true,
-      isFirstInPair = true,
-      inferredInsertSize = Some(300),
-      isMateMapped = true,
-      Some("chr5"),
-      Some(100L),
-      false)
+      matePropertiesOpt = Some(
+        MateProperties(
+          isFirstInPair = true,
+          inferredInsertSize = Some(300),
+          isMateMapped = true,
+          Some("chr5"),
+          Some(100L),
+          false
+        )
+      )
+    )
 
     val serialized = TestUtil.serialize(read)
     val deserialized = TestUtil.deserialize[MappedRead](serialized)
@@ -165,9 +185,7 @@ class ReadSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
     deserialized.mdTagOpt should equal(read.mdTagOpt)
     deserialized.failedVendorQualityChecks should equal(read.failedVendorQualityChecks)
     deserialized.isPositiveStrand should equal(read.isPositiveStrand)
-    deserialized.isMateMapped should equal(true)
-    deserialized.mateReferenceContig should equal(Some("chr5"))
-    deserialized.mateStart should equal(Some(100L))
+    deserialized.matePropertiesOpt should equal(read.matePropertiesOpt)
   }
 
   test("serialize / deserialize mapped read with mdtag") {
@@ -184,13 +202,17 @@ class ReadSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
       Some("6"), // mdtag
       false,
       isPositiveStrand = true,
-      isPaired = true,
-      isFirstInPair = true,
-      inferredInsertSize = Some(300),
-      isMateMapped = true,
-      Some("chr5"),
-      Some(100L),
-      false)
+      matePropertiesOpt = Some(
+        MateProperties(
+          isFirstInPair = true,
+          inferredInsertSize = Some(300),
+          isMateMapped = true,
+          Some("chr5"),
+          Some(100L),
+          false
+        )
+      )
+    )
 
     val serialized = TestUtil.serialize(read)
     val deserialized = TestUtil.deserialize[MappedRead](serialized)
@@ -213,9 +235,7 @@ class ReadSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
     deserialized.mdTagOpt should equal(read.mdTagOpt)
     deserialized.failedVendorQualityChecks should equal(read.failedVendorQualityChecks)
     deserialized.isPositiveStrand should equal(read.isPositiveStrand)
-    deserialized.isMateMapped should equal(true)
-    deserialized.mateReferenceContig should equal(Some("chr5"))
-    deserialized.mateStart should equal(Some(100L))
+    deserialized.matePropertiesOpt should equal(read.matePropertiesOpt)
   }
 
   test("serialize / deserialize mapped read with unmapped pair") {
@@ -232,13 +252,17 @@ class ReadSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
       None, // mdtag
       false,
       isPositiveStrand = true,
-      isPaired = true,
-      isFirstInPair = true,
-      inferredInsertSize = Some(300),
-      isMateMapped = false,
-      None,
-      None,
-      false)
+      matePropertiesOpt = Some(
+        MateProperties(
+          isFirstInPair = true,
+          inferredInsertSize = Some(300),
+          isMateMapped = false,
+          None,
+          None,
+          false
+        )
+      )
+    )
 
     val serialized = TestUtil.serialize(read)
     val deserialized = TestUtil.deserialize[MappedRead](serialized)
@@ -261,9 +285,7 @@ class ReadSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
     deserialized.mdTagOpt should equal(read.mdTagOpt)
     deserialized.failedVendorQualityChecks should equal(read.failedVendorQualityChecks)
     deserialized.isPositiveStrand should equal(read.isPositiveStrand)
-    deserialized.isMateMapped should equal(false)
-    deserialized.mateReferenceContig should equal(None)
-    deserialized.mateStart should equal(None)
+    deserialized.matePropertiesOpt should equal(read.matePropertiesOpt)
   }
 
   test("serialize / deserialize unmapped read") {
@@ -275,13 +297,17 @@ class ReadSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
       "some sample name",
       false,
       isPositiveStrand = true,
-      isPaired = true,
-      isFirstInPair = true,
-      inferredInsertSize = Some(300),
-      isMateMapped = true,
-      Some("chr5"),
-      Some(100L),
-      false)
+      matePropertiesOpt = Some(
+        MateProperties(
+          isFirstInPair = true,
+          inferredInsertSize = Some(300),
+          isMateMapped = true,
+          Some("chr5"),
+          Some(100L),
+          false
+        )
+      )
+    )
 
     val serialized = TestUtil.serialize(read)
     val deserialized = TestUtil.deserialize[UnmappedRead](serialized)
@@ -299,9 +325,7 @@ class ReadSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
     deserialized.sampleName should equal(read.sampleName)
     deserialized.failedVendorQualityChecks should equal(read.failedVendorQualityChecks)
     deserialized.isPositiveStrand should equal(read.isPositiveStrand)
-    deserialized.isMateMapped should equal(true)
-    deserialized.mateReferenceContig should equal(Some("chr5"))
-    deserialized.mateStart should equal(Some(100L))
+    deserialized.matePropertiesOpt should equal(read.matePropertiesOpt)
   }
 
   sparkTest("load and test filters") {
@@ -328,9 +352,7 @@ class ReadSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
       deserialized.mdTagStringOpt should equal(read.mdTagStringOpt)
       deserialized.failedVendorQualityChecks should equal(read.failedVendorQualityChecks)
       deserialized.isPositiveStrand should equal(read.isPositiveStrand)
-      deserialized.isMateMapped should equal(read.isMateMapped)
-      deserialized.mateReferenceContig should equal(read.mateReferenceContig)
-      deserialized.mateStart should equal(read.mateStart)
+      deserialized.matePropertiesOpt should equal(read.matePropertiesOpt)
     }
 
   }

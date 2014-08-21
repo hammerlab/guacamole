@@ -5,7 +5,8 @@ import com.esotericsoftware.kryo.{ Kryo, Serializer }
 import net.sf.samtools.TextCigarCodec
 
 // Serialization: MappedRead
-class MappedReadSerializer extends Serializer[MappedRead] {
+class MappedReadSerializer extends Serializer[MappedRead] with CanSerializeMatePropertiesOption {
+
   def write(kryo: Kryo, output: Output, obj: MappedRead) = {
     output.writeInt(obj.token)
     assert(obj.sequence.length == obj.baseQualities.length)
@@ -27,23 +28,8 @@ class MappedReadSerializer extends Serializer[MappedRead] {
     }
     output.writeBoolean(obj.failedVendorQualityChecks)
     output.writeBoolean(obj.isPositiveStrand)
-    output.writeBoolean(obj.isPaired)
-    output.writeBoolean(obj.isFirstInPair)
-    obj.inferredInsertSize match {
-      case None =>
-        output.writeBoolean(false)
-      case Some(insertSize) =>
-        output.writeBoolean(true)
-        output.writeInt(insertSize)
-    }
-    if (obj.isMateMapped) {
-      output.writeBoolean(true)
-      output.writeString(obj.mateReferenceContig.get)
-      output.writeLong(obj.mateStart.get)
-    } else {
-      output.writeBoolean(false)
-    }
-    output.writeBoolean(obj.isMatePositiveStrand)
+
+    write(kryo, output, obj.matePropertiesOpt)
   }
 
   def read(kryo: Kryo, input: Input, klass: Class[MappedRead]): MappedRead = {
@@ -61,14 +47,8 @@ class MappedReadSerializer extends Serializer[MappedRead] {
     val mdTagStringOpt = if (hasMdTag) Some(input.readString()) else None
     val failedVendorQualityChecks = input.readBoolean()
     val isPositiveStrand = input.readBoolean()
-    val isPairedRead = input.readBoolean()
-    val isFirstInPair = input.readBoolean()
-    val hasInferredInsertSize = input.readBoolean()
-    val inferredInsertSize = if (hasInferredInsertSize) Some(input.readInt()) else None
-    val isMateMapped = input.readBoolean()
-    val mateReferenceContig = if (isMateMapped) Some(input.readString()) else None
-    val mateStart = if (isMateMapped) Some(input.readLong()) else None
-    val isMatePositiveStrand = input.readBoolean()
+
+    val matePropertiesOpt = read(kryo, input)
 
     val cigar = TextCigarCodec.getSingleton.decode(cigarString)
     MappedRead(
@@ -84,13 +64,8 @@ class MappedReadSerializer extends Serializer[MappedRead] {
       mdTagStringOpt,
       failedVendorQualityChecks,
       isPositiveStrand,
-      isPairedRead,
-      isFirstInPair,
-      inferredInsertSize,
-      isMateMapped,
-      mateReferenceContig,
-      mateStart,
-      isMatePositiveStrand)
+      matePropertiesOpt
+    )
   }
 }
 

@@ -5,7 +5,7 @@ package org.bdgenomics.guacamole
  *
  */
 
-import org.bdgenomics.guacamole.reads.{ Read, MappedRead }
+import org.bdgenomics.guacamole.reads.{ MateProperties, Read, MappedRead }
 import org.scalatest._
 import java.net.ServerSocket
 import org.apache.spark.SparkContext
@@ -83,7 +83,8 @@ object TestUtil extends ShouldMatchers {
 
     val qualityScoreString = sequence.map(x => '@').mkString
 
-    Read(sequence,
+    Read(
+      sequence,
       cigarString = cigar,
       start = start,
       referenceContig = chr,
@@ -91,10 +92,17 @@ object TestUtil extends ShouldMatchers {
       isPositiveStrand = isPositiveStrand,
       baseQualities = qualityScoreString,
       alignmentQuality = alignmentQuality,
-      isMateMapped = isMateMapped,
-      mateReferenceContig = mateReferenceContig,
-      mateStart = mateStart,
-      isMatePositiveStrand = isMatePositiveStrand).getMappedReadOpt.get
+      matePropertiesOpt = Some(
+        MateProperties(
+          isFirstInPair = false,
+          inferredInsertSize = None,
+          isMateMapped = isMateMapped,
+          mateReferenceContig = mateReferenceContig,
+          mateStart = mateStart,
+          isMatePositiveStrand = isMatePositiveStrand
+        )
+      )
+    ).getMappedReadOpt.get
   }
 
   def testDataPath(filename: String): String = {

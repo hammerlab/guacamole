@@ -55,29 +55,21 @@ trait Read {
   /** Whether the read was on the positive or forward strand */
   val isPositiveStrand: Boolean
 
-  /** Whether read is from a paired-end library */
-  val isPaired: Boolean
+  val matePropertiesOpt: Option[MateProperties]
+
+  def isPaired = matePropertiesOpt.isDefined
+  def inferredInsertSize = matePropertiesOpt.flatMap(_.inferredInsertSize)
 
 }
 
-trait MateProperties {
-  /** Distance between the first base and the last base in the paired reads */
-  val inferredInsertSize: Option[Int]
-
-  /** Whether the read is the first or second of the pair*/
-  val isFirstInPair: Boolean
-
-  /** If the read's mate is mapped */
-  val isMateMapped: Boolean
-
-  /** The contig or chromosome the mate is aligned to */
-  val mateReferenceContig: Option[String]
-
-  /** The start position on the mateReferenceContig the mate is aligned to */
-  val mateStart: Option[Long]
-
-  /** Whether the mate was on the positive or forward strand */
-  val isMatePositiveStrand: Boolean
+case class MateProperties(isFirstInPair: Boolean,
+                          inferredInsertSize: Option[Int],
+                          isMateMapped: Boolean,
+                          mateReferenceContig: Option[String],
+                          mateStart: Option[Long],
+                          isMatePositiveStrand: Boolean) {
+  // If the mate is mapped, assert that know it's mapping
+  assert(!isMateMapped || (mateReferenceContig.isDefined && mateStart.isDefined))
 }
 
 /**
@@ -92,13 +84,7 @@ case class UnmappedRead(
     sampleName: String,
     failedVendorQualityChecks: Boolean,
     isPositiveStrand: Boolean,
-    isPaired: Boolean,
-    isFirstInPair: Boolean,
-    inferredInsertSize: Option[Int],
-    isMateMapped: Boolean,
-    mateReferenceContig: Option[String],
-    mateStart: Option[Long],
-    isMatePositiveStrand: Boolean) extends Read with MateProperties {
+    matePropertiesOpt: Option[MateProperties]) extends Read {
 
   assert(baseQualities.length == sequence.length)
 
@@ -126,19 +112,10 @@ case class MappedRead(
     mdTagStringOpt: Option[String],
     failedVendorQualityChecks: Boolean,
     isPositiveStrand: Boolean,
-    isPaired: Boolean,
-    isFirstInPair: Boolean,
-    inferredInsertSize: Option[Int],
-    isMateMapped: Boolean,
-    mateReferenceContig: Option[String],
-    mateStart: Option[Long],
-    isMatePositiveStrand: Boolean) extends Read with HasReferenceRegion with MateProperties {
+    matePropertiesOpt: Option[MateProperties]) extends Read with HasReferenceRegion {
 
   assert(baseQualities.length == sequence.length,
     "Base qualities have length %d but sequence has length %d".format(baseQualities.length, sequence.length))
-
-  // If the mate is map assert that know it's mapping
-  assert(!isMateMapped || (mateReferenceContig.isDefined && mateStart.isDefined))
 
   final override val isMapped = true
   final override lazy val getMappedReadOpt = Some(this)
@@ -223,13 +200,7 @@ object Read extends Logging {
     mdTagString: String = "",
     failedVendorQualityChecks: Boolean = false,
     isPositiveStrand: Boolean = true,
-    isPaired: Boolean = false,
-    isFirstInPair: Boolean = false,
-    inferredInsertSize: Option[Int] = None,
-    isMateMapped: Boolean = false,
-    mateReferenceContig: Option[String] = None,
-    mateStart: Option[Long] = None,
-    isMatePositiveStrand: Boolean = false): Read = {
+    matePropertiesOpt: Option[MateProperties] = None): Read = {
 
     val sequenceArray = sequence.map(_.toByte).toArray
     val qualityScoresArray = {
@@ -248,13 +219,8 @@ object Read extends Logging {
         sampleName.intern,
         failedVendorQualityChecks,
         isPositiveStrand,
-        isPaired,
-        isFirstInPair,
-        inferredInsertSize,
-        isMateMapped,
-        mateReferenceContig,
-        mateStart,
-        isMatePositiveStrand)
+        matePropertiesOpt
+      )
     } else {
       val cigar = TextCigarCodec.getSingleton.decode(cigarString)
       MappedRead(
@@ -270,13 +236,8 @@ object Read extends Logging {
         Some(mdTagString),
         failedVendorQualityChecks,
         isPositiveStrand,
-        isPaired,
-        isFirstInPair,
-        inferredInsertSize,
-        isMateMapped,
-        mateReferenceContig,
-        mateStart,
-        isMatePositiveStrand)
+        matePropertiesOpt
+      )
     }
   }
 
@@ -315,13 +276,21 @@ object Read extends Logging {
         mdTagStringOpt = mdTagStringOpt,
         failedVendorQualityChecks = record.getReadFailsVendorQualityCheckFlag,
         isPositiveStrand = !record.getReadNegativeStrandFlag,
-        isPaired = record.getReadPairedFlag,
-        isFirstInPair = record.getFirstOfPairFlag,
-        inferredInsertSize = Some(record.getInferredInsertSize),
-        isMateMapped = !record.getMateUnmappedFlag,
-        mateReferenceContig = Some(record.getMateReferenceName),
-        mateStart = Some(record.getMateAlignmentStart),
-        isMatePositiveStrand = !record.getMateNegativeStrandFlag)
+        matePropertiesOpt =
+          if (record.getReadPairedFlag)
+            Some(
+            MateProperties(
+              isFirstInPair = record.getFirstOfPairFlag,
+              inferredInsertSize = Some(record.getInferredInsertSize),
+              isMateMapped = !record.getMateUnmappedFlag,
+              mateReferenceContig = Some(record.getMateReferenceName),
+              mateStart = Some(record.getMateAlignmentStart),
+              isMatePositiveStrand = !record.getMateNegativeStrandFlag
+            )
+          )
+          else
+            None
+      )
 
       // We subtract 1 from start, since samtools is 1-based and we're 0-based.
       if (result.unclippedStart != record.getUnclippedStart - 1)
@@ -337,13 +306,21 @@ object Read extends Logging {
         sampleName,
         record.getReadFailsVendorQualityCheckFlag,
         !record.getReadNegativeStrandFlag,
-        isPaired = record.getReadPairedFlag,
-        isFirstInPair = record.getFirstOfPairFlag,
-        inferredInsertSize = Some(record.getInferredInsertSize),
-        isMateMapped = !record.getMateUnmappedFlag,
-        mateReferenceContig = Some(record.getMateReferenceName),
-        mateStart = Some(record.getMateAlignmentStart),
-        isMatePositiveStrand = !record.getMateNegativeStrandFlag)
+        matePropertiesOpt =
+          if (record.getReadPairedFlag)
+            Some(
+            MateProperties(
+              isFirstInPair = record.getFirstOfPairFlag,
+              inferredInsertSize = Some(record.getInferredInsertSize),
+              isMateMapped = !record.getMateUnmappedFlag,
+              mateReferenceContig = Some(record.getMateReferenceName),
+              mateStart = Some(record.getMateAlignmentStart),
+              isMatePositiveStrand = !record.getMateNegativeStrandFlag
+            )
+          )
+          else
+            None
+      )
 
       result
     }
