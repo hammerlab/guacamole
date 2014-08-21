@@ -4,7 +4,7 @@ import com.esotericsoftware.kryo.io.{ Input, Output }
 import com.esotericsoftware.kryo.{ Kryo, Serializer }
 
 // Serialization: UnmappedRead
-class UnmappedReadSerializer extends Serializer[UnmappedRead] {
+class UnmappedReadSerializer extends Serializer[UnmappedRead] with CanSerializeMatePropertiesOption {
   def write(kryo: Kryo, output: Output, obj: UnmappedRead) = {
     output.writeInt(obj.token)
     assert(obj.sequence.length == obj.baseQualities.length)
@@ -15,25 +15,8 @@ class UnmappedReadSerializer extends Serializer[UnmappedRead] {
     output.writeString(obj.sampleName)
     output.writeBoolean(obj.failedVendorQualityChecks)
     output.writeBoolean(obj.isPositiveStrand)
-    output.writeBoolean(obj.isPaired)
-    output.writeBoolean(obj.isFirstInPair)
-    obj.inferredInsertSize match {
-      case None =>
-        output.writeBoolean(false)
-      case Some(insertSize) =>
-        output.writeBoolean(true)
-        output.writeInt(insertSize)
 
-    }
-    if (obj.isMateMapped) {
-      output.writeBoolean(true)
-      output.writeString(obj.mateReferenceContig.get)
-      output.writeLong(obj.mateStart.get)
-    } else {
-      output.writeBoolean(false)
-    }
-    output.writeBoolean(obj.isMatePositiveStrand)
-
+    write(kryo, output, obj.matePropertiesOpt)
   }
 
   def read(kryo: Kryo, input: Input, klass: Class[UnmappedRead]): UnmappedRead = {
@@ -45,14 +28,8 @@ class UnmappedReadSerializer extends Serializer[UnmappedRead] {
     val sampleName = input.readString().intern()
     val failedVendorQualityChecks = input.readBoolean()
     val isPositiveStrand = input.readBoolean()
-    val isPairedRead = input.readBoolean()
-    val isFirstInPair = input.readBoolean()
-    val hasInferredInsertSize = input.readBoolean()
-    val inferredInsertSize = if (hasInferredInsertSize) Some(input.readInt()) else None
-    val isMateMapped = input.readBoolean()
-    val mateReferenceContig = if (isMateMapped) Some(input.readString()) else None
-    val mateStart = if (isMateMapped) Some(input.readLong()) else None
-    val isMatePositiveStrand = input.readBoolean()
+
+    val matePropertiesOpt = read(kryo, input)
 
     UnmappedRead(
       token,
@@ -62,13 +39,8 @@ class UnmappedReadSerializer extends Serializer[UnmappedRead] {
       sampleName.intern,
       failedVendorQualityChecks,
       isPositiveStrand,
-      isPairedRead,
-      isFirstInPair,
-      inferredInsertSize,
-      isMateMapped,
-      mateReferenceContig,
-      mateStart,
-      isMatePositiveStrand)
+      matePropertiesOpt
+    )
   }
 }
 

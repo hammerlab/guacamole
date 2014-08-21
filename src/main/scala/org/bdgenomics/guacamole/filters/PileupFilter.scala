@@ -24,10 +24,17 @@ object RegionComplexityFilter {
    */
   def apply(elements: Seq[PileupElement], maximumAlignmentComplexity: Int, minimumAlignmentQuality: Int): Seq[PileupElement] = {
     val depth = elements.length
-    val qualityMappedReads = elements.filter(
-      el => el.read.alignmentQuality >= minimumAlignmentQuality
-        && el.read.isMateMapped
-        && el.read.mateReferenceContig.get == el.read.referenceContig).length
+    val qualityMappedReads = elements.filter(el =>
+      el.read.alignmentQuality >= minimumAlignmentQuality &&
+        (for {
+          mp <- el.read.matePropertiesOpt
+          if mp.isMateMapped
+          mateReferenceContig <- mp.mateReferenceContig
+          if mateReferenceContig == el.read.referenceContig
+        } yield {
+          Some(true)
+        }).isDefined
+    ).length
 
     if (math.ceil((depth - qualityMappedReads) * 100.0 / depth) < maximumAlignmentComplexity) {
       elements
