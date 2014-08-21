@@ -18,10 +18,10 @@
 
 package org.bdgenomics.guacamole.pileup
 
-import org.scalatest.matchers.ShouldMatchers
 import org.bdgenomics.guacamole.{ Bases, TestUtil }
+import org.scalatest.Matchers
 
-class PileupSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
+class PileupSuite extends TestUtil.SparkFunSuite with Matchers {
 
   //lazy so that this is only accessed from inside a spark test where SparkContext has been initialized
   lazy val testAdamRecords = TestUtil.loadReads(sc, "different_start_reads.sam").mappedReads.collect()

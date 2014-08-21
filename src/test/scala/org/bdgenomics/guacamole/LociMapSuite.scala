@@ -18,10 +18,10 @@
 
 package org.bdgenomics.guacamole
 
-import org.scalatest.matchers.ShouldMatchers
 import com.google.common.collect._
+import org.scalatest.Matchers
 
-class LociMapSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
+class LociMapSuite extends TestUtil.SparkFunSuite with Matchers {
 
   test("properties of empty LociMap") {
     val emptyMap = LociMap[String]()
