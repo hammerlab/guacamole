@@ -28,7 +28,7 @@ case class PileupElement(
 
   assume(locus >= read.start)
   assume(locus < read.end)
-  assume(read.mdTag.isDefined, "Record has no MDTag.")
+  assume(read.mdTagOpt.isDefined, "Record has no MDTag.")
 
   lazy val cigarElement = remainingReadCigar.head
   lazy val nextCigarElement = if (remainingReadCigar.tail.isEmpty) None else Some(remainingReadCigar.tail.head)
@@ -56,7 +56,7 @@ case class PileupElement(
       case (CigarOperator.M, _) | (CigarOperator.EQ, _) | (CigarOperator.X, _) =>
         val base: Byte = read.sequence(readPosition.toInt)
         val quality = read.baseQualities(readPosition.toInt)
-        if (read.mdTag.get.isMatch(locus)) {
+        if (read.mdTagOpt.get.isMatch(locus)) {
           Match(base, quality)
         } else {
           Mismatch(base, quality)
