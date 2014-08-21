@@ -139,7 +139,10 @@ case class PileupElement(
     }
     // Iterate through the remaining cigar elements to find one overlapping the current position.
     @tailrec
-    def getCurrentElement(remainingCigarElements: List[CigarElement], cigarReadPosition: Long, cigarReferencePosition: Long, cigarElementIndex: Long): PileupElement = {
+    def getCurrentElement(remainingCigarElements: List[CigarElement],
+                          cigarReadPosition: Long,
+                          cigarReferencePosition: Long,
+                          cigarElementIndex: Long): PileupElement = {
       if (remainingCigarElements.isEmpty) {
         throw new RuntimeException(
           "Couldn't find cigar element for locus %d, cigar string only extends to %d".format(newLocus, cigarReferencePosition))
@@ -168,7 +171,12 @@ case class PileupElement(
             offset)
         }
       }
-      getCurrentElement(remainingCigarElements.tail, cigarReadPosition + cigarElementReadLength, cigarReferencePosition + cigarElementReferenceLength, cigarElementIndex + 1)
+      getCurrentElement(
+        remainingCigarElements.tail,
+        cigarReadPosition + cigarElementReadLength,
+        cigarReferencePosition + cigarElementReferenceLength,
+        cigarElementIndex + 1
+      )
     }
 
     getCurrentElement(remainingReadCigar, currentCigarReadPosition, cigarElementLocus, indexInCigarElements)
