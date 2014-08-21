@@ -1,13 +1,12 @@
 package org.bdgenomics.guacamole.callers
 
-import org.scalatest.FunSuite
+import org.scalatest.{ Matchers, FunSuite }
 import org.bdgenomics.guacamole.{ TestUtil }
 import org.bdgenomics.formats.avro.ADAMGenotypeAllele
 import scala.collection.JavaConversions._
 import org.bdgenomics.guacamole.pileup.Pileup
-import org.scalatest.matchers.ShouldMatchers
 
-class ThresholdVariantCallerSuite extends FunSuite with ShouldMatchers {
+class ThresholdVariantCallerSuite extends FunSuite with Matchers {
 
   test("no variants, threshold 0") {
     val reads = Seq(

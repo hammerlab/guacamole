@@ -18,12 +18,11 @@
 
 package org.bdgenomics.guacamole
 
-import org.bdgenomics.guacamole.reads.{ MateProperties, MappedRead, UnmappedRead, Read }
-import org.scalatest.matchers.ShouldMatchers
 import net.sf.samtools.TextCigarCodec
-import org.bdgenomics.adam.util.MdTag
+import org.bdgenomics.guacamole.reads.{ MateProperties, MappedRead, UnmappedRead, Read }
+import org.scalatest.Matchers
 
-class ReadSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
+class ReadSuite extends TestUtil.SparkFunSuite with Matchers {
 
   test("mappedread is mapped") {
     val read = MappedRead(
