@@ -6,6 +6,7 @@ import org.apache.spark.SparkContext._
 import org.apache.spark.broadcast.Broadcast
 import org.apache.commons.math3
 import org.apache.spark._
+import org.bdgenomics.guacamole.reads.MappedRead
 import scala.reflect.ClassTag
 import org.bdgenomics.guacamole.Common.Arguments.{ Loci, Base }
 import org.kohsuke.args4j.{ Option => Opt }

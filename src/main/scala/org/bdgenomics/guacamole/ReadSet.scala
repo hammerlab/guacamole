@@ -3,6 +3,7 @@ package org.bdgenomics.guacamole
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.models.SequenceDictionary
 import org.apache.spark.SparkContext
+import org.bdgenomics.guacamole.reads.Read
 
 /**
  * A ReadSet contains an RDD of reads along with some metadata about them.
