@@ -3,6 +3,7 @@ package org.bdgenomics.guacamole.callers
 import org.bdgenomics.guacamole._
 import org.apache.spark.Logging
 import org.bdgenomics.guacamole.Common.Arguments.{ TumorNormalReads, Output }
+import org.bdgenomics.guacamole.reads.Read
 import org.kohsuke.args4j.{ Option => Opt }
 import org.bdgenomics.adam.cli.Args4j
 import org.apache.spark.rdd.RDD

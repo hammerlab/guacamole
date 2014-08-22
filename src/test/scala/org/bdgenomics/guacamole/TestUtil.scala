@@ -4,6 +4,7 @@ package org.bdgenomics.guacamole
  * This is copied from SparkFunSuite in ADAM, which is for some reason not exposed.
  *
  */
+
 import java.io.{ File, FileNotFoundException }
 import java.net.ServerSocket
 
@@ -14,6 +15,7 @@ import org.apache.log4j.{ Level, Logger }
 import org.apache.spark.SparkContext
 import org.bdgenomics.adam.cli.SparkArgs
 import org.bdgenomics.guacamole.pileup.Pileup
+import org.bdgenomics.guacamole.reads.{ MateProperties, Read, MappedRead }
 import org.scalatest._
 
 import scala.math._
@@ -63,7 +65,7 @@ object TestUtil extends Matchers {
       start = start,
       referenceContig = chr,
       baseQualities = qualityScoreString,
-      alignmentQuality = alignmentQuality).getMappedRead
+      alignmentQuality = alignmentQuality).getMappedReadOpt.get
   }
 
   def makePairedRead(
@@ -81,7 +83,8 @@ object TestUtil extends Matchers {
 
     val qualityScoreString = sequence.map(x => '@').mkString
 
-    Read(sequence,
+    Read(
+      sequence,
       cigarString = cigar,
       start = start,
       referenceContig = chr,
@@ -89,10 +92,17 @@ object TestUtil extends Matchers {
       isPositiveStrand = isPositiveStrand,
       baseQualities = qualityScoreString,
       alignmentQuality = alignmentQuality,
-      isMateMapped = isMateMapped,
-      mateReferenceContig = mateReferenceContig,
-      mateStart = mateStart,
-      isMatePositiveStrand = isMatePositiveStrand).getMappedRead
+      matePropertiesOpt = Some(
+        MateProperties(
+          isFirstInPair = false,
+          inferredInsertSize = None,
+          isMateMapped = isMateMapped,
+          mateReferenceContig = mateReferenceContig,
+          mateStart = mateStart,
+          isMatePositiveStrand = isMatePositiveStrand
+        )
+      )
+    ).getMappedReadOpt.get
   }
 
   def testDataPath(filename: String): String = {

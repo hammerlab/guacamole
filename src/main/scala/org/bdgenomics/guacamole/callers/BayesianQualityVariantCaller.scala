@@ -5,6 +5,7 @@ import org.apache.spark.Logging
 import org.bdgenomics.adam.cli.Args4j
 import org.bdgenomics.guacamole.pileup.{ PileupElement, Pileup }
 import org.bdgenomics.formats.avro.{ ADAMVariant, ADAMContig, ADAMGenotypeAllele, ADAMGenotype }
+import org.bdgenomics.guacamole.reads.Read
 import scala.collection.JavaConversions
 import org.apache.spark.rdd.RDD
 import org.kohsuke.args4j.Option

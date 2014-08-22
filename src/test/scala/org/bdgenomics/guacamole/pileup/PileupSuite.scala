@@ -111,7 +111,7 @@ class PileupSuite extends TestUtil.SparkFunSuite with Matchers {
 
     val lastPileup = Pileup(reads, 8)
     lastPileup.elements.forall(e => Bases.equalString(e.sequencedBases, "A")) should be(true)
-    lastPileup.elements.forall(_.sequencedSingleBase == Bases.A) should be(true)
+    lastPileup.elements.forall(_.sequencedSingleBaseOpt.exists(_ == Bases.A)) should be(true)
 
     lastPileup.elements.forall(_.isMatch) should be(true)
     lastPileup.elements.forall(_.qualityScore == 25) should be(true)
@@ -227,7 +227,7 @@ class PileupSuite extends TestUtil.SparkFunSuite with Matchers {
     val at5 = PileupElement(decadentRead1, 5)
     assert(at5 != null)
     assert(Bases.equalString(at5.sequencedBases, "A"))
-    assert(at5.sequencedSingleBase == Bases.A)
+    assert(at5.sequencedSingleBaseOpt.exists(_ == Bases.A))
 
     // At the end of the read:
     assert(PileupElement(decadentRead1, 74) != null)

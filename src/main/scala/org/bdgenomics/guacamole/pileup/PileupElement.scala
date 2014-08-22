@@ -1,7 +1,8 @@
 package org.bdgenomics.guacamole.pileup
 
 import net.sf.samtools.{ CigarOperator, CigarElement }
-import org.bdgenomics.guacamole.{ MappedRead, CigarUtils }
+import org.bdgenomics.guacamole.CigarUtils
+import org.bdgenomics.guacamole.reads.MappedRead
 import scala.annotation.tailrec
 import scala.math
 
@@ -28,7 +29,7 @@ case class PileupElement(
 
   assume(locus >= read.start)
   assume(locus < read.end)
-  assume(read.mdTag.isDefined, "Record has no MDTag.")
+  assume(read.mdTagOpt.isDefined, "Record has no MDTag.")
 
   lazy val cigarElement = remainingReadCigar.head
   lazy val nextCigarElement = if (remainingReadCigar.tail.isEmpty) None else Some(remainingReadCigar.tail.head)
@@ -56,7 +57,7 @@ case class PileupElement(
       case (CigarOperator.M, _) | (CigarOperator.EQ, _) | (CigarOperator.X, _) =>
         val base: Byte = read.sequence(readPosition.toInt)
         val quality = read.baseQualities(readPosition.toInt)
-        if (read.mdTag.get.isMatch(locus)) {
+        if (read.mdTagOpt.get.isMatch(locus)) {
           Match(base, quality)
         } else {
           Mismatch(base, quality)
@@ -92,14 +93,13 @@ case class PileupElement(
 
   /**
    * For matches, mismatches, and single base insertions, this is the base sequenced at this locus, as a byte. For
-   * all other cases, this throws an assertion error.
+   * all other cases, return None.
    */
-  lazy val sequencedSingleBase: Byte = alignment match {
-    case Match(base, _)                           => base
-    case Mismatch(base, _)                        => base
-    case Insertion(bases, _) if bases.length == 1 => bases(0)
-    case other =>
-      throw new AssertionError("Not a match, mismatch, or single nucleotide insertion: " + other.toString)
+  lazy val sequencedSingleBaseOpt: Option[Byte] = alignment match {
+    case Match(base, _)      => Some(base)
+    case Mismatch(base, _)   => Some(base)
+    case Insertion(bases, _) => bases.headOption
+    case _                   => None
   }
 
   /*
