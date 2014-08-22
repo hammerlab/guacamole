@@ -19,6 +19,7 @@
 package org.bdgenomics.guacamole
 
 import net.sf.samtools.TextCigarCodec
+import org.bdgenomics.guacamole.reads.{ MateProperties, MappedRead, UnmappedRead, Read }
 import org.scalatest.Matchers
 
 class ReadSuite extends TestUtil.SparkFunSuite with Matchers {
@@ -37,23 +38,22 @@ class ReadSuite extends TestUtil.SparkFunSuite with Matchers {
       None, // mdtag
       false,
       isPositiveStrand = true,
-      isPaired = true,
-      isFirstInPair = true,
-      inferredInsertSize = Some(300),
-      isMateMapped = true,
-      Some("chr5"),
-      Some(100L),
-      false)
+      matePropertiesOpt = Some(
+        MateProperties(
+          isFirstInPair = true,
+          inferredInsertSize = Some(300),
+          isMateMapped = true,
+          Some("chr5"),
+          Some(100L),
+          false
+        )
+      )
+    )
 
     read.isMapped should be(true)
     read.asInstanceOf[Read].isMapped should be(true)
 
-    val mappedRead = read.asInstanceOf[Read].getMappedRead()
-    mappedRead.isMapped should be(true)
-
-    val collectionMappedReads: Seq[Read] = Seq(read, mappedRead)
-    collectionMappedReads(0).isMapped should be(true)
-    collectionMappedReads(1).isMapped should be(true)
+    read.getMappedReadOpt.exists(_.isMapped) should be(true)
 
   }
 
@@ -66,18 +66,21 @@ class ReadSuite extends TestUtil.SparkFunSuite with Matchers {
       "some sample name",
       false,
       isPositiveStrand = true,
-      isPaired = true,
-      isFirstInPair = true,
-      inferredInsertSize = Some(300),
-      isMateMapped = true,
-      Some("chr5"),
-      Some(100L),
-      false)
+      matePropertiesOpt = Some(
+        MateProperties(
+          isFirstInPair = true,
+          inferredInsertSize = Some(300),
+          isMateMapped = true,
+          Some("chr5"),
+          Some(100L),
+          false
+        )
+      )
+    )
 
     read.isMapped should be(false)
     read.asInstanceOf[Read].isMapped should be(false)
-
-    intercept[AssertionError] { read.getMappedRead }
+    read.getMappedReadOpt should be(None)
 
     val collectionMappedReads: Seq[Read] = Seq(read)
     collectionMappedReads(0).isMapped should be(false)
@@ -92,13 +95,17 @@ class ReadSuite extends TestUtil.SparkFunSuite with Matchers {
       "some sample name",
       false,
       isPositiveStrand = true,
-      isPaired = true,
-      isFirstInPair = true,
-      inferredInsertSize = Some(300),
-      isMateMapped = true,
-      Some("chr5"),
-      Some(100L),
-      false)
+      matePropertiesOpt = Some(
+        MateProperties(
+          isFirstInPair = true,
+          inferredInsertSize = Some(300),
+          isMateMapped = true,
+          Some("chr5"),
+          Some(100L),
+          false
+        )
+      )
+    )
 
     val mread = MappedRead(
       5, // token
@@ -113,13 +120,17 @@ class ReadSuite extends TestUtil.SparkFunSuite with Matchers {
       None, // mdtag
       false,
       isPositiveStrand = true,
-      isPaired = true,
-      isFirstInPair = true,
-      inferredInsertSize = Some(300),
-      isMateMapped = true,
-      Some("chr5"),
-      Some(100L),
-      false)
+      matePropertiesOpt = Some(
+        MateProperties(
+          isFirstInPair = true,
+          inferredInsertSize = Some(300),
+          isMateMapped = true,
+          Some("chr5"),
+          Some(100L),
+          false
+        )
+      )
+    )
 
     val collectionMappedReads: Seq[Read] = Seq(uread, mread)
     collectionMappedReads(0).isMapped should be(false)
@@ -140,13 +151,17 @@ class ReadSuite extends TestUtil.SparkFunSuite with Matchers {
       None, // mdtag
       false,
       isPositiveStrand = true,
-      isPaired = true,
-      isFirstInPair = true,
-      inferredInsertSize = Some(300),
-      isMateMapped = true,
-      Some("chr5"),
-      Some(100L),
-      false)
+      matePropertiesOpt = Some(
+        MateProperties(
+          isFirstInPair = true,
+          inferredInsertSize = Some(300),
+          isMateMapped = true,
+          Some("chr5"),
+          Some(100L),
+          false
+        )
+      )
+    )
 
     val serialized = TestUtil.serialize(read)
     val deserialized = TestUtil.deserialize[MappedRead](serialized)
@@ -166,12 +181,10 @@ class ReadSuite extends TestUtil.SparkFunSuite with Matchers {
     deserialized.alignmentQuality should equal(read.alignmentQuality)
     deserialized.start should equal(read.start)
     deserialized.cigar should equal(read.cigar)
-    deserialized.mdTag should equal(read.mdTag)
+    deserialized.mdTagOpt should equal(read.mdTagOpt)
     deserialized.failedVendorQualityChecks should equal(read.failedVendorQualityChecks)
     deserialized.isPositiveStrand should equal(read.isPositiveStrand)
-    deserialized.isMateMapped should equal(true)
-    deserialized.mateReferenceContig should equal(Some("chr5"))
-    deserialized.mateStart should equal(Some(100L))
+    deserialized.matePropertiesOpt should equal(read.matePropertiesOpt)
   }
 
   test("serialize / deserialize mapped read with mdtag") {
@@ -188,13 +201,17 @@ class ReadSuite extends TestUtil.SparkFunSuite with Matchers {
       Some("6"), // mdtag
       false,
       isPositiveStrand = true,
-      isPaired = true,
-      isFirstInPair = true,
-      inferredInsertSize = Some(300),
-      isMateMapped = true,
-      Some("chr5"),
-      Some(100L),
-      false)
+      matePropertiesOpt = Some(
+        MateProperties(
+          isFirstInPair = true,
+          inferredInsertSize = Some(300),
+          isMateMapped = true,
+          Some("chr5"),
+          Some(100L),
+          false
+        )
+      )
+    )
 
     val serialized = TestUtil.serialize(read)
     val deserialized = TestUtil.deserialize[MappedRead](serialized)
@@ -214,12 +231,10 @@ class ReadSuite extends TestUtil.SparkFunSuite with Matchers {
     deserialized.alignmentQuality should equal(read.alignmentQuality)
     deserialized.start should equal(read.start)
     deserialized.cigar should equal(read.cigar)
-    deserialized.mdTag should equal(read.mdTag)
+    deserialized.mdTagOpt should equal(read.mdTagOpt)
     deserialized.failedVendorQualityChecks should equal(read.failedVendorQualityChecks)
     deserialized.isPositiveStrand should equal(read.isPositiveStrand)
-    deserialized.isMateMapped should equal(true)
-    deserialized.mateReferenceContig should equal(Some("chr5"))
-    deserialized.mateStart should equal(Some(100L))
+    deserialized.matePropertiesOpt should equal(read.matePropertiesOpt)
   }
 
   test("serialize / deserialize mapped read with unmapped pair") {
@@ -236,13 +251,17 @@ class ReadSuite extends TestUtil.SparkFunSuite with Matchers {
       None, // mdtag
       false,
       isPositiveStrand = true,
-      isPaired = true,
-      isFirstInPair = true,
-      inferredInsertSize = Some(300),
-      isMateMapped = false,
-      None,
-      None,
-      false)
+      matePropertiesOpt = Some(
+        MateProperties(
+          isFirstInPair = true,
+          inferredInsertSize = Some(300),
+          isMateMapped = false,
+          None,
+          None,
+          false
+        )
+      )
+    )
 
     val serialized = TestUtil.serialize(read)
     val deserialized = TestUtil.deserialize[MappedRead](serialized)
@@ -262,12 +281,10 @@ class ReadSuite extends TestUtil.SparkFunSuite with Matchers {
     deserialized.alignmentQuality should equal(read.alignmentQuality)
     deserialized.start should equal(read.start)
     deserialized.cigar should equal(read.cigar)
-    deserialized.mdTag should equal(read.mdTag)
+    deserialized.mdTagOpt should equal(read.mdTagOpt)
     deserialized.failedVendorQualityChecks should equal(read.failedVendorQualityChecks)
     deserialized.isPositiveStrand should equal(read.isPositiveStrand)
-    deserialized.isMateMapped should equal(false)
-    deserialized.mateReferenceContig should equal(None)
-    deserialized.mateStart should equal(None)
+    deserialized.matePropertiesOpt should equal(read.matePropertiesOpt)
   }
 
   test("serialize / deserialize unmapped read") {
@@ -279,13 +296,17 @@ class ReadSuite extends TestUtil.SparkFunSuite with Matchers {
       "some sample name",
       false,
       isPositiveStrand = true,
-      isPaired = true,
-      isFirstInPair = true,
-      inferredInsertSize = Some(300),
-      isMateMapped = true,
-      Some("chr5"),
-      Some(100L),
-      false)
+      matePropertiesOpt = Some(
+        MateProperties(
+          isFirstInPair = true,
+          inferredInsertSize = Some(300),
+          isMateMapped = true,
+          Some("chr5"),
+          Some(100L),
+          false
+        )
+      )
+    )
 
     val serialized = TestUtil.serialize(read)
     val deserialized = TestUtil.deserialize[UnmappedRead](serialized)
@@ -303,9 +324,7 @@ class ReadSuite extends TestUtil.SparkFunSuite with Matchers {
     deserialized.sampleName should equal(read.sampleName)
     deserialized.failedVendorQualityChecks should equal(read.failedVendorQualityChecks)
     deserialized.isPositiveStrand should equal(read.isPositiveStrand)
-    deserialized.isMateMapped should equal(true)
-    deserialized.mateReferenceContig should equal(Some("chr5"))
-    deserialized.mateStart should equal(Some(100L))
+    deserialized.matePropertiesOpt should equal(read.matePropertiesOpt)
   }
 
   sparkTest("load and test filters") {
@@ -329,12 +348,10 @@ class ReadSuite extends TestUtil.SparkFunSuite with Matchers {
       deserialized.alignmentQuality should equal(read.alignmentQuality)
       deserialized.start should equal(read.start)
       deserialized.cigar should equal(read.cigar)
-      deserialized.mdTagString should equal(read.mdTagString)
+      deserialized.mdTagStringOpt should equal(read.mdTagStringOpt)
       deserialized.failedVendorQualityChecks should equal(read.failedVendorQualityChecks)
       deserialized.isPositiveStrand should equal(read.isPositiveStrand)
-      deserialized.isMateMapped should equal(read.isMateMapped)
-      deserialized.mateReferenceContig should equal(read.mateReferenceContig)
-      deserialized.mateStart should equal(read.mateStart)
+      deserialized.matePropertiesOpt should equal(read.matePropertiesOpt)
     }
 
   }

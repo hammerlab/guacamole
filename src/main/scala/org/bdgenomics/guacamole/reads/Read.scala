@@ -1,19 +1,18 @@
-package org.bdgenomics.guacamole
+package org.bdgenomics.guacamole.reads
 
-import net.sf.samtools._
-import org.apache.spark.{ Logging, SparkContext }
-import org.apache.spark.rdd.RDD
-import org.apache.hadoop.io.LongWritable
-import fi.tkk.ics.hadoop.bam.{ AnySAMInputFormat, SAMRecordWritable }
-import scala.collection.mutable.ArrayBuffer
-import org.bdgenomics.adam.models.SequenceDictionary
 import fi.tkk.ics.hadoop.bam.util.SAMHeaderReader
+import fi.tkk.ics.hadoop.bam.{ AnySAMInputFormat, SAMRecordWritable }
+import net.sf.samtools._
 import org.apache.hadoop.fs.Path
-import scala.collection.JavaConversions
-import scala.Some
+import org.apache.hadoop.io.LongWritable
+import org.apache.spark.rdd.RDD
+import org.apache.spark.{ Logging, SparkContext }
+import org.bdgenomics.adam.models.SequenceDictionary
 import org.bdgenomics.adam.util.MdTag
-import com.esotericsoftware.kryo.{ Kryo, Serializer }
-import com.esotericsoftware.kryo.io.{ Input, Output }
+import org.bdgenomics.guacamole.{ LociSet, HasReferenceRegion }
+
+import scala.collection.JavaConversions
+import scala.collection.mutable.ArrayBuffer
 
 /**
  * The fields in the Read trait are common to any read, whether mapped (aligned) or not.
@@ -47,8 +46,8 @@ trait Read {
   /** The sample (e.g. "tumor" or "patient3636") name. */
   val sampleName: String
 
-  /** If isMapped=true, will return the corresponding MappedRead. Otherwise, throws an error. */
-  def getMappedRead(): MappedRead
+  /** Returns this Read as a MappedRead iff isMapped=true, otherwise None. */
+  def getMappedReadOpt: Option[MappedRead] = None
 
   /** Whether the read failed predefined vendor checks for quality */
   val failedVendorQualityChecks: Boolean
@@ -56,29 +55,22 @@ trait Read {
   /** Whether the read was on the positive or forward strand */
   val isPositiveStrand: Boolean
 
-  /** Whether read is from a paired-end library */
-  val isPaired: Boolean
+  val matePropertiesOpt: Option[MateProperties]
+
+  // A couple of accessors, for convenience.
+  def isPaired = matePropertiesOpt.isDefined
+  def inferredInsertSize = matePropertiesOpt.flatMap(_.inferredInsertSize)
 
 }
 
-trait MateProperties {
-  /** Distance between the first base and the last base in the paired reads */
-  val inferredInsertSize: Option[Int]
-
-  /** Whether the read is the first or second of the pair*/
-  val isFirstInPair: Boolean
-
-  /** If the read's mate is mapped */
-  val isMateMapped: Boolean
-
-  /** The contig or chromosome the mate is aligned to */
-  val mateReferenceContig: Option[String]
-
-  /** The start position on the mateReferenceContig the mate is aligned to */
-  val mateStart: Option[Long]
-
-  /** Whether the mate was on the positive or forward strand */
-  val isMatePositiveStrand: Boolean
+case class MateProperties(isFirstInPair: Boolean,
+                          inferredInsertSize: Option[Int],
+                          isMateMapped: Boolean,
+                          mateReferenceContig: Option[String],
+                          mateStart: Option[Long],
+                          isMatePositiveStrand: Boolean) {
+  // If the mate is mapped check that we also know where it is mapped
+  assert(!isMateMapped || (mateReferenceContig.isDefined && mateStart.isDefined))
 }
 
 /**
@@ -93,18 +85,11 @@ case class UnmappedRead(
     sampleName: String,
     failedVendorQualityChecks: Boolean,
     isPositiveStrand: Boolean,
-    isPaired: Boolean,
-    isFirstInPair: Boolean,
-    inferredInsertSize: Option[Int],
-    isMateMapped: Boolean,
-    mateReferenceContig: Option[String],
-    mateStart: Option[Long],
-    isMatePositiveStrand: Boolean) extends Read with MateProperties {
+    matePropertiesOpt: Option[MateProperties]) extends Read {
 
   assert(baseQualities.length == sequence.length)
 
   final override val isMapped = false
-  override def getMappedRead(): MappedRead = throw new AssertionError("Not a mapped read.")
 }
 
 /**
@@ -125,27 +110,18 @@ case class MappedRead(
     alignmentQuality: Int,
     start: Long,
     cigar: Cigar,
-    mdTagString: Option[String],
+    mdTagStringOpt: Option[String],
     failedVendorQualityChecks: Boolean,
     isPositiveStrand: Boolean,
-    isPaired: Boolean,
-    isFirstInPair: Boolean,
-    inferredInsertSize: Option[Int],
-    isMateMapped: Boolean,
-    mateReferenceContig: Option[String],
-    mateStart: Option[Long],
-    isMatePositiveStrand: Boolean) extends Read with HasReferenceRegion with MateProperties {
+    matePropertiesOpt: Option[MateProperties]) extends Read with HasReferenceRegion {
 
   assert(baseQualities.length == sequence.length,
     "Base qualities have length %d but sequence has length %d".format(baseQualities.length, sequence.length))
 
-  // If the mate is map assert that know it's mapping
-  assert(!isMateMapped || (mateReferenceContig.isDefined && mateStart.isDefined))
-
   final override val isMapped = true
-  override def getMappedRead(): MappedRead = this
+  final override lazy val getMappedReadOpt = Some(this)
 
-  lazy val mdTag = mdTagString.map(MdTag(_, start))
+  lazy val mdTagOpt = mdTagStringOpt.map(MdTag(_, start))
 
   /** Individual components of the CIGAR string (e.g. "10M"), parsed, and as a Scala buffer. */
   val cigarElements = JavaConversions.asScalaBuffer(cigar.getCigarElements)
@@ -225,13 +201,7 @@ object Read extends Logging {
     mdTagString: String = "",
     failedVendorQualityChecks: Boolean = false,
     isPositiveStrand: Boolean = true,
-    isPaired: Boolean = false,
-    isFirstInPair: Boolean = false,
-    inferredInsertSize: Option[Int] = None,
-    isMateMapped: Boolean = false,
-    mateReferenceContig: Option[String] = None,
-    mateStart: Option[Long] = None,
-    isMatePositiveStrand: Boolean = false): Read = {
+    matePropertiesOpt: Option[MateProperties] = None): Read = {
 
     val sequenceArray = sequence.map(_.toByte).toArray
     val qualityScoresArray = {
@@ -250,13 +220,8 @@ object Read extends Logging {
         sampleName.intern,
         failedVendorQualityChecks,
         isPositiveStrand,
-        isPaired,
-        isFirstInPair,
-        inferredInsertSize,
-        isMateMapped,
-        mateReferenceContig,
-        mateStart,
-        isMatePositiveStrand)
+        matePropertiesOpt
+      )
     } else {
       val cigar = TextCigarCodec.getSingleton.decode(cigarString)
       MappedRead(
@@ -272,13 +237,8 @@ object Read extends Logging {
         Some(mdTagString),
         failedVendorQualityChecks,
         isPositiveStrand,
-        isPaired,
-        isFirstInPair,
-        inferredInsertSize,
-        isMateMapped,
-        mateReferenceContig,
-        mateStart,
-        isMatePositiveStrand)
+        matePropertiesOpt
+      )
     }
   }
 
@@ -303,7 +263,7 @@ object Read extends Logging {
     }).intern
 
     if (isMapped) {
-      val mdTagString = Option(record.getStringAttribute("MD"))
+      val mdTagStringOpt = Option(record.getStringAttribute("MD"))
       val result = MappedRead(
         token,
         record.getReadString.getBytes,
@@ -314,16 +274,24 @@ object Read extends Logging {
         record.getMappingQuality,
         record.getAlignmentStart - 1,
         cigar = record.getCigar,
-        mdTagString = mdTagString,
+        mdTagStringOpt = mdTagStringOpt,
         failedVendorQualityChecks = record.getReadFailsVendorQualityCheckFlag,
         isPositiveStrand = !record.getReadNegativeStrandFlag,
-        isPaired = record.getReadPairedFlag,
-        isFirstInPair = record.getFirstOfPairFlag,
-        inferredInsertSize = Some(record.getInferredInsertSize),
-        isMateMapped = !record.getMateUnmappedFlag,
-        mateReferenceContig = Some(record.getMateReferenceName),
-        mateStart = Some(record.getMateAlignmentStart),
-        isMatePositiveStrand = !record.getMateNegativeStrandFlag)
+        matePropertiesOpt =
+          if (record.getReadPairedFlag)
+            Some(
+            MateProperties(
+              isFirstInPair = record.getFirstOfPairFlag,
+              inferredInsertSize = Some(record.getInferredInsertSize),
+              isMateMapped = !record.getMateUnmappedFlag,
+              mateReferenceContig = Some(record.getMateReferenceName),
+              mateStart = Some(record.getMateAlignmentStart),
+              isMatePositiveStrand = !record.getMateNegativeStrandFlag
+            )
+          )
+          else
+            None
+      )
 
       // We subtract 1 from start, since samtools is 1-based and we're 0-based.
       if (result.unclippedStart != record.getUnclippedStart - 1)
@@ -339,13 +307,21 @@ object Read extends Logging {
         sampleName,
         record.getReadFailsVendorQualityCheckFlag,
         !record.getReadNegativeStrandFlag,
-        isPaired = record.getReadPairedFlag,
-        isFirstInPair = record.getFirstOfPairFlag,
-        inferredInsertSize = Some(record.getInferredInsertSize),
-        isMateMapped = !record.getMateUnmappedFlag,
-        mateReferenceContig = Some(record.getMateReferenceName),
-        mateStart = Some(record.getMateAlignmentStart),
-        isMatePositiveStrand = !record.getMateNegativeStrandFlag)
+        matePropertiesOpt =
+          if (record.getReadPairedFlag)
+            Some(
+            MateProperties(
+              isFirstInPair = record.getFirstOfPairFlag,
+              inferredInsertSize = Some(record.getInferredInsertSize),
+              isMateMapped = !record.getMateUnmappedFlag,
+              mateReferenceContig = Some(record.getMateReferenceName),
+              mateStart = Some(record.getMateAlignmentStart),
+              isMatePositiveStrand = !record.getMateNegativeStrandFlag
+            )
+          )
+          else
+            None
+      )
 
       result
     }
@@ -368,7 +344,7 @@ object Read extends Logging {
         val read = fromSAMRecord(item, token)
         if ((!filters.mapped || read.isMapped) &&
           (!filters.passedVendorQualityChecks || !read.failedVendorQualityChecks) &&
-          (!filters.hasMdTag || read.isMapped && read.getMappedRead.mdTagString.isDefined) &&
+          (!filters.hasMdTag || read.getMappedReadOpt.exists(_.mdTagStringOpt.isDefined)) &&
           (!filters.isPaired || read.isPaired))
           result += read
       }
@@ -401,171 +377,12 @@ object Read extends Logging {
     if (filters.mapped) reads = reads.filter(_.isMapped)
     if (filters.nonDuplicate) reads = reads.filter(!_.isDuplicate)
     if (filters.passedVendorQualityChecks) reads = reads.filter(!_.failedVendorQualityChecks)
-    if (filters.hasMdTag) reads = reads.filter(read => read.isMapped && read.getMappedRead.mdTagString.isDefined)
+    if (filters.hasMdTag) reads = reads.filter(_.getMappedReadOpt.exists(_.mdTagStringOpt.isDefined))
     (reads, sequenceDictionary)
   }
 
   /** Is the given samtools CigarElement a (hard/soft) clip? */
   def cigarElementIsClipped(element: CigarElement): Boolean = {
     element.getOperator == CigarOperator.SOFT_CLIP || element.getOperator == CigarOperator.HARD_CLIP
-  }
-}
-
-// Serialization: MappedRead
-class MappedReadSerializer extends Serializer[MappedRead] {
-  def write(kryo: Kryo, output: Output, obj: MappedRead) = {
-    output.writeInt(obj.token)
-    assert(obj.sequence.length == obj.baseQualities.length)
-    output.writeInt(obj.sequence.length, true)
-    output.writeBytes(obj.sequence)
-    output.writeBytes(obj.baseQualities)
-    output.writeBoolean(obj.isDuplicate)
-    output.writeString(obj.sampleName)
-    output.writeString(obj.referenceContig)
-    output.writeInt(obj.alignmentQuality, true)
-    output.writeLong(obj.start, true)
-    output.writeString(obj.cigar.toString)
-    obj.mdTagString match {
-      case None =>
-        output.writeBoolean(false)
-      case Some(tag) =>
-        output.writeBoolean(true)
-        output.writeString(tag)
-    }
-    output.writeBoolean(obj.failedVendorQualityChecks)
-    output.writeBoolean(obj.isPositiveStrand)
-    output.writeBoolean(obj.isPaired)
-    output.writeBoolean(obj.isFirstInPair)
-    obj.inferredInsertSize match {
-      case None =>
-        output.writeBoolean(false)
-      case Some(insertSize) =>
-        output.writeBoolean(true)
-        output.writeInt(insertSize)
-    }
-    if (obj.isMateMapped) {
-      output.writeBoolean(true)
-      output.writeString(obj.mateReferenceContig.get)
-      output.writeLong(obj.mateStart.get)
-    } else {
-      output.writeBoolean(false)
-    }
-    output.writeBoolean(obj.isMatePositiveStrand)
-  }
-
-  def read(kryo: Kryo, input: Input, klass: Class[MappedRead]): MappedRead = {
-    val token = input.readInt()
-    val count: Int = input.readInt(true)
-    val sequenceArray: Array[Byte] = input.readBytes(count)
-    val qualityScoresArray = input.readBytes(count)
-    val isDuplicate = input.readBoolean()
-    val sampleName = input.readString().intern()
-    val referenceContig = input.readString().intern()
-    val alignmentQuality = input.readInt(true)
-    val start = input.readLong(true)
-    val cigarString = input.readString()
-    val hasMdTag = input.readBoolean()
-    val mdTagString = if (hasMdTag) Some(input.readString()) else None
-    val failedVendorQualityChecks = input.readBoolean()
-    val isPositiveStrand = input.readBoolean()
-    val isPairedRead = input.readBoolean()
-    val isFirstInPair = input.readBoolean()
-    val hasInferredInsertSize = input.readBoolean()
-    val inferredInsertSize = if (hasInferredInsertSize) Some(input.readInt()) else None
-    val isMateMapped = input.readBoolean()
-    val mateReferenceContig = if (isMateMapped) Some(input.readString()) else None
-    val mateStart = if (isMateMapped) Some(input.readLong()) else None
-    val isMatePositiveStrand = input.readBoolean()
-
-    val cigar = TextCigarCodec.getSingleton.decode(cigarString)
-    MappedRead(
-      token,
-      sequenceArray,
-      qualityScoresArray,
-      isDuplicate,
-      sampleName.intern,
-      referenceContig,
-      alignmentQuality,
-      start,
-      cigar,
-      mdTagString,
-      failedVendorQualityChecks,
-      isPositiveStrand,
-      isPairedRead,
-      isFirstInPair,
-      inferredInsertSize,
-      isMateMapped,
-      mateReferenceContig,
-      mateStart,
-      isMatePositiveStrand)
-  }
-}
-
-// Serialization: UnmappedRead
-class UnmappedReadSerializer extends Serializer[UnmappedRead] {
-  def write(kryo: Kryo, output: Output, obj: UnmappedRead) = {
-    output.writeInt(obj.token)
-    assert(obj.sequence.length == obj.baseQualities.length)
-    output.writeInt(obj.sequence.length, true)
-    output.writeBytes(obj.sequence)
-    output.writeBytes(obj.baseQualities)
-    output.writeBoolean(obj.isDuplicate)
-    output.writeString(obj.sampleName)
-    output.writeBoolean(obj.failedVendorQualityChecks)
-    output.writeBoolean(obj.isPositiveStrand)
-    output.writeBoolean(obj.isPaired)
-    output.writeBoolean(obj.isFirstInPair)
-    obj.inferredInsertSize match {
-      case None =>
-        output.writeBoolean(false)
-      case Some(insertSize) =>
-        output.writeBoolean(true)
-        output.writeInt(insertSize)
-
-    }
-    if (obj.isMateMapped) {
-      output.writeBoolean(true)
-      output.writeString(obj.mateReferenceContig.get)
-      output.writeLong(obj.mateStart.get)
-    } else {
-      output.writeBoolean(false)
-    }
-    output.writeBoolean(obj.isMatePositiveStrand)
-
-  }
-
-  def read(kryo: Kryo, input: Input, klass: Class[UnmappedRead]): UnmappedRead = {
-    val token = input.readInt()
-    val count: Int = input.readInt(true)
-    val sequenceArray: Array[Byte] = input.readBytes(count)
-    val qualityScoresArray = input.readBytes(count)
-    val isDuplicate = input.readBoolean()
-    val sampleName = input.readString().intern()
-    val failedVendorQualityChecks = input.readBoolean()
-    val isPositiveStrand = input.readBoolean()
-    val isPairedRead = input.readBoolean()
-    val isFirstInPair = input.readBoolean()
-    val hasInferredInsertSize = input.readBoolean()
-    val inferredInsertSize = if (hasInferredInsertSize) Some(input.readInt()) else None
-    val isMateMapped = input.readBoolean()
-    val mateReferenceContig = if (isMateMapped) Some(input.readString()) else None
-    val mateStart = if (isMateMapped) Some(input.readLong()) else None
-    val isMatePositiveStrand = input.readBoolean()
-
-    UnmappedRead(
-      token,
-      sequenceArray,
-      qualityScoresArray,
-      isDuplicate,
-      sampleName.intern,
-      failedVendorQualityChecks,
-      isPositiveStrand,
-      isPairedRead,
-      isFirstInPair,
-      inferredInsertSize,
-      isMateMapped,
-      mateReferenceContig,
-      mateStart,
-      isMatePositiveStrand)
   }
 }
