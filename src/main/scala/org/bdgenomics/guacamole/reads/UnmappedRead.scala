@@ -15,7 +15,5 @@ case class UnmappedRead(
     matePropertiesOpt: Option[MateProperties]) extends Read {
 
   assert(baseQualities.length == sequence.length)
-
-  final override val isMapped = false
 }
 

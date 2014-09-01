@@ -39,7 +39,7 @@ trait Read {
   val isDuplicate: Boolean
 
   /** Is this read mapped? */
-  val isMapped: Boolean
+  final val isMapped: Boolean = getMappedReadOpt.isDefined
 
   /** The sample (e.g. "tumor" or "patient3636") name. */
   val sampleName: String
