@@ -70,7 +70,8 @@ object ReadSet {
       filename,
       sc,
       token = token,
-      filters = filters)
+      filters = filters
+    )
     new ReadSet(reads, Some(sequenceDictionary), filename, filters, token, contigLengthsFromDictionary)
   }
 }
