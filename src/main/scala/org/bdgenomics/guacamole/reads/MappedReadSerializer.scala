@@ -19,13 +19,13 @@ class MappedReadSerializer extends Serializer[MappedRead] with CanSerializeMateP
     output.writeInt(obj.alignmentQuality, true)
     output.writeLong(obj.start, true)
     output.writeString(obj.cigar.toString)
-    obj.mdTagStringOpt match {
-      case None =>
-        output.writeBoolean(false)
-      case Some(tag) =>
-        output.writeBoolean(true)
-        output.writeString(tag)
-    }
+
+    // NOTE(ryan): writing a boolean here to remain backwards-compatible with reads that had mdTagString as an
+    // Option[String], and used this boolean to indicate presence or absence of an MDTag.
+    // TODO(ryan): remove this.
+    output.writeBoolean(true)
+    output.writeString(obj.mdTagString)
+
     output.writeBoolean(obj.failedVendorQualityChecks)
     output.writeBoolean(obj.isPositiveStrand)
 
@@ -44,7 +44,7 @@ class MappedReadSerializer extends Serializer[MappedRead] with CanSerializeMateP
     val start = input.readLong(true)
     val cigarString = input.readString()
     val hasMdTag = input.readBoolean()
-    val mdTagStringOpt = if (hasMdTag) Some(input.readString()) else None
+    val mdTagString = input.readString()
     val failedVendorQualityChecks = input.readBoolean()
     val isPositiveStrand = input.readBoolean()
 
@@ -61,7 +61,7 @@ class MappedReadSerializer extends Serializer[MappedRead] with CanSerializeMateP
       alignmentQuality,
       start,
       cigar,
-      mdTagStringOpt,
+      mdTagString,
       failedVendorQualityChecks,
       isPositiveStrand,
       matePropertiesOpt
