@@ -1,22 +1,22 @@
 package org.bdgenomics.guacamole.callers
 
-import org.bdgenomics.guacamole._
 import org.apache.spark.Logging
-import org.bdgenomics.adam.cli.Args4j
-import org.bdgenomics.guacamole.pileup.{ PileupElement, Pileup }
-import org.bdgenomics.formats.avro.{ ADAMVariant, ADAMContig, ADAMGenotypeAllele, ADAMGenotype }
-import org.bdgenomics.guacamole.reads.Read
-import scala.collection.JavaConversions
 import org.apache.spark.rdd.RDD
-import org.kohsuke.args4j.Option
-import org.bdgenomics.guacamole.Common.Arguments._
+import org.bdgenomics.adam.cli.Args4j
 import org.bdgenomics.adam.util.PhredUtils
-import scala.Some
+import org.bdgenomics.formats.avro.{ Contig, Genotype, GenotypeAllele, Variant }
+import org.bdgenomics.guacamole.Common.Arguments._
+import org.bdgenomics.guacamole._
 import org.bdgenomics.guacamole.concordance.GenotypesEvaluator
 import org.bdgenomics.guacamole.concordance.GenotypesEvaluator.GenotypeConcordance
 import org.bdgenomics.guacamole.filters.GenotypeFilter.GenotypeFilterArguments
 import org.bdgenomics.guacamole.filters.PileupFilter.PileupFilterArguments
-import org.bdgenomics.guacamole.filters.{ QualityAlignedReadsFilter, GenotypeFilter }
+import org.bdgenomics.guacamole.filters.{ GenotypeFilter, QualityAlignedReadsFilter }
+import org.bdgenomics.guacamole.pileup.{ Pileup, PileupElement }
+import org.bdgenomics.guacamole.reads.Read
+import org.kohsuke.args4j.Option
+
+import scala.collection.JavaConversions
 
 /**
  * A Genotype is a sequence of alleles of length equal to the ploidy of the organism.
@@ -28,7 +28,7 @@ import org.bdgenomics.guacamole.filters.{ QualityAlignedReadsFilter, GenotypeFil
  * Alleles can also be multiple bases as well, e.g. Seq("AAA", "T")
  *
  */
-case class Genotype(alleles: String*) {
+case class GenotypeAlleles(alleles: String*) {
 
   /**
    * The ploidy of the organism is the number of alleles in the genotype.
@@ -68,17 +68,17 @@ case class Genotype(alleles: String*) {
    * @param referenceAllele Reference allele to compare against
    * @return Sequence of GenotypeAlleles which are Ref, Alt or OtherAlt.
    */
-  def getGenotypeAlleles(referenceAllele: String): Seq[ADAMGenotypeAllele] = {
+  def getGenotypeAlleles(referenceAllele: String): Seq[GenotypeAllele] = {
     assume(ploidy == 2)
     val numVariants = numberOfVariants(referenceAllele)
     if (numVariants == 0) {
-      Seq(ADAMGenotypeAllele.Ref, ADAMGenotypeAllele.Ref)
+      Seq(GenotypeAllele.Ref, GenotypeAllele.Ref)
     } else if (numVariants > 0 && uniqueAllelesCount == 1) {
-      Seq(ADAMGenotypeAllele.Alt, ADAMGenotypeAllele.Alt)
+      Seq(GenotypeAllele.Alt, GenotypeAllele.Alt)
     } else if (numVariants >= 2 && uniqueAllelesCount > 1) {
-      Seq(ADAMGenotypeAllele.Alt, ADAMGenotypeAllele.OtherAlt)
+      Seq(GenotypeAllele.Alt, GenotypeAllele.OtherAlt)
     } else {
-      Seq(ADAMGenotypeAllele.Ref, ADAMGenotypeAllele.Alt)
+      Seq(GenotypeAllele.Ref, GenotypeAllele.Alt)
     }
   }
 
@@ -115,7 +115,7 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
 
     val minAlignmentQuality = args.minAlignmentQuality
 
-    val genotypes: RDD[ADAMGenotype] = DistributedUtil.pileupFlatMap[ADAMGenotype](
+    val genotypes: RDD[Genotype] = DistributedUtil.pileupFlatMap[Genotype](
       readSet.mappedReads,
       lociPartitions,
       skipEmpty = true, // skip empty pileups
@@ -142,7 +142,7 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
   def callVariantsAtLocus(
     pileup: Pileup,
     minAlignmentQuality: Int = 0,
-    emitRef: Boolean = false): Seq[ADAMGenotype] = {
+    emitRef: Boolean = false): Seq[Genotype] = {
 
     // For now, we skip loci that have no reads mapped. We may instead want to emit NoCall in this case.
     if (pileup.elements.isEmpty)
@@ -154,17 +154,17 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
         val genotypeLikelihoods = computeLogLikelihoods(Pileup(samplePileup.locus, filteredPileupElements))
         val mostLikelyGenotype = genotypeLikelihoods.maxBy(_._2)
 
-        def buildVariants(genotype: Genotype, probability: Double): Seq[ADAMGenotype] = {
+        def buildVariants(genotype: GenotypeAlleles, probability: Double): Seq[Genotype] = {
           val genotypeAlleles = JavaConversions.seqAsJavaList(genotype.getGenotypeAlleles(Bases.baseToString(pileup.referenceBase)))
           genotype.getNonReferenceAlleles(Bases.baseToString(pileup.referenceBase)).map(
             variantAllele => {
-              val variant = ADAMVariant.newBuilder
-                .setPosition(pileup.locus)
+              val variant = Variant.newBuilder
+                .setStart(pileup.locus)
                 .setReferenceAllele(Bases.baseToString(pileup.referenceBase))
-                .setVariantAllele(variantAllele)
-                .setContig(ADAMContig.newBuilder.setContigName(pileup.referenceName).build)
+                .setAlternateAllele(variantAllele)
+                .setContig(Contig.newBuilder.setContigName(pileup.referenceName).build)
                 .build
-              ADAMGenotype.newBuilder
+              Genotype.newBuilder
                 .setAlleles(genotypeAlleles)
                 .setSampleId(sampleName.toCharArray)
                 .setVariant(variant)
@@ -181,14 +181,14 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
    *
    * @return Sequence of possible genotypes
    */
-  def getPossibleGenotypes(pileup: Pileup): Seq[Genotype] = {
+  def getPossibleGenotypes(pileup: Pileup): Seq[GenotypeAlleles] = {
     // We prefer to work with Strings than with Array[Byte] for nucleotide sequences, so we convert to Strings as we
     // extract sequences from the Pileup. If this turns into a production variant caller, we may want to use the more
     // efficient Array[Byte] type everywhere.
     val possibleAlleles = pileup.elements.map(e => Bases.basesToString(e.sequencedBases)).distinct.sorted
     val possibleGenotypes =
       for (i <- 0 until possibleAlleles.size; j <- i until possibleAlleles.size)
-        yield Genotype(possibleAlleles(i), possibleAlleles(j))
+        yield GenotypeAlleles(possibleAlleles(i), possibleAlleles(j))
     possibleGenotypes
   }
 
@@ -198,9 +198,9 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
    * @return Sequence of (Genotype, Likelihood)
    */
   def computeLikelihoods(pileup: Pileup,
-                         prior: Genotype => Double = computeUniformGenotypePrior,
+                         prior: GenotypeAlleles => Double = computeUniformGenotypePrior,
                          includeAlignmentLikelihood: Boolean = true,
-                         normalize: Boolean = false): Seq[(Genotype, Double)] = {
+                         normalize: Boolean = false): Seq[(GenotypeAlleles, Double)] = {
     val possibleGenotypes = getPossibleGenotypes(pileup)
     val genotypeLikelihoods = possibleGenotypes.map(g =>
       (g, prior(g) * computeGenotypeLikelihoods(pileup, g, possibleGenotypes.size - 1, includeAlignmentLikelihood)))
@@ -218,8 +218,8 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
    * @return Sequence of (Genotype, LogLikelihood)
    */
   def computeLogLikelihoods(pileup: Pileup,
-                            prior: Genotype => Double = computeUniformGenotypeLogPrior,
-                            includeAlignmentLikelihood: Boolean = false): Seq[(Genotype, Double)] = {
+                            prior: GenotypeAlleles => Double = computeUniformGenotypeLogPrior,
+                            includeAlignmentLikelihood: Boolean = false): Seq[(GenotypeAlleles, Double)] = {
     val possibleGenotypes = getPossibleGenotypes(pileup)
     possibleGenotypes.map(g =>
       (g, prior(g) + computeGenotypeLogLikelihoods(pileup, g, possibleGenotypes.size - 1, includeAlignmentLikelihood)))
@@ -238,7 +238,7 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
    *  @return likelihood for genotype based on P( bases in pileup | genotype )
    */
   protected def computeGenotypeLikelihoods(pileup: Pileup,
-                                           genotype: Genotype,
+                                           genotype: GenotypeAlleles,
                                            numAlternateAlleles: Int,
                                            includeAlignmentLikelihood: Boolean = false): Double = {
 
@@ -254,7 +254,7 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
    *  @return log likelihood for genotype based P( bases in pileup | genotype )
    */
   protected def computeGenotypeLogLikelihoods(pileup: Pileup,
-                                              genotype: Genotype,
+                                              genotype: GenotypeAlleles,
                                               numAlternateAlleles: Int,
                                               includeAlignmentLikelihood: Boolean = false): Double = {
 
@@ -281,7 +281,7 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
    * @return likelihood for genotype based on P( bases in pileup element | genotype )
    */
   private def computeBaseGenotypeLikelihood(element: PileupElement,
-                                            genotype: Genotype,
+                                            genotype: GenotypeAlleles,
                                             includeAlignmentLikelihood: Boolean = false): Double = {
     def computeBaseLikelihood(element: PileupElement, referenceAllele: String): Double = {
       val baseCallProbability = PhredUtils.phredToErrorProbability(element.qualityScore)
@@ -301,19 +301,19 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
    *
    * @return 0.0 (default uniform prior)
    */
-  protected def computeUniformGenotypeLogPrior(genotype: Genotype): Double = 0.0
+  protected def computeUniformGenotypeLogPrior(genotype: GenotypeAlleles): Double = 0.0
 
   /**
    * Compute prior probability for given genotype
    *
    * @return 1.0 (default uniform prior)
    */
-  protected def computeUniformGenotypePrior(genotype: Genotype): Double = 1.0
+  protected def computeUniformGenotypePrior(genotype: GenotypeAlleles): Double = 1.0
 
   /*
    * Helper function to normalize probabilities
    */
-  def normalizeLikelihoods(likelihoods: Seq[(Genotype, Double)]): Seq[(Genotype, Double)] = {
+  def normalizeLikelihoods(likelihoods: Seq[(GenotypeAlleles, Double)]): Seq[(GenotypeAlleles, Double)] = {
     val totalLikelihood = likelihoods.map(_._2).sum
     likelihoods.map(genotypeLikelihood => (genotypeLikelihood._1, genotypeLikelihood._2 / totalLikelihood))
   }
