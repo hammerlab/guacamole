@@ -1,6 +1,6 @@
 package org.bdgenomics.guacamole.reads
 
-import org.bdgenomics.guacamole.{Bases, TestUtil}
+import org.bdgenomics.guacamole.{ Bases, TestUtil }
 import org.scalatest.Matchers
 
 class UnmappedReadSerializerSuite extends TestUtil.SparkFunSuite with Matchers {
