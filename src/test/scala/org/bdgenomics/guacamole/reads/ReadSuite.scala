@@ -16,10 +16,10 @@
  * limitations under the License.
  */
 
-package org.bdgenomics.guacamole
+package org.bdgenomics.guacamole.reads
 
 import net.sf.samtools.TextCigarCodec
-import org.bdgenomics.guacamole.reads.{ MateProperties, MappedRead, UnmappedRead, Read }
+import org.bdgenomics.guacamole.{Bases, TestUtil}
 import org.scalatest.Matchers
 
 class ReadSuite extends TestUtil.SparkFunSuite with Matchers {
