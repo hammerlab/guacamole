@@ -161,6 +161,22 @@ object Read extends Logging {
       "default"
     }).intern
 
+    val matePropertiesOpt =
+      if (record.getReadPairedFlag) {
+        Some(
+          MateProperties(
+            isFirstInPair = record.getFirstOfPairFlag,
+            inferredInsertSize = Some(record.getInferredInsertSize),
+            isMateMapped = !record.getMateUnmappedFlag,
+            mateReferenceContig = Some(record.getMateReferenceName),
+            mateStart = Some(record.getMateAlignmentStart),
+            isMatePositiveStrand = !record.getMateNegativeStrandFlag
+          )
+        )
+      } else {
+        None
+      }
+
     if (isMapped) {
       val mdTagStringOpt = Option(record.getStringAttribute("MD"))
       val result = MappedRead(
@@ -176,20 +192,7 @@ object Read extends Logging {
         mdTagStringOpt = mdTagStringOpt,
         failedVendorQualityChecks = record.getReadFailsVendorQualityCheckFlag,
         isPositiveStrand = !record.getReadNegativeStrandFlag,
-        matePropertiesOpt =
-          if (record.getReadPairedFlag)
-            Some(
-            MateProperties(
-              isFirstInPair = record.getFirstOfPairFlag,
-              inferredInsertSize = Some(record.getInferredInsertSize),
-              isMateMapped = !record.getMateUnmappedFlag,
-              mateReferenceContig = Some(record.getMateReferenceName),
-              mateStart = Some(record.getMateAlignmentStart),
-              isMatePositiveStrand = !record.getMateNegativeStrandFlag
-            )
-          )
-          else
-            None
+        matePropertiesOpt = matePropertiesOpt
       )
 
       // We subtract 1 from start, since samtools is 1-based and we're 0-based.
@@ -206,20 +209,7 @@ object Read extends Logging {
         sampleName,
         record.getReadFailsVendorQualityCheckFlag,
         !record.getReadNegativeStrandFlag,
-        matePropertiesOpt =
-          if (record.getReadPairedFlag)
-            Some(
-            MateProperties(
-              isFirstInPair = record.getFirstOfPairFlag,
-              inferredInsertSize = Some(record.getInferredInsertSize),
-              isMateMapped = !record.getMateUnmappedFlag,
-              mateReferenceContig = Some(record.getMateReferenceName),
-              mateStart = Some(record.getMateAlignmentStart),
-              isMatePositiveStrand = !record.getMateNegativeStrandFlag
-            )
-          )
-          else
-            None
+        matePropertiesOpt = matePropertiesOpt
       )
 
       result
