@@ -1,6 +1,6 @@
 package org.bdgenomics.guacamole.reads
 
-import net.sf.samtools.Cigar
+import net.sf.samtools.{ SAMRecord, Cigar }
 import org.bdgenomics.adam.util.MdTag
 import org.bdgenomics.guacamole.{ LociSet, HasReferenceRegion }
 
@@ -24,7 +24,7 @@ case class MappedRead(
     alignmentQuality: Int,
     start: Long,
     cigar: Cigar,
-    mdTagStringOpt: Option[String],
+    mdTagString: String,
     failedVendorQualityChecks: Boolean,
     isPositiveStrand: Boolean,
     matePropertiesOpt: Option[MateProperties]) extends Read with HasReferenceRegion {
@@ -34,7 +34,7 @@ case class MappedRead(
 
   final override lazy val getMappedReadOpt = Some(this)
 
-  lazy val mdTagOpt = mdTagStringOpt.map(MdTag(_, start))
+  lazy val mdTag = MdTag(mdTagString, start)
 
   /** Individual components of the CIGAR string (e.g. "10M"), parsed, and as a Scala buffer. */
   val cigarElements = JavaConversions.asScalaBuffer(cigar.getCigarElements)
@@ -75,3 +75,5 @@ case class MappedRead(
   }
 }
 
+case class MissingMDTagException(record: SAMRecord)
+  extends Exception("Missing MDTag in SAMRecord: %s".format(record.toString))

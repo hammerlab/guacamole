@@ -26,7 +26,7 @@ class ReadSetSuite extends TestUtil.SparkFunSuite with Matchers {
       deserialized.alignmentQuality should equal(read.alignmentQuality)
       deserialized.start should equal(read.start)
       deserialized.cigar should equal(read.cigar)
-      deserialized.mdTagStringOpt should equal(read.mdTagStringOpt)
+      deserialized.mdTagString should equal(read.mdTagString)
       deserialized.failedVendorQualityChecks should equal(read.failedVendorQualityChecks)
       deserialized.isPositiveStrand should equal(read.isPositiveStrand)
       deserialized.matePropertiesOpt should equal(read.matePropertiesOpt)

@@ -17,7 +17,7 @@ class MappedReadSerializerSuite extends TestUtil.SparkFunSuite with Matchers {
       50,
       325352323,
       TextCigarCodec.getSingleton.decode(""),
-      None, // mdtag
+      mdTagString = "11",
       false,
       isPositiveStrand = true,
       matePropertiesOpt = Some(
@@ -50,7 +50,7 @@ class MappedReadSerializerSuite extends TestUtil.SparkFunSuite with Matchers {
     deserialized.alignmentQuality should equal(read.alignmentQuality)
     deserialized.start should equal(read.start)
     deserialized.cigar should equal(read.cigar)
-    deserialized.mdTagOpt should equal(read.mdTagOpt)
+    deserialized.mdTag should equal(read.mdTag)
     deserialized.failedVendorQualityChecks should equal(read.failedVendorQualityChecks)
     deserialized.isPositiveStrand should equal(read.isPositiveStrand)
     deserialized.matePropertiesOpt should equal(read.matePropertiesOpt)
@@ -67,7 +67,7 @@ class MappedReadSerializerSuite extends TestUtil.SparkFunSuite with Matchers {
       50,
       325352323,
       TextCigarCodec.getSingleton.decode(""),
-      Some("6"), // mdtag
+      mdTagString = "11",
       false,
       isPositiveStrand = true,
       matePropertiesOpt = Some(
@@ -100,7 +100,7 @@ class MappedReadSerializerSuite extends TestUtil.SparkFunSuite with Matchers {
     deserialized.alignmentQuality should equal(read.alignmentQuality)
     deserialized.start should equal(read.start)
     deserialized.cigar should equal(read.cigar)
-    deserialized.mdTagOpt should equal(read.mdTagOpt)
+    deserialized.mdTag should equal(read.mdTag)
     deserialized.failedVendorQualityChecks should equal(read.failedVendorQualityChecks)
     deserialized.isPositiveStrand should equal(read.isPositiveStrand)
     deserialized.matePropertiesOpt should equal(read.matePropertiesOpt)
@@ -117,7 +117,7 @@ class MappedReadSerializerSuite extends TestUtil.SparkFunSuite with Matchers {
       50,
       325352323,
       TextCigarCodec.getSingleton.decode(""),
-      None, // mdtag
+      mdTagString = "11",
       false,
       isPositiveStrand = true,
       matePropertiesOpt = Some(
@@ -150,7 +150,7 @@ class MappedReadSerializerSuite extends TestUtil.SparkFunSuite with Matchers {
     deserialized.alignmentQuality should equal(read.alignmentQuality)
     deserialized.start should equal(read.start)
     deserialized.cigar should equal(read.cigar)
-    deserialized.mdTagOpt should equal(read.mdTagOpt)
+    deserialized.mdTag should equal(read.mdTag)
     deserialized.failedVendorQualityChecks should equal(read.failedVendorQualityChecks)
     deserialized.isPositiveStrand should equal(read.isPositiveStrand)
     deserialized.matePropertiesOpt should equal(read.matePropertiesOpt)
