@@ -14,7 +14,7 @@ import org.bdgenomics.adam.util.PhredUtils
 import org.bdgenomics.guacamole.filters.GenotypeFilter.GenotypeFilterArguments
 import org.bdgenomics.guacamole.filters.PileupFilter.PileupFilterArguments
 import org.bdgenomics.guacamole.filters.{ PileupFilter, GenotypeFilter }
-import org.bdgenomics.formats.avro.{ ADAMGenotypeAllele, ADAMVariant, ADAMContig, ADAMGenotype }
+import org.bdgenomics.formats.avro.{ GenotypeAllele, Variant, Contig, Genotype }
 
 /**
  * Simple subtraction based somatic variant caller
@@ -85,7 +85,7 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
     val loci = Common.loci(args, normalReads)
     val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(args, loci, tumorReads.mappedReads, normalReads.mappedReads)
 
-    val genotypes: RDD[ADAMGenotype] = DistributedUtil.pileupFlatMapTwoRDDs[ADAMGenotype](
+    val genotypes: RDD[Genotype] = DistributedUtil.pileupFlatMapTwoRDDs[Genotype](
       tumorReads.mappedReads,
       normalReads.mappedReads,
       lociPartitions,
@@ -123,7 +123,7 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
                                  maxMappingComplexity: Int = 100,
                                  minAlignmentForComplexity: Int = 1,
                                  minAlignmentQuality: Int = 1,
-                                 filterMultiAllelic: Boolean = false): Seq[ADAMGenotype] = {
+                                 filterMultiAllelic: Boolean = false): Seq[Genotype] = {
 
     val filteredNormalPileup = PileupFilter(normalPileup,
       filterMultiAllelic,
@@ -195,7 +195,7 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
    */
   def callVariantInTumor(referenceBase: String,
                          tumorPileup: Pileup): (Option[String], Double) = {
-    def normalPrior(gt: Genotype, hetVariantPrior: Double = 1e-4): Double = {
+    def normalPrior(gt: GenotypeAlleles, hetVariantPrior: Double = 1e-4): Double = {
       val numberVariants = gt.numberOfVariants(referenceBase)
       if (numberVariants > 0) math.pow(hetVariantPrior / gt.uniqueAllelesCount, numberVariants) else 1
     }
@@ -240,15 +240,15 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
                     readDepth: Int,
                     alternateReadDepth: Int,
                     alternateForwardDepth: Int,
-                    delta: Double = 1e-10): Seq[ADAMGenotype] = {
-    val genotypeAlleles = JavaConversions.seqAsJavaList(Seq(ADAMGenotypeAllele.Ref, ADAMGenotypeAllele.Alt))
-    val variant = ADAMVariant.newBuilder
-      .setPosition(locus)
+                    delta: Double = 1e-10): Seq[Genotype] = {
+    val genotypeAlleles = JavaConversions.seqAsJavaList(Seq(GenotypeAllele.Ref, GenotypeAllele.Alt))
+    val variant = Variant.newBuilder
+      .setStart(locus)
       .setReferenceAllele(referenceBase)
-      .setVariantAllele(alternateBase)
-      .setContig(ADAMContig.newBuilder.setContigName(referenceName).build)
+      .setAlternateAllele(alternateBase)
+      .setContig(Contig.newBuilder.setContigName(referenceName).build)
       .build
-    Seq(ADAMGenotype.newBuilder
+    Seq(Genotype.newBuilder
       .setAlleles(genotypeAlleles)
       .setGenotypeQuality(PhredUtils.successProbabilityToPhred(probability - delta))
       .setReadDepth(readDepth)

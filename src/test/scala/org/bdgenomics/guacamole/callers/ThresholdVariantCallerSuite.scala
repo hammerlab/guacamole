@@ -2,7 +2,7 @@ package org.bdgenomics.guacamole.callers
 
 import org.scalatest.{ Matchers, FunSuite }
 import org.bdgenomics.guacamole.{ TestUtil }
-import org.bdgenomics.formats.avro.ADAMGenotypeAllele
+import org.bdgenomics.formats.avro.GenotypeAllele
 import scala.collection.JavaConversions._
 import org.bdgenomics.guacamole.pileup.Pileup
 
@@ -15,7 +15,7 @@ class ThresholdVariantCallerSuite extends FunSuite with Matchers {
       TestUtil.makeRead("TCGATCGA", "8M", "8", 1))
     val pileup = Pileup(reads, 1)
     val genotypes = ThresholdVariantCaller.callVariantsAtLocus(pileup, 0)
-    genotypes.foreach(gt => assert(gt.getAlleles.toList === List(ADAMGenotypeAllele.Ref, ADAMGenotypeAllele.Ref)))
+    genotypes.foreach(gt => assert(gt.getAlleles.toList === List(GenotypeAllele.Ref, GenotypeAllele.Ref)))
   }
 
   test("het variant, threshold 0") {
@@ -25,7 +25,7 @@ class ThresholdVariantCallerSuite extends FunSuite with Matchers {
       TestUtil.makeRead("GCGATCGA", "8M", "0T7", 1))
     val pileup = Pileup(reads, 1)
     val genotypes = ThresholdVariantCaller.callVariantsAtLocus(pileup, 0)
-    genotypes.foreach(gt => assert(gt.getAlleles.toList === List(ADAMGenotypeAllele.Ref, ADAMGenotypeAllele.Alt)))
+    genotypes.foreach(gt => assert(gt.getAlleles.toList === List(GenotypeAllele.Ref, GenotypeAllele.Alt)))
 
   }
 
@@ -36,7 +36,7 @@ class ThresholdVariantCallerSuite extends FunSuite with Matchers {
       TestUtil.makeRead("GCGATCGA", "8M", "0T7", 1))
     val pileup = Pileup(reads, 1)
     val genotypes = ThresholdVariantCaller.callVariantsAtLocus(pileup, 30)
-    genotypes.foreach(gt => assert(gt.getAlleles.toList === List(ADAMGenotypeAllele.Ref, ADAMGenotypeAllele.Alt)))
+    genotypes.foreach(gt => assert(gt.getAlleles.toList === List(GenotypeAllele.Ref, GenotypeAllele.Alt)))
 
   }
 
@@ -47,7 +47,7 @@ class ThresholdVariantCallerSuite extends FunSuite with Matchers {
       TestUtil.makeRead("GCGATCGA", "8M", "0T7", 1))
     val pileup = Pileup(reads, 1)
     val genotypes = ThresholdVariantCaller.callVariantsAtLocus(pileup, 50)
-    genotypes.foreach(gt => assert(gt.getAlleles.toList === List(ADAMGenotypeAllele.Ref, ADAMGenotypeAllele.Ref)))
+    genotypes.foreach(gt => assert(gt.getAlleles.toList === List(GenotypeAllele.Ref, GenotypeAllele.Ref)))
   }
 
   test("homozygous alt variant, threshold 50") {
@@ -57,12 +57,12 @@ class ThresholdVariantCallerSuite extends FunSuite with Matchers {
       TestUtil.makeRead("GCGATCGA", "8M", "0T7", 1))
     val pileup = Pileup(reads, 1)
     val genotypes = ThresholdVariantCaller.callVariantsAtLocus(pileup, 50, emitRef = false)
-    genotypes.foreach(gt => assert(gt.getAlleles.toList === List(ADAMGenotypeAllele.Alt, ADAMGenotypeAllele.Alt)))
+    genotypes.foreach(gt => assert(gt.getAlleles.toList === List(GenotypeAllele.Alt, GenotypeAllele.Alt)))
 
     genotypes.length should be(1)
-    genotypes.head.variant.position should be(1)
+    genotypes.head.variant.start should be(1)
     genotypes.head.variant.referenceAllele.toString should be("T")
-    genotypes.head.variant.variantAllele.toString should be("G")
+    genotypes.head.variant.alternateAllele.toString should be("G")
   }
 
   test("homozygous alt variant, threshold 50; no reference bases observed") {
@@ -74,10 +74,10 @@ class ThresholdVariantCallerSuite extends FunSuite with Matchers {
     val genotypes = ThresholdVariantCaller.callVariantsAtLocus(pileup, 50, emitRef = false)
 
     genotypes.length should be(1)
-    genotypes.head.variant.position should be(2)
+    genotypes.head.variant.start should be(2)
     genotypes.head.variant.referenceAllele.toString should be("C")
-    genotypes.head.variant.variantAllele.toString should be("G")
+    genotypes.head.variant.alternateAllele.toString should be("G")
 
-    genotypes.foreach(gt => assert(gt.getAlleles.toList === List(ADAMGenotypeAllele.Alt, ADAMGenotypeAllele.Alt)))
+    genotypes.foreach(gt => assert(gt.getAlleles.toList === List(GenotypeAllele.Alt, GenotypeAllele.Alt)))
   }
 }

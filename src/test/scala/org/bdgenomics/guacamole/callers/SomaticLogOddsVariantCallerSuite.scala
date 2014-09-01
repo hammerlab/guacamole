@@ -23,6 +23,7 @@ class SomaticLogOddsVariantCallerSuite extends SparkFunSuite with Matchers with 
   val minLikelihood = 30
   val minAlignmentQuality = 1
   val minReadDepth = 8
+  val maxReadDepth = 200
   val minAlternateReadDepth = 3
   val maxNormalAlternateReadDepth = 5
   val maxMappingComplexity = 20
@@ -52,7 +53,7 @@ class SomaticLogOddsVariantCallerSuite extends SparkFunSuite with Matchers with 
           minAlignmentForComplexity,
           minAlignmentQuality,
           filterMultiAllelic)
-        val hasVariant = GenotypeFilter(calledGenotypes, minReadDepth, minAlternateReadDepth, minLikelihood).size > 0
+        val hasVariant = GenotypeFilter(calledGenotypes, minReadDepth, minAlternateReadDepth, minLikelihood, maxReadDepth).size > 0
         hasVariant should be(isTrue)
     }
   }
