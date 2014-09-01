@@ -149,6 +149,10 @@ object Read extends Logging {
    */
   def fromSAMRecord(record: SAMRecord, token: Int): Read = {
     val isMapped = (
+      // NOTE(ryan): this flag should maybe be the main determinant of the mapped-ness of this SAM record. SAM spec
+      // (http://samtools.github.io/hts-specs/SAMv1.pdf) says: "Bit 0x4 is the only reliable place to tell whether the
+      // read is unmapped."
+      !record.getReadUnmappedFlag &&
       record.getMappingQuality != SAMRecord.UNKNOWN_MAPPING_QUALITY &&
       record.getReferenceName != null &&
       record.getReferenceIndex >= SAMRecord.NO_ALIGNMENT_REFERENCE_INDEX &&
