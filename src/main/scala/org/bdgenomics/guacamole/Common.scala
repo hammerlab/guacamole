@@ -21,7 +21,7 @@ package org.bdgenomics.guacamole
 import org.bdgenomics.adam.cli.{ SparkArgs, ParquetArgs, Args4jBase }
 import org.bdgenomics.guacamole.reads.Read
 import org.kohsuke.args4j.{ Option => Opt }
-import org.bdgenomics.formats.avro.ADAMGenotype
+import org.bdgenomics.formats.avro.Genotype
 import org.apache.spark.rdd.RDD
 import org.apache.spark.{ SparkConf, Logging, SparkContext }
 import org.bdgenomics.adam.rdd.ADAMContext._
@@ -111,7 +111,7 @@ object Common extends Logging {
    * @param sc spark context
    * @return RDD of ADAM Genotypes
    */
-  def loadGenotypes(path: String, sc: SparkContext): RDD[ADAMGenotype] = {
+  def loadGenotypes(path: String, sc: SparkContext): RDD[Genotype] = {
     if (path.endsWith(".vcf")) {
       sc.adamVCFLoad(path).flatMap(_.genotypes)
     } else {
@@ -186,11 +186,11 @@ object Common extends Logging {
   }
 
   /**
-   * Write out an RDD of ADAMGenotype instances to a file.
+   * Write out an RDD of Genotype instances to a file.
    * @param args parsed arguments
    * @param genotypes ADAM genotypes (i.e. the variants)
    */
-  def writeVariantsFromArguments(args: Arguments.Output, genotypes: RDD[ADAMGenotype]): Unit = {
+  def writeVariantsFromArguments(args: Arguments.Output, genotypes: RDD[Genotype]): Unit = {
     val subsetGenotypes = if (args.maxGenotypes > 0) {
       progress("Subsetting to %d genotypes.".format(args.maxGenotypes))
       genotypes.sample(withReplacement = false, args.maxGenotypes, 0)
@@ -211,8 +211,8 @@ object Common extends Logging {
       val coalescedSubsetGenotypes = if (args.outChunks > 0) subsetGenotypes.coalesce(args.outChunks) else subsetGenotypes
       coalescedSubsetGenotypes.persist()
 
-      // Write each ADAMGenotype with a JsonEncoder.
-      val schema = ADAMGenotype.getClassSchema
+      // Write each Genotype with a JsonEncoder.
+      val schema = Genotype.getClassSchema
       val writer = new GenericDatumWriter[Object](schema)
       val encoder = EncoderFactory.get.jsonEncoder(schema, out)
       val generator = new JsonFactory().createJsonGenerator(out)
@@ -237,7 +237,7 @@ object Common extends Logging {
     } else if (outputPath.toLowerCase.endsWith(".vcf")) {
       progress("Writing genotypes to VCF file: %s.".format(outputPath))
       val sc = subsetGenotypes.sparkContext
-      sc.adamVCFSave(outputPath, subsetGenotypes.toADAMVariantContext.coalesce(1))
+      sc.adamVCFSave(outputPath, subsetGenotypes.toVariantContext.coalesce(1))
     } else {
       progress("Writing genotypes to: %s.".format(outputPath))
       subsetGenotypes.adamSave(outputPath,

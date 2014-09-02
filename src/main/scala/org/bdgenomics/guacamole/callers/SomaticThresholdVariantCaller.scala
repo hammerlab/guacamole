@@ -18,8 +18,8 @@
 
 package org.bdgenomics.guacamole.callers
 
-import org.bdgenomics.formats.avro.{ ADAMContig, ADAMVariant, ADAMGenotypeAllele, ADAMGenotype }
-import org.bdgenomics.formats.avro.ADAMGenotypeAllele.{ Ref, Alt, OtherAlt }
+import org.bdgenomics.formats.avro.{ Contig, Variant, GenotypeAllele, Genotype }
+import org.bdgenomics.formats.avro.GenotypeAllele.{ Ref, Alt, OtherAlt }
 import org.bdgenomics.guacamole._
 import org.apache.spark.SparkContext._
 import org.bdgenomics.guacamole.reads.Read
@@ -79,7 +79,7 @@ object SomaticThresholdVariantCaller extends Command with Serializable with Logg
     val numGenotypes = sc.accumulator(0L)
     DelayedMessages.default.say { () => "Called %,d genotypes.".format(numGenotypes.value) }
 
-    val genotypes: RDD[ADAMGenotype] = DistributedUtil.pileupFlatMapTwoRDDs[ADAMGenotype](
+    val genotypes: RDD[Genotype] = DistributedUtil.pileupFlatMapTwoRDDs[Genotype](
       tumorReads.mappedReads,
       normalReads.mappedReads,
       lociPartitions,
@@ -99,7 +99,7 @@ object SomaticThresholdVariantCaller extends Command with Serializable with Logg
     pileupTumor: Pileup,
     pileupNormal: Pileup,
     thresholdTumor: Int,
-    thresholdNormal: Int): Seq[ADAMGenotype] = {
+    thresholdNormal: Int): Seq[Genotype] = {
 
     // We skip loci where either tumor or normal samples have no reads mapped.
     if (pileupTumor.elements.isEmpty || pileupNormal.elements.isEmpty)
@@ -117,15 +117,15 @@ object SomaticThresholdVariantCaller extends Command with Serializable with Logg
       percents.withDefaultValue(0.0)
     }
 
-    def variant(alternateBase: Byte, allelesList: List[ADAMGenotypeAllele]): ADAMGenotype = {
-      ADAMGenotype.newBuilder
+    def variant(alternateBase: Byte, allelesList: List[GenotypeAllele]): Genotype = {
+      Genotype.newBuilder
         .setAlleles(JavaConversions.seqAsJavaList(allelesList))
         .setSampleId("somatic".toCharArray)
-        .setVariant(ADAMVariant.newBuilder
-          .setPosition(pileupNormal.locus)
+        .setVariant(Variant.newBuilder
+          .setStart(pileupNormal.locus)
           .setReferenceAllele(Bases.baseToString(pileupNormal.referenceBase))
-          .setVariantAllele(Bases.baseToString(alternateBase))
-          .setContig(ADAMContig.newBuilder.setContigName(pileupNormal.referenceName).build)
+          .setAlternateAllele(Bases.baseToString(alternateBase))
+          .setContig(Contig.newBuilder.setContigName(pileupNormal.referenceName).build)
           .build)
         .build
     }

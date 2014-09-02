@@ -19,15 +19,13 @@
 
 package org.bdgenomics.guacamole
 
-import org.bdgenomics.formats.avro.{ ADAMGenotype }
+import org.bdgenomics.formats.avro.{ Genotype }
 import org.scalatest.matchers.ShouldMatchers
 import org.bdgenomics.adam.rdd.ADAMContext._
 import org.apache.spark.SparkContext._
 import org.apache.spark.rdd.RDD
 import org.apache.spark.rdd.OrderedRDDFunctions
 import org.bdgenomics.guacamole.somatic.{ Reference, SimpleRead, SimpleSomaticVariantCaller }
-import net.sf.samtools.SAMRecord
-import org.bdgenomics.adam.projections.ADAMNucleotideContigFragmentField
 
 class SimpleSomaticVariantCallerSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
   // Disabling for now to allow Spark 1.0 upgrade to go through.
@@ -76,7 +74,7 @@ class SimpleSomaticVariantCallerSuite extends TestUtil.SparkFunSuite with Should
   sparkTest("Simple SNV in same_start_reads") {
     val normal = loadReads("same_start_reads.sam")
     val tumor = loadReads("same_start_reads_snv_tumor.sam")
-    val genotypes: RDD[ADAMGenotype] =
+    val genotypes: RDD[Genotype] =
       SimpleSomaticVariantCaller.callVariants(normal, tumor, sc.parallelize(sameStartReferenceBases))
     genotypes.collect.toList should have length 1
   }
@@ -91,13 +89,13 @@ class SimpleSomaticVariantCallerSuite extends TestUtil.SparkFunSuite with Should
     val normal = loadReads("normal_without_mdtag.sam")
     val tumor = loadReads("tumor_without_mdtag.sam")
 
-    val genotypes: RDD[ADAMGenotype] =
+    val genotypes: RDD[Genotype] =
       SimpleSomaticVariantCaller.callVariants(normal, tumor, sc.parallelize(noMdtagReferenceBases))
-    val localGenotypes: List[ADAMGenotype] = genotypes.collect.toList
+    val localGenotypes: List[Genotype] = genotypes.collect.toList
     println("# of variants: %d".format(localGenotypes.length))
     localGenotypes should have length 3
     for (offset: Int <- 0 to 2) {
-      val genotype: ADAMGenotype = localGenotypes(offset)
+      val genotype: Genotype = localGenotypes(offset)
       val variant = genotype.getVariant
       val pos = variant.getPosition
       pos should be(16 + offset)
