@@ -36,6 +36,8 @@ case class MappedRead(
 
   lazy val mdTag = MdTag(mdTagString, start)
 
+  lazy val referenceString = mdTag.getReference(sequenceStr, cigar, start)
+
   /** Individual components of the CIGAR string (e.g. "10M"), parsed, and as a Scala buffer. */
   val cigarElements = JavaConversions.asScalaBuffer(cigar.getCigarElements)
 
