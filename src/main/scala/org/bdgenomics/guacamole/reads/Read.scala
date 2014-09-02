@@ -8,6 +8,7 @@ import org.apache.hadoop.io.LongWritable
 import org.apache.spark.rdd.RDD
 import org.apache.spark.{ Logging, SparkContext }
 import org.bdgenomics.adam.models.SequenceDictionary
+import org.bdgenomics.guacamole.Bases
 
 import scala.collection.JavaConversions
 import scala.collection.mutable.ArrayBuffer
@@ -31,6 +32,7 @@ trait Read {
 
   /** The nucleotide sequence. */
   val sequence: Array[Byte]
+  lazy val sequenceStr = Bases.basesToString(sequence)
 
   /** The base qualities, phred scaled.  These are numbers, and are NOT character encoded. */
   val baseQualities: Array[Byte]
