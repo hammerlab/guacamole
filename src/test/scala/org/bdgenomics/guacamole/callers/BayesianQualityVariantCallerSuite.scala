@@ -3,16 +3,16 @@ package org.bdgenomics.guacamole.callers
 import org.bdgenomics.guacamole.TestUtil.SparkFunSuite
 import org.bdgenomics.guacamole.TestUtil
 import org.bdgenomics.guacamole.pileup.Pileup
-import org.bdgenomics.formats.avro.ADAMGenotypeAllele
+import org.bdgenomics.formats.avro.GenotypeAllele
 import scala.collection.JavaConversions._
 import org.bdgenomics.adam.util.PhredUtils
 
 class BayesianQualityVariantCallerSuite extends SparkFunSuite {
 
-  def makeGenotype(alleles: String*): Genotype = {
+  def makeGenotype(alleles: String*): GenotypeAlleles = {
     // If we later change Genotype to work with Array[byte] instead of strings, we can use this function to convert
     // to byte arrays.
-    Genotype(alleles: _*)
+    GenotypeAlleles(alleles: _*)
   }
 
   test("no variants") {
@@ -22,7 +22,7 @@ class BayesianQualityVariantCallerSuite extends SparkFunSuite {
       TestUtil.makeRead("TCGATCGA", "8M", "8", 1))
     val pileup = Pileup(reads, 1)
     val genotypes = BayesianQualityVariantCaller.callVariantsAtLocus(pileup)
-    genotypes.foreach(gt => assert(gt.getAlleles.toList === List(ADAMGenotypeAllele.Ref, ADAMGenotypeAllele.Ref)))
+    genotypes.foreach(gt => assert(gt.getAlleles.toList === List(GenotypeAllele.Ref, GenotypeAllele.Ref)))
   }
 
   test("het variant; single alternate base") {
@@ -32,7 +32,7 @@ class BayesianQualityVariantCallerSuite extends SparkFunSuite {
       TestUtil.makeRead("GCGATCGA", "8M", "0G7", 1))
     val pileup = Pileup(reads, 1)
     val genotypes = BayesianQualityVariantCaller.callVariantsAtLocus(pileup)
-    genotypes.foreach(gt => assert(gt.getAlleles.toList === List(ADAMGenotypeAllele.Ref, ADAMGenotypeAllele.Alt)))
+    genotypes.foreach(gt => assert(gt.getAlleles.toList === List(GenotypeAllele.Ref, GenotypeAllele.Alt)))
 
   }
 
@@ -43,7 +43,7 @@ class BayesianQualityVariantCallerSuite extends SparkFunSuite {
       TestUtil.makeRead("GCGATCGA", "8M", "0G7", 1))
     val pileup = Pileup(reads, 1)
     val genotypes = BayesianQualityVariantCaller.callVariantsAtLocus(pileup)
-    genotypes.foreach(gt => assert(gt.getAlleles.toList === List(ADAMGenotypeAllele.Ref, ADAMGenotypeAllele.Alt)))
+    genotypes.foreach(gt => assert(gt.getAlleles.toList === List(GenotypeAllele.Ref, GenotypeAllele.Alt)))
   }
 
   val floatingPointingThreshold = 1e-6
@@ -60,7 +60,7 @@ class BayesianQualityVariantCallerSuite extends SparkFunSuite {
     val pileup = Pileup(reads, 1)
     val hetLikelihood = ((1 - errorPhred30) + errorPhred30 / 3) * ((1 - errorPhred40) + errorPhred40 / 3) * ((1 - errorPhred30) + errorPhred30 / 3) / 8.0
     val altLikelihood = (2 * errorPhred30 / 3) * (2 * errorPhred40 / 3) * (2 * errorPhred30 / 3) / 8.0
-    val expectedLikelihoods = scala.collection.mutable.Map.empty[Genotype, Double]
+    val expectedLikelihoods = scala.collection.mutable.Map.empty[GenotypeAlleles, Double]
 
     expectedLikelihoods += makeGenotype("C", "C") -> (2 * ((1 - errorPhred30) * 2 * (1 - errorPhred40) * 2 * (1 - errorPhred30))) / 8.0
 
@@ -85,7 +85,7 @@ class BayesianQualityVariantCallerSuite extends SparkFunSuite {
     val pileup = Pileup(reads, 1)
 
     val hetLikelihood = ((1 - errorPhred30) + errorPhred30 / 3) * ((1 - errorPhred40) + errorPhred40 / 3) * ((1 - errorPhred30) + errorPhred30 / 3) / 8.0
-    val expectedLikelihoods = scala.collection.mutable.Map.empty[Genotype, Double]
+    val expectedLikelihoods = scala.collection.mutable.Map.empty[GenotypeAlleles, Double]
 
     expectedLikelihoods += makeGenotype("C", "C") -> (2 * ((1 - errorPhred30) * 2 * (1 - errorPhred40) * 2 * errorPhred30)) / 8.0
     expectedLikelihoods += makeGenotype("A", "C") -> hetLikelihood
@@ -106,7 +106,7 @@ class BayesianQualityVariantCallerSuite extends SparkFunSuite {
 
     val hetLikelihood = ((1 - errorPhred30) + errorPhred30 / 3) * ((1 - errorPhred40) + errorPhred40 / 3) * ((1 - errorPhred30) + errorPhred30 / 3) / 8.0
     val allErrorLikelihood = (2 * errorPhred30 / 3) * (2 * errorPhred40 / 3) * (2 * errorPhred30 / 3) / 8.0
-    val expectedLikelihoods = scala.collection.mutable.Map.empty[Genotype, Double]
+    val expectedLikelihoods = scala.collection.mutable.Map.empty[GenotypeAlleles, Double]
 
     expectedLikelihoods += makeGenotype("A", "A") -> (2 * ((1 - errorPhred30) * 2 * (1 - errorPhred40) * 2 * (1 - errorPhred30))) / 8.0
 
@@ -133,7 +133,7 @@ class BayesianQualityVariantCallerSuite extends SparkFunSuite {
     val pileup = Pileup(reads, 1)
     val hetLikelihood = math.log((1 - errorPhred30) + errorPhred30 / 3) + math.log((1 - errorPhred40) + errorPhred40 / 3) + math.log((1 - errorPhred30) + errorPhred30 / 3) - 3.0
     val altLikelihood = math.log(2 * errorPhred30 / 3) + math.log(2 * errorPhred40 / 3) + math.log(2 * errorPhred30 / 3) - 3.0
-    val expectedLikelihoods = scala.collection.mutable.Map.empty[Genotype, Double]
+    val expectedLikelihoods = scala.collection.mutable.Map.empty[GenotypeAlleles, Double]
 
     expectedLikelihoods += makeGenotype("C", "C") -> (math.log(2 * (1 - errorPhred30)) + math.log(2 * (1 - errorPhred40)) + math.log(2 * (1 - errorPhred30)) - 3)
 
@@ -158,7 +158,7 @@ class BayesianQualityVariantCallerSuite extends SparkFunSuite {
     val pileup = Pileup(reads, 1)
 
     val hetLikelihood = math.log((1 - errorPhred30) + errorPhred30 / 3) + math.log((1 - errorPhred40) + errorPhred40 / 3) + math.log((1 - errorPhred30) + errorPhred30 / 3) - 3.0
-    val expectedLikelihoods = scala.collection.mutable.Map.empty[Genotype, Double]
+    val expectedLikelihoods = scala.collection.mutable.Map.empty[GenotypeAlleles, Double]
 
     expectedLikelihoods += makeGenotype("C", "C") -> (math.log(2 * (1 - errorPhred30)) + math.log(2 * (1 - errorPhred40)) + math.log(2 * errorPhred30) - 3.0)
     expectedLikelihoods += makeGenotype("A", "C") -> hetLikelihood
@@ -179,7 +179,7 @@ class BayesianQualityVariantCallerSuite extends SparkFunSuite {
 
     val hetLikelihood = math.log((1 - errorPhred30) + errorPhred30 / 3) + math.log((1 - errorPhred40) + errorPhred40 / 3) + math.log((1 - errorPhred30) + errorPhred30 / 3) - 3.0
     val allErrorLikelihood = math.log(2 * errorPhred30 / 3) + math.log(2 * errorPhred40 / 3) + math.log(2 * errorPhred30 / 3) - 3.0
-    val expectedLikelihoods = scala.collection.mutable.Map.empty[Genotype, Double]
+    val expectedLikelihoods = scala.collection.mutable.Map.empty[GenotypeAlleles, Double]
 
     expectedLikelihoods += makeGenotype("A", "A") -> (math.log(2 * (1 - errorPhred30)) + math.log(2.0 * (1 - errorPhred30)) + math.log(2 * (1 - errorPhred30)) - 3.0)
 

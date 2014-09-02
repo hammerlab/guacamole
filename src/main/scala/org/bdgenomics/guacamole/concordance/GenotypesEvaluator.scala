@@ -8,8 +8,8 @@ import org.bdgenomics.adam.rdd.variation.ADAMVariationContext._
 import org.apache.spark.SparkContext._
 import org.bdgenomics.adam.rdd.variation.ConcordanceTable
 import java.util.EnumSet
-import org.bdgenomics.formats.avro.{ ADAMGenotype, ADAMGenotypeType }
-import org.bdgenomics.adam.rich.RichADAMVariant
+import org.bdgenomics.formats.avro.{ Genotype, GenotypeType }
+import org.bdgenomics.adam.rich.RichVariant
 import org.apache.spark.rdd.RDD
 
 object GenotypesEvaluator extends Command with Logging {
@@ -61,18 +61,18 @@ object GenotypesEvaluator extends Command with Logging {
    * @param chromosome name of a chromosome, if any, to filter to (default: null)
    * @return  precision, recall and f1score
    */
-  def computePrecisionAndRecall(calledGenotypes: RDD[ADAMGenotype],
-                                trueGenotypes: RDD[ADAMGenotype],
+  def computePrecisionAndRecall(calledGenotypes: RDD[Genotype],
+                                trueGenotypes: RDD[Genotype],
                                 excludeSNVs: Boolean = false,
                                 excludeIndels: Boolean = true,
                                 chromosome: String = null): (Double, Double, Double) = {
-    val chromosomeFilter: (ADAMGenotype => Boolean) = chromosome == "" || _.variant.contig.contigName.toString == chromosome
-    val variantTypeFilter: (ADAMGenotype => Boolean) = genotype => {
-      val variant = new RichADAMVariant(genotype.variant)
+    val chromosomeFilter: (Genotype => Boolean) = chromosome == "" || _.variant.contig.contigName.toString == chromosome
+    val variantTypeFilter: (Genotype => Boolean) = genotype => {
+      val variant = new RichVariant(genotype.variant)
       (!excludeSNVs && variant.isSingleNucleotideVariant()) || (!excludeIndels && (variant.isInsertion() || variant.isDeletion()))
     }
 
-    val relevantVariants: (ADAMGenotype => Boolean) = v => chromosomeFilter(v) && variantTypeFilter(v)
+    val relevantVariants: (Genotype => Boolean) = v => chromosomeFilter(v) && variantTypeFilter(v)
 
     val filteredCalledGenotypes = calledGenotypes.filter(relevantVariants)
     val filteredTrueGenotypes = trueGenotypes.filter(relevantVariants)
@@ -84,13 +84,13 @@ object GenotypesEvaluator extends Command with Logging {
     val truePositives = sampleAccuracy.total(ConcordanceTable.CALLED, ConcordanceTable.CALLED)
 
     // We called AND it was NOT called in truth
-    val falsePositives = sampleAccuracy.total(ConcordanceTable.CALLED, EnumSet.of(ADAMGenotypeType.NO_CALL))
+    val falsePositives = sampleAccuracy.total(ConcordanceTable.CALLED, EnumSet.of(GenotypeType.NO_CALL))
 
     // We did NOT call AND it was called in truth
-    val falseNegatives = sampleAccuracy.total(EnumSet.of(ADAMGenotypeType.NO_CALL), ConcordanceTable.CALLED)
+    val falseNegatives = sampleAccuracy.total(EnumSet.of(GenotypeType.NO_CALL), ConcordanceTable.CALLED)
 
     // We did NOT call AND it was NOT called in truth
-    // val trueNegatives = sampleAccuracy.total(EnumSet.of(ADAMGenotypeType.NO_CALL), EnumSet.of(ADAMGenotypeType.NO_CALL))
+    // val trueNegatives = sampleAccuracy.total(EnumSet.of(GenotypeType.NO_CALL), EnumSet.of(GenotypeType.NO_CALL))
     // val specificity = trueNegatives / (falsePositives + falseNegatives)
     // Obviously the above won't be recorded ( we don't save NoCall, NoCall info)
 
@@ -112,7 +112,7 @@ object GenotypesEvaluator extends Command with Logging {
    * @param sc spark context
    */
 
-  def printGenotypeConcordance(args: GenotypeConcordance, genotypes: RDD[ADAMGenotype], sc: SparkContext) = {
+  def printGenotypeConcordance(args: GenotypeConcordance, genotypes: RDD[Genotype], sc: SparkContext) = {
     val trueGenotypes = Common.loadGenotypes(args.truthGenotypesFile, sc)
 
     val (precision, recall, f1score) = computePrecisionAndRecall(genotypes, trueGenotypes, args.excludeSNVs, args.excludeIndels, args.chromosome)
