@@ -13,7 +13,7 @@ class ReadSetSuite extends TestUtil.SparkFunSuite with Matchers {
     mdTagReads.reads.count() should be(6)
 
     val nonDuplicateReads = TestUtil.loadReads(sc, "mdtagissue.sam", Read.InputFilters(mapped = true, nonDuplicate = true))
-    nonDuplicateReads.reads.count() should be(6)
+    nonDuplicateReads.reads.count() should be(4)
   }
 
   sparkTest("load and serialize / deserialize reads") {
