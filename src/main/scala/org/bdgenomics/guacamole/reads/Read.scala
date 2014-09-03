@@ -73,14 +73,12 @@ object Read extends Logging {
    * @param mapped include only mapped reads
    * @param nonDuplicate include only reads that do not have the duplicate bit set
    * @param passedVendorQualityChecks include only reads that do not have the failedVendorQualityChecks bit set
-   * @param hasMdTag include only reads that are both mapped and have md tags defined.
    * @param isPaired include only reads are paired-end reads
    */
   case class InputFilters(
     mapped: Boolean = false,
     nonDuplicate: Boolean = false,
     passedVendorQualityChecks: Boolean = false,
-    hasMdTag: Boolean = false,
     isPaired: Boolean = false) {}
   object InputFilters {
     val empty = InputFilters()
@@ -248,7 +246,6 @@ object Read extends Logging {
         fromSAMRecordOpt(item, token).filter(read =>
           (!filters.mapped || read.isMapped) &&
             (!filters.passedVendorQualityChecks || !read.failedVendorQualityChecks) &&
-            (!filters.hasMdTag || read.getMappedReadOpt.isDefined) &&
             (!filters.isPaired || read.isPaired)
         ).map(result += _)
       }
