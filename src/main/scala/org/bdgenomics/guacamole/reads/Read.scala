@@ -39,7 +39,7 @@ trait Read {
   val isDuplicate: Boolean
 
   /** Is this read mapped? */
-  val isMapped: Boolean
+  final val isMapped: Boolean = getMappedReadOpt.isDefined
 
   /** The sample (e.g. "tumor" or "patient3636") name. */
   val sampleName: String
@@ -149,6 +149,10 @@ object Read extends Logging {
    */
   def fromSAMRecord(record: SAMRecord, token: Int): Read = {
     val isMapped = (
+      // NOTE(ryan): this flag should maybe be the main determinant of the mapped-ness of this SAM record. SAM spec
+      // (http://samtools.github.io/hts-specs/SAMv1.pdf) says: "Bit 0x4 is the only reliable place to tell whether the
+      // read is unmapped."
+      !record.getReadUnmappedFlag &&
       record.getMappingQuality != SAMRecord.UNKNOWN_MAPPING_QUALITY &&
       record.getReferenceName != null &&
       record.getReferenceIndex >= SAMRecord.NO_ALIGNMENT_REFERENCE_INDEX &&
@@ -160,6 +164,22 @@ object Read extends Logging {
     } else {
       "default"
     }).intern
+
+    val matePropertiesOpt =
+      if (record.getReadPairedFlag) {
+        Some(
+          MateProperties(
+            isFirstInPair = record.getFirstOfPairFlag,
+            inferredInsertSize = Some(record.getInferredInsertSize),
+            isMateMapped = !record.getMateUnmappedFlag,
+            mateReferenceContig = Some(record.getMateReferenceName),
+            mateStart = Some(record.getMateAlignmentStart),
+            isMatePositiveStrand = !record.getMateNegativeStrandFlag
+          )
+        )
+      } else {
+        None
+      }
 
     if (isMapped) {
       val mdTagStringOpt = Option(record.getStringAttribute("MD"))
@@ -176,20 +196,7 @@ object Read extends Logging {
         mdTagStringOpt = mdTagStringOpt,
         failedVendorQualityChecks = record.getReadFailsVendorQualityCheckFlag,
         isPositiveStrand = !record.getReadNegativeStrandFlag,
-        matePropertiesOpt =
-          if (record.getReadPairedFlag)
-            Some(
-            MateProperties(
-              isFirstInPair = record.getFirstOfPairFlag,
-              inferredInsertSize = Some(record.getInferredInsertSize),
-              isMateMapped = !record.getMateUnmappedFlag,
-              mateReferenceContig = Some(record.getMateReferenceName),
-              mateStart = Some(record.getMateAlignmentStart),
-              isMatePositiveStrand = !record.getMateNegativeStrandFlag
-            )
-          )
-          else
-            None
+        matePropertiesOpt = matePropertiesOpt
       )
 
       // We subtract 1 from start, since samtools is 1-based and we're 0-based.
@@ -206,20 +213,7 @@ object Read extends Logging {
         sampleName,
         record.getReadFailsVendorQualityCheckFlag,
         !record.getReadNegativeStrandFlag,
-        matePropertiesOpt =
-          if (record.getReadPairedFlag)
-            Some(
-            MateProperties(
-              isFirstInPair = record.getFirstOfPairFlag,
-              inferredInsertSize = Some(record.getInferredInsertSize),
-              isMateMapped = !record.getMateUnmappedFlag,
-              mateReferenceContig = Some(record.getMateReferenceName),
-              mateStart = Some(record.getMateAlignmentStart),
-              isMatePositiveStrand = !record.getMateNegativeStrandFlag
-            )
-          )
-          else
-            None
+        matePropertiesOpt = matePropertiesOpt
       )
 
       result
