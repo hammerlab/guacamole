@@ -9,7 +9,7 @@ class ReadSetSuite extends TestUtil.SparkFunSuite with Matchers {
     val allReads = TestUtil.loadReads(sc, "mdtagissue.sam")
     allReads.reads.count() should be(8)
 
-    val mdTagReads = TestUtil.loadReads(sc, "mdtagissue.sam", Read.InputFilters(mapped = true, hasMdTag = true))
+    val mdTagReads = TestUtil.loadReads(sc, "mdtagissue.sam", Read.InputFilters(mapped = true))
     mdTagReads.reads.count() should be(6)
 
     val nonDuplicateReads = TestUtil.loadReads(sc, "mdtagissue.sam", Read.InputFilters(mapped = true, nonDuplicate = true))

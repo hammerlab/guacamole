@@ -58,7 +58,7 @@ object ThresholdVariantCaller extends Command with Serializable with Logging {
     val args = Args4j[Arguments](rawArgs)
     val sc = Common.createSparkContext(args, appName = Some(name))
 
-    val readSet = Common.loadReadsFromArguments(args, sc, Read.InputFilters(mapped = true, nonDuplicate = true, hasMdTag = true))
+    val readSet = Common.loadReadsFromArguments(args, sc, Read.InputFilters(mapped = true, nonDuplicate = true))
 
     readSet.mappedReads.persist()
     Common.progress("Loaded %,d mapped non-duplicate MdTag-containing reads into %,d partitions.".format(
