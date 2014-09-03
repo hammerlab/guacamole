@@ -17,7 +17,7 @@ class MappedReadSuite extends TestUtil.SparkFunSuite with Matchers {
       50,
       325352323,
       TextCigarCodec.getSingleton.decode(""),
-      None, // mdtag
+      mdTagString = "11",
       false,
       isPositiveStrand = true,
       matePropertiesOpt = Some(
@@ -70,7 +70,7 @@ class MappedReadSuite extends TestUtil.SparkFunSuite with Matchers {
       50,
       325352323,
       TextCigarCodec.getSingleton.decode(""),
-      None, // mdtag
+      mdTagString = "11",
       false,
       isPositiveStrand = true,
       matePropertiesOpt = Some(
