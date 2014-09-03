@@ -122,7 +122,7 @@ object TestUtil extends Matchers {
   def loadTumorNormalReads(sc: SparkContext,
                            tumorFile: String,
                            normalFile: String): (Seq[MappedRead], Seq[MappedRead]) = {
-    val filters = Read.InputFilters(mapped = true, nonDuplicate = true, hasMdTag = true, passedVendorQualityChecks = true)
+    val filters = Read.InputFilters(mapped = true, nonDuplicate = true, passedVendorQualityChecks = true)
     (loadReads(sc, tumorFile, filters = filters).mappedReads.collect(), loadReads(sc, normalFile, filters = filters).mappedReads.collect())
   }
 

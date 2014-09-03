@@ -8,6 +8,7 @@ import org.apache.hadoop.io.LongWritable
 import org.apache.spark.rdd.RDD
 import org.apache.spark.{ Logging, SparkContext }
 import org.bdgenomics.adam.models.SequenceDictionary
+import org.bdgenomics.guacamole.Bases
 
 import scala.collection.JavaConversions
 import scala.collection.mutable.ArrayBuffer
@@ -31,6 +32,7 @@ trait Read {
 
   /** The nucleotide sequence. */
   val sequence: Array[Byte]
+  lazy val sequenceStr = Bases.basesToString(sequence)
 
   /** The base qualities, phred scaled.  These are numbers, and are NOT character encoded. */
   val baseQualities: Array[Byte]
@@ -71,14 +73,12 @@ object Read extends Logging {
    * @param mapped include only mapped reads
    * @param nonDuplicate include only reads that do not have the duplicate bit set
    * @param passedVendorQualityChecks include only reads that do not have the failedVendorQualityChecks bit set
-   * @param hasMdTag include only reads that are both mapped and have md tags defined.
    * @param isPaired include only reads are paired-end reads
    */
   case class InputFilters(
     mapped: Boolean = false,
     nonDuplicate: Boolean = false,
     passedVendorQualityChecks: Boolean = false,
-    hasMdTag: Boolean = false,
     isPaired: Boolean = false) {}
   object InputFilters {
     val empty = InputFilters()
@@ -97,7 +97,7 @@ object Read extends Logging {
     alignmentQuality: Int = -1,
     start: Long = -1L,
     cigarString: String = "",
-    mdTagString: String = "",
+    mdTagString: String,
     failedVendorQualityChecks: Boolean = false,
     isPositiveStrand: Boolean = true,
     matePropertiesOpt: Option[MateProperties] = None): Read = {
@@ -133,7 +133,7 @@ object Read extends Logging {
         alignmentQuality,
         start,
         cigar,
-        Some(mdTagString),
+        mdTagString,
         failedVendorQualityChecks,
         isPositiveStrand,
         matePropertiesOpt
@@ -147,7 +147,7 @@ object Read extends Logging {
    * @param record
    * @return
    */
-  def fromSAMRecord(record: SAMRecord, token: Int): Read = {
+  def fromSAMRecordOpt(record: SAMRecord, token: Int, requireMDTagsOnMappedReads: Boolean = false): Option[Read] = {
     val isMapped = (
       // NOTE(ryan): this flag should maybe be the main determinant of the mapped-ness of this SAM record. SAM spec
       // (http://samtools.github.io/hts-specs/SAMv1.pdf) says: "Bit 0x4 is the only reliable place to tell whether the
@@ -182,28 +182,37 @@ object Read extends Logging {
       }
 
     if (isMapped) {
-      val mdTagStringOpt = Option(record.getStringAttribute("MD"))
-      val result = MappedRead(
-        token,
-        record.getReadString.getBytes,
-        record.getBaseQualities,
-        record.getDuplicateReadFlag,
-        sampleName.intern,
-        record.getReferenceName.intern,
-        record.getMappingQuality,
-        record.getAlignmentStart - 1,
-        cigar = record.getCigar,
-        mdTagStringOpt = mdTagStringOpt,
-        failedVendorQualityChecks = record.getReadFailsVendorQualityCheckFlag,
-        isPositiveStrand = !record.getReadNegativeStrandFlag,
-        matePropertiesOpt = matePropertiesOpt
-      )
+      Option(record.getStringAttribute("MD")) match {
+        case Some(mdTagString) =>
+          val result = MappedRead(
+            token,
+            record.getReadString.getBytes,
+            record.getBaseQualities,
+            record.getDuplicateReadFlag,
+            sampleName.intern,
+            record.getReferenceName.intern,
+            record.getMappingQuality,
+            record.getAlignmentStart - 1,
+            cigar = record.getCigar,
+            mdTagString = mdTagString,
+            failedVendorQualityChecks = record.getReadFailsVendorQualityCheckFlag,
+            isPositiveStrand = !record.getReadNegativeStrandFlag,
+            matePropertiesOpt = matePropertiesOpt
+          )
 
-      // We subtract 1 from start, since samtools is 1-based and we're 0-based.
-      if (result.unclippedStart != record.getUnclippedStart - 1)
-        log.warn("Computed read 'unclippedStart' %d != samtools read end %d.".format(
-          result.unclippedStart, record.getUnclippedStart - 1))
-      result
+          // We subtract 1 from start, since samtools is 1-based and we're 0-based.
+          if (result.unclippedStart != record.getUnclippedStart - 1)
+            log.warn("Computed read 'unclippedStart' %d != samtools read end %d.".format(
+              result.unclippedStart, record.getUnclippedStart - 1))
+          Some(result)
+        case None =>
+          if (requireMDTagsOnMappedReads) {
+            throw MissingMDTagException(record)
+          } else {
+            None
+          }
+      }
+
     } else {
       val result = UnmappedRead(
         token,
@@ -216,7 +225,7 @@ object Read extends Logging {
         matePropertiesOpt = matePropertiesOpt
       )
 
-      result
+      Some(result)
     }
   }
 
@@ -234,12 +243,11 @@ object Read extends Logging {
 
     JavaConversions.asScalaIterator(reader.iterator).foreach(item => {
       if (!filters.nonDuplicate || !item.getDuplicateReadFlag) {
-        val read = fromSAMRecord(item, token)
-        if ((!filters.mapped || read.isMapped) &&
-          (!filters.passedVendorQualityChecks || !read.failedVendorQualityChecks) &&
-          (!filters.hasMdTag || read.getMappedReadOpt.exists(_.mdTagStringOpt.isDefined)) &&
-          (!filters.isPaired || read.isPaired))
-          result += read
+        fromSAMRecordOpt(item, token).filter(read =>
+          (!filters.mapped || read.isMapped) &&
+            (!filters.passedVendorQualityChecks || !read.failedVendorQualityChecks) &&
+            (!filters.isPaired || read.isPaired)
+        ).map(result += _)
       }
     })
     (result, sequenceDictionary)
@@ -266,11 +274,13 @@ object Read extends Logging {
 
     val samRecords: RDD[(LongWritable, SAMRecordWritable)] =
       sc.newAPIHadoopFile[LongWritable, SAMRecordWritable, AnySAMInputFormat](filename)
-    var reads: RDD[Read] = samRecords.map({ case (k, v) => fromSAMRecord(v.get, token) })
+    var reads: RDD[Read] =
+      samRecords.flatMap({
+        case (k, v) => fromSAMRecordOpt(v.get, token)
+      })
     if (filters.mapped) reads = reads.filter(_.isMapped)
     if (filters.nonDuplicate) reads = reads.filter(!_.isDuplicate)
     if (filters.passedVendorQualityChecks) reads = reads.filter(!_.failedVendorQualityChecks)
-    if (filters.hasMdTag) reads = reads.filter(_.getMappedReadOpt.exists(_.mdTagStringOpt.isDefined))
     (reads, sequenceDictionary)
   }
 

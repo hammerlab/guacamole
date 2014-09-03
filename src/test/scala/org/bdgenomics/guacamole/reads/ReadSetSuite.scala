@@ -9,7 +9,7 @@ class ReadSetSuite extends TestUtil.SparkFunSuite with Matchers {
     val allReads = TestUtil.loadReads(sc, "mdtagissue.sam")
     allReads.reads.count() should be(8)
 
-    val mdTagReads = TestUtil.loadReads(sc, "mdtagissue.sam", Read.InputFilters(mapped = true, hasMdTag = true))
+    val mdTagReads = TestUtil.loadReads(sc, "mdtagissue.sam", Read.InputFilters(mapped = true))
     mdTagReads.reads.count() should be(6)
 
     val nonDuplicateReads = TestUtil.loadReads(sc, "mdtagissue.sam", Read.InputFilters(mapped = true, nonDuplicate = true))
@@ -26,7 +26,7 @@ class ReadSetSuite extends TestUtil.SparkFunSuite with Matchers {
       deserialized.alignmentQuality should equal(read.alignmentQuality)
       deserialized.start should equal(read.start)
       deserialized.cigar should equal(read.cigar)
-      deserialized.mdTagStringOpt should equal(read.mdTagStringOpt)
+      deserialized.mdTagString should equal(read.mdTagString)
       deserialized.failedVendorQualityChecks should equal(read.failedVendorQualityChecks)
       deserialized.isPositiveStrand should equal(read.isPositiveStrand)
       deserialized.matePropertiesOpt should equal(read.matePropertiesOpt)
