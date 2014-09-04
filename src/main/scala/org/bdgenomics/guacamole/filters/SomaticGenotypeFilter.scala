@@ -3,11 +3,40 @@ package org.bdgenomics.guacamole.filters
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.guacamole.Common.Arguments.Base
 import org.bdgenomics.guacamole._
-import org.bdgenomics.guacamole.variants.CalledSomaticGenotype
+import org.bdgenomics.guacamole.variants.{ CalledGenotype, GenotypeEvidence, CalledSomaticGenotype }
 import org.kohsuke.args4j.Option
 
 /**
- * Filter to remove genotypes where the number of reads at the locus is too low or too high
+ * Filter to remove genotypes where the somatic likelihood is low
+ */
+object SomaticMinimumLikelihoodFilter {
+
+  def hasMinimumLikelihood(genotype: CalledSomaticGenotype,
+                           minLikelihood: Int): Boolean = {
+    genotype.phredScaledSomaticLikelihood >= minLikelihood
+  }
+
+  /**
+   *
+   *  Apply the filter to an RDD of genotypes
+   *
+   * @param genotypes RDD of genotypes to filter
+   * @param minLikelihood minimum quality score for this genotype (Phred-scaled)
+   * @param debug if true, compute the count of genotypes after filtering
+   * @return Genotypes with quality >= minLikelihood
+   */
+  def apply(genotypes: RDD[CalledSomaticGenotype],
+            minLikelihood: Int,
+            debug: Boolean = false): RDD[CalledSomaticGenotype] = {
+    val filteredGenotypes = genotypes.filter(gt => hasMinimumLikelihood(gt, minLikelihood))
+    if (debug) SomaticGenotypeFilter.printFilterProgress(filteredGenotypes)
+    filteredGenotypes
+  }
+}
+
+/**
+ * Added new CalledGenotype and CalledSomaticGenotype (+ serializers) to save more intermediate; changed string to
+ * seq[byte] for alleles Filter to remove genotypes where the number of reads at the locus is too low or too high.
  */
 object SomaticReadDepthFilter {
 
@@ -115,6 +144,56 @@ object SomaticLogOddsFilter {
   }
 }
 
+object SomaticAverageMappingQualityFilter {
+
+  def hasMinimumAverageMappingQuality(somaticGenotype: CalledSomaticGenotype,
+                                      minAverageMappingQuality: Int): Boolean = {
+
+    somaticGenotype.tumorEvidence.averageMappingQuality > minAverageMappingQuality &&
+      somaticGenotype.normalEvidence.averageMappingQuality > minAverageMappingQuality
+  }
+
+  /**
+   *
+   * @param genotypes RDD of genotypes to filter
+   * @param minAverageMappingQuality
+   * @param debug if true, compute the count of genotypes after filtering
+   * @return  Genotypes with variant allele frequency >= minVAF
+   */
+  def apply(genotypes: RDD[CalledSomaticGenotype],
+            minAverageMappingQuality: Int,
+            debug: Boolean = false): RDD[CalledSomaticGenotype] = {
+    val filteredGenotypes = genotypes.filter(hasMinimumAverageMappingQuality(_, minAverageMappingQuality))
+    if (debug) SomaticGenotypeFilter.printFilterProgress(filteredGenotypes)
+    filteredGenotypes
+  }
+}
+
+object SomaticAverageBaseQualityFilter {
+
+  def hasMinimumAverageBaseQuality(somaticGenotype: CalledSomaticGenotype,
+                                   minAverageBaseQuality: Int): Boolean = {
+
+    somaticGenotype.tumorEvidence.averageBaseQuality > minAverageBaseQuality &&
+      somaticGenotype.normalEvidence.averageBaseQuality > minAverageBaseQuality
+  }
+
+  /**
+   *
+   * @param genotypes RDD of genotypes to filter
+   * @param minAverageBaseQuality
+   * @param debug if true, compute the count of genotypes after filtering
+   * @return  Genotypes with variant allele frequency >= minVAF
+   */
+  def apply(genotypes: RDD[CalledSomaticGenotype],
+            minAverageBaseQuality: Int,
+            debug: Boolean = false): RDD[CalledSomaticGenotype] = {
+    val filteredGenotypes = genotypes.filter(hasMinimumAverageBaseQuality(_, minAverageBaseQuality))
+    if (debug) SomaticGenotypeFilter.printFilterProgress(filteredGenotypes)
+    filteredGenotypes
+  }
+}
+
 object SomaticGenotypeFilter {
 
   def printFilterProgress(filteredGenotypes: RDD[CalledSomaticGenotype]) = {
@@ -132,6 +211,12 @@ object SomaticGenotypeFilter {
 
     @Option(name = "-minLOD", metaVar = "X", usage = "Make a call if the log odds of variant is greater than this value (Phred-scaled)")
     var minLOD: Int = 0
+
+    @Option(name = "-minAverageMappingQuality", metaVar = "X", usage = "Make a call average mapping quality of reads is greater than this value")
+    var minAverageMappingQuality: Int = 0
+
+    @Option(name = "-minAverageBaseQuality", metaVar = "X", usage = "Make a call average base quality of bases in the pileup is greater than this value")
+    var minAverageBaseQuality: Int = 0
 
     @Option(name = "-minTumorReadDepth", usage = "Minimum number of reads in tumor sample for a genotype call")
     var minTumorReadDepth: Int = 0
@@ -158,13 +243,19 @@ object SomaticGenotypeFilter {
 
     filteredGenotypes = SomaticReadDepthFilter(filteredGenotypes, args.minTumorReadDepth, args.maxTumorReadDepth, args.minNormalReadDepth, args.debugGenotypeFilters)
 
-    filteredGenotypes = SomaticLogOddsFilter(filteredGenotypes, args.minLOD, args.debugGenotypeFilters)
-
-    filteredGenotypes = SomaticVAFFilter(filteredGenotypes, args.minVAF, args.debugGenotypeFilters)
-
     if (args.minTumorAlternateReadDepth > 0) {
       filteredGenotypes = SomaticAlternateReadDepthFilter(filteredGenotypes, args.minTumorAlternateReadDepth, args.debugGenotypeFilters)
     }
+
+    filteredGenotypes = SomaticLogOddsFilter(filteredGenotypes, args.minLOD, args.debugGenotypeFilters)
+
+    filteredGenotypes = SomaticMinimumLikelihoodFilter(filteredGenotypes, args.minLikelihood, args.debugGenotypeFilters)
+
+    filteredGenotypes = SomaticVAFFilter(filteredGenotypes, args.minVAF, args.debugGenotypeFilters)
+
+    filteredGenotypes = SomaticAverageMappingQualityFilter(filteredGenotypes, args.minAverageMappingQuality, args.debugGenotypeFilters)
+
+    filteredGenotypes = SomaticAverageBaseQualityFilter(filteredGenotypes, args.minAverageBaseQuality, args.debugGenotypeFilters)
 
     filteredGenotypes
   }
