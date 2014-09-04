@@ -1,19 +1,19 @@
 package org.bdgenomics.guacamole
 
-import org.bdgenomics.guacamole.Common._
-import org.apache.spark.rdd._
-import org.apache.spark.SparkContext._
-import org.apache.spark.broadcast.Broadcast
 import org.apache.commons.math3
+import org.apache.spark.SparkContext._
 import org.apache.spark._
-import org.bdgenomics.guacamole.reads.MappedRead
-import scala.reflect.ClassTag
-import org.bdgenomics.guacamole.Common.Arguments.{ Loci, Base }
-import org.kohsuke.args4j.{ Option => Opt }
-import org.bdgenomics.guacamole.pileup.Pileup
-import scala.Some
+import org.apache.spark.broadcast.Broadcast
+import org.apache.spark.rdd._
 import org.apache.spark.serializer.JavaSerializer
-import scala.collection.mutable.{ HashMap => MutableHashMap, ArrayBuffer }
+import org.bdgenomics.guacamole.Common.Arguments.{ Base, Loci }
+import org.bdgenomics.guacamole.Common._
+import org.bdgenomics.guacamole.pileup.Pileup
+import org.bdgenomics.guacamole.reads.MappedRead
+import org.kohsuke.args4j.{ Option => Opt }
+
+import scala.collection.mutable.{ ArrayBuffer, HashMap => MutableHashMap }
+import scala.reflect.ClassTag
 
 object DistributedUtil extends Logging {
   trait Arguments extends Base with Loci {
@@ -85,7 +85,8 @@ object DistributedUtil extends Logging {
    * mapped to them removed. Also prints out progress info on the number of regions assigned to each contig.
    */
   def filterLociWhoseContigsHaveNoRegions[M <: HasReferenceRegion](loci: LociSet, regions: RDD[M]): LociSet = {
-    val contigsAndCounts = regions.map(_.referenceContig).countByValue.toMap.withDefaultValue(0L)
+    val contigsInLociSet = loci.contigs.toSet
+    val contigsAndCounts = regions.map(_.referenceContig).filter(contigsInLociSet.contains(_)).countByValue.toMap.withDefaultValue(0L)
     Common.progress("Region counts per contig: %s".format(
       contigsAndCounts.toSeq.sorted.map(pair => "%s=%,d".format(pair._1, pair._2)).mkString(" ")))
     val contigsWithoutRegions = loci.contigs.filter(contigsAndCounts(_) == 0L).toSet
@@ -122,7 +123,7 @@ object DistributedUtil extends Logging {
    *  - Does not require a distributed sort.
    *
    * @param tasks number of partitions
-   * @param loci loci to partition
+   * @param lociUsed loci to partition
    * @param accuracy integer >= 1. Higher values of this will result in a more exact but also more expensive computation.
    *                 Specifically, this is the number of micro partitions to use per task to estimate the region depth.
    *                 In the extreme case, setting this to greater than the number of loci per task will result in an
@@ -131,11 +132,8 @@ object DistributedUtil extends Logging {
    *                Any number RDD[ReferenceRegion] arguments giving the regions to base the partitioning on.
    * @return LociMap of locus -> task assignments.
    */
-  def partitionLociByApproximateDepth[M <: HasReferenceRegion: ClassTag](tasks: Int, loci: LociSet, accuracy: Int, regionRDDs: RDD[M]*): LociMap[Long] = {
+  def partitionLociByApproximateDepth[M <: HasReferenceRegion: ClassTag](tasks: Int, lociUsed: LociSet, accuracy: Int, regionRDDs: RDD[M]*): LociMap[Long] = {
     val sc = regionRDDs(0).sparkContext
-
-    // As an optimization for the case where some contigs have no overlapping regions, we remove contigs without coverage first.
-    val lociUsed = filterLociWhoseContigsHaveNoRegions(loci, sc.union(regionRDDs))
 
     // Step (1). Split loci uniformly into micro partitions.
     assume(tasks >= 1)
@@ -164,20 +162,8 @@ object DistributedUtil extends Logging {
     val counts = regionRDDs.map(regions => {
       progress("Collecting region counts for RDD %d of %d.".format(num, regionRDDs.length))
       num += 1
-      regions.mapPartitions(regionIterator => {
-        val microPartitions = broadcastMicroPartitions.value
-        assert(microPartitions.count > 0)
-        val counts = new Array[Long](numMicroPartitions)
-        regionIterator.foreach(region => {
-          val contigMap = microPartitions.onContig(region.referenceContig)
-          val indices: Set[Long] = contigMap.getAll(region.start, region.end)
-          indices.foreach(index => {
-            counts(index.toInt) += 1
-          })
-        })
-        Seq(counts).iterator
-      }).reduce(addArray)
-    }).reduce(addArray)
+      regions.mapPartitions(computeRegionDepth(numMicroPartitions, broadcastMicroPartitions, _)).reduce(addArray _)
+    }).reduce(addArray _)
 
     // Step (3)
     // Assign loci to tasks, taking into account region depth in each micro partition.
@@ -189,7 +175,6 @@ object DistributedUtil extends Logging {
       counts.min, counts.sum.toDouble / counts.length, counts.max))
 
     val builder = LociMap.newBuilder[Long]
-    builder.put(loci.filterContigs(!lociUsed.contigs.contains(_)), 0) // Empty contigs get assigned to task 0.
     var regionsAssigned = 0.0
     var task = 0L
     def regionsRemainingForThisTask = math.round(((task + 1) * regionsPerTask) - regionsAssigned).toLong
@@ -234,8 +219,22 @@ object DistributedUtil extends Logging {
       microTask += 1
     }
     val result = builder.result
-    assert(result.count == loci.count)
+    assert(result.count == lociUsed.count)
     result
+  }
+
+  def computeRegionDepth[M <: HasReferenceRegion: ClassTag](numMicroPartitions: Int, broadcastMicroPartitions: Broadcast[LociMap[Long]], regionIterator: Iterator[M]): Iterator[Array[Long]] = {
+    val microPartitions = broadcastMicroPartitions.value
+    assert(microPartitions.count > 0)
+    val counts = new Array[Long](numMicroPartitions)
+    regionIterator.foreach(region => {
+      val contigMap = microPartitions.onContig(region.referenceContig)
+      val indices: Set[Long] = contigMap.getAll(region.start, region.end)
+      indices.foreach(index => {
+        counts(index.toInt) += 1
+      })
+    })
+    Seq(counts).iterator
   }
 
   /**
@@ -352,7 +351,10 @@ object DistributedUtil extends Logging {
     windowTaskFlatMapMultipleRDDs(regionRDDs, lociPartitions, halfWindowSize, (task, taskLoci, taskRegionsSeq: Seq[Iterator[M]]) => {
       val regionSplitByContigSeq = taskRegionsSeq.map(taskRegions => new RegionsByContig(taskRegions))
       val result = new ArrayBuffer[T]
-      taskLoci.contigs.foreach(contig => {
+      val numContigs = taskLoci.contigs.size
+      var i = 0
+      while (i < numContigs) {
+        val contig = taskLoci.contigs(i)
         val regionIterator = regionSplitByContigSeq.map(_.next(contig))
         val windows = regionIterator.map(SlidingWindow[M](halfWindowSize, _))
         def windowsEmpty = windows.forall(_.currentRegions.isEmpty)
@@ -379,7 +381,8 @@ object DistributedUtil extends Logging {
             }
           }
         }
-      })
+        i += 1
+      }
       result.iterator
     })
   }

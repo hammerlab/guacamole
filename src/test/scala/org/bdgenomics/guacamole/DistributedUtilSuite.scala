@@ -91,37 +91,6 @@ class DistributedUtilSuite extends TestUtil.SparkFunSuite with Matchers {
     }
   }
 
-  sparkTest("partitionLociByApproximateReadDepth empty chromosomes") {
-    def makeRead(start: Long, length: Long) = {
-      TestUtil.makeRead("A" * length.toInt, "%sM".format(length), "%s".format(length), start, "chr5")
-    }
-    def pairsToReads(pairs: Seq[(Long, Long)]): RDD[MappedRead] = {
-      sc.parallelize(pairs.map(pair => makeRead(pair._1, pair._2)))
-    }
-    {
-      val reads = pairsToReads(Seq(
-        (5, 1),
-        (6, 1),
-        (7, 1),
-        (8, 1)))
-      val loci = LociSet.parse("chr1:0-1000000,chr5:0-100")
-      val result = DistributedUtil.partitionLociByApproximateDepth(2, loci, 100, reads)
-      result.toString should equal("chr1:0-1000000=0,chr5:0-7=0,chr5:7-100=1")
-    }
-  }
-
-  sparkTest("partitionLociByApproximateReadDepth chr20 synth1 subset") {
-    val tumorReads = TestUtil.loadReads(sc, "dream_training.chr20.mdTagged.loci0-150k.tumor.sam")
-    val normalReads = TestUtil.loadReads(sc, "dream_training.chr20.mdTagged.loci0-150k.normal.sam")
-
-    val loci = LociSet.parse("1:0-249250621,20:0-100000")
-    val partitioned = DistributedUtil.partitionLociByApproximateDepth(2, loci, 250, tumorReads.mappedReads, normalReads.mappedReads)
-    println(partitioned)
-
-    // The entire chromosome 1, which has no reads, should be assigned to task 0.
-    partitioned.filterContigs(_ == "1").toString should equal("1:0-249250621=0")
-  }
-
   sparkTest("test pileup flatmap parallelism 0; create pileups") {
 
     val reads = sc.parallelize(Seq(
