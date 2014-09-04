@@ -6,7 +6,7 @@ import org.bdgenomics.guacamole.pileup.Pileup
 import org.bdgenomics.guacamole.reads.MappedRead
 import org.scalatest.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks
-import org.bdgenomics.guacamole.filters.GenotypeFilter
+import org.bdgenomics.guacamole.filters.{ SomaticGenotypeFilter, GenotypeFilter }
 
 class SomaticLogOddsVariantCallerSuite extends SparkFunSuite with Matchers with TableDrivenPropertyChecks {
 
@@ -20,20 +20,21 @@ class SomaticLogOddsVariantCallerSuite extends SparkFunSuite with Matchers with 
    * Common algorithm parameters - fixed for all tests
    */
   val logOddsThreshold = 90
-  val minLikelihood = 30
   val minAlignmentQuality = 1
-  val minReadDepth = 8
-  val maxReadDepth = 200
-  val minAlternateReadDepth = 3
+  val minTumorReadDepth = 8
+  val minNormalReadDepth = 4
+  val maxTumorReadDepth = 200
   val maxNormalAlternateReadDepth = 5
+  val minTumorAlternateReadDepth = 3
   val maxMappingComplexity = 20
   val minAlignmentForComplexity = 1
 
   val filterMultiAllelic = false
 
-  val snvCorrelationPercent = 20
   val snvWindowRange = 25
-  val minNormalReadDepth = 3
+  val snvCorrelationPercent = 20
+  val minLikelihood = 15
+  val minVAF = 5
 
   def testVariants(tumorReads: Seq[MappedRead], normalReads: Seq[MappedRead], positions: Array[Long], isTrue: Boolean = false) = {
     val positionsTable = Table("locus", positions: _*)
@@ -44,16 +45,21 @@ class SomaticLogOddsVariantCallerSuite extends SparkFunSuite with Matchers with 
           tumorPileup,
           normalPileup,
           logOddsThreshold,
-          snvWindowRange,
-          snvCorrelationPercent,
+          snvWindowRange = snvWindowRange,
+          minNormalReadDepth = minNormalReadDepth,
+          maxNormalAlternateReadDepth = maxNormalAlternateReadDepth,
+          minAlternateReadDepth = minTumorAlternateReadDepth,
+          maxMappingComplexity = maxMappingComplexity,
+          minAlignmentForComplexity = minAlignmentForComplexity,
+          minAlignmentQuality = minAlignmentQuality,
+          filterMultiAllelic = filterMultiAllelic)
+        val hasVariant = SomaticGenotypeFilter(calledGenotypes,
+          minTumorReadDepth,
+          maxTumorReadDepth,
           minNormalReadDepth,
-          maxNormalAlternateReadDepth,
-          minAlternateReadDepth,
-          maxMappingComplexity,
-          minAlignmentForComplexity,
-          minAlignmentQuality,
-          filterMultiAllelic)
-        val hasVariant = GenotypeFilter(calledGenotypes, minReadDepth, minAlternateReadDepth, minLikelihood, maxReadDepth).size > 0
+          minTumorAlternateReadDepth,
+          logOddsThreshold,
+          minLikelihood).size > 0
         hasVariant should be(isTrue)
     }
   }

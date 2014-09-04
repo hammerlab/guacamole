@@ -1,10 +1,20 @@
 package org.bdgenomics.guacamole.variants
 
-import com.esotericsoftware.kryo.io.{Input, Output}
-import com.esotericsoftware.kryo.{Kryo, Serializer}
+import com.esotericsoftware.kryo.io.{ Input, Output }
+import com.esotericsoftware.kryo.{ Kryo, Serializer }
 import org.bdgenomics.adam.util.PhredUtils
 import org.bdgenomics.guacamole.pileup.Pileup
 
+/**
+ *
+ * @param likelihood probability of the genotype
+ * @param readDepth total reads at the genotype position
+ * @param alternateReadDepth total reads with alternate base at the genotype position
+ * @param forwardDepth total reads on the forward strand at the genotype position
+ * @param alternateForwardDepth total reads with alternate base on the forward strand at the genotype position
+ * @param averageMappingQuality average mapping quality of reads
+ * @param averageBaseQuality average base quality of bases covering this position
+ */
 case class GenotypeEvidence(likelihood: Double,
                             readDepth: Int,
                             alternateReadDepth: Int,
@@ -13,7 +23,7 @@ case class GenotypeEvidence(likelihood: Double,
                             averageMappingQuality: Double,
                             averageBaseQuality: Double) {
 
-  lazy val phredScaledLikelihood = PhredUtils.successProbabilityToPhred(likelihood - 1e-10)
+  lazy val phredScaledLikelihood = PhredUtils.successProbabilityToPhred(likelihood - 1e-10) //subtract small delta to prevent p = 1
   lazy val variantAlleleFrequency = alternateReadDepth.toFloat / readDepth
 }
 

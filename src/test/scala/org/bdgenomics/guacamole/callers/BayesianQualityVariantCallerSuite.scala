@@ -1,8 +1,8 @@
 package org.bdgenomics.guacamole.callers
 
 import org.bdgenomics.guacamole.TestUtil.SparkFunSuite
+import org.bdgenomics.guacamole.variants.GenotypeAlleles
 import org.bdgenomics.guacamole.{ Bases, TestUtil }
-import org.bdgenomics.guacamole.genotype.GenotypeAlleles
 import org.bdgenomics.guacamole.pileup.Pileup
 import org.bdgenomics.formats.avro.GenotypeAllele
 import scala.collection.JavaConversions._

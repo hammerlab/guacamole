@@ -1,14 +1,10 @@
 package org.bdgenomics.guacamole.variants
 
-
-import com.esotericsoftware.kryo.io.{Input, Output}
-import com.esotericsoftware.kryo.{Kryo, Serializer}
-import org.bdgenomics.formats.avro.{Contig, Genotype, GenotypeAllele, Variant}
-import org.bdgenomics.guacamole.Bases
+import com.esotericsoftware.kryo.io.{ Input, Output }
+import com.esotericsoftware.kryo.{ Kryo, Serializer }
+import org.bdgenomics.formats.avro.{ Genotype, GenotypeAllele }
 
 import scala.collection.JavaConversions
-
-
 
 object CalledGenotype {
 
@@ -43,7 +39,7 @@ case class CalledGenotype(sampleName: String,
                           referenceBase: Byte,
                           alternateBase: Seq[Byte],
                           evidence: GenotypeEvidence,
-                          length: Int = 1) extends Variant {
+                          length: Int = 1) extends ReferenceVariant {
   val end: Long = start + 1L
 
 }
@@ -97,13 +93,13 @@ case class CalledSomaticGenotype(sampleName: String,
                                  somaticLogOdds: Double,
                                  tumorEvidence: GenotypeEvidence,
                                  normalEvidence: GenotypeEvidence,
-                                 length: Int = 1) extends Variant {
+                                 length: Int = 1) extends ReferenceVariant {
   val end: Long = start + 1L
 }
 
 class CalledSomaticGenotypeSerializer extends Serializer[CalledSomaticGenotype] {
 
-  lazy val genotypeEvidenceSeralizer = new GenotypeEvidenceSerializer()
+  lazy val genotypeEvidenceSerializer = new GenotypeEvidenceSerializer()
 
   def write(kryo: Kryo, output: Output, obj: CalledSomaticGenotype) = {
     output.writeString(obj.sampleName)
@@ -114,8 +110,8 @@ class CalledSomaticGenotypeSerializer extends Serializer[CalledSomaticGenotype] 
     output.writeBytes(obj.alternateBase.toArray)
     output.writeDouble(obj.somaticLogOdds)
 
-    genotypeEvidenceSeralizer.write(kryo, output, obj.tumorEvidence)
-    genotypeEvidenceSeralizer.write(kryo, output, obj.normalEvidence)
+    genotypeEvidenceSerializer.write(kryo, output, obj.tumorEvidence)
+    genotypeEvidenceSerializer.write(kryo, output, obj.normalEvidence)
 
     output.writeInt(obj.length, true)
 
@@ -131,8 +127,8 @@ class CalledSomaticGenotypeSerializer extends Serializer[CalledSomaticGenotype] 
     val alternateBase = input.readBytes(alternateLength).toSeq
     val somaticLogOdds = input.readDouble()
 
-    val tumorEvidence = genotypeEvidenceSeralizer.read(kryo, input, classOf[GenotypeEvidence])
-    val normalEvidence = genotypeEvidenceSeralizer.read(kryo, input, classOf[GenotypeEvidence])
+    val tumorEvidence = genotypeEvidenceSerializer.read(kryo, input, classOf[GenotypeEvidence])
+    val normalEvidence = genotypeEvidenceSerializer.read(kryo, input, classOf[GenotypeEvidence])
 
     val length: Int = input.readInt(true)
 
@@ -150,6 +146,4 @@ class CalledSomaticGenotypeSerializer extends Serializer[CalledSomaticGenotype] 
   }
 
 }
-
-
 
