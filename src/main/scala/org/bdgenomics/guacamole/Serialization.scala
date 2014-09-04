@@ -21,6 +21,7 @@ package org.bdgenomics.guacamole
 import com.esotericsoftware.kryo.Kryo
 import org.bdgenomics.adam.serialization.{ ADAMKryoRegistrator }
 import org.bdgenomics.guacamole.reads.{ UnmappedReadSerializer, MappedReadSerializer, MappedRead, UnmappedRead }
+import org.bdgenomics.guacamole.variants._
 
 class GuacamoleKryoRegistrator extends ADAMKryoRegistrator {
   override def registerClasses(kryo: Kryo) {
@@ -42,5 +43,8 @@ class GuacamoleKryoRegistrator extends ADAMKryoRegistrator {
     kryo.register(classOf[LociSet.SingleContig], new LociSetSingleContigSerializer)
     kryo.register(classOf[LociMap[Long]], new LociMapLongSerializer)
     kryo.register(classOf[LociMap.SingleContig[Long]], new LociMapLongSingleContigSerializer)
+    kryo.register(classOf[CalledGenotype], new CalledGenotypeSerializer)
+    kryo.register(classOf[CalledSomaticGenotype], new CalledSomaticGenotypeSerializer)
+    kryo.register(classOf[GenotypeEvidence], new GenotypeEvidenceSerializer)
   }
 }
