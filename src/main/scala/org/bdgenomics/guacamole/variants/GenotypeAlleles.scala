@@ -1,21 +1,18 @@
 package org.bdgenomics.guacamole.variants
 
-import com.esotericsoftware.kryo.io.{Input, Output}
-import com.esotericsoftware.kryo.{Kryo, Serializer}
 import org.bdgenomics.formats.avro.GenotypeAllele
 
 /**
- * A GenotypeAllele is a sequence of alleles of length equal to the ploidy of the organism.
+ * A Genotype is a sequence of alleles of length equal to the ploidy of the organism.
  *
- * A GenotypeAllele is for a particular reference locus. Each allele gives the base(s) present on a chromosome at that
+ * A Genotype is for a particular reference locus. Each allele gives the base(s) present on a chromosome at that
  * locus.
  *
  * For example, the possible single-base diploid genotypes are Seq('A', 'A'), Seq('A', 'T') ... Seq('T', 'T').
  * Alleles can also be multiple bases as well, e.g. Seq("AAA", "T")
  *
  */
-case class GenotypeAlleles(alleles: Seq[Byte]*) extends Serializable {
-
+case class GenotypeAlleles(alleles: Seq[Byte]*) {
   /**
    * The ploidy of the organism is the number of alleles in the genotype.
    */
@@ -68,26 +65,4 @@ case class GenotypeAlleles(alleles: Seq[Byte]*) extends Serializable {
     }
   }
 
-}
-
-class GenotypeAllelesSerializer extends Serializer[GenotypeAlleles] {
-  def write(kryo: Kryo, output: Output, obj: GenotypeAlleles) = {
-    output.writeInt(obj.ploidy)
-    obj.alleles.foreach(allele => {
-      output.writeInt(allele.length)
-      output.writeBytes(allele.toArray)
-    })
-  }
-
-  def read(kryo: Kryo, input: Input, klass: Class[GenotypeAlleles]): GenotypeAlleles = {
-
-    val ploidy = input.readInt()
-    val alleles: Seq[Seq[Byte]] = (0 until ploidy).map(i => {
-      val length = input.readInt(true)
-      input.readBytes(length).toSeq
-    })
-
-    GenotypeAlleles(alleles: _*)
-
-  }
 }
