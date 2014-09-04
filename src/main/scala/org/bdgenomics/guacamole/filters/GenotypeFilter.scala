@@ -90,7 +90,6 @@ object MinimumAlternateReadDepthFilter {
   def hasMinimumAlternateReadDepth(genotypeEvidence: GenotypeEvidence,
                                    minAlternateReadDepth: Int): Boolean = {
     genotypeEvidence.alternateReadDepth >= minAlternateReadDepth
-
   }
 }
 

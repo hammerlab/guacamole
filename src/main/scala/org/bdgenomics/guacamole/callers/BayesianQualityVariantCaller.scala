@@ -92,7 +92,8 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
               samplePileup.locus,
               referenceBase,
               alternate,
-              GenotypeEvidence(probability,
+              GenotypeEvidence(
+                probability,
                 alternate,
                 samplePileup
               )
