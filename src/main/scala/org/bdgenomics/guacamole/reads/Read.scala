@@ -57,9 +57,8 @@ trait Read {
 
   val matePropertiesOpt: Option[MateProperties]
 
-  // A couple of accessors, for convenience.
-  def isPaired = matePropertiesOpt.isDefined
-  def inferredInsertSize = matePropertiesOpt.flatMap(_.inferredInsertSize)
+  /** Whether read is from a paired-end library */
+  val isPaired: Boolean = matePropertiesOpt.isDefined
 
 }
 
@@ -112,14 +111,15 @@ object Read extends Logging {
     }
 
     if (referenceContig.isEmpty) {
-      UnmappedRead(token,
+      UnmappedRead(
+        token,
         sequenceArray,
         qualityScoresArray,
         isDuplicate,
         sampleName.intern,
         failedVendorQualityChecks,
         isPositiveStrand,
-        matePropertiesOpt
+        matePropertiesOpt = matePropertiesOpt
       )
     } else {
       val cigar = TextCigarCodec.getSingleton.decode(cigarString)
@@ -136,7 +136,7 @@ object Read extends Logging {
         mdTagString,
         failedVendorQualityChecks,
         isPositiveStrand,
-        matePropertiesOpt
+        matePropertiesOpt = matePropertiesOpt
       )
     }
   }
@@ -224,7 +224,6 @@ object Read extends Logging {
         !record.getReadNegativeStrandFlag,
         matePropertiesOpt = matePropertiesOpt
       )
-
       Some(result)
     }
   }
