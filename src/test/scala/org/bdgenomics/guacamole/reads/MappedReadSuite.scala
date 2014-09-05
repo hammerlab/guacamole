@@ -1,7 +1,8 @@
 package org.bdgenomics.guacamole.reads
 
 import net.sf.samtools.TextCigarCodec
-import org.bdgenomics.guacamole.{ Bases, TestUtil }
+import org.bdgenomics.guacamole.TestUtil
+import org.bdgenomics.guacamole.TestUtil.Implicits._
 import org.scalatest.Matchers
 
 class MappedReadSuite extends TestUtil.SparkFunSuite with Matchers {
@@ -9,7 +10,7 @@ class MappedReadSuite extends TestUtil.SparkFunSuite with Matchers {
   test("mappedread is mapped") {
     val read = MappedRead(
       5, // token
-      Bases.stringToBases("TCGACCCTCGA"),
+      "TCGACCCTCGA",
       Array[Byte]((10 to 20).map(_.toByte): _*),
       true,
       "some sample name",
@@ -42,7 +43,7 @@ class MappedReadSuite extends TestUtil.SparkFunSuite with Matchers {
   test("mixed collections mapped and unmapped reads") {
     val uread = UnmappedRead(
       5, // token
-      Bases.stringToBases("TCGACCCTCGA"),
+      "TCGACCCTCGA",
       Array[Byte]((10 to 20).map(_.toByte): _*),
       true,
       "some sample name",
@@ -62,7 +63,7 @@ class MappedReadSuite extends TestUtil.SparkFunSuite with Matchers {
 
     val mread = MappedRead(
       5, // token
-      Bases.stringToBases("TCGACCCTCGA"),
+      "TCGACCCTCGA",
       Array[Byte]((10 to 20).map(_.toByte): _*),
       true,
       "some sample name",
