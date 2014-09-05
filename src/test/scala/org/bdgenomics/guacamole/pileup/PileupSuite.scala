@@ -55,7 +55,7 @@ class PileupSuite extends TestUtil.SparkFunSuite with Matchers with TableDrivenP
 
     insertPileup.elements(0).alignment should equal(Match('A', 31.toByte))
     insertPileup.elements(1).alignment should equal(Match('A', 31.toByte))
-    insertPileup.elements(2).alignment should equal(Insertion("ACCC", Seq(31, 31, 31, 31).map(_.toByte)))
+    insertPileup.elements(2).alignment should equal(Insertion("ACCC", Seq(31, 31, 31, 31).map(_.toByte), 'A'))
   }
 
   sparkTest("create pileup from long insert reads; different qualities in insertion") {
@@ -70,9 +70,9 @@ class PileupSuite extends TestUtil.SparkFunSuite with Matchers with TableDrivenP
 
     insertPileup.elements.forall(
       _.alignment match {
-        case Match(_, quality)       => quality == 25
-        case Insertion(_, qualities) => qualities.sameElements(Seq(25, 5, 5, 5))
-        case _                       => false
+        case Match(_, quality)          => quality == 25
+        case Insertion(_, qualities, _) => qualities.sameElements(Seq(25, 5, 5, 5))
+        case _                          => false
       }) should be(true)
   }
 
@@ -164,7 +164,7 @@ class PileupSuite extends TestUtil.SparkFunSuite with Matchers with TableDrivenP
   test("insertion at contig start includes trailing base") {
     val contigStartInsertionRead = TestUtil.makeRead("AAAAAACGT", "5I4M", "4", 0, "chr1")
     val pileup = PileupElement(contigStartInsertionRead, 0)
-    pileup.alignment should equal(Insertion("AAAAAA", List(31, 31, 31, 31, 31, 31)))
+    pileup.alignment should equal(Insertion("AAAAAA", List(31, 31, 31, 31, 31, 31), 'A'))
   }
 
   test("pileup alignment at insertion cigar-element throws") {
@@ -187,15 +187,16 @@ class PileupSuite extends TestUtil.SparkFunSuite with Matchers with TableDrivenP
     firstElement.isMatch should be(true)
     firstElement.indexWithinCigarElement should be(0L)
 
-    val matchElement = firstElement.advanceToLocus(4L)
-    matchElement.isMatch should be(true)
-    matchElement.indexWithinCigarElement should be(4L)
-
-    val deletionElement = matchElement.advanceToLocus(5L)
+    val deletionElement = firstElement.advanceToLocus(4L)
+    deletionElement.alignment should equal(Deletion("GC"))
     deletionElement.isDeletion should be(true)
-    deletionElement.indexWithinCigarElement should be(0L)
+    deletionElement.indexWithinCigarElement should be(4L)
 
-    val pastDeletionElement = matchElement.advanceToLocus(6L)
+    val midDeletionElement = deletionElement.advanceToLocus(5L)
+    midDeletionElement.isMidDeletion should be(true)
+    midDeletionElement.indexWithinCigarElement should be(0L)
+
+    val pastDeletionElement = midDeletionElement.advanceToLocus(6L)
     pastDeletionElement.isMatch should be(true)
     pastDeletionElement.indexWithinCigarElement should be(0L)
 
@@ -207,9 +208,17 @@ class PileupSuite extends TestUtil.SparkFunSuite with Matchers with TableDrivenP
 
   sparkTest("Loci 10-19 deleted from half of the reads") {
     val pileup = loadPileup("same_start_reads.sam", 0)
+    val deletionPileup = pileup.atGreaterLocus(9, Seq.empty.iterator)
+    deletionPileup.elements.map(_.alignment).count {
+      case Deletion(bases) => {
+        Bases.basesToString(bases) should equal("AAAAAAAAAAA")
+        true
+      }
+      case _ => false
+    } should be(5)
     for (i <- 10 to 19) {
       val nextPileup = pileup.atGreaterLocus(i, Seq.empty.iterator)
-      nextPileup.elements.filter(_.isDeletion).length should be(5)
+      nextPileup.elements.count(_.isMidDeletion) should be(5)
     }
   }
 
@@ -244,7 +253,9 @@ class PileupSuite extends TestUtil.SparkFunSuite with Matchers with TableDrivenP
     intercept[AssertionError] { PileupElement(decadentRead1, 75) }
 
     // Just before the deletion
-    assertBases(PileupElement(decadentRead1, 5 + 28).sequencedBases, "A")
+    val deletionPileup = PileupElement(decadentRead1, 5 + 28)
+    deletionPileup.alignment should equal(Deletion("AGGGGGGGGGG"))
+
     // Inside the deletion
     val at29 = PileupElement(decadentRead1, 5 + 29)
     assert(at29.sequencedBases.size === 0)
