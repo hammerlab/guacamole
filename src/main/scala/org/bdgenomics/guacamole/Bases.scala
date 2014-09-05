@@ -20,6 +20,7 @@ package org.bdgenomics.guacamole
  *
  */
 object Bases {
+
   /** Standard bases. Note that other bases are sometimes used as well (e.g. "N"). */
   val A = "A".getBytes()(0)
   val C = "C".getBytes()(0)
@@ -61,13 +62,4 @@ object Bases {
     bases.map(_.toChar).mkString
   }
 
-  /** Are the two given base sequences equal? */
-  def equal(bases1: Array[Byte], bases2: Array[Byte]): Boolean = {
-    bases1.sameElements(bases2)
-  }
-
-  /* Is the first base sequence equal to the second string? */
-  def equalString(bases1: Array[Byte], bases2: String): Boolean = {
-    bases1.sameElements(stringToBases(bases2))
-  }
 }
