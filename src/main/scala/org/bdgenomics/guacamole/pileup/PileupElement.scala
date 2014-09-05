@@ -4,7 +4,6 @@ import net.sf.samtools.{ CigarOperator, CigarElement }
 import org.bdgenomics.guacamole.CigarUtils
 import org.bdgenomics.guacamole.reads.MappedRead
 import scala.annotation.tailrec
-import scala.math
 
 /**
  * A [[PileupElement]] represents the bases  sequenced by a particular read at a particular reference locus.
