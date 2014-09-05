@@ -15,7 +15,7 @@ import org.apache.log4j.{ Level, Logger }
 import org.apache.spark.SparkContext
 import org.bdgenomics.adam.cli.SparkArgs
 import org.bdgenomics.guacamole.pileup.Pileup
-import org.bdgenomics.guacamole.reads.{ MateProperties, Read, MappedRead }
+import org.bdgenomics.guacamole.reads.{ MappedRead, MateProperties, Read }
 import org.scalatest._
 
 import scala.math._
@@ -55,7 +55,7 @@ object TestUtil extends Matchers {
                mdtag: String,
                start: Long = 1,
                chr: String = "chr1",
-               qualityScores: Option[Array[Int]] = None,
+               qualityScores: Option[Seq[Int]] = None,
                alignmentQuality: Int = 30): MappedRead = {
 
     val qualityScoreString = if (qualityScores.isDefined) {

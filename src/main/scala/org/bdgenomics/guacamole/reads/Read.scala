@@ -31,11 +31,11 @@ trait Read {
   val token: Int
 
   /** The nucleotide sequence. */
-  val sequence: Array[Byte]
+  val sequence: Seq[Byte]
   lazy val sequenceStr = Bases.basesToString(sequence)
 
   /** The base qualities, phred scaled.  These are numbers, and are NOT character encoded. */
-  val baseQualities: Array[Byte]
+  val baseQualities: Seq[Byte]
 
   /** Is this read a duplicate of another? */
   val isDuplicate: Boolean

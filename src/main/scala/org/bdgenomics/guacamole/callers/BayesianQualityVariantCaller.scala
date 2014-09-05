@@ -12,77 +12,12 @@ import org.bdgenomics.guacamole.concordance.GenotypesEvaluator.GenotypeConcordan
 import org.bdgenomics.guacamole.filters.GenotypeFilter.GenotypeFilterArguments
 import org.bdgenomics.guacamole.filters.PileupFilter.PileupFilterArguments
 import org.bdgenomics.guacamole.filters.{ GenotypeFilter, QualityAlignedReadsFilter }
+import org.bdgenomics.guacamole.genotype.GenotypeAlleles
 import org.bdgenomics.guacamole.pileup.{ Pileup, PileupElement }
 import org.bdgenomics.guacamole.reads.Read
 import org.kohsuke.args4j.Option
 
 import scala.collection.JavaConversions
-
-/**
- * A Genotype is a sequence of alleles of length equal to the ploidy of the organism.
- *
- * A Genotype is for a particular reference locus. Each allele gives the base(s) present on a chromosome at that
- * locus.
- *
- * For example, the possible single-base diploid genotypes are Seq('A', 'A'), Seq('A', 'T') ... Seq('T', 'T').
- * Alleles can also be multiple bases as well, e.g. Seq("AAA", "T")
- *
- */
-case class GenotypeAlleles(alleles: String*) {
-
-  /**
-   * The ploidy of the organism is the number of alleles in the genotype.
-   */
-  val ploidy = alleles.size
-
-  lazy val uniqueAllelesCount = alleles.toSet.size
-
-  def getNonReferenceAlleles(referenceAllele: String): Seq[String] = {
-    alleles.filter(_ != referenceAllele)
-  }
-
-  /**
-   * Counts alleles in this genotype that are not the same as the specified reference allele.
-   *
-   * @param referenceAllele Reference allele to compare against
-   * @return Count of non reference alleles
-   */
-  def numberOfVariants(referenceAllele: String): Int = {
-    getNonReferenceAlleles(referenceAllele).size
-  }
-
-  /**
-   * Returns whether this genotype contains any non-reference alleles for a given reference sequence.
-   *
-   * @param referenceAllele Reference allele to compare against
-   * @return True if at least one allele is not the reference
-   */
-  def isVariant(referenceAllele: String): Boolean = {
-    numberOfVariants(referenceAllele) > 0
-  }
-
-  /**
-   * Transform the alleles in this genotype to the ADAM allele enumeration.
-   * Classifies alleles as Reference or Alternate.
-   *
-   * @param referenceAllele Reference allele to compare against
-   * @return Sequence of GenotypeAlleles which are Ref, Alt or OtherAlt.
-   */
-  def getGenotypeAlleles(referenceAllele: String): Seq[GenotypeAllele] = {
-    assume(ploidy == 2)
-    val numVariants = numberOfVariants(referenceAllele)
-    if (numVariants == 0) {
-      Seq(GenotypeAllele.Ref, GenotypeAllele.Ref)
-    } else if (numVariants > 0 && uniqueAllelesCount == 1) {
-      Seq(GenotypeAllele.Alt, GenotypeAllele.Alt)
-    } else if (numVariants >= 2 && uniqueAllelesCount > 1) {
-      Seq(GenotypeAllele.Alt, GenotypeAllele.OtherAlt)
-    } else {
-      Seq(GenotypeAllele.Ref, GenotypeAllele.Alt)
-    }
-  }
-
-}
 
 /**
  * Simple Bayesian variant caller implementation that uses the base and read quality score
@@ -154,14 +89,16 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
         val genotypeLikelihoods = computeLogLikelihoods(Pileup(samplePileup.locus, filteredPileupElements))
         val mostLikelyGenotype = genotypeLikelihoods.maxBy(_._2)
 
+        val referenceBase = samplePileup.referenceBase
+
         def buildVariants(genotype: GenotypeAlleles, probability: Double): Seq[Genotype] = {
-          val genotypeAlleles = JavaConversions.seqAsJavaList(genotype.getGenotypeAlleles(Bases.baseToString(pileup.referenceBase)))
-          genotype.getNonReferenceAlleles(Bases.baseToString(pileup.referenceBase)).map(
+          val genotypeAlleles = JavaConversions.seqAsJavaList(genotype.getGenotypeAlleles(pileup.referenceBase))
+          genotype.getNonReferenceAlleles(pileup.referenceBase).map(
             variantAllele => {
               val variant = Variant.newBuilder
                 .setStart(pileup.locus)
                 .setReferenceAllele(Bases.baseToString(pileup.referenceBase))
-                .setAlternateAllele(variantAllele)
+                .setAlternateAllele(Bases.basesToString(variantAllele))
                 .setContig(Contig.newBuilder.setContigName(pileup.referenceName).build)
                 .build
               Genotype.newBuilder
@@ -181,11 +118,15 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
    *
    * @return Sequence of possible genotypes
    */
-  def getPossibleGenotypes(pileup: Pileup): Seq[GenotypeAlleles] = {
-    // We prefer to work with Strings than with Array[Byte] for nucleotide sequences, so we convert to Strings as we
-    // extract sequences from the Pileup. If this turns into a production variant caller, we may want to use the more
-    // efficient Array[Byte] type everywhere.
-    val possibleAlleles = pileup.elements.map(e => Bases.basesToString(e.sequencedBases)).distinct.sorted
+  def getPossibleAlleles(pileup: Pileup): Seq[GenotypeAlleles] = {
+
+    object AlleleOrdering extends Ordering[Seq[Byte]] {
+      override def compare(x: Seq[Byte], y: Seq[Byte]): Int = {
+        Bases.basesToString(x).compare(Bases.basesToString(y))
+      }
+    }
+
+    val possibleAlleles = pileup.elements.map(e => e.sequencedBases).distinct.sorted(AlleleOrdering)
     val possibleGenotypes =
       for (i <- 0 until possibleAlleles.size; j <- i until possibleAlleles.size)
         yield GenotypeAlleles(possibleAlleles(i), possibleAlleles(j))
@@ -195,19 +136,20 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
   /**
    * For each possible genotype based on the pileup sequencedBases, compute the likelihood.
    *
-   * @return Sequence of (Genotype, Likelihood)
+   * @return Sequence of (GenotypeAlleles, Likelihood)
    */
   def computeLikelihoods(pileup: Pileup,
                          prior: GenotypeAlleles => Double = computeUniformGenotypePrior,
                          includeAlignmentLikelihood: Boolean = true,
                          normalize: Boolean = false): Seq[(GenotypeAlleles, Double)] = {
-    val possibleGenotypes = getPossibleGenotypes(pileup)
-    val genotypeLikelihoods = possibleGenotypes.map(g =>
-      (g, prior(g) * computeGenotypeLikelihoods(pileup, g, possibleGenotypes.size - 1, includeAlignmentLikelihood)))
+    val possibleGenotypes = getPossibleAlleles(pileup)
+    val genotypeLikelihoods = pileup.elements.map(el =>
+      computeGenotypeLikelihoods(el, possibleGenotypes, includeAlignmentLikelihood)).transpose.map(l => l.product / math.pow(2, l.length))
+
     if (normalize) {
-      normalizeLikelihoods(genotypeLikelihoods)
+      normalizeLikelihoods(possibleGenotypes.zip(genotypeLikelihoods))
     } else {
-      genotypeLikelihoods
+      possibleGenotypes.zip(genotypeLikelihoods)
     }
 
   }
@@ -215,14 +157,14 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
   /**
    * See computeLikelihoods, same computation in log-space
    *
-   * @return Sequence of (Genotype, LogLikelihood)
+   * @return Sequence of (GenotypeAlleles, LogLikelihood)
    */
   def computeLogLikelihoods(pileup: Pileup,
                             prior: GenotypeAlleles => Double = computeUniformGenotypeLogPrior,
                             includeAlignmentLikelihood: Boolean = false): Seq[(GenotypeAlleles, Double)] = {
-    val possibleGenotypes = getPossibleGenotypes(pileup)
+    val possibleGenotypes = getPossibleAlleles(pileup)
     possibleGenotypes.map(g =>
-      (g, prior(g) + computeGenotypeLogLikelihoods(pileup, g, possibleGenotypes.size - 1, includeAlignmentLikelihood)))
+      (g, prior(g) + computeGenotypeLogLikelihoods(pileup, g, includeAlignmentLikelihood)))
   }
 
   /**
@@ -237,15 +179,22 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
    *
    *  @return likelihood for genotype based on P( bases in pileup | genotype )
    */
-  protected def computeGenotypeLikelihoods(pileup: Pileup,
-                                           genotype: GenotypeAlleles,
-                                           numAlternateAlleles: Int,
-                                           includeAlignmentLikelihood: Boolean = false): Double = {
 
-    val depth = pileup.elements.size
-    pileup.elements
-      .map(computeBaseGenotypeLikelihood(_, genotype, includeAlignmentLikelihood))
-      .reduce(_ * _) / math.pow(genotype.ploidy, depth)
+  protected def computeGenotypeLikelihoods(element: PileupElement,
+                                           genotypes: Seq[GenotypeAlleles],
+                                           includeAlignmentLikelihood: Boolean = false): Seq[Double] = {
+
+    val baseCallProbability = PhredUtils.phredToSuccessProbability(element.qualityScore)
+    val successProbability = if (includeAlignmentLikelihood) {
+      baseCallProbability * element.read.alignmentLikelihood
+    } else {
+      baseCallProbability
+    }
+
+    genotypes.map(genotype =>
+      genotype.alleles.map(referenceAllele =>
+        if (referenceAllele == element.sequencedBases) successProbability else (1 - successProbability)).sum)
+
   }
 
   /**
@@ -255,7 +204,6 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
    */
   protected def computeGenotypeLogLikelihoods(pileup: Pileup,
                                               genotype: GenotypeAlleles,
-                                              numAlternateAlleles: Int,
                                               includeAlignmentLikelihood: Boolean = false): Double = {
 
     val depth = pileup.elements.size
@@ -283,16 +231,17 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
   private def computeBaseGenotypeLikelihood(element: PileupElement,
                                             genotype: GenotypeAlleles,
                                             includeAlignmentLikelihood: Boolean = false): Double = {
-    def computeBaseLikelihood(element: PileupElement, referenceAllele: String): Double = {
+    def computeBaseLikelihood(element: PileupElement, referenceAllele: Seq[Byte]): Double = {
       val baseCallProbability = PhredUtils.phredToErrorProbability(element.qualityScore)
       val errorProbability = if (includeAlignmentLikelihood) {
-        baseCallProbability + PhredUtils.phredToErrorProbability(element.read.alignmentQuality)
+        baseCallProbability + element.read.alignmentLikelihood
       } else {
         baseCallProbability
       }
 
-      if (Bases.basesToString(element.sequencedBases) == referenceAllele) 1 - errorProbability else errorProbability
+      if (element.sequencedBases == referenceAllele) 1 - errorProbability else errorProbability
     }
+
     genotype.alleles.map(referenceAllele => computeBaseLikelihood(element, referenceAllele)).sum
   }
 
