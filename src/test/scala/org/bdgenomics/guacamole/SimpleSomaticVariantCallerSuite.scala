@@ -20,14 +20,14 @@
 package org.bdgenomics.guacamole
 
 import org.bdgenomics.formats.avro.{ Genotype }
-import org.scalatest.matchers.ShouldMatchers
+import org.scalatest.Matchers
 import org.bdgenomics.adam.rdd.ADAMContext._
 import org.apache.spark.SparkContext._
 import org.apache.spark.rdd.RDD
 import org.apache.spark.rdd.OrderedRDDFunctions
 import org.bdgenomics.guacamole.somatic.{ Reference, SimpleRead, SimpleSomaticVariantCaller }
 
-class SimpleSomaticVariantCallerSuite extends TestUtil.SparkFunSuite with ShouldMatchers {
+class SimpleSomaticVariantCallerSuite extends TestUtil.SparkFunSuite with Matchers {
   // Disabling for now to allow Spark 1.0 upgrade to go through.
   // Will have to revisit this.
 

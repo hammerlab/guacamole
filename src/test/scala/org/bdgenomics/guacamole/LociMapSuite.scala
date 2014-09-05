@@ -129,7 +129,7 @@ class LociMapSuite extends TestUtil.SparkFunSuite with Matchers {
     contigMap.union(emptyMap) should equal(contigMap)
 
     val emptyMapWrongContig = new LociMap.SingleContig("chr2", ImmutableRangeMap.builder[JLong, String]().build())
-    val caught = evaluating { contigMap.union(emptyMapWrongContig) } should produce[AssertionError]
+    val caught = the[AssertionError] thrownBy { contigMap.union(emptyMapWrongContig) }
     caught.getMessage should include("different contigs: chr1 and chr2")
   }
 

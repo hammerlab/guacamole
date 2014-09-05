@@ -60,9 +60,9 @@ class ThresholdVariantCallerSuite extends FunSuite with Matchers {
     genotypes.foreach(gt => assert(gt.getAlleles.toList === List(GenotypeAllele.Alt, GenotypeAllele.Alt)))
 
     genotypes.length should be(1)
-    genotypes.head.variant.start should be(1)
-    genotypes.head.variant.referenceAllele.toString should be("T")
-    genotypes.head.variant.alternateAllele.toString should be("G")
+    genotypes.head.getVariant.getStart should be(1)
+    genotypes.head.getVariant.getReferenceAllele.toString should be("T")
+    genotypes.head.getVariant.getAlternateAllele.toString should be("G")
   }
 
   test("homozygous alt variant, threshold 50; no reference bases observed") {
@@ -74,9 +74,9 @@ class ThresholdVariantCallerSuite extends FunSuite with Matchers {
     val genotypes = ThresholdVariantCaller.callVariantsAtLocus(pileup, 50, emitRef = false)
 
     genotypes.length should be(1)
-    genotypes.head.variant.start should be(2)
-    genotypes.head.variant.referenceAllele.toString should be("C")
-    genotypes.head.variant.alternateAllele.toString should be("G")
+    genotypes.head.getVariant.getStart should be(2)
+    genotypes.head.getVariant.getReferenceAllele.toString should be("C")
+    genotypes.head.getVariant.getAlternateAllele.toString should be("G")
 
     genotypes.foreach(gt => assert(gt.getAlleles.toList === List(GenotypeAllele.Alt, GenotypeAllele.Alt)))
   }
