@@ -22,6 +22,11 @@ import scala.math._
 
 object TestUtil extends Matchers {
 
+  object Implicits {
+    implicit def basesToString = Bases.basesToString _
+    implicit def stringToBases = Bases.stringToBases _
+  }
+
   // As a hack to run a single unit test, you can set this to the name of a test to run only it. See the top of
   // DistributedUtilSuite for an example.
   var runOnly: String = ""
@@ -104,6 +109,8 @@ object TestUtil extends Matchers {
       )
     ).getMappedReadOpt.get
   }
+
+  def assertBases(bases1: String, bases2: String) = bases1 should equal(bases2)
 
   def testDataPath(filename: String): String = {
     val resource = ClassLoader.getSystemClassLoader.getResource(filename)
