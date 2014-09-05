@@ -80,9 +80,10 @@ object AbnormalInsertSizePileupFilter {
    */
   def apply(elements: Seq[PileupElement], maxAbnormalInsertSizeReadsThreshold: Int, minInsertSize: Int = 5, maxInsertSize: Int = 1000): Seq[PileupElement] = {
     val abnormalInsertSizeReads = elements.count(el => {
-      el.read.inferredInsertSize.isDefined &&
-        (math.abs(el.read.inferredInsertSize.get) < minInsertSize ||
-          math.abs(el.read.inferredInsertSize.get) > maxInsertSize)
+      el.read.matePropertiesOpt.flatMap(_.inferredInsertSize).exists(inferredInsertSize =>
+        math.abs(inferredInsertSize) < minInsertSize ||
+          math.abs(inferredInsertSize) > maxInsertSize
+      )
     })
     if (100.0 * abnormalInsertSizeReads / elements.length > maxAbnormalInsertSizeReadsThreshold) {
       Seq.empty

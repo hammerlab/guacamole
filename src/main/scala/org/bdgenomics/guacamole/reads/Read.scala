@@ -59,7 +59,6 @@ trait Read {
 
   // A couple of accessors, for convenience.
   def isPaired = matePropertiesOpt.isDefined
-  def inferredInsertSize = matePropertiesOpt.flatMap(_.inferredInsertSize)
 
 }
 
