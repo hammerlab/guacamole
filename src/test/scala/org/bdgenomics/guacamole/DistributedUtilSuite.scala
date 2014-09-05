@@ -320,11 +320,11 @@ class DistributedUtilSuite extends TestUtil.SparkFunSuite with Matchers {
       pileup => ThresholdVariantCaller.callVariantsAtLocus(pileup, 0, false, false).iterator).collect()
 
     genotypes.length should be(1)
-    genotypes.head.variant.start should be(4)
-    genotypes.head.variant.referenceAllele.toString should be("A")
-    genotypes.head.variant.alternateAllele.toString should be("G")
+    genotypes.head.getVariant.getStart should be(4)
+    genotypes.head.getVariant.getReferenceAllele.toString should be("A")
+    genotypes.head.getVariant.getAlternateAllele.toString should be("G")
 
-    genotypes.head.alleles.toList should be(List(GenotypeAllele.Ref, GenotypeAllele.Alt))
+    genotypes.head.getAlleles.toList should be(List(GenotypeAllele.Ref, GenotypeAllele.Alt))
   }
 
   sparkTest("test pileup flatmap parallelism 3; thresholdvariant caller; no reference bases observed") {
@@ -341,9 +341,9 @@ class DistributedUtilSuite extends TestUtil.SparkFunSuite with Matchers {
       pileup => ThresholdVariantCaller.callVariantsAtLocus(pileup, 0, false, false).iterator).collect()
 
     genotypes.length should be(1)
-    genotypes.head.variant.start should be(1)
-    genotypes.head.variant.referenceAllele.toString should be("T")
-    genotypes.head.variant.alternateAllele.toString should be("C")
-    genotypes.head.alleles.toList should be(List(GenotypeAllele.Alt, GenotypeAllele.Alt))
+    genotypes.head.getVariant.getStart should be(1)
+    genotypes.head.getVariant.getReferenceAllele.toString should be("T")
+    genotypes.head.getVariant.getAlternateAllele.toString should be("C")
+    genotypes.head.getAlleles.toList should be(List(GenotypeAllele.Alt, GenotypeAllele.Alt))
   }
 }
