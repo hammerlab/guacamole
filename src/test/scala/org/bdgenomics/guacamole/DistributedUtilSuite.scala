@@ -23,6 +23,8 @@ import org.bdgenomics.formats.avro.{ GenotypeAllele, Genotype }
 import org.bdgenomics.guacamole.callers.ThresholdVariantCaller
 import org.bdgenomics.guacamole.pileup.{ Pileup, PileupElement }
 import org.bdgenomics.guacamole.reads.MappedRead
+import org.bdgenomics.guacamole.TestUtil.assertBases
+import org.bdgenomics.guacamole.TestUtil.Implicits._
 import org.scalatest.Matchers
 
 import scala.collection.JavaConversions._
@@ -248,8 +250,10 @@ class DistributedUtilSuite extends TestUtil.SparkFunSuite with Matchers {
       (pileup1, pileup2) => (pileup1.elements ++ pileup2.elements).toIterator).collect()
 
     elements.forall(_.isMatch) should be(true)
-    val concatenated = Bases.basesToString(elements.flatMap(_.sequencedSingleBaseOpt))
-    concatenated should equal("TTTACTCCCACTGGGACTAAAACTTTTACTCCCACTGGGACTAAAACTXGGGXGGGXGGGGGGGGGGGGGGGGGG")
+    assertBases(
+      elements.flatMap(_.sequencedSingleBaseOpt),
+      "TTTACTCCCACTGGGACTAAAACTTTTACTCCCACTGGGACTAAAACTXGGGXGGGXGGGGGGGGGGGGGGGGGG"
+    )
   }
 
   sparkTest("test pileup flatmap parallelism 5; create pileup elements; with indel") {

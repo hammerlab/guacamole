@@ -1,6 +1,7 @@
 package org.bdgenomics.guacamole.reads
 
-import org.bdgenomics.guacamole.{ Bases, TestUtil }
+import org.bdgenomics.guacamole.TestUtil
+import org.bdgenomics.guacamole.TestUtil.Implicits._
 import org.scalatest.Matchers
 
 class UnmappedReadSuite extends TestUtil.SparkFunSuite with Matchers {
@@ -8,7 +9,7 @@ class UnmappedReadSuite extends TestUtil.SparkFunSuite with Matchers {
   test("unmappedread is not mapped") {
     val read = UnmappedRead(
       5, // token
-      Bases.stringToBases("TCGACCCTCGA"),
+      "TCGACCCTCGA",
       Array[Byte]((10 to 20).map(_.toByte): _*),
       true,
       "some sample name",
