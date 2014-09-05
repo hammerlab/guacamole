@@ -111,14 +111,15 @@ object Read extends Logging {
     }
 
     if (referenceContig.isEmpty) {
-      UnmappedRead(token,
+      UnmappedRead(
+        token,
         sequenceArray,
         qualityScoresArray,
         isDuplicate,
         sampleName.intern,
         failedVendorQualityChecks,
         isPositiveStrand,
-        matePropertiesOpt
+        matePropertiesOpt = matePropertiesOpt
       )
     } else {
       val cigar = TextCigarCodec.getSingleton.decode(cigarString)
@@ -135,7 +136,7 @@ object Read extends Logging {
         mdTagString,
         failedVendorQualityChecks,
         isPositiveStrand,
-        matePropertiesOpt
+        matePropertiesOpt = matePropertiesOpt
       )
     }
   }
@@ -223,7 +224,6 @@ object Read extends Logging {
         !record.getReadNegativeStrandFlag,
         matePropertiesOpt = matePropertiesOpt
       )
-
       Some(result)
     }
   }
