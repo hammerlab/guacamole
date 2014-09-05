@@ -62,19 +62,6 @@ case class MappedRead(
     (pos, element) => pos + element.getLength
   })
 
-  /**
-   * Does this read overlap any of the given loci, with halfWindowSize padding?
-   */
-  def overlapsLociSet(loci: LociSet, halfWindowSize: Long = 0): Boolean = {
-    loci.onContig(referenceContig).intersects(math.max(0, start - halfWindowSize), end + halfWindowSize)
-  }
-
-  /**
-   * Does the read overlap the given locus, with halfWindowSize padding?
-   */
-  def overlapsLocus(locus: Long, halfWindowSize: Long = 0): Boolean = {
-    start - halfWindowSize <= locus && end + halfWindowSize > locus
-  }
 }
 
 case class MissingMDTagException(record: SAMRecord)
