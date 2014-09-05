@@ -10,7 +10,7 @@ package org.bdgenomics.guacamole.pileup
  *  - the base quality scores of the bases read.
  */
 private[pileup] sealed abstract class Alignment
-case class Insertion(bases: Array[Byte], baseQualities: Array[Byte]) extends Alignment
+case class Insertion(bases: Seq[Byte], baseQualities: Seq[Byte]) extends Alignment
 case class Deletion() extends Alignment
 case class Match(base: Byte, baseQuality: Byte) extends Alignment
 case class Mismatch(base: Byte, baseQuality: Byte) extends Alignment

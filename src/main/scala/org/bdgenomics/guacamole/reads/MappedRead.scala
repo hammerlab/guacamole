@@ -1,7 +1,7 @@
 package org.bdgenomics.guacamole.reads
 
 import net.sf.samtools.{ SAMRecord, Cigar }
-import org.bdgenomics.adam.util.MdTag
+import org.bdgenomics.adam.util.{ PhredUtils, MdTag }
 import org.bdgenomics.guacamole.{ LociSet, HasReferenceRegion }
 
 import scala.collection.JavaConversions
@@ -16,8 +16,8 @@ import scala.collection.JavaConversions
  */
 case class MappedRead(
     token: Int,
-    sequence: Array[Byte],
-    baseQualities: Array[Byte],
+    sequence: Seq[Byte],
+    baseQualities: Seq[Byte],
     isDuplicate: Boolean,
     sampleName: String,
     referenceContig: String,
@@ -37,6 +37,8 @@ case class MappedRead(
   lazy val mdTag = MdTag(mdTagString, start)
 
   lazy val referenceString = mdTag.getReference(sequenceStr, cigar, start)
+
+  lazy val alignmentLikelihood = PhredUtils.phredToSuccessProbability(alignmentQuality)
 
   /** Individual components of the CIGAR string (e.g. "10M"), parsed, and as a Scala buffer. */
   val cigarElements = JavaConversions.asScalaBuffer(cigar.getCigarElements)

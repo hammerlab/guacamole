@@ -6,8 +6,8 @@ package org.bdgenomics.guacamole.reads
  */
 case class UnmappedRead(
     token: Int,
-    sequence: Array[Byte],
-    baseQualities: Array[Byte],
+    sequence: Seq[Byte],
+    baseQualities: Seq[Byte],
     isDuplicate: Boolean,
     sampleName: String,
     failedVendorQualityChecks: Boolean,

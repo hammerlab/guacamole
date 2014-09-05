@@ -3,6 +3,7 @@ package org.bdgenomics.guacamole.callers
 import org.bdgenomics.guacamole._
 import org.apache.spark.Logging
 import org.bdgenomics.guacamole.Common.Arguments.{ TumorNormalReads, Output }
+import org.bdgenomics.guacamole.genotype.GenotypeAlleles
 import org.bdgenomics.guacamole.reads.Read
 import org.kohsuke.args4j.{ Option => Opt }
 import org.bdgenomics.adam.cli.Args4j
@@ -146,12 +147,12 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
       || filteredNormalPileup.depth < minNormalReadDepth)
       return Seq.empty
 
-    val referenceBase = Bases.baseToString(normalPileup.referenceBase)
+    val referenceBase = normalPileup.referenceBase
     val tumorSampleName = tumorPileup.elements(0).read.sampleName
 
-    val (alternateBase, tumorVariantLikelihood): (Option[String], Double) = callVariantInTumor(referenceBase, filteredTumorPileup)
+    val (alternateBase, tumorVariantLikelihood): (Option[Seq[Byte]], Double) = callVariantInTumor(referenceBase, filteredTumorPileup)
     alternateBase match {
-      case None | Some("") => Seq.empty
+
       case Some(alternate) => {
 
         val (alternateReadDepth, alternateForwardReadDepth) = computeDepthAndForwardDepth(filteredTumorPileup, alternate)
@@ -182,6 +183,7 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
           Seq.empty
         }
       }
+      case _ => Seq.empty
     }
   }
 
@@ -193,8 +195,8 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
    * @param tumorPileup The pileup of reads at the current locus in the tumor sample
    * @return The alternate base and the likelihood of the most likely variant
    */
-  def callVariantInTumor(referenceBase: String,
-                         tumorPileup: Pileup): (Option[String], Double) = {
+  def callVariantInTumor(referenceBase: Byte,
+                         tumorPileup: Pileup): (Option[Seq[Byte]], Double) = {
     def normalPrior(gt: GenotypeAlleles, hetVariantPrior: Double = 1e-4): Double = {
       val numberVariants = gt.numberOfVariants(referenceBase)
       if (numberVariants > 0) math.pow(hetVariantPrior / gt.uniqueAllelesCount, numberVariants) else 1
@@ -224,8 +226,8 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
    * @param base base to search for in that pileup
    * @return Number of reads that support the given base and number of reads in the forward direction that support it
    */
-  def computeDepthAndForwardDepth(pileup: Pileup, base: String): (Int, Int) = {
-    val baseElements = pileup.elements.view.filter(el => Bases.basesToString(el.sequencedBases) == base)
+  def computeDepthAndForwardDepth(pileup: Pileup, base: Seq[Byte]): (Int, Int) = {
+    val baseElements = pileup.elements.view.filter(el => el.sequencedBases == base)
     val readDepth = baseElements.length
     val baseForwardReadDepth = baseElements.count(_.read.isPositiveStrand)
     (readDepth, baseForwardReadDepth)
@@ -233,9 +235,9 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
 
   def buildVariants(sampleName: String,
                     referenceName: String,
-                    referenceBase: String,
+                    referenceBase: Byte,
                     locus: Long,
-                    alternateBase: String,
+                    alternateBase: Seq[Byte],
                     probability: Double,
                     readDepth: Int,
                     alternateReadDepth: Int,
@@ -244,8 +246,8 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
     val genotypeAlleles = JavaConversions.seqAsJavaList(Seq(GenotypeAllele.Ref, GenotypeAllele.Alt))
     val variant = Variant.newBuilder
       .setStart(locus)
-      .setReferenceAllele(referenceBase)
-      .setAlternateAllele(alternateBase)
+      .setReferenceAllele(Bases.baseToString(referenceBase))
+      .setAlternateAllele(Bases.basesToString(alternateBase))
       .setContig(Contig.newBuilder.setContigName(referenceName).build)
       .build
     Seq(Genotype.newBuilder
