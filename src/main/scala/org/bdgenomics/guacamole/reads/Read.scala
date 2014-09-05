@@ -57,8 +57,8 @@ trait Read {
 
   val matePropertiesOpt: Option[MateProperties]
 
-  // A couple of accessors, for convenience.
-  def isPaired = matePropertiesOpt.isDefined
+  /** Whether read is from a paired-end library */
+  val isPaired: Boolean = matePropertiesOpt.isDefined
 
 }
 
