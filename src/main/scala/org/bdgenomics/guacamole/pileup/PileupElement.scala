@@ -37,6 +37,11 @@ case class PileupElement(
       None
     }
 
+  lazy val referenceStringIdx =
+    (cigarElementLocus - read.start).toInt +
+      (if (cigarElement.getOperator.consumesReferenceBases()) indexWithinCigarElement else 0)
+  lazy val referenceBase = read.referenceString.charAt(referenceStringIdx).toUpper.toByte
+
   lazy val cigarElementReadLength = CigarUtils.getReadLength(cigarElement)
   lazy val cigarElementReferenceLength = CigarUtils.getReferenceLength(cigarElement)
   lazy val cigarElementEndLocus = cigarElementLocus + cigarElementReferenceLength
@@ -60,7 +65,8 @@ case class PileupElement(
         read.baseQualities.slice(
           readPosition,
           readPosition + CigarUtils.getReadLength(cigarElem) + 1
-        )
+        ),
+        referenceBase
       )
 
     (cigarOperator, nextBaseCigarOperator) match {
@@ -81,6 +87,19 @@ case class PileupElement(
       // In general, a PileupElement pointing at an Insertion cigar-element is an error.
       case (CigarOperator.I, _) => throw new InvalidCigarElementException(this)
 
+      case (CigarOperator.M | CigarOperator.EQ | CigarOperator.X, Some(CigarOperator.D)) =>
+        val deletedBases = read.referenceString.substring(
+          referenceStringIdx,
+          referenceStringIdx + 1 + nextCigarElement.get.getLength
+        )
+        Deletion(deletedBases)
+      case (CigarOperator.D, _) =>
+        MidDeletion
+      case (op, Some(CigarOperator.D)) =>
+        // TODO(ryan): are there sane cases where a 'D' is not preceded by an 'M'?
+        throw new AssertionError(
+          "Found deletion preceded by cigar operator %s at PileupElement for read %s at locus %d".format(op, read.toString, locus)
+        )
       case (CigarOperator.M, _) | (CigarOperator.EQ, _) | (CigarOperator.X, _) =>
         val base: Byte = read.sequence(readPosition)
         val quality = read.baseQualities(readPosition)
@@ -89,7 +108,7 @@ case class PileupElement(
         } else {
           Mismatch(base, quality)
         }
-      case (CigarOperator.D, _) | (CigarOperator.S, _) | (CigarOperator.N, _) | (CigarOperator.H, _) => Deletion()
+      case (CigarOperator.S, _) | (CigarOperator.N, _) | (CigarOperator.H, _) => Clipped
       case (CigarOperator.P, _) =>
         throw new AssertionError("`P` CIGAR-ops should have been ignored earlier in `findNextCigarElement`")
     }
@@ -98,8 +117,9 @@ case class PileupElement(
   /* If you only care about what kind of CigarOperator is at this position, but not its associated sequence, then you
    * can use these state variables.
    */
-  lazy val isInsertion = alignment match { case Insertion(_, _) => true; case _ => false }
-  lazy val isDeletion = alignment match { case Deletion() => true; case _ => false }
+  lazy val isInsertion = alignment match { case Insertion(_, _, _) => true; case _ => false }
+  lazy val isDeletion = alignment match { case Deletion(_) => true; case _ => false }
+  lazy val isMidDeletion = alignment match { case MidDeletion => true; case _ => false }
   lazy val isMismatch = alignment match { case Mismatch(_, _) => true; case _ => false }
   lazy val isMatch = alignment match { case Match(_, _) => true; case _ => false }
 
@@ -112,10 +132,12 @@ case class PileupElement(
    * an array of length 1.
    */
   lazy val sequencedBases: Seq[Byte] = alignment match {
-    case Deletion()          => Seq[Byte]()
-    case Match(base, _)      => Seq[Byte](base)
-    case Mismatch(base, _)   => Seq[Byte](base)
-    case Insertion(bases, _) => bases
+    case Deletion(_)            => Seq[Byte]()
+    case MidDeletion            => Seq[Byte]()
+    case Match(base, _)         => Seq[Byte](base)
+    case Mismatch(base, _)      => Seq[Byte](base)
+    case Insertion(bases, _, _) => bases
+    case Clipped                => Seq[Byte]()
   }
 
   /*
@@ -126,10 +148,10 @@ case class PileupElement(
    * For deletions this is the mapping quality as there are no base quality scores available.
    */
   lazy val qualityScore: Int = alignment match {
-    case Deletion()        => read.alignmentQuality
-    case Match(_, qs)      => qs
-    case Mismatch(_, qs)   => qs
-    case Insertion(_, qss) => qss.min
+    case Deletion(_) | Clipped | MidDeletion => read.alignmentQuality
+    case Match(_, qs)                        => qs
+    case Mismatch(_, qs)                     => qs
+    case Insertion(_, qss, _)                => qss.min
   }
 
   /**
