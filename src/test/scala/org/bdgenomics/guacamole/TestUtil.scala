@@ -64,13 +64,15 @@ object TestUtil extends Matchers {
       sequence.map(x => '@').mkString
     }
 
-    Read(sequence,
+    Read(
+      sequence,
       cigarString = cigar,
       mdTagString = mdtag,
       start = start,
       referenceContig = chr,
       baseQualities = qualityScoreString,
-      alignmentQuality = alignmentQuality).getMappedReadOpt.get
+      alignmentQuality = alignmentQuality
+    ).getMappedReadOpt.get
   }
 
   def makePairedRead(
