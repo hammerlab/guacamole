@@ -23,7 +23,6 @@ case class PileupElement(
     readPosition: Long,
     remainingReadCigar: List[CigarElement],
     cigarElementLocus: Long,
-    indexInCigarElements: Long,
     indexWithinCigarElement: Long) {
 
   assume(locus >= read.start)
@@ -139,8 +138,7 @@ case class PileupElement(
     @tailrec
     def getCurrentElement(remainingCigarElements: List[CigarElement],
                           cigarReadPosition: Long,
-                          cigarReferencePosition: Long,
-                          cigarElementIndex: Long): PileupElement = {
+                          cigarReferencePosition: Long): PileupElement = {
       if (remainingCigarElements.isEmpty) {
         throw new RuntimeException(
           "Couldn't find cigar element for locus %d, cigar string only extends to %d".format(newLocus, cigarReferencePosition))
@@ -165,19 +163,17 @@ case class PileupElement(
             finalReadPos,
             remainingCigarElements,
             cigarReferencePosition,
-            cigarElementIndex,
             offset)
         }
       }
       getCurrentElement(
         remainingCigarElements.tail,
         cigarReadPosition + cigarElementReadLength,
-        cigarReferencePosition + cigarElementReferenceLength,
-        cigarElementIndex + 1
+        cigarReferencePosition + cigarElementReferenceLength
       )
     }
 
-    getCurrentElement(remainingReadCigar, currentCigarReadPosition, cigarElementLocus, indexInCigarElements)
+    getCurrentElement(remainingReadCigar, currentCigarReadPosition, cigarElementLocus)
   }
 
   /**
@@ -202,7 +198,6 @@ object PileupElement {
       readPosition = 0,
       remainingReadCigar = read.cigarElements.toList,
       cigarElementLocus = read.start,
-      indexInCigarElements = 0,
       indexWithinCigarElement = 0)
     startElement.elementAtGreaterLocus(locus)
   }
