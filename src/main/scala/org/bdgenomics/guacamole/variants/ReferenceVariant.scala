@@ -3,6 +3,9 @@ package org.bdgenomics.guacamole.variants
 import org.bdgenomics.formats.avro.{ Contig, Variant }
 import org.bdgenomics.guacamole.{ Bases, HasReferenceRegion }
 
+/**
+ * Base properties of a genomic change in a sequence sample from a reference genome
+ */
 trait ReferenceVariant extends HasReferenceRegion {
 
   val sampleName: String
