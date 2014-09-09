@@ -1,7 +1,8 @@
 package org.bdgenomics.guacamole.callers
 
 import org.bdgenomics.guacamole.TestUtil.SparkFunSuite
-import org.bdgenomics.guacamole.TestUtil
+import org.bdgenomics.guacamole.{ Bases, TestUtil }
+import org.bdgenomics.guacamole.genotype.GenotypeAlleles
 import org.bdgenomics.guacamole.pileup.Pileup
 import org.bdgenomics.formats.avro.GenotypeAllele
 import scala.collection.JavaConversions._
@@ -12,38 +13,7 @@ class BayesianQualityVariantCallerSuite extends SparkFunSuite {
   def makeGenotype(alleles: String*): GenotypeAlleles = {
     // If we later change Genotype to work with Array[byte] instead of strings, we can use this function to convert
     // to byte arrays.
-    GenotypeAlleles(alleles: _*)
-  }
-
-  test("no variants") {
-    val reads = Seq(
-      TestUtil.makeRead("TCGATCGA", "8M", "8", 1),
-      TestUtil.makeRead("TCGATCGA", "8M", "8", 1),
-      TestUtil.makeRead("TCGATCGA", "8M", "8", 1))
-    val pileup = Pileup(reads, 1)
-    val genotypes = BayesianQualityVariantCaller.callVariantsAtLocus(pileup)
-    genotypes.foreach(gt => assert(gt.getAlleles.toList === List(GenotypeAllele.Ref, GenotypeAllele.Ref)))
-  }
-
-  test("het variant; single alternate base") {
-    val reads = Seq(
-      TestUtil.makeRead("TCGATCGA", "8M", "8", 1),
-      TestUtil.makeRead("TCGATCGA", "8M", "8", 1),
-      TestUtil.makeRead("GCGATCGA", "8M", "0G7", 1))
-    val pileup = Pileup(reads, 1)
-    val genotypes = BayesianQualityVariantCaller.callVariantsAtLocus(pileup)
-    genotypes.foreach(gt => assert(gt.getAlleles.toList === List(GenotypeAllele.Ref, GenotypeAllele.Alt)))
-
-  }
-
-  test("het variant; single reference base") {
-    val reads = Seq(
-      TestUtil.makeRead("TCGATCGA", "8M", "8", 1),
-      TestUtil.makeRead("GCGATCGA", "8M", "0G7", 1),
-      TestUtil.makeRead("GCGATCGA", "8M", "0G7", 1))
-    val pileup = Pileup(reads, 1)
-    val genotypes = BayesianQualityVariantCaller.callVariantsAtLocus(pileup)
-    genotypes.foreach(gt => assert(gt.getAlleles.toList === List(GenotypeAllele.Ref, GenotypeAllele.Alt)))
+    GenotypeAlleles(alleles.map(Bases.stringToBases(_)): _*)
   }
 
   val floatingPointingThreshold = 1e-6
