@@ -77,12 +77,10 @@ object SomaticVAFFilter {
 
   /**
    *
-   *  Apply the filter to an RDD of genotypes
-   *
    * @param genotypes RDD of genotypes to filter
-   * @param minVAF minimum likelihood
+   * @param minVAF minimum variant allele frequency
    * @param debug if true, compute the count of genotypes after filtering
-   * @return  Genotypes with tumor alternate read depth >= minAlternateReadDepth
+   * @return  Genotypes with variant allele frequency >= minVAF
    */
   def apply(genotypes: RDD[CalledSomaticGenotype],
             minVAF: Int,
@@ -103,12 +101,10 @@ object SomaticLogOddsFilter {
 
   /**
    *
-   *  Apply the filter to an RDD of genotypes
-   *
    * @param genotypes RDD of genotypes to filter
-   * @param minLogOdds minimum minLOD
+   * @param minLogOdds minimum log odd difference between tumor and normal genotypes
    * @param debug if true, compute the count of genotypes after filtering
-   * @return  Genotypes with tumor alternate read depth >= minAlternateReadDepth
+   * @return  Genotypes with tumor genotype log odds >= minLOD
    */
   def apply(genotypes: RDD[CalledSomaticGenotype],
             minLogOdds: Int,
@@ -128,25 +124,22 @@ object SomaticGenotypeFilter {
 
   trait SomaticGenotypeFilterArguments extends Base {
 
-    @Option(name = "-minLikelihood", usage = "Minimum likelihood")
+    @Option(name = "-minLikelihood", usage = "Minimum likelihood (Phred-scaled)")
     var minLikelihood: Int = 0
 
     @Option(name = "-minVAF", usage = "Minimum variant allele frequency")
     var minVAF: Int = 0
 
-    @Option(name = "-strandBiasThreshold", usage = "strandBiasThreshold")
-    var strandBiasThreshold: Int = 0
-
-    @Option(name = "-minLOD", metaVar = "X", usage = "Make a call if the probability of variant is greater than this value (Phred-scaled)")
+    @Option(name = "-minLOD", metaVar = "X", usage = "Make a call if the log odds of variant is greater than this value (Phred-scaled)")
     var minLOD: Int = 0
 
-    @Option(name = "-minTumorReadDepth", usage = "Minimum number of reads for a genotype call")
+    @Option(name = "-minTumorReadDepth", usage = "Minimum number of reads in tumor sample for a genotype call")
     var minTumorReadDepth: Int = 0
 
-    @Option(name = "-minNormalReadDepth", usage = "Minimum number of reads for a genotype call")
+    @Option(name = "-minNormalReadDepth", usage = "Minimum number of reads in normal sample for a genotype call")
     var minNormalReadDepth: Int = 0
 
-    @Option(name = "-maxTumorReadDepth", usage = "Minimum number of reads for a genotype call")
+    @Option(name = "-maxTumorReadDepth", usage = "Maximum number of reads in tumor sample for a genotype call")
     var maxTumorReadDepth: Int = Int.MaxValue
 
     @Option(name = "-minTumorAlternateReadDepth", usage = "Minimum number of reads with alternate allele for a genotype call")
@@ -157,6 +150,9 @@ object SomaticGenotypeFilter {
 
   }
 
+  /**
+   * Filter an RDD of Somatic Genotypes with all applicable filters
+   */
   def apply(genotypes: RDD[CalledSomaticGenotype], args: SomaticGenotypeFilterArguments): RDD[CalledSomaticGenotype] = {
     var filteredGenotypes = genotypes
 
@@ -173,6 +169,10 @@ object SomaticGenotypeFilter {
     filteredGenotypes
   }
 
+  /**
+   * Filter a sequence of Somatic Genotypes
+   *  Utility function for testing
+   */
   def apply(genotypes: Seq[CalledSomaticGenotype],
             minTumorReadDepth: Int,
             maxTumorReadDepth: Int,
