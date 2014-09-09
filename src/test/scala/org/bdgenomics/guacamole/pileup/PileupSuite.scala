@@ -136,17 +136,14 @@ class PileupSuite extends TestUtil.SparkFunSuite with Matchers {
     val firstElement = PileupElement(read, 0)
 
     firstElement.isMatch should be(true)
-    firstElement.indexInCigarElements should be(0L)
     firstElement.indexWithinCigarElement should be(0L)
 
     val secondElement = firstElement.elementAtGreaterLocus(1L)
     secondElement.isMatch should be(true)
-    secondElement.indexInCigarElements should be(0L)
     secondElement.indexWithinCigarElement should be(1L)
 
     val thirdElement = secondElement.elementAtGreaterLocus(2L)
     thirdElement.isMatch should be(true)
-    thirdElement.indexInCigarElements should be(0L)
     thirdElement.indexWithinCigarElement should be(2L)
 
   }
@@ -156,12 +153,10 @@ class PileupSuite extends TestUtil.SparkFunSuite with Matchers {
 
     val secondMatch = PileupElement(read, 3)
     secondMatch.isMatch should be(true)
-    secondMatch.indexInCigarElements should be(1L)
     secondMatch.indexWithinCigarElement should be(0L)
 
     val secondMatchSecondElement = PileupElement(read, 4)
     secondMatchSecondElement.isMatch should be(true)
-    secondMatchSecondElement.indexInCigarElements should be(1L)
     secondMatchSecondElement.indexWithinCigarElement should be(1L)
 
   }
@@ -171,27 +166,22 @@ class PileupSuite extends TestUtil.SparkFunSuite with Matchers {
     val firstElement = PileupElement(read, 0)
 
     firstElement.isMatch should be(true)
-    firstElement.indexInCigarElements should be(0L)
     firstElement.indexWithinCigarElement should be(0L)
 
     val matchElement = firstElement.elementAtGreaterLocus(4L)
     matchElement.isMatch should be(true)
-    matchElement.indexInCigarElements should be(0L)
     matchElement.indexWithinCigarElement should be(4L)
 
     val deletionElement = matchElement.elementAtGreaterLocus(5L)
     deletionElement.isDeletion should be(true)
-    deletionElement.indexInCigarElements should be(1L)
     deletionElement.indexWithinCigarElement should be(0L)
 
     val pastDeletionElement = matchElement.elementAtGreaterLocus(6L)
     pastDeletionElement.isMatch should be(true)
-    pastDeletionElement.indexInCigarElements should be(2L)
     pastDeletionElement.indexWithinCigarElement should be(0L)
 
     val continuePastDeletionElement = pastDeletionElement.elementAtGreaterLocus(9L)
     continuePastDeletionElement.isMatch should be(true)
-    continuePastDeletionElement.indexInCigarElements should be(2L)
     continuePastDeletionElement.indexWithinCigarElement should be(3L)
 
   }
