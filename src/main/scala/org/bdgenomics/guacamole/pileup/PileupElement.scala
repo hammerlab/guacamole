@@ -30,7 +30,7 @@ case class PileupElement(
   assume(locus < read.end)
 
   lazy val cigarElement = remainingReadCigar.head
-  lazy val nextCigarElement = if (remainingReadCigar.tail.isEmpty) None else Some(remainingReadCigar.tail.head)
+  lazy val nextCigarElement = remainingReadCigar.tail.headOption
 
   /*
    * True if this is the last base of the current cigar element.
