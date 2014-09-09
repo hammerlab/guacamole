@@ -33,6 +33,18 @@ object CalledGenotype {
   }
 }
 
+/**
+ *
+ * A variant that in the sample with supporting read statistics
+ *
+ * @param sampleName sample the variant was called on
+ * @param referenceContig chromosome or genome contig of the variant
+ * @param start start position of the variant (0-based)
+ * @param referenceBase base in the reference genome
+ * @param alternateBase base in the sample genome
+ * @param evidence supporting statistics for the variant
+ * @param length length of the variant
+ */
 case class CalledGenotype(sampleName: String,
                           referenceContig: String,
                           start: Long,
@@ -85,6 +97,20 @@ class CalledGenotypeSerializer extends Serializer[CalledGenotype] {
   }
 }
 
+/**
+ *
+ * A variant that exists in a tumor sample, but not in the normal sample with supporting read statistics from both samples
+ *
+ * @param sampleName sample the variant was called on
+ * @param referenceContig chromosome or genome contig of the variant
+ * @param start start position of the variant (0-based)
+ * @param referenceBase base in the reference genome
+ * @param alternateBase base in the sample genome
+ * @param somaticLogOdds log odds-ratio of the variant in the tumor compared to the normal sample
+ * @param tumorEvidence supporting statistics for the variant in the tumor sample
+ * @param normalEvidence supporting statistics for the variant in the normal sample
+ * @param length length of the variant
+ */
 case class CalledSomaticGenotype(sampleName: String,
                                  referenceContig: String,
                                  start: Long,

@@ -7,6 +7,8 @@ import org.bdgenomics.guacamole.pileup.Pileup
 
 /**
  *
+ * Sample specific pileup and read statistics in support of a given variant
+ *
  * @param likelihood probability of the genotype
  * @param readDepth total reads at the genotype position
  * @param alternateReadDepth total reads with alternate base at the genotype position
