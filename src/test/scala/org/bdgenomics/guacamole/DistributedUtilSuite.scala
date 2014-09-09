@@ -83,10 +83,10 @@ class DistributedUtilSuite extends TestUtil.SparkFunSuite with Matchers {
     }
     {
       val reads = pairsToReads(Seq(
-        (5, 1),
-        (6, 1),
-        (7, 1),
-        (8, 1)))
+        (5L, 1L),
+        (6L, 1L),
+        (7L, 1L),
+        (8L, 1L)))
       val loci = LociSet.parse("chr1:0-100")
       val result = DistributedUtil.partitionLociByApproximateDepth(2, loci, 100, reads)
       result.toString should equal("chr1:0-7=0,chr1:7-100=1")
@@ -220,7 +220,7 @@ class DistributedUtilSuite extends TestUtil.SparkFunSuite with Matchers {
 
     elements.forall(_.isMatch) should be(true)
     assertBases(
-      elements.flatMap(_.sequencedSingleBaseOpt),
+      elements.flatMap(_.sequencedSingleBaseOpt).toSeq,
       "TTTACTCCCACTGGGACTAAAACTTTTACTCCCACTGGGACTAAAACTXGGGXGGGXGGGGGGGGGGGGGGGGGG"
     )
   }

@@ -54,16 +54,16 @@ class PileupSuite extends TestUtil.SparkFunSuite with Matchers {
     insertPileup.elements.forall(
       _.alignment match {
         case Match('A', quality) => quality == 31
-        case Insertion(Array('A', 'C', 'C', 'C'), qualities) => qualities.sameElements(Array(31, 31, 31, 31))
+        case Insertion(Seq('A', 'C', 'C', 'C'), qualities) => qualities.sameElements(Seq(31, 31, 31, 31))
         case _ => false
       }) should be(true)
   }
 
   sparkTest("create pileup from long insert reads; different qualities in insertion") {
     val reads = Seq(
-      TestUtil.makeRead("TCGATCGA", "8M", "8", 1, "chr1", Some(Array(10, 15, 20, 25, 10, 15, 20, 25))),
-      TestUtil.makeRead("TCGATCGA", "8M", "8", 1, "chr1", Some(Array(10, 15, 20, 25, 10, 15, 20, 25))),
-      TestUtil.makeRead("TCGACCCTCGA", "4M3I4M", "8", 1, "chr1", Some(Array(10, 15, 20, 25, 5, 5, 5, 10, 15, 20, 25))))
+      TestUtil.makeRead("TCGATCGA", "8M", "8", 1, "chr1", Some(Seq(10, 15, 20, 25, 10, 15, 20, 25))),
+      TestUtil.makeRead("TCGATCGA", "8M", "8", 1, "chr1", Some(Seq(10, 15, 20, 25, 10, 15, 20, 25))),
+      TestUtil.makeRead("TCGACCCTCGA", "4M3I4M", "8", 1, "chr1", Some(Seq(10, 15, 20, 25, 5, 5, 5, 10, 15, 20, 25))))
 
     val insertPileup = Pileup(reads, 4)
     insertPileup.elements.exists(_.isInsertion) should be(true)
@@ -72,16 +72,16 @@ class PileupSuite extends TestUtil.SparkFunSuite with Matchers {
     insertPileup.elements.forall(
       _.alignment match {
         case Match(_, quality)       => quality == 25
-        case Insertion(_, qualities) => qualities.sameElements(Array(25, 5, 5, 5))
+        case Insertion(_, qualities) => qualities.sameElements(Seq(25, 5, 5, 5))
         case _                       => false
       }) should be(true)
   }
 
   sparkTest("create pileup from long insert reads; right after insertion") {
     val reads = Seq(
-      TestUtil.makeRead("TCGATCGA", "8M", "8", 1, "chr1", Some(Array(10, 15, 20, 25, 10, 15, 20, 25))),
-      TestUtil.makeRead("TCGATCGA", "8M", "8", 1, "chr1", Some(Array(10, 15, 20, 25, 10, 15, 20, 25))),
-      TestUtil.makeRead("TCGACCCTCGA", "4M3I4M", "8", 1, "chr1", Some(Array(10, 15, 20, 25, 5, 5, 5, 10, 15, 20, 25))))
+      TestUtil.makeRead("TCGATCGA", "8M", "8", 1, "chr1", Some(Seq(10, 15, 20, 25, 10, 15, 20, 25))),
+      TestUtil.makeRead("TCGATCGA", "8M", "8", 1, "chr1", Some(Seq(10, 15, 20, 25, 10, 15, 20, 25))),
+      TestUtil.makeRead("TCGACCCTCGA", "4M3I4M", "8", 1, "chr1", Some(Seq(10, 15, 20, 25, 5, 5, 5, 10, 15, 20, 25))))
 
     val noPileup = Pileup(reads, 0).elements
     noPileup.size should be(0)
@@ -106,9 +106,9 @@ class PileupSuite extends TestUtil.SparkFunSuite with Matchers {
   sparkTest("create pileup from long insert reads; end of read") {
 
     val reads = Seq(
-      TestUtil.makeRead("TCGATCGA", "8M", "8", 1, "chr1", Some(Array(10, 15, 20, 25, 10, 15, 20, 25))),
-      TestUtil.makeRead("TCGATCGA", "8M", "8", 1, "chr1", Some(Array(10, 15, 20, 25, 10, 15, 20, 25))),
-      TestUtil.makeRead("TCGACCCTCGA", "4M3I4M", "8", 1, "chr1", Some(Array(10, 15, 20, 25, 5, 5, 5, 10, 15, 20, 25))))
+      TestUtil.makeRead("TCGATCGA", "8M", "8", 1, "chr1", Some(Seq(10, 15, 20, 25, 10, 15, 20, 25))),
+      TestUtil.makeRead("TCGATCGA", "8M", "8", 1, "chr1", Some(Seq(10, 15, 20, 25, 10, 15, 20, 25))),
+      TestUtil.makeRead("TCGACCCTCGA", "4M3I4M", "8", 1, "chr1", Some(Seq(10, 15, 20, 25, 5, 5, 5, 10, 15, 20, 25))))
 
     val lastPileup = Pileup(reads, 8)
     lastPileup.elements.foreach(e => assertBases(e.sequencedBases, "A"))
