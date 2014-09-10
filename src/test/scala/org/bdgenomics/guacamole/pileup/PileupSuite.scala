@@ -18,6 +18,7 @@
 
 package org.bdgenomics.guacamole.pileup
 
+import net.sf.samtools.{ CigarOperator, CigarElement }
 import org.bdgenomics.guacamole.{ Bases, TestUtil }
 import org.bdgenomics.guacamole.TestUtil.assertBases
 import org.bdgenomics.guacamole.TestUtil.Implicits._
@@ -136,11 +137,11 @@ class PileupSuite extends TestUtil.SparkFunSuite with Matchers {
     firstElement.isMatch should be(true)
     firstElement.indexWithinCigarElement should be(0L)
 
-    val secondElement = firstElement.elementAtGreaterLocus(1L)
+    val secondElement = firstElement.advanceToLocus(1L)
     secondElement.isMatch should be(true)
     secondElement.indexWithinCigarElement should be(1L)
 
-    val thirdElement = secondElement.elementAtGreaterLocus(2L)
+    val thirdElement = secondElement.advanceToLocus(2L)
     thirdElement.isMatch should be(true)
     thirdElement.indexWithinCigarElement should be(2L)
 
@@ -159,6 +160,25 @@ class PileupSuite extends TestUtil.SparkFunSuite with Matchers {
 
   }
 
+  test("insertion at contig start includes trailing base") {
+    val contigStartInsertionRead = TestUtil.makeRead("AAAAAACGT", "5I4M", "4", 0, "chr1")
+    val pileup = PileupElement(contigStartInsertionRead, 0)
+    pileup.alignment should equal(Insertion("AAAAAA", List(31, 31, 31, 31, 31, 31)))
+  }
+
+  test("pileup alignment at insertion cigar-element throws") {
+    val contigStartInsertionRead = TestUtil.makeRead("AAAAAACGT", "5I4M", "4", 0, "chr1")
+    val pileup = PileupElement(
+      read = contigStartInsertionRead,
+      locus = 1,
+      readPosition = 0,
+      cigarElementIdx = 0,
+      cigarElementLocus = 1,
+      indexWithinCigarElement = 0
+    )
+    the[InvalidCigarElementException] thrownBy pileup.alignment
+  }
+
   sparkTest("test pileup element creation with deletion cigar elements") {
     val read = TestUtil.makeRead("AATTGAATTG", "5M1D5M", "5^C5", 0, "chr1")
     val firstElement = PileupElement(read, 0)
@@ -166,19 +186,19 @@ class PileupSuite extends TestUtil.SparkFunSuite with Matchers {
     firstElement.isMatch should be(true)
     firstElement.indexWithinCigarElement should be(0L)
 
-    val matchElement = firstElement.elementAtGreaterLocus(4L)
+    val matchElement = firstElement.advanceToLocus(4L)
     matchElement.isMatch should be(true)
     matchElement.indexWithinCigarElement should be(4L)
 
-    val deletionElement = matchElement.elementAtGreaterLocus(5L)
+    val deletionElement = matchElement.advanceToLocus(5L)
     deletionElement.isDeletion should be(true)
     deletionElement.indexWithinCigarElement should be(0L)
 
-    val pastDeletionElement = matchElement.elementAtGreaterLocus(6L)
+    val pastDeletionElement = matchElement.advanceToLocus(6L)
     pastDeletionElement.isMatch should be(true)
     pastDeletionElement.indexWithinCigarElement should be(0L)
 
-    val continuePastDeletionElement = pastDeletionElement.elementAtGreaterLocus(9L)
+    val continuePastDeletionElement = pastDeletionElement.advanceToLocus(9L)
     continuePastDeletionElement.isMatch should be(true)
     continuePastDeletionElement.indexWithinCigarElement should be(3L)
 
@@ -241,13 +261,13 @@ class PileupSuite extends TestUtil.SparkFunSuite with Matchers {
     val read2At20 = PileupElement(read2Record, 20)
     assertBases(read2At20.sequencedBases: String, "A")
 
-    // elementAtGreaterLocus is a no-op on the same locus, 
+    // advanceToLocus is a no-op on the same locus,
     // and fails in lower loci
     def testAdvanceToLocusEdgeCases(l: Int): Unit = {
       val elt = PileupElement(decadentRead1, l)
-      assert(elt.elementAtGreaterLocus(l) === elt)
-      intercept[AssertionError] { elt.elementAtGreaterLocus(l - 1) }
-      intercept[AssertionError] { elt.elementAtGreaterLocus(75) }
+      assert(elt.advanceToLocus(l) === elt)
+      intercept[AssertionError] { elt.advanceToLocus(l - 1) }
+      intercept[AssertionError] { elt.advanceToLocus(75) }
     }
     testAdvanceToLocusEdgeCases(5)
     testAdvanceToLocusEdgeCases(33)
@@ -260,10 +280,10 @@ class PileupSuite extends TestUtil.SparkFunSuite with Matchers {
     val read3At15 = PileupElement(read3Record, 15)
     assert(read3At15 != null)
     assertBases(read3At15.sequencedBases, "A")
-    assertBases(read3At15.elementAtGreaterLocus(16).sequencedBases, "T")
-    assertBases(read3At15.elementAtGreaterLocus(17).sequencedBases, "C")
-    assertBases(read3At15.elementAtGreaterLocus(16).elementAtGreaterLocus(17).sequencedBases, "C")
-    assertBases(read3At15.elementAtGreaterLocus(18).sequencedBases, "G")
+    assertBases(read3At15.advanceToLocus(16).sequencedBases, "T")
+    assertBases(read3At15.advanceToLocus(17).sequencedBases, "C")
+    assertBases(read3At15.advanceToLocus(16).advanceToLocus(17).sequencedBases, "C")
+    assertBases(read3At15.advanceToLocus(18).sequencedBases, "G")
   }
 
   sparkTest("Read4 has CIGAR: 10M10I10D40M; ACGT repeated 15 times") {
@@ -273,13 +293,13 @@ class PileupSuite extends TestUtil.SparkFunSuite with Matchers {
     val read4At20 = PileupElement(decadentRead4, 20)
     assert(read4At20 != null)
     for (i <- 0 until 2) {
-      assert(read4At20.elementAtGreaterLocus(20 + i * 4 + 0).sequencedBases(0) == 'A')
-      assert(read4At20.elementAtGreaterLocus(20 + i * 4 + 1).sequencedBases(0) == 'C')
-      assert(read4At20.elementAtGreaterLocus(20 + i * 4 + 2).sequencedBases(0) == 'G')
-      assert(read4At20.elementAtGreaterLocus(20 + i * 4 + 3).sequencedBases(0) == 'T')
+      assert(read4At20.advanceToLocus(20 + i * 4 + 0).sequencedBases(0) == 'A')
+      assert(read4At20.advanceToLocus(20 + i * 4 + 1).sequencedBases(0) == 'C')
+      assert(read4At20.advanceToLocus(20 + i * 4 + 2).sequencedBases(0) == 'G')
+      assert(read4At20.advanceToLocus(20 + i * 4 + 3).sequencedBases(0) == 'T')
     }
 
-    val read4At30 = read4At20.elementAtGreaterLocus(20 + 9)
+    val read4At30 = read4At20.advanceToLocus(20 + 9)
     read4At30.isInsertion should be(true)
     (read4At30.sequencedBases: String) should equal("CGTACGTACGT")
   }
@@ -291,14 +311,14 @@ class PileupSuite extends TestUtil.SparkFunSuite with Matchers {
     val decadentRead5 = testAdamRecords(4)
     val read5At10 = PileupElement(decadentRead5, 10)
     assert(read5At10 != null)
-    assertBases(read5At10.elementAtGreaterLocus(10).sequencedBases, "A")
-    assertBases(read5At10.elementAtGreaterLocus(14).sequencedBases, "A")
-    assertBases(read5At10.elementAtGreaterLocus(18).sequencedBases, "A")
-    assertBases(read5At10.elementAtGreaterLocus(19).sequencedBases, "C")
-    assertBases(read5At10.elementAtGreaterLocus(20).sequencedBases, "G")
-    assertBases(read5At10.elementAtGreaterLocus(21).sequencedBases, "T")
-    assertBases(read5At10.elementAtGreaterLocus(22).sequencedBases, "A")
-    assertBases(read5At10.elementAtGreaterLocus(24).sequencedBases, "G")
+    assertBases(read5At10.advanceToLocus(10).sequencedBases, "A")
+    assertBases(read5At10.advanceToLocus(14).sequencedBases, "A")
+    assertBases(read5At10.advanceToLocus(18).sequencedBases, "A")
+    assertBases(read5At10.advanceToLocus(19).sequencedBases, "C")
+    assertBases(read5At10.advanceToLocus(20).sequencedBases, "G")
+    assertBases(read5At10.advanceToLocus(21).sequencedBases, "T")
+    assertBases(read5At10.advanceToLocus(22).sequencedBases, "A")
+    assertBases(read5At10.advanceToLocus(24).sequencedBases, "G")
   }
 
   sparkTest("read6: ACGTACGTACGT 4=1N4=4S") {
@@ -307,15 +327,15 @@ class PileupSuite extends TestUtil.SparkFunSuite with Matchers {
     val decadentRead6 = testAdamRecords(5)
     val read6At40 = PileupElement(decadentRead6, 40)
     assert(read6At40 != null)
-    assertBases(read6At40.elementAtGreaterLocus(40).sequencedBases, "A")
-    assertBases(read6At40.elementAtGreaterLocus(41).sequencedBases, "C")
-    assertBases(read6At40.elementAtGreaterLocus(42).sequencedBases, "G")
-    assertBases(read6At40.elementAtGreaterLocus(43).sequencedBases, "T")
-    assertBases(read6At40.elementAtGreaterLocus(44).sequencedBases, "")
-    assertBases(read6At40.elementAtGreaterLocus(45).sequencedBases, "A")
-    assertBases(read6At40.elementAtGreaterLocus(48).sequencedBases, "T")
+    assertBases(read6At40.advanceToLocus(40).sequencedBases, "A")
+    assertBases(read6At40.advanceToLocus(41).sequencedBases, "C")
+    assertBases(read6At40.advanceToLocus(42).sequencedBases, "G")
+    assertBases(read6At40.advanceToLocus(43).sequencedBases, "T")
+    assertBases(read6At40.advanceToLocus(44).sequencedBases, "")
+    assertBases(read6At40.advanceToLocus(45).sequencedBases, "A")
+    assertBases(read6At40.advanceToLocus(48).sequencedBases, "T")
     intercept[AssertionError] {
-      read6At40.elementAtGreaterLocus(49).sequencedBases
+      read6At40.advanceToLocus(49).sequencedBases
     }
   }
 
@@ -323,15 +343,15 @@ class PileupSuite extends TestUtil.SparkFunSuite with Matchers {
     val decadentRead7 = testAdamRecords(6)
     val read7At40 = PileupElement(decadentRead7, 40)
     assert(read7At40 != null)
-    assertBases(read7At40.elementAtGreaterLocus(40).sequencedBases, "A")
-    assertBases(read7At40.elementAtGreaterLocus(41).sequencedBases, "C")
-    assertBases(read7At40.elementAtGreaterLocus(42).sequencedBases, "G")
-    assertBases(read7At40.elementAtGreaterLocus(43).sequencedBases, "T")
-    assertBases(read7At40.elementAtGreaterLocus(44).sequencedBases, "")
-    assertBases(read7At40.elementAtGreaterLocus(45).sequencedBases, "A")
-    assertBases(read7At40.elementAtGreaterLocus(48).sequencedBases, "T")
+    assertBases(read7At40.advanceToLocus(40).sequencedBases, "A")
+    assertBases(read7At40.advanceToLocus(41).sequencedBases, "C")
+    assertBases(read7At40.advanceToLocus(42).sequencedBases, "G")
+    assertBases(read7At40.advanceToLocus(43).sequencedBases, "T")
+    assertBases(read7At40.advanceToLocus(44).sequencedBases, "")
+    assertBases(read7At40.advanceToLocus(45).sequencedBases, "A")
+    assertBases(read7At40.advanceToLocus(48).sequencedBases, "T")
     intercept[AssertionError] {
-      read7At40.elementAtGreaterLocus(49).sequencedBases
+      read7At40.advanceToLocus(49).sequencedBases
     }
   }
 
@@ -344,16 +364,16 @@ class PileupSuite extends TestUtil.SparkFunSuite with Matchers {
     val decadentRead8 = testAdamRecords(7)
     val read8At40 = PileupElement(decadentRead8, 40)
     assert(read8At40 != null)
-    assertBases(read8At40.elementAtGreaterLocus(40).sequencedBases, "A")
-    assertBases(read8At40.elementAtGreaterLocus(41).sequencedBases, "C")
-    assertBases(read8At40.elementAtGreaterLocus(42).sequencedBases, "G")
-    assertBases(read8At40.elementAtGreaterLocus(43).sequencedBases, "T")
-    assertBases(read8At40.elementAtGreaterLocus(44).sequencedBases, "A")
-    assertBases(read8At40.elementAtGreaterLocus(45).sequencedBases, "C")
-    assertBases(read8At40.elementAtGreaterLocus(46).sequencedBases, "G")
-    assertBases(read8At40.elementAtGreaterLocus(47).sequencedBases, "T")
+    assertBases(read8At40.advanceToLocus(40).sequencedBases, "A")
+    assertBases(read8At40.advanceToLocus(41).sequencedBases, "C")
+    assertBases(read8At40.advanceToLocus(42).sequencedBases, "G")
+    assertBases(read8At40.advanceToLocus(43).sequencedBases, "T")
+    assertBases(read8At40.advanceToLocus(44).sequencedBases, "A")
+    assertBases(read8At40.advanceToLocus(45).sequencedBases, "C")
+    assertBases(read8At40.advanceToLocus(46).sequencedBases, "G")
+    assertBases(read8At40.advanceToLocus(47).sequencedBases, "T")
     intercept[RuntimeException] {
-      read8At40.elementAtGreaterLocus(48).sequencedBases
+      read8At40.advanceToLocus(48).sequencedBases
     }
   }
 
