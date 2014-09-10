@@ -107,7 +107,7 @@ case class Pileup(locus: Long, elements: Seq[PileupElement]) {
       Pileup(newLocus, Seq.empty[PileupElement])
     } else {
       val reusableElements = elements.filter(element => element.read.overlapsLocus(newLocus))
-      val updatedElements = reusableElements.map(_.elementAtGreaterLocus(newLocus))
+      val updatedElements = reusableElements.map(_.advanceToLocus(newLocus))
       val newElements = newReads.map(PileupElement(_, newLocus))
       Pileup(newLocus, updatedElements ++ newElements)
     }
