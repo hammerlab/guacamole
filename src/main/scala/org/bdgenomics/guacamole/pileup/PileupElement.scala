@@ -162,7 +162,8 @@ case class PileupElement(
             finalReadPos,
             remainingCigarElements,
             cigarReferencePosition,
-            offset)
+            offset
+          )
         }
       }
       getCurrentElement(
@@ -197,7 +198,8 @@ object PileupElement {
       readPosition = 0,
       remainingReadCigar = read.cigarElements.toList,
       cigarElementLocus = read.start,
-      indexWithinCigarElement = 0)
+      indexWithinCigarElement = 0
+    )
     startElement.elementAtGreaterLocus(locus)
   }
 }
