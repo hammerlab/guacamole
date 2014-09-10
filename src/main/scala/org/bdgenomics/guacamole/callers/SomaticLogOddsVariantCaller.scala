@@ -13,9 +13,8 @@ import org.bdgenomics.guacamole.filters.{ SomaticGenotypeFilter, GenotypeFilter,
 import org.bdgenomics.guacamole.filters.SomaticGenotypeFilter.SomaticGenotypeFilterArguments
 import org.bdgenomics.guacamole.pileup.Pileup
 import org.bdgenomics.guacamole.reads.Read
-import org.bdgenomics.guacamole.variants.{ GenotypeEvidence, CalledSomaticGenotype, GenotypeAlleles }
+import org.bdgenomics.guacamole.variants._
 import org.kohsuke.args4j.{ Option => Opt }
-import org.bdgenomics.guacamole.variants.CalledGenotype
 
 import scala.collection.JavaConversions
 
@@ -108,7 +107,7 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
     val filteredGenotypes: RDD[CalledSomaticGenotype] = SomaticGenotypeFilter(genotypes, args)
     Common.progress("Computed %,d genotypes".format(filteredGenotypes.count))
 
-    Common.writeVariantsFromArguments(args, filteredGenotypes.flatMap(CalledGenotype.calledSomaticGenotypeToADAMGenotype(_)))
+    Common.writeVariantsFromArguments(args, filteredGenotypes.flatMap(GenotypeConversions.calledSomaticGenotypeToADAMGenotype(_)))
     DelayedMessages.default.print()
   }
 
