@@ -19,10 +19,10 @@ import scala.annotation.tailrec
 case class PileupElement(
     read: MappedRead,
     locus: Long,
-    readPosition: Long,
+    readPosition: Int,
     remainingReadCigar: List[CigarElement],
     cigarElementLocus: Long,
-    indexWithinCigarElement: Long) {
+    indexWithinCigarElement: Int) {
 
   assume(locus >= read.start)
   assume(locus < read.end)
@@ -45,14 +45,14 @@ case class PileupElement(
       // conventional choice. That is, if we have a match followed by an insertion, the final base of the match will
       // get combined with the insertion into one Alignment, at the match's reference locus.
       case (CigarOperator.M, Some(CigarOperator.I)) | (CigarOperator.EQ, Some(CigarOperator.I)) | (CigarOperator.I, _) =>
-        val startReadOffset: Int = readPosition.toInt
-        val endReadOffset: Int = readPosition.toInt + CigarUtils.getReadLength(nextBaseCigarElement.get) + 1
+        val startReadOffset: Int = readPosition
+        val endReadOffset: Int = readPosition + CigarUtils.getReadLength(nextBaseCigarElement.get) + 1
         val bases = read.sequence.slice(startReadOffset, endReadOffset)
         val qualities = read.baseQualities.slice(startReadOffset, endReadOffset)
         Insertion(bases, qualities)
       case (CigarOperator.M, _) | (CigarOperator.EQ, _) | (CigarOperator.X, _) =>
-        val base: Byte = read.sequence(readPosition.toInt)
-        val quality = read.baseQualities(readPosition.toInt)
+        val base: Byte = read.sequence(readPosition)
+        val quality = read.baseQualities(readPosition)
         if (read.mdTag.isMatch(locus)) {
           Match(base, quality)
         } else {
@@ -136,7 +136,7 @@ case class PileupElement(
     // Iterate through the remaining cigar elements to find one overlapping the current position.
     @tailrec
     def getCurrentElement(remainingCigarElements: List[CigarElement],
-                          cigarReadPosition: Long,
+                          cigarReadPosition: Int,
                           cigarReferencePosition: Long): PileupElement = {
       if (remainingCigarElements.isEmpty) {
         throw new RuntimeException(
@@ -154,7 +154,7 @@ case class PileupElement(
       if (cigarOperator != CigarOperator.P) {
         val currentElementEnd = cigarReferencePosition + cigarElementReferenceLength
         if (currentElementEnd > newLocus) {
-          val offset = newLocus - cigarReferencePosition
+          val offset = (newLocus - cigarReferencePosition).toInt
           val finalReadPos = if (cigarOperator.consumesReadBases) cigarReadPosition + offset else cigarReadPosition
           return PileupElement(
             read,
