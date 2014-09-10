@@ -14,7 +14,6 @@ import scala.annotation.tailrec
  * @param remainingReadCigar A list of remaining parsed cigar elements of this read.
  * @param cigarElementLocus The reference START position of the cigar element.
  *                          If the element is an INSERTION this the PRECEDING reference base
- * @param indexInCigarElements Which cigar element in the read this element belongs to.
  * @param indexWithinCigarElement The offset of this element within the current cigar element.
  */
 case class PileupElement(
