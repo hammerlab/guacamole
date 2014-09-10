@@ -115,12 +115,12 @@ case class Pileup(locus: Long, elements: Seq[PileupElement]) {
 
   /**
    * Compute depth and positive strand depth of a particular alternate base
-   * @param alternateBase alternate base to consider
+   * @param alternateBases alternate bases to consider
    * @return tuple of total depth and forward strand depth
    */
-  def alternateReadDepthAndPositiveDepth(alternateBase: Seq[Byte]): (Int, Int) = {
+  def alternateReadDepthAndPositiveDepth(alternateBases: Seq[Byte]): (Int, Int) = {
 
-    val alternateElements = elements.view.filter(el => el.sequencedBases == alternateBase)
+    val alternateElements = elements.view.filter(_.sequencedBases == alternateBases)
     val numAlternatePositiveElements = alternateElements.count(_.read.isPositiveStrand)
 
     (alternateElements.size, numAlternatePositiveElements)

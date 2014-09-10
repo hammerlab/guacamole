@@ -86,7 +86,8 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
 
         def buildVariants(genotype: GenotypeAlleles, probability: Double): Seq[CalledGenotype] = {
           genotype.getNonReferenceAlleles(referenceBase).map(alternate => {
-            CalledGenotype(sampleName,
+            CalledGenotype(
+              sampleName,
               samplePileup.referenceName,
               samplePileup.locus,
               referenceBase,
@@ -105,20 +106,14 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
   }
 
   /**
-   * Generate possible genotypes from a pileup
-   * Possible genotypes are all unique n-tuples of sequencedBases that appear in the pileup.
+   * Generate possible alleles from a pileup
+   * Possible alleles are all unique n-tuples of sequencedBases that appear in the pileup.
    *
-   * @return Sequence of possible genotypes
+   * @return Sequence of possible alleles for the genotype
    */
   def getPossibleAlleles(pileup: Pileup): Seq[GenotypeAlleles] = {
 
-    object AlleleOrdering extends Ordering[Seq[Byte]] {
-      override def compare(x: Seq[Byte], y: Seq[Byte]): Int = {
-        Bases.basesToString(x).compare(Bases.basesToString(y))
-      }
-    }
-
-    val possibleAlleles = pileup.elements.map(e => e.sequencedBases).distinct.sorted(AlleleOrdering)
+    val possibleAlleles = pileup.elements.map(_.sequencedBases).distinct.sorted(AlleleOrdering)
     val possibleGenotypes =
       for (i <- 0 until possibleAlleles.size; j <- i until possibleAlleles.size)
         yield GenotypeAlleles(possibleAlleles(i), possibleAlleles(j))
@@ -136,8 +131,10 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
                          normalize: Boolean = false): Seq[(GenotypeAlleles, Double)] = {
 
     val possibleGenotypes = getPossibleAlleles(pileup)
-    val genotypeLikelihoods = pileup.elements.map(el =>
-      computeGenotypeLikelihoods(el, possibleGenotypes, includeAlignmentLikelihood)).transpose.map(l => l.product / math.pow(2, l.length))
+    val genotypeLikelihoods = pileup.elements.map(
+      computeGenotypeLikelihoods(_, possibleGenotypes, includeAlignmentLikelihood))
+      .transpose
+      .map(l => l.product / math.pow(2, l.length))
 
     if (normalize) {
       normalizeLikelihoods(possibleGenotypes.zip(genotypeLikelihoods))

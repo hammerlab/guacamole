@@ -35,13 +35,13 @@ object CalledGenotype {
 
 /**
  *
- * A variant that in the sample with supporting read statistics
+ * A variant that exists in the sample; includes supporting read statistics
  *
  * @param sampleName sample the variant was called on
  * @param referenceContig chromosome or genome contig of the variant
  * @param start start position of the variant (0-based)
  * @param referenceBase base in the reference genome
- * @param alternateBase base in the sample genome
+ * @param alternateBases base in the sample genome
  * @param evidence supporting statistics for the variant
  * @param length length of the variant
  */
@@ -49,7 +49,7 @@ case class CalledGenotype(sampleName: String,
                           referenceContig: String,
                           start: Long,
                           referenceBase: Byte,
-                          alternateBase: Seq[Byte],
+                          alternateBases: Seq[Byte],
                           evidence: GenotypeEvidence,
                           length: Int = 1) extends ReferenceVariant {
   val end: Long = start + 1L
@@ -65,8 +65,8 @@ class CalledGenotypeSerializer extends Serializer[CalledGenotype] {
     output.writeString(obj.referenceContig)
     output.writeLong(obj.start, true)
     output.writeByte(obj.referenceBase)
-    output.writeInt(obj.alternateBase.length, true)
-    output.writeBytes(obj.alternateBase.toArray)
+    output.writeInt(obj.alternateBases.length, true)
+    output.writeBytes(obj.alternateBases.toArray)
     genotypeEvidenceSeralizer.write(kryo, output, obj.evidence)
     output.writeInt(obj.length, true)
 
@@ -79,7 +79,7 @@ class CalledGenotypeSerializer extends Serializer[CalledGenotype] {
     val start: Long = input.readLong(true)
     val referenceBase: Byte = input.readByte()
     val alternateLength = input.readInt(true)
-    val alternateBase: Seq[Byte] = input.readBytes(alternateLength)
+    val alternateBases: Seq[Byte] = input.readBytes(alternateLength)
 
     val evidence = genotypeEvidenceSeralizer.read(kryo, input, classOf[GenotypeEvidence])
     val length: Int = input.readInt(true)
@@ -89,7 +89,7 @@ class CalledGenotypeSerializer extends Serializer[CalledGenotype] {
       referenceContig,
       start,
       referenceBase,
-      alternateBase,
+      alternateBases,
       evidence,
       length
     )
@@ -99,13 +99,13 @@ class CalledGenotypeSerializer extends Serializer[CalledGenotype] {
 
 /**
  *
- * A variant that exists in a tumor sample, but not in the normal sample with supporting read statistics from both samples
+ * A variant that exists in a tumor sample, but not in the normal sample; includes supporting read statistics from both samples
  *
  * @param sampleName sample the variant was called on
  * @param referenceContig chromosome or genome contig of the variant
  * @param start start position of the variant (0-based)
  * @param referenceBase base in the reference genome
- * @param alternateBase base in the sample genome
+ * @param alternateBases base in the sample genome
  * @param somaticLogOdds log odds-ratio of the variant in the tumor compared to the normal sample
  * @param tumorEvidence supporting statistics for the variant in the tumor sample
  * @param normalEvidence supporting statistics for the variant in the normal sample
@@ -115,7 +115,7 @@ case class CalledSomaticGenotype(sampleName: String,
                                  referenceContig: String,
                                  start: Long,
                                  referenceBase: Byte,
-                                 alternateBase: Seq[Byte],
+                                 alternateBases: Seq[Byte],
                                  somaticLogOdds: Double,
                                  tumorEvidence: GenotypeEvidence,
                                  normalEvidence: GenotypeEvidence,
@@ -132,8 +132,8 @@ class CalledSomaticGenotypeSerializer extends Serializer[CalledSomaticGenotype] 
     output.writeString(obj.referenceContig)
     output.writeLong(obj.start)
     output.writeByte(obj.referenceBase)
-    output.writeInt(obj.alternateBase.length, true)
-    output.writeBytes(obj.alternateBase.toArray)
+    output.writeInt(obj.alternateBases.length, true)
+    output.writeBytes(obj.alternateBases.toArray)
     output.writeDouble(obj.somaticLogOdds)
 
     genotypeEvidenceSerializer.write(kryo, output, obj.tumorEvidence)
@@ -150,7 +150,7 @@ class CalledSomaticGenotypeSerializer extends Serializer[CalledSomaticGenotype] 
     val start: Long = input.readLong()
     val referenceBase: Byte = input.readByte()
     val alternateLength = input.readInt(true)
-    val alternateBase = input.readBytes(alternateLength).toSeq
+    val alternateBases = input.readBytes(alternateLength).toSeq
     val somaticLogOdds = input.readDouble()
 
     val tumorEvidence = genotypeEvidenceSerializer.read(kryo, input, classOf[GenotypeEvidence])
@@ -163,7 +163,7 @@ class CalledSomaticGenotypeSerializer extends Serializer[CalledSomaticGenotype] 
       referenceContig,
       start,
       referenceBase,
-      alternateBase,
+      alternateBases,
       somaticLogOdds,
       tumorEvidence = tumorEvidence,
       normalEvidence = normalEvidence

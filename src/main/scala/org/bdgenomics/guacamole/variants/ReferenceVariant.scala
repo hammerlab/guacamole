@@ -19,7 +19,7 @@ trait ReferenceVariant extends HasReferenceRegion {
   val referenceBase: Byte
 
   /** alternate base in the variant */
-  val alternateBase: Seq[Byte]
+  val alternateBases: Seq[Byte]
 
   val length: Int
 
@@ -28,7 +28,7 @@ trait ReferenceVariant extends HasReferenceRegion {
     .setStart(start)
     .setEnd(end)
     .setReferenceAllele(Bases.baseToString(referenceBase))
-    .setAlternateAllele(Bases.basesToString(alternateBase))
+    .setAlternateAllele(Bases.basesToString(alternateBases))
     .setContig(Contig.newBuilder.setContigName(referenceContig).build)
     .build
 
