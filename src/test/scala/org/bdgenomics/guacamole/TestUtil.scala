@@ -245,30 +245,6 @@ object TestUtil extends Matchers {
       }
     }
 
-    def sparkBefore(beforeName: String, silenceSpark: Boolean = true)(body: => Unit) {
-      before {
-        sc = createSpark(beforeName, silenceSpark)
-        try {
-          // Run the before block
-          body
-        } finally {
-          destroySpark()
-        }
-      }
-    }
-
-    def sparkAfter(beforeName: String, silenceSpark: Boolean = true)(body: => Unit) {
-      after {
-        sc = createSpark(beforeName, silenceSpark)
-        try {
-          // Run the after block
-          body
-        } finally {
-          destroySpark()
-        }
-      }
-    }
-
     def sparkTest(name: String, silenceSpark: Boolean = true)(body: => Unit) {
       if (runOnly.isEmpty || runOnly == name) {
         test(name, SparkTest) {
