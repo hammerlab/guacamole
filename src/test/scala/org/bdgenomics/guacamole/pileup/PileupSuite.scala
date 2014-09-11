@@ -74,7 +74,7 @@ class PileupSuite extends TestUtil.SparkFunSuite with Matchers {
       }) should be(true)
   }
 
-  sparkTest("create pileup from long insert reads; right after insertion") {
+  sparkTest("create pileup from long insert reads, right after insertion") {
     val reads = Seq(
       TestUtil.makeRead("TCGATCGA", "8M", "8", 1, "chr1", Some(Seq(10, 15, 20, 25, 10, 15, 20, 25))),
       TestUtil.makeRead("TCGATCGA", "8M", "8", 1, "chr1", Some(Seq(10, 15, 20, 25, 10, 15, 20, 25))),
