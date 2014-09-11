@@ -22,8 +22,9 @@ import org.bdgenomics.guacamole.{ Bases, TestUtil }
 import org.bdgenomics.guacamole.TestUtil.assertBases
 import org.bdgenomics.guacamole.TestUtil.Implicits._
 import org.scalatest.Matchers
+import org.scalatest.prop.TableDrivenPropertyChecks
 
-class PileupSuite extends TestUtil.SparkFunSuite with Matchers {
+class PileupSuite extends TestUtil.SparkFunSuite with Matchers with TableDrivenPropertyChecks {
 
   //lazy so that this is only accessed from inside a spark test where SparkContext has been initialized
   lazy val testAdamRecords = TestUtil.loadReads(sc, "different_start_reads.sam").mappedReads.collect()
@@ -243,18 +244,12 @@ class PileupSuite extends TestUtil.SparkFunSuite with Matchers {
 
     // elementAtGreaterLocus is a no-op on the same locus, 
     // and fails in lower loci
-    def testAdvanceToLocusEdgeCases(l: Int): Unit = {
-      val elt = PileupElement(decadentRead1, l)
-      assert(elt.elementAtGreaterLocus(l) === elt)
-      intercept[AssertionError] { elt.elementAtGreaterLocus(l - 1) }
+    forAll(Table("locus", List(5, 33, 34, 43, 44, 74): _*)) { locus =>
+      val elt = PileupElement(decadentRead1, locus)
+      assert(elt.elementAtGreaterLocus(locus) === elt)
+      intercept[AssertionError] { elt.elementAtGreaterLocus(locus - 1) }
       intercept[AssertionError] { elt.elementAtGreaterLocus(75) }
     }
-    testAdvanceToLocusEdgeCases(5)
-    testAdvanceToLocusEdgeCases(33)
-    testAdvanceToLocusEdgeCases(34)
-    testAdvanceToLocusEdgeCases(43)
-    testAdvanceToLocusEdgeCases(44)
-    testAdvanceToLocusEdgeCases(74)
 
     val read3Record = testAdamRecords(2) // read3
     val read3At15 = PileupElement(read3Record, 15)
