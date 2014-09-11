@@ -6,7 +6,6 @@ import org.bdgenomics.formats.avro.{ Genotype, GenotypeAllele }
 
 import scala.collection.JavaConversions
 
-
 /**
  *
  * A variant that exists in the sample; includes supporting read statistics

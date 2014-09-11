@@ -1,6 +1,6 @@
 package org.bdgenomics.guacamole.variants
 
-import org.bdgenomics.formats.avro.{GenotypeAllele, Genotype}
+import org.bdgenomics.formats.avro.{ GenotypeAllele, Genotype }
 
 import scala.collection.JavaConversions
 
@@ -22,7 +22,7 @@ object GenotypeConversions {
     Seq(Genotype.newBuilder
       .setAlleles(JavaConversions.seqAsJavaList(Seq(GenotypeAllele.Ref, GenotypeAllele.Alt)))
       .setSampleId(calledGenotype.sampleName.toCharArray)
-      .setGenotypeQuality(calledGenotype.tumorEvidence.phredScaledLikelihood)
+      .setGenotypeQuality(calledGenotype.phredScaledSomaticLikelihood)
       .setReadDepth(calledGenotype.tumorEvidence.readDepth)
       .setExpectedAlleleDosage(calledGenotype.tumorEvidence.alternateReadDepth.toFloat / calledGenotype.tumorEvidence.readDepth)
       .setAlternateReadDepth(calledGenotype.tumorEvidence.alternateReadDepth)
