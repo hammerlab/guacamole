@@ -3,8 +3,36 @@ package org.bdgenomics.guacamole.filters
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.guacamole.Common.Arguments.Base
 import org.bdgenomics.guacamole._
-import org.bdgenomics.guacamole.variants.CalledSomaticGenotype
+import org.bdgenomics.guacamole.variants.{CalledGenotype, GenotypeEvidence, CalledSomaticGenotype}
 import org.kohsuke.args4j.Option
+
+/**
+ * Filter to remove genotypes where the somatic likelihood is low
+ */
+object SomaticMinimumLikelihoodFilter {
+
+  def hasMinimumLikelihood(genotype: CalledSomaticGenotype,
+                           minLikelihood: Int): Boolean = {
+    genotype.phredScaledSomaticLikelihood >= minLikelihood
+  }
+
+  /**
+   *
+   *  Apply the filter to an RDD of genotypes
+   *
+   * @param genotypes RDD of genotypes to filter
+   * @param minLikelihood minimum quality score for this genotype (Phred-scaled)
+   * @param debug if true, compute the count of genotypes after filtering
+   * @return Genotypes with quality >= minLikelihood
+   */
+  def apply(genotypes: RDD[CalledSomaticGenotype],
+            minLikelihood: Int,
+            debug: Boolean = false): RDD[CalledSomaticGenotype] = {
+    val filteredGenotypes = genotypes.filter(gt => hasMinimumLikelihood(gt, minLikelihood))
+    if (debug) SomaticGenotypeFilter.printFilterProgress(filteredGenotypes)
+    filteredGenotypes
+  }
+}
 
 /**
  * Filter to remove genotypes where the number of reads at the locus is too low or too high

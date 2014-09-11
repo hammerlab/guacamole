@@ -7,7 +7,7 @@ import org.bdgenomics.guacamole.variants.{ CalledGenotype, GenotypeEvidence }
 import org.kohsuke.args4j.Option
 
 /**
- * Filter to remove genotypes where the number of reads at the locus is low
+ * Filter to remove genotypes where the likelihood is low
  */
 object MinimumLikelihoodFilter {
 
@@ -21,7 +21,7 @@ object MinimumLikelihoodFilter {
    *  Apply the filter to an RDD of genotypes
    *
    * @param genotypes RDD of genotypes to filter
-   * @param minLikelihood minimum quality score for this genotype
+   * @param minLikelihood minimum quality score for this genotype (Phred-scaled)
    * @param debug if true, compute the count of genotypes after filtering
    * @return Genotypes with quality >= minLikelihood
    */
