@@ -18,7 +18,6 @@
 
 package org.bdgenomics.guacamole.pileup
 
-import net.sf.samtools.{ CigarOperator, CigarElement }
 import org.bdgenomics.guacamole.{ Bases, TestUtil }
 import org.bdgenomics.guacamole.TestUtil.assertBases
 import org.bdgenomics.guacamole.TestUtil.Implicits._
