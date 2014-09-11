@@ -50,8 +50,8 @@ object ReadDepthFilter {
                            minReadDepth: Int,
                            maxReadDepth: Int,
                            includeNull: Boolean = true): Boolean = {
-    if (genotype.readDepth != null) {
-      genotype.readDepth >= minReadDepth && genotype.readDepth < maxReadDepth
+    if (genotype.getReadDepth != null) {
+      genotype.getReadDepth >= minReadDepth && genotype.getReadDepth < maxReadDepth
     } else {
       includeNull
     }
@@ -106,8 +106,8 @@ object MinimumAlternateReadDepthFilter {
   def hasMinimumAlternateReadDepth(genotype: Genotype,
                                    minAlternateReadDepth: Int,
                                    includeNull: Boolean = true): Boolean = {
-    if (genotype.alternateReadDepth != null) {
-      genotype.alternateReadDepth >= minAlternateReadDepth
+    if (genotype.getAlternateReadDepth != null) {
+      genotype.getAlternateReadDepth >= minAlternateReadDepth
     } else {
       includeNull
     }

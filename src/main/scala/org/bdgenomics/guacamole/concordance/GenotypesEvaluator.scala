@@ -66,9 +66,9 @@ object GenotypesEvaluator extends Command with Logging {
                                 excludeSNVs: Boolean = false,
                                 excludeIndels: Boolean = true,
                                 chromosome: String = null): (Double, Double, Double) = {
-    val chromosomeFilter: (Genotype => Boolean) = chromosome == "" || _.variant.contig.contigName.toString == chromosome
+    val chromosomeFilter: (Genotype => Boolean) = chromosome == "" || _.getVariant.getContig.getContigName.toString == chromosome
     val variantTypeFilter: (Genotype => Boolean) = genotype => {
-      val variant = new RichVariant(genotype.variant)
+      val variant = new RichVariant(genotype.getVariant)
       (!excludeSNVs && variant.isSingleNucleotideVariant()) || (!excludeIndels && (variant.isInsertion() || variant.isDeletion()))
     }
 
