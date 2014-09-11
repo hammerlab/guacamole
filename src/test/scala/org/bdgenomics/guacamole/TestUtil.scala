@@ -64,13 +64,15 @@ object TestUtil extends Matchers {
       sequence.map(x => '@').mkString
     }
 
-    Read(sequence,
+    Read(
+      sequence,
       cigarString = cigar,
       mdTagString = mdtag,
       start = start,
       referenceContig = chr,
       baseQualities = qualityScoreString,
-      alignmentQuality = alignmentQuality).getMappedReadOpt.get
+      alignmentQuality = alignmentQuality
+    ).getMappedReadOpt.get
   }
 
   def makePairedRead(
@@ -242,30 +244,6 @@ object TestUtil extends Matchers {
           for ((className, level) <- levels) {
             SparkLogUtil.setLogLevels(level, List(className))
           }
-      }
-    }
-
-    def sparkBefore(beforeName: String, silenceSpark: Boolean = true)(body: => Unit) {
-      before {
-        sc = createSpark(beforeName, silenceSpark)
-        try {
-          // Run the before block
-          body
-        } finally {
-          destroySpark()
-        }
-      }
-    }
-
-    def sparkAfter(beforeName: String, silenceSpark: Boolean = true)(body: => Unit) {
-      after {
-        sc = createSpark(beforeName, silenceSpark)
-        try {
-          // Run the after block
-          body
-        } finally {
-          destroySpark()
-        }
       }
     }
 
