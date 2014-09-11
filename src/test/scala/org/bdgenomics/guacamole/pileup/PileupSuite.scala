@@ -51,12 +51,9 @@ class PileupSuite extends TestUtil.SparkFunSuite with Matchers {
     insertPileup.elements.exists(_.isInsertion) should be(true)
     insertPileup.elements.forall(_.qualityScore == 31) should be(true)
 
-    insertPileup.elements.forall(
-      _.alignment match {
-        case Match('A', quality) => quality == 31
-        case Insertion(Seq('A', 'C', 'C', 'C'), qualities) => qualities.sameElements(Seq(31, 31, 31, 31))
-        case _ => false
-      }) should be(true)
+    insertPileup.elements(0).alignment should equal(Match('A', 31.toByte))
+    insertPileup.elements(1).alignment should equal(Match('A', 31.toByte))
+    insertPileup.elements(2).alignment should equal(Insertion("ACCC", Seq(31, 31, 31, 31).map(_.toByte)))
   }
 
   sparkTest("create pileup from long insert reads; different qualities in insertion") {
@@ -87,9 +84,9 @@ class PileupSuite extends TestUtil.SparkFunSuite with Matchers {
     noPileup.size should be(0)
 
     val pastInsertPileup = Pileup(reads, 5)
-    pastInsertPileup.elements.forall(_.isMatch) should be(true)
+    pastInsertPileup.elements.foreach(_.isMatch should be(true))
 
-    pastInsertPileup.elements.forall(_.qualityScore == 10) should be(true)
+    pastInsertPileup.elements.foreach(_.qualityScore should be(10))
 
   }
 
@@ -245,13 +242,18 @@ class PileupSuite extends TestUtil.SparkFunSuite with Matchers {
 
     // elementAtGreaterLocus is a no-op on the same locus, 
     // and fails in lower loci
-    val loci = Seq(5, 33, 34, 43, 44, 74)
-    loci.map({ l =>
+    def testAdvanceToLocusEdgeCases(l: Int): Unit = {
       val elt = PileupElement(decadentRead1, l)
       assert(elt.elementAtGreaterLocus(l) === elt)
       intercept[AssertionError] { elt.elementAtGreaterLocus(l - 1) }
       intercept[AssertionError] { elt.elementAtGreaterLocus(75) }
-    })
+    }
+    testAdvanceToLocusEdgeCases(5)
+    testAdvanceToLocusEdgeCases(33)
+    testAdvanceToLocusEdgeCases(34)
+    testAdvanceToLocusEdgeCases(43)
+    testAdvanceToLocusEdgeCases(44)
+    testAdvanceToLocusEdgeCases(74)
 
     val read3Record = testAdamRecords(2) // read3
     val read3At15 = PileupElement(read3Record, 15)
