@@ -32,7 +32,7 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
     @Opt(name = "-snvWindowRange", usage = "Number of bases before and after to check for additional matches or deletions")
     var snvWindowRange: Int = 20
 
-    @Opt(name = "-logOddsThreshold", usage = "Minimum log odds threshold for possible variant candidates")
+    @Opt(name = "-log-odds", usage = "Minimum log odds threshold for possible variant candidates")
     var logOddsThreshold: Int = 20
 
   }
@@ -167,23 +167,17 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
             normalize = true).toMap
 
         val (normalVariantGenotypes, normalReferenceGenotype) = normalLikelihoods.partition(_._1.isVariant(referenceBase))
-
         val normalEvidence = GenotypeEvidence(normalVariantGenotypes.map(_._2).sum, alternate, filteredNormalPileup)
+        val somaticOdds = tumorVariantLikelihood / normalVariantGenotypes.map(_._2).sum
 
-        val tumorLikelihoods = BayesianQualityVariantCaller.computeLikelihoods(tumorPileup,
-          includeAlignmentLikelihood = true,
-          normalize = true).toMap
-
-        val somaticLogOdds = math.log(tumorVariantLikelihood) - math.log(normalVariantGenotypes.map(_._2).sum)
-
-        if (somaticLogOdds >= logOddsThreshold) {
+        if (somaticOdds >= logOddsThreshold) {
           Seq(
             CalledSomaticGenotype(tumorSampleName,
               tumorPileup.referenceName,
               tumorPileup.locus,
               referenceBase,
               alternate,
-              somaticLogOdds,
+              math.log(somaticOdds),
               tumorEvidence,
               normalEvidence)
           )
