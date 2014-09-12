@@ -19,7 +19,7 @@ class SomaticLogOddsVariantCallerSuite extends SparkFunSuite with ShouldMatchers
   /**
    * Common algorithm parameters - fixed for all tests
    */
-  val logOddsThreshold = 20
+  val logOddsThreshold = 120
   val minAlignmentQuality = 1
   val minTumorReadDepth = 8
   val minNormalReadDepth = 4

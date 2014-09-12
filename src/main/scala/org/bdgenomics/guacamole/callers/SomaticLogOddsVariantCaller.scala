@@ -7,7 +7,7 @@ import org.bdgenomics.guacamole.Common.Arguments.{ Output, TumorNormalReads }
 import org.bdgenomics.guacamole._
 import org.bdgenomics.guacamole.filters.PileupFilter.PileupFilterArguments
 import org.bdgenomics.guacamole.filters.SomaticGenotypeFilter.SomaticGenotypeFilterArguments
-import org.bdgenomics.guacamole.filters.{ PileupFilter, SomaticGenotypeFilter }
+import org.bdgenomics.guacamole.filters._
 import org.bdgenomics.guacamole.pileup.Pileup
 import org.bdgenomics.guacamole.reads.Read
 import org.bdgenomics.guacamole.variants.{ CalledSomaticGenotype, GenotypeConversions, GenotypeEvidence }
@@ -32,8 +32,8 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
     @Opt(name = "-snvWindowRange", usage = "Number of bases before and after to check for additional matches or deletions")
     var snvWindowRange: Int = 20
 
-    @Opt(name = "-log-odds", usage = "Minimum log odds threshold for possible variant candidates")
-    var logOddsThreshold: Int = 20
+    @Opt(name = "-odds", usage = "Minimum log odds threshold for possible variant candidates")
+    var oddsThreshold: Int = 20
 
   }
 
@@ -58,7 +58,7 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
     val minAlignmentQuality = args.minAlignmentQuality
     val maxReadDepth = args.maxTumorReadDepth
 
-    val logOddsThreshold = args.logOddsThreshold
+    val oddsThreshold = args.oddsThreshold
 
     val loci = Common.loci(args, normalReads)
     val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(
@@ -68,7 +68,7 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
       normalReads.mappedReads
     )
 
-    val potentialGenotypes: RDD[CalledSomaticGenotype] = DistributedUtil.pileupFlatMapTwoRDDs[CalledSomaticGenotype](
+    var potentialGenotypes: RDD[CalledSomaticGenotype] = DistributedUtil.pileupFlatMapTwoRDDs[CalledSomaticGenotype](
       tumorReads.mappedReads,
       normalReads.mappedReads,
       lociPartitions,
@@ -76,18 +76,21 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
       (pileupTumor, pileupNormal) => findPotentialVariantAtLocus(
         pileupTumor,
         pileupNormal,
-        logOddsThreshold,
+        oddsThreshold,
         maxMappingComplexity,
         minAlignmentForComplexity,
         minAlignmentQuality,
         filterMultiAllelic,
         maxReadDepth).iterator)
 
+    // Filter potential genotypes to min read values
+    potentialGenotypes = SomaticReadDepthFilter(potentialGenotypes, args.minTumorReadDepth, args.maxTumorReadDepth, args.minNormalReadDepth)
+    potentialGenotypes = SomaticAlternateReadDepthFilter(potentialGenotypes, args.minTumorAlternateReadDepth)
+
     potentialGenotypes.persist()
     Common.progress("Computed %,d potential genotypes".format(potentialGenotypes.count))
 
     val genotypeLociPartitions = DistributedUtil.partitionLociUniformly(args.parallelism, loci)
-
     val genotypes: RDD[CalledSomaticGenotype] = DistributedUtil.windowFlatMapWithState[CalledSomaticGenotype, CalledSomaticGenotype, Option[String]](
       Seq(potentialGenotypes),
       genotypeLociPartitions,
@@ -106,6 +109,13 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
     DelayedMessages.default.print()
   }
 
+  /**
+   * Remove genotypes if there are others in a nearby window
+   *
+   * @param state Unused
+   * @param genotypeWindows Collection of potential genotypes in the window
+   * @return Set of genotypes if there are no others in the window
+   */
   def removeCorrelatedGenotypes(state: Option[String],
                                 genotypeWindows: Seq[SlidingWindow[CalledSomaticGenotype]]): (Option[String], Iterator[CalledSomaticGenotype]) = {
     val genotypeWindow = genotypeWindows(0)
@@ -123,7 +133,7 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
 
   def findPotentialVariantAtLocus(tumorPileup: Pileup,
                                   normalPileup: Pileup,
-                                  logOddsThreshold: Int,
+                                  oddsThreshold: Int,
                                   maxMappingComplexity: Int = 100,
                                   minAlignmentForComplexity: Int = 1,
                                   minAlignmentQuality: Int = 1,
@@ -170,7 +180,7 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
         val normalEvidence = GenotypeEvidence(normalVariantGenotypes.map(_._2).sum, alternate, filteredNormalPileup)
         val somaticOdds = tumorVariantLikelihood / normalVariantGenotypes.map(_._2).sum
 
-        if (somaticOdds >= logOddsThreshold) {
+        if (somaticOdds * 100 >= oddsThreshold) {
           Seq(
             CalledSomaticGenotype(tumorSampleName,
               tumorPileup.referenceName,

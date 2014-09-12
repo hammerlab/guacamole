@@ -3,6 +3,7 @@ package org.bdgenomics.guacamole.variants
 import com.esotericsoftware.kryo.io.{ Input, Output }
 import com.esotericsoftware.kryo.{ Kryo, Serializer }
 import org.bdgenomics.adam.util.PhredUtils
+import org.bdgenomics.guacamole.Bases
 
 /**
  *
