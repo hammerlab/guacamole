@@ -12,8 +12,7 @@ import com.esotericsoftware.kryo.Kryo
 import com.twitter.chill.{ IKryoRegistrar, KryoInstantiator, KryoPool }
 import org.apache.commons.io.FileUtils
 import org.apache.log4j.{ Level, Logger }
-import org.apache.spark.SparkContext
-import org.bdgenomics.adam.cli.SparkArgs
+import org.apache.spark.{ SparkConf, SparkContext }
 import org.bdgenomics.guacamole.pileup.Pileup
 import org.bdgenomics.guacamole.reads.{ MappedRead, MateProperties, Read }
 import org.scalatest._
@@ -200,27 +199,27 @@ object TestUtil extends Matchers {
     var sc: SparkContext = _
     var maybeLevels: Option[Map[String, Level]] = None
 
-    def createSpark(sparkName: String, silenceSpark: Boolean = true): SparkContext = {
+    def createSpark(sparkName: String, silenceSpark: Boolean = true) = {
       // Silence the Spark logs if requested
       maybeLevels = if (silenceSpark) Some(SparkLogUtil.silenceSpark()) else None
       synchronized {
         // Find two unused ports
         val driverSocket = new ServerSocket(0)
         val uiSocket = new ServerSocket(0)
-
         val driverPort = driverSocket.getLocalPort
         val uiPort = uiSocket.getLocalPort
-
-        uiSocket.close()
         driverSocket.close()
-
-        object args extends SparkArgs {
-          spark_master = "local[4]"
-          spark_kryo_buffer_size = 256
-        }
-        // Create a spark context
-        Common.createSparkContext(
-          args, loadSystemValues = false, sparkDriverPort = Some(driverPort), sparkUIPort = Some(uiPort))
+        uiSocket.close()
+        val conf = new SparkConf(false)
+          .setAppName("guacamole: " + sparkName)
+          .setMaster("local[4]")
+          .set(sparkPortProperty, driverPort.toString)
+          .set("spark.ui.port", uiPort.toString)
+          .set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
+          .set("spark.kryo.registrator", "org.bdgenomics.guacamole.GuacamoleKryoRegistrator")
+          .set("spark.kryoserializer.buffer.mb", "4")
+          .set("spark.kryo.referenceTracking", "true")
+        sc = new SparkContext(conf)
       }
     }
 
@@ -248,7 +247,7 @@ object TestUtil extends Matchers {
     def sparkTest(name: String, silenceSpark: Boolean = true)(body: => Unit) {
       if (runOnly.isEmpty || runOnly == name) {
         test(name, SparkTest) {
-          sc = createSpark(name, silenceSpark)
+          createSpark(name, silenceSpark)
           try {
             // Run the test
             body
