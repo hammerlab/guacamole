@@ -358,7 +358,7 @@ object SimpleSomaticVariantCaller extends Command {
 
   override def run(rawArgs: Array[String]): Unit = {
     val args = Args4j[Arguments](rawArgs)
-    val context: SparkContext = Common.createSparkContext(args)
+    val context: SparkContext = Common.createSparkContext(appName = Some(name))
     val genotypes: RDD[Genotype] = callVariantsFromArgs(context, args)
     Common.progress("Found %d variants".format(genotypes.count))
     Common.writeVariantsFromArguments(args, genotypes)
