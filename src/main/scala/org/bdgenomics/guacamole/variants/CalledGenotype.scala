@@ -2,6 +2,7 @@ package org.bdgenomics.guacamole.variants
 
 import com.esotericsoftware.kryo.io.{ Input, Output }
 import com.esotericsoftware.kryo.{ Kryo, Serializer }
+import org.bdgenomics.guacamole.pileup.Allele
 
 /**
  *
@@ -10,16 +11,14 @@ import com.esotericsoftware.kryo.{ Kryo, Serializer }
  * @param sampleName sample the variant was called on
  * @param referenceContig chromosome or genome contig of the variant
  * @param start start position of the variant (0-based)
- * @param referenceBases bases in the reference genome
- * @param alternateBases bases in the sample genome
+ * @param allele allele (ref + seq bases) for this variant
  * @param evidence supporting statistics for the variant
  * @param length length of the variant
  */
 case class CalledGenotype(sampleName: String,
                           referenceContig: String,
                           start: Long,
-                          referenceBases: Seq[Byte],
-                          alternateBases: Seq[Byte],
+                          allele: Allele,
                           evidence: GenotypeEvidence,
                           length: Int = 1) extends ReferenceVariant {
   val end: Long = start + 1L
@@ -34,10 +33,10 @@ class CalledGenotypeSerializer extends Serializer[CalledGenotype] {
     output.writeString(obj.sampleName)
     output.writeString(obj.referenceContig)
     output.writeLong(obj.start, true)
-    output.writeInt(obj.referenceBases.length, true)
-    output.writeBytes(obj.referenceBases.toArray)
-    output.writeInt(obj.alternateBases.length, true)
-    output.writeBytes(obj.alternateBases.toArray)
+    output.writeInt(obj.allele.refBases.length, true)
+    output.writeBytes(obj.allele.refBases.toArray)
+    output.writeInt(obj.allele.altBases.length, true)
+    output.writeBytes(obj.allele.altBases.toArray)
     genotypeEvidenceSeralizer.write(kryo, output, obj.evidence)
     output.writeInt(obj.length, true)
 
@@ -60,8 +59,7 @@ class CalledGenotypeSerializer extends Serializer[CalledGenotype] {
       sampleName,
       referenceContig,
       start,
-      referenceBases,
-      alternateBases,
+      Allele(referenceBases, alternateBases),
       evidence,
       length
     )

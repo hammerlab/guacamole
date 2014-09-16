@@ -3,7 +3,7 @@ package org.bdgenomics.guacamole.callers
 import org.bdgenomics.guacamole.TestUtil.SparkFunSuite
 import org.bdgenomics.guacamole.variants.GenotypeAlleles
 import org.bdgenomics.guacamole.{ Bases, TestUtil }
-import org.bdgenomics.guacamole.pileup.Pileup
+import org.bdgenomics.guacamole.pileup.{ Allele, Pileup }
 import org.bdgenomics.adam.util.PhredUtils
 
 class BayesianQualityVariantCallerSuite extends SparkFunSuite {
@@ -11,7 +11,7 @@ class BayesianQualityVariantCallerSuite extends SparkFunSuite {
   def makeGenotype(referenceBase: Char, alleles: String*): GenotypeAlleles = {
     // If we later change Genotype to work with Array[byte] instead of strings, we can use this function to convert
     // to byte arrays.
-    GenotypeAlleles(referenceBase.toByte, alleles.map(Bases.stringToBases): _*)
+    GenotypeAlleles(alleles.map(allele => Allele(Seq(referenceBase.toByte), Bases.stringToBases(allele))): _*)
   }
 
   val floatingPointingThreshold = 1e-6
@@ -48,7 +48,7 @@ class BayesianQualityVariantCallerSuite extends SparkFunSuite {
     val reads = Seq(
       TestUtil.makeRead("C", "1M", "1", 1, "chr1", Some(Array(30))),
       TestUtil.makeRead("C", "1M", "1", 1, "chr1", Some(Array(40))),
-      TestUtil.makeRead("A", "1M", "0A0", 1, "chr1", Some(Array(30))))
+      TestUtil.makeRead("A", "1M", "0C0", 1, "chr1", Some(Array(30))))
 
     val pileup = Pileup(reads, 1)
 
@@ -121,7 +121,7 @@ class BayesianQualityVariantCallerSuite extends SparkFunSuite {
     val reads = Seq(
       TestUtil.makeRead("C", "1M", "1", 1, "chr1", Some(Array(30))),
       TestUtil.makeRead("C", "1M", "1", 1, "chr1", Some(Array(40))),
-      TestUtil.makeRead("A", "1M", "0A0", 1, "chr1", Some(Array(30))))
+      TestUtil.makeRead("A", "1M", "0C0", 1, "chr1", Some(Array(30))))
 
     val pileup = Pileup(reads, 1)
 

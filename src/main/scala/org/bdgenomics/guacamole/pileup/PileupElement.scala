@@ -1,8 +1,9 @@
 package org.bdgenomics.guacamole.pileup
 
 import htsjdk.samtools.{ CigarElement, CigarOperator }
-import org.bdgenomics.guacamole.CigarUtils
-import org.bdgenomics.guacamole.pileup.PileupElement.Allele
+import org.bdgenomics.guacamole.{ Bases, CigarUtils }
+import org.bdgenomics.guacamole.Bases.BasesOrdering
+import org.bdgenomics.guacamole.variants.AlleleOrdering
 import org.bdgenomics.guacamole.reads.MappedRead
 
 import scala.annotation.tailrec
@@ -132,8 +133,9 @@ case class PileupElement(
    * an array of length 1.
    */
   lazy val sequencedBases: Seq[Byte] = alignment.sequencedBases
+  lazy val referenceBases: Seq[Byte] = alignment.referenceBases
 
-  lazy val allele: Allele = sequencedBases
+  lazy val allele: Allele = Allele(referenceBases, sequencedBases)
 
   /*
    * Base quality score, phred-scaled.
@@ -232,8 +234,6 @@ case class PileupElement(
 
 object PileupElement {
 
-  type Allele = Seq[Byte]
-
   /**
    * Create a new [[PileupElement]] backed by the given read at the specified locus. The read must overlap the locus.
    */
@@ -247,6 +247,14 @@ object PileupElement {
       indexWithinCigarElement = 0
     ).advanceToLocus(locus)
   }
+}
+
+case class Allele(refBases: Seq[Byte], altBases: Seq[Byte]) {
+  lazy val isVariant = BasesOrdering.compare(refBases, altBases) != 0
+
+  override def toString: String = "Allele(%s,%s)".format(Bases.basesToString(refBases), Bases.basesToString(altBases))
+
+  def equals(other: Allele): Boolean = AlleleOrdering.compare(this, other) == 0
 }
 
 case class InvalidCigarElementException(elem: PileupElement)
