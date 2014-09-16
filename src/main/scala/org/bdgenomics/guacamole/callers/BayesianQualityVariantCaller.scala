@@ -85,7 +85,7 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
         val mostLikelyGenotype = genotypeLikelihoods.maxBy(_._2)
 
         def buildVariants(genotype: GenotypeAlleles, probability: Double): Seq[CalledGenotype] = {
-          genotype.getNonReferenceAlleles(referenceBase).map(alternate => {
+          genotype.getNonReferenceAlleles.map(alternate => {
             CalledGenotype(
               sampleName,
               samplePileup.referenceName,
@@ -98,26 +98,6 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
               )
             )
           })
-
-<<<<<<< HEAD
-=======
-        def buildVariants(genotype: GenotypeAlleles, probability: Double): Seq[Genotype] = {
-          val genotypeAlleles = JavaConversions.seqAsJavaList(genotype.getGenotypeAlleles)
-          genotype.getNonReferenceAlleles.map(
-            variantAllele => {
-              val variant = Variant.newBuilder
-                .setStart(pileup.locus)
-                .setReferenceAllele(Bases.baseToString(referenceBase))
-                .setAlternateAllele(Bases.basesToString(variantAllele))
-                .setContig(Contig.newBuilder.setContigName(pileup.referenceName).build)
-                .build
-              Genotype.newBuilder
-                .setAlleles(genotypeAlleles)
-                .setSampleId(sampleName.toCharArray)
-                .setVariant(variant)
-                .build
-            })
->>>>>>> 43ed9c77032f06ae0f3f43db20e463cc8416dc5c
         }
         buildVariants(mostLikelyGenotype._1, mostLikelyGenotype._2)
 
