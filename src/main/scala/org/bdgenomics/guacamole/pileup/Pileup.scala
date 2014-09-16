@@ -70,6 +70,59 @@ case class Pileup(locus: Long, elements: Seq[PileupElement]) {
   }
 
   /**
+   * For each possible genotype based on the pileup sequencedBases, compute the likelihood.
+   *
+   * @return Sequence of (GenotypeAlleles, Likelihood)
+   */
+  def computeLikelihoods(prior: GenotypeAlleles => Double = computeUniformGenotypePrior,
+                         includeAlignmentLikelihood: Boolean = true,
+                         normalize: Boolean = false): Seq[(GenotypeAlleles, Double)] = {
+
+    val genotypeLikelihoods = possibleGenotypes.map(_.likelihoodOfReads(elements, includeAlignmentLikelihood))
+
+    if (normalize) {
+      normalizeLikelihoods(possibleGenotypes.zip(genotypeLikelihoods))
+    } else {
+      possibleGenotypes.zip(genotypeLikelihoods)
+    }
+
+  }
+
+  /**
+   * See computeLikelihoods, same computation in log-space
+   *
+   * @return Sequence of (GenotypeAlleles, LogLikelihood)
+   */
+  def computeLogLikelihoods(prior: GenotypeAlleles => Double = computeUniformGenotypeLogPrior,
+                            includeAlignmentLikelihood: Boolean = false): Seq[(GenotypeAlleles, Double)] = {
+    possibleGenotypes.map(g =>
+      (g, prior(g) + g.logLikelihoodOfReads(elements, includeAlignmentLikelihood))
+    )
+  }
+
+  /**
+   * Compute prior probability for given genotype, in log-space
+   *
+   * @return 0.0 (default uniform prior)
+   */
+  protected def computeUniformGenotypeLogPrior(genotype: GenotypeAlleles): Double = 0.0
+
+  /**
+   * Compute prior probability for given genotype
+   *
+   * @return 1.0 (default uniform prior)
+   */
+  protected def computeUniformGenotypePrior(genotype: GenotypeAlleles): Double = 1.0
+
+  /*
+   * Helper function to normalize probabilities
+   */
+  def normalizeLikelihoods(likelihoods: Seq[(GenotypeAlleles, Double)]): Seq[(GenotypeAlleles, Double)] = {
+    val totalLikelihood = likelihoods.map(_._2).sum
+    likelihoods.map(genotypeLikelihood => (genotypeLikelihood._1, genotypeLikelihood._2 / totalLikelihood))
+  }
+
+  /**
    * Split this [[Pileup]] by sample name. Returns a map from sample name to [[Pileup]] instances that use only reads
    * from that sample.
    */

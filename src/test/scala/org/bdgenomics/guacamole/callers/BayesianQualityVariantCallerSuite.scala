@@ -40,7 +40,7 @@ class BayesianQualityVariantCallerSuite extends SparkFunSuite {
     expectedLikelihoods += makeGenotype('C', "G", "G") -> altLikelihood
     expectedLikelihoods += makeGenotype('C', "T", "G") -> altLikelihood
 
-    val scored = BayesianQualityVariantCaller.computeLikelihoods(pileup).toMap
+    val scored = pileup.computeLikelihoods().toMap
     scored.foreach(l => TestUtil.assertAlmostEqual(l._2, expectedLikelihoods(l._1), 1e-2))
   }
 
@@ -59,7 +59,7 @@ class BayesianQualityVariantCallerSuite extends SparkFunSuite {
     expectedLikelihoods += makeGenotype('C', "A", "C") -> hetLikelihood
     expectedLikelihoods += makeGenotype('C', "A", "A") -> (2 * errorPhred30 * 2 * errorPhred40 * 2 * (1 - errorPhred30)) / 8.0
 
-    val scored = BayesianQualityVariantCaller.computeLikelihoods(pileup).toMap
+    val scored = pileup.computeLikelihoods().toMap
     scored.foreach(l => TestUtil.assertAlmostEqual(l._2, expectedLikelihoods(l._1), 1e-3))
   }
 
@@ -87,7 +87,7 @@ class BayesianQualityVariantCallerSuite extends SparkFunSuite {
 
     expectedLikelihoods += makeGenotype('A', "C", "C") -> allErrorLikelihood
 
-    val scored = BayesianQualityVariantCaller.computeLikelihoods(pileup).toMap
+    val scored = pileup.computeLikelihoods().toMap
     scored.foreach(l => TestUtil.assertAlmostEqual(l._2, expectedLikelihoods(l._1), 1e-2))
   }
 
@@ -113,7 +113,7 @@ class BayesianQualityVariantCallerSuite extends SparkFunSuite {
     expectedLikelihoods += makeGenotype('C', "G", "G") -> altLikelihood
     expectedLikelihoods += makeGenotype('C', "T", "G") -> altLikelihood
 
-    val scored = BayesianQualityVariantCaller.computeLogLikelihoods(pileup).toMap
+    val scored = pileup.computeLogLikelihoods().toMap
     scored.foreach(l => TestUtil.assertAlmostEqual(l._2, expectedLikelihoods(l._1)))
   }
 
@@ -132,7 +132,7 @@ class BayesianQualityVariantCallerSuite extends SparkFunSuite {
     expectedLikelihoods += makeGenotype('C', "A", "C") -> hetLikelihood
     expectedLikelihoods += makeGenotype('C', "A", "A") -> (math.log(2 * errorPhred30) + math.log(2 * errorPhred40) + math.log(2 * (1 - errorPhred30)) - 3.0)
 
-    val scored = BayesianQualityVariantCaller.computeLogLikelihoods(pileup).toMap
+    val scored = pileup.computeLogLikelihoods().toMap
     scored.foreach(l => TestUtil.assertAlmostEqual(l._2, expectedLikelihoods(l._1), 1e-2))
   }
 
@@ -160,7 +160,7 @@ class BayesianQualityVariantCallerSuite extends SparkFunSuite {
 
     expectedLikelihoods += makeGenotype('A', "C", "C") -> allErrorLikelihood
 
-    val scored = BayesianQualityVariantCaller.computeLogLikelihoods(pileup).toMap
+    val scored = pileup.computeLogLikelihoods().toMap
     scored.foreach(l => TestUtil.assertAlmostEqual(l._2, expectedLikelihoods(l._1), 1e-2))
   }
 

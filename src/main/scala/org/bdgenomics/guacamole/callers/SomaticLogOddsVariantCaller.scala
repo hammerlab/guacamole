@@ -182,9 +182,10 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
         val tumorEvidence = GenotypeEvidence(tumorVariantLikelihood, allele.altBases, filteredTumorPileup)
 
         val normalLikelihoods =
-          BayesianQualityVariantCaller.computeLikelihoods(filteredNormalPileup,
+          filteredNormalPileup.computeLikelihoods(
             includeAlignmentLikelihood = false,
-            normalize = true).toMap
+            normalize = true
+          ).toMap
 
         val (normalVariantGenotypes, normalReferenceGenotype) = normalLikelihoods.partition(_._1.isVariant)
         val normalEvidence = GenotypeEvidence(normalVariantGenotypes.map(_._2).sum, allele.altBases, filteredNormalPileup)
@@ -218,9 +219,11 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
    */
   def callVariantInTumor(tumorPileup: Pileup): (Option[Allele], Double) = {
 
-    val tumorLikelihoods = BayesianQualityVariantCaller.computeLikelihoods(tumorPileup,
-      includeAlignmentLikelihood = true,
-      normalize = true).toMap
+    val tumorLikelihoods =
+      tumorPileup.computeLikelihoods(
+        includeAlignmentLikelihood = true,
+        normalize = true
+      ).toMap
 
     val tumorMostLikelyGenotype = tumorLikelihoods.maxBy(_._2)
 
