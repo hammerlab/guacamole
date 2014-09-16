@@ -37,7 +37,7 @@ object GenotypesEvaluator extends Command with Logging {
 
   override def run(rawArgs: Array[String]): Unit = {
     val args = Args4j[Arguments](rawArgs)
-    val sc = Common.createSparkContext(args, appName = Some(name))
+    val sc = Common.createSparkContext(appName = Some(name))
 
     val calledGenotypes = Common.loadGenotypes(args.testGenotypesFile, sc)
     printGenotypeConcordance(args, calledGenotypes, sc)

@@ -18,23 +18,23 @@
 
 package org.bdgenomics.guacamole
 
-import org.bdgenomics.adam.cli.{ SparkArgs, ParquetArgs, Args4jBase }
-import org.bdgenomics.guacamole.reads.Read
-import org.kohsuke.args4j.{ Option => Opt }
-import org.bdgenomics.formats.avro.Genotype
-import org.apache.spark.rdd.RDD
-import org.apache.spark.{ SparkConf, Logging, SparkContext }
-import org.bdgenomics.adam.rdd.ADAMContext._
+import java.io.OutputStream
 import java.util
-import org.bdgenomics.adam.rdd.variation.ADAMVariationContext._
-import org.apache.spark.scheduler.StatsReportListener
 import java.util.Calendar
+
 import org.apache.avro.generic.GenericDatumWriter
 import org.apache.avro.io.EncoderFactory
-import org.codehaus.jackson.JsonFactory
-import java.io.OutputStream
-import org.apache.hadoop.fs.{ Path, FileSystem }
 import org.apache.hadoop.conf.Configuration
+import org.apache.hadoop.fs.{FileSystem, Path}
+import org.apache.spark.rdd.RDD
+import org.apache.spark.{Logging, SparkConf, SparkContext}
+import org.bdgenomics.adam.cli.{Args4jBase, ParquetArgs}
+import org.bdgenomics.adam.rdd.ADAMContext._
+import org.bdgenomics.adam.rdd.variation.ADAMVariationContext._
+import org.bdgenomics.formats.avro.Genotype
+import org.bdgenomics.guacamole.reads.Read
+import org.codehaus.jackson.JsonFactory
+import org.kohsuke.args4j.{Option => Opt}
 
 /**
  * Collection of functions that are useful to multiple variant calling implementations, and specifications of command-
@@ -44,7 +44,7 @@ import org.apache.hadoop.conf.Configuration
 object Common extends Logging {
   object Arguments {
     /** Common argument(s) we always want.*/
-    trait Base extends Args4jBase with ParquetArgs with SparkArgs {
+    trait Base extends Args4jBase with ParquetArgs {
       @Opt(name = "-debug", usage = "If set, prints a higher level of debug output.")
       var debug = false
     }
@@ -267,43 +267,42 @@ object Common extends Logging {
   }
 
   /**
-   * Return a spark context. Copied from ADAM so we can set the Kryo serializer.
-   * @param args parsed arguments
-   * @param loadSystemValues
-   * @param sparkDriverPort
+   *
+   * Return a spark context.
+   *
+   * NOTE: Most properties are set through config file
+   *
+   * @param appName
+   * @return
    */
-  def createSparkContext(args: SparkArgs,
-                         loadSystemValues: Boolean = true,
-                         sparkDriverPort: Option[Int] = None,
-                         sparkUIPort: Option[Int] = None,
-                         appName: Option[String] = None): SparkContext = {
-    val config: SparkConf = new SparkConf(loadSystemValues).setMaster(args.spark_master)
+  def createSparkContext(appName: Option[String] = None): SparkContext = {
+    val config: SparkConf = new SparkConf()
     appName match {
       case Some(name) => config.setAppName("guacamole: %s".format(name))
       case _          => config.setAppName("guacamole")
     }
-    if (args.spark_home != null) config.setSparkHome(args.spark_home)
-    if (args.spark_jars.nonEmpty) config.setJars(args.spark_jars)
-    if (args.spark_env_vars.nonEmpty) config.setExecutorEnv(parseEnvVariables(args.spark_env_vars))
 
-    // Optionally set the spark driver and UI ports
-    sparkDriverPort.foreach(port => config.set("spark.driver.port", port.toString))
-    sparkUIPort.foreach(port => config.set("spark.ui.port", port.toString))
-
-    // Setup the Kryo settings
-    // The spark.kryo.registrator setting below is our only modification from ADAM's version of this function.
-    config.setAll(
-      Seq(
-        ("spark.serializer", "org.apache.spark.serializer.KryoSerializer"),
-        ("spark.kryo.registrator", "org.bdgenomics.guacamole.GuacamoleKryoRegistrator"),
-        ("spark.kryoserializer.buffer.mb", args.spark_kryo_buffer_size.toString),
-        ("spark.kryo.referenceTracking", "false")))
-
-    val sc = new SparkContext(config)
-    if (args.spark_add_stats_listener) {
-      sc.addSparkListener(new StatsReportListener)
+    if (config.getOption("spark.master").isEmpty) {
+      config.setMaster("local[%d]".format(Runtime.getRuntime.availableProcessors()))
     }
-    sc
+
+    if (config.getOption("spark.serializer").isEmpty) {
+      config.set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
+    }
+
+    if (config.getOption("spark.kryo.registrator").isEmpty) {
+      config.set("spark.kryo.registrator", "org.bdgenomics.guacamole.GuacamoleKryoRegistrator")
+    }
+
+    if (config.getOption("spark.kryoserializer.buffer.mb").isEmpty) {
+      config.set("spark.kryoserializer.buffer.mb", "4")
+    }
+
+    if (config.getOption("spark.kryo.referenceTracking").isEmpty) {
+      config.set("spark.kryo.referenceTracking", "true")
+    }
+
+    new SparkContext(config)
   }
 
   /** Time in milliseconds of last progress message. */
