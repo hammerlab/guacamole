@@ -1,8 +1,8 @@
 package org.bdgenomics.guacamole.variants
 
 import org.bdgenomics.formats.avro.GenotypeAllele
-import org.bdgenomics.guacamole.Bases
-import org.bdgenomics.guacamole.pileup.PileupElement.Allele
+import org.bdgenomics.guacamole.Bases.BasesOrdering
+import org.bdgenomics.guacamole.pileup.Allele
 
 /**
  * A Genotype is a sequence of alleles of length equal to the ploidy of the organism.
@@ -14,7 +14,7 @@ import org.bdgenomics.guacamole.pileup.PileupElement.Allele
  * Alleles can also be multiple bases as well, e.g. Seq("AAA", "T")
  *
  */
-case class GenotypeAlleles(referenceAllele: Byte, alleles: Allele*) {
+case class GenotypeAlleles(alleles: Allele*) {
   /**
    * The ploidy of the organism is the number of alleles in the genotype.
    */
@@ -23,7 +23,7 @@ case class GenotypeAlleles(referenceAllele: Byte, alleles: Allele*) {
   lazy val uniqueAllelesCount = alleles.toSet.size
 
   lazy val getNonReferenceAlleles: Seq[Allele] = {
-    alleles.filter(allele => allele.length != 1 || allele(0) != referenceAllele)
+    alleles.filter(_.isVariant)
   }
 
   /**
@@ -60,10 +60,14 @@ case class GenotypeAlleles(referenceAllele: Byte, alleles: Allele*) {
     }
   }
 
+  override def toString: String = "GenotypeAlleles(%s)".format(alleles.map(_.toString).mkString(","))
 }
 
 object AlleleOrdering extends Ordering[Allele] {
   override def compare(x: Allele, y: Allele): Int = {
-    Bases.basesToString(x).compare(Bases.basesToString(y))
+    BasesOrdering.compare(x.refBases, y.refBases) match {
+      case 0 => BasesOrdering.compare(x.altBases, y.altBases)
+      case x => x
+    }
   }
 }

@@ -79,8 +79,8 @@ object GenotypeEvidence {
     )
   }
 
-  def apply(likelihood: Double, alternate: Seq[Byte], pileup: Pileup): GenotypeEvidence = {
-    val (alternateReadDepth, alternatePositiveReadDepth) = pileup.alternateReadDepthAndPositiveDepth(alternate)
+  def apply(likelihood: Double, alternateBases: Seq[Byte], pileup: Pileup): GenotypeEvidence = {
+    val (alternateReadDepth, alternatePositiveReadDepth) = pileup.alternateReadDepthAndPositiveDepth(alternateBases)
     GenotypeEvidence(likelihood, alternateReadDepth, alternatePositiveReadDepth, pileup)
 
   }

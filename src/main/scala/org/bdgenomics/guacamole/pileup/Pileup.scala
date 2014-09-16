@@ -45,10 +45,14 @@ case class Pileup(locus: Long, elements: Seq[PileupElement]) {
     "Reads in pileup have mismatching reference names")
   assume(elements.forall(_.locus == locus), "Reads in pileup have mismatching loci")
 
-  /** The reference nucleotide base at this pileup's locus. */
-  lazy val referenceBase: Byte = {
-    head.read.referenceString.charAt((head.locus - head.read.start).toInt).toByte
-  }
+  /**
+   * The reference nucleotide base at this pileup's locus.
+   *
+   * TODO(ryan): this should possibly be passed in to the [[Pileup]] constructor; each [[PileupElement]] can have
+   * different notions of what the reference is (e.g. in the case of different-length deletions). Pulling the first idx
+   * from the first [[PileupElement]] feels somewhat hacky.
+   */
+  lazy val referenceBase: Byte = head.referenceBase
 
   lazy val possibleAlleles = elements.map(_.allele).distinct.sorted(AlleleOrdering)
 
