@@ -112,12 +112,11 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
    * @return Sequence of possible alleles for the genotype
    */
   def getPossibleAlleles(pileup: Pileup): Seq[GenotypeAlleles] = {
-
-    val possibleAlleles = pileup.elements.map(_.sequencedBases).distinct.sorted(AlleleOrdering)
-    val possibleGenotypes =
-      for (i <- 0 until possibleAlleles.size; j <- i until possibleAlleles.size)
-        yield GenotypeAlleles(pileup.referenceBase, possibleAlleles(i), possibleAlleles(j))
-    possibleGenotypes
+    val possibleAlleles = pileup.possibleAlleles
+    for {
+      i <- 0 until possibleAlleles.size
+      j <- i until possibleAlleles.size
+    } yield GenotypeAlleles(pileup.referenceBase, possibleAlleles(i), possibleAlleles(j))
   }
 
   /**
@@ -154,7 +153,8 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
                             includeAlignmentLikelihood: Boolean = false): Seq[(GenotypeAlleles, Double)] = {
     val possibleGenotypes = getPossibleAlleles(pileup)
     possibleGenotypes.map(g =>
-      (g, prior(g) + computeGenotypeLogLikelihoods(pileup, g, includeAlignmentLikelihood)))
+      (g, prior(g) + computeGenotypeLogLikelihoods(pileup, g, includeAlignmentLikelihood))
+    )
   }
 
   /**
