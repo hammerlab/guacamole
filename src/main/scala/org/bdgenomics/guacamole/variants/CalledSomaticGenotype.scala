@@ -12,8 +12,8 @@ import org.bdgenomics.guacamole.Bases
  * @param sampleName sample the variant was called on
  * @param referenceContig chromosome or genome contig of the variant
  * @param start start position of the variant (0-based)
- * @param referenceBase base in the reference genome
- * @param alternateBases base in the sample genome
+ * @param referenceBases bases in the reference genome
+ * @param alternateBases bases in the sample genome
  * @param somaticLogOdds log odds-ratio of the variant in the tumor compared to the normal sample
  * @param tumorEvidence supporting statistics for the variant in the tumor sample
  * @param normalEvidence supporting statistics for the variant in the normal sample
@@ -22,7 +22,7 @@ import org.bdgenomics.guacamole.Bases
 case class CalledSomaticGenotype(sampleName: String,
                                  referenceContig: String,
                                  start: Long,
-                                 referenceBase: Byte,
+                                 referenceBases: Seq[Byte],
                                  alternateBases: Seq[Byte],
                                  somaticLogOdds: Double,
                                  tumorEvidence: GenotypeEvidence,
@@ -43,7 +43,8 @@ class CalledSomaticGenotypeSerializer extends Serializer[CalledSomaticGenotype] 
     output.writeString(obj.sampleName)
     output.writeString(obj.referenceContig)
     output.writeLong(obj.start)
-    output.writeByte(obj.referenceBase)
+    output.writeInt(obj.referenceBases.length, true)
+    output.writeBytes(obj.referenceBases.toArray)
     output.writeInt(obj.alternateBases.length, true)
     output.writeBytes(obj.alternateBases.toArray)
     output.writeDouble(obj.somaticLogOdds)
@@ -60,9 +61,10 @@ class CalledSomaticGenotypeSerializer extends Serializer[CalledSomaticGenotype] 
     val sampleName: String = input.readString()
     val referenceContig: String = input.readString()
     val start: Long = input.readLong()
-    val referenceBase: Byte = input.readByte()
+    val referenceBasesLength = input.readInt(true)
+    val referenceBases: Seq[Byte] = input.readBytes(referenceBasesLength)
     val alternateLength = input.readInt(true)
-    val alternateBases = input.readBytes(alternateLength).toSeq
+    val alternateBases: Seq[Byte] = input.readBytes(alternateLength)
     val somaticLogOdds = input.readDouble()
 
     val tumorEvidence = genotypeEvidenceSerializer.read(kryo, input, classOf[GenotypeEvidence])
@@ -74,7 +76,7 @@ class CalledSomaticGenotypeSerializer extends Serializer[CalledSomaticGenotype] 
       sampleName,
       referenceContig,
       start,
-      referenceBase,
+      referenceBases,
       alternateBases,
       somaticLogOdds,
       tumorEvidence = tumorEvidence,
