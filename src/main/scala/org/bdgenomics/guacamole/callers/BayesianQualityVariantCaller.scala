@@ -105,20 +105,6 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
   }
 
   /**
-   * Generate possible alleles from a pileup
-   * Possible alleles are all unique n-tuples of sequencedBases that appear in the pileup.
-   *
-   * @return Sequence of possible alleles for the genotype
-   */
-  def getPossibleAlleles(pileup: Pileup): Seq[GenotypeAlleles] = {
-    val possibleAlleles = pileup.possibleAlleles
-    for {
-      i <- 0 until possibleAlleles.size
-      j <- i until possibleAlleles.size
-    } yield GenotypeAlleles(possibleAlleles(i), possibleAlleles(j))
-  }
-
-  /**
    * For each possible genotype based on the pileup sequencedBases, compute the likelihood.
    *
    * @return Sequence of (GenotypeAlleles, Likelihood)
@@ -128,13 +114,17 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
                          includeAlignmentLikelihood: Boolean = true,
                          normalize: Boolean = false): Seq[(GenotypeAlleles, Double)] = {
 
-    val possibleGenotypes = getPossibleAlleles(pileup)
+    val possibleGenotypes = pileup.possibleAlleles
     val genotypeLikelihoods =
-      pileup.elements.map(
-        computeGenotypeLikelihoods(_, possibleGenotypes, includeAlignmentLikelihood)
-      )
-        .transpose
-        .map(l => l.product / math.pow(2, l.length))
+      possibleGenotypes.map(genotype => {
+        val elementLikelihoods =
+          // TODO(ryan): we could memoize a lot of computation here by keeping around a count of each genotype's
+          // frequency in the Pileup, which we've already had an opportunity to compute and save.
+          pileup.elements.map(element =>
+            genotype.computeLikelihood(element, includeAlignmentLikelihood)
+          )
+        elementLikelihoods.product / math.pow(2, elementLikelihoods.length)
+      })
 
     if (normalize) {
       normalizeLikelihoods(possibleGenotypes.zip(genotypeLikelihoods))
@@ -152,7 +142,7 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
   def computeLogLikelihoods(pileup: Pileup,
                             prior: GenotypeAlleles => Double = computeUniformGenotypeLogPrior,
                             includeAlignmentLikelihood: Boolean = false): Seq[(GenotypeAlleles, Double)] = {
-    val possibleGenotypes = getPossibleAlleles(pileup)
+    val possibleGenotypes = pileup.possibleAlleles
     possibleGenotypes.map(g =>
       (g, prior(g) + computeGenotypeLogLikelihoods(pileup, g, includeAlignmentLikelihood))
     )

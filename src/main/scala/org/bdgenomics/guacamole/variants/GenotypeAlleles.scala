@@ -1,8 +1,9 @@
 package org.bdgenomics.guacamole.variants
 
+import org.bdgenomics.adam.util.PhredUtils
 import org.bdgenomics.formats.avro.GenotypeAllele
 import org.bdgenomics.guacamole.Bases.BasesOrdering
-import org.bdgenomics.guacamole.pileup.Allele
+import org.bdgenomics.guacamole.pileup.{ PileupElement, Allele }
 
 /**
  * A Genotype is a sequence of alleles of length equal to the ploidy of the organism.
@@ -24,6 +25,22 @@ case class GenotypeAlleles(alleles: Allele*) {
 
   lazy val getNonReferenceAlleles: Seq[Allele] = {
     alleles.filter(_.isVariant)
+  }
+
+  def computeLikelihood(element: PileupElement, includeAlignmentLikelihood: Boolean = false): Double = {
+    val baseCallProbability = PhredUtils.phredToSuccessProbability(element.qualityScore)
+    val successProbability = if (includeAlignmentLikelihood) {
+      baseCallProbability * element.read.alignmentLikelihood
+    } else {
+      baseCallProbability
+    }
+
+    alleles.map(allele =>
+      if (allele.equals(element.allele))
+        successProbability
+      else
+        (1 - successProbability)
+    ).sum
   }
 
   /**
