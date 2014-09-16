@@ -3,6 +3,7 @@ package org.bdgenomics.guacamole.variants
 import com.esotericsoftware.kryo.io.{ Input, Output }
 import com.esotericsoftware.kryo.{ Kryo, Serializer }
 import org.bdgenomics.adam.util.PhredUtils
+import org.bdgenomics.guacamole.pileup.Allele
 
 /**
  *
@@ -11,8 +12,7 @@ import org.bdgenomics.adam.util.PhredUtils
  * @param sampleName sample the variant was called on
  * @param referenceContig chromosome or genome contig of the variant
  * @param start start position of the variant (0-based)
- * @param referenceBases bases in the reference genome
- * @param alternateBases bases in the sample genome
+ * @param allele reference and sequence bases of this variant
  * @param somaticLogOdds log odds-ratio of the variant in the tumor compared to the normal sample
  * @param tumorEvidence supporting statistics for the variant in the tumor sample
  * @param normalEvidence supporting statistics for the variant in the normal sample
@@ -21,8 +21,7 @@ import org.bdgenomics.adam.util.PhredUtils
 case class CalledSomaticGenotype(sampleName: String,
                                  referenceContig: String,
                                  start: Long,
-                                 referenceBases: Seq[Byte],
-                                 alternateBases: Seq[Byte],
+                                 allele: Allele,
                                  somaticLogOdds: Double,
                                  tumorEvidence: GenotypeEvidence,
                                  normalEvidence: GenotypeEvidence,
@@ -42,10 +41,10 @@ class CalledSomaticGenotypeSerializer extends Serializer[CalledSomaticGenotype] 
     output.writeString(obj.sampleName)
     output.writeString(obj.referenceContig)
     output.writeLong(obj.start)
-    output.writeInt(obj.referenceBases.length, true)
-    output.writeBytes(obj.referenceBases.toArray)
-    output.writeInt(obj.alternateBases.length, true)
-    output.writeBytes(obj.alternateBases.toArray)
+    output.writeInt(obj.allele.refBases.length, true)
+    output.writeBytes(obj.allele.refBases.toArray)
+    output.writeInt(obj.allele.altBases.length, true)
+    output.writeBytes(obj.allele.altBases.toArray)
     output.writeDouble(obj.somaticLogOdds)
 
     genotypeEvidenceSerializer.write(kryo, output, obj.tumorEvidence)
@@ -75,8 +74,7 @@ class CalledSomaticGenotypeSerializer extends Serializer[CalledSomaticGenotype] 
       sampleName,
       referenceContig,
       start,
-      referenceBases,
-      alternateBases,
+      Allele(referenceBases, alternateBases),
       somaticLogOdds,
       tumorEvidence = tumorEvidence,
       normalEvidence = normalEvidence

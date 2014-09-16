@@ -1,6 +1,7 @@
 package org.bdgenomics.guacamole.variants
 
 import org.bdgenomics.formats.avro.{ Contig, Variant }
+import org.bdgenomics.guacamole.pileup.Allele
 import org.bdgenomics.guacamole.{ Bases, HasReferenceRegion }
 
 /**
@@ -15,11 +16,8 @@ trait ReferenceVariant extends HasReferenceRegion {
   /** start locus of the variant */
   val start: Long
 
-  /** reference genome base at the start locus */
-  val referenceBases: Seq[Byte]
-
-  /** alternate base in the variant */
-  val alternateBases: Seq[Byte]
+  /** reference and sequenced bases for this variant */
+  val allele: Allele
 
   val length: Int
 
@@ -27,8 +25,8 @@ trait ReferenceVariant extends HasReferenceRegion {
   def adamVariant = Variant.newBuilder
     .setStart(start)
     .setEnd(end)
-    .setReferenceAllele(Bases.basesToString(referenceBases))
-    .setAlternateAllele(Bases.basesToString(alternateBases))
+    .setReferenceAllele(Bases.basesToString(allele.refBases))
+    .setAlternateAllele(Bases.basesToString(allele.altBases))
     .setContig(Contig.newBuilder.setContigName(referenceContig).build)
     .build
 
