@@ -56,7 +56,7 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
   override def run(rawArgs: Array[String]): Unit = {
 
     val args = Args4j[Arguments](rawArgs)
-    val sc = Common.createSparkContext(args, appName = Some(name))
+    val sc = Common.createSparkContext(appName = Some(name))
 
     val filters = Read.InputFilters(mapped = true, nonDuplicate = true, passedVendorQualityChecks = true)
     val (tumorReads, normalReads) = Common.loadTumorNormalReadsFromArguments(args, sc, filters)
@@ -160,7 +160,7 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
             includeAlignmentLikelihood = false,
             normalize = true)
 
-        val (normalVariantGenotypes, normalReferenceGenotype) = normalLikelihoods.partition(_._1.isVariant(referenceBase))
+        val (normalVariantGenotypes, normalReferenceGenotype) = normalLikelihoods.partition(_._1.isVariant)
 
         val normalEvidence = GenotypeEvidence(normalVariantGenotypes.map(_._2).sum, alternate, filteredNormalPileup)
 
@@ -183,7 +183,6 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
               normalEvidence = normalEvidence
             )
           )
-
         } else {
           Seq.empty
         }
@@ -203,7 +202,7 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
   def callVariantInTumor(referenceBase: Byte,
                          tumorPileup: Pileup): (Option[Seq[Byte]], Double) = {
     def normalPrior(gt: GenotypeAlleles, hetVariantPrior: Double = 1e-4): Double = {
-      val numberVariants = gt.numberOfVariants(referenceBase)
+      val numberVariants = gt.numberOfVariants
       if (numberVariants > 0) math.pow(hetVariantPrior / gt.uniqueAllelesCount, numberVariants) else 1
     }
 
@@ -214,8 +213,8 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
 
     val tumorMostLikelyGenotype = tumorLikelihoods.maxBy(_._2)
 
-    if (tumorMostLikelyGenotype._1.isVariant(referenceBase)) {
-      val alternateBase = tumorMostLikelyGenotype._1.getNonReferenceAlleles(referenceBase)(0)
+    if (tumorMostLikelyGenotype._1.isVariant) {
+      val alternateBase = tumorMostLikelyGenotype._1.getNonReferenceAlleles(0)
       (Some(alternateBase), tumorMostLikelyGenotype._2)
     } else {
       (None, 1 - tumorMostLikelyGenotype._2)

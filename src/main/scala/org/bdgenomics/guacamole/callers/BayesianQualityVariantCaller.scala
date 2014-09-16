@@ -32,7 +32,7 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
 
   override def run(rawArgs: Array[String]): Unit = {
     val args = Args4j[Arguments](rawArgs)
-    val sc = Common.createSparkContext(args, appName = Some(name))
+    val sc = Common.createSparkContext(appName = Some(name))
 
     val readSet = Common.loadReadsFromArguments(args, sc, Read.InputFilters(mapped = true, nonDuplicate = true))
     readSet.mappedReads.persist()
@@ -99,6 +99,25 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
             )
           })
 
+<<<<<<< HEAD
+=======
+        def buildVariants(genotype: GenotypeAlleles, probability: Double): Seq[Genotype] = {
+          val genotypeAlleles = JavaConversions.seqAsJavaList(genotype.getGenotypeAlleles)
+          genotype.getNonReferenceAlleles.map(
+            variantAllele => {
+              val variant = Variant.newBuilder
+                .setStart(pileup.locus)
+                .setReferenceAllele(Bases.baseToString(referenceBase))
+                .setAlternateAllele(Bases.basesToString(variantAllele))
+                .setContig(Contig.newBuilder.setContigName(pileup.referenceName).build)
+                .build
+              Genotype.newBuilder
+                .setAlleles(genotypeAlleles)
+                .setSampleId(sampleName.toCharArray)
+                .setVariant(variant)
+                .build
+            })
+>>>>>>> 43ed9c77032f06ae0f3f43db20e463cc8416dc5c
         }
         buildVariants(mostLikelyGenotype._1, mostLikelyGenotype._2)
 
@@ -116,7 +135,7 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
     val possibleAlleles = pileup.elements.map(_.sequencedBases).distinct.sorted(AlleleOrdering)
     val possibleGenotypes =
       for (i <- 0 until possibleAlleles.size; j <- i until possibleAlleles.size)
-        yield GenotypeAlleles(possibleAlleles(i), possibleAlleles(j))
+        yield GenotypeAlleles(pileup.referenceBase, possibleAlleles(i), possibleAlleles(j))
     possibleGenotypes
   }
 
