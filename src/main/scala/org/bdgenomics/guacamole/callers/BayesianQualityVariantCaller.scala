@@ -79,7 +79,7 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
 
     pileup.bySample.toSeq.flatMap({
       case (sampleName, samplePileup) =>
-        val referenceBase = samplePileup.referenceBase
+        val referenceBases = Seq(samplePileup.referenceBase)
         val filteredPileupElements = QualityAlignedReadsFilter(samplePileup.elements, minAlignmentQuality)
         val genotypeLikelihoods = computeLogLikelihoods(Pileup(samplePileup.locus, filteredPileupElements))
         val mostLikelyGenotype = genotypeLikelihoods.maxBy(_._2)
@@ -90,7 +90,7 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
               sampleName,
               samplePileup.referenceName,
               samplePileup.locus,
-              referenceBase,
+              referenceBases,
               alternate,
               GenotypeEvidence(
                 probability,
