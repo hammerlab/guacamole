@@ -4,8 +4,6 @@ import org.bdgenomics.guacamole.TestUtil.SparkFunSuite
 import org.bdgenomics.guacamole.{ Bases, TestUtil }
 import org.bdgenomics.guacamole.genotype.GenotypeAlleles
 import org.bdgenomics.guacamole.pileup.Pileup
-import org.bdgenomics.formats.avro.GenotypeAllele
-import scala.collection.JavaConversions._
 import org.bdgenomics.adam.util.PhredUtils
 
 class BayesianQualityVariantCallerSuite extends SparkFunSuite {

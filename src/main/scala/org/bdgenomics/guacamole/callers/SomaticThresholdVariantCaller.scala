@@ -28,7 +28,7 @@ import org.kohsuke.args4j.Option
 import org.bdgenomics.adam.cli.Args4j
 import org.bdgenomics.guacamole.Common.Arguments._
 import org.apache.spark.rdd.RDD
-import org.apache.spark.Logging
+import org.apache.spark.{ SparkContext, Logging }
 import org.bdgenomics.guacamole.pileup.Pileup
 
 /**
@@ -43,7 +43,7 @@ object SomaticThresholdVariantCaller extends Command with Serializable with Logg
   override val name = "somatic-threshold"
   override val description = "call somatic variants using a two-threshold criterion"
 
-  private class Arguments extends Base with Output with TumorNormalReads with DistributedUtil.Arguments {
+  private[callers] class Arguments extends Base with Output with TumorNormalReads with DistributedUtil.Arguments {
     @Option(name = "-threshold-normal", metaVar = "X",
       usage = "Somatic variants must have fewer than X% of reads in the normal sample.")
     var thresholdNormal: Int = 4
@@ -56,6 +56,11 @@ object SomaticThresholdVariantCaller extends Command with Serializable with Logg
   override def run(rawArgs: Array[String]): Unit = {
     val args = Args4j[Arguments](rawArgs)
     val sc = Common.createSparkContext(appName = Some(name))
+
+    runWrapper(sc, args)
+  }
+
+  def runWrapper(sc: SparkContext, args: Arguments): Unit = {
 
     val filters = Read.InputFilters(mapped = true, nonDuplicate = true)
     val (tumorReads, normalReads) = Common.loadTumorNormalReadsFromArguments(args, sc, filters)
