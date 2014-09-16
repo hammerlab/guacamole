@@ -2,11 +2,11 @@ package org.bdgenomics.guacamole.callers
 
 import org.bdgenomics.guacamole.TestUtil
 import org.bdgenomics.guacamole.TestUtil.SparkFunSuite
+import org.bdgenomics.guacamole.filters.SomaticGenotypeFilter
 import org.bdgenomics.guacamole.pileup.Pileup
 import org.bdgenomics.guacamole.reads.MappedRead
 import org.scalatest.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks
-import org.bdgenomics.guacamole.filters.{ SomaticGenotypeFilter, GenotypeFilter }
 
 class SomaticLogOddsVariantCallerSuite extends SparkFunSuite with Matchers with TableDrivenPropertyChecks {
 
@@ -19,21 +19,18 @@ class SomaticLogOddsVariantCallerSuite extends SparkFunSuite with Matchers with 
   /**
    * Common algorithm parameters - fixed for all tests
    */
-  val logOddsThreshold = 90
+  val logOddsThreshold = 120
   val minAlignmentQuality = 1
   val minTumorReadDepth = 8
   val minNormalReadDepth = 4
   val maxTumorReadDepth = 200
-  val maxNormalAlternateReadDepth = 5
   val minTumorAlternateReadDepth = 3
   val maxMappingComplexity = 20
   val minAlignmentForComplexity = 1
 
   val filterMultiAllelic = false
 
-  val snvWindowRange = 25
-  val snvCorrelationPercent = 20
-  val minLikelihood = 15
+  val minLikelihood = 70
   val minVAF = 5
 
   def testVariants(tumorReads: Seq[MappedRead], normalReads: Seq[MappedRead], positions: Array[Long], isTrue: Boolean = false) = {
@@ -41,33 +38,31 @@ class SomaticLogOddsVariantCallerSuite extends SparkFunSuite with Matchers with 
     forAll(positionsTable) {
       (locus: Long) =>
         val (tumorPileup, normalPileup) = TestUtil.loadTumorNormalPileup(tumorReads, normalReads, locus)
-        val calledGenotypes = SomaticLogOddsVariantCaller.callSomaticVariantsAtLocus(
+        val calledGenotypes = SomaticLogOddsVariantCaller.findPotentialVariantAtLocus(
           tumorPileup,
           normalPileup,
           logOddsThreshold,
-          snvWindowRange = snvWindowRange,
-          minNormalReadDepth = minNormalReadDepth,
-          maxNormalAlternateReadDepth = maxNormalAlternateReadDepth,
-          minAlternateReadDepth = minTumorAlternateReadDepth,
-          maxMappingComplexity = maxMappingComplexity,
-          minAlignmentForComplexity = minAlignmentForComplexity,
-          minAlignmentQuality = minAlignmentQuality,
-          filterMultiAllelic = filterMultiAllelic)
-        val hasVariant = SomaticGenotypeFilter(calledGenotypes,
+          maxMappingComplexity,
+          minAlignmentForComplexity,
+          minAlignmentQuality,
+          filterMultiAllelic)
+        val hasVariant = SomaticGenotypeFilter(
+          calledGenotypes,
           minTumorReadDepth,
           maxTumorReadDepth,
           minNormalReadDepth,
           minTumorAlternateReadDepth,
           logOddsThreshold,
-          minLikelihood).size > 0
+          minVAF = minVAF,
+          minLikelihood = minLikelihood).size > 0
         hasVariant should be(isTrue)
     }
   }
 
   sparkTest("testing simple positive variants") {
     val (tumorReads, normalReads) = TestUtil.loadTumorNormalReads(sc, "tumor.chr20.tough.sam", "normal.chr20.tough.sam")
-    val positivePositions = Array[Long](39083205, 42999694, 25031215, 44061033, 45175149, 755754, 1843813,
-      3555766, 3868620, 9896926, 14017900, 17054263, 35951019, 39083205, 50472935, 51858471, 58201903, 7087895,
+    val positivePositions = Array[Long](42999694, 25031215, 44061033, 45175149, 755754, 1843813,
+      3555766, 3868620, 9896926, 14017900, 17054263, 35951019, 50472935, 51858471, 58201903, 7087895,
       19772181, 30430960, 32150541, 42186626, 44973412, 46814443, 52311925, 53774355, 57280858, 62262870)
     testVariants(tumorReads, normalReads, positivePositions, isTrue = true)
   }
@@ -95,7 +90,7 @@ class SomaticLogOddsVariantCallerSuite extends SparkFunSuite with Matchers with 
   sparkTest("difficult negative variants") {
 
     val (tumorReads, normalReads) = TestUtil.loadTumorNormalReads(sc, "tumor.chr20.simplefp.sam", "normal.chr20.simplefp.sam")
-    val negativeVariantPositions = Array[Long](26211835, 29603746, 29652479, 54495768, 13046318, 25939088)
+    val negativeVariantPositions = Array[Long](26211835, 29652479, 54495768, 13046318, 25939088)
     testVariants(tumorReads, normalReads, negativeVariantPositions, isTrue = false)
   }
 }
