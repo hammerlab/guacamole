@@ -200,7 +200,7 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
     val unnormalizedLikelihood =
       pileup.elements
         .map(el => math.log(computeBaseGenotypeLikelihood(el, genotype, includeAlignmentLikelihood)))
-        .reduce(_ + _)
+        .sum
     if (genotype.ploidy == 2) {
       unnormalizedLikelihood - depth
     } else {
