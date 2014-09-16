@@ -1,6 +1,7 @@
-package org.bdgenomics.guacamole.genotype
+package org.bdgenomics.guacamole.variants
 
 import org.bdgenomics.formats.avro.GenotypeAllele
+import org.bdgenomics.guacamole.Bases
 
 /**
  * A Genotype is a sequence of alleles of length equal to the ploidy of the organism.
@@ -58,4 +59,10 @@ case class GenotypeAlleles(referenceAllele: Byte, alleles: Seq[Byte]*) {
     }
   }
 
+}
+
+object AlleleOrdering extends Ordering[Seq[Byte]] {
+  override def compare(x: Seq[Byte], y: Seq[Byte]): Int = {
+    Bases.basesToString(x).compare(Bases.basesToString(y))
+  }
 }

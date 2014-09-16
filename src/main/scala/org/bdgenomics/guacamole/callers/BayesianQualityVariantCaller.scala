@@ -4,7 +4,6 @@ import org.apache.spark.Logging
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.cli.Args4j
 import org.bdgenomics.adam.util.PhredUtils
-import org.bdgenomics.formats.avro.{ Contig, Genotype, GenotypeAllele, Variant }
 import org.bdgenomics.guacamole.Common.Arguments._
 import org.bdgenomics.guacamole._
 import org.bdgenomics.guacamole.concordance.GenotypesEvaluator
@@ -12,12 +11,10 @@ import org.bdgenomics.guacamole.concordance.GenotypesEvaluator.GenotypeConcordan
 import org.bdgenomics.guacamole.filters.GenotypeFilter.GenotypeFilterArguments
 import org.bdgenomics.guacamole.filters.PileupFilter.PileupFilterArguments
 import org.bdgenomics.guacamole.filters.{ GenotypeFilter, QualityAlignedReadsFilter }
-import org.bdgenomics.guacamole.genotype.GenotypeAlleles
 import org.bdgenomics.guacamole.pileup.{ Pileup, PileupElement }
 import org.bdgenomics.guacamole.reads.Read
+import org.bdgenomics.guacamole.variants._
 import org.kohsuke.args4j.Option
-
-import scala.collection.JavaConversions
 
 /**
  * Simple Bayesian variant caller implementation that uses the base and read quality score
@@ -40,24 +37,21 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
     val readSet = Common.loadReadsFromArguments(args, sc, Read.InputFilters(mapped = true, nonDuplicate = true))
     readSet.mappedReads.persist()
     Common.progress(
-      "Loaded %,d mapped non-duplicate reads into %,d partitions.".format(
-        readSet.mappedReads.count(), readSet.mappedReads.partitions.length
-      )
-    )
+      "Loaded %,d mapped non-duplicate reads into %,d partitions.".format(readSet.mappedReads.count, readSet.mappedReads.partitions.length))
 
     val loci = Common.loci(args, readSet)
     val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(args, loci, readSet.mappedReads)
 
     val minAlignmentQuality = args.minAlignmentQuality
 
-    val genotypes: RDD[Genotype] = DistributedUtil.pileupFlatMap[Genotype](
+    val genotypes: RDD[CalledGenotype] = DistributedUtil.pileupFlatMap[CalledGenotype](
       readSet.mappedReads,
       lociPartitions,
       skipEmpty = true, // skip empty pileups
       pileup => callVariantsAtLocus(pileup, minAlignmentQuality).iterator)
     readSet.mappedReads.unpersist()
 
-    val filteredGenotypes = GenotypeFilter(genotypes, args)
+    val filteredGenotypes = GenotypeFilter(genotypes, args).flatMap(GenotypeConversions.calledGenotypeToADAMGenotype(_))
     Common.writeVariantsFromArguments(args, filteredGenotypes)
     if (args.truthGenotypesFile != "")
       GenotypesEvaluator.printGenotypeConcordance(args, filteredGenotypes, sc)
@@ -77,7 +71,7 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
   def callVariantsAtLocus(
     pileup: Pileup,
     minAlignmentQuality: Int = 0,
-    emitRef: Boolean = false): Seq[Genotype] = {
+    emitRef: Boolean = false): Seq[CalledGenotype] = {
 
     // For now, we skip loci that have no reads mapped. We may instead want to emit NoCall in this case.
     if (pileup.elements.isEmpty)
@@ -85,48 +79,40 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
 
     pileup.bySample.toSeq.flatMap({
       case (sampleName, samplePileup) =>
+        val referenceBase = samplePileup.referenceBase
         val filteredPileupElements = QualityAlignedReadsFilter(samplePileup.elements, minAlignmentQuality)
         val genotypeLikelihoods = computeLogLikelihoods(Pileup(samplePileup.locus, filteredPileupElements))
         val mostLikelyGenotype = genotypeLikelihoods.maxBy(_._2)
 
-        val referenceBase = samplePileup.referenceBase
-
-        def buildVariants(genotype: GenotypeAlleles, probability: Double): Seq[Genotype] = {
-          val genotypeAlleles = JavaConversions.seqAsJavaList(genotype.getGenotypeAlleles)
-          genotype.getNonReferenceAlleles.map(
-            variantAllele => {
-              val variant = Variant.newBuilder
-                .setStart(pileup.locus)
-                .setReferenceAllele(Bases.baseToString(referenceBase))
-                .setAlternateAllele(Bases.basesToString(variantAllele))
-                .setContig(Contig.newBuilder.setContigName(pileup.referenceName).build)
-                .build
-              Genotype.newBuilder
-                .setAlleles(genotypeAlleles)
-                .setSampleId(sampleName.toCharArray)
-                .setVariant(variant)
-                .build
-            })
+        def buildVariants(genotype: GenotypeAlleles, probability: Double): Seq[CalledGenotype] = {
+          genotype.getNonReferenceAlleles.map(alternate => {
+            CalledGenotype(
+              sampleName,
+              samplePileup.referenceName,
+              samplePileup.locus,
+              referenceBase,
+              alternate,
+              GenotypeEvidence(probability,
+                alternate,
+                samplePileup
+              )
+            )
+          })
         }
         buildVariants(mostLikelyGenotype._1, mostLikelyGenotype._2)
+
     })
   }
 
   /**
-   * Generate possible genotypes from a pileup
-   * Possible genotypes are all unique n-tuples of sequencedBases that appear in the pileup.
+   * Generate possible alleles from a pileup
+   * Possible alleles are all unique n-tuples of sequencedBases that appear in the pileup.
    *
-   * @return Sequence of possible genotypes
+   * @return Sequence of possible alleles for the genotype
    */
   def getPossibleAlleles(pileup: Pileup): Seq[GenotypeAlleles] = {
 
-    object AlleleOrdering extends Ordering[Seq[Byte]] {
-      override def compare(x: Seq[Byte], y: Seq[Byte]): Int = {
-        Bases.basesToString(x).compare(Bases.basesToString(y))
-      }
-    }
-
-    val possibleAlleles = pileup.elements.map(e => e.sequencedBases).distinct.sorted(AlleleOrdering)
+    val possibleAlleles = pileup.elements.map(_.sequencedBases).distinct.sorted(AlleleOrdering)
     val possibleGenotypes =
       for (i <- 0 until possibleAlleles.size; j <- i until possibleAlleles.size)
         yield GenotypeAlleles(pileup.referenceBase, possibleAlleles(i), possibleAlleles(j))
@@ -142,9 +128,12 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
                          prior: GenotypeAlleles => Double = computeUniformGenotypePrior,
                          includeAlignmentLikelihood: Boolean = true,
                          normalize: Boolean = false): Seq[(GenotypeAlleles, Double)] = {
+
     val possibleGenotypes = getPossibleAlleles(pileup)
-    val genotypeLikelihoods = pileup.elements.map(el =>
-      computeGenotypeLikelihoods(el, possibleGenotypes, includeAlignmentLikelihood)).transpose.map(l => l.product / math.pow(2, l.length))
+    val genotypeLikelihoods = pileup.elements.map(
+      computeGenotypeLikelihoods(_, possibleGenotypes, includeAlignmentLikelihood))
+      .transpose
+      .map(l => l.product / math.pow(2, l.length))
 
     if (normalize) {
       normalizeLikelihoods(possibleGenotypes.zip(genotypeLikelihoods))

@@ -58,7 +58,7 @@ object Bases {
   }
 
   /** Convert a base sequence to a String. */
-  def basesToString(bases: Seq[Byte]): String = {
+  def basesToString(bases: Iterable[Byte]): String = {
     bases.map(_.toChar).mkString
   }
 
