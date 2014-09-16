@@ -220,7 +220,7 @@ class DistributedUtilSuite extends TestUtil.SparkFunSuite with Matchers {
 
     elements.forall(_.isMatch) should be(true)
     assertBases(
-      elements.flatMap(_.sequencedSingleBaseOpt).toSeq,
+      elements.flatMap(_.sequencedBases).toSeq,
       "TTTACTCCCACTGGGACTAAAACTTTTACTCCCACTGGGACTAAAACTXGGGXGGGXGGGGGGGGGGGGGGGGGG"
     )
   }

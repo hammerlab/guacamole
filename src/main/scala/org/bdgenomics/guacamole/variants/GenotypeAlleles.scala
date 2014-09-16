@@ -13,7 +13,7 @@ import org.bdgenomics.guacamole.Bases
  * Alleles can also be multiple bases as well, e.g. Seq("AAA", "T")
  *
  */
-case class GenotypeAlleles(alleles: Seq[Byte]*) {
+case class GenotypeAlleles(referenceAllele: Byte, alleles: Seq[Byte]*) {
   /**
    * The ploidy of the organism is the number of alleles in the genotype.
    */
@@ -21,40 +21,33 @@ case class GenotypeAlleles(alleles: Seq[Byte]*) {
 
   lazy val uniqueAllelesCount = alleles.toSet.size
 
-  def getNonReferenceAlleles(referenceAllele: Byte): Seq[Seq[Byte]] = {
+  lazy val getNonReferenceAlleles: Seq[Seq[Byte]] = {
     alleles.filter(allele => allele.length != 1 || allele(0) != referenceAllele)
   }
 
   /**
    * Counts alleles in this genotype that are not the same as the specified reference allele.
    *
-   * @param referenceAllele Reference allele to compare against
    * @return Count of non reference alleles
    */
-  def numberOfVariants(referenceAllele: Byte): Int = {
-    getNonReferenceAlleles(referenceAllele).size
-  }
+  lazy val numberOfVariants: Int = getNonReferenceAlleles.size
 
   /**
    * Returns whether this genotype contains any non-reference alleles for a given reference sequence.
    *
-   * @param referenceAllele Reference allele to compare against
    * @return True if at least one allele is not the reference
    */
-  def isVariant(referenceAllele: Byte): Boolean = {
-    numberOfVariants(referenceAllele) > 0
-  }
+  lazy val isVariant: Boolean = (numberOfVariants > 0)
 
   /**
    * Transform the alleles in this genotype to the ADAM allele enumeration.
    * Classifies alleles as Reference or Alternate.
    *
-   * @param referenceAllele Reference allele to compare against
    * @return Sequence of GenotypeAlleles which are Ref, Alt or OtherAlt.
    */
-  def getGenotypeAlleles(referenceAllele: Byte): Seq[GenotypeAllele] = {
+  lazy val getGenotypeAlleles: Seq[GenotypeAllele] = {
     assume(ploidy == 2)
-    val numVariants = numberOfVariants(referenceAllele)
+    val numVariants = numberOfVariants
     if (numVariants == 0) {
       Seq(GenotypeAllele.Ref, GenotypeAllele.Ref)
     } else if (numVariants > 0 && uniqueAllelesCount == 1) {
