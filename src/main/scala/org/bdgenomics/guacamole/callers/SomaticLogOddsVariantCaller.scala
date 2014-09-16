@@ -176,7 +176,7 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
             includeAlignmentLikelihood = false,
             normalize = true).toMap
 
-        val (normalVariantGenotypes, normalReferenceGenotype) = normalLikelihoods.partition(_._1.isVariant(referenceBase))
+        val (normalVariantGenotypes, normalReferenceGenotype) = normalLikelihoods.partition(_._1.isVariant)
         val normalEvidence = GenotypeEvidence(normalVariantGenotypes.map(_._2).sum, alternate, filteredNormalPileup)
         val somaticOdds = tumorVariantLikelihood / normalVariantGenotypes.map(_._2).sum
 
@@ -216,8 +216,8 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
 
     val tumorMostLikelyGenotype = tumorLikelihoods.maxBy(_._2)
 
-    if (tumorMostLikelyGenotype._1.isVariant(referenceBase)) {
-      val alternateBase = tumorMostLikelyGenotype._1.getNonReferenceAlleles(referenceBase)(0)
+    if (tumorMostLikelyGenotype._1.isVariant) {
+      val alternateBase = tumorMostLikelyGenotype._1.getNonReferenceAlleles(0)
       (Some(alternateBase), tumorMostLikelyGenotype._2)
     } else {
       (None, 1 - tumorMostLikelyGenotype._2)
