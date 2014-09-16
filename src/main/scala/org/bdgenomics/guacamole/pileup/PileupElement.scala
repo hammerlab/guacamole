@@ -2,6 +2,7 @@ package org.bdgenomics.guacamole.pileup
 
 import net.sf.samtools.{ CigarElement, CigarOperator }
 import org.bdgenomics.guacamole.CigarUtils
+import org.bdgenomics.guacamole.pileup.PileupElement.Allele
 import org.bdgenomics.guacamole.reads.MappedRead
 
 import scala.annotation.tailrec
@@ -132,6 +133,8 @@ case class PileupElement(
    */
   lazy val sequencedBases: Seq[Byte] = alignment.sequencedBases
 
+  lazy val allele: Allele = sequencedBases
+
   /*
    * Base quality score, phred-scaled.
    *
@@ -228,6 +231,9 @@ case class PileupElement(
 }
 
 object PileupElement {
+
+  type Allele = Seq[Byte]
+
   /**
    * Create a new [[PileupElement]] backed by the given read at the specified locus. The read must overlap the locus.
    */
