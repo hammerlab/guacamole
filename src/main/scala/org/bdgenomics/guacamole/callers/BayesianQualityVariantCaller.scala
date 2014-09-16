@@ -106,21 +106,6 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
   }
 
   /**
-   * Generate possible alleles from a pileup
-   * Possible alleles are all unique n-tuples of sequencedBases that appear in the pileup.
-   *
-   * @return Sequence of possible alleles for the genotype
-   */
-  def getPossibleAlleles(pileup: Pileup): Seq[GenotypeAlleles] = {
-
-    val possibleAlleles = pileup.elements.map(_.sequencedBases).distinct.sorted(AlleleOrdering)
-    val possibleGenotypes =
-      for (i <- 0 until possibleAlleles.size; j <- i until possibleAlleles.size)
-        yield GenotypeAlleles(pileup.referenceBase, possibleAlleles(i), possibleAlleles(j))
-    possibleGenotypes
-  }
-
-  /**
    * For each possible genotype based on the pileup sequencedBases, compute the likelihood.
    *
    * @return Sequence of (GenotypeAlleles, Likelihood)
@@ -130,7 +115,7 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
                          includeAlignmentLikelihood: Boolean = true,
                          normalize: Boolean = false): Seq[(GenotypeAlleles, Double)] = {
 
-    val possibleGenotypes = getPossibleAlleles(pileup)
+    val possibleGenotypes = pileup.possibleGenotypes
     val genotypeLikelihoods = pileup.elements.map(
       computeGenotypeLikelihoods(_, possibleGenotypes, includeAlignmentLikelihood))
       .transpose
@@ -152,9 +137,10 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
   def computeLogLikelihoods(pileup: Pileup,
                             prior: GenotypeAlleles => Double = computeUniformGenotypeLogPrior,
                             includeAlignmentLikelihood: Boolean = false): Seq[(GenotypeAlleles, Double)] = {
-    val possibleGenotypes = getPossibleAlleles(pileup)
+    val possibleGenotypes = pileup.possibleGenotypes
     possibleGenotypes.map(g =>
-      (g, prior(g) + computeGenotypeLogLikelihoods(pileup, g, includeAlignmentLikelihood)))
+      (g, prior(g) + computeGenotypeLogLikelihoods(pileup, g, includeAlignmentLikelihood))
+    )
   }
 
   /**

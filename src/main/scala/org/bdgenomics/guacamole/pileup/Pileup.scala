@@ -18,8 +18,8 @@
 
 package org.bdgenomics.guacamole.pileup
 
-import org.bdgenomics.guacamole.Bases
 import org.bdgenomics.guacamole.reads.MappedRead
+import org.bdgenomics.guacamole.variants.{ GenotypeAlleles, AlleleOrdering }
 
 /**
  * A [[Pileup]] at a locus contains a sequence of [[PileupElement]] instances, one for every read that overlaps that
@@ -48,6 +48,21 @@ case class Pileup(locus: Long, elements: Seq[PileupElement]) {
   /** The reference nucleotide base at this pileup's locus. */
   lazy val referenceBase: Byte = {
     head.read.referenceString.charAt((head.locus - head.read.start).toInt).toByte
+  }
+
+  private[pileup] lazy val possibleAlleles = elements.map(_.sequencedBases).distinct.sorted(AlleleOrdering)
+
+  /**
+   * Generate possible genotypes from a pileup
+   * Possible genotypes are all unique n-tuples of alleles that appear in the pileup.
+   *
+   * @return Sequence of possible genotypes for the pileup
+   */
+  lazy val possibleGenotypes: Seq[GenotypeAlleles] = {
+    for {
+      i <- 0 until possibleAlleles.size
+      j <- i until possibleAlleles.size
+    } yield GenotypeAlleles(referenceBase, possibleAlleles(i), possibleAlleles(j))
   }
 
   /**
