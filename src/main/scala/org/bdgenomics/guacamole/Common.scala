@@ -25,16 +25,16 @@ import java.util.Calendar
 import org.apache.avro.generic.GenericDatumWriter
 import org.apache.avro.io.EncoderFactory
 import org.apache.hadoop.conf.Configuration
-import org.apache.hadoop.fs.{FileSystem, Path}
+import org.apache.hadoop.fs.{ FileSystem, Path }
 import org.apache.spark.rdd.RDD
-import org.apache.spark.{Logging, SparkConf, SparkContext}
-import org.bdgenomics.adam.cli.{Args4jBase, ParquetArgs}
+import org.apache.spark.{ Logging, SparkConf, SparkContext }
+import org.bdgenomics.adam.cli.{ Args4jBase, ParquetArgs }
 import org.bdgenomics.adam.rdd.ADAMContext._
 import org.bdgenomics.adam.rdd.variation.ADAMVariationContext._
 import org.bdgenomics.formats.avro.Genotype
 import org.bdgenomics.guacamole.reads.Read
 import org.codehaus.jackson.JsonFactory
-import org.kohsuke.args4j.{Option => Opt}
+import org.kohsuke.args4j.{ Option => Opt }
 
 /**
  * Collection of functions that are useful to multiple variant calling implementations, and specifications of command-

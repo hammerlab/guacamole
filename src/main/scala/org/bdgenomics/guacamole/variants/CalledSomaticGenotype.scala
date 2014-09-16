@@ -1,7 +1,8 @@
 package org.bdgenomics.guacamole.variants
 
-import com.esotericsoftware.kryo.io.{Input, Output}
-import com.esotericsoftware.kryo.{Kryo, Serializer}
+import com.esotericsoftware.kryo.io.{ Input, Output }
+import com.esotericsoftware.kryo.{ Kryo, Serializer }
+import org.bdgenomics.adam.util.PhredUtils
 
 /**
  *
@@ -27,6 +28,10 @@ case class CalledSomaticGenotype(sampleName: String,
                                  normalEvidence: GenotypeEvidence,
                                  length: Int = 1) extends ReferenceVariant {
   val end: Long = start + 1L
+
+  // P ( variant in tumor AND no variant in normal) = P(variant in tumor) * ( 1 - P(variant in normal) )
+  lazy val phredScaledSomaticLikelihood =
+    PhredUtils.successProbabilityToPhred(tumorEvidence.likelihood * (1 - normalEvidence.likelihood) - 1e-10)
 }
 
 class CalledSomaticGenotypeSerializer extends Serializer[CalledSomaticGenotype] {
