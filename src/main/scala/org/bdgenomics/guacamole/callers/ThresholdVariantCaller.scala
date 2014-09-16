@@ -96,22 +96,22 @@ object ThresholdVariantCaller extends Command with Serializable with Logging {
     if (pileup.elements.isEmpty)
       return Seq.empty
 
-    val refBase = pileup.referenceBase
+    val refBases = Seq(pileup.referenceBase)
     pileup.bySample.toSeq.flatMap({
       case (sampleName, samplePileup) =>
         val totalReads = samplePileup.elements.length
         val matchesOrMismatches = samplePileup.elements.filter(e => e.isMatch || e.isMismatch)
-        val counts = matchesOrMismatches.flatMap(_.sequencedSingleBaseOpt).groupBy(char => char).mapValues(_.length)
+        val counts = matchesOrMismatches.map(_.sequencedBases).groupBy(char => char).mapValues(_.length)
         val sortedAlleles = counts.toList.filter(_._2 * 100 / totalReads > thresholdPercent).sortBy(-1 * _._2)
 
-        def variant(alternateBase: Byte, allelesList: List[GenotypeAllele]): Genotype = {
+        def variant(alternateBases: Seq[Byte], allelesList: List[GenotypeAllele]): Genotype = {
           Genotype.newBuilder
             .setAlleles(JavaConversions.seqAsJavaList(allelesList))
             .setSampleId(sampleName.toCharArray)
             .setVariant(Variant.newBuilder
               .setStart(pileup.locus)
-              .setReferenceAllele(Bases.baseToString(pileup.referenceBase))
-              .setAlternateAllele(Bases.baseToString(alternateBase))
+              .setReferenceAllele(Bases.basesToString(refBases))
+              .setAlternateAllele(Bases.basesToString(alternateBases))
               .setContig(Contig.newBuilder.setContigName(pileup.referenceName).build)
               .build)
             .build
@@ -122,23 +122,23 @@ object ThresholdVariantCaller extends Command with Serializable with Logging {
            * as the variant allele.
            */
           case Nil =>
-            if (emitNoCall) (variant(refBase, NoCall :: NoCall :: Nil) :: Nil) else Nil
+            if (emitNoCall) (variant(refBases, NoCall :: NoCall :: Nil) :: Nil) else Nil
 
           // Hom Ref.
-          case (base, count) :: Nil if base == refBase =>
-            if (emitRef) (variant(refBase, Ref :: Ref :: Nil) :: Nil) else Nil
+          case (bases, count) :: Nil if bases == refBases =>
+            if (emitRef) (variant(refBases, Ref :: Ref :: Nil) :: Nil) else Nil
 
           // Hom alt.
-          case (base: Byte, count) :: Nil =>
-            variant(base, Alt :: Alt :: Nil) :: Nil
+          case (bases: Seq[Byte], count) :: Nil =>
+            variant(bases, Alt :: Alt :: Nil) :: Nil
 
           // Het alt.
-          case (base1, count1) :: (base2, count2) :: rest if base1 == refBase || base2 == refBase =>
-            variant(if (base1 != refBase) base1 else base2, Ref :: Alt :: Nil) :: Nil
+          case (bases1, count1) :: (bases2, count2) :: rest if bases1 == refBases || bases2 == refBases =>
+            variant(if (bases1 != Seq(refBases)) bases1 else bases2, Ref :: Alt :: Nil) :: Nil
 
           // Compound alt
-          case (base1, count1) :: (base2, count2) :: rest =>
-            variant(base1, Alt :: OtherAlt :: Nil) :: variant(base2, Alt :: OtherAlt :: Nil) :: Nil
+          case (bases1, count1) :: (bases2, count2) :: rest =>
+            variant(bases1, Alt :: OtherAlt :: Nil) :: variant(bases2, Alt :: OtherAlt :: Nil) :: Nil
         }
     })
   }
