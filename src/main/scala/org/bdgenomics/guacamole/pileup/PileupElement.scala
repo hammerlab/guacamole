@@ -66,8 +66,7 @@ case class PileupElement(
         read.baseQualities.slice(
           readPosition,
           readPosition + CigarUtils.getReadLength(cigarElem) + 1
-        ),
-        referenceBase
+        )
       )
 
     (cigarOperator, nextBaseCigarOperator) match {
@@ -107,7 +106,7 @@ case class PileupElement(
         if (read.mdTag.isMatch(locus)) {
           Match(base, quality)
         } else {
-          Mismatch(base, quality)
+          Mismatch(base, quality, referenceBase)
         }
       case (CigarOperator.S, _) | (CigarOperator.N, _) | (CigarOperator.H, _) => Clipped
       case (CigarOperator.P, _) =>
@@ -118,10 +117,10 @@ case class PileupElement(
   /* If you only care about what kind of CigarOperator is at this position, but not its associated sequence, then you
    * can use these state variables.
    */
-  lazy val isInsertion = alignment match { case Insertion(_, _, _) => true; case _ => false }
+  lazy val isInsertion = alignment match { case Insertion(_, _) => true; case _ => false }
   lazy val isDeletion = alignment match { case Deletion(_) => true; case _ => false }
   lazy val isMidDeletion = alignment match { case MidDeletion => true; case _ => false }
-  lazy val isMismatch = alignment match { case Mismatch(_, _) => true; case _ => false }
+  lazy val isMismatch = alignment match { case Mismatch(_, _, _) => true; case _ => false }
   lazy val isMatch = alignment match { case Match(_, _) => true; case _ => false }
 
   /**
@@ -132,14 +131,7 @@ case class PileupElement(
    * the inserted sequence starting at the current locus. Otherwise, this is
    * an array of length 1.
    */
-  lazy val sequencedBases: Seq[Byte] = alignment match {
-    case Deletion(_)            => Seq[Byte]()
-    case MidDeletion            => Seq[Byte]()
-    case Match(base, _)         => Seq[Byte](base)
-    case Mismatch(base, _)      => Seq[Byte](base)
-    case Insertion(bases, _, _) => bases
-    case Clipped                => Seq[Byte]()
-  }
+  lazy val sequencedBases: Seq[Byte] = alignment.sequencedBases
 
   lazy val allele: Allele = sequencedBases
 
@@ -152,9 +144,8 @@ case class PileupElement(
    */
   lazy val qualityScore: Int = alignment match {
     case Deletion(_) | Clipped | MidDeletion => read.alignmentQuality
-    case Match(_, qs)                        => qs
-    case Mismatch(_, qs)                     => qs
-    case Insertion(_, qss, _)                => qss.min
+    case MatchOrMisMatch(_, qs)              => qs
+    case Insertion(_, qss)                   => qss.min
   }
 
   /**
