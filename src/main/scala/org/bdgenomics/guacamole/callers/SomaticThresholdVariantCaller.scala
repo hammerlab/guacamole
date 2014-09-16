@@ -55,7 +55,7 @@ object SomaticThresholdVariantCaller extends Command with Serializable with Logg
 
   override def run(rawArgs: Array[String]): Unit = {
     val args = Args4j[Arguments](rawArgs)
-    val sc = Common.createSparkContext(args, appName = Some(name))
+    val sc = Common.createSparkContext(appName = Some(name))
 
     val filters = Read.InputFilters(mapped = true, nonDuplicate = true)
     val (tumorReads, normalReads) = Common.loadTumorNormalReadsFromArguments(args, sc, filters)
