@@ -54,7 +54,7 @@ class PileupSuite extends TestUtil.SparkFunSuite with Matchers with TableDrivenP
 
     insertPileup.elements(0).alignment should equal(Match('A', 31.toByte))
     insertPileup.elements(1).alignment should equal(Match('A', 31.toByte))
-    insertPileup.elements(2).alignment should equal(Insertion("ACCC", Seq(31, 31, 31, 31).map(_.toByte), 'A'))
+    insertPileup.elements(2).alignment should equal(Insertion("ACCC", Seq(31, 31, 31, 31).map(_.toByte)))
   }
 
   sparkTest("create pileup from long insert reads; different qualities in insertion") {
@@ -69,9 +69,9 @@ class PileupSuite extends TestUtil.SparkFunSuite with Matchers with TableDrivenP
 
     insertPileup.elements.forall(
       _.alignment match {
-        case Match(_, quality)          => quality == 25
-        case Insertion(_, qualities, _) => qualities.sameElements(Seq(25, 5, 5, 5))
-        case _                          => false
+        case Match(_, quality)       => quality == 25
+        case Insertion(_, qualities) => qualities.sameElements(Seq(25, 5, 5, 5))
+        case _                       => false
       }) should be(true)
   }
 
@@ -163,7 +163,7 @@ class PileupSuite extends TestUtil.SparkFunSuite with Matchers with TableDrivenP
   test("insertion at contig start includes trailing base") {
     val contigStartInsertionRead = TestUtil.makeRead("AAAAAACGT", "5I4M", "4", 0, "chr1")
     val pileup = PileupElement(contigStartInsertionRead, 0)
-    pileup.alignment should equal(Insertion("AAAAAA", List(31, 31, 31, 31, 31, 31), 'A'))
+    pileup.alignment should equal(Insertion("AAAAAA", List(31, 31, 31, 31, 31, 31)))
   }
 
   test("pileup alignment at insertion cigar-element throws") {
