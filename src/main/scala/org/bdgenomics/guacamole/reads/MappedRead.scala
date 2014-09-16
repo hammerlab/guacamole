@@ -2,7 +2,7 @@ package org.bdgenomics.guacamole.reads
 
 import net.sf.samtools.{ SAMRecord, Cigar }
 import org.bdgenomics.adam.util.{ PhredUtils, MdTag }
-import org.bdgenomics.guacamole.{ LociSet, HasReferenceRegion }
+import org.bdgenomics.guacamole.{ Bases, LociSet, HasReferenceRegion }
 
 import scala.collection.JavaConversions
 
@@ -36,7 +36,14 @@ case class MappedRead(
 
   lazy val mdTag = MdTag(mdTagString, start)
 
-  lazy val referenceString = mdTag.getReference(sequenceStr, cigar, start)
+  lazy val referenceString =
+    try {
+      mdTag.getReference(sequenceStr, cigar, start)
+    } catch {
+      case e: IllegalStateException => throw new CigarMDTagMismatchException(cigar, mdTag, e)
+    }
+
+  lazy val referenceBases = Bases.stringToBases(referenceString)
 
   lazy val alignmentLikelihood = PhredUtils.phredToSuccessProbability(alignmentQuality)
 
@@ -68,3 +75,6 @@ case class MappedRead(
 
 case class MissingMDTagException(record: SAMRecord)
   extends Exception("Missing MDTag in SAMRecord: %s".format(record.toString))
+
+case class CigarMDTagMismatchException(cigar: Cigar, mdTag: MdTag, cause: IllegalStateException)
+  extends Exception("Cigar %s seems inconsistent with MD tag %s".format(cigar.toString, mdTag.toString), cause)

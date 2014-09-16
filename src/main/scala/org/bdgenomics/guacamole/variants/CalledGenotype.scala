@@ -10,15 +10,15 @@ import com.esotericsoftware.kryo.{ Kryo, Serializer }
  * @param sampleName sample the variant was called on
  * @param referenceContig chromosome or genome contig of the variant
  * @param start start position of the variant (0-based)
- * @param referenceBase base in the reference genome
- * @param alternateBases base in the sample genome
+ * @param referenceBases bases in the reference genome
+ * @param alternateBases bases in the sample genome
  * @param evidence supporting statistics for the variant
  * @param length length of the variant
  */
 case class CalledGenotype(sampleName: String,
                           referenceContig: String,
                           start: Long,
-                          referenceBase: Byte,
+                          referenceBases: Seq[Byte],
                           alternateBases: Seq[Byte],
                           evidence: GenotypeEvidence,
                           length: Int = 1) extends ReferenceVariant {
@@ -34,7 +34,8 @@ class CalledGenotypeSerializer extends Serializer[CalledGenotype] {
     output.writeString(obj.sampleName)
     output.writeString(obj.referenceContig)
     output.writeLong(obj.start, true)
-    output.writeByte(obj.referenceBase)
+    output.writeInt(obj.referenceBases.length, true)
+    output.writeBytes(obj.referenceBases.toArray)
     output.writeInt(obj.alternateBases.length, true)
     output.writeBytes(obj.alternateBases.toArray)
     genotypeEvidenceSeralizer.write(kryo, output, obj.evidence)
@@ -47,7 +48,8 @@ class CalledGenotypeSerializer extends Serializer[CalledGenotype] {
     val sampleName: String = input.readString()
     val referenceContig: String = input.readString()
     val start: Long = input.readLong(true)
-    val referenceBase: Byte = input.readByte()
+    val referenceBasesLength = input.readInt(true)
+    val referenceBases: Seq[Byte] = input.readBytes(referenceBasesLength)
     val alternateLength = input.readInt(true)
     val alternateBases: Seq[Byte] = input.readBytes(alternateLength)
 
@@ -58,7 +60,7 @@ class CalledGenotypeSerializer extends Serializer[CalledGenotype] {
       sampleName,
       referenceContig,
       start,
-      referenceBase,
+      referenceBases,
       alternateBases,
       evidence,
       length

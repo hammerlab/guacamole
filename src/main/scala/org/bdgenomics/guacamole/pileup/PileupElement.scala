@@ -1,7 +1,9 @@
 package org.bdgenomics.guacamole.pileup
 
 import net.sf.samtools.{ CigarElement, CigarOperator }
-import org.bdgenomics.guacamole.CigarUtils
+import org.bdgenomics.guacamole.Bases.BasesOrdering
+import org.bdgenomics.guacamole.variants.AlleleOrdering
+import org.bdgenomics.guacamole.{ Bases, CigarUtils }
 import org.bdgenomics.guacamole.reads.MappedRead
 
 import scala.annotation.tailrec
@@ -12,7 +14,8 @@ import scala.annotation.tailrec
  * @param read The read this [[PileupElement]] is coming from.
  * @param locus The reference locus.
  * @param readPosition The offset into the sequence of bases in the read that this element corresponds to.
- * @param remainingReadCigar A list of remaining parsed cigar elements of this read.
+ * @param cigarElementIdx The idx in [[read.cigarElements]] of the [[CigarElement]] corresponding to the current
+ *                        readPosition.
  * @param cigarElementLocus The reference START position of the cigar element.
  *                          If the element is an INSERTION this the PRECEDING reference base
  * @param indexWithinCigarElement The offset of this element within the current cigar element.
@@ -21,45 +24,92 @@ case class PileupElement(
     read: MappedRead,
     locus: Long,
     readPosition: Int,
-    remainingReadCigar: List[CigarElement],
+    cigarElementIdx: Int,
     cigarElementLocus: Long,
     indexWithinCigarElement: Int) {
 
   assume(locus >= read.start)
   assume(locus < read.end)
 
-  lazy val cigarElement = remainingReadCigar.head
-  lazy val nextCigarElement = remainingReadCigar.tail.headOption
+  lazy val cigarElement = read.cigarElements(cigarElementIdx)
+  lazy val nextCigarElement =
+    if (cigarElementIdx + 1 < read.cigarElements.size) {
+      Some(read.cigarElements(cigarElementIdx + 1))
+    } else {
+      None
+    }
 
-  /*
-   * True if this is the last base of the current cigar element.
-   */
-  def isFinalCigarBase: Boolean = indexWithinCigarElement == cigarElement.getLength - 1
+  lazy val referenceStringIdx =
+    (cigarElementLocus - read.start).toInt +
+      (if (cigarElement.getOperator.consumesReferenceBases()) indexWithinCigarElement else 0)
+  lazy val referenceBase = read.referenceString.charAt(referenceStringIdx).toUpper.toByte
+
+  lazy val cigarElementReadLength = CigarUtils.getReadLength(cigarElement)
+  lazy val cigarElementReferenceLength = CigarUtils.getReferenceLength(cigarElement)
+  lazy val cigarElementEndLocus = cigarElementLocus + cigarElementReferenceLength
 
   lazy val alignment: Alignment = {
+
+    /*
+     * True if this is the last base of the current cigar element.
+     */
+    def isFinalCigarBase: Boolean = indexWithinCigarElement == cigarElement.getLength - 1
     val cigarOperator = cigarElement.getOperator
     val nextBaseCigarElement = if (isFinalCigarBase) nextCigarElement else Some(cigarElement)
     val nextBaseCigarOperator = nextBaseCigarElement.map(_.getOperator)
+
+    def makeInsertion(cigarElem: CigarElement) =
+      Insertion(
+        read.sequence.slice(
+          readPosition,
+          readPosition + CigarUtils.getReadLength(cigarElem) + 1
+        ),
+        read.baseQualities.slice(
+          readPosition,
+          readPosition + CigarUtils.getReadLength(cigarElem) + 1
+        )
+      )
+
     (cigarOperator, nextBaseCigarOperator) match {
+
       // Since insertions by definition have no corresponding reference loci, there is a choice in whether we "attach"
       // them to the preceding or following locus. Here we attach them to the preceding base, since that seems to be the
       // conventional choice. That is, if we have a match followed by an insertion, the final base of the match will
       // get combined with the insertion into one Alignment, at the match's reference locus.
-      case (CigarOperator.M, Some(CigarOperator.I)) | (CigarOperator.EQ, Some(CigarOperator.I)) | (CigarOperator.I, _) =>
-        val startReadOffset: Int = readPosition
-        val endReadOffset: Int = readPosition + CigarUtils.getReadLength(nextBaseCigarElement.get) + 1
-        val bases = read.sequence.slice(startReadOffset, endReadOffset)
-        val qualities = read.baseQualities.slice(startReadOffset, endReadOffset)
-        Insertion(bases, qualities)
+      case (CigarOperator.M, Some(CigarOperator.I)) | (CigarOperator.EQ, Some(CigarOperator.I)) =>
+        makeInsertion(nextCigarElement.get)
+
+      // The exception to the above is insertion at the start of a contig, where there is no preceding reference base to
+      // anchor to; in this case, the spec calls for including the reference base immediately after the insertion (the
+      // first reference base of the contig).
+      case (CigarOperator.I, Some(_)) if cigarElementLocus == 0 =>
+        makeInsertion(cigarElement)
+
+      // In general, a PileupElement pointing at an Insertion cigar-element is an error.
+      case (CigarOperator.I, _) => throw new InvalidCigarElementException(this)
+
+      case (CigarOperator.M | CigarOperator.EQ | CigarOperator.X, Some(CigarOperator.D)) =>
+        val deletedBases = read.referenceString.substring(
+          referenceStringIdx,
+          referenceStringIdx + 1 + nextCigarElement.get.getLength
+        )
+        Deletion(deletedBases)
+      case (CigarOperator.D, _) =>
+        MidDeletion
+      case (op, Some(CigarOperator.D)) =>
+        // TODO(ryan): are there sane cases where a 'D' is not preceded by an 'M'?
+        throw new AssertionError(
+          "Found deletion preceded by cigar operator %s at PileupElement for read %s at locus %d".format(op, read.toString, locus)
+        )
       case (CigarOperator.M, _) | (CigarOperator.EQ, _) | (CigarOperator.X, _) =>
         val base: Byte = read.sequence(readPosition)
         val quality = read.baseQualities(readPosition)
         if (read.mdTag.isMatch(locus)) {
           Match(base, quality)
         } else {
-          Mismatch(base, quality)
+          Mismatch(base, quality, referenceBase)
         }
-      case (CigarOperator.D, _) | (CigarOperator.S, _) | (CigarOperator.N, _) | (CigarOperator.H, _) => Deletion()
+      case (CigarOperator.S, _) | (CigarOperator.N, _) | (CigarOperator.H, _) => Clipped
       case (CigarOperator.P, _) =>
         throw new AssertionError("`P` CIGAR-ops should have been ignored earlier in `findNextCigarElement`")
     }
@@ -69,8 +119,9 @@ case class PileupElement(
    * can use these state variables.
    */
   lazy val isInsertion = alignment match { case Insertion(_, _) => true; case _ => false }
-  lazy val isDeletion = alignment match { case Deletion() => true; case _ => false }
-  lazy val isMismatch = alignment match { case Mismatch(_, _) => true; case _ => false }
+  lazy val isDeletion = alignment match { case Deletion(_) => true; case _ => false }
+  lazy val isMidDeletion = alignment match { case MidDeletion => true; case _ => false }
+  lazy val isMismatch = alignment match { case Mismatch(_, _, _) => true; case _ => false }
   lazy val isMatch = alignment match { case Match(_, _) => true; case _ => false }
 
   /**
@@ -81,12 +132,10 @@ case class PileupElement(
    * the inserted sequence starting at the current locus. Otherwise, this is
    * an array of length 1.
    */
-  lazy val sequencedBases: Seq[Byte] = alignment match {
-    case Deletion()          => Seq[Byte]()
-    case Match(base, _)      => Seq[Byte](base)
-    case Mismatch(base, _)   => Seq[Byte](base)
-    case Insertion(bases, _) => bases
-  }
+  lazy val sequencedBases: Seq[Byte] = alignment.sequencedBases
+  lazy val referenceBases: Seq[Byte] = alignment.referenceBases
+
+  lazy val allele: Allele = Allele(referenceBases, sequencedBases)
 
   /*
    * Base quality score, phred-scaled.
@@ -96,10 +145,43 @@ case class PileupElement(
    * For deletions this is the mapping quality as there are no base quality scores available.
    */
   lazy val qualityScore: Int = alignment match {
-    case Deletion()        => read.alignmentQuality
-    case Match(_, qs)      => qs
-    case Mismatch(_, qs)   => qs
-    case Insertion(_, qss) => qss.min
+    case Deletion(_) | Clipped | MidDeletion => read.alignmentQuality
+    case MatchOrMisMatch(_, qs)              => qs
+    case Insertion(_, qss)                   => qss.min
+  }
+
+  /**
+   * Returns a new [[PileupElement]] of the same read, advanced by one [[CigarElement]].
+   */
+  def advanceToNextCigarElement: PileupElement = {
+    val readPositionOffset =
+      if (cigarElement.getOperator.consumesReadBases()) {
+        // If this [[CigarElement]] consumes read bases then [[readPosition]] will advance by the rest of this
+        // [[CigarElement]].
+        cigarElement.getLength - indexWithinCigarElement
+      } else {
+        // Otherwise, [[readPosition]] will stay the same.
+        0
+      }
+
+    PileupElement(
+      read,
+      locus + (cigarElementReferenceLength - indexWithinCigarElement),
+      readPosition + readPositionOffset,
+      cigarElementIdx + 1,
+      cigarElementLocus + cigarElementReferenceLength,
+      // Even if we are somewhere in the middle of the current cigar element, lock to the beginning of the next one.
+      indexWithinCigarElement = 0
+    )
+  }
+
+  /**
+   * Returns whether the current [[CigarElement]] of this [[MappedRead]] contains the given @referenceLocus.
+   *
+   * Can only return true if [[cigarElement]] actually consumes reference bases.
+   */
+  def currentCigarElementContainsLocus(referenceLocus: Long): Boolean = {
+    cigarElementLocus <= referenceLocus && referenceLocus < cigarElementEndLocus
   }
 
   /**
@@ -112,58 +194,33 @@ case class PileupElement(
    *
    * @return A new [[PileupElement]] at the given locus.
    */
-  def elementAtGreaterLocus(newLocus: Long): PileupElement = {
-    if (newLocus == locus) { return this }
-
-    assume(newLocus > locus, "Can't rewind to locus %d from %d. Pileups only advance.".format(newLocus, locus))
+  @tailrec
+  final def advanceToLocus(newLocus: Long): PileupElement = {
+    assume(newLocus >= locus, "Can't rewind to locus %d from %d. Pileups only advance.".format(newLocus, locus))
     assume(newLocus < read.end, "This read stops at position %d. Can't advance to %d".format(read.end, newLocus))
-
-    val currentCigarReadPosition = if (cigarElement.getOperator.consumesReadBases()) {
-      readPosition - indexWithinCigarElement
-    } else {
-      readPosition
-    }
-    // Iterate through the remaining cigar elements to find one overlapping the current position.
-    @tailrec
-    def getCurrentElement(remainingCigarElements: List[CigarElement],
-                          cigarReadPosition: Int,
-                          cigarReferencePosition: Long): PileupElement = {
-      if (remainingCigarElements.isEmpty) {
-        throw new RuntimeException(
-          "Couldn't find cigar element for locus %d, cigar string only extends to %d".format(newLocus, cigarReferencePosition))
-      }
-      val nextCigarElement = remainingCigarElements.head
-      val cigarOperator = nextCigarElement.getOperator
-      val cigarElementReadLength = CigarUtils.getReadLength(nextCigarElement)
-      val cigarElementReferenceLength = CigarUtils.getReferenceLength(nextCigarElement)
-      // The 'P' (padding) operator is used to indicate a deletion-in-an-insertion. This only comes up when the
-      // aligner attempted not only to align reads to the reference, but also to align inserted sequences within reads
-      // to each other. In particular, a de novo assembler would automatically be doing this.
-      // We ignore this operator, since our simple Alignment handling code does not expose within-insertion alignments.
-      // See: http://davetang.org/wiki/tiki-index.php?page=SAM
-      if (cigarOperator != CigarOperator.P) {
-        val currentElementEnd = cigarReferencePosition + cigarElementReferenceLength
-        if (currentElementEnd > newLocus) {
-          val offset = (newLocus - cigarReferencePosition).toInt
-          val finalReadPos = if (cigarOperator.consumesReadBases) cigarReadPosition + offset else cigarReadPosition
-          return PileupElement(
-            read,
-            newLocus,
-            finalReadPos,
-            remainingCigarElements,
-            cigarReferencePosition,
-            offset
-          )
+    if (currentCigarElementContainsLocus(newLocus)) {
+      // Aside: the current cigar element must consume reference bases if we've gotten here.
+      val readPositionOffset =
+        if (cigarElement.getOperator.consumesReadBases()) {
+          (newLocus - cigarElementLocus - indexWithinCigarElement).toInt
+        } else {
+          // If this cigar doesn't consume read bases, then advancing within it will not consume [[readPosition]]
+          0
         }
-      }
-      getCurrentElement(
-        remainingCigarElements.tail,
-        cigarReadPosition + cigarElementReadLength,
-        cigarReferencePosition + cigarElementReferenceLength
-      )
-    }
 
-    getCurrentElement(remainingReadCigar, currentCigarReadPosition, cigarElementLocus)
+      this.copy(
+        locus = newLocus,
+        readPosition = readPosition + readPositionOffset,
+        indexWithinCigarElement = (newLocus - cigarElementLocus).toInt
+      )
+    } else if (newLocus == 0 && cigarElement.getOperator == CigarOperator.I) {
+      // NOTE(ryan): this is the rare case where we allow a [[PileupElement]] to exist at a non-reference-consuming
+      // CigarElement (namely, an Insertion at the start of a contig). It is correct for us to emit an Insertion
+      // alignment in such a case, where typically an Insertion [[CigarElement]] would get skipped over by subsequent
+      // [[advanceToLocus]] calls, since it represents a zero-width interval of reference bases.
+      this
+    } else
+      advanceToNextCigarElement.advanceToLocus(newLocus)
   }
 
   /**
@@ -176,20 +233,36 @@ case class PileupElement(
 }
 
 object PileupElement {
+
   /**
    * Create a new [[PileupElement]] backed by the given read at the specified locus. The read must overlap the locus.
    */
   def apply(read: MappedRead, locus: Long): PileupElement = {
-    assume(locus >= read.start)
-    assume(locus < read.end)
-    val startElement = PileupElement(
+    PileupElement(
       read = read,
       locus = read.start,
       readPosition = 0,
-      remainingReadCigar = read.cigarElements.toList,
+      cigarElementIdx = 0,
       cigarElementLocus = read.start,
       indexWithinCigarElement = 0
-    )
-    startElement.elementAtGreaterLocus(locus)
+    ).advanceToLocus(locus)
   }
 }
+
+case class Allele(refBases: Seq[Byte], altBases: Seq[Byte]) {
+  lazy val isVariant = BasesOrdering.compare(refBases, altBases) != 0
+
+  override def toString: String = "Allele(%s,%s)".format(Bases.basesToString(refBases), Bases.basesToString(altBases))
+
+  def equals(other: Allele): Boolean = AlleleOrdering.compare(this, other) == 0
+}
+
+case class InvalidCigarElementException(elem: PileupElement)
+  extends Exception(
+    "Should not have a PileupElement at non-reference-consuming cigar-operator I. " +
+      "Locus: %d, readPosition: %d, cigar: %s (elem idx %d)".format(
+        elem.locus,
+        elem.readPosition,
+        elem.read.cigar.toString, elem.cigarElementIdx
+      )
+  )

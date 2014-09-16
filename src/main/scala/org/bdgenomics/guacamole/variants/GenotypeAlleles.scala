@@ -1,7 +1,9 @@
 package org.bdgenomics.guacamole.variants
 
+import org.bdgenomics.adam.util.PhredUtils
 import org.bdgenomics.formats.avro.GenotypeAllele
-import org.bdgenomics.guacamole.Bases
+import org.bdgenomics.guacamole.Bases.BasesOrdering
+import org.bdgenomics.guacamole.pileup.{PileupElement, Allele}
 
 /**
  * A Genotype is a sequence of alleles of length equal to the ploidy of the organism.
@@ -13,7 +15,7 @@ import org.bdgenomics.guacamole.Bases
  * Alleles can also be multiple bases as well, e.g. Seq("AAA", "T")
  *
  */
-case class GenotypeAlleles(referenceAllele: Byte, alleles: Seq[Byte]*) {
+case class GenotypeAlleles(alleles: Allele*) {
   /**
    * The ploidy of the organism is the number of alleles in the genotype.
    */
@@ -21,8 +23,24 @@ case class GenotypeAlleles(referenceAllele: Byte, alleles: Seq[Byte]*) {
 
   lazy val uniqueAllelesCount = alleles.toSet.size
 
-  lazy val getNonReferenceAlleles: Seq[Seq[Byte]] = {
-    alleles.filter(allele => allele.length != 1 || allele(0) != referenceAllele)
+  lazy val getNonReferenceAlleles: Seq[Allele] = {
+    alleles.filter(_.isVariant)
+  }
+
+  def computeLikelihood(element: PileupElement, includeAlignmentLikelihood: Boolean = false): Double = {
+    val baseCallProbability = PhredUtils.phredToSuccessProbability(element.qualityScore)
+    val successProbability = if (includeAlignmentLikelihood) {
+      baseCallProbability * element.read.alignmentLikelihood
+    } else {
+      baseCallProbability
+    }
+
+    alleles.map(allele =>
+      if (allele.equals(element.allele))
+        successProbability
+      else
+        (1 - successProbability)
+    ).sum
   }
 
   /**
@@ -59,10 +77,14 @@ case class GenotypeAlleles(referenceAllele: Byte, alleles: Seq[Byte]*) {
     }
   }
 
+  override def toString: String = "GenotypeAlleles(%s)".format(alleles.map(_.toString).mkString(","))
 }
 
-object AlleleOrdering extends Ordering[Seq[Byte]] {
-  override def compare(x: Seq[Byte], y: Seq[Byte]): Int = {
-    Bases.basesToString(x).compare(Bases.basesToString(y))
+object AlleleOrdering extends Ordering[Allele] {
+  override def compare(x: Allele, y: Allele): Int = {
+    BasesOrdering.compare(x.refBases, y.refBases) match {
+      case 0 => BasesOrdering.compare(x.altBases, y.altBases)
+      case x => x
+    }
   }
 }

@@ -22,6 +22,7 @@ import org.bdgenomics.formats.avro.{ Contig, Variant, GenotypeAllele, Genotype }
 import org.bdgenomics.formats.avro.GenotypeAllele.{ Ref, Alt, OtherAlt }
 import org.bdgenomics.guacamole._
 import org.apache.spark.SparkContext._
+import org.bdgenomics.guacamole.pileup.Allele
 import org.bdgenomics.guacamole.reads.Read
 import scala.collection.JavaConversions
 import org.kohsuke.args4j.Option
@@ -110,26 +111,22 @@ object SomaticThresholdVariantCaller extends Command with Serializable with Logg
     if (pileupTumor.elements.isEmpty || pileupNormal.elements.isEmpty)
       return Seq.empty
 
-    assert(pileupTumor.referenceBase == pileupNormal.referenceBase)
-    val refBases = Seq(pileupTumor.referenceBase)
-
     // Given a Pileup, return a Map from single base alleles to the percent of reads that have that allele.
-    def possibleSNVAllelePercents(pileup: Pileup): Map[Seq[Byte], Double] = {
+    def possibleSNVAllelePercents(pileup: Pileup): Map[Allele, Double] = {
       val totalReads = pileup.elements.length
-      val matchesOrMismatches = pileup.elements.filter(e => e.isMatch || e.isMismatch)
-      val counts = matchesOrMismatches.map(_.sequencedBases).groupBy(char => char).mapValues(_.length)
+      val counts = pileup.elements.map(_.allele).groupBy(x => x).mapValues(_.length)
       val percents = counts.mapValues(_ * 100.0 / totalReads.toDouble)
       percents.withDefaultValue(0.0)
     }
 
-    def variant(alternateBases: Seq[Byte], allelesList: List[GenotypeAllele]): Genotype = {
+    def variant(allele: Allele, allelesList: List[GenotypeAllele]): Genotype = {
       Genotype.newBuilder
         .setAlleles(JavaConversions.seqAsJavaList(allelesList))
         .setSampleId("somatic".toCharArray)
         .setVariant(Variant.newBuilder
           .setStart(pileupNormal.locus)
-          .setReferenceAllele(Bases.baseToString(pileupNormal.referenceBase))
-          .setAlternateAllele(Bases.basesToString(alternateBases))
+          .setReferenceAllele(Bases.basesToString(allele.refBases))
+          .setAlternateAllele(Bases.basesToString(allele.altBases))
           .setContig(Contig.newBuilder.setContigName(pileupNormal.referenceName).build)
           .build)
         .build
@@ -146,20 +143,20 @@ object SomaticThresholdVariantCaller extends Command with Serializable with Logg
         .reverse
 
     // A variant allele is, by definition, not equal to the reference base. Filter non-variants out.
-    val possibleVariantAlles = possibleAlleles.filter(_ != refBases)
+    val possibleVariantAlleles = possibleAlleles.filter(_.isVariant)
 
-    val thresholdSatisfyingAlleles = possibleVariantAlles.filter(
-      base => possibleAllelesNormal(base) < thresholdNormal && possibleAllelesTumor(base) > thresholdTumor
+    val thresholdSatisfyingAlleles = possibleVariantAlleles.filter(
+      allele => possibleAllelesNormal(allele) < thresholdNormal && possibleAllelesTumor(allele) > thresholdTumor
     )
 
     // For now, we call a het when we have one somatic variant, and a compound alt when we have two. This is not really
     // correct though. We should take into account the evidence for the reference allele in the tumor, and call het or
     // hom alt accordingly.
     thresholdSatisfyingAlleles.toList match {
-      case Nil         => Nil
-      case base :: Nil => variant(base, Alt :: Ref :: Nil) :: Nil
-      case base1 :: base2 :: rest => {
-        variant(base1, Alt :: OtherAlt :: Nil) :: variant(base2, Alt :: OtherAlt :: Nil) :: Nil
+      case Nil           => Nil
+      case allele :: Nil => variant(allele, Alt :: Ref :: Nil) :: Nil
+      case allele1 :: allele2 :: rest => {
+        variant(allele1, Alt :: OtherAlt :: Nil) :: variant(allele2, Alt :: OtherAlt :: Nil) :: Nil
       }
     }
   }

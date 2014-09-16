@@ -12,6 +12,7 @@ import org.bdgenomics.guacamole.filters.PileupFilter.PileupFilterArguments
 import org.bdgenomics.guacamole.filters.SomaticGenotypeFilter.SomaticGenotypeFilterArguments
 import org.bdgenomics.guacamole.filters._
 import org.bdgenomics.guacamole.pileup.Pileup
+import org.bdgenomics.guacamole.pileup.Allele
 import org.bdgenomics.guacamole.reads.Read
 import org.bdgenomics.guacamole.variants.{ CalledSomaticGenotype, GenotypeConversions, GenotypeEvidence }
 import org.kohsuke.args4j.{ Option => Opt }
@@ -148,20 +149,25 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
                                   filterMultiAllelic: Boolean = false,
                                   maxReadDepth: Int = Int.MaxValue): Seq[CalledSomaticGenotype] = {
 
-    val filteredNormalPileup = PileupFilter(normalPileup,
+    val filteredNormalPileup = PileupFilter(
+      normalPileup,
       filterMultiAllelic,
       maxMappingComplexity = 100,
       minAlignmentForComplexity,
       minAlignmentQuality,
       minEdgeDistance = 0,
-      maxPercentAbnormalInsertSize = 100)
-    val filteredTumorPileup = PileupFilter(tumorPileup,
+      maxPercentAbnormalInsertSize = 100
+    )
+
+    val filteredTumorPileup = PileupFilter(
+      tumorPileup,
       filterMultiAllelic,
       maxMappingComplexity,
       minAlignmentForComplexity,
       minAlignmentQuality,
       minEdgeDistance = 0,
-      maxPercentAbnormalInsertSize = 100)
+      maxPercentAbnormalInsertSize = 100
+    )
 
     // For now, we skip loci that have no reads mapped. We may instead want to emit NoCall in this case.
     if (filteredTumorPileup.elements.isEmpty
@@ -172,12 +178,11 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
       return Seq.empty
 
     val tumorSampleName = tumorPileup.elements(0).read.sampleName
-    val referenceBase = tumorPileup.referenceBase
 
-    val (alternateBase, tumorVariantLikelihood) = callVariantInTumor(referenceBase, filteredTumorPileup)
-    alternateBase match {
-      case Some(alternate) if alternate.nonEmpty => {
-        val tumorEvidence = GenotypeEvidence(tumorVariantLikelihood, alternate, filteredTumorPileup)
+    val (alleleOpt, tumorVariantLikelihood) = callVariantInTumor(filteredTumorPileup)
+    alleleOpt match {
+      case Some(allele) => {
+        val tumorEvidence = GenotypeEvidence(tumorVariantLikelihood, allele.altBases, filteredTumorPileup)
 
         val normalLikelihoods =
           BayesianQualityVariantCaller.computeLikelihoods(filteredNormalPileup,
@@ -185,7 +190,7 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
             normalize = true).toMap
 
         val (normalVariantGenotypes, normalReferenceGenotype) = normalLikelihoods.partition(_._1.isVariant)
-        val normalEvidence = GenotypeEvidence(normalVariantGenotypes.map(_._2).sum, alternate, filteredNormalPileup)
+        val normalEvidence = GenotypeEvidence(normalVariantGenotypes.map(_._2).sum, allele.altBases, filteredNormalPileup)
         val somaticOdds = tumorVariantLikelihood / normalVariantGenotypes.map(_._2).sum
 
         if (somaticOdds * 100 >= oddsThreshold) {
@@ -194,8 +199,8 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
               tumorSampleName,
               tumorPileup.referenceName,
               tumorPileup.locus,
-              referenceBase,
-              alternate,
+              allele.refBases,
+              allele.altBases,
               math.log(somaticOdds),
               tumorEvidence,
               normalEvidence)
@@ -212,12 +217,10 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
    * Find the most likely genotype in the tumor sample
    * This is either the reference genotype or an heterozygous genotype with some alternate base
    *
-   * @param referenceBase Reference base at the current locus
    * @param tumorPileup The pileup of reads at the current locus in the tumor sample
    * @return The alternate base and the likelihood of the most likely variant
    */
-  def callVariantInTumor(referenceBase: Byte,
-                         tumorPileup: Pileup): (Option[Seq[Byte]], Double) = {
+  def callVariantInTumor(tumorPileup: Pileup): (Option[Allele], Double) = {
 
     val tumorLikelihoods = BayesianQualityVariantCaller.computeLikelihoods(tumorPileup,
       includeAlignmentLikelihood = true,
@@ -226,8 +229,8 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
     val tumorMostLikelyGenotype = tumorLikelihoods.maxBy(_._2)
 
     if (tumorMostLikelyGenotype._1.isVariant) {
-      val alternateBase = tumorMostLikelyGenotype._1.getNonReferenceAlleles(0)
-      (Some(alternateBase), tumorMostLikelyGenotype._2)
+      val allele = tumorMostLikelyGenotype._1.getNonReferenceAlleles(0)
+      (Some(allele), tumorMostLikelyGenotype._2)
     } else {
       (None, 1 - tumorMostLikelyGenotype._2)
     }

@@ -29,7 +29,7 @@ import org.bdgenomics.adam.cli.Args4j
 import org.bdgenomics.guacamole.Common.Arguments._
 import org.apache.spark.rdd.RDD
 import org.apache.spark.Logging
-import org.bdgenomics.guacamole.pileup.Pileup
+import org.bdgenomics.guacamole.pileup.{ Allele, Pileup }
 import org.bdgenomics.guacamole.concordance.GenotypesEvaluator
 import org.bdgenomics.guacamole.concordance.GenotypesEvaluator.GenotypeConcordance
 
@@ -96,22 +96,20 @@ object ThresholdVariantCaller extends Command with Serializable with Logging {
     if (pileup.elements.isEmpty)
       return Seq.empty
 
-    val refBases = Seq(pileup.referenceBase)
     pileup.bySample.toSeq.flatMap({
       case (sampleName, samplePileup) =>
         val totalReads = samplePileup.elements.length
-        val matchesOrMismatches = samplePileup.elements.filter(e => e.isMatch || e.isMismatch)
-        val counts = matchesOrMismatches.map(_.sequencedBases).groupBy(char => char).mapValues(_.length)
+        val counts = samplePileup.elements.map(_.allele).groupBy(x => x).mapValues(_.length)
         val sortedAlleles = counts.toList.filter(_._2 * 100 / totalReads > thresholdPercent).sortBy(-1 * _._2)
 
-        def variant(alternateBases: Seq[Byte], allelesList: List[GenotypeAllele]): Genotype = {
+        def variant(allele: Allele, allelesList: List[GenotypeAllele]): Genotype = {
           Genotype.newBuilder
             .setAlleles(JavaConversions.seqAsJavaList(allelesList))
             .setSampleId(sampleName.toCharArray)
             .setVariant(Variant.newBuilder
               .setStart(pileup.locus)
-              .setReferenceAllele(Bases.baseToString(pileup.referenceBase))
-              .setAlternateAllele(Bases.basesToString(alternateBases))
+              .setReferenceAllele(Bases.basesToString(allele.refBases))
+              .setAlternateAllele(Bases.basesToString(allele.altBases))
               .setContig(Contig.newBuilder.setContigName(pileup.referenceName).build)
               .build)
             .build
@@ -122,23 +120,32 @@ object ThresholdVariantCaller extends Command with Serializable with Logging {
            * as the variant allele.
            */
           case Nil =>
-            if (emitNoCall) (variant(refBases, NoCall :: NoCall :: Nil) :: Nil) else Nil
+            if (emitNoCall)
+              variant(
+                Allele(
+                  Seq(pileup.referenceBase),
+                  Seq(pileup.referenceBase)
+                ),
+                NoCall :: NoCall :: Nil
+              ) :: Nil
+            else
+              Nil
 
           // Hom Ref.
-          case (bases, count) :: Nil if bases == refBases =>
-            if (emitRef) (variant(refBases, Ref :: Ref :: Nil) :: Nil) else Nil
+          case (allele, count) :: Nil if !allele.isVariant =>
+            if (emitRef) (variant(allele, Ref :: Ref :: Nil) :: Nil) else Nil
 
           // Hom alt.
-          case (bases: Seq[Byte], count) :: Nil =>
-            variant(bases, Alt :: Alt :: Nil) :: Nil
+          case (allele: Allele, count) :: Nil =>
+            variant(allele, Alt :: Alt :: Nil) :: Nil
 
           // Het alt.
-          case (bases1, count1) :: (bases2, count2) :: rest if bases1 == refBases || bases2 == refBases =>
-            variant(if (bases1 != Seq(refBases)) bases1 else bases2, Ref :: Alt :: Nil) :: Nil
+          case (allele1, count1) :: (allele2, count2) :: rest if !allele1.isVariant || !allele2.isVariant =>
+            variant(if (allele1.isVariant) allele1 else allele2, Ref :: Alt :: Nil) :: Nil
 
           // Compound alt
-          case (bases1, count1) :: (bases2, count2) :: rest =>
-            variant(bases1, Alt :: OtherAlt :: Nil) :: variant(bases2, Alt :: OtherAlt :: Nil) :: Nil
+          case (allele1, count1) :: (allele2, count2) :: rest =>
+            variant(allele1, Alt :: OtherAlt :: Nil) :: variant(allele2, Alt :: OtherAlt :: Nil) :: Nil
         }
     })
   }
