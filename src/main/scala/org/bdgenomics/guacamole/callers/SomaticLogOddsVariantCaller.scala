@@ -162,7 +162,7 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
             includeAlignmentLikelihood = false,
             normalize = true)
 
-        val (normalVariantGenotypes, normalReferenceGenotype) = normalLikelihoods.partition(_._1.isVariant(referenceBase))
+        val (normalVariantGenotypes, normalReferenceGenotype) = normalLikelihoods.partition(_._1.isVariant)
 
         val somaticLogOdds = math.log(tumorVariantLikelihood) - math.log(normalVariantGenotypes.map(_._2).sum)
         val normalReferenceLikelihood = normalReferenceGenotype.map(_._2).sum
@@ -178,7 +178,10 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
             normalPileup.locus,
             alternate,
             tumorVariantLikelihood,
-            filteredTumorPileup.depth, alternateReadDepth, 0)
+            filteredTumorPileup.depth,
+            alternateReadDepth,
+            0
+          )
         } else {
           Seq.empty
         }
@@ -198,7 +201,7 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
   def callVariantInTumor(referenceBase: Byte,
                          tumorPileup: Pileup): (Option[Seq[Byte]], Double) = {
     def normalPrior(gt: GenotypeAlleles, hetVariantPrior: Double = 1e-4): Double = {
-      val numberVariants = gt.numberOfVariants(referenceBase)
+      val numberVariants = gt.numberOfVariants
       if (numberVariants > 0) math.pow(hetVariantPrior / gt.uniqueAllelesCount, numberVariants) else 1
     }
 
@@ -209,8 +212,8 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
 
     val tumorMostLikelyGenotype = tumorLikelihoods.maxBy(_._2)
 
-    if (tumorMostLikelyGenotype._1.isVariant(referenceBase)) {
-      val alternateBase = tumorMostLikelyGenotype._1.getNonReferenceAlleles(referenceBase)(0)
+    if (tumorMostLikelyGenotype._1.isVariant) {
+      val alternateBase = tumorMostLikelyGenotype._1.getNonReferenceAlleles(0)
       (Some(alternateBase), tumorMostLikelyGenotype._2)
     } else {
       (None, 1 - tumorMostLikelyGenotype._2)
