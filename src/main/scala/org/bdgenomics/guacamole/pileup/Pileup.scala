@@ -50,7 +50,7 @@ case class Pileup(locus: Long, elements: Seq[PileupElement]) {
     head.read.referenceString.charAt((head.locus - head.read.start).toInt).toByte
   }
 
-  lazy val possibleAlleles = elements.map(_.sequencedBases).distinct.sorted(AlleleOrdering)
+  lazy val possibleAlleles = elements.map(_.allele).distinct.sorted(AlleleOrdering)
 
   /**
    * Split this [[Pileup]] by sample name. Returns a map from sample name to [[Pileup]] instances that use only reads

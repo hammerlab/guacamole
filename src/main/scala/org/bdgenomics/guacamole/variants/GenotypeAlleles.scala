@@ -2,6 +2,7 @@ package org.bdgenomics.guacamole.variants
 
 import org.bdgenomics.formats.avro.GenotypeAllele
 import org.bdgenomics.guacamole.Bases
+import org.bdgenomics.guacamole.pileup.PileupElement.Allele
 
 /**
  * A Genotype is a sequence of alleles of length equal to the ploidy of the organism.
@@ -13,7 +14,7 @@ import org.bdgenomics.guacamole.Bases
  * Alleles can also be multiple bases as well, e.g. Seq("AAA", "T")
  *
  */
-case class GenotypeAlleles(referenceAllele: Byte, alleles: Seq[Byte]*) {
+case class GenotypeAlleles(referenceAllele: Byte, alleles: Allele*) {
   /**
    * The ploidy of the organism is the number of alleles in the genotype.
    */
@@ -21,7 +22,7 @@ case class GenotypeAlleles(referenceAllele: Byte, alleles: Seq[Byte]*) {
 
   lazy val uniqueAllelesCount = alleles.toSet.size
 
-  lazy val getNonReferenceAlleles: Seq[Seq[Byte]] = {
+  lazy val getNonReferenceAlleles: Seq[Allele] = {
     alleles.filter(allele => allele.length != 1 || allele(0) != referenceAllele)
   }
 
@@ -61,8 +62,8 @@ case class GenotypeAlleles(referenceAllele: Byte, alleles: Seq[Byte]*) {
 
 }
 
-object AlleleOrdering extends Ordering[Seq[Byte]] {
-  override def compare(x: Seq[Byte], y: Seq[Byte]): Int = {
+object AlleleOrdering extends Ordering[Allele] {
+  override def compare(x: Allele, y: Allele): Int = {
     Bases.basesToString(x).compare(Bases.basesToString(y))
   }
 }
