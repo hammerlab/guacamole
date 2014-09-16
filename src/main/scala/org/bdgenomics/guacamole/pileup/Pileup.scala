@@ -50,7 +50,7 @@ case class Pileup(locus: Long, elements: Seq[PileupElement]) {
     head.read.referenceString.charAt((head.locus - head.read.start).toInt).toByte
   }
 
-  private[pileup] lazy val possibleAlleles = elements.map(_.sequencedBases).distinct.sorted(AlleleOrdering)
+  private[pileup] lazy val possibleAlleles = elements.map(_.allele).distinct.sorted(AlleleOrdering)
 
   /**
    * Generate possible genotypes from a pileup
