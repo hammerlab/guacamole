@@ -92,12 +92,12 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
         val referenceBase = samplePileup.referenceBase
 
         def buildVariants(genotype: GenotypeAlleles, probability: Double): Seq[Genotype] = {
-          val genotypeAlleles = JavaConversions.seqAsJavaList(genotype.getGenotypeAlleles(pileup.referenceBase))
-          genotype.getNonReferenceAlleles(pileup.referenceBase).map(
+          val genotypeAlleles = JavaConversions.seqAsJavaList(genotype.getGenotypeAlleles)
+          genotype.getNonReferenceAlleles.map(
             variantAllele => {
               val variant = Variant.newBuilder
                 .setStart(pileup.locus)
-                .setReferenceAllele(Bases.baseToString(pileup.referenceBase))
+                .setReferenceAllele(Bases.baseToString(referenceBase))
                 .setAlternateAllele(Bases.basesToString(variantAllele))
                 .setContig(Contig.newBuilder.setContigName(pileup.referenceName).build)
                 .build
@@ -129,7 +129,7 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
     val possibleAlleles = pileup.elements.map(e => e.sequencedBases).distinct.sorted(AlleleOrdering)
     val possibleGenotypes =
       for (i <- 0 until possibleAlleles.size; j <- i until possibleAlleles.size)
-        yield GenotypeAlleles(possibleAlleles(i), possibleAlleles(j))
+        yield GenotypeAlleles(pileup.referenceBase, possibleAlleles(i), possibleAlleles(j))
     possibleGenotypes
   }
 
