@@ -128,7 +128,7 @@ object SomaticThresholdVariantCaller extends Command with Serializable with Logg
         .setSampleId("somatic".toCharArray)
         .setVariant(Variant.newBuilder
           .setStart(pileupNormal.locus)
-          .setReferenceAllele(Bases.baseToString(pileupNormal.referenceBase))
+          .setReferenceAllele(Bases.basesToString(refBases))
           .setAlternateAllele(Bases.basesToString(alternateBases))
           .setContig(Contig.newBuilder.setContigName(pileupNormal.referenceName).build)
           .build)

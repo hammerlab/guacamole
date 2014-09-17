@@ -11,7 +11,7 @@ class CalledGenotypeSuite extends FunSuite with SparkFunSuite {
     val gt = CalledGenotype("sample",
       "chr1",
       123456789123L,
-      Bases.T,
+      Seq(Bases.T),
       Seq(Bases.A),
       evidence = GenotypeEvidence(0.99, 15, 10, 10, 5, 60, 30))
 
@@ -26,7 +26,7 @@ class CalledGenotypeSuite extends FunSuite with SparkFunSuite {
     val sgt = new CalledSomaticGenotype("sample",
       "chr1",
       123456789123L,
-      Bases.T,
+      Seq(Bases.T),
       Seq(Bases.A),
       0.99 / 0.01,
       tumorEvidence = GenotypeEvidence(0.99, 15, 10, 10, 5, 60, 30),
@@ -46,7 +46,7 @@ class CalledGenotypeSuite extends FunSuite with SparkFunSuite {
     val sgt = new CalledSomaticGenotype("sample",
       "chr1",
       123456789123L,
-      Bases.T,
+      Seq(Bases.T),
       Seq(Bases.T, Bases.A, Bases.T),
       0.99 / 0.01,
       tumorEvidence = GenotypeEvidence(0.99, 15, 10, 10, 5, 60, 30),
