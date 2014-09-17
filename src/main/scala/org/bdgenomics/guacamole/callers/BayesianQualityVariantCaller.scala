@@ -201,11 +201,7 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
       pileup.elements
         .map(el => math.log(computeBaseGenotypeLikelihood(el, genotype, includeAlignmentLikelihood)))
         .sum
-    if (genotype.ploidy == 2) {
-      unnormalizedLikelihood - depth
-    } else {
-      unnormalizedLikelihood - math.log(math.pow(genotype.ploidy, depth))
-    }
+    unnormalizedLikelihood - depth * math.log(genotype.ploidy)
   }
 
   /**
