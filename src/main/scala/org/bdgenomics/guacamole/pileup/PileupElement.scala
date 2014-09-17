@@ -1,6 +1,6 @@
 package org.bdgenomics.guacamole.pileup
 
-import net.sf.samtools.{ CigarElement, CigarOperator }
+import htsjdk.samtools.{ CigarElement, CigarOperator }
 import org.bdgenomics.guacamole.CigarUtils
 import org.bdgenomics.guacamole.pileup.PileupElement.Allele
 import org.bdgenomics.guacamole.reads.MappedRead

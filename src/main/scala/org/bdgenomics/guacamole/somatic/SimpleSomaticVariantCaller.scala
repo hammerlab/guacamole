@@ -27,7 +27,7 @@ import org.apache.spark.SparkContext._
 import org.apache.spark.SparkContext.rddToPairRDDFunctions
 import scala.collection.{ mutable, JavaConversions }
 import org.bdgenomics.adam.rdd.ADAMContext._
-import net.sf.samtools.CigarOperator
+import htsjdk.samtools.{ Cigar, CigarOperator }
 import org.apache.spark.SparkContext
 
 /**
@@ -156,7 +156,7 @@ object SimpleSomaticVariantCaller extends Command {
     val baseSequence: Array[Byte] = record.baseSequence
     val qualityScores: Array[Byte] = record.baseQualities
     val contig = record.referenceContig
-    val cigar: net.sf.samtools.Cigar = record.cigar
+    val cigar: Cigar = record.cigar
     for (cigarElt <- cigar.getCigarElements) {
       val cigarOp = cigarElt.getOperator
       // emit one BaseRead per position in the cigar element
