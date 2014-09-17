@@ -16,7 +16,7 @@ trait ReferenceVariant extends HasReferenceRegion {
   val start: Long
 
   /** reference genome base at the start locus */
-  val referenceBase: Byte
+  val referenceBases: Seq[Byte]
 
   /** alternate base in the variant */
   val alternateBases: Seq[Byte]
@@ -27,7 +27,7 @@ trait ReferenceVariant extends HasReferenceRegion {
   def adamVariant = Variant.newBuilder
     .setStart(start)
     .setEnd(end)
-    .setReferenceAllele(Bases.baseToString(referenceBase))
+    .setReferenceAllele(Bases.basesToString(referenceBases))
     .setAlternateAllele(Bases.basesToString(alternateBases))
     .setContig(Contig.newBuilder.setContigName(referenceContig).build)
     .build

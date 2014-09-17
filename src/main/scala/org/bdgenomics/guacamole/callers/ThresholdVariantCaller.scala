@@ -110,7 +110,7 @@ object ThresholdVariantCaller extends Command with Serializable with Logging {
             .setSampleId(sampleName.toCharArray)
             .setVariant(Variant.newBuilder
               .setStart(pileup.locus)
-              .setReferenceAllele(Bases.baseToString(pileup.referenceBase))
+              .setReferenceAllele(Bases.basesToString(refBases))
               .setAlternateAllele(Bases.basesToString(alternateBases))
               .setContig(Contig.newBuilder.setContigName(pileup.referenceName).build)
               .build)
