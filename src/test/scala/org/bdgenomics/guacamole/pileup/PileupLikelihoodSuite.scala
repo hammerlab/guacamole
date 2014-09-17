@@ -1,14 +1,14 @@
-package org.bdgenomics.guacamole.callers
+
+package org.bdgenomics.guacamole.pileup
 
 import org.bdgenomics.guacamole.TestUtil.SparkFunSuite
 import org.bdgenomics.guacamole.variants.GenotypeAlleles
 import org.bdgenomics.guacamole.{ Bases, TestUtil }
-import org.bdgenomics.guacamole.pileup.{ Allele, Pileup }
 import org.bdgenomics.adam.util.PhredUtils
 import org.scalatest.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks
 
-class BayesianQualityVariantCallerSuite extends SparkFunSuite with TableDrivenPropertyChecks with Matchers {
+class PileupLikelihoodSuite extends SparkFunSuite with TableDrivenPropertyChecks with Matchers {
 
   val referenceBase = 'C'.toByte
 
