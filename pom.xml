@@ -9,13 +9,13 @@
   <name>guacamole: variant caller</name>
   
   <properties>
-    <adam.version>0.13.0</adam.version>
+    <adam.version>0.14.0</adam.version>
     <bdg-formats.version>0.2.0</bdg-formats.version>
     <java.version>1.7.4</java.version>
     <scala.version>2.10.3</scala.version>
     <scala.version.prefix>2.10</scala.version.prefix>
     <hadoop.version>2.3.0</hadoop.version>
-    <spark.version>1.0.0</spark.version>
+    <spark.version>1.1.0</spark.version>
   </properties>
   
   <licenses>
@@ -238,6 +238,21 @@
       <groupId>org.apache.spark</groupId>
       <artifactId>spark-core_${scala.version.prefix}</artifactId>
       <version>${spark.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.seqdoop</groupId>
+      <artifactId>htsjdk</artifactId>
+      <version>1.118</version>
+    </dependency>
+    <dependency>
+      <groupId>org.seqdoop</groupId>
+      <artifactId>hadoop-bam</artifactId>
+      <version>7.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-math3</artifactId>
+      <version>3.0</version>
     </dependency>
     <dependency>
       <groupId>org.scalatest</groupId>
