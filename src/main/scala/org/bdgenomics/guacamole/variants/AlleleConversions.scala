@@ -4,9 +4,12 @@ import org.bdgenomics.formats.avro.{ GenotypeAllele, Genotype => ADAMGenotype }
 
 import scala.collection.JavaConversions
 
-object GenotypeConversions {
+/**
+ * Note: ADAM Genotypes really map more to our concept of an "allele", hence some naming dissonance here.
+ */
+object AlleleConversions {
 
-  implicit def calledGenotypeToADAMGenotype(calledGenotype: CalledAllele): Seq[ADAMGenotype] = {
+  implicit def calledAlleleToADAMGenotype(calledGenotype: CalledAllele): Seq[ADAMGenotype] = {
     Seq(
       ADAMGenotype.newBuilder
         .setAlleles(JavaConversions.seqAsJavaList(Seq(GenotypeAllele.Ref, GenotypeAllele.Alt)))
@@ -22,7 +25,7 @@ object GenotypeConversions {
     )
   }
 
-  implicit def calledSomaticGenotypeToADAMGenotype(calledGenotype: CalledSomaticAllele): Seq[ADAMGenotype] = {
+  implicit def calledSomaticAlleleToADAMGenotype(calledGenotype: CalledSomaticAllele): Seq[ADAMGenotype] = {
     Seq(
       ADAMGenotype.newBuilder
         .setAlleles(JavaConversions.seqAsJavaList(Seq(GenotypeAllele.Ref, GenotypeAllele.Alt)))

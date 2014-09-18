@@ -10,7 +10,7 @@ import org.bdgenomics.guacamole.filters.PileupFilter.PileupFilterArguments
 import org.bdgenomics.guacamole.filters.SomaticGenotypeFilter.SomaticGenotypeFilterArguments
 import org.bdgenomics.guacamole.pileup.Pileup
 import org.bdgenomics.guacamole.reads.Read
-import org.bdgenomics.guacamole.variants.{ Allele, CalledSomaticAllele, GenotypeConversions, AlleleEvidence }
+import org.bdgenomics.guacamole.variants.{ Allele, CalledSomaticAllele, AlleleConversions, AlleleEvidence }
 import org.kohsuke.args4j.{ Option => Opt }
 
 /**
@@ -126,7 +126,7 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
 
     Common.writeVariantsFromArguments(
       args,
-      filteredGenotypes.flatMap(GenotypeConversions.calledSomaticGenotypeToADAMGenotype)
+      filteredGenotypes.flatMap(AlleleConversions.calledSomaticAlleleToADAMGenotype)
     )
 
     DelayedMessages.default.print()

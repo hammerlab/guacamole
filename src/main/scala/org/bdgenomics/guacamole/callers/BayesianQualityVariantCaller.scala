@@ -4,6 +4,7 @@ import org.apache.spark.Logging
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.cli.Args4j
 import org.bdgenomics.adam.util.PhredUtils
+import org.bdgenomics.guacamole.variants.{ AlleleEvidence, Genotype, AlleleConversions, CalledAllele }
 import org.bdgenomics.guacamole.{ DelayedMessages, Common, DistributedUtil, Command }
 import org.bdgenomics.guacamole.Common.Arguments._
 import org.bdgenomics.guacamole.concordance.GenotypesEvaluator
@@ -13,7 +14,6 @@ import org.bdgenomics.guacamole.filters.PileupFilter.PileupFilterArguments
 import org.bdgenomics.guacamole.filters.{ GenotypeFilter, QualityAlignedReadsFilter }
 import org.bdgenomics.guacamole.pileup.Pileup
 import org.bdgenomics.guacamole.reads.Read
-import org.bdgenomics.guacamole.variants._
 import org.kohsuke.args4j.Option
 
 /**
@@ -51,7 +51,7 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
       pileup => callVariantsAtLocus(pileup, minAlignmentQuality).iterator)
     readSet.mappedReads.unpersist()
 
-    val filteredGenotypes = GenotypeFilter(genotypes, args).flatMap(GenotypeConversions.calledGenotypeToADAMGenotype(_))
+    val filteredGenotypes = GenotypeFilter(genotypes, args).flatMap(AlleleConversions.calledAlleleToADAMGenotype(_))
     Common.writeVariantsFromArguments(args, filteredGenotypes)
     if (args.truthGenotypesFile != "")
       GenotypesEvaluator.printGenotypeConcordance(args, filteredGenotypes, sc)
