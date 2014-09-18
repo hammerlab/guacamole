@@ -3,7 +3,7 @@ package org.bdgenomics.guacamole.filters
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.guacamole.Common
 import org.bdgenomics.guacamole.Common.Arguments.Base
-import org.bdgenomics.guacamole.variants.{ CalledGenotype, GenotypeEvidence }
+import org.bdgenomics.guacamole.variants.{ CalledGenotype, AlleleEvidence }
 import org.kohsuke.args4j.Option
 
 /**
@@ -11,9 +11,9 @@ import org.kohsuke.args4j.Option
  */
 object MinimumLikelihoodFilter {
 
-  def hasMinimumLikelihood(genotypeEvidence: GenotypeEvidence,
+  def hasMinimumLikelihood(alleleEvidence: AlleleEvidence,
                            minLikelihood: Int): Boolean = {
-    genotypeEvidence.phredScaledLikelihood >= minLikelihood
+    alleleEvidence.phredScaledLikelihood >= minLikelihood
   }
 
   /**
@@ -39,10 +39,10 @@ object MinimumLikelihoodFilter {
  */
 object ReadDepthFilter {
 
-  def withinReadDepthRange(genotypeEvidence: GenotypeEvidence,
+  def withinReadDepthRange(alleleEvidence: AlleleEvidence,
                            minReadDepth: Int,
                            maxReadDepth: Int): Boolean = {
-    genotypeEvidence.readDepth >= minReadDepth && genotypeEvidence.readDepth < maxReadDepth
+    alleleEvidence.readDepth >= minReadDepth && alleleEvidence.readDepth < maxReadDepth
   }
 
   /**
@@ -87,9 +87,9 @@ object MinimumAlternateReadDepthFilter {
     filteredGenotypes
   }
 
-  def hasMinimumAlternateReadDepth(genotypeEvidence: GenotypeEvidence,
+  def hasMinimumAlternateReadDepth(alleleEvidence: AlleleEvidence,
                                    minAlternateReadDepth: Int): Boolean = {
-    genotypeEvidence.alleleReadDepth >= minAlternateReadDepth
+    alleleEvidence.alleleReadDepth >= minAlternateReadDepth
   }
 }
 

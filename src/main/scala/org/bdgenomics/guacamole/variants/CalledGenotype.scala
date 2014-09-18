@@ -18,7 +18,7 @@ case class CalledGenotype(sampleName: String,
                           referenceContig: String,
                           start: Long,
                           allele: Allele,
-                          evidence: GenotypeEvidence,
+                          evidence: AlleleEvidence,
                           length: Int = 1) extends ReferenceVariant {
   val end: Long = start + 1L
 
@@ -34,7 +34,7 @@ class CalledGenotypeSerializer
     output.writeString(obj.referenceContig)
     output.writeLong(obj.start, true)
     alleleSerializer.write(kryo, output, obj.allele)
-    genotypeEvidenceSerializer.write(kryo, output, obj.evidence)
+    alleleEvidenceSerializer.write(kryo, output, obj.evidence)
     output.writeInt(obj.length, true)
   }
 
@@ -44,7 +44,7 @@ class CalledGenotypeSerializer
     val referenceContig: String = input.readString()
     val start: Long = input.readLong(true)
     val allele = alleleSerializer.read(kryo, input, classOf[Allele])
-    val evidence = genotypeEvidenceSerializer.read(kryo, input, classOf[GenotypeEvidence])
+    val evidence = alleleEvidenceSerializer.read(kryo, input, classOf[AlleleEvidence])
     val length: Int = input.readInt(true)
 
     CalledGenotype(
