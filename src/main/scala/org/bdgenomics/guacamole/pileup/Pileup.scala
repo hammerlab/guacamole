@@ -122,6 +122,8 @@ case class Pileup(locus: Long, elements: Seq[PileupElement]) {
     likelihoods.map(genotypeLikelihood => (genotypeLikelihood._1, genotypeLikelihood._2 / totalLikelihood))
   }
 
+  lazy val sampleName = elements.head.read.sampleName
+
   /**
    * Split this [[Pileup]] by sample name. Returns a map from sample name to [[Pileup]] instances that use only reads
    * from that sample.
