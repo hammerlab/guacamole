@@ -12,8 +12,8 @@ object GenotypeConversions {
       .setSampleId(calledGenotype.sampleName.toCharArray)
       .setGenotypeQuality(calledGenotype.evidence.phredScaledLikelihood)
       .setReadDepth(calledGenotype.evidence.readDepth)
-      .setExpectedAlleleDosage(calledGenotype.evidence.alternateReadDepth.toFloat / calledGenotype.evidence.readDepth)
-      .setAlternateReadDepth(calledGenotype.evidence.alternateReadDepth)
+      .setExpectedAlleleDosage(calledGenotype.evidence.alleleReadDepth.toFloat / calledGenotype.evidence.readDepth)
+      .setAlternateReadDepth(calledGenotype.evidence.alleleReadDepth)
       .setVariant(calledGenotype.adamVariant)
       .build)
   }
@@ -24,8 +24,8 @@ object GenotypeConversions {
       .setSampleId(calledGenotype.sampleName.toCharArray)
       .setGenotypeQuality(calledGenotype.phredScaledSomaticLikelihood)
       .setReadDepth(calledGenotype.tumorEvidence.readDepth)
-      .setExpectedAlleleDosage(calledGenotype.tumorEvidence.alternateReadDepth.toFloat / calledGenotype.tumorEvidence.readDepth)
-      .setAlternateReadDepth(calledGenotype.tumorEvidence.alternateReadDepth)
+      .setExpectedAlleleDosage(calledGenotype.tumorEvidence.alleleReadDepth.toFloat / calledGenotype.tumorEvidence.readDepth)
+      .setAlternateReadDepth(calledGenotype.tumorEvidence.alleleReadDepth)
       .setVariant(calledGenotype.adamVariant)
       .build)
   }
