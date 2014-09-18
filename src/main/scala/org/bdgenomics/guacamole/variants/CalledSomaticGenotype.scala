@@ -32,18 +32,16 @@ case class CalledSomaticGenotype(sampleName: String,
     PhredUtils.successProbabilityToPhred(tumorEvidence.likelihood * (1 - normalEvidence.likelihood) - 1e-10)
 }
 
-class CalledSomaticGenotypeSerializer extends Serializer[CalledSomaticGenotype] {
-
-  lazy val genotypeEvidenceSerializer = new GenotypeEvidenceSerializer()
+class CalledSomaticGenotypeSerializer
+    extends Serializer[CalledSomaticGenotype]
+    with HasGenotypeEvidenceSerializer
+    with HasAlleleSerializer {
 
   def write(kryo: Kryo, output: Output, obj: CalledSomaticGenotype) = {
     output.writeString(obj.sampleName)
     output.writeString(obj.referenceContig)
     output.writeLong(obj.start)
-    output.writeInt(obj.allele.refBases.length, true)
-    output.writeBytes(obj.allele.refBases.toArray)
-    output.writeInt(obj.allele.altBases.length, true)
-    output.writeBytes(obj.allele.altBases.toArray)
+    alleleSerializer.write(kryo, output, obj.allele)
     output.writeDouble(obj.somaticLogOdds)
 
     genotypeEvidenceSerializer.write(kryo, output, obj.tumorEvidence)
@@ -58,10 +56,7 @@ class CalledSomaticGenotypeSerializer extends Serializer[CalledSomaticGenotype] 
     val sampleName: String = input.readString()
     val referenceContig: String = input.readString()
     val start: Long = input.readLong()
-    val referenceBasesLength = input.readInt(true)
-    val referenceBases: Seq[Byte] = input.readBytes(referenceBasesLength)
-    val alternateLength = input.readInt(true)
-    val alternateBases: Seq[Byte] = input.readBytes(alternateLength)
+    val allele: Allele = alleleSerializer.read(kryo, input, classOf[Allele])
     val somaticLogOdds = input.readDouble()
 
     val tumorEvidence = genotypeEvidenceSerializer.read(kryo, input, classOf[GenotypeEvidence])
@@ -73,7 +68,7 @@ class CalledSomaticGenotypeSerializer extends Serializer[CalledSomaticGenotype] 
       sampleName,
       referenceContig,
       start,
-      Allele(referenceBases, alternateBases),
+      allele,
       somaticLogOdds,
       tumorEvidence = tumorEvidence,
       normalEvidence = normalEvidence

@@ -24,21 +24,18 @@ case class CalledGenotype(sampleName: String,
 
 }
 
-class CalledGenotypeSerializer extends Serializer[CalledGenotype] {
-
-  lazy val genotypeEvidenceSeralizer = new GenotypeEvidenceSerializer()
+class CalledGenotypeSerializer
+    extends Serializer[CalledGenotype]
+    with HasAlleleSerializer
+    with HasGenotypeEvidenceSerializer {
 
   def write(kryo: Kryo, output: Output, obj: CalledGenotype) = {
     output.writeString(obj.sampleName)
     output.writeString(obj.referenceContig)
     output.writeLong(obj.start, true)
-    output.writeInt(obj.allele.refBases.length, true)
-    output.writeBytes(obj.allele.refBases.toArray)
-    output.writeInt(obj.allele.altBases.length, true)
-    output.writeBytes(obj.allele.altBases.toArray)
-    genotypeEvidenceSeralizer.write(kryo, output, obj.evidence)
+    alleleSerializer.write(kryo, output, obj.allele)
+    genotypeEvidenceSerializer.write(kryo, output, obj.evidence)
     output.writeInt(obj.length, true)
-
   }
 
   def read(kryo: Kryo, input: Input, klass: Class[CalledGenotype]): CalledGenotype = {
@@ -46,19 +43,15 @@ class CalledGenotypeSerializer extends Serializer[CalledGenotype] {
     val sampleName: String = input.readString()
     val referenceContig: String = input.readString()
     val start: Long = input.readLong(true)
-    val referenceBasesLength = input.readInt(true)
-    val referenceBases: Seq[Byte] = input.readBytes(referenceBasesLength)
-    val alternateLength = input.readInt(true)
-    val alternateBases: Seq[Byte] = input.readBytes(alternateLength)
-
-    val evidence = genotypeEvidenceSeralizer.read(kryo, input, classOf[GenotypeEvidence])
+    val allele = alleleSerializer.read(kryo, input, classOf[Allele])
+    val evidence = genotypeEvidenceSerializer.read(kryo, input, classOf[GenotypeEvidence])
     val length: Int = input.readInt(true)
 
     CalledGenotype(
       sampleName,
       referenceContig,
       start,
-      Allele(referenceBases, alternateBases),
+      allele,
       evidence,
       length
     )

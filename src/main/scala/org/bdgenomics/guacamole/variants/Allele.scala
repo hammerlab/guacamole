@@ -1,5 +1,7 @@
 package org.bdgenomics.guacamole.variants
 
+import com.esotericsoftware.kryo.io.{ Input, Output }
+import com.esotericsoftware.kryo.{ Kryo, Serializer }
 import org.bdgenomics.guacamole.Bases
 import org.bdgenomics.guacamole.Bases.BasesOrdering
 
@@ -12,3 +14,23 @@ case class Allele(refBases: Seq[Byte], altBases: Seq[Byte]) extends Ordered[Alle
   def ==(other: Allele): Boolean = compare(other) == 0
 }
 
+class AlleleSerializer extends Serializer[Allele] {
+  def write(kryo: Kryo, output: Output, obj: Allele) = {
+    output.writeInt(obj.refBases.length, true)
+    output.writeBytes(obj.refBases.toArray)
+    output.writeInt(obj.altBases.length, true)
+    output.writeBytes(obj.altBases.toArray)
+  }
+
+  def read(kryo: Kryo, input: Input, klass: Class[Allele]): Allele = {
+    val referenceBasesLength = input.readInt(true)
+    val referenceBases: Seq[Byte] = input.readBytes(referenceBasesLength)
+    val alternateLength = input.readInt(true)
+    val alternateBases: Seq[Byte] = input.readBytes(alternateLength)
+    Allele(referenceBases, alternateBases)
+  }
+}
+
+trait HasAlleleSerializer {
+  lazy val alleleSerializer: AlleleSerializer = new AlleleSerializer
+}
