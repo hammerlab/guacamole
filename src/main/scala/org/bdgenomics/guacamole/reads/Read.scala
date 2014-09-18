@@ -8,6 +8,7 @@ import fi.tkk.ics.hadoop.bam.{ AnySAMInputFormat, SAMRecordWritable }
 import scala.collection.mutable.ArrayBuffer
 import org.bdgenomics.adam.models.SequenceDictionary
 import org.bdgenomics.guacamole.Bases
+import org.bdgenomics.guacamole.util.Implication._
 
 import fi.tkk.ics.hadoop.bam.util.SAMHeaderReader
 import org.apache.hadoop.fs.Path
@@ -273,13 +274,14 @@ object Read extends Logging {
 
     val samRecords: RDD[(LongWritable, SAMRecordWritable)] =
       sc.newAPIHadoopFile[LongWritable, SAMRecordWritable, AnySAMInputFormat](filename)
-    var reads: RDD[Read] =
+    val reads: RDD[Read] =
       samRecords.flatMap({
         case (k, v) => fromSAMRecordOpt(v.get, token)
-      })
-    if (filters.mapped) reads = reads.filter(_.isMapped)
-    if (filters.nonDuplicate) reads = reads.filter(!_.isDuplicate)
-    if (filters.passedVendorQualityChecks) reads = reads.filter(!_.failedVendorQualityChecks)
+      }).filter(read =>
+        filters.mapped ==> read.isMapped &&
+          filters.nonDuplicate ==> !read.isDuplicate &&
+          filters.passedVendorQualityChecks ==> !read.failedVendorQualityChecks
+      )
     (reads, sequenceDictionary)
   }
 

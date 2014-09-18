@@ -19,8 +19,7 @@
 package org.bdgenomics.guacamole
 
 import java.io.OutputStream
-import java.util
-import java.util.Calendar
+import java.util.{ ArrayList, Calendar }
 
 import org.apache.avro.generic.GenericDatumWriter
 import org.apache.avro.io.EncoderFactory
@@ -255,7 +254,7 @@ object Common extends Logging {
    * @param envVariables The variables found on the commandline
    * @return array of (key, value) pairs parsed from the command line.
    */
-  def parseEnvVariables(envVariables: util.ArrayList[String]): Array[(String, String)] = {
+  def parseEnvVariables(envVariables: ArrayList[String]): Array[(String, String)] = {
     envVariables.foldLeft(Array[(String, String)]()) {
       (a, kv) =>
         val kvSplit = kv.split("=")
