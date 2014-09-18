@@ -3,26 +3,12 @@ package org.bdgenomics.guacamole.pileup
 
 import org.bdgenomics.guacamole.TestUtil.SparkFunSuite
 import org.bdgenomics.guacamole.variants.GenotypeAlleles
-import org.bdgenomics.guacamole.{ Bases, TestUtil }
-import org.bdgenomics.adam.util.PhredUtils
+import org.bdgenomics.guacamole.TestUtil
+import org.bdgenomics.guacamole.ReadsUtil._
 import org.scalatest.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks
 
 class PileupLikelihoodSuite extends SparkFunSuite with TableDrivenPropertyChecks with Matchers {
-
-  val referenceBase = 'C'.toByte
-
-  def makeGenotype(alleles: String*): GenotypeAlleles = {
-    // If we later change Genotype to work with Array[byte] instead of strings, we can use this function to convert
-    // to byte arrays.
-    GenotypeAlleles(alleles.map(allele => Allele(Seq(referenceBase), Bases.stringToBases(allele))): _*)
-  }
-
-  val errorPhred30 = PhredUtils.phredToErrorProbability(30)
-  val errorPhred40 = PhredUtils.phredToErrorProbability(40)
-
-  def refRead(phred: Int) = TestUtil.makeRead("C", "1M", "1", 1, "chr1", Some(Array(phred)))
-  def altRead(phred: Int) = TestUtil.makeRead("A", "1M", "0C0", 1, "chr1", Some(Array(phred)))
 
   def testLikelihoods(actualLikelihoods: Seq[(GenotypeAlleles, Double)],
                       expectedLikelihoods: Map[GenotypeAlleles, Double],
@@ -33,8 +19,6 @@ class PileupLikelihoodSuite extends SparkFunSuite with TableDrivenPropertyChecks
       l => TestUtil.assertAlmostEqual(actualLikelihoodsMap(l._1), l._2, acceptableError)
     }
   }
-
-  val homRefLikelihood = ((1 - errorPhred30) * (1 - errorPhred40) * (1 - errorPhred30))
 
   test("score genotype for single sample; all bases ref") {
 
@@ -48,7 +32,7 @@ class PileupLikelihoodSuite extends SparkFunSuite with TableDrivenPropertyChecks
 
     val expectedLikelihoods: Map[GenotypeAlleles, Double] =
       Map(
-        makeGenotype("C", "C") -> homRefLikelihood
+        makeGenotype("C", "C") -> (1 - errorPhred30) * (1 - errorPhred40) * (1 - errorPhred30)
       )
 
     testLikelihoods(pileup.computeLikelihoods(includeAlignmentLikelihood = false), expectedLikelihoods)
