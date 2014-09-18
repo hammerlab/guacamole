@@ -36,7 +36,7 @@ case class GenotypeAlleles(alleles: Allele*) {
     }
 
     alleles.map(allele =>
-      if (allele.equals(element.allele))
+      if (allele == element.allele)
         successProbability
       else
         (1 - successProbability)

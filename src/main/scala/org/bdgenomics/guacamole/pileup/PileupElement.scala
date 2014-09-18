@@ -255,6 +255,7 @@ case class Allele(refBases: Seq[Byte], altBases: Seq[Byte]) {
   override def toString: String = "Allele(%s,%s)".format(Bases.basesToString(refBases), Bases.basesToString(altBases))
 
   def equals(other: Allele): Boolean = AlleleOrdering.compare(this, other) == 0
+  def ==(other: Allele): Boolean = equals(other)
 }
 
 case class InvalidCigarElementException(elem: PileupElement)
