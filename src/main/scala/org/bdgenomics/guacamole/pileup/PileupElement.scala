@@ -1,10 +1,9 @@
 package org.bdgenomics.guacamole.pileup
 
 import htsjdk.samtools.{ CigarElement, CigarOperator }
-import org.bdgenomics.guacamole.{ Bases, CigarUtils }
-import org.bdgenomics.guacamole.Bases.BasesOrdering
-import org.bdgenomics.guacamole.variants.AlleleOrdering
+import org.bdgenomics.guacamole.CigarUtils
 import org.bdgenomics.guacamole.reads.MappedRead
+import org.bdgenomics.guacamole.variants.Allele
 
 import scala.annotation.tailrec
 
@@ -247,15 +246,6 @@ object PileupElement {
       indexWithinCigarElement = 0
     ).advanceToLocus(locus)
   }
-}
-
-case class Allele(refBases: Seq[Byte], altBases: Seq[Byte]) {
-  lazy val isVariant = BasesOrdering.compare(refBases, altBases) != 0
-
-  override def toString: String = "Allele(%s,%s)".format(Bases.basesToString(refBases), Bases.basesToString(altBases))
-
-  def equals(other: Allele): Boolean = AlleleOrdering.compare(this, other) == 0
-  def ==(other: Allele): Boolean = equals(other)
 }
 
 case class InvalidCigarElementException(elem: PileupElement)

@@ -22,8 +22,8 @@ import org.bdgenomics.formats.avro.{ Contig, Variant, GenotypeAllele, Genotype }
 import org.bdgenomics.formats.avro.GenotypeAllele.{ Ref, Alt, OtherAlt }
 import org.bdgenomics.guacamole._
 import org.apache.spark.SparkContext._
-import org.bdgenomics.guacamole.pileup.Allele
 import org.bdgenomics.guacamole.reads.Read
+import org.bdgenomics.guacamole.variants.Allele
 import scala.collection.JavaConversions
 import org.kohsuke.args4j.Option
 import org.bdgenomics.adam.cli.Args4j

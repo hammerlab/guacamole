@@ -1,7 +1,6 @@
 package org.bdgenomics.guacamole.variants
 
 import org.bdgenomics.formats.avro.{ Contig, Variant }
-import org.bdgenomics.guacamole.pileup.Allele
 import org.bdgenomics.guacamole.{ Bases, HasReferenceRegion }
 
 /**

@@ -23,13 +23,14 @@ import org.bdgenomics.formats.avro.GenotypeAllele.{ NoCall, Ref, Alt, OtherAlt }
 import org.bdgenomics.guacamole._
 import org.apache.spark.SparkContext._
 import org.bdgenomics.guacamole.reads.Read
+import org.bdgenomics.guacamole.variants.Allele
 import scala.collection.JavaConversions
 import org.kohsuke.args4j.Option
 import org.bdgenomics.adam.cli.Args4j
 import org.bdgenomics.guacamole.Common.Arguments._
 import org.apache.spark.rdd.RDD
 import org.apache.spark.Logging
-import org.bdgenomics.guacamole.pileup.{ Allele, Pileup }
+import org.bdgenomics.guacamole.pileup.Pileup
 import org.bdgenomics.guacamole.concordance.GenotypesEvaluator
 import org.bdgenomics.guacamole.concordance.GenotypesEvaluator.GenotypeConcordance
 
