@@ -186,12 +186,10 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
     // For now, we skip loci that have no reads mapped. We may instead want to emit NoCall in this case.
     if (filteredTumorPileup.elements.isEmpty
       || filteredNormalPileup.elements.isEmpty
-      || filteredTumorPileup.referenceDepth == filteredTumorPileup.depth // skip computation if no alternate bases
-      || filteredTumorPileup.depth > maxReadDepth // skip  abnormally deep pileups
+      || filteredTumorPileup.referenceDepth == filteredTumorPileup.depth // skip computation if no alternate reads
+      || filteredTumorPileup.depth > maxReadDepth // skip abnormally deep pileups
       || filteredNormalPileup.depth > maxReadDepth)
       return Seq.empty
-
-    val tumorSampleName = tumorPileup.elements(0).read.sampleName
 
     val (alleleOpt, tumorVariantLikelihood) = callVariantInTumor(filteredTumorPileup)
     alleleOpt match {
@@ -211,7 +209,7 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
         if (somaticOdds * 100 >= oddsThreshold) {
           Seq(
             CalledSomaticGenotype(
-              tumorSampleName,
+              tumorPileup.sampleName,
               tumorPileup.referenceName,
               tumorPileup.locus,
               allele,
