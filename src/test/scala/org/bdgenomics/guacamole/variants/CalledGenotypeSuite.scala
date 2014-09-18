@@ -1,7 +1,6 @@
 package org.bdgenomics.guacamole.variants
 
 import org.apache.spark.SparkEnv
-import org.bdgenomics.guacamole.pileup.Allele
 import org.bdgenomics.guacamole.{ Bases, TestUtil }
 import org.bdgenomics.guacamole.TestUtil.SparkFunSuite
 import org.scalatest.FunSuite

@@ -9,9 +9,8 @@ import org.bdgenomics.guacamole.filters.{ SomaticAlternateReadDepthFilter, Somat
 import org.bdgenomics.guacamole.filters.PileupFilter.PileupFilterArguments
 import org.bdgenomics.guacamole.filters.SomaticGenotypeFilter.SomaticGenotypeFilterArguments
 import org.bdgenomics.guacamole.pileup.Pileup
-import org.bdgenomics.guacamole.pileup.Allele
 import org.bdgenomics.guacamole.reads.Read
-import org.bdgenomics.guacamole.variants.{ CalledSomaticGenotype, GenotypeConversions, GenotypeEvidence }
+import org.bdgenomics.guacamole.variants.{ Allele, CalledSomaticGenotype, GenotypeConversions, GenotypeEvidence }
 import org.kohsuke.args4j.{ Option => Opt }
 
 /**

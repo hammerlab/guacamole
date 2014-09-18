@@ -2,8 +2,7 @@
 package org.bdgenomics.guacamole
 
 import org.bdgenomics.adam.util.PhredUtils
-import org.bdgenomics.guacamole.pileup.Allele
-import org.bdgenomics.guacamole.variants.GenotypeAlleles
+import org.bdgenomics.guacamole.variants.{ Allele, GenotypeAlleles }
 
 /**
  * Some utility functions shared by [[org.bdgenomics.guacamole.pileup.PileupLikelihoodSuite]] and

@@ -2,7 +2,6 @@ package org.bdgenomics.guacamole.variants
 
 import com.esotericsoftware.kryo.io.{ Input, Output }
 import com.esotericsoftware.kryo.{ Kryo, Serializer }
-import org.bdgenomics.guacamole.pileup.Allele
 
 /**
  *

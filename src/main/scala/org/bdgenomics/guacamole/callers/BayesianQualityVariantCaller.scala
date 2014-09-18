@@ -11,7 +11,7 @@ import org.bdgenomics.guacamole.concordance.GenotypesEvaluator.GenotypeConcordan
 import org.bdgenomics.guacamole.filters.GenotypeFilter.GenotypeFilterArguments
 import org.bdgenomics.guacamole.filters.PileupFilter.PileupFilterArguments
 import org.bdgenomics.guacamole.filters.{ GenotypeFilter, QualityAlignedReadsFilter }
-import org.bdgenomics.guacamole.pileup.{ Allele, Pileup, PileupElement }
+import org.bdgenomics.guacamole.pileup.{ Pileup, PileupElement }
 import org.bdgenomics.guacamole.reads.Read
 import org.bdgenomics.guacamole.variants._
 import org.kohsuke.args4j.Option

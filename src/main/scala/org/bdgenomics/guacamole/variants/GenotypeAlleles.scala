@@ -3,7 +3,7 @@ package org.bdgenomics.guacamole.variants
 import org.bdgenomics.adam.util.PhredUtils
 import org.bdgenomics.formats.avro.GenotypeAllele
 import org.bdgenomics.guacamole.Bases.BasesOrdering
-import org.bdgenomics.guacamole.pileup.{ Pileup, PileupElement, Allele }
+import org.bdgenomics.guacamole.pileup.{ Pileup, PileupElement }
 
 /**
  * A Genotype is a sequence of alleles of length equal to the ploidy of the organism.

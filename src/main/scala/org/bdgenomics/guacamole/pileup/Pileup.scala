@@ -19,7 +19,7 @@
 package org.bdgenomics.guacamole.pileup
 
 import org.bdgenomics.guacamole.reads.MappedRead
-import org.bdgenomics.guacamole.variants.{ GenotypeAlleles, AlleleOrdering }
+import org.bdgenomics.guacamole.variants.{ Allele, GenotypeAlleles, AlleleOrdering }
 
 /**
  * A [[Pileup]] at a locus contains a sequence of [[PileupElement]] instances, one for every read that overlaps that
