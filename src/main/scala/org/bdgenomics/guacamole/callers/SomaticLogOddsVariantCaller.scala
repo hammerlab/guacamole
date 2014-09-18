@@ -73,43 +73,61 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
       normalReads.mappedReads
     )
 
-    var potentialGenotypes: RDD[CalledSomaticGenotype] = DistributedUtil.pileupFlatMapTwoRDDs[CalledSomaticGenotype](
-      tumorReads.mappedReads,
-      normalReads.mappedReads,
-      lociPartitions,
-      skipEmpty = true, // skip empty pileups
-      (pileupTumor, pileupNormal) => findPotentialVariantAtLocus(
-        pileupTumor,
-        pileupNormal,
-        oddsThreshold,
-        maxMappingComplexity,
-        minAlignmentForComplexity,
-        minAlignmentQuality,
-        filterMultiAllelic,
-        maxReadDepth).iterator)
+    var potentialGenotypes: RDD[CalledSomaticGenotype] =
+      DistributedUtil.pileupFlatMapTwoRDDs[CalledSomaticGenotype](
+        tumorReads.mappedReads,
+        normalReads.mappedReads,
+        lociPartitions,
+        skipEmpty = true, // skip empty pileups
+        (pileupTumor, pileupNormal) => findPotentialVariantAtLocus(
+          pileupTumor,
+          pileupNormal,
+          oddsThreshold,
+          maxMappingComplexity,
+          minAlignmentForComplexity,
+          minAlignmentQuality,
+          filterMultiAllelic,
+          maxReadDepth).iterator
+      )
 
     // Filter potential genotypes to min read values
-    potentialGenotypes = SomaticReadDepthFilter(potentialGenotypes, args.minTumorReadDepth, args.maxTumorReadDepth, args.minNormalReadDepth)
-    potentialGenotypes = SomaticAlternateReadDepthFilter(potentialGenotypes, args.minTumorAlternateReadDepth)
+    potentialGenotypes =
+      SomaticReadDepthFilter(
+        potentialGenotypes,
+        args.minTumorReadDepth,
+        args.maxTumorReadDepth,
+        args.minNormalReadDepth
+      )
+
+    potentialGenotypes =
+      SomaticAlternateReadDepthFilter(
+        potentialGenotypes,
+        args.minTumorAlternateReadDepth
+      )
 
     potentialGenotypes.persist()
     Common.progress("Computed %,d potential genotypes".format(potentialGenotypes.count))
 
     val genotypeLociPartitions = DistributedUtil.partitionLociUniformly(args.parallelism, loci)
-    val genotypes: RDD[CalledSomaticGenotype] = DistributedUtil.windowFlatMapWithState[CalledSomaticGenotype, CalledSomaticGenotype, Option[String]](
-      Seq(potentialGenotypes),
-      genotypeLociPartitions,
-      skipEmpty = true,
-      snvWindowRange.toLong,
-      None,
-      removeCorrelatedGenotypes)
+    val genotypes: RDD[CalledSomaticGenotype] =
+      DistributedUtil.windowFlatMapWithState[CalledSomaticGenotype, CalledSomaticGenotype, Option[String]](
+        Seq(potentialGenotypes),
+        genotypeLociPartitions,
+        skipEmpty = true,
+        snvWindowRange.toLong,
+        None,
+        removeCorrelatedGenotypes
+      )
     genotypes.persist()
     Common.progress("Computed %,d genotypes after regional analysis".format(genotypes.count))
 
     val filteredGenotypes: RDD[CalledSomaticGenotype] = SomaticGenotypeFilter(genotypes, args)
     Common.progress("Computed %,d genotypes after basic filtering".format(filteredGenotypes.count))
 
-    Common.writeVariantsFromArguments(args, filteredGenotypes.flatMap(GenotypeConversions.calledSomaticGenotypeToADAMGenotype(_)))
+    Common.writeVariantsFromArguments(
+      args,
+      filteredGenotypes.flatMap(GenotypeConversions.calledSomaticGenotypeToADAMGenotype)
+    )
 
     DelayedMessages.default.print()
   }
@@ -199,7 +217,8 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
               allele,
               math.log(somaticOdds),
               tumorEvidence,
-              normalEvidence)
+              normalEvidence
+            )
           )
         } else {
           Seq.empty
