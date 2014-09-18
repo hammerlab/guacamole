@@ -10,7 +10,7 @@ import org.bdgenomics.guacamole.filters.PileupFilter.PileupFilterArguments
 import org.bdgenomics.guacamole.filters.SomaticGenotypeFilter.SomaticGenotypeFilterArguments
 import org.bdgenomics.guacamole.pileup.Pileup
 import org.bdgenomics.guacamole.reads.Read
-import org.bdgenomics.guacamole.variants.{ Allele, CalledSomaticGenotype, GenotypeConversions, AlleleEvidence }
+import org.bdgenomics.guacamole.variants.{ Allele, CalledSomaticAllele, GenotypeConversions, AlleleEvidence }
 import org.kohsuke.args4j.{ Option => Opt }
 
 /**
@@ -73,8 +73,8 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
       normalReads.mappedReads
     )
 
-    var potentialGenotypes: RDD[CalledSomaticGenotype] =
-      DistributedUtil.pileupFlatMapTwoRDDs[CalledSomaticGenotype](
+    var potentialGenotypes: RDD[CalledSomaticAllele] =
+      DistributedUtil.pileupFlatMapTwoRDDs[CalledSomaticAllele](
         tumorReads.mappedReads,
         normalReads.mappedReads,
         lociPartitions,
@@ -109,8 +109,8 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
     Common.progress("Computed %,d potential genotypes".format(potentialGenotypes.count))
 
     val genotypeLociPartitions = DistributedUtil.partitionLociUniformly(args.parallelism, loci)
-    val genotypes: RDD[CalledSomaticGenotype] =
-      DistributedUtil.windowFlatMapWithState[CalledSomaticGenotype, CalledSomaticGenotype, Option[String]](
+    val genotypes: RDD[CalledSomaticAllele] =
+      DistributedUtil.windowFlatMapWithState[CalledSomaticAllele, CalledSomaticAllele, Option[String]](
         Seq(potentialGenotypes),
         genotypeLociPartitions,
         skipEmpty = true,
@@ -121,7 +121,7 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
     genotypes.persist()
     Common.progress("Computed %,d genotypes after regional analysis".format(genotypes.count))
 
-    val filteredGenotypes: RDD[CalledSomaticGenotype] = SomaticGenotypeFilter(genotypes, args)
+    val filteredGenotypes: RDD[CalledSomaticAllele] = SomaticGenotypeFilter(genotypes, args)
     Common.progress("Computed %,d genotypes after basic filtering".format(filteredGenotypes.count))
 
     Common.writeVariantsFromArguments(
@@ -140,7 +140,7 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
    * @return Set of genotypes if there are no others in the window
    */
   def removeCorrelatedGenotypes(state: Option[String],
-                                genotypeWindows: Seq[SlidingWindow[CalledSomaticGenotype]]): (Option[String], Iterator[CalledSomaticGenotype]) = {
+                                genotypeWindows: Seq[SlidingWindow[CalledSomaticAllele]]): (Option[String], Iterator[CalledSomaticAllele]) = {
     val genotypeWindow = genotypeWindows(0)
     val locus = genotypeWindow.currentLocus
     val currentGenotypes = genotypeWindow.currentRegions.filter(_.overlapsLocus(locus))
@@ -161,7 +161,7 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
                                   minAlignmentForComplexity: Int = 1,
                                   minAlignmentQuality: Int = 1,
                                   filterMultiAllelic: Boolean = false,
-                                  maxReadDepth: Int = Int.MaxValue): Seq[CalledSomaticGenotype] = {
+                                  maxReadDepth: Int = Int.MaxValue): Seq[CalledSomaticAllele] = {
 
     val filteredNormalPileup = PileupFilter(
       normalPileup,
@@ -208,7 +208,7 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
 
         if (somaticOdds * 100 >= oddsThreshold) {
           Seq(
-            CalledSomaticGenotype(
+            CalledSomaticAllele(
               tumorPileup.sampleName,
               tumorPileup.referenceName,
               tumorPileup.locus,
