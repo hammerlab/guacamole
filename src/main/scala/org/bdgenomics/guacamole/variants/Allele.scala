@@ -34,3 +34,12 @@ class AlleleSerializer extends Serializer[Allele] {
 trait HasAlleleSerializer {
   lazy val alleleSerializer: AlleleSerializer = new AlleleSerializer
 }
+
+object AlleleOrdering extends Ordering[Allele] {
+  override def compare(x: Allele, y: Allele): Int = {
+    BasesOrdering.compare(x.refBases, y.refBases) match {
+      case 0 => BasesOrdering.compare(x.altBases, y.altBases)
+      case x => x
+    }
+  }
+}
