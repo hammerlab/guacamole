@@ -47,5 +47,6 @@ class GuacamoleKryoRegistrator extends ADAMKryoRegistrator {
     kryo.register(classOf[CalledSomaticGenotype], new CalledSomaticGenotypeSerializer)
     kryo.register(classOf[GenotypeEvidence], new GenotypeEvidenceSerializer)
     kryo.register(classOf[Allele], new AlleleSerializer)
+    kryo.register(classOf[Allele], new GenotypeSerializer)
   }
 }

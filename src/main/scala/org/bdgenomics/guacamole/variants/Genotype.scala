@@ -1,5 +1,7 @@
 package org.bdgenomics.guacamole.variants
 
+import com.esotericsoftware.kryo.io.{ Input, Output }
+import com.esotericsoftware.kryo.{ Kryo, Serializer }
 import org.bdgenomics.adam.util.PhredUtils
 import org.bdgenomics.formats.avro.GenotypeAllele
 import org.bdgenomics.guacamole.Bases.BasesOrdering
@@ -101,3 +103,17 @@ case class Genotype(alleles: Allele*) {
   override def toString: String = "Genotype(%s)".format(alleles.map(_.toString).mkString(","))
 }
 
+class GenotypeSerializer
+    extends Serializer[Genotype]
+    with HasAlleleSerializer {
+  def write(kryo: Kryo, output: Output, obj: Genotype) = {
+    output.writeInt(obj.alleles.length, true)
+    obj.alleles.foreach(alleleSerializer.write(kryo, output, _))
+  }
+
+  def read(kryo: Kryo, input: Input, klass: Class[Genotype]): Genotype = {
+    val numAlleles = input.readInt(true)
+    val alleles = (0 to numAlleles).map(i => alleleSerializer.read(kryo, input, classOf[Allele]))
+    Genotype(alleles: _*)
+  }
+}
