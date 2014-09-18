@@ -179,7 +179,7 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
     val (alleleOpt, tumorVariantLikelihood) = callVariantInTumor(filteredTumorPileup)
     alleleOpt match {
       case Some(allele) => {
-        val tumorEvidence = GenotypeEvidence(tumorVariantLikelihood, allele.altBases, filteredTumorPileup)
+        val tumorEvidence = GenotypeEvidence(tumorVariantLikelihood, allele, filteredTumorPileup)
 
         val normalLikelihoods =
           filteredNormalPileup.computeLikelihoods(
@@ -188,7 +188,7 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
           ).toMap
 
         val (normalVariantGenotypes, normalReferenceGenotype) = normalLikelihoods.partition(_._1.isVariant)
-        val normalEvidence = GenotypeEvidence(normalVariantGenotypes.map(_._2).sum, allele.altBases, filteredNormalPileup)
+        val normalEvidence = GenotypeEvidence(normalVariantGenotypes.map(_._2).sum, allele, filteredNormalPileup)
         val somaticOdds = tumorVariantLikelihood / normalVariantGenotypes.map(_._2).sum
 
         if (somaticOdds * 100 >= oddsThreshold) {

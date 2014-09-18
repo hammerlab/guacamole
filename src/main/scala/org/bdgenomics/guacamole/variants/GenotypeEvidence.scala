@@ -3,7 +3,7 @@ package org.bdgenomics.guacamole.variants
 import com.esotericsoftware.kryo.io.{ Input, Output }
 import com.esotericsoftware.kryo.{ Kryo, Serializer }
 import org.bdgenomics.adam.util.PhredUtils
-import org.bdgenomics.guacamole.pileup.Pileup
+import org.bdgenomics.guacamole.pileup.{ Allele, Pileup }
 
 /**
  *
@@ -11,31 +11,31 @@ import org.bdgenomics.guacamole.pileup.Pileup
  *
  * @param likelihood probability of the genotype
  * @param readDepth total reads at the genotype position
- * @param alternateReadDepth total reads with alternate base at the genotype position
+ * @param alleleReadDepth total reads with allele base at the genotype position
  * @param forwardDepth total reads on the forward strand at the genotype position
- * @param alternateForwardDepth total reads with alternate base on the forward strand at the genotype position
+ * @param alleleForwardDepth total reads with allele base on the forward strand at the genotype position
  * @param averageMappingQuality average mapping quality of reads
  * @param averageBaseQuality average base quality of bases covering this position
  */
 case class GenotypeEvidence(likelihood: Double,
                             readDepth: Int,
-                            alternateReadDepth: Int,
+                            alleleReadDepth: Int,
                             forwardDepth: Int,
-                            alternateForwardDepth: Int,
+                            alleleForwardDepth: Int,
                             averageMappingQuality: Double,
                             averageBaseQuality: Double) {
 
   lazy val phredScaledLikelihood = PhredUtils.successProbabilityToPhred(likelihood - 1e-10) //subtract small delta to prevent p = 1
-  lazy val variantAlleleFrequency = alternateReadDepth.toFloat / readDepth
+  lazy val variantAlleleFrequency = alleleReadDepth.toFloat / readDepth
 }
 
 class GenotypeEvidenceSerializer extends Serializer[GenotypeEvidence] {
   def write(kryo: Kryo, output: Output, obj: GenotypeEvidence) = {
     output.writeDouble(obj.likelihood)
     output.writeInt(obj.readDepth)
-    output.writeInt(obj.alternateReadDepth)
+    output.writeInt(obj.alleleReadDepth)
     output.writeInt(obj.forwardDepth)
-    output.writeInt(obj.alternateForwardDepth)
+    output.writeInt(obj.alleleForwardDepth)
 
     output.writeDouble(obj.averageMappingQuality)
     output.writeDouble(obj.averageBaseQuality)
@@ -46,18 +46,18 @@ class GenotypeEvidenceSerializer extends Serializer[GenotypeEvidence] {
 
     val likelihood = input.readDouble()
     val readDepth = input.readInt()
-    val alternateReadDepth = input.readInt()
+    val alleleReadDepth = input.readInt()
     val forwardDepth = input.readInt()
-    val alternateForwardDepth = input.readInt()
+    val alleleForwardDepth = input.readInt()
 
     val averageMappingQuality = input.readDouble()
     val averageBaseQuality = input.readDouble()
 
     GenotypeEvidence(likelihood,
       readDepth,
-      alternateReadDepth,
+      alleleReadDepth,
       forwardDepth,
-      alternateForwardDepth,
+      alleleForwardDepth,
       averageMappingQuality,
       averageBaseQuality
     )
@@ -67,21 +67,22 @@ class GenotypeEvidenceSerializer extends Serializer[GenotypeEvidence] {
 
 object GenotypeEvidence {
 
-  def apply(likelihood: Double, alternateReadDepth: Int, alternatePositiveReadDepth: Int, pileup: Pileup): GenotypeEvidence = {
+  def apply(likelihood: Double, alleleReadDepth: Int, allelePositiveReadDepth: Int, pileup: Pileup): GenotypeEvidence = {
 
-    GenotypeEvidence(likelihood,
+    GenotypeEvidence(
+      likelihood,
       pileup.depth,
-      alternateReadDepth,
+      alleleReadDepth,
       pileup.positiveDepth,
-      alternatePositiveReadDepth,
+      allelePositiveReadDepth,
       pileup.elements.map(_.read.alignmentQuality).sum.toFloat / pileup.depth,
       pileup.elements.map(_.qualityScore).sum.toFloat / pileup.depth
     )
   }
 
-  def apply(likelihood: Double, alternateBases: Seq[Byte], pileup: Pileup): GenotypeEvidence = {
-    val (alternateReadDepth, alternatePositiveReadDepth) = pileup.alternateReadDepthAndPositiveDepth(alternateBases)
-    GenotypeEvidence(likelihood, alternateReadDepth, alternatePositiveReadDepth, pileup)
+  def apply(likelihood: Double, allele: Allele, pileup: Pileup): GenotypeEvidence = {
+    val (alleleReadDepth, allelePositiveReadDepth) = pileup.alleleReadDepthAndPositiveDepth(allele)
+    GenotypeEvidence(likelihood, alleleReadDepth, allelePositiveReadDepth, pileup)
 
   }
 }

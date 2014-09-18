@@ -74,7 +74,7 @@ object SomaticAlternateReadDepthFilter {
 
   def hasMinimumAlternateReadDepth(somaticGenotype: CalledSomaticGenotype,
                                    minAlternateReadDepth: Int): Boolean = {
-    somaticGenotype.tumorEvidence.alternateReadDepth >= minAlternateReadDepth
+    somaticGenotype.tumorEvidence.alleleReadDepth >= minAlternateReadDepth
   }
 
   /**
