@@ -19,7 +19,7 @@
 package org.bdgenomics.guacamole.pileup
 
 import org.bdgenomics.guacamole.reads.MappedRead
-import org.bdgenomics.guacamole.variants.{ Allele, GenotypeAlleles, AlleleOrdering }
+import org.bdgenomics.guacamole.variants.{ Allele, Genotype, AlleleOrdering }
 
 /**
  * A [[Pileup]] at a locus contains a sequence of [[PileupElement]] instances, one for every read that overlaps that
@@ -62,21 +62,21 @@ case class Pileup(locus: Long, elements: Seq[PileupElement]) {
    *
    * @return Sequence of possible genotypes for the pileup
    */
-  lazy val possibleGenotypes: Seq[GenotypeAlleles] = {
+  lazy val possibleGenotypes: Seq[Genotype] = {
     for {
       i <- 0 until possibleAlleles.size
       j <- i until possibleAlleles.size
-    } yield GenotypeAlleles(possibleAlleles(i), possibleAlleles(j))
+    } yield Genotype(possibleAlleles(i), possibleAlleles(j))
   }
 
   /**
    * For each possible genotype based on the pileup sequencedBases, compute the likelihood.
    *
-   * @return Sequence of (GenotypeAlleles, Likelihood)
+   * @return Sequence of (Genotype, Likelihood)
    */
-  def computeLikelihoods(prior: GenotypeAlleles => Double = computeUniformGenotypePrior,
+  def computeLikelihoods(prior: Genotype => Double = computeUniformGenotypePrior,
                          includeAlignmentLikelihood: Boolean = true,
-                         normalize: Boolean = false): Seq[(GenotypeAlleles, Double)] = {
+                         normalize: Boolean = false): Seq[(Genotype, Double)] = {
 
     val genotypeLikelihoods = possibleGenotypes.map(_.likelihoodOfReads(elements, includeAlignmentLikelihood))
 
@@ -91,10 +91,10 @@ case class Pileup(locus: Long, elements: Seq[PileupElement]) {
   /**
    * See computeLikelihoods, same computation in log-space
    *
-   * @return Sequence of (GenotypeAlleles, LogLikelihood)
+   * @return Sequence of (Genotype, LogLikelihood)
    */
-  def computeLogLikelihoods(prior: GenotypeAlleles => Double = computeUniformGenotypeLogPrior,
-                            includeAlignmentLikelihood: Boolean = false): Seq[(GenotypeAlleles, Double)] = {
+  def computeLogLikelihoods(prior: Genotype => Double = computeUniformGenotypeLogPrior,
+                            includeAlignmentLikelihood: Boolean = false): Seq[(Genotype, Double)] = {
     possibleGenotypes.map(g =>
       (g, prior(g) + g.logLikelihoodOfReads(elements, includeAlignmentLikelihood))
     )
@@ -105,19 +105,19 @@ case class Pileup(locus: Long, elements: Seq[PileupElement]) {
    *
    * @return 0.0 (default uniform prior)
    */
-  protected def computeUniformGenotypeLogPrior(genotype: GenotypeAlleles): Double = 0.0
+  protected def computeUniformGenotypeLogPrior(genotype: Genotype): Double = 0.0
 
   /**
    * Compute prior probability for given genotype
    *
    * @return 1.0 (default uniform prior)
    */
-  protected def computeUniformGenotypePrior(genotype: GenotypeAlleles): Double = 1.0
+  protected def computeUniformGenotypePrior(genotype: Genotype): Double = 1.0
 
   /*
    * Helper function to normalize probabilities
    */
-  def normalizeLikelihoods(likelihoods: Seq[(GenotypeAlleles, Double)]): Seq[(GenotypeAlleles, Double)] = {
+  def normalizeLikelihoods(likelihoods: Seq[(Genotype, Double)]): Seq[(Genotype, Double)] = {
     val totalLikelihood = likelihoods.map(_._2).sum
     likelihoods.map(genotypeLikelihood => (genotypeLikelihood._1, genotypeLikelihood._2 / totalLikelihood))
   }

@@ -2,7 +2,7 @@
 package org.bdgenomics.guacamole.pileup
 
 import org.bdgenomics.guacamole.TestUtil.SparkFunSuite
-import org.bdgenomics.guacamole.variants.GenotypeAlleles
+import org.bdgenomics.guacamole.variants.Genotype
 import org.bdgenomics.guacamole.TestUtil
 import org.bdgenomics.guacamole.ReadsUtil._
 import org.scalatest.Matchers
@@ -10,8 +10,8 @@ import org.scalatest.prop.TableDrivenPropertyChecks
 
 class PileupLikelihoodSuite extends SparkFunSuite with TableDrivenPropertyChecks with Matchers {
 
-  def testLikelihoods(actualLikelihoods: Seq[(GenotypeAlleles, Double)],
-                      expectedLikelihoods: Map[GenotypeAlleles, Double],
+  def testLikelihoods(actualLikelihoods: Seq[(Genotype, Double)],
+                      expectedLikelihoods: Map[Genotype, Double],
                       acceptableError: Double = 1e-12): Unit = {
     actualLikelihoods.size should equal(expectedLikelihoods.size)
     val actualLikelihoodsMap = actualLikelihoods.toMap
@@ -30,7 +30,7 @@ class PileupLikelihoodSuite extends SparkFunSuite with TableDrivenPropertyChecks
 
     val pileup = Pileup(reads, 1)
 
-    val expectedLikelihoods: Map[GenotypeAlleles, Double] =
+    val expectedLikelihoods: Map[Genotype, Double] =
       Map(
         makeGenotype("C", "C") -> (1 - errorPhred30) * (1 - errorPhred40) * (1 - errorPhred30)
       )
@@ -47,7 +47,7 @@ class PileupLikelihoodSuite extends SparkFunSuite with TableDrivenPropertyChecks
 
     val pileup = Pileup(reads, 1)
 
-    val expectedLikelihoods: Map[GenotypeAlleles, Double] =
+    val expectedLikelihoods: Map[Genotype, Double] =
       Map(
         makeGenotype("C", "C") -> (1 - errorPhred30) * (1 - errorPhred40) * errorPhred30,
         makeGenotype("A", "C") -> 1 / 8.0,
@@ -67,7 +67,7 @@ class PileupLikelihoodSuite extends SparkFunSuite with TableDrivenPropertyChecks
 
     val pileup = Pileup(reads, 1)
 
-    val expectedLikelihoods: Map[GenotypeAlleles, Double] =
+    val expectedLikelihoods: Map[Genotype, Double] =
       Map(
         makeGenotype("A", "A") -> (1 - errorPhred30) * (1 - errorPhred40) * (1 - errorPhred30)
       )
@@ -85,7 +85,7 @@ class PileupLikelihoodSuite extends SparkFunSuite with TableDrivenPropertyChecks
 
     val pileup = Pileup(reads, 1)
 
-    val expectedLikelihoods: Map[GenotypeAlleles, Double] =
+    val expectedLikelihoods: Map[Genotype, Double] =
       Map(
         makeGenotype("C", "C") ->
           (math.log(1 - errorPhred30) + math.log(1 - errorPhred40) + math.log(1 - errorPhred30))
@@ -103,7 +103,7 @@ class PileupLikelihoodSuite extends SparkFunSuite with TableDrivenPropertyChecks
 
     val pileup = Pileup(reads, 1)
 
-    val expectedLikelihoods: Map[GenotypeAlleles, Double] =
+    val expectedLikelihoods: Map[Genotype, Double] =
       Map(
 
         makeGenotype("C", "C") ->
@@ -128,7 +128,7 @@ class PileupLikelihoodSuite extends SparkFunSuite with TableDrivenPropertyChecks
 
     val pileup = Pileup(reads, 1)
 
-    val expectedLikelihoods: Map[GenotypeAlleles, Double] =
+    val expectedLikelihoods: Map[Genotype, Double] =
       Map(
         makeGenotype("A", "A") ->
           (math.log(1 - errorPhred30) + math.log(1 - errorPhred40) + math.log(1 - errorPhred30))

@@ -7,9 +7,9 @@ import org.scalatest.prop.TableDrivenPropertyChecks
 import org.scalatest.{ Matchers, FunSuite }
 import org.bdgenomics.guacamole.ReadsUtil._
 
-class GenotypeAllelesSuite extends FunSuite with Matchers with TableDrivenPropertyChecks {
+class GenotypeSuite extends FunSuite with Matchers with TableDrivenPropertyChecks {
 
-  def testGenotypeLikelihoods(reads: Seq[MappedRead], genotypesMap: (GenotypeAlleles, Double)*): Unit = {
+  def testGenotypeLikelihoods(reads: Seq[MappedRead], genotypesMap: (Genotype, Double)*): Unit = {
     val pileup = Pileup(reads, 1)
     forAll(Table("genotype", genotypesMap: _*)) { l =>
       assertAlmostEqual(
