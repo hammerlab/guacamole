@@ -17,20 +17,20 @@ import org.bdgenomics.guacamole.pileup.Pileup
  * @param averageMappingQuality average mapping quality of reads
  * @param averageBaseQuality average base quality of bases covering this position
  */
-case class GenotypeEvidence(likelihood: Double,
-                            readDepth: Int,
-                            alleleReadDepth: Int,
-                            forwardDepth: Int,
-                            alleleForwardDepth: Int,
-                            averageMappingQuality: Double,
-                            averageBaseQuality: Double) {
+case class AlleleEvidence(likelihood: Double,
+                          readDepth: Int,
+                          alleleReadDepth: Int,
+                          forwardDepth: Int,
+                          alleleForwardDepth: Int,
+                          averageMappingQuality: Double,
+                          averageBaseQuality: Double) {
 
   lazy val phredScaledLikelihood = PhredUtils.successProbabilityToPhred(likelihood - 1e-10) //subtract small delta to prevent p = 1
   lazy val variantAlleleFrequency = alleleReadDepth.toFloat / readDepth
 }
 
-class GenotypeEvidenceSerializer extends Serializer[GenotypeEvidence] {
-  def write(kryo: Kryo, output: Output, obj: GenotypeEvidence) = {
+class AlleleEvidenceSerializer extends Serializer[AlleleEvidence] {
+  def write(kryo: Kryo, output: Output, obj: AlleleEvidence) = {
     output.writeDouble(obj.likelihood)
     output.writeInt(obj.readDepth)
     output.writeInt(obj.alleleReadDepth)
@@ -42,7 +42,7 @@ class GenotypeEvidenceSerializer extends Serializer[GenotypeEvidence] {
 
   }
 
-  def read(kryo: Kryo, input: Input, klass: Class[GenotypeEvidence]): GenotypeEvidence = {
+  def read(kryo: Kryo, input: Input, klass: Class[AlleleEvidence]): AlleleEvidence = {
 
     val likelihood = input.readDouble()
     val readDepth = input.readInt()
@@ -53,7 +53,7 @@ class GenotypeEvidenceSerializer extends Serializer[GenotypeEvidence] {
     val averageMappingQuality = input.readDouble()
     val averageBaseQuality = input.readDouble()
 
-    GenotypeEvidence(likelihood,
+    AlleleEvidence(likelihood,
       readDepth,
       alleleReadDepth,
       forwardDepth,
@@ -66,17 +66,17 @@ class GenotypeEvidenceSerializer extends Serializer[GenotypeEvidence] {
 }
 
 trait HasGenotypeEvidenceSerializer {
-  lazy val genotypeEvidenceSerializer: GenotypeEvidenceSerializer = new GenotypeEvidenceSerializer
+  lazy val alleleEvidenceSerializer: AlleleEvidenceSerializer = new AlleleEvidenceSerializer
 }
 
-object GenotypeEvidence {
+object AlleleEvidence {
 
   def apply(likelihood: Double,
             alleleReadDepth: Int,
             allelePositiveReadDepth: Int,
-            pileup: Pileup): GenotypeEvidence = {
+            pileup: Pileup): AlleleEvidence = {
 
-    GenotypeEvidence(
+    AlleleEvidence(
       likelihood,
       pileup.depth,
       alleleReadDepth,
@@ -87,9 +87,9 @@ object GenotypeEvidence {
     )
   }
 
-  def apply(likelihood: Double, allele: Allele, pileup: Pileup): GenotypeEvidence = {
+  def apply(likelihood: Double, allele: Allele, pileup: Pileup): AlleleEvidence = {
     val (alleleReadDepth, allelePositiveReadDepth) = pileup.alleleReadDepthAndPositiveDepth(allele)
-    GenotypeEvidence(likelihood, alleleReadDepth, allelePositiveReadDepth, pileup)
+    AlleleEvidence(likelihood, alleleReadDepth, allelePositiveReadDepth, pileup)
 
   }
 }

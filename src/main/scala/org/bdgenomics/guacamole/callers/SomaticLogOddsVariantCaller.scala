@@ -10,7 +10,7 @@ import org.bdgenomics.guacamole.filters.PileupFilter.PileupFilterArguments
 import org.bdgenomics.guacamole.filters.SomaticGenotypeFilter.SomaticGenotypeFilterArguments
 import org.bdgenomics.guacamole.pileup.Pileup
 import org.bdgenomics.guacamole.reads.Read
-import org.bdgenomics.guacamole.variants.{ Allele, CalledSomaticGenotype, GenotypeConversions, GenotypeEvidence }
+import org.bdgenomics.guacamole.variants.{ Allele, CalledSomaticGenotype, GenotypeConversions, AlleleEvidence }
 import org.kohsuke.args4j.{ Option => Opt }
 
 /**
@@ -194,7 +194,7 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
     val (alleleOpt, tumorVariantLikelihood) = callVariantInTumor(filteredTumorPileup)
     alleleOpt match {
       case Some(allele) => {
-        val tumorEvidence = GenotypeEvidence(tumorVariantLikelihood, allele, filteredTumorPileup)
+        val tumorEvidence = AlleleEvidence(tumorVariantLikelihood, allele, filteredTumorPileup)
 
         val normalLikelihoods =
           filteredNormalPileup.computeLikelihoods(
@@ -203,7 +203,7 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
           ).toMap
 
         val (normalVariantGenotypes, normalReferenceGenotype) = normalLikelihoods.partition(_._1.isVariant)
-        val normalEvidence = GenotypeEvidence(normalVariantGenotypes.map(_._2).sum, allele, filteredNormalPileup)
+        val normalEvidence = AlleleEvidence(normalVariantGenotypes.map(_._2).sum, allele, filteredNormalPileup)
         val somaticOdds = tumorVariantLikelihood / normalVariantGenotypes.map(_._2).sum
 
         if (somaticOdds * 100 >= oddsThreshold) {

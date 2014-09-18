@@ -3,7 +3,7 @@ package org.bdgenomics.guacamole.filters
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.guacamole.Common.Arguments.Base
 import org.bdgenomics.guacamole._
-import org.bdgenomics.guacamole.variants.{ CalledGenotype, GenotypeEvidence, CalledSomaticGenotype }
+import org.bdgenomics.guacamole.variants.{ CalledGenotype, AlleleEvidence, CalledSomaticGenotype }
 import org.kohsuke.args4j.Option
 
 /**

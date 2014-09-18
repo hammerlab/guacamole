@@ -90,7 +90,7 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
               samplePileup.referenceName,
               samplePileup.locus,
               allele,
-              GenotypeEvidence(
+              AlleleEvidence(
                 probability,
                 allele,
                 samplePileup

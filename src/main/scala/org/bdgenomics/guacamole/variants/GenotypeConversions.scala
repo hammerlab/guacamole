@@ -7,17 +7,18 @@ import scala.collection.JavaConversions
 object GenotypeConversions {
 
   implicit def calledGenotypeToADAMGenotype(calledGenotype: CalledGenotype): Seq[ADAMGenotype] = {
-    Seq(ADAMGenotype.newBuilder
-      .setAlleles(JavaConversions.seqAsJavaList(Seq(GenotypeAllele.Ref, GenotypeAllele.Alt)))
-      .setSampleId(calledGenotype.sampleName.toCharArray)
-      .setGenotypeQuality(calledGenotype.evidence.phredScaledLikelihood)
-      .setReadDepth(calledGenotype.evidence.readDepth)
-      .setExpectedAlleleDosage(
-        calledGenotype.evidence.alleleReadDepth.toFloat / calledGenotype.evidence.readDepth
-      )
-      .setAlternateReadDepth(calledGenotype.evidence.alleleReadDepth)
-      .setVariant(calledGenotype.adamVariant)
-      .build
+    Seq(
+      ADAMGenotype.newBuilder
+        .setAlleles(JavaConversions.seqAsJavaList(Seq(GenotypeAllele.Ref, GenotypeAllele.Alt)))
+        .setSampleId(calledGenotype.sampleName.toCharArray)
+        .setGenotypeQuality(calledGenotype.evidence.phredScaledLikelihood)
+        .setReadDepth(calledGenotype.evidence.readDepth)
+        .setExpectedAlleleDosage(
+          calledGenotype.evidence.alleleReadDepth.toFloat / calledGenotype.evidence.readDepth
+        )
+        .setAlternateReadDepth(calledGenotype.evidence.alleleReadDepth)
+        .setVariant(calledGenotype.adamVariant)
+        .build
     )
   }
 

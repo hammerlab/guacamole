@@ -22,8 +22,8 @@ case class CalledSomaticGenotype(sampleName: String,
                                  start: Long,
                                  allele: Allele,
                                  somaticLogOdds: Double,
-                                 tumorEvidence: GenotypeEvidence,
-                                 normalEvidence: GenotypeEvidence,
+                                 tumorEvidence: AlleleEvidence,
+                                 normalEvidence: AlleleEvidence,
                                  length: Int = 1) extends ReferenceVariant {
   val end: Long = start + 1L
 
@@ -44,8 +44,8 @@ class CalledSomaticGenotypeSerializer
     alleleSerializer.write(kryo, output, obj.allele)
     output.writeDouble(obj.somaticLogOdds)
 
-    genotypeEvidenceSerializer.write(kryo, output, obj.tumorEvidence)
-    genotypeEvidenceSerializer.write(kryo, output, obj.normalEvidence)
+    alleleEvidenceSerializer.write(kryo, output, obj.tumorEvidence)
+    alleleEvidenceSerializer.write(kryo, output, obj.normalEvidence)
 
     output.writeInt(obj.length, true)
 
@@ -59,8 +59,8 @@ class CalledSomaticGenotypeSerializer
     val allele: Allele = alleleSerializer.read(kryo, input, classOf[Allele])
     val somaticLogOdds = input.readDouble()
 
-    val tumorEvidence = genotypeEvidenceSerializer.read(kryo, input, classOf[GenotypeEvidence])
-    val normalEvidence = genotypeEvidenceSerializer.read(kryo, input, classOf[GenotypeEvidence])
+    val tumorEvidence = alleleEvidenceSerializer.read(kryo, input, classOf[AlleleEvidence])
+    val normalEvidence = alleleEvidenceSerializer.read(kryo, input, classOf[AlleleEvidence])
 
     val length: Int = input.readInt(true)
 
