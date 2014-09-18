@@ -44,7 +44,7 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
 
     val minAlignmentQuality = args.minAlignmentQuality
 
-    val genotypes: RDD[CalledGenotype] = DistributedUtil.pileupFlatMap[CalledGenotype](
+    val genotypes: RDD[CalledAllele] = DistributedUtil.pileupFlatMap[CalledAllele](
       readSet.mappedReads,
       lociPartitions,
       skipEmpty = true, // skip empty pileups
@@ -71,7 +71,7 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
   def callVariantsAtLocus(
     pileup: Pileup,
     minAlignmentQuality: Int = 0,
-    emitRef: Boolean = false): Seq[CalledGenotype] = {
+    emitRef: Boolean = false): Seq[CalledAllele] = {
 
     // For now, we skip loci that have no reads mapped. We may instead want to emit NoCall in this case.
     if (pileup.elements.isEmpty)
@@ -83,9 +83,9 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
         val genotypeLikelihoods = Pileup(samplePileup.locus, filteredPileupElements).computeLogLikelihoods()
         val mostLikelyGenotype = genotypeLikelihoods.maxBy(_._2)
 
-        def buildVariants(genotype: Genotype, probability: Double): Seq[CalledGenotype] = {
+        def buildVariants(genotype: Genotype, probability: Double): Seq[CalledAllele] = {
           genotype.getNonReferenceAlleles.map(allele => {
-            CalledGenotype(
+            CalledAllele(
               sampleName,
               samplePileup.referenceName,
               samplePileup.locus,

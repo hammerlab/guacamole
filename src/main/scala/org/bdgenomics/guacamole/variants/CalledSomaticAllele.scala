@@ -17,14 +17,14 @@ import org.bdgenomics.adam.util.PhredUtils
  * @param normalEvidence supporting statistics for the variant in the normal sample
  * @param length length of the variant
  */
-case class CalledSomaticGenotype(sampleName: String,
-                                 referenceContig: String,
-                                 start: Long,
-                                 allele: Allele,
-                                 somaticLogOdds: Double,
-                                 tumorEvidence: AlleleEvidence,
-                                 normalEvidence: AlleleEvidence,
-                                 length: Int = 1) extends ReferenceVariant {
+case class CalledSomaticAllele(sampleName: String,
+                               referenceContig: String,
+                               start: Long,
+                               allele: Allele,
+                               somaticLogOdds: Double,
+                               tumorEvidence: AlleleEvidence,
+                               normalEvidence: AlleleEvidence,
+                               length: Int = 1) extends ReferenceVariant {
   val end: Long = start + 1L
 
   // P ( variant in tumor AND no variant in normal) = P(variant in tumor) * ( 1 - P(variant in normal) )
@@ -33,11 +33,11 @@ case class CalledSomaticGenotype(sampleName: String,
 }
 
 class CalledSomaticGenotypeSerializer
-    extends Serializer[CalledSomaticGenotype]
+    extends Serializer[CalledSomaticAllele]
     with HasGenotypeEvidenceSerializer
     with HasAlleleSerializer {
 
-  def write(kryo: Kryo, output: Output, obj: CalledSomaticGenotype) = {
+  def write(kryo: Kryo, output: Output, obj: CalledSomaticAllele) = {
     output.writeString(obj.sampleName)
     output.writeString(obj.referenceContig)
     output.writeLong(obj.start)
@@ -51,7 +51,7 @@ class CalledSomaticGenotypeSerializer
 
   }
 
-  def read(kryo: Kryo, input: Input, klass: Class[CalledSomaticGenotype]): CalledSomaticGenotype = {
+  def read(kryo: Kryo, input: Input, klass: Class[CalledSomaticAllele]): CalledSomaticAllele = {
 
     val sampleName: String = input.readString()
     val referenceContig: String = input.readString()
@@ -64,7 +64,7 @@ class CalledSomaticGenotypeSerializer
 
     val length: Int = input.readInt(true)
 
-    CalledSomaticGenotype(
+    CalledSomaticAllele(
       sampleName,
       referenceContig,
       start,

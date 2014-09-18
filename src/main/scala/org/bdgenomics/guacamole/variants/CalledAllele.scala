@@ -14,22 +14,22 @@ import com.esotericsoftware.kryo.{ Kryo, Serializer }
  * @param evidence supporting statistics for the variant
  * @param length length of the variant
  */
-case class CalledGenotype(sampleName: String,
-                          referenceContig: String,
-                          start: Long,
-                          allele: Allele,
-                          evidence: AlleleEvidence,
-                          length: Int = 1) extends ReferenceVariant {
+case class CalledAllele(sampleName: String,
+                        referenceContig: String,
+                        start: Long,
+                        allele: Allele,
+                        evidence: AlleleEvidence,
+                        length: Int = 1) extends ReferenceVariant {
   val end: Long = start + 1L
 
 }
 
-class CalledGenotypeSerializer
-    extends Serializer[CalledGenotype]
+class CalledAlleleSerializer
+    extends Serializer[CalledAllele]
     with HasAlleleSerializer
     with HasGenotypeEvidenceSerializer {
 
-  def write(kryo: Kryo, output: Output, obj: CalledGenotype) = {
+  def write(kryo: Kryo, output: Output, obj: CalledAllele) = {
     output.writeString(obj.sampleName)
     output.writeString(obj.referenceContig)
     output.writeLong(obj.start, true)
@@ -38,7 +38,7 @@ class CalledGenotypeSerializer
     output.writeInt(obj.length, true)
   }
 
-  def read(kryo: Kryo, input: Input, klass: Class[CalledGenotype]): CalledGenotype = {
+  def read(kryo: Kryo, input: Input, klass: Class[CalledAllele]): CalledAllele = {
 
     val sampleName: String = input.readString()
     val referenceContig: String = input.readString()
@@ -47,7 +47,7 @@ class CalledGenotypeSerializer
     val evidence = alleleEvidenceSerializer.read(kryo, input, classOf[AlleleEvidence])
     val length: Int = input.readInt(true)
 
-    CalledGenotype(
+    CalledAllele(
       sampleName,
       referenceContig,
       start,

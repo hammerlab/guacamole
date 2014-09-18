@@ -3,7 +3,7 @@ package org.bdgenomics.guacamole.filters
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.guacamole.Common.Arguments.Base
 import org.bdgenomics.guacamole._
-import org.bdgenomics.guacamole.variants.{ CalledGenotype, AlleleEvidence, CalledSomaticGenotype }
+import org.bdgenomics.guacamole.variants.{ CalledAllele, AlleleEvidence, CalledSomaticAllele }
 import org.kohsuke.args4j.Option
 
 /**
@@ -11,7 +11,7 @@ import org.kohsuke.args4j.Option
  */
 object SomaticMinimumLikelihoodFilter {
 
-  def hasMinimumLikelihood(genotype: CalledSomaticGenotype,
+  def hasMinimumLikelihood(genotype: CalledSomaticAllele,
                            minLikelihood: Int): Boolean = {
     genotype.phredScaledSomaticLikelihood >= minLikelihood
   }
@@ -25,9 +25,9 @@ object SomaticMinimumLikelihoodFilter {
    * @param debug if true, compute the count of genotypes after filtering
    * @return Genotypes with quality >= minLikelihood
    */
-  def apply(genotypes: RDD[CalledSomaticGenotype],
+  def apply(genotypes: RDD[CalledSomaticAllele],
             minLikelihood: Int,
-            debug: Boolean = false): RDD[CalledSomaticGenotype] = {
+            debug: Boolean = false): RDD[CalledSomaticAllele] = {
     val filteredGenotypes = genotypes.filter(gt => hasMinimumLikelihood(gt, minLikelihood))
     if (debug) SomaticGenotypeFilter.printFilterProgress(filteredGenotypes)
     filteredGenotypes
@@ -39,7 +39,7 @@ object SomaticMinimumLikelihoodFilter {
  */
 object SomaticReadDepthFilter {
 
-  def withinReadDepthRange(somaticGenotype: CalledSomaticGenotype,
+  def withinReadDepthRange(somaticGenotype: CalledSomaticAllele,
                            minTumorReadDepth: Int,
                            maxTumorReadDepth: Int,
                            minNormalReadDepth: Int): Boolean = {
@@ -59,11 +59,11 @@ object SomaticReadDepthFilter {
    * @param debug if true, compute the count of genotypes after filtering
    * @return Genotypes with read depth >= minReadDepth and < maxReadDepth
    */
-  def apply(genotypes: RDD[CalledSomaticGenotype],
+  def apply(genotypes: RDD[CalledSomaticAllele],
             minTumorReadDepth: Int,
             maxTumorReadDepth: Int,
             minNormalReadDepth: Int,
-            debug: Boolean = false): RDD[CalledSomaticGenotype] = {
+            debug: Boolean = false): RDD[CalledSomaticAllele] = {
     var filteredGenotypes = genotypes.filter(withinReadDepthRange(_, minTumorReadDepth, maxTumorReadDepth, minNormalReadDepth))
     if (debug) SomaticGenotypeFilter.printFilterProgress(filteredGenotypes)
     filteredGenotypes
@@ -72,7 +72,7 @@ object SomaticReadDepthFilter {
 
 object SomaticAlternateReadDepthFilter {
 
-  def hasMinimumAlternateReadDepth(somaticGenotype: CalledSomaticGenotype,
+  def hasMinimumAlternateReadDepth(somaticGenotype: CalledSomaticAllele,
                                    minAlternateReadDepth: Int): Boolean = {
     somaticGenotype.tumorEvidence.alleleReadDepth >= minAlternateReadDepth
   }
@@ -86,9 +86,9 @@ object SomaticAlternateReadDepthFilter {
    * @param debug if true, compute the count of genotypes after filtering
    * @return  Genotypes with tumor alternate read depth >= minAlternateReadDepth
    */
-  def apply(genotypes: RDD[CalledSomaticGenotype],
+  def apply(genotypes: RDD[CalledSomaticAllele],
             minAlternateReadDepth: Int,
-            debug: Boolean = false): RDD[CalledSomaticGenotype] = {
+            debug: Boolean = false): RDD[CalledSomaticAllele] = {
     val filteredGenotypes = genotypes.filter(hasMinimumAlternateReadDepth(_, minAlternateReadDepth))
     if (debug) SomaticGenotypeFilter.printFilterProgress(filteredGenotypes)
     filteredGenotypes
@@ -97,7 +97,7 @@ object SomaticAlternateReadDepthFilter {
 
 object SomaticVAFFilter {
 
-  def hasMinimumVAF(somaticGenotype: CalledSomaticGenotype,
+  def hasMinimumVAF(somaticGenotype: CalledSomaticAllele,
                     minVAF: Int): Boolean = {
 
     somaticGenotype.tumorEvidence.variantAlleleFrequency * 100.0 > minVAF
@@ -110,9 +110,9 @@ object SomaticVAFFilter {
    * @param debug if true, compute the count of genotypes after filtering
    * @return  Genotypes with variant allele frequency >= minVAF
    */
-  def apply(genotypes: RDD[CalledSomaticGenotype],
+  def apply(genotypes: RDD[CalledSomaticAllele],
             minVAF: Int,
-            debug: Boolean = false): RDD[CalledSomaticGenotype] = {
+            debug: Boolean = false): RDD[CalledSomaticAllele] = {
     val filteredGenotypes = genotypes.filter(hasMinimumVAF(_, minVAF))
     if (debug) SomaticGenotypeFilter.printFilterProgress(filteredGenotypes)
     filteredGenotypes
@@ -121,7 +121,7 @@ object SomaticVAFFilter {
 
 object SomaticLogOddsFilter {
 
-  def hasMinimumLOD(somaticGenotype: CalledSomaticGenotype,
+  def hasMinimumLOD(somaticGenotype: CalledSomaticAllele,
                     minLogOdds: Int): Boolean = {
 
     somaticGenotype.somaticLogOdds > minLogOdds
@@ -134,9 +134,9 @@ object SomaticLogOddsFilter {
    * @param debug if true, compute the count of genotypes after filtering
    * @return  Genotypes with tumor genotype log odds >= minLOD
    */
-  def apply(genotypes: RDD[CalledSomaticGenotype],
+  def apply(genotypes: RDD[CalledSomaticAllele],
             minLogOdds: Int,
-            debug: Boolean = false): RDD[CalledSomaticGenotype] = {
+            debug: Boolean = false): RDD[CalledSomaticAllele] = {
     val filteredGenotypes = genotypes.filter(hasMinimumLOD(_, minLogOdds))
     if (debug) SomaticGenotypeFilter.printFilterProgress(filteredGenotypes)
     filteredGenotypes
@@ -145,7 +145,7 @@ object SomaticLogOddsFilter {
 
 object SomaticAverageMappingQualityFilter {
 
-  def hasMinimumAverageMappingQuality(somaticGenotype: CalledSomaticGenotype,
+  def hasMinimumAverageMappingQuality(somaticGenotype: CalledSomaticAllele,
                                       minAverageMappingQuality: Int): Boolean = {
 
     somaticGenotype.tumorEvidence.averageMappingQuality > minAverageMappingQuality &&
@@ -159,9 +159,9 @@ object SomaticAverageMappingQualityFilter {
    * @param debug if true, compute the count of genotypes after filtering
    * @return  Genotypes with variant allele frequency >= minVAF
    */
-  def apply(genotypes: RDD[CalledSomaticGenotype],
+  def apply(genotypes: RDD[CalledSomaticAllele],
             minAverageMappingQuality: Int,
-            debug: Boolean = false): RDD[CalledSomaticGenotype] = {
+            debug: Boolean = false): RDD[CalledSomaticAllele] = {
     val filteredGenotypes = genotypes.filter(hasMinimumAverageMappingQuality(_, minAverageMappingQuality))
     if (debug) SomaticGenotypeFilter.printFilterProgress(filteredGenotypes)
     filteredGenotypes
@@ -170,7 +170,7 @@ object SomaticAverageMappingQualityFilter {
 
 object SomaticAverageBaseQualityFilter {
 
-  def hasMinimumAverageBaseQuality(somaticGenotype: CalledSomaticGenotype,
+  def hasMinimumAverageBaseQuality(somaticGenotype: CalledSomaticAllele,
                                    minAverageBaseQuality: Int): Boolean = {
 
     somaticGenotype.tumorEvidence.averageBaseQuality > minAverageBaseQuality &&
@@ -184,9 +184,9 @@ object SomaticAverageBaseQualityFilter {
    * @param debug if true, compute the count of genotypes after filtering
    * @return  Genotypes with variant allele frequency >= minVAF
    */
-  def apply(genotypes: RDD[CalledSomaticGenotype],
+  def apply(genotypes: RDD[CalledSomaticAllele],
             minAverageBaseQuality: Int,
-            debug: Boolean = false): RDD[CalledSomaticGenotype] = {
+            debug: Boolean = false): RDD[CalledSomaticAllele] = {
     val filteredGenotypes = genotypes.filter(hasMinimumAverageBaseQuality(_, minAverageBaseQuality))
     if (debug) SomaticGenotypeFilter.printFilterProgress(filteredGenotypes)
     filteredGenotypes
@@ -195,7 +195,7 @@ object SomaticAverageBaseQualityFilter {
 
 object SomaticGenotypeFilter {
 
-  def printFilterProgress(filteredGenotypes: RDD[CalledSomaticGenotype]) = {
+  def printFilterProgress(filteredGenotypes: RDD[CalledSomaticAllele]) = {
     filteredGenotypes.persist()
     Common.progress("Filtered genotypes down to %d genotypes".format(filteredGenotypes.count()))
   }
@@ -237,7 +237,7 @@ object SomaticGenotypeFilter {
   /**
    * Filter an RDD of Somatic Genotypes with all applicable filters
    */
-  def apply(genotypes: RDD[CalledSomaticGenotype], args: SomaticGenotypeFilterArguments): RDD[CalledSomaticGenotype] = {
+  def apply(genotypes: RDD[CalledSomaticAllele], args: SomaticGenotypeFilterArguments): RDD[CalledSomaticAllele] = {
     var filteredGenotypes = genotypes
 
     filteredGenotypes = SomaticReadDepthFilter(filteredGenotypes, args.minTumorReadDepth, args.maxTumorReadDepth, args.minNormalReadDepth, args.debugGenotypeFilters)
@@ -263,14 +263,14 @@ object SomaticGenotypeFilter {
    * Filter a sequence of Somatic Genotypes
    *  Utility function for testing
    */
-  def apply(genotypes: Seq[CalledSomaticGenotype],
+  def apply(genotypes: Seq[CalledSomaticAllele],
             minTumorReadDepth: Int,
             maxTumorReadDepth: Int,
             minNormalReadDepth: Int,
             minTumorAlternateReadDepth: Int,
             minLogOdds: Int,
             minVAF: Int,
-            minLikelihood: Int): Seq[CalledSomaticGenotype] = {
+            minLikelihood: Int): Seq[CalledSomaticAllele] = {
 
     var filteredGenotypes = genotypes
 

@@ -6,7 +6,7 @@ import scala.collection.JavaConversions
 
 object GenotypeConversions {
 
-  implicit def calledGenotypeToADAMGenotype(calledGenotype: CalledGenotype): Seq[ADAMGenotype] = {
+  implicit def calledGenotypeToADAMGenotype(calledGenotype: CalledAllele): Seq[ADAMGenotype] = {
     Seq(
       ADAMGenotype.newBuilder
         .setAlleles(JavaConversions.seqAsJavaList(Seq(GenotypeAllele.Ref, GenotypeAllele.Alt)))
@@ -22,7 +22,7 @@ object GenotypeConversions {
     )
   }
 
-  implicit def calledSomaticGenotypeToADAMGenotype(calledGenotype: CalledSomaticGenotype): Seq[ADAMGenotype] = {
+  implicit def calledSomaticGenotypeToADAMGenotype(calledGenotype: CalledSomaticAllele): Seq[ADAMGenotype] = {
     Seq(
       ADAMGenotype.newBuilder
         .setAlleles(JavaConversions.seqAsJavaList(Seq(GenotypeAllele.Ref, GenotypeAllele.Alt)))
