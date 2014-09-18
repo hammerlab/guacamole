@@ -65,6 +65,10 @@ class GenotypeEvidenceSerializer extends Serializer[GenotypeEvidence] {
   }
 }
 
+trait HasGenotypeEvidenceSerializer {
+  lazy val genotypeEvidenceSerializer: GenotypeEvidenceSerializer = new GenotypeEvidenceSerializer
+}
+
 object GenotypeEvidence {
 
   def apply(likelihood: Double,
