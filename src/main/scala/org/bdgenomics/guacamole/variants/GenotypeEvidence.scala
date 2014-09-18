@@ -67,7 +67,10 @@ class GenotypeEvidenceSerializer extends Serializer[GenotypeEvidence] {
 
 object GenotypeEvidence {
 
-  def apply(likelihood: Double, alleleReadDepth: Int, allelePositiveReadDepth: Int, pileup: Pileup): GenotypeEvidence = {
+  def apply(likelihood: Double,
+            alleleReadDepth: Int,
+            allelePositiveReadDepth: Int,
+            pileup: Pileup): GenotypeEvidence = {
 
     GenotypeEvidence(
       likelihood,

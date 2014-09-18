@@ -15,7 +15,7 @@ import org.bdgenomics.guacamole.pileup.{ Pileup, PileupElement }
  * Alleles can also be multiple bases as well, e.g. Seq("AAA", "T")
  *
  */
-case class GenotypeAlleles(alleles: Allele*) {
+case class Genotype(alleles: Allele*) {
   /**
    * The ploidy of the organism is the number of alleles in the genotype.
    */
@@ -82,7 +82,7 @@ case class GenotypeAlleles(alleles: Allele*) {
    * Transform the alleles in this genotype to the ADAM allele enumeration.
    * Classifies alleles as Reference or Alternate.
    *
-   * @return Sequence of GenotypeAlleles which are Ref, Alt or OtherAlt.
+   * @return Sequence of Genotype which are Ref, Alt or OtherAlt.
    */
   lazy val getGenotypeAlleles: Seq[GenotypeAllele] = {
     assume(ploidy == 2)
@@ -98,7 +98,7 @@ case class GenotypeAlleles(alleles: Allele*) {
     }
   }
 
-  override def toString: String = "GenotypeAlleles(%s)".format(alleles.map(_.toString).mkString(","))
+  override def toString: String = "Genotype(%s)".format(alleles.map(_.toString).mkString(","))
 }
 
 object AlleleOrdering extends Ordering[Allele] {
