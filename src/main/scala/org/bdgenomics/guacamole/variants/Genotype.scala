@@ -3,7 +3,7 @@ package org.bdgenomics.guacamole.variants
 import org.bdgenomics.adam.util.PhredUtils
 import org.bdgenomics.formats.avro.GenotypeAllele
 import org.bdgenomics.guacamole.Bases.BasesOrdering
-import org.bdgenomics.guacamole.pileup.{ Pileup, PileupElement }
+import org.bdgenomics.guacamole.pileup.PileupElement
 
 /**
  * A Genotype is a sequence of alleles of length equal to the ploidy of the organism.
@@ -101,11 +101,3 @@ case class Genotype(alleles: Allele*) {
   override def toString: String = "Genotype(%s)".format(alleles.map(_.toString).mkString(","))
 }
 
-object AlleleOrdering extends Ordering[Allele] {
-  override def compare(x: Allele, y: Allele): Int = {
-    BasesOrdering.compare(x.refBases, y.refBases) match {
-      case 0 => BasesOrdering.compare(x.altBases, y.altBases)
-      case x => x
-    }
-  }
-}
