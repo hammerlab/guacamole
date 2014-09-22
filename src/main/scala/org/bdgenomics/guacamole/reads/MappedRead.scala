@@ -71,6 +71,13 @@ case class MappedRead(
     (pos, element) => pos + element.getLength
   })
 
+  override def toString(): String =
+    "MappedRead(%d, %s, %s, %s)".format(
+      start,
+      cigar.toString,
+      mdTagString,
+      Bases.basesToString(sequence)
+    )
 }
 
 case class MissingMDTagException(record: SAMRecord)
