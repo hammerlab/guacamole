@@ -14,6 +14,13 @@ import org.bdgenomics.guacamole.Bases
 private[pileup] sealed abstract class Alignment {
   def sequencedBases: Seq[Byte] = Seq[Byte]()
   def referenceBases: Seq[Byte] = Seq[Byte]()
+
+  override def toString: String =
+    "%s(%s,%s)".format(
+      getClass.getSimpleName,
+      Bases.basesToString(referenceBases),
+      Bases.basesToString(sequencedBases)
+    )
 }
 
 case class Insertion(override val sequencedBases: Seq[Byte], baseQualities: Seq[Byte]) extends Alignment {
@@ -52,7 +59,6 @@ case class Deletion(override val referenceBases: Seq[Byte]) extends Alignment {
       false
   }
   override val sequencedBases = referenceBases.headOption.toSeq
-  override def toString: String = "Deletion(%s)".format(Bases.basesToString(referenceBases))
 }
 object Deletion {
   def apply(referenceBases: String): Deletion =
