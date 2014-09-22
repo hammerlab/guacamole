@@ -3,7 +3,7 @@ package org.bdgenomics.guacamole
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.models.SequenceDictionary
 import org.apache.spark.SparkContext
-import org.bdgenomics.guacamole.reads.Read
+import org.bdgenomics.guacamole.reads.{ SampleLibraryMetrics, MappedRead, Read }
 
 /**
  * A ReadSet contains an RDD of reads along with some metadata about them.
@@ -26,6 +26,32 @@ case class ReadSet(
 
   /** Only mapped reads. */
   lazy val mappedReads = reads.flatMap(_.getMappedReadOpt)
+
+  /**
+   *
+   * Aggregates common statistics across all reads in the sample
+   *
+   * @param lociPartitions Contains the loci to process on each task
+   * @return SampleLibraryMetrics
+   */
+  def libraryMetrics(lociPartitions: LociMap[Long]): SampleLibraryMetrics = {
+
+    val pileupMetrics = DistributedUtil.windowFoldLoci[MappedRead, SampleLibraryMetrics](
+      Seq(mappedReads),
+      lociPartitions,
+      skipEmpty = true,
+      0L,
+      SampleLibraryMetrics.SampleLibraryMetricsZero,
+      (metrics: SampleLibraryMetrics, windows: Seq[SlidingWindow[MappedRead]]) => {
+        windows.foreach(window => {
+          metrics.insertReads(window.newRegions)
+          metrics.insertReadDepth(window.currentRegions().size)
+        })
+        metrics
+      }
+    )
+    pileupMetrics.reduce(_ + _)
+  }
 
   /**
    * A map from contig name -> length of contig.

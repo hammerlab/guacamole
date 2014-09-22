@@ -161,8 +161,12 @@ object Common extends Logging {
    * @param readSet readSet from which to use to get contigs and lengths.
    */
   def loci(args: Arguments.Loci, readSet: ReadSet): LociSet = {
+    loci(args.loci, readSet)
+  }
+
+  def loci(lociString: String, readSet: ReadSet): LociSet = {
     val result = {
-      if (args.loci == "all") {
+      if (lociString == "all") {
         // Call at all loci.
         val builder = LociSet.newBuilder
         // Here, pair is (contig name, contig length).
@@ -170,7 +174,7 @@ object Common extends Logging {
         builder.result
       } else {
         // Call at specified loci. Check that loci given are in the sequence dictionary.
-        val parsed = LociSet.parse(args.loci)
+        val parsed = LociSet.parse(lociString)
         parsed.contigs.foreach(contig => {
           if (!readSet.contigLengths.contains(contig))
             throw new IllegalArgumentException("No such contig: '%s'.".format(contig))

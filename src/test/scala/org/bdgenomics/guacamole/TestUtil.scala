@@ -101,7 +101,7 @@ object TestUtil extends Matchers {
       matePropertiesOpt = Some(
         MateProperties(
           isFirstInPair = false,
-          inferredInsertSize = None,
+          inferredInsertSize = Some(500),
           isMateMapped = isMateMapped,
           mateReferenceContig = mateReferenceContig,
           mateStart = mateStart,

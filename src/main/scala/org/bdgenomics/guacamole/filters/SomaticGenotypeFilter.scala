@@ -1,9 +1,9 @@
 package org.bdgenomics.guacamole.filters
 
 import org.apache.spark.rdd.RDD
+import org.bdgenomics.guacamole.Common
 import org.bdgenomics.guacamole.Common.Arguments.Base
-import org.bdgenomics.guacamole._
-import org.bdgenomics.guacamole.variants.{ CalledAllele, AlleleEvidence, CalledSomaticAllele }
+import org.bdgenomics.guacamole.variants.CalledSomaticAllele
 import org.kohsuke.args4j.Option
 
 /**
@@ -211,10 +211,16 @@ object SomaticGenotypeFilter {
     @Option(name = "-minLOD", metaVar = "X", usage = "Make a call if the log odds of variant is greater than this value (Phred-scaled)")
     var minLOD: Int = 0
 
-    @Option(name = "-minAverageMappingQuality", metaVar = "X", usage = "Make a call average mapping quality of reads is greater than this value")
+    @Option(
+      name = "-minAverageMappingQuality",
+      metaVar = "X",
+      usage = "Make a call average mapping quality of reads is greater than this value")
     var minAverageMappingQuality: Int = 0
 
-    @Option(name = "-minAverageBaseQuality", metaVar = "X", usage = "Make a call average base quality of bases in the pileup is greater than this value")
+    @Option(
+      name = "-minAverageBaseQuality",
+      metaVar = "X",
+      usage = "Make a call average base quality of bases in the pileup is greater than this value")
     var minAverageBaseQuality: Int = 0
 
     @Option(name = "-minTumorReadDepth", usage = "Minimum number of reads in tumor sample for a genotype call")
@@ -232,18 +238,33 @@ object SomaticGenotypeFilter {
     @Option(name = "-debug-genotype-filters", usage = "Print count of genotypes after each filtering step")
     var debugGenotypeFilters = false
 
+    @Option(
+      name = "-approx-depth-limits",
+      usage = "Compute read depth limits based on the sample data",
+      forbids = Array[String]("-minTumorReadDepth", "-maxTumorReadDepth", "-minNormalReadDepth"))
+    var approxDepthLimits = false
+
   }
 
   /**
    * Filter an RDD of Somatic Genotypes with all applicable filters
    */
-  def apply(genotypes: RDD[CalledSomaticAllele], args: SomaticGenotypeFilterArguments): RDD[CalledSomaticAllele] = {
+  def apply(genotypes: RDD[CalledSomaticAllele],
+            args: SomaticGenotypeFilterArguments): RDD[CalledSomaticAllele] = {
     var filteredGenotypes = genotypes
 
-    filteredGenotypes = SomaticReadDepthFilter(filteredGenotypes, args.minTumorReadDepth, args.maxTumorReadDepth, args.minNormalReadDepth, args.debugGenotypeFilters)
+    filteredGenotypes = SomaticReadDepthFilter(
+      filteredGenotypes,
+      args.minTumorReadDepth,
+      args.maxTumorReadDepth,
+      args.minNormalReadDepth,
+      args.debugGenotypeFilters)
 
     if (args.minTumorAlternateReadDepth > 0) {
-      filteredGenotypes = SomaticAlternateReadDepthFilter(filteredGenotypes, args.minTumorAlternateReadDepth, args.debugGenotypeFilters)
+      filteredGenotypes = SomaticAlternateReadDepthFilter(
+        filteredGenotypes,
+        args.minTumorAlternateReadDepth,
+        args.debugGenotypeFilters)
     }
 
     filteredGenotypes = SomaticLogOddsFilter(filteredGenotypes, args.minLOD, args.debugGenotypeFilters)
@@ -252,9 +273,15 @@ object SomaticGenotypeFilter {
 
     filteredGenotypes = SomaticVAFFilter(filteredGenotypes, args.minVAF, args.debugGenotypeFilters)
 
-    filteredGenotypes = SomaticAverageMappingQualityFilter(filteredGenotypes, args.minAverageMappingQuality, args.debugGenotypeFilters)
+    filteredGenotypes = SomaticAverageMappingQualityFilter(
+      filteredGenotypes,
+      args.minAverageMappingQuality,
+      args.debugGenotypeFilters)
 
-    filteredGenotypes = SomaticAverageBaseQualityFilter(filteredGenotypes, args.minAverageBaseQuality, args.debugGenotypeFilters)
+    filteredGenotypes = SomaticAverageBaseQualityFilter(
+      filteredGenotypes,
+      args.minAverageBaseQuality,
+      args.debugGenotypeFilters)
 
     filteredGenotypes
   }

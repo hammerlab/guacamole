@@ -64,16 +64,16 @@ case class SlidingWindowsIterator[Region <: HasReferenceRegion](ranges: Iterator
         windows.foreach(_.setCurrentLocus(nextRange.start))
       }
       // No loci left to process
-      case _ =>  currentLocus = None
+      case _ => currentLocus = None
     }
   }
 
   private def updateNextNonEmptyLocus() = {
     updateNextLocus()
-    lazy val nextReadStartOpt = firstStartLocus(windows:_*)
+    lazy val nextReadStartOpt = firstStartLocus(windows: _*)
     currentLocus match {
       // Fast forward if the next read start it outside of the window
-      case Some(locus) if windowsEmpty && nextReadStartOpt.exists( _ - halfWindowSize > locus)  => {
+      case Some(locus) if windowsEmpty && nextReadStartOpt.exists(_ - halfWindowSize > locus) => {
         windows.foreach(_.setCurrentLocus(nextReadStartOpt.get))
         currentLocus = nextReadStartOpt
       }

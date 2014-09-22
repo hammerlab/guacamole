@@ -1,6 +1,7 @@
 package org.bdgenomics.guacamole.reads
 
-import org.bdgenomics.guacamole.TestUtil
+import org.apache.spark.rdd.RDD
+import org.bdgenomics.guacamole.{ DistributedUtil, Common, ReadSet, TestUtil }
 import org.scalatest.Matchers
 
 class ReadSetSuite extends TestUtil.SparkFunSuite with Matchers {
@@ -32,5 +33,29 @@ class ReadSetSuite extends TestUtil.SparkFunSuite with Matchers {
       deserialized.matePropertiesOpt should equal(read.matePropertiesOpt)
     }
 
+  }
+
+  sparkTest("compute read statistics") {
+    val reads: RDD[Read] = sc.parallelize((0 to 100).map(i => TestUtil.makePairedRead(start = i,
+      sequence = (0 to 25).map(i => "TCGA").mkString,
+      cigar = "100M",
+      mdTag = "100"
+
+    )))
+    val readSet = ReadSet(reads,
+      sequenceDictionary = None,
+      source = "test",
+      filters = Read.InputFilters(),
+      token = 0,
+      contigLengthsFromDictionary = false)
+
+    val loci = Common.loci("chr1:0-99", readSet)
+    val lociPartitions = DistributedUtil.partitionLociUniformly(1, loci)
+    val metrics = readSet.libraryMetrics(lociPartitions)
+
+    metrics.numLoci should be(99)
+    metrics.numReads should be(99)
+    TestUtil.assertAlmostEqual(metrics.averageReadDepth, 50)
+    TestUtil.assertAlmostEqual(metrics.averageInsertSize, 500)
   }
 }
