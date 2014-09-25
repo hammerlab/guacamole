@@ -3,7 +3,7 @@ package org.bdgenomics.guacamole.filters
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.guacamole.Common
 import org.bdgenomics.guacamole.Common.Arguments.Base
-import org.bdgenomics.guacamole.variants.{ CalledGenotype, GenotypeEvidence }
+import org.bdgenomics.guacamole.variants.{ CalledAllele, AlleleEvidence }
 import org.kohsuke.args4j.Option
 
 /**
@@ -11,9 +11,9 @@ import org.kohsuke.args4j.Option
  */
 object MinimumLikelihoodFilter {
 
-  def hasMinimumLikelihood(genotypeEvidence: GenotypeEvidence,
+  def hasMinimumLikelihood(alleleEvidence: AlleleEvidence,
                            minLikelihood: Int): Boolean = {
-    genotypeEvidence.phredScaledLikelihood >= minLikelihood
+    alleleEvidence.phredScaledLikelihood >= minLikelihood
   }
 
   /**
@@ -25,9 +25,9 @@ object MinimumLikelihoodFilter {
    * @param debug if true, compute the count of genotypes after filtering
    * @return Genotypes with quality >= minLikelihood
    */
-  def apply(genotypes: RDD[CalledGenotype],
+  def apply(genotypes: RDD[CalledAllele],
             minLikelihood: Int,
-            debug: Boolean = false): RDD[CalledGenotype] = {
+            debug: Boolean = false): RDD[CalledAllele] = {
     val filteredGenotypes = genotypes.filter(gt => hasMinimumLikelihood(gt.evidence, minLikelihood))
     if (debug) GenotypeFilter.printFilterProgress(filteredGenotypes)
     filteredGenotypes
@@ -39,10 +39,10 @@ object MinimumLikelihoodFilter {
  */
 object ReadDepthFilter {
 
-  def withinReadDepthRange(genotypeEvidence: GenotypeEvidence,
+  def withinReadDepthRange(alleleEvidence: AlleleEvidence,
                            minReadDepth: Int,
                            maxReadDepth: Int): Boolean = {
-    genotypeEvidence.readDepth >= minReadDepth && genotypeEvidence.readDepth < maxReadDepth
+    alleleEvidence.readDepth >= minReadDepth && alleleEvidence.readDepth < maxReadDepth
   }
 
   /**
@@ -55,10 +55,10 @@ object ReadDepthFilter {
    * @param debug if true, compute the count of genotypes after filtering
    * @return Genotypes with read depth >= minReadDepth and < maxReadDepth
    */
-  def apply(genotypes: RDD[CalledGenotype],
+  def apply(genotypes: RDD[CalledAllele],
             minReadDepth: Int,
             maxReadDepth: Int,
-            debug: Boolean = false): RDD[CalledGenotype] = {
+            debug: Boolean = false): RDD[CalledAllele] = {
     val filteredGenotypes = genotypes.filter(gt => withinReadDepthRange(gt.evidence, minReadDepth, maxReadDepth))
     if (debug) GenotypeFilter.printFilterProgress(filteredGenotypes)
     filteredGenotypes
@@ -79,23 +79,23 @@ object MinimumAlternateReadDepthFilter {
    * @param debug if true, compute the count of genotypes after filtering
    * @return Genotypes with read depth >= minAlternateReadDepth
    */
-  def apply(genotypes: RDD[CalledGenotype],
+  def apply(genotypes: RDD[CalledAllele],
             minAlternateReadDepth: Int,
-            debug: Boolean = false): RDD[CalledGenotype] = {
+            debug: Boolean = false): RDD[CalledAllele] = {
     val filteredGenotypes = genotypes.filter(gt => hasMinimumAlternateReadDepth(gt.evidence, minAlternateReadDepth))
     if (debug) GenotypeFilter.printFilterProgress(filteredGenotypes)
     filteredGenotypes
   }
 
-  def hasMinimumAlternateReadDepth(genotypeEvidence: GenotypeEvidence,
+  def hasMinimumAlternateReadDepth(alleleEvidence: AlleleEvidence,
                                    minAlternateReadDepth: Int): Boolean = {
-    genotypeEvidence.alternateReadDepth >= minAlternateReadDepth
+    alleleEvidence.alleleReadDepth >= minAlternateReadDepth
   }
 }
 
 object GenotypeFilter {
 
-  def printFilterProgress(filteredGenotypes: RDD[CalledGenotype]) = {
+  def printFilterProgress(filteredGenotypes: RDD[CalledAllele]) = {
     filteredGenotypes.persist()
     Common.progress("Filtered genotypes down to %d genotypes".format(filteredGenotypes.count()))
   }
@@ -119,7 +119,7 @@ object GenotypeFilter {
 
   }
 
-  def apply(genotypes: RDD[CalledGenotype], args: GenotypeFilterArguments): RDD[CalledGenotype] = {
+  def apply(genotypes: RDD[CalledAllele], args: GenotypeFilterArguments): RDD[CalledAllele] = {
     var filteredGenotypes = genotypes
 
     filteredGenotypes = ReadDepthFilter(filteredGenotypes, args.minReadDepth, args.maxReadDepth, args.debugGenotypeFilters)
@@ -135,11 +135,11 @@ object GenotypeFilter {
     filteredGenotypes
   }
 
-  def apply(genotypes: Seq[CalledGenotype],
+  def apply(genotypes: Seq[CalledAllele],
             minReadDepth: Int,
             minAlternateReadDepth: Int,
             minLikelihood: Int,
-            maxReadDepth: Int): Seq[CalledGenotype] = {
+            maxReadDepth: Int): Seq[CalledAllele] = {
     var filteredGenotypes = genotypes
 
     if (minReadDepth > 0) {

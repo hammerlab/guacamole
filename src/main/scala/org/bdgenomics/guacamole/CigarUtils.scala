@@ -1,6 +1,6 @@
 package org.bdgenomics.guacamole
 
-import net.sf.samtools.CigarElement
+import htsjdk.samtools.CigarElement
 
 object CigarUtils {
   /**

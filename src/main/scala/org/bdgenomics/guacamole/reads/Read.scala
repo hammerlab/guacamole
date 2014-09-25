@@ -1,15 +1,15 @@
 package org.bdgenomics.guacamole.reads
 
-import net.sf.samtools._
+import htsjdk.samtools._
 import org.apache.spark.{ Logging, SparkContext }
 import org.apache.spark.rdd.RDD
 import org.apache.hadoop.io.LongWritable
-import fi.tkk.ics.hadoop.bam.{ AnySAMInputFormat, SAMRecordWritable }
+import org.seqdoop.hadoop_bam.{ AnySAMInputFormat, SAMRecordWritable }
+import org.seqdoop.hadoop_bam.util.SAMHeaderReader
 import scala.collection.mutable.ArrayBuffer
 import org.bdgenomics.adam.models.SequenceDictionary
 import org.bdgenomics.guacamole.Bases
 
-import fi.tkk.ics.hadoop.bam.util.SAMHeaderReader
 import org.apache.hadoop.fs.Path
 import scala.collection.JavaConversions
 

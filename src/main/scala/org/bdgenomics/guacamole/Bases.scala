@@ -27,6 +27,12 @@ object Bases {
   val T = "T".getBytes()(0)
   val G = "G".getBytes()(0)
 
+  object BasesOrdering extends Ordering[Seq[Byte]] {
+    override def compare(x: Seq[Byte], y: Seq[Byte]): Int = {
+      Bases.basesToString(x).compare(Bases.basesToString(y))
+    }
+  }
+
   /** Is the given base one of the 4 canonical DNA bases? */
   def isStandardBase(base: Byte): Boolean = {
     base == Bases.A || base == Bases.C || base == Bases.T || base == Bases.G

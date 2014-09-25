@@ -101,8 +101,8 @@ object IndelPoCCaller extends Command with Serializable with Logging {
                   Contig.newBuilder.setContigName(pileupNormal.referenceName).build
                 )
                 .setStart(pileupNormal.locus)
-                .setReferenceAllele(Bases.baseToString(tumorInsertion.referenceBase))
-                .setAlternateAllele(Bases.basesToString(tumorInsertion.readBases))
+                .setReferenceAllele(Bases.basesToString(tumorInsertion.referenceBases))
+                .setAlternateAllele(Bases.basesToString(tumorInsertion.sequencedBases))
                 .build
             )
             .build

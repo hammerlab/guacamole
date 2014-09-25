@@ -18,8 +18,8 @@
 
 package org.bdgenomics.guacamole.pileup
 
-import org.bdgenomics.guacamole.Bases
 import org.bdgenomics.guacamole.reads.MappedRead
+import org.bdgenomics.guacamole.variants.{ Allele, Genotype }
 
 /**
  * A [[Pileup]] at a locus contains a sequence of [[PileupElement]] instances, one for every read that overlaps that
@@ -45,10 +45,84 @@ case class Pileup(locus: Long, elements: Seq[PileupElement]) {
     "Reads in pileup have mismatching reference names")
   assume(elements.forall(_.locus == locus), "Reads in pileup have mismatching loci")
 
-  /** The reference nucleotide base at this pileup's locus. */
-  lazy val referenceBase: Byte = {
-    head.read.referenceString.charAt((head.locus - head.read.start).toInt).toByte
+  /**
+   * The reference nucleotide base at this pileup's locus.
+   *
+   * TODO(ryan): this should possibly be passed in to the [[Pileup]] constructor; each [[PileupElement]] can have
+   * different notions of what the reference is (e.g. in the case of different-length deletions). Pulling the first idx
+   * from the first [[PileupElement]] feels somewhat hacky.
+   */
+  lazy val referenceBase: Byte = head.referenceBase
+
+  private[pileup] lazy val possibleAlleles = elements.map(_.allele).distinct.sorted
+
+  /**
+   * Generate possible genotypes from a pileup
+   * Possible genotypes are all unique n-tuples of alleles that appear in the pileup.
+   *
+   * @return Sequence of possible genotypes for the pileup
+   */
+  lazy val possibleGenotypes: Seq[Genotype] = {
+    for {
+      i <- 0 until possibleAlleles.size
+      j <- i until possibleAlleles.size
+    } yield Genotype(possibleAlleles(i), possibleAlleles(j))
   }
+
+  /**
+   * For each possible genotype based on the pileup sequencedBases, compute the likelihood.
+   *
+   * @return Sequence of (Genotype, Likelihood)
+   */
+  def computeLikelihoods(prior: Genotype => Double = computeUniformGenotypePrior,
+                         includeAlignmentLikelihood: Boolean = true,
+                         normalize: Boolean = false): Seq[(Genotype, Double)] = {
+
+    val genotypeLikelihoods = possibleGenotypes.map(_.likelihoodOfReads(elements, includeAlignmentLikelihood))
+
+    if (normalize) {
+      normalizeLikelihoods(possibleGenotypes.zip(genotypeLikelihoods))
+    } else {
+      possibleGenotypes.zip(genotypeLikelihoods)
+    }
+
+  }
+
+  /**
+   * See computeLikelihoods, same computation in log-space
+   *
+   * @return Sequence of (Genotype, LogLikelihood)
+   */
+  def computeLogLikelihoods(prior: Genotype => Double = computeUniformGenotypeLogPrior,
+                            includeAlignmentLikelihood: Boolean = false): Seq[(Genotype, Double)] = {
+    possibleGenotypes.map(g =>
+      (g, prior(g) + g.logLikelihoodOfReads(elements, includeAlignmentLikelihood))
+    )
+  }
+
+  /**
+   * Compute prior probability for given genotype, in log-space
+   *
+   * @return 0.0 (default uniform prior)
+   */
+  protected def computeUniformGenotypeLogPrior(genotype: Genotype): Double = 0.0
+
+  /**
+   * Compute prior probability for given genotype
+   *
+   * @return 1.0 (default uniform prior)
+   */
+  protected def computeUniformGenotypePrior(genotype: Genotype): Double = 1.0
+
+  /*
+   * Helper function to normalize probabilities
+   */
+  def normalizeLikelihoods(likelihoods: Seq[(Genotype, Double)]): Seq[(Genotype, Double)] = {
+    val totalLikelihood = likelihoods.map(_._2).sum
+    likelihoods.map(genotypeLikelihood => (genotypeLikelihood._1, genotypeLikelihood._2 / totalLikelihood))
+  }
+
+  lazy val sampleName = elements.head.read.sampleName
 
   /**
    * Split this [[Pileup]] by sample name. Returns a map from sample name to [[Pileup]] instances that use only reads
@@ -115,15 +189,15 @@ case class Pileup(locus: Long, elements: Seq[PileupElement]) {
 
   /**
    * Compute depth and positive strand depth of a particular alternate base
-   * @param alternateBases alternate bases to consider
+   * @param allele allele to consider
    * @return tuple of total depth and forward strand depth
    */
-  def alternateReadDepthAndPositiveDepth(alternateBases: Seq[Byte]): (Int, Int) = {
+  def alleleReadDepthAndPositiveDepth(allele: Allele): (Int, Int) = {
 
-    val alternateElements = elements.view.filter(_.sequencedBases == alternateBases)
-    val numAlternatePositiveElements = alternateElements.count(_.read.isPositiveStrand)
+    val alleleElements = elements.view.filter(_.allele == allele)
+    val numAllelePositiveElements = alleleElements.count(_.read.isPositiveStrand)
 
-    (alternateElements.size, numAlternatePositiveElements)
+    (alleleElements.size, numAllelePositiveElements)
 
   }
 }

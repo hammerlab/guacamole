@@ -2,7 +2,7 @@ package org.bdgenomics.guacamole.reads
 
 import com.esotericsoftware.kryo.io.{ Input, Output }
 import com.esotericsoftware.kryo.{ Kryo, Serializer }
-import net.sf.samtools.TextCigarCodec
+import htsjdk.samtools.TextCigarCodec
 
 // Serialization: MappedRead
 class MappedReadSerializer extends Serializer[MappedRead] with CanSerializeMatePropertiesOption {
