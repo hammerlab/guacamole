@@ -5,13 +5,23 @@ import com.esotericsoftware.kryo.{ Kryo, Serializer }
 import org.bdgenomics.guacamole.Bases
 import org.bdgenomics.guacamole.Bases.BasesOrdering
 
-case class Allele(refBases: Seq[Byte], altBases: Seq[Byte]) extends Ordered[Allele] {
+case class Allele(refBases: Seq[Byte], altBases: Seq[Byte]) {
   lazy val isVariant = BasesOrdering.compare(refBases, altBases) != 0
 
   override def toString: String = "Allele(%s,%s)".format(Bases.basesToString(refBases), Bases.basesToString(altBases))
 
-  override def compare(that: Allele): Int = AlleleOrdering.compare(this, that)
-  def ==(other: Allele): Boolean = compare(other) == 0
+  def ==(that: Allele): Boolean = Allele.ordering.compare(this, that) == 0
+}
+
+object Allele {
+  implicit val ordering: Ordering[Allele] = new Ordering[Allele] {
+    override def compare(x: Allele, y: Allele): Int = {
+      BasesOrdering.compare(x.refBases, y.refBases) match {
+        case 0 => BasesOrdering.compare(x.altBases, y.altBases)
+        case x => x
+      }
+    }
+  }
 }
 
 class AlleleSerializer extends Serializer[Allele] {
@@ -33,13 +43,4 @@ class AlleleSerializer extends Serializer[Allele] {
 
 trait HasAlleleSerializer {
   lazy val alleleSerializer: AlleleSerializer = new AlleleSerializer
-}
-
-object AlleleOrdering extends Ordering[Allele] {
-  override def compare(x: Allele, y: Allele): Int = {
-    BasesOrdering.compare(x.refBases, y.refBases) match {
-      case 0 => BasesOrdering.compare(x.altBases, y.altBases)
-      case x => x
-    }
-  }
 }
