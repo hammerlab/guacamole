@@ -150,8 +150,8 @@ object TestUtil extends Matchers {
     (Pileup(tumorReads, locus), Pileup(normalReads, locus))
   }
 
-  def assertAlmostEqual(a: Double, b: Double, epsilon: Double = 1e-6) {
-    assert(abs(a - b) < epsilon)
+  def assertAlmostEqual(a: Double, b: Double, epsilon: Double = 1e-12) {
+    assert(abs(a - b) < epsilon, "|%.12f - %.12f| == %.12f >= %.12f".format(a, b, abs(a - b), epsilon))
   }
 
   object SparkTest extends org.scalatest.Tag("org.bdgenomics.guacamole.SparkScalaTestFunSuite")

@@ -18,12 +18,12 @@
 
 package org.bdgenomics.guacamole.somatic
 
-import net.sf.samtools.SAMRecord
+import htsjdk.samtools.{ Cigar, SAMRecord }
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.apache.hadoop.io.LongWritable
-import fi.tkk.ics.hadoop.bam.{ AnySAMInputFormat, SAMRecordWritable }
 import org.bdgenomics.guacamole.Common
+import org.seqdoop.hadoop_bam.{ AnySAMInputFormat, SAMRecordWritable }
 
 case class SimpleRead(
   baseSequence: Array[Byte],
@@ -34,7 +34,7 @@ case class SimpleRead(
   end: Int,
   unclippedStart: Int,
   unclippedEnd: Int,
-  cigar: net.sf.samtools.Cigar,
+  cigar: Cigar,
   isMapped: Boolean,
   isDuplicate: Boolean)
 

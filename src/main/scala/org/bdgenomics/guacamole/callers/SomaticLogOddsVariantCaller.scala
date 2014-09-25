@@ -10,7 +10,7 @@ import org.bdgenomics.guacamole.filters.PileupFilter.PileupFilterArguments
 import org.bdgenomics.guacamole.filters.SomaticGenotypeFilter.SomaticGenotypeFilterArguments
 import org.bdgenomics.guacamole.pileup.Pileup
 import org.bdgenomics.guacamole.reads.Read
-import org.bdgenomics.guacamole.variants.{ CalledSomaticGenotype, GenotypeConversions, GenotypeEvidence }
+import org.bdgenomics.guacamole.variants.{ Allele, CalledSomaticAllele, AlleleConversions, AlleleEvidence }
 import org.kohsuke.args4j.{ Option => Opt }
 
 /**
@@ -73,43 +73,61 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
       normalReads.mappedReads
     )
 
-    var potentialGenotypes: RDD[CalledSomaticGenotype] = DistributedUtil.pileupFlatMapTwoRDDs[CalledSomaticGenotype](
-      tumorReads.mappedReads,
-      normalReads.mappedReads,
-      lociPartitions,
-      skipEmpty = true, // skip empty pileups
-      (pileupTumor, pileupNormal) => findPotentialVariantAtLocus(
-        pileupTumor,
-        pileupNormal,
-        oddsThreshold,
-        maxMappingComplexity,
-        minAlignmentForComplexity,
-        minAlignmentQuality,
-        filterMultiAllelic,
-        maxReadDepth).iterator)
+    var potentialGenotypes: RDD[CalledSomaticAllele] =
+      DistributedUtil.pileupFlatMapTwoRDDs[CalledSomaticAllele](
+        tumorReads.mappedReads,
+        normalReads.mappedReads,
+        lociPartitions,
+        skipEmpty = true, // skip empty pileups
+        (pileupTumor, pileupNormal) => findPotentialVariantAtLocus(
+          pileupTumor,
+          pileupNormal,
+          oddsThreshold,
+          maxMappingComplexity,
+          minAlignmentForComplexity,
+          minAlignmentQuality,
+          filterMultiAllelic,
+          maxReadDepth).iterator
+      )
 
     // Filter potential genotypes to min read values
-    potentialGenotypes = SomaticReadDepthFilter(potentialGenotypes, args.minTumorReadDepth, args.maxTumorReadDepth, args.minNormalReadDepth)
-    potentialGenotypes = SomaticAlternateReadDepthFilter(potentialGenotypes, args.minTumorAlternateReadDepth)
+    potentialGenotypes =
+      SomaticReadDepthFilter(
+        potentialGenotypes,
+        args.minTumorReadDepth,
+        args.maxTumorReadDepth,
+        args.minNormalReadDepth
+      )
+
+    potentialGenotypes =
+      SomaticAlternateReadDepthFilter(
+        potentialGenotypes,
+        args.minTumorAlternateReadDepth
+      )
 
     potentialGenotypes.persist()
     Common.progress("Computed %,d potential genotypes".format(potentialGenotypes.count))
 
     val genotypeLociPartitions = DistributedUtil.partitionLociUniformly(args.parallelism, loci)
-    val genotypes: RDD[CalledSomaticGenotype] = DistributedUtil.windowFlatMapWithState[CalledSomaticGenotype, CalledSomaticGenotype, Option[String]](
-      Seq(potentialGenotypes),
-      genotypeLociPartitions,
-      skipEmpty = true,
-      snvWindowRange.toLong,
-      None,
-      removeCorrelatedGenotypes)
+    val genotypes: RDD[CalledSomaticAllele] =
+      DistributedUtil.windowFlatMapWithState[CalledSomaticAllele, CalledSomaticAllele, Option[String]](
+        Seq(potentialGenotypes),
+        genotypeLociPartitions,
+        skipEmpty = true,
+        snvWindowRange.toLong,
+        None,
+        removeCorrelatedGenotypes
+      )
     genotypes.persist()
     Common.progress("Computed %,d genotypes after regional analysis".format(genotypes.count))
 
-    val filteredGenotypes: RDD[CalledSomaticGenotype] = SomaticGenotypeFilter(genotypes, args)
+    val filteredGenotypes: RDD[CalledSomaticAllele] = SomaticGenotypeFilter(genotypes, args)
     Common.progress("Computed %,d genotypes after basic filtering".format(filteredGenotypes.count))
 
-    Common.writeVariantsFromArguments(args, filteredGenotypes.flatMap(GenotypeConversions.calledSomaticGenotypeToADAMGenotype(_)))
+    Common.writeVariantsFromArguments(
+      args,
+      filteredGenotypes.flatMap(AlleleConversions.calledSomaticAlleleToADAMGenotype)
+    )
 
     DelayedMessages.default.print()
   }
@@ -122,7 +140,7 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
    * @return Set of genotypes if there are no others in the window
    */
   def removeCorrelatedGenotypes(state: Option[String],
-                                genotypeWindows: Seq[SlidingWindow[CalledSomaticGenotype]]): (Option[String], Iterator[CalledSomaticGenotype]) = {
+                                genotypeWindows: Seq[SlidingWindow[CalledSomaticAllele]]): (Option[String], Iterator[CalledSomaticAllele]) = {
     val genotypeWindow = genotypeWindows(0)
     val locus = genotypeWindow.currentLocus
     val currentGenotypes = genotypeWindow.currentRegions.filter(_.overlapsLocus(locus))
@@ -143,59 +161,62 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
                                   minAlignmentForComplexity: Int = 1,
                                   minAlignmentQuality: Int = 1,
                                   filterMultiAllelic: Boolean = false,
-                                  maxReadDepth: Int = Int.MaxValue): Seq[CalledSomaticGenotype] = {
+                                  maxReadDepth: Int = Int.MaxValue): Seq[CalledSomaticAllele] = {
 
-    val filteredNormalPileup = PileupFilter(normalPileup,
+    val filteredNormalPileup = PileupFilter(
+      normalPileup,
       filterMultiAllelic,
       maxMappingComplexity = 100,
       minAlignmentForComplexity,
       minAlignmentQuality,
       minEdgeDistance = 0,
-      maxPercentAbnormalInsertSize = 100)
-    val filteredTumorPileup = PileupFilter(tumorPileup,
+      maxPercentAbnormalInsertSize = 100
+    )
+
+    val filteredTumorPileup = PileupFilter(
+      tumorPileup,
       filterMultiAllelic,
       maxMappingComplexity,
       minAlignmentForComplexity,
       minAlignmentQuality,
       minEdgeDistance = 0,
-      maxPercentAbnormalInsertSize = 100)
+      maxPercentAbnormalInsertSize = 100
+    )
 
     // For now, we skip loci that have no reads mapped. We may instead want to emit NoCall in this case.
     if (filteredTumorPileup.elements.isEmpty
       || filteredNormalPileup.elements.isEmpty
-      || filteredTumorPileup.referenceDepth == filteredTumorPileup.depth // skip computation if no alternate bases
-      || filteredTumorPileup.depth > maxReadDepth // skip  abnormally deep pileups
+      || filteredTumorPileup.referenceDepth == filteredTumorPileup.depth // skip computation if no alternate reads
+      || filteredTumorPileup.depth > maxReadDepth // skip abnormally deep pileups
       || filteredNormalPileup.depth > maxReadDepth)
       return Seq.empty
 
-    val tumorSampleName = tumorPileup.elements(0).read.sampleName
-    val referenceBases = Seq(tumorPileup.referenceBase)
-
-    val (alternateBase, tumorVariantLikelihood) = callVariantInTumor(filteredTumorPileup)
-    alternateBase match {
-      case Some(alternate) if alternate.nonEmpty => {
-        val tumorEvidence = GenotypeEvidence(tumorVariantLikelihood, alternate, filteredTumorPileup)
+    val (alleleOpt, tumorVariantLikelihood) = callVariantInTumor(filteredTumorPileup)
+    alleleOpt match {
+      case Some(allele) => {
+        val tumorEvidence = AlleleEvidence(tumorVariantLikelihood, allele, filteredTumorPileup)
 
         val normalLikelihoods =
-          BayesianQualityVariantCaller.computeLikelihoods(filteredNormalPileup,
+          filteredNormalPileup.computeLikelihoods(
             includeAlignmentLikelihood = false,
-            normalize = true).toMap
+            normalize = true
+          ).toMap
 
         val (normalVariantGenotypes, normalReferenceGenotype) = normalLikelihoods.partition(_._1.isVariant)
-        val normalEvidence = GenotypeEvidence(normalVariantGenotypes.map(_._2).sum, alternate, filteredNormalPileup)
+        val normalEvidence = AlleleEvidence(normalVariantGenotypes.map(_._2).sum, allele, filteredNormalPileup)
         val somaticOdds = tumorVariantLikelihood / normalVariantGenotypes.map(_._2).sum
 
         if (somaticOdds * 100 >= oddsThreshold) {
           Seq(
-            CalledSomaticGenotype(
-              tumorSampleName,
+            CalledSomaticAllele(
+              tumorPileup.sampleName,
               tumorPileup.referenceName,
               tumorPileup.locus,
-              referenceBases,
-              alternate,
+              allele,
               math.log(somaticOdds),
               tumorEvidence,
-              normalEvidence)
+              normalEvidence
+            )
           )
         } else {
           Seq.empty
@@ -212,17 +233,19 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
    * @param tumorPileup The pileup of reads at the current locus in the tumor sample
    * @return The alternate base and the likelihood of the most likely variant
    */
-  def callVariantInTumor(tumorPileup: Pileup): (Option[Seq[Byte]], Double) = {
+  def callVariantInTumor(tumorPileup: Pileup): (Option[Allele], Double) = {
 
-    val tumorLikelihoods = BayesianQualityVariantCaller.computeLikelihoods(tumorPileup,
-      includeAlignmentLikelihood = true,
-      normalize = true).toMap
+    val tumorLikelihoods =
+      tumorPileup.computeLikelihoods(
+        includeAlignmentLikelihood = true,
+        normalize = true
+      ).toMap
 
     val tumorMostLikelyGenotype = tumorLikelihoods.maxBy(_._2)
 
     if (tumorMostLikelyGenotype._1.isVariant) {
-      val alternateBase = tumorMostLikelyGenotype._1.getNonReferenceAlleles(0)
-      (Some(alternateBase), tumorMostLikelyGenotype._2)
+      val allele = tumorMostLikelyGenotype._1.getNonReferenceAlleles(0)
+      (Some(allele), tumorMostLikelyGenotype._2)
     } else {
       (None, 1 - tumorMostLikelyGenotype._2)
     }

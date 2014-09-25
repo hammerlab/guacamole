@@ -1,6 +1,6 @@
 package org.bdgenomics.guacamole.reads
 
-import net.sf.samtools.TextCigarCodec
+import htsjdk.samtools.TextCigarCodec
 import org.bdgenomics.guacamole.TestUtil
 import org.bdgenomics.guacamole.TestUtil.Implicits._
 import org.scalatest.Matchers

@@ -1,6 +1,6 @@
 package org.bdgenomics.guacamole.reads
 
-import net.sf.samtools.{ SAMRecord, Cigar }
+import htsjdk.samtools.{ SAMRecord, Cigar }
 import org.bdgenomics.adam.util.{ PhredUtils, MdTag }
 import org.bdgenomics.guacamole.{ Bases, LociSet, HasReferenceRegion }
 
@@ -71,6 +71,13 @@ case class MappedRead(
     (pos, element) => pos + element.getLength
   })
 
+  override def toString(): String =
+    "MappedRead(%d, %s, %s, %s)".format(
+      start,
+      cigar.toString,
+      mdTagString,
+      Bases.basesToString(sequence)
+    )
 }
 
 case class MissingMDTagException(record: SAMRecord)

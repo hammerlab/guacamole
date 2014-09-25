@@ -33,11 +33,12 @@ class SomaticLogOddsVariantCallerSuite extends SparkFunSuite with Matchers with 
   val minLikelihood = 70
   val minVAF = 5
 
-  def testVariants(tumorReads: Seq[MappedRead], normalReads: Seq[MappedRead], positions: Array[Long], isTrue: Boolean = false) = {
+  def testVariants(tumorReads: Seq[MappedRead], normalReads: Seq[MappedRead], positions: Array[Long], shouldFindVariant: Boolean = false) = {
     val positionsTable = Table("locus", positions: _*)
     forAll(positionsTable) {
       (locus: Long) =>
         val (tumorPileup, normalPileup) = TestUtil.loadTumorNormalPileup(tumorReads, normalReads, locus)
+
         val calledGenotypes = SomaticLogOddsVariantCaller.findPotentialVariantAtLocus(
           tumorPileup,
           normalPileup,
@@ -45,8 +46,10 @@ class SomaticLogOddsVariantCallerSuite extends SparkFunSuite with Matchers with 
           maxMappingComplexity,
           minAlignmentForComplexity,
           minAlignmentQuality,
-          filterMultiAllelic)
-        val hasVariant = SomaticGenotypeFilter(
+          filterMultiAllelic
+        )
+
+        val foundVariant = SomaticGenotypeFilter(
           calledGenotypes,
           minTumorReadDepth,
           maxTumorReadDepth,
@@ -54,8 +57,9 @@ class SomaticLogOddsVariantCallerSuite extends SparkFunSuite with Matchers with 
           minTumorAlternateReadDepth,
           logOddsThreshold,
           minVAF = minVAF,
-          minLikelihood = minLikelihood).size > 0
-        hasVariant should be(isTrue)
+          minLikelihood).size > 0
+
+        foundVariant should be(shouldFindVariant)
     }
   }
 
@@ -64,7 +68,7 @@ class SomaticLogOddsVariantCallerSuite extends SparkFunSuite with Matchers with 
     val positivePositions = Array[Long](42999694, 25031215, 44061033, 45175149, 755754, 1843813,
       3555766, 3868620, 9896926, 14017900, 17054263, 35951019, 50472935, 51858471, 58201903, 7087895,
       19772181, 30430960, 32150541, 42186626, 44973412, 46814443, 52311925, 53774355, 57280858, 62262870)
-    testVariants(tumorReads, normalReads, positivePositions, isTrue = true)
+    testVariants(tumorReads, normalReads, positivePositions, shouldFindVariant = true)
   }
 
   sparkTest("testing simple negative variants on syn1") {
@@ -73,7 +77,7 @@ class SomaticLogOddsVariantCallerSuite extends SparkFunSuite with Matchers with 
       "synthetic.challenge.set1.normal.v2.withMDTags.chr2.syn1fp.sam")
     val negativePositions = Array[Long](216094721, 3529313, 8789794, 104043280, 104175801,
       126651101, 241901237, 57270796, 120757852)
-    testVariants(tumorReads, normalReads, negativePositions, isTrue = false)
+    testVariants(tumorReads, normalReads, negativePositions, shouldFindVariant = false)
   }
 
   sparkTest("testing complex region negative variants on syn1") {
@@ -81,16 +85,16 @@ class SomaticLogOddsVariantCallerSuite extends SparkFunSuite with Matchers with 
       "synthetic.challenge.set1.tumor.v2.withMDTags.chr2.complexvar.sam",
       "synthetic.challenge.set1.normal.v2.withMDTags.chr2.complexvar.sam")
     val negativePositions = Array[Long](148487667, 134307261, 90376213, 3638733, 112529049, 91662497, 109347468)
-    testVariants(tumorReads, normalReads, negativePositions, isTrue = false)
+    testVariants(tumorReads, normalReads, negativePositions, shouldFindVariant = false)
 
     val positivePositions = Array[Long](82949713, 130919744)
-    testVariants(tumorReads, normalReads, positivePositions, isTrue = true)
+    testVariants(tumorReads, normalReads, positivePositions, shouldFindVariant = true)
   }
 
   sparkTest("difficult negative variants") {
 
     val (tumorReads, normalReads) = TestUtil.loadTumorNormalReads(sc, "tumor.chr20.simplefp.sam", "normal.chr20.simplefp.sam")
     val negativeVariantPositions = Array[Long](26211835, 29652479, 54495768, 13046318, 25939088)
-    testVariants(tumorReads, normalReads, negativeVariantPositions, isTrue = false)
+    testVariants(tumorReads, normalReads, negativeVariantPositions, shouldFindVariant = false)
   }
 }

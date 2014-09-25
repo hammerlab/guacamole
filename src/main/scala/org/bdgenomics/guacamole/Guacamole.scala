@@ -24,7 +24,6 @@ import org.bdgenomics.guacamole.callers.{ IndelPoCCaller, SomaticLogOddsVariantC
 import org.bdgenomics.guacamole.somatic.SimpleSomaticVariantCaller
 import org.bdgenomics.adam.util.ParquetLogger
 import org.bdgenomics.guacamole.Common.progress
-import scala.Some
 import org.bdgenomics.guacamole.concordance.GenotypesEvaluator
 
 /**

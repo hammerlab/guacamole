@@ -57,7 +57,7 @@ object MultiAllelicPileupFilter {
    * @return Empty sequence if there are > maxPloidy possible allelee, otherwise original set of elements
    */
   def apply(elements: Seq[PileupElement], maxPloidy: Int = 2): Seq[PileupElement] = {
-    if (elements.map(el => Bases.basesToString(el.sequencedBases)).distinct.length > maxPloidy) {
+    if (elements.map(_.allele).distinct.length > maxPloidy) {
       Seq.empty
     } else {
       elements
@@ -78,13 +78,17 @@ object AbnormalInsertSizePileupFilter {
    * @param maxInsertSize largest insert size considered normal (default: 1000)
    * @return Empty sequence if there are more than maxAbnormalInsertSizeReadsThreshold % reads with insert size out of the specified range
    */
-  def apply(elements: Seq[PileupElement], maxAbnormalInsertSizeReadsThreshold: Int, minInsertSize: Int = 5, maxInsertSize: Int = 1000): Seq[PileupElement] = {
-    val abnormalInsertSizeReads = elements.count(el => {
-      el.read.matePropertiesOpt.flatMap(_.inferredInsertSize).exists(inferredInsertSize =>
-        math.abs(inferredInsertSize) < minInsertSize ||
-          math.abs(inferredInsertSize) > maxInsertSize
-      )
-    })
+  def apply(elements: Seq[PileupElement],
+            maxAbnormalInsertSizeReadsThreshold: Int,
+            minInsertSize: Int = 5, maxInsertSize: Int = 1000): Seq[PileupElement] = {
+    val abnormalInsertSizeReads = elements.count(
+      _.read.matePropertiesOpt
+        .flatMap(_.inferredInsertSize)
+        .exists(inferredInsertSize =>
+          math.abs(inferredInsertSize) < minInsertSize ||
+            math.abs(inferredInsertSize) > maxInsertSize
+        )
+    )
     if (100.0 * abnormalInsertSizeReads / elements.length > maxAbnormalInsertSizeReadsThreshold) {
       Seq.empty
     } else {

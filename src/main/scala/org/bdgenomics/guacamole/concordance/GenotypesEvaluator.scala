@@ -74,11 +74,11 @@ object GenotypesEvaluator extends Command with Logging {
 
     val relevantVariants: (Genotype => Boolean) = v => chromosomeFilter(v) && variantTypeFilter(v)
 
-    val filteredCalledGenotypes = calledGenotypes.filter(relevantVariants)
+    val filteredCalledAlleles = calledGenotypes.filter(relevantVariants)
     val filteredTrueGenotypes = trueGenotypes.filter(relevantVariants)
 
-    val sampleName = filteredCalledGenotypes.take(1)(0).getSampleId.toString
-    val sampleAccuracy = filteredCalledGenotypes.concordanceWith(filteredTrueGenotypes).collectAsMap()(sampleName)
+    val sampleName = filteredCalledAlleles.take(1)(0).getSampleId.toString
+    val sampleAccuracy = filteredCalledAlleles.concordanceWith(filteredTrueGenotypes).collectAsMap()(sampleName)
 
     // We called AND it was called in truth
     val truePositives = sampleAccuracy.total(ConcordanceTable.CALLED, ConcordanceTable.CALLED)
