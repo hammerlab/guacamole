@@ -32,7 +32,7 @@ case class CalledSomaticAllele(sampleName: String,
     PhredUtils.successProbabilityToPhred(tumorEvidence.likelihood * (1 - normalEvidence.likelihood) - 1e-10)
 }
 
-class CalledSomaticGenotypeSerializer
+class CalledSomaticAlleleSerializer
     extends Serializer[CalledSomaticAllele]
     with HasGenotypeEvidenceSerializer
     with HasAlleleSerializer {
