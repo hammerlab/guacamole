@@ -5,21 +5,21 @@ import com.esotericsoftware.kryo.{ Kryo, Serializer }
 import org.bdgenomics.guacamole.Bases
 import org.bdgenomics.guacamole.Bases.BasesOrdering
 
-case class Allele(refBases: Seq[Byte], altBases: Seq[Byte]) {
-  lazy val isVariant = BasesOrdering.compare(refBases, altBases) != 0
+case class Allele(refBases: Seq[Byte], altBases: Seq[Byte]) extends Ordered[Allele] {
+  lazy val isVariant = refBases != altBases
 
   override def toString: String = "Allele(%s,%s)".format(Bases.basesToString(refBases), Bases.basesToString(altBases))
 
-  def ==(that: Allele): Boolean = Allele.ordering.compare(this, that) == 0
-}
+  override def equals(other: Any): Boolean = other match {
+    case otherAllele: Allele => refBases == otherAllele.refBases && altBases == otherAllele.altBases
+    case _                   => false
+  }
+  def ==(other: Allele): Boolean = equals(other)
 
-object Allele {
-  implicit val ordering: Ordering[Allele] = new Ordering[Allele] {
-    override def compare(x: Allele, y: Allele): Int = {
-      BasesOrdering.compare(x.refBases, y.refBases) match {
-        case 0 => BasesOrdering.compare(x.altBases, y.altBases)
-        case x => x
-      }
+  override def compare(that: Allele): Int = {
+    BasesOrdering.compare(refBases, that.refBases) match {
+      case 0 => BasesOrdering.compare(altBases, that.altBases)
+      case x => x
     }
   }
 }
