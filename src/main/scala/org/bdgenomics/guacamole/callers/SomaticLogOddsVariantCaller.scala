@@ -197,12 +197,13 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
      * Find the most likely genotype in the tumor sample
      * This is either the reference genotype or an heterozygous genotype with some alternate base
      */
-    lazy val (mostLikelyTumorGenotype, mostLikelyTumorGenotypeLikelihood) =
+    val (mostLikelyTumorGenotype, mostLikelyTumorGenotypeLikelihood) =
       filteredTumorPileup.computeLikelihoods(
         includeAlignmentLikelihood = true,
         normalize = true
       ).maxBy(_._2)
 
+    // The following lazy vals are only evaluated if mostLikelyTumorGenotype.hasVariantAllele
     lazy val normalLikelihoods =
       filteredNormalPileup.computeLikelihoods(
         includeAlignmentLikelihood = false,
@@ -213,7 +214,7 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
     lazy val normalVariantsTotalLikelihood = normalVariantGenotypes.map(_._2).sum
     lazy val somaticOdds = mostLikelyTumorGenotypeLikelihood / normalVariantsTotalLikelihood
 
-    if (somaticOdds * 100 >= oddsThreshold)
+    if (mostLikelyTumorGenotype.hasVariantAllele && somaticOdds * 100 >= oddsThreshold) {
       for {
         // NOTE(ryan): for now, iterate over non-reference alleles found in tumor and compare their most likely
         // genotype's likelihood to the sum of all likelihoods of variant genotypes in the normal sample.
@@ -233,7 +234,9 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
           normalEvidence
         )
       }
-    else
+    } else {
       Seq()
+    }
+
   }
 }
