@@ -456,7 +456,10 @@ object DistributedUtil extends Logging {
     val regionsByTask = sc.accumulator(MutableHashMap.empty[String, Long])(new HashMapAccumulatorParam)
     DelayedMessages.default.say { () =>
       {
-        assert(regionsByTask.value.size == numTasks)
+        assert(
+          regionsByTask.value.size == numTasks,
+          "regionsByTask.value.size (%d) should equal numTasks (%d)".format(regionsByTask.value.size, numTasks)
+        )
         val stats = new math3.stat.descriptive.DescriptiveStatistics()
         regionsByTask.value.valuesIterator.foreach(stats.addValue(_))
         "Regions per task: min=%,.0f 25%%=%,.0f median=%,.0f (mean=%,.0f) 75%%=%,.0f max=%,.0f. Max is %,.2f%% more than mean.".format(
