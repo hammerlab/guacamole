@@ -147,23 +147,17 @@ object DistributedUtil extends Logging {
 
     // Step (2)
     // Total up regions overlapping each micro partition. We keep the totals as an array of Longs.
-    def addArray(first: Array[Long], second: Array[Long]): Array[Long] = {
-      assert(first.length == second.length)
-      val result = new Array[Long](first.length)
-      var i = 0
-      while (i < first.length) {
-        result(i) = first(i) + second(i)
-        i += 1
-      }
-      result
-    }
-
     var num = 1
-    val counts = regionRDDs.map(regions => {
+    val regionCounts = regionRDDs.map(regions => {
       progress("Collecting region counts for RDD %d of %d.".format(num, regionRDDs.length))
       num += 1
-      regions.mapPartitions(computeRegionDepth(numMicroPartitions, broadcastMicroPartitions, _)).reduce(addArray _)
-    }).reduce(addArray _)
+      val microPartitionCounts = regions
+        .flatMap(region => broadcastMicroPartitions.value.onContig(region.referenceContig).getAll(region.start, region.end))
+        .countByValue()
+      microPartitionCounts
+    })
+
+    val counts: Seq[Long] = (0 until numMicroPartitions).map(i => regionCounts.map(_.getOrElse(i, 0L)).sum)
 
     // Step (3)
     // Assign loci to tasks, taking into account region depth in each micro partition.
@@ -221,20 +215,6 @@ object DistributedUtil extends Logging {
     val result = builder.result
     assert(result.count == lociUsed.count)
     result
-  }
-
-  def computeRegionDepth[M <: HasReferenceRegion: ClassTag](numMicroPartitions: Int, broadcastMicroPartitions: Broadcast[LociMap[Long]], regionIterator: Iterator[M]): Iterator[Array[Long]] = {
-    val microPartitions = broadcastMicroPartitions.value
-    assert(microPartitions.count > 0)
-    val counts = new Array[Long](numMicroPartitions)
-    regionIterator.foreach(region => {
-      val contigMap = microPartitions.onContig(region.referenceContig)
-      val indices: Set[Long] = contigMap.getAll(region.start, region.end)
-      indices.foreach(index => {
-        counts(index.toInt) += 1
-      })
-    })
-    Seq(counts).iterator
   }
 
   /**
