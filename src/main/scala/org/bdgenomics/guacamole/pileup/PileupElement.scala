@@ -92,7 +92,8 @@ case class PileupElement(
           referenceStringIdx,
           referenceStringIdx + 1 + nextCigarElement.get.getLength
         )
-        Deletion(deletedBases)
+        val anchorBaseSequenceQuality = read.baseQualities(readPosition)
+        Deletion(deletedBases, anchorBaseSequenceQuality)
       case (CigarOperator.D, _) =>
         MidDeletion
       case (op, Some(CigarOperator.D)) =>
@@ -118,7 +119,7 @@ case class PileupElement(
    * can use these state variables.
    */
   lazy val isInsertion = alignment match { case Insertion(_, _) => true; case _ => false }
-  lazy val isDeletion = alignment match { case Deletion(_) => true; case _ => false }
+  lazy val isDeletion = alignment match { case Deletion(_, _) => true; case _ => false }
   lazy val isMidDeletion = alignment match { case MidDeletion => true; case _ => false }
   lazy val isMismatch = alignment match { case Mismatch(_, _, _) => true; case _ => false }
   lazy val isMatch = alignment match { case Match(_, _) => true; case _ => false }
@@ -144,9 +145,10 @@ case class PileupElement(
    * For deletions this is the mapping quality as there are no base quality scores available.
    */
   lazy val qualityScore: Int = alignment match {
-    case Deletion(_) | Clipped | MidDeletion => read.alignmentQuality
-    case MatchOrMisMatch(_, qs)              => qs
-    case Insertion(_, qss)                   => qss.min
+    case Clipped | MidDeletion  => read.alignmentQuality
+    case Deletion(_, qs)        => qs
+    case MatchOrMisMatch(_, qs) => qs
+    case Insertion(_, qss)      => qss.min
   }
 
   /**
