@@ -151,10 +151,9 @@ object DistributedUtil extends Logging {
     val regionCounts = regionRDDs.map(regions => {
       progress("Collecting region counts for RDD %d of %d.".format(num, regionRDDs.length))
       num += 1
-      val microPartitionCounts = regions
-        .flatMap(region => broadcastMicroPartitions.value.onContig(region.referenceContig).getAll(region.start, region.end))
-        .countByValue()
-      microPartitionCounts
+      regions.flatMap(region =>
+        broadcastMicroPartitions.value.onContig(region.referenceContig).getAll(region.start, region.end)
+      ).countByValue()
     })
 
     val counts: Seq[Long] = (0 until numMicroPartitions).map(i => regionCounts.map(_.getOrElse(i, 0L)).sum)
