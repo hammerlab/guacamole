@@ -21,7 +21,6 @@ package org.bdgenomics.guacamole
 import org.apache.spark.Logging
 import java.util.logging.Level
 import org.bdgenomics.guacamole.callers.{ IndelPoCCaller, SomaticLogOddsVariantCaller, SomaticThresholdVariantCaller, BayesianQualityVariantCaller, ThresholdVariantCaller }
-import org.bdgenomics.guacamole.somatic.SimpleSomaticVariantCaller
 import org.bdgenomics.adam.util.ParquetLogger
 import org.bdgenomics.guacamole.Common.progress
 import org.bdgenomics.guacamole.concordance.GenotypesEvaluator
@@ -39,7 +38,6 @@ object Guacamole extends Logging {
     IndelPoCCaller,
     ThresholdVariantCaller,
     SomaticThresholdVariantCaller,
-    SimpleSomaticVariantCaller,
     BayesianQualityVariantCaller,
     GenotypesEvaluator,
     SomaticLogOddsVariantCaller)
