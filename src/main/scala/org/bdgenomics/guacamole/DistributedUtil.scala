@@ -132,7 +132,10 @@ object DistributedUtil extends Logging {
    *                Any number RDD[ReferenceRegion] arguments giving the regions to base the partitioning on.
    * @return LociMap of locus -> task assignments.
    */
-  def partitionLociByApproximateDepth[M <: HasReferenceRegion: ClassTag](tasks: Int, lociUsed: LociSet, accuracy: Int, regionRDDs: RDD[M]*): LociMap[Long] = {
+  def partitionLociByApproximateDepth[M <: HasReferenceRegion: ClassTag](tasks: Int,
+                                                                         lociUsed: LociSet,
+                                                                         accuracy: Int,
+                                                                         regionRDDs: RDD[M]*): LociMap[Long] = {
     val sc = regionRDDs(0).sparkContext
 
     // Step (1). Split loci uniformly into micro partitions.
