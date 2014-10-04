@@ -95,6 +95,7 @@ case class PileupElement(
         val anchorBaseSequenceQuality = read.baseQualities(readPosition)
         Deletion(deletedBases, anchorBaseSequenceQuality)
       case (CigarOperator.D, _) =>
+        // TODO(ryan): can a cigar begin with a 'D' operator?
         MidDeletion
       case (op, Some(CigarOperator.D)) =>
         // TODO(ryan): are there sane cases where a 'D' is not preceded by an 'M'?
