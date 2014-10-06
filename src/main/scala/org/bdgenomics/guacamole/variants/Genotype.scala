@@ -50,7 +50,7 @@ case class Genotype(alleles: Allele*) {
    *
    * @return Count of non reference alleles
    */
-  lazy val numberOfVariants: Int = getNonReferenceAlleles.size
+  lazy val numberOfVariantAlleles: Int = getNonReferenceAlleles.size
 
   def likelihoodOfReads(elements: Seq[PileupElement], includeAlignmentLikelihood: Boolean = false) = {
     val depth = elements.size
@@ -78,7 +78,7 @@ case class Genotype(alleles: Allele*) {
    *
    * @return True if at least one allele is not the reference
    */
-  lazy val isVariant: Boolean = (numberOfVariants > 0)
+  lazy val hasVariantAllele: Boolean = (numberOfVariantAlleles > 0)
 
   /**
    * Transform the alleles in this genotype to the ADAM allele enumeration.
@@ -88,7 +88,7 @@ case class Genotype(alleles: Allele*) {
    */
   lazy val getGenotypeAlleles: Seq[GenotypeAllele] = {
     assume(ploidy == 2)
-    val numVariants = numberOfVariants
+    val numVariants = numberOfVariantAlleles
     if (numVariants == 0) {
       Seq(GenotypeAllele.Ref, GenotypeAllele.Ref)
     } else if (numVariants > 0 && uniqueAllelesCount == 1) {

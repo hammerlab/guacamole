@@ -2,7 +2,7 @@ package org.bdgenomics.guacamole.reads
 
 import htsjdk.samtools.{ SAMRecord, Cigar }
 import org.bdgenomics.adam.util.{ PhredUtils, MdTag }
-import org.bdgenomics.guacamole.{ Bases, LociSet, HasReferenceRegion }
+import org.bdgenomics.guacamole.{ Bases, HasReferenceRegion }
 
 import scala.collection.JavaConversions
 

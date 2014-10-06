@@ -51,9 +51,9 @@ case class Mismatch(override val base: Byte, override val baseQuality: Byte, ove
  *
  * @param referenceBases
  */
-case class Deletion(override val referenceBases: Seq[Byte]) extends Alignment {
+case class Deletion(override val referenceBases: Seq[Byte], baseQuality: Byte) extends Alignment {
   override def equals(other: Any): Boolean = other match {
-    case Deletion(otherBases) =>
+    case Deletion(otherBases, _) =>
       referenceBases.sameElements(otherBases)
     case _ =>
       false
@@ -61,8 +61,8 @@ case class Deletion(override val referenceBases: Seq[Byte]) extends Alignment {
   override val sequencedBases = referenceBases.headOption.toSeq
 }
 object Deletion {
-  def apply(referenceBases: String): Deletion =
-    Deletion(Bases.stringToBases(referenceBases))
+  def apply(referenceBases: String, baseQuality: Byte): Deletion =
+    Deletion(Bases.stringToBases(referenceBases), baseQuality)
 }
 
 /**

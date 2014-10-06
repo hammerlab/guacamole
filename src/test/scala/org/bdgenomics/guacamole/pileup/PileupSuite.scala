@@ -187,7 +187,7 @@ class PileupSuite extends TestUtil.SparkFunSuite with Matchers with TableDrivenP
     firstElement.indexWithinCigarElement should be(0L)
 
     val deletionElement = firstElement.advanceToLocus(4L)
-    deletionElement.alignment should equal(Deletion("GC"))
+    deletionElement.alignment should equal(Deletion("GC", 1.toByte))
     deletionElement.isDeletion should be(true)
     deletionElement.indexWithinCigarElement should be(4L)
 
@@ -209,7 +209,7 @@ class PileupSuite extends TestUtil.SparkFunSuite with Matchers with TableDrivenP
     val pileup = loadPileup("same_start_reads.sam", 0)
     val deletionPileup = pileup.atGreaterLocus(9, Seq.empty.iterator)
     deletionPileup.elements.map(_.alignment).count {
-      case Deletion(bases) => {
+      case Deletion(bases, _) => {
         Bases.basesToString(bases) should equal("AAAAAAAAAAA")
         true
       }
@@ -253,7 +253,7 @@ class PileupSuite extends TestUtil.SparkFunSuite with Matchers with TableDrivenP
 
     // Just before the deletion
     val deletionPileup = PileupElement(decadentRead1, 5 + 28)
-    deletionPileup.alignment should equal(Deletion("AGGGGGGGGGG"))
+    deletionPileup.alignment should equal(Deletion("AGGGGGGGGGG", 1.toByte))
 
     // Inside the deletion
     val at29 = PileupElement(decadentRead1, 5 + 29)
