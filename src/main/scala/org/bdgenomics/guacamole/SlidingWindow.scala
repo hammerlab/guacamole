@@ -83,14 +83,10 @@ case class SlidingWindow[Region <: HasReferenceRegion](halfWindowSize: Long, raw
     assume(locus >= currentLocus, "Pileup window can only move forward in locus")
     currentLocus = locus
 
-    def overlaps(region: Region) = {
-      region.start <= locus + halfWindowSize && (region.end - 1) >= locus - halfWindowSize
-    }
-
     // Remove regions that are no longer in the window.
     while (!currentRegionsPriorityQueue.isEmpty && (currentRegionsPriorityQueue.head.end - 1) < locus - halfWindowSize) {
       val dropped = currentRegionsPriorityQueue.dequeue()
-      assert(!overlaps(dropped))
+      assert(!dropped.overlapsLocus(locus, halfWindowSize))
     }
 
     newRegions = if (sortedRegions.isEmpty) {
@@ -100,7 +96,7 @@ case class SlidingWindow[Region <: HasReferenceRegion](halfWindowSize: Long, raw
       val newRegionsBuilder = mutable.ArrayBuffer.newBuilder[Region]
       while (sortedRegions.nonEmpty && sortedRegions.head.start <= locus + halfWindowSize) {
         val region = sortedRegions.next()
-        if (overlaps(region)) newRegionsBuilder += region
+        if (region.overlapsLocus(locus, halfWindowSize)) newRegionsBuilder += region
       }
       newRegionsBuilder.result
     }
