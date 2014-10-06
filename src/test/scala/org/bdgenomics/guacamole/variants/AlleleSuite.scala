@@ -1,8 +1,7 @@
 package org.bdgenomics.guacamole.variants
 
-import org.bdgenomics.guacamole.{TestUtil, Bases}
-import org.scalatest.{Matchers, FunSuite}
-
+import org.bdgenomics.guacamole.{ TestUtil, Bases }
+import org.scalatest.{ Matchers, FunSuite }
 
 class AlleleSuite extends FunSuite with Matchers {
 
@@ -18,7 +17,6 @@ class AlleleSuite extends FunSuite with Matchers {
 
     val insertion = Allele(Seq(Bases.T), Seq(Bases.T, Bases.A, Bases.A))
     insertion.isVariant should be(true)
-
 
   }
 

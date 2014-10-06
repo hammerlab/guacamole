@@ -51,7 +51,7 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
       pileup => callVariantsAtLocus(pileup, minAlignmentQuality).iterator)
     readSet.mappedReads.unpersist()
 
-    val filteredGenotypes = GenotypeFilter(genotypes, args).flatMap(AlleleConversions.calledAlleleToADAMGenotype(_))
+    val filteredGenotypes = GenotypeFilter(genotypes, args).flatMap(AlleleConversions.calledAlleleToADAMGenotype)
     Common.writeVariantsFromArguments(args, filteredGenotypes)
     if (args.truthGenotypesFile != "")
       GenotypesEvaluator.printGenotypeConcordance(args, filteredGenotypes, sc)
