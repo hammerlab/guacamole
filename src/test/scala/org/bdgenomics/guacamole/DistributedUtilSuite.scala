@@ -19,12 +19,11 @@
 package org.bdgenomics.guacamole
 
 import org.apache.spark.rdd.RDD
-import org.bdgenomics.formats.avro.{ GenotypeAllele, Genotype }
-import org.bdgenomics.guacamole.callers.ThresholdVariantCaller
-import org.bdgenomics.guacamole.pileup.{ Pileup, PileupElement }
-import org.bdgenomics.guacamole.reads.MappedRead
+import org.bdgenomics.formats.avro.{Genotype, GenotypeAllele}
 import org.bdgenomics.guacamole.TestUtil.assertBases
-import org.bdgenomics.guacamole.TestUtil.Implicits._
+import org.bdgenomics.guacamole.callers.ThresholdVariantCaller
+import org.bdgenomics.guacamole.pileup.{Pileup, PileupElement}
+import org.bdgenomics.guacamole.reads.MappedRead
 import org.scalatest.Matchers
 
 import scala.collection.JavaConversions._
@@ -314,5 +313,31 @@ class DistributedUtilSuite extends TestUtil.SparkFunSuite with Matchers {
     genotypes.head.getVariant.getReferenceAllele.toString should be("T")
     genotypes.head.getVariant.getAlternateAllele.toString should be("C")
     genotypes.head.getAlleles.toList should be(List(GenotypeAllele.Alt, GenotypeAllele.Alt))
+  }
+
+  sparkTest("test window fold parallelism 5; average read depth") {
+
+    val reads = sc.parallelize(Seq(
+      TestUtil.makeRead("TCGATCGATT", "10M", "10", 1),
+      TestUtil.makeRead("TCGATCGATT", "10M", "10", 4),
+      TestUtil.makeRead("TCGATCGACC", "10M", "10", 7)))
+
+    val counts = DistributedUtil.windowFoldLoci(
+      Seq(reads),
+      DistributedUtil.partitionLociUniformly(3, LociSet.parse("chr1:1-10")),
+      false,
+      0,
+      (0L, 0L),
+      (averageDepth: Tuple2[Long, Long], windows: Seq[SlidingWindow[MappedRead]]) => {
+        val currentDepth = windows.map(w => w.currentRegions().count(_.overlapsLocus(w.currentLocus))).sum
+        (averageDepth._1 + currentDepth, averageDepth._2 + 1)
+      }
+    )
+    .collect()
+
+    counts.size == 3
+    counts(0) should be (3, 3)
+    counts(1) should be (6, 3)
+    counts(2) should be (9, 3)
   }
 }
