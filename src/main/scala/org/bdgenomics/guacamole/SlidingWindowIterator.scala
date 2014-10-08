@@ -10,24 +10,24 @@ case class SlidingWindowsIterator[Region <: HasReferenceRegion](ranges: Iterator
                                                                 headWindow: SlidingWindow[Region],
                                                                 restWindows: SlidingWindow[Region]*) extends Iterator[Seq[SlidingWindow[Region]]] {
 
-  val windows: Seq[SlidingWindow[Region]] = headWindow :: restWindows.toList
+  private val windows: Seq[SlidingWindow[Region]] = headWindow :: restWindows.toList
 
-  var currentRange: Option[LociMap.SimpleRange] = None
-  var currentLocus: Option[Long] = None
+  private var currentRange: Option[LociMap.SimpleRange] = None
+  private var currentLocus: Option[Long] = None
 
   override def hasNext: Boolean = {
     if (skipEmpty) updateNextNonEmptyLocus() else updateNextLocus()
     currentLocus.isDefined
   }
 
-  val halfWindowSize = headWindow.halfWindowSize
-  def windowsEmpty = windows.forall(_.currentRegions.isEmpty)
+  private val halfWindowSize = headWindow.halfWindowSize
+  private def windowsEmpty = windows.forall(_.currentRegions.isEmpty)
 
   override def next(): Seq[SlidingWindow[Region]] = {
     windows
   }
 
-  def updateNextLocus() = {
+  private def updateNextLocus() = {
     (currentRange, currentLocus) match {
       // Increment locus if within current range
       case (Some(range), Some(locus)) if range.end > locus + 1 => {
@@ -46,7 +46,7 @@ case class SlidingWindowsIterator[Region <: HasReferenceRegion](ranges: Iterator
     }
   }
 
-  def updateNextNonEmptyLocus() = {
+  private def updateNextNonEmptyLocus() = {
     updateNextLocus()
     lazy val nextReadStartOpt = firstStartLocus(windows:_*)
     currentLocus match {
@@ -68,7 +68,7 @@ case class SlidingWindowsIterator[Region <: HasReferenceRegion](ranges: Iterator
    * Helper function. Given some sliding window instances, return the lowest nextStartLocus from any of them. If all of
    * the sliding windows are at the end of the region iterators, return Long.MaxValue.
    */
-  def firstStartLocus(windows: SlidingWindow[Region]*) = {
+  private def firstStartLocus(windows: SlidingWindow[Region]*) = {
     val starts = windows.map(_.nextStartLocus)
     starts.min
   }
