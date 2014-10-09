@@ -409,7 +409,7 @@ object DistributedUtil extends Logging {
       val regionIterator = regionSplitByContigSeq.map(_.next(contig))
       val windows = regionIterator.map(SlidingWindow[M](halfWindowSize, _))
       val ranges = taskLoci.onContig(contig).ranges.iterator
-      result ++= generateFromWindow(SlidingWindowsIterator[M](ranges, skipEmpty = skipEmpty, windows.head, windows.tail:_*))
+      result ++= generateFromWindow(SlidingWindowsIterator[M](ranges, skipEmpty = skipEmpty, windows.head, windows.tail))
       i += 1
     }
     result.iterator
