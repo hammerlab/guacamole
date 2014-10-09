@@ -1,6 +1,12 @@
 package org.bdgenomics.guacamole
 
 /**
+ *
+ * This iterator moves locus by locus through a collection of sliding windows.
+ *
+ * Each call to next advances each SlidingWindow 1 locus (unless skipEmpty is set where it advances to the next non-empty
+ * locus.
+ *
  * @param ranges Collection of ranges the iterator should cover
  * @param skipEmpty Skip loci if the windows contain no overlapping regions
  * @param restWindows Sliding Window of regions
@@ -8,21 +14,37 @@ package org.bdgenomics.guacamole
 case class SlidingWindowsIterator[Region <: HasReferenceRegion](ranges: Iterator[LociMap.SimpleRange],
                                                                 skipEmpty: Boolean,
                                                                 headWindow: SlidingWindow[Region],
-                                                                restWindows: SlidingWindow[Region]*) extends Iterator[Seq[SlidingWindow[Region]]] {
+                                                                restWindows: Seq[SlidingWindow[Region]]) extends Iterator[Seq[SlidingWindow[Region]]] {
 
   private val windows: Seq[SlidingWindow[Region]] = headWindow :: restWindows.toList
 
   private var currentRange: Option[LociMap.SimpleRange] = None
   private var currentLocus: Option[Long] = None
 
+  private val halfWindowSize = headWindow.halfWindowSize
+  private def windowsEmpty = windows.forall(_.currentRegions.isEmpty)
+
+  /**
+   * This advances the sliding window to the next locus if it exists, and if skipEmpty is true the window will be moved
+   * to the next non-empty locus
+   *
+   * @return true if there are locus left to process and if skipEmpty is true, there is a locus with overlapping elements
+   */
   override def hasNext: Boolean = {
     if (skipEmpty) updateNextNonEmptyLocus() else updateNextLocus()
     currentLocus.isDefined
   }
 
-  private val halfWindowSize = headWindow.halfWindowSize
-  private def windowsEmpty = windows.forall(_.currentRegions.isEmpty)
-
+  /**
+   *
+   * Next returns the sequences of windows we are iterating over, which have been advanced to the next locus
+   * The window cover a region of (2 * halfWindowSize + 1) around the currentLocus
+   * and contain all of the elements that overlap that region
+   *
+   * Each call to next() returns windows that been advanced to the next locus (and corresponding overlapping reads are adjusted)
+   *
+   * @return The sliding windows advanced to the next locus (next nonEmpty locus if skipEmpty is true)
+   */
   override def next(): Seq[SlidingWindow[Region]] = {
     windows
   }
