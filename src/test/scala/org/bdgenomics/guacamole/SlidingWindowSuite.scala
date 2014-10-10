@@ -16,8 +16,9 @@
  * limitations under the License.
  */
 
-package org.bdgenomics.guacamole
+package org.bdgenomics.guacamole.windowing
 
+import org.bdgenomics.guacamole.TestUtil
 import org.scalatest.{ Matchers, FunSuite }
 
 class SlidingWindowSuite extends FunSuite with Matchers {
