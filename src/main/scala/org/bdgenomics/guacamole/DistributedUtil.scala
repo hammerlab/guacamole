@@ -10,6 +10,7 @@ import org.bdgenomics.guacamole.Common.Arguments.{ Base, Loci }
 import org.bdgenomics.guacamole.Common._
 import org.bdgenomics.guacamole.pileup.Pileup
 import org.bdgenomics.guacamole.reads.MappedRead
+import org.bdgenomics.guacamole.windowing.{ SlidingWindowsIterator, SlidingWindow }
 import org.kohsuke.args4j.{ Option => Opt }
 
 import scala.collection.mutable.{ ArrayBuffer, HashMap => MutableHashMap }
@@ -235,14 +236,6 @@ object DistributedUtil extends Logging {
   }
 
   /**
-   * Helper function. Given some sliding window instances, return the lowest nextStartLocus from any of them. If all of
-   * the sliding windows are at the end of the region iterators, return Long.MaxValue.
-   */
-  def firstStartLocus[M <: HasReferenceRegion](windows: SlidingWindow[M]*) = {
-    windows.map(_.nextStartLocus.getOrElse(Long.MaxValue)).min
-  }
-
-  /**
    * Flatmap across loci, where at each locus the provided function is passed a Pileup instance.
    *
    * @param skipEmpty If true, the function will only be called at loci that have nonempty pileups, i.e. those
@@ -355,6 +348,9 @@ object DistributedUtil extends Logging {
 
   /**
    *
+   * Computes an aggregate over each task and contig
+   * The user specified aggFunction is used to accumulate a result starting with `initialValue`
+   *
    * @param regionRDDs sequence of region RDDs
    * @param lociPartitions loci to consider, partitioned into tasks
    * @param skipEmpty If True, empty windows (no regions within the window) will be skipped
@@ -386,6 +382,9 @@ object DistributedUtil extends Logging {
   }
 
   /**
+   *
+   * Generates a sequence of results from each task (using the `generateFromWindow` function)
+   * and collects them into a single iterator
    *
    * @param taskRegionsSeq Elements of type M to process for this task
    * @param taskLoci Set of loci to process for this task

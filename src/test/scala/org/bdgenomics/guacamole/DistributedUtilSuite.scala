@@ -19,11 +19,12 @@
 package org.bdgenomics.guacamole
 
 import org.apache.spark.rdd.RDD
-import org.bdgenomics.formats.avro.{Genotype, GenotypeAllele}
+import org.bdgenomics.formats.avro.{ Genotype, GenotypeAllele }
 import org.bdgenomics.guacamole.TestUtil.assertBases
 import org.bdgenomics.guacamole.callers.ThresholdVariantCaller
-import org.bdgenomics.guacamole.pileup.{Pileup, PileupElement}
+import org.bdgenomics.guacamole.pileup.{ Pileup, PileupElement }
 import org.bdgenomics.guacamole.reads.MappedRead
+import org.bdgenomics.guacamole.windowing.SlidingWindow
 import org.scalatest.Matchers
 
 import scala.collection.JavaConversions._
@@ -333,11 +334,11 @@ class DistributedUtilSuite extends TestUtil.SparkFunSuite with Matchers {
         (averageDepth._1 + currentDepth, averageDepth._2 + 1)
       }
     )
-    .collect()
+      .collect()
 
-    counts.size == 3
-    counts(0) should be (3, 3)
-    counts(1) should be (6, 3)
-    counts(2) should be (9, 3)
+    counts.size should be(3)
+    counts(0) should be(3, 3)
+    counts(1) should be(6, 3)
+    counts(2) should be(9, 3)
   }
 }
