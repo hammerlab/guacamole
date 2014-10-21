@@ -9,34 +9,36 @@ import scala.collection.JavaConversions
  */
 object AlleleConversions {
 
-  implicit def calledAlleleToADAMGenotype(calledGenotype: CalledAllele): Seq[ADAMGenotype] = {
+  implicit def calledAlleleToADAMGenotype(calledAllele: CalledAllele): Seq[ADAMGenotype] = {
     Seq(
       ADAMGenotype.newBuilder
         .setAlleles(JavaConversions.seqAsJavaList(Seq(GenotypeAllele.Ref, GenotypeAllele.Alt)))
-        .setSampleId(calledGenotype.sampleName.toCharArray)
-        .setGenotypeQuality(calledGenotype.evidence.phredScaledLikelihood)
-        .setReadDepth(calledGenotype.evidence.readDepth)
+        .setSampleId(calledAllele.sampleName.toCharArray)
+        .setGenotypeQuality(calledAllele.evidence.phredScaledLikelihood)
+        .setReadDepth(calledAllele.evidence.readDepth)
         .setExpectedAlleleDosage(
-          calledGenotype.evidence.alleleReadDepth.toFloat / calledGenotype.evidence.readDepth
+          calledAllele.evidence.alleleReadDepth.toFloat / calledAllele.evidence.readDepth
         )
-        .setAlternateReadDepth(calledGenotype.evidence.alleleReadDepth)
-        .setVariant(calledGenotype.adamVariant)
+        .setReferenceReadDepth(calledAllele.evidence.readDepth - calledAllele.evidence.alleleReadDepth)
+        .setAlternateReadDepth(calledAllele.evidence.alleleReadDepth)
+        .setVariant(calledAllele.adamVariant)
         .build
     )
   }
 
-  implicit def calledSomaticAlleleToADAMGenotype(calledGenotype: CalledSomaticAllele): Seq[ADAMGenotype] = {
+  implicit def calledSomaticAlleleToADAMGenotype(calledAllele: CalledSomaticAllele): Seq[ADAMGenotype] = {
     Seq(
       ADAMGenotype.newBuilder
         .setAlleles(JavaConversions.seqAsJavaList(Seq(GenotypeAllele.Ref, GenotypeAllele.Alt)))
-        .setSampleId(calledGenotype.sampleName.toCharArray)
-        .setGenotypeQuality(calledGenotype.phredScaledSomaticLikelihood)
-        .setReadDepth(calledGenotype.tumorEvidence.readDepth)
+        .setSampleId(calledAllele.sampleName.toCharArray)
+        .setGenotypeQuality(calledAllele.phredScaledSomaticLikelihood)
+        .setReadDepth(calledAllele.tumorEvidence.readDepth)
         .setExpectedAlleleDosage(
-          calledGenotype.tumorEvidence.alleleReadDepth.toFloat / calledGenotype.tumorEvidence.readDepth
+          calledAllele.tumorEvidence.alleleReadDepth.toFloat / calledAllele.tumorEvidence.readDepth
         )
-        .setAlternateReadDepth(calledGenotype.tumorEvidence.alleleReadDepth)
-        .setVariant(calledGenotype.adamVariant)
+        .setReferenceReadDepth(calledAllele.tumorEvidence.readDepth - calledAllele.tumorEvidence.alleleReadDepth)
+        .setAlternateReadDepth(calledAllele.tumorEvidence.alleleReadDepth)
+        .setVariant(calledAllele.adamVariant)
         .build
     )
   }
