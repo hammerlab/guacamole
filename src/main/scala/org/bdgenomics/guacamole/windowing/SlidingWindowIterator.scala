@@ -1,6 +1,6 @@
 package org.bdgenomics.guacamole.windowing
 
-import org.bdgenomics.guacamole.{ LociMap, HasReferenceRegion }
+import org.bdgenomics.guacamole.{HasReferenceRegion, LociMap}
 
 /**
  *
