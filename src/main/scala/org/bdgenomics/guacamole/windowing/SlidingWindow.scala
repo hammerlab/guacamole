@@ -18,10 +18,10 @@
 
 package org.bdgenomics.guacamole.windowing
 
+import org.apache.spark.Logging
 import org.bdgenomics.guacamole.HasReferenceRegion
 
 import scala.collection.mutable
-import org.apache.spark.Logging
 
 /**
  * Suppose we have a set of loci on a given contig and some objects that are mapped to that contig, and at each locus we
