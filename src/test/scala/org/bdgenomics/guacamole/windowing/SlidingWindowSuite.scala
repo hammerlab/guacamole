@@ -19,7 +19,7 @@
 package org.bdgenomics.guacamole.windowing
 
 import org.bdgenomics.guacamole.TestUtil
-import org.scalatest.{ Matchers, FunSuite }
+import org.scalatest.{FunSuite, Matchers}
 
 class SlidingWindowSuite extends FunSuite with Matchers {
 
