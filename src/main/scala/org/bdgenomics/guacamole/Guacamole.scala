@@ -23,6 +23,7 @@ import java.util.logging.Level
 import org.bdgenomics.guacamole.commands._
 import org.bdgenomics.adam.util.ParquetLogger
 import org.bdgenomics.guacamole.Common.progress
+import org.bdgenomics.guacamole.commands.GenomeSubstrings
 
 /**
  * Guacamole main class.
@@ -37,7 +38,9 @@ object Guacamole extends Logging {
     GermlineThresholdCaller,
     GermlineStandardCaller,
     SomaticStandardCaller,
-    SomaticPoCIndelCaller)
+    SomaticPoCIndelCaller,
+    GenomeSubstrings
+  )
 
   private def printUsage() = {
     println("Usage: java ... <command> [other args]\n")
