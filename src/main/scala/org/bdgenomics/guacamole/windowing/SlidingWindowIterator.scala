@@ -6,8 +6,8 @@ import org.bdgenomics.guacamole.{HasReferenceRegion, LociMap}
  *
  * This iterator moves locus by locus through a collection of sliding windows.
  *
- * Each call to next advances each SlidingWindow one locus (unless skipEmpty is set where it advances to the next non-empty
- * locus).
+ * Each call to next advances each SlidingWindow one locus (unless skipEmpty is set where it advances to the next
+ * non-empty locus).
  *
  * @param ranges Collection of ranges the iterator should cover
  * @param skipEmpty Skip loci if the windows contain no overlapping regions
@@ -16,25 +16,33 @@ import org.bdgenomics.guacamole.{HasReferenceRegion, LociMap}
 case class SlidingWindowsIterator[Region <: HasReferenceRegion](ranges: Iterator[LociMap.SimpleRange],
                                                                 skipEmpty: Boolean,
                                                                 headWindow: SlidingWindow[Region],
-                                                                restWindows: Seq[SlidingWindow[Region]]) extends Iterator[Seq[SlidingWindow[Region]]] {
+                                                                restWindows: Seq[SlidingWindow[Region]])
+  extends Iterator[Seq[SlidingWindow[Region]]] {
 
   private val windows: Seq[SlidingWindow[Region]] = headWindow :: restWindows.toList
 
   private var currentRange: LociMap.SimpleRange = ranges.next()
 
   private var currentLocus: Long = -1L
-  private var nextLocus: Option[Long] = if (skipEmpty) findNextNonEmptyLocus(currentRange.start) else Some(currentRange.start)
+  private var nextLocus: Option[Long] =
+    if (skipEmpty)
+      findNextNonEmptyLocus(currentRange.start)
+    else
+      Some(currentRange.start)
 
   // Check that there are regions in the window and the final base of the final region is before this locus
-  private def currentElementsOverlapLocus(locus: Long): Boolean = windows.exists(w => w.endOfRange().exists(locus < _))
+  private def currentElementsOverlapLocus(locus: Long): Boolean =
+    windows.exists(_.endOfRange().exists(locus < _))
 
   // Check that the next element in any window overlaps [[locus]]
-  private def nextElementOverlapsLocus(locus: Long): Boolean = windows.exists(w => w.nextElement.exists(_.overlapsLocus(locus)))
+  private def nextElementOverlapsLocus(locus: Long): Boolean =
+    windows.exists(_.nextElement.exists(_.overlapsLocus(locus)))
 
   /**
    * Whether there are any more loci left to process
    *
-   * @return true if there are locus left to process and if skipEmpty is true, there is a locus with overlapping elements
+   * @return true if there are locus left to process and if skipEmpty is true, there is a locus with overlapping
+   *         elements
    */
   override def hasNext: Boolean = {
     nextLocus.isDefined
@@ -45,7 +53,8 @@ case class SlidingWindowsIterator[Region <: HasReferenceRegion](ranges: Iterator
    * The window cover a region of (2 * halfWindowSize + 1) around the currentLocus
    * and contain all of the elements that overlap that region
    *
-   * Each call to next() returns windows that been advanced to the next locus (and corresponding overlapping reads are adjusted)
+   * Each call to next() returns windows that been advanced to the next locus (and corresponding overlapping reads are
+   * adjusted)
    *
    * @return The sliding windows advanced to the next locus (next nonEmpty locus if skipEmpty is true)
    */
