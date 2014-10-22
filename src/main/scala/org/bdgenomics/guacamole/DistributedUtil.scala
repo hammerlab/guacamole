@@ -399,7 +399,7 @@ object DistributedUtil extends Logging {
                                                                       skipEmpty: Boolean,
                                                                       halfWindowSize: Long,
                                                                       generateFromWindow: (SlidingWindowsIterator[M] => Iterator[T])): Iterator[T] = {
-    val regionSplitByContigSeq = taskRegionsSeq.map(taskRegions => new RegionsByContig(taskRegions))
+    val regionSplitByContigSeq = taskRegionsSeq.map(new RegionsByContig(_))
     val result = new ArrayBuffer[T]
     val numContigs = taskLoci.contigs.size
     var i = 0
@@ -408,7 +408,14 @@ object DistributedUtil extends Logging {
       val regionIterator = regionSplitByContigSeq.map(_.next(contig))
       val windows = regionIterator.map(SlidingWindow[M](halfWindowSize, _))
       val ranges = taskLoci.onContig(contig).ranges.iterator
-      result ++= generateFromWindow(SlidingWindowsIterator[M](ranges, skipEmpty = skipEmpty, windows.head, windows.tail))
+      result ++= generateFromWindow(
+        SlidingWindowsIterator[M](
+          ranges,
+          skipEmpty = skipEmpty,
+          windows.head,
+          windows.tail
+        )
+      )
       i += 1
     }
     result.iterator
@@ -486,18 +493,19 @@ object DistributedUtil extends Logging {
     }
 
     // Expand regions into (task, region) pairs for each region RDD.
-    val taskNumberRegionPairsRDDs = regionRDDs.map(regions => regions.flatMap(region => {
-      val singleContig = lociPartitionsBoxed.value.onContig(region.referenceContig)
-      val thisRegionsTasks = singleContig.getAll(region.start - halfWindowSize, region.end.get + halfWindowSize)
+    val taskNumberRegionPairsRDDs: Seq[RDD[(Long, M)]] =
+      regionRDDs.map(_.flatMap(region => {
+        val singleContig = lociPartitionsBoxed.value.onContig(region.referenceContig)
+        val thisRegionsTasks = singleContig.getAll(region.start - halfWindowSize, region.end.get + halfWindowSize)
 
-      // Update counters
-      totalRegions += 1
-      if (thisRegionsTasks.nonEmpty) relevantRegions += 1
-      expandedRegions += thisRegionsTasks.size
+        // Update counters
+        totalRegions += 1
+        if (thisRegionsTasks.nonEmpty) relevantRegions += 1
+        expandedRegions += thisRegionsTasks.size
 
-      // Return this region, duplicated for each task it is assigned to.
-      thisRegionsTasks.map(task => (task, region))
-    }))
+        // Return this region, duplicated for each task it is assigned to.
+        thisRegionsTasks.map((_, region))
+      }))
 
     // Run the task on each partition. Keep track of the number of regions assigned to each task in an accumulator, so
     // we can print out a summary of the skew.
