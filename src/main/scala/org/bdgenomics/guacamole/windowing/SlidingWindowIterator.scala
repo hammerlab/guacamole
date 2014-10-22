@@ -1,6 +1,6 @@
 package org.bdgenomics.guacamole.windowing
 
-import org.bdgenomics.guacamole.{HasReferenceRegion, LociMap}
+import org.bdgenomics.guacamole.{ HasReferenceRegion, LociMap }
 
 /**
  *
@@ -17,7 +17,7 @@ case class SlidingWindowsIterator[Region <: HasReferenceRegion](ranges: Iterator
                                                                 skipEmpty: Boolean,
                                                                 headWindow: SlidingWindow[Region],
                                                                 restWindows: Seq[SlidingWindow[Region]])
-  extends Iterator[Seq[SlidingWindow[Region]]] {
+    extends Iterator[Seq[SlidingWindow[Region]]] {
 
   private val windows: Seq[SlidingWindow[Region]] = headWindow :: restWindows.toList
 
