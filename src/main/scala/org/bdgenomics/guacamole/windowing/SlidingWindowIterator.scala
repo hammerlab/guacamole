@@ -76,7 +76,7 @@ case class SlidingWindowsIterator[Region <: HasReferenceRegion](ranges: Iterator
    * @param locus Current locus that iterator is at
    * @return Next locus > [[locus]] to process, None if none exist
    */
-  def findNextLocus(locus: Long): Option[Long] = {
+  private def findNextLocus(locus: Long): Option[Long] = {
     var nextLocusInRangeOpt = nextLocusInRange(locus + 1)
 
     // If we are skipping empty loci and the the current window does not overlap the next locus
@@ -90,7 +90,7 @@ case class SlidingWindowsIterator[Region <: HasReferenceRegion](ranges: Iterator
    * @param locus Find next non-empty locus >= [[locus]]
    * @return Next non-empty locus >= [[locus]], or None if none exist
    */
-  def findNextNonEmptyLocus(locus: Long): Option[Long] = {
+  private def findNextNonEmptyLocus(locus: Long): Option[Long] = {
 
     var nextLocusInRangeOpt: Option[Long] = Some(locus)
     // Find the next loci with overlapping elements that is in a valid range
@@ -115,7 +115,7 @@ case class SlidingWindowsIterator[Region <: HasReferenceRegion](ranges: Iterator
    * @param locus locus to find in ranges
    * @return The next locus >= [[locus]] which is contained in ranges
    */
-  def nextLocusInRange(locus: Long): Option[Long] = {
+  private def nextLocusInRange(locus: Long): Option[Long] = {
     if (currentRange.end > locus) {
       Some(locus)
     } else if (ranges.hasNext) {
