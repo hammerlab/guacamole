@@ -3,14 +3,14 @@ package org.bdgenomics.guacamole.callers
 import org.apache.spark.Logging
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.cli.Args4j
-import org.bdgenomics.guacamole._
 import org.bdgenomics.guacamole.Common.Arguments.{ Output, TumorNormalReads }
-import org.bdgenomics.guacamole.filters.{ SomaticAlternateReadDepthFilter, SomaticReadDepthFilter, PileupFilter, SomaticGenotypeFilter }
+import org.bdgenomics.guacamole._
 import org.bdgenomics.guacamole.filters.PileupFilter.PileupFilterArguments
 import org.bdgenomics.guacamole.filters.SomaticGenotypeFilter.SomaticGenotypeFilterArguments
+import org.bdgenomics.guacamole.filters.{ PileupFilter, SomaticAlternateReadDepthFilter, SomaticGenotypeFilter, SomaticReadDepthFilter }
 import org.bdgenomics.guacamole.pileup.Pileup
 import org.bdgenomics.guacamole.reads.Read
-import org.bdgenomics.guacamole.variants.{ Allele, CalledSomaticAllele, AlleleConversions, AlleleEvidence }
+import org.bdgenomics.guacamole.variants.{ AlleleConversions, AlleleEvidence, CalledSomaticAllele }
 import org.kohsuke.args4j.{ Option => Opt }
 
 /**
@@ -61,9 +61,6 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
 
     val filterMultiAllelic = args.filterMultiAllelic
     val minAlignmentQuality = args.minAlignmentQuality
-    val maxReadDepth = args.maxTumorReadDepth
-
-    val oddsThreshold = args.oddsThreshold
 
     val loci = Common.loci(args, normalReads)
     val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(
@@ -72,6 +69,25 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
       tumorReads.mappedReads,
       normalReads.mappedReads
     )
+
+    if (args.approxDepthLimits) {
+
+      val averageTumorReadDepth = tumorReads.libraryMetrics(lociPartitions).averageReadDepth
+
+      // Read depth thresholds are set to avg(D) +/- 3 * sqrt(avg(D)) See Li. (2014) - Towards Better Understanding of Variant Artifacts
+      args.maxTumorReadDepth = Math.round(averageTumorReadDepth + 4 * math.sqrt(averageTumorReadDepth)).toInt
+      args.minTumorReadDepth = Math.round(averageTumorReadDepth - 4 * math.sqrt(averageTumorReadDepth)).toInt
+      args.minNormalReadDepth = Math.round(averageTumorReadDepth - 4 * math.sqrt(averageTumorReadDepth)).toInt
+
+      Common.progress("Setting read depth limits: minTumorReadDepth: %d, maxTumorReadDepth: %d, minNormalReadDepth: %d"
+        .format(args.minTumorReadDepth, args.maxTumorReadDepth, args.minNormalReadDepth))
+    }
+
+    val minTumorReadDepth = args.minTumorReadDepth
+    val maxTumorReadDepth = args.maxTumorReadDepth
+    val minNormalReadDepth = args.minNormalReadDepth
+
+    val oddsThreshold = args.oddsThreshold
 
     var potentialGenotypes: RDD[CalledSomaticAllele] =
       DistributedUtil.pileupFlatMapTwoRDDs[CalledSomaticAllele](
@@ -88,7 +104,7 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
             minAlignmentForComplexity,
             minAlignmentQuality,
             filterMultiAllelic,
-            maxReadDepth
+            maxTumorReadDepth
           ).iterator
       )
 
@@ -96,9 +112,9 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
     potentialGenotypes =
       SomaticReadDepthFilter(
         potentialGenotypes,
-        args.minTumorReadDepth,
-        args.maxTumorReadDepth,
-        args.minNormalReadDepth
+        minTumorReadDepth,
+        maxTumorReadDepth,
+        minNormalReadDepth
       )
 
     potentialGenotypes =
@@ -188,7 +204,7 @@ object SomaticLogOddsVariantCaller extends Command with Serializable with Loggin
     // For now, we skip loci that have no reads mapped. We may instead want to emit NoCall in this case.
     if (filteredTumorPileup.elements.isEmpty
       || filteredNormalPileup.elements.isEmpty
-      || filteredTumorPileup.referenceDepth == filteredTumorPileup.depth // skip computation if no alternate reads
+      || filteredTumorPileup.referenceDepth == filteredTumorPileup.depth // skip computation if no alternate bases
       || filteredTumorPileup.depth > maxReadDepth // skip abnormally deep pileups
       || filteredNormalPileup.depth > maxReadDepth)
       return Seq.empty

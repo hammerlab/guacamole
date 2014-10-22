@@ -330,43 +330,89 @@ object DistributedUtil extends Logging {
     halfWindowSize: Long,
     initialState: S,
     function: (S, Seq[SlidingWindow[M]]) => (S, Iterator[T])): RDD[T] = {
-    windowTaskFlatMapMultipleRDDs(regionRDDs, lociPartitions, halfWindowSize, (task, taskLoci, taskRegionsSeq: Seq[Iterator[M]]) => {
-      val regionSplitByContigSeq = taskRegionsSeq.map(taskRegions => new RegionsByContig(taskRegions))
-      val result = new ArrayBuffer[T]
-      val numContigs = taskLoci.contigs.size
-      var i = 0
-      while (i < numContigs) {
-        val contig = taskLoci.contigs(i)
-        val regionIterator = regionSplitByContigSeq.map(_.next(contig))
-        val windows = regionIterator.map(SlidingWindow[M](halfWindowSize, _))
-        def windowsEmpty = windows.forall(_.currentRegions.isEmpty)
-        val ranges = taskLoci.onContig(contig).ranges.iterator
-        var state = initialState
-        var locus = 0L
-        while (ranges.hasNext) {
-          val range = ranges.next()
-          locus = math.max(range.start, locus)
-          while (locus < range.end) {
-            lazy val nextLocusWithRegions = firstStartLocus(windows: _*)
-            if (skipEmpty && windowsEmpty && nextLocusWithRegions - halfWindowSize > locus) {
-              // Fast forward.
-              locus = nextLocusWithRegions - halfWindowSize
-            } else {
-              // Run at this locus.
-              windows.foreach(_.setCurrentLocus(locus))
-              if (!(skipEmpty && windowsEmpty)) {
-                val (newState, newElements) = function(state, windows)
-                state = newState
-                result ++= newElements
-              }
-              locus += 1
-            }
+    windowTaskFlatMapMultipleRDDs(
+      regionRDDs,
+      lociPartitions,
+      halfWindowSize,
+      (task, taskLoci, taskRegionsSeq: Seq[Iterator[M]]) => {
+        collectByContig[M, T](
+          taskRegionsSeq,
+          taskLoci,
+          skipEmpty,
+          halfWindowSize,
+          (windowsIterator) => {
+            var lastState: S = initialState
+            windowsIterator.flatMap(windows => {
+              val (state, elements) = function(lastState, windows)
+              lastState = state
+              elements
+            })
           }
-        }
-        i += 1
+        )
       }
-      result.iterator
-    })
+    )
+  }
+
+  /**
+   *
+   * @param regionRDDs sequence of region RDDs
+   * @param lociPartitions loci to consider, partitioned into tasks
+   * @param skipEmpty If True, empty windows (no regions within the window) will be skipped
+   * @param halfWindowSize A window centered at locus = l will contain regions overlapping l +/- halfWindowSize
+   * @param initialValue Initial value for aggregation
+   * @param aggFunction Function to aggregate windows, folds the windows into the aggregate value so far
+   * @tparam T Type of the aggregation value
+   * @return Iterator[T], the aggregate values collected over contigs
+   */
+  def windowFoldLoci[M <: HasReferenceRegion: ClassTag, T: ClassTag](regionRDDs: Seq[RDD[M]],
+                                                                     lociPartitions: LociMap[Long],
+                                                                     skipEmpty: Boolean,
+                                                                     halfWindowSize: Long,
+                                                                     initialValue: T,
+                                                                     aggFunction: (T, Seq[SlidingWindow[M]]) => T): RDD[T] = {
+    windowTaskFlatMapMultipleRDDs(
+      regionRDDs,
+      lociPartitions,
+      halfWindowSize,
+      (task, taskLoci, taskRegionsSeq: Seq[Iterator[M]]) => {
+        collectByContig[M, T](
+          taskRegionsSeq,
+          taskLoci,
+          skipEmpty,
+          halfWindowSize,
+          (windowsIterator) => Iterator.single(windowsIterator.foldLeft(initialValue)(aggFunction)))
+      }
+    )
+  }
+
+  /**
+   *
+   * @param taskRegionsSeq Elements of type M to process for this task
+   * @param taskLoci Set of loci to process for this task
+   * @param skipEmpty If True, empty windows (no regions within the window) will be skipped
+   * @param halfWindowSize A window centered at locus = l will contain regions overlapping l +/- halfWindowSize
+   * @param generateFromWindow Function that maps window to result type
+   * @tparam T result data type
+   * @return Iterator[T] collected from each contig
+   */
+  def collectByContig[M <: HasReferenceRegion: ClassTag, T: ClassTag](taskRegionsSeq: Seq[Iterator[M]],
+                                                                      taskLoci: LociSet,
+                                                                      skipEmpty: Boolean,
+                                                                      halfWindowSize: Long,
+                                                                      generateFromWindow: (SlidingWindowsIterator[M] => Iterator[T])): Iterator[T] = {
+    val regionSplitByContigSeq = taskRegionsSeq.map(taskRegions => new RegionsByContig(taskRegions))
+    val result = new ArrayBuffer[T]
+    val numContigs = taskLoci.contigs.size
+    var i = 0
+    while (i < numContigs) {
+      val contig = taskLoci.contigs(i)
+      val regionIterator = regionSplitByContigSeq.map(_.next(contig))
+      val windows = regionIterator.map(SlidingWindow[M](halfWindowSize, _))
+      val ranges = taskLoci.onContig(contig).ranges.iterator
+      result ++= generateFromWindow(SlidingWindowsIterator[M](ranges, skipEmpty = skipEmpty, windows.head, windows.tail))
+      i += 1
+    }
+    result.iterator
   }
 
   /**
