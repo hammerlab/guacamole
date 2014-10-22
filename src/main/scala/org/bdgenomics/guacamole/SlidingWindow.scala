@@ -101,7 +101,9 @@ case class SlidingWindow[Region <: HasReferenceRegion](halfWindowSize: Long, raw
       newRegionsBuilder.result
     }
     currentRegionsPriorityQueue.enqueue(newRegions: _*)
-    //newRegions(currentRegionsPriorityQueue.forall(overlaps)) // Correctness check.
+    //    currentRegionsPriorityQueue.foreach(region =>
+    //      assert(region.overlapsLocus(locus, halfWindowSize))   // Correctness check.
+    //    )
     newRegions // We return the newly added regions.
   }
 
