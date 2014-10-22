@@ -229,7 +229,7 @@ object DistributedUtil extends Logging {
   private def initOrMovePileup(existing: Option[Pileup], window: SlidingWindow[MappedRead]): Pileup = {
     val locus = window.currentLocus
     existing match {
-      case None         => Pileup(window.newRegions, locus)
+      case None         => Pileup(window.currentRegions(), locus)
       case Some(pileup) => pileup.atGreaterLocus(locus, window.newRegions.iterator)
     }
   }

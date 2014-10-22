@@ -201,6 +201,7 @@ case class Pileup(locus: Long, elements: Seq[PileupElement]) {
 
   }
 }
+
 object Pileup {
   /**
    * Given reads and a locus, returns a [[Pileup]] at the specified locus.
