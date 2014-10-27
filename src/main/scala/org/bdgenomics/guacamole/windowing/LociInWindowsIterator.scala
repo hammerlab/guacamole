@@ -1,25 +1,23 @@
 package org.bdgenomics.guacamole.windowing
 
+import org.bdgenomics.guacamole.DistributedUtil.PerSample
 import org.bdgenomics.guacamole.{ HasReferenceRegion, LociMap }
 
 /**
  *
- * This iterator moves locus by locus through a collection of sliding windows.
+ * This iterator advances each per-sample SlidingWindow to the next locus.
  *
- * Each call to next advances each SlidingWindow one locus (unless skipEmpty is set where it advances to the next
- * non-empty locus).
+ * Each call to next advances each per sample SlidingWindow one locus (unless skipEmpty is set,
+ * where it advances to the next locus where at least one window contains an element)
  *
  * @param ranges Collection of ranges the iterator should cover
  * @param skipEmpty Skip loci if the windows contain no overlapping regions
- * @param restWindows Sliding Window of regions
+ * @param windows Sliding Window of regions
  */
-case class SlidingWindowsIterator[Region <: HasReferenceRegion](ranges: Iterator[LociMap.SimpleRange],
-                                                                skipEmpty: Boolean,
-                                                                headWindow: SlidingWindow[Region],
-                                                                restWindows: Seq[SlidingWindow[Region]])
-    extends Iterator[Seq[SlidingWindow[Region]]] {
-
-  private val windows: Seq[SlidingWindow[Region]] = headWindow :: restWindows.toList
+case class LociInWindowsIterator[Region <: HasReferenceRegion](ranges: Iterator[LociMap.SimpleRange],
+                                                               skipEmpty: Boolean,
+                                                               windows: PerSample[SlidingWindow[Region]])
+    extends Iterator[PerSample[SlidingWindow[Region]]] {
 
   private var currentRange: LociMap.SimpleRange = ranges.next()
 
@@ -30,7 +28,7 @@ case class SlidingWindowsIterator[Region <: HasReferenceRegion](ranges: Iterator
     else
       Some(currentRange.start)
 
-  // Check that there are regions in the window and the final base of the final region is before this locus
+  // Check that there are regions in at least one window and the final base of the final element is before this locus
   private def currentElementsOverlapLocus(locus: Long): Boolean =
     windows.exists(_.endOfRange().exists(locus < _))
 
@@ -49,7 +47,7 @@ case class SlidingWindowsIterator[Region <: HasReferenceRegion](ranges: Iterator
   }
 
   /**
-   * Next returns the sequences of windows we are iterating over, which have been advanced to the next locus
+   * Next returns the sequences of windows we are iterating over, which have been each advanced to the next locus.
    * The window cover a region of (2 * halfWindowSize + 1) around the currentLocus
    * and contain all of the elements that overlap that region
    *
@@ -58,7 +56,7 @@ case class SlidingWindowsIterator[Region <: HasReferenceRegion](ranges: Iterator
    *
    * @return The sliding windows advanced to the next locus (next nonEmpty locus if skipEmpty is true)
    */
-  override def next(): Seq[SlidingWindow[Region]] = {
+  override def next(): PerSample[SlidingWindow[Region]] = {
     nextLocus match {
       case Some(locus) => {
         currentLocus = locus

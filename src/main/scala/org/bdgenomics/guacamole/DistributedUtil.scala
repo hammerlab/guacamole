@@ -10,10 +10,10 @@ import org.bdgenomics.guacamole.Common.Arguments.{ Base, Loci }
 import org.bdgenomics.guacamole.Common._
 import org.bdgenomics.guacamole.pileup.Pileup
 import org.bdgenomics.guacamole.reads.MappedRead
-import org.bdgenomics.guacamole.windowing.{ SlidingWindowsIterator, SlidingWindow }
+import org.bdgenomics.guacamole.windowing.{ LociInWindowsIterator, SlidingWindow }
 import org.kohsuke.args4j.{ Option => Opt }
 
-import scala.collection.mutable.{ ArrayBuffer, HashMap => MutableHashMap }
+import scala.collection.mutable.{ HashMap => MutableHashMap }
 import scala.reflect.ClassTag
 
 object DistributedUtil extends Logging {
@@ -400,7 +400,7 @@ object DistributedUtil extends Logging {
                                                                       taskLoci: LociSet,
                                                                       skipEmpty: Boolean,
                                                                       halfWindowSize: Long,
-                                                                      generateFromWindow: (SlidingWindowsIterator[M] => Iterator[T])): Iterator[T] = {
+                                                                      generateFromWindow: (LociInWindowsIterator[M] => Iterator[T])): Iterator[T] = {
     val regionSplitByContigPerSample: PerSample[RegionsByContig[M]] = taskRegionsPerSample.map(new RegionsByContig(_))
 
     taskLoci.contigs.flatMap(contig => {
@@ -408,11 +408,10 @@ object DistributedUtil extends Logging {
       val windows: PerSample[SlidingWindow[M]] = regionIterator.map(SlidingWindow[M](halfWindowSize, _))
       val ranges: Iterator[LociMap.SimpleRange] = taskLoci.onContig(contig).ranges.iterator
       generateFromWindow(
-        SlidingWindowsIterator[M](
+        LociInWindowsIterator[M](
           ranges,
           skipEmpty = skipEmpty,
-          windows.head,
-          windows.tail
+          windows
         )
       )
     }).iterator
