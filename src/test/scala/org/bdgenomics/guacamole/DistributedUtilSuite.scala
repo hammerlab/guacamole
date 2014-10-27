@@ -318,6 +318,14 @@ class DistributedUtilSuite extends TestUtil.SparkFunSuite with Matchers {
 
   sparkTest("test window fold parallelism 5; average read depth") {
 
+    // 3 reads that overlap at offsets of 3 bases
+    //     0 1 2 3 4 5 6 7 8 9 ....
+    // r1: T C G A T C G A T T
+    // r2:     T C G A T C G A T T
+    // r3:               T C G A T C G A T T
+    // At pos = 0, the depth is 1
+    // At pos = 3, the depth is 2
+    // At pos = 7, the depth is 3
     val reads = sc.parallelize(Seq(
       TestUtil.makeRead("TCGATCGATT", "10M", "10", 1),
       TestUtil.makeRead("TCGATCGATT", "10M", "10", 4),
@@ -326,10 +334,11 @@ class DistributedUtilSuite extends TestUtil.SparkFunSuite with Matchers {
     val counts = DistributedUtil.windowFoldLoci(
       Seq(reads),
       DistributedUtil.partitionLociUniformly(3, LociSet.parse("chr1:1-10")),
-      false,
-      0,
-      (0L, 0L),
-      (averageDepth: Tuple2[Long, Long], windows: Seq[SlidingWindow[MappedRead]]) => {
+      skipEmpty = false,
+      halfWindowSize = 0,
+      initialValue = (0L, 0L),
+      // averageDepth is represented as fraction tuple (numerator, denominator) == (totalDepth, totalLoci)
+      (averageDepth: (Long, Long), windows: Seq[SlidingWindow[MappedRead]]) => {
         val currentDepth = windows.map(w => w.currentRegions().count(_.overlapsLocus(w.currentLocus))).sum
         (averageDepth._1 + currentDepth, averageDepth._2 + 1)
       }
@@ -337,8 +346,8 @@ class DistributedUtilSuite extends TestUtil.SparkFunSuite with Matchers {
       .collect()
 
     counts.size should be(3)
-    counts(0) should be(3, 3)
-    counts(1) should be(6, 3)
-    counts(2) should be(9, 3)
+    counts(0) should be(3, 3) // average depth betwen 1-3 is 3/3 = 1
+    counts(1) should be(6, 3) // average depth betwen 3-7 is 6/3 = 2
+    counts(2) should be(9, 3) // average depth betwen 7-10 is 9/3 = 3
   }
 }
