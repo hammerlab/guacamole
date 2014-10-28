@@ -19,10 +19,10 @@
 package org.bdgenomics.guacamole
 
 import org.apache.spark.rdd.RDD
-import org.bdgenomics.formats.avro.{ Genotype, GenotypeAllele }
+import org.bdgenomics.formats.avro.{Genotype, GenotypeAllele}
 import org.bdgenomics.guacamole.TestUtil.assertBases
 import org.bdgenomics.guacamole.callers.ThresholdVariantCaller
-import org.bdgenomics.guacamole.pileup.{ Pileup, PileupElement }
+import org.bdgenomics.guacamole.pileup.{Pileup, PileupElement}
 import org.bdgenomics.guacamole.reads.MappedRead
 import org.bdgenomics.guacamole.windowing.SlidingWindow
 import org.scalatest.Matchers
@@ -318,22 +318,27 @@ class DistributedUtilSuite extends TestUtil.SparkFunSuite with Matchers {
 
   sparkTest("test window fold parallelism 5; average read depth") {
 
-    // 3 reads that overlap at offsets of 3 bases
-    //     0 1 2 3 4 5 6 7 8 9 ....
-    // r1: T C G A T C G A T T
-    // r2:     T C G A T C G A T T
-    // r3:               T C G A T C G A T T
+    // 4 overlapping reads starting at loci = 0
+    //     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6
+    // r1: T C G A T C G G
+    // r2:   C C C C C C C C
+    // r3:         T C G A T C G A
+    // r4:                   G G G G G G G
     // At pos = 0, the depth is 1
-    // At pos = 3, the depth is 2
-    // At pos = 7, the depth is 3
+    // At pos = 1, 2, 3,  the depth is 2
+    // At pos = 4 through 7, the depth is 3
+    // At pos = 8 - 11 through 11, the depth is 2
+
     val reads = sc.parallelize(Seq(
-      TestUtil.makeRead("TCGATCGATT", "10M", "10", 1),
-      TestUtil.makeRead("TCGATCGATT", "10M", "10", 4),
-      TestUtil.makeRead("TCGATCGACC", "10M", "10", 7)))
+      TestUtil.makeRead("TCGATCGGC", "8M", "8", 0),
+      TestUtil.makeRead("CCCCCCCC", "8M", "8", 1),
+      TestUtil.makeRead("TCGATCGA", "8M", "8", 4),
+      TestUtil.makeRead("GGGGGGG", "7M", "7", 9)))
 
     val counts = DistributedUtil.windowFoldLoci(
       Seq(reads),
-      DistributedUtil.partitionLociUniformly(3, LociSet.parse("chr1:1-10")),
+      // Split loci in 5 partitions - we will compute an aggregate value per partition
+      DistributedUtil.partitionLociUniformly(5, LociSet.parse("chr1:0-20")),
       skipEmpty = false,
       halfWindowSize = 0,
       initialValue = (0L, 0L),
@@ -345,9 +350,11 @@ class DistributedUtilSuite extends TestUtil.SparkFunSuite with Matchers {
     )
       .collect()
 
-    counts.size should be(3)
-    counts(0) should be(3, 3) // average depth betwen 1-3 is 3/3 = 1
-    counts(1) should be(6, 3) // average depth betwen 3-7 is 6/3 = 2
-    counts(2) should be(9, 3) // average depth betwen 7-10 is 9/3 = 3
+    counts.size should be(5)
+    counts(0) should be(7, 4) // average depth between [0, 3] is 7/4 = 2.75
+    counts(1) should be(12, 4) // average depth between [4, 7] is 12/4 = 3
+    counts(2) should be(8, 4) // average depth between [8, 11] is 8/4 = 2
+    counts(3) should be(4, 4) // average depth between [12, 15] is 4/4 = 2
+    counts(4) should be(0, 4) // average depth between [16, 19] is 0/4 = 0
   }
 }
