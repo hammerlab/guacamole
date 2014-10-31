@@ -45,6 +45,12 @@ object Bases {
   val T = "T".getBytes()(0)
   val G = "G".getBytes()(0)
 
+  // Unknown Base
+  val N = "N".getBytes()(0)
+
+  // Unknown alternate base
+  val ALT = "<ALT>".getBytes().toSeq
+
   object BasesOrdering extends Ordering[Seq[Byte]] {
     override def compare(x: Seq[Byte], y: Seq[Byte]): Int = {
       Bases.basesToString(x).compare(Bases.basesToString(y))
