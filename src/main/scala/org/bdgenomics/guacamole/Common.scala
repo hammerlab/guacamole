@@ -231,7 +231,7 @@ object Common extends Logging {
         })
         partitionNum += 1
       }
-      out.write("\n".toByte)
+      out.write("\n".getBytes())
       generator.close()
       coalescedSubsetGenotypes.unpersist()
     } else if (outputPath.toLowerCase.endsWith(".vcf")) {
