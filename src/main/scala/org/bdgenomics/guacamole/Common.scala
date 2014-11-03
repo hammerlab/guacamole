@@ -237,7 +237,7 @@ object Common extends Logging {
     } else if (outputPath.toLowerCase.endsWith(".vcf")) {
       progress("Writing genotypes to VCF file: %s.".format(outputPath))
       val sc = subsetGenotypes.sparkContext
-      sc.adamVCFSave(outputPath, subsetGenotypes.toVariantContext.coalesce(1))
+      sc.adamVCFSave(outputPath, subsetGenotypes.toVariantContext.coalesce(1, shuffle = true))
     } else {
       progress("Writing genotypes to: %s.".format(outputPath))
       subsetGenotypes.adamSave(outputPath,
