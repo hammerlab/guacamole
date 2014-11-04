@@ -1,4 +1,4 @@
-package org.bdgenomics.guacamole.callers
+package org.bdgenomics.guacamole.commands
 
 import org.apache.spark.Logging
 import org.apache.spark.rdd.RDD
@@ -11,9 +11,9 @@ import org.bdgenomics.guacamole.reads.Read
 
 import scala.collection.JavaConversions
 
-object IndelPoCCaller extends Command with Serializable with Logging {
+object SomaticPoCIndelCaller extends Command with Serializable with Logging {
 
-  override val name = "indel-poc"
+  override val name = "somatic-poc"
   override val description = "call simple insertion and deletion variants between a tumor and a normal"
 
   private class Arguments

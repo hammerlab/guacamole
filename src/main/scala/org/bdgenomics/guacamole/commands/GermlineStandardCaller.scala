@@ -1,14 +1,13 @@
-package org.bdgenomics.guacamole.callers
+package org.bdgenomics.guacamole.commands
 
 import org.apache.spark.Logging
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.cli.Args4j
 import org.bdgenomics.adam.util.PhredUtils
 import org.bdgenomics.guacamole.variants.{ AlleleEvidence, Genotype, AlleleConversions, CalledAllele }
-import org.bdgenomics.guacamole.{ DelayedMessages, Common, DistributedUtil, Command }
+import org.bdgenomics.guacamole._
 import org.bdgenomics.guacamole.Common.Arguments._
-import org.bdgenomics.guacamole.concordance.GenotypesEvaluator
-import org.bdgenomics.guacamole.concordance.GenotypesEvaluator.GenotypeConcordance
+import Concordance.ConcordanceArgs
 import org.bdgenomics.guacamole.filters.GenotypeFilter.GenotypeFilterArguments
 import org.bdgenomics.guacamole.filters.PileupFilter.PileupFilterArguments
 import org.bdgenomics.guacamole.filters.{ GenotypeFilter, QualityAlignedReadsFilter }
@@ -19,12 +18,12 @@ import org.kohsuke.args4j.Option
 /**
  * Simple Bayesian variant caller implementation that uses the base and read quality score
  */
-object BayesianQualityVariantCaller extends Command with Serializable with Logging {
-  override val name = "uniformbayes"
-  override val description = "call variants using a simple quality based probability"
+object GermlineStandardCaller extends Command with Serializable with Logging {
+  override val name = "germline-standard"
+  override val description = "call variants using a simple quality-based probability"
 
   private class Arguments extends Base
-      with Output with Reads with GenotypeConcordance with GenotypeFilterArguments with PileupFilterArguments with DistributedUtil.Arguments {
+      with Output with Reads with ConcordanceArgs with GenotypeFilterArguments with PileupFilterArguments with DistributedUtil.Arguments {
 
     @Option(name = "-emit-ref", usage = "Output homozygous reference calls.")
     var emitRef: Boolean = false
@@ -54,7 +53,7 @@ object BayesianQualityVariantCaller extends Command with Serializable with Loggi
     val filteredGenotypes = GenotypeFilter(genotypes, args).flatMap(AlleleConversions.calledAlleleToADAMGenotype)
     Common.writeVariantsFromArguments(args, filteredGenotypes)
     if (args.truthGenotypesFile != "")
-      GenotypesEvaluator.printGenotypeConcordance(args, filteredGenotypes, sc)
+      Concordance.printGenotypeConcordance(args, filteredGenotypes, sc)
 
     DelayedMessages.default.print()
   }
