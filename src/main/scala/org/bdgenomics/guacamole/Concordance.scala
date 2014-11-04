@@ -1,23 +1,26 @@
-package org.bdgenomics.guacamole.concordance
+package org.bdgenomics.guacamole
 
-import org.bdgenomics.guacamole.{ Common, Command }
-import org.apache.spark.{ SparkContext, Logging }
+import org.apache.spark.SparkContext
+import java.util.EnumSet
 import org.kohsuke.args4j.Option
-import org.bdgenomics.adam.cli.Args4j
+import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.rdd.variation.ADAMVariationContext._
 import org.apache.spark.SparkContext._
 import org.bdgenomics.adam.rdd.variation.ConcordanceTable
-import java.util.EnumSet
-import org.bdgenomics.formats.avro.{ Genotype, GenotypeType }
 import org.bdgenomics.adam.rich.RichVariant
-import org.apache.spark.rdd.RDD
+import org.bdgenomics.formats.avro.{ GenotypeType, Genotype }
 
-object GenotypesEvaluator extends Command with Logging {
-  val name: String = "varianteval"
-  val description: String = "Evaluation script for scoring"
+/**
+ * As a convenience to users experimenting with different callers, some variant callers include functionality to compare
+ * the called variants to a gold standard VCF after they are computed, in the same job. We implement that logic here.
+ *
+ */
+object Concordance {
 
-  trait GenotypeConcordance extends Common.Arguments.Base {
-
+  /**
+   * Arguments that callers can include to support concordance calculations.
+   */
+  trait ConcordanceArgs extends Common.Arguments.Base {
     @Option(name = "-truth", metaVar = "truth", usage = "The truth ADAM or VCF genotypes file")
     var truthGenotypesFile: String = ""
 
@@ -27,20 +30,6 @@ object GenotypesEvaluator extends Command with Logging {
     var excludeIndels: Boolean = false
     @Option(name = "-chr", usage = "Chromosome to filter to")
     var chromosome: String = ""
-  }
-
-  private class Arguments extends GenotypeConcordance {
-
-    @Option(name = "-test", required = true, usage = "The test ADAM genotypes file")
-    var testGenotypesFile: String = ""
-  }
-
-  override def run(rawArgs: Array[String]): Unit = {
-    val args = Args4j[Arguments](rawArgs)
-    val sc = Common.createSparkContext(appName = Some(name))
-
-    val calledGenotypes = Common.loadGenotypes(args.testGenotypesFile, sc)
-    printGenotypeConcordance(args, calledGenotypes, sc)
   }
 
   /**
@@ -112,9 +101,8 @@ object GenotypesEvaluator extends Command with Logging {
    * @param sc spark context
    */
 
-  def printGenotypeConcordance(args: GenotypeConcordance, genotypes: RDD[Genotype], sc: SparkContext) = {
+  def printGenotypeConcordance(args: ConcordanceArgs, genotypes: RDD[Genotype], sc: SparkContext) = {
     val trueGenotypes = Common.loadGenotypes(args.truthGenotypesFile, sc)
-
     val (precision, recall, f1score) = computePrecisionAndRecall(genotypes, trueGenotypes, args.excludeSNVs, args.excludeIndels, args.chromosome)
     println("Precision\tRecall\tF1Score")
     println("%f\t%f\t%f".format(precision, recall, f1score))

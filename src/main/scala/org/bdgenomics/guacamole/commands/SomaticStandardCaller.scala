@@ -1,4 +1,4 @@
-package org.bdgenomics.guacamole.callers
+package org.bdgenomics.guacamole.commands
 
 import org.apache.spark.Logging
 import org.apache.spark.rdd.RDD
@@ -17,16 +17,16 @@ import org.kohsuke.args4j.{ Option => Opt }
 /**
  * Simple subtraction based somatic variant caller
  *
- * This takes two variant callers, calls variants on tumor and normal independently
+ * This takes two variant commands, calls variants on tumor and normal independently
  * and outputs the variants in the tumor sample BUT NOT the normal sample
  *
  * This assumes that both read sets only contain a single sample, otherwise we should compare
  * on a sample identifier when joining the genotypes
  *
  */
-object SomaticLogOddsVariantCaller extends Command with Serializable with Logging {
-  override val name = "logodds-somatic"
-  override val description = "call somatic variants using a two independent caller on tumor and normal"
+object SomaticStandardCaller extends Command with Serializable with Logging {
+  override val name = "somatic-standard"
+  override val description = "call somatic variants using independent callers on tumor and normal"
 
   private class Arguments
       extends DistributedUtil.Arguments
