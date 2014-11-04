@@ -3,14 +3,15 @@ package org.bdgenomics.guacamole.callers
 import org.apache.spark.Logging
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.cli.Args4j
-import org.bdgenomics.guacamole._
 import org.bdgenomics.guacamole.Common.Arguments.{ Output, TumorNormalReads }
-import org.bdgenomics.guacamole.filters.{ SomaticAlternateReadDepthFilter, SomaticReadDepthFilter, PileupFilter, SomaticGenotypeFilter }
+import org.bdgenomics.guacamole._
 import org.bdgenomics.guacamole.filters.PileupFilter.PileupFilterArguments
 import org.bdgenomics.guacamole.filters.SomaticGenotypeFilter.SomaticGenotypeFilterArguments
+import org.bdgenomics.guacamole.filters.{ PileupFilter, SomaticAlternateReadDepthFilter, SomaticGenotypeFilter, SomaticReadDepthFilter }
 import org.bdgenomics.guacamole.pileup.Pileup
 import org.bdgenomics.guacamole.reads.Read
-import org.bdgenomics.guacamole.variants.{ Allele, CalledSomaticAllele, AlleleConversions, AlleleEvidence }
+import org.bdgenomics.guacamole.variants.{ AlleleConversions, AlleleEvidence, CalledSomaticAllele }
+import org.bdgenomics.guacamole.windowing.SlidingWindow
 import org.kohsuke.args4j.{ Option => Opt }
 
 /**

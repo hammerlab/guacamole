@@ -16,10 +16,12 @@
  * limitations under the License.
  */
 
-package org.bdgenomics.guacamole
+package org.bdgenomics.guacamole.windowing
+
+import org.apache.spark.Logging
+import org.bdgenomics.guacamole.HasReferenceRegion
 
 import scala.collection.mutable
-import org.apache.spark.Logging
 
 /**
  * Suppose we have a set of loci on a given contig and some objects that are mapped to that contig, and at each locus we
@@ -34,13 +36,14 @@ import org.apache.spark.Logging
  * of objects are sorted.
  *
  * @param halfWindowSize Number of nucleotide bases to either side of the specified locus to provide regions for. For
- *                       example, if halfWindowSize=5, and our currentLocus=100, then currentRegions will include regions
- *                       that map to anywhere between 95 and 105, inclusive. Set to 0 to consider only regions that
- *                       overlap the exact locus being considered, with no surrounding window.
+ *                       example, if halfWindowSize=5, and our currentLocus=100, then currentRegions will include
+ *                       regions that map to anywhere between 95 and 105, inclusive. Set to 0 to consider only regions
+ *                       that overlap the exact locus being considered, with no surrounding window.
  *
  * @param rawSortedRegions Iterator of regions, sorted by the aligned start locus.
  */
-case class SlidingWindow[Region <: HasReferenceRegion](halfWindowSize: Long, rawSortedRegions: Iterator[Region]) extends Logging {
+case class SlidingWindow[Region <: HasReferenceRegion](halfWindowSize: Long,
+                                                       rawSortedRegions: Iterator[Region]) extends Logging {
   /** The locus currently under consideration. */
   var currentLocus = -1L
 
@@ -72,19 +75,30 @@ case class SlidingWindow[Region <: HasReferenceRegion](halfWindowSize: Long, raw
   }
 
   /**
+   * The highest base covered by the window at [[currentLocus]]
+   *
+   * @return The greater the end of the window (currentLocus + halfWindowSize) or end of the last read in
+   *         [[currentRegions]]
+   */
+  def endOfRange(): Option[Long] = {
+    val lastReadEnd = currentRegionsPriorityQueue.lastOption.map(_.end)
+    lastReadEnd.map(math.max(_, currentLocus + halfWindowSize))
+  }
+
+  /**
    * Advance to the specified locus, which must be greater than the current locus. After calling this, the
    * [[currentRegions]] method will give the overlapping regions at the new locus.
    *
    * @param locus Locus to advance to.
-   * @return The *new regions* that were added as a result of this call. Note that this is not the full set of regions in
-   *         the window: you must examine [[currentRegions]] for that.
+   * @return The *new regions* that were added as a result of this call. Note that this is not the full set of regions
+   *         in the window: you must examine [[currentRegions]] for that.
    */
-  def setCurrentLocus(locus: Long): Seq[Region] = {
+  private[windowing] def setCurrentLocus(locus: Long): Seq[Region] = {
     assume(locus >= currentLocus, "Pileup window can only move forward in locus")
     currentLocus = locus
 
     // Remove regions that are no longer in the window.
-    while (!currentRegionsPriorityQueue.isEmpty && (currentRegionsPriorityQueue.head.end - 1) < locus - halfWindowSize) {
+    while (!currentRegionsPriorityQueue.isEmpty && currentRegionsPriorityQueue.head.end <= locus - halfWindowSize) {
       val dropped = currentRegionsPriorityQueue.dequeue()
       assert(!dropped.overlapsLocus(locus, halfWindowSize))
     }
@@ -108,9 +122,25 @@ case class SlidingWindow[Region <: HasReferenceRegion](halfWindowSize: Long, raw
   }
 
   /**
+   * Drop regions that do not overlap until this locus
+   *
+   * @param locus locus to drop until
+   */
+  private[windowing] def dropUntil(locus: Long) = {
+    sortedRegions.dropWhile(_.start < locus - halfWindowSize)
+  }
+
+  /**
    * The start locus of the next region in the (sorted) iterator.
    */
-  def nextStartLocus(): Option[Long] = {
+  private[windowing] def nextStartLocus(): Option[Long] = {
     if (sortedRegions.hasNext) Some(sortedRegions.head.start) else None
+  }
+
+  /**
+   * The next element in queue not currently in the window
+   */
+  private[windowing] def nextElement: Option[Region] = {
+    if (sortedRegions.hasNext) Some(sortedRegions.head) else None
   }
 }
