@@ -16,7 +16,8 @@
  * limitations under the License.
  */
 
-import org.bdgenomics.guacamole.commands.GermlineThresholdCaller
+package org.bdgenomics.guacamole.commands
+
 import org.scalatest.{ Matchers, FunSuite }
 import org.bdgenomics.guacamole.{ TestUtil }
 import org.bdgenomics.formats.avro.GenotypeAllele
