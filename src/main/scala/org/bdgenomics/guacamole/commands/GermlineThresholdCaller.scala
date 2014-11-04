@@ -16,10 +16,11 @@
  * limitations under the License.
  */
 
-package org.bdgenomics.guacamole.callers
+package org.bdgenomics.guacamole.commands
 
 import org.bdgenomics.formats.avro.{ Contig, Variant, GenotypeAllele, Genotype }
 import org.bdgenomics.formats.avro.GenotypeAllele.{ NoCall, Ref, Alt, OtherAlt }
+import org.bdgenomics.guacamole.Concordance.ConcordanceArgs
 import org.bdgenomics.guacamole._
 import org.apache.spark.SparkContext._
 import org.bdgenomics.guacamole.reads.Read
@@ -31,8 +32,6 @@ import org.bdgenomics.guacamole.Common.Arguments._
 import org.apache.spark.rdd.RDD
 import org.apache.spark.Logging
 import org.bdgenomics.guacamole.pileup.Pileup
-import org.bdgenomics.guacamole.concordance.GenotypesEvaluator
-import org.bdgenomics.guacamole.concordance.GenotypesEvaluator.GenotypeConcordance
 
 /**
  * Simple variant caller.
@@ -40,11 +39,11 @@ import org.bdgenomics.guacamole.concordance.GenotypesEvaluator.GenotypeConcordan
  * Calls variants when the percent of reads supporting a variant at a locus exceeds a threshold.
  *
  */
-object ThresholdVariantCaller extends Command with Serializable with Logging {
-  override val name = "threshold"
-  override val description = "call variants using a simple threshold"
+object GermlineThresholdCaller extends Command with Serializable with Logging {
+  override val name = "germline-threshold"
+  override val description = "call variants by thresholding read counts (toy example)"
 
-  private class Arguments extends Base with Output with Reads with GenotypeConcordance with DistributedUtil.Arguments {
+  private class Arguments extends Base with Output with Reads with ConcordanceArgs with DistributedUtil.Arguments {
     @Option(name = "-threshold", metaVar = "X", usage = "Make a call if at least X% of reads support it. Default: 8")
     var threshold: Int = 8
 
@@ -82,7 +81,7 @@ object ThresholdVariantCaller extends Command with Serializable with Logging {
     readSet.mappedReads.unpersist()
     Common.writeVariantsFromArguments(args, genotypes)
     if (args.truthGenotypesFile != "")
-      GenotypesEvaluator.printGenotypeConcordance(args, genotypes, sc)
+      Concordance.printGenotypeConcordance(args, genotypes, sc)
 
     DelayedMessages.default.print()
   }
