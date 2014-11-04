@@ -21,7 +21,7 @@ trait Read {
    * Each read has a "token", which is an arbitrary integer for use by the application. Unlike the other fields,
    * a read's token does NOT correspond to any underlying column in e.g. the BAM file.
    *
-   * It's used, for example, to differentiate tumor/normal pairs in some somatic callers.
+   * It's used, for example, to differentiate tumor/normal pairs in some somatic commands.
    *
    * This field can be set when reading in the reads, or modified at any point by the application.
    *

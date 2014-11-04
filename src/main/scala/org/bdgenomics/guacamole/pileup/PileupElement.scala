@@ -8,7 +8,7 @@ import org.bdgenomics.guacamole.variants.Allele
 import scala.annotation.tailrec
 
 /**
- * A [[PileupElement]] represents the bases  sequenced by a particular read at a particular reference locus.
+ * A [[PileupElement]] represents the bases sequenced by a particular read at a particular reference locus.
  *
  * @param read The read this [[PileupElement]] is coming from.
  * @param locus The reference locus.

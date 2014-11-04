@@ -1,4 +1,4 @@
-package org.bdgenomics.guacamole.callers
+package org.bdgenomics.guacamole.commands
 
 import org.bdgenomics.guacamole.TestUtil
 import org.bdgenomics.guacamole.TestUtil.SparkFunSuite
@@ -8,7 +8,7 @@ import org.bdgenomics.guacamole.reads.MappedRead
 import org.scalatest.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks
 
-class SomaticLogOddsVariantCallerSuite extends SparkFunSuite with Matchers with TableDrivenPropertyChecks {
+class SomaticStandardCallerSuite extends SparkFunSuite with Matchers with TableDrivenPropertyChecks {
 
   def loadPileup(filename: String, locus: Long = 0): Pileup = {
     val records = TestUtil.loadReads(sc, filename).mappedReads
@@ -39,7 +39,7 @@ class SomaticLogOddsVariantCallerSuite extends SparkFunSuite with Matchers with 
       (locus: Long) =>
         val (tumorPileup, normalPileup) = TestUtil.loadTumorNormalPileup(tumorReads, normalReads, locus)
 
-        val calledGenotypes = SomaticLogOddsVariantCaller.findPotentialVariantAtLocus(
+        val calledGenotypes = SomaticStandardCaller.findPotentialVariantAtLocus(
           tumorPileup,
           normalPileup,
           logOddsThreshold,
