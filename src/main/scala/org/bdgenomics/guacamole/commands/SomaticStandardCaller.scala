@@ -17,8 +17,8 @@ import org.kohsuke.args4j.{ Option => Opt }
 /**
  * Simple subtraction based somatic variant caller
  *
- * This takes two variant commands, calls variants on tumor and normal independently
- * and outputs the variants in the tumor sample BUT NOT the normal sample
+ * This takes two variant callers, calls variants on tumor and normal independently,
+ * and outputs the variants in the tumor sample BUT NOT the normal sample.
  *
  * This assumes that both read sets only contain a single sample, otherwise we should compare
  * on a sample identifier when joining the genotypes
