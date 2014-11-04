@@ -1,0 +1,450 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+        <head>
+          <title>guacamole - guacamole: variant caller 0.0.1 API - org.bdgenomics.guacamole</title>
+          <meta name="description" content="guacamole - guacamole variant caller 0.0.1 API - org.bdgenomics.guacamole" />
+          <meta name="keywords" content="guacamole guacamole variant caller 0.0.1 API org.bdgenomics.guacamole" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../../index.html';
+            var hash = 'org.bdgenomics.guacamole.package';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
+    
+        </head>
+        <body class="value">
+      <div id="definition">
+        <img src="../../../lib/package_big.png" />
+        <p id="owner"><a href="../../package.html" class="extype" name="org">org</a>.<a href="../package.html" class="extype" name="org.bdgenomics">bdgenomics</a></p>
+        <h1>guacamole</h1>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <span class="name">guacamole</span>
+      </span>
+      </h4>
+      
+          <div id="comment" class="fullcommenttop"></div>
+        
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        
+        
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="org.bdgenomics.guacamole.Command" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="CommandextendsAnyRef"></a>
+      <a id="Command:Command"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="Command.html"><span class="name">Command</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Interface for running a variant caller from command line arguments.</p>
+    </li><li name="org.bdgenomics.guacamole.DelayedMessages" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="DelayedMessagesextendsAnyRef"></a>
+      <a id="DelayedMessages:DelayedMessages"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="DelayedMessages.html"><span class="name">DelayedMessages</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt"> It's often useful to output counts of certain events that occur in RDD operations.</p>
+    </li><li name="org.bdgenomics.guacamole.GuacamoleKryoRegistrator" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="GuacamoleKryoRegistratorextendsADAMKryoRegistrator"></a>
+      <a id="GuacamoleKryoRegistrator:GuacamoleKryoRegistrator"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="GuacamoleKryoRegistrator.html"><span class="name">GuacamoleKryoRegistrator</span></a><span class="result"> extends <span class="extype" name="org.bdgenomics.adam.serialization.ADAMKryoRegistrator">ADAMKryoRegistrator</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.bdgenomics.guacamole.HasReferenceRegion" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="HasReferenceRegionextendsAnyRef"></a>
+      <a id="HasReferenceRegion:HasReferenceRegion"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="HasReferenceRegion.html"><span class="name">HasReferenceRegion</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">   TODO: replace with ReferenceRegion base class in ADAM
+</p>
+    </li><li name="org.bdgenomics.guacamole.LociMap" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="LociMap[T]extendsProductwithSerializable"></a>
+      <a id="LociMap[T]:LociMap[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="LociMap.html"><span class="name">LociMap</span></a><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="map">map: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <a href="LociMap$$SingleContig.html" class="extype" name="org.bdgenomics.guacamole.LociMap.SingleContig">SingleContig</a>[<span class="extype" name="org.bdgenomics.guacamole.LociMap.T">T</span>]]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">An immutable map from loci to a instances of an arbitrary type T.</p>
+    </li><li name="org.bdgenomics.guacamole.LociMapLongSerializer" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="LociMapLongSerializerextendsSerializer[org.bdgenomics.guacamole.LociMap[Long]]"></a>
+      <a id="LociMapLongSerializer:LociMapLongSerializer"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="LociMapLongSerializer.html"><span class="name">LociMapLongSerializer</span></a><span class="result"> extends <span class="extype" name="com.esotericsoftware.kryo.Serializer">Serializer</span>[<a href="LociMap.html" class="extype" name="org.bdgenomics.guacamole.LociMap">LociMap</a>[<span class="extype" name="scala.Long">Long</span>]]</span>
+      </span>
+      </h4>
+      
+    </li><li name="org.bdgenomics.guacamole.LociMapLongSingleContigSerializer" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="LociMapLongSingleContigSerializerextendsSerializer[org.bdgenomics.guacamole.LociMap.SingleContig[Long]]"></a>
+      <a id="LociMapLongSingleContigSerializer:LociMapLongSingleContigSerializer"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="LociMapLongSingleContigSerializer.html"><span class="name">LociMapLongSingleContigSerializer</span></a><span class="result"> extends <span class="extype" name="com.esotericsoftware.kryo.Serializer">Serializer</span>[<a href="LociMap$$SingleContig.html" class="extype" name="org.bdgenomics.guacamole.LociMap.SingleContig">SingleContig</a>[<span class="extype" name="scala.Long">Long</span>]]</span>
+      </span>
+      </h4>
+      
+    </li><li name="org.bdgenomics.guacamole.LociSet" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="LociSetextendsProductwithSerializable"></a>
+      <a id="LociSet:LociSet"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="LociSet.html"><span class="name">LociSet</span></a><span class="params">(<span name="map">map: <a href="LociMap.html" class="extype" name="org.bdgenomics.guacamole.LociMap">LociMap</a>[<span class="extype" name="scala.Long">Long</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">An immutable collection of genomic regions on any number of contigs.</p>
+    </li><li name="org.bdgenomics.guacamole.LociSetSerializer" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="LociSetSerializerextendsSerializer[org.bdgenomics.guacamole.LociSet]"></a>
+      <a id="LociSetSerializer:LociSetSerializer"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="LociSetSerializer.html"><span class="name">LociSetSerializer</span></a><span class="result"> extends <span class="extype" name="com.esotericsoftware.kryo.Serializer">Serializer</span>[<a href="LociSet.html" class="extype" name="org.bdgenomics.guacamole.LociSet">LociSet</a>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="org.bdgenomics.guacamole.LociSetSingleContigSerializer" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="LociSetSingleContigSerializerextendsSerializer[org.bdgenomics.guacamole.LociSet.SingleContig]"></a>
+      <a id="LociSetSingleContigSerializer:LociSetSingleContigSerializer"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="LociSetSingleContigSerializer.html"><span class="name">LociSetSingleContigSerializer</span></a><span class="result"> extends <span class="extype" name="com.esotericsoftware.kryo.Serializer">Serializer</span>[<a href="LociSet$$SingleContig.html" class="extype" name="org.bdgenomics.guacamole.LociSet.SingleContig">SingleContig</a>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="org.bdgenomics.guacamole.ReadSet" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ReadSetextendsProductwithSerializable"></a>
+      <a id="ReadSet:ReadSet"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="ReadSet.html"><span class="name">ReadSet</span></a><span class="params">(<span name="reads">reads: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<a href="reads/Read.html" class="extype" name="org.bdgenomics.guacamole.reads.Read">Read</a>]</span>, <span name="sequenceDictionary">sequenceDictionary: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="org.bdgenomics.adam.models.SequenceDictionary">SequenceDictionary</span>]</span>, <span name="source">source: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="filters">filters: <a href="reads/Read$$InputFilters.html" class="extype" name="org.bdgenomics.guacamole.reads.Read.InputFilters">InputFilters</a></span>, <span name="token">token: <span class="extype" name="scala.Int">Int</span></span>, <span name="contigLengthsFromDictionary">contigLengthsFromDictionary: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">A ReadSet contains an RDD of reads along with some metadata about them.</p>
+    </li></ol>
+            </div>
+
+        
+
+        <div id="values" class="values members">
+              <h3>Value Members</h3>
+              <ol><li name="org.bdgenomics.guacamole.Bases" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Bases"></a>
+      <a id="Bases:Bases"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Bases$.html"><span class="name">Bases</span></a>
+      </span>
+      </h4>
+      <p class="comment cmt">We represent a nucleotide base as a Byte, whose value is equal to the ASCII value of the character representing the
+base (e.</p>
+    </li><li name="org.bdgenomics.guacamole.CigarUtils" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CigarUtils"></a>
+      <a id="CigarUtils:CigarUtils"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="CigarUtils$.html"><span class="name">CigarUtils</span></a>
+      </span>
+      </h4>
+      
+    </li><li name="org.bdgenomics.guacamole.Common" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Common"></a>
+      <a id="Common:Common"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Common$.html"><span class="name">Common</span></a><span class="result"> extends <span class="extype" name="org.apache.spark.Logging">Logging</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Collection of functions that are useful to multiple variant calling implementations, and specifications of command-
+line arguments that they use.</p>
+    </li><li name="org.bdgenomics.guacamole.Concordance" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Concordance"></a>
+      <a id="Concordance:Concordance"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Concordance$.html"><span class="name">Concordance</span></a>
+      </span>
+      </h4>
+      <p class="comment cmt">As a convenience to users experimenting with different callers, some variant callers include functionality to compare
+the called variants to a gold standard VCF after they are computed, in the same job.</p>
+    </li><li name="org.bdgenomics.guacamole.DelayedMessages" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="DelayedMessages"></a>
+      <a id="DelayedMessages:DelayedMessages"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="DelayedMessages$.html"><span class="name">DelayedMessages</span></a>
+      </span>
+      </h4>
+      
+    </li><li name="org.bdgenomics.guacamole.DistributedUtil" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="DistributedUtil"></a>
+      <a id="DistributedUtil:DistributedUtil"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="DistributedUtil$.html"><span class="name">DistributedUtil</span></a><span class="result"> extends <span class="extype" name="org.apache.spark.Logging">Logging</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.bdgenomics.guacamole.Guacamole" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Guacamole"></a>
+      <a id="Guacamole:Guacamole"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Guacamole$.html"><span class="name">Guacamole</span></a><span class="result"> extends <span class="extype" name="org.apache.spark.Logging">Logging</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Guacamole main class.</p>
+    </li><li name="org.bdgenomics.guacamole.LociMap" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="LociMap"></a>
+      <a id="LociMap:LociMap"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="LociMap$.html"><span class="name">LociMap</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.bdgenomics.guacamole.LociSet" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="LociSet"></a>
+      <a id="LociSet:LociSet"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="LociSet$.html"><span class="name">LociSet</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.bdgenomics.guacamole.ReadSet" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ReadSet"></a>
+      <a id="ReadSet:ReadSet"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="ReadSet$.html"><span class="name">ReadSet</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.bdgenomics.guacamole.commands" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="commands"></a>
+      <a id="commands:commands"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="commands/package.html"><span class="name">commands</span></a>
+      </span>
+      </h4>
+      
+    </li><li name="org.bdgenomics.guacamole.filters" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="filters"></a>
+      <a id="filters:filters"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="filters/package.html"><span class="name">filters</span></a>
+      </span>
+      </h4>
+      
+    </li><li name="org.bdgenomics.guacamole.pileup" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="pileup"></a>
+      <a id="pileup:pileup"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="pileup/package.html"><span class="name">pileup</span></a>
+      </span>
+      </h4>
+      
+    </li><li name="org.bdgenomics.guacamole.reads" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="reads"></a>
+      <a id="reads:reads"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="reads/package.html"><span class="name">reads</span></a>
+      </span>
+      </h4>
+      
+    </li><li name="org.bdgenomics.guacamole.variants" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="variants"></a>
+      <a id="variants:variants"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="variants/package.html"><span class="name">variants</span></a>
+      </span>
+      </h4>
+      
+    </li><li name="org.bdgenomics.guacamole.windowing" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="windowing"></a>
+      <a id="windowing:windowing"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="windowing/package.html"><span class="name">windowing</span></a>
+      </span>
+      </h4>
+      
+    </li></ol>
+            </div>
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../lib/template.js"></script>
+    </body>
+      </html>

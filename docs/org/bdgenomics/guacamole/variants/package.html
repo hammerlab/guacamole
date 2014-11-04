@@ -1,0 +1,294 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+        <head>
+          <title>variants - guacamole: variant caller 0.0.1 API - org.bdgenomics.guacamole.variants</title>
+          <meta name="description" content="variants - guacamole variant caller 0.0.1 API - org.bdgenomics.guacamole.variants" />
+          <meta name="keywords" content="variants guacamole variant caller 0.0.1 API org.bdgenomics.guacamole.variants" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../../../index.html';
+            var hash = 'org.bdgenomics.guacamole.variants.package';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
+    
+        </head>
+        <body class="value">
+      <div id="definition">
+        <img src="../../../../lib/package_big.png" />
+        <p id="owner"><a href="../../../package.html" class="extype" name="org">org</a>.<a href="../../package.html" class="extype" name="org.bdgenomics">bdgenomics</a>.<a href="../package.html" class="extype" name="org.bdgenomics.guacamole">guacamole</a></p>
+        <h1>variants</h1>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <span class="name">variants</span>
+      </span>
+      </h4>
+      
+          <div id="comment" class="fullcommenttop"></div>
+        
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        
+        
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="org.bdgenomics.guacamole.variants.Allele" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="AlleleextendsOrdered[org.bdgenomics.guacamole.variants.Allele]withProductwithSerializable"></a>
+      <a id="Allele:Allele"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Allele.html"><span class="name">Allele</span></a><span class="params">(<span name="refBases">refBases: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>, <span name="altBases">altBases: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Ordered">Ordered</span>[<a href="Allele.html" class="extype" name="org.bdgenomics.guacamole.variants.Allele">Allele</a>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.bdgenomics.guacamole.variants.AlleleEvidence" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="AlleleEvidenceextendsProductwithSerializable"></a>
+      <a id="AlleleEvidence:AlleleEvidence"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="AlleleEvidence.html"><span class="name">AlleleEvidence</span></a><span class="params">(<span name="likelihood">likelihood: <span class="extype" name="scala.Double">Double</span></span>, <span name="readDepth">readDepth: <span class="extype" name="scala.Int">Int</span></span>, <span name="alleleReadDepth">alleleReadDepth: <span class="extype" name="scala.Int">Int</span></span>, <span name="forwardDepth">forwardDepth: <span class="extype" name="scala.Int">Int</span></span>, <span name="alleleForwardDepth">alleleForwardDepth: <span class="extype" name="scala.Int">Int</span></span>, <span name="averageMappingQuality">averageMappingQuality: <span class="extype" name="scala.Double">Double</span></span>, <span name="averageBaseQuality">averageBaseQuality: <span class="extype" name="scala.Double">Double</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Sample specific pileup and read statistics in support of a given variant
+</p>
+    </li><li name="org.bdgenomics.guacamole.variants.AlleleEvidenceSerializer" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="AlleleEvidenceSerializerextendsSerializer[org.bdgenomics.guacamole.variants.AlleleEvidence]"></a>
+      <a id="AlleleEvidenceSerializer:AlleleEvidenceSerializer"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="AlleleEvidenceSerializer.html"><span class="name">AlleleEvidenceSerializer</span></a><span class="result"> extends <span class="extype" name="com.esotericsoftware.kryo.Serializer">Serializer</span>[<a href="AlleleEvidence.html" class="extype" name="org.bdgenomics.guacamole.variants.AlleleEvidence">AlleleEvidence</a>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="org.bdgenomics.guacamole.variants.AlleleSerializer" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="AlleleSerializerextendsSerializer[org.bdgenomics.guacamole.variants.Allele]"></a>
+      <a id="AlleleSerializer:AlleleSerializer"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="AlleleSerializer.html"><span class="name">AlleleSerializer</span></a><span class="result"> extends <span class="extype" name="com.esotericsoftware.kryo.Serializer">Serializer</span>[<a href="Allele.html" class="extype" name="org.bdgenomics.guacamole.variants.Allele">Allele</a>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="org.bdgenomics.guacamole.variants.CalledAllele" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CalledAlleleextendsReferenceVariantwithProductwithSerializable"></a>
+      <a id="CalledAllele:CalledAllele"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="CalledAllele.html"><span class="name">CalledAllele</span></a><span class="params">(<span name="sampleName">sampleName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="referenceContig">referenceContig: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="start">start: <span class="extype" name="scala.Long">Long</span></span>, <span name="allele">allele: <a href="Allele.html" class="extype" name="org.bdgenomics.guacamole.variants.Allele">Allele</a></span>, <span name="evidence">evidence: <a href="AlleleEvidence.html" class="extype" name="org.bdgenomics.guacamole.variants.AlleleEvidence">AlleleEvidence</a></span>, <span name="length">length: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">1</span></span>)</span><span class="result"> extends <a href="ReferenceVariant.html" class="extype" name="org.bdgenomics.guacamole.variants.ReferenceVariant">ReferenceVariant</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">A variant that exists in the sample; includes supporting read statistics
+</p>
+    </li><li name="org.bdgenomics.guacamole.variants.CalledAlleleSerializer" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CalledAlleleSerializerextendsSerializer[org.bdgenomics.guacamole.variants.CalledAllele]withHasAlleleSerializerwithHasGenotypeEvidenceSerializer"></a>
+      <a id="CalledAlleleSerializer:CalledAlleleSerializer"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="CalledAlleleSerializer.html"><span class="name">CalledAlleleSerializer</span></a><span class="result"> extends <span class="extype" name="com.esotericsoftware.kryo.Serializer">Serializer</span>[<a href="CalledAllele.html" class="extype" name="org.bdgenomics.guacamole.variants.CalledAllele">CalledAllele</a>] with <a href="HasAlleleSerializer.html" class="extype" name="org.bdgenomics.guacamole.variants.HasAlleleSerializer">HasAlleleSerializer</a> with <a href="HasGenotypeEvidenceSerializer.html" class="extype" name="org.bdgenomics.guacamole.variants.HasGenotypeEvidenceSerializer">HasGenotypeEvidenceSerializer</a></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.bdgenomics.guacamole.variants.CalledSomaticAllele" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CalledSomaticAlleleextendsReferenceVariantwithProductwithSerializable"></a>
+      <a id="CalledSomaticAllele:CalledSomaticAllele"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="CalledSomaticAllele.html"><span class="name">CalledSomaticAllele</span></a><span class="params">(<span name="sampleName">sampleName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="referenceContig">referenceContig: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="start">start: <span class="extype" name="scala.Long">Long</span></span>, <span name="allele">allele: <a href="Allele.html" class="extype" name="org.bdgenomics.guacamole.variants.Allele">Allele</a></span>, <span name="somaticLogOdds">somaticLogOdds: <span class="extype" name="scala.Double">Double</span></span>, <span name="tumorEvidence">tumorEvidence: <a href="AlleleEvidence.html" class="extype" name="org.bdgenomics.guacamole.variants.AlleleEvidence">AlleleEvidence</a></span>, <span name="normalEvidence">normalEvidence: <a href="AlleleEvidence.html" class="extype" name="org.bdgenomics.guacamole.variants.AlleleEvidence">AlleleEvidence</a></span>, <span name="length">length: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">1</span></span>)</span><span class="result"> extends <a href="ReferenceVariant.html" class="extype" name="org.bdgenomics.guacamole.variants.ReferenceVariant">ReferenceVariant</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">A variant that exists in a tumor sample, but not in the normal sample; includes supporting read statistics from both samples
+</p>
+    </li><li name="org.bdgenomics.guacamole.variants.CalledSomaticAlleleSerializer" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CalledSomaticAlleleSerializerextendsSerializer[org.bdgenomics.guacamole.variants.CalledSomaticAllele]withHasGenotypeEvidenceSerializerwithHasAlleleSerializer"></a>
+      <a id="CalledSomaticAlleleSerializer:CalledSomaticAlleleSerializer"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="CalledSomaticAlleleSerializer.html"><span class="name">CalledSomaticAlleleSerializer</span></a><span class="result"> extends <span class="extype" name="com.esotericsoftware.kryo.Serializer">Serializer</span>[<a href="CalledSomaticAllele.html" class="extype" name="org.bdgenomics.guacamole.variants.CalledSomaticAllele">CalledSomaticAllele</a>] with <a href="HasGenotypeEvidenceSerializer.html" class="extype" name="org.bdgenomics.guacamole.variants.HasGenotypeEvidenceSerializer">HasGenotypeEvidenceSerializer</a> with <a href="HasAlleleSerializer.html" class="extype" name="org.bdgenomics.guacamole.variants.HasAlleleSerializer">HasAlleleSerializer</a></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.bdgenomics.guacamole.variants.Genotype" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="GenotypeextendsProductwithSerializable"></a>
+      <a id="Genotype:Genotype"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Genotype.html"><span class="name">Genotype</span></a><span class="params">(<span name="alleles">alleles: <a href="Allele.html" class="extype" name="org.bdgenomics.guacamole.variants.Allele">Allele</a>*</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">A Genotype is a sequence of alleles of length equal to the ploidy of the organism.</p>
+    </li><li name="org.bdgenomics.guacamole.variants.GenotypeSerializer" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="GenotypeSerializerextendsSerializer[org.bdgenomics.guacamole.variants.Genotype]withHasAlleleSerializer"></a>
+      <a id="GenotypeSerializer:GenotypeSerializer"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="GenotypeSerializer.html"><span class="name">GenotypeSerializer</span></a><span class="result"> extends <span class="extype" name="com.esotericsoftware.kryo.Serializer">Serializer</span>[<a href="Genotype.html" class="extype" name="org.bdgenomics.guacamole.variants.Genotype">Genotype</a>] with <a href="HasAlleleSerializer.html" class="extype" name="org.bdgenomics.guacamole.variants.HasAlleleSerializer">HasAlleleSerializer</a></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.bdgenomics.guacamole.variants.HasAlleleSerializer" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="HasAlleleSerializerextendsAnyRef"></a>
+      <a id="HasAlleleSerializer:HasAlleleSerializer"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="HasAlleleSerializer.html"><span class="name">HasAlleleSerializer</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.bdgenomics.guacamole.variants.HasGenotypeEvidenceSerializer" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="HasGenotypeEvidenceSerializerextendsAnyRef"></a>
+      <a id="HasGenotypeEvidenceSerializer:HasGenotypeEvidenceSerializer"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="HasGenotypeEvidenceSerializer.html"><span class="name">HasGenotypeEvidenceSerializer</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.bdgenomics.guacamole.variants.ReferenceVariant" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="ReferenceVariantextendsHasReferenceRegion"></a>
+      <a id="ReferenceVariant:ReferenceVariant"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="ReferenceVariant.html"><span class="name">ReferenceVariant</span></a><span class="result"> extends <a href="../HasReferenceRegion.html" class="extype" name="org.bdgenomics.guacamole.HasReferenceRegion">HasReferenceRegion</a></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Base properties of a genomic change in a sequence sample from a reference genome
+</p>
+    </li></ol>
+            </div>
+
+        
+
+        <div id="values" class="values members">
+              <h3>Value Members</h3>
+              <ol><li name="org.bdgenomics.guacamole.variants.AlleleConversions" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="AlleleConversions"></a>
+      <a id="AlleleConversions:AlleleConversions"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="AlleleConversions$.html"><span class="name">AlleleConversions</span></a>
+      </span>
+      </h4>
+      <p class="comment cmt">Note: ADAM Genotypes really map more to our concept of an &quot;allele&quot;, hence some naming dissonance here.</p>
+    </li><li name="org.bdgenomics.guacamole.variants.AlleleEvidence" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="AlleleEvidence"></a>
+      <a id="AlleleEvidence:AlleleEvidence"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="AlleleEvidence$.html"><span class="name">AlleleEvidence</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li></ol>
+            </div>
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../lib/template.js"></script>
+    </body>
+      </html>
