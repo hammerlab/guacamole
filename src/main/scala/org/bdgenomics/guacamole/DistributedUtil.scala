@@ -10,9 +10,10 @@ import org.bdgenomics.guacamole.Common.Arguments.{ Base, Loci }
 import org.bdgenomics.guacamole.Common._
 import org.bdgenomics.guacamole.pileup.Pileup
 import org.bdgenomics.guacamole.reads.MappedRead
+import org.bdgenomics.guacamole.windowing.{ LociInWindowsIterator, SlidingWindow }
 import org.kohsuke.args4j.{ Option => Opt }
 
-import scala.collection.mutable.{ ArrayBuffer, HashMap => MutableHashMap }
+import scala.collection.mutable.{ HashMap => MutableHashMap }
 import scala.reflect.ClassTag
 
 object DistributedUtil extends Logging {
@@ -24,6 +25,8 @@ object DistributedUtil extends Logging {
       usage = "Num micro partitions to use per task in loci partitioning. Set to 0 to partition loci uniformly. Default: 250.")
     var partitioningAccuracy: Int = 250
   }
+
+  type PerSample[A] = Seq[A]
 
   /**
    * Partition a LociSet among tasks according to the strategy specified in args.
@@ -60,7 +63,7 @@ object DistributedUtil extends Logging {
     val builder = LociMap.newBuilder[Long]
     var lociAssigned = 0L
     var task = 0L
-    def remainingForThisTask = math.round(((task + 1) * lociPerTask) - lociAssigned).toLong
+    def remainingForThisTask = math.round(((task + 1) * lociPerTask) - lociAssigned)
     loci.contigs.foreach(contig => {
       loci.onContig(contig).ranges.foreach(range => {
         var start = range.start
@@ -235,14 +238,6 @@ object DistributedUtil extends Logging {
   }
 
   /**
-   * Helper function. Given some sliding window instances, return the lowest nextStartLocus from any of them. If all of
-   * the sliding windows are at the end of the region iterators, return Long.MaxValue.
-   */
-  def firstStartLocus[M <: HasReferenceRegion](windows: SlidingWindow[M]*) = {
-    windows.map(_.nextStartLocus.getOrElse(Long.MaxValue)).min
-  }
-
-  /**
    * Flatmap across loci, where at each locus the provided function is passed a Pileup instance.
    *
    * @param skipEmpty If true, the function will only be called at loci that have nonempty pileups, i.e. those
@@ -265,7 +260,7 @@ object DistributedUtil extends Logging {
       skipEmpty,
       0,
       None,
-      (maybePileup: Option[Pileup], windows: Seq[SlidingWindow[MappedRead]]) => {
+      (maybePileup: Option[Pileup], windows: PerSample[SlidingWindow[MappedRead]]) => {
         assert(windows.length == 1)
         val pileup = initOrMovePileup(maybePileup, windows(0))
         (Some(pileup), function(pileup))
@@ -293,7 +288,7 @@ object DistributedUtil extends Logging {
       skipEmpty,
       halfWindowSize = 0L,
       initialState = None,
-      function = (maybePileups: Option[(Pileup, Pileup)], windows: Seq[SlidingWindow[MappedRead]]) => {
+      function = (maybePileups: Option[(Pileup, Pileup)], windows: PerSample[SlidingWindow[MappedRead]]) => {
         assert(windows.length == 2)
         val pileup1 = initOrMovePileup(maybePileups.map(_._1), windows(0))
         val pileup2 = initOrMovePileup(maybePileups.map(_._2), windows(1))
@@ -311,7 +306,7 @@ object DistributedUtil extends Logging {
    * (new state, result data). The state is initialized to initialState for each task, and for each new contig handled
    * by a single task.
    *
-   * @param regionRDDs sequence of region RDDs
+   * @param regionRDDs RDDs of reads, one per sample
    * @param lociPartitions loci to consider, partitioned into tasks
    * @param skipEmpty If True, then the function will only be called on loci where at least one region maps within a
    *                  window around the locus. If False, then the function will be called at all loci in lociPartitions.
@@ -324,49 +319,102 @@ object DistributedUtil extends Logging {
    * @return RDD[T] of flatmap results
    */
   def windowFlatMapWithState[M <: HasReferenceRegion: ClassTag, T: ClassTag, S](
-    regionRDDs: Seq[RDD[M]],
+    regionRDDs: PerSample[RDD[M]],
     lociPartitions: LociMap[Long],
     skipEmpty: Boolean,
     halfWindowSize: Long,
     initialState: S,
-    function: (S, Seq[SlidingWindow[M]]) => (S, Iterator[T])): RDD[T] = {
-    windowTaskFlatMapMultipleRDDs(regionRDDs, lociPartitions, halfWindowSize, (task, taskLoci, taskRegionsSeq: Seq[Iterator[M]]) => {
-      val regionSplitByContigSeq = taskRegionsSeq.map(taskRegions => new RegionsByContig(taskRegions))
-      val result = new ArrayBuffer[T]
-      val numContigs = taskLoci.contigs.size
-      var i = 0
-      while (i < numContigs) {
-        val contig = taskLoci.contigs(i)
-        val regionIterator = regionSplitByContigSeq.map(_.next(contig))
-        val windows = regionIterator.map(SlidingWindow[M](halfWindowSize, _))
-        def windowsEmpty = windows.forall(_.currentRegions.isEmpty)
-        val ranges = taskLoci.onContig(contig).ranges.iterator
-        var state = initialState
-        var locus = 0L
-        while (ranges.hasNext) {
-          val range = ranges.next()
-          locus = math.max(range.start, locus)
-          while (locus < range.end) {
-            lazy val nextLocusWithRegions = firstStartLocus(windows: _*)
-            if (skipEmpty && windowsEmpty && nextLocusWithRegions - halfWindowSize > locus) {
-              // Fast forward.
-              locus = nextLocusWithRegions - halfWindowSize
-            } else {
-              // Run at this locus.
-              windows.foreach(_.setCurrentLocus(locus))
-              if (!(skipEmpty && windowsEmpty)) {
-                val (newState, newElements) = function(state, windows)
-                state = newState
-                result ++= newElements
-              }
-              locus += 1
-            }
+    function: (S, PerSample[SlidingWindow[M]]) => (S, Iterator[T])): RDD[T] = {
+    windowTaskFlatMapMultipleRDDs(
+      regionRDDs,
+      lociPartitions,
+      halfWindowSize,
+      (task, taskLoci, taskRegionsPerSample: PerSample[Iterator[M]]) => {
+        collectByContig[M, T](
+          taskRegionsPerSample,
+          taskLoci,
+          skipEmpty,
+          halfWindowSize,
+          (windowsIterator) => {
+            var lastState: S = initialState
+            windowsIterator.flatMap(windows => {
+              val (state, elements) = function(lastState, windows)
+              lastState = state
+              elements
+            })
           }
-        }
-        i += 1
+        )
       }
-      result.iterator
-    })
+    )
+  }
+
+  /**
+   *
+   * Computes an aggregate over each task and contig
+   * The user specified aggFunction is used to accumulate a result starting with `initialValue`
+   *
+   * @param regionRDDs RDDs of reads, one per sample
+   * @param lociPartitions loci to consider, partitioned into tasks
+   * @param skipEmpty If True, empty windows (no regions within the window) will be skipped
+   * @param halfWindowSize A window centered at locus = l will contain regions overlapping l +/- halfWindowSize
+   * @param initialValue Initial value for aggregation
+   * @param aggFunction Function to aggregate windows, folds the windows into the aggregate value so far
+   * @tparam T Type of the aggregation value
+   * @return Iterator[T], the aggregate values collected over contigs
+   */
+  def windowFoldLoci[M <: HasReferenceRegion: ClassTag, T: ClassTag](regionRDDs: PerSample[RDD[M]],
+                                                                     lociPartitions: LociMap[Long],
+                                                                     skipEmpty: Boolean,
+                                                                     halfWindowSize: Long,
+                                                                     initialValue: T,
+                                                                     aggFunction: (T, PerSample[SlidingWindow[M]]) => T): RDD[T] = {
+    windowTaskFlatMapMultipleRDDs(
+      regionRDDs,
+      lociPartitions,
+      halfWindowSize,
+      (task, taskLoci, taskRegionsPerSample: PerSample[Iterator[M]]) => {
+        collectByContig[M, T](
+          taskRegionsPerSample,
+          taskLoci,
+          skipEmpty,
+          halfWindowSize,
+          (windowsIterator) => Iterator.single(windowsIterator.foldLeft(initialValue)(aggFunction)))
+      }
+    )
+  }
+
+  /**
+   *
+   * Generates a sequence of results from each task (using the `generateFromWindow` function)
+   * and collects them into a single iterator
+   *
+   * @param taskRegionsPerSample for each sample, elements of type M to process for this task
+   * @param taskLoci Set of loci to process for this task
+   * @param skipEmpty If True, empty windows (no regions within the window) will be skipped
+   * @param halfWindowSize A window centered at locus = l will contain regions overlapping l +/- halfWindowSize
+   * @param generateFromWindow Function that maps window to result type
+   * @tparam T result data type
+   * @return Iterator[T] collected from each contig
+   */
+  def collectByContig[M <: HasReferenceRegion: ClassTag, T: ClassTag](taskRegionsPerSample: PerSample[Iterator[M]],
+                                                                      taskLoci: LociSet,
+                                                                      skipEmpty: Boolean,
+                                                                      halfWindowSize: Long,
+                                                                      generateFromWindow: (LociInWindowsIterator[M] => Iterator[T])): Iterator[T] = {
+    val regionSplitByContigPerSample: PerSample[RegionsByContig[M]] = taskRegionsPerSample.map(new RegionsByContig(_))
+
+    taskLoci.contigs.flatMap(contig => {
+      val regionIterator: PerSample[Iterator[M]] = regionSplitByContigPerSample.map(_.next(contig))
+      val windows: PerSample[SlidingWindow[M]] = regionIterator.map(SlidingWindow[M](halfWindowSize, _))
+      val ranges: Iterator[LociMap.SimpleRange] = taskLoci.onContig(contig).ranges.iterator
+      generateFromWindow(
+        LociInWindowsIterator[M](
+          ranges,
+          skipEmpty = skipEmpty,
+          windows
+        )
+      )
+    }).iterator
   }
 
   /**
@@ -406,21 +454,22 @@ object DistributedUtil extends Logging {
    *
    *  (3) The results of the provided function are concatenated into an RDD, which is returned.
    *
-   * @param regionRDDs sequence of RDD[].
+   * @param regionRDDs RDDs of reads, one per sample.
    * @param lociPartitions map from locus -> task number. This argument specifies both the loci to be considered and how
    *                       they should be split among tasks. regions that don't overlap these loci are discarded.
    * @param halfWindowSize if a region overlaps a region of halfWindowSize to either side of a locus under consideration,
    *                       then it is included.
-   * @param function function to flatMap: (task number, loci, sequence of iterators of regions that overlap a window
-   *                 around these loci) -> T
+   * @param function function to flatMap: (task number, loci, iterators of regions that overlap a window around these
+   *                 loci (one region-iterator per sample)) -> T
    * @tparam T type of value returned by function
    * @return flatMap results, RDD[T]
    */
   private def windowTaskFlatMapMultipleRDDs[M <: HasReferenceRegion: ClassTag, T: ClassTag](
-    regionRDDs: Seq[RDD[M]],
+    regionRDDs: PerSample[RDD[M]],
     lociPartitions: LociMap[Long],
     halfWindowSize: Long,
-    function: (Long, LociSet, Seq[Iterator[M]]) => Iterator[T]): RDD[T] = {
+    // TODO(ryan): factor this function type out (as a PartialFunction?)
+    function: (Long, LociSet, PerSample[Iterator[M]]) => Iterator[T]): RDD[T] = {
 
     assume(regionRDDs.length > 0)
     val sc = regionRDDs(0).sparkContext
@@ -441,18 +490,19 @@ object DistributedUtil extends Logging {
     }
 
     // Expand regions into (task, region) pairs for each region RDD.
-    val taskNumberRegionPairsRDDs = regionRDDs.map(regions => regions.flatMap(region => {
-      val singleContig = lociPartitionsBoxed.value.onContig(region.referenceContig)
-      val thisRegionsTasks = singleContig.getAll(region.start - halfWindowSize, region.end.get + halfWindowSize)
+    val taskNumberRegionPairsRDDs: PerSample[RDD[(Long, M)]] =
+      regionRDDs.map(_.flatMap(region => {
+        val singleContig = lociPartitionsBoxed.value.onContig(region.referenceContig)
+        val thisRegionsTasks = singleContig.getAll(region.start - halfWindowSize, region.end.get + halfWindowSize)
 
-      // Update counters
-      totalRegions += 1
-      if (thisRegionsTasks.nonEmpty) relevantRegions += 1
-      expandedRegions += thisRegionsTasks.size
+        // Update counters
+        totalRegions += 1
+        if (thisRegionsTasks.nonEmpty) relevantRegions += 1
+        expandedRegions += thisRegionsTasks.size
 
-      // Return this region, duplicated for each task it is assigned to.
-      thisRegionsTasks.map(task => (task, region))
-    }))
+        // Return this region, duplicated for each task it is assigned to.
+        thisRegionsTasks.map((_, region))
+      }))
 
     // Run the task on each partition. Keep track of the number of regions assigned to each task in an accumulator, so
     // we can print out a summary of the skew.
