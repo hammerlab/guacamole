@@ -16,9 +16,10 @@
  * limitations under the License.
  */
 
+package org.bdgenomics.guacamole.commands
+
 import org.bdgenomics.guacamole.TestUtil
 import org.bdgenomics.guacamole.TestUtil.SparkFunSuite
-import org.bdgenomics.guacamole.commands.SomaticPoCIndelCaller
 import org.bdgenomics.guacamole.pileup.Pileup
 import org.scalatest.Matchers
 
