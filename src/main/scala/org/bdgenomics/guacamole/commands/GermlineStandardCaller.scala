@@ -16,12 +16,11 @@
  * limitations under the License.
  */
 
-package org.bdgenomics.guacamole.callers
+package org.bdgenomics.guacamole.commands
 
 import org.apache.spark.Logging
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.cli.Args4j
-import org.bdgenomics.adam.util.PhredUtils
 import org.bdgenomics.guacamole.variants.{ AlleleEvidence, Genotype, AlleleConversions, CalledAllele }
 import org.bdgenomics.guacamole._
 import org.bdgenomics.guacamole.Common.Arguments._

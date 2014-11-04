@@ -16,6 +16,8 @@
  * limitations under the License.
  */
 
+package org.bdgenomics.guacamole.commands
+
 import org.apache.spark.Logging
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.cli.Args4j
@@ -24,7 +26,6 @@ import org.bdgenomics.guacamole.Common.Arguments.{ TumorNormalReads, Output }
 import org.bdgenomics.guacamole.pileup.{ Insertion, Deletion, Pileup }
 import org.bdgenomics.guacamole._
 import org.bdgenomics.guacamole.reads.Read
-
 import scala.collection.JavaConversions
 
 object SomaticPoCIndelCaller extends Command with Serializable with Logging {
