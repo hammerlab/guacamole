@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.bdgenomics.guacamole.concordance
+package org.bdgenomics.guacamole
 
 import org.apache.spark.SparkContext
 import java.util.EnumSet

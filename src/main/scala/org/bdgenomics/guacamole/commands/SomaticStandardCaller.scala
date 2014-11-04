@@ -16,6 +16,8 @@
  * limitations under the License.
  */
 
+package org.bdgenomics.guacamole.commands
+
 import org.apache.spark.Logging
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.cli.Args4j

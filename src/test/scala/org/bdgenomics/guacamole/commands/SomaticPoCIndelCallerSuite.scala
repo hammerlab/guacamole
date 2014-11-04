@@ -18,6 +18,7 @@
 
 import org.bdgenomics.guacamole.TestUtil
 import org.bdgenomics.guacamole.TestUtil.SparkFunSuite
+import org.bdgenomics.guacamole.commands.SomaticPoCIndelCaller
 import org.bdgenomics.guacamole.pileup.Pileup
 import org.scalatest.Matchers
 
