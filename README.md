@@ -1,15 +1,26 @@
 guacamole
 =========
 [![Build Status](https://travis-ci.org/hammerlab/guacamole.svg?branch=master)](https://travis-ci.org/hammerlab/guacamole)
-Guacamole is a Spark-based variant calling framework inspired by Avocado.
+Guacamole is a framework for identifying mutations from Next Generation
+Sequencing data, a procedure known as variant calling. Guacamole currently
+includes a demonstration germline (non-cancer) variant caller as well as a
+somatic variant caller for finding mutations present in a cancer. More
+development effort has gone into the somatic caller so far.
 
-The goal is a small, readable codebase that can be understood quickly and adapted for experimentation.
+The emphasis is on a readable codebase that can be readily understood and
+adapted for experimentation.
 
-Currently, the variant callers included are toy implementations for understanding Spark performance, and are not suitable
-for production use.
+Guacamole is written in Scala using the Apache Spark engine for distributed
+processing. It can run on a single computer or on a Hadoop cluster. Guacamole
+reads BAM files and generates VCFs.
 
+Guacamole uses many ideas and some functionality from
+[ADAM](https://github.com/bigdatagenomics/adam). We've also taken inspiration
+from the [Avocado](https://github.com/bigdatagenomics/avocado) project.
 
-## Running Guacamole
+For hacking Guacamole, see our [code docs](http://blog.hammerlab.org/guacamole/docs/#package).
+
+## Running Guacamole on a Single Node
 
 Build:
 
