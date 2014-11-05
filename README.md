@@ -2,12 +2,11 @@ guacamole
 =========
 [![Build Status](https://travis-ci.org/hammerlab/guacamole.svg?branch=master)](https://travis-ci.org/hammerlab/guacamole)
 
-Guacamole is a framework for identifying DNA mutations from [Next Generation
-Sequencing](http://en.wikipedia.org/wiki/DNA_sequencing) reads, a procedure
-known as variant calling. Guacamole currently includes a demonstration germline
-(non-cancer) variant caller as well as a somatic variant caller for finding
-mutations present in a cancer. Most development effort has gone into the
-somatic caller so far.
+Guacamole is a framework for variant calling, i.e. identifying DNA mutations
+from [Next Generation Sequencing](http://en.wikipedia.org/wiki/DNA_sequencing)
+reads. It currently includes a toy germline (non-cancer) variant caller as well
+as a somatic variant caller for finding cancer mutations.  Most development
+effort has gone into the somatic caller so far.
 
 The emphasis is on a readable codebase that can be readily understood and
 adapted for experimentation.
@@ -43,10 +42,8 @@ scripts/guacamole germline-threshold \
 ```
 
 This creates a *directory* called `/tmp/result.vcf`. The actual VCF file is in
-`/tmp/result.vcf/part-r-00000`. Outputting results this way lets Guacamole
-potentially split the final VCF into multiple files, which can be more
-efficient when running on a cluster. Currently, however, you'll always get one
-part file in the output directory.
+`/tmp/result.vcf/part-r-00000`. Currently, however, you'll always get one part
+file in the output directory.
 
 Try 
 ```
@@ -87,7 +84,7 @@ spark-submit \
 	-spark_master yarn-cluster
 ```
 
-This command references a `log4j.properties` with logging settings. Here is an example:
+This command references a `log4j.properties` file with logging settings. Here is an example:
 
 ```
 # Set everything to be logged to the console
