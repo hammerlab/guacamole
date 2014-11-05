@@ -122,10 +122,7 @@ object GermlineThresholdCaller extends Command with Serializable with Logging {
           case Nil =>
             if (emitNoCall)
               variant(
-                Allele(
-                  Seq(pileup.referenceBase),
-                  Seq(pileup.referenceBase)
-                ),
+                Allele(Seq(pileup.referenceBase), Bases.ALT),
                 NoCall :: NoCall :: Nil
               ) :: Nil
             else
@@ -133,19 +130,45 @@ object GermlineThresholdCaller extends Command with Serializable with Logging {
 
           // Hom Ref.
           case (allele, count) :: Nil if !allele.isVariant =>
-            if (emitRef) (variant(allele, Ref :: Ref :: Nil) :: Nil) else Nil
+            if (emitRef) {
+              variant(
+                Allele(Seq(pileup.referenceBase), Bases.ALT),
+                Ref :: Ref :: Nil
+              ) :: Nil
+            } else {
+              Nil
+            }
 
           // Hom alt.
           case (allele: Allele, count) :: Nil =>
             variant(allele, Alt :: Alt :: Nil) :: Nil
 
           // Het alt.
-          case (allele1, count1) :: (allele2, count2) :: rest if !allele1.isVariant || !allele2.isVariant =>
+          case (allele1, count1) :: (allele2, count2) :: rest if allele1.isVariant ^ allele2.isVariant =>
             variant(if (allele1.isVariant) allele1 else allele2, Ref :: Alt :: Nil) :: Nil
 
           // Compound alt
-          case (allele1, count1) :: (allele2, count2) :: rest =>
+          case (allele1, count1) :: (allele2, count2) :: rest if allele1.isVariant && allele2.isVariant =>
             variant(allele1, Alt :: OtherAlt :: Nil) :: variant(allele2, Alt :: OtherAlt :: Nil) :: Nil
+
+          // Multiple reference bases
+          case (allele1, count1) :: (allele2, count2) :: rest => {
+            if (allele1.refBases == Seq(Bases.N) || allele2.refBases == Seq(Bases.N)) {
+              log.warn("Reference base N found and ignored in sample = %s at (chr, pos) = (%s, %d)"
+                .format(sampleName, samplePileup.referenceName, samplePileup.locus))
+              // Find the non-N reference
+              val properReference = if (allele1.refBases == Seq(Bases.N)) allele2.refBases else allele1.refBases
+              variant(
+                Allele(properReference, Bases.ALT),
+                Ref :: Ref :: Nil
+              ) :: Nil
+            } else {
+              throw new IllegalArgumentException(
+                "Multiple reference bases found in sample = %s at (chr, pos) = (%s, %d)"
+                  .format(sampleName, samplePileup.referenceName, samplePileup.locus)
+              )
+            }
+          }
         }
     })
   }
