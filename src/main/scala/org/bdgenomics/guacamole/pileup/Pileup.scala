@@ -18,6 +18,7 @@
 
 package org.bdgenomics.guacamole.pileup
 
+import org.bdgenomics.guacamole.Bases
 import org.bdgenomics.guacamole.reads.MappedRead
 import org.bdgenomics.guacamole.variants.{ Allele, Genotype }
 
@@ -27,11 +28,11 @@ import org.bdgenomics.guacamole.variants.{ Allele, Genotype }
  * of the read itself and the offset of the base in the read.
  *
  * @param locus The locus on the reference genome
- *
+ * @param referenceBase The reference base at [[locus]] on the reference genome
  * @param elements Sequence of [[PileupElement]] instances giving the sequenced bases that align to a particular
  *                 reference locus, in arbitrary order.
  */
-case class Pileup(locus: Long, elements: Seq[PileupElement]) {
+case class Pileup(locus: Long, referenceBase: Byte, elements: Seq[PileupElement]) {
   /** The first element in the pileup. */
   lazy val head = {
     assume(elements.nonEmpty, "Empty pileup")
@@ -45,15 +46,6 @@ case class Pileup(locus: Long, elements: Seq[PileupElement]) {
     "Reads in pileup have mismatching reference names")
   assume(elements.forall(_.locus == locus), "Reads in pileup have mismatching loci")
 
-  /**
-   * The reference nucleotide base at this pileup's locus.
-   *
-   * TODO(ryan): this should possibly be passed in to the [[Pileup]] constructor; each [[PileupElement]] can have
-   * different notions of what the reference is (e.g. in the case of different-length deletions). Pulling the first idx
-   * from the first [[PileupElement]] feels somewhat hacky.
-   */
-  lazy val referenceBase: Byte = head.referenceBase
-
   lazy val distinctAlleles: Seq[Allele] = elements.map(_.allele).distinct.sorted.toIndexedSeq
 
   lazy val sampleName = elements.head.read.sampleName
@@ -64,7 +56,7 @@ case class Pileup(locus: Long, elements: Seq[PileupElement]) {
    */
   lazy val bySample: Map[String, Pileup] = {
     elements.groupBy(element => Option(element.read.sampleName).map(_.toString).getOrElse("default")).map({
-      case (sample, elems) => (sample, Pileup(locus, elems))
+      case (sample, elems) => (sample, Pileup(locus, referenceBase, elems))
     })
   }
 
@@ -74,7 +66,7 @@ case class Pileup(locus: Long, elements: Seq[PileupElement]) {
    */
   lazy val byToken: Map[Int, Pileup] = {
     elements.groupBy(element => element.read.token).map({
-      case (token, elems) => (token, Pileup(locus, elems))
+      case (token, elems) => (token, Pileup(locus, referenceBase, elems))
     })
   }
 
@@ -107,12 +99,13 @@ case class Pileup(locus: Long, elements: Seq[PileupElement]) {
    * @param newReads The *new* reads, i.e. those that overlap the new locus, but not the current locus.
    * @return A new [[Pileup]] at the given locus.
    */
-  def atGreaterLocus(newLocus: Long, newReads: Iterator[MappedRead]) = {
+  def atGreaterLocus(newLocus: Long, newReferenceBase: Byte, newReads: Iterator[MappedRead]) = {
     assume(elements.isEmpty || newLocus > locus,
       "New locus (%d) not greater than current locus (%d)".format(newLocus, locus))
     if (elements.isEmpty && newReads.isEmpty) {
       // Optimization for common case.
-      Pileup(newLocus, Vector.empty[PileupElement])
+      // If there are no reads, we won't know what the reference base is
+      Pileup(newLocus, newReferenceBase, Vector.empty[PileupElement])
     } else {
       // This code gets called many times. We are using while loops for performance.
       val builder = Vector.newBuilder[PileupElement]
@@ -123,15 +116,17 @@ case class Pileup(locus: Long, elements: Seq[PileupElement]) {
       while (iterator.hasNext) {
         val element = iterator.next()
         if (element.read.overlapsLocus(newLocus)) {
-          builder += element.advanceToLocus(newLocus)
+          builder += element.advanceToLocus(newLocus, newReferenceBase)
         }
       }
 
       // Add elements for new reads.
       while (newReads.hasNext) {
-        builder += PileupElement(newReads.next(), newLocus)
+        builder += PileupElement(newReads.next(), newLocus, newReferenceBase)
       }
-      Pileup(newLocus, builder.result)
+
+      val newPileupElements = builder.result
+      Pileup(newLocus, newReferenceBase, newPileupElements)
     }
   }
 
@@ -148,18 +143,44 @@ case class Pileup(locus: Long, elements: Seq[PileupElement]) {
     (alleleElements.size, numAllelePositiveElements)
   }
 }
-
 object Pileup {
+
+  /**
+   *
+   * Find the reference base at [[locus]] in the reads at this pileup
+   *
+   * @param reads collection of reads that overlap locus
+   * @param locus locus to find reference base at
+   * @return First non N reference base at this locus
+   */
+  def referenceBaseAtLocus(reads: Seq[MappedRead], locus: Long): Byte = {
+    // We take the reference base from the first read with a standard A, C, T, G base
+    // TODO: Is there a case where the reads disagree
+    val readWithStandardReferenceBase = reads.find(read => Bases.isStandardBase(read.getReferenceBaseAtLocus(locus)))
+    readWithStandardReferenceBase match {
+      case Some(read) => read.getReferenceBaseAtLocus(locus)
+      case None       => Bases.N
+    }
+  }
+
   /**
    * Given reads and a locus, returns a [[Pileup]] at the specified locus.
    *
    * @param reads Sequence of reads, in any order, that may or may not overlap the locus.
    * @param locus The locus to return a [[Pileup]] at.
+   * @param referenceBase The reference base at [[locus]]
    * @return A [[Pileup]] at the given locus.
    */
+  def apply(reads: Seq[MappedRead], locus: Long, referenceBase: Byte): Pileup = {
+    //TODO: Is this call to overlaps locus necessary?
+    val elements = reads.filter(_.overlapsLocus(locus)).map(PileupElement(_, locus, referenceBase))
+    Pileup(locus, referenceBase, elements)
+  }
+
   def apply(reads: Seq[MappedRead], locus: Long): Pileup = {
-    val elements = reads.filter(_.overlapsLocus(locus)).map(PileupElement(_, locus))
-    Pileup(locus, elements)
+    val overlappingReads = reads.filter(_.overlapsLocus(locus))
+    val referenceBase = referenceBaseAtLocus(overlappingReads, locus)
+    val elements = overlappingReads.map(PileupElement(_, locus, referenceBase))
+    Pileup(locus, referenceBase, elements)
   }
 }
-

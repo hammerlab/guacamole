@@ -96,7 +96,7 @@ object GermlineStandard {
         case (sampleName, samplePileup) =>
           val filteredPileupElements = QualityAlignedReadsFilter(samplePileup.elements, minAlignmentQuality)
           val genotypeLikelihoods = Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(
-            Pileup(samplePileup.locus, filteredPileupElements),
+            Pileup(samplePileup.locus, samplePileup.referenceBase, filteredPileupElements),
             logSpace = true)
 
           val mostLikelyGenotype = genotypeLikelihoods.maxBy(_._2)
