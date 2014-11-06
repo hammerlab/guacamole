@@ -54,14 +54,12 @@ case class MappedRead(
 
   lazy val mdTag = MdTag(mdTagString, start)
 
-  lazy val referenceString =
+  lazy val referenceBases =
     try {
-      mdTag.getReference(sequenceStr, cigar, start)
+      MDTagUtils.getReference(mdTag, sequence, cigar, start)
     } catch {
       case e: IllegalStateException => throw new CigarMDTagMismatchException(cigar, mdTag, e)
     }
-
-  lazy val referenceBases = Bases.stringToBases(referenceString)
 
   lazy val alignmentLikelihood = PhredUtils.phredToSuccessProbability(alignmentQuality)
 
