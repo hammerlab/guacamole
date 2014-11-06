@@ -64,13 +64,13 @@ the versions of Hadoop and Spark that Guacamole expects to find on your
 cluster.
 
 Here is an example command to get started using Guacamole in Spark's yarn
-cluster mode.  You'll probably have to modify it for your environment. 
+cluster mode. You'll probably have to modify it for your environment. 
 
 ```
 spark-submit \
 	--master yarn \
 	--deploy-mode cluster \
-	--driver-java-options -Dlog4j.configuration=log4j.properties \
+	--driver-java-options -Dlog4j.configuration=/path/to/guacamole/scripts/log4j.properties \
 	--executor-memory 4g \
 	--driver-memory 10g \
 	--num-executors 1000 \
@@ -82,32 +82,6 @@ spark-submit \
         -reads hdfs:///path/to/reads.bam \
         -out hdfs:///path/to/result.vcf \
 	-spark_master yarn-cluster
-```
-
-This command references a `log4j.properties` file with logging settings. Here is an example:
-
-```
-# Set everything to be logged to the console
-log4j.rootCategory=INFO, console
-log4j.appender.console=org.apache.log4j.ConsoleAppender
-log4j.appender.console.layout=org.apache.log4j.PatternLayout
-log4j.appender.console.layout.ConversionPattern=%d{yy/MM/dd HH:mm:ss} %p %c{1}: %m%n
-
-# Change this to set Spark log level
-log4j.logger.org.apache.spark=WARN
-
-# Enable logging from SparkUI
-log4j.logger.org.apache.spark.ui=INFO
-
-# Silence akka remoting
-log4j.logger.Remoting=WARN
-
-# Yarn silencing
-# log4j.logger.org.apache.hadoop.yarn=WARN
-log4j.logger.org.apache.hadoop.yarn.util.RackResolver=WARN
-
-# Ignore messages below warning level from Jetty, because it's a bit verbose
-log4j.logger.org.eclipse.jetty=WARN
 ```
 
 
