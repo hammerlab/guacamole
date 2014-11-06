@@ -4,7 +4,7 @@ guacamole
 
 Guacamole is a framework for variant calling, i.e. identifying DNA mutations
 from [Next Generation Sequencing](http://en.wikipedia.org/wiki/DNA_sequencing)
-reads. It currently includes a toy germline (non-cancer) variant caller as well
+data. It currently includes a toy germline (non-cancer) variant caller as well
 as a somatic variant caller for finding cancer mutations.  Most development
 effort has gone into the somatic caller so far.
 
