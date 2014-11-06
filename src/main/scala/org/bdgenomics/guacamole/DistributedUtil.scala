@@ -248,10 +248,13 @@ object DistributedUtil extends Logging {
    *  If an existing Pileup is provided, then its locus must be <= the new locus.
    */
   private def initOrMovePileup(existing: Option[Pileup], window: SlidingWindow[MappedRead]): Pileup = {
+    assume(window.halfWindowSize == 0)
+
     val locus = window.currentLocus
+    val referenceBase = Pileup.referenceBaseAtLocus(window.currentRegions(), locus)
     existing match {
-      case None         => Pileup(window.currentRegions(), locus)
-      case Some(pileup) => pileup.atGreaterLocus(locus, window.newRegions.iterator)
+      case None         => Pileup(window.currentRegions(), locus, referenceBase)
+      case Some(pileup) => pileup.atGreaterLocus(locus, referenceBase, window.newRegions.iterator)
     }
   }
 
