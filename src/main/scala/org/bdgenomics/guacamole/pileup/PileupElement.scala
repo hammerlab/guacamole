@@ -59,7 +59,8 @@ case class PileupElement(
   lazy val referenceStringIdx =
     (cigarElementLocus - read.start).toInt +
       (if (cigarElement.getOperator.consumesReferenceBases()) indexWithinCigarElement else 0)
-  lazy val referenceBase = read.referenceString.charAt(referenceStringIdx).toUpper.toByte
+
+  lazy val referenceBase = read.referenceBases(referenceStringIdx)
 
   lazy val cigarElementReadLength = CigarUtils.getReadLength(cigarElement)
   lazy val cigarElementReferenceLength = CigarUtils.getReferenceLength(cigarElement)
@@ -77,11 +78,11 @@ case class PileupElement(
 
     def makeInsertion(cigarElem: CigarElement) =
       Insertion(
-        read.sequence.slice(
+        read.sequence.view(
           readPosition,
           readPosition + CigarUtils.getReadLength(cigarElem) + 1
         ),
-        read.baseQualities.slice(
+        read.baseQualities.view(
           readPosition,
           readPosition + CigarUtils.getReadLength(cigarElem) + 1
         )
@@ -106,7 +107,7 @@ case class PileupElement(
       case (CigarOperator.I, _) => throw new InvalidCigarElementException(this)
 
       case (CigarOperator.M | CigarOperator.EQ | CigarOperator.X, Some(CigarOperator.D)) =>
-        val deletedBases = read.referenceString.substring(
+        val deletedBases = read.referenceBases.view(
           referenceStringIdx,
           referenceStringIdx + 1 + nextCigarElement.get.getLength
         )

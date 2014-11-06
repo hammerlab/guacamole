@@ -211,6 +211,13 @@
           <id>central</id>
           <url>http://repo1.maven.org/maven2</url>
       </repository>
+      <repository>
+          <snapshots>
+              <enabled>false</enabled>
+          </snapshots>
+          <id>spire</id>
+          <url>http://dl.bintray.com/non/maven</url>
+      </repository>
   </repositories>
 
   <dependencies>
@@ -269,6 +276,11 @@
         <groupId>com.google.guava</groupId>
         <artifactId>guava</artifactId>
         <version>18.0</version>
+    </dependency>
+    <dependency>
+        <groupId>org.spire-math</groupId>
+        <artifactId>debox_${scala.version.prefix}</artifactId>
+        <version>0.6.0</version>
     </dependency>
   </dependencies>
 </project>
