@@ -19,10 +19,10 @@
 package org.bdgenomics.guacamole
 
 import org.apache.commons.math3
+import org.apache.spark.rdd.RDD
+import org.apache.spark.{ Partitioner, AccumulatorParam, SparkConf, Logging }
 import org.apache.spark.SparkContext._
-import org.apache.spark._
 import org.apache.spark.broadcast.Broadcast
-import org.apache.spark.rdd._
 import org.apache.spark.serializer.JavaSerializer
 import org.bdgenomics.guacamole.Common.Arguments.{ Base, Loci }
 import org.bdgenomics.guacamole.Common._
@@ -49,7 +49,9 @@ object DistributedUtil extends Logging {
   /**
    * Partition a LociSet among tasks according to the strategy specified in args.
    */
-  def partitionLociAccordingToArgs[M <: HasReferenceRegion: ClassTag](args: Arguments, loci: LociSet, regionRDDs: RDD[M]*): LociMap[Long] = {
+  def partitionLociAccordingToArgs[M <: HasReferenceRegion: ClassTag](args: Arguments,
+                                                                      loci: LociSet,
+                                                                      regionRDDs: RDD[M]*): LociMap[Long] = {
     val tasks = if (args.parallelism > 0) args.parallelism else regionRDDs(0).partitions.length
     if (args.partitioningAccuracy == 0) {
       partitionLociUniformly(tasks, loci)
