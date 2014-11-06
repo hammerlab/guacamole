@@ -511,7 +511,7 @@ object DistributedUtil extends Logging {
     val taskNumberRegionPairsRDDs: PerSample[RDD[(Long, M)]] =
       regionRDDs.map(_.flatMap(region => {
         val singleContig = lociPartitionsBoxed.value.onContig(region.referenceContig)
-        val thisRegionsTasks = singleContig.getAll(region.start - halfWindowSize, region.end.get + halfWindowSize)
+        val thisRegionsTasks = singleContig.getAll(region.start - halfWindowSize, region.end + halfWindowSize)
 
         // Update counters
         totalRegions += 1
