@@ -11,7 +11,7 @@
   <properties>
     <adam.version>0.14.0</adam.version>
     <bdg-formats.version>0.2.0</bdg-formats.version>
-    <java.version>1.7.4</java.version>
+    <java.version>1.8</java.version>
     <scala.version>2.10.3</scala.version>
     <scala.version.prefix>2.10</scala.version.prefix>
     <hadoop.version>2.3.0</hadoop.version>
