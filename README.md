@@ -42,8 +42,8 @@ scripts/guacamole germline-threshold \
 ```
 
 This creates a *directory* called `/tmp/result.vcf`. The actual VCF file is in
-`/tmp/result.vcf/part-r-00000`. Currently, however, you'll always get one part
-file in the output directory.
+`/tmp/result.vcf/part-r-00000`. You'll always get one part file in the output
+directory.
 
 Try 
 ```
