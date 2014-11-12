@@ -77,7 +77,6 @@ case class Pileup(locus: Long, elements: Seq[PileupElement]) {
   def computeLikelihoods(prior: Genotype => Double = computeUniformGenotypePrior,
                          includeAlignmentLikelihood: Boolean = true,
                          normalize: Boolean = false): Seq[(Genotype, Double)] = {
-
     val genotypeLikelihoods = possibleGenotypes.map(_.likelihoodOfReads(elements, includeAlignmentLikelihood))
 
     if (normalize) {
@@ -85,7 +84,6 @@ case class Pileup(locus: Long, elements: Seq[PileupElement]) {
     } else {
       possibleGenotypes.zip(genotypeLikelihoods)
     }
-
   }
 
   /**
@@ -178,12 +176,26 @@ case class Pileup(locus: Long, elements: Seq[PileupElement]) {
       "New locus (%d) not greater than current locus (%d)".format(newLocus, locus))
     if (elements.isEmpty && newReads.isEmpty) {
       // Optimization for common case.
-      Pileup(newLocus, Seq.empty[PileupElement])
+      Pileup(newLocus, Vector.empty[PileupElement])
     } else {
-      val reusableElements = elements.filter(element => element.read.overlapsLocus(newLocus))
-      val updatedElements = reusableElements.map(_.advanceToLocus(newLocus))
-      val newElements = newReads.map(PileupElement(_, newLocus))
-      Pileup(newLocus, updatedElements ++ newElements)
+      // This code gets called many times. We are using while loops for performance.
+      val builder = Vector.newBuilder[PileupElement]
+      builder.sizeHint(elements.size) // We expect to have about the same number of elements as we currently have.
+
+      // Add current elements that overlap the new locus.
+      val iterator = elements.iterator
+      while (iterator.hasNext) {
+        val element = iterator.next()
+        if (element.read.overlapsLocus(newLocus)) {
+          builder += element.advanceToLocus(newLocus)
+        }
+      }
+
+      // Add elements for new reads.
+      while (newReads.hasNext) {
+        builder += PileupElement(newReads.next(), newLocus)
+      }
+      Pileup(newLocus, builder.result)
     }
   }
 
@@ -198,7 +210,6 @@ case class Pileup(locus: Long, elements: Seq[PileupElement]) {
     val numAllelePositiveElements = alleleElements.count(_.read.isPositiveStrand)
 
     (alleleElements.size, numAllelePositiveElements)
-
   }
 }
 
@@ -212,8 +223,7 @@ object Pileup {
    */
   def apply(reads: Seq[MappedRead], locus: Long): Pileup = {
     val elements = reads.filter(_.overlapsLocus(locus)).map(PileupElement(_, locus))
-    val pileup = Pileup(locus, elements)
-    pileup
+    Pileup(locus, elements)
   }
 }
 
