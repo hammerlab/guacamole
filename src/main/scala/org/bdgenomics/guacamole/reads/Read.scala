@@ -19,17 +19,16 @@
 package org.bdgenomics.guacamole.reads
 
 import htsjdk.samtools._
-import org.apache.spark.{ Logging, SparkContext }
-import org.apache.spark.rdd.RDD
-import org.apache.hadoop.io.LongWritable
-import org.seqdoop.hadoop_bam.{ AnySAMInputFormat, SAMRecordWritable }
-import org.seqdoop.hadoop_bam.util.SAMHeaderReader
-import scala.collection.mutable.ArrayBuffer
-import org.bdgenomics.adam.models.SequenceDictionary
-import org.bdgenomics.guacamole.Bases
-
 import org.apache.hadoop.fs.Path
+import org.apache.hadoop.io.LongWritable
+import org.apache.spark.rdd.RDD
+import org.apache.spark.{ Logging, SparkContext }
+import org.bdgenomics.adam.models.SequenceDictionary
+import org.seqdoop.hadoop_bam.util.SAMHeaderReader
+import org.seqdoop.hadoop_bam.{ AnySAMInputFormat, SAMRecordWritable }
+
 import scala.collection.JavaConversions
+import scala.collection.mutable.ArrayBuffer
 
 /**
  * The fields in the Read trait are common to any read, whether mapped (aligned) or not.
@@ -50,7 +49,6 @@ trait Read {
 
   /** The nucleotide sequence. */
   val sequence: Seq[Byte]
-  lazy val sequenceStr = Bases.basesToString(sequence)
 
   /** The base qualities, phred scaled.  These are numbers, and are NOT character encoded. */
   val baseQualities: Seq[Byte]
