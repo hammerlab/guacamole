@@ -178,19 +178,23 @@ case class Pileup(locus: Long, elements: Seq[PileupElement]) {
       // Optimization for common case.
       Pileup(newLocus, Vector.empty[PileupElement])
     } else {
+      // This code gets called many times. We are using while loops for performance.
       val builder = Vector.newBuilder[PileupElement]
-      // We expect the next locus to have about the same number of elements as the current locus.
-      builder.sizeHint(elements)
+      builder.sizeHint(elements.size) // We expect to have about the same number of elements as we currently have.
 
       // Add current elements that overlap the new locus.
-      elements.foreach(element => {
+      val iterator = elements.iterator
+      while (iterator.hasNext) {
+        val element = iterator.next()
         if (element.read.overlapsLocus(newLocus)) {
           builder += element.advanceToLocus(newLocus)
         }
-      })
+      }
 
       // Add elements for new reads.
-      builder ++= newReads.map(PileupElement(_, newLocus))
+      while (newReads.hasNext) {
+        builder += PileupElement(newReads.next(), newLocus)
+      }
       Pileup(newLocus, builder.result)
     }
   }
@@ -218,7 +222,7 @@ object Pileup {
    * @return A [[Pileup]] at the given locus.
    */
   def apply(reads: Seq[MappedRead], locus: Long): Pileup = {
-    val elements = reads.view.filter(_.overlapsLocus(locus)).map(PileupElement(_, locus)).toVector
+    val elements = reads.filter(_.overlapsLocus(locus)).map(PileupElement(_, locus))
     Pileup(locus, elements)
   }
 }
