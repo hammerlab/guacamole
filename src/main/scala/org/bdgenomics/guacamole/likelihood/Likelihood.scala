@@ -18,6 +18,8 @@
 
 package org.bdgenomics.guacamole.likelihood
 
+import cern.colt.matrix.impl.DenseDoubleMatrix2D
+import cern.jet.math.Functions
 import org.bdgenomics.adam.util.PhredUtils
 import org.bdgenomics.guacamole.pileup.{ PileupElement, Pileup }
 import org.bdgenomics.guacamole.variants.{ Allele, Genotype }
@@ -120,6 +122,7 @@ object Likelihood {
    *    sum over the two alleles in the genotype {
    *      probability(element, allele)
    *    }
+   *  }
    *
    * where
    *
@@ -154,20 +157,15 @@ object Likelihood {
 
     val alleles = genotypes.flatMap(_.alleles).distinct.toIndexedSeq.sorted // the distinct alleles in our genotypes
     val alleleToIndex = alleles.zipWithIndex.toMap // map from allele -> allele index in our alleles sequence.
-    val numElements = elements.size
-    val numAlleles = alleles.size
+    val depth = elements.size
 
-    // Create and populate the alleleElementProbabilities array.
-    // This is logically a two dimensional array where the element at position
+    // alleleElementProbabilities is a two dimensional array where the element at position
     //    (allele index, element index)
-    // is:
+    // is
     //    probability(allele, element).
     //
     // where the probability is defined as in the header comment.
-    //
-    // Since java doesn't have true two dimensional arrays, we fake it by manually indexing a 1 dimensional array.
-    // This is actually detectably faster to allocate than an Array[Array[Double]].
-    val alleleElementProbabilities = Array.ofDim[Double](numAlleles * numElements)
+    val a = new DenseDoubleMatrix2D(alleles.size, depth)
     var alleleIndex = 0
     while (alleleIndex < alleles.size) {
       var elementIndex = 0
@@ -175,11 +173,8 @@ object Likelihood {
       while (elementIndex < elements.size) {
         val element = elements(elementIndex)
         val successProbability = probabilityCorrect(element)
-        if (allele == element.allele) {
-          alleleElementProbabilities(alleleIndex * numElements + elementIndex) = successProbability
-        } else {
-          alleleElementProbabilities(alleleIndex * numElements + elementIndex) = 1 - successProbability
-        }
+        val probability = if (allele == element.allele) successProbability else 1 - successProbability
+        a.set(alleleIndex, elementIndex, probability)
         elementIndex += 1
       }
       alleleIndex += 1
@@ -188,30 +183,27 @@ object Likelihood {
     // Calculate likelihoods using our alleleElementProbabilities.
     val likelihoods = genotypes.map(genotype => {
       assume(genotype.alleles.size == 2, "Non-diploid genotype not supported")
-      val alleleOffset1 = numElements * alleleToIndex(genotype.alleles(0))
-      val alleleOffset2 = numElements * alleleToIndex(genotype.alleles(1))
-      var result = 0.0
+      val alleleRow1 = a.viewRow(alleleToIndex(genotype.alleles(0)))
+      val alleleRow2 = a.viewRow(alleleToIndex(genotype.alleles(1)))
       if (logSpace) {
-        var elementIndex = 0
-        while (elementIndex < elements.length) {
-          result += math.log(
-            alleleElementProbabilities(alleleOffset1 + elementIndex)
-              + alleleElementProbabilities(alleleOffset2 + elementIndex))
-          elementIndex += 1
-        }
-        result += math.log(prior(genotype)) - math.log(genotype.ploidy) * numElements
+        // Compute:
+        //   sum over elements {
+        //      log(probability(allele1, element) + probability(allele2, element))
+        //   } + log(prior) - log(ploidy) * depth
+        //
+        (alleleRow1.aggregate(alleleRow2, Functions.plus, Functions.chain(Functions.log, Functions.plus))
+          + math.log(prior(genotype))
+          - math.log(genotype.ploidy) * depth)
       } else {
-        result = 1.0
-        var elementIndex = 0
-        while (elementIndex < elements.length) {
-          result *= (
-            alleleElementProbabilities(alleleOffset1 + elementIndex)
-            + alleleElementProbabilities(alleleOffset2 + elementIndex))
-          elementIndex += 1
-        }
-        result = result * prior(genotype) / math.pow(genotype.ploidy, numElements)
+        // Compute:
+        //   product over elements {
+        //      probability(allele1, element) + probability(allele2, element)
+        //   } * prior / pow(ploidy, depth)
+        //
+        (alleleRow1.aggregate(alleleRow2, Functions.mult, Functions.plus)
+          * prior(genotype)
+          / math.pow(genotype.ploidy, depth))
       }
-      result
     })
 
     // Normalize results if necessary.
