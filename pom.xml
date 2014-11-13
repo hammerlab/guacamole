@@ -242,6 +242,11 @@
       <version>${bdg-formats.version}</version>
     </dependency>
     <dependency>
+      <groupId>colt</groupId>
+      <artifactId>colt</artifactId>
+      <version>1.2.0</version>
+    </dependency>
+    <dependency>
       <groupId>org.apache.spark</groupId>
       <artifactId>spark-core_${scala.version.prefix}</artifactId>
       <version>${spark.version}</version>
