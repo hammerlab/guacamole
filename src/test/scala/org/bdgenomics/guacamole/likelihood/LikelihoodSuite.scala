@@ -16,16 +16,18 @@
  * limitations under the License.
  */
 
-package org.bdgenomics.guacamole.pileup
+package org.bdgenomics.guacamole.likelihood
 
-import org.bdgenomics.guacamole.TestUtil.SparkFunSuite
-import org.bdgenomics.guacamole.variants.Genotype
 import org.bdgenomics.guacamole.TestUtil
+import org.bdgenomics.guacamole.TestUtil.SparkFunSuite
+import org.bdgenomics.guacamole.pileup.Pileup
+import org.bdgenomics.guacamole.reads.MappedRead
+import org.bdgenomics.guacamole.variants.Genotype
 import org.bdgenomics.guacamole.ReadsUtil._
 import org.scalatest.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks
 
-class PileupLikelihoodSuite extends SparkFunSuite with TableDrivenPropertyChecks with Matchers {
+class LikelihoodSuite extends SparkFunSuite with TableDrivenPropertyChecks with Matchers {
 
   def testLikelihoods(actualLikelihoods: Seq[(Genotype, Double)],
                       expectedLikelihoods: Map[Genotype, Double],
@@ -35,6 +37,66 @@ class PileupLikelihoodSuite extends SparkFunSuite with TableDrivenPropertyChecks
     forAll(Table("genotype", expectedLikelihoods.toList: _*)) {
       l => TestUtil.assertAlmostEqual(actualLikelihoodsMap(l._1), l._2, acceptableError)
     }
+  }
+
+  def testGenotypeLikelihoods(reads: Seq[MappedRead], genotypesMap: (Genotype, Double)*): Unit = {
+    val pileup = Pileup(reads, 1)
+    forAll(Table("genotype", genotypesMap: _*)) { pair =>
+      TestUtil.assertAlmostEqual(
+        Likelihood.likelihoodOfGenotype(
+          pileup.elements,
+          pair._1, // genotype
+          Likelihood.probabilityCorrectIgnoringAlignment),
+        pair._2
+      )
+    }
+  }
+
+  test("all reads ref") {
+    testGenotypeLikelihoods(
+      Seq(refRead(30), refRead(40), refRead(30)),
+      makeGenotype("C", "C") -> (1 - errorPhred30) * (1 - errorPhred40) * (1 - errorPhred30),
+      makeGenotype("C", "A") -> 1.0 / 8,
+      makeGenotype("A", "C") -> 1.0 / 8,
+      makeGenotype("A", "A") -> errorPhred30 * errorPhred40 * errorPhred30,
+      makeGenotype("A", "T") -> errorPhred30 * errorPhred40 * errorPhred30
+    )
+  }
+
+  test("two ref, one alt") {
+    testGenotypeLikelihoods(
+      Seq(refRead(30), refRead(40), altRead(30)),
+      makeGenotype("C", "C") -> (1 - errorPhred30) * (1 - errorPhred40) * errorPhred30,
+      makeGenotype("C", "A") -> 1.0 / 8,
+      makeGenotype("A", "C") -> 1.0 / 8,
+      makeGenotype("A", "A") -> errorPhred30 * errorPhred40 * (1 - errorPhred30),
+      makeGenotype("A", "T") -> errorPhred30 * errorPhred40 * 1 / 2,
+      makeGenotype("T", "T") -> errorPhred30 * errorPhred40 * errorPhred30
+    )
+  }
+
+  test("one ref, two alt") {
+    testGenotypeLikelihoods(
+      Seq(refRead(30), altRead(40), altRead(30)),
+      makeGenotype("C", "C") -> (1 - errorPhred30) * errorPhred40 * errorPhred30,
+      makeGenotype("C", "A") -> 1.0 / 8,
+      makeGenotype("A", "C") -> 1.0 / 8,
+      makeGenotype("A", "A") -> errorPhred30 * (1 - errorPhred40) * (1 - errorPhred30),
+      makeGenotype("A", "T") -> errorPhred30 * 1 / 2 * 1 / 2,
+      makeGenotype("T", "T") -> errorPhred30 * errorPhred40 * errorPhred30
+    )
+  }
+
+  test("all reads alt") {
+    testGenotypeLikelihoods(
+      Seq(altRead(30), altRead(40), altRead(30)),
+      makeGenotype("C", "C") -> errorPhred30 * errorPhred40 * errorPhred30,
+      makeGenotype("C", "A") -> 1.0 / 8,
+      makeGenotype("A", "C") -> 1.0 / 8,
+      makeGenotype("A", "A") -> (1 - errorPhred30) * (1 - errorPhred40) * (1 - errorPhred30),
+      makeGenotype("A", "T") -> 1.0 / 8,
+      makeGenotype("T", "T") -> errorPhred30 * errorPhred40 * errorPhred30
+    )
   }
 
   test("score genotype for single sample; all bases ref") {
@@ -52,7 +114,9 @@ class PileupLikelihoodSuite extends SparkFunSuite with TableDrivenPropertyChecks
         makeGenotype("C", "C") -> (1 - errorPhred30) * (1 - errorPhred40) * (1 - errorPhred30)
       )
 
-    testLikelihoods(pileup.computeLikelihoods(includeAlignmentLikelihood = false), expectedLikelihoods)
+    testLikelihoods(
+      Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(pileup, Likelihood.probabilityCorrectIgnoringAlignment),
+      expectedLikelihoods)
   }
 
   test("score genotype for single sample; mix of ref/non-ref bases") {
@@ -71,7 +135,9 @@ class PileupLikelihoodSuite extends SparkFunSuite with TableDrivenPropertyChecks
         makeGenotype("A", "A") -> errorPhred30 * errorPhred40 * (1 - errorPhred30)
       )
 
-    testLikelihoods(pileup.computeLikelihoods(includeAlignmentLikelihood = false), expectedLikelihoods)
+    testLikelihoods(
+      Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(pileup, Likelihood.probabilityCorrectIgnoringAlignment),
+      expectedLikelihoods)
   }
 
   test("score genotype for single sample; all bases non-ref") {
@@ -89,7 +155,9 @@ class PileupLikelihoodSuite extends SparkFunSuite with TableDrivenPropertyChecks
         makeGenotype("A", "A") -> (1 - errorPhred30) * (1 - errorPhred40) * (1 - errorPhred30)
       )
 
-    testLikelihoods(pileup.computeLikelihoods(includeAlignmentLikelihood = false), expectedLikelihoods)
+    testLikelihoods(
+      Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(pileup, Likelihood.probabilityCorrectIgnoringAlignment),
+      expectedLikelihoods)
   }
 
   test("log score genotype for single sample; all bases ref") {
@@ -108,7 +176,12 @@ class PileupLikelihoodSuite extends SparkFunSuite with TableDrivenPropertyChecks
           (math.log(1 - errorPhred30) + math.log(1 - errorPhred40) + math.log(1 - errorPhred30))
       )
 
-    testLikelihoods(pileup.computeLogLikelihoods(), expectedLikelihoods)
+    testLikelihoods(
+      Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(
+        pileup,
+        Likelihood.probabilityCorrectIgnoringAlignment,
+        logSpace = true),
+      expectedLikelihoods)
   }
 
   test("log score genotype for single sample; mix of ref/non-ref bases") {
@@ -132,7 +205,12 @@ class PileupLikelihoodSuite extends SparkFunSuite with TableDrivenPropertyChecks
           (math.log(errorPhred30) + math.log(errorPhred40) + math.log(1 - errorPhred30))
       )
 
-    testLikelihoods(pileup.computeLogLikelihoods(), expectedLikelihoods)
+    testLikelihoods(
+      Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(
+        pileup,
+        Likelihood.probabilityCorrectIgnoringAlignment,
+        logSpace = true),
+      expectedLikelihoods)
   }
 
   test("log score genotype for single sample; all bases non-ref") {
@@ -151,7 +229,11 @@ class PileupLikelihoodSuite extends SparkFunSuite with TableDrivenPropertyChecks
           (math.log(1 - errorPhred30) + math.log(1 - errorPhred40) + math.log(1 - errorPhred30))
       )
 
-    testLikelihoods(pileup.computeLogLikelihoods(), expectedLikelihoods)
+    testLikelihoods(
+      Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(
+        pileup,
+        Likelihood.probabilityCorrectIgnoringAlignment,
+        logSpace = true),
+      expectedLikelihoods)
   }
-
 }
