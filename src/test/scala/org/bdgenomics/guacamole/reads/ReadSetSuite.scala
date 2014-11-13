@@ -18,10 +18,16 @@
 
 package org.bdgenomics.guacamole.reads
 
+import org.apache.spark.rdd.RDD
+import org.bdgenomics.adam.rdd.ADAMContext
+import org.bdgenomics.formats.avro.AlignmentRecord
 import org.bdgenomics.guacamole.TestUtil
 import org.scalatest.Matchers
+import org.bdgenomics.adam.rdd.ADAMContext._
 
 class ReadSetSuite extends TestUtil.SparkFunSuite with Matchers {
+
+
 
   sparkTest("load and test filters") {
     val allReads = TestUtil.loadReads(sc, "mdtagissue.sam")
@@ -32,6 +38,30 @@ class ReadSetSuite extends TestUtil.SparkFunSuite with Matchers {
 
     val nonDuplicateReads = TestUtil.loadReads(sc, "mdtagissue.sam", Read.InputFilters(mapped = true, nonDuplicate = true))
     nonDuplicateReads.reads.count() should be(4)
+  }
+
+  sparkTest("load read from ADAM") {
+    // First load reads from SAM using ADAM and save as ADAM
+    val adamContext = new ADAMContext(sc)
+    val adamAlignmentRecords: RDD[AlignmentRecord] = adamContext.adamLoad(TestUtil.testDataPath("mdtagissue.sam"))
+    val origReads = TestUtil.loadReads(sc, "mdtagissue.sam").reads.collect()
+
+    val adamOut = TestUtil.tmpFileName(".adam")
+    adamAlignmentRecords.adamSave(adamOut)
+
+    val (allReads, _) = Read.loadReadRDDAndSequenceDictionaryFromADAM(adamOut, sc, token = 0)
+    allReads.count() should be(8)
+    val collectedReads = allReads.collect()
+
+//    The follow test does not pass due to TLEN or InferredInsertSize not set on ADAMRecords
+//    See https://github.com/bigdatagenomics/bdg-formats/issues/37
+//    origReads.zip(collectedReads).foreach( {
+//      case (guacRead, adamRead) => guacRead should be(adamRead)
+//    })
+
+    val (filteredReads, _) = Read.loadReadRDDAndSequenceDictionary(adamOut, sc, token = 0, Read.InputFilters(mapped = true, nonDuplicate = true))
+    filteredReads.count() should be(4)
+
   }
 
   sparkTest("load and serialize / deserialize reads") {
