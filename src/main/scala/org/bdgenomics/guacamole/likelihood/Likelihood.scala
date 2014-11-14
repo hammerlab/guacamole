@@ -145,13 +145,12 @@ object Likelihood {
    * @param normalize if true, the probabilities returned are normalized to sum to 1.
    * @return A sequence of probabilities corresponding to each genotype in the genotypes argument
    */
-    def likelihoodsOfGenotypes(
-    elements: Seq[PileupElement],
-    genotypes: Seq[Genotype],
-    probabilityCorrect: PileupElement => Double = probabilityCorrectIgnoringAlignment,
-    prior: Genotype => Double = uniformPrior,
-    logSpace: Boolean = false,
-    normalize: Boolean = false): Seq[Double] = {
+  def likelihoodsOfGenotypes(elements: Seq[PileupElement],
+                             genotypes: Seq[Genotype],
+                             probabilityCorrect: PileupElement => Double = probabilityCorrectIgnoringAlignment,
+                             prior: Genotype => Double = uniformPrior,
+                             logSpace: Boolean = false,
+                             normalize: Boolean = false): Seq[Double] = {
 
     val alleles = genotypes.flatMap(_.alleles).distinct.toIndexedSeq.sorted // the distinct alleles in our genotypes
     val alleleToIndex = alleles.zipWithIndex.toMap // map from allele -> allele index in our alleles sequence.
@@ -170,22 +169,21 @@ object Likelihood {
       alleleElementProbabilities.set(alleleIndex, elementIndex, probability)
     }
 
-    // Calculate likelihoods using our alleleElementProbabilities. The calculation is done in log-space.
+    // Calculate likelihoods in log-space. For each genotype, we compute:
+    //   sum over elements {
+    //      log(probability(allele1, element) + probability(allele2, element))
+    //   } + log(prior) - log(ploidy) * depth
+    //
     val likelihoods = genotypes.map(genotype => {
       assume(genotype.alleles.size == 2, "Non-diploid genotype not supported")
       val alleleRow1 = alleleElementProbabilities.viewRow(alleleToIndex(genotype.alleles(0)))
       val alleleRow2 = alleleElementProbabilities.viewRow(alleleToIndex(genotype.alleles(1)))
-      // Compute:
-      //   sum over elements {
-      //      log(probability(allele1, element) + probability(allele2, element))
-      //   } + log(prior) - log(ploidy) * depth
-      //
       (alleleRow1.aggregate(alleleRow2, Functions.plus, Functions.chain(Functions.log, Functions.plus))
         + math.log(prior(genotype))
         - math.log(2) * depth)
     })
 
-    // Normalize results if necessary.
+    // Normalize and/or convert log probs to plain probabilities.
     val possiblyNormalized = if (normalize) {
       val totalLikelihood = math.log(likelihoods.map(math.exp).sum)
       likelihoods.map(_ - totalLikelihood)
