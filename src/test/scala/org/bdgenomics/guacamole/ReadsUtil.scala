@@ -35,6 +35,10 @@ object ReadsUtil {
     Genotype(alleles.map(allele => Allele(Seq(referenceBase), Bases.stringToBases(allele))): _*)
   }
 
+  def makeGenotype(alleles: (Char, Char)): Genotype = {
+    makeGenotype(alleles.productIterator.map(_.toString).toList: _*)
+  }
+
   val errorPhred30 = PhredUtils.phredToErrorProbability(30)
   val errorPhred40 = PhredUtils.phredToErrorProbability(40)
 
