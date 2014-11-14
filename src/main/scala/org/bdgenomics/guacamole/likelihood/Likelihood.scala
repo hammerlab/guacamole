@@ -138,16 +138,14 @@ object Likelihood {
    * @param probabilityCorrect a function of [[PileupElement]] that gives the probability that the bases sequenced are
    *                           correct. See [[probabilityCorrectIgnoringAlignment()]] and
    *                           [[probabilityCorrectIncludingAlignment()]] for two reasonable functions to use here.
-   *                           Note that the return value of this function is *always* expected to be a plain
-   *                           probability, never a log prob, no matter if the computation is being done in log space or
-   *                           not.
+   *                           This function should return a plain probability, not a log prob.
    * @param prior a function on genotypes that gives the prior probability that genotype is correct. This function should
-   *             return a plain probability (NOT a log prob), even if the computation is being done in log space.
-   * @param logSpace if true, the calculation is performed in log space and the probabilities are returned as log probs.
-   * @param normalize if true, the probabilities returned are normalized so they sum to 1.
+   *             return a plain probability, not a log prob.
+   * @param logSpace if true, the probabilities are returned as log probs.
+   * @param normalize if true, the probabilities returned are normalized to sum to 1.
    * @return A sequence of probabilities corresponding to each genotype in the genotypes argument
    */
-  def likelihoodsOfGenotypes(
+    def likelihoodsOfGenotypes(
     elements: Seq[PileupElement],
     genotypes: Seq[Genotype],
     probabilityCorrect: PileupElement => Double = probabilityCorrectIgnoringAlignment,
@@ -162,61 +160,41 @@ object Likelihood {
     // alleleElementProbabilities is a two dimensional array where the element at position
     //    (allele index, element index)
     // is
-    //    probability(allele, element).
+    //    probability(element, allele).
     //
     // where the probability is defined as in the header comment.
-    val a = new DenseDoubleMatrix2D(alleles.size, depth)
-    var alleleIndex = 0
-    while (alleleIndex < alleles.size) {
-      var elementIndex = 0
-      val allele = alleles(alleleIndex)
-      while (elementIndex < elements.size) {
-        val element = elements(elementIndex)
-        val successProbability = probabilityCorrect(element)
-        val probability = if (allele == element.allele) successProbability else 1 - successProbability
-        a.set(alleleIndex, elementIndex, probability)
-        elementIndex += 1
-      }
-      alleleIndex += 1
+    val alleleElementProbabilities = new DenseDoubleMatrix2D(alleles.size, depth)
+    for ((allele, alleleIndex) <- alleles.zipWithIndex; (element, elementIndex) <- elements.zipWithIndex) {
+      val successProbability = probabilityCorrect(element)
+      val probability = if (allele == element.allele) successProbability else 1 - successProbability
+      alleleElementProbabilities.set(alleleIndex, elementIndex, probability)
     }
 
-    // Calculate likelihoods using our alleleElementProbabilities.
+    // Calculate likelihoods using our alleleElementProbabilities. The calculation is done in log-space.
     val likelihoods = genotypes.map(genotype => {
       assume(genotype.alleles.size == 2, "Non-diploid genotype not supported")
-      val alleleRow1 = a.viewRow(alleleToIndex(genotype.alleles(0)))
-      val alleleRow2 = a.viewRow(alleleToIndex(genotype.alleles(1)))
-      if (logSpace) {
-        // Compute:
-        //   sum over elements {
-        //      log(probability(allele1, element) + probability(allele2, element))
-        //   } + log(prior) - log(ploidy) * depth
-        //
-        (alleleRow1.aggregate(alleleRow2, Functions.plus, Functions.chain(Functions.log, Functions.plus))
-          + math.log(prior(genotype))
-          - math.log(genotype.ploidy) * depth)
-      } else {
-        // Compute:
-        //   product over elements {
-        //      probability(allele1, element) + probability(allele2, element)
-        //   } * prior / pow(ploidy, depth)
-        //
-        (alleleRow1.aggregate(alleleRow2, Functions.mult, Functions.plus)
-          * prior(genotype)
-          / math.pow(genotype.ploidy, depth))
-      }
+      val alleleRow1 = alleleElementProbabilities.viewRow(alleleToIndex(genotype.alleles(0)))
+      val alleleRow2 = alleleElementProbabilities.viewRow(alleleToIndex(genotype.alleles(1)))
+      // Compute:
+      //   sum over elements {
+      //      log(probability(allele1, element) + probability(allele2, element))
+      //   } + log(prior) - log(ploidy) * depth
+      //
+      (alleleRow1.aggregate(alleleRow2, Functions.plus, Functions.chain(Functions.log, Functions.plus))
+        + math.log(prior(genotype))
+        - math.log(2) * depth)
     })
 
     // Normalize results if necessary.
-    if (normalize) {
-      if (logSpace) {
-        val totalLikelihood = math.log(likelihoods.map(math.exp).sum)
-        likelihoods.map(_ - totalLikelihood)
-      } else {
-        val totalLikelihood = likelihoods.sum
-        likelihoods.map(_ / totalLikelihood)
-      }
+    val possiblyNormalized = if (normalize) {
+      val totalLikelihood = math.log(likelihoods.map(math.exp).sum)
+      likelihoods.map(_ - totalLikelihood)
     } else {
       likelihoods
     }
+    if (logSpace)
+      possiblyNormalized
+    else
+      possiblyNormalized.map(math.exp)
   }
 }
