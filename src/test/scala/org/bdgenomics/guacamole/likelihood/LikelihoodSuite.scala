@@ -30,6 +30,10 @@ import org.scalatest.prop.TableDrivenPropertyChecks
 class LikelihoodSuite extends SparkFunSuite with TableDrivenPropertyChecks with Matchers {
 
   def testLikelihoods(actualLikelihoods: Seq[(Genotype, Double)],
+                      expectedLikelihoods: ((Char, Char), Double)*): Unit =
+    testLikelihoods(actualLikelihoods, expectedLikelihoods.toList.map(p => makeGenotype(p._1) -> p._2).toMap)
+
+  def testLikelihoods(actualLikelihoods: Seq[(Genotype, Double)],
                       expectedLikelihoods: Map[Genotype, Double],
                       acceptableError: Double = 1e-12): Unit = {
     actualLikelihoods.size should equal(expectedLikelihoods.size)
@@ -39,13 +43,13 @@ class LikelihoodSuite extends SparkFunSuite with TableDrivenPropertyChecks with 
     }
   }
 
-  def testGenotypeLikelihoods(reads: Seq[MappedRead], genotypesMap: (Genotype, Double)*): Unit = {
+  def testGenotypeLikelihoods(reads: Seq[MappedRead], genotypesMap: ((Char, Char), Double)*): Unit = {
     val pileup = Pileup(reads, 1)
     forAll(Table("genotype", genotypesMap: _*)) { pair =>
       TestUtil.assertAlmostEqual(
         Likelihood.likelihoodOfGenotype(
           pileup.elements,
-          pair._1, // genotype
+          makeGenotype(pair._1), // genotype
           Likelihood.probabilityCorrectIgnoringAlignment),
         pair._2
       )
@@ -55,47 +59,47 @@ class LikelihoodSuite extends SparkFunSuite with TableDrivenPropertyChecks with 
   test("all reads ref") {
     testGenotypeLikelihoods(
       Seq(refRead(30), refRead(40), refRead(30)),
-      makeGenotype("C", "C") -> (1 - errorPhred30) * (1 - errorPhred40) * (1 - errorPhred30),
-      makeGenotype("C", "A") -> 1.0 / 8,
-      makeGenotype("A", "C") -> 1.0 / 8,
-      makeGenotype("A", "A") -> errorPhred30 * errorPhred40 * errorPhred30,
-      makeGenotype("A", "T") -> errorPhred30 * errorPhred40 * errorPhred30
+      ('C', 'C') -> (1 - errorPhred30) * (1 - errorPhred40) * (1 - errorPhred30),
+      ('C', 'A') -> 1.0 / 8,
+      ('A', 'C') -> 1.0 / 8,
+      ('A', 'A') -> errorPhred30 * errorPhred40 * errorPhred30,
+      ('A', 'T') -> errorPhred30 * errorPhred40 * errorPhred30
     )
   }
 
   test("two ref, one alt") {
     testGenotypeLikelihoods(
       Seq(refRead(30), refRead(40), altRead(30)),
-      makeGenotype("C", "C") -> (1 - errorPhred30) * (1 - errorPhred40) * errorPhred30,
-      makeGenotype("C", "A") -> 1.0 / 8,
-      makeGenotype("A", "C") -> 1.0 / 8,
-      makeGenotype("A", "A") -> errorPhred30 * errorPhred40 * (1 - errorPhred30),
-      makeGenotype("A", "T") -> errorPhred30 * errorPhred40 * 1 / 2,
-      makeGenotype("T", "T") -> errorPhred30 * errorPhred40 * errorPhred30
+      ('C', 'C') -> (1 - errorPhred30) * (1 - errorPhred40) * errorPhred30,
+      ('C', 'A') -> 1.0 / 8,
+      ('A', 'C') -> 1.0 / 8,
+      ('A', 'A') -> errorPhred30 * errorPhred40 * (1 - errorPhred30),
+      ('A', 'T') -> errorPhred30 * errorPhred40 * 1 / 2,
+      ('T', 'T') -> errorPhred30 * errorPhred40 * errorPhred30
     )
   }
 
   test("one ref, two alt") {
     testGenotypeLikelihoods(
       Seq(refRead(30), altRead(40), altRead(30)),
-      makeGenotype("C", "C") -> (1 - errorPhred30) * errorPhred40 * errorPhred30,
-      makeGenotype("C", "A") -> 1.0 / 8,
-      makeGenotype("A", "C") -> 1.0 / 8,
-      makeGenotype("A", "A") -> errorPhred30 * (1 - errorPhred40) * (1 - errorPhred30),
-      makeGenotype("A", "T") -> errorPhred30 * 1 / 2 * 1 / 2,
-      makeGenotype("T", "T") -> errorPhred30 * errorPhred40 * errorPhred30
+      ('C', 'C') -> (1 - errorPhred30) * errorPhred40 * errorPhred30,
+      ('C', 'A') -> 1.0 / 8,
+      ('A', 'C') -> 1.0 / 8,
+      ('A', 'A') -> errorPhred30 * (1 - errorPhred40) * (1 - errorPhred30),
+      ('A', 'T') -> errorPhred30 * 1 / 2 * 1 / 2,
+      ('T', 'T') -> errorPhred30 * errorPhred40 * errorPhred30
     )
   }
 
   test("all reads alt") {
     testGenotypeLikelihoods(
       Seq(altRead(30), altRead(40), altRead(30)),
-      makeGenotype("C", "C") -> errorPhred30 * errorPhred40 * errorPhred30,
-      makeGenotype("C", "A") -> 1.0 / 8,
-      makeGenotype("A", "C") -> 1.0 / 8,
-      makeGenotype("A", "A") -> (1 - errorPhred30) * (1 - errorPhred40) * (1 - errorPhred30),
-      makeGenotype("A", "T") -> 1.0 / 8,
-      makeGenotype("T", "T") -> errorPhred30 * errorPhred40 * errorPhred30
+      ('C', 'C') -> errorPhred30 * errorPhred40 * errorPhred30,
+      ('C', 'A') -> 1.0 / 8,
+      ('A', 'C') -> 1.0 / 8,
+      ('A', 'A') -> (1 - errorPhred30) * (1 - errorPhred40) * (1 - errorPhred30),
+      ('A', 'T') -> 1.0 / 8,
+      ('T', 'T') -> errorPhred30 * errorPhred40 * errorPhred30
     )
   }
 
@@ -109,14 +113,10 @@ class LikelihoodSuite extends SparkFunSuite with TableDrivenPropertyChecks with 
 
     val pileup = Pileup(reads, 1)
 
-    val expectedLikelihoods: Map[Genotype, Double] =
-      Map(
-        makeGenotype("C", "C") -> (1 - errorPhred30) * (1 - errorPhred40) * (1 - errorPhred30)
-      )
-
     testLikelihoods(
       Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(pileup, Likelihood.probabilityCorrectIgnoringAlignment),
-      expectedLikelihoods)
+      ('C', 'C') -> (1 - errorPhred30) * (1 - errorPhred40) * (1 - errorPhred30)
+    )
   }
 
   test("score genotype for single sample; mix of ref/non-ref bases") {
@@ -128,16 +128,12 @@ class LikelihoodSuite extends SparkFunSuite with TableDrivenPropertyChecks with 
 
     val pileup = Pileup(reads, 1)
 
-    val expectedLikelihoods: Map[Genotype, Double] =
-      Map(
-        makeGenotype("C", "C") -> (1 - errorPhred30) * (1 - errorPhred40) * errorPhred30,
-        makeGenotype("A", "C") -> 1 / 8.0,
-        makeGenotype("A", "A") -> errorPhred30 * errorPhred40 * (1 - errorPhred30)
-      )
-
     testLikelihoods(
       Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(pileup, Likelihood.probabilityCorrectIgnoringAlignment),
-      expectedLikelihoods)
+      ('C', 'C') -> (1 - errorPhred30) * (1 - errorPhred40) * errorPhred30,
+      ('A', 'C') -> 1 / 8.0,
+      ('A', 'A') -> errorPhred30 * errorPhred40 * (1 - errorPhred30)
+    )
   }
 
   test("score genotype for single sample; all bases non-ref") {
@@ -150,14 +146,10 @@ class LikelihoodSuite extends SparkFunSuite with TableDrivenPropertyChecks with 
 
     val pileup = Pileup(reads, 1)
 
-    val expectedLikelihoods: Map[Genotype, Double] =
-      Map(
-        makeGenotype("A", "A") -> (1 - errorPhred30) * (1 - errorPhred40) * (1 - errorPhred30)
-      )
-
     testLikelihoods(
       Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(pileup, Likelihood.probabilityCorrectIgnoringAlignment),
-      expectedLikelihoods)
+      ('A', 'A') -> (1 - errorPhred30) * (1 - errorPhred40) * (1 - errorPhred30)
+    )
   }
 
   test("log score genotype for single sample; all bases ref") {
@@ -170,18 +162,13 @@ class LikelihoodSuite extends SparkFunSuite with TableDrivenPropertyChecks with 
 
     val pileup = Pileup(reads, 1)
 
-    val expectedLikelihoods: Map[Genotype, Double] =
-      Map(
-        makeGenotype("C", "C") ->
-          (math.log(1 - errorPhred30) + math.log(1 - errorPhred40) + math.log(1 - errorPhred30))
-      )
-
     testLikelihoods(
       Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(
         pileup,
         Likelihood.probabilityCorrectIgnoringAlignment,
         logSpace = true),
-      expectedLikelihoods)
+      ('C', 'C') -> (math.log(1 - errorPhred30) + math.log(1 - errorPhred40) + math.log(1 - errorPhred30))
+    )
   }
 
   test("log score genotype for single sample; mix of ref/non-ref bases") {
@@ -193,24 +180,15 @@ class LikelihoodSuite extends SparkFunSuite with TableDrivenPropertyChecks with 
 
     val pileup = Pileup(reads, 1)
 
-    val expectedLikelihoods: Map[Genotype, Double] =
-      Map(
-
-        makeGenotype("C", "C") ->
-          (math.log(1 - errorPhred30) + math.log(1 - errorPhred40) + math.log(errorPhred30)),
-
-        makeGenotype("A", "C") -> math.log(1.0 / 8),
-
-        makeGenotype("A", "A") ->
-          (math.log(errorPhred30) + math.log(errorPhred40) + math.log(1 - errorPhred30))
-      )
-
     testLikelihoods(
       Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(
         pileup,
         Likelihood.probabilityCorrectIgnoringAlignment,
         logSpace = true),
-      expectedLikelihoods)
+      ('C', 'C') -> (math.log(1 - errorPhred30) + math.log(1 - errorPhred40) + math.log(errorPhred30)),
+      ('A', 'C') -> math.log(1.0 / 8),
+      ('A', 'A') -> (math.log(errorPhred30) + math.log(errorPhred40) + math.log(1 - errorPhred30))
+    )
   }
 
   test("log score genotype for single sample; all bases non-ref") {
@@ -223,17 +201,12 @@ class LikelihoodSuite extends SparkFunSuite with TableDrivenPropertyChecks with 
 
     val pileup = Pileup(reads, 1)
 
-    val expectedLikelihoods: Map[Genotype, Double] =
-      Map(
-        makeGenotype("A", "A") ->
-          (math.log(1 - errorPhred30) + math.log(1 - errorPhred40) + math.log(1 - errorPhred30))
-      )
-
     testLikelihoods(
       Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(
         pileup,
         Likelihood.probabilityCorrectIgnoringAlignment,
         logSpace = true),
-      expectedLikelihoods)
+      ('A', 'A') -> (math.log(1 - errorPhred30) + math.log(1 - errorPhred40) + math.log(1 - errorPhred30))
+    )
   }
 }
