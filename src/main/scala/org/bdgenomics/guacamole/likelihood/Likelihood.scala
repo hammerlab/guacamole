@@ -163,7 +163,10 @@ object Likelihood {
     //
     // where the probability is defined as in the header comment.
     val alleleElementProbabilities = new DenseDoubleMatrix2D(alleles.size, depth)
-    for ((allele, alleleIndex) <- alleles.zipWithIndex; (element, elementIndex) <- elements.zipWithIndex) {
+    for {
+      (allele, alleleIndex) <- alleles.zipWithIndex
+      (element, elementIndex) <- elements.zipWithIndex
+    } {
       val successProbability = probabilityCorrect(element)
       val probability = if (allele == element.allele) successProbability else 1 - successProbability
       alleleElementProbabilities.set(alleleIndex, elementIndex, probability)
@@ -174,7 +177,7 @@ object Likelihood {
     //      log(probability(allele1, element) + probability(allele2, element))
     //   } + log(prior) - log(ploidy) * depth
     //
-    val likelihoods = genotypes.map(genotype => {
+    val logLikelihoods = genotypes.map(genotype => {
       assume(genotype.alleles.size == 2, "Non-diploid genotype not supported")
       val alleleRow1 = alleleElementProbabilities.viewRow(alleleToIndex(genotype.alleles(0)))
       val alleleRow2 = alleleElementProbabilities.viewRow(alleleToIndex(genotype.alleles(1)))
@@ -184,15 +187,15 @@ object Likelihood {
     })
 
     // Normalize and/or convert log probs to plain probabilities.
-    val possiblyNormalized = if (normalize) {
-      val totalLikelihood = math.log(likelihoods.map(math.exp).sum)
-      likelihoods.map(_ - totalLikelihood)
+    val possiblyNormalizedLogLikelihoods = if (normalize) {
+      val logTotalLikelihood = math.log(logLikelihoods.map(math.exp).sum)
+      logLikelihoods.map(_ - logTotalLikelihood)
     } else {
-      likelihoods
+      logLikelihoods
     }
     if (logSpace)
-      possiblyNormalized
+      possiblyNormalizedLogLikelihoods
     else
-      possiblyNormalized.map(math.exp)
+      possiblyNormalizedLogLikelihoods.map(math.exp)
   }
 }
