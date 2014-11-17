@@ -28,12 +28,6 @@ case class Allele(refBases: Seq[Byte], altBases: Seq[Byte]) extends Ordered[Alle
 
   override def toString: String = "Allele(%s,%s)".format(Bases.basesToString(refBases), Bases.basesToString(altBases))
 
-  override def equals(other: Any): Boolean = other match {
-    case otherAllele: Allele => refBases == otherAllele.refBases && altBases == otherAllele.altBases
-    case _                   => false
-  }
-  def ==(other: Allele): Boolean = equals(other)
-
   override def compare(that: Allele): Int = {
     BasesOrdering.compare(refBases, that.refBases) match {
       case 0 => BasesOrdering.compare(altBases, that.altBases)

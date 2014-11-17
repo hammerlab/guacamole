@@ -19,11 +19,11 @@
 package org.bdgenomics.guacamole
 
 import org.bdgenomics.adam.util.PhredUtils
+import org.bdgenomics.guacamole.likelihood.LikelihoodSuite
 import org.bdgenomics.guacamole.variants.{ Allele, Genotype }
 
 /**
- * Some utility functions shared by [[org.bdgenomics.guacamole.pileup.PileupLikelihoodSuite]] and
- * [[org.bdgenomics.guacamole.variants.GenotypeSuite]].
+ * Some utility functions for [[LikelihoodSuite]].
  */
 object ReadsUtil {
 
@@ -33,6 +33,10 @@ object ReadsUtil {
     // If we later change Genotype to work with Array[byte] instead of strings, we can use this function to convert
     // to byte arrays.
     Genotype(alleles.map(allele => Allele(Seq(referenceBase), Bases.stringToBases(allele))): _*)
+  }
+
+  def makeGenotype(alleles: (Char, Char)): Genotype = {
+    makeGenotype(alleles.productIterator.map(_.toString).toList: _*)
   }
 
   val errorPhred30 = PhredUtils.phredToErrorProbability(30)

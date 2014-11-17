@@ -21,6 +21,7 @@ package org.bdgenomics.guacamole.commands
 import org.apache.spark.Logging
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.cli.Args4j
+import org.bdgenomics.guacamole.likelihood.Likelihood
 import org.bdgenomics.guacamole.variants.{ AlleleEvidence, Genotype, AlleleConversions, CalledAllele }
 import org.bdgenomics.guacamole._
 import org.bdgenomics.guacamole.Common.Arguments._
@@ -96,7 +97,10 @@ object GermlineStandardCaller extends Command with Serializable with Logging {
     pileup.bySample.toSeq.flatMap({
       case (sampleName, samplePileup) =>
         val filteredPileupElements = QualityAlignedReadsFilter(samplePileup.elements, minAlignmentQuality)
-        val genotypeLikelihoods = Pileup(samplePileup.locus, filteredPileupElements).computeLogLikelihoods()
+        val genotypeLikelihoods = Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(
+          Pileup(samplePileup.locus, filteredPileupElements),
+          logSpace = true)
+
         val mostLikelyGenotype = genotypeLikelihoods.maxBy(_._2)
 
         def buildVariants(genotype: Genotype, probability: Double): Seq[CalledAllele] = {

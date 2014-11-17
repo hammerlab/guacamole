@@ -47,49 +47,12 @@ case class Genotype(alleles: Allele*) {
     alleles.filter(_.isVariant)
   }
 
-  def computeElementLikelihood(element: PileupElement, includeAlignmentLikelihood: Boolean = false): Double = {
-    val baseCallProbability = PhredUtils.phredToSuccessProbability(element.qualityScore)
-    val successProbability = if (includeAlignmentLikelihood) {
-      baseCallProbability * element.read.alignmentLikelihood
-    } else {
-      baseCallProbability
-    }
-
-    alleles.map(allele =>
-      if (allele == element.allele)
-        successProbability
-      else
-        (1 - successProbability)
-    ).sum
-  }
-
   /**
    * Counts alleles in this genotype that are not the same as the specified reference allele.
    *
    * @return Count of non reference alleles
    */
   lazy val numberOfVariantAlleles: Int = getNonReferenceAlleles.size
-
-  def likelihoodOfReads(elements: Seq[PileupElement], includeAlignmentLikelihood: Boolean = false) = {
-    val depth = elements.size
-    val elementLikelihoods =
-      // TODO(ryan): we could memoize a lot of computation here by keeping around a count of each genotype's
-      // frequency in the Pileup, which we've already had an opportunity to compute and save.
-      elements.map(
-        computeElementLikelihood(_, includeAlignmentLikelihood)
-      )
-
-    elementLikelihoods.product / math.pow(ploidy, depth)
-  }
-
-  def logLikelihoodOfReads(elements: Seq[PileupElement], includeAlignmentLikelihood: Boolean = false): Double = {
-    val depth = elements.size
-    val unnormalizedLikelihood =
-      elements
-        .map(el => math.log(computeElementLikelihood(el, includeAlignmentLikelihood)))
-        .sum
-    unnormalizedLikelihood - depth * math.log(ploidy)
-  }
 
   /**
    * Returns whether this genotype contains any non-reference alleles for a given reference sequence.

@@ -22,6 +22,7 @@ import org.apache.spark.Logging
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.cli.Args4j
 import org.bdgenomics.guacamole.Common.Arguments.{ Output, TumorNormalReads }
+import org.bdgenomics.guacamole.likelihood.Likelihood
 import org.bdgenomics.guacamole._
 import org.bdgenomics.guacamole.filters.PileupFilter.PileupFilterArguments
 import org.bdgenomics.guacamole.filters.SomaticGenotypeFilter.SomaticGenotypeFilterArguments
@@ -217,18 +218,18 @@ object SomaticStandardCaller extends Command with Serializable with Logging {
      * This is either the reference genotype or an heterozygous genotype with some alternate base
      */
     val (mostLikelyTumorGenotype, mostLikelyTumorGenotypeLikelihood) =
-      filteredTumorPileup.computeLikelihoods(
-        includeAlignmentLikelihood = true,
+      Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(
+        filteredTumorPileup,
+        Likelihood.probabilityCorrectIncludingAlignment,
         normalize = true
       ).maxBy(_._2)
 
     // The following lazy vals are only evaluated if mostLikelyTumorGenotype.hasVariantAllele
     lazy val normalLikelihoods =
-      filteredNormalPileup.computeLikelihoods(
-        includeAlignmentLikelihood = false,
-        normalize = true
-      ).toMap
-
+      Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(
+        filteredNormalPileup,
+        Likelihood.probabilityCorrectIgnoringAlignment,
+        normalize = true).toMap
     lazy val normalVariantGenotypes = normalLikelihoods.filter(_._1.hasVariantAllele)
 
     // NOTE(ryan): for now, compare non-reference alleles found in tumor to the sum of all likelihoods of variant
