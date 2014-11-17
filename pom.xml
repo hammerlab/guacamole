@@ -82,6 +82,15 @@
               <exclude>org.apache.maven:lib:tests</exclude>
             </excludes>
           </artifactSet>
+          <relocations>
+            <relocation>
+              <pattern>com.google.common</pattern>
+              <shadedPattern>org.bdgenomics.guavarelocated</shadedPattern>
+                <includes>
+                  <include>com.google.common.collect.**</include>
+                </includes>
+            </relocation>
+          </relocations>
         </configuration>
         <executions>
           <execution>
