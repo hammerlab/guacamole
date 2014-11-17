@@ -266,69 +266,6 @@ with that token.
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="org.bdgenomics.guacamole.pileup.Pileup#computeLikelihoods" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="computeLikelihoods(prior:org.bdgenomics.guacamole.variants.Genotype=&gt;Double,includeAlignmentLikelihood:Boolean,normalize:Boolean):Seq[(org.bdgenomics.guacamole.variants.Genotype,Double)]"></a>
-      <a id="computeLikelihoods((Genotype)⇒Double,Boolean,Boolean):Seq[(Genotype,Double)]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">computeLikelihoods</span><span class="params">(<span name="prior">prior: (<a href="../variants/Genotype.html" class="extype" name="org.bdgenomics.guacamole.variants.Genotype">Genotype</a>) ⇒ <span class="extype" name="scala.Double">Double</span> = <span class="symbol"><span class="name"><a href="#computeUniformGenotypePrior(genotype:org.bdgenomics.guacamole.variants.Genotype):Double">computeUniformGenotypePrior</a></span></span></span>, <span name="includeAlignmentLikelihood">includeAlignmentLikelihood: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">true</span></span>, <span name="normalize">normalize: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[(<a href="../variants/Genotype.html" class="extype" name="org.bdgenomics.guacamole.variants.Genotype">Genotype</a>, <span class="extype" name="scala.Double">Double</span>)]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">For each possible genotype based on the pileup sequencedBases, compute the likelihood.</p><div class="fullcomment"><div class="comment cmt"><p>For each possible genotype based on the pileup sequencedBases, compute the likelihood.
-</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>Sequence of (Genotype, Likelihood)
-</p></dd></dl></div>
-    </li><li name="org.bdgenomics.guacamole.pileup.Pileup#computeLogLikelihoods" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="computeLogLikelihoods(prior:org.bdgenomics.guacamole.variants.Genotype=&gt;Double,includeAlignmentLikelihood:Boolean):Seq[(org.bdgenomics.guacamole.variants.Genotype,Double)]"></a>
-      <a id="computeLogLikelihoods((Genotype)⇒Double,Boolean):Seq[(Genotype,Double)]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">computeLogLikelihoods</span><span class="params">(<span name="prior">prior: (<a href="../variants/Genotype.html" class="extype" name="org.bdgenomics.guacamole.variants.Genotype">Genotype</a>) ⇒ <span class="extype" name="scala.Double">Double</span> = <span class="symbol"><span class="name"><a href="#computeUniformGenotypeLogPrior(genotype:org.bdgenomics.guacamole.variants.Genotype):Double">computeUniformGenotypeLogPrior</a></span></span></span>, <span name="includeAlignmentLikelihood">includeAlignmentLikelihood: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[(<a href="../variants/Genotype.html" class="extype" name="org.bdgenomics.guacamole.variants.Genotype">Genotype</a>, <span class="extype" name="scala.Double">Double</span>)]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">See computeLikelihoods, same computation in log-space
-</p><div class="fullcomment"><div class="comment cmt"><p>See computeLikelihoods, same computation in log-space
-</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>Sequence of (Genotype, LogLikelihood)
-</p></dd></dl></div>
-    </li><li name="org.bdgenomics.guacamole.pileup.Pileup#computeUniformGenotypeLogPrior" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="computeUniformGenotypeLogPrior(genotype:org.bdgenomics.guacamole.variants.Genotype):Double"></a>
-      <a id="computeUniformGenotypeLogPrior(Genotype):Double"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">computeUniformGenotypeLogPrior</span><span class="params">(<span name="genotype">genotype: <a href="../variants/Genotype.html" class="extype" name="org.bdgenomics.guacamole.variants.Genotype">Genotype</a></span>)</span><span class="result">: <span class="extype" name="scala.Double">Double</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Compute prior probability for given genotype, in log-space
-</p><div class="fullcomment"><div class="comment cmt"><p>Compute prior probability for given genotype, in log-space
-</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>0.0 (default uniform prior)
-</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
-    </li><li name="org.bdgenomics.guacamole.pileup.Pileup#computeUniformGenotypePrior" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="computeUniformGenotypePrior(genotype:org.bdgenomics.guacamole.variants.Genotype):Double"></a>
-      <a id="computeUniformGenotypePrior(Genotype):Double"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">computeUniformGenotypePrior</span><span class="params">(<span name="genotype">genotype: <a href="../variants/Genotype.html" class="extype" name="org.bdgenomics.guacamole.variants.Genotype">Genotype</a></span>)</span><span class="result">: <span class="extype" name="scala.Double">Double</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Compute prior probability for given genotype
-</p><div class="fullcomment"><div class="comment cmt"><p>Compute prior probability for given genotype
-</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>1.0 (default uniform prior)
-</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
     </li><li name="org.bdgenomics.guacamole.pileup.Pileup#depth" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="depth:Int"></a>
       <a id="depth:Int"></a>
@@ -343,6 +280,19 @@ with that token.
       </h4>
       <p class="shortcomment cmt">Depth of pileup - number of reads at locus
 </p>
+    </li><li name="org.bdgenomics.guacamole.pileup.Pileup#distinctAlleles" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="distinctAlleles:Seq[org.bdgenomics.guacamole.variants.Allele]"></a>
+      <a id="distinctAlleles:Seq[Allele]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">distinctAlleles</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<a href="../variants/Allele.html" class="extype" name="org.bdgenomics.guacamole.variants.Allele">Allele</a>]</span>
+      </span>
+      </h4>
+      
     </li><li name="org.bdgenomics.guacamole.pileup.Pileup#elements" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="elements:Seq[org.bdgenomics.guacamole.pileup.PileupElement]"></a>
       <a id="elements:Seq[PileupElement]"></a>
@@ -455,19 +405,6 @@ with that token.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="org.bdgenomics.guacamole.pileup.Pileup#normalizeLikelihoods" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="normalizeLikelihoods(likelihoods:Seq[(org.bdgenomics.guacamole.variants.Genotype,Double)]):Seq[(org.bdgenomics.guacamole.variants.Genotype,Double)]"></a>
-      <a id="normalizeLikelihoods(Seq[(Genotype,Double)]):Seq[(Genotype,Double)]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">normalizeLikelihoods</span><span class="params">(<span name="likelihoods">likelihoods: <span class="extype" name="scala.Seq">Seq</span>[(<a href="../variants/Genotype.html" class="extype" name="org.bdgenomics.guacamole.variants.Genotype">Genotype</a>, <span class="extype" name="scala.Double">Double</span>)]</span>)</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[(<a href="../variants/Genotype.html" class="extype" name="org.bdgenomics.guacamole.variants.Genotype">Genotype</a>, <span class="extype" name="scala.Double">Double</span>)]</span>
-      </span>
-      </h4>
-      
     </li><li name="scala.AnyRef#notify" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notify():Unit"></a>
       <a id="notify():Unit"></a>
@@ -508,23 +445,6 @@ with that token.
       </h4>
       <p class="shortcomment cmt">Number of positively stranded reads
 </p>
-    </li><li name="org.bdgenomics.guacamole.pileup.Pileup#possibleGenotypes" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="possibleGenotypes:Seq[org.bdgenomics.guacamole.variants.Genotype]"></a>
-      <a id="possibleGenotypes:Seq[Genotype]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">lazy val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">possibleGenotypes</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<a href="../variants/Genotype.html" class="extype" name="org.bdgenomics.guacamole.variants.Genotype">Genotype</a>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Generate possible genotypes from a pileup
-Possible genotypes are all unique n-tuples of alleles that appear in the pileup.</p><div class="fullcomment"><div class="comment cmt"><p>Generate possible genotypes from a pileup
-Possible genotypes are all unique n-tuples of alleles that appear in the pileup.
-</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>Sequence of possible genotypes for the pileup
-</p></dd></dl></div>
     </li><li name="org.bdgenomics.guacamole.pileup.Pileup#referenceBase" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="referenceBase:Byte"></a>
       <a id="referenceBase:Byte"></a>

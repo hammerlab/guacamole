@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>Genotype - guacamole: variant caller 0.0.1 API - org.bdgenomics.guacamole.variants.Genotype</title>
-          <meta name="description" content="Genotype - guacamole variant caller 0.0.1 API - org.bdgenomics.guacamole.variants.Genotype" />
-          <meta name="keywords" content="Genotype guacamole variant caller 0.0.1 API org.bdgenomics.guacamole.variants.Genotype" />
+          <title>Likelihood - guacamole: variant caller 0.0.1 API - org.bdgenomics.guacamole.likelihood.Likelihood</title>
+          <meta name="description" content="Likelihood - guacamole variant caller 0.0.1 API - org.bdgenomics.guacamole.likelihood.Likelihood" />
+          <meta name="keywords" content="Likelihood guacamole variant caller 0.0.1 API org.bdgenomics.guacamole.likelihood.Likelihood" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -12,7 +12,7 @@
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../index.html';
-            var hash = 'org.bdgenomics.guacamole.variants.Genotype';
+            var hash = 'org.bdgenomics.guacamole.likelihood.Likelihood$';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -22,28 +22,27 @@
    	  </script>
     
         </head>
-        <body class="type">
+        <body class="value">
       <div id="definition">
-        <img src="../../../../lib/class_big.png" />
-        <p id="owner"><a href="../../../package.html" class="extype" name="org">org</a>.<a href="../../package.html" class="extype" name="org.bdgenomics">bdgenomics</a>.<a href="../package.html" class="extype" name="org.bdgenomics.guacamole">guacamole</a>.<a href="package.html" class="extype" name="org.bdgenomics.guacamole.variants">variants</a></p>
-        <h1>Genotype</h1>
+        <img src="../../../../lib/object_big.png" />
+        <p id="owner"><a href="../../../package.html" class="extype" name="org">org</a>.<a href="../../package.html" class="extype" name="org.bdgenomics">bdgenomics</a>.<a href="../package.html" class="extype" name="org.bdgenomics.guacamole">guacamole</a>.<a href="package.html" class="extype" name="org.bdgenomics.guacamole.likelihood">likelihood</a></p>
+        <h1>Likelihood</h1>
       </div>
 
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">case class</span>
+        <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <span class="name">Genotype</span><span class="params">(<span name="alleles">alleles: <a href="Allele.html" class="extype" name="org.bdgenomics.guacamole.variants.Allele">Allele</a>*</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">Likelihood</span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>A Genotype is a sequence of alleles of length equal to the ploidy of the organism.</p><p>A Genotype is for a particular reference locus. Each allele gives the base(s) present on a chromosome at that
-locus.</p><p>For example, the possible single-base diploid genotypes are Seq('A', 'A'), Seq('A', 'T') ... Seq('T', 'T').
-Alleles can also be multiple bases as well, e.g. Seq(&quot;AAA&quot;, &quot;T&quot;)</p></div><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Functions for calculating the likelihood of a genotype given some read evidence (pileup elements).
+</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -61,7 +60,7 @@ Alleles can also be multiple bases as well, e.g. Seq(&quot;AAA&quot;, &quot;T&qu
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="org.bdgenomics.guacamole.variants.Genotype"><span>Genotype</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="org.bdgenomics.guacamole.likelihood.Likelihood"><span>Likelihood</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -79,23 +78,7 @@ Alleles can also be multiple bases as well, e.g. Seq(&quot;AAA&quot;, &quot;T&qu
 
       <div id="template">
         <div id="allMembers">
-        <div id="constructors" class="members">
-              <h3>Instance Constructors</h3>
-              <ol><li name="org.bdgenomics.guacamole.variants.Genotype#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(alleles:org.bdgenomics.guacamole.variants.Allele*):org.bdgenomics.guacamole.variants.Genotype"></a>
-      <a id="&lt;init&gt;:Genotype"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">new</span>
-      </span>
-      <span class="symbol">
-        <span class="name">Genotype</span><span class="params">(<span name="alleles">alleles: <a href="Allele.html" class="extype" name="org.bdgenomics.guacamole.variants.Allele">Allele</a>*</span>)</span>
-      </span>
-      </h4>
-      
-    </li></ol>
-            </div>
+        
 
         
 
@@ -168,19 +151,6 @@ Alleles can also be multiple bases as well, e.g. Seq(&quot;AAA&quot;, &quot;T&qu
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="org.bdgenomics.guacamole.variants.Genotype#alleles" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="alleles:org.bdgenomics.guacamole.variants.Allele*"></a>
-      <a id="alleles:Allele*"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">alleles</span><span class="result">: <a href="Allele.html" class="extype" name="org.bdgenomics.guacamole.variants.Allele">Allele</a>*</span>
-      </span>
-      </h4>
-      
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -226,6 +196,19 @@ Alleles can also be multiple bases as well, e.g. Seq(&quot;AAA&quot;, &quot;T&qu
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#equals" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="equals(x$1:Any):Boolean"></a>
+      <a id="equals(Any):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <a id="finalize():Unit"></a>
@@ -258,50 +241,19 @@ Alleles can also be multiple bases as well, e.g. Seq(&quot;AAA&quot;, &quot;T&qu
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="org.bdgenomics.guacamole.variants.Genotype#getGenotypeAlleles" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="getGenotypeAlleles:Seq[org.bdgenomics.formats.avro.GenotypeAllele]"></a>
-      <a id="getGenotypeAlleles:Seq[GenotypeAllele]"></a>
+    </li><li name="scala.AnyRef#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="hashCode():Int"></a>
+      <a id="hashCode():Int"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">lazy val</span>
+        <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getGenotypeAlleles</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="org.bdgenomics.formats.avro.GenotypeAllele">GenotypeAllele</span>]</span>
+        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Transform the alleles in this genotype to the ADAM allele enumeration.</p><div class="fullcomment"><div class="comment cmt"><p>Transform the alleles in this genotype to the ADAM allele enumeration.
-Classifies alleles as Reference or Alternate.
-</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>Sequence of Genotype which are Ref, Alt or OtherAlt.
-</p></dd></dl></div>
-    </li><li name="org.bdgenomics.guacamole.variants.Genotype#getNonReferenceAlleles" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="getNonReferenceAlleles:Seq[org.bdgenomics.guacamole.variants.Allele]"></a>
-      <a id="getNonReferenceAlleles:Seq[Allele]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">lazy val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">getNonReferenceAlleles</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<a href="Allele.html" class="extype" name="org.bdgenomics.guacamole.variants.Allele">Allele</a>]</span>
-      </span>
-      </h4>
-      
-    </li><li name="org.bdgenomics.guacamole.variants.Genotype#hasVariantAllele" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="hasVariantAllele:Boolean"></a>
-      <a id="hasVariantAllele:Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">lazy val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">hasVariantAllele</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Returns whether this genotype contains any non-reference alleles for a given reference sequence.</p><div class="fullcomment"><div class="comment cmt"><p>Returns whether this genotype contains any non-reference alleles for a given reference sequence.
-</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>True if at least one allele is not the reference
-</p></dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <a id="isInstanceOf[T0]:Boolean"></a>
@@ -315,6 +267,63 @@ Classifies alleles as Reference or Alternate.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="org.bdgenomics.guacamole.likelihood.Likelihood#likelihoodOfGenotype" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="likelihoodOfGenotype(elements:Seq[org.bdgenomics.guacamole.pileup.PileupElement],genotype:org.bdgenomics.guacamole.variants.Genotype,probabilityCorrect:org.bdgenomics.guacamole.pileup.PileupElement=&gt;Double,prior:org.bdgenomics.guacamole.variants.Genotype=&gt;Double,logSpace:Boolean):Double"></a>
+      <a id="likelihoodOfGenotype(Seq[PileupElement],Genotype,(PileupElement)⇒Double,(Genotype)⇒Double,Boolean):Double"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">likelihoodOfGenotype</span><span class="params">(<span name="elements">elements: <span class="extype" name="scala.Seq">Seq</span>[<a href="../pileup/PileupElement.html" class="extype" name="org.bdgenomics.guacamole.pileup.PileupElement">PileupElement</a>]</span>, <span name="genotype">genotype: <a href="../variants/Genotype.html" class="extype" name="org.bdgenomics.guacamole.variants.Genotype">Genotype</a></span>, <span name="probabilityCorrect">probabilityCorrect: (<a href="../pileup/PileupElement.html" class="extype" name="org.bdgenomics.guacamole.pileup.PileupElement">PileupElement</a>) ⇒ <span class="extype" name="scala.Double">Double</span> = <span class="symbol"><span class="name"><a href="#probabilityCorrectIgnoringAlignment(element:org.bdgenomics.guacamole.pileup.PileupElement):Double">probabilityCorrectIgnoringAlignment</a></span></span></span>, <span name="prior">prior: (<a href="../variants/Genotype.html" class="extype" name="org.bdgenomics.guacamole.variants.Genotype">Genotype</a>) ⇒ <span class="extype" name="scala.Double">Double</span> = <span class="symbol"><span class="name"><a href="#uniformPrior(genotype:org.bdgenomics.guacamole.variants.Genotype):Double">uniformPrior</a></span></span></span>, <span name="logSpace">logSpace: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="result">: <span class="extype" name="scala.Double">Double</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Calculate the likelihood of a single genotype.</p><div class="fullcomment"><div class="comment cmt"><p>Calculate the likelihood of a single genotype.</p><p>See <span class="extype" name="likelihoodsOfGenotypes()">likelihoodsOfGenotypes()</span> for argument descriptions.
+</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>The likelihood for the given genotype.
+</p></dd></dl></div>
+    </li><li name="org.bdgenomics.guacamole.likelihood.Likelihood#likelihoodsOfAllPossibleGenotypesFromPileup" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="likelihoodsOfAllPossibleGenotypesFromPileup(pileup:org.bdgenomics.guacamole.pileup.Pileup,probabilityCorrect:org.bdgenomics.guacamole.pileup.PileupElement=&gt;Double,prior:org.bdgenomics.guacamole.variants.Genotype=&gt;Double,logSpace:Boolean,normalize:Boolean):Seq[(org.bdgenomics.guacamole.variants.Genotype,Double)]"></a>
+      <a id="likelihoodsOfAllPossibleGenotypesFromPileup(Pileup,(PileupElement)⇒Double,(Genotype)⇒Double,Boolean,Boolean):Seq[(Genotype,Double)]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">likelihoodsOfAllPossibleGenotypesFromPileup</span><span class="params">(<span name="pileup">pileup: <a href="../pileup/Pileup.html" class="extype" name="org.bdgenomics.guacamole.pileup.Pileup">Pileup</a></span>, <span name="probabilityCorrect">probabilityCorrect: (<a href="../pileup/PileupElement.html" class="extype" name="org.bdgenomics.guacamole.pileup.PileupElement">PileupElement</a>) ⇒ <span class="extype" name="scala.Double">Double</span> = <span class="symbol"><span class="name"><a href="#probabilityCorrectIgnoringAlignment(element:org.bdgenomics.guacamole.pileup.PileupElement):Double">probabilityCorrectIgnoringAlignment</a></span></span></span>, <span name="prior">prior: (<a href="../variants/Genotype.html" class="extype" name="org.bdgenomics.guacamole.variants.Genotype">Genotype</a>) ⇒ <span class="extype" name="scala.Double">Double</span> = <span class="symbol"><span class="name"><a href="#uniformPrior(genotype:org.bdgenomics.guacamole.variants.Genotype):Double">uniformPrior</a></span></span></span>, <span name="logSpace">logSpace: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>, <span name="normalize">normalize: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[(<a href="../variants/Genotype.html" class="extype" name="org.bdgenomics.guacamole.variants.Genotype">Genotype</a>, <span class="extype" name="scala.Double">Double</span>)]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Calculate likelihoods for all genotypes with any evidence in a <span class="extype" name="Pileup">Pileup</span>.</p><div class="fullcomment"><div class="comment cmt"><p>Calculate likelihoods for all genotypes with any evidence in a <span class="extype" name="Pileup">Pileup</span>.</p><p>By &quot;possible genotypes&quot; we mean any genotype where both alleles in the genotype match the sequenced bases of at
+least one element in the Pileup.</p><p>See <span class="extype" name="likelihoodsOfGenotypes()">likelihoodsOfGenotypes()</span> for argument descriptions.
+</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>A sequence of (genotype, likelihood) pairs.
+</p></dd></dl></div>
+    </li><li name="org.bdgenomics.guacamole.likelihood.Likelihood#likelihoodsOfGenotypes" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="likelihoodsOfGenotypes(elements:Seq[org.bdgenomics.guacamole.pileup.PileupElement],genotypes:Seq[org.bdgenomics.guacamole.variants.Genotype],probabilityCorrect:org.bdgenomics.guacamole.pileup.PileupElement=&gt;Double,prior:org.bdgenomics.guacamole.variants.Genotype=&gt;Double,logSpace:Boolean,normalize:Boolean):Seq[Double]"></a>
+      <a id="likelihoodsOfGenotypes(Seq[PileupElement],Seq[Genotype],(PileupElement)⇒Double,(Genotype)⇒Double,Boolean,Boolean):Seq[Double]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">likelihoodsOfGenotypes</span><span class="params">(<span name="elements">elements: <span class="extype" name="scala.Seq">Seq</span>[<a href="../pileup/PileupElement.html" class="extype" name="org.bdgenomics.guacamole.pileup.PileupElement">PileupElement</a>]</span>, <span name="genotypes">genotypes: <span class="extype" name="scala.Seq">Seq</span>[<a href="../variants/Genotype.html" class="extype" name="org.bdgenomics.guacamole.variants.Genotype">Genotype</a>]</span>, <span name="probabilityCorrect">probabilityCorrect: (<a href="../pileup/PileupElement.html" class="extype" name="org.bdgenomics.guacamole.pileup.PileupElement">PileupElement</a>) ⇒ <span class="extype" name="scala.Double">Double</span> = <span class="symbol"><span class="name"><a href="#probabilityCorrectIgnoringAlignment(element:org.bdgenomics.guacamole.pileup.PileupElement):Double">probabilityCorrectIgnoringAlignment</a></span></span></span>, <span name="prior">prior: (<a href="../variants/Genotype.html" class="extype" name="org.bdgenomics.guacamole.variants.Genotype">Genotype</a>) ⇒ <span class="extype" name="scala.Double">Double</span> = <span class="symbol"><span class="name"><a href="#uniformPrior(genotype:org.bdgenomics.guacamole.variants.Genotype):Double">uniformPrior</a></span></span></span>, <span name="logSpace">logSpace: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>, <span name="normalize">normalize: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Double">Double</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Calculate likelihoods for a collection of diploid genotypes.</p><div class="fullcomment"><div class="comment cmt"><p>Calculate likelihoods for a collection of diploid genotypes.</p><p>We work with multiple genotypes at once to enable an efficient implementation.</p><p>For each genotype this calculates:</p><p> prior(genotype) / pow(2, depth) * product over all elements of {
+   sum over the two alleles in the genotype {
+     probability(element, allele)
+   }
+ }</p><p>where</p><p> probability(element, allele) = probabilityCorrect(element)     if element.allele = allele
+                                1 - probabilityCorrect(element) otherwise</p><p>and probabilityCorrect(element) is a user supplied function that maps pileup elements to the probability that the
+sequenced bases for that element are correct, for example by considering the base qualities and/or alignment
+quality.
+</p></div><dl class="paramcmts block"><dt class="param">elements</dt><dd class="cmt"><p>the <span class="extype" name="PileupElement">PileupElement</span> instances across which the likelihoods are calculated.</p></dd><dt class="param">genotypes</dt><dd class="cmt"><p>the genotypes to calculate likelihoods for.</p></dd><dt class="param">probabilityCorrect</dt><dd class="cmt"><p>a function of <span class="extype" name="PileupElement">PileupElement</span> that gives the probability that the bases sequenced are
+                          correct. See <span class="extype" name="probabilityCorrectIgnoringAlignment()">probabilityCorrectIgnoringAlignment()</span> and
+                          <span class="extype" name="probabilityCorrectIncludingAlignment()">probabilityCorrectIncludingAlignment()</span> for two reasonable functions to use here.
+                          This function should return a plain probability, not a log prob.</p></dd><dt class="param">prior</dt><dd class="cmt"><p>a function on genotypes that gives the prior probability that genotype is correct. This function should
+            return a plain probability, not a log prob.</p></dd><dt class="param">logSpace</dt><dd class="cmt"><p>if true, the probabilities are returned as log probs.</p></dd><dt class="param">normalize</dt><dd class="cmt"><p>if true, the probabilities returned are normalized to sum to 1.</p></dd><dt>returns</dt><dd class="cmt"><p>A sequence of probabilities corresponding to each genotype in the genotypes argument
+</p></dd></dl></div>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -354,34 +363,36 @@ Classifies alleles as Reference or Alternate.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="org.bdgenomics.guacamole.variants.Genotype#numberOfVariantAlleles" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="numberOfVariantAlleles:Int"></a>
-      <a id="numberOfVariantAlleles:Int"></a>
+    </li><li name="org.bdgenomics.guacamole.likelihood.Likelihood#probabilityCorrectIgnoringAlignment" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="probabilityCorrectIgnoringAlignment(element:org.bdgenomics.guacamole.pileup.PileupElement):Double"></a>
+      <a id="probabilityCorrectIgnoringAlignment(PileupElement):Double"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">lazy val</span>
+        <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">numberOfVariantAlleles</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+        <span class="name">probabilityCorrectIgnoringAlignment</span><span class="params">(<span name="element">element: <a href="../pileup/PileupElement.html" class="extype" name="org.bdgenomics.guacamole.pileup.PileupElement">PileupElement</a></span>)</span><span class="result">: <span class="extype" name="scala.Double">Double</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Counts alleles in this genotype that are not the same as the specified reference allele.</p><div class="fullcomment"><div class="comment cmt"><p>Counts alleles in this genotype that are not the same as the specified reference allele.
-</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>Count of non reference alleles
+      <p class="shortcomment cmt">One way of defining the likelihood that the sequenced bases in a <span class="extype" name="PileupElement">PileupElement</span> are correct.</p><div class="fullcomment"><div class="comment cmt"><p>One way of defining the likelihood that the sequenced bases in a <span class="extype" name="PileupElement">PileupElement</span> are correct.</p><p>This considers only the base quality scores.
+</p></div><dl class="paramcmts block"><dt class="param">element</dt><dd class="cmt"><p>the <span class="extype" name="PileupElement">PileupElement</span> to consider</p></dd><dt>returns</dt><dd class="cmt"><p>the unnormalized likelihood the sequenced bases are correct. Plain probability, NOT a log prob.
 </p></dd></dl></div>
-    </li><li name="org.bdgenomics.guacamole.variants.Genotype#ploidy" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="ploidy:Int"></a>
-      <a id="ploidy:Int"></a>
+    </li><li name="org.bdgenomics.guacamole.likelihood.Likelihood#probabilityCorrectIncludingAlignment" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="probabilityCorrectIncludingAlignment(element:org.bdgenomics.guacamole.pileup.PileupElement):Double"></a>
+      <a id="probabilityCorrectIncludingAlignment(PileupElement):Double"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">val</span>
+        <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">ploidy</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+        <span class="name">probabilityCorrectIncludingAlignment</span><span class="params">(<span name="element">element: <a href="../pileup/PileupElement.html" class="extype" name="org.bdgenomics.guacamole.pileup.PileupElement">PileupElement</a></span>)</span><span class="result">: <span class="extype" name="scala.Double">Double</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">The ploidy of the organism is the number of alleles in the genotype.</p>
+      <p class="shortcomment cmt">Another way of defining the likelihood that the sequenced bases in a <span class="extype" name="PileupElement">PileupElement</span> are correct.</p><div class="fullcomment"><div class="comment cmt"><p>Another way of defining the likelihood that the sequenced bases in a <span class="extype" name="PileupElement">PileupElement</span> are correct.</p><p>This considers both the base quality scores and alignment quality of the corresponding read.
+</p></div><dl class="paramcmts block"><dt class="param">element</dt><dd class="cmt"><p>the <span class="extype" name="PileupElement">PileupElement</span> to consider</p></dd><dt>returns</dt><dd class="cmt"><p>the unnormalized likelihood the sequenced bases are correct. Plain probability, NOT a log prob.
+</p></dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -395,7 +406,7 @@ Classifies alleles as Reference or Alternate.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="org.bdgenomics.guacamole.variants.Genotype#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="scala.AnyRef#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toString():String"></a>
       <a id="toString():String"></a>
       <h4 class="signature">
@@ -404,23 +415,25 @@ Classifies alleles as Reference or Alternate.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+        <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.bdgenomics.guacamole.variants.Genotype">Genotype</a> → AnyRef → Any</dd></dl></div>
-    </li><li name="org.bdgenomics.guacamole.variants.Genotype#uniqueAllelesCount" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="uniqueAllelesCount:Int"></a>
-      <a id="uniqueAllelesCount:Int"></a>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="org.bdgenomics.guacamole.likelihood.Likelihood#uniformPrior" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="uniformPrior(genotype:org.bdgenomics.guacamole.variants.Genotype):Double"></a>
+      <a id="uniformPrior(Genotype):Double"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">lazy val</span>
+        <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">uniqueAllelesCount</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+        <span class="name">uniformPrior</span><span class="params">(<span name="genotype">genotype: <a href="../variants/Genotype.html" class="extype" name="org.bdgenomics.guacamole.variants.Genotype">Genotype</a></span>)</span><span class="result">: <span class="extype" name="scala.Double">Double</span></span>
       </span>
       </h4>
-      
+      <p class="shortcomment cmt">A uniform prior on genotypes, i.</p><div class="fullcomment"><div class="comment cmt"><p>A uniform prior on genotypes, i.e. one where all genotypes have equal prior probability.
+</p></div><dl class="paramcmts block"><dt class="param">genotype</dt><dd class="cmt"><p>The genotype</p></dd><dt>returns</dt><dd class="cmt"><p>the unnormalized prior probability. Plain probability, NOT a log prob.
+</p></dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>
@@ -487,15 +500,7 @@ Classifies alleles as Reference or Alternate.
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="scala.Serializable">
-              <h3>Inherited from <span class="extype" name="scala.Serializable">Serializable</span></h3>
-            </div><div class="parent" name="java.io.Serializable">
-              <h3>Inherited from <span class="extype" name="java.io.Serializable">Serializable</span></h3>
-            </div><div class="parent" name="scala.Product">
-              <h3>Inherited from <span class="extype" name="scala.Product">Product</span></h3>
-            </div><div class="parent" name="scala.Equals">
-              <h3>Inherited from <span class="extype" name="scala.Equals">Equals</span></h3>
-            </div><div class="parent" name="scala.AnyRef">
+        <div class="parent" name="scala.AnyRef">
               <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
             </div><div class="parent" name="scala.Any">
               <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
