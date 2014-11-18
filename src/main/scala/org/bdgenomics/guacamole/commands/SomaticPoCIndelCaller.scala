@@ -18,7 +18,6 @@
 
 package org.bdgenomics.guacamole.commands
 
-import org.apache.spark.Logging
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.formats.avro.{ Contig, Variant, GenotypeAllele, Genotype }
 import org.bdgenomics.guacamole.Common.Arguments.{ TumorNormalReads, Output }
@@ -34,7 +33,7 @@ object SomaticPoCIndel {
     with Output
     with TumorNormalReads
 
-  object Caller extends Command[Arguments] with Serializable with Logging {
+  object Caller extends Command[Arguments] {
 
     override val name = "somatic-poc"
     override val description = "call simple insertion and deletion variants between a tumor and a normal"

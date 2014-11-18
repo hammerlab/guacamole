@@ -29,7 +29,6 @@ import scala.collection.JavaConversions
 import org.kohsuke.args4j.Option
 import org.bdgenomics.guacamole.Common.Arguments._
 import org.apache.spark.rdd.RDD
-import org.apache.spark.Logging
 import org.bdgenomics.guacamole.pileup.Pileup
 
 /**
@@ -51,7 +50,7 @@ object GermlineThreshold {
     var emitNoCall: Boolean = false
   }
 
-  object Caller extends Command[Arguments] with Serializable with Logging {
+  object Caller extends Command[Arguments] {
 
     override val name = "germline-threshold"
     override val description = "call variants by thresholding read counts (toy example)"

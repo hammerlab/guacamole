@@ -18,7 +18,6 @@
 
 package org.bdgenomics.guacamole.commands
 
-import org.apache.spark.Logging
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.guacamole.likelihood.Likelihood
 import org.bdgenomics.guacamole.variants.{ AlleleEvidence, Genotype, AlleleConversions, CalledAllele }
@@ -50,7 +49,7 @@ object GermlineStandard {
     var emitRef: Boolean = false
   }
 
-  object Caller extends Command[Arguments] with Serializable with Logging {
+  object Caller extends Command[Arguments] {
     override val name = "germline-standard"
     override val description = "call variants using a simple quality-based probability"
 
