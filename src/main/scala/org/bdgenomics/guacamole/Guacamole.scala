@@ -33,7 +33,7 @@ object Guacamole extends Logging {
    * Commands (i.e. variant caller implementations) that are part of Guacamole. If you add a new variant caller, update
    * this list.
    */
-  private val commands: Seq[Command] = List(
+  private val commands: Seq[Command[_]] = List(
     GermlineThreshold.Caller,
     GermlineStandard.Caller,
     SomaticStandard.Caller,

@@ -18,6 +18,8 @@
 
 package org.bdgenomics.guacamole
 
+import org.bdgenomics.adam.cli.{ Args4j, Args4jBase }
+
 /**
  *
  * Interface for running a variant caller from command line arguments.
@@ -29,7 +31,7 @@ package org.bdgenomics.guacamole
  * include it.
  *
  */
-trait Command {
+abstract class Command[T <% Args4jBase: Manifest] {
   /** The name of the variant caller, as it will be specified on the command line. */
   val name: String
 
@@ -42,5 +44,7 @@ trait Command {
    * @param args the command line arguments, with the first one chopped off. The first argument specifies what variant
    *             caller to call, and is therefore already consumed by Guacamole.
    */
-  def run(args: Array[String]): Unit
+  def run(args: Array[String]): Unit = run(Args4j[T](args))
+
+  def run(args: T): Unit
 }
