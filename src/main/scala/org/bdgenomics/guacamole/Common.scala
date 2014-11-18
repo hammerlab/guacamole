@@ -24,7 +24,7 @@ import java.util.Calendar
 
 import org.apache.avro.generic.GenericDatumWriter
 import org.apache.avro.io.EncoderFactory
-import org.apache.commons.io.{ IOUtils, FileUtils }
+import org.apache.commons.io.IOUtils
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.{ FileSystem, Path }
 import org.apache.spark.rdd.RDD
@@ -52,10 +52,10 @@ object Common extends Logging {
 
     /** Argument for accepting a set of loci. */
     trait Loci extends Base {
-      @Opt(name = "-loci", usage = "Loci at which to call variants. Either 'all' or contig:start-end,contig:start-end,...")
+      @Opt(name = "-loci", usage = "Loci at which to call variants. Either 'all' or contig:start-end,contig:start-end,...", forbids = Array("-loci-from-file"))
       var loci: String = ""
 
-      @Opt(name = "-loci-from-file", usage = "Path to file giving loci at which to call variants.")
+      @Opt(name = "-loci-from-file", usage = "Path to file giving loci at which to call variants.", forbids = Array("-loci"))
       var lociFromFile: String = ""
     }
 
