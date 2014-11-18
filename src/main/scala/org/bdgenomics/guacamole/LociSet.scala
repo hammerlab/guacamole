@@ -136,11 +136,11 @@ object LociSet {
    * Return a LociSet parsed from a string representation.
    *
    * @param loci A string of the form "CONTIG:START-END,CONTIG:START-END,..." where CONTIG is a string giving the
-   *             contig name, and START and END are integers. Spaces are ignored.
+   *             contig name, and START and END are integers. Whitespace is ignored.
    */
   def parse(loci: String): LociSet = {
     val syntax = """^([\pL\pN._]+):(\pN+)-(\pN+)""".r
-    val sets = loci.replace(" ", "").split(',').map({
+    val sets = loci.replaceAll("\\s", "").split(',').map({
       case ""                       => LociSet.empty
       case syntax(name, start, end) => LociSet(name, start.toLong, end.toLong)
       case other                    => throw new IllegalArgumentException("Couldn't parse loci range: %s".format(other))
