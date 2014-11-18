@@ -18,12 +18,13 @@
 
 package org.bdgenomics.guacamole
 
-import java.io.OutputStream
+import java.io.{ InputStreamReader, OutputStream }
 import java.util
 import java.util.Calendar
 
 import org.apache.avro.generic.GenericDatumWriter
 import org.apache.avro.io.EncoderFactory
+import org.apache.commons.io.IOUtils
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.{ FileSystem, Path }
 import org.apache.spark.rdd.RDD
@@ -51,8 +52,11 @@ object Common extends Logging {
 
     /** Argument for accepting a set of loci. */
     trait Loci extends Base {
-      @Opt(name = "-loci", usage = "Loci at which to call variants. Either 'all' or contig:start-end,contig:start-end,...")
-      var loci: String = "all"
+      @Opt(name = "-loci", usage = "Loci at which to call variants. Either 'all' or contig:start-end,contig:start-end,...", forbids = Array("-loci-from-file"))
+      var loci: String = ""
+
+      @Opt(name = "-loci-from-file", usage = "Path to file giving loci at which to call variants.", forbids = Array("-loci"))
+      var lociFromFile: String = ""
     }
 
     /** Argument for using / not using sequence dictionaries to get contigs and lengths. */
@@ -161,16 +165,32 @@ object Common extends Logging {
    * @param readSet readSet from which to use to get contigs and lengths.
    */
   def loci(args: Arguments.Loci, readSet: ReadSet): LociSet = {
+    if (args.loci.nonEmpty && args.lociFromFile.nonEmpty) {
+      throw new IllegalArgumentException("Specify at most one of the 'loci' and 'loci-from-file' arguments")
+    }
+    val lociToParse = if (args.loci.nonEmpty) {
+      args.loci
+    } else if (args.lociFromFile.nonEmpty) {
+      // Load loci from file.
+      val filesystem = FileSystem.get(new Configuration())
+      val path = new Path(args.lociFromFile)
+      IOUtils.toString(new InputStreamReader(filesystem.open(path)))
+    } else {
+      // Default is "all"
+      "all"
+    }
+
     val result = {
-      if (args.loci == "all") {
+      if (lociToParse == "all") {
         // Call at all loci.
         val builder = LociSet.newBuilder
-        // Here, pair is (contig name, contig length).
-        readSet.contigLengths.foreach(pair => builder.put(pair._1, 0L, pair._2))
+        readSet.contigLengths.foreach(contigNameAndLength => builder.put(contigNameAndLength._1, 0L, contigNameAndLength._2))
         builder.result
       } else {
-        // Call at specified loci. Check that loci given are in the sequence dictionary.
-        val parsed = LociSet.parse(args.loci)
+        // Call at specified loci.
+        val parsed = LociSet.parse(lociToParse)
+
+        // Check that loci given are in the sequence dictionary.
         parsed.contigs.foreach(contig => {
           if (!readSet.contigLengths.contains(contig))
             throw new IllegalArgumentException("No such contig: '%s'.".format(contig))
