@@ -36,9 +36,7 @@ import org.kohsuke.args4j.Option
 /**
  * Simple Bayesian variant caller implementation that uses the base and read quality score
  */
-object GermlineStandardCaller extends Command with Serializable with Logging {
-  override val name = "germline-standard"
-  override val description = "call variants using a simple quality-based probability"
+object GermlineStandard {
 
   private class Arguments extends Base
       with Output with Reads with ConcordanceArgs with GenotypeFilterArguments with PileupFilterArguments with DistributedUtil.Arguments {
@@ -47,79 +45,84 @@ object GermlineStandardCaller extends Command with Serializable with Logging {
     var emitRef: Boolean = false
   }
 
-  override def run(rawArgs: Array[String]): Unit = {
-    val args = Args4j[Arguments](rawArgs)
-    val sc = Common.createSparkContext(appName = Some(name))
+  object Caller extends Command with Serializable with Logging {
+    override val name = "germline-standard"
+    override val description = "call variants using a simple quality-based probability"
 
-    val readSet = Common.loadReadsFromArguments(args, sc, Read.InputFilters(mapped = true, nonDuplicate = true))
-    readSet.mappedReads.persist()
-    Common.progress(
-      "Loaded %,d mapped non-duplicate reads into %,d partitions.".format(readSet.mappedReads.count, readSet.mappedReads.partitions.length))
+    override def run(rawArgs: Array[String]): Unit = {
+      val args = Args4j[Arguments](rawArgs)
+      val sc = Common.createSparkContext(appName = Some(name))
 
-    val loci = Common.loci(args, readSet)
-    val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(args, loci, readSet.mappedReads)
+      val readSet = Common.loadReadsFromArguments(args, sc, Read.InputFilters(mapped = true, nonDuplicate = true))
+      readSet.mappedReads.persist()
+      Common.progress(
+        "Loaded %,d mapped non-duplicate reads into %,d partitions.".format(readSet.mappedReads.count, readSet.mappedReads.partitions.length))
 
-    val minAlignmentQuality = args.minAlignmentQuality
+      val loci = Common.loci(args, readSet)
+      val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(args, loci, readSet.mappedReads)
 
-    val genotypes: RDD[CalledAllele] = DistributedUtil.pileupFlatMap[CalledAllele](
-      readSet.mappedReads,
-      lociPartitions,
-      skipEmpty = true, // skip empty pileups
-      pileup => callVariantsAtLocus(pileup, minAlignmentQuality).iterator)
-    readSet.mappedReads.unpersist()
+      val minAlignmentQuality = args.minAlignmentQuality
 
-    val filteredGenotypes = GenotypeFilter(genotypes, args).flatMap(AlleleConversions.calledAlleleToADAMGenotype)
-    Common.writeVariantsFromArguments(args, filteredGenotypes)
-    if (args.truthGenotypesFile != "")
-      Concordance.printGenotypeConcordance(args, filteredGenotypes, sc)
+      val genotypes: RDD[CalledAllele] = DistributedUtil.pileupFlatMap[CalledAllele](
+        readSet.mappedReads,
+        lociPartitions,
+        skipEmpty = true, // skip empty pileups
+        pileup => callVariantsAtLocus(pileup, minAlignmentQuality).iterator)
+      readSet.mappedReads.unpersist()
 
-    DelayedMessages.default.print()
-  }
+      val filteredGenotypes = GenotypeFilter(genotypes, args).flatMap(AlleleConversions.calledAlleleToADAMGenotype)
+      Common.writeVariantsFromArguments(args, filteredGenotypes)
+      if (args.truthGenotypesFile != "")
+        Concordance.printGenotypeConcordance(args, filteredGenotypes, sc)
 
-  /**
-   * Computes the genotype and probability at a given locus
-   *
-   * @param pileup Collection of pileup elements at align to the locus
-   * @param minAlignmentQuality minimum alignment quality for reads to consider (default: 0)
-   * @param emitRef Also return all reference genotypes (default: false)
-   *
-   * @return Sequence of possible called genotypes for all samples
-   */
-  def callVariantsAtLocus(
-    pileup: Pileup,
-    minAlignmentQuality: Int = 0,
-    emitRef: Boolean = false): Seq[CalledAllele] = {
+      DelayedMessages.default.print()
+    }
 
-    // For now, we skip loci that have no reads mapped. We may instead want to emit NoCall in this case.
-    if (pileup.elements.isEmpty)
-      return Seq.empty
+    /**
+     * Computes the genotype and probability at a given locus
+     *
+     * @param pileup Collection of pileup elements at align to the locus
+     * @param minAlignmentQuality minimum alignment quality for reads to consider (default: 0)
+     * @param emitRef Also return all reference genotypes (default: false)
+     *
+     * @return Sequence of possible called genotypes for all samples
+     */
+    def callVariantsAtLocus(
+      pileup: Pileup,
+      minAlignmentQuality: Int = 0,
+      emitRef: Boolean = false): Seq[CalledAllele] = {
 
-    pileup.bySample.toSeq.flatMap({
-      case (sampleName, samplePileup) =>
-        val filteredPileupElements = QualityAlignedReadsFilter(samplePileup.elements, minAlignmentQuality)
-        val genotypeLikelihoods = Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(
-          Pileup(samplePileup.locus, filteredPileupElements),
-          logSpace = true)
+      // For now, we skip loci that have no reads mapped. We may instead want to emit NoCall in this case.
+      if (pileup.elements.isEmpty)
+        return Seq.empty
 
-        val mostLikelyGenotype = genotypeLikelihoods.maxBy(_._2)
+      pileup.bySample.toSeq.flatMap({
+        case (sampleName, samplePileup) =>
+          val filteredPileupElements = QualityAlignedReadsFilter(samplePileup.elements, minAlignmentQuality)
+          val genotypeLikelihoods = Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(
+            Pileup(samplePileup.locus, filteredPileupElements),
+            logSpace = true)
 
-        def buildVariants(genotype: Genotype, probability: Double): Seq[CalledAllele] = {
-          genotype.getNonReferenceAlleles.map(allele => {
-            CalledAllele(
-              sampleName,
-              samplePileup.referenceName,
-              samplePileup.locus,
-              allele,
-              AlleleEvidence(
-                probability,
+          val mostLikelyGenotype = genotypeLikelihoods.maxBy(_._2)
+
+          def buildVariants(genotype: Genotype, probability: Double): Seq[CalledAllele] = {
+            genotype.getNonReferenceAlleles.map(allele => {
+              CalledAllele(
+                sampleName,
+                samplePileup.referenceName,
+                samplePileup.locus,
                 allele,
-                samplePileup
+                AlleleEvidence(
+                  probability,
+                  allele,
+                  samplePileup
+                )
               )
-            )
-          })
-        }
-        buildVariants(mostLikelyGenotype._1, mostLikelyGenotype._2)
+            })
+          }
+          buildVariants(mostLikelyGenotype._1, mostLikelyGenotype._2)
 
-    })
+      })
+    }
   }
 }

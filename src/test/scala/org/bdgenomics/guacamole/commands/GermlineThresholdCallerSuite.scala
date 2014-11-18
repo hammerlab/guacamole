@@ -32,7 +32,7 @@ class GermlineThresholdCallerSuite extends FunSuite with Matchers {
       TestUtil.makeRead("TCGATCGA", "8M", "8", 1),
       TestUtil.makeRead("TCGATCGA", "8M", "8", 1))
     val pileup = Pileup(reads, 1)
-    val genotypes = GermlineThresholdCaller.callVariantsAtLocus(pileup, 0)
+    val genotypes = GermlineThreshold.Caller.callVariantsAtLocus(pileup, 0)
     genotypes.foreach(gt => assert(gt.getAlleles.toList === List(GenotypeAllele.Ref, GenotypeAllele.Ref)))
   }
 
@@ -42,7 +42,7 @@ class GermlineThresholdCallerSuite extends FunSuite with Matchers {
       TestUtil.makeRead("TCGATCGA", "8M", "8", 1),
       TestUtil.makeRead("GCGATCGA", "8M", "0T7", 1))
     val pileup = Pileup(reads, 1)
-    val genotypes = GermlineThresholdCaller.callVariantsAtLocus(pileup, 0)
+    val genotypes = GermlineThreshold.Caller.callVariantsAtLocus(pileup, 0)
     genotypes.foreach(gt => assert(gt.getAlleles.toList === List(GenotypeAllele.Ref, GenotypeAllele.Alt)))
 
   }
@@ -53,7 +53,7 @@ class GermlineThresholdCallerSuite extends FunSuite with Matchers {
       TestUtil.makeRead("TCGATCGA", "8M", "8", 1),
       TestUtil.makeRead("GCGATCGA", "8M", "0T7", 1))
     val pileup = Pileup(reads, 1)
-    val genotypes = GermlineThresholdCaller.callVariantsAtLocus(pileup, 30)
+    val genotypes = GermlineThreshold.Caller.callVariantsAtLocus(pileup, 30)
     genotypes.foreach(gt => assert(gt.getAlleles.toList === List(GenotypeAllele.Ref, GenotypeAllele.Alt)))
 
   }
@@ -64,7 +64,7 @@ class GermlineThresholdCallerSuite extends FunSuite with Matchers {
       TestUtil.makeRead("TCGATCGA", "8M", "8", 1),
       TestUtil.makeRead("GCGATCGA", "8M", "0T7", 1))
     val pileup = Pileup(reads, 1)
-    val genotypes = GermlineThresholdCaller.callVariantsAtLocus(pileup, 50)
+    val genotypes = GermlineThreshold.Caller.callVariantsAtLocus(pileup, 50)
     genotypes.foreach(gt => assert(gt.getAlleles.toList === List(GenotypeAllele.Ref, GenotypeAllele.Ref)))
   }
 
@@ -74,7 +74,7 @@ class GermlineThresholdCallerSuite extends FunSuite with Matchers {
       TestUtil.makeRead("GCGATCGA", "8M", "0T7", 1),
       TestUtil.makeRead("GCGATCGA", "8M", "0T7", 1))
     val pileup = Pileup(reads, 1)
-    val genotypes = GermlineThresholdCaller.callVariantsAtLocus(pileup, 50, emitRef = false)
+    val genotypes = GermlineThreshold.Caller.callVariantsAtLocus(pileup, 50, emitRef = false)
     genotypes.foreach(gt => assert(gt.getAlleles.toList === List(GenotypeAllele.Alt, GenotypeAllele.Alt)))
 
     genotypes.length should be(1)
@@ -89,7 +89,7 @@ class GermlineThresholdCallerSuite extends FunSuite with Matchers {
       TestUtil.makeRead("TGGATCGA", "8M", "1C6", 1),
       TestUtil.makeRead("TGGATCGA", "8M", "1C6", 1))
     val pileup = Pileup(reads, 2)
-    val genotypes = GermlineThresholdCaller.callVariantsAtLocus(pileup, 50, emitRef = false)
+    val genotypes = GermlineThreshold.Caller.callVariantsAtLocus(pileup, 50, emitRef = false)
 
     genotypes.length should be(1)
     genotypes.head.getVariant.getStart should be(2)

@@ -21,7 +21,8 @@ package org.bdgenomics.guacamole
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.formats.avro.{ Genotype, GenotypeAllele }
 import org.bdgenomics.guacamole.TestUtil.assertBases
-import org.bdgenomics.guacamole.commands.GermlineThresholdCaller
+import org.bdgenomics.guacamole.commands.GermlineThreshold
+import org.bdgenomics.guacamole.commands.GermlineThreshold.Caller
 import org.bdgenomics.guacamole.pileup.{ Pileup, PileupElement }
 import org.bdgenomics.guacamole.reads.MappedRead
 import org.bdgenomics.guacamole.windowing.SlidingWindow
@@ -254,7 +255,7 @@ class DistributedUtilSuite extends TestUtil.SparkFunSuite with Matchers {
       reads,
       DistributedUtil.partitionLociUniformly(reads.partitions.length, LociSet.parse("chr1:1-100")),
       false, // don't skip empty pileups
-      pileup => GermlineThresholdCaller.callVariantsAtLocus(pileup, 0, false, false).iterator).collect()
+      pileup => GermlineThreshold.Caller.callVariantsAtLocus(pileup, 0, false, false).iterator).collect()
 
     genotypes.length should be(0)
   }
@@ -270,7 +271,7 @@ class DistributedUtilSuite extends TestUtil.SparkFunSuite with Matchers {
       reads,
       DistributedUtil.partitionLociUniformly(3, LociSet.parse("chr1:1-100")),
       false, // don't skip empty pileups
-      pileup => GermlineThresholdCaller.callVariantsAtLocus(pileup, 0, false, false).iterator).collect()
+      pileup => GermlineThreshold.Caller.callVariantsAtLocus(pileup, 0, false, false).iterator).collect()
 
     genotypes.length should be(0)
   }
@@ -286,7 +287,7 @@ class DistributedUtilSuite extends TestUtil.SparkFunSuite with Matchers {
       reads,
       DistributedUtil.partitionLociUniformly(3, LociSet.parse("chr1:1-100")),
       false, // don't skip empty pileups
-      pileup => GermlineThresholdCaller.callVariantsAtLocus(pileup, 0, false, false).iterator).collect()
+      pileup => GermlineThreshold.Caller.callVariantsAtLocus(pileup, 0, false, false).iterator).collect()
 
     genotypes.length should be(1)
     genotypes.head.getVariant.getStart should be(4)
@@ -307,7 +308,7 @@ class DistributedUtilSuite extends TestUtil.SparkFunSuite with Matchers {
       reads,
       DistributedUtil.partitionLociUniformly(3, LociSet.parse("chr1:1-100")),
       false, // don't skip empty pileups
-      pileup => GermlineThresholdCaller.callVariantsAtLocus(pileup, 0, false, false).iterator).collect()
+      pileup => GermlineThreshold.Caller.callVariantsAtLocus(pileup, 0, false, false).iterator).collect()
 
     genotypes.length should be(1)
     genotypes.head.getVariant.getStart should be(1)
