@@ -18,7 +18,7 @@
 
 package org.bdgenomics.guacamole
 
-import org.apache.spark.Logging
+import org.apache.spark.{ SparkContext, Logging }
 import org.bdgenomics.adam.cli.{ Args4j, Args4jBase }
 
 /**
@@ -48,4 +48,13 @@ abstract class Command[T <% Args4jBase: Manifest] extends Serializable with Logg
   def run(args: Array[String]): Unit = run(Args4j[T](args))
 
   def run(args: T): Unit
+}
+
+abstract class SparkCommand[T <% Args4jBase: Manifest] extends Command[T] {
+  override def run(args: T): Unit = {
+    val sc = Common.createSparkContext(appName = Some(name))
+    run(args, sc)
+  }
+
+  def run(args: T, sc: SparkContext): Unit
 }

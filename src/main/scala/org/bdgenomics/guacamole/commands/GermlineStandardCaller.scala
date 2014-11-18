@@ -18,8 +18,9 @@
 
 package org.bdgenomics.guacamole.commands
 
+import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
-import org.bdgenomics.guacamole.{ DelayedMessages, Concordance, DistributedUtil, Common, Command }
+import org.bdgenomics.guacamole.{ DelayedMessages, Concordance, DistributedUtil, Common, SparkCommand }
 import org.bdgenomics.guacamole.Common.Arguments.GermlineCallerArgs
 import org.bdgenomics.guacamole.likelihood.Likelihood
 import org.bdgenomics.guacamole.variants.{ AlleleEvidence, Genotype, AlleleConversions, CalledAllele }
@@ -42,12 +43,11 @@ object GermlineStandard {
     var emitRef: Boolean = false
   }
 
-  object Caller extends Command[Arguments] {
+  object Caller extends SparkCommand[Arguments] {
     override val name = "germline-standard"
     override val description = "call variants using a simple quality-based probability"
 
-    override def run(args: Arguments): Unit = {
-      val sc = Common.createSparkContext(appName = Some(name))
+    override def run(args: Arguments, sc: SparkContext): Unit = {
 
       val readSet = Common.loadReadsFromArguments(args, sc, Read.InputFilters(mapped = true, nonDuplicate = true))
       readSet.mappedReads.persist()
