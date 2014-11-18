@@ -18,6 +18,7 @@
 
 package org.bdgenomics.guacamole
 
+import org.apache.spark.Logging
 import org.bdgenomics.adam.cli.{ Args4j, Args4jBase }
 
 /**
@@ -31,7 +32,7 @@ import org.bdgenomics.adam.cli.{ Args4j, Args4jBase }
  * include it.
  *
  */
-abstract class Command[T <% Args4jBase: Manifest] {
+abstract class Command[T <% Args4jBase: Manifest] extends Serializable with Logging {
   /** The name of the variant caller, as it will be specified on the command line. */
   val name: String
 

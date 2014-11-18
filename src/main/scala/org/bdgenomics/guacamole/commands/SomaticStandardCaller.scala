@@ -18,7 +18,6 @@
 
 package org.bdgenomics.guacamole.commands
 
-import org.apache.spark.Logging
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.guacamole.Common.Arguments.{ Output, TumorNormalReads }
 import org.bdgenomics.guacamole.likelihood.Likelihood
@@ -59,7 +58,7 @@ object SomaticStandard {
 
   }
 
-  object Caller extends Command[Arguments] with Serializable with Logging {
+  object Caller extends Command[Arguments] {
     override val name = "somatic-standard"
     override val description = "call somatic variants using independent callers on tumor and normal"
 
