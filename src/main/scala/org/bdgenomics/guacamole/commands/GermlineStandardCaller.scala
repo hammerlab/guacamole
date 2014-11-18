@@ -19,10 +19,10 @@
 package org.bdgenomics.guacamole.commands
 
 import org.apache.spark.rdd.RDD
+import org.bdgenomics.guacamole.{ DelayedMessages, Concordance, DistributedUtil, Common, Command }
 import org.bdgenomics.guacamole.Common.Arguments.GermlineCallerArgs
 import org.bdgenomics.guacamole.likelihood.Likelihood
 import org.bdgenomics.guacamole.variants.{ AlleleEvidence, Genotype, AlleleConversions, CalledAllele }
-import org.bdgenomics.guacamole._
 
 import org.bdgenomics.guacamole.filters.GenotypeFilter.GenotypeFilterArguments
 import org.bdgenomics.guacamole.filters.PileupFilter.PileupFilterArguments

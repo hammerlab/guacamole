@@ -20,8 +20,8 @@ package org.bdgenomics.guacamole.commands
 
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.guacamole.Common.Arguments.{ Output, TumorNormalReads }
+import org.bdgenomics.guacamole.{ DelayedMessages, Common, Command, DistributedUtil }
 import org.bdgenomics.guacamole.likelihood.Likelihood
-import org.bdgenomics.guacamole._
 import org.bdgenomics.guacamole.filters.PileupFilter.PileupFilterArguments
 import org.bdgenomics.guacamole.filters.SomaticGenotypeFilter.SomaticGenotypeFilterArguments
 import org.bdgenomics.guacamole.filters.{ PileupFilter, SomaticAlternateReadDepthFilter, SomaticGenotypeFilter, SomaticReadDepthFilter }

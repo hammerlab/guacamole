@@ -21,8 +21,8 @@ package org.bdgenomics.guacamole.commands
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.formats.avro.{ Contig, Variant, GenotypeAllele, Genotype }
 import org.bdgenomics.guacamole.Common.Arguments.{ TumorNormalReads, Output }
+import org.bdgenomics.guacamole.{ Bases, DelayedMessages, Common, Command, DistributedUtil }
 import org.bdgenomics.guacamole.pileup.{ Insertion, Deletion, Pileup }
-import org.bdgenomics.guacamole._
 import org.bdgenomics.guacamole.reads.Read
 import scala.collection.JavaConversions
 
