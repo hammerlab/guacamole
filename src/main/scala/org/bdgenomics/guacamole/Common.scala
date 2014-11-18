@@ -18,7 +18,7 @@
 
 package org.bdgenomics.guacamole
 
-import java.io.{ InputStreamReader, BufferedReader, OutputStream }
+import java.io.{ InputStreamReader, OutputStream }
 import java.util
 import java.util.Calendar
 
