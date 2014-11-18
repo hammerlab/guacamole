@@ -22,7 +22,6 @@ import org.apache.spark.rdd.RDD
 import org.bdgenomics.formats.avro.{ Genotype, GenotypeAllele }
 import org.bdgenomics.guacamole.TestUtil.assertBases
 import org.bdgenomics.guacamole.commands.GermlineThreshold
-import org.bdgenomics.guacamole.commands.GermlineThreshold.Caller
 import org.bdgenomics.guacamole.pileup.{ Pileup, PileupElement }
 import org.bdgenomics.guacamole.reads.MappedRead
 import org.bdgenomics.guacamole.windowing.SlidingWindow

@@ -20,7 +20,6 @@ package org.bdgenomics.guacamole.commands
 
 import org.apache.spark.Logging
 import org.apache.spark.rdd.RDD
-import org.bdgenomics.adam.cli.Args4j
 import org.bdgenomics.guacamole.likelihood.Likelihood
 import org.bdgenomics.guacamole.variants.{ AlleleEvidence, Genotype, AlleleConversions, CalledAllele }
 import org.bdgenomics.guacamole._
@@ -38,19 +37,24 @@ import org.kohsuke.args4j.Option
  */
 object GermlineStandard {
 
-  private class Arguments extends Base
-      with Output with Reads with ConcordanceArgs with GenotypeFilterArguments with PileupFilterArguments with DistributedUtil.Arguments {
+  protected class Arguments
+      extends Base
+      with Output
+      with Reads
+      with ConcordanceArgs
+      with GenotypeFilterArguments
+      with PileupFilterArguments
+      with DistributedUtil.Arguments {
 
     @Option(name = "-emit-ref", usage = "Output homozygous reference calls.")
     var emitRef: Boolean = false
   }
 
-  object Caller extends Command with Serializable with Logging {
+  object Caller extends Command[Arguments] with Serializable with Logging {
     override val name = "germline-standard"
     override val description = "call variants using a simple quality-based probability"
 
-    override def run(rawArgs: Array[String]): Unit = {
-      val args = Args4j[Arguments](rawArgs)
+    override def run(args: Arguments): Unit = {
       val sc = Common.createSparkContext(appName = Some(name))
 
       val readSet = Common.loadReadsFromArguments(args, sc, Read.InputFilters(mapped = true, nonDuplicate = true))

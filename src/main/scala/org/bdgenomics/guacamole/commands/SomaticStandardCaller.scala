@@ -20,7 +20,6 @@ package org.bdgenomics.guacamole.commands
 
 import org.apache.spark.Logging
 import org.apache.spark.rdd.RDD
-import org.bdgenomics.adam.cli.Args4j
 import org.bdgenomics.guacamole.Common.Arguments.{ Output, TumorNormalReads }
 import org.bdgenomics.guacamole.likelihood.Likelihood
 import org.bdgenomics.guacamole._
@@ -45,7 +44,7 @@ import org.kohsuke.args4j.{ Option => Opt }
  */
 object SomaticStandard {
 
-  private class Arguments
+  protected class Arguments
       extends DistributedUtil.Arguments
       with Output
       with SomaticGenotypeFilterArguments
@@ -60,13 +59,12 @@ object SomaticStandard {
 
   }
 
-  object Caller extends Command with Serializable with Logging {
+  object Caller extends Command[Arguments] with Serializable with Logging {
     override val name = "somatic-standard"
     override val description = "call somatic variants using independent callers on tumor and normal"
 
-    override def run(rawArgs: Array[String]): Unit = {
+    override def run(args: Arguments): Unit = {
 
-      val args = Args4j[Arguments](rawArgs)
       val sc = Common.createSparkContext(appName = Some(name))
 
       val filters = Read.InputFilters(mapped = true, nonDuplicate = true, passedVendorQualityChecks = true)
