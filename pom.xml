@@ -7,7 +7,7 @@
   <version>0.0.1</version>
   <packaging>jar</packaging>
   <name>guacamole: variant caller</name>
-  
+
   <properties>
     <adam.version>0.14.0</adam.version>
     <bdg-formats.version>0.2.0</bdg-formats.version>
@@ -16,8 +16,10 @@
     <scala.version.prefix>2.10</scala.version.prefix>
     <hadoop.version>2.3.0</hadoop.version>
     <spark.version>1.1.0</spark.version>
+    <scoverage-plugin.version>0.99.11</scoverage-plugin.version>
+    <maven.plugin.scoverage.version>0.99.10</maven.plugin.scoverage.version>
   </properties>
-  
+
   <licenses>
     <license>
       <name>Apache License</name>
@@ -25,7 +27,7 @@
       <distribution>repo</distribution>
     </license>
   </licenses>
-  
+
   <scm>
     <connection>scm:git:git@github.com:hammerlab/guacamole.git</connection>
     <developerConnection>scm:git:git@github.com:hammerlab/guacamole.git</developerConnection>
@@ -52,8 +54,7 @@
         <version>2.1</version>
         <configuration>
           <transformers>
-            <transformer
-               implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+            <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
               <mainClass>org.bdgenomics.guacamole.Guacamole</mainClass>
             </transformer>
             <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
@@ -102,6 +103,19 @@
             <goals>
               <goal>compile</goal>
             </goals>
+            <configuration>
+              <compilerPlugins>
+                <compilerPlugin>
+                  <groupId>org.scoverage</groupId>
+                  <artifactId>scalac-scoverage-plugin_${scala.version.prefix}</artifactId>
+                  <version>${scoverage-plugin.version}</version>
+                </compilerPlugin>
+              </compilerPlugins>
+              <args>
+                <arg>-g:vars</arg>
+                <arg>-P:scoverage:dataDir:${project.build.directory}</arg>
+              </args>
+            </configuration>
           </execution>
           <execution>
             <id>scala-test-compile-first</id>
@@ -140,7 +154,6 @@
           </javacArgs>
         </configuration>
       </plugin>
-
       <!-- disable surefire -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -189,37 +202,42 @@
           </execution>
         </executions>
       </plugin>
+
+      <!-- scoverage: test coverage tool -->
+      <plugin>
+        <groupId>org.scoverage</groupId>
+        <artifactId>maven-scoverage-plugin</artifactId>
+        <version>${maven.plugin.scoverage.version}</version>
+      </plugin>
     </plugins>
   </build>
-
   <repositories>
-      <repository>
-          <id>sonatype-nexus-snapshots</id>
-          <name>Sonatype Nexus Snapshots</name>
-          <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-          <releases>
-              <enabled>false</enabled>
-          </releases>
-          <snapshots>
-              <enabled>true</enabled>
-          </snapshots>
-      </repository>
-      <repository>
-          <snapshots>
-              <enabled>false</enabled>
-          </snapshots>
-          <id>central</id>
-          <url>http://repo1.maven.org/maven2</url>
-      </repository>
-      <repository>
-          <snapshots>
-              <enabled>false</enabled>
-          </snapshots>
-          <id>spire</id>
-          <url>http://dl.bintray.com/non/maven</url>
-      </repository>
+    <repository>
+      <id>sonatype-nexus-snapshots</id>
+      <name>Sonatype Nexus Snapshots</name>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <id>central</id>
+      <url>http://repo1.maven.org/maven2</url>
+    </repository>
+    <repository>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <id>spire</id>
+      <url>http://dl.bintray.com/non/maven</url>
+    </repository>
   </repositories>
-
   <dependencies>
     <dependency>
       <groupId>args4j</groupId>
@@ -278,14 +296,19 @@
       <version>${hadoop.version}</version>
     </dependency>
     <dependency>
-        <groupId>com.google.guava</groupId>
-        <artifactId>guava</artifactId>
-        <version>18.0</version>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>18.0</version>
     </dependency>
     <dependency>
-        <groupId>org.spire-math</groupId>
-        <artifactId>debox_${scala.version.prefix}</artifactId>
-        <version>0.6.0</version>
+      <groupId>org.spire-math</groupId>
+      <artifactId>debox_${scala.version.prefix}</artifactId>
+      <version>0.6.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.scoverage</groupId>
+      <artifactId>scalac-scoverage-plugin_${scala.version.prefix}</artifactId>
+      <version>${scoverage-plugin.version}</version>
     </dependency>
   </dependencies>
 </project>
