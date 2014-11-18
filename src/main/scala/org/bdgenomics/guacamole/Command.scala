@@ -54,6 +54,7 @@ abstract class SparkCommand[T <% Args4jBase: Manifest] extends Command[T] {
   override def run(args: T): Unit = {
     val sc = Common.createSparkContext(appName = Some(name))
     run(args, sc)
+    sc.stop()
   }
 
   def run(args: T, sc: SparkContext): Unit
