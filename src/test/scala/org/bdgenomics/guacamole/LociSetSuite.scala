@@ -18,6 +18,9 @@
 
 package org.bdgenomics.guacamole
 
+import org.apache.commons.io.FileUtils
+import org.apache.hadoop.fs.FileUtil
+import org.bdgenomics.guacamole.reads.Read
 import org.scalatest.Matchers
 
 class LociSetSuite extends TestUtil.SparkFunSuite with Matchers {
@@ -101,6 +104,22 @@ class LociSetSuite extends TestUtil.SparkFunSuite with Matchers {
     }
     sets.foreach(check_invariants)
     check_invariants(LociSet.union(sets: _*))
+  }
+
+  sparkTest("loci argument parsing in Common") {
+    val read = TestUtil.makeRead("C", "1M", "1", 500, "20")
+    val emptyReadSet = ReadSet(sc.parallelize(Seq(read)), None, "", Read.InputFilters.empty, 0, false)
+    class TestArgs extends Common.Arguments.Base with Common.Arguments.Loci {}
+
+    // Test -loci argument
+    val args1 = new TestArgs()
+    args1.loci = "20:100-200"
+    Common.loci(args1, emptyReadSet) should equal(LociSet.parse("20:100-200"))
+
+    // Test -loci-from-file argument. The test file gives a loci set equal to 20:100-200.
+    val args2 = new TestArgs()
+    args2.lociFromFile = TestUtil.testDataPath("loci.txt")
+    Common.loci(args2, emptyReadSet) should equal(LociSet.parse("20:100-200"))
   }
 
   sparkTest("serialization: make an RDD[LociSet]") {
