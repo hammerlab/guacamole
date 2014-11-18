@@ -108,6 +108,9 @@ object Common extends Logging {
     }
 
     trait GermlineCallerArgs extends Output with Reads with ConcordanceArgs with DistributedUtil.Arguments
+
+    trait SomaticCallerArgs extends Output with TumorNormalReads with DistributedUtil.Arguments
+
   }
 
   /**
