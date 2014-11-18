@@ -18,9 +18,10 @@
 
 package org.bdgenomics.guacamole.commands
 
+import org.apache.spark.SparkContext
 import org.bdgenomics.formats.avro.{ Contig, Variant, GenotypeAllele, Genotype }
 import org.bdgenomics.formats.avro.GenotypeAllele.{ NoCall, Ref, Alt, OtherAlt }
-import org.bdgenomics.guacamole.{ Bases, Concordance, DistributedUtil, DelayedMessages, Common, Command }
+import org.bdgenomics.guacamole.{ SparkCommand, Bases, Concordance, DistributedUtil, DelayedMessages, Common }
 import org.bdgenomics.guacamole.Common.Arguments.GermlineCallerArgs
 import org.apache.spark.SparkContext._
 import org.bdgenomics.guacamole.reads.Read
@@ -49,13 +50,12 @@ object GermlineThreshold {
     var emitNoCall: Boolean = false
   }
 
-  object Caller extends Command[Arguments] {
+  object Caller extends SparkCommand[Arguments] {
 
     override val name = "germline-threshold"
     override val description = "call variants by thresholding read counts (toy example)"
 
-    override def run(args: Arguments): Unit = {
-      val sc = Common.createSparkContext(appName = Some(name))
+    override def run(args: Arguments, sc: SparkContext): Unit = {
 
       val readSet = Common.loadReadsFromArguments(args, sc, Read.InputFilters(mapped = true, nonDuplicate = true))
 

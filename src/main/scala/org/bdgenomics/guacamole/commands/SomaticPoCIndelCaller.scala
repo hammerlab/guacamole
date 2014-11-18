@@ -18,10 +18,11 @@
 
 package org.bdgenomics.guacamole.commands
 
+import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.formats.avro.{ Contig, Variant, GenotypeAllele, Genotype }
 import org.bdgenomics.guacamole.Common.Arguments.SomaticCallerArgs
-import org.bdgenomics.guacamole.{ Bases, DelayedMessages, Common, Command, DistributedUtil }
+import org.bdgenomics.guacamole.{ SparkCommand, Bases, DelayedMessages, Common, DistributedUtil }
 import org.bdgenomics.guacamole.pileup.{ Insertion, Deletion, Pileup }
 import org.bdgenomics.guacamole.reads.Read
 import scala.collection.JavaConversions
@@ -30,14 +31,12 @@ object SomaticPoCIndel {
 
   protected class Arguments extends SomaticCallerArgs
 
-  object Caller extends Command[Arguments] {
+  object Caller extends SparkCommand[Arguments] {
 
     override val name = "somatic-poc"
     override val description = "call simple insertion and deletion variants between a tumor and a normal"
 
-    override def run(args: Arguments): Unit = {
-
-      val sc = Common.createSparkContext(appName = Some(name))
+    override def run(args: Arguments, sc: SparkContext): Unit = {
 
       val filters = Read.InputFilters(mapped = true, nonDuplicate = true, passedVendorQualityChecks = true)
       val (tumorReads, normalReads) = Common.loadTumorNormalReadsFromArguments(args, sc, filters)
