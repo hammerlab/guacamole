@@ -20,8 +20,8 @@ package org.bdgenomics.guacamole.commands
 
 import org.bdgenomics.formats.avro.{ Contig, Variant, GenotypeAllele, Genotype }
 import org.bdgenomics.formats.avro.GenotypeAllele.{ NoCall, Ref, Alt, OtherAlt }
+import org.bdgenomics.guacamole.{ Bases, Concordance, DistributedUtil, DelayedMessages, Common, Command }
 import org.bdgenomics.guacamole.Common.Arguments.GermlineCallerArgs
-import org.bdgenomics.guacamole._
 import org.apache.spark.SparkContext._
 import org.bdgenomics.guacamole.reads.Read
 import org.bdgenomics.guacamole.variants.Allele
