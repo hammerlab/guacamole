@@ -57,7 +57,7 @@ class SomaticStandardCallerSuite extends SparkFunSuite with Matchers with TableD
       (locus: Long) =>
         val (tumorPileup, normalPileup) = TestUtil.loadTumorNormalPileup(tumorReads, normalReads, locus)
 
-        val calledGenotypes = SomaticStandardCaller.findPotentialVariantAtLocus(
+        val calledGenotypes = SomaticStandard.Caller.findPotentialVariantAtLocus(
           tumorPileup,
           normalPileup,
           logOddsThreshold,

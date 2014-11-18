@@ -34,10 +34,10 @@ object Guacamole extends Logging {
    * this list.
    */
   private val commands: Seq[Command] = List(
-    GermlineThresholdCaller,
-    GermlineStandardCaller,
-    SomaticStandardCaller,
-    SomaticPoCIndelCaller)
+    GermlineThreshold.Caller,
+    GermlineStandard.Caller,
+    SomaticStandard.Caller,
+    SomaticPoCIndel.Caller)
 
   private def printUsage() = {
     println("Usage: java ... <command> [other args]\n")
