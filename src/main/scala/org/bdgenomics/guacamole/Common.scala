@@ -33,6 +33,7 @@ import org.bdgenomics.adam.cli.{ Args4jBase, ParquetArgs }
 import org.bdgenomics.adam.rdd.ADAMContext._
 import org.bdgenomics.adam.rdd.variation.ADAMVariationContext._
 import org.bdgenomics.formats.avro.Genotype
+import org.bdgenomics.guacamole.Concordance.ConcordanceArgs
 import org.bdgenomics.guacamole.reads.Read
 import org.codehaus.jackson.JsonFactory
 import org.kohsuke.args4j.{ Option => Opt }
@@ -105,6 +106,8 @@ object Common extends Logging {
         usage = "Sets maximum fragment length. Default value is 10,000. Values greater than 1e9 should be avoided.")
       var fragmentLength: Long = 10000L
     }
+
+    trait GermlineCallerArgs extends Output with Reads with ConcordanceArgs with DistributedUtil.Arguments
   }
 
   /**

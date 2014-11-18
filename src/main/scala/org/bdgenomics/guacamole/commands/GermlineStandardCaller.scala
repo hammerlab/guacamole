@@ -19,11 +19,11 @@
 package org.bdgenomics.guacamole.commands
 
 import org.apache.spark.rdd.RDD
+import org.bdgenomics.guacamole.Common.Arguments.GermlineCallerArgs
 import org.bdgenomics.guacamole.likelihood.Likelihood
 import org.bdgenomics.guacamole.variants.{ AlleleEvidence, Genotype, AlleleConversions, CalledAllele }
 import org.bdgenomics.guacamole._
-import org.bdgenomics.guacamole.Common.Arguments._
-import Concordance.ConcordanceArgs
+
 import org.bdgenomics.guacamole.filters.GenotypeFilter.GenotypeFilterArguments
 import org.bdgenomics.guacamole.filters.PileupFilter.PileupFilterArguments
 import org.bdgenomics.guacamole.filters.{ GenotypeFilter, QualityAlignedReadsFilter }
@@ -36,14 +36,7 @@ import org.kohsuke.args4j.Option
  */
 object GermlineStandard {
 
-  protected class Arguments
-      extends Base
-      with Output
-      with Reads
-      with ConcordanceArgs
-      with GenotypeFilterArguments
-      with PileupFilterArguments
-      with DistributedUtil.Arguments {
+  protected class Arguments extends GermlineCallerArgs with PileupFilterArguments with GenotypeFilterArguments {
 
     @Option(name = "-emit-ref", usage = "Output homozygous reference calls.")
     var emitRef: Boolean = false

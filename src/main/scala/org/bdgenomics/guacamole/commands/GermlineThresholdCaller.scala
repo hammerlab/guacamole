@@ -20,14 +20,13 @@ package org.bdgenomics.guacamole.commands
 
 import org.bdgenomics.formats.avro.{ Contig, Variant, GenotypeAllele, Genotype }
 import org.bdgenomics.formats.avro.GenotypeAllele.{ NoCall, Ref, Alt, OtherAlt }
-import org.bdgenomics.guacamole.Concordance.ConcordanceArgs
+import org.bdgenomics.guacamole.Common.Arguments.GermlineCallerArgs
 import org.bdgenomics.guacamole._
 import org.apache.spark.SparkContext._
 import org.bdgenomics.guacamole.reads.Read
 import org.bdgenomics.guacamole.variants.Allele
 import scala.collection.JavaConversions
 import org.kohsuke.args4j.Option
-import org.bdgenomics.guacamole.Common.Arguments._
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.guacamole.pileup.Pileup
 
@@ -39,7 +38,7 @@ import org.bdgenomics.guacamole.pileup.Pileup
  */
 object GermlineThreshold {
 
-  protected class Arguments extends Base with Output with Reads with ConcordanceArgs with DistributedUtil.Arguments {
+  protected class Arguments extends GermlineCallerArgs {
     @Option(name = "-threshold", metaVar = "X", usage = "Make a call if at least X% of reads support it. Default: 8")
     var threshold: Int = 8
 
