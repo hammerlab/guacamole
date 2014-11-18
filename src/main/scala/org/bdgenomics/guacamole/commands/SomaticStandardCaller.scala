@@ -19,7 +19,7 @@
 package org.bdgenomics.guacamole.commands
 
 import org.apache.spark.rdd.RDD
-import org.bdgenomics.guacamole.Common.Arguments.{ Output, TumorNormalReads }
+import org.bdgenomics.guacamole.Common.Arguments.SomaticCallerArgs
 import org.bdgenomics.guacamole.{ DelayedMessages, Common, Command, DistributedUtil }
 import org.bdgenomics.guacamole.likelihood.Likelihood
 import org.bdgenomics.guacamole.filters.PileupFilter.PileupFilterArguments
@@ -43,12 +43,7 @@ import org.kohsuke.args4j.{ Option => Opt }
  */
 object SomaticStandard {
 
-  protected class Arguments
-      extends DistributedUtil.Arguments
-      with Output
-      with SomaticGenotypeFilterArguments
-      with PileupFilterArguments
-      with TumorNormalReads {
+  protected class Arguments extends SomaticCallerArgs with PileupFilterArguments with SomaticGenotypeFilterArguments {
 
     @Opt(name = "-snvWindowRange", usage = "Number of bases before and after to check for additional matches or deletions")
     var snvWindowRange: Int = 20
