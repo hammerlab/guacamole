@@ -10,7 +10,6 @@
 
   <properties>
     <adam.version>0.14.0</adam.version>
-    <bdg-formats.version>0.2.0</bdg-formats.version>
     <java.version>1.8</java.version>
     <scala.version>2.10.3</scala.version>
     <scala.version.prefix>2.10</scala.version.prefix>
@@ -253,11 +252,6 @@
       <groupId>org.bdgenomics.adam</groupId>
       <artifactId>adam-cli</artifactId>
       <version>${adam.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.bdgenomics.bdg-formats</groupId>
-      <artifactId>bdg-formats</artifactId>
-      <version>${bdg-formats.version}</version>
     </dependency>
     <dependency>
       <groupId>colt</groupId>
