@@ -22,6 +22,7 @@ import com.esotericsoftware.kryo.Kryo
 import org.bdgenomics.adam.serialization.{ ADAMKryoRegistrator }
 import org.hammerlab.guacamole.reads.{ UnmappedReadSerializer, MappedReadSerializer, MappedRead, UnmappedRead }
 import org.hammerlab.guacamole.variants._
+import org.hammerlab.guacamole.DistributedUtil.TaskPosition
 
 class GuacamoleKryoRegistrator extends ADAMKryoRegistrator {
   override def registerClasses(kryo: Kryo) {
@@ -48,5 +49,6 @@ class GuacamoleKryoRegistrator extends ADAMKryoRegistrator {
     kryo.register(classOf[AlleleEvidence], new AlleleEvidenceSerializer)
     kryo.register(classOf[Allele], new AlleleSerializer)
     kryo.register(classOf[Genotype], new GenotypeSerializer)
+    kryo.register(classOf[TaskPosition])
   }
 }
