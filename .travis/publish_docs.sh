@@ -15,6 +15,7 @@ if [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" == "master" ]; th
 
   cd gh-pages
   git rm -rf ./docs
+  git rm -rf ./scoverage-report
   mv ../target/site/scaladocs ./docs
   mv ../target/scoverage-report ./scoverage-report
   git add -f .
