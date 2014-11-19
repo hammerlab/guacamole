@@ -1,0 +1,4449 @@
+<html>
+      <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+      <title id="title">Scoverage Code Coverage</title>
+      <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css"/>
+      <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+      <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+      <style>
+        .meter {
+        height: 14px;
+        position: relative;
+        background: #BB2020;
+}
+.meter span {
+	display: block;
+	height: 100%;
+	background-color: rgb(43,194,83);
+	background-image: -webkit-gradient(
+	  linear,
+	  left bottom,
+	  left top,
+	  color-stop(0, rgb(43,194,83)),
+	  color-stop(1, rgb(84,240,84))
+	 );
+	background-image: -webkit-linear-gradient(
+	  center bottom,
+	  rgb(43,194,83) 37%,
+	  rgb(84,240,84) 69%
+	 );
+	background-image: -moz-linear-gradient(
+	  center bottom,
+	  rgb(43,194,83) 37%,
+	  rgb(84,240,84) 69%
+	 );
+	background-image: -ms-linear-gradient(
+	  center bottom,
+	  rgb(43,194,83) 37%,
+	  rgb(84,240,84) 69%
+	 );
+	background-image: -o-linear-gradient(
+	  center bottom,
+	  rgb(43,194,83) 37%,
+	  rgb(84,240,84) 69%
+	 );
+	-webkit-box-shadow:
+	  inset 0 2px 9px  rgba(255,255,255,0.3),
+	  inset 0 -2px 6px rgba(0,0,0,0.4);
+	-moz-box-shadow:
+	  inset 0 2px 9px  rgba(255,255,255,0.3),
+	  inset 0 -2px 6px rgba(0,0,0,0.4);
+	position: relative;
+	overflow: hidden;
+}
+      </style>
+    </head><body style="font-family: monospace;">
+      <div class="alert alert-info">
+        <b>
+          SCoverage
+        </b>
+        generated at
+        Wed Nov 19 16:45:15 UTC 2014
+      </div>
+      <div class="overview">
+        <div class="stats">
+          <table class="table">
+      <tr>
+        <td>
+          Lines of code:
+        </td>
+        <td>
+          5887
+        </td>
+        <td>
+          Files:
+        </td>
+        <td>
+          42
+        </td>
+        <td>
+          Classes:
+        </td>
+        <td>
+          94
+        </td>
+        <td>
+          Methods:
+        </td>
+        <td>
+          176
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Lines per file
+        </td>
+        <td>
+          140.17
+        </td>
+        <td>
+          Packages:
+        </td>
+        <td>
+          8
+        </td>
+        <td>
+          Clases per package:
+        </td>
+        <td>
+          11.75
+        </td>
+        <td>
+          Methods per class:
+        </td>
+        <td>
+          1.87
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Total statements:
+        </td>
+        <td>
+          3003
+        </td>
+        <td>
+          Invoked statements:
+        </td>
+        <td>
+          1833
+        </td>
+        <td>
+          Total branches:
+        </td>
+        <td>
+          281
+        </td>
+        <td>
+          Invoked branches:
+        </td>
+        <td>
+          144
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Statement coverage:
+        </td>
+        <td>
+          61.04
+          %
+        </td>
+        <td colspan="2">
+          <div class="meter">
+            <span style="width: 61%"></span>
+          </div>
+        </td>
+        <td>
+          Branch coverage:
+        </td>
+        <td>
+          51.25
+          %
+        </td>
+        <td colspan="2">
+          <div class="meter">
+            <span style="width: 51%"></span>
+          </div>
+        </td>
+      </tr>
+    </table>
+        </div>
+        <div>
+          <table class="table table-striped" style="font-size:13px">
+      <thead>
+        <tr>
+          <th>
+            Class
+          </th>
+          <th>
+            Source file
+          </th>
+          <th>
+            Lines
+          </th>
+          <th>
+            Methods
+          </th>
+          <th>
+            Statements
+          </th>
+          <th>
+            Invoked
+          </th>
+          <th>
+            Coverage
+          </th>
+          <th>
+          </th>
+          <th>
+            Branches
+          </th>
+          <th>
+            Invoked
+          </th>
+          <th>
+            Coverage
+          </th>
+          <th>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/windowing/SlidingWindow.scala.html">
+          $anon
+        </a>
+      </td>
+      <td>
+        SlidingWindow.scala
+      </td>
+      <td>
+        162
+      </td>
+      <td>
+        3
+      </td>
+      <td>
+        16
+      </td>
+      <td>
+        14
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 88%"></span>
+        </div>
+      </td>
+      <td>
+        87.50
+        %
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 50%"></span>
+        </div>
+      </td>
+      <td>
+        50.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/filters/PileupFilter.scala.html">
+          AbnormalInsertSizePileupFilter
+        </a>
+      </td>
+      <td>
+        PileupFilter.scala
+      </td>
+      <td>
+        113
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        9
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/pileup/Alignment.scala.html">
+          Alignment
+        </a>
+      </td>
+      <td>
+        Alignment.scala
+      </td>
+      <td>
+        40
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        9
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 11%"></span>
+        </div>
+      </td>
+      <td>
+        11.11
+        %
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/variants/Allele.scala.html">
+          Allele
+        </a>
+      </td>
+      <td>
+        Allele.scala
+      </td>
+      <td>
+        34
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        17
+      </td>
+      <td>
+        10
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 59%"></span>
+        </div>
+      </td>
+      <td>
+        58.82
+        %
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/variants/AlleleConversions.scala.html">
+          AlleleConversions
+        </a>
+      </td>
+      <td>
+        AlleleConversions.scala
+      </td>
+      <td>
+        60
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        4
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/variants/AlleleEvidence.scala.html">
+          AlleleEvidence
+        </a>
+      </td>
+      <td>
+        AlleleEvidence.scala
+      </td>
+      <td>
+        110
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        15
+      </td>
+      <td>
+        13
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 87%"></span>
+        </div>
+      </td>
+      <td>
+        86.67
+        %
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/variants/AlleleEvidence.scala.html">
+          AlleleEvidenceSerializer
+        </a>
+      </td>
+      <td>
+        AlleleEvidence.scala
+      </td>
+      <td>
+        74
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        22
+      </td>
+      <td>
+        22
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/variants/Allele.scala.html">
+          AlleleSerializer
+        </a>
+      </td>
+      <td>
+        Allele.scala
+      </td>
+      <td>
+        52
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        17
+      </td>
+      <td>
+        17
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/commands/SomaticStandardCaller.scala.html">
+          Arguments
+        </a>
+      </td>
+      <td>
+        SomaticStandardCaller.scala
+      </td>
+      <td>
+        61
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        8
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/Common.scala.html">
+          Base
+        </a>
+      </td>
+      <td>
+        Common.scala
+      </td>
+      <td>
+        50
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/Bases.scala.html">
+          Bases
+        </a>
+      </td>
+      <td>
+        Bases.scala
+      </td>
+      <td>
+        92
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        42
+      </td>
+      <td>
+        13
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 31%"></span>
+        </div>
+      </td>
+      <td>
+        30.95
+        %
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/Bases.scala.html">
+          BasesOrdering
+        </a>
+      </td>
+      <td>
+        Bases.scala
+      </td>
+      <td>
+        56
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        3
+      </td>
+      <td>
+        3
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/LociMap.scala.html">
+          Builder
+        </a>
+      </td>
+      <td>
+        LociMap.scala
+      </td>
+      <td>
+        226
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        58
+      </td>
+      <td>
+        57
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 98%"></span>
+        </div>
+      </td>
+      <td>
+        98.28
+        %
+      </td>
+      <td>
+        6
+      </td>
+      <td>
+        6
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/variants/CalledAllele.scala.html">
+          CalledAllele
+        </a>
+      </td>
+      <td>
+        CalledAllele.scala
+      </td>
+      <td>
+        41
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/variants/CalledAllele.scala.html">
+          CalledAlleleSerializer
+        </a>
+      </td>
+      <td>
+        CalledAllele.scala
+      </td>
+      <td>
+        68
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        22
+      </td>
+      <td>
+        22
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/variants/CalledSomaticAllele.scala.html">
+          CalledSomaticAllele
+        </a>
+      </td>
+      <td>
+        CalledSomaticAllele.scala
+      </td>
+      <td>
+        50
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        3
+      </td>
+      <td>
+        3
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/variants/CalledSomaticAllele.scala.html">
+          CalledSomaticAlleleSerializer
+        </a>
+      </td>
+      <td>
+        CalledSomaticAllele.scala
+      </td>
+      <td>
+        85
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        28
+      </td>
+      <td>
+        28
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/reads/MatePropertiesSerializer.scala.html">
+          CanSerializeMatePropertiesOption
+        </a>
+      </td>
+      <td>
+        MatePropertiesSerializer.scala
+      </td>
+      <td>
+        44
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        13
+      </td>
+      <td>
+        13
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/CigarUtils.scala.html">
+          CigarUtils
+        </a>
+      </td>
+      <td>
+        CigarUtils.scala
+      </td>
+      <td>
+        41
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        10
+      </td>
+      <td>
+        8
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 80%"></span>
+        </div>
+      </td>
+      <td>
+        80.00
+        %
+      </td>
+      <td>
+        4
+      </td>
+      <td>
+        3
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 75%"></span>
+        </div>
+      </td>
+      <td>
+        75.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/Common.scala.html">
+          Common
+        </a>
+      </td>
+      <td>
+        Common.scala
+      </td>
+      <td>
+        367
+      </td>
+      <td>
+        9
+      </td>
+      <td>
+        252
+      </td>
+      <td>
+        69
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 27%"></span>
+        </div>
+      </td>
+      <td>
+        27.38
+        %
+      </td>
+      <td>
+        44
+      </td>
+      <td>
+        14
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 32%"></span>
+        </div>
+      </td>
+      <td>
+        31.82
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/Concordance.scala.html">
+          Concordance
+        </a>
+      </td>
+      <td>
+        Concordance.scala
+      </td>
+      <td>
+        126
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        43
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/Concordance.scala.html">
+          ConcordanceArgs
+        </a>
+      </td>
+      <td>
+        Concordance.scala
+      </td>
+      <td>
+        50
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        4
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/DelayedMessages.scala.html">
+          DelayedMessages
+        </a>
+      </td>
+      <td>
+        DelayedMessages.scala
+      </td>
+      <td>
+        53
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        13
+      </td>
+      <td>
+        4
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 31%"></span>
+        </div>
+      </td>
+      <td>
+        30.77
+        %
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/pileup/Alignment.scala.html">
+          Deletion
+        </a>
+      </td>
+      <td>
+        Alignment.scala
+      </td>
+      <td>
+        83
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        9
+      </td>
+      <td>
+        7
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 78%"></span>
+        </div>
+      </td>
+      <td>
+        77.78
+        %
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/filters/PileupFilter.scala.html">
+          DeletionEvidencePileupFilter
+        </a>
+      </td>
+      <td>
+        PileupFilter.scala
+      </td>
+      <td>
+        128
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        4
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/DistributedUtil.scala.html">
+          DistributedUtil
+        </a>
+      </td>
+      <td>
+        DistributedUtil.scala
+      </td>
+      <td>
+        595
+      </td>
+      <td>
+        10
+      </td>
+      <td>
+        322
+      </td>
+      <td>
+        257
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 80%"></span>
+        </div>
+      </td>
+      <td>
+        79.81
+        %
+      </td>
+      <td>
+        22
+      </td>
+      <td>
+        14
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 64%"></span>
+        </div>
+      </td>
+      <td>
+        63.64
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/filters/PileupElementsFilter.scala.html">
+          EdgeBaseFilter
+        </a>
+      </td>
+      <td>
+        PileupElementsFilter.scala
+      </td>
+      <td>
+        49
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/filters/FishersExactTest.scala.html">
+          FishersExactTest
+        </a>
+      </td>
+      <td>
+        FishersExactTest.scala
+      </td>
+      <td>
+        28
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        6
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/variants/Genotype.scala.html">
+          Genotype
+        </a>
+      </td>
+      <td>
+        Genotype.scala
+      </td>
+      <td>
+        84
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        27
+      </td>
+      <td>
+        4
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 15%"></span>
+        </div>
+      </td>
+      <td>
+        14.81
+        %
+      </td>
+      <td>
+        6
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/filters/GenotypeFilter.scala.html">
+          GenotypeFilter
+        </a>
+      </td>
+      <td>
+        GenotypeFilter.scala
+      </td>
+      <td>
+        168
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        37
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+      <td>
+        8
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/filters/GenotypeFilter.scala.html">
+          GenotypeFilterArguments
+        </a>
+      </td>
+      <td>
+        GenotypeFilter.scala
+      </td>
+      <td>
+        136
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        5
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/variants/Genotype.scala.html">
+          GenotypeSerializer
+        </a>
+      </td>
+      <td>
+        Genotype.scala
+      </td>
+      <td>
+        98
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        11
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/commands/GermlineStandardCaller.scala.html">
+          GermlineStandardCaller
+        </a>
+      </td>
+      <td>
+        GermlineStandardCaller.scala
+      </td>
+      <td>
+        121
+      </td>
+      <td>
+        3
+      </td>
+      <td>
+        69
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+      <td>
+        4
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/commands/GermlineThresholdCaller.scala.html">
+          GermlineThresholdCaller
+        </a>
+      </td>
+      <td>
+        GermlineThresholdCaller.scala
+      </td>
+      <td>
+        166
+      </td>
+      <td>
+        3
+      </td>
+      <td>
+        110
+      </td>
+      <td>
+        34
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 31%"></span>
+        </div>
+      </td>
+      <td>
+        30.91
+        %
+      </td>
+      <td>
+        12
+      </td>
+      <td>
+        4
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 33%"></span>
+        </div>
+      </td>
+      <td>
+        33.33
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/Guacamole.scala.html">
+          Guacamole
+        </a>
+      </td>
+      <td>
+        Guacamole.scala
+      </td>
+      <td>
+        70
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        35
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/Serialization.scala.html">
+          GuacamoleKryoRegistrator
+        </a>
+      </td>
+      <td>
+        Serialization.scala
+      </td>
+      <td>
+        50
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        36
+      </td>
+      <td>
+        36
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/variants/Allele.scala.html">
+          HasAlleleSerializer
+        </a>
+      </td>
+      <td>
+        Allele.scala
+      </td>
+      <td>
+        57
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/variants/AlleleEvidence.scala.html">
+          HasGenotypeEvidenceSerializer
+        </a>
+      </td>
+      <td>
+        AlleleEvidence.scala
+      </td>
+      <td>
+        87
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/HasReferenceRegion.scala.html">
+          HasReferenceRegion
+        </a>
+      </td>
+      <td>
+        HasReferenceRegion.scala
+      </td>
+      <td>
+        46
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        8
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 25%"></span>
+        </div>
+      </td>
+      <td>
+        25.00
+        %
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/DistributedUtil.scala.html">
+          HashMapAccumulatorParam
+        </a>
+      </td>
+      <td>
+        DistributedUtil.scala
+      </td>
+      <td>
+        681
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        17
+      </td>
+      <td>
+        11
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 65%"></span>
+        </div>
+      </td>
+      <td>
+        64.71
+        %
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 50%"></span>
+        </div>
+      </td>
+      <td>
+        50.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/reads/Read.scala.html">
+          InputFilters
+        </a>
+      </td>
+      <td>
+        Read.scala
+      </td>
+      <td>
+        99
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        5
+      </td>
+      <td>
+        5
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/pileup/Alignment.scala.html">
+          Insertion
+        </a>
+      </td>
+      <td>
+        Alignment.scala
+      </td>
+      <td>
+        45
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/likelihood/Likelihood.scala.html">
+          Likelihood
+        </a>
+      </td>
+      <td>
+        Likelihood.scala
+      </td>
+      <td>
+        199
+      </td>
+      <td>
+        4
+      </td>
+      <td>
+        87
+      </td>
+      <td>
+        86
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 99%"></span>
+        </div>
+      </td>
+      <td>
+        98.85
+        %
+      </td>
+      <td>
+        6
+      </td>
+      <td>
+        6
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/Common.scala.html">
+          Loci
+        </a>
+      </td>
+      <td>
+        Common.scala
+      </td>
+      <td>
+        59
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/windowing/LociInWindowsIterator.scala.html">
+          LociInWindowsIterator
+        </a>
+      </td>
+      <td>
+        LociInWindowsIterator.scala
+      </td>
+      <td>
+        141
+      </td>
+      <td>
+        3
+      </td>
+      <td>
+        70
+      </td>
+      <td>
+        63
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 90%"></span>
+        </div>
+      </td>
+      <td>
+        90.00
+        %
+      </td>
+      <td>
+        10
+      </td>
+      <td>
+        9
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 90%"></span>
+        </div>
+      </td>
+      <td>
+        90.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/LociMap.scala.html">
+          LociMap
+        </a>
+      </td>
+      <td>
+        LociMap.scala
+      </td>
+      <td>
+        248
+      </td>
+      <td>
+        3
+      </td>
+      <td>
+        117
+      </td>
+      <td>
+        60
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 51%"></span>
+        </div>
+      </td>
+      <td>
+        51.28
+        %
+      </td>
+      <td>
+        8
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/LociMap.scala.html">
+          LociMapLongSerializer
+        </a>
+      </td>
+      <td>
+        LociMap.scala
+      </td>
+      <td>
+        350
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        13
+      </td>
+      <td>
+        13
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/LociMap.scala.html">
+          LociMapLongSingleContigSerializer
+        </a>
+      </td>
+      <td>
+        LociMap.scala
+      </td>
+      <td>
+        375
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        23
+      </td>
+      <td>
+        23
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/LociSet.scala.html">
+          LociSet
+        </a>
+      </td>
+      <td>
+        LociSet.scala
+      </td>
+      <td>
+        153
+      </td>
+      <td>
+        3
+      </td>
+      <td>
+        57
+      </td>
+      <td>
+        38
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 67%"></span>
+        </div>
+      </td>
+      <td>
+        66.67
+        %
+      </td>
+      <td>
+        4
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 50%"></span>
+        </div>
+      </td>
+      <td>
+        50.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/LociSet.scala.html">
+          LociSetSerializer
+        </a>
+      </td>
+      <td>
+        LociSet.scala
+      </td>
+      <td>
+        195
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        4
+      </td>
+      <td>
+        4
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/LociSet.scala.html">
+          LociSetSingleContigSerializer
+        </a>
+      </td>
+      <td>
+        LociSet.scala
+      </td>
+      <td>
+        204
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        4
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/reads/MDTagUtils.scala.html">
+          MDTagUtils
+        </a>
+      </td>
+      <td>
+        MDTagUtils.scala
+      </td>
+      <td>
+        70
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        47
+      </td>
+      <td>
+        41
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 87%"></span>
+        </div>
+      </td>
+      <td>
+        87.23
+        %
+      </td>
+      <td>
+        4
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 50%"></span>
+        </div>
+      </td>
+      <td>
+        50.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/reads/MappedRead.scala.html">
+          MappedRead
+        </a>
+      </td>
+      <td>
+        MappedRead.scala
+      </td>
+      <td>
+        95
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        41
+      </td>
+      <td>
+        28
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 68%"></span>
+        </div>
+      </td>
+      <td>
+        68.29
+        %
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/reads/MappedReadSerializer.scala.html">
+          MappedReadSerializer
+        </a>
+      </td>
+      <td>
+        MappedReadSerializer.scala
+      </td>
+      <td>
+        70
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        53
+      </td>
+      <td>
+        53
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/pileup/Alignment.scala.html">
+          MatchOrMisMatch
+        </a>
+      </td>
+      <td>
+        Alignment.scala
+      </td>
+      <td>
+        53
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        8
+      </td>
+      <td>
+        8
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/reads/MateProperties.scala.html">
+          MateProperties
+        </a>
+      </td>
+      <td>
+        MateProperties.scala
+      </td>
+      <td>
+        28
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        4
+      </td>
+      <td>
+        4
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/reads/MatePropertiesSerializer.scala.html">
+          MatePropertiesSerializer
+        </a>
+      </td>
+      <td>
+        MatePropertiesSerializer.scala
+      </td>
+      <td>
+        80
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        40
+      </td>
+      <td>
+        36
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 90%"></span>
+        </div>
+      </td>
+      <td>
+        90.00
+        %
+      </td>
+      <td>
+        8
+      </td>
+      <td>
+        7
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 88%"></span>
+        </div>
+      </td>
+      <td>
+        87.50
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/filters/GenotypeFilter.scala.html">
+          MinimumAlternateReadDepthFilter
+        </a>
+      </td>
+      <td>
+        GenotypeFilter.scala
+      </td>
+      <td>
+        110
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        8
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/filters/GenotypeFilter.scala.html">
+          MinimumLikelihoodFilter
+        </a>
+      </td>
+      <td>
+        GenotypeFilter.scala
+      </td>
+      <td>
+        50
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        8
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/filters/PileupFilter.scala.html">
+          MultiAllelicPileupFilter
+        </a>
+      </td>
+      <td>
+        PileupFilter.scala
+      </td>
+      <td>
+        81
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        4
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/Common.scala.html">
+          NoSequenceDictionary
+        </a>
+      </td>
+      <td>
+        Common.scala
+      </td>
+      <td>
+        66
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/Common.scala.html">
+          Output
+        </a>
+      </td>
+      <td>
+        Common.scala
+      </td>
+      <td>
+        96
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        3
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/DistributedUtil.scala.html">
+          PartitionByKey
+        </a>
+      </td>
+      <td>
+        DistributedUtil.scala
+      </td>
+      <td>
+        452
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        12
+      </td>
+      <td>
+        4
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 33%"></span>
+        </div>
+      </td>
+      <td>
+        33.33
+        %
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/pileup/Pileup.scala.html">
+          Pileup
+        </a>
+      </td>
+      <td>
+        Pileup.scala
+      </td>
+      <td>
+        162
+      </td>
+      <td>
+        4
+      </td>
+      <td>
+        92
+      </td>
+      <td>
+        78
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 85%"></span>
+        </div>
+      </td>
+      <td>
+        84.78
+        %
+      </td>
+      <td>
+        8
+      </td>
+      <td>
+        8
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/pileup/PileupElement.scala.html">
+          PileupElement
+        </a>
+      </td>
+      <td>
+        PileupElement.scala
+      </td>
+      <td>
+        269
+      </td>
+      <td>
+        3
+      </td>
+      <td>
+        176
+      </td>
+      <td>
+        151
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 86%"></span>
+        </div>
+      </td>
+      <td>
+        85.80
+        %
+      </td>
+      <td>
+        18
+      </td>
+      <td>
+        15
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 83%"></span>
+        </div>
+      </td>
+      <td>
+        83.33
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/filters/PileupFilter.scala.html">
+          PileupFilter
+        </a>
+      </td>
+      <td>
+        PileupFilter.scala
+      </td>
+      <td>
+        198
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        37
+      </td>
+      <td>
+        19
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 51%"></span>
+        </div>
+      </td>
+      <td>
+        51.35
+        %
+      </td>
+      <td>
+        10
+      </td>
+      <td>
+        6
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 60%"></span>
+        </div>
+      </td>
+      <td>
+        60.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/filters/PileupFilter.scala.html">
+          PileupFilterArguments
+        </a>
+      </td>
+      <td>
+        PileupFilter.scala
+      </td>
+      <td>
+        153
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        6
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/filters/PileupElementsFilter.scala.html">
+          QualityAlignedReadsFilter
+        </a>
+      </td>
+      <td>
+        PileupElementsFilter.scala
+      </td>
+      <td>
+        33
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/reads/Read.scala.html">
+          Read
+        </a>
+      </td>
+      <td>
+        Read.scala
+      </td>
+      <td>
+        304
+      </td>
+      <td>
+        5
+      </td>
+      <td>
+        152
+      </td>
+      <td>
+        111
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 73%"></span>
+        </div>
+      </td>
+      <td>
+        73.03
+        %
+      </td>
+      <td>
+        20
+      </td>
+      <td>
+        13
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 65%"></span>
+        </div>
+      </td>
+      <td>
+        65.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/filters/GenotypeFilter.scala.html">
+          ReadDepthFilter
+        </a>
+      </td>
+      <td>
+        GenotypeFilter.scala
+      </td>
+      <td>
+        81
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        9
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 22%"></span>
+        </div>
+      </td>
+      <td>
+        22.22
+        %
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/ReadSet.scala.html">
+          ReadSet
+        </a>
+      </td>
+      <td>
+        ReadSet.scala
+      </td>
+      <td>
+        93
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        33
+      </td>
+      <td>
+        14
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 42%"></span>
+        </div>
+      </td>
+      <td>
+        42.42
+        %
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 50%"></span>
+        </div>
+      </td>
+      <td>
+        50.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/Common.scala.html">
+          Reads
+        </a>
+      </td>
+      <td>
+        Common.scala
+      </td>
+      <td>
+        72
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/Common.scala.html">
+          Reference
+        </a>
+      </td>
+      <td>
+        Common.scala
+      </td>
+      <td>
+        106
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/variants/ReferenceVariant.scala.html">
+          ReferenceVariant
+        </a>
+      </td>
+      <td>
+        ReferenceVariant.scala
+      </td>
+      <td>
+        48
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/filters/PileupFilter.scala.html">
+          RegionComplexityFilter
+        </a>
+      </td>
+      <td>
+        PileupFilter.scala
+      </td>
+      <td>
+        60
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        13
+      </td>
+      <td>
+        13
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/DistributedUtil.scala.html">
+          RegionsByContig
+        </a>
+      </td>
+      <td>
+        DistributedUtil.scala
+      </td>
+      <td>
+        633
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        24
+      </td>
+      <td>
+        17
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 71%"></span>
+        </div>
+      </td>
+      <td>
+        70.83
+        %
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 50%"></span>
+        </div>
+      </td>
+      <td>
+        50.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/LociMap.scala.html">
+          SimpleRange
+        </a>
+      </td>
+      <td>
+        LociMap.scala
+      </td>
+      <td>
+        172
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        13
+      </td>
+      <td>
+        11
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 85%"></span>
+        </div>
+      </td>
+      <td>
+        84.62
+        %
+      </td>
+      <td>
+        4
+      </td>
+      <td>
+        3
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 75%"></span>
+        </div>
+      </td>
+      <td>
+        75.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/LociMap.scala.html">
+          SingleContig
+        </a>
+      </td>
+      <td>
+        LociMap.scala
+      </td>
+      <td>
+        332
+      </td>
+      <td>
+        3
+      </td>
+      <td>
+        74
+      </td>
+      <td>
+        71
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 96%"></span>
+        </div>
+      </td>
+      <td>
+        95.95
+        %
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/DistributedUtil.scala.html">
+          SingleContigRegionIterator
+        </a>
+      </td>
+      <td>
+        DistributedUtil.scala
+      </td>
+      <td>
+        643
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        8
+      </td>
+      <td>
+        6
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 75%"></span>
+        </div>
+      </td>
+      <td>
+        75.00
+        %
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 50%"></span>
+        </div>
+      </td>
+      <td>
+        50.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/windowing/SlidingWindow.scala.html">
+          SlidingWindow
+        </a>
+      </td>
+      <td>
+        SlidingWindow.scala
+      </td>
+      <td>
+        144
+      </td>
+      <td>
+        3
+      </td>
+      <td>
+        87
+      </td>
+      <td>
+        75
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 86%"></span>
+        </div>
+      </td>
+      <td>
+        86.21
+        %
+      </td>
+      <td>
+        14
+      </td>
+      <td>
+        11
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 79%"></span>
+        </div>
+      </td>
+      <td>
+        78.57
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/filters/SomaticGenotypeFilter.scala.html">
+          SomaticAlternateReadDepthFilter
+        </a>
+      </td>
+      <td>
+        SomaticGenotypeFilter.scala
+      </td>
+      <td>
+        111
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        7
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 14%"></span>
+        </div>
+      </td>
+      <td>
+        14.29
+        %
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/filters/SomaticGenotypeFilter.scala.html">
+          SomaticAverageBaseQualityFilter
+        </a>
+      </td>
+      <td>
+        SomaticGenotypeFilter.scala
+      </td>
+      <td>
+        209
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        8
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/filters/SomaticGenotypeFilter.scala.html">
+          SomaticAverageMappingQualityFilter
+        </a>
+      </td>
+      <td>
+        SomaticGenotypeFilter.scala
+      </td>
+      <td>
+        184
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        8
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/filters/SomaticGenotypeFilter.scala.html">
+          SomaticGenotypeFilter
+        </a>
+      </td>
+      <td>
+        SomaticGenotypeFilter.scala
+      </td>
+      <td>
+        302
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        44
+      </td>
+      <td>
+        10
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 23%"></span>
+        </div>
+      </td>
+      <td>
+        22.73
+        %
+      </td>
+      <td>
+        4
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 25%"></span>
+        </div>
+      </td>
+      <td>
+        25.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/filters/SomaticGenotypeFilter.scala.html">
+          SomaticGenotypeFilterArguments
+        </a>
+      </td>
+      <td>
+        SomaticGenotypeFilter.scala
+      </td>
+      <td>
+        251
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        10
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/filters/SomaticGenotypeFilter.scala.html">
+          SomaticLogOddsFilter
+        </a>
+      </td>
+      <td>
+        SomaticGenotypeFilter.scala
+      </td>
+      <td>
+        159
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        7
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/filters/SomaticGenotypeFilter.scala.html">
+          SomaticMinimumLikelihoodFilter
+        </a>
+      </td>
+      <td>
+        SomaticGenotypeFilter.scala
+      </td>
+      <td>
+        50
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        7
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 14%"></span>
+        </div>
+      </td>
+      <td>
+        14.29
+        %
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/commands/SomaticPoCIndelCaller.scala.html">
+          SomaticPoCIndelCaller
+        </a>
+      </td>
+      <td>
+        SomaticPoCIndelCaller.scala
+      </td>
+      <td>
+        131
+      </td>
+      <td>
+        3
+      </td>
+      <td>
+        64
+      </td>
+      <td>
+        34
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 53%"></span>
+        </div>
+      </td>
+      <td>
+        53.13
+        %
+      </td>
+      <td>
+        4
+      </td>
+      <td>
+        4
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/filters/SomaticGenotypeFilter.scala.html">
+          SomaticReadDepthFilter
+        </a>
+      </td>
+      <td>
+        SomaticGenotypeFilter.scala
+      </td>
+      <td>
+        86
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        11
+      </td>
+      <td>
+        5
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 45%"></span>
+        </div>
+      </td>
+      <td>
+        45.45
+        %
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/commands/SomaticStandardCaller.scala.html">
+          SomaticStandardCaller
+        </a>
+      </td>
+      <td>
+        SomaticStandardCaller.scala
+      </td>
+      <td>
+        263
+      </td>
+      <td>
+        4
+      </td>
+      <td>
+        137
+      </td>
+      <td>
+        51
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 37%"></span>
+        </div>
+      </td>
+      <td>
+        37.23
+        %
+      </td>
+      <td>
+        6
+      </td>
+      <td>
+        4
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 67%"></span>
+        </div>
+      </td>
+      <td>
+        66.67
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/filters/SomaticGenotypeFilter.scala.html">
+          SomaticVAFFilter
+        </a>
+      </td>
+      <td>
+        SomaticGenotypeFilter.scala
+      </td>
+      <td>
+        135
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        7
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 14%"></span>
+        </div>
+      </td>
+      <td>
+        14.29
+        %
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/Common.scala.html">
+          TumorNormalReads
+        </a>
+      </td>
+      <td>
+        Common.scala
+      </td>
+      <td>
+        81
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 0%"></span>
+        </div>
+      </td>
+      <td>
+        0.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/reads/UnmappedRead.scala.html">
+          UnmappedRead
+        </a>
+      </td>
+      <td>
+        UnmappedRead.scala
+      </td>
+      <td>
+        35
+      </td>
+      <td>
+        1
+      </td>
+      <td>
+        3
+      </td>
+      <td>
+        3
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+    </tr><tr>
+      <td>
+        <a href="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/reads/UnmappedReadSerializer.scala.html">
+          UnmappedReadSerializer
+        </a>
+      </td>
+      <td>
+        UnmappedReadSerializer.scala
+      </td>
+      <td>
+        57
+      </td>
+      <td>
+        2
+      </td>
+      <td>
+        35
+      </td>
+      <td>
+        35
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        0
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+    </tr>
+      </tbody>
+    </table>
+        </div>
+      </div>
+    </body>
+    </html>
