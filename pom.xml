@@ -104,16 +104,8 @@
               <goal>compile</goal>
             </goals>
             <configuration>
-              <compilerPlugins>
-                <compilerPlugin>
-                  <groupId>org.scoverage</groupId>
-                  <artifactId>scalac-scoverage-plugin_${scala.version.prefix}</artifactId>
-                  <version>${scoverage-plugin.version}</version>
-                </compilerPlugin>
-              </compilerPlugins>
               <args>
                 <arg>-g:vars</arg>
-                <arg>-P:scoverage:dataDir:${project.build.directory}</arg>
               </args>
             </configuration>
           </execution>
@@ -202,8 +194,6 @@
           </execution>
         </executions>
       </plugin>
-
-      <!-- scoverage: test coverage tool -->
       <plugin>
         <groupId>org.scoverage</groupId>
         <artifactId>maven-scoverage-plugin</artifactId>
@@ -311,4 +301,51 @@
       <version>${scoverage-plugin.version}</version>
     </dependency>
   </dependencies>
+
+  <profiles>
+    <!-- Only build coverage in when we want to run coverage -->
+    <profile>
+      <id>coverage</id>
+
+      <!-- Activate when being built by travis CI. -->
+      <activation>
+        <property>
+          <name>env.TRAVIS</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>net.alchim31.maven</groupId>
+            <artifactId>scala-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>scala-compile-first</id>
+                <phase>process-resources</phase>
+                <goals>
+                  <goal>compile</goal>
+                </goals>
+                <configuration>
+                  <args>
+                    <arg>-g:vars</arg>
+                    <arg>-P:scoverage:dataDir:${project.build.directory}</arg>
+                  </args>
+                </configuration>
+              </execution>
+            </executions>
+            <configuration>
+              <compilerPlugins>
+                <compilerPlugin>
+                  <groupId>org.scoverage</groupId>
+                  <artifactId>scalac-scoverage-plugin_${scala.version.prefix}</artifactId>
+                  <version>${scoverage-plugin.version}</version>
+                </compilerPlugin>
+              </compilerPlugins>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>
