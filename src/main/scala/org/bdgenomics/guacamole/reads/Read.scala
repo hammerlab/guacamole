@@ -22,14 +22,14 @@ import htsjdk.samtools._
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.io.LongWritable
 import org.apache.spark.rdd.RDD
-import org.apache.spark.{Logging, SparkContext}
+import org.apache.spark.{ Logging, SparkContext }
 import org.bdgenomics.adam.models.SequenceDictionary
-import org.bdgenomics.adam.projections.{AlignmentRecordField, Projection}
-import org.bdgenomics.adam.rdd.{ADAMContext, ADAMSpecificRecordSequenceDictionaryRDDAggregator}
+import org.bdgenomics.adam.projections.{ AlignmentRecordField, Projection }
+import org.bdgenomics.adam.rdd.{ ADAMContext, ADAMSpecificRecordSequenceDictionaryRDDAggregator }
 import org.bdgenomics.formats.avro.AlignmentRecord
 import org.bdgenomics.guacamole.Bases
 import org.seqdoop.hadoop_bam.util.SAMHeaderReader
-import org.seqdoop.hadoop_bam.{AnySAMInputFormat, SAMRecordWritable}
+import org.seqdoop.hadoop_bam.{ AnySAMInputFormat, SAMRecordWritable }
 
 import scala.collection.JavaConversions
 import scala.collection.mutable.ArrayBuffer
@@ -321,7 +321,6 @@ object Read extends Logging {
     (reads, sequenceDictionary)
   }
 
-
   /** Returns an RDD of Reads and SequenceDictionary from reads in ADAM format **/
   def loadReadRDDAndSequenceDictionaryFromADAM(filename: String,
                                                sc: SparkContext,
@@ -383,7 +382,7 @@ object Read extends Logging {
         isMateMapped = alignmentRecord.getMateMapped,
         mateReferenceContig = if (alignmentRecord.getMateMapped) Some(alignmentRecord.getMateContig.getContigName.toString.intern()) else None,
         mateStart = if (alignmentRecord.getMateMapped) Some(alignmentRecord.getMateAlignmentStart) else None,
-        isMatePositiveStrand =  if (alignmentRecord.getMateMapped) !alignmentRecord.getMateNegativeStrand else false
+        isMatePositiveStrand = if (alignmentRecord.getMateMapped) !alignmentRecord.getMateNegativeStrand else false
       ))
     } else {
       None
@@ -399,7 +398,7 @@ object Read extends Logging {
         baseQualities = baseQualities,
         isDuplicate = alignmentRecord.getDuplicateRead,
         sampleName = alignmentRecord.getRecordGroupSample.toString.intern(),
-        referenceContig =  alignmentRecord.getContig.getContigName.toString.intern(),
+        referenceContig = alignmentRecord.getContig.getContigName.toString.intern(),
         alignmentQuality = alignmentRecord.getMapq,
         start = alignmentRecord.getStart,
         cigar = TextCigarCodec.getSingleton.decode(alignmentRecord.getCigar.toString),

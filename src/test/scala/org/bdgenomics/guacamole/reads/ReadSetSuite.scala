@@ -27,8 +27,6 @@ import org.bdgenomics.adam.rdd.ADAMContext._
 
 class ReadSetSuite extends TestUtil.SparkFunSuite with Matchers {
 
-
-
   sparkTest("load and test filters") {
     val allReads = TestUtil.loadReads(sc, "mdtagissue.sam")
     allReads.reads.count() should be(8)
@@ -53,11 +51,18 @@ class ReadSetSuite extends TestUtil.SparkFunSuite with Matchers {
     allReads.count() should be(8)
     val collectedReads = allReads.collect()
 
-//    The follow test does not pass due to TLEN or InferredInsertSize not set on ADAMRecords
-//    See https://github.com/bigdatagenomics/bdg-formats/issues/37
-//    origReads.zip(collectedReads).foreach( {
-//      case (guacRead, adamRead) => guacRead should be(adamRead)
-//    })
+    //    The follow test does not pass due to TLEN or InferredInsertSize not set on ADAMRecords
+    //    See https://github.com/bigdatagenomics/bdg-formats/issues/37
+    //    origReads.zip(collectedReads).foreach( {
+    //      case (guacRead, adamRead) => guacRead should be(adamRead)
+    //    })
+
+    // Filter to cases where they will match
+    val noInsertSizeReads = origReads.zip(collectedReads).filter(
+      reads => reads._1.matePropertiesOpt.isEmpty || reads._1.matePropertiesOpt.exists(mateProp => !mateProp.inferredInsertSize.isDefined))
+    noInsertSizeReads.foreach({
+      case (guacRead, adamRead) => guacRead should be(adamRead)
+    })
 
     val (filteredReads, _) = Read.loadReadRDDAndSequenceDictionary(adamOut, sc, token = 0, Read.InputFilters(mapped = true, nonDuplicate = true))
     filteredReads.count() should be(4)
