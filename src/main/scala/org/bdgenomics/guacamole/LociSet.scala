@@ -171,7 +171,7 @@ object LociSet {
     def isEmpty(): Boolean = map.isEmpty
 
     /** Iterator through loci in this set, sorted. */
-    def individually(): Iterator[Long] = map.lociIndividually()
+    def iterator(): SingleContig.Iterator = new SingleContig.Iterator(this)
 
     /** Returns the union of this set with another. Both must be on the same contig. */
     def union(other: SingleContig): SingleContig = SingleContig(map.union(other.map))
@@ -183,6 +183,95 @@ object LociSet {
 
     /** String representation, truncated to maxLength characters. */
     def truncatedString(maxLength: Int = 100): String = map.truncatedString(maxLength, false)
+  }
+  object SingleContig {
+
+    /**
+     * An iterator over loci on a single contig. Loci from this iterator are sorted (monotonically increasing).
+     *
+     * This can be used as a plain scala Iterator[Long], but also supports extra functionality for quickly skipping
+     * ahead past a given locus.
+     *
+     * @param loci loci to iterate over
+     */
+    class Iterator(loci: SingleContig) extends scala.Iterator[Long] {
+      private var ranges = loci.ranges.iterator
+
+      /** The range for the *next* locus to be returned. */
+      var headRangeOption: Option[SimpleRange] = if (ranges.isEmpty) None else Some(ranges.next())
+
+      /** The index in the range for the next element to be returned. */
+      var headIndex = 0L
+
+      /** true if calling next() will succeed. */
+      def hasNext() = headRangeOption.nonEmpty
+
+      /**
+       * Advance the iterator and return the current head.
+       *
+       * Throws NoSuchElementException if the iterator is already at the end.
+       */
+      def next(): Long = {
+        if (!hasNext) {
+          throw new NoSuchElementException("next on empty Loci iterator")
+        }
+        val nextLocus: Long = headOption.get
+
+        // Advance
+        headIndex += 1
+        if (headIndex == headRangeOption.get.length) {
+          nextRange()
+        }
+        nextLocus
+      }
+
+      /**
+       * Skip ahead to the first locus in the iterator that is at or past the given locus.
+       *
+       * After calling this, a subsequent call to next() will return the first element in the iterator that is >= the
+       * given locus. If there is no such element, then the iterator will be empty after calling this method.
+       *
+       */
+      def skipTo(locus: Long): Unit = {
+        // Skip entire ranges until we hit one whose end is past the target locus.
+        while (headRangeOption.exists(_.end <= locus)) {
+          nextRange()
+        }
+        // If we're not at the end of the iterator and the current head range includes the target locus, set our index
+        // so that our next locus is the target.
+        headRangeOption match {
+          case Some(range) if (locus >= range.start && locus < range.end) => {
+            headIndex = locus - range.start
+          }
+          case _ => {}
+        }
+      }
+
+      /**
+       * Skip ahead to the end of the iterator. After calling this, the iterator will be empty.
+       */
+      def skipToEnd(): Unit = {
+        ranges = Iterator.empty
+        headRangeOption = None
+      }
+
+      /**
+       * The next locus in the iterator, i.e. what the next call to next() will return.
+       *
+       * Some(locus) if there is a next element, None otherwise.
+       */
+      def headOption(): Option[Long] =
+        headRangeOption.map(_.start + headIndex)
+
+      /**
+       * Advance past all loci in the current head range. Return the next range if one exists.
+       */
+      def nextRange(): Option[SimpleRange] = {
+        headIndex = 0
+        headRangeOption = if (ranges.hasNext) Some(ranges.next()) else None
+        headRangeOption
+      }
+    }
   }
 }
 
