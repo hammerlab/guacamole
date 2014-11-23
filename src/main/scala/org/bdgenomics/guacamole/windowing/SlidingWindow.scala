@@ -19,7 +19,8 @@
 package org.bdgenomics.guacamole.windowing
 
 import org.apache.spark.Logging
-import org.bdgenomics.guacamole.HasReferenceRegion
+import org.bdgenomics.guacamole.DistributedUtil.PerSample
+import org.bdgenomics.guacamole.{ LociSet, HasReferenceRegion }
 
 import scala.collection.mutable
 
@@ -75,17 +76,6 @@ case class SlidingWindow[Region <: HasReferenceRegion](halfWindowSize: Long,
   }
 
   /**
-   * The highest base covered by the window at [[currentLocus]]
-   *
-   * @return The greater the end of the window (currentLocus + halfWindowSize) or end of the last read in
-   *         [[currentRegions]]
-   */
-  def endOfRange(): Option[Long] = {
-    val lastReadEnd = currentRegionsPriorityQueue.lastOption.map(_.end)
-    lastReadEnd.map(math.max(_, currentLocus + halfWindowSize))
-  }
-
-  /**
    * Advance to the specified locus, which must be greater than the current locus. After calling this, the
    * [[currentRegions]] method will give the overlapping regions at the new locus.
    *
@@ -93,7 +83,7 @@ case class SlidingWindow[Region <: HasReferenceRegion](halfWindowSize: Long,
    * @return The *new regions* that were added as a result of this call. Note that this is not the full set of regions
    *         in the window: you must examine [[currentRegions]] for that.
    */
-  private[windowing] def setCurrentLocus(locus: Long): Seq[Region] = {
+  def setCurrentLocus(locus: Long): Seq[Region] = {
     assume(locus >= currentLocus, "Pileup window can only move forward in locus")
     currentLocus = locus
 
@@ -115,32 +105,83 @@ case class SlidingWindow[Region <: HasReferenceRegion](halfWindowSize: Long,
       newRegionsBuilder.result
     }
     currentRegionsPriorityQueue.enqueue(newRegions: _*)
-    //    currentRegionsPriorityQueue.foreach(region =>
-    //      assert(region.overlapsLocus(locus, halfWindowSize))   // Correctness check.
-    //    )
     newRegions // We return the newly added regions.
   }
 
   /**
-   * Drop regions that do not overlap until this locus
+   * Find the next locus for which calling setCurrentLocus(locus) would result in a non-empty set of regions in
+   * currentRegions.
    *
-   * @param locus locus to drop until
+   * @return Some(locus) if such a locus exists, otherwise None
    */
-  private[windowing] def dropUntil(locus: Long) = {
-    sortedRegions.dropWhile(_.start < locus - halfWindowSize)
+  def nextLocusWithRegions(): Option[Long] = {
+    if (currentRegionsPriorityQueue.exists(_.overlapsLocus(currentLocus + 1, halfWindowSize))) {
+      Some(currentLocus + 1)
+    } else if (sortedRegions.hasNext) {
+      val result = sortedRegions.head.start - halfWindowSize
+      assert(result > currentLocus)
+      Some(result)
+    } else {
+      None
+    }
   }
-
+}
+object SlidingWindow {
   /**
-   * The start locus of the next region in the (sorted) iterator.
+   * Advance one or more sliding windows to the next locus in an iterator, optionally skipping loci for which no windows
+   * have regions.
+   *
+   * If this function returns Some(locus), then all the windows are now positioned at locus. If it returns None, then
+   * there are no more loci to process (we have reached the end of the loci iterator), and the positions of the sliding
+   * windows are undefined.
+   *
+   * This function takes an iterator of loci instead of a single locus to enable it to efficiently skip entire ranges of
+   * loci when skipEmpty=true.
+   *
+   * @param windows SlidingWindow instances to be advanced
+   * @param loci iterator over loci. This function will advance the iterator at least once, and possibly many times
+   *             if skipEmpty is true.
+   * @param skipEmpty whether to skip over loci for which no window has any regions
+   * @return Some(locus) if there was another locus left to process, otherwise None
    */
-  private[windowing] def nextStartLocus(): Option[Long] = {
-    if (sortedRegions.hasNext) Some(sortedRegions.head.start) else None
-  }
+  def advanceMultipleWindows[Region <: HasReferenceRegion](windows: PerSample[SlidingWindow[Region]],
+                                                           loci: LociSet.SingleContig.Iterator,
+                                                           skipEmpty: Boolean = true): Option[Long] = {
+    if (skipEmpty) {
+      while (loci.hasNext) {
+        val nextNonEmptyLocus = windows.flatMap(_.nextLocusWithRegions).reduceOption(_ min _)
+        if (nextNonEmptyLocus.isEmpty) {
+          // Our windows are out of regions. We're done. Skip the loci iterator forward to the end, so the loop
+          // terminates.
+          loci.skipToEnd()
+        } else if (nextNonEmptyLocus.get <= loci.headOption.get) {
+          // The next locus with regions is at or before the next locus in the iterator.
+          // We advance to the next locus in the iterator, and check if the resulting windows are all empty.
+          val nextLocus = loci.next()
+          windows.foreach(_.setCurrentLocus(nextLocus))
 
-  /**
-   * The next element in queue not currently in the window
-   */
-  private[windowing] def nextElement: Option[Region] = {
-    if (sortedRegions.hasNext) Some(sortedRegions.head) else None
+          // Windows may still be empty here, because the next locus with regions may have been before the next locus,
+          // and now we just fast-forwarded past the regions into an empty area of the genome.
+          // If any window is nonempty, we're done. If not, we continue looping.
+          if (windows.exists(_.currentRegions.nonEmpty)) {
+            return Some(nextLocus)
+          }
+        } else {
+          // The next locus with regions is beyond the next locus in the iterator.
+          // We skip the iterator forward so in the next iteration of the loop, we'll be at the locus with regions.
+          loci.skipTo(nextNonEmptyLocus.get)
+        }
+      }
+      // Out of loci
+      None
+    } else if (loci.hasNext) {
+      // Not skipping empty, and we have another locus in the iterator to go to.
+      val nextLocus = loci.next()
+      windows.foreach(_.setCurrentLocus(nextLocus))
+      Some(nextLocus)
+    } else {
+      // We are out of loci.
+      None
+    }
   }
 }
