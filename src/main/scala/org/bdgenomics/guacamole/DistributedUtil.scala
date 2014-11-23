@@ -36,10 +36,10 @@ import scala.reflect.ClassTag
 
 object DistributedUtil extends Logging {
   trait Arguments extends Base with Loci {
-    @Opt(name = "-parallelism", usage = "Num variant calling tasks. Set to 0 (default) to use the number of Spark partitions.")
+    @Opt(name = "--parallelism", usage = "Num variant calling tasks. Set to 0 (default) to use the number of Spark partitions.")
     var parallelism: Int = 0
 
-    @Opt(name = "-partition-accuracy",
+    @Opt(name = "--partition-accuracy",
       usage = "Num micro partitions to use per task in loci partitioning. Set to 0 to partition loci uniformly. Default: 250.")
     var partitioningAccuracy: Int = 250
   }

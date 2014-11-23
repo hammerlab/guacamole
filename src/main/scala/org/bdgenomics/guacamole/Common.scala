@@ -47,62 +47,62 @@ object Common extends Logging {
   object Arguments {
     /** Common argument(s) we always want.*/
     trait Base extends Args4jBase with ParquetArgs {
-      @Opt(name = "-debug", usage = "If set, prints a higher level of debug output.")
+      @Opt(name = "--debug", usage = "If set, prints a higher level of debug output.")
       var debug = false
     }
 
     /** Argument for accepting a set of loci. */
     trait Loci extends Base {
-      @Opt(name = "-loci", usage = "Loci at which to call variants. Either 'all' or contig:start-end,contig:start-end,...", forbids = Array("-loci-from-file"))
+      @Opt(name = "--loci", usage = "Loci at which to call variants. Either 'all' or contig:start-end,contig:start-end,...", forbids = Array("-loci-from-file"))
       var loci: String = ""
 
-      @Opt(name = "-loci-from-file", usage = "Path to file giving loci at which to call variants.", forbids = Array("-loci"))
+      @Opt(name = "--loci-from-file", usage = "Path to file giving loci at which to call variants.", forbids = Array("-loci"))
       var lociFromFile: String = ""
     }
 
     /** Argument for using / not using sequence dictionaries to get contigs and lengths. */
     trait NoSequenceDictionary extends Base {
-      @Opt(name = "-no-sequence-dictionary",
+      @Opt(name = "--no-sequence-dictionary",
         usage = "If set, get contigs and lengths directly from reads instead of from sequence dictionary.")
       var noSequenceDictionary: Boolean = false
     }
 
     /** Argument for accepting a single set of reads (for non-somatic variant calling). */
     trait Reads extends Base with NoSequenceDictionary {
-      @Opt(name = "-reads", metaVar = "X", required = true, usage = "Aligned reads")
+      @Opt(name = "--reads", metaVar = "X", required = true, usage = "Aligned reads")
       var reads: String = ""
     }
 
     /** Arguments for accepting two sets of reads (tumor + normal). */
     trait TumorNormalReads extends Base with NoSequenceDictionary {
-      @Opt(name = "-normal-reads", metaVar = "X", required = true, usage = "Aligned reads: normal")
+      @Opt(name = "--normal-reads", metaVar = "X", required = true, usage = "Aligned reads: normal")
       var normalReads: String = ""
 
-      @Opt(name = "-tumor-reads", metaVar = "X", required = true, usage = "Aligned reads: tumor")
+      @Opt(name = "--tumor-reads", metaVar = "X", required = true, usage = "Aligned reads: tumor")
       var tumorReads: String = ""
     }
 
     /** Argument for writing output genotypes. */
     trait Output extends Base {
-      @Opt(name = "-out", metaVar = "VARIANTS_OUT", required = false,
+      @Opt(name = "--out", metaVar = "VARIANTS_OUT", required = false,
         usage = "Variant output path. If not specified, print to screen.")
       var variantOutput: String = ""
 
-      @Opt(name = "-out-chunks", metaVar = "X", required = false,
+      @Opt(name = "--out-chunks", metaVar = "X", required = false,
         usage = "When writing out to json format, number of chunks to coalesce the genotypes RDD into.")
       var outChunks: Int = 1
 
-      @Opt(name = "-max-genotypes", metaVar = "X", required = false,
+      @Opt(name = "--max-genotypes", metaVar = "X", required = false,
         usage = "Maximum number of genotypes to output. 0 (default) means output all genotypes.")
       var maxGenotypes: Int = 0
     }
 
     /** Arguments for accepting a reference genome. */
     trait Reference extends Base {
-      @Opt(required = false, name = "-reference", usage = "ADAM or FASTA reference genome data")
+      @Opt(required = false, name = "--reference", usage = "ADAM or FASTA reference genome data")
       var referenceInput: String = ""
 
-      @Opt(required = false, name = "-fragment_length",
+      @Opt(required = false, name = "--fragment-length",
         usage = "Sets maximum fragment length. Default value is 10,000. Values greater than 1e9 should be avoided.")
       var fragmentLength: Long = 10000L
     }
