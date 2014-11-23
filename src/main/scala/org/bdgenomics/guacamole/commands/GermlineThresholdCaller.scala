@@ -18,19 +18,17 @@
 
 package org.bdgenomics.guacamole.commands
 
+import org.apache.spark.SparkContext
 import org.bdgenomics.formats.avro.{ Contig, Variant, GenotypeAllele, Genotype }
 import org.bdgenomics.formats.avro.GenotypeAllele.{ NoCall, Ref, Alt, OtherAlt }
-import org.bdgenomics.guacamole.Concordance.ConcordanceArgs
-import org.bdgenomics.guacamole._
+import org.bdgenomics.guacamole.{ SparkCommand, Bases, Concordance, DistributedUtil, DelayedMessages, Common }
+import org.bdgenomics.guacamole.Common.Arguments.GermlineCallerArgs
 import org.apache.spark.SparkContext._
 import org.bdgenomics.guacamole.reads.Read
 import org.bdgenomics.guacamole.variants.Allele
 import scala.collection.JavaConversions
 import org.kohsuke.args4j.Option
-import org.bdgenomics.adam.cli.Args4j
-import org.bdgenomics.guacamole.Common.Arguments._
 import org.apache.spark.rdd.RDD
-import org.apache.spark.Logging
 import org.bdgenomics.guacamole.pileup.Pileup
 
 /**
@@ -39,11 +37,9 @@ import org.bdgenomics.guacamole.pileup.Pileup
  * Calls variants when the percent of reads supporting a variant at a locus exceeds a threshold.
  *
  */
-object GermlineThresholdCaller extends Command with Serializable with Logging {
-  override val name = "germline-threshold"
-  override val description = "call variants by thresholding read counts (toy example)"
+object GermlineThreshold {
 
-  private class Arguments extends Base with Output with Reads with ConcordanceArgs with DistributedUtil.Arguments {
+  protected class Arguments extends GermlineCallerArgs {
     @Option(name = "-threshold", metaVar = "X", usage = "Make a call if at least X% of reads support it. Default: 8")
     var threshold: Int = 8
 
@@ -54,122 +50,126 @@ object GermlineThresholdCaller extends Command with Serializable with Logging {
     var emitNoCall: Boolean = false
   }
 
-  override def run(rawArgs: Array[String]): Unit = {
-    val args = Args4j[Arguments](rawArgs)
-    val sc = Common.createSparkContext(appName = Some(name))
+  object Caller extends SparkCommand[Arguments] {
 
-    val readSet = Common.loadReadsFromArguments(args, sc, Read.InputFilters(mapped = true, nonDuplicate = true))
+    override val name = "germline-threshold"
+    override val description = "call variants by thresholding read counts (toy example)"
 
-    readSet.mappedReads.persist()
-    Common.progress("Loaded %,d mapped non-duplicate MdTag-containing reads into %,d partitions.".format(
-      readSet.mappedReads.count, readSet.mappedReads.partitions.length))
+    override def run(args: Arguments, sc: SparkContext): Unit = {
 
-    val loci = Common.loci(args, readSet)
-    val (threshold, emitRef, emitNoCall) = (args.threshold, args.emitRef, args.emitNoCall)
-    val numGenotypes = sc.accumulator(0L)
-    DelayedMessages.default.say { () => "Called %,d genotypes.".format(numGenotypes.value) }
-    val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(args, loci, readSet.mappedReads)
-    val genotypes: RDD[Genotype] = DistributedUtil.pileupFlatMap[Genotype](
-      readSet.mappedReads,
-      lociPartitions,
-      true, // skip empty pileups
-      pileup => {
-        val genotypes = callVariantsAtLocus(pileup, threshold, emitRef, emitNoCall)
-        numGenotypes += genotypes.length
-        genotypes.iterator
-      })
-    readSet.mappedReads.unpersist()
-    Common.writeVariantsFromArguments(args, genotypes)
-    if (args.truthGenotypesFile != "")
-      Concordance.printGenotypeConcordance(args, genotypes, sc)
+      val readSet = Common.loadReadsFromArguments(args, sc, Read.InputFilters(mapped = true, nonDuplicate = true))
 
-    DelayedMessages.default.print()
-  }
+      readSet.mappedReads.persist()
+      Common.progress("Loaded %,d mapped non-duplicate MdTag-containing reads into %,d partitions.".format(
+        readSet.mappedReads.count, readSet.mappedReads.partitions.length))
 
-  def callVariantsAtLocus(
-    pileup: Pileup,
-    thresholdPercent: Int,
-    emitRef: Boolean = true,
-    emitNoCall: Boolean = true): Seq[Genotype] = {
+      val loci = Common.loci(args, readSet)
+      val (threshold, emitRef, emitNoCall) = (args.threshold, args.emitRef, args.emitNoCall)
+      val numGenotypes = sc.accumulator(0L)
+      DelayedMessages.default.say { () => "Called %,d genotypes.".format(numGenotypes.value) }
+      val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(args, loci, readSet.mappedReads)
+      val genotypes: RDD[Genotype] = DistributedUtil.pileupFlatMap[Genotype](
+        readSet.mappedReads,
+        lociPartitions,
+        true, // skip empty pileups
+        pileup => {
+          val genotypes = callVariantsAtLocus(pileup, threshold, emitRef, emitNoCall)
+          numGenotypes += genotypes.length
+          genotypes.iterator
+        })
+      readSet.mappedReads.unpersist()
+      Common.writeVariantsFromArguments(args, genotypes)
+      if (args.truthGenotypesFile != "")
+        Concordance.printGenotypeConcordance(args, genotypes, sc)
 
-    // For now, we skip loci that have no reads mapped. We may instead want to emit NoCall in this case.
-    if (pileup.elements.isEmpty)
-      return Seq.empty
+      DelayedMessages.default.print()
+    }
 
-    pileup.bySample.toSeq.flatMap({
-      case (sampleName, samplePileup) =>
-        val totalReads = samplePileup.elements.length
-        val counts = samplePileup.elements.map(_.allele).groupBy(x => x).mapValues(_.length)
-        val sortedAlleles = counts.toList.filter(_._2 * 100 / totalReads > thresholdPercent).sortBy(-1 * _._2)
+    def callVariantsAtLocus(
+      pileup: Pileup,
+      thresholdPercent: Int,
+      emitRef: Boolean = true,
+      emitNoCall: Boolean = true): Seq[Genotype] = {
 
-        def variant(allele: Allele, allelesList: List[GenotypeAllele]): Genotype = {
-          Genotype.newBuilder
-            .setAlleles(JavaConversions.seqAsJavaList(allelesList))
-            .setSampleId(sampleName.toCharArray)
-            .setVariant(Variant.newBuilder
-              .setStart(pileup.locus)
-              .setReferenceAllele(Bases.basesToString(allele.refBases))
-              .setAlternateAllele(Bases.basesToString(allele.altBases))
-              .setContig(Contig.newBuilder.setContigName(pileup.referenceName).build)
-              .build)
-            .build
-        }
+      // For now, we skip loci that have no reads mapped. We may instead want to emit NoCall in this case.
+      if (pileup.elements.isEmpty)
+        return Seq.empty
 
-        sortedAlleles match {
-          /* If no alleles are above our threshold, we emit a NoCall variant with the reference allele
+      pileup.bySample.toSeq.flatMap({
+        case (sampleName, samplePileup) =>
+          val totalReads = samplePileup.elements.length
+          val counts = samplePileup.elements.map(_.allele).groupBy(x => x).mapValues(_.length)
+          val sortedAlleles = counts.toList.filter(_._2 * 100 / totalReads > thresholdPercent).sortBy(-1 * _._2)
+
+          def variant(allele: Allele, allelesList: List[GenotypeAllele]): Genotype = {
+            Genotype.newBuilder
+              .setAlleles(JavaConversions.seqAsJavaList(allelesList))
+              .setSampleId(sampleName.toCharArray)
+              .setVariant(Variant.newBuilder
+                .setStart(pileup.locus)
+                .setReferenceAllele(Bases.basesToString(allele.refBases))
+                .setAlternateAllele(Bases.basesToString(allele.altBases))
+                .setContig(Contig.newBuilder.setContigName(pileup.referenceName).build)
+                .build)
+              .build
+          }
+
+          sortedAlleles match {
+            /* If no alleles are above our threshold, we emit a NoCall variant with the reference allele
            * as the variant allele.
            */
-          case Nil =>
-            if (emitNoCall)
-              variant(
-                Allele(Seq(pileup.referenceBase), Bases.ALT),
-                NoCall :: NoCall :: Nil
-              ) :: Nil
-            else
-              Nil
+            case Nil =>
+              if (emitNoCall)
+                variant(
+                  Allele(Seq(pileup.referenceBase), Bases.ALT),
+                  NoCall :: NoCall :: Nil
+                ) :: Nil
+              else
+                Nil
 
-          // Hom Ref.
-          case (allele, count) :: Nil if !allele.isVariant =>
-            if (emitRef) {
-              variant(
-                Allele(Seq(pileup.referenceBase), Bases.ALT),
-                Ref :: Ref :: Nil
-              ) :: Nil
-            } else {
-              Nil
-            }
+            // Hom Ref.
+            case (allele, count) :: Nil if !allele.isVariant =>
+              if (emitRef) {
+                variant(
+                  Allele(Seq(pileup.referenceBase), Bases.ALT),
+                  Ref :: Ref :: Nil
+                ) :: Nil
+              } else {
+                Nil
+              }
 
-          // Hom alt.
-          case (allele: Allele, count) :: Nil =>
-            variant(allele, Alt :: Alt :: Nil) :: Nil
+            // Hom alt.
+            case (allele: Allele, count) :: Nil =>
+              variant(allele, Alt :: Alt :: Nil) :: Nil
 
-          // Het alt.
-          case (allele1, count1) :: (allele2, count2) :: rest if allele1.isVariant ^ allele2.isVariant =>
-            variant(if (allele1.isVariant) allele1 else allele2, Ref :: Alt :: Nil) :: Nil
+            // Het alt.
+            case (allele1, count1) :: (allele2, count2) :: rest if allele1.isVariant ^ allele2.isVariant =>
+              variant(if (allele1.isVariant) allele1 else allele2, Ref :: Alt :: Nil) :: Nil
 
-          // Compound alt
-          case (allele1, count1) :: (allele2, count2) :: rest if allele1.isVariant && allele2.isVariant =>
-            variant(allele1, Alt :: OtherAlt :: Nil) :: variant(allele2, Alt :: OtherAlt :: Nil) :: Nil
+            // Compound alt
+            case (allele1, count1) :: (allele2, count2) :: rest if allele1.isVariant && allele2.isVariant =>
+              variant(allele1, Alt :: OtherAlt :: Nil) :: variant(allele2, Alt :: OtherAlt :: Nil) :: Nil
 
-          // Multiple reference bases
-          case (allele1, count1) :: (allele2, count2) :: rest => {
-            if (allele1.refBases == Seq(Bases.N) || allele2.refBases == Seq(Bases.N)) {
-              log.warn("Reference base N found and ignored in sample = %s at (chr, pos) = (%s, %d)"
-                .format(sampleName, samplePileup.referenceName, samplePileup.locus))
-              // Find the non-N reference
-              val properReference = if (allele1.refBases == Seq(Bases.N)) allele2.refBases else allele1.refBases
-              variant(
-                Allele(properReference, Bases.ALT),
-                Ref :: Ref :: Nil
-              ) :: Nil
-            } else {
-              throw new IllegalArgumentException(
-                "Multiple reference bases found in sample = %s at (chr, pos) = (%s, %d)"
-                  .format(sampleName, samplePileup.referenceName, samplePileup.locus)
-              )
+            // Multiple reference bases
+            case (allele1, count1) :: (allele2, count2) :: rest => {
+              if (allele1.refBases == Seq(Bases.N) || allele2.refBases == Seq(Bases.N)) {
+                log.warn("Reference base N found and ignored in sample = %s at (chr, pos) = (%s, %d)"
+                  .format(sampleName, samplePileup.referenceName, samplePileup.locus))
+                // Find the non-N reference
+                val properReference = if (allele1.refBases == Seq(Bases.N)) allele2.refBases else allele1.refBases
+                variant(
+                  Allele(properReference, Bases.ALT),
+                  Ref :: Ref :: Nil
+                ) :: Nil
+              } else {
+                throw new IllegalArgumentException(
+                  "Multiple reference bases found in sample = %s at (chr, pos) = (%s, %d)"
+                    .format(sampleName, samplePileup.referenceName, samplePileup.locus)
+                )
+              }
             }
           }
-        }
-    })
+      })
+    }
   }
 }
