@@ -134,22 +134,22 @@ object PileupFilter {
 
   trait PileupFilterArguments extends Base {
 
-    @Option(name = "-minMapQ", usage = "Minimum read mapping quality for a read (Phred-scaled). (default: 1)")
+    @Option(name = "--min-mapq", usage = "Minimum read mapping quality for a read (Phred-scaled). (default: 1)")
     var minAlignmentQuality: Int = 1
 
-    @Option(name = "-maxMappingComplexity", usage = "Maximum percent of reads that can be mapped with low quality (indicative of a complex region")
+    @Option(name = "--max-mapping-complexity", usage = "Maximum percent of reads that can be mapped with low quality (indicative of a complex region")
     var maxMappingComplexity: Int = 20
 
-    @Option(name = "-minAlignmentForComplexity", usage = "Minimum read mapping quality for a read (Phred-scaled) that counts towards poorly mapped for complexity (default: 1)")
+    @Option(name = "--min-alignment-for-complexity", usage = "Minimum read mapping quality for a read (Phred-scaled) that counts towards poorly mapped for complexity (default: 1)")
     var minAlignmentForComplexity: Int = 1
 
-    @Option(name = "-maxPercentAbnormalInsertSize", usage = "Filter pileups where % of reads with abnormal insert size is greater than specified (default: 100)")
+    @Option(name = "--max-percent-abnormal-insert-size", usage = "Filter pileups where % of reads with abnormal insert size is greater than specified (default: 100)")
     var maxPercentAbnormalInsertSize: Int = 100
 
-    @Option(name = "-filterMultiAllelic", usage = "Filter any pileups > 2 bases considered")
+    @Option(name = "--filter-multi-allelic", usage = "Filter any pileups > 2 bases considered")
     var filterMultiAllelic: Boolean = false
 
-    @Option(name = "-minEdgeDistance", usage = "Filter reads where the base in the pileup is closer than minEdgeDistance to the (directional) end of the read")
+    @Option(name = "--min-edge-distance", usage = "Filter reads where the base in the pileup is closer than minEdgeDistance to the (directional) end of the read")
     var minEdgeDistance: Int = 0
 
   }

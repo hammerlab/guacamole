@@ -220,34 +220,34 @@ object SomaticGenotypeFilter {
 
   trait SomaticGenotypeFilterArguments extends Base {
 
-    @Option(name = "-minLikelihood", usage = "Minimum likelihood (Phred-scaled)")
+    @Option(name = "--min-likelihood", usage = "Minimum likelihood (Phred-scaled)")
     var minLikelihood: Int = 0
 
-    @Option(name = "-minVAF", usage = "Minimum variant allele frequency")
+    @Option(name = "--min-vaf", usage = "Minimum variant allele frequency")
     var minVAF: Int = 0
 
-    @Option(name = "-minLOD", metaVar = "X", usage = "Make a call if the log odds of variant is greater than this value (Phred-scaled)")
+    @Option(name = "--min-lod", metaVar = "X", usage = "Make a call if the log odds of variant is greater than this value (Phred-scaled)")
     var minLOD: Int = 0
 
-    @Option(name = "-minAverageMappingQuality", metaVar = "X", usage = "Make a call average mapping quality of reads is greater than this value")
+    @Option(name = "--min-average-mapping-quality", metaVar = "X", usage = "Make a call average mapping quality of reads is greater than this value")
     var minAverageMappingQuality: Int = 0
 
-    @Option(name = "-minAverageBaseQuality", metaVar = "X", usage = "Make a call average base quality of bases in the pileup is greater than this value")
+    @Option(name = "--min-average-base-quality", metaVar = "X", usage = "Make a call average base quality of bases in the pileup is greater than this value")
     var minAverageBaseQuality: Int = 0
 
-    @Option(name = "-minTumorReadDepth", usage = "Minimum number of reads in tumor sample for a genotype call")
+    @Option(name = "--min-tumor-read-depth", usage = "Minimum number of reads in tumor sample for a genotype call")
     var minTumorReadDepth: Int = 0
 
-    @Option(name = "-minNormalReadDepth", usage = "Minimum number of reads in normal sample for a genotype call")
+    @Option(name = "--min-normal-read-depth", usage = "Minimum number of reads in normal sample for a genotype call")
     var minNormalReadDepth: Int = 0
 
-    @Option(name = "-maxTumorReadDepth", usage = "Maximum number of reads in tumor sample for a genotype call")
+    @Option(name = "--max-tumor-read-depth", usage = "Maximum number of reads in tumor sample for a genotype call")
     var maxTumorReadDepth: Int = Int.MaxValue
 
-    @Option(name = "-minTumorAlternateReadDepth", usage = "Minimum number of reads with alternate allele for a genotype call")
+    @Option(name = "--min-tumor-alternate-read-depth", usage = "Minimum number of reads with alternate allele for a genotype call")
     var minTumorAlternateReadDepth: Int = 0
 
-    @Option(name = "-debug-genotype-filters", usage = "Print count of genotypes after each filtering step")
+    @Option(name = "--debug-genotype-filters", usage = "Print count of genotypes after each filtering step")
     var debugGenotypeFilters = false
 
   }
