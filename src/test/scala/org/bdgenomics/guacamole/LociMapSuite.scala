@@ -54,6 +54,7 @@ class LociMapSuite extends TestUtil.SparkFunSuite with Matchers {
 
     // union clobbers the beginning of the first interval
     lociMap.union(LociMap("chr1", 100, 140, "X")).toString should be("chr1:100-140=X,chr1:140-200=A,chr20:200-201=B")
+    lociMap.union(LociMap("chr1", 100, 140, "@")).toString should be("chr1:100-140=@,chr1:140-200=A,chr20:200-201=B")
   }
 
   test("asInverseMap with duplicate values") {
@@ -65,6 +66,16 @@ class LociMapSuite extends TestUtil.SparkFunSuite with Matchers {
     // asInverseMap stuffs all Loci with the same value into a LociSet.
     lociMap.asInverseMap should equal(
       List("A" -> LociSet.parse("chr1:100-200,chr2:200-300"), "B" -> LociSet.parse("chr3:400-500")).toMap)
+  }
+
+  test("range coalescing") {
+    val lociMap = LociMap.union(
+      LociMap("chr1", 100, 200, "A"),
+      LociMap("chr1", 400, 500, "B"),
+      LociMap("chr1", 150, 160, "C"),
+      LociMap("chr1", 180, 240, "A")
+    )
+    lociMap.toString should be("chr1:100-150=A,chr1:150-160=C,chr1:160-240=A,chr1:400-500=B")
   }
 
   test("union invariants") {
