@@ -18,9 +18,12 @@
 
 package org.bdgenomics.guacamole
 
+import org.apache.spark.{ SparkContext, Logging }
+import org.bdgenomics.adam.cli.{ Args4j, Args4jBase }
+
 /**
  *
- * Interface for running a variant caller from command line arguments.
+ * Interface for running a command from command line arguments.
  *
  * We give the variant callers and other commands control of execution. Guacamole is a toolbox of common functionality
  * for these to use as appropriate.
@@ -29,18 +32,33 @@ package org.bdgenomics.guacamole
  * include it.
  *
  */
-trait Command {
-  /** The name of the variant caller, as it will be specified on the command line. */
+abstract class Command[T <% Args4jBase: Manifest] extends Serializable with Logging {
+  /** The name of the command, as it will be specified on the command line. */
   val name: String
 
-  /** A short description of the variant caller, for display in the usage info on the command line. */
+  /** A short description of the command, for display in the usage info on the command line. */
   val description: String
 
   /**
-   * Run the variant caller.
+   * Run the command.
    *
-   * @param args the command line arguments, with the first one chopped off. The first argument specifies what variant
-   *             caller to call, and is therefore already consumed by Guacamole.
+   * @param args the command line arguments, with the first one chopped off. The first argument specifies which
+   *             command to run, and is therefore already consumed by Guacamole.
    */
-  def run(args: Array[String]): Unit
+  def run(args: Array[String]): Unit = run(Args4j[T](args))
+
+  def run(args: T): Unit
+}
+
+abstract class SparkCommand[T <% Args4jBase: Manifest] extends Command[T] {
+  override def run(args: T): Unit = {
+    val sc = Common.createSparkContext(appName = Some(name))
+    try {
+      run(args, sc)
+    } finally {
+      sc.stop()
+    }
+  }
+
+  def run(args: T, sc: SparkContext): Unit
 }

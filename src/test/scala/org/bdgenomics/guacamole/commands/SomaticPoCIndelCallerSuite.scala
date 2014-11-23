@@ -39,7 +39,7 @@ class SomaticPoCIndelCallerSuite extends SparkFunSuite with Matchers {
     )
     val tumorPileup = Pileup(tumorReads, 2)
 
-    SomaticPoCIndelCaller.callSimpleIndelsAtLocus(tumorPileup, normalPileup).size should be(0)
+    SomaticPoCIndel.Caller.callSimpleIndelsAtLocus(tumorPileup, normalPileup).size should be(0)
   }
 
   test("single-base deletion") {
@@ -55,7 +55,7 @@ class SomaticPoCIndelCallerSuite extends SparkFunSuite with Matchers {
       TestUtil.makeRead("TCGTCGA", "3M1D4M", "3^A4", 0))
     val tumorPileup = Pileup(tumorReads, 2)
 
-    val genotypes = SomaticPoCIndelCaller.callSimpleIndelsAtLocus(tumorPileup, normalPileup)
+    val genotypes = SomaticPoCIndel.Caller.callSimpleIndelsAtLocus(tumorPileup, normalPileup)
     genotypes.size should be(1)
 
     val genotype = genotypes(0)
@@ -79,7 +79,7 @@ class SomaticPoCIndelCallerSuite extends SparkFunSuite with Matchers {
     )
     val tumorPileup = Pileup(tumorReads, 4)
 
-    val genotypes = SomaticPoCIndelCaller.callSimpleIndelsAtLocus(tumorPileup, normalPileup)
+    val genotypes = SomaticPoCIndel.Caller.callSimpleIndelsAtLocus(tumorPileup, normalPileup)
     genotypes.size should be(1)
 
     val genotype = genotypes(0)
@@ -103,7 +103,7 @@ class SomaticPoCIndelCallerSuite extends SparkFunSuite with Matchers {
     )
     val tumorPileup = Pileup(tumorReads, 3)
 
-    val genotypes = SomaticPoCIndelCaller.callSimpleIndelsAtLocus(tumorPileup, normalPileup)
+    val genotypes = SomaticPoCIndel.Caller.callSimpleIndelsAtLocus(tumorPileup, normalPileup)
     genotypes.size should be(1)
 
     val genotype = genotypes(0)
@@ -125,7 +125,7 @@ class SomaticPoCIndelCallerSuite extends SparkFunSuite with Matchers {
       TestUtil.makeRead("TCGAGGTCTCGA", "4M4I4M", "8", 0)
     )
 
-    val genotypes = SomaticPoCIndelCaller.callSimpleIndelsAtLocus(Pileup(tumorReads, 3), Pileup(normalReads, 3))
+    val genotypes = SomaticPoCIndel.Caller.callSimpleIndelsAtLocus(Pileup(tumorReads, 3), Pileup(normalReads, 3))
     genotypes.size should be(1)
 
     val genotype = genotypes(0)
@@ -156,7 +156,7 @@ class SomaticPoCIndelCallerSuite extends SparkFunSuite with Matchers {
     def testLocus(locus: Int, refBases: String, altBases: String) = {
       val tumorPileup = Pileup(tumorReads, locus)
       val normalPileup = Pileup(normalReads, locus)
-      val genotypes = SomaticPoCIndelCaller.callSimpleIndelsAtLocus(tumorPileup, normalPileup)
+      val genotypes = SomaticPoCIndel.Caller.callSimpleIndelsAtLocus(tumorPileup, normalPileup)
       genotypes.size should be(1)
 
       val genotype = genotypes(0)
