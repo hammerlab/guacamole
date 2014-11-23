@@ -18,7 +18,7 @@
 
 package org.bdgenomics.guacamole.commands
 
-import org.bdgenomics.guacamole.TestUtil
+import org.bdgenomics.guacamole.{ Bases, TestUtil }
 import org.bdgenomics.guacamole.TestUtil.SparkFunSuite
 import org.bdgenomics.guacamole.filters.SomaticGenotypeFilter
 import org.bdgenomics.guacamole.pileup.Pileup
@@ -115,4 +115,152 @@ class SomaticStandardCallerSuite extends SparkFunSuite with Matchers with TableD
     val negativeVariantPositions = Array[Long](26211835, 29652479, 54495768, 13046318, 25939088)
     testVariants(tumorReads, normalReads, negativeVariantPositions, shouldFindVariant = false)
   }
+
+  test("no indels") {
+    val normalReads = Seq(
+      TestUtil.makeRead("TCGATCGA", "8M", "8", 0),
+      TestUtil.makeRead("TCGATCGA", "8M", "8", 0),
+      TestUtil.makeRead("TCGATCGA", "8M", "8", 0)
+    )
+    val normalPileup = Pileup(normalReads, 2)
+
+    val tumorReads = Seq(
+      TestUtil.makeRead("TCGGTCGA", "8M", "3G4", 0),
+      TestUtil.makeRead("TCGGTCGA", "8M", "3G4", 0),
+      TestUtil.makeRead("TCGGTCGA", "8M", "3G4", 0)
+    )
+    val tumorPileup = Pileup(tumorReads, 2)
+
+    SomaticStandard.Caller.findPotentialVariantAtLocus(tumorPileup, normalPileup, oddsThreshold = 2).size should be(0)
+  }
+
+  test("single-base deletion") {
+    val normalReads = Seq(
+      TestUtil.makeRead("TCGATCGA", "8M", "8", 0),
+      TestUtil.makeRead("TCGATCGA", "8M", "8", 0),
+      TestUtil.makeRead("TCGATCGA", "8M", "8", 0))
+    val normalPileup = Pileup(normalReads, 2)
+
+    val tumorReads = Seq(
+      TestUtil.makeRead("TCGTCGA", "3M1D4M", "3^A4", 0),
+      TestUtil.makeRead("TCGTCGA", "3M1D4M", "3^A4", 0),
+      TestUtil.makeRead("TCGTCGA", "3M1D4M", "3^A4", 0))
+    val tumorPileup = Pileup(tumorReads, 2)
+
+    val alleles = SomaticStandard.Caller.findPotentialVariantAtLocus(tumorPileup, normalPileup, oddsThreshold = 2)
+    alleles.size should be(1)
+
+    val allele = alleles(0).allele
+    Bases.basesToString(allele.refBases) should be("GA")
+    Bases.basesToString(allele.altBases) should be("G")
+  }
+
+  test("multiple-base deletion") {
+    val normalReads = Seq(
+      TestUtil.makeRead("TCGAAGCTTCGAAGCT", "16M", "16", 0),
+      TestUtil.makeRead("TCGAAGCTTCGAAGCT", "16M", "16", 0),
+      TestUtil.makeRead("TCGAAGCTTCGAAGCT", "16M", "16", 0)
+    )
+    val normalPileup = Pileup(normalReads, 4)
+
+    val tumorReads = Seq(
+      TestUtil.makeRead("TCGAAAAGCT", "5M6D5M", "5^GCTTCG5", 0),
+      TestUtil.makeRead("TCGAAAAGCT", "5M6D5M", "5^GCTTCG5", 0),
+      TestUtil.makeRead("TCGAAAAGCT", "5M6D5M", "5^GCTTCG5", 0)
+    )
+    val tumorPileup = Pileup(tumorReads, 4)
+
+    val alleles = SomaticStandard.Caller.findPotentialVariantAtLocus(tumorPileup, normalPileup, oddsThreshold = 2)
+    alleles.size should be(1)
+
+    val allele = alleles(0).allele
+    Bases.basesToString(allele.refBases) should be("AGCTTCG")
+    Bases.basesToString(allele.altBases) should be("A")
+  }
+
+  test("single-base insertion") {
+    val normalReads = Seq(
+      TestUtil.makeRead("TCGATCGA", "8M", "8", 0),
+      TestUtil.makeRead("TCGATCGA", "8M", "8", 0),
+      TestUtil.makeRead("TCGATCGA", "8M", "8", 0)
+    )
+    val normalPileup = Pileup(normalReads, 2)
+
+    val tumorReads = Seq(
+      TestUtil.makeRead("TCGAGTCGA", "4M1I4M", "8", 0),
+      TestUtil.makeRead("TCGAGTCGA", "4M1I4M", "8", 0),
+      TestUtil.makeRead("TCGAGTCGA", "4M1I4M", "8", 0)
+    )
+    val tumorPileup = Pileup(tumorReads, 3)
+
+    val alleles = SomaticStandard.Caller.findPotentialVariantAtLocus(tumorPileup, normalPileup, oddsThreshold = 2)
+    alleles.size should be(1)
+
+    val allele = alleles(0).allele
+    Bases.basesToString(allele.refBases) should be("A")
+    Bases.basesToString(allele.altBases) should be("AG")
+  }
+
+  test("multiple-base insertion") {
+    val normalReads = Seq(
+      TestUtil.makeRead("TCGATCGA", "8M", "8", 0),
+      TestUtil.makeRead("TCGATCGA", "8M", "8", 0),
+      TestUtil.makeRead("TCGATCGA", "8M", "8", 0)
+    )
+
+    val tumorReads = Seq(
+      TestUtil.makeRead("TCGAGGTCTCGA", "4M4I4M", "8", 0),
+      TestUtil.makeRead("TCGAGGTCTCGA", "4M4I4M", "8", 0),
+      TestUtil.makeRead("TCGAGGTCTCGA", "4M4I4M", "8", 0)
+    )
+
+    val alleles = SomaticStandard.Caller.findPotentialVariantAtLocus(
+      Pileup(tumorReads, 3), Pileup(normalReads, 3), oddsThreshold = 2
+    )
+    alleles.size should be(1)
+
+    val allele = alleles(0).allele
+    Bases.basesToString(allele.refBases) should be("A")
+    Bases.basesToString(allele.altBases) should be("AGGTC")
+  }
+
+  test("insertions and deletions") {
+    /*
+    idx:  01234  56    7890123456
+    ref:  TCGAA  TC    GATCGATCGA
+    seq:  TC  ATCTCAAAAGA  GATCGA
+     */
+
+    val normalReads = Seq(
+      TestUtil.makeRead("TCGAATCGATCGATCGA", "17M", "17", 10),
+      TestUtil.makeRead("TCGAATCGATCGATCGA", "17M", "17", 10),
+      TestUtil.makeRead("TCGAATCGATCGATCGA", "17M", "17", 10)
+    )
+
+    val tumorReads = Seq(
+      TestUtil.makeRead("TCATCTCAAAAGAGATCGA", "2M2D1M2I2M4I2M2D6M", "2^GA5^TC6", 10),
+      TestUtil.makeRead("TCATCTCAAAAGAGATCGA", "2M2D1M2I2M4I2M2D6M", "2^GA5^TC6", 10),
+      TestUtil.makeRead("TCATCTCAAAAGAGATCGA", "2M2D1M2I2M4I2M2D6M", "2^GA5^TC6", 10)
+    )
+
+    def testLocus(locus: Int, refBases: String, altBases: String) = {
+      val tumorPileup = Pileup(tumorReads, locus)
+      val normalPileup = Pileup(normalReads, locus)
+
+      val alleles = SomaticStandard.Caller.findPotentialVariantAtLocus(
+        Pileup(tumorReads, locus), Pileup(normalReads, locus), oddsThreshold = 2
+      )
+      alleles.size should be(1)
+
+      val allele = alleles(0).allele
+      Bases.basesToString(allele.refBases) should be(refBases)
+      Bases.basesToString(allele.altBases) should be(altBases)
+    }
+
+    testLocus(11, "CGA", "C")
+    testLocus(14, "A", "ATC")
+    testLocus(16, "C", "CAAAA")
+    testLocus(18, "ATC", "A")
+  }
+
 }
