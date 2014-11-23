@@ -252,7 +252,7 @@ object Read extends Logging {
     filename: String,
     token: Int,
     filters: InputFilters): (ArrayBuffer[Read], SequenceDictionary) = {
-    val reader = new SAMFileReader(new java.io.File(filename))
+    val reader = SamReaderFactory.make.open(new java.io.File(filename))
     val sequenceDictionary = SequenceDictionary.fromSAMReader(reader)
     val result = new ArrayBuffer[Read]
 
