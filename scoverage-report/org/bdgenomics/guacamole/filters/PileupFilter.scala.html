@@ -15045,7 +15045,7 @@
           44
         </td>
         <td>
-          1714
+          1698
         </td>
         <td>
           scala.collection.SeqLike.length
@@ -15058,20 +15058,20 @@
           46
         </td>
         <td>
-          1721
+          1705
         </td>
         <td>
           scala.Boolean.&amp;&amp;
         </td>
         <td style="background: #F0ADAD">
-          el.read.alignmentQuality.&gt;=(minimumAlignmentQuality).&amp;&amp;({  scoverage.Invoker.invoked(1720, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  el.read.matePropertiesOpt.withFilter(((mp: org.bdgenomics.guacamole.reads.MateProperties) =&gt; {  scoverage.Invoker.invoked(1715, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  mp.isMateMapped})).flatMap[Some[Boolean]](((mp: org.bdgenomics.guacamole.reads.MateProperties) =&gt; {  scoverage.Invoker.invoked(1719, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  mp.mateReferenceContig.withFilter(((mateReferenceContig: String) =&gt; {  scoverage.Invoker.invoked(1717, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  mateReferenceContig.==({    scoverage.Invoker.invoked(1716, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    el.read.referenceContig  })})).map[Some[Boolean]](((mateReferenceContig: String) =&gt; {    scoverage.Invoker.invoked(1718, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.Some.apply[Boolean](true)  }))})).isDefined})
+          el.read.alignmentQuality.&gt;=(minimumAlignmentQuality).&amp;&amp;({  scoverage.Invoker.invoked(1704, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  el.read.matePropertiesOpt.withFilter(((mp: org.bdgenomics.guacamole.reads.MateProperties) =&gt; {  scoverage.Invoker.invoked(1699, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  mp.isMateMapped})).flatMap[Some[Boolean]](((mp: org.bdgenomics.guacamole.reads.MateProperties) =&gt; {  scoverage.Invoker.invoked(1703, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  mp.mateReferenceContig.withFilter(((mateReferenceContig: String) =&gt; {  scoverage.Invoker.invoked(1701, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  mateReferenceContig.==({    scoverage.Invoker.invoked(1700, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    el.read.referenceContig  })})).map[Some[Boolean]](((mateReferenceContig: String) =&gt; {    scoverage.Invoker.invoked(1702, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.Some.apply[Boolean](true)  }))})).isDefined})
         </td>
       </tr><tr>
         <td>
           49
         </td>
         <td>
-          1715
+          1699
         </td>
         <td>
           org.bdgenomics.guacamole.reads.MateProperties.isMateMapped
@@ -15084,20 +15084,33 @@
           50
         </td>
         <td>
-          1719
+          1703
         </td>
         <td>
           scala.Option.WithFilter.map
         </td>
         <td style="background: #F0ADAD">
-          mp.mateReferenceContig.withFilter(((mateReferenceContig: String) =&gt; {  scoverage.Invoker.invoked(1717, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  mateReferenceContig.==({    scoverage.Invoker.invoked(1716, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    el.read.referenceContig  })})).map[Some[Boolean]](((mateReferenceContig: String) =&gt; {  scoverage.Invoker.invoked(1718, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.Some.apply[Boolean](true)}))
+          mp.mateReferenceContig.withFilter(((mateReferenceContig: String) =&gt; {  scoverage.Invoker.invoked(1701, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  mateReferenceContig.==({    scoverage.Invoker.invoked(1700, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    el.read.referenceContig  })})).map[Some[Boolean]](((mateReferenceContig: String) =&gt; {  scoverage.Invoker.invoked(1702, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.Some.apply[Boolean](true)}))
         </td>
       </tr><tr>
         <td>
           51
         </td>
         <td>
-          1716
+          1701
+        </td>
+        <td>
+          java.lang.Object.==
+        </td>
+        <td style="background: #F0ADAD">
+          mateReferenceContig.==({  scoverage.Invoker.invoked(1700, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  el.read.referenceContig})
+        </td>
+      </tr><tr>
+        <td>
+          51
+        </td>
+        <td>
+          1700
         </td>
         <td>
           org.bdgenomics.guacamole.reads.MappedRead.referenceContig
@@ -15107,23 +15120,10 @@
         </td>
       </tr><tr>
         <td>
-          51
-        </td>
-        <td>
-          1717
-        </td>
-        <td>
-          java.lang.Object.==
-        </td>
-        <td style="background: #F0ADAD">
-          mateReferenceContig.==({  scoverage.Invoker.invoked(1716, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  el.read.referenceContig})
-        </td>
-      </tr><tr>
-        <td>
           53
         </td>
         <td>
-          1718
+          1702
         </td>
         <td>
           scala.Some.apply
@@ -15136,33 +15136,33 @@
           54
         </td>
         <td>
-          1720
+          1704
         </td>
         <td>
           scala.Option.isDefined
         </td>
         <td style="background: #F0ADAD">
-          el.read.matePropertiesOpt.withFilter(((mp: org.bdgenomics.guacamole.reads.MateProperties) =&gt; {  scoverage.Invoker.invoked(1715, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  mp.isMateMapped})).flatMap[Some[Boolean]](((mp: org.bdgenomics.guacamole.reads.MateProperties) =&gt; {  scoverage.Invoker.invoked(1719, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  mp.mateReferenceContig.withFilter(((mateReferenceContig: String) =&gt; {  scoverage.Invoker.invoked(1717, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  mateReferenceContig.==({    scoverage.Invoker.invoked(1716, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    el.read.referenceContig  })})).map[Some[Boolean]](((mateReferenceContig: String) =&gt; {    scoverage.Invoker.invoked(1718, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.Some.apply[Boolean](true)  }))})).isDefined
+          el.read.matePropertiesOpt.withFilter(((mp: org.bdgenomics.guacamole.reads.MateProperties) =&gt; {  scoverage.Invoker.invoked(1699, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  mp.isMateMapped})).flatMap[Some[Boolean]](((mp: org.bdgenomics.guacamole.reads.MateProperties) =&gt; {  scoverage.Invoker.invoked(1703, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  mp.mateReferenceContig.withFilter(((mateReferenceContig: String) =&gt; {  scoverage.Invoker.invoked(1701, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  mateReferenceContig.==({    scoverage.Invoker.invoked(1700, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    el.read.referenceContig  })})).map[Some[Boolean]](((mateReferenceContig: String) =&gt; {    scoverage.Invoker.invoked(1702, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.Some.apply[Boolean](true)  }))})).isDefined
         </td>
       </tr><tr>
         <td>
           55
         </td>
         <td>
-          1722
+          1706
         </td>
         <td>
           scala.collection.SeqLike.length
         </td>
         <td style="background: #F0ADAD">
-          elements.filter(((el: org.bdgenomics.guacamole.pileup.PileupElement) =&gt; {  scoverage.Invoker.invoked(1721, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  el.read.alignmentQuality.&gt;=(minimumAlignmentQuality).&amp;&amp;({    scoverage.Invoker.invoked(1720, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    el.read.matePropertiesOpt.withFilter(((mp: org.bdgenomics.guacamole.reads.MateProperties) =&gt; {  scoverage.Invoker.invoked(1715, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  mp.isMateMapped})).flatMap[Some[Boolean]](((mp: org.bdgenomics.guacamole.reads.MateProperties) =&gt; {  scoverage.Invoker.invoked(1719, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  mp.mateReferenceContig.withFilter(((mateReferenceContig: String) =&gt; {  scoverage.Invoker.invoked(1717, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  mateReferenceContig.==({    scoverage.Invoker.invoked(1716, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    el.read.referenceContig  })})).map[Some[Boolean]](((mateReferenceContig: String) =&gt; {    scoverage.Invoker.invoked(1718, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.Some.apply[Boolean](true)  }))})).isDefined  })})).length
+          elements.filter(((el: org.bdgenomics.guacamole.pileup.PileupElement) =&gt; {  scoverage.Invoker.invoked(1705, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  el.read.alignmentQuality.&gt;=(minimumAlignmentQuality).&amp;&amp;({    scoverage.Invoker.invoked(1704, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    el.read.matePropertiesOpt.withFilter(((mp: org.bdgenomics.guacamole.reads.MateProperties) =&gt; {  scoverage.Invoker.invoked(1699, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  mp.isMateMapped})).flatMap[Some[Boolean]](((mp: org.bdgenomics.guacamole.reads.MateProperties) =&gt; {  scoverage.Invoker.invoked(1703, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  mp.mateReferenceContig.withFilter(((mateReferenceContig: String) =&gt; {  scoverage.Invoker.invoked(1701, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  mateReferenceContig.==({    scoverage.Invoker.invoked(1700, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    el.read.referenceContig  })})).map[Some[Boolean]](((mateReferenceContig: String) =&gt; {    scoverage.Invoker.invoked(1702, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.Some.apply[Boolean](true)  }))})).isDefined  })})).length
         </td>
       </tr><tr>
         <td>
           57
         </td>
         <td>
-          1723
+          1707
         </td>
         <td>
           scala.Double.&lt;
@@ -15175,7 +15175,7 @@
           58
         </td>
         <td>
-          1724
+          1708
         </td>
         <td>
           org.bdgenomics.guacamole.filters.RegionComplexityFilter.elements
@@ -15188,7 +15188,20 @@
           60
         </td>
         <td>
-          1725
+          1710
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  scoverage.Invoker.invoked(1709, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.empty[Nothing]}
+        </td>
+      </tr><tr>
+        <td>
+          60
+        </td>
+        <td>
+          1709
         </td>
         <td>
           scala.collection.generic.GenericCompanion.empty
@@ -15198,23 +15211,10 @@
         </td>
       </tr><tr>
         <td>
-          60
-        </td>
-        <td>
-          1726
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1725, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.empty[Nothing]}
-        </td>
-      </tr><tr>
-        <td>
           78
         </td>
         <td>
-          1727
+          1711
         </td>
         <td>
           scala.Int.&gt;
@@ -15227,7 +15227,20 @@
           79
         </td>
         <td>
-          1728
+          1713
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  scoverage.Invoker.invoked(1712, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.empty[Nothing]}
+        </td>
+      </tr><tr>
+        <td>
+          79
+        </td>
+        <td>
+          1712
         </td>
         <td>
           scala.collection.generic.GenericCompanion.empty
@@ -15237,23 +15250,10 @@
         </td>
       </tr><tr>
         <td>
-          79
-        </td>
-        <td>
-          1729
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1728, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.empty[Nothing]}
-        </td>
-      </tr><tr>
-        <td>
           81
         </td>
         <td>
-          1730
+          1714
         </td>
         <td>
           org.bdgenomics.guacamole.filters.MultiAllelicPileupFilter.elements
@@ -15266,20 +15266,20 @@
           102
         </td>
         <td>
-          1735
+          1719
         </td>
         <td>
           scala.collection.TraversableOnce.count
         </td>
         <td style="background: #F0ADAD">
-          elements.count(((x$2: org.bdgenomics.guacamole.pileup.PileupElement) =&gt; {  scoverage.Invoker.invoked(1734, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x$2.read.matePropertiesOpt.flatMap[Int](((x$3: org.bdgenomics.guacamole.reads.MateProperties) =&gt; {  scoverage.Invoker.invoked(1731, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x$3.inferredInsertSize})).exists(((inferredInsertSize: Int) =&gt; {    scoverage.Invoker.invoked(1733, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.math.`package`.abs(inferredInsertSize).&lt;(minInsertSize).||({      scoverage.Invoker.invoked(1732, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      scala.math.`package`.abs(inferredInsertSize).&gt;(maxInsertSize)    })  }))}))
+          elements.count(((x$2: org.bdgenomics.guacamole.pileup.PileupElement) =&gt; {  scoverage.Invoker.invoked(1718, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x$2.read.matePropertiesOpt.flatMap[Int](((x$3: org.bdgenomics.guacamole.reads.MateProperties) =&gt; {  scoverage.Invoker.invoked(1715, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x$3.inferredInsertSize})).exists(((inferredInsertSize: Int) =&gt; {    scoverage.Invoker.invoked(1717, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.math.`package`.abs(inferredInsertSize).&lt;(minInsertSize).||({      scoverage.Invoker.invoked(1716, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      scala.math.`package`.abs(inferredInsertSize).&gt;(maxInsertSize)    })  }))}))
         </td>
       </tr><tr>
         <td>
           104
         </td>
         <td>
-          1731
+          1715
         </td>
         <td>
           org.bdgenomics.guacamole.reads.MateProperties.inferredInsertSize
@@ -15292,33 +15292,33 @@
           105
         </td>
         <td>
-          1734
+          1718
         </td>
         <td>
           scala.Option.exists
         </td>
         <td style="background: #F0ADAD">
-          x$2.read.matePropertiesOpt.flatMap[Int](((x$3: org.bdgenomics.guacamole.reads.MateProperties) =&gt; {  scoverage.Invoker.invoked(1731, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x$3.inferredInsertSize})).exists(((inferredInsertSize: Int) =&gt; {  scoverage.Invoker.invoked(1733, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.math.`package`.abs(inferredInsertSize).&lt;(minInsertSize).||({    scoverage.Invoker.invoked(1732, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.math.`package`.abs(inferredInsertSize).&gt;(maxInsertSize)  })}))
+          x$2.read.matePropertiesOpt.flatMap[Int](((x$3: org.bdgenomics.guacamole.reads.MateProperties) =&gt; {  scoverage.Invoker.invoked(1715, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x$3.inferredInsertSize})).exists(((inferredInsertSize: Int) =&gt; {  scoverage.Invoker.invoked(1717, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.math.`package`.abs(inferredInsertSize).&lt;(minInsertSize).||({    scoverage.Invoker.invoked(1716, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.math.`package`.abs(inferredInsertSize).&gt;(maxInsertSize)  })}))
         </td>
       </tr><tr>
         <td>
           106
         </td>
         <td>
-          1733
+          1717
         </td>
         <td>
           scala.Boolean.||
         </td>
         <td style="background: #F0ADAD">
-          scala.math.`package`.abs(inferredInsertSize).&lt;(minInsertSize).||({  scoverage.Invoker.invoked(1732, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.math.`package`.abs(inferredInsertSize).&gt;(maxInsertSize)})
+          scala.math.`package`.abs(inferredInsertSize).&lt;(minInsertSize).||({  scoverage.Invoker.invoked(1716, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.math.`package`.abs(inferredInsertSize).&gt;(maxInsertSize)})
         </td>
       </tr><tr>
         <td>
           107
         </td>
         <td>
-          1732
+          1716
         </td>
         <td>
           scala.Int.&gt;
@@ -15331,7 +15331,7 @@
           110
         </td>
         <td>
-          1736
+          1720
         </td>
         <td>
           scala.Double.&gt;
@@ -15344,7 +15344,20 @@
           111
         </td>
         <td>
-          1737
+          1722
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  scoverage.Invoker.invoked(1721, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.empty[Nothing]}
+        </td>
+      </tr><tr>
+        <td>
+          111
+        </td>
+        <td>
+          1721
         </td>
         <td>
           scala.collection.generic.GenericCompanion.empty
@@ -15354,23 +15367,10 @@
         </td>
       </tr><tr>
         <td>
-          111
-        </td>
-        <td>
-          1738
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1737, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.empty[Nothing]}
-        </td>
-      </tr><tr>
-        <td>
           113
         </td>
         <td>
-          1739
+          1723
         </td>
         <td>
           org.bdgenomics.guacamole.filters.AbnormalInsertSizePileupFilter.elements
@@ -15383,7 +15383,7 @@
           125
         </td>
         <td>
-          1740
+          1724
         </td>
         <td>
           scala.collection.IterableLike.exists
@@ -15396,20 +15396,7 @@
           126
         </td>
         <td>
-          1742
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1741, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.empty[Nothing]}
-        </td>
-      </tr><tr>
-        <td>
-          126
-        </td>
-        <td>
-          1741
+          1725
         </td>
         <td>
           scala.collection.generic.GenericCompanion.empty
@@ -15419,10 +15406,23 @@
         </td>
       </tr><tr>
         <td>
+          126
+        </td>
+        <td>
+          1726
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  scoverage.Invoker.invoked(1725, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.empty[Nothing]}
+        </td>
+      </tr><tr>
+        <td>
           128
         </td>
         <td>
-          1743
+          1727
         </td>
         <td>
           org.bdgenomics.guacamole.filters.DeletionEvidencePileupFilter.elements
@@ -15435,7 +15435,7 @@
           138
         </td>
         <td>
-          1744
+          1728
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -15448,7 +15448,7 @@
           141
         </td>
         <td>
-          1745
+          1729
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -15461,7 +15461,7 @@
           144
         </td>
         <td>
-          1746
+          1730
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -15474,7 +15474,7 @@
           147
         </td>
         <td>
-          1747
+          1731
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -15487,7 +15487,7 @@
           150
         </td>
         <td>
-          1748
+          1732
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -15500,7 +15500,7 @@
           153
         </td>
         <td>
-          1749
+          1733
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -15513,20 +15513,20 @@
           158
         </td>
         <td>
-          1756
+          1740
         </td>
         <td>
           org.bdgenomics.guacamole.filters.PileupFilter.apply
         </td>
         <td style="background: #F0ADAD">
-          PileupFilter.this.apply(pileup, {  scoverage.Invoker.invoked(1750, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  args.filterMultiAllelic}, {  scoverage.Invoker.invoked(1751, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  args.maxMappingComplexity}, {  scoverage.Invoker.invoked(1752, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  args.minAlignmentForComplexity}, {  scoverage.Invoker.invoked(1753, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  args.minAlignmentQuality}, {  scoverage.Invoker.invoked(1754, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  args.maxPercentAbnormalInsertSize}, {  scoverage.Invoker.invoked(1755, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  args.minEdgeDistance})
+          PileupFilter.this.apply(pileup, {  scoverage.Invoker.invoked(1734, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  args.filterMultiAllelic}, {  scoverage.Invoker.invoked(1735, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  args.maxMappingComplexity}, {  scoverage.Invoker.invoked(1736, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  args.minAlignmentForComplexity}, {  scoverage.Invoker.invoked(1737, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  args.minAlignmentQuality}, {  scoverage.Invoker.invoked(1738, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  args.maxPercentAbnormalInsertSize}, {  scoverage.Invoker.invoked(1739, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  args.minEdgeDistance})
         </td>
       </tr><tr>
         <td>
           159
         </td>
         <td>
-          1750
+          1734
         </td>
         <td>
           org.bdgenomics.guacamole.filters.PileupFilter.PileupFilterArguments.filterMultiAllelic
@@ -15539,7 +15539,7 @@
           160
         </td>
         <td>
-          1751
+          1735
         </td>
         <td>
           org.bdgenomics.guacamole.filters.PileupFilter.PileupFilterArguments.maxMappingComplexity
@@ -15552,7 +15552,7 @@
           161
         </td>
         <td>
-          1752
+          1736
         </td>
         <td>
           org.bdgenomics.guacamole.filters.PileupFilter.PileupFilterArguments.minAlignmentForComplexity
@@ -15565,7 +15565,7 @@
           162
         </td>
         <td>
-          1753
+          1737
         </td>
         <td>
           org.bdgenomics.guacamole.filters.PileupFilter.PileupFilterArguments.minAlignmentQuality
@@ -15578,7 +15578,7 @@
           163
         </td>
         <td>
-          1754
+          1738
         </td>
         <td>
           org.bdgenomics.guacamole.filters.PileupFilter.PileupFilterArguments.maxPercentAbnormalInsertSize
@@ -15591,7 +15591,7 @@
           164
         </td>
         <td>
-          1755
+          1739
         </td>
         <td>
           org.bdgenomics.guacamole.filters.PileupFilter.PileupFilterArguments.minEdgeDistance
@@ -15604,7 +15604,7 @@
           176
         </td>
         <td>
-          1757
+          1741
         </td>
         <td>
           org.bdgenomics.guacamole.pileup.Pileup.elements
@@ -15617,7 +15617,20 @@
           178
         </td>
         <td>
-          1761
+          1746
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  scoverage.Invoker.invoked(1745, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
+        </td>
+      </tr><tr>
+        <td>
+          178
+        </td>
+        <td>
+          1745
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -15627,49 +15640,23 @@
         </td>
       </tr><tr>
         <td>
-          178
-        </td>
-        <td>
-          1762
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1761, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
-        </td>
-      </tr><tr>
-        <td>
           179
         </td>
         <td>
-          1760
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          elements = {  scoverage.Invoker.invoked(1759, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  MultiAllelicPileupFilter.apply(elements, {    scoverage.Invoker.invoked(1758, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    MultiAllelicPileupFilter.apply$default$2  })}
-        </td>
-      </tr><tr>
-        <td>
-          179
-        </td>
-        <td>
-          1759
+          1743
         </td>
         <td>
           org.bdgenomics.guacamole.filters.MultiAllelicPileupFilter.apply
         </td>
         <td style="background: #F0ADAD">
-          MultiAllelicPileupFilter.apply(elements, {  scoverage.Invoker.invoked(1758, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  MultiAllelicPileupFilter.apply$default$2})
+          MultiAllelicPileupFilter.apply(elements, {  scoverage.Invoker.invoked(1742, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  MultiAllelicPileupFilter.apply$default$2})
         </td>
       </tr><tr>
         <td>
           179
         </td>
         <td>
-          1758
+          1742
         </td>
         <td>
           org.bdgenomics.guacamole.filters.MultiAllelicPileupFilter.apply$default$2
@@ -15679,36 +15666,23 @@
         </td>
       </tr><tr>
         <td>
-          182
+          179
         </td>
         <td>
-          1763
-        </td>
-        <td>
-          scala.Int.&lt;
-        </td>
-        <td style="background: #F0ADAD">
-          maxPercentAbnormalInsertSize.&lt;(100)
-        </td>
-      </tr><tr>
-        <td>
-          182
-        </td>
-        <td>
-          1769
+          1744
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1768, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
+          elements = {  scoverage.Invoker.invoked(1743, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  MultiAllelicPileupFilter.apply(elements, {    scoverage.Invoker.invoked(1742, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    MultiAllelicPileupFilter.apply$default$2  })}
         </td>
       </tr><tr>
         <td>
           182
         </td>
         <td>
-          1768
+          1752
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -15718,10 +15692,36 @@
         </td>
       </tr><tr>
         <td>
+          182
+        </td>
+        <td>
+          1753
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  scoverage.Invoker.invoked(1752, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
+        </td>
+      </tr><tr>
+        <td>
+          182
+        </td>
+        <td>
+          1747
+        </td>
+        <td>
+          scala.Int.&lt;
+        </td>
+        <td style="background: #F0ADAD">
+          maxPercentAbnormalInsertSize.&lt;(100)
+        </td>
+      </tr><tr>
+        <td>
           183
         </td>
         <td>
-          1764
+          1748
         </td>
         <td>
           org.bdgenomics.guacamole.filters.AbnormalInsertSizePileupFilter.apply$default$3
@@ -15734,20 +15734,33 @@
           183
         </td>
         <td>
-          1766
+          1751
         </td>
         <td>
-          org.bdgenomics.guacamole.filters.AbnormalInsertSizePileupFilter.apply
+          &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          AbnormalInsertSizePileupFilter.apply(elements, maxPercentAbnormalInsertSize, {  scoverage.Invoker.invoked(1764, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  AbnormalInsertSizePileupFilter.apply$default$3}, {  scoverage.Invoker.invoked(1765, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  AbnormalInsertSizePileupFilter.apply$default$4})
+          elements = {  scoverage.Invoker.invoked(1750, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  AbnormalInsertSizePileupFilter.apply(elements, maxPercentAbnormalInsertSize, {    scoverage.Invoker.invoked(1748, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    AbnormalInsertSizePileupFilter.apply$default$3  }, {    scoverage.Invoker.invoked(1749, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    AbnormalInsertSizePileupFilter.apply$default$4  })}
         </td>
       </tr><tr>
         <td>
           183
         </td>
         <td>
-          1765
+          1750
+        </td>
+        <td>
+          org.bdgenomics.guacamole.filters.AbnormalInsertSizePileupFilter.apply
+        </td>
+        <td style="background: #F0ADAD">
+          AbnormalInsertSizePileupFilter.apply(elements, maxPercentAbnormalInsertSize, {  scoverage.Invoker.invoked(1748, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  AbnormalInsertSizePileupFilter.apply$default$3}, {  scoverage.Invoker.invoked(1749, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  AbnormalInsertSizePileupFilter.apply$default$4})
+        </td>
+      </tr><tr>
+        <td>
+          183
+        </td>
+        <td>
+          1749
         </td>
         <td>
           org.bdgenomics.guacamole.filters.AbnormalInsertSizePileupFilter.apply$default$4
@@ -15757,23 +15770,10 @@
         </td>
       </tr><tr>
         <td>
-          183
-        </td>
-        <td>
-          1767
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          elements = {  scoverage.Invoker.invoked(1766, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  AbnormalInsertSizePileupFilter.apply(elements, maxPercentAbnormalInsertSize, {    scoverage.Invoker.invoked(1764, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    AbnormalInsertSizePileupFilter.apply$default$3  }, {    scoverage.Invoker.invoked(1765, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    AbnormalInsertSizePileupFilter.apply$default$4  })}
-        </td>
-      </tr><tr>
-        <td>
           186
         </td>
         <td>
-          1770
+          1754
         </td>
         <td>
           scala.Int.&lt;
@@ -15786,7 +15786,7 @@
           186
         </td>
         <td>
-          1773
+          1757
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -15799,33 +15799,20 @@
           186
         </td>
         <td>
-          1774
+          1758
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1773, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
+          {  scoverage.Invoker.invoked(1757, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
         </td>
       </tr><tr>
         <td>
           187
         </td>
         <td>
-          1772
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          elements = {  scoverage.Invoker.invoked(1771, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  RegionComplexityFilter.apply(elements, maxMappingComplexity, minAlignmentForComplexity)}
-        </td>
-      </tr><tr>
-        <td>
-          187
-        </td>
-        <td>
-          1771
+          1755
         </td>
         <td>
           org.bdgenomics.guacamole.filters.RegionComplexityFilter.apply
@@ -15835,36 +15822,36 @@
         </td>
       </tr><tr>
         <td>
-          190
+          187
         </td>
         <td>
-          1779
+          1756
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1778, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
+          elements = {  scoverage.Invoker.invoked(1755, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  RegionComplexityFilter.apply(elements, maxMappingComplexity, minAlignmentForComplexity)}
         </td>
       </tr><tr>
         <td>
           190
         </td>
         <td>
-          1775
+          1763
         </td>
         <td>
-          scala.Int.&gt;
+          &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          minAlignmentQuality.&gt;(0)
+          {  scoverage.Invoker.invoked(1762, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
         </td>
       </tr><tr>
         <td>
           190
         </td>
         <td>
-          1778
+          1762
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -15874,23 +15861,36 @@
         </td>
       </tr><tr>
         <td>
-          191
+          190
         </td>
         <td>
-          1777
+          1759
         </td>
         <td>
-          &lt;nosymbol&gt;
+          scala.Int.&gt;
         </td>
         <td style="background: #F0ADAD">
-          elements = {  scoverage.Invoker.invoked(1776, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  QualityAlignedReadsFilter.apply(elements, minAlignmentQuality)}
+          minAlignmentQuality.&gt;(0)
         </td>
       </tr><tr>
         <td>
           191
         </td>
         <td>
-          1776
+          1761
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          elements = {  scoverage.Invoker.invoked(1760, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  QualityAlignedReadsFilter.apply(elements, minAlignmentQuality)}
+        </td>
+      </tr><tr>
+        <td>
+          191
+        </td>
+        <td>
+          1760
         </td>
         <td>
           org.bdgenomics.guacamole.filters.QualityAlignedReadsFilter.apply
@@ -15903,20 +15903,7 @@
           194
         </td>
         <td>
-          1784
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1783, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
-        </td>
-      </tr><tr>
-        <td>
-          194
-        </td>
-        <td>
-          1780
+          1764
         </td>
         <td>
           scala.Int.&gt;
@@ -15929,7 +15916,20 @@
           194
         </td>
         <td>
-          1783
+          1768
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  scoverage.Invoker.invoked(1767, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
+        </td>
+      </tr><tr>
+        <td>
+          194
+        </td>
+        <td>
+          1767
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -15942,20 +15942,20 @@
           195
         </td>
         <td>
-          1782
+          1766
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          elements = {  scoverage.Invoker.invoked(1781, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  EdgeBaseFilter.apply(elements, minEdgeDistance)}
+          elements = {  scoverage.Invoker.invoked(1765, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  EdgeBaseFilter.apply(elements, minEdgeDistance)}
         </td>
       </tr><tr>
         <td>
           195
         </td>
         <td>
-          1781
+          1765
         </td>
         <td>
           org.bdgenomics.guacamole.filters.EdgeBaseFilter.apply
@@ -15968,20 +15968,20 @@
           198
         </td>
         <td>
-          1786
+          1770
         </td>
         <td>
           org.bdgenomics.guacamole.pileup.Pileup.apply
         </td>
         <td style="background: #F0ADAD">
-          org.bdgenomics.guacamole.pileup.Pileup.apply({  scoverage.Invoker.invoked(1785, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  pileup.locus}, elements)
+          org.bdgenomics.guacamole.pileup.Pileup.apply({  scoverage.Invoker.invoked(1769, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  pileup.locus}, elements)
         </td>
       </tr><tr>
         <td>
           198
         </td>
         <td>
-          1785
+          1769
         </td>
         <td>
           org.bdgenomics.guacamole.pileup.Pileup.locus

@@ -59,18 +59,18 @@
         <div id="types" class="types members">
               <h3>Type Members</h3>
               <ol><li name="org.bdgenomics.guacamole.Command" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="CommandextendsAnyRef"></a>
-      <a id="Command:Command"></a>
+      <a id="Command[T]extendsSerializablewithLogging"></a>
+      <a id="Command[T]:Command[T]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">trait</span>
+        <span class="modifier">abstract </span>
+        <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a href="Command.html"><span class="name">Command</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <a href="Command.html"><span class="name">Command</span></a><span class="tparams">[<span name="T">T</span>]</span><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span> with <span class="extype" name="org.apache.spark.Logging">Logging</span></span>
       </span>
       </h4>
-      <p class="comment cmt">Interface for running a variant caller from command line arguments.</p>
+      <p class="comment cmt">Interface for running a command from command line arguments.</p>
     </li><li name="org.bdgenomics.guacamole.DelayedMessages" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="DelayedMessagesextendsAnyRef"></a>
       <a id="DelayedMessages:DelayedMessages"></a>
@@ -202,6 +202,19 @@
       </span>
       </h4>
       <p class="comment cmt">A ReadSet contains an RDD of reads along with some metadata about them.</p>
+    </li><li name="org.bdgenomics.guacamole.SparkCommand" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="SparkCommand[T]extendsCommand[T]"></a>
+      <a id="SparkCommand[T]:SparkCommand[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="SparkCommand.html"><span class="name">SparkCommand</span></a><span class="tparams">[<span name="T">T</span>]</span><span class="result"> extends <a href="Command.html" class="extype" name="org.bdgenomics.guacamole.Command">Command</a>[<span class="extype" name="org.bdgenomics.guacamole.SparkCommand.T">T</span>]</span>
+      </span>
+      </h4>
+      
     </li></ol>
             </div>
 

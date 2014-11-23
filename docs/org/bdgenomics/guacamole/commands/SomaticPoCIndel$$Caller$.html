@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>SomaticPoCIndelCaller - guacamole: variant caller 0.0.1 API - org.bdgenomics.guacamole.commands.SomaticPoCIndelCaller</title>
-          <meta name="description" content="SomaticPoCIndelCaller - guacamole variant caller 0.0.1 API - org.bdgenomics.guacamole.commands.SomaticPoCIndelCaller" />
-          <meta name="keywords" content="SomaticPoCIndelCaller guacamole variant caller 0.0.1 API org.bdgenomics.guacamole.commands.SomaticPoCIndelCaller" />
+          <title>Caller - guacamole: variant caller 0.0.1 API - org.bdgenomics.guacamole.commands.SomaticPoCIndel.Caller</title>
+          <meta name="description" content="Caller - guacamole variant caller 0.0.1 API - org.bdgenomics.guacamole.commands.SomaticPoCIndel.Caller" />
+          <meta name="keywords" content="Caller guacamole variant caller 0.0.1 API org.bdgenomics.guacamole.commands.SomaticPoCIndel.Caller" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -12,7 +12,7 @@
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../index.html';
-            var hash = 'org.bdgenomics.guacamole.commands.SomaticPoCIndelCaller$';
+            var hash = 'org.bdgenomics.guacamole.commands.SomaticPoCIndel$$Caller$';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -25,8 +25,8 @@
         <body class="value">
       <div id="definition">
         <img src="../../../../lib/object_big.png" />
-        <p id="owner"><a href="../../../package.html" class="extype" name="org">org</a>.<a href="../../package.html" class="extype" name="org.bdgenomics">bdgenomics</a>.<a href="../package.html" class="extype" name="org.bdgenomics.guacamole">guacamole</a>.<a href="package.html" class="extype" name="org.bdgenomics.guacamole.commands">commands</a></p>
-        <h1>SomaticPoCIndelCaller</h1>
+        <p id="owner"><a href="../../../package.html" class="extype" name="org">org</a>.<a href="../../package.html" class="extype" name="org.bdgenomics">bdgenomics</a>.<a href="../package.html" class="extype" name="org.bdgenomics.guacamole">guacamole</a>.<a href="package.html" class="extype" name="org.bdgenomics.guacamole.commands">commands</a>.<a href="SomaticPoCIndel$.html" class="extype" name="org.bdgenomics.guacamole.commands.SomaticPoCIndel">SomaticPoCIndel</a></p>
+        <h1>Caller</h1>
       </div>
 
       <h4 id="signature" class="signature">
@@ -35,13 +35,13 @@
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <span class="name">SomaticPoCIndelCaller</span><span class="result"> extends <a href="../Command.html" class="extype" name="org.bdgenomics.guacamole.Command">Command</a> with <span class="extype" name="scala.Serializable">Serializable</span> with <span class="extype" name="org.apache.spark.Logging">Logging</span></span>
+        <span class="name">Caller</span><span class="result"> extends <a href="../SparkCommand.html" class="extype" name="org.bdgenomics.guacamole.SparkCommand">SparkCommand</a>[<a href="SomaticPoCIndel$$Arguments.html" class="extype" name="org.bdgenomics.guacamole.commands.SomaticPoCIndel.Arguments">Arguments</a>]</span>
       </span>
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="org.apache.spark.Logging">Logging</span>, <span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <a href="../Command.html" class="extype" name="org.bdgenomics.guacamole.Command">Command</a>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><a href="../SparkCommand.html" class="extype" name="org.bdgenomics.guacamole.SparkCommand">SparkCommand</a>[<a href="SomaticPoCIndel$$Arguments.html" class="extype" name="org.bdgenomics.guacamole.commands.SomaticPoCIndel.Arguments">Arguments</a>], <a href="../Command.html" class="extype" name="org.bdgenomics.guacamole.Command">Command</a>[<a href="SomaticPoCIndel$$Arguments.html" class="extype" name="org.bdgenomics.guacamole.commands.SomaticPoCIndel.Arguments">Arguments</a>], <span class="extype" name="org.apache.spark.Logging">Logging</span>, <span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -59,7 +59,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="org.bdgenomics.guacamole.commands.SomaticPoCIndelCaller"><span>SomaticPoCIndelCaller</span></li><li class="in" name="org.apache.spark.Logging"><span>Logging</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="org.bdgenomics.guacamole.Command"><span>Command</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="org.bdgenomics.guacamole.commands.SomaticPoCIndel.Caller"><span>Caller</span></li><li class="in" name="org.bdgenomics.guacamole.SparkCommand"><span>SparkCommand</span></li><li class="in" name="org.bdgenomics.guacamole.Command"><span>Command</span></li><li class="in" name="org.apache.spark.Logging"><span>Logging</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -163,7 +163,7 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="org.bdgenomics.guacamole.commands.SomaticPoCIndelCaller#callSimpleIndelsAtLocus" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="org.bdgenomics.guacamole.commands.SomaticPoCIndel.Caller#callSimpleIndelsAtLocus" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="callSimpleIndelsAtLocus(pileupTumor:org.bdgenomics.guacamole.pileup.Pileup,pileupNormal:org.bdgenomics.guacamole.pileup.Pileup):Seq[org.bdgenomics.formats.avro.Genotype]"></a>
       <a id="callSimpleIndelsAtLocus(Pileup,Pileup):Seq[Genotype]"></a>
       <h4 class="signature">
@@ -195,7 +195,7 @@
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="org.bdgenomics.guacamole.commands.SomaticPoCIndelCaller#description" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="org.bdgenomics.guacamole.commands.SomaticPoCIndel.Caller#description" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="description:String"></a>
       <a id="description:String"></a>
       <h4 class="signature">
@@ -207,7 +207,7 @@
         <span class="name">description</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">A short description of the variant caller, for display in the usage info on the command line.</p><div class="fullcomment"><div class="comment cmt"><p>A short description of the variant caller, for display in the usage info on the command line.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.bdgenomics.guacamole.commands.SomaticPoCIndelCaller">SomaticPoCIndelCaller</a> → <a href="../Command.html" class="extype" name="org.bdgenomics.guacamole.Command">Command</a></dd></dl></div>
+      <p class="shortcomment cmt">A short description of the command, for display in the usage info on the command line.</p><div class="fullcomment"><div class="comment cmt"><p>A short description of the command, for display in the usage info on the command line.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.bdgenomics.guacamole.commands.SomaticPoCIndel.Caller">Caller</a> → <a href="../Command.html" class="extype" name="org.bdgenomics.guacamole.Command">Command</a></dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -461,7 +461,7 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd>Logging</dd></dl></div>
-    </li><li name="org.bdgenomics.guacamole.commands.SomaticPoCIndelCaller#name" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="org.bdgenomics.guacamole.commands.SomaticPoCIndel.Caller#name" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="name:String"></a>
       <a id="name:String"></a>
       <h4 class="signature">
@@ -473,7 +473,7 @@
         <span class="name">name</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">The name of the variant caller, as it will be specified on the command line.</p><div class="fullcomment"><div class="comment cmt"><p>The name of the variant caller, as it will be specified on the command line.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.bdgenomics.guacamole.commands.SomaticPoCIndelCaller">SomaticPoCIndelCaller</a> → <a href="../Command.html" class="extype" name="org.bdgenomics.guacamole.Command">Command</a></dd></dl></div>
+      <p class="shortcomment cmt">The name of the command, as it will be specified on the command line.</p><div class="fullcomment"><div class="comment cmt"><p>The name of the command, as it will be specified on the command line.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.bdgenomics.guacamole.commands.SomaticPoCIndel.Caller">Caller</a> → <a href="../Command.html" class="extype" name="org.bdgenomics.guacamole.Command">Command</a></dd></dl></div>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -513,8 +513,34 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="org.bdgenomics.guacamole.commands.SomaticPoCIndelCaller#run" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="run(rawArgs:Array[String]):Unit"></a>
+    </li><li name="org.bdgenomics.guacamole.commands.SomaticPoCIndel.Caller#run" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="run(args:org.bdgenomics.guacamole.commands.SomaticPoCIndel.Arguments,sc:org.apache.spark.SparkContext):Unit"></a>
+      <a id="run(Arguments,SparkContext):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">run</span><span class="params">(<span name="args">args: <a href="SomaticPoCIndel$$Arguments.html" class="extype" name="org.bdgenomics.guacamole.commands.SomaticPoCIndel.Arguments">Arguments</a></span>, <span name="sc">sc: <span class="extype" name="org.apache.spark.SparkContext">SparkContext</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.bdgenomics.guacamole.commands.SomaticPoCIndel.Caller">Caller</a> → <a href="../SparkCommand.html" class="extype" name="org.bdgenomics.guacamole.SparkCommand">SparkCommand</a></dd></dl></div>
+    </li><li name="org.bdgenomics.guacamole.SparkCommand#run" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="run(args:T):Unit"></a>
+      <a id="run(Arguments):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">run</span><span class="params">(<span name="args">args: <a href="SomaticPoCIndel$$Arguments.html" class="extype" name="org.bdgenomics.guacamole.commands.SomaticPoCIndel.Arguments">Arguments</a></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../SparkCommand.html" class="extype" name="org.bdgenomics.guacamole.SparkCommand">SparkCommand</a> → <a href="../Command.html" class="extype" name="org.bdgenomics.guacamole.Command">Command</a></dd></dl></div>
+    </li><li name="org.bdgenomics.guacamole.Command#run" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="run(args:Array[String]):Unit"></a>
       <a id="run(Array[String]):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -522,11 +548,13 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">run</span><span class="params">(<span name="rawArgs">rawArgs: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">run</span><span class="params">(<span name="args">args: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Run the variant caller.</p><div class="fullcomment"><div class="comment cmt"><p>Run the variant caller.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.bdgenomics.guacamole.commands.SomaticPoCIndelCaller">SomaticPoCIndelCaller</a> → <a href="../Command.html" class="extype" name="org.bdgenomics.guacamole.Command">Command</a></dd></dl></div>
+      <p class="shortcomment cmt">Run the command.</p><div class="fullcomment"><div class="comment cmt"><p>Run the command.
+</p></div><dl class="paramcmts block"><dt class="param">args</dt><dd class="cmt"><p>the command line arguments, with the first one chopped off. The first argument specifies which
+            command to run, and is therefore already consumed by Guacamole.
+</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../Command.html" class="extype" name="org.bdgenomics.guacamole.Command">Command</a></dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -619,14 +647,16 @@
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="org.apache.spark.Logging">
+        <div class="parent" name="org.bdgenomics.guacamole.SparkCommand">
+              <h3>Inherited from <a href="../SparkCommand.html" class="extype" name="org.bdgenomics.guacamole.SparkCommand">SparkCommand</a>[<a href="SomaticPoCIndel$$Arguments.html" class="extype" name="org.bdgenomics.guacamole.commands.SomaticPoCIndel.Arguments">Arguments</a>]</h3>
+            </div><div class="parent" name="org.bdgenomics.guacamole.Command">
+              <h3>Inherited from <a href="../Command.html" class="extype" name="org.bdgenomics.guacamole.Command">Command</a>[<a href="SomaticPoCIndel$$Arguments.html" class="extype" name="org.bdgenomics.guacamole.commands.SomaticPoCIndel.Arguments">Arguments</a>]</h3>
+            </div><div class="parent" name="org.apache.spark.Logging">
               <h3>Inherited from <span class="extype" name="org.apache.spark.Logging">Logging</span></h3>
             </div><div class="parent" name="scala.Serializable">
               <h3>Inherited from <span class="extype" name="scala.Serializable">Serializable</span></h3>
             </div><div class="parent" name="java.io.Serializable">
               <h3>Inherited from <span class="extype" name="java.io.Serializable">Serializable</span></h3>
-            </div><div class="parent" name="org.bdgenomics.guacamole.Command">
-              <h3>Inherited from <a href="../Command.html" class="extype" name="org.bdgenomics.guacamole.Command">Command</a></h3>
             </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
             </div><div class="parent" name="scala.Any">
