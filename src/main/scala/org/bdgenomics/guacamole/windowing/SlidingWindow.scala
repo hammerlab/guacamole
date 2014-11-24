@@ -151,9 +151,11 @@ object SlidingWindow {
       while (loci.hasNext) {
         val nextNonEmptyLocus = windows.flatMap(_.nextLocusWithRegions).reduceOption(_ min _)
         if (nextNonEmptyLocus.isEmpty) {
-          // Our windows are out of regions. We're done. Skip the loci iterator forward to the end, so the loop
-          // terminates.
+          // Our windows are out of regions. We're done.
+          // Before returning, we advance the loci iterator to the end. Not required that we do this, but it seems
+          // clearer to do so, since it makes it obvious to the caller that no more loci can be processed.
           loci.skipToEnd()
+          return None
         } else if (nextNonEmptyLocus.get <= loci.headOption.get) {
           // The next locus with regions is at or before the next locus in the iterator.
           // We advance to the next locus in the iterator, and check if the resulting windows are all empty.
@@ -172,16 +174,16 @@ object SlidingWindow {
           loci.skipTo(nextNonEmptyLocus.get)
         }
       }
-      // Out of loci
-      None
+      // No more loci remaining in the iterator. We're done.
+      return None
     } else if (loci.hasNext) {
       // Not skipping empty, and we have another locus in the iterator to go to.
       val nextLocus = loci.next()
       windows.foreach(_.setCurrentLocus(nextLocus))
-      Some(nextLocus)
+      return Some(nextLocus)
     } else {
       // We are out of loci.
-      None
+      return None
     }
   }
 }
