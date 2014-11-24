@@ -20,7 +20,7 @@ object MDTagUtils {
    * @param referenceFrom The starting point of this read alignment vs. the reference.
    * @return A sequence of bytes corresponding to the reference overlapping this read.
    */
-  def getReference(mdTag: MdTag, readSequence: Seq[Byte], cigar: Cigar, referenceFrom: Long): Seq[Byte] = {
+  def getReference(mdTag: MdTag, readSequence: Seq[Byte], cigar: Cigar, referenceFrom: Long, allowNBase: Boolean): Seq[Byte] = {
 
     var referencePos = mdTag.start
     var readPos = 0
@@ -38,6 +38,14 @@ object MDTagUtils {
               case _          => reference += readSequence(readPos).toByte
             }
 
+            readPos += 1
+            referencePos += 1
+          }
+        }
+        case CigarOperator.N if allowNBase => {
+          for (i <- 0 until cigarElement.getLength) {
+            // if a mismatch, get from the mismatch set, else pull from read
+            reference += readSequence(readPos)
             readPos += 1
             referencePos += 1
           }
