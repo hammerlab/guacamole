@@ -96,6 +96,7 @@ case class Pileup(locus: Long, referenceBase: Byte, elements: Seq[PileupElement]
    * To enable an efficient implementation, the new locus must be greater than the current locus.
    *
    * @param newLocus The locus to move forward to.
+   * @param newReferenceBase The reference base at the newLocus
    * @param newReads The *new* reads, i.e. those that overlap the new locus, but not the current locus.
    * @return A new [[Pileup]] at the given locus.
    */
