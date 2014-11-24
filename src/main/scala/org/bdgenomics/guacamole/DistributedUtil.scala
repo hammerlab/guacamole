@@ -28,7 +28,7 @@ import org.bdgenomics.guacamole.Common.Arguments.{ Base, Loci }
 import org.bdgenomics.guacamole.Common._
 import org.bdgenomics.guacamole.pileup.Pileup
 import org.bdgenomics.guacamole.reads.MappedRead
-import org.bdgenomics.guacamole.windowing.{ LociInWindowsIterator, SlidingWindow }
+import org.bdgenomics.guacamole.windowing.{ SlidingWindow }
 import org.kohsuke.args4j.{ Option => Opt }
 
 import scala.collection.mutable.{ HashMap => MutableHashMap }
@@ -351,15 +351,17 @@ object DistributedUtil extends Logging {
         collectByContig[M, T](
           taskRegionsPerSample,
           taskLoci,
-          skipEmpty,
           halfWindowSize,
-          (windowsIterator) => {
+          (loci, windows) => {
+            val lociIterator = loci.iterator
             var lastState: S = initialState
-            windowsIterator.flatMap(windows => {
+            val builder = Vector.newBuilder[T]
+            while (SlidingWindow.advanceMultipleWindows(windows, lociIterator, skipEmpty).isDefined) {
               val (state, elements) = function(lastState, windows)
               lastState = state
-              elements
-            })
+              builder ++= elements
+            }
+            builder.result.iterator
           }
         )
       }
@@ -394,44 +396,43 @@ object DistributedUtil extends Logging {
         collectByContig[M, T](
           taskRegionsPerSample,
           taskLoci,
-          skipEmpty,
           halfWindowSize,
-          (windowsIterator) => Iterator.single(windowsIterator.foldLeft(initialValue)(aggFunction)))
+          (loci, windows) => {
+            val lociIterator = loci.iterator
+            var value = initialValue
+            while (SlidingWindow.advanceMultipleWindows(windows, lociIterator, skipEmpty).isDefined) {
+              value = aggFunction(value, windows)
+            }
+            Iterator.single(value)
+          })
       }
     )
   }
 
   /**
    *
-   * Generates a sequence of results from each task (using the `generateFromWindow` function)
+   * Generates a sequence of results from each task (using the `generateFromWindows` function)
    * and collects them into a single iterator
    *
    * @param taskRegionsPerSample for each sample, elements of type M to process for this task
    * @param taskLoci Set of loci to process for this task
-   * @param skipEmpty If True, empty windows (no regions within the window) will be skipped
    * @param halfWindowSize A window centered at locus = l will contain regions overlapping l +/- halfWindowSize
-   * @param generateFromWindow Function that maps window to result type
+   * @param generateFromWindows Function that maps windows to result type
    * @tparam T result data type
    * @return Iterator[T] collected from each contig
    */
-  def collectByContig[M <: HasReferenceRegion: ClassTag, T: ClassTag](taskRegionsPerSample: PerSample[Iterator[M]],
-                                                                      taskLoci: LociSet,
-                                                                      skipEmpty: Boolean,
-                                                                      halfWindowSize: Long,
-                                                                      generateFromWindow: (LociInWindowsIterator[M] => Iterator[T])): Iterator[T] = {
+  def collectByContig[M <: HasReferenceRegion: ClassTag, T: ClassTag](
+    taskRegionsPerSample: PerSample[Iterator[M]],
+    taskLoci: LociSet,
+    halfWindowSize: Long,
+    generateFromWindows: (LociSet.SingleContig, PerSample[SlidingWindow[M]]) => Iterator[T]): Iterator[T] = {
+
     val regionSplitByContigPerSample: PerSample[RegionsByContig[M]] = taskRegionsPerSample.map(new RegionsByContig(_))
 
     taskLoci.contigs.flatMap(contig => {
       val regionIterator: PerSample[Iterator[M]] = regionSplitByContigPerSample.map(_.next(contig))
       val windows: PerSample[SlidingWindow[M]] = regionIterator.map(SlidingWindow[M](halfWindowSize, _))
-      val ranges: Iterator[LociMap.SimpleRange] = taskLoci.onContig(contig).ranges.iterator
-      generateFromWindow(
-        LociInWindowsIterator[M](
-          ranges,
-          skipEmpty = skipEmpty,
-          windows
-        )
-      )
+      generateFromWindows(taskLoci.onContig(contig), windows)
     }).iterator
   }
 
