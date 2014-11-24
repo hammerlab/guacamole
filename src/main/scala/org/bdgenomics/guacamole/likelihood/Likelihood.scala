@@ -37,11 +37,11 @@ object Likelihood {
   def uniformPrior(genotype: Genotype) = 1.0
 
   /**
-   * One way of defining the likelihood that the sequenced bases in a [[PileupElement]] are correct.
+   * One way of defining the likelihood that the sequenced bases in a pileup element are correct.
    *
    * This considers only the base quality scores.
    *
-   * @param element the [[PileupElement]] to consider
+   * @param element the [org.bdgenomics.guacamole.pileup.PileupElement]] to consider
    * @return the unnormalized likelihood the sequenced bases are correct. Plain probability, NOT a log prob.
    */
   def probabilityCorrectIgnoringAlignment(element: PileupElement): Double = {
@@ -49,11 +49,11 @@ object Likelihood {
   }
 
   /**
-   * Another way of defining the likelihood that the sequenced bases in a [[PileupElement]] are correct.
+   * Another way of defining the likelihood that the sequenced bases in a pileup element are correct.
    *
    * This considers both the base quality scores and alignment quality of the corresponding read.
    *
-   * @param element the [[PileupElement]] to consider
+   * @param element the [[org.bdgenomics.guacamole.pileup.PileupElement]] to consider
    * @return the unnormalized likelihood the sequenced bases are correct. Plain probability, NOT a log prob.
    */
   def probabilityCorrectIncludingAlignment(element: PileupElement): Double = {
@@ -63,7 +63,7 @@ object Likelihood {
   /**
    * Calculate the likelihood of a single genotype.
    *
-   * See [[likelihoodsOfGenotypes()]] for argument descriptions.
+   * @see [[likelihoodsOfGenotypes]] for argument descriptions.
    *
    * @return The likelihood for the given genotype.
    */
@@ -86,12 +86,12 @@ object Likelihood {
   }
 
   /**
-   * Calculate likelihoods for all genotypes with any evidence in a [[Pileup]].
+   * Calculate likelihoods for all genotypes with any evidence in a [[org.bdgenomics.guacamole.pileup.Pileup]].
    *
    * By "possible genotypes" we mean any genotype where both alleles in the genotype match the sequenced bases of at
    * least one element in the Pileup.
    *
-   * See [[likelihoodsOfGenotypes()]] for argument descriptions.
+   * See [[likelihoodsOfGenotypes]] for argument descriptions.
    *
    * @return A sequence of (genotype, likelihood) pairs.
    */
@@ -133,11 +133,11 @@ object Likelihood {
    * sequenced bases for that element are correct, for example by considering the base qualities and/or alignment
    * quality.
    *
-   * @param elements the [[PileupElement]] instances across which the likelihoods are calculated.
+   * @param elements the [[org.bdgenomics.guacamole.pileup.PileupElement]] instances across which the likelihoods are calculated.
    * @param genotypes the genotypes to calculate likelihoods for.
-   * @param probabilityCorrect a function of [[PileupElement]] that gives the probability that the bases sequenced are
-   *                           correct. See [[probabilityCorrectIgnoringAlignment()]] and
-   *                           [[probabilityCorrectIncludingAlignment()]] for two reasonable functions to use here.
+   * @param probabilityCorrect a function of a pileup element that gives the probability that the bases sequenced are
+   *                           correct. See [[probabilityCorrectIgnoringAlignment]] and
+   *                           [[probabilityCorrectIncludingAlignment]] for two reasonable functions to use here.
    *                           This function should return a plain probability, not a log prob.
    * @param prior a function on genotypes that gives the prior probability that genotype is correct. This function should
    *             return a plain probability, not a log prob.
