@@ -25,6 +25,7 @@ package org.bdgenomics.guacamole
 
 import java.io.{ File, FileNotFoundException }
 import java.net.ServerSocket
+import java.util.UUID
 
 import com.esotericsoftware.kryo.Kryo
 import com.twitter.chill.{ IKryoRegistrar, KryoInstantiator, KryoPool }
@@ -45,8 +46,7 @@ object TestUtil extends Matchers {
   }
 
   def tmpFileName(suffix: String): String = {
-    val tempFile = File.createTempFile("TestUtil", "")
-    tempFile.getParentFile.getAbsolutePath + tempFile.getName + suffix
+    "TestUtil." + UUID.randomUUID() + suffix
   }
 
   // As a hack to run a single unit test, you can set this to the name of a test to run only it. See the top of
