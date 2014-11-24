@@ -24,9 +24,9 @@
         </head>
         <body class="type">
       <div id="definition">
-        <img src="../../../../lib/class_big.png" />
+        <a href="SlidingWindow$.html" title="Go to companion"><img src="../../../../lib/class_to_object_big.png" /></a>
         <p id="owner"><a href="../../../package.html" class="extype" name="org">org</a>.<a href="../../package.html" class="extype" name="org.bdgenomics">bdgenomics</a>.<a href="../package.html" class="extype" name="org.bdgenomics.guacamole">guacamole</a>.<a href="package.html" class="extype" name="org.bdgenomics.guacamole.windowing">windowing</a></p>
-        <h1>SlidingWindow</h1>
+        <h1><a href="SlidingWindow$.html" title="Go to companion">SlidingWindow</a></h1>
       </div>
 
       <h4 id="signature" class="signature">
@@ -240,23 +240,6 @@ of objects are sorted.
       </span>
       </h4>
       <p class="shortcomment cmt">The regions that overlap the window surrounding <a href="#currentLocus:Long" class="extmbr" name="org.bdgenomics.guacamole.windowing.SlidingWindow#currentLocus">currentLocus</a>.</p>
-    </li><li name="org.bdgenomics.guacamole.windowing.SlidingWindow#endOfRange" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="endOfRange():Option[Long]"></a>
-      <a id="endOfRange():Option[Long]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">endOfRange</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">The highest base covered by the window at <a href="#currentLocus:Long" class="extmbr" name="org.bdgenomics.guacamole.windowing.SlidingWindow#currentLocus">currentLocus</a>
-</p><div class="fullcomment"><div class="comment cmt"><p>The highest base covered by the window at <a href="#currentLocus:Long" class="extmbr" name="org.bdgenomics.guacamole.windowing.SlidingWindow#currentLocus">currentLocus</a>
-</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>The greater the end of the window (currentLocus + halfWindowSize) or end of the last read in
-        <a href="#currentRegions():Seq[Region]" class="extmbr" name="org.bdgenomics.guacamole.windowing.SlidingWindow#currentRegions">currentRegions</a>
-</p></dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -527,6 +510,23 @@ of objects are sorted.
       </span>
       </h4>
       <p class="shortcomment cmt">The new regions that were added to currentRegions as a result of the most recent call to setCurrentLocus.</p>
+    </li><li name="org.bdgenomics.guacamole.windowing.SlidingWindow#nextLocusWithRegions" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="nextLocusWithRegions():Option[Long]"></a>
+      <a id="nextLocusWithRegions():Option[Long]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">nextLocusWithRegions</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Find the next locus for which calling setCurrentLocus(locus) would result in a non-empty set of regions in
+currentRegions.</p><div class="fullcomment"><div class="comment cmt"><p>Find the next locus for which calling setCurrentLocus(locus) would result in a non-empty set of regions in
+currentRegions.
+</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>Some(locus) if such a locus exists, otherwise None
+</p></dd></dl></div>
     </li><li name="scala.AnyRef#notify" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notify():Unit"></a>
       <a id="notify():Unit"></a>
@@ -566,6 +566,23 @@ of objects are sorted.
       </span>
       </h4>
       <p class="shortcomment cmt">Iterator of regions, sorted by the aligned start locus.</p>
+    </li><li name="org.bdgenomics.guacamole.windowing.SlidingWindow#setCurrentLocus" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="setCurrentLocus(locus:Long):Seq[Region]"></a>
+      <a id="setCurrentLocus(Long):Seq[Region]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">setCurrentLocus</span><span class="params">(<span name="locus">locus: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="org.bdgenomics.guacamole.windowing.SlidingWindow.Region">Region</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Advance to the specified locus, which must be greater than the current locus.</p><div class="fullcomment"><div class="comment cmt"><p>Advance to the specified locus, which must be greater than the current locus. After calling this, the
+<a href="#currentRegions():Seq[Region]" class="extmbr" name="org.bdgenomics.guacamole.windowing.SlidingWindow#currentRegions">currentRegions</a> method will give the overlapping regions at the new locus.
+</p></div><dl class="paramcmts block"><dt class="param">locus</dt><dd class="cmt"><p>Locus to advance to.</p></dd><dt>returns</dt><dd class="cmt"><p>The *new regions* that were added as a result of this call. Note that this is not the full set of regions
+        in the window: you must examine <a href="#currentRegions():Seq[Region]" class="extmbr" name="org.bdgenomics.guacamole.windowing.SlidingWindow#currentRegions">currentRegions</a> for that.
+</p></dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
