@@ -40,9 +40,9 @@
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>We represent a nucleotide base as a Byte, whose value is equal to the ASCII value of the character representing the
-base (e.g. A, C, T, G). We represent a nucleotide sequence as an Array[Byte].</p><p>This is an optimization over java Chars and Strings which use two bytes per character.</p><p>Unfortunately, working with Bytes and especially Array[Byte] is a bit of a hassle and can be error-prone. The
-functions here are for working with these types correctly.</p><p>Things to know:</p><ul><li>you can compare two bases b1, b2 as you'd expect: b1 == b2</li><li>you CANNOT compare two Array[Byte] instances with == (or even .equals). Use the equal() function defined here.</li><li>If b is a base (say &quot;A&quot;) then b.toString does NOT give you want (in this case it would give you &quot;65&quot;). Use the
-   baseToString() function defined here.</li></ul></div><div class="toggleContainer block">
+base (for example: A, C, T, G). We represent a nucleotide sequence as a Seq[Byte].</p><p>This is an optimization over java Chars and Strings which use two bytes per character.
+</p></div><dl class="attributes block"> <dt>Note</dt><dd><span class="cmt"><p>If b is a base (say &quot;A&quot;) then b.toString does NOT give you want (in this case it would give you &quot;65&quot;). Use the
+      baseToString() function defined here.</p></span></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>

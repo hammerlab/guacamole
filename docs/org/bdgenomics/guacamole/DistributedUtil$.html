@@ -39,7 +39,8 @@
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Primitives for analyzing mapped reads with Spark.
+</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="org.apache.spark.Logging">Logging</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
@@ -658,7 +659,8 @@ about the same number of regions.
                  where at least one read overlaps. If false, then the function will be called at all the
                  specified loci. In cases where whole contigs may have no reads mapped (e.g. if running on
                  only a single chromosome, but loading loci from a sequence dictionary that includes the
-                 entire genome), this is an important optimization.</p><p>See <span class="extype" name="windowTaskFlatMapMultipleRDDs()">windowTaskFlatMapMultipleRDDs()</span> for other argument descriptions.</p></dd></dl></div>
+                 entire genome), this is an important optimization.
+</p></dd></dl><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p>the windowTaskFlatMapMultipleRDDs function for other argument descriptions</p></span></dd></dl></div>
     </li><li name="org.bdgenomics.guacamole.DistributedUtil#pileupFlatMapTwoRDDs" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="pileupFlatMapTwoRDDs[T](reads1:org.apache.spark.rdd.RDD[org.bdgenomics.guacamole.reads.MappedRead],reads2:org.apache.spark.rdd.RDD[org.bdgenomics.guacamole.reads.MappedRead],lociPartitions:org.bdgenomics.guacamole.LociMap[Long],skipEmpty:Boolean,function:(org.bdgenomics.guacamole.pileup.Pileup,org.bdgenomics.guacamole.pileup.Pileup)=&gt;Iterator[T])(implicitevidence$4:scala.reflect.ClassTag[T]):org.apache.spark.rdd.RDD[T]"></a>
       <a id="pileupFlatMapTwoRDDs[T](RDD[MappedRead],RDD[MappedRead],LociMap[Long],Boolean,(Pileup,Pileup)⇒Iterator[T])(ClassTag[T]):RDD[T]"></a>
@@ -673,7 +675,8 @@ about the same number of regions.
       </h4>
       <p class="shortcomment cmt">Flatmap across loci on two RDDs of MappedReads.</p><div class="fullcomment"><div class="comment cmt"><p>Flatmap across loci on two RDDs of MappedReads. At each locus the provided function is passed two Pileup instances,
 giving the pileup for the reads in each RDD at that locus.
-</p></div><dl class="paramcmts block"><dt class="param">skipEmpty</dt><dd class="cmt"><p>see <a href="#pileupFlatMap[T](reads:org.apache.spark.rdd.RDD[org.bdgenomics.guacamole.reads.MappedRead],lociPartitions:org.bdgenomics.guacamole.LociMap[Long],skipEmpty:Boolean,function:org.bdgenomics.guacamole.pileup.Pileup=&gt;Iterator[T])(implicitevidence$3:scala.reflect.ClassTag[T]):org.apache.spark.rdd.RDD[T]" class="extmbr" name="org.bdgenomics.guacamole.DistributedUtil#pileupFlatMap">pileupFlatMap</a> for description.</p><p>See <span class="extype" name="windowTaskFlatMapMultipleRDDs()">windowTaskFlatMapMultipleRDDs()</span> for other argument descriptions.</p></dd></dl></div>
+</p></div><dl class="paramcmts block"><dt class="param">skipEmpty</dt><dd class="cmt"><p>see <a href="#pileupFlatMap[T](reads:org.apache.spark.rdd.RDD[org.bdgenomics.guacamole.reads.MappedRead],lociPartitions:org.bdgenomics.guacamole.LociMap[Long],skipEmpty:Boolean,function:org.bdgenomics.guacamole.pileup.Pileup=&gt;Iterator[T])(implicitevidence$3:scala.reflect.ClassTag[T]):org.apache.spark.rdd.RDD[T]" class="extmbr" name="org.bdgenomics.guacamole.DistributedUtil#pileupFlatMap">pileupFlatMap</a> for description.
+</p></dd></dl><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p>the windowTaskFlatMapMultipleRDDs function for other argument descriptions.</p></span></dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>

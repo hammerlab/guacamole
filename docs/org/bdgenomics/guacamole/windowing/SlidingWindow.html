@@ -41,14 +41,13 @@
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Suppose we have a set of loci on a given contig and some objects that are mapped to that contig, and at each locus we
 want to look at the regions that overlap a window of a certain number of bases surrounding that locus. This class
-implements this &quot;sliding window&quot; functionality.</p><p>After instantiating this class, call <span class="extype" name="SlidingWindow.setCurrentLocus(">)</span> repeatedly for each
-locus being considered. After calling this method, the <a href="#currentRegions():Seq[Region]" class="extmbr" name="org.bdgenomics.guacamole.windowing.SlidingWindow#currentRegions">SlidingWindow.currentRegions</a> property will contain the
-objects that overlap the current locus.</p><p>To enable an efficient implementation, we require that both the sequence of loci to be considered and the iterator
+implements this &quot;sliding window&quot; functionality.</p><p>After instantiating this class, call <a href="#setCurrentLocus(locus:Long):Seq[Region]" class="extmbr" name="org.bdgenomics.guacamole.windowing.SlidingWindow#setCurrentLocus">setCurrentLocus</a> repeatedly for each locus being considered. After calling
+this method, the <a href="#currentRegions():Seq[Region]" class="extmbr" name="org.bdgenomics.guacamole.windowing.SlidingWindow#currentRegions">currentRegions</a> property will contain the objects that overlap the current locus.</p><p>To enable an efficient implementation, we require that both the sequence of loci to be considered and the iterator
 of objects are sorted.
 </p></div><dl class="paramcmts block"><dt class="param">halfWindowSize</dt><dd class="cmt"><p>Number of nucleotide bases to either side of the specified locus to provide regions for. For
-                      example, if halfWindowSize=5, and our currentLocus=100, then currentRegions will include
-                      regions that map to anywhere between 95 and 105, inclusive. Set to 0 to consider only regions
-                      that overlap the exact locus being considered, with no surrounding window.
+                      example, if <a href="#halfWindowSize:Long" class="extmbr" name="org.bdgenomics.guacamole.windowing.SlidingWindow#halfWindowSize">halfWindowSize</a>=5, and our <a href="#currentLocus:Long" class="extmbr" name="org.bdgenomics.guacamole.windowing.SlidingWindow#currentLocus">currentLocus</a>=100, then <a href="#currentRegions():Seq[Region]" class="extmbr" name="org.bdgenomics.guacamole.windowing.SlidingWindow#currentRegions">currentRegions</a> will
+                      include regions that map to anywhere between 95 and 105, inclusive. Set to 0 to consider only
+                      regions that overlap the exact locus being considered, with no surrounding window.
 </p></dd><dt class="param">rawSortedRegions</dt><dd class="cmt"><p>Iterator of regions, sorted by the aligned start locus.
 </p></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
@@ -103,9 +102,9 @@ of objects are sorted.
       </span>
       </h4>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">halfWindowSize</dt><dd class="cmt"><p>Number of nucleotide bases to either side of the specified locus to provide regions for. For
-                      example, if halfWindowSize=5, and our currentLocus=100, then currentRegions will include
-                      regions that map to anywhere between 95 and 105, inclusive. Set to 0 to consider only regions
-                      that overlap the exact locus being considered, with no surrounding window.
+                      example, if <a href="#halfWindowSize:Long" class="extmbr" name="org.bdgenomics.guacamole.windowing.SlidingWindow#halfWindowSize">halfWindowSize</a>=5, and our <a href="#currentLocus:Long" class="extmbr" name="org.bdgenomics.guacamole.windowing.SlidingWindow#currentLocus">currentLocus</a>=100, then <a href="#currentRegions():Seq[Region]" class="extmbr" name="org.bdgenomics.guacamole.windowing.SlidingWindow#currentRegions">currentRegions</a> will
+                      include regions that map to anywhere between 95 and 105, inclusive. Set to 0 to consider only
+                      regions that overlap the exact locus being considered, with no surrounding window.
 </p></dd><dt class="param">rawSortedRegions</dt><dd class="cmt"><p>Iterator of regions, sorted by the aligned start locus.
 </p></dd></dl></div>
     </li></ol>
@@ -298,9 +297,9 @@ of objects are sorted.
       </span>
       </h4>
       <p class="shortcomment cmt">Number of nucleotide bases to either side of the specified locus to provide regions for.</p><div class="fullcomment"><div class="comment cmt"><p>Number of nucleotide bases to either side of the specified locus to provide regions for. For
-                      example, if halfWindowSize=5, and our currentLocus=100, then currentRegions will include
-                      regions that map to anywhere between 95 and 105, inclusive. Set to 0 to consider only regions
-                      that overlap the exact locus being considered, with no surrounding window.
+                      example, if <a href="#halfWindowSize:Long" class="extmbr" name="org.bdgenomics.guacamole.windowing.SlidingWindow#halfWindowSize">halfWindowSize</a>=5, and our <a href="#currentLocus:Long" class="extmbr" name="org.bdgenomics.guacamole.windowing.SlidingWindow#currentLocus">currentLocus</a>=100, then <a href="#currentRegions():Seq[Region]" class="extmbr" name="org.bdgenomics.guacamole.windowing.SlidingWindow#currentRegions">currentRegions</a> will
+                      include regions that map to anywhere between 95 and 105, inclusive. Set to 0 to consider only
+                      regions that overlap the exact locus being considered, with no surrounding window.
 </p></div></div>
     </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>

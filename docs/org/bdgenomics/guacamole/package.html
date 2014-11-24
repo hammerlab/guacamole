@@ -39,13 +39,43 @@
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"></div>
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Guacamole is a framework for writing variant callers on the Apache Spark platform. Several variant callers are
+implemented in the <a href="commands/package.html" class="extype" name="org.bdgenomics.guacamole.commands">org.bdgenomics.guacamole.commands</a> package. The remaining packages implement a library of
+functionality used by these callers.</p><p>To get started, take a look at the code for <a href="commands/GermlineThreshold$.html" class="extype" name="org.bdgenomics.guacamole.commands.GermlineThreshold">org.bdgenomics.guacamole.commands.GermlineThreshold</a> for a
+pedagogical example of a variant caller, then see <a href="pileup/Pileup.html" class="extype" name="org.bdgenomics.guacamole.pileup.Pileup">org.bdgenomics.guacamole.pileup.Pileup</a> to understand how we
+work with pileups. The <a href="commands/SomaticStandard$.html" class="extype" name="org.bdgenomics.guacamole.commands.SomaticStandard">org.bdgenomics.guacamole.commands.SomaticStandard</a> caller is a more
+sophisticated caller (for the somatic setting) that gives an example of most of the functionality in the rest of the
+library.
+</p></div><div class="toggleContainer block">
+          <span class="toggle">Linear Supertypes</span>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+        </div></div>
         
 
       <div id="mbrsel">
         <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
-        
-        
+        <div id="order">
+              <span class="filtertype">Ordering</span>
+              <ol>
+                
+                <li class="alpha in"><span>Alphabetic</span></li>
+                <li class="inherit out"><span>By inheritance</span></li>
+              </ol>
+            </div>
+        <div id="ancestors">
+                <span class="filtertype">Inherited<br />
+                </span>
+                <ol id="linearization">
+                  <li class="in" name="org.bdgenomics.guacamole"><span>guacamole</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                </ol>
+              </div><div id="ancestors">
+            <span class="filtertype"></span>
+            <ol>
+              <li class="hideall out"><span>Hide All</span></li>
+              <li class="showall in"><span>Show all</span></li>
+            </ol>
+            <a href="http://docs.scala-lang.org/overviews/scaladoc/usage.html#members" target="_blank">Learn more about member selection</a>
+          </div>
         <div id="visbl">
             <span class="filtertype">Visibility</span>
             <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
@@ -109,8 +139,7 @@
         <a href="HasReferenceRegion.html"><span class="name">HasReferenceRegion</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       </h4>
-      <p class="comment cmt">   TODO: replace with ReferenceRegion base class in ADAM
-</p>
+      <p class="comment cmt">Trait for objects that are associated with an interval on the genome.</p>
     </li><li name="org.bdgenomics.guacamole.LociMap" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="LociMap[T]extendsProductwithSerializable"></a>
       <a id="LociMap[T]:LociMap[T]"></a>
@@ -235,7 +264,7 @@
       </span>
       </h4>
       <p class="comment cmt">We represent a nucleotide base as a Byte, whose value is equal to the ASCII value of the character representing the
-base (e.</p>
+base (for example: A, C, T, G).</p>
     </li><li name="org.bdgenomics.guacamole.CigarUtils" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="CigarUtils"></a>
       <a id="CigarUtils:CigarUtils"></a>
@@ -261,8 +290,7 @@ base (e.</p>
         <a href="Common$.html"><span class="name">Common</span></a><span class="result"> extends <span class="extype" name="org.apache.spark.Logging">Logging</span></span>
       </span>
       </h4>
-      <p class="comment cmt">Collection of functions that are useful to multiple variant calling implementations, and specifications of command-
-line arguments that they use.</p>
+      <p class="comment cmt">Basic functions that most commands need, and specifications of command-line arguments that they use.</p>
     </li><li name="org.bdgenomics.guacamole.Concordance" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="Concordance"></a>
       <a id="Concordance:Concordance"></a>
@@ -302,7 +330,7 @@ the called variants to a gold standard VCF after they are computed, in the same 
         <a href="DistributedUtil$.html"><span class="name">DistributedUtil</span></a><span class="result"> extends <span class="extype" name="org.apache.spark.Logging">Logging</span></span>
       </span>
       </h4>
-      
+      <p class="comment cmt">Primitives for analyzing mapped reads with Spark.</p>
     </li><li name="org.bdgenomics.guacamole.Guacamole" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="Guacamole"></a>
       <a id="Guacamole:Guacamole"></a>
@@ -367,7 +395,7 @@ the called variants to a gold standard VCF after they are computed, in the same 
         <a href="commands/package.html"><span class="name">commands</span></a>
       </span>
       </h4>
-      
+      <p class="comment cmt">Commands (such as variant callers) that can be invoked on the command line.</p>
     </li><li name="org.bdgenomics.guacamole.filters" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="filters"></a>
       <a id="filters:filters"></a>
@@ -380,7 +408,8 @@ the called variants to a gold standard VCF after they are computed, in the same 
         <a href="filters/package.html"><span class="name">filters</span></a>
       </span>
       </h4>
-      
+      <p class="comment cmt">Strategies for filtering reads, filtering bases within reads, and filtering the results of variant calling (called
+genotypes).</p>
     </li><li name="org.bdgenomics.guacamole.likelihood" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="likelihood"></a>
       <a id="likelihood:likelihood"></a>
@@ -393,7 +422,7 @@ the called variants to a gold standard VCF after they are computed, in the same 
         <a href="likelihood/package.html"><span class="name">likelihood</span></a>
       </span>
       </h4>
-      
+      <p class="comment cmt">Implementations of likelihood models.</p>
     </li><li name="org.bdgenomics.guacamole.pileup" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="pileup"></a>
       <a id="pileup:pileup"></a>
@@ -406,7 +435,8 @@ the called variants to a gold standard VCF after they are computed, in the same 
         <a href="pileup/package.html"><span class="name">pileup</span></a>
       </span>
       </h4>
-      
+      <p class="comment cmt">Answer questions like: given some reads that overlap a locus of interest, what bases were sequenced at that locus?
+</p>
     </li><li name="org.bdgenomics.guacamole.reads" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="reads"></a>
       <a id="reads:reads"></a>
@@ -419,7 +449,7 @@ the called variants to a gold standard VCF after they are computed, in the same 
         <a href="reads/package.html"><span class="name">reads</span></a>
       </span>
       </h4>
-      
+      <p class="comment cmt">Classes for representing sequenced reads, mapped or unmapped.</p>
     </li><li name="org.bdgenomics.guacamole.variants" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="variants"></a>
       <a id="variants:variants"></a>
@@ -432,7 +462,7 @@ the called variants to a gold standard VCF after they are computed, in the same 
         <a href="variants/package.html"><span class="name">variants</span></a>
       </span>
       </h4>
-      
+      <p class="comment cmt">Classes to represent the results of variant calling.</p>
     </li><li name="org.bdgenomics.guacamole.windowing" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="windowing"></a>
       <a id="windowing:windowing"></a>
@@ -445,7 +475,8 @@ the called variants to a gold standard VCF after they are computed, in the same 
         <a href="windowing/package.html"><span class="name">windowing</span></a>
       </span>
       </h4>
-      
+      <p class="comment cmt">Step through loci in the genome and at each step consider all the reads (or any object that implements the trait
+<a href="HasReferenceRegion.html" class="extype" name="org.bdgenomics.guacamole.HasReferenceRegion">HasReferenceRegion</a>) that overlap the locus.</p>
     </li></ol>
             </div>
 
@@ -455,7 +486,11 @@ the called variants to a gold standard VCF after they are computed, in the same 
         </div>
 
         <div id="inheritedMembers">
-        
+        <div class="parent" name="scala.AnyRef">
+              <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
+            </div><div class="parent" name="scala.Any">
+              <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
+            </div>
         
         </div>
 

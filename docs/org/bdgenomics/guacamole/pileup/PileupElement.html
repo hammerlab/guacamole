@@ -35,13 +35,13 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">PileupElement</span><span class="params">(<span name="read">read: <a href="../reads/MappedRead.html" class="extype" name="org.bdgenomics.guacamole.reads.MappedRead">MappedRead</a></span>, <span name="locus">locus: <span class="extype" name="scala.Long">Long</span></span>, <span name="readPosition">readPosition: <span class="extype" name="scala.Int">Int</span></span>, <span name="cigarElementIdx">cigarElementIdx: <span class="extype" name="scala.Int">Int</span></span>, <span name="cigarElementLocus">cigarElementLocus: <span class="extype" name="scala.Long">Long</span></span>, <span name="indexWithinCigarElement">indexWithinCigarElement: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">PileupElement</span><span class="params">(<span name="read">read: <a href="../reads/MappedRead.html" class="extype" name="org.bdgenomics.guacamole.reads.MappedRead">MappedRead</a></span>, <span name="locus">locus: <span class="extype" name="scala.Long">Long</span></span>, <span name="readPosition">readPosition: <span class="extype" name="scala.Int">Int</span></span>, <span name="cigarElementIndex">cigarElementIndex: <span class="extype" name="scala.Int">Int</span></span>, <span name="cigarElementLocus">cigarElementLocus: <span class="extype" name="scala.Long">Long</span></span>, <span name="indexWithinCigarElement">indexWithinCigarElement: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>A <a href="" class="extype" name="org.bdgenomics.guacamole.pileup.PileupElement">PileupElement</a> represents the bases sequenced by a particular read at a particular reference locus.
-</p></div><dl class="paramcmts block"><dt class="param">read</dt><dd class="cmt"><p>The read this <a href="" class="extype" name="org.bdgenomics.guacamole.pileup.PileupElement">PileupElement</a> is coming from.</p></dd><dt class="param">locus</dt><dd class="cmt"><p>The reference locus.</p></dd><dt class="param">readPosition</dt><dd class="cmt"><p>The offset into the sequence of bases in the read that this element corresponds to.</p></dd><dt class="param">cigarElementIdx</dt><dd class="cmt"><p>The idx in <span class="extype" name="read.cigarElements">read.cigarElements</span> of the <span class="extype" name="CigarElement">CigarElement</span> corresponding to the current
-                       readPosition.</p></dd><dt class="param">cigarElementLocus</dt><dd class="cmt"><p>The reference START position of the cigar element.
+</p></div><dl class="paramcmts block"><dt class="param">read</dt><dd class="cmt"><p>The read this <a href="" class="extype" name="org.bdgenomics.guacamole.pileup.PileupElement">PileupElement</a> is coming from.</p></dd><dt class="param">locus</dt><dd class="cmt"><p>The reference locus.</p></dd><dt class="param">readPosition</dt><dd class="cmt"><p>The offset into the sequence of bases in the read that this element corresponds to.</p></dd><dt class="param">cigarElementIndex</dt><dd class="cmt"><p>The index in the read's sequence of cigar elements (<a href="../reads/MappedRead.html#cigarElements:scala.collection.mutable.Buffer[htsjdk.samtools.CigarElement]" class="extmbr" name="org.bdgenomics.guacamole.reads.MappedRead#cigarElements">org.bdgenomics.guacamole.reads.MappedRead.cigarElements</a>)
+                         of the element that contains the current readPosition.</p></dd><dt class="param">cigarElementLocus</dt><dd class="cmt"><p>The reference START position of the current cigar element.
                          If the element is an INSERTION this the PRECEDING reference base</p></dd><dt class="param">indexWithinCigarElement</dt><dd class="cmt"><p>The offset of this element within the current cigar element.
 </p></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
@@ -84,7 +84,7 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="org.bdgenomics.guacamole.pileup.PileupElement#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="&lt;init&gt;(read:org.bdgenomics.guacamole.reads.MappedRead,locus:Long,readPosition:Int,cigarElementIdx:Int,cigarElementLocus:Long,indexWithinCigarElement:Int):org.bdgenomics.guacamole.pileup.PileupElement"></a>
+      <a id="&lt;init&gt;(read:org.bdgenomics.guacamole.reads.MappedRead,locus:Long,readPosition:Int,cigarElementIndex:Int,cigarElementLocus:Long,indexWithinCigarElement:Int):org.bdgenomics.guacamole.pileup.PileupElement"></a>
       <a id="&lt;init&gt;:PileupElement"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -92,11 +92,11 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">PileupElement</span><span class="params">(<span name="read">read: <a href="../reads/MappedRead.html" class="extype" name="org.bdgenomics.guacamole.reads.MappedRead">MappedRead</a></span>, <span name="locus">locus: <span class="extype" name="scala.Long">Long</span></span>, <span name="readPosition">readPosition: <span class="extype" name="scala.Int">Int</span></span>, <span name="cigarElementIdx">cigarElementIdx: <span class="extype" name="scala.Int">Int</span></span>, <span name="cigarElementLocus">cigarElementLocus: <span class="extype" name="scala.Long">Long</span></span>, <span name="indexWithinCigarElement">indexWithinCigarElement: <span class="extype" name="scala.Int">Int</span></span>)</span>
+        <span class="name">PileupElement</span><span class="params">(<span name="read">read: <a href="../reads/MappedRead.html" class="extype" name="org.bdgenomics.guacamole.reads.MappedRead">MappedRead</a></span>, <span name="locus">locus: <span class="extype" name="scala.Long">Long</span></span>, <span name="readPosition">readPosition: <span class="extype" name="scala.Int">Int</span></span>, <span name="cigarElementIndex">cigarElementIndex: <span class="extype" name="scala.Int">Int</span></span>, <span name="cigarElementLocus">cigarElementLocus: <span class="extype" name="scala.Long">Long</span></span>, <span name="indexWithinCigarElement">indexWithinCigarElement: <span class="extype" name="scala.Int">Int</span></span>)</span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">read</dt><dd class="cmt"><p>The read this <a href="" class="extype" name="org.bdgenomics.guacamole.pileup.PileupElement">PileupElement</a> is coming from.</p></dd><dt class="param">locus</dt><dd class="cmt"><p>The reference locus.</p></dd><dt class="param">readPosition</dt><dd class="cmt"><p>The offset into the sequence of bases in the read that this element corresponds to.</p></dd><dt class="param">cigarElementIdx</dt><dd class="cmt"><p>The idx in <span class="extype" name="read.cigarElements">read.cigarElements</span> of the <span class="extype" name="CigarElement">CigarElement</span> corresponding to the current
-                       readPosition.</p></dd><dt class="param">cigarElementLocus</dt><dd class="cmt"><p>The reference START position of the cigar element.
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">read</dt><dd class="cmt"><p>The read this <a href="" class="extype" name="org.bdgenomics.guacamole.pileup.PileupElement">PileupElement</a> is coming from.</p></dd><dt class="param">locus</dt><dd class="cmt"><p>The reference locus.</p></dd><dt class="param">readPosition</dt><dd class="cmt"><p>The offset into the sequence of bases in the read that this element corresponds to.</p></dd><dt class="param">cigarElementIndex</dt><dd class="cmt"><p>The index in the read's sequence of cigar elements (<a href="../reads/MappedRead.html#cigarElements:scala.collection.mutable.Buffer[htsjdk.samtools.CigarElement]" class="extmbr" name="org.bdgenomics.guacamole.reads.MappedRead#cigarElements">org.bdgenomics.guacamole.reads.MappedRead.cigarElements</a>)
+                         of the element that contains the current readPosition.</p></dd><dt class="param">cigarElementLocus</dt><dd class="cmt"><p>The reference START position of the current cigar element.
                          If the element is an INSERTION this the PRECEDING reference base</p></dd><dt class="param">indexWithinCigarElement</dt><dd class="cmt"><p>The offset of this element within the current cigar element.
 </p></dd></dl></div>
     </li></ol>
@@ -205,7 +205,7 @@
         <span class="name">advanceToNextCigarElement</span><span class="result">: <a href="" class="extype" name="org.bdgenomics.guacamole.pileup.PileupElement">PileupElement</a></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Returns a new <a href="" class="extype" name="org.bdgenomics.guacamole.pileup.PileupElement">PileupElement</a> of the same read, advanced by one <span class="extype" name="CigarElement">CigarElement</span>.</p>
+      <p class="shortcomment cmt">Returns a new <a href="" class="extype" name="org.bdgenomics.guacamole.pileup.PileupElement">PileupElement</a> of the same read, advanced by one cigar element.</p>
     </li><li name="org.bdgenomics.guacamole.pileup.PileupElement#alignment" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="alignment:org.bdgenomics.guacamole.pileup.Alignment"></a>
       <a id="alignment:Alignment"></a>
@@ -271,20 +271,20 @@
       </span>
       </h4>
       
-    </li><li name="org.bdgenomics.guacamole.pileup.PileupElement#cigarElementIdx" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="cigarElementIdx:Int"></a>
-      <a id="cigarElementIdx:Int"></a>
+    </li><li name="org.bdgenomics.guacamole.pileup.PileupElement#cigarElementIndex" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="cigarElementIndex:Int"></a>
+      <a id="cigarElementIndex:Int"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">cigarElementIdx</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+        <span class="name">cigarElementIndex</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">The idx in <span class="extype" name="read.cigarElements">read.cigarElements</span> of the <span class="extype" name="CigarElement">CigarElement</span> corresponding to the current
-                       readPosition.</p>
+      <p class="shortcomment cmt">The index in the read's sequence of cigar elements (<a href="../reads/MappedRead.html#cigarElements:scala.collection.mutable.Buffer[htsjdk.samtools.CigarElement]" class="extmbr" name="org.bdgenomics.guacamole.reads.MappedRead#cigarElements">org.bdgenomics.guacamole.reads.MappedRead.cigarElements</a>)
+                         of the element that contains the current readPosition.</p>
     </li><li name="org.bdgenomics.guacamole.pileup.PileupElement#cigarElementLocus" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="cigarElementLocus:Long"></a>
       <a id="cigarElementLocus:Long"></a>
@@ -297,7 +297,7 @@
         <span class="name">cigarElementLocus</span><span class="result">: <span class="extype" name="scala.Long">Long</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">The reference START position of the cigar element.</p><div class="fullcomment"><div class="comment cmt"><p>The reference START position of the cigar element.
+      <p class="shortcomment cmt">The reference START position of the current cigar element.</p><div class="fullcomment"><div class="comment cmt"><p>The reference START position of the current cigar element.
                          If the element is an INSERTION this the PRECEDING reference base</p></div></div>
     </li><li name="org.bdgenomics.guacamole.pileup.PileupElement#cigarElementReadLength" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="cigarElementReadLength:Int"></a>
@@ -356,7 +356,7 @@
         <span class="name">currentCigarElementContainsLocus</span><span class="params">(<span name="referenceLocus">referenceLocus: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Returns whether the current <span class="extype" name="CigarElement">CigarElement</span> of this <span class="extype" name="MappedRead">MappedRead</span> contains the given @referenceLocus.</p><div class="fullcomment"><div class="comment cmt"><p>Returns whether the current <span class="extype" name="CigarElement">CigarElement</span> of this <span class="extype" name="MappedRead">MappedRead</span> contains the given @referenceLocus.</p><p>Can only return true if <a href="#cigarElement:htsjdk.samtools.CigarElement" class="extmbr" name="org.bdgenomics.guacamole.pileup.PileupElement#cigarElement">cigarElement</a> actually consumes reference bases.
+      <p class="shortcomment cmt">Returns whether the current cigar element of this <a href="../reads/MappedRead.html" class="extype" name="org.bdgenomics.guacamole.reads.MappedRead">org.bdgenomics.guacamole.reads.MappedRead</a> contains the given reference locus.</p><div class="fullcomment"><div class="comment cmt"><p>Returns whether the current cigar element of this <a href="../reads/MappedRead.html" class="extype" name="org.bdgenomics.guacamole.reads.MappedRead">org.bdgenomics.guacamole.reads.MappedRead</a> contains the given reference locus.</p><p>Can only return true if the cigar element consumes reference bases.
 </p></div></div>
     </li><li name="org.bdgenomics.guacamole.pileup.PileupElement#distanceFromSequencingEnd" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="distanceFromSequencingEnd:Long"></a>

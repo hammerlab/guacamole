@@ -39,13 +39,37 @@
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"></div>
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Answer questions like: given some reads that overlap a locus of interest, what bases were sequenced at that locus?
+</p></div><div class="toggleContainer block">
+          <span class="toggle">Linear Supertypes</span>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+        </div></div>
         
 
       <div id="mbrsel">
         <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
-        
-        
+        <div id="order">
+              <span class="filtertype">Ordering</span>
+              <ol>
+                
+                <li class="alpha in"><span>Alphabetic</span></li>
+                <li class="inherit out"><span>By inheritance</span></li>
+              </ol>
+            </div>
+        <div id="ancestors">
+                <span class="filtertype">Inherited<br />
+                </span>
+                <ol id="linearization">
+                  <li class="in" name="org.bdgenomics.guacamole.pileup"><span>pileup</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                </ol>
+              </div><div id="ancestors">
+            <span class="filtertype"></span>
+            <ol>
+              <li class="hideall out"><span>Hide All</span></li>
+              <li class="showall in"><span>Show all</span></li>
+            </ol>
+            <a href="http://docs.scala-lang.org/overviews/scaladoc/usage.html#members" target="_blank">Learn more about member selection</a>
+          </div>
         <div id="visbl">
             <span class="filtertype">Visibility</span>
             <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
@@ -159,7 +183,7 @@ locus.</p>
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="PileupElement.html"><span class="name">PileupElement</span></a><span class="params">(<span name="read">read: <a href="../reads/MappedRead.html" class="extype" name="org.bdgenomics.guacamole.reads.MappedRead">MappedRead</a></span>, <span name="locus">locus: <span class="extype" name="scala.Long">Long</span></span>, <span name="readPosition">readPosition: <span class="extype" name="scala.Int">Int</span></span>, <span name="cigarElementIdx">cigarElementIdx: <span class="extype" name="scala.Int">Int</span></span>, <span name="cigarElementLocus">cigarElementLocus: <span class="extype" name="scala.Long">Long</span></span>, <span name="indexWithinCigarElement">indexWithinCigarElement: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="PileupElement.html"><span class="name">PileupElement</span></a><span class="params">(<span name="read">read: <a href="../reads/MappedRead.html" class="extype" name="org.bdgenomics.guacamole.reads.MappedRead">MappedRead</a></span>, <span name="locus">locus: <span class="extype" name="scala.Long">Long</span></span>, <span name="readPosition">readPosition: <span class="extype" name="scala.Int">Int</span></span>, <span name="cigarElementIndex">cigarElementIndex: <span class="extype" name="scala.Int">Int</span></span>, <span name="cigarElementLocus">cigarElementLocus: <span class="extype" name="scala.Long">Long</span></span>, <span name="indexWithinCigarElement">indexWithinCigarElement: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       <p class="comment cmt">A <a href="PileupElement.html" class="extype" name="org.bdgenomics.guacamole.pileup.PileupElement">PileupElement</a> represents the bases sequenced by a particular read at a particular reference locus.</p>
@@ -257,7 +281,11 @@ locus.</p>
         </div>
 
         <div id="inheritedMembers">
-        
+        <div class="parent" name="scala.AnyRef">
+              <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
+            </div><div class="parent" name="scala.Any">
+              <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
+            </div>
         
         </div>
 
