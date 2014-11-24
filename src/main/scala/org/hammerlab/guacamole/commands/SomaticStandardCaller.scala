@@ -201,9 +201,10 @@ object SomaticStandard {
       // For now, we skip loci that have no reads mapped. We may instead want to emit NoCall in this case.
       if (filteredTumorPileup.elements.isEmpty
         || filteredNormalPileup.elements.isEmpty
-        || filteredTumorPileup.referenceDepth == filteredTumorPileup.depth // skip computation if no alternate reads
         || filteredTumorPileup.depth > maxReadDepth // skip abnormally deep pileups
-        || filteredNormalPileup.depth > maxReadDepth)
+        || filteredNormalPileup.depth > maxReadDepth
+        || filteredTumorPileup.referenceDepth == filteredTumorPileup.depth // skip computation if no alternate reads
+        )
         return Seq.empty
 
       /**
