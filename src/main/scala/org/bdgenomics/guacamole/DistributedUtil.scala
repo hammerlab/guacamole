@@ -31,9 +31,7 @@ import org.bdgenomics.guacamole.reads.MappedRead
 import org.bdgenomics.guacamole.windowing.{ SlidingWindow }
 import org.kohsuke.args4j.{ Option => Opt }
 
-import scala.collection
 import scala.collection.mutable.{ HashMap => MutableHashMap }
-import scala.collection.parallel.mutable
 import scala.reflect.ClassTag
 
 object DistributedUtil extends Logging {

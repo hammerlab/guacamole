@@ -212,11 +212,10 @@ object LociMap {
       LociMap[T](data.map({
         case (contig, array) => {
           val mutableRangeMap = TreeRangeMap.create[JLong, T]()
-          // We coalesce adjacent or overlapping intervals with the same value into one interval.
           array.foreach(item => {
             var (start, end, value) = item
-            // If there is an existing entry *with the same value* in the map immediately before the range we're adding,
-            // we coalesce the two ranges by setting our start to be its start.
+            // If there is an existing entry associated *with the same value* in the map immediately before the range
+            // we're adding, we coalesce the two ranges by setting our start to be its start.
             val existingStart = mutableRangeMap.getEntry(start - 1)
             if (existingStart != null && existingStart.getValue == value) {
               assert(existingStart.getKey.lowerEndpoint < start)
