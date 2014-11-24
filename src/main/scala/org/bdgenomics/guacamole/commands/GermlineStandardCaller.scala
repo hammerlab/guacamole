@@ -39,7 +39,7 @@ object GermlineStandard {
 
   protected class Arguments extends GermlineCallerArgs with PileupFilterArguments with GenotypeFilterArguments {
 
-    @Option(name = "-emit-ref", usage = "Output homozygous reference calls.")
+    @Option(name = "--emit-ref", usage = "Output homozygous reference calls.")
     var emitRef: Boolean = false
   }
 

@@ -40,13 +40,13 @@ import org.bdgenomics.guacamole.pileup.Pileup
 object GermlineThreshold {
 
   protected class Arguments extends GermlineCallerArgs {
-    @Option(name = "-threshold", metaVar = "X", usage = "Make a call if at least X% of reads support it. Default: 8")
+    @Option(name = "--threshold", metaVar = "X", usage = "Make a call if at least X% of reads support it. Default: 8")
     var threshold: Int = 8
 
-    @Option(name = "-emit-ref", usage = "Output homozygous reference calls.")
+    @Option(name = "--emit-ref", usage = "Output homozygous reference calls.")
     var emitRef: Boolean = false
 
-    @Option(name = "-emit-no-call", usage = "Output no call calls.")
+    @Option(name = "--emit-no-call", usage = "Output no call calls.")
     var emitNoCall: Boolean = false
   }
 

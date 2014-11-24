@@ -46,10 +46,10 @@ object SomaticStandard {
 
   protected class Arguments extends SomaticCallerArgs with PileupFilterArguments with SomaticGenotypeFilterArguments {
 
-    @Opt(name = "-snvWindowRange", usage = "Number of bases before and after to check for additional matches or deletions")
+    @Opt(name = "--snv-window-range", usage = "Number of bases before and after to check for additional matches or deletions")
     var snvWindowRange: Int = 20
 
-    @Opt(name = "-odds", usage = "Minimum log odds threshold for possible variant candidates")
+    @Opt(name = "--odds", usage = "Minimum log odds threshold for possible variant candidates")
     var oddsThreshold: Int = 20
 
   }

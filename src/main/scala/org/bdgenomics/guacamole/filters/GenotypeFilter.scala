@@ -120,19 +120,19 @@ object GenotypeFilter {
 
   trait GenotypeFilterArguments extends Base {
 
-    @Option(name = "-minReadDepth", usage = "Minimum number of reads for a genotype call")
+    @Option(name = "--min-read-depth", usage = "Minimum number of reads for a genotype call")
     var minReadDepth: Int = 0
 
-    @Option(name = "-maxReadDepth", usage = "Maximum number of reads for a genotype call")
+    @Option(name = "--max-read-depth", usage = "Maximum number of reads for a genotype call")
     var maxReadDepth: Int = Int.MaxValue
 
-    @Option(name = "-minAlternateReadDepth", usage = "Minimum number of reads with alternate allele for a genotype call")
+    @Option(name = "--min-alternate-read-depth", usage = "Minimum number of reads with alternate allele for a genotype call")
     var minAlternateReadDepth: Int = 0
 
-    @Option(name = "-debug-genotype-filters", usage = "Print count of genotypes after each filtering step")
+    @Option(name = "--debug-genotype-filters", usage = "Print count of genotypes after each filtering step")
     var debugGenotypeFilters = false
 
-    @Option(name = "-minLikelihood", usage = "Minimum Phred-scaled likelihood. Default: 0 (off)")
+    @Option(name = "--min-likelihood", usage = "Minimum Phred-scaled likelihood. Default: 0 (off)")
     var minLikelihood: Int = 0
 
   }
