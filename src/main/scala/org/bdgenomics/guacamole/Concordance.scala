@@ -39,14 +39,14 @@ object Concordance {
    * Arguments that callers can include to support concordance calculations.
    */
   trait ConcordanceArgs extends Common.Arguments.Base {
-    @Option(name = "-truth", metaVar = "truth", usage = "The truth ADAM or VCF genotypes file")
+    @Option(name = "--truth", metaVar = "truth", usage = "The truth ADAM or VCF genotypes file")
     var truthGenotypesFile: String = ""
 
-    @Option(name = "-exclude-snv", usage = "Exclude SNV variants in comparison")
+    @Option(name = "--exclude-snv", usage = "Exclude SNV variants in comparison")
     var excludeSNVs: Boolean = false
-    @Option(name = "-exclude-indel", usage = "Exclude indel variants in comparison")
+    @Option(name = "--exclude-indel", usage = "Exclude indel variants in comparison")
     var excludeIndels: Boolean = false
-    @Option(name = "-chr", usage = "Chromosome to filter to")
+    @Option(name = "--chr", usage = "Chromosome to filter to")
     var chromosome: String = ""
   }
 
