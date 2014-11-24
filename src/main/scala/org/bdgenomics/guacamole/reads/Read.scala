@@ -155,11 +155,20 @@ object Read extends Logging {
     }
   }
 
+  /**
+   *
+   * Converts the ascii-string encoded base qualities into an array of integers
+   * quality scores in Phred-scale
+   *
+   * @param baseQualities Base qualities of a read (ascii-encoded)
+   * @param length Length of the read sequence
+   * @return  Base qualities in Phred scale
+   */
   def baseQualityStringToArray(baseQualities: String, length: Int): Array[Byte] = {
 
     // If no base qualities are set, we set them all to 0.
     if (baseQualities.isEmpty)
-      (0 until length).map(_ => 0.toByte).toSeq.toArray
+      (0 until length).map(_ => 0.toByte).toArray
     else
       baseQualities.map(q => (q - 33).toByte).toArray
 
@@ -290,10 +299,10 @@ object Read extends Logging {
                                        sc: SparkContext,
                                        token: Int,
                                        filters: InputFilters): (RDD[Read], SequenceDictionary) = {
-    var (reads, sequenceDictionary) = if (filename.endsWith(".adam")) {
-      loadReadRDDAndSequenceDictionaryFromADAM(filename, sc, token)
-    } else {
+    var (reads, sequenceDictionary) = if (filename.endsWith(".bam") || filename.endsWith(".sam")) {
       loadReadRDDAndSequenceDictionaryFromBAM(filename, sc, token)
+    } else {
+      loadReadRDDAndSequenceDictionaryFromADAM(filename, sc, token)
     }
     if (filters.mapped) reads = reads.filter(_.isMapped)
     if (filters.nonDuplicate) reads = reads.filter(!_.isDuplicate)
@@ -328,7 +337,7 @@ object Read extends Logging {
 
     val adamContext = new ADAMContext(sc)
 
-    // Build a project for to load only the fields we will need to populate a Read
+    // Build a projection that will only load the fields we will need to populate a Read
     val ADAMSpecificProjection = Projection(
       AlignmentRecordField.recordGroupSample,
 
