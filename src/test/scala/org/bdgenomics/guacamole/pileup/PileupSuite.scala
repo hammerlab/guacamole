@@ -172,7 +172,7 @@ class PileupSuite extends TestUtil.SparkFunSuite with Matchers with TableDrivenP
       read = contigStartInsertionRead,
       locus = 1,
       readPosition = 0,
-      cigarElementIdx = 0,
+      cigarElementIndex = 0,
       cigarElementLocus = 1,
       indexWithinCigarElement = 0
     )

@@ -20,21 +20,12 @@ package org.bdgenomics.guacamole
 
 /**
  * We represent a nucleotide base as a Byte, whose value is equal to the ASCII value of the character representing the
- * base (e.g. A, C, T, G). We represent a nucleotide sequence as an Array[Byte].
+ * base (for example: A, C, T, G). We represent a nucleotide sequence as a Seq[Byte].
  *
  * This is an optimization over java Chars and Strings which use two bytes per character.
  *
- * Unfortunately, working with Bytes and especially Array[Byte] is a bit of a hassle and can be error-prone. The
- * functions here are for working with these types correctly.
- *
- * Things to know:
- *
- *  - you can compare two bases b1, b2 as you'd expect: b1 == b2
- *
- *  - you CANNOT compare two Array[Byte] instances with == (or even .equals). Use the equal() function defined here.
- *
- *  - If b is a base (say "A") then b.toString does NOT give you want (in this case it would give you "65"). Use the
- *    baseToString() function defined here.
+ * @note If b is a base (say "A") then b.toString does NOT give you want (in this case it would give you "65"). Use the
+ *       baseToString() function defined here.
  *
  */
 object Bases {

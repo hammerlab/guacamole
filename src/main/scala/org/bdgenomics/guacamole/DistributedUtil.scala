@@ -34,6 +34,9 @@ import org.kohsuke.args4j.{ Option => Opt }
 import scala.collection.mutable.{ HashMap => MutableHashMap }
 import scala.reflect.ClassTag
 
+/**
+ * Primitives for analyzing mapped reads with Spark.
+ */
 object DistributedUtil extends Logging {
   trait Arguments extends Base with Loci {
     @Opt(name = "--parallelism", usage = "Num variant calling tasks. Set to 0 (default) to use the number of Spark partitions.")
@@ -264,7 +267,7 @@ object DistributedUtil extends Logging {
    *                  only a single chromosome, but loading loci from a sequence dictionary that includes the
    *                  entire genome), this is an important optimization.
    *
-   * See [[windowTaskFlatMapMultipleRDDs()]] for other argument descriptions.
+   * @see the windowTaskFlatMapMultipleRDDs function for other argument descriptions
    *
    */
   def pileupFlatMap[T: ClassTag](
@@ -291,7 +294,7 @@ object DistributedUtil extends Logging {
    *
    * @param skipEmpty see [[pileupFlatMap]] for description.
    *
-   * See [[windowTaskFlatMapMultipleRDDs()]] for other argument descriptions.
+   * @see the windowTaskFlatMapMultipleRDDs function for other argument descriptions.
    *
    */
   def pileupFlatMapTwoRDDs[T: ClassTag](
