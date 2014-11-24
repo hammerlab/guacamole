@@ -39,8 +39,7 @@ import org.codehaus.jackson.JsonFactory
 import org.kohsuke.args4j.{ Option => Opt }
 
 /**
- * Collection of functions that are useful to multiple variant calling implementations, and specifications of command-
- * line arguments that they use.
+ * Basic functions that most commands need, and specifications of command-line arguments that they use.
  *
  */
 object Common extends Logging {
@@ -53,10 +52,12 @@ object Common extends Logging {
 
     /** Argument for accepting a set of loci. */
     trait Loci extends Base {
-      @Opt(name = "--loci", usage = "Loci at which to call variants. Either 'all' or contig:start-end,contig:start-end,...", forbids = Array("-loci-from-file"))
+      @Opt(name = "--loci", usage = "Loci at which to call variants. Either 'all' or contig:start-end,contig:start-end,...",
+        forbids = Array("-loci-from-file"))
       var loci: String = ""
 
-      @Opt(name = "--loci-from-file", usage = "Path to file giving loci at which to call variants.", forbids = Array("-loci"))
+      @Opt(name = "--loci-from-file", usage = "Path to file giving loci at which to call variants.",
+        forbids = Array("-loci"))
       var lociFromFile: String = ""
     }
 

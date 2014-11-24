@@ -22,14 +22,12 @@ import org.apache.spark.{ SparkContext, Logging }
 import org.bdgenomics.adam.cli.{ Args4j, Args4jBase }
 
 /**
- *
  * Interface for running a command from command line arguments.
  *
  * We give the variant callers and other commands control of execution. Guacamole is a toolbox of common functionality
  * for these to use as appropriate.
  *
- * If you add a new command, you should also update the [[Guacamole.commands]] list in Guacamole.scala to
- * include it.
+ * If you add a new command, you should also update the commands list in Guacamole.scala to include it.
  *
  */
 abstract class Command[T <% Args4jBase: Manifest] extends Serializable with Logging {

@@ -29,17 +29,16 @@ import scala.collection.mutable
  * want to look at the regions that overlap a window of a certain number of bases surrounding that locus. This class
  * implements this "sliding window" functionality.
  *
- * After instantiating this class, call [[SlidingWindow.setCurrentLocus( )]] repeatedly for each
- * locus being considered. After calling this method, the [[SlidingWindow.currentRegions]] property will contain the
- * objects that overlap the current locus.
+ * After instantiating this class, call [[setCurrentLocus]] repeatedly for each locus being considered. After calling
+ * this method, the [[currentRegions]] property will contain the objects that overlap the current locus.
  *
  * To enable an efficient implementation, we require that both the sequence of loci to be considered and the iterator
  * of objects are sorted.
  *
  * @param halfWindowSize Number of nucleotide bases to either side of the specified locus to provide regions for. For
- *                       example, if halfWindowSize=5, and our currentLocus=100, then currentRegions will include
- *                       regions that map to anywhere between 95 and 105, inclusive. Set to 0 to consider only regions
- *                       that overlap the exact locus being considered, with no surrounding window.
+ *                       example, if [[halfWindowSize]]=5, and our [[currentLocus]]=100, then [[currentRegions]] will
+ *                       include regions that map to anywhere between 95 and 105, inclusive. Set to 0 to consider only
+ *                       regions that overlap the exact locus being considered, with no surrounding window.
  *
  * @param rawSortedRegions Iterator of regions, sorted by the aligned start locus.
  */

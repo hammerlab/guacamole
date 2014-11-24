@@ -19,7 +19,10 @@
 package org.bdgenomics.guacamole
 
 /**
- *    TODO: replace with ReferenceRegion base class in ADAM
+ * Trait for objects that are associated with an interval on the genome. The most prominent example is a
+ * [[org.bdgenomics.guacamole.reads.MappedRead]], but there's also [[org.bdgenomics.guacamole.variants.ReferenceVariant]].
+ *
+ * @todo replace with ReferenceRegion base class in ADAM
  */
 trait HasReferenceRegion {
 
