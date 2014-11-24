@@ -31,9 +31,9 @@ import scala.annotation.tailrec
  * @param read The read this [[PileupElement]] is coming from.
  * @param locus The reference locus.
  * @param readPosition The offset into the sequence of bases in the read that this element corresponds to.
- * @param cigarElementIdx The idx in [[read.cigarElements]] of the [[CigarElement]] corresponding to the current
- *                        readPosition.
- * @param cigarElementLocus The reference START position of the cigar element.
+ * @param cigarElementIndex The index in the read's sequence of cigar elements ([[org.bdgenomics.guacamole.reads.MappedRead.cigarElements]])
+ *                          of the element that contains the current readPosition.
+ * @param cigarElementLocus The reference START position of the current cigar element.
  *                          If the element is an INSERTION this the PRECEDING reference base
  * @param indexWithinCigarElement The offset of this element within the current cigar element.
  */
@@ -41,17 +41,17 @@ case class PileupElement(
     read: MappedRead,
     locus: Long,
     readPosition: Int,
-    cigarElementIdx: Int,
+    cigarElementIndex: Int,
     cigarElementLocus: Long,
     indexWithinCigarElement: Int) {
 
   assume(locus >= read.start)
   assume(locus < read.end)
 
-  lazy val cigarElement = read.cigarElements(cigarElementIdx)
+  lazy val cigarElement = read.cigarElements(cigarElementIndex)
   lazy val nextCigarElement =
-    if (cigarElementIdx + 1 < read.cigarElements.size) {
-      Some(read.cigarElements(cigarElementIdx + 1))
+    if (cigarElementIndex + 1 < read.cigarElements.size) {
+      Some(read.cigarElements(cigarElementIndex + 1))
     } else {
       None
     }
@@ -172,7 +172,7 @@ case class PileupElement(
   }
 
   /**
-   * Returns a new [[PileupElement]] of the same read, advanced by one [[CigarElement]].
+   * Returns a new [[PileupElement]] of the same read, advanced by one cigar element.
    */
   def advanceToNextCigarElement: PileupElement = {
     val readPositionOffset =
@@ -189,7 +189,7 @@ case class PileupElement(
       read,
       locus + (cigarElementReferenceLength - indexWithinCigarElement),
       readPosition + readPositionOffset,
-      cigarElementIdx + 1,
+      cigarElementIndex + 1,
       cigarElementLocus + cigarElementReferenceLength,
       // Even if we are somewhere in the middle of the current cigar element, lock to the beginning of the next one.
       indexWithinCigarElement = 0
@@ -197,9 +197,9 @@ case class PileupElement(
   }
 
   /**
-   * Returns whether the current [[CigarElement]] of this [[MappedRead]] contains the given @referenceLocus.
+   * Returns whether the current cigar element of this [[org.bdgenomics.guacamole.reads.MappedRead]] contains the given reference locus.
    *
-   * Can only return true if [[cigarElement]] actually consumes reference bases.
+   * Can only return true if the cigar element consumes reference bases.
    */
   def currentCigarElementContainsLocus(referenceLocus: Long): Boolean = {
     cigarElementLocus <= referenceLocus && referenceLocus < cigarElementEndLocus
@@ -263,7 +263,7 @@ object PileupElement {
       read = read,
       locus = read.start,
       readPosition = 0,
-      cigarElementIdx = 0,
+      cigarElementIndex = 0,
       cigarElementLocus = read.start,
       indexWithinCigarElement = 0
     ).advanceToLocus(locus)
@@ -276,6 +276,6 @@ case class InvalidCigarElementException(elem: PileupElement)
       "Locus: %d, readPosition: %d, cigar: %s (elem idx %d)".format(
         elem.locus,
         elem.readPosition,
-        elem.read.cigar.toString, elem.cigarElementIdx
+        elem.read.cigar.toString, elem.cigarElementIndex
       )
   )
