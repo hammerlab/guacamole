@@ -206,10 +206,10 @@ class DistributedUtilSuite extends TestUtil.SparkFunSuite with Matchers {
       TestUtil.makeRead("GGGGGGGG", "8M", "8", 100)))
 
     val reads2 = sc.parallelize(Seq(
-      TestUtil.makeRead("AAAAAAAA", "8M", "8", 1),
-      TestUtil.makeRead("CCCCCCCC", "8M", "8", 1),
-      TestUtil.makeRead("TTTTTTTT", "8M", "8", 1),
-      TestUtil.makeRead("XXX", "3M", "8", 99)))
+      TestUtil.makeRead("TCGATCGA", "8M", "8", 1),
+      TestUtil.makeRead("TCGATCGA", "8M", "8", 1),
+      TestUtil.makeRead("TCGATCGA", "8M", "8", 1),
+      TestUtil.makeRead("AGG", "3M", "8", 99)))
 
     val elements = DistributedUtil.pileupFlatMapTwoRDDs[PileupElement](
       reads1,
@@ -221,7 +221,7 @@ class DistributedUtilSuite extends TestUtil.SparkFunSuite with Matchers {
     elements.forall(_.isMatch) should be(true)
     assertBases(
       elements.flatMap(_.sequencedBases).toSeq,
-      "TTTACTCCCACTGGGACTAAAACTTTTACTCCCACTGGGACTAAAACTXGGGXGGGXGGGGGGGGGGGGGGGGGG"
+      "TTTTTTCCCCCCGGGGGGAAAAAATTTTTTCCCCCCGGGGGGAAAAAAAGGGGGGGGGGGGGGGGGGGGGGGGGG"
     )
   }
 

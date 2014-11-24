@@ -18,10 +18,9 @@
 
 package org.bdgenomics.guacamole.filters
 
-import org.bdgenomics.guacamole.pileup.{ PileupElement, Pileup }
 import org.bdgenomics.guacamole.Common.Arguments.Base
+import org.bdgenomics.guacamole.pileup.{ Pileup, PileupElement }
 import org.kohsuke.args4j.Option
-import org.bdgenomics.guacamole.Bases
 
 /**
  * This is a cheap computation for a region's complexity
@@ -195,6 +194,6 @@ object PileupFilter {
       elements = EdgeBaseFilter(elements, minEdgeDistance)
     }
 
-    Pileup(pileup.locus, elements)
+    Pileup(pileup.locus, pileup.referenceBase, elements)
   }
 }

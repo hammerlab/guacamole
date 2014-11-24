@@ -52,14 +52,25 @@ case class MappedRead(
 
   final override lazy val getMappedReadOpt = Some(this)
 
-  lazy val mdTag = MdTag(mdTagString, start)
+  def mdTag = MdTag(mdTagString, start)
 
   lazy val referenceBases =
     try {
-      MDTagUtils.getReference(mdTag, sequence, cigar, start)
+      MDTagUtils.getReference(mdTag, sequence, cigar, start, allowNBase = true)
     } catch {
       case e: IllegalStateException => throw new CigarMDTagMismatchException(cigar, mdTag, e)
     }
+
+  /**
+   * Find the reference base at a given locus for any locus that overlaps this read sequence
+   *
+   * @param referenceLocus Locus (0-based) at which to look up the reference base
+   * @return  The reference base at the given locus
+   */
+  def getReferenceBaseAtLocus(referenceLocus: Long): Byte = {
+    assume(referenceLocus >= start && referenceLocus < end)
+    referenceBases((referenceLocus - start).toInt)
+  }
 
   lazy val alignmentLikelihood = PhredUtils.phredToSuccessProbability(alignmentQuality)
 
