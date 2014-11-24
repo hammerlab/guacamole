@@ -166,43 +166,23 @@ class LociSetSuite extends TestUtil.SparkFunSuite with Matchers {
 
     val iter1 = set.onContig("chr1").iterator
     iter1.hasNext should be(true)
-    iter1.headOption.get should be(15)
-    iter1.headRangeOption.get should equal(LociMap.SimpleRange(15, 17))
-    iter1.headIndex should be(0)
+    iter1.head should be(15)
     iter1.next() should be(15)
-    iter1.headOption.get should be(16)
-    iter1.headRangeOption.get should equal(LociMap.SimpleRange(15, 17))
-    iter1.headIndex should be(1)
+    iter1.head should be(16)
     iter1.next() should be(16)
-    iter1.headOption.get should be(20)
-    iter1.headRangeOption.get should equal(LociMap.SimpleRange(20, 25))
-    iter1.headIndex should be(0)
+    iter1.head should be(20)
     iter1.next() should be(20)
-    iter1.headOption.get should be(21)
-    iter1.headRangeOption.get should equal(LociMap.SimpleRange(20, 25))
-    iter1.headIndex should be(1)
+    iter1.head should be(21)
     iter1.skipTo(23)
     iter1.next() should be(23)
-    iter1.headOption.get should be(24)
-    iter1.headRangeOption.get should equal(LociMap.SimpleRange(20, 25))
-    iter1.headIndex should be(4)
+    iter1.head should be(24)
     iter1.skipTo(5)
-    iter1.headOption.get should be(24)
+    iter1.head should be(24)
     iter1.skipTo(38)
-    iter1.headOption.get should be(40)
-    iter1.headRangeOption.get should equal(LociMap.SimpleRange(40, 43))
-    iter1.headIndex should be(0)
+    iter1.head should be(40)
     iter1.hasNext should be(true)
     iter1.skipTo(100)
-    iter1.headOption should be(None)
-    iter1.headRangeOption should be(None)
     iter1.hasNext should be(false)
-
-    val iter2 = set.onContig("chr1").iterator
-    iter2.skipToEnd()
-    iter2.headOption should be(None)
-    iter2.headRangeOption should be(None)
-    iter2.hasNext should be(false)
   }
 
   sparkTest("loci set single contig iterator: test that skipTo implemented efficiently.") {
@@ -210,17 +190,14 @@ class LociSetSuite extends TestUtil.SparkFunSuite with Matchers {
 
     val iter1 = set.onContig("chr1").iterator
     iter1.hasNext should be(true)
-    iter1.headOption.get should be(2)
-    iter1.headRangeOption.get should equal(LociMap.SimpleRange(2, 3))
-    iter1.headIndex should be(0)
+    iter1.head should be(2)
     iter1.next() should be(2)
     iter1.next() should be(10)
     iter1.next() should be(11)
     iter1.skipTo(6000000000L) // will hang if it steps through each locus.
     iter1.next() should be(6000000000L)
     iter1.next() should be(6000000001L)
-    iter1.skipToEnd()
-    iter1.hasNext() should be(false)
+    iter1.hasNext() should be(true)
 
     val iter2 = set.onContig("chr1").iterator
     iter2.skipTo(100000000000L)

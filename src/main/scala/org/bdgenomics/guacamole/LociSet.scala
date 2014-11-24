@@ -194,17 +194,23 @@ object LociSet {
      *
      * @param loci loci to iterate over
      */
-    class Iterator(loci: SingleContig) extends scala.Iterator[Long] {
+    class Iterator(loci: SingleContig) extends scala.BufferedIterator[Long] {
       private var ranges = loci.ranges.iterator
 
-      /** The range for the *next* locus to be returned. */
-      var headRangeOption: Option[SimpleRange] = if (ranges.isEmpty) None else Some(ranges.next())
+      /** The range for the next locus to be returned. */
+      private var headRangeOption: Option[SimpleRange] = if (ranges.isEmpty) None else Some(ranges.next())
 
-      /** The index in the range for the next element to be returned. */
-      var headIndex = 0L
+      /** The index in the range for the next locus. */
+      private var headIndex = 0L
 
       /** true if calling next() will succeed. */
       def hasNext() = headRangeOption.nonEmpty
+
+      /** The next element to be returned by next(). If the iterator is empty, throws NoSuchElementException. */
+      def head: Long = headRangeOption match {
+        case Some(range) => range.start + headIndex
+        case None        => throw new NoSuchElementException("empty iterator")
+      }
 
       /**
        * Advance the iterator and return the current head.
@@ -212,10 +218,7 @@ object LociSet {
        * Throws NoSuchElementException if the iterator is already at the end.
        */
       def next(): Long = {
-        if (!hasNext) {
-          throw new NoSuchElementException("next on empty Loci iterator")
-        }
-        val nextLocus: Long = headOption.get
+        val nextLocus: Long = head // may throw
 
         // Advance
         headIndex += 1
@@ -248,25 +251,9 @@ object LociSet {
       }
 
       /**
-       * Skip ahead to the end of the iterator. After calling this, the iterator will be empty.
-       */
-      def skipToEnd(): Unit = {
-        ranges = Iterator.empty
-        headRangeOption = None
-      }
-
-      /**
-       * The next locus in the iterator, i.e. what the next call to next() will return.
-       *
-       * Some(locus) if there is a next element, None otherwise.
-       */
-      def headOption(): Option[Long] =
-        headRangeOption.map(_.start + headIndex)
-
-      /**
        * Advance past all loci in the current head range. Return the next range if one exists.
        */
-      def nextRange(): Option[SimpleRange] = {
+      private def nextRange(): Option[SimpleRange] = {
         headIndex = 0
         headRangeOption = if (ranges.hasNext) Some(ranges.next()) else None
         headRangeOption
