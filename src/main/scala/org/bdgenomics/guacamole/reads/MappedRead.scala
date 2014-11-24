@@ -56,7 +56,7 @@ case class MappedRead(
 
   lazy val referenceBases =
     try {
-      MDTagUtils.getReference(mdTag, sequence, cigar, start)
+      MDTagUtils.getReference(mdTag, sequence, cigar, start, allowNBase = true)
     } catch {
       case e: IllegalStateException => throw new CigarMDTagMismatchException(cigar, mdTag, e)
     }

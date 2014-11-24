@@ -275,15 +275,6 @@ class PileupSuite extends TestUtil.SparkFunSuite with Matchers with TableDrivenP
     // Just after the deletion
     assertBases(pileupElementFromRead(decadentRead1, 5 + 39).sequencedBases, "A")
 
-    //  `read2` has an insertion: 5M5I34M10D16M
-    val read2Record = testAdamRecords(1) // read2
-    val read2At10 = pileupElementFromRead(read2Record, 10)
-    assert(read2At10 != null)
-    assertBases(read2At10.sequencedBases, "A")
-    // right after the insert
-    val read2At20 = pileupElementFromRead(read2Record, 20)
-    assertBases(read2At20.sequencedBases: String, "A")
-
     // advanceToLocus is a no-op on the same locus,
     // and fails in lower loci
     forAll(Table("locus", List(5, 33, 34, 43, 44, 74): _*)) { locus =>
