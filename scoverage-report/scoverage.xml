@@ -1,5 +1,5 @@
 <scoverage 
-statement-count="2987" statements-invoked="295" statement-rate="9.88" branch-rate="7.42" version="1.0" timestamp="1416770714487">
+statement-count="2987" statements-invoked="295" statement-rate="9.88" branch-rate="7.42" version="1.0" timestamp="1416791514066">
     <packages>
         <package name="org.bdgenomics.guacamole" statement-count="1262" statements-invoked="80" statement-rate="6.34">
             <classes>
