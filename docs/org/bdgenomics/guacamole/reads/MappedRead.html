@@ -352,6 +352,22 @@ base in this read.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.bdgenomics.guacamole.reads.MappedRead">MappedRead</a> → <a href="Read.html" class="extype" name="org.bdgenomics.guacamole.reads.Read">Read</a></dd></dl></div>
+    </li><li name="org.bdgenomics.guacamole.reads.MappedRead#getReferenceBaseAtLocus" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="getReferenceBaseAtLocus(referenceLocus:Long):Byte"></a>
+      <a id="getReferenceBaseAtLocus(Long):Byte"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getReferenceBaseAtLocus</span><span class="params">(<span name="referenceLocus">referenceLocus: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Byte">Byte</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Find the reference base at a given locus for any locus that overlaps this read sequence
+</p><div class="fullcomment"><div class="comment cmt"><p>Find the reference base at a given locus for any locus that overlaps this read sequence
+</p></div><dl class="paramcmts block"><dt class="param">referenceLocus</dt><dd class="cmt"><p>Locus (0-based) at which to look up the reference base</p></dd><dt>returns</dt><dd class="cmt"><p>The reference base at the given locus
+</p></dd></dl></div>
     </li><li name="org.bdgenomics.guacamole.reads.MappedRead#isDuplicate" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isDuplicate:Boolean"></a>
       <a id="isDuplicate:Boolean"></a>
@@ -436,7 +452,7 @@ base in this read.
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">lazy val</span>
+        <span class="kind">def</span>
       </span>
       <span class="symbol">
         <span class="name">mdTag</span><span class="result">: <span class="extype" name="org.bdgenomics.adam.util.MdTag">MdTag</span></span>

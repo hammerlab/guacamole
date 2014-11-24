@@ -241,15 +241,15 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="org.bdgenomics.guacamole.reads.MDTagUtils#getReference" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="getReference(mdTag:org.bdgenomics.adam.util.MdTag,readSequence:Seq[Byte],cigar:htsjdk.samtools.Cigar,referenceFrom:Long):Seq[Byte]"></a>
-      <a id="getReference(MdTag,Seq[Byte],Cigar,Long):Seq[Byte]"></a>
+      <a id="getReference(mdTag:org.bdgenomics.adam.util.MdTag,readSequence:Seq[Byte],cigar:htsjdk.samtools.Cigar,referenceFrom:Long,allowNBase:Boolean):Seq[Byte]"></a>
+      <a id="getReference(MdTag,Seq[Byte],Cigar,Long,Boolean):Seq[Byte]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getReference</span><span class="params">(<span name="mdTag">mdTag: <span class="extype" name="org.bdgenomics.adam.util.MdTag">MdTag</span></span>, <span name="readSequence">readSequence: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>, <span name="cigar">cigar: <span class="extype" name="htsjdk.samtools.Cigar">Cigar</span></span>, <span name="referenceFrom">referenceFrom: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>
+        <span class="name">getReference</span><span class="params">(<span name="mdTag">mdTag: <span class="extype" name="org.bdgenomics.adam.util.MdTag">MdTag</span></span>, <span name="readSequence">readSequence: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>, <span name="cigar">cigar: <span class="extype" name="htsjdk.samtools.Cigar">Cigar</span></span>, <span name="referenceFrom">referenceFrom: <span class="extype" name="scala.Long">Long</span></span>, <span name="allowNBase">allowNBase: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Adopted from ADAM's mdTag.</p><div class="fullcomment"><div class="comment cmt"><p>Adopted from ADAM's mdTag.getReference to operate on Seq[Byte] instead of strings

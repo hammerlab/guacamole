@@ -150,7 +150,7 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="org.bdgenomics.guacamole.pileup.Pileup#apply" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="org.bdgenomics.guacamole.pileup.Pileup#apply" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="apply(reads:Seq[org.bdgenomics.guacamole.reads.MappedRead],locus:Long):org.bdgenomics.guacamole.pileup.Pileup"></a>
       <a id="apply(Seq[MappedRead],Long):Pileup"></a>
       <h4 class="signature">
@@ -162,8 +162,21 @@
         <span class="name">apply</span><span class="params">(<span name="reads">reads: <span class="extype" name="scala.Seq">Seq</span>[<a href="../reads/MappedRead.html" class="extype" name="org.bdgenomics.guacamole.reads.MappedRead">MappedRead</a>]</span>, <span name="locus">locus: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <a href="Pileup.html" class="extype" name="org.bdgenomics.guacamole.pileup.Pileup">Pileup</a></span>
       </span>
       </h4>
+      
+    </li><li name="org.bdgenomics.guacamole.pileup.Pileup#apply" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="apply(reads:Seq[org.bdgenomics.guacamole.reads.MappedRead],locus:Long,referenceBase:Byte):org.bdgenomics.guacamole.pileup.Pileup"></a>
+      <a id="apply(Seq[MappedRead],Long,Byte):Pileup"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">apply</span><span class="params">(<span name="reads">reads: <span class="extype" name="scala.Seq">Seq</span>[<a href="../reads/MappedRead.html" class="extype" name="org.bdgenomics.guacamole.reads.MappedRead">MappedRead</a>]</span>, <span name="locus">locus: <span class="extype" name="scala.Long">Long</span></span>, <span name="referenceBase">referenceBase: <span class="extype" name="scala.Byte">Byte</span></span>)</span><span class="result">: <a href="Pileup.html" class="extype" name="org.bdgenomics.guacamole.pileup.Pileup">Pileup</a></span>
+      </span>
+      </h4>
       <p class="shortcomment cmt">Given reads and a locus, returns a <a href="Pileup.html" class="extype" name="org.bdgenomics.guacamole.pileup.Pileup">Pileup</a> at the specified locus.</p><div class="fullcomment"><div class="comment cmt"><p>Given reads and a locus, returns a <a href="Pileup.html" class="extype" name="org.bdgenomics.guacamole.pileup.Pileup">Pileup</a> at the specified locus.
-</p></div><dl class="paramcmts block"><dt class="param">reads</dt><dd class="cmt"><p>Sequence of reads, in any order, that may or may not overlap the locus.</p></dd><dt class="param">locus</dt><dd class="cmt"><p>The locus to return a <a href="Pileup.html" class="extype" name="org.bdgenomics.guacamole.pileup.Pileup">Pileup</a> at.</p></dd><dt>returns</dt><dd class="cmt"><p>A <a href="Pileup.html" class="extype" name="org.bdgenomics.guacamole.pileup.Pileup">Pileup</a> at the given locus.
+</p></div><dl class="paramcmts block"><dt class="param">reads</dt><dd class="cmt"><p>Sequence of reads, in any order, that may or may not overlap the locus.</p></dd><dt class="param">locus</dt><dd class="cmt"><p>The locus to return a <a href="Pileup.html" class="extype" name="org.bdgenomics.guacamole.pileup.Pileup">Pileup</a> at.</p></dd><dt class="param">referenceBase</dt><dd class="cmt"><p>The reference base at <span class="extype" name="locus">locus</span></p></dd><dt>returns</dt><dd class="cmt"><p>A <a href="Pileup.html" class="extype" name="org.bdgenomics.guacamole.pileup.Pileup">Pileup</a> at the given locus.
 </p></dd></dl></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
@@ -320,6 +333,22 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="org.bdgenomics.guacamole.pileup.Pileup#referenceBaseAtLocus" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="referenceBaseAtLocus(reads:Seq[org.bdgenomics.guacamole.reads.MappedRead],locus:Long):Byte"></a>
+      <a id="referenceBaseAtLocus(Seq[MappedRead],Long):Byte"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">referenceBaseAtLocus</span><span class="params">(<span name="reads">reads: <span class="extype" name="scala.Seq">Seq</span>[<a href="../reads/MappedRead.html" class="extype" name="org.bdgenomics.guacamole.reads.MappedRead">MappedRead</a>]</span>, <span name="locus">locus: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Byte">Byte</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Find the reference base at <span class="extype" name="locus">locus</span> in the reads at this pileup
+</p><div class="fullcomment"><div class="comment cmt"><p>Find the reference base at <span class="extype" name="locus">locus</span> in the reads at this pileup
+</p></div><dl class="paramcmts block"><dt class="param">reads</dt><dd class="cmt"><p>collection of reads that overlap locus</p></dd><dt class="param">locus</dt><dd class="cmt"><p>locus to find reference base at</p></dd><dt>returns</dt><dd class="cmt"><p>First non N reference base at this locus
+</p></dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>

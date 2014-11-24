@@ -7301,7 +7301,33 @@
           46
         </td>
         <td>
-          1255
+          1261
+        </td>
+        <td>
+          org.apache.spark.rdd.RDD.flatMap
+        </td>
+        <td style="background: #F0ADAD">
+          ReadSet.this.reads.flatMap[org.bdgenomics.guacamole.reads.MappedRead](((x$1: org.bdgenomics.guacamole.reads.Read) =&gt; {  scoverage.Invoker.invoked(1260, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Option.option2Iterable[org.bdgenomics.guacamole.reads.MappedRead]({    scoverage.Invoker.invoked(1259, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    x$1.getMappedReadOpt  })}))(ClassTag.apply[org.bdgenomics.guacamole.reads.MappedRead](classOf[org.bdgenomics.guacamole.reads.MappedRead]))
+        </td>
+      </tr><tr>
+        <td>
+          46
+        </td>
+        <td>
+          1260
+        </td>
+        <td>
+          scala.Option.option2Iterable
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Option.option2Iterable[org.bdgenomics.guacamole.reads.MappedRead]({  scoverage.Invoker.invoked(1259, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x$1.getMappedReadOpt})
+        </td>
+      </tr><tr>
+        <td>
+          46
+        </td>
+        <td>
+          1259
         </td>
         <td>
           org.bdgenomics.guacamole.reads.Read.getMappedReadOpt
@@ -7311,36 +7337,23 @@
         </td>
       </tr><tr>
         <td>
-          46
+          56
         </td>
         <td>
-          1257
+          1272
         </td>
         <td>
-          org.apache.spark.rdd.RDD.flatMap
+          &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          ReadSet.this.reads.flatMap[org.bdgenomics.guacamole.reads.MappedRead](((x$1: org.bdgenomics.guacamole.reads.Read) =&gt; {  scoverage.Invoker.invoked(1256, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Option.option2Iterable[org.bdgenomics.guacamole.reads.MappedRead]({    scoverage.Invoker.invoked(1255, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    x$1.getMappedReadOpt  })}))(ClassTag.apply[org.bdgenomics.guacamole.reads.MappedRead](classOf[org.bdgenomics.guacamole.reads.MappedRead]))
-        </td>
-      </tr><tr>
-        <td>
-          46
-        </td>
-        <td>
-          1256
-        </td>
-        <td>
-          scala.Option.option2Iterable
-        </td>
-        <td style="background: #AEF1AE">
-          scala.this.Option.option2Iterable[org.bdgenomics.guacamole.reads.MappedRead]({  scoverage.Invoker.invoked(1255, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x$1.getMappedReadOpt})
+          {  {    scoverage.Invoker.invoked(1264, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.this.Predef.assume({      scoverage.Invoker.invoked(1263, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      ReadSet.this.sequenceDictionary.isDefined    })  };  val builder: scala.collection.mutable.Builder[(String, Long),scala.collection.immutable.Map[String,Long]] = {    scoverage.Invoker.invoked(1265, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.this.Predef.Map.newBuilder[String, Long]  };  {    scoverage.Invoker.invoked(1270, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    ReadSet.this.sequenceDictionary.get.records.foreach[scala.collection.mutable.Builder[(String, Long),scala.collection.immutable.Map[String,Long]]](((record: org.bdgenomics.adam.models.SequenceRecord) =&gt; {      scoverage.Invoker.invoked(1269, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      builder.+=({        scoverage.Invoker.invoked(1268, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        scala.Tuple2.apply[String, Long]({          scoverage.Invoker.invoked(1266, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          record.name.toString()        }, {          scoverage.Invoker.invoked(1267, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          record.length        })      })    }))  };  {    scoverage.Invoker.invoked(1271, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    builder.result()  }}
         </td>
       </tr><tr>
         <td>
           56
         </td>
         <td>
-          1258
+          1262
         </td>
         <td>
           org.bdgenomics.guacamole.ReadSet.contigLengthsFromDictionary
@@ -7350,36 +7363,23 @@
         </td>
       </tr><tr>
         <td>
-          56
-        </td>
-        <td>
-          1268
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          {  {    scoverage.Invoker.invoked(1260, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.this.Predef.assume({      scoverage.Invoker.invoked(1259, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      ReadSet.this.sequenceDictionary.isDefined    })  };  val builder: scala.collection.mutable.Builder[(String, Long),scala.collection.immutable.Map[String,Long]] = {    scoverage.Invoker.invoked(1261, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.this.Predef.Map.newBuilder[String, Long]  };  {    scoverage.Invoker.invoked(1266, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    ReadSet.this.sequenceDictionary.get.records.foreach[scala.collection.mutable.Builder[(String, Long),scala.collection.immutable.Map[String,Long]]](((record: org.bdgenomics.adam.models.SequenceRecord) =&gt; {      scoverage.Invoker.invoked(1265, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      builder.+=({        scoverage.Invoker.invoked(1264, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        scala.Tuple2.apply[String, Long]({          scoverage.Invoker.invoked(1262, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          record.name.toString()        }, {          scoverage.Invoker.invoked(1263, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          record.length        })      })    }))  };  {    scoverage.Invoker.invoked(1267, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    builder.result()  }}
-        </td>
-      </tr><tr>
-        <td>
           57
         </td>
         <td>
-          1260
+          1264
         </td>
         <td>
           scala.Predef.assume
         </td>
         <td style="background: #F0ADAD">
-          scala.this.Predef.assume({  scoverage.Invoker.invoked(1259, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ReadSet.this.sequenceDictionary.isDefined})
+          scala.this.Predef.assume({  scoverage.Invoker.invoked(1263, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ReadSet.this.sequenceDictionary.isDefined})
         </td>
       </tr><tr>
         <td>
           57
         </td>
         <td>
-          1259
+          1263
         </td>
         <td>
           scala.Option.isDefined
@@ -7392,7 +7392,7 @@
           58
         </td>
         <td>
-          1261
+          1265
         </td>
         <td>
           scala.collection.generic.GenMapFactory.newBuilder
@@ -7405,20 +7405,7 @@
           59
         </td>
         <td>
-          1264
-        </td>
-        <td>
-          scala.Tuple2.apply
-        </td>
-        <td style="background: #F0ADAD">
-          scala.Tuple2.apply[String, Long]({  scoverage.Invoker.invoked(1262, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  record.name.toString()}, {  scoverage.Invoker.invoked(1263, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  record.length})
-        </td>
-      </tr><tr>
-        <td>
-          59
-        </td>
-        <td>
-          1263
+          1267
         </td>
         <td>
           org.bdgenomics.adam.models.SequenceRecord.length
@@ -7431,20 +7418,33 @@
           59
         </td>
         <td>
-          1266
+          1270
         </td>
         <td>
           scala.collection.IterableLike.foreach
         </td>
         <td style="background: #F0ADAD">
-          ReadSet.this.sequenceDictionary.get.records.foreach[scala.collection.mutable.Builder[(String, Long),scala.collection.immutable.Map[String,Long]]](((record: org.bdgenomics.adam.models.SequenceRecord) =&gt; {  scoverage.Invoker.invoked(1265, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  builder.+=({    scoverage.Invoker.invoked(1264, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.Tuple2.apply[String, Long]({      scoverage.Invoker.invoked(1262, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      record.name.toString()    }, {      scoverage.Invoker.invoked(1263, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      record.length    })  })}))
+          ReadSet.this.sequenceDictionary.get.records.foreach[scala.collection.mutable.Builder[(String, Long),scala.collection.immutable.Map[String,Long]]](((record: org.bdgenomics.adam.models.SequenceRecord) =&gt; {  scoverage.Invoker.invoked(1269, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  builder.+=({    scoverage.Invoker.invoked(1268, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.Tuple2.apply[String, Long]({      scoverage.Invoker.invoked(1266, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      record.name.toString()    }, {      scoverage.Invoker.invoked(1267, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      record.length    })  })}))
         </td>
       </tr><tr>
         <td>
           59
         </td>
         <td>
-          1262
+          1269
+        </td>
+        <td>
+          scala.collection.mutable.Builder.+=
+        </td>
+        <td style="background: #F0ADAD">
+          builder.+=({  scoverage.Invoker.invoked(1268, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.Tuple2.apply[String, Long]({    scoverage.Invoker.invoked(1266, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    record.name.toString()  }, {    scoverage.Invoker.invoked(1267, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    record.length  })})
+        </td>
+      </tr><tr>
+        <td>
+          59
+        </td>
+        <td>
+          1266
         </td>
         <td>
           java.lang.String.toString
@@ -7457,20 +7457,20 @@
           59
         </td>
         <td>
-          1265
+          1268
         </td>
         <td>
-          scala.collection.mutable.Builder.+=
+          scala.Tuple2.apply
         </td>
         <td style="background: #F0ADAD">
-          builder.+=({  scoverage.Invoker.invoked(1264, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.Tuple2.apply[String, Long]({    scoverage.Invoker.invoked(1262, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    record.name.toString()  }, {    scoverage.Invoker.invoked(1263, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    record.length  })})
+          scala.Tuple2.apply[String, Long]({  scoverage.Invoker.invoked(1266, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  record.name.toString()}, {  scoverage.Invoker.invoked(1267, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  record.length})
         </td>
       </tr><tr>
         <td>
           60
         </td>
         <td>
-          1267
+          1271
         </td>
         <td>
           scala.collection.mutable.Builder.result
@@ -7483,20 +7483,7 @@
           62
         </td>
         <td>
-          1270
-        </td>
-        <td>
-          org.bdgenomics.guacamole.reads.MappedRead.end
-        </td>
-        <td style="background: #AEF1AE">
-          read.end
-        </td>
-      </tr><tr>
-        <td>
-          62
-        </td>
-        <td>
-          1269
+          1273
         </td>
         <td>
           org.bdgenomics.guacamole.reads.MappedRead.referenceContig
@@ -7509,33 +7496,59 @@
           62
         </td>
         <td>
-          1272
+          1276
         </td>
         <td>
           scala.collection.generic.GenMapFactory.apply
         </td>
         <td style="background: #F0ADAD">
-          scala.this.Predef.Map.apply[String, Long]({  scoverage.Invoker.invoked(1271, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.any2ArrowAssoc[String]({  scoverage.Invoker.invoked(1269, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  read.referenceContig}).-&gt;[Long]({    scoverage.Invoker.invoked(1270, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    read.end  })})
+          scala.this.Predef.Map.apply[String, Long]({  scoverage.Invoker.invoked(1275, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.any2ArrowAssoc[String]({  scoverage.Invoker.invoked(1273, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  read.referenceContig}).-&gt;[Long]({    scoverage.Invoker.invoked(1274, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    read.end  })})
         </td>
       </tr><tr>
         <td>
           62
         </td>
         <td>
-          1271
+          1275
         </td>
         <td>
           scala.Predef.ArrowAssoc.-&gt;
         </td>
-        <td style="background: #AEF1AE">
-          scala.this.Predef.any2ArrowAssoc[String]({  scoverage.Invoker.invoked(1269, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  read.referenceContig}).-&gt;[Long]({  scoverage.Invoker.invoked(1270, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  read.end})
+        <td style="background: #F0ADAD">
+          scala.this.Predef.any2ArrowAssoc[String]({  scoverage.Invoker.invoked(1273, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  read.referenceContig}).-&gt;[Long]({  scoverage.Invoker.invoked(1274, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  read.end})
+        </td>
+      </tr><tr>
+        <td>
+          62
+        </td>
+        <td>
+          1274
+        </td>
+        <td>
+          org.bdgenomics.guacamole.reads.MappedRead.end
+        </td>
+        <td style="background: #F0ADAD">
+          read.end
         </td>
       </tr><tr>
         <td>
           63
         </td>
         <td>
-          1273
+          1278
+        </td>
+        <td>
+          scala.collection.SetLike.toSeq
+        </td>
+        <td style="background: #F0ADAD">
+          map1.keySet.union({  scoverage.Invoker.invoked(1277, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  map2.keySet}).toSeq
+        </td>
+      </tr><tr>
+        <td>
+          63
+        </td>
+        <td>
+          1277
         </td>
         <td>
           scala.collection.immutable.MapLike.keySet
@@ -7545,29 +7558,29 @@
         </td>
       </tr><tr>
         <td>
-          63
+          64
         </td>
         <td>
-          1274
+          1282
         </td>
         <td>
-          scala.collection.SetLike.toSeq
+          scala.Predef.ArrowAssoc.-&gt;
         </td>
         <td style="background: #F0ADAD">
-          map1.keySet.union({  scoverage.Invoker.invoked(1273, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  map2.keySet}).toSeq
+          scala.this.Predef.any2ArrowAssoc[String](key).-&gt;[Long]({  scoverage.Invoker.invoked(1281, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.math.`package`.max({    scoverage.Invoker.invoked(1279, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    map1.getOrElse[Long](key, 0L)  }, {    scoverage.Invoker.invoked(1280, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    map2.getOrElse[Long](key, 0L)  })})
         </td>
       </tr><tr>
         <td>
           64
         </td>
         <td>
-          1276
+          1285
         </td>
         <td>
-          scala.collection.MapLike.getOrElse
+          scala.collection.TraversableOnce.toMap
         </td>
         <td style="background: #F0ADAD">
-          map2.getOrElse[Long](key, 0L)
+          keys.map[(String, Long), Seq[(String, Long)]](((key: String) =&gt; {  scoverage.Invoker.invoked(1282, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.any2ArrowAssoc[String](key).-&gt;[Long]({    scoverage.Invoker.invoked(1281, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.math.`package`.max({      scoverage.Invoker.invoked(1279, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      map1.getOrElse[Long](key, 0L)    }, {      scoverage.Invoker.invoked(1280, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      map2.getOrElse[Long](key, 0L)    })  })}))({  scoverage.Invoker.invoked(1283, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.canBuildFrom[(String, Long)]}).toMap[String, Long]({  scoverage.Invoker.invoked(1284, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.conforms[(String, Long)]})
         </td>
       </tr><tr>
         <td>
@@ -7575,45 +7588,6 @@
         </td>
         <td>
           1279
-        </td>
-        <td>
-          scala.collection.Seq.canBuildFrom
-        </td>
-        <td style="background: #F0ADAD">
-          collection.this.Seq.canBuildFrom[(String, Long)]
-        </td>
-      </tr><tr>
-        <td>
-          64
-        </td>
-        <td>
-          1278
-        </td>
-        <td>
-          scala.Predef.ArrowAssoc.-&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          scala.this.Predef.any2ArrowAssoc[String](key).-&gt;[Long]({  scoverage.Invoker.invoked(1277, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.math.`package`.max({    scoverage.Invoker.invoked(1275, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    map1.getOrElse[Long](key, 0L)  }, {    scoverage.Invoker.invoked(1276, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    map2.getOrElse[Long](key, 0L)  })})
-        </td>
-      </tr><tr>
-        <td>
-          64
-        </td>
-        <td>
-          1281
-        </td>
-        <td>
-          scala.collection.TraversableOnce.toMap
-        </td>
-        <td style="background: #F0ADAD">
-          keys.map[(String, Long), Seq[(String, Long)]](((key: String) =&gt; {  scoverage.Invoker.invoked(1278, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.any2ArrowAssoc[String](key).-&gt;[Long]({    scoverage.Invoker.invoked(1277, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.math.`package`.max({      scoverage.Invoker.invoked(1275, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      map1.getOrElse[Long](key, 0L)    }, {      scoverage.Invoker.invoked(1276, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      map2.getOrElse[Long](key, 0L)    })  })}))({  scoverage.Invoker.invoked(1279, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.canBuildFrom[(String, Long)]}).toMap[String, Long]({  scoverage.Invoker.invoked(1280, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.conforms[(String, Long)]})
-        </td>
-      </tr><tr>
-        <td>
-          64
-        </td>
-        <td>
-          1275
         </td>
         <td>
           scala.collection.MapLike.getOrElse
@@ -7626,13 +7600,39 @@
           64
         </td>
         <td>
-          1277
+          1281
         </td>
         <td>
           scala.math.max
         </td>
         <td style="background: #F0ADAD">
-          scala.math.`package`.max({  scoverage.Invoker.invoked(1275, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  map1.getOrElse[Long](key, 0L)}, {  scoverage.Invoker.invoked(1276, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  map2.getOrElse[Long](key, 0L)})
+          scala.math.`package`.max({  scoverage.Invoker.invoked(1279, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  map1.getOrElse[Long](key, 0L)}, {  scoverage.Invoker.invoked(1280, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  map2.getOrElse[Long](key, 0L)})
+        </td>
+      </tr><tr>
+        <td>
+          64
+        </td>
+        <td>
+          1284
+        </td>
+        <td>
+          scala.Predef.conforms
+        </td>
+        <td style="background: #F0ADAD">
+          scala.this.Predef.conforms[(String, Long)]
+        </td>
+      </tr><tr>
+        <td>
+          64
+        </td>
+        <td>
+          1283
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #F0ADAD">
+          collection.this.Seq.canBuildFrom[(String, Long)]
         </td>
       </tr><tr>
         <td>
@@ -7642,69 +7642,56 @@
           1280
         </td>
         <td>
-          scala.Predef.conforms
+          scala.collection.MapLike.getOrElse
         </td>
         <td style="background: #F0ADAD">
-          scala.this.Predef.conforms[(String, Long)]
+          map2.getOrElse[Long](key, 0L)
         </td>
       </tr><tr>
         <td>
           65
         </td>
         <td>
-          1282
-        </td>
-        <td>
-          scala.Predef.conforms
-        </td>
-        <td style="background: #F0ADAD">
-          scala.this.Predef.conforms[(String, Long)]
-        </td>
-      </tr><tr>
-        <td>
-          65
-        </td>
-        <td>
-          1284
+          1288
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1283, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ReadSet.this.mappedReads.map[scala.collection.immutable.Map[String,Long]](((read: org.bdgenomics.guacamole.reads.MappedRead) =&gt; {  scoverage.Invoker.invoked(1272, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.Map.apply[String, Long]({    scoverage.Invoker.invoked(1271, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.this.Predef.any2ArrowAssoc[String]({  scoverage.Invoker.invoked(1269, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  read.referenceContig}).-&gt;[Long]({      scoverage.Invoker.invoked(1270, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      read.end    })  })}))(ClassTag.apply[scala.collection.immutable.Map[String,Long]](classOf[scala.collection.immutable.Map])).reduce(((map1: scala.collection.immutable.Map[String,Long], map2: scala.collection.immutable.Map[String,Long]) =&gt; {  val keys: Seq[String] = {    scoverage.Invoker.invoked(1274, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    map1.keySet.union({  scoverage.Invoker.invoked(1273, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  map2.keySet}).toSeq  };  {    scoverage.Invoker.invoked(1281, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    keys.map[(String, Long), Seq[(String, Long)]](((key: String) =&gt; {  scoverage.Invoker.invoked(1278, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.any2ArrowAssoc[String](key).-&gt;[Long]({    scoverage.Invoker.invoked(1277, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.math.`package`.max({      scoverage.Invoker.invoked(1275, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      map1.getOrElse[Long](key, 0L)    }, {      scoverage.Invoker.invoked(1276, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      map2.getOrElse[Long](key, 0L)    })  })}))({  scoverage.Invoker.invoked(1279, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.canBuildFrom[(String, Long)]}).toMap[String, Long]({      scoverage.Invoker.invoked(1280, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      scala.this.Predef.conforms[(String, Long)]    })  }})).toMap[String, Long]({    scoverage.Invoker.invoked(1282, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.this.Predef.conforms[(String, Long)]  })}
+          {  scoverage.Invoker.invoked(1287, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ReadSet.this.mappedReads.map[scala.collection.immutable.Map[String,Long]](((read: org.bdgenomics.guacamole.reads.MappedRead) =&gt; {  scoverage.Invoker.invoked(1276, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.Map.apply[String, Long]({    scoverage.Invoker.invoked(1275, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.this.Predef.any2ArrowAssoc[String]({  scoverage.Invoker.invoked(1273, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  read.referenceContig}).-&gt;[Long]({      scoverage.Invoker.invoked(1274, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      read.end    })  })}))(ClassTag.apply[scala.collection.immutable.Map[String,Long]](classOf[scala.collection.immutable.Map])).reduce(((map1: scala.collection.immutable.Map[String,Long], map2: scala.collection.immutable.Map[String,Long]) =&gt; {  val keys: Seq[String] = {    scoverage.Invoker.invoked(1278, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    map1.keySet.union({  scoverage.Invoker.invoked(1277, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  map2.keySet}).toSeq  };  {    scoverage.Invoker.invoked(1285, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    keys.map[(String, Long), Seq[(String, Long)]](((key: String) =&gt; {  scoverage.Invoker.invoked(1282, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.any2ArrowAssoc[String](key).-&gt;[Long]({    scoverage.Invoker.invoked(1281, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.math.`package`.max({      scoverage.Invoker.invoked(1279, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      map1.getOrElse[Long](key, 0L)    }, {      scoverage.Invoker.invoked(1280, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      map2.getOrElse[Long](key, 0L)    })  })}))({  scoverage.Invoker.invoked(1283, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.canBuildFrom[(String, Long)]}).toMap[String, Long]({      scoverage.Invoker.invoked(1284, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      scala.this.Predef.conforms[(String, Long)]    })  }})).toMap[String, Long]({    scoverage.Invoker.invoked(1286, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.this.Predef.conforms[(String, Long)]  })}
         </td>
       </tr><tr>
         <td>
           65
         </td>
         <td>
-          1283
+          1287
         </td>
         <td>
           scala.collection.immutable.Map.toMap
         </td>
         <td style="background: #F0ADAD">
-          ReadSet.this.mappedReads.map[scala.collection.immutable.Map[String,Long]](((read: org.bdgenomics.guacamole.reads.MappedRead) =&gt; {  scoverage.Invoker.invoked(1272, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.Map.apply[String, Long]({    scoverage.Invoker.invoked(1271, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.this.Predef.any2ArrowAssoc[String]({  scoverage.Invoker.invoked(1269, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  read.referenceContig}).-&gt;[Long]({      scoverage.Invoker.invoked(1270, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      read.end    })  })}))(ClassTag.apply[scala.collection.immutable.Map[String,Long]](classOf[scala.collection.immutable.Map])).reduce(((map1: scala.collection.immutable.Map[String,Long], map2: scala.collection.immutable.Map[String,Long]) =&gt; {  val keys: Seq[String] = {    scoverage.Invoker.invoked(1274, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    map1.keySet.union({  scoverage.Invoker.invoked(1273, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  map2.keySet}).toSeq  };  {    scoverage.Invoker.invoked(1281, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    keys.map[(String, Long), Seq[(String, Long)]](((key: String) =&gt; {  scoverage.Invoker.invoked(1278, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.any2ArrowAssoc[String](key).-&gt;[Long]({    scoverage.Invoker.invoked(1277, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.math.`package`.max({      scoverage.Invoker.invoked(1275, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      map1.getOrElse[Long](key, 0L)    }, {      scoverage.Invoker.invoked(1276, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      map2.getOrElse[Long](key, 0L)    })  })}))({  scoverage.Invoker.invoked(1279, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.canBuildFrom[(String, Long)]}).toMap[String, Long]({      scoverage.Invoker.invoked(1280, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      scala.this.Predef.conforms[(String, Long)]    })  }})).toMap[String, Long]({  scoverage.Invoker.invoked(1282, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.conforms[(String, Long)]})
+          ReadSet.this.mappedReads.map[scala.collection.immutable.Map[String,Long]](((read: org.bdgenomics.guacamole.reads.MappedRead) =&gt; {  scoverage.Invoker.invoked(1276, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.Map.apply[String, Long]({    scoverage.Invoker.invoked(1275, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.this.Predef.any2ArrowAssoc[String]({  scoverage.Invoker.invoked(1273, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  read.referenceContig}).-&gt;[Long]({      scoverage.Invoker.invoked(1274, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      read.end    })  })}))(ClassTag.apply[scala.collection.immutable.Map[String,Long]](classOf[scala.collection.immutable.Map])).reduce(((map1: scala.collection.immutable.Map[String,Long], map2: scala.collection.immutable.Map[String,Long]) =&gt; {  val keys: Seq[String] = {    scoverage.Invoker.invoked(1278, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    map1.keySet.union({  scoverage.Invoker.invoked(1277, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  map2.keySet}).toSeq  };  {    scoverage.Invoker.invoked(1285, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    keys.map[(String, Long), Seq[(String, Long)]](((key: String) =&gt; {  scoverage.Invoker.invoked(1282, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.any2ArrowAssoc[String](key).-&gt;[Long]({    scoverage.Invoker.invoked(1281, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.math.`package`.max({      scoverage.Invoker.invoked(1279, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      map1.getOrElse[Long](key, 0L)    }, {      scoverage.Invoker.invoked(1280, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      map2.getOrElse[Long](key, 0L)    })  })}))({  scoverage.Invoker.invoked(1283, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.canBuildFrom[(String, Long)]}).toMap[String, Long]({      scoverage.Invoker.invoked(1284, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      scala.this.Predef.conforms[(String, Long)]    })  }})).toMap[String, Long]({  scoverage.Invoker.invoked(1286, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.conforms[(String, Long)]})
         </td>
       </tr><tr>
         <td>
-          87
-        </td>
-        <td>
-          1285
-        </td>
-        <td>
-          scala.Tuple2._1
-        </td>
-        <td style="background: #F0ADAD">
-          x$2._1
-        </td>
-      </tr><tr>
-        <td>
-          87
+          65
         </td>
         <td>
           1286
+        </td>
+        <td>
+          scala.Predef.conforms
+        </td>
+        <td style="background: #F0ADAD">
+          scala.this.Predef.conforms[(String, Long)]
+        </td>
+      </tr><tr>
+        <td>
+          87
+        </td>
+        <td>
+          1290
         </td>
         <td>
           scala.Tuple2._2
@@ -7714,10 +7701,23 @@
         </td>
       </tr><tr>
         <td>
+          87
+        </td>
+        <td>
+          1289
+        </td>
+        <td>
+          scala.Tuple2._1
+        </td>
+        <td style="background: #F0ADAD">
+          x$2._1
+        </td>
+      </tr><tr>
+        <td>
           93
         </td>
         <td>
-          1287
+          1291
         </td>
         <td>
           org.bdgenomics.guacamole.ReadSet.&lt;init&gt;
