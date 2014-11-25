@@ -239,7 +239,7 @@
         <span class="name">end</span><span class="result">: <span class="extype" name="scala.Long">Long</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.bdgenomics.guacamole.variants.CalledAllele">CalledAllele</a> → <a href="../HasReferenceRegion.html" class="extype" name="org.bdgenomics.guacamole.HasReferenceRegion">HasReferenceRegion</a></dd></dl></div>
+      <p class="shortcomment cmt">The end position on the genome, *exclusive*.</p><div class="fullcomment"><div class="comment cmt"><p>The end position on the genome, *exclusive*. Must be non-negative.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.bdgenomics.guacamole.variants.CalledAllele">CalledAllele</a> → <a href="../HasReferenceRegion.html" class="extype" name="org.bdgenomics.guacamole.HasReferenceRegion">HasReferenceRegion</a></dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -377,8 +377,8 @@
         <span class="name">overlapsLociSet</span><span class="params">(<span name="loci">loci: <a href="../LociSet.html" class="extype" name="org.bdgenomics.guacamole.LociSet">LociSet</a></span>, <span name="halfWindowSize">halfWindowSize: <span class="extype" name="scala.Long">Long</span> = <span class="symbol">0</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Does this read overlap any of the given loci, with halfWindowSize padding?
-</p><div class="fullcomment"><div class="comment cmt"><p>Does this read overlap any of the given loci, with halfWindowSize padding?
+      <p class="shortcomment cmt">Does this region overlap any of the given loci, with halfWindowSize padding?</p><div class="fullcomment"><div class="comment cmt"><p>Does this region overlap any of the given loci, with halfWindowSize padding?</p><p>The padding is inclusive on both ends, so for example if halfWindowSize=1, then a region would overlap if it
+included any of these three positions: locus - 1, locus, and locus + 1.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../HasReferenceRegion.html" class="extype" name="org.bdgenomics.guacamole.HasReferenceRegion">HasReferenceRegion</a></dd></dl></div>
     </li><li name="org.bdgenomics.guacamole.HasReferenceRegion#overlapsLocus" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="overlapsLocus(locus:Long,halfWindowSize:Long):Boolean"></a>
@@ -392,8 +392,8 @@
         <span class="name">overlapsLocus</span><span class="params">(<span name="locus">locus: <span class="extype" name="scala.Long">Long</span></span>, <span name="halfWindowSize">halfWindowSize: <span class="extype" name="scala.Long">Long</span> = <span class="symbol">0</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Does the read overlap the given locus, with halfWindowSize padding?
-</p><div class="fullcomment"><div class="comment cmt"><p>Does the read overlap the given locus, with halfWindowSize padding?
+      <p class="shortcomment cmt">Does the region overlap the given locus, with halfWindowSize padding?
+</p><div class="fullcomment"><div class="comment cmt"><p>Does the region overlap the given locus, with halfWindowSize padding?
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../HasReferenceRegion.html" class="extype" name="org.bdgenomics.guacamole.HasReferenceRegion">HasReferenceRegion</a></dd></dl></div>
     </li><li name="org.bdgenomics.guacamole.variants.CalledAllele#referenceContig" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="referenceContig:String"></a>

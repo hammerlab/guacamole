@@ -1,5 +1,5 @@
 <scoverage 
-statement-count="3000" statements-invoked="226" statement-rate="7.53" branch-rate="3.81" version="1.0" timestamp="1416873395748">
+statement-count="3002" statements-invoked="226" statement-rate="7.53" branch-rate="3.81" version="1.0" timestamp="1416941281339">
     <packages>
         <package name="org.bdgenomics.guacamole" statement-count="1327" statements-invoked="78" statement-rate="5.88">
             <classes>
@@ -3136,28 +3136,28 @@ statement-count="3000" statements-invoked="226" statement-rate="7.53" branch-rat
                         name="org.bdgenomics.guacamole/HasReferenceRegion/&lt;none&gt;" statement-count="8" statements-invoked="0" statement-rate="0.00" branch-rate="0.00">
                             <statements>
                                 <statement 
-                                package="org.bdgenomics.guacamole" class="HasReferenceRegion" method="&lt;none&gt;" start="-1" line="42" branch="false" invocation-count="0">
+                                package="org.bdgenomics.guacamole" class="HasReferenceRegion" method="&lt;none&gt;" start="-1" line="45" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.bdgenomics.guacamole" class="HasReferenceRegion" method="&lt;none&gt;" start="-1" line="49" branch="false" invocation-count="0">
+                                package="org.bdgenomics.guacamole" class="HasReferenceRegion" method="&lt;none&gt;" start="-1" line="52" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.bdgenomics.guacamole" class="HasReferenceRegion" method="&lt;none&gt;" start="-1" line="42" branch="false" invocation-count="0">
+                                package="org.bdgenomics.guacamole" class="HasReferenceRegion" method="&lt;none&gt;" start="-1" line="45" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.bdgenomics.guacamole" class="HasReferenceRegion" method="&lt;none&gt;" start="-1" line="42" branch="false" invocation-count="0">
+                                package="org.bdgenomics.guacamole" class="HasReferenceRegion" method="&lt;none&gt;" start="-1" line="45" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.bdgenomics.guacamole" class="HasReferenceRegion" method="&lt;none&gt;" start="-1" line="42" branch="false" invocation-count="0">
+                                package="org.bdgenomics.guacamole" class="HasReferenceRegion" method="&lt;none&gt;" start="-1" line="45" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.bdgenomics.guacamole" class="HasReferenceRegion" method="&lt;none&gt;" start="-1" line="49" branch="false" invocation-count="0">
+                                package="org.bdgenomics.guacamole" class="HasReferenceRegion" method="&lt;none&gt;" start="-1" line="52" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.bdgenomics.guacamole" class="HasReferenceRegion" method="&lt;none&gt;" start="-1" line="42" branch="false" invocation-count="0">
+                                package="org.bdgenomics.guacamole" class="HasReferenceRegion" method="&lt;none&gt;" start="-1" line="45" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.bdgenomics.guacamole" class="HasReferenceRegion" method="&lt;none&gt;" start="-1" line="42" branch="false" invocation-count="0">
+                                package="org.bdgenomics.guacamole" class="HasReferenceRegion" method="&lt;none&gt;" start="-1" line="45" branch="false" invocation-count="0">
 </statement>
                             </statements>
 </method>
@@ -9940,7 +9940,7 @@ statement-count="3000" statements-invoked="226" statement-rate="7.53" branch-rat
 </class>
             </classes>
         </package>
-        <package name="org.bdgenomics.guacamole.windowing" statement-count="128" statements-invoked="2" statement-rate="1.56">
+        <package name="org.bdgenomics.guacamole.windowing" statement-count="130" statements-invoked="2" statement-rate="1.54">
             <classes>
                 <class 
                 name="$anon" filename="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/windowing/SlidingWindow.scala" statement-count="5" statements-invoked="0" statement-rate="0.00" branch-rate="0.00">
@@ -9968,109 +9968,109 @@ statement-count="3000" statements-invoked="226" statement-rate="7.53" branch-rat
                     </methods>
 </class>
                 <class 
-                name="SlidingWindow" filename="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/windowing/SlidingWindow.scala" statement-count="123" statements-invoked="2" statement-rate="1.63" branch-rate="3.85">
+                name="SlidingWindow" filename="/home/travis/build/hammerlab/guacamole/src/main/scala/org/bdgenomics/guacamole/windowing/SlidingWindow.scala" statement-count="125" statements-invoked="2" statement-rate="1.60" branch-rate="3.85">
                     <methods>
                         <method 
                         name="org.bdgenomics.guacamole.windowing/SlidingWindow/setCurrentLocus" statement-count="33" statements-invoked="0" statement-rate="0.00" branch-rate="0.00">
                             <statements>
                                 <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="102" branch="true" invocation-count="0">
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="106" branch="true" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="95" branch="false" invocation-count="0">
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="97" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="92" branch="false" invocation-count="0">
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="94" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="99" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="100" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="107" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="90" branch="true" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="100" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="102" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="100" branch="true" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="95" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="100" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="101" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="90" branch="true" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="97" branch="true" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="96" branch="true" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="102" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="92" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="100" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="102" branch="true" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="106" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="90" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="102" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="106" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="100" branch="true" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="100" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="90" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="102" branch="false" invocation-count="0">
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="103" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="104" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="91" branch="false" invocation-count="0">
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="111" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="96" branch="false" invocation-count="0">
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="92" branch="true" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="100" branch="false" invocation-count="0">
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="104" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="106" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="104" branch="true" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="97" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="104" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="105" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="92" branch="true" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="99" branch="true" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="98" branch="true" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="106" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="94" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="104" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="106" branch="true" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="110" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="92" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="106" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="110" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="104" branch="true" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="104" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="92" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="106" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="108" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="93" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="98" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="104" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="94" branch="false" invocation-count="0">
 </statement>
                             </statements>
 </method>
@@ -10078,121 +10078,121 @@ statement-count="3000" statements-invoked="226" statement-rate="7.53" branch-rat
                         name="org.bdgenomics.guacamole.windowing/SlidingWindow/advanceMultipleWindows" statement-count="39" statements-invoked="2" statement-rate="5.13" branch-rate="8.33">
                             <statements>
                                 <statement 
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="154" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="168" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="179" branch="true" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="159" branch="false" invocation-count="0">
+</statement>
+                                <statement 
                                 package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="174" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="155" branch="true" invocation-count="0">
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="163" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="182" branch="true" invocation-count="1">
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="155" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="158" branch="false" invocation-count="0">
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="153" branch="true" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="151" branch="false" invocation-count="0">
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="179" branch="true" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="170" branch="true" invocation-count="0">
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="156" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="164" branch="false" invocation-count="0">
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="168" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="151" branch="false" invocation-count="0">
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="159" branch="true" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="177" branch="false" invocation-count="0">
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="182" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="168" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="174" branch="true" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="181" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="155" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="169" branch="true" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="154" branch="true" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="165" branch="true" invocation-count="0">
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="158" branch="true" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="150" branch="true" invocation-count="0">
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="183" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="159" branch="true" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="178" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="155" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="162" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="186" branch="true" invocation-count="1">
+</statement>
+                                <statement 
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="154" branch="true" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="186" branch="false" invocation-count="1">
+</statement>
+                                <statement 
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="174" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="179" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="165" branch="false" invocation-count="0">
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="163" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="150" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="178" branch="false" invocation-count="0">
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="155" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="154" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="164" branch="true" invocation-count="0">
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="158" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="150" branch="true" invocation-count="0">
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="169" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="151" branch="false" invocation-count="0">
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="182" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="155" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="182" branch="false" invocation-count="1">
-</statement>
-                                <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="170" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="175" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="151" branch="false" invocation-count="0">
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="168" branch="true" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="159" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="149" branch="true" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="175" branch="true" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="155" branch="true" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="178" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="164" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="152" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="150" branch="false" invocation-count="0">
-</statement>
-                                <statement 
                                 package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="155" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="164" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="175" branch="true" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="170" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="159" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="151" branch="false" invocation-count="0">
 </statement>
                             </statements>
 </method>
@@ -10200,7 +10200,10 @@ statement-count="3000" statements-invoked="226" statement-rate="7.53" branch-rat
                         name="org.bdgenomics.guacamole.windowing/SlidingWindow/&lt;none&gt;" statement-count="41" statements-invoked="0" statement-rate="0.00" branch-rate="0.00">
                             <statements>
                                 <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="118" branch="false" invocation-count="0">
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="154" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="122" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="62" branch="false" invocation-count="0">
@@ -10212,7 +10215,7 @@ statement-count="3000" statements-invoked="226" statement-rate="7.53" branch-rat
                                 package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="58" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="90" branch="false" invocation-count="0">
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="92" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="56" branch="false" invocation-count="0">
@@ -10224,10 +10227,10 @@ statement-count="3000" statements-invoked="226" statement-rate="7.53" branch-rat
                                 package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="56" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="90" branch="false" invocation-count="0">
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="92" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="117" branch="false" invocation-count="0">
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="121" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="58" branch="false" invocation-count="0">
@@ -10242,13 +10245,13 @@ statement-count="3000" statements-invoked="226" statement-rate="7.53" branch-rat
                                 package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="57" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="117" branch="false" invocation-count="0">
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="121" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="90" branch="false" invocation-count="0">
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="92" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="118" branch="false" invocation-count="0">
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="122" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="59" branch="false" invocation-count="0">
@@ -10269,7 +10272,7 @@ statement-count="3000" statements-invoked="226" statement-rate="7.53" branch-rat
                                 package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="57" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="119" branch="false" invocation-count="0">
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="123" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="87" branch="false" invocation-count="0">
@@ -10281,22 +10284,19 @@ statement-count="3000" statements-invoked="226" statement-rate="7.53" branch-rat
                                 package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="58" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="118" branch="true" invocation-count="0">
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="122" branch="true" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="117" branch="false" invocation-count="0">
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="121" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="90" branch="false" invocation-count="0">
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="92" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="56" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="58" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="150" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="56" branch="true" invocation-count="0">
@@ -10308,7 +10308,7 @@ statement-count="3000" statements-invoked="226" statement-rate="7.53" branch-rat
                                 package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="51" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="117" branch="false" invocation-count="0">
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="121" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="86" branch="false" invocation-count="0">
@@ -10325,37 +10325,43 @@ statement-count="3000" statements-invoked="226" statement-rate="7.53" branch-rat
                             </statements>
 </method>
                         <method 
-                        name="org.bdgenomics.guacamole.windowing/SlidingWindow/nextLocusWithRegions" statement-count="10" statements-invoked="0" statement-rate="0.00" branch-rate="0.00">
+                        name="org.bdgenomics.guacamole.windowing/SlidingWindow/nextLocusWithRegions" statement-count="12" statements-invoked="0" statement-rate="0.00" branch-rate="0.00">
                             <statements>
                                 <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="nextLocusWithRegions" start="-1" line="121" branch="false" invocation-count="0">
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="nextLocusWithRegions" start="-1" line="124" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="nextLocusWithRegions" start="-1" line="119" branch="true" invocation-count="0">
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="nextLocusWithRegions" start="-1" line="125" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="nextLocusWithRegions" start="-1" line="119" branch="true" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="nextLocusWithRegions" start="-1" line="120" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="nextLocusWithRegions" start="-1" line="121" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="nextLocusWithRegions" start="-1" line="122" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="nextLocusWithRegions" start="-1" line="124" branch="true" invocation-count="0">
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="nextLocusWithRegions" start="-1" line="128" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="nextLocusWithRegions" start="-1" line="124" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="nextLocusWithRegions" start="-1" line="120" branch="false" invocation-count="0">
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="nextLocusWithRegions" start="-1" line="123" branch="true" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="nextLocusWithRegions" start="-1" line="121" branch="false" invocation-count="0">
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="nextLocusWithRegions" start="-1" line="124" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="nextLocusWithRegions" start="-1" line="125" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="nextLocusWithRegions" start="-1" line="123" branch="true" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="nextLocusWithRegions" start="-1" line="126" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="nextLocusWithRegions" start="-1" line="124" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="nextLocusWithRegions" start="-1" line="128" branch="true" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.bdgenomics.guacamole.windowing" class="SlidingWindow" method="nextLocusWithRegions" start="-1" line="125" branch="false" invocation-count="0">
 </statement>
                             </statements>
 </method>
