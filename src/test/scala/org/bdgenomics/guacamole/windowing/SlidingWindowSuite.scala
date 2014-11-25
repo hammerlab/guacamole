@@ -173,7 +173,7 @@ class SlidingWindowSuite extends FunSuite with Matchers {
     assert(window.currentRegions.size === 0)
   }
 
-  test("test sliding window advance multiple windows trivial") {
+  test("test sliding window advance multiple windows trivial 1") {
     val reads1 = Seq(
       TestUtil.makeRead("TCGATCGA", "8M", "8", 2),
       TestUtil.makeRead("CGATCGAT", "8M", "8", 3),
@@ -192,6 +192,35 @@ class SlidingWindowSuite extends FunSuite with Matchers {
     SlidingWindow.advanceMultipleWindows(windows, loci, skipEmpty = false) should be(Some(0))
     windows.map(_.currentLocus) should equal(Seq(0, 0))
     windows.map(_.nextLocusWithRegions) should equal(Seq(Some(2), Some(2)))
+
+    SlidingWindow.advanceMultipleWindows(windows, loci, skipEmpty = true) should be(Some(2))
+    windows.map(_.currentLocus) should equal(Seq(2, 2))
+
+    SlidingWindow.advanceMultipleWindows(windows, loci, skipEmpty = true) should be(None)
+  }
+
+  test("test sliding window advance multiple windows trivial 2") {
+    val reads1 = Seq(
+      TestUtil.makeRead("TCGATCGA", "8M", "8", 0),
+      TestUtil.makeRead("CGATCGAT", "8M", "8", 3),
+      TestUtil.makeRead("TCG", "3M", "3", 6))
+    val window1 = SlidingWindow(1, reads1.iterator)
+
+    val reads2 = Seq(
+      TestUtil.makeRead("TCGATCGA", "8M", "8", 2),
+      TestUtil.makeRead("CGATCGAT", "8M", "8", 3),
+      TestUtil.makeRead("TCG", "3M", "3", 6))
+    val window2 = SlidingWindow(0, reads2.iterator)
+
+    val loci = LociSet.parse("chr1:0-3,chr1:20-30").onContig("chr1").iterator
+    val windows = Seq(window1, window2)
+
+    SlidingWindow.advanceMultipleWindows(windows, loci, skipEmpty = true) should be(Some(0))
+    windows.map(_.currentLocus) should equal(Seq(0, 0))
+    windows.map(_.nextLocusWithRegions) should equal(Seq(Some(1), Some(2)))
+
+    SlidingWindow.advanceMultipleWindows(windows, loci, skipEmpty = true) should be(Some(1))
+    windows.map(_.currentLocus) should equal(Seq(1, 1))
 
     SlidingWindow.advanceMultipleWindows(windows, loci, skipEmpty = true) should be(Some(2))
     windows.map(_.currentLocus) should equal(Seq(2, 2))

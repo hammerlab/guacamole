@@ -87,6 +87,8 @@ case class SlidingWindow[Region <: HasReferenceRegion](halfWindowSize: Long,
     currentLocus = locus
 
     // Remove regions that are no longer in the window.
+    // Note that the end of a region is exclusive, so e.g. if halfWindowSize=0 and head.end=locus, we do want to drop
+    // that read.
     while (!currentRegionsPriorityQueue.isEmpty && currentRegionsPriorityQueue.head.end <= locus - halfWindowSize) {
       val dropped = currentRegionsPriorityQueue.dequeue()
       assert(!dropped.overlapsLocus(locus, halfWindowSize))
@@ -96,6 +98,8 @@ case class SlidingWindow[Region <: HasReferenceRegion](halfWindowSize: Long,
       Seq.empty
     } else {
       // Build up a list of new regions that are now in the window.
+      // Note that the start of a region is inclusive, so e.g. if halfWindowSize=0 and head.start=locus we want to
+      // include it.
       val newRegionsBuilder = mutable.ArrayBuffer.newBuilder[Region]
       while (sortedRegions.nonEmpty && sortedRegions.head.start <= locus + halfWindowSize) {
         val region = sortedRegions.next()
@@ -117,7 +121,7 @@ case class SlidingWindow[Region <: HasReferenceRegion](halfWindowSize: Long,
     if (currentRegionsPriorityQueue.exists(_.overlapsLocus(currentLocus + 1, halfWindowSize))) {
       Some(currentLocus + 1)
     } else if (sortedRegions.hasNext) {
-      val result = sortedRegions.head.start - halfWindowSize
+      val result = math.max(0, sortedRegions.head.start - halfWindowSize)
       assert(result > currentLocus)
       Some(result)
     } else {
