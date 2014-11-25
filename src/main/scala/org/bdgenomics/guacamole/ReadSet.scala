@@ -18,9 +18,9 @@
 
 package org.bdgenomics.guacamole
 
+import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.models.SequenceDictionary
-import org.apache.spark.SparkContext
 import org.bdgenomics.guacamole.reads.Read
 
 /**
@@ -84,12 +84,14 @@ object ReadSet {
     token: Int = 0,
     contigLengthsFromDictionary: Boolean = true): ReadSet = {
 
-    val (reads, sequenceDictionary) = Read.loadReadRDDAndSequenceDictionaryFromBAM(
-      filename,
-      sc,
-      token = token,
-      filters = filters
-    )
+    val (reads, sequenceDictionary) =
+      Read.loadReadRDDAndSequenceDictionary(
+        filename,
+        sc,
+        token = token,
+        filters = filters
+      )
+
     new ReadSet(reads, Some(sequenceDictionary), filename, filters, token, contigLengthsFromDictionary)
   }
 }
