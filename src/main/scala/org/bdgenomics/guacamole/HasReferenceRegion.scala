@@ -26,27 +26,30 @@ package org.bdgenomics.guacamole
  */
 trait HasReferenceRegion {
 
-  /* Name of the reference contig */
+  /** Name of the reference contig */
   val referenceContig: String
 
-  /* Start position on the genome */
+  /** Start position on the genome, inclusive. Must be non-negative. */
   val start: Long
 
-  /* End position on the genome */
+  /** The end position on the genome, *exclusive*. Must be non-negative. */
   val end: Long
 
   /**
-   * Does this read overlap any of the given loci, with halfWindowSize padding?
+   * Does this region overlap any of the given loci, with halfWindowSize padding?
+   *
+   * The padding is inclusive on both ends, so for example if halfWindowSize=1, then a region would overlap if it
+   * included any of these three positions: locus - 1, locus, and locus + 1.
    */
   def overlapsLociSet(loci: LociSet, halfWindowSize: Long = 0): Boolean = {
     loci.onContig(referenceContig).intersects(math.max(0, start - halfWindowSize), end + halfWindowSize)
   }
 
   /**
-   * Does the read overlap the given locus, with halfWindowSize padding?
+   * Does the region overlap the given locus, with halfWindowSize padding?
    */
   def overlapsLocus(locus: Long, halfWindowSize: Long = 0): Boolean = {
     start - halfWindowSize <= locus && end + halfWindowSize > locus
   }
-
 }
+
