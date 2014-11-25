@@ -24,6 +24,10 @@ import org.apache.hadoop.io.LongWritable
 import org.apache.spark.rdd.RDD
 import org.apache.spark.{ Logging, SparkContext }
 import org.bdgenomics.adam.models.SequenceDictionary
+import org.bdgenomics.adam.projections.{ AlignmentRecordField, Projection }
+import org.bdgenomics.adam.rdd.{ ADAMContext, ADAMSpecificRecordSequenceDictionaryRDDAggregator }
+import org.bdgenomics.formats.avro.AlignmentRecord
+import org.bdgenomics.guacamole.Bases
 import org.seqdoop.hadoop_bam.util.SAMHeaderReader
 import org.seqdoop.hadoop_bam.{ AnySAMInputFormat, SAMRecordWritable }
 
@@ -118,13 +122,7 @@ object Read extends Logging {
     matePropertiesOpt: Option[MateProperties] = None): Read = {
 
     val sequenceArray = sequence.map(_.toByte).toArray
-    val qualityScoresArray = {
-      // If no base qualities are set, we set them all to 0.
-      if (baseQualities.isEmpty)
-        sequenceArray.map(_ => 0.toByte).toSeq.toArray
-      else
-        baseQualities.map(q => (q - 33).toByte).toArray
-    }
+    val qualityScoresArray = baseQualityStringToArray(baseQualities, sequenceArray.length)
 
     if (referenceContig.isEmpty) {
       UnmappedRead(
@@ -158,6 +156,25 @@ object Read extends Logging {
   }
 
   /**
+   *
+   * Converts the ascii-string encoded base qualities into an array of integers
+   * quality scores in Phred-scale
+   *
+   * @param baseQualities Base qualities of a read (ascii-encoded)
+   * @param length Length of the read sequence
+   * @return  Base qualities in Phred scale
+   */
+  def baseQualityStringToArray(baseQualities: String, length: Int): Array[Byte] = {
+
+    // If no base qualities are set, we set them all to 0.
+    if (baseQualities.isEmpty)
+      (0 until length).map(_ => 0.toByte).toArray
+    else
+      baseQualities.map(q => (q - 33).toByte).toArray
+
+  }
+
+  /**
    * Convert a SAM tools record into a Read.
    *
    * @param record
@@ -186,11 +203,11 @@ object Read extends Logging {
         Some(
           MateProperties(
             isFirstInPair = record.getFirstOfPairFlag,
-            inferredInsertSize = Some(record.getInferredInsertSize),
+            inferredInsertSize = if (record.getInferredInsertSize != 0) Some(record.getInferredInsertSize) else None,
             isMateMapped = !record.getMateUnmappedFlag,
             mateReferenceContig = Some(record.getMateReferenceName),
-            mateStart = Some(record.getMateAlignmentStart),
-            isMatePositiveStrand = !record.getMateNegativeStrandFlag
+            mateStart = Some(record.getMateAlignmentStart - 1), //subtract 1 from start, since samtools is 1-based and we're 0-based.
+            isMatePositiveStrand = if (!record.getMateUnmappedFlag) !record.getMateNegativeStrandFlag else false
           )
         )
       } else {
@@ -228,7 +245,6 @@ object Read extends Logging {
             None
           }
       }
-
     } else {
       val result = UnmappedRead(
         token,
@@ -278,25 +294,140 @@ object Read extends Logging {
    * @param filters filters to apply
    * @return
    */
+
+  def loadReadRDDAndSequenceDictionary(filename: String,
+                                       sc: SparkContext,
+                                       token: Int,
+                                       filters: InputFilters): (RDD[Read], SequenceDictionary) = {
+    var (reads, sequenceDictionary) = if (filename.endsWith(".bam") || filename.endsWith(".sam")) {
+      loadReadRDDAndSequenceDictionaryFromBAM(filename, sc, token)
+    } else {
+      loadReadRDDAndSequenceDictionaryFromADAM(filename, sc, token)
+    }
+    if (filters.mapped) reads = reads.filter(_.isMapped)
+    if (filters.nonDuplicate) reads = reads.filter(!_.isDuplicate)
+    if (filters.passedVendorQualityChecks) reads = reads.filter(!_.failedVendorQualityChecks)
+    if (filters.isPaired) reads = reads.filter(_.isPaired)
+    (reads, sequenceDictionary)
+
+  }
+
+  /** Returns an RDD of Reads and SequenceDictionary from reads in BAM format **/
   def loadReadRDDAndSequenceDictionaryFromBAM(
     filename: String,
     sc: SparkContext,
-    token: Int,
-    filters: InputFilters): (RDD[Read], SequenceDictionary) = {
+    token: Int): (RDD[Read], SequenceDictionary) = {
 
     val samHeader = SAMHeaderReader.readSAMHeaderFrom(new Path(filename), sc.hadoopConfiguration)
     val sequenceDictionary = SequenceDictionary.fromSAMHeader(samHeader)
 
     val samRecords: RDD[(LongWritable, SAMRecordWritable)] =
       sc.newAPIHadoopFile[LongWritable, SAMRecordWritable, AnySAMInputFormat](filename)
-    var reads: RDD[Read] =
+    val reads: RDD[Read] =
       samRecords.flatMap({
         case (k, v) => fromSAMRecordOpt(v.get, token)
       })
-    if (filters.mapped) reads = reads.filter(_.isMapped)
-    if (filters.nonDuplicate) reads = reads.filter(!_.isDuplicate)
-    if (filters.passedVendorQualityChecks) reads = reads.filter(!_.failedVendorQualityChecks)
     (reads, sequenceDictionary)
+  }
+
+  /** Returns an RDD of Reads and SequenceDictionary from reads in ADAM format **/
+  def loadReadRDDAndSequenceDictionaryFromADAM(filename: String,
+                                               sc: SparkContext,
+                                               token: Int): (RDD[Read], SequenceDictionary) = {
+
+    val adamContext = new ADAMContext(sc)
+
+    // Build a projection that will only load the fields we will need to populate a Read
+    val ADAMSpecificProjection = Projection(
+      AlignmentRecordField.recordGroupSample,
+
+      AlignmentRecordField.sequence,
+      AlignmentRecordField.qual,
+
+      // Alignment properties
+      AlignmentRecordField.readMapped,
+      AlignmentRecordField.contig,
+      AlignmentRecordField.start,
+      AlignmentRecordField.readNegativeStrand,
+      AlignmentRecordField.cigar,
+      AlignmentRecordField.mapq,
+      AlignmentRecordField.mismatchingPositions,
+
+      // Filter flags
+      AlignmentRecordField.duplicateRead,
+      AlignmentRecordField.failedVendorQualityChecks,
+
+      // Mate fields
+      AlignmentRecordField.readPaired,
+      AlignmentRecordField.mateMapped,
+      AlignmentRecordField.firstOfPair,
+      AlignmentRecordField.mateContig,
+      AlignmentRecordField.mateAlignmentStart,
+      AlignmentRecordField.mateNegativeStrand,
+      AlignmentRecordField.recordGroupPredictedMedianInsertSize
+    )
+
+    val adamRecords: RDD[AlignmentRecord] = adamContext.adamLoad(filename, projection = Some(ADAMSpecificProjection))
+    val sequenceDictionary = new ADAMSpecificRecordSequenceDictionaryRDDAggregator(adamRecords).adamGetSequenceDictionary()
+
+    val reads: RDD[Read] = adamRecords.map(fromADAMRecord)
+
+    (reads, sequenceDictionary)
+  }
+
+  /**
+   *
+   * Builds a Guacamole Read from and ADAM Alignment Record
+   *
+   * @param alignmentRecord ADAM Alignment Record (an aligned or unaligned read)
+   * @return Mapped or Unmapped Read
+   */
+  def fromADAMRecord(alignmentRecord: AlignmentRecord): Read = {
+
+    val mateProperties = if (alignmentRecord.getReadPaired) {
+      Some(MateProperties(
+        isFirstInPair = alignmentRecord.getFirstOfPair,
+        inferredInsertSize = None, // ADAM does not support this field see https://github.com/bigdatagenomics/bdg-formats/issues/37
+        isMateMapped = alignmentRecord.getMateMapped,
+        mateReferenceContig = if (alignmentRecord.getMateMapped) Some(alignmentRecord.getMateContig.getContigName.toString.intern()) else None,
+        mateStart = if (alignmentRecord.getMateMapped) Some(alignmentRecord.getMateAlignmentStart) else None,
+        isMatePositiveStrand = if (alignmentRecord.getMateMapped) !alignmentRecord.getMateNegativeStrand else false
+      ))
+    } else {
+      None
+    }
+
+    val sequence = Bases.stringToBases(alignmentRecord.getSequence.toString)
+    val baseQualities = baseQualityStringToArray(alignmentRecord.getQual.toString, sequence.length)
+
+    if (alignmentRecord.getReadMapped) {
+      MappedRead(
+        token = 0,
+        sequence = sequence,
+        baseQualities = baseQualities,
+        isDuplicate = alignmentRecord.getDuplicateRead,
+        sampleName = alignmentRecord.getRecordGroupSample.toString.intern(),
+        referenceContig = alignmentRecord.getContig.getContigName.toString.intern(),
+        alignmentQuality = alignmentRecord.getMapq,
+        start = alignmentRecord.getStart,
+        cigar = TextCigarCodec.getSingleton.decode(alignmentRecord.getCigar.toString),
+        mdTagString = alignmentRecord.getMismatchingPositions.toString,
+        failedVendorQualityChecks = alignmentRecord.getFailedVendorQualityChecks,
+        isPositiveStrand = !alignmentRecord.getReadNegativeStrand,
+        matePropertiesOpt = mateProperties
+      )
+    } else {
+      UnmappedRead(
+        token = 0,
+        sequence = sequence,
+        baseQualities = baseQualities,
+        isDuplicate = alignmentRecord.getDuplicateRead,
+        sampleName = alignmentRecord.getRecordGroupSample.toString.intern(),
+        failedVendorQualityChecks = alignmentRecord.getFailedVendorQualityChecks,
+        isPositiveStrand = !alignmentRecord.getReadNegativeStrand,
+        matePropertiesOpt = mateProperties
+      )
+    }
   }
 
   /** Is the given samtools CigarElement a (hard/soft) clip? */
