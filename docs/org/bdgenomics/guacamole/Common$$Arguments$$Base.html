@@ -41,7 +41,7 @@
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Common argument(s) we always want.</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="org.bdgenomics.adam.cli.ParquetArgs">ParquetArgs</span>, <span class="extype" name="org.bdgenomics.adam.cli.Args4jBase">Args4jBase</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="org.bdgenomics.adam.cli.ParquetArgs">ParquetArgs</span>, <span class="extype" name="org.bdgenomics.adam.rdd.ADAMParquetArgs">ADAMParquetArgs</span>, <span class="extype" name="org.bdgenomics.adam.cli.Args4jBase">Args4jBase</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div><div class="toggleContainer block">
           <span class="toggle">Known Subclasses</span>
           <div class="subClasses hiddenContent"><a href="commands/SomaticStandard$$Arguments.html" class="extype" name="org.bdgenomics.guacamole.commands.SomaticStandard.Arguments">Arguments</a>, <a href="commands/GermlineThreshold$$Arguments.html" class="extype" name="org.bdgenomics.guacamole.commands.GermlineThreshold.Arguments">Arguments</a>, <a href="commands/GermlineStandard$$Arguments.html" class="extype" name="org.bdgenomics.guacamole.commands.GermlineStandard.Arguments">Arguments</a>, <a href="DistributedUtil$$Arguments.html" class="extype" name="org.bdgenomics.guacamole.DistributedUtil.Arguments">Arguments</a>, <a href="Concordance$$ConcordanceArgs.html" class="extype" name="org.bdgenomics.guacamole.Concordance.ConcordanceArgs">ConcordanceArgs</a>, <a href="filters/GenotypeFilter$$GenotypeFilterArguments.html" class="extype" name="org.bdgenomics.guacamole.filters.GenotypeFilter.GenotypeFilterArguments">GenotypeFilterArguments</a>, <a href="Common$$Arguments$$GermlineCallerArgs.html" class="extype" name="org.bdgenomics.guacamole.Common.Arguments.GermlineCallerArgs">GermlineCallerArgs</a>, <a href="Common$$Arguments$$Loci.html" class="extype" name="org.bdgenomics.guacamole.Common.Arguments.Loci">Loci</a>, <a href="Common$$Arguments$$NoSequenceDictionary.html" class="extype" name="org.bdgenomics.guacamole.Common.Arguments.NoSequenceDictionary">NoSequenceDictionary</a>, <a href="Common$$Arguments$$Output.html" class="extype" name="org.bdgenomics.guacamole.Common.Arguments.Output">Output</a>, <a href="filters/PileupFilter$$PileupFilterArguments.html" class="extype" name="org.bdgenomics.guacamole.filters.PileupFilter.PileupFilterArguments">PileupFilterArguments</a>, <a href="Common$$Arguments$$Reads.html" class="extype" name="org.bdgenomics.guacamole.Common.Arguments.Reads">Reads</a>, <a href="Common$$Arguments$$Reference.html" class="extype" name="org.bdgenomics.guacamole.Common.Arguments.Reference">Reference</a>, <a href="Common$$Arguments$$SomaticCallerArgs.html" class="extype" name="org.bdgenomics.guacamole.Common.Arguments.SomaticCallerArgs">SomaticCallerArgs</a>, <a href="filters/SomaticGenotypeFilter$$SomaticGenotypeFilterArguments.html" class="extype" name="org.bdgenomics.guacamole.filters.SomaticGenotypeFilter.SomaticGenotypeFilterArguments">SomaticGenotypeFilterArguments</a>, <a href="Common$$Arguments$$TumorNormalReads.html" class="extype" name="org.bdgenomics.guacamole.Common.Arguments.TumorNormalReads">TumorNormalReads</a></div>
@@ -62,7 +62,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="org.bdgenomics.guacamole.Common.Arguments.Base"><span>Base</span></li><li class="in" name="org.bdgenomics.adam.cli.ParquetArgs"><span>ParquetArgs</span></li><li class="in" name="org.bdgenomics.adam.cli.Args4jBase"><span>Args4jBase</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="org.bdgenomics.guacamole.Common.Arguments.Base"><span>Base</span></li><li class="in" name="org.bdgenomics.adam.cli.ParquetArgs"><span>ParquetArgs</span></li><li class="in" name="org.bdgenomics.adam.rdd.ADAMParquetArgs"><span>ADAMParquetArgs</span></li><li class="in" name="org.bdgenomics.adam.cli.Args4jBase"><span>Args4jBase</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -178,7 +178,7 @@
         <span class="name">blockSize</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>ParquetArgs</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>ParquetArgs → ADAMParquetArgs</dd></dl></div>
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>
       <a id="clone():AnyRef"></a>
@@ -210,7 +210,7 @@
         <span class="name">compressionCodec</span><span class="result">: <span class="extype" name="parquet.hadoop.metadata.CompressionCodecName">CompressionCodecName</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>ParquetArgs</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>ParquetArgs → ADAMParquetArgs</dd></dl></div>
     </li><li name="org.bdgenomics.guacamole.Common.Arguments.Base#debug" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="debug:Boolean"></a>
       <a id="debug:Boolean"></a>
@@ -224,19 +224,19 @@
       </span>
       </h4>
       
-    </li><li name="org.bdgenomics.adam.cli.ParquetArgs#disableDictionary" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="disableDictionary:Boolean"></a>
-      <a id="disableDictionary:Boolean"></a>
+    </li><li name="org.bdgenomics.adam.cli.ParquetArgs#disableDictionaryEncoding" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="disableDictionaryEncoding:Boolean"></a>
+      <a id="disableDictionaryEncoding:Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">var</span>
       </span>
       <span class="symbol">
-        <span class="name">disableDictionary</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">disableDictionaryEncoding</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>ParquetArgs</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>ParquetArgs → ADAMParquetArgs</dd></dl></div>
     </li><li name="org.bdgenomics.adam.cli.Args4jBase#doPrintUsage" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="doPrintUsage:Boolean"></a>
       <a id="doPrintUsage:Boolean"></a>
@@ -398,7 +398,7 @@
         <span class="name">pageSize</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>ParquetArgs</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>ParquetArgs → ADAMParquetArgs</dd></dl></div>
     </li><li name="org.bdgenomics.adam.cli.Args4jBase#printMetrics" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="printMetrics:Boolean"></a>
       <a id="printMetrics:Boolean"></a>
@@ -506,6 +506,8 @@
         <div id="inheritedMembers">
         <div class="parent" name="org.bdgenomics.adam.cli.ParquetArgs">
               <h3>Inherited from <span class="extype" name="org.bdgenomics.adam.cli.ParquetArgs">ParquetArgs</span></h3>
+            </div><div class="parent" name="org.bdgenomics.adam.rdd.ADAMParquetArgs">
+              <h3>Inherited from <span class="extype" name="org.bdgenomics.adam.rdd.ADAMParquetArgs">ADAMParquetArgs</span></h3>
             </div><div class="parent" name="org.bdgenomics.adam.cli.Args4jBase">
               <h3>Inherited from <span class="extype" name="org.bdgenomics.adam.cli.Args4jBase">Args4jBase</span></h3>
             </div><div class="parent" name="scala.AnyRef">

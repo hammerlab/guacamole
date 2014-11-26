@@ -2069,14 +2069,6 @@
           </td><td style="background: white">
             .
           </td><td style="background: white">
-            A
-          </td><td style="background: white">
-            D
-          </td><td style="background: white">
-            A
-          </td><td style="background: white">
-            M
-          </td><td style="background: white">
             V
           </td><td style="background: white">
             a
@@ -12385,7 +12377,7 @@
           349
         </td>
         <td>
-          java.lang.Object.toString
+          java.lang.String.toString
         </td>
         <td style="background: #F0ADAD">
           filteredCalledAlleles.take(1).apply(0).getSampleId().toString()
@@ -12401,7 +12393,7 @@
           scala.collection.MapLike.apply
         </td>
         <td style="background: #F0ADAD">
-          org.apache.spark.SparkContext.rddToPairRDDFunctions[String, org.bdgenomics.adam.rdd.variation.ConcordanceTable](org.bdgenomics.adam.rdd.variation.ADAMVariationContext.rddToADAMGenotypeRDD(filteredCalledAlleles).concordanceWith(filteredTrueGenotypes))(ClassTag.apply[String](classOf[java.lang.String]), ClassTag.apply[org.bdgenomics.adam.rdd.variation.ConcordanceTable](classOf[org.bdgenomics.adam.rdd.variation.ConcordanceTable]), math.this.Ordering.String).collectAsMap().apply(sampleName)
+          org.apache.spark.SparkContext.rddToPairRDDFunctions[String, org.bdgenomics.adam.rdd.variation.ConcordanceTable](org.bdgenomics.adam.rdd.variation.VariationContext.rddToADAMGenotypeRDD(filteredCalledAlleles).concordanceWith(filteredTrueGenotypes))(ClassTag.apply[String](classOf[java.lang.String]), ClassTag.apply[org.bdgenomics.adam.rdd.variation.ConcordanceTable](classOf[org.bdgenomics.adam.rdd.variation.ConcordanceTable]), math.this.Ordering.String).collectAsMap().apply(sampleName)
         </td>
       </tr><tr>
         <td>
