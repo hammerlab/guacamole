@@ -31,7 +31,7 @@ object AlleleConversions {
     Seq(
       ADAMGenotype.newBuilder
         .setAlleles(JavaConversions.seqAsJavaList(Seq(GenotypeAllele.Ref, GenotypeAllele.Alt)))
-        .setSampleId(calledAllele.sampleName.toCharArray)
+        .setSampleId(calledAllele.sampleName)
         .setGenotypeQuality(calledAllele.evidence.phredScaledLikelihood)
         .setReadDepth(calledAllele.evidence.readDepth)
         .setExpectedAlleleDosage(
@@ -48,7 +48,7 @@ object AlleleConversions {
     Seq(
       ADAMGenotype.newBuilder
         .setAlleles(JavaConversions.seqAsJavaList(Seq(GenotypeAllele.Ref, GenotypeAllele.Alt)))
-        .setSampleId(calledAllele.sampleName.toCharArray)
+        .setSampleId(calledAllele.sampleName)
         .setGenotypeQuality(calledAllele.phredScaledSomaticLikelihood)
         .setReadDepth(calledAllele.tumorEvidence.readDepth)
         .setExpectedAlleleDosage(

@@ -20,10 +20,9 @@ package org.bdgenomics.guacamole
 
 import com.google.common.collect._
 import scala.collection.immutable.{ SortedMap }
-import scala.collection.{ AbstractIterator, Iterator, mutable, JavaConversions }
+import scala.collection.{ Iterator, mutable, JavaConversions }
 import com.esotericsoftware.kryo.{ Serializer, Kryo }
 import com.esotericsoftware.kryo.io.{ Input, Output }
-import scala.Some
 import scala.collection.mutable.ArrayBuffer
 
 /**

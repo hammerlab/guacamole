@@ -104,7 +104,7 @@ object GermlineThreshold {
           def variant(allele: Allele, allelesList: List[GenotypeAllele]): Genotype = {
             Genotype.newBuilder
               .setAlleles(JavaConversions.seqAsJavaList(allelesList))
-              .setSampleId(sampleName.toCharArray)
+              .setSampleId(sampleName)
               .setVariant(Variant.newBuilder
                 .setStart(pileup.locus)
                 .setReferenceAllele(Bases.basesToString(allele.refBases))
