@@ -11,7 +11,7 @@ if [ -z "${GUACAMOLE_JAR}" ]; then
         echo "Couldn't find a Guacamole jar in the target/ directory."
         echo "Are you in the root directory of the Guacamole repo, and have you built Guacamole?"
         echo "To build, run: "
-        echo "    mvn package"
+        echo "    mvn package -DskipTests=true"
         exit 1
     fi
     echo "Using most recently modified jar: $jar"
