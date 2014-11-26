@@ -41,11 +41,11 @@ class ReadSetSuite extends TestUtil.SparkFunSuite with Matchers {
   sparkTest("load read from ADAM") {
     // First load reads from SAM using ADAM and save as ADAM
     val adamContext = new ADAMContext(sc)
-    val adamAlignmentRecords: RDD[AlignmentRecord] = adamContext.adamLoad(TestUtil.testDataPath("mdtagissue.sam"))
+    val adamAlignmentRecords: RDD[AlignmentRecord] = adamContext.loadAlignments(TestUtil.testDataPath("mdtagissue.sam"))
     val origReads = TestUtil.loadReads(sc, "mdtagissue.sam").reads.collect()
 
     val adamOut = TestUtil.tmpFileName(".adam")
-    adamAlignmentRecords.adamSave(adamOut)
+    adamAlignmentRecords.adamParquetSave(adamOut)
 
     val (allReads, _) = Read.loadReadRDDAndSequenceDictionaryFromADAM(adamOut, sc, token = 0)
     allReads.count() should be(8)
