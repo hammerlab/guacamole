@@ -99,6 +99,10 @@ object GermlineStandard {
             Pileup(samplePileup.locus, samplePileup.referenceBase, filteredPileupElements),
             logSpace = true)
 
+          // Again, we skip loci that after filtering have no evidence for any genotype.
+          if (genotypeLikelihoods.isEmpty)
+            return Seq.empty
+
           val mostLikelyGenotype = genotypeLikelihoods.maxBy(_._2)
 
           def buildVariants(genotype: Genotype, probability: Double): Seq[CalledAllele] = {
