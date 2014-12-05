@@ -302,6 +302,9 @@ object Read extends Logging {
     var (reads, sequenceDictionary) = if (filename.endsWith(".bam") || filename.endsWith(".sam")) {
       loadReadRDDAndSequenceDictionaryFromBAM(filename, sc, token)
     } else {
+      if (!filename.endsWith(".adam") && !filename.endsWith(".adam.gz")) {
+        logWarning(s"Attempting to open $filename as an ADAM file despite not having '.adam' extension")
+      }
       loadReadRDDAndSequenceDictionaryFromADAM(filename, sc, token)
     }
     if (filters.mapped) reads = reads.filter(_.isMapped)
