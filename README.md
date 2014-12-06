@@ -13,8 +13,15 @@ adapted for experimentation.
 
 Guacamole is written in Scala using the [Apache
 Spark](http://spark.apache.org/) engine for distributed processing. It can run
-on a single computer or on a Hadoop cluster. Guacamole takes as input aligned reads stored in [BAM files](http://genomicsandhealth.org/our-work/work-products/file-formats-sambam) or [Parquet files](http://parquet.incubator.apache.org/) of [bdg-formats](https://github.com/bigdatagenomics/bdg-formats) [AlignmentRecords](https://github.com/bigdatagenomics/bdg-formats/blob/master/src/main/resources/avro/bdg.avdl#L60) and produces as output
-genotypes written to [VCF files](http://genomicsandhealth.org/our-work/work-products/file-formats-vcfbcf) or Parquet files of bdg-formats [Genotypes](https://github.com/bigdatagenomics/bdg-formats/blob/master/src/main/resources/avro/bdg.avdl#L547).
+on a single computer or on a Hadoop cluster.
+
+Guacamole supports reading aligned reads as:
+ * [BAM or SAM files](http://genomicsandhealth.org/our-work/work-products/file-formats-sambam)
+ * [Parquet files](http://parquet.incubator.apache.org/) of [bdg-formats](https://github.com/bigdatagenomics/bdg-formats) [AlignmentRecords](https://github.com/bigdatagenomics/bdg-formats/blob/master/src/main/resources/avro/bdg.avdl#L60)
+ 
+It can write the called genotypes as:
+ * [VCF files](http://genomicsandhealth.org/our-work/work-products/file-formats-vcfbcf)
+ * Parquet files of bdg-formats [Genotypes](https://github.com/bigdatagenomics/bdg-formats/blob/master/src/main/resources/avro/bdg.avdl#L547).
 
 Guacamole uses ideas and some functionality from
 [ADAM](https://github.com/bigdatagenomics/adam). It also takes inspiration from
