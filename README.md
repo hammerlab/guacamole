@@ -27,7 +27,7 @@ Guacamole uses ideas and some functionality from
 [ADAM](https://github.com/bigdatagenomics/adam). It also takes inspiration from
 the [Avocado](https://github.com/bigdatagenomics/avocado) project.
 
-For hacking Guacamole, see our [code docs](http://blog.hammerlab.org/guacamole/docs/#package).
+For hacking Guacamole, see our [code docs](http://www.hammerlab.org/guacamole/docs/#org.bdgenomics.guacamole.package).
 
 # Running Guacamole on a Single Node
 
@@ -90,6 +90,11 @@ spark-submit \
         -out hdfs:///path/to/result.vcf \
 	-spark_master yarn-cluster
 ```
+
+# Is this ready for production use?
+
+Not currently. Everything here is experimental. Please use a standard tool if
+you need accurate variant calls.
 
 
 # License
