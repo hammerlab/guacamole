@@ -83,45 +83,38 @@ object GermlineStandard {
      *
      * @return Sequence of possible called genotypes for all samples
      */
-    def callVariantsAtLocus(
-      pileup: Pileup,
-      minAlignmentQuality: Int = 0,
-      emitRef: Boolean = false): Seq[CalledAllele] = {
+    def callVariantsAtLocus(pileup: Pileup,
+                            minAlignmentQuality: Int = 0,
+                            emitRef: Boolean = false): Seq[CalledAllele] = {
 
       // For now, we skip loci that have no reads mapped. We may instead want to emit NoCall in this case.
       if (pileup.elements.isEmpty)
         return Seq.empty
 
       pileup.bySample.toSeq.flatMap({
-        case (sampleName, samplePileup) =>
+        case (sampleName, samplePileup) => {
           val filteredPileupElements = QualityAlignedReadsFilter(samplePileup.elements, minAlignmentQuality)
-          val genotypeLikelihoods = Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(
-            Pileup(samplePileup.locus, samplePileup.referenceBase, filteredPileupElements),
-            logSpace = true)
+          if (filteredPileupElements.isEmpty) {
+            // Similarly to above, we skip samples that have no reads after filtering.
+            Seq.empty
+          } else {
+            val genotypeLikelihoods = Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(
+              Pileup(samplePileup.locus, samplePileup.referenceBase, filteredPileupElements),
+              logSpace = true)
+            val mostLikelyGenotypeAndProbability = genotypeLikelihoods.maxBy(_._2)
 
-          // Again, we skip loci that after filtering have no evidence for any genotype.
-          if (genotypeLikelihoods.isEmpty)
-            return Seq.empty
-
-          val mostLikelyGenotype = genotypeLikelihoods.maxBy(_._2)
-
-          def buildVariants(genotype: Genotype, probability: Double): Seq[CalledAllele] = {
+            val genotype = mostLikelyGenotypeAndProbability._1
+            val probability = mostLikelyGenotypeAndProbability._2
             genotype.getNonReferenceAlleles.map(allele => {
               CalledAllele(
                 sampleName,
                 samplePileup.referenceName,
                 samplePileup.locus,
                 allele,
-                AlleleEvidence(
-                  probability,
-                  allele,
-                  samplePileup
-                )
-              )
+                AlleleEvidence(probability, allele, samplePileup))
             })
           }
-          buildVariants(mostLikelyGenotype._1, mostLikelyGenotype._2)
-
+        }
       })
     }
   }
