@@ -27,7 +27,7 @@ Guacamole uses ideas and some functionality from
 [ADAM](https://github.com/bigdatagenomics/adam). It also takes inspiration from
 the [Avocado](https://github.com/bigdatagenomics/avocado) project.
 
-For hacking Guacamole, see our [code docs](http://www.hammerlab.org/guacamole/docs/#org.bdgenomics.guacamole.package).
+For hacking Guacamole, see our [code docs](http://www.hammerlab.org/guacamole/docs/#org.hammerlab.guacamole.package).
 
 # Running Guacamole on a Single Node
 
@@ -82,7 +82,7 @@ spark-submit \
 	--driver-memory 10g \
 	--num-executors 1000 \
 	--executor-cores 1 \
-	--class org.bdgenomics.guacamole.Guacamole \
+	--class org.hammerlab.guacamole.Guacamole \
 	--verbose \
 	/path/to/target/guacamole-0.0.1.jar \
 	germline-threshold \
