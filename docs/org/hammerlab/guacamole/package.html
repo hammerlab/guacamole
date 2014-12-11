@@ -1,0 +1,511 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+        <head>
+          <title>guacamole - guacamole: variant caller 0.0.1 API - org.hammerlab.guacamole</title>
+          <meta name="description" content="guacamole - guacamole variant caller 0.0.1 API - org.hammerlab.guacamole" />
+          <meta name="keywords" content="guacamole guacamole variant caller 0.0.1 API org.hammerlab.guacamole" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../../index.html';
+            var hash = 'org.hammerlab.guacamole.package';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
+    
+        </head>
+        <body class="value">
+      <div id="definition">
+        <img src="../../../lib/package_big.png" />
+        <p id="owner"><a href="../../package.html" class="extype" name="org">org</a>.<a href="../package.html" class="extype" name="org.hammerlab">hammerlab</a></p>
+        <h1>guacamole</h1>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <span class="name">guacamole</span>
+      </span>
+      </h4>
+      
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Guacamole is a framework for writing variant callers on the Apache Spark platform. Several variant callers are
+implemented in the <a href="commands/package.html" class="extype" name="org.hammerlab.guacamole.commands">org.hammerlab.guacamole.commands</a> package. The remaining packages implement a library of
+functionality used by these callers.</p><p>To get started, take a look at the code for <a href="commands/GermlineThreshold$.html" class="extype" name="org.hammerlab.guacamole.commands.GermlineThreshold">org.hammerlab.guacamole.commands.GermlineThreshold</a> for a
+pedagogical example of a variant caller, then see <a href="pileup/Pileup.html" class="extype" name="org.hammerlab.guacamole.pileup.Pileup">org.hammerlab.guacamole.pileup.Pileup</a> to understand how we
+work with pileups. The <a href="commands/SomaticStandard$.html" class="extype" name="org.hammerlab.guacamole.commands.SomaticStandard">org.hammerlab.guacamole.commands.SomaticStandard</a> caller is a more
+sophisticated caller (for the somatic setting) that gives an example of most of the functionality in the rest of the
+library.
+</p></div><div class="toggleContainer block">
+          <span class="toggle">Linear Supertypes</span>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+        </div></div>
+        
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        <div id="order">
+              <span class="filtertype">Ordering</span>
+              <ol>
+                
+                <li class="alpha in"><span>Alphabetic</span></li>
+                <li class="inherit out"><span>By inheritance</span></li>
+              </ol>
+            </div>
+        <div id="ancestors">
+                <span class="filtertype">Inherited<br />
+                </span>
+                <ol id="linearization">
+                  <li class="in" name="org.hammerlab.guacamole"><span>guacamole</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                </ol>
+              </div><div id="ancestors">
+            <span class="filtertype"></span>
+            <ol>
+              <li class="hideall out"><span>Hide All</span></li>
+              <li class="showall in"><span>Show all</span></li>
+            </ol>
+            <a href="http://docs.scala-lang.org/overviews/scaladoc/usage.html#members" target="_blank">Learn more about member selection</a>
+          </div>
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="org.hammerlab.guacamole.Command" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="Command[T]extendsSerializablewithLogging"></a>
+      <a id="Command[T]:Command[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="Command.html"><span class="name">Command</span></a><span class="tparams">[<span name="T">T</span>]</span><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span> with <span class="extype" name="org.apache.spark.Logging">Logging</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Interface for running a command from command line arguments.</p>
+    </li><li name="org.hammerlab.guacamole.DelayedMessages" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="DelayedMessagesextendsAnyRef"></a>
+      <a id="DelayedMessages:DelayedMessages"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="DelayedMessages.html"><span class="name">DelayedMessages</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt"> It's often useful to output counts of certain events that occur in RDD operations.</p>
+    </li><li name="org.hammerlab.guacamole.GuacamoleKryoRegistrator" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="GuacamoleKryoRegistratorextendsADAMKryoRegistrator"></a>
+      <a id="GuacamoleKryoRegistrator:GuacamoleKryoRegistrator"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="GuacamoleKryoRegistrator.html"><span class="name">GuacamoleKryoRegistrator</span></a><span class="result"> extends <span class="extype" name="org.bdgenomics.adam.serialization.ADAMKryoRegistrator">ADAMKryoRegistrator</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.HasReferenceRegion" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="HasReferenceRegionextendsAnyRef"></a>
+      <a id="HasReferenceRegion:HasReferenceRegion"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="HasReferenceRegion.html"><span class="name">HasReferenceRegion</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Trait for objects that are associated with an interval on the genome.</p>
+    </li><li name="org.hammerlab.guacamole.LociMap" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="LociMap[T]extendsProductwithSerializable"></a>
+      <a id="LociMap[T]:LociMap[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="LociMap.html"><span class="name">LociMap</span></a><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="map">map: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <a href="LociMap$$SingleContig.html" class="extype" name="org.hammerlab.guacamole.LociMap.SingleContig">SingleContig</a>[<span class="extype" name="org.hammerlab.guacamole.LociMap.T">T</span>]]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">An immutable map from loci to a instances of an arbitrary type T.</p>
+    </li><li name="org.hammerlab.guacamole.LociMapLongSerializer" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="LociMapLongSerializerextendsSerializer[org.hammerlab.guacamole.LociMap[Long]]"></a>
+      <a id="LociMapLongSerializer:LociMapLongSerializer"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="LociMapLongSerializer.html"><span class="name">LociMapLongSerializer</span></a><span class="result"> extends <span class="extype" name="com.esotericsoftware.kryo.Serializer">Serializer</span>[<a href="LociMap.html" class="extype" name="org.hammerlab.guacamole.LociMap">LociMap</a>[<span class="extype" name="scala.Long">Long</span>]]</span>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.LociMapLongSingleContigSerializer" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="LociMapLongSingleContigSerializerextendsSerializer[org.hammerlab.guacamole.LociMap.SingleContig[Long]]"></a>
+      <a id="LociMapLongSingleContigSerializer:LociMapLongSingleContigSerializer"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="LociMapLongSingleContigSerializer.html"><span class="name">LociMapLongSingleContigSerializer</span></a><span class="result"> extends <span class="extype" name="com.esotericsoftware.kryo.Serializer">Serializer</span>[<a href="LociMap$$SingleContig.html" class="extype" name="org.hammerlab.guacamole.LociMap.SingleContig">SingleContig</a>[<span class="extype" name="scala.Long">Long</span>]]</span>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.LociSet" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="LociSetextendsProductwithSerializable"></a>
+      <a id="LociSet:LociSet"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="LociSet.html"><span class="name">LociSet</span></a><span class="params">(<span name="map">map: <a href="LociMap.html" class="extype" name="org.hammerlab.guacamole.LociMap">LociMap</a>[<span class="extype" name="scala.Long">Long</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">An immutable collection of genomic regions on any number of contigs.</p>
+    </li><li name="org.hammerlab.guacamole.LociSetSerializer" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="LociSetSerializerextendsSerializer[org.hammerlab.guacamole.LociSet]"></a>
+      <a id="LociSetSerializer:LociSetSerializer"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="LociSetSerializer.html"><span class="name">LociSetSerializer</span></a><span class="result"> extends <span class="extype" name="com.esotericsoftware.kryo.Serializer">Serializer</span>[<a href="LociSet.html" class="extype" name="org.hammerlab.guacamole.LociSet">LociSet</a>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.LociSetSingleContigSerializer" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="LociSetSingleContigSerializerextendsSerializer[org.hammerlab.guacamole.LociSet.SingleContig]"></a>
+      <a id="LociSetSingleContigSerializer:LociSetSingleContigSerializer"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="LociSetSingleContigSerializer.html"><span class="name">LociSetSingleContigSerializer</span></a><span class="result"> extends <span class="extype" name="com.esotericsoftware.kryo.Serializer">Serializer</span>[<a href="LociSet$$SingleContig.html" class="extype" name="org.hammerlab.guacamole.LociSet.SingleContig">SingleContig</a>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.ReadSet" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ReadSetextendsProductwithSerializable"></a>
+      <a id="ReadSet:ReadSet"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="ReadSet.html"><span class="name">ReadSet</span></a><span class="params">(<span name="reads">reads: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<a href="reads/Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a>]</span>, <span name="sequenceDictionary">sequenceDictionary: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="org.bdgenomics.adam.models.SequenceDictionary">SequenceDictionary</span>]</span>, <span name="source">source: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="filters">filters: <a href="reads/Read$$InputFilters.html" class="extype" name="org.hammerlab.guacamole.reads.Read.InputFilters">InputFilters</a></span>, <span name="token">token: <span class="extype" name="scala.Int">Int</span></span>, <span name="contigLengthsFromDictionary">contigLengthsFromDictionary: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">A ReadSet contains an RDD of reads along with some metadata about them.</p>
+    </li><li name="org.hammerlab.guacamole.SparkCommand" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="SparkCommand[T]extendsCommand[T]"></a>
+      <a id="SparkCommand[T]:SparkCommand[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="SparkCommand.html"><span class="name">SparkCommand</span></a><span class="tparams">[<span name="T">T</span>]</span><span class="result"> extends <a href="Command.html" class="extype" name="org.hammerlab.guacamole.Command">Command</a>[<span class="extype" name="org.hammerlab.guacamole.SparkCommand.T">T</span>]</span>
+      </span>
+      </h4>
+      
+    </li></ol>
+            </div>
+
+        
+
+        <div id="values" class="values members">
+              <h3>Value Members</h3>
+              <ol><li name="org.hammerlab.guacamole.Bases" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Bases"></a>
+      <a id="Bases:Bases"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Bases$.html"><span class="name">Bases</span></a>
+      </span>
+      </h4>
+      <p class="comment cmt">We represent a nucleotide base as a Byte, whose value is equal to the ASCII value of the character representing the
+base (for example: A, C, T, G).</p>
+    </li><li name="org.hammerlab.guacamole.CigarUtils" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CigarUtils"></a>
+      <a id="CigarUtils:CigarUtils"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="CigarUtils$.html"><span class="name">CigarUtils</span></a>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.Common" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Common"></a>
+      <a id="Common:Common"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Common$.html"><span class="name">Common</span></a><span class="result"> extends <span class="extype" name="org.apache.spark.Logging">Logging</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Basic functions that most commands need, and specifications of command-line arguments that they use.</p>
+    </li><li name="org.hammerlab.guacamole.Concordance" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Concordance"></a>
+      <a id="Concordance:Concordance"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Concordance$.html"><span class="name">Concordance</span></a>
+      </span>
+      </h4>
+      <p class="comment cmt">As a convenience to users experimenting with different callers, some variant callers include functionality to compare
+the called variants to a gold standard VCF after they are computed, in the same job.</p>
+    </li><li name="org.hammerlab.guacamole.DelayedMessages" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="DelayedMessages"></a>
+      <a id="DelayedMessages:DelayedMessages"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="DelayedMessages$.html"><span class="name">DelayedMessages</span></a>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.DistributedUtil" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="DistributedUtil"></a>
+      <a id="DistributedUtil:DistributedUtil"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="DistributedUtil$.html"><span class="name">DistributedUtil</span></a><span class="result"> extends <span class="extype" name="org.apache.spark.Logging">Logging</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Primitives for analyzing mapped reads with Spark.</p>
+    </li><li name="org.hammerlab.guacamole.Guacamole" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Guacamole"></a>
+      <a id="Guacamole:Guacamole"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Guacamole$.html"><span class="name">Guacamole</span></a><span class="result"> extends <span class="extype" name="org.apache.spark.Logging">Logging</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Guacamole main class.</p>
+    </li><li name="org.hammerlab.guacamole.LociMap" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="LociMap"></a>
+      <a id="LociMap:LociMap"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="LociMap$.html"><span class="name">LociMap</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.LociSet" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="LociSet"></a>
+      <a id="LociSet:LociSet"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="LociSet$.html"><span class="name">LociSet</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.ReadSet" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ReadSet"></a>
+      <a id="ReadSet:ReadSet"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="ReadSet$.html"><span class="name">ReadSet</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.commands" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="commands"></a>
+      <a id="commands:commands"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="commands/package.html"><span class="name">commands</span></a>
+      </span>
+      </h4>
+      <p class="comment cmt">Commands (such as variant callers) that can be invoked on the command line.</p>
+    </li><li name="org.hammerlab.guacamole.filters" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="filters"></a>
+      <a id="filters:filters"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="filters/package.html"><span class="name">filters</span></a>
+      </span>
+      </h4>
+      <p class="comment cmt">Strategies for filtering reads, filtering bases within reads, and filtering the results of variant calling (called
+genotypes).</p>
+    </li><li name="org.hammerlab.guacamole.likelihood" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="likelihood"></a>
+      <a id="likelihood:likelihood"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="likelihood/package.html"><span class="name">likelihood</span></a>
+      </span>
+      </h4>
+      <p class="comment cmt">Implementations of likelihood models.</p>
+    </li><li name="org.hammerlab.guacamole.pileup" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="pileup"></a>
+      <a id="pileup:pileup"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="pileup/package.html"><span class="name">pileup</span></a>
+      </span>
+      </h4>
+      <p class="comment cmt">Answer questions like: given some reads that overlap a locus of interest, what bases were sequenced at that locus?
+</p>
+    </li><li name="org.hammerlab.guacamole.reads" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="reads"></a>
+      <a id="reads:reads"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="reads/package.html"><span class="name">reads</span></a>
+      </span>
+      </h4>
+      <p class="comment cmt">Classes for representing sequenced reads, mapped or unmapped.</p>
+    </li><li name="org.hammerlab.guacamole.variants" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="variants"></a>
+      <a id="variants:variants"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="variants/package.html"><span class="name">variants</span></a>
+      </span>
+      </h4>
+      <p class="comment cmt">Classes to represent the results of variant calling.</p>
+    </li><li name="org.hammerlab.guacamole.windowing" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="windowing"></a>
+      <a id="windowing:windowing"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="windowing/package.html"><span class="name">windowing</span></a>
+      </span>
+      </h4>
+      <p class="comment cmt">Step through loci in the genome and at each step consider all the reads (or any object that implements the trait
+<a href="HasReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.HasReferenceRegion">HasReferenceRegion</a>) that overlap the locus.</p>
+    </li></ol>
+            </div>
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        <div class="parent" name="scala.AnyRef">
+              <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
+            </div><div class="parent" name="scala.Any">
+              <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
+            </div>
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../lib/template.js"></script>
+    </body>
+      </html>
