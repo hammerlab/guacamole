@@ -370,7 +370,7 @@ object Read extends Logging {
     val adamRecords: RDD[AlignmentRecord] = adamContext.adamLoad(filename, projection = Some(ADAMSpecificProjection))
     val sequenceDictionary = new ADAMSpecificRecordSequenceDictionaryRDDAggregator(adamRecords).adamGetSequenceDictionary()
 
-    val reads: RDD[Read] = adamRecords.map(fromADAMRecord)
+    val reads: RDD[Read] = adamRecords.map(fromADAMRecord(_, token))
 
     (reads, sequenceDictionary)
   }
@@ -382,7 +382,7 @@ object Read extends Logging {
    * @param alignmentRecord ADAM Alignment Record (an aligned or unaligned read)
    * @return Mapped or Unmapped Read
    */
-  def fromADAMRecord(alignmentRecord: AlignmentRecord): Read = {
+  def fromADAMRecord(alignmentRecord: AlignmentRecord, token: Int): Read = {
 
     val mateProperties = if (alignmentRecord.getReadPaired) {
       Some(MateProperties(
@@ -402,7 +402,7 @@ object Read extends Logging {
 
     if (alignmentRecord.getReadMapped) {
       MappedRead(
-        token = 0,
+        token = token,
         sequence = sequence,
         baseQualities = baseQualities,
         isDuplicate = alignmentRecord.getDuplicateRead,
@@ -418,7 +418,7 @@ object Read extends Logging {
       )
     } else {
       UnmappedRead(
-        token = 0,
+        token = token,
         sequence = sequence,
         baseQualities = baseQualities,
         isDuplicate = alignmentRecord.getDuplicateRead,
