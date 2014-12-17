@@ -28687,6 +28687,26 @@
           </td><td style="background: white">
             d
           </td><td style="background: white">
+            (
+          </td><td style="background: white">
+            _
+          </td><td style="background: white">
+            ,
+          </td><td style="background: white">
+            &nbsp;
+          </td><td style="background: white">
+            t
+          </td><td style="background: white">
+            o
+          </td><td style="background: white">
+            k
+          </td><td style="background: white">
+            e
+          </td><td style="background: white">
+            n
+          </td><td style="background: white">
+            )
+          </td><td style="background: white">
             )
           </td>
       </tr><tr>
@@ -29296,6 +29316,30 @@
             r
           </td><td style="background: white">
             d
+          </td><td style="background: white">
+            ,
+          </td><td style="background: white">
+            &nbsp;
+          </td><td style="background: white">
+            t
+          </td><td style="background: white">
+            o
+          </td><td style="background: white">
+            k
+          </td><td style="background: white">
+            e
+          </td><td style="background: white">
+            n
+          </td><td style="background: white">
+            :
+          </td><td style="background: white">
+            &nbsp;
+          </td><td style="background: white">
+            I
+          </td><td style="background: white">
+            n
+          </td><td style="background: white">
+            t
           </td><td style="background: white">
             )
           </td><td style="background: white">
@@ -31351,7 +31395,15 @@
           </td><td style="background: white">
             &nbsp;
           </td><td style="background: white">
-            0
+            t
+          </td><td style="background: white">
+            o
+          </td><td style="background: white">
+            k
+          </td><td style="background: white">
+            e
+          </td><td style="background: white">
+            n
           </td><td style="background: white">
             ,
           </td>
@@ -32965,7 +33017,15 @@
           </td><td style="background: white">
             &nbsp;
           </td><td style="background: white">
-            0
+            t
+          </td><td style="background: white">
+            o
+          </td><td style="background: white">
+            k
+          </td><td style="background: white">
+            e
+          </td><td style="background: white">
+            n
           </td><td style="background: white">
             ,
           </td>
@@ -36891,7 +36951,7 @@
           org.bdgenomics.adam.rdd.ADAMContext.adamLoad
         </td>
         <td style="background: #F0ADAD">
-          adamContext.adamLoad[org.bdgenomics.formats.avro.AlignmentRecord, Nothing](x$9, x$11, x$10)({  scoverage.Invoker.invoked(2708, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.conforms[org.bdgenomics.formats.avro.AlignmentRecord]}, {  scoverage.Invoker.invoked(2709, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  reflect.this.ManifestFactory.classType[org.bdgenomics.formats.avro.AlignmentRecord](classOf[org.bdgenomics.formats.avro.AlignmentRecord])})
+          adamContext.adamLoad[org.bdgenomics.formats.avro.AlignmentRecord, Nothing](x$10, x$12, x$11)({  scoverage.Invoker.invoked(2708, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.conforms[org.bdgenomics.formats.avro.AlignmentRecord]}, {  scoverage.Invoker.invoked(2709, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  reflect.this.ManifestFactory.classType[org.bdgenomics.formats.avro.AlignmentRecord](classOf[org.bdgenomics.formats.avro.AlignmentRecord])})
         </td>
       </tr><tr>
         <td>
@@ -36930,7 +36990,7 @@
           org.hammerlab.guacamole.reads.Read.fromADAMRecord
         </td>
         <td style="background: #F0ADAD">
-          Read.this.fromADAMRecord(alignmentRecord)
+          Read.this.fromADAMRecord(x$9, token)
         </td>
       </tr><tr>
         <td>
@@ -36943,7 +37003,7 @@
           org.apache.spark.rdd.RDD.map
         </td>
         <td style="background: #F0ADAD">
-          adamRecords.map[org.hammerlab.guacamole.reads.Read]({  ((alignmentRecord: org.bdgenomics.formats.avro.AlignmentRecord) =&gt; {    scoverage.Invoker.invoked(2712, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    Read.this.fromADAMRecord(alignmentRecord)  })})(ClassTag.apply[org.hammerlab.guacamole.reads.Read](classOf[org.hammerlab.guacamole.reads.Read]))
+          adamRecords.map[org.hammerlab.guacamole.reads.Read](((x$9: org.bdgenomics.formats.avro.AlignmentRecord) =&gt; {  scoverage.Invoker.invoked(2712, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  Read.this.fromADAMRecord(x$9, token)}))(ClassTag.apply[org.hammerlab.guacamole.reads.Read](classOf[org.hammerlab.guacamole.reads.Read]))
         </td>
       </tr><tr>
         <td>
@@ -37496,46 +37556,33 @@
           404
         </td>
         <td>
-          2774
+          2773
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(2773, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  MappedRead.apply({    scoverage.Invoker.invoked(2756, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    0  }, sequence, {    scoverage.Invoker.invoked(2757, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.this.Predef.wrapByteArray(baseQualities)  }, {    scoverage.Invoker.invoked(2759, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.this.Predef.Boolean2boolean({      scoverage.Invoker.invoked(2758, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      alignmentRecord.getDuplicateRead()    })  }, {    scoverage.Invoker.invoked(2760, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    alignmentRecord.getRecordGroupSample().toString().intern()  }, {    scoverage.Invoker.invoked(2761, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    alignmentRecord.getContig().getContigName().toString().intern()  }, {    scoverage.Invoker.invoked(2763, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.this.Predef.Integer2int({      scoverage.Invoker.invoked(2762, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      alignmentRecord.getMapq()    })  }, {    scoverage.Invoker.invoked(2765, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.this.Predef.Long2long({      scoverage.Invoker.invoked(2764, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      alignmentRecord.getStart()    })  }, {    scoverage.Invoker.invoked(2767, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    htsjdk.samtools.TextCigarCodec.getSingleton().decode({      scoverage.Invoker.invoked(2766, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      alignmentRecord.getCigar().toString()    })  }, {    scoverage.Invoker.invoked(2768, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    alignmentRecord.getMismatchingPositions().toString()  }, {    scoverage.Invoker.invoked(2770, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.this.Predef.Boolean2boolean({      scoverage.Invoker.invoked(2769, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      alignmentRecord.getFailedVendorQualityChecks()    })  }, {    scoverage.Invoker.invoked(2772, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.this.Predef.Boolean2boolean({  scoverage.Invoker.invoked(2771, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  alignmentRecord.getReadNegativeStrand()}).unary_!  }, mateProperties)}
+          {  scoverage.Invoker.invoked(2772, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  MappedRead.apply(token, sequence, {    scoverage.Invoker.invoked(2756, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.this.Predef.wrapByteArray(baseQualities)  }, {    scoverage.Invoker.invoked(2758, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.this.Predef.Boolean2boolean({      scoverage.Invoker.invoked(2757, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      alignmentRecord.getDuplicateRead()    })  }, {    scoverage.Invoker.invoked(2759, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    alignmentRecord.getRecordGroupSample().toString().intern()  }, {    scoverage.Invoker.invoked(2760, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    alignmentRecord.getContig().getContigName().toString().intern()  }, {    scoverage.Invoker.invoked(2762, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.this.Predef.Integer2int({      scoverage.Invoker.invoked(2761, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      alignmentRecord.getMapq()    })  }, {    scoverage.Invoker.invoked(2764, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.this.Predef.Long2long({      scoverage.Invoker.invoked(2763, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      alignmentRecord.getStart()    })  }, {    scoverage.Invoker.invoked(2766, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    htsjdk.samtools.TextCigarCodec.getSingleton().decode({      scoverage.Invoker.invoked(2765, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      alignmentRecord.getCigar().toString()    })  }, {    scoverage.Invoker.invoked(2767, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    alignmentRecord.getMismatchingPositions().toString()  }, {    scoverage.Invoker.invoked(2769, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.this.Predef.Boolean2boolean({      scoverage.Invoker.invoked(2768, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      alignmentRecord.getFailedVendorQualityChecks()    })  }, {    scoverage.Invoker.invoked(2771, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.this.Predef.Boolean2boolean({  scoverage.Invoker.invoked(2770, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  alignmentRecord.getReadNegativeStrand()}).unary_!  }, mateProperties)}
         </td>
       </tr><tr>
         <td>
           404
         </td>
         <td>
-          2773
+          2772
         </td>
         <td>
           org.hammerlab.guacamole.reads.MappedRead.apply
         </td>
         <td style="background: #F0ADAD">
-          MappedRead.apply({  scoverage.Invoker.invoked(2756, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  0}, sequence, {  scoverage.Invoker.invoked(2757, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.wrapByteArray(baseQualities)}, {  scoverage.Invoker.invoked(2759, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.Boolean2boolean({    scoverage.Invoker.invoked(2758, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    alignmentRecord.getDuplicateRead()  })}, {  scoverage.Invoker.invoked(2760, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  alignmentRecord.getRecordGroupSample().toString().intern()}, {  scoverage.Invoker.invoked(2761, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  alignmentRecord.getContig().getContigName().toString().intern()}, {  scoverage.Invoker.invoked(2763, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.Integer2int({    scoverage.Invoker.invoked(2762, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    alignmentRecord.getMapq()  })}, {  scoverage.Invoker.invoked(2765, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.Long2long({    scoverage.Invoker.invoked(2764, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    alignmentRecord.getStart()  })}, {  scoverage.Invoker.invoked(2767, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  htsjdk.samtools.TextCigarCodec.getSingleton().decode({    scoverage.Invoker.invoked(2766, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    alignmentRecord.getCigar().toString()  })}, {  scoverage.Invoker.invoked(2768, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  alignmentRecord.getMismatchingPositions().toString()}, {  scoverage.Invoker.invoked(2770, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.Boolean2boolean({    scoverage.Invoker.invoked(2769, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    alignmentRecord.getFailedVendorQualityChecks()  })}, {  scoverage.Invoker.invoked(2772, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.Boolean2boolean({  scoverage.Invoker.invoked(2771, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  alignmentRecord.getReadNegativeStrand()}).unary_!}, mateProperties)
-        </td>
-      </tr><tr>
-        <td>
-          405
-        </td>
-        <td>
-          2756
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          0
+          MappedRead.apply(token, sequence, {  scoverage.Invoker.invoked(2756, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.wrapByteArray(baseQualities)}, {  scoverage.Invoker.invoked(2758, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.Boolean2boolean({    scoverage.Invoker.invoked(2757, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    alignmentRecord.getDuplicateRead()  })}, {  scoverage.Invoker.invoked(2759, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  alignmentRecord.getRecordGroupSample().toString().intern()}, {  scoverage.Invoker.invoked(2760, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  alignmentRecord.getContig().getContigName().toString().intern()}, {  scoverage.Invoker.invoked(2762, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.Integer2int({    scoverage.Invoker.invoked(2761, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    alignmentRecord.getMapq()  })}, {  scoverage.Invoker.invoked(2764, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.Long2long({    scoverage.Invoker.invoked(2763, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    alignmentRecord.getStart()  })}, {  scoverage.Invoker.invoked(2766, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  htsjdk.samtools.TextCigarCodec.getSingleton().decode({    scoverage.Invoker.invoked(2765, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    alignmentRecord.getCigar().toString()  })}, {  scoverage.Invoker.invoked(2767, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  alignmentRecord.getMismatchingPositions().toString()}, {  scoverage.Invoker.invoked(2769, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.Boolean2boolean({    scoverage.Invoker.invoked(2768, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    alignmentRecord.getFailedVendorQualityChecks()  })}, {  scoverage.Invoker.invoked(2771, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.Boolean2boolean({  scoverage.Invoker.invoked(2770, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  alignmentRecord.getReadNegativeStrand()}).unary_!}, mateProperties)
         </td>
       </tr><tr>
         <td>
           407
         </td>
         <td>
-          2757
+          2756
         </td>
         <td>
           scala.LowPriorityImplicits.wrapByteArray
@@ -37548,20 +37595,7 @@
           408
         </td>
         <td>
-          2759
-        </td>
-        <td>
-          scala.Predef.Boolean2boolean
-        </td>
-        <td style="background: #F0ADAD">
-          scala.this.Predef.Boolean2boolean({  scoverage.Invoker.invoked(2758, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  alignmentRecord.getDuplicateRead()})
-        </td>
-      </tr><tr>
-        <td>
-          408
-        </td>
-        <td>
-          2758
+          2757
         </td>
         <td>
           org.bdgenomics.formats.avro.AlignmentRecord.getDuplicateRead
@@ -37571,10 +37605,23 @@
         </td>
       </tr><tr>
         <td>
+          408
+        </td>
+        <td>
+          2758
+        </td>
+        <td>
+          scala.Predef.Boolean2boolean
+        </td>
+        <td style="background: #F0ADAD">
+          scala.this.Predef.Boolean2boolean({  scoverage.Invoker.invoked(2757, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  alignmentRecord.getDuplicateRead()})
+        </td>
+      </tr><tr>
+        <td>
           409
         </td>
         <td>
-          2760
+          2759
         </td>
         <td>
           java.lang.String.intern
@@ -37587,7 +37634,7 @@
           410
         </td>
         <td>
-          2761
+          2760
         </td>
         <td>
           java.lang.String.intern
@@ -37603,6 +37650,19 @@
           2762
         </td>
         <td>
+          scala.Predef.Integer2int
+        </td>
+        <td style="background: #F0ADAD">
+          scala.this.Predef.Integer2int({  scoverage.Invoker.invoked(2761, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  alignmentRecord.getMapq()})
+        </td>
+      </tr><tr>
+        <td>
+          411
+        </td>
+        <td>
+          2761
+        </td>
+        <td>
           org.bdgenomics.formats.avro.AlignmentRecord.getMapq
         </td>
         <td style="background: #F0ADAD">
@@ -37610,36 +37670,23 @@
         </td>
       </tr><tr>
         <td>
-          411
-        </td>
-        <td>
-          2763
-        </td>
-        <td>
-          scala.Predef.Integer2int
-        </td>
-        <td style="background: #F0ADAD">
-          scala.this.Predef.Integer2int({  scoverage.Invoker.invoked(2762, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  alignmentRecord.getMapq()})
-        </td>
-      </tr><tr>
-        <td>
           412
         </td>
         <td>
-          2765
+          2764
         </td>
         <td>
           scala.Predef.Long2long
         </td>
         <td style="background: #F0ADAD">
-          scala.this.Predef.Long2long({  scoverage.Invoker.invoked(2764, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  alignmentRecord.getStart()})
+          scala.this.Predef.Long2long({  scoverage.Invoker.invoked(2763, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  alignmentRecord.getStart()})
         </td>
       </tr><tr>
         <td>
           412
         </td>
         <td>
-          2764
+          2763
         </td>
         <td>
           org.bdgenomics.formats.avro.AlignmentRecord.getStart
@@ -37655,6 +37702,19 @@
           2766
         </td>
         <td>
+          htsjdk.samtools.TextCigarCodec.decode
+        </td>
+        <td style="background: #F0ADAD">
+          htsjdk.samtools.TextCigarCodec.getSingleton().decode({  scoverage.Invoker.invoked(2765, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  alignmentRecord.getCigar().toString()})
+        </td>
+      </tr><tr>
+        <td>
+          413
+        </td>
+        <td>
+          2765
+        </td>
+        <td>
           java.lang.String.toString
         </td>
         <td style="background: #F0ADAD">
@@ -37662,23 +37722,10 @@
         </td>
       </tr><tr>
         <td>
-          413
-        </td>
-        <td>
-          2767
-        </td>
-        <td>
-          htsjdk.samtools.TextCigarCodec.decode
-        </td>
-        <td style="background: #F0ADAD">
-          htsjdk.samtools.TextCigarCodec.getSingleton().decode({  scoverage.Invoker.invoked(2766, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  alignmentRecord.getCigar().toString()})
-        </td>
-      </tr><tr>
-        <td>
           414
         </td>
         <td>
-          2768
+          2767
         </td>
         <td>
           java.lang.String.toString
@@ -37691,20 +37738,7 @@
           415
         </td>
         <td>
-          2770
-        </td>
-        <td>
-          scala.Predef.Boolean2boolean
-        </td>
-        <td style="background: #F0ADAD">
-          scala.this.Predef.Boolean2boolean({  scoverage.Invoker.invoked(2769, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  alignmentRecord.getFailedVendorQualityChecks()})
-        </td>
-      </tr><tr>
-        <td>
-          415
-        </td>
-        <td>
-          2769
+          2768
         </td>
         <td>
           org.bdgenomics.formats.avro.AlignmentRecord.getFailedVendorQualityChecks
@@ -37714,10 +37748,36 @@
         </td>
       </tr><tr>
         <td>
+          415
+        </td>
+        <td>
+          2769
+        </td>
+        <td>
+          scala.Predef.Boolean2boolean
+        </td>
+        <td style="background: #F0ADAD">
+          scala.this.Predef.Boolean2boolean({  scoverage.Invoker.invoked(2768, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  alignmentRecord.getFailedVendorQualityChecks()})
+        </td>
+      </tr><tr>
+        <td>
           416
         </td>
         <td>
           2771
+        </td>
+        <td>
+          scala.Boolean.unary_!
+        </td>
+        <td style="background: #F0ADAD">
+          scala.this.Predef.Boolean2boolean({  scoverage.Invoker.invoked(2770, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  alignmentRecord.getReadNegativeStrand()}).unary_!
+        </td>
+      </tr><tr>
+        <td>
+          416
+        </td>
+        <td>
+          2770
         </td>
         <td>
           org.bdgenomics.formats.avro.AlignmentRecord.getReadNegativeStrand
@@ -37727,62 +37787,36 @@
         </td>
       </tr><tr>
         <td>
-          416
+          420
         </td>
         <td>
-          2772
+          2783
         </td>
         <td>
-          scala.Boolean.unary_!
+          &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          scala.this.Predef.Boolean2boolean({  scoverage.Invoker.invoked(2771, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  alignmentRecord.getReadNegativeStrand()}).unary_!
+          {  scoverage.Invoker.invoked(2782, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  UnmappedRead.apply(token, sequence, {    scoverage.Invoker.invoked(2774, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.this.Predef.wrapByteArray(baseQualities)  }, {    scoverage.Invoker.invoked(2776, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.this.Predef.Boolean2boolean({      scoverage.Invoker.invoked(2775, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      alignmentRecord.getDuplicateRead()    })  }, {    scoverage.Invoker.invoked(2777, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    alignmentRecord.getRecordGroupSample().toString().intern()  }, {    scoverage.Invoker.invoked(2779, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.this.Predef.Boolean2boolean({      scoverage.Invoker.invoked(2778, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      alignmentRecord.getFailedVendorQualityChecks()    })  }, {    scoverage.Invoker.invoked(2781, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.this.Predef.Boolean2boolean({  scoverage.Invoker.invoked(2780, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  alignmentRecord.getReadNegativeStrand()}).unary_!  }, mateProperties)}
         </td>
       </tr><tr>
         <td>
           420
         </td>
         <td>
-          2784
+          2782
         </td>
         <td>
           org.hammerlab.guacamole.reads.UnmappedRead.apply
         </td>
         <td style="background: #F0ADAD">
-          UnmappedRead.apply({  scoverage.Invoker.invoked(2775, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  0}, sequence, {  scoverage.Invoker.invoked(2776, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.wrapByteArray(baseQualities)}, {  scoverage.Invoker.invoked(2778, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.Boolean2boolean({    scoverage.Invoker.invoked(2777, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    alignmentRecord.getDuplicateRead()  })}, {  scoverage.Invoker.invoked(2779, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  alignmentRecord.getRecordGroupSample().toString().intern()}, {  scoverage.Invoker.invoked(2781, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.Boolean2boolean({    scoverage.Invoker.invoked(2780, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    alignmentRecord.getFailedVendorQualityChecks()  })}, {  scoverage.Invoker.invoked(2783, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.Boolean2boolean({  scoverage.Invoker.invoked(2782, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  alignmentRecord.getReadNegativeStrand()}).unary_!}, mateProperties)
-        </td>
-      </tr><tr>
-        <td>
-          420
-        </td>
-        <td>
-          2785
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(2784, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  UnmappedRead.apply({    scoverage.Invoker.invoked(2775, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    0  }, sequence, {    scoverage.Invoker.invoked(2776, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.this.Predef.wrapByteArray(baseQualities)  }, {    scoverage.Invoker.invoked(2778, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.this.Predef.Boolean2boolean({      scoverage.Invoker.invoked(2777, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      alignmentRecord.getDuplicateRead()    })  }, {    scoverage.Invoker.invoked(2779, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    alignmentRecord.getRecordGroupSample().toString().intern()  }, {    scoverage.Invoker.invoked(2781, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.this.Predef.Boolean2boolean({      scoverage.Invoker.invoked(2780, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      alignmentRecord.getFailedVendorQualityChecks()    })  }, {    scoverage.Invoker.invoked(2783, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.this.Predef.Boolean2boolean({  scoverage.Invoker.invoked(2782, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  alignmentRecord.getReadNegativeStrand()}).unary_!  }, mateProperties)}
-        </td>
-      </tr><tr>
-        <td>
-          421
-        </td>
-        <td>
-          2775
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          0
+          UnmappedRead.apply(token, sequence, {  scoverage.Invoker.invoked(2774, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.wrapByteArray(baseQualities)}, {  scoverage.Invoker.invoked(2776, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.Boolean2boolean({    scoverage.Invoker.invoked(2775, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    alignmentRecord.getDuplicateRead()  })}, {  scoverage.Invoker.invoked(2777, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  alignmentRecord.getRecordGroupSample().toString().intern()}, {  scoverage.Invoker.invoked(2779, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.Boolean2boolean({    scoverage.Invoker.invoked(2778, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    alignmentRecord.getFailedVendorQualityChecks()  })}, {  scoverage.Invoker.invoked(2781, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.Boolean2boolean({  scoverage.Invoker.invoked(2780, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  alignmentRecord.getReadNegativeStrand()}).unary_!}, mateProperties)
         </td>
       </tr><tr>
         <td>
           423
         </td>
         <td>
-          2776
+          2774
         </td>
         <td>
           scala.LowPriorityImplicits.wrapByteArray
@@ -37795,7 +37829,7 @@
           424
         </td>
         <td>
-          2777
+          2775
         </td>
         <td>
           org.bdgenomics.formats.avro.AlignmentRecord.getDuplicateRead
@@ -37808,20 +37842,20 @@
           424
         </td>
         <td>
-          2778
+          2776
         </td>
         <td>
           scala.Predef.Boolean2boolean
         </td>
         <td style="background: #F0ADAD">
-          scala.this.Predef.Boolean2boolean({  scoverage.Invoker.invoked(2777, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  alignmentRecord.getDuplicateRead()})
+          scala.this.Predef.Boolean2boolean({  scoverage.Invoker.invoked(2775, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  alignmentRecord.getDuplicateRead()})
         </td>
       </tr><tr>
         <td>
           425
         </td>
         <td>
-          2779
+          2777
         </td>
         <td>
           java.lang.String.intern
@@ -37834,7 +37868,20 @@
           426
         </td>
         <td>
-          2780
+          2779
+        </td>
+        <td>
+          scala.Predef.Boolean2boolean
+        </td>
+        <td style="background: #F0ADAD">
+          scala.this.Predef.Boolean2boolean({  scoverage.Invoker.invoked(2778, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  alignmentRecord.getFailedVendorQualityChecks()})
+        </td>
+      </tr><tr>
+        <td>
+          426
+        </td>
+        <td>
+          2778
         </td>
         <td>
           org.bdgenomics.formats.avro.AlignmentRecord.getFailedVendorQualityChecks
@@ -37844,36 +37891,10 @@
         </td>
       </tr><tr>
         <td>
-          426
-        </td>
-        <td>
-          2781
-        </td>
-        <td>
-          scala.Predef.Boolean2boolean
-        </td>
-        <td style="background: #F0ADAD">
-          scala.this.Predef.Boolean2boolean({  scoverage.Invoker.invoked(2780, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  alignmentRecord.getFailedVendorQualityChecks()})
-        </td>
-      </tr><tr>
-        <td>
           427
         </td>
         <td>
-          2783
-        </td>
-        <td>
-          scala.Boolean.unary_!
-        </td>
-        <td style="background: #F0ADAD">
-          scala.this.Predef.Boolean2boolean({  scoverage.Invoker.invoked(2782, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  alignmentRecord.getReadNegativeStrand()}).unary_!
-        </td>
-      </tr><tr>
-        <td>
-          427
-        </td>
-        <td>
-          2782
+          2780
         </td>
         <td>
           org.bdgenomics.formats.avro.AlignmentRecord.getReadNegativeStrand
@@ -37883,42 +37904,55 @@
         </td>
       </tr><tr>
         <td>
+          427
+        </td>
+        <td>
+          2781
+        </td>
+        <td>
+          scala.Boolean.unary_!
+        </td>
+        <td style="background: #F0ADAD">
+          scala.this.Predef.Boolean2boolean({  scoverage.Invoker.invoked(2780, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  alignmentRecord.getReadNegativeStrand()}).unary_!
+        </td>
+      </tr><tr>
+        <td>
+          435
+        </td>
+        <td>
+          2784
+        </td>
+        <td>
+          htsjdk.samtools.CigarOperator.SOFT_CLIP
+        </td>
+        <td style="background: #F0ADAD">
+          htsjdk.samtools.CigarOperator.SOFT_CLIP
+        </td>
+      </tr><tr>
+        <td>
           435
         </td>
         <td>
           2786
         </td>
         <td>
-          htsjdk.samtools.CigarOperator.SOFT_CLIP
-        </td>
-        <td style="background: #F0ADAD">
-          htsjdk.samtools.CigarOperator.SOFT_CLIP
-        </td>
-      </tr><tr>
-        <td>
-          435
-        </td>
-        <td>
-          2789
-        </td>
-        <td>
-          scala.Boolean.||
-        </td>
-        <td style="background: #F0ADAD">
-          element.getOperator().==({  scoverage.Invoker.invoked(2786, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  htsjdk.samtools.CigarOperator.SOFT_CLIP}).||({  scoverage.Invoker.invoked(2788, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  element.getOperator().==({    scoverage.Invoker.invoked(2787, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    htsjdk.samtools.CigarOperator.HARD_CLIP  })})
-        </td>
-      </tr><tr>
-        <td>
-          435
-        </td>
-        <td>
-          2788
-        </td>
-        <td>
           java.lang.Object.==
         </td>
         <td style="background: #F0ADAD">
-          element.getOperator().==({  scoverage.Invoker.invoked(2787, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  htsjdk.samtools.CigarOperator.HARD_CLIP})
+          element.getOperator().==({  scoverage.Invoker.invoked(2785, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  htsjdk.samtools.CigarOperator.HARD_CLIP})
+        </td>
+      </tr><tr>
+        <td>
+          435
+        </td>
+        <td>
+          2785
+        </td>
+        <td>
+          htsjdk.samtools.CigarOperator.HARD_CLIP
+        </td>
+        <td style="background: #F0ADAD">
+          htsjdk.samtools.CigarOperator.HARD_CLIP
         </td>
       </tr><tr>
         <td>
@@ -37928,10 +37962,10 @@
           2787
         </td>
         <td>
-          htsjdk.samtools.CigarOperator.HARD_CLIP
+          scala.Boolean.||
         </td>
         <td style="background: #F0ADAD">
-          htsjdk.samtools.CigarOperator.HARD_CLIP
+          element.getOperator().==({  scoverage.Invoker.invoked(2784, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  htsjdk.samtools.CigarOperator.SOFT_CLIP}).||({  scoverage.Invoker.invoked(2786, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  element.getOperator().==({    scoverage.Invoker.invoked(2785, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    htsjdk.samtools.CigarOperator.HARD_CLIP  })})
         </td>
       </tr>
     </table>

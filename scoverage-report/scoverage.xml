@@ -1,5 +1,5 @@
 <scoverage 
-statement-count="3127" statements-invoked="220" statement-rate="7.04" branch-rate="4.23" version="1.0" timestamp="1418688569090">
+statement-count="3125" statements-invoked="220" statement-rate="7.04" branch-rate="4.23" version="1.0" timestamp="1418857655953">
     <packages>
         <package name="org.hammerlab.guacamole" statement-count="1327" statements-invoked="175" statement-rate="13.19">
             <classes>
@@ -7893,10 +7893,10 @@ statement-count="3127" statements-invoked="220" statement-rate="7.04" branch-rat
 </class>
             </classes>
         </package>
-        <package name="org.hammerlab.guacamole.reads" statement-count="533" statements-invoked="4" statement-rate="0.75">
+        <package name="org.hammerlab.guacamole.reads" statement-count="531" statements-invoked="4" statement-rate="0.75">
             <classes>
                 <class 
-                name="Read" filename="/home/travis/build/hammerlab/guacamole/src/main/scala/org/hammerlab/guacamole/reads/Read.scala" statement-count="274" statements-invoked="4" statement-rate="1.46" branch-rate="0.00">
+                name="Read" filename="/home/travis/build/hammerlab/guacamole/src/main/scala/org/hammerlab/guacamole/reads/Read.scala" statement-count="272" statements-invoked="4" statement-rate="1.47" branch-rate="0.00">
                     <methods>
                         <method 
                         name="org.hammerlab.guacamole.reads/Read/apply" statement-count="17" statements-invoked="0" statement-rate="0.00" branch-rate="0.00">
@@ -8050,19 +8050,16 @@ statement-count="3127" statements-invoked="220" statement-rate="7.04" branch-rat
                             </statements>
 </method>
                         <method 
-                        name="org.hammerlab.guacamole.reads/Read/fromADAMRecord" statement-count="71" statements-invoked="0" statement-rate="0.00" branch-rate="0.00">
+                        name="org.hammerlab.guacamole.reads/Read/fromADAMRecord" statement-count="69" statements-invoked="0" statement-rate="0.00" branch-rate="0.00">
                             <statements>
                                 <statement 
-                                package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="421" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="424" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="391" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="420" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="407" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="408" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="413" branch="false" invocation-count="0">
@@ -8089,10 +8086,10 @@ statement-count="3127" statements-invoked="220" statement-rate="7.04" branch-rat
                                 package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="394" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="404" branch="true" invocation-count="0">
+                                package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="423" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="427" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="420" branch="true" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="392" branch="false" invocation-count="0">
@@ -8104,16 +8101,16 @@ statement-count="3127" statements-invoked="220" statement-rate="7.04" branch-rat
                                 package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="394" branch="true" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="414" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="415" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="424" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="425" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="400" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="408" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="409" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="416" branch="false" invocation-count="0">
@@ -8128,7 +8125,7 @@ statement-count="3127" statements-invoked="220" statement-rate="7.04" branch-rat
                                 package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="388" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="426" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="427" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="401" branch="false" invocation-count="0">
@@ -8152,10 +8149,10 @@ statement-count="3127" statements-invoked="220" statement-rate="7.04" branch-rat
                                 package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="397" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="405" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="407" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="412" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="413" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="392" branch="true" invocation-count="0">
@@ -8173,13 +8170,13 @@ statement-count="3127" statements-invoked="220" statement-rate="7.04" branch-rat
                                 package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="412" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="404" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="404" branch="true" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="427" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="420" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="423" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="424" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="408" branch="false" invocation-count="0">
@@ -8188,16 +8185,13 @@ statement-count="3127" statements-invoked="220" statement-rate="7.04" branch-rat
                                 package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="393" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="413" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="414" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="392" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="400" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="420" branch="true" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="394" branch="false" invocation-count="0">
@@ -8209,7 +8203,7 @@ statement-count="3127" statements-invoked="220" statement-rate="7.04" branch-rat
                                 package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="401" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="410" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="411" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="393" branch="true" invocation-count="0">
@@ -8221,16 +8215,16 @@ statement-count="3127" statements-invoked="220" statement-rate="7.04" branch-rat
                                 package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="387" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="415" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="416" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="425" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="426" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="390" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="409" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="410" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="415" branch="false" invocation-count="0">
@@ -8239,19 +8233,19 @@ statement-count="3127" statements-invoked="220" statement-rate="7.04" branch-rat
                                 package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="401" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="424" branch="false" invocation-count="0">
-</statement>
-                                <statement 
                                 package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="426" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="411" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="427" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="412" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="393" branch="true" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="416" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="404" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.reads" class="Read" method="fromADAMRecord" start="-1" line="388" branch="false" invocation-count="0">
@@ -8271,6 +8265,9 @@ statement-count="3127" statements-invoked="220" statement-rate="7.04" branch-rat
                         name="org.hammerlab.guacamole.reads/Read/&lt;none&gt;" statement-count="19" statements-invoked="0" statement-rate="0.00" branch-rate="0.00">
                             <statements>
                                 <statement 
+                                package="org.hammerlab.guacamole.reads" class="Read" method="&lt;none&gt;" start="-1" line="435" branch="false" invocation-count="0">
+</statement>
+                                <statement 
                                 package="org.hammerlab.guacamole.reads" class="Read" method="&lt;none&gt;" start="-1" line="64" branch="false" invocation-count="0">
 </statement>
                                 <statement 
@@ -8289,13 +8286,7 @@ statement-count="3127" statements-invoked="220" statement-rate="7.04" branch-rat
                                 package="org.hammerlab.guacamole.reads" class="Read" method="&lt;none&gt;" start="-1" line="435" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.reads" class="Read" method="&lt;none&gt;" start="-1" line="435" branch="false" invocation-count="0">
-</statement>
-                                <statement 
                                 package="org.hammerlab.guacamole.reads" class="Read" method="&lt;none&gt;" start="-1" line="173" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.reads" class="Read" method="&lt;none&gt;" start="-1" line="435" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.reads" class="Read" method="&lt;none&gt;" start="-1" line="171" branch="false" invocation-count="0">
@@ -8308,6 +8299,9 @@ statement-count="3127" statements-invoked="220" statement-rate="7.04" branch-rat
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.reads" class="Read" method="&lt;none&gt;" start="-1" line="171" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.reads" class="Read" method="&lt;none&gt;" start="-1" line="435" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.reads" class="Read" method="&lt;none&gt;" start="-1" line="171" branch="true" invocation-count="0">
@@ -8904,43 +8898,10 @@ statement-count="3127" statements-invoked="220" statement-rate="7.04" branch-rat
                         name="org.hammerlab.guacamole.reads/UnmappedReadSerializer/&lt;none&gt;" statement-count="22" statements-invoked="0" statement-rate="0.00" branch-rate="0.00">
                             <statements>
                                 <statement 
-                                package="org.hammerlab.guacamole.reads" class="UnmappedReadSerializer" method="&lt;none&gt;" start="-1" line="30" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.reads" class="UnmappedReadSerializer" method="&lt;none&gt;" start="-1" line="27" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.reads" class="UnmappedReadSerializer" method="&lt;none&gt;" start="-1" line="34" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.reads" class="UnmappedReadSerializer" method="&lt;none&gt;" start="-1" line="30" branch="false" invocation-count="0">
-</statement>
-                                <statement 
                                 package="org.hammerlab.guacamole.reads" class="UnmappedReadSerializer" method="&lt;none&gt;" start="-1" line="31" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.reads" class="UnmappedReadSerializer" method="&lt;none&gt;" start="-1" line="37" branch="false" invocation-count="0">
-</statement>
-                                <statement 
                                 package="org.hammerlab.guacamole.reads" class="UnmappedReadSerializer" method="&lt;none&gt;" start="-1" line="28" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.reads" class="UnmappedReadSerializer" method="&lt;none&gt;" start="-1" line="33" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.reads" class="UnmappedReadSerializer" method="&lt;none&gt;" start="-1" line="29" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.reads" class="UnmappedReadSerializer" method="&lt;none&gt;" start="-1" line="28" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.reads" class="UnmappedReadSerializer" method="&lt;none&gt;" start="-1" line="32" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.reads" class="UnmappedReadSerializer" method="&lt;none&gt;" start="-1" line="29" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.reads" class="UnmappedReadSerializer" method="&lt;none&gt;" start="-1" line="34" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.reads" class="UnmappedReadSerializer" method="&lt;none&gt;" start="-1" line="35" branch="false" invocation-count="0">
@@ -8952,10 +8913,31 @@ statement-count="3127" statements-invoked="220" statement-rate="7.04" branch-rat
                                 package="org.hammerlab.guacamole.reads" class="UnmappedReadSerializer" method="&lt;none&gt;" start="-1" line="31" branch="false" invocation-count="0">
 </statement>
                                 <statement 
+                                package="org.hammerlab.guacamole.reads" class="UnmappedReadSerializer" method="&lt;none&gt;" start="-1" line="32" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.reads" class="UnmappedReadSerializer" method="&lt;none&gt;" start="-1" line="28" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.reads" class="UnmappedReadSerializer" method="&lt;none&gt;" start="-1" line="34" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.reads" class="UnmappedReadSerializer" method="&lt;none&gt;" start="-1" line="29" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.reads" class="UnmappedReadSerializer" method="&lt;none&gt;" start="-1" line="29" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.reads" class="UnmappedReadSerializer" method="&lt;none&gt;" start="-1" line="33" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.reads" class="UnmappedReadSerializer" method="&lt;none&gt;" start="-1" line="30" branch="false" invocation-count="0">
+</statement>
+                                <statement 
                                 package="org.hammerlab.guacamole.reads" class="UnmappedReadSerializer" method="&lt;none&gt;" start="-1" line="35" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.reads" class="UnmappedReadSerializer" method="&lt;none&gt;" start="-1" line="32" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.reads" class="UnmappedReadSerializer" method="&lt;none&gt;" start="-1" line="27" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.reads" class="UnmappedReadSerializer" method="&lt;none&gt;" start="-1" line="37" branch="false" invocation-count="0">
@@ -8964,10 +8946,22 @@ statement-count="3127" statements-invoked="220" statement-rate="7.04" branch-rat
                                 package="org.hammerlab.guacamole.reads" class="UnmappedReadSerializer" method="&lt;none&gt;" start="-1" line="28" branch="false" invocation-count="0">
 </statement>
                                 <statement 
+                                package="org.hammerlab.guacamole.reads" class="UnmappedReadSerializer" method="&lt;none&gt;" start="-1" line="32" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.reads" class="UnmappedReadSerializer" method="&lt;none&gt;" start="-1" line="37" branch="false" invocation-count="0">
+</statement>
+                                <statement 
                                 package="org.hammerlab.guacamole.reads" class="UnmappedReadSerializer" method="&lt;none&gt;" start="-1" line="33" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.reads" class="UnmappedReadSerializer" method="&lt;none&gt;" start="-1" line="29" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.reads" class="UnmappedReadSerializer" method="&lt;none&gt;" start="-1" line="34" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.reads" class="UnmappedReadSerializer" method="&lt;none&gt;" start="-1" line="30" branch="false" invocation-count="0">
 </statement>
                             </statements>
 </method>
@@ -8975,16 +8969,7 @@ statement-count="3127" statements-invoked="220" statement-rate="7.04" branch-rat
                         name="org.hammerlab.guacamole.reads/UnmappedReadSerializer/read" statement-count="13" statements-invoked="0" statement-rate="0.00" branch-rate="0.00">
                             <statements>
                                 <statement 
-                                package="org.hammerlab.guacamole.reads" class="UnmappedReadSerializer" method="read" start="-1" line="44" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.reads" class="UnmappedReadSerializer" method="read" start="-1" line="47" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.reads" class="UnmappedReadSerializer" method="read" start="-1" line="55" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.reads" class="UnmappedReadSerializer" method="read" start="-1" line="42" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.reads" class="UnmappedReadSerializer" method="read" start="-1" line="46" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.reads" class="UnmappedReadSerializer" method="read" start="-1" line="41" branch="false" invocation-count="0">
@@ -8993,13 +8978,16 @@ statement-count="3127" statements-invoked="220" statement-rate="7.04" branch-rat
                                 package="org.hammerlab.guacamole.reads" class="UnmappedReadSerializer" method="read" start="-1" line="50" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.reads" class="UnmappedReadSerializer" method="read" start="-1" line="43" branch="false" invocation-count="0">
-</statement>
-                                <statement 
                                 package="org.hammerlab.guacamole.reads" class="UnmappedReadSerializer" method="read" start="-1" line="52" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.reads" class="UnmappedReadSerializer" method="read" start="-1" line="46" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.reads" class="UnmappedReadSerializer" method="read" start="-1" line="43" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.reads" class="UnmappedReadSerializer" method="read" start="-1" line="43" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.reads" class="UnmappedReadSerializer" method="read" start="-1" line="57" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.reads" class="UnmappedReadSerializer" method="read" start="-1" line="45" branch="false" invocation-count="0">
@@ -9008,10 +8996,16 @@ statement-count="3127" statements-invoked="220" statement-rate="7.04" branch-rat
                                 package="org.hammerlab.guacamole.reads" class="UnmappedReadSerializer" method="read" start="-1" line="48" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.reads" class="UnmappedReadSerializer" method="read" start="-1" line="43" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.reads" class="UnmappedReadSerializer" method="read" start="-1" line="47" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.reads" class="UnmappedReadSerializer" method="read" start="-1" line="57" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.reads" class="UnmappedReadSerializer" method="read" start="-1" line="42" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.reads" class="UnmappedReadSerializer" method="read" start="-1" line="55" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.reads" class="UnmappedReadSerializer" method="read" start="-1" line="44" branch="false" invocation-count="0">
 </statement>
                             </statements>
 </method>
@@ -9668,19 +9662,13 @@ statement-count="3127" statements-invoked="220" statement-rate="7.04" branch-rat
                         name="org.hammerlab.guacamole.variants/AlleleEvidenceSerializer/read" statement-count="8" statements-invoked="0" statement-rate="0.00" branch-rate="0.00">
                             <statements>
                                 <statement 
-                                package="org.hammerlab.guacamole.variants" class="AlleleEvidenceSerializer" method="read" start="-1" line="68" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.variants" class="AlleleEvidenceSerializer" method="read" start="-1" line="72" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.variants" class="AlleleEvidenceSerializer" method="read" start="-1" line="65" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.variants" class="AlleleEvidenceSerializer" method="read" start="-1" line="71" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.variants" class="AlleleEvidenceSerializer" method="read" start="-1" line="67" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.variants" class="AlleleEvidenceSerializer" method="read" start="-1" line="71" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.variants" class="AlleleEvidenceSerializer" method="read" start="-1" line="66" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.variants" class="AlleleEvidenceSerializer" method="read" start="-1" line="69" branch="false" invocation-count="0">
@@ -9689,7 +9677,13 @@ statement-count="3127" statements-invoked="220" statement-rate="7.04" branch-rat
                                 package="org.hammerlab.guacamole.variants" class="AlleleEvidenceSerializer" method="read" start="-1" line="74" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.variants" class="AlleleEvidenceSerializer" method="read" start="-1" line="66" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.variants" class="AlleleEvidenceSerializer" method="read" start="-1" line="72" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="AlleleEvidenceSerializer" method="read" start="-1" line="65" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="AlleleEvidenceSerializer" method="read" start="-1" line="68" branch="false" invocation-count="0">
 </statement>
                             </statements>
 </method>
@@ -9697,10 +9691,7 @@ statement-count="3127" statements-invoked="220" statement-rate="7.04" branch-rat
                         name="org.hammerlab.guacamole.variants/AlleleEvidenceSerializer/&lt;none&gt;" statement-count="14" statements-invoked="0" statement-rate="0.00" branch-rate="0.00">
                             <statements>
                                 <statement 
-                                package="org.hammerlab.guacamole.variants" class="AlleleEvidenceSerializer" method="&lt;none&gt;" start="-1" line="56" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.variants" class="AlleleEvidenceSerializer" method="&lt;none&gt;" start="-1" line="53" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.variants" class="AlleleEvidenceSerializer" method="&lt;none&gt;" start="-1" line="52" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.variants" class="AlleleEvidenceSerializer" method="&lt;none&gt;" start="-1" line="58" branch="false" invocation-count="0">
@@ -9712,16 +9703,10 @@ statement-count="3127" statements-invoked="220" statement-rate="7.04" branch-rat
                                 package="org.hammerlab.guacamole.variants" class="AlleleEvidenceSerializer" method="&lt;none&gt;" start="-1" line="59" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.variants" class="AlleleEvidenceSerializer" method="&lt;none&gt;" start="-1" line="54" branch="false" invocation-count="0">
-</statement>
-                                <statement 
                                 package="org.hammerlab.guacamole.variants" class="AlleleEvidenceSerializer" method="&lt;none&gt;" start="-1" line="55" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.variants" class="AlleleEvidenceSerializer" method="&lt;none&gt;" start="-1" line="58" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.variants" class="AlleleEvidenceSerializer" method="&lt;none&gt;" start="-1" line="52" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.variants" class="AlleleEvidenceSerializer" method="&lt;none&gt;" start="-1" line="55" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.variants" class="AlleleEvidenceSerializer" method="&lt;none&gt;" start="-1" line="56" branch="false" invocation-count="0">
@@ -9736,7 +9721,16 @@ statement-count="3127" statements-invoked="220" statement-rate="7.04" branch-rat
                                 package="org.hammerlab.guacamole.variants" class="AlleleEvidenceSerializer" method="&lt;none&gt;" start="-1" line="53" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.variants" class="AlleleEvidenceSerializer" method="&lt;none&gt;" start="-1" line="55" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.variants" class="AlleleEvidenceSerializer" method="&lt;none&gt;" start="-1" line="58" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="AlleleEvidenceSerializer" method="&lt;none&gt;" start="-1" line="53" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="AlleleEvidenceSerializer" method="&lt;none&gt;" start="-1" line="54" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="AlleleEvidenceSerializer" method="&lt;none&gt;" start="-1" line="56" branch="false" invocation-count="0">
 </statement>
                             </statements>
 </method>
@@ -9749,22 +9743,16 @@ statement-count="3127" statements-invoked="220" statement-rate="7.04" branch-rat
                         name="org.hammerlab.guacamole.variants/CalledSomaticAlleleSerializer/read" statement-count="10" statements-invoked="0" statement-rate="0.00" branch-rate="0.00">
                             <statements>
                                 <statement 
-                                package="org.hammerlab.guacamole.variants" class="CalledSomaticAlleleSerializer" method="read" start="-1" line="80" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.variants" class="CalledSomaticAlleleSerializer" method="read" start="-1" line="83" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.variants" class="CalledSomaticAlleleSerializer" method="read" start="-1" line="85" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.variants" class="CalledSomaticAlleleSerializer" method="read" start="-1" line="76" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.variants" class="CalledSomaticAlleleSerializer" method="read" start="-1" line="75" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.variants" class="CalledSomaticAlleleSerializer" method="read" start="-1" line="78" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.variants" class="CalledSomaticAlleleSerializer" method="read" start="-1" line="83" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.variants" class="CalledSomaticAlleleSerializer" method="read" start="-1" line="75" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.variants" class="CalledSomaticAlleleSerializer" method="read" start="-1" line="81" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.variants" class="CalledSomaticAlleleSerializer" method="read" start="-1" line="74" branch="false" invocation-count="0">
@@ -9776,7 +9764,13 @@ statement-count="3127" statements-invoked="220" statement-rate="7.04" branch-rat
                                 package="org.hammerlab.guacamole.variants" class="CalledSomaticAlleleSerializer" method="read" start="-1" line="77" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.variants" class="CalledSomaticAlleleSerializer" method="read" start="-1" line="81" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.variants" class="CalledSomaticAlleleSerializer" method="read" start="-1" line="76" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="CalledSomaticAlleleSerializer" method="read" start="-1" line="80" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="CalledSomaticAlleleSerializer" method="read" start="-1" line="85" branch="false" invocation-count="0">
 </statement>
                             </statements>
 </method>
@@ -9784,13 +9778,7 @@ statement-count="3127" statements-invoked="220" statement-rate="7.04" branch-rat
                         name="org.hammerlab.guacamole.variants/CalledSomaticAlleleSerializer/&lt;none&gt;" statement-count="18" statements-invoked="0" statement-rate="0.00" branch-rate="0.00">
                             <statements>
                                 <statement 
-                                package="org.hammerlab.guacamole.variants" class="CalledSomaticAlleleSerializer" method="&lt;none&gt;" start="-1" line="68" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.variants" class="CalledSomaticAlleleSerializer" method="&lt;none&gt;" start="-1" line="63" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.variants" class="CalledSomaticAlleleSerializer" method="&lt;none&gt;" start="-1" line="60" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.variants" class="CalledSomaticAlleleSerializer" method="&lt;none&gt;" start="-1" line="59" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.variants" class="CalledSomaticAlleleSerializer" method="&lt;none&gt;" start="-1" line="65" branch="false" invocation-count="0">
@@ -9799,13 +9787,10 @@ statement-count="3127" statements-invoked="220" statement-rate="7.04" branch-rat
                                 package="org.hammerlab.guacamole.variants" class="CalledSomaticAlleleSerializer" method="&lt;none&gt;" start="-1" line="61" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.variants" class="CalledSomaticAlleleSerializer" method="&lt;none&gt;" start="-1" line="68" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.variants" class="CalledSomaticAlleleSerializer" method="&lt;none&gt;" start="-1" line="61" branch="false" invocation-count="0">
-</statement>
-                                <statement 
                                 package="org.hammerlab.guacamole.variants" class="CalledSomaticAlleleSerializer" method="&lt;none&gt;" start="-1" line="66" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="CalledSomaticAlleleSerializer" method="&lt;none&gt;" start="-1" line="62" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.variants" class="CalledSomaticAlleleSerializer" method="&lt;none&gt;" start="-1" line="68" branch="false" invocation-count="0">
@@ -9814,16 +9799,16 @@ statement-count="3127" statements-invoked="220" statement-rate="7.04" branch-rat
                                 package="org.hammerlab.guacamole.variants" class="CalledSomaticAlleleSerializer" method="&lt;none&gt;" start="-1" line="62" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.variants" class="CalledSomaticAlleleSerializer" method="&lt;none&gt;" start="-1" line="59" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.variants" class="CalledSomaticAlleleSerializer" method="&lt;none&gt;" start="-1" line="65" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.variants" class="CalledSomaticAlleleSerializer" method="&lt;none&gt;" start="-1" line="59" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.variants" class="CalledSomaticAlleleSerializer" method="&lt;none&gt;" start="-1" line="68" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.variants" class="CalledSomaticAlleleSerializer" method="&lt;none&gt;" start="-1" line="63" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="CalledSomaticAlleleSerializer" method="&lt;none&gt;" start="-1" line="59" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="CalledSomaticAlleleSerializer" method="&lt;none&gt;" start="-1" line="60" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.variants" class="CalledSomaticAlleleSerializer" method="&lt;none&gt;" start="-1" line="66" branch="false" invocation-count="0">
@@ -9832,7 +9817,16 @@ statement-count="3127" statements-invoked="220" statement-rate="7.04" branch-rat
                                 package="org.hammerlab.guacamole.variants" class="CalledSomaticAlleleSerializer" method="&lt;none&gt;" start="-1" line="60" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.variants" class="CalledSomaticAlleleSerializer" method="&lt;none&gt;" start="-1" line="62" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.variants" class="CalledSomaticAlleleSerializer" method="&lt;none&gt;" start="-1" line="65" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="CalledSomaticAlleleSerializer" method="&lt;none&gt;" start="-1" line="68" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="CalledSomaticAlleleSerializer" method="&lt;none&gt;" start="-1" line="61" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="CalledSomaticAlleleSerializer" method="&lt;none&gt;" start="-1" line="63" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.variants" class="CalledSomaticAlleleSerializer" method="&lt;none&gt;" start="-1" line="68" branch="false" invocation-count="0">
@@ -9874,12 +9868,6 @@ statement-count="3127" statements-invoked="220" statement-rate="7.04" branch-rat
                         name="org.hammerlab.guacamole.variants/GenotypeSerializer/&lt;none&gt;" statement-count="5" statements-invoked="0" statement-rate="0.00" branch-rate="0.00">
                             <statements>
                                 <statement 
-                                package="org.hammerlab.guacamole.variants" class="GenotypeSerializer" method="&lt;none&gt;" start="-1" line="92" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.variants" class="GenotypeSerializer" method="&lt;none&gt;" start="-1" line="91" branch="false" invocation-count="0">
-</statement>
-                                <statement 
                                 package="org.hammerlab.guacamole.variants" class="GenotypeSerializer" method="&lt;none&gt;" start="-1" line="91" branch="false" invocation-count="0">
 </statement>
                                 <statement 
@@ -9887,18 +9875,18 @@ statement-count="3127" statements-invoked="220" statement-rate="7.04" branch-rat
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.variants" class="GenotypeSerializer" method="&lt;none&gt;" start="-1" line="91" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="GenotypeSerializer" method="&lt;none&gt;" start="-1" line="91" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="GenotypeSerializer" method="&lt;none&gt;" start="-1" line="92" branch="false" invocation-count="0">
 </statement>
                             </statements>
 </method>
                         <method 
                         name="org.hammerlab.guacamole.variants/GenotypeSerializer/read" statement-count="6" statements-invoked="0" statement-rate="0.00" branch-rate="0.00">
                             <statements>
-                                <statement 
-                                package="org.hammerlab.guacamole.variants" class="GenotypeSerializer" method="read" start="-1" line="97" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.variants" class="GenotypeSerializer" method="read" start="-1" line="98" branch="false" invocation-count="0">
-</statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.variants" class="GenotypeSerializer" method="read" start="-1" line="97" branch="false" invocation-count="0">
 </statement>
@@ -9911,6 +9899,12 @@ statement-count="3127" statements-invoked="220" statement-rate="7.04" branch-rat
                                 <statement 
                                 package="org.hammerlab.guacamole.variants" class="GenotypeSerializer" method="read" start="-1" line="97" branch="false" invocation-count="0">
 </statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="GenotypeSerializer" method="read" start="-1" line="97" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="GenotypeSerializer" method="read" start="-1" line="98" branch="false" invocation-count="0">
+</statement>
                             </statements>
 </method>
                     </methods>
@@ -9922,55 +9916,55 @@ statement-count="3127" statements-invoked="220" statement-rate="7.04" branch-rat
                         name="org.hammerlab.guacamole.variants/Allele/&lt;none&gt;" statement-count="17" statements-invoked="0" statement-rate="0.00" branch-rate="0.00">
                             <statements>
                                 <statement 
+                                package="org.hammerlab.guacamole.variants" class="Allele" method="&lt;none&gt;" start="-1" line="32" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="Allele" method="&lt;none&gt;" start="-1" line="29" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="Allele" method="&lt;none&gt;" start="-1" line="33" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="Allele" method="&lt;none&gt;" start="-1" line="29" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="Allele" method="&lt;none&gt;" start="-1" line="33" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="Allele" method="&lt;none&gt;" start="-1" line="29" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="Allele" method="&lt;none&gt;" start="-1" line="32" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="Allele" method="&lt;none&gt;" start="-1" line="32" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="Allele" method="&lt;none&gt;" start="-1" line="27" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="Allele" method="&lt;none&gt;" start="-1" line="33" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="Allele" method="&lt;none&gt;" start="-1" line="29" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="Allele" method="&lt;none&gt;" start="-1" line="33" branch="false" invocation-count="0">
+</statement>
+                                <statement 
                                 package="org.hammerlab.guacamole.variants" class="Allele" method="&lt;none&gt;" start="-1" line="29" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.variants" class="Allele" method="&lt;none&gt;" start="-1" line="34" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.variants" class="Allele" method="&lt;none&gt;" start="-1" line="27" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.variants" class="Allele" method="&lt;none&gt;" start="-1" line="32" branch="false" invocation-count="0">
-</statement>
-                                <statement 
                                 package="org.hammerlab.guacamole.variants" class="Allele" method="&lt;none&gt;" start="-1" line="29" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.variants" class="Allele" method="&lt;none&gt;" start="-1" line="33" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.variants" class="Allele" method="&lt;none&gt;" start="-1" line="29" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.variants" class="Allele" method="&lt;none&gt;" start="-1" line="33" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.variants" class="Allele" method="&lt;none&gt;" start="-1" line="32" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.variants" class="Allele" method="&lt;none&gt;" start="-1" line="33" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.variants" class="Allele" method="&lt;none&gt;" start="-1" line="29" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.variants" class="Allele" method="&lt;none&gt;" start="-1" line="32" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.variants" class="Allele" method="&lt;none&gt;" start="-1" line="27" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.variants" class="Allele" method="&lt;none&gt;" start="-1" line="33" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.variants" class="Allele" method="&lt;none&gt;" start="-1" line="29" branch="false" invocation-count="0">
-</statement>
-                                <statement 
                                 package="org.hammerlab.guacamole.variants" class="Allele" method="&lt;none&gt;" start="-1" line="32" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.variants" class="Allele" method="&lt;none&gt;" start="-1" line="29" branch="false" invocation-count="0">
 </statement>
                             </statements>
 </method>
@@ -9983,13 +9977,76 @@ statement-count="3127" statements-invoked="220" statement-rate="7.04" branch-rat
                         name="org.hammerlab.guacamole.variants/Genotype/&lt;none&gt;" statement-count="27" statements-invoked="0" statement-rate="0.00" branch-rate="0.00">
                             <statements>
                                 <statement 
-                                package="org.hammerlab.guacamole.variants" class="Genotype" method="&lt;none&gt;" start="-1" line="77" branch="true" invocation-count="0">
+                                package="org.hammerlab.guacamole.variants" class="Genotype" method="&lt;none&gt;" start="-1" line="84" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="Genotype" method="&lt;none&gt;" start="-1" line="77" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="Genotype" method="&lt;none&gt;" start="-1" line="71" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="Genotype" method="&lt;none&gt;" start="-1" line="42" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="Genotype" method="&lt;none&gt;" start="-1" line="78" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="Genotype" method="&lt;none&gt;" start="-1" line="74" branch="true" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="Genotype" method="&lt;none&gt;" start="-1" line="75" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="Genotype" method="&lt;none&gt;" start="-1" line="80" branch="true" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="Genotype" method="&lt;none&gt;" start="-1" line="55" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="Genotype" method="&lt;none&gt;" start="-1" line="80" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="Genotype" method="&lt;none&gt;" start="-1" line="75" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="Genotype" method="&lt;none&gt;" start="-1" line="75" branch="true" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="Genotype" method="&lt;none&gt;" start="-1" line="71" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="Genotype" method="&lt;none&gt;" start="-1" line="76" branch="true" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="Genotype" method="&lt;none&gt;" start="-1" line="84" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="Genotype" method="&lt;none&gt;" start="-1" line="74" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="Genotype" method="&lt;none&gt;" start="-1" line="77" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="Genotype" method="&lt;none&gt;" start="-1" line="47" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="Genotype" method="&lt;none&gt;" start="-1" line="78" branch="true" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="Genotype" method="&lt;none&gt;" start="-1" line="75" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="Genotype" method="&lt;none&gt;" start="-1" line="44" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="Genotype" method="&lt;none&gt;" start="-1" line="62" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.variants" class="Genotype" method="&lt;none&gt;" start="-1" line="76" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.variants" class="Genotype" method="&lt;none&gt;" start="-1" line="62" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.variants" class="Genotype" method="&lt;none&gt;" start="-1" line="77" branch="true" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.variants" class="Genotype" method="&lt;none&gt;" start="-1" line="84" branch="false" invocation-count="0">
@@ -9999,69 +10056,6 @@ statement-count="3127" statements-invoked="220" statement-rate="7.04" branch-rat
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.variants" class="Genotype" method="&lt;none&gt;" start="-1" line="73" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.variants" class="Genotype" method="&lt;none&gt;" start="-1" line="75" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.variants" class="Genotype" method="&lt;none&gt;" start="-1" line="78" branch="true" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.variants" class="Genotype" method="&lt;none&gt;" start="-1" line="44" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.variants" class="Genotype" method="&lt;none&gt;" start="-1" line="78" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.variants" class="Genotype" method="&lt;none&gt;" start="-1" line="74" branch="true" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.variants" class="Genotype" method="&lt;none&gt;" start="-1" line="80" branch="true" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.variants" class="Genotype" method="&lt;none&gt;" start="-1" line="55" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.variants" class="Genotype" method="&lt;none&gt;" start="-1" line="75" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.variants" class="Genotype" method="&lt;none&gt;" start="-1" line="84" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.variants" class="Genotype" method="&lt;none&gt;" start="-1" line="71" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.variants" class="Genotype" method="&lt;none&gt;" start="-1" line="77" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.variants" class="Genotype" method="&lt;none&gt;" start="-1" line="42" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.variants" class="Genotype" method="&lt;none&gt;" start="-1" line="84" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.variants" class="Genotype" method="&lt;none&gt;" start="-1" line="77" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.variants" class="Genotype" method="&lt;none&gt;" start="-1" line="74" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.variants" class="Genotype" method="&lt;none&gt;" start="-1" line="47" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.variants" class="Genotype" method="&lt;none&gt;" start="-1" line="75" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.variants" class="Genotype" method="&lt;none&gt;" start="-1" line="80" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.variants" class="Genotype" method="&lt;none&gt;" start="-1" line="75" branch="true" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.variants" class="Genotype" method="&lt;none&gt;" start="-1" line="76" branch="true" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.variants" class="Genotype" method="&lt;none&gt;" start="-1" line="71" branch="false" invocation-count="0">
 </statement>
                             </statements>
 </method>
@@ -10077,10 +10071,10 @@ statement-count="3127" statements-invoked="220" statement-rate="7.04" branch-rat
                                 package="org.hammerlab.guacamole.variants" class="CalledSomaticAllele" method="&lt;none&gt;" start="-1" line="50" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.variants" class="CalledSomaticAllele" method="&lt;none&gt;" start="-1" line="50" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.variants" class="CalledSomaticAllele" method="&lt;none&gt;" start="-1" line="46" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.variants" class="CalledSomaticAllele" method="&lt;none&gt;" start="-1" line="46" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.variants" class="CalledSomaticAllele" method="&lt;none&gt;" start="-1" line="50" branch="false" invocation-count="0">
 </statement>
                             </statements>
 </method>
@@ -10096,25 +10090,16 @@ statement-count="3127" statements-invoked="220" statement-rate="7.04" branch-rat
                                 package="org.hammerlab.guacamole.variants" class="AlleleEvidence" method="&lt;none&gt;" start="-1" line="103" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.variants" class="AlleleEvidence" method="&lt;none&gt;" start="-1" line="103" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.variants" class="AlleleEvidence" method="&lt;none&gt;" start="-1" line="104" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.variants" class="AlleleEvidence" method="&lt;none&gt;" start="-1" line="47" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.variants" class="AlleleEvidence" method="&lt;none&gt;" start="-1" line="104" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.variants" class="AlleleEvidence" method="&lt;none&gt;" start="-1" line="103" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.variants" class="AlleleEvidence" method="&lt;none&gt;" start="-1" line="46" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.variants" class="AlleleEvidence" method="&lt;none&gt;" start="-1" line="47" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.variants" class="AlleleEvidence" method="&lt;none&gt;" start="-1" line="103" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.variants" class="AlleleEvidence" method="&lt;none&gt;" start="-1" line="104" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.variants" class="AlleleEvidence" method="&lt;none&gt;" start="-1" line="104" branch="false" invocation-count="0">
@@ -10123,10 +10108,19 @@ statement-count="3127" statements-invoked="220" statement-rate="7.04" branch-rat
                                 package="org.hammerlab.guacamole.variants" class="AlleleEvidence" method="&lt;none&gt;" start="-1" line="97" branch="false" invocation-count="0">
 </statement>
                                 <statement 
+                                package="org.hammerlab.guacamole.variants" class="AlleleEvidence" method="&lt;none&gt;" start="-1" line="104" branch="false" invocation-count="0">
+</statement>
+                                <statement 
                                 package="org.hammerlab.guacamole.variants" class="AlleleEvidence" method="&lt;none&gt;" start="-1" line="103" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.variants" class="AlleleEvidence" method="&lt;none&gt;" start="-1" line="46" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="AlleleEvidence" method="&lt;none&gt;" start="-1" line="103" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="AlleleEvidence" method="&lt;none&gt;" start="-1" line="47" branch="false" invocation-count="0">
 </statement>
                             </statements>
 </method>
@@ -10137,10 +10131,10 @@ statement-count="3127" statements-invoked="220" statement-rate="7.04" branch-rat
                                 package="org.hammerlab.guacamole.variants" class="AlleleEvidence" method="apply" start="-1" line="109" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.variants" class="AlleleEvidence" method="apply" start="-1" line="109" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.variants" class="AlleleEvidence" method="apply" start="-1" line="110" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.variants" class="AlleleEvidence" method="apply" start="-1" line="110" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.variants" class="AlleleEvidence" method="apply" start="-1" line="109" branch="false" invocation-count="0">
 </statement>
                             </statements>
 </method>
@@ -10166,16 +10160,16 @@ statement-count="3127" statements-invoked="220" statement-rate="7.04" branch-rat
                         name="org.hammerlab.guacamole.variants/AlleleConversions/&lt;none&gt;" statement-count="4" statements-invoked="0" statement-rate="0.00" branch-rate="0.00">
                             <statements>
                                 <statement 
-                                package="org.hammerlab.guacamole.variants" class="AlleleConversions" method="&lt;none&gt;" start="-1" line="31" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.variants" class="AlleleConversions" method="&lt;none&gt;" start="-1" line="43" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.variants" class="AlleleConversions" method="&lt;none&gt;" start="-1" line="48" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.variants" class="AlleleConversions" method="&lt;none&gt;" start="-1" line="43" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.variants" class="AlleleConversions" method="&lt;none&gt;" start="-1" line="60" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.variants" class="AlleleConversions" method="&lt;none&gt;" start="-1" line="60" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.variants" class="AlleleConversions" method="&lt;none&gt;" start="-1" line="31" branch="false" invocation-count="0">
 </statement>
                             </statements>
 </method>
@@ -10188,7 +10182,28 @@ statement-count="3127" statements-invoked="220" statement-rate="7.04" branch-rat
                         name="org.hammerlab.guacamole.variants/CalledAlleleSerializer/&lt;none&gt;" statement-count="15" statements-invoked="0" statement-rate="0.00" branch-rate="0.00">
                             <statements>
                                 <statement 
+                                package="org.hammerlab.guacamole.variants" class="CalledAlleleSerializer" method="&lt;none&gt;" start="-1" line="54" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="CalledAlleleSerializer" method="&lt;none&gt;" start="-1" line="56" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="CalledAlleleSerializer" method="&lt;none&gt;" start="-1" line="52" branch="false" invocation-count="0">
+</statement>
+                                <statement 
                                 package="org.hammerlab.guacamole.variants" class="CalledAlleleSerializer" method="&lt;none&gt;" start="-1" line="53" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="CalledAlleleSerializer" method="&lt;none&gt;" start="-1" line="56" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="CalledAlleleSerializer" method="&lt;none&gt;" start="-1" line="56" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="CalledAlleleSerializer" method="&lt;none&gt;" start="-1" line="53" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="CalledAlleleSerializer" method="&lt;none&gt;" start="-1" line="54" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.variants" class="CalledAlleleSerializer" method="&lt;none&gt;" start="-1" line="55" branch="false" invocation-count="0">
@@ -10203,34 +10218,13 @@ statement-count="3127" statements-invoked="220" statement-rate="7.04" branch-rat
                                 package="org.hammerlab.guacamole.variants" class="CalledAlleleSerializer" method="&lt;none&gt;" start="-1" line="56" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.variants" class="CalledAlleleSerializer" method="&lt;none&gt;" start="-1" line="56" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.variants" class="CalledAlleleSerializer" method="&lt;none&gt;" start="-1" line="52" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.variants" class="CalledAlleleSerializer" method="&lt;none&gt;" start="-1" line="56" branch="false" invocation-count="0">
-</statement>
-                                <statement 
                                 package="org.hammerlab.guacamole.variants" class="CalledAlleleSerializer" method="&lt;none&gt;" start="-1" line="53" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.variants" class="CalledAlleleSerializer" method="&lt;none&gt;" start="-1" line="54" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.variants" class="CalledAlleleSerializer" method="&lt;none&gt;" start="-1" line="51" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.variants" class="CalledAlleleSerializer" method="&lt;none&gt;" start="-1" line="55" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.variants" class="CalledAlleleSerializer" method="&lt;none&gt;" start="-1" line="53" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.variants" class="CalledAlleleSerializer" method="&lt;none&gt;" start="-1" line="56" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.variants" class="CalledAlleleSerializer" method="&lt;none&gt;" start="-1" line="54" branch="false" invocation-count="0">
 </statement>
                             </statements>
 </method>
@@ -10238,25 +10232,25 @@ statement-count="3127" statements-invoked="220" statement-rate="7.04" branch-rat
                         name="org.hammerlab.guacamole.variants/CalledAlleleSerializer/read" statement-count="7" statements-invoked="0" statement-rate="0.00" branch-rate="0.00">
                             <statements>
                                 <statement 
-                                package="org.hammerlab.guacamole.variants" class="CalledAlleleSerializer" method="read" start="-1" line="61" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.variants" class="CalledAlleleSerializer" method="read" start="-1" line="64" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.variants" class="CalledAlleleSerializer" method="read" start="-1" line="68" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.variants" class="CalledAlleleSerializer" method="read" start="-1" line="63" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.variants" class="CalledAlleleSerializer" method="read" start="-1" line="66" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.variants" class="CalledAlleleSerializer" method="read" start="-1" line="63" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.variants" class="CalledAlleleSerializer" method="read" start="-1" line="62" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.variants" class="CalledAlleleSerializer" method="read" start="-1" line="65" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.variants" class="CalledAlleleSerializer" method="read" start="-1" line="62" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.variants" class="CalledAlleleSerializer" method="read" start="-1" line="68" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="CalledAlleleSerializer" method="read" start="-1" line="61" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="CalledAlleleSerializer" method="read" start="-1" line="64" branch="false" invocation-count="0">
 </statement>
                             </statements>
 </method>
@@ -10269,25 +10263,25 @@ statement-count="3127" statements-invoked="220" statement-rate="7.04" branch-rat
                         name="org.hammerlab.guacamole.variants/AlleleSerializer/read" statement-count="7" statements-invoked="0" statement-rate="0.00" branch-rate="0.00">
                             <statements>
                                 <statement 
-                                package="org.hammerlab.guacamole.variants" class="AlleleSerializer" method="read" start="-1" line="52" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.variants" class="AlleleSerializer" method="read" start="-1" line="49" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.variants" class="AlleleSerializer" method="read" start="-1" line="48" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.variants" class="AlleleSerializer" method="read" start="-1" line="51" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="AlleleSerializer" method="read" start="-1" line="51" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="AlleleSerializer" method="read" start="-1" line="49" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.variants" class="AlleleSerializer" method="read" start="-1" line="50" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.variants" class="AlleleSerializer" method="read" start="-1" line="49" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.variants" class="AlleleSerializer" method="read" start="-1" line="52" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.variants" class="AlleleSerializer" method="read" start="-1" line="51" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.variants" class="AlleleSerializer" method="read" start="-1" line="49" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.variants" class="AlleleSerializer" method="read" start="-1" line="51" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.variants" class="AlleleSerializer" method="read" start="-1" line="48" branch="false" invocation-count="0">
 </statement>
                             </statements>
 </method>
@@ -10295,7 +10289,7 @@ statement-count="3127" statements-invoked="220" statement-rate="7.04" branch-rat
                         name="org.hammerlab.guacamole.variants/AlleleSerializer/&lt;none&gt;" statement-count="10" statements-invoked="0" statement-rate="0.00" branch-rate="0.00">
                             <statements>
                                 <statement 
-                                package="org.hammerlab.guacamole.variants" class="AlleleSerializer" method="&lt;none&gt;" start="-1" line="43" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.variants" class="AlleleSerializer" method="&lt;none&gt;" start="-1" line="44" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.variants" class="AlleleSerializer" method="&lt;none&gt;" start="-1" line="41" branch="false" invocation-count="0">
@@ -10304,6 +10298,18 @@ statement-count="3127" statements-invoked="220" statement-rate="7.04" branch-rat
                                 package="org.hammerlab.guacamole.variants" class="AlleleSerializer" method="&lt;none&gt;" start="-1" line="42" branch="false" invocation-count="0">
 </statement>
                                 <statement 
+                                package="org.hammerlab.guacamole.variants" class="AlleleSerializer" method="&lt;none&gt;" start="-1" line="43" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="AlleleSerializer" method="&lt;none&gt;" start="-1" line="43" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="AlleleSerializer" method="&lt;none&gt;" start="-1" line="44" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.variants" class="AlleleSerializer" method="&lt;none&gt;" start="-1" line="41" branch="false" invocation-count="0">
+</statement>
+                                <statement 
                                 package="org.hammerlab.guacamole.variants" class="AlleleSerializer" method="&lt;none&gt;" start="-1" line="42" branch="false" invocation-count="0">
 </statement>
                                 <statement 
@@ -10311,18 +10317,6 @@ statement-count="3127" statements-invoked="220" statement-rate="7.04" branch-rat
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.variants" class="AlleleSerializer" method="&lt;none&gt;" start="-1" line="41" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.variants" class="AlleleSerializer" method="&lt;none&gt;" start="-1" line="44" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.variants" class="AlleleSerializer" method="&lt;none&gt;" start="-1" line="41" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.variants" class="AlleleSerializer" method="&lt;none&gt;" start="-1" line="43" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.variants" class="AlleleSerializer" method="&lt;none&gt;" start="-1" line="44" branch="false" invocation-count="0">
 </statement>
                             </statements>
 </method>
@@ -10342,13 +10336,13 @@ statement-count="3127" statements-invoked="220" statement-rate="7.04" branch-rat
                                 package="org.hammerlab.guacamole.windowing" class="$anon" method="regionOrdering" start="-1" line="67" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.windowing" class="$anon" method="regionOrdering" start="-1" line="67" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.windowing" class="$anon" method="regionOrdering" start="-1" line="67" branch="false" invocation-count="0">
-</statement>
-                                <statement 
                                 package="org.hammerlab.guacamole.windowing" class="$anon" method="regionOrdering" start="-1" line="69" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.windowing" class="$anon" method="regionOrdering" start="-1" line="67" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.windowing" class="$anon" method="regionOrdering" start="-1" line="67" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.windowing" class="$anon" method="regionOrdering" start="-1" line="66" branch="false" invocation-count="0">
@@ -10364,40 +10358,16 @@ statement-count="3127" statements-invoked="220" statement-rate="7.04" branch-rat
                         name="org.hammerlab.guacamole.windowing/SlidingWindow/setCurrentLocus" statement-count="33" statements-invoked="0" statement-rate="0.00" branch-rate="0.00">
                             <statements>
                                 <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="108" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="106" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="93" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="98" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="106" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="110" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="94" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="104" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="94" branch="false" invocation-count="0">
-</statement>
-                                <statement 
                                 package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="97" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="103" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="106" branch="true" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="106" branch="true" invocation-count="0">
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="94" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="103" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="104" branch="false" invocation-count="0">
@@ -10406,37 +10376,13 @@ statement-count="3127" statements-invoked="220" statement-rate="7.04" branch-rat
                                 package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="111" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="104" branch="false" invocation-count="0">
-</statement>
-                                <statement 
                                 package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="92" branch="true" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="104" branch="true" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="97" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="106" branch="false" invocation-count="0">
-</statement>
-                                <statement 
                                 package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="104" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="105" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="98" branch="true" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="106" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="99" branch="true" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="94" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="92" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="110" branch="false" invocation-count="0">
@@ -10448,10 +10394,46 @@ statement-count="3127" statements-invoked="220" statement-rate="7.04" branch-rat
                                 package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="106" branch="true" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="92" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="104" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="105" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="92" branch="true" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="99" branch="true" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="98" branch="true" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="106" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="94" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="108" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="106" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="104" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="106" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="110" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="94" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="104" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="104" branch="true" invocation-count="0">
@@ -10460,7 +10442,19 @@ statement-count="3127" statements-invoked="220" statement-rate="7.04" branch-rat
                                 package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="92" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="104" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="93" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="98" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="104" branch="true" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="97" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="setCurrentLocus" start="-1" line="106" branch="false" invocation-count="0">
 </statement>
                             </statements>
 </method>
@@ -10468,64 +10462,49 @@ statement-count="3127" statements-invoked="220" statement-rate="7.04" branch-rat
                         name="org.hammerlab.guacamole.windowing/SlidingWindow/advanceMultipleWindows" statement-count="39" statements-invoked="0" statement-rate="0.00" branch-rate="0.00">
                             <statements>
                                 <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="168" branch="true" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="159" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="155" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="154" branch="true" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="186" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="168" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="154" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="159" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="179" branch="true" invocation-count="0">
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="174" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="163" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="174" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="155" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="153" branch="true" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="155" branch="false" invocation-count="0">
-</statement>
-                                <statement 
                                 package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="179" branch="true" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="182" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="168" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="159" branch="true" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="156" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="178" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="155" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="162" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="186" branch="true" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="168" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="174" branch="true" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="181" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="155" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="183" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="169" branch="true" invocation-count="0">
@@ -10537,34 +10516,28 @@ statement-count="3127" statements-invoked="220" statement-rate="7.04" branch-rat
                                 package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="158" branch="true" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="183" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="154" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="159" branch="true" invocation-count="0">
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="182" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="162" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="168" branch="true" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="186" branch="true" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="178" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="154" branch="true" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="155" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="168" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="159" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="155" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="186" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="174" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="155" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="163" branch="false" invocation-count="0">
@@ -10573,16 +10546,37 @@ statement-count="3127" statements-invoked="220" statement-rate="7.04" branch-rat
                                 package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="179" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="154" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="158" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="155" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="169" branch="false" invocation-count="0">
 </statement>
                                 <statement 
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="158" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="159" branch="true" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="156" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="168" branch="false" invocation-count="0">
+</statement>
+                                <statement 
                                 package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="182" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="154" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="159" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="168" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="advanceMultipleWindows" start="-1" line="179" branch="true" invocation-count="0">
 </statement>
                             </statements>
 </method>
@@ -10593,91 +10587,31 @@ statement-count="3127" statements-invoked="220" statement-rate="7.04" branch-rat
                                 package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="86" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="59" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="51" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="56" branch="true" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="121" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="57" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="86" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="56" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="56" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="154" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="122" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="86" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="92" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="56" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="58" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="121" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="58" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="74" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="48" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="92" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="56" branch="false" invocation-count="0">
-</statement>
-                                <statement 
                                 package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="62" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="57" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="54" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="121" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="86" branch="false" invocation-count="0">
-</statement>
-                                <statement 
                                 package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="57" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="59" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="53" branch="false" invocation-count="0">
-</statement>
-                                <statement 
                                 package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="122" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="58" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="92" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="56" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="48" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="56" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="123" branch="false" invocation-count="0">
@@ -10686,13 +10620,10 @@ statement-count="3127" statements-invoked="220" statement-rate="7.04" branch-rat
                                 package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="87" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="56" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="57" branch="false" invocation-count="0">
-</statement>
-                                <statement 
                                 package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="92" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="121" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="56" branch="true" invocation-count="0">
@@ -10701,10 +10632,73 @@ statement-count="3127" statements-invoked="220" statement-rate="7.04" branch-rat
                                 package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="58" branch="false" invocation-count="0">
 </statement>
                                 <statement 
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="122" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="59" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="86" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="53" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="57" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="57" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="56" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="121" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="86" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="57" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="56" branch="false" invocation-count="0">
+</statement>
+                                <statement 
                                 package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="122" branch="true" invocation-count="0">
 </statement>
                                 <statement 
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="121" branch="false" invocation-count="0">
+</statement>
+                                <statement 
                                 package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="92" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="56" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="58" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="86" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="56" branch="true" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="59" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="51" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="92" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="74" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="154" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="&lt;none&gt;" start="-1" line="121" branch="false" invocation-count="0">
@@ -10721,34 +10715,34 @@ statement-count="3127" statements-invoked="220" statement-rate="7.04" branch-rat
                                 package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="nextLocusWithRegions" start="-1" line="125" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="nextLocusWithRegions" start="-1" line="125" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="nextLocusWithRegions" start="-1" line="128" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="nextLocusWithRegions" start="-1" line="124" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="nextLocusWithRegions" start="-1" line="124" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="nextLocusWithRegions" start="-1" line="124" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="nextLocusWithRegions" start="-1" line="123" branch="true" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="nextLocusWithRegions" start="-1" line="123" branch="true" invocation-count="0">
 </statement>
                                 <statement 
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="nextLocusWithRegions" start="-1" line="124" branch="false" invocation-count="0">
+</statement>
+                                <statement 
                                 package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="nextLocusWithRegions" start="-1" line="125" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="nextLocusWithRegions" start="-1" line="123" branch="true" invocation-count="0">
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="nextLocusWithRegions" start="-1" line="125" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="nextLocusWithRegions" start="-1" line="126" branch="false" invocation-count="0">
 </statement>
                                 <statement 
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="nextLocusWithRegions" start="-1" line="124" branch="false" invocation-count="0">
+</statement>
+                                <statement 
                                 package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="nextLocusWithRegions" start="-1" line="128" branch="true" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="nextLocusWithRegions" start="-1" line="124" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="nextLocusWithRegions" start="-1" line="128" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.windowing" class="SlidingWindow" method="nextLocusWithRegions" start="-1" line="124" branch="false" invocation-count="0">
