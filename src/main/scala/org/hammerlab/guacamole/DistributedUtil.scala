@@ -572,6 +572,9 @@ object DistributedUtil extends Logging {
       }
     }
 
+    // Accumulator to track the number of loci in each task
+    val lociAccumulator = sc.accumulator[Long](0, "NumLoci")
+
     // Here, we special case for different numbers of RDDs.
     val results = taskNumberRegionPairsRDDs match {
 
@@ -582,6 +585,10 @@ object DistributedUtil extends Logging {
           .repartitionAndSortWithinPartitions(new PartitionByKey(numTasks.toInt))
         partitioned.mapPartitionsWithIndex((taskNum: Int, taskNumAndRegions) => {
           val taskLoci = lociPartitionsBoxed.value.asInverseMap(taskNum.toLong)
+
+          // Add number of loci covered to accumulator
+          lociAccumulator += taskLoci.count
+
           function(taskNum, taskLoci, Seq(taskNumAndRegions.map(_._2)))
         })
       }
@@ -615,6 +622,9 @@ object DistributedUtil extends Logging {
                 bufferTaskNumAndRegionPairs2.head._1.task
 
               val taskLoci = lociPartitionsBoxed.value.asInverseMap(taskNum.toLong)
+
+              // Add number of loci processed on this partition to the accumulator
+              lociAccumulator += taskLoci.count
 
               function(taskNum, taskLoci, Array(bufferTaskNumAndRegionPairs1.map(_._2), bufferTaskNumAndRegionPairs2.map(_._2)))
             }
