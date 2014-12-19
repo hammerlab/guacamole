@@ -161,6 +161,21 @@ over the regions in each contig.</p>
       </span>
       </h4>
       <p class="comment cmt">Wraps an iterator of regions sorted by contig name.</p>
+    </li><li name="org.hammerlab.guacamole.DistributedUtil.TaskPosition" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="TaskPositionextendsOrdered[org.hammerlab.guacamole.DistributedUtil.TaskPosition]withProductwithSerializable"></a>
+      <a id="TaskPosition:TaskPosition"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="DistributedUtil$$TaskPosition.html"><span class="name">TaskPosition</span></a><span class="params">(<span name="task">task: <span class="extype" name="scala.Int">Int</span></span>, <span name="referenceContig">referenceContig: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="locus">locus: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Ordered">Ordered</span>[<a href="DistributedUtil$$TaskPosition.html" class="extype" name="org.hammerlab.guacamole.DistributedUtil.TaskPosition">TaskPosition</a>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">TaskPosition represents the task a read is assigned to and the start position on the reference genome of the read
+Each read is assigned to a task and the reads are sorted by (referenceContig, locus) when they are processed
+</p>
     </li></ol>
             </div>
 
