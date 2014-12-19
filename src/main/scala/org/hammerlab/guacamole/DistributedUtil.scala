@@ -475,12 +475,15 @@ object DistributedUtil extends Logging {
 
     // Sorting is performed by first sorting on task, secondly on contig and lastly on the start locus
     override def compare(other: TaskPosition): Int = {
-      if (task - other.task != 0) {
+      if (task != other.task) {
         task - other.task
-      } else if (referenceContig.compare(other.referenceContig) != 0) {
-        referenceContig.compare(other.referenceContig)
       } else {
-        (locus - other.locus).toInt
+        val contigComparison = referenceContig.compare(other.referenceContig)
+        if (contigComparison != 0) {
+          contigComparison
+        } else {
+          (locus - other.locus).toInt
+        }
       }
     }
   }
@@ -595,7 +598,6 @@ object DistributedUtil extends Logging {
 
       // Two RDDs.
       case taskNumberRegionPairs1 :: taskNumberRegionPairs2 :: Nil => {
-        // Cogroup-based implementation.
         val sortedtaskNumberRegionPairs1 =
           taskNumberRegionPairs1
             .repartitionAndSortWithinPartitions(new PartitionByKey(numTasks.toInt))
@@ -626,7 +628,7 @@ object DistributedUtil extends Logging {
               // Add number of loci processed on this partition to the accumulator
               lociAccumulator += taskLoci.count
 
-              function(taskNum, taskLoci, Array(bufferTaskNumAndRegionPairs1.map(_._2), bufferTaskNumAndRegionPairs2.map(_._2)))
+              function(taskNum, taskLoci, Seq(bufferTaskNumAndRegionPairs1.map(_._2), bufferTaskNumAndRegionPairs2.map(_._2)))
             }
           })
       }
