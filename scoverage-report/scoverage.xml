@@ -1,7 +1,7 @@
 <scoverage 
-statement-count="3125" statements-invoked="220" statement-rate="7.04" branch-rate="4.23" version="1.0" timestamp="1418857655953">
+statement-count="3125" statements-invoked="184" statement-rate="5.89" branch-rate="4.23" version="1.0" timestamp="1419026664138">
     <packages>
-        <package name="org.hammerlab.guacamole" statement-count="1327" statements-invoked="175" statement-rate="13.19">
+        <package name="org.hammerlab.guacamole" statement-count="1327" statements-invoked="139" statement-rate="10.47">
             <classes>
                 <class 
                 name="SingleContigRegionIterator" filename="/home/travis/build/hammerlab/guacamole/src/main/scala/org/hammerlab/guacamole/DistributedUtil.scala" statement-count="8" statements-invoked="6" statement-rate="75.00" branch-rate="50.00">
@@ -610,118 +610,118 @@ statement-count="3125" statements-invoked="220" statement-rate="7.04" branch-rat
                     </methods>
 </class>
                 <class 
-                name="GuacamoleKryoRegistrator" filename="/home/travis/build/hammerlab/guacamole/src/main/scala/org/hammerlab/guacamole/Serialization.scala" statement-count="36" statements-invoked="36" statement-rate="100.00" branch-rate="100.00">
+                name="GuacamoleKryoRegistrator" filename="/home/travis/build/hammerlab/guacamole/src/main/scala/org/hammerlab/guacamole/Serialization.scala" statement-count="36" statements-invoked="0" statement-rate="0.00" branch-rate="0.00">
                     <methods>
                         <method 
-                        name="org.hammerlab.guacamole/GuacamoleKryoRegistrator/&lt;none&gt;" statement-count="36" statements-invoked="36" statement-rate="100.00" branch-rate="100.00">
+                        name="org.hammerlab.guacamole/GuacamoleKryoRegistrator/&lt;none&gt;" statement-count="36" statements-invoked="0" statement-rate="0.00" branch-rate="0.00">
                             <statements>
                                 <statement 
-                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="47" branch="false" invocation-count="1">
+                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="47" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="50" branch="false" invocation-count="1">
+                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="50" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="41" branch="false" invocation-count="1">
+                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="41" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="44" branch="false" invocation-count="1">
+                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="44" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="48" branch="false" invocation-count="1">
+                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="48" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="50" branch="false" invocation-count="1">
+                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="50" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="42" branch="false" invocation-count="1">
+                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="42" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="45" branch="false" invocation-count="1">
+                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="45" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="46" branch="false" invocation-count="1">
+                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="46" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="49" branch="false" invocation-count="1">
+                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="49" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="40" branch="false" invocation-count="1">
+                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="40" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="43" branch="false" invocation-count="1">
+                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="43" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="48" branch="false" invocation-count="1">
+                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="48" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="49" branch="false" invocation-count="1">
+                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="49" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="43" branch="false" invocation-count="1">
+                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="43" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="46" branch="false" invocation-count="1">
+                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="46" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="40" branch="false" invocation-count="1">
+                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="40" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="47" branch="false" invocation-count="1">
+                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="47" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="50" branch="false" invocation-count="1">
+                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="50" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="41" branch="false" invocation-count="1">
+                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="41" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="44" branch="false" invocation-count="1">
+                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="44" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="37" branch="false" invocation-count="1">
+                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="37" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="42" branch="false" invocation-count="1">
+                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="42" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="45" branch="false" invocation-count="1">
+                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="45" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="34" branch="false" invocation-count="1">
+                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="34" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="42" branch="false" invocation-count="1">
+                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="42" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="45" branch="false" invocation-count="1">
+                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="45" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="48" branch="false" invocation-count="1">
+                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="48" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="43" branch="false" invocation-count="1">
+                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="43" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="46" branch="false" invocation-count="1">
+                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="46" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="49" branch="false" invocation-count="1">
+                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="49" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="40" branch="false" invocation-count="1">
+                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="40" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="44" branch="false" invocation-count="1">
+                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="44" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="47" branch="false" invocation-count="1">
+                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="47" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="41" branch="false" invocation-count="1">
+                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="41" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="50" branch="false" invocation-count="1">
+                                package="org.hammerlab.guacamole" class="GuacamoleKryoRegistrator" method="&lt;none&gt;" start="-1" line="50" branch="false" invocation-count="0">
 </statement>
                             </statements>
 </method>
