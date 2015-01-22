@@ -54,6 +54,7 @@ object GermlineStandard {
       Common.progress(
         "Loaded %,d mapped non-duplicate reads into %,d partitions.".format(readSet.mappedReads.count, readSet.mappedReads.partitions.length))
 
+
       val loci = Common.loci(args, readSet)
       val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(args, loci, readSet.mappedReads)
 
@@ -100,11 +101,12 @@ object GermlineStandard {
           } else {
             val genotypeLikelihoods = Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(
               Pileup(samplePileup.locus, samplePileup.referenceBase, filteredPileupElements),
-              logSpace = true)
+              logSpace = true,
+              normalize = true)
             val mostLikelyGenotypeAndProbability = genotypeLikelihoods.maxBy(_._2)
 
             val genotype = mostLikelyGenotypeAndProbability._1
-            val probability = mostLikelyGenotypeAndProbability._2
+            val probability = math.exp(mostLikelyGenotypeAndProbability._2)
             genotype.getNonReferenceAlleles.map(allele => {
               CalledAllele(
                 sampleName,
