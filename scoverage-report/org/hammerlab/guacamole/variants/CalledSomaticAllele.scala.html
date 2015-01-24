@@ -7883,7 +7883,7 @@
           46
         </td>
         <td>
-          2975
+          2976
         </td>
         <td>
           scala.Long.+
@@ -7896,20 +7896,20 @@
           50
         </td>
         <td>
-          2977
+          2978
         </td>
         <td>
           org.bdgenomics.adam.util.PhredUtils.successProbabilityToPhred
         </td>
         <td style="background: #F0ADAD">
-          org.bdgenomics.adam.util.PhredUtils.successProbabilityToPhred({  scoverage.Invoker.invoked(2976, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  CalledSomaticAllele.this.tumorEvidence.likelihood.*(1.-(CalledSomaticAllele.this.normalEvidence.likelihood)).-(1.0E-10)})
+          org.bdgenomics.adam.util.PhredUtils.successProbabilityToPhred({  scoverage.Invoker.invoked(2977, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  CalledSomaticAllele.this.tumorEvidence.likelihood.*(1.-(CalledSomaticAllele.this.normalEvidence.likelihood)).-(1.0E-10)})
         </td>
       </tr><tr>
         <td>
           50
         </td>
         <td>
-          2976
+          2977
         </td>
         <td>
           scala.Double.-
@@ -7922,13 +7922,13 @@
           59
         </td>
         <td>
-          2978
+          2980
         </td>
         <td>
-          org.hammerlab.guacamole.variants.CalledSomaticAllele.sampleName
+          com.esotericsoftware.kryo.io.Output.writeString
         </td>
         <td style="background: #F0ADAD">
-          obj.sampleName
+          output.writeString({  scoverage.Invoker.invoked(2979, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  obj.sampleName})
         </td>
       </tr><tr>
         <td>
@@ -7938,10 +7938,10 @@
           2979
         </td>
         <td>
-          com.esotericsoftware.kryo.io.Output.writeString
+          org.hammerlab.guacamole.variants.CalledSomaticAllele.sampleName
         </td>
         <td style="background: #F0ADAD">
-          output.writeString({  scoverage.Invoker.invoked(2978, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  obj.sampleName})
+          obj.sampleName
         </td>
       </tr><tr>
         <td>
@@ -7951,19 +7951,6 @@
           2981
         </td>
         <td>
-          com.esotericsoftware.kryo.io.Output.writeString
-        </td>
-        <td style="background: #F0ADAD">
-          output.writeString({  scoverage.Invoker.invoked(2980, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  obj.referenceContig})
-        </td>
-      </tr><tr>
-        <td>
-          60
-        </td>
-        <td>
-          2980
-        </td>
-        <td>
           org.hammerlab.guacamole.variants.CalledSomaticAllele.referenceContig
         </td>
         <td style="background: #F0ADAD">
@@ -7971,23 +7958,36 @@
         </td>
       </tr><tr>
         <td>
-          61
+          60
         </td>
         <td>
-          2983
+          2982
         </td>
         <td>
-          com.esotericsoftware.kryo.io.Output.writeLong
+          com.esotericsoftware.kryo.io.Output.writeString
         </td>
         <td style="background: #F0ADAD">
-          output.writeLong({  scoverage.Invoker.invoked(2982, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  obj.start})
+          output.writeString({  scoverage.Invoker.invoked(2981, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  obj.referenceContig})
         </td>
       </tr><tr>
         <td>
           61
         </td>
         <td>
-          2982
+          2984
+        </td>
+        <td>
+          com.esotericsoftware.kryo.io.Output.writeLong
+        </td>
+        <td style="background: #F0ADAD">
+          output.writeLong({  scoverage.Invoker.invoked(2983, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  obj.start})
+        </td>
+      </tr><tr>
+        <td>
+          61
+        </td>
+        <td>
+          2983
         </td>
         <td>
           org.hammerlab.guacamole.variants.CalledSomaticAllele.start
@@ -8000,13 +8000,13 @@
           62
         </td>
         <td>
-          2984
+          2986
         </td>
         <td>
-          org.hammerlab.guacamole.variants.CalledSomaticAllele.allele
+          org.hammerlab.guacamole.variants.AlleleSerializer.write
         </td>
         <td style="background: #F0ADAD">
-          obj.allele
+          CalledSomaticAlleleSerializer.this.alleleSerializer.write(kryo, output, {  scoverage.Invoker.invoked(2985, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  obj.allele})
         </td>
       </tr><tr>
         <td>
@@ -8016,10 +8016,10 @@
           2985
         </td>
         <td>
-          org.hammerlab.guacamole.variants.AlleleSerializer.write
+          org.hammerlab.guacamole.variants.CalledSomaticAllele.allele
         </td>
         <td style="background: #F0ADAD">
-          CalledSomaticAlleleSerializer.this.alleleSerializer.write(kryo, output, {  scoverage.Invoker.invoked(2984, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  obj.allele})
+          obj.allele
         </td>
       </tr><tr>
         <td>
@@ -8029,19 +8029,6 @@
           2987
         </td>
         <td>
-          com.esotericsoftware.kryo.io.Output.writeDouble
-        </td>
-        <td style="background: #F0ADAD">
-          output.writeDouble({  scoverage.Invoker.invoked(2986, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  obj.somaticLogOdds})
-        </td>
-      </tr><tr>
-        <td>
-          63
-        </td>
-        <td>
-          2986
-        </td>
-        <td>
           org.hammerlab.guacamole.variants.CalledSomaticAllele.somaticLogOdds
         </td>
         <td style="background: #F0ADAD">
@@ -8049,23 +8036,36 @@
         </td>
       </tr><tr>
         <td>
-          65
+          63
         </td>
         <td>
-          2989
+          2988
         </td>
         <td>
-          org.hammerlab.guacamole.variants.AlleleEvidenceSerializer.write
+          com.esotericsoftware.kryo.io.Output.writeDouble
         </td>
         <td style="background: #F0ADAD">
-          CalledSomaticAlleleSerializer.this.alleleEvidenceSerializer.write(kryo, output, {  scoverage.Invoker.invoked(2988, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  obj.tumorEvidence})
+          output.writeDouble({  scoverage.Invoker.invoked(2987, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  obj.somaticLogOdds})
         </td>
       </tr><tr>
         <td>
           65
         </td>
         <td>
-          2988
+          2990
+        </td>
+        <td>
+          org.hammerlab.guacamole.variants.AlleleEvidenceSerializer.write
+        </td>
+        <td style="background: #F0ADAD">
+          CalledSomaticAlleleSerializer.this.alleleEvidenceSerializer.write(kryo, output, {  scoverage.Invoker.invoked(2989, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  obj.tumorEvidence})
+        </td>
+      </tr><tr>
+        <td>
+          65
+        </td>
+        <td>
+          2989
         </td>
         <td>
           org.hammerlab.guacamole.variants.CalledSomaticAllele.tumorEvidence
@@ -8078,13 +8078,13 @@
           66
         </td>
         <td>
-          2990
+          2992
         </td>
         <td>
-          org.hammerlab.guacamole.variants.CalledSomaticAllele.normalEvidence
+          org.hammerlab.guacamole.variants.AlleleEvidenceSerializer.write
         </td>
         <td style="background: #F0ADAD">
-          obj.normalEvidence
+          CalledSomaticAlleleSerializer.this.alleleEvidenceSerializer.write(kryo, output, {  scoverage.Invoker.invoked(2991, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  obj.normalEvidence})
         </td>
       </tr><tr>
         <td>
@@ -8094,10 +8094,10 @@
           2991
         </td>
         <td>
-          org.hammerlab.guacamole.variants.AlleleEvidenceSerializer.write
+          org.hammerlab.guacamole.variants.CalledSomaticAllele.normalEvidence
         </td>
         <td style="background: #F0ADAD">
-          CalledSomaticAlleleSerializer.this.alleleEvidenceSerializer.write(kryo, output, {  scoverage.Invoker.invoked(2990, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  obj.normalEvidence})
+          obj.normalEvidence
         </td>
       </tr><tr>
         <td>
@@ -8105,32 +8105,6 @@
         </td>
         <td>
           2993
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          true
-        </td>
-      </tr><tr>
-        <td>
-          68
-        </td>
-        <td>
-          2995
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          ()
-        </td>
-      </tr><tr>
-        <td>
-          68
-        </td>
-        <td>
-          2992
         </td>
         <td>
           org.hammerlab.guacamole.variants.CalledSomaticAllele.length
@@ -8143,30 +8117,43 @@
           68
         </td>
         <td>
-          2994
+          2996
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          ()
+        </td>
+      </tr><tr>
+        <td>
+          68
+        </td>
+        <td>
+          2995
         </td>
         <td>
           com.esotericsoftware.kryo.io.Output.writeInt
         </td>
         <td style="background: #F0ADAD">
-          output.writeInt({  scoverage.Invoker.invoked(2992, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  obj.length}, {  scoverage.Invoker.invoked(2993, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  true})
+          output.writeInt({  scoverage.Invoker.invoked(2993, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  obj.length}, {  scoverage.Invoker.invoked(2994, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  true})
+        </td>
+      </tr><tr>
+        <td>
+          68
+        </td>
+        <td>
+          2994
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          true
         </td>
       </tr><tr>
         <td>
           74
-        </td>
-        <td>
-          2996
-        </td>
-        <td>
-          com.esotericsoftware.kryo.io.Input.readString
-        </td>
-        <td style="background: #F0ADAD">
-          input.readString()
-        </td>
-      </tr><tr>
-        <td>
-          75
         </td>
         <td>
           2997
@@ -8179,10 +8166,23 @@
         </td>
       </tr><tr>
         <td>
-          76
+          75
         </td>
         <td>
           2998
+        </td>
+        <td>
+          com.esotericsoftware.kryo.io.Input.readString
+        </td>
+        <td style="background: #F0ADAD">
+          input.readString()
+        </td>
+      </tr><tr>
+        <td>
+          76
+        </td>
+        <td>
+          2999
         </td>
         <td>
           com.esotericsoftware.kryo.io.Input.readLong
@@ -8195,7 +8195,7 @@
           77
         </td>
         <td>
-          2999
+          3000
         </td>
         <td>
           org.hammerlab.guacamole.variants.AlleleSerializer.read
@@ -8208,7 +8208,7 @@
           78
         </td>
         <td>
-          3000
+          3001
         </td>
         <td>
           com.esotericsoftware.kryo.io.Input.readDouble
@@ -8221,7 +8221,7 @@
           80
         </td>
         <td>
-          3001
+          3002
         </td>
         <td>
           org.hammerlab.guacamole.variants.AlleleEvidenceSerializer.read
@@ -8234,7 +8234,7 @@
           81
         </td>
         <td>
-          3002
+          3003
         </td>
         <td>
           org.hammerlab.guacamole.variants.AlleleEvidenceSerializer.read
@@ -8247,7 +8247,7 @@
           83
         </td>
         <td>
-          3003
+          3004
         </td>
         <td>
           com.esotericsoftware.kryo.io.Input.readInt
@@ -8263,23 +8263,23 @@
           3005
         </td>
         <td>
-          org.hammerlab.guacamole.variants.CalledSomaticAllele.apply
+          org.hammerlab.guacamole.variants.CalledSomaticAllele.apply$default$8
         </td>
         <td style="background: #F0ADAD">
-          CalledSomaticAllele.apply(sampleName, referenceContig, start, allele, somaticLogOdds, tumorEvidence, normalEvidence, {  scoverage.Invoker.invoked(3004, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  CalledSomaticAllele.apply$default$8})
+          CalledSomaticAllele.apply$default$8
         </td>
       </tr><tr>
         <td>
           85
         </td>
         <td>
-          3004
+          3006
         </td>
         <td>
-          org.hammerlab.guacamole.variants.CalledSomaticAllele.apply$default$8
+          org.hammerlab.guacamole.variants.CalledSomaticAllele.apply
         </td>
         <td style="background: #F0ADAD">
-          CalledSomaticAllele.apply$default$8
+          CalledSomaticAllele.apply(sampleName, referenceContig, start, allele, somaticLogOdds, tumorEvidence, normalEvidence, {  scoverage.Invoker.invoked(3005, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  CalledSomaticAllele.apply$default$8})
         </td>
       </tr>
     </table>
