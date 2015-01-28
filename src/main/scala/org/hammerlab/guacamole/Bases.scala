@@ -59,13 +59,13 @@ object Bases {
   }
 
   /** Are all the given bases standard? */
-  def allStandardBases(bases: Seq[Byte]) = {
-    assert(bases.forall(b => isStandardBase(b)), "Invalid base array: %s".format(bases.map(_.toChar).mkString))
+  def allStandardBases(bases: Seq[Byte]): Boolean = {
+    bases.forall(b => isStandardBase(b))
   }
 
   /** Throw an error if any of the given bases are not standard. */
   def assertAllStandardBases(bases: Seq[Byte]) = {
-    assert(bases.forall(b => isStandardBase(b)), "Invalid base array: %s".format(bases.map(_.toChar).mkString))
+    assert(allStandardBases(bases), "Invalid base array: %s".format(bases.map(_.toChar).mkString))
   }
 
   /** Convert a string (e.g. "AAAGGC") to a byte array. */
