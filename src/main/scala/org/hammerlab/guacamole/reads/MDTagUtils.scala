@@ -1,10 +1,11 @@
 package org.hammerlab.guacamole.reads
 
-import htsjdk.samtools.{ CigarOperator, Cigar }
+import debox.Buffer
+import htsjdk.samtools.{Cigar, CigarOperator}
 import org.bdgenomics.adam.util.MdTag
+import org.hammerlab.guacamole.Bases
 
 import scala.collection.JavaConversions
-import debox.Buffer
 
 object MDTagUtils {
 
@@ -75,7 +76,42 @@ object MDTagUtils {
       }
     })
 
-    reference.elems
+    reference.toArray
+  }
+
+  def getReference(read: MappedRead, allowNBase: Boolean): Seq[Byte] = {
+    getReference(read.mdTag, read.sequence, read.cigar, read.start, allowNBase)
+  }
+
+  /**
+   * Rebuilds the reference from a set of overlapping and sorted reads
+   * Fill in N if there is a gap in the reads
+   *
+   * @param sortedReads Set of overlapping and sorted reads that are mapped to the reference
+   * @return A sequence of bytes corresponding to the reference overlapping these read.
+   */
+  def getReference(sortedReads: Seq[MappedRead]): Array[Byte] = {
+    // assume reads are sorted
+    val referenceSeq: Buffer[Byte] = Buffer.empty
+    val readsBuffer = sortedReads.iterator.buffered
+    var currentLocus = readsBuffer.head.start
+    while (readsBuffer.hasNext) {
+      val read = readsBuffer.next()
+      val offsetInRead = currentLocus - read.start
+      if (offsetInRead < 0) {
+        //Fill in gap with N
+        (currentLocus until read.start).foreach(_ => referenceSeq += Bases.N)
+        currentLocus = read.start
+      }
+
+      // Find last read that overlaps the current locus
+      if (!readsBuffer.hasNext || currentLocus < readsBuffer.head.start) {
+        val readReferenceSequence = MDTagUtils.getReference(read, allowNBase = true)
+        referenceSeq ++= readReferenceSequence.drop(offsetInRead.toInt)
+        currentLocus = read.end
+      }
+    }
+    referenceSeq.toArray
   }
 
 }
