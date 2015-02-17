@@ -51,5 +51,14 @@ trait HasReferenceRegion {
   def overlapsLocus(locus: Long, halfWindowSize: Long = 0): Boolean = {
     start - halfWindowSize <= locus && end + halfWindowSize > locus
   }
+
+  /**
+   * Does the region overlap another reference region
+   * @param other another region on the genome
+   * @return True if the the regions overlap
+   */
+  def overlaps(other: HasReferenceRegion): Boolean = {
+    other.referenceContig == referenceContig && (overlapsLocus(other.start) || overlapsLocus(other.end - 1))
+  }
 }
 
