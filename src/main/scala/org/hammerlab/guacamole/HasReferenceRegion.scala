@@ -58,7 +58,7 @@ trait HasReferenceRegion {
    * @return True if the the regions overlap
    */
   def overlaps(other: HasReferenceRegion): Boolean = {
-    other.referenceContig == referenceContig && (overlapsLocus(other.start) || overlapsLocus(other.end - 1))
+    other.referenceContig == referenceContig && (overlapsLocus(other.start) || other.overlapsLocus(start))
   }
 }
 
