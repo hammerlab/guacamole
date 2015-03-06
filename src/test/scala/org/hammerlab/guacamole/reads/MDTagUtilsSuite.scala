@@ -36,6 +36,13 @@ class MDTagUtilsSuite extends FunSuite with Matchers {
   test("rebuild reference from multiple reads") {
     val originalReference = "AAATTGATACTCGAACGA"
 
+    /*
+        ref: AAATTGATACTCGAACGA
+         r1: AAATTGATAC
+         r2:      GATACTCGAA
+         r3:         ACTCGAACGA
+     */
+
     val firstRead = TestUtil.makeRead(originalReference.substring(0, 10), "10M", "10", start = 0)
     val secondRead = TestUtil.makeRead(originalReference.substring(5, 15), "10M", "10", start = 5)
     val thirdRead = TestUtil.makeRead(originalReference.substring(8, 18), "10M", "10", start = 8)
@@ -46,6 +53,14 @@ class MDTagUtilsSuite extends FunSuite with Matchers {
 
   test("rebuild reference from multiple reads with mismatch") {
     val originalReference = "AAATTGATACTCGAACGA"
+
+    /*
+        ref: AAATTGATACTCGAACGA
+         r1: AAATTGATAC
+         r2:      GCTACTCGAA
+         r3:         ACTCGAACGA
+     */
+
     val firstRead = TestUtil.makeRead(originalReference.substring(0, 10), "10M", "10", start = 0)
     val secondRead = TestUtil.makeRead("GCTACTCGAA", "10M", "1A9", start = 5)
     val thirdRead = TestUtil.makeRead(originalReference.substring(8, 18), "10M", "10", start = 8)
@@ -56,8 +71,15 @@ class MDTagUtilsSuite extends FunSuite with Matchers {
 
   test("rebuild reference from multiple reads with multiple mismatches") {
     val originalReference = "AAATTGATACTCGAACGA"
+
+    /*
+        ref: AAATTGATACTCGAACGA
+         r1: AAATTGATAC
+         r2:      GCTACTCAAA
+         r3:         ACTCGAACGA
+     */
     val firstRead = TestUtil.makeRead(originalReference.substring(0, 10), "10M", "10", start = 0)
-    val secondRead = TestUtil.makeRead("GCGGGTACTCGAA", "10M", "1C5G2", start = 5)
+    val secondRead = TestUtil.makeRead("GCGGGTACTCAAA", "10M", "1C5A2", start = 5)
     val thirdRead = TestUtil.makeRead(originalReference.substring(8, 18), "10M", "10", start = 8)
 
     val reference = MDTagUtils.getReference(Seq(firstRead, secondRead, thirdRead))
@@ -66,8 +88,15 @@ class MDTagUtilsSuite extends FunSuite with Matchers {
 
   test("rebuild reference from multiple reads with insertion") {
     val originalReference = "AAATTGATACTCGAACGA"
+
+    /*
+        ref: AAATTGA   TACTCGAACGA
+         r1: AAATTGA   TAC
+         r2:      GAGGGTACTCGAA
+         r3:            ACTCGAACGA
+     */
     val firstRead = TestUtil.makeRead(originalReference.substring(0, 10), "10M", "10", start = 0)
-    val secondRead = TestUtil.makeRead("GCGGGTACTCGAA", "2M3I7M", "10", start = 5)
+    val secondRead = TestUtil.makeRead("GCGGGTACTCGAA", "2M3I8M", "10", start = 5)
     val thirdRead = TestUtil.makeRead(originalReference.substring(8, 18), "10M", "10", start = 8)
 
     val reference = MDTagUtils.getReference(Seq(firstRead, secondRead, thirdRead))
@@ -76,6 +105,13 @@ class MDTagUtilsSuite extends FunSuite with Matchers {
 
   test("rebuild reference from multiple reads with insertion and mismatches") {
     val originalReference = "AAATTGATACTCGAACGA"
+
+    /*
+        ref: AAATTGA   TACTCGAACGA
+         r1: AAATTGA   TAC
+         r2:      GAGGGTACTCGAA
+         r3:            ACTCGAACGA
+     */
     val firstRead = TestUtil.makeRead(originalReference.substring(0, 10), "10M", "10", start = 0)
     val secondRead = TestUtil.makeRead("GAGGGTACTCGAA", "2M3I7M", "1A5G2", start = 5)
     val thirdRead = TestUtil.makeRead("ACTCGAATTA", "10M", "7CG1", start = 8)
