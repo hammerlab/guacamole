@@ -1,5 +1,5 @@
 <scoverage 
-statement-count="3176" statements-invoked="216" statement-rate="6.80" branch-rate="5.71" version="1.0" timestamp="1425701982380">
+statement-count="3176" statements-invoked="216" statement-rate="6.80" branch-rate="5.71" version="1.0" timestamp="1426447755364">
     <packages>
         <package name="org.hammerlab.guacamole" statement-count="1377" statements-invoked="160" statement-rate="11.62">
             <classes>
