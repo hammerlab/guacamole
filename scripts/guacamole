@@ -6,7 +6,7 @@
 echo "$@" >> ~/.guacamole.invocations.log
 
 if [ -z "${GUACAMOLE_JAR}" ]; then
-    jar=$(ls -tc target/guacamole-?.*.jar | head -n 1)
+    jar=$(ls -tc target/guacamole-with-dependencies-*.jar | head -n 1)
     if [ -z "$jar" ]; then
         echo "Couldn't find a Guacamole jar in the target/ directory."
         echo "Are you in the root directory of the Guacamole repo, and have you built Guacamole?"
