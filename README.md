@@ -44,8 +44,8 @@ included to run it:
 
 ```
 scripts/guacamole germline-threshold \
-	-reads src/test/resources/chrM.sorted.bam \
-	-out /tmp/result.vcf
+	--reads src/test/resources/chrM.sorted.bam \
+	--out /tmp/result.vcf
 ```
 
 This creates a *directory* called `/tmp/result.vcf`. The actual VCF file is in
@@ -84,11 +84,10 @@ spark-submit \
 	--executor-cores 1 \
 	--class org.hammerlab.guacamole.Guacamole \
 	--verbose \
-	/path/to/target/guacamole-0.0.1.jar \
+	/path/to/target/guacamole-with-dependencies-<x.y.z>.jar \
 	germline-threshold \
-        -reads hdfs:///path/to/reads.bam \
-        -out hdfs:///path/to/result.vcf \
-	-spark_master yarn-cluster
+        --reads hdfs:///path/to/reads.bam \
+        --out hdfs:///path/to/result.vcf
 ```
 
 # Is this ready for production use?
