@@ -1,7 +1,6 @@
 package org.hammerlab.guacamole
 
-import org.scalatest.{Matchers, FunSuite}
-
+import org.scalatest.{ Matchers, FunSuite }
 
 class HasReferenceRegionSuite extends FunSuite with Matchers {
 
