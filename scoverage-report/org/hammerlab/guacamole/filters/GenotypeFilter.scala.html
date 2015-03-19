@@ -13383,7 +13383,7 @@
           34
         </td>
         <td>
-          1690
+          1692
         </td>
         <td>
           scala.Int.&gt;=
@@ -13396,26 +13396,26 @@
           49
         </td>
         <td>
-          1692
+          1695
         </td>
         <td>
-          org.hammerlab.guacamole.filters.MinimumLikelihoodFilter.hasMinimumLikelihood
+          org.apache.spark.rdd.RDD.filter
         </td>
         <td style="background: #F0ADAD">
-          MinimumLikelihoodFilter.this.hasMinimumLikelihood({  scoverage.Invoker.invoked(1691, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  gt.evidence}, minLikelihood)
+          genotypes.filter(((gt: org.hammerlab.guacamole.variants.CalledAllele) =&gt; {  scoverage.Invoker.invoked(1694, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  MinimumLikelihoodFilter.this.hasMinimumLikelihood({    scoverage.Invoker.invoked(1693, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    gt.evidence  }, minLikelihood)}))
         </td>
       </tr><tr>
         <td>
           49
         </td>
         <td>
-          1691
+          1694
         </td>
         <td>
-          org.hammerlab.guacamole.variants.CalledAllele.evidence
+          org.hammerlab.guacamole.filters.MinimumLikelihoodFilter.hasMinimumLikelihood
         </td>
         <td style="background: #F0ADAD">
-          gt.evidence
+          MinimumLikelihoodFilter.this.hasMinimumLikelihood({  scoverage.Invoker.invoked(1693, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  gt.evidence}, minLikelihood)
         </td>
       </tr><tr>
         <td>
@@ -13425,36 +13425,23 @@
           1693
         </td>
         <td>
-          org.apache.spark.rdd.RDD.filter
+          org.hammerlab.guacamole.variants.CalledAllele.evidence
         </td>
         <td style="background: #F0ADAD">
-          genotypes.filter(((gt: org.hammerlab.guacamole.variants.CalledAllele) =&gt; {  scoverage.Invoker.invoked(1692, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  MinimumLikelihoodFilter.this.hasMinimumLikelihood({    scoverage.Invoker.invoked(1691, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    gt.evidence  }, minLikelihood)}))
+          gt.evidence
         </td>
       </tr><tr>
         <td>
           50
         </td>
         <td>
-          1695
+          1698
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1694, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  GenotypeFilter.printFilterProgress(filteredGenotypes)}
-        </td>
-      </tr><tr>
-        <td>
-          50
-        </td>
-        <td>
-          1694
-        </td>
-        <td>
-          org.hammerlab.guacamole.filters.GenotypeFilter.printFilterProgress
-        </td>
-        <td style="background: #F0ADAD">
-          GenotypeFilter.printFilterProgress(filteredGenotypes)
+          ()
         </td>
       </tr><tr>
         <td>
@@ -13467,7 +13454,7 @@
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1696, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
+          {  scoverage.Invoker.invoked(1696, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  GenotypeFilter.printFilterProgress(filteredGenotypes)}
         </td>
       </tr><tr>
         <td>
@@ -13477,17 +13464,43 @@
           1696
         </td>
         <td>
+          org.hammerlab.guacamole.filters.GenotypeFilter.printFilterProgress
+        </td>
+        <td style="background: #F0ADAD">
+          GenotypeFilter.printFilterProgress(filteredGenotypes)
+        </td>
+      </tr><tr>
+        <td>
+          50
+        </td>
+        <td>
+          1699
+        </td>
+        <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          ()
+          {  scoverage.Invoker.invoked(1698, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
         </td>
       </tr><tr>
         <td>
           63
         </td>
         <td>
-          1698
+          1701
+        </td>
+        <td>
+          scala.Boolean.&amp;&amp;
+        </td>
+        <td style="background: #F0ADAD">
+          alleleEvidence.readDepth.&gt;=(minReadDepth).&amp;&amp;({  scoverage.Invoker.invoked(1700, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  alleleEvidence.readDepth.&lt;(maxReadDepth)})
+        </td>
+      </tr><tr>
+        <td>
+          63
+        </td>
+        <td>
+          1700
         </td>
         <td>
           scala.Int.&lt;
@@ -13497,42 +13510,29 @@
         </td>
       </tr><tr>
         <td>
-          63
+          80
         </td>
         <td>
-          1699
+          1704
         </td>
         <td>
-          scala.Boolean.&amp;&amp;
+          org.apache.spark.rdd.RDD.filter
         </td>
         <td style="background: #F0ADAD">
-          alleleEvidence.readDepth.&gt;=(minReadDepth).&amp;&amp;({  scoverage.Invoker.invoked(1698, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  alleleEvidence.readDepth.&lt;(maxReadDepth)})
+          genotypes.filter(((gt: org.hammerlab.guacamole.variants.CalledAllele) =&gt; {  scoverage.Invoker.invoked(1703, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ReadDepthFilter.this.withinReadDepthRange({    scoverage.Invoker.invoked(1702, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    gt.evidence  }, minReadDepth, maxReadDepth)}))
         </td>
       </tr><tr>
         <td>
           80
         </td>
         <td>
-          1701
+          1703
         </td>
         <td>
           org.hammerlab.guacamole.filters.ReadDepthFilter.withinReadDepthRange
         </td>
         <td style="background: #F0ADAD">
-          ReadDepthFilter.this.withinReadDepthRange({  scoverage.Invoker.invoked(1700, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  gt.evidence}, minReadDepth, maxReadDepth)
-        </td>
-      </tr><tr>
-        <td>
-          80
-        </td>
-        <td>
-          1700
-        </td>
-        <td>
-          org.hammerlab.guacamole.variants.CalledAllele.evidence
-        </td>
-        <td style="background: #F0ADAD">
-          gt.evidence
+          ReadDepthFilter.this.withinReadDepthRange({  scoverage.Invoker.invoked(1702, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  gt.evidence}, minReadDepth, maxReadDepth)
         </td>
       </tr><tr>
         <td>
@@ -13542,36 +13542,23 @@
           1702
         </td>
         <td>
-          org.apache.spark.rdd.RDD.filter
+          org.hammerlab.guacamole.variants.CalledAllele.evidence
         </td>
         <td style="background: #F0ADAD">
-          genotypes.filter(((gt: org.hammerlab.guacamole.variants.CalledAllele) =&gt; {  scoverage.Invoker.invoked(1701, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ReadDepthFilter.this.withinReadDepthRange({    scoverage.Invoker.invoked(1700, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    gt.evidence  }, minReadDepth, maxReadDepth)}))
+          gt.evidence
         </td>
       </tr><tr>
         <td>
           81
         </td>
         <td>
-          1704
+          1707
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1703, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  GenotypeFilter.printFilterProgress(filteredGenotypes)}
-        </td>
-      </tr><tr>
-        <td>
-          81
-        </td>
-        <td>
-          1703
-        </td>
-        <td>
-          org.hammerlab.guacamole.filters.GenotypeFilter.printFilterProgress
-        </td>
-        <td style="background: #F0ADAD">
-          GenotypeFilter.printFilterProgress(filteredGenotypes)
+          ()
         </td>
       </tr><tr>
         <td>
@@ -13584,7 +13571,7 @@
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1705, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
+          {  scoverage.Invoker.invoked(1705, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  GenotypeFilter.printFilterProgress(filteredGenotypes)}
         </td>
       </tr><tr>
         <td>
@@ -13594,17 +13581,43 @@
           1705
         </td>
         <td>
+          org.hammerlab.guacamole.filters.GenotypeFilter.printFilterProgress
+        </td>
+        <td style="background: #F0ADAD">
+          GenotypeFilter.printFilterProgress(filteredGenotypes)
+        </td>
+      </tr><tr>
+        <td>
+          81
+        </td>
+        <td>
+          1708
+        </td>
+        <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          ()
+          {  scoverage.Invoker.invoked(1707, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
         </td>
       </tr><tr>
         <td>
           103
         </td>
         <td>
-          1707
+          1710
+        </td>
+        <td>
+          org.hammerlab.guacamole.filters.MinimumAlternateReadDepthFilter.hasMinimumAlternateReadDepth
+        </td>
+        <td style="background: #F0ADAD">
+          MinimumAlternateReadDepthFilter.this.hasMinimumAlternateReadDepth({  scoverage.Invoker.invoked(1709, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  gt.evidence}, minAlternateReadDepth)
+        </td>
+      </tr><tr>
+        <td>
+          103
+        </td>
+        <td>
+          1709
         </td>
         <td>
           org.hammerlab.guacamole.variants.CalledAllele.evidence
@@ -13617,39 +13630,13 @@
           103
         </td>
         <td>
-          1709
+          1711
         </td>
         <td>
           org.apache.spark.rdd.RDD.filter
         </td>
         <td style="background: #F0ADAD">
-          genotypes.filter(((gt: org.hammerlab.guacamole.variants.CalledAllele) =&gt; {  scoverage.Invoker.invoked(1708, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  MinimumAlternateReadDepthFilter.this.hasMinimumAlternateReadDepth({    scoverage.Invoker.invoked(1707, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    gt.evidence  }, minAlternateReadDepth)}))
-        </td>
-      </tr><tr>
-        <td>
-          103
-        </td>
-        <td>
-          1708
-        </td>
-        <td>
-          org.hammerlab.guacamole.filters.MinimumAlternateReadDepthFilter.hasMinimumAlternateReadDepth
-        </td>
-        <td style="background: #F0ADAD">
-          MinimumAlternateReadDepthFilter.this.hasMinimumAlternateReadDepth({  scoverage.Invoker.invoked(1707, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  gt.evidence}, minAlternateReadDepth)
-        </td>
-      </tr><tr>
-        <td>
-          104
-        </td>
-        <td>
-          1710
-        </td>
-        <td>
-          org.hammerlab.guacamole.filters.GenotypeFilter.printFilterProgress
-        </td>
-        <td style="background: #F0ADAD">
-          GenotypeFilter.printFilterProgress(filteredGenotypes)
+          genotypes.filter(((gt: org.hammerlab.guacamole.variants.CalledAllele) =&gt; {  scoverage.Invoker.invoked(1710, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  MinimumAlternateReadDepthFilter.this.hasMinimumAlternateReadDepth({    scoverage.Invoker.invoked(1709, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    gt.evidence  }, minAlternateReadDepth)}))
         </td>
       </tr><tr>
         <td>
@@ -13662,7 +13649,7 @@
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1712, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
+          {  scoverage.Invoker.invoked(1712, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  GenotypeFilter.printFilterProgress(filteredGenotypes)}
         </td>
       </tr><tr>
         <td>
@@ -13672,6 +13659,32 @@
           1712
         </td>
         <td>
+          org.hammerlab.guacamole.filters.GenotypeFilter.printFilterProgress
+        </td>
+        <td style="background: #F0ADAD">
+          GenotypeFilter.printFilterProgress(filteredGenotypes)
+        </td>
+      </tr><tr>
+        <td>
+          104
+        </td>
+        <td>
+          1715
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  scoverage.Invoker.invoked(1714, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
+        </td>
+      </tr><tr>
+        <td>
+          104
+        </td>
+        <td>
+          1714
+        </td>
+        <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
@@ -13679,23 +13692,10 @@
         </td>
       </tr><tr>
         <td>
-          104
-        </td>
-        <td>
-          1711
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1710, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  GenotypeFilter.printFilterProgress(filteredGenotypes)}
-        </td>
-      </tr><tr>
-        <td>
           110
         </td>
         <td>
-          1714
+          1716
         </td>
         <td>
           scala.Int.&gt;=
@@ -13708,7 +13708,7 @@
           117
         </td>
         <td>
-          1715
+          1717
         </td>
         <td>
           org.apache.spark.rdd.RDD.persist
@@ -13721,7 +13721,33 @@
           118
         </td>
         <td>
-          1716
+          1719
+        </td>
+        <td>
+          org.apache.spark.rdd.RDD.count
+        </td>
+        <td style="background: #F0ADAD">
+          filteredGenotypes.count()
+        </td>
+      </tr><tr>
+        <td>
+          118
+        </td>
+        <td>
+          1721
+        </td>
+        <td>
+          org.hammerlab.guacamole.Common.progress
+        </td>
+        <td style="background: #F0ADAD">
+          org.hammerlab.guacamole.Common.progress({  scoverage.Invoker.invoked(1720, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.augmentString({  scoverage.Invoker.invoked(1718, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot;Filtered genotypes down to %d genotypes&quot;}).format({    scoverage.Invoker.invoked(1719, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    filteredGenotypes.count()  })})
+        </td>
+      </tr><tr>
+        <td>
+          118
+        </td>
+        <td>
+          1718
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -13734,69 +13760,17 @@
           118
         </td>
         <td>
-          1719
-        </td>
-        <td>
-          org.hammerlab.guacamole.Common.progress
-        </td>
-        <td style="background: #F0ADAD">
-          org.hammerlab.guacamole.Common.progress({  scoverage.Invoker.invoked(1718, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.augmentString({  scoverage.Invoker.invoked(1716, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot;Filtered genotypes down to %d genotypes&quot;}).format({    scoverage.Invoker.invoked(1717, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    filteredGenotypes.count()  })})
-        </td>
-      </tr><tr>
-        <td>
-          118
-        </td>
-        <td>
-          1718
+          1720
         </td>
         <td>
           scala.collection.immutable.StringLike.format
         </td>
         <td style="background: #F0ADAD">
-          scala.this.Predef.augmentString({  scoverage.Invoker.invoked(1716, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot;Filtered genotypes down to %d genotypes&quot;}).format({  scoverage.Invoker.invoked(1717, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  filteredGenotypes.count()})
-        </td>
-      </tr><tr>
-        <td>
-          118
-        </td>
-        <td>
-          1717
-        </td>
-        <td>
-          org.apache.spark.rdd.RDD.count
-        </td>
-        <td style="background: #F0ADAD">
-          filteredGenotypes.count()
+          scala.this.Predef.augmentString({  scoverage.Invoker.invoked(1718, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot;Filtered genotypes down to %d genotypes&quot;}).format({  scoverage.Invoker.invoked(1719, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  filteredGenotypes.count()})
         </td>
       </tr><tr>
         <td>
           124
-        </td>
-        <td>
-          1720
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          0
-        </td>
-      </tr><tr>
-        <td>
-          127
-        </td>
-        <td>
-          1721
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          2147483647
-        </td>
-      </tr><tr>
-        <td>
-          130
         </td>
         <td>
           1722
@@ -13809,7 +13783,7 @@
         </td>
       </tr><tr>
         <td>
-          133
+          127
         </td>
         <td>
           1723
@@ -13818,11 +13792,11 @@
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          false
+          2147483647
         </td>
       </tr><tr>
         <td>
-          136
+          130
         </td>
         <td>
           1724
@@ -13835,10 +13809,62 @@
         </td>
       </tr><tr>
         <td>
-          143
+          133
         </td>
         <td>
           1725
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          false
+        </td>
+      </tr><tr>
+        <td>
+          136
+        </td>
+        <td>
+          1726
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          0
+        </td>
+      </tr><tr>
+        <td>
+          143
+        </td>
+        <td>
+          1728
+        </td>
+        <td>
+          org.hammerlab.guacamole.filters.GenotypeFilter.GenotypeFilterArguments.maxReadDepth
+        </td>
+        <td style="background: #F0ADAD">
+          args.maxReadDepth
+        </td>
+      </tr><tr>
+        <td>
+          143
+        </td>
+        <td>
+          1730
+        </td>
+        <td>
+          org.hammerlab.guacamole.filters.ReadDepthFilter.apply
+        </td>
+        <td style="background: #F0ADAD">
+          ReadDepthFilter.apply(filteredGenotypes, {  scoverage.Invoker.invoked(1727, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  args.minReadDepth}, {  scoverage.Invoker.invoked(1728, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  args.maxReadDepth}, {  scoverage.Invoker.invoked(1729, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  args.debugGenotypeFilters})
+        </td>
+      </tr><tr>
+        <td>
+          143
+        </td>
+        <td>
+          1727
         </td>
         <td>
           org.hammerlab.guacamole.filters.GenotypeFilter.GenotypeFilterArguments.minReadDepth
@@ -13851,20 +13877,7 @@
           143
         </td>
         <td>
-          1728
-        </td>
-        <td>
-          org.hammerlab.guacamole.filters.ReadDepthFilter.apply
-        </td>
-        <td style="background: #F0ADAD">
-          ReadDepthFilter.apply(filteredGenotypes, {  scoverage.Invoker.invoked(1725, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  args.minReadDepth}, {  scoverage.Invoker.invoked(1726, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  args.maxReadDepth}, {  scoverage.Invoker.invoked(1727, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  args.debugGenotypeFilters})
-        </td>
-      </tr><tr>
-        <td>
-          143
-        </td>
-        <td>
-          1727
+          1729
         </td>
         <td>
           org.hammerlab.guacamole.filters.GenotypeFilter.GenotypeFilterArguments.debugGenotypeFilters
@@ -13874,49 +13887,23 @@
         </td>
       </tr><tr>
         <td>
-          143
-        </td>
-        <td>
-          1726
-        </td>
-        <td>
-          org.hammerlab.guacamole.filters.GenotypeFilter.GenotypeFilterArguments.maxReadDepth
-        </td>
-        <td style="background: #F0ADAD">
-          args.maxReadDepth
-        </td>
-      </tr><tr>
-        <td>
           145
         </td>
         <td>
-          1734
+          1737
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          ()
+          {  scoverage.Invoker.invoked(1736, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
         </td>
       </tr><tr>
         <td>
           145
         </td>
         <td>
-          1735
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1734, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
-        </td>
-      </tr><tr>
-        <td>
-          145
-        </td>
-        <td>
-          1729
+          1731
         </td>
         <td>
           scala.Int.&gt;
@@ -13926,10 +13913,36 @@
         </td>
       </tr><tr>
         <td>
+          145
+        </td>
+        <td>
+          1736
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          ()
+        </td>
+      </tr><tr>
+        <td>
           146
         </td>
         <td>
-          1731
+          1734
+        </td>
+        <td>
+          org.hammerlab.guacamole.filters.MinimumAlternateReadDepthFilter.apply
+        </td>
+        <td style="background: #F0ADAD">
+          MinimumAlternateReadDepthFilter.apply(filteredGenotypes, {  scoverage.Invoker.invoked(1732, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  args.minAlternateReadDepth}, {  scoverage.Invoker.invoked(1733, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  args.debugGenotypeFilters})
+        </td>
+      </tr><tr>
+        <td>
+          146
+        </td>
+        <td>
+          1733
         </td>
         <td>
           org.hammerlab.guacamole.filters.GenotypeFilter.GenotypeFilterArguments.debugGenotypeFilters
@@ -13942,26 +13955,13 @@
           146
         </td>
         <td>
-          1730
-        </td>
-        <td>
-          org.hammerlab.guacamole.filters.GenotypeFilter.GenotypeFilterArguments.minAlternateReadDepth
-        </td>
-        <td style="background: #F0ADAD">
-          args.minAlternateReadDepth
-        </td>
-      </tr><tr>
-        <td>
-          146
-        </td>
-        <td>
-          1733
+          1735
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          filteredGenotypes = {  scoverage.Invoker.invoked(1732, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  MinimumAlternateReadDepthFilter.apply(filteredGenotypes, {    scoverage.Invoker.invoked(1730, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    args.minAlternateReadDepth  }, {    scoverage.Invoker.invoked(1731, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    args.debugGenotypeFilters  })}
+          filteredGenotypes = {  scoverage.Invoker.invoked(1734, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  MinimumAlternateReadDepthFilter.apply(filteredGenotypes, {    scoverage.Invoker.invoked(1732, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    args.minAlternateReadDepth  }, {    scoverage.Invoker.invoked(1733, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    args.debugGenotypeFilters  })}
         </td>
       </tr><tr>
         <td>
@@ -13971,43 +13971,17 @@
           1732
         </td>
         <td>
-          org.hammerlab.guacamole.filters.MinimumAlternateReadDepthFilter.apply
+          org.hammerlab.guacamole.filters.GenotypeFilter.GenotypeFilterArguments.minAlternateReadDepth
         </td>
         <td style="background: #F0ADAD">
-          MinimumAlternateReadDepthFilter.apply(filteredGenotypes, {  scoverage.Invoker.invoked(1730, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  args.minAlternateReadDepth}, {  scoverage.Invoker.invoked(1731, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  args.debugGenotypeFilters})
+          args.minAlternateReadDepth
         </td>
       </tr><tr>
         <td>
           149
         </td>
         <td>
-          1742
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1741, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
-        </td>
-      </tr><tr>
-        <td>
-          149
-        </td>
-        <td>
-          1736
-        </td>
-        <td>
-          scala.Int.&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          args.minLikelihood.&gt;(0)
-        </td>
-      </tr><tr>
-        <td>
-          149
-        </td>
-        <td>
-          1741
+          1743
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -14017,10 +13991,36 @@
         </td>
       </tr><tr>
         <td>
+          149
+        </td>
+        <td>
+          1744
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  scoverage.Invoker.invoked(1743, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
+        </td>
+      </tr><tr>
+        <td>
+          149
+        </td>
+        <td>
+          1738
+        </td>
+        <td>
+          scala.Int.&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          args.minLikelihood.&gt;(0)
+        </td>
+      </tr><tr>
+        <td>
           150
         </td>
         <td>
-          1737
+          1739
         </td>
         <td>
           org.hammerlab.guacamole.filters.GenotypeFilter.GenotypeFilterArguments.minLikelihood
@@ -14033,26 +14033,26 @@
           150
         </td>
         <td>
-          1739
+          1742
         </td>
         <td>
-          org.hammerlab.guacamole.filters.MinimumLikelihoodFilter.apply
+          &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          MinimumLikelihoodFilter.apply(filteredGenotypes, {  scoverage.Invoker.invoked(1737, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  args.minLikelihood}, {  scoverage.Invoker.invoked(1738, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  args.debugGenotypeFilters})
+          filteredGenotypes = {  scoverage.Invoker.invoked(1741, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  MinimumLikelihoodFilter.apply(filteredGenotypes, {    scoverage.Invoker.invoked(1739, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    args.minLikelihood  }, {    scoverage.Invoker.invoked(1740, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    args.debugGenotypeFilters  })}
         </td>
       </tr><tr>
         <td>
           150
         </td>
         <td>
-          1738
+          1741
         </td>
         <td>
-          org.hammerlab.guacamole.filters.GenotypeFilter.GenotypeFilterArguments.debugGenotypeFilters
+          org.hammerlab.guacamole.filters.MinimumLikelihoodFilter.apply
         </td>
         <td style="background: #F0ADAD">
-          args.debugGenotypeFilters
+          MinimumLikelihoodFilter.apply(filteredGenotypes, {  scoverage.Invoker.invoked(1739, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  args.minLikelihood}, {  scoverage.Invoker.invoked(1740, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  args.debugGenotypeFilters})
         </td>
       </tr><tr>
         <td>
@@ -14062,17 +14062,30 @@
           1740
         </td>
         <td>
-          &lt;nosymbol&gt;
+          org.hammerlab.guacamole.filters.GenotypeFilter.GenotypeFilterArguments.debugGenotypeFilters
         </td>
         <td style="background: #F0ADAD">
-          filteredGenotypes = {  scoverage.Invoker.invoked(1739, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  MinimumLikelihoodFilter.apply(filteredGenotypes, {    scoverage.Invoker.invoked(1737, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    args.minLikelihood  }, {    scoverage.Invoker.invoked(1738, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    args.debugGenotypeFilters  })}
+          args.debugGenotypeFilters
         </td>
       </tr><tr>
         <td>
           163
         </td>
         <td>
-          1743
+          1751
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  scoverage.Invoker.invoked(1750, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
+        </td>
+      </tr><tr>
+        <td>
+          163
+        </td>
+        <td>
+          1745
         </td>
         <td>
           scala.Int.&gt;
@@ -14085,26 +14098,13 @@
           163
         </td>
         <td>
-          1748
+          1750
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
           ()
-        </td>
-      </tr><tr>
-        <td>
-          163
-        </td>
-        <td>
-          1749
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1748, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
         </td>
       </tr><tr>
         <td>
@@ -14114,32 +14114,6 @@
           1746
         </td>
         <td>
-          scala.collection.TraversableLike.filter
-        </td>
-        <td style="background: #F0ADAD">
-          filteredGenotypes.filter(((gt: org.hammerlab.guacamole.variants.CalledAllele) =&gt; {  scoverage.Invoker.invoked(1745, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ReadDepthFilter.withinReadDepthRange({    scoverage.Invoker.invoked(1744, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    gt.evidence  }, minReadDepth, maxReadDepth)}))
-        </td>
-      </tr><tr>
-        <td>
-          164
-        </td>
-        <td>
-          1745
-        </td>
-        <td>
-          org.hammerlab.guacamole.filters.ReadDepthFilter.withinReadDepthRange
-        </td>
-        <td style="background: #F0ADAD">
-          ReadDepthFilter.withinReadDepthRange({  scoverage.Invoker.invoked(1744, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  gt.evidence}, minReadDepth, maxReadDepth)
-        </td>
-      </tr><tr>
-        <td>
-          164
-        </td>
-        <td>
-          1744
-        </td>
-        <td>
           org.hammerlab.guacamole.variants.CalledAllele.evidence
         </td>
         <td style="background: #F0ADAD">
@@ -14150,20 +14124,59 @@
           164
         </td>
         <td>
+          1748
+        </td>
+        <td>
+          scala.collection.TraversableLike.filter
+        </td>
+        <td style="background: #F0ADAD">
+          filteredGenotypes.filter(((gt: org.hammerlab.guacamole.variants.CalledAllele) =&gt; {  scoverage.Invoker.invoked(1747, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ReadDepthFilter.withinReadDepthRange({    scoverage.Invoker.invoked(1746, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    gt.evidence  }, minReadDepth, maxReadDepth)}))
+        </td>
+      </tr><tr>
+        <td>
+          164
+        </td>
+        <td>
           1747
+        </td>
+        <td>
+          org.hammerlab.guacamole.filters.ReadDepthFilter.withinReadDepthRange
+        </td>
+        <td style="background: #F0ADAD">
+          ReadDepthFilter.withinReadDepthRange({  scoverage.Invoker.invoked(1746, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  gt.evidence}, minReadDepth, maxReadDepth)
+        </td>
+      </tr><tr>
+        <td>
+          164
+        </td>
+        <td>
+          1749
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          filteredGenotypes = {  scoverage.Invoker.invoked(1746, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  filteredGenotypes.filter(((gt: org.hammerlab.guacamole.variants.CalledAllele) =&gt; {    scoverage.Invoker.invoked(1745, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    ReadDepthFilter.withinReadDepthRange({      scoverage.Invoker.invoked(1744, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      gt.evidence    }, minReadDepth, maxReadDepth)  }))}
+          filteredGenotypes = {  scoverage.Invoker.invoked(1748, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  filteredGenotypes.filter(((gt: org.hammerlab.guacamole.variants.CalledAllele) =&gt; {    scoverage.Invoker.invoked(1747, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    ReadDepthFilter.withinReadDepthRange({      scoverage.Invoker.invoked(1746, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      gt.evidence    }, minReadDepth, maxReadDepth)  }))}
         </td>
       </tr><tr>
         <td>
           167
         </td>
         <td>
-          1755
+          1752
+        </td>
+        <td>
+          scala.Int.&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          minAlternateReadDepth.&gt;(0)
+        </td>
+      </tr><tr>
+        <td>
+          167
+        </td>
+        <td>
+          1757
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -14176,39 +14189,26 @@
           167
         </td>
         <td>
-          1756
+          1758
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1755, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
-        </td>
-      </tr><tr>
-        <td>
-          167
-        </td>
-        <td>
-          1750
-        </td>
-        <td>
-          scala.Int.&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          minAlternateReadDepth.&gt;(0)
+          {  scoverage.Invoker.invoked(1757, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
         </td>
       </tr><tr>
         <td>
           168
         </td>
         <td>
-          1752
+          1755
         </td>
         <td>
-          org.hammerlab.guacamole.filters.MinimumAlternateReadDepthFilter.hasMinimumAlternateReadDepth
+          scala.collection.TraversableLike.filter
         </td>
         <td style="background: #F0ADAD">
-          MinimumAlternateReadDepthFilter.hasMinimumAlternateReadDepth({  scoverage.Invoker.invoked(1751, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  gt.evidence}, minAlternateReadDepth)
+          filteredGenotypes.filter(((gt: org.hammerlab.guacamole.variants.CalledAllele) =&gt; {  scoverage.Invoker.invoked(1754, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  MinimumAlternateReadDepthFilter.hasMinimumAlternateReadDepth({    scoverage.Invoker.invoked(1753, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    gt.evidence  }, minAlternateReadDepth)}))
         </td>
       </tr><tr>
         <td>
@@ -14218,17 +14218,17 @@
           1754
         </td>
         <td>
-          &lt;nosymbol&gt;
+          org.hammerlab.guacamole.filters.MinimumAlternateReadDepthFilter.hasMinimumAlternateReadDepth
         </td>
         <td style="background: #F0ADAD">
-          filteredGenotypes = {  scoverage.Invoker.invoked(1753, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  filteredGenotypes.filter(((gt: org.hammerlab.guacamole.variants.CalledAllele) =&gt; {    scoverage.Invoker.invoked(1752, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    MinimumAlternateReadDepthFilter.hasMinimumAlternateReadDepth({      scoverage.Invoker.invoked(1751, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      gt.evidence    }, minAlternateReadDepth)  }))}
+          MinimumAlternateReadDepthFilter.hasMinimumAlternateReadDepth({  scoverage.Invoker.invoked(1753, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  gt.evidence}, minAlternateReadDepth)
         </td>
       </tr><tr>
         <td>
           168
         </td>
         <td>
-          1751
+          1753
         </td>
         <td>
           org.hammerlab.guacamole.variants.CalledAllele.evidence
@@ -14241,13 +14241,13 @@
           168
         </td>
         <td>
-          1753
+          1756
         </td>
         <td>
-          scala.collection.TraversableLike.filter
+          &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          filteredGenotypes.filter(((gt: org.hammerlab.guacamole.variants.CalledAllele) =&gt; {  scoverage.Invoker.invoked(1752, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  MinimumAlternateReadDepthFilter.hasMinimumAlternateReadDepth({    scoverage.Invoker.invoked(1751, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    gt.evidence  }, minAlternateReadDepth)}))
+          filteredGenotypes = {  scoverage.Invoker.invoked(1755, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  filteredGenotypes.filter(((gt: org.hammerlab.guacamole.variants.CalledAllele) =&gt; {    scoverage.Invoker.invoked(1754, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    MinimumAlternateReadDepthFilter.hasMinimumAlternateReadDepth({      scoverage.Invoker.invoked(1753, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      gt.evidence    }, minAlternateReadDepth)  }))}
         </td>
       </tr>
     </table>
