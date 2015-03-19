@@ -150,7 +150,11 @@ object LociSet {
 
   /** Returns union of specified [[LociSet]] instances. */
   def union(lociSets: LociSet*): LociSet = {
-    lociSets.reduce(_.union(_))
+    val result = LociSet.newBuilder
+    lociSets.foreach(lociSet => {
+      result.put(lociSet)
+    })
+    result.result
   }
 
   /**
