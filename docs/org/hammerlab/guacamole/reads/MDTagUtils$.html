@@ -241,21 +241,52 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="org.hammerlab.guacamole.reads.MDTagUtils#getReference" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="getReference(mdTag:org.bdgenomics.adam.util.MdTag,readSequence:Seq[Byte],cigar:htsjdk.samtools.Cigar,referenceFrom:Long,allowNBase:Boolean):Seq[Byte]"></a>
-      <a id="getReference(MdTag,Seq[Byte],Cigar,Long,Boolean):Seq[Byte]"></a>
+      <a id="getReference(sortedReads:Seq[org.hammerlab.guacamole.reads.MappedRead],referenceStart:Long,referenceEnd:Long):Array[Byte]"></a>
+      <a id="getReference(Seq[MappedRead],Long,Long):Array[Byte]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getReference</span><span class="params">(<span name="mdTag">mdTag: <span class="extype" name="org.bdgenomics.adam.util.MdTag">MdTag</span></span>, <span name="readSequence">readSequence: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>, <span name="cigar">cigar: <span class="extype" name="htsjdk.samtools.Cigar">Cigar</span></span>, <span name="referenceFrom">referenceFrom: <span class="extype" name="scala.Long">Long</span></span>, <span name="allowNBase">allowNBase: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>
+        <span class="name">getReference</span><span class="params">(<span name="sortedReads">sortedReads: <span class="extype" name="scala.Seq">Seq</span>[<a href="MappedRead.html" class="extype" name="org.hammerlab.guacamole.reads.MappedRead">MappedRead</a>]</span>, <span name="referenceStart">referenceStart: <span class="extype" name="scala.Long">Long</span></span>, <span name="referenceEnd">referenceEnd: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Rebuilds the reference from a set of overlapping and sorted reads
+Fill in N if there is a gap in the reads
+</p><div class="fullcomment"><div class="comment cmt"><p>Rebuilds the reference from a set of overlapping and sorted reads
+Fill in N if there is a gap in the reads
+</p></div><dl class="paramcmts block"><dt class="param">sortedReads</dt><dd class="cmt"><p>Set of overlapping and sorted reads that are mapped to the reference</p></dd><dt class="param">referenceStart</dt><dd class="cmt"><p>locus at which to start reference sequence (inclusive)</p></dd><dt class="param">referenceEnd</dt><dd class="cmt"><p>locus at which to end reference sequence (exclusive)</p></dd><dt>returns</dt><dd class="cmt"><p>A sequence of bytes corresponding to the reference overlapping these read.
+</p></dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.reads.MDTagUtils#getReference" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="getReference(read:org.hammerlab.guacamole.reads.MappedRead,allowNBase:Boolean):(Long,Seq[Byte])"></a>
+      <a id="getReference(MappedRead,Boolean):(Long,Seq[Byte])"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getReference</span><span class="params">(<span name="read">read: <a href="MappedRead.html" class="extype" name="org.hammerlab.guacamole.reads.MappedRead">MappedRead</a></span>, <span name="allowNBase">allowNBase: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: (<span class="extype" name="scala.Long">Long</span>, <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Byte">Byte</span>])</span>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.reads.MDTagUtils#getReference" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="getReference(mdTag:org.bdgenomics.adam.util.MdTag,readSequence:Seq[Byte],cigar:htsjdk.samtools.Cigar,allowNBase:Boolean):Seq[Byte]"></a>
+      <a id="getReference(MdTag,Seq[Byte],Cigar,Boolean):Seq[Byte]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getReference</span><span class="params">(<span name="mdTag">mdTag: <span class="extype" name="org.bdgenomics.adam.util.MdTag">MdTag</span></span>, <span name="readSequence">readSequence: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>, <span name="cigar">cigar: <span class="extype" name="htsjdk.samtools.Cigar">Cigar</span></span>, <span name="allowNBase">allowNBase: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Adopted from ADAM's mdTag.</p><div class="fullcomment"><div class="comment cmt"><p>Adopted from ADAM's mdTag.getReference to operate on Seq[Byte] instead of strings
 Also we use a Buffer from spire here instead to avoid an additional array allocation and ensure
 we return an Array[Byte]</p><p>Given a mdtag, read sequence, cigar, and a reference start position, returns the reference.
-</p></div><dl class="paramcmts block"><dt class="param">readSequence</dt><dd class="cmt"><p>The base sequence of the read.</p></dd><dt class="param">cigar</dt><dd class="cmt"><p>The cigar for the read.</p></dd><dt class="param">referenceFrom</dt><dd class="cmt"><p>The starting point of this read alignment vs. the reference.</p></dd><dt>returns</dt><dd class="cmt"><p>A sequence of bytes corresponding to the reference overlapping this read.
+</p></div><dl class="paramcmts block"><dt class="param">readSequence</dt><dd class="cmt"><p>The base sequence of the read.</p></dd><dt class="param">cigar</dt><dd class="cmt"><p>The cigar for the read.</p></dd><dt>returns</dt><dd class="cmt"><p>A sequence of bytes corresponding to the reference overlapping this read.
 </p></dd></dl></div>
     </li><li name="scala.AnyRef#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="hashCode():Int"></a>
