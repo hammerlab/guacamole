@@ -20,6 +20,7 @@ package org.hammerlab.guacamole
 
 import org.apache.commons.io.FileUtils
 import org.apache.hadoop.fs.FileUtil
+import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole.reads.Read
 import org.scalatest.Matchers
 
@@ -108,7 +109,8 @@ class LociSetSuite extends TestUtil.SparkFunSuite with Matchers {
 
   sparkTest("loci argument parsing in Common") {
     val read = TestUtil.makeRead("C", "1M", "1", 500, "20")
-    val emptyReadSet = ReadSet(sc.parallelize(Seq(read)), None, "", Read.InputFilters.empty, 0, false)
+    val reads: RDD[Read] = sc.parallelize(Seq(read))
+    val emptyReadSet = new ReadSet(reads, None, "", Read.InputFilters.empty, 0, false)
     class TestArgs extends Common.Arguments.Base with Common.Arguments.Loci {}
 
     // Test -loci argument

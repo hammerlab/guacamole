@@ -64,7 +64,12 @@ class ReadSetSuite extends TestUtil.SparkFunSuite with Matchers {
       case (guacRead, adamRead) => guacRead should be(adamRead)
     })
 
-    val (filteredReads, _) = Read.loadReadRDDAndSequenceDictionary(adamOut, sc, token = 1, Read.InputFilters(mapped = true, nonDuplicate = true))
+    val (filteredReads, _) = Read.loadReadRDDAndSequenceDictionary(
+      adamOut,
+      sc,
+      token = 1,
+      Read.InputFilters(mapped = true, nonDuplicate = true),
+      requireMDTagsOnMappedReads = true)
     filteredReads.count() should be(4)
     filteredReads.collect().forall(_.token == 1) should be(true)
 
