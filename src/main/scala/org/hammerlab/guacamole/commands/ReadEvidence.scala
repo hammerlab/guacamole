@@ -73,10 +73,10 @@ object ReadEvidence {
       )
 
       // Build a loci set from the variant positions
-      val lociSet = LociSet.parse(
+      val lociSet = LociSet.union(
         variants.map(
-          variant => s"${variant.getContig.getContigName}:${variant.getStart}-${variant.getEnd}")
-          .collect().mkString(","))
+          variant => LociSet(variant.getContig.getContigName, variant.getStart, variant.getEnd))
+          .collect():_*)
 
       val lociPartitions = DistributedUtil.partitionLociUniformly(args.parallelism, lociSet)
 
