@@ -59,6 +59,7 @@ object ReadEvidence {
     override def run(args: Arguments, sc: SparkContext): Unit = {
 
       val adamContext = new VariationContext(sc)
+
       val variants: RDD[Variant] = adamContext.adamVCFLoad(args.variants).map(_.variant)
       val reads: Seq[RDD[MappedRead]] = args.bams.zipWithIndex.map(
         bamFile =>
@@ -71,6 +72,7 @@ object ReadEvidence {
             contigLengthsFromDictionary = false).mappedReads
       )
 
+      // Build a loci set from the variant positions
       val lociSet = LociSet.parse(
         variants.map(
           variant => s"${variant.getContig.getContigName}:${variant.getStart}-${variant.getEnd}")
@@ -92,6 +94,11 @@ object ReadEvidence {
 
     }
 
+    /**
+     * Count alleles in a pileup
+     * @param pileup Pileup of reads a given locu
+     * @return Iterator of AlleleCount which contains pair of reference and alternate with a count
+     */
     def pileupToAlleleCounts(pileup: Pileup): Iterator[AlleleCount] = {
       val alleles = pileup.elements.groupBy(_.allele)
       alleles.map(kv => AlleleCount(pileup.sampleName,
