@@ -147,7 +147,7 @@ object TestUtil extends Matchers {
     val path = testDataPath(filename)
     assert(sc != null)
     assert(sc.hadoopConfiguration != null)
-    ReadSet(sc, path)
+    ReadSet(sc, path, requireMDTagsOnMappedReads = false)
   }
 
   def loadTumorNormalReads(sc: SparkContext,
@@ -164,7 +164,7 @@ object TestUtil extends Matchers {
     val path = testDataPath(filename)
     assert(sc != null)
     assert(sc.hadoopConfiguration != null)
-    ReadSet(sc, path, filters = filters)
+    ReadSet(sc, path, requireMDTagsOnMappedReads = false, filters = filters)
   }
 
   def loadTumorNormalPileup(tumorReads: Seq[MappedRead],

@@ -180,7 +180,7 @@ object Read extends Logging {
    * @param record
    * @return
    */
-  def fromSAMRecordOpt(record: SAMRecord, token: Int, requireMDTagsOnMappedReads: Boolean = false): Option[Read] = {
+  def fromSAMRecordOpt(record: SAMRecord, token: Int, requireMDTagsOnMappedReads: Boolean): Option[Read] = {
     val isMapped = (
       // NOTE(ryan): this flag should maybe be the main determinant of the mapped-ness of this SAM record. SAM spec
       // (http://samtools.github.io/hts-specs/SAMv1.pdf) says: "Bit 0x4 is the only reliable place to tell whether the
@@ -274,7 +274,7 @@ object Read extends Logging {
 
     JavaConversions.asScalaIterator(reader.iterator).foreach(item => {
       if (!filters.nonDuplicate || !item.getDuplicateReadFlag) {
-        fromSAMRecordOpt(item, token).filter(read =>
+        fromSAMRecordOpt(item, token, requireMDTagsOnMappedReads = false).filter(read =>
           (!filters.mapped || read.isMapped) &&
             (!filters.passedVendorQualityChecks || !read.failedVendorQualityChecks) &&
             (!filters.isPaired || read.isPaired)
@@ -298,9 +298,10 @@ object Read extends Logging {
   def loadReadRDDAndSequenceDictionary(filename: String,
                                        sc: SparkContext,
                                        token: Int,
-                                       filters: InputFilters): (RDD[Read], SequenceDictionary) = {
+                                       filters: InputFilters,
+                                       requireMDTagsOnMappedReads: Boolean): (RDD[Read], SequenceDictionary) = {
     var (reads, sequenceDictionary) = if (filename.endsWith(".bam") || filename.endsWith(".sam")) {
-      loadReadRDDAndSequenceDictionaryFromBAM(filename, sc, token)
+      loadReadRDDAndSequenceDictionaryFromBAM(filename, sc, token, requireMDTagsOnMappedReads)
     } else {
       loadReadRDDAndSequenceDictionaryFromADAM(filename, sc, token)
     }
@@ -316,7 +317,8 @@ object Read extends Logging {
   def loadReadRDDAndSequenceDictionaryFromBAM(
     filename: String,
     sc: SparkContext,
-    token: Int): (RDD[Read], SequenceDictionary) = {
+    token: Int,
+    requireMDTagsOnMappedReads: Boolean): (RDD[Read], SequenceDictionary) = {
 
     val samHeader = SAMHeaderReader.readSAMHeaderFrom(new Path(filename), sc.hadoopConfiguration)
     val sequenceDictionary = SequenceDictionary.fromSAMHeader(samHeader)
@@ -325,7 +327,7 @@ object Read extends Logging {
       sc.newAPIHadoopFile[LongWritable, SAMRecordWritable, AnySAMInputFormat](filename)
     val reads: RDD[Read] =
       samRecords.flatMap({
-        case (k, v) => fromSAMRecordOpt(v.get, token)
+        case (k, v) => fromSAMRecordOpt(v.get, token, requireMDTagsOnMappedReads)
       })
     (reads, sequenceDictionary)
   }

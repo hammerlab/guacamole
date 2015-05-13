@@ -84,7 +84,7 @@ object Common extends Logging {
     }
 
     /** Argument for writing output genotypes. */
-    trait Output extends Base {
+    trait GenotypeOutput extends Base {
       @Opt(name = "--out", metaVar = "VARIANTS_OUT", required = false,
         usage = "Variant output path. If not specified, print to screen.")
       var variantOutput: String = ""
@@ -108,9 +108,9 @@ object Common extends Logging {
       var fragmentLength: Long = 10000L
     }
 
-    trait GermlineCallerArgs extends Output with Reads with ConcordanceArgs with DistributedUtil.Arguments
+    trait GermlineCallerArgs extends GenotypeOutput with Reads with ConcordanceArgs with DistributedUtil.Arguments
 
-    trait SomaticCallerArgs extends Output with TumorNormalReads with DistributedUtil.Arguments
+    trait SomaticCallerArgs extends GenotypeOutput with TumorNormalReads with DistributedUtil.Arguments
 
   }
 
@@ -141,8 +141,9 @@ object Common extends Logging {
   def loadReadsFromArguments(
     args: Arguments.Reads,
     sc: SparkContext,
-    filters: Read.InputFilters): ReadSet = {
-    ReadSet(sc, args.reads, filters, token = 0, contigLengthsFromDictionary = !args.noSequenceDictionary)
+    filters: Read.InputFilters,
+    requireMDTagsOnMappedReads: Boolean = false): ReadSet = {
+    ReadSet(sc, args.reads, requireMDTagsOnMappedReads, filters, token = 0, contigLengthsFromDictionary = !args.noSequenceDictionary)
   }
 
   /**
@@ -157,10 +158,11 @@ object Common extends Logging {
   def loadTumorNormalReadsFromArguments(
     args: Arguments.TumorNormalReads,
     sc: SparkContext,
-    filters: Read.InputFilters): (ReadSet, ReadSet) = {
+    filters: Read.InputFilters,
+    requireMDTagsOnMappedReads: Boolean = false): (ReadSet, ReadSet) = {
 
-    val tumor = ReadSet(sc, args.tumorReads, filters, 1, !args.noSequenceDictionary)
-    val normal = ReadSet(sc, args.normalReads, filters, 2, !args.noSequenceDictionary)
+    val tumor = ReadSet(sc, args.tumorReads, requireMDTagsOnMappedReads, filters, 1, !args.noSequenceDictionary)
+    val normal = ReadSet(sc, args.normalReads, requireMDTagsOnMappedReads, filters, 2, !args.noSequenceDictionary)
     (tumor, normal)
   }
 
@@ -217,7 +219,7 @@ object Common extends Logging {
    * @param args parsed arguments
    * @param genotypes ADAM genotypes (i.e. the variants)
    */
-  def writeVariantsFromArguments(args: Arguments.Output, genotypes: RDD[Genotype]): Unit = {
+  def writeVariantsFromArguments(args: Arguments.GenotypeOutput, genotypes: RDD[Genotype]): Unit = {
     val subsetGenotypes = if (args.maxGenotypes > 0) {
       progress("Subsetting to %d genotypes.".format(args.maxGenotypes))
       genotypes.sample(withReplacement = false, args.maxGenotypes, 0)

@@ -18,11 +18,12 @@
 
 package org.hammerlab.guacamole
 
-import org.apache.spark.Logging
 import java.util.logging.Level
-import org.hammerlab.guacamole.commands._
+
+import org.apache.spark.Logging
 import org.bdgenomics.adam.util.ParquetLogger
 import org.hammerlab.guacamole.Common.progress
+import org.hammerlab.guacamole.commands._
 
 /**
  * Guacamole main class.
@@ -36,7 +37,8 @@ object Guacamole extends Logging {
   private val commands: Seq[Command[_]] = List(
     GermlineThreshold.Caller,
     GermlineStandard.Caller,
-    SomaticStandard.Caller
+    SomaticStandard.Caller,
+    ReadEvidence.Caller
   )
 
   private def printUsage() = {
