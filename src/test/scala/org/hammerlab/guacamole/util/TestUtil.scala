@@ -16,19 +16,18 @@
  * limitations under the License.
  */
 
-package org.hammerlab.guacamole
+package org.hammerlab.guacamole.util
 
 import java.io.{ File, FileNotFoundException }
-import java.net.ServerSocket
 import java.util.UUID
 
 import com.esotericsoftware.kryo.Kryo
 import com.twitter.chill.{ IKryoRegistrar, KryoInstantiator, KryoPool }
 import org.apache.commons.io.FileUtils
-import org.apache.log4j.{ Level, Logger }
-import org.apache.spark.{ SparkConf, SparkContext }
+import org.apache.spark.SparkContext
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.{ MappedRead, MateProperties, Read }
+import org.hammerlab.guacamole.{ Bases, GuacamoleKryoRegistrator, ReadSet }
 import org.scalatest._
 
 import scala.math._
@@ -211,5 +210,5 @@ object TestUtil extends Matchers {
       case e: FileNotFoundException => {}
     }
   }
-  
+
 }

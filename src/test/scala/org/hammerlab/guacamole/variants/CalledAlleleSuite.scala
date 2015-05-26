@@ -19,8 +19,8 @@
 package org.hammerlab.guacamole.variants
 
 import org.apache.spark.SparkEnv
-import org.hammerlab.guacamole.{ Bases, TestUtil }
-import org.hammerlab.guacamole.util.GuacFunSuite
+import org.hammerlab.guacamole.Bases
+import org.hammerlab.guacamole.util.{ TestUtil, GuacFunSuite }
 
 class CalledAlleleSuite extends GuacFunSuite {
 

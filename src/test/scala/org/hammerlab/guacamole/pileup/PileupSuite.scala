@@ -18,11 +18,11 @@
 
 package org.hammerlab.guacamole.pileup
 
-import org.hammerlab.guacamole.util.GuacFunSuite
-import org.hammerlab.guacamole.TestUtil.Implicits._
-import org.hammerlab.guacamole.TestUtil.assertBases
+import org.hammerlab.guacamole.util.{ TestUtil, GuacFunSuite }
+import TestUtil.Implicits._
+import TestUtil.assertBases
 import org.hammerlab.guacamole.reads.MappedRead
-import org.hammerlab.guacamole.{ Bases, TestUtil }
+import org.hammerlab.guacamole.Bases
 import org.scalatest.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks
 

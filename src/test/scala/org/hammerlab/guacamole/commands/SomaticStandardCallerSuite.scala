@@ -18,8 +18,8 @@
 
 package org.hammerlab.guacamole.commands
 
-import org.hammerlab.guacamole.util.GuacFunSuite
-import org.hammerlab.guacamole.{ Bases, TestUtil }
+import org.hammerlab.guacamole.util.{ TestUtil, GuacFunSuite }
+import org.hammerlab.guacamole.Bases
 import org.hammerlab.guacamole.filters.SomaticGenotypeFilter
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.MappedRead
