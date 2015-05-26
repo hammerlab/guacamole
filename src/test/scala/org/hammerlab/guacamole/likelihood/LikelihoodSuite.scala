@@ -18,8 +18,7 @@
 
 package org.hammerlab.guacamole.likelihood
 
-import org.hammerlab.guacamole.util.GuacFunSuite
-import org.hammerlab.guacamole.TestUtil
+import org.hammerlab.guacamole.util.{ TestUtil, GuacFunSuite }
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.variants.Genotype

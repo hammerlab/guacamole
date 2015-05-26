@@ -20,8 +20,8 @@ package org.hammerlab.guacamole
 
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.formats.avro.{ Genotype, GenotypeAllele }
-import org.hammerlab.guacamole.util.GuacFunSuite
-import org.hammerlab.guacamole.TestUtil.assertBases
+import org.hammerlab.guacamole.util.{ TestUtil, GuacFunSuite }
+import TestUtil.assertBases
 import org.hammerlab.guacamole.commands.GermlineThreshold
 import org.hammerlab.guacamole.pileup.{ Pileup, PileupElement }
 import org.hammerlab.guacamole.reads.MappedRead

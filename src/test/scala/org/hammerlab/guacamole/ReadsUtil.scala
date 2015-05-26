@@ -20,6 +20,7 @@ package org.hammerlab.guacamole
 
 import org.bdgenomics.adam.util.PhredUtils
 import org.hammerlab.guacamole.likelihood.LikelihoodSuite
+import org.hammerlab.guacamole.util.TestUtil
 import org.hammerlab.guacamole.variants.{ Allele, Genotype }
 
 /**

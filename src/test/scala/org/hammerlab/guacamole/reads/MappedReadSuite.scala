@@ -19,8 +19,8 @@
 package org.hammerlab.guacamole.reads
 
 import htsjdk.samtools.TextCigarCodec
-import org.hammerlab.guacamole.util.GuacFunSuite
-import org.hammerlab.guacamole.TestUtil.Implicits._
+import org.hammerlab.guacamole.util.{ TestUtil, GuacFunSuite }
+import TestUtil.Implicits._
 import org.scalatest.Matchers
 
 class MappedReadSuite extends GuacFunSuite with Matchers {
