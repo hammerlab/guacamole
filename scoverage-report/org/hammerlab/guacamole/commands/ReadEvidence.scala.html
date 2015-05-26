@@ -1937,43 +1937,13 @@
           </td><td style="background: white">
             .
           </td><td style="background: white">
-            v
+            A
           </td><td style="background: white">
-            a
+            D
           </td><td style="background: white">
-            r
+            A
           </td><td style="background: white">
-            i
-          </td><td style="background: white">
-            a
-          </td><td style="background: white">
-            t
-          </td><td style="background: white">
-            i
-          </td><td style="background: white">
-            o
-          </td><td style="background: white">
-            n
-          </td><td style="background: white">
-            .
-          </td><td style="background: white">
-            V
-          </td><td style="background: white">
-            a
-          </td><td style="background: white">
-            r
-          </td><td style="background: white">
-            i
-          </td><td style="background: white">
-            a
-          </td><td style="background: white">
-            t
-          </td><td style="background: white">
-            i
-          </td><td style="background: white">
-            o
-          </td><td style="background: white">
-            n
+            M
           </td><td style="background: white">
             C
           </td><td style="background: white">
@@ -4799,23 +4769,13 @@
           </td><td style="background: white">
             &nbsp;
           </td><td style="background: white">
-            V
+            A
           </td><td style="background: white">
-            a
+            D
           </td><td style="background: white">
-            r
+            A
           </td><td style="background: white">
-            i
-          </td><td style="background: white">
-            a
-          </td><td style="background: white">
-            t
-          </td><td style="background: white">
-            i
-          </td><td style="background: white">
-            o
-          </td><td style="background: white">
-            n
+            M
           </td><td style="background: white">
             C
           </td><td style="background: white">
@@ -4941,27 +4901,29 @@
           </td><td style="background: white">
             .
           </td><td style="background: white">
-            a
-          </td><td style="background: white">
-            d
-          </td><td style="background: white">
-            a
-          </td><td style="background: white">
-            m
-          </td><td style="background: white">
-            V
-          </td><td style="background: white">
-            C
-          </td><td style="background: white">
-            F
-          </td><td style="background: white">
-            L
+            l
           </td><td style="background: white">
             o
           </td><td style="background: white">
             a
           </td><td style="background: white">
             d
+          </td><td style="background: white">
+            V
+          </td><td style="background: white">
+            a
+          </td><td style="background: white">
+            r
+          </td><td style="background: white">
+            i
+          </td><td style="background: white">
+            a
+          </td><td style="background: white">
+            n
+          </td><td style="background: white">
+            t
+          </td><td style="background: white">
+            s
           </td><td style="background: white">
             (
           </td><td style="background: white">
@@ -4990,36 +4952,6 @@
             t
           </td><td style="background: white">
             s
-          </td><td style="background: white">
-            )
-          </td><td style="background: white">
-            .
-          </td><td style="background: white">
-            m
-          </td><td style="background: white">
-            a
-          </td><td style="background: white">
-            p
-          </td><td style="background: white">
-            (
-          </td><td style="background: white">
-            _
-          </td><td style="background: white">
-            .
-          </td><td style="background: white">
-            v
-          </td><td style="background: white">
-            a
-          </td><td style="background: white">
-            r
-          </td><td style="background: white">
-            i
-          </td><td style="background: white">
-            a
-          </td><td style="background: white">
-            n
-          </td><td style="background: white">
-            t
           </td><td style="background: white">
             )
           </td>
@@ -8443,10 +8375,10 @@
           1576
         </td>
         <td>
-          org.bdgenomics.adam.rdd.variation.VariationContext.&lt;init&gt;
+          org.bdgenomics.adam.rdd.ADAMContext.&lt;init&gt;
         </td>
         <td style="background: #F0ADAD">
-          new org.bdgenomics.adam.rdd.variation.VariationContext(sc)
+          new org.bdgenomics.adam.rdd.ADAMContext(sc)
         </td>
       </tr><tr>
         <td>
@@ -8456,10 +8388,10 @@
           1578
         </td>
         <td>
-          org.bdgenomics.adam.rdd.variation.VariationContext.adamVCFLoad$default$2
+          org.bdgenomics.adam.rdd.ADAMContext.loadVariants$default$2
         </td>
         <td style="background: #F0ADAD">
-          adamContext.adamVCFLoad$default$2
+          adamContext.loadVariants$default$2[Nothing]
         </td>
       </tr><tr>
         <td>
@@ -8469,10 +8401,10 @@
           1581
         </td>
         <td>
-          org.apache.spark.rdd.RDD.map
+          org.bdgenomics.adam.rdd.ADAMContext.loadVariants
         </td>
         <td style="background: #F0ADAD">
-          adamContext.adamVCFLoad({  scoverage.Invoker.invoked(1577, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  args.variants}, {  scoverage.Invoker.invoked(1578, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  adamContext.adamVCFLoad$default$2}).map[org.bdgenomics.formats.avro.Variant](((x$1: org.bdgenomics.adam.models.VariantContext) =&gt; {  scoverage.Invoker.invoked(1580, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  rich.this.RichVariant.richVariantToVariant({    scoverage.Invoker.invoked(1579, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    x$1.variant  })}))(ClassTag.apply[org.bdgenomics.formats.avro.Variant](classOf[org.bdgenomics.formats.avro.Variant]))
+          adamContext.loadVariants[Nothing]({  scoverage.Invoker.invoked(1577, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  args.variants}, {  scoverage.Invoker.invoked(1578, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  adamContext.loadVariants$default$2[Nothing]}, {  scoverage.Invoker.invoked(1579, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  adamContext.loadVariants$default$3[Nothing]}, {  scoverage.Invoker.invoked(1580, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  adamContext.loadVariants$default$4[Nothing]})
         </td>
       </tr><tr>
         <td>
@@ -8495,10 +8427,10 @@
           1580
         </td>
         <td>
-          org.bdgenomics.adam.rich.RichVariant.richVariantToVariant
+          org.bdgenomics.adam.rdd.ADAMContext.loadVariants$default$4
         </td>
         <td style="background: #F0ADAD">
-          rich.this.RichVariant.richVariantToVariant({  scoverage.Invoker.invoked(1579, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x$1.variant})
+          adamContext.loadVariants$default$4[Nothing]
         </td>
       </tr><tr>
         <td>
@@ -8508,10 +8440,10 @@
           1579
         </td>
         <td>
-          org.bdgenomics.adam.models.VariantContext.variant
+          org.bdgenomics.adam.rdd.ADAMContext.loadVariants$default$3
         </td>
         <td style="background: #F0ADAD">
-          x$1.variant
+          adamContext.loadVariants$default$3[Nothing]
         </td>
       </tr><tr>
         <td>
@@ -8706,7 +8638,7 @@
           org.apache.spark.rdd.RDD.++
         </td>
         <td style="background: #F0ADAD">
-          x$2.++(x$3)
+          x$1.++(x$2)
         </td>
       </tr><tr>
         <td>
@@ -8719,7 +8651,7 @@
           scala.collection.TraversableOnce.reduce
         </td>
         <td style="background: #F0ADAD">
-          reads.map[org.apache.spark.rdd.RDD[org.hammerlab.guacamole.commands.ReadEvidence.Caller.AlleleCount], Seq[org.apache.spark.rdd.RDD[org.hammerlab.guacamole.commands.ReadEvidence.Caller.AlleleCount]]](((sampleReads: org.apache.spark.rdd.RDD[org.hammerlab.guacamole.reads.MappedRead]) =&gt; {  scoverage.Invoker.invoked(1594, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  org.hammerlab.guacamole.DistributedUtil.pileupFlatMap[org.hammerlab.guacamole.commands.ReadEvidence.Caller.AlleleCount](sampleReads, lociPartitions, {    scoverage.Invoker.invoked(1592, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    true  }, {    ((pileup: org.hammerlab.guacamole.pileup.Pileup) =&gt; {      scoverage.Invoker.invoked(1593, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      Caller.this.pileupToAlleleCounts(pileup)    })  })(ClassTag.apply[org.hammerlab.guacamole.commands.ReadEvidence.Caller.AlleleCount](classOf[org.hammerlab.guacamole.commands.ReadEvidence$$Caller$AlleleCount]))}))({  scoverage.Invoker.invoked(1595, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.canBuildFrom[org.apache.spark.rdd.RDD[org.hammerlab.guacamole.commands.ReadEvidence.Caller.AlleleCount]]}).reduce[org.apache.spark.rdd.RDD[org.hammerlab.guacamole.commands.ReadEvidence.Caller.AlleleCount]](((x$2: org.apache.spark.rdd.RDD[org.hammerlab.guacamole.commands.ReadEvidence.Caller.AlleleCount], x$3: org.apache.spark.rdd.RDD[org.hammerlab.guacamole.commands.ReadEvidence.Caller.AlleleCount]) =&gt; {  scoverage.Invoker.invoked(1596, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x$2.++(x$3)}))
+          reads.map[org.apache.spark.rdd.RDD[org.hammerlab.guacamole.commands.ReadEvidence.Caller.AlleleCount], Seq[org.apache.spark.rdd.RDD[org.hammerlab.guacamole.commands.ReadEvidence.Caller.AlleleCount]]](((sampleReads: org.apache.spark.rdd.RDD[org.hammerlab.guacamole.reads.MappedRead]) =&gt; {  scoverage.Invoker.invoked(1594, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  org.hammerlab.guacamole.DistributedUtil.pileupFlatMap[org.hammerlab.guacamole.commands.ReadEvidence.Caller.AlleleCount](sampleReads, lociPartitions, {    scoverage.Invoker.invoked(1592, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    true  }, {    ((pileup: org.hammerlab.guacamole.pileup.Pileup) =&gt; {      scoverage.Invoker.invoked(1593, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      Caller.this.pileupToAlleleCounts(pileup)    })  })(ClassTag.apply[org.hammerlab.guacamole.commands.ReadEvidence.Caller.AlleleCount](classOf[org.hammerlab.guacamole.commands.ReadEvidence$$Caller$AlleleCount]))}))({  scoverage.Invoker.invoked(1595, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.canBuildFrom[org.apache.spark.rdd.RDD[org.hammerlab.guacamole.commands.ReadEvidence.Caller.AlleleCount]]}).reduce[org.apache.spark.rdd.RDD[org.hammerlab.guacamole.commands.ReadEvidence.Caller.AlleleCount]](((x$1: org.apache.spark.rdd.RDD[org.hammerlab.guacamole.commands.ReadEvidence.Caller.AlleleCount], x$2: org.apache.spark.rdd.RDD[org.hammerlab.guacamole.commands.ReadEvidence.Caller.AlleleCount]) =&gt; {  scoverage.Invoker.invoked(1596, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x$1.++(x$2)}))
         </td>
       </tr><tr>
         <td>
@@ -8758,7 +8690,7 @@
           scala.collection.TraversableLike.groupBy
         </td>
         <td style="background: #F0ADAD">
-          pileup.elements.groupBy[org.hammerlab.guacamole.variants.Allele](((x$4: org.hammerlab.guacamole.pileup.PileupElement) =&gt; x$4.allele))
+          pileup.elements.groupBy[org.hammerlab.guacamole.variants.Allele](((x$3: org.hammerlab.guacamole.pileup.PileupElement) =&gt; x$3.allele))
         </td>
       </tr><tr>
         <td>
