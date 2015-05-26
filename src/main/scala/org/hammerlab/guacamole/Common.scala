@@ -31,7 +31,6 @@ import org.apache.spark.rdd.RDD
 import org.apache.spark.{ Logging, SparkConf, SparkContext }
 import org.bdgenomics.adam.cli.{ Args4jBase, ParquetArgs }
 import org.bdgenomics.adam.rdd.ADAMContext._
-import org.bdgenomics.adam.rdd.variation.VariationContext._
 import org.bdgenomics.formats.avro.Genotype
 import org.hammerlab.guacamole.Concordance.ConcordanceArgs
 import org.hammerlab.guacamole.reads.Read
@@ -124,7 +123,7 @@ object Common extends Logging {
    */
   def loadGenotypes(path: String, sc: SparkContext): RDD[Genotype] = {
     if (path.endsWith(".vcf")) {
-      sc.adamVCFLoad(path).flatMap(_.genotypes)
+      sc.loadGenotypes(path)
     } else {
       sc.adamLoad(path)
     }
@@ -266,7 +265,7 @@ object Common extends Logging {
     } else if (outputPath.toLowerCase.endsWith(".vcf")) {
       progress("Writing genotypes to VCF file: %s.".format(outputPath))
       val sc = subsetGenotypes.sparkContext
-      sc.adamVCFSave(outputPath, subsetGenotypes.toVariantContext.coalesce(1, shuffle = true))
+      subsetGenotypes.toVariantContext.coalesce(1, shuffle = true).adamVCFSave(outputPath)
     } else {
       progress("Writing genotypes to: %s.".format(outputPath))
       subsetGenotypes.adamParquetSave(
