@@ -10,3 +10,4 @@ build
 *.swo
 .DS_Store
 dependency-reduced-pom.xml
+TestUtil*
