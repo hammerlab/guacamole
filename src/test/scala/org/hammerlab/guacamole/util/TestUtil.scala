@@ -171,34 +171,6 @@ object TestUtil extends Matchers {
     assert(abs(a - b) < epsilon, "|%.12f - %.12f| == %.12f >= %.12f".format(a, b, abs(a - b), epsilon))
   }
 
-  object SparkTest extends org.scalatest.Tag("org.hammerlab.guacamole.SparkScalaTestFunSuite")
-
-  object SparkLogUtil {
-    /**
-     * set all loggers to the given log level.  Returns a map of the value of every logger
-     * @param level Log4j level
-     * @param loggers Loggers to apply level to
-     * @return
-     */
-    def setLogLevels(level: org.apache.log4j.Level, loggers: TraversableOnce[String]) = {
-      loggers.map {
-        loggerName =>
-          val logger = Logger.getLogger(loggerName)
-          val prevLevel = logger.getLevel
-          logger.setLevel(level)
-          loggerName -> prevLevel
-      }.toMap
-    }
-
-    /**
-     * turn off most of spark logging.  Returns a map of the previous values so you can turn logging back to its
-     * former values
-     */
-    def silenceSpark() = {
-      setLogLevels(Level.WARN, Seq("spark", "org.eclipse.jetty", "akka"))
-    }
-  }
-
   /**
    * Delete a file or directory (recursively) if it exists.
    */
