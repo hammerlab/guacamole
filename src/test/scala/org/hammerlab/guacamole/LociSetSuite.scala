@@ -21,10 +21,11 @@ package org.hammerlab.guacamole
 import org.apache.commons.io.FileUtils
 import org.apache.hadoop.fs.FileUtil
 import org.apache.spark.rdd.RDD
+import org.hammerlab.guacamole.util.GuacFunSuite
 import org.hammerlab.guacamole.reads.Read
 import org.scalatest.Matchers
 
-class LociSetSuite extends TestUtil.SparkFunSuite with Matchers {
+class LociSetSuite extends GuacFunSuite with Matchers {
 
   test("properties of empty LociSet") {
     LociSet.empty.contigs should have length (0)

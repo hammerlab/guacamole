@@ -18,8 +18,8 @@
 
 package org.hammerlab.guacamole.likelihood
 
+import org.hammerlab.guacamole.util.GuacFunSuite
 import org.hammerlab.guacamole.TestUtil
-import org.hammerlab.guacamole.TestUtil.SparkFunSuite
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.variants.Genotype
@@ -27,7 +27,7 @@ import org.hammerlab.guacamole.ReadsUtil._
 import org.scalatest.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks
 
-class LikelihoodSuite extends SparkFunSuite with TableDrivenPropertyChecks with Matchers {
+class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks with Matchers {
 
   def testLikelihoods(actualLikelihoods: Seq[(Genotype, Double)],
                       expectedLikelihoods: ((Char, Char), Double)*): Unit =

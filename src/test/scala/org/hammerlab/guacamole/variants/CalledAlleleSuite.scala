@@ -20,10 +20,9 @@ package org.hammerlab.guacamole.variants
 
 import org.apache.spark.SparkEnv
 import org.hammerlab.guacamole.{ Bases, TestUtil }
-import org.hammerlab.guacamole.TestUtil.SparkFunSuite
-import org.scalatest.FunSuite
+import org.hammerlab.guacamole.util.GuacFunSuite
 
-class CalledAlleleSuite extends FunSuite with SparkFunSuite {
+class CalledAlleleSuite extends GuacFunSuite {
 
   test("serializing called genotype") {
     val gt = CalledAllele("sample",
