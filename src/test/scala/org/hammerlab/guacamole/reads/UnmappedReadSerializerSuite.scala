@@ -18,11 +18,12 @@
 
 package org.hammerlab.guacamole.reads
 
+import org.hammerlab.guacamole.util.GuacFunSuite
 import org.hammerlab.guacamole.TestUtil
 import org.hammerlab.guacamole.TestUtil.Implicits._
 import org.scalatest.Matchers
 
-class UnmappedReadSerializerSuite extends TestUtil.SparkFunSuite with Matchers {
+class UnmappedReadSerializerSuite extends GuacFunSuite with Matchers {
 
   test("serialize / deserialize unmapped read") {
     val read = UnmappedRead(

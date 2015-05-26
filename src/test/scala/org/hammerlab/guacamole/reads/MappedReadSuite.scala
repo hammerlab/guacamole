@@ -19,11 +19,11 @@
 package org.hammerlab.guacamole.reads
 
 import htsjdk.samtools.TextCigarCodec
-import org.hammerlab.guacamole.TestUtil
+import org.hammerlab.guacamole.util.GuacFunSuite
 import org.hammerlab.guacamole.TestUtil.Implicits._
 import org.scalatest.Matchers
 
-class MappedReadSuite extends TestUtil.SparkFunSuite with Matchers {
+class MappedReadSuite extends GuacFunSuite with Matchers {
 
   test("mappedread is mapped") {
     val read = MappedRead(

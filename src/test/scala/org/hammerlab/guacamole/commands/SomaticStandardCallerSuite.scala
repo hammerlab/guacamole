@@ -18,15 +18,15 @@
 
 package org.hammerlab.guacamole.commands
 
+import org.hammerlab.guacamole.util.GuacFunSuite
 import org.hammerlab.guacamole.{ Bases, TestUtil }
-import org.hammerlab.guacamole.TestUtil.SparkFunSuite
 import org.hammerlab.guacamole.filters.SomaticGenotypeFilter
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.MappedRead
 import org.scalatest.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks
 
-class SomaticStandardCallerSuite extends SparkFunSuite with Matchers with TableDrivenPropertyChecks {
+class SomaticStandardCallerSuite extends GuacFunSuite with Matchers with TableDrivenPropertyChecks {
 
   def loadPileup(filename: String, locus: Long = 0): Pileup = {
     val records = TestUtil.loadReads(sc, filename).mappedReads

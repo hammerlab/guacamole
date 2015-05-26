@@ -18,11 +18,6 @@
 
 package org.hammerlab.guacamole
 
-/**
- * This is copied from SparkFunSuite in ADAM, which is for some reason not exposed.
- *
- */
-
 import java.io.{ File, FileNotFoundException }
 import java.net.ServerSocket
 import java.util.UUID
@@ -216,71 +211,5 @@ object TestUtil extends Matchers {
       case e: FileNotFoundException => {}
     }
   }
-
-  trait SparkFunSuite extends FunSuite with BeforeAndAfter {
-
-    val sparkPortProperty = "spark.driver.port"
-
-    var sc: SparkContext = _
-    var maybeLevels: Option[Map[String, Level]] = None
-
-    def createSpark(sparkName: String, silenceSpark: Boolean = true) = {
-      // Silence the Spark logs if requested
-      maybeLevels = if (silenceSpark) Some(SparkLogUtil.silenceSpark()) else None
-      synchronized {
-        // Find two unused ports
-        val driverSocket = new ServerSocket(0)
-        val uiSocket = new ServerSocket(0)
-        val driverPort = driverSocket.getLocalPort
-        val uiPort = uiSocket.getLocalPort
-        driverSocket.close()
-        uiSocket.close()
-        val conf = new SparkConf(false)
-          .setAppName("guacamole: " + sparkName)
-          .setMaster("local[4]")
-          .set(sparkPortProperty, driverPort.toString)
-          .set("spark.ui.port", uiPort.toString)
-          .set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
-          .set("spark.kryo.registrator", "org.hammerlab.guacamole.GuacamoleKryoRegistrator")
-          .set("spark.kryoserializer.buffer.mb", "4")
-          .set("spark.kryo.referenceTracking", "true")
-        sc = new SparkContext(conf)
-      }
-    }
-
-    def destroySpark() {
-      // Stop the context
-      sc.stop()
-      sc = null
-
-      // See notes at:
-      // http://blog.quantifind.com/posts/spark-unit-test/
-      // That post calls for clearing 'spark.master.port', but this thread
-      // https://groups.google.com/forum/#!topic/spark-users/MeVzgoJXm8I
-      // suggests that the property was renamed 'spark.driver.port'
-      System.clearProperty(sparkPortProperty)
-
-      maybeLevels match {
-        case None =>
-        case Some(levels) =>
-          for ((className, level) <- levels) {
-            SparkLogUtil.setLogLevels(level, List(className))
-          }
-      }
-    }
-
-    def sparkTest(name: String, silenceSpark: Boolean = true)(body: => Unit) {
-      if (runOnly.isEmpty || runOnly == name) {
-        test(name, SparkTest) {
-          createSpark(name, silenceSpark)
-          try {
-            // Run the test
-            body
-          } finally {
-            destroySpark()
-          }
-        }
-      }
-    }
-  }
+  
 }
