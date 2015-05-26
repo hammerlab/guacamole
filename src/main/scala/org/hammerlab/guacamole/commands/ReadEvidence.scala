@@ -20,7 +20,7 @@ package org.hammerlab.guacamole.commands
 
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
-import org.bdgenomics.adam.rdd.variation.VariationContext
+import org.bdgenomics.adam.rdd.ADAMContext
 import org.bdgenomics.formats.avro.Variant
 import org.hammerlab.guacamole._
 import org.hammerlab.guacamole.pileup.Pileup
@@ -58,9 +58,9 @@ object ReadEvidence {
 
     override def run(args: Arguments, sc: SparkContext): Unit = {
 
-      val adamContext = new VariationContext(sc)
+      val adamContext = new ADAMContext(sc)
 
-      val variants: RDD[Variant] = adamContext.adamVCFLoad(args.variants).map(_.variant)
+      val variants: RDD[Variant] = adamContext.loadVariants(args.variants)
       val reads: Seq[RDD[MappedRead]] = args.bams.zipWithIndex.map(
         bamFile =>
           ReadSet(
@@ -76,7 +76,7 @@ object ReadEvidence {
       val lociSet = LociSet.union(
         variants.map(
           variant => LociSet(variant.getContig.getContigName, variant.getStart, variant.getEnd))
-          .collect():_*)
+          .collect(): _*)
 
       val lociPartitions = DistributedUtil.partitionLociUniformly(args.parallelism, lociSet)
 
