@@ -20,7 +20,8 @@ package org.hammerlab.guacamole
 
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.formats.avro.{ Genotype, GenotypeAllele }
-import org.hammerlab.guacamole.TestUtil.assertBases
+import org.hammerlab.guacamole.util.{ TestUtil, GuacFunSuite }
+import TestUtil.assertBases
 import org.hammerlab.guacamole.commands.GermlineThreshold
 import org.hammerlab.guacamole.pileup.{ Pileup, PileupElement }
 import org.hammerlab.guacamole.reads.MappedRead
@@ -29,7 +30,7 @@ import org.scalatest.Matchers
 
 import scala.collection.JavaConversions._
 
-class DistributedUtilSuite extends TestUtil.SparkFunSuite with Matchers {
+class DistributedUtilSuite extends GuacFunSuite with Matchers {
 
   // You can use a line like the following to turn on only a particular unit test for debugging.
   // TestUtil.runOnly = "partitionLociByApproximateReadDepth chr20 synth1 subset"

@@ -16,24 +16,18 @@
  * limitations under the License.
  */
 
-package org.hammerlab.guacamole
-
-/**
- * This is copied from SparkFunSuite in ADAM, which is for some reason not exposed.
- *
- */
+package org.hammerlab.guacamole.util
 
 import java.io.{ File, FileNotFoundException }
-import java.net.ServerSocket
 import java.util.UUID
 
 import com.esotericsoftware.kryo.Kryo
 import com.twitter.chill.{ IKryoRegistrar, KryoInstantiator, KryoPool }
 import org.apache.commons.io.FileUtils
-import org.apache.log4j.{ Level, Logger }
-import org.apache.spark.{ SparkConf, SparkContext }
+import org.apache.spark.SparkContext
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.{ MappedRead, MateProperties, Read }
+import org.hammerlab.guacamole.{ Bases, GuacamoleKryoRegistrator, ReadSet }
 import org.scalatest._
 
 import scala.math._
@@ -177,34 +171,6 @@ object TestUtil extends Matchers {
     assert(abs(a - b) < epsilon, "|%.12f - %.12f| == %.12f >= %.12f".format(a, b, abs(a - b), epsilon))
   }
 
-  object SparkTest extends org.scalatest.Tag("org.hammerlab.guacamole.SparkScalaTestFunSuite")
-
-  object SparkLogUtil {
-    /**
-     * set all loggers to the given log level.  Returns a map of the value of every logger
-     * @param level Log4j level
-     * @param loggers Loggers to apply level to
-     * @return
-     */
-    def setLogLevels(level: org.apache.log4j.Level, loggers: TraversableOnce[String]) = {
-      loggers.map {
-        loggerName =>
-          val logger = Logger.getLogger(loggerName)
-          val prevLevel = logger.getLevel
-          logger.setLevel(level)
-          loggerName -> prevLevel
-      }.toMap
-    }
-
-    /**
-     * turn off most of spark logging.  Returns a map of the previous values so you can turn logging back to its
-     * former values
-     */
-    def silenceSpark() = {
-      setLogLevels(Level.WARN, Seq("spark", "org.eclipse.jetty", "akka"))
-    }
-  }
-
   /**
    * Delete a file or directory (recursively) if it exists.
    */
@@ -217,70 +183,4 @@ object TestUtil extends Matchers {
     }
   }
 
-  trait SparkFunSuite extends FunSuite with BeforeAndAfter {
-
-    val sparkPortProperty = "spark.driver.port"
-
-    var sc: SparkContext = _
-    var maybeLevels: Option[Map[String, Level]] = None
-
-    def createSpark(sparkName: String, silenceSpark: Boolean = true) = {
-      // Silence the Spark logs if requested
-      maybeLevels = if (silenceSpark) Some(SparkLogUtil.silenceSpark()) else None
-      synchronized {
-        // Find two unused ports
-        val driverSocket = new ServerSocket(0)
-        val uiSocket = new ServerSocket(0)
-        val driverPort = driverSocket.getLocalPort
-        val uiPort = uiSocket.getLocalPort
-        driverSocket.close()
-        uiSocket.close()
-        val conf = new SparkConf(false)
-          .setAppName("guacamole: " + sparkName)
-          .setMaster("local[4]")
-          .set(sparkPortProperty, driverPort.toString)
-          .set("spark.ui.port", uiPort.toString)
-          .set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
-          .set("spark.kryo.registrator", "org.hammerlab.guacamole.GuacamoleKryoRegistrator")
-          .set("spark.kryoserializer.buffer.mb", "4")
-          .set("spark.kryo.referenceTracking", "true")
-        sc = new SparkContext(conf)
-      }
-    }
-
-    def destroySpark() {
-      // Stop the context
-      sc.stop()
-      sc = null
-
-      // See notes at:
-      // http://blog.quantifind.com/posts/spark-unit-test/
-      // That post calls for clearing 'spark.master.port', but this thread
-      // https://groups.google.com/forum/#!topic/spark-users/MeVzgoJXm8I
-      // suggests that the property was renamed 'spark.driver.port'
-      System.clearProperty(sparkPortProperty)
-
-      maybeLevels match {
-        case None =>
-        case Some(levels) =>
-          for ((className, level) <- levels) {
-            SparkLogUtil.setLogLevels(level, List(className))
-          }
-      }
-    }
-
-    def sparkTest(name: String, silenceSpark: Boolean = true)(body: => Unit) {
-      if (runOnly.isEmpty || runOnly == name) {
-        test(name, SparkTest) {
-          createSpark(name, silenceSpark)
-          try {
-            // Run the test
-            body
-          } finally {
-            destroySpark()
-          }
-        }
-      }
-    }
-  }
 }

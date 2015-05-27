@@ -18,11 +18,11 @@
 
 package org.hammerlab.guacamole.reads
 
-import org.hammerlab.guacamole.TestUtil
-import org.hammerlab.guacamole.TestUtil.Implicits._
+import org.hammerlab.guacamole.util.{ TestUtil, GuacFunSuite }
+import TestUtil.Implicits._
 import org.scalatest.Matchers
 
-class UnmappedReadSuite extends TestUtil.SparkFunSuite with Matchers {
+class UnmappedReadSuite extends GuacFunSuite with Matchers {
 
   test("unmappedread is not mapped") {
     val read = UnmappedRead(

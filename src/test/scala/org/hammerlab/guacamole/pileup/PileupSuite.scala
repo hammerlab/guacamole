@@ -18,14 +18,15 @@
 
 package org.hammerlab.guacamole.pileup
 
-import org.hammerlab.guacamole.TestUtil.Implicits._
-import org.hammerlab.guacamole.TestUtil.assertBases
+import org.hammerlab.guacamole.util.{ TestUtil, GuacFunSuite }
+import TestUtil.Implicits._
+import TestUtil.assertBases
 import org.hammerlab.guacamole.reads.MappedRead
-import org.hammerlab.guacamole.{ Bases, TestUtil }
+import org.hammerlab.guacamole.Bases
 import org.scalatest.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks
 
-class PileupSuite extends TestUtil.SparkFunSuite with Matchers with TableDrivenPropertyChecks {
+class PileupSuite extends GuacFunSuite with Matchers with TableDrivenPropertyChecks {
 
   //lazy so that this is only accessed from inside a spark test where SparkContext has been initialized
   lazy val testAdamRecords = TestUtil.loadReads(sc, "different_start_reads.sam").mappedReads.collect()

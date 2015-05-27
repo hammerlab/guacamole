@@ -19,9 +19,10 @@
 package org.hammerlab.guacamole
 
 import com.google.common.collect._
+import org.hammerlab.guacamole.util.GuacFunSuite
 import org.scalatest.Matchers
 
-class LociMapSuite extends TestUtil.SparkFunSuite with Matchers {
+class LociMapSuite extends GuacFunSuite with Matchers {
 
   test("properties of empty LociMap") {
     val emptyMap = LociMap[String]()

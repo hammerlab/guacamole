@@ -21,11 +21,11 @@ package org.hammerlab.guacamole.reads
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.rdd.ADAMContext
 import org.bdgenomics.formats.avro.AlignmentRecord
-import org.hammerlab.guacamole.TestUtil
+import org.hammerlab.guacamole.util.{ TestUtil, GuacFunSuite }
 import org.scalatest.Matchers
 import org.bdgenomics.adam.rdd.ADAMContext._
 
-class ReadSetSuite extends TestUtil.SparkFunSuite with Matchers {
+class ReadSetSuite extends GuacFunSuite with Matchers {
 
   sparkTest("load and test filters") {
     val allReads = TestUtil.loadReads(sc, "mdtagissue.sam")
