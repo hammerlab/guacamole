@@ -18,8 +18,8 @@
 
 package org.hammerlab.guacamole.commands
 
+import org.hammerlab.guacamole.util.TestUtil
 import org.scalatest.{ Matchers, FunSuite }
-import org.hammerlab.guacamole.{ TestUtil }
 import org.bdgenomics.formats.avro.GenotypeAllele
 import scala.collection.JavaConversions._
 import org.hammerlab.guacamole.pileup.Pileup

@@ -18,7 +18,8 @@
 
 package org.hammerlab.guacamole.windowing
 
-import org.hammerlab.guacamole.{ LociSet, TestUtil }
+import org.hammerlab.guacamole.LociSet
+import org.hammerlab.guacamole.util.TestUtil
 import org.scalatest.{ FunSuite, Matchers }
 
 class SlidingWindowSuite extends FunSuite with Matchers {

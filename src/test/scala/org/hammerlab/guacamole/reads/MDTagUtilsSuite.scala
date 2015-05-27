@@ -1,6 +1,7 @@
 package org.hammerlab.guacamole.reads
 
-import org.hammerlab.guacamole.{ Bases, TestUtil }
+import org.hammerlab.guacamole.Bases
+import org.hammerlab.guacamole.util.TestUtil
 import org.scalatest.{ FunSuite, Matchers }
 
 class MDTagUtilsSuite extends FunSuite with Matchers {

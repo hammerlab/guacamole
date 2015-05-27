@@ -18,7 +18,8 @@
 
 package org.hammerlab.guacamole.variants
 
-import org.hammerlab.guacamole.{ TestUtil, Bases }
+import org.hammerlab.guacamole.Bases
+import org.hammerlab.guacamole.util.TestUtil
 import org.scalatest.{ Matchers, FunSuite }
 
 class AlleleSuite extends FunSuite with Matchers {

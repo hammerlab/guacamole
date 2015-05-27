@@ -321,6 +321,13 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.bdgenomics.bdg-utils</groupId>
+      <artifactId>bdg-utils-misc</artifactId>
+      <version>0.1.1</version>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-client</artifactId>
       <version>${hadoop.version}</version>
