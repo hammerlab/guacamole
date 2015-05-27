@@ -5647,7 +5647,7 @@
           41
         </td>
         <td>
-          3074
+          3075
         </td>
         <td>
           scala.Long.+
@@ -5663,19 +5663,6 @@
           3076
         </td>
         <td>
-          com.esotericsoftware.kryo.io.Output.writeString
-        </td>
-        <td style="background: #F0ADAD">
-          output.writeString({  scoverage.Invoker.invoked(3075, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  obj.sampleName})
-        </td>
-      </tr><tr>
-        <td>
-          51
-        </td>
-        <td>
-          3075
-        </td>
-        <td>
           org.hammerlab.guacamole.variants.CalledAllele.sampleName
         </td>
         <td style="background: #F0ADAD">
@@ -5683,23 +5670,36 @@
         </td>
       </tr><tr>
         <td>
-          52
+          51
         </td>
         <td>
-          3078
+          3077
         </td>
         <td>
           com.esotericsoftware.kryo.io.Output.writeString
         </td>
         <td style="background: #F0ADAD">
-          output.writeString({  scoverage.Invoker.invoked(3077, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  obj.referenceContig})
+          output.writeString({  scoverage.Invoker.invoked(3076, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  obj.sampleName})
         </td>
       </tr><tr>
         <td>
           52
         </td>
         <td>
-          3077
+          3079
+        </td>
+        <td>
+          com.esotericsoftware.kryo.io.Output.writeString
+        </td>
+        <td style="background: #F0ADAD">
+          output.writeString({  scoverage.Invoker.invoked(3078, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  obj.referenceContig})
+        </td>
+      </tr><tr>
+        <td>
+          52
+        </td>
+        <td>
+          3078
         </td>
         <td>
           org.hammerlab.guacamole.variants.CalledAllele.referenceContig
@@ -5715,19 +5715,6 @@
           3080
         </td>
         <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          true
-        </td>
-      </tr><tr>
-        <td>
-          53
-        </td>
-        <td>
-          3079
-        </td>
-        <td>
           org.hammerlab.guacamole.variants.CalledAllele.start
         </td>
         <td style="background: #F0ADAD">
@@ -5738,26 +5725,39 @@
           53
         </td>
         <td>
-          3081
+          3082
         </td>
         <td>
           com.esotericsoftware.kryo.io.Output.writeLong
         </td>
         <td style="background: #F0ADAD">
-          output.writeLong({  scoverage.Invoker.invoked(3079, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  obj.start}, {  scoverage.Invoker.invoked(3080, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  true})
+          output.writeLong({  scoverage.Invoker.invoked(3080, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  obj.start}, {  scoverage.Invoker.invoked(3081, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  true})
+        </td>
+      </tr><tr>
+        <td>
+          53
+        </td>
+        <td>
+          3081
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          true
         </td>
       </tr><tr>
         <td>
           54
         </td>
         <td>
-          3082
+          3084
         </td>
         <td>
-          org.hammerlab.guacamole.variants.CalledAllele.allele
+          org.hammerlab.guacamole.variants.AlleleSerializer.write
         </td>
         <td style="background: #F0ADAD">
-          obj.allele
+          CalledAlleleSerializer.this.alleleSerializer.write(kryo, output, {  scoverage.Invoker.invoked(3083, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  obj.allele})
         </td>
       </tr><tr>
         <td>
@@ -5767,10 +5767,10 @@
           3083
         </td>
         <td>
-          org.hammerlab.guacamole.variants.AlleleSerializer.write
+          org.hammerlab.guacamole.variants.CalledAllele.allele
         </td>
         <td style="background: #F0ADAD">
-          CalledAlleleSerializer.this.alleleSerializer.write(kryo, output, {  scoverage.Invoker.invoked(3082, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  obj.allele})
+          obj.allele
         </td>
       </tr><tr>
         <td>
@@ -5780,23 +5780,23 @@
           3085
         </td>
         <td>
-          org.hammerlab.guacamole.variants.AlleleEvidenceSerializer.write
+          org.hammerlab.guacamole.variants.CalledAllele.evidence
         </td>
         <td style="background: #F0ADAD">
-          CalledAlleleSerializer.this.alleleEvidenceSerializer.write(kryo, output, {  scoverage.Invoker.invoked(3084, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  obj.evidence})
+          obj.evidence
         </td>
       </tr><tr>
         <td>
           55
         </td>
         <td>
-          3084
+          3086
         </td>
         <td>
-          org.hammerlab.guacamole.variants.CalledAllele.evidence
+          org.hammerlab.guacamole.variants.AlleleEvidenceSerializer.write
         </td>
         <td style="background: #F0ADAD">
-          obj.evidence
+          CalledAlleleSerializer.this.alleleEvidenceSerializer.write(kryo, output, {  scoverage.Invoker.invoked(3085, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  obj.evidence})
         </td>
       </tr><tr>
         <td>
@@ -5806,10 +5806,10 @@
           3089
         </td>
         <td>
-          &lt;nosymbol&gt;
+          com.esotericsoftware.kryo.io.Output.writeInt
         </td>
         <td style="background: #F0ADAD">
-          ()
+          output.writeInt({  scoverage.Invoker.invoked(3087, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  obj.length}, {  scoverage.Invoker.invoked(3088, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  true})
         </td>
       </tr><tr>
         <td>
@@ -5817,19 +5817,6 @@
         </td>
         <td>
           3088
-        </td>
-        <td>
-          com.esotericsoftware.kryo.io.Output.writeInt
-        </td>
-        <td style="background: #F0ADAD">
-          output.writeInt({  scoverage.Invoker.invoked(3086, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  obj.length}, {  scoverage.Invoker.invoked(3087, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  true})
-        </td>
-      </tr><tr>
-        <td>
-          56
-        </td>
-        <td>
-          3087
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -5842,7 +5829,7 @@
           56
         </td>
         <td>
-          3086
+          3087
         </td>
         <td>
           org.hammerlab.guacamole.variants.CalledAllele.length
@@ -5852,20 +5839,20 @@
         </td>
       </tr><tr>
         <td>
-          61
+          56
         </td>
         <td>
           3090
         </td>
         <td>
-          com.esotericsoftware.kryo.io.Input.readString
+          &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          input.readString()
+          ()
         </td>
       </tr><tr>
         <td>
-          62
+          61
         </td>
         <td>
           3091
@@ -5878,10 +5865,23 @@
         </td>
       </tr><tr>
         <td>
-          63
+          62
         </td>
         <td>
           3092
+        </td>
+        <td>
+          com.esotericsoftware.kryo.io.Input.readString
+        </td>
+        <td style="background: #F0ADAD">
+          input.readString()
+        </td>
+      </tr><tr>
+        <td>
+          63
+        </td>
+        <td>
+          3093
         </td>
         <td>
           com.esotericsoftware.kryo.io.Input.readLong
@@ -5894,7 +5894,7 @@
           64
         </td>
         <td>
-          3093
+          3094
         </td>
         <td>
           org.hammerlab.guacamole.variants.AlleleSerializer.read
@@ -5907,7 +5907,7 @@
           65
         </td>
         <td>
-          3094
+          3095
         </td>
         <td>
           org.hammerlab.guacamole.variants.AlleleEvidenceSerializer.read
@@ -5920,7 +5920,7 @@
           66
         </td>
         <td>
-          3095
+          3096
         </td>
         <td>
           com.esotericsoftware.kryo.io.Input.readInt
@@ -5933,7 +5933,7 @@
           68
         </td>
         <td>
-          3096
+          3097
         </td>
         <td>
           org.hammerlab.guacamole.variants.CalledAllele.apply
