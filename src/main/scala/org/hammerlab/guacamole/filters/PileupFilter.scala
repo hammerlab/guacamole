@@ -23,45 +23,6 @@ import org.hammerlab.guacamole.pileup.{ Pileup, PileupElement }
 import org.kohsuke.args4j.Option
 
 /**
- * This is a cheap computation for a region's complexity
- * We define a region's complexity as the number of reads whose alignment quality was below a certain threshold
- * (minimumAlignmentQuality) or reads have unmapped or incorrectly mapped pairs
- *
- * This filter eliminates pileups where the number of low quality aligned reads is above the maximumAlignmentComplexity
- * or reads have unmapped or incorrectly mapped pairs
- */
-object RegionComplexityFilter {
-
-  /**
-   *
-   * @param elements sequence of pileup elements to filter
-   * @param maximumAlignmentComplexity The maximum allowed percent of reads to be poorly aligned (as defined by minimumAlignmentQuality)
-   * @param minimumAlignmentQuality Threshold to define whether a read was poorly aligned
-   * @return Empty sequence if the number of poorly mapped reads surpass the maximumAlignmentComplexity
-   */
-  def apply(elements: Seq[PileupElement], maximumAlignmentComplexity: Int, minimumAlignmentQuality: Int): Seq[PileupElement] = {
-    val depth = elements.length
-    val qualityMappedReads = elements.filter(el =>
-      el.read.alignmentQuality >= minimumAlignmentQuality &&
-        (for {
-          mp <- el.read.matePropertiesOpt
-          if mp.isMateMapped
-          mateReferenceContig <- mp.mateReferenceContig
-          if mateReferenceContig == el.read.referenceContig
-        } yield {
-          Some(true)
-        }).isDefined
-    ).length
-
-    if (math.ceil((depth - qualityMappedReads) * 100.0 / depth) < maximumAlignmentComplexity) {
-      elements
-    } else {
-      Seq.empty
-    }
-  }
-}
-
-/**
  * Filter to remove pileups which may produce multi-allelic variant calls.
  * These are generally more complex and more difficult to call
  */
@@ -136,12 +97,6 @@ object PileupFilter {
     @Option(name = "--min-mapq", usage = "Minimum read mapping quality for a read (Phred-scaled). (default: 1)")
     var minAlignmentQuality: Int = 1
 
-    @Option(name = "--max-mapping-complexity", usage = "Maximum percent of reads that can be mapped with low quality (indicative of a complex region")
-    var maxMappingComplexity: Int = 20
-
-    @Option(name = "--min-alignment-for-complexity", usage = "Minimum read mapping quality for a read (Phred-scaled) that counts towards poorly mapped for complexity (default: 1)")
-    var minAlignmentForComplexity: Int = 1
-
     @Option(name = "--max-percent-abnormal-insert-size", usage = "Filter pileups where % of reads with abnormal insert size is greater than specified (default: 100)")
     var maxPercentAbnormalInsertSize: Int = 100
 
@@ -156,8 +111,6 @@ object PileupFilter {
   def apply(pileup: Pileup, args: PileupFilterArguments): Pileup = {
     apply(pileup,
       args.filterMultiAllelic,
-      args.maxMappingComplexity,
-      args.minAlignmentForComplexity,
       args.minAlignmentQuality,
       args.maxPercentAbnormalInsertSize,
       args.minEdgeDistance)
@@ -166,8 +119,6 @@ object PileupFilter {
 
   def apply(pileup: Pileup,
             filterMultiAllelic: Boolean,
-            maxMappingComplexity: Int,
-            minAlignmentForComplexity: Int,
             minAlignmentQuality: Int,
             maxPercentAbnormalInsertSize: Int,
             minEdgeDistance: Int): Pileup = {
@@ -180,10 +131,6 @@ object PileupFilter {
 
     if (maxPercentAbnormalInsertSize < 100) {
       elements = AbnormalInsertSizePileupFilter(elements, maxPercentAbnormalInsertSize)
-    }
-
-    if (maxMappingComplexity < 100) {
-      elements = RegionComplexityFilter(elements, maxMappingComplexity, minAlignmentForComplexity)
     }
 
     if (minAlignmentQuality > 0) {

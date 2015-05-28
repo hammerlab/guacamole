@@ -61,8 +61,6 @@ class SomaticStandardCallerSuite extends GuacFunSuite with Matchers with TableDr
           tumorPileup,
           normalPileup,
           logOddsThreshold,
-          maxMappingComplexity,
-          minAlignmentForComplexity,
           minAlignmentQuality,
           filterMultiAllelic
         )
