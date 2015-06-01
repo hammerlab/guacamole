@@ -31,7 +31,7 @@ For hacking Guacamole, see our [code docs](http://www.hammerlab.org/guacamole/do
 
 # Running Guacamole on a Single Node
 
-Guacamole requires [Apache Maven](http://maven.apache.org/).
+Guacamole requires [Apache Maven](http://maven.apache.org/) (version 3.0.4 or higher).
 
 Build:
 
