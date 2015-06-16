@@ -26,7 +26,7 @@ import com.twitter.chill.{ IKryoRegistrar, KryoInstantiator, KryoPool }
 import org.apache.commons.io.FileUtils
 import org.apache.spark.SparkContext
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.reads.{ MappedRead, MateProperties, Read }
+import org.hammerlab.guacamole.reads.{ MateAlignmentProperties, ReadPair, MappedRead, Read }
 import org.hammerlab.guacamole.{ Bases, GuacamoleKryoRegistrator, ReadSet }
 import org.scalatest._
 
@@ -99,29 +99,34 @@ object TestUtil extends Matchers {
     isMatePositiveStrand: Boolean = false,
     sequence: String = "ACTGACTGACTG",
     cigar: String = "12M",
-    mdTag: String = "12"): MappedRead = {
+    mdTag: String = "12"): ReadPair[MappedRead] = {
 
     val qualityScoreString = sequence.map(x => '@').mkString
 
-    Read(
-      sequence,
-      cigarString = cigar,
-      start = start,
-      referenceContig = chr,
-      mdTagString = mdTag,
-      isPositiveStrand = isPositiveStrand,
-      baseQualities = qualityScoreString,
-      alignmentQuality = alignmentQuality,
-      matePropertiesOpt = Some(
-        MateProperties(
-          isFirstInPair = false,
-          inferredInsertSize = None,
-          isMateMapped = isMateMapped,
-          mateReferenceContig = mateReferenceContig,
-          mateStart = mateStart,
-          isMatePositiveStrand = isMatePositiveStrand
+    ReadPair(
+      Read(
+        sequence,
+        cigarString = cigar,
+        start = start,
+        referenceContig = chr,
+        mdTagString = mdTag,
+        isPositiveStrand = isPositiveStrand,
+        baseQualities = qualityScoreString,
+        alignmentQuality = alignmentQuality,
+        isPaired = true
+      ),
+      isFirstInPair = true,
+      mateAlignmentProperties =
+        if (isMateMapped) Some(
+          MateAlignmentProperties(
+            mateReferenceContig.get,
+            mateStart.get,
+            inferredInsertSize = None,
+            isMatePositiveStrand = isMatePositiveStrand
+          )
         )
-      )
+        else
+          None
     )
   }
 

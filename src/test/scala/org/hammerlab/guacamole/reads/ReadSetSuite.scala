@@ -34,7 +34,10 @@ class ReadSetSuite extends GuacFunSuite with Matchers {
     val mdTagReads = TestUtil.loadReads(sc, "mdtagissue.sam", Read.InputFilters(mapped = true))
     mdTagReads.reads.count() should be(6)
 
-    val nonDuplicateReads = TestUtil.loadReads(sc, "mdtagissue.sam", Read.InputFilters(mapped = true, nonDuplicate = true))
+    val nonDuplicateReads = TestUtil.loadReads(
+      sc,
+      "mdtagissue.sam",
+      Read.InputFilters(mapped = true, nonDuplicate = true))
     nonDuplicateReads.reads.count() should be(4)
   }
 
@@ -55,19 +58,6 @@ class ReadSetSuite extends GuacFunSuite with Matchers {
     val (allReads, _) = Read.loadReadRDDAndSequenceDictionaryFromADAM(adamOut, sc, token = 0)
     allReads.count() should be(8)
     val collectedReads = allReads.collect()
-
-    //    The follow test does not pass due to TLEN or InferredInsertSize not set on ADAMRecords
-    //    See https://github.com/bigdatagenomics/bdg-formats/issues/37
-    //    origReads.zip(collectedReads).foreach( {
-    //      case (guacRead, adamRead) => guacRead should be(adamRead)
-    //    })
-
-    // Filter to cases where they will match
-    val noInsertSizeReads = origReads.zip(collectedReads).filter(
-      reads => reads._1.matePropertiesOpt.isEmpty || reads._1.matePropertiesOpt.exists(mateProp => !mateProp.inferredInsertSize.isDefined))
-    noInsertSizeReads.foreach({
-      case (guacRead, adamRead) => guacRead should be(adamRead)
-    })
 
     val (filteredReads, _) = Read.loadReadRDDAndSequenceDictionary(
       adamOut,
@@ -93,7 +83,7 @@ class ReadSetSuite extends GuacFunSuite with Matchers {
       deserialized.mdTagString should equal(read.mdTagString)
       deserialized.failedVendorQualityChecks should equal(read.failedVendorQualityChecks)
       deserialized.isPositiveStrand should equal(read.isPositiveStrand)
-      deserialized.matePropertiesOpt should equal(read.matePropertiesOpt)
+      deserialized.isPaired should equal(read.isPaired)
     }
 
   }

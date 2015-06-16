@@ -22,7 +22,7 @@ import com.esotericsoftware.kryo.io.{ Input, Output }
 import com.esotericsoftware.kryo.{ Kryo, Serializer }
 
 // Serialization: UnmappedRead
-class UnmappedReadSerializer extends Serializer[UnmappedRead] with CanSerializeMatePropertiesOption {
+class UnmappedReadSerializer extends Serializer[UnmappedRead] {
   def write(kryo: Kryo, output: Output, obj: UnmappedRead) = {
     output.writeInt(obj.token)
     assert(obj.sequence.length == obj.baseQualities.length)
@@ -33,8 +33,8 @@ class UnmappedReadSerializer extends Serializer[UnmappedRead] with CanSerializeM
     output.writeString(obj.sampleName)
     output.writeBoolean(obj.failedVendorQualityChecks)
     output.writeBoolean(obj.isPositiveStrand)
+    output.writeBoolean(obj.isPaired)
 
-    write(kryo, output, obj.matePropertiesOpt)
   }
 
   def read(kryo: Kryo, input: Input, klass: Class[UnmappedRead]): UnmappedRead = {
@@ -46,8 +46,7 @@ class UnmappedReadSerializer extends Serializer[UnmappedRead] with CanSerializeM
     val sampleName = input.readString().intern()
     val failedVendorQualityChecks = input.readBoolean()
     val isPositiveStrand = input.readBoolean()
-
-    val matePropertiesOpt = read(kryo, input)
+    val isPaired = input.readBoolean()
 
     UnmappedRead(
       token,
@@ -57,7 +56,7 @@ class UnmappedReadSerializer extends Serializer[UnmappedRead] with CanSerializeM
       sampleName.intern,
       failedVendorQualityChecks,
       isPositiveStrand,
-      matePropertiesOpt
+      isPaired
     )
   }
 }
