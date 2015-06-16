@@ -45,7 +45,7 @@ case class MappedRead(
     mdTagString: String,
     failedVendorQualityChecks: Boolean,
     isPositiveStrand: Boolean,
-    matePropertiesOpt: Option[MateProperties]) extends Read with HasReferenceRegion {
+    isPaired: Boolean) extends Read with HasReferenceRegion {
 
   assert(baseQualities.length == sequence.length,
     "Base qualities have length %d but sequence has length %d".format(baseQualities.length, sequence.length))
