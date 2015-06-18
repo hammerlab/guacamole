@@ -100,7 +100,7 @@ class SomaticStandardCallerSuite extends GuacFunSuite with Matchers with TableDr
     val (tumorReads, normalReads) = TestUtil.loadTumorNormalReads(sc,
       "synthetic.challenge.set1.tumor.v2.withMDTags.chr2.complexvar.sam",
       "synthetic.challenge.set1.normal.v2.withMDTags.chr2.complexvar.sam")
-    val negativePositions = Array[Long](148487667, 134307261, 90376213, 3638733, 112529049, 91662497, 109347468)
+    val negativePositions = Array[Long](148487667, 134307261, 90376213, 3638733, 109347468)
     testVariants(tumorReads, normalReads, negativePositions, shouldFindVariant = false)
 
     val positivePositions = Array[Long](82949713, 130919744)
