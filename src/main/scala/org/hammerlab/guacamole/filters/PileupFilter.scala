@@ -49,7 +49,6 @@ object PileupFilter {
 
     @Option(name = "--min-mapq", usage = "Minimum read mapping quality for a read (Phred-scaled). (default: 1)")
     var minAlignmentQuality: Int = 1
-    
     @Option(name = "--filter-multi-allelic", usage = "Filter any pileups > 2 bases considered")
     var filterMultiAllelic: Boolean = false
 
