@@ -61,13 +61,13 @@ trait Read {
   val isDuplicate: Boolean
 
   /** Is this read mapped? */
-  final val isMapped: Boolean = getMappedReadOpt.isDefined
+  final val isMapped: Boolean = this match {
+    case r: MappedRead   => true
+    case r: UnmappedRead => false
+  }
 
   /** The sample (e.g. "tumor" or "patient3636") name. */
   val sampleName: String
-
-  /** Returns this Read as a MappedRead iff isMapped=true, otherwise None. */
-  def getMappedReadOpt: Option[MappedRead] = None
 
   /** Whether the read failed predefined vendor checks for quality */
   val failedVendorQualityChecks: Boolean
@@ -119,40 +119,27 @@ object Read extends Logging {
     mdTagString: String,
     failedVendorQualityChecks: Boolean = false,
     isPositiveStrand: Boolean = true,
-    matePropertiesOpt: Option[MateProperties] = None): Read = {
+    matePropertiesOpt: Option[MateProperties] = None) = {
 
     val sequenceArray = sequence.map(_.toByte).toArray
     val qualityScoresArray = baseQualityStringToArray(baseQualities, sequenceArray.length)
 
-    if (referenceContig.isEmpty) {
-      UnmappedRead(
-        token,
-        sequenceArray,
-        qualityScoresArray,
-        isDuplicate,
-        sampleName.intern,
-        failedVendorQualityChecks,
-        isPositiveStrand,
-        matePropertiesOpt = matePropertiesOpt
-      )
-    } else {
-      val cigar = TextCigarCodec.getSingleton.decode(cigarString)
-      MappedRead(
-        token,
-        sequenceArray,
-        qualityScoresArray,
-        isDuplicate,
-        sampleName.intern,
-        referenceContig,
-        alignmentQuality,
-        start,
-        cigar,
-        mdTagString,
-        failedVendorQualityChecks,
-        isPositiveStrand,
-        matePropertiesOpt = matePropertiesOpt
-      )
-    }
+    val cigar = TextCigarCodec.getSingleton.decode(cigarString)
+    MappedRead(
+      token,
+      sequenceArray,
+      qualityScoresArray,
+      isDuplicate,
+      sampleName.intern,
+      referenceContig,
+      alignmentQuality,
+      start,
+      cigar,
+      mdTagString,
+      failedVendorQualityChecks,
+      isPositiveStrand,
+      matePropertiesOpt = matePropertiesOpt
+    )
   }
 
   /**
