@@ -21,7 +21,7 @@ package org.hammerlab.guacamole
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.models.SequenceDictionary
-import org.hammerlab.guacamole.reads.Read
+import org.hammerlab.guacamole.reads.{ UnmappedRead, MappedRead, Read }
 
 /**
  * A ReadSet contains an RDD of reads along with some metadata about them.
@@ -43,7 +43,12 @@ case class ReadSet(
     contigLengthsFromDictionary: Boolean) {
 
   /** Only mapped reads. */
-  lazy val mappedReads = reads.flatMap(_.getMappedReadOpt)
+  lazy val mappedReads = reads.flatMap(read =>
+    read match {
+      case r: MappedRead   => Some(r)
+      case r: UnmappedRead => None
+    }
+  )
 
   /**
    * A map from contig name -> length of contig.

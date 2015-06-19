@@ -47,7 +47,6 @@ class UnmappedReadSuite extends GuacFunSuite with Matchers {
 
     read.isMapped should be(false)
     read.asInstanceOf[Read].isMapped should be(false)
-    read.getMappedReadOpt should be(None)
 
     val collectionMappedReads: Seq[Read] = Seq(read)
     collectionMappedReads(0).isMapped should be(false)
