@@ -46,9 +46,6 @@ object SomaticStandard {
 
   protected class Arguments extends SomaticCallerArgs with PileupFilterArguments with SomaticGenotypeFilterArguments {
 
-    @Opt(name = "--snv-window-range", usage = "Number of bases before and after to check for additional matches or deletions")
-    var snvWindowRange: Int = 20
-
     @Opt(name = "--odds", usage = "Minimum log odds threshold for possible variant candidates")
     var oddsThreshold: Int = 20
 
@@ -66,11 +63,6 @@ object SomaticStandard {
       assert(tumorReads.sequenceDictionary == normalReads.sequenceDictionary,
         "Tumor and normal samples have different sequence dictionaries. Tumor dictionary: %s.\nNormal dictionary: %s."
           .format(tumorReads.sequenceDictionary, normalReads.sequenceDictionary))
-
-      val snvWindowRange = args.snvWindowRange
-
-      val maxMappingComplexity = args.maxMappingComplexity
-      val minAlignmentForComplexity = args.minAlignmentForComplexity
 
       val filterMultiAllelic = args.filterMultiAllelic
       val minAlignmentQuality = args.minAlignmentQuality
@@ -97,13 +89,14 @@ object SomaticStandard {
               pileupTumor,
               pileupNormal,
               oddsThreshold,
-              maxMappingComplexity,
-              minAlignmentForComplexity,
               minAlignmentQuality,
               filterMultiAllelic,
               maxReadDepth
             ).iterator
         )
+
+      potentialGenotypes.persist()
+      Common.progress("Computed %,d potential genotypes".format(potentialGenotypes.count))
 
       // Filter potential genotypes to min read values
       potentialGenotypes =
@@ -120,23 +113,7 @@ object SomaticStandard {
           args.minTumorAlternateReadDepth
         )
 
-      potentialGenotypes.persist()
-      Common.progress("Computed %,d potential genotypes".format(potentialGenotypes.count))
-
-      val genotypeLociPartitions = DistributedUtil.partitionLociUniformly(args.parallelism, loci)
-      val genotypes: RDD[CalledSomaticAllele] =
-        DistributedUtil.windowFlatMapWithState[CalledSomaticAllele, CalledSomaticAllele, Option[String]](
-          Seq(potentialGenotypes),
-          genotypeLociPartitions,
-          skipEmpty = true,
-          snvWindowRange.toLong,
-          None,
-          removeCorrelatedGenotypes
-        )
-      genotypes.persist()
-      Common.progress("Computed %,d genotypes after regional analysis".format(genotypes.count))
-
-      val filteredGenotypes: RDD[CalledSomaticAllele] = SomaticGenotypeFilter(genotypes, args)
+      val filteredGenotypes: RDD[CalledSomaticAllele] = SomaticGenotypeFilter(potentialGenotypes, args)
       Common.progress("Computed %,d genotypes after basic filtering".format(filteredGenotypes.count))
 
       Common.writeVariantsFromArguments(
@@ -147,33 +124,9 @@ object SomaticStandard {
       DelayedMessages.default.print()
     }
 
-    /**
-     * Remove genotypes if there are others in a nearby window
-     *
-     * @param state Unused
-     * @param genotypeWindows Collection of potential genotypes in the window
-     * @return Set of genotypes if there are no others in the window
-     */
-    def removeCorrelatedGenotypes(state: Option[String],
-                                  genotypeWindows: Seq[SlidingWindow[CalledSomaticAllele]]): (Option[String], Iterator[CalledSomaticAllele]) = {
-      val genotypeWindow = genotypeWindows(0)
-      val locus = genotypeWindow.currentLocus
-      val currentGenotypes = genotypeWindow.currentRegions.filter(_.overlapsLocus(locus))
-
-      assert(currentGenotypes.length <= 1, "There cannot be more than one called genotype at the given locus")
-
-      if (currentGenotypes.size == genotypeWindow.currentRegions().size) {
-        (None, currentGenotypes.iterator)
-      } else {
-        (None, Iterator.empty)
-      }
-    }
-
     def findPotentialVariantAtLocus(tumorPileup: Pileup,
                                     normalPileup: Pileup,
                                     oddsThreshold: Int,
-                                    maxMappingComplexity: Int = 100,
-                                    minAlignmentForComplexity: Int = 1,
                                     minAlignmentQuality: Int = 1,
                                     filterMultiAllelic: Boolean = false,
                                     maxReadDepth: Int = Int.MaxValue): Seq[CalledSomaticAllele] = {
@@ -181,8 +134,6 @@ object SomaticStandard {
       val filteredNormalPileup = PileupFilter(
         normalPileup,
         filterMultiAllelic,
-        maxMappingComplexity = 100,
-        minAlignmentForComplexity,
         minAlignmentQuality,
         minEdgeDistance = 0,
         maxPercentAbnormalInsertSize = 100
@@ -191,8 +142,6 @@ object SomaticStandard {
       val filteredTumorPileup = PileupFilter(
         tumorPileup,
         filterMultiAllelic,
-        maxMappingComplexity,
-        minAlignmentForComplexity,
         minAlignmentQuality,
         minEdgeDistance = 0,
         maxPercentAbnormalInsertSize = 100
