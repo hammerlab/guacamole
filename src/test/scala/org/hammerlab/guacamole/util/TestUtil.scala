@@ -78,8 +78,8 @@ object TestUtil extends Matchers {
       qualityScores.get.map(q => q + 33).map(_.toChar).mkString
     } else {
       sequence.map(x => '@').mkString
-    }
-
+    } 
+    
     Read(
       sequence,
       cigarString = cigar,
@@ -88,7 +88,8 @@ object TestUtil extends Matchers {
       referenceContig = chr,
       baseQualities = qualityScoreString,
       alignmentQuality = alignmentQuality
-    ).getMappedReadOpt.get
+    )
+
   }
 
   def makePairedRead(
@@ -125,7 +126,7 @@ object TestUtil extends Matchers {
           isMatePositiveStrand = isMatePositiveStrand
         )
       )
-    ).getMappedReadOpt.get
+    )
   }
 
   def assertBases(bases1: Iterable[Byte], bases2: String) = Bases.basesToString(bases1) should equal(bases2)

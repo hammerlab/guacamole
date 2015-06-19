@@ -54,8 +54,6 @@ class MappedReadSuite extends GuacFunSuite with Matchers {
     read.isMapped should be(true)
     read.asInstanceOf[Read].isMapped should be(true)
 
-    read.getMappedReadOpt.exists(_.isMapped) should be(true)
-
   }
 
   test("mixed collections mapped and unmapped reads") {

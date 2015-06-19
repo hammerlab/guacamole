@@ -50,8 +50,6 @@ case class MappedRead(
   assert(baseQualities.length == sequence.length,
     "Base qualities have length %d but sequence has length %d".format(baseQualities.length, sequence.length))
 
-  final override lazy val getMappedReadOpt = Some(this)
-
   def mdTag = MdTag(mdTagString, start)
 
   lazy val referenceBases: Seq[Byte] =
