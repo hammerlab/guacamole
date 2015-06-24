@@ -56,7 +56,7 @@ object SomaticStandard {
     override val description = "call somatic variants using independent callers on tumor and normal"
 
     override def run(args: Arguments, sc: SparkContext): Unit = {
-
+      Common.validateArguments(args)
       val filters = Read.InputFilters(mapped = true, nonDuplicate = true, passedVendorQualityChecks = true)
       val (tumorReads, normalReads) = Common.loadTumorNormalReadsFromArguments(args, sc, filters)
 
