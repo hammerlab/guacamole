@@ -115,9 +115,8 @@ object GermlineThreshold {
           }
 
           sortedAlleles match {
-            /* If no alleles are above our threshold, we emit a NoCall variant with the reference allele
-           * as the variant allele.
-           */
+            // If no alleles are above our threshold, we emit a NoCall variant with the reference allele
+            // as the variant allele.
             case Nil =>
               if (emitNoCall)
                 variant(
@@ -141,6 +140,15 @@ object GermlineThreshold {
             // Hom alt.
             case (allele: Allele, count) :: Nil =>
               variant(allele, Alt :: Alt :: Nil) :: Nil
+
+            // Heterozygous deletion
+            case (allele1, count1) :: (allele2, count2) :: rest if
+                  ((!allele1.isVariant || !allele2.isVariant) &&
+                  (allele1.altBases == Nil ^ allele2.altBases == Nil)) => {
+              val (deletedAllele, referenceAllele) =
+                  if (allele1.altBases == Nil) (allele1, allele2) else (allele2, allele1)
+              variant(Allele(referenceAllele.refBases, deletedAllele.altBases), Ref :: Alt :: Nil) :: Nil
+            }
 
             // Het alt.
             case (allele1, count1) :: (allele2, count2) :: rest if allele1.isVariant ^ allele2.isVariant =>
