@@ -48,7 +48,7 @@ object GermlineStandard {
     override val description = "call variants using a simple quality-based probability"
 
     override def run(args: Arguments, sc: SparkContext): Unit = {
-
+      Common.validateArguments(args)
       val readSet = Common.loadReadsFromArguments(args, sc, Read.InputFilters(mapped = true, nonDuplicate = true))
       readSet.mappedReads.persist()
       Common.progress(
