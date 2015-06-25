@@ -48,7 +48,8 @@ class MappedReadSerializerSuite extends GuacFunSuite with Matchers {
           Some(100L),
           false
         )
-      )
+      ),
+      "readName"
     )
 
     val serialized = TestUtil.serialize(read)
@@ -73,6 +74,7 @@ class MappedReadSerializerSuite extends GuacFunSuite with Matchers {
     deserialized.failedVendorQualityChecks should equal(read.failedVendorQualityChecks)
     deserialized.isPositiveStrand should equal(read.isPositiveStrand)
     deserialized.matePropertiesOpt should equal(read.matePropertiesOpt)
+    deserialized.readName should equal(read.readName)
   }
 
   test("serialize / deserialize mapped read with mdtag") {
@@ -98,7 +100,8 @@ class MappedReadSerializerSuite extends GuacFunSuite with Matchers {
           Some(100L),
           false
         )
-      )
+      ),
+      "readName"
     )
 
     val serialized = TestUtil.serialize(read)
@@ -123,6 +126,7 @@ class MappedReadSerializerSuite extends GuacFunSuite with Matchers {
     deserialized.failedVendorQualityChecks should equal(read.failedVendorQualityChecks)
     deserialized.isPositiveStrand should equal(read.isPositiveStrand)
     deserialized.matePropertiesOpt should equal(read.matePropertiesOpt)
+    deserialized.readName should equal(read.readName)
   }
 
   test("serialize / deserialize mapped read with unmapped pair") {
@@ -148,7 +152,8 @@ class MappedReadSerializerSuite extends GuacFunSuite with Matchers {
           None,
           false
         )
-      )
+      ),
+      "readName"
     )
 
     val serialized = TestUtil.serialize(read)
@@ -173,6 +178,7 @@ class MappedReadSerializerSuite extends GuacFunSuite with Matchers {
     deserialized.failedVendorQualityChecks should equal(read.failedVendorQualityChecks)
     deserialized.isPositiveStrand should equal(read.isPositiveStrand)
     deserialized.matePropertiesOpt should equal(read.matePropertiesOpt)
+    deserialized.readName should equal(read.readName)
   }
 
 }

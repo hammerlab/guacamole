@@ -48,7 +48,8 @@ class MappedReadSuite extends GuacFunSuite with Matchers {
           Some(100L),
           false
         )
-      )
+      ),
+      "readName"
     )
 
     read.isMapped should be(true)
@@ -74,7 +75,8 @@ class MappedReadSuite extends GuacFunSuite with Matchers {
           Some(100L),
           false
         )
-      )
+      ),
+      "readName"
     )
 
     val mread = MappedRead(
@@ -99,7 +101,8 @@ class MappedReadSuite extends GuacFunSuite with Matchers {
           Some(100L),
           false
         )
-      )
+      ),
+      "readName"
     )
 
     val collectionMappedReads: Seq[Read] = Seq(uread, mread)

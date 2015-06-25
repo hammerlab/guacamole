@@ -40,6 +40,7 @@ class MappedReadSerializer extends Serializer[MappedRead] with CanSerializeMateP
     output.writeString(obj.mdTagString)
     output.writeBoolean(obj.failedVendorQualityChecks)
     output.writeBoolean(obj.isPositiveStrand)
+    output.writeString(obj.readName)
 
     write(kryo, output, obj.matePropertiesOpt)
   }
@@ -58,6 +59,7 @@ class MappedReadSerializer extends Serializer[MappedRead] with CanSerializeMateP
     val mdTagString = input.readString()
     val failedVendorQualityChecks = input.readBoolean()
     val isPositiveStrand = input.readBoolean()
+    val readName = input.readString()
 
     val matePropertiesOpt = read(kryo, input)
 
@@ -75,7 +77,8 @@ class MappedReadSerializer extends Serializer[MappedRead] with CanSerializeMateP
       mdTagString,
       failedVendorQualityChecks,
       isPositiveStrand,
-      matePropertiesOpt
+      matePropertiesOpt,
+      readName
     )
   }
 }

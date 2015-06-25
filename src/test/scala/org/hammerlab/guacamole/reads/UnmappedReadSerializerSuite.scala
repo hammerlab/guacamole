@@ -42,7 +42,8 @@ class UnmappedReadSerializerSuite extends GuacFunSuite with Matchers {
           Some(100L),
           false
         )
-      )
+      ),
+      "readName"
     )
 
     val serialized = TestUtil.serialize(read)
@@ -62,6 +63,7 @@ class UnmappedReadSerializerSuite extends GuacFunSuite with Matchers {
     deserialized.failedVendorQualityChecks should equal(read.failedVendorQualityChecks)
     deserialized.isPositiveStrand should equal(read.isPositiveStrand)
     deserialized.matePropertiesOpt should equal(read.matePropertiesOpt)
+    deserialized.readName should equal(read.readName)
   }
 
 }
