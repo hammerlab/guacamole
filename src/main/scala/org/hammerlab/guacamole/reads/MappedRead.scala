@@ -97,8 +97,8 @@ case class MappedRead(
   })
 
   override def toString(): String =
-    "MappedRead(%d, %s, %s, %s)".format(
-      start,
+    "MappedRead(%s:%d, %s, %s, %s)".format(
+      referenceContig, start,
       cigar.toString,
       mdTagString,
       Bases.basesToString(sequence)

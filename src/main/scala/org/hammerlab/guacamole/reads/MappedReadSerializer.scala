@@ -61,7 +61,7 @@ class MappedReadSerializer extends Serializer[MappedRead] with CanSerializeMateP
 
     val matePropertiesOpt = read(kryo, input)
 
-    val cigar = TextCigarCodec.getSingleton.decode(cigarString)
+    val cigar = TextCigarCodec.decode(cigarString)
     MappedRead(
       token,
       sequenceArray,

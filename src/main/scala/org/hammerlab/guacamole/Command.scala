@@ -19,7 +19,7 @@
 package org.hammerlab.guacamole
 
 import org.apache.spark.{ SparkContext, Logging }
-import org.bdgenomics.adam.cli.{ Args4j, Args4jBase }
+import org.bdgenomics.utils.cli.{ Args4j, Args4jBase }
 
 /**
  * Interface for running a command from command line arguments.

@@ -124,7 +124,7 @@ object Read extends Logging {
     val sequenceArray = sequence.map(_.toByte).toArray
     val qualityScoresArray = baseQualityStringToArray(baseQualities, sequenceArray.length)
 
-    val cigar = TextCigarCodec.getSingleton.decode(cigarString)
+    val cigar = TextCigarCodec.decode(cigarString)
     MappedRead(
       token,
       sequenceArray,
@@ -356,7 +356,7 @@ object Read extends Logging {
       AlignmentRecordField.recordGroupPredictedMedianInsertSize
     )
 
-    val adamRecords: RDD[AlignmentRecord] = adamContext.adamLoad(filename, projection = Some(ADAMSpecificProjection))
+    val adamRecords: RDD[AlignmentRecord] = adamContext.loadParquet(filename, projection = Some(ADAMSpecificProjection))
     val sequenceDictionary = new ADAMSpecificRecordSequenceDictionaryRDDAggregator(adamRecords).adamGetSequenceDictionary()
 
     val reads: RDD[Read] = adamRecords.map(fromADAMRecord(_, token))
@@ -399,7 +399,7 @@ object Read extends Logging {
         referenceContig = alignmentRecord.getContig.getContigName.toString.intern(),
         alignmentQuality = alignmentRecord.getMapq,
         start = alignmentRecord.getStart,
-        cigar = TextCigarCodec.getSingleton.decode(alignmentRecord.getCigar.toString),
+        cigar = TextCigarCodec.decode(alignmentRecord.getCigar.toString),
         mdTagString = alignmentRecord.getMismatchingPositions.toString,
         failedVendorQualityChecks = alignmentRecord.getFailedVendorQualityChecks,
         isPositiveStrand = !alignmentRecord.getReadNegativeStrand,

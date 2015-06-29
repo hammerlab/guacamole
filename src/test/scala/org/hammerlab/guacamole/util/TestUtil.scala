@@ -78,8 +78,8 @@ object TestUtil extends Matchers {
       qualityScores.get.map(q => q + 33).map(_.toChar).mkString
     } else {
       sequence.map(x => '@').mkString
-    } 
-    
+    }
+
     Read(
       sequence,
       cigarString = cigar,

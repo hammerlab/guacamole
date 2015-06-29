@@ -30,7 +30,7 @@ import org.apache.hadoop.fs.{ FileSystem, Path }
 import org.apache.hadoop.mapred.FileAlreadyExistsException
 import org.apache.spark.rdd.RDD
 import org.apache.spark.{ Logging, SparkConf, SparkContext }
-import org.bdgenomics.adam.cli.{ Args4jBase, ParquetArgs }
+import org.bdgenomics.utils.cli.{ Args4jBase, ParquetArgs }
 import org.bdgenomics.adam.rdd.ADAMContext._
 import org.bdgenomics.formats.avro.Genotype
 import org.hammerlab.guacamole.Concordance.ConcordanceArgs
@@ -126,7 +126,7 @@ object Common extends Logging {
     if (path.endsWith(".vcf")) {
       sc.loadGenotypes(path)
     } else {
-      sc.adamLoad(path)
+      sc.loadParquet(path)
     }
   }
 
@@ -266,7 +266,7 @@ object Common extends Logging {
     } else if (outputPath.toLowerCase.endsWith(".vcf")) {
       progress("Writing genotypes to VCF file: %s.".format(outputPath))
       val sc = subsetGenotypes.sparkContext
-      subsetGenotypes.toVariantContext.coalesce(1, shuffle = true).adamVCFSave(outputPath)
+      subsetGenotypes.toVariantContext.coalesce(1, shuffle = true).saveAsVcf(outputPath)
     } else {
       progress("Writing genotypes to: %s.".format(outputPath))
       subsetGenotypes.adamParquetSave(
