@@ -25,6 +25,7 @@ import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.rdd.ADAMContext._
 import org.apache.spark.SparkContext._
 import org.bdgenomics.adam.rdd.variation.ConcordanceTable
+import org.bdgenomics.adam.rdd.variation.GenotypeConcordanceRDDFunctions
 import org.bdgenomics.adam.rich.RichVariant
 import org.bdgenomics.formats.avro.{ GenotypeType, Genotype }
 
@@ -85,7 +86,8 @@ object Concordance {
     val filteredTrueGenotypes = trueGenotypes.filter(relevantVariants)
 
     val sampleName = filteredCalledAlleles.take(1)(0).getSampleId.toString
-    val sampleAccuracy = filteredCalledAlleles.concordanceWith(filteredTrueGenotypes).collectAsMap()(sampleName)
+
+    val sampleAccuracy = new GenotypeConcordanceRDDFunctions(filteredCalledAlleles).concordanceWith(filteredTrueGenotypes).collectAsMap()(sampleName)
 
     // We called AND it was called in truth
     val truePositives = sampleAccuracy.total(ConcordanceTable.CALLED, ConcordanceTable.CALLED)
