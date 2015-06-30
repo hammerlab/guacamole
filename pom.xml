@@ -87,7 +87,7 @@
               <pattern>com.google.common</pattern>
               <shadedPattern>org.bdgenomics.guavarelocated</shadedPattern>
               <includes>
-                <include>com.google.common.collect.**</include>
+                <include>com.google.common.**</include>
               </includes>
             </relocation>
           </relocations>
