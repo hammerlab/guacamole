@@ -42,7 +42,8 @@ class UnmappedReadSuite extends GuacFunSuite with Matchers {
           Some(100L),
           false
         )
-      )
+      ),
+      "readName"
     )
 
     read.isMapped should be(false)

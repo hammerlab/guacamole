@@ -33,6 +33,7 @@ class UnmappedReadSerializer extends Serializer[UnmappedRead] with CanSerializeM
     output.writeString(obj.sampleName)
     output.writeBoolean(obj.failedVendorQualityChecks)
     output.writeBoolean(obj.isPositiveStrand)
+    output.writeString(obj.readName)
 
     write(kryo, output, obj.matePropertiesOpt)
   }
@@ -46,6 +47,7 @@ class UnmappedReadSerializer extends Serializer[UnmappedRead] with CanSerializeM
     val sampleName = input.readString().intern()
     val failedVendorQualityChecks = input.readBoolean()
     val isPositiveStrand = input.readBoolean()
+    val readName = input.readString()
 
     val matePropertiesOpt = read(kryo, input)
 
@@ -57,7 +59,8 @@ class UnmappedReadSerializer extends Serializer[UnmappedRead] with CanSerializeM
       sampleName.intern,
       failedVendorQualityChecks,
       isPositiveStrand,
-      matePropertiesOpt
+      matePropertiesOpt,
+      readName
     )
   }
 }
