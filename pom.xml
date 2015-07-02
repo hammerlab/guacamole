@@ -16,7 +16,7 @@
   <name>guacamole: variant caller</name>
 
   <properties>
-    <adam.version>0.16.0</adam.version>
+    <adam.version>0.17.0</adam.version>
     <bdg-formats.version>0.4.0</bdg-formats.version>
     <java.version>1.8</java.version>
     <scala.version>2.10.3</scala.version>
@@ -137,7 +137,7 @@
         <configuration>
           <scalaVersion>${scala.version}</scalaVersion>
           <recompileMode>incremental</recompileMode>
-          <useZincServer>true</useZincServer>
+          <useZincServer>false</useZincServer>
           <args>
             <arg>-unchecked</arg>
             <arg>-optimise</arg>
@@ -276,18 +276,23 @@
     </dependency>
     <dependency>
       <groupId>org.bdgenomics.adam</groupId>
-      <artifactId>adam-core</artifactId>
+      <artifactId>adam-core_${scala.version.prefix}</artifactId>
       <version>${adam.version}</version>
     </dependency>
     <dependency>
       <groupId>org.bdgenomics.adam</groupId>
-      <artifactId>adam-cli</artifactId>
+      <artifactId>adam-cli_${scala.version.prefix}</artifactId>
       <version>${adam.version}</version>
     </dependency>
     <dependency>
       <groupId>org.bdgenomics.bdg-formats</groupId>
       <artifactId>bdg-formats</artifactId>
       <version>${bdg-formats.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.bdgenomics.qc-metrics</groupId>
+      <artifactId>qc-metrics-core</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>colt</groupId>
