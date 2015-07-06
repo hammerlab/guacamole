@@ -135,16 +135,14 @@ object SomaticStandard {
         normalPileup,
         filterMultiAllelic,
         minAlignmentQuality,
-        minEdgeDistance = 0,
-        maxPercentAbnormalInsertSize = 100
+        minEdgeDistance = 0
       )
 
       val filteredTumorPileup = PileupFilter(
         tumorPileup,
         filterMultiAllelic,
         minAlignmentQuality,
-        minEdgeDistance = 0,
-        maxPercentAbnormalInsertSize = 100
+        minEdgeDistance = 0
       )
 
       // For now, we skip loci that have no reads mapped. We may instead want to emit NoCall in this case.
