@@ -14,7 +14,7 @@ import org.hammerlab.guacamole.reads.{ MappedRead, Read }
 import org.kohsuke.args4j.{ Argument, Option => Args4jOption }
 
 /**
- * VariantLocus is locus and the variant allele frequency at that locus
+ * VariantLocus is a locus and the variant allele frequency at that locus
  * @param locus Position of non-reference alleles
  * @param variantAlleleFrequency Frequency of non-reference alleles
  */
@@ -102,21 +102,26 @@ object VAFHistogram {
 
       val bins = args.bins
       val variantAlleleHistograms =
-        variantLoci.map(variantLoci => generateVAFHistogram(variantLoci, bins)) // Sort by variant allele frequency
+        variantLoci.map(variantLoci => generateVAFHistogram(variantLoci, bins))
 
       val sampleNames = readSets.map(_.mappedReads.take(1)(0).sampleName)
+      val binSize = 100 / bins
+      
+      def histogramToString(kv: (Int, Long)): String = {
+        s"${kv._1}, ${math.min(kv._1 + binSize - 1, 100)}, ${kv._2}"
+      }
+      
       if (args.output != "") {
-        sampleNames.zip(variantAlleleHistograms).foreach(kv => {
+        // Parallelize histogram and save on HDFS
+        sc.parallelize(sampleNames.zip(variantAlleleHistograms).flatMap(kv => {
           val sampleName = kv._1
           val histogram = kv._2
-          // Parallelize histogram and save on HDFS
-          val histogramStrings = histogram.toSeq.sortBy(_._1).map(kv => f"VAF: ${kv._1} -> ${kv._2}").toSeq
-          sc.parallelize(histogramStrings).saveAsTextFile(args.output + '-' + sampleName)
-        })
+          histogram.toSeq.sortBy(_._1).map(kv => s"$sampleName, ${histogramToString(kv)}").toSeq
+        }))
       } else {
         // Print histograms to standard out
         variantAlleleHistograms.foreach(histogram =>
-          histogram.toSeq.sortBy(_._1).foreach(kv => println(f"VAF: ${kv._1} -> ${kv._2}"))
+          histogram.toSeq.sortBy(_._1).foreach(kv => println(histogramToString(kv)))
         )
       }
 
