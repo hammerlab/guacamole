@@ -43,63 +43,13 @@ object MultiAllelicPileupFilter {
   }
 }
 
-/**
- * Filter to remove pileups where there are many reads with abnormal insert size
- */
-object AbnormalInsertSizePileupFilter {
-
-  /**
-   *
-   * @param elements sequence of pileup elements to filter
-   * @param maxAbnormalInsertSizeReadsThreshold maximum allowed percent of reads that have an abnormal insert size
-   * @param minInsertSize smallest insert size considered normal (default: 5)
-   * @param maxInsertSize largest insert size considered normal (default: 1000)
-   * @return Empty sequence if there are more than maxAbnormalInsertSizeReadsThreshold % reads with insert size out of the specified range
-   */
-  def apply(elements: Seq[PileupElement],
-            maxAbnormalInsertSizeReadsThreshold: Int,
-            minInsertSize: Int = 5, maxInsertSize: Int = 1000): Seq[PileupElement] = {
-    val abnormalInsertSizeReads = elements.count(
-      _.read.matePropertiesOpt
-        .flatMap(_.inferredInsertSize)
-        .exists(inferredInsertSize =>
-          math.abs(inferredInsertSize) < minInsertSize ||
-            math.abs(inferredInsertSize) > maxInsertSize
-        )
-    )
-    if (100.0 * abnormalInsertSizeReads / elements.length > maxAbnormalInsertSizeReadsThreshold) {
-      Seq.empty
-    } else {
-      elements
-    }
-  }
-}
-
-object DeletionEvidencePileupFilter {
-  /**
-   *
-   * @param elements sequence of pileup elements to filter
-   * @return Empty sequence if they overlap deletion
-   */
-  def apply(elements: Seq[PileupElement]): Seq[PileupElement] = {
-    if (elements.exists(_.isDeletion)) {
-      Seq.empty
-    } else {
-      elements
-    }
-  }
-}
-
 object PileupFilter {
 
   trait PileupFilterArguments extends Base {
 
     @Option(name = "--min-mapq", usage = "Minimum read mapping quality for a read (Phred-scaled). (default: 1)")
     var minAlignmentQuality: Int = 1
-
-    @Option(name = "--max-percent-abnormal-insert-size", usage = "Filter pileups where % of reads with abnormal insert size is greater than specified (default: 100)")
-    var maxPercentAbnormalInsertSize: Int = 100
-
+    
     @Option(name = "--filter-multi-allelic", usage = "Filter any pileups > 2 bases considered")
     var filterMultiAllelic: Boolean = false
 
@@ -112,7 +62,6 @@ object PileupFilter {
     apply(pileup,
       args.filterMultiAllelic,
       args.minAlignmentQuality,
-      args.maxPercentAbnormalInsertSize,
       args.minEdgeDistance)
 
   }
@@ -120,17 +69,12 @@ object PileupFilter {
   def apply(pileup: Pileup,
             filterMultiAllelic: Boolean,
             minAlignmentQuality: Int,
-            maxPercentAbnormalInsertSize: Int,
             minEdgeDistance: Int): Pileup = {
 
     var elements: Seq[PileupElement] = pileup.elements
 
     if (filterMultiAllelic) {
       elements = MultiAllelicPileupFilter(elements)
-    }
-
-    if (maxPercentAbnormalInsertSize < 100) {
-      elements = AbnormalInsertSizePileupFilter(elements, maxPercentAbnormalInsertSize)
     }
 
     if (minAlignmentQuality > 0) {
