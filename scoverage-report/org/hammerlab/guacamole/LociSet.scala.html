@@ -20913,13 +20913,13 @@
           50
         </td>
         <td>
-          1196
+          1198
         </td>
         <td>
-          org.hammerlab.guacamole.LociMap.onContig
+          org.hammerlab.guacamole.LociSet.SingleContig.apply
         </td>
         <td style="background: #F0ADAD">
-          LociSet.this.map.onContig(contig)
+          LociSet.SingleContig.apply({  scoverage.Invoker.invoked(1197, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  LociSet.this.map.onContig(contig)})
         </td>
       </tr><tr>
         <td>
@@ -20929,23 +20929,23 @@
           1197
         </td>
         <td>
-          org.hammerlab.guacamole.LociSet.SingleContig.apply
+          org.hammerlab.guacamole.LociMap.onContig
         </td>
         <td style="background: #F0ADAD">
-          LociSet.SingleContig.apply({  scoverage.Invoker.invoked(1196, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  LociSet.this.map.onContig(contig)})
+          LociSet.this.map.onContig(contig)
         </td>
       </tr><tr>
         <td>
           53
         </td>
         <td>
-          1198
+          1201
         </td>
         <td>
-          org.hammerlab.guacamole.LociSet.map
+          org.hammerlab.guacamole.LociSet.apply
         </td>
         <td style="background: #F0ADAD">
-          other.map
+          LociSet.apply({  scoverage.Invoker.invoked(1200, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  LociSet.this.map.union({    scoverage.Invoker.invoked(1199, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    other.map  })})
         </td>
       </tr><tr>
         <td>
@@ -20955,10 +20955,10 @@
           1200
         </td>
         <td>
-          org.hammerlab.guacamole.LociSet.apply
+          org.hammerlab.guacamole.LociMap.union
         </td>
         <td style="background: #F0ADAD">
-          LociSet.apply({  scoverage.Invoker.invoked(1199, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  LociSet.this.map.union({    scoverage.Invoker.invoked(1198, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    other.map  })})
+          LociSet.this.map.union({  scoverage.Invoker.invoked(1199, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  other.map})
         </td>
       </tr><tr>
         <td>
@@ -20968,17 +20968,17 @@
           1199
         </td>
         <td>
-          org.hammerlab.guacamole.LociMap.union
+          org.hammerlab.guacamole.LociSet.map
         </td>
         <td style="background: #F0ADAD">
-          LociSet.this.map.union({  scoverage.Invoker.invoked(1198, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  other.map})
+          other.map
         </td>
       </tr><tr>
         <td>
           56
         </td>
         <td>
-          1201
+          1202
         </td>
         <td>
           org.hammerlab.guacamole.LociSet.truncatedString
@@ -20991,7 +20991,7 @@
           59
         </td>
         <td>
-          1202
+          1203
         </td>
         <td>
           org.hammerlab.guacamole.LociMap.truncatedString
@@ -21004,20 +21004,20 @@
           63
         </td>
         <td>
-          1204
+          1205
         </td>
         <td>
           org.hammerlab.guacamole.LociSet.apply
         </td>
         <td style="background: #F0ADAD">
-          LociSet.apply({  scoverage.Invoker.invoked(1203, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  LociSet.this.map.filterContigs(function)})
+          LociSet.apply({  scoverage.Invoker.invoked(1204, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  LociSet.this.map.filterContigs(function)})
         </td>
       </tr><tr>
         <td>
           63
         </td>
         <td>
-          1203
+          1204
         </td>
         <td>
           org.hammerlab.guacamole.LociMap.filterContigs
@@ -21030,20 +21030,33 @@
           66
         </td>
         <td>
-          1210
+          1211
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          other match {  case (that @ (_: org.hammerlab.guacamole.LociSet)) =&gt; {    scoverage.Invoker.invoked(1207, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(1206, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      LociSet.this.map.equals({        scoverage.Invoker.invoked(1205, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        that.map      })    }  }  case _ =&gt; {    scoverage.Invoker.invoked(1209, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(1208, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      false    }  }}
+          other match {  case (that @ (_: org.hammerlab.guacamole.LociSet)) =&gt; {    scoverage.Invoker.invoked(1208, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(1207, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      LociSet.this.map.equals({        scoverage.Invoker.invoked(1206, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        that.map      })    }  }  case _ =&gt; {    scoverage.Invoker.invoked(1210, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(1209, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      false    }  }}
         </td>
       </tr><tr>
         <td>
           67
         </td>
         <td>
-          1205
+          1207
+        </td>
+        <td>
+          org.hammerlab.guacamole.LociMap.equals
+        </td>
+        <td style="background: #F0ADAD">
+          LociSet.this.map.equals({  scoverage.Invoker.invoked(1206, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  that.map})
+        </td>
+      </tr><tr>
+        <td>
+          67
+        </td>
+        <td>
+          1206
         </td>
         <td>
           org.hammerlab.guacamole.LociSet.map
@@ -21056,26 +21069,26 @@
           67
         </td>
         <td>
-          1207
+          1208
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1206, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  LociSet.this.map.equals({    scoverage.Invoker.invoked(1205, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    that.map  })}
+          {  scoverage.Invoker.invoked(1207, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  LociSet.this.map.equals({    scoverage.Invoker.invoked(1206, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    that.map  })}
         </td>
       </tr><tr>
         <td>
-          67
+          68
         </td>
         <td>
-          1206
+          1210
         </td>
         <td>
-          org.hammerlab.guacamole.LociMap.equals
+          &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          LociSet.this.map.equals({  scoverage.Invoker.invoked(1205, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  that.map})
+          {  scoverage.Invoker.invoked(1209, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  false}
         </td>
       </tr><tr>
         <td>
@@ -21088,19 +21101,6 @@
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1208, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  false}
-        </td>
-      </tr><tr>
-        <td>
-          68
-        </td>
-        <td>
-          1208
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
           false
         </td>
       </tr><tr>
@@ -21108,7 +21108,7 @@
           70
         </td>
         <td>
-          1211
+          1212
         </td>
         <td>
           org.hammerlab.guacamole.LociMap.hashCode
@@ -21124,19 +21124,6 @@
           1214
         </td>
         <td>
-          scala.collection.immutable.StringLike.format
-        </td>
-        <td style="background: #F0ADAD">
-          scala.this.Predef.augmentString({  scoverage.Invoker.invoked(1213, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot;Can\'t take %d loci from a set of size %d.&quot;}).format(numToTake, LociSet.this.count)
-        </td>
-      </tr><tr>
-        <td>
-          80
-        </td>
-        <td>
-          1213
-        </td>
-        <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
@@ -21147,7 +21134,7 @@
           80
         </td>
         <td>
-          1212
+          1213
         </td>
         <td>
           scala.Long.&lt;=
@@ -21160,20 +21147,33 @@
           80
         </td>
         <td>
-          1215
+          1216
         </td>
         <td>
           scala.Predef.assume
         </td>
         <td style="background: #F0ADAD">
-          scala.this.Predef.assume({  scoverage.Invoker.invoked(1212, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  numToTake.&lt;=(LociSet.this.count)}, {  scoverage.Invoker.invoked(1214, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.augmentString({  scoverage.Invoker.invoked(1213, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot;Can\'t take %d loci from a set of size %d.&quot;}).format(numToTake, LociSet.this.count)})
+          scala.this.Predef.assume({  scoverage.Invoker.invoked(1213, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  numToTake.&lt;=(LociSet.this.count)}, {  scoverage.Invoker.invoked(1215, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.augmentString({  scoverage.Invoker.invoked(1214, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot;Can\'t take %d loci from a set of size %d.&quot;}).format(numToTake, LociSet.this.count)})
+        </td>
+      </tr><tr>
+        <td>
+          80
+        </td>
+        <td>
+          1215
+        </td>
+        <td>
+          scala.collection.immutable.StringLike.format
+        </td>
+        <td style="background: #F0ADAD">
+          scala.this.Predef.augmentString({  scoverage.Invoker.invoked(1214, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot;Can\'t take %d loci from a set of size %d.&quot;}).format(numToTake, LociSet.this.count)
         </td>
       </tr><tr>
         <td>
           83
         </td>
         <td>
-          1216
+          1217
         </td>
         <td>
           scala.Long.==
@@ -21189,10 +21189,10 @@
           1219
         </td>
         <td>
-          &lt;nosymbol&gt;
+          scala.Tuple2.apply
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1218, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.Tuple2.apply[org.hammerlab.guacamole.LociSet, org.hammerlab.guacamole.LociSet]({    scoverage.Invoker.invoked(1217, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    LociSet.empty  }, this)}
+          scala.Tuple2.apply[org.hammerlab.guacamole.LociSet, org.hammerlab.guacamole.LociSet]({  scoverage.Invoker.invoked(1218, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  LociSet.empty}, this)
         </td>
       </tr><tr>
         <td>
@@ -21202,19 +21202,6 @@
           1218
         </td>
         <td>
-          scala.Tuple2.apply
-        </td>
-        <td style="background: #F0ADAD">
-          scala.Tuple2.apply[org.hammerlab.guacamole.LociSet, org.hammerlab.guacamole.LociSet]({  scoverage.Invoker.invoked(1217, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  LociSet.empty}, this)
-        </td>
-      </tr><tr>
-        <td>
-          84
-        </td>
-        <td>
-          1217
-        </td>
-        <td>
           org.hammerlab.guacamole.LociSet.empty
         </td>
         <td style="background: #F0ADAD">
@@ -21222,23 +21209,23 @@
         </td>
       </tr><tr>
         <td>
-          85
+          84
         </td>
         <td>
-          1231
+          1220
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          if ({  scoverage.Invoker.invoked(1220, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  numToTake.==(LociSet.this.count)})  {    scoverage.Invoker.invoked(1223, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(1222, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      scala.Tuple2.apply[org.hammerlab.guacamole.LociSet, org.hammerlab.guacamole.LociSet](this, {        scoverage.Invoker.invoked(1221, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        LociSet.empty      })    }  }else  {    scoverage.Invoker.invoked(1230, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      val mapTake: (org.hammerlab.guacamole.LociMap[Long], org.hammerlab.guacamole.LociMap[Long]) = {        scoverage.Invoker.invoked(1224, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        LociSet.this.map.take(numToTake)      };      {        scoverage.Invoker.invoked(1229, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        scala.Tuple2.apply[org.hammerlab.guacamole.LociSet, org.hammerlab.guacamole.LociSet]({          scoverage.Invoker.invoked(1226, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          LociSet.apply({            scoverage.Invoker.invoked(1225, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            mapTake._1          })        }, {          scoverage.Invoker.invoked(1228, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          LociSet.apply({            scoverage.Invoker.invoked(1227, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            mapTake._2          })        })      }    }  }
+          {  scoverage.Invoker.invoked(1219, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.Tuple2.apply[org.hammerlab.guacamole.LociSet, org.hammerlab.guacamole.LociSet]({    scoverage.Invoker.invoked(1218, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    LociSet.empty  }, this)}
         </td>
       </tr><tr>
         <td>
           85
         </td>
         <td>
-          1220
+          1221
         </td>
         <td>
           scala.Long.==
@@ -21248,23 +21235,23 @@
         </td>
       </tr><tr>
         <td>
-          86
+          85
         </td>
         <td>
-          1222
+          1232
         </td>
         <td>
-          scala.Tuple2.apply
+          &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          scala.Tuple2.apply[org.hammerlab.guacamole.LociSet, org.hammerlab.guacamole.LociSet](this, {  scoverage.Invoker.invoked(1221, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  LociSet.empty})
+          if ({  scoverage.Invoker.invoked(1221, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  numToTake.==(LociSet.this.count)})  {    scoverage.Invoker.invoked(1224, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(1223, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      scala.Tuple2.apply[org.hammerlab.guacamole.LociSet, org.hammerlab.guacamole.LociSet](this, {        scoverage.Invoker.invoked(1222, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        LociSet.empty      })    }  }else  {    scoverage.Invoker.invoked(1231, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      val mapTake: (org.hammerlab.guacamole.LociMap[Long], org.hammerlab.guacamole.LociMap[Long]) = {        scoverage.Invoker.invoked(1225, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        LociSet.this.map.take(numToTake)      };      {        scoverage.Invoker.invoked(1230, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        scala.Tuple2.apply[org.hammerlab.guacamole.LociSet, org.hammerlab.guacamole.LociSet]({          scoverage.Invoker.invoked(1227, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          LociSet.apply({            scoverage.Invoker.invoked(1226, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            mapTake._1          })        }, {          scoverage.Invoker.invoked(1229, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          LociSet.apply({            scoverage.Invoker.invoked(1228, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            mapTake._2          })        })      }    }  }
         </td>
       </tr><tr>
         <td>
           86
         </td>
         <td>
-          1221
+          1222
         </td>
         <td>
           org.hammerlab.guacamole.LociSet.empty
@@ -21277,33 +21264,46 @@
           86
         </td>
         <td>
-          1223
+          1224
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1222, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.Tuple2.apply[org.hammerlab.guacamole.LociSet, org.hammerlab.guacamole.LociSet](this, {    scoverage.Invoker.invoked(1221, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    LociSet.empty  })}
+          {  scoverage.Invoker.invoked(1223, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.Tuple2.apply[org.hammerlab.guacamole.LociSet, org.hammerlab.guacamole.LociSet](this, {    scoverage.Invoker.invoked(1222, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    LociSet.empty  })}
+        </td>
+      </tr><tr>
+        <td>
+          86
+        </td>
+        <td>
+          1223
+        </td>
+        <td>
+          scala.Tuple2.apply
+        </td>
+        <td style="background: #F0ADAD">
+          scala.Tuple2.apply[org.hammerlab.guacamole.LociSet, org.hammerlab.guacamole.LociSet](this, {  scoverage.Invoker.invoked(1222, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  LociSet.empty})
         </td>
       </tr><tr>
         <td>
           87
         </td>
         <td>
-          1230
+          1231
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  val mapTake: (org.hammerlab.guacamole.LociMap[Long], org.hammerlab.guacamole.LociMap[Long]) = {    scoverage.Invoker.invoked(1224, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    LociSet.this.map.take(numToTake)  };  {    scoverage.Invoker.invoked(1229, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.Tuple2.apply[org.hammerlab.guacamole.LociSet, org.hammerlab.guacamole.LociSet]({      scoverage.Invoker.invoked(1226, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      LociSet.apply({        scoverage.Invoker.invoked(1225, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        mapTake._1      })    }, {      scoverage.Invoker.invoked(1228, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      LociSet.apply({        scoverage.Invoker.invoked(1227, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        mapTake._2      })    })  }}
+          {  val mapTake: (org.hammerlab.guacamole.LociMap[Long], org.hammerlab.guacamole.LociMap[Long]) = {    scoverage.Invoker.invoked(1225, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    LociSet.this.map.take(numToTake)  };  {    scoverage.Invoker.invoked(1230, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.Tuple2.apply[org.hammerlab.guacamole.LociSet, org.hammerlab.guacamole.LociSet]({      scoverage.Invoker.invoked(1227, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      LociSet.apply({        scoverage.Invoker.invoked(1226, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        mapTake._1      })    }, {      scoverage.Invoker.invoked(1229, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      LociSet.apply({        scoverage.Invoker.invoked(1228, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        mapTake._2      })    })  }}
         </td>
       </tr><tr>
         <td>
           88
         </td>
         <td>
-          1224
+          1225
         </td>
         <td>
           org.hammerlab.guacamole.LociMap.take
@@ -21316,33 +21316,7 @@
           89
         </td>
         <td>
-          1225
-        </td>
-        <td>
-          scala.Tuple2._1
-        </td>
-        <td style="background: #F0ADAD">
-          mapTake._1
-        </td>
-      </tr><tr>
-        <td>
-          89
-        </td>
-        <td>
           1228
-        </td>
-        <td>
-          org.hammerlab.guacamole.LociSet.apply
-        </td>
-        <td style="background: #F0ADAD">
-          LociSet.apply({  scoverage.Invoker.invoked(1227, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  mapTake._2})
-        </td>
-      </tr><tr>
-        <td>
-          89
-        </td>
-        <td>
-          1227
         </td>
         <td>
           scala.Tuple2._2
@@ -21355,13 +21329,39 @@
           89
         </td>
         <td>
-          1226
+          1227
         </td>
         <td>
           org.hammerlab.guacamole.LociSet.apply
         </td>
         <td style="background: #F0ADAD">
-          LociSet.apply({  scoverage.Invoker.invoked(1225, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  mapTake._1})
+          LociSet.apply({  scoverage.Invoker.invoked(1226, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  mapTake._1})
+        </td>
+      </tr><tr>
+        <td>
+          89
+        </td>
+        <td>
+          1230
+        </td>
+        <td>
+          scala.Tuple2.apply
+        </td>
+        <td style="background: #F0ADAD">
+          scala.Tuple2.apply[org.hammerlab.guacamole.LociSet, org.hammerlab.guacamole.LociSet]({  scoverage.Invoker.invoked(1227, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  LociSet.apply({    scoverage.Invoker.invoked(1226, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    mapTake._1  })}, {  scoverage.Invoker.invoked(1229, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  LociSet.apply({    scoverage.Invoker.invoked(1228, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    mapTake._2  })})
+        </td>
+      </tr><tr>
+        <td>
+          89
+        </td>
+        <td>
+          1226
+        </td>
+        <td>
+          scala.Tuple2._1
+        </td>
+        <td style="background: #F0ADAD">
+          mapTake._1
         </td>
       </tr><tr>
         <td>
@@ -21371,10 +21371,23 @@
           1229
         </td>
         <td>
-          scala.Tuple2.apply
+          org.hammerlab.guacamole.LociSet.apply
         </td>
         <td style="background: #F0ADAD">
-          scala.Tuple2.apply[org.hammerlab.guacamole.LociSet, org.hammerlab.guacamole.LociSet]({  scoverage.Invoker.invoked(1226, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  LociSet.apply({    scoverage.Invoker.invoked(1225, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    mapTake._1  })}, {  scoverage.Invoker.invoked(1228, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  LociSet.apply({    scoverage.Invoker.invoked(1227, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    mapTake._2  })})
+          LociSet.apply({  scoverage.Invoker.invoked(1228, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  mapTake._2})
+        </td>
+      </tr><tr>
+        <td>
+          95
+        </td>
+        <td>
+          1234
+        </td>
+        <td>
+          org.hammerlab.guacamole.LociSet.apply
+        </td>
+        <td style="background: #F0ADAD">
+          LociSet.apply({  scoverage.Invoker.invoked(1233, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  LociMap.apply[Long]()})
         </td>
       </tr><tr>
         <td>
@@ -21382,19 +21395,6 @@
         </td>
         <td>
           1233
-        </td>
-        <td>
-          org.hammerlab.guacamole.LociSet.apply
-        </td>
-        <td style="background: #F0ADAD">
-          LociSet.apply({  scoverage.Invoker.invoked(1232, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  LociMap.apply[Long]()})
-        </td>
-      </tr><tr>
-        <td>
-          95
-        </td>
-        <td>
-          1232
         </td>
         <td>
           org.hammerlab.guacamole.LociMap.apply
@@ -21407,7 +21407,7 @@
           100
         </td>
         <td>
-          1234
+          1235
         </td>
         <td>
           org.hammerlab.guacamole.LociSet.Builder.&lt;init&gt;
@@ -21420,7 +21420,7 @@
           106
         </td>
         <td>
-          1235
+          1236
         </td>
         <td>
           org.hammerlab.guacamole.LociMap.Builder.&lt;init&gt;
@@ -21433,7 +21433,7 @@
           112
         </td>
         <td>
-          1236
+          1237
         </td>
         <td>
           org.hammerlab.guacamole.LociMap.Builder.put
@@ -21446,7 +21446,7 @@
           120
         </td>
         <td>
-          1237
+          1238
         </td>
         <td>
           org.hammerlab.guacamole.LociMap.Builder.put
@@ -21459,20 +21459,20 @@
           127
         </td>
         <td>
-          1239
+          1240
         </td>
         <td>
           org.hammerlab.guacamole.LociSet.apply
         </td>
         <td style="background: #F0ADAD">
-          LociSet.apply({  scoverage.Invoker.invoked(1238, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  Builder.this.wrapped.result()})
+          LociSet.apply({  scoverage.Invoker.invoked(1239, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  Builder.this.wrapped.result()})
         </td>
       </tr><tr>
         <td>
           127
         </td>
         <td>
-          1238
+          1239
         </td>
         <td>
           org.hammerlab.guacamole.LociMap.Builder.result
@@ -21485,7 +21485,7 @@
           132
         </td>
         <td>
-          1240
+          1241
         </td>
         <td>
           org.hammerlab.guacamole.LociSet.Builder.result
@@ -21498,20 +21498,20 @@
           142
         </td>
         <td>
-          1242
+          1243
         </td>
         <td>
           scala.collection.immutable.StringLike.r
         </td>
         <td style="background: #F0ADAD">
-          scala.this.Predef.augmentString({  scoverage.Invoker.invoked(1241, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot;^([\\pL\\pN._]+):(\\pN+)-(\\pN+)&quot;}).r
+          scala.this.Predef.augmentString({  scoverage.Invoker.invoked(1242, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot;^([\\pL\\pN._]+):(\\pN+)-(\\pN+)&quot;}).r
         </td>
       </tr><tr>
         <td>
           142
         </td>
         <td>
-          1241
+          1242
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -21524,7 +21524,33 @@
           143
         </td>
         <td>
-          1243
+          1255
+        </td>
+        <td>
+          scala.collection.TraversableLike.map
+        </td>
+        <td style="background: #F0ADAD">
+          scala.this.Predef.refArrayOps[String]({  scoverage.Invoker.invoked(1244, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.augmentString(loci.replaceAll(&quot;\\s&quot;, &quot;&quot;)).split(',')}).map[org.hammerlab.guacamole.LociSet, Array[org.hammerlab.guacamole.LociSet]](((x0$1: String) =&gt; {  scoverage.Invoker.invoked(1253, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x0$1 match {    case &quot;&quot; =&gt; {      scoverage.Invoker.invoked(1246, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(1245, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        LociSet.empty      }    }    case syntax.unapplySeq(&lt;unapply-selector&gt;) &lt;unapply&gt; ((name @ _), (start @ _), (end @ _)) =&gt; {      scoverage.Invoker.invoked(1250, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(1249, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        LociSet.apply(name, {          scoverage.Invoker.invoked(1247, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          scala.this.Predef.augmentString(start).toLong        }, {          scoverage.Invoker.invoked(1248, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          scala.this.Predef.augmentString(end).toLong        })      }    }    case (other @ _) =&gt; {      scoverage.Invoker.invoked(1252, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(1251, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        throw new scala.`package`.IllegalArgumentException(scala.this.Predef.augmentString(&quot;Couldn\'t parse loci range: %s&quot;).format(other))      }    }  }}))({  scoverage.Invoker.invoked(1254, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Array.canBuildFrom[org.hammerlab.guacamole.LociSet](ClassTag.apply[org.hammerlab.guacamole.LociSet](classOf[org.hammerlab.guacamole.LociSet]))})
+        </td>
+      </tr><tr>
+        <td>
+          143
+        </td>
+        <td>
+          1254
+        </td>
+        <td>
+          scala.Array.canBuildFrom
+        </td>
+        <td style="background: #F0ADAD">
+          scala.this.Array.canBuildFrom[org.hammerlab.guacamole.LociSet](ClassTag.apply[org.hammerlab.guacamole.LociSet](classOf[org.hammerlab.guacamole.LociSet]))
+        </td>
+      </tr><tr>
+        <td>
+          143
+        </td>
+        <td>
+          1244
         </td>
         <td>
           scala.collection.immutable.StringLike.split
@@ -21537,39 +21563,26 @@
           143
         </td>
         <td>
-          1252
+          1253
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          x0$1 match {  case &quot;&quot; =&gt; {    scoverage.Invoker.invoked(1245, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(1244, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      LociSet.empty    }  }  case syntax.unapplySeq(&lt;unapply-selector&gt;) &lt;unapply&gt; ((name @ _), (start @ _), (end @ _)) =&gt; {    scoverage.Invoker.invoked(1249, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(1248, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      LociSet.apply(name, {        scoverage.Invoker.invoked(1246, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        scala.this.Predef.augmentString(start).toLong      }, {        scoverage.Invoker.invoked(1247, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        scala.this.Predef.augmentString(end).toLong      })    }  }  case (other @ _) =&gt; {    scoverage.Invoker.invoked(1251, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(1250, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      throw new scala.`package`.IllegalArgumentException(scala.this.Predef.augmentString(&quot;Couldn\'t parse loci range: %s&quot;).format(other))    }  }}
+          x0$1 match {  case &quot;&quot; =&gt; {    scoverage.Invoker.invoked(1246, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(1245, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      LociSet.empty    }  }  case syntax.unapplySeq(&lt;unapply-selector&gt;) &lt;unapply&gt; ((name @ _), (start @ _), (end @ _)) =&gt; {    scoverage.Invoker.invoked(1250, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(1249, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      LociSet.apply(name, {        scoverage.Invoker.invoked(1247, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        scala.this.Predef.augmentString(start).toLong      }, {        scoverage.Invoker.invoked(1248, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        scala.this.Predef.augmentString(end).toLong      })    }  }  case (other @ _) =&gt; {    scoverage.Invoker.invoked(1252, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(1251, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      throw new scala.`package`.IllegalArgumentException(scala.this.Predef.augmentString(&quot;Couldn\'t parse loci range: %s&quot;).format(other))    }  }}
         </td>
       </tr><tr>
         <td>
-          143
+          144
         </td>
         <td>
-          1254
+          1246
         </td>
         <td>
-          scala.collection.TraversableLike.map
+          &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          scala.this.Predef.refArrayOps[String]({  scoverage.Invoker.invoked(1243, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.augmentString(loci.replaceAll(&quot;\\s&quot;, &quot;&quot;)).split(',')}).map[org.hammerlab.guacamole.LociSet, Array[org.hammerlab.guacamole.LociSet]](((x0$1: String) =&gt; {  scoverage.Invoker.invoked(1252, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x0$1 match {    case &quot;&quot; =&gt; {      scoverage.Invoker.invoked(1245, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(1244, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        LociSet.empty      }    }    case syntax.unapplySeq(&lt;unapply-selector&gt;) &lt;unapply&gt; ((name @ _), (start @ _), (end @ _)) =&gt; {      scoverage.Invoker.invoked(1249, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(1248, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        LociSet.apply(name, {          scoverage.Invoker.invoked(1246, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          scala.this.Predef.augmentString(start).toLong        }, {          scoverage.Invoker.invoked(1247, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          scala.this.Predef.augmentString(end).toLong        })      }    }    case (other @ _) =&gt; {      scoverage.Invoker.invoked(1251, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(1250, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        throw new scala.`package`.IllegalArgumentException(scala.this.Predef.augmentString(&quot;Couldn\'t parse loci range: %s&quot;).format(other))      }    }  }}))({  scoverage.Invoker.invoked(1253, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Array.canBuildFrom[org.hammerlab.guacamole.LociSet](ClassTag.apply[org.hammerlab.guacamole.LociSet](classOf[org.hammerlab.guacamole.LociSet]))})
-        </td>
-      </tr><tr>
-        <td>
-          143
-        </td>
-        <td>
-          1253
-        </td>
-        <td>
-          scala.Array.canBuildFrom
-        </td>
-        <td style="background: #F0ADAD">
-          scala.this.Array.canBuildFrom[org.hammerlab.guacamole.LociSet](ClassTag.apply[org.hammerlab.guacamole.LociSet](classOf[org.hammerlab.guacamole.LociSet]))
+          {  scoverage.Invoker.invoked(1245, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  LociSet.empty}
         </td>
       </tr><tr>
         <td>
@@ -21577,19 +21590,6 @@
         </td>
         <td>
           1245
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1244, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  LociSet.empty}
-        </td>
-      </tr><tr>
-        <td>
-          144
-        </td>
-        <td>
-          1244
         </td>
         <td>
           org.hammerlab.guacamole.LociSet.empty
@@ -21602,26 +21602,13 @@
           145
         </td>
         <td>
-          1246
-        </td>
-        <td>
-          scala.collection.immutable.StringLike.toLong
-        </td>
-        <td style="background: #F0ADAD">
-          scala.this.Predef.augmentString(start).toLong
-        </td>
-      </tr><tr>
-        <td>
-          145
-        </td>
-        <td>
           1249
         </td>
         <td>
-          &lt;nosymbol&gt;
+          org.hammerlab.guacamole.LociSet.apply
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1248, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  LociSet.apply(name, {    scoverage.Invoker.invoked(1246, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.this.Predef.augmentString(start).toLong  }, {    scoverage.Invoker.invoked(1247, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.this.Predef.augmentString(end).toLong  })}
+          LociSet.apply(name, {  scoverage.Invoker.invoked(1247, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.augmentString(start).toLong}, {  scoverage.Invoker.invoked(1248, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.augmentString(end).toLong})
         </td>
       </tr><tr>
         <td>
@@ -21631,10 +21618,23 @@
           1248
         </td>
         <td>
-          org.hammerlab.guacamole.LociSet.apply
+          scala.collection.immutable.StringLike.toLong
         </td>
         <td style="background: #F0ADAD">
-          LociSet.apply(name, {  scoverage.Invoker.invoked(1246, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.augmentString(start).toLong}, {  scoverage.Invoker.invoked(1247, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.augmentString(end).toLong})
+          scala.this.Predef.augmentString(end).toLong
+        </td>
+      </tr><tr>
+        <td>
+          145
+        </td>
+        <td>
+          1250
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  scoverage.Invoker.invoked(1249, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  LociSet.apply(name, {    scoverage.Invoker.invoked(1247, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.this.Predef.augmentString(start).toLong  }, {    scoverage.Invoker.invoked(1248, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.this.Predef.augmentString(end).toLong  })}
         </td>
       </tr><tr>
         <td>
@@ -21647,7 +21647,20 @@
           scala.collection.immutable.StringLike.toLong
         </td>
         <td style="background: #F0ADAD">
-          scala.this.Predef.augmentString(end).toLong
+          scala.this.Predef.augmentString(start).toLong
+        </td>
+      </tr><tr>
+        <td>
+          146
+        </td>
+        <td>
+          1252
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  scoverage.Invoker.invoked(1251, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  throw new scala.`package`.IllegalArgumentException(scala.this.Predef.augmentString(&quot;Couldn\'t parse loci range: %s&quot;).format(other))}
         </td>
       </tr><tr>
         <td>
@@ -21660,19 +21673,6 @@
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1250, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  throw new scala.`package`.IllegalArgumentException(scala.this.Predef.augmentString(&quot;Couldn\'t parse loci range: %s&quot;).format(other))}
-        </td>
-      </tr><tr>
-        <td>
-          146
-        </td>
-        <td>
-          1250
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
           throw new scala.`package`.IllegalArgumentException(scala.this.Predef.augmentString(&quot;Couldn\'t parse loci range: %s&quot;).format(other))
         </td>
       </tr><tr>
@@ -21680,7 +21680,7 @@
           148
         </td>
         <td>
-          1255
+          1256
         </td>
         <td>
           org.hammerlab.guacamole.LociSet.union
@@ -21693,7 +21693,7 @@
           153
         </td>
         <td>
-          1256
+          1257
         </td>
         <td>
           org.hammerlab.guacamole.LociSet.newBuilder
@@ -21706,20 +21706,20 @@
           154
         </td>
         <td>
-          1258
+          1259
         </td>
         <td>
           scala.collection.IterableLike.foreach
         </td>
         <td style="background: #F0ADAD">
-          lociSets.foreach[org.hammerlab.guacamole.LociSet.Builder](((lociSet: org.hammerlab.guacamole.LociSet) =&gt; {  scoverage.Invoker.invoked(1257, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  result.put(lociSet)}))
+          lociSets.foreach[org.hammerlab.guacamole.LociSet.Builder](((lociSet: org.hammerlab.guacamole.LociSet) =&gt; {  scoverage.Invoker.invoked(1258, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  result.put(lociSet)}))
         </td>
       </tr><tr>
         <td>
           155
         </td>
         <td>
-          1257
+          1258
         </td>
         <td>
           org.hammerlab.guacamole.LociSet.Builder.put
@@ -21732,7 +21732,7 @@
           157
         </td>
         <td>
-          1259
+          1260
         </td>
         <td>
           org.hammerlab.guacamole.LociSet.Builder.result
@@ -21745,7 +21745,7 @@
           166
         </td>
         <td>
-          1260
+          1261
         </td>
         <td>
           org.hammerlab.guacamole.LociMap.SingleContig.contains
@@ -21758,7 +21758,7 @@
           178
         </td>
         <td>
-          1261
+          1262
         </td>
         <td>
           org.hammerlab.guacamole.LociSet.SingleContig.Iterator.&lt;init&gt;
@@ -21774,10 +21774,10 @@
           1264
         </td>
         <td>
-          org.hammerlab.guacamole.LociSet.SingleContig.apply
+          org.hammerlab.guacamole.LociMap.SingleContig.union
         </td>
         <td style="background: #F0ADAD">
-          LociSet.this.SingleContig.apply({  scoverage.Invoker.invoked(1263, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  SingleContig.this.map.union({    scoverage.Invoker.invoked(1262, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    other.map  })})
+          SingleContig.this.map.union({  scoverage.Invoker.invoked(1263, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  other.map})
         </td>
       </tr><tr>
         <td>
@@ -21787,19 +21787,6 @@
           1263
         </td>
         <td>
-          org.hammerlab.guacamole.LociMap.SingleContig.union
-        </td>
-        <td style="background: #F0ADAD">
-          SingleContig.this.map.union({  scoverage.Invoker.invoked(1262, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  other.map})
-        </td>
-      </tr><tr>
-        <td>
-          181
-        </td>
-        <td>
-          1262
-        </td>
-        <td>
           org.hammerlab.guacamole.LociSet.SingleContig.map
         </td>
         <td style="background: #F0ADAD">
@@ -21807,10 +21794,23 @@
         </td>
       </tr><tr>
         <td>
-          184
+          181
         </td>
         <td>
           1265
+        </td>
+        <td>
+          org.hammerlab.guacamole.LociSet.SingleContig.apply
+        </td>
+        <td style="background: #F0ADAD">
+          LociSet.this.SingleContig.apply({  scoverage.Invoker.invoked(1264, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  SingleContig.this.map.union({    scoverage.Invoker.invoked(1263, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    other.map  })})
+        </td>
+      </tr><tr>
+        <td>
+          184
+        </td>
+        <td>
+          1266
         </td>
         <td>
           scala.Boolean.unary_!
@@ -21823,7 +21823,7 @@
           186
         </td>
         <td>
-          1266
+          1267
         </td>
         <td>
           org.hammerlab.guacamole.LociSet.SingleContig.truncatedString
@@ -21836,7 +21836,7 @@
           189
         </td>
         <td>
-          1267
+          1268
         </td>
         <td>
           org.hammerlab.guacamole.LociMap.SingleContig.truncatedString
@@ -21849,7 +21849,7 @@
           202
         </td>
         <td>
-          1268
+          1269
         </td>
         <td>
           scala.collection.IterableLike.iterator
@@ -21865,10 +21865,10 @@
           1273
         </td>
         <td>
-          scala.Some.apply
+          scala.collection.Iterator.next
         </td>
         <td style="background: #AEF1AE">
-          scala.Some.apply[org.hammerlab.guacamole.LociMap.SimpleRange]({  scoverage.Invoker.invoked(1272, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  Iterator.this.ranges.next()})
+          Iterator.this.ranges.next()
         </td>
       </tr><tr>
         <td>
@@ -21876,19 +21876,6 @@
         </td>
         <td>
           1270
-        </td>
-        <td>
-          scala.None
-        </td>
-        <td style="background: #F0ADAD">
-          scala.None
-        </td>
-      </tr><tr>
-        <td>
-          205
-        </td>
-        <td>
-          1269
         </td>
         <td>
           scala.collection.Iterator.isEmpty
@@ -21904,10 +21891,23 @@
           1272
         </td>
         <td>
-          scala.collection.Iterator.next
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  scoverage.Invoker.invoked(1271, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.None}
+        </td>
+      </tr><tr>
+        <td>
+          205
+        </td>
+        <td>
+          1275
+        </td>
+        <td>
+          &lt;nosymbol&gt;
         </td>
         <td style="background: #AEF1AE">
-          Iterator.this.ranges.next()
+          {  scoverage.Invoker.invoked(1274, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.Some.apply[org.hammerlab.guacamole.LociMap.SimpleRange]({    scoverage.Invoker.invoked(1273, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    Iterator.this.ranges.next()  })}
         </td>
       </tr><tr>
         <td>
@@ -21917,10 +21917,10 @@
           1271
         </td>
         <td>
-          &lt;nosymbol&gt;
+          scala.None
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1270, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.None}
+          scala.None
         </td>
       </tr><tr>
         <td>
@@ -21930,17 +21930,17 @@
           1274
         </td>
         <td>
-          &lt;nosymbol&gt;
+          scala.Some.apply
         </td>
         <td style="background: #AEF1AE">
-          {  scoverage.Invoker.invoked(1273, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.Some.apply[org.hammerlab.guacamole.LociMap.SimpleRange]({    scoverage.Invoker.invoked(1272, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    Iterator.this.ranges.next()  })}
+          scala.Some.apply[org.hammerlab.guacamole.LociMap.SimpleRange]({  scoverage.Invoker.invoked(1273, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  Iterator.this.ranges.next()})
         </td>
       </tr><tr>
         <td>
           208
         </td>
         <td>
-          1275
+          1276
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -21953,7 +21953,7 @@
           211
         </td>
         <td>
-          1276
+          1277
         </td>
         <td>
           scala.Option.nonEmpty
@@ -21966,20 +21966,7 @@
           214
         </td>
         <td>
-          1283
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #AEF1AE">
-          {  scoverage.Invoker.invoked(1277, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  Iterator.this.headRangeOption} match {  case (x: org.hammerlab.guacamole.LociMap.SimpleRange)Some[org.hammerlab.guacamole.LociMap.SimpleRange]((range @ _)) =&gt; {    scoverage.Invoker.invoked(1280, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(1279, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      range.start.+({        scoverage.Invoker.invoked(1278, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        Iterator.this.headIndex      })    }  }  case scala.None =&gt; {    scoverage.Invoker.invoked(1282, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(1281, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      throw new scala.`package`.NoSuchElementException(&quot;empty iterator&quot;)    }  }}
-        </td>
-      </tr><tr>
-        <td>
-          214
-        </td>
-        <td>
-          1277
+          1278
         </td>
         <td>
           org.hammerlab.guacamole.LociSet.SingleContig.Iterator.headRangeOption
@@ -21989,23 +21976,23 @@
         </td>
       </tr><tr>
         <td>
-          215
+          214
         </td>
         <td>
-          1279
+          1284
         </td>
         <td>
-          scala.Long.+
+          &lt;nosymbol&gt;
         </td>
         <td style="background: #AEF1AE">
-          range.start.+({  scoverage.Invoker.invoked(1278, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  Iterator.this.headIndex})
+          {  scoverage.Invoker.invoked(1278, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  Iterator.this.headRangeOption} match {  case (x: org.hammerlab.guacamole.LociMap.SimpleRange)Some[org.hammerlab.guacamole.LociMap.SimpleRange]((range @ _)) =&gt; {    scoverage.Invoker.invoked(1281, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(1280, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      range.start.+({        scoverage.Invoker.invoked(1279, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        Iterator.this.headIndex      })    }  }  case scala.None =&gt; {    scoverage.Invoker.invoked(1283, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(1282, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      throw new scala.`package`.NoSuchElementException(&quot;empty iterator&quot;)    }  }}
         </td>
       </tr><tr>
         <td>
           215
         </td>
         <td>
-          1278
+          1279
         </td>
         <td>
           org.hammerlab.guacamole.LociSet.SingleContig.Iterator.headIndex
@@ -22018,13 +22005,26 @@
           215
         </td>
         <td>
-          1280
+          1281
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #AEF1AE">
-          {  scoverage.Invoker.invoked(1279, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  range.start.+({    scoverage.Invoker.invoked(1278, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    Iterator.this.headIndex  })}
+          {  scoverage.Invoker.invoked(1280, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  range.start.+({    scoverage.Invoker.invoked(1279, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    Iterator.this.headIndex  })}
+        </td>
+      </tr><tr>
+        <td>
+          215
+        </td>
+        <td>
+          1280
+        </td>
+        <td>
+          scala.Long.+
+        </td>
+        <td style="background: #AEF1AE">
+          range.start.+({  scoverage.Invoker.invoked(1279, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  Iterator.this.headIndex})
         </td>
       </tr><tr>
         <td>
@@ -22037,27 +22037,27 @@
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1281, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  throw new scala.`package`.NoSuchElementException(&quot;empty iterator&quot;)}
+          throw new scala.`package`.NoSuchElementException(&quot;empty iterator&quot;)
         </td>
       </tr><tr>
         <td>
           216
         </td>
         <td>
-          1281
+          1283
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          throw new scala.`package`.NoSuchElementException(&quot;empty iterator&quot;)
+          {  scoverage.Invoker.invoked(1282, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  throw new scala.`package`.NoSuchElementException(&quot;empty iterator&quot;)}
         </td>
       </tr><tr>
         <td>
           225
         </td>
         <td>
-          1284
+          1285
         </td>
         <td>
           org.hammerlab.guacamole.LociSet.SingleContig.Iterator.head
@@ -22070,13 +22070,13 @@
           228
         </td>
         <td>
-          1285
+          1287
         </td>
         <td>
-          scala.Long.+
+          org.hammerlab.guacamole.LociSet.SingleContig.Iterator.headIndex_=
         </td>
         <td style="background: #AEF1AE">
-          Iterator.this.headIndex.+(1)
+          Iterator.this.headIndex_=({  scoverage.Invoker.invoked(1286, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  Iterator.this.headIndex.+(1)})
         </td>
       </tr><tr>
         <td>
@@ -22086,23 +22086,10 @@
           1286
         </td>
         <td>
-          org.hammerlab.guacamole.LociSet.SingleContig.Iterator.headIndex_=
+          scala.Long.+
         </td>
         <td style="background: #AEF1AE">
-          Iterator.this.headIndex_=({  scoverage.Invoker.invoked(1285, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  Iterator.this.headIndex.+(1)})
-        </td>
-      </tr><tr>
-        <td>
-          229
-        </td>
-        <td>
-          1291
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #AEF1AE">
-          ()
+          Iterator.this.headIndex.+(1)
         </td>
       </tr><tr>
         <td>
@@ -22110,19 +22097,6 @@
         </td>
         <td>
           1288
-        </td>
-        <td>
-          scala.Long.==
-        </td>
-        <td style="background: #AEF1AE">
-          Iterator.this.headIndex.==({  scoverage.Invoker.invoked(1287, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  Iterator.this.headRangeOption.get.length})
-        </td>
-      </tr><tr>
-        <td>
-          229
-        </td>
-        <td>
-          1287
         </td>
         <td>
           org.hammerlab.guacamole.LociMap.SimpleRange.length
@@ -22135,13 +22109,52 @@
           229
         </td>
         <td>
+          1293
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          {  scoverage.Invoker.invoked(1292, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
+        </td>
+      </tr><tr>
+        <td>
+          229
+        </td>
+        <td>
           1292
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #AEF1AE">
-          {  scoverage.Invoker.invoked(1291, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
+          ()
+        </td>
+      </tr><tr>
+        <td>
+          229
+        </td>
+        <td>
+          1289
+        </td>
+        <td>
+          scala.Long.==
+        </td>
+        <td style="background: #AEF1AE">
+          Iterator.this.headIndex.==({  scoverage.Invoker.invoked(1288, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  Iterator.this.headRangeOption.get.length})
+        </td>
+      </tr><tr>
+        <td>
+          230
+        </td>
+        <td>
+          1291
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          {  scoverage.Invoker.invoked(1290, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  Iterator.this.nextRange()}
         </td>
       </tr><tr>
         <td>
@@ -22149,19 +22162,6 @@
         </td>
         <td>
           1290
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #AEF1AE">
-          {  scoverage.Invoker.invoked(1289, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  Iterator.this.nextRange()}
-        </td>
-      </tr><tr>
-        <td>
-          230
-        </td>
-        <td>
-          1289
         </td>
         <td>
           org.hammerlab.guacamole.LociSet.SingleContig.Iterator.nextRange
@@ -22174,13 +22174,13 @@
           244
         </td>
         <td>
-          1297
+          1300
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
-        <td style="background: #F0ADAD">
-          {  {    scoverage.Invoker.invoked(1295, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    Iterator.this.nextRange()  };  {    scoverage.Invoker.invoked(1296, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    while$1()  }}
+        <td style="background: #AEF1AE">
+          {  scoverage.Invoker.invoked(1299, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
         </td>
       </tr><tr>
         <td>
@@ -22188,32 +22188,6 @@
         </td>
         <td>
           1294
-        </td>
-        <td>
-          scala.Option.exists
-        </td>
-        <td style="background: #AEF1AE">
-          Iterator.this.headRangeOption.exists(((x$1: org.hammerlab.guacamole.LociMap.SimpleRange) =&gt; {  scoverage.Invoker.invoked(1293, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x$1.end.&lt;=(locus)}))
-        </td>
-      </tr><tr>
-        <td>
-          244
-        </td>
-        <td>
-          1299
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #AEF1AE">
-          {  scoverage.Invoker.invoked(1298, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
-        </td>
-      </tr><tr>
-        <td>
-          244
-        </td>
-        <td>
-          1293
         </td>
         <td>
           scala.Long.&lt;=
@@ -22226,20 +22200,46 @@
           244
         </td>
         <td>
+          1299
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          ()
+        </td>
+      </tr><tr>
+        <td>
+          244
+        </td>
+        <td>
+          1295
+        </td>
+        <td>
+          scala.Option.exists
+        </td>
+        <td style="background: #AEF1AE">
+          Iterator.this.headRangeOption.exists(((x$1: org.hammerlab.guacamole.LociMap.SimpleRange) =&gt; {  scoverage.Invoker.invoked(1294, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x$1.end.&lt;=(locus)}))
+        </td>
+      </tr><tr>
+        <td>
+          244
+        </td>
+        <td>
           1298
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          ()
+          {  {    scoverage.Invoker.invoked(1296, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    Iterator.this.nextRange()  };  {    scoverage.Invoker.invoked(1297, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    while$1()  }}
         </td>
       </tr><tr>
         <td>
           245
         </td>
         <td>
-          1296
+          1297
         </td>
         <td>
           org.hammerlab.guacamole.LociSet.SingleContig.Iterator.while$1
@@ -22252,7 +22252,7 @@
           245
         </td>
         <td>
-          1295
+          1296
         </td>
         <td>
           org.hammerlab.guacamole.LociSet.SingleContig.Iterator.nextRange
@@ -22265,7 +22265,20 @@
           249
         </td>
         <td>
-          1300
+          1312
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          {  scoverage.Invoker.invoked(1301, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  Iterator.this.headRangeOption} match {  case (x: org.hammerlab.guacamole.LociMap.SimpleRange)Some[org.hammerlab.guacamole.LociMap.SimpleRange]((range @ _)) if {    scoverage.Invoker.invoked(1305, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    locus.&gt;=({  scoverage.Invoker.invoked(1302, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  range.start}).&amp;&amp;({      scoverage.Invoker.invoked(1304, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      locus.&lt;({        scoverage.Invoker.invoked(1303, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        range.end      })    })  } =&gt; {    scoverage.Invoker.invoked(1309, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(1308, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      Iterator.this.headIndex_=({        scoverage.Invoker.invoked(1307, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        locus.-({          scoverage.Invoker.invoked(1306, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          range.start        })      })    }  }  case _ =&gt; {    scoverage.Invoker.invoked(1311, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(1310, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      ()    }  }}
+        </td>
+      </tr><tr>
+        <td>
+          249
+        </td>
+        <td>
+          1301
         </td>
         <td>
           org.hammerlab.guacamole.LociSet.SingleContig.Iterator.headRangeOption
@@ -22275,36 +22288,10 @@
         </td>
       </tr><tr>
         <td>
-          249
-        </td>
-        <td>
-          1311
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #AEF1AE">
-          {  scoverage.Invoker.invoked(1300, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  Iterator.this.headRangeOption} match {  case (x: org.hammerlab.guacamole.LociMap.SimpleRange)Some[org.hammerlab.guacamole.LociMap.SimpleRange]((range @ _)) if {    scoverage.Invoker.invoked(1304, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    locus.&gt;=({  scoverage.Invoker.invoked(1301, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  range.start}).&amp;&amp;({      scoverage.Invoker.invoked(1303, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      locus.&lt;({        scoverage.Invoker.invoked(1302, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        range.end      })    })  } =&gt; {    scoverage.Invoker.invoked(1308, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(1307, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      Iterator.this.headIndex_=({        scoverage.Invoker.invoked(1306, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        locus.-({          scoverage.Invoker.invoked(1305, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          range.start        })      })    }  }  case _ =&gt; {    scoverage.Invoker.invoked(1310, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(1309, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      ()    }  }}
-        </td>
-      </tr><tr>
-        <td>
           250
         </td>
         <td>
           1303
-        </td>
-        <td>
-          scala.Long.&lt;
-        </td>
-        <td style="background: #AEF1AE">
-          locus.&lt;({  scoverage.Invoker.invoked(1302, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  range.end})
-        </td>
-      </tr><tr>
-        <td>
-          250
-        </td>
-        <td>
-          1302
         </td>
         <td>
           org.hammerlab.guacamole.LociMap.SimpleRange.end
@@ -22317,7 +22304,20 @@
           250
         </td>
         <td>
-          1301
+          1305
+        </td>
+        <td>
+          scala.Boolean.&amp;&amp;
+        </td>
+        <td style="background: #AEF1AE">
+          locus.&gt;=({  scoverage.Invoker.invoked(1302, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  range.start}).&amp;&amp;({  scoverage.Invoker.invoked(1304, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  locus.&lt;({    scoverage.Invoker.invoked(1303, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    range.end  })})
+        </td>
+      </tr><tr>
+        <td>
+          250
+        </td>
+        <td>
+          1302
         </td>
         <td>
           org.hammerlab.guacamole.LociMap.SimpleRange.start
@@ -22333,10 +22333,10 @@
           1304
         </td>
         <td>
-          scala.Boolean.&amp;&amp;
+          scala.Long.&lt;
         </td>
         <td style="background: #AEF1AE">
-          locus.&gt;=({  scoverage.Invoker.invoked(1301, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  range.start}).&amp;&amp;({  scoverage.Invoker.invoked(1303, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  locus.&lt;({    scoverage.Invoker.invoked(1302, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    range.end  })})
+          locus.&lt;({  scoverage.Invoker.invoked(1303, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  range.end})
         </td>
       </tr><tr>
         <td>
@@ -22344,19 +22344,6 @@
         </td>
         <td>
           1306
-        </td>
-        <td>
-          scala.Long.-
-        </td>
-        <td style="background: #AEF1AE">
-          locus.-({  scoverage.Invoker.invoked(1305, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  range.start})
-        </td>
-      </tr><tr>
-        <td>
-          251
-        </td>
-        <td>
-          1305
         </td>
         <td>
           org.hammerlab.guacamole.LociMap.SimpleRange.start
@@ -22369,13 +22356,26 @@
           251
         </td>
         <td>
-          1308
+          1309
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #AEF1AE">
-          {  scoverage.Invoker.invoked(1307, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  Iterator.this.headIndex_=({    scoverage.Invoker.invoked(1306, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    locus.-({      scoverage.Invoker.invoked(1305, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      range.start    })  })}
+          {  scoverage.Invoker.invoked(1308, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  Iterator.this.headIndex_=({    scoverage.Invoker.invoked(1307, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    locus.-({      scoverage.Invoker.invoked(1306, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      range.start    })  })}
+        </td>
+      </tr><tr>
+        <td>
+          251
+        </td>
+        <td>
+          1308
+        </td>
+        <td>
+          org.hammerlab.guacamole.LociSet.SingleContig.Iterator.headIndex_=
+        </td>
+        <td style="background: #AEF1AE">
+          Iterator.this.headIndex_=({  scoverage.Invoker.invoked(1307, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  locus.-({    scoverage.Invoker.invoked(1306, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    range.start  })})
         </td>
       </tr><tr>
         <td>
@@ -22385,23 +22385,23 @@
           1307
         </td>
         <td>
-          org.hammerlab.guacamole.LociSet.SingleContig.Iterator.headIndex_=
+          scala.Long.-
         </td>
         <td style="background: #AEF1AE">
-          Iterator.this.headIndex_=({  scoverage.Invoker.invoked(1306, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  locus.-({    scoverage.Invoker.invoked(1305, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    range.start  })})
+          locus.-({  scoverage.Invoker.invoked(1306, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  range.start})
         </td>
       </tr><tr>
         <td>
           253
         </td>
         <td>
-          1309
+          1311
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          ()
+          {  scoverage.Invoker.invoked(1310, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
         </td>
       </tr><tr>
         <td>
@@ -22414,14 +22414,14 @@
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1309, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
+          ()
         </td>
       </tr><tr>
         <td>
           261
         </td>
         <td>
-          1312
+          1313
         </td>
         <td>
           org.hammerlab.guacamole.LociSet.SingleContig.Iterator.headIndex_=
@@ -22437,32 +22437,6 @@
           1315
         </td>
         <td>
-          scala.Some.apply
-        </td>
-        <td style="background: #F0ADAD">
-          scala.Some.apply[org.hammerlab.guacamole.LociMap.SimpleRange]({  scoverage.Invoker.invoked(1314, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  Iterator.this.ranges.next()})
-        </td>
-      </tr><tr>
-        <td>
-          262
-        </td>
-        <td>
-          1318
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #AEF1AE">
-          {  scoverage.Invoker.invoked(1317, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.None}
-        </td>
-      </tr><tr>
-        <td>
-          262
-        </td>
-        <td>
-          1314
-        </td>
-        <td>
           scala.collection.Iterator.next
         </td>
         <td style="background: #F0ADAD">
@@ -22473,7 +22447,7 @@
           262
         </td>
         <td>
-          1317
+          1318
         </td>
         <td>
           scala.None
@@ -22486,20 +22460,20 @@
           262
         </td>
         <td>
-          1319
+          1320
         </td>
         <td>
           org.hammerlab.guacamole.LociSet.SingleContig.Iterator.headRangeOption_=
         </td>
         <td style="background: #AEF1AE">
-          Iterator.this.headRangeOption_=(if ({  scoverage.Invoker.invoked(1313, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  Iterator.this.ranges.hasNext})  {    scoverage.Invoker.invoked(1316, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(1315, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      scala.Some.apply[org.hammerlab.guacamole.LociMap.SimpleRange]({        scoverage.Invoker.invoked(1314, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        Iterator.this.ranges.next()      })    }  }else  {    scoverage.Invoker.invoked(1318, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(1317, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      scala.None    }  })
+          Iterator.this.headRangeOption_=(if ({  scoverage.Invoker.invoked(1314, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  Iterator.this.ranges.hasNext})  {    scoverage.Invoker.invoked(1317, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(1316, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      scala.Some.apply[org.hammerlab.guacamole.LociMap.SimpleRange]({        scoverage.Invoker.invoked(1315, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        Iterator.this.ranges.next()      })    }  }else  {    scoverage.Invoker.invoked(1319, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(1318, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      scala.None    }  })
         </td>
       </tr><tr>
         <td>
           262
         </td>
         <td>
-          1313
+          1314
         </td>
         <td>
           scala.collection.Iterator.hasNext
@@ -22512,20 +22486,46 @@
           262
         </td>
         <td>
-          1316
+          1317
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1315, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.Some.apply[org.hammerlab.guacamole.LociMap.SimpleRange]({    scoverage.Invoker.invoked(1314, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    Iterator.this.ranges.next()  })}
+          {  scoverage.Invoker.invoked(1316, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.Some.apply[org.hammerlab.guacamole.LociMap.SimpleRange]({    scoverage.Invoker.invoked(1315, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    Iterator.this.ranges.next()  })}
+        </td>
+      </tr><tr>
+        <td>
+          262
+        </td>
+        <td>
+          1319
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          {  scoverage.Invoker.invoked(1318, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.None}
+        </td>
+      </tr><tr>
+        <td>
+          262
+        </td>
+        <td>
+          1316
+        </td>
+        <td>
+          scala.Some.apply
+        </td>
+        <td style="background: #F0ADAD">
+          scala.Some.apply[org.hammerlab.guacamole.LociMap.SimpleRange]({  scoverage.Invoker.invoked(1315, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  Iterator.this.ranges.next()})
         </td>
       </tr><tr>
         <td>
           263
         </td>
         <td>
-          1320
+          1321
         </td>
         <td>
           org.hammerlab.guacamole.LociSet.SingleContig.Iterator.headRangeOption
@@ -22538,13 +22538,13 @@
           272
         </td>
         <td>
-          1321
+          1323
         </td>
         <td>
-          org.hammerlab.guacamole.LociSet.map
+          com.esotericsoftware.kryo.Kryo.writeObject
         </td>
         <td style="background: #AEF1AE">
-          obj.map
+          kryo.writeObject(output, {  scoverage.Invoker.invoked(1322, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  obj.map})
         </td>
       </tr><tr>
         <td>
@@ -22554,10 +22554,10 @@
           1322
         </td>
         <td>
-          com.esotericsoftware.kryo.Kryo.writeObject
+          org.hammerlab.guacamole.LociSet.map
         </td>
         <td style="background: #AEF1AE">
-          kryo.writeObject(output, {  scoverage.Invoker.invoked(1321, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  obj.map})
+          obj.map
         </td>
       </tr><tr>
         <td>
@@ -22567,19 +22567,6 @@
           1324
         </td>
         <td>
-          org.hammerlab.guacamole.LociSet.apply
-        </td>
-        <td style="background: #AEF1AE">
-          LociSet.apply({  scoverage.Invoker.invoked(1323, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  kryo.readObject[org.hammerlab.guacamole.LociMap[Long]](input, classOf[org.hammerlab.guacamole.LociMap])})
-        </td>
-      </tr><tr>
-        <td>
-          275
-        </td>
-        <td>
-          1323
-        </td>
-        <td>
           com.esotericsoftware.kryo.Kryo.readObject
         </td>
         <td style="background: #AEF1AE">
@@ -22587,23 +22574,36 @@
         </td>
       </tr><tr>
         <td>
-          281
+          275
         </td>
         <td>
-          1326
+          1325
         </td>
         <td>
-          com.esotericsoftware.kryo.Kryo.writeObject
+          org.hammerlab.guacamole.LociSet.apply
         </td>
-        <td style="background: #F0ADAD">
-          kryo.writeObject(output, {  scoverage.Invoker.invoked(1325, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  obj.map})
+        <td style="background: #AEF1AE">
+          LociSet.apply({  scoverage.Invoker.invoked(1324, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  kryo.readObject[org.hammerlab.guacamole.LociMap[Long]](input, classOf[org.hammerlab.guacamole.LociMap])})
         </td>
       </tr><tr>
         <td>
           281
         </td>
         <td>
-          1325
+          1327
+        </td>
+        <td>
+          com.esotericsoftware.kryo.Kryo.writeObject
+        </td>
+        <td style="background: #F0ADAD">
+          kryo.writeObject(output, {  scoverage.Invoker.invoked(1326, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  obj.map})
+        </td>
+      </tr><tr>
+        <td>
+          281
+        </td>
+        <td>
+          1326
         </td>
         <td>
           org.hammerlab.guacamole.LociSet.SingleContig.map
@@ -22616,13 +22616,13 @@
           284
         </td>
         <td>
-          1327
+          1329
         </td>
         <td>
-          com.esotericsoftware.kryo.Kryo.readObject
+          org.hammerlab.guacamole.LociSet.SingleContig.apply
         </td>
         <td style="background: #F0ADAD">
-          kryo.readObject[org.hammerlab.guacamole.LociMap.SingleContig[Long]](input, classOf[org.hammerlab.guacamole.LociMap$$SingleContig])
+          LociSet.SingleContig.apply({  scoverage.Invoker.invoked(1328, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  kryo.readObject[org.hammerlab.guacamole.LociMap.SingleContig[Long]](input, classOf[org.hammerlab.guacamole.LociMap$$SingleContig])})
         </td>
       </tr><tr>
         <td>
@@ -22632,10 +22632,10 @@
           1328
         </td>
         <td>
-          org.hammerlab.guacamole.LociSet.SingleContig.apply
+          com.esotericsoftware.kryo.Kryo.readObject
         </td>
         <td style="background: #F0ADAD">
-          LociSet.SingleContig.apply({  scoverage.Invoker.invoked(1327, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  kryo.readObject[org.hammerlab.guacamole.LociMap.SingleContig[Long]](input, classOf[org.hammerlab.guacamole.LociMap$$SingleContig])})
+          kryo.readObject[org.hammerlab.guacamole.LociMap.SingleContig[Long]](input, classOf[org.hammerlab.guacamole.LociMap$$SingleContig])
         </td>
       </tr>
     </table>
