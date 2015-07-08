@@ -386,5 +386,42 @@ class PileupSuite extends GuacFunSuite with Matchers with TableDrivenPropertyChe
     }
   }
 
+  test("create and advance pileup element from RNA read") {
+    val rnaRead = TestUtil.makeRead(
+      sequence = "CCCCAGCCTAGGCCTTCGACACTGGGGGGCTGAGGGAAGGGGCACCTGCC",
+      cigar = "7M191084N43M",
+      mdtag = "9T24T7G7",
+      start = 229538779,
+      chr = "chr1")
+
+    val rnaPileupElement = PileupElement(rnaRead, 229538779L, Bases.C)
+
+    // Second base
+    assertBases(advancePileupElement(rnaPileupElement, 229538780L).sequencedBases, "C")
+
+    // Third base
+    assertBases(advancePileupElement(rnaPileupElement, 229538781L).sequencedBases, "C")
+
+    // In intron
+    assertBases(advancePileupElement(rnaPileupElement, 229539779L).sequencedBases, "")
+
+    // Last base
+    assertBases(advancePileupElement(rnaPileupElement, 229729912L).sequencedBases, "C")
+
+  }
+
+  sparkTest("create pileup from RNA reads") {
+    val rnaReadsPileup = loadPileup("testrna.sam", locus = 229580594)
+
+    // 94 reads in the testrna.sam
+    // 3 reads end at 229580707 and 1 extends further
+    rnaReadsPileup.depth should be(94)
+
+    val movedRnaReadsPileup = rnaReadsPileup.atGreaterLocus(229580706, Bases.A, Iterator.empty)
+    movedRnaReadsPileup.depth should be(4)
+
+    movedRnaReadsPileup.atGreaterLocus(229580707, Bases.N, Iterator.empty).depth should be(1)
+  }
+
 }
 
