@@ -211,4 +211,22 @@ class MDTagUtilsSuite extends FunSuite with Matchers {
     val reference = MDTagUtils.getReference(Seq(firstRead, secondRead), 0, 18)
     Bases.basesToString(reference) should be("AAATTGANNNNCGANNNN")
   }
+
+  test("rebuild reference: RNA read with N CIGAR operator") {
+    val rnaRead = TestUtil.makeRead(
+      sequence = "CCCCAGCCTAGGCCTTCGACACTGGGGGGCTGAGGGAAGGGGCACCTGCC",
+      cigar = "7M191084N43M",
+      mdtag = "9T24T7G7",
+      start = 229538779,
+      chr = "chr1")
+    val referenceLength = (rnaRead.end - rnaRead.start).toInt
+    println(rnaRead.end)
+    val reference = MDTagUtils.getReference(rnaRead, allowNBase = true)._2
+
+    reference.size should be(referenceLength)
+    Bases.basesToString(reference.slice(0, 7).toSeq) should be("CCCCAGC")
+    (Bases.basesToString(reference.slice(referenceLength - 43, referenceLength).toSeq)
+      should be("CTAGGCCTTCGACACTGGGGGGCTGAGGGAAGGGGCACCTGCC"))
+
+  }
 }
