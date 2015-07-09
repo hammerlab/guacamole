@@ -46,12 +46,8 @@ object MDTagUtils {
           }
         }
         case CigarOperator.N if allowNBase => {
-          for (i <- 0 until cigarElement.getLength) {
-            // if a mismatch, get from the mismatch set, else pull from read
-            reference += readSequence(readPos)
-            readPos += 1
-            referencePos += 1
-          }
+          referencePos += cigarElement.getLength
+          reference ++= Buffer.fill(cigarElement.getLength)(Bases.N)
         }
         case CigarOperator.D => {
           // if a delete, get from the delete pool
