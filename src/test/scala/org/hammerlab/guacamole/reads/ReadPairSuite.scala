@@ -2,8 +2,7 @@ package org.hammerlab.guacamole.reads
 
 import htsjdk.samtools.TextCigarCodec
 import org.hammerlab.guacamole.util.TestUtil.Implicits._
-import org.scalatest.{Matchers, FunSuite}
-
+import org.scalatest.{ Matchers, FunSuite }
 
 class ReadPairSuite extends FunSuite with Matchers {
 
@@ -17,20 +16,20 @@ class ReadPairSuite extends FunSuite with Matchers {
       false,
       isPositiveStrand = true,
       isPaired = true)
-    
+
     val read =
       ReadPair(
         unmappedRead,
-      isFirstInPair = true,
-      mateAlignmentProperties = Some(
-        MateAlignmentProperties(
-          inferredInsertSize = Some(300),
-          mateReferenceContig = "chr5",
-          mateStart = 100L,
-          isMatePositiveStrand =  false
+        isFirstInPair = true,
+        mateAlignmentProperties = Some(
+          MateAlignmentProperties(
+            inferredInsertSize = Some(300),
+            mateReferenceContig = "chr5",
+            mateStart = 100L,
+            isMatePositiveStrand = false
+          )
         )
       )
-    )
 
     read.isMapped should be(false)
     read.asInstanceOf[Read].isMapped should be(false)
@@ -56,7 +55,7 @@ class ReadPairSuite extends FunSuite with Matchers {
           inferredInsertSize = Some(300),
           mateReferenceContig = "chr5",
           mateStart = 100L,
-          isMatePositiveStrand =  false
+          isMatePositiveStrand = false
         )
       )
     )
@@ -82,7 +81,7 @@ class ReadPairSuite extends FunSuite with Matchers {
           inferredInsertSize = Some(300),
           mateReferenceContig = "chr5",
           mateStart = 100L,
-          isMatePositiveStrand =  false
+          isMatePositiveStrand = false
         )
       )
     )

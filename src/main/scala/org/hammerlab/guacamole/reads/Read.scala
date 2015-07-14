@@ -295,7 +295,7 @@ object Read extends Logging {
       sc.newAPIHadoopFile[LongWritable, SAMRecordWritable, AnySAMInputFormat](filename)
     val reads: RDD[Read] =
       samRecords.flatMap({
-        case (k, v) => fromSAMRecordOpt(v.get, token, requireMDTagsOnMappedReads)
+        case (k, v) => if (v.get.getReadPairedFlag) ReadPair(v.get, token) else fromSAMRecordOpt(v.get, token, requireMDTagsOnMappedReads)
       })
     (reads, sequenceDictionary)
   }
@@ -357,7 +357,7 @@ object Read extends Logging {
     val sequence = Bases.stringToBases(alignmentRecord.getSequence.toString)
     val baseQualities = baseQualityStringToArray(alignmentRecord.getQual.toString, sequence.length)
 
-    if (alignmentRecord.getReadMapped) {
+    val read = if (alignmentRecord.getReadMapped) {
       MappedRead(
         token = token,
         sequence = sequence,
@@ -384,6 +384,22 @@ object Read extends Logging {
         isPositiveStrand = !alignmentRecord.getReadNegativeStrand,
         alignmentRecord.getReadPaired
       )
+    }
+
+    if (alignmentRecord.getReadPaired) {
+      val mateAlignment = if (alignmentRecord.getMateMapped) Some(
+        MateAlignmentProperties(
+          mateReferenceContig = alignmentRecord.getMateContig.toString,
+          mateStart = alignmentRecord.getMateAlignmentStart,
+          inferredInsertSize = None,
+          isMatePositiveStrand = !alignmentRecord.getMateNegativeStrand
+        )
+      )
+      else
+        None
+      ReadPair(read, isFirstInPair = alignmentRecord.getFirstOfPair, mateAlignment)
+    } else {
+      read
     }
   }
 
