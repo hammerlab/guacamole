@@ -51,7 +51,6 @@ object PileupFilter {
     var minAlignmentQuality: Int = 1
 
     @Args4jOption(name = "--filter-multi-allelic", usage = "Filter any pileups > 2 bases considered")
-    var filterMultiAllelic: Boolean = false
 
     @Args4jOption(name = "--min-edge-distance", usage = "Filter reads where the base in the pileup is closer than minEdgeDistance to the (directional) end of the read")
     var minEdgeDistance: Int = 0
