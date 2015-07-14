@@ -28,7 +28,7 @@ import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.reads.Read.InputFilters
 import org.kohsuke.args4j.{ Argument, Option => Args4jOption }
 
-object ReadEvidence {
+object VariantSupport {
 
   protected class Arguments extends DistributedUtil.Arguments {
     @Args4jOption(name = "--input-variant", required = true, aliases = Array("-v"),
@@ -50,7 +50,12 @@ object ReadEvidence {
     override val name = "variant-support"
     override val description = "Find number of reads that support each variant across BAMs"
 
-    case class AlleleCount(sample: String, contig: String, locus: Long, reference: String, alternate: String, count: Int) {
+    case class AlleleCount(sample: String,
+                           contig: String,
+                           locus: Long,
+                           reference: String,
+                           alternate: String,
+                           count: Int) {
       override def toString: String = {
         s"$sample, $contig, $locus, $reference, $alternate, $count"
       }

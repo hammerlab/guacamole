@@ -38,7 +38,7 @@ object Guacamole extends Logging {
     GermlineThreshold.Caller,
     GermlineStandard.Caller,
     SomaticStandard.Caller,
-    ReadEvidence.Caller,
+    VariantSupport.Caller,
     VAFHistogram.Caller
   )
 
