@@ -7,7 +7,6 @@ import org.apache.spark.mllib.linalg.Vectors
 import org.apache.spark.rdd.RDD
 import org.apache.spark.storage.StorageLevel
 import org.hammerlab.guacamole._
-import org.hammerlab.guacamole.filters.PileupFilter.PileupFilterArguments
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.Read.InputFilters
 import org.hammerlab.guacamole.reads.{ MappedRead, Read }
@@ -39,7 +38,7 @@ object VariantLocus {
 
 object VAFHistogram {
 
-  protected class Arguments extends DistributedUtil.Arguments with PileupFilterArguments {
+  protected class Arguments extends DistributedUtil.Arguments {
 
     @Args4jOption(name = "--out", required = false,
       usage = "Path to save the variant allele frequency histogram. (Print to screen if not provided)")
@@ -59,6 +58,12 @@ object VAFHistogram {
 
     @Args4jOption(name = "--samplePercent", usage = "Percent of variant to use for the calculations (Default: 25)")
     var samplePercent: Int = 25
+
+    @Opt(name = "--min-read-depth", usage = "Minimum read depth to include variant allele frequency")
+    var minReadDepth: Int = 0
+
+    @Opt(name = "--min-vaf", usage = "Minimum variant allele frequency to include")
+    var minVAF: Int = 0
 
     @Argument(required = true, multiValued = true,
       usage = "BAMs")
@@ -93,11 +98,16 @@ object VAFHistogram {
         readSets(0).mappedReads // Use the first set of reads as a proxy for read depth
       )
 
+      val minReadDepth = args.minReadDepth
+      val minVariantAlleleFrequency = args.minVAF
       val variantLoci = readSets.map(readSet =>
         variantLociFromReads(
           readSet.mappedReads,
           lociPartitions,
-          samplePercent)
+          samplePercent,
+          minReadDepth,
+          minVariantAlleleFrequency
+        )
       )
 
       val bins = args.bins
@@ -106,11 +116,11 @@ object VAFHistogram {
 
       val sampleNames = readSets.map(_.mappedReads.take(1)(0).sampleName)
       val binSize = 100 / bins
-      
+
       def histogramToString(kv: (Int, Long)): String = {
         s"${kv._1}, ${math.min(kv._1 + binSize - 1, 100)}, ${kv._2}"
       }
-      
+
       if (args.output != "") {
         // Parallelize histogram and save on HDFS
         sc.parallelize(sampleNames.zip(variantAlleleHistograms).flatMap(kv => {
@@ -154,17 +164,24 @@ object VAFHistogram {
    * @param reads RDD of mapped reads for the sample
    * @param lociPartitions Positions which to examine for non-reference loci
    * @param samplePercent Percent of non-reference loci to use for descriptive statistics
+   * @param minReadDepth Minimum read depth before including variant allele frequency
+   * @param minVariantAlleleFrequency Minimum variant allele frequency to include
    * @return RDD of VariantLocus, which contain the locus and non-zero variant allele frequency
    */
   def variantLociFromReads(reads: RDD[MappedRead],
                            lociPartitions: LociMap[Long],
-                           samplePercent: Int = 100): RDD[VariantLocus] = {
+                           samplePercent: Int = 100,
+                           minReadDepth: Int = 0,
+                           minVariantAlleleFrequency: Int = 0): RDD[VariantLocus] = {
     val sampleName = reads.take(1)(0).sampleName
     val variantLoci = DistributedUtil.pileupFlatMap[VariantLocus](
       reads,
       lociPartitions,
       skipEmpty = true,
-      pileup => VariantLocus(pileup).iterator
+      pileup => VariantLocus(pileup)
+        .filter(locus => pileup.depth >= minReadDepth)
+        .filter(_.variantAlleleFrequency >= (minVariantAlleleFrequency / 100.0))
+        .iterator
     )
     variantLoci.persist(StorageLevel.MEMORY_ONLY)
 
