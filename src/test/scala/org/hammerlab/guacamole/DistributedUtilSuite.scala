@@ -32,9 +32,6 @@ import scala.collection.JavaConversions._
 
 class DistributedUtilSuite extends GuacFunSuite with Matchers {
 
-  // You can use a line like the following to turn on only a particular unit test for debugging.
-  // TestUtil.runOnly = "partitionLociByApproximateReadDepth chr20 synth1 subset"
-
   test("partitionLociUniformly") {
     val set = LociSet.parse("chr21:100-200,chr20:0-10,chr20:8-15,chr20:100-121,empty:10-10")
     val result1 = DistributedUtil.partitionLociUniformly(1, set).asInverseMap
@@ -177,6 +174,63 @@ class DistributedUtilSuite extends GuacFunSuite with Matchers {
       true, // skip empty pileups
       (pileup1, pileup2) => Iterator(pileup1.locus)).collect
     loci.toSeq should equal(Seq(1, 2, 3, 4, 5, 6, 7, 8, 99, 100, 101, 102, 103, 104, 105, 106, 107))
+  }
+
+  sparkTest("test pileup flatmap multiple rdds; skip empty pileups") {
+    val reads1 = sc.parallelize(Seq(
+      TestUtil.makeRead("TCGATCGA", "8M", "8", 1),
+      TestUtil.makeRead("TCGATCGA", "8M", "8", 1),
+      TestUtil.makeRead("TCGATCGA", "8M", "8", 1),
+      TestUtil.makeRead("GGGGGGGG", "8M", "8", 100),
+      TestUtil.makeRead("GGGGGGGG", "8M", "8", 100),
+      TestUtil.makeRead("GGGGGGGG", "8M", "8", 100)))
+
+    val reads2 = sc.parallelize(Seq(
+      TestUtil.makeRead("AAAAAAAA", "8M", "8", 1),
+      TestUtil.makeRead("CCCCCCCC", "8M", "8", 1),
+      TestUtil.makeRead("TTTTTTTT", "8M", "8", 1),
+      TestUtil.makeRead("XYX", "3M", "8", 99)))
+
+    val reads3 = sc.parallelize(Seq(
+      TestUtil.makeRead("AAGGCCTT", "8M", "8", 1),
+      TestUtil.makeRead("GGAATTCC", "8M", "8", 1),
+      TestUtil.makeRead("GGGGGGGG", "8M", "8", 1),
+      TestUtil.makeRead("XZX", "3M", "8", 99)))
+
+    val resultPlain = DistributedUtil.pileupFlatMapMultipleRDDs[Seq[Seq[String]]](
+      Seq(reads1, reads2, reads3),
+      DistributedUtil.partitionLociUniformly(1, LociSet.parse("chr1:1-500,chr2:10-20")),
+      true, // skip empty pileups
+      pileups => Iterator(pileups.map(_.elements.map(p => Bases.basesToString(p.sequencedBases))))).collect.map(_.toList)
+
+    val resultParallelized = DistributedUtil.pileupFlatMapMultipleRDDs[Seq[Seq[String]]](
+      Seq(reads1, reads2, reads3),
+      DistributedUtil.partitionLociUniformly(800, LociSet.parse("chr0:0-100,chr1:1-500,chr2:10-20")),
+      true, // skip empty pileups
+      pileups => Iterator(pileups.map(_.elements.map(p => Bases.basesToString(p.sequencedBases))))).collect.map(_.toList)
+
+    val resultWithEmpty = DistributedUtil.pileupFlatMapMultipleRDDs[Seq[Seq[String]]](
+      Seq(reads1, reads2, reads3),
+      DistributedUtil.partitionLociUniformly(5, LociSet.parse("chr1:1-500,chr2:10-20")),
+      false, // don't skip empty pileups
+      pileups => Iterator(pileups.map(_.elements.map(p => Bases.basesToString(p.sequencedBases))))).collect.map(_.toList)
+
+    resultPlain should equal(resultParallelized)
+
+    resultWithEmpty(0) should equal(resultPlain(0))
+    resultWithEmpty(1) should equal(resultPlain(1))
+    resultWithEmpty(2) should equal(resultPlain(2))
+    resultWithEmpty(3) should equal(resultPlain(3))
+    resultWithEmpty(35) should equal(Seq(Seq(), Seq(), Seq()))
+
+    resultPlain(0) should equal(Seq(Seq("T", "T", "T"), Seq("A", "C", "T"), Seq("A", "G", "G")))
+    resultPlain(1) should equal(Seq(Seq("C", "C", "C"), Seq("A", "C", "T"), Seq("A", "G", "G")))
+    resultPlain(2) should equal(Seq(Seq("G", "G", "G"), Seq("A", "C", "T"), Seq("G", "A", "G")))
+    resultPlain(3) should equal(Seq(Seq("A", "A", "A"), Seq("A", "C", "T"), Seq("G", "A", "G")))
+
+    resultPlain(8) should equal(Seq(Seq(), Seq("X"), Seq("X")))
+    resultPlain(9) should equal(Seq(Seq("G", "G", "G"), Seq("Y"), Seq("Z")))
+    resultPlain(10) should equal(Seq(Seq("G", "G", "G"), Seq("X"), Seq("X")))
   }
 
   sparkTest("test pileup flatmap parallelism 5; create pileup elements") {
