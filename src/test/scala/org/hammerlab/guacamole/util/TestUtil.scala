@@ -26,7 +26,7 @@ import com.twitter.chill.{ IKryoRegistrar, KryoInstantiator, KryoPool }
 import org.apache.commons.io.FileUtils
 import org.apache.spark.SparkContext
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.reads.{ MateAlignmentProperties, ReadPair, MappedRead, Read }
+import org.hammerlab.guacamole.reads.{ MateAlignmentProperties, PairedRead, MappedRead, Read }
 import org.hammerlab.guacamole.{ Bases, GuacamoleKryoRegistrator, ReadSet }
 import org.scalatest._
 
@@ -99,11 +99,11 @@ object TestUtil extends Matchers {
     isMatePositiveStrand: Boolean = false,
     sequence: String = "ACTGACTGACTG",
     cigar: String = "12M",
-    mdTag: String = "12"): ReadPair[MappedRead] = {
+    mdTag: String = "12"): PairedRead[MappedRead] = {
 
     val qualityScoreString = sequence.map(x => '@').mkString
 
-    ReadPair(
+    PairedRead(
       Read(
         sequence,
         cigarString = cigar,

@@ -3,15 +3,15 @@ package org.hammerlab.guacamole.reads
 import htsjdk.samtools.SAMRecord
 
 /**
- * *
+ * PairedRead is a MappedRead or UnmappedRead with the additional mate information
  * @param read Unmapped or MappedRead base read
  * @param isFirstInPair Whether the read is earlier that the the mate read
  * @param mateAlignmentProperties Alignment location of the mate if it the mate is aligned
  * @tparam T UnmappedRead or MappedRead
  */
-case class ReadPair[+T <: Read](read: T,
-                                isFirstInPair: Boolean,
-                                mateAlignmentProperties: Option[MateAlignmentProperties]) extends Read {
+case class PairedRead[+T <: Read](read: T,
+                                  isFirstInPair: Boolean,
+                                  mateAlignmentProperties: Option[MateAlignmentProperties]) extends Read {
 
   val isMateMapped = mateAlignmentProperties.isDefined
   override val token: Int = read.token
@@ -24,10 +24,10 @@ case class ReadPair[+T <: Read](read: T,
   override val isPaired: Boolean = true
 }
 
-object ReadPair {
+object PairedRead {
   def apply(record: SAMRecord,
             token: Int,
-            requireMDTagsOnMappedReads: Boolean): Option[ReadPair[Read]] = {
+            requireMDTagsOnMappedReads: Boolean): Option[PairedRead[Read]] = {
     val read = Read.fromSAMRecordOpt(
       record,
       token,
@@ -35,7 +35,7 @@ object ReadPair {
     )
 
     val mateAlignment = MateAlignmentProperties(record)
-    read.map(ReadPair(_, isFirstInPair = record.getFirstOfPairFlag, mateAlignment))
+    read.map(PairedRead(_, isFirstInPair = record.getFirstOfPairFlag, mateAlignment))
   }
 }
 
