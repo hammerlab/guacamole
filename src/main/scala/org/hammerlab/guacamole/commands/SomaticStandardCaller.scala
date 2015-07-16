@@ -30,7 +30,7 @@ import org.hammerlab.guacamole.reads.Read
 import org.hammerlab.guacamole.variants.{ AlleleConversions, AlleleEvidence, CalledSomaticAllele }
 import org.hammerlab.guacamole.windowing.SlidingWindow
 import org.hammerlab.guacamole.{ Common, DelayedMessages, DistributedUtil, SparkCommand }
-import org.kohsuke.args4j.{ Option => Opt }
+import org.kohsuke.args4j.{ Option => Args4jOption }
 
 /**
  * Simple subtraction based somatic variant caller
@@ -46,7 +46,7 @@ object SomaticStandard {
 
   protected class Arguments extends SomaticCallerArgs with PileupFilterArguments with SomaticGenotypeFilterArguments {
 
-    @Opt(name = "--odds", usage = "Minimum log odds threshold for possible variant candidates")
+    @Args4jOption(name = "--odds", usage = "Minimum log odds threshold for possible variant candidates")
     var oddsThreshold: Int = 20
 
   }

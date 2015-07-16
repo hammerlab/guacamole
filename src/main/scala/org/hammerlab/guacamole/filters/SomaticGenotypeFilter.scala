@@ -22,7 +22,7 @@ import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole.Common.Arguments.Base
 import org.hammerlab.guacamole._
 import org.hammerlab.guacamole.variants.{ CalledAllele, AlleleEvidence, CalledSomaticAllele }
-import org.kohsuke.args4j.Option
+import org.kohsuke.args4j.{ Option => Args4jOption }
 
 /**
  * Filter to remove genotypes where the somatic likelihood is low
@@ -220,34 +220,34 @@ object SomaticGenotypeFilter {
 
   trait SomaticGenotypeFilterArguments extends Base {
 
-    @Option(name = "--min-likelihood", usage = "Minimum likelihood (Phred-scaled)")
+    @Args4jOption(name = "--min-likelihood", usage = "Minimum likelihood (Phred-scaled)")
     var minLikelihood: Int = 0
 
-    @Option(name = "--min-vaf", usage = "Minimum variant allele frequency")
+    @Args4jOption(name = "--min-vaf", usage = "Minimum variant allele frequency")
     var minVAF: Int = 0
 
-    @Option(name = "--min-lod", metaVar = "X", usage = "Make a call if the log odds of variant is greater than this value (Phred-scaled)")
+    @Args4jOption(name = "--min-lod", metaVar = "X", usage = "Make a call if the log odds of variant is greater than this value (Phred-scaled)")
     var minLOD: Int = 0
 
-    @Option(name = "--min-average-mapping-quality", metaVar = "X", usage = "Make a call average mapping quality of reads is greater than this value")
+    @Args4jOption(name = "--min-average-mapping-quality", metaVar = "X", usage = "Make a call average mapping quality of reads is greater than this value")
     var minAverageMappingQuality: Int = 0
 
-    @Option(name = "--min-average-base-quality", metaVar = "X", usage = "Make a call average base quality of bases in the pileup is greater than this value")
+    @Args4jOption(name = "--min-average-base-quality", metaVar = "X", usage = "Make a call average base quality of bases in the pileup is greater than this value")
     var minAverageBaseQuality: Int = 0
 
-    @Option(name = "--min-tumor-read-depth", usage = "Minimum number of reads in tumor sample for a genotype call")
+    @Args4jOption(name = "--min-tumor-read-depth", usage = "Minimum number of reads in tumor sample for a genotype call")
     var minTumorReadDepth: Int = 0
 
-    @Option(name = "--min-normal-read-depth", usage = "Minimum number of reads in normal sample for a genotype call")
+    @Args4jOption(name = "--min-normal-read-depth", usage = "Minimum number of reads in normal sample for a genotype call")
     var minNormalReadDepth: Int = 0
 
-    @Option(name = "--max-tumor-read-depth", usage = "Maximum number of reads in tumor sample for a genotype call")
+    @Args4jOption(name = "--max-tumor-read-depth", usage = "Maximum number of reads in tumor sample for a genotype call")
     var maxTumorReadDepth: Int = Int.MaxValue
 
-    @Option(name = "--min-tumor-alternate-read-depth", usage = "Minimum number of reads with alternate allele for a genotype call")
+    @Args4jOption(name = "--min-tumor-alternate-read-depth", usage = "Minimum number of reads with alternate allele for a genotype call")
     var minTumorAlternateReadDepth: Int = 0
 
-    @Option(name = "--debug-genotype-filters", usage = "Print count of genotypes after each filtering step")
+    @Args4jOption(name = "--debug-genotype-filters", usage = "Print count of genotypes after each filtering step")
     var debugGenotypeFilters = false
 
   }
