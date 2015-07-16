@@ -210,7 +210,12 @@ object Read extends Logging {
             log.warn("Computed read 'unclippedStart' %d != samtools read end %d.".format(
               result.unclippedStart, record.getUnclippedStart - 1))
           Some(result)
-        case None => None
+        case None =>
+          if (requireMDTagsOnMappedReads) {
+            throw MissingMDTagException(record)
+          } else {
+            None
+          }
       }
     } else {
       Some(UnmappedRead(
@@ -295,7 +300,11 @@ object Read extends Logging {
       sc.newAPIHadoopFile[LongWritable, SAMRecordWritable, AnySAMInputFormat](filename)
     val reads: RDD[Read] =
       samRecords.flatMap({
-        case (k, v) => if (v.get.getReadPairedFlag) ReadPair(v.get, token) else fromSAMRecordOpt(v.get, token, requireMDTagsOnMappedReads)
+        case (k, v) =>
+          if (v.get.getReadPairedFlag)
+            ReadPair(v.get, token, requireMDTagsOnMappedReads)
+          else
+            fromSAMRecordOpt(v.get, token, requireMDTagsOnMappedReads)
       })
     (reads, sequenceDictionary)
   }
