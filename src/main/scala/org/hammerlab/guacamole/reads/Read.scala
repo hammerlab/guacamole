@@ -62,9 +62,9 @@ trait Read {
 
   /** Is this read mapped? */
   final val isMapped: Boolean = this match {
-    case r: MappedRead     => true
-    case r: UnmappedRead   => false
-    case ReadPair(r, _, _) => r.isMapped
+    case r: MappedRead       => true
+    case r: UnmappedRead     => false
+    case PairedRead(r, _, _) => r.isMapped
   }
 
   /** The sample (e.g. "tumor" or "patient3636") name. */
@@ -302,7 +302,7 @@ object Read extends Logging {
       samRecords.flatMap({
         case (k, v) =>
           if (v.get.getReadPairedFlag)
-            ReadPair(v.get, token, requireMDTagsOnMappedReads)
+            PairedRead(v.get, token, requireMDTagsOnMappedReads)
           else
             fromSAMRecordOpt(v.get, token, requireMDTagsOnMappedReads)
       })
@@ -406,7 +406,7 @@ object Read extends Logging {
       )
       else
         None
-      ReadPair(read, isFirstInPair = alignmentRecord.getFirstOfPair, mateAlignment)
+      PairedRead(read, isFirstInPair = alignmentRecord.getFirstOfPair, mateAlignment)
     } else {
       read
     }

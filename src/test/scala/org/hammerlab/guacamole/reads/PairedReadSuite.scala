@@ -4,7 +4,7 @@ import htsjdk.samtools.TextCigarCodec
 import org.hammerlab.guacamole.util.TestUtil.Implicits._
 import org.scalatest.{ Matchers, FunSuite }
 
-class ReadPairSuite extends FunSuite with Matchers {
+class PairedReadSuite extends FunSuite with Matchers {
 
   test("unmappedread paired read is not mapped") {
     val unmappedRead = UnmappedRead(
@@ -18,7 +18,7 @@ class ReadPairSuite extends FunSuite with Matchers {
       isPaired = true)
 
     val read =
-      ReadPair(
+      PairedRead(
         unmappedRead,
         isFirstInPair = true,
         mateAlignmentProperties = Some(
@@ -39,7 +39,7 @@ class ReadPairSuite extends FunSuite with Matchers {
   }
 
   test("mixed collections mapped and unmapped read pairs") {
-    val uread = ReadPair(
+    val uread = PairedRead(
       UnmappedRead(
         5, // token
         "TCGACCCTCGA",
@@ -60,7 +60,7 @@ class ReadPairSuite extends FunSuite with Matchers {
       )
     )
 
-    val mread = ReadPair(
+    val mread = PairedRead(
       MappedRead(
         5, // token
         "TCGACCCTCGA",
