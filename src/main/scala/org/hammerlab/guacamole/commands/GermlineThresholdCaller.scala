@@ -27,7 +27,7 @@ import org.apache.spark.SparkContext._
 import org.hammerlab.guacamole.reads.Read
 import org.hammerlab.guacamole.variants.Allele
 import scala.collection.JavaConversions
-import org.kohsuke.args4j.Option
+import org.kohsuke.args4j.{ Option => Args4jOption }
 import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole.pileup.Pileup
 
@@ -40,13 +40,13 @@ import org.hammerlab.guacamole.pileup.Pileup
 object GermlineThreshold {
 
   protected class Arguments extends GermlineCallerArgs {
-    @Option(name = "--threshold", metaVar = "X", usage = "Make a call if at least X% of reads support it. Default: 8")
+    @Args4jOption(name = "--threshold", metaVar = "X", usage = "Make a call if at least X% of reads support it. Default: 8")
     var threshold: Int = 8
 
-    @Option(name = "--emit-ref", usage = "Output homozygous reference calls.")
+    @Args4jOption(name = "--emit-ref", usage = "Output homozygous reference calls.")
     var emitRef: Boolean = false
 
-    @Option(name = "--emit-no-call", usage = "Output no call calls.")
+    @Args4jOption(name = "--emit-no-call", usage = "Output no call calls.")
     var emitNoCall: Boolean = false
   }
 
