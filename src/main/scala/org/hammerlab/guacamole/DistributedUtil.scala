@@ -341,7 +341,7 @@ object DistributedUtil extends Logging {
         val advancedPileups = maybePileups match {
           case Some(existingPileups) => {
             existingPileups.zip(windows).map(
-              pileup_and_window => initOrMovePileup(Some(pileup_and_window._1), pileup_and_window._2))
+              pileupAndWindow => initOrMovePileup(Some(pileupAndWindow._1), pileupAndWindow._2))
           }
           case None => windows.map(initOrMovePileup(None, _))
         }
