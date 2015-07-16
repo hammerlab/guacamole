@@ -26,11 +26,12 @@ case class ReadPair[+T <: Read](read: T,
 
 object ReadPair {
   def apply(record: SAMRecord,
-            token: Int): Option[ReadPair[Read]] = {
+            token: Int,
+            requireMDTagsOnMappedReads: Boolean): Option[ReadPair[Read]] = {
     val read = Read.fromSAMRecordOpt(
       record,
       token,
-      requireMDTagsOnMappedReads = true
+      requireMDTagsOnMappedReads
     )
 
     val mateAlignment = MateAlignmentProperties(record)
