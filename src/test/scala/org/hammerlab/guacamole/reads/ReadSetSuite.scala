@@ -37,6 +37,11 @@ class ReadSetSuite extends GuacFunSuite with Matchers {
     val nonDuplicateReads = TestUtil.loadReads(sc, "mdtagissue.sam", Read.InputFilters(mapped = true, nonDuplicate = true))
     nonDuplicateReads.reads.count() should be(4)
   }
+  
+  sparkTest("load RNA reads") {
+    val readSet = TestUtil.loadReads(sc, "rna_chr17_41244936.sam")
+    readSet.reads.count should be(23)
+  }
 
   sparkTest("load read from ADAM") {
     // First load reads from SAM using ADAM and save as ADAM
