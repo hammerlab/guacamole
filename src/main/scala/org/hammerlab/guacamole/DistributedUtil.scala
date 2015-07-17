@@ -29,7 +29,7 @@ import org.hammerlab.guacamole.Common._
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.windowing.{ SlidingWindow }
-import org.kohsuke.args4j.{ Option => Opt }
+import org.kohsuke.args4j.{ Option => Args4jOption }
 
 import scala.collection.mutable.{ HashMap => MutableHashMap }
 import scala.reflect.ClassTag
@@ -39,10 +39,10 @@ import scala.reflect.ClassTag
  */
 object DistributedUtil extends Logging {
   trait Arguments extends Base with Loci {
-    @Opt(name = "--parallelism", usage = "Num variant calling tasks. Set to 0 (default) to use the number of Spark partitions.")
+    @Args4jOption(name = "--parallelism", usage = "Num variant calling tasks. Set to 0 (default) to use the number of Spark partitions.")
     var parallelism: Int = 0
 
-    @Opt(name = "--partition-accuracy",
+    @Args4jOption(name = "--partition-accuracy",
       usage = "Num micro partitions to use per task in loci partitioning. Set to 0 to partition loci uniformly. Default: 250.")
     var partitioningAccuracy: Int = 250
   }

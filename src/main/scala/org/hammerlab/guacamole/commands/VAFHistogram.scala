@@ -11,7 +11,7 @@ import org.hammerlab.guacamole.filters.PileupFilter.PileupFilterArguments
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.Read.InputFilters
 import org.hammerlab.guacamole.reads.{ MappedRead, Read }
-import org.kohsuke.args4j.{ Argument, Option => Opt }
+import org.kohsuke.args4j.{ Argument, Option => Args4jOption }
 
 /**
  * VariantLocus is locus and the variant allele frequency at that locus
@@ -41,23 +41,23 @@ object VAFHistogram {
 
   protected class Arguments extends DistributedUtil.Arguments with PileupFilterArguments {
 
-    @Opt(name = "--out", required = false,
+    @Args4jOption(name = "--out", required = false,
       usage = "Path to save the variant allele frequency histogram. (Print to screen if not provided)")
     var output: String = ""
 
-    @Opt(name = "--bins", required = false,
+    @Args4jOption(name = "--bins", required = false,
       usage = "Number of bins for the variant allele frequency histogram (Default: 20)")
     var bins: Int = 20
 
-    @Opt(name = "--cluster", required = false,
+    @Args4jOption(name = "--cluster", required = false,
       usage = "Cluster the variant allele frequencies using a Gaussian mixture model")
     var cluster: Boolean = false
 
-    @Opt(name = "--num-clusters", required = false, depends = Array("--cluster"),
+    @Args4jOption(name = "--num-clusters", required = false, depends = Array("--cluster"),
       usage = "Number of clusters for the Gaussian mixture model (Default: 3)")
     var numClusters: Int = 3
 
-    @Opt(name = "--samplePercent", usage = "Percent of variant to use for the calculations (Default: 25)")
+    @Args4jOption(name = "--samplePercent", usage = "Percent of variant to use for the calculations (Default: 25)")
     var samplePercent: Int = 25
 
     @Argument(required = true, multiValued = true,
