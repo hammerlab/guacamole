@@ -22,7 +22,7 @@ import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole.Common
 import org.hammerlab.guacamole.Common.Arguments.Base
 import org.hammerlab.guacamole.variants.{ CalledAllele, AlleleEvidence }
-import org.kohsuke.args4j.Option
+import org.kohsuke.args4j.{ Option => Args4jOption }
 
 /**
  * Filter to remove genotypes where the likelihood is low
@@ -120,19 +120,19 @@ object GenotypeFilter {
 
   trait GenotypeFilterArguments extends Base {
 
-    @Option(name = "--min-read-depth", usage = "Minimum number of reads for a genotype call")
+    @Args4jOption(name = "--min-read-depth", usage = "Minimum number of reads for a genotype call")
     var minReadDepth: Int = 0
 
-    @Option(name = "--max-read-depth", usage = "Maximum number of reads for a genotype call")
+    @Args4jOption(name = "--max-read-depth", usage = "Maximum number of reads for a genotype call")
     var maxReadDepth: Int = Int.MaxValue
 
-    @Option(name = "--min-alternate-read-depth", usage = "Minimum number of reads with alternate allele for a genotype call")
+    @Args4jOption(name = "--min-alternate-read-depth", usage = "Minimum number of reads with alternate allele for a genotype call")
     var minAlternateReadDepth: Int = 0
 
-    @Option(name = "--debug-genotype-filters", usage = "Print count of genotypes after each filtering step")
+    @Args4jOption(name = "--debug-genotype-filters", usage = "Print count of genotypes after each filtering step")
     var debugGenotypeFilters = false
 
-    @Option(name = "--min-likelihood", usage = "Minimum Phred-scaled likelihood. Default: 0 (off)")
+    @Args4jOption(name = "--min-likelihood", usage = "Minimum Phred-scaled likelihood. Default: 0 (off)")
     var minLikelihood: Int = 0
 
   }
