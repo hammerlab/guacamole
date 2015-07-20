@@ -43,10 +43,6 @@ object TestUtil extends Matchers {
     "TestUtil." + UUID.randomUUID() + suffix
   }
 
-  // As a hack to run a single unit test, you can set this to the name of a test to run only it. See the top of
-  // DistributedUtilSuite for an example.
-  var runOnly: String = ""
-
   // Serialization helper functions.
   lazy val kryoPool = {
     val instantiator = new KryoInstantiator().setRegistrationRequired(true).withRegistrar(new IKryoRegistrar {

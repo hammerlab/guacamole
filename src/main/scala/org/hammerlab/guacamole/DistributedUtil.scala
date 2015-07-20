@@ -21,14 +21,13 @@ package org.hammerlab.guacamole
 import org.apache.commons.math3
 import org.apache.spark.rdd.RDD
 import org.apache.spark.{ Partitioner, AccumulatorParam, SparkConf, Logging }
-import org.apache.spark.SparkContext._
 import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.serializer.JavaSerializer
 import org.hammerlab.guacamole.Common.Arguments.{ Base, Loci }
 import org.hammerlab.guacamole.Common._
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.MappedRead
-import org.hammerlab.guacamole.windowing.{ SlidingWindow }
+import org.hammerlab.guacamole.windowing.{ SplitIterator, SlidingWindow }
 import org.kohsuke.args4j.{ Option => Args4jOption }
 
 import scala.collection.mutable.{ HashMap => MutableHashMap }
@@ -323,6 +322,34 @@ object DistributedUtil extends Logging {
   }
 
   /**
+   * Flatmap across loci and any number of RDDs of MappedReads.
+   *
+   * @see the windowTaskFlatMapMultipleRDDs function for other argument descriptions.
+   */
+  def pileupFlatMapMultipleRDDs[T: ClassTag](
+    readsRDDs: Seq[RDD[MappedRead]],
+    lociPartitions: LociMap[Long],
+    skipEmpty: Boolean,
+    function: Seq[Pileup] => Iterator[T]): RDD[T] = {
+    windowFlatMapWithState(
+      readsRDDs,
+      lociPartitions,
+      skipEmpty,
+      halfWindowSize = 0L,
+      initialState = None,
+      function = (maybePileups: Option[Seq[Pileup]], windows: PerSample[SlidingWindow[MappedRead]]) => {
+        val advancedPileups = maybePileups match {
+          case Some(existingPileups) => {
+            existingPileups.zip(windows).map(
+              pileupAndWindow => initOrMovePileup(Some(pileupAndWindow._1), pileupAndWindow._2))
+          }
+          case None => windows.map(initOrMovePileup(None, _))
+        }
+        (Some(advancedPileups), function(advancedPileups))
+      })
+  }
+
+  /**
    * FlatMap across loci, and any number of RDDs of regions, where at each locus the provided function is passed a
    * sliding window instance for each RDD containing the regions overlapping an interval of halfWindowSize to either side
    * of a locus.
@@ -489,10 +516,7 @@ object DistributedUtil extends Logging {
   }
 
   /**
-   * FlatMap across sets of regions overlapping genomic partitions, on multiple RDDs.
-   *
-   * Although this function would from its interface appear to support any number of RDDs, as a matter of implementation
-   * we currently only support working with 1 or 2 region RDDs. That is, the regionRDDs param must currently be length 1 or 2.
+   * FlatMap across sets of regions (e.g. reads) overlapping genomic partitions, on multiple RDDs.
    *
    * This function works as follows:
    *
@@ -524,7 +548,8 @@ object DistributedUtil extends Logging {
     // TODO(ryan): factor this function type out (as a PartialFunction?)
     function: (Long, LociSet, PerSample[Iterator[M]]) => Iterator[T]): RDD[T] = {
 
-    assume(regionRDDs.length > 0)
+    val numRDDs = regionRDDs.length
+    assume(numRDDs > 0)
     val sc = regionRDDs(0).sparkContext
     progress("Loci partitioning: %s".format(lociPartitions.truncatedString()))
     val lociPartitionsBoxed: Broadcast[LociMap[Long]] = sc.broadcast(lociPartitions)
@@ -578,65 +603,20 @@ object DistributedUtil extends Logging {
     // Accumulator to track the number of loci in each task
     val lociAccumulator = sc.accumulator[Long](0, "NumLoci")
 
-    // Here, we special case for different numbers of RDDs.
-    val results = taskNumberRegionPairsRDDs match {
+    // Build an RDD of (read set num, read), take union of this over all RDDs, and partition by task.
+    val partitioned = sc.union(
+      taskNumberRegionPairsRDDs.zipWithIndex.map({
+        case (taskNumberRegionPairs, rddIndex: Int) => {
+          taskNumberRegionPairs.map(pair => (pair._1, (rddIndex, pair._2)))
+        }
+      })).repartitionAndSortWithinPartitions(new PartitionByKey(numTasks.toInt)).map(_._2)
 
-      // One RDD.
-      case taskNumberRegionPairs :: Nil => {
-        // Each key (i.e. task) gets its own partition.
-        val partitioned = taskNumberRegionPairs
-          .repartitionAndSortWithinPartitions(new PartitionByKey(numTasks.toInt))
-        partitioned.mapPartitionsWithIndex((taskNum: Int, taskNumAndRegions) => {
-          val taskLoci = lociPartitionsBoxed.value.asInverseMap(taskNum.toLong)
-
-          // Add number of loci covered to accumulator
-          lociAccumulator += taskLoci.count
-
-          function(taskNum, taskLoci, Seq(taskNumAndRegions.map(_._2)))
-        })
-      }
-
-      // Two RDDs.
-      case taskNumberRegionPairs1 :: taskNumberRegionPairs2 :: Nil => {
-        val sortedtaskNumberRegionPairs1 =
-          taskNumberRegionPairs1
-            .repartitionAndSortWithinPartitions(new PartitionByKey(numTasks.toInt))
-        val sortedtaskNumberRegionPairs2 =
-          taskNumberRegionPairs2
-            .repartitionAndSortWithinPartitions(new PartitionByKey(numTasks.toInt))
-
-        // TODO: A zipPartitionsWithIndex with would make this cleaner
-        sortedtaskNumberRegionPairs1.zipPartitions(sortedtaskNumberRegionPairs2, preservesPartitioning = true)(
-          (taskNumAndRegionPairs1: Iterator[(TaskPosition, M)], taskNumAndRegionPairs2: Iterator[(TaskPosition, M)]) => {
-            if (taskNumAndRegionPairs1.isEmpty && taskNumAndRegionPairs2.isEmpty) {
-              Iterator.empty
-            } else {
-
-              // Both iterators are buffered so we can retrieve the task number for this partition
-              // TODO: a zipPartitionsWithIndex would allow us to have direct access to the task number
-              val bufferTaskNumAndRegionPairs1 = taskNumAndRegionPairs1.buffered
-              val bufferTaskNumAndRegionPairs2 = taskNumAndRegionPairs2.buffered
-
-              // Take the task number from the first element of either non-empty iterator
-              val taskNum = if (bufferTaskNumAndRegionPairs1.hasNext)
-                bufferTaskNumAndRegionPairs1.head._1.task
-              else
-                bufferTaskNumAndRegionPairs2.head._1.task
-
-              val taskLoci = lociPartitionsBoxed.value.asInverseMap(taskNum.toLong)
-
-              // Add number of loci processed on this partition to the accumulator
-              lociAccumulator += taskLoci.count
-
-              function(taskNum, taskLoci, Seq(bufferTaskNumAndRegionPairs1.map(_._2), bufferTaskNumAndRegionPairs2.map(_._2)))
-            }
-          })
-      }
-
-      // We currently do not support the general case.
-      case _ => throw new AssertionError("Unsupported number of RDDs: %d".format(taskNumberRegionPairsRDDs.length))
-    }
-    results
+    partitioned.mapPartitionsWithIndex((taskNum, values) => {
+      val iterators = SplitIterator.split(numRDDs, values)
+      val taskLoci = lociPartitionsBoxed.value.asInverseMap(taskNum)
+      lociAccumulator += taskLoci.count
+      function(taskNum, taskLoci, iterators)
+    })
   }
 
   /**
