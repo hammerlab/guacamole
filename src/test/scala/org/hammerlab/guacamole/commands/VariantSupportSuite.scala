@@ -2,8 +2,8 @@ package org.hammerlab.guacamole.commands
 
 import org.hammerlab.guacamole.Bases
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.reads.{MappedRead, Read}
-import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
+import org.hammerlab.guacamole.reads.{ MappedRead, Read }
+import org.hammerlab.guacamole.util.{ GuacFunSuite, TestUtil }
 import org.hammerlab.guacamole.windowing.SlidingWindow
 import org.scalatest.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks
@@ -14,15 +14,16 @@ class VariantSupportSuite extends GuacFunSuite with Matchers with TableDrivenPro
                        variantAlleleLoci: (String, Long, Map[String, Int])*) = {
     val variantAlleleLociTable = Table(
       heading = ("contig", "locus", "alleleCounts"),
-      variantAlleleLoci:_*
+      variantAlleleLoci: _*
     )
 
     forAll(variantAlleleLociTable) {
-      (contig: String, locus: Long, alleleCountMap) => {
-        window.setCurrentLocus(locus)
-        val pileup = Pileup(window.currentRegions(), locus, Bases.N)
-        assertAlleleCounts(pileup, alleleCountMap)
-      }
+      (contig: String, locus: Long, alleleCountMap) =>
+        {
+          window.setCurrentLocus(locus)
+          val pileup = Pileup(window.currentRegions(), locus, Bases.N)
+          assertAlleleCounts(pileup, alleleCountMap)
+        }
     }
   }
 
@@ -45,9 +46,8 @@ class VariantSupportSuite extends GuacFunSuite with Matchers with TableDrivenPro
     sc,
     "gatk_mini_bundle_extract.bam",
     Read.InputFilters(mapped = true, nonDuplicate = true)).mappedReads.collect().sortBy(_.start)
-  
-  lazy val rna_reads = TestUtil.loadReads(sc, "rna_chr17_41244936.sam").mappedReads.collect().sortBy(_.start)
 
+  lazy val rna_reads = TestUtil.loadReads(sc, "rna_chr17_41244936.sam").mappedReads.collect().sortBy(_.start)
 
   sparkTest("read evidence for simple snvs") {
 
@@ -61,13 +61,11 @@ class VariantSupportSuite extends GuacFunSuite with Matchers with TableDrivenPro
     assertAlleleCounts(pileup, Map(("", 5), ("C", 1)))
   }
 
-
   sparkTest("read evidence for simple snvs 2") {
 
     val pileup = Pileup(gatk_reads, 10009053)
     assertAlleleCounts(pileup, Map(("AT", 3)))
   }
-
 
   sparkTest("read evidence for simple snvs 3") {
     val loci = Seq(
@@ -77,7 +75,7 @@ class VariantSupportSuite extends GuacFunSuite with Matchers with TableDrivenPro
     )
 
     val window = SlidingWindow[MappedRead](0L, gatk_reads.toIterator)
-    testAlleleCounts(window, loci:_*)
+    testAlleleCounts(window, loci: _*)
   }
 
   sparkTest("read evidence for simple snvs no filters") {
@@ -89,7 +87,7 @@ class VariantSupportSuite extends GuacFunSuite with Matchers with TableDrivenPro
     )
 
     val window = SlidingWindow[MappedRead](0L, gatk_reads.toIterator)
-    testAlleleCounts(window, loci:_*)
+    testAlleleCounts(window, loci: _*)
 
   }
 
@@ -102,7 +100,7 @@ class VariantSupportSuite extends GuacFunSuite with Matchers with TableDrivenPro
     )
 
     val window = SlidingWindow[MappedRead](0L, non_duplicate_gatk_reads.toIterator)
-    testAlleleCounts(window, loci:_*)
+    testAlleleCounts(window, loci: _*)
 
   }
 }
