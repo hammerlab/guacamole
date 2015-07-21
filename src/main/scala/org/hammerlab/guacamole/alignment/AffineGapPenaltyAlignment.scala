@@ -1,7 +1,7 @@
 package org.hammerlab.guacamole.alignment
 
 import breeze.linalg.DenseVector
-import org.hammerlab.guacamole.alignment.AlignmentState.{AlignmentState, isGapAlignment}
+import org.hammerlab.guacamole.alignment.AlignmentState.{ AlignmentState, isGapAlignment }
 
 object AffineGapPenaltyAlignment {
 
@@ -104,7 +104,7 @@ object AffineGapPenaltyAlignment {
             (sequenceIdx, referenceIdx - 1),
             (sequenceIdx - 1, referenceIdx - 1)
           ).filter {
-              case (sI, rI) => sI >= 0 && rI >= 0  // Filter positions before the start of either sequence
+              case (sI, rI) => sI >= 0 && rI >= 0 // Filter positions before the start of either sequence
             }
 
         // Compute the transition costs based on the gap penalties
@@ -133,7 +133,7 @@ object AffineGapPenaltyAlignment {
       }
       // Save current sequence position alignment position
       lastSequenceAlignment = currentSequenceAlignment
-      
+
       // Clear alignment information before next sequence element
       currentSequenceAlignment = new DenseVector[Path](referenceLength + 1)
     }
