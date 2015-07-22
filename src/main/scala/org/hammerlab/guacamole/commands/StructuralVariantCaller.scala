@@ -14,6 +14,10 @@ import scala.collection.mutable.ArrayBuffer
  * This currently looks for regions with abnormally large insert sizes. This typically indicates
  * that there's been a large deletion.
  *
+ * It does this by finding the average insert size of all mate pairs which overlap each 25-base pair "block" of the
+ * genome. If this average is significantly different than the average insert size genome-wide, then it's evidence that
+ * there may be a structural variant.
+ * 
  * The output is a text file of genomic ranges where there's some evidence of an SV.
  */
 object StructuralVariant {
