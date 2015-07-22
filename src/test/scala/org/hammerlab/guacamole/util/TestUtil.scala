@@ -122,7 +122,7 @@ object TestUtil extends Matchers {
             mateReferenceContig.get,
             mateStart.get,
             inferredInsertSize = None,
-            isMatePositiveStrand = isMatePositiveStrand
+            isPositiveStrand = isMatePositiveStrand
           )
         )
         else

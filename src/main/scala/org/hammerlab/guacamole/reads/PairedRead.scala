@@ -22,6 +22,7 @@ case class PairedRead[+T <: Read](read: T,
   override val isDuplicate: Boolean = read.isDuplicate
   override val sequence: Seq[Byte] = read.sequence
   override val isPaired: Boolean = true
+  override val isMapped = read.isMapped
 }
 
 object PairedRead {

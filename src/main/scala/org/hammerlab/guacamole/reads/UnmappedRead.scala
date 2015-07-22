@@ -33,5 +33,7 @@ case class UnmappedRead(
     isPaired: Boolean) extends Read {
 
   assert(baseQualities.length == sequence.length)
+
+  override val isMapped = false
 }
 
