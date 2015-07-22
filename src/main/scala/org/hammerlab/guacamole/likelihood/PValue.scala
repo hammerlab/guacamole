@@ -10,6 +10,7 @@ object PValue {
     // compute p value of observing the read counts drawn from a population of the given
     // genotype plus an error population. (e.g. fischer's exact test).
 
-    genotype.alleles
+    //genotype.alleles
+    2.0
   }
 }

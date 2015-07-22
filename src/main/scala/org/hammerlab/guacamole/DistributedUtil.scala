@@ -349,6 +349,32 @@ object DistributedUtil extends Logging {
       })
   }
 
+  def pileupFlatMapMultipleRDDsWithState[T: ClassTag, S: ClassTag](
+    readsRDDs: Seq[RDD[MappedRead]],
+    lociPartitions: LociMap[Long],
+    skipEmpty: Boolean,
+    initialState: S,
+    function: (S, Seq[Pileup]) => (S, Iterator[T])): RDD[T] = {
+    windowFlatMapWithState(
+      readsRDDs,
+      lociPartitions,
+      skipEmpty,
+      halfWindowSize = 0L,
+      initialState = None,
+      function = (statePair: Option[(S, Seq[Pileup])], windows: PerSample[SlidingWindow[MappedRead]]) => {
+        val (existingState, advancedPileups) = statePair match {
+          case Some((existingState: S, existingPileups: Seq[Pileup])) => {
+            val advancedPileups = existingPileups.zip(windows).map(
+              pileupAndWindow => initOrMovePileup(Some(pileupAndWindow._1), pileupAndWindow._2))
+            (existingState, advancedPileups)
+          }
+          case None => (initialState, windows.map(initOrMovePileup(None, _)))
+        }
+        val (newState, value) = function(existingState, advancedPileups)
+        (Some((newState, advancedPileups)), value)
+      })
+  }
+
   /**
    * FlatMap across loci, and any number of RDDs of regions, where at each locus the provided function is passed a
    * sliding window instance for each RDD containing the regions overlapping an interval of halfWindowSize to either side
