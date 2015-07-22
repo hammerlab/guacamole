@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>MatePropertiesSerializer - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.reads.MatePropertiesSerializer</title>
-          <meta name="description" content="MatePropertiesSerializer - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.reads.MatePropertiesSerializer" />
-          <meta name="keywords" content="MatePropertiesSerializer guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.reads.MatePropertiesSerializer" />
+          <title>MateAlignmentProperties - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.reads.MateAlignmentProperties</title>
+          <meta name="description" content="MateAlignmentProperties - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.reads.MateAlignmentProperties" />
+          <meta name="keywords" content="MateAlignmentProperties guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.reads.MateAlignmentProperties" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -12,7 +12,7 @@
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../index.html';
-            var hash = 'org.hammerlab.guacamole.reads.MatePropertiesSerializer';
+            var hash = 'org.hammerlab.guacamole.reads.MateAlignmentProperties';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -24,24 +24,25 @@
         </head>
         <body class="type">
       <div id="definition">
-        <img src="../../../../lib/class_big.png" />
+        <a href="MateAlignmentProperties$.html" title="Go to companion"><img src="../../../../lib/class_to_object_big.png" /></a>
         <p id="owner"><a href="../../../package.html" class="extype" name="org">org</a>.<a href="../../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="../package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole.reads">reads</a></p>
-        <h1>MatePropertiesSerializer</h1>
+        <h1><a href="MateAlignmentProperties$.html" title="Go to companion">MateAlignmentProperties</a></h1>
       </div>
 
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">class</span>
+        <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">MatePropertiesSerializer</span><span class="result"> extends <span class="extype" name="com.esotericsoftware.kryo.Serializer">Serializer</span>[<a href="MateProperties.html" class="extype" name="org.hammerlab.guacamole.reads.MateProperties">MateProperties</a>]</span>
+        <span class="name">MateAlignmentProperties</span><span class="params">(<span name="referenceContig">referenceContig: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="start">start: <span class="extype" name="scala.Long">Long</span></span>, <span name="inferredInsertSize">inferredInsertSize: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>]</span>, <span name="isPositiveStrand">isPositiveStrand: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Details of the mate read alignment</p></div><dl class="paramcmts block"><dt class="param">referenceContig</dt><dd class="cmt"><p>Contig/chromosome of the mate read</p></dd><dt class="param">start</dt><dd class="cmt"><p>0-based start position of the mate read</p></dd><dt class="param">inferredInsertSize</dt><dd class="cmt"><p>Insert size between the reads if defined</p></dd><dt class="param">isPositiveStrand</dt><dd class="cmt"><p>Whether the mate is on the positive strand
+</p></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="com.esotericsoftware.kryo.Serializer">Serializer</span>[<a href="MateProperties.html" class="extype" name="org.hammerlab.guacamole.reads.MateProperties">MateProperties</a>], <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -59,7 +60,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="org.hammerlab.guacamole.reads.MatePropertiesSerializer"><span>MatePropertiesSerializer</span></li><li class="in" name="com.esotericsoftware.kryo.Serializer"><span>Serializer</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="org.hammerlab.guacamole.reads.MateAlignmentProperties"><span>MateAlignmentProperties</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -79,19 +80,20 @@
         <div id="allMembers">
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
-              <ol><li name="org.hammerlab.guacamole.reads.MatePropertiesSerializer#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;():org.hammerlab.guacamole.reads.MatePropertiesSerializer"></a>
-      <a id="&lt;init&gt;:MatePropertiesSerializer"></a>
+              <ol><li name="org.hammerlab.guacamole.reads.MateAlignmentProperties#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="&lt;init&gt;(referenceContig:String,start:Long,inferredInsertSize:Option[Int],isPositiveStrand:Boolean):org.hammerlab.guacamole.reads.MateAlignmentProperties"></a>
+      <a id="&lt;init&gt;:MateAlignmentProperties"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">MatePropertiesSerializer</span><span class="params">()</span>
+        <span class="name">MateAlignmentProperties</span><span class="params">(<span name="referenceContig">referenceContig: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="start">start: <span class="extype" name="scala.Long">Long</span></span>, <span name="inferredInsertSize">inferredInsertSize: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>]</span>, <span name="isPositiveStrand">isPositiveStrand: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span>
       </span>
       </h4>
-      
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">referenceContig</dt><dd class="cmt"><p>Contig/chromosome of the mate read</p></dd><dt class="param">start</dt><dd class="cmt"><p>0-based start position of the mate read</p></dd><dt class="param">inferredInsertSize</dt><dd class="cmt"><p>Insert size between the reads if defined</p></dd><dt class="param">isPositiveStrand</dt><dd class="cmt"><p>Whether the mate is on the positive strand
+</p></dd></dl></div>
     </li></ol>
             </div>
 
@@ -198,19 +200,6 @@
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="com.esotericsoftware.kryo.Serializer#copy" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="copy(x$1:com.esotericsoftware.kryo.Kryo,x$2:T):T"></a>
-      <a id="copy(Kryo,MateProperties):MateProperties"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">copy</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="com.esotericsoftware.kryo.Kryo">Kryo</span></span>, <span name="arg1">arg1: <a href="MateProperties.html" class="extype" name="org.hammerlab.guacamole.reads.MateProperties">MateProperties</a></span>)</span><span class="result">: <a href="MateProperties.html" class="extype" name="org.hammerlab.guacamole.reads.MateProperties">MateProperties</a></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Serializer</dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -224,19 +213,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scala.AnyRef#equals" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="equals(x$1:Any):Boolean"></a>
-      <a id="equals(Any):Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <a id="finalize():Unit"></a>
@@ -256,19 +232,6 @@
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="com.esotericsoftware.kryo.Serializer#getAcceptsNull" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="getAcceptsNull():Boolean"></a>
-      <a id="getAcceptsNull():Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">getAcceptsNull</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Serializer</dd></dl></div>
     </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
       <a id="getClass():Class[_]"></a>
@@ -282,32 +245,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="scala.AnyRef#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="hashCode():Int"></a>
-      <a id="hashCode():Int"></a>
+    </li><li name="org.hammerlab.guacamole.reads.MateAlignmentProperties#inferredInsertSize" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="inferredInsertSize:Option[Int]"></a>
+      <a id="inferredInsertSize:Option[Int]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">def</span>
+        <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+        <span class="name">inferredInsertSize</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>]</span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="com.esotericsoftware.kryo.Serializer#isImmutable" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="isImmutable():Boolean"></a>
-      <a id="isImmutable():Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">isImmutable</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Serializer</dd></dl></div>
+      <p class="shortcomment cmt">Insert size between the reads if defined</p>
     </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <a id="isInstanceOf[T0]:Boolean"></a>
@@ -321,6 +271,20 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.reads.MateAlignmentProperties#isPositiveStrand" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="isPositiveStrand:Boolean"></a>
+      <a id="isPositiveStrand:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isPositiveStrand</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Whether the mate is on the positive strand
+</p>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -360,58 +324,32 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.reads.MatePropertiesSerializer#read" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="read(kryo:com.esotericsoftware.kryo.Kryo,input:com.esotericsoftware.kryo.io.Input,klass:Class[org.hammerlab.guacamole.reads.MateProperties]):org.hammerlab.guacamole.reads.MateProperties"></a>
-      <a id="read(Kryo,Input,Class[MateProperties]):MateProperties"></a>
+    </li><li name="org.hammerlab.guacamole.reads.MateAlignmentProperties#referenceContig" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="referenceContig:String"></a>
+      <a id="referenceContig:String"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">def</span>
+        <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">read</span><span class="params">(<span name="kryo">kryo: <span class="extype" name="com.esotericsoftware.kryo.Kryo">Kryo</span></span>, <span name="input">input: <span class="extype" name="com.esotericsoftware.kryo.io.Input">Input</span></span>, <span name="klass">klass: <span class="extype" name="scala.Predef.Class">Class</span>[<a href="MateProperties.html" class="extype" name="org.hammerlab.guacamole.reads.MateProperties">MateProperties</a>]</span>)</span><span class="result">: <a href="MateProperties.html" class="extype" name="org.hammerlab.guacamole.reads.MateProperties">MateProperties</a></span>
+        <span class="name">referenceContig</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.reads.MatePropertiesSerializer">MatePropertiesSerializer</a> → Serializer</dd></dl></div>
-    </li><li name="com.esotericsoftware.kryo.Serializer#setAcceptsNull" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="setAcceptsNull(x$1:Boolean):Unit"></a>
-      <a id="setAcceptsNull(Boolean):Unit"></a>
+      <p class="shortcomment cmt">Contig/chromosome of the mate read</p>
+    </li><li name="org.hammerlab.guacamole.reads.MateAlignmentProperties#start" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="start:Long"></a>
+      <a id="start:Long"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">def</span>
+        <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">setAcceptsNull</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">start</span><span class="result">: <span class="extype" name="scala.Long">Long</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Serializer</dd></dl></div>
-    </li><li name="com.esotericsoftware.kryo.Serializer#setGenerics" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="setGenerics(x$1:com.esotericsoftware.kryo.Kryo,x$2:Array[Class[_]]):Unit"></a>
-      <a id="setGenerics(Kryo,Array[Class[_]]):Unit"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">setGenerics</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="com.esotericsoftware.kryo.Kryo">Kryo</span></span>, <span name="arg1">arg1: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="java.lang.Class">Class</span>[_]]</span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Serializer</dd></dl></div>
-    </li><li name="com.esotericsoftware.kryo.Serializer#setImmutable" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="setImmutable(x$1:Boolean):Unit"></a>
-      <a id="setImmutable(Boolean):Unit"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">setImmutable</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Serializer</dd></dl></div>
+      <p class="shortcomment cmt">0-based start position of the mate read</p>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -425,19 +363,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scala.AnyRef#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="toString():String"></a>
-      <a id="toString():String"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>
@@ -495,19 +420,6 @@
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.reads.MatePropertiesSerializer#write" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="write(kryo:com.esotericsoftware.kryo.Kryo,output:com.esotericsoftware.kryo.io.Output,obj:org.hammerlab.guacamole.reads.MateProperties):Unit"></a>
-      <a id="write(Kryo,Output,MateProperties):Unit"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">write</span><span class="params">(<span name="kryo">kryo: <span class="extype" name="com.esotericsoftware.kryo.Kryo">Kryo</span></span>, <span name="output">output: <span class="extype" name="com.esotericsoftware.kryo.io.Output">Output</span></span>, <span name="obj">obj: <a href="MateProperties.html" class="extype" name="org.hammerlab.guacamole.reads.MateProperties">MateProperties</a></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.reads.MatePropertiesSerializer">MatePropertiesSerializer</a> → Serializer</dd></dl></div>
     </li></ol>
             </div>
 
@@ -517,8 +429,14 @@
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="com.esotericsoftware.kryo.Serializer">
-              <h3>Inherited from <span class="extype" name="com.esotericsoftware.kryo.Serializer">Serializer</span>[<a href="MateProperties.html" class="extype" name="org.hammerlab.guacamole.reads.MateProperties">MateProperties</a>]</h3>
+        <div class="parent" name="scala.Serializable">
+              <h3>Inherited from <span class="extype" name="scala.Serializable">Serializable</span></h3>
+            </div><div class="parent" name="java.io.Serializable">
+              <h3>Inherited from <span class="extype" name="java.io.Serializable">Serializable</span></h3>
+            </div><div class="parent" name="scala.Product">
+              <h3>Inherited from <span class="extype" name="scala.Product">Product</span></h3>
+            </div><div class="parent" name="scala.Equals">
+              <h3>Inherited from <span class="extype" name="scala.Equals">Equals</span></h3>
             </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
             </div><div class="parent" name="scala.Any">
