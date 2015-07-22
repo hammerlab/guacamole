@@ -30,8 +30,10 @@ case class UnmappedRead(
     sampleName: String,
     failedVendorQualityChecks: Boolean,
     isPositiveStrand: Boolean,
-    matePropertiesOpt: Option[MateProperties]) extends Read {
+    isPaired: Boolean) extends Read {
 
   assert(baseQualities.length == sequence.length)
+
+  override val isMapped = false
 }
 

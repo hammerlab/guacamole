@@ -39,16 +39,7 @@ class MappedReadSuite extends GuacFunSuite with Matchers {
       mdTagString = "11",
       false,
       isPositiveStrand = true,
-      matePropertiesOpt = Some(
-        MateProperties(
-          isFirstInPair = true,
-          inferredInsertSize = Some(300),
-          isMateMapped = true,
-          Some("chr5"),
-          Some(100L),
-          false
-        )
-      )
+      isPaired = true
     )
 
     read.isMapped should be(true)
@@ -65,16 +56,7 @@ class MappedReadSuite extends GuacFunSuite with Matchers {
       "some sample name",
       false,
       isPositiveStrand = true,
-      matePropertiesOpt = Some(
-        MateProperties(
-          isFirstInPair = true,
-          inferredInsertSize = Some(300),
-          isMateMapped = true,
-          Some("chr5"),
-          Some(100L),
-          false
-        )
-      )
+      isPaired = true
     )
 
     val mread = MappedRead(
@@ -90,16 +72,7 @@ class MappedReadSuite extends GuacFunSuite with Matchers {
       mdTagString = "11",
       false,
       isPositiveStrand = true,
-      matePropertiesOpt = Some(
-        MateProperties(
-          isFirstInPair = true,
-          inferredInsertSize = Some(300),
-          isMateMapped = true,
-          Some("chr5"),
-          Some(100L),
-          false
-        )
-      )
+      isPaired = true
     )
 
     val collectionMappedReads: Seq[Read] = Seq(uread, mread)

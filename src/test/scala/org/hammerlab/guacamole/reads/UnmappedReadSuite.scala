@@ -33,16 +33,7 @@ class UnmappedReadSuite extends GuacFunSuite with Matchers {
       "some sample name",
       false,
       isPositiveStrand = true,
-      matePropertiesOpt = Some(
-        MateProperties(
-          isFirstInPair = true,
-          inferredInsertSize = Some(300),
-          isMateMapped = true,
-          Some("chr5"),
-          Some(100L),
-          false
-        )
-      )
+      isPaired = false
     )
 
     read.isMapped should be(false)

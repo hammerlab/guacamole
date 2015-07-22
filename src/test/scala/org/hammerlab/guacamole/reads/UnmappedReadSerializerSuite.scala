@@ -33,16 +33,7 @@ class UnmappedReadSerializerSuite extends GuacFunSuite with Matchers {
       "some sample name",
       false,
       isPositiveStrand = true,
-      matePropertiesOpt = Some(
-        MateProperties(
-          isFirstInPair = true,
-          inferredInsertSize = Some(300),
-          isMateMapped = true,
-          Some("chr5"),
-          Some(100L),
-          false
-        )
-      )
+      isPaired = true
     )
 
     val serialized = TestUtil.serialize(read)
@@ -61,7 +52,7 @@ class UnmappedReadSerializerSuite extends GuacFunSuite with Matchers {
     deserialized.sampleName should equal(read.sampleName)
     deserialized.failedVendorQualityChecks should equal(read.failedVendorQualityChecks)
     deserialized.isPositiveStrand should equal(read.isPositiveStrand)
-    deserialized.matePropertiesOpt should equal(read.matePropertiesOpt)
+    deserialized.isPaired should equal(read.isPaired)
   }
 
 }

@@ -61,10 +61,7 @@ trait Read {
   val isDuplicate: Boolean
 
   /** Is this read mapped? */
-  final val isMapped: Boolean = this match {
-    case r: MappedRead   => true
-    case r: UnmappedRead => false
-  }
+  def isMapped: Boolean
 
   /** The sample (e.g. "tumor" or "patient3636") name. */
   val sampleName: String
@@ -75,10 +72,8 @@ trait Read {
   /** Whether the read was on the positive or forward strand */
   val isPositiveStrand: Boolean
 
-  val matePropertiesOpt: Option[MateProperties]
-
   /** Whether read is from a paired-end library */
-  val isPaired: Boolean = matePropertiesOpt.isDefined
+  val isPaired: Boolean
 
 }
 
@@ -119,7 +114,7 @@ object Read extends Logging {
     mdTagString: String,
     failedVendorQualityChecks: Boolean = false,
     isPositiveStrand: Boolean = true,
-    matePropertiesOpt: Option[MateProperties] = None) = {
+    isPaired: Boolean = true) = {
 
     val sequenceArray = sequence.map(_.toByte).toArray
     val qualityScoresArray = baseQualityStringToArray(baseQualities, sequenceArray.length)
@@ -138,7 +133,7 @@ object Read extends Logging {
       mdTagString,
       failedVendorQualityChecks,
       isPositiveStrand,
-      matePropertiesOpt = matePropertiesOpt
+      isPaired
     )
   }
 
@@ -170,6 +165,7 @@ object Read extends Logging {
   def fromSAMRecordOpt(record: SAMRecord,
                        token: Int,
                        requireMDTagsOnMappedReads: Boolean): Option[Read] = {
+
     val isMapped = (
       // NOTE(ryan): this flag should maybe be the main determinant of the mapped-ness of this SAM record. SAM spec
       // (http://samtools.github.io/hts-specs/SAMv1.pdf) says: "Bit 0x4 is the only reliable place to tell whether the
@@ -186,23 +182,7 @@ object Read extends Logging {
       "default"
     }).intern
 
-    val matePropertiesOpt =
-      if (record.getReadPairedFlag) {
-        Some(
-          MateProperties(
-            isFirstInPair = record.getFirstOfPairFlag,
-            inferredInsertSize = if (record.getInferredInsertSize != 0) Some(record.getInferredInsertSize) else None,
-            isMateMapped = !record.getMateUnmappedFlag,
-            mateReferenceContig = Some(record.getMateReferenceName),
-            mateStart = Some(record.getMateAlignmentStart - 1), //subtract 1 from start, since samtools is 1-based and we're 0-based.
-            isMatePositiveStrand = if (!record.getMateUnmappedFlag) !record.getMateNegativeStrandFlag else false
-          )
-        )
-      } else {
-        None
-      }
-
-    if (isMapped) {
+    val r = if (isMapped) {
       Option(record.getStringAttribute("MD")) match {
         case Some(mdTagString) =>
           val result = MappedRead(
@@ -218,7 +198,7 @@ object Read extends Logging {
             mdTagString = mdTagString,
             failedVendorQualityChecks = record.getReadFailsVendorQualityCheckFlag,
             isPositiveStrand = !record.getReadNegativeStrandFlag,
-            matePropertiesOpt = matePropertiesOpt
+            isPaired = record.getReadPairedFlag
           )
 
           // We subtract 1 from start, since samtools is 1-based and we're 0-based.
@@ -234,7 +214,7 @@ object Read extends Logging {
           }
       }
     } else {
-      val result = UnmappedRead(
+      Some(UnmappedRead(
         token,
         record.getReadString.getBytes,
         record.getBaseQualities,
@@ -242,10 +222,11 @@ object Read extends Logging {
         sampleName,
         record.getReadFailsVendorQualityCheckFlag,
         !record.getReadNegativeStrandFlag,
-        matePropertiesOpt = matePropertiesOpt
-      )
-      Some(result)
+        record.getReadPairedFlag
+      ))
     }
+
+    r
   }
 
   /**
@@ -315,7 +296,11 @@ object Read extends Logging {
       sc.newAPIHadoopFile[LongWritable, SAMRecordWritable, AnySAMInputFormat](filename)
     val reads: RDD[Read] =
       samRecords.flatMap({
-        case (k, v) => fromSAMRecordOpt(v.get, token, requireMDTagsOnMappedReads)
+        case (k, v) =>
+          if (v.get.getReadPairedFlag)
+            PairedRead(v.get, token, requireMDTagsOnMappedReads)
+          else
+            fromSAMRecordOpt(v.get, token, requireMDTagsOnMappedReads)
       })
     (reads, sequenceDictionary)
   }
@@ -374,23 +359,10 @@ object Read extends Logging {
    */
   def fromADAMRecord(alignmentRecord: AlignmentRecord, token: Int): Read = {
 
-    val mateProperties = if (alignmentRecord.getReadPaired) {
-      Some(MateProperties(
-        isFirstInPair = alignmentRecord.getFirstOfPair,
-        inferredInsertSize = None, // ADAM does not support this field see https://github.com/bigdatagenomics/bdg-formats/issues/37
-        isMateMapped = alignmentRecord.getMateMapped,
-        mateReferenceContig = if (alignmentRecord.getMateMapped) Some(alignmentRecord.getMateContig.getContigName.toString.intern()) else None,
-        mateStart = if (alignmentRecord.getMateMapped) Some(alignmentRecord.getMateAlignmentStart) else None,
-        isMatePositiveStrand = if (alignmentRecord.getMateMapped) !alignmentRecord.getMateNegativeStrand else false
-      ))
-    } else {
-      None
-    }
-
     val sequence = Bases.stringToBases(alignmentRecord.getSequence.toString)
     val baseQualities = baseQualityStringToArray(alignmentRecord.getQual.toString, sequence.length)
 
-    if (alignmentRecord.getReadMapped) {
+    val read = if (alignmentRecord.getReadMapped) {
       MappedRead(
         token = token,
         sequence = sequence,
@@ -404,7 +376,7 @@ object Read extends Logging {
         mdTagString = alignmentRecord.getMismatchingPositions.toString,
         failedVendorQualityChecks = alignmentRecord.getFailedVendorQualityChecks,
         isPositiveStrand = !alignmentRecord.getReadNegativeStrand,
-        matePropertiesOpt = mateProperties
+        alignmentRecord.getReadPaired
       )
     } else {
       UnmappedRead(
@@ -415,8 +387,24 @@ object Read extends Logging {
         sampleName = alignmentRecord.getRecordGroupSample.toString.intern(),
         failedVendorQualityChecks = alignmentRecord.getFailedVendorQualityChecks,
         isPositiveStrand = !alignmentRecord.getReadNegativeStrand,
-        matePropertiesOpt = mateProperties
+        alignmentRecord.getReadPaired
       )
+    }
+
+    if (alignmentRecord.getReadPaired) {
+      val mateAlignment = if (alignmentRecord.getMateMapped) Some(
+        MateAlignmentProperties(
+          referenceContig = alignmentRecord.getMateContig.toString,
+          start = alignmentRecord.getMateAlignmentStart,
+          inferredInsertSize = None,
+          isPositiveStrand = !alignmentRecord.getMateNegativeStrand
+        )
+      )
+      else
+        None
+      PairedRead(read, isFirstInPair = alignmentRecord.getFirstOfPair, mateAlignment)
+    } else {
+      read
     }
   }
 
