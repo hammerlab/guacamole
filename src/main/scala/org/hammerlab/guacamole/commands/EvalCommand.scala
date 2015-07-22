@@ -150,7 +150,10 @@ object EvalCommand {
             case Some(state) => state
           }
           val results = codeWithEnvironments.map(e => e(pileups))
-          (Some(codeWithEnvironments), Iterator.single(results.mkString(separator)))
+          if (results.exists(_ == "--skip--"))
+            (Some(codeWithEnvironments), Iterator.empty)
+          else
+            (Some(codeWithEnvironments), Iterator.single(results.mkString(separator)))
         })
 
       if (args.out.nonEmpty) {
@@ -173,17 +176,23 @@ object Evaluation {
   val engine = factory.getEngineByName("JavaScript")
   val compilingEngine = engine.asInstanceOf[Compilable]
 
+  val pileupElementCodeWithEnvironmentCache = new collection.mutable.HashMap[String, CodeWithEnvironment[PileupElement]]
   def countPileupElements(pileup: Pileup, code: String): Int = {
     if (code.isEmpty) {
       pileup.elements.size
     } else {
-      val evaluator = new CodeWithEnvironment[PileupElement](code, new PileupElementEnvironment())
+      val evaluator = if (pileupElementCodeWithEnvironmentCache.contains(code)) {
+        pileupElementCodeWithEnvironmentCache(code)
+      } else {
+        val evaluator = new CodeWithEnvironment[PileupElement](code, new PileupElementEnvironment())
+        pileupElementCodeWithEnvironmentCache.put(code, evaluator)
+        evaluator
+      }
       var count = 0
       pileup.elements.foreach(element => {
         PartialFunction.condOpt(evaluator(element): Any) {
-          case Some(true)  => count += 1
-          case Some(false) => {}
-          case None        => throw new RuntimeException("Expected a boolean return value.")
+          case b: Boolean => if (b) count += 1 else {}
+          case _          => throw new RuntimeException("Expected a boolean return value.")
         }
       })
       count
@@ -198,15 +207,15 @@ object Evaluation {
     }
 
     def addPrologueFunction(name: String): Unit = {
-      prologueBuilder += "var %s = function() { return _%s.apply(arguments); };".format(name, name)
+      prologueBuilder += "function %s(value) { return _%s.apply(value); };".format(name, name)
     }
     def addBindings(value: T, bindings: Bindings): Unit
     lazy val prologue = prologueBuilder.result.mkString("\n")
   }
 
   case class CodeWithEnvironment[T](code: String, environment: Environment[T]) {
-    val fullCode = environment.prologue + "\n\n" + code
-    val compiledCode = compilingEngine.compile(code)
+    val fullCode = environment.prologue + "\nskip = '--skip--'\n" + code
+    val compiledCode = compilingEngine.compile(fullCode)
     val cachedBindings = new SimpleBindings()
 
     def apply(value: T): Any = {
@@ -217,11 +226,14 @@ object Evaluation {
       } catch {
         case e: javax.script.ScriptException => {
           val codeDisplay = fullCode.split("\n").zipWithIndex.map(
-            pair => "\t%3d| %s".format(pair._2, pair._1)).mkString("\n")
+            pair => "\t%3d| %s".format(pair._2 + 1, pair._1)).mkString("\n")
           throw new javax.script.ScriptException(e.getMessage
-            + " while evaluating:\n\t" + codeDisplay + "\nwith these bindings:\n"
+            + " while evaluating:\n" + codeDisplay + "\nwith these bindings:\n\t"
             + JavaConversions.asScalaSet(
-              cachedBindings.keySet).map(key => "%20s = %20s".format(key, cachedBindings.get(key))).mkString("\n\t"))
+              cachedBindings.keySet).map(key => "%20s = %20s".format(key, cachedBindings.get(key))).mkString("\n\t"),
+            e.getFileName,
+            e.getLineNumber,
+            e.getColumnNumber)
         }
       }
     }
@@ -230,9 +242,12 @@ object Evaluation {
   class ReadEnvironment(prefix: String = "") extends Environment[MappedRead] {
     def addBindings(read: MappedRead, result: Bindings): Unit = {
       result.put("baseQualities", read.baseQualities)
-      result.put("isMapped", Boolean.box(read.isMapped))
-      result.put("start", Long.box(read.start))
-      result.put("end", Long.box(read.end))
+      result.put("isMapped", read.isMapped)
+      result.put("isDuplicate", read.isDuplicate)
+      result.put("alignmentLikelihood", read.alignmentLikelihood)
+
+      result.put("start", read.start)
+      result.put("end", read.end)
       result.put("alignmentQuality", read.alignmentQuality)
     }
   }
