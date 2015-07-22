@@ -23,7 +23,7 @@ import com.esotericsoftware.kryo.{ Kryo, Serializer }
 import htsjdk.samtools.TextCigarCodec
 
 // Serialization: MappedRead
-class MappedReadSerializer extends Serializer[MappedRead] with CanSerializeMatePropertiesOption {
+class MappedReadSerializer extends Serializer[MappedRead] {
 
   def write(kryo: Kryo, output: Output, obj: MappedRead) = {
     output.writeInt(obj.token)
@@ -40,8 +40,7 @@ class MappedReadSerializer extends Serializer[MappedRead] with CanSerializeMateP
     output.writeString(obj.mdTagString)
     output.writeBoolean(obj.failedVendorQualityChecks)
     output.writeBoolean(obj.isPositiveStrand)
-
-    write(kryo, output, obj.matePropertiesOpt)
+    output.writeBoolean(obj.isPaired)
   }
 
   def read(kryo: Kryo, input: Input, klass: Class[MappedRead]): MappedRead = {
@@ -58,10 +57,10 @@ class MappedReadSerializer extends Serializer[MappedRead] with CanSerializeMateP
     val mdTagString = input.readString()
     val failedVendorQualityChecks = input.readBoolean()
     val isPositiveStrand = input.readBoolean()
-
-    val matePropertiesOpt = read(kryo, input)
-
     val cigar = TextCigarCodec.decode(cigarString)
+
+    val isPaired = input.readBoolean()
+
     MappedRead(
       token,
       sequenceArray,
@@ -75,7 +74,7 @@ class MappedReadSerializer extends Serializer[MappedRead] with CanSerializeMateP
       mdTagString,
       failedVendorQualityChecks,
       isPositiveStrand,
-      matePropertiesOpt
+      isPaired
     )
   }
 }
