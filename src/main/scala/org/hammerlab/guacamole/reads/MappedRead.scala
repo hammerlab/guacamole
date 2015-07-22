@@ -52,6 +52,8 @@ case class MappedRead(
 
   def mdTag = MdTag(mdTagString, start)
 
+  override val isMapped = true
+
   lazy val referenceBases: Seq[Byte] =
     try {
       MDTagUtils.getReference(mdTag, sequence, cigar, allowNBase = true)

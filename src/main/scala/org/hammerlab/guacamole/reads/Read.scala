@@ -61,11 +61,7 @@ trait Read {
   val isDuplicate: Boolean
 
   /** Is this read mapped? */
-  final val isMapped: Boolean = this match {
-    case r: MappedRead       => true
-    case r: UnmappedRead     => false
-    case PairedRead(r, _, _) => r.isMapped
-  }
+  def isMapped: Boolean
 
   /** The sample (e.g. "tumor" or "patient3636") name. */
   val sampleName: String
@@ -398,10 +394,10 @@ object Read extends Logging {
     if (alignmentRecord.getReadPaired) {
       val mateAlignment = if (alignmentRecord.getMateMapped) Some(
         MateAlignmentProperties(
-          mateReferenceContig = alignmentRecord.getMateContig.toString,
-          mateStart = alignmentRecord.getMateAlignmentStart,
+          referenceContig = alignmentRecord.getMateContig.toString,
+          start = alignmentRecord.getMateAlignmentStart,
           inferredInsertSize = None,
-          isMatePositiveStrand = !alignmentRecord.getMateNegativeStrand
+          isPositiveStrand = !alignmentRecord.getMateNegativeStrand
         )
       )
       else

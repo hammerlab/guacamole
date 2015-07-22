@@ -22,15 +22,15 @@ import htsjdk.samtools.SAMRecord
 
 /**
  * Details of the mate read alignment
- * @param mateReferenceContig Contig/chromosome of the mate read
- * @param mateStart 0-based start position of the mate read
+ * @param referenceContig Contig/chromosome of the mate read
+ * @param start 0-based start position of the mate read
  * @param inferredInsertSize Insert size between the reads if defined
- * @param isMatePositiveStrand Whether the mate is on the positive strand
+ * @param isPositiveStrand Whether the mate is on the positive strand
  */
-case class MateAlignmentProperties(mateReferenceContig: String,
-                                   mateStart: Long,
+case class MateAlignmentProperties(referenceContig: String,
+                                   start: Long,
                                    inferredInsertSize: Option[Int],
-                                   isMatePositiveStrand: Boolean) {
+                                   isPositiveStrand: Boolean) {
 }
 
 object MateAlignmentProperties {
@@ -38,10 +38,10 @@ object MateAlignmentProperties {
     if (!record.getMateUnmappedFlag) {
       Some(
         MateAlignmentProperties(
-          mateReferenceContig = record.getMateReferenceName.toString,
-          mateStart = record.getMateAlignmentStart - 1, //subtract 1 from start, since samtools is 1-based and we're 0-based.
+          referenceContig = record.getMateReferenceName.toString,
+          start = record.getMateAlignmentStart - 1, //subtract 1 from start, since samtools is 1-based and we're 0-based.
           inferredInsertSize = if (record.getInferredInsertSize != 0) Some(record.getInferredInsertSize) else None,
-          isMatePositiveStrand = !record.getMateNegativeStrandFlag
+          isPositiveStrand = !record.getMateNegativeStrandFlag
         )
       )
     } else {
