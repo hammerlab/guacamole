@@ -3,7 +3,7 @@ package org.hammerlab.guacamole.commands
 import org.apache.spark.SparkContext
 import org.apache.spark.util.StatCounter
 import org.hammerlab.guacamole.{ DistributedUtil, SparkCommand, Common }
-import org.hammerlab.guacamole.reads.{ Read, MappedRead }
+import org.hammerlab.guacamole.reads.{ PairedRead, Read, MappedRead }
 import org.kohsuke.args4j.{ Option => Args4JOption }
 
 import scala.collection.mutable.ArrayBuffer
@@ -30,31 +30,24 @@ object StructuralVariant {
   }
 
   case class Location(
-    contig: String,
-    position: Long) {
+      contig: String,
+      position: Long) {
   }
 
   case class GenomeRange(
     contig: String,
     start: Long,
-    stop: Long
-  )
+    stop: Long)
 
   object Caller extends SparkCommand[Arguments] {
     override val name = "structural-variant"
     override val description = "Find structural variants, i.e. large insertions or deletions, inversions and translocations."
 
-    def isFirstInPair(read: MappedRead) = {
-      read.matePropertiesOpt match {
-        case Some(mateProps) => mateProps.isFirstInPair
-        case None            => false
-      }
-    }
-
     // The sign of inferredInsertSize follows the orientation of the read. This returns
     // an insert size which is positive in the common case, regardless of the orientation.
-    def orientedInsertSize(r: MappedRead): Option[Int] = {
-      r.matePropertiesOpt.flatMap(_.inferredInsertSize.map(x => x * (if (r.isPositiveStrand) { 1 } else { -1 })))
+    def orientedInsertSize(r: PairedRead[MappedRead]): Option[Int] = {
+      val sgn = if (r.isPositiveStrand) { 1 } else { -1 }
+      r.mateAlignmentProperties.flatMap(_.inferredInsertSize).map(x => x * sgn)
     }
 
     // Coalesce sequences of values separated by blockSize into single ranges.
@@ -76,19 +69,22 @@ object StructuralVariant {
     }
 
     // Returns a sequence of all blocks which overlap the read, its mate or the insert between them.
-    def matedReadBlocks(r: MappedRead): Seq[Long] = {
-      val mateStart = r.matePropertiesOpt.map(_.mateStart.getOrElse(r.start)).getOrElse(r.start)
-      val start = List(r.start, r.end, mateStart).min
-      val roundedStart = (1.0 * start / BLOCK_SIZE).toLong * BLOCK_SIZE
-      val insertSize = orientedInsertSize(r).getOrElse(0)
-
-      (roundedStart to (roundedStart + insertSize) by BLOCK_SIZE)
+    def matedReadBlocks(r: PairedRead[MappedRead]): Seq[Long] = {
+      if (!r.isMateMapped) {
+        Seq[Long]()
+      } else {
+        val mateStart = r.mateAlignmentProperties.map(mp => mp.start).getOrElse(r.read.start)
+        val start = List(r.read.start, r.read.end, mateStart).min
+        val roundedStart = (1.0 * start / BLOCK_SIZE).toLong * BLOCK_SIZE
+        val insertSize = orientedInsertSize(r).getOrElse(0)
+        (roundedStart to (roundedStart + insertSize) by BLOCK_SIZE)
+      }
     }
 
     override def run(args: Arguments, sc: SparkContext): Unit = {
       val readSet = Common.loadReadsFromArguments(args, sc, Read.InputFilters(nonDuplicate = true))
-      val pairedMappedReads = readSet.mappedReads.filter(_.isPaired)
-      val firstInPair = pairedMappedReads.filter(isFirstInPair)
+      val pairedMappedReads = readSet.mappedPairedReads
+      val firstInPair = pairedMappedReads.filter(_.isFirstInPair)
 
       // Pare down to mate pairs which aren't highly displaced & aren't inverted.
       val readsInRange = firstInPair.filter(r => {
@@ -105,7 +101,7 @@ object StructuralVariant {
       // TODO: take greater advantage of data locality than .groupByKey() does?
       val insertsByBlock = readsInRange.flatMap(r => {
         val insertSize = orientedInsertSize(r).getOrElse(0)
-        matedReadBlocks(r).map(pos => (Location(r.referenceContig, pos), insertSize))
+        matedReadBlocks(r).map(pos => (Location(r.read.referenceContig, pos), insertSize))
       }).groupByKey()
 
       // Find blocks where the average insert size is 2 sigma from the average for the whole genome.
