@@ -17,7 +17,7 @@ import scala.collection.mutable.ArrayBuffer
  * It does this by finding the average insert size of all mate pairs which overlap each 25-base pair "block" of the
  * genome. If this average is significantly different than the average insert size genome-wide, then it's evidence that
  * there may be a structural variant.
- * 
+ *
  * The output is a text file of genomic ranges where there's some evidence of an SV.
  */
 object StructuralVariant {
@@ -45,7 +45,7 @@ object StructuralVariant {
 
   object Caller extends SparkCommand[Arguments] {
     override val name = "structural-variant"
-    override val description = "Find structural variants, i.e. large insertions or deletions, inversions and translocations."
+    override val description = "Find structural variants, e.g. large deletions."
 
     // The sign of inferredInsertSize follows the orientation of the read. This returns
     // an insert size which is positive in the common case, regardless of the orientation.
@@ -54,8 +54,9 @@ object StructuralVariant {
       r.mateAlignmentProperties.flatMap(_.inferredInsertSize).map(x => x * sgn)
     }
 
-    // Coalesce sequences of values separated by blockSize into single ranges.
-    // The sequence of values must be sorted.
+    // Coalesce sequences of values separated by blockSize into single (inclusive) ranges.
+    // The sequence of values must be sorted and consist of multiples of blockSize.
+    // For example, (0, 10, 20, 30, 70, 80) --> [(0, 30), (70, 80)]
     def coalesceAdjacent(xs: IndexedSeq[Long], blockSize: Long): Iterator[(Long, Long)] = {
       val rangeStarts = ArrayBuffer(0)
       for (i <- 1 until xs.length) {
@@ -65,11 +66,11 @@ object StructuralVariant {
       }
       rangeStarts += xs.length
 
-      rangeStarts.sliding(2).map(items => {
-        val startIdx = items(0)
-        val nextStartIdx = items(1)
+      for {
+        Seq(startIdx, nextStartIdx) <- rangeStarts.sliding(2)
+      } yield {
         (xs(startIdx), xs(nextStartIdx - 1))
-      })
+      }
     }
 
     // Returns a sequence of all blocks which overlap the read, its mate or the insert between them.
@@ -78,10 +79,10 @@ object StructuralVariant {
         Seq[Long]()
       } else {
         val mateStart = r.mateAlignmentProperties.map(mp => mp.start).getOrElse(r.read.start)
-        val start = List(r.read.start, r.read.end, mateStart).min
-        val roundedStart = (1.0 * start / BLOCK_SIZE).toLong * BLOCK_SIZE
+        val start = Math.min(r.read.start, mateStart)
+        val roundedStart = start / BLOCK_SIZE * BLOCK_SIZE
         val insertSize = orientedInsertSize(r).getOrElse(0)
-        (roundedStart to (roundedStart + insertSize) by BLOCK_SIZE)
+        roundedStart to (roundedStart + insertSize) by BLOCK_SIZE
       }
     }
 
@@ -91,43 +92,43 @@ object StructuralVariant {
       val firstInPair = pairedMappedReads.filter(_.isFirstInPair)
 
       // Pare down to mate pairs which aren't highly displaced & aren't inverted.
-      val readsInRange = firstInPair.filter(r => {
-        val insertSize = orientedInsertSize(r).getOrElse(0)
-        (insertSize > 0) && (insertSize < MAX_INSERT_SIZE)
-      })
+      val readsInRange = for {
+        r <- firstInPair
+        s <- orientedInsertSize(r)
+        if 0 < s && s < MAX_INSERT_SIZE
+      } yield r
       readsInRange.persist()
 
       val insertSizes = readsInRange.flatMap(orientedInsertSize)
       val insertStats = insertSizes.stats()
       println("Stats on inferredInsertSize: " + insertStats)
 
-      // Create a map from (block) -> [insert sizes]
-      // TODO: take greater advantage of data locality than .groupByKey() does?
-      val insertsByBlock = readsInRange.flatMap(r => {
-        val insertSize = orientedInsertSize(r).getOrElse(0)
-        matedReadBlocks(r).map(pos => (Location(r.read.referenceContig, pos), insertSize))
-      }).groupByKey()
-
       // Find blocks where the average insert size is 2 sigma from the average for the whole genome.
       val exceptionalThreshold = insertStats.mean + 2 * insertStats.stdev
-      val exceptionalBlocks = insertsByBlock.filter(pair => {
-        val inserts = pair._2
-        val stats = new StatCounter()
-        stats.merge(inserts.map(_.toDouble))
-        (stats.mean > exceptionalThreshold)
+      val exceptionalBlocks = (for {
+        r <- readsInRange
+        pos <- matedReadBlocks(r)
+        insertSize <- orientedInsertSize(r)
+      } yield {
+        Location(r.read.referenceContig, pos) -> insertSize
       })
+        .aggregateByKey(new StatCounter())(seqOp = _.merge(_), combOp = _.merge(_))
+        .filter { case (loc, stats) => stats.mean > exceptionalThreshold }
+        .map(_._1)
 
       // Group adjacent blocks on the same contig
-      val exceptionalRanges = exceptionalBlocks.groupBy(_._1.contig).flatMap(kv => {
-        val contig = kv._1
-        val locations = kv._2.map(_._1.position).toArray.sorted
-        coalesceAdjacent(locations, BLOCK_SIZE).map(x => GenomeRange(contig, x._1, x._2))
-      })
+      val exceptionalRanges = exceptionalBlocks
+        .groupBy(_.contig)
+        .flatMap {
+          case (contig, locations) => {
+            val positions = locations.map(_.position).toArray.sorted
+            coalesceAdjacent(positions, BLOCK_SIZE)
+              .map(x => GenomeRange(contig, x._1, x._2))
+          }
+        }
 
       println("Number of exceptional blocks: " + exceptionalBlocks.count())
       exceptionalRanges.coalesce(1).saveAsTextFile(args.output)
     }
-
   }
-
 }
