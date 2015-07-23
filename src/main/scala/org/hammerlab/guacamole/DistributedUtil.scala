@@ -257,7 +257,7 @@ object DistributedUtil extends Logging {
     val locus = window.currentLocus
     val referenceBase = Pileup.referenceBaseAtLocus(window.currentRegions(), locus)
     existing match {
-      case None         => Pileup(window.currentRegions(), locus, referenceBase)
+      case None         => Pileup(window.currentRegions(), window.referenceName, locus, referenceBase)
       case Some(pileup) => pileup.atGreaterLocus(locus, referenceBase, window.newRegions.iterator)
     }
   }
@@ -466,7 +466,7 @@ object DistributedUtil extends Logging {
 
     taskLoci.contigs.flatMap(contig => {
       val regionIterator: PerSample[Iterator[M]] = regionSplitByContigPerSample.map(_.next(contig))
-      val windows: PerSample[SlidingWindow[M]] = regionIterator.map(SlidingWindow[M](halfWindowSize, _))
+      val windows: PerSample[SlidingWindow[M]] = regionIterator.map(SlidingWindow[M](contig, halfWindowSize, _))
       generateFromWindows(taskLoci.onContig(contig), windows)
     }).iterator
   }
