@@ -32,7 +32,7 @@ class GermlineThresholdCallerSuite extends GuacFunSuite with Matchers {
       TestUtil.makeRead("TCGATCGA", "8M", "8", 1),
       TestUtil.makeRead("TCGATCGA", "8M", "8", 1),
       TestUtil.makeRead("TCGATCGA", "8M", "8", 1))
-    val pileup = Pileup(reads, 1)
+    val pileup = Pileup(reads, "chr1", 1)
     val genotypes = GermlineThreshold.Caller.callVariantsAtLocus(pileup, 0)
     genotypes.foreach(gt => assert(gt.getAlleles.toList === List(GenotypeAllele.Ref, GenotypeAllele.Ref)))
   }
@@ -42,7 +42,7 @@ class GermlineThresholdCallerSuite extends GuacFunSuite with Matchers {
       TestUtil.makeRead("TCGATCGA", "8M", "8", 1),
       TestUtil.makeRead("TCGATCGA", "8M", "8", 1),
       TestUtil.makeRead("GCGATCGA", "8M", "0T7", 1))
-    val pileup = Pileup(reads, 1)
+    val pileup = Pileup(reads, "chr1", 1)
     val genotypes = GermlineThreshold.Caller.callVariantsAtLocus(pileup, 0)
     genotypes.foreach(gt => assert(gt.getAlleles.toList === List(GenotypeAllele.Ref, GenotypeAllele.Alt)))
 
@@ -53,7 +53,7 @@ class GermlineThresholdCallerSuite extends GuacFunSuite with Matchers {
       TestUtil.makeRead("TCGATCGA", "8M", "8", 1),
       TestUtil.makeRead("TCGATCGA", "8M", "8", 1),
       TestUtil.makeRead("GCGATCGA", "8M", "0T7", 1))
-    val pileup = Pileup(reads, 1)
+    val pileup = Pileup(reads, "chr1", 1)
     val genotypes = GermlineThreshold.Caller.callVariantsAtLocus(pileup, 30)
     genotypes.foreach(gt => assert(gt.getAlleles.toList === List(GenotypeAllele.Ref, GenotypeAllele.Alt)))
 
@@ -64,7 +64,7 @@ class GermlineThresholdCallerSuite extends GuacFunSuite with Matchers {
       TestUtil.makeRead("TCGATCGA", "8M", "8", 1),
       TestUtil.makeRead("TCGATCGA", "8M", "8", 1),
       TestUtil.makeRead("GCGATCGA", "8M", "0T7", 1))
-    val pileup = Pileup(reads, 1)
+    val pileup = Pileup(reads, "chr1", 1)
     val genotypes = GermlineThreshold.Caller.callVariantsAtLocus(pileup, 50)
     genotypes.foreach(gt => assert(gt.getAlleles.toList === List(GenotypeAllele.Ref, GenotypeAllele.Ref)))
   }
@@ -74,7 +74,7 @@ class GermlineThresholdCallerSuite extends GuacFunSuite with Matchers {
       TestUtil.makeRead("TCGATCGA", "8M", "8", 1),
       TestUtil.makeRead("GCGATCGA", "8M", "0T7", 1),
       TestUtil.makeRead("GCGATCGA", "8M", "0T7", 1))
-    val pileup = Pileup(reads, 1)
+    val pileup = Pileup(reads, "chr1", 1)
     val genotypes = GermlineThreshold.Caller.callVariantsAtLocus(pileup, 50, emitRef = false)
     genotypes.foreach(gt => assert(gt.getAlleles.toList === List(GenotypeAllele.Alt, GenotypeAllele.Alt)))
 
@@ -89,7 +89,7 @@ class GermlineThresholdCallerSuite extends GuacFunSuite with Matchers {
       TestUtil.makeRead("TGGATCGA", "8M", "1C6", 1),
       TestUtil.makeRead("TGGATCGA", "8M", "1C6", 1),
       TestUtil.makeRead("TGGATCGA", "8M", "1C6", 1))
-    val pileup = Pileup(reads, 2)
+    val pileup = Pileup(reads, "chr1", 2)
     val genotypes = GermlineThreshold.Caller.callVariantsAtLocus(pileup, 50, emitRef = false)
 
     genotypes.length should be(1)
@@ -104,7 +104,7 @@ class GermlineThresholdCallerSuite extends GuacFunSuite with Matchers {
   sparkTest("heterozygous deletion") {
     val filters = Read.InputFilters(mapped = true, nonDuplicate = true, passedVendorQualityChecks = true)
     val reads = TestUtil.loadReads(sc, "synthetic.challenge.set1.normal.v2.withMDTags.chr2.syn1fp.sam", filters = filters).mappedReads.collect()
-    val pileup = Pileup(reads, 16050070)
+    val pileup = Pileup(reads, "2", 16050070)
 
     val genotypes = GermlineThreshold.Caller.callVariantsAtLocus(pileup, 8 /* 8% variant allele fraction */ , emitRef = false)
 
