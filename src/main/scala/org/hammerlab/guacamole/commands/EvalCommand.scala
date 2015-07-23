@@ -127,7 +127,7 @@ object EvalCommand {
 
       val readSets = bams.map(
         path => ReadSet(
-          sc, path, true, Read.InputFilters.empty, token = 0, contigLengthsFromDictionary = !args.noSequenceDictionary))
+          sc, path, false, Read.InputFilters.empty, token = 0, contigLengthsFromDictionary = !args.noSequenceDictionary))
 
       assert(readSets.forall(_.sequenceDictionary == readSets(0).sequenceDictionary),
         "Samples have different sequence dictionaries: %s."
