@@ -136,6 +136,7 @@ object Common extends Logging {
    * @param args parsed arguments
    * @param sc spark context
    * @param filters input filters to apply
+   * @param requireMDTagsOnMappedReads If set, mapped reads without MDTags will throw.
    * @return
    */
   def loadReadsFromArguments(
