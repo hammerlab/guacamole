@@ -18,11 +18,13 @@
 
 package org.hammerlab.guacamole.pileup
 
+import org.hammerlab.guacamole.commands.SomaticStandard
 import org.hammerlab.guacamole.util.{ TestUtil, GuacFunSuite }
 import TestUtil.Implicits._
 import TestUtil.assertBases
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.Bases
+import org.hammerlab.guacamole.variants.Allele
 import org.scalatest.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks
 
@@ -252,9 +254,15 @@ class PileupSuite extends GuacFunSuite with Matchers with TableDrivenPropertyChe
     // read1 starts at SAM:6 → 0-based 5
     // and has CIGAR: 29M10D31M
     // so, the length is 70
-    intercept[AssertionError] { pileupElementFromRead(decadentRead1, 0) }
-    intercept[AssertionError] { pileupElementFromRead(decadentRead1, 4) }
-    intercept[AssertionError] { pileupElementFromRead(decadentRead1, 5 + 70) }
+    intercept[AssertionError] {
+      pileupElementFromRead(decadentRead1, 0)
+    }
+    intercept[AssertionError] {
+      pileupElementFromRead(decadentRead1, 4)
+    }
+    intercept[AssertionError] {
+      pileupElementFromRead(decadentRead1, 5 + 70)
+    }
     val at5 = pileupElementFromRead(decadentRead1, 5)
     assert(at5 != null)
     assertBases(at5.sequencedBases, "A")
@@ -262,7 +270,9 @@ class PileupSuite extends GuacFunSuite with Matchers with TableDrivenPropertyChe
 
     // At the end of the read:
     assert(pileupElementFromRead(decadentRead1, 74) != null)
-    intercept[AssertionError] { pileupElementFromRead(decadentRead1, 75) }
+    intercept[AssertionError] {
+      pileupElementFromRead(decadentRead1, 75)
+    }
 
     // Just before the deletion
     val deletionPileup = pileupElementFromRead(decadentRead1, 5 + 28)
@@ -281,8 +291,12 @@ class PileupSuite extends GuacFunSuite with Matchers with TableDrivenPropertyChe
     forAll(Table("locus", List(5, 33, 34, 43, 44, 74): _*)) { locus =>
       val elt = pileupElementFromRead(decadentRead1, locus)
       assert(advancePileupElement(elt, locus) === elt)
-      intercept[AssertionError] { advancePileupElement(elt, locus - 1) }
-      intercept[AssertionError] { advancePileupElement(elt, 75) }
+      intercept[AssertionError] {
+        advancePileupElement(elt, locus - 1)
+      }
+      intercept[AssertionError] {
+        advancePileupElement(elt, 75)
+      }
     }
 
     val read3Record = testAdamRecords(2) // read3
@@ -421,6 +435,23 @@ class PileupSuite extends GuacFunSuite with Matchers with TableDrivenPropertyChe
     movedRnaReadsPileup.depth should be(4)
 
     movedRnaReadsPileup.atGreaterLocus(229580707, Bases.N, Iterator.empty).depth should be(1)
+  }
+
+  test("pileup in the middle of a deletion") {
+    val reads = Seq(
+      TestUtil.makeRead("TCGAAAAGCT", "5M6D5M", "5^GCTTCG5", 0),
+      TestUtil.makeRead("TCGAAAAGCT", "5M6D5M", "5^GCTTCG5", 0),
+      TestUtil.makeRead("TCGAAAAGCT", "5M6D5M", "5^GCTTCG5", 0)
+    )
+    val deletionPileup = Pileup(reads, "chr1", 4)
+    val deletionAlleles = deletionPileup.distinctAlleles
+    deletionAlleles.size should be(1)
+    deletionAlleles(0) should be(Allele("AGCTTCG", "A"))
+
+    val midDeletionPileup = Pileup(reads, "chr1", 5)
+    val midAlleles = midDeletionPileup.distinctAlleles
+    midAlleles.size should be(1)
+    midAlleles(0) should be(Allele("G", ""))
   }
 
 }
