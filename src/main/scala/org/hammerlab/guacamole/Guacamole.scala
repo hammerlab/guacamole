@@ -39,7 +39,8 @@ object Guacamole extends Logging {
     GermlineStandard.Caller,
     SomaticStandard.Caller,
     VariantSupport.Caller,
-    VAFHistogram.Caller
+    VAFHistogram.Caller,
+    StructuralVariant.Caller
   )
 
   private def printUsage() = {
