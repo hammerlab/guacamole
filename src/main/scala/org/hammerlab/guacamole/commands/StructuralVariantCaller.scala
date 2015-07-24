@@ -2,12 +2,15 @@ package org.hammerlab.guacamole.commands
 
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
-import org.apache.spark.util.StatCounter
 import org.hammerlab.guacamole.{ DistributedUtil, SparkCommand, Common }
-import org.hammerlab.guacamole.reads.{ PairedMappedRead, PairedRead, Read, MappedRead }
+import org.hammerlab.guacamole.reads.{ PairedMappedRead, Read }
 import org.kohsuke.args4j.{ Option => Args4JOption }
 
-import scala.collection.mutable.ArrayBuffer
+import scalax.collection.Graph
+import scalax.collection.edge._
+import scalax.collection.mutable.{ Graph => MutableGraph }
+import scalax.collection.GraphPredef._
+import scalax.collection.edge.Implicits._
 
 /**
  * Structural Variant caller
@@ -47,12 +50,11 @@ object StructuralVariant {
     median: Double,
     mad: Double)
 
-  // An undirected graph of evidence for structural variants
-  // TODO: find an appropriate Scala graph library and use that.
-  case class PairedReadGraph(
-    reads: IndexedSeq[PairedMappedRead], // vertices
-    edges: Seq[(Int, Int, Double)] // (vertex1, vertex2, weight)
-    )
+  // An undirected, weighted graph of evidence for structural variants.
+  // Nodes are paired reads.
+  // Edges represent compatibility between the induced structural variants,
+  // with the weight being the strength of compatibility.
+  type PairedReadGraph = Graph[PairedMappedRead, WUnDiEdge]
 
   object Caller extends SparkCommand[Arguments] {
     override val name = "structural-variant"
@@ -154,7 +156,7 @@ object StructuralVariant {
     // For more details, see the DELLY paper.
     def buildVariantGraph(exceptionalReads: Iterable[PairedMappedRead], maxNormalInsertSize: Int): PairedReadGraph = {
       val reads = exceptionalReads.toArray.sortBy(r => Math.min(r.read.start, r.mate.start))
-      val edges = new ArrayBuffer[(Int, Int, Double)]()
+      val graph = MutableGraph[PairedMappedRead, WUnDiEdge]()
 
       for {
         i <- 0 until reads.length
@@ -171,7 +173,7 @@ object StructuralVariant {
             done = true
           } else {
             if (!areReadsIncompatible(read, nextRead, maxNormalInsertSize)) {
-              edges += ((i, j, 1.0))
+              graph += (read ~ nextRead) % 1
             }
           }
           j += 1
@@ -179,7 +181,7 @@ object StructuralVariant {
       }
 
       // TODO: exclude isolated reads from the graph
-      PairedReadGraph(reads, edges)
+      graph
     }
 
     override def run(args: Arguments, sc: SparkContext): Unit = {
