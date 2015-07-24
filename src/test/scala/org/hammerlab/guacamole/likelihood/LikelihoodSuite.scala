@@ -43,7 +43,7 @@ class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks with M
   }
 
   def testGenotypeLikelihoods(reads: Seq[MappedRead], genotypesMap: ((Char, Char), Double)*): Unit = {
-    val pileup = Pileup(reads, 1)
+    val pileup = Pileup(reads, reads(0).referenceContig, 1)
     forAll(Table("genotype", genotypesMap: _*)) { pair =>
       TestUtil.assertAlmostEqual(
         Likelihood.likelihoodOfGenotype(
@@ -110,7 +110,7 @@ class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks with M
       refRead(30)
     )
 
-    val pileup = Pileup(reads, 1)
+    val pileup = Pileup(reads, "chr1", 1)
 
     testLikelihoods(
       Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(pileup, Likelihood.probabilityCorrectIgnoringAlignment),
@@ -125,7 +125,7 @@ class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks with M
       altRead(30)
     )
 
-    val pileup = Pileup(reads, 1)
+    val pileup = Pileup(reads, "chr1", 1)
 
     testLikelihoods(
       Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(pileup, Likelihood.probabilityCorrectIgnoringAlignment),
@@ -143,7 +143,7 @@ class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks with M
       altRead(30)
     )
 
-    val pileup = Pileup(reads, 1)
+    val pileup = Pileup(reads, "chr1", 1)
 
     testLikelihoods(
       Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(pileup, Likelihood.probabilityCorrectIgnoringAlignment),
@@ -159,7 +159,7 @@ class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks with M
       refRead(30)
     )
 
-    val pileup = Pileup(reads, 1)
+    val pileup = Pileup(reads, "chr1", 1)
 
     testLikelihoods(
       Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(
@@ -177,7 +177,7 @@ class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks with M
       altRead(30)
     )
 
-    val pileup = Pileup(reads, 1)
+    val pileup = Pileup(reads, "chr1", 1)
 
     testLikelihoods(
       Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(
@@ -198,7 +198,7 @@ class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks with M
       altRead(30)
     )
 
-    val pileup = Pileup(reads, 1)
+    val pileup = Pileup(reads, "chr1", 1)
 
     testLikelihoods(
       Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(

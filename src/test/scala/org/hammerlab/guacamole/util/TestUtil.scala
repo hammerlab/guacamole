@@ -166,7 +166,9 @@ object TestUtil extends Matchers {
   def loadTumorNormalPileup(tumorReads: Seq[MappedRead],
                             normalReads: Seq[MappedRead],
                             locus: Long): (Pileup, Pileup) = {
-    (Pileup(tumorReads, locus), Pileup(normalReads, locus))
+    val contig = tumorReads(0).referenceContig
+    assume(normalReads(0).referenceContig == contig)
+    (Pileup(tumorReads, contig, locus), Pileup(normalReads, contig, locus))
   }
 
   def assertAlmostEqual(a: Double, b: Double, epsilon: Double = 1e-12) {

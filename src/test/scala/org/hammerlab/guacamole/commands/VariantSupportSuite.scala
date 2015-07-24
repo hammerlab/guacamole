@@ -21,7 +21,7 @@ class VariantSupportSuite extends GuacFunSuite with Matchers with TableDrivenPro
       (contig: String, locus: Long, alleleCountMap) =>
         {
           window.setCurrentLocus(locus)
-          val pileup = Pileup(window.currentRegions(), locus, Bases.N)
+          val pileup = Pileup(window.currentRegions(), contig, locus, Bases.N)
           assertAlleleCounts(pileup, alleleCountMap)
         }
     }
@@ -51,19 +51,19 @@ class VariantSupportSuite extends GuacFunSuite with Matchers with TableDrivenPro
 
   sparkTest("read evidence for simple snvs") {
 
-    val pileup = Pileup(gatk_reads, 10008951)
+    val pileup = Pileup(gatk_reads, "20", 10008951)
     assertAlleleCounts(pileup, Map(("A", 1), ("C", 4)))
   }
 
   sparkTest("read evidence for mid-deletion") {
 
-    val pileup = Pileup(gatk_reads, 10006822)
+    val pileup = Pileup(gatk_reads, "20", 10006822)
     assertAlleleCounts(pileup, Map(("", 5), ("C", 1)))
   }
 
   sparkTest("read evidence for simple snvs 2") {
 
-    val pileup = Pileup(gatk_reads, 10009053)
+    val pileup = Pileup(gatk_reads, "20", 10009053)
     assertAlleleCounts(pileup, Map(("AT", 3)))
   }
 
@@ -74,7 +74,7 @@ class VariantSupportSuite extends GuacFunSuite with Matchers with TableDrivenPro
       ("20", 10009053L, Map(("AT", 3)))
     )
 
-    val window = SlidingWindow[MappedRead](0L, gatk_reads.toIterator)
+    val window = SlidingWindow[MappedRead]("20", 0L, gatk_reads.toIterator)
     testAlleleCounts(window, loci: _*)
   }
 
@@ -86,7 +86,7 @@ class VariantSupportSuite extends GuacFunSuite with Matchers with TableDrivenPro
       ("20", 10260442L, Map(("T", 7)))
     )
 
-    val window = SlidingWindow[MappedRead](0L, gatk_reads.toIterator)
+    val window = SlidingWindow[MappedRead]("20", 0L, gatk_reads.toIterator)
     testAlleleCounts(window, loci: _*)
 
   }
@@ -99,7 +99,7 @@ class VariantSupportSuite extends GuacFunSuite with Matchers with TableDrivenPro
       ("20", 10009053L, Map(("AT", 3)))
     )
 
-    val window = SlidingWindow[MappedRead](0L, non_duplicate_gatk_reads.toIterator)
+    val window = SlidingWindow[MappedRead]("20", 0L, non_duplicate_gatk_reads.toIterator)
     testAlleleCounts(window, loci: _*)
 
   }

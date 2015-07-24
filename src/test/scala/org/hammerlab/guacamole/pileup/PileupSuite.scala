@@ -44,7 +44,7 @@ class PileupSuite extends GuacFunSuite with Matchers with TableDrivenPropertyChe
   def loadPileup(filename: String, locus: Long = 0): Pileup = {
     val records = TestUtil.loadReads(sc, filename).mappedReads
     val localReads = records.collect
-    Pileup(localReads, locus)
+    Pileup(localReads, localReads(0).referenceContig, locus)
   }
 
   sparkTest("create pileup from long insert reads") {
@@ -53,14 +53,14 @@ class PileupSuite extends GuacFunSuite with Matchers with TableDrivenPropertyChe
       TestUtil.makeRead("TCGATCGA", "8M", "8", 1),
       TestUtil.makeRead("TCGACCCTCGA", "4M3I4M", "8", 1))
 
-    val noPileup = Pileup(reads, 0).elements
+    val noPileup = Pileup(reads, "chr1", 0).elements
     assert(noPileup.size === 0)
 
-    val firstPileup = Pileup(reads, 1)
+    val firstPileup = Pileup(reads, "chr1", 1)
     firstPileup.elements.forall(_.isMatch) should be(true)
     firstPileup.elements.forall(_.qualityScore == 31) should be(true)
 
-    val insertPileup = Pileup(reads, 4)
+    val insertPileup = Pileup(reads, "chr1", 4)
     insertPileup.elements.exists(_.isInsertion) should be(true)
     insertPileup.elements.forall(_.qualityScore == 31) should be(true)
 
@@ -75,7 +75,7 @@ class PileupSuite extends GuacFunSuite with Matchers with TableDrivenPropertyChe
       TestUtil.makeRead("TCGATCGA", "8M", "8", 1, "chr1", Some(Seq(10, 15, 20, 25, 10, 15, 20, 25))),
       TestUtil.makeRead("TCGACCCTCGA", "4M3I4M", "8", 1, "chr1", Some(Seq(10, 15, 20, 25, 5, 5, 5, 10, 15, 20, 25))))
 
-    val insertPileup = Pileup(reads, 4)
+    val insertPileup = Pileup(reads, "chr1", 4)
     insertPileup.elements.exists(_.isInsertion) should be(true)
     insertPileup.elements.exists(_.qualityScore == 5) should be(true)
 
@@ -94,10 +94,10 @@ class PileupSuite extends GuacFunSuite with Matchers with TableDrivenPropertyChe
       TestUtil.makeRead("TCGACCCTCGA", "4M3I4M", "8", 1, "chr1", Some(Seq(10, 15, 20, 25, 5, 5, 5, 10, 15, 20, 25)))
     )
 
-    val noPileup = Pileup(reads, 0).elements
+    val noPileup = Pileup(reads, "chr1", 0).elements
     noPileup.size should be(0)
 
-    val pastInsertPileup = Pileup(reads, 5)
+    val pastInsertPileup = Pileup(reads, "chr1", 5)
     pastInsertPileup.elements.foreach(_.isMatch should be(true))
 
     pastInsertPileup.elements.foreach(_.qualityScore should be(10))
@@ -109,7 +109,7 @@ class PileupSuite extends GuacFunSuite with Matchers with TableDrivenPropertyChe
       TestUtil.makeRead("TCGATCGA", "8M", "8", 1),
       TestUtil.makeRead("TCGATCGA", "8M", "8", 1),
       TestUtil.makeRead("TCGACCCTCGA", "4M3I4M", "8", 1))
-    val lastPileup = Pileup(reads, 7)
+    val lastPileup = Pileup(reads, "chr1", 7)
     lastPileup.elements.foreach(e => assertBases(e.sequencedBases, "G"))
     lastPileup.elements.forall(_.isMatch) should be(true)
   }
@@ -121,7 +121,7 @@ class PileupSuite extends GuacFunSuite with Matchers with TableDrivenPropertyChe
       TestUtil.makeRead("TCGATCGA", "8M", "8", 1, "chr1", Some(Seq(10, 15, 20, 25, 10, 15, 20, 25))),
       TestUtil.makeRead("TCGACCCTCGA", "4M3I4M", "8", 1, "chr1", Some(Seq(10, 15, 20, 25, 5, 5, 5, 10, 15, 20, 25))))
 
-    val lastPileup = Pileup(reads, 8)
+    val lastPileup = Pileup(reads, "chr1", 8)
     lastPileup.elements.foreach(e => assertBases(e.sequencedBases, "A"))
     lastPileup.elements.forall(_.sequencedBases.headOption.exists(_ == Bases.A)) should be(true)
 
