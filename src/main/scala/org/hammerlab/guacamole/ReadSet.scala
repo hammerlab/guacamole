@@ -53,8 +53,8 @@ case class ReadSet(
 
   lazy val mappedPairedReads: RDD[PairedRead[MappedRead]] = reads.flatMap(read =>
     read match {
-      case rp: PairedRead[MappedRead] => Some(rp)
-      case _                          => None
+      case rp: PairedRead[_] if rp.isMapped => Some(rp.asInstanceOf[PairedRead[MappedRead]])
+      case _                                => None
     }
   )
 

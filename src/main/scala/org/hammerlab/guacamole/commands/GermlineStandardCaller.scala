@@ -99,7 +99,7 @@ object GermlineStandard {
             Seq.empty
           } else {
             val genotypeLikelihoods = Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(
-              Pileup(samplePileup.locus, samplePileup.referenceBase, filteredPileupElements),
+              Pileup(samplePileup.referenceName, samplePileup.locus, samplePileup.referenceBase, filteredPileupElements),
               logSpace = true,
               normalize = true)
             val mostLikelyGenotypeAndProbability = genotypeLikelihoods.maxBy(_._2)

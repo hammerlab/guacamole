@@ -28,10 +28,10 @@ import org.scalatest.prop.TableDrivenPropertyChecks
 
 class SomaticStandardCallerSuite extends GuacFunSuite with Matchers with TableDrivenPropertyChecks {
 
-  def loadPileup(filename: String, locus: Long = 0): Pileup = {
+  def loadPileup(filename: String, referenceName: String, locus: Long = 0): Pileup = {
     val records = TestUtil.loadReads(sc, filename).mappedReads
     val localReads = records.collect
-    Pileup(localReads, locus)
+    Pileup(localReads, referenceName, locus)
   }
 
   /**
@@ -120,14 +120,14 @@ class SomaticStandardCallerSuite extends GuacFunSuite with Matchers with TableDr
       TestUtil.makeRead("TCGATCGA", "8M", "8", 0),
       TestUtil.makeRead("TCGATCGA", "8M", "8", 0)
     )
-    val normalPileup = Pileup(normalReads, 2)
+    val normalPileup = Pileup(normalReads, "chr1", 2)
 
     val tumorReads = Seq(
       TestUtil.makeRead("TCGGTCGA", "8M", "3G4", 0),
       TestUtil.makeRead("TCGGTCGA", "8M", "3G4", 0),
       TestUtil.makeRead("TCGGTCGA", "8M", "3G4", 0)
     )
-    val tumorPileup = Pileup(tumorReads, 2)
+    val tumorPileup = Pileup(tumorReads, "chr1", 2)
 
     SomaticStandard.Caller.findPotentialVariantAtLocus(tumorPileup, normalPileup, oddsThreshold = 2).size should be(0)
   }
@@ -137,13 +137,13 @@ class SomaticStandardCallerSuite extends GuacFunSuite with Matchers with TableDr
       TestUtil.makeRead("TCGATCGA", "8M", "8", 0),
       TestUtil.makeRead("TCGATCGA", "8M", "8", 0),
       TestUtil.makeRead("TCGATCGA", "8M", "8", 0))
-    val normalPileup = Pileup(normalReads, 2)
+    val normalPileup = Pileup(normalReads, "chr1", 2)
 
     val tumorReads = Seq(
       TestUtil.makeRead("TCGTCGA", "3M1D4M", "3^A4", 0),
       TestUtil.makeRead("TCGTCGA", "3M1D4M", "3^A4", 0),
       TestUtil.makeRead("TCGTCGA", "3M1D4M", "3^A4", 0))
-    val tumorPileup = Pileup(tumorReads, 2)
+    val tumorPileup = Pileup(tumorReads, "chr1", 2)
 
     val alleles = SomaticStandard.Caller.findPotentialVariantAtLocus(tumorPileup, normalPileup, oddsThreshold = 2)
     alleles.size should be(1)
@@ -159,14 +159,14 @@ class SomaticStandardCallerSuite extends GuacFunSuite with Matchers with TableDr
       TestUtil.makeRead("TCGAAGCTTCGAAGCT", "16M", "16", 0),
       TestUtil.makeRead("TCGAAGCTTCGAAGCT", "16M", "16", 0)
     )
-    val normalPileup = Pileup(normalReads, 4)
+    val normalPileup = Pileup(normalReads, "chr1", 4)
 
     val tumorReads = Seq(
       TestUtil.makeRead("TCGAAAAGCT", "5M6D5M", "5^GCTTCG5", 0),
       TestUtil.makeRead("TCGAAAAGCT", "5M6D5M", "5^GCTTCG5", 0),
       TestUtil.makeRead("TCGAAAAGCT", "5M6D5M", "5^GCTTCG5", 0)
     )
-    val tumorPileup = Pileup(tumorReads, 4)
+    val tumorPileup = Pileup(tumorReads, "chr1", 4)
 
     val alleles = SomaticStandard.Caller.findPotentialVariantAtLocus(tumorPileup, normalPileup, oddsThreshold = 2)
     alleles.size should be(1)
@@ -182,14 +182,14 @@ class SomaticStandardCallerSuite extends GuacFunSuite with Matchers with TableDr
       TestUtil.makeRead("TCGATCGA", "8M", "8", 0),
       TestUtil.makeRead("TCGATCGA", "8M", "8", 0)
     )
-    val normalPileup = Pileup(normalReads, 2)
+    val normalPileup = Pileup(normalReads, "chr1", 2)
 
     val tumorReads = Seq(
       TestUtil.makeRead("TCGAGTCGA", "4M1I4M", "8", 0),
       TestUtil.makeRead("TCGAGTCGA", "4M1I4M", "8", 0),
       TestUtil.makeRead("TCGAGTCGA", "4M1I4M", "8", 0)
     )
-    val tumorPileup = Pileup(tumorReads, 3)
+    val tumorPileup = Pileup(tumorReads, "chr1", 3)
 
     val alleles = SomaticStandard.Caller.findPotentialVariantAtLocus(tumorPileup, normalPileup, oddsThreshold = 2)
     alleles.size should be(1)
@@ -213,7 +213,7 @@ class SomaticStandardCallerSuite extends GuacFunSuite with Matchers with TableDr
     )
 
     val alleles = SomaticStandard.Caller.findPotentialVariantAtLocus(
-      Pileup(tumorReads, 3), Pileup(normalReads, 3), oddsThreshold = 2
+      Pileup(tumorReads, "chr1", 3), Pileup(normalReads, "chr1", 3), oddsThreshold = 2
     )
     alleles.size should be(1)
 
@@ -241,12 +241,12 @@ class SomaticStandardCallerSuite extends GuacFunSuite with Matchers with TableDr
       TestUtil.makeRead("TCATCTCAAAAGAGATCGA", "2M2D1M2I2M4I2M2D6M", "2^GA5^TC6", 10)
     )
 
-    def testLocus(locus: Int, refBases: String, altBases: String) = {
-      val tumorPileup = Pileup(tumorReads, locus)
-      val normalPileup = Pileup(normalReads, locus)
+    def testLocus(referenceName: String, locus: Int, refBases: String, altBases: String) = {
+      val tumorPileup = Pileup(tumorReads, referenceName, locus)
+      val normalPileup = Pileup(normalReads, referenceName, locus)
 
       val alleles = SomaticStandard.Caller.findPotentialVariantAtLocus(
-        Pileup(tumorReads, locus), Pileup(normalReads, locus), oddsThreshold = 2
+        Pileup(tumorReads, referenceName, locus), Pileup(normalReads, referenceName, locus), oddsThreshold = 2
       )
       alleles.size should be(1)
 
@@ -255,10 +255,10 @@ class SomaticStandardCallerSuite extends GuacFunSuite with Matchers with TableDr
       Bases.basesToString(allele.altBases) should be(altBases)
     }
 
-    testLocus(11, "CGA", "C")
-    testLocus(14, "A", "ATC")
-    testLocus(16, "C", "CAAAA")
-    testLocus(18, "ATC", "A")
+    testLocus("chr1", 11, "CGA", "C")
+    testLocus("chr1", 14, "A", "ATC")
+    testLocus("chr1", 16, "C", "CAAAA")
+    testLocus("chr1", 18, "ATC", "A")
   }
 
 }

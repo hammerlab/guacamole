@@ -42,7 +42,8 @@ import scala.collection.mutable
  *
  * @param rawSortedRegions Iterator of regions, sorted by the aligned start locus.
  */
-case class SlidingWindow[Region <: HasReferenceRegion](halfWindowSize: Long,
+case class SlidingWindow[Region <: HasReferenceRegion](referenceName: String,
+                                                       halfWindowSize: Long,
                                                        rawSortedRegions: Iterator[Region]) extends Logging {
   /** The locus currently under consideration. */
   var currentLocus = -1L
@@ -50,11 +51,9 @@ case class SlidingWindow[Region <: HasReferenceRegion](halfWindowSize: Long,
   /** The new regions that were added to currentRegions as a result of the most recent call to setCurrentLocus. */
   var newRegions: Seq[Region] = Seq.empty
 
-  private var referenceName: Option[String] = None
   private var mostRecentRegionStart: Long = 0
   private val sortedRegions: BufferedIterator[Region] = rawSortedRegions.map(region => {
-    if (referenceName.isEmpty) referenceName = Some(region.referenceContig)
-    require(region.referenceContig == referenceName.get, "Regions must have the same reference name")
+    require(region.referenceContig == referenceName, "Regions must have the same reference name")
     require(region.start >= mostRecentRegionStart, "Regions must be sorted by start locus")
     mostRecentRegionStart = region.start
 
