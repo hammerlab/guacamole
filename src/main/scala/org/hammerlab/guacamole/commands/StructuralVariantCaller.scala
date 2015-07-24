@@ -54,8 +54,8 @@ object StructuralVariant {
       r.mateAlignmentProperties.flatMap(_.inferredInsertSize).map(x => x * sgn)
     }
 
-    // Coalesce sequences of values separated by blockSize into single (inclusive) ranges.
-    // The sequence of values must be sorted and consist of multiples of blockSize.
+    // Given a sorted sequence of positions (all of which are multiples of @blockSize), coalesce ranges of
+    // consecutive multiples of @blockSize into tuples representing the start and end (inclusive) of each range.
     // For example, (0, 10, 20, 30, 70, 80) --> [(0, 30), (70, 80)]
     def coalesceAdjacent(xs: IndexedSeq[Long], blockSize: Long): Iterator[(Long, Long)] = {
       val rangeStarts = ArrayBuffer(0)
@@ -78,7 +78,7 @@ object StructuralVariant {
       if (!r.isMateMapped) {
         Seq[Long]()
       } else {
-        val mateStart = r.mateAlignmentProperties.map(mp => mp.start).getOrElse(r.read.start)
+        val mateStart = r.mateAlignmentProperties.map(_.start).getOrElse(r.read.start)
         val start = Math.min(r.read.start, mateStart)
         val roundedStart = start / BLOCK_SIZE * BLOCK_SIZE
         val insertSize = orientedInsertSize(r).getOrElse(0)
@@ -117,14 +117,13 @@ object StructuralVariant {
         .map(_._1)
 
       // Group adjacent blocks on the same contig
-      val exceptionalRanges = exceptionalBlocks
-        .groupBy(_.contig)
-        .flatMap {
-          case (contig, locations) => {
-            val positions = locations.map(_.position).toArray.sorted
-            coalesceAdjacent(positions, BLOCK_SIZE)
-              .map(x => GenomeRange(contig, x._1, x._2))
-          }
+      val exceptionalRanges =
+        for {
+          (contig, locations) <- exceptionalBlocks.groupBy(_.contig)
+          positions = locations.map(_.position).toArray.sorted
+          (start, end) <- coalesceAdjacent(positions, BLOCK_SIZE)
+        } yield {
+          GenomeRange(contig, start, end)
         }
 
       println("Number of exceptional blocks: " + exceptionalBlocks.count())
