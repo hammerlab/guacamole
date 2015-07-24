@@ -362,6 +362,11 @@
       <artifactId>scalac-scoverage-plugin_${scala.version.prefix}</artifactId>
       <version>${scoverage-plugin.version}</version>
     </dependency>
+    <dependency>
+      <groupId>com.assembla.scala-incubator</groupId>
+      <artifactId>graph-core_2.10</artifactId>
+      <version>1.9.1</version>
+    </dependency>
   </dependencies>
 
   <profiles>

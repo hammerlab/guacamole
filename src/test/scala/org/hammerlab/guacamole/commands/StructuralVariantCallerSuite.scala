@@ -3,6 +3,10 @@ package org.hammerlab.guacamole.commands
 import org.hammerlab.guacamole.util.{ TestUtil, GuacFunSuite }
 import org.scalatest.Matchers
 
+import scalax.collection.Graph
+import scalax.collection.GraphPredef._
+import scalax.collection.edge.Implicits._
+
 class StructuralVariantCallerSuite extends GuacFunSuite with Matchers {
 
   // aliases
@@ -62,8 +66,7 @@ class StructuralVariantCallerSuite extends GuacFunSuite with Matchers {
     )
 
     val graph = StructuralVariant.Caller.buildVariantGraph(reads, 100)
-    assert(graph.reads === reads)
-    assert(graph.edges === Seq((1, 2, 1.0)))
+    assert(graph === Graph(reads(1) ~ reads(2) % 1))
 
     // TODO: test overlapping but incompatible pairs
     // TODO: test reads with mateStart < start
