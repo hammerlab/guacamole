@@ -35,14 +35,14 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">Pileup</span><span class="params">(<span name="locus">locus: <span class="extype" name="scala.Long">Long</span></span>, <span name="referenceBase">referenceBase: <span class="extype" name="scala.Byte">Byte</span></span>, <span name="elements">elements: <span class="extype" name="scala.Seq">Seq</span>[<a href="PileupElement.html" class="extype" name="org.hammerlab.guacamole.pileup.PileupElement">PileupElement</a>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">Pileup</span><span class="params">(<span name="referenceName">referenceName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="locus">locus: <span class="extype" name="scala.Long">Long</span></span>, <span name="referenceBase">referenceBase: <span class="extype" name="scala.Byte">Byte</span></span>, <span name="elements">elements: <span class="extype" name="scala.Seq">Seq</span>[<a href="PileupElement.html" class="extype" name="org.hammerlab.guacamole.pileup.PileupElement">PileupElement</a>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>A <a href="" class="extype" name="org.hammerlab.guacamole.pileup.Pileup">Pileup</a> at a locus contains a sequence of <a href="PileupElement.html" class="extype" name="org.hammerlab.guacamole.pileup.PileupElement">PileupElement</a> instances, one for every read that overlaps that
 locus. Each <a href="PileupElement.html" class="extype" name="org.hammerlab.guacamole.pileup.PileupElement">PileupElement</a> specifies the base read at the given locus in a particular read. It also keeps track
 of the read itself and the offset of the base in the read.
-</p></div><dl class="paramcmts block"><dt class="param">locus</dt><dd class="cmt"><p>The locus on the reference genome</p></dd><dt class="param">referenceBase</dt><dd class="cmt"><p>The reference base at <a href="#locus:Long" class="extmbr" name="org.hammerlab.guacamole.pileup.Pileup#locus">locus</a> on the reference genome</p></dd><dt class="param">elements</dt><dd class="cmt"><p>Sequence of <a href="PileupElement.html" class="extype" name="org.hammerlab.guacamole.pileup.PileupElement">PileupElement</a> instances giving the sequenced bases that align to a particular
+</p></div><dl class="paramcmts block"><dt class="param">referenceName</dt><dd class="cmt"><p>The contig name for all elements in this pileup.</p></dd><dt class="param">locus</dt><dd class="cmt"><p>The locus on the reference genome</p></dd><dt class="param">referenceBase</dt><dd class="cmt"><p>The reference base at <a href="#locus:Long" class="extmbr" name="org.hammerlab.guacamole.pileup.Pileup#locus">locus</a> on the reference genome</p></dd><dt class="param">elements</dt><dd class="cmt"><p>Sequence of <a href="PileupElement.html" class="extype" name="org.hammerlab.guacamole.pileup.PileupElement">PileupElement</a> instances giving the sequenced bases that align to a particular
                 reference locus, in arbitrary order.
 </p></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
@@ -85,7 +85,7 @@ of the read itself and the offset of the base in the read.
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="org.hammerlab.guacamole.pileup.Pileup#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="&lt;init&gt;(locus:Long,referenceBase:Byte,elements:Seq[org.hammerlab.guacamole.pileup.PileupElement]):org.hammerlab.guacamole.pileup.Pileup"></a>
+      <a id="&lt;init&gt;(referenceName:String,locus:Long,referenceBase:Byte,elements:Seq[org.hammerlab.guacamole.pileup.PileupElement]):org.hammerlab.guacamole.pileup.Pileup"></a>
       <a id="&lt;init&gt;:Pileup"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -93,10 +93,10 @@ of the read itself and the offset of the base in the read.
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">Pileup</span><span class="params">(<span name="locus">locus: <span class="extype" name="scala.Long">Long</span></span>, <span name="referenceBase">referenceBase: <span class="extype" name="scala.Byte">Byte</span></span>, <span name="elements">elements: <span class="extype" name="scala.Seq">Seq</span>[<a href="PileupElement.html" class="extype" name="org.hammerlab.guacamole.pileup.PileupElement">PileupElement</a>]</span>)</span>
+        <span class="name">Pileup</span><span class="params">(<span name="referenceName">referenceName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="locus">locus: <span class="extype" name="scala.Long">Long</span></span>, <span name="referenceBase">referenceBase: <span class="extype" name="scala.Byte">Byte</span></span>, <span name="elements">elements: <span class="extype" name="scala.Seq">Seq</span>[<a href="PileupElement.html" class="extype" name="org.hammerlab.guacamole.pileup.PileupElement">PileupElement</a>]</span>)</span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">locus</dt><dd class="cmt"><p>The locus on the reference genome</p></dd><dt class="param">referenceBase</dt><dd class="cmt"><p>The reference base at <a href="#locus:Long" class="extmbr" name="org.hammerlab.guacamole.pileup.Pileup#locus">locus</a> on the reference genome</p></dd><dt class="param">elements</dt><dd class="cmt"><p>Sequence of <a href="PileupElement.html" class="extype" name="org.hammerlab.guacamole.pileup.PileupElement">PileupElement</a> instances giving the sequenced bases that align to a particular
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">referenceName</dt><dd class="cmt"><p>The contig name for all elements in this pileup.</p></dd><dt class="param">locus</dt><dd class="cmt"><p>The locus on the reference genome</p></dd><dt class="param">referenceBase</dt><dd class="cmt"><p>The reference base at <a href="#locus:Long" class="extmbr" name="org.hammerlab.guacamole.pileup.Pileup#locus">locus</a> on the reference genome</p></dd><dt class="param">elements</dt><dd class="cmt"><p>Sequence of <a href="PileupElement.html" class="extype" name="org.hammerlab.guacamole.pileup.PileupElement">PileupElement</a> instances giving the sequenced bases that align to a particular
                 reference locus, in arbitrary order.
 </p></dd></dl></div>
     </li></ol>
@@ -489,7 +489,7 @@ with that token.
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">lazy val</span>
+        <span class="kind">val</span>
       </span>
       <span class="symbol">
         <span class="name">referenceName</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>

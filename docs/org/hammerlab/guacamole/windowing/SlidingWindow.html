@@ -35,7 +35,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">SlidingWindow</span><span class="tparams">[<span name="Region">Region &lt;: <a href="../HasReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.HasReferenceRegion">HasReferenceRegion</a></span>]</span><span class="params">(<span name="halfWindowSize">halfWindowSize: <span class="extype" name="scala.Long">Long</span></span>, <span name="rawSortedRegions">rawSortedRegions: <span class="extype" name="scala.Iterator">Iterator</span>[<span class="extype" name="org.hammerlab.guacamole.windowing.SlidingWindow.Region">Region</span>]</span>)</span><span class="result"> extends <span class="extype" name="org.apache.spark.Logging">Logging</span> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">SlidingWindow</span><span class="tparams">[<span name="Region">Region &lt;: <a href="../HasReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.HasReferenceRegion">HasReferenceRegion</a></span>]</span><span class="params">(<span name="referenceName">referenceName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="halfWindowSize">halfWindowSize: <span class="extype" name="scala.Long">Long</span></span>, <span name="rawSortedRegions">rawSortedRegions: <span class="extype" name="scala.Iterator">Iterator</span>[<span class="extype" name="org.hammerlab.guacamole.windowing.SlidingWindow.Region">Region</span>]</span>)</span><span class="result"> extends <span class="extype" name="org.apache.spark.Logging">Logging</span> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
@@ -90,7 +90,7 @@ of objects are sorted.
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="org.hammerlab.guacamole.windowing.SlidingWindow#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="&lt;init&gt;(halfWindowSize:Long,rawSortedRegions:Iterator[Region]):org.hammerlab.guacamole.windowing.SlidingWindow[Region]"></a>
+      <a id="&lt;init&gt;(referenceName:String,halfWindowSize:Long,rawSortedRegions:Iterator[Region]):org.hammerlab.guacamole.windowing.SlidingWindow[Region]"></a>
       <a id="&lt;init&gt;:SlidingWindow[Region]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -98,7 +98,7 @@ of objects are sorted.
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">SlidingWindow</span><span class="params">(<span name="halfWindowSize">halfWindowSize: <span class="extype" name="scala.Long">Long</span></span>, <span name="rawSortedRegions">rawSortedRegions: <span class="extype" name="scala.Iterator">Iterator</span>[<span class="extype" name="org.hammerlab.guacamole.windowing.SlidingWindow.Region">Region</span>]</span>)</span>
+        <span class="name">SlidingWindow</span><span class="params">(<span name="referenceName">referenceName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="halfWindowSize">halfWindowSize: <span class="extype" name="scala.Long">Long</span></span>, <span name="rawSortedRegions">rawSortedRegions: <span class="extype" name="scala.Iterator">Iterator</span>[<span class="extype" name="org.hammerlab.guacamole.windowing.SlidingWindow.Region">Region</span>]</span>)</span>
       </span>
       </h4>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">halfWindowSize</dt><dd class="cmt"><p>Number of nucleotide bases to either side of the specified locus to provide regions for. For
@@ -565,6 +565,19 @@ currentRegions.
       </span>
       </h4>
       <p class="shortcomment cmt">Iterator of regions, sorted by the aligned start locus.</p>
+    </li><li name="org.hammerlab.guacamole.windowing.SlidingWindow#referenceName" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="referenceName:String"></a>
+      <a id="referenceName:String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">referenceName</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      </h4>
+      
     </li><li name="org.hammerlab.guacamole.windowing.SlidingWindow#setCurrentLocus" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="setCurrentLocus(locus:Long):Seq[Region]"></a>
       <a id="setCurrentLocus(Long):Seq[Region]"></a>
