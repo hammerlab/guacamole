@@ -1,5 +1,5 @@
 <scoverage 
-statement-count="3497" statements-invoked="233" statement-rate="6.66" branch-rate="4.79" version="1.0" timestamp="1437758591650">
+statement-count="3497" statements-invoked="233" statement-rate="6.66" branch-rate="4.79" version="1.0" timestamp="1437858447002">
     <packages>
         <package name="org.hammerlab.guacamole" statement-count="1415" statements-invoked="174" statement-rate="12.30">
             <classes>
@@ -603,16 +603,16 @@ statement-count="3497" statements-invoked="233" statement-rate="6.66" branch-rat
                         name="org.hammerlab.guacamole/ConcordanceArgs/&lt;none&gt;" statement-count="4" statements-invoked="0" statement-rate="0.00" branch-rate="0.00">
                             <statements>
                                 <statement 
-                                package="org.hammerlab.guacamole" class="ConcordanceArgs" method="&lt;none&gt;" start="-1" line="47" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole" class="ConcordanceArgs" method="&lt;none&gt;" start="-1" line="45" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole" class="ConcordanceArgs" method="&lt;none&gt;" start="-1" line="51" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole" class="ConcordanceArgs" method="&lt;none&gt;" start="-1" line="44" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole" class="ConcordanceArgs" method="&lt;none&gt;" start="-1" line="42" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole" class="ConcordanceArgs" method="&lt;none&gt;" start="-1" line="49" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole" class="ConcordanceArgs" method="&lt;none&gt;" start="-1" line="48" branch="false" invocation-count="0">
 </statement>
                             </statements>
 </method>
