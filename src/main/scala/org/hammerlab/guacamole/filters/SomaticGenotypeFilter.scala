@@ -21,7 +21,7 @@ package org.hammerlab.guacamole.filters
 import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole.Common.Arguments.Base
 import org.hammerlab.guacamole._
-import org.hammerlab.guacamole.variants.{ CalledAllele, AlleleEvidence, CalledSomaticAllele }
+import org.hammerlab.guacamole.variants.CalledSomaticAllele
 import org.kohsuke.args4j.{ Option => Args4jOption }
 
 /**
@@ -166,8 +166,8 @@ object SomaticAverageMappingQualityFilter {
   def hasMinimumAverageMappingQuality(somaticGenotype: CalledSomaticAllele,
                                       minAverageMappingQuality: Int): Boolean = {
 
-    somaticGenotype.tumorEvidence.averageMappingQuality > minAverageMappingQuality &&
-      somaticGenotype.normalEvidence.averageMappingQuality > minAverageMappingQuality
+    somaticGenotype.tumorEvidence.meanMappingQuality >= minAverageMappingQuality &&
+      somaticGenotype.normalEvidence.meanMappingQuality >= minAverageMappingQuality
   }
 
   /**
@@ -175,7 +175,7 @@ object SomaticAverageMappingQualityFilter {
    * @param genotypes RDD of genotypes to filter
    * @param minAverageMappingQuality
    * @param debug if true, compute the count of genotypes after filtering
-   * @return  Genotypes with variant allele frequency >= minVAF
+   * @return  Genotypes with mean average mapping quality >= minAverageMappingQuality
    */
   def apply(genotypes: RDD[CalledSomaticAllele],
             minAverageMappingQuality: Int,
@@ -191,8 +191,8 @@ object SomaticAverageBaseQualityFilter {
   def hasMinimumAverageBaseQuality(somaticGenotype: CalledSomaticAllele,
                                    minAverageBaseQuality: Int): Boolean = {
 
-    somaticGenotype.tumorEvidence.averageBaseQuality > minAverageBaseQuality &&
-      somaticGenotype.normalEvidence.averageBaseQuality > minAverageBaseQuality
+    somaticGenotype.tumorEvidence.meanMappingQuality >= minAverageBaseQuality &&
+      somaticGenotype.normalEvidence.meanMappingQuality >= minAverageBaseQuality
   }
 
   /**
@@ -200,12 +200,36 @@ object SomaticAverageBaseQualityFilter {
    * @param genotypes RDD of genotypes to filter
    * @param minAverageBaseQuality
    * @param debug if true, compute the count of genotypes after filtering
-   * @return  Genotypes with variant allele frequency >= minVAF
+   * @return  Genotypes with mean average base quality >= minAverageBaseQuality
    */
   def apply(genotypes: RDD[CalledSomaticAllele],
             minAverageBaseQuality: Int,
             debug: Boolean = false): RDD[CalledSomaticAllele] = {
     val filteredGenotypes = genotypes.filter(hasMinimumAverageBaseQuality(_, minAverageBaseQuality))
+    if (debug) SomaticGenotypeFilter.printFilterProgress(filteredGenotypes)
+    filteredGenotypes
+  }
+}
+
+object SomaticMedianMismatchFilter {
+
+  def hasMaximumMedianMismatch(somaticGenotype: CalledSomaticAllele,
+                               maximumMedianMismatches: Int): Boolean = {
+
+    somaticGenotype.tumorEvidence.medianMismatchesPerRead <= maximumMedianMismatches
+  }
+
+  /**
+   *
+   * @param genotypes RDD of genotypes to filter
+   * @param maximumMedianMismatches Maximum median number of mismatches on a read
+   * @param debug if true, compute the count of genotypes after filtering
+   * @return  Genotypes with median mismatches on reads <= maximumMedianMismatches
+   */
+  def apply(genotypes: RDD[CalledSomaticAllele],
+            maximumMedianMismatches: Int,
+            debug: Boolean = false): RDD[CalledSomaticAllele] = {
+    val filteredGenotypes = genotypes.filter(hasMaximumMedianMismatch(_, maximumMedianMismatches))
     if (debug) SomaticGenotypeFilter.printFilterProgress(filteredGenotypes)
     filteredGenotypes
   }
@@ -247,6 +271,9 @@ object SomaticGenotypeFilter {
     @Args4jOption(name = "--min-tumor-alternate-read-depth", usage = "Minimum number of reads with alternate allele for a genotype call")
     var minTumorAlternateReadDepth: Int = 0
 
+    @Args4jOption(name = "--max-median-mismatches", usage = "Maximum median number of mismatches on a read")
+    var maximumMedianMismatches: Int = Int.MaxValue
+
     @Args4jOption(name = "--debug-genotype-filters", usage = "Print count of genotypes after each filtering step")
     var debugGenotypeFilters = false
 
@@ -273,6 +300,8 @@ object SomaticGenotypeFilter {
     filteredGenotypes = SomaticAverageMappingQualityFilter(filteredGenotypes, args.minAverageMappingQuality, args.debugGenotypeFilters)
 
     filteredGenotypes = SomaticAverageBaseQualityFilter(filteredGenotypes, args.minAverageBaseQuality, args.debugGenotypeFilters)
+
+    filteredGenotypes = SomaticMedianMismatchFilter(filteredGenotypes, args.maximumMedianMismatches, args.debugGenotypeFilters)
 
     filteredGenotypes
   }

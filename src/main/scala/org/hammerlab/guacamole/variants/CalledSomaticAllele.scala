@@ -18,8 +18,6 @@
 
 package org.hammerlab.guacamole.variants
 
-import com.esotericsoftware.kryo.io.{ Input, Output }
-import com.esotericsoftware.kryo.{ Kryo, Serializer }
 import org.bdgenomics.adam.util.PhredUtils
 
 /**
@@ -50,62 +48,4 @@ case class CalledSomaticAllele(sampleName: String,
   // P ( variant in tumor AND no variant in normal) = P(variant in tumor) * ( 1 - P(variant in normal) )
   lazy val phredScaledSomaticLikelihood =
     PhredUtils.successProbabilityToPhred(tumorEvidence.likelihood * (1 - normalEvidence.likelihood) - 1e-10)
-}
-
-class CalledSomaticAlleleSerializer
-    extends Serializer[CalledSomaticAllele]
-    with HasGenotypeEvidenceSerializer
-    with HasAlleleSerializer {
-
-  def write(kryo: Kryo, output: Output, obj: CalledSomaticAllele) = {
-    output.writeString(obj.sampleName)
-    output.writeString(obj.referenceContig)
-    output.writeLong(obj.start)
-    alleleSerializer.write(kryo, output, obj.allele)
-    output.writeDouble(obj.somaticLogOdds)
-
-    alleleEvidenceSerializer.write(kryo, output, obj.tumorEvidence)
-    alleleEvidenceSerializer.write(kryo, output, obj.normalEvidence)
-
-    output.writeBoolean(obj.rsID.isDefined)
-    obj.rsID.foreach(output.writeInt(_, true))
-
-    output.writeInt(obj.length, true)
-
-  }
-
-  def read(kryo: Kryo, input: Input, klass: Class[CalledSomaticAllele]): CalledSomaticAllele = {
-
-    val sampleName: String = input.readString()
-    val referenceContig: String = input.readString()
-    val start: Long = input.readLong()
-    val allele: Allele = alleleSerializer.read(kryo, input, classOf[Allele])
-    val somaticLogOdds = input.readDouble()
-
-    val tumorEvidence = alleleEvidenceSerializer.read(kryo, input, classOf[AlleleEvidence])
-    val normalEvidence = alleleEvidenceSerializer.read(kryo, input, classOf[AlleleEvidence])
-
-    val hasRsID = input.readBoolean()
-    val rsId =
-      if (hasRsID)
-        Some(input.readInt(true))
-      else
-        None
-
-    val length: Int = input.readInt(true)
-
-    CalledSomaticAllele(
-      sampleName,
-      referenceContig,
-      start,
-      allele,
-      somaticLogOdds,
-      tumorEvidence = tumorEvidence,
-      normalEvidence = normalEvidence,
-      rsId,
-      length
-    )
-
-  }
-
 }

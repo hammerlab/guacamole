@@ -18,9 +18,6 @@
 
 package org.hammerlab.guacamole.variants
 
-import com.esotericsoftware.kryo.io.{ Input, Output }
-import com.esotericsoftware.kryo.{ Kryo, Serializer }
-
 /**
  *
  * A variant that exists in the sample; includes supporting read statistics
@@ -42,49 +39,3 @@ case class CalledAllele(sampleName: String,
   val end: Long = start + 1L
 
 }
-
-class CalledAlleleSerializer
-    extends Serializer[CalledAllele]
-    with HasAlleleSerializer
-    with HasGenotypeEvidenceSerializer {
-
-  def write(kryo: Kryo, output: Output, obj: CalledAllele) = {
-    output.writeString(obj.sampleName)
-    output.writeString(obj.referenceContig)
-    output.writeLong(obj.start, true)
-    alleleSerializer.write(kryo, output, obj.allele)
-    alleleEvidenceSerializer.write(kryo, output, obj.evidence)
-
-    output.writeBoolean(obj.rsID.isDefined)
-    obj.rsID.foreach(output.writeInt(_, true))
-    output.writeInt(obj.length, true)
-  }
-
-  def read(kryo: Kryo, input: Input, klass: Class[CalledAllele]): CalledAllele = {
-
-    val sampleName: String = input.readString()
-    val referenceContig: String = input.readString()
-    val start: Long = input.readLong(true)
-    val allele = alleleSerializer.read(kryo, input, classOf[Allele])
-    val evidence = alleleEvidenceSerializer.read(kryo, input, classOf[AlleleEvidence])
-    val hasRsID = input.readBoolean()
-    val rsId =
-      if (hasRsID)
-        Some(input.readInt(true))
-      else
-        None
-    val length: Int = input.readInt(true)
-
-    CalledAllele(
-      sampleName,
-      referenceContig,
-      start,
-      allele,
-      evidence,
-      rsId,
-      length
-    )
-
-  }
-}
-
