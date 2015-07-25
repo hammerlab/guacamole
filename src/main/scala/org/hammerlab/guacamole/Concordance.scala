@@ -18,16 +18,14 @@
 
 package org.hammerlab.guacamole
 
-import org.apache.spark.SparkContext
 import java.util.EnumSet
-import org.kohsuke.args4j.Option
+
+import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
-import org.bdgenomics.adam.rdd.ADAMContext._
-import org.apache.spark.SparkContext._
-import org.bdgenomics.adam.rdd.variation.ConcordanceTable
-import org.bdgenomics.adam.rdd.variation.GenotypeConcordanceRDDFunctions
 import org.bdgenomics.adam.rich.RichVariant
-import org.bdgenomics.formats.avro.{ GenotypeType, Genotype }
+import org.bdgenomics.formats.avro.{ Genotype, GenotypeType }
+import org.bdgenomics.qc.rdd.variation.{ ConcordanceTable, GenotypeConcordanceRDDFunctions }
+import org.kohsuke.args4j.{ Option => Args4jOption }
 
 /**
  * As a convenience to users experimenting with different callers, some variant callers include functionality to compare
@@ -40,14 +38,16 @@ object Concordance {
    * Arguments that callers can include to support concordance calculations.
    */
   trait ConcordanceArgs extends Common.Arguments.Base {
-    @Option(name = "--truth", metaVar = "truth", usage = "The truth ADAM or VCF genotypes file")
+    @Args4jOption(name = "--truth", metaVar = "truth", usage = "The truth ADAM or VCF genotypes file")
     var truthGenotypesFile: String = ""
 
-    @Option(name = "--exclude-snv", usage = "Exclude SNV variants in comparison")
+    @Args4jOption(name = "--exclude-snv", usage = "Exclude SNV variants in comparison")
     var excludeSNVs: Boolean = false
-    @Option(name = "--exclude-indel", usage = "Exclude indel variants in comparison")
+
+    @Args4jOption(name = "--exclude-indel", usage = "Exclude indel variants in comparison")
     var excludeIndels: Boolean = false
-    @Option(name = "--chr", usage = "Chromosome to filter to")
+
+    @Args4jOption(name = "--chr", usage = "Chromosome to filter to")
     var chromosome: String = ""
   }
 
