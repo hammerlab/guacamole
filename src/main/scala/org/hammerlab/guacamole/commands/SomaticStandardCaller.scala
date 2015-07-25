@@ -29,7 +29,7 @@ import org.hammerlab.guacamole.filters.{ PileupFilter, SomaticAlternateReadDepth
 import org.hammerlab.guacamole.likelihood.Likelihood
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.Read
-import org.hammerlab.guacamole.variants.{ AlleleConversions, AlleleEvidence, CalledSomaticAllele }
+import org.hammerlab.guacamole.variants.{ Allele, AlleleConversions, AlleleEvidence, CalledSomaticAllele }
 import org.hammerlab.guacamole.{ Common, DelayedMessages, DistributedUtil, SparkCommand }
 import org.kohsuke.args4j.{ Option => Args4jOption }
 
@@ -219,7 +219,7 @@ object SomaticStandard {
           // non-reference alleles here and rework downstream assumptions accordingly.
           allele <- mostLikelyTumorGenotype.getNonReferenceAlleles.filter(!_.altBases.isEmpty).headOption.toSeq
           tumorEvidence = AlleleEvidence(mostLikelyTumorGenotypeLikelihood, allele, filteredTumorPileup)
-          normalEvidence = AlleleEvidence(normalVariantsTotalLikelihood, allele, filteredNormalPileup)
+          normalEvidence = AlleleEvidence(normalVariantsTotalLikelihood, Allele(allele.refBases, allele.refBases), filteredNormalPileup)
         } yield {
           CalledSomaticAllele(
             tumorPileup.sampleName,
