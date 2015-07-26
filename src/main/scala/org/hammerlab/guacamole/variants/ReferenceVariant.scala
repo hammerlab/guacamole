@@ -47,4 +47,5 @@ trait ReferenceVariant extends HasReferenceRegion {
     .setContig(Contig.newBuilder.setContigName(referenceContig).build)
     .build
 
+  val rsID: Option[Int]
 }
