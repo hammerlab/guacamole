@@ -235,11 +235,12 @@ object Evaluation {
       "\treturn pileups.apply(value);\n" +
       "};"
     def addBindings(pileups: Seq[Pileup], bindings: Bindings): Unit = {
+      val scriptPileups = pileups.map(new ScriptPileup(_))
       bindings.put(prefix + "ref", Bases.baseToString(pileups(0).referenceBase))
       bindings.put(prefix + "locus", pileups(0).locus)
       bindings.put(prefix + "contig", pileups(0).referenceName)
-      bindings.put(prefix + "pileups", pileups.map(new ScriptPileup(_)))
-      bindings.put("_by_label", labels.zip(pileups).toMap)
+      bindings.put(prefix + "pileups", scriptPileups)
+      bindings.put("_by_label", labels.zip(scriptPileups).toMap)
     }
   }
 
