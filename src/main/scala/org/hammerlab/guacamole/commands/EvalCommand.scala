@@ -118,7 +118,12 @@ object EvalCommand {
       bams.zip(bamLabels).foreach(pair => println("%20s : %s".format(pair._2, pair._1)))
       println()
       println("Expressions (%d):".format(expressions.size))
-      expressions.zip(expressionLabels).foreach(pair => println("%20s : %s".format(pair._2, pair._1)))
+      expressions.zip(expressionLabels).foreach({case (label, expression) =>
+        println("%20s : %s".format(label, expression))
+
+        // Test that it compiles, so we error out quickly if there is an error.
+        Evaluation.compilingEngine.compile(expression)
+      })
       println()
 
       val readSets = bams.map(
@@ -246,6 +251,10 @@ object Evaluation {
 
   val pileupElementCodeWithEnvironmentCache = new collection.mutable.HashMap[String, CodeWithEnvironment[PileupElement]]
   class ScriptPileup(pileup: Pileup) extends Pileup(pileup.referenceName, pileup.locus, pileup.referenceBase, pileup.elements) {
+
+    override def toString() = {
+      "<Pileup at %s:%d of %d elements>".format(referenceName, locus, elements.size)
+    }
 
     def count(code: String): Int = {
       if (code.isEmpty) {
