@@ -29,7 +29,8 @@ class StructuralVariantCallerSuite extends GuacFunSuite with Matchers {
 
   sparkTest("read filtering") {
     val reads = Seq(
-      // A few reads with an insert size of 100 to set the median and MAD
+      // A few reads with an insert size of 100 to set the median to 100 and MAD to 0.
+      // (TestUtil makes reads with a length of 12, so insert size = 97 - 9 + 12 == 100)
       // TODO: add reads which are not firstInPair
       TestUtil.makePairedMappedRead(start = 9, mateStart = 97),
       TestUtil.makePairedMappedRead(start = 10, mateStart = 98),
