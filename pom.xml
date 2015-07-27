@@ -16,7 +16,7 @@
   <name>guacamole: variant caller</name>
 
   <properties>
-    <adam.version>0.17.0</adam.version>
+    <adam.version>246a6998bd072857ae4ae589fd73a3aadd0dcba4</adam.version>
     <bdg-formats.version>0.4.0</bdg-formats.version>
     <java.version>1.8</java.version>
     <scala.version>2.10.3</scala.version>
@@ -250,7 +250,7 @@
         <enabled>false</enabled>
       </releases>
       <snapshots>
-        <enabled>true</enabled>
+        <enabled>false</enabled>
       </snapshots>
     </repository>
     <repository>

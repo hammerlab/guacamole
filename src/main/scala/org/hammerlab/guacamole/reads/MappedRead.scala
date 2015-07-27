@@ -50,7 +50,7 @@ case class MappedRead(
   assert(baseQualities.length == sequence.length,
     "Base qualities have length %d but sequence has length %d".format(baseQualities.length, sequence.length))
 
-  def mdTag = MdTag(mdTagString, start)
+  def mdTag = MdTag(mdTagString, start, cigar)
 
   override val isMapped = true
 

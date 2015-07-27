@@ -49,10 +49,6 @@ object EvalCommand {
       usage = "Include empty pileups.")
     var includeEmpty: Boolean = false
 
-    @Args4jOption(name = "--filter",
-      usage = "Filter expression.")
-    var filter: String = ""
-
     @Args4jOption(name = "--separator",
       usage = "CSV field separator")
     var separator: String = ", "
@@ -176,29 +172,6 @@ object Evaluation {
   val engine = factory.getEngineByName("JavaScript")
   val compilingEngine = engine.asInstanceOf[Compilable]
 
-  val pileupElementCodeWithEnvironmentCache = new collection.mutable.HashMap[String, CodeWithEnvironment[PileupElement]]
-  def countPileupElements(pileup: Pileup, code: String): Int = {
-    if (code.isEmpty) {
-      pileup.elements.size
-    } else {
-      val evaluator = if (pileupElementCodeWithEnvironmentCache.contains(code)) {
-        pileupElementCodeWithEnvironmentCache(code)
-      } else {
-        val evaluator = new CodeWithEnvironment[PileupElement](code, new PileupElementEnvironment())
-        pileupElementCodeWithEnvironmentCache.put(code, evaluator)
-        evaluator
-      }
-      var count = 0
-      pileup.elements.foreach(element => {
-        PartialFunction.condOpt(evaluator(element): Any) {
-          case b: Boolean => if (b) count += 1 else {}
-          case _          => throw new RuntimeException("Expected a boolean return value.")
-        }
-      })
-      count
-    }
-  }
-
   abstract class Environment[T] {
     val prologueBuilder = ArrayBuffer.newBuilder[String]
 
@@ -241,14 +214,7 @@ object Evaluation {
 
   class ReadEnvironment(prefix: String = "") extends Environment[MappedRead] {
     def addBindings(read: MappedRead, result: Bindings): Unit = {
-      result.put("baseQualities", read.baseQualities)
-      result.put("isMapped", read.isMapped)
-      result.put("isDuplicate", read.isDuplicate)
-      result.put("alignmentLikelihood", read.alignmentLikelihood)
-
-      result.put("start", read.start)
-      result.put("end", read.end)
-      result.put("alignmentQuality", read.alignmentQuality)
+      result.put("read", read)
     }
   }
 
@@ -257,44 +223,49 @@ object Evaluation {
     include(readEnvironment)
 
     def addBindings(element: PileupElement, result: Bindings): Unit = {
-      result.put("quality", element.qualityScore)
-      result.put("isDeletion", element.isDeletion)
-      result.put("isInsertion", element.isInsertion)
-      result.put("isMatch", element.isMatch)
-      result.put("isMidDeletion", element.isMidDeletion)
-      result.put("isMismatch", element.isMismatch)
-      result.put("indexWithinCigarElement", element.indexWithinCigarElement)
-      result.put("sequencedBases", Bases.basesToString(element.sequencedBases))
+      result.put("element", element)
       readEnvironment.addBindings(element.read, result)
     }
   }
 
-  class PileupEnvironment(prefix: String = "") extends Environment[Pileup] {
-    addPrologueFunction(prefix + "count")
-    def addBindings(pileup: Pileup, bindings: Bindings): Unit = {
-      bindings.put(prefix + "ref", Bases.baseToString(pileup.referenceBase))
-      bindings.put(prefix + "locus", pileup.locus)
-      bindings.put(prefix + "contig", pileup.referenceName)
-      def count(expression: String): Int = {
-        if (expression.isEmpty) {
-          pileup.elements.size
-        } else {
-          countPileupElements(pileup, expression)
-        }
-      }
-      bindings.put("_" + prefix + "count", count _)
-    }
-  }
-
   class PileupsEnvironment(labels: Seq[String], prefix: String = "") extends Environment[Seq[Pileup]] {
-    val pileupEnvironments = labels.map(label => new PileupEnvironment(prefix = "%s%s_".format(prefix, label)))
-    pileupEnvironments.foreach(include _)
+    prologueBuilder += "function pileup(value) {\n" +
+      "\tif (typeof value === 'string') return _by_label.apply(value);\n" +
+      "\telse if (typeof value === 'undefined') return pileups.apply(0);\n" +
+      "\treturn pileups.apply(value);\n" +
+      "};"
     def addBindings(pileups: Seq[Pileup], bindings: Bindings): Unit = {
       bindings.put(prefix + "ref", Bases.baseToString(pileups(0).referenceBase))
       bindings.put(prefix + "locus", pileups(0).locus)
       bindings.put(prefix + "contig", pileups(0).referenceName)
-      bindings.put(prefix + "pileups", pileups)
-      pileups.zip(pileupEnvironments).foreach(pair => pair._2.addBindings(pair._1, bindings))
+      bindings.put(prefix + "pileups", pileups.map(new ScriptPileup(_)))
+      bindings.put("_by_label", labels.zip(pileups).toMap)
+    }
+  }
+
+  val pileupElementCodeWithEnvironmentCache = new collection.mutable.HashMap[String, CodeWithEnvironment[PileupElement]]
+  class ScriptPileup(pileup: Pileup) extends Pileup(pileup.referenceName, pileup.locus, pileup.referenceBase, pileup.elements) {
+
+    def count(code: String): Int = {
+      if (code.isEmpty) {
+        pileup.elements.size
+      } else {
+        val evaluator = if (pileupElementCodeWithEnvironmentCache.contains(code)) {
+          pileupElementCodeWithEnvironmentCache(code)
+        } else {
+          val evaluator = new CodeWithEnvironment[PileupElement](code, new PileupElementEnvironment())
+          pileupElementCodeWithEnvironmentCache.put(code, evaluator)
+          evaluator
+        }
+        var count = 0
+        pileup.elements.foreach(element => {
+          PartialFunction.condOpt(evaluator(element): Any) {
+            case b: Boolean => if (b) count += 1 else {}
+            case _          => throw new RuntimeException("Expected a boolean return value.")
+          }
+        })
+        count
+      }
     }
   }
 }

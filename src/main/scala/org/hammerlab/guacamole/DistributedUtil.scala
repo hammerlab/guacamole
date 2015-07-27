@@ -178,11 +178,11 @@ object DistributedUtil extends Logging {
     var num = 1
     val regionCounts = regionRDDs.map(regions => {
       progress("Collecting region counts for RDD %d of %d.".format(num, regionRDDs.length))
-      num += 1
       val result = regions.flatMap(region =>
         broadcastMicroPartitions.value.onContig(region.referenceContig).getAll(region.start, region.end)
       ).countByValue()
-      progress("RDD %d: %d regions".format(num, result.values.sum))
+      progress("RDD %d: %,d regions".format(num, result.values.sum))
+      num += 1
       result
     })
 
