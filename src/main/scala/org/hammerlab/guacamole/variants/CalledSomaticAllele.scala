@@ -33,6 +33,7 @@ import org.bdgenomics.adam.util.PhredUtils
  * @param somaticLogOdds log odds-ratio of the variant in the tumor compared to the normal sample
  * @param tumorEvidence supporting statistics for the variant in the tumor sample
  * @param normalEvidence supporting statistics for the variant in the normal sample
+ * @param rsID   identifier for the variant if it is in dbSNP
  * @param length length of the variant
  */
 case class CalledSomaticAllele(sampleName: String,
@@ -42,6 +43,7 @@ case class CalledSomaticAllele(sampleName: String,
                                somaticLogOdds: Double,
                                tumorEvidence: AlleleEvidence,
                                normalEvidence: AlleleEvidence,
+                               rsID: Option[Int] = None,
                                length: Int = 1) extends ReferenceVariant {
   val end: Long = start + 1L
 
@@ -65,6 +67,9 @@ class CalledSomaticAlleleSerializer
     alleleEvidenceSerializer.write(kryo, output, obj.tumorEvidence)
     alleleEvidenceSerializer.write(kryo, output, obj.normalEvidence)
 
+    output.writeBoolean(obj.rsID.isDefined)
+    obj.rsID.foreach(output.writeInt(_, true))
+
     output.writeInt(obj.length, true)
 
   }
@@ -80,6 +85,13 @@ class CalledSomaticAlleleSerializer
     val tumorEvidence = alleleEvidenceSerializer.read(kryo, input, classOf[AlleleEvidence])
     val normalEvidence = alleleEvidenceSerializer.read(kryo, input, classOf[AlleleEvidence])
 
+    val hasRsID = input.readBoolean()
+    val rsId =
+      if (hasRsID)
+        Some(input.readInt(true))
+      else
+        None
+
     val length: Int = input.readInt(true)
 
     CalledSomaticAllele(
@@ -89,7 +101,9 @@ class CalledSomaticAlleleSerializer
       allele,
       somaticLogOdds,
       tumorEvidence = tumorEvidence,
-      normalEvidence = normalEvidence
+      normalEvidence = normalEvidence,
+      rsId,
+      length
     )
 
   }
