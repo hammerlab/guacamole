@@ -31,8 +31,17 @@ case class PairedMappedRead(read: MappedRead,
     Math.abs(this.read.start - this.mate.start) + this.readLength
   }
 
-  def ends: (Long, Long) = {
-    (this.minPos, this.maxPos)
+  // Returns the four alignment points, i.e. the start/stop of each read in the pair.
+  // The output is guaranteed to be sorted.
+  def startsAndStops: (Long, Long, Long, Long) = {
+    val r = this.read
+    val m = this.mate
+    val len = this.readLength
+    if (r.start < m.start) {
+      (r.start, r.start + len, m.start, m.start + len)
+    } else {
+      (m.start, m.start + len, r.start, r.start + len)
+    }
   }
 }
 
