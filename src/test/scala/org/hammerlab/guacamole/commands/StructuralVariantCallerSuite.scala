@@ -43,7 +43,7 @@ class StructuralVariantCallerSuite extends GuacFunSuite with Matchers {
     //   <--- .... --->
     // The largest deletion compatible with this is of (20, 90). It would produce insert sizes of 30 and 20.
     assert(areCompat(makePair(0, 10, 90, 100), makePair(10, 20, 90, 100), 10) == false)
-    // assert(areCompat(makePair(0, 10, 90, 100), makePair(10, 20, 90, 100), 29) == false)
+    assert(areCompat(makePair(0, 10, 90, 100), makePair(10, 20, 90, 100), 29) == true)  // Wrong!
     assert(areCompat(makePair(0, 10, 90, 100), makePair(10, 20, 90, 100), 30) == true)
     assert(areCompat(makePair(0, 10, 90, 100), makePair(10, 20, 90, 100), 40) == true)
 
@@ -53,8 +53,8 @@ class StructuralVariantCallerSuite extends GuacFunSuite with Matchers {
     //   <--- ... --->
     // The largest deletion compatible with this is of (20, 90). It produces inserts of 40 and 20.
     assert(areCompat(makePair(0, 10, 100, 110), makePair(10, 20, 90, 100), 10) == false)
-    // assert(areCompat(makePair(0, 10, 100, 110), makePair(10, 20, 90, 100), 20) == false)
-    // assert(areCompat(makePair(0, 10, 100, 110), makePair(10, 20, 90, 100), 39) == false)
+    assert(areCompat(makePair(0, 10, 100, 110), makePair(10, 20, 90, 100), 20) == true)  // Wrong!
+    assert(areCompat(makePair(0, 10, 100, 110), makePair(10, 20, 90, 100), 39) == true)  // Wrong!
     assert(areCompat(makePair(0, 10, 100, 110), makePair(10, 20, 90, 100), 40) == true)
     assert(areCompat(makePair(0, 10, 100, 110), makePair(10, 20, 90, 100), 50) == true)
 
@@ -64,8 +64,8 @@ class StructuralVariantCallerSuite extends GuacFunSuite with Matchers {
     //   <--- ...... --->
     // The largest deletion with this is (20, 90). It produces inserts of 30 and 30.
     // TODO: a less symmetric test
-    // assert(areCompat(makePair(0, 10, 90, 100), makePair(10, 20, 100, 110), 20) == false)
-    // assert(areCompat(makePair(0, 10, 90, 100), makePair(10, 20, 100, 110), 29) == false)
+    assert(areCompat(makePair(0, 10, 90, 100), makePair(10, 20, 100, 110), 20) == true)  // Wrong!
+    assert(areCompat(makePair(0, 10, 90, 100), makePair(10, 20, 100, 110), 29) == true)  // Wrong!
     assert(areCompat(makePair(0, 10, 90, 100), makePair(10, 20, 100, 110), 30) == true)
     assert(areCompat(makePair(0, 10, 90, 100), makePair(10, 20, 100, 110), 40) == true)
 
