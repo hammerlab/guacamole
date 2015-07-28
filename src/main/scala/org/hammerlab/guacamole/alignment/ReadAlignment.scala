@@ -1,0 +1,46 @@
+package org.hammerlab.guacamole.alignment
+
+import org.hammerlab.guacamole.alignment.AlignmentState.AlignmentState
+
+object AlignmentState extends Enumeration {
+  type AlignmentState = Value
+  val Match, Mismatch, Insertion, Deletion = Value
+
+  def isGapAlignment(state: AlignmentState) = {
+    state == AlignmentState.Insertion || state == AlignmentState.Deletion
+  }
+}
+
+case class ReadAlignment(alignments: Seq[AlignmentState], alignmentScore: Int) {
+  def cigarKey(alignmentOperator: AlignmentState): String = {
+    alignmentOperator match {
+      case AlignmentState.Match => "="
+      case AlignmentState.Mismatch => "X"
+      case AlignmentState.Insertion => "I"
+      case AlignmentState.Deletion => "D"
+    }
+  }
+
+  def toCigar: String = {
+    def runLengthEncode(operators: Seq[String]): String = {
+      var lastOperator = operators.head
+      var i = 1
+      val rle = new StringBuffer()
+      var currentRun = 1
+      while (i < operators.size) {
+        if (operators(i) == lastOperator) {
+          currentRun += 1
+        } else {
+          rle.append(currentRun.toString + lastOperator)
+          currentRun = 1
+        }
+        lastOperator = operators(i)
+        i += 1
+      }
+      rle.append(currentRun.toString + lastOperator)
+      rle.toString
+    }
+
+    runLengthEncode(alignments.map(cigarKey(_)))
+  }
+}
