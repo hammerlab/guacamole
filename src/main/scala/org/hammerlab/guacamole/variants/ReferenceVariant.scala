@@ -18,8 +18,8 @@
 
 package org.hammerlab.guacamole.variants
 
-import org.bdgenomics.formats.avro.{DatabaseVariantAnnotation, Contig, Variant}
-import org.hammerlab.guacamole.{Bases, HasReferenceRegion}
+import org.bdgenomics.formats.avro.{ DatabaseVariantAnnotation, Contig, Variant }
+import org.hammerlab.guacamole.{ Bases, HasReferenceRegion }
 
 /**
  * Base properties of a genomic change in a sequence sample from a reference genome
