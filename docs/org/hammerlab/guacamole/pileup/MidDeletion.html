@@ -12,7 +12,7 @@
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../index.html';
-            var hash = 'org.hammerlab.guacamole.pileup.MidDeletion$';
+            var hash = 'org.hammerlab.guacamole.pileup.MidDeletion';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -22,9 +22,9 @@
    	  </script>
     
         </head>
-        <body class="value">
+        <body class="type">
       <div id="definition">
-        <img src="../../../../lib/object_big.png" />
+        <img src="../../../../lib/class_big.png" />
         <p id="owner"><a href="../../../package.html" class="extype" name="org">org</a>.<a href="../../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="../package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole.pileup">pileup</a></p>
         <h1>MidDeletion</h1>
       </div>
@@ -32,10 +32,10 @@
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">object</span>
+        <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">MidDeletion</span><span class="result"> extends <span class="extype" name="org.hammerlab.guacamole.pileup.Alignment">Alignment</span> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">MidDeletion</span><span class="params">(<span name="referenceBase">referenceBase: <span class="extype" name="scala.Byte">Byte</span></span>)</span><span class="result"> extends <span class="extype" name="org.hammerlab.guacamole.pileup.Alignment">Alignment</span> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
@@ -78,7 +78,23 @@
 
       <div id="template">
         <div id="allMembers">
-        
+        <div id="constructors" class="members">
+              <h3>Instance Constructors</h3>
+              <ol><li name="org.hammerlab.guacamole.pileup.MidDeletion#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="&lt;init&gt;(referenceBase:Byte):org.hammerlab.guacamole.pileup.MidDeletion"></a>
+      <a id="&lt;init&gt;:MidDeletion"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">new</span>
+      </span>
+      <span class="symbol">
+        <span class="name">MidDeletion</span><span class="params">(<span name="referenceBase">referenceBase: <span class="extype" name="scala.Byte">Byte</span></span>)</span>
+      </span>
+      </h4>
+      
+    </li></ol>
+            </div>
 
         
 
@@ -196,19 +212,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scala.AnyRef#equals" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="equals(x$1:Any):Boolean"></a>
-      <a id="equals(Any):Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <a id="finalize():Unit"></a>
@@ -293,32 +296,45 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.pileup.Alignment#referenceBases" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="org.hammerlab.guacamole.pileup.MidDeletion#referenceBase" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="referenceBase:Byte"></a>
+      <a id="referenceBase:Byte"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">referenceBase</span><span class="result">: <span class="extype" name="scala.Byte">Byte</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.pileup.MidDeletion#referenceBases" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="referenceBases:Seq[Byte]"></a>
       <a id="referenceBases:Seq[Byte]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">def</span>
+        <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">referenceBases</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>
+        <span class="name">referenceBases</span><span class="result">: <span class="extype" name="scala.collection.Seq">Seq</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Alignment</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.pileup.Alignment#sequencedBases" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="sequencedBases:Seq[Byte]"></a>
-      <a id="sequencedBases:Seq[Byte]"></a>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.pileup.MidDeletion">MidDeletion</a> → Alignment</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.pileup.MidDeletion#sequencedBases" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="sequencedBases:Seq[Nothing]"></a>
+      <a id="sequencedBases:Seq[Nothing]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">def</span>
+        <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">sequencedBases</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>
+        <span class="name">sequencedBases</span><span class="result">: <span class="extype" name="scala.collection.Seq">Seq</span>[<span class="extype" name="scala.Nothing">Nothing</span>]</span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Alignment</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.pileup.MidDeletion">MidDeletion</a> → Alignment</dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
