@@ -11,16 +11,32 @@ object AlignmentState extends Enumeration {
   }
 }
 
-case class ReadAlignment(alignments: Seq[AlignmentState], alignmentScore: Int) {
-  def cigarKey(alignmentOperator: AlignmentState): String = {
+/**
+ * ReadAlignment stores a sequence of states describing the alignment of a reads to a reference
+ * @param alignments Sequence of alignments
+ * @param alignmentScore Score of the alignment
+ */
+case class ReadAlignment(alignments: Seq[AlignmentState],
+                         alignmentScore: Int) {
+
+  /**
+   * Match an AlignmentState to a CIGAR operator
+   * @param alignmentOperator  An alignment state
+   * @return CIGAR operator corresponding to alignment state
+   */
+  private def cigarKey(alignmentOperator: AlignmentState): String = {
     alignmentOperator match {
-      case AlignmentState.Match => "="
-      case AlignmentState.Mismatch => "X"
+      case AlignmentState.Match     => "="
+      case AlignmentState.Mismatch  => "X"
       case AlignmentState.Insertion => "I"
-      case AlignmentState.Deletion => "D"
+      case AlignmentState.Deletion  => "D"
     }
   }
 
+  /**
+   * Convert a ReadAlignment to a CIGAR string
+   * @return CIGAR String
+   */
   def toCigar: String = {
     def runLengthEncode(operators: Seq[String]): String = {
       var lastOperator = operators.head
