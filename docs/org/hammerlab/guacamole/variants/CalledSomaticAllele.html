@@ -35,12 +35,12 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">CalledSomaticAllele</span><span class="params">(<span name="sampleName">sampleName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="referenceContig">referenceContig: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="start">start: <span class="extype" name="scala.Long">Long</span></span>, <span name="allele">allele: <a href="Allele.html" class="extype" name="org.hammerlab.guacamole.variants.Allele">Allele</a></span>, <span name="somaticLogOdds">somaticLogOdds: <span class="extype" name="scala.Double">Double</span></span>, <span name="tumorEvidence">tumorEvidence: <a href="AlleleEvidence.html" class="extype" name="org.hammerlab.guacamole.variants.AlleleEvidence">AlleleEvidence</a></span>, <span name="normalEvidence">normalEvidence: <a href="AlleleEvidence.html" class="extype" name="org.hammerlab.guacamole.variants.AlleleEvidence">AlleleEvidence</a></span>, <span name="length">length: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">1</span></span>)</span><span class="result"> extends <a href="ReferenceVariant.html" class="extype" name="org.hammerlab.guacamole.variants.ReferenceVariant">ReferenceVariant</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">CalledSomaticAllele</span><span class="params">(<span name="sampleName">sampleName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="referenceContig">referenceContig: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="start">start: <span class="extype" name="scala.Long">Long</span></span>, <span name="allele">allele: <a href="Allele.html" class="extype" name="org.hammerlab.guacamole.variants.Allele">Allele</a></span>, <span name="somaticLogOdds">somaticLogOdds: <span class="extype" name="scala.Double">Double</span></span>, <span name="tumorEvidence">tumorEvidence: <a href="AlleleEvidence.html" class="extype" name="org.hammerlab.guacamole.variants.AlleleEvidence">AlleleEvidence</a></span>, <span name="normalEvidence">normalEvidence: <a href="AlleleEvidence.html" class="extype" name="org.hammerlab.guacamole.variants.AlleleEvidence">AlleleEvidence</a></span>, <span name="rsID">rsID: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>] = <span class="symbol">scala.None</span></span>, <span name="length">length: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">1</span></span>)</span><span class="result"> extends <a href="ReferenceVariant.html" class="extype" name="org.hammerlab.guacamole.variants.ReferenceVariant">ReferenceVariant</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>A variant that exists in a tumor sample, but not in the normal sample; includes supporting read statistics from both samples
-</p></div><dl class="paramcmts block"><dt class="param">sampleName</dt><dd class="cmt"><p>sample the variant was called on</p></dd><dt class="param">referenceContig</dt><dd class="cmt"><p>chromosome or genome contig of the variant</p></dd><dt class="param">start</dt><dd class="cmt"><p>start position of the variant (0-based)</p></dd><dt class="param">allele</dt><dd class="cmt"><p>reference and sequence bases of this variant</p></dd><dt class="param">somaticLogOdds</dt><dd class="cmt"><p>log odds-ratio of the variant in the tumor compared to the normal sample</p></dd><dt class="param">tumorEvidence</dt><dd class="cmt"><p>supporting statistics for the variant in the tumor sample</p></dd><dt class="param">normalEvidence</dt><dd class="cmt"><p>supporting statistics for the variant in the normal sample</p></dd><dt class="param">length</dt><dd class="cmt"><p>length of the variant
+</p></div><dl class="paramcmts block"><dt class="param">sampleName</dt><dd class="cmt"><p>sample the variant was called on</p></dd><dt class="param">referenceContig</dt><dd class="cmt"><p>chromosome or genome contig of the variant</p></dd><dt class="param">start</dt><dd class="cmt"><p>start position of the variant (0-based)</p></dd><dt class="param">allele</dt><dd class="cmt"><p>reference and sequence bases of this variant</p></dd><dt class="param">somaticLogOdds</dt><dd class="cmt"><p>log odds-ratio of the variant in the tumor compared to the normal sample</p></dd><dt class="param">tumorEvidence</dt><dd class="cmt"><p>supporting statistics for the variant in the tumor sample</p></dd><dt class="param">normalEvidence</dt><dd class="cmt"><p>supporting statistics for the variant in the normal sample</p></dd><dt class="param">rsID</dt><dd class="cmt"><p>identifier for the variant if it is in dbSNP</p></dd><dt class="param">length</dt><dd class="cmt"><p>length of the variant
 </p></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <a href="ReferenceVariant.html" class="extype" name="org.hammerlab.guacamole.variants.ReferenceVariant">ReferenceVariant</a>, <a href="../HasReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.HasReferenceRegion">HasReferenceRegion</a>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
@@ -82,7 +82,7 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="org.hammerlab.guacamole.variants.CalledSomaticAllele#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="&lt;init&gt;(sampleName:String,referenceContig:String,start:Long,allele:org.hammerlab.guacamole.variants.Allele,somaticLogOdds:Double,tumorEvidence:org.hammerlab.guacamole.variants.AlleleEvidence,normalEvidence:org.hammerlab.guacamole.variants.AlleleEvidence,length:Int):org.hammerlab.guacamole.variants.CalledSomaticAllele"></a>
+      <a id="&lt;init&gt;(sampleName:String,referenceContig:String,start:Long,allele:org.hammerlab.guacamole.variants.Allele,somaticLogOdds:Double,tumorEvidence:org.hammerlab.guacamole.variants.AlleleEvidence,normalEvidence:org.hammerlab.guacamole.variants.AlleleEvidence,rsID:Option[Int],length:Int):org.hammerlab.guacamole.variants.CalledSomaticAllele"></a>
       <a id="&lt;init&gt;:CalledSomaticAllele"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -90,10 +90,10 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">CalledSomaticAllele</span><span class="params">(<span name="sampleName">sampleName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="referenceContig">referenceContig: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="start">start: <span class="extype" name="scala.Long">Long</span></span>, <span name="allele">allele: <a href="Allele.html" class="extype" name="org.hammerlab.guacamole.variants.Allele">Allele</a></span>, <span name="somaticLogOdds">somaticLogOdds: <span class="extype" name="scala.Double">Double</span></span>, <span name="tumorEvidence">tumorEvidence: <a href="AlleleEvidence.html" class="extype" name="org.hammerlab.guacamole.variants.AlleleEvidence">AlleleEvidence</a></span>, <span name="normalEvidence">normalEvidence: <a href="AlleleEvidence.html" class="extype" name="org.hammerlab.guacamole.variants.AlleleEvidence">AlleleEvidence</a></span>, <span name="length">length: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">1</span></span>)</span>
+        <span class="name">CalledSomaticAllele</span><span class="params">(<span name="sampleName">sampleName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="referenceContig">referenceContig: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="start">start: <span class="extype" name="scala.Long">Long</span></span>, <span name="allele">allele: <a href="Allele.html" class="extype" name="org.hammerlab.guacamole.variants.Allele">Allele</a></span>, <span name="somaticLogOdds">somaticLogOdds: <span class="extype" name="scala.Double">Double</span></span>, <span name="tumorEvidence">tumorEvidence: <a href="AlleleEvidence.html" class="extype" name="org.hammerlab.guacamole.variants.AlleleEvidence">AlleleEvidence</a></span>, <span name="normalEvidence">normalEvidence: <a href="AlleleEvidence.html" class="extype" name="org.hammerlab.guacamole.variants.AlleleEvidence">AlleleEvidence</a></span>, <span name="rsID">rsID: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>] = <span class="symbol">scala.None</span></span>, <span name="length">length: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">1</span></span>)</span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">sampleName</dt><dd class="cmt"><p>sample the variant was called on</p></dd><dt class="param">referenceContig</dt><dd class="cmt"><p>chromosome or genome contig of the variant</p></dd><dt class="param">start</dt><dd class="cmt"><p>start position of the variant (0-based)</p></dd><dt class="param">allele</dt><dd class="cmt"><p>reference and sequence bases of this variant</p></dd><dt class="param">somaticLogOdds</dt><dd class="cmt"><p>log odds-ratio of the variant in the tumor compared to the normal sample</p></dd><dt class="param">tumorEvidence</dt><dd class="cmt"><p>supporting statistics for the variant in the tumor sample</p></dd><dt class="param">normalEvidence</dt><dd class="cmt"><p>supporting statistics for the variant in the normal sample</p></dd><dt class="param">length</dt><dd class="cmt"><p>length of the variant
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">sampleName</dt><dd class="cmt"><p>sample the variant was called on</p></dd><dt class="param">referenceContig</dt><dd class="cmt"><p>chromosome or genome contig of the variant</p></dd><dt class="param">start</dt><dd class="cmt"><p>start position of the variant (0-based)</p></dd><dt class="param">allele</dt><dd class="cmt"><p>reference and sequence bases of this variant</p></dd><dt class="param">somaticLogOdds</dt><dd class="cmt"><p>log odds-ratio of the variant in the tumor compared to the normal sample</p></dd><dt class="param">tumorEvidence</dt><dd class="cmt"><p>supporting statistics for the variant in the tumor sample</p></dd><dt class="param">normalEvidence</dt><dd class="cmt"><p>supporting statistics for the variant in the normal sample</p></dd><dt class="param">rsID</dt><dd class="cmt"><p>identifier for the variant if it is in dbSNP</p></dd><dt class="param">length</dt><dd class="cmt"><p>length of the variant
 </p></dd></dl></div>
     </li></ol>
             </div>
@@ -182,6 +182,19 @@
       </span>
       </h4>
       <p class="shortcomment cmt">Conversion to ADAMVariant</p><div class="fullcomment"><div class="comment cmt"><p>Conversion to ADAMVariant</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ReferenceVariant.html" class="extype" name="org.hammerlab.guacamole.variants.ReferenceVariant">ReferenceVariant</a></dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.variants.ReferenceVariant#adamVariantDatabase" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="adamVariantDatabase:org.bdgenomics.formats.avro.DatabaseVariantAnnotation"></a>
+      <a id="adamVariantDatabase:DatabaseVariantAnnotation"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">adamVariantDatabase</span><span class="result">: <span class="extype" name="org.bdgenomics.formats.avro.DatabaseVariantAnnotation">DatabaseVariantAnnotation</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ReferenceVariant.html" class="extype" name="org.hammerlab.guacamole.variants.ReferenceVariant">ReferenceVariant</a></dd></dl></div>
     </li><li name="org.hammerlab.guacamole.variants.CalledSomaticAllele#allele" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="allele:org.hammerlab.guacamole.variants.Allele"></a>
       <a id="allele:Allele"></a>
@@ -435,6 +448,19 @@ included any of these three positions: locus - 1, locus, and locus + 1.
       </span>
       </h4>
       <p class="shortcomment cmt">chromosome or genome contig of the variant</p><div class="fullcomment"><div class="comment cmt"><p>chromosome or genome contig of the variant</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.variants.CalledSomaticAllele">CalledSomaticAllele</a> → <a href="ReferenceVariant.html" class="extype" name="org.hammerlab.guacamole.variants.ReferenceVariant">ReferenceVariant</a> → <a href="../HasReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.HasReferenceRegion">HasReferenceRegion</a></dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.variants.CalledSomaticAllele#rsID" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="rsID:Option[Int]"></a>
+      <a id="rsID:Option[Int]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">rsID</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">identifier for the variant if it is in dbSNP</p><div class="fullcomment"><div class="comment cmt"><p>identifier for the variant if it is in dbSNP</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.variants.CalledSomaticAllele">CalledSomaticAllele</a> → <a href="ReferenceVariant.html" class="extype" name="org.hammerlab.guacamole.variants.ReferenceVariant">ReferenceVariant</a></dd></dl></div>
     </li><li name="org.hammerlab.guacamole.variants.CalledSomaticAllele#sampleName" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="sampleName:String"></a>
       <a id="sampleName:String"></a>
