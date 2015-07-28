@@ -1,5 +1,7 @@
 package org.hammerlab.guacamole.commands
 
+import java.io.{ BufferedWriter, FileWriter }
+
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics
 import org.apache.spark.SparkContext
 import org.apache.spark.mllib.clustering.{ GaussianMixture, GaussianMixtureModel }
@@ -40,9 +42,13 @@ object VAFHistogram {
 
   protected class Arguments extends DistributedUtil.Arguments {
 
-    @Args4jOption(name = "--out", required = false,
-      usage = "Path to save the variant allele frequency histogram. (Print to screen if not provided)")
+    @Args4jOption(name = "--out", required = false, forbids = Array("--local-out"),
+      usage = "HDFS file path to save the variant allele frequency histogram")
     var output: String = ""
+
+    @Args4jOption(name = "--local-out", required = false, forbids = Array("--out"),
+      usage = "Local file path to save the variant allele frequency histogram")
+    var localOutputPath: String = ""
 
     @Args4jOption(name = "--bins", required = false,
       usage = "Number of bins for the variant allele frequency histogram (Default: 20)")
@@ -56,14 +62,18 @@ object VAFHistogram {
       usage = "Number of clusters for the Gaussian mixture model (Default: 3)")
     var numClusters: Int = 3
 
-    @Args4jOption(name = "--samplePercent", usage = "Percent of variant to use for the calculations (Default: 25)")
-    var samplePercent: Int = 25
-
-    @Opt(name = "--min-read-depth", usage = "Minimum read depth to include variant allele frequency")
+    @Args4jOption(name = "--min-read-depth", usage = "Minimum read depth to include variant allele frequency")
     var minReadDepth: Int = 0
 
-    @Opt(name = "--min-vaf", usage = "Minimum variant allele frequency to include")
+    @Args4jOption(name = "--min-vaf", usage = "Minimum variant allele frequency to include")
     var minVAF: Int = 0
+
+    @Args4jOption(name = "--print-stats", usage = "Print descriptive statistics on variant allele frequncy distribution")
+    var printStats: Boolean = false
+
+    @Args4jOption(name = "--sample-percent", depends = Array("--print-stats"),
+      usage = "Percent of variant to use for the calculations (Default: 25)")
+    var samplePercent: Int = 25
 
     @Argument(required = true, multiValued = true,
       usage = "BAMs")
@@ -106,7 +116,8 @@ object VAFHistogram {
           lociPartitions,
           samplePercent,
           minReadDepth,
-          minVariantAlleleFrequency
+          minVariantAlleleFrequency,
+          printStats = args.printStats
         )
       )
 
@@ -114,20 +125,36 @@ object VAFHistogram {
       val variantAlleleHistograms =
         variantLoci.map(variantLoci => generateVAFHistogram(variantLoci, bins))
 
-      val sampleNames = readSets.map(_.mappedReads.take(1)(0).sampleName)
+      val sampleAndFileNames = args.bams.zip(readSets.map(_.mappedReads.take(1)(0).sampleName))
       val binSize = 100 / bins
 
       def histogramToString(kv: (Int, Long)): String = {
-        s"${kv._1}, ${math.min(kv._1 + binSize - 1, 100)}, ${kv._2}"
+        s"${kv._1}, ${math.min(kv._1 + binSize, 100)}, ${kv._2}"
       }
 
-      if (args.output != "") {
-        // Parallelize histogram and save on HDFS
-        sc.parallelize(sampleNames.zip(variantAlleleHistograms).flatMap(kv => {
-          val sampleName = kv._1
+      val histogramOutput =
+        sampleAndFileNames.zip(variantAlleleHistograms).flatMap(kv => {
+          val fileName = kv._1._1
+          val sampleName = kv._1._2
           val histogram = kv._2
-          histogram.toSeq.sortBy(_._1).map(kv => s"$sampleName, ${histogramToString(kv)}").toSeq
-        }))
+          histogram.toSeq
+            .sortBy(_._1)
+            .map(kv => s"$fileName, $sampleName, ${histogramToString(kv)}").toSeq
+        })
+
+      if (args.localOutputPath != "") {
+        val writer = new BufferedWriter(new FileWriter(args.localOutputPath))
+        writer.write("Filename, SampleName, BinStart, BinEnd, Size")
+        writer.newLine()
+        histogramOutput.foreach(line => {
+          writer.write(line)
+          writer.newLine()
+        })
+        writer.flush()
+        writer.close()
+      } else if (args.output != "") {
+        // Parallelize histogram and save on HDFS
+        sc.parallelize(histogramOutput).saveAsTextFile(args.output)
       } else {
         // Print histograms to standard out
         variantAlleleHistograms.foreach(histogram =>
@@ -141,7 +168,6 @@ object VAFHistogram {
       }
 
     }
-
   }
 
   /**
@@ -151,6 +177,7 @@ object VAFHistogram {
    * @return Map of rounded variant allele frequency to number of loci with that value
    */
   def generateVAFHistogram(variantAlleleFrequencies: RDD[VariantLocus], bins: Int): Map[Int, Long] = {
+    assume(bins <= 100 && bins >= 1, "Bins should be between 1 and 100")
 
     def roundToBin(variantAlleleFrequency: Float) = {
       val variantPercent = (variantAlleleFrequency * 100).toInt
@@ -166,13 +193,15 @@ object VAFHistogram {
    * @param samplePercent Percent of non-reference loci to use for descriptive statistics
    * @param minReadDepth Minimum read depth before including variant allele frequency
    * @param minVariantAlleleFrequency Minimum variant allele frequency to include
+   * @param printStats Print descriptive statistics for the variant allele frequency distribution
    * @return RDD of VariantLocus, which contain the locus and non-zero variant allele frequency
    */
   def variantLociFromReads(reads: RDD[MappedRead],
                            lociPartitions: LociMap[Long],
                            samplePercent: Int = 100,
                            minReadDepth: Int = 0,
-                           minVariantAlleleFrequency: Int = 0): RDD[VariantLocus] = {
+                           minVariantAlleleFrequency: Int = 0,
+                           printStats: Boolean = false): RDD[VariantLocus] = {
     val sampleName = reads.take(1)(0).sampleName
     val variantLoci = DistributedUtil.pileupFlatMap[VariantLocus](
       reads,
@@ -183,33 +212,35 @@ object VAFHistogram {
         .filter(_.variantAlleleFrequency >= (minVariantAlleleFrequency / 100.0))
         .iterator
     )
-    variantLoci.persist(StorageLevel.MEMORY_ONLY)
+    if (printStats) {
+      variantLoci.persist(StorageLevel.MEMORY_ONLY)
 
-    val numVariantLoci = variantLoci.count
-    Common.progress("%d non-zero variant loci in sample %s".format(numVariantLoci, sampleName))
+      val numVariantLoci = variantLoci.count
+      Common.progress("%d non-zero variant loci in sample %s".format(numVariantLoci, sampleName))
 
-    // Sample variant loci to compute descriptive statistics
-    val sampledVAFs =
-      if (samplePercent < 100)
-        variantLoci
-          .sample(withReplacement = false, fraction = samplePercent / 100.0)
-          .collect()
-      else
-        variantLoci.collect()
+      // Sample variant loci to compute descriptive statistics
+      val sampledVAFs =
+        if (samplePercent < 100)
+          variantLoci
+            .sample(withReplacement = false, fraction = samplePercent / 100.0)
+            .collect()
+        else
+          variantLoci.collect()
 
-    val stats = new DescriptiveStatistics()
-    sampledVAFs.foreach(v => stats.addValue(v.variantAlleleFrequency))
+      val stats = new DescriptiveStatistics()
+      sampledVAFs.foreach(v => stats.addValue(v.variantAlleleFrequency))
 
-    // Print out descriptive statistics for the variant allele frequency distribution
-    Common.progress("Variant loci stats for %s (min: %f, max: %f, median: %f, mean: %f, 25Pct: %f, 75Pct: %f)".format(
-      sampleName,
-      stats.getMin,
-      stats.getMax,
-      stats.getPercentile(50),
-      stats.getMean,
-      stats.getPercentile(25),
-      stats.getPercentile(75)
-    ))
+      // Print out descriptive statistics for the variant allele frequency distribution
+      Common.progress("Variant loci stats for %s (min: %f, max: %f, median: %f, mean: %f, 25Pct: %f, 75Pct: %f)".format(
+        sampleName,
+        stats.getMin,
+        stats.getMax,
+        stats.getPercentile(50),
+        stats.getMean,
+        stats.getPercentile(25),
+        stats.getPercentile(75)
+      ))
+    }
 
     variantLoci
   }
