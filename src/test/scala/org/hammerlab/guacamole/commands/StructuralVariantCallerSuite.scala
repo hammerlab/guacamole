@@ -29,14 +29,14 @@ class StructuralVariantCallerSuite extends GuacFunSuite with Matchers {
 
   sparkTest("read filtering") {
     val reads = Seq(
-      // A few reads with an insert size of 100 to set the median to 100 and MAD to 0.
+      // A few reads with an insert size near 100 to set the median to 100 and MAD to 1.
       // (TestUtil makes reads with a length of 12, so insert size = 97 - 9 + 12 == 100)
       // TODO: add reads which are not firstInPair
-      TestUtil.makePairedMappedRead(start = 9, mateStart = 97),
-      TestUtil.makePairedMappedRead(start = 10, mateStart = 98),
-      TestUtil.makePairedMappedRead(start = 11, mateStart = 99),
-      TestUtil.makePairedMappedRead(start = 12, mateStart = 100),
-      TestUtil.makePairedMappedRead(start = 13, mateStart = 101),
+      TestUtil.makePairedMappedRead(start = 9, mateStart = 97), // insert size 100
+      TestUtil.makePairedMappedRead(start = 10, mateStart = 97), // 99
+      TestUtil.makePairedMappedRead(start = 11, mateStart = 98), // 99
+      TestUtil.makePairedMappedRead(start = 12, mateStart = 101), // 101
+      TestUtil.makePairedMappedRead(start = 13, mateStart = 101), // 100
 
       // An inverted read pair
       TestUtil.makePairedMappedRead(start = 100, mateStart = 150, isPositiveStrand = true, isMatePositiveStrand = true),
@@ -52,9 +52,9 @@ class StructuralVariantCallerSuite extends GuacFunSuite with Matchers {
     val result = StructuralVariant.Caller.getExceptionalReads(sc.parallelize(reads))
     // It should drop the inverted read pair & the pair with a very large insert
     assert(result.readsInRange.count == 7)
-    assert(result.insertSizes.collect() === Seq(100, 100, 100, 100, 100, 300, 300))
-    assert(result.insertStats == MedianStats(100, 0))
-    assert(result.maxNormalInsertSize == 100)
+    assert(result.insertSizes.collect() === Seq(100, 99, 99, 101, 100, 300, 300))
+    assert(result.insertStats == MedianStats(100, 1))
+    assert(result.maxNormalInsertSize == 105)
     assert(result.exceptionalReads.collect().map(_.read.start) === Seq(1000, 1001))
   }
 
