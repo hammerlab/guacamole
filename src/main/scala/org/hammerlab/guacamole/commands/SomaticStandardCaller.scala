@@ -28,7 +28,6 @@ import org.hammerlab.guacamole.likelihood.Likelihood
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.Read
 import org.hammerlab.guacamole.variants.{ AlleleConversions, AlleleEvidence, CalledSomaticAllele }
-import org.hammerlab.guacamole.windowing.SlidingWindow
 import org.hammerlab.guacamole.{ Common, DelayedMessages, DistributedUtil, SparkCommand }
 import org.kohsuke.args4j.{ Option => Args4jOption }
 
@@ -180,13 +179,14 @@ object SomaticStandard {
       lazy val normalVariantsTotalLikelihood = normalVariantGenotypes.map(_._2).sum
       lazy val somaticOdds = mostLikelyTumorGenotypeLikelihood / normalVariantsTotalLikelihood
 
-      if (mostLikelyTumorGenotype.hasVariantAllele && somaticOdds * 100 >= oddsThreshold) {
+      if (mostLikelyTumorGenotype.hasVariantAllele
+        && somaticOdds * 100 >= oddsThreshold) {
         for {
           // NOTE(ryan): currently only look at the first non-ref allele in the most likely tumor genotype.
           // removeCorrelatedGenotypes depends on there only being one variant per locus.
           // TODO(ryan): if we want to handle the possibility of two non-reference alleles at a locus, iterate over all
           // non-reference alleles here and rework downstream assumptions accordingly.
-          allele <- mostLikelyTumorGenotype.getNonReferenceAlleles.headOption.toSeq
+          allele <- mostLikelyTumorGenotype.getNonReferenceAlleles.filter(!_.altBases.isEmpty).headOption.toSeq
           tumorEvidence = AlleleEvidence(mostLikelyTumorGenotypeLikelihood, allele, filteredTumorPileup)
           normalEvidence = AlleleEvidence(normalVariantsTotalLikelihood, allele, filteredNormalPileup)
         } yield {

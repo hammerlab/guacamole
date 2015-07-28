@@ -114,7 +114,7 @@ case class PileupElement(
         Deletion(deletedBases, anchorBaseSequenceQuality)
       case (CigarOperator.D, _) =>
         // TODO(ryan): can a cigar begin with a 'D' operator?
-        MidDeletion
+        MidDeletion(read.referenceBases(referenceStringIdx))
       case (op, Some(CigarOperator.D)) =>
         // TODO(ryan): are there sane cases where a 'D' is not preceded by an 'M'?
         throw new AssertionError(
@@ -139,7 +139,7 @@ case class PileupElement(
    */
   lazy val isInsertion = alignment match { case Insertion(_, _) => true; case _ => false }
   lazy val isDeletion = alignment match { case Deletion(_, _) => true; case _ => false }
-  lazy val isMidDeletion = alignment match { case MidDeletion => true; case _ => false }
+  lazy val isMidDeletion = alignment match { case MidDeletion(_) => true; case _ => false }
   lazy val isMismatch = alignment match { case Mismatch(_, _, _) => true; case _ => false }
   lazy val isMatch = alignment match { case Match(_, _) => true; case _ => false }
 
@@ -164,10 +164,10 @@ case class PileupElement(
    * For deletions this is the mapping quality as there are no base quality scores available.
    */
   lazy val qualityScore: Int = alignment match {
-    case Clipped | MidDeletion  => read.alignmentQuality
-    case Deletion(_, qs)        => qs
-    case MatchOrMisMatch(_, qs) => qs
-    case Insertion(_, qss)      => qss.min
+    case Clipped | MidDeletion(_) => read.alignmentQuality
+    case Deletion(_, qs)          => qs
+    case MatchOrMisMatch(_, qs)   => qs
+    case Insertion(_, qss)        => qss.min
   }
 
   /**

@@ -86,6 +86,10 @@ object Deletion {
 /**
  * Signifies that at a particular locus, a read has bases deleted.
  */
-case object MidDeletion extends Alignment
+case class MidDeletion(referenceBase: Byte) extends Alignment {
+  override val referenceBases = Seq(referenceBase)
+  override val sequencedBases = Seq.empty
+}
+
 case object Clipped extends Alignment
 
