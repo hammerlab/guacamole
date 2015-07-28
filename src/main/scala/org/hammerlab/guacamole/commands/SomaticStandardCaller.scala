@@ -20,6 +20,8 @@ package org.hammerlab.guacamole.commands
 
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
+import org.bdgenomics.adam.rdd.ADAMContext
+import org.bdgenomics.formats.avro.DatabaseVariantAnnotation
 import org.hammerlab.guacamole.Common.Arguments.SomaticCallerArgs
 import org.hammerlab.guacamole.filters.PileupFilter.PileupFilterArguments
 import org.hammerlab.guacamole.filters.SomaticGenotypeFilter.SomaticGenotypeFilterArguments
@@ -47,6 +49,9 @@ object SomaticStandard {
 
     @Args4jOption(name = "--odds", usage = "Minimum log odds threshold for possible variant candidates")
     var oddsThreshold: Int = 20
+
+    @Args4jOption(name = "--dbsnp-vcf", required = false, usage = "VCF file to identify DBSNP variants")
+    var dbSnpVcf: String = ""
 
   }
 
@@ -111,6 +116,28 @@ object SomaticStandard {
           potentialGenotypes,
           args.minTumorAlternateReadDepth
         )
+
+      if (args.dbSnpVcf != "") {
+        val adamContext = new ADAMContext(sc)
+        val dbSnpVariants = adamContext.loadVariantAnnotations(args.dbSnpVcf)
+        potentialGenotypes
+          .keyBy(_.adamVariant)
+          .leftOuterJoin(dbSnpVariants.keyBy(_.variant))
+          .map(_._2).map({
+            case (calledAllele: CalledSomaticAllele, dbSnpVariant: Option[DatabaseVariantAnnotation]) =>
+              CalledSomaticAllele(
+                sampleName = calledAllele.sampleName,
+                referenceContig = calledAllele.referenceContig,
+                start = calledAllele.start,
+                allele = calledAllele.allele,
+                somaticLogOdds = calledAllele.somaticLogOdds,
+                tumorEvidence = calledAllele.tumorEvidence,
+                normalEvidence = calledAllele.normalEvidence,
+                rsID = dbSnpVariant.map(_.getDbSnpId)
+              )
+          }
+          )
+      }
 
       val filteredGenotypes: RDD[CalledSomaticAllele] = SomaticGenotypeFilter(potentialGenotypes, args)
       Common.progress("Computed %,d genotypes after basic filtering".format(filteredGenotypes.count))

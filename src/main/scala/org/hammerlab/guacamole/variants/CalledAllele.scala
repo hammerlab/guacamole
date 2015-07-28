@@ -37,6 +37,7 @@ case class CalledAllele(sampleName: String,
                         start: Long,
                         allele: Allele,
                         evidence: AlleleEvidence,
+                        rsID: Option[Int] = None,
                         length: Int = 1) extends ReferenceVariant {
   val end: Long = start + 1L
 
@@ -53,6 +54,9 @@ class CalledAlleleSerializer
     output.writeLong(obj.start, true)
     alleleSerializer.write(kryo, output, obj.allele)
     alleleEvidenceSerializer.write(kryo, output, obj.evidence)
+
+    output.writeBoolean(obj.rsID.isDefined)
+    obj.rsID.foreach(output.writeInt(_, true))
     output.writeInt(obj.length, true)
   }
 
@@ -63,6 +67,12 @@ class CalledAlleleSerializer
     val start: Long = input.readLong(true)
     val allele = alleleSerializer.read(kryo, input, classOf[Allele])
     val evidence = alleleEvidenceSerializer.read(kryo, input, classOf[AlleleEvidence])
+    val hasRsID = input.readBoolean()
+    val rsId =
+      if (hasRsID)
+        Some(input.readInt(true))
+      else
+        None
     val length: Int = input.readInt(true)
 
     CalledAllele(
@@ -71,6 +81,7 @@ class CalledAlleleSerializer
       start,
       allele,
       evidence,
+      rsId,
       length
     )
 
