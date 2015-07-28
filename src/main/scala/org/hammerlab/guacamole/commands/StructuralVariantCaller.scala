@@ -93,11 +93,11 @@ object StructuralVariant {
     }
 
     case class ExceptionalReadsReturnType(
-      val readsInRange: RDD[PairedMappedRead],
-      val insertSizes: RDD[Int],
-      val insertStats: MedianStats,
-      val maxNormalInsertSize: Int,
-      val exceptionalReads: RDD[PairedMappedRead])
+      readsInRange: RDD[PairedMappedRead],
+      insertSizes: RDD[Int],
+      insertStats: MedianStats,
+      maxNormalInsertSize: Int,
+      exceptionalReads: RDD[PairedMappedRead])
 
     def getExceptionalReads(reads: RDD[PairedMappedRead]): ExceptionalReadsReturnType = {
       // Pare down to mate pairs which aren't highly displaced & aren't inverted or translocated.
@@ -129,9 +129,9 @@ object StructuralVariant {
     }
 
     // Given two pairs of reads, is there a deletion which would make both of them have normal insert sizes?
-    def areReadsIncompatible(read1: PairedMappedRead, read2: PairedMappedRead, maxNormalInsertSize: Long): Boolean = {
+    def areReadsCompatible(read1: PairedMappedRead, read2: PairedMappedRead, maxNormalInsertSize: Long): Boolean = {
       if (read1.minPos > read2.minPos) {
-        areReadsIncompatible(read2, read1, maxNormalInsertSize)
+        areReadsCompatible(read2, read1, maxNormalInsertSize)
       } else {
         // This matches the DELLY logic; the last five lines are copy/paste. See
         // https://github.com/tobiasrausch/delly/blob/7464cacfe1d420ac5bd7ed40a3093a80a93a6964/src/tags.h#L441-L445
@@ -141,10 +141,10 @@ object StructuralVariant {
         val (pair2Min, pair2Max) = read2.ends
         val pair2ReadLength = read2.read.sequence.length
 
-        (((pair2Min + pair2ReadLength - pair1Min) > maxNormalInsertSize) ||
-         ((pair2Max < pair1Max) && ((pair1Max + pair1ReadLength - pair2Max) > maxNormalInsertSize)) ||
-         ((pair2Max >= pair1Max) && ((pair2Max + pair2ReadLength - pair1Max) > maxNormalInsertSize)) ||
-         ((pair1Max < pair2Min) || (pair2Max < pair1Min)))
+        !(((pair2Min + pair2ReadLength - pair1Min) > maxNormalInsertSize) ||
+          ((pair2Max < pair1Max) && ((pair1Max + pair1ReadLength - pair2Max) > maxNormalInsertSize)) ||
+          ((pair2Max >= pair1Max) && ((pair2Max + pair2ReadLength - pair1Max) > maxNormalInsertSize)) ||
+          ((pair1Max < pair2Min) || (pair2Max < pair1Min)))
       }
     }
 
@@ -168,7 +168,7 @@ object StructuralVariant {
           if (Math.abs(nextStart + nextRead.readLength - start) > maxNormalInsertSize) {
             done = true
           } else {
-            if (!areReadsIncompatible(read, nextRead, maxNormalInsertSize)) {
+            if (areReadsCompatible(read, nextRead, maxNormalInsertSize)) {
               graph += (read ~ nextRead) % 1
             }
           }
