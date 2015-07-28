@@ -27,6 +27,55 @@ class StructuralVariantCallerSuite extends GuacFunSuite with Matchers {
     assert(medianStats(Array()) == MedianStats(0.0, 0.0))
   }
 
+  test("read compatibility") {
+    // Shorthand for this test
+    val areCompat = StructuralVariant.Caller.areReadsCompatible(_, _, _)
+    def makePair(start: Long, end: Long, mateStart: Long, mateEnd: Long) = {
+      assert(mateEnd - mateStart == end - start)
+      TestUtil.makePairedMappedRead(start = start, mateStart = mateStart, sequence = "A" * (end - start).toInt)
+    }
+
+    // Assertions which are commented out _should_ pass but do not because of inaccuracies in the DELLY checks.
+
+    // Scenario 1:
+    // 0 10       90 100
+    // <--- ...... --->
+    //   <--- .... --->
+    // The largest deletion compatible with this is of (20, 90). It would produce insert sizes of 30 and 20.
+    assert(areCompat(makePair(0, 10, 90, 100), makePair(10, 20, 90, 100), 10) == false)
+    // assert(areCompat(makePair(0, 10, 90, 100), makePair(10, 20, 90, 100), 29) == false)
+    assert(areCompat(makePair(0, 10, 90, 100), makePair(10, 20, 90, 100), 30) == true)
+    assert(areCompat(makePair(0, 10, 90, 100), makePair(10, 20, 90, 100), 40) == true)
+
+    // Scenario 2:
+    // 0 10       90 100
+    // <--- ........ --->
+    //   <--- ... --->
+    // The largest deletion compatible with this is of (20, 90). It produces inserts of 40 and 20.
+    assert(areCompat(makePair(0, 10, 100, 110), makePair(10, 20, 90, 100), 10) == false)
+    // assert(areCompat(makePair(0, 10, 100, 110), makePair(10, 20, 90, 100), 20) == false)
+    // assert(areCompat(makePair(0, 10, 100, 110), makePair(10, 20, 90, 100), 39) == false)
+    assert(areCompat(makePair(0, 10, 100, 110), makePair(10, 20, 90, 100), 40) == true)
+    assert(areCompat(makePair(0, 10, 100, 110), makePair(10, 20, 90, 100), 50) == true)
+
+    // Scenario 3:
+    // 0 10       90 100
+    // <--- ...... --->
+    //   <--- ...... --->
+    // The largest deletion with this is (20, 90). It produces inserts of 30 and 30.
+    // TODO: a less symmetric test
+    // assert(areCompat(makePair(0, 10, 90, 100), makePair(10, 20, 100, 110), 20) == false)
+    // assert(areCompat(makePair(0, 10, 90, 100), makePair(10, 20, 100, 110), 29) == false)
+    assert(areCompat(makePair(0, 10, 90, 100), makePair(10, 20, 100, 110), 30) == true)
+    assert(areCompat(makePair(0, 10, 90, 100), makePair(10, 20, 100, 110), 40) == true)
+
+    // Scenario 4:
+    // 0 10       90 100
+    // <--- ...... --->
+    //              <--- ...... --->
+    assert(areCompat(makePair(0, 10, 90, 100), makePair(95, 105, 195, 205), 1000) == false)
+  }
+
   sparkTest("read filtering") {
     val reads = Seq(
       // A few reads with an insert size near 100 to set the median to 100 and MAD to 1.

@@ -135,11 +135,11 @@ object StructuralVariant {
       } else {
         // This matches the DELLY logic; the last five lines are copy/paste. See
         // https://github.com/tobiasrausch/delly/blob/7464cacfe1d420ac5bd7ed40a3093a80a93a6964/src/tags.h#L441-L445
-        val (pair1Min, pair1Max) = read1.ends
+        val (pair1Min, _, pair1Max, _) = read1.startsAndStops
         val pair1ReadLength = read1.readLength
 
-        val (pair2Min, pair2Max) = read2.ends
-        val pair2ReadLength = read2.read.sequence.length
+        val (pair2Min, _, pair2Max, _) = read2.startsAndStops
+        val pair2ReadLength = read2.readLength
 
         !(((pair2Min + pair2ReadLength - pair1Min) > maxNormalInsertSize) ||
           ((pair2Max < pair1Max) && ((pair1Max + pair1ReadLength - pair2Max) > maxNormalInsertSize)) ||
