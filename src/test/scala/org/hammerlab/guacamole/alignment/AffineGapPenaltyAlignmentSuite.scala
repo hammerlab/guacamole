@@ -51,4 +51,20 @@ class AffineGapPenaltyAlignmentSuite extends FunSuite with Matchers {
     val alignment = AffineGapPenaltyAlignment.align("TCGACCCTCTTA", "TCGATCTGA")
     alignment.toCigar should be("4=3I3=1X1=")
   }
+
+  test("only mismatch long sequence") {
+    val alignment = AffineGapPenaltyAlignment
+      .align(
+        "ATTCTCAAGTTTTAAGTGGTATTCTAATTATGGCAGTAATTAACTGAATAAAGAGATTCATCATGTGCAAAAACTAATCTTGTTTACTTAAAATTGAGAGT", 
+        "ATTCTCAAGTTTTAAGTGGTTTTCTAATTATGGCAGTAATAAACTGAATAAAGAGATTCATCATGTGCAAAAACTAATCTTGTTTACTTAAAATTGAGAGT")
+    alignment.toCigar should be("20=1X19=1X60=")
+  }
+
+  test("2 mismatch with deletion sequence") {
+    val alignment = AffineGapPenaltyAlignment
+      .align(
+        "ATTCTCAAGTTTTAAGTGGTATTCTAATTATGGCAGTAATTAACTGAATAAAGAGATTCATCATGTGCAAAAACTAATCTTGTTTACTTAAAATTGAGAGT",
+        "ATTCTCAAGTTTTAAGTGGTTTTCTAATTATGGCAGTAATAAACTGAATAAAGAGATTCATCATGTGCAAAAACTAATCTTCCCGTTTACTTAAAATTGAGAGT")
+    alignment.toCigar should be("20=1X19=1X40=3D20=")
+  }
 }
