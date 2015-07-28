@@ -31,6 +31,11 @@ case class PairedMappedRead(read: MappedRead,
     Math.abs(this.read.start - this.mate.start) + this.readLength
   }
 
+  // Should be the same as inferredInsertSize
+  def insertSize: Long = {
+    this.maxPos - this.minPos
+  }
+
   // Returns the four alignment points, i.e. the start/stop of each read in the pair.
   // The output is guaranteed to be sorted.
   def startsAndStops: (Long, Long, Long, Long) = {
