@@ -43,13 +43,13 @@ abstract class Command[T <% Args4jBase: Manifest] extends Serializable with Logg
    * @param args the command line arguments, with the first one chopped off. The first argument specifies which
    *             command to run, and is therefore already consumed by Guacamole.
    */
-  def run(args: Array[String]): Unit = run(Args4j[T](args))
+  def run(args: Array[String]): Any = run(Args4j[T](args))
 
-  def run(args: T): Unit
+  def run(args: T): Any
 }
 
 abstract class SparkCommand[T <% Args4jBase: Manifest] extends Command[T] {
-  override def run(args: T): Unit = {
+  override def run(args: T): Any = {
     val sc = Common.createSparkContext(appName = Some(name))
     try {
       run(args, sc)
@@ -58,5 +58,10 @@ abstract class SparkCommand[T <% Args4jBase: Manifest] extends Command[T] {
     }
   }
 
-  def run(args: T, sc: SparkContext): Unit
+  def run(args: T, sc: SparkContext): Any
+
+  /** This method is useful for unit tests. */
+  def run(sc: SparkContext, args: String*): Any = {
+    run(Args4j[T](args.toArray), sc)
+  }
 }

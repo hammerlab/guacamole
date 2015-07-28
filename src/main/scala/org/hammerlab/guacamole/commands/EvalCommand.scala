@@ -18,20 +18,25 @@
 
 package org.hammerlab.guacamole.commands
 
+import java.io.InputStreamReader
 import javax.script.{ CompiledScript, Compilable, SimpleBindings, Bindings }
 
+import com.google.common.io.CharStreams
+import org.apache.commons.io.IOUtils
+import org.apache.hadoop.conf.Configuration
+import org.apache.hadoop.fs.{ Path, FileSystem }
 import org.apache.spark.SparkContext
+import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole.Common.Arguments.{ NoSequenceDictionary }
-import org.hammerlab.guacamole.commands.Evaluation.{ Environment, PileupsEnvironment, CodeWithEnvironment }
+import org.hammerlab.guacamole.commands.Evaluation.{ ScriptPileup }
 import org.hammerlab.guacamole.pileup.{ PileupElement, Pileup }
 import org.hammerlab.guacamole.reads.{ MappedRead, Read }
 import org.hammerlab.guacamole._
+import org.kohsuke.args4j.spi.StringArrayOptionHandler
 import org.kohsuke.args4j.{ Option => Args4jOption, Argument }
 
-import scala.collection
 import scala.collection.JavaConversions
 import scala.collection.mutable.ArrayBuffer
-import scala.collection.parallel.mutable
 
 object EvalCommand {
 
@@ -56,6 +61,15 @@ object EvalCommand {
     @Args4jOption(name = "--domain",
       usage = "Input to evaluate, either: 'reads' or 'pileups' (default)")
     var domain: String = "pileups"
+
+    @Args4jOption(name = "--include-file", usage = "Code files to include", handler = classOf[StringArrayOptionHandler])
+    var includeFiles: ArrayBuffer[String] = ArrayBuffer.empty
+
+    var includeCode = new ArrayBuffer[String]()
+    @Args4jOption(name = "--include-code",
+      usage = "Code to include")
+    def addCode(arg: String): Unit = includeCode += arg
+
   }
 
   object Caller extends SparkCommand[Arguments] {
@@ -109,22 +123,44 @@ object EvalCommand {
       (bamLabels.result, bams.result, expressionLabels.result, expressions.result)
     }
 
-    override def run(args: Arguments, sc: SparkContext): Unit = {
+    val standardInclude = CharStreams.toString(
+      new InputStreamReader(ClassLoader.getSystemClassLoader.getResourceAsStream("eval_command_preamble.js")))
+
+    def makeScript(args: Arguments) = {
+      lazy val filesystem = FileSystem.get(new Configuration())
+      val extraIncludesFromFiles = args.includeFiles.map(path => {
+        val code = IOUtils.toString(new InputStreamReader(filesystem.open(new Path(path))))
+        "// Included from: %s\n%s".format(path, code)
+      })
+      val extraIncludesFromCommandline = args.includeCode.zipWithIndex.map(pair => {
+        "// Included code block %d\n%s".format(pair._2 + 1, pair._1)
+      })
+      (Iterator(standardInclude) ++ extraIncludesFromFiles ++ extraIncludesFromCommandline).mkString("\n")
+    }
+
+    override def run(args: Arguments, sc: SparkContext): Any = {
       val (bamLabels, bams, expressionLabels, expressions) = parseFields(args.fields)
       assert(bamLabels.size == bams.size)
       assert(expressionLabels.size == expressions.size)
 
+      val script = makeScript(args)
+
       println("Read inputs (%d):".format(bams.size))
       bams.zip(bamLabels).foreach(pair => println("%20s : %s".format(pair._2, pair._1)))
       println()
+      println("Script:")
+      println(Evaluation.stringWithLineNumbers(script))
+      println()
       println("Expressions (%d):".format(expressions.size))
-      expressions.zip(expressionLabels).foreach({case (label, expression) =>
-        println("%20s : %s".format(label, expression))
-
-        // Test that it compiles, so we error out quickly if there is an error.
-        Evaluation.compilingEngine.compile(expression)
+      expressions.zip(expressionLabels).foreach({
+        case (label, expression) =>
+          println("%20s : %s".format(label, expression))
       })
       println()
+
+      // Test that our script runs and that and expressions at least compile, so we error out immediately if not.
+      Evaluation.eval(script, Evaluation.compilingEngine.compile(script), new SimpleBindings())
+      expressions.foreach(Evaluation.compilingEngine.compile _)
 
       val readSets = bams.map(
         path => ReadSet(
@@ -138,28 +174,46 @@ object EvalCommand {
       val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(args, loci, readSets.map(_.mappedReads): _*)
 
       val separator = args.separator
-      val result = DistributedUtil.pileupFlatMapMultipleRDDsWithState[String, Option[Seq[CodeWithEnvironment[Seq[Pileup]]]]](
+
+      val result = DistributedUtil.pileupFlatMapMultipleRDDsWithState[String, Option[(Seq[CompiledScript], Bindings)]](
         readSets.map(_.mappedReads),
         lociPartitions,
         !args.includeEmpty, // skip empty
         initialState = None,
         (maybeState, pileups) => {
-          val codeWithEnvironments = maybeState match {
-            case None => expressions.map(
-              expression =>
-                new CodeWithEnvironment[Seq[Pileup]](expression, new PileupsEnvironment(bamLabels)))
-            case Some(state) => state
+          val (compiledExpressions, bindings) = maybeState match {
+            case None => {
+              val newBindings = new SimpleBindings()
+              Evaluation.eval(script, Evaluation.compilingEngine.compile(script), newBindings)
+              (expressions.map(Evaluation.compilingEngine.compile _), newBindings)
+            }
+            case Some(pair) => pair
           }
-          val results = codeWithEnvironments.map(e => e(pileups))
-          if (results.exists(_ == "--skip--"))
-            (Some(codeWithEnvironments), Iterator.empty)
-          else
-            (Some(codeWithEnvironments), Iterator.single(results.mkString(separator)))
+
+          // Update bindings for the current locus.
+          val scriptPileups = pileups.map(new ScriptPileup(_))
+          bindings.put("ref", Bases.baseToString(pileups(0).referenceBase))
+          bindings.put("locus", pileups(0).locus)
+          bindings.put("contig", pileups(0).referenceName)
+          bindings.put("pileups", scriptPileups)
+          bindings.put("_by_label", bamLabels.zip(scriptPileups).toMap)
+
+          val evaluatedExpressionResults = expressions.zip(compiledExpressions).map(
+            pair => Evaluation.eval(pair._1, pair._2, bindings))
+
+          val result = if (evaluatedExpressionResults.exists(_ == null)) {
+            Iterator.empty
+          } else {
+            Iterator.apply(evaluatedExpressionResults.map(_.toString).mkString(separator))
+          }
+          (Some((compiledExpressions, bindings)), result)
         })
 
       if (args.out.nonEmpty) {
         sc.parallelize(Seq(expressionLabels.mkString(separator))).union(result).saveAsTextFile(args.out)
+        ""
       } else {
+
         println("BEGIN RESULT")
         println("*" * 60)
         println(expressionLabels.mkString(separator))
@@ -169,6 +223,9 @@ object EvalCommand {
       }
 
       DelayedMessages.default.print()
+
+      // We return the result to make unit testing easier.
+      result
     }
   }
 }
@@ -177,101 +234,52 @@ object Evaluation {
   val engine = factory.getEngineByName("JavaScript")
   val compilingEngine = engine.asInstanceOf[Compilable]
 
-  abstract class Environment[T] {
-    val prologueBuilder = ArrayBuffer.newBuilder[String]
-
-    def include[S](other: Environment[S]): Unit = {
-      prologueBuilder ++= other.prologueBuilder.result
-    }
-
-    def addPrologueFunction(name: String): Unit = {
-      prologueBuilder += "function %s(value) { return _%s.apply(value); };".format(name, name)
-    }
-    def addBindings(value: T, bindings: Bindings): Unit
-    lazy val prologue = prologueBuilder.result.mkString("\n")
-  }
-
-  case class CodeWithEnvironment[T](code: String, environment: Environment[T]) {
-    val fullCode = environment.prologue + "\nskip = '--skip--'\n" + code
-    val compiledCode = compilingEngine.compile(fullCode)
-    val cachedBindings = new SimpleBindings()
-
-    def apply(value: T): Any = {
-      environment.addBindings(value, cachedBindings)
-
-      try {
-        compiledCode.eval(cachedBindings)
-      } catch {
-        case e: javax.script.ScriptException => {
-          val codeDisplay = fullCode.split("\n").zipWithIndex.map(
-            pair => "\t%3d| %s".format(pair._2 + 1, pair._1)).mkString("\n")
-          throw new javax.script.ScriptException(e.getMessage
-            + " while evaluating:\n" + codeDisplay + "\nwith these bindings:\n\t"
-            + JavaConversions.asScalaSet(
-              cachedBindings.keySet).map(key => "%20s = %20s".format(key, cachedBindings.get(key))).mkString("\n\t"),
-            e.getFileName,
-            e.getLineNumber,
-            e.getColumnNumber)
-        }
+  def eval(code: String, compiledCode: CompiledScript, bindings: Bindings): Any = {
+    try {
+      compiledCode.eval(bindings)
+    } catch {
+      case e: javax.script.ScriptException => {
+        throw new javax.script.ScriptException(e.getMessage
+          + " while evaluating:\n" + stringWithLineNumbers(code) + "\nwith these bindings:\n\t"
+          + JavaConversions.asScalaSet(
+            bindings.keySet).map(key => "%20s = %20s".format(key, bindings.get(key))).mkString("\n\t"),
+          e.getFileName,
+          e.getLineNumber,
+          e.getColumnNumber)
       }
     }
   }
 
-  class ReadEnvironment(prefix: String = "") extends Environment[MappedRead] {
-    def addBindings(read: MappedRead, result: Bindings): Unit = {
-      result.put("read", read)
-    }
+  def stringWithLineNumbers(s: String): String = {
+    s.split("\n").zipWithIndex.map(pair => "\t%3d) %s".format(pair._2 + 1, pair._1)).mkString("\n")
   }
 
-  class PileupElementEnvironment(prefix: String = "") extends Environment[PileupElement] {
-    val readEnvironment = new ReadEnvironment(prefix = prefix)
-    include(readEnvironment)
+  val pileupCountScriptCache = new collection.mutable.HashMap[String, CompiledScript]
 
-    def addBindings(element: PileupElement, result: Bindings): Unit = {
-      result.put("element", element)
-      readEnvironment.addBindings(element.read, result)
-    }
-  }
+  class ScriptPileup(pileup: Pileup) extends Pileup(
+    pileup.referenceName, pileup.locus, pileup.referenceBase, pileup.elements) {
 
-  class PileupsEnvironment(labels: Seq[String], prefix: String = "") extends Environment[Seq[Pileup]] {
-    prologueBuilder += "function pileup(value) {\n" +
-      "\tif (typeof value === 'string') return _by_label.apply(value);\n" +
-      "\telse if (typeof value === 'undefined') return pileups.apply(0);\n" +
-      "\treturn pileups.apply(value);\n" +
-      "};"
-    def addBindings(pileups: Seq[Pileup], bindings: Bindings): Unit = {
-      val scriptPileups = pileups.map(new ScriptPileup(_))
-      bindings.put(prefix + "ref", Bases.baseToString(pileups(0).referenceBase))
-      bindings.put(prefix + "locus", pileups(0).locus)
-      bindings.put(prefix + "contig", pileups(0).referenceName)
-      bindings.put(prefix + "pileups", scriptPileups)
-      bindings.put("_by_label", labels.zip(scriptPileups).toMap)
-    }
-  }
-
-  val pileupElementCodeWithEnvironmentCache = new collection.mutable.HashMap[String, CodeWithEnvironment[PileupElement]]
-  class ScriptPileup(pileup: Pileup) extends Pileup(pileup.referenceName, pileup.locus, pileup.referenceBase, pileup.elements) {
-
-    override def toString() = {
-      "<Pileup at %s:%d of %d elements>".format(referenceName, locus, elements.size)
-    }
+    override def toString() = "<Pileup at %s:%d of %d elements>".format(referenceName, locus, elements.size)
 
     def count(code: String): Int = {
       if (code.isEmpty) {
         pileup.elements.size
       } else {
-        val evaluator = if (pileupElementCodeWithEnvironmentCache.contains(code)) {
-          pileupElementCodeWithEnvironmentCache(code)
+        val compiled = if (pileupCountScriptCache.contains(code)) {
+          pileupCountScriptCache(code)
         } else {
-          val evaluator = new CodeWithEnvironment[PileupElement](code, new PileupElementEnvironment())
-          pileupElementCodeWithEnvironmentCache.put(code, evaluator)
-          evaluator
+          val compiled = compilingEngine.compile(code)
+          pileupCountScriptCache.put(code, compiled)
+          compiled
         }
+        val bindings = new SimpleBindings()
         var count = 0
         pileup.elements.foreach(element => {
-          PartialFunction.condOpt(evaluator(element): Any) {
-            case b: Boolean => if (b) count += 1 else {}
-            case _          => throw new RuntimeException("Expected a boolean return value.")
+          bindings.put("element", element)
+          bindings.put("read", element.read)
+          PartialFunction.condOpt(compiled.eval(bindings): Any) {
+            case b: Boolean => if (b) count += 1
+            case _          => throw new RuntimeException("Non-boolean value from evaluating: %s".format(code))
           }
         })
         count
