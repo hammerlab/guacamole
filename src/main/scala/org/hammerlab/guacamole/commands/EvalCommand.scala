@@ -129,11 +129,13 @@ object EvalCommand {
     val standardIncludePaths = Seq(
       ("Preamble", "EvalCommand/preamble.js"))
 
-    val standardIncludes = standardIncludePaths.map({case (name, path) => {
+    val standardIncludes = standardIncludePaths.map({
+      case (name, path) => {
         val stream = EvalCommand.getClass.getClassLoader.getResourceAsStream(path)
         assert(stream != null, "Couldn't load: " + path)
-      (name, CharStreams.toString(new InputStreamReader(stream)))
-    }})
+        (name, CharStreams.toString(new InputStreamReader(stream)))
+      }
+    })
 
     def makeScriptFragments(args: Arguments): Seq[(String, String)] = {
       lazy val filesystem = FileSystem.get(new Configuration())
