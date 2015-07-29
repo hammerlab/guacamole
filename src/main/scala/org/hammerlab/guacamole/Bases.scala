@@ -48,6 +48,18 @@ object Bases {
     }
   }
 
+  def complement(base: Byte) = base match {
+    case A => T
+    case T => A
+    case C => G
+    case G => C
+    case _ => N
+  }
+
+  def complement(bases: Seq[Byte]): Seq[Byte] = bases.map(complement _)
+
+  def reverseComplement(bases: Seq[Byte]): Seq[Byte] = complement(bases.reverse)
+
   /** Is the given base one of the 4 canonical DNA bases? */
   def isStandardBase(base: Byte): Boolean = {
     base == Bases.A || base == Bases.C || base == Bases.T || base == Bases.G

@@ -19,9 +19,10 @@
 package org.hammerlab.guacamole.commands
 
 import java.io.InputStreamReader
-import javax.script.{ CompiledScript, Compilable, SimpleBindings, Bindings }
+import javax.script._
 
 import com.google.common.io.CharStreams
+import htsjdk.samtools.Cigar
 import org.apache.commons.io.IOUtils
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.{ Path, FileSystem }
@@ -29,8 +30,8 @@ import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole.Common.Arguments.{ NoSequenceDictionary }
 import org.hammerlab.guacamole.commands.Evaluation.{ ScriptPileup }
-import org.hammerlab.guacamole.pileup.{ PileupElement, Pileup }
-import org.hammerlab.guacamole.reads.{ MappedRead, Read }
+import org.hammerlab.guacamole.pileup.{ Pileup }
+import org.hammerlab.guacamole.reads.{PairedRead, UnmappedRead, MappedRead, Read}
 import org.hammerlab.guacamole._
 import org.kohsuke.args4j.spi.StringArrayOptionHandler
 import org.kohsuke.args4j.{ Option => Args4jOption, Argument }
@@ -59,7 +60,7 @@ object EvalCommand {
     var separator: String = ", "
 
     @Args4jOption(name = "--domain",
-      usage = "Input to evaluate, either: 'reads' or 'pileups' (default)")
+      usage = "Input to evaluate, either: 'pileups' (default) or 'reads'")
     var domain: String = "pileups"
 
     @Args4jOption(name = "--include-file", usage = "Code files to include", handler = classOf[StringArrayOptionHandler])
@@ -70,6 +71,8 @@ object EvalCommand {
       usage = "Code to include")
     def addCode(arg: String): Unit = includeCode += arg
 
+    @Args4jOption(name = "-q", usage = "Quiet: less stdout")
+    var quiet: Boolean = false
   }
 
   object Caller extends SparkCommand[Arguments] {
@@ -110,7 +113,7 @@ object EvalCommand {
             } else {
               if (parsingExpressions) {
                 expressions += field
-                expressionLabels += field
+                expressionLabels += field.replaceAll("\n", " ").substring(0, Math.min(field.length, 20))
               } else {
                 bams += field
                 bamLabels += "r%d".format(nextDefaultNum)
@@ -126,16 +129,22 @@ object EvalCommand {
     val standardInclude = CharStreams.toString(
       new InputStreamReader(ClassLoader.getSystemClassLoader.getResourceAsStream("eval_command_preamble.js")))
 
-    def makeScript(args: Arguments) = {
+    def makeScriptFragments(args: Arguments): Seq[(String, String)] = {
       lazy val filesystem = FileSystem.get(new Configuration())
       val extraIncludesFromFiles = args.includeFiles.map(path => {
         val code = IOUtils.toString(new InputStreamReader(filesystem.open(new Path(path))))
-        "// Included from: %s\n%s".format(path, code)
+        ("Code from: %s".format(path), code)
       })
       val extraIncludesFromCommandline = args.includeCode.zipWithIndex.map(pair => {
-        "// Included code block %d\n%s".format(pair._2 + 1, pair._1)
+        ("Code block %d".format(pair._2), pair._1)
       })
-      (Iterator(standardInclude) ++ extraIncludesFromFiles ++ extraIncludesFromCommandline).mkString("\n")
+      Seq(("Standard preamble", standardInclude)) ++ extraIncludesFromFiles ++ extraIncludesFromCommandline
+    }
+
+    def runScriptFragments(fragments: Seq[String], bindings: Bindings): Unit = {
+      fragments.foreach(fragment => {
+        Evaluation.eval(fragment, Evaluation.compilingEngine.compile(fragment), bindings)
+      })
     }
 
     override def run(args: Arguments, sc: SparkContext): Any = {
@@ -143,80 +152,134 @@ object EvalCommand {
       assert(bamLabels.size == bams.size)
       assert(expressionLabels.size == expressions.size)
 
-      val script = makeScript(args)
+      val namedScriptFragments = makeScriptFragments(args)
+      val scriptFragments = namedScriptFragments.map(_._2)
 
-      println("Read inputs (%d):".format(bams.size))
-      bams.zip(bamLabels).foreach(pair => println("%20s : %s".format(pair._2, pair._1)))
-      println()
-      println("Script:")
-      println(Evaluation.stringWithLineNumbers(script))
-      println()
-      println("Expressions (%d):".format(expressions.size))
-      expressions.zip(expressionLabels).foreach({
-        case (label, expression) =>
-          println("%20s : %s".format(label, expression))
-      })
-      println()
+      if (!args.quiet) {
+        println("Read inputs (%d):".format(bams.size))
+        bams.zip(bamLabels).foreach(pair => println("%20s : %s".format(pair._2, pair._1)))
+        println()
+        println("Script fragments:")
+        namedScriptFragments.foreach({
+          case (name, fragment) => {
+            println(name)
+            println(Evaluation.stringWithLineNumbers(fragment))
+            println()
+          }
+        })
+        println()
+        println("Expressions (%d):".format(expressions.size))
+        expressions.zip(expressionLabels).foreach({
+          case (label, expression) =>
+            println("%20s : %s".format(label, expression))
+        })
+        println()
+
+      }
 
       // Test that our script runs and that and expressions at least compile, so we error out immediately if not.
-      Evaluation.eval(script, Evaluation.compilingEngine.compile(script), new SimpleBindings())
+      val bindings = new SimpleBindings()
+
       expressions.foreach(Evaluation.compilingEngine.compile _)
 
-      val readSets = bams.map(
-        path => ReadSet(
-          sc, path, false, Read.InputFilters.empty, token = 0, contigLengthsFromDictionary = !args.noSequenceDictionary))
+      val readSets = bams.zipWithIndex.map({
+        case (path, index) => ReadSet(
+          sc, path, false, Read.InputFilters.empty, token = index, contigLengthsFromDictionary = !args.noSequenceDictionary)
+      })
 
       assert(readSets.forall(_.sequenceDictionary == readSets(0).sequenceDictionary),
         "Samples have different sequence dictionaries: %s."
           .format(readSets.map(_.sequenceDictionary.toString).mkString("\n")))
 
-      val loci = Common.loci(args, readSets(0))
-      val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(args, loci, readSets.map(_.mappedReads): _*)
-
       val separator = args.separator
 
-      val result = DistributedUtil.pileupFlatMapMultipleRDDsWithState[String, Option[(Seq[CompiledScript], Bindings)]](
-        readSets.map(_.mappedReads),
-        lociPartitions,
-        !args.includeEmpty, // skip empty
-        initialState = None,
-        (maybeState, pileups) => {
-          val (compiledExpressions, bindings) = maybeState match {
-            case None => {
-              val newBindings = new SimpleBindings()
-              Evaluation.eval(script, Evaluation.compilingEngine.compile(script), newBindings)
-              (expressions.map(Evaluation.compilingEngine.compile _), newBindings)
+      val result: RDD[String] = if (args.domain == "pileups") {
+        // Running over pileups.
+
+        val loci = Common.loci(args, readSets(0))
+        val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(args, loci, readSets.map(_.mappedReads): _*)
+
+        DistributedUtil.pileupFlatMapMultipleRDDsWithState[String, Option[(Seq[CompiledScript], Bindings)]](
+          readSets.map(_.mappedReads),
+          lociPartitions,
+          !args.includeEmpty, // skip empty
+          initialState = None,
+          (maybeState, pileups) => {
+            val (compiledExpressions, bindings) = maybeState match {
+              case None => {
+                val newBindings = new SimpleBindings()
+                runScriptFragments(scriptFragments, newBindings)
+                (expressions.map(Evaluation.compilingEngine.compile _), newBindings)
+              }
+              case Some(pair) => pair
             }
-            case Some(pair) => pair
-          }
 
-          // Update bindings for the current locus.
-          val scriptPileups = pileups.map(new ScriptPileup(_))
-          bindings.put("ref", Bases.baseToString(pileups(0).referenceBase))
-          bindings.put("locus", pileups(0).locus)
-          bindings.put("contig", pileups(0).referenceName)
-          bindings.put("pileups", scriptPileups)
-          bindings.put("_by_label", bamLabels.zip(scriptPileups).toMap)
+            // Update bindings for the current locus.
+            val scriptPileups = pileups.map(new ScriptPileup(_))
+            bindings.put("ref", Bases.baseToString(pileups(0).referenceBase))
+            bindings.put("locus", pileups(0).locus)
+            bindings.put("contig", pileups(0).referenceName)
+            bindings.put("_pileups", scriptPileups)
+            bindings.put("_by_label", bamLabels.zip(scriptPileups).toMap)
 
-          val evaluatedExpressionResults = expressions.zip(compiledExpressions).map(
-            pair => Evaluation.eval(pair._1, pair._2, bindings))
+            val evaluatedExpressionResults = expressions.zip(compiledExpressions).map(
+              pair => Evaluation.eval(pair._1, pair._2, bindings))
 
-          val result = if (evaluatedExpressionResults.exists(_ == null)) {
-            Iterator.empty
-          } else {
-            Iterator.apply(evaluatedExpressionResults.map(_.toString).mkString(separator))
-          }
-          (Some((compiledExpressions, bindings)), result)
+            val result = if (evaluatedExpressionResults.exists(_ == null)) {
+              Iterator.empty
+            } else {
+              Iterator.apply(evaluatedExpressionResults.map(Evaluation.toJSON(_)).mkString(separator))
+            }
+            (Some((compiledExpressions, bindings)), result)
+          })
+      } else if (args.domain == "reads") {
+        // Running over reads.
+        val union = sc.union(readSets.map(_.reads))
+        union.mapPartitions(reads => {
+          val bindings = new SimpleBindings()
+          runScriptFragments(scriptFragments, bindings)
+
+          val compiledExpressions = expressions.map(Evaluation.compilingEngine.compile _)
+
+          reads.flatMap(read => {
+            read match {
+              case r: MappedRead => bindings.put("read", r)
+              case r: UnmappedRead => bindings.put("read", r)
+              case r: PairedRead[_] if r.isMapped => bindings.put("read", r.asInstanceOf[PairedRead[MappedRead]])
+              case r: PairedRead[_] => bindings.put("read", r.asInstanceOf[PairedRead[UnmappedRead]])
+              case _ => assert(false, "Unsupported read variety")
+            }
+            bindings.put("read", read)
+            bindings.put("label", bamLabels(read.token))
+            bindings.put("path", bams(read.token))
+
+            val evaluatedExpressionResults = expressions.zip(compiledExpressions).map(
+              pair => Evaluation.eval(pair._1, pair._2, bindings))
+
+            if (evaluatedExpressionResults.exists(_ == null)) {
+              Iterator.empty
+            } else {
+              Iterator.apply(evaluatedExpressionResults.map(Evaluation.toJSON _).mkString(separator))
+            }
+          })
         })
-
-      if (args.out.nonEmpty) {
-        sc.parallelize(Seq(expressionLabels.mkString(separator))).union(result).saveAsTextFile(args.out)
-        ""
       } else {
+        throw new IllegalArgumentException("Unsupported domain: %s".format(args.domain))
+      }
 
+      if (args.out == "none") {
+        // No output.
+
+      } else if (args.out.nonEmpty) {
+        // Write using hadoop.
+        result.saveAsTextFile(args.out)
+
+      } else {
+        // Write to stdout.
         println("BEGIN RESULT")
         println("*" * 60)
         println(expressionLabels.mkString(separator))
+
         result.collect.foreach(println _)
         println("*" * 60)
         println("END RESULT")
@@ -224,8 +287,7 @@ object EvalCommand {
 
       DelayedMessages.default.print()
 
-      // We return the result to make unit testing easier.
-      result
+      result // Unit tests use this.
     }
   }
 }
@@ -233,6 +295,23 @@ object Evaluation {
   val factory = new javax.script.ScriptEngineManager
   val engine = factory.getEngineByName("JavaScript")
   val compilingEngine = engine.asInstanceOf[Compilable]
+  val invocableEngine = engine.asInstanceOf[Invocable]
+  val jsonObject = engine.eval("JSON")
+
+  assert(engine != null)
+  assert(compilingEngine != null)
+  assert(invocableEngine != null)
+  assert(jsonObject != null)
+
+  def toJSON(jsValue: Any): String = {
+    val result = invocableEngine.invokeMethod(jsonObject, "stringify", jsValue.asInstanceOf[AnyRef])
+
+    // TODO: nashorn (java 8) will give result==null for lists and objects, hence this fallback for now:
+    if (result == null)
+      jsValue.toString
+    else
+      result.toString
+  }
 
   def eval(code: String, compiledCode: CompiledScript, bindings: Bindings): Any = {
     try {
@@ -255,7 +334,7 @@ object Evaluation {
   }
 
   val pileupCountScriptCache = new collection.mutable.HashMap[String, CompiledScript]
-
+  val pileupCountScriptCacheMaxSize = 1000
   class ScriptPileup(pileup: Pileup) extends Pileup(
     pileup.referenceName, pileup.locus, pileup.referenceBase, pileup.elements) {
 
@@ -268,6 +347,9 @@ object Evaluation {
         val compiled = if (pileupCountScriptCache.contains(code)) {
           pileupCountScriptCache(code)
         } else {
+          if (pileupCountScriptCache.size > pileupCountScriptCacheMaxSize) {
+            pileupCountScriptCache.clear
+          }
           val compiled = compilingEngine.compile(code)
           pileupCountScriptCache.put(code, compiled)
           compiled
@@ -285,5 +367,30 @@ object Evaluation {
         count
       }
     }
+  }
+
+  class ScriptMappedRead(read: MappedRead) extends MappedRead(
+    read.token,
+    read.sequence: Seq[Byte],
+    read.baseQualities: Seq[Byte],
+    read.isDuplicate: Boolean,
+    read.sampleName: String,
+    read.referenceContig: String,
+    read.alignmentQuality: Int,
+    read.start: Long,
+    read.cigar: Cigar,
+    read.mdTagString: String,
+    read.failedVendorQualityChecks: Boolean,
+    read.isPositiveStrand: Boolean,
+    read.isPaired) {
+
+    def bases: String = {
+      Bases.basesToString(sequence)
+    }
+
+    def reverseComplementBases: String = {
+      Bases.basesToString(Bases.reverseComplement(sequence))
+    }
+
   }
 }
