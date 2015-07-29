@@ -31,7 +31,7 @@ import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole.Common.Arguments.{ NoSequenceDictionary }
 import org.hammerlab.guacamole.commands.Evaluation.{ ScriptPileup }
 import org.hammerlab.guacamole.pileup.{ Pileup }
-import org.hammerlab.guacamole.reads.{PairedRead, UnmappedRead, MappedRead, Read}
+import org.hammerlab.guacamole.reads._
 import org.hammerlab.guacamole._
 import org.kohsuke.args4j.spi.StringArrayOptionHandler
 import org.kohsuke.args4j.{ Option => Args4jOption, Argument }
@@ -242,14 +242,7 @@ object EvalCommand {
           val compiledExpressions = expressions.map(Evaluation.compilingEngine.compile _)
 
           reads.flatMap(read => {
-            read match {
-              case r: MappedRead => bindings.put("read", r)
-              case r: UnmappedRead => bindings.put("read", r)
-              case r: PairedRead[_] if r.isMapped => bindings.put("read", r.asInstanceOf[PairedRead[MappedRead]])
-              case r: PairedRead[_] => bindings.put("read", r.asInstanceOf[PairedRead[UnmappedRead]])
-              case _ => assert(false, "Unsupported read variety")
-            }
-            bindings.put("read", read)
+            bindings.put("read", new Evaluation.ScriptRead(read))
             bindings.put("label", bamLabels(read.token))
             bindings.put("path", bams(read.token))
 
@@ -369,6 +362,46 @@ object Evaluation {
     }
   }
 
+  class ScriptRead(read: Read) {
+    lazy val token = read.token
+    lazy val sequence = Bases.basesToString(read.sequence)
+    lazy val baseQualities = read.baseQualities.map(_.toInt)
+    lazy val isDuplicate = read.isDuplicate
+    lazy val sampleName = read.sampleName
+    lazy val isMapped = read.isMapped
+
+    // Mapped read properties
+    private lazy val mappedRead: MappedRead = read match {
+      case r: MappedRead                  => r
+      case r: PairedRead[_] if r.isMapped => r.read.asInstanceOf[MappedRead]
+      case _                              => throw new IncompatibleClassChangeError("Not a mapped read: " + toString)
+    }
+    lazy val contig = mappedRead.referenceContig
+    lazy val referenceContig = contig
+    lazy val start = mappedRead.start
+    lazy val end = mappedRead.end
+    lazy val alignmentQuality = mappedRead.alignmentQuality
+    lazy val cigarString = mappedRead.cigar.toString
+
+    // Paired read properties
+    private lazy val pairedRead: PairedRead[_] = read match {
+      case r: PairedRead[_] => r
+      case _                => throw new IncompatibleClassChangeError(("Not a paired read: " + toString))
+    }
+    lazy val isFirstInPair = pairedRead.isFirstInPair
+    lazy val isMateMapped = pairedRead.isMateMapped
+    lazy val mateStart = pairedRead.mateAlignmentProperties.get.start
+    lazy val mateReferenceContig = pairedRead.mateAlignmentProperties.get.referenceContig
+    lazy val mateContig = mateReferenceContig
+    lazy val mateIsPositiveStrand = pairedRead.mateAlignmentProperties.get.isPositiveStrand
+    lazy val inferredInsertSize = pairedRead.mateAlignmentProperties.get.inferredInsertSize
+
+    // Extra properties
+    def reverseComplementBases: String = {
+      Bases.basesToString(Bases.reverseComplement(read.sequence))
+    }
+  }
+
   class ScriptMappedRead(read: MappedRead) extends MappedRead(
     read.token,
     read.sequence: Seq[Byte],
@@ -386,10 +419,6 @@ object Evaluation {
 
     def bases: String = {
       Bases.basesToString(sequence)
-    }
-
-    def reverseComplementBases: String = {
-      Bases.basesToString(Bases.reverseComplement(sequence))
     }
 
   }

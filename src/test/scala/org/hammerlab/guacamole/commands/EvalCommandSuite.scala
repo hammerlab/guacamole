@@ -40,7 +40,6 @@ class EvalCommandSuite extends GuacFunSuite with Matchers {
     run(fullArgs: _*)
   }
 
-  /*
   sparkTest("basic") {
     runChrM("locus") should equal((5000 until 5005).map(_.toString))
     runChrM("locus * 2") should equal(Seq("10000", "10002", "10004", "10006", "10008"))
@@ -66,7 +65,6 @@ class EvalCommandSuite extends GuacFunSuite with Matchers {
       "5000, 161, 161", "5001, 159, 158", "5002, 155, 151", "5003, 156, 155", "5004, 157, 153"
     ))
   }
-  */
 
   sparkTest("reads") {
     runChrM("read.start()", "read.end()", "--domain", "reads").size should equal(38461)
