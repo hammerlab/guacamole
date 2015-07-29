@@ -19,7 +19,8 @@ class ReadAlignmentSuite extends FunSuite with Matchers {
 
   test("test cigar string: mixed match/insertion") {
     val alignment = ReadAlignment(
-      Seq(AlignmentState.Match,
+      Seq(
+        AlignmentState.Match,
         AlignmentState.Match,
         AlignmentState.Match,
         AlignmentState.Insertion,

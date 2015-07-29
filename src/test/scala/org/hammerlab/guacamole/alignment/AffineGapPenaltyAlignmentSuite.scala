@@ -6,13 +6,25 @@ import org.hammerlab.guacamole.util.TestUtil.Implicits._
 class AffineGapPenaltyAlignmentSuite extends FunSuite with Matchers {
 
   test("score alignment: exact match") {
-    val (alignmentStates, alignmentScores) = AffineGapPenaltyAlignment.scoreAlignmentPaths("TCGA", "TCGA")
+    val (alignmentStates, alignmentScores) = AffineGapPenaltyAlignment.scoreAlignmentPaths(
+      "TCGA",
+      "TCGA",
+      mismatchProbability = 1e-2,
+      openGapProbability = 1e-3,
+      closeGapProbability = 1e-2
+    )
     alignmentScores(4, 4).toInt should be(0)
   }
 
   test("score alignment: single mismatch") {
-    val (alignmentStates, alignmentScores) = AffineGapPenaltyAlignment.scoreAlignmentPaths("TCGA", "TCCA", mismatchProbability = 1e-2)
-    alignmentScores(4, 4).toInt should be(5)
+    val (alignmentStates, alignmentScores) = AffineGapPenaltyAlignment.scoreAlignmentPaths(
+      "TCGA",
+      "TCCA",
+      mismatchProbability = 1e-2,
+      openGapProbability = 1e-3,
+      closeGapProbability = 1e-2
+    )
+    math.round(alignmentScores(4, 4)) should be(5)
   }
 
   test("align exact match") {
@@ -21,7 +33,7 @@ class AffineGapPenaltyAlignmentSuite extends FunSuite with Matchers {
   }
 
   test("align: single mismatch") {
-    val alignment = AffineGapPenaltyAlignment.align("TCGA", "TCCA", mismatchProbability = 1e-2)
+    val alignment = AffineGapPenaltyAlignment.align("TCGA", "TCCA")
 
     alignment.toCigar should be("2=1X1=")
   }
@@ -55,7 +67,8 @@ class AffineGapPenaltyAlignmentSuite extends FunSuite with Matchers {
   test("only mismatch long sequence") {
     val alignment = AffineGapPenaltyAlignment
       .align(
-        "ATTCTCAAGTTTTAAGTGGTATTCTAATTATGGCAGTAATTAACTGAATAAAGAGATTCATCATGTGCAAAAACTAATCTTGTTTACTTAAAATTGAGAGT", 
+        //====================X===================X============================================================
+        "ATTCTCAAGTTTTAAGTGGTATTCTAATTATGGCAGTAATTAACTGAATAAAGAGATTCATCATGTGCAAAAACTAATCTTGTTTACTTAAAATTGAGAGT",
         "ATTCTCAAGTTTTAAGTGGTTTTCTAATTATGGCAGTAATAAACTGAATAAAGAGATTCATCATGTGCAAAAACTAATCTTGTTTACTTAAAATTGAGAGT")
     alignment.toCigar should be("20=1X19=1X60=")
   }
@@ -63,7 +76,8 @@ class AffineGapPenaltyAlignmentSuite extends FunSuite with Matchers {
   test("2 mismatch with deletion sequence") {
     val alignment = AffineGapPenaltyAlignment
       .align(
-        "ATTCTCAAGTTTTAAGTGGTATTCTAATTATGGCAGTAATTAACTGAATAAAGAGATTCATCATGTGCAAAAACTAATCTTGTTTACTTAAAATTGAGAGT",
+        //====================X===================X========================================DDD====================
+        "ATTCTCAAGTTTTAAGTGGTATTCTAATTATGGCAGTAATTAACTGAATAAAGAGATTCATCATGTGCAAAAACTAATCTT" + "GTTTACTTAAAATTGAGAGT",
         "ATTCTCAAGTTTTAAGTGGTTTTCTAATTATGGCAGTAATAAACTGAATAAAGAGATTCATCATGTGCAAAAACTAATCTTCCCGTTTACTTAAAATTGAGAGT")
     alignment.toCigar should be("20=1X19=1X40=3D20=")
   }

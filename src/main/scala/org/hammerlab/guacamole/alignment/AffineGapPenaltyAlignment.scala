@@ -10,8 +10,8 @@ object AffineGapPenaltyAlignment {
   /**
    * Retraces the optimal alignment path from a matrix of scores and transitions
    *
-   * @param alignmentStates sequenceLength x referenceLength matrix of alignment score at each step
-   * @param alignmentScores sequenceLength x referenceLength matrix of best transition at each step
+   * @param alignmentStates (sequenceLength + 1) x (referenceLength + 1) matrix of best transition at each step
+   * @param alignmentScores (sequenceLength + 1) x (referenceLength + 1) matrix of alignment score at each step
    * @param sequenceLength Length of the input sequence to align
    * @param referenceLength Length of reference sequence to align against
    * @return An alignment path and score
@@ -31,15 +31,12 @@ object AffineGapPenaltyAlignment {
         lastMove :: currentPath
       } else {
         lastMove match {
-          case AlignmentState.Match | AlignmentState.Mismatch => {
+          case AlignmentState.Match | AlignmentState.Mismatch =>
             recFindBestPath(sequenceIdx - 1, referenceIdx - 1, lastMove :: currentPath)
-          }
-          case AlignmentState.Insertion => {
+          case AlignmentState.Insertion =>
             recFindBestPath(sequenceIdx - 1, referenceIdx, lastMove :: currentPath)
-          }
-          case AlignmentState.Deletion => {
+          case AlignmentState.Deletion =>
             recFindBestPath(sequenceIdx, referenceIdx - 1, lastMove :: currentPath)
-          }
         }
       }
     }
@@ -60,9 +57,14 @@ object AffineGapPenaltyAlignment {
    */
   def align(sequence: Seq[Byte],
             reference: Seq[Byte],
-            mismatchProbability: Double = 1e-3,
-            openGapProbability: Double = 1e-5,
-            closeGapProbability: Double = 1e-2): ReadAlignment = {
+            mismatchProbability: Double = math.exp(-4),
+            openGapProbability: Double = math.exp(-6),
+            closeGapProbability: Double = 1 - math.exp(-1)): ReadAlignment = {
+    // TODO: What are the best defaults?
+    // BWA defaults:
+    // -log mismatchProbability = 4
+    // -log openGapProbability = 6
+    // -log (1 - closeGapProbability) = 1
 
     val sequenceLength = sequence.length
     val referenceLength = reference.length
@@ -77,16 +79,16 @@ object AffineGapPenaltyAlignment {
 
   def scoreAlignmentPaths(sequence: Seq[Byte],
                           reference: Seq[Byte],
-                          mismatchProbability: Double = 1e-2,
-                          openGapProbability: Double = 1e-3,
-                          closeGapProbability: Double = 1e-2): (DenseMatrix[AlignmentState], DenseMatrix[Double]) = {
+                          mismatchProbability: Double,
+                          openGapProbability: Double,
+                          closeGapProbability: Double): (DenseMatrix[AlignmentState], DenseMatrix[Double]) = {
 
-    val logMismatchPenalty = -math.round(math.log(mismatchProbability))
-    val logOpenGapPenalty = -math.round(math.log(openGapProbability))
-    val logCloseGapPenalty = -math.round(math.log(closeGapProbability))
+    val logMismatchPenalty = -math.log(mismatchProbability)
+    val logOpenGapPenalty = -math.log(openGapProbability)
+    val logCloseGapPenalty = -math.log(closeGapProbability)
 
-    val logContinueGapPenalty = -math.round(math.log(1 - closeGapProbability)).toInt
-    val noGapPenalty = -math.round(math.log(1 - openGapProbability)).toInt
+    val logContinueGapPenalty = -math.log(1 - closeGapProbability)
+    val noGapPenalty = -math.log(1 - openGapProbability)
 
     val sequenceLength = sequence.length
     val referenceLength = reference.length
@@ -114,7 +116,7 @@ object AffineGapPenaltyAlignment {
 
     for (referenceIdx <- 1 to referenceLength) {
       for (sequenceIdx <- 1 to sequenceLength) {
-        // Given the change is position, is the transition a gap or match/mismatch
+        // Given the change in position, is the transition a gap or match/mismatch
         def classifyTransition(prevSeqPos: Int, prevRefPos: Int): AlignmentState = {
           if (sequenceIdx == prevSeqPos) {
             AlignmentState.Deletion
