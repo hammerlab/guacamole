@@ -126,8 +126,14 @@ object EvalCommand {
       (bamLabels.result, bams.result, expressionLabels.result, expressions.result)
     }
 
-    val standardInclude = CharStreams.toString(
-      new InputStreamReader(ClassLoader.getSystemClassLoader.getResourceAsStream("eval_command_preamble.js")))
+    val standardIncludePaths = Seq(
+      ("Preamble", "EvalCommand/preamble.js"))
+
+    val standardIncludes = standardIncludePaths.map({case (name, path) => {
+        val stream = ClassLoader.getSystemClassLoader.getResourceAsStream(path)
+        assert(stream != null, "Couldn't load: " + path)
+      (name, CharStreams.toString(new InputStreamReader(stream)))
+    }})
 
     def makeScriptFragments(args: Arguments): Seq[(String, String)] = {
       lazy val filesystem = FileSystem.get(new Configuration())
@@ -138,7 +144,7 @@ object EvalCommand {
       val extraIncludesFromCommandline = args.includeCode.zipWithIndex.map(pair => {
         ("Code block %d".format(pair._2), pair._1)
       })
-      Seq(("Standard preamble", standardInclude)) ++ extraIncludesFromFiles ++ extraIncludesFromCommandline
+      standardIncludes ++ extraIncludesFromFiles ++ extraIncludesFromCommandline
     }
 
     def runScriptFragments(fragments: Seq[String], bindings: Bindings): Unit = {
@@ -163,7 +169,11 @@ object EvalCommand {
         namedScriptFragments.foreach({
           case (name, fragment) => {
             println(name)
-            println(Evaluation.stringWithLineNumbers(fragment))
+            if (fragment.size < 1000) {
+              println(Evaluation.stringWithLineNumbers(fragment))
+            } else {
+              println("(skipped due to size)")
+            }
             println()
           }
         })
@@ -289,21 +299,28 @@ object Evaluation {
   val engine = factory.getEngineByName("JavaScript")
   val compilingEngine = engine.asInstanceOf[Compilable]
   val invocableEngine = engine.asInstanceOf[Invocable]
-  val jsonObject = engine.eval("JSON")
+
+  val jsonObject = try {
+    Some(engine.eval("JSON"))
+  } catch {
+    case _: Exception => None
+  }
 
   assert(engine != null)
   assert(compilingEngine != null)
   assert(invocableEngine != null)
-  assert(jsonObject != null)
 
-  def toJSON(jsValue: Any): String = {
-    val result = invocableEngine.invokeMethod(jsonObject, "stringify", jsValue.asInstanceOf[AnyRef])
+  def toJSON(jsValue: Any): String = jsonObject match {
+    case Some(json) => {
+      val result = invocableEngine.invokeMethod(jsonObject.get, "stringify", jsValue.asInstanceOf[AnyRef])
 
-    // TODO: nashorn (java 8) will give result==null for lists and objects, hence this fallback for now:
-    if (result == null)
-      jsValue.toString
-    else
-      result.toString
+      // TODO: nashorn (java 8) will give result==null for lists and objects, hence this fallback for now:
+      if (result == null)
+        jsValue.toString
+      else
+        result.toString
+    }
+    case None => jsValue.toString
   }
 
   def eval(code: String, compiledCode: CompiledScript, bindings: Bindings): Any = {
