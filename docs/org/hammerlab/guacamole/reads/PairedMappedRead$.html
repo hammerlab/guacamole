@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>StructuralVariant - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.commands.StructuralVariant</title>
-          <meta name="description" content="StructuralVariant - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.commands.StructuralVariant" />
-          <meta name="keywords" content="StructuralVariant guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.commands.StructuralVariant" />
+          <title>PairedMappedRead - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.reads.PairedMappedRead</title>
+          <meta name="description" content="PairedMappedRead - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.reads.PairedMappedRead" />
+          <meta name="keywords" content="PairedMappedRead guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.reads.PairedMappedRead" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -12,7 +12,7 @@
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../index.html';
-            var hash = 'org.hammerlab.guacamole.commands.StructuralVariant$';
+            var hash = 'org.hammerlab.guacamole.reads.PairedMappedRead$';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -24,9 +24,9 @@
         </head>
         <body class="value">
       <div id="definition">
-        <img src="../../../../lib/object_big.png" />
-        <p id="owner"><a href="../../../package.html" class="extype" name="org">org</a>.<a href="../../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="../package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole.commands">commands</a></p>
-        <h1>StructuralVariant</h1>
+        <a href="PairedMappedRead.html" title="Go to companion"><img src="../../../../lib/object_to_class_big.png" /></a>
+        <p id="owner"><a href="../../../package.html" class="extype" name="org">org</a>.<a href="../../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="../package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole.reads">reads</a></p>
+        <h1><a href="PairedMappedRead.html" title="Go to companion">PairedMappedRead</a></h1>
       </div>
 
       <h4 id="signature" class="signature">
@@ -35,17 +35,13 @@
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <span class="name">StructuralVariant</span>
+        <span class="name">PairedMappedRead</span><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Structural Variant caller</p><p>This currently looks for regions with abnormally large insert sizes. This typically indicates
-that there's been a large deletion.</p><p>It does this by finding the average insert size of all mate pairs which overlap each 25-base pair &quot;block&quot; of the
-genome. If this average is significantly different than the average insert size genome-wide, then it's evidence that
-there may be a structural variant.</p><p>The output is a text file of genomic ranges where there's some evidence of an SV.
-</p></div><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -63,7 +59,7 @@ there may be a structural variant.</p><p>The output is a text file of genomic ra
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="org.hammerlab.guacamole.commands.StructuralVariant"><span>StructuralVariant</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="org.hammerlab.guacamole.reads.PairedMappedRead"><span>PairedMappedRead</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -83,75 +79,7 @@ there may be a structural variant.</p><p>The output is a text file of genomic ra
         <div id="allMembers">
         
 
-        <div id="types" class="types members">
-              <h3>Type Members</h3>
-              <ol><li name="org.hammerlab.guacamole.commands.StructuralVariant.Arguments" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="ArgumentsextendsArgs4jBasewithCommon.Arguments.ReadswithDistributedUtil.Arguments"></a>
-      <a id="Arguments:Arguments"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">class</span>
-      </span>
-      <span class="symbol">
-        <a href="StructuralVariant$$Arguments.html"><span class="name">Arguments</span></a><span class="result"> extends <span class="extype" name="org.bdgenomics.utils.cli.Args4jBase">Args4jBase</span> with <a href="../Common$$Arguments$$Reads.html" class="extype" name="org.hammerlab.guacamole.Common.Arguments.Reads">Reads</a> with <a href="../DistributedUtil$$Arguments.html" class="extype" name="org.hammerlab.guacamole.DistributedUtil.Arguments">DistributedUtil.Arguments</a></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.commands.StructuralVariant.GenomeRange" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="GenomeRangeextendsProductwithSerializable"></a>
-      <a id="GenomeRange:GenomeRange"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">case class</span>
-      </span>
-      <span class="symbol">
-        <a href="StructuralVariant$$GenomeRange.html"><span class="name">GenomeRange</span></a><span class="params">(<span name="contig">contig: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="start">start: <span class="extype" name="scala.Long">Long</span></span>, <span name="stop">stop: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
-      </span>
-      </h4>
-      
-    </li><li name="org.hammerlab.guacamole.commands.StructuralVariant.Location" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="LocationextendsProductwithSerializable"></a>
-      <a id="Location:Location"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">case class</span>
-      </span>
-      <span class="symbol">
-        <a href="StructuralVariant$$Location.html"><span class="name">Location</span></a><span class="params">(<span name="contig">contig: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="position">position: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
-      </span>
-      </h4>
-      
-    </li><li name="org.hammerlab.guacamole.commands.StructuralVariant.MedianStats" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="MedianStatsextendsProductwithSerializable"></a>
-      <a id="MedianStats:MedianStats"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">case class</span>
-      </span>
-      <span class="symbol">
-        <a href="StructuralVariant$$MedianStats.html"><span class="name">MedianStats</span></a><span class="params">(<span name="median">median: <span class="extype" name="scala.Double">Double</span></span>, <span name="mad">mad: <span class="extype" name="scala.Double">Double</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
-      </span>
-      </h4>
-      
-    </li><li name="org.hammerlab.guacamole.commands.StructuralVariant.PairedReadGraph" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="PairedReadGraph=scalax.collection.Graph[org.hammerlab.guacamole.reads.PairedMappedRead,scalax.collection.edge.WUnDiEdge]"></a>
-      <a id="PairedReadGraph:PairedReadGraph"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">type</span>
-      </span>
-      <span class="symbol">
-        <span class="name">PairedReadGraph</span><span class="result"> = <span class="extype" name="scalax.collection.Graph">Graph</span>[<a href="../reads/PairedMappedRead.html" class="extype" name="org.hammerlab.guacamole.reads.PairedMappedRead">PairedMappedRead</a>, <span class="extype" name="scalax.collection.edge.WUnDiEdge">WUnDiEdge</span>]</span>
-      </span>
-      </h4>
-      
-    </li></ol>
-            </div>
+        
 
         
 
@@ -222,42 +150,16 @@ there may be a structural variant.</p><p>The output is a text file of genomic ra
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.commands.StructuralVariant#BLOCK_SIZE" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="BLOCK_SIZE:Int"></a>
-      <a id="BLOCK_SIZE:Int"></a>
+    </li><li name="org.hammerlab.guacamole.reads.PairedMappedRead#apply" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="apply(read:org.hammerlab.guacamole.reads.PairedRead[org.hammerlab.guacamole.reads.MappedRead]):Option[org.hammerlab.guacamole.reads.PairedMappedRead]"></a>
+      <a id="apply(PairedRead[MappedRead]):Option[PairedMappedRead]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">val</span>
+        <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">BLOCK_SIZE</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
-      </span>
-      </h4>
-      
-    </li><li name="org.hammerlab.guacamole.commands.StructuralVariant.Caller" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="Caller"></a>
-      <a id="Caller:Caller"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a href="StructuralVariant$$Caller$.html"><span class="name">Caller</span></a><span class="result"> extends <a href="../SparkCommand.html" class="extype" name="org.hammerlab.guacamole.SparkCommand">SparkCommand</a>[<a href="StructuralVariant$$Arguments.html" class="extype" name="org.hammerlab.guacamole.commands.StructuralVariant.Arguments">Arguments</a>]</span>
-      </span>
-      </h4>
-      
-    </li><li name="org.hammerlab.guacamole.commands.StructuralVariant#MAX_INSERT_SIZE" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="MAX_INSERT_SIZE:Int"></a>
-      <a id="MAX_INSERT_SIZE:Int"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">MAX_INSERT_SIZE</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+        <span class="name">apply</span><span class="params">(<span name="read">read: <a href="PairedRead.html" class="extype" name="org.hammerlab.guacamole.reads.PairedRead">PairedRead</a>[<a href="MappedRead.html" class="extype" name="org.hammerlab.guacamole.reads.MappedRead">MappedRead</a>]</span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<a href="PairedMappedRead.html" class="extype" name="org.hammerlab.guacamole.reads.PairedMappedRead">PairedMappedRead</a>]</span>
       </span>
       </h4>
       
@@ -508,7 +410,11 @@ there may be a structural variant.</p><p>The output is a text file of genomic ra
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="scala.AnyRef">
+        <div class="parent" name="scala.Serializable">
+              <h3>Inherited from <span class="extype" name="scala.Serializable">Serializable</span></h3>
+            </div><div class="parent" name="java.io.Serializable">
+              <h3>Inherited from <span class="extype" name="java.io.Serializable">Serializable</span></h3>
+            </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
             </div><div class="parent" name="scala.Any">
               <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>

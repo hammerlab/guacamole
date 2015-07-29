@@ -79,7 +79,23 @@
         <div id="allMembers">
         
 
-        
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="org.hammerlab.guacamole.commands.StructuralVariant.Caller.ExceptionalReadsReturnType" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ExceptionalReadsReturnTypeextendsProductwithSerializable"></a>
+      <a id="ExceptionalReadsReturnType:ExceptionalReadsReturnType"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="StructuralVariant$$Caller$$ExceptionalReadsReturnType.html"><span class="name">ExceptionalReadsReturnType</span></a><span class="params">(<span name="readsInRange">readsInRange: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<a href="../reads/PairedMappedRead.html" class="extype" name="org.hammerlab.guacamole.reads.PairedMappedRead">PairedMappedRead</a>]</span>, <span name="insertSizes">insertSizes: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<span class="extype" name="scala.Int">Int</span>]</span>, <span name="insertStats">insertStats: <a href="StructuralVariant$$MedianStats.html" class="extype" name="org.hammerlab.guacamole.commands.StructuralVariant.MedianStats">MedianStats</a></span>, <span name="maxNormalInsertSize">maxNormalInsertSize: <span class="extype" name="scala.Int">Int</span></span>, <span name="exceptionalReads">exceptionalReads: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<a href="../reads/PairedMappedRead.html" class="extype" name="org.hammerlab.guacamole.reads.PairedMappedRead">PairedMappedRead</a>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li></ol>
+            </div>
 
         
 
@@ -150,6 +166,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.commands.StructuralVariant.Caller#areReadsCompatible" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="areReadsCompatible(read1:org.hammerlab.guacamole.reads.PairedMappedRead,read2:org.hammerlab.guacamole.reads.PairedMappedRead,maxNormalInsertSize:Long):Boolean"></a>
+      <a id="areReadsCompatible(PairedMappedRead,PairedMappedRead,Long):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">areReadsCompatible</span><span class="params">(<span name="read1">read1: <a href="../reads/PairedMappedRead.html" class="extype" name="org.hammerlab.guacamole.reads.PairedMappedRead">PairedMappedRead</a></span>, <span name="read2">read2: <a href="../reads/PairedMappedRead.html" class="extype" name="org.hammerlab.guacamole.reads.PairedMappedRead">PairedMappedRead</a></span>, <span name="maxNormalInsertSize">maxNormalInsertSize: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -163,6 +192,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.commands.StructuralVariant.Caller#buildVariantGraph" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="buildVariantGraph(exceptionalReads:Iterable[org.hammerlab.guacamole.reads.PairedMappedRead],maxNormalInsertSize:Int):org.hammerlab.guacamole.commands.StructuralVariant.PairedReadGraph"></a>
+      <a id="buildVariantGraph(Iterable[PairedMappedRead],Int):PairedReadGraph"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">buildVariantGraph</span><span class="params">(<span name="exceptionalReads">exceptionalReads: <span class="extype" name="scala.Iterable">Iterable</span>[<a href="../reads/PairedMappedRead.html" class="extype" name="org.hammerlab.guacamole.reads.PairedMappedRead">PairedMappedRead</a>]</span>, <span name="maxNormalInsertSize">maxNormalInsertSize: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <a href="StructuralVariant$.html#PairedReadGraph=scalax.collection.Graph[org.hammerlab.guacamole.reads.PairedMappedRead,scalax.collection.edge.WUnDiEdge]" class="extmbr" name="org.hammerlab.guacamole.commands.StructuralVariant.PairedReadGraph">PairedReadGraph</a></span>
+      </span>
+      </h4>
+      
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>
       <a id="clone():AnyRef"></a>
@@ -182,19 +224,6 @@
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.commands.StructuralVariant.Caller#coalesceAdjacent" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="coalesceAdjacent(xs:IndexedSeq[Long],blockSize:Long):Iterator[(Long,Long)]"></a>
-      <a id="coalesceAdjacent(IndexedSeq[Long],Long):Iterator[(Long,Long)]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">coalesceAdjacent</span><span class="params">(<span name="xs">xs: <span class="extype" name="scala.IndexedSeq">IndexedSeq</span>[<span class="extype" name="scala.Long">Long</span>]</span>, <span name="blockSize">blockSize: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Iterator">Iterator</span>[(<span class="extype" name="scala.Long">Long</span>, <span class="extype" name="scala.Long">Long</span>)]</span>
-      </span>
-      </h4>
-      
     </li><li name="org.hammerlab.guacamole.commands.StructuralVariant.Caller#description" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="description:String"></a>
       <a id="description:String"></a>
@@ -266,6 +295,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.commands.StructuralVariant.Caller#getExceptionalReads" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="getExceptionalReads(reads:org.apache.spark.rdd.RDD[org.hammerlab.guacamole.reads.PairedMappedRead]):org.hammerlab.guacamole.commands.StructuralVariant.Caller.ExceptionalReadsReturnType"></a>
+      <a id="getExceptionalReads(RDD[PairedMappedRead]):ExceptionalReadsReturnType"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getExceptionalReads</span><span class="params">(<span name="reads">reads: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<a href="../reads/PairedMappedRead.html" class="extype" name="org.hammerlab.guacamole.reads.PairedMappedRead">PairedMappedRead</a>]</span>)</span><span class="result">: <a href="StructuralVariant$$Caller$$ExceptionalReadsReturnType.html" class="extype" name="org.hammerlab.guacamole.commands.StructuralVariant.Caller.ExceptionalReadsReturnType">ExceptionalReadsReturnType</a></span>
+      </span>
+      </h4>
+      
     </li><li name="scala.AnyRef#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="hashCode():Int"></a>
       <a id="hashCode():Int"></a>
@@ -461,16 +503,16 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd>Logging</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.commands.StructuralVariant.Caller#matedReadBlocks" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="matedReadBlocks(r:org.hammerlab.guacamole.reads.PairedRead[org.hammerlab.guacamole.reads.MappedRead]):Seq[Long]"></a>
-      <a id="matedReadBlocks(PairedRead[MappedRead]):Seq[Long]"></a>
+    </li><li name="org.hammerlab.guacamole.commands.StructuralVariant.Caller#medianStats" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="medianStats[T](xs:Array[T])(implicitevidence$1:T=&gt;Double,implicitord:Ordering[T]):org.hammerlab.guacamole.commands.StructuralVariant.MedianStats"></a>
+      <a id="medianStats[T](Array[T])((T)⇒Double,Ordering[T]):MedianStats"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">matedReadBlocks</span><span class="params">(<span name="r">r: <a href="../reads/PairedRead.html" class="extype" name="org.hammerlab.guacamole.reads.PairedRead">PairedRead</a>[<a href="../reads/MappedRead.html" class="extype" name="org.hammerlab.guacamole.reads.MappedRead">MappedRead</a>]</span>)</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Long">Long</span>]</span>
+        <span class="name">medianStats</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="xs">xs: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="org.hammerlab.guacamole.commands.StructuralVariant.Caller.medianStats.T">T</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: (<span class="extype" name="org.hammerlab.guacamole.commands.StructuralVariant.Caller.medianStats.T">T</span>) ⇒ <span class="extype" name="scala.Double">Double</span></span>, <span name="ord">ord: <span class="extype" name="scala.Ordering">Ordering</span>[<span class="extype" name="org.hammerlab.guacamole.commands.StructuralVariant.Caller.medianStats.T">T</span>]</span>)</span><span class="result">: <a href="StructuralVariant$$MedianStats.html" class="extype" name="org.hammerlab.guacamole.commands.StructuralVariant.MedianStats">MedianStats</a></span>
       </span>
       </h4>
       
@@ -527,15 +569,15 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="org.hammerlab.guacamole.commands.StructuralVariant.Caller#orientedInsertSize" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="orientedInsertSize(r:org.hammerlab.guacamole.reads.PairedRead[org.hammerlab.guacamole.reads.MappedRead]):Option[Int]"></a>
-      <a id="orientedInsertSize(PairedRead[MappedRead]):Option[Int]"></a>
+      <a id="orientedInsertSize(r:org.hammerlab.guacamole.reads.PairedMappedRead):Int"></a>
+      <a id="orientedInsertSize(PairedMappedRead):Int"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">orientedInsertSize</span><span class="params">(<span name="r">r: <a href="../reads/PairedRead.html" class="extype" name="org.hammerlab.guacamole.reads.PairedRead">PairedRead</a>[<a href="../reads/MappedRead.html" class="extype" name="org.hammerlab.guacamole.reads.MappedRead">MappedRead</a>]</span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>]</span>
+        <span class="name">orientedInsertSize</span><span class="params">(<span name="r">r: <a href="../reads/PairedMappedRead.html" class="extype" name="org.hammerlab.guacamole.reads.PairedMappedRead">PairedMappedRead</a></span>)</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
       </span>
       </h4>
       
