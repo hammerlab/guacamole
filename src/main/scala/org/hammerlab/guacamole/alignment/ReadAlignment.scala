@@ -57,6 +57,6 @@ case class ReadAlignment(alignments: Seq[AlignmentState],
       rle.toString
     }
 
-    runLengthEncode(alignments.map(cigarKey(_)))
+    runLengthEncode(alignments.map(cigarKey))
   }
 }
