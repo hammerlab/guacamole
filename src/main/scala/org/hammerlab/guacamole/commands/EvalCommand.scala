@@ -130,7 +130,7 @@ object EvalCommand {
       ("Preamble", "EvalCommand/preamble.js"))
 
     val standardIncludes = standardIncludePaths.map({case (name, path) => {
-        val stream = ClassLoader.getSystemClassLoader.getResourceAsStream(path)
+        val stream = EvalCommand.getClass.getClassLoader.getResourceAsStream(path)
         assert(stream != null, "Couldn't load: " + path)
       (name, CharStreams.toString(new InputStreamReader(stream)))
     }})
