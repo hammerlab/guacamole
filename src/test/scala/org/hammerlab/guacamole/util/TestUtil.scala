@@ -26,7 +26,7 @@ import com.twitter.chill.{ IKryoRegistrar, KryoInstantiator, KryoPool }
 import org.apache.commons.io.FileUtils
 import org.apache.spark.SparkContext
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.reads.{ MateAlignmentProperties, PairedRead, MappedRead, Read }
+import org.hammerlab.guacamole.reads._
 import org.hammerlab.guacamole.{ Bases, GuacamoleKryoRegistrator, ReadSet }
 import org.scalatest._
 
@@ -99,7 +99,8 @@ object TestUtil extends Matchers {
     isMatePositiveStrand: Boolean = false,
     sequence: String = "ACTGACTGACTG",
     cigar: String = "12M",
-    mdTag: String = "12"): PairedRead[MappedRead] = {
+    mdTag: String = "12",
+    inferredInsertSize: Option[Int]): PairedRead[MappedRead] = {
 
     val qualityScoreString = sequence.map(x => '@').mkString
 
@@ -121,13 +122,48 @@ object TestUtil extends Matchers {
           MateAlignmentProperties(
             mateReferenceContig.get,
             mateStart.get,
-            inferredInsertSize = None,
+            inferredInsertSize = inferredInsertSize,
             isPositiveStrand = isMatePositiveStrand
           )
         )
         else
           None
     )
+  }
+
+  def makePairedMappedRead(
+    chr: String = "chr1",
+    start: Long = 1,
+    alignmentQuality: Int = 30,
+    isPositiveStrand: Boolean = true,
+    mateReferenceContig: String = "chr1",
+    mateStart: Long = 1,
+    isMatePositiveStrand: Boolean = false,
+    inferredInsertSize: Option[Int] = None,
+    sequence: String = "ACTGACTGACTG",
+    cigar: String = "12M",
+    mdTag: String = "12"): PairedMappedRead = {
+
+    val insertSize = inferredInsertSize.getOrElse({
+      val minStart = Math.min(start, mateStart)
+      val maxStart = Math.max(start, mateStart)
+      (maxStart - minStart).toInt + sequence.length
+    })
+
+    val mate = MateAlignmentProperties(
+      mateReferenceContig,
+      mateStart,
+      inferredInsertSize = Some(insertSize),
+      isPositiveStrand = isMatePositiveStrand
+    )
+    PairedMappedRead(
+      makePairedRead(
+        chr, start, alignmentQuality, isPositiveStrand, true,
+        Some(mate.referenceContig), Some(mate.start), mate.isPositiveStrand,
+        sequence, cigar, mdTag, mate.inferredInsertSize).read,
+      isFirstInPair = true,
+      inferredInsertSize = insertSize,
+      mate = mate)
   }
 
   def assertBases(bases1: Iterable[Byte], bases2: String) = Bases.basesToString(bases1) should equal(bases2)
