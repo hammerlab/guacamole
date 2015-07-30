@@ -171,6 +171,7 @@ object StructuralVariant {
           } else {
             if (areReadsCompatible(read, nextRead, maxNormalInsertSize)) {
               // TODO: this is from DELLY but seems imprecise. It only considers the insert size, not position.
+              // If two reads are of similar length, but don't overlap much, they'll get a spuriously low weight.
               val weight = Math.abs((nextGapEnd - nextStart) - (gapEnd - start))
               graph += (read ~ nextRead) % weight
             }
