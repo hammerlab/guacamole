@@ -8,7 +8,6 @@ import org.kohsuke.args4j.{ Option => Args4JOption }
 
 import scalax.collection.Graph
 import scalax.collection.edge._
-import scala.collection.mutable
 import scalax.collection.mutable.{ Graph => MutableGraph }
 import scalax.collection.GraphPredef._
 import scalax.collection.edge.Implicits._
@@ -16,12 +15,12 @@ import scalax.collection.edge.Implicits._
 /**
  * Structural Variant caller
  *
- * This currently looks for regions with abnormally large insert sizes. This typically indicates
- * that there's been a large deletion.
+ * This follows the DELLY algorithm:
+ * 1. Look for read pairs with abnormally large insert sizes.
+ * 2. Build a graph of pairs which could be explained by a single SV.
+ * 3. Find maximal cliques in this graph.
  *
- * It does this by finding the average insert size of all mate pairs which overlap each 25-base pair "block" of the
- * genome. If this average is significantly different than the average insert size genome-wide, then it's evidence that
- * there may be a structural variant.
+ * These cliques each represent a large deletion.
  *
  * The output is a text file of genomic ranges where there's some evidence of an SV.
  */
@@ -114,7 +113,7 @@ object StructuralVariant {
       val insertStats = medianStats(insertSizes.takeSample(false, 100000))
       println("insert stats: " + insertStats)
 
-      // Find blocks where the average insert size differs significantly from the genome-wide median.
+      // Find read pairs where the insert size differs significantly from the genome-wide median.
       // Following DELLY, we use a threshold of 5 median absolute deviations above the median.
       val maxNormalInsertSize = (insertStats.median + 5 * insertStats.mad).toInt
 
@@ -129,8 +128,10 @@ object StructuralVariant {
       )
     }
 
-    // Given two pairs of reads, is there a deletion which would make both of them have normal insert sizes?
-    def areReadsCompatible(read1: PairedMappedRead, read2: PairedMappedRead, maxNormalInsertSize: Long): Boolean = {
+    // Given two pairs of reads, is there a deletion which would make their insert sizes normal?
+    def areReadsCompatible(read1: PairedMappedRead,
+                           read2: PairedMappedRead,
+                           maxNormalInsertSize: Long): Boolean = {
       if (read1.minPos > read2.minPos) {
         areReadsCompatible(read2, read1, maxNormalInsertSize)
       } else {
@@ -149,12 +150,14 @@ object StructuralVariant {
       }
     }
 
-    // Given a list of reads with abnormally large inserts, construct a graph representation of the structural variants
-    // where:
+    // Given a list of reads with abnormally large inserts, construct a graph representation of the
+    // structural variants where:
     // Vertices = paired reads
     // Edges = two sets of paired reads could represent the same structural variant
+    // Weights = compatibility between reads (0=most compatible)
     // For more details, see the DELLY paper.
-    def buildVariantGraph(exceptionalReads: Iterable[PairedMappedRead], maxNormalInsertSize: Int): PairedReadGraph = {
+    def buildVariantGraph(exceptionalReads: Iterable[PairedMappedRead],
+                          maxNormalInsertSize: Int): PairedReadGraph = {
       val reads = exceptionalReads.toArray.sortBy(_.minPos)
       val graph = MutableGraph[PairedMappedRead, WUnDiEdge]()
 
@@ -170,8 +173,9 @@ object StructuralVariant {
             done = true
           } else {
             if (areReadsCompatible(read, nextRead, maxNormalInsertSize)) {
-              // TODO: this is from DELLY but seems imprecise. It only considers the insert size, not position.
-              // If two reads are of similar length, but don't overlap much, they'll get a spuriously low weight.
+              // TODO: this is from DELLY but seems imprecise. It only considers the insert size,
+              // not position. If two reads are of similar length, but don't overlap much, they'll
+              // get a spuriously low weight.
               val weight = Math.abs((nextGapEnd - nextStart) - (gapEnd - start))
               graph += (read ~ nextRead) % weight
             }
@@ -190,6 +194,7 @@ object StructuralVariant {
                         svEnd: Long,
                         maxNormalInsertSize: Int) {
 
+      // All connected components will have at least one node (by definition), so .head is safe.
       def span = GenomeRange(readPairs.head.read.referenceContig, svStart, svEnd)
 
       // If an edge has one node in the clique and one not, return the one that's not.
@@ -215,8 +220,8 @@ object StructuralVariant {
         val newSvStart = Math.max(svStart, nodeGapMin)
         val newSvEnd = Math.min(svEnd, nodeGapMax)
 
-        // The amount of wiggle room could shrink either because of the new read, or because it shrinks the
-        // the induced structural variant and pulls another read closer to being incompatible.
+        // The amount of wiggle room could shrink either because of the new read, or because it
+        // shrinks the induced SV and pulls another read closer to being incompatible.
         val wiggleNewRead = maxNormalInsertSize - (n.value.insertSize - (newSvEnd - newSvStart))
         val wiggleChange = wiggle + (newSvEnd - newSvStart) - (svEnd - svStart)
         val newWiggle = Math.min(wiggleNewRead, wiggleChange)
@@ -232,8 +237,9 @@ object StructuralVariant {
     object SVClique {
       def apply(pair: PairedMappedRead, maxNormalInsertSize: Int): SVClique = {
         val (_, svStart, svEnd, _) = pair.startsAndStops
-        // this is the "wiggle room": by how much can the SV shrink and still be compatible with all reads in the clique?
-        // It starts negative and then increases towards zero (at which point there's no wiggle room left).
+        // this is the "wiggle room": by how much can the SV shrink and still be compatible with all
+        // reads in the clique? It starts positive and then shrinks towards zero (at which point
+        // there's no wiggle room left).
         val wiggle = maxNormalInsertSize - ((pair.insertSize - (svEnd - svStart)))
         SVClique(Set(pair), wiggle, svStart, svEnd, maxNormalInsertSize)
       }
@@ -241,7 +247,8 @@ object StructuralVariant {
 
     def findOneClique(g: PairedReadGraph, maxNormalInsertSize: Int): SVClique = {
       // Seed the clique with the source of the lowest-weight edge.
-      // Because the graph is constructed by adding edges, all connected components will have at least one edge.
+      // Because the graph is constructed by adding edges, all connected components will have at
+      // least one edge.
       val edges = g.edges.toList.sortBy(_.weight)
       val bestEdge = edges.head
 
@@ -268,11 +275,13 @@ object StructuralVariant {
       val pairedMappedReads = readSet.mappedPairedReads
       val firstInPair = pairedMappedReads.filter(_.isFirstInPair).flatMap(PairedMappedRead(_))
 
-      val ExceptionalReadsReturnType(_, _, _, maxNormalInsertSize, exceptionalReads) = getExceptionalReads(firstInPair)
+      val ExceptionalReadsReturnType(_, _, _, maxNormalInsertSize, exceptionalReads) =
+          getExceptionalReads(firstInPair)
 
       val readsByContig = exceptionalReads.groupBy(_.read.referenceContig)
       val svGraph = readsByContig.mapValues(buildVariantGraph(_, maxNormalInsertSize))
-      val svs = svGraph.mapValues(findCliques(_, maxNormalInsertSize)).mapValues(_.map(_.span).toList)
+      val svs = svGraph.mapValues(findCliques(_, maxNormalInsertSize))
+                       .mapValues(_.map(_.span).toList)
 
       svs.coalesce(1).saveAsTextFile(args.output)
     }
