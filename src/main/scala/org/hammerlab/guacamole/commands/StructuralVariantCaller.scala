@@ -159,19 +159,20 @@ object StructuralVariant {
       val graph = MutableGraph[PairedMappedRead, WUnDiEdge]()
 
       for { (read, i) <- reads.zipWithIndex } {
-        val (start, _, end, _) = read.startsAndStops
+        val (start, _, gapEnd, _) = read.startsAndStops
         var j = i + 1
         var done = false
         // Loop through subsequent reads until it's impossible to find another compatible one.
         while (j < reads.length && !done) {
           val nextRead = reads(j)
-          val (nextStart, _, nextEnd, _) = nextRead.startsAndStops
-          if (Math.abs(nextStart + nextRead.readLength - start) > maxNormalInsertSize) {
+          val (nextStart, nextGapStart, nextGapEnd, _) = nextRead.startsAndStops
+          if (Math.abs(nextGapStart - start) > maxNormalInsertSize) {
             done = true
           } else {
             if (areReadsCompatible(read, nextRead, maxNormalInsertSize)) {
-              val weight = Math.abs((nextEnd - nextStart) - (end - start))
-              graph += (read ~ nextRead) % Math.max(30000, weight)
+              // TODO: this is from DELLY but seems imprecise. It only considers the insert size, not position.
+              val weight = Math.abs((nextGapEnd - nextStart) - (gapEnd - start))
+              graph += (read ~ nextRead) % weight
             }
           }
           j += 1
@@ -185,11 +186,11 @@ object StructuralVariant {
     case class SVClique(
       reads: Set[PairedMappedRead],
       span: GenomeRange,
-      wiggle: Long
-    )
+      wiggle: Long)
 
     def findOneClique(g: PairedReadGraph, maxNormalInsertSize: Int): SVClique = {
       // Seed the clique with the source of the lowest-weight edge.
+      // Because the graph is constructed by adding edges, all connected components will have at least one edge.
       val edges = g.edges.toList.sortBy(_.weight)
       val bestEdge = edges.head
 
@@ -197,39 +198,45 @@ object StructuralVariant {
       var (pairMin, svStart, svEnd, _) = initPair.startsAndStops
 
       // this is the "wiggle room": by how much can the SV shrink and still be compatible with all reads in the clique?
+      // It starts negative and then increases towards zero (at which point there's no wiggle room left).
       var wiggle = initPair.insertSize - maxNormalInsertSize - (svEnd - svStart)
 
       val clique = mutable.Set(initPair)
-
       val graphSize = g.nodes.length
 
-      var cliqueGrow = true
-      while (cliqueGrow && clique.size < graphSize) {
-        cliqueGrow = false
+      // If an edge has one node in the clique and one not, return the one that's not.
+      def findNodeConnectedToClique(edge: PairedReadGraph#EdgeT): Option[PairedReadGraph#NodeT] = {
+        val Seq(node1, node2) = edge.nodes.toSeq
+        val node1InClique = clique.contains(node1.value)
+        val node2InClique = clique.contains(node2.value)
+
+        // The edge should have one end in the clique and one end out of it.
+        (node1InClique, node2InClique) match {
+          case (false, true) => Some(node1)
+          case (true, false) => Some(node2)
+          case _             => None
+        }
+      }
+
+      def nodeCanJoinClique(node: PairedReadGraph#NodeT): Boolean = {
+        clique.subsetOf(node.neighbors map { _.value })
+      }
+
+      var newNode: Option[PairedReadGraph#NodeT] = None
+
+      do {
         // Try to find a node which:
         // 1. isn't currently in the clique
         // 2. is connected to every node in the clique
         // 3. doesn't perturb the SV in a way that makes it incompatible with any reads in the clique
-        mapFirst(edges, (edge: PairedReadGraph#EdgeT) => {
-          val nodes = edge.nodes.toSeq
-          val Seq(node1, node2) = nodes
-          val node1InClique = clique.contains(node1.value)
-          val node2InClique = clique.contains(node2.value)
-
-          // The edge should have one end in the clique and one end out of it.
-          val node = (node1InClique, node2InClique) match {
-            case (false, true) => Some(node1)
-            case (true, false) => Some(node2)
-            case _             => None
-          }
+        newNode = mapFirst(edges, (edge: PairedReadGraph#EdgeT) => {
+          val node = findNodeConnectedToClique(edge)
 
           // TODO: DELLY caches a list of incompatible vertices
 
           // The new node should be fully connected with the rest of the clique.
-          node filter { n =>
-            {
-              clique.subsetOf(n.neighbors map { _.value })
-            }
+          node filter {
+            nodeCanJoinClique
           } filter { n =>
             // And it should be compatible with the existing SV.
             {
@@ -247,7 +254,6 @@ object StructuralVariant {
                 svStart = newSvStart
                 svEnd = newSvEnd
                 wiggle = newWiggle
-                cliqueGrow = true
                 clique += n.value
                 true
               } else {
@@ -256,12 +262,12 @@ object StructuralVariant {
             }
           }
         })
-      }
+      } while (newNode.isDefined && clique.size < graphSize)
 
       val reads = clique.map(_.value).toSet
-      SVClique(reads=reads,
-               span=GenomeRange(reads.head.read.referenceContig, svStart, svEnd),
-               wiggle=Math.abs(wiggle))
+      SVClique(reads = reads,
+        span = GenomeRange(reads.head.read.referenceContig, svStart, svEnd),
+        wiggle = Math.abs(wiggle))
     }
 
     def mapFirst[A, B](seq: Seq[A], f: (A) => Option[B]): Option[B] = {
@@ -284,7 +290,7 @@ object StructuralVariant {
 
       val readsByContig = exceptionalReads.groupBy(_.read.referenceContig)
       val svGraph = readsByContig.mapValues(buildVariantGraph(_, maxNormalInsertSize))
-      val svs = svGraph.mapValues(findCliques(_, maxNormalInsertSize)).mapValues(x => x.map(_.span).toList)
+      val svs = svGraph.mapValues(findCliques(_, maxNormalInsertSize)).mapValues(_.map(_.span).toList)
 
       svs.coalesce(1).saveAsTextFile(args.output)
     }
