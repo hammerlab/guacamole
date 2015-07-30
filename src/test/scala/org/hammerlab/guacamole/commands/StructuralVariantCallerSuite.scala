@@ -12,6 +12,12 @@ class StructuralVariantCallerSuite extends GuacFunSuite with Matchers {
   // aliases
   val MedianStats = StructuralVariant.MedianStats
   val medianStats = StructuralVariant.Caller.medianStats[Int] _
+  val GenomeRange = StructuralVariant.GenomeRange
+
+  def makePair(start: Long, end: Long, mateStart: Long, mateEnd: Long) = {
+    assert(mateEnd - mateStart == end - start)
+    TestUtil.makePairedMappedRead(start = start, mateStart = mateStart, sequence = "A" * (end - start).toInt)
+  }
 
   test("median stats") {
     // This example comes from Wikipedia: https://en.wikipedia.org/wiki/Median_absolute_deviation
@@ -30,12 +36,8 @@ class StructuralVariantCallerSuite extends GuacFunSuite with Matchers {
   test("read compatibility") {
     // Shorthand for this test
     val areCompat = StructuralVariant.Caller.areReadsCompatible(_, _, _)
-    def makePair(start: Long, end: Long, mateStart: Long, mateEnd: Long) = {
-      assert(mateEnd - mateStart == end - start)
-      TestUtil.makePairedMappedRead(start = start, mateStart = mateStart, sequence = "A" * (end - start).toInt)
-    }
 
-    // Assertions which are commented out _should_ pass but do not because of inaccuracies in the DELLY checks.
+    // Assertions which are marked should be inverted but are not because of inaccuracies in the DELLY checks.
 
     // Scenario 1:
     // 0 10       90 100
@@ -116,10 +118,71 @@ class StructuralVariantCallerSuite extends GuacFunSuite with Matchers {
     )
 
     val graph = StructuralVariant.Caller.buildVariantGraph(reads, 100)
-    assert(graph === Graph(reads(1) ~ reads(2) % 1))
+    assert(graph === Graph(reads(1) ~ reads(2) % 0))
+    // See https://github.com/scala-graph/scala-graph/issues/46
+    assert(graph.totalWeight == 0)
 
     // TODO: test overlapping but incompatible pairs
     // TODO: test reads with mateStart < start
+  }
+
+  test("clique detection") {
+    // These reads are all compatible. We'll use them to create some graphs.
+    val (a, b, c, d) = (
+      TestUtil.makePairedMappedRead(start = 1000, mateStart = 1287),
+      TestUtil.makePairedMappedRead(start = 1000, mateStart = 1288),
+      TestUtil.makePairedMappedRead(start = 1001, mateStart = 1289),
+      TestUtil.makePairedMappedRead(start = 1002, mateStart = 1290)
+    )
+    val findCliques = StructuralVariant.Caller.findCliques(_, _)
+
+    // Simple case: two reads which are compatible
+    var g = Graph(a ~ b % 1)
+    assert(findCliques(g, 100).map(_.readPairs) === Seq(Set(a, b)))
+
+    // two reads are compatible, but the third one won't form a clique. The lower-weight edge becomes the clique.
+    g = Graph(a ~ b % 1, b ~ c % 2)
+    assert(findCliques(g, 100).map(_.readPairs) === Seq(Set(a, b)))
+
+    // a fully-connected three-read clique
+    g = Graph(a ~ b % 1, b ~ c % 2, a ~ c % 3)
+    assert(findCliques(g, 100).map(_.readPairs) === Seq(Set(a, b, c)))
+
+    // Read c is not part of the clique, but a lower-weight read, d, is.
+    g = Graph(a ~ b % 1, b ~ c % 2, c ~ d % 3, a ~ d % 4, d ~ b % 5)
+    assert(findCliques(g, 100).map(_.readPairs) === Seq(Set(a, b, d)))
+
+    // {a, c, d} is the maximal clique but we miss it because a~b has stronger agreement
+    g = Graph(a ~ b % 1, a ~ c % 2, a ~ d % 3, c ~ d % 4)
+    assert(findCliques(g, 100).map(_.readPairs) === Seq(Set(a, b)))
+
+    // disjoint components -- the ordering of the components is arbitrary
+    g = Graph(a ~ b % 1, c ~ d % 2)
+    assert(findCliques(g, 100).map(_.readPairs).toSet === Set(Set(a, b), Set(c, d)))
+  }
+
+  // The clique detection tests are entirely for graph operations. This checks cases where there is a clique,
+  // but some paired reads are incompatible with the intersection of gaps between other reads in the clique.
+  test("clique detection with alignment limitations") {
+    // In this situation, all three reads are compatible with each other pairwise, but there is no deletion which
+    // would make all three normal reads. Hence they can't all form a clique representing a single SV.
+    //    <-- ...... -->
+    //      <-- ...... -->
+    // <-- ................ -->
+    //          xxxx
+    // (The xs mark the largest deletion possible with all three reads. It's incompatible with the third read.)
+    val (a, b, c) = (
+      makePair(100, 120, 380, 400),
+      makePair(200, 220, 480, 500),
+      makePair(0, 20, 580, 600)
+    )
+    val findCliques = StructuralVariant.Caller.findCliques(_, _)
+
+    val g = Graph(a ~ b % 1, b ~ c % 2, a ~ c % 3)
+    val Seq(sv) = findCliques(g, 400)
+    assert(sv.readPairs === Set(a, b))
+    assert(sv.span === GenomeRange("chr1", 220, 380))
+    assert(sv.wiggle == 260) // the deletion could be made 260bp smaller & the reads would still be OK
   }
 
 }

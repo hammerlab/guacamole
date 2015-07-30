@@ -8,6 +8,7 @@ case class PairedMappedRead(read: MappedRead,
                             isFirstInPair: Boolean,
                             inferredInsertSize: Int,
                             mate: MateAlignmentProperties) {
+  // The length of the primary read's sequence
   def readLength: Long = {
     this.read.sequence.length
   }
@@ -28,7 +29,12 @@ case class PairedMappedRead(read: MappedRead,
 
   // Size of the gap between mated reads (only makes sense for same contig pairs)
   def gapLength: Long = {
-    Math.abs(this.read.start - this.mate.start) + this.readLength
+    Math.abs(this.read.start - this.mate.start) - this.readLength
+  }
+
+  // Should be the same as inferredInsertSize
+  def insertSize: Long = {
+    this.maxPos - this.minPos
   }
 
   // Returns the four alignment points, i.e. the start/stop of each read in the pair.
