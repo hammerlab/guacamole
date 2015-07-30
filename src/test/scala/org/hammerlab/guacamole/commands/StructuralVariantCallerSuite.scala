@@ -118,7 +118,9 @@ class StructuralVariantCallerSuite extends GuacFunSuite with Matchers {
     )
 
     val graph = StructuralVariant.Caller.buildVariantGraph(reads, 100)
-    assert(graph === Graph(reads(1) ~ reads(2) % 1))
+    assert(graph === Graph(reads(1) ~ reads(2) % 0))
+    // See https://github.com/scala-graph/scala-graph/issues/46
+    assert(graph.totalWeight == 0)
 
     // TODO: test overlapping but incompatible pairs
     // TODO: test reads with mateStart < start
