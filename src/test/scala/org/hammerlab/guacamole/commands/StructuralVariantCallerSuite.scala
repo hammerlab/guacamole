@@ -180,7 +180,7 @@ class StructuralVariantCallerSuite extends GuacFunSuite with Matchers {
     val Seq(sv) = findCliques(g, 400)
     assert(sv.reads === Set(a, b))
     assert(sv.span === GenomeRange("chr1", 220, 380))
-    assert(sv.wiggle == 260)  // the deletion could be made 260bp smaller & the reads would still be OK
+    assert(sv.wiggle == 260) // the deletion could be made 260bp smaller & the reads would still be OK
   }
 
 }
