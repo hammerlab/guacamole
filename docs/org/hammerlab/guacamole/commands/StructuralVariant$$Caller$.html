@@ -94,6 +94,19 @@
       </span>
       </h4>
       
+    </li><li name="org.hammerlab.guacamole.commands.StructuralVariant.Caller.SVClique" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="SVCliqueextendsProductwithSerializable"></a>
+      <a id="SVClique:SVClique"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="StructuralVariant$$Caller$$SVClique.html"><span class="name">SVClique</span></a><span class="params">(<span name="readPairs">readPairs: <span class="extype" name="scala.Predef.Set">Set</span>[<a href="../reads/PairedMappedRead.html" class="extype" name="org.hammerlab.guacamole.reads.PairedMappedRead">PairedMappedRead</a>]</span>, <span name="wiggle">wiggle: <span class="extype" name="scala.Long">Long</span></span>, <span name="svStart">svStart: <span class="extype" name="scala.Long">Long</span></span>, <span name="svEnd">svEnd: <span class="extype" name="scala.Long">Long</span></span>, <span name="maxNormalInsertSize">maxNormalInsertSize: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
     </li></ol>
             </div>
 
@@ -166,6 +179,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.commands.StructuralVariant.Caller.SVClique" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="SVClique"></a>
+      <a id="SVClique:SVClique"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="StructuralVariant$$Caller$$SVClique$.html"><span class="name">SVClique</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
     </li><li name="org.hammerlab.guacamole.commands.StructuralVariant.Caller#areReadsCompatible" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="areReadsCompatible(read1:org.hammerlab.guacamole.reads.PairedMappedRead,read2:org.hammerlab.guacamole.reads.PairedMappedRead,maxNormalInsertSize:Long):Boolean"></a>
       <a id="areReadsCompatible(PairedMappedRead,PairedMappedRead,Long):Boolean"></a>
@@ -282,6 +308,32 @@
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.commands.StructuralVariant.Caller#findCliques" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="findCliques(g:org.hammerlab.guacamole.commands.StructuralVariant.PairedReadGraph,maxNormalInsertSize:Int):Traversable[org.hammerlab.guacamole.commands.StructuralVariant.Caller.SVClique]"></a>
+      <a id="findCliques(PairedReadGraph,Int):Traversable[SVClique]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">findCliques</span><span class="params">(<span name="g">g: <a href="StructuralVariant$.html#PairedReadGraph=scalax.collection.Graph[org.hammerlab.guacamole.reads.PairedMappedRead,scalax.collection.edge.WUnDiEdge]" class="extmbr" name="org.hammerlab.guacamole.commands.StructuralVariant.PairedReadGraph">PairedReadGraph</a></span>, <span name="maxNormalInsertSize">maxNormalInsertSize: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Traversable">Traversable</span>[<a href="StructuralVariant$$Caller$$SVClique.html" class="extype" name="org.hammerlab.guacamole.commands.StructuralVariant.Caller.SVClique">SVClique</a>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.commands.StructuralVariant.Caller#findOneClique" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="findOneClique(g:org.hammerlab.guacamole.commands.StructuralVariant.PairedReadGraph,maxNormalInsertSize:Int):org.hammerlab.guacamole.commands.StructuralVariant.Caller.SVClique"></a>
+      <a id="findOneClique(PairedReadGraph,Int):SVClique"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">findOneClique</span><span class="params">(<span name="g">g: <a href="StructuralVariant$.html#PairedReadGraph=scalax.collection.Graph[org.hammerlab.guacamole.reads.PairedMappedRead,scalax.collection.edge.WUnDiEdge]" class="extmbr" name="org.hammerlab.guacamole.commands.StructuralVariant.PairedReadGraph">PairedReadGraph</a></span>, <span name="maxNormalInsertSize">maxNormalInsertSize: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <a href="StructuralVariant$$Caller$$SVClique.html" class="extype" name="org.hammerlab.guacamole.commands.StructuralVariant.Caller.SVClique">SVClique</a></span>
+      </span>
+      </h4>
+      
     </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
       <a id="getClass():Class[_]"></a>
