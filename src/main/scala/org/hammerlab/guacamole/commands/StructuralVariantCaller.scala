@@ -184,7 +184,7 @@ object StructuralVariant {
       graph
     }
 
-    case class SVClique(readPairs: mutable.Set[PairedMappedRead],
+    case class SVClique(readPairs: Set[PairedMappedRead],
                         wiggle: Long,
                         svStart: Long,
                         svEnd: Long,
@@ -235,7 +235,7 @@ object StructuralVariant {
         // this is the "wiggle room": by how much can the SV shrink and still be compatible with all reads in the clique?
         // It starts negative and then increases towards zero (at which point there's no wiggle room left).
         val wiggle = maxNormalInsertSize - ((pair.insertSize - (svEnd - svStart)))
-        SVClique(mutable.Set(pair), wiggle, svStart, svEnd, maxNormalInsertSize)
+        SVClique(Set(pair), wiggle, svStart, svEnd, maxNormalInsertSize)
       }
     }
 
