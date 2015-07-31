@@ -1,11 +1,15 @@
 package org.hammerlab.guacamole.commands
 
+import org.hammerlab.guacamole.reads.PairedMappedRead
 import org.hammerlab.guacamole.util.{ TestUtil, GuacFunSuite }
 import org.scalatest.Matchers
 
 import scalax.collection.Graph
 import scalax.collection.GraphPredef._
 import scalax.collection.edge.Implicits._
+import scalax.collection.edge.{ WUnDiEdge, WkUnDiEdge }
+
+import scala.reflect.runtime.universe.TypeTag
 
 class StructuralVariantCallerSuite extends GuacFunSuite with Matchers {
 
@@ -17,6 +21,13 @@ class StructuralVariantCallerSuite extends GuacFunSuite with Matchers {
   def makePair(start: Long, end: Long, mateStart: Long, mateEnd: Long) = {
     assert(mateEnd - mateStart == end - start)
     TestUtil.makePairedMappedRead(start = start, mateStart = mateStart, sequence = "A" * (end - start).toInt)
+  }
+
+  // The syntax for making a WkUnDiEdge graph is a bit awkward.
+  // This converts WUnDiEdges, which have a cleaner syntax, to WkUnDiEdges.
+  def makeGraph[N: TypeTag](args: WUnDiEdge[N]*): Graph[N, WkUnDiEdge] = {
+    val keyedEdges = args.map(edge => WkUnDiEdge(edge.nodeSeq(0), edge.nodeSeq(1))(edge.weight))
+    Graph[N, WkUnDiEdge](keyedEdges: _*)
   }
 
   test("median stats") {
@@ -118,9 +129,7 @@ class StructuralVariantCallerSuite extends GuacFunSuite with Matchers {
     )
 
     val graph = StructuralVariant.Caller.buildVariantGraph(reads, 100)
-    assert(graph === Graph(reads(1) ~ reads(2) % 0))
-    // See https://github.com/scala-graph/scala-graph/issues/46
-    assert(graph.totalWeight == 0)
+    assert(graph === makeGraph(reads(1) ~ reads(2) % 0))
 
     // TODO: test overlapping but incompatible pairs
     // TODO: test reads with mateStart < start
@@ -137,27 +146,27 @@ class StructuralVariantCallerSuite extends GuacFunSuite with Matchers {
     val findCliques = StructuralVariant.Caller.findCliques(_, _)
 
     // Simple case: two reads which are compatible
-    var g = Graph(a ~ b % 1)
+    var g = makeGraph(a ~ b % 1)
     assert(findCliques(g, 100).map(_.readPairs) === Seq(Set(a, b)))
 
     // two reads are compatible, but the third one won't form a clique. The lower-weight edge becomes the clique.
-    g = Graph(a ~ b % 1, b ~ c % 2)
+    g = makeGraph(a ~ b % 1, b ~ c % 2)
     assert(findCliques(g, 100).map(_.readPairs) === Seq(Set(a, b)))
 
     // a fully-connected three-read clique
-    g = Graph(a ~ b % 1, b ~ c % 2, a ~ c % 3)
+    g = makeGraph(a ~ b % 1, b ~ c % 2, a ~ c % 3)
     assert(findCliques(g, 100).map(_.readPairs) === Seq(Set(a, b, c)))
 
     // Read c is not part of the clique, but a lower-weight read, d, is.
-    g = Graph(a ~ b % 1, b ~ c % 2, c ~ d % 3, a ~ d % 4, d ~ b % 5)
+    g = makeGraph(a ~ b % 1, b ~ c % 2, c ~ d % 3, a ~ d % 4, d ~ b % 5)
     assert(findCliques(g, 100).map(_.readPairs) === Seq(Set(a, b, d)))
 
     // {a, c, d} is the maximal clique but we miss it because a~b has stronger agreement
-    g = Graph(a ~ b % 1, a ~ c % 2, a ~ d % 3, c ~ d % 4)
+    g = makeGraph(a ~ b % 1, a ~ c % 2, a ~ d % 3, c ~ d % 4)
     assert(findCliques(g, 100).map(_.readPairs) === Seq(Set(a, b)))
 
     // disjoint components -- the ordering of the components is arbitrary
-    g = Graph(a ~ b % 1, c ~ d % 2)
+    g = makeGraph(a ~ b % 1, c ~ d % 2)
     assert(findCliques(g, 100).map(_.readPairs).toSet === Set(Set(a, b), Set(c, d)))
   }
 
@@ -178,7 +187,7 @@ class StructuralVariantCallerSuite extends GuacFunSuite with Matchers {
     )
     val findCliques = StructuralVariant.Caller.findCliques(_, _)
 
-    val g = Graph(a ~ b % 1, b ~ c % 2, a ~ c % 3)
+    val g = makeGraph(a ~ b % 1, b ~ c % 2, a ~ c % 3)
     val Seq(sv) = findCliques(g, 400)
     assert(sv.readPairs === Set(a, b))
     assert(sv.span === GenomeRange("chr1", 220, 380))
