@@ -103,7 +103,7 @@ class GermlineThresholdCallerSuite extends GuacFunSuite with Matchers {
   // Regression test for https://github.com/hammerlab/guacamole/issues/302
   sparkTest("heterozygous deletion") {
     val filters = Read.InputFilters(mapped = true, nonDuplicate = true, passedVendorQualityChecks = true)
-    val reads = TestUtil.loadReads(sc, "synthetic.challenge.set1.normal.v2.withMDTags.chr2.syn1fp.sam", filters = filters).mappedReads.collect()
+    val reads = TestUtil.loadReads(sc, "synthetic.challenge.set1.normal.v2.withMDTags.chr2.syn1fp.sam", filters = filters).mdTaggedReads.collect()
     val pileup = Pileup(reads, "2", 16050070)
 
     val genotypes = GermlineThreshold.Caller.callVariantsAtLocus(pileup, 8 /* 8% variant allele fraction */ , emitRef = false)

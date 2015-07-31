@@ -68,7 +68,7 @@ object TestUtil extends Matchers {
                start: Long = 1,
                chr: String = "chr1",
                qualityScores: Option[Seq[Int]] = None,
-               alignmentQuality: Int = 30): MappedRead = {
+               alignmentQuality: Int = 30): MDTaggedRead = {
 
     val qualityScoreString = if (qualityScores.isDefined) {
       qualityScores.get.map(q => q + 33).map(_.toChar).mkString
@@ -184,9 +184,10 @@ object TestUtil extends Matchers {
 
   def loadTumorNormalReads(sc: SparkContext,
                            tumorFile: String,
-                           normalFile: String): (Seq[MappedRead], Seq[MappedRead]) = {
+                           normalFile: String): (Seq[MDTaggedRead], Seq[MDTaggedRead]) = {
     val filters = Read.InputFilters(mapped = true, nonDuplicate = true, passedVendorQualityChecks = true)
-    (loadReads(sc, tumorFile, filters = filters).mappedReads.collect(), loadReads(sc, normalFile, filters = filters).mappedReads.collect())
+    (loadReads(sc, tumorFile, filters = filters).mdTaggedReads.collect(),
+      loadReads(sc, normalFile, filters = filters).mdTaggedReads.collect())
   }
 
   def loadReads(sc: SparkContext,
@@ -199,8 +200,8 @@ object TestUtil extends Matchers {
     ReadSet(sc, path, requireMDTagsOnMappedReads = false, filters = filters)
   }
 
-  def loadTumorNormalPileup(tumorReads: Seq[MappedRead],
-                            normalReads: Seq[MappedRead],
+  def loadTumorNormalPileup(tumorReads: Seq[MDTaggedRead],
+                            normalReads: Seq[MDTaggedRead],
                             locus: Long): (Pileup, Pileup) = {
     val contig = tumorReads(0).referenceContig
     assume(normalReads(0).referenceContig == contig)

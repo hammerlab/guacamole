@@ -61,7 +61,7 @@ class PairedReadSuite extends FunSuite with Matchers {
     )
 
     val mread = PairedRead(
-      MappedRead(
+      new MDTaggedRead(
         5, // token
         "TCGACCCTCGA",
         Array[Byte]((10 to 20).map(_.toByte): _*),

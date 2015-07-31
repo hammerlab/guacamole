@@ -11,7 +11,7 @@ import org.apache.spark.storage.StorageLevel
 import org.hammerlab.guacamole._
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.Read.InputFilters
-import org.hammerlab.guacamole.reads.{ MappedRead, Read }
+import org.hammerlab.guacamole.reads.{ MDTaggedRead, MappedRead, Read }
 import org.kohsuke.args4j.{ Argument, Option => Args4jOption }
 
 /**
@@ -105,14 +105,14 @@ object VAFHistogram {
       val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(
         args,
         loci,
-        readSets(0).mappedReads // Use the first set of reads as a proxy for read depth
+        readSets(0).mdTaggedReads // Use the first set of reads as a proxy for read depth
       )
 
       val minReadDepth = args.minReadDepth
       val minVariantAlleleFrequency = args.minVAF
       val variantLoci = readSets.map(readSet =>
         variantLociFromReads(
-          readSet.mappedReads,
+          readSet.mdTaggedReads,
           lociPartitions,
           samplePercent,
           minReadDepth,
@@ -125,7 +125,7 @@ object VAFHistogram {
       val variantAlleleHistograms =
         variantLoci.map(variantLoci => generateVAFHistogram(variantLoci, bins))
 
-      val sampleAndFileNames = args.bams.zip(readSets.map(_.mappedReads.take(1)(0).sampleName))
+      val sampleAndFileNames = args.bams.zip(readSets.map(_.mdTaggedReads.take(1)(0).sampleName))
       val binSize = 100 / bins
 
       def histogramToString(kv: (Int, Long)): String = {
@@ -196,7 +196,7 @@ object VAFHistogram {
    * @param printStats Print descriptive statistics for the variant allele frequency distribution
    * @return RDD of VariantLocus, which contain the locus and non-zero variant allele frequency
    */
-  def variantLociFromReads(reads: RDD[MappedRead],
+  def variantLociFromReads(reads: RDD[MDTaggedRead],
                            lociPartitions: LociMap[Long],
                            samplePercent: Int = 100,
                            minReadDepth: Int = 0,

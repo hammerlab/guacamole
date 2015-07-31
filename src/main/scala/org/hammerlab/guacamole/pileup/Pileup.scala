@@ -19,7 +19,7 @@
 package org.hammerlab.guacamole.pileup
 
 import org.hammerlab.guacamole.Bases
-import org.hammerlab.guacamole.reads.MappedRead
+import org.hammerlab.guacamole.reads.{ MDTaggedRead, MappedRead }
 import org.hammerlab.guacamole.variants.{ Allele, Genotype }
 
 /**
@@ -99,7 +99,7 @@ case class Pileup(referenceName: String, locus: Long, referenceBase: Byte, eleme
    * @param newReads The *new* reads, i.e. those that overlap the new locus, but not the current locus.
    * @return A new [[Pileup]] at the given locus.
    */
-  def atGreaterLocus(newLocus: Long, newReferenceBase: Byte, newReads: Iterator[MappedRead]) = {
+  def atGreaterLocus(newLocus: Long, newReferenceBase: Byte, newReads: Iterator[MDTaggedRead]) = {
     assume(elements.isEmpty || newLocus > locus,
       "New locus (%d) not greater than current locus (%d)".format(newLocus, locus))
     if (elements.isEmpty && newReads.isEmpty) {
@@ -153,7 +153,7 @@ object Pileup {
    * @param locus locus to find reference base at
    * @return First non N reference base at this locus
    */
-  def referenceBaseAtLocus(reads: Seq[MappedRead], locus: Long): Byte = {
+  def referenceBaseAtLocus(reads: Seq[MDTaggedRead], locus: Long): Byte = {
     // We take the reference base from the first read with a standard A, C, T, G base
     // TODO: Is there a case where the reads disagree
     val readWithStandardReferenceBase = reads.find(read => Bases.isStandardBase(read.getReferenceBaseAtLocus(locus)))
@@ -171,13 +171,13 @@ object Pileup {
    * @param referenceBase The reference base at [[locus]]
    * @return A [[Pileup]] at the given locus.
    */
-  def apply(reads: Seq[MappedRead], referenceName: String, locus: Long, referenceBase: Byte): Pileup = {
+  def apply(reads: Seq[MDTaggedRead], referenceName: String, locus: Long, referenceBase: Byte): Pileup = {
     //TODO: Is this call to overlaps locus necessary?
     val elements = reads.filter(_.overlapsLocus(locus)).map(PileupElement(_, locus, referenceBase))
     Pileup(referenceName, locus, referenceBase, elements)
   }
 
-  def apply(reads: Seq[MappedRead], referenceName: String, locus: Long): Pileup = {
+  def apply(reads: Seq[MDTaggedRead], referenceName: String, locus: Long): Pileup = {
     val overlappingReads = reads.filter(_.overlapsLocus(locus))
     val referenceBase = referenceBaseAtLocus(overlappingReads, locus)
     val elements = overlappingReads.map(PileupElement(_, locus, referenceBase))

@@ -20,7 +20,7 @@ package org.hammerlab.guacamole.likelihood
 
 import org.hammerlab.guacamole.util.{ TestUtil, GuacFunSuite }
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.reads.MappedRead
+import org.hammerlab.guacamole.reads.MDTaggedRead
 import org.hammerlab.guacamole.variants.Genotype
 import org.hammerlab.guacamole.ReadsUtil._
 import org.scalatest.Matchers
@@ -42,7 +42,7 @@ class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks with M
     }
   }
 
-  def testGenotypeLikelihoods(reads: Seq[MappedRead], genotypesMap: ((Char, Char), Double)*): Unit = {
+  def testGenotypeLikelihoods(reads: Seq[MDTaggedRead], genotypesMap: ((Char, Char), Double)*): Unit = {
     val pileup = Pileup(reads, reads(0).referenceContig, 1)
     forAll(Table("genotype", genotypesMap: _*)) { pair =>
       TestUtil.assertAlmostEqual(

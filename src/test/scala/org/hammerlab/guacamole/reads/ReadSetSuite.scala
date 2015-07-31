@@ -87,4 +87,21 @@ class ReadSetSuite extends GuacFunSuite with Matchers {
     }
 
   }
+
+  sparkTest("load mdTaggedReads") {
+    val readSet = TestUtil.loadReads(sc, "different_start_reads.sam")
+    readSet.mappedReads.collect().length should be(8)
+    readSet.mdTaggedReads.collect().length should be(8)
+    readSet.mappedPairedReads.collect().length should be(8)
+    readSet.mdTaggedPairedReads.collect().length should be(8)
+  }
+
+  sparkTest("load without mdTaggedReads") {
+    val readSet = TestUtil.loadReads(sc, "tumor_without_mdtag.sam")
+    readSet.reads.collect().length should be(50)
+    readSet.mappedReads.collect().length should be(50)
+    readSet.mdTaggedReads.collect().length should be(0)
+    readSet.mappedPairedReads.collect().length should be(50)
+    readSet.mdTaggedPairedReads.collect().length should be(0)
+  }
 }

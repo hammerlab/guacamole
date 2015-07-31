@@ -26,7 +26,7 @@ import org.apache.spark.serializer.JavaSerializer
 import org.hammerlab.guacamole.Common.Arguments.{ Base, Loci }
 import org.hammerlab.guacamole.Common._
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.reads.MappedRead
+import org.hammerlab.guacamole.reads.{ MDTaggedRead, MappedRead }
 import org.hammerlab.guacamole.windowing.{ SplitIterator, SlidingWindow }
 import org.kohsuke.args4j.{ Option => Args4jOption }
 
@@ -251,7 +251,7 @@ object DistributedUtil extends Logging {
    *
    *  If an existing Pileup is provided, then its locus must be <= the new locus.
    */
-  private def initOrMovePileup(existing: Option[Pileup], window: SlidingWindow[MappedRead]): Pileup = {
+  private def initOrMovePileup(existing: Option[Pileup], window: SlidingWindow[MDTaggedRead]): Pileup = {
     assume(window.halfWindowSize == 0)
 
     val locus = window.currentLocus
@@ -275,7 +275,7 @@ object DistributedUtil extends Logging {
    *
    */
   def pileupFlatMap[T: ClassTag](
-    reads: RDD[MappedRead],
+    reads: RDD[MDTaggedRead],
     lociPartitions: LociMap[Long],
     skipEmpty: Boolean,
     function: Pileup => Iterator[T]): RDD[T] = {
@@ -285,7 +285,7 @@ object DistributedUtil extends Logging {
       skipEmpty,
       0,
       None,
-      (maybePileup: Option[Pileup], windows: PerSample[SlidingWindow[MappedRead]]) => {
+      (maybePileup: Option[Pileup], windows: PerSample[SlidingWindow[MDTaggedRead]]) => {
         assert(windows.length == 1)
         val pileup = initOrMovePileup(maybePileup, windows(0))
         (Some(pileup), function(pileup))
@@ -293,7 +293,7 @@ object DistributedUtil extends Logging {
     )
   }
   /**
-   * Flatmap across loci on two RDDs of MappedReads. At each locus the provided function is passed two Pileup instances,
+   * Flatmap across loci on two RDDs of MDTaggedReads. At each locus the provided function is passed two Pileup instances,
    * giving the pileup for the reads in each RDD at that locus.
    *
    * @param skipEmpty see [[pileupFlatMap]] for description.
@@ -302,8 +302,8 @@ object DistributedUtil extends Logging {
    *
    */
   def pileupFlatMapTwoRDDs[T: ClassTag](
-    reads1: RDD[MappedRead],
-    reads2: RDD[MappedRead],
+    reads1: RDD[MDTaggedRead],
+    reads2: RDD[MDTaggedRead],
     lociPartitions: LociMap[Long],
     skipEmpty: Boolean,
     function: (Pileup, Pileup) => Iterator[T]): RDD[T] = {
@@ -313,7 +313,7 @@ object DistributedUtil extends Logging {
       skipEmpty,
       halfWindowSize = 0L,
       initialState = None,
-      function = (maybePileups: Option[(Pileup, Pileup)], windows: PerSample[SlidingWindow[MappedRead]]) => {
+      function = (maybePileups: Option[(Pileup, Pileup)], windows: PerSample[SlidingWindow[MDTaggedRead]]) => {
         assert(windows.length == 2)
         val pileup1 = initOrMovePileup(maybePileups.map(_._1), windows(0))
         val pileup2 = initOrMovePileup(maybePileups.map(_._2), windows(1))
@@ -322,12 +322,12 @@ object DistributedUtil extends Logging {
   }
 
   /**
-   * Flatmap across loci and any number of RDDs of MappedReads.
+   * Flatmap across loci and any number of RDDs of MDTaggedReads.
    *
    * @see the windowTaskFlatMapMultipleRDDs function for other argument descriptions.
    */
   def pileupFlatMapMultipleRDDs[T: ClassTag](
-    readsRDDs: Seq[RDD[MappedRead]],
+    readsRDDs: Seq[RDD[MDTaggedRead]],
     lociPartitions: LociMap[Long],
     skipEmpty: Boolean,
     function: Seq[Pileup] => Iterator[T]): RDD[T] = {
@@ -337,7 +337,7 @@ object DistributedUtil extends Logging {
       skipEmpty,
       halfWindowSize = 0L,
       initialState = None,
-      function = (maybePileups: Option[Seq[Pileup]], windows: PerSample[SlidingWindow[MappedRead]]) => {
+      function = (maybePileups: Option[Seq[Pileup]], windows: PerSample[SlidingWindow[MDTaggedRead]]) => {
         val advancedPileups = maybePileups match {
           case Some(existingPileups) => {
             existingPileups.zip(windows).map(

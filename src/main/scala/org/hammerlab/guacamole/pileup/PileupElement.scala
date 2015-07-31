@@ -20,7 +20,7 @@ package org.hammerlab.guacamole.pileup
 
 import htsjdk.samtools.{ CigarElement, CigarOperator }
 import org.hammerlab.guacamole.{ Bases, CigarUtils }
-import org.hammerlab.guacamole.reads.MappedRead
+import org.hammerlab.guacamole.reads.{ MDTaggedRead, MappedRead }
 import org.hammerlab.guacamole.variants.Allele
 
 import scala.annotation.tailrec
@@ -38,7 +38,7 @@ import scala.annotation.tailrec
  * @param indexWithinCigarElement The offset of this element within the current cigar element.
  */
 case class PileupElement(
-    read: MappedRead,
+    read: MDTaggedRead,
     locus: Long,
     referenceBase: Byte,
     readPosition: Int,
@@ -261,7 +261,7 @@ object PileupElement {
   /**
    * Create a new [[PileupElement]] backed by the given read at the specified locus. The read must overlap the locus.
    */
-  def apply(read: MappedRead, locus: Long, referenceBase: Byte): PileupElement = {
+  def apply(read: MDTaggedRead, locus: Long, referenceBase: Byte): PileupElement = {
     PileupElement(
       read = read,
       locus = read.start,

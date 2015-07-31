@@ -77,7 +77,7 @@ object MDTagUtils {
     reference.toArray
   }
 
-  def getReference(read: MappedRead, allowNBase: Boolean): (Long, Seq[Byte]) = {
+  def getReference(read: MDTaggedRead, allowNBase: Boolean): (Long, Seq[Byte]) = {
     val readReferenceStart = read.mdTag.start
     (readReferenceStart, getReference(read.mdTag, read.sequence, read.cigar, allowNBase))
   }
@@ -91,7 +91,7 @@ object MDTagUtils {
    * @param referenceEnd locus at which to end reference sequence (exclusive)
    * @return A sequence of bytes corresponding to the reference overlapping these read.
    */
-  def getReference(sortedReads: Seq[MappedRead],
+  def getReference(sortedReads: Seq[MDTaggedRead],
                    referenceStart: Long,
                    referenceEnd: Long): Array[Byte] = {
 

@@ -22,7 +22,7 @@ import org.hammerlab.guacamole.commands.SomaticStandard
 import org.hammerlab.guacamole.util.{ TestUtil, GuacFunSuite }
 import TestUtil.Implicits._
 import TestUtil.assertBases
-import org.hammerlab.guacamole.reads.MappedRead
+import org.hammerlab.guacamole.reads.{ MDTaggedRead, MappedRead }
 import org.hammerlab.guacamole.Bases
 import org.hammerlab.guacamole.variants.Allele
 import org.scalatest.Matchers
@@ -31,7 +31,7 @@ import org.scalatest.prop.TableDrivenPropertyChecks
 class PileupSuite extends GuacFunSuite with Matchers with TableDrivenPropertyChecks {
 
   //lazy so that this is only accessed from inside a spark test where SparkContext has been initialized
-  lazy val testAdamRecords = TestUtil.loadReads(sc, "different_start_reads.sam").mappedReads.collect()
+  lazy val testAdamRecords = TestUtil.loadReads(sc, "different_start_reads.sam").mdTaggedReads.collect()
 
   // The follow two functions provide a convenience for testing but not efficient as they rebuild
   // the reference sequence for a read every time
@@ -39,12 +39,12 @@ class PileupSuite extends GuacFunSuite with Matchers with TableDrivenPropertyChe
     element.advanceToLocus(locus, element.read.getReferenceBaseAtLocus(locus))
   }
 
-  def pileupElementFromRead(read: MappedRead, locus: Long): PileupElement = {
+  def pileupElementFromRead(read: MDTaggedRead, locus: Long): PileupElement = {
     PileupElement(read, locus, read.getReferenceBaseAtLocus(locus))
   }
 
   def loadPileup(filename: String, locus: Long = 0): Pileup = {
-    val records = TestUtil.loadReads(sc, filename).mappedReads
+    val records = TestUtil.loadReads(sc, filename).mdTaggedReads
     val localReads = records.collect
     Pileup(localReads, localReads(0).referenceContig, locus)
   }

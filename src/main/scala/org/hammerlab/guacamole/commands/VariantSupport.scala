@@ -24,7 +24,7 @@ import org.bdgenomics.adam.rdd.ADAMContext
 import org.bdgenomics.formats.avro.Variant
 import org.hammerlab.guacamole._
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.reads.MappedRead
+import org.hammerlab.guacamole.reads.{ MDTaggedRead, MappedRead }
 import org.hammerlab.guacamole.reads.Read.InputFilters
 import org.kohsuke.args4j.{ Argument, Option => Args4jOption }
 
@@ -66,7 +66,7 @@ object VariantSupport {
       val adamContext = new ADAMContext(sc)
 
       val variants: RDD[Variant] = adamContext.loadVariants(args.variants)
-      val reads: Seq[RDD[MappedRead]] = args.bams.zipWithIndex.map(
+      val reads: Seq[RDD[MDTaggedRead]] = args.bams.zipWithIndex.map(
         bamFile =>
           ReadSet(
             sc,
@@ -74,7 +74,7 @@ object VariantSupport {
             requireMDTagsOnMappedReads = false,
             InputFilters.empty,
             token = bamFile._2,
-            contigLengthsFromDictionary = false).mappedReads
+            contigLengthsFromDictionary = false).mdTaggedReads
       )
 
       // Build a loci set from the variant positions
