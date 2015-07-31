@@ -21,7 +21,7 @@ package org.hammerlab.guacamole
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.models.SequenceDictionary
-import org.hammerlab.guacamole.reads.{ MappedRead, Read, PairedRead }
+import org.hammerlab.guacamole.reads.{ MDTaggedRead, MappedRead, Read, PairedRead }
 
 /**
  * A ReadSet contains an RDD of reads along with some metadata about them.
@@ -51,10 +51,32 @@ case class ReadSet(
     }
   )
 
-  lazy val mappedPairedReads: RDD[PairedRead[MappedRead]] = reads.flatMap(read =>
+  lazy val mdTaggedPairedReads: RDD[PairedRead[MDTaggedRead]] = {
+    def hasMDTag(rp: PairedRead[MappedRead]) = {
+      rp.read.mdTagString.isDefined
+    }
+    mappedPairedReads.flatMap(read =>
+      read match {
+        case rp: PairedRead[_] if hasMDTag(rp) => Some(rp.asInstanceOf[PairedRead[MDTaggedRead]])
+        case _                                 => None
+      }
+    )
+  }
+
+  lazy val mappedPairedReads: RDD[PairedRead[MappedRead]] = {
+    reads.flatMap(read =>
+      read match {
+        case rp: PairedRead[_] if rp.isMapped => Some(rp.asInstanceOf[PairedRead[MappedRead]])
+        case _                                => None
+      }
+    )
+  }
+
+  lazy val mdTaggedReads = reads.flatMap(read =>
     read match {
-      case rp: PairedRead[_] if rp.isMapped => Some(rp.asInstanceOf[PairedRead[MappedRead]])
-      case _                                => None
+      case r: MDTaggedRead                   => Some(r)
+      case PairedRead(r: MDTaggedRead, _, _) => Some(r)
+      case _                                 => None
     }
   )
 

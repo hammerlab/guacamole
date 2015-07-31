@@ -36,7 +36,7 @@ class MappedReadSerializerSuite extends GuacFunSuite with Matchers {
       50,
       325352323,
       TextCigarCodec.decode(""),
-      mdTagString = "11",
+      mdTagString = Some("11"),
       false,
       isPositiveStrand = true,
       isPaired = true
@@ -60,7 +60,7 @@ class MappedReadSerializerSuite extends GuacFunSuite with Matchers {
     deserialized.alignmentQuality should equal(read.alignmentQuality)
     deserialized.start should equal(read.start)
     deserialized.cigar should equal(read.cigar)
-    deserialized.mdTag should equal(read.mdTag)
+    deserialized.mdTagOpt should equal(read.mdTagOpt)
     deserialized.failedVendorQualityChecks should equal(read.failedVendorQualityChecks)
     deserialized.isPositiveStrand should equal(read.isPositiveStrand)
     deserialized.isPaired should equal(read.isPaired)
@@ -77,7 +77,7 @@ class MappedReadSerializerSuite extends GuacFunSuite with Matchers {
       50,
       325352323,
       TextCigarCodec.decode(""),
-      mdTagString = "11",
+      mdTagString = Some("11"),
       false,
       isPositiveStrand = true,
       isPaired = true
@@ -101,7 +101,7 @@ class MappedReadSerializerSuite extends GuacFunSuite with Matchers {
     deserialized.alignmentQuality should equal(read.alignmentQuality)
     deserialized.start should equal(read.start)
     deserialized.cigar should equal(read.cigar)
-    deserialized.mdTag should equal(read.mdTag)
+    deserialized.mdTagOpt should equal(read.mdTagOpt)
     deserialized.failedVendorQualityChecks should equal(read.failedVendorQualityChecks)
     deserialized.isPositiveStrand should equal(read.isPositiveStrand)
     deserialized.isPaired should equal(read.isPaired)
@@ -118,7 +118,7 @@ class MappedReadSerializerSuite extends GuacFunSuite with Matchers {
       50,
       325352323,
       TextCigarCodec.decode(""),
-      mdTagString = "11",
+      mdTagString = Some("11"),
       false,
       isPositiveStrand = true,
       isPaired = true
@@ -142,7 +142,48 @@ class MappedReadSerializerSuite extends GuacFunSuite with Matchers {
     deserialized.alignmentQuality should equal(read.alignmentQuality)
     deserialized.start should equal(read.start)
     deserialized.cigar should equal(read.cigar)
-    deserialized.mdTag should equal(read.mdTag)
+    deserialized.mdTagOpt should equal(read.mdTagOpt)
+    deserialized.failedVendorQualityChecks should equal(read.failedVendorQualityChecks)
+    deserialized.isPositiveStrand should equal(read.isPositiveStrand)
+    deserialized.isPaired should equal(read.isPaired)
+  }
+
+  test("serialize / deserialize mapped read without MDTag") {
+    val read = MappedRead(
+      5, // token
+      "TCGACCCTCGA",
+      Array[Byte]((10 to 20).map(_.toByte): _*),
+      true,
+      "some sample name",
+      "chr5",
+      50,
+      325352323,
+      TextCigarCodec.decode(""),
+      mdTagString = None,
+      false,
+      isPositiveStrand = true,
+      isPaired = true
+    )
+
+    val serialized = TestUtil.serialize(read)
+    val deserialized = TestUtil.deserialize[MappedRead](serialized)
+
+    // We *should* be able to just use MappedRead's equality implementation, since Scala should implement the equals
+    // method for case classes. Somehow, something goes wrong though, and this fails:
+
+    // deserialized should equal(read)
+
+    // So, instead, we'll compare each field ourselves:
+    deserialized.token should equal(read.token)
+    deserialized.sequence should equal(read.sequence)
+    deserialized.baseQualities should equal(read.baseQualities)
+    deserialized.isDuplicate should equal(read.isDuplicate)
+    deserialized.sampleName should equal(read.sampleName)
+    deserialized.referenceContig should equal(read.referenceContig)
+    deserialized.alignmentQuality should equal(read.alignmentQuality)
+    deserialized.start should equal(read.start)
+    deserialized.cigar should equal(read.cigar)
+    deserialized.mdTagOpt should equal(read.mdTagOpt)
     deserialized.failedVendorQualityChecks should equal(read.failedVendorQualityChecks)
     deserialized.isPositiveStrand should equal(read.isPositiveStrand)
     deserialized.isPaired should equal(read.isPaired)

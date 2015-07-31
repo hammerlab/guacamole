@@ -42,7 +42,7 @@ case class MappedRead(
     alignmentQuality: Int,
     start: Long,
     cigar: Cigar,
-    mdTagString: String,
+    mdTagString: Option[String],
     failedVendorQualityChecks: Boolean,
     isPositiveStrand: Boolean,
     isPaired: Boolean) extends Read with HasReferenceRegion {
@@ -50,27 +50,9 @@ case class MappedRead(
   assert(baseQualities.length == sequence.length,
     "Base qualities have length %d but sequence has length %d".format(baseQualities.length, sequence.length))
 
-  def mdTag = MdTag(mdTagString, start)
+  def mdTagOpt = mdTagString.map(MdTag(_, start))
 
   override val isMapped = true
-
-  lazy val referenceBases: Seq[Byte] =
-    try {
-      MDTagUtils.getReference(mdTag, sequence, cigar, allowNBase = true)
-    } catch {
-      case e: IllegalStateException => throw new CigarMDTagMismatchException(cigar, mdTag, e)
-    }
-
-  /**
-   * Find the reference base at a given locus for any locus that overlaps this read sequence
-   *
-   * @param referenceLocus Locus (0-based) at which to look up the reference base
-   * @return  The reference base at the given locus
-   */
-  def getReferenceBaseAtLocus(referenceLocus: Long): Byte = {
-    assume(referenceLocus >= start && referenceLocus < end)
-    referenceBases((referenceLocus - start).toInt)
-  }
 
   lazy val alignmentLikelihood = PhredUtils.phredToSuccessProbability(alignmentQuality)
 

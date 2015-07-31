@@ -120,7 +120,7 @@ object Read extends Logging {
     val qualityScoresArray = baseQualityStringToArray(baseQualities, sequenceArray.length)
 
     val cigar = TextCigarCodec.decode(cigarString)
-    MappedRead(
+    new MDTaggedRead(
       token,
       sequenceArray,
       qualityScoresArray,
@@ -185,7 +185,7 @@ object Read extends Logging {
     val r = if (isMapped) {
       Option(record.getStringAttribute("MD")) match {
         case Some(mdTagString) =>
-          val result = MappedRead(
+          val result = new MDTaggedRead(
             token,
             record.getReadString.getBytes,
             record.getBaseQualities,
@@ -373,7 +373,7 @@ object Read extends Logging {
         alignmentQuality = alignmentRecord.getMapq,
         start = alignmentRecord.getStart,
         cigar = TextCigarCodec.decode(alignmentRecord.getCigar.toString),
-        mdTagString = alignmentRecord.getMismatchingPositions.toString,
+        mdTagString = Some(alignmentRecord.getMismatchingPositions.toString),
         failedVendorQualityChecks = alignmentRecord.getFailedVendorQualityChecks,
         isPositiveStrand = !alignmentRecord.getReadNegativeStrand,
         alignmentRecord.getReadPaired

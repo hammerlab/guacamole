@@ -20,7 +20,7 @@ package org.hammerlab.guacamole
 
 import com.esotericsoftware.kryo.Kryo
 import org.bdgenomics.adam.serialization.{ ADAMKryoRegistrator }
-import org.hammerlab.guacamole.reads.{ UnmappedReadSerializer, MappedReadSerializer, MappedRead, UnmappedRead }
+import org.hammerlab.guacamole.reads._
 import org.hammerlab.guacamole.variants._
 import org.hammerlab.guacamole.DistributedUtil.TaskPosition
 
@@ -39,6 +39,7 @@ class GuacamoleKryoRegistrator extends ADAMKryoRegistrator {
 
     // Register Guacamole serializers.
     kryo.register(classOf[MappedRead], new MappedReadSerializer)
+    kryo.register(classOf[MDTaggedRead], new MDTaggedReadSerializer)
     kryo.register(classOf[UnmappedRead], new UnmappedReadSerializer)
     kryo.register(classOf[LociSet], new LociSetSerializer)
     kryo.register(classOf[LociSet.SingleContig], new LociSetSingleContigSerializer)

@@ -78,14 +78,14 @@ object SomaticStandard {
       val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(
         args,
         loci,
-        tumorReads.mappedReads,
-        normalReads.mappedReads
+        tumorReads.mdTaggedReads,
+        normalReads.mdTaggedReads
       )
 
       var potentialGenotypes: RDD[CalledSomaticAllele] =
         DistributedUtil.pileupFlatMapTwoRDDs[CalledSomaticAllele](
-          tumorReads.mappedReads,
-          normalReads.mappedReads,
+          tumorReads.mdTaggedReads,
+          normalReads.mdTaggedReads,
           lociPartitions,
           skipEmpty = true, // skip empty pileups
           (pileupTumor, pileupNormal) =>

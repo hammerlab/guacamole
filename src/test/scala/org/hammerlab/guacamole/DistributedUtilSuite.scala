@@ -24,7 +24,7 @@ import org.hammerlab.guacamole.util.{ TestUtil, GuacFunSuite }
 import TestUtil.assertBases
 import org.hammerlab.guacamole.commands.GermlineThreshold
 import org.hammerlab.guacamole.pileup.{ Pileup, PileupElement }
-import org.hammerlab.guacamole.reads.MappedRead
+import org.hammerlab.guacamole.reads.{ MDTaggedRead, MappedRead }
 import org.hammerlab.guacamole.windowing.SlidingWindow
 import org.scalatest.Matchers
 
@@ -398,7 +398,7 @@ class DistributedUtilSuite extends GuacFunSuite with Matchers {
       halfWindowSize = 0,
       initialValue = (0L, 0L),
       // averageDepth is represented as fraction tuple (numerator, denominator) == (totalDepth, totalLoci)
-      (averageDepth: (Long, Long), windows: Seq[SlidingWindow[MappedRead]]) => {
+      (averageDepth: (Long, Long), windows: Seq[SlidingWindow[MDTaggedRead]]) => {
         val currentDepth = windows.map(w => w.currentRegions().count(_.overlapsLocus(w.currentLocus))).sum
         (averageDepth._1 + currentDepth, averageDepth._2 + 1)
       }

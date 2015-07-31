@@ -22,14 +22,14 @@ import org.hammerlab.guacamole.util.{ TestUtil, GuacFunSuite }
 import org.hammerlab.guacamole.Bases
 import org.hammerlab.guacamole.filters.SomaticGenotypeFilter
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.reads.MappedRead
+import org.hammerlab.guacamole.reads.{ MDTaggedRead, MappedRead }
 import org.scalatest.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks
 
 class SomaticStandardCallerSuite extends GuacFunSuite with Matchers with TableDrivenPropertyChecks {
 
   def loadPileup(filename: String, referenceName: String, locus: Long = 0): Pileup = {
-    val records = TestUtil.loadReads(sc, filename).mappedReads
+    val records = TestUtil.loadReads(sc, filename).mdTaggedReads
     val localReads = records.collect
     Pileup(localReads, referenceName, locus)
   }
@@ -51,7 +51,7 @@ class SomaticStandardCallerSuite extends GuacFunSuite with Matchers with TableDr
   val minLikelihood = 70
   val minVAF = 5
 
-  def testVariants(tumorReads: Seq[MappedRead], normalReads: Seq[MappedRead], positions: Array[Long], shouldFindVariant: Boolean = false) = {
+  def testVariants(tumorReads: Seq[MDTaggedRead], normalReads: Seq[MDTaggedRead], positions: Array[Long], shouldFindVariant: Boolean = false) = {
     val positionsTable = Table("locus", positions: _*)
     forAll(positionsTable) {
       (locus: Long) =>

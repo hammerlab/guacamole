@@ -69,7 +69,7 @@ object GermlineThreshold {
       DelayedMessages.default.say { () => "Called %,d genotypes.".format(numGenotypes.value) }
       val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(args, loci, readSet.mappedReads)
       val genotypes: RDD[Genotype] = DistributedUtil.pileupFlatMap[Genotype](
-        readSet.mappedReads,
+        readSet.mdTaggedReads,
         lociPartitions,
         true, // skip empty pileups
         pileup => {
@@ -77,7 +77,7 @@ object GermlineThreshold {
           numGenotypes += genotypes.length
           genotypes.iterator
         })
-      readSet.mappedReads.unpersist()
+      readSet.mdTaggedReads.unpersist()
       Common.writeVariantsFromArguments(args, genotypes)
       if (args.truthGenotypesFile != "")
         Concordance.printGenotypeConcordance(args, genotypes, sc)
