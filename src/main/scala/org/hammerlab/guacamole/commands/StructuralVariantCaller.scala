@@ -54,7 +54,7 @@ object StructuralVariant {
   // Nodes are paired reads.
   // Edges represent compatibility between the induced structural variants,
   // with the weight being the strength of compatibility.
-  type PairedReadGraph = Graph[PairedMappedRead, WUnDiEdge]
+  type PairedReadGraph = Graph[PairedMappedRead, WkUnDiEdge]
 
   object Caller extends SparkCommand[Arguments] {
     override val name = "structural-variant"
@@ -159,7 +159,7 @@ object StructuralVariant {
     def buildVariantGraph(exceptionalReads: Iterable[PairedMappedRead],
                           maxNormalInsertSize: Int): PairedReadGraph = {
       val reads = exceptionalReads.toArray.sortBy(_.minPos)
-      val graph = MutableGraph[PairedMappedRead, WUnDiEdge]()
+      val graph = MutableGraph[PairedMappedRead, WkUnDiEdge]()
 
       for { (read, i) <- reads.zipWithIndex } {
         val (start, _, gapEnd, _) = read.startsAndStops
@@ -177,7 +177,7 @@ object StructuralVariant {
               // not position. If two reads are of similar length, but don't overlap much, they'll
               // get a spuriously low weight.
               val weight = Math.abs((nextGapEnd - nextStart) - (gapEnd - start))
-              graph += (read ~ nextRead) % weight
+              graph += WkUnDiEdge(read, nextRead)(weight)
             }
           }
           j += 1
@@ -276,12 +276,12 @@ object StructuralVariant {
       val firstInPair = pairedMappedReads.filter(_.isFirstInPair).flatMap(PairedMappedRead(_))
 
       val ExceptionalReadsReturnType(_, _, _, maxNormalInsertSize, exceptionalReads) =
-          getExceptionalReads(firstInPair)
+        getExceptionalReads(firstInPair)
 
       val readsByContig = exceptionalReads.groupBy(_.read.referenceContig)
       val svGraph = readsByContig.mapValues(buildVariantGraph(_, maxNormalInsertSize))
       val svs = svGraph.mapValues(findCliques(_, maxNormalInsertSize))
-                       .mapValues(_.map(_.span).toList)
+        .mapValues(_.map(_.span).toList)
 
       svs.coalesce(1).saveAsTextFile(args.output)
     }
