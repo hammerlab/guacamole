@@ -45,9 +45,9 @@ case class ReadSet(
   /** Only mapped reads. */
   lazy val mappedReads = reads.flatMap(read =>
     read match {
-      case r: MappedRead                   => Some(r)
-      case PairedRead(r: MappedRead, _, _) => Some(r)
-      case _                               => None
+      case r: MappedRead                     => Some(r)
+      case PairedRead(r: MappedRead, _, _)   => Some(r)
+      case _                                 => None
     }
   )
 

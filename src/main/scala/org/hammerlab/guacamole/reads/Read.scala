@@ -183,9 +183,15 @@ object Read extends Logging {
     }).intern
 
     val r = if (isMapped) {
-      Option(record.getStringAttribute("MD")) match {
+      val mdTagStringOpt = Option(record.getStringAttribute("MD"))
+
+      if (mdTagStringOpt.isEmpty && requireMDTagsOnMappedReads) {
+        throw MissingMDTagException(record)
+      }
+
+      val result = mdTagStringOpt match {
         case Some(mdTagString) =>
-          val result = new MDTaggedRead(
+          new MDTaggedRead(
             token,
             record.getReadString.getBytes,
             record.getBaseQualities,
@@ -194,27 +200,39 @@ object Read extends Logging {
             record.getReferenceName.intern,
             record.getMappingQuality,
             record.getAlignmentStart - 1,
-            cigar = record.getCigar,
             mdTagString = mdTagString,
             failedVendorQualityChecks = record.getReadFailsVendorQualityCheckFlag,
             isPositiveStrand = !record.getReadNegativeStrandFlag,
-            isPaired = record.getReadPairedFlag
+            isPaired = record.getReadPairedFlag,
+            cigar = record.getCigar
           )
-
-          // We subtract 1 from start, since samtools is 1-based and we're 0-based.
-          if (result.unclippedStart != record.getUnclippedStart - 1)
-            log.warn("Computed read 'unclippedStart' %d != samtools read end %d.".format(
-              result.unclippedStart, record.getUnclippedStart - 1))
-          Some(result)
         case None =>
-          if (requireMDTagsOnMappedReads) {
-            throw MissingMDTagException(record)
-          } else {
-            None
-          }
+          MappedRead(
+            token,
+            record.getReadString.getBytes,
+            record.getBaseQualities,
+            record.getDuplicateReadFlag,
+            sampleName.intern,
+            record.getReferenceName.intern,
+            record.getMappingQuality,
+            record.getAlignmentStart - 1,
+            mdTagString = None,
+            failedVendorQualityChecks = record.getReadFailsVendorQualityCheckFlag,
+            isPositiveStrand = !record.getReadNegativeStrandFlag,
+            isPaired = record.getReadPairedFlag,
+            cigar = record.getCigar
+          )
       }
+
+      // We subtract 1 from start, since samtools is 1-based and we're 0-based.
+      if (result.unclippedStart != record.getUnclippedStart - 1) {
+        log.warn("Computed read 'unclippedStart' %d != samtools read end %d.".format(
+          result.unclippedStart, record.getUnclippedStart - 1))
+      }
+
+      result
     } else {
-      Some(UnmappedRead(
+      UnmappedRead(
         token,
         record.getReadString.getBytes,
         record.getBaseQualities,
@@ -223,10 +241,11 @@ object Read extends Logging {
         record.getReadFailsVendorQualityCheckFlag,
         !record.getReadNegativeStrandFlag,
         record.getReadPairedFlag
-      ))
+      )
     }
 
-    r
+    // TODO: just return r
+    Some(r)
   }
 
   /**

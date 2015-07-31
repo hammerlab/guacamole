@@ -273,6 +273,7 @@ object StructuralVariant {
     override def run(args: Arguments, sc: SparkContext): Unit = {
       val readSet = Common.loadReadsFromArguments(args, sc, Read.InputFilters(nonDuplicate = true))
       val pairedMappedReads = readSet.mappedPairedReads
+
       val firstInPair = pairedMappedReads.filter(_.isFirstInPair).flatMap(PairedMappedRead(_))
 
       val ExceptionalReadsReturnType(_, _, _, maxNormalInsertSize, exceptionalReads) =
