@@ -43,6 +43,9 @@ class EvalCommandSuite extends GuacFunSuite with Matchers {
   sparkTest("basic") {
     runChrM("locus") should equal((5000 until 5005).map(_.toString))
     runChrM("locus * 2") should equal(Seq("10000", "10002", "10004", "10006", "10008"))
+    runChrM("locus * parseInt(args.foo) - parseInt(args.bar)", "--arg", "foo=2", "--arg", "bar=1") should equal(
+      Seq("9999", "10001", "10003", "10005", "10007"))
+
   }
 
   sparkTest("includes") {
@@ -61,9 +64,35 @@ class EvalCommandSuite extends GuacFunSuite with Matchers {
   }
 
   sparkTest("pileups") {
-    runChrM("locus", "pileup().count('')", "pileup().count('element.isMatch()')") should equal(Seq(
+    runChrM("locus", "pileup().depth()", "pileup().numMatch()") should equal(Seq(
       "5000, 161, 161", "5001, 159, 158", "5002, 155, 151", "5003, 156, 155", "5004, 157, 153"
     ))
+
+    runChrM(
+      "locus",
+      "pileup().depth()",
+      "pileupCount(pileup(), function(element) {return element.isMatch(); })") should equal(Seq(
+        "5000, 161, 161", "5001, 159, 158", "5002, 155, 151", "5003, 156, 155", "5004, 157, 153"
+      ))
+
+    runChrM(
+      "locus",
+      "pileup().depth()",
+      "pileup().numMatch()",
+      "pileup().numNotMatch()",
+      "pileup().topVariantAllele()",
+      "pileup().numTopVariantAllele()",
+      "pileup().numOtherAllele()") should equal(Seq(
+        "5000, 161, 161, 0, \"none\", 0, 0",
+        "5001, 159, 158, 1, \"G\", 1, 0",
+        "5002, 155, 151, 4, \"C\", 3, 1",
+        "5003, 156, 155, 1, \"A\", 1, 0",
+        "5004, 157, 153, 4, \"C\", 3, 1"))
+
+    runChrM(
+      "locus",
+      "pileupGroupCount('', function(element) {return element.sequence(); })['A']") should equal(
+        Seq("5000, 161", "5001, 158", "5002, 1", "5003, 1"))
   }
 
   sparkTest("reads") {

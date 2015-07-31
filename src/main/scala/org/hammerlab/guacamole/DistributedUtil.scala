@@ -194,8 +194,10 @@ object DistributedUtil extends Logging {
     val regionsPerTask = math.max(1, totalRegions.toDouble / tasks.toDouble)
     progress("Done collecting region counts. Total regions with micro partition overlaps: %,d = ~%,.0f regions per task."
       .format(totalRegions, regionsPerTask))
-    progress("Regions per micro partition: min=%,d mean=%,.0f max=%,d.".format(
-      counts.min, counts.sum.toDouble / counts.length, counts.max))
+
+    val maxIndex = counts.view.zipWithIndex.maxBy(_._1)._2
+    progress("Regions per micro partition: min=%,d mean=%,.0f max=%,d at %s.".format(
+      counts.min, counts.sum.toDouble / counts.length, counts(maxIndex), microPartitions.asInverseMap(maxIndex)))
 
     val builder = LociMap.newBuilder[Long]
     var regionsAssigned = 0.0

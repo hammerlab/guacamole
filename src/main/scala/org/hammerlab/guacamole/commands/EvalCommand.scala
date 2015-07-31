@@ -30,7 +30,7 @@ import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole.Common.Arguments.{ NoSequenceDictionary }
 import org.hammerlab.guacamole.commands.Evaluation.{ ScriptPileup }
-import org.hammerlab.guacamole.pileup.{ Pileup }
+import org.hammerlab.guacamole.pileup.{ Clipped, PileupElement, Pileup }
 import org.hammerlab.guacamole.reads._
 import org.hammerlab.guacamole._
 import org.kohsuke.args4j.spi.StringArrayOptionHandler
@@ -38,6 +38,7 @@ import org.kohsuke.args4j.{ Option => Args4jOption, Argument }
 
 import scala.collection.JavaConversions
 import scala.collection.mutable.ArrayBuffer
+import scala.util.matching.Regex
 
 object EvalCommand {
 
@@ -51,25 +52,30 @@ object EvalCommand {
       usage = "Output path. Default: stdout")
     var out: String = ""
 
-    @Args4jOption(name = "--include-empty",
+    @Args4jOption(name = "--include-empty-pileups",
       usage = "Include empty pileups.")
-    var includeEmpty: Boolean = false
+    var includeEmptyPileups: Boolean = false
 
     @Args4jOption(name = "--separator",
       usage = "CSV field separator")
     var separator: String = ", "
 
     @Args4jOption(name = "--domain",
-      usage = "Input to evaluate, either: 'pileups' (default) or 'reads'")
+      usage = "Input to evaluate, either: 'pileups' (default), 'reads', 'mapped-reads', or 'unmapped-reads'")
     var domain: String = "pileups"
 
     @Args4jOption(name = "--include-file", usage = "Code files to include", handler = classOf[StringArrayOptionHandler])
     var includeFiles: ArrayBuffer[String] = ArrayBuffer.empty
 
     var includeCode = new ArrayBuffer[String]()
-    @Args4jOption(name = "--include-code",
+    @Args4jOption(name = "--include-code", metaVar = "CODE",
       usage = "Code to include")
     def addCode(arg: String): Unit = includeCode += arg
+
+    var codeArgs = new ArrayBuffer[String]()
+    @Args4jOption(name = "--arg", metaVar = "NAME=VALUE",
+      usage = "Argument for script, given as NAME=VALUE")
+    def codeArgs(arg: String): Unit = codeArgs += arg
 
     @Args4jOption(name = "-q", usage = "Quiet: less stdout")
     var quiet: Boolean = false
@@ -137,8 +143,18 @@ object EvalCommand {
       }
     })
 
+    def buildArgsCode(codeArgs: Seq[String]): String = {
+      val syntax = """^([A-z_][A-z0-9_]+)=(.+)""".r
+      val nameValues = codeArgs.map(s => s match {
+        case syntax(name: String, value: String) => (name, value)
+        case _                                   => throw new IllegalArgumentException("Couldn't parse script arg: " + s)
+      })
+      "args = {\n" + nameValues.map(pair => "    '%s': '%s'".format(pair._1, pair._2)).mkString(",\n") + "\n}"
+    }
+
     def makeScriptFragments(args: Arguments): Seq[(String, String)] = {
       lazy val filesystem = FileSystem.get(new Configuration())
+      val argsFragment = Seq(("Arguments", buildArgsCode(args.codeArgs)))
       val extraIncludesFromFiles = args.includeFiles.map(path => {
         val code = IOUtils.toString(new InputStreamReader(filesystem.open(new Path(path))))
         ("Code from: %s".format(path), code)
@@ -146,7 +162,7 @@ object EvalCommand {
       val extraIncludesFromCommandline = args.includeCode.zipWithIndex.map(pair => {
         ("Code block %d".format(pair._2), pair._1)
       })
-      standardIncludes ++ extraIncludesFromFiles ++ extraIncludesFromCommandline
+      standardIncludes ++ argsFragment ++ extraIncludesFromFiles ++ extraIncludesFromCommandline
     }
 
     def runScriptFragments(fragments: Seq[String], bindings: Bindings): Unit = {
@@ -181,7 +197,7 @@ object EvalCommand {
         })
         println()
         println("Expressions (%d):".format(expressions.size))
-        expressions.zip(expressionLabels).foreach({
+        expressionLabels.zip(expressions).foreach({
           case (label, expression) =>
             println("%20s : %s".format(label, expression))
         })
@@ -214,7 +230,7 @@ object EvalCommand {
         DistributedUtil.pileupFlatMapMultipleRDDsWithState[String, Option[(Seq[CompiledScript], Bindings)]](
           readSets.map(_.mappedReads),
           lociPartitions,
-          !args.includeEmpty, // skip empty
+          !args.includeEmptyPileups, // skip empty
           initialState = None,
           (maybeState, pileups) => {
             val (compiledExpressions, bindings) = maybeState match {
@@ -244,9 +260,15 @@ object EvalCommand {
             }
             (Some((compiledExpressions, bindings)), result)
           })
-      } else if (args.domain == "reads") {
+      } else if (args.domain == "reads" || args.domain == "mapped-reads" || args.domain == "unmapped-reads") {
         // Running over reads.
-        val union = sc.union(readSets.map(_.reads))
+        val unionAll = sc.union(readSets.map(_.reads))
+        val union = args.domain match {
+          case "reads"          => unionAll
+          case "mapped-reads"   => unionAll.filter(_.isMapped)
+          case "unmapped-reads" => unionAll.filter(!_.isMapped)
+        }
+
         union.mapPartitions(reads => {
           val bindings = new SimpleBindings()
           runScriptFragments(scriptFragments, bindings)
@@ -314,7 +336,11 @@ object Evaluation {
 
   def toJSON(jsValue: Any): String = jsonObject match {
     case Some(json) => {
-      val result = invocableEngine.invokeMethod(jsonObject.get, "stringify", jsValue.asInstanceOf[AnyRef])
+      val result = try {
+        invocableEngine.invokeMethod(jsonObject.get, "stringify", jsValue.asInstanceOf[AnyRef])
+      } catch {
+        case e: Exception => jsValue.toString
+      }
 
       // TODO: nashorn (java 8) will give result==null for lists and objects, hence this fallback for now:
       if (result == null)
@@ -345,52 +371,68 @@ object Evaluation {
     s.split("\n").zipWithIndex.map(pair => "\t%3d) %s".format(pair._2 + 1, pair._1)).mkString("\n")
   }
 
-  val pileupCountScriptCache = new collection.mutable.HashMap[String, CompiledScript]
-  val pileupCountScriptCacheMaxSize = 1000
-  class ScriptPileup(pileup: Pileup) extends Pileup(
-    pileup.referenceName, pileup.locus, pileup.referenceBase, pileup.elements) {
+  class ScriptPileupElement(val wrapped: PileupElement) {
+    lazy val isMatch = wrapped.isMatch
+    lazy val isMismatch = wrapped.isMismatch
+    lazy val isInsertion = wrapped.isInsertion
+    lazy val isDeletion = wrapped.isDeletion
+    lazy val isMidDeletion = wrapped.isMidDeletion
+
+    lazy val read = new ScriptRead(wrapped.read)
+    lazy val sequence = Bases.basesToString(wrapped.sequencedBases)
+    lazy val reference = Bases.basesToString(wrapped.referenceBases)
+    lazy val baseQuality = wrapped.qualityScore
+    lazy val readPosition = wrapped.readPosition
+  }
+
+  class ScriptPileup(wrapped: Pileup) {
+    private lazy val byAllele: Map[String, Seq[ScriptPileupElement]] =
+      elements.groupBy(_.sequence).withDefaultValue(Seq.empty)
+
+    lazy val referenceName = wrapped.referenceName
+    lazy val contig = referenceName
+    lazy val reference: String = Bases.baseToString(wrapped.referenceBase)
+
+    lazy val locus = wrapped.locus
+    lazy val depth = wrapped.depth
+    lazy val elements = wrapped.elements.map(new ScriptPileupElement(_))
+    lazy val alleles: Seq[String] =
+      Seq(reference) ++
+        byAllele.filterKeys(_ != reference).toSeq.sortBy(-1 * _._2.count(_.wrapped.alignment != Clipped)).map(_._1)
+
+    def withAllele(allele: String): ScriptPileup = {
+      val elements = byAllele(allele).map(_.wrapped)
+      new ScriptPileup(new Pileup(referenceName, locus, wrapped.referenceBase, elements))
+    }
+
+    lazy val numMatch = wrapped.elements.count(_.isMatch)
+    lazy val numMismatch = wrapped.elements.count(_.isMismatch)
+    lazy val numInsertion = wrapped.elements.count(_.isInsertion)
+    lazy val numDeletion = wrapped.elements.count(_.isDeletion)
+    lazy val numMidDeletion = wrapped.elements.count(_.isMidDeletion)
+    lazy val numDeleted = wrapped.elements.count(e => e.isDeletion || e.isMidDeletion)
+
+    lazy val topAllele = byAllele.toSeq.sortBy(-1 * _._2.length).headOption.map(_._1).getOrElse("none")
+    lazy val topVariantAllele: String = if (alleles.size > 1) alleles(1) else "none"
+
+    lazy val numNotMatch = depth - numMatch
+    lazy val numTopVariantAllele = elements.count(_.sequence == topVariantAllele)
+    lazy val numOtherAllele = depth - numMatch - numTopVariantAllele
 
     override def toString() = "<Pileup at %s:%d of %d elements>".format(referenceName, locus, elements.size)
 
-    def count(code: String): Int = {
-      if (code.isEmpty) {
-        pileup.elements.size
-      } else {
-        val compiled = if (pileupCountScriptCache.contains(code)) {
-          pileupCountScriptCache(code)
-        } else {
-          if (pileupCountScriptCache.size > pileupCountScriptCacheMaxSize) {
-            pileupCountScriptCache.clear
-          }
-          val compiled = compilingEngine.compile(code)
-          pileupCountScriptCache.put(code, compiled)
-          compiled
-        }
-        val bindings = new SimpleBindings()
-        var count = 0
-        pileup.elements.foreach(element => {
-          bindings.put("element", element)
-          bindings.put("read", element.read)
-          PartialFunction.condOpt(compiled.eval(bindings): Any) {
-            case b: Boolean => if (b) count += 1
-            case _          => throw new RuntimeException("Non-boolean value from evaluating: %s".format(code))
-          }
-        })
-        count
-      }
-    }
   }
 
-  class ScriptRead(read: Read) {
-    lazy val token = read.token
-    lazy val sequence = Bases.basesToString(read.sequence)
-    lazy val baseQualities = read.baseQualities.map(_.toInt)
-    lazy val isDuplicate = read.isDuplicate
-    lazy val sampleName = read.sampleName
-    lazy val isMapped = read.isMapped
+  class ScriptRead(wrapped: Read) {
+    lazy val token = wrapped.token
+    lazy val sequence = Bases.basesToString(wrapped.sequence)
+    lazy val baseQualities = wrapped.baseQualities.map(_.toInt)
+    lazy val isDuplicate = wrapped.isDuplicate
+    lazy val sampleName = wrapped.sampleName
+    lazy val isMapped = wrapped.isMapped
 
     // Mapped read properties
-    private lazy val mappedRead: MappedRead = read match {
+    private lazy val mappedRead: MappedRead = wrapped match {
       case r: MappedRead                  => r
       case r: PairedRead[_] if r.isMapped => r.read.asInstanceOf[MappedRead]
       case _                              => throw new IncompatibleClassChangeError("Not a mapped read: " + toString)
@@ -403,7 +445,7 @@ object Evaluation {
     lazy val cigarString = mappedRead.cigar.toString
 
     // Paired read properties
-    private lazy val pairedRead: PairedRead[_] = read match {
+    private lazy val pairedRead: PairedRead[_] = wrapped match {
       case r: PairedRead[_] => r
       case _                => throw new IncompatibleClassChangeError(("Not a paired read: " + toString))
     }
@@ -417,7 +459,7 @@ object Evaluation {
 
     // Extra properties
     def reverseComplementBases: String = {
-      Bases.basesToString(Bases.reverseComplement(read.sequence))
+      Bases.basesToString(Bases.reverseComplement(wrapped.sequence))
     }
   }
 

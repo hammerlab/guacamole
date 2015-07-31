@@ -72,12 +72,12 @@ case class Pileup(referenceName: String, locus: Long, referenceBase: Byte, eleme
   /**
    * Depth of pileup - number of reads at locus
    */
-  lazy val depth: Int = elements.length
+  lazy val depth: Int = elements.count(_.alignment != Clipped)
 
   /**
    * Number of positively stranded reads
    */
-  lazy val positiveDepth: Int = elements.count(_.read.isPositiveStrand)
+  lazy val positiveDepth: Int = elements.count(e => e.alignment != Clipped && e.read.isPositiveStrand)
 
   /**
    * PileupElements that match the reference base
@@ -137,7 +137,7 @@ case class Pileup(referenceName: String, locus: Long, referenceBase: Byte, eleme
    */
   def alleleReadDepthAndPositiveDepth(allele: Allele): (Int, Int) = {
 
-    val alleleElements = elements.view.filter(_.allele == allele)
+    val alleleElements = elements.view.filter(e => e.alignment != Clipped && e.allele == allele)
     val numAllelePositiveElements = alleleElements.count(_.read.isPositiveStrand)
 
     (alleleElements.size, numAllelePositiveElements)
