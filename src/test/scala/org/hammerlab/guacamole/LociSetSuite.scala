@@ -80,7 +80,7 @@ class LociSetSuite extends GuacFunSuite with Matchers {
       "with_dots.and_underscores..2:100-200",
       "21:300-400",
       "X:5-17,X:19-22,Y:50-60",
-      "chr21:100-200,chr20:0-10,chr20:8-15,chr20:100-120").map(LociSet.parse)
+      "chr21:100-200,chr20:0-10,chr20:8-15,chr20:100-120").map(LociSet.parse(_))
 
     def check_invariants(set: LociSet): Unit = {
       set should not be (null)
@@ -133,7 +133,7 @@ class LociSetSuite extends GuacFunSuite with Matchers {
       "21:300-400",
       "with_dots._and_..underscores11:900-1000",
       "X:5-17,X:19-22,Y:50-60",
-      "chr21:100-200,chr20:0-10,chr20:8-15,chr20:100-120").map(LociSet.parse)
+      "chr21:100-200,chr20:0-10,chr20:8-15,chr20:100-120").map(LociSet.parse(_))
     val rdd = sc.parallelize(sets)
     val result = rdd.map(_.toString).collect.toSeq
     result should equal(sets.map(_.toString).toSeq)
@@ -146,7 +146,7 @@ class LociSetSuite extends GuacFunSuite with Matchers {
       "20:100-200",
       "21:300-400",
       "X:5-17,X:19-22,Y:50-60",
-      "chr21:100-200,chr20:0-10,chr20:8-15,chr20:100-120").map(LociSet.parse)
+      "chr21:100-200,chr20:0-10,chr20:8-15,chr20:100-120").map(LociSet.parse(_))
     val rdd = sc.parallelize(sets)
     val result = rdd.map(set => {
       set.onContig("21").contains(5) // no op
@@ -160,6 +160,13 @@ class LociSetSuite extends GuacFunSuite with Matchers {
     val set1 = LociSet.parse("chr1:40-43")
     val set2 = LociSet.parse("chr1:40-42")
     set1.union(set2).toString should equal("chr1:40-43")
+  }
+
+  sparkTest("loci set parsing with contig lengths") {
+    LociSet.parse(
+      "chr1,chr2,17,chr2:3-5,chr20:10-20",
+      Some(Map("chr1" -> 10, "chr2" -> 20, "17" -> 12, "chr20" -> 5000))).toString should equal(
+        "17:0-12,chr1:0-10,chr2:0-20,chr20:10-20")
   }
 
   sparkTest("loci set single contig iterator basic") {

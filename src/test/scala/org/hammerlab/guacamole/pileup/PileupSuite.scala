@@ -429,7 +429,7 @@ class PileupSuite extends GuacFunSuite with Matchers with TableDrivenPropertyChe
 
     // 94 reads in the testrna.sam
     // 3 reads end at 229580707 and 1 extends further
-    rnaReadsPileup.depth should be(0)  // all intronic at this location
+    rnaReadsPileup.depth should be(0) // all intronic at this location
 
     val movedRnaReadsPileup = rnaReadsPileup.atGreaterLocus(229580706, Bases.A, Iterator.empty)
     movedRnaReadsPileup.depth should be(3)

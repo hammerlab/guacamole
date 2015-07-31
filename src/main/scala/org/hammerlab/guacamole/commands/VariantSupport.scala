@@ -26,14 +26,18 @@ import org.hammerlab.guacamole._
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.reads.Read.InputFilters
+import org.kohsuke.args4j.spi.StringArrayOptionHandler
 import org.kohsuke.args4j.{ Argument, Option => Args4jOption }
+
+import scala.collection.mutable.ArrayBuffer
 
 object VariantSupport {
 
   protected class Arguments extends DistributedUtil.Arguments {
     @Args4jOption(name = "--input-variant", required = true, aliases = Array("-v"),
+      handler = classOf[StringArrayOptionHandler],
       usage = "")
-    var variants: String = ""
+    var variants: ArrayBuffer[String] = ArrayBuffer.empty
 
     @Args4jOption(name = "--output", metaVar = "OUT", required = true, aliases = Array("-o"),
       usage = "Output path for CSV")
@@ -65,7 +69,7 @@ object VariantSupport {
 
       val adamContext = new ADAMContext(sc)
 
-      val variants: RDD[Variant] = adamContext.loadVariants(args.variants)
+      val variants: RDD[Variant] = sc.union(args.variants.map(adamContext.loadVariants(_)))
       val reads: Seq[RDD[MappedRead]] = args.bams.zipWithIndex.map(
         bamFile =>
           ReadSet(
