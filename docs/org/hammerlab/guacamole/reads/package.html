@@ -104,7 +104,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="MappedRead.html"><span class="name">MappedRead</span></a><span class="params">(<span name="token">token: <span class="extype" name="scala.Int">Int</span></span>, <span name="sequence">sequence: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>, <span name="baseQualities">baseQualities: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>, <span name="isDuplicate">isDuplicate: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="sampleName">sampleName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="referenceContig">referenceContig: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="alignmentQuality">alignmentQuality: <span class="extype" name="scala.Int">Int</span></span>, <span name="start">start: <span class="extype" name="scala.Long">Long</span></span>, <span name="cigar">cigar: <span class="extype" name="htsjdk.samtools.Cigar">Cigar</span></span>, <span name="mdTagString">mdTagString: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="failedVendorQualityChecks">failedVendorQualityChecks: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="isPositiveStrand">isPositiveStrand: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="isPaired">isPaired: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result"> extends <a href="Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a> with <a href="../HasReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.HasReferenceRegion">HasReferenceRegion</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="MappedRead.html"><span class="name">MappedRead</span></a><span class="params">(<span name="token">token: <span class="extype" name="scala.Int">Int</span></span>, <span name="sequence">sequence: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>, <span name="baseQualities">baseQualities: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>, <span name="isDuplicate">isDuplicate: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="sampleName">sampleName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="referenceContig">referenceContig: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="alignmentQuality">alignmentQuality: <span class="extype" name="scala.Int">Int</span></span>, <span name="start">start: <span class="extype" name="scala.Long">Long</span></span>, <span name="cigar">cigar: <span class="extype" name="htsjdk.samtools.Cigar">Cigar</span></span>, <span name="mdTagOpt">mdTagOpt: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="org.bdgenomics.adam.util.MdTag">MdTag</span>]</span>, <span name="failedVendorQualityChecks">failedVendorQualityChecks: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="isPositiveStrand">isPositiveStrand: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="isPaired">isPaired: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result"> extends <a href="Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a> with <a href="../HasReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.HasReferenceRegion">HasReferenceRegion</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       <p class="comment cmt">A mapped read.</p>
@@ -186,6 +186,19 @@
       </span>
       </h4>
       <p class="comment cmt">The fields in the Read trait are common to any read, whether mapped (aligned) or not.</p>
+    </li><li name="org.hammerlab.guacamole.reads.ReferenceWithoutMDTagException" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ReferenceWithoutMDTagExceptionextendsExceptionwithProductwithSerializable"></a>
+      <a id="ReferenceWithoutMDTagException:ReferenceWithoutMDTagException"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="ReferenceWithoutMDTagException.html"><span class="name">ReferenceWithoutMDTagException</span></a><span class="params">(<span name="read">read: <a href="MappedRead.html" class="extype" name="org.hammerlab.guacamole.reads.MappedRead">MappedRead</a></span>)</span><span class="result"> extends <span class="extype" name="scala.Exception">Exception</span> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
     </li><li name="org.hammerlab.guacamole.reads.UnmappedRead" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="UnmappedReadextendsReadwithProductwithSerializable"></a>
       <a id="UnmappedRead:UnmappedRead"></a>
@@ -229,6 +242,19 @@
       </span>
       <span class="symbol">
         <a href="MDTagUtils$.html"><span class="name">MDTagUtils</span></a>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.reads.MappedRead" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="MappedRead"></a>
+      <a id="MappedRead:MappedRead"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="MappedRead$.html"><span class="name">MappedRead</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
