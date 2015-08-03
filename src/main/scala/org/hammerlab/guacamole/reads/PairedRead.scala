@@ -23,20 +23,21 @@ case class PairedRead[+T <: Read](read: T,
   override val sequence: Seq[Byte] = read.sequence
   override val isPaired: Boolean = true
   override val isMapped = read.isMapped
+  override val hasMdTag = read.hasMdTag
 }
 
 object PairedRead {
   def apply(record: SAMRecord,
             token: Int,
-            requireMDTagsOnMappedReads: Boolean): Option[PairedRead[Read]] = {
-    val read = Read.fromSAMRecordOpt(
+            requireMDTagsOnMappedReads: Boolean): PairedRead[Read] = {
+    val read = Read.fromSAMRecord(
       record,
       token,
       requireMDTagsOnMappedReads
     )
 
     val mateAlignment = MateAlignmentProperties(record)
-    read.map(PairedRead(_, isFirstInPair = record.getFirstOfPairFlag, mateAlignment))
+    PairedRead(read, isFirstInPair = record.getFirstOfPairFlag, mateAlignment)
   }
 }
 
