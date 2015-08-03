@@ -61,7 +61,11 @@ object SomaticStandard {
 
     override def run(args: Arguments, sc: SparkContext): Unit = {
       Common.validateArguments(args)
-      val filters = Read.InputFilters(mapped = true, nonDuplicate = true, passedVendorQualityChecks = true)
+      val filters = Read.InputFilters(
+        mapped = true,
+        nonDuplicate = true,
+        passedVendorQualityChecks = true,
+        hasMdTag = true)
       val (tumorReads, normalReads) = Common.loadTumorNormalReadsFromArguments(args, sc, filters)
 
       assert(tumorReads.sequenceDictionary == normalReads.sequenceDictionary,

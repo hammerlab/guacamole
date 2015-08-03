@@ -53,6 +53,7 @@ case class MappedRead(
   def mdTag = mdTagString.map(MdTag(_, start))
 
   override val isMapped = true
+  override val hasMdTag = mdTagString.isDefined
 
   lazy val referenceBases: Seq[Byte] =
     mdTag match {

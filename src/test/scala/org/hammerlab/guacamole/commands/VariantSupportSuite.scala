@@ -40,14 +40,17 @@ class VariantSupportSuite extends GuacFunSuite with Matchers with TableDrivenPro
   lazy val gatk_reads = TestUtil.loadReads(
     sc,
     "gatk_mini_bundle_extract.bam",
-    Read.InputFilters(mapped = true, nonDuplicate = false)).mappedReads.collect().sortBy(_.start)
+    Read.InputFilters(mapped = true, nonDuplicate = false, hasMdTag = true)).mappedReads.collect().sortBy(_.start)
 
   lazy val non_duplicate_gatk_reads = TestUtil.loadReads(
     sc,
     "gatk_mini_bundle_extract.bam",
-    Read.InputFilters(mapped = true, nonDuplicate = true)).mappedReads.collect().sortBy(_.start)
+    Read.InputFilters(mapped = true, nonDuplicate = true, hasMdTag = true)).mappedReads.collect().sortBy(_.start)
 
-  lazy val rna_reads = TestUtil.loadReads(sc, "rna_chr17_41244936.sam").mappedReads.collect().sortBy(_.start)
+  lazy val rna_reads = TestUtil.loadReads(
+    sc,
+    "rna_chr17_41244936.sam",
+    Read.InputFilters(hasMdTag = true)).mappedReads.collect().sortBy(_.start)
 
   sparkTest("read evidence for simple snvs") {
 
