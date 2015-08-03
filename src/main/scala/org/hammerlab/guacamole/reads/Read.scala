@@ -49,34 +49,34 @@ trait Read {
    * Many applications just ignore this.
    *
    */
-  val token: Int
+  def token: Int
 
   /** The nucleotide sequence. */
-  val sequence: Seq[Byte]
+  def sequence: Seq[Byte]
 
   /** The base qualities, phred scaled.  These are numbers, and are NOT character encoded. */
-  val baseQualities: Seq[Byte]
+  def baseQualities: Seq[Byte]
 
   /** Is this read a duplicate of another? */
-  val isDuplicate: Boolean
+  def isDuplicate: Boolean
 
   /** Is this read mapped? */
   def isMapped: Boolean
 
   /** The sample (e.g. "tumor" or "patient3636") name. */
-  val sampleName: String
+  def sampleName: String
 
   /** Whether the read failed predefined vendor checks for quality */
-  val failedVendorQualityChecks: Boolean
+  def failedVendorQualityChecks: Boolean
 
   /** Whether the read was on the positive or forward strand */
-  val isPositiveStrand: Boolean
+  def isPositiveStrand: Boolean
 
   /** Whether read is from a paired-end library */
-  val isPaired: Boolean
+  def isPaired: Boolean
 
   /** Whether the read has associated reference data */
-  val hasMdTag: Boolean
+  def hasMdTag: Boolean
 
 }
 
