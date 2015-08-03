@@ -78,8 +78,13 @@ object MDTagUtils {
   }
 
   def getReference(read: MappedRead, allowNBase: Boolean): (Long, Seq[Byte]) = {
-    val readReferenceStart = read.mdTag.start
-    (readReferenceStart, getReference(read.mdTag, read.sequence, read.cigar, allowNBase))
+    read.mdTagOpt match {
+      case None => throw ReferenceWithoutMDTagException(read)
+      case Some(mdTag) => {
+        val readReferenceStart = mdTag.start
+        (readReferenceStart, getReference(mdTag, read.sequence, read.cigar, allowNBase))
+      }
+    }
   }
 
   /**

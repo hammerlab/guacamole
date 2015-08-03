@@ -80,7 +80,7 @@ class ReadSetSuite extends GuacFunSuite with Matchers {
       deserialized.alignmentQuality should equal(read.alignmentQuality)
       deserialized.start should equal(read.start)
       deserialized.cigar should equal(read.cigar)
-      deserialized.mdTagString should equal(read.mdTagString)
+      deserialized.mdTagOpt should equal(read.mdTagOpt)
       deserialized.failedVendorQualityChecks should equal(read.failedVendorQualityChecks)
       deserialized.isPositiveStrand should equal(read.isPositiveStrand)
       deserialized.isPaired should equal(read.isPaired)

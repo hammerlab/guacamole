@@ -35,5 +35,6 @@ case class UnmappedRead(
   assert(baseQualities.length == sequence.length)
 
   override val isMapped = false
+  override val hasMdTag = false
 }
 
