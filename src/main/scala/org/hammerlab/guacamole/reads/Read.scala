@@ -75,6 +75,9 @@ trait Read {
   /** Whether read is from a paired-end library */
   val isPaired: Boolean
 
+  /** Whether the read has associated reference data */
+  val hasMdTag: Boolean
+
 }
 
 object Read extends Logging {
@@ -93,7 +96,8 @@ object Read extends Logging {
     mapped: Boolean = false,
     nonDuplicate: Boolean = false,
     passedVendorQualityChecks: Boolean = false,
-    isPaired: Boolean = false) {}
+    isPaired: Boolean = false,
+    hasMdTag: Boolean = false) {}
   object InputFilters {
     val empty = InputFilters()
   }
@@ -274,6 +278,7 @@ object Read extends Logging {
     if (filters.nonDuplicate) reads = reads.filter(!_.isDuplicate)
     if (filters.passedVendorQualityChecks) reads = reads.filter(!_.failedVendorQualityChecks)
     if (filters.isPaired) reads = reads.filter(_.isPaired)
+    if (filters.hasMdTag) reads = reads.filter(_.hasMdTag)
     (reads, sequenceDictionary)
 
   }

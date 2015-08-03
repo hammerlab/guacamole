@@ -49,7 +49,8 @@ object GermlineStandard {
 
     override def run(args: Arguments, sc: SparkContext): Unit = {
       Common.validateArguments(args)
-      val readSet = Common.loadReadsFromArguments(args, sc, Read.InputFilters(mapped = true, nonDuplicate = true))
+      val readSet = Common.loadReadsFromArguments(
+          args, sc, Read.InputFilters(mapped = true, nonDuplicate = true, hasMdTag = true))
       readSet.mappedReads.persist()
       Common.progress(
         "Loaded %,d mapped non-duplicate reads into %,d partitions.".format(readSet.mappedReads.count, readSet.mappedReads.partitions.length))

@@ -87,7 +87,11 @@ object VAFHistogram {
 
     override def run(args: Arguments, sc: SparkContext): Unit = {
 
-      val filters = Read.InputFilters(mapped = true, nonDuplicate = true, passedVendorQualityChecks = true)
+      val filters = Read.InputFilters(
+        mapped = true,
+        nonDuplicate = true,
+        passedVendorQualityChecks = true,
+        hasMdTag = true)
       val samplePercent = args.samplePercent
 
       val readSets: Seq[ReadSet] = args.bams.zipWithIndex.map(
