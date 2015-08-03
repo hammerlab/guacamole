@@ -79,7 +79,7 @@ object TestUtil extends Matchers {
     Read(
       sequence,
       cigarString = cigar,
-      mdTagString = mdtag,
+      mdTagString = Some(mdtag),
       start = start,
       referenceContig = chr,
       baseQualities = qualityScoreString,
@@ -110,7 +110,7 @@ object TestUtil extends Matchers {
         cigarString = cigar,
         start = start,
         referenceContig = chr,
-        mdTagString = mdTag,
+        mdTagString = Some(mdTag),
         isPositiveStrand = isPositiveStrand,
         baseQualities = qualityScoreString,
         alignmentQuality = alignmentQuality,
