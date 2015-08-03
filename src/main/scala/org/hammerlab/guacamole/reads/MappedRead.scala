@@ -42,7 +42,7 @@ case class MappedRead(
     alignmentQuality: Int,
     start: Long,
     cigar: Cigar,
-    mdTagString: Option[String],
+    mdTagOpt: Option[MdTag],
     failedVendorQualityChecks: Boolean,
     isPositiveStrand: Boolean,
     isPaired: Boolean) extends Read with HasReferenceRegion {
@@ -50,13 +50,11 @@ case class MappedRead(
   assert(baseQualities.length == sequence.length,
     "Base qualities have length %d but sequence has length %d".format(baseQualities.length, sequence.length))
 
-  def mdTag = mdTagString.map(MdTag(_, start))
-
   override val isMapped = true
-  override val hasMdTag = mdTagString.isDefined
+  override val hasMdTag = mdTagOpt.isDefined
 
   lazy val referenceBases: Seq[Byte] =
-    mdTag match {
+    mdTagOpt match {
       case None => throw new ReferenceWithoutMDTagException(this)
       case Some(mdTag) => try {
         MDTagUtils.getReference(mdTag, sequence, cigar, allowNBase = true)
@@ -106,16 +104,38 @@ case class MappedRead(
     "MappedRead(%s:%d, %s, %s, %s)".format(
       referenceContig, start,
       cigar.toString,
-      mdTagString,
+      mdTagOpt.map(_.toString),
       Bases.basesToString(sequence)
     )
 }
 
+object MappedRead {
+  def apply(
+    token: Int,
+    sequence: Seq[Byte],
+    baseQualities: Seq[Byte],
+    isDuplicate: Boolean,
+    sampleName: String,
+    referenceContig: String,
+    alignmentQuality: Int,
+    start: Long,
+    cigar: Cigar,
+    mdTagString: Option[String],
+    failedVendorQualityChecks: Boolean,
+    isPositiveStrand: Boolean,
+    isPaired: Boolean)(implicit d: DummyImplicit): MappedRead = MappedRead(
+      token, sequence, baseQualities, isDuplicate, sampleName, referenceContig,
+      alignmentQuality, start, cigar,
+      mdTagString.map(MdTag(_, start)),
+      failedVendorQualityChecks, isPositiveStrand, isPaired)
+}
+
+
 case class MissingMDTagException(record: SAMRecord)
-  extends Exception("Missing MDTag in SAMRecord: %s".format(record.toString))
+  extends Exception(s"Missing MDTag in SAMRecord: $record")
 
 case class CigarMDTagMismatchException(cigar: Cigar, mdTag: MdTag, cause: IllegalStateException)
-  extends Exception("Cigar %s seems inconsistent with MD tag %s".format(cigar.toString, mdTag.toString), cause)
+  extends Exception(s"Cigar $cigar seems inconsistent with MD tag $mdTag", cause)
 
 case class ReferenceWithoutMDTagException(read: MappedRead)
-  extends Exception("Attempted to get reference data for a read without an MD tag: %s".format(read))
+  extends Exception(s"Attempted to get reference data for a read without an MD tag: $read")
