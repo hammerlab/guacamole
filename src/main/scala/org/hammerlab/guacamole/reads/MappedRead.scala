@@ -42,7 +42,7 @@ case class MappedRead(
     alignmentQuality: Int,
     start: Long,
     cigar: Cigar,
-    mdTagString: String,
+    mdTagString: Option[String],
     failedVendorQualityChecks: Boolean,
     isPositiveStrand: Boolean,
     isPaired: Boolean) extends Read with HasReferenceRegion {
@@ -50,15 +50,18 @@ case class MappedRead(
   assert(baseQualities.length == sequence.length,
     "Base qualities have length %d but sequence has length %d".format(baseQualities.length, sequence.length))
 
-  def mdTag = MdTag(mdTagString, start)
+  def mdTag = mdTagString.map(MdTag(_, start))
 
   override val isMapped = true
 
   lazy val referenceBases: Seq[Byte] =
-    try {
-      MDTagUtils.getReference(mdTag, sequence, cigar, allowNBase = true)
-    } catch {
-      case e: IllegalStateException => throw new CigarMDTagMismatchException(cigar, mdTag, e)
+    mdTag match {
+      case None => throw new ReferenceWithoutMDTagException(this)
+      case Some(mdTag) => try {
+        MDTagUtils.getReference(mdTag, sequence, cigar, allowNBase = true)
+      } catch {
+        case e: IllegalStateException => throw new CigarMDTagMismatchException(cigar, mdTag, e)
+      }
     }
 
   /**
@@ -112,3 +115,6 @@ case class MissingMDTagException(record: SAMRecord)
 
 case class CigarMDTagMismatchException(cigar: Cigar, mdTag: MdTag, cause: IllegalStateException)
   extends Exception("Cigar %s seems inconsistent with MD tag %s".format(cigar.toString, mdTag.toString), cause)
+
+case class ReferenceWithoutMDTagException(read: MappedRead)
+  extends Exception("Attempted to get reference data for a read without an MD tag: %s".format(read))
