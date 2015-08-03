@@ -21,6 +21,7 @@ package org.hammerlab.guacamole.reads
 import com.esotericsoftware.kryo.io.{ Input, Output }
 import com.esotericsoftware.kryo.{ Kryo, Serializer }
 import htsjdk.samtools.TextCigarCodec
+import org.bdgenomics.adam.util.MdTag
 
 // Serialization: MappedRead
 class MappedReadSerializer extends Serializer[MappedRead] {
@@ -37,7 +38,7 @@ class MappedReadSerializer extends Serializer[MappedRead] {
     output.writeInt(obj.alignmentQuality, true)
     output.writeLong(obj.start, true)
     output.writeString(obj.cigar.toString)
-    output.writeString(obj.mdTagString.orNull)
+    output.writeString(obj.mdTagOpt.map(_.toString).orNull)
     output.writeBoolean(obj.failedVendorQualityChecks)
     output.writeBoolean(obj.isPositiveStrand)
     output.writeBoolean(obj.isPaired)
@@ -54,7 +55,7 @@ class MappedReadSerializer extends Serializer[MappedRead] {
     val alignmentQuality = input.readInt(true)
     val start = input.readLong(true)
     val cigarString = input.readString()
-    val mdTagString = Option(input.readString())
+    val mdTagStringOpt = Option(input.readString())
     val failedVendorQualityChecks = input.readBoolean()
     val isPositiveStrand = input.readBoolean()
     val cigar = TextCigarCodec.decode(cigarString)
@@ -71,7 +72,7 @@ class MappedReadSerializer extends Serializer[MappedRead] {
       alignmentQuality,
       start,
       cigar,
-      mdTagString,
+      mdTagStringOpt,
       failedVendorQualityChecks,
       isPositiveStrand,
       isPaired
