@@ -1,5 +1,7 @@
-language: java
-sudo: false
+script:
+  - sudo rm /etc/mavenrc
+  - export MAVEN_OPTS="-Xmx2g -XX:MaxPermSize=512m"
+  - mvn clean install
 cache:
   directories:
   - .autoconf
