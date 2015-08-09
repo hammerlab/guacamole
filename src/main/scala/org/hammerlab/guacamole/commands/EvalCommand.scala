@@ -24,13 +24,15 @@ import javax.script._
 import com.google.common.io.CharStreams
 import htsjdk.samtools.Cigar
 import org.apache.commons.io.IOUtils
+import org.apache.commons.lang.StringEscapeUtils
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.{ Path, FileSystem }
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
+import org.bdgenomics.adam.util.PhredUtils
 import org.hammerlab.guacamole.Common.Arguments.{ NoSequenceDictionary }
 import org.hammerlab.guacamole.commands.Evaluation.{ ScriptPileup }
-import org.hammerlab.guacamole.pileup.{ Clipped, PileupElement, Pileup }
+import org.hammerlab.guacamole.pileup._
 import org.hammerlab.guacamole.reads._
 import org.hammerlab.guacamole._
 import org.kohsuke.args4j.spi.StringArrayOptionHandler
@@ -220,6 +222,7 @@ object EvalCommand {
           .format(readSets.map(_.sequenceDictionary.toString).mkString("\n")))
 
       val separator = args.separator
+      val totalRows = sc.accumulator(0L)
 
       val result: RDD[String] = if (args.domain == "pileups") {
         // Running over pileups.
@@ -256,7 +259,8 @@ object EvalCommand {
             val result = if (evaluatedExpressionResults.exists(_ == null)) {
               Iterator.empty
             } else {
-              Iterator.apply(evaluatedExpressionResults.map(Evaluation.toJSON(_)).mkString(separator))
+              totalRows += 1
+              Iterator.apply(evaluatedExpressionResults.map(Evaluation.toString(_)).mkString(separator))
             }
             (Some((compiledExpressions, bindings)), result)
           })
@@ -286,7 +290,8 @@ object EvalCommand {
             if (evaluatedExpressionResults.exists(_ == null)) {
               Iterator.empty
             } else {
-              Iterator.apply(evaluatedExpressionResults.map(Evaluation.toJSON _).mkString(separator))
+              totalRows += 1
+              Iterator.apply(evaluatedExpressionResults.map(Evaluation.toString(_)).mkString(separator))
             }
           })
         })
@@ -295,7 +300,8 @@ object EvalCommand {
       }
 
       if (args.out == "none") {
-        // No output.
+        // No output (this is used in unit tests). We collect the result to force the computation.
+        result.collect()
 
       } else if (args.out.nonEmpty) {
         // Write using hadoop.
@@ -311,10 +317,11 @@ object EvalCommand {
         println("*" * 60)
         println("END RESULT")
       }
+      println("Generated %,d rows.".format(totalRows.value))
 
       DelayedMessages.default.print()
 
-      result // Unit tests use this.
+      result // Unit tests use this return value.
     }
   }
 }
@@ -334,22 +341,29 @@ object Evaluation {
   assert(compilingEngine != null)
   assert(invocableEngine != null)
 
-  def toJSON(jsValue: Any): String = jsonObject match {
-    case Some(json) => {
-      val result = try {
-        invocableEngine.invokeMethod(jsonObject.get, "stringify", jsValue.asInstanceOf[AnyRef])
-      } catch {
-        case e: Exception => jsValue.toString
-      }
-
-      // TODO: nashorn (java 8) will give result==null for lists and objects, hence this fallback for now:
-      if (result == null)
-        jsValue.toString
-      else
-        result.toString
-    }
-    case None => jsValue.toString
+  def toString(value: Any): String = {
+    val code = "JSON.stringify(value)"
+    val compiled = compilingEngine.compile(code)
+    val bindings = new SimpleBindings()
+    bindings.put("value", value)
+    eval(code, compiled, bindings).toString
   }
+
+  /*
+  def toString(value: Any): String = value match {
+    case v: Double => "%g".format(v)
+    case other => StringEscapeUtils.escapeCsv(value.toString)
+  }
+  */
+
+  /*
+  def toString(value: Any): String = {
+    PartialFunction.condOpt(value) {
+      case v: Double => "%g".format(v)
+      case other => StringEscapeUtils.escapeCsv(value.toString)
+    }
+  }
+  */
 
   def eval(code: String, compiledCode: CompiledScript, bindings: Bindings): Any = {
     try {
@@ -395,7 +409,9 @@ object Evaluation {
 
     lazy val locus = wrapped.locus
     lazy val depth = wrapped.depth
-    lazy val elements = wrapped.elements.map(new ScriptPileupElement(_))
+    lazy val elements = wrapped.elements.filter(_.alignment != Clipped).map(new ScriptPileupElement(_))
+    lazy val elementsIncludingClipped = wrapped.elements.map(new ScriptPileupElement(_))
+
     lazy val alleles: Seq[String] =
       Seq(reference) ++
         byAllele.filterKeys(_ != reference).toSeq.sortBy(-1 * _._2.count(_.wrapped.alignment != Clipped)).map(_._1)
@@ -421,6 +437,47 @@ object Evaluation {
 
     override def toString() = "<Pileup at %s:%d of %d elements>".format(referenceName, locus, elements.size)
 
+    def mpileup(includeMappingQualities: Boolean = true): String = {
+      def indicateStrand(value: String, isPositiveStrand: Boolean): String = value match {
+        case "." if (!isPositiveStrand) => ","
+        case _ if (isPositiveStrand) => value.toUpperCase
+        case _ => value.toLowerCase
+      }
+
+      def encodeQuality(quality: Int): Char = (quality + 33).toChar
+
+      val result = StringBuilder.newBuilder
+      result ++= "%s %d %s %d ".format(referenceName, locus + 1, reference, depth)
+
+      // Note: we are ignoring clipped bases and bases inside introns ('N' cigar operator). This is different than
+      // samtools, which outputs '>' and '<' in this case.
+
+      // Bases
+      result ++= elements.map(element => indicateStrand(element.wrapped.alignment match {
+        case Match(_, _) => "."
+        case Mismatch(base, _, _) => Bases.baseToString(base)
+        case Insertion(bases, _) => "+%d%s".format(bases.length, Bases.basesToString(bases))
+        case Deletion(referenceBases, _) => "-%d%s".format(referenceBases.length, Bases.basesToString(referenceBases))
+        case MidDeletion(_) => "*"
+        case _ => ""
+      }, element.read.isPostiveStrand)).mkString
+      result += ' '
+
+      // Base qualitites
+      val qualities = elements.flatMap(element => element.wrapped.alignment match {
+        case MatchOrMisMatch(_, quality) => Seq(quality)
+        case Insertion(_, qualities) => qualities
+        case _ => Seq.empty
+      }).map(_.toInt)
+      result ++= qualities.map(encodeQuality _)
+
+      // Mapping qualities
+      if (includeMappingQualities) {
+        result ++= elements.map(element => encodeQuality(element.read.alignmentQuality))
+      }
+
+      result.result
+    }
   }
 
   class ScriptRead(wrapped: Read) {
@@ -443,6 +500,7 @@ object Evaluation {
     lazy val end = mappedRead.end
     lazy val alignmentQuality = mappedRead.alignmentQuality
     lazy val cigarString = mappedRead.cigar.toString
+    lazy val isPostiveStrand = mappedRead.isPositiveStrand
 
     // Paired read properties
     private lazy val pairedRead: PairedRead[_] = wrapped match {
