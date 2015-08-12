@@ -26,6 +26,7 @@ class EvalCommandSuite extends GuacFunSuite with Matchers {
 
   val chrM = TestUtil.testDataPath("chrM.sorted.bam")
   val gasvExample = TestUtil.testDataPath("gasv_example_both_mapped_and_unmapped.bam")
+  val rnaExample = TestUtil.testDataPath("testrna.sam")
 
   def run(args: String*): Seq[String] = {
     EvalCommand.Caller.run(sc, args: _*).asInstanceOf[RDD[String]].collect()
@@ -37,6 +38,11 @@ class EvalCommandSuite extends GuacFunSuite with Matchers {
 
   def runGasv(args: String*): Seq[String] = {
     val fullArgs: Seq[String] = Seq(gasvExample, "::") ++ args ++ Seq("--domain", "reads", "--out", "none", "-q")
+    run(fullArgs: _*)
+  }
+
+  def runRNA(args: String*): Seq[String] = {
+    val fullArgs: Seq[String] = Seq(rnaExample, "::") ++ args ++ Seq("--loci", "1:229577771-229577786", "--out", "none", "-q")
     run(fullArgs: _*)
   }
 
@@ -63,7 +69,19 @@ class EvalCommandSuite extends GuacFunSuite with Matchers {
         Seq("-10000, 10000", "-10002, 10002", "-10004, 10004", "-10006, 10006", "-10008, 10008"))
   }
 
-  sparkTest("pileups") {
+  sparkTest("escape result strings") {
+    runChrM(
+      "2*2.5", "3*2.5", "\"a complex, string\"", "\"a simple string\"").head should equal(
+        "5, 7.5, \"a complex, string\", a simple string")
+  }
+
+  sparkTest("mpileup") {
+    runChrM("locus", "pileup().mpileup()") should equal(Seq(
+      "5000, 161, 161", "5001, 159, 158", "5002, 155, 151", "5003, 156, 155", "5004, 157, 153"
+    ))
+  }
+
+  sparkTest("pileup basics") {
     runChrM("locus", "pileup().depth()", "pileup().numMatch()") should equal(Seq(
       "5000, 161, 161", "5001, 159, 158", "5002, 155, 151", "5003, 156, 155", "5004, 157, 153"
     ))
@@ -83,16 +101,22 @@ class EvalCommandSuite extends GuacFunSuite with Matchers {
       "pileup().topVariantAllele()",
       "pileup().numTopVariantAllele()",
       "pileup().numOtherAllele()") should equal(Seq(
-        "5000, 161, 161, 0, \"none\", 0, 0",
-        "5001, 159, 158, 1, \"G\", 1, 0",
-        "5002, 155, 151, 4, \"C\", 3, 1",
-        "5003, 156, 155, 1, \"A\", 1, 0",
-        "5004, 157, 153, 4, \"C\", 3, 1"))
+        "5000, 161, 161, 0, none, 0, 0",
+        "5001, 159, 158, 1, G, 1, 0",
+        "5002, 155, 151, 4, C, 3, 1",
+        "5003, 156, 155, 1, A, 1, 0",
+        "5004, 157, 153, 4, C, 3, 1"))
 
     runChrM(
       "locus",
       "pileupGroupCount('', function(element) {return element.sequence(); })['A']") should equal(
         Seq("5000, 161", "5001, 158", "5002, 1", "5003, 1"))
+  }
+
+  sparkTest("pileup rna basics") {
+    runRNA("locus", "pileup().depth()", "pileup().numMatch()", "pileup().numTopVariantAllele()", "pileup().numOtherAllele()") should equal(Seq(
+      "5000, 161, 161", "5001, 159, 158", "5002, 155, 151", "5003, 156, 155", "5004, 157, 153"
+    ))
   }
 
   sparkTest("reads") {

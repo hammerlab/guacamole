@@ -19,19 +19,18 @@
 package org.hammerlab.guacamole.commands
 
 import java.io.InputStreamReader
+import java.text.{ DecimalFormatSymbols, DecimalFormat }
+import java.util.Locale
 import javax.script._
 
 import com.google.common.io.CharStreams
-import htsjdk.samtools.Cigar
 import org.apache.commons.io.IOUtils
 import org.apache.commons.lang.StringEscapeUtils
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.{ Path, FileSystem }
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
-import org.bdgenomics.adam.util.PhredUtils
-import org.hammerlab.guacamole.Common.Arguments.{ NoSequenceDictionary }
-import org.hammerlab.guacamole.commands.Evaluation.{ ScriptPileup }
+import org.hammerlab.guacamole.Common.Arguments.NoSequenceDictionary
 import org.hammerlab.guacamole.pileup._
 import org.hammerlab.guacamole.reads._
 import org.hammerlab.guacamole._
@@ -40,26 +39,97 @@ import org.kohsuke.args4j.{ Option => Args4jOption, Argument }
 
 import scala.collection.JavaConversions
 import scala.collection.mutable.ArrayBuffer
-import scala.util.matching.Regex
 
+/**
+ * This is an experimental command that runs user-specified javascript over reads or pileups.
+ *
+ * An invocation on the commandline looks like this:
+ *
+ * guacamole eval /path/to/my/reads.bam :: "pileup().depth()"
+ *
+ * The first positional arguments give paths to BAMs (any number of BAMs may be analyzed simultaneously), followed by
+ * a double colon (::) to indicate the end of the list of input files. The remaining positional arguments give javascript
+ * expressions to evaluate.
+ *
+ * The results of evaluating each expression on each input item are converted to strings and written as csv to the
+ * file given by the --out argument or stdout.
+ *
+ * If any expression evaluates to null, the input item is skipped. For example:
+ *
+ * guacamole eval /path/to/my/reads.bam :: contig locus "if (ref == 'A') pileup().depth(); else null"
+ *
+ * will output a csv with with lines for every locus where the reference base is "A". Each line will give the contig,
+ * locus, and depth.
+ *
+ * Several "domains" are supported, including "pileups" and "reads". The default domain is "pileups," which runs each of
+ * the expressions at every genomic locus (or the loci specified by --loci). The "reads" domain runs the expressions on
+ * each read individually. For example:
+ *
+ * guacamole eval src/test/resources/synth1.tumor.100k-200k.withmd.bam ::  \
+ *    "if (read.isMateMapped() && read.inferredInsertSize() > 5000) read.inferredInsertSize()" \
+ *    --domain reads
+ *
+ * Will output reads inferred insert sizes when they are > 5000.
+ *
+ * For complex scripts, put your functions in a separate file and include it with --include-file. Then just invoke your
+ * functions on the commandline.
+ *
+ * LABELS
+ *
+ * Both the input files and the expressions to evaluate can be associated with labels by preceeding them with an
+ * argument that ends with a colon:
+ *
+ * guacamole eval normal: /path/to/my/reads.bam tumor: /path/to/my/reads2.bam :: depth: "pileup().depth()"
+ *
+ * Labeling input files allows javascript code to refer to them by name. Expression labels are used in the header line
+ * in the output csv (currently headers are written only for results written to stdout).
+ *
+ * EVALUATION CONTEXT: PILEUPS DOMAIN
+ *
+ * In the "pileups" domain, there is a global JS function "pileup()" that gives the pileup for an input file at the current
+ * locus. If an argument is given it can be either an int i to read the pileup for the i'th file, with "pileup(0)" giving
+ * the first pileup, or a string giving an input file label. If no argument is given it defaults to 0. See the
+ * `Evaluation.ScriptPileup` class for the methods available on a pileup.
+ *
+ * Global variables available in the pileups domain:
+ *  contig  the chromosome (string)
+ *  locus   the genomic locus (int)
+ *  ref     the reference base at this locus (string)
+ *
+ * EVALUATION CONTEXT: READS DOMAIN
+ *
+ * Global variables:
+ *  read  the read. See the `ScriptRead` class for docs.
+ *  path  the path to the BAM file where this read came from (string).
+ *  label the label of the BAM file where this read came from. Defaults to path if there is no label. (string)
+ *
+ * IMPLEMENTATION NOTES
+ *
+ * Javascript was chosen because it ships with the JVM. Since we use only the public javax.script API, it may be possible
+ * to extend this to work with other languages. We're aiming for compatability with both the Java 7 (rhino) and Java 8
+ * (nashorn) implementations.
+ *
+ * The commandline arguments are somewhat awkward since args4j is very limited. For example, it can't handle options that
+ * take variable numbers of positional arguments and respect shell quoting. If we switch to a different argument
+ * parsing package this may get better.
+ *
+ */
 object EvalCommand {
 
   protected class Arguments extends DistributedUtil.Arguments with NoSequenceDictionary {
 
     @Argument(required = true, multiValued = true,
-      usage = "[label1: ]bam1 ... - [header1: ]expression1 ... ")
+      usage = "[label1: ]bam1 ... :: [header1: ]expression1 ... ")
     var fields: Array[String] = Array.empty
 
-    @Args4jOption(name = "--out",
-      usage = "Output path. Default: stdout")
+    @Args4jOption(name = "--out", usage = "Output path. Default: stdout")
     var out: String = ""
 
     @Args4jOption(name = "--include-empty-pileups",
-      usage = "Include empty pileups.")
+      usage = "Include empty pileups. Only meaningful in the 'pilups' domain.")
     var includeEmptyPileups: Boolean = false
 
-    @Args4jOption(name = "--separator",
-      usage = "CSV field separator")
+    @Args4jOption(name = "--separator", usage = "CSV field separator")
     var separator: String = ", "
 
     @Args4jOption(name = "--domain",
@@ -70,8 +140,7 @@ object EvalCommand {
     var includeFiles: ArrayBuffer[String] = ArrayBuffer.empty
 
     var includeCode = new ArrayBuffer[String]()
-    @Args4jOption(name = "--include-code", metaVar = "CODE",
-      usage = "Code to include")
+    @Args4jOption(name = "--include-code", metaVar = "CODE", usage = "Code to include")
     def addCode(arg: String): Unit = includeCode += arg
 
     var codeArgs = new ArrayBuffer[String]()
@@ -85,8 +154,15 @@ object EvalCommand {
 
   object Caller extends SparkCommand[Arguments] {
     override val name = "eval"
-    override val description = "run javascript code over pileups"
+    override val description = "run arbitrary javascript over reads or pileups"
 
+    /**
+     * Parse positional arguments of the form:
+     *  [label:] bam ... :: [label:] expression ...
+     *
+     * @param fields
+     * @return (bam labels, bams, expression labels, expressions)
+     */
     def parseFields(fields: Seq[String]): (Seq[String], Seq[String], Seq[String], Seq[String]) = {
       val bams = ArrayBuffer.newBuilder[String]
       val bamLabels = ArrayBuffer.newBuilder[String]
@@ -134,6 +210,9 @@ object EvalCommand {
       (bamLabels.result, bams.result, expressionLabels.result, expressions.result)
     }
 
+    /**
+     * Files that are automatically included as (description, path) pairs.
+     */
     val standardIncludePaths = Seq(
       ("Preamble", "EvalCommand/preamble.js"))
 
@@ -145,6 +224,10 @@ object EvalCommand {
       }
     })
 
+    /**
+     * Given a list of strings of the form "A=B", return a fragment of javascript that creates an object called "args"
+     * with the specified properties.
+     */
     def buildArgsCode(codeArgs: Seq[String]): String = {
       val syntax = """^([A-z_][A-z0-9_]+)=(.+)""".r
       val nameValues = codeArgs.map(s => s match {
@@ -154,6 +237,9 @@ object EvalCommand {
       "args = {\n" + nameValues.map(pair => "    '%s': '%s'".format(pair._1, pair._2)).mkString(",\n") + "\n}"
     }
 
+    /**
+     * Return a list of (description, code fragment) giving the code fragments to run, based on user arguments.
+     */
     def makeScriptFragments(args: Arguments): Seq[(String, String)] = {
       lazy val filesystem = FileSystem.get(new Configuration())
       val argsFragment = Seq(("Arguments", buildArgsCode(args.codeArgs)))
@@ -167,6 +253,9 @@ object EvalCommand {
       standardIncludes ++ argsFragment ++ extraIncludesFromFiles ++ extraIncludesFromCommandline
     }
 
+    /**
+     * Evaluate a sequence of code fragments in the context given by bindings.
+     */
     def runScriptFragments(fragments: Seq[String], bindings: Bindings): Unit = {
       fragments.foreach(fragment => {
         Evaluation.eval(fragment, Evaluation.compilingEngine.compile(fragment), bindings)
@@ -189,7 +278,7 @@ object EvalCommand {
         namedScriptFragments.foreach({
           case (name, fragment) => {
             println(name)
-            if (fragment.size < 1000) {
+            if (fragment.size < 5000) {
               println(Evaluation.stringWithLineNumbers(fragment))
             } else {
               println("(skipped due to size)")
@@ -209,7 +298,6 @@ object EvalCommand {
 
       // Test that our script runs and that and expressions at least compile, so we error out immediately if not.
       val bindings = new SimpleBindings()
-
       expressions.foreach(Evaluation.compilingEngine.compile _)
 
       val readSets = bams.zipWithIndex.map({
@@ -246,7 +334,7 @@ object EvalCommand {
             }
 
             // Update bindings for the current locus.
-            val scriptPileups = pileups.map(new ScriptPileup(_))
+            val scriptPileups = pileups.map(new Evaluation.ScriptPileup(_))
             bindings.put("ref", Bases.baseToString(pileups(0).referenceBase))
             bindings.put("locus", pileups(0).locus)
             bindings.put("contig", pileups(0).referenceName)
@@ -260,7 +348,7 @@ object EvalCommand {
               Iterator.empty
             } else {
               totalRows += 1
-              Iterator.apply(evaluatedExpressionResults.map(Evaluation.toString(_)).mkString(separator))
+              Iterator.apply(evaluatedExpressionResults.map(Evaluation.jsValueToString(_)).mkString(separator))
             }
             (Some((compiledExpressions, bindings)), result)
           })
@@ -291,7 +379,7 @@ object EvalCommand {
               Iterator.empty
             } else {
               totalRows += 1
-              Iterator.apply(evaluatedExpressionResults.map(Evaluation.toString(_)).mkString(separator))
+              Iterator.apply(evaluatedExpressionResults.map(Evaluation.jsValueToString(_)).mkString(separator))
             }
           })
         })
@@ -325,46 +413,47 @@ object EvalCommand {
     }
   }
 }
+
+/**
+ * Helper functions and wrapper classes for evaluating javascript over pileups and reads.
+ *
+ * Although javascript can call arbitrary methods on any JVM object and would work fine with our usual Guacamole classes
+ * like Pileup, we give a more convenient scripting interface by wrapping the most common classes.
+ *
+ */
 object Evaluation {
   val factory = new javax.script.ScriptEngineManager
   val engine = factory.getEngineByName("JavaScript")
   val compilingEngine = engine.asInstanceOf[Compilable]
-  val invocableEngine = engine.asInstanceOf[Invocable]
-
-  val jsonObject = try {
-    Some(engine.eval("JSON"))
-  } catch {
-    case _: Exception => None
-  }
 
   assert(engine != null)
   assert(compilingEngine != null)
-  assert(invocableEngine != null)
 
-  def toString(value: Any): String = {
-    val code = "JSON.stringify(value)"
-    val compiled = compilingEngine.compile(code)
-    val bindings = new SimpleBindings()
-    bindings.put("value", value)
-    eval(code, compiled, bindings).toString
+  private val decimalFormatter = new DecimalFormat("0", DecimalFormatSymbols.getInstance(Locale.ENGLISH))
+  decimalFormatter.setMaximumFractionDigits(10)
+
+  /**
+   * Convert a javascript value to a string for csv output. Since javascript has no int type, we special case doubles
+   * here to output them without decimals if they are in fact integers.
+   * @param value arbitrary javascript value
+   * @return string representation of that value
+   */
+  def jsValueToString(value: Any): String = value match {
+    case v: Double => decimalFormatter.format(v)
+    case other     => StringEscapeUtils.escapeCsv(value.toString)
   }
 
-  /*
-  def toString(value: Any): String = value match {
-    case v: Double => "%g".format(v)
-    case other => StringEscapeUtils.escapeCsv(value.toString)
-  }
-  */
-
-  /*
-  def toString(value: Any): String = {
-    PartialFunction.condOpt(value) {
-      case v: Double => "%g".format(v)
-      case other => StringEscapeUtils.escapeCsv(value.toString)
-    }
-  }
-  */
-
+  /**
+   * Evaluate the given compiled javascript code with the specified bindings.
+   *
+   * For efficiency, this takes pre compiled code. The code argument should be the source code that was used to generate
+   * it, and is used to display a meaningful message if an error occurs.
+   *
+   * @param code source code used to generate compiledCode
+   * @param compiledCode compiled code
+   * @param bindings context to run in
+   * @return the result of the evaluation
+   */
   def eval(code: String, compiledCode: CompiledScript, bindings: Bindings): Any = {
     try {
       compiledCode.eval(bindings)
@@ -385,6 +474,9 @@ object Evaluation {
     s.split("\n").zipWithIndex.map(pair => "\t%3d) %s".format(pair._2 + 1, pair._1)).mkString("\n")
   }
 
+  /**
+   * Wrapper for a PileupElement.
+   */
   class ScriptPileupElement(val wrapped: PileupElement) {
     lazy val isMatch = wrapped.isMatch
     lazy val isMismatch = wrapped.isMismatch
@@ -399,6 +491,7 @@ object Evaluation {
     lazy val readPosition = wrapped.readPosition
   }
 
+  /** Wrapper for Pileup */
   class ScriptPileup(wrapped: Pileup) {
     private lazy val byAllele: Map[String, Seq[ScriptPileupElement]] =
       elements.groupBy(_.sequence).withDefaultValue(Seq.empty)
@@ -412,10 +505,12 @@ object Evaluation {
     lazy val elements = wrapped.elements.filter(_.alignment != Clipped).map(new ScriptPileupElement(_))
     lazy val elementsIncludingClipped = wrapped.elements.map(new ScriptPileupElement(_))
 
+    /** Alleles sequenced at this locus. */
     lazy val alleles: Seq[String] =
       Seq(reference) ++
         byAllele.filterKeys(_ != reference).toSeq.sortBy(-1 * _._2.count(_.wrapped.alignment != Clipped)).map(_._1)
 
+    /** Return a pileup containing the subset of the current pileup whose reads match the given allele. */
     def withAllele(allele: String): ScriptPileup = {
       val elements = byAllele(allele).map(_.wrapped)
       new ScriptPileup(new Pileup(referenceName, locus, wrapped.referenceBase, elements))
@@ -428,7 +523,10 @@ object Evaluation {
     lazy val numMidDeletion = wrapped.elements.count(_.isMidDeletion)
     lazy val numDeleted = wrapped.elements.count(e => e.isDeletion || e.isMidDeletion)
 
+    /** Most common allele sequenced at this locus. */
     lazy val topAllele = byAllele.toSeq.sortBy(-1 * _._2.length).headOption.map(_._1).getOrElse("none")
+
+    /** Most common non-reference allele, or the string "none" if there are no non-reference alleles sequenced. */
     lazy val topVariantAllele: String = if (alleles.size > 1) alleles(1) else "none"
 
     lazy val numNotMatch = depth - numMatch
@@ -437,42 +535,46 @@ object Evaluation {
 
     override def toString() = "<Pileup at %s:%d of %d elements>".format(referenceName, locus, elements.size)
 
-    def mpileup(includeMappingQualities: Boolean = true): String = {
+    /** Samtools-style mpileup representation of a pileup. */
+    def mpileup(): String = mpileup(true)
+    def mpileupNoMappingQualities(): String = mpileup(false)
+    def mpileup(includeMappingQualities: Boolean): String = {
       def indicateStrand(value: String, isPositiveStrand: Boolean): String = value match {
         case "." if (!isPositiveStrand) => ","
-        case _ if (isPositiveStrand) => value.toUpperCase
-        case _ => value.toLowerCase
+        case _ if (isPositiveStrand)    => value.toUpperCase
+        case _                          => value.toLowerCase
       }
 
       def encodeQuality(quality: Int): Char = (quality + 33).toChar
 
       val result = StringBuilder.newBuilder
-      result ++= "%s %d %s %d ".format(referenceName, locus + 1, reference, depth)
+      result ++= "%s\t%d\t%s\t%d ".format(referenceName, locus + 1, reference, depth)
 
       // Note: we are ignoring clipped bases and bases inside introns ('N' cigar operator). This is different than
       // samtools, which outputs '>' and '<' in this case.
 
       // Bases
       result ++= elements.map(element => indicateStrand(element.wrapped.alignment match {
-        case Match(_, _) => "."
-        case Mismatch(base, _, _) => Bases.baseToString(base)
-        case Insertion(bases, _) => "+%d%s".format(bases.length, Bases.basesToString(bases))
+        case Match(_, _)                 => "."
+        case Mismatch(base, _, _)        => Bases.baseToString(base)
+        case Insertion(bases, _)         => "+%d%s".format(bases.length, Bases.basesToString(bases))
         case Deletion(referenceBases, _) => "-%d%s".format(referenceBases.length, Bases.basesToString(referenceBases))
-        case MidDeletion(_) => "*"
-        case _ => ""
+        case MidDeletion(_)              => "*"
+        case _                           => ""
       }, element.read.isPostiveStrand)).mkString
-      result += ' '
+      result += '\t'
 
       // Base qualitites
       val qualities = elements.flatMap(element => element.wrapped.alignment match {
         case MatchOrMisMatch(_, quality) => Seq(quality)
-        case Insertion(_, qualities) => qualities
-        case _ => Seq.empty
+        case Insertion(_, qualities)     => qualities
+        case _                           => Seq.empty
       }).map(_.toInt)
       result ++= qualities.map(encodeQuality _)
 
       // Mapping qualities
       if (includeMappingQualities) {
+        result += '\t'
         result ++= elements.map(element => encodeQuality(element.read.alignmentQuality))
       }
 
@@ -480,6 +582,7 @@ object Evaluation {
     }
   }
 
+  /** Wrapper for Read, MappedRead, etc. */
   class ScriptRead(wrapped: Read) {
     lazy val token = wrapped.token
     lazy val sequence = Bases.basesToString(wrapped.sequence)
@@ -513,32 +616,11 @@ object Evaluation {
     lazy val mateReferenceContig = pairedRead.mateAlignmentProperties.get.referenceContig
     lazy val mateContig = mateReferenceContig
     lazy val mateIsPositiveStrand = pairedRead.mateAlignmentProperties.get.isPositiveStrand
-    lazy val inferredInsertSize = pairedRead.mateAlignmentProperties.get.inferredInsertSize
+    lazy val inferredInsertSize = pairedRead.mateAlignmentProperties.get.inferredInsertSize.getOrElse(-1)
 
     // Extra properties
     def reverseComplementBases: String = {
       Bases.basesToString(Bases.reverseComplement(wrapped.sequence))
     }
-  }
-
-  class ScriptMappedRead(read: MappedRead) extends MappedRead(
-    read.token,
-    read.sequence: Seq[Byte],
-    read.baseQualities: Seq[Byte],
-    read.isDuplicate: Boolean,
-    read.sampleName: String,
-    read.referenceContig: String,
-    read.alignmentQuality: Int,
-    read.start: Long,
-    read.cigar: Cigar,
-    read.mdTagString: String,
-    read.failedVendorQualityChecks: Boolean,
-    read.isPositiveStrand: Boolean,
-    read.isPaired) {
-
-    def bases: String = {
-      Bases.basesToString(sequence)
-    }
-
   }
 }
