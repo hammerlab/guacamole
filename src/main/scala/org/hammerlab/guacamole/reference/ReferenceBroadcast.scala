@@ -7,14 +7,9 @@ import htsjdk.samtools.reference.FastaSequenceFile
 import org.apache.spark.SparkContext
 import org.apache.spark.broadcast.Broadcast
 
-case class ReferenceBroadcast(broadcastedContigs: Map[String, Broadcast[Array[Byte]]]) {
+case class ReferenceBroadcast(broadcastedContigs: Map[String, Broadcast[Array[Byte]]]) extends ReferenceGenome {
 
-  /**
-   * Retrieve a full contig sequence
-   * @param contigName contig/chromosome to retrieve reference sequence from
-   * @return Full sequence associated with the contig
-   */
-  def getContig(contigName: String): Array[Byte] = {
+  override def getContig(contigName: String): Array[Byte] = {
     try {
       broadcastedContigs(contigName).value
     } catch {
@@ -28,7 +23,7 @@ case class ReferenceBroadcast(broadcastedContigs: Map[String, Broadcast[Array[By
    * @param locus position in the sequence to retrieve
    * @return Base at the given reference position
    */
-  def getReferenceBase(contigName: String, locus: Int): Byte = {
+  override def getReferenceBase(contigName: String, locus: Int): Byte = {
     getContig(contigName)(locus)
   }
 
@@ -39,7 +34,7 @@ case class ReferenceBroadcast(broadcastedContigs: Map[String, Broadcast[Array[By
    * @param endLocus 0-based exclusive end of the subsequence
    * @return
    */
-  def getReferenceSequence(contigName: String, startLocus: Int, endLocus: Int): Array[Byte] = {
+  override def getReferenceSequence(contigName: String, startLocus: Int, endLocus: Int): Array[Byte] = {
     getContig(contigName).slice(startLocus, endLocus)
   }
 

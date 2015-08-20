@@ -59,8 +59,6 @@ case class SlidingWindow[Region <: HasReferenceRegion](referenceName: String,
     region
   }).buffered
 
-  val referenceContig = sortedRegions.head.referenceContig
-
   private val currentRegionsPriorityQueue = {
     // Order regions by end locus, increasing.
     def regionOrdering = new Ordering[Region] {

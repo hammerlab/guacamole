@@ -62,7 +62,7 @@ class ReadSetSuite extends GuacFunSuite with Matchers {
     val (filteredReads, _) = Read.loadReadRDDAndSequenceDictionary(
       adamOut,
       sc,
-      token = 1,
+      1,
       Read.InputFilters(mapped = true, nonDuplicate = true),
       requireMDTagsOnMappedReads = true)
     filteredReads.count() should be(4)
