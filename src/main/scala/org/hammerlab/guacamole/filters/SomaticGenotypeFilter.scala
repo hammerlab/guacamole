@@ -62,8 +62,8 @@ object SomaticReadDepthFilter {
                            maxTumorReadDepth: Int,
                            minNormalReadDepth: Int): Boolean = {
 
-    ReadDepthFilter.withinReadDepthRange(somaticGenotype.tumorEvidence, minTumorReadDepth, maxTumorReadDepth) &&
-      ReadDepthFilter.withinReadDepthRange(somaticGenotype.normalEvidence, minNormalReadDepth, Int.MaxValue)
+    ReadDepthFilter.withinReadDepthRange(somaticGenotype.tumorVariantEvidence, minTumorReadDepth, maxTumorReadDepth) &&
+      ReadDepthFilter.withinReadDepthRange(somaticGenotype.normalReferenceEvidence, minNormalReadDepth, Int.MaxValue)
   }
 
   /**
@@ -92,7 +92,7 @@ object SomaticAlternateReadDepthFilter {
 
   def hasMinimumAlternateReadDepth(somaticGenotype: CalledSomaticAllele,
                                    minAlternateReadDepth: Int): Boolean = {
-    somaticGenotype.tumorEvidence.alleleReadDepth >= minAlternateReadDepth
+    somaticGenotype.tumorVariantEvidence.alleleReadDepth >= minAlternateReadDepth
   }
 
   /**
@@ -118,7 +118,7 @@ object SomaticVAFFilter {
   def hasMinimumVAF(somaticGenotype: CalledSomaticAllele,
                     minVAF: Int): Boolean = {
 
-    somaticGenotype.tumorEvidence.variantAlleleFrequency * 100.0 > minVAF
+    somaticGenotype.tumorVariantEvidence.variantAlleleFrequency * 100.0 > minVAF
   }
 
   /**
@@ -166,8 +166,8 @@ object SomaticAverageMappingQualityFilter {
   def hasMinimumAverageMappingQuality(somaticGenotype: CalledSomaticAllele,
                                       minAverageMappingQuality: Int): Boolean = {
 
-    somaticGenotype.tumorEvidence.meanMappingQuality >= minAverageMappingQuality &&
-      somaticGenotype.normalEvidence.meanMappingQuality >= minAverageMappingQuality
+    somaticGenotype.tumorVariantEvidence.meanMappingQuality >= minAverageMappingQuality &&
+      somaticGenotype.normalReferenceEvidence.meanMappingQuality >= minAverageMappingQuality
   }
 
   /**
@@ -191,8 +191,8 @@ object SomaticAverageBaseQualityFilter {
   def hasMinimumAverageBaseQuality(somaticGenotype: CalledSomaticAllele,
                                    minAverageBaseQuality: Int): Boolean = {
 
-    somaticGenotype.tumorEvidence.meanMappingQuality >= minAverageBaseQuality &&
-      somaticGenotype.normalEvidence.meanMappingQuality >= minAverageBaseQuality
+    somaticGenotype.tumorVariantEvidence.meanMappingQuality >= minAverageBaseQuality &&
+      somaticGenotype.normalReferenceEvidence.meanMappingQuality >= minAverageBaseQuality
   }
 
   /**
@@ -216,7 +216,7 @@ object SomaticMedianMismatchFilter {
   def hasMaximumMedianMismatch(somaticGenotype: CalledSomaticAllele,
                                maximumMedianMismatches: Int): Boolean = {
 
-    somaticGenotype.tumorEvidence.medianMismatchesPerRead <= maximumMedianMismatches
+    somaticGenotype.tumorVariantEvidence.medianMismatchesPerRead <= maximumMedianMismatches
   }
 
   /**

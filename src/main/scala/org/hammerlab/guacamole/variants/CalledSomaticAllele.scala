@@ -29,8 +29,8 @@ import org.bdgenomics.adam.util.PhredUtils
  * @param start start position of the variant (0-based)
  * @param allele reference and sequence bases of this variant
  * @param somaticLogOdds log odds-ratio of the variant in the tumor compared to the normal sample
- * @param tumorEvidence supporting statistics for the variant in the tumor sample
- * @param normalEvidence supporting statistics for the variant in the normal sample
+ * @param tumorVariantEvidence supporting statistics for the variant in the tumor sample
+ * @param normalReferenceEvidence supporting statistics for the reference in the normal sample
  * @param rsID   identifier for the variant if it is in dbSNP
  * @param length length of the variant
  */
@@ -39,13 +39,13 @@ case class CalledSomaticAllele(sampleName: String,
                                start: Long,
                                allele: Allele,
                                somaticLogOdds: Double,
-                               tumorEvidence: AlleleEvidence,
-                               normalEvidence: AlleleEvidence,
+                               tumorVariantEvidence: AlleleEvidence,
+                               normalReferenceEvidence: AlleleEvidence,
                                rsID: Option[Int] = None,
                                length: Int = 1) extends ReferenceVariant {
   val end: Long = start + 1L
 
-  // P ( variant in tumor AND no variant in normal) = P(variant in tumor) * ( 1 - P(variant in normal) )
+  // P ( variant in tumor AND no variant in normal) = P(variant in tumor) * P(reference in normal)
   lazy val phredScaledSomaticLikelihood =
-    PhredUtils.successProbabilityToPhred(tumorEvidence.likelihood * (1 - normalEvidence.likelihood) - 1e-10)
+    PhredUtils.successProbabilityToPhred(tumorVariantEvidence.likelihood * normalReferenceEvidence.likelihood - 1e-10)
 }
