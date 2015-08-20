@@ -102,7 +102,9 @@ object VAFHistogram {
             requireMDTagsOnMappedReads = false,
             InputFilters.empty,
             token = bamFile._2,
-            contigLengthsFromDictionary = true)
+            contigLengthsFromDictionary = true,
+            referenceGenome = None
+          )
       )
 
       val loci = Common.loci(args, readSets(0))

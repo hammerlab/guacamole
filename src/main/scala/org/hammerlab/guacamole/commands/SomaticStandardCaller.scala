@@ -70,12 +70,16 @@ object SomaticStandard {
         nonDuplicate = true,
         passedVendorQualityChecks = true,
         hasMdTag = true)
+
+      val reference = Option(args.referenceFastaPath).map(ReferenceBroadcast(_, sc))
+
       val (tumorReads, normalReads) =
         Common.loadTumorNormalReadsFromArguments(
           args,
           sc,
           filters,
-          requireMDTagsOnMappedReads = false
+          requireMDTagsOnMappedReads = false,
+          referenceGenome = reference
         )
 
       assert(tumorReads.sequenceDictionary == normalReads.sequenceDictionary,
@@ -96,8 +100,6 @@ object SomaticStandard {
         normalReads.mappedReads
       )
 
-      val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
-
       var potentialGenotypes: RDD[CalledSomaticAllele] =
         DistributedUtil.pileupFlatMapTwoRDDs[CalledSomaticAllele](
           tumorReads.mappedReads,
@@ -113,7 +115,7 @@ object SomaticStandard {
               filterMultiAllelic,
               maxReadDepth
             ).iterator,
-          Some(reference)
+          referenceGenome = reference
         )
 
       potentialGenotypes.persist()

@@ -1,6 +1,7 @@
 package org.hammerlab.guacamole.reads
 
 import htsjdk.samtools.SAMRecord
+import org.hammerlab.guacamole.reference.ReferenceGenome
 
 /**
  * PairedRead is a MappedRead or UnmappedRead with the additional mate information
@@ -29,11 +30,13 @@ case class PairedRead[+T <: Read](read: T,
 object PairedRead {
   def apply(record: SAMRecord,
             token: Int,
-            requireMDTagsOnMappedReads: Boolean): PairedRead[Read] = {
+            requireMDTagsOnMappedReads: Boolean,
+            referenceGenome: Option[ReferenceGenome]): PairedRead[Read] = {
     val read = Read.fromSAMRecord(
       record,
       token,
-      requireMDTagsOnMappedReads
+      requireMDTagsOnMappedReads,
+      referenceGenome
     )
 
     val mateAlignment = MateAlignmentProperties(record)

@@ -23,12 +23,12 @@ import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole.Common.Arguments.GermlineCallerArgs
 import org.hammerlab.guacamole.filters.GenotypeFilter.GenotypeFilterArguments
 import org.hammerlab.guacamole.filters.PileupFilter.PileupFilterArguments
-import org.hammerlab.guacamole.filters.{GenotypeFilter, QualityAlignedReadsFilter}
+import org.hammerlab.guacamole.filters.{ GenotypeFilter, QualityAlignedReadsFilter }
 import org.hammerlab.guacamole.likelihood.Likelihood
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.Read
-import org.hammerlab.guacamole.variants.{AlleleConversions, AlleleEvidence, CalledAllele}
-import org.hammerlab.guacamole.{Common, Concordance, DelayedMessages, DistributedUtil, SparkCommand}
+import org.hammerlab.guacamole.variants.{ AlleleConversions, AlleleEvidence, CalledAllele }
+import org.hammerlab.guacamole.{ Common, Concordance, DelayedMessages, DistributedUtil, SparkCommand }
 import org.kohsuke.args4j.Option
 
 /**

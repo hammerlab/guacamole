@@ -28,6 +28,7 @@ import org.bdgenomics.adam.projections.{ AlignmentRecordField, Projection }
 import org.bdgenomics.adam.rdd.{ ADAMContext, ADAMSpecificRecordSequenceDictionaryRDDAggregator }
 import org.bdgenomics.formats.avro.AlignmentRecord
 import org.hammerlab.guacamole.Bases
+import org.hammerlab.guacamole.reference.ReferenceGenome
 import org.seqdoop.hadoop_bam.util.SAMHeaderReader
 import org.seqdoop.hadoop_bam.{ AnySAMInputFormat, SAMRecordWritable }
 
@@ -168,7 +169,8 @@ object Read extends Logging {
    */
   def fromSAMRecord(record: SAMRecord,
                     token: Int,
-                    requireMDTagsOnMappedReads: Boolean): Read = {
+                    requireMDTagsOnMappedReads: Boolean,
+                    referenceGenome: Option[ReferenceGenome]): Read = {
 
     val isMapped = (
       // NOTE(ryan): this flag should maybe be the main determinant of the mapped-ness of this SAM record. SAM spec
@@ -187,7 +189,11 @@ object Read extends Logging {
     }).intern
 
     if (isMapped) {
-      val mdTagString = Option(record.getStringAttribute("MD"))
+      val mdTagString =
+        referenceGenome.map(
+          _.buildMdTag(record.getReadString, record.getReferenceName, record.getAlignmentStart - 1, record.getCigar)
+        ).orElse(Option(record.getStringAttribute("MD")))
+
       if (!mdTagString.isDefined && requireMDTagsOnMappedReads) {
         throw MissingMDTagException(record)
       }
@@ -234,14 +240,20 @@ object Read extends Logging {
   def loadReadArrayAndSequenceDictionaryFromBAM(
     filename: String,
     token: Int,
-    filters: InputFilters): (ArrayBuffer[Read], SequenceDictionary) = {
+    filters: InputFilters,
+    referenceGenome: Option[ReferenceGenome]): (ArrayBuffer[Read], SequenceDictionary) = {
     val reader = SamReaderFactory.make.open(new java.io.File(filename))
     val sequenceDictionary = SequenceDictionary.fromSAMReader(reader)
     val result = new ArrayBuffer[Read]
 
     JavaConversions.asScalaIterator(reader.iterator).foreach(item => {
       if (!filters.nonDuplicate || !item.getDuplicateReadFlag) {
-        val read = fromSAMRecord(item, token, requireMDTagsOnMappedReads = false)
+        val read = fromSAMRecord(
+          item,
+          token,
+          requireMDTagsOnMappedReads = false,
+          referenceGenome
+        )
 
         if ((!filters.mapped || read.isMapped) &&
           (!filters.passedVendorQualityChecks || !read.failedVendorQualityChecks) &&
@@ -268,11 +280,23 @@ object Read extends Logging {
                                        sc: SparkContext,
                                        token: Int,
                                        filters: InputFilters,
-                                       requireMDTagsOnMappedReads: Boolean): (RDD[Read], SequenceDictionary) = {
+                                       requireMDTagsOnMappedReads: Boolean,
+                                       referenceGenome: Option[ReferenceGenome] = None): (RDD[Read], SequenceDictionary) = {
     var (reads, sequenceDictionary) = if (filename.endsWith(".bam") || filename.endsWith(".sam")) {
-      loadReadRDDAndSequenceDictionaryFromBAM(filename, sc, token, requireMDTagsOnMappedReads)
+      loadReadRDDAndSequenceDictionaryFromBAM(
+        filename,
+        sc,
+        token,
+        requireMDTagsOnMappedReads,
+        referenceGenome
+      )
     } else {
-      loadReadRDDAndSequenceDictionaryFromADAM(filename, sc, token)
+      loadReadRDDAndSequenceDictionaryFromADAM(
+        filename,
+        sc,
+        token,
+        referenceGenome
+      )
     }
     if (filters.mapped) reads = reads.filter(_.isMapped)
     if (filters.nonDuplicate) reads = reads.filter(!_.isDuplicate)
@@ -288,7 +312,8 @@ object Read extends Logging {
     filename: String,
     sc: SparkContext,
     token: Int,
-    requireMDTagsOnMappedReads: Boolean): (RDD[Read], SequenceDictionary) = {
+    requireMDTagsOnMappedReads: Boolean,
+    referenceGenome: Option[ReferenceGenome]): (RDD[Read], SequenceDictionary) = {
 
     val samHeader = SAMHeaderReader.readSAMHeaderFrom(new Path(filename), sc.hadoopConfiguration)
     val sequenceDictionary = SequenceDictionary.fromSAMHeader(samHeader)
@@ -299,9 +324,19 @@ object Read extends Logging {
       samRecords.map({
         case (k, v) =>
           if (v.get.getReadPairedFlag)
-            PairedRead(v.get, token, requireMDTagsOnMappedReads)
+            PairedRead(
+              v.get,
+              token,
+              requireMDTagsOnMappedReads,
+              referenceGenome
+            )
           else
-            fromSAMRecord(v.get, token, requireMDTagsOnMappedReads)
+            fromSAMRecord(
+              v.get,
+              token,
+              requireMDTagsOnMappedReads,
+              referenceGenome
+            )
       })
     (reads, sequenceDictionary)
   }
@@ -309,7 +344,8 @@ object Read extends Logging {
   /** Returns an RDD of Reads and SequenceDictionary from reads in ADAM format **/
   def loadReadRDDAndSequenceDictionaryFromADAM(filename: String,
                                                sc: SparkContext,
-                                               token: Int): (RDD[Read], SequenceDictionary) = {
+                                               token: Int,
+                                               referenceGenome: Option[ReferenceGenome] = None): (RDD[Read], SequenceDictionary) = {
 
     val adamContext = new ADAMContext(sc)
 
@@ -346,7 +382,7 @@ object Read extends Logging {
     val adamRecords: RDD[AlignmentRecord] = adamContext.loadParquet(filename, projection = Some(ADAMSpecificProjection))
     val sequenceDictionary = new ADAMSpecificRecordSequenceDictionaryRDDAggregator(adamRecords).adamGetSequenceDictionary()
 
-    val reads: RDD[Read] = adamRecords.map(fromADAMRecord(_, token))
+    val reads: RDD[Read] = adamRecords.map(fromADAMRecord(_, token, referenceGenome))
 
     (reads, sequenceDictionary)
   }
@@ -358,10 +394,17 @@ object Read extends Logging {
    * @param alignmentRecord ADAM Alignment Record (an aligned or unaligned read)
    * @return Mapped or Unmapped Read
    */
-  def fromADAMRecord(alignmentRecord: AlignmentRecord, token: Int): Read = {
+  def fromADAMRecord(alignmentRecord: AlignmentRecord, token: Int, referenceGenome: Option[ReferenceGenome]): Read = {
 
     val sequence = Bases.stringToBases(alignmentRecord.getSequence.toString)
     val baseQualities = baseQualityStringToArray(alignmentRecord.getQual.toString, sequence.length)
+
+    val referenceContig = alignmentRecord.getContig.getContigName.intern
+    val cigar = TextCigarCodec.decode(alignmentRecord.getCigar)
+    val mdTagString =
+      referenceGenome.map(
+        _.buildMdTag(alignmentRecord.getSequence, referenceContig, alignmentRecord.getStart.toInt - 1, cigar)
+      ).orElse(Option(alignmentRecord.getMismatchingPositions))
 
     val read = if (alignmentRecord.getReadMapped) {
       MappedRead(
@@ -370,11 +413,11 @@ object Read extends Logging {
         baseQualities = baseQualities,
         isDuplicate = alignmentRecord.getDuplicateRead,
         sampleName = alignmentRecord.getRecordGroupSample.toString.intern(),
-        referenceContig = alignmentRecord.getContig.getContigName.toString.intern(),
+        referenceContig = referenceContig,
         alignmentQuality = alignmentRecord.getMapq,
         start = alignmentRecord.getStart,
-        cigar = TextCigarCodec.decode(alignmentRecord.getCigar.toString),
-        mdTagString = Some(alignmentRecord.getMismatchingPositions.toString),
+        cigar = cigar,
+        mdTagString = mdTagString,
         failedVendorQualityChecks = alignmentRecord.getFailedVendorQualityChecks,
         isPositiveStrand = !alignmentRecord.getReadNegativeStrand,
         alignmentRecord.getReadPaired

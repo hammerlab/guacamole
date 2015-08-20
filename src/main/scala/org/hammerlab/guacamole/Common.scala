@@ -36,6 +36,7 @@ import org.bdgenomics.formats.avro.Genotype
 import org.hammerlab.guacamole.Concordance.ConcordanceArgs
 import org.hammerlab.guacamole.reads.Read
 import org.codehaus.jackson.JsonFactory
+import org.hammerlab.guacamole.reference.ReferenceGenome
 import org.kohsuke.args4j.{ Option => Args4jOption }
 
 /**
@@ -143,8 +144,16 @@ object Common extends Logging {
     args: Arguments.Reads,
     sc: SparkContext,
     filters: Read.InputFilters,
-    requireMDTagsOnMappedReads: Boolean = false): ReadSet = {
-    ReadSet(sc, args.reads, requireMDTagsOnMappedReads, filters, token = 0, contigLengthsFromDictionary = !args.noSequenceDictionary)
+    requireMDTagsOnMappedReads: Boolean = false,
+    referenceGenome: Option[ReferenceGenome] = None): ReadSet = {
+    ReadSet(
+      sc,
+      args.reads,
+      requireMDTagsOnMappedReads,
+      filters,
+      token = 0,
+      contigLengthsFromDictionary = !args.noSequenceDictionary,
+      referenceGenome)
   }
 
   /**
@@ -160,10 +169,11 @@ object Common extends Logging {
     args: Arguments.TumorNormalReads,
     sc: SparkContext,
     filters: Read.InputFilters,
-    requireMDTagsOnMappedReads: Boolean = false): (ReadSet, ReadSet) = {
+    requireMDTagsOnMappedReads: Boolean = false,
+    referenceGenome: Option[ReferenceGenome] = None): (ReadSet, ReadSet) = {
 
-    val tumor = ReadSet(sc, args.tumorReads, requireMDTagsOnMappedReads, filters, 1, !args.noSequenceDictionary)
-    val normal = ReadSet(sc, args.normalReads, requireMDTagsOnMappedReads, filters, 2, !args.noSequenceDictionary)
+    val tumor = ReadSet(sc, args.tumorReads, requireMDTagsOnMappedReads, filters, 1, !args.noSequenceDictionary, referenceGenome)
+    val normal = ReadSet(sc, args.normalReads, requireMDTagsOnMappedReads, filters, 2, !args.noSequenceDictionary, referenceGenome)
     (tumor, normal)
   }
 
