@@ -135,8 +135,8 @@ object SomaticStandard {
                 start = calledAllele.start,
                 allele = calledAllele.allele,
                 somaticLogOdds = calledAllele.somaticLogOdds,
-                tumorEvidence = calledAllele.tumorEvidence,
-                normalEvidence = calledAllele.normalEvidence,
+                tumorVariantEvidence = calledAllele.tumorVariantEvidence,
+                normalReferenceEvidence = calledAllele.normalReferenceEvidence,
                 rsID = dbSnpVariant.map(_.getDbSnpId)
               )
           }
@@ -217,9 +217,9 @@ object SomaticStandard {
           // removeCorrelatedGenotypes depends on there only being one variant per locus.
           // TODO(ryan): if we want to handle the possibility of two non-reference alleles at a locus, iterate over all
           // non-reference alleles here and rework downstream assumptions accordingly.
-          allele <- mostLikelyTumorGenotype.getNonReferenceAlleles.filter(!_.altBases.isEmpty).headOption.toSeq
-          tumorEvidence = AlleleEvidence(mostLikelyTumorGenotypeLikelihood, allele, filteredTumorPileup)
-          normalEvidence = AlleleEvidence(normalVariantsTotalLikelihood, Allele(allele.refBases, allele.refBases), filteredNormalPileup)
+          allele <- mostLikelyTumorGenotype.getNonReferenceAlleles.find(_.altBases.nonEmpty).toSeq
+          tumorVariantEvidence = AlleleEvidence(mostLikelyTumorGenotypeLikelihood, allele, filteredTumorPileup)
+          normalReferenceEvidence = AlleleEvidence(1 - normalVariantsTotalLikelihood, Allele(allele.refBases, allele.refBases), filteredNormalPileup)
         } yield {
           CalledSomaticAllele(
             tumorPileup.sampleName,
@@ -227,8 +227,8 @@ object SomaticStandard {
             tumorPileup.locus,
             allele,
             math.log(somaticOdds),
-            tumorEvidence,
-            normalEvidence
+            tumorVariantEvidence,
+            normalReferenceEvidence
           )
         }
       } else {
