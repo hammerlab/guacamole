@@ -106,7 +106,7 @@ case class PileupElement(
       case (CigarOperator.I, _) => throw new InvalidCigarElementException(this)
 
       case (CigarOperator.M | CigarOperator.EQ | CigarOperator.X, Some(CigarOperator.D)) =>
-        val deletedBases = read.referenceBases.view(
+        val deletedBases = read.mdTagReferenceBases.view(
           referenceStringIdx,
           referenceStringIdx + 1 + nextCigarElement.get.getLength
         )
@@ -114,7 +114,7 @@ case class PileupElement(
         Deletion(deletedBases, anchorBaseSequenceQuality)
       case (CigarOperator.D, _) =>
         // TODO(ryan): can a cigar begin with a 'D' operator?
-        MidDeletion(read.referenceBases(referenceStringIdx))
+        MidDeletion(read.mdTagReferenceBases(referenceStringIdx))
       case (op, Some(CigarOperator.D)) =>
         // TODO(ryan): are there sane cases where a 'D' is not preceded by an 'M'?
         throw new AssertionError(

@@ -27,6 +27,7 @@ import org.hammerlab.guacamole.Common.Arguments.{ Base, Loci }
 import org.hammerlab.guacamole.Common._
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.MappedRead
+import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.windowing.{ SplitIterator, SlidingWindow }
 import org.kohsuke.args4j.{ Option => Args4jOption }
 
@@ -251,11 +252,16 @@ object DistributedUtil extends Logging {
    *
    *  If an existing Pileup is provided, then its locus must be <= the new locus.
    */
-  private def initOrMovePileup(existing: Option[Pileup], window: SlidingWindow[MappedRead]): Pileup = {
+  private def initOrMovePileup(existing: Option[Pileup],
+                               window: SlidingWindow[MappedRead],
+                               reference: Option[ReferenceBroadcast]): Pileup = {
     assume(window.halfWindowSize == 0)
 
     val locus = window.currentLocus
-    val referenceBase = Pileup.referenceBaseAtLocus(window.currentRegions(), locus)
+    val referenceBase =
+      reference.map(_.getReferenceBase(window.referenceContig, locus.toInt))
+        .getOrElse(Pileup.referenceBaseAtLocus(window.currentRegions(), locus))
+
     existing match {
       case None         => Pileup(window.currentRegions(), window.referenceName, locus, referenceBase)
       case Some(pileup) => pileup.atGreaterLocus(locus, referenceBase, window.newRegions.iterator)
@@ -278,7 +284,8 @@ object DistributedUtil extends Logging {
     reads: RDD[MappedRead],
     lociPartitions: LociMap[Long],
     skipEmpty: Boolean,
-    function: Pileup => Iterator[T]): RDD[T] = {
+    function: Pileup => Iterator[T],
+    reference: Option[ReferenceBroadcast] = None): RDD[T] = {
     windowFlatMapWithState(
       Seq(reads),
       lociPartitions,
@@ -287,7 +294,7 @@ object DistributedUtil extends Logging {
       None,
       (maybePileup: Option[Pileup], windows: PerSample[SlidingWindow[MappedRead]]) => {
         assert(windows.length == 1)
-        val pileup = initOrMovePileup(maybePileup, windows(0))
+        val pileup = initOrMovePileup(maybePileup, windows(0), reference)
         (Some(pileup), function(pileup))
       }
     )
@@ -306,7 +313,8 @@ object DistributedUtil extends Logging {
     reads2: RDD[MappedRead],
     lociPartitions: LociMap[Long],
     skipEmpty: Boolean,
-    function: (Pileup, Pileup) => Iterator[T]): RDD[T] = {
+    function: (Pileup, Pileup) => Iterator[T],
+    reference: Option[ReferenceBroadcast] = None): RDD[T] = {
     windowFlatMapWithState(
       Seq(reads1, reads2),
       lociPartitions,
@@ -315,8 +323,8 @@ object DistributedUtil extends Logging {
       initialState = None,
       function = (maybePileups: Option[(Pileup, Pileup)], windows: PerSample[SlidingWindow[MappedRead]]) => {
         assert(windows.length == 2)
-        val pileup1 = initOrMovePileup(maybePileups.map(_._1), windows(0))
-        val pileup2 = initOrMovePileup(maybePileups.map(_._2), windows(1))
+        val pileup1 = initOrMovePileup(maybePileups.map(_._1), windows(0), reference)
+        val pileup2 = initOrMovePileup(maybePileups.map(_._2), windows(1), reference)
         (Some((pileup1, pileup2)), function(pileup1, pileup2))
       })
   }
@@ -330,7 +338,8 @@ object DistributedUtil extends Logging {
     readsRDDs: Seq[RDD[MappedRead]],
     lociPartitions: LociMap[Long],
     skipEmpty: Boolean,
-    function: Seq[Pileup] => Iterator[T]): RDD[T] = {
+    function: Seq[Pileup] => Iterator[T],
+    reference: Option[ReferenceBroadcast] = None): RDD[T] = {
     windowFlatMapWithState(
       readsRDDs,
       lociPartitions,
@@ -341,9 +350,9 @@ object DistributedUtil extends Logging {
         val advancedPileups = maybePileups match {
           case Some(existingPileups) => {
             existingPileups.zip(windows).map(
-              pileupAndWindow => initOrMovePileup(Some(pileupAndWindow._1), pileupAndWindow._2))
+              pileupAndWindow => initOrMovePileup(Some(pileupAndWindow._1), pileupAndWindow._2, reference))
           }
-          case None => windows.map(initOrMovePileup(None, _))
+          case None => windows.map(initOrMovePileup(None, _, reference))
         }
         (Some(advancedPileups), function(advancedPileups))
       })

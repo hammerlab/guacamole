@@ -137,14 +137,16 @@ object VAFHistogram {
       }
 
       val histogramOutput =
-        sampleAndFileNames.zip(variantAlleleHistograms).flatMap(kv => {
-          val fileName = kv._1._1
-          val sampleName = kv._1._2
-          val histogram = kv._2
-          histogram.toSeq
-            .sortBy(_._1)
-            .map(kv => s"$fileName, $sampleName, ${histogramToString(kv)}").toSeq
-        })
+        sampleAndFileNames
+          .zip(variantAlleleHistograms)
+          .flatMap(kv => {
+            val fileName = kv._1._1
+            val sampleName = kv._1._2
+            val histogram = kv._2
+            histogram.toSeq
+              .sortBy(_._1)
+              .map(kv => s"$fileName, $sampleName, ${histogramToString(kv)}").toSeq
+          })
 
       if (args.localOutputPath != "") {
         val writer = new BufferedWriter(new FileWriter(args.localOutputPath))
@@ -211,7 +213,7 @@ object VAFHistogram {
       reads,
       lociPartitions,
       skipEmpty = true,
-      pileup => VariantLocus(pileup)
+      function = pileup => VariantLocus(pileup)
         .filter(locus => pileup.depth >= minReadDepth)
         .filter(_.variantAlleleFrequency >= (minVariantAlleleFrequency / 100.0))
         .iterator

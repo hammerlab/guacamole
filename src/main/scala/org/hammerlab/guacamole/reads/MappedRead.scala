@@ -53,7 +53,7 @@ case class MappedRead(
   override val isMapped = true
   override val hasMdTag = mdTagOpt.isDefined
 
-  lazy val referenceBases: Seq[Byte] =
+  lazy val mdTagReferenceBases: Seq[Byte] =
     mdTagOpt match {
       case None => throw new ReferenceWithoutMDTagException(this)
       case Some(mdTag) => try {
@@ -71,7 +71,7 @@ case class MappedRead(
    */
   def getReferenceBaseAtLocus(referenceLocus: Long): Byte = {
     assume(referenceLocus >= start && referenceLocus < end)
-    referenceBases((referenceLocus - start).toInt)
+    mdTagReferenceBases((referenceLocus - start).toInt)
   }
 
   lazy val alignmentLikelihood = PhredUtils.phredToSuccessProbability(alignmentQuality)
@@ -124,12 +124,11 @@ object MappedRead {
     failedVendorQualityChecks: Boolean,
     isPositiveStrand: Boolean,
     isPaired: Boolean)(implicit d: DummyImplicit): MappedRead = MappedRead(
-      token, sequence, baseQualities, isDuplicate, sampleName, referenceContig,
-      alignmentQuality, start, cigar,
-      mdTagString.map(MdTag(_, start)),
-      failedVendorQualityChecks, isPositiveStrand, isPaired)
+    token, sequence, baseQualities, isDuplicate, sampleName, referenceContig,
+    alignmentQuality, start, cigar,
+    mdTagString.map(MdTag(_, start)),
+    failedVendorQualityChecks, isPositiveStrand, isPaired)
 }
-
 
 case class MissingMDTagException(record: SAMRecord)
   extends Exception(s"Missing MDTag in SAMRecord: $record")
