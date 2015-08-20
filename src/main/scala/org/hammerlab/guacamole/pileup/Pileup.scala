@@ -20,6 +20,7 @@ package org.hammerlab.guacamole.pileup
 
 import org.hammerlab.guacamole.Bases
 import org.hammerlab.guacamole.reads.MappedRead
+import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.variants.{ Allele, Genotype }
 
 /**

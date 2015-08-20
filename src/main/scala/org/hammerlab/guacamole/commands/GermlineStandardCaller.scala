@@ -20,16 +20,15 @@ package org.hammerlab.guacamole.commands
 
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
-import org.hammerlab.guacamole.{ DelayedMessages, Concordance, DistributedUtil, Common, SparkCommand }
 import org.hammerlab.guacamole.Common.Arguments.GermlineCallerArgs
-import org.hammerlab.guacamole.likelihood.Likelihood
-import org.hammerlab.guacamole.variants.{ AlleleEvidence, Genotype, AlleleConversions, CalledAllele }
-
 import org.hammerlab.guacamole.filters.GenotypeFilter.GenotypeFilterArguments
 import org.hammerlab.guacamole.filters.PileupFilter.PileupFilterArguments
-import org.hammerlab.guacamole.filters.{ GenotypeFilter, QualityAlignedReadsFilter }
+import org.hammerlab.guacamole.filters.{GenotypeFilter, QualityAlignedReadsFilter}
+import org.hammerlab.guacamole.likelihood.Likelihood
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.Read
+import org.hammerlab.guacamole.variants.{AlleleConversions, AlleleEvidence, CalledAllele}
+import org.hammerlab.guacamole.{Common, Concordance, DelayedMessages, DistributedUtil, SparkCommand}
 import org.kohsuke.args4j.Option
 
 /**
@@ -50,7 +49,7 @@ object GermlineStandard {
     override def run(args: Arguments, sc: SparkContext): Unit = {
       Common.validateArguments(args)
       val readSet = Common.loadReadsFromArguments(
-          args, sc, Read.InputFilters(mapped = true, nonDuplicate = true, hasMdTag = true))
+        args, sc, Read.InputFilters(mapped = true, nonDuplicate = true, hasMdTag = true))
       readSet.mappedReads.persist()
       Common.progress(
         "Loaded %,d mapped non-duplicate reads into %,d partitions.".format(readSet.mappedReads.count, readSet.mappedReads.partitions.length))
@@ -64,7 +63,7 @@ object GermlineStandard {
         readSet.mappedReads,
         lociPartitions,
         skipEmpty = true, // skip empty pileups
-        pileup => callVariantsAtLocus(pileup, minAlignmentQuality).iterator)
+        function = pileup => callVariantsAtLocus(pileup, minAlignmentQuality).iterator)
       readSet.mappedReads.unpersist()
 
       val filteredGenotypes = GenotypeFilter(genotypes, args).flatMap(AlleleConversions.calledAlleleToADAMGenotype)
