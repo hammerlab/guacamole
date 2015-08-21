@@ -6,25 +6,25 @@ import org.hammerlab.guacamole.util.TestUtil.Implicits._
 class AffineGapPenaltyAlignmentSuite extends FunSuite with Matchers {
 
   test("score alignment: exact match") {
-    val (alignmentStates, alignmentScores) = AffineGapPenaltyAlignment.scoreAlignmentPaths(
+    val alignments = AffineGapPenaltyAlignment.scoreAlignmentPaths(
       "TCGA",
       "TCGA",
       mismatchProbability = 1e-2,
       openGapProbability = 1e-3,
       closeGapProbability = 1e-2
     )
-    alignmentScores(4, 4).toInt should be(0)
+    alignments(4, 4)._3.toInt should be(0)
   }
 
   test("score alignment: single mismatch") {
-    val (alignmentStates, alignmentScores) = AffineGapPenaltyAlignment.scoreAlignmentPaths(
+    val alignments = AffineGapPenaltyAlignment.scoreAlignmentPaths(
       "TCGA",
       "TCCA",
       mismatchProbability = 1e-2,
       openGapProbability = 1e-3,
       closeGapProbability = 1e-2
     )
-    math.round(alignmentScores(4, 4)) should be(5)
+    math.round(alignments(4, 4)._3) should be(5)
   }
 
   test("align exact match") {
