@@ -50,12 +50,12 @@ object AlleleConversions {
         .setAlleles(JavaConversions.seqAsJavaList(Seq(GenotypeAllele.Ref, GenotypeAllele.Alt)))
         .setSampleId(calledAllele.sampleName)
         .setGenotypeQuality(calledAllele.phredScaledSomaticLikelihood)
-        .setReadDepth(calledAllele.tumorEvidence.readDepth)
+        .setReadDepth(calledAllele.tumorVariantEvidence.readDepth)
         .setExpectedAlleleDosage(
-          calledAllele.tumorEvidence.alleleReadDepth.toFloat / calledAllele.tumorEvidence.readDepth
+          calledAllele.tumorVariantEvidence.alleleReadDepth.toFloat / calledAllele.tumorVariantEvidence.readDepth
         )
-        .setReferenceReadDepth(calledAllele.tumorEvidence.readDepth - calledAllele.tumorEvidence.alleleReadDepth)
-        .setAlternateReadDepth(calledAllele.tumorEvidence.alleleReadDepth)
+        .setReferenceReadDepth(calledAllele.tumorVariantEvidence.readDepth - calledAllele.tumorVariantEvidence.alleleReadDepth)
+        .setAlternateReadDepth(calledAllele.tumorVariantEvidence.alleleReadDepth)
         .setVariant(calledAllele.adamVariant)
         .build
     )
