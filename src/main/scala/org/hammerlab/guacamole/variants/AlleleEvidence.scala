@@ -89,7 +89,7 @@ object AlleleEvidence {
         medianMappingQuality = median(alignmentScores),
         meanBaseQuality = mean(baseQualityScores),
         medianBaseQuality = median(baseQualityScores),
-        medianMismatchesPerRead = median(DenseVector(alleleElements.map(_.read.mdTag.countOfMismatches).toArray)
+        medianMismatchesPerRead = median(DenseVector(alleleElements.map(_.read.mdTagOpt.get.countOfMismatches).toArray)
         )
       )
   }
