@@ -12,7 +12,11 @@ class ReadAlignmentSuite extends FunSuite with Matchers {
         AlignmentState.Match,
         AlignmentState.Match,
         AlignmentState.Match,
-        AlignmentState.Match), 60)
+        AlignmentState.Match
+      ),
+      Nil,
+      60
+    )
 
     alignment.toCigar should be("6=")
   }
@@ -25,7 +29,11 @@ class ReadAlignmentSuite extends FunSuite with Matchers {
         AlignmentState.Match,
         AlignmentState.Insertion,
         AlignmentState.Insertion,
-        AlignmentState.Match), 60)
+        AlignmentState.Match
+      ),
+      Nil,
+      60
+    )
 
     alignment.toCigar should be("3=2I1=")
   }
@@ -38,7 +46,11 @@ class ReadAlignmentSuite extends FunSuite with Matchers {
         AlignmentState.Insertion,
         AlignmentState.Insertion,
         AlignmentState.Insertion,
-        AlignmentState.Match), 60)
+        AlignmentState.Match
+      ),
+      Nil,
+      60
+    )
 
     alignment.toCigar should be("1=4I1=")
   }
@@ -51,7 +63,11 @@ class ReadAlignmentSuite extends FunSuite with Matchers {
         AlignmentState.Mismatch,
         AlignmentState.Match,
         AlignmentState.Match,
-        AlignmentState.Match), 60)
+        AlignmentState.Match
+      ),
+      Nil,
+      60
+    )
 
     alignment.toCigar should be("1=2X3=")
   }
