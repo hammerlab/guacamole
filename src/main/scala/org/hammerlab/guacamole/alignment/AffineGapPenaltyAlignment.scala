@@ -37,7 +37,7 @@ object AffineGapPenaltyAlignment {
         closeGapProbability
       )
 
-    val (path, score) = alignments(sequence.length, reference.length)
+    val (path, score) = (for (i <- 0 to reference.length) yield { alignments(sequence.length, i) }).minBy(_._2)
     ReadAlignment(path, score.toInt)
   }
 
@@ -112,7 +112,7 @@ object AffineGapPenaltyAlignment {
           val (prevPath, prevScore) = alignments(prevSeqPos, prevRefPos)
           val prevStateOpt = prevPath.lastOption
 
-          val isEndState = (sequenceIdx == sequenceLength && referenceIdx == referenceLength)
+          val isEndState = sequenceIdx == sequenceLength
 
           val transitionCost = transitionPenalty(nextState, prevStateOpt, isEndState = isEndState)
           (prevPath :+ nextState, prevScore + transitionCost)
