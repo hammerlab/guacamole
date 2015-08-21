@@ -5,7 +5,7 @@ import org.hammerlab.guacamole.alignment.AlignmentState.{ AlignmentState, isGapA
 
 object AffineGapPenaltyAlignment {
 
-  type Path = (Seq[AlignmentState], Double)
+  type Path = (Int, Seq[AlignmentState], Double)
 
   /**
    * Produces an alignment of an input sequence against a reference sequence
@@ -37,7 +37,7 @@ object AffineGapPenaltyAlignment {
         closeGapProbability
       )
 
-    val (path, score) = (for (i <- 0 to reference.length) yield { alignments(sequence.length, i) }).minBy(_._2)
+    val (refStartIdx, path, score) = (for (i <- 0 to reference.length) yield { alignments(sequence.length, i) }).minBy(_._3)
     ReadAlignment(path, score.toInt)
   }
 
@@ -62,7 +62,11 @@ object AffineGapPenaltyAlignment {
     // M is the length of the sequence and N is the length of the reference
     // Element (i,j) represents the best alignment of the first `i` bases of sequence to the first `j` bases of reference.
     val alignments = new DenseMatrix[Path](sequenceLength + 1, referenceLength + 1)
-    alignments(0, 0) = (Nil, 0)
+    for {
+      refIdx <- 0 to referenceLength
+    } {
+      alignments(0, refIdx) = (refIdx, Nil, 0)
+    }
 
     def transitionPenalty(nextState: AlignmentState, previousStateOpt: Option[AlignmentState], isEndState: Boolean) = {
 
@@ -78,9 +82,8 @@ object AffineGapPenaltyAlignment {
     }
 
     for {
+      sequenceIdx <- 1 to sequenceLength
       referenceIdx <- 0 to referenceLength
-      sequenceIdx <- 0 to sequenceLength
-      if referenceIdx > 0 || sequenceIdx > 0
     } {
       // Given the change in position, is the transition a gap or match/mismatch
       def classifyTransition(prevSeqPos: Int, prevRefPos: Int): AlignmentState = {
@@ -109,17 +112,17 @@ object AffineGapPenaltyAlignment {
         case (prevSeqPos, prevRefPos) => {
           val nextState = classifyTransition(prevSeqPos, prevRefPos)
 
-          val (prevPath, prevScore) = alignments(prevSeqPos, prevRefPos)
+          val (prevRefStartIdx, prevPath, prevScore) = alignments(prevSeqPos, prevRefPos)
           val prevStateOpt = prevPath.lastOption
 
           val isEndState = sequenceIdx == sequenceLength
 
           val transitionCost = transitionPenalty(nextState, prevStateOpt, isEndState = isEndState)
-          (prevPath :+ nextState, prevScore + transitionCost)
+          (prevRefStartIdx, prevPath :+ nextState, prevScore + transitionCost)
         }
       }
 
-      alignments(sequenceIdx, referenceIdx) = nextPaths.minBy(_._2)
+      alignments(sequenceIdx, referenceIdx) = nextPaths.minBy(_._3)
     }
 
     alignments
