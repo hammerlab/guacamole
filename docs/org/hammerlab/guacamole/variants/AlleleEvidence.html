@@ -35,12 +35,12 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">AlleleEvidence</span><span class="params">(<span name="likelihood">likelihood: <span class="extype" name="scala.Double">Double</span></span>, <span name="readDepth">readDepth: <span class="extype" name="scala.Int">Int</span></span>, <span name="alleleReadDepth">alleleReadDepth: <span class="extype" name="scala.Int">Int</span></span>, <span name="forwardDepth">forwardDepth: <span class="extype" name="scala.Int">Int</span></span>, <span name="alleleForwardDepth">alleleForwardDepth: <span class="extype" name="scala.Int">Int</span></span>, <span name="averageMappingQuality">averageMappingQuality: <span class="extype" name="scala.Double">Double</span></span>, <span name="averageBaseQuality">averageBaseQuality: <span class="extype" name="scala.Double">Double</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">AlleleEvidence</span><span class="params">(<span name="likelihood">likelihood: <span class="extype" name="scala.Double">Double</span></span>, <span name="readDepth">readDepth: <span class="extype" name="scala.Int">Int</span></span>, <span name="alleleReadDepth">alleleReadDepth: <span class="extype" name="scala.Int">Int</span></span>, <span name="forwardDepth">forwardDepth: <span class="extype" name="scala.Int">Int</span></span>, <span name="alleleForwardDepth">alleleForwardDepth: <span class="extype" name="scala.Int">Int</span></span>, <span name="meanMappingQuality">meanMappingQuality: <span class="extype" name="scala.Double">Double</span></span>, <span name="medianMappingQuality">medianMappingQuality: <span class="extype" name="scala.Double">Double</span></span>, <span name="meanBaseQuality">meanBaseQuality: <span class="extype" name="scala.Double">Double</span></span>, <span name="medianBaseQuality">medianBaseQuality: <span class="extype" name="scala.Double">Double</span></span>, <span name="medianMismatchesPerRead">medianMismatchesPerRead: <span class="extype" name="scala.Double">Double</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Sample specific pileup and read statistics in support of a given variant
-</p></div><dl class="paramcmts block"><dt class="param">likelihood</dt><dd class="cmt"><p>probability of the genotype</p></dd><dt class="param">readDepth</dt><dd class="cmt"><p>total reads at the genotype position</p></dd><dt class="param">alleleReadDepth</dt><dd class="cmt"><p>total reads with allele base at the genotype position</p></dd><dt class="param">forwardDepth</dt><dd class="cmt"><p>total reads on the forward strand at the genotype position</p></dd><dt class="param">alleleForwardDepth</dt><dd class="cmt"><p>total reads with allele base on the forward strand at the genotype position</p></dd><dt class="param">averageMappingQuality</dt><dd class="cmt"><p>average mapping quality of reads</p></dd><dt class="param">averageBaseQuality</dt><dd class="cmt"><p>average base quality of bases covering this position
+</p></div><dl class="paramcmts block"><dt class="param">likelihood</dt><dd class="cmt"><p>probability of the genotype</p></dd><dt class="param">readDepth</dt><dd class="cmt"><p>total reads at the genotype position</p></dd><dt class="param">alleleReadDepth</dt><dd class="cmt"><p>total reads with allele base at the genotype position</p></dd><dt class="param">forwardDepth</dt><dd class="cmt"><p>total reads on the forward strand at the genotype position</p></dd><dt class="param">alleleForwardDepth</dt><dd class="cmt"><p>total reads with allele base on the forward strand at the genotype position</p></dd><dt class="param">meanMappingQuality</dt><dd class="cmt"><p>mean mapping quality of reads</p></dd><dt class="param">medianMappingQuality</dt><dd class="cmt"><p>median mapping quality of reads</p></dd><dt class="param">meanBaseQuality</dt><dd class="cmt"><p>mean base quality of bases covering this position</p></dd><dt class="param">medianBaseQuality</dt><dd class="cmt"><p>median base quality of bases covering this position</p></dd><dt class="param">medianMismatchesPerRead</dt><dd class="cmt"><p>median number of mismatches on reads supporting this variant
 </p></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
@@ -82,7 +82,7 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="org.hammerlab.guacamole.variants.AlleleEvidence#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="&lt;init&gt;(likelihood:Double,readDepth:Int,alleleReadDepth:Int,forwardDepth:Int,alleleForwardDepth:Int,averageMappingQuality:Double,averageBaseQuality:Double):org.hammerlab.guacamole.variants.AlleleEvidence"></a>
+      <a id="&lt;init&gt;(likelihood:Double,readDepth:Int,alleleReadDepth:Int,forwardDepth:Int,alleleForwardDepth:Int,meanMappingQuality:Double,medianMappingQuality:Double,meanBaseQuality:Double,medianBaseQuality:Double,medianMismatchesPerRead:Double):org.hammerlab.guacamole.variants.AlleleEvidence"></a>
       <a id="&lt;init&gt;:AlleleEvidence"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -90,10 +90,10 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">AlleleEvidence</span><span class="params">(<span name="likelihood">likelihood: <span class="extype" name="scala.Double">Double</span></span>, <span name="readDepth">readDepth: <span class="extype" name="scala.Int">Int</span></span>, <span name="alleleReadDepth">alleleReadDepth: <span class="extype" name="scala.Int">Int</span></span>, <span name="forwardDepth">forwardDepth: <span class="extype" name="scala.Int">Int</span></span>, <span name="alleleForwardDepth">alleleForwardDepth: <span class="extype" name="scala.Int">Int</span></span>, <span name="averageMappingQuality">averageMappingQuality: <span class="extype" name="scala.Double">Double</span></span>, <span name="averageBaseQuality">averageBaseQuality: <span class="extype" name="scala.Double">Double</span></span>)</span>
+        <span class="name">AlleleEvidence</span><span class="params">(<span name="likelihood">likelihood: <span class="extype" name="scala.Double">Double</span></span>, <span name="readDepth">readDepth: <span class="extype" name="scala.Int">Int</span></span>, <span name="alleleReadDepth">alleleReadDepth: <span class="extype" name="scala.Int">Int</span></span>, <span name="forwardDepth">forwardDepth: <span class="extype" name="scala.Int">Int</span></span>, <span name="alleleForwardDepth">alleleForwardDepth: <span class="extype" name="scala.Int">Int</span></span>, <span name="meanMappingQuality">meanMappingQuality: <span class="extype" name="scala.Double">Double</span></span>, <span name="medianMappingQuality">medianMappingQuality: <span class="extype" name="scala.Double">Double</span></span>, <span name="meanBaseQuality">meanBaseQuality: <span class="extype" name="scala.Double">Double</span></span>, <span name="medianBaseQuality">medianBaseQuality: <span class="extype" name="scala.Double">Double</span></span>, <span name="medianMismatchesPerRead">medianMismatchesPerRead: <span class="extype" name="scala.Double">Double</span></span>)</span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">likelihood</dt><dd class="cmt"><p>probability of the genotype</p></dd><dt class="param">readDepth</dt><dd class="cmt"><p>total reads at the genotype position</p></dd><dt class="param">alleleReadDepth</dt><dd class="cmt"><p>total reads with allele base at the genotype position</p></dd><dt class="param">forwardDepth</dt><dd class="cmt"><p>total reads on the forward strand at the genotype position</p></dd><dt class="param">alleleForwardDepth</dt><dd class="cmt"><p>total reads with allele base on the forward strand at the genotype position</p></dd><dt class="param">averageMappingQuality</dt><dd class="cmt"><p>average mapping quality of reads</p></dd><dt class="param">averageBaseQuality</dt><dd class="cmt"><p>average base quality of bases covering this position
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">likelihood</dt><dd class="cmt"><p>probability of the genotype</p></dd><dt class="param">readDepth</dt><dd class="cmt"><p>total reads at the genotype position</p></dd><dt class="param">alleleReadDepth</dt><dd class="cmt"><p>total reads with allele base at the genotype position</p></dd><dt class="param">forwardDepth</dt><dd class="cmt"><p>total reads on the forward strand at the genotype position</p></dd><dt class="param">alleleForwardDepth</dt><dd class="cmt"><p>total reads with allele base on the forward strand at the genotype position</p></dd><dt class="param">meanMappingQuality</dt><dd class="cmt"><p>mean mapping quality of reads</p></dd><dt class="param">medianMappingQuality</dt><dd class="cmt"><p>median mapping quality of reads</p></dd><dt class="param">meanBaseQuality</dt><dd class="cmt"><p>mean base quality of bases covering this position</p></dd><dt class="param">medianBaseQuality</dt><dd class="cmt"><p>median base quality of bases covering this position</p></dd><dt class="param">medianMismatchesPerRead</dt><dd class="cmt"><p>median number of mismatches on reads supporting this variant
 </p></dd></dl></div>
     </li></ol>
             </div>
@@ -208,33 +208,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.variants.AlleleEvidence#averageBaseQuality" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="averageBaseQuality:Double"></a>
-      <a id="averageBaseQuality:Double"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">averageBaseQuality</span><span class="result">: <span class="extype" name="scala.Double">Double</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">average base quality of bases covering this position
-</p>
-    </li><li name="org.hammerlab.guacamole.variants.AlleleEvidence#averageMappingQuality" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="averageMappingQuality:Double"></a>
-      <a id="averageMappingQuality:Double"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">averageMappingQuality</span><span class="result">: <span class="extype" name="scala.Double">Double</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">average mapping quality of reads</p>
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>
       <a id="clone():AnyRef"></a>
@@ -338,6 +311,72 @@
       </span>
       </h4>
       <p class="shortcomment cmt">probability of the genotype</p>
+    </li><li name="org.hammerlab.guacamole.variants.AlleleEvidence#meanBaseQuality" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="meanBaseQuality:Double"></a>
+      <a id="meanBaseQuality:Double"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">meanBaseQuality</span><span class="result">: <span class="extype" name="scala.Double">Double</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">mean base quality of bases covering this position</p>
+    </li><li name="org.hammerlab.guacamole.variants.AlleleEvidence#meanMappingQuality" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="meanMappingQuality:Double"></a>
+      <a id="meanMappingQuality:Double"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">meanMappingQuality</span><span class="result">: <span class="extype" name="scala.Double">Double</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">mean mapping quality of reads</p>
+    </li><li name="org.hammerlab.guacamole.variants.AlleleEvidence#medianBaseQuality" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="medianBaseQuality:Double"></a>
+      <a id="medianBaseQuality:Double"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">medianBaseQuality</span><span class="result">: <span class="extype" name="scala.Double">Double</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">median base quality of bases covering this position</p>
+    </li><li name="org.hammerlab.guacamole.variants.AlleleEvidence#medianMappingQuality" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="medianMappingQuality:Double"></a>
+      <a id="medianMappingQuality:Double"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">medianMappingQuality</span><span class="result">: <span class="extype" name="scala.Double">Double</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">median mapping quality of reads</p>
+    </li><li name="org.hammerlab.guacamole.variants.AlleleEvidence#medianMismatchesPerRead" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="medianMismatchesPerRead:Double"></a>
+      <a id="medianMismatchesPerRead:Double"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">medianMismatchesPerRead</span><span class="result">: <span class="extype" name="scala.Double">Double</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">median number of mismatches on reads supporting this variant
+</p>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>

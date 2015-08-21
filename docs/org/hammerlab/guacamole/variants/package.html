@@ -104,24 +104,11 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="AlleleEvidence.html"><span class="name">AlleleEvidence</span></a><span class="params">(<span name="likelihood">likelihood: <span class="extype" name="scala.Double">Double</span></span>, <span name="readDepth">readDepth: <span class="extype" name="scala.Int">Int</span></span>, <span name="alleleReadDepth">alleleReadDepth: <span class="extype" name="scala.Int">Int</span></span>, <span name="forwardDepth">forwardDepth: <span class="extype" name="scala.Int">Int</span></span>, <span name="alleleForwardDepth">alleleForwardDepth: <span class="extype" name="scala.Int">Int</span></span>, <span name="averageMappingQuality">averageMappingQuality: <span class="extype" name="scala.Double">Double</span></span>, <span name="averageBaseQuality">averageBaseQuality: <span class="extype" name="scala.Double">Double</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="AlleleEvidence.html"><span class="name">AlleleEvidence</span></a><span class="params">(<span name="likelihood">likelihood: <span class="extype" name="scala.Double">Double</span></span>, <span name="readDepth">readDepth: <span class="extype" name="scala.Int">Int</span></span>, <span name="alleleReadDepth">alleleReadDepth: <span class="extype" name="scala.Int">Int</span></span>, <span name="forwardDepth">forwardDepth: <span class="extype" name="scala.Int">Int</span></span>, <span name="alleleForwardDepth">alleleForwardDepth: <span class="extype" name="scala.Int">Int</span></span>, <span name="meanMappingQuality">meanMappingQuality: <span class="extype" name="scala.Double">Double</span></span>, <span name="medianMappingQuality">medianMappingQuality: <span class="extype" name="scala.Double">Double</span></span>, <span name="meanBaseQuality">meanBaseQuality: <span class="extype" name="scala.Double">Double</span></span>, <span name="medianBaseQuality">medianBaseQuality: <span class="extype" name="scala.Double">Double</span></span>, <span name="medianMismatchesPerRead">medianMismatchesPerRead: <span class="extype" name="scala.Double">Double</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       <p class="comment cmt">Sample specific pileup and read statistics in support of a given variant
 </p>
-    </li><li name="org.hammerlab.guacamole.variants.AlleleEvidenceSerializer" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="AlleleEvidenceSerializerextendsSerializer[org.hammerlab.guacamole.variants.AlleleEvidence]"></a>
-      <a id="AlleleEvidenceSerializer:AlleleEvidenceSerializer"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">class</span>
-      </span>
-      <span class="symbol">
-        <a href="AlleleEvidenceSerializer.html"><span class="name">AlleleEvidenceSerializer</span></a><span class="result"> extends <span class="extype" name="com.esotericsoftware.kryo.Serializer">Serializer</span>[<a href="AlleleEvidence.html" class="extype" name="org.hammerlab.guacamole.variants.AlleleEvidence">AlleleEvidence</a>]</span>
-      </span>
-      </h4>
-      
     </li><li name="org.hammerlab.guacamole.variants.AlleleSerializer" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="AlleleSerializerextendsSerializer[org.hammerlab.guacamole.variants.Allele]"></a>
       <a id="AlleleSerializer:AlleleSerializer"></a>
@@ -149,19 +136,6 @@
       </h4>
       <p class="comment cmt">A variant that exists in the sample; includes supporting read statistics
 </p>
-    </li><li name="org.hammerlab.guacamole.variants.CalledAlleleSerializer" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="CalledAlleleSerializerextendsSerializer[org.hammerlab.guacamole.variants.CalledAllele]withHasAlleleSerializerwithHasGenotypeEvidenceSerializer"></a>
-      <a id="CalledAlleleSerializer:CalledAlleleSerializer"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">class</span>
-      </span>
-      <span class="symbol">
-        <a href="CalledAlleleSerializer.html"><span class="name">CalledAlleleSerializer</span></a><span class="result"> extends <span class="extype" name="com.esotericsoftware.kryo.Serializer">Serializer</span>[<a href="CalledAllele.html" class="extype" name="org.hammerlab.guacamole.variants.CalledAllele">CalledAllele</a>] with <a href="HasAlleleSerializer.html" class="extype" name="org.hammerlab.guacamole.variants.HasAlleleSerializer">HasAlleleSerializer</a> with <a href="HasGenotypeEvidenceSerializer.html" class="extype" name="org.hammerlab.guacamole.variants.HasGenotypeEvidenceSerializer">HasGenotypeEvidenceSerializer</a></span>
-      </span>
-      </h4>
-      
     </li><li name="org.hammerlab.guacamole.variants.CalledSomaticAllele" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="CalledSomaticAlleleextendsReferenceVariantwithProductwithSerializable"></a>
       <a id="CalledSomaticAllele:CalledSomaticAllele"></a>
@@ -171,24 +145,11 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="CalledSomaticAllele.html"><span class="name">CalledSomaticAllele</span></a><span class="params">(<span name="sampleName">sampleName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="referenceContig">referenceContig: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="start">start: <span class="extype" name="scala.Long">Long</span></span>, <span name="allele">allele: <a href="Allele.html" class="extype" name="org.hammerlab.guacamole.variants.Allele">Allele</a></span>, <span name="somaticLogOdds">somaticLogOdds: <span class="extype" name="scala.Double">Double</span></span>, <span name="tumorEvidence">tumorEvidence: <a href="AlleleEvidence.html" class="extype" name="org.hammerlab.guacamole.variants.AlleleEvidence">AlleleEvidence</a></span>, <span name="normalEvidence">normalEvidence: <a href="AlleleEvidence.html" class="extype" name="org.hammerlab.guacamole.variants.AlleleEvidence">AlleleEvidence</a></span>, <span name="rsID">rsID: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>] = <span class="symbol">scala.None</span></span>, <span name="length">length: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">1</span></span>)</span><span class="result"> extends <a href="ReferenceVariant.html" class="extype" name="org.hammerlab.guacamole.variants.ReferenceVariant">ReferenceVariant</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="CalledSomaticAllele.html"><span class="name">CalledSomaticAllele</span></a><span class="params">(<span name="sampleName">sampleName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="referenceContig">referenceContig: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="start">start: <span class="extype" name="scala.Long">Long</span></span>, <span name="allele">allele: <a href="Allele.html" class="extype" name="org.hammerlab.guacamole.variants.Allele">Allele</a></span>, <span name="somaticLogOdds">somaticLogOdds: <span class="extype" name="scala.Double">Double</span></span>, <span name="tumorVariantEvidence">tumorVariantEvidence: <a href="AlleleEvidence.html" class="extype" name="org.hammerlab.guacamole.variants.AlleleEvidence">AlleleEvidence</a></span>, <span name="normalReferenceEvidence">normalReferenceEvidence: <a href="AlleleEvidence.html" class="extype" name="org.hammerlab.guacamole.variants.AlleleEvidence">AlleleEvidence</a></span>, <span name="rsID">rsID: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>] = <span class="symbol">scala.None</span></span>, <span name="length">length: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">1</span></span>)</span><span class="result"> extends <a href="ReferenceVariant.html" class="extype" name="org.hammerlab.guacamole.variants.ReferenceVariant">ReferenceVariant</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       <p class="comment cmt">A variant that exists in a tumor sample, but not in the normal sample; includes supporting read statistics from both samples
 </p>
-    </li><li name="org.hammerlab.guacamole.variants.CalledSomaticAlleleSerializer" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="CalledSomaticAlleleSerializerextendsSerializer[org.hammerlab.guacamole.variants.CalledSomaticAllele]withHasGenotypeEvidenceSerializerwithHasAlleleSerializer"></a>
-      <a id="CalledSomaticAlleleSerializer:CalledSomaticAlleleSerializer"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">class</span>
-      </span>
-      <span class="symbol">
-        <a href="CalledSomaticAlleleSerializer.html"><span class="name">CalledSomaticAlleleSerializer</span></a><span class="result"> extends <span class="extype" name="com.esotericsoftware.kryo.Serializer">Serializer</span>[<a href="CalledSomaticAllele.html" class="extype" name="org.hammerlab.guacamole.variants.CalledSomaticAllele">CalledSomaticAllele</a>] with <a href="HasGenotypeEvidenceSerializer.html" class="extype" name="org.hammerlab.guacamole.variants.HasGenotypeEvidenceSerializer">HasGenotypeEvidenceSerializer</a> with <a href="HasAlleleSerializer.html" class="extype" name="org.hammerlab.guacamole.variants.HasAlleleSerializer">HasAlleleSerializer</a></span>
-      </span>
-      </h4>
-      
     </li><li name="org.hammerlab.guacamole.variants.Genotype" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="GenotypeextendsProductwithSerializable"></a>
       <a id="Genotype:Genotype"></a>
@@ -228,19 +189,6 @@
       </span>
       </h4>
       
-    </li><li name="org.hammerlab.guacamole.variants.HasGenotypeEvidenceSerializer" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="HasGenotypeEvidenceSerializerextendsAnyRef"></a>
-      <a id="HasGenotypeEvidenceSerializer:HasGenotypeEvidenceSerializer"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">trait</span>
-      </span>
-      <span class="symbol">
-        <a href="HasGenotypeEvidenceSerializer.html"><span class="name">HasGenotypeEvidenceSerializer</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
-      </span>
-      </h4>
-      
     </li><li name="org.hammerlab.guacamole.variants.ReferenceVariant" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="ReferenceVariantextendsHasReferenceRegion"></a>
       <a id="ReferenceVariant:ReferenceVariant"></a>
@@ -262,7 +210,20 @@
 
         <div id="values" class="values members">
               <h3>Value Members</h3>
-              <ol><li name="org.hammerlab.guacamole.variants.AlleleConversions" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+              <ol><li name="org.hammerlab.guacamole.variants.Allele" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Allele"></a>
+      <a id="Allele:Allele"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Allele$.html"><span class="name">Allele</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.variants.AlleleConversions" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="AlleleConversions"></a>
       <a id="AlleleConversions:AlleleConversions"></a>
       <h4 class="signature">
