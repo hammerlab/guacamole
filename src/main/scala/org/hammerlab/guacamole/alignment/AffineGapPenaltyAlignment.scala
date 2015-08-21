@@ -37,8 +37,8 @@ object AffineGapPenaltyAlignment {
         closeGapProbability
       )
 
-    val (refStartIdx, path, score) = (for (i <- 0 to reference.length) yield { alignments(sequence.length, i) }).minBy(_._3)
-    ReadAlignment(path, score.toInt)
+    val ((refStartIdx, path, score), refEndIdx) = (for (i <- 0 to reference.length) yield { (alignments(sequence.length, i), i) }).minBy(_._1._3)
+    ReadAlignment(path, reference.slice(refStartIdx, refEndIdx), score.toInt)
   }
 
   def scoreAlignmentPaths(sequence: Seq[Byte],
