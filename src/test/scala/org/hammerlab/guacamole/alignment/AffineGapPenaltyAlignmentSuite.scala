@@ -13,7 +13,7 @@ class AffineGapPenaltyAlignmentSuite extends FunSuite with Matchers {
       openGapProbability = 1e-3,
       closeGapProbability = 1e-2
     )
-    alignments(4, 4)._2.toInt should be(0)
+    alignments(4, 4)._3.toInt should be(0)
   }
 
   test("score alignment: single mismatch") {
@@ -24,7 +24,7 @@ class AffineGapPenaltyAlignmentSuite extends FunSuite with Matchers {
       openGapProbability = 1e-3,
       closeGapProbability = 1e-2
     )
-    math.round(alignments(4, 4)._2) should be(5)
+    math.round(alignments(4, 4)._3) should be(5)
   }
 
   test("align exact match") {
