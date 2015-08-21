@@ -229,4 +229,12 @@ class MDTagUtilsSuite extends FunSuite with Matchers {
       should be("CTAGGCCTTCGACACTGGGGGGCTGAGGGAAGGGGCACCTGCC"))
 
   }
+
+  test("rebuild reference") {
+    val read = TestUtil.makeRead("TCGATCGA", "8M", "1A6", 1, alignmentQuality = 60)
+    val reference = MDTagUtils.getReference(read, false)._2
+
+    Bases.basesToString(reference) should be("TAGATCGA")
+
+  }
 }

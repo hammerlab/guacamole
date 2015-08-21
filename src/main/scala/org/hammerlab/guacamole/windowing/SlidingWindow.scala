@@ -128,6 +128,7 @@ case class SlidingWindow[Region <: HasReferenceRegion](referenceName: String,
     }
   }
 }
+
 object SlidingWindow {
   /**
    * Advance one or more sliding windows to the next locus in an iterator, optionally skipping loci for which no windows
