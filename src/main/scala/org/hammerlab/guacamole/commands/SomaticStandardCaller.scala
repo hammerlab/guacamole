@@ -124,23 +124,13 @@ object SomaticStandard {
       if (args.dbSnpVcf != "") {
         val adamContext = new ADAMContext(sc)
         val dbSnpVariants = adamContext.loadVariantAnnotations(args.dbSnpVcf)
-        potentialGenotypes
+        potentialGenotypes = potentialGenotypes
           .keyBy(_.adamVariant)
-          .leftOuterJoin(dbSnpVariants.keyBy(_.variant))
+          .leftOuterJoin(dbSnpVariants.keyBy(_.getVariant))
           .map(_._2).map({
             case (calledAllele: CalledSomaticAllele, dbSnpVariant: Option[DatabaseVariantAnnotation]) =>
-              CalledSomaticAllele(
-                sampleName = calledAllele.sampleName,
-                referenceContig = calledAllele.referenceContig,
-                start = calledAllele.start,
-                allele = calledAllele.allele,
-                somaticLogOdds = calledAllele.somaticLogOdds,
-                tumorVariantEvidence = calledAllele.tumorVariantEvidence,
-                normalReferenceEvidence = calledAllele.normalReferenceEvidence,
-                rsID = dbSnpVariant.map(_.getDbSnpId)
-              )
-          }
-          )
+              calledAllele.copy(rsID = dbSnpVariant.map(_.getDbSnpId))
+          })
       }
 
       val filteredGenotypes: RDD[CalledSomaticAllele] = SomaticGenotypeFilter(potentialGenotypes, args)
