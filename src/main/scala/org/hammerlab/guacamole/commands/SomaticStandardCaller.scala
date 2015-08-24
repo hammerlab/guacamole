@@ -54,7 +54,7 @@ object SomaticStandard {
     @Args4jOption(name = "--dbsnp-vcf", required = false, usage = "VCF file to identify DBSNP variants")
     var dbSnpVcf: String = ""
 
-    @Args4jOption(name = "--reference-fasta", required = true, usage = "Local path to a reference FASTA file")
+    @Args4jOption(name = "--reference-fasta", required = false, usage = "Local path to a reference FASTA file")
     var referenceFastaPath: String = ""
 
   }

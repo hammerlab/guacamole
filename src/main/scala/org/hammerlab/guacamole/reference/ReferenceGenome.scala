@@ -7,7 +7,7 @@ import org.hammerlab.guacamole.Bases
 trait ReferenceGenome {
 
   /**
-   * Retrieve a full contig sequence
+   * Retrieve a full contig/chromosome sequence
    * @param contigName contig/chromosome to retrieve reference sequence from
    * @return Full sequence associated with the contig
    */
@@ -22,14 +22,23 @@ trait ReferenceGenome {
   def getReferenceBase(contigName: String, locus: Int): Byte
 
   /**
-   * *
+   * Get the reference base at the given reference location
    * @param contigName contig/chromosome to retrieve reference sequence from
    * @param startLocus 0-based inclusive start of the subsequence
    * @param endLocus 0-based exclusive end of the subsequence
-   * @return
+   * @return Array of bases for the reference sequence
    */
   def getReferenceSequence(contigName: String, startLocus: Int, endLocus: Int): Array[Byte]
 
+
+  /**
+   * Build a new MDTag from the reference and read sequence
+   * @param readSequence Bases from the read
+   * @param referenceContig Name of the reference contig or chromosome
+   * @param referenceStart Start position of the read on the reference
+   * @param cigar CIGAR for the read on the reference
+   * @return MdTag for the the read
+   */
   def buildMdTag(readSequence: String, referenceContig: String, referenceStart: Int, cigar: Cigar): String = {
     val referenceSequence =
       Bases.basesToString(

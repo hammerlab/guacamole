@@ -17,23 +17,10 @@ case class ReferenceBroadcast(broadcastedContigs: Map[String, Broadcast[Array[By
     }
   }
 
-  /**
-   * Retrieve a reference base on a given contig at a given locus
-   * @param contigName contig/chromosome to retrieve reference sequence from
-   * @param locus position in the sequence to retrieve
-   * @return Base at the given reference position
-   */
   override def getReferenceBase(contigName: String, locus: Int): Byte = {
     getContig(contigName)(locus)
   }
 
-  /**
-   * *
-   * @param contigName contig/chromosome to retrieve reference sequence from
-   * @param startLocus 0-based inclusive start of the subsequence
-   * @param endLocus 0-based exclusive end of the subsequence
-   * @return
-   */
   override def getReferenceSequence(contigName: String, startLocus: Int, endLocus: Int): Array[Byte] = {
     getContig(contigName).slice(startLocus, endLocus)
   }
@@ -42,6 +29,12 @@ case class ReferenceBroadcast(broadcastedContigs: Map[String, Broadcast[Array[By
 
 object ReferenceBroadcast {
 
+  /**
+   * Build a map from contig name to broadcasted reference sequence
+   * @param fastaPath Local path to a FASTA file
+   * @param sc SparkContext
+   * @return ReferenceBroadcast which maps contig/chromosome names to broadcasted sequences
+   */
   def apply(fastaPath: String, sc: SparkContext): ReferenceBroadcast = {
 
     val referenceFasta = new FastaSequenceFile(new File(fastaPath), true)
