@@ -1,5 +1,5 @@
 <scoverage 
-statement-count="3734" statements-invoked="231" statement-rate="6.19" branch-rate="4.42" version="1.0" timestamp="1440200481244">
+statement-count="3734" statements-invoked="231" statement-rate="6.19" branch-rate="4.42" version="1.0" timestamp="1440430544558">
     <packages>
         <package name="org.hammerlab.guacamole" statement-count="1406" statements-invoked="174" statement-rate="12.38">
             <classes>
@@ -5251,7 +5251,7 @@ statement-count="3734" statements-invoked="231" statement-rate="6.19" branch-rat
                                 package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="81" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="154" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="144" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="91" branch="false" invocation-count="0">
@@ -5287,7 +5287,7 @@ statement-count="3734" statements-invoked="231" statement-rate="6.19" branch-rat
                                 package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="283" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="135" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="132" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="286" branch="false" invocation-count="0">
@@ -5344,7 +5344,7 @@ statement-count="3734" statements-invoked="231" statement-rate="6.19" branch-rat
                                 package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="109" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="147" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="137" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="128" branch="false" invocation-count="0">
@@ -5368,7 +5368,7 @@ statement-count="3734" statements-invoked="231" statement-rate="6.19" branch-rat
                                 package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="124" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="151" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="141" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="128" branch="false" invocation-count="0">
@@ -5380,7 +5380,7 @@ statement-count="3734" statements-invoked="231" statement-rate="6.19" branch-rat
                                 package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="95" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="138" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="132" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="286" branch="false" invocation-count="0">
@@ -5425,7 +5425,7 @@ statement-count="3734" statements-invoked="231" statement-rate="6.19" branch-rat
                                 package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="130" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="140" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="132" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="89" branch="false" invocation-count="0">
@@ -5563,7 +5563,7 @@ statement-count="3734" statements-invoked="231" statement-rate="6.19" branch-rat
                                 package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="97" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="140" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="132" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="114" branch="false" invocation-count="0">
@@ -5620,7 +5620,7 @@ statement-count="3734" statements-invoked="231" statement-rate="6.19" branch-rat
                                 package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="117" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="149" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="139" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="169" branch="true" invocation-count="0">
@@ -5641,7 +5641,7 @@ statement-count="3734" statements-invoked="231" statement-rate="6.19" branch-rat
                                 package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="108" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="147" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="137" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="130" branch="false" invocation-count="0">
@@ -5650,7 +5650,7 @@ statement-count="3734" statements-invoked="231" statement-rate="6.19" branch-rat
                                 package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="93" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="134" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="132" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="102" branch="false" invocation-count="0">
@@ -5722,13 +5722,13 @@ statement-count="3734" statements-invoked="231" statement-rate="6.19" branch-rat
                                 package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="65" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="147" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="137" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="90" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="137" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="132" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="105" branch="false" invocation-count="0">
@@ -5857,7 +5857,7 @@ statement-count="3734" statements-invoked="231" statement-rate="6.19" branch-rat
                                 package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="132" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="147" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="137" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="171" branch="false" invocation-count="0">
@@ -5890,7 +5890,7 @@ statement-count="3734" statements-invoked="231" statement-rate="6.19" branch-rat
                                 package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="140" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="136" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="132" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="53" branch="false" invocation-count="0">
@@ -5947,7 +5947,7 @@ statement-count="3734" statements-invoked="231" statement-rate="6.19" branch-rat
                                 package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="97" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="139" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="132" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="97" branch="false" invocation-count="0">
@@ -5983,7 +5983,7 @@ statement-count="3734" statements-invoked="231" statement-rate="6.19" branch-rat
                                 package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="165" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="151" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="141" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="151" branch="false" invocation-count="0">
@@ -5998,13 +5998,13 @@ statement-count="3734" statements-invoked="231" statement-rate="6.19" branch-rat
                                 package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="101" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="140" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="132" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="108" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="146" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="136" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="282" branch="false" invocation-count="0">
@@ -6013,7 +6013,7 @@ statement-count="3734" statements-invoked="231" statement-rate="6.19" branch-rat
                                 package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="71" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="133" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="132" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.commands" class="Caller" method="run" start="-1" line="286" branch="false" invocation-count="0">
@@ -6291,157 +6291,157 @@ statement-count="3734" statements-invoked="231" statement-rate="6.19" branch-rat
                         name="org.hammerlab.guacamole.commands/Caller/findPotentialVariantAtLocus" statement-count="51" statements-invoked="0" statement-rate="0.00" branch-rate="0.00">
                             <statements>
                                 <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="214" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="185" branch="true" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="200" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="222" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="224" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="220" branch="false" invocation-count="0">
-</statement>
-                                <statement 
                                 package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="204" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="220" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="175" branch="true" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="226" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="190" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="191" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="212" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="180" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="210" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="235" branch="true" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="203" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="183" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="222" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="224" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="202" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="235" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="214" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="210" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="222" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="229" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="222" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="224" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="200" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="211" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="185" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="203" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="220" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="171" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="179" branch="true" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="220" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="220" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="182" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="220" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="220" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="194" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="210" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="191" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="220" branch="true" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="221" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="216" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="181" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="227" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="210" branch="false" invocation-count="0">
-</statement>
-                                <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="222" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="170" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="200" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="183" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="225" branch="true" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="224" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="193" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="173" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="212" branch="false" invocation-count="0">
 </statement>
                                 <statement 
                                 package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="214" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="164" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="192" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="179" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="225" branch="false" invocation-count="0">
 </statement>
                                 <statement 
-                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="203" branch="false" invocation-count="0">
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="200" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="212" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="219" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="212" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="214" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="190" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="201" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="175" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="193" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="210" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="161" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="169" branch="true" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="210" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="210" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="172" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="210" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="210" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="200" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="181" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="210" branch="true" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="211" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="171" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="217" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="200" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="212" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="190" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="173" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="214" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="204" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="154" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="169" branch="false" invocation-count="0">
+</statement>
+                                <statement 
+                                package="org.hammerlab.guacamole.commands" class="Caller" method="findPotentialVariantAtLocus" start="-1" line="193" branch="false" invocation-count="0">
 </statement>
                             </statements>
 </method>
