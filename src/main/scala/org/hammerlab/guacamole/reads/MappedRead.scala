@@ -124,12 +124,11 @@ object MappedRead {
     failedVendorQualityChecks: Boolean,
     isPositiveStrand: Boolean,
     isPaired: Boolean)(implicit d: DummyImplicit): MappedRead = MappedRead(
-      token, sequence, baseQualities, isDuplicate, sampleName, referenceContig,
-      alignmentQuality, start, cigar,
-      mdTagString.map(MdTag(_, start)),
-      failedVendorQualityChecks, isPositiveStrand, isPaired)
+    token, sequence, baseQualities, isDuplicate, sampleName, referenceContig,
+    alignmentQuality, start, cigar,
+    mdTagString.map(MdTag(_, start)),
+    failedVendorQualityChecks, isPositiveStrand, isPaired)
 }
-
 
 case class MissingMDTagException(record: SAMRecord)
   extends Exception(s"Missing MDTag in SAMRecord: $record")
