@@ -30,7 +30,6 @@ trait ReferenceGenome {
    */
   def getReferenceSequence(contigName: String, startLocus: Int, endLocus: Int): Array[Byte]
 
-
   /**
    * Build a new MDTag from the reference and read sequence
    * @param readSequence Bases from the read
