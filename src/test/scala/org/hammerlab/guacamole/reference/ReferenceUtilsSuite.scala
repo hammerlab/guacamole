@@ -7,20 +7,20 @@ class ReferenceUtilsSuite extends GuacFunSuite {
 
   test("compute base ratios") {
     val referenceSequence = Bases.stringToBases("TCGATCGAAATT").toArray
-    val baseRatios = ReferenceUtils.getBaseRatios(referenceSequence)
+    val baseFractions = ReferenceUtils.getBaseFraction(referenceSequence)
 
-    TestUtil.assertAlmostEqual(baseRatios(Bases.A), 1 / 3f)
-    TestUtil.assertAlmostEqual(baseRatios(Bases.T), 1 / 3f)
-    TestUtil.assertAlmostEqual(baseRatios(Bases.G), 1 / 6f)
-    TestUtil.assertAlmostEqual(baseRatios(Bases.C), 1 / 6f)
+    TestUtil.assertAlmostEqual(baseFractions(Bases.A), 1 / 3f)
+    TestUtil.assertAlmostEqual(baseFractions(Bases.T), 1 / 3f)
+    TestUtil.assertAlmostEqual(baseFractions(Bases.G), 1 / 6f)
+    TestUtil.assertAlmostEqual(baseFractions(Bases.C), 1 / 6f)
 
   }
 
   test("compute gc ratio") {
     val referenceSequence = Bases.stringToBases("TCGATCGAAATT").toArray
-    val gcRatio = ReferenceUtils.getGCRatio(referenceSequence)
+    val gcFraction = ReferenceUtils.getGCFraction(referenceSequence)
 
-    TestUtil.assertAlmostEqual(gcRatio, 1 / 3f)
+    TestUtil.assertAlmostEqual(gcFraction, 1 / 3f)
   }
 
 }
