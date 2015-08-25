@@ -222,7 +222,7 @@ class PileupSuite extends GuacFunSuite with Matchers with TableDrivenPropertyChe
 
   sparkTest("Loci 10-19 deleted from half of the reads") {
     val pileup = loadPileup("same_start_reads.sam", 0)
-    val deletionPileup = pileup.atGreaterLocus(9, Bases.N, Seq.empty.iterator)
+    val deletionPileup = pileup.atGreaterLocus(9, Bases.A, Seq.empty.iterator)
     deletionPileup.elements.map(_.alignment).count {
       case Deletion(bases, _) => {
         Bases.basesToString(bases) should equal("AAAAAAAAAAA")
