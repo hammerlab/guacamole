@@ -301,15 +301,15 @@ quality scores in Phred-scale
               
         </dd></dl></div>
     </li><li name="org.hammerlab.guacamole.reads.Read#fromADAMRecord" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="fromADAMRecord(alignmentRecord:org.bdgenomics.formats.avro.AlignmentRecord,token:Int):org.hammerlab.guacamole.reads.Read"></a>
-      <a id="fromADAMRecord(AlignmentRecord,Int):Read"></a>
+      <a id="fromADAMRecord(alignmentRecord:org.bdgenomics.formats.avro.AlignmentRecord,token:Int,referenceGenome:Option[org.hammerlab.guacamole.reference.ReferenceGenome]):org.hammerlab.guacamole.reads.Read"></a>
+      <a id="fromADAMRecord(AlignmentRecord,Int,Option[ReferenceGenome]):Read"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">fromADAMRecord</span><span class="params">(<span name="alignmentRecord">alignmentRecord: <span class="extype" name="org.bdgenomics.formats.avro.AlignmentRecord">AlignmentRecord</span></span>, <span name="token">token: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <a href="Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a></span>
+        <span class="name">fromADAMRecord</span><span class="params">(<span name="alignmentRecord">alignmentRecord: <span class="extype" name="org.bdgenomics.formats.avro.AlignmentRecord">AlignmentRecord</span></span>, <span name="token">token: <span class="extype" name="scala.Int">Int</span></span>, <span name="referenceGenome">referenceGenome: <span class="extype" name="scala.Option">Option</span>[<a href="../reference/ReferenceGenome.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceGenome">ReferenceGenome</a>]</span>)</span><span class="result">: <a href="Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a></span>
       </span>
       </h4>
       <p class="shortcomment cmt">Builds a Guacamole Read from and ADAM Alignment Record
@@ -317,15 +317,15 @@ quality scores in Phred-scale
 </p></div><dl class="paramcmts block"><dt class="param">alignmentRecord</dt><dd class="cmt"><p>ADAM Alignment Record (an aligned or unaligned read)</p></dd><dt>returns</dt><dd class="cmt"><p>Mapped or Unmapped Read
 </p></dd></dl></div>
     </li><li name="org.hammerlab.guacamole.reads.Read#fromSAMRecord" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="fromSAMRecord(record:htsjdk.samtools.SAMRecord,token:Int,requireMDTagsOnMappedReads:Boolean):org.hammerlab.guacamole.reads.Read"></a>
-      <a id="fromSAMRecord(SAMRecord,Int,Boolean):Read"></a>
+      <a id="fromSAMRecord(record:htsjdk.samtools.SAMRecord,token:Int,requireMDTagsOnMappedReads:Boolean,referenceGenome:Option[org.hammerlab.guacamole.reference.ReferenceGenome]):org.hammerlab.guacamole.reads.Read"></a>
+      <a id="fromSAMRecord(SAMRecord,Int,Boolean,Option[ReferenceGenome]):Read"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">fromSAMRecord</span><span class="params">(<span name="record">record: <span class="extype" name="htsjdk.samtools.SAMRecord">SAMRecord</span></span>, <span name="token">token: <span class="extype" name="scala.Int">Int</span></span>, <span name="requireMDTagsOnMappedReads">requireMDTagsOnMappedReads: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <a href="Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a></span>
+        <span class="name">fromSAMRecord</span><span class="params">(<span name="record">record: <span class="extype" name="htsjdk.samtools.SAMRecord">SAMRecord</span></span>, <span name="token">token: <span class="extype" name="scala.Int">Int</span></span>, <span name="requireMDTagsOnMappedReads">requireMDTagsOnMappedReads: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="referenceGenome">referenceGenome: <span class="extype" name="scala.Option">Option</span>[<a href="../reference/ReferenceGenome.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceGenome">ReferenceGenome</a>]</span>)</span><span class="result">: <a href="Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a></span>
       </span>
       </h4>
       <p class="shortcomment cmt">Convert a SAM tools record into a Read.</p><div class="fullcomment"><div class="comment cmt"><p>Convert a SAM tools record into a Read.
@@ -384,15 +384,15 @@ quality scores in Phred-scale
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd>Logging</dd></dl></div>
     </li><li name="org.hammerlab.guacamole.reads.Read#loadReadArrayAndSequenceDictionaryFromBAM" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="loadReadArrayAndSequenceDictionaryFromBAM(filename:String,token:Int,filters:org.hammerlab.guacamole.reads.Read.InputFilters):(scala.collection.mutable.ArrayBuffer[org.hammerlab.guacamole.reads.Read],org.bdgenomics.adam.models.SequenceDictionary)"></a>
-      <a id="loadReadArrayAndSequenceDictionaryFromBAM(String,Int,InputFilters):(ArrayBuffer[Read],SequenceDictionary)"></a>
+      <a id="loadReadArrayAndSequenceDictionaryFromBAM(filename:String,token:Int,filters:org.hammerlab.guacamole.reads.Read.InputFilters,referenceGenome:Option[org.hammerlab.guacamole.reference.ReferenceGenome]):(scala.collection.mutable.ArrayBuffer[org.hammerlab.guacamole.reads.Read],org.bdgenomics.adam.models.SequenceDictionary)"></a>
+      <a id="loadReadArrayAndSequenceDictionaryFromBAM(String,Int,InputFilters,Option[ReferenceGenome]):(ArrayBuffer[Read],SequenceDictionary)"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">loadReadArrayAndSequenceDictionaryFromBAM</span><span class="params">(<span name="filename">filename: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="token">token: <span class="extype" name="scala.Int">Int</span></span>, <span name="filters">filters: <a href="Read$$InputFilters.html" class="extype" name="org.hammerlab.guacamole.reads.Read.InputFilters">InputFilters</a></span>)</span><span class="result">: (<span class="extype" name="scala.collection.mutable.ArrayBuffer">ArrayBuffer</span>[<a href="Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a>], <span class="extype" name="org.bdgenomics.adam.models.SequenceDictionary">SequenceDictionary</span>)</span>
+        <span class="name">loadReadArrayAndSequenceDictionaryFromBAM</span><span class="params">(<span name="filename">filename: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="token">token: <span class="extype" name="scala.Int">Int</span></span>, <span name="filters">filters: <a href="Read$$InputFilters.html" class="extype" name="org.hammerlab.guacamole.reads.Read.InputFilters">InputFilters</a></span>, <span name="referenceGenome">referenceGenome: <span class="extype" name="scala.Option">Option</span>[<a href="../reference/ReferenceGenome.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceGenome">ReferenceGenome</a>]</span>)</span><span class="result">: (<span class="extype" name="scala.collection.mutable.ArrayBuffer">ArrayBuffer</span>[<a href="Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a>], <span class="extype" name="org.bdgenomics.adam.models.SequenceDictionary">SequenceDictionary</span>)</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Given a local path to a BAM/SAM file, return a pair: (Array, SequenceDictionary), where the first element is an
@@ -400,15 +400,15 @@ array of the reads, and the second is a Sequence Dictionary giving info (e.</p><
 array of the reads, and the second is a Sequence Dictionary giving info (e.g. length) about the contigs in the BAM.
 </p></div></div>
     </li><li name="org.hammerlab.guacamole.reads.Read#loadReadRDDAndSequenceDictionary" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="loadReadRDDAndSequenceDictionary(filename:String,sc:org.apache.spark.SparkContext,token:Int,filters:org.hammerlab.guacamole.reads.Read.InputFilters,requireMDTagsOnMappedReads:Boolean):(org.apache.spark.rdd.RDD[org.hammerlab.guacamole.reads.Read],org.bdgenomics.adam.models.SequenceDictionary)"></a>
-      <a id="loadReadRDDAndSequenceDictionary(String,SparkContext,Int,InputFilters,Boolean):(RDD[Read],SequenceDictionary)"></a>
+      <a id="loadReadRDDAndSequenceDictionary(filename:String,sc:org.apache.spark.SparkContext,token:Int,filters:org.hammerlab.guacamole.reads.Read.InputFilters,requireMDTagsOnMappedReads:Boolean,referenceGenome:Option[org.hammerlab.guacamole.reference.ReferenceGenome]):(org.apache.spark.rdd.RDD[org.hammerlab.guacamole.reads.Read],org.bdgenomics.adam.models.SequenceDictionary)"></a>
+      <a id="loadReadRDDAndSequenceDictionary(String,SparkContext,Int,InputFilters,Boolean,Option[ReferenceGenome]):(RDD[Read],SequenceDictionary)"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">loadReadRDDAndSequenceDictionary</span><span class="params">(<span name="filename">filename: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="sc">sc: <span class="extype" name="org.apache.spark.SparkContext">SparkContext</span></span>, <span name="token">token: <span class="extype" name="scala.Int">Int</span></span>, <span name="filters">filters: <a href="Read$$InputFilters.html" class="extype" name="org.hammerlab.guacamole.reads.Read.InputFilters">InputFilters</a></span>, <span name="requireMDTagsOnMappedReads">requireMDTagsOnMappedReads: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: (<span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<a href="Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a>], <span class="extype" name="org.bdgenomics.adam.models.SequenceDictionary">SequenceDictionary</span>)</span>
+        <span class="name">loadReadRDDAndSequenceDictionary</span><span class="params">(<span name="filename">filename: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="sc">sc: <span class="extype" name="org.apache.spark.SparkContext">SparkContext</span></span>, <span name="token">token: <span class="extype" name="scala.Int">Int</span></span>, <span name="filters">filters: <a href="Read$$InputFilters.html" class="extype" name="org.hammerlab.guacamole.reads.Read.InputFilters">InputFilters</a></span>, <span name="requireMDTagsOnMappedReads">requireMDTagsOnMappedReads: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="referenceGenome">referenceGenome: <span class="extype" name="scala.Option">Option</span>[<a href="../reference/ReferenceGenome.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceGenome">ReferenceGenome</a>] = <span class="symbol">None</span></span>)</span><span class="result">: (<span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<a href="Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a>], <span class="extype" name="org.bdgenomics.adam.models.SequenceDictionary">SequenceDictionary</span>)</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Given a filename and a spark context, return a pair (RDD, SequenceDictionary), where the first element is an RDD
@@ -417,28 +417,28 @@ of Reads, and the second element is the Sequence Dictionary giving info (e.g. le
 </p></div><dl class="paramcmts block"><dt class="param">filename</dt><dd class="cmt"><p>name of file containing reads</p></dd><dt class="param">sc</dt><dd class="cmt"><p>spark context</p></dd><dt class="param">token</dt><dd class="cmt"><p>value to set the &quot;token&quot; field to in all the reads (default 0)</p></dd><dt class="param">filters</dt><dd class="cmt"><p>filters to apply</p></dd><dt>returns</dt><dd class="cmt"><p>
 </p></dd></dl></div>
     </li><li name="org.hammerlab.guacamole.reads.Read#loadReadRDDAndSequenceDictionaryFromADAM" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="loadReadRDDAndSequenceDictionaryFromADAM(filename:String,sc:org.apache.spark.SparkContext,token:Int):(org.apache.spark.rdd.RDD[org.hammerlab.guacamole.reads.Read],org.bdgenomics.adam.models.SequenceDictionary)"></a>
-      <a id="loadReadRDDAndSequenceDictionaryFromADAM(String,SparkContext,Int):(RDD[Read],SequenceDictionary)"></a>
+      <a id="loadReadRDDAndSequenceDictionaryFromADAM(filename:String,sc:org.apache.spark.SparkContext,token:Int,referenceGenome:Option[org.hammerlab.guacamole.reference.ReferenceGenome]):(org.apache.spark.rdd.RDD[org.hammerlab.guacamole.reads.Read],org.bdgenomics.adam.models.SequenceDictionary)"></a>
+      <a id="loadReadRDDAndSequenceDictionaryFromADAM(String,SparkContext,Int,Option[ReferenceGenome]):(RDD[Read],SequenceDictionary)"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">loadReadRDDAndSequenceDictionaryFromADAM</span><span class="params">(<span name="filename">filename: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="sc">sc: <span class="extype" name="org.apache.spark.SparkContext">SparkContext</span></span>, <span name="token">token: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: (<span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<a href="Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a>], <span class="extype" name="org.bdgenomics.adam.models.SequenceDictionary">SequenceDictionary</span>)</span>
+        <span class="name">loadReadRDDAndSequenceDictionaryFromADAM</span><span class="params">(<span name="filename">filename: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="sc">sc: <span class="extype" name="org.apache.spark.SparkContext">SparkContext</span></span>, <span name="token">token: <span class="extype" name="scala.Int">Int</span></span>, <span name="referenceGenome">referenceGenome: <span class="extype" name="scala.Option">Option</span>[<a href="../reference/ReferenceGenome.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceGenome">ReferenceGenome</a>] = <span class="symbol">None</span></span>)</span><span class="result">: (<span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<a href="Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a>], <span class="extype" name="org.bdgenomics.adam.models.SequenceDictionary">SequenceDictionary</span>)</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Returns an RDD of Reads and SequenceDictionary from reads in ADAM format *</p>
     </li><li name="org.hammerlab.guacamole.reads.Read#loadReadRDDAndSequenceDictionaryFromBAM" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="loadReadRDDAndSequenceDictionaryFromBAM(filename:String,sc:org.apache.spark.SparkContext,token:Int,requireMDTagsOnMappedReads:Boolean):(org.apache.spark.rdd.RDD[org.hammerlab.guacamole.reads.Read],org.bdgenomics.adam.models.SequenceDictionary)"></a>
-      <a id="loadReadRDDAndSequenceDictionaryFromBAM(String,SparkContext,Int,Boolean):(RDD[Read],SequenceDictionary)"></a>
+      <a id="loadReadRDDAndSequenceDictionaryFromBAM(filename:String,sc:org.apache.spark.SparkContext,token:Int,requireMDTagsOnMappedReads:Boolean,referenceGenome:Option[org.hammerlab.guacamole.reference.ReferenceGenome]):(org.apache.spark.rdd.RDD[org.hammerlab.guacamole.reads.Read],org.bdgenomics.adam.models.SequenceDictionary)"></a>
+      <a id="loadReadRDDAndSequenceDictionaryFromBAM(String,SparkContext,Int,Boolean,Option[ReferenceGenome]):(RDD[Read],SequenceDictionary)"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">loadReadRDDAndSequenceDictionaryFromBAM</span><span class="params">(<span name="filename">filename: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="sc">sc: <span class="extype" name="org.apache.spark.SparkContext">SparkContext</span></span>, <span name="token">token: <span class="extype" name="scala.Int">Int</span></span>, <span name="requireMDTagsOnMappedReads">requireMDTagsOnMappedReads: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: (<span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<a href="Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a>], <span class="extype" name="org.bdgenomics.adam.models.SequenceDictionary">SequenceDictionary</span>)</span>
+        <span class="name">loadReadRDDAndSequenceDictionaryFromBAM</span><span class="params">(<span name="filename">filename: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="sc">sc: <span class="extype" name="org.apache.spark.SparkContext">SparkContext</span></span>, <span name="token">token: <span class="extype" name="scala.Int">Int</span></span>, <span name="requireMDTagsOnMappedReads">requireMDTagsOnMappedReads: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="referenceGenome">referenceGenome: <span class="extype" name="scala.Option">Option</span>[<a href="../reference/ReferenceGenome.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceGenome">ReferenceGenome</a>]</span>)</span><span class="result">: (<span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<a href="Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a>], <span class="extype" name="org.bdgenomics.adam.models.SequenceDictionary">SequenceDictionary</span>)</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Returns an RDD of Reads and SequenceDictionary from reads in BAM format *</p>

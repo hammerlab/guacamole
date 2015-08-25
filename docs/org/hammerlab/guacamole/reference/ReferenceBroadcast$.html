@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>PairedRead - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.reads.PairedRead</title>
-          <meta name="description" content="PairedRead - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.reads.PairedRead" />
-          <meta name="keywords" content="PairedRead guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.reads.PairedRead" />
+          <title>ReferenceBroadcast - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.reference.ReferenceBroadcast</title>
+          <meta name="description" content="ReferenceBroadcast - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.reference.ReferenceBroadcast" />
+          <meta name="keywords" content="ReferenceBroadcast guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.reference.ReferenceBroadcast" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -12,7 +12,7 @@
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../index.html';
-            var hash = 'org.hammerlab.guacamole.reads.PairedRead$';
+            var hash = 'org.hammerlab.guacamole.reference.ReferenceBroadcast$';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -24,9 +24,9 @@
         </head>
         <body class="value">
       <div id="definition">
-        <a href="PairedRead.html" title="Go to companion"><img src="../../../../lib/object_to_class_big.png" /></a>
-        <p id="owner"><a href="../../../package.html" class="extype" name="org">org</a>.<a href="../../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="../package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole.reads">reads</a></p>
-        <h1><a href="PairedRead.html" title="Go to companion">PairedRead</a></h1>
+        <a href="ReferenceBroadcast.html" title="Go to companion"><img src="../../../../lib/object_to_class_big.png" /></a>
+        <p id="owner"><a href="../../../package.html" class="extype" name="org">org</a>.<a href="../../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="../package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole.reference">reference</a></p>
+        <h1><a href="ReferenceBroadcast.html" title="Go to companion">ReferenceBroadcast</a></h1>
       </div>
 
       <h4 id="signature" class="signature">
@@ -35,7 +35,7 @@
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <span class="name">PairedRead</span><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">ReferenceBroadcast</span><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
@@ -59,7 +59,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="org.hammerlab.guacamole.reads.PairedRead"><span>PairedRead</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="org.hammerlab.guacamole.reference.ReferenceBroadcast"><span>ReferenceBroadcast</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -150,19 +150,20 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.reads.PairedRead#apply" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="apply(record:htsjdk.samtools.SAMRecord,token:Int,requireMDTagsOnMappedReads:Boolean,referenceGenome:Option[org.hammerlab.guacamole.reference.ReferenceGenome]):org.hammerlab.guacamole.reads.PairedRead[org.hammerlab.guacamole.reads.Read]"></a>
-      <a id="apply(SAMRecord,Int,Boolean,Option[ReferenceGenome]):PairedRead[Read]"></a>
+    </li><li name="org.hammerlab.guacamole.reference.ReferenceBroadcast#apply" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="apply(fastaPath:String,sc:org.apache.spark.SparkContext):org.hammerlab.guacamole.reference.ReferenceBroadcast"></a>
+      <a id="apply(String,SparkContext):ReferenceBroadcast"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">apply</span><span class="params">(<span name="record">record: <span class="extype" name="htsjdk.samtools.SAMRecord">SAMRecord</span></span>, <span name="token">token: <span class="extype" name="scala.Int">Int</span></span>, <span name="requireMDTagsOnMappedReads">requireMDTagsOnMappedReads: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="referenceGenome">referenceGenome: <span class="extype" name="scala.Option">Option</span>[<a href="../reference/ReferenceGenome.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceGenome">ReferenceGenome</a>]</span>)</span><span class="result">: <a href="PairedRead.html" class="extype" name="org.hammerlab.guacamole.reads.PairedRead">PairedRead</a>[<a href="Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a>]</span>
+        <span class="name">apply</span><span class="params">(<span name="fastaPath">fastaPath: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="sc">sc: <span class="extype" name="org.apache.spark.SparkContext">SparkContext</span></span>)</span><span class="result">: <a href="ReferenceBroadcast.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceBroadcast">ReferenceBroadcast</a></span>
       </span>
       </h4>
-      
+      <p class="shortcomment cmt">Build a map from contig name to broadcasted reference sequence</p><div class="fullcomment"><div class="comment cmt"><p>Build a map from contig name to broadcasted reference sequence</p></div><dl class="paramcmts block"><dt class="param">fastaPath</dt><dd class="cmt"><p>Local path to a FASTA file</p></dd><dt class="param">sc</dt><dd class="cmt"><p>SparkContext</p></dd><dt>returns</dt><dd class="cmt"><p>ReferenceBroadcast which maps contig/chromosome names to broadcasted sequences
+</p></dd></dl></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>

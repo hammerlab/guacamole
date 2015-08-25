@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>PairedRead - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.reads.PairedRead</title>
-          <meta name="description" content="PairedRead - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.reads.PairedRead" />
-          <meta name="keywords" content="PairedRead guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.reads.PairedRead" />
+          <title>ReferenceGenome - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.reference.ReferenceGenome</title>
+          <meta name="description" content="ReferenceGenome - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.reference.ReferenceGenome" />
+          <meta name="keywords" content="ReferenceGenome guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.reference.ReferenceGenome" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -12,7 +12,7 @@
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../index.html';
-            var hash = 'org.hammerlab.guacamole.reads.PairedRead$';
+            var hash = 'org.hammerlab.guacamole.reference.ReferenceGenome';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -22,26 +22,29 @@
    	  </script>
     
         </head>
-        <body class="value">
+        <body class="type">
       <div id="definition">
-        <a href="PairedRead.html" title="Go to companion"><img src="../../../../lib/object_to_class_big.png" /></a>
-        <p id="owner"><a href="../../../package.html" class="extype" name="org">org</a>.<a href="../../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="../package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole.reads">reads</a></p>
-        <h1><a href="PairedRead.html" title="Go to companion">PairedRead</a></h1>
+        <img src="../../../../lib/trait_big.png" />
+        <p id="owner"><a href="../../../package.html" class="extype" name="org">org</a>.<a href="../../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="../package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole.reference">reference</a></p>
+        <h1>ReferenceGenome</h1>
       </div>
 
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">object</span>
+        <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <span class="name">PairedRead</span><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">ReferenceGenome</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+        </div><div class="toggleContainer block">
+          <span class="toggle">Known Subclasses</span>
+          <div class="subClasses hiddenContent"><a href="ReferenceBroadcast.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceBroadcast">ReferenceBroadcast</a></div>
         </div></div>
         
 
@@ -59,7 +62,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="org.hammerlab.guacamole.reads.PairedRead"><span>PairedRead</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="org.hammerlab.guacamole.reference.ReferenceGenome"><span>ReferenceGenome</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -81,10 +84,55 @@
 
         
 
-        
+        <div id="values" class="values members">
+              <h3>Abstract Value Members</h3>
+              <ol><li name="org.hammerlab.guacamole.reference.ReferenceGenome#getContig" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="getContig(contigName:String):Array[Byte]"></a>
+      <a id="getContig(String):Array[Byte]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getContig</span><span class="params">(<span name="contigName">contigName: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Retrieve a full contig/chromosome sequence</p><div class="fullcomment"><div class="comment cmt"><p>Retrieve a full contig/chromosome sequence</p></div><dl class="paramcmts block"><dt class="param">contigName</dt><dd class="cmt"><p>contig/chromosome to retrieve reference sequence from</p></dd><dt>returns</dt><dd class="cmt"><p>Full sequence associated with the contig
+</p></dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.reference.ReferenceGenome#getReferenceBase" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="getReferenceBase(contigName:String,locus:Int):Byte"></a>
+      <a id="getReferenceBase(String,Int):Byte"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getReferenceBase</span><span class="params">(<span name="contigName">contigName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="locus">locus: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Byte">Byte</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Retrieve a reference base on a given contig at a given locus</p><div class="fullcomment"><div class="comment cmt"><p>Retrieve a reference base on a given contig at a given locus</p></div><dl class="paramcmts block"><dt class="param">contigName</dt><dd class="cmt"><p>contig/chromosome to retrieve reference sequence from</p></dd><dt class="param">locus</dt><dd class="cmt"><p>position in the sequence to retrieve</p></dd><dt>returns</dt><dd class="cmt"><p>Base at the given reference position
+</p></dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.reference.ReferenceGenome#getReferenceSequence" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="getReferenceSequence(contigName:String,startLocus:Int,endLocus:Int):Array[Byte]"></a>
+      <a id="getReferenceSequence(String,Int,Int):Array[Byte]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getReferenceSequence</span><span class="params">(<span name="contigName">contigName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="startLocus">startLocus: <span class="extype" name="scala.Int">Int</span></span>, <span name="endLocus">endLocus: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Get the reference base at the given reference location</p><div class="fullcomment"><div class="comment cmt"><p>Get the reference base at the given reference location</p></div><dl class="paramcmts block"><dt class="param">contigName</dt><dd class="cmt"><p>contig/chromosome to retrieve reference sequence from</p></dd><dt class="param">startLocus</dt><dd class="cmt"><p>0-based inclusive start of the subsequence</p></dd><dt class="param">endLocus</dt><dd class="cmt"><p>0-based exclusive end of the subsequence</p></dd><dt>returns</dt><dd class="cmt"><p>Array of bases for the reference sequence
+</p></dd></dl></div>
+    </li></ol>
+            </div>
 
         <div id="values" class="values members">
-              <h3>Value Members</h3>
+              <h3>Concrete Value Members</h3>
               <ol><li name="scala.AnyRef#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="!=(x$1:AnyRef):Boolean"></a>
       <a id="!=(AnyRef):Boolean"></a>
@@ -150,19 +198,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.reads.PairedRead#apply" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="apply(record:htsjdk.samtools.SAMRecord,token:Int,requireMDTagsOnMappedReads:Boolean,referenceGenome:Option[org.hammerlab.guacamole.reference.ReferenceGenome]):org.hammerlab.guacamole.reads.PairedRead[org.hammerlab.guacamole.reads.Read]"></a>
-      <a id="apply(SAMRecord,Int,Boolean,Option[ReferenceGenome]):PairedRead[Read]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">apply</span><span class="params">(<span name="record">record: <span class="extype" name="htsjdk.samtools.SAMRecord">SAMRecord</span></span>, <span name="token">token: <span class="extype" name="scala.Int">Int</span></span>, <span name="requireMDTagsOnMappedReads">requireMDTagsOnMappedReads: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="referenceGenome">referenceGenome: <span class="extype" name="scala.Option">Option</span>[<a href="../reference/ReferenceGenome.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceGenome">ReferenceGenome</a>]</span>)</span><span class="result">: <a href="PairedRead.html" class="extype" name="org.hammerlab.guacamole.reads.PairedRead">PairedRead</a>[<a href="Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a>]</span>
-      </span>
-      </h4>
-      
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -176,6 +211,20 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.reference.ReferenceGenome#buildMdTag" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="buildMdTag(readSequence:String,referenceContig:String,referenceStart:Int,cigar:htsjdk.samtools.Cigar):String"></a>
+      <a id="buildMdTag(String,String,Int,Cigar):String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">buildMdTag</span><span class="params">(<span name="readSequence">readSequence: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="referenceContig">referenceContig: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="referenceStart">referenceStart: <span class="extype" name="scala.Int">Int</span></span>, <span name="cigar">cigar: <span class="extype" name="htsjdk.samtools.Cigar">Cigar</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Build a new MDTag from the reference and read sequence</p><div class="fullcomment"><div class="comment cmt"><p>Build a new MDTag from the reference and read sequence</p></div><dl class="paramcmts block"><dt class="param">readSequence</dt><dd class="cmt"><p>Bases from the read</p></dd><dt class="param">referenceContig</dt><dd class="cmt"><p>Name of the reference contig or chromosome</p></dd><dt class="param">referenceStart</dt><dd class="cmt"><p>Start position of the read on the reference</p></dd><dt class="param">cigar</dt><dd class="cmt"><p>CIGAR for the read on the reference</p></dd><dt>returns</dt><dd class="cmt"><p>MdTag for the the read
+</p></dd></dl></div>
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>
       <a id="clone():AnyRef"></a>
@@ -410,11 +459,7 @@
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="scala.Serializable">
-              <h3>Inherited from <span class="extype" name="scala.Serializable">Serializable</span></h3>
-            </div><div class="parent" name="java.io.Serializable">
-              <h3>Inherited from <span class="extype" name="java.io.Serializable">Serializable</span></h3>
-            </div><div class="parent" name="scala.AnyRef">
+        <div class="parent" name="scala.AnyRef">
               <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
             </div><div class="parent" name="scala.Any">
               <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
