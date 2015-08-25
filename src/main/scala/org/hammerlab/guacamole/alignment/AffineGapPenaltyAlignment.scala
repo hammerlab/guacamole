@@ -5,7 +5,7 @@ import org.hammerlab.guacamole.alignment.AlignmentState.{AlignmentState, isGapAl
 
 object AffineGapPenaltyAlignment {
 
-  type Path = (Int, Seq[AlignmentState], Double)
+  type Path = (Int, Vector[AlignmentState], Double)
 
   /**
    * Produces an alignment of an input sequence against a reference sequence
@@ -66,7 +66,7 @@ object AffineGapPenaltyAlignment {
     for {
       refIdx <- 0 to referenceLength
     } {
-      lastSequenceAlignment(refIdx) = (refIdx, Nil, 0)
+      lastSequenceAlignment(refIdx) = (refIdx, Vector.empty, 0)
     }
     var currentSequenceAlignment = new DenseVector[Path](referenceLength + 1)
 
