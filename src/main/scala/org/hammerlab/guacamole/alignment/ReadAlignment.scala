@@ -17,6 +17,7 @@ object AlignmentState extends Enumeration {
  * @param alignmentScore Score of the alignment
  */
 case class ReadAlignment(alignments: Seq[AlignmentState],
+                         refBases: Seq[Byte],
                          alignmentScore: Int) {
 
   /**

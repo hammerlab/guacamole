@@ -1,49 +1,11 @@
 package org.hammerlab.guacamole.alignment
 
-import breeze.linalg.{ DenseMatrix, argmin }
-import org.hammerlab.guacamole.alignment.AlignmentState.AlignmentState
-
-import scala.annotation.tailrec
+import breeze.linalg.DenseVector
+import org.hammerlab.guacamole.alignment.AlignmentState.{AlignmentState, isGapAlignment}
 
 object AffineGapPenaltyAlignment {
 
-  /**
-   * Retraces the optimal alignment path from a matrix of scores and transitions
-   *
-   * @param alignmentStates (sequenceLength + 1) x (referenceLength + 1) matrix of best transition at each step
-   * @param alignmentScores (sequenceLength + 1) x (referenceLength + 1) matrix of alignment score at each step
-   * @param sequenceLength Length of the input sequence to align
-   * @param referenceLength Length of reference sequence to align against
-   * @return An alignment path and score
-   */
-  def findBestPath(alignmentStates: DenseMatrix[AlignmentState],
-                   alignmentScores: DenseMatrix[Double],
-                   sequenceLength: Int,
-                   referenceLength: Int): ReadAlignment = {
-
-    @tailrec
-    def recFindBestPath(sequenceIdx: Int,
-                        referenceIdx: Int,
-                        currentPath: List[AlignmentState]): List[AlignmentState] = {
-
-      val lastMove = alignmentStates(sequenceIdx, referenceIdx)
-      if (sequenceIdx == 1 && referenceIdx == 1) {
-        lastMove :: currentPath
-      } else {
-        lastMove match {
-          case AlignmentState.Match | AlignmentState.Mismatch =>
-            recFindBestPath(sequenceIdx - 1, referenceIdx - 1, lastMove :: currentPath)
-          case AlignmentState.Insertion =>
-            recFindBestPath(sequenceIdx - 1, referenceIdx, lastMove :: currentPath)
-          case AlignmentState.Deletion =>
-            recFindBestPath(sequenceIdx, referenceIdx - 1, lastMove :: currentPath)
-        }
-      }
-    }
-
-    val alignments = recFindBestPath(sequenceLength, referenceLength, List.empty)
-    ReadAlignment(alignments, argmin(alignmentScores.t(::, sequenceLength)))
-  }
+  type Path = (Int, Vector[AlignmentState], Double)
 
   /**
    * Produces an alignment of an input sequence against a reference sequence
@@ -66,56 +28,63 @@ object AffineGapPenaltyAlignment {
     // -log openGapProbability = 6
     // -log (1 - closeGapProbability) = 1
 
-    val sequenceLength = sequence.length
-    val referenceLength = reference.length
-    val (alignmentStates, alignmentScores) = scoreAlignmentPaths(sequence,
-      reference,
-      mismatchProbability,
-      openGapProbability,
-      closeGapProbability)
+    val alignment =
+      scoreAlignmentPaths(
+        sequence,
+        reference,
+        mismatchProbability,
+        openGapProbability,
+        closeGapProbability
+      )
 
-    findBestPath(alignmentStates, alignmentScores, sequenceLength, referenceLength)
+    val ((refStartIdx, path, score), refEndIdx) =
+      (for (i <- 0 to reference.length) yield {
+        (alignment(i), i)
+      }).minBy(_._1._3)
+
+    ReadAlignment(path, reference.slice(refStartIdx, refEndIdx), score.toInt)
   }
 
   def scoreAlignmentPaths(sequence: Seq[Byte],
                           reference: Seq[Byte],
                           mismatchProbability: Double,
                           openGapProbability: Double,
-                          closeGapProbability: Double): (DenseMatrix[AlignmentState], DenseMatrix[Double]) = {
+                          closeGapProbability: Double): DenseVector[Path] = {
 
     val logMismatchPenalty = -math.log(mismatchProbability)
-    val logOpenGapPenalty = -math.log(openGapProbability)
-    val logCloseGapPenalty = -math.log(closeGapProbability)
 
-    val logContinueGapPenalty = -math.log(1 - closeGapProbability)
+    val logOpenGapPenalty = -math.log(openGapProbability)
     val noGapPenalty = -math.log(1 - openGapProbability)
+
+    val logCloseGapPenalty = -math.log(closeGapProbability)
+    val logContinueGapPenalty = -math.log(1 - closeGapProbability)
 
     val sequenceLength = sequence.length
     val referenceLength = reference.length
 
-    // alignmentScores is M x N matrix
-    // M is the length of the sequence and N is the length of the reference
-    val alignmentScores = DenseMatrix.fill[Double](sequenceLength + 1, referenceLength + 1) { Double.PositiveInfinity }
-    val alignmentStates = new DenseMatrix[AlignmentState](sequenceLength + 1, referenceLength + 1)
+    var lastSequenceAlignment = new DenseVector[Path](referenceLength + 1)
+    for {
+      refIdx <- 0 to referenceLength
+    } {
+      lastSequenceAlignment(refIdx) = (refIdx, Vector.empty, 0)
+    }
+    var currentSequenceAlignment = new DenseVector[Path](referenceLength + 1)
 
-    def transitionPenalty(nextState: AlignmentState, previousState: AlignmentState, isEndState: Boolean) = {
+    def transitionPenalty(nextState: AlignmentState, previousStateOpt: Option[AlignmentState], isEndState: Boolean) = {
 
-      val openGap = nextState != previousState && AlignmentState.isGapAlignment(nextState)
-      val closeGap = nextState != previousState && AlignmentState.isGapAlignment(previousState)
-      val continueGap = nextState == previousState && AlignmentState.isGapAlignment(nextState)
+      val openGap = !previousStateOpt.exists(_ == nextState) && isGapAlignment(nextState)
+      val closeGap = previousStateOpt.exists(previousState => nextState != previousState && isGapAlignment(previousState))
+      val continueGap = previousStateOpt.exists(_ == nextState) && isGapAlignment(nextState)
       val mismatch = nextState == AlignmentState.Mismatch
 
       (if (openGap) logOpenGapPenalty else 0) +
         (if (closeGap) logCloseGapPenalty else 0) +
         (if (continueGap) logContinueGapPenalty else if (mismatch) noGapPenalty + logMismatchPenalty else noGapPenalty) +
-        (if (isEndState && AlignmentState.isGapAlignment(nextState)) logCloseGapPenalty else 0)
+        (if (isEndState && isGapAlignment(nextState)) logCloseGapPenalty else 0)
     }
 
-    // empty case
-    alignmentScores(0, 0) = 0
-
-    for (referenceIdx <- 1 to referenceLength) {
-      for (sequenceIdx <- 1 to sequenceLength) {
+    for (sequenceIdx <- 1 to sequenceLength) {
+      for (referenceIdx <- 0 to referenceLength) {
         // Given the change in position, is the transition a gap or match/mismatch
         def classifyTransition(prevSeqPos: Int, prevRefPos: Int): AlignmentState = {
           if (sequenceIdx == prevSeqPos) {
@@ -129,31 +98,45 @@ object AffineGapPenaltyAlignment {
           }
         }
 
-        val possiblePreviousStates = Seq(
-          (sequenceIdx - 1, referenceIdx),
-          (sequenceIdx, referenceIdx - 1),
-          (sequenceIdx - 1, referenceIdx - 1)
-        )
+        val possiblePreviousStates =
+          Seq(
+            (sequenceIdx - 1, referenceIdx),
+            (sequenceIdx, referenceIdx - 1),
+            (sequenceIdx - 1, referenceIdx - 1)
+          ).filter {
+              case (sI, rI) => sI >= 0 && rI >= 0  // Filter positions before the start of either sequence
+            }
 
         // Compute the transition costs based on the gap penalties
-        val stateScores: Seq[(AlignmentState, Double)] = possiblePreviousStates.map({
+        val nextPaths: Seq[Path] = possiblePreviousStates.map {
           case (prevSeqPos, prevRefPos) => {
             val nextState = classifyTransition(prevSeqPos, prevRefPos)
-            val previousState = alignmentStates(prevSeqPos, prevRefPos)
-            val previousScore = alignmentScores(prevSeqPos, prevRefPos)
-            val isEndState = (sequenceIdx == sequenceLength && referenceIdx == referenceLength)
 
-            val transitionCost = transitionPenalty(nextState, previousState, isEndState = isEndState)
-            (nextState, previousScore + transitionCost)
+            val (prevRefStartIdx, prevPath, prevScore) =
+              nextState match {
+                case AlignmentState.Deletion  => currentSequenceAlignment(referenceIdx - 1)
+                case AlignmentState.Insertion => lastSequenceAlignment(referenceIdx)
+                case _ => {
+                  lastSequenceAlignment(referenceIdx - 1)
+                }
+              }
+
+            val prevStateOpt = prevPath.lastOption
+
+            val isEndState = sequenceIdx == sequenceLength
+
+            val transitionCost = transitionPenalty(nextState, prevStateOpt, isEndState = isEndState)
+            (prevRefStartIdx, prevPath :+ nextState, prevScore + transitionCost)
           }
-        })
-
-        val optimalTransition = stateScores.minBy(_._2)
-        alignmentStates(sequenceIdx, referenceIdx) = optimalTransition._1
-        alignmentScores(sequenceIdx, referenceIdx) = optimalTransition._2
+        }
+        currentSequenceAlignment(referenceIdx) = nextPaths.minBy(_._3)
       }
+      // Save current sequence position alignment position
+      lastSequenceAlignment = currentSequenceAlignment
+      
+      // Clear alignment information before next sequence element
+      currentSequenceAlignment = new DenseVector[Path](referenceLength + 1)
     }
-
-    (alignmentStates, alignmentScores)
+    lastSequenceAlignment
   }
 }
