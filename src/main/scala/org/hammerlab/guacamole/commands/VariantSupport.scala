@@ -74,7 +74,9 @@ object VariantSupport {
             requireMDTagsOnMappedReads = false,
             InputFilters.empty,
             token = bamFile._2,
-            contigLengthsFromDictionary = false).mappedReads
+            contigLengthsFromDictionary = false,
+            referenceGenome = None
+          ).mappedReads
       )
 
       // Build a loci set from the variant positions

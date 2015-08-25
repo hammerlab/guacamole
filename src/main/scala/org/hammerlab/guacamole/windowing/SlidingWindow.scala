@@ -47,7 +47,6 @@ case class SlidingWindow[Region <: HasReferenceRegion](referenceName: String,
                                                        rawSortedRegions: Iterator[Region]) extends Logging {
   /** The locus currently under consideration. */
   var currentLocus = -1L
-
   /** The new regions that were added to currentRegions as a result of the most recent call to setCurrentLocus. */
   var newRegions: Seq[Region] = Seq.empty
 

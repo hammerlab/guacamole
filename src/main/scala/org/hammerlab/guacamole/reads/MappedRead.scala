@@ -53,7 +53,7 @@ case class MappedRead(
   override val isMapped = true
   override val hasMdTag = mdTagOpt.isDefined
 
-  lazy val referenceBases: Seq[Byte] =
+  lazy val mdTagReferenceBases: Seq[Byte] =
     mdTagOpt match {
       case None => throw new ReferenceWithoutMDTagException(this)
       case Some(mdTag) => try {
@@ -71,7 +71,7 @@ case class MappedRead(
    */
   def getReferenceBaseAtLocus(referenceLocus: Long): Byte = {
     assume(referenceLocus >= start && referenceLocus < end)
-    referenceBases((referenceLocus - start).toInt)
+    mdTagReferenceBases((referenceLocus - start).toInt)
   }
 
   lazy val alignmentLikelihood = PhredUtils.phredToSuccessProbability(alignmentQuality)
