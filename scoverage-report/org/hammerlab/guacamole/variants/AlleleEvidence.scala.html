@@ -8683,20 +8683,20 @@
           52
         </td>
         <td>
-          3492
+          3641
         </td>
         <td>
           org.bdgenomics.adam.util.PhredUtils.successProbabilityToPhred
         </td>
         <td style="background: #F0ADAD">
-          org.bdgenomics.adam.util.PhredUtils.successProbabilityToPhred({  scoverage.Invoker.invoked(3491, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  AlleleEvidence.this.likelihood.-(1.0E-10)})
+          org.bdgenomics.adam.util.PhredUtils.successProbabilityToPhred({  scoverage.Invoker.invoked(3640, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  AlleleEvidence.this.likelihood.-(1.0E-10)})
         </td>
       </tr><tr>
         <td>
           52
         </td>
         <td>
-          3491
+          3640
         </td>
         <td>
           scala.Double.-
@@ -8709,20 +8709,7 @@
           53
         </td>
         <td>
-          3494
-        </td>
-        <td>
-          scala.Float./
-        </td>
-        <td style="background: #F0ADAD">
-          AlleleEvidence.this.alleleReadDepth.toFloat./({  scoverage.Invoker.invoked(3493, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  AlleleEvidence.this.readDepth})
-        </td>
-      </tr><tr>
-        <td>
-          53
-        </td>
-        <td>
-          3493
+          3642
         </td>
         <td>
           org.hammerlab.guacamole.variants.AlleleEvidence.readDepth
@@ -8732,10 +8719,36 @@
         </td>
       </tr><tr>
         <td>
+          53
+        </td>
+        <td>
+          3643
+        </td>
+        <td>
+          scala.Float./
+        </td>
+        <td style="background: #F0ADAD">
+          AlleleEvidence.this.alleleReadDepth.toFloat./({  scoverage.Invoker.invoked(3642, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  AlleleEvidence.this.readDepth})
+        </td>
+      </tr><tr>
+        <td>
           64
         </td>
         <td>
-          3495
+          3645
+        </td>
+        <td>
+          scala.collection.TraversableLike.filter
+        </td>
+        <td style="background: #F0ADAD">
+          pileup.elements.filter(((x$1: org.hammerlab.guacamole.pileup.PileupElement) =&gt; {  scoverage.Invoker.invoked(3644, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x$1.allele.==(allele)}))
+        </td>
+      </tr><tr>
+        <td>
+          64
+        </td>
+        <td>
+          3644
         </td>
         <td>
           java.lang.Object.==
@@ -8745,23 +8758,23 @@
         </td>
       </tr><tr>
         <td>
-          64
+          65
         </td>
         <td>
-          3496
+          3648
         </td>
         <td>
-          scala.collection.TraversableLike.filter
+          scala.collection.TraversableOnce.toArray
         </td>
         <td style="background: #F0ADAD">
-          pileup.elements.filter(((x$1: org.hammerlab.guacamole.pileup.PileupElement) =&gt; {  scoverage.Invoker.invoked(3495, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x$1.allele.==(allele)}))
+          alleleElements.map[Double, Seq[Double]](((x$2: org.hammerlab.guacamole.pileup.PileupElement) =&gt; {  scoverage.Invoker.invoked(3646, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x$2.read.alignmentQuality.toDouble}))({  scoverage.Invoker.invoked(3647, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.canBuildFrom[Double]}).toArray[Double](ClassTag.Double)
         </td>
       </tr><tr>
         <td>
           65
         </td>
         <td>
-          3498
+          3647
         </td>
         <td>
           scala.collection.Seq.canBuildFrom
@@ -8774,7 +8787,7 @@
           65
         </td>
         <td>
-          3497
+          3646
         </td>
         <td>
           scala.Int.toDouble
@@ -8787,33 +8800,20 @@
           65
         </td>
         <td>
-          3500
+          3649
         </td>
         <td>
           breeze.linalg.DenseVector.apply
         </td>
         <td style="background: #F0ADAD">
-          breeze.linalg.DenseVector.apply[Double]({  scoverage.Invoker.invoked(3499, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  alleleElements.map[Double, Seq[Double]](((x$2: org.hammerlab.guacamole.pileup.PileupElement) =&gt; {  scoverage.Invoker.invoked(3497, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x$2.read.alignmentQuality.toDouble}))({  scoverage.Invoker.invoked(3498, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.canBuildFrom[Double]}).toArray[Double](ClassTag.Double)})
-        </td>
-      </tr><tr>
-        <td>
-          65
-        </td>
-        <td>
-          3499
-        </td>
-        <td>
-          scala.collection.TraversableOnce.toArray
-        </td>
-        <td style="background: #F0ADAD">
-          alleleElements.map[Double, Seq[Double]](((x$2: org.hammerlab.guacamole.pileup.PileupElement) =&gt; {  scoverage.Invoker.invoked(3497, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x$2.read.alignmentQuality.toDouble}))({  scoverage.Invoker.invoked(3498, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.canBuildFrom[Double]}).toArray[Double](ClassTag.Double)
+          breeze.linalg.DenseVector.apply[Double]({  scoverage.Invoker.invoked(3648, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  alleleElements.map[Double, Seq[Double]](((x$2: org.hammerlab.guacamole.pileup.PileupElement) =&gt; {  scoverage.Invoker.invoked(3646, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x$2.read.alignmentQuality.toDouble}))({  scoverage.Invoker.invoked(3647, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.canBuildFrom[Double]}).toArray[Double](ClassTag.Double)})
         </td>
       </tr><tr>
         <td>
           66
         </td>
         <td>
-          3501
+          3650
         </td>
         <td>
           scala.Int.toDouble
@@ -8826,33 +8826,33 @@
           66
         </td>
         <td>
-          3504
+          3653
         </td>
         <td>
           breeze.linalg.DenseVector.apply
         </td>
         <td style="background: #F0ADAD">
-          breeze.linalg.DenseVector.apply[Double]({  scoverage.Invoker.invoked(3503, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  alleleElements.map[Double, Seq[Double]](((x$3: org.hammerlab.guacamole.pileup.PileupElement) =&gt; {  scoverage.Invoker.invoked(3501, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x$3.qualityScore.toDouble}))({  scoverage.Invoker.invoked(3502, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.canBuildFrom[Double]}).toArray[Double](ClassTag.Double)})
+          breeze.linalg.DenseVector.apply[Double]({  scoverage.Invoker.invoked(3652, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  alleleElements.map[Double, Seq[Double]](((x$3: org.hammerlab.guacamole.pileup.PileupElement) =&gt; {  scoverage.Invoker.invoked(3650, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x$3.qualityScore.toDouble}))({  scoverage.Invoker.invoked(3651, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.canBuildFrom[Double]}).toArray[Double](ClassTag.Double)})
         </td>
       </tr><tr>
         <td>
           66
         </td>
         <td>
-          3503
+          3652
         </td>
         <td>
           scala.collection.TraversableOnce.toArray
         </td>
         <td style="background: #F0ADAD">
-          alleleElements.map[Double, Seq[Double]](((x$3: org.hammerlab.guacamole.pileup.PileupElement) =&gt; {  scoverage.Invoker.invoked(3501, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x$3.qualityScore.toDouble}))({  scoverage.Invoker.invoked(3502, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.canBuildFrom[Double]}).toArray[Double](ClassTag.Double)
+          alleleElements.map[Double, Seq[Double]](((x$3: org.hammerlab.guacamole.pileup.PileupElement) =&gt; {  scoverage.Invoker.invoked(3650, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x$3.qualityScore.toDouble}))({  scoverage.Invoker.invoked(3651, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.canBuildFrom[Double]}).toArray[Double](ClassTag.Double)
         </td>
       </tr><tr>
         <td>
           66
         </td>
         <td>
-          3502
+          3651
         </td>
         <td>
           scala.collection.Seq.canBuildFrom
@@ -8865,7 +8865,7 @@
           68
         </td>
         <td>
-          3505
+          3654
         </td>
         <td>
           scala.Int.==
@@ -8878,33 +8878,33 @@
           69
         </td>
         <td>
-          3512
+          3661
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(3511, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  AlleleEvidence.apply(likelihood, pileup.depth, alleleReadDepth, pileup.positiveDepth, allelePositiveReadDepth, {    scoverage.Invoker.invoked(3506, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    NaN  }, {    scoverage.Invoker.invoked(3507, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    NaN  }, {    scoverage.Invoker.invoked(3508, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    NaN  }, {    scoverage.Invoker.invoked(3509, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    NaN  }, {    scoverage.Invoker.invoked(3510, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    NaN  })}
+          {  scoverage.Invoker.invoked(3660, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  AlleleEvidence.apply(likelihood, pileup.depth, alleleReadDepth, pileup.positiveDepth, allelePositiveReadDepth, {    scoverage.Invoker.invoked(3655, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    NaN  }, {    scoverage.Invoker.invoked(3656, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    NaN  }, {    scoverage.Invoker.invoked(3657, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    NaN  }, {    scoverage.Invoker.invoked(3658, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    NaN  }, {    scoverage.Invoker.invoked(3659, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    NaN  })}
         </td>
       </tr><tr>
         <td>
           69
         </td>
         <td>
-          3511
+          3660
         </td>
         <td>
           org.hammerlab.guacamole.variants.AlleleEvidence.apply
         </td>
         <td style="background: #F0ADAD">
-          AlleleEvidence.apply(likelihood, pileup.depth, alleleReadDepth, pileup.positiveDepth, allelePositiveReadDepth, {  scoverage.Invoker.invoked(3506, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  NaN}, {  scoverage.Invoker.invoked(3507, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  NaN}, {  scoverage.Invoker.invoked(3508, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  NaN}, {  scoverage.Invoker.invoked(3509, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  NaN}, {  scoverage.Invoker.invoked(3510, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  NaN})
+          AlleleEvidence.apply(likelihood, pileup.depth, alleleReadDepth, pileup.positiveDepth, allelePositiveReadDepth, {  scoverage.Invoker.invoked(3655, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  NaN}, {  scoverage.Invoker.invoked(3656, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  NaN}, {  scoverage.Invoker.invoked(3657, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  NaN}, {  scoverage.Invoker.invoked(3658, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  NaN}, {  scoverage.Invoker.invoked(3659, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  NaN})
         </td>
       </tr><tr>
         <td>
           75
         </td>
         <td>
-          3506
+          3655
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -8917,7 +8917,7 @@
           76
         </td>
         <td>
-          3507
+          3656
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -8930,7 +8930,7 @@
           77
         </td>
         <td>
-          3508
+          3657
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -8943,7 +8943,7 @@
           78
         </td>
         <td>
-          3509
+          3658
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -8956,7 +8956,7 @@
           79
         </td>
         <td>
-          3510
+          3659
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -8969,33 +8969,46 @@
           82
         </td>
         <td>
-          3530
+          3679
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(3529, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  AlleleEvidence.apply(likelihood, pileup.depth, alleleReadDepth, pileup.positiveDepth, allelePositiveReadDepth, {    scoverage.Invoker.invoked(3515, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    breeze.stats.`package`.mean.apply[breeze.linalg.DenseVector[Double], Double](alignmentScores)({      scoverage.Invoker.invoked(3514, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      breeze.stats.`package`.mean.reduce_Double[breeze.linalg.DenseVector[Double]]({        scoverage.Invoker.invoked(3513, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        linalg.this.DenseVector.canIterateValues[Double]      })    })  }, {    scoverage.Invoker.invoked(3517, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    breeze.stats.`package`.median.apply[breeze.linalg.DenseVector[Double], Double](alignmentScores)({      scoverage.Invoker.invoked(3516, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      breeze.stats.`package`.median.reduce_Double    })  }, {    scoverage.Invoker.invoked(3520, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    breeze.stats.`package`.mean.apply[breeze.linalg.DenseVector[Double], Double](baseQualityScores)({      scoverage.Invoker.invoked(3519, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      breeze.stats.`package`.mean.reduce_Double[breeze.linalg.DenseVector[Double]]({        scoverage.Invoker.invoked(3518, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        linalg.this.DenseVector.canIterateValues[Double]      })    })  }, {    scoverage.Invoker.invoked(3522, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    breeze.stats.`package`.median.apply[breeze.linalg.DenseVector[Double], Double](baseQualityScores)({      scoverage.Invoker.invoked(3521, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      breeze.stats.`package`.median.reduce_Double    })  }, {    scoverage.Invoker.invoked(3528, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    breeze.stats.`package`.median.apply[breeze.linalg.DenseVector[Int], Int]({  scoverage.Invoker.invoked(3526, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  breeze.linalg.DenseVector.apply[Int]({    scoverage.Invoker.invoked(3525, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    alleleElements.map[Int, Seq[Int]](((x$4: org.hammerlab.guacamole.pileup.PileupElement) =&gt; {  scoverage.Invoker.invoked(3523, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x$4.read.mdTagOpt.get.countOfMismatches}))({  scoverage.Invoker.invoked(3524, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.canBuildFrom[Int]}).toArray[Int](ClassTag.Int)  })})({  scoverage.Invoker.invoked(3527, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  breeze.stats.`package`.median.reduce_Int}).toDouble  })}
+          {  scoverage.Invoker.invoked(3678, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  AlleleEvidence.apply(likelihood, pileup.depth, alleleReadDepth, pileup.positiveDepth, allelePositiveReadDepth, {    scoverage.Invoker.invoked(3664, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    breeze.stats.`package`.mean.apply[breeze.linalg.DenseVector[Double], Double](alignmentScores)({      scoverage.Invoker.invoked(3663, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      breeze.stats.`package`.mean.reduce_Double[breeze.linalg.DenseVector[Double]]({        scoverage.Invoker.invoked(3662, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        linalg.this.DenseVector.canIterateValues[Double]      })    })  }, {    scoverage.Invoker.invoked(3666, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    breeze.stats.`package`.median.apply[breeze.linalg.DenseVector[Double], Double](alignmentScores)({      scoverage.Invoker.invoked(3665, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      breeze.stats.`package`.median.reduce_Double    })  }, {    scoverage.Invoker.invoked(3669, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    breeze.stats.`package`.mean.apply[breeze.linalg.DenseVector[Double], Double](baseQualityScores)({      scoverage.Invoker.invoked(3668, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      breeze.stats.`package`.mean.reduce_Double[breeze.linalg.DenseVector[Double]]({        scoverage.Invoker.invoked(3667, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        linalg.this.DenseVector.canIterateValues[Double]      })    })  }, {    scoverage.Invoker.invoked(3671, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    breeze.stats.`package`.median.apply[breeze.linalg.DenseVector[Double], Double](baseQualityScores)({      scoverage.Invoker.invoked(3670, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      breeze.stats.`package`.median.reduce_Double    })  }, {    scoverage.Invoker.invoked(3677, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    breeze.stats.`package`.median.apply[breeze.linalg.DenseVector[Int], Int]({  scoverage.Invoker.invoked(3675, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  breeze.linalg.DenseVector.apply[Int]({    scoverage.Invoker.invoked(3674, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    alleleElements.map[Int, Seq[Int]](((x$4: org.hammerlab.guacamole.pileup.PileupElement) =&gt; {  scoverage.Invoker.invoked(3672, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x$4.read.mdTagOpt.get.countOfMismatches}))({  scoverage.Invoker.invoked(3673, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.canBuildFrom[Int]}).toArray[Int](ClassTag.Int)  })})({  scoverage.Invoker.invoked(3676, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  breeze.stats.`package`.median.reduce_Int}).toDouble  })}
         </td>
       </tr><tr>
         <td>
           82
         </td>
         <td>
-          3529
+          3678
         </td>
         <td>
           org.hammerlab.guacamole.variants.AlleleEvidence.apply
         </td>
         <td style="background: #F0ADAD">
-          AlleleEvidence.apply(likelihood, pileup.depth, alleleReadDepth, pileup.positiveDepth, allelePositiveReadDepth, {  scoverage.Invoker.invoked(3515, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  breeze.stats.`package`.mean.apply[breeze.linalg.DenseVector[Double], Double](alignmentScores)({    scoverage.Invoker.invoked(3514, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    breeze.stats.`package`.mean.reduce_Double[breeze.linalg.DenseVector[Double]]({      scoverage.Invoker.invoked(3513, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      linalg.this.DenseVector.canIterateValues[Double]    })  })}, {  scoverage.Invoker.invoked(3517, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  breeze.stats.`package`.median.apply[breeze.linalg.DenseVector[Double], Double](alignmentScores)({    scoverage.Invoker.invoked(3516, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    breeze.stats.`package`.median.reduce_Double  })}, {  scoverage.Invoker.invoked(3520, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  breeze.stats.`package`.mean.apply[breeze.linalg.DenseVector[Double], Double](baseQualityScores)({    scoverage.Invoker.invoked(3519, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    breeze.stats.`package`.mean.reduce_Double[breeze.linalg.DenseVector[Double]]({      scoverage.Invoker.invoked(3518, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      linalg.this.DenseVector.canIterateValues[Double]    })  })}, {  scoverage.Invoker.invoked(3522, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  breeze.stats.`package`.median.apply[breeze.linalg.DenseVector[Double], Double](baseQualityScores)({    scoverage.Invoker.invoked(3521, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    breeze.stats.`package`.median.reduce_Double  })}, {  scoverage.Invoker.invoked(3528, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  breeze.stats.`package`.median.apply[breeze.linalg.DenseVector[Int], Int]({  scoverage.Invoker.invoked(3526, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  breeze.linalg.DenseVector.apply[Int]({    scoverage.Invoker.invoked(3525, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    alleleElements.map[Int, Seq[Int]](((x$4: org.hammerlab.guacamole.pileup.PileupElement) =&gt; {  scoverage.Invoker.invoked(3523, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x$4.read.mdTagOpt.get.countOfMismatches}))({  scoverage.Invoker.invoked(3524, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.canBuildFrom[Int]}).toArray[Int](ClassTag.Int)  })})({  scoverage.Invoker.invoked(3527, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  breeze.stats.`package`.median.reduce_Int}).toDouble})
+          AlleleEvidence.apply(likelihood, pileup.depth, alleleReadDepth, pileup.positiveDepth, allelePositiveReadDepth, {  scoverage.Invoker.invoked(3664, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  breeze.stats.`package`.mean.apply[breeze.linalg.DenseVector[Double], Double](alignmentScores)({    scoverage.Invoker.invoked(3663, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    breeze.stats.`package`.mean.reduce_Double[breeze.linalg.DenseVector[Double]]({      scoverage.Invoker.invoked(3662, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      linalg.this.DenseVector.canIterateValues[Double]    })  })}, {  scoverage.Invoker.invoked(3666, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  breeze.stats.`package`.median.apply[breeze.linalg.DenseVector[Double], Double](alignmentScores)({    scoverage.Invoker.invoked(3665, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    breeze.stats.`package`.median.reduce_Double  })}, {  scoverage.Invoker.invoked(3669, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  breeze.stats.`package`.mean.apply[breeze.linalg.DenseVector[Double], Double](baseQualityScores)({    scoverage.Invoker.invoked(3668, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    breeze.stats.`package`.mean.reduce_Double[breeze.linalg.DenseVector[Double]]({      scoverage.Invoker.invoked(3667, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      linalg.this.DenseVector.canIterateValues[Double]    })  })}, {  scoverage.Invoker.invoked(3671, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  breeze.stats.`package`.median.apply[breeze.linalg.DenseVector[Double], Double](baseQualityScores)({    scoverage.Invoker.invoked(3670, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    breeze.stats.`package`.median.reduce_Double  })}, {  scoverage.Invoker.invoked(3677, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  breeze.stats.`package`.median.apply[breeze.linalg.DenseVector[Int], Int]({  scoverage.Invoker.invoked(3675, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  breeze.linalg.DenseVector.apply[Int]({    scoverage.Invoker.invoked(3674, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    alleleElements.map[Int, Seq[Int]](((x$4: org.hammerlab.guacamole.pileup.PileupElement) =&gt; {  scoverage.Invoker.invoked(3672, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x$4.read.mdTagOpt.get.countOfMismatches}))({  scoverage.Invoker.invoked(3673, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.canBuildFrom[Int]}).toArray[Int](ClassTag.Int)  })})({  scoverage.Invoker.invoked(3676, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  breeze.stats.`package`.median.reduce_Int}).toDouble})
         </td>
       </tr><tr>
         <td>
           88
         </td>
         <td>
-          3513
+          3663
+        </td>
+        <td>
+          breeze.stats.DescriptiveStatsTrait.mean.reduce_Double
+        </td>
+        <td style="background: #F0ADAD">
+          breeze.stats.`package`.mean.reduce_Double[breeze.linalg.DenseVector[Double]]({  scoverage.Invoker.invoked(3662, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  linalg.this.DenseVector.canIterateValues[Double]})
+        </td>
+      </tr><tr>
+        <td>
+          88
+        </td>
+        <td>
+          3662
         </td>
         <td>
           breeze.linalg.DenseVector.canIterateValues
@@ -9008,33 +9021,33 @@
           88
         </td>
         <td>
-          3515
+          3664
         </td>
         <td>
           breeze.generic.UFunc.apply
         </td>
         <td style="background: #F0ADAD">
-          breeze.stats.`package`.mean.apply[breeze.linalg.DenseVector[Double], Double](alignmentScores)({  scoverage.Invoker.invoked(3514, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  breeze.stats.`package`.mean.reduce_Double[breeze.linalg.DenseVector[Double]]({    scoverage.Invoker.invoked(3513, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    linalg.this.DenseVector.canIterateValues[Double]  })})
-        </td>
-      </tr><tr>
-        <td>
-          88
-        </td>
-        <td>
-          3514
-        </td>
-        <td>
-          breeze.stats.DescriptiveStatsTrait.mean.reduce_Double
-        </td>
-        <td style="background: #F0ADAD">
-          breeze.stats.`package`.mean.reduce_Double[breeze.linalg.DenseVector[Double]]({  scoverage.Invoker.invoked(3513, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  linalg.this.DenseVector.canIterateValues[Double]})
+          breeze.stats.`package`.mean.apply[breeze.linalg.DenseVector[Double], Double](alignmentScores)({  scoverage.Invoker.invoked(3663, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  breeze.stats.`package`.mean.reduce_Double[breeze.linalg.DenseVector[Double]]({    scoverage.Invoker.invoked(3662, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    linalg.this.DenseVector.canIterateValues[Double]  })})
         </td>
       </tr><tr>
         <td>
           89
         </td>
         <td>
-          3516
+          3666
+        </td>
+        <td>
+          breeze.generic.UFunc.apply
+        </td>
+        <td style="background: #F0ADAD">
+          breeze.stats.`package`.median.apply[breeze.linalg.DenseVector[Double], Double](alignmentScores)({  scoverage.Invoker.invoked(3665, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  breeze.stats.`package`.median.reduce_Double})
+        </td>
+      </tr><tr>
+        <td>
+          89
+        </td>
+        <td>
+          3665
         </td>
         <td>
           breeze.stats.DescriptiveStatsTrait.median.reduce_Double
@@ -9044,36 +9057,23 @@
         </td>
       </tr><tr>
         <td>
-          89
-        </td>
-        <td>
-          3517
-        </td>
-        <td>
-          breeze.generic.UFunc.apply
-        </td>
-        <td style="background: #F0ADAD">
-          breeze.stats.`package`.median.apply[breeze.linalg.DenseVector[Double], Double](alignmentScores)({  scoverage.Invoker.invoked(3516, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  breeze.stats.`package`.median.reduce_Double})
-        </td>
-      </tr><tr>
-        <td>
           90
         </td>
         <td>
-          3519
+          3668
         </td>
         <td>
           breeze.stats.DescriptiveStatsTrait.mean.reduce_Double
         </td>
         <td style="background: #F0ADAD">
-          breeze.stats.`package`.mean.reduce_Double[breeze.linalg.DenseVector[Double]]({  scoverage.Invoker.invoked(3518, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  linalg.this.DenseVector.canIterateValues[Double]})
+          breeze.stats.`package`.mean.reduce_Double[breeze.linalg.DenseVector[Double]]({  scoverage.Invoker.invoked(3667, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  linalg.this.DenseVector.canIterateValues[Double]})
         </td>
       </tr><tr>
         <td>
           90
         </td>
         <td>
-          3518
+          3667
         </td>
         <td>
           breeze.linalg.DenseVector.canIterateValues
@@ -9086,33 +9086,33 @@
           90
         </td>
         <td>
-          3520
+          3669
         </td>
         <td>
           breeze.generic.UFunc.apply
         </td>
         <td style="background: #F0ADAD">
-          breeze.stats.`package`.mean.apply[breeze.linalg.DenseVector[Double], Double](baseQualityScores)({  scoverage.Invoker.invoked(3519, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  breeze.stats.`package`.mean.reduce_Double[breeze.linalg.DenseVector[Double]]({    scoverage.Invoker.invoked(3518, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    linalg.this.DenseVector.canIterateValues[Double]  })})
+          breeze.stats.`package`.mean.apply[breeze.linalg.DenseVector[Double], Double](baseQualityScores)({  scoverage.Invoker.invoked(3668, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  breeze.stats.`package`.mean.reduce_Double[breeze.linalg.DenseVector[Double]]({    scoverage.Invoker.invoked(3667, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    linalg.this.DenseVector.canIterateValues[Double]  })})
         </td>
       </tr><tr>
         <td>
           91
         </td>
         <td>
-          3522
+          3671
         </td>
         <td>
           breeze.generic.UFunc.apply
         </td>
         <td style="background: #F0ADAD">
-          breeze.stats.`package`.median.apply[breeze.linalg.DenseVector[Double], Double](baseQualityScores)({  scoverage.Invoker.invoked(3521, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  breeze.stats.`package`.median.reduce_Double})
+          breeze.stats.`package`.median.apply[breeze.linalg.DenseVector[Double], Double](baseQualityScores)({  scoverage.Invoker.invoked(3670, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  breeze.stats.`package`.median.reduce_Double})
         </td>
       </tr><tr>
         <td>
           91
         </td>
         <td>
-          3521
+          3670
         </td>
         <td>
           breeze.stats.DescriptiveStatsTrait.median.reduce_Double
@@ -9125,33 +9125,59 @@
           92
         </td>
         <td>
-          3525
+          3672
+        </td>
+        <td>
+          org.bdgenomics.adam.util.MdTag.countOfMismatches
+        </td>
+        <td style="background: #F0ADAD">
+          x$4.read.mdTagOpt.get.countOfMismatches
+        </td>
+      </tr><tr>
+        <td>
+          92
+        </td>
+        <td>
+          3675
+        </td>
+        <td>
+          breeze.linalg.DenseVector.apply
+        </td>
+        <td style="background: #F0ADAD">
+          breeze.linalg.DenseVector.apply[Int]({  scoverage.Invoker.invoked(3674, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  alleleElements.map[Int, Seq[Int]](((x$4: org.hammerlab.guacamole.pileup.PileupElement) =&gt; {  scoverage.Invoker.invoked(3672, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x$4.read.mdTagOpt.get.countOfMismatches}))({  scoverage.Invoker.invoked(3673, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.canBuildFrom[Int]}).toArray[Int](ClassTag.Int)})
+        </td>
+      </tr><tr>
+        <td>
+          92
+        </td>
+        <td>
+          3674
         </td>
         <td>
           scala.collection.TraversableOnce.toArray
         </td>
         <td style="background: #F0ADAD">
-          alleleElements.map[Int, Seq[Int]](((x$4: org.hammerlab.guacamole.pileup.PileupElement) =&gt; {  scoverage.Invoker.invoked(3523, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x$4.read.mdTagOpt.get.countOfMismatches}))({  scoverage.Invoker.invoked(3524, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.canBuildFrom[Int]}).toArray[Int](ClassTag.Int)
+          alleleElements.map[Int, Seq[Int]](((x$4: org.hammerlab.guacamole.pileup.PileupElement) =&gt; {  scoverage.Invoker.invoked(3672, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x$4.read.mdTagOpt.get.countOfMismatches}))({  scoverage.Invoker.invoked(3673, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.canBuildFrom[Int]}).toArray[Int](ClassTag.Int)
         </td>
       </tr><tr>
         <td>
           92
         </td>
         <td>
-          3528
+          3677
         </td>
         <td>
           scala.Int.toDouble
         </td>
         <td style="background: #F0ADAD">
-          breeze.stats.`package`.median.apply[breeze.linalg.DenseVector[Int], Int]({  scoverage.Invoker.invoked(3526, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  breeze.linalg.DenseVector.apply[Int]({    scoverage.Invoker.invoked(3525, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    alleleElements.map[Int, Seq[Int]](((x$4: org.hammerlab.guacamole.pileup.PileupElement) =&gt; {  scoverage.Invoker.invoked(3523, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x$4.read.mdTagOpt.get.countOfMismatches}))({  scoverage.Invoker.invoked(3524, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.canBuildFrom[Int]}).toArray[Int](ClassTag.Int)  })})({  scoverage.Invoker.invoked(3527, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  breeze.stats.`package`.median.reduce_Int}).toDouble
+          breeze.stats.`package`.median.apply[breeze.linalg.DenseVector[Int], Int]({  scoverage.Invoker.invoked(3675, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  breeze.linalg.DenseVector.apply[Int]({    scoverage.Invoker.invoked(3674, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    alleleElements.map[Int, Seq[Int]](((x$4: org.hammerlab.guacamole.pileup.PileupElement) =&gt; {  scoverage.Invoker.invoked(3672, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x$4.read.mdTagOpt.get.countOfMismatches}))({  scoverage.Invoker.invoked(3673, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.canBuildFrom[Int]}).toArray[Int](ClassTag.Int)  })})({  scoverage.Invoker.invoked(3676, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  breeze.stats.`package`.median.reduce_Int}).toDouble
         </td>
       </tr><tr>
         <td>
           92
         </td>
         <td>
-          3524
+          3673
         </td>
         <td>
           scala.collection.Seq.canBuildFrom
@@ -9164,7 +9190,7 @@
           92
         </td>
         <td>
-          3527
+          3676
         </td>
         <td>
           breeze.stats.DescriptiveStatsTrait.median.reduce_Int
@@ -9174,49 +9200,10 @@
         </td>
       </tr><tr>
         <td>
-          92
-        </td>
-        <td>
-          3526
-        </td>
-        <td>
-          breeze.linalg.DenseVector.apply
-        </td>
-        <td style="background: #F0ADAD">
-          breeze.linalg.DenseVector.apply[Int]({  scoverage.Invoker.invoked(3525, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  alleleElements.map[Int, Seq[Int]](((x$4: org.hammerlab.guacamole.pileup.PileupElement) =&gt; {  scoverage.Invoker.invoked(3523, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x$4.read.mdTagOpt.get.countOfMismatches}))({  scoverage.Invoker.invoked(3524, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.canBuildFrom[Int]}).toArray[Int](ClassTag.Int)})
-        </td>
-      </tr><tr>
-        <td>
-          92
-        </td>
-        <td>
-          3523
-        </td>
-        <td>
-          org.bdgenomics.adam.util.MdTag.countOfMismatches
-        </td>
-        <td style="background: #F0ADAD">
-          x$4.read.mdTagOpt.get.countOfMismatches
-        </td>
-      </tr><tr>
-        <td>
           98
         </td>
         <td>
-          3531
-        </td>
-        <td>
-          scala.Tuple2._1
-        </td>
-        <td style="background: #F0ADAD">
-          x$5._1
-        </td>
-      </tr><tr>
-        <td>
-          98
-        </td>
-        <td>
-          3532
+          3681
         </td>
         <td>
           scala.Tuple2._2
@@ -9226,10 +9213,23 @@
         </td>
       </tr><tr>
         <td>
+          98
+        </td>
+        <td>
+          3680
+        </td>
+        <td>
+          scala.Tuple2._1
+        </td>
+        <td style="background: #F0ADAD">
+          x$5._1
+        </td>
+      </tr><tr>
+        <td>
           99
         </td>
         <td>
-          3533
+          3682
         </td>
         <td>
           org.hammerlab.guacamole.variants.AlleleEvidence.apply
