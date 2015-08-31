@@ -55,7 +55,7 @@ object SomaticStandard {
     var dbSnpVcf: String = ""
 
     @Args4jOption(name = "--reference-fasta", required = false, usage = "Local path to a reference FASTA file")
-    var referenceFastaPath: String = ""
+    var referenceFastaPath: String = null
 
   }
 
