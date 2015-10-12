@@ -193,12 +193,14 @@ object SomaticStandard {
        * Find the most likely genotype in the tumor sample
        * This is either the reference genotype or an heterozygous genotype with some alternate base
        */
-      val (mostLikelyTumorGenotype, mostLikelyTumorGenotypeLikelihood) =
-        Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(
-          filteredTumorPileup,
-          Likelihood.probabilityCorrectIncludingAlignment,
-          normalize = true
-        ).maxBy(_._2)
+      val genotypesAndLikelihoods = Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(
+        filteredTumorPileup,
+        Likelihood.probabilityCorrectIncludingAlignment,
+        normalize = true)
+      if (genotypesAndLikelihoods.isEmpty)
+        return Seq.empty
+
+      val (mostLikelyTumorGenotype, mostLikelyTumorGenotypeLikelihood) = genotypesAndLikelihoods.maxBy(_._2)
 
       // The following lazy vals are only evaluated if mostLikelyTumorGenotype.hasVariantAllele
       lazy val normalLikelihoods =
