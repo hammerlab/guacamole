@@ -21,6 +21,7 @@ package org.hammerlab.guacamole.likelihood
 import cern.colt.matrix.impl.DenseDoubleMatrix2D
 import cern.jet.math.Functions
 import org.bdgenomics.adam.util.PhredUtils
+import org.hammerlab.guacamole.Bases
 import org.hammerlab.guacamole.pileup.{ PileupElement, Pileup }
 import org.hammerlab.guacamole.variants.{ Allele, Genotype }
 
@@ -102,7 +103,7 @@ object Likelihood {
     logSpace: Boolean = false,
     normalize: Boolean = false): Seq[(Genotype, Double)] = {
 
-    val alleles = pileup.distinctAlleles
+    val alleles = pileup.distinctAlleles.filter(allele => allele.altBases.forall((Bases.isStandardBase _)))
     val genotypes = for {
       i <- 0 until alleles.size
       j <- i until alleles.size
