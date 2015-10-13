@@ -136,7 +136,10 @@ object LociSet {
    * Return a LociSet parsed from a string representation.
    *
    * @param loci A string of the form "CONTIG:START-END,CONTIG:START-END,..." where CONTIG is a string giving the
-   *             contig name, and START and END are integers. Whitespace is ignored.
+   *             contig name, and START and END are integers. Whitespace is ignored. The :START-END suffix is optional
+   *             if the contigLengths parameter is specified, and defaults to start=0 end=length of contig - 1.
+   * @param contigLengths Optional map: contig name -> length.
+   * @return
    */
   def parse(loci: String, contigLengths: Option[Map[String, Long]] = None): LociSet = {
     def maybeCheckContigIsValid(contig: String): Unit = contigLengths match {
