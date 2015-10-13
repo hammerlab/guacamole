@@ -56,7 +56,7 @@ case class LociSet(map: LociMap[Long]) {
   override def toString(): String = truncatedString(Int.MaxValue)
 
   /** String representation, truncated to maxLength characters. */
-  def truncatedString(maxLength: Int = 100): String = map.truncatedString(maxLength, false)
+  def truncatedString(maxLength: Int = 200): String = map.truncatedString(maxLength, false)
 
   /** Returns a LociSet containing only those contigs TODO*/
   def filterContigs(function: String => Boolean): LociSet = {
@@ -138,14 +138,45 @@ object LociSet {
    * @param loci A string of the form "CONTIG:START-END,CONTIG:START-END,..." where CONTIG is a string giving the
    *             contig name, and START and END are integers. Whitespace is ignored.
    */
-  def parse(loci: String): LociSet = {
-    val syntax = """^([\pL\pN._]+):(\pN+)-(\pN+)""".r
-    val sets = loci.replaceAll("\\s", "").split(',').map({
-      case ""                       => LociSet.empty
-      case syntax(name, start, end) => LociSet(name, start.toLong, end.toLong)
-      case other                    => throw new IllegalArgumentException("Couldn't parse loci range: %s".format(other))
-    })
-    union(sets: _*)
+  def parse(loci: String, contigLengths: Option[Map[String, Long]] = None): LociSet = {
+    def maybeCheckContigIsValid(contig: String): Unit = contigLengths match {
+      case Some(map) if (!map.contains(contig)) =>
+        throw new IllegalArgumentException("No such contig: '%s'.".format(contig))
+      case _ => {}
+    }
+
+    if (loci == "all") {
+      contigLengths match {
+        case None => throw new IllegalArgumentException("Specifying loci 'all' requires providing contigLengths")
+        case Some(map) => {
+          val builder = LociSet.newBuilder
+          map.foreach(contigNameAndLength => builder.put(contigNameAndLength._1, 0L, contigNameAndLength._2))
+          builder.result
+        }
+      }
+    } else {
+      val contigAndLoci = """^([\pL\pN._]+):(\pN+)-(\pN+)$""".r
+      val contigOnly = """^([\pL\pN._]+)""".r
+      val sets = loci.replaceAll("\\s", "").split(',').map({
+        case "" => LociSet.empty
+        case contigAndLoci(name, start, end) => {
+          maybeCheckContigIsValid(name)
+          LociSet(name, start.toLong, end.toLong)
+        }
+        case contigOnly(contig) => contigLengths match {
+          case None =>
+            throw new IllegalArgumentException(
+              "Specifying a contig ('%s') without a loci range requires providing contigLengths".format(contig))
+          case Some(map) => {
+            maybeCheckContigIsValid(contig)
+            LociSet(contig, 0L, map(contig))
+          }
+        }
+        case other =>
+          throw new IllegalArgumentException("Couldn't parse loci range: %s".format(other))
+      })
+      union(sets: _*)
+    }
   }
 
   /** Returns union of specified [[LociSet]] instances. */
