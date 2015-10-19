@@ -200,24 +200,7 @@ object Common extends Logging {
       "all"
     }
 
-    val result = {
-      if (lociToParse == "all") {
-        // Call at all loci.
-        val builder = LociSet.newBuilder
-        readSet.contigLengths.foreach(contigNameAndLength => builder.put(contigNameAndLength._1, 0L, contigNameAndLength._2))
-        builder.result
-      } else {
-        // Call at specified loci.
-        val parsed = LociSet.parse(lociToParse)
-
-        // Check that loci given are in the sequence dictionary.
-        parsed.contigs.foreach(contig => {
-          if (!readSet.contigLengths.contains(contig))
-            throw new IllegalArgumentException("No such contig: '%s'.".format(contig))
-        })
-        parsed
-      }
-    }
+    val result = LociSet.parse(lociToParse, Some(readSet.contigLengths))
     progress("Including %,d loci across %,d contig(s): %s".format(
       result.count,
       result.contigs.length,

@@ -179,10 +179,12 @@ object DistributedUtil extends Logging {
     var num = 1
     val regionCounts = regionRDDs.map(regions => {
       progress("Collecting region counts for RDD %d of %d.".format(num, regionRDDs.length))
-      num += 1
-      regions.flatMap(region =>
+      val result = regions.flatMap(region =>
         broadcastMicroPartitions.value.onContig(region.referenceContig).getAll(region.start, region.end)
       ).countByValue()
+      progress("RDD %d: %,d regions".format(num, result.values.sum))
+      num += 1
+      result
     })
 
     val counts: Seq[Long] = (0 until numMicroPartitions).map(i => regionCounts.map(_.getOrElse(i, 0L)).sum)
@@ -193,8 +195,10 @@ object DistributedUtil extends Logging {
     val regionsPerTask = math.max(1, totalRegions.toDouble / tasks.toDouble)
     progress("Done collecting region counts. Total regions with micro partition overlaps: %,d = ~%,.0f regions per task."
       .format(totalRegions, regionsPerTask))
-    progress("Regions per micro partition: min=%,d mean=%,.0f max=%,d.".format(
-      counts.min, counts.sum.toDouble / counts.length, counts.max))
+
+    val maxIndex = counts.view.zipWithIndex.maxBy(_._1)._2
+    progress("Regions per micro partition: min=%,d mean=%,.0f max=%,d at %s.".format(
+      counts.min, counts.sum.toDouble / counts.length, counts(maxIndex), microPartitions.asInverseMap(maxIndex)))
 
     val builder = LociMap.newBuilder[Long]
     var regionsAssigned = 0.0
