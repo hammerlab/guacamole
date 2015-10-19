@@ -387,20 +387,21 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="org.hammerlab.guacamole.LociSet#parse" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="parse(loci:String):org.hammerlab.guacamole.LociSet"></a>
-      <a id="parse(String):LociSet"></a>
+      <a id="parse(loci:String,contigLengths:Option[Map[String,Long]]):org.hammerlab.guacamole.LociSet"></a>
+      <a id="parse(String,Option[Map[String,Long]]):LociSet"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">parse</span><span class="params">(<span name="loci">loci: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="LociSet.html" class="extype" name="org.hammerlab.guacamole.LociSet">LociSet</a></span>
+        <span class="name">parse</span><span class="params">(<span name="loci">loci: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="contigLengths">contigLengths: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Long">Long</span>]] = <span class="symbol">None</span></span>)</span><span class="result">: <a href="LociSet.html" class="extype" name="org.hammerlab.guacamole.LociSet">LociSet</a></span>
       </span>
       </h4>
       <p class="shortcomment cmt">Return a LociSet parsed from a string representation.</p><div class="fullcomment"><div class="comment cmt"><p>Return a LociSet parsed from a string representation.
 </p></div><dl class="paramcmts block"><dt class="param">loci</dt><dd class="cmt"><p>A string of the form &quot;CONTIG:START-END,CONTIG:START-END,...&quot; where CONTIG is a string giving the
-            contig name, and START and END are integers. Whitespace is ignored.
+            contig name, and START and END are integers. Whitespace is ignored. The :START-END suffix is optional
+            if the contigLengths parameter is specified, and defaults to start=0 end=length of contig - 1.</p></dd><dt class="param">contigLengths</dt><dd class="cmt"><p>Optional map: contig name -&gt; length.</p></dd><dt>returns</dt><dd class="cmt"><p>
 </p></dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
