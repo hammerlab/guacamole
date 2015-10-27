@@ -21,13 +21,7 @@ class DeBruijnGraphSuite extends GuacFunSuite with Matchers {
     val sequence = Bases.stringToBases("TCATCTCAAAAGAGATCGA")
     val graph = DeBruijnGraph(Seq(sequence), kmerSize = 8)
 
-    val firstKmer = "TCATCTCA"
-    val nextKmer = "CATCTCAA"
-    val lastKmer = "GAGATCGA"
-
-    assert(graph.kmerCounts.contains(firstKmer))
-    assert(graph.kmerCounts.contains(nextKmer))
-    assert(graph.kmerCounts.contains(lastKmer))
+    graph.kmerCounts === Map("TCATCTCA" -> 1, "CATCTCAA" -> 1, "GAGATCGA" -> 1)
   }
 
   test("build graph test prefix/suffix") {
@@ -54,13 +48,7 @@ class DeBruijnGraphSuite extends GuacFunSuite with Matchers {
     val sequence = Bases.stringToBases("TCATCTTAAAAGACATAAA")
     val graph = DeBruijnGraph(Seq(sequence), kmerSize = 3)
 
-    val firstKmer = "TCA"
-    val nextKmer = "CAT"
-    val lastKmer = "AAA"
-
-    assert(graph.kmerCounts(firstKmer) === 1)
-    assert(graph.kmerCounts(nextKmer) === 2)
-    assert(graph.kmerCounts(lastKmer) === 3)
+    graph.kmerCounts === Map("TCA" -> 1, "CAT" -> 2, "AAA" -> 3)
   }
 
   test("build graph with short kmers and correct children/parents") {
@@ -91,6 +79,8 @@ class DeBruijnGraphSuite extends GuacFunSuite with Matchers {
     val catChildren = graph.children("CAT")
     TestUtil.assertBases(graph.kmerSuffix("CAT"), "AT")
     catChildren.length should be(2) // CA is the suffix, ATC and ATA are children
+    TestUtil.assertBases(catChildren(0), "ATA")
+    TestUtil.assertBases(catChildren(1), "ATC")
   }
 
   test("build graph with all unique kmers") {
@@ -110,10 +100,10 @@ class DeBruijnGraphSuite extends GuacFunSuite with Matchers {
 
     val firstKmer = "AAAT"
 
-    val merageableForward = graph.mergeForward(firstKmer)
-    merageableForward.size should be(9)
+    val mergeableForward = graph.mergeForward(firstKmer)
+    mergeableForward.size should be(9)
 
-    DeBruijnGraph.mergeKmers(merageableForward.reverse) should be(sequence)
+    DeBruijnGraph.mergeKmers(mergeableForward) should be(sequence)
   }
 
   test("find backward unique path; full graph") {
@@ -121,17 +111,17 @@ class DeBruijnGraphSuite extends GuacFunSuite with Matchers {
     val sequence = "AAATCCCTGGGT"
     val graph = DeBruijnGraph(Seq(Bases.stringToBases(sequence)), kmerSize = 4)
 
-    val firstKmer = "GGGT"
+    val lastKmer = "GGGT"
 
-    val merageableReverse = graph.mergeBackward(firstKmer)
-    merageableReverse.size should be(9)
+    val mergeableReverse = graph.mergeBackward(lastKmer)
+    mergeableReverse.size should be(9)
 
-    val mergedReference: Seq[Byte] = DeBruijnGraph.mergeKmers(merageableReverse)
+    val mergedReference: Seq[Byte] = DeBruijnGraph.mergeKmers(mergeableReverse)
 
     TestUtil.assertBases(mergedReference, sequence)
   }
 
-  test("find forward unique path; with bubble") {
+  test("find forward unique path; with bubble at end") {
 
     val sequence = "AAATCCCTGGGT"
     val variantSequence = "AAATCCCTGGAT"
@@ -143,9 +133,9 @@ class DeBruijnGraphSuite extends GuacFunSuite with Matchers {
 
     val firstKmer = "AAAT"
 
-    val merageableForward = graph.mergeForward(firstKmer)
-    merageableForward.size should be(7)
-    TestUtil.assertBases(DeBruijnGraph.mergeKmers(merageableForward.reverse), "AAATCCCTGG")
+    val mergeableForward = graph.mergeForward(firstKmer)
+    mergeableForward.size should be(7)
+    TestUtil.assertBases(DeBruijnGraph.mergeKmers(mergeableForward), "AAATCCCTGG")
   }
 
   test("find forward unique path; with bubble in middle") {
@@ -160,9 +150,9 @@ class DeBruijnGraphSuite extends GuacFunSuite with Matchers {
 
     val firstKmer = "AAAT"
 
-    val merageableForward = graph.mergeForward(firstKmer)
-    merageableForward.size should be(2)
-    TestUtil.assertBases(DeBruijnGraph.mergeKmers(merageableForward.reverse), "AAATC")
+    val mergeableForward = graph.mergeForward(firstKmer)
+    mergeableForward.size should be(2)
+    TestUtil.assertBases(DeBruijnGraph.mergeKmers(mergeableForward), "AAATC")
   }
 
   test("find forward unique path; with bubble in first kmer") {
@@ -173,12 +163,12 @@ class DeBruijnGraphSuite extends GuacFunSuite with Matchers {
 
     val firstKmer = "AAAT"
 
-    val merageableForward = graph.mergeForward(firstKmer)
-    merageableForward.size should be(2)
-    TestUtil.assertBases(DeBruijnGraph.mergeKmers(merageableForward.reverse), "AAATC")
+    val mergeableForward = graph.mergeForward(firstKmer)
+    mergeableForward.size should be(2)
+    TestUtil.assertBases(DeBruijnGraph.mergeKmers(mergeableForward), "AAATC")
   }
 
-  test("find backward unique path; with bubble") {
+  test("find backward unique path; with bubble at end") {
 
     val sequence = "AAATCCCTGGGT"
     val variantSequence = "AAATCCCTGGAT"
@@ -186,14 +176,14 @@ class DeBruijnGraphSuite extends GuacFunSuite with Matchers {
 
     val seq1End = "GGGT"
 
-    val seq1MerageableReverse = graph.mergeBackward(seq1End)
-    seq1MerageableReverse.size should be(2)
-    TestUtil.assertBases(DeBruijnGraph.mergeKmers(seq1MerageableReverse), "TGGGT")
+    val seq1mergeableReverse = graph.mergeBackward(seq1End)
+    seq1mergeableReverse.size should be(2)
+    TestUtil.assertBases(DeBruijnGraph.mergeKmers(seq1mergeableReverse), "TGGGT")
 
     val seq2End = "GGAT"
-    val seq2MerageableReverse = graph.mergeBackward(seq2End)
-    seq2MerageableReverse.size should be(2)
-    TestUtil.assertBases(DeBruijnGraph.mergeKmers(seq2MerageableReverse), "TGGAT")
+    val seq2mergeableReverse = graph.mergeBackward(seq2End)
+    seq2mergeableReverse.size should be(2)
+    TestUtil.assertBases(DeBruijnGraph.mergeKmers(seq2mergeableReverse), "TGGAT")
 
   }
 
@@ -203,11 +193,11 @@ class DeBruijnGraphSuite extends GuacFunSuite with Matchers {
     val variantSequence = "AAATCGCTGGGT"
     val graph = DeBruijnGraph(Seq(sequence, variantSequence), kmerSize = 4)
 
-    val firstKmer = "AAAT"
+    val lastKmer = "GGGT"
 
-    val merageableForward = graph.mergeForward(firstKmer)
-    merageableForward.size should be(2)
-    TestUtil.assertBases(DeBruijnGraph.mergeKmers(merageableForward.reverse), "AAATC")
+    val mergeableReverse = graph.mergeBackward(lastKmer)
+    mergeableReverse.size should be(3)
+    TestUtil.assertBases(DeBruijnGraph.mergeKmers(mergeableReverse), "CTGGGT")
   }
 
   test("test merge nodes; full graph") {
@@ -236,11 +226,7 @@ class DeBruijnGraphSuite extends GuacFunSuite with Matchers {
     graph.mergeNodes()
     graph.kmerCounts.keys.size should be(3)
 
-    assert(graph.kmerCounts.contains("AAATCCCTGG"))
-
-    assert(graph.kmerCounts.contains("TGGGT"))
-    assert(graph.kmerCounts.contains("TGGAT"))
-
+    graph.kmerCounts === Map("AAATCCCTGG" -> 1, "TGGGT" -> 1, "TGGAT" -> 1)
   }
 
   test("find single unique path in sequence") {
@@ -273,12 +259,12 @@ class DeBruijnGraphSuite extends GuacFunSuite with Matchers {
     val paths = graph.depthFirstSearch(referenceKmerSource, referenceKmerSink)
 
     paths.length should be(1)
-    TestUtil.assertBases(DeBruijnGraph.mergeKmers(paths(0).reverse), reference)
+    TestUtil.assertBases(DeBruijnGraph.mergeKmers(paths(0)), reference)
 
     graph.mergeNodes()
     val pathsAfterMerging = graph.depthFirstSearch(referenceKmerSource, referenceKmerSink)
     pathsAfterMerging.length should be(1)
-    TestUtil.assertBases(DeBruijnGraph.mergeKmers(pathsAfterMerging(0).reverse), reference)
+    TestUtil.assertBases(DeBruijnGraph.mergeKmers(pathsAfterMerging(0)), reference)
 
   }
 
@@ -301,10 +287,8 @@ class DeBruijnGraphSuite extends GuacFunSuite with Matchers {
     val referenceKmerSource = reference.take(kmerSize)
     val referenceKmerSink = reference.takeRight(kmerSize)
 
-    println(snpReads.length)
-
     val currentGraph: DeBruijnGraph = DeBruijnGraph(
-      snpReads.map(read => read.sequence),
+      snpReads.map(_.sequence),
       kmerSize,
       minOccurrence = 1,
       mergeNodes = false
