@@ -4193,20 +4193,7 @@
           14
         </td>
         <td>
-          3679
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(3678, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ReferenceBroadcast.this.broadcastedContigs.apply(contigName).value}
-        </td>
-      </tr><tr>
-        <td>
-          14
-        </td>
-        <td>
-          3678
+          3872
         </td>
         <td>
           org.apache.spark.broadcast.Broadcast.value
@@ -4216,23 +4203,36 @@
         </td>
       </tr><tr>
         <td>
-          16
+          14
         </td>
         <td>
-          3681
+          3873
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(3680, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  throw new ContigNotFound(contigName, ReferenceBroadcast.this.broadcastedContigs.keys)}
+          {  scoverage.Invoker.invoked(3872, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ReferenceBroadcast.this.broadcastedContigs.apply(contigName).value}
         </td>
       </tr><tr>
         <td>
           16
         </td>
         <td>
-          3680
+          3875
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  scoverage.Invoker.invoked(3874, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  throw new ContigNotFound(contigName, ReferenceBroadcast.this.broadcastedContigs.keys)}
+        </td>
+      </tr><tr>
+        <td>
+          16
+        </td>
+        <td>
+          3874
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -4245,7 +4245,7 @@
           21
         </td>
         <td>
-          3682
+          3876
         </td>
         <td>
           scala.Array.apply
@@ -4258,7 +4258,7 @@
           25
         </td>
         <td>
-          3683
+          3877
         </td>
         <td>
           scala.collection.IndexedSeqOptimized.slice
@@ -4271,7 +4271,7 @@
           40
         </td>
         <td>
-          3684
+          3878
         </td>
         <td>
           htsjdk.samtools.reference.FastaSequenceFile.&lt;init&gt;
@@ -4284,7 +4284,7 @@
           41
         </td>
         <td>
-          3685
+          3879
         </td>
         <td>
           htsjdk.samtools.reference.FastaSequenceFile.nextSequence
@@ -4297,7 +4297,7 @@
           42
         </td>
         <td>
-          3686
+          3880
         </td>
         <td>
           scala.collection.generic.GenMapFactory.newBuilder
@@ -4310,46 +4310,7 @@
           43
         </td>
         <td>
-          3695
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          {  {    val sequenceName: String = {      scoverage.Invoker.invoked(3688, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      nextSequence.getName()    };    val sequence: Array[Byte] = {      scoverage.Invoker.invoked(3689, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      nextSequence.getBases()    };    val broadcastedSequence: org.apache.spark.broadcast.Broadcast[Array[Byte]] = {      scoverage.Invoker.invoked(3690, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      sc.broadcast[Array[Byte]](sequence)(ClassTag.apply[Array[Byte]](ScalaRunTime.this.arrayClass(classOf[scala.Byte])))    };    {      scoverage.Invoker.invoked(3692, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      broadcastedSequences.+=({        scoverage.Invoker.invoked(3691, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        scala.Tuple2.apply[String, org.apache.spark.broadcast.Broadcast[Array[Byte]]](sequenceName, broadcastedSequence)      })    };    nextSequence = {      scoverage.Invoker.invoked(3693, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      referenceFasta.nextSequence()    }  };  {    scoverage.Invoker.invoked(3694, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    while$1()  }}
-        </td>
-      </tr><tr>
-        <td>
-          43
-        </td>
-        <td>
-          3697
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(3696, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
-        </td>
-      </tr><tr>
-        <td>
-          43
-        </td>
-        <td>
-          3694
-        </td>
-        <td>
-          org.hammerlab.guacamole.reference.ReferenceBroadcast.while$1
-        </td>
-        <td style="background: #F0ADAD">
-          while$1()
-        </td>
-      </tr><tr>
-        <td>
-          43
-        </td>
-        <td>
-          3687
+          3881
         </td>
         <td>
           java.lang.Object.!=
@@ -4362,7 +4323,7 @@
           43
         </td>
         <td>
-          3696
+          3890
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -4372,10 +4333,49 @@
         </td>
       </tr><tr>
         <td>
+          43
+        </td>
+        <td>
+          3889
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  {    val sequenceName: String = {      scoverage.Invoker.invoked(3882, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      nextSequence.getName()    };    val sequence: Array[Byte] = {      scoverage.Invoker.invoked(3883, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      nextSequence.getBases()    };    val broadcastedSequence: org.apache.spark.broadcast.Broadcast[Array[Byte]] = {      scoverage.Invoker.invoked(3884, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      sc.broadcast[Array[Byte]](sequence)(ClassTag.apply[Array[Byte]](ScalaRunTime.this.arrayClass(classOf[scala.Byte])))    };    {      scoverage.Invoker.invoked(3886, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      broadcastedSequences.+=({        scoverage.Invoker.invoked(3885, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        scala.Tuple2.apply[String, org.apache.spark.broadcast.Broadcast[Array[Byte]]](sequenceName, broadcastedSequence)      })    };    nextSequence = {      scoverage.Invoker.invoked(3887, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      referenceFasta.nextSequence()    }  };  {    scoverage.Invoker.invoked(3888, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    while$1()  }}
+        </td>
+      </tr><tr>
+        <td>
+          43
+        </td>
+        <td>
+          3891
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  scoverage.Invoker.invoked(3890, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
+        </td>
+      </tr><tr>
+        <td>
+          43
+        </td>
+        <td>
+          3888
+        </td>
+        <td>
+          org.hammerlab.guacamole.reference.ReferenceBroadcast.while$1
+        </td>
+        <td style="background: #F0ADAD">
+          while$1()
+        </td>
+      </tr><tr>
+        <td>
           44
         </td>
         <td>
-          3688
+          3882
         </td>
         <td>
           htsjdk.samtools.reference.ReferenceSequence.getName
@@ -4388,7 +4388,7 @@
           45
         </td>
         <td>
-          3689
+          3883
         </td>
         <td>
           htsjdk.samtools.reference.ReferenceSequence.getBases
@@ -4401,7 +4401,7 @@
           46
         </td>
         <td>
-          3690
+          3884
         </td>
         <td>
           org.apache.spark.SparkContext.broadcast
@@ -4414,20 +4414,20 @@
           48
         </td>
         <td>
-          3692
+          3886
         </td>
         <td>
           scala.collection.mutable.Builder.+=
         </td>
         <td style="background: #F0ADAD">
-          broadcastedSequences.+=({  scoverage.Invoker.invoked(3691, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.Tuple2.apply[String, org.apache.spark.broadcast.Broadcast[Array[Byte]]](sequenceName, broadcastedSequence)})
+          broadcastedSequences.+=({  scoverage.Invoker.invoked(3885, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.Tuple2.apply[String, org.apache.spark.broadcast.Broadcast[Array[Byte]]](sequenceName, broadcastedSequence)})
         </td>
       </tr><tr>
         <td>
           48
         </td>
         <td>
-          3691
+          3885
         </td>
         <td>
           scala.Tuple2.apply
@@ -4440,7 +4440,7 @@
           50
         </td>
         <td>
-          3693
+          3887
         </td>
         <td>
           htsjdk.samtools.reference.FastaSequenceFile.nextSequence
@@ -4453,20 +4453,20 @@
           53
         </td>
         <td>
-          3699
+          3893
         </td>
         <td>
           org.hammerlab.guacamole.reference.ReferenceBroadcast.apply
         </td>
         <td style="background: #F0ADAD">
-          ReferenceBroadcast.apply({  scoverage.Invoker.invoked(3698, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  broadcastedSequences.result()})
+          ReferenceBroadcast.apply({  scoverage.Invoker.invoked(3892, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  broadcastedSequences.result()})
         </td>
       </tr><tr>
         <td>
           53
         </td>
         <td>
-          3698
+          3892
         </td>
         <td>
           scala.collection.mutable.Builder.result
