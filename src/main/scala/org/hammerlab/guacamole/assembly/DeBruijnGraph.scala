@@ -9,6 +9,7 @@ class DeBruijnGraph(val kmerSize: Int,
 
   type Kmer = Seq[Byte] // Sequence of length `kmerSize`
   type SubKmer = Seq[Byte] // Sequence of bases < `kmerSize`
+  type Sequence = Seq[Byte]
 
   // Table to store prefix to kmers that share that prefix
   val prefixTable: mutable.Map[SubKmer, List[Kmer]] =
@@ -30,9 +31,10 @@ class DeBruijnGraph(val kmerSize: Int,
         .toSeq: _*
     )
 
-  // Table to store kmers and what they have been merged into
-  // The value is the original kmer and the index of the key in that kmer
-  val mergeIndex: mutable.Map[Kmer, (Int, Kmer)] = mutable.Map.empty
+  //  Map from kmers to the sequence they were merged in to.
+  //  The value is the merged sequence and the index in that sequence 
+  // at which the "key" kmer occurs.
+  val mergeIndex: mutable.Map[Kmer, (Sequence, Int)] = mutable.Map.empty
 
   @inline
   private[assembly] def kmerPrefix(seq: Kmer): SubKmer = {
@@ -53,7 +55,7 @@ class DeBruijnGraph(val kmerSize: Int,
     kmerCounts.remove(kmer)
     def removeFromTable(kmer: Kmer,
                         table: mutable.Map[Kmer, List[Kmer]],
-                        keyFunc: Kmer => Kmer) = {
+                        keyFunc: Kmer => SubKmer) = {
       val key = keyFunc(kmer)
       val otherNodes = table(key).filterNot(_ == kmer)
       if (otherNodes.nonEmpty) {
@@ -88,7 +90,7 @@ class DeBruijnGraph(val kmerSize: Int,
       val node = allNodes.head
       val forwardUniquePath = mergeForward(node)
       val backwardUniquePath = mergeBackward(node)
-      val fullMergeablePath = backwardUniquePath ++ forwardUniquePath.reverse.tail
+      val fullMergeablePath = backwardUniquePath ++ forwardUniquePath.tail
 
       if (fullMergeablePath.length > 1) {
         // Remove everything in the merged path from the prefix/suffix tables
@@ -102,7 +104,7 @@ class DeBruijnGraph(val kmerSize: Int,
 
         // Save each node that was merged
         fullMergeablePath.zipWithIndex.foreach({
-          case (nodeElement, index) => mergeIndex.update(nodeElement, (index, mergedNode))
+          case (nodeElement, index) => mergeIndex.update(nodeElement, (mergedNode, index))
         })
 
         // Update the prefix and suffix tables
@@ -156,7 +158,7 @@ class DeBruijnGraph(val kmerSize: Int,
     mergeable
   }
 
-  private[assembly] def mergeForward(kmer: Kmer) = findMergeable(kmer, searchForward = true)
+  private[assembly] def mergeForward(kmer: Kmer) = findMergeable(kmer, searchForward = true).reverse
   private[assembly] def mergeBackward(kmer: Kmer) = findMergeable(kmer, searchForward = false)
 
   type Path = List[Kmer]
@@ -186,7 +188,7 @@ class DeBruijnGraph(val kmerSize: Int,
     // Add the source node to the frontier
     var frontier: mutable.Stack[Kmer] =
       if (mergeIndex.contains(source)) {
-        val (pathIndex, mergedNode) = mergeIndex(source)
+        val (mergedNode, pathIndex) = mergeIndex(source)
         mutable.Stack(mergedNode.drop(pathIndex))
       } else {
         mutable.Stack(source)
@@ -196,6 +198,8 @@ class DeBruijnGraph(val kmerSize: Int,
 
     // Initialize an empty path
     var currentPath: Path = List.empty
+
+    val nodeContainingSink = mergeIndex.get(sink)
 
     // explore branches until we find the sink
     // or accumulate the maximum number of appropriate length paths
@@ -207,7 +211,7 @@ class DeBruijnGraph(val kmerSize: Int,
       visited += next
 
       // Check if the source node was merged into the current one
-      lazy val foundMergedSink = mergeIndex.get(sink).exists(_._2 == next)
+      lazy val foundMergedSink = nodeContainingSink.exists(_._1 == next)
       val foundSink = (next == sink || foundMergedSink)
       if (!foundSink && currentPath.size < maxPathLength) {
         // Keep searching down tree
@@ -220,12 +224,12 @@ class DeBruijnGraph(val kmerSize: Int,
 
           // Trim merged node if the sink is inside of it
           if (foundMergedSink) {
-            val (mergedPathIdx, mergedNode) = mergeIndex(sink)
+            val (mergedNode, mergedPathIdx) = mergeIndex(sink)
             val mergedPathEndIdx = mergedPathIdx + kmerSize
             currentPath = currentPath.head.dropRight(mergedNode.length - mergedPathEndIdx) :: currentPath.tail
           }
           // Found legitimate path to sink, save path
-          paths = (currentPath) :: paths
+          paths = (currentPath.reverse) :: paths
         } // else degenerate path, too long or too short
         currentPath = List.empty
       }
@@ -262,8 +266,8 @@ class DeBruijnGraph(val kmerSize: Int,
 }
 
 object DeBruijnGraph {
-  type Sequence = Seq[Byte]
-  type Kmer = Seq[Byte]
+  type Sequence = DeBruijnGraph#Sequence
+  type Kmer = DeBruijnGraph#Kmer
   def apply(sequences: Seq[Sequence],
             kmerSize: Int,
             minOccurrence: Int = 1,
@@ -295,5 +299,4 @@ object DeBruijnGraph {
     head ++ rest
   }
 
-  type Sequences = Seq[String]
 }
