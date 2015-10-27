@@ -19,7 +19,7 @@ import org.kohsuke.args4j.{ Argument, Option => Args4jOption }
  * @param locus Position of non-reference alleles
  * @param variantAlleleFrequency Frequency of non-reference alleles
  */
-case class VariantLocus(locus: Long, variantAlleleFrequency: Float)
+case class VariantLocus(contig: String, locus: Long, variantAlleleFrequency: Float)
 
 object VariantLocus {
 
@@ -30,7 +30,8 @@ object VariantLocus {
    */
   def apply(pileup: Pileup): Option[VariantLocus] = {
     if (pileup.referenceDepth != pileup.depth) {
-      Some(VariantLocus(pileup.locus, (pileup.depth - pileup.referenceDepth).toFloat / pileup.depth))
+      val contig = pileup.elements.head.read.referenceContig
+      Some(VariantLocus(contig, pileup.locus, (pileup.depth - pileup.referenceDepth).toFloat / pileup.depth))
     } else {
       None
     }
