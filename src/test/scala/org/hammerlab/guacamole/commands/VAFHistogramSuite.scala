@@ -8,11 +8,11 @@ class VAFHistogramSuite extends GuacFunSuite with Matchers {
   sparkTest("generating the histogram") {
 
     val loci = sc.parallelize(Seq(
-      VariantLocus(1L, 0.25f),
-      VariantLocus(2L, 0.35f),
-      VariantLocus(3L, 0.4f),
-      VariantLocus(4L, 0.5f),
-      VariantLocus(5L, 0.55f)
+      VariantLocus("chr1", 1L, 0.25f),
+      VariantLocus("chr1", 2L, 0.35f),
+      VariantLocus("chr1", 3L, 0.4f),
+      VariantLocus("chr1", 4L, 0.5f),
+      VariantLocus("chr1", 5L, 0.55f)
     ))
 
     val tensHistogram = VAFHistogram.generateVAFHistogram(loci, 10)

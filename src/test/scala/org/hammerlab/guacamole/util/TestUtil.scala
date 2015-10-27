@@ -166,20 +166,13 @@ object TestUtil extends Matchers {
       mate = mate)
   }
 
+  def assertBases(bases1: String, bases2: String) = bases1 should equal(bases2)
   def assertBases(bases1: Iterable[Byte], bases2: String) = Bases.basesToString(bases1) should equal(bases2)
 
   def testDataPath(filename: String): String = {
     val resource = ClassLoader.getSystemClassLoader.getResource(filename)
     if (resource == null) throw new RuntimeException("No such test data file: %s".format(filename))
     resource.getFile
-  }
-
-  def loadReads(sc: SparkContext, filename: String): ReadSet = {
-    /* grab the path to the SAM file we've stashed in the resources subdirectory */
-    val path = testDataPath(filename)
-    assert(sc != null)
-    assert(sc.hadoopConfiguration != null)
-    ReadSet(sc, path, requireMDTagsOnMappedReads = false)
   }
 
   def loadTumorNormalReads(sc: SparkContext,
