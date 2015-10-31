@@ -446,7 +446,7 @@ object Read extends Logging {
       )
       else
         None
-      PairedRead(read, isFirstInPair = alignmentRecord.getFirstOfPair, mateAlignment)
+      PairedRead(read, isFirstInPair = alignmentRecord.getReadNum == 1, mateAlignment)
     } else {
       read
     }
