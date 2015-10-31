@@ -18,12 +18,11 @@
 
 package org.hammerlab.guacamole.pileup
 
-import org.hammerlab.guacamole.commands.SomaticStandard
-import org.hammerlab.guacamole.util.{ TestUtil, GuacFunSuite }
-import TestUtil.Implicits._
-import TestUtil.assertBases
-import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.Bases
+import org.hammerlab.guacamole.reads.MappedRead
+import org.hammerlab.guacamole.util.TestUtil.Implicits._
+import org.hammerlab.guacamole.util.TestUtil.assertBases
+import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
 import org.hammerlab.guacamole.variants.Allele
 import org.scalatest.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks
@@ -375,28 +374,6 @@ class PileupSuite extends GuacFunSuite with Matchers with TableDrivenPropertyChe
     assertBases(advancePileupElement(read7At40, 48).sequencedBases, "T")
     intercept[AssertionError] {
       advancePileupElement(read7At40, 49).sequencedBases
-    }
-  }
-
-  sparkTest("Read8: ACGTACGT 4=1P4=") {
-
-    // Read8: ACGTACGT 4=1P4=
-    // one `P`, a silent deletion (i.e. a deletion from a reference with a
-    // virtual insertion)
-    // 4=1P4= should be equivalent to 8=
-    val decadentRead8 = testAdamRecords(7)
-    val read8At40 = pileupElementFromRead(decadentRead8, 40)
-    assert(read8At40 != null)
-    assertBases(advancePileupElement(read8At40, 40).sequencedBases, "A")
-    assertBases(advancePileupElement(read8At40, 41).sequencedBases, "C")
-    assertBases(advancePileupElement(read8At40, 42).sequencedBases, "G")
-    assertBases(advancePileupElement(read8At40, 43).sequencedBases, "T")
-    assertBases(advancePileupElement(read8At40, 44).sequencedBases, "A")
-    assertBases(advancePileupElement(read8At40, 45).sequencedBases, "C")
-    assertBases(advancePileupElement(read8At40, 46).sequencedBases, "G")
-    assertBases(advancePileupElement(read8At40, 47).sequencedBases, "T")
-    intercept[RuntimeException] {
-      advancePileupElement(read8At40, 48).sequencedBases
     }
   }
 
