@@ -126,7 +126,7 @@ object MappedRead {
     isPaired: Boolean)(implicit d: DummyImplicit): MappedRead = MappedRead(
     token, sequence, baseQualities, isDuplicate, sampleName, referenceContig,
     alignmentQuality, start, cigar,
-    mdTagString.map(MdTag(_, start)),
+    mdTagString.map(MdTag(_, start, cigar)),
     failedVendorQualityChecks, isPositiveStrand, isPaired)
 }
 

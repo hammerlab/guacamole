@@ -226,7 +226,9 @@ class MDTagUtilsSuite extends FunSuite with Matchers {
     reference.size should be(referenceLength)
     Bases.basesToString(reference.slice(0, 7).toSeq) should be("CCCCAGC")
     (Bases.basesToString(reference.slice(referenceLength - 43, referenceLength).toSeq)
-      should be("CTAGGCCTTCGACACTGGGGGGCTGAGGGAAGGGGCACCTGCC"))
+      // seq: CT[A]GGCCTTCGACACTGGGGGGCTGAG[G]GAAGGGG[C]ACCTGCC
+      // ref: CT[T]GGCCTTCGACACTGGGGGGCTGAG[T]GAAGGGG[G]ACCTGCC
+      should be("CTTGGCCTTCGACACTGGGGGGCTGAGTGAAGGGGGACCTGCC"))
 
   }
 
