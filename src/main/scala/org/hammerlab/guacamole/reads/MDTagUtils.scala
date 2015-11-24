@@ -118,7 +118,8 @@ object MDTagUtils {
     while (readsBuffer.hasNext && currentLocus < referenceEnd) {
       val read = readsBuffer.next()
       // assume reads are sorted
-      assume(read.start >= lastReadStart)
+      assume(read.start >= lastReadStart,
+        s"Reads are not sorted, last read start was $lastReadStart and the current read starts at ${read.start}")
 
       // Pad with N's if currentLocus is earlier than the next read
       if (currentLocus < read.start) {
