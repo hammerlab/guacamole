@@ -54,7 +54,7 @@ object GermlineStandard {
       Common.progress(
         "Loaded %,d mapped non-duplicate reads into %,d partitions.".format(readSet.mappedReads.count, readSet.mappedReads.partitions.length))
 
-      val loci = Common.loci(args, readSet)
+      val loci = Common.loci(args).result(readSet.contigLengths)
       val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(args, loci, readSet.mappedReads)
 
       val minAlignmentQuality = args.minAlignmentQuality
