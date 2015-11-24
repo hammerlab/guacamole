@@ -92,7 +92,7 @@ object SomaticStandard {
 
       val oddsThreshold = args.oddsThreshold
 
-      val loci = Common.loci(args, normalReads)
+      val loci = Common.loci(args).result(normalReads.contigLengths)
       val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(
         args,
         loci,

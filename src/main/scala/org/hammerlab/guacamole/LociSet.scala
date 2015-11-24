@@ -22,6 +22,8 @@ import com.esotericsoftware.kryo.{ Serializer, Kryo }
 import com.esotericsoftware.kryo.io.{ Input, Output }
 import org.hammerlab.guacamole.LociMap.SimpleRange
 
+import scala.collection.mutable.ArrayBuffer
+
 /**
  * An immutable collection of genomic regions on any number of contigs.
  *
@@ -103,33 +105,93 @@ object LociSet {
    * Class for constructing a LociSet.
    */
   class Builder {
-    val wrapped = new LociMap.Builder[Long]
+    var fullyResolved = true
+
+    // include all contigs
+    private var allContigs = false
+
+    // (contig, start). The end will be the length of the given contig.
+    private val ranges = ArrayBuffer.newBuilder[(String, Long, Long)]
+
+    def putAllContigs(): Unit = {
+      allContigs = true
+      fullyResolved = false
+    }
 
     /**
      * Add an interval to the LociSet under construction.
      */
-    def put(contig: String, start: Long, end: Long): Builder = {
-      wrapped.put(contig, start, end, 0)
+    def put(contig: String, start: Long = 0, end: Long = -1): Builder = {
+      if (!allContigs) {
+        ranges += ((contig, start, end))
+        if (end == -1) {
+          fullyResolved = false
+        }
+      }
       this
     }
 
-    /**
-     * Add an entire other LociSet to the LociSet under construction.
-     */
-    def put(lociSet: LociSet): Builder = {
-      wrapped.put(lociSet, 0)
+    def putExpression(loci: String): Builder = {
+      if (loci == "all") {
+        putAllContigs()
+      } else {
+        val contigAndLoci = """^([\pL\pN._]+):(\pN+)-(\pN+)$""".r
+        val contigOnly = """^([\pL\pN._]+)""".r
+        val sets = loci.replaceAll("\\s", "").split(',').foreach({
+          case ""                              => {}
+          case contigAndLoci(name, start, end) => put(name, start.toLong, end.toLong)
+          case contigOnly(contig)              => put(contig)
+          case other => {
+            throw new IllegalArgumentException("Couldn't parse loci range: %s".format(other))
+          }
+        })
+      }
       this
     }
 
     /**
      * Build the result.
      */
-    def result(): LociSet = LociSet(wrapped.result)
+    def result(contigLengths: Option[Map[String, Long]] = None): LociSet = {
+      assume(contigLengths.nonEmpty || fullyResolved)
+      val wrapped = new LociMap.Builder[Long]
+      val rangesResult = ranges.result
+
+      // Check for invalid contigs.
+      if (contigLengths.nonEmpty) {
+        rangesResult.foreach({
+          case (contig, start, end) => contigLengths.get.get(contig) match {
+            case None => throw new IllegalArgumentException("No such contig: %s".format(contig))
+            case Some(contigLength) if end > contigLength =>
+              throw new IllegalArgumentException(
+                "Invalid range %d-%d for contig '%s' which has length %d".format(
+                  start, end, contig, contigLength))
+            case _ => {}
+          }
+        })
+      }
+      if (allContigs) {
+        contigLengths.get.foreach(
+          contigAndLength => wrapped.put(contigAndLength._1, 0, contigAndLength._2 - 1, 0))
+      } else {
+        rangesResult.foreach({
+          case (contig, start, end) => {
+            val resolvedEnd = if (end != -1) end else contigLengths.get.apply(contig)
+            wrapped.put(contig, start, resolvedEnd, 0)
+          }
+        })
+      }
+      LociSet(wrapped.result)
+    }
+
+    /* Convenience wrappers. */
+    def result: LociSet = result(None) // enables omitting parentheses: builder.result instead of builder.result()
+    def result(contigLengths: Map[String, Long]): LociSet = result(Some(contigLengths))
   }
 
   /** Return a LociSet of a single genomic interval. */
   def apply(contig: String, start: Long, end: Long): LociSet = {
-    (new Builder).put(contig, start, end).result
+    (new Builder).put(contig, start, end).result()
   }
 
   /**
@@ -141,54 +203,17 @@ object LociSet {
    * @param contigLengths Optional map: contig name -> length.
    * @return
    */
-  def parse(loci: String, contigLengths: Option[Map[String, Long]] = None): LociSet = {
-    def maybeCheckContigIsValid(contig: String): Unit = contigLengths match {
-      case Some(map) if (!map.contains(contig)) =>
-        throw new IllegalArgumentException("No such contig: '%s'.".format(contig))
-      case _ => {}
-    }
-
-    if (loci == "all") {
-      contigLengths match {
-        case None => throw new IllegalArgumentException("Specifying loci 'all' requires providing contigLengths")
-        case Some(map) => {
-          val builder = LociSet.newBuilder
-          map.foreach(contigNameAndLength => builder.put(contigNameAndLength._1, 0L, contigNameAndLength._2))
-          builder.result
-        }
-      }
-    } else {
-      val contigAndLoci = """^([\pL\pN._]+):(\pN+)-(\pN+)$""".r
-      val contigOnly = """^([\pL\pN._]+)""".r
-      val sets = loci.replaceAll("\\s", "").split(',').map({
-        case "" => LociSet.empty
-        case contigAndLoci(name, start, end) => {
-          maybeCheckContigIsValid(name)
-          LociSet(name, start.toLong, end.toLong)
-        }
-        case contigOnly(contig) => contigLengths match {
-          case None =>
-            throw new IllegalArgumentException(
-              "Specifying a contig ('%s') without a loci range requires providing contigLengths".format(contig))
-          case Some(map) => {
-            maybeCheckContigIsValid(contig)
-            LociSet(contig, 0L, map(contig))
-          }
-        }
-        case other =>
-          throw new IllegalArgumentException("Couldn't parse loci range: %s".format(other))
-      })
-      union(sets: _*)
-    }
+  def parse(loci: String): LociSet.Builder = {
+    LociSet.newBuilder.putExpression(loci)
   }
 
   /** Returns union of specified [[LociSet]] instances. */
   def union(lociSets: LociSet*): LociSet = {
-    val result = LociSet.newBuilder
+    val wrapped = LociMap.newBuilder[Long]
     lociSets.foreach(lociSet => {
-      result.put(lociSet)
+      wrapped.put(lociSet, 0)
     })
-    result.result
+    LociSet(wrapped.result)
   }
 
   /**

@@ -64,7 +64,7 @@ object GermlineThreshold {
       Common.progress("Loaded %,d mapped non-duplicate MdTag-containing reads into %,d partitions.".format(
         readSet.mappedReads.count, readSet.mappedReads.partitions.length))
 
-      val loci = Common.loci(args, readSet)
+      val loci = Common.loci(args).result(readSet.contigLengths)
       val (threshold, emitRef, emitNoCall) = (args.threshold, args.emitRef, args.emitNoCall)
       val numGenotypes = sc.accumulator(0L)
       DelayedMessages.default.say { () => "Called %,d genotypes.".format(numGenotypes.value) }

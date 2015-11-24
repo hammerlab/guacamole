@@ -184,7 +184,7 @@ object Common extends Logging {
    * @param args parsed arguments
    * @param readSet readSet from which to use to get contigs and lengths.
    */
-  def loci(args: Arguments.Loci, readSet: ReadSet): LociSet = {
+  def loci(args: Arguments.Loci): LociSet.Builder = {
     if (args.loci.nonEmpty && args.lociFromFile.nonEmpty) {
       throw new IllegalArgumentException("Specify at most one of the 'loci' and 'loci-from-file' arguments")
     }
@@ -199,13 +199,7 @@ object Common extends Logging {
       // Default is "all"
       "all"
     }
-
-    val result = LociSet.parse(lociToParse, Some(readSet.contigLengths))
-    progress("Including %,d loci across %,d contig(s): %s".format(
-      result.count,
-      result.contigs.length,
-      result.truncatedString()))
-    result
+    LociSet.parse(lociToParse)
   }
 
   /**
