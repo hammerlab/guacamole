@@ -180,8 +180,8 @@ class DeBruijnGraph(val kmerSize: Int,
                        maxPaths: Int = 10,
                        avoidLoops: Boolean = true): List[(Path)] = {
 
-    assume(source.length == kmerSize)
-    assume(sink.length == kmerSize)
+    assume(source.length == kmerSize, s"Source kmer ${Bases.basesToString(source)} has a size != $kmerSize")
+    assume(sink.length == kmerSize, s"Sink kmer ${Bases.basesToString(sink)} has a size != $kmerSize")
 
     var paths = List.empty[(Path)]
 
