@@ -30,7 +30,7 @@ import org.kohsuke.args4j.{ Argument, Option => Args4jOption }
 
 object VariantSupport {
 
-  protected class Arguments extends DistributedUtil.Arguments {
+  protected class Arguments extends DistributedUtil.Arguments with Common.Arguments.ReadLoadingConfigArgs {
     @Args4jOption(name = "--input-variant", required = true, aliases = Array("-v"),
       usage = "")
     var variants: String = ""
@@ -75,7 +75,8 @@ object VariantSupport {
             InputFilters.empty,
             token = bamFile._2,
             contigLengthsFromDictionary = false,
-            referenceGenome = None
+            referenceGenome = None,
+            config = Common.Arguments.ReadLoadingConfigArgs.fromArguments(args)
           ).mappedReads
       )
 
