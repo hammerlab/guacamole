@@ -41,7 +41,7 @@ object VariantLocus {
 
 object VAFHistogram {
 
-  protected class Arguments extends DistributedUtil.Arguments {
+  protected class Arguments extends DistributedUtil.Arguments with Common.Arguments.ReadLoadingConfigArgs {
 
     @Args4jOption(name = "--out", required = false, forbids = Array("--local-out"),
       usage = "HDFS file path to save the variant allele frequency histogram")
@@ -104,7 +104,8 @@ object VAFHistogram {
             InputFilters.empty,
             token = bamFile._2,
             contigLengthsFromDictionary = true,
-            referenceGenome = None
+            referenceGenome = None,
+            config = Common.Arguments.ReadLoadingConfigArgs.fromArguments(args)
           )
       )
 
