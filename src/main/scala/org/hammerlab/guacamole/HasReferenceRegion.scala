@@ -42,7 +42,8 @@ trait HasReferenceRegion {
    * included any of these three positions: locus - 1, locus, and locus + 1.
    */
   def overlapsLociSet(loci: LociSet, halfWindowSize: Long = 0): Boolean = {
-    loci.onContig(referenceContig).intersects(math.max(0, start - halfWindowSize), end + halfWindowSize)
+    val contigRanges = loci.onContig(referenceContig)
+    contigRanges.contains(start) || contigRanges.intersects(math.max(0, start - halfWindowSize), end + halfWindowSize)
   }
 
   /**

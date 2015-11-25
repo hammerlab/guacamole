@@ -108,21 +108,24 @@ object LociSet {
     var fullyResolved = true
 
     // include all contigs
-    private var allContigs = false
+    var containsAll = false
 
     // (contig, start). The end will be the length of the given contig.
     private val ranges = ArrayBuffer.newBuilder[(String, Long, Long)]
 
-    def putAllContigs(): Unit = {
-      allContigs = true
+    def putAllContigs(): Builder = {
+      containsAll = true
       fullyResolved = false
+      this
     }
 
     /**
      * Add an interval to the LociSet under construction.
      */
     def put(contig: String, start: Long = 0, end: Long = -1): Builder = {
-      if (!allContigs) {
+      assume(start >= 0)
+      assume(end == -1 || end >= start)
+      if (!containsAll) {
         ranges += ((contig, start, end))
         if (end == -1) {
           fullyResolved = false
@@ -170,7 +173,7 @@ object LociSet {
           }
         })
       }
-      if (allContigs) {
+      if (containsAll) {
         contigLengths.get.foreach(
           contigAndLength => wrapped.put(contigAndLength._1, 0, contigAndLength._2 - 1, 0))
       } else {

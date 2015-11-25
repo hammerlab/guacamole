@@ -21,6 +21,7 @@ package org.hammerlab.guacamole.reads
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.rdd.ADAMContext
 import org.bdgenomics.formats.avro.AlignmentRecord
+import org.hammerlab.guacamole.Bases
 import org.hammerlab.guacamole.util.{ TestUtil, GuacFunSuite }
 import org.scalatest.Matchers
 import org.bdgenomics.adam.rdd.ADAMContext._
@@ -85,6 +86,5 @@ class ReadSetSuite extends GuacFunSuite with Matchers {
       deserialized.isPositiveStrand should equal(read.isPositiveStrand)
       deserialized.isPaired should equal(read.isPaired)
     }
-
   }
 }

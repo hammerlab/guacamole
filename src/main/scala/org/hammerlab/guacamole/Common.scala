@@ -33,9 +33,11 @@ import org.apache.spark.{ Logging, SparkConf, SparkContext }
 import org.bdgenomics.utils.cli.{ Args4jBase, ParquetArgs }
 import org.bdgenomics.adam.rdd.ADAMContext._
 import org.bdgenomics.formats.avro.Genotype
+import org.hammerlab.guacamole.Common.Arguments.ReadLoadingConfigArgs
 import org.hammerlab.guacamole.Concordance.ConcordanceArgs
 import org.hammerlab.guacamole.reads.Read
 import org.codehaus.jackson.JsonFactory
+import org.hammerlab.guacamole.reads.Read.ReadLoadingConfig
 import org.hammerlab.guacamole.reference.ReferenceGenome
 import org.kohsuke.args4j.{ Option => Args4jOption }
 
@@ -69,14 +71,25 @@ object Common extends Logging {
       var noSequenceDictionary: Boolean = false
     }
 
+    trait ReadLoadingConfigArgs extends Base {
+      @Args4jOption(name = "--bam-reader-api",
+        usage = "API to use for reading BAMs, one of: best, samtools, hadoopbam. Default: best")
+      var bamReaderAPI: String = "best"
+    }
+    object ReadLoadingConfigArgs {
+      def fromArguments(args: ReadLoadingConfigArgs): Read.ReadLoadingConfig = {
+        Read.ReadLoadingConfig(bamReaderAPI = Read.BamReaderAPI.withName(args.bamReaderAPI))
+      }
+    }
+
     /** Argument for accepting a single set of reads (for non-somatic variant calling). */
-    trait Reads extends Base with NoSequenceDictionary {
+    trait Reads extends Base with NoSequenceDictionary with ReadLoadingConfigArgs {
       @Args4jOption(name = "--reads", metaVar = "X", required = true, usage = "Aligned reads")
       var reads: String = ""
     }
 
     /** Arguments for accepting two sets of reads (tumor + normal). */
-    trait TumorNormalReads extends Base with NoSequenceDictionary {
+    trait TumorNormalReads extends Base with NoSequenceDictionary with ReadLoadingConfigArgs {
       @Args4jOption(name = "--normal-reads", metaVar = "X", required = true, usage = "Aligned reads: normal")
       var normalReads: String = ""
 
@@ -146,6 +159,7 @@ object Common extends Logging {
     filters: Read.InputFilters,
     requireMDTagsOnMappedReads: Boolean = false,
     referenceGenome: Option[ReferenceGenome] = None): ReadSet = {
+
     ReadSet(
       sc,
       args.reads,
@@ -153,7 +167,8 @@ object Common extends Logging {
       filters,
       token = 0,
       contigLengthsFromDictionary = !args.noSequenceDictionary,
-      referenceGenome)
+      referenceGenome = referenceGenome,
+      config = ReadLoadingConfigArgs.fromArguments(args))
   }
 
   /**
@@ -172,8 +187,24 @@ object Common extends Logging {
     requireMDTagsOnMappedReads: Boolean = false,
     referenceGenome: Option[ReferenceGenome] = None): (ReadSet, ReadSet) = {
 
-    val tumor = ReadSet(sc, args.tumorReads, requireMDTagsOnMappedReads, filters, 1, !args.noSequenceDictionary, referenceGenome)
-    val normal = ReadSet(sc, args.normalReads, requireMDTagsOnMappedReads, filters, 2, !args.noSequenceDictionary, referenceGenome)
+    val tumor = ReadSet(
+      sc,
+      args.tumorReads,
+      requireMDTagsOnMappedReads,
+      filters,
+      1,
+      !args.noSequenceDictionary,
+      referenceGenome,
+      ReadLoadingConfigArgs.fromArguments(args))
+    val normal = ReadSet(
+      sc,
+      args.normalReads,
+      requireMDTagsOnMappedReads,
+      filters,
+      2,
+      !args.noSequenceDictionary,
+      referenceGenome,
+      ReadLoadingConfigArgs.fromArguments(args))
     (tumor, normal)
   }
 

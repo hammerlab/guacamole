@@ -32,7 +32,6 @@ class UnmappedReadSerializer extends Serializer[UnmappedRead] {
     output.writeBoolean(obj.isDuplicate)
     output.writeString(obj.sampleName)
     output.writeBoolean(obj.failedVendorQualityChecks)
-    output.writeBoolean(obj.isPositiveStrand)
     output.writeBoolean(obj.isPaired)
 
   }
@@ -45,7 +44,6 @@ class UnmappedReadSerializer extends Serializer[UnmappedRead] {
     val isDuplicate = input.readBoolean()
     val sampleName = input.readString().intern()
     val failedVendorQualityChecks = input.readBoolean()
-    val isPositiveStrand = input.readBoolean()
     val isPaired = input.readBoolean()
 
     UnmappedRead(
@@ -55,7 +53,6 @@ class UnmappedReadSerializer extends Serializer[UnmappedRead] {
       isDuplicate,
       sampleName.intern,
       failedVendorQualityChecks,
-      isPositiveStrand,
       isPaired
     )
   }

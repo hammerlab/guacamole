@@ -18,29 +18,11 @@ case class PairedRead[+T <: Read](read: T,
   override val token: Int = read.token
   override val failedVendorQualityChecks: Boolean = read.failedVendorQualityChecks
   override val sampleName: String = read.sampleName
-  override val isPositiveStrand: Boolean = read.isPositiveStrand
   override val baseQualities: Seq[Byte] = read.baseQualities
   override val isDuplicate: Boolean = read.isDuplicate
   override val sequence: Seq[Byte] = read.sequence
   override val isPaired: Boolean = true
   override val isMapped = read.isMapped
+  override def asMappedRead = read.asMappedRead
   override val hasMdTag = read.hasMdTag
 }
-
-object PairedRead {
-  def apply(record: SAMRecord,
-            token: Int,
-            requireMDTagsOnMappedReads: Boolean,
-            referenceGenome: Option[ReferenceGenome]): PairedRead[Read] = {
-    val read = Read.fromSAMRecord(
-      record,
-      token,
-      requireMDTagsOnMappedReads,
-      referenceGenome
-    )
-
-    val mateAlignment = MateAlignmentProperties(record)
-    PairedRead(read, isFirstInPair = record.getFirstOfPairFlag, mateAlignment)
-  }
-}
-

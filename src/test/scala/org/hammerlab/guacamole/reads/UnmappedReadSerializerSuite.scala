@@ -32,7 +32,6 @@ class UnmappedReadSerializerSuite extends GuacFunSuite with Matchers {
       true,
       "some sample name",
       false,
-      isPositiveStrand = true,
       isPaired = true
     )
 
@@ -51,7 +50,6 @@ class UnmappedReadSerializerSuite extends GuacFunSuite with Matchers {
     deserialized.isDuplicate should equal(read.isDuplicate)
     deserialized.sampleName should equal(read.sampleName)
     deserialized.failedVendorQualityChecks should equal(read.failedVendorQualityChecks)
-    deserialized.isPositiveStrand should equal(read.isPositiveStrand)
     deserialized.isPaired should equal(read.isPaired)
   }
 
