@@ -57,18 +57,19 @@ object GermlineThreshold {
 
     override def run(args: Arguments, sc: SparkContext): Unit = {
       Common.validateArguments(args)
+      val loci = Common.loci(args)
       val readSet = Common.loadReadsFromArguments(
-        args, sc, Read.InputFilters(mapped = true, nonDuplicate = true, hasMdTag = true))
+        args, sc, Read.InputFilters(
+          overlapsLoci = Some(loci), nonDuplicate = true, hasMdTag = true))
 
       readSet.mappedReads.persist()
       Common.progress("Loaded %,d mapped non-duplicate MdTag-containing reads into %,d partitions.".format(
         readSet.mappedReads.count, readSet.mappedReads.partitions.length))
 
-      val loci = Common.loci(args).result(readSet.contigLengths)
       val (threshold, emitRef, emitNoCall) = (args.threshold, args.emitRef, args.emitNoCall)
       val numGenotypes = sc.accumulator(0L)
       DelayedMessages.default.say { () => "Called %,d genotypes.".format(numGenotypes.value) }
-      val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(args, loci, readSet.mappedReads)
+      val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(args, loci.result(readSet.contigLengths), readSet.mappedReads)
       val genotypes: RDD[Genotype] = DistributedUtil.pileupFlatMap[Genotype](
         readSet.mappedReads,
         lociPartitions,

@@ -87,9 +87,9 @@ object VAFHistogram {
     override val description = "Compute and cluster the variant allele frequencies"
 
     override def run(args: Arguments, sc: SparkContext): Unit = {
-
+      val loci = Common.loci(args)
       val filters = Read.InputFilters(
-        mapped = true,
+        overlapsLoci = Some(loci),
         nonDuplicate = true,
         passedVendorQualityChecks = true,
         hasMdTag = true)
@@ -109,10 +109,9 @@ object VAFHistogram {
           )
       )
 
-      val loci = Common.loci(args).result(Some(readSets(0).contigLengths))
       val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(
         args,
-        loci,
+        loci.result(readSets(0).contigLengths),
         readSets(0).mappedReads // Use the first set of reads as a proxy for read depth
       )
 
