@@ -37,7 +37,6 @@ import org.hammerlab.guacamole.Common.Arguments.ReadLoadingConfigArgs
 import org.hammerlab.guacamole.Concordance.ConcordanceArgs
 import org.hammerlab.guacamole.reads.Read
 import org.codehaus.jackson.JsonFactory
-import org.hammerlab.guacamole.reads.Read.ReadLoadingConfig
 import org.hammerlab.guacamole.reference.ReferenceGenome
 import org.kohsuke.args4j.{ Option => Args4jOption }
 
@@ -71,12 +70,14 @@ object Common extends Logging {
       var noSequenceDictionary: Boolean = false
     }
 
+    /** Argument for configuring read loading with a Read.ReadLoadingConfig object. */
     trait ReadLoadingConfigArgs extends Base {
       @Args4jOption(name = "--bam-reader-api",
         usage = "API to use for reading BAMs, one of: best (use samtools if file local), samtools, hadoopbam")
       var bamReaderAPI: String = "best"
     }
     object ReadLoadingConfigArgs {
+      /** Given commandline arguments, return a ReadLoadingConfig. */
       def fromArguments(args: ReadLoadingConfigArgs): Read.ReadLoadingConfig = {
         Read.ReadLoadingConfig(bamReaderAPI = Read.ReadLoadingConfig.BamReaderAPI.withNameCaseInsensitive(args.bamReaderAPI))
       }
