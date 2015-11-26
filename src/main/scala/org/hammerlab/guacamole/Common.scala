@@ -56,7 +56,7 @@ object Common extends Logging {
     /** Argument for accepting a set of loci. */
     trait Loci extends Base {
       @Args4jOption(name = "--loci", usage = "Loci at which to call variants. Either 'all' or contig:start-end,contig:start-end,...",
-        forbids = Array("-loci-from-file"))
+        forbids = Array("--loci-from-file"))
       var loci: String = ""
 
       @Args4jOption(name = "--loci-from-file", usage = "Path to file giving loci at which to call variants.",
@@ -73,12 +73,12 @@ object Common extends Logging {
 
     trait ReadLoadingConfigArgs extends Base {
       @Args4jOption(name = "--bam-reader-api",
-        usage = "API to use for reading BAMs, one of: best, samtools, hadoopbam. Default: best")
+        usage = "API to use for reading BAMs, one of: best (use samtools if file local), samtools, hadoopbam")
       var bamReaderAPI: String = "best"
     }
     object ReadLoadingConfigArgs {
       def fromArguments(args: ReadLoadingConfigArgs): Read.ReadLoadingConfig = {
-        Read.ReadLoadingConfig(bamReaderAPI = Read.BamReaderAPI.withName(args.bamReaderAPI))
+        Read.ReadLoadingConfig(bamReaderAPI = Read.ReadLoadingConfig.BamReaderAPI.withNameCaseInsensitive(args.bamReaderAPI))
       }
     }
 
@@ -209,11 +209,9 @@ object Common extends Logging {
   }
 
   /**
-   * If the user specifies a -loci argument, parse it out and return the LociSet. Otherwise, construct a LociSet that
-   * includes all the loci in the contigs.
+   * Return the loci specified by the user as a LociSet.Builder.
    *
    * @param args parsed arguments
-   * @param readSet readSet from which to use to get contigs and lengths.
    */
   def loci(args: Arguments.Loci): LociSet.Builder = {
     if (args.loci.nonEmpty && args.lociFromFile.nonEmpty) {

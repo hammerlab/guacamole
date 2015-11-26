@@ -48,14 +48,18 @@ object GermlineStandard {
 
     override def run(args: Arguments, sc: SparkContext): Unit = {
       Common.validateArguments(args)
+      val loci = Common.loci(args)
       val readSet = Common.loadReadsFromArguments(
-        args, sc, Read.InputFilters(mapped = true, nonDuplicate = true, hasMdTag = true))
+        args, sc, Read.InputFilters(
+          overlapsLoci = Some(loci),
+          nonDuplicate = true,
+          hasMdTag = true))
       readSet.mappedReads.persist()
       Common.progress(
         "Loaded %,d mapped non-duplicate reads into %,d partitions.".format(readSet.mappedReads.count, readSet.mappedReads.partitions.length))
 
-      val loci = Common.loci(args).result(readSet.contigLengths)
-      val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(args, loci, readSet.mappedReads)
+      val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(
+        args, loci.result(readSet.contigLengths), readSet.mappedReads)
 
       val minAlignmentQuality = args.minAlignmentQuality
 
