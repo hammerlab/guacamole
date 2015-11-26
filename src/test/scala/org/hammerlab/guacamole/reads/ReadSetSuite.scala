@@ -71,13 +71,13 @@ class ReadSetSuite extends GuacFunSuite with Matchers {
     allReads.reads.count() should be(8)
 
     val mdTagReads = TestUtil.loadReads(sc, "mdtagissue.sam", Read.InputFilters(mapped = true))
-    mdTagReads.reads.count() should be(6)
+    mdTagReads.reads.count() should be(5)
 
     val nonDuplicateReads = TestUtil.loadReads(
       sc,
       "mdtagissue.sam",
       Read.InputFilters(mapped = true, nonDuplicate = true))
-    nonDuplicateReads.reads.count() should be(4)
+    nonDuplicateReads.reads.count() should be(3)
   }
 
   sparkTest("load RNA reads") {
@@ -104,7 +104,7 @@ class ReadSetSuite extends GuacFunSuite with Matchers {
       1,
       Read.InputFilters(mapped = true, nonDuplicate = true),
       requireMDTagsOnMappedReads = true)
-    filteredReads.count() should be(4)
+    filteredReads.count() should be(3)
     filteredReads.collect().forall(_.token == 1) should be(true)
   }
 

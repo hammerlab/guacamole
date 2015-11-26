@@ -58,7 +58,7 @@ case class LociMap[T](private val map: Map[String, LociMap.SingleContig[T]]) {
         }
       })
     })
-    mapOfBuilders.mapValues(_.result()).toMap
+    mapOfBuilders.mapValues(_.result).toMap
   }
 
   def filterContigs(function: String => Boolean): LociMap[T] = {

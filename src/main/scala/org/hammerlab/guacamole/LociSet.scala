@@ -21,7 +21,6 @@ package org.hammerlab.guacamole
 import com.esotericsoftware.kryo.{ Serializer, Kryo }
 import com.esotericsoftware.kryo.io.{ Input, Output }
 import org.hammerlab.guacamole.LociMap.SimpleRange
-
 import scala.collection.mutable.ArrayBuffer
 
 /**
@@ -223,7 +222,7 @@ object LociSet {
 
   /** Return a LociSet of a single genomic interval. */
   def apply(contig: String, start: Long, end: Long): LociSet = {
-    (new Builder).put(contig, start, end).result()
+    (new Builder).put(contig, start, end).result
   }
 
   /**
