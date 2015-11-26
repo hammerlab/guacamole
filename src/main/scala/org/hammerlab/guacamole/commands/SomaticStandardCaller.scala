@@ -65,8 +65,9 @@ object SomaticStandard {
 
     override def run(args: Arguments, sc: SparkContext): Unit = {
       Common.validateArguments(args)
+      val loci = Common.loci(args)
       val filters = Read.InputFilters(
-        mapped = true,
+        overlapsLoci = Some(loci),
         nonDuplicate = true,
         passedVendorQualityChecks = true,
         hasMdTag = true)
@@ -92,10 +93,9 @@ object SomaticStandard {
 
       val oddsThreshold = args.oddsThreshold
 
-      val loci = Common.loci(args).result(normalReads.contigLengths)
       val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(
         args,
-        loci,
+        loci.result(normalReads.contigLengths),
         tumorReads.mappedReads,
         normalReads.mappedReads
       )

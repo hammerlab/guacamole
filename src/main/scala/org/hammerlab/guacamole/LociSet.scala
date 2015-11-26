@@ -103,16 +103,39 @@ object LociSet {
 
   /**
    * Class for constructing a LociSet.
+   *
+   * A LociSet always has an exact size, but a Builder supports specifications of loci sets before the contigs
+   * and their lengths are known. For example, a builder can specify "all sites on all contigs", or "all sites
+   * on chromosomes 1 and 2". To build such an "unresolved" LociSet, the contigs and their lengths must be provided to
+   * the result method.
+   *
+   * This comes in handy when we want to pass a specification of loci to the BAM reading methods.
+   * We don't know the contigs and their lengths until we read in the BAM file, so we can't make a LociSet until
+   * we read the file header. At the same time, we want to use the BAM index to read only the loci of interest from
+   * the file. A LociSet.Builder is a convenient object to pass to the bam loading functions, as it is an object
+   * that specifies the loci of interest without requiring us to already know the contigs and their lengths.
+   *
    */
   class Builder {
+    /**
+     * Does this Builder contain only loci ranges with exact ends (e.g. "chr:1-20000" not "all of chr1")?
+     * If false, we require contig lengths to be specified to the result method.
+     */
     var fullyResolved = true
 
-    // include all contigs
+    /**
+     * Does this Builder contain all sites on all contigs?
+     */
     var containsAll = false
 
-    // (contig, start). The end will be the length of the given contig.
+    /**
+     * (contig, start, end) ranges which have been added to this builder.
+     */
     private val ranges = ArrayBuffer.newBuilder[(String, Long, Long)]
 
+    /**
+     * Specify that this builder contains all sites on all contigs.
+     */
     def putAllContigs(): Builder = {
       containsAll = true
       fullyResolved = false
@@ -120,7 +143,7 @@ object LociSet {
     }
 
     /**
-     * Add an interval to the LociSet under construction.
+     * Add an interval to the Builder. If end is -1, then it is taken to be the length of the contig.
      */
     def put(contig: String, start: Long = 0, end: Long = -1): Builder = {
       assume(start >= 0)
@@ -134,6 +157,12 @@ object LociSet {
       this
     }
 
+    /**
+     * Parse a loci expression and add it to the builder. Example expressions:
+     *  "all" (all sites on all contigs)
+     *  "chr1,chr3" (all sites on contigs chr1 and chr3)
+     *  "chr1:10000-20000,chr2" (sites x where 10000 <= x < 20000 on chr1, all sites on chr2)
+     */
     def putExpression(loci: String): Builder = {
       if (loci == "all") {
         putAllContigs()
@@ -198,13 +227,8 @@ object LociSet {
   }
 
   /**
-   * Return a LociSet parsed from a string representation.
-   *
-   * @param loci A string of the form "CONTIG:START-END,CONTIG:START-END,..." where CONTIG is a string giving the
-   *             contig name, and START and END are integers. Whitespace is ignored. The :START-END suffix is optional
-   *             if the contigLengths parameter is specified, and defaults to start=0 end=length of contig - 1.
-   * @param contigLengths Optional map: contig name -> length.
-   * @return
+   * Return a LociSet.Builder parsed from a string representation.
+   * See LociSet.Builder.putExpression for example expressions.
    */
   def parse(loci: String): LociSet.Builder = {
     LociSet.newBuilder.putExpression(loci)
