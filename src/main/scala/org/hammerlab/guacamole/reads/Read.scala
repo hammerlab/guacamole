@@ -83,13 +83,14 @@ object Read extends Logging {
   /**
    * Filtering reads while they are loaded can be an important optimization.
    *
-   * These fields are commonly used filters. Setting a field to True will result in filtering on that field. If multiple
-   * fields are set, the result is the intersection of the filters (i.e. reads must satisfy ALL filters).
+   * These fields are commonly used filters. For boolean fields, setting a field to true will result in filtering on
+   * that field. The result is the intersection of the filters (i.e. reads must satisfy ALL filters).
    *
-   * @param mapped include only mapped reads
+   * @param overlapsLoci if not None, include only mapped reads that overlap the given loci
    * @param nonDuplicate include only reads that do not have the duplicate bit set
    * @param passedVendorQualityChecks include only reads that do not have the failedVendorQualityChecks bit set
    * @param isPaired include only reads are paired-end reads
+   * @param hasMdTag include only reads with md tags
    */
   case class InputFilters(
     val overlapsLoci: Option[LociSet.Builder],
@@ -100,6 +101,11 @@ object Read extends Logging {
   object InputFilters {
     val empty = InputFilters()
 
+    /**
+     * See InputFilters for full documentation.
+     * @param mapped include only mapped reads. Convenience argument that is equivalent to specifying all sites in
+     *               overlapsLoci.
+     */
     def apply(mapped: Boolean = false,
               overlapsLoci: Option[LociSet.Builder] = None,
               nonDuplicate: Boolean = false,
@@ -114,6 +120,14 @@ object Read extends Logging {
         hasMdTag = hasMdTag)
     }
 
+    /**
+     * Apply filters to an RDD of reads.
+     *
+     * @param filters
+     * @param reads
+     * @param sequenceDictionary
+     * @return filtered RDD
+     */
     def filterRDD(filters: InputFilters, reads: RDD[Read], sequenceDictionary: SequenceDictionary): RDD[Read] = {
       /* Note that the InputFilter properties are public, and some loaders directly apply
        * the filters as the reads are loaded, instead of filtering an existing RDD as we do here. If more filters
@@ -388,7 +402,6 @@ object Read extends Logging {
         // Optimization: some of the filters are easy to run on the raw SamRecord, so we avoid making a Read.
         if ((filters.overlapsLoci.nonEmpty && record.getReadUnmappedFlag) ||
           (requiresFilteringByLocus &&
-            !loci.get.onContig(record.getContig).contains(record.getAlignmentStart) &&
             !loci.get.onContig(record.getContig).intersects(record.getStart - 1, record.getEnd)) ||
             (filters.nonDuplicate && record.getDuplicateReadFlag) ||
             (filters.passedVendorQualityChecks && record.getReadFailsVendorQualityCheckFlag) ||
@@ -544,6 +557,7 @@ object Read extends Logging {
     element.getOperator == CigarOperator.SOFT_CLIP || element.getOperator == CigarOperator.HARD_CLIP
   }
 
+  /** Extract the length of each contig from a sequence dictionary */
   def contigLengths(sequenceDictionary: SequenceDictionary): Map[String, Long] = {
     val builder = Map.newBuilder[String, Long]
     sequenceDictionary.records.foreach(record => builder += ((record.name.toString, record.length)))
