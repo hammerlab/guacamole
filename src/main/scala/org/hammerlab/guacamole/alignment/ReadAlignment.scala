@@ -1,6 +1,6 @@
 package org.hammerlab.guacamole.alignment
 
-import htsjdk.samtools.{Cigar, TextCigarCodec}
+import htsjdk.samtools.{ Cigar, TextCigarCodec }
 import org.hammerlab.guacamole.alignment.AlignmentState.AlignmentState
 
 object AlignmentState extends Enumeration {
@@ -9,6 +9,20 @@ object AlignmentState extends Enumeration {
 
   def isGapAlignment(state: AlignmentState) = {
     state == AlignmentState.Insertion || state == AlignmentState.Deletion
+  }
+
+  /**
+   * Match an AlignmentState to a CIGAR operator
+   * @param alignmentOperator  An alignment state
+   * @return CIGAR operator corresponding to alignment state
+   */
+  def cigarKey(alignmentOperator: AlignmentState): String = {
+    alignmentOperator match {
+      case AlignmentState.Match     => "="
+      case AlignmentState.Mismatch  => "X"
+      case AlignmentState.Insertion => "I"
+      case AlignmentState.Deletion  => "D"
+    }
   }
 }
 
@@ -20,20 +34,6 @@ object AlignmentState extends Enumeration {
 case class ReadAlignment(alignments: Seq[AlignmentState],
                          refBases: Seq[Byte],
                          alignmentScore: Int) {
-
-  /**
-   * Match an AlignmentState to a CIGAR operator
-   * @param alignmentOperator  An alignment state
-   * @return CIGAR operator corresponding to alignment state
-   */
-  private def cigarKey(alignmentOperator: AlignmentState): String = {
-    alignmentOperator match {
-      case AlignmentState.Match     => "="
-      case AlignmentState.Mismatch  => "X"
-      case AlignmentState.Insertion => "I"
-      case AlignmentState.Deletion  => "D"
-    }
-  }
 
   /**
    * Convert a ReadAlignment to a CIGAR string
@@ -59,7 +59,7 @@ case class ReadAlignment(alignments: Seq[AlignmentState],
       rle.toString
     }
 
-    runLengthEncode(alignments.map(alignment => cigarKey(alignment)))
+    runLengthEncode(alignments.map(alignment => AlignmentState.cigarKey(alignment)))
   }
 
   def toCigar: Cigar = {

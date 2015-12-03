@@ -100,7 +100,7 @@ class DeBruijnGraph(val kmerSize: Int,
         })
 
         // Get full node from non-branch path
-        val mergedNode = DeBruijnGraph.mergeKmers(fullMergeablePath)
+        val mergedNode = DeBruijnGraph.mergeKmers(fullMergeablePath, kmerSize)
 
         // Save each node that was merged
         fullMergeablePath.zipWithIndex.foreach({
@@ -293,9 +293,9 @@ object DeBruijnGraph {
     graph
   }
 
-  def mergeKmers(kmers: Seq[Kmer]): Sequence = {
-    val head = kmers.headOption.map(h => h.take(h.length - 1)).getOrElse(Seq.empty)
-    val rest = kmers.map(_.last)
+  def mergeKmers(kmers: Seq[Kmer], kmerSize: Int): Sequence = {
+    val head = kmers.headOption.getOrElse(Seq.empty)
+    val rest = kmers.tail.flatMap(kmer => kmer.takeRight(kmer.length - kmerSize + 1))
     head ++ rest
   }
 

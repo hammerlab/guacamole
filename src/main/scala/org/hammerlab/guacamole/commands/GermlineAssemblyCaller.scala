@@ -1,19 +1,21 @@
 package org.hammerlab.guacamole.commands
 
+import htsjdk.samtools.CigarOperator
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole.Common.Arguments.GermlineCallerArgs
-import org.hammerlab.guacamole.DistributedUtil.PerSample
 import org.hammerlab.guacamole._
 import org.hammerlab.guacamole.alignment.AlignmentState.AlignmentState
-import org.hammerlab.guacamole.alignment.{AffineGapPenaltyAlignment, AlignmentState, ReadAlignment}
+import org.hammerlab.guacamole.alignment.{ AffineGapPenaltyAlignment, AlignmentState, ReadAlignment }
 import org.hammerlab.guacamole.assembly.DeBruijnGraph
 import org.hammerlab.guacamole.filters.GenotypeFilter.GenotypeFilterArguments
-import org.hammerlab.guacamole.reads.{MappedRead, Read}
-import org.hammerlab.guacamole.reference.{ReferenceBroadcast, ReferenceGenome}
-import org.hammerlab.guacamole.variants.{Allele, AlleleConversions, AlleleEvidence, CalledAllele}
+import org.hammerlab.guacamole.reads.{ MappedRead, Read }
+import org.hammerlab.guacamole.reference.{ ReferenceBroadcast, ReferenceGenome }
+import org.hammerlab.guacamole.variants.{ Allele, AlleleConversions, AlleleEvidence, CalledAllele }
 import org.hammerlab.guacamole.windowing.SlidingWindow
-import org.kohsuke.args4j.{Option => Args4jOption}
+import org.kohsuke.args4j.{ Option => Args4jOption }
+
+import scala.collection.JavaConversions._
 
 /**
  *
@@ -59,42 +61,35 @@ object GermlineAssemblyCaller {
 
     /**
      *
-     * @param graph
-     * @param windows
-     * @param kmerSize
-     * @param minAlignmentQuality
-     * @param minAverageBaseQuality
-     * @param minOccurrence
-     * @param expectedPloidy
-     * @return
+     * @param graph An existing DeBruijn graph of the reads
+     * @param currentWindow Window of reads that overlaps the current loci
+     * @param kmerSize Length kmers in the DeBruijn graph
+     * @param minOccurrence Minimum times a kmer must appear to be in the DeBruijn graph
+     * @param expectedPloidy Expected ploidy, or expected number of valid paths through the graph
+     * @return A set of variants in the window
      */
     def discoverHaplotypes(graph: Option[DeBruijnGraph],
-                           windows: PerSample[SlidingWindow[MappedRead]],
+                           currentWindow: SlidingWindow[MappedRead],
                            kmerSize: Int,
-                           minAlignmentQuality: Int,
-                           minAverageBaseQuality: Int,
                            reference: ReferenceGenome,
                            minOccurrence: Int = 2,
                            expectedPloidy: Int = 2): (Option[DeBruijnGraph], Iterator[CalledAllele]) = {
 
-      val currentWindow = windows(0)
       val locus = currentWindow.currentLocus
 
-      val newReads = currentWindow.currentRegions()
-      val filteredReads = newReads.filter(_.alignmentQuality > minAlignmentQuality)
+      val reads = currentWindow.currentRegions()
 
-      // println(s"Building graph at $locus with ${newReads.length} reads")
       // TODO: Should update graph instead of rebuilding it
       // Need to keep track of reads removed from last update and reads added
       val currentGraph: DeBruijnGraph = DeBruijnGraph(
-        filteredReads.map(_.sequence),
+        reads.map(_.sequence),
         kmerSize,
         minOccurrence,
         mergeNodes = true
       )
 
-      val referenceStart = (newReads.head.start).toInt
-      val referenceEnd = (newReads.last.end).toInt
+      val referenceStart = (reads.head.start).toInt
+      val referenceEnd = (reads.last.end).toInt
 
       val currentReference: Array[Byte] = reference.getReferenceSequence(
         currentWindow.referenceName,
@@ -102,19 +97,39 @@ object GermlineAssemblyCaller {
         referenceEnd
       )
 
-      def buildVariant(locus: Long, tuple: (AlignmentState, Int)): CalledAllele = {
+      val referenceKmerSource = currentReference.take(kmerSize)
+      val referenceKmerSink = currentReference.takeRight(kmerSize)
 
-        //val variantType = tuple._1
-        val offset = tuple._2
+      // If the current window size
+      if (referenceKmerSource.length != kmerSize || referenceKmerSink.length != kmerSize)
+        return (graph, Iterator.empty)
+
+      val paths = currentGraph.depthFirstSearch(
+        referenceKmerSource,
+        referenceKmerSink
+      )
+
+      // Take `ploidy` paths
+      val topPaths = paths
+        .take(expectedPloidy)
+        .map(DeBruijnGraph.mergeKmers(_, kmerSize))
+
+      // Build a variant using the current offset and
+      // read evidence
+      def buildVariant(referenceOffset: Int,
+                       referenceBases: Array[Byte],
+                       alternateBases: Array[Byte]) = {
         val allele = Allele(
-          Bases.stringToBases("<REF>"),
-          Bases.stringToBases("<ALT>")
+          referenceBases,
+          alternateBases
         )
-        val depth = filteredReads.length
+
+        val depth = reads.length
+
         CalledAllele(
-          filteredReads.head.sampleName,
-          filteredReads.head.referenceContig,
-          locus,
+          reads.head.sampleName,
+          reads.head.referenceContig,
+          referenceStart + referenceOffset,
           allele,
           AlleleEvidence(
             likelihood = 1,
@@ -131,51 +146,49 @@ object GermlineAssemblyCaller {
         )
       }
 
-      val referenceKmerSource = currentReference.take(kmerSize)
-      val referenceKmerSink = currentReference.takeRight(kmerSize)
+      val variants =
+        topPaths.flatMap(path => {
+          // Align the path to the reference sequence
+          val alignment = AffineGapPenaltyAlignment.align(path, currentReference)
+          var referenceIndex = 0
+          var pathIndex = 0
 
-      if (referenceKmerSource.length != kmerSize || referenceKmerSink.length != kmerSize)
-        return (graph, Iterator.empty)
+          // Find the alignment sequences using the CIGAR
+          val cigarElements = alignment.toCigar.getCigarElements
+          cigarElements.flatMap(cigarElement => {
+            val cigarOperator = cigarElement.getOperator
+            val referenceLength = CigarUtils.getReferenceLength(cigarElement)
+            val pathLength = CigarUtils.getReadLength(cigarElement)
+            val referenceAllele = currentReference.slice(referenceIndex, referenceIndex + referenceLength)
+            val alternateAllele = path.slice(pathIndex, pathIndex + pathLength)
+            referenceIndex += referenceLength
+            pathIndex += pathLength
 
-      val paths = currentGraph.depthFirstSearch(
-        referenceKmerSource,
-        referenceKmerSink
-      )
+            // Yield a resulting variant when there is a mismatch, insertion or deletion
+            cigarOperator match {
+              case CigarOperator.X | CigarOperator.I | CigarOperator.D =>
+                Some(buildVariant(referenceIndex, referenceAllele, alternateAllele.toArray))
+              case _ => None
+            }
+          })
+        })
 
-      // Take `ploidy` paths
-      val topPaths = paths
-        .take(expectedPloidy)
-        .map(DeBruijnGraph.mergeKmers)
-
-      println(s"Found ${topPaths.length} paths at $locus")
-
-      // Align paths to reference
-      val alignments =
-        topPaths
-        .map(AffineGapPenaltyAlignment.align(_, currentReference))
-
-      // Output variants
-      val variantAlignments =
-        alignments
-          .flatMap(
-            getVariantAlignments(_)
-              .map(tup => buildVariant(locus, tup))
-          )
-      (graph, variantAlignments.iterator)
+      (graph, variants.iterator)
     }
 
     override def run(args: Arguments, sc: SparkContext): Unit = {
 
+      val loci = Common.loci(args)
       val readSet = Common.loadReadsFromArguments(
         args,
         sc,
         Read.InputFilters(mapped = true, nonDuplicate = true))
 
-      Common.progress(
-        "Loaded %,d mapped non-duplicate reads into %,d partitions.".format(readSet.mappedReads.count, readSet.mappedReads.partitions.length))
-
-      val loci = Common.loci(args, readSet)
-      val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(args, loci, readSet.mappedReads)
+      val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(
+        args,
+        loci.result(readSet.contigLengths),
+        readSet.mappedReads
+      )
 
       val kmerSize = args.kmerSize
       val minAlignmentQuality = args.minAlignmentQuality
@@ -184,22 +197,23 @@ object GermlineAssemblyCaller {
 
       val qualityReads = readSet.mappedReads.filter(_.alignmentQuality > minAlignmentQuality)
 
+      // Find loci where there are variant reads
       val lociOfInterest = DistributedUtil.pileupFlatMap[VariantLocus](
         qualityReads,
         lociPartitions,
         skipEmpty = true,
-        function = pileup => VariantLocus(pileup).iterator
-        //reference = Some(reference)
+        function = pileup => VariantLocus(pileup).iterator,
+        reference = Some(reference)
       )
 
-      println(s"${lociOfInterest.count} loci with non-reference reads")
+      Common.progress(s"Found ${lociOfInterest.count} loci with non-reference reads")
 
+      // Re-examine loci with variant read
       val lociOfInterestSet = LociSet.union(
         lociOfInterest.map(
           locus => LociSet(locus.contig, locus.locus, locus.locus + 1))
           .collect(): _*
       )
-
       val lociOfInterestPartitions = DistributedUtil.partitionLociUniformly(
         args.parallelism,
         lociOfInterestSet
@@ -212,22 +226,22 @@ object GermlineAssemblyCaller {
           skipEmpty = true,
           halfWindowSize = args.snvWindowRange,
           initialState = None,
-          (graph, window) => {
+          (graph, windows) => {
             discoverHaplotypes(
               graph,
-              window,
+              windows(0),
               kmerSize,
-              minAlignmentQuality,
-              minAverageBaseQuality,
               reference)
           }
         )
-
       readSet.mappedReads.unpersist()
-      println(s"${genotypes.count} variants found")
+      genotypes.persist()
+
+      Common.progress(s"Found ${genotypes.count} variants")
+
       val filteredGenotypes =
-        //GenotypeFilter(genotypes, args)
-          genotypes.flatMap(AlleleConversions.calledAlleleToADAMGenotype)
+        genotypes.flatMap(AlleleConversions.calledAlleleToADAMGenotype)
+
       Common.writeVariantsFromArguments(args, filteredGenotypes)
       DelayedMessages.default.print()
     }
