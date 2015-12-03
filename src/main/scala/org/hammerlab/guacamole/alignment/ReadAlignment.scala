@@ -1,5 +1,6 @@
 package org.hammerlab.guacamole.alignment
 
+import htsjdk.samtools.{Cigar, TextCigarCodec}
 import org.hammerlab.guacamole.alignment.AlignmentState.AlignmentState
 
 object AlignmentState extends Enumeration {
@@ -38,7 +39,7 @@ case class ReadAlignment(alignments: Seq[AlignmentState],
    * Convert a ReadAlignment to a CIGAR string
    * @return CIGAR String
    */
-  def toCigar: String = {
+  def toCigarString: String = {
     def runLengthEncode(operators: Seq[String]): String = {
       var lastOperator = operators.head
       var i = 1
@@ -58,6 +59,11 @@ case class ReadAlignment(alignments: Seq[AlignmentState],
       rle.toString
     }
 
-    runLengthEncode(alignments.map(cigarKey))
+    runLengthEncode(alignments.map(alignment => cigarKey(alignment)))
+  }
+
+  def toCigar: Cigar = {
+    val cigarString = this.toCigarString
+    TextCigarCodec.decode(cigarString)
   }
 }
