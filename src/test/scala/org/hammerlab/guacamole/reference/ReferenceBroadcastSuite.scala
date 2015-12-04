@@ -40,6 +40,10 @@ class ReferenceBroadcastSuite extends GuacFunSuite with Matchers {
       reference.getReferenceSequence("2", 240, 320),
       "GACGTTCATTCAGAATGCCACCTAACTAGGCCAGTTTTTGGACTGTATGCCAGCCTCTTTCTGCGGGATGTAATCTCAAT")
 
+    TestUtil.assertBases(
+      reference.getReferenceSequence("2", 720, 800),
+      "CTGATGATCGCACCTGCATAACTGCTACCAGACCTGCTAAGGGGGAGCCTGGCCCAGCCATCTCTTCTTTGTGGTCACAA")
+
   }
 
 }
