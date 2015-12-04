@@ -6,6 +6,7 @@ import java.util.NoSuchElementException
 import htsjdk.samtools.reference.FastaSequenceFile
 import org.apache.spark.SparkContext
 import org.apache.spark.broadcast.Broadcast
+import org.hammerlab.guacamole.Bases
 
 case class ReferenceBroadcast(broadcastedContigs: Map[String, Broadcast[Array[Byte]]]) extends ReferenceGenome {
 
@@ -42,7 +43,7 @@ object ReferenceBroadcast {
     val broadcastedSequences = Map.newBuilder[String, Broadcast[Array[Byte]]]
     while (nextSequence != null) {
       val sequenceName = nextSequence.getName
-      val sequence = nextSequence.getBases
+      val sequence = Bases.unmaskBases(nextSequence.getBases)
       val broadcastedSequence = sc.broadcast(sequence)
 
       broadcastedSequences += ((sequenceName, broadcastedSequence))
