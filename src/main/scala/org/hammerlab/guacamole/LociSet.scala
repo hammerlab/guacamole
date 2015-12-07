@@ -129,8 +129,9 @@ object LociSet {
 
     /**
      * (contig, start, end) ranges which have been added to this builder.
+     * If end is None, it indicates "until the end of the contig"
      */
-    private val ranges = ArrayBuffer.newBuilder[(String, Long, Long)]
+    private val ranges = ArrayBuffer.newBuilder[(String, Long, Option[Long])]
 
     /**
      * Specify that this builder contains all sites on all contigs.
@@ -142,14 +143,14 @@ object LociSet {
     }
 
     /**
-     * Add an interval to the Builder. If end is -1, then it is taken to be the length of the contig.
+     * Add an interval to the Builder. If end is not specified, then it is taken to be the length of the contig.
      */
-    def put(contig: String, start: Long = 0, end: Long = -1): Builder = {
+    def put(contig: String, start: Long = 0, end: Option[Long] = None): Builder = {
       assume(start >= 0)
-      assume(end == -1 || end >= start)
+      assume(end.forall(_ >= start))
       if (!containsAll) {
         ranges += ((contig, start, end))
-        if (end == -1) {
+        if (end.isEmpty) {
           fullyResolved = false
         }
       }
@@ -170,7 +171,7 @@ object LociSet {
         val contigOnly = """^([\pL\pN._]+)""".r
         val sets = loci.replaceAll("\\s", "").split(',').foreach({
           case ""                              => {}
-          case contigAndLoci(name, start, end) => put(name, start.toLong, end.toLong)
+          case contigAndLoci(name, start, end) => put(name, start.toLong, Some(end.toLong))
           case contigOnly(contig)              => put(contig)
           case other => {
             throw new IllegalArgumentException("Couldn't parse loci range: %s".format(other))
@@ -193,10 +194,10 @@ object LociSet {
         rangesResult.foreach({
           case (contig, start, end) => contigLengths.get.get(contig) match {
             case None => throw new IllegalArgumentException("No such contig: %s".format(contig))
-            case Some(contigLength) if end > contigLength =>
+            case Some(contigLength) if end.exists(_ > contigLength) =>
               throw new IllegalArgumentException(
                 "Invalid range %d-%d for contig '%s' which has length %d".format(
-                  start, end, contig, contigLength))
+                  start, end.get, contig, contigLength))
             case _ => {}
           }
         })
@@ -207,7 +208,7 @@ object LociSet {
       } else {
         rangesResult.foreach({
           case (contig, start, end) => {
-            val resolvedEnd = if (end != -1) end else contigLengths.get.apply(contig)
+            val resolvedEnd = end.getOrElse(contigLengths.get.apply(contig))
             wrapped.put(contig, start, resolvedEnd, 0)
           }
         })
@@ -222,7 +223,7 @@ object LociSet {
 
   /** Return a LociSet of a single genomic interval. */
   def apply(contig: String, start: Long, end: Long): LociSet = {
-    (new Builder).put(contig, start, end).result
+    (new Builder).put(contig, start, Some(end)).result
   }
 
   /**
