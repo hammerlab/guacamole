@@ -53,8 +53,8 @@ case class LociMap[T](private val map: Map[String, LociMap.SingleContig[T]]) {
     contigs.foreach(contig => {
       onContig(contig).asMap.foreach({
         case (range, value) => mapOfBuilders.get(value) match {
-          case None          => mapOfBuilders.put(value, LociSet.newBuilder.put(contig, range.start, range.end))
-          case Some(builder) => builder.put(contig, range.start, range.end)
+          case None          => mapOfBuilders.put(value, LociSet.newBuilder.put(contig, range.start, Some(range.end)))
+          case Some(builder) => builder.put(contig, range.start, Some(range.end))
         }
       })
     })
