@@ -217,7 +217,12 @@ object Read extends Logging {
   def fromSAMRecord(record: SAMRecord,
                     token: Int,
                     requireMDTagsOnMappedReads: Boolean,
+                    recomputeMdTags: Boolean,
                     referenceGenome: Option[ReferenceGenome]): Read = {
+
+    if (recomputeMdTags && referenceGenome.isEmpty) {
+      throw new IllegalArgumentException("To recompute MD tags, a reference genome fasta must be provided.")
+    }
 
     val isMapped = (
       !record.getReadUnmappedFlag &&
@@ -234,7 +239,7 @@ object Read extends Logging {
 
     val read = if (isMapped) {
       val readMdTag = Option(record.getStringAttribute("MD"))
-      val mdTagString = if (readMdTag.isDefined) {
+      val mdTagString = if (readMdTag.isDefined && !recomputeMdTags) {
         readMdTag
       } else {
         referenceGenome.map(
@@ -290,7 +295,9 @@ object Read extends Logging {
    *
    * @param bamReaderAPI which library to use to load SAM and BAM files
    */
-  case class ReadLoadingConfig(bamReaderAPI: ReadLoadingConfig.BamReaderAPI.BamReaderAPI = ReadLoadingConfig.BamReaderAPI.Best) {}
+  case class ReadLoadingConfig(
+    bamReaderAPI: ReadLoadingConfig.BamReaderAPI.BamReaderAPI = ReadLoadingConfig.BamReaderAPI.Best,
+    recomputeMDTags: Boolean = false) {}
   object ReadLoadingConfig {
     val default = ReadLoadingConfig()
 
@@ -368,13 +375,16 @@ object Read extends Logging {
     config: ReadLoadingConfig = ReadLoadingConfig.default): (RDD[Read], SequenceDictionary) = {
 
     val path = new Path(filename)
-    val useSamtools =
-      config.bamReaderAPI == ReadLoadingConfig.BamReaderAPI.Samtools ||
-        (config.bamReaderAPI == ReadLoadingConfig.BamReaderAPI.Best &&
-          path.getFileSystem(sc.hadoopConfiguration).getScheme == "file")
+    val scheme = path.getFileSystem(sc.hadoopConfiguration).getScheme
+    val useSamtools = config.bamReaderAPI == ReadLoadingConfig.BamReaderAPI.Samtools ||
+        (config.bamReaderAPI == ReadLoadingConfig.BamReaderAPI.Best && scheme ==  "file")
 
     if (useSamtools) {
       // Load with samtools
+      if (scheme != "file") {
+        throw new IllegalArgumentException(
+          "Samtools API can only be used to read local files (i.e. scheme='file'), not: scheme='%s'".format(scheme))
+      }
       var requiresFilteringByLocus = filters.overlapsLoci.nonEmpty
 
       val factory = SamReaderFactory.makeDefault
@@ -408,7 +418,7 @@ object Read extends Logging {
             (filters.isPaired && !record.getReadPairedFlag)) {
           None
         } else {
-          val read = fromSAMRecord(record, token, requireMDTagsOnMappedReads, referenceGenome)
+          val read = fromSAMRecord(record, token, requireMDTagsOnMappedReads, config.recomputeMDTags, referenceGenome)
           if (filters.hasMdTag && !read.hasMdTag) {
             None
           } else {
@@ -432,6 +442,7 @@ object Read extends Logging {
             v.get,
             token,
             requireMDTagsOnMappedReads,
+            config.recomputeMDTags,
             referenceGenome)
         })
       val reads = InputFilters.filterRDD(filters, allReads, sequenceDictionary)
@@ -448,6 +459,11 @@ object Read extends Logging {
                                                config: ReadLoadingConfig = ReadLoadingConfig.default): (RDD[Read], SequenceDictionary) = {
 
     Common.progress("Using ADAM to read: %s".format(filename))
+
+    if (config.recomputeMDTags) {
+      throw new IllegalArgumentException("Recomputing md tags currently not implemented for ADAM files.")
+    }
+
     val adamContext = new ADAMContext(sc)
 
     // Build a projection that will only load the fields we will need to populate a Read

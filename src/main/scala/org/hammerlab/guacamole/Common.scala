@@ -75,11 +75,17 @@ object Common extends Logging {
       @Args4jOption(name = "--bam-reader-api",
         usage = "API to use for reading BAMs, one of: best (use samtools if file local), samtools, hadoopbam")
       var bamReaderAPI: String = "best"
+
+      @Args4jOption(name = "--recompute-md-tags",
+        usage = "Use the reference fasta to recompute the MD Tags on all mapped reads")
+      var recomputeMDTags: Boolean = false
     }
     object ReadLoadingConfigArgs {
       /** Given commandline arguments, return a ReadLoadingConfig. */
       def fromArguments(args: ReadLoadingConfigArgs): Read.ReadLoadingConfig = {
-        Read.ReadLoadingConfig(bamReaderAPI = Read.ReadLoadingConfig.BamReaderAPI.withNameCaseInsensitive(args.bamReaderAPI))
+        Read.ReadLoadingConfig(
+          bamReaderAPI = Read.ReadLoadingConfig.BamReaderAPI.withNameCaseInsensitive(args.bamReaderAPI),
+          recomputeMDTags = args.recomputeMDTags)
       }
     }
 
