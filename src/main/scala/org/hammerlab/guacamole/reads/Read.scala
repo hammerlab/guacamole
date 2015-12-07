@@ -377,7 +377,7 @@ object Read extends Logging {
     val path = new Path(filename)
     val scheme = path.getFileSystem(sc.hadoopConfiguration).getScheme
     val useSamtools = config.bamReaderAPI == ReadLoadingConfig.BamReaderAPI.Samtools ||
-        (config.bamReaderAPI == ReadLoadingConfig.BamReaderAPI.Best && scheme ==  "file")
+      (config.bamReaderAPI == ReadLoadingConfig.BamReaderAPI.Best && scheme == "file")
 
     if (useSamtools) {
       // Load with samtools
