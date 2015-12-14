@@ -33,6 +33,7 @@ import org.apache.spark.{ Logging, SparkConf, SparkContext }
 import org.bdgenomics.utils.cli.{ Args4jBase, ParquetArgs }
 import org.bdgenomics.adam.rdd.ADAMContext._
 import org.bdgenomics.formats.avro.Genotype
+import org.hammerlab.guacamole.Common.Arguments.ReadLoadingConfigArgs
 import org.hammerlab.guacamole.Concordance.ConcordanceArgs
 import org.hammerlab.guacamole.reads.Read
 import org.codehaus.jackson.JsonFactory
@@ -54,7 +55,7 @@ object Common extends Logging {
     /** Argument for accepting a set of loci. */
     trait Loci extends Base {
       @Args4jOption(name = "--loci", usage = "Loci at which to call variants. Either 'all' or contig:start-end,contig:start-end,...",
-        forbids = Array("-loci-from-file"))
+        forbids = Array("--loci-from-file"))
       var loci: String = ""
 
       @Args4jOption(name = "--loci-from-file", usage = "Path to file giving loci at which to call variants.",
@@ -69,14 +70,33 @@ object Common extends Logging {
       var noSequenceDictionary: Boolean = false
     }
 
+    /** Argument for configuring read loading with a Read.ReadLoadingConfig object. */
+    trait ReadLoadingConfigArgs extends Base {
+      @Args4jOption(name = "--bam-reader-api",
+        usage = "API to use for reading BAMs, one of: best (use samtools if file local), samtools, hadoopbam")
+      var bamReaderAPI: String = "best"
+
+      @Args4jOption(name = "--recompute-md-tags",
+        usage = "Use the reference fasta to recompute the MD Tags on all mapped reads")
+      var recomputeMDTags: Boolean = false
+    }
+    object ReadLoadingConfigArgs {
+      /** Given commandline arguments, return a ReadLoadingConfig. */
+      def fromArguments(args: ReadLoadingConfigArgs): Read.ReadLoadingConfig = {
+        Read.ReadLoadingConfig(
+          bamReaderAPI = Read.ReadLoadingConfig.BamReaderAPI.withNameCaseInsensitive(args.bamReaderAPI),
+          recomputeMDTags = args.recomputeMDTags)
+      }
+    }
+
     /** Argument for accepting a single set of reads (for non-somatic variant calling). */
-    trait Reads extends Base with NoSequenceDictionary {
+    trait Reads extends Base with NoSequenceDictionary with ReadLoadingConfigArgs {
       @Args4jOption(name = "--reads", metaVar = "X", required = true, usage = "Aligned reads")
       var reads: String = ""
     }
 
     /** Arguments for accepting two sets of reads (tumor + normal). */
-    trait TumorNormalReads extends Base with NoSequenceDictionary {
+    trait TumorNormalReads extends Base with NoSequenceDictionary with ReadLoadingConfigArgs {
       @Args4jOption(name = "--normal-reads", metaVar = "X", required = true, usage = "Aligned reads: normal")
       var normalReads: String = ""
 
@@ -146,6 +166,7 @@ object Common extends Logging {
     filters: Read.InputFilters,
     requireMDTagsOnMappedReads: Boolean = false,
     referenceGenome: Option[ReferenceGenome] = None): ReadSet = {
+
     ReadSet(
       sc,
       args.reads,
@@ -153,7 +174,8 @@ object Common extends Logging {
       filters,
       token = 0,
       contigLengthsFromDictionary = !args.noSequenceDictionary,
-      referenceGenome)
+      referenceGenome = referenceGenome,
+      config = ReadLoadingConfigArgs.fromArguments(args))
   }
 
   /**
@@ -172,19 +194,33 @@ object Common extends Logging {
     requireMDTagsOnMappedReads: Boolean = false,
     referenceGenome: Option[ReferenceGenome] = None): (ReadSet, ReadSet) = {
 
-    val tumor = ReadSet(sc, args.tumorReads, requireMDTagsOnMappedReads, filters, 1, !args.noSequenceDictionary, referenceGenome)
-    val normal = ReadSet(sc, args.normalReads, requireMDTagsOnMappedReads, filters, 2, !args.noSequenceDictionary, referenceGenome)
+    val tumor = ReadSet(
+      sc,
+      args.tumorReads,
+      requireMDTagsOnMappedReads,
+      filters,
+      1,
+      !args.noSequenceDictionary,
+      referenceGenome,
+      ReadLoadingConfigArgs.fromArguments(args))
+    val normal = ReadSet(
+      sc,
+      args.normalReads,
+      requireMDTagsOnMappedReads,
+      filters,
+      2,
+      !args.noSequenceDictionary,
+      referenceGenome,
+      ReadLoadingConfigArgs.fromArguments(args))
     (tumor, normal)
   }
 
   /**
-   * If the user specifies a -loci argument, parse it out and return the LociSet. Otherwise, construct a LociSet that
-   * includes all the loci in the contigs.
+   * Return the loci specified by the user as a LociSet.Builder.
    *
    * @param args parsed arguments
-   * @param readSet readSet from which to use to get contigs and lengths.
    */
-  def loci(args: Arguments.Loci, readSet: ReadSet): LociSet = {
+  def loci(args: Arguments.Loci): LociSet.Builder = {
     if (args.loci.nonEmpty && args.lociFromFile.nonEmpty) {
       throw new IllegalArgumentException("Specify at most one of the 'loci' and 'loci-from-file' arguments")
     }
@@ -199,13 +235,7 @@ object Common extends Logging {
       // Default is "all"
       "all"
     }
-
-    val result = LociSet.parse(lociToParse, Some(readSet.contigLengths))
-    progress("Including %,d loci across %,d contig(s): %s".format(
-      result.count,
-      result.contigs.length,
-      result.truncatedString()))
-    result
+    LociSet.parse(lociToParse)
   }
 
   /**

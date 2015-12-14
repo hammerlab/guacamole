@@ -100,7 +100,8 @@ object ReadSet {
     filters: Read.InputFilters = Read.InputFilters.empty,
     token: Int = 0,
     contigLengthsFromDictionary: Boolean = true,
-    referenceGenome: Option[ReferenceGenome] = None): ReadSet = {
+    referenceGenome: Option[ReferenceGenome] = None,
+    config: Read.ReadLoadingConfig = Read.ReadLoadingConfig.default): ReadSet = {
 
     val (reads, sequenceDictionary) =
       Read.loadReadRDDAndSequenceDictionary(
@@ -109,7 +110,8 @@ object ReadSet {
         token = token,
         filters = filters,
         requireMDTagsOnMappedReads,
-        referenceGenome
+        referenceGenome,
+        config
       )
 
     new ReadSet(
