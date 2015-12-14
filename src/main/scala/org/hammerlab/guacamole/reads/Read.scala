@@ -18,6 +18,8 @@
 
 package org.hammerlab.guacamole.reads
 
+import java.io.File
+
 import htsjdk.samtools._
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.io.LongWritable
@@ -27,13 +29,12 @@ import org.bdgenomics.adam.models.SequenceDictionary
 import org.bdgenomics.adam.projections.{ AlignmentRecordField, Projection }
 import org.bdgenomics.adam.rdd.{ ADAMContext, ADAMSpecificRecordSequenceDictionaryRDDAggregator }
 import org.bdgenomics.formats.avro.AlignmentRecord
-import org.hammerlab.guacamole.Bases
+import org.hammerlab.guacamole.{ Common, LociSet, Bases }
 import org.hammerlab.guacamole.reference.ReferenceGenome
 import org.seqdoop.hadoop_bam.util.SAMHeaderReader
 import org.seqdoop.hadoop_bam.{ AnySAMInputFormat, SAMRecordWritable }
 
 import scala.collection.JavaConversions
-import scala.collection.mutable.ArrayBuffer
 
 /**
  * The fields in the Read trait are common to any read, whether mapped (aligned) or not.
@@ -46,8 +47,6 @@ trait Read {
    * It's used, for example, to differentiate tumor/normal pairs in some somatic callers.
    *
    * This field can be set when reading in the reads, or modified at any point by the application.
-   *
-   * Many applications just ignore this.
    *
    */
   def token: Int
@@ -64,14 +63,13 @@ trait Read {
   /** Is this read mapped? */
   def isMapped: Boolean
 
+  def asMappedRead: Option[MappedRead]
+
   /** The sample (e.g. "tumor" or "patient3636") name. */
   def sampleName: String
 
   /** Whether the read failed predefined vendor checks for quality */
   def failedVendorQualityChecks: Boolean
-
-  /** Whether the read was on the positive or forward strand */
-  def isPositiveStrand: Boolean
 
   /** Whether read is from a paired-end library */
   def isPaired: Boolean
@@ -85,22 +83,72 @@ object Read extends Logging {
   /**
    * Filtering reads while they are loaded can be an important optimization.
    *
-   * These fields are commonly used filters. Setting a field to True will result in filtering on that field. If multiple
-   * fields are set, the result is the intersection of the filters (i.e. reads must satisfy ALL filters).
+   * These fields are commonly used filters. For boolean fields, setting a field to true will result in filtering on
+   * that field. The result is the intersection of the filters (i.e. reads must satisfy ALL filters).
    *
-   * @param mapped include only mapped reads
+   * @param overlapsLoci if not None, include only mapped reads that overlap the given loci
    * @param nonDuplicate include only reads that do not have the duplicate bit set
    * @param passedVendorQualityChecks include only reads that do not have the failedVendorQualityChecks bit set
    * @param isPaired include only reads are paired-end reads
+   * @param hasMdTag include only reads with md tags
    */
   case class InputFilters(
-    mapped: Boolean = false,
-    nonDuplicate: Boolean = false,
-    passedVendorQualityChecks: Boolean = false,
-    isPaired: Boolean = false,
-    hasMdTag: Boolean = false) {}
+    val overlapsLoci: Option[LociSet.Builder],
+    val nonDuplicate: Boolean,
+    val passedVendorQualityChecks: Boolean,
+    val isPaired: Boolean,
+    val hasMdTag: Boolean) {}
   object InputFilters {
     val empty = InputFilters()
+
+    /**
+     * See InputFilters for full documentation.
+     * @param mapped include only mapped reads. Convenience argument that is equivalent to specifying all sites in
+     *               overlapsLoci.
+     */
+    def apply(mapped: Boolean = false,
+              overlapsLoci: Option[LociSet.Builder] = None,
+              nonDuplicate: Boolean = false,
+              passedVendorQualityChecks: Boolean = false,
+              isPaired: Boolean = false,
+              hasMdTag: Boolean = false): InputFilters = {
+      new InputFilters(
+        overlapsLoci = if (overlapsLoci.isEmpty && mapped) Some(LociSet.newBuilder.putAllContigs) else overlapsLoci,
+        nonDuplicate = nonDuplicate,
+        passedVendorQualityChecks = passedVendorQualityChecks,
+        isPaired = isPaired,
+        hasMdTag = hasMdTag)
+    }
+
+    /**
+     * Apply filters to an RDD of reads.
+     *
+     * @param filters
+     * @param reads
+     * @param sequenceDictionary
+     * @return filtered RDD
+     */
+    def filterRDD(filters: InputFilters, reads: RDD[Read], sequenceDictionary: SequenceDictionary): RDD[Read] = {
+      /* Note that the InputFilter properties are public, and some loaders directly apply
+       * the filters as the reads are loaded, instead of filtering an existing RDD as we do here. If more filters
+       * are added, be sure to update those implementations.
+       * 
+       * This is implemented as a static function instead of a method in InputFilters because the overlapsLoci
+       * attribute cannot be serialized.
+       */
+      var result = reads
+      if (filters.overlapsLoci.nonEmpty) {
+        val loci = filters.overlapsLoci.get.result(contigLengths(sequenceDictionary))
+        val broadcastLoci = reads.sparkContext.broadcast(loci)
+        result = result.filter(
+          read => read.isMapped && read.asMappedRead.get.overlapsLociSet(broadcastLoci.value))
+      }
+      if (filters.nonDuplicate) result = result.filter(!_.isDuplicate)
+      if (filters.passedVendorQualityChecks) result = result.filter(!_.failedVendorQualityChecks)
+      if (filters.isPaired) result = result.filter(_.isPaired)
+      if (filters.hasMdTag) result = result.filter(_.hasMdTag)
+      result
+    }
   }
 
   /**
@@ -143,7 +191,6 @@ object Read extends Logging {
   }
 
   /**
-   *
    * Converts the ascii-string encoded base qualities into an array of integers
    * quality scores in Phred-scale
    *
@@ -170,12 +217,14 @@ object Read extends Logging {
   def fromSAMRecord(record: SAMRecord,
                     token: Int,
                     requireMDTagsOnMappedReads: Boolean,
+                    recomputeMdTags: Boolean,
                     referenceGenome: Option[ReferenceGenome]): Read = {
 
+    if (recomputeMdTags && referenceGenome.isEmpty) {
+      throw new IllegalArgumentException("To recompute MD tags, a reference genome fasta must be provided.")
+    }
+
     val isMapped = (
-      // NOTE(ryan): this flag should maybe be the main determinant of the mapped-ness of this SAM record. SAM spec
-      // (http://samtools.github.io/hts-specs/SAMv1.pdf) says: "Bit 0x4 is the only reliable place to tell whether the
-      // read is unmapped."
       !record.getReadUnmappedFlag &&
       record.getReferenceName != null &&
       record.getReferenceIndex >= SAMRecord.NO_ALIGNMENT_REFERENCE_INDEX &&
@@ -188,11 +237,14 @@ object Read extends Logging {
       "default"
     }).intern
 
-    if (isMapped) {
-      val mdTagString =
+    val read = if (isMapped) {
+      val readMdTag = Option(record.getStringAttribute("MD"))
+      val mdTagString = if (readMdTag.isDefined && !recomputeMdTags) {
+        readMdTag
+      } else {
         referenceGenome.map(
-          _.buildMdTag(record.getReadString, record.getReferenceName, record.getAlignmentStart - 1, record.getCigar)
-        ).orElse(Option(record.getStringAttribute("MD")))
+          _.buildMdTag(record.getReadString, record.getReferenceName, record.getAlignmentStart - 1, record.getCigar))
+      }
 
       if (!mdTagString.isDefined && requireMDTagsOnMappedReads) {
         throw MissingMDTagException(record)
@@ -227,42 +279,48 @@ object Read extends Logging {
         record.getDuplicateReadFlag,
         sampleName,
         record.getReadFailsVendorQualityCheckFlag,
-        !record.getReadNegativeStrandFlag,
         record.getReadPairedFlag
       )
+    }
+    if (record.getReadPairedFlag) {
+      val mateAlignment = MateAlignmentProperties(record)
+      PairedRead(read, isFirstInPair = record.getFirstOfPairFlag, mateAlignment)
+    } else {
+      read
     }
   }
 
   /**
-   * Given a local path to a BAM/SAM file, return a pair: (Array, SequenceDictionary), where the first element is an
-   * array of the reads, and the second is a Sequence Dictionary giving info (e.g. length) about the contigs in the BAM.
+   * Configuration for read loading. These options should affect performance but not results.
+   *
+   * @param bamReaderAPI which library to use to load SAM and BAM files
    */
-  def loadReadArrayAndSequenceDictionaryFromBAM(
-    filename: String,
-    token: Int,
-    filters: InputFilters,
-    referenceGenome: Option[ReferenceGenome]): (ArrayBuffer[Read], SequenceDictionary) = {
-    val reader = SamReaderFactory.make.open(new java.io.File(filename))
-    val sequenceDictionary = SequenceDictionary.fromSAMReader(reader)
-    val result = new ArrayBuffer[Read]
+  case class ReadLoadingConfig(
+    bamReaderAPI: ReadLoadingConfig.BamReaderAPI.BamReaderAPI = ReadLoadingConfig.BamReaderAPI.Best,
+    recomputeMDTags: Boolean = false) {}
+  object ReadLoadingConfig {
+    val default = ReadLoadingConfig()
 
-    JavaConversions.asScalaIterator(reader.iterator).foreach(item => {
-      if (!filters.nonDuplicate || !item.getDuplicateReadFlag) {
-        val read = fromSAMRecord(
-          item,
-          token,
-          requireMDTagsOnMappedReads = false,
-          referenceGenome
-        )
+    /**
+     * Specification of which API to use when reading BAM and SAM files.
+     *
+     * Best - use Samtools when the file is on the local filesystem otherwise HadoopBAM
+     * Samtools - use Samtools. This supports using the bam index when available.
+     * HadoopBAM - use HadoopBAM. This supports reading the file in parallel when it is on HDFS.
+     */
+    object BamReaderAPI extends Enumeration {
+      type BamReaderAPI = Value
+      val Best, Samtools, HadoopBAM = Value
 
-        if ((!filters.mapped || read.isMapped) &&
-          (!filters.passedVendorQualityChecks || !read.failedVendorQualityChecks) &&
-          (!filters.isPaired || read.isPaired)) {
-          result += read
-        }
+      /**
+       * Like Enumeration.withName but case insensitive
+       */
+      def withNameCaseInsensitive(s: String): Value = {
+        val result = values.find(_.toString.compareToIgnoreCase(s) == 0)
+        result.getOrElse(throw new IllegalArgumentException(
+          "Unsupported bam reading API: %s. Valid APIs are: %s".format(s, values.map(_.toString).mkString(", "))))
       }
-    })
-    (result, sequenceDictionary)
+    }
   }
 
   /**
@@ -273,79 +331,138 @@ object Read extends Logging {
    * @param sc spark context
    * @param token value to set the "token" field to in all the reads (default 0)
    * @param filters filters to apply
+   * @param requireMDTagsOnMappedReads throw an error if any mapped reads are missing md tags
+   * @param referenceGenome
    * @return
    */
-
   def loadReadRDDAndSequenceDictionary(filename: String,
                                        sc: SparkContext,
                                        token: Int,
                                        filters: InputFilters,
                                        requireMDTagsOnMappedReads: Boolean,
-                                       referenceGenome: Option[ReferenceGenome] = None): (RDD[Read], SequenceDictionary) = {
-    var (reads, sequenceDictionary) = if (filename.endsWith(".bam") || filename.endsWith(".sam")) {
+                                       referenceGenome: Option[ReferenceGenome] = None,
+                                       config: ReadLoadingConfig = ReadLoadingConfig.default): (RDD[Read], SequenceDictionary) = {
+    if (filename.endsWith(".bam") || filename.endsWith(".sam")) {
       loadReadRDDAndSequenceDictionaryFromBAM(
         filename,
         sc,
         token,
+        filters,
         requireMDTagsOnMappedReads,
-        referenceGenome
+        referenceGenome,
+        config
       )
     } else {
       loadReadRDDAndSequenceDictionaryFromADAM(
         filename,
         sc,
         token,
-        referenceGenome
+        filters,
+        referenceGenome,
+        config
       )
     }
-    if (filters.mapped) reads = reads.filter(_.isMapped)
-    if (filters.nonDuplicate) reads = reads.filter(!_.isDuplicate)
-    if (filters.passedVendorQualityChecks) reads = reads.filter(!_.failedVendorQualityChecks)
-    if (filters.isPaired) reads = reads.filter(_.isPaired)
-    if (filters.hasMdTag) reads = reads.filter(_.hasMdTag)
-    (reads, sequenceDictionary)
-
   }
 
   /** Returns an RDD of Reads and SequenceDictionary from reads in BAM format **/
   def loadReadRDDAndSequenceDictionaryFromBAM(
     filename: String,
     sc: SparkContext,
-    token: Int,
+    token: Int = 0,
+    filters: InputFilters = InputFilters.empty,
     requireMDTagsOnMappedReads: Boolean,
-    referenceGenome: Option[ReferenceGenome]): (RDD[Read], SequenceDictionary) = {
+    referenceGenome: Option[ReferenceGenome],
+    config: ReadLoadingConfig = ReadLoadingConfig.default): (RDD[Read], SequenceDictionary) = {
 
-    val samHeader = SAMHeaderReader.readSAMHeaderFrom(new Path(filename), sc.hadoopConfiguration)
-    val sequenceDictionary = SequenceDictionary.fromSAMHeader(samHeader)
+    val path = new Path(filename)
+    val scheme = path.getFileSystem(sc.hadoopConfiguration).getScheme
+    val useSamtools = config.bamReaderAPI == ReadLoadingConfig.BamReaderAPI.Samtools ||
+      (config.bamReaderAPI == ReadLoadingConfig.BamReaderAPI.Best && scheme == "file")
 
-    val samRecords: RDD[(LongWritable, SAMRecordWritable)] =
-      sc.newAPIHadoopFile[LongWritable, SAMRecordWritable, AnySAMInputFormat](filename)
-    val reads: RDD[Read] =
-      samRecords.map({
-        case (k, v) =>
-          if (v.get.getReadPairedFlag)
-            PairedRead(
-              v.get,
-              token,
-              requireMDTagsOnMappedReads,
-              referenceGenome
-            )
-          else
-            fromSAMRecord(
-              v.get,
-              token,
-              requireMDTagsOnMappedReads,
-              referenceGenome
-            )
+    if (useSamtools) {
+      // Load with samtools
+      if (scheme != "file") {
+        throw new IllegalArgumentException(
+          "Samtools API can only be used to read local files (i.e. scheme='file'), not: scheme='%s'".format(scheme))
+      }
+      var requiresFilteringByLocus = filters.overlapsLoci.nonEmpty
+
+      val factory = SamReaderFactory.makeDefault
+      val reader = factory.open(new File(path.toUri.getPath))
+      val samSequenceDictionary = reader.getFileHeader.getSequenceDictionary
+      val sequenceDictionary = SequenceDictionary.fromSAMSequenceDictionary(samSequenceDictionary)
+      val loci = filters.overlapsLoci.map(_.result(contigLengths(sequenceDictionary)))
+      val recordIterator: SAMRecordIterator = if (filters.overlapsLoci.nonEmpty && reader.hasIndex) {
+        Common.progress("Using samtools with BAM index to read: %s".format(filename))
+        requiresFilteringByLocus = false
+        val queryIntervals = loci.get.contigs.flatMap(contig => {
+          val contigIndex = samSequenceDictionary.getSequenceIndex(contig)
+          loci.get.onContig(contig).ranges().map(range =>
+            new QueryInterval(contigIndex,
+              range.start.toInt + 1, // convert 0-indexed inclusive to 1-indexed inclusive
+              range.end.toInt)) // "convert" 0-indexed exclusive to 1-indexed inclusive, which is a no-op)
+        })
+        val optimizedQueryIntervals = QueryInterval.optimizeIntervals(queryIntervals.toArray)
+        reader.query(optimizedQueryIntervals, false) // Note: this can return unmapped reads, which we filter below.
+      } else {
+        Common.progress("Using samtools without BAM index to read: %s".format(filename))
+        reader.iterator
+      }
+      val reads = JavaConversions.asScalaIterator(recordIterator).flatMap(record => {
+        // Optimization: some of the filters are easy to run on the raw SamRecord, so we avoid making a Read.
+        if ((filters.overlapsLoci.nonEmpty && record.getReadUnmappedFlag) ||
+          (requiresFilteringByLocus &&
+            !loci.get.onContig(record.getContig).intersects(record.getStart - 1, record.getEnd)) ||
+            (filters.nonDuplicate && record.getDuplicateReadFlag) ||
+            (filters.passedVendorQualityChecks && record.getReadFailsVendorQualityCheckFlag) ||
+            (filters.isPaired && !record.getReadPairedFlag)) {
+          None
+        } else {
+          val read = fromSAMRecord(record, token, requireMDTagsOnMappedReads, config.recomputeMDTags, referenceGenome)
+          if (filters.hasMdTag && !read.hasMdTag) {
+            None
+          } else {
+            assert(filters.overlapsLoci.isEmpty || read.isMapped)
+            Some(read)
+          }
+        }
       })
-    (reads, sequenceDictionary)
+      (sc.parallelize(reads.toSeq), sequenceDictionary)
+    } else {
+      // Load with hadoop bam
+      Common.progress("Using hadoop bam to read: %s".format(filename))
+      val samHeader = SAMHeaderReader.readSAMHeaderFrom(path, sc.hadoopConfiguration)
+      val sequenceDictionary = SequenceDictionary.fromSAMHeader(samHeader)
+
+      val samRecords: RDD[(LongWritable, SAMRecordWritable)] =
+        sc.newAPIHadoopFile[LongWritable, SAMRecordWritable, AnySAMInputFormat](filename)
+      val allReads: RDD[Read] =
+        samRecords.map({
+          case (k, v) => fromSAMRecord(
+            v.get,
+            token,
+            requireMDTagsOnMappedReads,
+            config.recomputeMDTags,
+            referenceGenome)
+        })
+      val reads = InputFilters.filterRDD(filters, allReads, sequenceDictionary)
+      (reads, sequenceDictionary)
+    }
   }
 
   /** Returns an RDD of Reads and SequenceDictionary from reads in ADAM format **/
   def loadReadRDDAndSequenceDictionaryFromADAM(filename: String,
                                                sc: SparkContext,
-                                               token: Int,
-                                               referenceGenome: Option[ReferenceGenome] = None): (RDD[Read], SequenceDictionary) = {
+                                               token: Int = 0,
+                                               filters: InputFilters = InputFilters.empty,
+                                               referenceGenome: Option[ReferenceGenome] = None,
+                                               config: ReadLoadingConfig = ReadLoadingConfig.default): (RDD[Read], SequenceDictionary) = {
+
+    Common.progress("Using ADAM to read: %s".format(filename))
+
+    if (config.recomputeMDTags) {
+      throw new IllegalArgumentException("Recomputing md tags currently not implemented for ADAM files.")
+    }
 
     val adamContext = new ADAMContext(sc)
 
@@ -382,8 +499,8 @@ object Read extends Logging {
     val adamRecords: RDD[AlignmentRecord] = adamContext.loadParquet(filename, projection = Some(ADAMSpecificProjection))
     val sequenceDictionary = new ADAMSpecificRecordSequenceDictionaryRDDAggregator(adamRecords).adamGetSequenceDictionary()
 
-    val reads: RDD[Read] = adamRecords.map(fromADAMRecord(_, token, referenceGenome))
-
+    val allReads: RDD[Read] = adamRecords.map(fromADAMRecord(_, token, referenceGenome))
+    val reads = InputFilters.filterRDD(filters, allReads, sequenceDictionary)
     (reads, sequenceDictionary)
   }
 
@@ -430,7 +547,6 @@ object Read extends Logging {
         isDuplicate = alignmentRecord.getDuplicateRead,
         sampleName = alignmentRecord.getRecordGroupSample.toString.intern(),
         failedVendorQualityChecks = alignmentRecord.getFailedVendorQualityChecks,
-        isPositiveStrand = !alignmentRecord.getReadNegativeStrand,
         alignmentRecord.getReadPaired
       )
     }
@@ -456,4 +572,12 @@ object Read extends Logging {
   def cigarElementIsClipped(element: CigarElement): Boolean = {
     element.getOperator == CigarOperator.SOFT_CLIP || element.getOperator == CigarOperator.HARD_CLIP
   }
+
+  /** Extract the length of each contig from a sequence dictionary */
+  def contigLengths(sequenceDictionary: SequenceDictionary): Map[String, Long] = {
+    val builder = Map.newBuilder[String, Long]
+    sequenceDictionary.records.foreach(record => builder += ((record.name.toString, record.length)))
+    builder.result
+  }
+
 }

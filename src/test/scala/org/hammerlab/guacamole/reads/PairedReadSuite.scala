@@ -14,7 +14,6 @@ class PairedReadSuite extends FunSuite with Matchers {
       true,
       "some sample name",
       false,
-      isPositiveStrand = true,
       isPaired = true)
 
     val read =
@@ -47,7 +46,6 @@ class PairedReadSuite extends FunSuite with Matchers {
         true,
         "some sample name",
         false,
-        isPositiveStrand = true,
         isPaired = true),
       isFirstInPair = true,
       mateAlignmentProperties = Some(

@@ -41,7 +41,7 @@ object VariantLocus {
 
 object VAFHistogram {
 
-  protected class Arguments extends DistributedUtil.Arguments {
+  protected class Arguments extends DistributedUtil.Arguments with Common.Arguments.ReadLoadingConfigArgs {
 
     @Args4jOption(name = "--out", required = false, forbids = Array("--local-out"),
       usage = "HDFS file path to save the variant allele frequency histogram")
@@ -87,9 +87,9 @@ object VAFHistogram {
     override val description = "Compute and cluster the variant allele frequencies"
 
     override def run(args: Arguments, sc: SparkContext): Unit = {
-
+      val loci = Common.loci(args)
       val filters = Read.InputFilters(
-        mapped = true,
+        overlapsLoci = Some(loci),
         nonDuplicate = true,
         passedVendorQualityChecks = true,
         hasMdTag = true)
@@ -104,14 +104,14 @@ object VAFHistogram {
             InputFilters.empty,
             token = bamFile._2,
             contigLengthsFromDictionary = true,
-            referenceGenome = None
+            referenceGenome = None,
+            config = Common.Arguments.ReadLoadingConfigArgs.fromArguments(args)
           )
       )
 
-      val loci = Common.loci(args, readSets(0))
       val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(
         args,
-        loci,
+        loci.result(readSets(0).contigLengths),
         readSets(0).mappedReads // Use the first set of reads as a proxy for read depth
       )
 

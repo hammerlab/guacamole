@@ -29,12 +29,12 @@ case class UnmappedRead(
     isDuplicate: Boolean,
     sampleName: String,
     failedVendorQualityChecks: Boolean,
-    isPositiveStrand: Boolean,
     isPaired: Boolean) extends Read {
 
   assert(baseQualities.length == sequence.length)
 
   override val isMapped = false
+  override def asMappedRead = None
   override val hasMdTag = false
 }
 

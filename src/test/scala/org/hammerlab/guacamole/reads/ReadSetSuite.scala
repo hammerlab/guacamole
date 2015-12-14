@@ -21,24 +21,63 @@ package org.hammerlab.guacamole.reads
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.rdd.ADAMContext
 import org.bdgenomics.formats.avro.AlignmentRecord
+import org.hammerlab.guacamole.{ LociSet, Bases }
+import org.hammerlab.guacamole.reads.Read.InputFilters
 import org.hammerlab.guacamole.util.{ TestUtil, GuacFunSuite }
 import org.scalatest.Matchers
 import org.bdgenomics.adam.rdd.ADAMContext._
 
 class ReadSetSuite extends GuacFunSuite with Matchers {
 
+  sparkTest("using different bam reading APIs on sam/bam files should give identical results") {
+    def check(paths: Seq[String], filter: InputFilters): Unit = {
+      withClue("using filter %s: ".format(filter)) {
+        val configs = Read.ReadLoadingConfig.BamReaderAPI.values.map(api => Read.ReadLoadingConfig(bamReaderAPI = api)).toSeq
+        val standard = TestUtil.loadReads(sc, paths(0), filter, config = configs(0)).reads.collect
+        configs.foreach(config => {
+          paths.foreach(path => {
+            withClue("file %s with config %s vs standard %s with config %s:\n".format(path, config, paths(0), configs(0))) {
+              val result = TestUtil.loadReads(sc, path, filter, config = config).reads.collect
+              if (result.toSet != standard.toSet) {
+                val missing = standard.filter(!result.contains(_))
+                assert(missing.isEmpty, "Missing reads: %s".format(missing.map(_.toString).mkString("\n\t")))
+                val extra = result.filter(!standard.contains(_))
+                assert(extra.isEmpty, "Extra reads:\n\t%s".format(extra.map(_.toString).mkString("\n\t")))
+                assert(false, "shouldn't get here")
+              }
+            }
+          })
+        })
+      }
+    }
+
+    Seq(
+      InputFilters(),
+      InputFilters(mapped = true, nonDuplicate = true),
+      InputFilters(overlapsLoci = Some(LociSet.parse("20:10220390-10220490")))
+    ).foreach(filter => {
+        check(Seq("gatk_mini_bundle_extract.bam", "gatk_mini_bundle_extract.sam"), filter)
+      })
+
+    Seq(
+      InputFilters(overlapsLoci = Some(LociSet.parse("19:147033-147034")))
+    ).foreach(filter => {
+        check(Seq("synth1.normal.100k-200k.withmd.bam", "synth1.normal.100k-200k.withmd.sam"), filter)
+      })
+  }
+
   sparkTest("load and test filters") {
     val allReads = TestUtil.loadReads(sc, "mdtagissue.sam")
     allReads.reads.count() should be(8)
 
     val mdTagReads = TestUtil.loadReads(sc, "mdtagissue.sam", Read.InputFilters(mapped = true))
-    mdTagReads.reads.count() should be(6)
+    mdTagReads.reads.count() should be(5)
 
     val nonDuplicateReads = TestUtil.loadReads(
       sc,
       "mdtagissue.sam",
       Read.InputFilters(mapped = true, nonDuplicate = true))
-    nonDuplicateReads.reads.count() should be(4)
+    nonDuplicateReads.reads.count() should be(3)
   }
 
   sparkTest("load RNA reads") {
@@ -65,9 +104,8 @@ class ReadSetSuite extends GuacFunSuite with Matchers {
       1,
       Read.InputFilters(mapped = true, nonDuplicate = true),
       requireMDTagsOnMappedReads = true)
-    filteredReads.count() should be(4)
+    filteredReads.count() should be(3)
     filteredReads.collect().forall(_.token == 1) should be(true)
-
   }
 
   sparkTest("load and serialize / deserialize reads") {
@@ -85,6 +123,5 @@ class ReadSetSuite extends GuacFunSuite with Matchers {
       deserialized.isPositiveStrand should equal(read.isPositiveStrand)
       deserialized.isPaired should equal(read.isPaired)
     }
-
   }
 }

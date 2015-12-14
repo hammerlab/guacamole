@@ -32,7 +32,6 @@ class UnmappedReadSuite extends GuacFunSuite with Matchers {
       true,
       "some sample name",
       false,
-      isPositiveStrand = true,
       isPaired = false
     )
 
