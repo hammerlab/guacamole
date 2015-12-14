@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>AlignmentState - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.alignment.AlignmentState</title>
-          <meta name="description" content="AlignmentState - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.alignment.AlignmentState" />
-          <meta name="keywords" content="AlignmentState guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.alignment.AlignmentState" />
+          <title>BamReaderAPI - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.reads.Read.ReadLoadingConfig.BamReaderAPI</title>
+          <meta name="description" content="BamReaderAPI - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.reads.Read.ReadLoadingConfig.BamReaderAPI" />
+          <meta name="keywords" content="BamReaderAPI guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.reads.Read.ReadLoadingConfig.BamReaderAPI" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -12,7 +12,7 @@
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../index.html';
-            var hash = 'org.hammerlab.guacamole.alignment.AlignmentState$';
+            var hash = 'org.hammerlab.guacamole.reads.Read$$ReadLoadingConfig$$BamReaderAPI$';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -25,8 +25,8 @@
         <body class="value">
       <div id="definition">
         <img src="../../../../lib/object_big.png" />
-        <p id="owner"><a href="../../../package.html" class="extype" name="org">org</a>.<a href="../../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="../package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole.alignment">alignment</a></p>
-        <h1>AlignmentState</h1>
+        <p id="owner"><a href="../../../package.html" class="extype" name="org">org</a>.<a href="../../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="../package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole.reads">reads</a>.<a href="Read$.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a>.<a href="Read$$ReadLoadingConfig$.html" class="extype" name="org.hammerlab.guacamole.reads.Read.ReadLoadingConfig">ReadLoadingConfig</a></p>
+        <h1>BamReaderAPI</h1>
       </div>
 
       <h4 id="signature" class="signature">
@@ -35,11 +35,14 @@
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <span class="name">AlignmentState</span><span class="result"> extends <span class="extype" name="scala.Enumeration">Enumeration</span></span>
+        <span class="name">BamReaderAPI</span><span class="result"> extends <span class="extype" name="scala.Enumeration">Enumeration</span></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Specification of which API to use when reading BAM and SAM files.</p><p>Best - use Samtools when the file is on the local filesystem otherwise HadoopBAM
+Samtools - use Samtools. This supports using the bam index when available.
+HadoopBAM - use HadoopBAM. This supports reading the file in parallel when it is on HDFS.
+</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.Enumeration">Enumeration</span>, <span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
@@ -59,7 +62,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="org.hammerlab.guacamole.alignment.AlignmentState"><span>AlignmentState</span></li><li class="in" name="scala.Enumeration"><span>Enumeration</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="org.hammerlab.guacamole.reads.Read.ReadLoadingConfig.BamReaderAPI"><span>BamReaderAPI</span></li><li class="in" name="scala.Enumeration"><span>Enumeration</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -81,16 +84,16 @@
 
         <div id="types" class="types members">
               <h3>Type Members</h3>
-              <ol><li name="org.hammerlab.guacamole.alignment.AlignmentState.AlignmentState" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="AlignmentState=org.hammerlab.guacamole.alignment.AlignmentState.Value"></a>
-      <a id="AlignmentState:AlignmentState"></a>
+              <ol><li name="org.hammerlab.guacamole.reads.Read.ReadLoadingConfig.BamReaderAPI.BamReaderAPI" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="BamReaderAPI=org.hammerlab.guacamole.reads.Read.ReadLoadingConfig.BamReaderAPI.Value"></a>
+      <a id="BamReaderAPI:BamReaderAPI"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">type</span>
       </span>
       <span class="symbol">
-        <span class="name">AlignmentState</span><span class="result"> = <a href="#ValueextendsOrdered[Enumeration.this.Value]withSerializable" class="extmbr" name="org.hammerlab.guacamole.alignment.AlignmentState.Value">Value</a></span>
+        <span class="name">BamReaderAPI</span><span class="result"> = <a href="#ValueextendsOrdered[Enumeration.this.Value]withSerializable" class="extmbr" name="org.hammerlab.guacamole.reads.Read.ReadLoadingConfig.BamReaderAPI.Value">Value</a></span>
       </span>
       </h4>
       
@@ -217,55 +220,42 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.alignment.AlignmentState#Deletion" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="Deletion:org.hammerlab.guacamole.alignment.AlignmentState.Value"></a>
-      <a id="Deletion:Value"></a>
+    </li><li name="org.hammerlab.guacamole.reads.Read.ReadLoadingConfig.BamReaderAPI#Best" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Best:org.hammerlab.guacamole.reads.Read.ReadLoadingConfig.BamReaderAPI.Value"></a>
+      <a id="Best:Value"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">Deletion</span><span class="result">: <a href="#ValueextendsOrdered[Enumeration.this.Value]withSerializable" class="extmbr" name="org.hammerlab.guacamole.alignment.AlignmentState.Value">Value</a></span>
+        <span class="name">Best</span><span class="result">: <a href="#ValueextendsOrdered[Enumeration.this.Value]withSerializable" class="extmbr" name="org.hammerlab.guacamole.reads.Read.ReadLoadingConfig.BamReaderAPI.Value">Value</a></span>
       </span>
       </h4>
       
-    </li><li name="org.hammerlab.guacamole.alignment.AlignmentState#Insertion" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="Insertion:org.hammerlab.guacamole.alignment.AlignmentState.Value"></a>
-      <a id="Insertion:Value"></a>
+    </li><li name="org.hammerlab.guacamole.reads.Read.ReadLoadingConfig.BamReaderAPI#HadoopBAM" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="HadoopBAM:org.hammerlab.guacamole.reads.Read.ReadLoadingConfig.BamReaderAPI.Value"></a>
+      <a id="HadoopBAM:Value"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">Insertion</span><span class="result">: <a href="#ValueextendsOrdered[Enumeration.this.Value]withSerializable" class="extmbr" name="org.hammerlab.guacamole.alignment.AlignmentState.Value">Value</a></span>
+        <span class="name">HadoopBAM</span><span class="result">: <a href="#ValueextendsOrdered[Enumeration.this.Value]withSerializable" class="extmbr" name="org.hammerlab.guacamole.reads.Read.ReadLoadingConfig.BamReaderAPI.Value">Value</a></span>
       </span>
       </h4>
       
-    </li><li name="org.hammerlab.guacamole.alignment.AlignmentState#Match" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="Match:org.hammerlab.guacamole.alignment.AlignmentState.Value"></a>
-      <a id="Match:Value"></a>
+    </li><li name="org.hammerlab.guacamole.reads.Read.ReadLoadingConfig.BamReaderAPI#Samtools" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Samtools:org.hammerlab.guacamole.reads.Read.ReadLoadingConfig.BamReaderAPI.Value"></a>
+      <a id="Samtools:Value"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">Match</span><span class="result">: <a href="#ValueextendsOrdered[Enumeration.this.Value]withSerializable" class="extmbr" name="org.hammerlab.guacamole.alignment.AlignmentState.Value">Value</a></span>
-      </span>
-      </h4>
-      
-    </li><li name="org.hammerlab.guacamole.alignment.AlignmentState#Mismatch" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="Mismatch:org.hammerlab.guacamole.alignment.AlignmentState.Value"></a>
-      <a id="Mismatch:Value"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">Mismatch</span><span class="result">: <a href="#ValueextendsOrdered[Enumeration.this.Value]withSerializable" class="extmbr" name="org.hammerlab.guacamole.alignment.AlignmentState.Value">Value</a></span>
+        <span class="name">Samtools</span><span class="result">: <a href="#ValueextendsOrdered[Enumeration.this.Value]withSerializable" class="extmbr" name="org.hammerlab.guacamole.reads.Read.ReadLoadingConfig.BamReaderAPI.Value">Value</a></span>
       </span>
       </h4>
       
@@ -278,7 +268,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">Value</span><span class="params">(<span name="i">i: <span class="extype" name="scala.Int">Int</span></span>, <span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="#ValueextendsOrdered[Enumeration.this.Value]withSerializable" class="extmbr" name="org.hammerlab.guacamole.alignment.AlignmentState.Value">Value</a></span>
+        <span class="name">Value</span><span class="params">(<span name="i">i: <span class="extype" name="scala.Int">Int</span></span>, <span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="#ValueextendsOrdered[Enumeration.this.Value]withSerializable" class="extmbr" name="org.hammerlab.guacamole.reads.Read.ReadLoadingConfig.BamReaderAPI.Value">Value</a></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd>Enumeration</dd></dl></div>
@@ -291,7 +281,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">Value</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="#ValueextendsOrdered[Enumeration.this.Value]withSerializable" class="extmbr" name="org.hammerlab.guacamole.alignment.AlignmentState.Value">Value</a></span>
+        <span class="name">Value</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="#ValueextendsOrdered[Enumeration.this.Value]withSerializable" class="extmbr" name="org.hammerlab.guacamole.reads.Read.ReadLoadingConfig.BamReaderAPI.Value">Value</a></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd>Enumeration</dd></dl></div>
@@ -304,7 +294,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">Value</span><span class="params">(<span name="i">i: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <a href="#ValueextendsOrdered[Enumeration.this.Value]withSerializable" class="extmbr" name="org.hammerlab.guacamole.alignment.AlignmentState.Value">Value</a></span>
+        <span class="name">Value</span><span class="params">(<span name="i">i: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <a href="#ValueextendsOrdered[Enumeration.this.Value]withSerializable" class="extmbr" name="org.hammerlab.guacamole.reads.Read.ReadLoadingConfig.BamReaderAPI.Value">Value</a></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd>Enumeration</dd></dl></div>
@@ -317,7 +307,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">Value</span><span class="result">: <a href="#ValueextendsOrdered[Enumeration.this.Value]withSerializable" class="extmbr" name="org.hammerlab.guacamole.alignment.AlignmentState.Value">Value</a></span>
+        <span class="name">Value</span><span class="result">: <a href="#ValueextendsOrdered[Enumeration.this.Value]withSerializable" class="extmbr" name="org.hammerlab.guacamole.reads.Read.ReadLoadingConfig.BamReaderAPI.Value">Value</a></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd>Enumeration</dd></dl></div>
@@ -335,7 +325,7 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Enumeration</dd></dl></div>
     </li><li name="scala.Enumeration#apply" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="apply(x:Int):Enumeration.this.Value"></a>
+      <a id="apply(x:&lt;?&gt;):Enumeration.this.Value"></a>
       <a id="apply(Int):Value"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -343,7 +333,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">apply</span><span class="params">(<span name="x">x: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <a href="#ValueextendsOrdered[Enumeration.this.Value]withSerializable" class="extmbr" name="org.hammerlab.guacamole.alignment.AlignmentState.Value">Value</a></span>
+        <span class="name">apply</span><span class="params">(<span name="x">x: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <a href="#ValueextendsOrdered[Enumeration.this.Value]withSerializable" class="extmbr" name="org.hammerlab.guacamole.reads.Read.ReadLoadingConfig.BamReaderAPI.Value">Value</a></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Enumeration</dd></dl></div>
@@ -450,19 +440,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.alignment.AlignmentState#isGapAlignment" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="isGapAlignment(state:org.hammerlab.guacamole.alignment.AlignmentState.AlignmentState):Boolean"></a>
-      <a id="isGapAlignment(AlignmentState):Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">isGapAlignment</span><span class="params">(<span name="state">state: <a href="#AlignmentState=org.hammerlab.guacamole.alignment.AlignmentState.Value" class="extmbr" name="org.hammerlab.guacamole.alignment.AlignmentState.AlignmentState">AlignmentState</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      </h4>
-      
     </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <a id="isInstanceOf[T0]:Boolean"></a>
@@ -602,7 +579,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">values</span><span class="result">: <a href="#ValueSetextendsAbstractSet[Enumeration.this.Value]withSortedSet[Enumeration.this.Value]withSortedSetLike[Enumeration.this.Value,Enumeration.this.ValueSet]withSerializable" class="extmbr" name="org.hammerlab.guacamole.alignment.AlignmentState.ValueSet">ValueSet</a></span>
+        <span class="name">values</span><span class="result">: <a href="#ValueSetextendsAbstractSet[Enumeration.this.Value]withSortedSet[Enumeration.this.Value]withSortedSetLike[Enumeration.this.Value,Enumeration.this.ValueSet]withSerializable" class="extmbr" name="org.hammerlab.guacamole.reads.Read.ReadLoadingConfig.BamReaderAPI.ValueSet">ValueSet</a></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Enumeration</dd></dl></div>
@@ -664,7 +641,7 @@
               
         </dd></dl></div>
     </li><li name="scala.Enumeration#withName" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="withName(s:String):Enumeration.this.Value"></a>
+      <a id="withName(s:&lt;?&gt;):Enumeration.this.Value"></a>
       <a id="withName(String):Value"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -672,10 +649,24 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">withName</span><span class="params">(<span name="s">s: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="#ValueextendsOrdered[Enumeration.this.Value]withSerializable" class="extmbr" name="org.hammerlab.guacamole.alignment.AlignmentState.Value">Value</a></span>
+        <span class="name">withName</span><span class="params">(<span name="s">s: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="#ValueextendsOrdered[Enumeration.this.Value]withSerializable" class="extmbr" name="org.hammerlab.guacamole.reads.Read.ReadLoadingConfig.BamReaderAPI.Value">Value</a></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Enumeration</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.reads.Read.ReadLoadingConfig.BamReaderAPI#withNameCaseInsensitive" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="withNameCaseInsensitive(s:String):org.hammerlab.guacamole.reads.Read.ReadLoadingConfig.BamReaderAPI.Value"></a>
+      <a id="withNameCaseInsensitive(String):Value"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">withNameCaseInsensitive</span><span class="params">(<span name="s">s: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="#ValueextendsOrdered[Enumeration.this.Value]withSerializable" class="extmbr" name="org.hammerlab.guacamole.reads.Read.ReadLoadingConfig.BamReaderAPI.Value">Value</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Like Enumeration.</p><div class="fullcomment"><div class="comment cmt"><p>Like Enumeration.withName but case insensitive
+</p></div></div>
     </li></ol>
             </div>
 

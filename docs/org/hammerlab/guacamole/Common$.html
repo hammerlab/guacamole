@@ -382,20 +382,19 @@ characters. If truncation occurs, the string is terminated with ellipses.
 </p></div><dl class="paramcmts block"><dt class="param">args</dt><dd class="cmt"><p>parsed arguments</p></dd><dt class="param">sc</dt><dd class="cmt"><p>spark context</p></dd><dt class="param">filters</dt><dd class="cmt"><p>input filters to apply
 </p></dd></dl></div>
     </li><li name="org.hammerlab.guacamole.Common#loci" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="loci(args:org.hammerlab.guacamole.Common.Arguments.Loci,readSet:org.hammerlab.guacamole.ReadSet):org.hammerlab.guacamole.LociSet"></a>
-      <a id="loci(Loci,ReadSet):LociSet"></a>
+      <a id="loci(args:org.hammerlab.guacamole.Common.Arguments.Loci):org.hammerlab.guacamole.LociSet.Builder"></a>
+      <a id="loci(Loci):Builder"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">loci</span><span class="params">(<span name="args">args: <a href="Common$$Arguments$$Loci.html" class="extype" name="org.hammerlab.guacamole.Common.Arguments.Loci">Loci</a></span>, <span name="readSet">readSet: <a href="ReadSet.html" class="extype" name="org.hammerlab.guacamole.ReadSet">ReadSet</a></span>)</span><span class="result">: <a href="LociSet.html" class="extype" name="org.hammerlab.guacamole.LociSet">LociSet</a></span>
+        <span class="name">loci</span><span class="params">(<span name="args">args: <a href="Common$$Arguments$$Loci.html" class="extype" name="org.hammerlab.guacamole.Common.Arguments.Loci">Loci</a></span>)</span><span class="result">: <a href="LociSet$$Builder.html" class="extype" name="org.hammerlab.guacamole.LociSet.Builder">Builder</a></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">If the user specifies a -loci argument, parse it out and return the LociSet.</p><div class="fullcomment"><div class="comment cmt"><p>If the user specifies a -loci argument, parse it out and return the LociSet. Otherwise, construct a LociSet that
-includes all the loci in the contigs.
-</p></div><dl class="paramcmts block"><dt class="param">args</dt><dd class="cmt"><p>parsed arguments</p></dd><dt class="param">readSet</dt><dd class="cmt"><p>readSet from which to use to get contigs and lengths.
+      <p class="shortcomment cmt">Return the loci specified by the user as a LociSet.</p><div class="fullcomment"><div class="comment cmt"><p>Return the loci specified by the user as a LociSet.Builder.
+</p></div><dl class="paramcmts block"><dt class="param">args</dt><dd class="cmt"><p>parsed arguments
 </p></dd></dl></div>
     </li><li name="org.apache.spark.Logging#log" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="log:org.slf4j.Logger"></a>

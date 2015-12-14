@@ -39,8 +39,14 @@
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Class for constructing a LociSet.
-</p></div><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Class for constructing a LociSet.</p><p>A LociSet always has an exact size, but a Builder supports specifications of loci sets before the contigs
+and their lengths are known. For example, a builder can specify &quot;all sites on all contigs&quot;, or &quot;all sites
+on chromosomes 1 and 2&quot;. To build such an &quot;unresolved&quot; LociSet, the contigs and their lengths must be provided to
+the result method.</p><p>This comes in handy when we want to pass a specification of loci to the BAM reading methods.
+We don't know the contigs and their lengths until we read in the BAM file, so we can't make a LociSet until
+we read the file header. At the same time, we want to use the BAM index to read only the loci of interest from
+the file. A LociSet.Builder is a convenient object to pass to the bam loading functions, as it is an object
+that specifies the loci of interest without requiring us to already know the contigs and their lengths.</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
@@ -199,6 +205,20 @@
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.LociSet.Builder#containsAll" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="containsAll:Boolean"></a>
+      <a id="containsAll:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">var</span>
+      </span>
+      <span class="symbol">
+        <span class="name">containsAll</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Does this Builder contain all sites on all contigs?
+</p>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -244,6 +264,21 @@
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.LociSet.Builder#fullyResolved" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="fullyResolved:Boolean"></a>
+      <a id="fullyResolved:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">var</span>
+      </span>
+      <span class="symbol">
+        <span class="name">fullyResolved</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Does this Builder contain only loci ranges with exact ends (e.</p><div class="fullcomment"><div class="comment cmt"><p>Does this Builder contain only loci ranges with exact ends (e.g. &quot;chr:1-20000&quot; not &quot;all of chr1&quot;)?
+If false, we require contig lengths to be specified to the result method.
+</p></div></div>
     </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
       <a id="getClass():Class[_]"></a>
@@ -322,42 +357,86 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.LociSet.Builder#put" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="put(lociSet:org.hammerlab.guacamole.LociSet):org.hammerlab.guacamole.LociSet.Builder"></a>
-      <a id="put(LociSet):Builder"></a>
+    </li><li name="org.hammerlab.guacamole.LociSet.Builder#put" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="put(contig:String,start:Long,end:Option[Long]):org.hammerlab.guacamole.LociSet.Builder"></a>
+      <a id="put(String,Long,Option[Long]):Builder"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">put</span><span class="params">(<span name="lociSet">lociSet: <a href="LociSet.html" class="extype" name="org.hammerlab.guacamole.LociSet">LociSet</a></span>)</span><span class="result">: <a href="" class="extype" name="org.hammerlab.guacamole.LociSet.Builder">Builder</a></span>
+        <span class="name">put</span><span class="params">(<span name="contig">contig: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="start">start: <span class="extype" name="scala.Long">Long</span> = <span class="symbol">0</span></span>, <span name="end">end: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>] = <span class="symbol">None</span></span>)</span><span class="result">: <a href="" class="extype" name="org.hammerlab.guacamole.LociSet.Builder">Builder</a></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Add an entire other LociSet to the LociSet under construction.</p>
-    </li><li name="org.hammerlab.guacamole.LociSet.Builder#put" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="put(contig:String,start:Long,end:Long):org.hammerlab.guacamole.LociSet.Builder"></a>
-      <a id="put(String,Long,Long):Builder"></a>
+      <p class="shortcomment cmt">Add an interval to the Builder.</p><div class="fullcomment"><div class="comment cmt"><p>Add an interval to the Builder. If end is not specified, then it is taken to be the length of the contig.
+</p></div></div>
+    </li><li name="org.hammerlab.guacamole.LociSet.Builder#putAllContigs" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="putAllContigs():org.hammerlab.guacamole.LociSet.Builder"></a>
+      <a id="putAllContigs():Builder"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">put</span><span class="params">(<span name="contig">contig: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="start">start: <span class="extype" name="scala.Long">Long</span></span>, <span name="end">end: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <a href="" class="extype" name="org.hammerlab.guacamole.LociSet.Builder">Builder</a></span>
+        <span class="name">putAllContigs</span><span class="params">()</span><span class="result">: <a href="" class="extype" name="org.hammerlab.guacamole.LociSet.Builder">Builder</a></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Add an interval to the LociSet under construction.</p>
+      <p class="shortcomment cmt">Specify that this builder contains all sites on all contigs.</p>
+    </li><li name="org.hammerlab.guacamole.LociSet.Builder#putExpression" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="putExpression(loci:String):org.hammerlab.guacamole.LociSet.Builder"></a>
+      <a id="putExpression(String):Builder"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">putExpression</span><span class="params">(<span name="loci">loci: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="" class="extype" name="org.hammerlab.guacamole.LociSet.Builder">Builder</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Parse a loci expression and add it to the builder.</p><div class="fullcomment"><div class="comment cmt"><p>Parse a loci expression and add it to the builder. Example expressions:
+ &quot;all&quot; (all sites on all contigs)
+ &quot;chr1,chr3&quot; (all sites on contigs chr1 and chr3)
+ &quot;chr1:10000-20000,chr2&quot; (sites x where 10000 &lt;= x &lt; 20000 on chr1, all sites on chr2)
+</p></div></div>
     </li><li name="org.hammerlab.guacamole.LociSet.Builder#result" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="result():org.hammerlab.guacamole.LociSet"></a>
-      <a id="result():LociSet"></a>
+      <a id="result(contigLengths:Map[String,Long]):org.hammerlab.guacamole.LociSet"></a>
+      <a id="result(Map[String,Long]):LociSet"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">result</span><span class="params">()</span><span class="result">: <a href="LociSet.html" class="extype" name="org.hammerlab.guacamole.LociSet">LociSet</a></span>
+        <span class="name">result</span><span class="params">(<span name="contigLengths">contigLengths: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Long">Long</span>]</span>)</span><span class="result">: <a href="LociSet.html" class="extype" name="org.hammerlab.guacamole.LociSet">LociSet</a></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.LociSet.Builder#result" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="result:org.hammerlab.guacamole.LociSet"></a>
+      <a id="result:LociSet"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">result</span><span class="result">: <a href="LociSet.html" class="extype" name="org.hammerlab.guacamole.LociSet">LociSet</a></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.LociSet.Builder#result" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="result(contigLengths:Option[Map[String,Long]]):org.hammerlab.guacamole.LociSet"></a>
+      <a id="result(Option[Map[String,Long]]):LociSet"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">result</span><span class="params">(<span name="contigLengths">contigLengths: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Long">Long</span>]] = <span class="symbol">None</span></span>)</span><span class="result">: <a href="LociSet.html" class="extype" name="org.hammerlab.guacamole.LociSet">LociSet</a></span>
       </span>
       </h4>
       <p class="shortcomment cmt">Build the result.</p>
@@ -444,19 +523,6 @@
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.LociSet.Builder#wrapped" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="wrapped:org.hammerlab.guacamole.LociMap.Builder[Long]"></a>
-      <a id="wrapped:LociMap.Builder[Long]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">wrapped</span><span class="result">: <a href="LociMap$$Builder.html" class="extype" name="org.hammerlab.guacamole.LociMap.Builder">LociMap.Builder</a>[<span class="extype" name="scala.Long">Long</span>]</span>
-      </span>
-      </h4>
-      
     </li></ol>
             </div>
 

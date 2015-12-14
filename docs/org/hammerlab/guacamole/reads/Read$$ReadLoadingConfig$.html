@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>InputFilters - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.reads.Read.InputFilters</title>
-          <meta name="description" content="InputFilters - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.reads.Read.InputFilters" />
-          <meta name="keywords" content="InputFilters guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.reads.Read.InputFilters" />
+          <title>ReadLoadingConfig - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.reads.Read.ReadLoadingConfig</title>
+          <meta name="description" content="ReadLoadingConfig - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.reads.Read.ReadLoadingConfig" />
+          <meta name="keywords" content="ReadLoadingConfig guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.reads.Read.ReadLoadingConfig" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -12,7 +12,7 @@
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../index.html';
-            var hash = 'org.hammerlab.guacamole.reads.Read$$InputFilters';
+            var hash = 'org.hammerlab.guacamole.reads.Read$$ReadLoadingConfig$';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -22,29 +22,26 @@
    	  </script>
     
         </head>
-        <body class="type">
+        <body class="value">
       <div id="definition">
-        <a href="Read$$InputFilters$.html" title="Go to companion"><img src="../../../../lib/class_to_object_big.png" /></a>
+        <a href="Read$$ReadLoadingConfig.html" title="Go to companion"><img src="../../../../lib/object_to_class_big.png" /></a>
         <p id="owner"><a href="../../../package.html" class="extype" name="org">org</a>.<a href="../../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="../package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole.reads">reads</a>.<a href="Read$.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a></p>
-        <h1><a href="Read$$InputFilters$.html" title="Go to companion">InputFilters</a></h1>
+        <h1><a href="Read$$ReadLoadingConfig.html" title="Go to companion">ReadLoadingConfig</a></h1>
       </div>
 
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">case class</span>
+        <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <span class="name">InputFilters</span><span class="params">(<span name="overlapsLoci">overlapsLoci: <span class="extype" name="scala.Option">Option</span>[<a href="../LociSet$$Builder.html" class="extype" name="org.hammerlab.guacamole.LociSet.Builder">Builder</a>]</span>, <span name="nonDuplicate">nonDuplicate: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="passedVendorQualityChecks">passedVendorQualityChecks: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="isPaired">isPaired: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="hasMdTag">hasMdTag: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">ReadLoadingConfig</span><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Filtering reads while they are loaded can be an important optimization.</p><p>These fields are commonly used filters. For boolean fields, setting a field to true will result in filtering on
-that field. The result is the intersection of the filters (i.e. reads must satisfy ALL filters).
-</p></div><dl class="paramcmts block"><dt class="param">overlapsLoci</dt><dd class="cmt"><p>if not None, include only mapped reads that overlap the given loci</p></dd><dt class="param">nonDuplicate</dt><dd class="cmt"><p>include only reads that do not have the duplicate bit set</p></dd><dt class="param">passedVendorQualityChecks</dt><dd class="cmt"><p>include only reads that do not have the failedVendorQualityChecks bit set</p></dd><dt class="param">isPaired</dt><dd class="cmt"><p>include only reads are paired-end reads</p></dd><dt class="param">hasMdTag</dt><dd class="cmt"><p>include only reads with md tags
-</p></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -62,7 +59,7 @@ that field. The result is the intersection of the filters (i.e. reads must satis
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="org.hammerlab.guacamole.reads.Read.InputFilters"><span>InputFilters</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="org.hammerlab.guacamole.reads.Read.ReadLoadingConfig"><span>ReadLoadingConfig</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -80,24 +77,7 @@ that field. The result is the intersection of the filters (i.e. reads must satis
 
       <div id="template">
         <div id="allMembers">
-        <div id="constructors" class="members">
-              <h3>Instance Constructors</h3>
-              <ol><li name="org.hammerlab.guacamole.reads.Read.InputFilters#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="&lt;init&gt;(overlapsLoci:Option[org.hammerlab.guacamole.LociSet.Builder],nonDuplicate:Boolean,passedVendorQualityChecks:Boolean,isPaired:Boolean,hasMdTag:Boolean):org.hammerlab.guacamole.reads.Read.InputFilters"></a>
-      <a id="&lt;init&gt;:InputFilters"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">new</span>
-      </span>
-      <span class="symbol">
-        <span class="name">InputFilters</span><span class="params">(<span name="overlapsLoci">overlapsLoci: <span class="extype" name="scala.Option">Option</span>[<a href="../LociSet$$Builder.html" class="extype" name="org.hammerlab.guacamole.LociSet.Builder">Builder</a>]</span>, <span name="nonDuplicate">nonDuplicate: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="passedVendorQualityChecks">passedVendorQualityChecks: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="isPaired">isPaired: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="hasMdTag">hasMdTag: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">overlapsLoci</dt><dd class="cmt"><p>if not None, include only mapped reads that overlap the given loci</p></dd><dt class="param">nonDuplicate</dt><dd class="cmt"><p>include only reads that do not have the duplicate bit set</p></dd><dt class="param">passedVendorQualityChecks</dt><dd class="cmt"><p>include only reads that do not have the failedVendorQualityChecks bit set</p></dd><dt class="param">isPaired</dt><dd class="cmt"><p>include only reads are paired-end reads</p></dd><dt class="param">hasMdTag</dt><dd class="cmt"><p>include only reads with md tags
-</p></dd></dl></div>
-    </li></ol>
-            </div>
+        
 
         
 
@@ -170,6 +150,19 @@ that field. The result is the intersection of the filters (i.e. reads must satis
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.reads.Read.ReadLoadingConfig.BamReaderAPI" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="BamReaderAPI"></a>
+      <a id="BamReaderAPI:BamReaderAPI"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Read$$ReadLoadingConfig$$BamReaderAPI$.html"><span class="name">BamReaderAPI</span></a><span class="result"> extends <span class="extype" name="scala.Enumeration">Enumeration</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Specification of which API to use when reading BAM and SAM files.</p>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -202,6 +195,19 @@ that field. The result is the intersection of the filters (i.e. reads must satis
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.reads.Read.ReadLoadingConfig#default" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="default:org.hammerlab.guacamole.reads.Read.ReadLoadingConfig"></a>
+      <a id="default:ReadLoadingConfig"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">default</span><span class="result">: <a href="Read$$ReadLoadingConfig.html" class="extype" name="org.hammerlab.guacamole.reads.Read.ReadLoadingConfig">ReadLoadingConfig</a></span>
+      </span>
+      </h4>
+      
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -215,6 +221,19 @@ that field. The result is the intersection of the filters (i.e. reads must satis
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#equals" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="equals(x$1:Any):Boolean"></a>
+      <a id="equals(Any):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <a id="finalize():Unit"></a>
@@ -247,20 +266,19 @@ that field. The result is the intersection of the filters (i.e. reads must satis
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.reads.Read.InputFilters#hasMdTag" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="hasMdTag:Boolean"></a>
-      <a id="hasMdTag:Boolean"></a>
+    </li><li name="scala.AnyRef#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="hashCode():Int"></a>
+      <a id="hashCode():Int"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">val</span>
+        <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">hasMdTag</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">include only reads with md tags
-</p>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <a id="isInstanceOf[T0]:Boolean"></a>
@@ -274,19 +292,6 @@ that field. The result is the intersection of the filters (i.e. reads must satis
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.reads.Read.InputFilters#isPaired" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="isPaired:Boolean"></a>
-      <a id="isPaired:Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">isPaired</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">include only reads are paired-end reads</p>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -300,19 +305,6 @@ that field. The result is the intersection of the filters (i.e. reads must satis
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.reads.Read.InputFilters#nonDuplicate" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="nonDuplicate:Boolean"></a>
-      <a id="nonDuplicate:Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">nonDuplicate</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">include only reads that do not have the duplicate bit set</p>
     </li><li name="scala.AnyRef#notify" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notify():Unit"></a>
       <a id="notify():Unit"></a>
@@ -339,32 +331,6 @@ that field. The result is the intersection of the filters (i.e. reads must satis
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.reads.Read.InputFilters#overlapsLoci" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="overlapsLoci:Option[org.hammerlab.guacamole.LociSet.Builder]"></a>
-      <a id="overlapsLoci:Option[Builder]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">overlapsLoci</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<a href="../LociSet$$Builder.html" class="extype" name="org.hammerlab.guacamole.LociSet.Builder">Builder</a>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">if not None, include only mapped reads that overlap the given loci</p>
-    </li><li name="org.hammerlab.guacamole.reads.Read.InputFilters#passedVendorQualityChecks" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="passedVendorQualityChecks:Boolean"></a>
-      <a id="passedVendorQualityChecks:Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">passedVendorQualityChecks</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">include only reads that do not have the failedVendorQualityChecks bit set</p>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -378,6 +344,19 @@ that field. The result is the intersection of the filters (i.e. reads must satis
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="toString():String"></a>
+      <a id="toString():String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>
@@ -448,10 +427,6 @@ that field. The result is the intersection of the filters (i.e. reads must satis
               <h3>Inherited from <span class="extype" name="scala.Serializable">Serializable</span></h3>
             </div><div class="parent" name="java.io.Serializable">
               <h3>Inherited from <span class="extype" name="java.io.Serializable">Serializable</span></h3>
-            </div><div class="parent" name="scala.Product">
-              <h3>Inherited from <span class="extype" name="scala.Product">Product</span></h3>
-            </div><div class="parent" name="scala.Equals">
-              <h3>Inherited from <span class="extype" name="scala.Equals">Equals</span></h3>
             </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
             </div><div class="parent" name="scala.Any">

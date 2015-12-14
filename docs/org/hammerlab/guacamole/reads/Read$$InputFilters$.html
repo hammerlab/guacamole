@@ -150,6 +150,21 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.reads.Read.InputFilters#apply" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="apply(mapped:Boolean,overlapsLoci:Option[org.hammerlab.guacamole.LociSet.Builder],nonDuplicate:Boolean,passedVendorQualityChecks:Boolean,isPaired:Boolean,hasMdTag:Boolean):org.hammerlab.guacamole.reads.Read.InputFilters"></a>
+      <a id="apply(Boolean,Option[Builder],Boolean,Boolean,Boolean,Boolean):InputFilters"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">apply</span><span class="params">(<span name="mapped">mapped: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>, <span name="overlapsLoci">overlapsLoci: <span class="extype" name="scala.Option">Option</span>[<a href="../LociSet$$Builder.html" class="extype" name="org.hammerlab.guacamole.LociSet.Builder">Builder</a>] = <span class="symbol">None</span></span>, <span name="nonDuplicate">nonDuplicate: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>, <span name="passedVendorQualityChecks">passedVendorQualityChecks: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>, <span name="isPaired">isPaired: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>, <span name="hasMdTag">hasMdTag: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="result">: <a href="Read$$InputFilters.html" class="extype" name="org.hammerlab.guacamole.reads.Read.InputFilters">InputFilters</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">See InputFilters for full documentation.</p><div class="fullcomment"><div class="comment cmt"><p>See InputFilters for full documentation.</p></div><dl class="paramcmts block"><dt class="param">mapped</dt><dd class="cmt"><p>include only mapped reads. Convenience argument that is equivalent to specifying all sites in
+              overlapsLoci.
+</p></dd></dl></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -221,6 +236,21 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.reads.Read.InputFilters#filterRDD" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="filterRDD(filters:org.hammerlab.guacamole.reads.Read.InputFilters,reads:org.apache.spark.rdd.RDD[org.hammerlab.guacamole.reads.Read],sequenceDictionary:org.bdgenomics.adam.models.SequenceDictionary):org.apache.spark.rdd.RDD[org.hammerlab.guacamole.reads.Read]"></a>
+      <a id="filterRDD(InputFilters,RDD[Read],SequenceDictionary):RDD[Read]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">filterRDD</span><span class="params">(<span name="filters">filters: <a href="Read$$InputFilters.html" class="extype" name="org.hammerlab.guacamole.reads.Read.InputFilters">InputFilters</a></span>, <span name="reads">reads: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<a href="Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a>]</span>, <span name="sequenceDictionary">sequenceDictionary: <span class="extype" name="org.bdgenomics.adam.models.SequenceDictionary">SequenceDictionary</span></span>)</span><span class="result">: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<a href="Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Apply filters to an RDD of reads.</p><div class="fullcomment"><div class="comment cmt"><p>Apply filters to an RDD of reads.
+</p></div><dl class="paramcmts block"><dt class="param">filters</dt><dd class="cmt"></dd><dt class="param">reads</dt><dd class="cmt"></dd><dt class="param">sequenceDictionary</dt><dd class="cmt"></dd><dt>returns</dt><dd class="cmt"><p>filtered RDD
+</p></dd></dl></div>
     </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <a id="finalize():Unit"></a>

@@ -87,7 +87,20 @@
 
         <div id="values" class="values members">
               <h3>Abstract Value Members</h3>
-              <ol><li name="org.hammerlab.guacamole.reads.Read#baseQualities" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+              <ol><li name="org.hammerlab.guacamole.reads.Read#asMappedRead" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="asMappedRead:Option[org.hammerlab.guacamole.reads.MappedRead]"></a>
+      <a id="asMappedRead:Option[MappedRead]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">asMappedRead</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<a href="MappedRead.html" class="extype" name="org.hammerlab.guacamole.reads.MappedRead">MappedRead</a>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.reads.Read#baseQualities" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
       <a id="baseQualities:Seq[Byte]"></a>
       <a id="baseQualities:Seq[Byte]"></a>
       <h4 class="signature">
@@ -165,19 +178,6 @@
       </span>
       </h4>
       <p class="shortcomment cmt">Whether read is from a paired-end library</p>
-    </li><li name="org.hammerlab.guacamole.reads.Read#isPositiveStrand" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="isPositiveStrand:Boolean"></a>
-      <a id="isPositiveStrand:Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">isPositiveStrand</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Whether the read was on the positive or forward strand</p>
     </li><li name="org.hammerlab.guacamole.reads.Read#sampleName" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
       <a id="sampleName:String"></a>
       <a id="sampleName:String"></a>
@@ -217,7 +217,7 @@
       </span>
       </h4>
       <p class="shortcomment cmt">Each read has a &quot;token&quot;, which is an arbitrary integer for use by the application.</p><div class="fullcomment"><div class="comment cmt"><p>Each read has a &quot;token&quot;, which is an arbitrary integer for use by the application. Unlike the other fields,
-a read's token does NOT correspond to any underlying column in e.g. the BAM file.</p><p>It's used, for example, to differentiate tumor/normal pairs in some somatic callers.</p><p>This field can be set when reading in the reads, or modified at any point by the application.</p><p>Many applications just ignore this.</p></div></div>
+a read's token does NOT correspond to any underlying column in e.g. the BAM file.</p><p>It's used, for example, to differentiate tumor/normal pairs in some somatic callers.</p><p>This field can be set when reading in the reads, or modified at any point by the application.</p></div></div>
     </li></ol>
             </div>
 

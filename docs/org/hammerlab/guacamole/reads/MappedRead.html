@@ -208,6 +208,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.reads.MappedRead#asMappedRead" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="asMappedRead:Some[org.hammerlab.guacamole.reads.MappedRead]"></a>
+      <a id="asMappedRead:Some[MappedRead]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">asMappedRead</span><span class="result">: <span class="extype" name="scala.Some">Some</span>[<a href="" class="extype" name="org.hammerlab.guacamole.reads.MappedRead">MappedRead</a>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.reads.MappedRead">MappedRead</a> → <a href="Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a></dd></dl></div>
     </li><li name="org.hammerlab.guacamole.reads.MappedRead#baseQualities" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="baseQualities:Seq[Byte]"></a>
       <a id="baseQualities:Seq[Byte]"></a>
@@ -420,7 +433,7 @@ base in this read.
       </span>
       </h4>
       <p class="shortcomment cmt">Whether read is from a paired-end library</p><div class="fullcomment"><div class="comment cmt"><p>Whether read is from a paired-end library</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.reads.MappedRead">MappedRead</a> → <a href="Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a></dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.reads.MappedRead#isPositiveStrand" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="org.hammerlab.guacamole.reads.MappedRead#isPositiveStrand" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="isPositiveStrand:Boolean"></a>
       <a id="isPositiveStrand:Boolean"></a>
       <h4 class="signature">
@@ -432,7 +445,7 @@ base in this read.
         <span class="name">isPositiveStrand</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Whether the read was on the positive or forward strand</p><div class="fullcomment"><div class="comment cmt"><p>Whether the read was on the positive or forward strand</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.reads.MappedRead">MappedRead</a> → <a href="Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a></dd></dl></div>
+      
     </li><li name="org.hammerlab.guacamole.reads.MappedRead#mdTagOpt" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="mdTagOpt:Option[org.bdgenomics.adam.util.MdTag]"></a>
       <a id="mdTagOpt:Option[MdTag]"></a>
@@ -633,7 +646,7 @@ included any of these three positions: locus - 1, locus, and locus + 1.
       </span>
       </h4>
       <p class="shortcomment cmt">Each read has a &quot;token&quot;, which is an arbitrary integer for use by the application.</p><div class="fullcomment"><div class="comment cmt"><p>Each read has a &quot;token&quot;, which is an arbitrary integer for use by the application. Unlike the other fields,
-a read's token does NOT correspond to any underlying column in e.g. the BAM file.</p><p>It's used, for example, to differentiate tumor/normal pairs in some somatic callers.</p><p>This field can be set when reading in the reads, or modified at any point by the application.</p><p>Many applications just ignore this.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.reads.MappedRead">MappedRead</a> → <a href="Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a></dd></dl></div>
+a read's token does NOT correspond to any underlying column in e.g. the BAM file.</p><p>It's used, for example, to differentiate tumor/normal pairs in some somatic callers.</p><p>This field can be set when reading in the reads, or modified at any point by the application.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.reads.MappedRead">MappedRead</a> → <a href="Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a></dd></dl></div>
     </li><li name="org.hammerlab.guacamole.reads.MappedRead#unclippedEnd" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="unclippedEnd:Long"></a>
       <a id="unclippedEnd:Long"></a>
