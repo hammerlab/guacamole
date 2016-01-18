@@ -27,19 +27,23 @@ import org.hammerlab.guacamole.filters.{ GenotypeFilter, QualityAlignedReadsFilt
 import org.hammerlab.guacamole.likelihood.Likelihood
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.Read
+import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.variants.{ AlleleConversions, AlleleEvidence, CalledAllele }
 import org.hammerlab.guacamole.{ Common, Concordance, DelayedMessages, DistributedUtil, SparkCommand }
-import org.kohsuke.args4j.Option
+import org.kohsuke.args4j.{Option => Args4jOption}
 
 /**
  * Simple Bayesian variant caller implementation that uses the base and read quality score
  */
 object GermlineStandard {
 
-  protected class Arguments extends GermlineCallerArgs with PileupFilterArguments with GenotypeFilterArguments {
+  class Arguments extends GermlineCallerArgs with PileupFilterArguments with GenotypeFilterArguments {
 
-    @Option(name = "--emit-ref", usage = "Output homozygous reference calls.")
+    @Args4jOption(name = "--emit-ref", usage = "Output homozygous reference calls.")
     var emitRef: Boolean = false
+
+    @Args4jOption(name = "--reference-fasta", required = false, usage = "Local path to a reference FASTA file")
+    var referenceFastaPath: String = null
   }
 
   object Caller extends SparkCommand[Arguments] {
@@ -52,6 +56,7 @@ object GermlineStandard {
       val readSet = Common.loadReadsFromArguments(
         args, sc, Read.InputFilters(
           overlapsLoci = Some(loci),
+          mapped = true,
           nonDuplicate = true,
           hasMdTag = true))
       readSet.mappedReads.persist()
@@ -60,14 +65,17 @@ object GermlineStandard {
 
       val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(
         args, loci.result(readSet.contigLengths), readSet.mappedReads)
-
       val minAlignmentQuality = args.minAlignmentQuality
+
+      val reference = Option(args.referenceFastaPath).map(ReferenceBroadcast(_, sc))
 
       val genotypes: RDD[CalledAllele] = DistributedUtil.pileupFlatMap[CalledAllele](
         readSet.mappedReads,
         lociPartitions,
         skipEmpty = true, // skip empty pileups
-        function = pileup => callVariantsAtLocus(pileup, minAlignmentQuality).iterator)
+        function = pileup => callVariantsAtLocus(pileup, minAlignmentQuality).iterator,
+        reference = reference
+      )
       readSet.mappedReads.unpersist()
 
       val filteredGenotypes = GenotypeFilter(genotypes, args).flatMap(AlleleConversions.calledAlleleToADAMGenotype)
@@ -100,17 +108,25 @@ object GermlineStandard {
           val filteredPileupElements = QualityAlignedReadsFilter(samplePileup.elements, minAlignmentQuality)
           if (filteredPileupElements.isEmpty) {
             // Similarly to above, we skip samples that have no reads after filtering.
-            Seq.empty
+            return Seq.empty
           } else {
             val genotypeLikelihoods = Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(
               Pileup(samplePileup.referenceName, samplePileup.locus, samplePileup.referenceBase, filteredPileupElements),
               logSpace = true,
               normalize = true)
+
+            // If we did not have any valid genotypes to evaluate
+            // we do not return any variants
+            if (genotypeLikelihoods.isEmpty) {
+              return Seq.empty
+            }
             val mostLikelyGenotypeAndProbability = genotypeLikelihoods.maxBy(_._2)
 
             val genotype = mostLikelyGenotypeAndProbability._1
             val probability = math.exp(mostLikelyGenotypeAndProbability._2)
-            genotype.getNonReferenceAlleles.map(allele => {
+            genotype.getNonReferenceAlleles
+              .find(_.altBases.nonEmpty)
+              .map(allele => {
               CalledAllele(
                 sampleName,
                 samplePileup.referenceName,
