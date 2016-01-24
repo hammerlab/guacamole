@@ -387,6 +387,7 @@ object Read extends Logging {
       }
       var requiresFilteringByLocus = filters.overlapsLoci.nonEmpty
 
+      SamReaderFactory.setDefaultValidationStringency(ValidationStringency.LENIENT)
       val factory = SamReaderFactory.makeDefault
       val reader = factory.open(new File(path.toUri.getPath))
       val samSequenceDictionary = reader.getFileHeader.getSequenceDictionary
