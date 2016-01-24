@@ -41,6 +41,9 @@ object GermlineAssemblyCaller {
     @Args4jOption(name = "--reference-fasta", required = false, usage = "Local path to a reference FASTA file")
     var referenceFastaPath: String = null
 
+    @Args4jOption(name = "--min-area-vaf", required = false, usage = "Minimum variant allele frequency to investigate ara")
+    var minAreaVaf: Int = 5
+
   }
 
   object Caller extends SparkCommand[Arguments] {
@@ -197,6 +200,7 @@ object GermlineAssemblyCaller {
 
       val qualityReads = readSet.mappedReads.filter(_.alignmentQuality > minAlignmentQuality)
 
+      val minAreaVaf = args.minAreaVaf
       // Find loci where there are variant reads
       val lociOfInterest = DistributedUtil.pileupFlatMap[VariantLocus](
         qualityReads,
@@ -204,7 +208,7 @@ object GermlineAssemblyCaller {
         skipEmpty = true,
         function = pileup => VariantLocus(pileup).iterator,
         reference = Some(reference)
-      )
+      ).filter(_.variantAlleleFrequency > (minAreaVaf / 100.0))
 
       Common.progress(s"Found ${lociOfInterest.count} loci with non-reference reads")
 
