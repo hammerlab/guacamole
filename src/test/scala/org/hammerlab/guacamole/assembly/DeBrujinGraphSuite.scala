@@ -268,6 +268,47 @@ class DeBruijnGraphSuite extends GuacFunSuite with Matchers {
 
   }
 
+  test("find single unique path in sequence with diverging sequence") {
+
+    val reference =
+      "GAGGATCTGCCATGGCCGGGCGAGCTGGAGGAGCGAGGAGGAGGCAGGAGGA"
+
+    val reads =
+      Seq(
+        reference.substring(0, 25),
+        reference.substring(5, 30),
+        reference.substring(7, 32),
+        reference.substring(10, 35),
+        reference.substring(19, 41),
+        // This is an errant read with a sequence that will lead to a dead-end
+        reference.substring(19, 41) + "TCGAA",
+        reference.substring(22, 44),
+        reference.substring(25, 47),
+        reference.substring(31, 52) + "TTT"
+      )
+
+    val kmerSize = 15
+    val graph: DeBruijnGraph = DeBruijnGraph(
+      reads.map(Bases.stringToBases),
+      kmerSize,
+      minOccurrence = 1,
+      mergeNodes = false
+    )
+
+    val referenceKmerSource = reference.take(kmerSize)
+    val referenceKmerSink = reference.takeRight(kmerSize)
+    val paths = graph.depthFirstSearch(referenceKmerSource, referenceKmerSink)
+
+    paths.length should be(1)
+    TestUtil.assertBases(DeBruijnGraph.mergeKmers(paths(0), kmerSize), reference)
+
+    graph.mergeNodes()
+    val pathsAfterMerging = graph.depthFirstSearch(referenceKmerSource, referenceKmerSink)
+    pathsAfterMerging.length should be(1)
+    TestUtil.assertBases(DeBruijnGraph.mergeKmers(pathsAfterMerging(0), kmerSize), reference)
+
+  }
+
   sparkTest("real reads data test") {
     val kmerSize = 55
 
