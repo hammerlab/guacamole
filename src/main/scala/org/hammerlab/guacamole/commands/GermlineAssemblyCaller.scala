@@ -1,5 +1,7 @@
 package org.hammerlab.guacamole.commands
 
+import breeze.linalg.DenseVector
+import breeze.stats.{ mean, median }
 import htsjdk.samtools.CigarOperator
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
@@ -41,8 +43,11 @@ object GermlineAssemblyCaller {
     @Args4jOption(name = "--reference-fasta", required = false, usage = "Local path to a reference FASTA file")
     var referenceFastaPath: String = null
 
-    @Args4jOption(name = "--min-area-vaf", required = false, usage = "Minimum variant allele frequency to investigate ara")
+    @Args4jOption(name = "--min-area-vaf", required = false, usage = "Minimum variant allele frequency to investigate area")
     var minAreaVaf: Int = 5
+
+    @Args4jOption(name = "--min-occurrence", required = false, usage = "Minimum occurrences to include a kmer ")
+    var minOccurrence: Int = 3
 
   }
 
@@ -75,11 +80,10 @@ object GermlineAssemblyCaller {
                            currentWindow: SlidingWindow[MappedRead],
                            kmerSize: Int,
                            reference: ReferenceGenome,
-                           minOccurrence: Int = 2,
+                           minOccurrence: Int = 3,
                            expectedPloidy: Int = 2): (Option[DeBruijnGraph], Iterator[CalledAllele]) = {
 
       val locus = currentWindow.currentLocus
-
       val reads = currentWindow.currentRegions()
 
       // TODO: Should update graph instead of rebuilding it
@@ -103,7 +107,7 @@ object GermlineAssemblyCaller {
       val referenceKmerSource = currentReference.take(kmerSize)
       val referenceKmerSink = currentReference.takeRight(kmerSize)
 
-      // If the current window size
+      // If the current window size doesn't cover the kmer size we won't be able to find the reference start/end
       if (referenceKmerSource.length != kmerSize || referenceKmerSink.length != kmerSize)
         return (graph, Iterator.empty)
 
@@ -128,7 +132,8 @@ object GermlineAssemblyCaller {
         )
 
         val depth = reads.length
-
+        val mappingQualities = DenseVector(reads.map(_.alignmentQuality.toFloat).toArray)
+        val baseQualities =  DenseVector(reads.flatMap(_.baseQualities).map(_.toFloat).toArray)
         CalledAllele(
           reads.head.sampleName,
           reads.head.referenceContig,
@@ -140,10 +145,10 @@ object GermlineAssemblyCaller {
             alleleReadDepth = depth,
             forwardDepth = depth,
             alleleForwardDepth = depth,
-            meanMappingQuality = 60,
-            medianMappingQuality = 60,
-            meanBaseQuality = 60,
-            medianBaseQuality = 60,
+            meanMappingQuality = mean(mappingQualities),
+            medianMappingQuality = median(mappingQualities),
+            meanBaseQuality = mean(baseQualities),
+            medianBaseQuality = median(baseQualities),
             medianMismatchesPerRead = 0
           )
         )
@@ -162,17 +167,25 @@ object GermlineAssemblyCaller {
             val cigarOperator = cigarElement.getOperator
             val referenceLength = CigarUtils.getReferenceLength(cigarElement)
             val pathLength = CigarUtils.getReadLength(cigarElement)
-            val referenceAllele = currentReference.slice(referenceIndex, referenceIndex + referenceLength)
-            val alternateAllele = path.slice(pathIndex, pathIndex + pathLength)
+
+            // Yield a resulting variant when there is a mismatch, insertion or deletion
+            val possibleVariant = cigarOperator match {
+              case CigarOperator.X =>
+                val referenceAllele = currentReference.slice(referenceIndex, referenceIndex + referenceLength)
+                val alternateAllele = path.slice(pathIndex, pathIndex + pathLength)
+                Some(buildVariant(referenceIndex, referenceAllele, alternateAllele.toArray))
+              case (CigarOperator.I | CigarOperator.D) =>
+                // For insertions and deletions, report the variant with the last reference base attached
+                val referenceAllele = currentReference.slice(referenceIndex - 1, referenceIndex + referenceLength)
+                val alternateAllele = path.slice(pathIndex - 1, pathIndex + pathLength)
+                Some(buildVariant(referenceIndex - 1, referenceAllele, alternateAllele.toArray))
+              case _ => None
+            }
             referenceIndex += referenceLength
             pathIndex += pathLength
 
-            // Yield a resulting variant when there is a mismatch, insertion or deletion
-            cigarOperator match {
-              case CigarOperator.X | CigarOperator.I | CigarOperator.D =>
-                Some(buildVariant(referenceIndex, referenceAllele, alternateAllele.toArray))
-              case _ => None
-            }
+            possibleVariant
+
           })
         })
 
@@ -198,7 +211,9 @@ object GermlineAssemblyCaller {
       val minAverageBaseQuality = args.minAverageBaseQuality
       val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
 
-      val qualityReads = readSet.mappedReads.filter(_.alignmentQuality > minAlignmentQuality)
+      val qualityReads = readSet
+        .mappedReads
+        .filter(_.alignmentQuality > minAlignmentQuality)
 
       val minAreaVaf = args.minAreaVaf
       // Find loci where there are variant reads
@@ -223,9 +238,10 @@ object GermlineAssemblyCaller {
         lociOfInterestSet
       )
 
+      val minOccurrence = args.minOccurrence
       val genotypes: RDD[CalledAllele] =
         DistributedUtil.windowFlatMapWithState[MappedRead, CalledAllele, Option[DeBruijnGraph]](
-          Seq(readSet.mappedReads),
+          Seq(qualityReads),
           lociOfInterestPartitions,
           skipEmpty = true,
           halfWindowSize = args.snvWindowRange,
@@ -235,18 +251,19 @@ object GermlineAssemblyCaller {
               graph,
               windows(0),
               kmerSize,
-              reference)
+              reference,
+              minOccurrence
+            )
           }
         )
-      readSet.mappedReads.unpersist()
       genotypes.persist()
 
       Common.progress(s"Found ${genotypes.count} variants")
 
-      val filteredGenotypes =
+      val outputGenotypes =
         genotypes.flatMap(AlleleConversions.calledAlleleToADAMGenotype)
 
-      Common.writeVariantsFromArguments(args, filteredGenotypes)
+      Common.writeVariantsFromArguments(args, outputGenotypes)
       DelayedMessages.default.print()
     }
 
