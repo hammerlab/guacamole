@@ -186,7 +186,7 @@ class DeBruijnGraph(val kmerSize: Int,
     var paths = List.empty[(Path)]
 
     // Add the source node to the frontier
-    var frontier: mutable.Stack[Kmer] =
+    val frontier: mutable.Stack[Kmer] =
       if (mergeIndex.contains(source)) {
         val (mergedNode, pathIndex) = mergeIndex(source)
         mutable.Stack(mergedNode.drop(pathIndex))
@@ -201,6 +201,8 @@ class DeBruijnGraph(val kmerSize: Int,
 
     val nodeContainingSink = mergeIndex.get(sink)
 
+    // Track if we branch in the path if we need to return to this point
+    var lastBranchIndex = 0
     // explore branches until we find the sink
     // or accumulate the maximum number of appropriate length paths
     while (frontier.nonEmpty && paths.size < maxPaths) {
@@ -213,13 +215,20 @@ class DeBruijnGraph(val kmerSize: Int,
       // Check if the source node was merged into the current one
       lazy val foundMergedSink = nodeContainingSink.exists(_._1 == next)
       val foundSink = (next == sink || foundMergedSink)
-      if (!foundSink && currentPath.size < maxPathLength) {
+      val nextNodes = children(next)
+      val filteredNextNodes = (if (avoidLoops) nextNodes.filterNot(visited.contains) else nextNodes)
+      if (!foundSink && filteredNextNodes.nonEmpty && currentPath.size < maxPathLength) {
+
+        // Track if this is a branching node
+        if (filteredNextNodes.size > 1) {
+          lastBranchIndex = currentPath.length
+        }
+
         // Keep searching down tree
-        val nextNodes = children(next)
-        frontier ++= (if (avoidLoops) nextNodes.filterNot(visited.contains) else nextNodes)
+        frontier.pushAll(filteredNextNodes)
 
       } else {
-        //found sink or too long
+        // Found sink or too long
         if (foundSink && currentPath.size + 1 >= minPathLength) {
 
           // Trim merged node if the sink is inside of it
@@ -231,7 +240,9 @@ class DeBruijnGraph(val kmerSize: Int,
           // Found legitimate path to sink, save path
           paths = (currentPath.reverse) :: paths
         } // else degenerate path, too long or too short
-        currentPath = List.empty
+
+        // Backtrack the current path to the last node with siblings
+        currentPath = currentPath.drop(currentPath.length - lastBranchIndex)
       }
     }
     paths
