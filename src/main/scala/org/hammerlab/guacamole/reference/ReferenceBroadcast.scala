@@ -43,7 +43,8 @@ object ReferenceBroadcast {
     val broadcastedSequences = Map.newBuilder[String, Broadcast[Array[Byte]]]
     while (nextSequence != null) {
       val sequenceName = nextSequence.getName
-      val sequence = Bases.unmaskBases(nextSequence.getBases)
+      val sequence = nextSequence.getBases
+      Bases.unmaskBases(sequence)
       val broadcastedSequence = sc.broadcast(sequence)
 
       broadcastedSequences += ((sequenceName, broadcastedSequence))
