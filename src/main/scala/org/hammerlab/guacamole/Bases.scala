@@ -109,20 +109,18 @@ object Bases {
    * Convert a mixed sequence of bases (lower and upper-case) to upper case
    * Lower-case bases typically represent masked bases
    *
+   * Works in place.
+   *
    * @param bases Byte array of bases
    * @return Unmasked (upper-case) byte array of bases
    */
-  def unmaskBases(bases: Array[Byte]): Array[Byte] = {
-    bases.map(base =>
-      base match {
-        case (Bases.A | Bases.a) => Bases.A
-        case (Bases.G | Bases.g) => Bases.G
-        case (Bases.T | Bases.t) => Bases.T
-        case (Bases.C | Bases.c) => Bases.C
-        case (Bases.N | Bases.n) => Bases.N
-        case (other: Byte)       => other.toChar.toUpper.toByte
-      }
-    )
+  def unmaskBases(bases: Array[Byte]): Unit = {
+    // We modify the array in place.
+    var i = 0
+    while (i < bases.length) {
+      bases(i) = java.lang.Character.toUpperCase(bases(i)).toByte
+      i += 1
+    }
   }
 
 }
