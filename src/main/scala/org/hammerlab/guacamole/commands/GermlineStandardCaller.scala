@@ -53,12 +53,18 @@ object GermlineStandard {
     override def run(args: Arguments, sc: SparkContext): Unit = {
       Common.validateArguments(args)
       val loci = Common.loci(args)
+
+      val reference = Option(args.referenceFastaPath).map(ReferenceBroadcast(_, sc))
+
       val readSet = Common.loadReadsFromArguments(
         args, sc, Read.InputFilters(
           overlapsLoci = Some(loci),
           mapped = true,
           nonDuplicate = true,
-          hasMdTag = true))
+          hasMdTag = true),
+        requireMDTagsOnMappedReads = false,
+        referenceGenome = reference)
+
       readSet.mappedReads.persist()
       Common.progress(
         "Loaded %,d mapped non-duplicate reads into %,d partitions.".format(readSet.mappedReads.count, readSet.mappedReads.partitions.length))
@@ -67,7 +73,6 @@ object GermlineStandard {
         args, loci.result(readSet.contigLengths), readSet.mappedReads)
       val minAlignmentQuality = args.minAlignmentQuality
 
-      val reference = Option(args.referenceFastaPath).map(ReferenceBroadcast(_, sc))
 
       val genotypes: RDD[CalledAllele] = DistributedUtil.pileupFlatMap[CalledAllele](
         readSet.mappedReads,
