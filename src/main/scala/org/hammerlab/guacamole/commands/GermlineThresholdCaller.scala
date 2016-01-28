@@ -19,17 +19,18 @@
 package org.hammerlab.guacamole.commands
 
 import org.apache.spark.SparkContext
-import org.bdgenomics.formats.avro.{ Contig, Variant, GenotypeAllele, Genotype }
-import org.bdgenomics.formats.avro.GenotypeAllele.{ NoCall, Ref, Alt, OtherAlt }
-import org.hammerlab.guacamole.{ SparkCommand, Bases, Concordance, DistributedUtil, DelayedMessages, Common }
-import org.hammerlab.guacamole.Common.Arguments.GermlineCallerArgs
-import org.apache.spark.SparkContext._
-import org.hammerlab.guacamole.reads.Read
-import org.hammerlab.guacamole.variants.Allele
-import scala.collection.JavaConversions
-import org.kohsuke.args4j.{ Option => Args4jOption }
 import org.apache.spark.rdd.RDD
+import org.bdgenomics.formats.avro.GenotypeAllele.{Alt, NoCall, OtherAlt, Ref}
+import org.bdgenomics.formats.avro.{Contig, Genotype, GenotypeAllele, Variant}
+import org.hammerlab.guacamole.Common.Arguments.GermlineCallerArgs
 import org.hammerlab.guacamole.pileup.Pileup
+import org.hammerlab.guacamole.reads.Read
+import org.hammerlab.guacamole.reference.ReferenceBroadcast
+import org.hammerlab.guacamole.variants.Allele
+import org.hammerlab.guacamole.{Bases, Common, Concordance, DelayedMessages, DistributedUtil, SparkCommand}
+import org.kohsuke.args4j.{Option => Args4jOption}
+
+import scala.collection.JavaConversions
 
 /**
  * Simple variant caller.
@@ -48,6 +49,9 @@ object GermlineThreshold {
 
     @Args4jOption(name = "--emit-no-call", usage = "Output no call calls.")
     var emitNoCall: Boolean = false
+
+    @Args4jOption(name = "--reference-fasta", required = false, usage = "Local path to a reference FASTA file")
+    var referenceFastaPath: String = null
   }
 
   object Caller extends SparkCommand[Arguments] {
@@ -58,9 +62,15 @@ object GermlineThreshold {
     override def run(args: Arguments, sc: SparkContext): Unit = {
       Common.validateArguments(args)
       val loci = Common.loci(args)
+
+      val reference = Option(args.referenceFastaPath).map(ReferenceBroadcast(_, sc))
+
       val readSet = Common.loadReadsFromArguments(
         args, sc, Read.InputFilters(
-          overlapsLoci = Some(loci), nonDuplicate = true, hasMdTag = true))
+          overlapsLoci = Some(loci), nonDuplicate = true, hasMdTag = true),
+        requireMDTagsOnMappedReads = false,
+        referenceGenome = reference
+      )
 
       readSet.mappedReads.persist()
       Common.progress("Loaded %,d mapped non-duplicate MdTag-containing reads into %,d partitions.".format(
