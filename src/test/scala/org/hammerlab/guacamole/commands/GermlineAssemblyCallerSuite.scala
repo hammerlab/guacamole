@@ -2,7 +2,7 @@ package org.hammerlab.guacamole.commands
 
 import org.bdgenomics.adam.rdd.ADAMContext
 import org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Arguments
-import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
+import org.hammerlab.guacamole.util.{ GuacFunSuite, TestUtil }
 import org.scalatest.Matchers
 
 class GermlineAssemblyCallerSuite extends GuacFunSuite with Matchers {
@@ -25,7 +25,7 @@ class GermlineAssemblyCallerSuite extends GuacFunSuite with Matchers {
 
     variants.length should be(1)
     val variant = variants(0)
-    variant.getContig.getContigName should be ("chr1")
+    variant.getContig.getContigName should be("chr1")
     variant.getStart should be(772754)
     variant.getReferenceAllele should be("A")
     variant.getAlternateAllele should be("C")
