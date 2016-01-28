@@ -7,8 +7,7 @@ import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole.Common.Arguments.GermlineCallerArgs
 import org.hammerlab.guacamole._
-import org.hammerlab.guacamole.alignment.AlignmentState.AlignmentState
-import org.hammerlab.guacamole.alignment.{ AffineGapPenaltyAlignment, AlignmentState, ReadAlignment }
+import org.hammerlab.guacamole.alignment.AffineGapPenaltyAlignment
 import org.hammerlab.guacamole.assembly.DeBruijnGraph
 import org.hammerlab.guacamole.filters.GenotypeFilter.GenotypeFilterArguments
 import org.hammerlab.guacamole.reads.{ MappedRead, Read }
@@ -20,8 +19,14 @@ import org.kohsuke.args4j.{ Option => Args4jOption }
 import scala.collection.JavaConversions._
 
 /**
- *
  * Simple assembly based germline variant caller
+ *
+ * Overview:
+ * - Find areas where > `min-area-vaf` %  of the reads show a variant
+ * - Re-examine those areas with N base window around it
+ * - Place the reads in the `snv-window-range`-base window into a DeBruijn graph
+ *   and find paths between the start and end of the reference sequence that covers that region
+ * - Align those paths to the reference sequence to discover variants
  *
  */
 object GermlineAssemblyCaller {
@@ -56,18 +61,6 @@ object GermlineAssemblyCaller {
     override val description = "call germline variants by assembling the surrounding region of reads"
 
     /**
-     * Extract alignments that are mismatches, insertions or deletions
-     * @param alignment
-     * @return Filtered set of alignments that are mismatches, insertions or deletions
-     */
-    def getVariantAlignments(alignment: ReadAlignment): Seq[(AlignmentState, Int)] = {
-      alignment
-        .alignments
-        .zipWithIndex
-        .filter(tup => AlignmentState.isGapAlignment(tup._1) || tup._1 == AlignmentState.Mismatch)
-    }
-
-    /**
      *
      * @param graph An existing DeBruijn graph of the reads
      * @param currentWindow Window of reads that overlaps the current loci
@@ -75,6 +68,8 @@ object GermlineAssemblyCaller {
      * @param minOccurrence Minimum times a kmer must appear to be in the DeBruijn graph
      * @param expectedPloidy Expected ploidy, or expected number of valid paths through the graph
      * @return A set of variants in the window
+     *         TODO: This currently passes along a graph as state, but rebuilds it each time
+     *         This can be updated to use the existing graph and just update it
      */
     def discoverHaplotypes(graph: Option[DeBruijnGraph],
                            currentWindow: SlidingWindow[MappedRead],
@@ -119,7 +114,10 @@ object GermlineAssemblyCaller {
       // Take `ploidy` paths
       val topPaths = paths
         .take(expectedPloidy)
-        .map(DeBruijnGraph.mergeKmers(_, kmerSize))
+        .map(DeBruijnGraph.mergeOverlappingSequences(_, kmerSize))
+
+      val sampleName = reads.head.sampleName
+      val referenceContig = reads.head.referenceContig
 
       // Build a variant using the current offset and
       // read evidence
@@ -133,10 +131,10 @@ object GermlineAssemblyCaller {
 
         val depth = reads.length
         val mappingQualities = DenseVector(reads.map(_.alignmentQuality.toFloat).toArray)
-        val baseQualities =  DenseVector(reads.flatMap(_.baseQualities).map(_.toFloat).toArray)
+        val baseQualities = DenseVector(reads.flatMap(_.baseQualities).map(_.toFloat).toArray)
         CalledAllele(
-          reads.head.sampleName,
-          reads.head.referenceContig,
+          sampleName,
+          referenceContig,
           referenceStart + referenceOffset,
           allele,
           AlleleEvidence(

@@ -30,7 +30,7 @@ import org.hammerlab.guacamole.reads.Read
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.variants.{ AlleleConversions, AlleleEvidence, CalledAllele }
 import org.hammerlab.guacamole.{ Common, Concordance, DelayedMessages, DistributedUtil, SparkCommand }
-import org.kohsuke.args4j.{Option => Args4jOption}
+import org.kohsuke.args4j.{ Option => Args4jOption }
 
 /**
  * Simple Bayesian variant caller implementation that uses the base and read quality score
@@ -127,13 +127,13 @@ object GermlineStandard {
             genotype.getNonReferenceAlleles
               .find(_.altBases.nonEmpty)
               .map(allele => {
-              CalledAllele(
-                sampleName,
-                samplePileup.referenceName,
-                samplePileup.locus,
-                allele,
-                AlleleEvidence(probability, allele, samplePileup))
-            })
+                CalledAllele(
+                  sampleName,
+                  samplePileup.referenceName,
+                  samplePileup.locus,
+                  allele,
+                  AlleleEvidence(probability, allele, samplePileup))
+              })
           }
         }
       })
