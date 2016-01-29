@@ -67,6 +67,7 @@ object GermlineAssemblyCaller {
      * @param kmerSize Length kmers in the DeBruijn graph
      * @param minOccurrence Minimum times a kmer must appear to be in the DeBruijn graph
      * @param expectedPloidy Expected ploidy, or expected number of valid paths through the graph
+     * @param maxPathsToScore Number of paths to align to the reference to score them
      * @return A set of variants in the window
      *         TODO: This currently passes along a graph as state, but rebuilds it each time
      *         This can be updated to use the existing graph and just update it
@@ -76,7 +77,8 @@ object GermlineAssemblyCaller {
                            kmerSize: Int,
                            reference: ReferenceGenome,
                            minOccurrence: Int = 3,
-                           expectedPloidy: Int = 2): (Option[DeBruijnGraph], Iterator[CalledAllele]) = {
+                           expectedPloidy: Int = 2,
+                           maxPathsToScore: Int = 6): (Option[DeBruijnGraph], Iterator[CalledAllele]) = {
 
       val locus = currentWindow.currentLocus
       val reads = currentWindow.currentRegions()
@@ -111,13 +113,24 @@ object GermlineAssemblyCaller {
         referenceKmerSink
       )
 
-      // Take `ploidy` paths
-      val topPaths = paths
-        .take(expectedPloidy)
-        .map(DeBruijnGraph.mergeOverlappingSequences(_, kmerSize))
-
       val sampleName = reads.head.sampleName
       val referenceContig = reads.head.referenceContig
+
+      // Score up to the maximum number of paths, by aligning them against the reference
+      // Take the best aligning `expectedPloidy` paths
+      val pathAndAlignments =
+        if (paths.length <= maxPathsToScore) {
+          paths.map(path => {
+            val mergedPath = DeBruijnGraph.mergeOverlappingSequences(path, kmerSize)
+            (mergedPath, AffineGapPenaltyAlignment.align(mergedPath, currentReference))
+          })
+            .sortBy(_._2.alignmentScore)
+            .take(expectedPloidy)
+        }  else {
+          log.warn(s"In window ${referenceContig}:${referenceStart}-$referenceEnd " +
+            s"there were ${paths.length} paths found, all variants skipped")
+          List.empty
+        }
 
       // Build a variant using the current offset and
       // read evidence
@@ -153,9 +166,9 @@ object GermlineAssemblyCaller {
       }
 
       val variants =
-        topPaths.flatMap(path => {
-          // Align the path to the reference sequence
-          val alignment = AffineGapPenaltyAlignment.align(path, currentReference)
+        pathAndAlignments.flatMap(kv => {
+          val path = kv._1
+          val alignment = kv._2
           var referenceIndex = 0
           var pathIndex = 0
 
