@@ -524,9 +524,9 @@ object Read extends Logging {
     if (alignmentRecord.getReadPaired) {
       val mateAlignment = if (alignmentRecord.getMateMapped) Some(
         MateAlignmentProperties(
-          referenceContig = alignmentRecord.getMateContig.getContigName.intern,
+          referenceContig = alignmentRecord.getMateContig.getContigName.intern(),
           start = alignmentRecord.getMateAlignmentStart,
-          inferredInsertSize = None,
+          inferredInsertSize = if (alignmentRecord.getInferredInsertSize != 0 && alignmentRecord.getInferredInsertSize != null) Some(alignmentRecord.getInferredInsertSize.toInt) else None,
           isPositiveStrand = !alignmentRecord.getMateNegativeStrand
         )
       )
