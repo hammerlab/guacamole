@@ -308,19 +308,23 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.assembly.DeBruijnGraph#mergeKmers" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="mergeKmers(kmers:Seq[org.hammerlab.guacamole.assembly.DeBruijnGraph.Kmer]):org.hammerlab.guacamole.assembly.DeBruijnGraph.Sequence"></a>
-      <a id="mergeKmers(Seq[Kmer]):Sequence"></a>
+    </li><li name="org.hammerlab.guacamole.assembly.DeBruijnGraph#mergeOverlappingSequences" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="mergeOverlappingSequences(sequences:Seq[org.hammerlab.guacamole.assembly.DeBruijnGraph.Sequence],overlapSize:Int):org.hammerlab.guacamole.assembly.DeBruijnGraph.Sequence"></a>
+      <a id="mergeOverlappingSequences(Seq[Sequence],Int):Sequence"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">mergeKmers</span><span class="params">(<span name="kmers">kmers: <span class="extype" name="scala.Seq">Seq</span>[<a href="#Kmer=Seq[Byte]" class="extmbr" name="org.hammerlab.guacamole.assembly.DeBruijnGraph.Kmer">Kmer</a>]</span>)</span><span class="result">: <a href="#Sequence=Seq[Byte]" class="extmbr" name="org.hammerlab.guacamole.assembly.DeBruijnGraph.Sequence">Sequence</a></span>
+        <span class="name">mergeOverlappingSequences</span><span class="params">(<span name="sequences">sequences: <span class="extype" name="scala.Seq">Seq</span>[<a href="#Sequence=Seq[Byte]" class="extmbr" name="org.hammerlab.guacamole.assembly.DeBruijnGraph.Sequence">Sequence</a>]</span>, <span name="overlapSize">overlapSize: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <a href="#Sequence=Seq[Byte]" class="extmbr" name="org.hammerlab.guacamole.assembly.DeBruijnGraph.Sequence">Sequence</a></span>
       </span>
       </h4>
-      
+      <p class="shortcomment cmt">Merge sequences where we expect consecutive entries to overlap by <code>overlapSize</code> bases.</p><div class="fullcomment"><div class="comment cmt"><p>Merge sequences where we expect consecutive entries to overlap by <code>overlapSize</code> bases.
+</p></div><dl class="paramcmts block"><dt class="param">sequences</dt><dd class="cmt"><p>Set of sequences that we would like to combine into a single sequence</p></dd><dt class="param">overlapSize</dt><dd class="cmt"><p>The amount of the sequences we expect to overlap (The number of bases the last sequence overlaps
+                   with the next. For a standard kmer graph, this is the length of the kmer length - 1
+</p></dd><dt>returns</dt><dd class="cmt"><p>A single merged sequence
+</p></dd></dl></div>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>

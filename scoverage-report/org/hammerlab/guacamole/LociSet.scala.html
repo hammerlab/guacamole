@@ -28484,23 +28484,23 @@
           1231
         </td>
         <td>
-          org.hammerlab.guacamole.LociSet.SingleContig.apply
+          org.hammerlab.guacamole.LociMap.onContig
         </td>
         <td style="background: #F0ADAD">
-          LociSet.SingleContig.apply({  scoverage.Invoker.invoked(1230, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  LociSet.this.map.onContig(contig)})
+          LociSet.this.map.onContig(contig)
         </td>
       </tr><tr>
         <td>
           51
         </td>
         <td>
-          1230
+          1232
         </td>
         <td>
-          org.hammerlab.guacamole.LociMap.onContig
+          org.hammerlab.guacamole.LociSet.SingleContig.apply
         </td>
         <td style="background: #F0ADAD">
-          LociSet.this.map.onContig(contig)
+          LociSet.SingleContig.apply({  scoverage.Invoker.invoked(1231, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  LociSet.this.map.onContig(contig)})
         </td>
       </tr><tr>
         <td>
@@ -28510,10 +28510,10 @@
           1234
         </td>
         <td>
-          org.hammerlab.guacamole.LociSet.apply
+          org.hammerlab.guacamole.LociMap.union
         </td>
         <td style="background: #F0ADAD">
-          LociSet.apply({  scoverage.Invoker.invoked(1233, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  LociSet.this.map.union({    scoverage.Invoker.invoked(1232, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    other.map  })})
+          LociSet.this.map.union({  scoverage.Invoker.invoked(1233, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  other.map})
         </td>
       </tr><tr>
         <td>
@@ -28523,19 +28523,6 @@
           1233
         </td>
         <td>
-          org.hammerlab.guacamole.LociMap.union
-        </td>
-        <td style="background: #F0ADAD">
-          LociSet.this.map.union({  scoverage.Invoker.invoked(1232, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  other.map})
-        </td>
-      </tr><tr>
-        <td>
-          54
-        </td>
-        <td>
-          1232
-        </td>
-        <td>
           org.hammerlab.guacamole.LociSet.map
         </td>
         <td style="background: #F0ADAD">
@@ -28543,10 +28530,23 @@
         </td>
       </tr><tr>
         <td>
-          57
+          54
         </td>
         <td>
           1235
+        </td>
+        <td>
+          org.hammerlab.guacamole.LociSet.apply
+        </td>
+        <td style="background: #F0ADAD">
+          LociSet.apply({  scoverage.Invoker.invoked(1234, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  LociSet.this.map.union({    scoverage.Invoker.invoked(1233, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    other.map  })})
+        </td>
+      </tr><tr>
+        <td>
+          57
+        </td>
+        <td>
+          1236
         </td>
         <td>
           org.hammerlab.guacamole.LociSet.truncatedString
@@ -28559,7 +28559,7 @@
           60
         </td>
         <td>
-          1236
+          1237
         </td>
         <td>
           org.hammerlab.guacamole.LociMap.truncatedString
@@ -28572,13 +28572,13 @@
           64
         </td>
         <td>
-          1237
+          1239
         </td>
         <td>
-          org.hammerlab.guacamole.LociMap.filterContigs
+          org.hammerlab.guacamole.LociSet.apply
         </td>
         <td style="background: #F0ADAD">
-          LociSet.this.map.filterContigs(function)
+          LociSet.apply({  scoverage.Invoker.invoked(1238, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  LociSet.this.map.filterContigs(function)})
         </td>
       </tr><tr>
         <td>
@@ -28588,23 +28588,23 @@
           1238
         </td>
         <td>
-          org.hammerlab.guacamole.LociSet.apply
+          org.hammerlab.guacamole.LociMap.filterContigs
         </td>
         <td style="background: #F0ADAD">
-          LociSet.apply({  scoverage.Invoker.invoked(1237, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  LociSet.this.map.filterContigs(function)})
+          LociSet.this.map.filterContigs(function)
         </td>
       </tr><tr>
         <td>
           67
         </td>
         <td>
-          1244
+          1245
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          other match {  case (that @ (_: org.hammerlab.guacamole.LociSet)) =&gt; {    scoverage.Invoker.invoked(1241, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(1240, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      LociSet.this.map.equals({        scoverage.Invoker.invoked(1239, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        that.map      })    }  }  case _ =&gt; {    scoverage.Invoker.invoked(1243, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(1242, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      false    }  }}
+          other match {  case (that @ (_: org.hammerlab.guacamole.LociSet)) =&gt; {    scoverage.Invoker.invoked(1242, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(1241, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      LociSet.this.map.equals({        scoverage.Invoker.invoked(1240, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        that.map      })    }  }  case _ =&gt; {    scoverage.Invoker.invoked(1244, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(1243, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      false    }  }}
         </td>
       </tr><tr>
         <td>
@@ -28612,19 +28612,6 @@
         </td>
         <td>
           1240
-        </td>
-        <td>
-          org.hammerlab.guacamole.LociMap.equals
-        </td>
-        <td style="background: #F0ADAD">
-          LociSet.this.map.equals({  scoverage.Invoker.invoked(1239, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  that.map})
-        </td>
-      </tr><tr>
-        <td>
-          68
-        </td>
-        <td>
-          1239
         </td>
         <td>
           org.hammerlab.guacamole.LociSet.map
@@ -28637,13 +28624,26 @@
           68
         </td>
         <td>
-          1241
+          1242
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1240, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  LociSet.this.map.equals({    scoverage.Invoker.invoked(1239, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    that.map  })}
+          {  scoverage.Invoker.invoked(1241, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  LociSet.this.map.equals({    scoverage.Invoker.invoked(1240, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    that.map  })}
+        </td>
+      </tr><tr>
+        <td>
+          68
+        </td>
+        <td>
+          1241
+        </td>
+        <td>
+          org.hammerlab.guacamole.LociMap.equals
+        </td>
+        <td style="background: #F0ADAD">
+          LociSet.this.map.equals({  scoverage.Invoker.invoked(1240, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  that.map})
         </td>
       </tr><tr>
         <td>
@@ -28656,27 +28656,27 @@
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1242, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  false}
+          false
         </td>
       </tr><tr>
         <td>
           69
         </td>
         <td>
-          1242
+          1244
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          false
+          {  scoverage.Invoker.invoked(1243, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  false}
         </td>
       </tr><tr>
         <td>
           71
         </td>
         <td>
-          1245
+          1246
         </td>
         <td>
           org.hammerlab.guacamole.LociMap.hashCode
@@ -28689,26 +28689,13 @@
           81
         </td>
         <td>
-          1246
-        </td>
-        <td>
-          scala.Long.&lt;=
-        </td>
-        <td style="background: #F0ADAD">
-          numToTake.&lt;=(LociSet.this.count)
-        </td>
-      </tr><tr>
-        <td>
-          81
-        </td>
-        <td>
           1249
         </td>
         <td>
-          scala.Predef.assume
+          scala.collection.immutable.StringLike.format
         </td>
         <td style="background: #F0ADAD">
-          scala.this.Predef.assume({  scoverage.Invoker.invoked(1246, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  numToTake.&lt;=(LociSet.this.count)}, {  scoverage.Invoker.invoked(1248, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.augmentString({  scoverage.Invoker.invoked(1247, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot;Can\'t take %d loci from a set of size %d.&quot;}).format(numToTake, LociSet.this.count)})
+          scala.this.Predef.augmentString({  scoverage.Invoker.invoked(1248, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot;Can\'t take %d loci from a set of size %d.&quot;}).format(numToTake, LociSet.this.count)
         </td>
       </tr><tr>
         <td>
@@ -28718,10 +28705,23 @@
           1248
         </td>
         <td>
-          scala.collection.immutable.StringLike.format
+          &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          scala.this.Predef.augmentString({  scoverage.Invoker.invoked(1247, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot;Can\'t take %d loci from a set of size %d.&quot;}).format(numToTake, LociSet.this.count)
+          &quot;Can\'t take %d loci from a set of size %d.&quot;
+        </td>
+      </tr><tr>
+        <td>
+          81
+        </td>
+        <td>
+          1250
+        </td>
+        <td>
+          scala.Predef.assume
+        </td>
+        <td style="background: #F0ADAD">
+          scala.this.Predef.assume({  scoverage.Invoker.invoked(1247, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  numToTake.&lt;=(LociSet.this.count)}, {  scoverage.Invoker.invoked(1249, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.augmentString({  scoverage.Invoker.invoked(1248, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot;Can\'t take %d loci from a set of size %d.&quot;}).format(numToTake, LociSet.this.count)})
         </td>
       </tr><tr>
         <td>
@@ -28731,17 +28731,17 @@
           1247
         </td>
         <td>
-          &lt;nosymbol&gt;
+          scala.Long.&lt;=
         </td>
         <td style="background: #F0ADAD">
-          &quot;Can\'t take %d loci from a set of size %d.&quot;
+          numToTake.&lt;=(LociSet.this.count)
         </td>
       </tr><tr>
         <td>
           84
         </td>
         <td>
-          1250
+          1251
         </td>
         <td>
           scala.Long.==
@@ -28757,19 +28757,6 @@
           1252
         </td>
         <td>
-          scala.Tuple2.apply
-        </td>
-        <td style="background: #F0ADAD">
-          scala.Tuple2.apply[org.hammerlab.guacamole.LociSet, org.hammerlab.guacamole.LociSet]({  scoverage.Invoker.invoked(1251, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  LociSet.empty}, this)
-        </td>
-      </tr><tr>
-        <td>
-          85
-        </td>
-        <td>
-          1251
-        </td>
-        <td>
           org.hammerlab.guacamole.LociSet.empty
         </td>
         <td style="background: #F0ADAD">
@@ -28780,20 +28767,33 @@
           85
         </td>
         <td>
-          1253
+          1254
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1252, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.Tuple2.apply[org.hammerlab.guacamole.LociSet, org.hammerlab.guacamole.LociSet]({    scoverage.Invoker.invoked(1251, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    LociSet.empty  }, this)}
+          {  scoverage.Invoker.invoked(1253, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.Tuple2.apply[org.hammerlab.guacamole.LociSet, org.hammerlab.guacamole.LociSet]({    scoverage.Invoker.invoked(1252, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    LociSet.empty  }, this)}
+        </td>
+      </tr><tr>
+        <td>
+          85
+        </td>
+        <td>
+          1253
+        </td>
+        <td>
+          scala.Tuple2.apply
+        </td>
+        <td style="background: #F0ADAD">
+          scala.Tuple2.apply[org.hammerlab.guacamole.LociSet, org.hammerlab.guacamole.LociSet]({  scoverage.Invoker.invoked(1252, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  LociSet.empty}, this)
         </td>
       </tr><tr>
         <td>
           86
         </td>
         <td>
-          1254
+          1255
         </td>
         <td>
           scala.Long.==
@@ -28806,26 +28806,26 @@
           86
         </td>
         <td>
-          1265
+          1266
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          if ({  scoverage.Invoker.invoked(1254, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  numToTake.==(LociSet.this.count)})  {    scoverage.Invoker.invoked(1257, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(1256, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      scala.Tuple2.apply[org.hammerlab.guacamole.LociSet, org.hammerlab.guacamole.LociSet](this, {        scoverage.Invoker.invoked(1255, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        LociSet.empty      })    }  }else  {    scoverage.Invoker.invoked(1264, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      val mapTake: (org.hammerlab.guacamole.LociMap[Long], org.hammerlab.guacamole.LociMap[Long]) = {        scoverage.Invoker.invoked(1258, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        LociSet.this.map.take(numToTake)      };      {        scoverage.Invoker.invoked(1263, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        scala.Tuple2.apply[org.hammerlab.guacamole.LociSet, org.hammerlab.guacamole.LociSet]({          scoverage.Invoker.invoked(1260, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          LociSet.apply({            scoverage.Invoker.invoked(1259, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            mapTake._1          })        }, {          scoverage.Invoker.invoked(1262, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          LociSet.apply({            scoverage.Invoker.invoked(1261, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            mapTake._2          })        })      }    }  }
+          if ({  scoverage.Invoker.invoked(1255, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  numToTake.==(LociSet.this.count)})  {    scoverage.Invoker.invoked(1258, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(1257, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      scala.Tuple2.apply[org.hammerlab.guacamole.LociSet, org.hammerlab.guacamole.LociSet](this, {        scoverage.Invoker.invoked(1256, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        LociSet.empty      })    }  }else  {    scoverage.Invoker.invoked(1265, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      val mapTake: (org.hammerlab.guacamole.LociMap[Long], org.hammerlab.guacamole.LociMap[Long]) = {        scoverage.Invoker.invoked(1259, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        LociSet.this.map.take(numToTake)      };      {        scoverage.Invoker.invoked(1264, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        scala.Tuple2.apply[org.hammerlab.guacamole.LociSet, org.hammerlab.guacamole.LociSet]({          scoverage.Invoker.invoked(1261, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          LociSet.apply({            scoverage.Invoker.invoked(1260, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            mapTake._1          })        }, {          scoverage.Invoker.invoked(1263, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          LociSet.apply({            scoverage.Invoker.invoked(1262, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            mapTake._2          })        })      }    }  }
         </td>
       </tr><tr>
         <td>
           87
         </td>
         <td>
-          1255
+          1258
         </td>
         <td>
-          org.hammerlab.guacamole.LociSet.empty
+          &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          LociSet.empty
+          {  scoverage.Invoker.invoked(1257, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.Tuple2.apply[org.hammerlab.guacamole.LociSet, org.hammerlab.guacamole.LociSet](this, {    scoverage.Invoker.invoked(1256, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    LociSet.empty  })}
         </td>
       </tr><tr>
         <td>
@@ -28835,10 +28835,10 @@
           1257
         </td>
         <td>
-          &lt;nosymbol&gt;
+          scala.Tuple2.apply
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1256, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.Tuple2.apply[org.hammerlab.guacamole.LociSet, org.hammerlab.guacamole.LociSet](this, {    scoverage.Invoker.invoked(1255, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    LociSet.empty  })}
+          scala.Tuple2.apply[org.hammerlab.guacamole.LociSet, org.hammerlab.guacamole.LociSet](this, {  scoverage.Invoker.invoked(1256, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  LociSet.empty})
         </td>
       </tr><tr>
         <td>
@@ -28848,30 +28848,30 @@
           1256
         </td>
         <td>
-          scala.Tuple2.apply
+          org.hammerlab.guacamole.LociSet.empty
         </td>
         <td style="background: #F0ADAD">
-          scala.Tuple2.apply[org.hammerlab.guacamole.LociSet, org.hammerlab.guacamole.LociSet](this, {  scoverage.Invoker.invoked(1255, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  LociSet.empty})
+          LociSet.empty
         </td>
       </tr><tr>
         <td>
           88
         </td>
         <td>
-          1264
+          1265
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  val mapTake: (org.hammerlab.guacamole.LociMap[Long], org.hammerlab.guacamole.LociMap[Long]) = {    scoverage.Invoker.invoked(1258, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    LociSet.this.map.take(numToTake)  };  {    scoverage.Invoker.invoked(1263, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.Tuple2.apply[org.hammerlab.guacamole.LociSet, org.hammerlab.guacamole.LociSet]({      scoverage.Invoker.invoked(1260, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      LociSet.apply({        scoverage.Invoker.invoked(1259, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        mapTake._1      })    }, {      scoverage.Invoker.invoked(1262, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      LociSet.apply({        scoverage.Invoker.invoked(1261, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        mapTake._2      })    })  }}
+          {  val mapTake: (org.hammerlab.guacamole.LociMap[Long], org.hammerlab.guacamole.LociMap[Long]) = {    scoverage.Invoker.invoked(1259, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    LociSet.this.map.take(numToTake)  };  {    scoverage.Invoker.invoked(1264, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.Tuple2.apply[org.hammerlab.guacamole.LociSet, org.hammerlab.guacamole.LociSet]({      scoverage.Invoker.invoked(1261, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      LociSet.apply({        scoverage.Invoker.invoked(1260, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        mapTake._1      })    }, {      scoverage.Invoker.invoked(1263, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      LociSet.apply({        scoverage.Invoker.invoked(1262, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        mapTake._2      })    })  }}
         </td>
       </tr><tr>
         <td>
           89
         </td>
         <td>
-          1258
+          1259
         </td>
         <td>
           org.hammerlab.guacamole.LociMap.take
@@ -28884,13 +28884,26 @@
           90
         </td>
         <td>
+          1264
+        </td>
+        <td>
+          scala.Tuple2.apply
+        </td>
+        <td style="background: #F0ADAD">
+          scala.Tuple2.apply[org.hammerlab.guacamole.LociSet, org.hammerlab.guacamole.LociSet]({  scoverage.Invoker.invoked(1261, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  LociSet.apply({    scoverage.Invoker.invoked(1260, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    mapTake._1  })}, {  scoverage.Invoker.invoked(1263, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  LociSet.apply({    scoverage.Invoker.invoked(1262, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    mapTake._2  })})
+        </td>
+      </tr><tr>
+        <td>
+          90
+        </td>
+        <td>
           1261
         </td>
         <td>
-          scala.Tuple2._2
+          org.hammerlab.guacamole.LociSet.apply
         </td>
         <td style="background: #F0ADAD">
-          mapTake._2
+          LociSet.apply({  scoverage.Invoker.invoked(1260, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  mapTake._1})
         </td>
       </tr><tr>
         <td>
@@ -28898,32 +28911,6 @@
         </td>
         <td>
           1260
-        </td>
-        <td>
-          org.hammerlab.guacamole.LociSet.apply
-        </td>
-        <td style="background: #F0ADAD">
-          LociSet.apply({  scoverage.Invoker.invoked(1259, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  mapTake._1})
-        </td>
-      </tr><tr>
-        <td>
-          90
-        </td>
-        <td>
-          1263
-        </td>
-        <td>
-          scala.Tuple2.apply
-        </td>
-        <td style="background: #F0ADAD">
-          scala.Tuple2.apply[org.hammerlab.guacamole.LociSet, org.hammerlab.guacamole.LociSet]({  scoverage.Invoker.invoked(1260, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  LociSet.apply({    scoverage.Invoker.invoked(1259, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    mapTake._1  })}, {  scoverage.Invoker.invoked(1262, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  LociSet.apply({    scoverage.Invoker.invoked(1261, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    mapTake._2  })})
-        </td>
-      </tr><tr>
-        <td>
-          90
-        </td>
-        <td>
-          1259
         </td>
         <td>
           scala.Tuple2._1
@@ -28936,13 +28923,26 @@
           90
         </td>
         <td>
-          1262
+          1263
         </td>
         <td>
           org.hammerlab.guacamole.LociSet.apply
         </td>
         <td style="background: #F0ADAD">
-          LociSet.apply({  scoverage.Invoker.invoked(1261, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  mapTake._2})
+          LociSet.apply({  scoverage.Invoker.invoked(1262, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  mapTake._2})
+        </td>
+      </tr><tr>
+        <td>
+          90
+        </td>
+        <td>
+          1262
+        </td>
+        <td>
+          scala.Tuple2._2
+        </td>
+        <td style="background: #F0ADAD">
+          mapTake._2
         </td>
       </tr><tr>
         <td>
@@ -28952,19 +28952,6 @@
           1267
         </td>
         <td>
-          org.hammerlab.guacamole.LociSet.apply
-        </td>
-        <td style="background: #F0ADAD">
-          LociSet.apply({  scoverage.Invoker.invoked(1266, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  LociMap.apply[Long]()})
-        </td>
-      </tr><tr>
-        <td>
-          96
-        </td>
-        <td>
-          1266
-        </td>
-        <td>
           org.hammerlab.guacamole.LociMap.apply
         </td>
         <td style="background: #F0ADAD">
@@ -28972,10 +28959,23 @@
         </td>
       </tr><tr>
         <td>
-          101
+          96
         </td>
         <td>
           1268
+        </td>
+        <td>
+          org.hammerlab.guacamole.LociSet.apply
+        </td>
+        <td style="background: #F0ADAD">
+          LociSet.apply({  scoverage.Invoker.invoked(1267, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  LociMap.apply[Long]()})
+        </td>
+      </tr><tr>
+        <td>
+          101
+        </td>
+        <td>
+          1269
         </td>
         <td>
           org.hammerlab.guacamole.LociSet.Builder.&lt;init&gt;
@@ -28988,7 +28988,7 @@
           123
         </td>
         <td>
-          1269
+          1270
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -29001,7 +29001,7 @@
           128
         </td>
         <td>
-          1270
+          1271
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -29014,7 +29014,7 @@
           134
         </td>
         <td>
-          1271
+          1272
         </td>
         <td>
           scala.collection.mutable.ArrayBuffer.newBuilder
@@ -29027,7 +29027,7 @@
           140
         </td>
         <td>
-          1272
+          1273
         </td>
         <td>
           org.hammerlab.guacamole.LociSet.Builder.containsAll_=
@@ -29040,7 +29040,7 @@
           141
         </td>
         <td>
-          1273
+          1274
         </td>
         <td>
           org.hammerlab.guacamole.LociSet.Builder.fullyResolved_=
@@ -29053,20 +29053,20 @@
           149
         </td>
         <td>
-          1275
+          1276
         </td>
         <td>
           scala.Predef.assume
         </td>
         <td style="background: #F0ADAD">
-          scala.this.Predef.assume({  scoverage.Invoker.invoked(1274, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  start.&gt;=(0)})
+          scala.this.Predef.assume({  scoverage.Invoker.invoked(1275, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  start.&gt;=(0)})
         </td>
       </tr><tr>
         <td>
           149
         </td>
         <td>
-          1274
+          1275
         </td>
         <td>
           scala.Long.&gt;=
@@ -29079,13 +29079,13 @@
           150
         </td>
         <td>
-          1276
+          1279
         </td>
         <td>
-          scala.Long.&gt;=
+          scala.Predef.assume
         </td>
         <td style="background: #F0ADAD">
-          x$1.&gt;=(start)
+          scala.this.Predef.assume({  scoverage.Invoker.invoked(1278, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  end.forall(((x$1: Long) =&gt; {    scoverage.Invoker.invoked(1277, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    x$1.&gt;=(start)  }))})
         </td>
       </tr><tr>
         <td>
@@ -29095,10 +29095,10 @@
           1278
         </td>
         <td>
-          scala.Predef.assume
+          scala.Option.forall
         </td>
         <td style="background: #F0ADAD">
-          scala.this.Predef.assume({  scoverage.Invoker.invoked(1277, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  end.forall(((x$1: Long) =&gt; {    scoverage.Invoker.invoked(1276, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    x$1.&gt;=(start)  }))})
+          end.forall(((x$1: Long) =&gt; {  scoverage.Invoker.invoked(1277, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x$1.&gt;=(start)}))
         </td>
       </tr><tr>
         <td>
@@ -29108,23 +29108,10 @@
           1277
         </td>
         <td>
-          scala.Option.forall
+          scala.Long.&gt;=
         </td>
         <td style="background: #F0ADAD">
-          end.forall(((x$1: Long) =&gt; {  scoverage.Invoker.invoked(1276, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x$1.&gt;=(start)}))
-        </td>
-      </tr><tr>
-        <td>
-          151
-        </td>
-        <td>
-          1279
-        </td>
-        <td>
-          scala.Boolean.unary_!
-        </td>
-        <td style="background: #F0ADAD">
-          Builder.this.containsAll.unary_!
+          x$1.&gt;=(start)
         </td>
       </tr><tr>
         <td>
@@ -29137,20 +29124,20 @@
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          ()
+          {  {    scoverage.Invoker.invoked(1282, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    Builder.this.ranges.+=({      scoverage.Invoker.invoked(1281, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      scala.Tuple3.apply[String, Long, Option[Long]](contig, start, end)    })  };  if ({    scoverage.Invoker.invoked(1283, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    end.isEmpty  })    {      scoverage.Invoker.invoked(1285, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(1284, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        Builder.this.fullyResolved_=(false)      }    }  else    {      scoverage.Invoker.invoked(1287, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(1286, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        ()      }    }}
         </td>
       </tr><tr>
         <td>
           151
         </td>
         <td>
-          1287
+          1290
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  {    scoverage.Invoker.invoked(1281, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    Builder.this.ranges.+=({      scoverage.Invoker.invoked(1280, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      scala.Tuple3.apply[String, Long, Option[Long]](contig, start, end)    })  };  if ({    scoverage.Invoker.invoked(1282, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    end.isEmpty  })    {      scoverage.Invoker.invoked(1284, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(1283, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        Builder.this.fullyResolved_=(false)      }    }  else    {      scoverage.Invoker.invoked(1286, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(1285, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        ()      }    }}
+          {  scoverage.Invoker.invoked(1289, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
         </td>
       </tr><tr>
         <td>
@@ -29163,7 +29150,33 @@
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1288, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
+          ()
+        </td>
+      </tr><tr>
+        <td>
+          151
+        </td>
+        <td>
+          1280
+        </td>
+        <td>
+          scala.Boolean.unary_!
+        </td>
+        <td style="background: #F0ADAD">
+          Builder.this.containsAll.unary_!
+        </td>
+      </tr><tr>
+        <td>
+          152
+        </td>
+        <td>
+          1282
+        </td>
+        <td>
+          scala.collection.mutable.Builder.+=
+        </td>
+        <td style="background: #F0ADAD">
+          Builder.this.ranges.+=({  scoverage.Invoker.invoked(1281, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.Tuple3.apply[String, Long, Option[Long]](contig, start, end)})
         </td>
       </tr><tr>
         <td>
@@ -29171,19 +29184,6 @@
         </td>
         <td>
           1281
-        </td>
-        <td>
-          scala.collection.mutable.Builder.+=
-        </td>
-        <td style="background: #F0ADAD">
-          Builder.this.ranges.+=({  scoverage.Invoker.invoked(1280, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.Tuple3.apply[String, Long, Option[Long]](contig, start, end)})
-        </td>
-      </tr><tr>
-        <td>
-          152
-        </td>
-        <td>
-          1280
         </td>
         <td>
           scala.Tuple3.apply
@@ -29196,7 +29196,20 @@
           153
         </td>
         <td>
-          1282
+          1287
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  scoverage.Invoker.invoked(1286, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
+        </td>
+      </tr><tr>
+        <td>
+          153
+        </td>
+        <td>
+          1283
         </td>
         <td>
           scala.Option.isEmpty
@@ -29209,7 +29222,7 @@
           153
         </td>
         <td>
-          1285
+          1286
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -29219,16 +29232,16 @@
         </td>
       </tr><tr>
         <td>
-          153
+          154
         </td>
         <td>
-          1286
+          1285
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1285, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
+          {  scoverage.Invoker.invoked(1284, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  Builder.this.fullyResolved_=(false)}
         </td>
       </tr><tr>
         <td>
@@ -29236,19 +29249,6 @@
         </td>
         <td>
           1284
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1283, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  Builder.this.fullyResolved_=(false)}
-        </td>
-      </tr><tr>
-        <td>
-          154
-        </td>
-        <td>
-          1283
         </td>
         <td>
           org.hammerlab.guacamole.LociSet.Builder.fullyResolved_=
@@ -29261,7 +29261,7 @@
           167
         </td>
         <td>
-          1290
+          1291
         </td>
         <td>
           java.lang.Object.==
@@ -29274,13 +29274,13 @@
           168
         </td>
         <td>
-          1291
+          1293
         </td>
         <td>
-          org.hammerlab.guacamole.LociSet.Builder.putAllContigs
+          &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          Builder.this.putAllContigs()
+          {  scoverage.Invoker.invoked(1292, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  Builder.this.putAllContigs()}
         </td>
       </tr><tr>
         <td>
@@ -29290,23 +29290,23 @@
           1292
         </td>
         <td>
-          &lt;nosymbol&gt;
+          org.hammerlab.guacamole.LociSet.Builder.putAllContigs
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1291, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  Builder.this.putAllContigs()}
+          Builder.this.putAllContigs()
         </td>
       </tr><tr>
         <td>
           169
         </td>
         <td>
-          1314
+          1315
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  val contigAndLoci: scala.util.matching.Regex = {    scoverage.Invoker.invoked(1294, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.this.Predef.augmentString({  scoverage.Invoker.invoked(1293, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot;^([\\pL\\pN._]+):(\\pN+)-(\\pN+)$&quot;}).r  };  val contigOnly: scala.util.matching.Regex = {    scoverage.Invoker.invoked(1296, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.this.Predef.augmentString({  scoverage.Invoker.invoked(1295, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot;^([\\pL\\pN._]+)&quot;}).r  };  val sets: Unit = {    scoverage.Invoker.invoked(1312, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.this.Predef.refArrayOps[String]({  scoverage.Invoker.invoked(1297, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.augmentString(loci.replaceAll(&quot;\\s&quot;, &quot;&quot;)).split(',')}).foreach[Any](((x0$1: String) =&gt; {      scoverage.Invoker.invoked(1311, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      x0$1 match {        case &quot;&quot; =&gt; {          scoverage.Invoker.invoked(1299, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          {            scoverage.Invoker.invoked(1298, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            ()          }        }        case contigAndLoci.unapplySeq(&lt;unapply-selector&gt;) &lt;unapply&gt; ((name @ _), (start @ _), (end @ _)) =&gt; {          scoverage.Invoker.invoked(1304, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          {            scoverage.Invoker.invoked(1303, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            Builder.this.put(name, {              scoverage.Invoker.invoked(1300, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              scala.this.Predef.augmentString(start).toLong            }, {              scoverage.Invoker.invoked(1302, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              scala.Some.apply[Long]({                scoverage.Invoker.invoked(1301, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                scala.this.Predef.augmentString(end).toLong              })            })          }        }        case contigOnly.unapplySeq(&lt;unapply-selector&gt;) &lt;unapply&gt; ((contig @ _)) =&gt; {          scoverage.Invoker.invoked(1308, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          {            scoverage.Invoker.invoked(1307, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            Builder.this.put(contig, {              scoverage.Invoker.invoked(1305, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              Builder.this.put$default$2            }, {              scoverage.Invoker.invoked(1306, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              Builder.this.put$default$3            })          }        }        case (other @ _) =&gt; {          scoverage.Invoker.invoked(1310, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          {            scoverage.Invoker.invoked(1309, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            throw new scala.`package`.IllegalArgumentException(scala.this.Predef.augmentString(&quot;Couldn\'t parse loci range: %s&quot;).format(other))          }        }      }    }))  };  {    scoverage.Invoker.invoked(1313, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    ()  }}
+          {  val contigAndLoci: scala.util.matching.Regex = {    scoverage.Invoker.invoked(1295, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.this.Predef.augmentString({  scoverage.Invoker.invoked(1294, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot;^([\\pL\\pN._]+):(\\pN+)-(\\pN+)$&quot;}).r  };  val contigOnly: scala.util.matching.Regex = {    scoverage.Invoker.invoked(1297, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.this.Predef.augmentString({  scoverage.Invoker.invoked(1296, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot;^([\\pL\\pN._]+)&quot;}).r  };  val sets: Unit = {    scoverage.Invoker.invoked(1313, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.this.Predef.refArrayOps[String]({  scoverage.Invoker.invoked(1298, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.augmentString(loci.replaceAll(&quot;\\s&quot;, &quot;&quot;)).split(',')}).foreach[Any](((x0$1: String) =&gt; {      scoverage.Invoker.invoked(1312, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      x0$1 match {        case &quot;&quot; =&gt; {          scoverage.Invoker.invoked(1300, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          {            scoverage.Invoker.invoked(1299, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            ()          }        }        case contigAndLoci.unapplySeq(&lt;unapply-selector&gt;) &lt;unapply&gt; ((name @ _), (start @ _), (end @ _)) =&gt; {          scoverage.Invoker.invoked(1305, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          {            scoverage.Invoker.invoked(1304, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            Builder.this.put(name, {              scoverage.Invoker.invoked(1301, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              scala.this.Predef.augmentString(start).toLong            }, {              scoverage.Invoker.invoked(1303, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              scala.Some.apply[Long]({                scoverage.Invoker.invoked(1302, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                scala.this.Predef.augmentString(end).toLong              })            })          }        }        case contigOnly.unapplySeq(&lt;unapply-selector&gt;) &lt;unapply&gt; ((contig @ _)) =&gt; {          scoverage.Invoker.invoked(1309, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          {            scoverage.Invoker.invoked(1308, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            Builder.this.put(contig, {              scoverage.Invoker.invoked(1306, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              Builder.this.put$default$2            }, {              scoverage.Invoker.invoked(1307, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              Builder.this.put$default$3            })          }        }        case (other @ _) =&gt; {          scoverage.Invoker.invoked(1311, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          {            scoverage.Invoker.invoked(1310, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            throw new scala.`package`.IllegalArgumentException(scala.this.Predef.augmentString(&quot;Couldn\'t parse loci range: %s&quot;).format(other))          }        }      }    }))  };  {    scoverage.Invoker.invoked(1314, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    ()  }}
         </td>
       </tr><tr>
         <td>
@@ -29316,19 +29316,6 @@
           1294
         </td>
         <td>
-          scala.collection.immutable.StringLike.r
-        </td>
-        <td style="background: #F0ADAD">
-          scala.this.Predef.augmentString({  scoverage.Invoker.invoked(1293, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot;^([\\pL\\pN._]+):(\\pN+)-(\\pN+)$&quot;}).r
-        </td>
-      </tr><tr>
-        <td>
-          170
-        </td>
-        <td>
-          1293
-        </td>
-        <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
@@ -29336,23 +29323,36 @@
         </td>
       </tr><tr>
         <td>
-          171
+          170
         </td>
         <td>
-          1296
+          1295
         </td>
         <td>
           scala.collection.immutable.StringLike.r
         </td>
         <td style="background: #F0ADAD">
-          scala.this.Predef.augmentString({  scoverage.Invoker.invoked(1295, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot;^([\\pL\\pN._]+)&quot;}).r
+          scala.this.Predef.augmentString({  scoverage.Invoker.invoked(1294, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot;^([\\pL\\pN._]+):(\\pN+)-(\\pN+)$&quot;}).r
         </td>
       </tr><tr>
         <td>
           171
         </td>
         <td>
-          1295
+          1297
+        </td>
+        <td>
+          scala.collection.immutable.StringLike.r
+        </td>
+        <td style="background: #F0ADAD">
+          scala.this.Predef.augmentString({  scoverage.Invoker.invoked(1296, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot;^([\\pL\\pN._]+)&quot;}).r
+        </td>
+      </tr><tr>
+        <td>
+          171
+        </td>
+        <td>
+          1296
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -29365,7 +29365,33 @@
           172
         </td>
         <td>
-          1297
+          1312
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          x0$1 match {  case &quot;&quot; =&gt; {    scoverage.Invoker.invoked(1300, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(1299, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      ()    }  }  case contigAndLoci.unapplySeq(&lt;unapply-selector&gt;) &lt;unapply&gt; ((name @ _), (start @ _), (end @ _)) =&gt; {    scoverage.Invoker.invoked(1305, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(1304, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      Builder.this.put(name, {        scoverage.Invoker.invoked(1301, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        scala.this.Predef.augmentString(start).toLong      }, {        scoverage.Invoker.invoked(1303, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        scala.Some.apply[Long]({          scoverage.Invoker.invoked(1302, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          scala.this.Predef.augmentString(end).toLong        })      })    }  }  case contigOnly.unapplySeq(&lt;unapply-selector&gt;) &lt;unapply&gt; ((contig @ _)) =&gt; {    scoverage.Invoker.invoked(1309, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(1308, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      Builder.this.put(contig, {        scoverage.Invoker.invoked(1306, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        Builder.this.put$default$2      }, {        scoverage.Invoker.invoked(1307, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        Builder.this.put$default$3      })    }  }  case (other @ _) =&gt; {    scoverage.Invoker.invoked(1311, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(1310, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      throw new scala.`package`.IllegalArgumentException(scala.this.Predef.augmentString(&quot;Couldn\'t parse loci range: %s&quot;).format(other))    }  }}
+        </td>
+      </tr><tr>
+        <td>
+          172
+        </td>
+        <td>
+          1313
+        </td>
+        <td>
+          scala.collection.IndexedSeqOptimized.foreach
+        </td>
+        <td style="background: #F0ADAD">
+          scala.this.Predef.refArrayOps[String]({  scoverage.Invoker.invoked(1298, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.augmentString(loci.replaceAll(&quot;\\s&quot;, &quot;&quot;)).split(',')}).foreach[Any](((x0$1: String) =&gt; {  scoverage.Invoker.invoked(1312, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x0$1 match {    case &quot;&quot; =&gt; {      scoverage.Invoker.invoked(1300, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(1299, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        ()      }    }    case contigAndLoci.unapplySeq(&lt;unapply-selector&gt;) &lt;unapply&gt; ((name @ _), (start @ _), (end @ _)) =&gt; {      scoverage.Invoker.invoked(1305, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(1304, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        Builder.this.put(name, {          scoverage.Invoker.invoked(1301, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          scala.this.Predef.augmentString(start).toLong        }, {          scoverage.Invoker.invoked(1303, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          scala.Some.apply[Long]({            scoverage.Invoker.invoked(1302, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            scala.this.Predef.augmentString(end).toLong          })        })      }    }    case contigOnly.unapplySeq(&lt;unapply-selector&gt;) &lt;unapply&gt; ((contig @ _)) =&gt; {      scoverage.Invoker.invoked(1309, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(1308, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        Builder.this.put(contig, {          scoverage.Invoker.invoked(1306, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          Builder.this.put$default$2        }, {          scoverage.Invoker.invoked(1307, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          Builder.this.put$default$3        })      }    }    case (other @ _) =&gt; {      scoverage.Invoker.invoked(1311, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(1310, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        throw new scala.`package`.IllegalArgumentException(scala.this.Predef.augmentString(&quot;Couldn\'t parse loci range: %s&quot;).format(other))      }    }  }}))
+        </td>
+      </tr><tr>
+        <td>
+          172
+        </td>
+        <td>
+          1298
         </td>
         <td>
           scala.collection.immutable.StringLike.split
@@ -29375,29 +29401,16 @@
         </td>
       </tr><tr>
         <td>
-          172
+          173
         </td>
         <td>
-          1312
-        </td>
-        <td>
-          scala.collection.IndexedSeqOptimized.foreach
-        </td>
-        <td style="background: #F0ADAD">
-          scala.this.Predef.refArrayOps[String]({  scoverage.Invoker.invoked(1297, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.augmentString(loci.replaceAll(&quot;\\s&quot;, &quot;&quot;)).split(',')}).foreach[Any](((x0$1: String) =&gt; {  scoverage.Invoker.invoked(1311, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x0$1 match {    case &quot;&quot; =&gt; {      scoverage.Invoker.invoked(1299, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(1298, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        ()      }    }    case contigAndLoci.unapplySeq(&lt;unapply-selector&gt;) &lt;unapply&gt; ((name @ _), (start @ _), (end @ _)) =&gt; {      scoverage.Invoker.invoked(1304, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(1303, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        Builder.this.put(name, {          scoverage.Invoker.invoked(1300, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          scala.this.Predef.augmentString(start).toLong        }, {          scoverage.Invoker.invoked(1302, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          scala.Some.apply[Long]({            scoverage.Invoker.invoked(1301, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            scala.this.Predef.augmentString(end).toLong          })        })      }    }    case contigOnly.unapplySeq(&lt;unapply-selector&gt;) &lt;unapply&gt; ((contig @ _)) =&gt; {      scoverage.Invoker.invoked(1308, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(1307, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        Builder.this.put(contig, {          scoverage.Invoker.invoked(1305, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          Builder.this.put$default$2        }, {          scoverage.Invoker.invoked(1306, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          Builder.this.put$default$3        })      }    }    case (other @ _) =&gt; {      scoverage.Invoker.invoked(1310, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(1309, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        throw new scala.`package`.IllegalArgumentException(scala.this.Predef.augmentString(&quot;Couldn\'t parse loci range: %s&quot;).format(other))      }    }  }}))
-        </td>
-      </tr><tr>
-        <td>
-          172
-        </td>
-        <td>
-          1311
+          1300
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          x0$1 match {  case &quot;&quot; =&gt; {    scoverage.Invoker.invoked(1299, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(1298, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      ()    }  }  case contigAndLoci.unapplySeq(&lt;unapply-selector&gt;) &lt;unapply&gt; ((name @ _), (start @ _), (end @ _)) =&gt; {    scoverage.Invoker.invoked(1304, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(1303, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      Builder.this.put(name, {        scoverage.Invoker.invoked(1300, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        scala.this.Predef.augmentString(start).toLong      }, {        scoverage.Invoker.invoked(1302, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        scala.Some.apply[Long]({          scoverage.Invoker.invoked(1301, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          scala.this.Predef.augmentString(end).toLong        })      })    }  }  case contigOnly.unapplySeq(&lt;unapply-selector&gt;) &lt;unapply&gt; ((contig @ _)) =&gt; {    scoverage.Invoker.invoked(1308, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(1307, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      Builder.this.put(contig, {        scoverage.Invoker.invoked(1305, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        Builder.this.put$default$2      }, {        scoverage.Invoker.invoked(1306, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        Builder.this.put$default$3      })    }  }  case (other @ _) =&gt; {    scoverage.Invoker.invoked(1310, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(1309, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      throw new scala.`package`.IllegalArgumentException(scala.this.Predef.augmentString(&quot;Couldn\'t parse loci range: %s&quot;).format(other))    }  }}
+          {  scoverage.Invoker.invoked(1299, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
         </td>
       </tr><tr>
         <td>
@@ -29410,33 +29423,7 @@
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1298, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
-        </td>
-      </tr><tr>
-        <td>
-          173
-        </td>
-        <td>
-          1298
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
           ()
-        </td>
-      </tr><tr>
-        <td>
-          174
-        </td>
-        <td>
-          1300
-        </td>
-        <td>
-          scala.collection.immutable.StringLike.toLong
-        </td>
-        <td style="background: #F0ADAD">
-          scala.this.Predef.augmentString(start).toLong
         </td>
       </tr><tr>
         <td>
@@ -29446,10 +29433,23 @@
           1303
         </td>
         <td>
-          org.hammerlab.guacamole.LociSet.Builder.put
+          scala.Some.apply
         </td>
         <td style="background: #F0ADAD">
-          Builder.this.put(name, {  scoverage.Invoker.invoked(1300, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.augmentString(start).toLong}, {  scoverage.Invoker.invoked(1302, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.Some.apply[Long]({    scoverage.Invoker.invoked(1301, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.this.Predef.augmentString(end).toLong  })})
+          scala.Some.apply[Long]({  scoverage.Invoker.invoked(1302, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.augmentString(end).toLong})
+        </td>
+      </tr><tr>
+        <td>
+          174
+        </td>
+        <td>
+          1305
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  scoverage.Invoker.invoked(1304, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  Builder.this.put(name, {    scoverage.Invoker.invoked(1301, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.this.Predef.augmentString(start).toLong  }, {    scoverage.Invoker.invoked(1303, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.Some.apply[Long]({      scoverage.Invoker.invoked(1302, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      scala.this.Predef.augmentString(end).toLong    })  })}
         </td>
       </tr><tr>
         <td>
@@ -29457,19 +29457,6 @@
         </td>
         <td>
           1302
-        </td>
-        <td>
-          scala.Some.apply
-        </td>
-        <td style="background: #F0ADAD">
-          scala.Some.apply[Long]({  scoverage.Invoker.invoked(1301, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.augmentString(end).toLong})
-        </td>
-      </tr><tr>
-        <td>
-          174
-        </td>
-        <td>
-          1301
         </td>
         <td>
           scala.collection.immutable.StringLike.toLong
@@ -29482,13 +29469,26 @@
           174
         </td>
         <td>
+          1301
+        </td>
+        <td>
+          scala.collection.immutable.StringLike.toLong
+        </td>
+        <td style="background: #F0ADAD">
+          scala.this.Predef.augmentString(start).toLong
+        </td>
+      </tr><tr>
+        <td>
+          174
+        </td>
+        <td>
           1304
         </td>
         <td>
-          &lt;nosymbol&gt;
+          org.hammerlab.guacamole.LociSet.Builder.put
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1303, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  Builder.this.put(name, {    scoverage.Invoker.invoked(1300, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.this.Predef.augmentString(start).toLong  }, {    scoverage.Invoker.invoked(1302, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.Some.apply[Long]({      scoverage.Invoker.invoked(1301, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      scala.this.Predef.augmentString(end).toLong    })  })}
+          Builder.this.put(name, {  scoverage.Invoker.invoked(1301, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.augmentString(start).toLong}, {  scoverage.Invoker.invoked(1303, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.Some.apply[Long]({    scoverage.Invoker.invoked(1302, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.this.Predef.augmentString(end).toLong  })})
         </td>
       </tr><tr>
         <td>
@@ -29496,19 +29496,6 @@
         </td>
         <td>
           1306
-        </td>
-        <td>
-          org.hammerlab.guacamole.LociSet.Builder.put$default$3
-        </td>
-        <td style="background: #F0ADAD">
-          Builder.this.put$default$3
-        </td>
-      </tr><tr>
-        <td>
-          175
-        </td>
-        <td>
-          1305
         </td>
         <td>
           org.hammerlab.guacamole.LociSet.Builder.put$default$2
@@ -29521,13 +29508,26 @@
           175
         </td>
         <td>
-          1308
+          1309
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1307, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  Builder.this.put(contig, {    scoverage.Invoker.invoked(1305, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    Builder.this.put$default$2  }, {    scoverage.Invoker.invoked(1306, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    Builder.this.put$default$3  })}
+          {  scoverage.Invoker.invoked(1308, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  Builder.this.put(contig, {    scoverage.Invoker.invoked(1306, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    Builder.this.put$default$2  }, {    scoverage.Invoker.invoked(1307, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    Builder.this.put$default$3  })}
+        </td>
+      </tr><tr>
+        <td>
+          175
+        </td>
+        <td>
+          1308
+        </td>
+        <td>
+          org.hammerlab.guacamole.LociSet.Builder.put
+        </td>
+        <td style="background: #F0ADAD">
+          Builder.this.put(contig, {  scoverage.Invoker.invoked(1306, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  Builder.this.put$default$2}, {  scoverage.Invoker.invoked(1307, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  Builder.this.put$default$3})
         </td>
       </tr><tr>
         <td>
@@ -29537,23 +29537,23 @@
           1307
         </td>
         <td>
-          org.hammerlab.guacamole.LociSet.Builder.put
+          org.hammerlab.guacamole.LociSet.Builder.put$default$3
         </td>
         <td style="background: #F0ADAD">
-          Builder.this.put(contig, {  scoverage.Invoker.invoked(1305, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  Builder.this.put$default$2}, {  scoverage.Invoker.invoked(1306, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  Builder.this.put$default$3})
+          Builder.this.put$default$3
         </td>
       </tr><tr>
         <td>
           177
         </td>
         <td>
-          1309
+          1311
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          throw new scala.`package`.IllegalArgumentException(scala.this.Predef.augmentString(&quot;Couldn\'t parse loci range: %s&quot;).format(other))
+          {  scoverage.Invoker.invoked(1310, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  throw new scala.`package`.IllegalArgumentException(scala.this.Predef.augmentString(&quot;Couldn\'t parse loci range: %s&quot;).format(other))}
         </td>
       </tr><tr>
         <td>
@@ -29566,14 +29566,14 @@
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1309, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  throw new scala.`package`.IllegalArgumentException(scala.this.Predef.augmentString(&quot;Couldn\'t parse loci range: %s&quot;).format(other))}
+          throw new scala.`package`.IllegalArgumentException(scala.this.Predef.augmentString(&quot;Couldn\'t parse loci range: %s&quot;).format(other))
         </td>
       </tr><tr>
         <td>
           180
         </td>
         <td>
-          1313
+          1314
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -29586,13 +29586,13 @@
           188
         </td>
         <td>
-          1315
+          1318
         </td>
         <td>
-          org.hammerlab.guacamole.LociSet.Builder.fullyResolved
+          scala.Predef.assume
         </td>
         <td style="background: #F0ADAD">
-          Builder.this.fullyResolved
+          scala.this.Predef.assume({  scoverage.Invoker.invoked(1317, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  contigLengths.nonEmpty.||({    scoverage.Invoker.invoked(1316, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    Builder.this.fullyResolved  })})
         </td>
       </tr><tr>
         <td>
@@ -29602,10 +29602,10 @@
           1317
         </td>
         <td>
-          scala.Predef.assume
+          scala.Boolean.||
         </td>
         <td style="background: #F0ADAD">
-          scala.this.Predef.assume({  scoverage.Invoker.invoked(1316, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  contigLengths.nonEmpty.||({    scoverage.Invoker.invoked(1315, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    Builder.this.fullyResolved  })})
+          contigLengths.nonEmpty.||({  scoverage.Invoker.invoked(1316, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  Builder.this.fullyResolved})
         </td>
       </tr><tr>
         <td>
@@ -29615,17 +29615,17 @@
           1316
         </td>
         <td>
-          scala.Boolean.||
+          org.hammerlab.guacamole.LociSet.Builder.fullyResolved
         </td>
         <td style="background: #F0ADAD">
-          contigLengths.nonEmpty.||({  scoverage.Invoker.invoked(1315, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  Builder.this.fullyResolved})
+          Builder.this.fullyResolved
         </td>
       </tr><tr>
         <td>
           189
         </td>
         <td>
-          1318
+          1319
         </td>
         <td>
           org.hammerlab.guacamole.LociMap.Builder.&lt;init&gt;
@@ -29638,7 +29638,7 @@
           190
         </td>
         <td>
-          1319
+          1320
         </td>
         <td>
           scala.collection.mutable.Builder.result
@@ -29657,14 +29657,14 @@
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1335, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
+          ()
         </td>
       </tr><tr>
         <td>
           193
         </td>
         <td>
-          1320
+          1321
         </td>
         <td>
           scala.Option.nonEmpty
@@ -29677,13 +29677,13 @@
           193
         </td>
         <td>
-          1335
+          1337
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          ()
+          {  scoverage.Invoker.invoked(1336, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
         </td>
       </tr><tr>
         <td>
@@ -29693,23 +29693,23 @@
           1333
         </td>
         <td>
-          scala.collection.mutable.ResizableArray.foreach
+          &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          rangesResult.foreach[Unit](((x0$2: (String, Long, Option[Long])) =&gt; {  scoverage.Invoker.invoked(1332, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x0$2 match {    case (_1: String, _2: Long, _3: Option[Long])(String, Long, Option[Long])((contig @ _), (start @ _), (end @ _)) =&gt; {      scoverage.Invoker.invoked(1331, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(1330, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        {          scoverage.Invoker.invoked(1321, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          contigLengths.get.get(contig)        } match {          case scala.None =&gt; {            scoverage.Invoker.invoked(1323, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            {              scoverage.Invoker.invoked(1322, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              throw new scala.`package`.IllegalArgumentException(scala.this.Predef.augmentString(&quot;No such contig: %s&quot;).format(contig))            }          }          case (x: Long)Some[Long]((contigLength @ _)) if {            scoverage.Invoker.invoked(1325, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            end.exists(((x$2: Long) =&gt; {              scoverage.Invoker.invoked(1324, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              x$2.&gt;(contigLength)            }))          } =&gt; {            scoverage.Invoker.invoked(1327, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            {              scoverage.Invoker.invoked(1326, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              throw new scala.`package`.IllegalArgumentException(scala.this.Predef.augmentString(&quot;Invalid range %d-%d for contig \'%s\' which has length %d&quot;).format(start, end.get, contig, contigLength))            }          }          case _ =&gt; {            scoverage.Invoker.invoked(1329, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            {              scoverage.Invoker.invoked(1328, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              ()            }          }        }      }    }  }}))
+          x0$2 match {  case (_1: String, _2: Long, _3: Option[Long])(String, Long, Option[Long])((contig @ _), (start @ _), (end @ _)) =&gt; {    scoverage.Invoker.invoked(1332, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(1331, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(1322, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        contigLengths.get.get(contig)      } match {        case scala.None =&gt; {          scoverage.Invoker.invoked(1324, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          {            scoverage.Invoker.invoked(1323, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            throw new scala.`package`.IllegalArgumentException(scala.this.Predef.augmentString(&quot;No such contig: %s&quot;).format(contig))          }        }        case (x: Long)Some[Long]((contigLength @ _)) if {          scoverage.Invoker.invoked(1326, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          end.exists(((x$2: Long) =&gt; {            scoverage.Invoker.invoked(1325, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            x$2.&gt;(contigLength)          }))        } =&gt; {          scoverage.Invoker.invoked(1328, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          {            scoverage.Invoker.invoked(1327, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            throw new scala.`package`.IllegalArgumentException(scala.this.Predef.augmentString(&quot;Invalid range %d-%d for contig \'%s\' which has length %d&quot;).format(start, end.get, contig, contigLength))          }        }        case _ =&gt; {          scoverage.Invoker.invoked(1330, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          {            scoverage.Invoker.invoked(1329, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            ()          }        }      }    }  }}
         </td>
       </tr><tr>
         <td>
           194
         </td>
         <td>
-          1332
+          1335
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          x0$2 match {  case (_1: String, _2: Long, _3: Option[Long])(String, Long, Option[Long])((contig @ _), (start @ _), (end @ _)) =&gt; {    scoverage.Invoker.invoked(1331, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(1330, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(1321, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        contigLengths.get.get(contig)      } match {        case scala.None =&gt; {          scoverage.Invoker.invoked(1323, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          {            scoverage.Invoker.invoked(1322, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            throw new scala.`package`.IllegalArgumentException(scala.this.Predef.augmentString(&quot;No such contig: %s&quot;).format(contig))          }        }        case (x: Long)Some[Long]((contigLength @ _)) if {          scoverage.Invoker.invoked(1325, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          end.exists(((x$2: Long) =&gt; {            scoverage.Invoker.invoked(1324, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            x$2.&gt;(contigLength)          }))        } =&gt; {          scoverage.Invoker.invoked(1327, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          {            scoverage.Invoker.invoked(1326, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            throw new scala.`package`.IllegalArgumentException(scala.this.Predef.augmentString(&quot;Invalid range %d-%d for contig \'%s\' which has length %d&quot;).format(start, end.get, contig, contigLength))          }        }        case _ =&gt; {          scoverage.Invoker.invoked(1329, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          {            scoverage.Invoker.invoked(1328, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            ()          }        }      }    }  }}
+          {  scoverage.Invoker.invoked(1334, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  rangesResult.foreach[Unit](((x0$2: (String, Long, Option[Long])) =&gt; {    scoverage.Invoker.invoked(1333, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    x0$2 match {      case (_1: String, _2: Long, _3: Option[Long])(String, Long, Option[Long])((contig @ _), (start @ _), (end @ _)) =&gt; {        scoverage.Invoker.invoked(1332, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        {          scoverage.Invoker.invoked(1331, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          {            scoverage.Invoker.invoked(1322, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            contigLengths.get.get(contig)          } match {            case scala.None =&gt; {              scoverage.Invoker.invoked(1324, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              {                scoverage.Invoker.invoked(1323, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                throw new scala.`package`.IllegalArgumentException(scala.this.Predef.augmentString(&quot;No such contig: %s&quot;).format(contig))              }            }            case (x: Long)Some[Long]((contigLength @ _)) if {              scoverage.Invoker.invoked(1326, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              end.exists(((x$2: Long) =&gt; {                scoverage.Invoker.invoked(1325, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                x$2.&gt;(contigLength)              }))            } =&gt; {              scoverage.Invoker.invoked(1328, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              {                scoverage.Invoker.invoked(1327, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                throw new scala.`package`.IllegalArgumentException(scala.this.Predef.augmentString(&quot;Invalid range %d-%d for contig \'%s\' which has length %d&quot;).format(start, end.get, contig, contigLength))              }            }            case _ =&gt; {              scoverage.Invoker.invoked(1330, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              {                scoverage.Invoker.invoked(1329, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                ()              }            }          }        }      }    }  }))}
         </td>
       </tr><tr>
         <td>
@@ -29719,36 +29719,23 @@
           1334
         </td>
         <td>
-          &lt;nosymbol&gt;
+          scala.collection.mutable.ResizableArray.foreach
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1333, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  rangesResult.foreach[Unit](((x0$2: (String, Long, Option[Long])) =&gt; {    scoverage.Invoker.invoked(1332, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    x0$2 match {      case (_1: String, _2: Long, _3: Option[Long])(String, Long, Option[Long])((contig @ _), (start @ _), (end @ _)) =&gt; {        scoverage.Invoker.invoked(1331, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        {          scoverage.Invoker.invoked(1330, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          {            scoverage.Invoker.invoked(1321, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            contigLengths.get.get(contig)          } match {            case scala.None =&gt; {              scoverage.Invoker.invoked(1323, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              {                scoverage.Invoker.invoked(1322, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                throw new scala.`package`.IllegalArgumentException(scala.this.Predef.augmentString(&quot;No such contig: %s&quot;).format(contig))              }            }            case (x: Long)Some[Long]((contigLength @ _)) if {              scoverage.Invoker.invoked(1325, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              end.exists(((x$2: Long) =&gt; {                scoverage.Invoker.invoked(1324, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                x$2.&gt;(contigLength)              }))            } =&gt; {              scoverage.Invoker.invoked(1327, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              {                scoverage.Invoker.invoked(1326, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                throw new scala.`package`.IllegalArgumentException(scala.this.Predef.augmentString(&quot;Invalid range %d-%d for contig \'%s\' which has length %d&quot;).format(start, end.get, contig, contigLength))              }            }            case _ =&gt; {              scoverage.Invoker.invoked(1329, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              {                scoverage.Invoker.invoked(1328, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                ()              }            }          }        }      }    }  }))}
+          rangesResult.foreach[Unit](((x0$2: (String, Long, Option[Long])) =&gt; {  scoverage.Invoker.invoked(1333, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x0$2 match {    case (_1: String, _2: Long, _3: Option[Long])(String, Long, Option[Long])((contig @ _), (start @ _), (end @ _)) =&gt; {      scoverage.Invoker.invoked(1332, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(1331, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        {          scoverage.Invoker.invoked(1322, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          contigLengths.get.get(contig)        } match {          case scala.None =&gt; {            scoverage.Invoker.invoked(1324, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            {              scoverage.Invoker.invoked(1323, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              throw new scala.`package`.IllegalArgumentException(scala.this.Predef.augmentString(&quot;No such contig: %s&quot;).format(contig))            }          }          case (x: Long)Some[Long]((contigLength @ _)) if {            scoverage.Invoker.invoked(1326, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            end.exists(((x$2: Long) =&gt; {              scoverage.Invoker.invoked(1325, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              x$2.&gt;(contigLength)            }))          } =&gt; {            scoverage.Invoker.invoked(1328, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            {              scoverage.Invoker.invoked(1327, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              throw new scala.`package`.IllegalArgumentException(scala.this.Predef.augmentString(&quot;Invalid range %d-%d for contig \'%s\' which has length %d&quot;).format(start, end.get, contig, contigLength))            }          }          case _ =&gt; {            scoverage.Invoker.invoked(1330, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            {              scoverage.Invoker.invoked(1329, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              ()            }          }        }      }    }  }}))
         </td>
       </tr><tr>
         <td>
           195
         </td>
         <td>
-          1330
+          1332
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1321, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  contigLengths.get.get(contig)} match {  case scala.None =&gt; {    scoverage.Invoker.invoked(1323, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(1322, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      throw new scala.`package`.IllegalArgumentException(scala.this.Predef.augmentString(&quot;No such contig: %s&quot;).format(contig))    }  }  case (x: Long)Some[Long]((contigLength @ _)) if {    scoverage.Invoker.invoked(1325, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    end.exists(((x$2: Long) =&gt; {      scoverage.Invoker.invoked(1324, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      x$2.&gt;(contigLength)    }))  } =&gt; {    scoverage.Invoker.invoked(1327, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(1326, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      throw new scala.`package`.IllegalArgumentException(scala.this.Predef.augmentString(&quot;Invalid range %d-%d for contig \'%s\' which has length %d&quot;).format(start, end.get, contig, contigLength))    }  }  case _ =&gt; {    scoverage.Invoker.invoked(1329, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(1328, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      ()    }  }}
-        </td>
-      </tr><tr>
-        <td>
-          195
-        </td>
-        <td>
-          1321
-        </td>
-        <td>
-          scala.collection.MapLike.get
-        </td>
-        <td style="background: #F0ADAD">
-          contigLengths.get.get(contig)
+          {  scoverage.Invoker.invoked(1331, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  {    scoverage.Invoker.invoked(1322, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    contigLengths.get.get(contig)  } match {    case scala.None =&gt; {      scoverage.Invoker.invoked(1324, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(1323, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        throw new scala.`package`.IllegalArgumentException(scala.this.Predef.augmentString(&quot;No such contig: %s&quot;).format(contig))      }    }    case (x: Long)Some[Long]((contigLength @ _)) if {      scoverage.Invoker.invoked(1326, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      end.exists(((x$2: Long) =&gt; {        scoverage.Invoker.invoked(1325, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        x$2.&gt;(contigLength)      }))    } =&gt; {      scoverage.Invoker.invoked(1328, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(1327, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        throw new scala.`package`.IllegalArgumentException(scala.this.Predef.augmentString(&quot;Invalid range %d-%d for contig \'%s\' which has length %d&quot;).format(start, end.get, contig, contigLength))      }    }    case _ =&gt; {      scoverage.Invoker.invoked(1330, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(1329, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        ()      }    }  }}
         </td>
       </tr><tr>
         <td>
@@ -29761,7 +29748,33 @@
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1330, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  {    scoverage.Invoker.invoked(1321, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    contigLengths.get.get(contig)  } match {    case scala.None =&gt; {      scoverage.Invoker.invoked(1323, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(1322, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        throw new scala.`package`.IllegalArgumentException(scala.this.Predef.augmentString(&quot;No such contig: %s&quot;).format(contig))      }    }    case (x: Long)Some[Long]((contigLength @ _)) if {      scoverage.Invoker.invoked(1325, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      end.exists(((x$2: Long) =&gt; {        scoverage.Invoker.invoked(1324, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        x$2.&gt;(contigLength)      }))    } =&gt; {      scoverage.Invoker.invoked(1327, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(1326, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        throw new scala.`package`.IllegalArgumentException(scala.this.Predef.augmentString(&quot;Invalid range %d-%d for contig \'%s\' which has length %d&quot;).format(start, end.get, contig, contigLength))      }    }    case _ =&gt; {      scoverage.Invoker.invoked(1329, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(1328, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        ()      }    }  }}
+          {  scoverage.Invoker.invoked(1322, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  contigLengths.get.get(contig)} match {  case scala.None =&gt; {    scoverage.Invoker.invoked(1324, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(1323, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      throw new scala.`package`.IllegalArgumentException(scala.this.Predef.augmentString(&quot;No such contig: %s&quot;).format(contig))    }  }  case (x: Long)Some[Long]((contigLength @ _)) if {    scoverage.Invoker.invoked(1326, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    end.exists(((x$2: Long) =&gt; {      scoverage.Invoker.invoked(1325, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      x$2.&gt;(contigLength)    }))  } =&gt; {    scoverage.Invoker.invoked(1328, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(1327, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      throw new scala.`package`.IllegalArgumentException(scala.this.Predef.augmentString(&quot;Invalid range %d-%d for contig \'%s\' which has length %d&quot;).format(start, end.get, contig, contigLength))    }  }  case _ =&gt; {    scoverage.Invoker.invoked(1330, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(1329, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      ()    }  }}
+        </td>
+      </tr><tr>
+        <td>
+          195
+        </td>
+        <td>
+          1322
+        </td>
+        <td>
+          scala.collection.MapLike.get
+        </td>
+        <td style="background: #F0ADAD">
+          contigLengths.get.get(contig)
+        </td>
+      </tr><tr>
+        <td>
+          196
+        </td>
+        <td>
+          1324
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  scoverage.Invoker.invoked(1323, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  throw new scala.`package`.IllegalArgumentException(scala.this.Predef.augmentString(&quot;No such contig: %s&quot;).format(contig))}
         </td>
       </tr><tr>
         <td>
@@ -29774,19 +29787,6 @@
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1322, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  throw new scala.`package`.IllegalArgumentException(scala.this.Predef.augmentString(&quot;No such contig: %s&quot;).format(contig))}
-        </td>
-      </tr><tr>
-        <td>
-          196
-        </td>
-        <td>
-          1322
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
           throw new scala.`package`.IllegalArgumentException(scala.this.Predef.augmentString(&quot;No such contig: %s&quot;).format(contig))
         </td>
       </tr><tr>
@@ -29794,13 +29794,13 @@
           197
         </td>
         <td>
-          1324
+          1326
         </td>
         <td>
-          scala.Long.&gt;
+          scala.Option.exists
         </td>
         <td style="background: #F0ADAD">
-          x$2.&gt;(contigLength)
+          end.exists(((x$2: Long) =&gt; {  scoverage.Invoker.invoked(1325, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x$2.&gt;(contigLength)}))
         </td>
       </tr><tr>
         <td>
@@ -29810,10 +29810,10 @@
           1325
         </td>
         <td>
-          scala.Option.exists
+          scala.Long.&gt;
         </td>
         <td style="background: #F0ADAD">
-          end.exists(((x$2: Long) =&gt; {  scoverage.Invoker.invoked(1324, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x$2.&gt;(contigLength)}))
+          x$2.&gt;(contigLength)
         </td>
       </tr><tr>
         <td>
@@ -29826,20 +29826,33 @@
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1326, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  throw new scala.`package`.IllegalArgumentException(scala.this.Predef.augmentString(&quot;Invalid range %d-%d for contig \'%s\' which has length %d&quot;).format(start, end.get, contig, contigLength))}
+          throw new scala.`package`.IllegalArgumentException(scala.this.Predef.augmentString(&quot;Invalid range %d-%d for contig \'%s\' which has length %d&quot;).format(start, end.get, contig, contigLength))
         </td>
       </tr><tr>
         <td>
           198
         </td>
         <td>
-          1326
+          1328
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          throw new scala.`package`.IllegalArgumentException(scala.this.Predef.augmentString(&quot;Invalid range %d-%d for contig \'%s\' which has length %d&quot;).format(start, end.get, contig, contigLength))
+          {  scoverage.Invoker.invoked(1327, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  throw new scala.`package`.IllegalArgumentException(scala.this.Predef.augmentString(&quot;Invalid range %d-%d for contig \'%s\' which has length %d&quot;).format(start, end.get, contig, contigLength))}
+        </td>
+      </tr><tr>
+        <td>
+          201
+        </td>
+        <td>
+          1330
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  scoverage.Invoker.invoked(1329, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
         </td>
       </tr><tr>
         <td>
@@ -29852,19 +29865,6 @@
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1328, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
-        </td>
-      </tr><tr>
-        <td>
-          201
-        </td>
-        <td>
-          1328
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
           ()
         </td>
       </tr><tr>
@@ -29872,7 +29872,7 @@
           205
         </td>
         <td>
-          1337
+          1338
         </td>
         <td>
           org.hammerlab.guacamole.LociSet.Builder.containsAll
@@ -29885,26 +29885,26 @@
           206
         </td>
         <td>
-          1344
+          1345
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1343, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  contigLengths.get.foreach[org.hammerlab.guacamole.LociMap.Builder[Long]](((contigAndLength: (String, Long)) =&gt; {    scoverage.Invoker.invoked(1342, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    wrapped.put({      scoverage.Invoker.invoked(1338, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      contigAndLength._1    }, {      scoverage.Invoker.invoked(1339, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      0L    }, {      scoverage.Invoker.invoked(1340, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      contigAndLength._2.-(1)    }, {      scoverage.Invoker.invoked(1341, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      0L    })  }))}
+          {  scoverage.Invoker.invoked(1344, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  contigLengths.get.foreach[org.hammerlab.guacamole.LociMap.Builder[Long]](((contigAndLength: (String, Long)) =&gt; {    scoverage.Invoker.invoked(1343, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    wrapped.put({      scoverage.Invoker.invoked(1339, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      contigAndLength._1    }, {      scoverage.Invoker.invoked(1340, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      0L    }, {      scoverage.Invoker.invoked(1341, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      contigAndLength._2.-(1)    }, {      scoverage.Invoker.invoked(1342, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      0L    })  }))}
         </td>
       </tr><tr>
         <td>
           206
         </td>
         <td>
-          1343
+          1344
         </td>
         <td>
           scala.collection.IterableLike.foreach
         </td>
         <td style="background: #F0ADAD">
-          contigLengths.get.foreach[org.hammerlab.guacamole.LociMap.Builder[Long]](((contigAndLength: (String, Long)) =&gt; {  scoverage.Invoker.invoked(1342, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  wrapped.put({    scoverage.Invoker.invoked(1338, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    contigAndLength._1  }, {    scoverage.Invoker.invoked(1339, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    0L  }, {    scoverage.Invoker.invoked(1340, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    contigAndLength._2.-(1)  }, {    scoverage.Invoker.invoked(1341, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    0L  })}))
+          contigLengths.get.foreach[org.hammerlab.guacamole.LociMap.Builder[Long]](((contigAndLength: (String, Long)) =&gt; {  scoverage.Invoker.invoked(1343, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  wrapped.put({    scoverage.Invoker.invoked(1339, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    contigAndLength._1  }, {    scoverage.Invoker.invoked(1340, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    0L  }, {    scoverage.Invoker.invoked(1341, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    contigAndLength._2.-(1)  }, {    scoverage.Invoker.invoked(1342, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    0L  })}))
         </td>
       </tr><tr>
         <td>
@@ -29912,19 +29912,6 @@
         </td>
         <td>
           1342
-        </td>
-        <td>
-          org.hammerlab.guacamole.LociMap.Builder.put
-        </td>
-        <td style="background: #F0ADAD">
-          wrapped.put({  scoverage.Invoker.invoked(1338, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  contigAndLength._1}, {  scoverage.Invoker.invoked(1339, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  0L}, {  scoverage.Invoker.invoked(1340, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  contigAndLength._2.-(1)}, {  scoverage.Invoker.invoked(1341, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  0L})
-        </td>
-      </tr><tr>
-        <td>
-          207
-        </td>
-        <td>
-          1339
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -29937,7 +29924,7 @@
           207
         </td>
         <td>
-          1338
+          1339
         </td>
         <td>
           scala.Tuple2._1
@@ -29953,10 +29940,23 @@
           1341
         </td>
         <td>
-          &lt;nosymbol&gt;
+          scala.Long.-
         </td>
         <td style="background: #F0ADAD">
-          0L
+          contigAndLength._2.-(1)
+        </td>
+      </tr><tr>
+        <td>
+          207
+        </td>
+        <td>
+          1343
+        </td>
+        <td>
+          org.hammerlab.guacamole.LociMap.Builder.put
+        </td>
+        <td style="background: #F0ADAD">
+          wrapped.put({  scoverage.Invoker.invoked(1339, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  contigAndLength._1}, {  scoverage.Invoker.invoked(1340, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  0L}, {  scoverage.Invoker.invoked(1341, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  contigAndLength._2.-(1)}, {  scoverage.Invoker.invoked(1342, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  0L})
         </td>
       </tr><tr>
         <td>
@@ -29966,10 +29966,10 @@
           1340
         </td>
         <td>
-          scala.Long.-
+          &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          contigAndLength._2.-(1)
+          0L
         </td>
       </tr><tr>
         <td>
@@ -29979,10 +29979,10 @@
           1351
         </td>
         <td>
-          &lt;nosymbol&gt;
+          scala.collection.mutable.ResizableArray.foreach
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1350, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  rangesResult.foreach[org.hammerlab.guacamole.LociMap.Builder[Long]](((x0$3: (String, Long, Option[Long])) =&gt; {    scoverage.Invoker.invoked(1349, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    x0$3 match {      case (_1: String, _2: Long, _3: Option[Long])(String, Long, Option[Long])((contig @ _), (start @ _), (end @ _)) =&gt; {        scoverage.Invoker.invoked(1348, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        {          val resolvedEnd: Long = {            scoverage.Invoker.invoked(1346, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            end.getOrElse[Long]({              scoverage.Invoker.invoked(1345, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              contigLengths.get.apply(contig)            })          };          {            scoverage.Invoker.invoked(1347, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            wrapped.put(contig, start, resolvedEnd, 0L)          }        }      }    }  }))}
+          rangesResult.foreach[org.hammerlab.guacamole.LociMap.Builder[Long]](((x0$3: (String, Long, Option[Long])) =&gt; {  scoverage.Invoker.invoked(1350, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x0$3 match {    case (_1: String, _2: Long, _3: Option[Long])(String, Long, Option[Long])((contig @ _), (start @ _), (end @ _)) =&gt; {      scoverage.Invoker.invoked(1349, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        val resolvedEnd: Long = {          scoverage.Invoker.invoked(1347, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          end.getOrElse[Long]({            scoverage.Invoker.invoked(1346, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            contigLengths.get.apply(contig)          })        };        {          scoverage.Invoker.invoked(1348, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          wrapped.put(contig, start, resolvedEnd, 0L)        }      }    }  }}))
         </td>
       </tr><tr>
         <td>
@@ -29992,14 +29992,27 @@
           1350
         </td>
         <td>
-          scala.collection.mutable.ResizableArray.foreach
+          &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          rangesResult.foreach[org.hammerlab.guacamole.LociMap.Builder[Long]](((x0$3: (String, Long, Option[Long])) =&gt; {  scoverage.Invoker.invoked(1349, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x0$3 match {    case (_1: String, _2: Long, _3: Option[Long])(String, Long, Option[Long])((contig @ _), (start @ _), (end @ _)) =&gt; {      scoverage.Invoker.invoked(1348, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        val resolvedEnd: Long = {          scoverage.Invoker.invoked(1346, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          end.getOrElse[Long]({            scoverage.Invoker.invoked(1345, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            contigLengths.get.apply(contig)          })        };        {          scoverage.Invoker.invoked(1347, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          wrapped.put(contig, start, resolvedEnd, 0L)        }      }    }  }}))
+          x0$3 match {  case (_1: String, _2: Long, _3: Option[Long])(String, Long, Option[Long])((contig @ _), (start @ _), (end @ _)) =&gt; {    scoverage.Invoker.invoked(1349, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      val resolvedEnd: Long = {        scoverage.Invoker.invoked(1347, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        end.getOrElse[Long]({          scoverage.Invoker.invoked(1346, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          contigLengths.get.apply(contig)        })      };      {        scoverage.Invoker.invoked(1348, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        wrapped.put(contig, start, resolvedEnd, 0L)      }    }  }}
         </td>
       </tr><tr>
         <td>
           209
+        </td>
+        <td>
+          1352
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  scoverage.Invoker.invoked(1351, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  rangesResult.foreach[org.hammerlab.guacamole.LociMap.Builder[Long]](((x0$3: (String, Long, Option[Long])) =&gt; {    scoverage.Invoker.invoked(1350, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    x0$3 match {      case (_1: String, _2: Long, _3: Option[Long])(String, Long, Option[Long])((contig @ _), (start @ _), (end @ _)) =&gt; {        scoverage.Invoker.invoked(1349, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        {          val resolvedEnd: Long = {            scoverage.Invoker.invoked(1347, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            end.getOrElse[Long]({              scoverage.Invoker.invoked(1346, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              contigLengths.get.apply(contig)            })          };          {            scoverage.Invoker.invoked(1348, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            wrapped.put(contig, start, resolvedEnd, 0L)          }        }      }    }  }))}
+        </td>
+      </tr><tr>
+        <td>
+          210
         </td>
         <td>
           1349
@@ -30008,33 +30021,20 @@
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          x0$3 match {  case (_1: String, _2: Long, _3: Option[Long])(String, Long, Option[Long])((contig @ _), (start @ _), (end @ _)) =&gt; {    scoverage.Invoker.invoked(1348, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      val resolvedEnd: Long = {        scoverage.Invoker.invoked(1346, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        end.getOrElse[Long]({          scoverage.Invoker.invoked(1345, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          contigLengths.get.apply(contig)        })      };      {        scoverage.Invoker.invoked(1347, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        wrapped.put(contig, start, resolvedEnd, 0L)      }    }  }}
-        </td>
-      </tr><tr>
-        <td>
-          210
-        </td>
-        <td>
-          1348
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          {  val resolvedEnd: Long = {    scoverage.Invoker.invoked(1346, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    end.getOrElse[Long]({      scoverage.Invoker.invoked(1345, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      contigLengths.get.apply(contig)    })  };  {    scoverage.Invoker.invoked(1347, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    wrapped.put(contig, start, resolvedEnd, 0L)  }}
+          {  val resolvedEnd: Long = {    scoverage.Invoker.invoked(1347, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    end.getOrElse[Long]({      scoverage.Invoker.invoked(1346, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      contigLengths.get.apply(contig)    })  };  {    scoverage.Invoker.invoked(1348, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    wrapped.put(contig, start, resolvedEnd, 0L)  }}
         </td>
       </tr><tr>
         <td>
           211
         </td>
         <td>
-          1345
+          1347
         </td>
         <td>
-          scala.collection.MapLike.apply
+          scala.Option.getOrElse
         </td>
         <td style="background: #F0ADAD">
-          contigLengths.get.apply(contig)
+          end.getOrElse[Long]({  scoverage.Invoker.invoked(1346, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  contigLengths.get.apply(contig)})
         </td>
       </tr><tr>
         <td>
@@ -30044,17 +30044,17 @@
           1346
         </td>
         <td>
-          scala.Option.getOrElse
+          scala.collection.MapLike.apply
         </td>
         <td style="background: #F0ADAD">
-          end.getOrElse[Long]({  scoverage.Invoker.invoked(1345, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  contigLengths.get.apply(contig)})
+          contigLengths.get.apply(contig)
         </td>
       </tr><tr>
         <td>
           212
         </td>
         <td>
-          1347
+          1348
         </td>
         <td>
           org.hammerlab.guacamole.LociMap.Builder.put
@@ -30067,20 +30067,20 @@
           216
         </td>
         <td>
-          1353
+          1354
         </td>
         <td>
           org.hammerlab.guacamole.LociSet.apply
         </td>
         <td style="background: #F0ADAD">
-          LociSet.apply({  scoverage.Invoker.invoked(1352, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  wrapped.result()})
+          LociSet.apply({  scoverage.Invoker.invoked(1353, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  wrapped.result()})
         </td>
       </tr><tr>
         <td>
           216
         </td>
         <td>
-          1352
+          1353
         </td>
         <td>
           org.hammerlab.guacamole.LociMap.Builder.result
@@ -30093,13 +30093,13 @@
           220
         </td>
         <td>
-          1354
+          1356
         </td>
         <td>
-          scala.None
+          org.hammerlab.guacamole.LociSet.Builder.result
         </td>
         <td style="background: #F0ADAD">
-          scala.None
+          Builder.this.result({  scoverage.Invoker.invoked(1355, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.None})
         </td>
       </tr><tr>
         <td>
@@ -30109,10 +30109,10 @@
           1355
         </td>
         <td>
-          org.hammerlab.guacamole.LociSet.Builder.result
+          scala.None
         </td>
         <td style="background: #F0ADAD">
-          Builder.this.result({  scoverage.Invoker.invoked(1354, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.None})
+          scala.None
         </td>
       </tr><tr>
         <td>
@@ -30122,19 +30122,6 @@
           1357
         </td>
         <td>
-          org.hammerlab.guacamole.LociSet.Builder.result
-        </td>
-        <td style="background: #F0ADAD">
-          Builder.this.result({  scoverage.Invoker.invoked(1356, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.Some.apply[Map[String,Long]](contigLengths)})
-        </td>
-      </tr><tr>
-        <td>
-          221
-        </td>
-        <td>
-          1356
-        </td>
-        <td>
           scala.Some.apply
         </td>
         <td style="background: #F0ADAD">
@@ -30142,23 +30129,23 @@
         </td>
       </tr><tr>
         <td>
-          226
+          221
         </td>
         <td>
-          1360
+          1358
         </td>
         <td>
           org.hammerlab.guacamole.LociSet.Builder.result
         </td>
         <td style="background: #F0ADAD">
-          new {  scoverage.Invoker.invoked(1358, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  org.hammerlab.guacamole.LociSet.Builder}().put(contig, start, {  scoverage.Invoker.invoked(1359, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.Some.apply[Long](end)}).result
+          Builder.this.result({  scoverage.Invoker.invoked(1357, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.Some.apply[Map[String,Long]](contigLengths)})
         </td>
       </tr><tr>
         <td>
           226
         </td>
         <td>
-          1359
+          1360
         </td>
         <td>
           scala.Some.apply
@@ -30171,7 +30158,7 @@
           226
         </td>
         <td>
-          1358
+          1359
         </td>
         <td>
           org.hammerlab.guacamole.LociSet.Builder
@@ -30181,10 +30168,23 @@
         </td>
       </tr><tr>
         <td>
-          234
+          226
         </td>
         <td>
           1361
+        </td>
+        <td>
+          org.hammerlab.guacamole.LociSet.Builder.result
+        </td>
+        <td style="background: #F0ADAD">
+          new {  scoverage.Invoker.invoked(1359, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  org.hammerlab.guacamole.LociSet.Builder}().put(contig, start, {  scoverage.Invoker.invoked(1360, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.Some.apply[Long](end)}).result
+        </td>
+      </tr><tr>
+        <td>
+          234
+        </td>
+        <td>
+          1362
         </td>
         <td>
           org.hammerlab.guacamole.LociSet.Builder.putExpression
@@ -30197,7 +30197,7 @@
           239
         </td>
         <td>
-          1362
+          1363
         </td>
         <td>
           org.hammerlab.guacamole.LociMap.newBuilder
@@ -30210,20 +30210,20 @@
           240
         </td>
         <td>
-          1364
+          1365
         </td>
         <td>
           scala.collection.IterableLike.foreach
         </td>
         <td style="background: #F0ADAD">
-          lociSets.foreach[org.hammerlab.guacamole.LociMap.Builder[Long]](((lociSet: org.hammerlab.guacamole.LociSet) =&gt; {  scoverage.Invoker.invoked(1363, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  wrapped.put(lociSet, 0L)}))
+          lociSets.foreach[org.hammerlab.guacamole.LociMap.Builder[Long]](((lociSet: org.hammerlab.guacamole.LociSet) =&gt; {  scoverage.Invoker.invoked(1364, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  wrapped.put(lociSet, 0L)}))
         </td>
       </tr><tr>
         <td>
           241
         </td>
         <td>
-          1363
+          1364
         </td>
         <td>
           org.hammerlab.guacamole.LociMap.Builder.put
@@ -30239,19 +30239,6 @@
           1366
         </td>
         <td>
-          org.hammerlab.guacamole.LociSet.apply
-        </td>
-        <td style="background: #F0ADAD">
-          LociSet.apply({  scoverage.Invoker.invoked(1365, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  wrapped.result()})
-        </td>
-      </tr><tr>
-        <td>
-          243
-        </td>
-        <td>
-          1365
-        </td>
-        <td>
           org.hammerlab.guacamole.LociMap.Builder.result
         </td>
         <td style="background: #F0ADAD">
@@ -30259,10 +30246,23 @@
         </td>
       </tr><tr>
         <td>
-          252
+          243
         </td>
         <td>
           1367
+        </td>
+        <td>
+          org.hammerlab.guacamole.LociSet.apply
+        </td>
+        <td style="background: #F0ADAD">
+          LociSet.apply({  scoverage.Invoker.invoked(1366, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  wrapped.result()})
+        </td>
+      </tr><tr>
+        <td>
+          252
+        </td>
+        <td>
+          1368
         </td>
         <td>
           org.hammerlab.guacamole.LociMap.SingleContig.contains
@@ -30275,7 +30275,7 @@
           264
         </td>
         <td>
-          1368
+          1369
         </td>
         <td>
           org.hammerlab.guacamole.LociSet.SingleContig.Iterator.&lt;init&gt;
@@ -30288,13 +30288,13 @@
           267
         </td>
         <td>
-          1369
+          1372
         </td>
         <td>
-          org.hammerlab.guacamole.LociSet.SingleContig.map
+          org.hammerlab.guacamole.LociSet.SingleContig.apply
         </td>
         <td style="background: #F0ADAD">
-          other.map
+          LociSet.this.SingleContig.apply({  scoverage.Invoker.invoked(1371, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  SingleContig.this.map.union({    scoverage.Invoker.invoked(1370, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    other.map  })})
         </td>
       </tr><tr>
         <td>
@@ -30304,10 +30304,10 @@
           1371
         </td>
         <td>
-          org.hammerlab.guacamole.LociSet.SingleContig.apply
+          org.hammerlab.guacamole.LociMap.SingleContig.union
         </td>
         <td style="background: #F0ADAD">
-          LociSet.this.SingleContig.apply({  scoverage.Invoker.invoked(1370, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  SingleContig.this.map.union({    scoverage.Invoker.invoked(1369, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    other.map  })})
+          SingleContig.this.map.union({  scoverage.Invoker.invoked(1370, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  other.map})
         </td>
       </tr><tr>
         <td>
@@ -30317,17 +30317,17 @@
           1370
         </td>
         <td>
-          org.hammerlab.guacamole.LociMap.SingleContig.union
+          org.hammerlab.guacamole.LociSet.SingleContig.map
         </td>
         <td style="background: #F0ADAD">
-          SingleContig.this.map.union({  scoverage.Invoker.invoked(1369, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  other.map})
+          other.map
         </td>
       </tr><tr>
         <td>
           270
         </td>
         <td>
-          1372
+          1373
         </td>
         <td>
           scala.Boolean.unary_!
@@ -30340,7 +30340,7 @@
           272
         </td>
         <td>
-          1373
+          1374
         </td>
         <td>
           org.hammerlab.guacamole.LociSet.SingleContig.truncatedString
@@ -30353,7 +30353,7 @@
           275
         </td>
         <td>
-          1374
+          1375
         </td>
         <td>
           org.hammerlab.guacamole.LociMap.SingleContig.truncatedString
@@ -30366,7 +30366,7 @@
           288
         </td>
         <td>
-          1375
+          1376
         </td>
         <td>
           scala.collection.IterableLike.iterator
@@ -30382,10 +30382,10 @@
           1378
         </td>
         <td>
-          &lt;nosymbol&gt;
+          scala.None
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1377, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.None}
+          scala.None
         </td>
       </tr><tr>
         <td>
@@ -30395,10 +30395,10 @@
           1381
         </td>
         <td>
-          &lt;nosymbol&gt;
+          scala.Some.apply
         </td>
         <td style="background: #AEF1AE">
-          {  scoverage.Invoker.invoked(1380, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.Some.apply[org.hammerlab.guacamole.LociMap.SimpleRange]({    scoverage.Invoker.invoked(1379, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    Iterator.this.ranges.next()  })}
+          scala.Some.apply[org.hammerlab.guacamole.LociMap.SimpleRange]({  scoverage.Invoker.invoked(1380, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  Iterator.this.ranges.next()})
         </td>
       </tr><tr>
         <td>
@@ -30406,32 +30406,6 @@
         </td>
         <td>
           1380
-        </td>
-        <td>
-          scala.Some.apply
-        </td>
-        <td style="background: #F0ADAD">
-          scala.Some.apply[org.hammerlab.guacamole.LociMap.SimpleRange]({  scoverage.Invoker.invoked(1379, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  Iterator.this.ranges.next()})
-        </td>
-      </tr><tr>
-        <td>
-          291
-        </td>
-        <td>
-          1377
-        </td>
-        <td>
-          scala.None
-        </td>
-        <td style="background: #F0ADAD">
-          scala.None
-        </td>
-      </tr><tr>
-        <td>
-          291
-        </td>
-        <td>
-          1379
         </td>
         <td>
           scala.collection.Iterator.next
@@ -30444,7 +30418,7 @@
           291
         </td>
         <td>
-          1376
+          1377
         </td>
         <td>
           scala.collection.Iterator.isEmpty
@@ -30454,10 +30428,36 @@
         </td>
       </tr><tr>
         <td>
-          294
+          291
+        </td>
+        <td>
+          1379
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  scoverage.Invoker.invoked(1378, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.None}
+        </td>
+      </tr><tr>
+        <td>
+          291
         </td>
         <td>
           1382
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          {  scoverage.Invoker.invoked(1381, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.Some.apply[org.hammerlab.guacamole.LociMap.SimpleRange]({    scoverage.Invoker.invoked(1380, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    Iterator.this.ranges.next()  })}
+        </td>
+      </tr><tr>
+        <td>
+          294
+        </td>
+        <td>
+          1383
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -30470,7 +30470,7 @@
           297
         </td>
         <td>
-          1383
+          1384
         </td>
         <td>
           scala.Option.nonEmpty
@@ -30483,7 +30483,20 @@
           300
         </td>
         <td>
-          1384
+          1391
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          {  scoverage.Invoker.invoked(1385, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  Iterator.this.headRangeOption} match {  case (x: org.hammerlab.guacamole.LociMap.SimpleRange)Some[org.hammerlab.guacamole.LociMap.SimpleRange]((range @ _)) =&gt; {    scoverage.Invoker.invoked(1388, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(1387, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      range.start.+({        scoverage.Invoker.invoked(1386, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        Iterator.this.headIndex      })    }  }  case scala.None =&gt; {    scoverage.Invoker.invoked(1390, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(1389, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      throw new scala.`package`.NoSuchElementException(&quot;empty iterator&quot;)    }  }}
+        </td>
+      </tr><tr>
+        <td>
+          300
+        </td>
+        <td>
+          1385
         </td>
         <td>
           org.hammerlab.guacamole.LociSet.SingleContig.Iterator.headRangeOption
@@ -30493,29 +30506,16 @@
         </td>
       </tr><tr>
         <td>
-          300
-        </td>
-        <td>
-          1390
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #AEF1AE">
-          {  scoverage.Invoker.invoked(1384, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  Iterator.this.headRangeOption} match {  case (x: org.hammerlab.guacamole.LociMap.SimpleRange)Some[org.hammerlab.guacamole.LociMap.SimpleRange]((range @ _)) =&gt; {    scoverage.Invoker.invoked(1387, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(1386, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      range.start.+({        scoverage.Invoker.invoked(1385, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        Iterator.this.headIndex      })    }  }  case scala.None =&gt; {    scoverage.Invoker.invoked(1389, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(1388, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      throw new scala.`package`.NoSuchElementException(&quot;empty iterator&quot;)    }  }}
-        </td>
-      </tr><tr>
-        <td>
           301
         </td>
         <td>
           1387
         </td>
         <td>
-          &lt;nosymbol&gt;
+          scala.Long.+
         </td>
         <td style="background: #AEF1AE">
-          {  scoverage.Invoker.invoked(1386, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  range.start.+({    scoverage.Invoker.invoked(1385, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    Iterator.this.headIndex  })}
+          range.start.+({  scoverage.Invoker.invoked(1386, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  Iterator.this.headIndex})
         </td>
       </tr><tr>
         <td>
@@ -30525,23 +30525,36 @@
           1386
         </td>
         <td>
-          scala.Long.+
+          org.hammerlab.guacamole.LociSet.SingleContig.Iterator.headIndex
         </td>
         <td style="background: #AEF1AE">
-          range.start.+({  scoverage.Invoker.invoked(1385, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  Iterator.this.headIndex})
+          Iterator.this.headIndex
         </td>
       </tr><tr>
         <td>
           301
         </td>
         <td>
-          1385
+          1388
         </td>
         <td>
-          org.hammerlab.guacamole.LociSet.SingleContig.Iterator.headIndex
+          &lt;nosymbol&gt;
         </td>
         <td style="background: #AEF1AE">
-          Iterator.this.headIndex
+          {  scoverage.Invoker.invoked(1387, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  range.start.+({    scoverage.Invoker.invoked(1386, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    Iterator.this.headIndex  })}
+        </td>
+      </tr><tr>
+        <td>
+          302
+        </td>
+        <td>
+          1390
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  scoverage.Invoker.invoked(1389, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  throw new scala.`package`.NoSuchElementException(&quot;empty iterator&quot;)}
         </td>
       </tr><tr>
         <td>
@@ -30554,19 +30567,6 @@
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1388, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  throw new scala.`package`.NoSuchElementException(&quot;empty iterator&quot;)}
-        </td>
-      </tr><tr>
-        <td>
-          302
-        </td>
-        <td>
-          1388
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
           throw new scala.`package`.NoSuchElementException(&quot;empty iterator&quot;)
         </td>
       </tr><tr>
@@ -30574,7 +30574,7 @@
           311
         </td>
         <td>
-          1391
+          1392
         </td>
         <td>
           org.hammerlab.guacamole.LociSet.SingleContig.Iterator.head
@@ -30590,19 +30590,6 @@
           1393
         </td>
         <td>
-          org.hammerlab.guacamole.LociSet.SingleContig.Iterator.headIndex_=
-        </td>
-        <td style="background: #AEF1AE">
-          Iterator.this.headIndex_=({  scoverage.Invoker.invoked(1392, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  Iterator.this.headIndex.+(1)})
-        </td>
-      </tr><tr>
-        <td>
-          314
-        </td>
-        <td>
-          1392
-        </td>
-        <td>
           scala.Long.+
         </td>
         <td style="background: #AEF1AE">
@@ -30610,23 +30597,36 @@
         </td>
       </tr><tr>
         <td>
-          315
+          314
         </td>
         <td>
-          1399
+          1394
         </td>
         <td>
-          &lt;nosymbol&gt;
+          org.hammerlab.guacamole.LociSet.SingleContig.Iterator.headIndex_=
         </td>
         <td style="background: #AEF1AE">
-          {  scoverage.Invoker.invoked(1398, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
+          Iterator.this.headIndex_=({  scoverage.Invoker.invoked(1393, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  Iterator.this.headIndex.+(1)})
         </td>
       </tr><tr>
         <td>
           315
         </td>
         <td>
-          1398
+          1396
+        </td>
+        <td>
+          scala.Long.==
+        </td>
+        <td style="background: #AEF1AE">
+          Iterator.this.headIndex.==({  scoverage.Invoker.invoked(1395, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  Iterator.this.headRangeOption.get.length})
+        </td>
+      </tr><tr>
+        <td>
+          315
+        </td>
+        <td>
+          1399
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -30642,19 +30642,6 @@
           1395
         </td>
         <td>
-          scala.Long.==
-        </td>
-        <td style="background: #AEF1AE">
-          Iterator.this.headIndex.==({  scoverage.Invoker.invoked(1394, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  Iterator.this.headRangeOption.get.length})
-        </td>
-      </tr><tr>
-        <td>
-          315
-        </td>
-        <td>
-          1394
-        </td>
-        <td>
           org.hammerlab.guacamole.LociMap.SimpleRange.length
         </td>
         <td style="background: #AEF1AE">
@@ -30662,16 +30649,29 @@
         </td>
       </tr><tr>
         <td>
+          315
+        </td>
+        <td>
+          1400
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          {  scoverage.Invoker.invoked(1399, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
+        </td>
+      </tr><tr>
+        <td>
           316
         </td>
         <td>
-          1396
+          1398
         </td>
         <td>
-          org.hammerlab.guacamole.LociSet.SingleContig.Iterator.nextRange
+          &lt;nosymbol&gt;
         </td>
         <td style="background: #AEF1AE">
-          Iterator.this.nextRange()
+          {  scoverage.Invoker.invoked(1397, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  Iterator.this.nextRange()}
         </td>
       </tr><tr>
         <td>
@@ -30681,10 +30681,23 @@
           1397
         </td>
         <td>
-          &lt;nosymbol&gt;
+          org.hammerlab.guacamole.LociSet.SingleContig.Iterator.nextRange
         </td>
         <td style="background: #AEF1AE">
-          {  scoverage.Invoker.invoked(1396, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  Iterator.this.nextRange()}
+          Iterator.this.nextRange()
+        </td>
+      </tr><tr>
+        <td>
+          330
+        </td>
+        <td>
+          1402
+        </td>
+        <td>
+          scala.Option.exists
+        </td>
+        <td style="background: #AEF1AE">
+          Iterator.this.headRangeOption.exists(((x$3: org.hammerlab.guacamole.LociMap.SimpleRange) =&gt; {  scoverage.Invoker.invoked(1401, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x$3.end.&lt;=(locus)}))
         </td>
       </tr><tr>
         <td>
@@ -30696,8 +30709,21 @@
         <td>
           &lt;nosymbol&gt;
         </td>
+        <td style="background: #F0ADAD">
+          {  {    scoverage.Invoker.invoked(1403, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    Iterator.this.nextRange()  };  {    scoverage.Invoker.invoked(1404, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    while$1()  }}
+        </td>
+      </tr><tr>
+        <td>
+          330
+        </td>
+        <td>
+          1407
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
         <td style="background: #AEF1AE">
-          ()
+          {  scoverage.Invoker.invoked(1406, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
         </td>
       </tr><tr>
         <td>
@@ -30707,23 +30733,10 @@
           1401
         </td>
         <td>
-          scala.Option.exists
+          scala.Long.&lt;=
         </td>
         <td style="background: #AEF1AE">
-          Iterator.this.headRangeOption.exists(((x$3: org.hammerlab.guacamole.LociMap.SimpleRange) =&gt; {  scoverage.Invoker.invoked(1400, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x$3.end.&lt;=(locus)}))
-        </td>
-      </tr><tr>
-        <td>
-          330
-        </td>
-        <td>
-          1404
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          {  {    scoverage.Invoker.invoked(1402, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    Iterator.this.nextRange()  };  {    scoverage.Invoker.invoked(1403, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    while$1()  }}
+          x$3.end.&lt;=(locus)
         </td>
       </tr><tr>
         <td>
@@ -30736,40 +30749,14 @@
           &lt;nosymbol&gt;
         </td>
         <td style="background: #AEF1AE">
-          {  scoverage.Invoker.invoked(1405, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
-        </td>
-      </tr><tr>
-        <td>
-          330
-        </td>
-        <td>
-          1400
-        </td>
-        <td>
-          scala.Long.&lt;=
-        </td>
-        <td style="background: #AEF1AE">
-          x$3.end.&lt;=(locus)
+          ()
         </td>
       </tr><tr>
         <td>
           331
         </td>
         <td>
-          1402
-        </td>
-        <td>
-          org.hammerlab.guacamole.LociSet.SingleContig.Iterator.nextRange
-        </td>
-        <td style="background: #F0ADAD">
-          Iterator.this.nextRange()
-        </td>
-      </tr><tr>
-        <td>
-          331
-        </td>
-        <td>
-          1403
+          1404
         </td>
         <td>
           org.hammerlab.guacamole.LociSet.SingleContig.Iterator.while$1
@@ -30779,10 +30766,23 @@
         </td>
       </tr><tr>
         <td>
+          331
+        </td>
+        <td>
+          1403
+        </td>
+        <td>
+          org.hammerlab.guacamole.LociSet.SingleContig.Iterator.nextRange
+        </td>
+        <td style="background: #F0ADAD">
+          Iterator.this.nextRange()
+        </td>
+      </tr><tr>
+        <td>
           335
         </td>
         <td>
-          1407
+          1408
         </td>
         <td>
           org.hammerlab.guacamole.LociSet.SingleContig.Iterator.headRangeOption
@@ -30795,13 +30795,13 @@
           335
         </td>
         <td>
-          1418
+          1419
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #AEF1AE">
-          {  scoverage.Invoker.invoked(1407, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  Iterator.this.headRangeOption} match {  case (x: org.hammerlab.guacamole.LociMap.SimpleRange)Some[org.hammerlab.guacamole.LociMap.SimpleRange]((range @ _)) if {    scoverage.Invoker.invoked(1411, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    locus.&gt;=({  scoverage.Invoker.invoked(1408, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  range.start}).&amp;&amp;({      scoverage.Invoker.invoked(1410, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      locus.&lt;({        scoverage.Invoker.invoked(1409, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        range.end      })    })  } =&gt; {    scoverage.Invoker.invoked(1415, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(1414, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      Iterator.this.headIndex_=({        scoverage.Invoker.invoked(1413, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        locus.-({          scoverage.Invoker.invoked(1412, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          range.start        })      })    }  }  case _ =&gt; {    scoverage.Invoker.invoked(1417, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(1416, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      ()    }  }}
+          {  scoverage.Invoker.invoked(1408, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  Iterator.this.headRangeOption} match {  case (x: org.hammerlab.guacamole.LociMap.SimpleRange)Some[org.hammerlab.guacamole.LociMap.SimpleRange]((range @ _)) if {    scoverage.Invoker.invoked(1412, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    locus.&gt;=({  scoverage.Invoker.invoked(1409, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  range.start}).&amp;&amp;({      scoverage.Invoker.invoked(1411, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      locus.&lt;({        scoverage.Invoker.invoked(1410, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        range.end      })    })  } =&gt; {    scoverage.Invoker.invoked(1416, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(1415, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      Iterator.this.headIndex_=({        scoverage.Invoker.invoked(1414, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        locus.-({          scoverage.Invoker.invoked(1413, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          range.start        })      })    }  }  case _ =&gt; {    scoverage.Invoker.invoked(1418, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(1417, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      ()    }  }}
         </td>
       </tr><tr>
         <td>
@@ -30811,23 +30811,10 @@
           1411
         </td>
         <td>
-          scala.Boolean.&amp;&amp;
+          scala.Long.&lt;
         </td>
         <td style="background: #AEF1AE">
-          locus.&gt;=({  scoverage.Invoker.invoked(1408, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  range.start}).&amp;&amp;({  scoverage.Invoker.invoked(1410, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  locus.&lt;({    scoverage.Invoker.invoked(1409, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    range.end  })})
-        </td>
-      </tr><tr>
-        <td>
-          336
-        </td>
-        <td>
-          1408
-        </td>
-        <td>
-          org.hammerlab.guacamole.LociMap.SimpleRange.start
-        </td>
-        <td style="background: #AEF1AE">
-          range.start
+          locus.&lt;({  scoverage.Invoker.invoked(1410, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  range.end})
         </td>
       </tr><tr>
         <td>
@@ -30837,10 +30824,23 @@
           1410
         </td>
         <td>
-          scala.Long.&lt;
+          org.hammerlab.guacamole.LociMap.SimpleRange.end
         </td>
         <td style="background: #AEF1AE">
-          locus.&lt;({  scoverage.Invoker.invoked(1409, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  range.end})
+          range.end
+        </td>
+      </tr><tr>
+        <td>
+          336
+        </td>
+        <td>
+          1412
+        </td>
+        <td>
+          scala.Boolean.&amp;&amp;
+        </td>
+        <td style="background: #AEF1AE">
+          locus.&gt;=({  scoverage.Invoker.invoked(1409, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  range.start}).&amp;&amp;({  scoverage.Invoker.invoked(1411, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  locus.&lt;({    scoverage.Invoker.invoked(1410, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    range.end  })})
         </td>
       </tr><tr>
         <td>
@@ -30850,10 +30850,10 @@
           1409
         </td>
         <td>
-          org.hammerlab.guacamole.LociMap.SimpleRange.end
+          org.hammerlab.guacamole.LociMap.SimpleRange.start
         </td>
         <td style="background: #AEF1AE">
-          range.end
+          range.start
         </td>
       </tr><tr>
         <td>
@@ -30863,10 +30863,23 @@
           1414
         </td>
         <td>
-          org.hammerlab.guacamole.LociSet.SingleContig.Iterator.headIndex_=
+          scala.Long.-
         </td>
         <td style="background: #AEF1AE">
-          Iterator.this.headIndex_=({  scoverage.Invoker.invoked(1413, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  locus.-({    scoverage.Invoker.invoked(1412, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    range.start  })})
+          locus.-({  scoverage.Invoker.invoked(1413, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  range.start})
+        </td>
+      </tr><tr>
+        <td>
+          337
+        </td>
+        <td>
+          1416
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          {  scoverage.Invoker.invoked(1415, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  Iterator.this.headIndex_=({    scoverage.Invoker.invoked(1414, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    locus.-({      scoverage.Invoker.invoked(1413, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      range.start    })  })}
         </td>
       </tr><tr>
         <td>
@@ -30874,19 +30887,6 @@
         </td>
         <td>
           1413
-        </td>
-        <td>
-          scala.Long.-
-        </td>
-        <td style="background: #AEF1AE">
-          locus.-({  scoverage.Invoker.invoked(1412, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  range.start})
-        </td>
-      </tr><tr>
-        <td>
-          337
-        </td>
-        <td>
-          1412
         </td>
         <td>
           org.hammerlab.guacamole.LociMap.SimpleRange.start
@@ -30902,23 +30902,23 @@
           1415
         </td>
         <td>
-          &lt;nosymbol&gt;
+          org.hammerlab.guacamole.LociSet.SingleContig.Iterator.headIndex_=
         </td>
         <td style="background: #AEF1AE">
-          {  scoverage.Invoker.invoked(1414, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  Iterator.this.headIndex_=({    scoverage.Invoker.invoked(1413, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    locus.-({      scoverage.Invoker.invoked(1412, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      range.start    })  })}
+          Iterator.this.headIndex_=({  scoverage.Invoker.invoked(1414, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  locus.-({    scoverage.Invoker.invoked(1413, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    range.start  })})
         </td>
       </tr><tr>
         <td>
           339
         </td>
         <td>
-          1416
+          1418
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          ()
+          {  scoverage.Invoker.invoked(1417, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
         </td>
       </tr><tr>
         <td>
@@ -30931,14 +30931,14 @@
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1416, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
+          ()
         </td>
       </tr><tr>
         <td>
           347
         </td>
         <td>
-          1419
+          1420
         </td>
         <td>
           org.hammerlab.guacamole.LociSet.SingleContig.Iterator.headIndex_=
@@ -30951,26 +30951,13 @@
           348
         </td>
         <td>
-          1420
-        </td>
-        <td>
-          scala.collection.Iterator.hasNext
-        </td>
-        <td style="background: #AEF1AE">
-          Iterator.this.ranges.hasNext
-        </td>
-      </tr><tr>
-        <td>
-          348
-        </td>
-        <td>
           1423
         </td>
         <td>
-          &lt;nosymbol&gt;
+          scala.Some.apply
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1422, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.Some.apply[org.hammerlab.guacamole.LociMap.SimpleRange]({    scoverage.Invoker.invoked(1421, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    Iterator.this.ranges.next()  })}
+          scala.Some.apply[org.hammerlab.guacamole.LociMap.SimpleRange]({  scoverage.Invoker.invoked(1422, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  Iterator.this.ranges.next()})
         </td>
       </tr><tr>
         <td>
@@ -30980,10 +30967,10 @@
           1425
         </td>
         <td>
-          &lt;nosymbol&gt;
+          scala.None
         </td>
         <td style="background: #AEF1AE">
-          {  scoverage.Invoker.invoked(1424, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.None}
+          scala.None
         </td>
       </tr><tr>
         <td>
@@ -30991,19 +30978,6 @@
         </td>
         <td>
           1422
-        </td>
-        <td>
-          scala.Some.apply
-        </td>
-        <td style="background: #F0ADAD">
-          scala.Some.apply[org.hammerlab.guacamole.LociMap.SimpleRange]({  scoverage.Invoker.invoked(1421, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  Iterator.this.ranges.next()})
-        </td>
-      </tr><tr>
-        <td>
-          348
-        </td>
-        <td>
-          1421
         </td>
         <td>
           scala.collection.Iterator.next
@@ -31016,13 +30990,39 @@
           348
         </td>
         <td>
+          1421
+        </td>
+        <td>
+          scala.collection.Iterator.hasNext
+        </td>
+        <td style="background: #AEF1AE">
+          Iterator.this.ranges.hasNext
+        </td>
+      </tr><tr>
+        <td>
+          348
+        </td>
+        <td>
           1424
         </td>
         <td>
-          scala.None
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  scoverage.Invoker.invoked(1423, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.Some.apply[org.hammerlab.guacamole.LociMap.SimpleRange]({    scoverage.Invoker.invoked(1422, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    Iterator.this.ranges.next()  })}
+        </td>
+      </tr><tr>
+        <td>
+          348
+        </td>
+        <td>
+          1427
+        </td>
+        <td>
+          org.hammerlab.guacamole.LociSet.SingleContig.Iterator.headRangeOption_=
         </td>
         <td style="background: #AEF1AE">
-          scala.None
+          Iterator.this.headRangeOption_=(if ({  scoverage.Invoker.invoked(1421, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  Iterator.this.ranges.hasNext})  {    scoverage.Invoker.invoked(1424, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(1423, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      scala.Some.apply[org.hammerlab.guacamole.LociMap.SimpleRange]({        scoverage.Invoker.invoked(1422, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        Iterator.this.ranges.next()      })    }  }else  {    scoverage.Invoker.invoked(1426, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(1425, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      scala.None    }  })
         </td>
       </tr><tr>
         <td>
@@ -31032,17 +31032,17 @@
           1426
         </td>
         <td>
-          org.hammerlab.guacamole.LociSet.SingleContig.Iterator.headRangeOption_=
+          &lt;nosymbol&gt;
         </td>
         <td style="background: #AEF1AE">
-          Iterator.this.headRangeOption_=(if ({  scoverage.Invoker.invoked(1420, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  Iterator.this.ranges.hasNext})  {    scoverage.Invoker.invoked(1423, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(1422, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      scala.Some.apply[org.hammerlab.guacamole.LociMap.SimpleRange]({        scoverage.Invoker.invoked(1421, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        Iterator.this.ranges.next()      })    }  }else  {    scoverage.Invoker.invoked(1425, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(1424, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      scala.None    }  })
+          {  scoverage.Invoker.invoked(1425, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.None}
         </td>
       </tr><tr>
         <td>
           349
         </td>
         <td>
-          1427
+          1428
         </td>
         <td>
           org.hammerlab.guacamole.LociSet.SingleContig.Iterator.headRangeOption
@@ -31058,19 +31058,6 @@
           1429
         </td>
         <td>
-          com.esotericsoftware.kryo.Kryo.writeObject
-        </td>
-        <td style="background: #F0ADAD">
-          kryo.writeObject(output, {  scoverage.Invoker.invoked(1428, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  obj.map})
-        </td>
-      </tr><tr>
-        <td>
-          358
-        </td>
-        <td>
-          1428
-        </td>
-        <td>
           org.hammerlab.guacamole.LociSet.map
         </td>
         <td style="background: #F0ADAD">
@@ -31078,23 +31065,36 @@
         </td>
       </tr><tr>
         <td>
-          361
+          358
         </td>
         <td>
-          1431
+          1430
         </td>
         <td>
-          org.hammerlab.guacamole.LociSet.apply
+          com.esotericsoftware.kryo.Kryo.writeObject
         </td>
         <td style="background: #F0ADAD">
-          LociSet.apply({  scoverage.Invoker.invoked(1430, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  kryo.readObject[org.hammerlab.guacamole.LociMap[Long]](input, classOf[org.hammerlab.guacamole.LociMap])})
+          kryo.writeObject(output, {  scoverage.Invoker.invoked(1429, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  obj.map})
         </td>
       </tr><tr>
         <td>
           361
         </td>
         <td>
-          1430
+          1432
+        </td>
+        <td>
+          org.hammerlab.guacamole.LociSet.apply
+        </td>
+        <td style="background: #F0ADAD">
+          LociSet.apply({  scoverage.Invoker.invoked(1431, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  kryo.readObject[org.hammerlab.guacamole.LociMap[Long]](input, classOf[org.hammerlab.guacamole.LociMap])})
+        </td>
+      </tr><tr>
+        <td>
+          361
+        </td>
+        <td>
+          1431
         </td>
         <td>
           com.esotericsoftware.kryo.Kryo.readObject
@@ -31107,13 +31107,13 @@
           367
         </td>
         <td>
-          1432
+          1434
         </td>
         <td>
-          org.hammerlab.guacamole.LociSet.SingleContig.map
+          com.esotericsoftware.kryo.Kryo.writeObject
         </td>
         <td style="background: #F0ADAD">
-          obj.map
+          kryo.writeObject(output, {  scoverage.Invoker.invoked(1433, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  obj.map})
         </td>
       </tr><tr>
         <td>
@@ -31123,23 +31123,23 @@
           1433
         </td>
         <td>
-          com.esotericsoftware.kryo.Kryo.writeObject
+          org.hammerlab.guacamole.LociSet.SingleContig.map
         </td>
         <td style="background: #F0ADAD">
-          kryo.writeObject(output, {  scoverage.Invoker.invoked(1432, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  obj.map})
+          obj.map
         </td>
       </tr><tr>
         <td>
           370
         </td>
         <td>
-          1434
+          1436
         </td>
         <td>
-          com.esotericsoftware.kryo.Kryo.readObject
+          org.hammerlab.guacamole.LociSet.SingleContig.apply
         </td>
         <td style="background: #F0ADAD">
-          kryo.readObject[org.hammerlab.guacamole.LociMap.SingleContig[Long]](input, classOf[org.hammerlab.guacamole.LociMap$$SingleContig])
+          LociSet.SingleContig.apply({  scoverage.Invoker.invoked(1435, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  kryo.readObject[org.hammerlab.guacamole.LociMap.SingleContig[Long]](input, classOf[org.hammerlab.guacamole.LociMap$$SingleContig])})
         </td>
       </tr><tr>
         <td>
@@ -31149,10 +31149,10 @@
           1435
         </td>
         <td>
-          org.hammerlab.guacamole.LociSet.SingleContig.apply
+          com.esotericsoftware.kryo.Kryo.readObject
         </td>
         <td style="background: #F0ADAD">
-          LociSet.SingleContig.apply({  scoverage.Invoker.invoked(1434, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  kryo.readObject[org.hammerlab.guacamole.LociMap.SingleContig[Long]](input, classOf[org.hammerlab.guacamole.LociMap$$SingleContig])})
+          kryo.readObject[org.hammerlab.guacamole.LociMap.SingleContig[Long]](input, classOf[org.hammerlab.guacamole.LociMap$$SingleContig])
         </td>
       </tr>
     </table>
