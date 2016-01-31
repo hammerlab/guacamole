@@ -467,37 +467,7 @@ object Read extends Logging {
 
     val adamContext = new ADAMContext(sc)
 
-    // Build a projection that will only load the fields we will need to populate a Read
-    val ADAMSpecificProjection = Projection(
-      AlignmentRecordField.recordGroupSample,
-
-      AlignmentRecordField.sequence,
-      AlignmentRecordField.qual,
-
-      // Alignment properties
-      AlignmentRecordField.readMapped,
-      AlignmentRecordField.contig,
-      AlignmentRecordField.start,
-      AlignmentRecordField.readNegativeStrand,
-      AlignmentRecordField.cigar,
-      AlignmentRecordField.mapq,
-      AlignmentRecordField.mismatchingPositions,
-
-      // Filter flags
-      AlignmentRecordField.duplicateRead,
-      AlignmentRecordField.failedVendorQualityChecks,
-
-      // Mate fields
-      AlignmentRecordField.readPaired,
-      AlignmentRecordField.mateMapped,
-      AlignmentRecordField.firstOfPair,
-      AlignmentRecordField.mateContig,
-      AlignmentRecordField.mateAlignmentStart,
-      AlignmentRecordField.mateNegativeStrand,
-      AlignmentRecordField.recordGroupPredictedMedianInsertSize
-    )
-
-    val adamRecords: RDD[AlignmentRecord] = adamContext.loadParquet(filename, projection = Some(ADAMSpecificProjection))
+    val adamRecords: RDD[AlignmentRecord] = adamContext.loadAlignments(filename, projection = None, stringency = ValidationStringency.LENIENT)
     val sequenceDictionary = new ADAMSpecificRecordSequenceDictionaryRDDAggregator(adamRecords).adamGetSequenceDictionary()
 
     val allReads: RDD[Read] = adamRecords.map(fromADAMRecord(_, token, referenceGenome))
@@ -555,9 +525,9 @@ object Read extends Logging {
     if (alignmentRecord.getReadPaired) {
       val mateAlignment = if (alignmentRecord.getMateMapped) Some(
         MateAlignmentProperties(
-          referenceContig = alignmentRecord.getMateContig.toString,
+          referenceContig = alignmentRecord.getMateContig.getContigName.intern(),
           start = alignmentRecord.getMateAlignmentStart,
-          inferredInsertSize = None,
+          inferredInsertSize = if (alignmentRecord.getInferredInsertSize != 0 && alignmentRecord.getInferredInsertSize != null) Some(alignmentRecord.getInferredInsertSize.toInt) else None,
           isPositiveStrand = !alignmentRecord.getMateNegativeStrand
         )
       )
