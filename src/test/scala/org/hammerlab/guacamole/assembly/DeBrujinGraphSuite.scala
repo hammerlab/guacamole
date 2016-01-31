@@ -10,7 +10,7 @@ class DeBruijnGraphSuite extends GuacFunSuite with Matchers {
 
   test("DeBruijnGraph.mergeKmers") {
     val kmers = Seq("TTTC", "TTCC", "TCCC", "CCCC").map(Bases.stringToBases)
-    val longerKmer = DeBruijnGraph.mergeKmers(kmers)
+    val longerKmer = DeBruijnGraph.mergeOverlappingSequences(kmers, 4)
 
     longerKmer.length should be(7)
     TestUtil.assertBases(longerKmer, "TTTCCCC")
@@ -103,7 +103,7 @@ class DeBruijnGraphSuite extends GuacFunSuite with Matchers {
     val mergeableForward = graph.mergeForward(firstKmer)
     mergeableForward.size should be(9)
 
-    DeBruijnGraph.mergeKmers(mergeableForward) should be(sequence)
+    DeBruijnGraph.mergeOverlappingSequences(mergeableForward, 4) should be(sequence)
   }
 
   test("find backward unique path; full graph") {
@@ -116,7 +116,7 @@ class DeBruijnGraphSuite extends GuacFunSuite with Matchers {
     val mergeableReverse = graph.mergeBackward(lastKmer)
     mergeableReverse.size should be(9)
 
-    val mergedReference: Seq[Byte] = DeBruijnGraph.mergeKmers(mergeableReverse)
+    val mergedReference: Seq[Byte] = DeBruijnGraph.mergeOverlappingSequences(mergeableReverse, 4)
 
     TestUtil.assertBases(mergedReference, sequence)
   }
@@ -135,7 +135,7 @@ class DeBruijnGraphSuite extends GuacFunSuite with Matchers {
 
     val mergeableForward = graph.mergeForward(firstKmer)
     mergeableForward.size should be(7)
-    TestUtil.assertBases(DeBruijnGraph.mergeKmers(mergeableForward), "AAATCCCTGG")
+    TestUtil.assertBases(DeBruijnGraph.mergeOverlappingSequences(mergeableForward, 4), "AAATCCCTGG")
   }
 
   test("find forward unique path; with bubble in middle") {
@@ -152,7 +152,7 @@ class DeBruijnGraphSuite extends GuacFunSuite with Matchers {
 
     val mergeableForward = graph.mergeForward(firstKmer)
     mergeableForward.size should be(2)
-    TestUtil.assertBases(DeBruijnGraph.mergeKmers(mergeableForward), "AAATC")
+    TestUtil.assertBases(DeBruijnGraph.mergeOverlappingSequences(mergeableForward, 4), "AAATC")
   }
 
   test("find forward unique path; with bubble in first kmer") {
@@ -165,7 +165,7 @@ class DeBruijnGraphSuite extends GuacFunSuite with Matchers {
 
     val mergeableForward = graph.mergeForward(firstKmer)
     mergeableForward.size should be(2)
-    TestUtil.assertBases(DeBruijnGraph.mergeKmers(mergeableForward), "AAATC")
+    TestUtil.assertBases(DeBruijnGraph.mergeOverlappingSequences(mergeableForward, 4), "AAATC")
   }
 
   test("find backward unique path; with bubble at end") {
@@ -178,12 +178,12 @@ class DeBruijnGraphSuite extends GuacFunSuite with Matchers {
 
     val seq1mergeableReverse = graph.mergeBackward(seq1End)
     seq1mergeableReverse.size should be(2)
-    TestUtil.assertBases(DeBruijnGraph.mergeKmers(seq1mergeableReverse), "TGGGT")
+    TestUtil.assertBases(DeBruijnGraph.mergeOverlappingSequences(seq1mergeableReverse, 4), "TGGGT")
 
     val seq2End = "GGAT"
     val seq2mergeableReverse = graph.mergeBackward(seq2End)
     seq2mergeableReverse.size should be(2)
-    TestUtil.assertBases(DeBruijnGraph.mergeKmers(seq2mergeableReverse), "TGGAT")
+    TestUtil.assertBases(DeBruijnGraph.mergeOverlappingSequences(seq2mergeableReverse, 4), "TGGAT")
 
   }
 
@@ -197,7 +197,7 @@ class DeBruijnGraphSuite extends GuacFunSuite with Matchers {
 
     val mergeableReverse = graph.mergeBackward(lastKmer)
     mergeableReverse.size should be(3)
-    TestUtil.assertBases(DeBruijnGraph.mergeKmers(mergeableReverse), "CTGGGT")
+    TestUtil.assertBases(DeBruijnGraph.mergeOverlappingSequences(mergeableReverse, 4), "CTGGGT")
   }
 
   test("test merge nodes; full graph") {
@@ -259,12 +259,96 @@ class DeBruijnGraphSuite extends GuacFunSuite with Matchers {
     val paths = graph.depthFirstSearch(referenceKmerSource, referenceKmerSink)
 
     paths.length should be(1)
-    TestUtil.assertBases(DeBruijnGraph.mergeKmers(paths(0)), reference)
+    TestUtil.assertBases(DeBruijnGraph.mergeOverlappingSequences(paths(0), kmerSize), reference)
 
     graph.mergeNodes()
     val pathsAfterMerging = graph.depthFirstSearch(referenceKmerSource, referenceKmerSink)
     pathsAfterMerging.length should be(1)
-    TestUtil.assertBases(DeBruijnGraph.mergeKmers(pathsAfterMerging(0)), reference)
+    TestUtil.assertBases(DeBruijnGraph.mergeOverlappingSequences(pathsAfterMerging(0), kmerSize), reference)
+
+  }
+
+  test("find single unique path in sequence with diverging sequence") {
+
+    val reference =
+      "GAGGATCTGCCATGGCCGGGCGAGCTGGAGGAGCGAGGAGGAGGCAGGAGGA"
+
+    val reads =
+      Seq(
+        reference.substring(0, 25),
+        reference.substring(5, 30),
+        reference.substring(7, 32),
+        reference.substring(10, 35),
+        reference.substring(19, 41),
+        // This is an errant read with a sequence that will lead to a dead-end
+        reference.substring(19, 41) + "TCGAA",
+        reference.substring(22, 44),
+        reference.substring(25, 47),
+        reference.substring(31, 52) + "TTT"
+      )
+
+    val kmerSize = 15
+    val graph: DeBruijnGraph = DeBruijnGraph(
+      reads.map(Bases.stringToBases),
+      kmerSize,
+      minOccurrence = 1,
+      mergeNodes = false
+    )
+
+    val referenceKmerSource = reference.take(kmerSize)
+    val referenceKmerSink = reference.takeRight(kmerSize)
+    val paths = graph.depthFirstSearch(referenceKmerSource, referenceKmerSink)
+
+    paths.length should be(1)
+    TestUtil.assertBases(DeBruijnGraph.mergeOverlappingSequences(paths(0), kmerSize), reference)
+
+    graph.mergeNodes()
+    val pathsAfterMerging = graph.depthFirstSearch(referenceKmerSource, referenceKmerSink)
+    pathsAfterMerging.length should be(1)
+    TestUtil.assertBases(DeBruijnGraph.mergeOverlappingSequences(pathsAfterMerging(0), kmerSize), reference)
+
+  }
+
+  test("find single unique path; with multiple dead end paths/splits") {
+
+    val reference =
+      "GAGGATCTGCCATGGCCGGGCGAGCTGGAGGAGCGAGGAGGAGGCAGGAGGA"
+
+    val reads =
+      Seq(
+        reference.substring(0, 25),
+        reference.substring(5, 30),
+        reference.substring(7, 32),
+        reference.substring(10, 35),
+        reference.substring(19, 41),
+        // This is an errant read with a sequence that will lead to a dead-end
+        reference.substring(19, 41) + "TCGAA",
+        // This is a second, slightly different read that will lead to a dead-end
+        reference.substring(19, 41) + "TCGTA",
+        reference.substring(22, 44),
+        reference.substring(25, 47),
+        reference.substring(31, 52) + "TTT"
+      )
+
+    val kmerSize = 15
+    val graph: DeBruijnGraph = DeBruijnGraph(
+      reads.map(Bases.stringToBases),
+      kmerSize,
+      minOccurrence = 1,
+      mergeNodes = false
+    )
+
+    val referenceKmerSource = reference.take(kmerSize)
+    val referenceKmerSink = reference.takeRight(kmerSize)
+    val paths = graph.depthFirstSearch(referenceKmerSource, referenceKmerSink)
+
+    paths.length should be(1)
+    TestUtil.assertBases(DeBruijnGraph.mergeOverlappingSequences(paths(0), kmerSize), reference)
+
+    graph.mergeNodes()
+    val pathsAfterMerging = graph.depthFirstSearch(referenceKmerSource, referenceKmerSink)
+    pathsAfterMerging.length should be(1)
+    TestUtil.assertBases(DeBruijnGraph.mergeOverlappingSequences(pathsAfterMerging(0), kmerSize), reference)
 
   }
 

@@ -96,11 +96,11 @@ class DeBruijnGraph(val kmerSize: Int,
         // Remove everything in the merged path from the prefix/suffix tables
         fullMergeablePath.foreach(k => {
           allNodes.remove(k)
-          removeKmer(k)
+          if (kmerCounts.contains(k)) removeKmer(k)
         })
 
         // Get full node from non-branch path
-        val mergedNode = DeBruijnGraph.mergeKmers(fullMergeablePath)
+        val mergedNode = DeBruijnGraph.mergeOverlappingSequences(fullMergeablePath, kmerSize)
 
         // Save each node that was merged
         fullMergeablePath.zipWithIndex.foreach({
@@ -180,13 +180,13 @@ class DeBruijnGraph(val kmerSize: Int,
                        maxPaths: Int = 10,
                        avoidLoops: Boolean = true): List[(Path)] = {
 
-    assume(source.length == kmerSize)
-    assume(sink.length == kmerSize)
+    assume(source.length == kmerSize, s"Source kmer ${Bases.basesToString(source)} has a size != $kmerSize")
+    assume(sink.length == kmerSize, s"Sink kmer ${Bases.basesToString(sink)} has a size != $kmerSize")
 
     var paths = List.empty[(Path)]
 
     // Add the source node to the frontier
-    var frontier: mutable.Stack[Kmer] =
+    val frontier: mutable.Stack[Kmer] =
       if (mergeIndex.contains(source)) {
         val (mergedNode, pathIndex) = mergeIndex(source)
         mutable.Stack(mergedNode.drop(pathIndex))
@@ -201,6 +201,12 @@ class DeBruijnGraph(val kmerSize: Int,
 
     val nodeContainingSink = mergeIndex.get(sink)
 
+    // Track if we branch in the path if we need to return to this point
+    // Keep track of the branch and number of children
+    val lastBranchIndex = mutable.Stack[Int]()
+    val lastBranchChildren = mutable.Stack[Int]()
+    var numBacktracks = 0
+
     // explore branches until we find the sink
     // or accumulate the maximum number of appropriate length paths
     while (frontier.nonEmpty && paths.size < maxPaths) {
@@ -213,14 +219,21 @@ class DeBruijnGraph(val kmerSize: Int,
       // Check if the source node was merged into the current one
       lazy val foundMergedSink = nodeContainingSink.exists(_._1 == next)
       val foundSink = (next == sink || foundMergedSink)
-      if (!foundSink && currentPath.size < maxPathLength) {
-        // Keep searching down tree
-        val nextNodes = children(next)
-        frontier ++= (if (avoidLoops) nextNodes.filterNot(visited.contains) else nextNodes)
+      val nextNodes = children(next)
+      val filteredNextNodes = (if (avoidLoops) nextNodes.filterNot(visited.contains) else nextNodes)
+      if (!foundSink && filteredNextNodes.nonEmpty && currentPath.size < maxPathLength) {
 
-      } else {
-        //found sink or too long
-        if (foundSink && currentPath.size + 1 >= minPathLength) {
+        // Track if this is a branching node
+        if (filteredNextNodes.size > 1) {
+          lastBranchIndex.push(currentPath.length)
+          lastBranchChildren.push(filteredNextNodes.size)
+        }
+
+        // Keep searching down tree
+        frontier.pushAll(filteredNextNodes)
+
+      } else { // Found sink or search was cut short
+        if (foundSink && currentPath.size >= minPathLength) { // Found sink with valid length
 
           // Trim merged node if the sink is inside of it
           if (foundMergedSink) {
@@ -231,7 +244,20 @@ class DeBruijnGraph(val kmerSize: Int,
           // Found legitimate path to sink, save path
           paths = (currentPath.reverse) :: paths
         } // else degenerate path, too long or too short
-        currentPath = List.empty
+
+        if (lastBranchIndex.nonEmpty) {
+          // Backtrack the current path to the last node with siblings or start
+          val backtrackIndex = lastBranchIndex.top
+          currentPath = currentPath.drop(currentPath.length - backtrackIndex)
+          numBacktracks += 1
+
+          // If we've exhausted all paths from this backtrack point, next time we will back track to the previous point
+          if (numBacktracks == lastBranchChildren.top - 1) {
+            lastBranchIndex.pop()
+            lastBranchChildren.pop()
+            numBacktracks = 0
+          }
+        }
       }
     }
     paths
@@ -293,9 +319,18 @@ object DeBruijnGraph {
     graph
   }
 
-  def mergeKmers(kmers: Seq[Kmer]): Sequence = {
-    val head = kmers.headOption.map(h => h.take(h.length - 1)).getOrElse(Seq.empty)
-    val rest = kmers.map(_.last)
+  /**
+   * Merge sequences where we expect consecutive entries to overlap by `overlapSize` bases.
+   *
+   * @param sequences Set of sequences that we would like to combine into a single sequence
+   * @param overlapSize The amount of the sequences we expect to overlap (The number of bases the last sequence overlaps
+   *                    with the next. For a standard kmer graph, this is the length of the kmer length - 1
+   *
+   * @return A single merged sequence
+   */
+  def mergeOverlappingSequences(sequences: Seq[Sequence], overlapSize: Int): Sequence = {
+    val head = sequences.headOption.getOrElse(Seq.empty)
+    val rest = sequences.tail.flatMap(sequence => sequence.takeRight(sequence.length - overlapSize + 1))
     head ++ rest
   }
 
