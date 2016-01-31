@@ -18,7 +18,7 @@ class ReadAlignmentSuite extends FunSuite with Matchers {
       60
     )
 
-    alignment.toCigar should be("6=")
+    alignment.toCigarString should be("6=")
   }
 
   test("test cigar string: mixed match/insertion") {
@@ -35,7 +35,7 @@ class ReadAlignmentSuite extends FunSuite with Matchers {
       60
     )
 
-    alignment.toCigar should be("3=2I1=")
+    alignment.toCigarString should be("3=2I1=")
   }
 
   test("test cigar string: start with single match") {
@@ -52,7 +52,7 @@ class ReadAlignmentSuite extends FunSuite with Matchers {
       60
     )
 
-    alignment.toCigar should be("1=4I1=")
+    alignment.toCigarString should be("1=4I1=")
   }
 
   test("test cigar string: with mismatch") {
@@ -69,6 +69,6 @@ class ReadAlignmentSuite extends FunSuite with Matchers {
       60
     )
 
-    alignment.toCigar should be("1=2X3=")
+    alignment.toCigarString should be("1=2X3=")
   }
 }
