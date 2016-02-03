@@ -374,7 +374,7 @@ class DeBruijnGraphSuite extends GuacFunSuite with Matchers {
     val currentGraph: DeBruijnGraph = DeBruijnGraph(
       snpReads.map(_.sequence),
       kmerSize,
-      minOccurrence = 1,
+      minOccurrence = 3,
       mergeNodes = false
     )
 
