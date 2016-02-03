@@ -185,20 +185,27 @@ class DeBruijnGraph(val kmerSize: Int,
     assume(sink.length == kmerSize, s"Sink kmer ${Bases.basesToString(sink)} has a size != $kmerSize")
 
     var paths = List.empty[(Path)]
+    var visited: mutable.Set[Kmer] = mutable.Set.empty
 
-    var basesToTrimFirstNode = 0
     // Add the source node to the frontier
     val frontier: mutable.Stack[Kmer] =
       if (mergeIndex.contains(source)) {
         val (mergedNode, pathIndex) = mergeIndex(source)
-        basesToTrimFirstNode = pathIndex
+
+        // Check if merged node contains the sink, if so shortcut the search as this is the only path
+        val mergedSink = mergeIndex.get(sink)
+        if (mergedSink.exists(node => node._1 == mergedNode && node._2 > pathIndex)) {
+          val path: Path = List(mergedNode.slice(pathIndex, mergedSink.get._2 + kmerSize))
+          return List(path)
+        }
+        // Add the merged node to the visited stack, so we don't loop back into it
+        visited += mergedNode
+
         // Add the merged node to the frontier, removing any preceding bases
-        mutable.Stack(mergedNode)
+        mutable.Stack(mergedNode.drop(pathIndex))
       } else {
         mutable.Stack(source)
       }
-
-    var visited: mutable.Set[Kmer] = mutable.Set.empty
 
     // Initialize an empty path
     var currentPath: Path = List.empty
@@ -218,7 +225,7 @@ class DeBruijnGraph(val kmerSize: Int,
 
       if (debugPrint) {
         if (currentPath.length == 0) {
-          println(Bases.basesToString(next.drop(basesToTrimFirstNode)))
+          println(Bases.basesToString(next))
         } else {
           println(" " * (currentPath.map(_.length).sum - kmerSize + 1) + Bases.basesToString(next))
         }
@@ -253,11 +260,9 @@ class DeBruijnGraph(val kmerSize: Int,
             val mergedPathEndIdx = mergedPathIdx + kmerSize
             currentPath = currentPath.head.dropRight(mergedNode.length - mergedPathEndIdx) :: currentPath.tail
           }
-          // Reverse the path and trim any leading bases
-          val currentPathReversed = currentPath.reverse
 
           // Found legitimate path to sink, save path
-          paths = (currentPathReversed.head.drop(basesToTrimFirstNode) :: currentPathReversed.tail) :: paths
+          paths = currentPath.reverse :: paths
         } // else degenerate path, too long or too short
 
         if (lastBranchIndex.nonEmpty) {
@@ -280,8 +285,10 @@ class DeBruijnGraph(val kmerSize: Int,
       }
     }
 
-    if (debugPrint)
+    if (debugPrint) {
       println(s"Found ${paths.size} paths")
+    }
+
     paths
   }
 
