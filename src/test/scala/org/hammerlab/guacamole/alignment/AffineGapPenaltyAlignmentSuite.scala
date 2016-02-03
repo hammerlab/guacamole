@@ -13,7 +13,7 @@ class AffineGapPenaltyAlignmentSuite extends FunSuite with Matchers {
       openGapProbability = 1e-3,
       closeGapProbability = 1e-2
     )
-    alignments(4)._3.toInt should be(0)
+    alignments(0)._3.toInt should be(0)
   }
 
   test("score alignment: single mismatch") {
@@ -24,7 +24,7 @@ class AffineGapPenaltyAlignmentSuite extends FunSuite with Matchers {
       openGapProbability = 1e-3,
       closeGapProbability = 1e-2
     )
-    math.round(alignments(4)._3) should be(5)
+    math.round(alignments(0)._3) should be(5)
   }
 
   test("align exact match") {
@@ -44,9 +44,9 @@ class AffineGapPenaltyAlignmentSuite extends FunSuite with Matchers {
     alignment.toCigarString should be(sequence.length.toString + "=")
   }
 
-  test("short align with insertion") {
+  test("short align with insertion; left aligned") {
     val alignment = AffineGapPenaltyAlignment.align("TCCGA", "TCGA")
-    alignment.toCigarString should be("2=1I2=")
+    alignment.toCigarString should be("1=1I3=")
   }
 
   test("long align with insertion") {
@@ -80,5 +80,14 @@ class AffineGapPenaltyAlignmentSuite extends FunSuite with Matchers {
         "ATTCTCAAGTTTTAAGTGGTATTCTAATTATGGCAGTAATTAACTGAATAAAGAGATTCATCATGTGCAAAAACTAATCTT" + "GTTTACTTAAAATTGAGAGT",
         "ATTCTCAAGTTTTAAGTGGTTTTCTAATTATGGCAGTAATAAACTGAATAAAGAGATTCATCATGTGCAAAAACTAATCTTCCCGTTTACTTAAAATTGAGAGT")
     alignment.toCigarString should be("20=1X19=1X40=3D20=")
+  }
+
+  test("left aligning a deletion alignment") {
+    val alignment = AffineGapPenaltyAlignment
+      .align(
+        //====================================DD=======================================
+         "AGACACGGAGACACACAGAGATACACGGAAACACAG"+"ACATGCACACACGCGAAGACACAGACACATACACATGCAT",
+         "AGACACGGAGACACACAGAGATACACGGAAACACAGACACATGCACACACGCGAAGACACAGACACATACACATGCAT")
+    alignment.toCigarString should be("36=2D40=")
   }
 }
