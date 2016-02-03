@@ -5,7 +5,7 @@ import org.hammerlab.guacamole.alignment.AlignmentState.{ AlignmentState, isGapA
 
 object AffineGapPenaltyAlignment {
 
-  type Path = (Int, Vector[AlignmentState], Double)
+  type Path = (Int, List[AlignmentState], Double)
 
   /**
    * Produces an alignment of an input sequence against a reference sequence
@@ -66,7 +66,7 @@ object AffineGapPenaltyAlignment {
     for {
       refIdx <- 0 to referenceLength
     } {
-      lastSequenceAlignment(refIdx) = (refIdx, Vector.empty, 0)
+      lastSequenceAlignment(refIdx) = (refIdx, List.empty, 0)
     }
     var currentSequenceAlignment = new DenseVector[Path](referenceLength + 1)
 
@@ -83,15 +83,21 @@ object AffineGapPenaltyAlignment {
         (if (isEndState && isGapAlignment(nextState)) logCloseGapPenalty else 0)
     }
 
-    for (sequenceIdx <- 1 to sequenceLength) {
-      for (referenceIdx <- 0 to referenceLength) {
+    // Alignment is performed from the end the sequence backwards
+    // This ensure that insertion and deletion alignments occur in the left-most position
+
+    var sequenceIdx = sequenceLength - 1
+    while (sequenceIdx >= 0) {
+      var referenceIdx = referenceLength
+      while (referenceIdx >= 0) {
+
         // Given the change in position, is the transition a gap or match/mismatch
         def classifyTransition(prevSeqPos: Int, prevRefPos: Int): AlignmentState = {
           if (sequenceIdx == prevSeqPos) {
             AlignmentState.Deletion
           } else if (referenceIdx == prevRefPos) {
             AlignmentState.Insertion
-          } else if (sequence(sequenceIdx - 1) != reference(referenceIdx - 1)) {
+          } else if (sequence(sequenceIdx) != reference(referenceIdx)) {
             AlignmentState.Mismatch
           } else {
             AlignmentState.Match
@@ -100,11 +106,11 @@ object AffineGapPenaltyAlignment {
 
         val possiblePreviousStates =
           Seq(
-            (sequenceIdx - 1, referenceIdx),
-            (sequenceIdx, referenceIdx - 1),
-            (sequenceIdx - 1, referenceIdx - 1)
+            (sequenceIdx + 1, referenceIdx),
+            (sequenceIdx, referenceIdx + 1),
+            (sequenceIdx + 1, referenceIdx + 1)
           ).filter {
-              case (sI, rI) => sI >= 0 && rI >= 0 // Filter positions before the start of either sequence
+              case (sI, rI) => sI <= sequenceLength && rI <= referenceLength // Filter positions before the start of either sequence
             }
 
         // Compute the transition costs based on the gap penalties
@@ -114,29 +120,33 @@ object AffineGapPenaltyAlignment {
 
             val (prevRefStartIdx, prevPath, prevScore) =
               nextState match {
-                case AlignmentState.Deletion  => currentSequenceAlignment(referenceIdx - 1)
+                case AlignmentState.Deletion  => currentSequenceAlignment(referenceIdx + 1)
                 case AlignmentState.Insertion => lastSequenceAlignment(referenceIdx)
                 case _ => {
-                  lastSequenceAlignment(referenceIdx - 1)
+                  lastSequenceAlignment(referenceIdx + 1)
                 }
               }
 
-            val prevStateOpt = prevPath.lastOption
+            val prevStateOpt = prevPath.headOption
 
-            val isEndState = sequenceIdx == sequenceLength
+            val isEndState = sequenceIdx == 0
 
             val transitionCost = transitionPenalty(nextState, prevStateOpt, isEndState = isEndState)
-            (prevRefStartIdx, prevPath :+ nextState, prevScore + transitionCost)
+            (prevRefStartIdx, nextState :: prevPath , prevScore + transitionCost)
           }
         }
+
         currentSequenceAlignment(referenceIdx) = nextPaths.minBy(_._3)
+        referenceIdx -= 1
       }
       // Save current sequence position alignment position
       lastSequenceAlignment = currentSequenceAlignment
 
       // Clear alignment information before next sequence element
       currentSequenceAlignment = new DenseVector[Path](referenceLength + 1)
+      sequenceIdx -= 1
     }
+
     lastSequenceAlignment
   }
 }
