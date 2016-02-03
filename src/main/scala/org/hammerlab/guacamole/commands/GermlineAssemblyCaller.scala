@@ -77,7 +77,8 @@ object GermlineAssemblyCaller {
                            reference: ReferenceGenome,
                            minOccurrence: Int = 3,
                            expectedPloidy: Int = 2,
-                           maxPathsToScore: Int = 6): (Option[DeBruijnGraph], Iterator[CalledAllele]) = {
+                           maxPathsToScore: Int = 6,
+                           debugPrint: Boolean = false): (Option[DeBruijnGraph], Iterator[CalledAllele]) = {
 
       val locus = currentWindow.currentLocus
       val reads = currentWindow.currentRegions()
@@ -91,8 +92,8 @@ object GermlineAssemblyCaller {
         mergeNodes = true
       )
 
-      val referenceStart = (reads.head.start).toInt
-      val referenceEnd = (reads.last.end).toInt
+      val referenceStart = (locus - currentWindow.halfWindowSize).toInt
+      val referenceEnd = (locus + currentWindow.halfWindowSize).toInt
 
       val currentReference: Array[Byte] = reference.getReferenceSequence(
         currentWindow.referenceName,
@@ -107,9 +108,15 @@ object GermlineAssemblyCaller {
       if (currentReference.size < kmerSize)
         return (graph, Iterator.empty)
 
+      if (debugPrint) {
+        println(s"Source: ${Bases.basesToString(referenceKmerSource)}")
+        println(s"Sink: ${Bases.basesToString(referenceKmerSink)}")
+      }
+
       val paths = currentGraph.depthFirstSearch(
         referenceKmerSource,
-        referenceKmerSink
+        referenceKmerSink,
+        debugPrint = debugPrint
       )
 
       val sampleName = reads.head.sampleName
@@ -168,11 +175,13 @@ object GermlineAssemblyCaller {
         pathAndAlignments.flatMap(kv => {
           val path = kv._1
           val alignment = kv._2
-          var referenceIndex = 0
+
+          var referenceIndex = alignment.refStartIdx
           var pathIndex = 0
 
           // Find the alignment sequences using the CIGAR
           val cigarElements = alignment.toCigar.getCigarElements
+
           cigarElements.flatMap(cigarElement => {
             val cigarOperator = cigarElement.getOperator
             val referenceLength = CigarUtils.getReferenceLength(cigarElement)
@@ -191,12 +200,13 @@ object GermlineAssemblyCaller {
                 Some(buildVariant(referenceIndex - 1, referenceAllele, alternateAllele.toArray))
               case _ => None
             }
+
             referenceIndex += referenceLength
             pathIndex += pathLength
 
             possibleVariant
-
           })
+
         })
 
       (graph, variants.iterator)
@@ -210,22 +220,19 @@ object GermlineAssemblyCaller {
         sc,
         Read.InputFilters(mapped = true, nonDuplicate = true))
 
+      val minAlignmentQuality = args.minAlignmentQuality
+      val qualityReads = readSet
+        .mappedReads
+        .filter(_.alignmentQuality > minAlignmentQuality)
+
+      val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
+
+      val minAreaVaf = args.minAreaVaf
       val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(
         args,
         loci.result(readSet.contigLengths),
         readSet.mappedReads
       )
-
-      val kmerSize = args.kmerSize
-      val minAlignmentQuality = args.minAlignmentQuality
-      val minAverageBaseQuality = args.minAverageBaseQuality
-      val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
-
-      val qualityReads = readSet
-        .mappedReads
-        .filter(_.alignmentQuality > minAlignmentQuality)
-
-      val minAreaVaf = args.minAreaVaf
       // Find loci where there are variant reads
       val lociOfInterest = DistributedUtil.pileupFlatMap[VariantLocus](
         qualityReads,
@@ -243,29 +250,17 @@ object GermlineAssemblyCaller {
           locus => LociSet(locus.contig, locus.locus, locus.locus + 1))
           .collect(): _*
       )
-      val lociOfInterestPartitions = DistributedUtil.partitionLociUniformly(
-        args.parallelism,
-        lociOfInterestSet
-      )
 
-      val minOccurrence = args.minOccurrence
-      val genotypes: RDD[CalledAllele] =
-        DistributedUtil.windowFlatMapWithState[MappedRead, CalledAllele, Option[DeBruijnGraph]](
-          Seq(qualityReads),
-          lociOfInterestPartitions,
-          skipEmpty = true,
-          halfWindowSize = args.snvWindowRange,
-          initialState = None,
-          (graph, windows) => {
-            discoverHaplotypes(
-              graph,
-              windows(0),
-              kmerSize,
-              reference,
-              minOccurrence
-            )
-          }
-        )
+      val kmerSize = args.kmerSize
+      val minAverageBaseQuality = args.minAverageBaseQuality
+      val genotypes: RDD[CalledAllele] = discoverGenotypes(
+        qualityReads,
+        kmerSize,
+        snvWindowRange = args.snvWindowRange,
+        minOccurrence = args.minOccurrence,
+        reference,
+        lociOfInterestSet,
+        parallelism = args.parallelism)
       genotypes.persist()
 
       Common.progress(s"Found ${genotypes.count} variants")
@@ -277,5 +272,37 @@ object GermlineAssemblyCaller {
       DelayedMessages.default.print()
     }
 
+    def discoverGenotypes(reads: RDD[MappedRead],
+                          kmerSize: Int,
+                          snvWindowRange: Int,
+                          minOccurrence: Int,
+                          reference: ReferenceBroadcast,
+                          lociOfInterest: LociSet,
+                          parallelism: Int): RDD[CalledAllele] = {
+
+      val lociOfInterestPartitions = DistributedUtil.partitionLociUniformly(
+        parallelism,
+        lociOfInterest
+      )
+
+      val genotypes: RDD[CalledAllele] =
+        DistributedUtil.windowFlatMapWithState[MappedRead, CalledAllele, Option[DeBruijnGraph]](
+          Seq(reads),
+          lociOfInterestPartitions,
+          skipEmpty = true,
+          halfWindowSize = snvWindowRange,
+          initialState = None,
+          (graph, windows) => {
+            discoverHaplotypes(
+              graph,
+              windows(0),
+              kmerSize,
+              reference,
+              minOccurrence
+            )
+          }
+        )
+      genotypes
+    }
   }
 }

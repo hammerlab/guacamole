@@ -229,6 +229,30 @@ class DeBruijnGraphSuite extends GuacFunSuite with Matchers {
     graph.kmerCounts === Map("AAATCCCTGG" -> 1, "TGGGT" -> 1, "TGGAT" -> 1)
   }
 
+  test("merging kmers and checking mergeIndex") {
+    val longRead =
+      Bases.stringToBases(
+        "TGCATGGTGCTGTGAGATCAGCGTGTGTGTGTGTGCAGTGCATGGTGCTGTGTGAGATCAGCATGTGTGTGTGTGCAGTGCATGGTGCTGTGAGATCAGCGTGTGTGTGCAGCGCATGGTGCTGTGTGAGA"
+      )
+    val kmerSize = 45
+    val graph: DeBruijnGraph = DeBruijnGraph(
+      Seq(longRead),
+      kmerSize,
+      minOccurrence = 1,
+      mergeNodes = true
+    )
+
+    longRead
+      .sliding(kmerSize)
+      .zipWithIndex.map(
+      {case (kmer, idx) => {
+        val mergedNode = graph.mergeIndex(kmer)
+        mergedNode._1 should be(longRead)
+        mergedNode._2 should be(idx)
+      }}
+    )
+  }
+
   test("find single unique path in sequence") {
 
     val reference =
