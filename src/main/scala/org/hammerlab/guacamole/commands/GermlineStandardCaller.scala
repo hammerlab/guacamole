@@ -73,7 +73,6 @@ object GermlineStandard {
         args, loci.result(readSet.contigLengths), readSet.mappedReads)
       val minAlignmentQuality = args.minAlignmentQuality
 
-
       val genotypes: RDD[CalledAllele] = DistributedUtil.pileupFlatMap[CalledAllele](
         readSet.mappedReads,
         lociPartitions,

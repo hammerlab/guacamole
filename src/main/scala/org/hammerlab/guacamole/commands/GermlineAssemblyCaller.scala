@@ -1,7 +1,7 @@
 package org.hammerlab.guacamole.commands
 
 import breeze.linalg.DenseVector
-import breeze.stats.{mean, median}
+import breeze.stats.{ mean, median }
 import htsjdk.samtools.CigarOperator
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
@@ -9,11 +9,11 @@ import org.hammerlab.guacamole.Common.Arguments.GermlineCallerArgs
 import org.hammerlab.guacamole._
 import org.hammerlab.guacamole.alignment.AffineGapPenaltyAlignment
 import org.hammerlab.guacamole.assembly.DeBruijnGraph
-import org.hammerlab.guacamole.reads.{MappedRead, Read}
-import org.hammerlab.guacamole.reference.{ReferenceBroadcast, ReferenceGenome}
-import org.hammerlab.guacamole.variants.{Allele, AlleleConversions, AlleleEvidence, CalledAllele}
+import org.hammerlab.guacamole.reads.{ MappedRead, Read }
+import org.hammerlab.guacamole.reference.{ ReferenceBroadcast, ReferenceGenome }
+import org.hammerlab.guacamole.variants.{ Allele, AlleleConversions, AlleleEvidence, CalledAllele }
 import org.hammerlab.guacamole.windowing.SlidingWindow
-import org.kohsuke.args4j.{Option => Args4jOption}
+import org.kohsuke.args4j.{ Option => Args4jOption }
 
 import scala.collection.JavaConversions._
 
@@ -125,7 +125,7 @@ object GermlineAssemblyCaller {
           })
             .sortBy(_._2.alignmentScore)
             .take(expectedPloidy)
-        }  else {
+        } else {
           log.warn(s"In window ${referenceContig}:${referenceStart}-$referenceEnd " +
             s"there were ${paths.length} paths found, all variants skipped")
           List.empty
