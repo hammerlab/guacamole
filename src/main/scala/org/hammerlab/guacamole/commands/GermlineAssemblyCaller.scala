@@ -1,7 +1,7 @@
 package org.hammerlab.guacamole.commands
 
 import breeze.linalg.DenseVector
-import breeze.stats.{ mean, median }
+import breeze.stats.{mean, median}
 import htsjdk.samtools.CigarOperator
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
@@ -9,12 +9,11 @@ import org.hammerlab.guacamole.Common.Arguments.GermlineCallerArgs
 import org.hammerlab.guacamole._
 import org.hammerlab.guacamole.alignment.AffineGapPenaltyAlignment
 import org.hammerlab.guacamole.assembly.DeBruijnGraph
-import org.hammerlab.guacamole.filters.GenotypeFilter.GenotypeFilterArguments
-import org.hammerlab.guacamole.reads.{ MappedRead, Read }
-import org.hammerlab.guacamole.reference.{ ReferenceBroadcast, ReferenceGenome }
-import org.hammerlab.guacamole.variants.{ Allele, AlleleConversions, AlleleEvidence, CalledAllele }
+import org.hammerlab.guacamole.reads.{MappedRead, Read}
+import org.hammerlab.guacamole.reference.{ReferenceBroadcast, ReferenceGenome}
+import org.hammerlab.guacamole.variants.{Allele, AlleleConversions, AlleleEvidence, CalledAllele}
 import org.hammerlab.guacamole.windowing.SlidingWindow
-import org.kohsuke.args4j.{ Option => Args4jOption }
+import org.kohsuke.args4j.{Option => Args4jOption}
 
 import scala.collection.JavaConversions._
 
@@ -31,7 +30,7 @@ import scala.collection.JavaConversions._
  */
 object GermlineAssemblyCaller {
 
-  class Arguments extends GermlineCallerArgs with GenotypeFilterArguments {
+  class Arguments extends GermlineCallerArgs {
 
     @Args4jOption(name = "--kmer-size", usage = "Length of kmer used for DeBrujin Graph assembly")
     var kmerSize: Int = 45
