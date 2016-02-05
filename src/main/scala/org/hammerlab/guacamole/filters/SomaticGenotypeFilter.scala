@@ -250,13 +250,13 @@ object SomaticGenotypeFilter {
     @Args4jOption(name = "--min-vaf", usage = "Minimum variant allele frequency")
     var minVAF: Int = 0
 
-    @Args4jOption(name = "--min-lod", metaVar = "X", usage = "Make a call if the log odds of variant is greater than this value (Phred-scaled)")
+    @Args4jOption(name = "--min-lod", metaVar = "X", usage = "Removes any variants where the log odds of variant is less than this value (Phred-scaled)")
     var minLOD: Int = 0
 
-    @Args4jOption(name = "--min-average-mapping-quality", metaVar = "X", usage = "Make a call average mapping quality of reads is greater than this value")
+    @Args4jOption(name = "--min-average-mapping-quality", metaVar = "X", usage = "Removes any variants where the average mapping quality of reads is less than this value")
     var minAverageMappingQuality: Int = 0
 
-    @Args4jOption(name = "--min-average-base-quality", metaVar = "X", usage = "Make a call average base quality of bases in the pileup is greater than this value")
+    @Args4jOption(name = "--min-average-base-quality", metaVar = "X", usage = "Removes any variants where the average base quality of bases in the pileup is less than this value")
     var minAverageBaseQuality: Int = 0
 
     @Args4jOption(name = "--min-tumor-read-depth", usage = "Minimum number of reads in tumor sample for a genotype call")

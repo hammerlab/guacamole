@@ -9,7 +9,6 @@ import org.hammerlab.guacamole.Common.Arguments.GermlineCallerArgs
 import org.hammerlab.guacamole._
 import org.hammerlab.guacamole.alignment.AffineGapPenaltyAlignment
 import org.hammerlab.guacamole.assembly.DeBruijnGraph
-import org.hammerlab.guacamole.filters.GenotypeFilter.GenotypeFilterArguments
 import org.hammerlab.guacamole.reads.{ MappedRead, Read }
 import org.hammerlab.guacamole.reference.{ ReferenceBroadcast, ReferenceGenome }
 import org.hammerlab.guacamole.variants.{ Allele, AlleleConversions, AlleleEvidence, CalledAllele }
@@ -31,7 +30,7 @@ import scala.collection.JavaConversions._
  */
 object GermlineAssemblyCaller {
 
-  class Arguments extends GermlineCallerArgs with GenotypeFilterArguments {
+  class Arguments extends GermlineCallerArgs {
 
     @Args4jOption(name = "--kmer-size", usage = "Length of kmer used for DeBrujin Graph assembly")
     var kmerSize: Int = 45
@@ -126,7 +125,7 @@ object GermlineAssemblyCaller {
           })
             .sortBy(_._2.alignmentScore)
             .take(expectedPloidy)
-        }  else {
+        } else {
           log.warn(s"In window ${referenceContig}:${referenceStart}-$referenceEnd " +
             s"there were ${paths.length} paths found, all variants skipped")
           List.empty
