@@ -14,7 +14,7 @@ class ReadAlignmentSuite extends FunSuite with Matchers {
         AlignmentState.Match,
         AlignmentState.Match
       ),
-      Nil,
+      0, 5,
       60
     )
 
@@ -31,7 +31,7 @@ class ReadAlignmentSuite extends FunSuite with Matchers {
         AlignmentState.Insertion,
         AlignmentState.Match
       ),
-      Nil,
+      0, 6,
       60
     )
 
@@ -48,7 +48,7 @@ class ReadAlignmentSuite extends FunSuite with Matchers {
         AlignmentState.Insertion,
         AlignmentState.Match
       ),
-      Nil,
+      0, 5,
       60
     )
 
@@ -65,7 +65,7 @@ class ReadAlignmentSuite extends FunSuite with Matchers {
         AlignmentState.Match,
         AlignmentState.Match
       ),
-      Nil,
+      0, 5,
       60
     )
 
