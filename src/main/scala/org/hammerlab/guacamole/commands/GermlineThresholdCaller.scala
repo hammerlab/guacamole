@@ -20,15 +20,15 @@ package org.hammerlab.guacamole.commands
 
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
-import org.bdgenomics.formats.avro.GenotypeAllele.{Alt, NoCall, OtherAlt, Ref}
-import org.bdgenomics.formats.avro.{Contig, Genotype, GenotypeAllele, Variant}
+import org.bdgenomics.formats.avro.GenotypeAllele.{ Alt, NoCall, OtherAlt, Ref }
+import org.bdgenomics.formats.avro.{ Contig, Genotype, GenotypeAllele, Variant }
 import org.hammerlab.guacamole.Common.Arguments.GermlineCallerArgs
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.Read
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.variants.Allele
-import org.hammerlab.guacamole.{Bases, Common, Concordance, DelayedMessages, DistributedUtil, SparkCommand}
-import org.kohsuke.args4j.{Option => Args4jOption}
+import org.hammerlab.guacamole.{ Bases, Common, Concordance, DelayedMessages, DistributedUtil, SparkCommand }
+import org.kohsuke.args4j.{ Option => Args4jOption }
 
 import scala.collection.JavaConversions
 
