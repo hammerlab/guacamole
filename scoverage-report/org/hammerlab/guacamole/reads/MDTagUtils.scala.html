@@ -11939,7 +11939,7 @@
           28
         </td>
         <td>
-          3575
+          3604
         </td>
         <td>
           org.bdgenomics.adam.util.MdTag.start
@@ -11952,7 +11952,7 @@
           29
         </td>
         <td>
-          3576
+          3605
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -11965,7 +11965,7 @@
           30
         </td>
         <td>
-          3577
+          3606
         </td>
         <td>
           debox.Buffer.empty
@@ -11978,20 +11978,20 @@
           33
         </td>
         <td>
-          3626
+          3655
         </td>
         <td>
           scala.collection.IterableLike.foreach
         </td>
         <td style="background: #F0ADAD">
-          scala.collection.JavaConversions.asScalaBuffer[htsjdk.samtools.CigarElement]({  scoverage.Invoker.invoked(3578, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  cigar.getCigarElements()}).foreach[Unit](((cigarElement: htsjdk.samtools.CigarElement) =&gt; {  scoverage.Invoker.invoked(3625, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  {    scoverage.Invoker.invoked(3579, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    cigarElement.getOperator()  } match {    case (M| EQ| X) =&gt; {      scoverage.Invoker.invoked(3593, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(3592, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        scala.this.Predef.intWrapper({  scoverage.Invoker.invoked(3580, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  0}).until({  scoverage.Invoker.invoked(3581, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  cigarElement.getLength()}).foreach[Unit](((i: Int) =&gt; {          {            scoverage.Invoker.invoked(3589, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            {              scoverage.Invoker.invoked(3582, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              mdTag.mismatches.get(referencePos)            } match {              case (x: Char)Some[Char]((base @ _)) =&gt; {                scoverage.Invoker.invoked(3585, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                {                  scoverage.Invoker.invoked(3584, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                  reference.+=({                    scoverage.Invoker.invoked(3583, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                    base.toByte                  })                }              }              case _ =&gt; {                scoverage.Invoker.invoked(3588, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                {                  scoverage.Invoker.invoked(3587, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                  reference.+=({                    scoverage.Invoker.invoked(3586, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                    readSequence.apply(readPos).toByte                  })                }              }            }          };          readPos = {            scoverage.Invoker.invoked(3590, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            readPos.+(1)          };          referencePos = {            scoverage.Invoker.invoked(3591, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            referencePos.+(1)          }        }))      }    }    case N if allowNBase =&gt; {      scoverage.Invoker.invoked(3600, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        referencePos = {          scoverage.Invoker.invoked(3595, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          referencePos.+({            scoverage.Invoker.invoked(3594, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            cigarElement.getLength()          })        };        {          scoverage.Invoker.invoked(3599, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          reference.++=({            scoverage.Invoker.invoked(3598, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            debox.Buffer.fill[Byte]({              scoverage.Invoker.invoked(3596, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              cigarElement.getLength()            })({              scoverage.Invoker.invoked(3597, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              org.hammerlab.guacamole.Bases.N            })(ClassTag.Byte)          })        }      }    }    case D =&gt; {      scoverage.Invoker.invoked(3612, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(3611, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        scala.this.Predef.intWrapper({  scoverage.Invoker.invoked(3601, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  0}).until({  scoverage.Invoker.invoked(3602, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  cigarElement.getLength()}).foreach[Unit](((i: Int) =&gt; {          {            scoverage.Invoker.invoked(3609, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            reference.+=({              scoverage.Invoker.invoked(3608, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              {                scoverage.Invoker.invoked(3603, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                mdTag.deletions.get(referencePos)              } match {                case (x: Char)Some[Char]((base @ _)) =&gt; {                  scoverage.Invoker.invoked(3605, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                  {                    scoverage.Invoker.invoked(3604, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                    base.toByte                  }                }                case _ =&gt; {                  scoverage.Invoker.invoked(3607, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                  {                    scoverage.Invoker.invoked(3606, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                    throw new java.this.lang.IllegalStateException(&quot;Could not find deleted base at cigar offset &quot;.+(i))                  }                }              }            })          };          referencePos = {            scoverage.Invoker.invoked(3610, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            referencePos.+(1)          }        }))      }    }    case _ =&gt; {      scoverage.Invoker.invoked(3624, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        if ({          scoverage.Invoker.invoked(3613, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          cigarElement.getOperator().consumesReadBases()        })          {            scoverage.Invoker.invoked(3616, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            readPos = {              scoverage.Invoker.invoked(3615, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              readPos.+({                scoverage.Invoker.invoked(3614, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                cigarElement.getLength()              })            }          }        else          {            scoverage.Invoker.invoked(3618, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            {              scoverage.Invoker.invoked(3617, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              ()            }          };        if ({          scoverage.Invoker.invoked(3619, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          cigarElement.getOperator().consumesReferenceBases()        })          {            scoverage.Invoker.invoked(3621, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            {              scoverage.Invoker.invoked(3620, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              throw new scala.`package`.IllegalArgumentException(&quot;Cannot handle operator: &quot;.+(cigarElement.getOperator()))            }          }        else          {            scoverage.Invoker.invoked(3623, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            {              scoverage.Invoker.invoked(3622, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              ()            }          }      }    }  }}))
+          scala.collection.JavaConversions.asScalaBuffer[htsjdk.samtools.CigarElement]({  scoverage.Invoker.invoked(3607, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  cigar.getCigarElements()}).foreach[Unit](((cigarElement: htsjdk.samtools.CigarElement) =&gt; {  scoverage.Invoker.invoked(3654, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  {    scoverage.Invoker.invoked(3608, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    cigarElement.getOperator()  } match {    case (M| EQ| X) =&gt; {      scoverage.Invoker.invoked(3622, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(3621, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        scala.this.Predef.intWrapper({  scoverage.Invoker.invoked(3609, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  0}).until({  scoverage.Invoker.invoked(3610, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  cigarElement.getLength()}).foreach[Unit](((i: Int) =&gt; {          {            scoverage.Invoker.invoked(3618, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            {              scoverage.Invoker.invoked(3611, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              mdTag.mismatches.get(referencePos)            } match {              case (x: Char)Some[Char]((base @ _)) =&gt; {                scoverage.Invoker.invoked(3614, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                {                  scoverage.Invoker.invoked(3613, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                  reference.+=({                    scoverage.Invoker.invoked(3612, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                    base.toByte                  })                }              }              case _ =&gt; {                scoverage.Invoker.invoked(3617, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                {                  scoverage.Invoker.invoked(3616, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                  reference.+=({                    scoverage.Invoker.invoked(3615, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                    readSequence.apply(readPos).toByte                  })                }              }            }          };          readPos = {            scoverage.Invoker.invoked(3619, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            readPos.+(1)          };          referencePos = {            scoverage.Invoker.invoked(3620, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            referencePos.+(1)          }        }))      }    }    case N if allowNBase =&gt; {      scoverage.Invoker.invoked(3629, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        referencePos = {          scoverage.Invoker.invoked(3624, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          referencePos.+({            scoverage.Invoker.invoked(3623, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            cigarElement.getLength()          })        };        {          scoverage.Invoker.invoked(3628, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          reference.++=({            scoverage.Invoker.invoked(3627, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            debox.Buffer.fill[Byte]({              scoverage.Invoker.invoked(3625, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              cigarElement.getLength()            })({              scoverage.Invoker.invoked(3626, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              org.hammerlab.guacamole.Bases.N            })(ClassTag.Byte)          })        }      }    }    case D =&gt; {      scoverage.Invoker.invoked(3641, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(3640, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        scala.this.Predef.intWrapper({  scoverage.Invoker.invoked(3630, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  0}).until({  scoverage.Invoker.invoked(3631, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  cigarElement.getLength()}).foreach[Unit](((i: Int) =&gt; {          {            scoverage.Invoker.invoked(3638, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            reference.+=({              scoverage.Invoker.invoked(3637, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              {                scoverage.Invoker.invoked(3632, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                mdTag.deletions.get(referencePos)              } match {                case (x: Char)Some[Char]((base @ _)) =&gt; {                  scoverage.Invoker.invoked(3634, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                  {                    scoverage.Invoker.invoked(3633, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                    base.toByte                  }                }                case _ =&gt; {                  scoverage.Invoker.invoked(3636, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                  {                    scoverage.Invoker.invoked(3635, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                    throw new java.this.lang.IllegalStateException(&quot;Could not find deleted base at cigar offset &quot;.+(i))                  }                }              }            })          };          referencePos = {            scoverage.Invoker.invoked(3639, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            referencePos.+(1)          }        }))      }    }    case _ =&gt; {      scoverage.Invoker.invoked(3653, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        if ({          scoverage.Invoker.invoked(3642, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          cigarElement.getOperator().consumesReadBases()        })          {            scoverage.Invoker.invoked(3645, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            readPos = {              scoverage.Invoker.invoked(3644, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              readPos.+({                scoverage.Invoker.invoked(3643, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                cigarElement.getLength()              })            }          }        else          {            scoverage.Invoker.invoked(3647, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            {              scoverage.Invoker.invoked(3646, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              ()            }          };        if ({          scoverage.Invoker.invoked(3648, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          cigarElement.getOperator().consumesReferenceBases()        })          {            scoverage.Invoker.invoked(3650, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            {              scoverage.Invoker.invoked(3649, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              throw new scala.`package`.IllegalArgumentException(&quot;Cannot handle operator: &quot;.+(cigarElement.getOperator()))            }          }        else          {            scoverage.Invoker.invoked(3652, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            {              scoverage.Invoker.invoked(3651, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              ()            }          }      }    }  }}))
         </td>
       </tr><tr>
         <td>
           33
         </td>
         <td>
-          3578
+          3607
         </td>
         <td>
           htsjdk.samtools.Cigar.getCigarElements
@@ -12004,7 +12004,20 @@
           34
         </td>
         <td>
-          3579
+          3654
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  scoverage.Invoker.invoked(3608, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  cigarElement.getOperator()} match {  case (M| EQ| X) =&gt; {    scoverage.Invoker.invoked(3622, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(3621, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      scala.this.Predef.intWrapper({  scoverage.Invoker.invoked(3609, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  0}).until({  scoverage.Invoker.invoked(3610, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  cigarElement.getLength()}).foreach[Unit](((i: Int) =&gt; {        {          scoverage.Invoker.invoked(3618, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          {            scoverage.Invoker.invoked(3611, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            mdTag.mismatches.get(referencePos)          } match {            case (x: Char)Some[Char]((base @ _)) =&gt; {              scoverage.Invoker.invoked(3614, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              {                scoverage.Invoker.invoked(3613, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                reference.+=({                  scoverage.Invoker.invoked(3612, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                  base.toByte                })              }            }            case _ =&gt; {              scoverage.Invoker.invoked(3617, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              {                scoverage.Invoker.invoked(3616, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                reference.+=({                  scoverage.Invoker.invoked(3615, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                  readSequence.apply(readPos).toByte                })              }            }          }        };        readPos = {          scoverage.Invoker.invoked(3619, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          readPos.+(1)        };        referencePos = {          scoverage.Invoker.invoked(3620, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          referencePos.+(1)        }      }))    }  }  case N if allowNBase =&gt; {    scoverage.Invoker.invoked(3629, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      referencePos = {        scoverage.Invoker.invoked(3624, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        referencePos.+({          scoverage.Invoker.invoked(3623, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          cigarElement.getLength()        })      };      {        scoverage.Invoker.invoked(3628, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        reference.++=({          scoverage.Invoker.invoked(3627, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          debox.Buffer.fill[Byte]({            scoverage.Invoker.invoked(3625, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            cigarElement.getLength()          })({            scoverage.Invoker.invoked(3626, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            org.hammerlab.guacamole.Bases.N          })(ClassTag.Byte)        })      }    }  }  case D =&gt; {    scoverage.Invoker.invoked(3641, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(3640, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      scala.this.Predef.intWrapper({  scoverage.Invoker.invoked(3630, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  0}).until({  scoverage.Invoker.invoked(3631, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  cigarElement.getLength()}).foreach[Unit](((i: Int) =&gt; {        {          scoverage.Invoker.invoked(3638, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          reference.+=({            scoverage.Invoker.invoked(3637, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            {              scoverage.Invoker.invoked(3632, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              mdTag.deletions.get(referencePos)            } match {              case (x: Char)Some[Char]((base @ _)) =&gt; {                scoverage.Invoker.invoked(3634, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                {                  scoverage.Invoker.invoked(3633, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                  base.toByte                }              }              case _ =&gt; {                scoverage.Invoker.invoked(3636, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                {                  scoverage.Invoker.invoked(3635, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                  throw new java.this.lang.IllegalStateException(&quot;Could not find deleted base at cigar offset &quot;.+(i))                }              }            }          })        };        referencePos = {          scoverage.Invoker.invoked(3639, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          referencePos.+(1)        }      }))    }  }  case _ =&gt; {    scoverage.Invoker.invoked(3653, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      if ({        scoverage.Invoker.invoked(3642, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        cigarElement.getOperator().consumesReadBases()      })        {          scoverage.Invoker.invoked(3645, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          readPos = {            scoverage.Invoker.invoked(3644, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            readPos.+({              scoverage.Invoker.invoked(3643, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              cigarElement.getLength()            })          }        }      else        {          scoverage.Invoker.invoked(3647, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          {            scoverage.Invoker.invoked(3646, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            ()          }        };      if ({        scoverage.Invoker.invoked(3648, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        cigarElement.getOperator().consumesReferenceBases()      })        {          scoverage.Invoker.invoked(3650, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          {            scoverage.Invoker.invoked(3649, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            throw new scala.`package`.IllegalArgumentException(&quot;Cannot handle operator: &quot;.+(cigarElement.getOperator()))          }        }      else        {          scoverage.Invoker.invoked(3652, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          {            scoverage.Invoker.invoked(3651, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            ()          }        }    }  }}
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          3608
         </td>
         <td>
           htsjdk.samtools.CigarElement.getOperator
@@ -12014,49 +12027,10 @@
         </td>
       </tr><tr>
         <td>
-          34
-        </td>
-        <td>
-          3625
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(3579, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  cigarElement.getOperator()} match {  case (M| EQ| X) =&gt; {    scoverage.Invoker.invoked(3593, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(3592, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      scala.this.Predef.intWrapper({  scoverage.Invoker.invoked(3580, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  0}).until({  scoverage.Invoker.invoked(3581, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  cigarElement.getLength()}).foreach[Unit](((i: Int) =&gt; {        {          scoverage.Invoker.invoked(3589, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          {            scoverage.Invoker.invoked(3582, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            mdTag.mismatches.get(referencePos)          } match {            case (x: Char)Some[Char]((base @ _)) =&gt; {              scoverage.Invoker.invoked(3585, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              {                scoverage.Invoker.invoked(3584, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                reference.+=({                  scoverage.Invoker.invoked(3583, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                  base.toByte                })              }            }            case _ =&gt; {              scoverage.Invoker.invoked(3588, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              {                scoverage.Invoker.invoked(3587, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                reference.+=({                  scoverage.Invoker.invoked(3586, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                  readSequence.apply(readPos).toByte                })              }            }          }        };        readPos = {          scoverage.Invoker.invoked(3590, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          readPos.+(1)        };        referencePos = {          scoverage.Invoker.invoked(3591, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          referencePos.+(1)        }      }))    }  }  case N if allowNBase =&gt; {    scoverage.Invoker.invoked(3600, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      referencePos = {        scoverage.Invoker.invoked(3595, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        referencePos.+({          scoverage.Invoker.invoked(3594, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          cigarElement.getLength()        })      };      {        scoverage.Invoker.invoked(3599, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        reference.++=({          scoverage.Invoker.invoked(3598, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          debox.Buffer.fill[Byte]({            scoverage.Invoker.invoked(3596, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            cigarElement.getLength()          })({            scoverage.Invoker.invoked(3597, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            org.hammerlab.guacamole.Bases.N          })(ClassTag.Byte)        })      }    }  }  case D =&gt; {    scoverage.Invoker.invoked(3612, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(3611, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      scala.this.Predef.intWrapper({  scoverage.Invoker.invoked(3601, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  0}).until({  scoverage.Invoker.invoked(3602, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  cigarElement.getLength()}).foreach[Unit](((i: Int) =&gt; {        {          scoverage.Invoker.invoked(3609, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          reference.+=({            scoverage.Invoker.invoked(3608, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            {              scoverage.Invoker.invoked(3603, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              mdTag.deletions.get(referencePos)            } match {              case (x: Char)Some[Char]((base @ _)) =&gt; {                scoverage.Invoker.invoked(3605, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                {                  scoverage.Invoker.invoked(3604, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                  base.toByte                }              }              case _ =&gt; {                scoverage.Invoker.invoked(3607, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                {                  scoverage.Invoker.invoked(3606, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                  throw new java.this.lang.IllegalStateException(&quot;Could not find deleted base at cigar offset &quot;.+(i))                }              }            }          })        };        referencePos = {          scoverage.Invoker.invoked(3610, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          referencePos.+(1)        }      }))    }  }  case _ =&gt; {    scoverage.Invoker.invoked(3624, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      if ({        scoverage.Invoker.invoked(3613, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        cigarElement.getOperator().consumesReadBases()      })        {          scoverage.Invoker.invoked(3616, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          readPos = {            scoverage.Invoker.invoked(3615, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            readPos.+({              scoverage.Invoker.invoked(3614, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              cigarElement.getLength()            })          }        }      else        {          scoverage.Invoker.invoked(3618, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          {            scoverage.Invoker.invoked(3617, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            ()          }        };      if ({        scoverage.Invoker.invoked(3619, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        cigarElement.getOperator().consumesReferenceBases()      })        {          scoverage.Invoker.invoked(3621, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          {            scoverage.Invoker.invoked(3620, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            throw new scala.`package`.IllegalArgumentException(&quot;Cannot handle operator: &quot;.+(cigarElement.getOperator()))          }        }      else        {          scoverage.Invoker.invoked(3623, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          {            scoverage.Invoker.invoked(3622, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            ()          }        }    }  }}
-        </td>
-      </tr><tr>
-        <td>
           37
         </td>
         <td>
-          3581
-        </td>
-        <td>
-          htsjdk.samtools.CigarElement.getLength
-        </td>
-        <td style="background: #F0ADAD">
-          cigarElement.getLength()
-        </td>
-      </tr><tr>
-        <td>
-          37
-        </td>
-        <td>
-          3593
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(3592, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.intWrapper({  scoverage.Invoker.invoked(3580, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  0}).until({  scoverage.Invoker.invoked(3581, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  cigarElement.getLength()}).foreach[Unit](((i: Int) =&gt; {    {      scoverage.Invoker.invoked(3589, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(3582, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        mdTag.mismatches.get(referencePos)      } match {        case (x: Char)Some[Char]((base @ _)) =&gt; {          scoverage.Invoker.invoked(3585, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          {            scoverage.Invoker.invoked(3584, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            reference.+=({              scoverage.Invoker.invoked(3583, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              base.toByte            })          }        }        case _ =&gt; {          scoverage.Invoker.invoked(3588, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          {            scoverage.Invoker.invoked(3587, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            reference.+=({              scoverage.Invoker.invoked(3586, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              readSequence.apply(readPos).toByte            })          }        }      }    };    readPos = {      scoverage.Invoker.invoked(3590, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      readPos.+(1)    };    referencePos = {      scoverage.Invoker.invoked(3591, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      referencePos.+(1)    }  }))}
-        </td>
-      </tr><tr>
-        <td>
-          37
-        </td>
-        <td>
-          3580
+          3609
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -12069,20 +12043,59 @@
           37
         </td>
         <td>
-          3592
+          3621
         </td>
         <td>
           scala.collection.immutable.Range.foreach
         </td>
         <td style="background: #F0ADAD">
-          scala.this.Predef.intWrapper({  scoverage.Invoker.invoked(3580, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  0}).until({  scoverage.Invoker.invoked(3581, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  cigarElement.getLength()}).foreach[Unit](((i: Int) =&gt; {  {    scoverage.Invoker.invoked(3589, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(3582, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      mdTag.mismatches.get(referencePos)    } match {      case (x: Char)Some[Char]((base @ _)) =&gt; {        scoverage.Invoker.invoked(3585, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        {          scoverage.Invoker.invoked(3584, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          reference.+=({            scoverage.Invoker.invoked(3583, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            base.toByte          })        }      }      case _ =&gt; {        scoverage.Invoker.invoked(3588, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        {          scoverage.Invoker.invoked(3587, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          reference.+=({            scoverage.Invoker.invoked(3586, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            readSequence.apply(readPos).toByte          })        }      }    }  };  readPos = {    scoverage.Invoker.invoked(3590, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    readPos.+(1)  };  referencePos = {    scoverage.Invoker.invoked(3591, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    referencePos.+(1)  }}))
+          scala.this.Predef.intWrapper({  scoverage.Invoker.invoked(3609, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  0}).until({  scoverage.Invoker.invoked(3610, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  cigarElement.getLength()}).foreach[Unit](((i: Int) =&gt; {  {    scoverage.Invoker.invoked(3618, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(3611, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      mdTag.mismatches.get(referencePos)    } match {      case (x: Char)Some[Char]((base @ _)) =&gt; {        scoverage.Invoker.invoked(3614, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        {          scoverage.Invoker.invoked(3613, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          reference.+=({            scoverage.Invoker.invoked(3612, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            base.toByte          })        }      }      case _ =&gt; {        scoverage.Invoker.invoked(3617, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        {          scoverage.Invoker.invoked(3616, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          reference.+=({            scoverage.Invoker.invoked(3615, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            readSequence.apply(readPos).toByte          })        }      }    }  };  readPos = {    scoverage.Invoker.invoked(3619, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    readPos.+(1)  };  referencePos = {    scoverage.Invoker.invoked(3620, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    referencePos.+(1)  }}))
+        </td>
+      </tr><tr>
+        <td>
+          37
+        </td>
+        <td>
+          3622
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  scoverage.Invoker.invoked(3621, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.intWrapper({  scoverage.Invoker.invoked(3609, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  0}).until({  scoverage.Invoker.invoked(3610, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  cigarElement.getLength()}).foreach[Unit](((i: Int) =&gt; {    {      scoverage.Invoker.invoked(3618, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(3611, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        mdTag.mismatches.get(referencePos)      } match {        case (x: Char)Some[Char]((base @ _)) =&gt; {          scoverage.Invoker.invoked(3614, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          {            scoverage.Invoker.invoked(3613, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            reference.+=({              scoverage.Invoker.invoked(3612, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              base.toByte            })          }        }        case _ =&gt; {          scoverage.Invoker.invoked(3617, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          {            scoverage.Invoker.invoked(3616, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            reference.+=({              scoverage.Invoker.invoked(3615, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              readSequence.apply(readPos).toByte            })          }        }      }    };    readPos = {      scoverage.Invoker.invoked(3619, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      readPos.+(1)    };    referencePos = {      scoverage.Invoker.invoked(3620, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      referencePos.+(1)    }  }))}
+        </td>
+      </tr><tr>
+        <td>
+          37
+        </td>
+        <td>
+          3610
+        </td>
+        <td>
+          htsjdk.samtools.CigarElement.getLength
+        </td>
+        <td style="background: #F0ADAD">
+          cigarElement.getLength()
         </td>
       </tr><tr>
         <td>
           39
         </td>
         <td>
-          3582
+          3618
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  scoverage.Invoker.invoked(3611, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  mdTag.mismatches.get(referencePos)} match {  case (x: Char)Some[Char]((base @ _)) =&gt; {    scoverage.Invoker.invoked(3614, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(3613, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      reference.+=({        scoverage.Invoker.invoked(3612, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        base.toByte      })    }  }  case _ =&gt; {    scoverage.Invoker.invoked(3617, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(3616, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      reference.+=({        scoverage.Invoker.invoked(3615, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        readSequence.apply(readPos).toByte      })    }  }}
+        </td>
+      </tr><tr>
+        <td>
+          39
+        </td>
+        <td>
+          3611
         </td>
         <td>
           scala.collection.MapLike.get
@@ -12092,49 +12105,10 @@
         </td>
       </tr><tr>
         <td>
-          39
-        </td>
-        <td>
-          3589
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(3582, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  mdTag.mismatches.get(referencePos)} match {  case (x: Char)Some[Char]((base @ _)) =&gt; {    scoverage.Invoker.invoked(3585, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(3584, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      reference.+=({        scoverage.Invoker.invoked(3583, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        base.toByte      })    }  }  case _ =&gt; {    scoverage.Invoker.invoked(3588, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(3587, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      reference.+=({        scoverage.Invoker.invoked(3586, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        readSequence.apply(readPos).toByte      })    }  }}
-        </td>
-      </tr><tr>
-        <td>
           40
         </td>
         <td>
-          3585
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(3584, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  reference.+=({    scoverage.Invoker.invoked(3583, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    base.toByte  })}
-        </td>
-      </tr><tr>
-        <td>
-          40
-        </td>
-        <td>
-          3584
-        </td>
-        <td>
-          debox.Buffer.+=
-        </td>
-        <td style="background: #F0ADAD">
-          reference.+=({  scoverage.Invoker.invoked(3583, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  base.toByte})
-        </td>
-      </tr><tr>
-        <td>
-          40
-        </td>
-        <td>
-          3583
+          3612
         </td>
         <td>
           scala.Char.toByte
@@ -12144,36 +12118,36 @@
         </td>
       </tr><tr>
         <td>
-          41
+          40
         </td>
         <td>
-          3588
+          3614
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(3587, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  reference.+=({    scoverage.Invoker.invoked(3586, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    readSequence.apply(readPos).toByte  })}
+          {  scoverage.Invoker.invoked(3613, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  reference.+=({    scoverage.Invoker.invoked(3612, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    base.toByte  })}
         </td>
       </tr><tr>
         <td>
-          41
+          40
         </td>
         <td>
-          3587
+          3613
         </td>
         <td>
           debox.Buffer.+=
         </td>
         <td style="background: #F0ADAD">
-          reference.+=({  scoverage.Invoker.invoked(3586, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  readSequence.apply(readPos).toByte})
+          reference.+=({  scoverage.Invoker.invoked(3612, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  base.toByte})
         </td>
       </tr><tr>
         <td>
           41
         </td>
         <td>
-          3586
+          3615
         </td>
         <td>
           scala.Byte.toByte
@@ -12183,10 +12157,36 @@
         </td>
       </tr><tr>
         <td>
+          41
+        </td>
+        <td>
+          3617
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  scoverage.Invoker.invoked(3616, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  reference.+=({    scoverage.Invoker.invoked(3615, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    readSequence.apply(readPos).toByte  })}
+        </td>
+      </tr><tr>
+        <td>
+          41
+        </td>
+        <td>
+          3616
+        </td>
+        <td>
+          debox.Buffer.+=
+        </td>
+        <td style="background: #F0ADAD">
+          reference.+=({  scoverage.Invoker.invoked(3615, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  readSequence.apply(readPos).toByte})
+        </td>
+      </tr><tr>
+        <td>
           44
         </td>
         <td>
-          3590
+          3619
         </td>
         <td>
           scala.Int.+
@@ -12199,7 +12199,7 @@
           45
         </td>
         <td>
-          3591
+          3620
         </td>
         <td>
           scala.Long.+
@@ -12212,72 +12212,33 @@
           48
         </td>
         <td>
-          3600
+          3629
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  referencePos = {    scoverage.Invoker.invoked(3595, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    referencePos.+({      scoverage.Invoker.invoked(3594, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      cigarElement.getLength()    })  };  {    scoverage.Invoker.invoked(3599, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    reference.++=({      scoverage.Invoker.invoked(3598, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      debox.Buffer.fill[Byte]({        scoverage.Invoker.invoked(3596, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        cigarElement.getLength()      })({        scoverage.Invoker.invoked(3597, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        org.hammerlab.guacamole.Bases.N      })(ClassTag.Byte)    })  }}
+          {  referencePos = {    scoverage.Invoker.invoked(3624, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    referencePos.+({      scoverage.Invoker.invoked(3623, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      cigarElement.getLength()    })  };  {    scoverage.Invoker.invoked(3628, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    reference.++=({      scoverage.Invoker.invoked(3627, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      debox.Buffer.fill[Byte]({        scoverage.Invoker.invoked(3625, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        cigarElement.getLength()      })({        scoverage.Invoker.invoked(3626, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        org.hammerlab.guacamole.Bases.N      })(ClassTag.Byte)    })  }}
         </td>
       </tr><tr>
         <td>
           49
         </td>
         <td>
-          3594
-        </td>
-        <td>
-          htsjdk.samtools.CigarElement.getLength
-        </td>
-        <td style="background: #F0ADAD">
-          cigarElement.getLength()
-        </td>
-      </tr><tr>
-        <td>
-          49
-        </td>
-        <td>
-          3595
+          3624
         </td>
         <td>
           scala.Long.+
         </td>
         <td style="background: #F0ADAD">
-          referencePos.+({  scoverage.Invoker.invoked(3594, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  cigarElement.getLength()})
+          referencePos.+({  scoverage.Invoker.invoked(3623, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  cigarElement.getLength()})
         </td>
       </tr><tr>
         <td>
-          50
+          49
         </td>
         <td>
-          3597
-        </td>
-        <td>
-          org.hammerlab.guacamole.Bases.N
-        </td>
-        <td style="background: #F0ADAD">
-          org.hammerlab.guacamole.Bases.N
-        </td>
-      </tr><tr>
-        <td>
-          50
-        </td>
-        <td>
-          3599
-        </td>
-        <td>
-          debox.Buffer.++=
-        </td>
-        <td style="background: #F0ADAD">
-          reference.++=({  scoverage.Invoker.invoked(3598, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  debox.Buffer.fill[Byte]({    scoverage.Invoker.invoked(3596, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    cigarElement.getLength()  })({    scoverage.Invoker.invoked(3597, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    org.hammerlab.guacamole.Bases.N  })(ClassTag.Byte)})
-        </td>
-      </tr><tr>
-        <td>
-          50
-        </td>
-        <td>
-          3596
+          3623
         </td>
         <td>
           htsjdk.samtools.CigarElement.getLength
@@ -12290,46 +12251,46 @@
           50
         </td>
         <td>
-          3598
+          3627
         </td>
         <td>
           debox.Buffer.fill
         </td>
         <td style="background: #F0ADAD">
-          debox.Buffer.fill[Byte]({  scoverage.Invoker.invoked(3596, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  cigarElement.getLength()})({  scoverage.Invoker.invoked(3597, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  org.hammerlab.guacamole.Bases.N})(ClassTag.Byte)
+          debox.Buffer.fill[Byte]({  scoverage.Invoker.invoked(3625, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  cigarElement.getLength()})({  scoverage.Invoker.invoked(3626, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  org.hammerlab.guacamole.Bases.N})(ClassTag.Byte)
         </td>
       </tr><tr>
         <td>
-          54
+          50
         </td>
         <td>
-          3612
+          3626
         </td>
         <td>
-          &lt;nosymbol&gt;
+          org.hammerlab.guacamole.Bases.N
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(3611, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.intWrapper({  scoverage.Invoker.invoked(3601, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  0}).until({  scoverage.Invoker.invoked(3602, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  cigarElement.getLength()}).foreach[Unit](((i: Int) =&gt; {    {      scoverage.Invoker.invoked(3609, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      reference.+=({        scoverage.Invoker.invoked(3608, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        {          scoverage.Invoker.invoked(3603, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          mdTag.deletions.get(referencePos)        } match {          case (x: Char)Some[Char]((base @ _)) =&gt; {            scoverage.Invoker.invoked(3605, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            {              scoverage.Invoker.invoked(3604, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              base.toByte            }          }          case _ =&gt; {            scoverage.Invoker.invoked(3607, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            {              scoverage.Invoker.invoked(3606, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              throw new java.this.lang.IllegalStateException(&quot;Could not find deleted base at cigar offset &quot;.+(i))            }          }        }      })    };    referencePos = {      scoverage.Invoker.invoked(3610, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      referencePos.+(1)    }  }))}
+          org.hammerlab.guacamole.Bases.N
         </td>
       </tr><tr>
         <td>
-          54
+          50
         </td>
         <td>
-          3611
+          3628
         </td>
         <td>
-          scala.collection.immutable.Range.foreach
+          debox.Buffer.++=
         </td>
         <td style="background: #F0ADAD">
-          scala.this.Predef.intWrapper({  scoverage.Invoker.invoked(3601, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  0}).until({  scoverage.Invoker.invoked(3602, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  cigarElement.getLength()}).foreach[Unit](((i: Int) =&gt; {  {    scoverage.Invoker.invoked(3609, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    reference.+=({      scoverage.Invoker.invoked(3608, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(3603, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        mdTag.deletions.get(referencePos)      } match {        case (x: Char)Some[Char]((base @ _)) =&gt; {          scoverage.Invoker.invoked(3605, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          {            scoverage.Invoker.invoked(3604, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            base.toByte          }        }        case _ =&gt; {          scoverage.Invoker.invoked(3607, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          {            scoverage.Invoker.invoked(3606, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            throw new java.this.lang.IllegalStateException(&quot;Could not find deleted base at cigar offset &quot;.+(i))          }        }      }    })  };  referencePos = {    scoverage.Invoker.invoked(3610, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    referencePos.+(1)  }}))
+          reference.++=({  scoverage.Invoker.invoked(3627, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  debox.Buffer.fill[Byte]({    scoverage.Invoker.invoked(3625, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    cigarElement.getLength()  })({    scoverage.Invoker.invoked(3626, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    org.hammerlab.guacamole.Bases.N  })(ClassTag.Byte)})
         </td>
       </tr><tr>
         <td>
-          54
+          50
         </td>
         <td>
-          3602
+          3625
         </td>
         <td>
           htsjdk.samtools.CigarElement.getLength
@@ -12342,7 +12303,7 @@
           54
         </td>
         <td>
-          3601
+          3630
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -12352,23 +12313,62 @@
         </td>
       </tr><tr>
         <td>
+          54
+        </td>
+        <td>
+          3641
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  scoverage.Invoker.invoked(3640, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.intWrapper({  scoverage.Invoker.invoked(3630, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  0}).until({  scoverage.Invoker.invoked(3631, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  cigarElement.getLength()}).foreach[Unit](((i: Int) =&gt; {    {      scoverage.Invoker.invoked(3638, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      reference.+=({        scoverage.Invoker.invoked(3637, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        {          scoverage.Invoker.invoked(3632, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          mdTag.deletions.get(referencePos)        } match {          case (x: Char)Some[Char]((base @ _)) =&gt; {            scoverage.Invoker.invoked(3634, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            {              scoverage.Invoker.invoked(3633, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              base.toByte            }          }          case _ =&gt; {            scoverage.Invoker.invoked(3636, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            {              scoverage.Invoker.invoked(3635, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              throw new java.this.lang.IllegalStateException(&quot;Could not find deleted base at cigar offset &quot;.+(i))            }          }        }      })    };    referencePos = {      scoverage.Invoker.invoked(3639, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      referencePos.+(1)    }  }))}
+        </td>
+      </tr><tr>
+        <td>
+          54
+        </td>
+        <td>
+          3640
+        </td>
+        <td>
+          scala.collection.immutable.Range.foreach
+        </td>
+        <td style="background: #F0ADAD">
+          scala.this.Predef.intWrapper({  scoverage.Invoker.invoked(3630, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  0}).until({  scoverage.Invoker.invoked(3631, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  cigarElement.getLength()}).foreach[Unit](((i: Int) =&gt; {  {    scoverage.Invoker.invoked(3638, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    reference.+=({      scoverage.Invoker.invoked(3637, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(3632, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        mdTag.deletions.get(referencePos)      } match {        case (x: Char)Some[Char]((base @ _)) =&gt; {          scoverage.Invoker.invoked(3634, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          {            scoverage.Invoker.invoked(3633, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            base.toByte          }        }        case _ =&gt; {          scoverage.Invoker.invoked(3636, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          {            scoverage.Invoker.invoked(3635, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            throw new java.this.lang.IllegalStateException(&quot;Could not find deleted base at cigar offset &quot;.+(i))          }        }      }    })  };  referencePos = {    scoverage.Invoker.invoked(3639, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    referencePos.+(1)  }}))
+        </td>
+      </tr><tr>
+        <td>
+          54
+        </td>
+        <td>
+          3631
+        </td>
+        <td>
+          htsjdk.samtools.CigarElement.getLength
+        </td>
+        <td style="background: #F0ADAD">
+          cigarElement.getLength()
+        </td>
+      </tr><tr>
+        <td>
           55
         </td>
         <td>
-          3609
+          3638
         </td>
         <td>
           debox.Buffer.+=
         </td>
         <td style="background: #F0ADAD">
-          reference.+=({  scoverage.Invoker.invoked(3608, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  {    scoverage.Invoker.invoked(3603, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    mdTag.deletions.get(referencePos)  } match {    case (x: Char)Some[Char]((base @ _)) =&gt; {      scoverage.Invoker.invoked(3605, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(3604, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        base.toByte      }    }    case _ =&gt; {      scoverage.Invoker.invoked(3607, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(3606, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        throw new java.this.lang.IllegalStateException(&quot;Could not find deleted base at cigar offset &quot;.+(i))      }    }  }})
+          reference.+=({  scoverage.Invoker.invoked(3637, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  {    scoverage.Invoker.invoked(3632, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    mdTag.deletions.get(referencePos)  } match {    case (x: Char)Some[Char]((base @ _)) =&gt; {      scoverage.Invoker.invoked(3634, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(3633, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        base.toByte      }    }    case _ =&gt; {      scoverage.Invoker.invoked(3636, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(3635, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        throw new java.this.lang.IllegalStateException(&quot;Could not find deleted base at cigar offset &quot;.+(i))      }    }  }})
         </td>
       </tr><tr>
         <td>
           56
         </td>
         <td>
-          3603
+          3632
         </td>
         <td>
           scala.collection.MapLike.get
@@ -12381,33 +12381,20 @@
           56
         </td>
         <td>
-          3608
+          3637
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(3603, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  mdTag.deletions.get(referencePos)} match {  case (x: Char)Some[Char]((base @ _)) =&gt; {    scoverage.Invoker.invoked(3605, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(3604, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      base.toByte    }  }  case _ =&gt; {    scoverage.Invoker.invoked(3607, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(3606, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      throw new java.this.lang.IllegalStateException(&quot;Could not find deleted base at cigar offset &quot;.+(i))    }  }}
+          {  scoverage.Invoker.invoked(3632, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  mdTag.deletions.get(referencePos)} match {  case (x: Char)Some[Char]((base @ _)) =&gt; {    scoverage.Invoker.invoked(3634, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(3633, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      base.toByte    }  }  case _ =&gt; {    scoverage.Invoker.invoked(3636, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(3635, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      throw new java.this.lang.IllegalStateException(&quot;Could not find deleted base at cigar offset &quot;.+(i))    }  }}
         </td>
       </tr><tr>
         <td>
           57
         </td>
         <td>
-          3605
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(3604, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  base.toByte}
-        </td>
-      </tr><tr>
-        <td>
-          57
-        </td>
-        <td>
-          3604
+          3633
         </td>
         <td>
           scala.Char.toByte
@@ -12417,10 +12404,36 @@
         </td>
       </tr><tr>
         <td>
+          57
+        </td>
+        <td>
+          3634
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  scoverage.Invoker.invoked(3633, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  base.toByte}
+        </td>
+      </tr><tr>
+        <td>
           58
         </td>
         <td>
-          3606
+          3636
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  scoverage.Invoker.invoked(3635, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  throw new java.this.lang.IllegalStateException(&quot;Could not find deleted base at cigar offset &quot;.+(i))}
+        </td>
+      </tr><tr>
+        <td>
+          58
+        </td>
+        <td>
+          3635
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -12430,23 +12443,10 @@
         </td>
       </tr><tr>
         <td>
-          58
-        </td>
-        <td>
-          3607
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(3606, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  throw new java.this.lang.IllegalStateException(&quot;Could not find deleted base at cigar offset &quot;.+(i))}
-        </td>
-      </tr><tr>
-        <td>
           62
         </td>
         <td>
-          3610
+          3639
         </td>
         <td>
           scala.Long.+
@@ -12459,46 +12459,20 @@
           65
         </td>
         <td>
-          3624
+          3653
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  if ({    scoverage.Invoker.invoked(3613, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    cigarElement.getOperator().consumesReadBases()  })    {      scoverage.Invoker.invoked(3616, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      readPos = {        scoverage.Invoker.invoked(3615, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        readPos.+({          scoverage.Invoker.invoked(3614, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          cigarElement.getLength()        })      }    }  else    {      scoverage.Invoker.invoked(3618, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(3617, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        ()      }    };  if ({    scoverage.Invoker.invoked(3619, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    cigarElement.getOperator().consumesReferenceBases()  })    {      scoverage.Invoker.invoked(3621, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(3620, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        throw new scala.`package`.IllegalArgumentException(&quot;Cannot handle operator: &quot;.+(cigarElement.getOperator()))      }    }  else    {      scoverage.Invoker.invoked(3623, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(3622, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        ()      }    }}
+          {  if ({    scoverage.Invoker.invoked(3642, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    cigarElement.getOperator().consumesReadBases()  })    {      scoverage.Invoker.invoked(3645, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      readPos = {        scoverage.Invoker.invoked(3644, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        readPos.+({          scoverage.Invoker.invoked(3643, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          cigarElement.getLength()        })      }    }  else    {      scoverage.Invoker.invoked(3647, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(3646, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        ()      }    };  if ({    scoverage.Invoker.invoked(3648, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    cigarElement.getOperator().consumesReferenceBases()  })    {      scoverage.Invoker.invoked(3650, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(3649, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        throw new scala.`package`.IllegalArgumentException(&quot;Cannot handle operator: &quot;.+(cigarElement.getOperator()))      }    }  else    {      scoverage.Invoker.invoked(3652, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(3651, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        ()      }    }}
         </td>
       </tr><tr>
         <td>
           67
         </td>
         <td>
-          3618
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(3617, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
-        </td>
-      </tr><tr>
-        <td>
-          67
-        </td>
-        <td>
-          3617
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          ()
-        </td>
-      </tr><tr>
-        <td>
-          67
-        </td>
-        <td>
-          3613
+          3642
         </td>
         <td>
           htsjdk.samtools.CigarOperator.consumesReadBases
@@ -12508,62 +12482,23 @@
         </td>
       </tr><tr>
         <td>
-          68
+          67
         </td>
         <td>
-          3615
-        </td>
-        <td>
-          scala.Int.+
-        </td>
-        <td style="background: #F0ADAD">
-          readPos.+({  scoverage.Invoker.invoked(3614, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  cigarElement.getLength()})
-        </td>
-      </tr><tr>
-        <td>
-          68
-        </td>
-        <td>
-          3614
-        </td>
-        <td>
-          htsjdk.samtools.CigarElement.getLength
-        </td>
-        <td style="background: #F0ADAD">
-          cigarElement.getLength()
-        </td>
-      </tr><tr>
-        <td>
-          68
-        </td>
-        <td>
-          3616
+          3647
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          readPos = {  scoverage.Invoker.invoked(3615, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  readPos.+({    scoverage.Invoker.invoked(3614, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    cigarElement.getLength()  })}
+          {  scoverage.Invoker.invoked(3646, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
         </td>
       </tr><tr>
         <td>
-          70
+          67
         </td>
         <td>
-          3623
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(3622, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
-        </td>
-      </tr><tr>
-        <td>
-          70
-        </td>
-        <td>
-          3622
+          3646
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -12573,10 +12508,49 @@
         </td>
       </tr><tr>
         <td>
+          68
+        </td>
+        <td>
+          3645
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          readPos = {  scoverage.Invoker.invoked(3644, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  readPos.+({    scoverage.Invoker.invoked(3643, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    cigarElement.getLength()  })}
+        </td>
+      </tr><tr>
+        <td>
+          68
+        </td>
+        <td>
+          3644
+        </td>
+        <td>
+          scala.Int.+
+        </td>
+        <td style="background: #F0ADAD">
+          readPos.+({  scoverage.Invoker.invoked(3643, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  cigarElement.getLength()})
+        </td>
+      </tr><tr>
+        <td>
+          68
+        </td>
+        <td>
+          3643
+        </td>
+        <td>
+          htsjdk.samtools.CigarElement.getLength
+        </td>
+        <td style="background: #F0ADAD">
+          cigarElement.getLength()
+        </td>
+      </tr><tr>
+        <td>
           70
         </td>
         <td>
-          3619
+          3648
         </td>
         <td>
           htsjdk.samtools.CigarOperator.consumesReferenceBases
@@ -12586,23 +12560,49 @@
         </td>
       </tr><tr>
         <td>
-          71
+          70
         </td>
         <td>
-          3621
+          3652
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(3620, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  throw new scala.`package`.IllegalArgumentException(&quot;Cannot handle operator: &quot;.+(cigarElement.getOperator()))}
+          {  scoverage.Invoker.invoked(3651, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
+        </td>
+      </tr><tr>
+        <td>
+          70
+        </td>
+        <td>
+          3651
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          ()
         </td>
       </tr><tr>
         <td>
           71
         </td>
         <td>
-          3620
+          3650
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  scoverage.Invoker.invoked(3649, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  throw new scala.`package`.IllegalArgumentException(&quot;Cannot handle operator: &quot;.+(cigarElement.getOperator()))}
+        </td>
+      </tr><tr>
+        <td>
+          71
+        </td>
+        <td>
+          3649
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -12615,7 +12615,20 @@
           77
         </td>
         <td>
-          3627
+          3657
+        </td>
+        <td>
+          scala.LowPriorityImplicits.wrapByteArray
+        </td>
+        <td style="background: #F0ADAD">
+          scala.this.Predef.wrapByteArray({  scoverage.Invoker.invoked(3656, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  reference.toArray})
+        </td>
+      </tr><tr>
+        <td>
+          77
+        </td>
+        <td>
+          3656
         </td>
         <td>
           debox.Buffer.toArray
@@ -12625,36 +12638,10 @@
         </td>
       </tr><tr>
         <td>
-          77
-        </td>
-        <td>
-          3628
-        </td>
-        <td>
-          scala.LowPriorityImplicits.wrapByteArray
-        </td>
-        <td style="background: #F0ADAD">
-          scala.this.Predef.wrapByteArray({  scoverage.Invoker.invoked(3627, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  reference.toArray})
-        </td>
-      </tr><tr>
-        <td>
           81
         </td>
         <td>
-          3638
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(3629, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  read.mdTagOpt} match {  case scala.None =&gt; {    scoverage.Invoker.invoked(3631, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(3630, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      throw ReferenceWithoutMDTagException.apply(read)    }  }  case (x: org.bdgenomics.adam.util.MdTag)Some[org.bdgenomics.adam.util.MdTag]((mdTag @ _)) =&gt; {    scoverage.Invoker.invoked(3637, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      val readReferenceStart: Long = {        scoverage.Invoker.invoked(3632, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        mdTag.start      };      {        scoverage.Invoker.invoked(3636, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        scala.Tuple2.apply[Long, Seq[Byte]](readReferenceStart, {          scoverage.Invoker.invoked(3635, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          MDTagUtils.this.getReference(mdTag, {            scoverage.Invoker.invoked(3633, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            read.sequence          }, {            scoverage.Invoker.invoked(3634, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            read.cigar          }, allowNBase)        })      }    }  }}
-        </td>
-      </tr><tr>
-        <td>
-          81
-        </td>
-        <td>
-          3629
+          3658
         </td>
         <td>
           org.hammerlab.guacamole.reads.MappedRead.mdTagOpt
@@ -12664,10 +12651,23 @@
         </td>
       </tr><tr>
         <td>
+          81
+        </td>
+        <td>
+          3667
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  scoverage.Invoker.invoked(3658, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  read.mdTagOpt} match {  case scala.None =&gt; {    scoverage.Invoker.invoked(3660, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(3659, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      throw ReferenceWithoutMDTagException.apply(read)    }  }  case (x: org.bdgenomics.adam.util.MdTag)Some[org.bdgenomics.adam.util.MdTag]((mdTag @ _)) =&gt; {    scoverage.Invoker.invoked(3666, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      val readReferenceStart: Long = {        scoverage.Invoker.invoked(3661, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        mdTag.start      };      {        scoverage.Invoker.invoked(3665, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        scala.Tuple2.apply[Long, Seq[Byte]](readReferenceStart, {          scoverage.Invoker.invoked(3664, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          MDTagUtils.this.getReference(mdTag, {            scoverage.Invoker.invoked(3662, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            read.sequence          }, {            scoverage.Invoker.invoked(3663, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            read.cigar          }, allowNBase)        })      }    }  }}
+        </td>
+      </tr><tr>
+        <td>
           82
         </td>
         <td>
-          3630
+          3659
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -12680,33 +12680,33 @@
           82
         </td>
         <td>
-          3631
+          3660
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(3630, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  throw ReferenceWithoutMDTagException.apply(read)}
+          {  scoverage.Invoker.invoked(3659, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  throw ReferenceWithoutMDTagException.apply(read)}
         </td>
       </tr><tr>
         <td>
           83
         </td>
         <td>
-          3637
+          3666
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  val readReferenceStart: Long = {    scoverage.Invoker.invoked(3632, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    mdTag.start  };  {    scoverage.Invoker.invoked(3636, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.Tuple2.apply[Long, Seq[Byte]](readReferenceStart, {      scoverage.Invoker.invoked(3635, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      MDTagUtils.this.getReference(mdTag, {        scoverage.Invoker.invoked(3633, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        read.sequence      }, {        scoverage.Invoker.invoked(3634, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        read.cigar      }, allowNBase)    })  }}
+          {  val readReferenceStart: Long = {    scoverage.Invoker.invoked(3661, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    mdTag.start  };  {    scoverage.Invoker.invoked(3665, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.Tuple2.apply[Long, Seq[Byte]](readReferenceStart, {      scoverage.Invoker.invoked(3664, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      MDTagUtils.this.getReference(mdTag, {        scoverage.Invoker.invoked(3662, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        read.sequence      }, {        scoverage.Invoker.invoked(3663, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        read.cigar      }, allowNBase)    })  }}
         </td>
       </tr><tr>
         <td>
           84
         </td>
         <td>
-          3632
+          3661
         </td>
         <td>
           org.bdgenomics.adam.util.MdTag.start
@@ -12719,20 +12719,33 @@
           85
         </td>
         <td>
-          3636
+          3663
         </td>
         <td>
-          scala.Tuple2.apply
+          org.hammerlab.guacamole.reads.MappedRead.cigar
         </td>
         <td style="background: #F0ADAD">
-          scala.Tuple2.apply[Long, Seq[Byte]](readReferenceStart, {  scoverage.Invoker.invoked(3635, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  MDTagUtils.this.getReference(mdTag, {    scoverage.Invoker.invoked(3633, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    read.sequence  }, {    scoverage.Invoker.invoked(3634, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    read.cigar  }, allowNBase)})
+          read.cigar
         </td>
       </tr><tr>
         <td>
           85
         </td>
         <td>
-          3633
+          3665
+        </td>
+        <td>
+          scala.Tuple2.apply
+        </td>
+        <td style="background: #F0ADAD">
+          scala.Tuple2.apply[Long, Seq[Byte]](readReferenceStart, {  scoverage.Invoker.invoked(3664, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  MDTagUtils.this.getReference(mdTag, {    scoverage.Invoker.invoked(3662, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    read.sequence  }, {    scoverage.Invoker.invoked(3663, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    read.cigar  }, allowNBase)})
+        </td>
+      </tr><tr>
+        <td>
+          85
+        </td>
+        <td>
+          3662
         </td>
         <td>
           org.hammerlab.guacamole.reads.MappedRead.sequence
@@ -12745,33 +12758,20 @@
           85
         </td>
         <td>
-          3635
+          3664
         </td>
         <td>
           org.hammerlab.guacamole.reads.MDTagUtils.getReference
         </td>
         <td style="background: #F0ADAD">
-          MDTagUtils.this.getReference(mdTag, {  scoverage.Invoker.invoked(3633, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  read.sequence}, {  scoverage.Invoker.invoked(3634, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  read.cigar}, allowNBase)
-        </td>
-      </tr><tr>
-        <td>
-          85
-        </td>
-        <td>
-          3634
-        </td>
-        <td>
-          org.hammerlab.guacamole.reads.MappedRead.cigar
-        </td>
-        <td style="background: #F0ADAD">
-          read.cigar
+          MDTagUtils.this.getReference(mdTag, {  scoverage.Invoker.invoked(3662, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  read.sequence}, {  scoverage.Invoker.invoked(3663, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  read.cigar}, allowNBase)
         </td>
       </tr><tr>
         <td>
           103
         </td>
         <td>
-          3639
+          3668
         </td>
         <td>
           scala.Long.&lt;
@@ -12784,20 +12784,20 @@
           103
         </td>
         <td>
-          3641
+          3670
         </td>
         <td>
           scala.Predef.assert
         </td>
         <td style="background: #F0ADAD">
-          scala.this.Predef.assert({  scoverage.Invoker.invoked(3639, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  referenceStart.&lt;(referenceEnd)}, {  scoverage.Invoker.invoked(3640, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.StringContext.apply(&quot;Reference sequence coordinates invalid, &quot;, &quot; &lt;= &quot;, &quot;&quot;).s(referenceEnd, referenceStart)})
+          scala.this.Predef.assert({  scoverage.Invoker.invoked(3668, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  referenceStart.&lt;(referenceEnd)}, {  scoverage.Invoker.invoked(3669, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.StringContext.apply(&quot;Reference sequence coordinates invalid, &quot;, &quot; &lt;= &quot;, &quot;&quot;).s(referenceEnd, referenceStart)})
         </td>
       </tr><tr>
         <td>
           103
         </td>
         <td>
-          3640
+          3669
         </td>
         <td>
           scala.StringContext.s
@@ -12810,46 +12810,7 @@
           107
         </td>
         <td>
-          3648
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          ()
-        </td>
-      </tr><tr>
-        <td>
-          107
-        </td>
-        <td>
-          3642
-        </td>
-        <td>
-          scala.Int.&lt;
-        </td>
-        <td style="background: #F0ADAD">
-          i.&lt;(endOffset)
-        </td>
-      </tr><tr>
-        <td>
-          107
-        </td>
-        <td>
-          3647
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          {  {    {      scoverage.Invoker.invoked(3644, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      seq.update(i, {        scoverage.Invoker.invoked(3643, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        org.hammerlab.guacamole.Bases.N      })    };    i = {      scoverage.Invoker.invoked(3645, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      i.+(1)    }  };  {    scoverage.Invoker.invoked(3646, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    while$1()  }}
-        </td>
-      </tr><tr>
-        <td>
-          107
-        </td>
-        <td>
-          3646
+          3675
         </td>
         <td>
           org.hammerlab.guacamole.reads.MDTagUtils.while$1
@@ -12862,46 +12823,85 @@
           107
         </td>
         <td>
-          3649
+          3677
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(3648, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
+          ()
+        </td>
+      </tr><tr>
+        <td>
+          107
+        </td>
+        <td>
+          3671
+        </td>
+        <td>
+          scala.Int.&lt;
+        </td>
+        <td style="background: #F0ADAD">
+          i.&lt;(endOffset)
+        </td>
+      </tr><tr>
+        <td>
+          107
+        </td>
+        <td>
+          3676
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  {    {      scoverage.Invoker.invoked(3673, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      seq.update(i, {        scoverage.Invoker.invoked(3672, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        org.hammerlab.guacamole.Bases.N      })    };    i = {      scoverage.Invoker.invoked(3674, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      i.+(1)    }  };  {    scoverage.Invoker.invoked(3675, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    while$1()  }}
+        </td>
+      </tr><tr>
+        <td>
+          107
+        </td>
+        <td>
+          3678
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  scoverage.Invoker.invoked(3677, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
         </td>
       </tr><tr>
         <td>
           108
         </td>
         <td>
-          3644
+          3672
+        </td>
+        <td>
+          org.hammerlab.guacamole.Bases.N
+        </td>
+        <td style="background: #F0ADAD">
+          org.hammerlab.guacamole.Bases.N
+        </td>
+      </tr><tr>
+        <td>
+          108
+        </td>
+        <td>
+          3673
         </td>
         <td>
           scala.Array.update
         </td>
         <td style="background: #F0ADAD">
-          seq.update(i, {  scoverage.Invoker.invoked(3643, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  org.hammerlab.guacamole.Bases.N})
-        </td>
-      </tr><tr>
-        <td>
-          108
-        </td>
-        <td>
-          3643
-        </td>
-        <td>
-          org.hammerlab.guacamole.Bases.N
-        </td>
-        <td style="background: #F0ADAD">
-          org.hammerlab.guacamole.Bases.N
+          seq.update(i, {  scoverage.Invoker.invoked(3672, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  org.hammerlab.guacamole.Bases.N})
         </td>
       </tr><tr>
         <td>
           109
         </td>
         <td>
-          3645
+          3674
         </td>
         <td>
           scala.Int.+
@@ -12914,7 +12914,20 @@
           113
         </td>
         <td>
-          3650
+          3680
+        </td>
+        <td>
+          scala.Array.ofDim
+        </td>
+        <td style="background: #F0ADAD">
+          scala.Array.ofDim[Byte]({  scoverage.Invoker.invoked(3679, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  referenceEnd.-(referenceStart).toInt})(ClassTag.Byte)
+        </td>
+      </tr><tr>
+        <td>
+          113
+        </td>
+        <td>
+          3679
         </td>
         <td>
           scala.Long.toInt
@@ -12924,23 +12937,10 @@
         </td>
       </tr><tr>
         <td>
-          113
-        </td>
-        <td>
-          3651
-        </td>
-        <td>
-          scala.Array.ofDim
-        </td>
-        <td style="background: #F0ADAD">
-          scala.Array.ofDim[Byte]({  scoverage.Invoker.invoked(3650, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  referenceEnd.-(referenceStart).toInt})(ClassTag.Byte)
-        </td>
-      </tr><tr>
-        <td>
           114
         </td>
         <td>
-          3652
+          3681
         </td>
         <td>
           scala.collection.Iterator.buffered
@@ -12953,7 +12953,7 @@
           117
         </td>
         <td>
-          3653
+          3682
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -12966,7 +12966,20 @@
           118
         </td>
         <td>
-          3654
+          3684
+        </td>
+        <td>
+          scala.Boolean.&amp;&amp;
+        </td>
+        <td style="background: #F0ADAD">
+          readsBuffer.hasNext.&amp;&amp;({  scoverage.Invoker.invoked(3683, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  currentLocus.&lt;(referenceEnd)})
+        </td>
+      </tr><tr>
+        <td>
+          118
+        </td>
+        <td>
+          3683
         </td>
         <td>
           scala.Long.&lt;
@@ -12979,7 +12992,7 @@
           118
         </td>
         <td>
-          3693
+          3722
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -12992,33 +13005,20 @@
           118
         </td>
         <td>
-          3692
+          3721
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  {    val read: org.hammerlab.guacamole.reads.MappedRead = {      scoverage.Invoker.invoked(3656, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      readsBuffer.next()    };    {      scoverage.Invoker.invoked(3663, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      scala.this.Predef.assume({        scoverage.Invoker.invoked(3657, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        read.start.&gt;=(lastReadStart)      }, {        scoverage.Invoker.invoked(3662, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        scala.StringContext.apply({  scoverage.Invoker.invoked(3658, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot;Reads are not sorted, last read start was &quot;}, {  scoverage.Invoker.invoked(3659, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot; and the current read starts at &quot;}, {  scoverage.Invoker.invoked(3660, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot;&quot;}).s(lastReadStart, {          scoverage.Invoker.invoked(3661, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          read.start        })      })    };    if ({      scoverage.Invoker.invoked(3665, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      currentLocus.&lt;({        scoverage.Invoker.invoked(3664, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        read.start      })    })      {        scoverage.Invoker.invoked(3671, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        {          val readReferenceStart: Long = {            scoverage.Invoker.invoked(3667, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            scala.math.`package`.min(referenceEnd, {              scoverage.Invoker.invoked(3666, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              read.start            })          };          {            scoverage.Invoker.invoked(3670, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            padWithNBases(referenceSeq, {              scoverage.Invoker.invoked(3668, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              currentLocus.-(referenceStart).toInt            }, {              scoverage.Invoker.invoked(3669, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              readReferenceStart.-(referenceStart).toInt            })          };          currentLocus = readReferenceStart        }      }    else      {        scoverage.Invoker.invoked(3673, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        {          scoverage.Invoker.invoked(3672, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          ()        }      };    if ({      scoverage.Invoker.invoked(3676, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      readsBuffer.hasNext.unary_!.||({        scoverage.Invoker.invoked(3675, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        currentLocus.&lt;({          scoverage.Invoker.invoked(3674, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          readsBuffer.head.start        })      })    })      {        scoverage.Invoker.invoked(3687, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        {          &lt;synthetic&gt; private[this] val x$1: (Long, Seq[Byte]) = (MDTagUtils.getReference(read, true): (Long, Seq[Byte]) @unchecked) match {            case (_1: Long, _2: Seq[Byte])(Long, Seq[Byte])((readReferenceStart @ _), (readReferenceSequence @ _)) =&gt; scala.Tuple2.apply[Long, Seq[Byte]](readReferenceStart, readReferenceSequence)          };          val readReferenceStart: Long = {            scoverage.Invoker.invoked(3677, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            x$1._1          };          val readReferenceSequence: Seq[Byte] = {            scoverage.Invoker.invoked(3678, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            x$1._2          };          val readReferenceEnd: Long = {            scoverage.Invoker.invoked(3681, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            scala.math.`package`.min({              scoverage.Invoker.invoked(3680, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              readReferenceStart.+({                scoverage.Invoker.invoked(3679, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                readReferenceSequence.length              })            }, referenceEnd)          };          {            scoverage.Invoker.invoked(3686, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            scala.this.Predef.longWrapper(currentLocus).until(readReferenceEnd).foreach[Unit](((locus: Long) =&gt; {              scoverage.Invoker.invoked(3685, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              referenceSeq.update({                scoverage.Invoker.invoked(3682, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                locus.-(referenceStart).toInt              }, {                scoverage.Invoker.invoked(3684, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                readReferenceSequence.apply({                  scoverage.Invoker.invoked(3683, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                  locus.-(readReferenceStart).toInt                })              })            }))          };          currentLocus = readReferenceEnd        }      }    else      {        scoverage.Invoker.invoked(3689, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        {          scoverage.Invoker.invoked(3688, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          ()        }      };    lastReadStart = {      scoverage.Invoker.invoked(3690, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      read.start    }  };  {    scoverage.Invoker.invoked(3691, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    while$2()  }}
+          {  {    val read: org.hammerlab.guacamole.reads.MappedRead = {      scoverage.Invoker.invoked(3685, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      readsBuffer.next()    };    {      scoverage.Invoker.invoked(3692, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      scala.this.Predef.assume({        scoverage.Invoker.invoked(3686, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        read.start.&gt;=(lastReadStart)      }, {        scoverage.Invoker.invoked(3691, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        scala.StringContext.apply({  scoverage.Invoker.invoked(3687, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot;Reads are not sorted, last read start was &quot;}, {  scoverage.Invoker.invoked(3688, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot; and the current read starts at &quot;}, {  scoverage.Invoker.invoked(3689, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot;&quot;}).s(lastReadStart, {          scoverage.Invoker.invoked(3690, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          read.start        })      })    };    if ({      scoverage.Invoker.invoked(3694, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      currentLocus.&lt;({        scoverage.Invoker.invoked(3693, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        read.start      })    })      {        scoverage.Invoker.invoked(3700, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        {          val readReferenceStart: Long = {            scoverage.Invoker.invoked(3696, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            scala.math.`package`.min(referenceEnd, {              scoverage.Invoker.invoked(3695, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              read.start            })          };          {            scoverage.Invoker.invoked(3699, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            padWithNBases(referenceSeq, {              scoverage.Invoker.invoked(3697, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              currentLocus.-(referenceStart).toInt            }, {              scoverage.Invoker.invoked(3698, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              readReferenceStart.-(referenceStart).toInt            })          };          currentLocus = readReferenceStart        }      }    else      {        scoverage.Invoker.invoked(3702, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        {          scoverage.Invoker.invoked(3701, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          ()        }      };    if ({      scoverage.Invoker.invoked(3705, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      readsBuffer.hasNext.unary_!.||({        scoverage.Invoker.invoked(3704, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        currentLocus.&lt;({          scoverage.Invoker.invoked(3703, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          readsBuffer.head.start        })      })    })      {        scoverage.Invoker.invoked(3716, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        {          &lt;synthetic&gt; private[this] val x$1: (Long, Seq[Byte]) = (MDTagUtils.getReference(read, true): (Long, Seq[Byte]) @unchecked) match {            case (_1: Long, _2: Seq[Byte])(Long, Seq[Byte])((readReferenceStart @ _), (readReferenceSequence @ _)) =&gt; scala.Tuple2.apply[Long, Seq[Byte]](readReferenceStart, readReferenceSequence)          };          val readReferenceStart: Long = {            scoverage.Invoker.invoked(3706, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            x$1._1          };          val readReferenceSequence: Seq[Byte] = {            scoverage.Invoker.invoked(3707, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            x$1._2          };          val readReferenceEnd: Long = {            scoverage.Invoker.invoked(3710, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            scala.math.`package`.min({              scoverage.Invoker.invoked(3709, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              readReferenceStart.+({                scoverage.Invoker.invoked(3708, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                readReferenceSequence.length              })            }, referenceEnd)          };          {            scoverage.Invoker.invoked(3715, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            scala.this.Predef.longWrapper(currentLocus).until(readReferenceEnd).foreach[Unit](((locus: Long) =&gt; {              scoverage.Invoker.invoked(3714, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              referenceSeq.update({                scoverage.Invoker.invoked(3711, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                locus.-(referenceStart).toInt              }, {                scoverage.Invoker.invoked(3713, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                readReferenceSequence.apply({                  scoverage.Invoker.invoked(3712, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                  locus.-(readReferenceStart).toInt                })              })            }))          };          currentLocus = readReferenceEnd        }      }    else      {        scoverage.Invoker.invoked(3718, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        {          scoverage.Invoker.invoked(3717, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          ()        }      };    lastReadStart = {      scoverage.Invoker.invoked(3719, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      read.start    }  };  {    scoverage.Invoker.invoked(3720, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    while$2()  }}
         </td>
       </tr><tr>
         <td>
           118
         </td>
         <td>
-          3655
-        </td>
-        <td>
-          scala.Boolean.&amp;&amp;
-        </td>
-        <td style="background: #F0ADAD">
-          readsBuffer.hasNext.&amp;&amp;({  scoverage.Invoker.invoked(3654, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  currentLocus.&lt;(referenceEnd)})
-        </td>
-      </tr><tr>
-        <td>
-          118
-        </td>
-        <td>
-          3691
+          3720
         </td>
         <td>
           org.hammerlab.guacamole.reads.MDTagUtils.while$2
@@ -13031,20 +13031,20 @@
           118
         </td>
         <td>
-          3694
+          3723
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(3693, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
+          {  scoverage.Invoker.invoked(3722, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
         </td>
       </tr><tr>
         <td>
           119
         </td>
         <td>
-          3656
+          3685
         </td>
         <td>
           scala.collection.Iterator.next
@@ -13057,20 +13057,20 @@
           121
         </td>
         <td>
-          3663
+          3692
         </td>
         <td>
           scala.Predef.assume
         </td>
         <td style="background: #F0ADAD">
-          scala.this.Predef.assume({  scoverage.Invoker.invoked(3657, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  read.start.&gt;=(lastReadStart)}, {  scoverage.Invoker.invoked(3662, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.StringContext.apply({  scoverage.Invoker.invoked(3658, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot;Reads are not sorted, last read start was &quot;}, {  scoverage.Invoker.invoked(3659, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot; and the current read starts at &quot;}, {  scoverage.Invoker.invoked(3660, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot;&quot;}).s(lastReadStart, {    scoverage.Invoker.invoked(3661, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    read.start  })})
+          scala.this.Predef.assume({  scoverage.Invoker.invoked(3686, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  read.start.&gt;=(lastReadStart)}, {  scoverage.Invoker.invoked(3691, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.StringContext.apply({  scoverage.Invoker.invoked(3687, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot;Reads are not sorted, last read start was &quot;}, {  scoverage.Invoker.invoked(3688, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot; and the current read starts at &quot;}, {  scoverage.Invoker.invoked(3689, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot;&quot;}).s(lastReadStart, {    scoverage.Invoker.invoked(3690, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    read.start  })})
         </td>
       </tr><tr>
         <td>
           121
         </td>
         <td>
-          3657
+          3686
         </td>
         <td>
           scala.Long.&gt;=
@@ -13083,7 +13083,33 @@
           122
         </td>
         <td>
-          3659
+          3690
+        </td>
+        <td>
+          org.hammerlab.guacamole.reads.MappedRead.start
+        </td>
+        <td style="background: #F0ADAD">
+          read.start
+        </td>
+      </tr><tr>
+        <td>
+          122
+        </td>
+        <td>
+          3689
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          &quot;&quot;
+        </td>
+      </tr><tr>
+        <td>
+          122
+        </td>
+        <td>
+          3688
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -13096,20 +13122,20 @@
           122
         </td>
         <td>
-          3662
+          3691
         </td>
         <td>
           scala.StringContext.s
         </td>
         <td style="background: #F0ADAD">
-          scala.StringContext.apply({  scoverage.Invoker.invoked(3658, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot;Reads are not sorted, last read start was &quot;}, {  scoverage.Invoker.invoked(3659, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot; and the current read starts at &quot;}, {  scoverage.Invoker.invoked(3660, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot;&quot;}).s(lastReadStart, {  scoverage.Invoker.invoked(3661, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  read.start})
+          scala.StringContext.apply({  scoverage.Invoker.invoked(3687, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot;Reads are not sorted, last read start was &quot;}, {  scoverage.Invoker.invoked(3688, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot; and the current read starts at &quot;}, {  scoverage.Invoker.invoked(3689, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot;&quot;}).s(lastReadStart, {  scoverage.Invoker.invoked(3690, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  read.start})
         </td>
       </tr><tr>
         <td>
           122
         </td>
         <td>
-          3658
+          3687
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -13119,10 +13145,23 @@
         </td>
       </tr><tr>
         <td>
-          122
+          125
         </td>
         <td>
-          3661
+          3702
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  scoverage.Invoker.invoked(3701, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
+        </td>
+      </tr><tr>
+        <td>
+          125
+        </td>
+        <td>
+          3693
         </td>
         <td>
           org.hammerlab.guacamole.reads.MappedRead.start
@@ -13132,23 +13171,10 @@
         </td>
       </tr><tr>
         <td>
-          122
-        </td>
-        <td>
-          3660
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          &quot;&quot;
-        </td>
-      </tr><tr>
-        <td>
           125
         </td>
         <td>
-          3672
+          3701
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -13161,59 +13187,33 @@
           125
         </td>
         <td>
-          3665
+          3700
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  val readReferenceStart: Long = {    scoverage.Invoker.invoked(3696, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.math.`package`.min(referenceEnd, {      scoverage.Invoker.invoked(3695, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      read.start    })  };  {    scoverage.Invoker.invoked(3699, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    padWithNBases(referenceSeq, {      scoverage.Invoker.invoked(3697, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      currentLocus.-(referenceStart).toInt    }, {      scoverage.Invoker.invoked(3698, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      readReferenceStart.-(referenceStart).toInt    })  };  currentLocus = readReferenceStart}
+        </td>
+      </tr><tr>
+        <td>
+          125
+        </td>
+        <td>
+          3694
         </td>
         <td>
           scala.Long.&lt;
         </td>
         <td style="background: #F0ADAD">
-          currentLocus.&lt;({  scoverage.Invoker.invoked(3664, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  read.start})
-        </td>
-      </tr><tr>
-        <td>
-          125
-        </td>
-        <td>
-          3671
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          {  val readReferenceStart: Long = {    scoverage.Invoker.invoked(3667, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.math.`package`.min(referenceEnd, {      scoverage.Invoker.invoked(3666, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      read.start    })  };  {    scoverage.Invoker.invoked(3670, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    padWithNBases(referenceSeq, {      scoverage.Invoker.invoked(3668, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      currentLocus.-(referenceStart).toInt    }, {      scoverage.Invoker.invoked(3669, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      readReferenceStart.-(referenceStart).toInt    })  };  currentLocus = readReferenceStart}
-        </td>
-      </tr><tr>
-        <td>
-          125
-        </td>
-        <td>
-          3664
-        </td>
-        <td>
-          org.hammerlab.guacamole.reads.MappedRead.start
-        </td>
-        <td style="background: #F0ADAD">
-          read.start
-        </td>
-      </tr><tr>
-        <td>
-          125
-        </td>
-        <td>
-          3673
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(3672, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
+          currentLocus.&lt;({  scoverage.Invoker.invoked(3693, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  read.start})
         </td>
       </tr><tr>
         <td>
           126
         </td>
         <td>
-          3666
+          3695
         </td>
         <td>
           org.hammerlab.guacamole.reads.MappedRead.start
@@ -13226,46 +13226,33 @@
           126
         </td>
         <td>
-          3667
+          3696
         </td>
         <td>
           scala.math.min
         </td>
         <td style="background: #F0ADAD">
-          scala.math.`package`.min(referenceEnd, {  scoverage.Invoker.invoked(3666, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  read.start})
+          scala.math.`package`.min(referenceEnd, {  scoverage.Invoker.invoked(3695, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  read.start})
         </td>
       </tr><tr>
         <td>
           127
         </td>
         <td>
-          3668
-        </td>
-        <td>
-          scala.Long.toInt
-        </td>
-        <td style="background: #F0ADAD">
-          currentLocus.-(referenceStart).toInt
-        </td>
-      </tr><tr>
-        <td>
-          127
-        </td>
-        <td>
-          3670
+          3699
         </td>
         <td>
           org.hammerlab.guacamole.reads.MDTagUtils.padWithNBases
         </td>
         <td style="background: #F0ADAD">
-          padWithNBases(referenceSeq, {  scoverage.Invoker.invoked(3668, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  currentLocus.-(referenceStart).toInt}, {  scoverage.Invoker.invoked(3669, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  readReferenceStart.-(referenceStart).toInt})
+          padWithNBases(referenceSeq, {  scoverage.Invoker.invoked(3697, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  currentLocus.-(referenceStart).toInt}, {  scoverage.Invoker.invoked(3698, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  readReferenceStart.-(referenceStart).toInt})
         </td>
       </tr><tr>
         <td>
           127
         </td>
         <td>
-          3669
+          3698
         </td>
         <td>
           scala.Long.toInt
@@ -13275,23 +13262,75 @@
         </td>
       </tr><tr>
         <td>
-          132
+          127
         </td>
         <td>
-          3675
+          3697
         </td>
         <td>
-          scala.Long.&lt;
+          scala.Long.toInt
         </td>
         <td style="background: #F0ADAD">
-          currentLocus.&lt;({  scoverage.Invoker.invoked(3674, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  readsBuffer.head.start})
+          currentLocus.-(referenceStart).toInt
         </td>
       </tr><tr>
         <td>
           132
         </td>
         <td>
-          3674
+          3717
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          ()
+        </td>
+      </tr><tr>
+        <td>
+          132
+        </td>
+        <td>
+          3704
+        </td>
+        <td>
+          scala.Long.&lt;
+        </td>
+        <td style="background: #F0ADAD">
+          currentLocus.&lt;({  scoverage.Invoker.invoked(3703, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  readsBuffer.head.start})
+        </td>
+      </tr><tr>
+        <td>
+          132
+        </td>
+        <td>
+          3716
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  &lt;synthetic&gt; private[this] val x$1: (Long, Seq[Byte]) = (MDTagUtils.getReference(read, true): (Long, Seq[Byte]) @unchecked) match {    case (_1: Long, _2: Seq[Byte])(Long, Seq[Byte])((readReferenceStart @ _), (readReferenceSequence @ _)) =&gt; scala.Tuple2.apply[Long, Seq[Byte]](readReferenceStart, readReferenceSequence)  };  val readReferenceStart: Long = {    scoverage.Invoker.invoked(3706, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    x$1._1  };  val readReferenceSequence: Seq[Byte] = {    scoverage.Invoker.invoked(3707, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    x$1._2  };  val readReferenceEnd: Long = {    scoverage.Invoker.invoked(3710, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.math.`package`.min({      scoverage.Invoker.invoked(3709, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      readReferenceStart.+({        scoverage.Invoker.invoked(3708, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        readReferenceSequence.length      })    }, referenceEnd)  };  {    scoverage.Invoker.invoked(3715, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.this.Predef.longWrapper(currentLocus).until(readReferenceEnd).foreach[Unit](((locus: Long) =&gt; {      scoverage.Invoker.invoked(3714, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      referenceSeq.update({        scoverage.Invoker.invoked(3711, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        locus.-(referenceStart).toInt      }, {        scoverage.Invoker.invoked(3713, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        readReferenceSequence.apply({          scoverage.Invoker.invoked(3712, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          locus.-(readReferenceStart).toInt        })      })    }))  };  currentLocus = readReferenceEnd}
+        </td>
+      </tr><tr>
+        <td>
+          132
+        </td>
+        <td>
+          3718
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  scoverage.Invoker.invoked(3717, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
+        </td>
+      </tr><tr>
+        <td>
+          132
+        </td>
+        <td>
+          3703
         </td>
         <td>
           org.hammerlab.guacamole.reads.MappedRead.start
@@ -13304,72 +13343,20 @@
           132
         </td>
         <td>
-          3689
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(3688, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
-        </td>
-      </tr><tr>
-        <td>
-          132
-        </td>
-        <td>
-          3688
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          ()
-        </td>
-      </tr><tr>
-        <td>
-          132
-        </td>
-        <td>
-          3676
+          3705
         </td>
         <td>
           scala.Boolean.||
         </td>
         <td style="background: #F0ADAD">
-          readsBuffer.hasNext.unary_!.||({  scoverage.Invoker.invoked(3675, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  currentLocus.&lt;({    scoverage.Invoker.invoked(3674, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    readsBuffer.head.start  })})
-        </td>
-      </tr><tr>
-        <td>
-          132
-        </td>
-        <td>
-          3687
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          {  &lt;synthetic&gt; private[this] val x$1: (Long, Seq[Byte]) = (MDTagUtils.getReference(read, true): (Long, Seq[Byte]) @unchecked) match {    case (_1: Long, _2: Seq[Byte])(Long, Seq[Byte])((readReferenceStart @ _), (readReferenceSequence @ _)) =&gt; scala.Tuple2.apply[Long, Seq[Byte]](readReferenceStart, readReferenceSequence)  };  val readReferenceStart: Long = {    scoverage.Invoker.invoked(3677, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    x$1._1  };  val readReferenceSequence: Seq[Byte] = {    scoverage.Invoker.invoked(3678, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    x$1._2  };  val readReferenceEnd: Long = {    scoverage.Invoker.invoked(3681, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.math.`package`.min({      scoverage.Invoker.invoked(3680, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      readReferenceStart.+({        scoverage.Invoker.invoked(3679, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        readReferenceSequence.length      })    }, referenceEnd)  };  {    scoverage.Invoker.invoked(3686, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.this.Predef.longWrapper(currentLocus).until(readReferenceEnd).foreach[Unit](((locus: Long) =&gt; {      scoverage.Invoker.invoked(3685, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      referenceSeq.update({        scoverage.Invoker.invoked(3682, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        locus.-(referenceStart).toInt      }, {        scoverage.Invoker.invoked(3684, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        readReferenceSequence.apply({          scoverage.Invoker.invoked(3683, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          locus.-(readReferenceStart).toInt        })      })    }))  };  currentLocus = readReferenceEnd}
+          readsBuffer.hasNext.unary_!.||({  scoverage.Invoker.invoked(3704, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  currentLocus.&lt;({    scoverage.Invoker.invoked(3703, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    readsBuffer.head.start  })})
         </td>
       </tr><tr>
         <td>
           133
         </td>
         <td>
-          3677
-        </td>
-        <td>
-          scala.Tuple2._1
-        </td>
-        <td style="background: #F0ADAD">
-          x$1._1
-        </td>
-      </tr><tr>
-        <td>
-          133
-        </td>
-        <td>
-          3678
+          3707
         </td>
         <td>
           scala.Tuple2._2
@@ -13379,36 +13366,23 @@
         </td>
       </tr><tr>
         <td>
-          134
+          133
         </td>
         <td>
-          3681
+          3706
         </td>
         <td>
-          scala.math.min
+          scala.Tuple2._1
         </td>
         <td style="background: #F0ADAD">
-          scala.math.`package`.min({  scoverage.Invoker.invoked(3680, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  readReferenceStart.+({    scoverage.Invoker.invoked(3679, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    readReferenceSequence.length  })}, referenceEnd)
+          x$1._1
         </td>
       </tr><tr>
         <td>
           134
         </td>
         <td>
-          3680
-        </td>
-        <td>
-          scala.Long.+
-        </td>
-        <td style="background: #F0ADAD">
-          readReferenceStart.+({  scoverage.Invoker.invoked(3679, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  readReferenceSequence.length})
-        </td>
-      </tr><tr>
-        <td>
-          134
-        </td>
-        <td>
-          3679
+          3708
         </td>
         <td>
           scala.collection.SeqLike.length
@@ -13418,36 +13392,62 @@
         </td>
       </tr><tr>
         <td>
+          134
+        </td>
+        <td>
+          3710
+        </td>
+        <td>
+          scala.math.min
+        </td>
+        <td style="background: #F0ADAD">
+          scala.math.`package`.min({  scoverage.Invoker.invoked(3709, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  readReferenceStart.+({    scoverage.Invoker.invoked(3708, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    readReferenceSequence.length  })}, referenceEnd)
+        </td>
+      </tr><tr>
+        <td>
+          134
+        </td>
+        <td>
+          3709
+        </td>
+        <td>
+          scala.Long.+
+        </td>
+        <td style="background: #F0ADAD">
+          readReferenceStart.+({  scoverage.Invoker.invoked(3708, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  readReferenceSequence.length})
+        </td>
+      </tr><tr>
+        <td>
           135
         </td>
         <td>
-          3686
+          3715
         </td>
         <td>
           scala.collection.immutable.NumericRange.foreach
         </td>
         <td style="background: #F0ADAD">
-          scala.this.Predef.longWrapper(currentLocus).until(readReferenceEnd).foreach[Unit](((locus: Long) =&gt; {  scoverage.Invoker.invoked(3685, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  referenceSeq.update({    scoverage.Invoker.invoked(3682, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    locus.-(referenceStart).toInt  }, {    scoverage.Invoker.invoked(3684, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    readReferenceSequence.apply({      scoverage.Invoker.invoked(3683, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      locus.-(readReferenceStart).toInt    })  })}))
+          scala.this.Predef.longWrapper(currentLocus).until(readReferenceEnd).foreach[Unit](((locus: Long) =&gt; {  scoverage.Invoker.invoked(3714, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  referenceSeq.update({    scoverage.Invoker.invoked(3711, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    locus.-(referenceStart).toInt  }, {    scoverage.Invoker.invoked(3713, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    readReferenceSequence.apply({      scoverage.Invoker.invoked(3712, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      locus.-(readReferenceStart).toInt    })  })}))
         </td>
       </tr><tr>
         <td>
           137
         </td>
         <td>
-          3684
+          3713
         </td>
         <td>
           scala.collection.SeqLike.apply
         </td>
         <td style="background: #F0ADAD">
-          readReferenceSequence.apply({  scoverage.Invoker.invoked(3683, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  locus.-(readReferenceStart).toInt})
+          readReferenceSequence.apply({  scoverage.Invoker.invoked(3712, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  locus.-(readReferenceStart).toInt})
         </td>
       </tr><tr>
         <td>
           137
         </td>
         <td>
-          3683
+          3712
         </td>
         <td>
           scala.Long.toInt
@@ -13460,7 +13460,7 @@
           137
         </td>
         <td>
-          3682
+          3711
         </td>
         <td>
           scala.Long.toInt
@@ -13473,20 +13473,20 @@
           137
         </td>
         <td>
-          3685
+          3714
         </td>
         <td>
           scala.Array.update
         </td>
         <td style="background: #F0ADAD">
-          referenceSeq.update({  scoverage.Invoker.invoked(3682, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  locus.-(referenceStart).toInt}, {  scoverage.Invoker.invoked(3684, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  readReferenceSequence.apply({    scoverage.Invoker.invoked(3683, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    locus.-(readReferenceStart).toInt  })})
+          referenceSeq.update({  scoverage.Invoker.invoked(3711, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  locus.-(referenceStart).toInt}, {  scoverage.Invoker.invoked(3713, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  readReferenceSequence.apply({    scoverage.Invoker.invoked(3712, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    locus.-(readReferenceStart).toInt  })})
         </td>
       </tr><tr>
         <td>
           142
         </td>
         <td>
-          3690
+          3719
         </td>
         <td>
           org.hammerlab.guacamole.reads.MappedRead.start
@@ -13499,20 +13499,7 @@
           146
         </td>
         <td>
-          3701
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(3700, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
-        </td>
-      </tr><tr>
-        <td>
-          146
-        </td>
-        <td>
-          3695
+          3724
         </td>
         <td>
           scala.Long.&gt;
@@ -13525,7 +13512,20 @@
           146
         </td>
         <td>
-          3700
+          3730
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  scoverage.Invoker.invoked(3729, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
+        </td>
+      </tr><tr>
+        <td>
+          146
+        </td>
+        <td>
+          3729
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -13538,33 +13538,7 @@
           147
         </td>
         <td>
-          3699
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(3698, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  padWithNBases(referenceSeq, {    scoverage.Invoker.invoked(3696, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    currentLocus.-(referenceStart).toInt  }, {    scoverage.Invoker.invoked(3697, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    referenceEnd.-(referenceStart).toInt  })}
-        </td>
-      </tr><tr>
-        <td>
-          147
-        </td>
-        <td>
-          3698
-        </td>
-        <td>
-          org.hammerlab.guacamole.reads.MDTagUtils.padWithNBases
-        </td>
-        <td style="background: #F0ADAD">
-          padWithNBases(referenceSeq, {  scoverage.Invoker.invoked(3696, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  currentLocus.-(referenceStart).toInt}, {  scoverage.Invoker.invoked(3697, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  referenceEnd.-(referenceStart).toInt})
-        </td>
-      </tr><tr>
-        <td>
-          147
-        </td>
-        <td>
-          3697
+          3726
         </td>
         <td>
           scala.Long.toInt
@@ -13577,13 +13551,39 @@
           147
         </td>
         <td>
-          3696
+          3725
         </td>
         <td>
           scala.Long.toInt
         </td>
         <td style="background: #F0ADAD">
           currentLocus.-(referenceStart).toInt
+        </td>
+      </tr><tr>
+        <td>
+          147
+        </td>
+        <td>
+          3728
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  scoverage.Invoker.invoked(3727, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  padWithNBases(referenceSeq, {    scoverage.Invoker.invoked(3725, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    currentLocus.-(referenceStart).toInt  }, {    scoverage.Invoker.invoked(3726, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    referenceEnd.-(referenceStart).toInt  })}
+        </td>
+      </tr><tr>
+        <td>
+          147
+        </td>
+        <td>
+          3727
+        </td>
+        <td>
+          org.hammerlab.guacamole.reads.MDTagUtils.padWithNBases
+        </td>
+        <td style="background: #F0ADAD">
+          padWithNBases(referenceSeq, {  scoverage.Invoker.invoked(3725, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  currentLocus.-(referenceStart).toInt}, {  scoverage.Invoker.invoked(3726, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  referenceEnd.-(referenceStart).toInt})
         </td>
       </tr>
     </table>
