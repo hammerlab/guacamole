@@ -132,7 +132,7 @@ object AffineGapPenaltyAlignment {
             val isEndState = sequenceIdx == 0
 
             val transitionCost = transitionPenalty(nextState, prevStateOpt, isEndState = isEndState)
-            (prevRefStartIdx, nextState :: prevPath , prevScore + transitionCost)
+            (prevRefStartIdx, nextState :: prevPath, prevScore + transitionCost)
           }
         }
 

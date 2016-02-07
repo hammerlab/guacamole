@@ -22,7 +22,6 @@ import scala.collection.JavaConversions._
  *
  * Overview:
  * - Find areas where > `min-area-vaf` %  of the reads show a variant
- * - Re-examine those areas with N base window around it
  * - Place the reads in the `snv-window-range`-base window into a DeBruijn graph
  *   and find paths between the start and end of the reference sequence that covers that region
  * - Align those paths to the reference sequence to discover variants
@@ -233,23 +232,6 @@ object GermlineAssemblyCaller {
         loci.result(readSet.contigLengths),
         readSet.mappedReads
       )
-      // Find loci where there are variant reads
-      val lociOfInterest = DistributedUtil.pileupFlatMap[VariantLocus](
-        qualityReads,
-        lociPartitions,
-        skipEmpty = true,
-        function = pileup => VariantLocus(pileup).iterator,
-        reference = Some(reference)
-      ).filter(_.variantAlleleFrequency > (minAreaVaf / 100.0))
-
-      Common.progress(s"Found ${lociOfInterest.count} loci with non-reference reads")
-
-      // Re-examine loci with variant read
-      val lociOfInterestSet = LociSet.union(
-        lociOfInterest.map(
-          locus => LociSet(locus.contig, locus.locus, locus.locus + 1))
-          .collect(): _*
-      )
 
       val kmerSize = args.kmerSize
       val minAverageBaseQuality = args.minAverageBaseQuality
@@ -258,8 +240,9 @@ object GermlineAssemblyCaller {
         kmerSize,
         snvWindowRange = args.snvWindowRange,
         minOccurrence = args.minOccurrence,
+        minAreaVaf = args.minAreaVaf / 100.0f,
         reference,
-        lociOfInterestSet,
+        lociPartitions,
         parallelism = args.parallelism)
       genotypes.persist()
 
@@ -276,30 +259,37 @@ object GermlineAssemblyCaller {
                           kmerSize: Int,
                           snvWindowRange: Int,
                           minOccurrence: Int,
+                          minAreaVaf: Float,
                           reference: ReferenceBroadcast,
-                          lociOfInterest: LociSet,
+                          lociPartitions: LociMap[Long],
                           parallelism: Int): RDD[CalledAllele] = {
-
-      val lociOfInterestPartitions = DistributedUtil.partitionLociUniformly(
-        parallelism,
-        lociOfInterest
-      )
 
       val genotypes: RDD[CalledAllele] =
         DistributedUtil.windowFlatMapWithState[MappedRead, CalledAllele, Option[DeBruijnGraph]](
           Seq(reads),
-          lociOfInterestPartitions,
+          lociPartitions,
           skipEmpty = true,
           halfWindowSize = snvWindowRange,
           initialState = None,
           (graph, windows) => {
-            discoverHaplotypes(
-              graph,
-              windows(0),
-              kmerSize,
-              reference,
-              minOccurrence
-            )
+            val window = windows(0)
+            val variableReads =
+              window
+                .currentRegions()
+                .filter(read => read.cigar.numCigarElements() > 1 || read.mdTagOpt.get.countOfMismatches > 0)
+                .length
+
+            if ((variableReads.toFloat / window.currentRegions().length) > minAreaVaf) {
+              discoverHaplotypes(
+                graph,
+                windows(0),
+                kmerSize,
+                reference,
+                minOccurrence
+              )
+            } else {
+              (graph, Iterator.empty)
+            }
           }
         )
       genotypes
