@@ -5,9 +5,9 @@ import org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Arguments
 import org.hammerlab.guacamole.reads.Read
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.util.TestUtil
-import org.hammerlab.guacamole.variants.{AlleleConversions, CalledAllele}
-import org.hammerlab.guacamole.{Bases, Common, LociSet, ReadSet}
-import org.scalatest.{BeforeAndAfter, FunSuite, Matchers}
+import org.hammerlab.guacamole.variants.CalledAllele
+import org.hammerlab.guacamole._
+import org.scalatest.{ BeforeAndAfter, FunSuite, Matchers }
 
 class GermlineAssemblyCallerSuite extends FunSuite with Matchers with BeforeAndAfter {
 
@@ -40,13 +40,18 @@ class GermlineAssemblyCallerSuite extends FunSuite with Matchers with BeforeAndA
   val loci = Common.loci(args)
 
   def discoverGenotypesAtLoci(loci: String): Seq[CalledAllele] = {
+    val lociPartitions = DistributedUtil.partitionLociUniformly(
+      tasks = args.parallelism,
+      loci = LociSet.parse(loci).result(readSet.contigLengths)
+    )
     GermlineAssemblyCaller.Caller.discoverGenotypes(
       readSet.mappedReads,
       kmerSize = 45,
       snvWindowRange = 75,
       minOccurrence = 3,
+      minAreaVaf = .1f,
       reference = reference,
-      lociOfInterest = LociSet.parse(loci).result,
+      lociPartitions = lociPartitions,
       parallelism = args.parallelism
     ).collect().sortBy(_.start)
   }
@@ -183,20 +188,7 @@ class GermlineAssemblyCallerSuite extends FunSuite with Matchers with BeforeAndA
     variants.length should be(0)
   }
 
-  test("test assembly caller: full test") {
-
-    val loci = "chr1:772754-1417918"
-    val variants = discoverGenotypesAtLoci(loci)
-    println(variants.length)
-
-    val outputGenotypes =
-      variants.flatMap(AlleleConversions.calledAlleleToADAMGenotype)
-    variants.filter(v => v.allele.refBases.isEmpty || v.allele.altBases.isEmpty).foreach(println)
-    args.variantOutput = TestUtil.tmpFileName(suffix=".vcf")
-    Common.writeVariantsFromArguments(args, sc.parallelize(outputGenotypes))
-  }
-
-  test("test assembly caller: homzygous snp in a repeat region") {
+  test("test assembly caller: homozygous snp in a repeat region") {
 
     val loci = "chr1:789255-789256"
     val variants = discoverGenotypesAtLoci(loci)
@@ -208,7 +200,5 @@ class GermlineAssemblyCallerSuite extends FunSuite with Matchers with BeforeAndA
     Bases.basesToString(variant.allele.altBases) should be("C")
 
   }
-
-
 
 }
