@@ -280,13 +280,17 @@ object GermlineAssemblyCaller {
                 .length
 
             if ((variableReads.toFloat / window.currentRegions().length) > minAreaVaf) {
-              discoverHaplotypes(
+              val result = discoverHaplotypes(
                 graph,
                 windows(0),
                 kmerSize,
                 reference,
                 minOccurrence
               )
+
+              // Jump to the next region
+              window.setCurrentLocus(window.currentLocus + snvWindowRange)
+              result
             } else {
               (graph, Iterator.empty)
             }
