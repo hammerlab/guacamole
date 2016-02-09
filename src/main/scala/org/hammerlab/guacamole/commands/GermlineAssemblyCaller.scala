@@ -104,7 +104,7 @@ object GermlineAssemblyCaller {
       val referenceKmerSink = currentReference.takeRight(kmerSize)
 
       // If the current window size doesn't cover the kmer size we won't be able to find the reference start/end
-      if (currentReference.size < kmerSize)
+      if (currentReference.size < kmerSize || referenceKmerSource == referenceKmerSink)
         return (graph, Iterator.empty)
 
       if (debugPrint) {
@@ -276,8 +276,7 @@ object GermlineAssemblyCaller {
             val variableReads =
               window
                 .currentRegions()
-                .filter(read => read.cigar.numCigarElements() > 1 || read.mdTagOpt.get.countOfMismatches > 0)
-                .length
+                .count(read => read.cigar.numCigarElements() > 1 || read.mdTagOpt.get.countOfMismatches > 0)
 
             if ((variableReads.toFloat / window.currentRegions().length) > minAreaVaf) {
               val result = discoverHaplotypes(
@@ -287,9 +286,9 @@ object GermlineAssemblyCaller {
                 reference,
                 minOccurrence
               )
-
               // Jump to the next region
               window.setCurrentLocus(window.currentLocus + snvWindowRange)
+
               result
             } else {
               (graph, Iterator.empty)
