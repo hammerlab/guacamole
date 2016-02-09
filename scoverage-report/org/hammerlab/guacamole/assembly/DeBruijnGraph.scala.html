@@ -23943,20 +23943,20 @@
           16
         </td>
         <td>
-          1673
+          1678
         </td>
         <td>
           scala.collection.generic.GenMapFactory.apply
         </td>
         <td style="background: #F0ADAD">
-          scala.collection.mutable.Map.apply[DeBruijnGraph.this.SubKmer, List[Seq[Byte]]](({  scoverage.Invoker.invoked(1672, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  DeBruijnGraph.this.kmerCounts.keys.groupBy[DeBruijnGraph.this.SubKmer]({  ((seq: DeBruijnGraph.this.Kmer) =&gt; {    scoverage.Invoker.invoked(1667, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    DeBruijnGraph.this.kmerPrefix(seq)  })}).map[(DeBruijnGraph.this.SubKmer, List[Seq[Byte]]), scala.collection.immutable.Map[DeBruijnGraph.this.SubKmer,List[Seq[Byte]]]](((kv: (DeBruijnGraph.this.SubKmer, Iterable[Seq[Byte]])) =&gt; {  scoverage.Invoker.invoked(1670, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.Tuple2.apply[DeBruijnGraph.this.SubKmer, List[Seq[Byte]]]({    scoverage.Invoker.invoked(1668, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    kv._1  }, {    scoverage.Invoker.invoked(1669, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    kv._2.toList  })}))({  scoverage.Invoker.invoked(1671, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  immutable.this.Map.canBuildFrom[DeBruijnGraph.this.SubKmer, List[Seq[Byte]]]}).toSeq}: _*))
+          scala.collection.mutable.Map.apply[DeBruijnGraph.this.SubKmer, List[Seq[Byte]]](({  scoverage.Invoker.invoked(1677, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  DeBruijnGraph.this.kmerCounts.keys.groupBy[DeBruijnGraph.this.SubKmer]({  ((seq: DeBruijnGraph.this.Kmer) =&gt; {    scoverage.Invoker.invoked(1672, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    DeBruijnGraph.this.kmerPrefix(seq)  })}).map[(DeBruijnGraph.this.SubKmer, List[Seq[Byte]]), scala.collection.immutable.Map[DeBruijnGraph.this.SubKmer,List[Seq[Byte]]]](((kv: (DeBruijnGraph.this.SubKmer, Iterable[Seq[Byte]])) =&gt; {  scoverage.Invoker.invoked(1675, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.Tuple2.apply[DeBruijnGraph.this.SubKmer, List[Seq[Byte]]]({    scoverage.Invoker.invoked(1673, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    kv._1  }, {    scoverage.Invoker.invoked(1674, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    kv._2.toList  })}))({  scoverage.Invoker.invoked(1676, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  immutable.this.Map.canBuildFrom[DeBruijnGraph.this.SubKmer, List[Seq[Byte]]]}).toSeq}: _*))
         </td>
       </tr><tr>
         <td>
           19
         </td>
         <td>
-          1667
+          1672
         </td>
         <td>
           org.hammerlab.guacamole.assembly.DeBruijnGraph.kmerPrefix
@@ -23969,7 +23969,20 @@
           20
         </td>
         <td>
-          1668
+          1674
+        </td>
+        <td>
+          scala.collection.TraversableOnce.toList
+        </td>
+        <td style="background: #F0ADAD">
+          kv._2.toList
+        </td>
+      </tr><tr>
+        <td>
+          20
+        </td>
+        <td>
+          1673
         </td>
         <td>
           scala.Tuple2._1
@@ -23982,7 +23995,7 @@
           20
         </td>
         <td>
-          1671
+          1676
         </td>
         <td>
           scala.collection.immutable.Map.canBuildFrom
@@ -23995,59 +24008,46 @@
           20
         </td>
         <td>
-          1670
+          1675
         </td>
         <td>
           scala.Tuple2.apply
         </td>
         <td style="background: #F0ADAD">
-          scala.Tuple2.apply[DeBruijnGraph.this.SubKmer, List[Seq[Byte]]]({  scoverage.Invoker.invoked(1668, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  kv._1}, {  scoverage.Invoker.invoked(1669, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  kv._2.toList})
-        </td>
-      </tr><tr>
-        <td>
-          20
-        </td>
-        <td>
-          1669
-        </td>
-        <td>
-          scala.collection.TraversableOnce.toList
-        </td>
-        <td style="background: #F0ADAD">
-          kv._2.toList
+          scala.Tuple2.apply[DeBruijnGraph.this.SubKmer, List[Seq[Byte]]]({  scoverage.Invoker.invoked(1673, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  kv._1}, {  scoverage.Invoker.invoked(1674, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  kv._2.toList})
         </td>
       </tr><tr>
         <td>
           21
         </td>
         <td>
-          1672
+          1677
         </td>
         <td>
           scala.collection.MapLike.toSeq
         </td>
         <td style="background: #F0ADAD">
-          DeBruijnGraph.this.kmerCounts.keys.groupBy[DeBruijnGraph.this.SubKmer]({  ((seq: DeBruijnGraph.this.Kmer) =&gt; {    scoverage.Invoker.invoked(1667, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    DeBruijnGraph.this.kmerPrefix(seq)  })}).map[(DeBruijnGraph.this.SubKmer, List[Seq[Byte]]), scala.collection.immutable.Map[DeBruijnGraph.this.SubKmer,List[Seq[Byte]]]](((kv: (DeBruijnGraph.this.SubKmer, Iterable[Seq[Byte]])) =&gt; {  scoverage.Invoker.invoked(1670, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.Tuple2.apply[DeBruijnGraph.this.SubKmer, List[Seq[Byte]]]({    scoverage.Invoker.invoked(1668, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    kv._1  }, {    scoverage.Invoker.invoked(1669, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    kv._2.toList  })}))({  scoverage.Invoker.invoked(1671, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  immutable.this.Map.canBuildFrom[DeBruijnGraph.this.SubKmer, List[Seq[Byte]]]}).toSeq
+          DeBruijnGraph.this.kmerCounts.keys.groupBy[DeBruijnGraph.this.SubKmer]({  ((seq: DeBruijnGraph.this.Kmer) =&gt; {    scoverage.Invoker.invoked(1672, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    DeBruijnGraph.this.kmerPrefix(seq)  })}).map[(DeBruijnGraph.this.SubKmer, List[Seq[Byte]]), scala.collection.immutable.Map[DeBruijnGraph.this.SubKmer,List[Seq[Byte]]]](((kv: (DeBruijnGraph.this.SubKmer, Iterable[Seq[Byte]])) =&gt; {  scoverage.Invoker.invoked(1675, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.Tuple2.apply[DeBruijnGraph.this.SubKmer, List[Seq[Byte]]]({    scoverage.Invoker.invoked(1673, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    kv._1  }, {    scoverage.Invoker.invoked(1674, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    kv._2.toList  })}))({  scoverage.Invoker.invoked(1676, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  immutable.this.Map.canBuildFrom[DeBruijnGraph.this.SubKmer, List[Seq[Byte]]]}).toSeq
         </td>
       </tr><tr>
         <td>
           26
         </td>
         <td>
-          1680
+          1685
         </td>
         <td>
           scala.collection.generic.GenMapFactory.apply
         </td>
         <td style="background: #F0ADAD">
-          scala.collection.mutable.Map.apply[DeBruijnGraph.this.SubKmer, List[Seq[Byte]]](({  scoverage.Invoker.invoked(1679, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  DeBruijnGraph.this.kmerCounts.keys.groupBy[DeBruijnGraph.this.SubKmer]({  ((seq: DeBruijnGraph.this.Kmer) =&gt; {    scoverage.Invoker.invoked(1674, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    DeBruijnGraph.this.kmerSuffix(seq)  })}).map[(DeBruijnGraph.this.SubKmer, List[Seq[Byte]]), scala.collection.immutable.Map[DeBruijnGraph.this.SubKmer,List[Seq[Byte]]]](((kv: (DeBruijnGraph.this.SubKmer, Iterable[Seq[Byte]])) =&gt; {  scoverage.Invoker.invoked(1677, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.Tuple2.apply[DeBruijnGraph.this.SubKmer, List[Seq[Byte]]]({    scoverage.Invoker.invoked(1675, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    kv._1  }, {    scoverage.Invoker.invoked(1676, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    kv._2.toList  })}))({  scoverage.Invoker.invoked(1678, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  immutable.this.Map.canBuildFrom[DeBruijnGraph.this.SubKmer, List[Seq[Byte]]]}).toSeq}: _*))
+          scala.collection.mutable.Map.apply[DeBruijnGraph.this.SubKmer, List[Seq[Byte]]](({  scoverage.Invoker.invoked(1684, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  DeBruijnGraph.this.kmerCounts.keys.groupBy[DeBruijnGraph.this.SubKmer]({  ((seq: DeBruijnGraph.this.Kmer) =&gt; {    scoverage.Invoker.invoked(1679, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    DeBruijnGraph.this.kmerSuffix(seq)  })}).map[(DeBruijnGraph.this.SubKmer, List[Seq[Byte]]), scala.collection.immutable.Map[DeBruijnGraph.this.SubKmer,List[Seq[Byte]]]](((kv: (DeBruijnGraph.this.SubKmer, Iterable[Seq[Byte]])) =&gt; {  scoverage.Invoker.invoked(1682, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.Tuple2.apply[DeBruijnGraph.this.SubKmer, List[Seq[Byte]]]({    scoverage.Invoker.invoked(1680, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    kv._1  }, {    scoverage.Invoker.invoked(1681, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    kv._2.toList  })}))({  scoverage.Invoker.invoked(1683, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  immutable.this.Map.canBuildFrom[DeBruijnGraph.this.SubKmer, List[Seq[Byte]]]}).toSeq}: _*))
         </td>
       </tr><tr>
         <td>
           29
         </td>
         <td>
-          1674
+          1679
         </td>
         <td>
           org.hammerlab.guacamole.assembly.DeBruijnGraph.kmerSuffix
@@ -24060,33 +24060,7 @@
           30
         </td>
         <td>
-          1677
-        </td>
-        <td>
-          scala.Tuple2.apply
-        </td>
-        <td style="background: #F0ADAD">
-          scala.Tuple2.apply[DeBruijnGraph.this.SubKmer, List[Seq[Byte]]]({  scoverage.Invoker.invoked(1675, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  kv._1}, {  scoverage.Invoker.invoked(1676, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  kv._2.toList})
-        </td>
-      </tr><tr>
-        <td>
-          30
-        </td>
-        <td>
-          1676
-        </td>
-        <td>
-          scala.collection.TraversableOnce.toList
-        </td>
-        <td style="background: #F0ADAD">
-          kv._2.toList
-        </td>
-      </tr><tr>
-        <td>
-          30
-        </td>
-        <td>
-          1675
+          1680
         </td>
         <td>
           scala.Tuple2._1
@@ -24099,7 +24073,7 @@
           30
         </td>
         <td>
-          1678
+          1683
         </td>
         <td>
           scala.collection.immutable.Map.canBuildFrom
@@ -24109,23 +24083,49 @@
         </td>
       </tr><tr>
         <td>
+          30
+        </td>
+        <td>
+          1682
+        </td>
+        <td>
+          scala.Tuple2.apply
+        </td>
+        <td style="background: #F0ADAD">
+          scala.Tuple2.apply[DeBruijnGraph.this.SubKmer, List[Seq[Byte]]]({  scoverage.Invoker.invoked(1680, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  kv._1}, {  scoverage.Invoker.invoked(1681, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  kv._2.toList})
+        </td>
+      </tr><tr>
+        <td>
+          30
+        </td>
+        <td>
+          1681
+        </td>
+        <td>
+          scala.collection.TraversableOnce.toList
+        </td>
+        <td style="background: #F0ADAD">
+          kv._2.toList
+        </td>
+      </tr><tr>
+        <td>
           31
         </td>
         <td>
-          1679
+          1684
         </td>
         <td>
           scala.collection.MapLike.toSeq
         </td>
         <td style="background: #F0ADAD">
-          DeBruijnGraph.this.kmerCounts.keys.groupBy[DeBruijnGraph.this.SubKmer]({  ((seq: DeBruijnGraph.this.Kmer) =&gt; {    scoverage.Invoker.invoked(1674, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    DeBruijnGraph.this.kmerSuffix(seq)  })}).map[(DeBruijnGraph.this.SubKmer, List[Seq[Byte]]), scala.collection.immutable.Map[DeBruijnGraph.this.SubKmer,List[Seq[Byte]]]](((kv: (DeBruijnGraph.this.SubKmer, Iterable[Seq[Byte]])) =&gt; {  scoverage.Invoker.invoked(1677, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.Tuple2.apply[DeBruijnGraph.this.SubKmer, List[Seq[Byte]]]({    scoverage.Invoker.invoked(1675, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    kv._1  }, {    scoverage.Invoker.invoked(1676, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    kv._2.toList  })}))({  scoverage.Invoker.invoked(1678, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  immutable.this.Map.canBuildFrom[DeBruijnGraph.this.SubKmer, List[Seq[Byte]]]}).toSeq
+          DeBruijnGraph.this.kmerCounts.keys.groupBy[DeBruijnGraph.this.SubKmer]({  ((seq: DeBruijnGraph.this.Kmer) =&gt; {    scoverage.Invoker.invoked(1679, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    DeBruijnGraph.this.kmerSuffix(seq)  })}).map[(DeBruijnGraph.this.SubKmer, List[Seq[Byte]]), scala.collection.immutable.Map[DeBruijnGraph.this.SubKmer,List[Seq[Byte]]]](((kv: (DeBruijnGraph.this.SubKmer, Iterable[Seq[Byte]])) =&gt; {  scoverage.Invoker.invoked(1682, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.Tuple2.apply[DeBruijnGraph.this.SubKmer, List[Seq[Byte]]]({    scoverage.Invoker.invoked(1680, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    kv._1  }, {    scoverage.Invoker.invoked(1681, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    kv._2.toList  })}))({  scoverage.Invoker.invoked(1683, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  immutable.this.Map.canBuildFrom[DeBruijnGraph.this.SubKmer, List[Seq[Byte]]]}).toSeq
         </td>
       </tr><tr>
         <td>
           37
         </td>
         <td>
-          1681
+          1686
         </td>
         <td>
           scala.collection.mutable.Map.empty
@@ -24138,20 +24138,20 @@
           41
         </td>
         <td>
-          1683
+          1688
         </td>
         <td>
           scala.collection.IterableLike.take
         </td>
         <td style="background: #F0ADAD">
-          seq.take({  scoverage.Invoker.invoked(1682, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  DeBruijnGraph.this.kmerSize.-(1)})
+          seq.take({  scoverage.Invoker.invoked(1687, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  DeBruijnGraph.this.kmerSize.-(1)})
         </td>
       </tr><tr>
         <td>
           41
         </td>
         <td>
-          1682
+          1687
         </td>
         <td>
           scala.Int.-
@@ -24164,33 +24164,33 @@
           46
         </td>
         <td>
-          1685
+          1689
+        </td>
+        <td>
+          scala.Int.-
+        </td>
+        <td style="background: #F0ADAD">
+          DeBruijnGraph.this.kmerSize.-(1)
+        </td>
+      </tr><tr>
+        <td>
+          46
+        </td>
+        <td>
+          1690
         </td>
         <td>
           scala.collection.IterableLike.takeRight
         </td>
         <td style="background: #F0ADAD">
-          seq.takeRight({  scoverage.Invoker.invoked(1684, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  DeBruijnGraph.this.kmerSize.-(1)})
-        </td>
-      </tr><tr>
-        <td>
-          46
-        </td>
-        <td>
-          1684
-        </td>
-        <td>
-          scala.Int.-
-        </td>
-        <td style="background: #F0ADAD">
-          DeBruijnGraph.this.kmerSize.-(1)
+          seq.takeRight({  scoverage.Invoker.invoked(1689, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  DeBruijnGraph.this.kmerSize.-(1)})
         </td>
       </tr><tr>
         <td>
           55
         </td>
         <td>
-          1686
+          1691
         </td>
         <td>
           scala.collection.mutable.MapLike.remove
@@ -24203,7 +24203,7 @@
           59
         </td>
         <td>
-          1687
+          1692
         </td>
         <td>
           scala.Function1.apply
@@ -24216,20 +24216,20 @@
           60
         </td>
         <td>
-          1689
+          1694
         </td>
         <td>
           scala.collection.TraversableLike.filterNot
         </td>
         <td style="background: #F0ADAD">
-          table.apply(key).filterNot(((x$1: DeBruijnGraph.this.Kmer) =&gt; {  scoverage.Invoker.invoked(1688, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x$1.==(kmer)}))
+          table.apply(key).filterNot(((x$1: DeBruijnGraph.this.Kmer) =&gt; {  scoverage.Invoker.invoked(1693, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x$1.==(kmer)}))
         </td>
       </tr><tr>
         <td>
           60
         </td>
         <td>
-          1688
+          1693
         </td>
         <td>
           java.lang.Object.==
@@ -24242,7 +24242,7 @@
           61
         </td>
         <td>
-          1690
+          1695
         </td>
         <td>
           scala.collection.TraversableOnce.nonEmpty
@@ -24255,20 +24255,20 @@
           62
         </td>
         <td>
-          1692
+          1697
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1691, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  table.update(key, otherNodes)}
+          {  scoverage.Invoker.invoked(1696, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  table.update(key, otherNodes)}
         </td>
       </tr><tr>
         <td>
           62
         </td>
         <td>
-          1691
+          1696
         </td>
         <td>
           scala.collection.mutable.MapLike.update
@@ -24281,20 +24281,7 @@
           64
         </td>
         <td>
-          1694
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1693, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  table.remove(key)}
-        </td>
-      </tr><tr>
-        <td>
-          64
-        </td>
-        <td>
-          1693
+          1698
         </td>
         <td>
           scala.collection.mutable.MapLike.remove
@@ -24304,10 +24291,36 @@
         </td>
       </tr><tr>
         <td>
+          64
+        </td>
+        <td>
+          1699
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  scoverage.Invoker.invoked(1698, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  table.remove(key)}
+        </td>
+      </tr><tr>
+        <td>
           68
         </td>
         <td>
-          1695
+          1701
+        </td>
+        <td>
+          org.hammerlab.guacamole.assembly.DeBruijnGraph.kmerPrefix
+        </td>
+        <td style="background: #F0ADAD">
+          DeBruijnGraph.this.kmerPrefix(seq)
+        </td>
+      </tr><tr>
+        <td>
+          68
+        </td>
+        <td>
+          1700
         </td>
         <td>
           org.hammerlab.guacamole.assembly.DeBruijnGraph.prefixTable
@@ -24320,33 +24333,33 @@
           68
         </td>
         <td>
-          1697
+          1702
         </td>
         <td>
           org.hammerlab.guacamole.assembly.DeBruijnGraph.removeFromTable
         </td>
         <td style="background: #F0ADAD">
-          removeFromTable(kmer, {  scoverage.Invoker.invoked(1695, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  DeBruijnGraph.this.prefixTable}, {  ((seq: DeBruijnGraph.this.Kmer) =&gt; {    scoverage.Invoker.invoked(1696, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    DeBruijnGraph.this.kmerPrefix(seq)  })})
-        </td>
-      </tr><tr>
-        <td>
-          68
-        </td>
-        <td>
-          1696
-        </td>
-        <td>
-          org.hammerlab.guacamole.assembly.DeBruijnGraph.kmerPrefix
-        </td>
-        <td style="background: #F0ADAD">
-          DeBruijnGraph.this.kmerPrefix(seq)
+          removeFromTable(kmer, {  scoverage.Invoker.invoked(1700, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  DeBruijnGraph.this.prefixTable}, {  ((seq: DeBruijnGraph.this.Kmer) =&gt; {    scoverage.Invoker.invoked(1701, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    DeBruijnGraph.this.kmerPrefix(seq)  })})
         </td>
       </tr><tr>
         <td>
           69
         </td>
         <td>
-          1698
+          1704
+        </td>
+        <td>
+          org.hammerlab.guacamole.assembly.DeBruijnGraph.kmerSuffix
+        </td>
+        <td style="background: #F0ADAD">
+          DeBruijnGraph.this.kmerSuffix(seq)
+        </td>
+      </tr><tr>
+        <td>
+          69
+        </td>
+        <td>
+          1703
         </td>
         <td>
           org.hammerlab.guacamole.assembly.DeBruijnGraph.suffixTable
@@ -24359,33 +24372,20 @@
           69
         </td>
         <td>
-          1700
+          1705
         </td>
         <td>
           org.hammerlab.guacamole.assembly.DeBruijnGraph.removeFromTable
         </td>
         <td style="background: #F0ADAD">
-          removeFromTable(kmer, {  scoverage.Invoker.invoked(1698, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  DeBruijnGraph.this.suffixTable}, {  ((seq: DeBruijnGraph.this.Kmer) =&gt; {    scoverage.Invoker.invoked(1699, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    DeBruijnGraph.this.kmerSuffix(seq)  })})
-        </td>
-      </tr><tr>
-        <td>
-          69
-        </td>
-        <td>
-          1699
-        </td>
-        <td>
-          org.hammerlab.guacamole.assembly.DeBruijnGraph.kmerSuffix
-        </td>
-        <td style="background: #F0ADAD">
-          DeBruijnGraph.this.kmerSuffix(seq)
+          removeFromTable(kmer, {  scoverage.Invoker.invoked(1703, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  DeBruijnGraph.this.suffixTable}, {  ((seq: DeBruijnGraph.this.Kmer) =&gt; {    scoverage.Invoker.invoked(1704, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    DeBruijnGraph.this.kmerSuffix(seq)  })})
         </td>
       </tr><tr>
         <td>
           79
         </td>
         <td>
-          1701
+          1706
         </td>
         <td>
           scala.Int.&lt;
@@ -24398,33 +24398,7 @@
           80
         </td>
         <td>
-          1704
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          x0$1 match {  case (_1: Seq[Byte], _2: Int)(Seq[Byte], Int)((kmer @ _), (count @ _)) =&gt; {    scoverage.Invoker.invoked(1703, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(1702, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      DeBruijnGraph.this.kmerCounts.remove(kmer)    }  }}
-        </td>
-      </tr><tr>
-        <td>
-          80
-        </td>
-        <td>
-          1703
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1702, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  DeBruijnGraph.this.kmerCounts.remove(kmer)}
-        </td>
-      </tr><tr>
-        <td>
-          80
-        </td>
-        <td>
-          1702
+          1707
         </td>
         <td>
           scala.collection.mutable.MapLike.remove
@@ -24437,33 +24411,59 @@
           80
         </td>
         <td>
-          1705
+          1710
         </td>
         <td>
           scala.collection.IterableLike.foreach
         </td>
         <td style="background: #F0ADAD">
-          DeBruijnGraph.this.kmerCounts.filter(((x$2: (Seq[Byte], Int)) =&gt; {  scoverage.Invoker.invoked(1701, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x$2._2.&lt;(minSupport)})).foreach[Option[Int]](((x0$1: (Seq[Byte], Int)) =&gt; {  scoverage.Invoker.invoked(1704, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x0$1 match {    case (_1: Seq[Byte], _2: Int)(Seq[Byte], Int)((kmer @ _), (count @ _)) =&gt; {      scoverage.Invoker.invoked(1703, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(1702, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        DeBruijnGraph.this.kmerCounts.remove(kmer)      }    }  }}))
+          DeBruijnGraph.this.kmerCounts.filter(((x$2: (Seq[Byte], Int)) =&gt; {  scoverage.Invoker.invoked(1706, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x$2._2.&lt;(minSupport)})).foreach[Option[Int]](((x0$1: (Seq[Byte], Int)) =&gt; {  scoverage.Invoker.invoked(1709, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x0$1 match {    case (_1: Seq[Byte], _2: Int)(Seq[Byte], Int)((kmer @ _), (count @ _)) =&gt; {      scoverage.Invoker.invoked(1708, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(1707, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        DeBruijnGraph.this.kmerCounts.remove(kmer)      }    }  }}))
+        </td>
+      </tr><tr>
+        <td>
+          80
+        </td>
+        <td>
+          1709
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          x0$1 match {  case (_1: Seq[Byte], _2: Int)(Seq[Byte], Int)((kmer @ _), (count @ _)) =&gt; {    scoverage.Invoker.invoked(1708, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(1707, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      DeBruijnGraph.this.kmerCounts.remove(kmer)    }  }}
+        </td>
+      </tr><tr>
+        <td>
+          80
+        </td>
+        <td>
+          1708
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  scoverage.Invoker.invoked(1707, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  DeBruijnGraph.this.kmerCounts.remove(kmer)}
         </td>
       </tr><tr>
         <td>
           87
         </td>
         <td>
-          1707
+          1712
         </td>
         <td>
           scala.collection.generic.GenericCompanion.apply
         </td>
         <td style="background: #F0ADAD">
-          scala.collection.mutable.HashSet.apply[DeBruijnGraph.this.Kmer](({  scoverage.Invoker.invoked(1706, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  DeBruijnGraph.this.kmerCounts.keys.toSeq}: _*))
+          scala.collection.mutable.HashSet.apply[DeBruijnGraph.this.Kmer](({  scoverage.Invoker.invoked(1711, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  DeBruijnGraph.this.kmerCounts.keys.toSeq}: _*))
         </td>
       </tr><tr>
         <td>
           87
         </td>
         <td>
-          1706
+          1711
         </td>
         <td>
           scala.collection.TraversableOnce.toSeq
@@ -24476,20 +24476,33 @@
           89
         </td>
         <td>
-          1743
+          1713
         </td>
         <td>
-          &lt;nosymbol&gt;
+          scala.collection.TraversableOnce.nonEmpty
         </td>
         <td style="background: #F0ADAD">
-          {  {    val node: DeBruijnGraph.this.Kmer = {      scoverage.Invoker.invoked(1709, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      allNodes.head    };    val forwardUniquePath: Seq[DeBruijnGraph.this.Kmer] = {      scoverage.Invoker.invoked(1710, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      DeBruijnGraph.this.mergeForward(node)    };    val backwardUniquePath: Seq[DeBruijnGraph.this.Kmer] = {      scoverage.Invoker.invoked(1711, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      DeBruijnGraph.this.mergeBackward(node)    };    val fullMergeablePath: Seq[DeBruijnGraph.this.Kmer] = {      scoverage.Invoker.invoked(1714, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      backwardUniquePath.++[DeBruijnGraph.this.Kmer, Seq[DeBruijnGraph.this.Kmer]]({        scoverage.Invoker.invoked(1712, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        forwardUniquePath.tail      })({        scoverage.Invoker.invoked(1713, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        collection.this.Seq.canBuildFrom[DeBruijnGraph.this.Kmer]      })    };    if ({      scoverage.Invoker.invoked(1715, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      fullMergeablePath.length.&gt;(1)    })      {        scoverage.Invoker.invoked(1739, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        {          {            scoverage.Invoker.invoked(1722, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            fullMergeablePath.foreach[Any](((k: DeBruijnGraph.this.Kmer) =&gt; {              {                scoverage.Invoker.invoked(1716, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                allNodes.remove(k)              };              if ({                scoverage.Invoker.invoked(1717, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                DeBruijnGraph.this.kmerCounts.contains(k)              })                {                  scoverage.Invoker.invoked(1719, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                  {                    scoverage.Invoker.invoked(1718, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                    DeBruijnGraph.this.removeKmer(k)                  }                }              else                {                  scoverage.Invoker.invoked(1721, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                  {                    scoverage.Invoker.invoked(1720, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                    ()                  }                }            }))          };          val mergedNode: org.hammerlab.guacamole.assembly.DeBruijnGraph.Sequence = {            scoverage.Invoker.invoked(1724, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            DeBruijnGraph.mergeOverlappingSequences(fullMergeablePath, {              scoverage.Invoker.invoked(1723, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              DeBruijnGraph.this.kmerSize            })          };          {            scoverage.Invoker.invoked(1730, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            fullMergeablePath.zipWithIndex[DeBruijnGraph.this.Kmer, Seq[(DeBruijnGraph.this.Kmer, Int)]]({  scoverage.Invoker.invoked(1725, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.canBuildFrom[(DeBruijnGraph.this.Kmer, Int)]}).foreach[Unit](((x0$2: (DeBruijnGraph.this.Kmer, Int)) =&gt; {              scoverage.Invoker.invoked(1729, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              x0$2 match {                case (_1: DeBruijnGraph.this.Kmer, _2: Int)(DeBruijnGraph.this.Kmer, Int)((nodeElement @ _), (index @ _)) =&gt; {                  scoverage.Invoker.invoked(1728, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                  {                    scoverage.Invoker.invoked(1727, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                    DeBruijnGraph.this.mergeIndex.update(nodeElement, {                      scoverage.Invoker.invoked(1726, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                      scala.Tuple2.apply[org.hammerlab.guacamole.assembly.DeBruijnGraph.Sequence, Int](mergedNode, index)                    })                  }                }              }            }))          };          val mergedNodePrefix: DeBruijnGraph.this.SubKmer = {            scoverage.Invoker.invoked(1731, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            DeBruijnGraph.this.kmerPrefix(mergedNode)          };          val mergedNodeSuffix: DeBruijnGraph.this.SubKmer = {            scoverage.Invoker.invoked(1732, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            DeBruijnGraph.this.kmerSuffix(mergedNode)          };          {            scoverage.Invoker.invoked(1734, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            DeBruijnGraph.this.prefixTable.update(mergedNodePrefix, {              &lt;synthetic&gt; val x$3: org.hammerlab.guacamole.assembly.DeBruijnGraph.Sequence = mergedNode;              {                scoverage.Invoker.invoked(1733, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                DeBruijnGraph.this.prefixTable.getOrElse[List[DeBruijnGraph.this.Kmer]](mergedNodePrefix, immutable.this.List.empty[Nothing]).::[DeBruijnGraph.this.Kmer](x$3)              }            })          };          {            scoverage.Invoker.invoked(1736, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            DeBruijnGraph.this.suffixTable.update(mergedNodeSuffix, {              &lt;synthetic&gt; val x$4: org.hammerlab.guacamole.assembly.DeBruijnGraph.Sequence = mergedNode;              {                scoverage.Invoker.invoked(1735, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                DeBruijnGraph.this.suffixTable.getOrElse[List[DeBruijnGraph.this.Kmer]](mergedNodeSuffix, immutable.this.List.empty[Nothing]).::[DeBruijnGraph.this.Kmer](x$4)              }            })          };          {            scoverage.Invoker.invoked(1738, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            DeBruijnGraph.this.kmerCounts.put(mergedNode, {              scoverage.Invoker.invoked(1737, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              DeBruijnGraph.this.kmerCounts.getOrElse[Int](mergedNode, 0).+(1)            })          }        }      }    else      {        scoverage.Invoker.invoked(1741, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        {          scoverage.Invoker.invoked(1740, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          allNodes.remove(node)        }      }  };  {    scoverage.Invoker.invoked(1742, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    while$1()  }}
+          allNodes.nonEmpty
         </td>
       </tr><tr>
         <td>
           89
         </td>
         <td>
-          1742
+          1748
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  {    val node: DeBruijnGraph.this.Kmer = {      scoverage.Invoker.invoked(1714, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      allNodes.head    };    val forwardUniquePath: Seq[DeBruijnGraph.this.Kmer] = {      scoverage.Invoker.invoked(1715, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      DeBruijnGraph.this.mergeForward(node)    };    val backwardUniquePath: Seq[DeBruijnGraph.this.Kmer] = {      scoverage.Invoker.invoked(1716, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      DeBruijnGraph.this.mergeBackward(node)    };    val fullMergeablePath: Seq[DeBruijnGraph.this.Kmer] = {      scoverage.Invoker.invoked(1719, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      backwardUniquePath.++[DeBruijnGraph.this.Kmer, Seq[DeBruijnGraph.this.Kmer]]({        scoverage.Invoker.invoked(1717, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        forwardUniquePath.tail      })({        scoverage.Invoker.invoked(1718, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        collection.this.Seq.canBuildFrom[DeBruijnGraph.this.Kmer]      })    };    if ({      scoverage.Invoker.invoked(1720, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      fullMergeablePath.length.&gt;(1)    })      {        scoverage.Invoker.invoked(1744, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        {          {            scoverage.Invoker.invoked(1727, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            fullMergeablePath.foreach[Any](((k: DeBruijnGraph.this.Kmer) =&gt; {              {                scoverage.Invoker.invoked(1721, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                allNodes.remove(k)              };              if ({                scoverage.Invoker.invoked(1722, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                DeBruijnGraph.this.kmerCounts.contains(k)              })                {                  scoverage.Invoker.invoked(1724, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                  {                    scoverage.Invoker.invoked(1723, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                    DeBruijnGraph.this.removeKmer(k)                  }                }              else                {                  scoverage.Invoker.invoked(1726, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                  {                    scoverage.Invoker.invoked(1725, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                    ()                  }                }            }))          };          val mergedNode: org.hammerlab.guacamole.assembly.DeBruijnGraph.Sequence = {            scoverage.Invoker.invoked(1729, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            DeBruijnGraph.mergeOverlappingSequences(fullMergeablePath, {              scoverage.Invoker.invoked(1728, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              DeBruijnGraph.this.kmerSize            })          };          {            scoverage.Invoker.invoked(1735, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            fullMergeablePath.zipWithIndex[DeBruijnGraph.this.Kmer, Seq[(DeBruijnGraph.this.Kmer, Int)]]({  scoverage.Invoker.invoked(1730, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.canBuildFrom[(DeBruijnGraph.this.Kmer, Int)]}).foreach[Unit](((x0$2: (DeBruijnGraph.this.Kmer, Int)) =&gt; {              scoverage.Invoker.invoked(1734, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              x0$2 match {                case (_1: DeBruijnGraph.this.Kmer, _2: Int)(DeBruijnGraph.this.Kmer, Int)((nodeElement @ _), (index @ _)) =&gt; {                  scoverage.Invoker.invoked(1733, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                  {                    scoverage.Invoker.invoked(1732, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                    DeBruijnGraph.this.mergeIndex.update(nodeElement, {                      scoverage.Invoker.invoked(1731, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                      scala.Tuple2.apply[org.hammerlab.guacamole.assembly.DeBruijnGraph.Sequence, Int](mergedNode, index)                    })                  }                }              }            }))          };          val mergedNodePrefix: DeBruijnGraph.this.SubKmer = {            scoverage.Invoker.invoked(1736, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            DeBruijnGraph.this.kmerPrefix(mergedNode)          };          val mergedNodeSuffix: DeBruijnGraph.this.SubKmer = {            scoverage.Invoker.invoked(1737, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            DeBruijnGraph.this.kmerSuffix(mergedNode)          };          {            scoverage.Invoker.invoked(1739, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            DeBruijnGraph.this.prefixTable.update(mergedNodePrefix, {              &lt;synthetic&gt; val x$3: org.hammerlab.guacamole.assembly.DeBruijnGraph.Sequence = mergedNode;              {                scoverage.Invoker.invoked(1738, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                DeBruijnGraph.this.prefixTable.getOrElse[List[DeBruijnGraph.this.Kmer]](mergedNodePrefix, immutable.this.List.empty[Nothing]).::[DeBruijnGraph.this.Kmer](x$3)              }            })          };          {            scoverage.Invoker.invoked(1741, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            DeBruijnGraph.this.suffixTable.update(mergedNodeSuffix, {              &lt;synthetic&gt; val x$4: org.hammerlab.guacamole.assembly.DeBruijnGraph.Sequence = mergedNode;              {                scoverage.Invoker.invoked(1740, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                DeBruijnGraph.this.suffixTable.getOrElse[List[DeBruijnGraph.this.Kmer]](mergedNodeSuffix, immutable.this.List.empty[Nothing]).::[DeBruijnGraph.this.Kmer](x$4)              }            })          };          {            scoverage.Invoker.invoked(1743, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            DeBruijnGraph.this.kmerCounts.put(mergedNode, {              scoverage.Invoker.invoked(1742, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              DeBruijnGraph.this.kmerCounts.getOrElse[Int](mergedNode, 0).+(1)            })          }        }      }    else      {        scoverage.Invoker.invoked(1746, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        {          scoverage.Invoker.invoked(1745, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          allNodes.remove(node)        }      }  };  {    scoverage.Invoker.invoked(1747, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    while$1()  }}
+        </td>
+      </tr><tr>
+        <td>
+          89
+        </td>
+        <td>
+          1747
         </td>
         <td>
           org.hammerlab.guacamole.assembly.DeBruijnGraph.while$1
@@ -24502,20 +24515,20 @@
           89
         </td>
         <td>
-          1745
+          1750
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1744, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
+          {  scoverage.Invoker.invoked(1749, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
         </td>
       </tr><tr>
         <td>
           89
         </td>
         <td>
-          1744
+          1749
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -24525,23 +24538,10 @@
         </td>
       </tr><tr>
         <td>
-          89
-        </td>
-        <td>
-          1708
-        </td>
-        <td>
-          scala.collection.TraversableOnce.nonEmpty
-        </td>
-        <td style="background: #F0ADAD">
-          allNodes.nonEmpty
-        </td>
-      </tr><tr>
-        <td>
           90
         </td>
         <td>
-          1709
+          1714
         </td>
         <td>
           scala.collection.IterableLike.head
@@ -24554,7 +24554,7 @@
           91
         </td>
         <td>
-          1710
+          1715
         </td>
         <td>
           org.hammerlab.guacamole.assembly.DeBruijnGraph.mergeForward
@@ -24567,7 +24567,7 @@
           92
         </td>
         <td>
-          1711
+          1716
         </td>
         <td>
           org.hammerlab.guacamole.assembly.DeBruijnGraph.mergeBackward
@@ -24580,7 +24580,20 @@
           93
         </td>
         <td>
-          1713
+          1719
+        </td>
+        <td>
+          scala.collection.TraversableLike.++
+        </td>
+        <td style="background: #F0ADAD">
+          backwardUniquePath.++[DeBruijnGraph.this.Kmer, Seq[DeBruijnGraph.this.Kmer]]({  scoverage.Invoker.invoked(1717, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  forwardUniquePath.tail})({  scoverage.Invoker.invoked(1718, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.canBuildFrom[DeBruijnGraph.this.Kmer]})
+        </td>
+      </tr><tr>
+        <td>
+          93
+        </td>
+        <td>
+          1718
         </td>
         <td>
           scala.collection.Seq.canBuildFrom
@@ -24593,7 +24606,7 @@
           93
         </td>
         <td>
-          1712
+          1717
         </td>
         <td>
           scala.collection.TraversableLike.tail
@@ -24603,36 +24616,23 @@
         </td>
       </tr><tr>
         <td>
-          93
-        </td>
-        <td>
-          1714
-        </td>
-        <td>
-          scala.collection.TraversableLike.++
-        </td>
-        <td style="background: #F0ADAD">
-          backwardUniquePath.++[DeBruijnGraph.this.Kmer, Seq[DeBruijnGraph.this.Kmer]]({  scoverage.Invoker.invoked(1712, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  forwardUniquePath.tail})({  scoverage.Invoker.invoked(1713, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.canBuildFrom[DeBruijnGraph.this.Kmer]})
-        </td>
-      </tr><tr>
-        <td>
           95
         </td>
         <td>
-          1739
+          1744
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  {    scoverage.Invoker.invoked(1722, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    fullMergeablePath.foreach[Any](((k: DeBruijnGraph.this.Kmer) =&gt; {      {        scoverage.Invoker.invoked(1716, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        allNodes.remove(k)      };      if ({        scoverage.Invoker.invoked(1717, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        DeBruijnGraph.this.kmerCounts.contains(k)      })        {          scoverage.Invoker.invoked(1719, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          {            scoverage.Invoker.invoked(1718, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            DeBruijnGraph.this.removeKmer(k)          }        }      else        {          scoverage.Invoker.invoked(1721, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          {            scoverage.Invoker.invoked(1720, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            ()          }        }    }))  };  val mergedNode: org.hammerlab.guacamole.assembly.DeBruijnGraph.Sequence = {    scoverage.Invoker.invoked(1724, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    DeBruijnGraph.mergeOverlappingSequences(fullMergeablePath, {      scoverage.Invoker.invoked(1723, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      DeBruijnGraph.this.kmerSize    })  };  {    scoverage.Invoker.invoked(1730, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    fullMergeablePath.zipWithIndex[DeBruijnGraph.this.Kmer, Seq[(DeBruijnGraph.this.Kmer, Int)]]({  scoverage.Invoker.invoked(1725, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.canBuildFrom[(DeBruijnGraph.this.Kmer, Int)]}).foreach[Unit](((x0$2: (DeBruijnGraph.this.Kmer, Int)) =&gt; {      scoverage.Invoker.invoked(1729, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      x0$2 match {        case (_1: DeBruijnGraph.this.Kmer, _2: Int)(DeBruijnGraph.this.Kmer, Int)((nodeElement @ _), (index @ _)) =&gt; {          scoverage.Invoker.invoked(1728, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          {            scoverage.Invoker.invoked(1727, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            DeBruijnGraph.this.mergeIndex.update(nodeElement, {              scoverage.Invoker.invoked(1726, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              scala.Tuple2.apply[org.hammerlab.guacamole.assembly.DeBruijnGraph.Sequence, Int](mergedNode, index)            })          }        }      }    }))  };  val mergedNodePrefix: DeBruijnGraph.this.SubKmer = {    scoverage.Invoker.invoked(1731, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    DeBruijnGraph.this.kmerPrefix(mergedNode)  };  val mergedNodeSuffix: DeBruijnGraph.this.SubKmer = {    scoverage.Invoker.invoked(1732, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    DeBruijnGraph.this.kmerSuffix(mergedNode)  };  {    scoverage.Invoker.invoked(1734, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    DeBruijnGraph.this.prefixTable.update(mergedNodePrefix, {      &lt;synthetic&gt; val x$3: org.hammerlab.guacamole.assembly.DeBruijnGraph.Sequence = mergedNode;      {        scoverage.Invoker.invoked(1733, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        DeBruijnGraph.this.prefixTable.getOrElse[List[DeBruijnGraph.this.Kmer]](mergedNodePrefix, immutable.this.List.empty[Nothing]).::[DeBruijnGraph.this.Kmer](x$3)      }    })  };  {    scoverage.Invoker.invoked(1736, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    DeBruijnGraph.this.suffixTable.update(mergedNodeSuffix, {      &lt;synthetic&gt; val x$4: org.hammerlab.guacamole.assembly.DeBruijnGraph.Sequence = mergedNode;      {        scoverage.Invoker.invoked(1735, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        DeBruijnGraph.this.suffixTable.getOrElse[List[DeBruijnGraph.this.Kmer]](mergedNodeSuffix, immutable.this.List.empty[Nothing]).::[DeBruijnGraph.this.Kmer](x$4)      }    })  };  {    scoverage.Invoker.invoked(1738, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    DeBruijnGraph.this.kmerCounts.put(mergedNode, {      scoverage.Invoker.invoked(1737, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      DeBruijnGraph.this.kmerCounts.getOrElse[Int](mergedNode, 0).+(1)    })  }}
+          {  {    scoverage.Invoker.invoked(1727, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    fullMergeablePath.foreach[Any](((k: DeBruijnGraph.this.Kmer) =&gt; {      {        scoverage.Invoker.invoked(1721, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        allNodes.remove(k)      };      if ({        scoverage.Invoker.invoked(1722, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        DeBruijnGraph.this.kmerCounts.contains(k)      })        {          scoverage.Invoker.invoked(1724, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          {            scoverage.Invoker.invoked(1723, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            DeBruijnGraph.this.removeKmer(k)          }        }      else        {          scoverage.Invoker.invoked(1726, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          {            scoverage.Invoker.invoked(1725, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            ()          }        }    }))  };  val mergedNode: org.hammerlab.guacamole.assembly.DeBruijnGraph.Sequence = {    scoverage.Invoker.invoked(1729, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    DeBruijnGraph.mergeOverlappingSequences(fullMergeablePath, {      scoverage.Invoker.invoked(1728, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      DeBruijnGraph.this.kmerSize    })  };  {    scoverage.Invoker.invoked(1735, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    fullMergeablePath.zipWithIndex[DeBruijnGraph.this.Kmer, Seq[(DeBruijnGraph.this.Kmer, Int)]]({  scoverage.Invoker.invoked(1730, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.canBuildFrom[(DeBruijnGraph.this.Kmer, Int)]}).foreach[Unit](((x0$2: (DeBruijnGraph.this.Kmer, Int)) =&gt; {      scoverage.Invoker.invoked(1734, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      x0$2 match {        case (_1: DeBruijnGraph.this.Kmer, _2: Int)(DeBruijnGraph.this.Kmer, Int)((nodeElement @ _), (index @ _)) =&gt; {          scoverage.Invoker.invoked(1733, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          {            scoverage.Invoker.invoked(1732, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            DeBruijnGraph.this.mergeIndex.update(nodeElement, {              scoverage.Invoker.invoked(1731, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              scala.Tuple2.apply[org.hammerlab.guacamole.assembly.DeBruijnGraph.Sequence, Int](mergedNode, index)            })          }        }      }    }))  };  val mergedNodePrefix: DeBruijnGraph.this.SubKmer = {    scoverage.Invoker.invoked(1736, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    DeBruijnGraph.this.kmerPrefix(mergedNode)  };  val mergedNodeSuffix: DeBruijnGraph.this.SubKmer = {    scoverage.Invoker.invoked(1737, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    DeBruijnGraph.this.kmerSuffix(mergedNode)  };  {    scoverage.Invoker.invoked(1739, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    DeBruijnGraph.this.prefixTable.update(mergedNodePrefix, {      &lt;synthetic&gt; val x$3: org.hammerlab.guacamole.assembly.DeBruijnGraph.Sequence = mergedNode;      {        scoverage.Invoker.invoked(1738, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        DeBruijnGraph.this.prefixTable.getOrElse[List[DeBruijnGraph.this.Kmer]](mergedNodePrefix, immutable.this.List.empty[Nothing]).::[DeBruijnGraph.this.Kmer](x$3)      }    })  };  {    scoverage.Invoker.invoked(1741, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    DeBruijnGraph.this.suffixTable.update(mergedNodeSuffix, {      &lt;synthetic&gt; val x$4: org.hammerlab.guacamole.assembly.DeBruijnGraph.Sequence = mergedNode;      {        scoverage.Invoker.invoked(1740, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        DeBruijnGraph.this.suffixTable.getOrElse[List[DeBruijnGraph.this.Kmer]](mergedNodeSuffix, immutable.this.List.empty[Nothing]).::[DeBruijnGraph.this.Kmer](x$4)      }    })  };  {    scoverage.Invoker.invoked(1743, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    DeBruijnGraph.this.kmerCounts.put(mergedNode, {      scoverage.Invoker.invoked(1742, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      DeBruijnGraph.this.kmerCounts.getOrElse[Int](mergedNode, 0).+(1)    })  }}
         </td>
       </tr><tr>
         <td>
           95
         </td>
         <td>
-          1715
+          1720
         </td>
         <td>
           scala.Int.&gt;
@@ -24645,20 +24645,20 @@
           97
         </td>
         <td>
-          1722
+          1727
         </td>
         <td>
           scala.collection.IterableLike.foreach
         </td>
         <td style="background: #F0ADAD">
-          fullMergeablePath.foreach[Any](((k: DeBruijnGraph.this.Kmer) =&gt; {  {    scoverage.Invoker.invoked(1716, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    allNodes.remove(k)  };  if ({    scoverage.Invoker.invoked(1717, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    DeBruijnGraph.this.kmerCounts.contains(k)  })    {      scoverage.Invoker.invoked(1719, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(1718, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        DeBruijnGraph.this.removeKmer(k)      }    }  else    {      scoverage.Invoker.invoked(1721, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(1720, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        ()      }    }}))
+          fullMergeablePath.foreach[Any](((k: DeBruijnGraph.this.Kmer) =&gt; {  {    scoverage.Invoker.invoked(1721, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    allNodes.remove(k)  };  if ({    scoverage.Invoker.invoked(1722, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    DeBruijnGraph.this.kmerCounts.contains(k)  })    {      scoverage.Invoker.invoked(1724, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(1723, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        DeBruijnGraph.this.removeKmer(k)      }    }  else    {      scoverage.Invoker.invoked(1726, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(1725, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        ()      }    }}))
         </td>
       </tr><tr>
         <td>
           98
         </td>
         <td>
-          1716
+          1721
         </td>
         <td>
           scala.collection.mutable.SetLike.remove
@@ -24671,46 +24671,20 @@
           99
         </td>
         <td>
-          1719
+          1725
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1718, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  DeBruijnGraph.this.removeKmer(k)}
+          ()
         </td>
       </tr><tr>
         <td>
           99
         </td>
         <td>
-          1721
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1720, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
-        </td>
-      </tr><tr>
-        <td>
-          99
-        </td>
-        <td>
-          1718
-        </td>
-        <td>
-          org.hammerlab.guacamole.assembly.DeBruijnGraph.removeKmer
-        </td>
-        <td style="background: #F0ADAD">
-          DeBruijnGraph.this.removeKmer(k)
-        </td>
-      </tr><tr>
-        <td>
-          99
-        </td>
-        <td>
-          1717
+          1722
         </td>
         <td>
           scala.collection.MapLike.contains
@@ -24723,33 +24697,46 @@
           99
         </td>
         <td>
-          1720
+          1724
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          ()
+          {  scoverage.Invoker.invoked(1723, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  DeBruijnGraph.this.removeKmer(k)}
         </td>
       </tr><tr>
         <td>
-          103
+          99
         </td>
         <td>
-          1724
+          1726
         </td>
         <td>
-          org.hammerlab.guacamole.assembly.DeBruijnGraph.mergeOverlappingSequences
+          &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          DeBruijnGraph.mergeOverlappingSequences(fullMergeablePath, {  scoverage.Invoker.invoked(1723, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  DeBruijnGraph.this.kmerSize})
+          {  scoverage.Invoker.invoked(1725, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
         </td>
       </tr><tr>
         <td>
-          103
+          99
         </td>
         <td>
           1723
+        </td>
+        <td>
+          org.hammerlab.guacamole.assembly.DeBruijnGraph.removeKmer
+        </td>
+        <td style="background: #F0ADAD">
+          DeBruijnGraph.this.removeKmer(k)
+        </td>
+      </tr><tr>
+        <td>
+          103
+        </td>
+        <td>
+          1728
         </td>
         <td>
           org.hammerlab.guacamole.assembly.DeBruijnGraph.kmerSize
@@ -24759,10 +24746,36 @@
         </td>
       </tr><tr>
         <td>
+          103
+        </td>
+        <td>
+          1729
+        </td>
+        <td>
+          org.hammerlab.guacamole.assembly.DeBruijnGraph.mergeOverlappingSequences
+        </td>
+        <td style="background: #F0ADAD">
+          DeBruijnGraph.mergeOverlappingSequences(fullMergeablePath, {  scoverage.Invoker.invoked(1728, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  DeBruijnGraph.this.kmerSize})
+        </td>
+      </tr><tr>
+        <td>
           106
         </td>
         <td>
-          1725
+          1734
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          x0$2 match {  case (_1: DeBruijnGraph.this.Kmer, _2: Int)(DeBruijnGraph.this.Kmer, Int)((nodeElement @ _), (index @ _)) =&gt; {    scoverage.Invoker.invoked(1733, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(1732, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      DeBruijnGraph.this.mergeIndex.update(nodeElement, {        scoverage.Invoker.invoked(1731, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        scala.Tuple2.apply[org.hammerlab.guacamole.assembly.DeBruijnGraph.Sequence, Int](mergedNode, index)      })    }  }}
+        </td>
+      </tr><tr>
+        <td>
+          106
+        </td>
+        <td>
+          1730
         </td>
         <td>
           scala.collection.Seq.canBuildFrom
@@ -24775,59 +24788,20 @@
           106
         </td>
         <td>
-          1730
+          1735
         </td>
         <td>
           scala.collection.IterableLike.foreach
         </td>
         <td style="background: #F0ADAD">
-          fullMergeablePath.zipWithIndex[DeBruijnGraph.this.Kmer, Seq[(DeBruijnGraph.this.Kmer, Int)]]({  scoverage.Invoker.invoked(1725, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.canBuildFrom[(DeBruijnGraph.this.Kmer, Int)]}).foreach[Unit](((x0$2: (DeBruijnGraph.this.Kmer, Int)) =&gt; {  scoverage.Invoker.invoked(1729, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x0$2 match {    case (_1: DeBruijnGraph.this.Kmer, _2: Int)(DeBruijnGraph.this.Kmer, Int)((nodeElement @ _), (index @ _)) =&gt; {      scoverage.Invoker.invoked(1728, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(1727, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        DeBruijnGraph.this.mergeIndex.update(nodeElement, {          scoverage.Invoker.invoked(1726, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          scala.Tuple2.apply[org.hammerlab.guacamole.assembly.DeBruijnGraph.Sequence, Int](mergedNode, index)        })      }    }  }}))
-        </td>
-      </tr><tr>
-        <td>
-          106
-        </td>
-        <td>
-          1729
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          x0$2 match {  case (_1: DeBruijnGraph.this.Kmer, _2: Int)(DeBruijnGraph.this.Kmer, Int)((nodeElement @ _), (index @ _)) =&gt; {    scoverage.Invoker.invoked(1728, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(1727, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      DeBruijnGraph.this.mergeIndex.update(nodeElement, {        scoverage.Invoker.invoked(1726, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        scala.Tuple2.apply[org.hammerlab.guacamole.assembly.DeBruijnGraph.Sequence, Int](mergedNode, index)      })    }  }}
+          fullMergeablePath.zipWithIndex[DeBruijnGraph.this.Kmer, Seq[(DeBruijnGraph.this.Kmer, Int)]]({  scoverage.Invoker.invoked(1730, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.canBuildFrom[(DeBruijnGraph.this.Kmer, Int)]}).foreach[Unit](((x0$2: (DeBruijnGraph.this.Kmer, Int)) =&gt; {  scoverage.Invoker.invoked(1734, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x0$2 match {    case (_1: DeBruijnGraph.this.Kmer, _2: Int)(DeBruijnGraph.this.Kmer, Int)((nodeElement @ _), (index @ _)) =&gt; {      scoverage.Invoker.invoked(1733, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(1732, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        DeBruijnGraph.this.mergeIndex.update(nodeElement, {          scoverage.Invoker.invoked(1731, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          scala.Tuple2.apply[org.hammerlab.guacamole.assembly.DeBruijnGraph.Sequence, Int](mergedNode, index)        })      }    }  }}))
         </td>
       </tr><tr>
         <td>
           107
         </td>
         <td>
-          1728
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1727, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  DeBruijnGraph.this.mergeIndex.update(nodeElement, {    scoverage.Invoker.invoked(1726, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.Tuple2.apply[org.hammerlab.guacamole.assembly.DeBruijnGraph.Sequence, Int](mergedNode, index)  })}
-        </td>
-      </tr><tr>
-        <td>
-          107
-        </td>
-        <td>
-          1727
-        </td>
-        <td>
-          scala.collection.mutable.MapLike.update
-        </td>
-        <td style="background: #F0ADAD">
-          DeBruijnGraph.this.mergeIndex.update(nodeElement, {  scoverage.Invoker.invoked(1726, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.Tuple2.apply[org.hammerlab.guacamole.assembly.DeBruijnGraph.Sequence, Int](mergedNode, index)})
-        </td>
-      </tr><tr>
-        <td>
-          107
-        </td>
-        <td>
-          1726
+          1731
         </td>
         <td>
           scala.Tuple2.apply
@@ -24837,10 +24811,36 @@
         </td>
       </tr><tr>
         <td>
+          107
+        </td>
+        <td>
+          1733
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  scoverage.Invoker.invoked(1732, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  DeBruijnGraph.this.mergeIndex.update(nodeElement, {    scoverage.Invoker.invoked(1731, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.Tuple2.apply[org.hammerlab.guacamole.assembly.DeBruijnGraph.Sequence, Int](mergedNode, index)  })}
+        </td>
+      </tr><tr>
+        <td>
+          107
+        </td>
+        <td>
+          1732
+        </td>
+        <td>
+          scala.collection.mutable.MapLike.update
+        </td>
+        <td style="background: #F0ADAD">
+          DeBruijnGraph.this.mergeIndex.update(nodeElement, {  scoverage.Invoker.invoked(1731, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.Tuple2.apply[org.hammerlab.guacamole.assembly.DeBruijnGraph.Sequence, Int](mergedNode, index)})
+        </td>
+      </tr><tr>
+        <td>
           111
         </td>
         <td>
-          1731
+          1736
         </td>
         <td>
           org.hammerlab.guacamole.assembly.DeBruijnGraph.kmerPrefix
@@ -24853,7 +24853,7 @@
           112
         </td>
         <td>
-          1732
+          1737
         </td>
         <td>
           org.hammerlab.guacamole.assembly.DeBruijnGraph.kmerSuffix
@@ -24866,20 +24866,20 @@
           113
         </td>
         <td>
-          1734
+          1739
         </td>
         <td>
           scala.collection.mutable.MapLike.update
         </td>
         <td style="background: #F0ADAD">
-          DeBruijnGraph.this.prefixTable.update(mergedNodePrefix, {  &lt;synthetic&gt; val x$3: org.hammerlab.guacamole.assembly.DeBruijnGraph.Sequence = mergedNode;  {    scoverage.Invoker.invoked(1733, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    DeBruijnGraph.this.prefixTable.getOrElse[List[DeBruijnGraph.this.Kmer]](mergedNodePrefix, immutable.this.List.empty[Nothing]).::[DeBruijnGraph.this.Kmer](x$3)  }})
+          DeBruijnGraph.this.prefixTable.update(mergedNodePrefix, {  &lt;synthetic&gt; val x$3: org.hammerlab.guacamole.assembly.DeBruijnGraph.Sequence = mergedNode;  {    scoverage.Invoker.invoked(1738, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    DeBruijnGraph.this.prefixTable.getOrElse[List[DeBruijnGraph.this.Kmer]](mergedNodePrefix, immutable.this.List.empty[Nothing]).::[DeBruijnGraph.this.Kmer](x$3)  }})
         </td>
       </tr><tr>
         <td>
           113
         </td>
         <td>
-          1733
+          1738
         </td>
         <td>
           scala.collection.immutable.List.::
@@ -24892,20 +24892,20 @@
           114
         </td>
         <td>
-          1736
+          1741
         </td>
         <td>
           scala.collection.mutable.MapLike.update
         </td>
         <td style="background: #F0ADAD">
-          DeBruijnGraph.this.suffixTable.update(mergedNodeSuffix, {  &lt;synthetic&gt; val x$4: org.hammerlab.guacamole.assembly.DeBruijnGraph.Sequence = mergedNode;  {    scoverage.Invoker.invoked(1735, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    DeBruijnGraph.this.suffixTable.getOrElse[List[DeBruijnGraph.this.Kmer]](mergedNodeSuffix, immutable.this.List.empty[Nothing]).::[DeBruijnGraph.this.Kmer](x$4)  }})
+          DeBruijnGraph.this.suffixTable.update(mergedNodeSuffix, {  &lt;synthetic&gt; val x$4: org.hammerlab.guacamole.assembly.DeBruijnGraph.Sequence = mergedNode;  {    scoverage.Invoker.invoked(1740, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    DeBruijnGraph.this.suffixTable.getOrElse[List[DeBruijnGraph.this.Kmer]](mergedNodeSuffix, immutable.this.List.empty[Nothing]).::[DeBruijnGraph.this.Kmer](x$4)  }})
         </td>
       </tr><tr>
         <td>
           114
         </td>
         <td>
-          1735
+          1740
         </td>
         <td>
           scala.collection.immutable.List.::
@@ -24918,7 +24918,20 @@
           115
         </td>
         <td>
-          1737
+          1743
+        </td>
+        <td>
+          scala.collection.mutable.MapLike.put
+        </td>
+        <td style="background: #F0ADAD">
+          DeBruijnGraph.this.kmerCounts.put(mergedNode, {  scoverage.Invoker.invoked(1742, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  DeBruijnGraph.this.kmerCounts.getOrElse[Int](mergedNode, 0).+(1)})
+        </td>
+      </tr><tr>
+        <td>
+          115
+        </td>
+        <td>
+          1742
         </td>
         <td>
           scala.Int.+
@@ -24928,36 +24941,23 @@
         </td>
       </tr><tr>
         <td>
-          115
-        </td>
-        <td>
-          1738
-        </td>
-        <td>
-          scala.collection.mutable.MapLike.put
-        </td>
-        <td style="background: #F0ADAD">
-          DeBruijnGraph.this.kmerCounts.put(mergedNode, {  scoverage.Invoker.invoked(1737, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  DeBruijnGraph.this.kmerCounts.getOrElse[Int](mergedNode, 0).+(1)})
-        </td>
-      </tr><tr>
-        <td>
           117
         </td>
         <td>
-          1741
+          1746
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1740, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  allNodes.remove(node)}
+          {  scoverage.Invoker.invoked(1745, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  allNodes.remove(node)}
         </td>
       </tr><tr>
         <td>
           117
         </td>
         <td>
-          1740
+          1745
         </td>
         <td>
           scala.collection.mutable.SetLike.remove
@@ -24970,111 +24970,111 @@
           134
         </td>
         <td>
-          1746
-        </td>
-        <td>
-          org.hammerlab.guacamole.assembly.DeBruijnGraph.children
-        </td>
-        <td style="background: #F0ADAD">
-          DeBruijnGraph.this.children(node)
-        </td>
-      </tr><tr>
-        <td>
-          134
-        </td>
-        <td>
-          1748
-        </td>
-        <td>
-          org.hammerlab.guacamole.assembly.DeBruijnGraph.parents
-        </td>
-        <td style="background: #F0ADAD">
-          DeBruijnGraph.this.parents(node)
-        </td>
-      </tr><tr>
-        <td>
-          134
-        </td>
-        <td>
-          1747
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          {  ((node: DeBruijnGraph.this.Kmer) =&gt; {    scoverage.Invoker.invoked(1746, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    DeBruijnGraph.this.children(node)  })}
-        </td>
-      </tr><tr>
-        <td>
-          134
-        </td>
-        <td>
-          1749
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          {  ((node: DeBruijnGraph.this.Kmer) =&gt; {    scoverage.Invoker.invoked(1748, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    DeBruijnGraph.this.parents(node)  })}
-        </td>
-      </tr><tr>
-        <td>
-          135
-        </td>
-        <td>
           1752
         </td>
         <td>
-          org.hammerlab.guacamole.assembly.DeBruijnGraph.children
+          &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          DeBruijnGraph.this.children(node)
+          {  ((node: DeBruijnGraph.this.Kmer) =&gt; {    scoverage.Invoker.invoked(1751, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    DeBruijnGraph.this.children(node)  })}
         </td>
       </tr><tr>
         <td>
-          135
+          134
+        </td>
+        <td>
+          1754
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  ((node: DeBruijnGraph.this.Kmer) =&gt; {    scoverage.Invoker.invoked(1753, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    DeBruijnGraph.this.parents(node)  })}
+        </td>
+      </tr><tr>
+        <td>
+          134
         </td>
         <td>
           1751
         </td>
         <td>
-          &lt;nosymbol&gt;
+          org.hammerlab.guacamole.assembly.DeBruijnGraph.children
         </td>
         <td style="background: #F0ADAD">
-          {  ((node: DeBruijnGraph.this.Kmer) =&gt; {    scoverage.Invoker.invoked(1750, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    DeBruijnGraph.this.parents(node)  })}
+          DeBruijnGraph.this.children(node)
         </td>
       </tr><tr>
         <td>
-          135
+          134
         </td>
         <td>
           1753
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          {  ((node: DeBruijnGraph.this.Kmer) =&gt; {    scoverage.Invoker.invoked(1752, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    DeBruijnGraph.this.children(node)  })}
-        </td>
-      </tr><tr>
-        <td>
-          135
-        </td>
-        <td>
-          1750
         </td>
         <td>
           org.hammerlab.guacamole.assembly.DeBruijnGraph.parents
         </td>
         <td style="background: #F0ADAD">
           DeBruijnGraph.this.parents(node)
+        </td>
+      </tr><tr>
+        <td>
+          135
+        </td>
+        <td>
+          1755
+        </td>
+        <td>
+          org.hammerlab.guacamole.assembly.DeBruijnGraph.parents
+        </td>
+        <td style="background: #F0ADAD">
+          DeBruijnGraph.this.parents(node)
+        </td>
+      </tr><tr>
+        <td>
+          135
+        </td>
+        <td>
+          1757
+        </td>
+        <td>
+          org.hammerlab.guacamole.assembly.DeBruijnGraph.children
+        </td>
+        <td style="background: #F0ADAD">
+          DeBruijnGraph.this.children(node)
+        </td>
+      </tr><tr>
+        <td>
+          135
+        </td>
+        <td>
+          1756
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  ((node: DeBruijnGraph.this.Kmer) =&gt; {    scoverage.Invoker.invoked(1755, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    DeBruijnGraph.this.parents(node)  })}
+        </td>
+      </tr><tr>
+        <td>
+          135
+        </td>
+        <td>
+          1758
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  ((node: DeBruijnGraph.this.Kmer) =&gt; {    scoverage.Invoker.invoked(1757, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    DeBruijnGraph.this.children(node)  })}
         </td>
       </tr><tr>
         <td>
           138
         </td>
         <td>
-          1754
+          1759
         </td>
         <td>
           scala.collection.generic.GenericCompanion.apply
@@ -25087,7 +25087,20 @@
           143
         </td>
         <td>
-          1755
+          1761
+        </td>
+        <td>
+          scala.collection.TraversableLike.filterNot
+        </td>
+        <td style="background: #F0ADAD">
+          nextFunc.apply(current).filterNot({  &lt;synthetic&gt; val eta$0$1: scala.collection.mutable.Set[DeBruijnGraph.this.Kmer] = visited;  ((elem: DeBruijnGraph.this.Kmer) =&gt; {    scoverage.Invoker.invoked(1760, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    eta$0$1.contains(elem)  })})
+        </td>
+      </tr><tr>
+        <td>
+          143
+        </td>
+        <td>
+          1760
         </td>
         <td>
           scala.collection.SetLike.contains
@@ -25100,46 +25113,33 @@
           143
         </td>
         <td>
-          1757
+          1762
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1756, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  nextFunc.apply(current).filterNot({    &lt;synthetic&gt; val eta$0$1: scala.collection.mutable.Set[DeBruijnGraph.this.Kmer] = visited;    ((elem: DeBruijnGraph.this.Kmer) =&gt; {      scoverage.Invoker.invoked(1755, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      eta$0$1.contains(elem)    })  })}
-        </td>
-      </tr><tr>
-        <td>
-          143
-        </td>
-        <td>
-          1756
-        </td>
-        <td>
-          scala.collection.TraversableLike.filterNot
-        </td>
-        <td style="background: #F0ADAD">
-          nextFunc.apply(current).filterNot({  &lt;synthetic&gt; val eta$0$1: scala.collection.mutable.Set[DeBruijnGraph.this.Kmer] = visited;  ((elem: DeBruijnGraph.this.Kmer) =&gt; {    scoverage.Invoker.invoked(1755, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    eta$0$1.contains(elem)  })})
+          {  scoverage.Invoker.invoked(1761, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  nextFunc.apply(current).filterNot({    &lt;synthetic&gt; val eta$0$1: scala.collection.mutable.Set[DeBruijnGraph.this.Kmer] = visited;    ((elem: DeBruijnGraph.this.Kmer) =&gt; {      scoverage.Invoker.invoked(1760, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      eta$0$1.contains(elem)    })  })}
         </td>
       </tr><tr>
         <td>
           145
         </td>
         <td>
-          1759
+          1764
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1758, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  nextFunc.apply(current)}
+          {  scoverage.Invoker.invoked(1763, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  nextFunc.apply(current)}
         </td>
       </tr><tr>
         <td>
           145
         </td>
         <td>
-          1758
+          1763
         </td>
         <td>
           scala.Function1.apply
@@ -25152,7 +25152,7 @@
           147
         </td>
         <td>
-          1760
+          1765
         </td>
         <td>
           org.hammerlab.guacamole.assembly.DeBruijnGraph.nextNodes
@@ -25165,7 +25165,7 @@
           148
         </td>
         <td>
-          1761
+          1766
         </td>
         <td>
           scala.collection.immutable.List.apply
@@ -25178,52 +25178,13 @@
           151
         </td>
         <td>
-          1770
+          1775
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  {    current = {      scoverage.Invoker.invoked(1765, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      next.head    };    {      scoverage.Invoker.invoked(1766, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      visited.+=(current)    };    mergeable = {      &lt;synthetic&gt; val x$5: DeBruijnGraph.this.Kmer = current;      {        scoverage.Invoker.invoked(1767, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        mergeable.::[DeBruijnGraph.this.Kmer](x$5)      }    };    next = {      scoverage.Invoker.invoked(1768, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      nextNodes(current)    }  };  {    scoverage.Invoker.invoked(1769, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    while$2()  }}
-        </td>
-      </tr><tr>
-        <td>
-          151
-        </td>
-        <td>
-          1764
-        </td>
-        <td>
-          scala.Boolean.&amp;&amp;
-        </td>
-        <td style="background: #F0ADAD">
-          next.size.==({  scoverage.Invoker.invoked(1762, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  1}).&amp;&amp;({  scoverage.Invoker.invoked(1763, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  prevFunc.apply(next.head).size.==(1)})
-        </td>
-      </tr><tr>
-        <td>
-          151
-        </td>
-        <td>
-          1763
-        </td>
-        <td>
-          scala.Int.==
-        </td>
-        <td style="background: #F0ADAD">
-          prevFunc.apply(next.head).size.==(1)
-        </td>
-      </tr><tr>
-        <td>
-          151
-        </td>
-        <td>
-          1772
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1771, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
+          {  {    current = {      scoverage.Invoker.invoked(1770, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      next.head    };    {      scoverage.Invoker.invoked(1771, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      visited.+=(current)    };    mergeable = {      &lt;synthetic&gt; val x$5: DeBruijnGraph.this.Kmer = current;      {        scoverage.Invoker.invoked(1772, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        mergeable.::[DeBruijnGraph.this.Kmer](x$5)      }    };    next = {      scoverage.Invoker.invoked(1773, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      nextNodes(current)    }  };  {    scoverage.Invoker.invoked(1774, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    while$2()  }}
         </td>
       </tr><tr>
         <td>
@@ -25231,6 +25192,32 @@
         </td>
         <td>
           1769
+        </td>
+        <td>
+          scala.Boolean.&amp;&amp;
+        </td>
+        <td style="background: #F0ADAD">
+          next.size.==({  scoverage.Invoker.invoked(1767, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  1}).&amp;&amp;({  scoverage.Invoker.invoked(1768, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  prevFunc.apply(next.head).size.==(1)})
+        </td>
+      </tr><tr>
+        <td>
+          151
+        </td>
+        <td>
+          1777
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  scoverage.Invoker.invoked(1776, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
+        </td>
+      </tr><tr>
+        <td>
+          151
+        </td>
+        <td>
+          1774
         </td>
         <td>
           org.hammerlab.guacamole.assembly.DeBruijnGraph.while$2
@@ -25243,20 +25230,20 @@
           151
         </td>
         <td>
-          1762
+          1768
         </td>
         <td>
-          &lt;nosymbol&gt;
+          scala.Int.==
         </td>
         <td style="background: #F0ADAD">
-          1
+          prevFunc.apply(next.head).size.==(1)
         </td>
       </tr><tr>
         <td>
           151
         </td>
         <td>
-          1771
+          1776
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -25266,10 +25253,23 @@
         </td>
       </tr><tr>
         <td>
+          151
+        </td>
+        <td>
+          1767
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          1
+        </td>
+      </tr><tr>
+        <td>
           152
         </td>
         <td>
-          1765
+          1770
         </td>
         <td>
           scala.collection.IterableLike.head
@@ -25282,7 +25282,7 @@
           153
         </td>
         <td>
-          1766
+          1771
         </td>
         <td>
           scala.collection.mutable.SetLike.+=
@@ -25295,7 +25295,7 @@
           154
         </td>
         <td>
-          1767
+          1772
         </td>
         <td>
           scala.collection.immutable.List.::
@@ -25308,7 +25308,7 @@
           155
         </td>
         <td>
-          1768
+          1773
         </td>
         <td>
           org.hammerlab.guacamole.assembly.DeBruijnGraph.nextNodes
@@ -25321,7 +25321,20 @@
           161
         </td>
         <td>
-          1773
+          1779
+        </td>
+        <td>
+          org.hammerlab.guacamole.assembly.DeBruijnGraph.findMergeable$default$3
+        </td>
+        <td style="background: #F0ADAD">
+          DeBruijnGraph.this.findMergeable$default$3
+        </td>
+      </tr><tr>
+        <td>
+          161
+        </td>
+        <td>
+          1778
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -25334,20 +25347,20 @@
           161
         </td>
         <td>
-          1775
+          1780
         </td>
         <td>
           scala.collection.SeqLike.reverse
         </td>
         <td style="background: #F0ADAD">
-          DeBruijnGraph.this.findMergeable(kmer, {  scoverage.Invoker.invoked(1773, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  true}, {  scoverage.Invoker.invoked(1774, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  DeBruijnGraph.this.findMergeable$default$3}).reverse
+          DeBruijnGraph.this.findMergeable(kmer, {  scoverage.Invoker.invoked(1778, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  true}, {  scoverage.Invoker.invoked(1779, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  DeBruijnGraph.this.findMergeable$default$3}).reverse
         </td>
       </tr><tr>
         <td>
-          161
+          162
         </td>
         <td>
-          1774
+          1782
         </td>
         <td>
           org.hammerlab.guacamole.assembly.DeBruijnGraph.findMergeable$default$3
@@ -25360,33 +25373,7 @@
           162
         </td>
         <td>
-          1778
-        </td>
-        <td>
-          org.hammerlab.guacamole.assembly.DeBruijnGraph.findMergeable
-        </td>
-        <td style="background: #F0ADAD">
-          DeBruijnGraph.this.findMergeable(kmer, {  scoverage.Invoker.invoked(1776, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  false}, {  scoverage.Invoker.invoked(1777, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  DeBruijnGraph.this.findMergeable$default$3})
-        </td>
-      </tr><tr>
-        <td>
-          162
-        </td>
-        <td>
-          1777
-        </td>
-        <td>
-          org.hammerlab.guacamole.assembly.DeBruijnGraph.findMergeable$default$3
-        </td>
-        <td style="background: #F0ADAD">
-          DeBruijnGraph.this.findMergeable$default$3
-        </td>
-      </tr><tr>
-        <td>
-          162
-        </td>
-        <td>
-          1776
+          1781
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -25396,10 +25383,49 @@
         </td>
       </tr><tr>
         <td>
+          162
+        </td>
+        <td>
+          1783
+        </td>
+        <td>
+          org.hammerlab.guacamole.assembly.DeBruijnGraph.findMergeable
+        </td>
+        <td style="background: #F0ADAD">
+          DeBruijnGraph.this.findMergeable(kmer, {  scoverage.Invoker.invoked(1781, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  false}, {  scoverage.Invoker.invoked(1782, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  DeBruijnGraph.this.findMergeable$default$3})
+        </td>
+      </tr><tr>
+        <td>
           183
         </td>
         <td>
-          1779
+          1788
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          &quot;&quot;
+        </td>
+      </tr><tr>
+        <td>
+          183
+        </td>
+        <td>
+          1791
+        </td>
+        <td>
+          scala.StringContext.s
+        </td>
+        <td style="background: #F0ADAD">
+          scala.StringContext.apply({  scoverage.Invoker.invoked(1786, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot;Source kmer &quot;}, {  scoverage.Invoker.invoked(1787, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot; has a size != &quot;}, {  scoverage.Invoker.invoked(1788, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot;&quot;}).s({  scoverage.Invoker.invoked(1789, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  org.hammerlab.guacamole.Bases.basesToString(source)}, {  scoverage.Invoker.invoked(1790, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  DeBruijnGraph.this.kmerSize})
+        </td>
+      </tr><tr>
+        <td>
+          183
+        </td>
+        <td>
+          1790
         </td>
         <td>
           org.hammerlab.guacamole.assembly.DeBruijnGraph.kmerSize
@@ -25412,7 +25438,20 @@
           183
         </td>
         <td>
-          1782
+          1784
+        </td>
+        <td>
+          org.hammerlab.guacamole.assembly.DeBruijnGraph.kmerSize
+        </td>
+        <td style="background: #F0ADAD">
+          DeBruijnGraph.this.kmerSize
+        </td>
+      </tr><tr>
+        <td>
+          183
+        </td>
+        <td>
+          1787
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -25425,7 +25464,7 @@
           183
         </td>
         <td>
-          1781
+          1786
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -25438,7 +25477,7 @@
           183
         </td>
         <td>
-          1784
+          1789
         </td>
         <td>
           org.hammerlab.guacamole.Bases.basesToString
@@ -25451,52 +25490,13 @@
           183
         </td>
         <td>
-          1787
+          1792
         </td>
         <td>
           scala.Predef.assume
         </td>
         <td style="background: #F0ADAD">
-          scala.this.Predef.assume({  scoverage.Invoker.invoked(1780, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  source.length.==({    scoverage.Invoker.invoked(1779, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    DeBruijnGraph.this.kmerSize  })}, {  scoverage.Invoker.invoked(1786, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.StringContext.apply({  scoverage.Invoker.invoked(1781, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot;Source kmer &quot;}, {  scoverage.Invoker.invoked(1782, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot; has a size != &quot;}, {  scoverage.Invoker.invoked(1783, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot;&quot;}).s({    scoverage.Invoker.invoked(1784, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    org.hammerlab.guacamole.Bases.basesToString(source)  }, {    scoverage.Invoker.invoked(1785, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    DeBruijnGraph.this.kmerSize  })})
-        </td>
-      </tr><tr>
-        <td>
-          183
-        </td>
-        <td>
-          1786
-        </td>
-        <td>
-          scala.StringContext.s
-        </td>
-        <td style="background: #F0ADAD">
-          scala.StringContext.apply({  scoverage.Invoker.invoked(1781, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot;Source kmer &quot;}, {  scoverage.Invoker.invoked(1782, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot; has a size != &quot;}, {  scoverage.Invoker.invoked(1783, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot;&quot;}).s({  scoverage.Invoker.invoked(1784, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  org.hammerlab.guacamole.Bases.basesToString(source)}, {  scoverage.Invoker.invoked(1785, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  DeBruijnGraph.this.kmerSize})
-        </td>
-      </tr><tr>
-        <td>
-          183
-        </td>
-        <td>
-          1780
-        </td>
-        <td>
-          scala.Int.==
-        </td>
-        <td style="background: #F0ADAD">
-          source.length.==({  scoverage.Invoker.invoked(1779, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  DeBruijnGraph.this.kmerSize})
-        </td>
-      </tr><tr>
-        <td>
-          183
-        </td>
-        <td>
-          1783
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          &quot;&quot;
+          scala.this.Predef.assume({  scoverage.Invoker.invoked(1785, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  source.length.==({    scoverage.Invoker.invoked(1784, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    DeBruijnGraph.this.kmerSize  })}, {  scoverage.Invoker.invoked(1791, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.StringContext.apply({  scoverage.Invoker.invoked(1786, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot;Source kmer &quot;}, {  scoverage.Invoker.invoked(1787, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot; has a size != &quot;}, {  scoverage.Invoker.invoked(1788, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot;&quot;}).s({    scoverage.Invoker.invoked(1789, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    org.hammerlab.guacamole.Bases.basesToString(source)  }, {    scoverage.Invoker.invoked(1790, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    DeBruijnGraph.this.kmerSize  })})
         </td>
       </tr><tr>
         <td>
@@ -25506,6 +25506,32 @@
           1785
         </td>
         <td>
+          scala.Int.==
+        </td>
+        <td style="background: #F0ADAD">
+          source.length.==({  scoverage.Invoker.invoked(1784, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  DeBruijnGraph.this.kmerSize})
+        </td>
+      </tr><tr>
+        <td>
+          184
+        </td>
+        <td>
+          1797
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          &quot;&quot;
+        </td>
+      </tr><tr>
+        <td>
+          184
+        </td>
+        <td>
+          1799
+        </td>
+        <td>
           org.hammerlab.guacamole.assembly.DeBruijnGraph.kmerSize
         </td>
         <td style="background: #F0ADAD">
@@ -25516,7 +25542,7 @@
           184
         </td>
         <td>
-          1788
+          1793
         </td>
         <td>
           org.hammerlab.guacamole.assembly.DeBruijnGraph.kmerSize
@@ -25529,7 +25555,7 @@
           184
         </td>
         <td>
-          1791
+          1796
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -25542,7 +25568,7 @@
           184
         </td>
         <td>
-          1790
+          1795
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -25555,7 +25581,7 @@
           184
         </td>
         <td>
-          1793
+          1798
         </td>
         <td>
           org.hammerlab.guacamole.Bases.basesToString
@@ -25568,52 +25594,26 @@
           184
         </td>
         <td>
-          1796
+          1801
         </td>
         <td>
           scala.Predef.assume
         </td>
         <td style="background: #F0ADAD">
-          scala.this.Predef.assume({  scoverage.Invoker.invoked(1789, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  sink.length.==({    scoverage.Invoker.invoked(1788, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    DeBruijnGraph.this.kmerSize  })}, {  scoverage.Invoker.invoked(1795, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.StringContext.apply({  scoverage.Invoker.invoked(1790, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot;Sink kmer &quot;}, {  scoverage.Invoker.invoked(1791, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot; has a size != &quot;}, {  scoverage.Invoker.invoked(1792, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot;&quot;}).s({    scoverage.Invoker.invoked(1793, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    org.hammerlab.guacamole.Bases.basesToString(sink)  }, {    scoverage.Invoker.invoked(1794, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    DeBruijnGraph.this.kmerSize  })})
+          scala.this.Predef.assume({  scoverage.Invoker.invoked(1794, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  sink.length.==({    scoverage.Invoker.invoked(1793, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    DeBruijnGraph.this.kmerSize  })}, {  scoverage.Invoker.invoked(1800, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.StringContext.apply({  scoverage.Invoker.invoked(1795, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot;Sink kmer &quot;}, {  scoverage.Invoker.invoked(1796, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot; has a size != &quot;}, {  scoverage.Invoker.invoked(1797, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot;&quot;}).s({    scoverage.Invoker.invoked(1798, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    org.hammerlab.guacamole.Bases.basesToString(sink)  }, {    scoverage.Invoker.invoked(1799, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    DeBruijnGraph.this.kmerSize  })})
         </td>
       </tr><tr>
         <td>
           184
         </td>
         <td>
-          1795
+          1800
         </td>
         <td>
           scala.StringContext.s
         </td>
         <td style="background: #F0ADAD">
-          scala.StringContext.apply({  scoverage.Invoker.invoked(1790, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot;Sink kmer &quot;}, {  scoverage.Invoker.invoked(1791, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot; has a size != &quot;}, {  scoverage.Invoker.invoked(1792, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot;&quot;}).s({  scoverage.Invoker.invoked(1793, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  org.hammerlab.guacamole.Bases.basesToString(sink)}, {  scoverage.Invoker.invoked(1794, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  DeBruijnGraph.this.kmerSize})
-        </td>
-      </tr><tr>
-        <td>
-          184
-        </td>
-        <td>
-          1789
-        </td>
-        <td>
-          scala.Int.==
-        </td>
-        <td style="background: #F0ADAD">
-          sink.length.==({  scoverage.Invoker.invoked(1788, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  DeBruijnGraph.this.kmerSize})
-        </td>
-      </tr><tr>
-        <td>
-          184
-        </td>
-        <td>
-          1792
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          &quot;&quot;
+          scala.StringContext.apply({  scoverage.Invoker.invoked(1795, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot;Sink kmer &quot;}, {  scoverage.Invoker.invoked(1796, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot; has a size != &quot;}, {  scoverage.Invoker.invoked(1797, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot;&quot;}).s({  scoverage.Invoker.invoked(1798, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  org.hammerlab.guacamole.Bases.basesToString(sink)}, {  scoverage.Invoker.invoked(1799, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  DeBruijnGraph.this.kmerSize})
         </td>
       </tr><tr>
         <td>
@@ -25623,17 +25623,17 @@
           1794
         </td>
         <td>
-          org.hammerlab.guacamole.assembly.DeBruijnGraph.kmerSize
+          scala.Int.==
         </td>
         <td style="background: #F0ADAD">
-          DeBruijnGraph.this.kmerSize
+          sink.length.==({  scoverage.Invoker.invoked(1793, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  DeBruijnGraph.this.kmerSize})
         </td>
       </tr><tr>
         <td>
           186
         </td>
         <td>
-          1797
+          1802
         </td>
         <td>
           scala.collection.immutable.List.empty
@@ -25646,13 +25646,13 @@
           190
         </td>
         <td>
-          1798
+          1808
         </td>
         <td>
-          scala.collection.MapLike.contains
+          &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          DeBruijnGraph.this.mergeIndex.contains(source)
+          {  &lt;synthetic&gt; private[this] val x$6: (DeBruijnGraph.this.Sequence, Int) = (DeBruijnGraph.this.mergeIndex.apply(source): (DeBruijnGraph.this.Sequence, Int) @unchecked) match {    case (_1: DeBruijnGraph.this.Sequence, _2: Int)(DeBruijnGraph.this.Sequence, Int)((mergedNode @ _), (pathIndex @ _)) =&gt; scala.Tuple2.apply[DeBruijnGraph.this.Sequence, Int](mergedNode, pathIndex)  };  val mergedNode: DeBruijnGraph.this.Sequence = {    scoverage.Invoker.invoked(1804, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    x$6._1  };  val pathIndex: Int = {    scoverage.Invoker.invoked(1805, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    x$6._2  };  {    scoverage.Invoker.invoked(1807, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.collection.mutable.Stack.apply[Seq[Byte]]({      scoverage.Invoker.invoked(1806, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      mergedNode.drop(pathIndex)    })  }}
         </td>
       </tr><tr>
         <td>
@@ -25662,30 +25662,17 @@
           1803
         </td>
         <td>
-          &lt;nosymbol&gt;
+          scala.collection.MapLike.contains
         </td>
         <td style="background: #F0ADAD">
-          {  &lt;synthetic&gt; private[this] val x$6: (DeBruijnGraph.this.Sequence, Int) = (DeBruijnGraph.this.mergeIndex.apply(source): (DeBruijnGraph.this.Sequence, Int) @unchecked) match {    case (_1: DeBruijnGraph.this.Sequence, _2: Int)(DeBruijnGraph.this.Sequence, Int)((mergedNode @ _), (pathIndex @ _)) =&gt; scala.Tuple2.apply[DeBruijnGraph.this.Sequence, Int](mergedNode, pathIndex)  };  val mergedNode: DeBruijnGraph.this.Sequence = {    scoverage.Invoker.invoked(1799, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    x$6._1  };  val pathIndex: Int = {    scoverage.Invoker.invoked(1800, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    x$6._2  };  {    scoverage.Invoker.invoked(1802, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.collection.mutable.Stack.apply[Seq[Byte]]({      scoverage.Invoker.invoked(1801, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      mergedNode.drop(pathIndex)    })  }}
+          DeBruijnGraph.this.mergeIndex.contains(source)
         </td>
       </tr><tr>
         <td>
           191
         </td>
         <td>
-          1799
-        </td>
-        <td>
-          scala.Tuple2._1
-        </td>
-        <td style="background: #F0ADAD">
-          x$6._1
-        </td>
-      </tr><tr>
-        <td>
-          191
-        </td>
-        <td>
-          1800
+          1805
         </td>
         <td>
           scala.Tuple2._2
@@ -25695,23 +25682,23 @@
         </td>
       </tr><tr>
         <td>
-          192
+          191
         </td>
         <td>
-          1802
+          1804
         </td>
         <td>
-          scala.collection.generic.GenericCompanion.apply
+          scala.Tuple2._1
         </td>
         <td style="background: #F0ADAD">
-          scala.collection.mutable.Stack.apply[Seq[Byte]]({  scoverage.Invoker.invoked(1801, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  mergedNode.drop(pathIndex)})
+          x$6._1
         </td>
       </tr><tr>
         <td>
           192
         </td>
         <td>
-          1801
+          1806
         </td>
         <td>
           scala.collection.IterableLike.drop
@@ -25721,23 +25708,36 @@
         </td>
       </tr><tr>
         <td>
-          194
+          192
         </td>
         <td>
-          1805
+          1807
         </td>
         <td>
-          &lt;nosymbol&gt;
+          scala.collection.generic.GenericCompanion.apply
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1804, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.collection.mutable.Stack.apply[DeBruijnGraph.this.Kmer](source)}
+          scala.collection.mutable.Stack.apply[Seq[Byte]]({  scoverage.Invoker.invoked(1806, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  mergedNode.drop(pathIndex)})
         </td>
       </tr><tr>
         <td>
           194
         </td>
         <td>
-          1804
+          1810
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  scoverage.Invoker.invoked(1809, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.collection.mutable.Stack.apply[DeBruijnGraph.this.Kmer](source)}
+        </td>
+      </tr><tr>
+        <td>
+          194
+        </td>
+        <td>
+          1809
         </td>
         <td>
           scala.collection.generic.GenericCompanion.apply
@@ -25750,7 +25750,7 @@
           197
         </td>
         <td>
-          1806
+          1811
         </td>
         <td>
           scala.collection.mutable.Set.empty
@@ -25763,7 +25763,7 @@
           200
         </td>
         <td>
-          1807
+          1812
         </td>
         <td>
           scala.collection.immutable.List.empty
@@ -25776,7 +25776,7 @@
           202
         </td>
         <td>
-          1808
+          1813
         </td>
         <td>
           scala.collection.MapLike.get
@@ -25789,7 +25789,7 @@
           206
         </td>
         <td>
-          1809
+          1814
         </td>
         <td>
           scala.collection.generic.GenericCompanion.apply
@@ -25802,7 +25802,7 @@
           207
         </td>
         <td>
-          1810
+          1815
         </td>
         <td>
           scala.collection.generic.GenericCompanion.apply
@@ -25815,7 +25815,7 @@
           208
         </td>
         <td>
-          1811
+          1816
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -25828,46 +25828,7 @@
           212
         </td>
         <td>
-          1871
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          ()
-        </td>
-      </tr><tr>
-        <td>
-          212
-        </td>
-        <td>
-          1813
-        </td>
-        <td>
-          scala.Boolean.&amp;&amp;
-        </td>
-        <td style="background: #F0ADAD">
-          frontier.nonEmpty.&amp;&amp;({  scoverage.Invoker.invoked(1812, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  paths.size.&lt;(maxPaths)})
-        </td>
-      </tr><tr>
-        <td>
-          212
-        </td>
-        <td>
-          1870
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          {  {    val next: DeBruijnGraph.this.Kmer = {      scoverage.Invoker.invoked(1814, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      frontier.pop()    };    currentPath = {      &lt;synthetic&gt; val x$7: DeBruijnGraph.this.Kmer = next;      {        scoverage.Invoker.invoked(1815, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        currentPath.::[DeBruijnGraph.this.Kmer](x$7)      }    };    {      scoverage.Invoker.invoked(1816, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      visited.+=(next)    };    lazy var foundMergedSink$lzy: Boolean = _;    &lt;stable&gt; &lt;accessor&gt; lazy def foundMergedSink: Boolean = {      foundMergedSink$lzy = {        scoverage.Invoker.invoked(1818, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        nodeContainingSink.exists(((x$8: (DeBruijnGraph.this.Sequence, Int)) =&gt; {          scoverage.Invoker.invoked(1817, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          x$8._1.==(next)        }))      };      foundMergedSink$lzy    };    val foundSink: Boolean = {      scoverage.Invoker.invoked(1819, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      next.==(sink).||(foundMergedSink)    };    val nextNodes: List[DeBruijnGraph.this.Kmer] = {      scoverage.Invoker.invoked(1820, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      DeBruijnGraph.this.children(next)    };    val filteredNextNodes: List[DeBruijnGraph.this.Kmer] = if (avoidLoops)      {        scoverage.Invoker.invoked(1823, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        {          scoverage.Invoker.invoked(1822, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          nextNodes.filterNot({            &lt;synthetic&gt; val eta$0$2: scala.collection.mutable.Set[DeBruijnGraph.this.Kmer] = visited;            ((elem: DeBruijnGraph.this.Kmer) =&gt; {              scoverage.Invoker.invoked(1821, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              eta$0$2.contains(elem)            })          })        }      }    else      {        scoverage.Invoker.invoked(1824, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        nextNodes      };    if ({      scoverage.Invoker.invoked(1827, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      foundSink.unary_!.&amp;&amp;({  scoverage.Invoker.invoked(1825, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  filteredNextNodes.nonEmpty}).&amp;&amp;({        scoverage.Invoker.invoked(1826, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        currentPath.size.&lt;(maxPathLength)      })    })      {        scoverage.Invoker.invoked(1837, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        {          if ({            scoverage.Invoker.invoked(1828, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            filteredNextNodes.size.&gt;(1)          })            {              scoverage.Invoker.invoked(1833, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              {                {                  scoverage.Invoker.invoked(1830, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                  lastBranchIndex.push({                    scoverage.Invoker.invoked(1829, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                    currentPath.length                  })                };                {                  scoverage.Invoker.invoked(1832, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                  lastBranchChildren.push({                    scoverage.Invoker.invoked(1831, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                    filteredNextNodes.size                  })                }              }            }          else            {              scoverage.Invoker.invoked(1835, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              {                scoverage.Invoker.invoked(1834, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                ()              }            };          {            scoverage.Invoker.invoked(1836, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            frontier.pushAll(filteredNextNodes)          }        }      }    else      {        scoverage.Invoker.invoked(1868, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        {          if ({            scoverage.Invoker.invoked(1839, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            foundSink.&amp;&amp;({              scoverage.Invoker.invoked(1838, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              currentPath.size.&gt;=(minPathLength)            })          })            {              scoverage.Invoker.invoked(1849, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              {                if (foundMergedSink)                  {                    scoverage.Invoker.invoked(1845, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                    {                      &lt;synthetic&gt; private[this] val x$9: (DeBruijnGraph.this.Sequence, Int) = (DeBruijnGraph.this.mergeIndex.apply(sink): (DeBruijnGraph.this.Sequence, Int) @unchecked) match {                        case (_1: DeBruijnGraph.this.Sequence, _2: Int)(DeBruijnGraph.this.Sequence, Int)((mergedNode @ _), (mergedPathIdx @ _)) =&gt; scala.Tuple2.apply[DeBruijnGraph.this.Sequence, Int](mergedNode, mergedPathIdx)                      };                      val mergedNode: DeBruijnGraph.this.Sequence = {                        scoverage.Invoker.invoked(1840, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                        x$9._1                      };                      val mergedPathIdx: Int = {                        scoverage.Invoker.invoked(1841, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                        x$9._2                      };                      val mergedPathEndIdx: Int = {                        scoverage.Invoker.invoked(1843, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                        mergedPathIdx.+({                          scoverage.Invoker.invoked(1842, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                          DeBruijnGraph.this.kmerSize                        })                      };                      currentPath = {                        &lt;synthetic&gt; val x$10: Seq[Byte] = currentPath.head.dropRight(mergedNode.length.-(mergedPathEndIdx));                        {                          scoverage.Invoker.invoked(1844, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                          currentPath.tail.::[DeBruijnGraph.this.Kmer](x$10)                        }                      }                    }                  }                else                  {                    scoverage.Invoker.invoked(1847, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                    {                      scoverage.Invoker.invoked(1846, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                      ()                    }                  };                paths = {                  &lt;synthetic&gt; val x$11: List[DeBruijnGraph.this.Kmer] = currentPath.reverse;                  {                    scoverage.Invoker.invoked(1848, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                    paths.::[DeBruijnGraph.this.Path](x$11)                  }                }              }            }          else            {              scoverage.Invoker.invoked(1851, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              {                scoverage.Invoker.invoked(1850, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                ()              }            };          if ({            scoverage.Invoker.invoked(1852, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            lastBranchIndex.nonEmpty          })            {              scoverage.Invoker.invoked(1865, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              {                val backtrackIndex: Int = {                  scoverage.Invoker.invoked(1853, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                  lastBranchIndex.top                };                currentPath = {                  scoverage.Invoker.invoked(1855, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                  currentPath.drop({                    scoverage.Invoker.invoked(1854, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                    currentPath.length.-(backtrackIndex)                  })                };                numBacktracks = {                  scoverage.Invoker.invoked(1856, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                  numBacktracks.+(1)                };                if ({                  scoverage.Invoker.invoked(1858, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                  numBacktracks.==({                    scoverage.Invoker.invoked(1857, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                    lastBranchChildren.top.-(1)                  })                })                  {                    scoverage.Invoker.invoked(1862, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                    {                      {                        scoverage.Invoker.invoked(1859, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                        lastBranchIndex.pop()                      };                      {                        scoverage.Invoker.invoked(1860, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                        lastBranchChildren.pop()                      };                      numBacktracks = {                        scoverage.Invoker.invoked(1861, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                        0                      }                    }                  }                else                  {                    scoverage.Invoker.invoked(1864, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                    {                      scoverage.Invoker.invoked(1863, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                      ()                    }                  }              }            }          else            {              scoverage.Invoker.invoked(1867, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              {                scoverage.Invoker.invoked(1866, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                ()              }            }        }      }  };  {    scoverage.Invoker.invoked(1869, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    while$3()  }}
-        </td>
-      </tr><tr>
-        <td>
-          212
-        </td>
-        <td>
-          1869
+          1874
         </td>
         <td>
           org.hammerlab.guacamole.assembly.DeBruijnGraph.while$3
@@ -25880,20 +25841,20 @@
           212
         </td>
         <td>
-          1872
+          1877
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1871, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
+          {  scoverage.Invoker.invoked(1876, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
         </td>
       </tr><tr>
         <td>
           212
         </td>
         <td>
-          1812
+          1817
         </td>
         <td>
           scala.Int.&lt;
@@ -25903,10 +25864,49 @@
         </td>
       </tr><tr>
         <td>
+          212
+        </td>
+        <td>
+          1876
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          ()
+        </td>
+      </tr><tr>
+        <td>
+          212
+        </td>
+        <td>
+          1818
+        </td>
+        <td>
+          scala.Boolean.&amp;&amp;
+        </td>
+        <td style="background: #F0ADAD">
+          frontier.nonEmpty.&amp;&amp;({  scoverage.Invoker.invoked(1817, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  paths.size.&lt;(maxPaths)})
+        </td>
+      </tr><tr>
+        <td>
+          212
+        </td>
+        <td>
+          1875
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  {    val next: DeBruijnGraph.this.Kmer = {      scoverage.Invoker.invoked(1819, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      frontier.pop()    };    currentPath = {      &lt;synthetic&gt; val x$7: DeBruijnGraph.this.Kmer = next;      {        scoverage.Invoker.invoked(1820, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        currentPath.::[DeBruijnGraph.this.Kmer](x$7)      }    };    {      scoverage.Invoker.invoked(1821, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      visited.+=(next)    };    lazy var foundMergedSink$lzy: Boolean = _;    &lt;stable&gt; &lt;accessor&gt; lazy def foundMergedSink: Boolean = {      foundMergedSink$lzy = {        scoverage.Invoker.invoked(1823, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        nodeContainingSink.exists(((x$8: (DeBruijnGraph.this.Sequence, Int)) =&gt; {          scoverage.Invoker.invoked(1822, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          x$8._1.==(next)        }))      };      foundMergedSink$lzy    };    val foundSink: Boolean = {      scoverage.Invoker.invoked(1824, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      next.==(sink).||(foundMergedSink)    };    val nextNodes: List[DeBruijnGraph.this.Kmer] = {      scoverage.Invoker.invoked(1825, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      DeBruijnGraph.this.children(next)    };    val filteredNextNodes: List[DeBruijnGraph.this.Kmer] = if (avoidLoops)      {        scoverage.Invoker.invoked(1828, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        {          scoverage.Invoker.invoked(1827, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          nextNodes.filterNot({            &lt;synthetic&gt; val eta$0$2: scala.collection.mutable.Set[DeBruijnGraph.this.Kmer] = visited;            ((elem: DeBruijnGraph.this.Kmer) =&gt; {              scoverage.Invoker.invoked(1826, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              eta$0$2.contains(elem)            })          })        }      }    else      {        scoverage.Invoker.invoked(1829, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        nextNodes      };    if ({      scoverage.Invoker.invoked(1832, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      foundSink.unary_!.&amp;&amp;({  scoverage.Invoker.invoked(1830, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  filteredNextNodes.nonEmpty}).&amp;&amp;({        scoverage.Invoker.invoked(1831, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        currentPath.size.&lt;(maxPathLength)      })    })      {        scoverage.Invoker.invoked(1842, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        {          if ({            scoverage.Invoker.invoked(1833, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            filteredNextNodes.size.&gt;(1)          })            {              scoverage.Invoker.invoked(1838, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              {                {                  scoverage.Invoker.invoked(1835, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                  lastBranchIndex.push({                    scoverage.Invoker.invoked(1834, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                    currentPath.length                  })                };                {                  scoverage.Invoker.invoked(1837, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                  lastBranchChildren.push({                    scoverage.Invoker.invoked(1836, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                    filteredNextNodes.size                  })                }              }            }          else            {              scoverage.Invoker.invoked(1840, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              {                scoverage.Invoker.invoked(1839, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                ()              }            };          {            scoverage.Invoker.invoked(1841, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            frontier.pushAll(filteredNextNodes)          }        }      }    else      {        scoverage.Invoker.invoked(1873, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        {          if ({            scoverage.Invoker.invoked(1844, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            foundSink.&amp;&amp;({              scoverage.Invoker.invoked(1843, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              currentPath.size.&gt;=(minPathLength)            })          })            {              scoverage.Invoker.invoked(1854, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              {                if (foundMergedSink)                  {                    scoverage.Invoker.invoked(1850, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                    {                      &lt;synthetic&gt; private[this] val x$9: (DeBruijnGraph.this.Sequence, Int) = (DeBruijnGraph.this.mergeIndex.apply(sink): (DeBruijnGraph.this.Sequence, Int) @unchecked) match {                        case (_1: DeBruijnGraph.this.Sequence, _2: Int)(DeBruijnGraph.this.Sequence, Int)((mergedNode @ _), (mergedPathIdx @ _)) =&gt; scala.Tuple2.apply[DeBruijnGraph.this.Sequence, Int](mergedNode, mergedPathIdx)                      };                      val mergedNode: DeBruijnGraph.this.Sequence = {                        scoverage.Invoker.invoked(1845, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                        x$9._1                      };                      val mergedPathIdx: Int = {                        scoverage.Invoker.invoked(1846, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                        x$9._2                      };                      val mergedPathEndIdx: Int = {                        scoverage.Invoker.invoked(1848, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                        mergedPathIdx.+({                          scoverage.Invoker.invoked(1847, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                          DeBruijnGraph.this.kmerSize                        })                      };                      currentPath = {                        &lt;synthetic&gt; val x$10: Seq[Byte] = currentPath.head.dropRight(mergedNode.length.-(mergedPathEndIdx));                        {                          scoverage.Invoker.invoked(1849, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                          currentPath.tail.::[DeBruijnGraph.this.Kmer](x$10)                        }                      }                    }                  }                else                  {                    scoverage.Invoker.invoked(1852, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                    {                      scoverage.Invoker.invoked(1851, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                      ()                    }                  };                paths = {                  &lt;synthetic&gt; val x$11: List[DeBruijnGraph.this.Kmer] = currentPath.reverse;                  {                    scoverage.Invoker.invoked(1853, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                    paths.::[DeBruijnGraph.this.Path](x$11)                  }                }              }            }          else            {              scoverage.Invoker.invoked(1856, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              {                scoverage.Invoker.invoked(1855, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                ()              }            };          if ({            scoverage.Invoker.invoked(1857, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            lastBranchIndex.nonEmpty          })            {              scoverage.Invoker.invoked(1870, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              {                val backtrackIndex: Int = {                  scoverage.Invoker.invoked(1858, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                  lastBranchIndex.top                };                currentPath = {                  scoverage.Invoker.invoked(1860, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                  currentPath.drop({                    scoverage.Invoker.invoked(1859, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                    currentPath.length.-(backtrackIndex)                  })                };                numBacktracks = {                  scoverage.Invoker.invoked(1861, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                  numBacktracks.+(1)                };                if ({                  scoverage.Invoker.invoked(1863, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                  numBacktracks.==({                    scoverage.Invoker.invoked(1862, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                    lastBranchChildren.top.-(1)                  })                })                  {                    scoverage.Invoker.invoked(1867, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                    {                      {                        scoverage.Invoker.invoked(1864, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                        lastBranchIndex.pop()                      };                      {                        scoverage.Invoker.invoked(1865, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                        lastBranchChildren.pop()                      };                      numBacktracks = {                        scoverage.Invoker.invoked(1866, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                        0                      }                    }                  }                else                  {                    scoverage.Invoker.invoked(1869, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                    {                      scoverage.Invoker.invoked(1868, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                      ()                    }                  }              }            }          else            {              scoverage.Invoker.invoked(1872, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              {                scoverage.Invoker.invoked(1871, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                ()              }            }        }      }  };  {    scoverage.Invoker.invoked(1874, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    while$3()  }}
+        </td>
+      </tr><tr>
+        <td>
           213
         </td>
         <td>
-          1814
+          1819
         </td>
         <td>
           scala.collection.mutable.Stack.pop
@@ -25919,7 +25919,7 @@
           216
         </td>
         <td>
-          1815
+          1820
         </td>
         <td>
           scala.collection.immutable.List.::
@@ -25932,7 +25932,7 @@
           217
         </td>
         <td>
-          1816
+          1821
         </td>
         <td>
           scala.collection.mutable.SetLike.+=
@@ -25945,7 +25945,20 @@
           220
         </td>
         <td>
-          1817
+          1823
+        </td>
+        <td>
+          scala.Option.exists
+        </td>
+        <td style="background: #F0ADAD">
+          nodeContainingSink.exists(((x$8: (DeBruijnGraph.this.Sequence, Int)) =&gt; {  scoverage.Invoker.invoked(1822, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x$8._1.==(next)}))
+        </td>
+      </tr><tr>
+        <td>
+          220
+        </td>
+        <td>
+          1822
         </td>
         <td>
           java.lang.Object.==
@@ -25955,23 +25968,10 @@
         </td>
       </tr><tr>
         <td>
-          220
-        </td>
-        <td>
-          1818
-        </td>
-        <td>
-          scala.Option.exists
-        </td>
-        <td style="background: #F0ADAD">
-          nodeContainingSink.exists(((x$8: (DeBruijnGraph.this.Sequence, Int)) =&gt; {  scoverage.Invoker.invoked(1817, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x$8._1.==(next)}))
-        </td>
-      </tr><tr>
-        <td>
           221
         </td>
         <td>
-          1819
+          1824
         </td>
         <td>
           scala.Boolean.||
@@ -25984,7 +25984,7 @@
           222
         </td>
         <td>
-          1820
+          1825
         </td>
         <td>
           org.hammerlab.guacamole.assembly.DeBruijnGraph.children
@@ -25997,7 +25997,20 @@
           223
         </td>
         <td>
-          1824
+          1826
+        </td>
+        <td>
+          scala.collection.SetLike.contains
+        </td>
+        <td style="background: #F0ADAD">
+          eta$0$2.contains(elem)
+        </td>
+      </tr><tr>
+        <td>
+          223
+        </td>
+        <td>
+          1829
         </td>
         <td>
           org.hammerlab.guacamole.assembly.DeBruijnGraph.nextNodes
@@ -26010,46 +26023,59 @@
           223
         </td>
         <td>
-          1823
+          1828
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1822, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  nextNodes.filterNot({    &lt;synthetic&gt; val eta$0$2: scala.collection.mutable.Set[DeBruijnGraph.this.Kmer] = visited;    ((elem: DeBruijnGraph.this.Kmer) =&gt; {      scoverage.Invoker.invoked(1821, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      eta$0$2.contains(elem)    })  })}
+          {  scoverage.Invoker.invoked(1827, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  nextNodes.filterNot({    &lt;synthetic&gt; val eta$0$2: scala.collection.mutable.Set[DeBruijnGraph.this.Kmer] = visited;    ((elem: DeBruijnGraph.this.Kmer) =&gt; {      scoverage.Invoker.invoked(1826, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      eta$0$2.contains(elem)    })  })}
         </td>
       </tr><tr>
         <td>
           223
         </td>
         <td>
-          1822
+          1827
         </td>
         <td>
           scala.collection.TraversableLike.filterNot
         </td>
         <td style="background: #F0ADAD">
-          nextNodes.filterNot({  &lt;synthetic&gt; val eta$0$2: scala.collection.mutable.Set[DeBruijnGraph.this.Kmer] = visited;  ((elem: DeBruijnGraph.this.Kmer) =&gt; {    scoverage.Invoker.invoked(1821, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    eta$0$2.contains(elem)  })})
-        </td>
-      </tr><tr>
-        <td>
-          223
-        </td>
-        <td>
-          1821
-        </td>
-        <td>
-          scala.collection.SetLike.contains
-        </td>
-        <td style="background: #F0ADAD">
-          eta$0$2.contains(elem)
+          nextNodes.filterNot({  &lt;synthetic&gt; val eta$0$2: scala.collection.mutable.Set[DeBruijnGraph.this.Kmer] = visited;  ((elem: DeBruijnGraph.this.Kmer) =&gt; {    scoverage.Invoker.invoked(1826, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    eta$0$2.contains(elem)  })})
         </td>
       </tr><tr>
         <td>
           224
         </td>
         <td>
-          1826
+          1842
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  if ({    scoverage.Invoker.invoked(1833, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    filteredNextNodes.size.&gt;(1)  })    {      scoverage.Invoker.invoked(1838, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        {          scoverage.Invoker.invoked(1835, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          lastBranchIndex.push({            scoverage.Invoker.invoked(1834, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            currentPath.length          })        };        {          scoverage.Invoker.invoked(1837, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          lastBranchChildren.push({            scoverage.Invoker.invoked(1836, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            filteredNextNodes.size          })        }      }    }  else    {      scoverage.Invoker.invoked(1840, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(1839, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        ()      }    };  {    scoverage.Invoker.invoked(1841, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    frontier.pushAll(filteredNextNodes)  }}
+        </td>
+      </tr><tr>
+        <td>
+          224
+        </td>
+        <td>
+          1832
+        </td>
+        <td>
+          scala.Boolean.&amp;&amp;
+        </td>
+        <td style="background: #F0ADAD">
+          foundSink.unary_!.&amp;&amp;({  scoverage.Invoker.invoked(1830, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  filteredNextNodes.nonEmpty}).&amp;&amp;({  scoverage.Invoker.invoked(1831, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  currentPath.size.&lt;(maxPathLength)})
+        </td>
+      </tr><tr>
+        <td>
+          224
+        </td>
+        <td>
+          1831
         </td>
         <td>
           scala.Int.&lt;
@@ -26062,20 +26088,7 @@
           224
         </td>
         <td>
-          1837
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          {  if ({    scoverage.Invoker.invoked(1828, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    filteredNextNodes.size.&gt;(1)  })    {      scoverage.Invoker.invoked(1833, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        {          scoverage.Invoker.invoked(1830, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          lastBranchIndex.push({            scoverage.Invoker.invoked(1829, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            currentPath.length          })        };        {          scoverage.Invoker.invoked(1832, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          lastBranchChildren.push({            scoverage.Invoker.invoked(1831, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            filteredNextNodes.size          })        }      }    }  else    {      scoverage.Invoker.invoked(1835, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(1834, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        ()      }    };  {    scoverage.Invoker.invoked(1836, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    frontier.pushAll(filteredNextNodes)  }}
-        </td>
-      </tr><tr>
-        <td>
-          224
-        </td>
-        <td>
-          1825
+          1830
         </td>
         <td>
           scala.collection.TraversableOnce.nonEmpty
@@ -26085,62 +26098,10 @@
         </td>
       </tr><tr>
         <td>
-          224
-        </td>
-        <td>
-          1827
-        </td>
-        <td>
-          scala.Boolean.&amp;&amp;
-        </td>
-        <td style="background: #F0ADAD">
-          foundSink.unary_!.&amp;&amp;({  scoverage.Invoker.invoked(1825, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  filteredNextNodes.nonEmpty}).&amp;&amp;({  scoverage.Invoker.invoked(1826, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  currentPath.size.&lt;(maxPathLength)})
-        </td>
-      </tr><tr>
-        <td>
           227
         </td>
         <td>
           1833
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          {  {    scoverage.Invoker.invoked(1830, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    lastBranchIndex.push({      scoverage.Invoker.invoked(1829, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      currentPath.length    })  };  {    scoverage.Invoker.invoked(1832, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    lastBranchChildren.push({      scoverage.Invoker.invoked(1831, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      filteredNextNodes.size    })  }}
-        </td>
-      </tr><tr>
-        <td>
-          227
-        </td>
-        <td>
-          1835
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1834, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
-        </td>
-      </tr><tr>
-        <td>
-          227
-        </td>
-        <td>
-          1834
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          ()
-        </td>
-      </tr><tr>
-        <td>
-          227
-        </td>
-        <td>
-          1828
         </td>
         <td>
           scala.Int.&gt;
@@ -26150,10 +26111,62 @@
         </td>
       </tr><tr>
         <td>
+          227
+        </td>
+        <td>
+          1838
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  {    scoverage.Invoker.invoked(1835, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    lastBranchIndex.push({      scoverage.Invoker.invoked(1834, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      currentPath.length    })  };  {    scoverage.Invoker.invoked(1837, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    lastBranchChildren.push({      scoverage.Invoker.invoked(1836, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      filteredNextNodes.size    })  }}
+        </td>
+      </tr><tr>
+        <td>
+          227
+        </td>
+        <td>
+          1840
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  scoverage.Invoker.invoked(1839, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
+        </td>
+      </tr><tr>
+        <td>
+          227
+        </td>
+        <td>
+          1839
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          ()
+        </td>
+      </tr><tr>
+        <td>
           228
         </td>
         <td>
-          1829
+          1835
+        </td>
+        <td>
+          scala.collection.mutable.Stack.push
+        </td>
+        <td style="background: #F0ADAD">
+          lastBranchIndex.push({  scoverage.Invoker.invoked(1834, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  currentPath.length})
+        </td>
+      </tr><tr>
+        <td>
+          228
+        </td>
+        <td>
+          1834
         </td>
         <td>
           scala.collection.LinearSeqOptimized.length
@@ -26163,36 +26176,23 @@
         </td>
       </tr><tr>
         <td>
-          228
+          229
         </td>
         <td>
-          1830
+          1837
         </td>
         <td>
           scala.collection.mutable.Stack.push
         </td>
         <td style="background: #F0ADAD">
-          lastBranchIndex.push({  scoverage.Invoker.invoked(1829, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  currentPath.length})
+          lastBranchChildren.push({  scoverage.Invoker.invoked(1836, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  filteredNextNodes.size})
         </td>
       </tr><tr>
         <td>
           229
         </td>
         <td>
-          1832
-        </td>
-        <td>
-          scala.collection.mutable.Stack.push
-        </td>
-        <td style="background: #F0ADAD">
-          lastBranchChildren.push({  scoverage.Invoker.invoked(1831, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  filteredNextNodes.size})
-        </td>
-      </tr><tr>
-        <td>
-          229
-        </td>
-        <td>
-          1831
+          1836
         </td>
         <td>
           scala.collection.SeqLike.size
@@ -26205,7 +26205,7 @@
           233
         </td>
         <td>
-          1836
+          1841
         </td>
         <td>
           scala.collection.mutable.Stack.pushAll
@@ -26218,33 +26218,46 @@
           235
         </td>
         <td>
-          1868
+          1873
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  if ({    scoverage.Invoker.invoked(1839, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    foundSink.&amp;&amp;({      scoverage.Invoker.invoked(1838, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      currentPath.size.&gt;=(minPathLength)    })  })    {      scoverage.Invoker.invoked(1849, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        if (foundMergedSink)          {            scoverage.Invoker.invoked(1845, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            {              &lt;synthetic&gt; private[this] val x$9: (DeBruijnGraph.this.Sequence, Int) = (DeBruijnGraph.this.mergeIndex.apply(sink): (DeBruijnGraph.this.Sequence, Int) @unchecked) match {                case (_1: DeBruijnGraph.this.Sequence, _2: Int)(DeBruijnGraph.this.Sequence, Int)((mergedNode @ _), (mergedPathIdx @ _)) =&gt; scala.Tuple2.apply[DeBruijnGraph.this.Sequence, Int](mergedNode, mergedPathIdx)              };              val mergedNode: DeBruijnGraph.this.Sequence = {                scoverage.Invoker.invoked(1840, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                x$9._1              };              val mergedPathIdx: Int = {                scoverage.Invoker.invoked(1841, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                x$9._2              };              val mergedPathEndIdx: Int = {                scoverage.Invoker.invoked(1843, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                mergedPathIdx.+({                  scoverage.Invoker.invoked(1842, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                  DeBruijnGraph.this.kmerSize                })              };              currentPath = {                &lt;synthetic&gt; val x$10: Seq[Byte] = currentPath.head.dropRight(mergedNode.length.-(mergedPathEndIdx));                {                  scoverage.Invoker.invoked(1844, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                  currentPath.tail.::[DeBruijnGraph.this.Kmer](x$10)                }              }            }          }        else          {            scoverage.Invoker.invoked(1847, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            {              scoverage.Invoker.invoked(1846, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              ()            }          };        paths = {          &lt;synthetic&gt; val x$11: List[DeBruijnGraph.this.Kmer] = currentPath.reverse;          {            scoverage.Invoker.invoked(1848, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            paths.::[DeBruijnGraph.this.Path](x$11)          }        }      }    }  else    {      scoverage.Invoker.invoked(1851, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(1850, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        ()      }    };  if ({    scoverage.Invoker.invoked(1852, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    lastBranchIndex.nonEmpty  })    {      scoverage.Invoker.invoked(1865, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        val backtrackIndex: Int = {          scoverage.Invoker.invoked(1853, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          lastBranchIndex.top        };        currentPath = {          scoverage.Invoker.invoked(1855, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          currentPath.drop({            scoverage.Invoker.invoked(1854, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            currentPath.length.-(backtrackIndex)          })        };        numBacktracks = {          scoverage.Invoker.invoked(1856, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          numBacktracks.+(1)        };        if ({          scoverage.Invoker.invoked(1858, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          numBacktracks.==({            scoverage.Invoker.invoked(1857, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            lastBranchChildren.top.-(1)          })        })          {            scoverage.Invoker.invoked(1862, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            {              {                scoverage.Invoker.invoked(1859, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                lastBranchIndex.pop()              };              {                scoverage.Invoker.invoked(1860, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                lastBranchChildren.pop()              };              numBacktracks = {                scoverage.Invoker.invoked(1861, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                0              }            }          }        else          {            scoverage.Invoker.invoked(1864, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            {              scoverage.Invoker.invoked(1863, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              ()            }          }      }    }  else    {      scoverage.Invoker.invoked(1867, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(1866, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        ()      }    }}
+          {  if ({    scoverage.Invoker.invoked(1844, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    foundSink.&amp;&amp;({      scoverage.Invoker.invoked(1843, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      currentPath.size.&gt;=(minPathLength)    })  })    {      scoverage.Invoker.invoked(1854, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        if (foundMergedSink)          {            scoverage.Invoker.invoked(1850, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            {              &lt;synthetic&gt; private[this] val x$9: (DeBruijnGraph.this.Sequence, Int) = (DeBruijnGraph.this.mergeIndex.apply(sink): (DeBruijnGraph.this.Sequence, Int) @unchecked) match {                case (_1: DeBruijnGraph.this.Sequence, _2: Int)(DeBruijnGraph.this.Sequence, Int)((mergedNode @ _), (mergedPathIdx @ _)) =&gt; scala.Tuple2.apply[DeBruijnGraph.this.Sequence, Int](mergedNode, mergedPathIdx)              };              val mergedNode: DeBruijnGraph.this.Sequence = {                scoverage.Invoker.invoked(1845, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                x$9._1              };              val mergedPathIdx: Int = {                scoverage.Invoker.invoked(1846, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                x$9._2              };              val mergedPathEndIdx: Int = {                scoverage.Invoker.invoked(1848, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                mergedPathIdx.+({                  scoverage.Invoker.invoked(1847, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                  DeBruijnGraph.this.kmerSize                })              };              currentPath = {                &lt;synthetic&gt; val x$10: Seq[Byte] = currentPath.head.dropRight(mergedNode.length.-(mergedPathEndIdx));                {                  scoverage.Invoker.invoked(1849, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                  currentPath.tail.::[DeBruijnGraph.this.Kmer](x$10)                }              }            }          }        else          {            scoverage.Invoker.invoked(1852, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            {              scoverage.Invoker.invoked(1851, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              ()            }          };        paths = {          &lt;synthetic&gt; val x$11: List[DeBruijnGraph.this.Kmer] = currentPath.reverse;          {            scoverage.Invoker.invoked(1853, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            paths.::[DeBruijnGraph.this.Path](x$11)          }        }      }    }  else    {      scoverage.Invoker.invoked(1856, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(1855, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        ()      }    };  if ({    scoverage.Invoker.invoked(1857, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    lastBranchIndex.nonEmpty  })    {      scoverage.Invoker.invoked(1870, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        val backtrackIndex: Int = {          scoverage.Invoker.invoked(1858, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          lastBranchIndex.top        };        currentPath = {          scoverage.Invoker.invoked(1860, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          currentPath.drop({            scoverage.Invoker.invoked(1859, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            currentPath.length.-(backtrackIndex)          })        };        numBacktracks = {          scoverage.Invoker.invoked(1861, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          numBacktracks.+(1)        };        if ({          scoverage.Invoker.invoked(1863, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          numBacktracks.==({            scoverage.Invoker.invoked(1862, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            lastBranchChildren.top.-(1)          })        })          {            scoverage.Invoker.invoked(1867, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            {              {                scoverage.Invoker.invoked(1864, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                lastBranchIndex.pop()              };              {                scoverage.Invoker.invoked(1865, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                lastBranchChildren.pop()              };              numBacktracks = {                scoverage.Invoker.invoked(1866, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                0              }            }          }        else          {            scoverage.Invoker.invoked(1869, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            {              scoverage.Invoker.invoked(1868, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              ()            }          }      }    }  else    {      scoverage.Invoker.invoked(1872, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(1871, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        ()      }    }}
         </td>
       </tr><tr>
         <td>
           236
         </td>
         <td>
-          1851
+          1844
         </td>
         <td>
-          &lt;nosymbol&gt;
+          scala.Boolean.&amp;&amp;
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1850, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
+          foundSink.&amp;&amp;({  scoverage.Invoker.invoked(1843, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  currentPath.size.&gt;=(minPathLength)})
         </td>
       </tr><tr>
         <td>
           236
         </td>
         <td>
-          1850
+          1856
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  scoverage.Invoker.invoked(1855, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
+        </td>
+      </tr><tr>
+        <td>
+          236
+        </td>
+        <td>
+          1855
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -26257,7 +26270,7 @@
           236
         </td>
         <td>
-          1838
+          1843
         </td>
         <td>
           scala.Int.&gt;=
@@ -26270,46 +26283,20 @@
           236
         </td>
         <td>
-          1849
+          1854
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  if (foundMergedSink)    {      scoverage.Invoker.invoked(1845, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        &lt;synthetic&gt; private[this] val x$9: (DeBruijnGraph.this.Sequence, Int) = (DeBruijnGraph.this.mergeIndex.apply(sink): (DeBruijnGraph.this.Sequence, Int) @unchecked) match {          case (_1: DeBruijnGraph.this.Sequence, _2: Int)(DeBruijnGraph.this.Sequence, Int)((mergedNode @ _), (mergedPathIdx @ _)) =&gt; scala.Tuple2.apply[DeBruijnGraph.this.Sequence, Int](mergedNode, mergedPathIdx)        };        val mergedNode: DeBruijnGraph.this.Sequence = {          scoverage.Invoker.invoked(1840, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          x$9._1        };        val mergedPathIdx: Int = {          scoverage.Invoker.invoked(1841, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          x$9._2        };        val mergedPathEndIdx: Int = {          scoverage.Invoker.invoked(1843, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          mergedPathIdx.+({            scoverage.Invoker.invoked(1842, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            DeBruijnGraph.this.kmerSize          })        };        currentPath = {          &lt;synthetic&gt; val x$10: Seq[Byte] = currentPath.head.dropRight(mergedNode.length.-(mergedPathEndIdx));          {            scoverage.Invoker.invoked(1844, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            currentPath.tail.::[DeBruijnGraph.this.Kmer](x$10)          }        }      }    }  else    {      scoverage.Invoker.invoked(1847, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(1846, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        ()      }    };  paths = {    &lt;synthetic&gt; val x$11: List[DeBruijnGraph.this.Kmer] = currentPath.reverse;    {      scoverage.Invoker.invoked(1848, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      paths.::[DeBruijnGraph.this.Path](x$11)    }  }}
-        </td>
-      </tr><tr>
-        <td>
-          236
-        </td>
-        <td>
-          1839
-        </td>
-        <td>
-          scala.Boolean.&amp;&amp;
-        </td>
-        <td style="background: #F0ADAD">
-          foundSink.&amp;&amp;({  scoverage.Invoker.invoked(1838, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  currentPath.size.&gt;=(minPathLength)})
+          {  if (foundMergedSink)    {      scoverage.Invoker.invoked(1850, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        &lt;synthetic&gt; private[this] val x$9: (DeBruijnGraph.this.Sequence, Int) = (DeBruijnGraph.this.mergeIndex.apply(sink): (DeBruijnGraph.this.Sequence, Int) @unchecked) match {          case (_1: DeBruijnGraph.this.Sequence, _2: Int)(DeBruijnGraph.this.Sequence, Int)((mergedNode @ _), (mergedPathIdx @ _)) =&gt; scala.Tuple2.apply[DeBruijnGraph.this.Sequence, Int](mergedNode, mergedPathIdx)        };        val mergedNode: DeBruijnGraph.this.Sequence = {          scoverage.Invoker.invoked(1845, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          x$9._1        };        val mergedPathIdx: Int = {          scoverage.Invoker.invoked(1846, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          x$9._2        };        val mergedPathEndIdx: Int = {          scoverage.Invoker.invoked(1848, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          mergedPathIdx.+({            scoverage.Invoker.invoked(1847, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            DeBruijnGraph.this.kmerSize          })        };        currentPath = {          &lt;synthetic&gt; val x$10: Seq[Byte] = currentPath.head.dropRight(mergedNode.length.-(mergedPathEndIdx));          {            scoverage.Invoker.invoked(1849, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            currentPath.tail.::[DeBruijnGraph.this.Kmer](x$10)          }        }      }    }  else    {      scoverage.Invoker.invoked(1852, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(1851, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        ()      }    };  paths = {    &lt;synthetic&gt; val x$11: List[DeBruijnGraph.this.Kmer] = currentPath.reverse;    {      scoverage.Invoker.invoked(1853, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      paths.::[DeBruijnGraph.this.Path](x$11)    }  }}
         </td>
       </tr><tr>
         <td>
           239
         </td>
         <td>
-          1847
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1846, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
-        </td>
-      </tr><tr>
-        <td>
-          239
-        </td>
-        <td>
-          1846
+          1851
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -26322,20 +26309,33 @@
           239
         </td>
         <td>
-          1845
+          1850
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  &lt;synthetic&gt; private[this] val x$9: (DeBruijnGraph.this.Sequence, Int) = (DeBruijnGraph.this.mergeIndex.apply(sink): (DeBruijnGraph.this.Sequence, Int) @unchecked) match {    case (_1: DeBruijnGraph.this.Sequence, _2: Int)(DeBruijnGraph.this.Sequence, Int)((mergedNode @ _), (mergedPathIdx @ _)) =&gt; scala.Tuple2.apply[DeBruijnGraph.this.Sequence, Int](mergedNode, mergedPathIdx)  };  val mergedNode: DeBruijnGraph.this.Sequence = {    scoverage.Invoker.invoked(1840, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    x$9._1  };  val mergedPathIdx: Int = {    scoverage.Invoker.invoked(1841, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    x$9._2  };  val mergedPathEndIdx: Int = {    scoverage.Invoker.invoked(1843, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    mergedPathIdx.+({      scoverage.Invoker.invoked(1842, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      DeBruijnGraph.this.kmerSize    })  };  currentPath = {    &lt;synthetic&gt; val x$10: Seq[Byte] = currentPath.head.dropRight(mergedNode.length.-(mergedPathEndIdx));    {      scoverage.Invoker.invoked(1844, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      currentPath.tail.::[DeBruijnGraph.this.Kmer](x$10)    }  }}
+          {  &lt;synthetic&gt; private[this] val x$9: (DeBruijnGraph.this.Sequence, Int) = (DeBruijnGraph.this.mergeIndex.apply(sink): (DeBruijnGraph.this.Sequence, Int) @unchecked) match {    case (_1: DeBruijnGraph.this.Sequence, _2: Int)(DeBruijnGraph.this.Sequence, Int)((mergedNode @ _), (mergedPathIdx @ _)) =&gt; scala.Tuple2.apply[DeBruijnGraph.this.Sequence, Int](mergedNode, mergedPathIdx)  };  val mergedNode: DeBruijnGraph.this.Sequence = {    scoverage.Invoker.invoked(1845, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    x$9._1  };  val mergedPathIdx: Int = {    scoverage.Invoker.invoked(1846, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    x$9._2  };  val mergedPathEndIdx: Int = {    scoverage.Invoker.invoked(1848, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    mergedPathIdx.+({      scoverage.Invoker.invoked(1847, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      DeBruijnGraph.this.kmerSize    })  };  currentPath = {    &lt;synthetic&gt; val x$10: Seq[Byte] = currentPath.head.dropRight(mergedNode.length.-(mergedPathEndIdx));    {      scoverage.Invoker.invoked(1849, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      currentPath.tail.::[DeBruijnGraph.this.Kmer](x$10)    }  }}
+        </td>
+      </tr><tr>
+        <td>
+          239
+        </td>
+        <td>
+          1852
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  scoverage.Invoker.invoked(1851, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
         </td>
       </tr><tr>
         <td>
           240
         </td>
         <td>
-          1841
+          1846
         </td>
         <td>
           scala.Tuple2._2
@@ -26348,7 +26348,7 @@
           240
         </td>
         <td>
-          1840
+          1845
         </td>
         <td>
           scala.Tuple2._1
@@ -26361,7 +26361,7 @@
           241
         </td>
         <td>
-          1842
+          1847
         </td>
         <td>
           org.hammerlab.guacamole.assembly.DeBruijnGraph.kmerSize
@@ -26374,20 +26374,20 @@
           241
         </td>
         <td>
-          1843
+          1848
         </td>
         <td>
           scala.Int.+
         </td>
         <td style="background: #F0ADAD">
-          mergedPathIdx.+({  scoverage.Invoker.invoked(1842, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  DeBruijnGraph.this.kmerSize})
+          mergedPathIdx.+({  scoverage.Invoker.invoked(1847, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  DeBruijnGraph.this.kmerSize})
         </td>
       </tr><tr>
         <td>
           242
         </td>
         <td>
-          1844
+          1849
         </td>
         <td>
           scala.collection.immutable.List.::
@@ -26400,7 +26400,7 @@
           245
         </td>
         <td>
-          1848
+          1853
         </td>
         <td>
           scala.collection.immutable.List.::
@@ -26413,46 +26413,7 @@
           248
         </td>
         <td>
-          1865
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          {  val backtrackIndex: Int = {    scoverage.Invoker.invoked(1853, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    lastBranchIndex.top  };  currentPath = {    scoverage.Invoker.invoked(1855, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    currentPath.drop({      scoverage.Invoker.invoked(1854, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      currentPath.length.-(backtrackIndex)    })  };  numBacktracks = {    scoverage.Invoker.invoked(1856, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    numBacktracks.+(1)  };  if ({    scoverage.Invoker.invoked(1858, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    numBacktracks.==({      scoverage.Invoker.invoked(1857, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      lastBranchChildren.top.-(1)    })  })    {      scoverage.Invoker.invoked(1862, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        {          scoverage.Invoker.invoked(1859, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          lastBranchIndex.pop()        };        {          scoverage.Invoker.invoked(1860, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          lastBranchChildren.pop()        };        numBacktracks = {          scoverage.Invoker.invoked(1861, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          0        }      }    }  else    {      scoverage.Invoker.invoked(1864, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(1863, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        ()      }    }}
-        </td>
-      </tr><tr>
-        <td>
-          248
-        </td>
-        <td>
-          1867
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1866, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
-        </td>
-      </tr><tr>
-        <td>
-          248
-        </td>
-        <td>
-          1852
-        </td>
-        <td>
-          scala.collection.TraversableOnce.nonEmpty
-        </td>
-        <td style="background: #F0ADAD">
-          lastBranchIndex.nonEmpty
-        </td>
-      </tr><tr>
-        <td>
-          248
-        </td>
-        <td>
-          1866
+          1871
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -26462,10 +26423,49 @@
         </td>
       </tr><tr>
         <td>
+          248
+        </td>
+        <td>
+          1870
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  val backtrackIndex: Int = {    scoverage.Invoker.invoked(1858, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    lastBranchIndex.top  };  currentPath = {    scoverage.Invoker.invoked(1860, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    currentPath.drop({      scoverage.Invoker.invoked(1859, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      currentPath.length.-(backtrackIndex)    })  };  numBacktracks = {    scoverage.Invoker.invoked(1861, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    numBacktracks.+(1)  };  if ({    scoverage.Invoker.invoked(1863, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    numBacktracks.==({      scoverage.Invoker.invoked(1862, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      lastBranchChildren.top.-(1)    })  })    {      scoverage.Invoker.invoked(1867, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        {          scoverage.Invoker.invoked(1864, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          lastBranchIndex.pop()        };        {          scoverage.Invoker.invoked(1865, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          lastBranchChildren.pop()        };        numBacktracks = {          scoverage.Invoker.invoked(1866, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          0        }      }    }  else    {      scoverage.Invoker.invoked(1869, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(1868, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        ()      }    }}
+        </td>
+      </tr><tr>
+        <td>
+          248
+        </td>
+        <td>
+          1872
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  scoverage.Invoker.invoked(1871, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
+        </td>
+      </tr><tr>
+        <td>
+          248
+        </td>
+        <td>
+          1857
+        </td>
+        <td>
+          scala.collection.TraversableOnce.nonEmpty
+        </td>
+        <td style="background: #F0ADAD">
+          lastBranchIndex.nonEmpty
+        </td>
+      </tr><tr>
+        <td>
           250
         </td>
         <td>
-          1853
+          1858
         </td>
         <td>
           scala.collection.mutable.Stack.top
@@ -26478,20 +26478,7 @@
           251
         </td>
         <td>
-          1855
-        </td>
-        <td>
-          scala.collection.immutable.List.drop
-        </td>
-        <td style="background: #F0ADAD">
-          currentPath.drop({  scoverage.Invoker.invoked(1854, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  currentPath.length.-(backtrackIndex)})
-        </td>
-      </tr><tr>
-        <td>
-          251
-        </td>
-        <td>
-          1854
+          1859
         </td>
         <td>
           scala.Int.-
@@ -26501,10 +26488,23 @@
         </td>
       </tr><tr>
         <td>
+          251
+        </td>
+        <td>
+          1860
+        </td>
+        <td>
+          scala.collection.immutable.List.drop
+        </td>
+        <td style="background: #F0ADAD">
+          currentPath.drop({  scoverage.Invoker.invoked(1859, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  currentPath.length.-(backtrackIndex)})
+        </td>
+      </tr><tr>
+        <td>
           252
         </td>
         <td>
-          1856
+          1861
         </td>
         <td>
           scala.Int.+
@@ -26517,46 +26517,7 @@
           255
         </td>
         <td>
-          1862
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          {  {    scoverage.Invoker.invoked(1859, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    lastBranchIndex.pop()  };  {    scoverage.Invoker.invoked(1860, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    lastBranchChildren.pop()  };  numBacktracks = {    scoverage.Invoker.invoked(1861, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    0  }}
-        </td>
-      </tr><tr>
-        <td>
-          255
-        </td>
-        <td>
-          1864
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1863, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
-        </td>
-      </tr><tr>
-        <td>
-          255
-        </td>
-        <td>
-          1858
-        </td>
-        <td>
-          scala.Int.==
-        </td>
-        <td style="background: #F0ADAD">
-          numBacktracks.==({  scoverage.Invoker.invoked(1857, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  lastBranchChildren.top.-(1)})
-        </td>
-      </tr><tr>
-        <td>
-          255
-        </td>
-        <td>
-          1863
+          1868
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -26569,7 +26530,7 @@
           255
         </td>
         <td>
-          1857
+          1862
         </td>
         <td>
           scala.Int.-
@@ -26579,10 +26540,49 @@
         </td>
       </tr><tr>
         <td>
+          255
+        </td>
+        <td>
+          1867
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  {    scoverage.Invoker.invoked(1864, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    lastBranchIndex.pop()  };  {    scoverage.Invoker.invoked(1865, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    lastBranchChildren.pop()  };  numBacktracks = {    scoverage.Invoker.invoked(1866, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    0  }}
+        </td>
+      </tr><tr>
+        <td>
+          255
+        </td>
+        <td>
+          1869
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  scoverage.Invoker.invoked(1868, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
+        </td>
+      </tr><tr>
+        <td>
+          255
+        </td>
+        <td>
+          1863
+        </td>
+        <td>
+          scala.Int.==
+        </td>
+        <td style="background: #F0ADAD">
+          numBacktracks.==({  scoverage.Invoker.invoked(1862, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  lastBranchChildren.top.-(1)})
+        </td>
+      </tr><tr>
+        <td>
           256
         </td>
         <td>
-          1859
+          1864
         </td>
         <td>
           scala.collection.mutable.Stack.pop
@@ -26595,7 +26595,7 @@
           257
         </td>
         <td>
-          1860
+          1865
         </td>
         <td>
           scala.collection.mutable.Stack.pop
@@ -26608,7 +26608,7 @@
           258
         </td>
         <td>
-          1861
+          1866
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -26621,20 +26621,20 @@
           271
         </td>
         <td>
-          1874
+          1879
         </td>
         <td>
           scala.collection.TraversableLike.filter
         </td>
         <td style="background: #F0ADAD">
-          DeBruijnGraph.this.kmerCounts.keys.filter(((x$12: Seq[Byte]) =&gt; {  scoverage.Invoker.invoked(1873, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  DeBruijnGraph.this.parents(x$12).isEmpty}))
+          DeBruijnGraph.this.kmerCounts.keys.filter(((x$12: Seq[Byte]) =&gt; {  scoverage.Invoker.invoked(1878, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  DeBruijnGraph.this.parents(x$12).isEmpty}))
         </td>
       </tr><tr>
         <td>
           271
         </td>
         <td>
-          1873
+          1878
         </td>
         <td>
           scala.collection.SeqLike.isEmpty
@@ -26647,33 +26647,7 @@
           280
         </td>
         <td>
-          1877
-        </td>
-        <td>
-          scala.collection.MapLike.getOrElse
-        </td>
-        <td style="background: #F0ADAD">
-          DeBruijnGraph.this.prefixTable.getOrElse[List[DeBruijnGraph.this.Kmer]]({  scoverage.Invoker.invoked(1875, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  DeBruijnGraph.this.kmerSuffix(node)}, {  scoverage.Invoker.invoked(1876, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  immutable.this.List.empty[Nothing]})
-        </td>
-      </tr><tr>
-        <td>
-          280
-        </td>
-        <td>
-          1876
-        </td>
-        <td>
-          scala.collection.immutable.List.empty
-        </td>
-        <td style="background: #F0ADAD">
-          immutable.this.List.empty[Nothing]
-        </td>
-      </tr><tr>
-        <td>
-          280
-        </td>
-        <td>
-          1875
+          1880
         </td>
         <td>
           org.hammerlab.guacamole.assembly.DeBruijnGraph.kmerSuffix
@@ -26683,23 +26657,23 @@
         </td>
       </tr><tr>
         <td>
-          289
+          280
         </td>
         <td>
-          1880
+          1882
         </td>
         <td>
           scala.collection.MapLike.getOrElse
         </td>
         <td style="background: #F0ADAD">
-          DeBruijnGraph.this.suffixTable.getOrElse[List[DeBruijnGraph.this.Kmer]]({  scoverage.Invoker.invoked(1878, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  DeBruijnGraph.this.kmerPrefix(node)}, {  scoverage.Invoker.invoked(1879, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  immutable.this.List.empty[Nothing]})
+          DeBruijnGraph.this.prefixTable.getOrElse[List[DeBruijnGraph.this.Kmer]]({  scoverage.Invoker.invoked(1880, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  DeBruijnGraph.this.kmerSuffix(node)}, {  scoverage.Invoker.invoked(1881, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  immutable.this.List.empty[Nothing]})
         </td>
       </tr><tr>
         <td>
-          289
+          280
         </td>
         <td>
-          1879
+          1881
         </td>
         <td>
           scala.collection.immutable.List.empty
@@ -26712,7 +26686,7 @@
           289
         </td>
         <td>
-          1878
+          1883
         </td>
         <td>
           org.hammerlab.guacamole.assembly.DeBruijnGraph.kmerPrefix
@@ -26722,10 +26696,36 @@
         </td>
       </tr><tr>
         <td>
+          289
+        </td>
+        <td>
+          1885
+        </td>
+        <td>
+          scala.collection.MapLike.getOrElse
+        </td>
+        <td style="background: #F0ADAD">
+          DeBruijnGraph.this.suffixTable.getOrElse[List[DeBruijnGraph.this.Kmer]]({  scoverage.Invoker.invoked(1883, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  DeBruijnGraph.this.kmerPrefix(node)}, {  scoverage.Invoker.invoked(1884, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  immutable.this.List.empty[Nothing]})
+        </td>
+      </tr><tr>
+        <td>
+          289
+        </td>
+        <td>
+          1884
+        </td>
+        <td>
+          scala.collection.immutable.List.empty
+        </td>
+        <td style="background: #F0ADAD">
+          immutable.this.List.empty[Nothing]
+        </td>
+      </tr><tr>
+        <td>
           302
         </td>
         <td>
-          1881
+          1886
         </td>
         <td>
           scala.collection.mutable.Map.empty
@@ -26738,7 +26738,7 @@
           304
         </td>
         <td>
-          1882
+          1887
         </td>
         <td>
           org.hammerlab.guacamole.Bases.allStandardBases
@@ -26751,33 +26751,33 @@
           305
         </td>
         <td>
-          1887
+          1892
         </td>
         <td>
           scala.collection.IterableLike.foreach
         </td>
         <td style="background: #F0ADAD">
-          sequences.filter(((x$13: org.hammerlab.guacamole.assembly.DeBruijnGraph.Sequence) =&gt; {  scoverage.Invoker.invoked(1882, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  org.hammerlab.guacamole.Bases.allStandardBases(x$13)})).foreach[Unit](((x$14: org.hammerlab.guacamole.assembly.DeBruijnGraph.Sequence) =&gt; {  scoverage.Invoker.invoked(1886, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x$14.sliding(kmerSize).foreach[Unit](((seq: Seq[Byte]) =&gt; {    val count: Int = {      scoverage.Invoker.invoked(1883, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      kmerCounts.getOrElse[Int](seq, 0)    };    {      scoverage.Invoker.invoked(1885, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      kmerCounts.update(seq, {        scoverage.Invoker.invoked(1884, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        count.+(1)      })    }  }))}))
+          sequences.filter(((x$13: org.hammerlab.guacamole.assembly.DeBruijnGraph.Sequence) =&gt; {  scoverage.Invoker.invoked(1887, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  org.hammerlab.guacamole.Bases.allStandardBases(x$13)})).foreach[Unit](((x$14: org.hammerlab.guacamole.assembly.DeBruijnGraph.Sequence) =&gt; {  scoverage.Invoker.invoked(1891, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x$14.sliding(kmerSize).foreach[Unit](((seq: Seq[Byte]) =&gt; {    val count: Int = {      scoverage.Invoker.invoked(1888, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      kmerCounts.getOrElse[Int](seq, 0)    };    {      scoverage.Invoker.invoked(1890, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      kmerCounts.update(seq, {        scoverage.Invoker.invoked(1889, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        count.+(1)      })    }  }))}))
         </td>
       </tr><tr>
         <td>
           307
         </td>
         <td>
-          1886
+          1891
         </td>
         <td>
           scala.collection.Iterator.foreach
         </td>
         <td style="background: #F0ADAD">
-          x$14.sliding(kmerSize).foreach[Unit](((seq: Seq[Byte]) =&gt; {  val count: Int = {    scoverage.Invoker.invoked(1883, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    kmerCounts.getOrElse[Int](seq, 0)  };  {    scoverage.Invoker.invoked(1885, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    kmerCounts.update(seq, {      scoverage.Invoker.invoked(1884, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      count.+(1)    })  }}))
+          x$14.sliding(kmerSize).foreach[Unit](((seq: Seq[Byte]) =&gt; {  val count: Int = {    scoverage.Invoker.invoked(1888, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    kmerCounts.getOrElse[Int](seq, 0)  };  {    scoverage.Invoker.invoked(1890, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    kmerCounts.update(seq, {      scoverage.Invoker.invoked(1889, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      count.+(1)    })  }}))
         </td>
       </tr><tr>
         <td>
           308
         </td>
         <td>
-          1883
+          1888
         </td>
         <td>
           scala.collection.MapLike.getOrElse
@@ -26790,20 +26790,7 @@
           309
         </td>
         <td>
-          1885
-        </td>
-        <td>
-          scala.collection.mutable.MapLike.update
-        </td>
-        <td style="background: #F0ADAD">
-          kmerCounts.update(seq, {  scoverage.Invoker.invoked(1884, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  count.+(1)})
-        </td>
-      </tr><tr>
-        <td>
-          309
-        </td>
-        <td>
-          1884
+          1889
         </td>
         <td>
           scala.Int.+
@@ -26813,10 +26800,23 @@
         </td>
       </tr><tr>
         <td>
+          309
+        </td>
+        <td>
+          1890
+        </td>
+        <td>
+          scala.collection.mutable.MapLike.update
+        </td>
+        <td style="background: #F0ADAD">
+          kmerCounts.update(seq, {  scoverage.Invoker.invoked(1889, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  count.+(1)})
+        </td>
+      </tr><tr>
+        <td>
           313
         </td>
         <td>
-          1888
+          1893
         </td>
         <td>
           org.hammerlab.guacamole.assembly.DeBruijnGraph.&lt;init&gt;
@@ -26829,7 +26829,7 @@
           315
         </td>
         <td>
-          1889
+          1894
         </td>
         <td>
           org.hammerlab.guacamole.assembly.DeBruijnGraph.pruneKmers
@@ -26842,33 +26842,7 @@
           317
         </td>
         <td>
-          1892
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          ()
-        </td>
-      </tr><tr>
-        <td>
-          317
-        </td>
-        <td>
-          1891
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1890, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  graph.mergeNodes()}
-        </td>
-      </tr><tr>
-        <td>
-          317
-        </td>
-        <td>
-          1890
+          1895
         </td>
         <td>
           org.hammerlab.guacamole.assembly.DeBruijnGraph.mergeNodes
@@ -26881,33 +26855,59 @@
           317
         </td>
         <td>
-          1893
+          1898
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(1892, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
+          {  scoverage.Invoker.invoked(1897, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  ()}
+        </td>
+      </tr><tr>
+        <td>
+          317
+        </td>
+        <td>
+          1897
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          ()
+        </td>
+      </tr><tr>
+        <td>
+          317
+        </td>
+        <td>
+          1896
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  scoverage.Invoker.invoked(1895, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  graph.mergeNodes()}
         </td>
       </tr><tr>
         <td>
           332
         </td>
         <td>
-          1895
+          1900
         </td>
         <td>
           scala.Option.getOrElse
         </td>
         <td style="background: #F0ADAD">
-          sequences.headOption.getOrElse[org.hammerlab.guacamole.assembly.DeBruijnGraph.Sequence]({  scoverage.Invoker.invoked(1894, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.empty[Nothing]})
+          sequences.headOption.getOrElse[org.hammerlab.guacamole.assembly.DeBruijnGraph.Sequence]({  scoverage.Invoker.invoked(1899, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.empty[Nothing]})
         </td>
       </tr><tr>
         <td>
           332
         </td>
         <td>
-          1894
+          1899
         </td>
         <td>
           scala.collection.generic.GenericCompanion.empty
@@ -26920,33 +26920,7 @@
           333
         </td>
         <td>
-          1898
-        </td>
-        <td>
-          scala.collection.Seq.canBuildFrom
-        </td>
-        <td style="background: #F0ADAD">
-          collection.this.Seq.canBuildFrom[Byte]
-        </td>
-      </tr><tr>
-        <td>
-          333
-        </td>
-        <td>
-          1897
-        </td>
-        <td>
-          scala.collection.IterableLike.takeRight
-        </td>
-        <td style="background: #F0ADAD">
-          sequence.takeRight({  scoverage.Invoker.invoked(1896, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  sequence.length.-(overlapSize).+(1)})
-        </td>
-      </tr><tr>
-        <td>
-          333
-        </td>
-        <td>
-          1896
+          1901
         </td>
         <td>
           scala.Int.+
@@ -26959,33 +26933,59 @@
           333
         </td>
         <td>
-          1899
+          1904
         </td>
         <td>
           scala.collection.TraversableLike.flatMap
         </td>
         <td style="background: #F0ADAD">
-          sequences.tail.flatMap[Byte, Seq[Byte]](((sequence: org.hammerlab.guacamole.assembly.DeBruijnGraph.Sequence) =&gt; {  scoverage.Invoker.invoked(1897, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  sequence.takeRight({    scoverage.Invoker.invoked(1896, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    sequence.length.-(overlapSize).+(1)  })}))({  scoverage.Invoker.invoked(1898, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.canBuildFrom[Byte]})
+          sequences.tail.flatMap[Byte, Seq[Byte]](((sequence: org.hammerlab.guacamole.assembly.DeBruijnGraph.Sequence) =&gt; {  scoverage.Invoker.invoked(1902, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  sequence.takeRight({    scoverage.Invoker.invoked(1901, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    sequence.length.-(overlapSize).+(1)  })}))({  scoverage.Invoker.invoked(1903, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.canBuildFrom[Byte]})
+        </td>
+      </tr><tr>
+        <td>
+          333
+        </td>
+        <td>
+          1903
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #F0ADAD">
+          collection.this.Seq.canBuildFrom[Byte]
+        </td>
+      </tr><tr>
+        <td>
+          333
+        </td>
+        <td>
+          1902
+        </td>
+        <td>
+          scala.collection.IterableLike.takeRight
+        </td>
+        <td style="background: #F0ADAD">
+          sequence.takeRight({  scoverage.Invoker.invoked(1901, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  sequence.length.-(overlapSize).+(1)})
         </td>
       </tr><tr>
         <td>
           334
         </td>
         <td>
-          1901
+          1906
         </td>
         <td>
           scala.collection.TraversableLike.++
         </td>
         <td style="background: #F0ADAD">
-          head.++[Byte, org.hammerlab.guacamole.assembly.DeBruijnGraph.Sequence](rest)({  scoverage.Invoker.invoked(1900, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.canBuildFrom[Byte]})
+          head.++[Byte, org.hammerlab.guacamole.assembly.DeBruijnGraph.Sequence](rest)({  scoverage.Invoker.invoked(1905, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.canBuildFrom[Byte]})
         </td>
       </tr><tr>
         <td>
           334
         </td>
         <td>
-          1900
+          1905
         </td>
         <td>
           scala.collection.Seq.canBuildFrom

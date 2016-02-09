@@ -18139,7 +18139,7 @@
           38
         </td>
         <td>
-          3189
+          3194
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -18152,7 +18152,7 @@
           49
         </td>
         <td>
-          3190
+          3195
         </td>
         <td>
           org.bdgenomics.adam.util.PhredUtils.phredToSuccessProbability
@@ -18165,7 +18165,7 @@
           61
         </td>
         <td>
-          3191
+          3196
         </td>
         <td>
           scala.Double.*
@@ -18178,20 +18178,20 @@
           78
         </td>
         <td>
-          3194
+          3199
         </td>
         <td>
           org.hammerlab.guacamole.likelihood.Likelihood.likelihoodsOfGenotypes
         </td>
         <td style="background: #F0ADAD">
-          Likelihood.this.likelihoodsOfGenotypes(elements, {  scoverage.Invoker.invoked(3192, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.apply[org.hammerlab.guacamole.variants.Genotype](genotype)}, probabilityCorrect, prior, logSpace, {  scoverage.Invoker.invoked(3193, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  false})
+          Likelihood.this.likelihoodsOfGenotypes(elements, {  scoverage.Invoker.invoked(3197, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.apply[org.hammerlab.guacamole.variants.Genotype](genotype)}, probabilityCorrect, prior, logSpace, {  scoverage.Invoker.invoked(3198, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  false})
         </td>
       </tr><tr>
         <td>
           80
         </td>
         <td>
-          3192
+          3197
         </td>
         <td>
           scala.collection.generic.GenericCompanion.apply
@@ -18204,7 +18204,7 @@
           84
         </td>
         <td>
-          3193
+          3198
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -18217,20 +18217,20 @@
           85
         </td>
         <td>
-          3196
+          3201
         </td>
         <td>
           scala.Predef.assert
         </td>
         <td style="background: #F0ADAD">
-          scala.this.Predef.assert({  scoverage.Invoker.invoked(3195, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  result.size.==(1)})
+          scala.this.Predef.assert({  scoverage.Invoker.invoked(3200, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  result.size.==(1)})
         </td>
       </tr><tr>
         <td>
           85
         </td>
         <td>
-          3195
+          3200
         </td>
         <td>
           scala.Int.==
@@ -18243,7 +18243,7 @@
           86
         </td>
         <td>
-          3197
+          3202
         </td>
         <td>
           scala.collection.SeqLike.apply
@@ -18256,20 +18256,33 @@
           106
         </td>
         <td>
-          3199
+          3205
         </td>
         <td>
-          scala.collection.IterableLike.forall
+          scala.collection.TraversableLike.filter
         </td>
         <td style="background: #F0ADAD">
-          allele.altBases.forall({  ((base: Byte) =&gt; {    scoverage.Invoker.invoked(3198, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    org.hammerlab.guacamole.Bases.isStandardBase(base)  })})
+          pileup.distinctAlleles.filter(((allele: org.hammerlab.guacamole.variants.Allele) =&gt; {  scoverage.Invoker.invoked(3204, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  allele.altBases.forall({    ((base: Byte) =&gt; {      scoverage.Invoker.invoked(3203, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      org.hammerlab.guacamole.Bases.isStandardBase(base)    })  })}))
         </td>
       </tr><tr>
         <td>
           106
         </td>
         <td>
-          3198
+          3204
+        </td>
+        <td>
+          scala.collection.IterableLike.forall
+        </td>
+        <td style="background: #F0ADAD">
+          allele.altBases.forall({  ((base: Byte) =&gt; {    scoverage.Invoker.invoked(3203, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    org.hammerlab.guacamole.Bases.isStandardBase(base)  })})
+        </td>
+      </tr><tr>
+        <td>
+          106
+        </td>
+        <td>
+          3203
         </td>
         <td>
           org.hammerlab.guacamole.Bases.isStandardBase
@@ -18279,23 +18292,23 @@
         </td>
       </tr><tr>
         <td>
-          106
+          108
         </td>
         <td>
-          3200
+          3214
         </td>
         <td>
-          scala.collection.TraversableLike.filter
+          scala.collection.immutable.IndexedSeq.canBuildFrom
         </td>
         <td style="background: #F0ADAD">
-          pileup.distinctAlleles.filter(((allele: org.hammerlab.guacamole.variants.Allele) =&gt; {  scoverage.Invoker.invoked(3199, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  allele.altBases.forall({    ((base: Byte) =&gt; {      scoverage.Invoker.invoked(3198, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      org.hammerlab.guacamole.Bases.isStandardBase(base)    })  })}))
+          immutable.this.IndexedSeq.canBuildFrom[org.hammerlab.guacamole.variants.Genotype]
         </td>
       </tr><tr>
         <td>
           108
         </td>
         <td>
-          3202
+          3207
         </td>
         <td>
           scala.collection.SeqLike.size
@@ -18308,7 +18321,20 @@
           108
         </td>
         <td>
-          3201
+          3215
+        </td>
+        <td>
+          scala.collection.TraversableLike.flatMap
+        </td>
+        <td style="background: #F0ADAD">
+          scala.this.Predef.intWrapper({  scoverage.Invoker.invoked(3206, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  0}).until({  scoverage.Invoker.invoked(3207, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  alleles.size}).flatMap[org.hammerlab.guacamole.variants.Genotype, scala.collection.immutable.IndexedSeq[org.hammerlab.guacamole.variants.Genotype]](((i: Int) =&gt; {  scoverage.Invoker.invoked(3213, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.intWrapper(i).until({  scoverage.Invoker.invoked(3208, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  alleles.size}).map[org.hammerlab.guacamole.variants.Genotype, scala.collection.immutable.IndexedSeq[org.hammerlab.guacamole.variants.Genotype]](((j: Int) =&gt; {    scoverage.Invoker.invoked(3211, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    org.hammerlab.guacamole.variants.Genotype.apply({      scoverage.Invoker.invoked(3209, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      alleles.apply(i)    }, {      scoverage.Invoker.invoked(3210, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      alleles.apply(j)    })  }))({    scoverage.Invoker.invoked(3212, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    immutable.this.IndexedSeq.canBuildFrom[org.hammerlab.guacamole.variants.Genotype]  })}))({  scoverage.Invoker.invoked(3214, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  immutable.this.IndexedSeq.canBuildFrom[org.hammerlab.guacamole.variants.Genotype]})
+        </td>
+      </tr><tr>
+        <td>
+          108
+        </td>
+        <td>
+          3206
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -18318,62 +18344,10 @@
         </td>
       </tr><tr>
         <td>
-          108
-        </td>
-        <td>
-          3210
-        </td>
-        <td>
-          scala.collection.TraversableLike.flatMap
-        </td>
-        <td style="background: #F0ADAD">
-          scala.this.Predef.intWrapper({  scoverage.Invoker.invoked(3201, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  0}).until({  scoverage.Invoker.invoked(3202, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  alleles.size}).flatMap[org.hammerlab.guacamole.variants.Genotype, scala.collection.immutable.IndexedSeq[org.hammerlab.guacamole.variants.Genotype]](((i: Int) =&gt; {  scoverage.Invoker.invoked(3208, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.intWrapper(i).until({  scoverage.Invoker.invoked(3203, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  alleles.size}).map[org.hammerlab.guacamole.variants.Genotype, scala.collection.immutable.IndexedSeq[org.hammerlab.guacamole.variants.Genotype]](((j: Int) =&gt; {    scoverage.Invoker.invoked(3206, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    org.hammerlab.guacamole.variants.Genotype.apply({      scoverage.Invoker.invoked(3204, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      alleles.apply(i)    }, {      scoverage.Invoker.invoked(3205, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      alleles.apply(j)    })  }))({    scoverage.Invoker.invoked(3207, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    immutable.this.IndexedSeq.canBuildFrom[org.hammerlab.guacamole.variants.Genotype]  })}))({  scoverage.Invoker.invoked(3209, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  immutable.this.IndexedSeq.canBuildFrom[org.hammerlab.guacamole.variants.Genotype]})
-        </td>
-      </tr><tr>
-        <td>
-          108
-        </td>
-        <td>
-          3209
-        </td>
-        <td>
-          scala.collection.immutable.IndexedSeq.canBuildFrom
-        </td>
-        <td style="background: #F0ADAD">
-          immutable.this.IndexedSeq.canBuildFrom[org.hammerlab.guacamole.variants.Genotype]
-        </td>
-      </tr><tr>
-        <td>
           109
         </td>
         <td>
           3208
-        </td>
-        <td>
-          scala.collection.TraversableLike.map
-        </td>
-        <td style="background: #F0ADAD">
-          scala.this.Predef.intWrapper(i).until({  scoverage.Invoker.invoked(3203, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  alleles.size}).map[org.hammerlab.guacamole.variants.Genotype, scala.collection.immutable.IndexedSeq[org.hammerlab.guacamole.variants.Genotype]](((j: Int) =&gt; {  scoverage.Invoker.invoked(3206, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  org.hammerlab.guacamole.variants.Genotype.apply({    scoverage.Invoker.invoked(3204, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    alleles.apply(i)  }, {    scoverage.Invoker.invoked(3205, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    alleles.apply(j)  })}))({  scoverage.Invoker.invoked(3207, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  immutable.this.IndexedSeq.canBuildFrom[org.hammerlab.guacamole.variants.Genotype]})
-        </td>
-      </tr><tr>
-        <td>
-          109
-        </td>
-        <td>
-          3207
-        </td>
-        <td>
-          scala.collection.immutable.IndexedSeq.canBuildFrom
-        </td>
-        <td style="background: #F0ADAD">
-          immutable.this.IndexedSeq.canBuildFrom[org.hammerlab.guacamole.variants.Genotype]
-        </td>
-      </tr><tr>
-        <td>
-          109
-        </td>
-        <td>
-          3203
         </td>
         <td>
           scala.collection.SeqLike.size
@@ -18383,10 +18357,49 @@
         </td>
       </tr><tr>
         <td>
+          109
+        </td>
+        <td>
+          3213
+        </td>
+        <td>
+          scala.collection.TraversableLike.map
+        </td>
+        <td style="background: #F0ADAD">
+          scala.this.Predef.intWrapper(i).until({  scoverage.Invoker.invoked(3208, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  alleles.size}).map[org.hammerlab.guacamole.variants.Genotype, scala.collection.immutable.IndexedSeq[org.hammerlab.guacamole.variants.Genotype]](((j: Int) =&gt; {  scoverage.Invoker.invoked(3211, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  org.hammerlab.guacamole.variants.Genotype.apply({    scoverage.Invoker.invoked(3209, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    alleles.apply(i)  }, {    scoverage.Invoker.invoked(3210, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    alleles.apply(j)  })}))({  scoverage.Invoker.invoked(3212, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  immutable.this.IndexedSeq.canBuildFrom[org.hammerlab.guacamole.variants.Genotype]})
+        </td>
+      </tr><tr>
+        <td>
+          109
+        </td>
+        <td>
+          3212
+        </td>
+        <td>
+          scala.collection.immutable.IndexedSeq.canBuildFrom
+        </td>
+        <td style="background: #F0ADAD">
+          immutable.this.IndexedSeq.canBuildFrom[org.hammerlab.guacamole.variants.Genotype]
+        </td>
+      </tr><tr>
+        <td>
           110
         </td>
         <td>
-          3205
+          3211
+        </td>
+        <td>
+          org.hammerlab.guacamole.variants.Genotype.apply
+        </td>
+        <td style="background: #F0ADAD">
+          org.hammerlab.guacamole.variants.Genotype.apply({  scoverage.Invoker.invoked(3209, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  alleles.apply(i)}, {  scoverage.Invoker.invoked(3210, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  alleles.apply(j)})
+        </td>
+      </tr><tr>
+        <td>
+          110
+        </td>
+        <td>
+          3210
         </td>
         <td>
           scala.collection.SeqLike.apply
@@ -18399,7 +18412,7 @@
           110
         </td>
         <td>
-          3204
+          3209
         </td>
         <td>
           scala.collection.SeqLike.apply
@@ -18409,23 +18422,23 @@
         </td>
       </tr><tr>
         <td>
-          110
+          111
         </td>
         <td>
-          3206
+          3217
         </td>
         <td>
-          org.hammerlab.guacamole.variants.Genotype.apply
+          org.hammerlab.guacamole.likelihood.Likelihood.likelihoodsOfGenotypes
         </td>
         <td style="background: #F0ADAD">
-          org.hammerlab.guacamole.variants.Genotype.apply({  scoverage.Invoker.invoked(3204, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  alleles.apply(i)}, {  scoverage.Invoker.invoked(3205, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  alleles.apply(j)})
+          Likelihood.this.likelihoodsOfGenotypes({  scoverage.Invoker.invoked(3216, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  pileup.elements}, genotypes, probabilityCorrect, prior, logSpace, normalize)
         </td>
       </tr><tr>
         <td>
           111
         </td>
         <td>
-          3211
+          3216
         </td>
         <td>
           org.hammerlab.guacamole.pileup.Pileup.elements
@@ -18435,36 +18448,23 @@
         </td>
       </tr><tr>
         <td>
-          111
-        </td>
-        <td>
-          3212
-        </td>
-        <td>
-          org.hammerlab.guacamole.likelihood.Likelihood.likelihoodsOfGenotypes
-        </td>
-        <td style="background: #F0ADAD">
-          Likelihood.this.likelihoodsOfGenotypes({  scoverage.Invoker.invoked(3211, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  pileup.elements}, genotypes, probabilityCorrect, prior, logSpace, normalize)
-        </td>
-      </tr><tr>
-        <td>
           112
         </td>
         <td>
-          3214
+          3219
         </td>
         <td>
           scala.collection.IterableLike.zip
         </td>
         <td style="background: #F0ADAD">
-          genotypes.zip[org.hammerlab.guacamole.variants.Genotype, Double, Seq[(org.hammerlab.guacamole.variants.Genotype, Double)]](likelihoods)({  scoverage.Invoker.invoked(3213, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  immutable.this.IndexedSeq.canBuildFrom[(org.hammerlab.guacamole.variants.Genotype, Double)]})
+          genotypes.zip[org.hammerlab.guacamole.variants.Genotype, Double, Seq[(org.hammerlab.guacamole.variants.Genotype, Double)]](likelihoods)({  scoverage.Invoker.invoked(3218, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  immutable.this.IndexedSeq.canBuildFrom[(org.hammerlab.guacamole.variants.Genotype, Double)]})
         </td>
       </tr><tr>
         <td>
           112
         </td>
         <td>
-          3213
+          3218
         </td>
         <td>
           scala.collection.immutable.IndexedSeq.canBuildFrom
@@ -18477,46 +18477,7 @@
           156
         </td>
         <td>
-          3217
-        </td>
-        <td>
-          scala.Predef.conforms
-        </td>
-        <td style="background: #F0ADAD">
-          scala.this.Predef.conforms[org.hammerlab.guacamole.variants.Allele]
-        </td>
-      </tr><tr>
-        <td>
-          156
-        </td>
-        <td>
-          3216
-        </td>
-        <td>
-          scala.collection.Seq.canBuildFrom
-        </td>
-        <td style="background: #F0ADAD">
-          collection.this.Seq.canBuildFrom[org.hammerlab.guacamole.variants.Allele]
-        </td>
-      </tr><tr>
-        <td>
-          156
-        </td>
-        <td>
-          3219
-        </td>
-        <td>
-          scala.collection.SeqLike.sorted
-        </td>
-        <td style="background: #F0ADAD">
-          genotypes.flatMap[org.hammerlab.guacamole.variants.Allele, Seq[org.hammerlab.guacamole.variants.Allele]](((x$1: org.hammerlab.guacamole.variants.Genotype) =&gt; {  scoverage.Invoker.invoked(3215, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x$1.alleles}))({  scoverage.Invoker.invoked(3216, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.canBuildFrom[org.hammerlab.guacamole.variants.Allele]}).distinct.toIndexedSeq.sorted[org.hammerlab.guacamole.variants.Allele]({  scoverage.Invoker.invoked(3218, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  math.this.Ordering.ordered[org.hammerlab.guacamole.variants.Allele]({    scoverage.Invoker.invoked(3217, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.this.Predef.conforms[org.hammerlab.guacamole.variants.Allele]  })})
-        </td>
-      </tr><tr>
-        <td>
-          156
-        </td>
-        <td>
-          3215
+          3220
         </td>
         <td>
           org.hammerlab.guacamole.variants.Genotype.alleles
@@ -18529,46 +18490,59 @@
           156
         </td>
         <td>
-          3218
+          3223
         </td>
         <td>
           scala.math.LowPriorityOrderingImplicits.ordered
         </td>
         <td style="background: #F0ADAD">
-          math.this.Ordering.ordered[org.hammerlab.guacamole.variants.Allele]({  scoverage.Invoker.invoked(3217, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.conforms[org.hammerlab.guacamole.variants.Allele]})
+          math.this.Ordering.ordered[org.hammerlab.guacamole.variants.Allele]({  scoverage.Invoker.invoked(3222, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.conforms[org.hammerlab.guacamole.variants.Allele]})
         </td>
       </tr><tr>
         <td>
-          157
-        </td>
-        <td>
-          3220
-        </td>
-        <td>
-          scala.collection.immutable.IndexedSeq.canBuildFrom
-        </td>
-        <td style="background: #F0ADAD">
-          immutable.this.IndexedSeq.canBuildFrom[(org.hammerlab.guacamole.variants.Allele, Int)]
-        </td>
-      </tr><tr>
-        <td>
-          157
+          156
         </td>
         <td>
           3222
         </td>
         <td>
-          scala.collection.TraversableOnce.toMap
+          scala.Predef.conforms
         </td>
         <td style="background: #F0ADAD">
-          alleles.zipWithIndex[org.hammerlab.guacamole.variants.Allele, scala.collection.immutable.IndexedSeq[(org.hammerlab.guacamole.variants.Allele, Int)]]({  scoverage.Invoker.invoked(3220, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  immutable.this.IndexedSeq.canBuildFrom[(org.hammerlab.guacamole.variants.Allele, Int)]}).toMap[org.hammerlab.guacamole.variants.Allele, Int]({  scoverage.Invoker.invoked(3221, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.conforms[(org.hammerlab.guacamole.variants.Allele, Int)]})
+          scala.this.Predef.conforms[org.hammerlab.guacamole.variants.Allele]
+        </td>
+      </tr><tr>
+        <td>
+          156
+        </td>
+        <td>
+          3221
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #F0ADAD">
+          collection.this.Seq.canBuildFrom[org.hammerlab.guacamole.variants.Allele]
+        </td>
+      </tr><tr>
+        <td>
+          156
+        </td>
+        <td>
+          3224
+        </td>
+        <td>
+          scala.collection.SeqLike.sorted
+        </td>
+        <td style="background: #F0ADAD">
+          genotypes.flatMap[org.hammerlab.guacamole.variants.Allele, Seq[org.hammerlab.guacamole.variants.Allele]](((x$1: org.hammerlab.guacamole.variants.Genotype) =&gt; {  scoverage.Invoker.invoked(3220, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x$1.alleles}))({  scoverage.Invoker.invoked(3221, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.canBuildFrom[org.hammerlab.guacamole.variants.Allele]}).distinct.toIndexedSeq.sorted[org.hammerlab.guacamole.variants.Allele]({  scoverage.Invoker.invoked(3223, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  math.this.Ordering.ordered[org.hammerlab.guacamole.variants.Allele]({    scoverage.Invoker.invoked(3222, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.this.Predef.conforms[org.hammerlab.guacamole.variants.Allele]  })})
         </td>
       </tr><tr>
         <td>
           157
         </td>
         <td>
-          3221
+          3226
         </td>
         <td>
           scala.Predef.conforms
@@ -18578,72 +18552,7 @@
         </td>
       </tr><tr>
         <td>
-          158
-        </td>
-        <td>
-          3223
-        </td>
-        <td>
-          scala.collection.SeqLike.size
-        </td>
-        <td style="background: #F0ADAD">
-          elements.size
-        </td>
-      </tr><tr>
-        <td>
-          166
-        </td>
-        <td>
-          3224
-        </td>
-        <td>
-          cern.colt.matrix.impl.DenseDoubleMatrix2D.&lt;init&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          new cern.colt.matrix.impl.DenseDoubleMatrix2D(alleles.size, depth)
-        </td>
-      </tr><tr>
-        <td>
-          168
-        </td>
-        <td>
-          3244
-        </td>
-        <td>
-          scala.collection.generic.FilterMonadic.foreach
-        </td>
-        <td style="background: #F0ADAD">
-          alleles.zipWithIndex[org.hammerlab.guacamole.variants.Allele, scala.collection.immutable.IndexedSeq[(org.hammerlab.guacamole.variants.Allele, Int)]]({  scoverage.Invoker.invoked(3225, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  immutable.this.IndexedSeq.canBuildFrom[(org.hammerlab.guacamole.variants.Allele, Int)]}).withFilter(((check$ifrefutable$1: (org.hammerlab.guacamole.variants.Allele, Int)) =&gt; {  scoverage.Invoker.invoked(3226, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  (check$ifrefutable$1: (org.hammerlab.guacamole.variants.Allele, Int) @unchecked)} match {  case (_1: org.hammerlab.guacamole.variants.Allele, _2: Int)(org.hammerlab.guacamole.variants.Allele, Int)((allele @ _), (alleleIndex @ _)) =&gt; {    scoverage.Invoker.invoked(3228, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(3227, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      true    }  }  case _ =&gt; false})).foreach[Unit](((x$3: (org.hammerlab.guacamole.variants.Allele, Int)) =&gt; {  scoverage.Invoker.invoked(3243, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  (x$3: (org.hammerlab.guacamole.variants.Allele, Int) @unchecked) match {    case (_1: org.hammerlab.guacamole.variants.Allele, _2: Int)(org.hammerlab.guacamole.variants.Allele, Int)((allele @ _), (alleleIndex @ _)) =&gt; {      scoverage.Invoker.invoked(3242, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(3241, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        elements.zipWithIndex[org.hammerlab.guacamole.pileup.PileupElement, Seq[(org.hammerlab.guacamole.pileup.PileupElement, Int)]]({  scoverage.Invoker.invoked(3229, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.canBuildFrom[(org.hammerlab.guacamole.pileup.PileupElement, Int)]}).withFilter(((check$ifrefutable$2: (org.hammerlab.guacamole.pileup.PileupElement, Int)) =&gt; {  scoverage.Invoker.invoked(3230, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  (check$ifrefutable$2: (org.hammerlab.guacamole.pileup.PileupElement, Int) @unchecked)} match {  case (_1: org.hammerlab.guacamole.pileup.PileupElement, _2: Int)(org.hammerlab.guacamole.pileup.PileupElement, Int)((element @ _), (elementIndex @ _)) =&gt; {    scoverage.Invoker.invoked(3232, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(3231, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      true    }  }  case _ =&gt; false})).foreach[Unit](((x$2: (org.hammerlab.guacamole.pileup.PileupElement, Int)) =&gt; {          scoverage.Invoker.invoked(3240, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          (x$2: (org.hammerlab.guacamole.pileup.PileupElement, Int) @unchecked) match {            case (_1: org.hammerlab.guacamole.pileup.PileupElement, _2: Int)(org.hammerlab.guacamole.pileup.PileupElement, Int)((element @ _), (elementIndex @ _)) =&gt; {              scoverage.Invoker.invoked(3239, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              {                val successProbability: Double = {                  scoverage.Invoker.invoked(3233, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                  probabilityCorrect.apply(element)                };                val probability: Double = if ({                  scoverage.Invoker.invoked(3234, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                  allele.==(element.allele)                })                  {                    scoverage.Invoker.invoked(3235, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                    successProbability                  }                else                  {                    scoverage.Invoker.invoked(3237, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                    {                      scoverage.Invoker.invoked(3236, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                      1.-(successProbability)                    }                  };                {                  scoverage.Invoker.invoked(3238, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                  alleleElementProbabilities.set(alleleIndex, elementIndex, probability)                }              }            }          }        }))      }    }  }}))
-        </td>
-      </tr><tr>
-        <td>
-          168
-        </td>
-        <td>
-          3226
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          (check$ifrefutable$1: (org.hammerlab.guacamole.variants.Allele, Int) @unchecked)
-        </td>
-      </tr><tr>
-        <td>
-          168
-        </td>
-        <td>
-          3243
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          (x$3: (org.hammerlab.guacamole.variants.Allele, Int) @unchecked) match {  case (_1: org.hammerlab.guacamole.variants.Allele, _2: Int)(org.hammerlab.guacamole.variants.Allele, Int)((allele @ _), (alleleIndex @ _)) =&gt; {    scoverage.Invoker.invoked(3242, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(3241, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      elements.zipWithIndex[org.hammerlab.guacamole.pileup.PileupElement, Seq[(org.hammerlab.guacamole.pileup.PileupElement, Int)]]({  scoverage.Invoker.invoked(3229, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.canBuildFrom[(org.hammerlab.guacamole.pileup.PileupElement, Int)]}).withFilter(((check$ifrefutable$2: (org.hammerlab.guacamole.pileup.PileupElement, Int)) =&gt; {  scoverage.Invoker.invoked(3230, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  (check$ifrefutable$2: (org.hammerlab.guacamole.pileup.PileupElement, Int) @unchecked)} match {  case (_1: org.hammerlab.guacamole.pileup.PileupElement, _2: Int)(org.hammerlab.guacamole.pileup.PileupElement, Int)((element @ _), (elementIndex @ _)) =&gt; {    scoverage.Invoker.invoked(3232, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(3231, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      true    }  }  case _ =&gt; false})).foreach[Unit](((x$2: (org.hammerlab.guacamole.pileup.PileupElement, Int)) =&gt; {        scoverage.Invoker.invoked(3240, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        (x$2: (org.hammerlab.guacamole.pileup.PileupElement, Int) @unchecked) match {          case (_1: org.hammerlab.guacamole.pileup.PileupElement, _2: Int)(org.hammerlab.guacamole.pileup.PileupElement, Int)((element @ _), (elementIndex @ _)) =&gt; {            scoverage.Invoker.invoked(3239, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            {              val successProbability: Double = {                scoverage.Invoker.invoked(3233, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                probabilityCorrect.apply(element)              };              val probability: Double = if ({                scoverage.Invoker.invoked(3234, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                allele.==(element.allele)              })                {                  scoverage.Invoker.invoked(3235, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                  successProbability                }              else                {                  scoverage.Invoker.invoked(3237, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                  {                    scoverage.Invoker.invoked(3236, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                    1.-(successProbability)                  }                };              {                scoverage.Invoker.invoked(3238, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                alleleElementProbabilities.set(alleleIndex, elementIndex, probability)              }            }          }        }      }))    }  }}
-        </td>
-      </tr><tr>
-        <td>
-          168
+          157
         </td>
         <td>
           3225
@@ -18656,46 +18565,46 @@
         </td>
       </tr><tr>
         <td>
-          168
-        </td>
-        <td>
-          3228
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(3227, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  true}
-        </td>
-      </tr><tr>
-        <td>
-          168
+          157
         </td>
         <td>
           3227
         </td>
         <td>
-          &lt;nosymbol&gt;
+          scala.collection.TraversableOnce.toMap
         </td>
         <td style="background: #F0ADAD">
-          true
+          alleles.zipWithIndex[org.hammerlab.guacamole.variants.Allele, scala.collection.immutable.IndexedSeq[(org.hammerlab.guacamole.variants.Allele, Int)]]({  scoverage.Invoker.invoked(3225, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  immutable.this.IndexedSeq.canBuildFrom[(org.hammerlab.guacamole.variants.Allele, Int)]}).toMap[org.hammerlab.guacamole.variants.Allele, Int]({  scoverage.Invoker.invoked(3226, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.this.Predef.conforms[(org.hammerlab.guacamole.variants.Allele, Int)]})
         </td>
       </tr><tr>
         <td>
-          169
+          158
+        </td>
+        <td>
+          3228
+        </td>
+        <td>
+          scala.collection.SeqLike.size
+        </td>
+        <td style="background: #F0ADAD">
+          elements.size
+        </td>
+      </tr><tr>
+        <td>
+          166
         </td>
         <td>
           3229
         </td>
         <td>
-          scala.collection.Seq.canBuildFrom
+          cern.colt.matrix.impl.DenseDoubleMatrix2D.&lt;init&gt;
         </td>
         <td style="background: #F0ADAD">
-          collection.this.Seq.canBuildFrom[(org.hammerlab.guacamole.pileup.PileupElement, Int)]
+          new cern.colt.matrix.impl.DenseDoubleMatrix2D(alleles.size, depth)
         </td>
       </tr><tr>
         <td>
-          169
+          168
         </td>
         <td>
           3232
@@ -18704,24 +18613,11 @@
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(3231, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  true}
+          true
         </td>
       </tr><tr>
         <td>
-          169
-        </td>
-        <td>
-          3241
-        </td>
-        <td>
-          scala.collection.generic.FilterMonadic.foreach
-        </td>
-        <td style="background: #F0ADAD">
-          elements.zipWithIndex[org.hammerlab.guacamole.pileup.PileupElement, Seq[(org.hammerlab.guacamole.pileup.PileupElement, Int)]]({  scoverage.Invoker.invoked(3229, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.canBuildFrom[(org.hammerlab.guacamole.pileup.PileupElement, Int)]}).withFilter(((check$ifrefutable$2: (org.hammerlab.guacamole.pileup.PileupElement, Int)) =&gt; {  scoverage.Invoker.invoked(3230, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  (check$ifrefutable$2: (org.hammerlab.guacamole.pileup.PileupElement, Int) @unchecked)} match {  case (_1: org.hammerlab.guacamole.pileup.PileupElement, _2: Int)(org.hammerlab.guacamole.pileup.PileupElement, Int)((element @ _), (elementIndex @ _)) =&gt; {    scoverage.Invoker.invoked(3232, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(3231, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      true    }  }  case _ =&gt; false})).foreach[Unit](((x$2: (org.hammerlab.guacamole.pileup.PileupElement, Int)) =&gt; {  scoverage.Invoker.invoked(3240, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  (x$2: (org.hammerlab.guacamole.pileup.PileupElement, Int) @unchecked) match {    case (_1: org.hammerlab.guacamole.pileup.PileupElement, _2: Int)(org.hammerlab.guacamole.pileup.PileupElement, Int)((element @ _), (elementIndex @ _)) =&gt; {      scoverage.Invoker.invoked(3239, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        val successProbability: Double = {          scoverage.Invoker.invoked(3233, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          probabilityCorrect.apply(element)        };        val probability: Double = if ({          scoverage.Invoker.invoked(3234, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          allele.==(element.allele)        })          {            scoverage.Invoker.invoked(3235, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            successProbability          }        else          {            scoverage.Invoker.invoked(3237, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            {              scoverage.Invoker.invoked(3236, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              1.-(successProbability)            }          };        {          scoverage.Invoker.invoked(3238, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          alleleElementProbabilities.set(alleleIndex, elementIndex, probability)        }      }    }  }}))
-        </td>
-      </tr><tr>
-        <td>
-          169
+          168
         </td>
         <td>
           3231
@@ -18730,27 +18626,66 @@
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          true
+          (check$ifrefutable$1: (org.hammerlab.guacamole.variants.Allele, Int) @unchecked)
         </td>
       </tr><tr>
         <td>
-          169
+          168
         </td>
         <td>
-          3240
+          3249
+        </td>
+        <td>
+          scala.collection.generic.FilterMonadic.foreach
+        </td>
+        <td style="background: #F0ADAD">
+          alleles.zipWithIndex[org.hammerlab.guacamole.variants.Allele, scala.collection.immutable.IndexedSeq[(org.hammerlab.guacamole.variants.Allele, Int)]]({  scoverage.Invoker.invoked(3230, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  immutable.this.IndexedSeq.canBuildFrom[(org.hammerlab.guacamole.variants.Allele, Int)]}).withFilter(((check$ifrefutable$1: (org.hammerlab.guacamole.variants.Allele, Int)) =&gt; {  scoverage.Invoker.invoked(3231, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  (check$ifrefutable$1: (org.hammerlab.guacamole.variants.Allele, Int) @unchecked)} match {  case (_1: org.hammerlab.guacamole.variants.Allele, _2: Int)(org.hammerlab.guacamole.variants.Allele, Int)((allele @ _), (alleleIndex @ _)) =&gt; {    scoverage.Invoker.invoked(3233, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(3232, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      true    }  }  case _ =&gt; false})).foreach[Unit](((x$3: (org.hammerlab.guacamole.variants.Allele, Int)) =&gt; {  scoverage.Invoker.invoked(3248, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  (x$3: (org.hammerlab.guacamole.variants.Allele, Int) @unchecked) match {    case (_1: org.hammerlab.guacamole.variants.Allele, _2: Int)(org.hammerlab.guacamole.variants.Allele, Int)((allele @ _), (alleleIndex @ _)) =&gt; {      scoverage.Invoker.invoked(3247, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(3246, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        elements.zipWithIndex[org.hammerlab.guacamole.pileup.PileupElement, Seq[(org.hammerlab.guacamole.pileup.PileupElement, Int)]]({  scoverage.Invoker.invoked(3234, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.canBuildFrom[(org.hammerlab.guacamole.pileup.PileupElement, Int)]}).withFilter(((check$ifrefutable$2: (org.hammerlab.guacamole.pileup.PileupElement, Int)) =&gt; {  scoverage.Invoker.invoked(3235, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  (check$ifrefutable$2: (org.hammerlab.guacamole.pileup.PileupElement, Int) @unchecked)} match {  case (_1: org.hammerlab.guacamole.pileup.PileupElement, _2: Int)(org.hammerlab.guacamole.pileup.PileupElement, Int)((element @ _), (elementIndex @ _)) =&gt; {    scoverage.Invoker.invoked(3237, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(3236, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      true    }  }  case _ =&gt; false})).foreach[Unit](((x$2: (org.hammerlab.guacamole.pileup.PileupElement, Int)) =&gt; {          scoverage.Invoker.invoked(3245, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          (x$2: (org.hammerlab.guacamole.pileup.PileupElement, Int) @unchecked) match {            case (_1: org.hammerlab.guacamole.pileup.PileupElement, _2: Int)(org.hammerlab.guacamole.pileup.PileupElement, Int)((element @ _), (elementIndex @ _)) =&gt; {              scoverage.Invoker.invoked(3244, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              {                val successProbability: Double = {                  scoverage.Invoker.invoked(3238, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                  probabilityCorrect.apply(element)                };                val probability: Double = if ({                  scoverage.Invoker.invoked(3239, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                  allele.==(element.allele)                })                  {                    scoverage.Invoker.invoked(3240, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                    successProbability                  }                else                  {                    scoverage.Invoker.invoked(3242, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                    {                      scoverage.Invoker.invoked(3241, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                      1.-(successProbability)                    }                  };                {                  scoverage.Invoker.invoked(3243, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                  alleleElementProbabilities.set(alleleIndex, elementIndex, probability)                }              }            }          }        }))      }    }  }}))
+        </td>
+      </tr><tr>
+        <td>
+          168
+        </td>
+        <td>
+          3248
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          (x$2: (org.hammerlab.guacamole.pileup.PileupElement, Int) @unchecked) match {  case (_1: org.hammerlab.guacamole.pileup.PileupElement, _2: Int)(org.hammerlab.guacamole.pileup.PileupElement, Int)((element @ _), (elementIndex @ _)) =&gt; {    scoverage.Invoker.invoked(3239, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      val successProbability: Double = {        scoverage.Invoker.invoked(3233, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        probabilityCorrect.apply(element)      };      val probability: Double = if ({        scoverage.Invoker.invoked(3234, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        allele.==(element.allele)      })        {          scoverage.Invoker.invoked(3235, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          successProbability        }      else        {          scoverage.Invoker.invoked(3237, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          {            scoverage.Invoker.invoked(3236, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            1.-(successProbability)          }        };      {        scoverage.Invoker.invoked(3238, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        alleleElementProbabilities.set(alleleIndex, elementIndex, probability)      }    }  }}
+          (x$3: (org.hammerlab.guacamole.variants.Allele, Int) @unchecked) match {  case (_1: org.hammerlab.guacamole.variants.Allele, _2: Int)(org.hammerlab.guacamole.variants.Allele, Int)((allele @ _), (alleleIndex @ _)) =&gt; {    scoverage.Invoker.invoked(3247, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(3246, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      elements.zipWithIndex[org.hammerlab.guacamole.pileup.PileupElement, Seq[(org.hammerlab.guacamole.pileup.PileupElement, Int)]]({  scoverage.Invoker.invoked(3234, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.canBuildFrom[(org.hammerlab.guacamole.pileup.PileupElement, Int)]}).withFilter(((check$ifrefutable$2: (org.hammerlab.guacamole.pileup.PileupElement, Int)) =&gt; {  scoverage.Invoker.invoked(3235, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  (check$ifrefutable$2: (org.hammerlab.guacamole.pileup.PileupElement, Int) @unchecked)} match {  case (_1: org.hammerlab.guacamole.pileup.PileupElement, _2: Int)(org.hammerlab.guacamole.pileup.PileupElement, Int)((element @ _), (elementIndex @ _)) =&gt; {    scoverage.Invoker.invoked(3237, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(3236, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      true    }  }  case _ =&gt; false})).foreach[Unit](((x$2: (org.hammerlab.guacamole.pileup.PileupElement, Int)) =&gt; {        scoverage.Invoker.invoked(3245, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        (x$2: (org.hammerlab.guacamole.pileup.PileupElement, Int) @unchecked) match {          case (_1: org.hammerlab.guacamole.pileup.PileupElement, _2: Int)(org.hammerlab.guacamole.pileup.PileupElement, Int)((element @ _), (elementIndex @ _)) =&gt; {            scoverage.Invoker.invoked(3244, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            {              val successProbability: Double = {                scoverage.Invoker.invoked(3238, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                probabilityCorrect.apply(element)              };              val probability: Double = if ({                scoverage.Invoker.invoked(3239, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                allele.==(element.allele)              })                {                  scoverage.Invoker.invoked(3240, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                  successProbability                }              else                {                  scoverage.Invoker.invoked(3242, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                  {                    scoverage.Invoker.invoked(3241, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                    1.-(successProbability)                  }                };              {                scoverage.Invoker.invoked(3243, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                alleleElementProbabilities.set(alleleIndex, elementIndex, probability)              }            }          }        }      }))    }  }}
+        </td>
+      </tr><tr>
+        <td>
+          168
+        </td>
+        <td>
+          3230
+        </td>
+        <td>
+          scala.collection.immutable.IndexedSeq.canBuildFrom
+        </td>
+        <td style="background: #F0ADAD">
+          immutable.this.IndexedSeq.canBuildFrom[(org.hammerlab.guacamole.variants.Allele, Int)]
+        </td>
+      </tr><tr>
+        <td>
+          168
+        </td>
+        <td>
+          3233
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  scoverage.Invoker.invoked(3232, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  true}
         </td>
       </tr><tr>
         <td>
           169
         </td>
         <td>
-          3230
+          3235
         </td>
         <td>
           &lt;nosymbol&gt;
@@ -18763,33 +18698,98 @@
           169
         </td>
         <td>
-          3242
+          3247
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(3241, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  elements.zipWithIndex[org.hammerlab.guacamole.pileup.PileupElement, Seq[(org.hammerlab.guacamole.pileup.PileupElement, Int)]]({  scoverage.Invoker.invoked(3229, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.canBuildFrom[(org.hammerlab.guacamole.pileup.PileupElement, Int)]}).withFilter(((check$ifrefutable$2: (org.hammerlab.guacamole.pileup.PileupElement, Int)) =&gt; {  scoverage.Invoker.invoked(3230, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  (check$ifrefutable$2: (org.hammerlab.guacamole.pileup.PileupElement, Int) @unchecked)} match {  case (_1: org.hammerlab.guacamole.pileup.PileupElement, _2: Int)(org.hammerlab.guacamole.pileup.PileupElement, Int)((element @ _), (elementIndex @ _)) =&gt; {    scoverage.Invoker.invoked(3232, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(3231, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      true    }  }  case _ =&gt; false})).foreach[Unit](((x$2: (org.hammerlab.guacamole.pileup.PileupElement, Int)) =&gt; {    scoverage.Invoker.invoked(3240, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    (x$2: (org.hammerlab.guacamole.pileup.PileupElement, Int) @unchecked) match {      case (_1: org.hammerlab.guacamole.pileup.PileupElement, _2: Int)(org.hammerlab.guacamole.pileup.PileupElement, Int)((element @ _), (elementIndex @ _)) =&gt; {        scoverage.Invoker.invoked(3239, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        {          val successProbability: Double = {            scoverage.Invoker.invoked(3233, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            probabilityCorrect.apply(element)          };          val probability: Double = if ({            scoverage.Invoker.invoked(3234, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            allele.==(element.allele)          })            {              scoverage.Invoker.invoked(3235, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              successProbability            }          else            {              scoverage.Invoker.invoked(3237, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              {                scoverage.Invoker.invoked(3236, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                1.-(successProbability)              }            };          {            scoverage.Invoker.invoked(3238, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            alleleElementProbabilities.set(alleleIndex, elementIndex, probability)          }        }      }    }  }))}
+          {  scoverage.Invoker.invoked(3246, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  elements.zipWithIndex[org.hammerlab.guacamole.pileup.PileupElement, Seq[(org.hammerlab.guacamole.pileup.PileupElement, Int)]]({  scoverage.Invoker.invoked(3234, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.canBuildFrom[(org.hammerlab.guacamole.pileup.PileupElement, Int)]}).withFilter(((check$ifrefutable$2: (org.hammerlab.guacamole.pileup.PileupElement, Int)) =&gt; {  scoverage.Invoker.invoked(3235, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  (check$ifrefutable$2: (org.hammerlab.guacamole.pileup.PileupElement, Int) @unchecked)} match {  case (_1: org.hammerlab.guacamole.pileup.PileupElement, _2: Int)(org.hammerlab.guacamole.pileup.PileupElement, Int)((element @ _), (elementIndex @ _)) =&gt; {    scoverage.Invoker.invoked(3237, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(3236, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      true    }  }  case _ =&gt; false})).foreach[Unit](((x$2: (org.hammerlab.guacamole.pileup.PileupElement, Int)) =&gt; {    scoverage.Invoker.invoked(3245, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    (x$2: (org.hammerlab.guacamole.pileup.PileupElement, Int) @unchecked) match {      case (_1: org.hammerlab.guacamole.pileup.PileupElement, _2: Int)(org.hammerlab.guacamole.pileup.PileupElement, Int)((element @ _), (elementIndex @ _)) =&gt; {        scoverage.Invoker.invoked(3244, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        {          val successProbability: Double = {            scoverage.Invoker.invoked(3238, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            probabilityCorrect.apply(element)          };          val probability: Double = if ({            scoverage.Invoker.invoked(3239, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            allele.==(element.allele)          })            {              scoverage.Invoker.invoked(3240, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              successProbability            }          else            {              scoverage.Invoker.invoked(3242, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              {                scoverage.Invoker.invoked(3241, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);                1.-(successProbability)              }            };          {            scoverage.Invoker.invoked(3243, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            alleleElementProbabilities.set(alleleIndex, elementIndex, probability)          }        }      }    }  }))}
+        </td>
+      </tr><tr>
+        <td>
+          169
+        </td>
+        <td>
+          3234
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #F0ADAD">
+          collection.this.Seq.canBuildFrom[(org.hammerlab.guacamole.pileup.PileupElement, Int)]
+        </td>
+      </tr><tr>
+        <td>
+          169
+        </td>
+        <td>
+          3237
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {  scoverage.Invoker.invoked(3236, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  true}
+        </td>
+      </tr><tr>
+        <td>
+          169
+        </td>
+        <td>
+          3246
+        </td>
+        <td>
+          scala.collection.generic.FilterMonadic.foreach
+        </td>
+        <td style="background: #F0ADAD">
+          elements.zipWithIndex[org.hammerlab.guacamole.pileup.PileupElement, Seq[(org.hammerlab.guacamole.pileup.PileupElement, Int)]]({  scoverage.Invoker.invoked(3234, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.canBuildFrom[(org.hammerlab.guacamole.pileup.PileupElement, Int)]}).withFilter(((check$ifrefutable$2: (org.hammerlab.guacamole.pileup.PileupElement, Int)) =&gt; {  scoverage.Invoker.invoked(3235, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  (check$ifrefutable$2: (org.hammerlab.guacamole.pileup.PileupElement, Int) @unchecked)} match {  case (_1: org.hammerlab.guacamole.pileup.PileupElement, _2: Int)(org.hammerlab.guacamole.pileup.PileupElement, Int)((element @ _), (elementIndex @ _)) =&gt; {    scoverage.Invoker.invoked(3237, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      scoverage.Invoker.invoked(3236, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      true    }  }  case _ =&gt; false})).foreach[Unit](((x$2: (org.hammerlab.guacamole.pileup.PileupElement, Int)) =&gt; {  scoverage.Invoker.invoked(3245, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  (x$2: (org.hammerlab.guacamole.pileup.PileupElement, Int) @unchecked) match {    case (_1: org.hammerlab.guacamole.pileup.PileupElement, _2: Int)(org.hammerlab.guacamole.pileup.PileupElement, Int)((element @ _), (elementIndex @ _)) =&gt; {      scoverage.Invoker.invoked(3244, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        val successProbability: Double = {          scoverage.Invoker.invoked(3238, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          probabilityCorrect.apply(element)        };        val probability: Double = if ({          scoverage.Invoker.invoked(3239, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          allele.==(element.allele)        })          {            scoverage.Invoker.invoked(3240, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            successProbability          }        else          {            scoverage.Invoker.invoked(3242, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            {              scoverage.Invoker.invoked(3241, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);              1.-(successProbability)            }          };        {          scoverage.Invoker.invoked(3243, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          alleleElementProbabilities.set(alleleIndex, elementIndex, probability)        }      }    }  }}))
+        </td>
+      </tr><tr>
+        <td>
+          169
+        </td>
+        <td>
+          3236
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          true
+        </td>
+      </tr><tr>
+        <td>
+          169
+        </td>
+        <td>
+          3245
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          (x$2: (org.hammerlab.guacamole.pileup.PileupElement, Int) @unchecked) match {  case (_1: org.hammerlab.guacamole.pileup.PileupElement, _2: Int)(org.hammerlab.guacamole.pileup.PileupElement, Int)((element @ _), (elementIndex @ _)) =&gt; {    scoverage.Invoker.invoked(3244, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    {      val successProbability: Double = {        scoverage.Invoker.invoked(3238, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        probabilityCorrect.apply(element)      };      val probability: Double = if ({        scoverage.Invoker.invoked(3239, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        allele.==(element.allele)      })        {          scoverage.Invoker.invoked(3240, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          successProbability        }      else        {          scoverage.Invoker.invoked(3242, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);          {            scoverage.Invoker.invoked(3241, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);            1.-(successProbability)          }        };      {        scoverage.Invoker.invoked(3243, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        alleleElementProbabilities.set(alleleIndex, elementIndex, probability)      }    }  }}
         </td>
       </tr><tr>
         <td>
           170
         </td>
         <td>
-          3239
+          3244
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  val successProbability: Double = {    scoverage.Invoker.invoked(3233, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    probabilityCorrect.apply(element)  };  val probability: Double = if ({    scoverage.Invoker.invoked(3234, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    allele.==(element.allele)  })    {      scoverage.Invoker.invoked(3235, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      successProbability    }  else    {      scoverage.Invoker.invoked(3237, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(3236, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        1.-(successProbability)      }    };  {    scoverage.Invoker.invoked(3238, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    alleleElementProbabilities.set(alleleIndex, elementIndex, probability)  }}
+          {  val successProbability: Double = {    scoverage.Invoker.invoked(3238, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    probabilityCorrect.apply(element)  };  val probability: Double = if ({    scoverage.Invoker.invoked(3239, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    allele.==(element.allele)  })    {      scoverage.Invoker.invoked(3240, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      successProbability    }  else    {      scoverage.Invoker.invoked(3242, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      {        scoverage.Invoker.invoked(3241, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        1.-(successProbability)      }    };  {    scoverage.Invoker.invoked(3243, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    alleleElementProbabilities.set(alleleIndex, elementIndex, probability)  }}
         </td>
       </tr><tr>
         <td>
           171
         </td>
         <td>
-          3233
+          3238
         </td>
         <td>
           scala.Function1.apply
@@ -18802,7 +18802,20 @@
           172
         </td>
         <td>
-          3235
+          3241
+        </td>
+        <td>
+          scala.Int.-
+        </td>
+        <td style="background: #F0ADAD">
+          1.-(successProbability)
+        </td>
+      </tr><tr>
+        <td>
+          172
+        </td>
+        <td>
+          3240
         </td>
         <td>
           org.hammerlab.guacamole.likelihood.Likelihood.successProbability
@@ -18815,7 +18828,7 @@
           172
         </td>
         <td>
-          3234
+          3239
         </td>
         <td>
           java.lang.Object.==
@@ -18828,33 +18841,20 @@
           172
         </td>
         <td>
-          3237
+          3242
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(3236, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  1.-(successProbability)}
-        </td>
-      </tr><tr>
-        <td>
-          172
-        </td>
-        <td>
-          3236
-        </td>
-        <td>
-          scala.Int.-
-        </td>
-        <td style="background: #F0ADAD">
-          1.-(successProbability)
+          {  scoverage.Invoker.invoked(3241, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  1.-(successProbability)}
         </td>
       </tr><tr>
         <td>
           173
         </td>
         <td>
-          3238
+          3243
         </td>
         <td>
           cern.colt.matrix.DoubleMatrix2D.set
@@ -18867,7 +18867,20 @@
           181
         </td>
         <td>
-          3262
+          3268
+        </td>
+        <td>
+          scala.collection.TraversableLike.map
+        </td>
+        <td style="background: #F0ADAD">
+          genotypes.map[Double, Seq[Double]](((genotype: org.hammerlab.guacamole.variants.Genotype) =&gt; {  {    scoverage.Invoker.invoked(3252, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.this.Predef.assume({      scoverage.Invoker.invoked(3250, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      genotype.alleles.size.==(2)    }, {      scoverage.Invoker.invoked(3251, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      &quot;Non-diploid genotype not supported&quot;    })  };  val alleleRow1: cern.colt.matrix.DoubleMatrix1D = {    scoverage.Invoker.invoked(3255, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    alleleElementProbabilities.viewRow({      scoverage.Invoker.invoked(3254, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      alleleToIndex.apply({        scoverage.Invoker.invoked(3253, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        genotype.alleles.apply(0)      })    })  };  val alleleRow2: cern.colt.matrix.DoubleMatrix1D = {    scoverage.Invoker.invoked(3258, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    alleleElementProbabilities.viewRow({      scoverage.Invoker.invoked(3257, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      alleleToIndex.apply({        scoverage.Invoker.invoked(3256, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        genotype.alleles.apply(1)      })    })  };  {    scoverage.Invoker.invoked(3266, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    alleleRow1.aggregate(alleleRow2, {  scoverage.Invoker.invoked(3259, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  cern.jet.math.Functions.plus}, {  scoverage.Invoker.invoked(3262, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  cern.jet.math.Functions.chain({    scoverage.Invoker.invoked(3260, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    cern.jet.math.Functions.log  }, {    scoverage.Invoker.invoked(3261, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    cern.jet.math.Functions.plus  })}).+({  scoverage.Invoker.invoked(3264, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.math.`package`.log({    scoverage.Invoker.invoked(3263, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    prior.apply(genotype)  })}).-({      scoverage.Invoker.invoked(3265, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      scala.math.`package`.log(2.0).*(depth)    })  }}))({  scoverage.Invoker.invoked(3267, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.canBuildFrom[Double]})
+        </td>
+      </tr><tr>
+        <td>
+          181
+        </td>
+        <td>
+          3267
         </td>
         <td>
           scala.collection.Seq.canBuildFrom
@@ -18877,49 +18890,10 @@
         </td>
       </tr><tr>
         <td>
-          181
-        </td>
-        <td>
-          3263
-        </td>
-        <td>
-          scala.collection.TraversableLike.map
-        </td>
-        <td style="background: #F0ADAD">
-          genotypes.map[Double, Seq[Double]](((genotype: org.hammerlab.guacamole.variants.Genotype) =&gt; {  {    scoverage.Invoker.invoked(3247, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.this.Predef.assume({      scoverage.Invoker.invoked(3245, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      genotype.alleles.size.==(2)    }, {      scoverage.Invoker.invoked(3246, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      &quot;Non-diploid genotype not supported&quot;    })  };  val alleleRow1: cern.colt.matrix.DoubleMatrix1D = {    scoverage.Invoker.invoked(3250, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    alleleElementProbabilities.viewRow({      scoverage.Invoker.invoked(3249, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      alleleToIndex.apply({        scoverage.Invoker.invoked(3248, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        genotype.alleles.apply(0)      })    })  };  val alleleRow2: cern.colt.matrix.DoubleMatrix1D = {    scoverage.Invoker.invoked(3253, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    alleleElementProbabilities.viewRow({      scoverage.Invoker.invoked(3252, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      alleleToIndex.apply({        scoverage.Invoker.invoked(3251, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        genotype.alleles.apply(1)      })    })  };  {    scoverage.Invoker.invoked(3261, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    alleleRow1.aggregate(alleleRow2, {  scoverage.Invoker.invoked(3254, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  cern.jet.math.Functions.plus}, {  scoverage.Invoker.invoked(3257, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  cern.jet.math.Functions.chain({    scoverage.Invoker.invoked(3255, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    cern.jet.math.Functions.log  }, {    scoverage.Invoker.invoked(3256, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    cern.jet.math.Functions.plus  })}).+({  scoverage.Invoker.invoked(3259, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.math.`package`.log({    scoverage.Invoker.invoked(3258, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    prior.apply(genotype)  })}).-({      scoverage.Invoker.invoked(3260, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      scala.math.`package`.log(2.0).*(depth)    })  }}))({  scoverage.Invoker.invoked(3262, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.canBuildFrom[Double]})
-        </td>
-      </tr><tr>
-        <td>
           182
         </td>
         <td>
-          3247
-        </td>
-        <td>
-          scala.Predef.assume
-        </td>
-        <td style="background: #F0ADAD">
-          scala.this.Predef.assume({  scoverage.Invoker.invoked(3245, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  genotype.alleles.size.==(2)}, {  scoverage.Invoker.invoked(3246, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot;Non-diploid genotype not supported&quot;})
-        </td>
-      </tr><tr>
-        <td>
-          182
-        </td>
-        <td>
-          3246
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          &quot;Non-diploid genotype not supported&quot;
-        </td>
-      </tr><tr>
-        <td>
-          182
-        </td>
-        <td>
-          3245
+          3250
         </td>
         <td>
           scala.Int.==
@@ -18929,36 +18903,36 @@
         </td>
       </tr><tr>
         <td>
-          183
+          182
         </td>
         <td>
-          3250
+          3252
         </td>
         <td>
-          cern.colt.matrix.DoubleMatrix2D.viewRow
+          scala.Predef.assume
         </td>
         <td style="background: #F0ADAD">
-          alleleElementProbabilities.viewRow({  scoverage.Invoker.invoked(3249, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  alleleToIndex.apply({    scoverage.Invoker.invoked(3248, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    genotype.alleles.apply(0)  })})
+          scala.this.Predef.assume({  scoverage.Invoker.invoked(3250, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  genotype.alleles.size.==(2)}, {  scoverage.Invoker.invoked(3251, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  &quot;Non-diploid genotype not supported&quot;})
+        </td>
+      </tr><tr>
+        <td>
+          182
+        </td>
+        <td>
+          3251
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          &quot;Non-diploid genotype not supported&quot;
         </td>
       </tr><tr>
         <td>
           183
         </td>
         <td>
-          3249
-        </td>
-        <td>
-          scala.collection.MapLike.apply
-        </td>
-        <td style="background: #F0ADAD">
-          alleleToIndex.apply({  scoverage.Invoker.invoked(3248, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  genotype.alleles.apply(0)})
-        </td>
-      </tr><tr>
-        <td>
-          183
-        </td>
-        <td>
-          3248
+          3253
         </td>
         <td>
           scala.collection.SeqLike.apply
@@ -18968,36 +18942,36 @@
         </td>
       </tr><tr>
         <td>
-          184
+          183
         </td>
         <td>
-          3253
+          3255
         </td>
         <td>
           cern.colt.matrix.DoubleMatrix2D.viewRow
         </td>
         <td style="background: #F0ADAD">
-          alleleElementProbabilities.viewRow({  scoverage.Invoker.invoked(3252, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  alleleToIndex.apply({    scoverage.Invoker.invoked(3251, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    genotype.alleles.apply(1)  })})
+          alleleElementProbabilities.viewRow({  scoverage.Invoker.invoked(3254, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  alleleToIndex.apply({    scoverage.Invoker.invoked(3253, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    genotype.alleles.apply(0)  })})
         </td>
       </tr><tr>
         <td>
-          184
+          183
         </td>
         <td>
-          3252
+          3254
         </td>
         <td>
           scala.collection.MapLike.apply
         </td>
         <td style="background: #F0ADAD">
-          alleleToIndex.apply({  scoverage.Invoker.invoked(3251, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  genotype.alleles.apply(1)})
+          alleleToIndex.apply({  scoverage.Invoker.invoked(3253, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  genotype.alleles.apply(0)})
         </td>
       </tr><tr>
         <td>
           184
         </td>
         <td>
-          3251
+          3256
         </td>
         <td>
           scala.collection.SeqLike.apply
@@ -19007,75 +18981,101 @@
         </td>
       </tr><tr>
         <td>
-          185
+          184
         </td>
         <td>
-          3256
+          3258
         </td>
         <td>
-          cern.jet.math.Functions.plus
+          cern.colt.matrix.DoubleMatrix2D.viewRow
         </td>
         <td style="background: #F0ADAD">
-          cern.jet.math.Functions.plus
+          alleleElementProbabilities.viewRow({  scoverage.Invoker.invoked(3257, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  alleleToIndex.apply({    scoverage.Invoker.invoked(3256, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    genotype.alleles.apply(1)  })})
         </td>
       </tr><tr>
         <td>
-          185
-        </td>
-        <td>
-          3255
-        </td>
-        <td>
-          cern.jet.math.Functions.log
-        </td>
-        <td style="background: #F0ADAD">
-          cern.jet.math.Functions.log
-        </td>
-      </tr><tr>
-        <td>
-          185
-        </td>
-        <td>
-          3254
-        </td>
-        <td>
-          cern.jet.math.Functions.plus
-        </td>
-        <td style="background: #F0ADAD">
-          cern.jet.math.Functions.plus
-        </td>
-      </tr><tr>
-        <td>
-          185
+          184
         </td>
         <td>
           3257
         </td>
         <td>
-          cern.jet.math.Functions.chain
+          scala.collection.MapLike.apply
         </td>
         <td style="background: #F0ADAD">
-          cern.jet.math.Functions.chain({  scoverage.Invoker.invoked(3255, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  cern.jet.math.Functions.log}, {  scoverage.Invoker.invoked(3256, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  cern.jet.math.Functions.plus})
+          alleleToIndex.apply({  scoverage.Invoker.invoked(3256, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  genotype.alleles.apply(1)})
         </td>
       </tr><tr>
         <td>
-          186
+          185
+        </td>
+        <td>
+          3262
+        </td>
+        <td>
+          cern.jet.math.Functions.chain
+        </td>
+        <td style="background: #F0ADAD">
+          cern.jet.math.Functions.chain({  scoverage.Invoker.invoked(3260, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  cern.jet.math.Functions.log}, {  scoverage.Invoker.invoked(3261, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  cern.jet.math.Functions.plus})
+        </td>
+      </tr><tr>
+        <td>
+          185
         </td>
         <td>
           3259
         </td>
         <td>
-          scala.math.log
+          cern.jet.math.Functions.plus
         </td>
         <td style="background: #F0ADAD">
-          scala.math.`package`.log({  scoverage.Invoker.invoked(3258, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  prior.apply(genotype)})
+          cern.jet.math.Functions.plus
+        </td>
+      </tr><tr>
+        <td>
+          185
+        </td>
+        <td>
+          3261
+        </td>
+        <td>
+          cern.jet.math.Functions.plus
+        </td>
+        <td style="background: #F0ADAD">
+          cern.jet.math.Functions.plus
+        </td>
+      </tr><tr>
+        <td>
+          185
+        </td>
+        <td>
+          3260
+        </td>
+        <td>
+          cern.jet.math.Functions.log
+        </td>
+        <td style="background: #F0ADAD">
+          cern.jet.math.Functions.log
         </td>
       </tr><tr>
         <td>
           186
         </td>
         <td>
-          3258
+          3264
+        </td>
+        <td>
+          scala.math.log
+        </td>
+        <td style="background: #F0ADAD">
+          scala.math.`package`.log({  scoverage.Invoker.invoked(3263, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  prior.apply(genotype)})
+        </td>
+      </tr><tr>
+        <td>
+          186
+        </td>
+        <td>
+          3263
         </td>
         <td>
           scala.Function1.apply
@@ -19088,20 +19088,7 @@
           187
         </td>
         <td>
-          3261
-        </td>
-        <td>
-          scala.Double.-
-        </td>
-        <td style="background: #F0ADAD">
-          alleleRow1.aggregate(alleleRow2, {  scoverage.Invoker.invoked(3254, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  cern.jet.math.Functions.plus}, {  scoverage.Invoker.invoked(3257, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  cern.jet.math.Functions.chain({    scoverage.Invoker.invoked(3255, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    cern.jet.math.Functions.log  }, {    scoverage.Invoker.invoked(3256, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    cern.jet.math.Functions.plus  })}).+({  scoverage.Invoker.invoked(3259, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.math.`package`.log({    scoverage.Invoker.invoked(3258, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    prior.apply(genotype)  })}).-({  scoverage.Invoker.invoked(3260, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.math.`package`.log(2.0).*(depth)})
-        </td>
-      </tr><tr>
-        <td>
-          187
-        </td>
-        <td>
-          3260
+          3265
         </td>
         <td>
           scala.Double.*
@@ -19111,75 +19098,36 @@
         </td>
       </tr><tr>
         <td>
+          187
+        </td>
+        <td>
+          3266
+        </td>
+        <td>
+          scala.Double.-
+        </td>
+        <td style="background: #F0ADAD">
+          alleleRow1.aggregate(alleleRow2, {  scoverage.Invoker.invoked(3259, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  cern.jet.math.Functions.plus}, {  scoverage.Invoker.invoked(3262, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  cern.jet.math.Functions.chain({    scoverage.Invoker.invoked(3260, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    cern.jet.math.Functions.log  }, {    scoverage.Invoker.invoked(3261, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    cern.jet.math.Functions.plus  })}).+({  scoverage.Invoker.invoked(3264, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.math.`package`.log({    scoverage.Invoker.invoked(3263, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    prior.apply(genotype)  })}).-({  scoverage.Invoker.invoked(3265, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  scala.math.`package`.log(2.0).*(depth)})
+        </td>
+      </tr><tr>
+        <td>
           191
         </td>
         <td>
-          3272
+          3277
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  val logTotalLikelihood: Double = {    scoverage.Invoker.invoked(3268, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.math.`package`.log({      scoverage.Invoker.invoked(3267, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      logLikelihoods.map[Double, Seq[Double]]({  ((x: Double) =&gt; {    scoverage.Invoker.invoked(3264, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.math.`package`.exp(x)  })})({  scoverage.Invoker.invoked(3265, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.canBuildFrom[Double]}).sum[Double]({        scoverage.Invoker.invoked(3266, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        math.this.Numeric.DoubleIsFractional      })    })  };  {    scoverage.Invoker.invoked(3271, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    logLikelihoods.map[Double, Seq[Double]](((x$4: Double) =&gt; {      scoverage.Invoker.invoked(3269, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      x$4.-(logTotalLikelihood)    }))({      scoverage.Invoker.invoked(3270, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      collection.this.Seq.canBuildFrom[Double]    })  }}
+          {  val logTotalLikelihood: Double = {    scoverage.Invoker.invoked(3273, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.math.`package`.log({      scoverage.Invoker.invoked(3272, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      logLikelihoods.map[Double, Seq[Double]]({  ((x: Double) =&gt; {    scoverage.Invoker.invoked(3269, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.math.`package`.exp(x)  })})({  scoverage.Invoker.invoked(3270, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.canBuildFrom[Double]}).sum[Double]({        scoverage.Invoker.invoked(3271, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);        math.this.Numeric.DoubleIsFractional      })    })  };  {    scoverage.Invoker.invoked(3276, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    logLikelihoods.map[Double, Seq[Double]](((x$4: Double) =&gt; {      scoverage.Invoker.invoked(3274, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      x$4.-(logTotalLikelihood)    }))({      scoverage.Invoker.invoked(3275, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      collection.this.Seq.canBuildFrom[Double]    })  }}
         </td>
       </tr><tr>
         <td>
           192
         </td>
         <td>
-          3268
-        </td>
-        <td>
-          scala.math.log
-        </td>
-        <td style="background: #F0ADAD">
-          scala.math.`package`.log({  scoverage.Invoker.invoked(3267, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  logLikelihoods.map[Double, Seq[Double]]({  ((x: Double) =&gt; {    scoverage.Invoker.invoked(3264, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.math.`package`.exp(x)  })})({  scoverage.Invoker.invoked(3265, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.canBuildFrom[Double]}).sum[Double]({    scoverage.Invoker.invoked(3266, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    math.this.Numeric.DoubleIsFractional  })})
-        </td>
-      </tr><tr>
-        <td>
-          192
-        </td>
-        <td>
-          3265
-        </td>
-        <td>
-          scala.collection.Seq.canBuildFrom
-        </td>
-        <td style="background: #F0ADAD">
-          collection.this.Seq.canBuildFrom[Double]
-        </td>
-      </tr><tr>
-        <td>
-          192
-        </td>
-        <td>
-          3267
-        </td>
-        <td>
-          scala.collection.TraversableOnce.sum
-        </td>
-        <td style="background: #F0ADAD">
-          logLikelihoods.map[Double, Seq[Double]]({  ((x: Double) =&gt; {    scoverage.Invoker.invoked(3264, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.math.`package`.exp(x)  })})({  scoverage.Invoker.invoked(3265, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.canBuildFrom[Double]}).sum[Double]({  scoverage.Invoker.invoked(3266, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  math.this.Numeric.DoubleIsFractional})
-        </td>
-      </tr><tr>
-        <td>
-          192
-        </td>
-        <td>
-          3264
-        </td>
-        <td>
-          scala.math.exp
-        </td>
-        <td style="background: #F0ADAD">
-          scala.math.`package`.exp(x)
-        </td>
-      </tr><tr>
-        <td>
-          192
-        </td>
-        <td>
-          3266
+          3271
         </td>
         <td>
           scala.math.Numeric.DoubleIsFractional
@@ -19189,20 +19137,7 @@
         </td>
       </tr><tr>
         <td>
-          193
-        </td>
-        <td>
-          3271
-        </td>
-        <td>
-          scala.collection.TraversableLike.map
-        </td>
-        <td style="background: #F0ADAD">
-          logLikelihoods.map[Double, Seq[Double]](((x$4: Double) =&gt; {  scoverage.Invoker.invoked(3269, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x$4.-(logTotalLikelihood)}))({  scoverage.Invoker.invoked(3270, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.canBuildFrom[Double]})
-        </td>
-      </tr><tr>
-        <td>
-          193
+          192
         </td>
         <td>
           3270
@@ -19215,10 +19150,49 @@
         </td>
       </tr><tr>
         <td>
-          193
+          192
+        </td>
+        <td>
+          3273
+        </td>
+        <td>
+          scala.math.log
+        </td>
+        <td style="background: #F0ADAD">
+          scala.math.`package`.log({  scoverage.Invoker.invoked(3272, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  logLikelihoods.map[Double, Seq[Double]]({  ((x: Double) =&gt; {    scoverage.Invoker.invoked(3269, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.math.`package`.exp(x)  })})({  scoverage.Invoker.invoked(3270, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.canBuildFrom[Double]}).sum[Double]({    scoverage.Invoker.invoked(3271, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    math.this.Numeric.DoubleIsFractional  })})
+        </td>
+      </tr><tr>
+        <td>
+          192
+        </td>
+        <td>
+          3272
+        </td>
+        <td>
+          scala.collection.TraversableOnce.sum
+        </td>
+        <td style="background: #F0ADAD">
+          logLikelihoods.map[Double, Seq[Double]]({  ((x: Double) =&gt; {    scoverage.Invoker.invoked(3269, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.math.`package`.exp(x)  })})({  scoverage.Invoker.invoked(3270, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.canBuildFrom[Double]}).sum[Double]({  scoverage.Invoker.invoked(3271, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  math.this.Numeric.DoubleIsFractional})
+        </td>
+      </tr><tr>
+        <td>
+          192
         </td>
         <td>
           3269
+        </td>
+        <td>
+          scala.math.exp
+        </td>
+        <td style="background: #F0ADAD">
+          scala.math.`package`.exp(x)
+        </td>
+      </tr><tr>
+        <td>
+          193
+        </td>
+        <td>
+          3274
         </td>
         <td>
           scala.Double.-
@@ -19228,10 +19202,36 @@
         </td>
       </tr><tr>
         <td>
+          193
+        </td>
+        <td>
+          3276
+        </td>
+        <td>
+          scala.collection.TraversableLike.map
+        </td>
+        <td style="background: #F0ADAD">
+          logLikelihoods.map[Double, Seq[Double]](((x$4: Double) =&gt; {  scoverage.Invoker.invoked(3274, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  x$4.-(logTotalLikelihood)}))({  scoverage.Invoker.invoked(3275, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.canBuildFrom[Double]})
+        </td>
+      </tr><tr>
+        <td>
+          193
+        </td>
+        <td>
+          3275
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #F0ADAD">
+          collection.this.Seq.canBuildFrom[Double]
+        </td>
+      </tr><tr>
+        <td>
           195
         </td>
         <td>
-          3273
+          3278
         </td>
         <td>
           org.hammerlab.guacamole.likelihood.Likelihood.logLikelihoods
@@ -19244,7 +19244,7 @@
           198
         </td>
         <td>
-          3274
+          3279
         </td>
         <td>
           org.hammerlab.guacamole.likelihood.Likelihood.possiblyNormalizedLogLikelihoods
@@ -19257,33 +19257,7 @@
           200
         </td>
         <td>
-          3277
-        </td>
-        <td>
-          scala.collection.TraversableLike.map
-        </td>
-        <td style="background: #F0ADAD">
-          possiblyNormalizedLogLikelihoods.map[Double, Seq[Double]]({  ((x: Double) =&gt; {    scoverage.Invoker.invoked(3275, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.math.`package`.exp(x)  })})({  scoverage.Invoker.invoked(3276, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.canBuildFrom[Double]})
-        </td>
-      </tr><tr>
-        <td>
-          200
-        </td>
-        <td>
-          3276
-        </td>
-        <td>
-          scala.collection.Seq.canBuildFrom
-        </td>
-        <td style="background: #F0ADAD">
-          collection.this.Seq.canBuildFrom[Double]
-        </td>
-      </tr><tr>
-        <td>
-          200
-        </td>
-        <td>
-          3275
+          3280
         </td>
         <td>
           scala.math.exp
@@ -19296,13 +19270,39 @@
           200
         </td>
         <td>
-          3278
+          3283
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {  scoverage.Invoker.invoked(3277, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  possiblyNormalizedLogLikelihoods.map[Double, Seq[Double]]({    ((x: Double) =&gt; {      scoverage.Invoker.invoked(3275, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      scala.math.`package`.exp(x)    })  })({    scoverage.Invoker.invoked(3276, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    collection.this.Seq.canBuildFrom[Double]  })}
+          {  scoverage.Invoker.invoked(3282, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  possiblyNormalizedLogLikelihoods.map[Double, Seq[Double]]({    ((x: Double) =&gt; {      scoverage.Invoker.invoked(3280, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);      scala.math.`package`.exp(x)    })  })({    scoverage.Invoker.invoked(3281, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    collection.this.Seq.canBuildFrom[Double]  })}
+        </td>
+      </tr><tr>
+        <td>
+          200
+        </td>
+        <td>
+          3282
+        </td>
+        <td>
+          scala.collection.TraversableLike.map
+        </td>
+        <td style="background: #F0ADAD">
+          possiblyNormalizedLogLikelihoods.map[Double, Seq[Double]]({  ((x: Double) =&gt; {    scoverage.Invoker.invoked(3280, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);    scala.math.`package`.exp(x)  })})({  scoverage.Invoker.invoked(3281, &quot;/home/travis/build/hammerlab/guacamole/target&quot;);  collection.this.Seq.canBuildFrom[Double]})
+        </td>
+      </tr><tr>
+        <td>
+          200
+        </td>
+        <td>
+          3281
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #F0ADAD">
+          collection.this.Seq.canBuildFrom[Double]
         </td>
       </tr>
     </table>
