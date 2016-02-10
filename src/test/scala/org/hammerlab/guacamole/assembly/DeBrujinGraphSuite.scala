@@ -244,15 +244,14 @@ class DeBruijnGraphSuite extends GuacFunSuite with Matchers {
 
     longRead
       .sliding(kmerSize)
-      .zipWithIndex.map(
-        {
-          case (kmer, idx) => {
-            val mergedNode = graph.mergeIndex(kmer)
-            mergedNode._1 should be(longRead)
-            mergedNode._2 should be(idx)
-          }
+      .zipWithIndex.foreach {
+        case (kmer, idx) => {
+          val mergedNode = graph.mergeIndex(kmer)
+          mergedNode._1 should be(longRead)
+          mergedNode._2 should be(idx)
         }
-      )
+      }
+
   }
 
   test("find single unique path in sequence") {

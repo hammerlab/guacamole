@@ -224,7 +224,7 @@ class DeBruijnGraph(val kmerSize: Int,
       val next = frontier.pop()
 
       if (debugPrint) {
-        if (currentPath.length == 0) {
+        if (currentPath.isEmpty) {
           println(Bases.basesToString(next))
         } else {
           println(" " * (currentPath.map(_.length).sum - kmerSize + 1) + Bases.basesToString(next))
@@ -269,7 +269,7 @@ class DeBruijnGraph(val kmerSize: Int,
           // Backtrack the current path to the last node with siblings or start
           val backtrackIndex = lastBranchIndex.top
           // Remove the nodes from the last branch from the visited set
-          currentPath.slice(0, currentPath.length - backtrackIndex).map(visited.remove)
+          currentPath.slice(0, currentPath.length - backtrackIndex).foreach(visited.remove)
 
           // Remove the nodes from the current path
           currentPath = currentPath.drop(currentPath.length - backtrackIndex)
