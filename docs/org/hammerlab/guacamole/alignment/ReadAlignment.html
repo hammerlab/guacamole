@@ -35,11 +35,11 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">ReadAlignment</span><span class="params">(<span name="alignments">alignments: <span class="extype" name="scala.Seq">Seq</span>[<a href="AlignmentState$.html#AlignmentState=org.hammerlab.guacamole.alignment.AlignmentState.Value" class="extmbr" name="org.hammerlab.guacamole.alignment.AlignmentState.AlignmentState">AlignmentState</a>]</span>, <span name="refBases">refBases: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>, <span name="alignmentScore">alignmentScore: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">ReadAlignment</span><span class="params">(<span name="alignments">alignments: <span class="extype" name="scala.Seq">Seq</span>[<a href="AlignmentState$.html#AlignmentState=org.hammerlab.guacamole.alignment.AlignmentState.Value" class="extmbr" name="org.hammerlab.guacamole.alignment.AlignmentState.AlignmentState">AlignmentState</a>]</span>, <span name="refStartIdx">refStartIdx: <span class="extype" name="scala.Int">Int</span></span>, <span name="refEndIdx">refEndIdx: <span class="extype" name="scala.Int">Int</span></span>, <span name="alignmentScore">alignmentScore: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>ReadAlignment stores a sequence of states describing the alignment of a reads to a reference</p></div><dl class="paramcmts block"><dt class="param">alignments</dt><dd class="cmt"><p>Sequence of alignments</p></dd><dt class="param">alignmentScore</dt><dd class="cmt"><p>Score of the alignment
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">alignments</dt><dd class="cmt"><p>Sequence of alignments</p></dd><dt class="param">refStartIdx</dt><dd class="cmt"><p>Start of the alignment in the reference sequence</p></dd><dt class="param">refEndIdx</dt><dd class="cmt"><p>End of the alignment (inclusive) in the reference sequence</p></dd><dt class="param">alignmentScore</dt><dd class="cmt"><p>Score of the alignment based on the mismatch and gap penalties
 </p></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
@@ -81,7 +81,7 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="org.hammerlab.guacamole.alignment.ReadAlignment#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="&lt;init&gt;(alignments:Seq[org.hammerlab.guacamole.alignment.AlignmentState.AlignmentState],refBases:Seq[Byte],alignmentScore:Int):org.hammerlab.guacamole.alignment.ReadAlignment"></a>
+      <a id="&lt;init&gt;(alignments:Seq[org.hammerlab.guacamole.alignment.AlignmentState.AlignmentState],refStartIdx:Int,refEndIdx:Int,alignmentScore:Int):org.hammerlab.guacamole.alignment.ReadAlignment"></a>
       <a id="&lt;init&gt;:ReadAlignment"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -89,10 +89,10 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">ReadAlignment</span><span class="params">(<span name="alignments">alignments: <span class="extype" name="scala.Seq">Seq</span>[<a href="AlignmentState$.html#AlignmentState=org.hammerlab.guacamole.alignment.AlignmentState.Value" class="extmbr" name="org.hammerlab.guacamole.alignment.AlignmentState.AlignmentState">AlignmentState</a>]</span>, <span name="refBases">refBases: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>, <span name="alignmentScore">alignmentScore: <span class="extype" name="scala.Int">Int</span></span>)</span>
+        <span class="name">ReadAlignment</span><span class="params">(<span name="alignments">alignments: <span class="extype" name="scala.Seq">Seq</span>[<a href="AlignmentState$.html#AlignmentState=org.hammerlab.guacamole.alignment.AlignmentState.Value" class="extmbr" name="org.hammerlab.guacamole.alignment.AlignmentState.AlignmentState">AlignmentState</a>]</span>, <span name="refStartIdx">refStartIdx: <span class="extype" name="scala.Int">Int</span></span>, <span name="refEndIdx">refEndIdx: <span class="extype" name="scala.Int">Int</span></span>, <span name="alignmentScore">alignmentScore: <span class="extype" name="scala.Int">Int</span></span>)</span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">alignments</dt><dd class="cmt"><p>Sequence of alignments</p></dd><dt class="param">alignmentScore</dt><dd class="cmt"><p>Score of the alignment
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">alignments</dt><dd class="cmt"><p>Sequence of alignments</p></dd><dt class="param">refStartIdx</dt><dd class="cmt"><p>Start of the alignment in the reference sequence</p></dd><dt class="param">refEndIdx</dt><dd class="cmt"><p>End of the alignment (inclusive) in the reference sequence</p></dd><dt class="param">alignmentScore</dt><dd class="cmt"><p>Score of the alignment based on the mismatch and gap penalties
 </p></dd></dl></div>
     </li></ol>
             </div>
@@ -180,7 +180,7 @@
         <span class="name">alignmentScore</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Score of the alignment
+      <p class="shortcomment cmt">Score of the alignment based on the mismatch and gap penalties
 </p>
     </li><li name="org.hammerlab.guacamole.alignment.ReadAlignment#alignments" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="alignments:Seq[org.hammerlab.guacamole.alignment.AlignmentState.AlignmentState]"></a>
@@ -324,19 +324,32 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.alignment.ReadAlignment#refBases" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="refBases:Seq[Byte]"></a>
-      <a id="refBases:Seq[Byte]"></a>
+    </li><li name="org.hammerlab.guacamole.alignment.ReadAlignment#refEndIdx" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="refEndIdx:Int"></a>
+      <a id="refEndIdx:Int"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">refBases</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>
+        <span class="name">refEndIdx</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
       </span>
       </h4>
-      
+      <p class="shortcomment cmt">End of the alignment (inclusive) in the reference sequence</p>
+    </li><li name="org.hammerlab.guacamole.alignment.ReadAlignment#refStartIdx" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="refStartIdx:Int"></a>
+      <a id="refStartIdx:Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">refStartIdx</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Start of the alignment in the reference sequence</p>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
