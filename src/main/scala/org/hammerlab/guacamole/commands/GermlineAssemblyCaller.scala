@@ -22,7 +22,6 @@ import scala.collection.JavaConversions._
  *
  * Overview:
  * - Find areas where > `min-area-vaf` %  of the reads show a variant
- * - Re-examine those areas with N base window around it
  * - Place the reads in the `snv-window-range`-base window into a DeBruijn graph
  *   and find paths between the start and end of the reference sequence that covers that region
  * - Align those paths to the reference sequence to discover variants
@@ -77,10 +76,14 @@ object GermlineAssemblyCaller {
                            reference: ReferenceGenome,
                            minOccurrence: Int = 3,
                            expectedPloidy: Int = 2,
-                           maxPathsToScore: Int = 6): (Option[DeBruijnGraph], Iterator[CalledAllele]) = {
+                           maxPathsToScore: Int = 6,
+                           debugPrint: Boolean = false): (Option[DeBruijnGraph], Iterator[CalledAllele]) = {
 
       val locus = currentWindow.currentLocus
       val reads = currentWindow.currentRegions()
+
+      val sampleName = reads.head.sampleName
+      val referenceContig = reads.head.referenceContig
 
       // TODO: Should update graph instead of rebuilding it
       // Need to keep track of reads removed from last update and reads added
@@ -91,8 +94,8 @@ object GermlineAssemblyCaller {
         mergeNodes = true
       )
 
-      val referenceStart = (reads.head.start).toInt
-      val referenceEnd = (reads.last.end).toInt
+      val referenceStart = (locus - currentWindow.halfWindowSize).toInt
+      val referenceEnd = (locus + currentWindow.halfWindowSize).toInt
 
       val currentReference: Array[Byte] = reference.getReferenceSequence(
         currentWindow.referenceName,
@@ -104,16 +107,23 @@ object GermlineAssemblyCaller {
       val referenceKmerSink = currentReference.takeRight(kmerSize)
 
       // If the current window size doesn't cover the kmer size we won't be able to find the reference start/end
-      if (currentReference.size < kmerSize)
+      if (currentReference.size < kmerSize || referenceKmerSource == referenceKmerSink) {
+        log.warn(s"In window ${referenceContig}:${referenceStart}-$referenceEnd " +
+          s"the start and end source kmers were invalid. " +
+          s"Start: ${Bases.basesToString(referenceKmerSource)} End: ${Bases.basesToString(referenceKmerSink)}")
         return (graph, Iterator.empty)
+      }
+
+      if (debugPrint) {
+        println(s"Source: ${Bases.basesToString(referenceKmerSource)}")
+        println(s"Sink: ${Bases.basesToString(referenceKmerSink)}")
+      }
 
       val paths = currentGraph.depthFirstSearch(
         referenceKmerSource,
-        referenceKmerSink
+        referenceKmerSink,
+        debugPrint = debugPrint
       )
-
-      val sampleName = reads.head.sampleName
-      val referenceContig = reads.head.referenceContig
 
       // Score up to the maximum number of paths, by aligning them against the reference
       // Take the best aligning `expectedPloidy` paths
@@ -168,11 +178,13 @@ object GermlineAssemblyCaller {
         pathAndAlignments.flatMap(kv => {
           val path = kv._1
           val alignment = kv._2
-          var referenceIndex = 0
+
+          var referenceIndex = alignment.refStartIdx
           var pathIndex = 0
 
           // Find the alignment sequences using the CIGAR
           val cigarElements = alignment.toCigar.getCigarElements
+
           cigarElements.flatMap(cigarElement => {
             val cigarOperator = cigarElement.getOperator
             val referenceLength = CigarUtils.getReferenceLength(cigarElement)
@@ -191,12 +203,13 @@ object GermlineAssemblyCaller {
                 Some(buildVariant(referenceIndex - 1, referenceAllele, alternateAllele.toArray))
               case _ => None
             }
+
             referenceIndex += referenceLength
             pathIndex += pathLength
 
             possibleVariant
-
           })
+
         })
 
       (graph, variants.iterator)
@@ -210,6 +223,14 @@ object GermlineAssemblyCaller {
         sc,
         Read.InputFilters(mapped = true, nonDuplicate = true))
 
+      val minAlignmentQuality = args.minAlignmentQuality
+      val qualityReads = readSet
+        .mappedReads
+        .filter(_.alignmentQuality > minAlignmentQuality)
+
+      val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
+
+      val minAreaVaf = args.minAreaVaf
       val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(
         args,
         loci.result(readSet.contigLengths),
@@ -217,55 +238,16 @@ object GermlineAssemblyCaller {
       )
 
       val kmerSize = args.kmerSize
-      val minAlignmentQuality = args.minAlignmentQuality
       val minAverageBaseQuality = args.minAverageBaseQuality
-      val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
-
-      val qualityReads = readSet
-        .mappedReads
-        .filter(_.alignmentQuality > minAlignmentQuality)
-
-      val minAreaVaf = args.minAreaVaf
-      // Find loci where there are variant reads
-      val lociOfInterest = DistributedUtil.pileupFlatMap[VariantLocus](
+      val genotypes: RDD[CalledAllele] = discoverGenotypes(
         qualityReads,
+        kmerSize,
+        snvWindowRange = args.snvWindowRange,
+        minOccurrence = args.minOccurrence,
+        minAreaVaf = args.minAreaVaf / 100.0f,
+        reference,
         lociPartitions,
-        skipEmpty = true,
-        function = pileup => VariantLocus(pileup).iterator,
-        reference = Some(reference)
-      ).filter(_.variantAlleleFrequency > (minAreaVaf / 100.0))
-
-      Common.progress(s"Found ${lociOfInterest.count} loci with non-reference reads")
-
-      // Re-examine loci with variant read
-      val lociOfInterestSet = LociSet.union(
-        lociOfInterest.map(
-          locus => LociSet(locus.contig, locus.locus, locus.locus + 1))
-          .collect(): _*
-      )
-      val lociOfInterestPartitions = DistributedUtil.partitionLociUniformly(
-        args.parallelism,
-        lociOfInterestSet
-      )
-
-      val minOccurrence = args.minOccurrence
-      val genotypes: RDD[CalledAllele] =
-        DistributedUtil.windowFlatMapWithState[MappedRead, CalledAllele, Option[DeBruijnGraph]](
-          Seq(qualityReads),
-          lociOfInterestPartitions,
-          skipEmpty = true,
-          halfWindowSize = args.snvWindowRange,
-          initialState = None,
-          (graph, windows) => {
-            discoverHaplotypes(
-              graph,
-              windows(0),
-              kmerSize,
-              reference,
-              minOccurrence
-            )
-          }
-        )
+        parallelism = args.parallelism)
       genotypes.persist()
 
       Common.progress(s"Found ${genotypes.count} variants")
@@ -277,5 +259,47 @@ object GermlineAssemblyCaller {
       DelayedMessages.default.print()
     }
 
+    def discoverGenotypes(reads: RDD[MappedRead],
+                          kmerSize: Int,
+                          snvWindowRange: Int,
+                          minOccurrence: Int,
+                          minAreaVaf: Float,
+                          reference: ReferenceBroadcast,
+                          lociPartitions: LociMap[Long],
+                          parallelism: Int): RDD[CalledAllele] = {
+
+      val genotypes: RDD[CalledAllele] =
+        DistributedUtil.windowFlatMapWithState[MappedRead, CalledAllele, Option[DeBruijnGraph]](
+          Seq(reads),
+          lociPartitions,
+          skipEmpty = true,
+          halfWindowSize = snvWindowRange,
+          initialState = None,
+          (graph, windows) => {
+            val window = windows(0)
+            val variableReads =
+              window
+                .currentRegions()
+                .count(read => read.cigar.numCigarElements() > 1 || read.mdTagOpt.get.countOfMismatches > 0)
+
+            if ((variableReads.toFloat / window.currentRegions().length) > minAreaVaf) {
+              val result = discoverHaplotypes(
+                graph,
+                windows(0),
+                kmerSize,
+                reference,
+                minOccurrence
+              )
+              // Jump to the next region
+              window.setCurrentLocus(window.currentLocus + snvWindowRange)
+
+              result
+            } else {
+              (graph, Iterator.empty)
+            }
+          }
+        )
+      genotypes
+    }
   }
 }
