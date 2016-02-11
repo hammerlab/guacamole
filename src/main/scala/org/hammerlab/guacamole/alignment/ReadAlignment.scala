@@ -27,12 +27,15 @@ object AlignmentState extends Enumeration {
 }
 
 /**
- * ReadAlignment stores a sequence of states describing the alignment of a reads to a reference
+ *
  * @param alignments Sequence of alignments
- * @param alignmentScore Score of the alignment
+ * @param refStartIdx Start of the alignment in the reference sequence
+ * @param refEndIdx End of the alignment (inclusive) in the reference sequence
+ * @param alignmentScore Score of the alignment based on the mismatch and gap penalties
  */
 case class ReadAlignment(alignments: Seq[AlignmentState],
-                         refBases: Seq[Byte],
+                         refStartIdx: Int,
+                         refEndIdx: Int,
                          alignmentScore: Int) {
 
   /**

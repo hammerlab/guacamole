@@ -77,7 +77,7 @@ class DeBruijnGraph(val kmerSize: Int,
   private[assembly] def pruneKmers(minSupport: Int) = {
     kmerCounts
       .filter(_._2 < minSupport)
-      .foreach({ case (kmer, count) => kmerCounts.remove(kmer) })
+      .foreach({ case (kmer, count) => removeKmer(kmer) })
   }
 
   /**
@@ -178,23 +178,34 @@ class DeBruijnGraph(val kmerSize: Int,
                        minPathLength: Int = 1,
                        maxPathLength: Int = Int.MaxValue,
                        maxPaths: Int = 10,
-                       avoidLoops: Boolean = true): List[(Path)] = {
+                       avoidLoops: Boolean = true,
+                       debugPrint: Boolean = false): List[(Path)] = {
 
     assume(source.length == kmerSize, s"Source kmer ${Bases.basesToString(source)} has a size != $kmerSize")
     assume(sink.length == kmerSize, s"Sink kmer ${Bases.basesToString(sink)} has a size != $kmerSize")
 
     var paths = List.empty[(Path)]
+    var visited: mutable.Set[Kmer] = mutable.Set.empty
 
     // Add the source node to the frontier
     val frontier: mutable.Stack[Kmer] =
       if (mergeIndex.contains(source)) {
         val (mergedNode, pathIndex) = mergeIndex(source)
+
+        // Check if merged node contains the sink, if so shortcut the search as this is the only path
+        val mergedSink = mergeIndex.get(sink)
+        if (mergedSink.exists(node => node._1 == mergedNode && node._2 > pathIndex)) {
+          val path: Path = List(mergedNode.slice(pathIndex, mergedSink.get._2 + kmerSize))
+          return List(path)
+        }
+        // Add the merged node to the visited stack, so we don't loop back into it
+        visited += mergedNode
+
+        // Add the merged node to the frontier, removing any preceding bases
         mutable.Stack(mergedNode.drop(pathIndex))
       } else {
         mutable.Stack(source)
       }
-
-    var visited: mutable.Set[Kmer] = mutable.Set.empty
 
     // Initialize an empty path
     var currentPath: Path = List.empty
@@ -212,9 +223,16 @@ class DeBruijnGraph(val kmerSize: Int,
     while (frontier.nonEmpty && paths.size < maxPaths) {
       val next = frontier.pop()
 
+      if (debugPrint) {
+        if (currentPath.isEmpty) {
+          println(Bases.basesToString(next))
+        } else {
+          println(" " * (currentPath.map(_.length).sum - kmerSize + 1) + Bases.basesToString(next))
+        }
+      }
+
       // add the node on to the path
       currentPath = next :: currentPath
-      visited += next
 
       // Check if the source node was merged into the current one
       lazy val foundMergedSink = nodeContainingSink.exists(_._1 == next)
@@ -231,6 +249,7 @@ class DeBruijnGraph(val kmerSize: Int,
 
         // Keep searching down tree
         frontier.pushAll(filteredNextNodes)
+        visited += next
 
       } else { // Found sink or search was cut short
         if (foundSink && currentPath.size >= minPathLength) { // Found sink with valid length
@@ -241,13 +260,18 @@ class DeBruijnGraph(val kmerSize: Int,
             val mergedPathEndIdx = mergedPathIdx + kmerSize
             currentPath = currentPath.head.dropRight(mergedNode.length - mergedPathEndIdx) :: currentPath.tail
           }
+
           // Found legitimate path to sink, save path
-          paths = (currentPath.reverse) :: paths
+          paths = currentPath.reverse :: paths
         } // else degenerate path, too long or too short
 
         if (lastBranchIndex.nonEmpty) {
           // Backtrack the current path to the last node with siblings or start
           val backtrackIndex = lastBranchIndex.top
+          // Remove the nodes from the last branch from the visited set
+          currentPath.slice(0, currentPath.length - backtrackIndex).foreach(visited.remove)
+
+          // Remove the nodes from the current path
           currentPath = currentPath.drop(currentPath.length - backtrackIndex)
           numBacktracks += 1
 
@@ -260,6 +284,11 @@ class DeBruijnGraph(val kmerSize: Int,
         }
       }
     }
+
+    if (debugPrint) {
+      println(s"Found ${paths.size} paths")
+    }
+
     paths
   }
 
@@ -310,9 +339,7 @@ object DeBruijnGraph {
           })
       )
 
-    val graph = new DeBruijnGraph(kmerSize, kmerCounts)
-    //TODO(arahuja) Only add in kmers once they hit minOccurrence rather than post-pruning
-    graph.pruneKmers(minOccurrence)
+    val graph = new DeBruijnGraph(kmerSize, kmerCounts.filter(_._2 >= minOccurrence))
 
     if (mergeNodes) graph.mergeNodes()
 
