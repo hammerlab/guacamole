@@ -82,6 +82,9 @@ object GermlineAssemblyCaller {
       val locus = currentWindow.currentLocus
       val reads = currentWindow.currentRegions()
 
+      val sampleName = reads.head.sampleName
+      val referenceContig = reads.head.referenceContig
+
       // TODO: Should update graph instead of rebuilding it
       // Need to keep track of reads removed from last update and reads added
       val currentGraph: DeBruijnGraph = DeBruijnGraph(
@@ -104,8 +107,12 @@ object GermlineAssemblyCaller {
       val referenceKmerSink = currentReference.takeRight(kmerSize)
 
       // If the current window size doesn't cover the kmer size we won't be able to find the reference start/end
-      if (currentReference.size < kmerSize || referenceKmerSource == referenceKmerSink)
+      if (currentReference.size < kmerSize || referenceKmerSource == referenceKmerSink) {
+        log.warn(s"In window ${referenceContig}:${referenceStart}-$referenceEnd " +
+          s"the start and end source kmers were invalid. " +
+          s"Start: ${Bases.basesToString(referenceKmerSource)} End: ${Bases.basesToString(referenceKmerSink)}")
         return (graph, Iterator.empty)
+      }
 
       if (debugPrint) {
         println(s"Source: ${Bases.basesToString(referenceKmerSource)}")
@@ -117,9 +124,6 @@ object GermlineAssemblyCaller {
         referenceKmerSink,
         debugPrint = debugPrint
       )
-
-      val sampleName = reads.head.sampleName
-      val referenceContig = reads.head.referenceContig
 
       // Score up to the maximum number of paths, by aligning them against the reference
       // Take the best aligning `expectedPloidy` paths
