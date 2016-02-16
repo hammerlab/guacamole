@@ -398,7 +398,7 @@
                     <arg>-g:vars</arg>
                     <!-- <arg>-P:scoverage:dataDir:${project.build.directory}</arg> -->
                   </args>
-                  <forkMode>once</forkMode>
+                  <forkMode>always</forkMode>
                 </configuration>
               </execution>
             </executions>
