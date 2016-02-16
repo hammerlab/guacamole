@@ -98,13 +98,6 @@ object Bases {
     bases.map(_.toChar).mkString
   }
 
-  // Masked lower case bases
-  val a = "a".getBytes()(0)
-  val t = "t".getBytes()(0)
-  val c = "c".getBytes()(0)
-  val g = "g".getBytes()(0)
-  val n = "n".getBytes()(0)
-
   /**
    * Convert a mixed sequence of bases (lower and upper-case) to upper case
    * Lower-case bases typically represent masked bases
@@ -122,5 +115,4 @@ object Bases {
       i += 1
     }
   }
-
 }
