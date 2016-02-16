@@ -21,7 +21,7 @@ package org.hammerlab.guacamole.pileup
 import org.hammerlab.guacamole.Bases
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.util.TestUtil.Implicits._
-import org.hammerlab.guacamole.util.TestUtil.assertBases
+import org.hammerlab.guacamole.util.TestUtil.{ assertBases, loadPileup }
 import org.hammerlab.guacamole.util.{ GuacFunSuite, TestUtil }
 import org.hammerlab.guacamole.variants.Allele
 import org.scalatest.Matchers
@@ -40,12 +40,6 @@ class PileupSuite extends GuacFunSuite with Matchers with TableDrivenPropertyChe
 
   def pileupElementFromRead(read: MappedRead, locus: Long): PileupElement = {
     PileupElement(read, locus, read.getReferenceBaseAtLocus(locus))
-  }
-
-  def loadPileup(filename: String, locus: Long = 0): Pileup = {
-    val records = TestUtil.loadReads(sc, filename).mappedReads
-    val localReads = records.collect
-    Pileup(localReads, localReads(0).referenceContig, locus)
   }
 
   sparkTest("create pileup from long insert reads") {
@@ -131,12 +125,12 @@ class PileupSuite extends GuacFunSuite with Matchers with TableDrivenPropertyChe
   }
 
   sparkTest("Load pileup from SAM file") {
-    val pileup = loadPileup("same_start_reads.sam", 0)
+    val pileup = loadPileup(sc, "same_start_reads.sam", 0)
     pileup.elements.length should be(10)
   }
 
   sparkTest("First 60 loci should have all 10 reads") {
-    val pileup = loadPileup("same_start_reads.sam", 0)
+    val pileup = loadPileup(sc, "same_start_reads.sam", 0)
     for (i <- 1 to 59) {
       val nextPileup = pileup.atGreaterLocus(i, Bases.N, Seq.empty.iterator)
       nextPileup.elements.length should be(10)
@@ -220,7 +214,7 @@ class PileupSuite extends GuacFunSuite with Matchers with TableDrivenPropertyChe
   }
 
   sparkTest("Loci 10-19 deleted from half of the reads") {
-    val pileup = loadPileup("same_start_reads.sam", 0)
+    val pileup = loadPileup(sc, "same_start_reads.sam", 0)
     val deletionPileup = pileup.atGreaterLocus(9, Bases.A, Seq.empty.iterator)
     deletionPileup.elements.map(_.alignment).count {
       case Deletion(bases, _) => {
@@ -236,7 +230,7 @@ class PileupSuite extends GuacFunSuite with Matchers with TableDrivenPropertyChe
   }
 
   sparkTest("Loci 60-69 have 5 reads") {
-    val pileup = loadPileup("same_start_reads.sam", 0)
+    val pileup = loadPileup(sc, "same_start_reads.sam", 0)
     for (i <- 60 to 69) {
       val nextPileup = pileup.atGreaterLocus(i, Bases.N, Seq.empty.iterator)
       nextPileup.elements.length should be(5)
@@ -402,7 +396,7 @@ class PileupSuite extends GuacFunSuite with Matchers with TableDrivenPropertyChe
   }
 
   sparkTest("create pileup from RNA reads") {
-    val rnaReadsPileup = loadPileup("testrna.sam", locus = 229580594)
+    val rnaReadsPileup = loadPileup(sc, "testrna.sam", locus = 229580594)
 
     // 94 reads in the testrna.sam
     // 3 reads end at 229580707 and 1 extends further
