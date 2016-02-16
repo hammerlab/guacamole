@@ -24,6 +24,7 @@ import org.apache.spark.Logging
 import org.bdgenomics.adam.util.ParquetLogger
 import org.hammerlab.guacamole.Common.progress
 import org.hammerlab.guacamole.commands._
+import org.hammerlab.guacamole.commands.jointcaller.SomaticJoint
 
 /**
  * Guacamole main class.
@@ -41,7 +42,9 @@ object Guacamole extends Logging {
     SomaticStandard.Caller,
     VariantSupport.Caller,
     VAFHistogram.Caller,
-    StructuralVariant.Caller
+    StructuralVariant.Caller,
+    SomaticJoint.Caller,
+    GeneratePartialFasta.Caller
   )
 
   private def printUsage() = {

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Session genome="b37" hasGeneTrack="true" hasSequenceTrack="true" locus="1:197069806-197069846" path="/Users/tim/sinai/git/guacamole/src/test/resources/cancer-wgs1/igv_session.xml" version="8">
+    <Resources>
+        <Resource path="/Users/tim/sinai/git/guacamole/src/test/resources/cancer-wgs1/primary.bam"/>
+        <Resource path="/Users/tim/sinai/git/guacamole/src/test/resources/cancer-wgs1/recurrence.bam"/>
+        <Resource path="/Users/tim/sinai/git/guacamole/src/test/resources/cancer-wgs1/normal.bam"/>
+    </Resources>
+    <Panel height="845" name="Panel1454102911726" width="1133">
+        <Track altColor="0,0,178" autoScale="true" color="175,175,175" colorScale="ContinuousColorScale;0.0;53.0;255,255,255;175,175,175" displayMode="EXPANDED" featureVisibilityWindow="-1" fontSize="10" id="/Users/tim/sinai/git/guacamole/src/test/resources/cancer-wgs1/normal.bam_coverage" name="normal.bam Coverage" showReference="false" snpThreshold="0.1" sortable="true" visible="true">
+            <DataRange baseline="0.0" drawBaseline="true" flipAxis="false" maximum="53.0" minimum="0.0" type="LINEAR"/>
+        </Track>
+        <Track altColor="0,0,178" autoScale="false" color="0,0,178" displayMode="EXPANDED" featureVisibilityWindow="-1" fontSize="10" id="/Users/tim/sinai/git/guacamole/src/test/resources/cancer-wgs1/normal.bam" name="normal.bam" showSpliceJunctions="false" sortable="true" visible="true">
+            <RenderOptions colorByTag="" colorOption="UNEXPECTED_PAIR" flagUnmappedPairs="false" groupByTag="" maxInsertSize="1000" minInsertSize="50" shadeBasesOption="QUALITY" shadeCenters="true" showAllBases="false" sortByTag=""/>
+        </Track>
+    </Panel>
+    <Panel height="1111" name="Panel1454102917334" width="1133">
+        <Track altColor="0,0,178" autoScale="true" color="175,175,175" colorScale="ContinuousColorScale;0.0;69.0;255,255,255;175,175,175" displayMode="EXPANDED" featureVisibilityWindow="-1" fontSize="10" id="/Users/tim/sinai/git/guacamole/src/test/resources/cancer-wgs1/primary.bam_coverage" name="primary.bam Coverage" showReference="false" snpThreshold="0.1" sortable="true" visible="true">
+            <DataRange baseline="0.0" drawBaseline="true" flipAxis="false" maximum="69.0" minimum="0.0" type="LINEAR"/>
+        </Track>
+        <Track altColor="0,0,178" autoScale="false" color="0,0,178" displayMode="EXPANDED" featureVisibilityWindow="-1" fontSize="10" id="/Users/tim/sinai/git/guacamole/src/test/resources/cancer-wgs1/primary.bam" name="primary.bam" showSpliceJunctions="false" sortable="true" visible="true">
+            <RenderOptions colorByTag="" colorOption="UNEXPECTED_PAIR" flagUnmappedPairs="false" groupByTag="" maxInsertSize="1000" minInsertSize="50" shadeBasesOption="QUALITY" shadeCenters="true" showAllBases="false" sortByTag=""/>
+        </Track>
+    </Panel>
+    <Panel height="1293" name="Panel1454102925223" width="1133">
+        <Track altColor="0,0,178" autoScale="true" color="175,175,175" colorScale="ContinuousColorScale;0.0;85.0;255,255,255;175,175,175" displayMode="EXPANDED" featureVisibilityWindow="-1" fontSize="10" id="/Users/tim/sinai/git/guacamole/src/test/resources/cancer-wgs1/recurrence.bam_coverage" name="recurrence.bam Coverage" showReference="false" snpThreshold="0.1" sortable="true" visible="true">
+            <DataRange baseline="0.0" drawBaseline="true" flipAxis="false" maximum="85.0" minimum="0.0" type="LINEAR"/>
+        </Track>
+        <Track altColor="0,0,178" autoScale="false" color="0,0,178" displayMode="EXPANDED" featureVisibilityWindow="-1" fontSize="10" id="/Users/tim/sinai/git/guacamole/src/test/resources/cancer-wgs1/recurrence.bam" name="recurrence.bam" showSpliceJunctions="false" sortable="true" visible="true">
+            <RenderOptions colorByTag="" colorOption="UNEXPECTED_PAIR" flagUnmappedPairs="false" groupByTag="" maxInsertSize="1000" minInsertSize="50" shadeBasesOption="QUALITY" shadeCenters="true" showAllBases="false" sortByTag=""/>
+        </Track>
+    </Panel>
+    <Panel height="91" name="FeaturePanel" width="1133">
+        <Track altColor="0,0,178" autoScale="false" color="0,0,178" displayMode="EXPANDED" featureVisibilityWindow="-1" fontSize="10" id="Reference sequence" name="Reference sequence" sortable="false" visible="true"/>
+        <Track altColor="0,0,178" autoScale="false" clazz="org.broad.igv.track.FeatureTrack" color="0,0,178" colorScale="ContinuousColorScale;0.0;251.0;255,255,255;0,0,178" displayMode="SQUISHED" featureVisibilityWindow="-1" fontSize="10" height="35" id="b37_genes" name="Gene" renderer="BASIC_FEATURE" sortable="false" visible="true" windowFunction="count">
+            <DataRange baseline="0.0" drawBaseline="true" flipAxis="false" maximum="251.0" minimum="0.0" type="LINEAR"/>
+        </Track>
+    </Panel>
+    <PanelLayout dividerFractions="0.0106951871657754,0.29411764705882354,0.5882352941176471,0.8823529411764706"/>
+    <HiddenAttributes>
+        <Attribute name="DATA FILE"/>
+        <Attribute name="DATA TYPE"/>
+        <Attribute name="NAME"/>
+    </HiddenAttributes>
+</Session>
