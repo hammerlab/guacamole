@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 
 # Some of our tests require a human reference genome, which is too big to
 # distribute. As a workaround we generate a "partial" fasta containing just the
@@ -8,7 +8,25 @@
 
 FULL_FASTA_PATH=/Users/tim/sinai/data/ucsc.hg19.fasta.gz
 
-scripts/guacamole generate-partial-fasta \
+set -e
+set -x
+
+if [ -z "${GUACAMOLE_JAR}" ]; then
+    jar=$(ls -tc target/guacamole-with-dependencies-*.jar | head -n 1)
+    if [ -z "$jar" ]; then
+        echo "Couldn't find a Guacamole jar in the target/ directory."
+        echo "Are you in the root directory of the Guacamole repo, and have you built Guacamole?"
+        echo "To build, run: "
+        echo "    mvn package -DskipTests=true"
+        exit 1
+    fi
+    echo "Using most recently modified jar: $jar"
+else
+    jar=${GUACAMOLE_JAR}
+    echo "Using GUACAMOLE_JAR=$jar"
+fi
+
+time java -Xmx6g -XX:MaxPermSize=512m "-Dspark.master=local[1]" -cp $jar org.hammerlab.guacamole.other_entrypoints.GeneratePartialFasta \
     --reference-fasta $FULL_FASTA_PATH \
     --output src/test/resources/hg19.partial.fasta \
     src/test/resources/cancer-wgs1/*.bam
