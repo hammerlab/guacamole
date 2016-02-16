@@ -39,13 +39,14 @@ import scala.collection.mutable.ArrayBuffer
 case class LociSet(map: LociMap[Long]) {
 
   /** The contigs included in this LociSet with a nonempty set of loci. */
-  lazy val contigs: Seq[String] = map.contigs
+  def contigs: Seq[String] = map.contigs
 
   /** The number of loci in this LociSet. */
-  lazy val count: Long = map.count
+  def count: Long = map.count
 
   /** Does count == 0? */
-  lazy val isEmpty = map.isEmpty
+  def isEmpty = map.isEmpty
+  def nonEmpty = !isEmpty
 
   /** Given a contig name, returns a [[LociSet.SingleContig]] giving the loci on that contig. */
   def onContig(contig: String): LociSet.SingleContig = LociSet.SingleContig(map.onContig(contig))
@@ -166,7 +167,7 @@ object LociSet {
     def putExpression(loci: String): Builder = {
       if (loci == "all") {
         putAllContigs()
-      } else {
+      } else if (loci != "none") {
         val contigAndLoci = """^([\pL\pN._]+):(\pN+)-(\pN+)$""".r
         val contigOnly = """^([\pL\pN._]+)""".r
         val sets = loci.replaceAll("\\s", "").split(',').foreach({

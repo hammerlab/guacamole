@@ -65,7 +65,7 @@ object SomaticStandard {
 
     override def run(args: Arguments, sc: SparkContext): Unit = {
       Common.validateArguments(args)
-      val loci = Common.loci(args)
+      val loci = Common.lociFromArguments(args)
       val filters = Read.InputFilters(
         overlapsLoci = Some(loci),
         nonDuplicate = true,
