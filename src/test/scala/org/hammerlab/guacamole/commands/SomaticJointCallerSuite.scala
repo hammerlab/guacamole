@@ -4,8 +4,8 @@ import org.hammerlab.guacamole.commands.jointcaller._
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.reference.ReferenceBroadcast.ArrayBackedReferenceSequence
-import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
-import org.hammerlab.guacamole.{Bases, LociSet}
+import org.hammerlab.guacamole.util.{ GuacFunSuite, TestUtil }
+import org.hammerlab.guacamole.{ Bases, LociSet }
 import org.scalatest.Matchers
 
 class SomaticJointCallerSuite extends GuacFunSuite with Matchers {

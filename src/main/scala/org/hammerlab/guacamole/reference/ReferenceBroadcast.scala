@@ -45,11 +45,11 @@ object ReferenceBroadcast {
   }
 
   /**
-    * A ContigSequence implementation that uses a Map to store only a subset of bases. This is what you get if you load
-    * a "partial fasta". This is used in tests.
-    * @param length
-    * @param wrapped
-    */
+   * A ContigSequence implementation that uses a Map to store only a subset of bases. This is what you get if you load
+   * a "partial fasta". This is used in tests.
+   * @param length
+   * @param wrapped
+   */
   case class MapBackedReferenceSequence(length: Int, wrapped: Broadcast[Map[Int, Byte]]) extends ContigSequence {
     def apply(index: Int): Byte = wrapped.value.getOrElse(index, Bases.N)
     def slice(start: Int, end: Int): Array[Byte] = (start until end).map(apply _).toArray
@@ -58,11 +58,11 @@ object ReferenceBroadcast {
   val cache = mutable.HashMap.empty[String, (SparkContext, ReferenceBroadcast)]
 
   /**
-    * Read a regular fasta file
-    * @param fastaPath local path to fasta
-    * @param sc the spark context
-    * @return a ReferenceBroadcast instance containing ArrayBackedReferenceSequence objects.
-    */
+   * Read a regular fasta file
+   * @param fastaPath local path to fasta
+   * @param sc the spark context
+   * @return a ReferenceBroadcast instance containing ArrayBackedReferenceSequence objects.
+   */
   def readFasta(fastaPath: String, sc: SparkContext): ReferenceBroadcast = {
     val referenceFasta = new FastaSequenceFile(new File(fastaPath), true)
     var nextSequence = referenceFasta.nextSequence()
@@ -78,20 +78,19 @@ object ReferenceBroadcast {
     ReferenceBroadcast(broadcastedSequences.result)
   }
 
-
   /**
-    * Read a "partial fasta" from the given path.
-    *
-    * A "partial fasta" is a fasta file where the reference names look like "chr1:9242255-9242454/249250621". That gives
-    * the contig name, the start and end locus, and the total contig size. The associated sequence in the file gives the
-    * reference sequence for just the sites between start and end.
-    *
-    * Partial fastas are used for testing to avoid distributing full reference genomes.
-    *
-    * @param fastaPath local path to partial fasta
-    * @param sc the spark context
-    * @return a ReferenceBroadcast instance containing MapBackedReferenceSequence objects
-    */
+   * Read a "partial fasta" from the given path.
+   *
+   * A "partial fasta" is a fasta file where the reference names look like "chr1:9242255-9242454/249250621". That gives
+   * the contig name, the start and end locus, and the total contig size. The associated sequence in the file gives the
+   * reference sequence for just the sites between start and end.
+   *
+   * Partial fastas are used for testing to avoid distributing full reference genomes.
+   *
+   * @param fastaPath local path to partial fasta
+   * @param sc the spark context
+   * @return a ReferenceBroadcast instance containing MapBackedReferenceSequence objects
+   */
   def readPartialFasta(fastaPath: String, sc: SparkContext): ReferenceBroadcast = {
     val raw = readFasta(fastaPath, sc)
     val result = mutable.HashMap[String, mutable.HashMap[Int, Byte]]()
@@ -138,20 +137,22 @@ object ReferenceBroadcast {
   }
 
   /**
-    * Load a ReferenceBroadcast, caching the result.
-    *
-    * @param fastaPath Local path to a FASTA file
-    * @param sc the spark context
-    * @param partialFasta is this a "partial fasta"? Partial fastas are used in tests to load only a subset of the
-    *                     reference. In production runs this will usually be false.
-    * @return ReferenceBroadcast which maps contig/chromosome names to broadcasted sequences
-    */
+   * Load a ReferenceBroadcast, caching the result.
+   *
+   * @param fastaPath Local path to a FASTA file
+   * @param sc the spark context
+   * @param partialFasta is this a "partial fasta"? Partial fastas are used in tests to load only a subset of the
+   *                     reference. In production runs this will usually be false.
+   * @return ReferenceBroadcast which maps contig/chromosome names to broadcasted sequences
+   */
   def apply(fastaPath: String, sc: SparkContext, partialFasta: Boolean = false): ReferenceBroadcast = {
     val lookup = cache.get(fastaPath)
     if (lookup.exists(_._1 == sc)) {
       lookup.get._2
     } else {
       val result = if (partialFasta) readPartialFasta(fastaPath, sc) else readFasta(fastaPath, sc)
+      // Currently we keep only one item in the cache at a time.
+      cache.clear()
       cache.put(fastaPath, (sc, result))
       result
     }

@@ -32,17 +32,17 @@ import org.hammerlab.guacamole.reference.{ ContigNotFound, ReferenceBroadcast }
 import org.kohsuke.args4j.{ Argument, Option => Args4jOption }
 
 /**
-  * This command is used to generate a "partial fasta" which we use in our tests of variant callers. It should be run
-  * locally. It is not intended for any large-scale or production use.
-  *
-  * A "partial fasta" is a fasta file where the reference names look like "chr1:9242255-9242454/249250621". That gives
-  * the contig name, the start and end locus, and the total contig size. The associated sequence in the file gives the
-  * reference sequence for just the sites between start and end.
-  *
-  * This lets us package up a subset of a reference fasta into a file that is small enough to version control and
-  * distribute.
-  *
-  */
+ * This command is used to generate a "partial fasta" which we use in our tests of variant callers. It should be run
+ * locally. It is not intended for any large-scale or production use.
+ *
+ * A "partial fasta" is a fasta file where the reference names look like "chr1:9242255-9242454/249250621". That gives
+ * the contig name, the start and end locus, and the total contig size. The associated sequence in the file gives the
+ * reference sequence for just the sites between start and end.
+ *
+ * This lets us package up a subset of a reference fasta into a file that is small enough to version control and
+ * distribute.
+ *
+ */
 object GeneratePartialFasta {
 
   protected class Arguments extends DistributedUtil.Arguments with Common.Arguments.ReadLoadingConfigArgs with Common.Arguments.Reference {

@@ -2,19 +2,18 @@ package org.hammerlab.guacamole.commands
 
 import java.io.File
 
-import htsjdk.variant.variantcontext.{Allele, GenotypeBuilder, VariantContext, VariantContextBuilder}
+import htsjdk.variant.variantcontext.{ Allele, GenotypeBuilder, VariantContext, VariantContextBuilder }
 import htsjdk.variant.vcf.VCFFileReader
 import org.hammerlab.guacamole.commands.jointcaller.SomaticJoint
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
-import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
-import org.hammerlab.guacamole.{Bases, LociMap, LociSet}
+import org.hammerlab.guacamole.util.{ GuacFunSuite, TestUtil }
+import org.hammerlab.guacamole.{ Bases, LociMap, LociSet }
 import org.scalatest.Matchers
 
 import scala.collection.JavaConversions
 import scala.collection.mutable.ArrayBuffer
 import scala.io.Source
-
 
 // This test currently does not make any assertions, but outputs a performance comparison. We may want to add assertions
 // on the accuracy later.
