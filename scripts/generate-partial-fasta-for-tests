@@ -1,0 +1,14 @@
+#!/usr/bin/bash
+
+# Some of our tests require a human reference genome, which is too big to
+# distribute. As a workaround we generate a "partial" fasta containing just the
+# regions of the reference needed. We check in this partial fasta into the repo
+# and it is used by the tests. The command here regenerates this fasta (change
+# the FULL_FASTA_PATH appropriately).
+
+FULL_FASTA_PATH=/Users/tim/sinai/data/ucsc.hg19.fasta.gz
+
+scripts/guacamole generate-partial-fasta \
+    --reference-fasta $FULL_FASTA_PATH \
+    --output src/test/resources/hg19.partial.fasta \
+    src/test/resources/cancer-wgs1/*.bam
