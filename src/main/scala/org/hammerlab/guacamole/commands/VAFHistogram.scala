@@ -87,7 +87,7 @@ object VAFHistogram {
     override val description = "Compute and cluster the variant allele frequencies"
 
     override def run(args: Arguments, sc: SparkContext): Unit = {
-      val loci = Common.loci(args)
+      val loci = Common.lociFromArguments(args)
       val filters = Read.InputFilters(
         overlapsLoci = Some(loci),
         nonDuplicate = true,
