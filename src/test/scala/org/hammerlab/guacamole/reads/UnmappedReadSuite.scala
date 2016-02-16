@@ -27,6 +27,7 @@ class UnmappedReadSuite extends GuacFunSuite with Matchers {
   test("unmappedread is not mapped") {
     val read = UnmappedRead(
       5, // token
+      "read1",
       "TCGACCCTCGA",
       Array[Byte]((10 to 20).map(_.toByte): _*),
       true,

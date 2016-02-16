@@ -9,6 +9,7 @@ class PairedReadSuite extends FunSuite with Matchers {
   test("unmappedread paired read is not mapped") {
     val unmappedRead = UnmappedRead(
       5, // token
+      "read1",
       "TCGACCCTCGA",
       Array[Byte]((10 to 20).map(_.toByte): _*),
       true,
@@ -41,6 +42,7 @@ class PairedReadSuite extends FunSuite with Matchers {
     val uread = PairedRead(
       UnmappedRead(
         5, // token
+        "read1",
         "TCGACCCTCGA",
         Array[Byte]((10 to 20).map(_.toByte): _*),
         true,
@@ -61,6 +63,7 @@ class PairedReadSuite extends FunSuite with Matchers {
     val mread = PairedRead(
       MappedRead(
         5, // token
+        "read1",
         "TCGACCCTCGA",
         Array[Byte]((10 to 20).map(_.toByte): _*),
         true,
