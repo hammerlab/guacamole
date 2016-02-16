@@ -5,8 +5,8 @@ guacamole
 Guacamole is a framework for variant calling, i.e. identifying DNA mutations
 from [Next Generation Sequencing][seq] data. It currently includes a toy
 germline (non-cancer) variant caller as well as a somatic variant caller for
-finding cancer mutations.  Most development effort has gone into the somatic
-caller so far.
+finding cancer mutations.  Most development effort has gone into somatic
+calling.
 
 The emphasis is on a readable codebase that can be readily understood and
 adapted for experimentation.
@@ -37,18 +37,26 @@ Build:
 mvn package
 ```
 
-This will build a guacamole JAR file in the `target` directory. A script is
-included to run it:
+This will build a guacamole JAR file in the `target` directory. You can use the
+`guacamole` script to run locally:
 
 ```
-scripts/guacamole germline-threshold \
-	--reads src/test/resources/chrM.sorted.bam \
-	--out /tmp/result.vcf
+scripts/guacamole somatic-joint \
+    src/test/resources/cancer-wgs1/normal.bam \
+    src/test/resources/cancer-wgs1/primary.bam \
+    src/test/resources/cancer-wgs1/recurrence.bam \
+    --reference-fasta src/test/resources/hg19.partial.fasta \
+    --reference-fasta-is-partial \
+    --loci chr11,chr5,chr22,chr8,chr19,chr1,chr15,chr12,chr18,chr20,chr2,chr13,chr7,chr14,chr3,chr17,chr4,chr6,chr9,chrX,chr10,chr21,chr16 \
+    --out-dir /tmp/test-guacamole-vcfs
 ```
-
-This creates a *directory* called `/tmp/result.vcf`. The actual VCF file is in
-`/tmp/result.vcf/part-r-00000`. You'll always get one part file in the output
-directory.
+This will call germline and somatic small variants from a set of test BAMs
+using the `somatic-joint` caller, which can call variants from any number of
+samples from the same patient. (The `--loci` argument is needed due to a
+peculiarity of our test dataset, and is not necessary in general. Also, in a
+production run, you would want to pass a regular fasta file with the
+`--reference-fasta` argument and omit the `--reference-fasta-is-partial`
+option.)
 
 Try 
 ```
