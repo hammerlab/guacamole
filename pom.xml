@@ -396,12 +396,13 @@
                 <configuration>
                   <args>
                     <arg>-g:vars</arg>
-                    <arg>-P:scoverage:dataDir:${project.build.directory}</arg>
+                    <!-- <arg>-P:scoverage:dataDir:${project.build.directory}</arg> -->
                   </args>
                 </configuration>
               </execution>
             </executions>
             <configuration>
+            <!--
               <compilerPlugins>
                 <compilerPlugin>
                   <groupId>org.scoverage</groupId>
@@ -409,6 +410,7 @@
                   <version>${scoverage-plugin.version}</version>
                 </compilerPlugin>
               </compilerPlugins>
+            -->
             </configuration>
           </plugin>
         </plugins>
