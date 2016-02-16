@@ -42,7 +42,6 @@ object Guacamole extends Logging {
     SomaticStandard.Caller,
     VariantSupport.Caller,
     VAFHistogram.Caller,
-    StructuralVariant.Caller,
     SomaticJoint.Caller,
     GeneratePartialFasta.Caller
   )
