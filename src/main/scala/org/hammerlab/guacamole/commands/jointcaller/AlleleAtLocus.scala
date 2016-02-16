@@ -64,20 +64,20 @@ case class AlleleAtLocus(
 object AlleleAtLocus {
 
   /**
-    * Given one or more pileups, return a sequence of AlleleAtLocus instances giving the possible variant alleles at the
-    * *next site* in the pileups.
-    *
-    * Pileup elements whose *current* position is a variant are ignored here. The alleles returned start at the
-    * subsequent reference base and continue as long the bases do not match the reference. This is a pattern used
-    * throughout the joint caller: given a pileup at locus X we call variants that start at locus X + 1. This is done to
-    * avoid calling variants in the middle of longer variants.
-    *
-    * @param reference reference genome
-    * @param pileups one or more pileups
-    * @param anyAlleleMinSupportingReads minimum number of reads in a single sample an allele must have
-    * @param anyAlleleMinSupportingPercent minimum percent of reads (i.e. between 0 and 100) an allele must have
-    * @return the alleles sequenced at this site
-    */
+   * Given one or more pileups, return a sequence of AlleleAtLocus instances giving the possible variant alleles at the
+   * *next site* in the pileups.
+   *
+   * Pileup elements whose *current* position is a variant are ignored here. The alleles returned start at the
+   * subsequent reference base and continue as long the bases do not match the reference. This is a pattern used
+   * throughout the joint caller: given a pileup at locus X we call variants that start at locus X + 1. This is done to
+   * avoid calling variants in the middle of longer variants.
+   *
+   * @param reference reference genome
+   * @param pileups one or more pileups
+   * @param anyAlleleMinSupportingReads minimum number of reads in a single sample an allele must have
+   * @param anyAlleleMinSupportingPercent minimum percent of reads (i.e. between 0 and 100) an allele must have
+   * @return the alleles sequenced at this site
+   */
   def variantAlleles(reference: ReferenceBroadcast,
                      pileups: PerSample[Pileup],
                      anyAlleleMinSupportingReads: Int,

@@ -2,7 +2,7 @@ package org.hammerlab.guacamole.commands.jointcaller
 
 import org.hammerlab.guacamole.Bases
 import org.hammerlab.guacamole.DistributedUtil._
-import org.hammerlab.guacamole.commands.jointcaller.Input.{Analyte, TissueType}
+import org.hammerlab.guacamole.commands.jointcaller.Input.{ Analyte, TissueType }
 import org.hammerlab.guacamole.commands.jointcaller.PileupStats.AlleleMixture
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
@@ -54,20 +54,20 @@ case class AlleleEvidenceAcrossSamples(parameters: Parameters,
   def tumorDNAPooledIndex = normalDNAPooledIndex + 1
 
   /**
-    * The individual TumorDNASampleAlleleEvidence and NormalDNASampleAlleleEvidence instances calculate the mixture
-    * likelihoods, but do not know about the prior. We establish the germline prior here.
-    *
-    * The rationale for having this in the current class instead of the SampleAlleleEvidence classes is that eventually
-    * we are going to use RNA evidence and phasing information to influence the posteriors, and we'll need to calculate
-    * that here, since the individual evidence classes only know about a single sample.
-    *
-    * Note that at no point are we working with normalized priors, likelihoods, or posteriors. All of these are specified
-    * just up to proportionality and do not need to sum to 1.
-    *
-    * @param alleles pair of alleles to return prior for
-    * @return negative log-base 10 prior probability for that allele. Since log probs are negative, this number will
-    *         be *positive* (it's the negative of a negative).
-    */
+   * The individual TumorDNASampleAlleleEvidence and NormalDNASampleAlleleEvidence instances calculate the mixture
+   * likelihoods, but do not know about the prior. We establish the germline prior here.
+   *
+   * The rationale for having this in the current class instead of the SampleAlleleEvidence classes is that eventually
+   * we are going to use RNA evidence and phasing information to influence the posteriors, and we'll need to calculate
+   * that here, since the individual evidence classes only know about a single sample.
+   *
+   * Note that at no point are we working with normalized priors, likelihoods, or posteriors. All of these are specified
+   * just up to proportionality and do not need to sum to 1.
+   *
+   * @param alleles pair of alleles to return prior for
+   * @return negative log-base 10 prior probability for that allele. Since log probs are negative, this number will
+   *         be *positive* (it's the negative of a negative).
+   */
   def germlinePrior(alleles: (String, String)): Double = Seq(alleles._1, alleles._2).count(_ == allele.ref) match {
     case 2                               => 0 // hom ref
     case 1                               => parameters.germlineNegativeLog10HeterozygousPrior // het
@@ -79,13 +79,13 @@ case class AlleleEvidenceAcrossSamples(parameters: Parameters,
   }
 
   /**
-    * Log10 posterior probabilities for each possible germline genotype in each normal sample.
-    *
-    * Map is from input index (i.e. index into inputs and sampleEvidences) to mixture posteriors.
-    *
-    * The posteriors are plain log10 logprobs. They are negative. The maximum a posteriori estimate is the greatest
-    * (i.e. least negative, closest to 0) posterior.
-    */
+   * Log10 posterior probabilities for each possible germline genotype in each normal sample.
+   *
+   * Map is from input index (i.e. index into inputs and sampleEvidences) to mixture posteriors.
+   *
+   * The posteriors are plain log10 logprobs. They are negative. The maximum a posteriori estimate is the greatest
+   * (i.e. least negative, closest to 0) posterior.
+   */
   def perNormalSampleGermlinePosteriors: Map[Int, Map[(String, String), Double]] = {
     (inputs.items.filter(_.normalDNA).map(_.index) ++ Seq(normalDNAPooledIndex)).map(index => {
       val likelihoods = allEvidences(index).asInstanceOf[NormalDNASampleAlleleEvidence].logLikelihoods
@@ -98,8 +98,8 @@ case class AlleleEvidenceAcrossSamples(parameters: Parameters,
   def pooledGermlinePosteriors = perNormalSampleGermlinePosteriors(normalDNAPooledIndex)
 
   /**
-    * Called germline genotype. We currently just use the maximum posterior from the pooled normal data.
-    */
+   * Called germline genotype. We currently just use the maximum posterior from the pooled normal data.
+   */
   def germlineAlleles: (String, String) = pooledGermlinePosteriors.maxBy(_._2)._1
 
   /** Are we making a germline call here? */

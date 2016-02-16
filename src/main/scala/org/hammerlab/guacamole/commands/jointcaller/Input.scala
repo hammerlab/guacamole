@@ -1,7 +1,7 @@
 package org.hammerlab.guacamole.commands.jointcaller
 
 import org.apache.http.client.utils.URLEncodedUtils
-import org.hammerlab.guacamole.commands.jointcaller.Input.{Analyte, TissueType}
+import org.hammerlab.guacamole.commands.jointcaller.Input.{ Analyte, TissueType }
 
 import scala.collection.JavaConversions
 
