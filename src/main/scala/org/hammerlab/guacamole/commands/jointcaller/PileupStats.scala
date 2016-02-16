@@ -65,6 +65,8 @@ class PileupStats(elements: Seq[PileupElement], refSequence: Seq[Byte]) {
   /**
    * Compute likelihood P(data|mixture) of the sequenced bases (data) given the specified mixture.
    *
+   * Reads with mapping quality 0 are ignored.
+   *
    * @param mixture Map from sequenced allele -> variant allele fraction
    * @return log10 likelihood probability, always non-positive
    */
@@ -81,7 +83,7 @@ class PileupStats(elements: Seq[PileupElement], refSequence: Seq[Byte]) {
         loglikelihood
       }
     }
-    subsequences.map(logLikelihoodReadSubsequence _).sum
+    subsequences.map(logLikelihoodReadSubsequence).sum
   }
 }
 object PileupStats {
