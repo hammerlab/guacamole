@@ -51,7 +51,7 @@ class SomaticJointCallerSuite extends GuacFunSuite with Matchers {
   }
 
   sparkTest("gathering possible alleles") {
-    val inputs = InputCollection.parseMultiple(cancerWGS1Bams)
+    val inputs = InputCollection(cancerWGS1Bams)
     val parameters = Parameters.defaults
     val contigLocus = ("chr12", 65857039)
     val pileups = cancerWGS1Bams.map(
@@ -74,7 +74,7 @@ class SomaticJointCallerSuite extends GuacFunSuite with Matchers {
   }
 
   sparkTest("call a variant") {
-    val inputs = InputCollection.parseMultiple(cancerWGS1Bams)
+    val inputs = InputCollection(cancerWGS1Bams)
     val loci = LociSet.parse("chr12:65857040-65857041")
     val readSets = SomaticJoint.inputsToReadSets(sc, inputs, loci, partialReference)
     val calls = SomaticJoint.makeCalls(

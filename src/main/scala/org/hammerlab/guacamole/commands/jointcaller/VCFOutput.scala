@@ -60,7 +60,7 @@ object VCFOutput {
 
     val header = new VCFHeader(headerLines,
       JavaConversions.seqAsJavaList(
-        inputs.items.map(_.name)
+        inputs.items.map(_.sampleName)
           ++ (if (includePooledNormal) Seq("pooled_normal") else Seq.empty)
           ++ (if (includePooledTumor) Seq("pooled_tumor") else Seq.empty)))
     header.setSequenceDictionary(sequenceDictionary)
@@ -130,7 +130,7 @@ object VCFOutput {
 
       val evidence = samplesEvidence.allEvidences(input.index)
       val genotypeBuilder = new GenotypeBuilder()
-      genotypeBuilder.name(input.name)
+      genotypeBuilder.name(input.sampleName)
       (input.tissueType, input.analyte) match {
         case (TissueType.Normal, Analyte.DNA) => {
           val germlineEvidence = samplesEvidence.allEvidences(input.index).asInstanceOf[NormalDNASampleAlleleEvidence]

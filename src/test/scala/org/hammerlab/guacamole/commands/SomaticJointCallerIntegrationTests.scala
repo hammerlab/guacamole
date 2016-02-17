@@ -31,7 +31,7 @@ class SomaticJointCallerIntegrationTests extends GuacFunSuite with Matchers {
         args.somaticGenotypePolicy = "trigger"
         args.loci = ((1).until(22).map(i => "chr%d".format(i)) ++ Seq("chrX", "chrY")).mkString(",")
 
-        args.inputs = cancerWGS1Bams.toArray
+        args.paths = cancerWGS1Bams.toArray
         val forceCallLoci = LociSet.newBuilder
         csvRecords(cancerWGS1ExpectedSomaticCallsCSV).filter(!_.tumor.contains("decoy")).foreach(record => {
           forceCallLoci.put("chr" + record.contig, record.interbaseStart, Some(record.interbaseStart + 1))
@@ -55,7 +55,7 @@ class SomaticJointCallerIntegrationTests extends GuacFunSuite with Matchers {
       if (true) {
         val args = new SomaticJoint.Arguments()
         args.out = resultFile
-        args.inputs = Seq(na12878SubsetBam).toArray
+        args.paths = Seq(na12878SubsetBam).toArray
         args.loci = "chr1:0-6700000"
         args.forceCallLociFromFile = na12878ExpectedCallsVCF
         args.referenceFastaPath = chr1PrefixFasta
