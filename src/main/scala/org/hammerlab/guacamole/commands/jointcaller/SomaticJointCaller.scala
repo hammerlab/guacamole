@@ -6,15 +6,10 @@ import org.hammerlab.guacamole.Common.Arguments.NoSequenceDictionary
 import org.hammerlab.guacamole._
 import org.hammerlab.guacamole.reads._
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
-import org.kohsuke.args4j.{ Argument, Option => Args4jOption }
+import org.kohsuke.args4j.{ Option => Args4jOption }
 
 object SomaticJoint {
-  class Arguments extends Parameters.CommandlineArguments with DistributedUtil.Arguments with NoSequenceDictionary {
-
-    @Argument(required = true, multiValued = true,
-      usage = "FILE1 FILE2 FILE3")
-    var inputs: Array[String] = Array.empty
-
+  class Arguments extends Parameters.CommandlineArguments with DistributedUtil.Arguments with NoSequenceDictionary with InputCollection.Arguments {
     @Args4jOption(name = "--out", usage = "Output path for all variants in VCF. Default: no output")
     var out: String = ""
 
@@ -63,7 +58,7 @@ object SomaticJoint {
     override val description = "call germline and somatic variants based on any number of samples from the same patient"
 
     override def run(args: Arguments, sc: SparkContext): Unit = {
-      val inputs = InputCollection.parseMultiple(args.inputs)
+      val inputs = InputCollection(args)
 
       if (!args.quiet) {
         println("Running on %d inputs:".format(inputs.items.length))
@@ -266,12 +261,12 @@ object SomaticJoint {
       inputs.items.foreach(input => {
         writeSome(
           path("all.%s.%s.%s".format(
-            input.name, input.tissueType.toString, input.analyte.toString)),
+            input.sampleName, input.tissueType.toString, input.analyte.toString)),
           calls,
           Seq(input))
         writeSome(
           path("somatic.%s.%s.%s".format(
-            input.name, input.tissueType.toString, input.analyte.toString)),
+            input.sampleName, input.tissueType.toString, input.analyte.toString)),
           somaticCallsOrForced,
           Seq(input))
       })
