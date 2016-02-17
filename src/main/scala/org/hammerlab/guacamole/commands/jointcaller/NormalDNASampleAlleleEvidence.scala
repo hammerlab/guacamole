@@ -13,7 +13,11 @@ case class NormalDNASampleAlleleEvidence(allele: AlleleAtLocus,
                                          allelicDepths: Map[String, Int],
                                          logLikelihoods: Map[(String, String), Double]) extends SampleAlleleEvidence {
 
+  /** Total depth of all reads contributing an allele. */
   def depth(): Int = allelicDepths.values.sum
+
+  /** Fraction of reads supporting this allele (variant allele frequency). */
+  def vaf() = allelicDepths.getOrElse(allele.alt, 0).toDouble / depth
 
   /**
    * Apply a transformation function to the alleles. See AlleleAtLocus.transformAlleles for details.
