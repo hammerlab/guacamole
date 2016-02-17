@@ -111,7 +111,14 @@ object VCFOutput {
 
     val allele = samplesEvidence.allele
 
-    def makeHtsjdkAllele(someAllele: String): Allele = Allele.create(someAllele, someAllele == allele.ref)
+    def makeHtsjdkAllele(someAllele: String): Allele =
+      Allele.create(someAllele, someAllele == allele.ref)
+
+    def allelicDepthString(depths: Map[String, Int]): String = {
+      val allAlleles = (Seq(allele.ref, allele.alt) ++ depths.keys.toSeq).distinct
+      allAlleles.map(x => "%s=%d".format(if (x.isEmpty) "." else x, depths.getOrElse(x, 0))).mkString(" ")
+    }
+
     val variantGenotypeAlleles = Seq(allele.ref, allele.alt)
 
     val effectiveInputs = subInputs.items ++
@@ -143,6 +150,8 @@ object VCFOutput {
           genotypeBuilder
             .AD(Seq(allele.ref, allele.alt).map(allele => germlineEvidence.allelicDepths.getOrElse(allele, 0)).toArray)
             .DP(germlineEvidence.depth)
+            .attribute("ADP", allelicDepthString(germlineEvidence.allelicDepths))
+            .attribute("VAF", germlineEvidence.vaf)
         }
         case (TissueType.Tumor, Analyte.DNA) => {
           val tumorEvidence = samplesEvidence.allEvidences(input.index).asInstanceOf[TumorDNASampleAlleleEvidence]
@@ -171,11 +180,8 @@ object VCFOutput {
             posteriors.map(pair => "[%s]->%.8g".format(mixtureToString(pair._1), pair._2)).mkString(" "))
           genotypeBuilder.attribute("TRIGGERED", if (thisSampleTriggered) "TRIGGER" else "NO")
 
-          val allAlleles = (Seq(allele.ref, allele.alt) ++ tumorEvidence.allelicDepths.keys.toSeq).distinct
           genotypeBuilder
-            .attribute("ADP", allAlleles.map(x => {
-              "%s=%d".format(if (x.isEmpty) "." else x, tumorEvidence.allelicDepths.getOrElse(x, 0))
-            }).mkString(" "))
+            .attribute("ADP", allelicDepthString(tumorEvidence.allelicDepths))
             .attribute("VAF", tumorEvidence.vaf)
             .DP(tumorEvidence.depth)
         }
