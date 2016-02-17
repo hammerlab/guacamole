@@ -80,8 +80,28 @@ class SomaticJointCallerSuite extends GuacFunSuite with Matchers {
     val calls = SomaticJoint.makeCalls(
       sc, inputs, readSets, Parameters.defaults, partialReference, loci.result, loci.result)
 
-    calls.length should equal(1)
-    calls.head.alleleEvidences.length should equal(1)
-    calls.head.alleleEvidences.map(_.allele.ref) should equal(Seq("G"))
+    calls.collect.length should equal(1)
+    calls.collect.head.alleleEvidences.length should equal(1)
+    calls.collect.head.alleleEvidences.map(_.allele.ref) should equal(Seq("G"))
+  }
+
+  sparkTest("call germline variants") {
+    val inputs = InputCollection(cancerWGS1Bams, tissueTypes = Seq("normal", "normal", "normal"))
+    val loci = LociSet.parse("chr1,chr2,chr3")
+    val readSets = SomaticJoint.inputsToReadSets(sc, inputs, loci, partialReference)
+    val calls = SomaticJoint.makeCalls(
+      sc,
+      inputs,
+      readSets,
+      Parameters.defaults,
+      partialReference,
+      loci.result(readSets.head.contigLengths)).collect
+
+    calls.nonEmpty should be(true)
+    calls.foreach(call => {
+      call.alleleEvidences.foreach(evidence => {
+        evidence.isSomaticCall should be (false)
+      })
+    })
   }
 }
