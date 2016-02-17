@@ -256,18 +256,23 @@ class SomaticJointCallerIntegrationTests extends GuacFunSuite with Matchers {
     // We always use the non-hom-ref genotype when there is one.
     val genotypes = (0 until variant.getGenotypes.size).map(variant.getGenotype _)
     val genotype = genotypes.sortBy(_.getType.toString == "HOM_REF").head
-
-    if (verbose) {
-      variant.toString
+    val trigger = Option(variant.getAttribute("TRIGGER"))
+    val calledString = if (trigger.isEmpty) {
+      // If there is no TRIGGER field (e.g. a VCF from a non-guacamole caller) then we use the genotype.
+      if (genotype.isHomRef) "NO_CALL" else "CALLED"
     } else {
-      "%s:%d-%d %s > %s %s".format(
+      if (trigger.get == "NONE") "NO_CALL" else "CALLED"
+    }
+
+    val result = "%s:%d-%d %s > %s %s %s".format(
         variant.getContig,
         variant.getStart,
         variant.getEnd,
         variant.getReference,
         JavaConversions.collectionAsScalaIterable(variant.getAlternateAlleles).map(_.toString).mkString(","),
-        genotype.getType.toString)
-    }
+        genotype.getType.toString,
+        calledString) + (if (verbose) " [%s]".format(variant.toString) else "")
+    result
   }
 
   def printSamplePairs(pairs: Seq[(VariantContext, VariantContext)], num: Int = 20): Unit = {
@@ -314,14 +319,17 @@ class SomaticJointCallerIntegrationTests extends GuacFunSuite with Matchers {
 
     println(comparisonFull.summary)
 
-    println("MISSED CALLS WITH DEPTH")
-    printSamplePairs(comparisonFull.partialMatch.filter(
-      pair => pair._2.getGenotype(0).isHomRef && pair._2.getGenotype(0).getDP > 5))
+    println("MISSED CALLS")
+    printSamplePairs(comparisonFull.partialMatch.filter(pair => pair._2.getAttribute("TRIGGER") == "NONE"))
     println()
 
     println("BAD CALLS")
     printSample(comparisonFull.uniqueToExperimental, 400)
     println()
+
+    println("EXACT MATCHES")
+    printSamplePairs(comparisonFull.exactMatch, 400)
+
   }
 
   def compareToVCF(experimentalFile: String, expectedFile: String): Unit = {

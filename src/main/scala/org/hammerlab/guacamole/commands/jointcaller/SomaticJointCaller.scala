@@ -2,6 +2,7 @@ package org.hammerlab.guacamole.commands.jointcaller
 
 import htsjdk.samtools.SAMSequenceDictionary
 import org.apache.spark.SparkContext
+import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole.Common.Arguments.NoSequenceDictionary
 import org.hammerlab.guacamole._
 import org.hammerlab.guacamole.reads._
@@ -90,21 +91,28 @@ object SomaticJoint {
 
       val parameters = Parameters(args)
 
-      val calls = makeCalls(
+      val allCalls = makeCalls(
         sc,
         inputs,
         readSets,
         parameters,
         reference,
         loci.result(readSets(0).contigLengths),
-        forceCallLoci, args)
+        forceCallLoci,
+        args)
+
+      val calls = allCalls.map(_.onlyBest)
+      calls.cache()
+
+      Common.progress("Collecting evidence for %,d sites with calls".format(calls.count))
+      val collectedCalls = calls.collect()
 
       Common.progress("Called %,d germline and %,d somatic variants.".format(
-        calls.count(_.alleleEvidences.exists(_.isGermlineCall)),
-        calls.count(_.alleleEvidences.exists(_.isSomaticCall))))
+        collectedCalls.count(_.alleleEvidences.exists(_.isGermlineCall)),
+        collectedCalls.count(_.alleleEvidences.exists(_.isSomaticCall))))
 
       writeCalls(
-        calls,
+        collectedCalls,
         inputs,
         parameters,
         readSets(0).sequenceDictionary.get.toSAMSequenceDictionary,
@@ -134,7 +142,7 @@ object SomaticJoint {
                 reference: ReferenceBroadcast,
                 loci: LociSet,
                 forceCallLoci: LociSet = LociSet.empty,
-                distributedUtilArguments: DistributedUtil.Arguments = new DistributedUtil.Arguments {}): Seq[MultipleAllelesEvidenceAcrossSamples] = {
+                distributedUtilArguments: DistributedUtil.Arguments = new DistributedUtil.Arguments {}): RDD[MultipleAllelesEvidenceAcrossSamples] = {
 
     // When mapping over pileups, at locus x we call variants at locus x + 1. Therefore we subtract 1 from the user-
     // specified loci.
@@ -190,7 +198,7 @@ object SomaticJoint {
         } else {
           Iterator.empty
         }
-      }, referenceGenome = Some(reference)).collect
+      }, referenceGenome = Some(reference))
     calls
   }
 
