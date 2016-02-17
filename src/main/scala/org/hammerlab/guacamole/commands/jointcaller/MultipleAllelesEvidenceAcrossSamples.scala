@@ -22,23 +22,23 @@ case class MultipleAllelesEvidenceAcrossSamples(alleleEvidences: Seq[AlleleEvide
   assume(alleleEvidences.forall(_.allele.referenceContig == referenceContig))
 
   /**
-    * If we are going to consider only one allele at this site, pick the best one.
-    *
-    * TODO: this should probably do something more sophisticated.
-    */
+   * If we are going to consider only one allele at this site, pick the best one.
+   *
+   * TODO: this should probably do something more sophisticated.
+   */
   def bestAllele(): AlleleEvidenceAcrossSamples = {
     // We rank germline calls first, then somatic calls, then break ties with the sum of the best posteriors.
     alleleEvidences.sortBy(evidence => {
       (evidence.isGermlineCall,
         evidence.isSomaticCall,
         evidence.pooledGermlinePosteriors.maxBy(_._2)._2 +
-          evidence.perTumorSampleSomaticPosteriors.values.map(x => x.maxBy(_._2)._2).max)
+        evidence.perTumorSampleSomaticPosteriors.values.map(x => x.maxBy(_._2)._2).max)
     }).last
   }
 
   /**
-    * Return a new instance containing only the best allele in the collection.
-    */
+   * Return a new instance containing only the best allele in the collection.
+   */
   def onlyBest(): MultipleAllelesEvidenceAcrossSamples = MultipleAllelesEvidenceAcrossSamples(Seq(bestAllele))
 
   /**

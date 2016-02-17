@@ -265,13 +265,13 @@ class SomaticJointCallerIntegrationTests extends GuacFunSuite with Matchers {
     }
 
     val result = "%s:%d-%d %s > %s %s %s".format(
-        variant.getContig,
-        variant.getStart,
-        variant.getEnd,
-        variant.getReference,
-        JavaConversions.collectionAsScalaIterable(variant.getAlternateAlleles).map(_.toString).mkString(","),
-        genotype.getType.toString,
-        calledString) + (if (verbose) " [%s]".format(variant.toString) else "")
+      variant.getContig,
+      variant.getStart,
+      variant.getEnd,
+      variant.getReference,
+      JavaConversions.collectionAsScalaIterable(variant.getAlternateAlleles).map(_.toString).mkString(","),
+      genotype.getType.toString,
+      calledString) + (if (verbose) " [%s]".format(variant.toString) else "")
     result
   }
 

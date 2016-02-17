@@ -4,7 +4,7 @@ import org.hammerlab.guacamole.commands.jointcaller._
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.reference.ReferenceBroadcast.ArrayBackedReferenceSequence
-import org.hammerlab.guacamole.util.{ GuacFunSuite, TestUtil }
+import org.hammerlab.guacamole.util.{ TestUtil, GuacFunSuite }
 import org.hammerlab.guacamole.{ Bases, LociSet }
 import org.scalatest.Matchers
 
@@ -28,26 +28,35 @@ class SomaticJointCallerSuite extends GuacFunSuite with Matchers {
 
     ReadSubsequence.ofFixedReferenceLength(pileups(0).head, Bases.stringToBases("C")).get.sequence should equal("C")
     ReadSubsequence.ofFixedReferenceLength(pileups(0).head, Bases.stringToBases("CG")).get.sequence should equal("CG")
-    ReadSubsequence.ofFixedReferenceLength(pileups(1).head, Bases.stringToBases("CGATCGA")).get.sequence should equal("CGACCCTCGA")
-    ReadSubsequence.ofFixedReferenceLength(pileups(2).head, Bases.stringToBases("CGATCGA")).get.sequence should equal("CGAGCGA")
+    ReadSubsequence.ofFixedReferenceLength(pileups(1).head, Bases.stringToBases("CGATCG")).get.sequence should equal("CGACCCTCG")
+    ReadSubsequence.ofFixedReferenceLength(pileups(2).head, Bases.stringToBases("CGATCG")).get.sequence should equal("CGAGCG")
   }
 
   sparkTest("read subsequence ofNextAltAllele") {
     val ref = ArrayBackedReferenceSequence(sc, "NTCGATCGA")
     val reads = Seq(
       TestUtil.makeRead("TCGATCGA", "8M", "8", 1), // no variant
+      TestUtil.makeRead("TCGAGCGA", "8M", "8", 1), // snv
       TestUtil.makeRead("TCGACCCTCGA", "4M3I4M", "8", 1), // insertion
-      TestUtil.makeRead("TCGAGCGA", "8M", "8", 1) // snv
+      TestUtil.makeRead("TCGGCCCTCGA", "4M3I4M", "8", 1), // insertion
+      TestUtil.makeRead("TCAGCCCTCGA", "4M3I4M", "8", 1) // insertion
     )
     val pileups = reads.map(read => Pileup(Seq(read), "chr1", 1))
 
     ReadSubsequence.ofNextAltAllele(pileups(0).elements(0), ref) should equal(None)
 
     ReadSubsequence.ofNextAltAllele(
-      pileups(2).atGreaterLocus(4, ref(4), Iterator.empty).elements(0), ref).get.sequence should equal("G")
+      pileups(1).atGreaterLocus(4, ref(4), Iterator.empty).elements(0), ref).get.sequence should equal("G")
 
     ReadSubsequence.ofNextAltAllele(
-      pileups(1).atGreaterLocus(3, ref(3), Iterator.empty).elements(0), ref).get.sequence should equal("ACCC")
+      pileups(2).atGreaterLocus(3, ref(3), Iterator.empty).elements(0), ref).get.sequence should equal("ACCC")
+
+    ReadSubsequence.ofNextAltAllele(
+      pileups(3).atGreaterLocus(3, ref(3), Iterator.empty).elements(0), ref).get.sequence should equal("GCCC")
+
+    ReadSubsequence.ofNextAltAllele(
+      pileups(4).atGreaterLocus(2, ref(2), Iterator.empty).elements(0), ref).get.sequence should equal("AGCCC")
+
   }
 
   sparkTest("gathering possible alleles") {
@@ -100,8 +109,38 @@ class SomaticJointCallerSuite extends GuacFunSuite with Matchers {
     calls.nonEmpty should be(true)
     calls.foreach(call => {
       call.alleleEvidences.foreach(evidence => {
-        evidence.isSomaticCall should be (false)
+        evidence.isSomaticCall should be(false)
       })
     })
+  }
+
+  sparkTest("pileupstats likelihood computation") {
+    val ref = "NTCGATCGA"
+
+    val reads = Seq(
+      TestUtil.makeRead("TCGATCGA", "8M", "8", 1, qualityScores = Some(Seq.fill(8)(10))),
+      TestUtil.makeRead("TCGATCGA", "8M", "8", 1, qualityScores = Some(Seq.fill(8)(20))),
+      TestUtil.makeRead("TCGCTCGA", "8M", "8", 1, qualityScores = Some(Seq.fill(8)(50))),
+      TestUtil.makeRead("TCGCTCGA", "8M", "8", 1, qualityScores = Some(Seq.fill(8)(50))),
+      TestUtil.makeRead("TCGCTCGA", "8M", "8", 1, qualityScores = Some(Seq.fill(8)(50))),
+      TestUtil.makeRead("TCGACCCTCGA", "4M3I4M", "8", 1, qualityScores = Some(Seq.fill(11)(30))))
+    val pileups = (0 until ref.length).map(locus => Pileup(reads, "chr1", locus))
+
+    val stats1 = PileupStats.apply(pileups(2).elements, Bases.stringToBases("G"))
+    stats1.totalDepth should equal(6)
+    stats1.allelicDepths should equal(Map("G" -> 6))
+    assert(stats1.logLikelihoodPileup(Map("G" -> 1.0)) > stats1.logLikelihoodPileup(Map("G" -> .99, "C" -> .01)))
+    assert(stats1.logLikelihoodPileup(Map("T" -> 1.0)) < stats1.logLikelihoodPileup(Map("G" -> .99, "C" -> .01)))
+
+    val stats2 = PileupStats.apply(pileups(3).elements, Bases.stringToBases("A"))
+    stats2.allelicDepths should equal(Map("A" -> 2, "C" -> 3, "ACCC" -> 1))
+    assert(stats2.logLikelihoodPileup(Map("A" -> 0.5, "C" -> 0.5)) > stats2.logLikelihoodPileup(Map("A" -> 1.0)))
+
+    // True because of the higher base qualities on the C allele:
+    assert(stats2.logLikelihoodPileup(Map("C" -> 1.0)) > stats2.logLikelihoodPileup(Map("A" -> 1.0)))
+
+    val stats3 = PileupStats.apply(pileups(4).elements, Bases.stringToBases("T"))
+    stats3.totalDepth should equal(6)
+    stats3.allelicDepths should equal(Map("T" -> 2)) // reads with an SNV at position 4 don't count
   }
 }

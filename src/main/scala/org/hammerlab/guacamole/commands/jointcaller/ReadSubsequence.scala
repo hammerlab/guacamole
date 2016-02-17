@@ -73,7 +73,7 @@ object ReadSubsequence {
         currentElement = currentElement.advanceToLocus(currentElement.locus + 1, refSequence(refOffset))
         refOffset += 1
       }
-      if (currentElement.locus == currentElement.read.end) {
+      if (currentElement.locus >= currentElement.read.end - 1) {
         None
       } else {
         Some(
@@ -82,7 +82,7 @@ object ReadSubsequence {
             firstElement.locus,
             currentElement.locus + 1,
             firstElement.readPosition,
-            currentElement.readPosition + 1))
+            currentElement.advanceToLocus(currentElement.locus + 1, Bases.N).readPosition))
       }
     }
   }
