@@ -43,7 +43,7 @@ class PileupStats(elements: Seq[PileupElement], refSequence: Seq[Byte]) {
   val allelicDepths = alleleToSubsequences.mapValues(_.size).withDefaultValue(0)
 
   /** Total depth, including reads that are NOT "anchored" by matching, non-variant bases. */
-  val totalDepth = elements.size
+  val totalDepthIncludingReadsContributingNoAlleles = elements.size
 
   /** All sequenced alleles that are not the ref allele, sorted by decreasing allelic depth. */
   val nonRefAlleles: Seq[String] = allelicDepths.filterKeys(_ != ref).toSeq.sortBy(_._2 * -1).map(_._1)
@@ -55,7 +55,7 @@ class PileupStats(elements: Seq[PileupElement], refSequence: Seq[Byte]) {
   val secondAlt = if (nonRefAlleles.size > 1) nonRefAlleles(1) else "N"
 
   /** Fraction of reads supporting the given allele. */
-  def vaf(allele: String): Double = allelicDepths(allele).toDouble / totalDepth
+  def vaf(allele: String): Double = allelicDepths(allele).toDouble / totalDepthIncludingReadsContributingNoAlleles
 
   /** Map from allele to read names supporting that allele. */
   lazy val readNamesByAllele = alleleToSubsequences
