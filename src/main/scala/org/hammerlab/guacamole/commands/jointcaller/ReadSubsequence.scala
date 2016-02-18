@@ -36,12 +36,8 @@ case class ReadSubsequence(read: MappedRead,
   def meanBaseQuality(): Double = {
     val qualities = baseQualities
     val result = qualities.sum.toDouble / qualities.length
-    if (result < 0) {
-      log.warn("Negative mean base qualities: %f [%s]".format(result, baseQualities.map(_.toString).mkString(" ")))
-      10
-    } else {
-      result
-    }
+    assert(result >= 0)
+    result
   }
 
   /** The reference sequence at this locus. */

@@ -42,21 +42,19 @@ This will build a guacamole JAR file in the `target` directory. You can use the
 
 ```
 scripts/guacamole somatic-joint \
-    src/test/resources/cancer-wgs1/normal.bam \
-    src/test/resources/cancer-wgs1/primary.bam \
-    src/test/resources/cancer-wgs1/recurrence.bam \
-    --reference-fasta src/test/resources/hg19.partial.fasta \
-    --reference-fasta-is-partial \
-    --loci chr11,chr5,chr22,chr8,chr19,chr1,chr15,chr12,chr18,chr20,chr2,chr13,chr7,chr14,chr3,chr17,chr4,chr6,chr9,chrX,chr10,chr21,chr16 \
-    --out-dir /tmp/test-guacamole-vcfs
+    src/test/resources/synth1.normal.100k-200k.withmd.bam \
+    src/test/resources/synth1.tumor.100k-200k.withmd.bam \
+    --reference-fasta /path/to/your/b37.fasta \
+    --out /tmp/out.vcf 
 ```
-This will call germline and somatic small variants from a set of test BAMs
-using the `somatic-joint` caller, which can call variants from any number of
-samples from the same patient. (The `--loci` argument is needed due to a
-peculiarity of our test dataset, and is not necessary in general. Also, in a
-production run, you would want to pass a regular fasta file with the
-`--reference-fasta` argument and omit the `--reference-fasta-is-partial`
-option.)
+
+Change the reference fasta above to point to a local copy of the B37 human
+reference.
+
+This calls germline and somatic variants from some small test BAMs using the
+*joint-caller* variant caller, which can works with any number of tumor/normal
+samples from the same patient. It takes around 2 minutes to run on my 2015
+MacBook.
 
 Try 
 ```
