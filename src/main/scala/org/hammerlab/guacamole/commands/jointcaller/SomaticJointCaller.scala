@@ -169,10 +169,12 @@ object SomaticJoint {
           val possibleNonReferenceAlleles = AlleleAtLocus.variantAlleles(
             reference,
             (inputs.normalDNA ++ inputs.tumorDNA).map(input => pileups(input.index)),
-            anyAlleleMinSupportingReads = parameters.anyAlleleMinSupportingReads,
-            anyAlleleMinSupportingPercent = parameters.anyAlleleMinSupportingPercent)
+            anyAlleleMinSupportingReads = if (forceCall) 0 else parameters.anyAlleleMinSupportingReads,
+            anyAlleleMinSupportingPercent = if (forceCall) 0 else parameters.anyAlleleMinSupportingPercent,
+            onlyStandardBases = true)
 
           val possibleAlleles = if (possibleNonReferenceAlleles.isEmpty && forceCall) {
+            // If we are force calling this site and we have no possible alternate alleles, use "N".
             Seq(AlleleAtLocus(
               contig,
               locus,
