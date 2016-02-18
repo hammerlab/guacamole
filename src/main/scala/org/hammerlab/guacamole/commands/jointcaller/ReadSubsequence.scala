@@ -100,12 +100,18 @@ object ReadSubsequence {
    * @return ReadSubsequence for the alt allele, if one exists
    */
   def ofNextAltAllele(element: PileupElement, contigReferenceSequence: ContigSequence): Option[ReadSubsequence] = {
-    if (element.allele.isVariant || element.locus >= element.read.end - 1) {
+    def isVariantOrFollowedByDeletion(e: PileupElement): Boolean = {
+      e.allele.isVariant || (
+        e.isFinalCigarBase && e.nextCigarElement.exists(
+          cigar => !cigar.getOperator.consumesReadBases && cigar.getOperator.consumesReferenceBases))
+    }
+
+    if (isVariantOrFollowedByDeletion(element) || element.locus >= element.read.end - 1) {
       None
     } else {
       val firstElement = element.advanceToLocus(element.locus + 1, contigReferenceSequence(element.locus.toInt + 1))
       var currentElement = firstElement
-      while (currentElement.locus < currentElement.read.end - 1 && currentElement.allele.isVariant) {
+      while (currentElement.locus < currentElement.read.end - 1 && isVariantOrFollowedByDeletion(currentElement)) {
         currentElement = currentElement.advanceToLocus(
           currentElement.locus + 1,
           contigReferenceSequence(currentElement.locus.toInt + 1))

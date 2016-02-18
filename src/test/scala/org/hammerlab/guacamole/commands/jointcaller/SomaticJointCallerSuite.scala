@@ -15,16 +15,29 @@ class SomaticJointCallerSuite extends GuacFunSuite with Matchers {
     ReferenceBroadcast(partialFasta, sc, partialFasta = true)
   }
 
-  sparkTest("call a variant") {
+  sparkTest("call a somatic variant") {
     val inputs = InputCollection(cancerWGS1Bams)
     val loci = LociSet.parse("chr12:65857040-65857041")
     val readSets = SomaticJoint.inputsToReadSets(sc, inputs, loci, partialReference)
     val calls = SomaticJoint.makeCalls(
-      sc, inputs, readSets, Parameters.defaults, partialReference, loci.result, loci.result)
+      sc, inputs, readSets, Parameters.defaults, partialReference, loci.result, loci.result).collect
 
-    calls.collect.length should equal(1)
-    calls.collect.head.alleleEvidences.length should equal(1)
-    calls.collect.head.alleleEvidences.map(_.allele.ref) should equal(Seq("G"))
+    calls.length should equal(1)
+    calls.head.alleleEvidences.length should equal(1)
+    calls.head.alleleEvidences.map(_.allele.ref) should equal(Seq("G"))
+  }
+
+  sparkTest("call a somatic deletion") {
+    val inputs = InputCollection(cancerWGS1Bams)
+    val loci = LociSet.parse("chr5:82649006-82649009")
+    val readSets = SomaticJoint.inputsToReadSets(sc, inputs, loci, partialReference)
+    val calls = SomaticJoint.makeCalls(
+      sc, inputs, readSets, Parameters.defaults, partialReference, loci.result, LociSet.empty).collect
+
+    calls.length should equal(1)
+    calls.head.alleleEvidences.length should equal(1)
+    calls.head.alleleEvidences.head.allele.ref should equal("TCTTTAGAAA")
+    calls.head.alleleEvidences.head.allele.alt should equal("T")
   }
 
   sparkTest("call germline variants") {

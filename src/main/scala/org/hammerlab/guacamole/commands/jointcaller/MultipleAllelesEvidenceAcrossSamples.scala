@@ -40,12 +40,4 @@ case class MultipleAllelesEvidenceAcrossSamples(alleleEvidences: Seq[AlleleEvide
    * Return a new instance containing only the best allele in the collection.
    */
   def onlyBest(): MultipleAllelesEvidenceAcrossSamples = MultipleAllelesEvidenceAcrossSamples(Seq(bestAllele))
-
-  /**
-   * Apply a transformation function to the alleles. See AlleleAtLocus.transformAlleles for details.
-   */
-  def transformAlleles(alleleTransform: String => String,
-                       startEndTransform: (Long, Long) => (Long, Long)): MultipleAllelesEvidenceAcrossSamples = {
-    MultipleAllelesEvidenceAcrossSamples(alleleEvidences.map(_.transformAlleles(alleleTransform, startEndTransform)))
-  }
 }

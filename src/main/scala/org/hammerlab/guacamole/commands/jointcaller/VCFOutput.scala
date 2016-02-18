@@ -72,23 +72,7 @@ object VCFOutput {
     })
     writer.writeHeader(header)
 
-    val deletionAdjustedCalls = calls.map(call => {
-      if (call.alleleEvidences.exists(_.allele.alt.isEmpty)) {
-        MultipleAllelesEvidenceAcrossSamples(call.alleleEvidences.map(evidence => {
-          if (evidence.allele.alt.isEmpty) {
-            val prevBase = Bases.baseToString(
-              reference.getContig(evidence.allele.referenceContig)(evidence.allele.start.toInt - 1))
-            evidence.transformAlleles(allele => prevBase + allele, (start, end) => (start - 1, end))
-          } else {
-            evidence
-          }
-        }))
-      } else {
-        call
-      }
-    })
-
-    val variantContexts = deletionAdjustedCalls.flatMap(
+    val variantContexts = calls.flatMap(
       _.alleleEvidences.map(evidence => makeHtsjdVariantContext(evidence, inputs, includePooledNormal, includePooledTumor, reference)))
     variantContexts.sortBy(context => (context.getContig, context.getStart)).foreach(writer.add(_))
     writer.close()

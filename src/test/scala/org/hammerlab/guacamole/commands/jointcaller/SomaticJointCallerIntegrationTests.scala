@@ -33,7 +33,9 @@ class SomaticJointCallerIntegrationTests extends GuacFunSuite with Matchers {
         args.paths = cancerWGS1Bams.toArray
         val forceCallLoci = LociSet.newBuilder
         csvRecords(cancerWGS1ExpectedSomaticCallsCSV).filter(!_.tumor.contains("decoy")).foreach(record => {
-          forceCallLoci.put("chr" + record.contig, record.interbaseStart, Some(record.interbaseStart + 1))
+          forceCallLoci.put("chr" + record.contig,
+            if (record.alt.nonEmpty) record.interbaseStart else record.interbaseStart - 1,
+            if (record.alt.nonEmpty) Some(record.interbaseStart + 1) else Some(record.interbaseStart))
         })
         args.forceCallLoci = forceCallLoci.result.truncatedString(100000)
 
@@ -47,7 +49,7 @@ class SomaticJointCallerIntegrationTests extends GuacFunSuite with Matchers {
   }
 
   sparkTest("germline calling on subset of illumina platinum NA12878") {
-    if (true) {
+    if (false) {
       val resultFile = tempFile(".vcf")
       println(resultFile)
 

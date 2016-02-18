@@ -169,17 +169,30 @@ object SomaticJoint {
           val possibleNonReferenceAlleles = AlleleAtLocus.variantAlleles(
             reference,
             (inputs.normalDNA ++ inputs.tumorDNA).map(input => pileups(input.index)),
-            anyAlleleMinSupportingReads = if (forceCall) 0 else parameters.anyAlleleMinSupportingReads,
-            anyAlleleMinSupportingPercent = if (forceCall) 0 else parameters.anyAlleleMinSupportingPercent,
+            anyAlleleMinSupportingReads = parameters.anyAlleleMinSupportingReads,
+            anyAlleleMinSupportingPercent = parameters.anyAlleleMinSupportingPercent,
             onlyStandardBases = true)
 
           val possibleAlleles = if (possibleNonReferenceAlleles.isEmpty && forceCall) {
-            // If we are force calling this site and we have no possible alternate alleles, use "N".
-            Seq(AlleleAtLocus(
-              contig,
-              locus,
-              Bases.baseToString(normalPileups.head.referenceBase),
-              "N"))
+            // If we are force calling this site and our read thresholds found no possible alleles, first we try looking
+            // for alleles with a read threshold of 0, and if that still doesn't work, then we use N as an alternate base.
+            val tryAgain = AlleleAtLocus.variantAlleles(
+              reference,
+              (inputs.normalDNA ++ inputs.tumorDNA).map(input => pileups(input.index)),
+              anyAlleleMinSupportingReads = 0,
+              anyAlleleMinSupportingPercent = 0,
+              onlyStandardBases = true)
+
+            if (tryAgain.nonEmpty) {
+              tryAgain
+            } else {
+              // If we are force calling this site and we have no possible alternate alleles, use "N".
+              Seq(AlleleAtLocus(
+                contig,
+                locus,
+                Bases.baseToString(normalPileups.head.referenceBase),
+                "N"))
+            }
           } else {
             possibleNonReferenceAlleles
           }

@@ -10,7 +10,7 @@ import org.hammerlab.guacamole.reference.ReferenceBroadcast
  * Usually alt != ref, but in some cases, such as force calling positions with no variant reads, we can have
  * alt == ref.
  *
- * Indels are supported in the usual VCF style, in which ref.length != alt.length. ref.length is always > 0
+ * Indels are supported in the usual VCF style, in which ref.length != alt.length. ref.length and alt.length are > 0
  * (e.g. an insertion is represented as A -> ACC) and therefore end > start. The length of the
  * reference allele determines the size of the region.
  *
@@ -30,6 +30,7 @@ case class AlleleAtLocus(
     alt: String) {
 
   assume(ref.nonEmpty)
+  assume(alt.nonEmpty)
 
   lazy val id = "%s:%d-%d %s>%s".format(
     referenceContig,
