@@ -12,10 +12,4 @@ trait SampleAlleleEvidence {
 
   /** The allele under consideration */
   val allele: AlleleAtLocus
-
-  /**
-   * Apply a transformation function to the alleles. See AlleleAtLocus.transformAlleles for details.
-   */
-  def transformAlleles(alleleTransform: String => String,
-                       startEndTransform: (Long, Long) => (Long, Long)): SampleAlleleEvidence
 }

@@ -18,17 +18,6 @@ case class NormalDNASampleAlleleEvidence(allele: AlleleAtLocus,
 
   /** Fraction of reads supporting this allele (variant allele frequency). */
   def vaf() = allelicDepths.getOrElse(allele.alt, 0).toDouble / depth
-
-  /**
-   * Apply a transformation function to the alleles. See AlleleAtLocus.transformAlleles for details.
-   */
-  def transformAlleles(alleleTransform: String => String,
-                       startEndTransform: (Long, Long) => (Long, Long)): NormalDNASampleAlleleEvidence = {
-    copy(
-      allele = allele.transform(alleleTransform, startEndTransform),
-      allelicDepths = allelicDepths.map(pair => alleleTransform(pair._1) -> pair._2),
-      logLikelihoods = logLikelihoods.map(pair => (alleleTransform(pair._1._1), alleleTransform(pair._1._2)) -> pair._2))
-  }
 }
 object NormalDNASampleAlleleEvidence {
 

@@ -31,18 +31,6 @@ case class AlleleEvidenceAcrossSamples(parameters: Parameters,
   assume(inputs.items.map(_.index) == (0 until inputs.items.length))
 
   /**
-   * Apply a transformation function to the alleles. See AlleleAtLocus.transformAlleles for details.
-   */
-  def transformAlleles(alleleTransform: String => String,
-                       startEndTransform: (Long, Long) => (Long, Long)): AlleleEvidenceAcrossSamples = {
-    copy(
-      allele = allele.transform(alleleTransform, startEndTransform),
-      normalDNAPooledEvidence = normalDNAPooledEvidence.transformAlleles(alleleTransform, startEndTransform),
-      tumorDNAPooledEvidence = tumorDNAPooledEvidence.transformAlleles(alleleTransform, startEndTransform),
-      sampleEvidences = sampleEvidences.map(_.transformAlleles(alleleTransform, startEndTransform)))
-  }
-
-  /**
    * There are times when we want to treat all the per-sample evidences and pooled evidences together. We do this
    * with a sequence called `allEvidences` that has the evidence for each sample followed by that of the two pooled
    * samples. The normal dna pooled sample is found at index `normalDNAPooledIndex` and the tumor pooled is at index
