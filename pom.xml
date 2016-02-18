@@ -22,7 +22,7 @@
     <scala.version>2.10.3</scala.version>
     <scala.version.prefix>2.10</scala.version.prefix>
     <hadoop.version>2.3.0</hadoop.version>
-    <spark.version>1.3.1</spark.version>
+    <spark.version>1.6.0</spark.version>
     <maven.release.plugin.version>2.4.1</maven.release.plugin.version>
   </properties>
 
