@@ -49,7 +49,7 @@ class SomaticJointCallerIntegrationTests extends GuacFunSuite with Matchers {
   }
 
   sparkTest("germline calling on subset of illumina platinum NA12878") {
-    if (false) {
+    if (true) {
       val resultFile = tempFile(".vcf")
       println(resultFile)
 
