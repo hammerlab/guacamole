@@ -29,6 +29,10 @@ case class ReadSubsequence(read: MappedRead,
   /** The sequenced bases as a string */
   def sequence(): String = Bases.basesToString(read.sequence.slice(startReadPosition, endReadPosition))
 
+  /** true if the sequence contains only A,C,G,T (e.g. no N's) */
+  def sequenceIsAllStandardBases(): Boolean =
+    Bases.allStandardBases(read.sequence.slice(startReadPosition, endReadPosition))
+
   /** The base qualities corresponding to the sequenced bases. */
   def baseQualities(): Seq[Int] = read.baseQualities.slice(startReadPosition, endReadPosition).map(_.toInt)
 
@@ -72,13 +76,13 @@ object ReadSubsequence {
       if (currentElement.locus >= currentElement.read.end - 1) {
         None
       } else {
-        Some(
-          ReadSubsequence(
-            element.read,
-            firstElement.locus,
-            currentElement.locus + 1,
-            firstElement.readPosition,
-            currentElement.advanceToLocus(currentElement.locus + 1, Bases.N).readPosition))
+        val result = ReadSubsequence(
+          element.read,
+          firstElement.locus,
+          currentElement.locus + 1,
+          firstElement.readPosition,
+          currentElement.advanceToLocus(currentElement.locus + 1, Bases.N).readPosition)
+        Some(result)
       }
     }
   }
@@ -110,13 +114,13 @@ object ReadSubsequence {
         // We either have no variant here, or we hit the end of the read.
         None
       } else {
-        Some(
-          ReadSubsequence(
-            element.read,
-            firstElement.locus,
-            currentElement.locus,
-            firstElement.readPosition,
-            currentElement.readPosition))
+        val result = ReadSubsequence(
+          element.read,
+          firstElement.locus,
+          currentElement.locus,
+          firstElement.readPosition,
+          currentElement.readPosition)
+        Some(result)
       }
     }
   }

@@ -76,12 +76,14 @@ object AlleleAtLocus {
    * @param pileups one or more pileups
    * @param anyAlleleMinSupportingReads minimum number of reads in a single sample an allele must have
    * @param anyAlleleMinSupportingPercent minimum percent of reads (i.e. between 0 and 100) an allele must have
+   * @param onlyStandardBases only include alleles made entirely of standard bases (no N's)
    * @return the alleles sequenced at this site
    */
   def variantAlleles(reference: ReferenceBroadcast,
                      pileups: PerSample[Pileup],
                      anyAlleleMinSupportingReads: Int,
-                     anyAlleleMinSupportingPercent: Double): Seq[AlleleAtLocus] = {
+                     anyAlleleMinSupportingPercent: Double,
+                     onlyStandardBases: Boolean = true): Seq[AlleleAtLocus] = {
 
     assume(pileups.forall(_.locus == pileups.head.locus))
     assume(pileups.forall(_.referenceName == pileups.head.referenceName))
@@ -92,7 +94,8 @@ object AlleleAtLocus {
       val requiredReads = math.max(
         anyAlleleMinSupportingReads,
         pileup.elements.size * anyAlleleMinSupportingPercent / 100.0)
-      val subsequences = ReadSubsequence.nextAlts(pileup.elements, contigRefSequence)
+      val rawSubsequences = ReadSubsequence.nextAlts(pileup.elements, contigRefSequence)
+      val subsequences = if (onlyStandardBases) rawSubsequences.filter(_.sequenceIsAllStandardBases) else rawSubsequences
       subsequences
         .groupBy(_.sequence)
         .filter(_._2.size >= requiredReads)

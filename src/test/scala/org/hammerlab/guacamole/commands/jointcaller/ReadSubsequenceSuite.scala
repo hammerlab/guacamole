@@ -4,7 +4,7 @@ import org.hammerlab.guacamole.Bases
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.reference.ReferenceBroadcast.ArrayBackedReferenceSequence
-import org.hammerlab.guacamole.util.{ GuacFunSuite, TestUtil }
+import org.hammerlab.guacamole.util.{ TestUtil, GuacFunSuite }
 import org.scalatest.Matchers
 
 class ReadSubsequenceSuite extends GuacFunSuite with Matchers {
@@ -16,29 +16,31 @@ class ReadSubsequenceSuite extends GuacFunSuite with Matchers {
     ReferenceBroadcast(partialFasta, sc, partialFasta = true)
   }
 
-  sparkTest("read subsequence ofFixedReferenceLength") {
+  sparkTest("ofFixedReferenceLength") {
     val ref = ArrayBackedReferenceSequence(sc, "NTCGATCGA")
     val reads = Seq(
       TestUtil.makeRead("TCGATCGA", "8M", "8", 1), // no variant
       TestUtil.makeRead("TCGACCCTCGA", "4M3I4M", "8", 1), // insertion
-      TestUtil.makeRead("TCGAGCGA", "8M", "8", 1) // snv
+      TestUtil.makeRead("TCGAGCGA", "8M", "8", 1), // snv
+      TestUtil.makeRead("TNGAGCGA", "8M", "8", 1) // contains N base
     )
     val pileups = reads.map(read => Pileup(Seq(read), "chr1", 1))
 
     ReadSubsequence.ofFixedReferenceLength(pileups(0).head, Bases.stringToBases("C")).get.sequence should equal("C")
     ReadSubsequence.ofFixedReferenceLength(pileups(0).head, Bases.stringToBases("CG")).get.sequence should equal("CG")
     ReadSubsequence.ofFixedReferenceLength(pileups(1).head, Bases.stringToBases("CGATCG")).get.sequence should equal("CGACCCTCG")
-    ReadSubsequence.ofFixedReferenceLength(pileups(2).head, Bases.stringToBases("CGATCG")).get.sequence should equal("CGAGCG")
+    ReadSubsequence.ofFixedReferenceLength(pileups(3).head, Bases.stringToBases("C")).get.sequenceIsAllStandardBases should equal(false)
   }
 
-  sparkTest("read subsequence ofNextAltAllele") {
+  sparkTest("ofNextAltAllele") {
     val ref = ArrayBackedReferenceSequence(sc, "NTCGATCGA")
     val reads = Seq(
       TestUtil.makeRead("TCGATCGA", "8M", "8", 1), // no variant
       TestUtil.makeRead("TCGAGCGA", "8M", "8", 1), // snv
       TestUtil.makeRead("TCGACCCTCGA", "4M3I4M", "8", 1), // insertion
       TestUtil.makeRead("TCGGCCCTCGA", "4M3I4M", "8", 1), // insertion
-      TestUtil.makeRead("TCAGCCCTCGA", "4M3I4M", "8", 1) // insertion
+      TestUtil.makeRead("TCAGCCCTCGA", "4M3I4M", "8", 1), // insertion
+      TestUtil.makeRead("TNGAGCGA", "8M", "8", 1) // contains N
     )
     val pileups = reads.map(read => Pileup(Seq(read), "chr1", 1))
 
@@ -56,6 +58,7 @@ class ReadSubsequenceSuite extends GuacFunSuite with Matchers {
     ReadSubsequence.ofNextAltAllele(
       pileups(4).atGreaterLocus(2, ref(2), Iterator.empty).elements(0), ref).get.sequence should equal("AGCCC")
 
+    ReadSubsequence.ofNextAltAllele(pileups(5).elements(0), ref).get.sequenceIsAllStandardBases should equal(false)
   }
 
   sparkTest("gathering possible alleles") {
