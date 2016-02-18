@@ -164,34 +164,39 @@ object SomaticJoint {
         val contig = normalPileups.head.referenceName
         val locus = normalPileups.head.locus
 
-        val possibleNonReferenceAlleles = AlleleAtLocus.variantAlleles(
-          reference,
-          (inputs.normalDNA ++ inputs.tumorDNA).map(input => pileups(input.index)),
-          anyAlleleMinSupportingReads = parameters.anyAlleleMinSupportingReads,
-          anyAlleleMinSupportingPercent = parameters.anyAlleleMinSupportingPercent)
+        // We only call variants at a site if the reference base is a standard base (i.e. not N).
+        if (Bases.isStandardBase(reference.getReferenceBase(contig, locus.toInt + 1))) {
+          val possibleNonReferenceAlleles = AlleleAtLocus.variantAlleles(
+            reference,
+            (inputs.normalDNA ++ inputs.tumorDNA).map(input => pileups(input.index)),
+            anyAlleleMinSupportingReads = parameters.anyAlleleMinSupportingReads,
+            anyAlleleMinSupportingPercent = parameters.anyAlleleMinSupportingPercent)
 
-        val possibleAlleles = if (possibleNonReferenceAlleles.isEmpty && forceCall) {
-          Seq(AlleleAtLocus(
-            contig,
-            locus,
-            Bases.baseToString(normalPileups.head.referenceBase),
-            "N"))
-        } else {
-          possibleNonReferenceAlleles
-        }
+          val possibleAlleles = if (possibleNonReferenceAlleles.isEmpty && forceCall) {
+            Seq(AlleleAtLocus(
+              contig,
+              locus,
+              Bases.baseToString(normalPileups.head.referenceBase),
+              "N"))
+          } else {
+            possibleNonReferenceAlleles
+          }
 
-        if (possibleAlleles.nonEmpty) {
-          val evidences = possibleAlleles.map(allele => {
-            AlleleEvidenceAcrossSamples(
-              parameters,
-              allele,
-              pileups,
-              inputs,
-              reference)
-          })
-          if (forceCall || evidences.exists(_.isCall)) {
-            val groupedEvidence = MultipleAllelesEvidenceAcrossSamples(evidences)
-            Iterator(groupedEvidence)
+          if (possibleAlleles.nonEmpty) {
+            val evidences = possibleAlleles.map(allele => {
+              AlleleEvidenceAcrossSamples(
+                parameters,
+                allele,
+                pileups,
+                inputs,
+                reference)
+            })
+            if (forceCall || evidences.exists(_.isCall)) {
+              val groupedEvidence = MultipleAllelesEvidenceAcrossSamples(evidences)
+              Iterator(groupedEvidence)
+            } else {
+              Iterator.empty
+            }
           } else {
             Iterator.empty
           }

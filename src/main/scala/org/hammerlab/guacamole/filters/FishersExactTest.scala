@@ -22,24 +22,18 @@ import org.apache.commons.math3.util.ArithmeticUtils
 
 object FishersExactTest {
 
-  /* Fischer's exact test, returned as a probability. */
+  /** Fisher's exact test, returned as a probability. */
   def apply(totalA: Int, totalB: Int, conditionA: Int, conditionB: Int): Double = {
     math.exp(ArithmeticUtils.binomialCoefficientLog(totalA, conditionA) +
       ArithmeticUtils.binomialCoefficientLog(totalB, conditionB) -
       ArithmeticUtils.binomialCoefficientLog(totalA + totalB, conditionA + conditionB))
   }
 
-  /* Fischer's exact test, returned as log base 10 probability. */
+  /** Fisher's exact test, returned as log base 10 probability. */
   def asLog10(totalA: Int, totalB: Int, conditionA: Int, conditionB: Int): Double = {
     (ArithmeticUtils.binomialCoefficientLog(totalA, conditionA) +
       ArithmeticUtils.binomialCoefficientLog(totalB, conditionB) -
       ArithmeticUtils.binomialCoefficientLog(totalA + totalB, conditionA + conditionB)
       / Math.log(10))
-  }
-
-  def log10BinomialTestPValue(n: Int, k: Int, p: Double = 0.5): Double = {
-    val q = 1.0 - p
-    val logEResult = ArithmeticUtils.binomialCoefficientLog(n, k) + k * Math.log(p) + (n - k) * Math.log(q)
-    logEResult / Math.log(10)
   }
 }

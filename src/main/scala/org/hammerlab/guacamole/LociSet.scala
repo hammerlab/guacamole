@@ -161,6 +161,7 @@ object LociSet {
     /**
      * Parse a loci expression and add it to the builder. Example expressions:
      *  "all" (all sites on all contigs)
+     *  "none" (no loci, used as a default in some places)
      *  "chr1,chr3" (all sites on contigs chr1 and chr3)
      *  "chr1:10000-20000,chr2" (sites x where 10000 <= x < 20000 on chr1, all sites on chr2)
      */

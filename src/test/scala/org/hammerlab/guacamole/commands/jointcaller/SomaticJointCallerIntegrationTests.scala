@@ -1,13 +1,12 @@
-package org.hammerlab.guacamole.commands
+package org.hammerlab.guacamole.commands.jointcaller
 
 import java.io.File
 
 import htsjdk.variant.variantcontext.{ Allele, GenotypeBuilder, VariantContext, VariantContextBuilder }
 import htsjdk.variant.vcf.VCFFileReader
-import org.hammerlab.guacamole.commands.jointcaller.SomaticJoint
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
-import org.hammerlab.guacamole.util.{ GuacFunSuite, TestUtil }
+import org.hammerlab.guacamole.util.{ VCFComparison, GuacFunSuite, TestUtil }
 import org.hammerlab.guacamole.{ Bases, LociMap, LociSet }
 import org.scalatest.Matchers
 
@@ -184,97 +183,6 @@ class SomaticJointCallerIntegrationTests extends GuacFunSuite with Matchers {
     }
   }
 
-  case class VCFComparison(expected: Seq[VariantContext], experimental: Seq[VariantContext]) {
-
-    val mapExpected = VCFComparison.makeLociMap(expected)
-    val mapExperimental = VCFComparison.makeLociMap(experimental)
-
-    val exactMatch = new ArrayBuffer[(VariantContext, VariantContext)]
-    val partialMatch = new ArrayBuffer[(VariantContext, VariantContext)]
-    val uniqueToExpected = new ArrayBuffer[VariantContext]
-    val uniqueToExperimental = new ArrayBuffer[VariantContext]
-
-    VCFComparison.accumulate(expected, mapExperimental, exactMatch, partialMatch, uniqueToExpected)
-
-    {
-      // Accumulate result.{exact,partial}Match in throwaway arrays so we don't double count.
-      val exactMatch2 = new ArrayBuffer[(VariantContext, VariantContext)]
-      val partialMatch2 = new ArrayBuffer[(VariantContext, VariantContext)]
-
-      VCFComparison.accumulate(experimental, mapExpected, exactMatch2, partialMatch2, uniqueToExperimental)
-      // assert(exactMatch2.size == exactMatch.size)
-      // assert(partialMatch2.size == partialMatch.size)
-    }
-
-    def sensitivity = exactMatch.size * 100.0 / expected.size
-    def specificity = exactMatch.size * 100.0 / experimental.size
-
-    def summary(): String = {
-      Seq(
-        "exact match: %,d".format(exactMatch.size),
-        "partial match: %,d".format(partialMatch.size),
-        "unique to expected: %,d".format(uniqueToExpected.size),
-        "unique to experimental: %,d".format(uniqueToExperimental.size),
-        "sensitivity: %1.2f%%".format(sensitivity),
-        "specificity: %1.2f%%".format(specificity)
-      ).mkString("\n")
-    }
-
-  }
-  object VCFComparison {
-    private def accumulate(
-      records: Seq[VariantContext],
-      map: LociMap[VariantContext],
-      exactMatch: ArrayBuffer[(VariantContext, VariantContext)],
-      partialMatch: ArrayBuffer[(VariantContext, VariantContext)],
-      unique: ArrayBuffer[VariantContext]): Unit = {
-      records.foreach(record1 => {
-        map.onContig(record1.getContig).get(record1.getStart) match {
-          case Some(record2) => {
-            if (variantToString(record1) == variantToString(record2)) {
-              exactMatch += ((record1, record2))
-            } else {
-              partialMatch += ((record1, record2))
-            }
-          }
-          case None => unique += record1
-        }
-      })
-    }
-
-    private def makeLociMap(records: Seq[VariantContext]): LociMap[VariantContext] = {
-      val builder = LociMap.newBuilder[VariantContext]()
-      records.foreach(record => {
-        // Switch from zero based inclusive to interbase coordinates.
-        builder.put(record.getContig, record.getStart, record.getEnd + 1, record)
-      })
-      builder.result
-    }
-  }
-
-  def variantToString(variant: VariantContext, verbose: Boolean = false): String = {
-    // We always use the non-hom-ref genotype when there is one.
-    val genotypes = (0 until variant.getGenotypes.size).map(variant.getGenotype _)
-    val genotype = genotypes.sortBy(_.getType.toString == "HOM_REF").head
-    val trigger = Option(variant.getAttribute("TRIGGER"))
-    val calledString = if (trigger.isEmpty) {
-      // If there is no TRIGGER field (e.g. a VCF from a non-guacamole caller) then we use the genotype.
-      if (genotype.isHomRef) "NO_CALL" else "CALLED"
-    } else {
-      if (trigger.get == "NONE") "NO_CALL" else "CALLED"
-    }
-
-    val result = "%s:%d-%d %s > %s %s %s".format(
-      variant.getContig,
-      variant.getStart,
-      variant.getEnd,
-      variant.getReference,
-      JavaConversions.collectionAsScalaIterable(variant.getAlternateAlleles).map(_.toString).mkString(","),
-      genotype.getType.toString,
-      calledString) + (if (verbose) " [%s]".format(variant.toString) else "")
-    result
-  }
-
   def printSamplePairs(pairs: Seq[(VariantContext, VariantContext)], num: Int = 20): Unit = {
     val sample = pairs.take(num)
     println("Showing %,d / %,d.".format(sample.size, pairs.size))
@@ -282,10 +190,10 @@ class SomaticJointCallerIntegrationTests extends GuacFunSuite with Matchers {
       case (pair, num) => {
         println("(%4d) %20s vs %20s \tDETAILS: %20s vs %20s".format(
           num + 1,
-          variantToString(pair._1, false),
-          variantToString(pair._2, false),
-          variantToString(pair._1, true),
-          variantToString(pair._2, true)))
+          VCFComparison.variantToString(pair._1, false),
+          VCFComparison.variantToString(pair._2, false),
+          VCFComparison.variantToString(pair._1, true),
+          VCFComparison.variantToString(pair._2, true)))
       }
     })
   }
@@ -297,8 +205,8 @@ class SomaticJointCallerIntegrationTests extends GuacFunSuite with Matchers {
       case (item, num) => {
         println("(%4d) %20s \tDETAILS: %29s".format(
           num + 1,
-          variantToString(item, false),
-          variantToString(item, true)))
+          VCFComparison.variantToString(item, false),
+          VCFComparison.variantToString(item, true)))
       }
     })
   }
