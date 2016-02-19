@@ -166,36 +166,16 @@ object SomaticJoint {
 
         // We only call variants at a site if the reference base is a standard base (i.e. not N).
         if (Bases.isStandardBase(reference.getReferenceBase(contig, locus.toInt + 1))) {
-          val possibleNonReferenceAlleles = AlleleAtLocus.variantAlleles(
+          val possibleAlleles = AlleleAtLocus.variantAlleles(
             reference,
             (inputs.normalDNA ++ inputs.tumorDNA).map(input => pileups(input.index)),
             anyAlleleMinSupportingReads = parameters.anyAlleleMinSupportingReads,
             anyAlleleMinSupportingPercent = parameters.anyAlleleMinSupportingPercent,
+            maxAlleles = Some(parameters.maxAllelesPerSite),
+            atLeastOneAllele = forceCall, // if force calling this site, always get at least one allele
             onlyStandardBases = true)
 
-          val possibleAlleles = if (possibleNonReferenceAlleles.isEmpty && forceCall) {
-            // If we are force calling this site and our read thresholds found no possible alleles, first we try looking
-            // for alleles with a read threshold of 0, and if that still doesn't work, then we use N as an alternate base.
-            val tryAgain = AlleleAtLocus.variantAlleles(
-              reference,
-              (inputs.normalDNA ++ inputs.tumorDNA).map(input => pileups(input.index)),
-              anyAlleleMinSupportingReads = 0,
-              anyAlleleMinSupportingPercent = 0,
-              onlyStandardBases = true)
-
-            if (tryAgain.nonEmpty) {
-              tryAgain
-            } else {
-              // If we are force calling this site and we have no possible alternate alleles, use "N".
-              Seq(AlleleAtLocus(
-                contig,
-                locus,
-                Bases.baseToString(normalPileups.head.referenceBase),
-                "N"))
-            }
-          } else {
-            possibleNonReferenceAlleles
-          }
+          if (forceCall) assert(possibleAlleles.nonEmpty)
 
           if (possibleAlleles.nonEmpty) {
             val evidences = possibleAlleles.map(allele => {

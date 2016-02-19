@@ -25,7 +25,7 @@ object TumorDNASampleAlleleEvidence {
 
   /** Create a (serializable) TumorDNASampleAlleleEvidence instance from (non-serializable) pileup statistics. */
   def apply(allele: AlleleAtLocus, stats: PileupStats, parameters: Parameters): TumorDNASampleAlleleEvidence = {
-    assume(allele.ref == stats.ref)
+    assume(allele.ref == stats.ref, "%s != %s".format(allele.ref, stats.ref))
 
     val altVaf = math.max(parameters.somaticVafFloor, stats.vaf(allele.alt))
     val possibleMixtures = Seq(Map(allele.ref -> 1.0)) ++ (
@@ -34,6 +34,8 @@ object TumorDNASampleAlleleEvidence {
       else
         Seq.empty)
     val logLikelihoods = possibleMixtures.map(mixture => mixture -> stats.logLikelihoodPileup(mixture)).toMap
-    TumorDNASampleAlleleEvidence(allele, stats.allelicDepths, logLikelihoods)
+    val topAlleles = stats.nonRefAlleles.take(parameters.maxAllelesPerSite).toSet
+    val truncatedAllelicDepths = stats.allelicDepths.filterKeys(topAlleles.contains _)
+    TumorDNASampleAlleleEvidence(allele, truncatedAllelicDepths, logLikelihoods)
   }
 }
