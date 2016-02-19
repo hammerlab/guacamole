@@ -1,5 +1,6 @@
 package org.hammerlab.guacamole.commands.jointcaller
 
+import org.hammerlab.guacamole.Bases
 import org.hammerlab.guacamole.DistributedUtil.PerSample
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
@@ -77,6 +78,11 @@ object AlleleAtLocus {
    * @param pileups one or more pileups
    * @param anyAlleleMinSupportingReads minimum number of reads in a single sample an allele must have
    * @param anyAlleleMinSupportingPercent minimum percent of reads (i.e. between 0 and 100) an allele must have
+   * @param maxAlleles if not None, return at most this many alleles
+   * @param atLeastOneAllele if true, then always return at least one allele (useful for force calling). If no
+   *                         alleles meet the minimum number of reads criteria, then the allele with the most
+   *                         reads (even though it doesn't meet the threshold) will be returned. If there are
+   *                         no alternate alleles at all, then the allele "N" is returned.
    * @param onlyStandardBases only include alleles made entirely of standard bases (no N's)
    * @return the alleles sequenced at this site
    */
@@ -84,6 +90,8 @@ object AlleleAtLocus {
                      pileups: PerSample[Pileup],
                      anyAlleleMinSupportingReads: Int,
                      anyAlleleMinSupportingPercent: Double,
+                     maxAlleles: Option[Int] = None,
+                     atLeastOneAllele: Boolean = false,
                      onlyStandardBases: Boolean = true): Seq[AlleleAtLocus] = {
 
     assume(pileups.forall(_.locus == pileups.head.locus))
@@ -91,20 +99,48 @@ object AlleleAtLocus {
     val contig = pileups.head.referenceName
     val variantStart = pileups.head.locus + 1
     val contigRefSequence = reference.getContig(contig)
-    pileups.flatMap(pileup => {
+    val alleleRequiredReadsActualReads = pileups.flatMap(pileup => {
       val requiredReads = math.max(
         anyAlleleMinSupportingReads,
         pileup.elements.size * anyAlleleMinSupportingPercent / 100.0)
-      val rawSubsequences = ReadSubsequence.nextAlts(pileup.elements, contigRefSequence)
-      val subsequences = if (onlyStandardBases) rawSubsequences.filter(_.sequenceIsAllStandardBases) else rawSubsequences
-      subsequences
-        .groupBy(_.sequence)
-        .filter(_._2.size >= requiredReads)
-        .map(pair => {
-          val exemplarSubsequence = pair._2.head
-          AlleleAtLocus(
-            contig, variantStart, exemplarSubsequence.refSequence(contigRefSequence), exemplarSubsequence.sequence)
-        }).toSeq
-    }).distinct
+
+      val subsequenceCounts =
+        ReadSubsequence.nextAlts(pileup.elements, contigRefSequence)
+          .filter(subsequence => !onlyStandardBases || subsequence.sequenceIsAllStandardBases)
+          .groupBy(x => (x.endLocus, x.sequence))
+          .map(pair => (pair._2.head -> pair._2.length))
+          .toSeq
+          .sortBy(-1 * _._2)
+
+      def subsequenceToAllele(subsequence: ReadSubsequence): AlleleAtLocus = {
+        AlleleAtLocus(
+          contig, variantStart, subsequence.refSequence(contigRefSequence), subsequence.sequence)
+      }
+
+      subsequenceCounts.map(pair => (subsequenceToAllele(pair._1), requiredReads, pair._2))
+    })
+    val result = alleleRequiredReadsActualReads.filter(tpl => tpl._3 >= tpl._2).map(_._1).distinct
+    if (atLeastOneAllele && result.isEmpty) {
+      val allelesSortedByTotal = alleleRequiredReadsActualReads
+        .groupBy(_._1)
+        .toSeq
+        .sortBy(-1 * _._2.map(_._3).sum)
+        .map(_._1)
+
+      if (allelesSortedByTotal.nonEmpty) {
+        Seq(allelesSortedByTotal.head)
+      } else {
+        Seq(AlleleAtLocus(
+          contig,
+          variantStart,
+          Bases.baseToString(contigRefSequence.apply(variantStart.toInt)),
+          "N"))
+      }
+    } else if (maxAlleles.isDefined) {
+      assume(maxAlleles.get > 0)
+      result.take(maxAlleles.get)
+    } else {
+      result
+    }
   }
 }

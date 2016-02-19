@@ -37,6 +37,9 @@ object NormalDNASampleAlleleEvidence {
     val logLikelihoods = possibleAllelePairs.map(allelePair => {
       allelePair -> stats.logLikelihoodPileup(allelesToMixture(allelePair))
     }).toMap
-    NormalDNASampleAlleleEvidence(allele, stats.allelicDepths, logLikelihoods)
+
+    val topAlleles = stats.nonRefAlleles.take(parameters.maxAllelesPerSite).toSet
+    val truncatedAllelicDepths = stats.allelicDepths.filterKeys(topAlleles.contains _)
+    NormalDNASampleAlleleEvidence(allele, truncatedAllelicDepths, logLikelihoods)
   }
 }
