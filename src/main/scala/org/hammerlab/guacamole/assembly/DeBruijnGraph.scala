@@ -140,12 +140,12 @@ class DeBruijnGraph(val kmerSize: Int,
     // Kmer next in the path
     def nextNodes(currentNode: Kmer) =
       if (avoidLoops)
-        nextFunc(current).filterNot(visited.contains)
+        nextFunc(currentNode).filterNot(visited.contains)
       else
-        nextFunc(current)
+        nextFunc(currentNode)
 
     var next = nextNodes(current)
-    var mergeable = List(kmer)
+    var mergeable = List(current)
 
     // While in/out-degree == 1
     while (next.size == 1 && prevFunc(next.head).size == 1) {
