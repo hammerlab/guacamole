@@ -24,8 +24,6 @@ case class VCFComparison(expected: Seq[VariantContext], experimental: Seq[Varian
     val partialMatch2 = new ArrayBuffer[(VariantContext, VariantContext)]
 
     VCFComparison.accumulate(experimental, mapExpected, exactMatch2, partialMatch2, uniqueToExperimental)
-    // assert(exactMatch2.size == exactMatch.size)
-    // assert(partialMatch2.size == partialMatch.size)
   }
 
   def sensitivity = exactMatch.size * 100.0 / expected.size
