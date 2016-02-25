@@ -39,7 +39,7 @@ object NormalDNASampleAlleleEvidence {
     }).toMap
 
     val topAlleles = stats.nonRefAlleles.take(parameters.maxAllelesPerSite).toSet
-    val truncatedAllelicDepths = stats.allelicDepths.filterKeys(topAlleles.contains _)
+    val truncatedAllelicDepths = stats.allelicDepths.filterKeys(topAlleles.contains)
     NormalDNASampleAlleleEvidence(allele, truncatedAllelicDepths, logLikelihoods)
   }
 }

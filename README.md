@@ -53,8 +53,8 @@ reference.
 
 This calls germline and somatic variants from some small test BAMs using the
 *joint-caller* variant caller, which can works with any number of tumor/normal
-samples from the same patient. It takes around 2 minutes to run on my 2015
-MacBook.
+samples from the same patient. It takes around 2 minutes to run on my 3.1 GHz,
+16gb memory Macbook.
 
 Try 
 ```
