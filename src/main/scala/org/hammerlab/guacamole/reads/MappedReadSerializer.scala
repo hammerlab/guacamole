@@ -28,6 +28,7 @@ class MappedReadSerializer extends Serializer[MappedRead] {
 
   def write(kryo: Kryo, output: Output, obj: MappedRead) = {
     output.writeInt(obj.token)
+    output.writeString(obj.name)
     assert(obj.sequence.length == obj.baseQualities.length)
     output.writeInt(obj.sequence.length, true)
     output.writeBytes(obj.sequence.toArray)
@@ -46,6 +47,7 @@ class MappedReadSerializer extends Serializer[MappedRead] {
 
   def read(kryo: Kryo, input: Input, klass: Class[MappedRead]): MappedRead = {
     val token = input.readInt()
+    val name = input.readString()
     val count: Int = input.readInt(true)
     val sequenceArray: Seq[Byte] = input.readBytes(count)
     val qualityScoresArray: Seq[Byte] = input.readBytes(count)
@@ -64,6 +66,7 @@ class MappedReadSerializer extends Serializer[MappedRead] {
 
     MappedRead(
       token,
+      name,
       sequenceArray,
       qualityScoresArray,
       isDuplicate,

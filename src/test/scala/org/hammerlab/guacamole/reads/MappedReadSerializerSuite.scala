@@ -28,6 +28,7 @@ class MappedReadSerializerSuite extends GuacFunSuite with Matchers {
   test("serialize / deserialize mapped read") {
     val read = MappedRead(
       5, // token
+      "read1",
       "TCGACCCTCGA",
       Array[Byte]((10 to 20).map(_.toByte): _*),
       true,
@@ -52,6 +53,7 @@ class MappedReadSerializerSuite extends GuacFunSuite with Matchers {
 
     // So, instead, we'll compare each field ourselves:
     deserialized.token should equal(read.token)
+    deserialized.name should equal(read.name)
     deserialized.sequence should equal(read.sequence)
     deserialized.baseQualities should equal(read.baseQualities)
     deserialized.isDuplicate should equal(read.isDuplicate)
@@ -69,6 +71,7 @@ class MappedReadSerializerSuite extends GuacFunSuite with Matchers {
   test("serialize / deserialize mapped read with mdtag") {
     val read = MappedRead(
       5, // token
+      "read1",
       "TCGACCCTCGA",
       Array[Byte]((10 to 20).map(_.toByte): _*),
       true,
@@ -93,6 +96,7 @@ class MappedReadSerializerSuite extends GuacFunSuite with Matchers {
 
     // So, instead, we'll compare each field ourselves:
     deserialized.token should equal(read.token)
+    deserialized.name should equal(read.name)
     deserialized.sequence should equal(read.sequence)
     deserialized.baseQualities should equal(read.baseQualities)
     deserialized.isDuplicate should equal(read.isDuplicate)
@@ -110,6 +114,7 @@ class MappedReadSerializerSuite extends GuacFunSuite with Matchers {
   test("serialize / deserialize mapped read with unmapped pair") {
     val read = MappedRead(
       5, // token
+      "read1",
       "TCGACCCTCGA",
       Array[Byte]((10 to 20).map(_.toByte): _*),
       true,
@@ -134,6 +139,7 @@ class MappedReadSerializerSuite extends GuacFunSuite with Matchers {
 
     // So, instead, we'll compare each field ourselves:
     deserialized.token should equal(read.token)
+    deserialized.name should equal(read.name)
     deserialized.sequence should equal(read.sequence)
     deserialized.baseQualities should equal(read.baseQualities)
     deserialized.isDuplicate should equal(read.isDuplicate)

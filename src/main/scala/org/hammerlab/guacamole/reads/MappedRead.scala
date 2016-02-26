@@ -34,6 +34,7 @@ import scala.collection.JavaConversions
  */
 case class MappedRead(
     token: Int,
+    name: String,
     sequence: Seq[Byte],
     baseQualities: Seq[Byte],
     isDuplicate: Boolean,
@@ -113,6 +114,7 @@ case class MappedRead(
 object MappedRead {
   def apply(
     token: Int,
+    name: String,
     sequence: Seq[Byte],
     baseQualities: Seq[Byte],
     isDuplicate: Boolean,
@@ -125,7 +127,7 @@ object MappedRead {
     failedVendorQualityChecks: Boolean,
     isPositiveStrand: Boolean,
     isPaired: Boolean)(implicit d: DummyImplicit): MappedRead = MappedRead(
-    token, sequence, baseQualities, isDuplicate, sampleName, referenceContig,
+    token, name, sequence, baseQualities, isDuplicate, sampleName, referenceContig,
     alignmentQuality, start, cigar,
     mdTagString.map(MdTag(_, start, cigar)),
     failedVendorQualityChecks, isPositiveStrand, isPaired)

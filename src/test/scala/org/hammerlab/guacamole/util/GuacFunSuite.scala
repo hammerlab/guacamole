@@ -8,7 +8,7 @@ trait GuacFunSuite extends SparkFunSuite {
     Map(
       "spark.serializer" -> "org.apache.spark.serializer.KryoSerializer",
       "spark.kryo.registrator" -> "org.hammerlab.guacamole.GuacamoleKryoRegistrator",
-      "spark.kryoserializer.buffer.mb" -> "4",
+      "spark.kryoserializer.buffer" -> "4",
       "spark.kryo.referenceTracking" -> "true"
     )
 

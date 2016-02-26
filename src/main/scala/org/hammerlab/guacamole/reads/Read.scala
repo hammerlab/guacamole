@@ -51,6 +51,9 @@ trait Read {
    */
   def token: Int
 
+  /* The template name. A read, its mate, and any alternate alignments have the same name. */
+  def name: String
+
   /** The nucleotide sequence. */
   def sequence: Seq[Byte]
 
@@ -156,6 +159,7 @@ object Read extends Logging {
    */
   def apply(
     sequence: String,
+    name: String,
     token: Int = 0,
     baseQualities: String = "",
     isDuplicate: Boolean = false,
@@ -175,6 +179,7 @@ object Read extends Logging {
     val cigar = TextCigarCodec.decode(cigarString)
     MappedRead(
       token,
+      name,
       sequenceArray,
       qualityScoresArray,
       isDuplicate,
@@ -252,6 +257,7 @@ object Read extends Logging {
 
       val result = MappedRead(
         token,
+        record.getReadName,
         record.getReadString.getBytes,
         record.getBaseQualities,
         record.getDuplicateReadFlag,
@@ -274,6 +280,7 @@ object Read extends Logging {
     } else {
       UnmappedRead(
         token,
+        record.getReadName,
         record.getReadString.getBytes,
         record.getBaseQualities,
         record.getDuplicateReadFlag,
@@ -387,7 +394,7 @@ object Read extends Logging {
       }
       var requiresFilteringByLocus = filters.overlapsLoci.nonEmpty
 
-      SamReaderFactory.setDefaultValidationStringency(ValidationStringency.LENIENT)
+      SamReaderFactory.setDefaultValidationStringency(ValidationStringency.SILENT)
       val factory = SamReaderFactory.makeDefault
       val reader = factory.open(new File(path.toUri.getPath))
       val samSequenceDictionary = reader.getFileHeader.getSequenceDictionary
@@ -406,7 +413,11 @@ object Read extends Logging {
         val optimizedQueryIntervals = QueryInterval.optimizeIntervals(queryIntervals.toArray)
         reader.query(optimizedQueryIntervals, false) // Note: this can return unmapped reads, which we filter below.
       } else {
-        Common.progress("Using samtools without BAM index to read: %s".format(filename))
+        val skippedReason = if (reader.hasIndex)
+          "(index is available but not needed)"
+        else
+          "(index unavailable)"
+        Common.progress("Using samtools without BAM index %s to read: %s".format(skippedReason, filename))
         reader.iterator
       }
       val reads = JavaConversions.asScalaIterator(recordIterator).flatMap(record => {
@@ -497,6 +508,7 @@ object Read extends Logging {
     val read = if (alignmentRecord.getReadMapped) {
       MappedRead(
         token = token,
+        name = alignmentRecord.getReadName,
         sequence = sequence,
         baseQualities = baseQualities,
         isDuplicate = alignmentRecord.getDuplicateRead,
@@ -513,6 +525,7 @@ object Read extends Logging {
     } else {
       UnmappedRead(
         token = token,
+        name = alignmentRecord.getReadName,
         sequence = sequence,
         baseQualities = baseQualities,
         isDuplicate = alignmentRecord.getDuplicateRead,

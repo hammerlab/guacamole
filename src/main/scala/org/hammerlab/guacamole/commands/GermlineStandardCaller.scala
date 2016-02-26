@@ -52,10 +52,8 @@ object GermlineStandard {
 
     override def run(args: Arguments, sc: SparkContext): Unit = {
       Common.validateArguments(args)
-      val loci = Common.loci(args)
-
       val reference = Option(args.referenceFastaPath).map(ReferenceBroadcast(_, sc))
-
+      val loci = Common.lociFromArguments(args)
       val readSet = Common.loadReadsFromArguments(
         args, sc, Read.InputFilters(
           overlapsLoci = Some(loci),
@@ -67,7 +65,8 @@ object GermlineStandard {
 
       readSet.mappedReads.persist()
       Common.progress(
-        "Loaded %,d mapped non-duplicate reads into %,d partitions.".format(readSet.mappedReads.count, readSet.mappedReads.partitions.length))
+        "Loaded %,d mapped non-duplicate reads into %,d partitions.".format(
+          readSet.mappedReads.count, readSet.mappedReads.partitions.length))
 
       val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(
         args, loci.result(readSet.contigLengths), readSet.mappedReads)

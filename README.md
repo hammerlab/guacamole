@@ -5,8 +5,8 @@ guacamole
 Guacamole is a framework for variant calling, i.e. identifying DNA mutations
 from [Next Generation Sequencing][seq] data. It currently includes a toy
 germline (non-cancer) variant caller as well as a somatic variant caller for
-finding cancer mutations.  Most development effort has gone into the somatic
-caller so far.
+finding cancer mutations.  Most development effort has gone into somatic
+calling.
 
 The emphasis is on a readable codebase that can be readily understood and
 adapted for experimentation.
@@ -37,18 +37,24 @@ Build:
 mvn package
 ```
 
-This will build a guacamole JAR file in the `target` directory. A script is
-included to run it:
+This will build a guacamole JAR file in the `target` directory. You can use the
+`guacamole` script to run locally:
 
 ```
-scripts/guacamole germline-threshold \
-	--reads src/test/resources/chrM.sorted.bam \
-	--out /tmp/result.vcf
+scripts/guacamole somatic-joint \
+    src/test/resources/synth1.normal.100k-200k.withmd.bam \
+    src/test/resources/synth1.tumor.100k-200k.withmd.bam \
+    --reference-fasta /path/to/your/b37.fasta \
+    --out /tmp/out.vcf 
 ```
 
-This creates a *directory* called `/tmp/result.vcf`. The actual VCF file is in
-`/tmp/result.vcf/part-r-00000`. You'll always get one part file in the output
-directory.
+Change the reference fasta above to point to a local copy of the B37 human
+reference.
+
+This calls germline and somatic variants from some small test BAMs using the
+*joint-caller* variant caller, which can works with any number of tumor/normal
+samples from the same patient. It takes around 2 minutes to run on my 3.1 GHz,
+16gb memory Macbook.
 
 Try 
 ```

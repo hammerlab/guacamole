@@ -24,6 +24,7 @@ import org.apache.spark.Logging
 import org.bdgenomics.adam.util.ParquetLogger
 import org.hammerlab.guacamole.Common.progress
 import org.hammerlab.guacamole.commands._
+import org.hammerlab.guacamole.commands.jointcaller.SomaticJoint
 
 /**
  * Guacamole main class.
@@ -31,8 +32,7 @@ import org.hammerlab.guacamole.commands._
 object Guacamole extends Logging {
 
   /**
-   * Commands (i.e. variant caller implementations) that are part of Guacamole. If you add a new variant caller, update
-   * this list.
+   * Commands (e.g. variant caller implementations) that are part of Guacamole. If you add a new command, update this.
    */
   private val commands: Seq[Command[_]] = List(
     GermlineThreshold.Caller,
@@ -41,8 +41,7 @@ object Guacamole extends Logging {
     SomaticStandard.Caller,
     VariantSupport.Caller,
     VAFHistogram.Caller,
-    StructuralVariant.Caller
-  )
+    SomaticJoint.Caller)
 
   private def printUsage() = {
     println("Usage: java ... <command> [other args]\n")
@@ -55,6 +54,7 @@ object Guacamole extends Logging {
 
   /**
    * Entry point into Guacamole.
+   *
    * @param args command line arguments
    */
   def main(args: Array[String]): Unit = {

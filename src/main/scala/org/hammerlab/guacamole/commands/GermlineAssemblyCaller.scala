@@ -217,7 +217,7 @@ object GermlineAssemblyCaller {
 
     override def run(args: Arguments, sc: SparkContext): Unit = {
 
-      val loci = Common.loci(args)
+      val loci = Common.lociFromArguments(args)
       val readSet = Common.loadReadsFromArguments(
         args,
         sc,
