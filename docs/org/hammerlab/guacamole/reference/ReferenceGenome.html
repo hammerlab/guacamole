@@ -87,18 +87,20 @@
         <div id="values" class="values members">
               <h3>Abstract Value Members</h3>
               <ol><li name="org.hammerlab.guacamole.reference.ReferenceGenome#getContig" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
-      <a id="getContig(contigName:String):Array[Byte]"></a>
-      <a id="getContig(String):Array[Byte]"></a>
+      <a id="getContig(contigName:String):org.hammerlab.guacamole.reference.ContigSequence"></a>
+      <a id="getContig(String):ContigSequence"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">abstract </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getContig</span><span class="params">(<span name="contigName">contigName: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>
+        <span class="name">getContig</span><span class="params">(<span name="contigName">contigName: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="ContigSequence.html" class="extype" name="org.hammerlab.guacamole.reference.ContigSequence">ContigSequence</a></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Retrieve a full contig/chromosome sequence</p><div class="fullcomment"><div class="comment cmt"><p>Retrieve a full contig/chromosome sequence</p></div><dl class="paramcmts block"><dt class="param">contigName</dt><dd class="cmt"><p>contig/chromosome to retrieve reference sequence from</p></dd><dt>returns</dt><dd class="cmt"><p>Full sequence associated with the contig
+      <p class="shortcomment cmt">Retrieve a full contig/chromosome sequence
+</p><div class="fullcomment"><div class="comment cmt"><p>Retrieve a full contig/chromosome sequence
+</p></div><dl class="paramcmts block"><dt class="param">contigName</dt><dd class="cmt"><p>contig/chromosome to retrieve reference sequence from</p></dd><dt>returns</dt><dd class="cmt"><p>Full sequence associated with the contig
 </p></dd></dl></div>
     </li><li name="org.hammerlab.guacamole.reference.ReferenceGenome#getReferenceBase" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
       <a id="getReferenceBase(contigName:String,locus:Int):Byte"></a>
@@ -112,7 +114,9 @@
         <span class="name">getReferenceBase</span><span class="params">(<span name="contigName">contigName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="locus">locus: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Byte">Byte</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Retrieve a reference base on a given contig at a given locus</p><div class="fullcomment"><div class="comment cmt"><p>Retrieve a reference base on a given contig at a given locus</p></div><dl class="paramcmts block"><dt class="param">contigName</dt><dd class="cmt"><p>contig/chromosome to retrieve reference sequence from</p></dd><dt class="param">locus</dt><dd class="cmt"><p>position in the sequence to retrieve</p></dd><dt>returns</dt><dd class="cmt"><p>Base at the given reference position
+      <p class="shortcomment cmt">Retrieve a reference base on a given contig at a given locus
+</p><div class="fullcomment"><div class="comment cmt"><p>Retrieve a reference base on a given contig at a given locus
+</p></div><dl class="paramcmts block"><dt class="param">contigName</dt><dd class="cmt"><p>contig/chromosome to retrieve reference sequence from</p></dd><dt class="param">locus</dt><dd class="cmt"><p>position in the sequence to retrieve</p></dd><dt>returns</dt><dd class="cmt"><p>Base at the given reference position
 </p></dd></dl></div>
     </li><li name="org.hammerlab.guacamole.reference.ReferenceGenome#getReferenceSequence" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
       <a id="getReferenceSequence(contigName:String,startLocus:Int,endLocus:Int):Array[Byte]"></a>
@@ -126,7 +130,9 @@
         <span class="name">getReferenceSequence</span><span class="params">(<span name="contigName">contigName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="startLocus">startLocus: <span class="extype" name="scala.Int">Int</span></span>, <span name="endLocus">endLocus: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Get the reference base at the given reference location</p><div class="fullcomment"><div class="comment cmt"><p>Get the reference base at the given reference location</p></div><dl class="paramcmts block"><dt class="param">contigName</dt><dd class="cmt"><p>contig/chromosome to retrieve reference sequence from</p></dd><dt class="param">startLocus</dt><dd class="cmt"><p>0-based inclusive start of the subsequence</p></dd><dt class="param">endLocus</dt><dd class="cmt"><p>0-based exclusive end of the subsequence</p></dd><dt>returns</dt><dd class="cmt"><p>Array of bases for the reference sequence
+      <p class="shortcomment cmt">Get the reference base at the given reference location
+</p><div class="fullcomment"><div class="comment cmt"><p>Get the reference base at the given reference location
+</p></div><dl class="paramcmts block"><dt class="param">contigName</dt><dd class="cmt"><p>contig/chromosome to retrieve reference sequence from</p></dd><dt class="param">startLocus</dt><dd class="cmt"><p>0-based inclusive start of the subsequence</p></dd><dt class="param">endLocus</dt><dd class="cmt"><p>0-based exclusive end of the subsequence</p></dd><dt>returns</dt><dd class="cmt"><p>Array of bases for the reference sequence
 </p></dd></dl></div>
     </li></ol>
             </div>
@@ -223,7 +229,9 @@
         <span class="name">buildMdTag</span><span class="params">(<span name="readSequence">readSequence: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="referenceContig">referenceContig: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="referenceStart">referenceStart: <span class="extype" name="scala.Int">Int</span></span>, <span name="cigar">cigar: <span class="extype" name="htsjdk.samtools.Cigar">Cigar</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Build a new MDTag from the reference and read sequence</p><div class="fullcomment"><div class="comment cmt"><p>Build a new MDTag from the reference and read sequence</p></div><dl class="paramcmts block"><dt class="param">readSequence</dt><dd class="cmt"><p>Bases from the read</p></dd><dt class="param">referenceContig</dt><dd class="cmt"><p>Name of the reference contig or chromosome</p></dd><dt class="param">referenceStart</dt><dd class="cmt"><p>Start position of the read on the reference</p></dd><dt class="param">cigar</dt><dd class="cmt"><p>CIGAR for the read on the reference</p></dd><dt>returns</dt><dd class="cmt"><p>MdTag for the the read
+      <p class="shortcomment cmt">Build a new MDTag from the reference and read sequence
+</p><div class="fullcomment"><div class="comment cmt"><p>Build a new MDTag from the reference and read sequence
+</p></div><dl class="paramcmts block"><dt class="param">readSequence</dt><dd class="cmt"><p>Bases from the read</p></dd><dt class="param">referenceContig</dt><dd class="cmt"><p>Name of the reference contig or chromosome</p></dd><dt class="param">referenceStart</dt><dd class="cmt"><p>Start position of the read on the reference</p></dd><dt class="param">cigar</dt><dd class="cmt"><p>CIGAR for the read on the reference</p></dd><dt>returns</dt><dd class="cmt"><p>MdTag for the the read
 </p></dd></dl></div>
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>

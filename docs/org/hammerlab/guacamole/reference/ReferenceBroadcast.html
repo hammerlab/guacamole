@@ -35,7 +35,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">ReferenceBroadcast</span><span class="params">(<span name="broadcastedContigs">broadcastedContigs: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="org.apache.spark.broadcast.Broadcast">Broadcast</span>[<span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Byte">Byte</span>]]]</span>)</span><span class="result"> extends <a href="ReferenceGenome.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceGenome">ReferenceGenome</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">ReferenceBroadcast</span><span class="params">(<span name="broadcastedContigs">broadcastedContigs: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <a href="ContigSequence.html" class="extype" name="org.hammerlab.guacamole.reference.ContigSequence">ContigSequence</a>]</span>)</span><span class="result"> extends <a href="ReferenceGenome.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceGenome">ReferenceGenome</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
@@ -80,7 +80,7 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="org.hammerlab.guacamole.reference.ReferenceBroadcast#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(broadcastedContigs:Map[String,org.apache.spark.broadcast.Broadcast[Array[Byte]]]):org.hammerlab.guacamole.reference.ReferenceBroadcast"></a>
+      <a id="&lt;init&gt;(broadcastedContigs:Map[String,org.hammerlab.guacamole.reference.ContigSequence]):org.hammerlab.guacamole.reference.ReferenceBroadcast"></a>
       <a id="&lt;init&gt;:ReferenceBroadcast"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -88,7 +88,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">ReferenceBroadcast</span><span class="params">(<span name="broadcastedContigs">broadcastedContigs: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="org.apache.spark.broadcast.Broadcast">Broadcast</span>[<span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Byte">Byte</span>]]]</span>)</span>
+        <span class="name">ReferenceBroadcast</span><span class="params">(<span name="broadcastedContigs">broadcastedContigs: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <a href="ContigSequence.html" class="extype" name="org.hammerlab.guacamole.reference.ContigSequence">ContigSequence</a>]</span>)</span>
       </span>
       </h4>
       
@@ -180,15 +180,15 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li name="org.hammerlab.guacamole.reference.ReferenceBroadcast#broadcastedContigs" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="broadcastedContigs:Map[String,org.apache.spark.broadcast.Broadcast[Array[Byte]]]"></a>
-      <a id="broadcastedContigs:Map[String,Broadcast[Array[Byte]]]"></a>
+      <a id="broadcastedContigs:Map[String,org.hammerlab.guacamole.reference.ContigSequence]"></a>
+      <a id="broadcastedContigs:Map[String,ContigSequence]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">broadcastedContigs</span><span class="result">: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="org.apache.spark.broadcast.Broadcast">Broadcast</span>[<span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Byte">Byte</span>]]]</span>
+        <span class="name">broadcastedContigs</span><span class="result">: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <a href="ContigSequence.html" class="extype" name="org.hammerlab.guacamole.reference.ContigSequence">ContigSequence</a>]</span>
       </span>
       </h4>
       
@@ -204,7 +204,9 @@
         <span class="name">buildMdTag</span><span class="params">(<span name="readSequence">readSequence: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="referenceContig">referenceContig: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="referenceStart">referenceStart: <span class="extype" name="scala.Int">Int</span></span>, <span name="cigar">cigar: <span class="extype" name="htsjdk.samtools.Cigar">Cigar</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Build a new MDTag from the reference and read sequence</p><div class="fullcomment"><div class="comment cmt"><p>Build a new MDTag from the reference and read sequence</p></div><dl class="paramcmts block"><dt class="param">readSequence</dt><dd class="cmt"><p>Bases from the read</p></dd><dt class="param">referenceContig</dt><dd class="cmt"><p>Name of the reference contig or chromosome</p></dd><dt class="param">referenceStart</dt><dd class="cmt"><p>Start position of the read on the reference</p></dd><dt class="param">cigar</dt><dd class="cmt"><p>CIGAR for the read on the reference</p></dd><dt>returns</dt><dd class="cmt"><p>MdTag for the the read
+      <p class="shortcomment cmt">Build a new MDTag from the reference and read sequence
+</p><div class="fullcomment"><div class="comment cmt"><p>Build a new MDTag from the reference and read sequence
+</p></div><dl class="paramcmts block"><dt class="param">readSequence</dt><dd class="cmt"><p>Bases from the read</p></dd><dt class="param">referenceContig</dt><dd class="cmt"><p>Name of the reference contig or chromosome</p></dd><dt class="param">referenceStart</dt><dd class="cmt"><p>Start position of the read on the reference</p></dd><dt class="param">cigar</dt><dd class="cmt"><p>CIGAR for the read on the reference</p></dd><dt>returns</dt><dd class="cmt"><p>MdTag for the the read
 </p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ReferenceGenome.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceGenome">ReferenceGenome</a></dd></dl></div>
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>
@@ -271,18 +273,20 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="org.hammerlab.guacamole.reference.ReferenceBroadcast#getContig" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="getContig(contigName:String):Array[Byte]"></a>
-      <a id="getContig(String):Array[Byte]"></a>
+      <a id="getContig(contigName:String):org.hammerlab.guacamole.reference.ContigSequence"></a>
+      <a id="getContig(String):ContigSequence"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getContig</span><span class="params">(<span name="contigName">contigName: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>
+        <span class="name">getContig</span><span class="params">(<span name="contigName">contigName: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="ContigSequence.html" class="extype" name="org.hammerlab.guacamole.reference.ContigSequence">ContigSequence</a></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Retrieve a full contig/chromosome sequence</p><div class="fullcomment"><div class="comment cmt"><p>Retrieve a full contig/chromosome sequence</p></div><dl class="paramcmts block"><dt class="param">contigName</dt><dd class="cmt"><p>contig/chromosome to retrieve reference sequence from</p></dd><dt>returns</dt><dd class="cmt"><p>Full sequence associated with the contig
+      <p class="shortcomment cmt">Retrieve a full contig/chromosome sequence
+</p><div class="fullcomment"><div class="comment cmt"><p>Retrieve a full contig/chromosome sequence
+</p></div><dl class="paramcmts block"><dt class="param">contigName</dt><dd class="cmt"><p>contig/chromosome to retrieve reference sequence from</p></dd><dt>returns</dt><dd class="cmt"><p>Full sequence associated with the contig
 </p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.reference.ReferenceBroadcast">ReferenceBroadcast</a> → <a href="ReferenceGenome.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceGenome">ReferenceGenome</a></dd></dl></div>
     </li><li name="org.hammerlab.guacamole.reference.ReferenceBroadcast#getReferenceBase" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getReferenceBase(contigName:String,locus:Int):Byte"></a>
@@ -296,7 +300,9 @@
         <span class="name">getReferenceBase</span><span class="params">(<span name="contigName">contigName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="locus">locus: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Byte">Byte</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Retrieve a reference base on a given contig at a given locus</p><div class="fullcomment"><div class="comment cmt"><p>Retrieve a reference base on a given contig at a given locus</p></div><dl class="paramcmts block"><dt class="param">contigName</dt><dd class="cmt"><p>contig/chromosome to retrieve reference sequence from</p></dd><dt class="param">locus</dt><dd class="cmt"><p>position in the sequence to retrieve</p></dd><dt>returns</dt><dd class="cmt"><p>Base at the given reference position
+      <p class="shortcomment cmt">Retrieve a reference base on a given contig at a given locus
+</p><div class="fullcomment"><div class="comment cmt"><p>Retrieve a reference base on a given contig at a given locus
+</p></div><dl class="paramcmts block"><dt class="param">contigName</dt><dd class="cmt"><p>contig/chromosome to retrieve reference sequence from</p></dd><dt class="param">locus</dt><dd class="cmt"><p>position in the sequence to retrieve</p></dd><dt>returns</dt><dd class="cmt"><p>Base at the given reference position
 </p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.reference.ReferenceBroadcast">ReferenceBroadcast</a> → <a href="ReferenceGenome.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceGenome">ReferenceGenome</a></dd></dl></div>
     </li><li name="org.hammerlab.guacamole.reference.ReferenceBroadcast#getReferenceSequence" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getReferenceSequence(contigName:String,startLocus:Int,endLocus:Int):Array[Byte]"></a>
@@ -310,7 +316,9 @@
         <span class="name">getReferenceSequence</span><span class="params">(<span name="contigName">contigName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="startLocus">startLocus: <span class="extype" name="scala.Int">Int</span></span>, <span name="endLocus">endLocus: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Get the reference base at the given reference location</p><div class="fullcomment"><div class="comment cmt"><p>Get the reference base at the given reference location</p></div><dl class="paramcmts block"><dt class="param">contigName</dt><dd class="cmt"><p>contig/chromosome to retrieve reference sequence from</p></dd><dt class="param">startLocus</dt><dd class="cmt"><p>0-based inclusive start of the subsequence</p></dd><dt class="param">endLocus</dt><dd class="cmt"><p>0-based exclusive end of the subsequence</p></dd><dt>returns</dt><dd class="cmt"><p>Array of bases for the reference sequence
+      <p class="shortcomment cmt">Get the reference base at the given reference location
+</p><div class="fullcomment"><div class="comment cmt"><p>Get the reference base at the given reference location
+</p></div><dl class="paramcmts block"><dt class="param">contigName</dt><dd class="cmt"><p>contig/chromosome to retrieve reference sequence from</p></dd><dt class="param">startLocus</dt><dd class="cmt"><p>0-based inclusive start of the subsequence</p></dd><dt class="param">endLocus</dt><dd class="cmt"><p>0-based exclusive end of the subsequence</p></dd><dt>returns</dt><dd class="cmt"><p>Array of bases for the reference sequence
 </p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.reference.ReferenceBroadcast">ReferenceBroadcast</a> → <a href="ReferenceGenome.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceGenome">ReferenceGenome</a></dd></dl></div>
     </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>

@@ -79,7 +79,36 @@
         <div id="allMembers">
         
 
-        
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="org.hammerlab.guacamole.reference.ReferenceBroadcast.ArrayBackedReferenceSequence" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ArrayBackedReferenceSequenceextendsContigSequencewithProductwithSerializable"></a>
+      <a id="ArrayBackedReferenceSequence:ArrayBackedReferenceSequence"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="ReferenceBroadcast$$ArrayBackedReferenceSequence.html"><span class="name">ArrayBackedReferenceSequence</span></a><span class="params">(<span name="wrapped">wrapped: <span class="extype" name="org.apache.spark.broadcast.Broadcast">Broadcast</span>[<span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Byte">Byte</span>]]</span>)</span><span class="result"> extends <a href="ContigSequence.html" class="extype" name="org.hammerlab.guacamole.reference.ContigSequence">ContigSequence</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">The standard ContigSequence implementation, which is an Array of bases.</p>
+    </li><li name="org.hammerlab.guacamole.reference.ReferenceBroadcast.MapBackedReferenceSequence" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="MapBackedReferenceSequenceextendsContigSequencewithProductwithSerializable"></a>
+      <a id="MapBackedReferenceSequence:MapBackedReferenceSequence"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="ReferenceBroadcast$$MapBackedReferenceSequence.html"><span class="name">MapBackedReferenceSequence</span></a><span class="params">(<span name="length">length: <span class="extype" name="scala.Int">Int</span></span>, <span name="wrapped">wrapped: <span class="extype" name="org.apache.spark.broadcast.Broadcast">Broadcast</span>[<span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Int">Int</span>, <span class="extype" name="scala.Byte">Byte</span>]]</span>)</span><span class="result"> extends <a href="ContigSequence.html" class="extype" name="org.hammerlab.guacamole.reference.ContigSequence">ContigSequence</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">A ContigSequence implementation that uses a Map to store only a subset of bases.</p>
+    </li></ol>
+            </div>
 
         
 
@@ -150,19 +179,34 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.reference.ReferenceBroadcast.ArrayBackedReferenceSequence" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ArrayBackedReferenceSequence"></a>
+      <a id="ArrayBackedReferenceSequence:ArrayBackedReferenceSequence"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="ReferenceBroadcast$$ArrayBackedReferenceSequence$.html"><span class="name">ArrayBackedReferenceSequence</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
     </li><li name="org.hammerlab.guacamole.reference.ReferenceBroadcast#apply" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="apply(fastaPath:String,sc:org.apache.spark.SparkContext):org.hammerlab.guacamole.reference.ReferenceBroadcast"></a>
-      <a id="apply(String,SparkContext):ReferenceBroadcast"></a>
+      <a id="apply(fastaPath:String,sc:org.apache.spark.SparkContext,partialFasta:Boolean):org.hammerlab.guacamole.reference.ReferenceBroadcast"></a>
+      <a id="apply(String,SparkContext,Boolean):ReferenceBroadcast"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">apply</span><span class="params">(<span name="fastaPath">fastaPath: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="sc">sc: <span class="extype" name="org.apache.spark.SparkContext">SparkContext</span></span>)</span><span class="result">: <a href="ReferenceBroadcast.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceBroadcast">ReferenceBroadcast</a></span>
+        <span class="name">apply</span><span class="params">(<span name="fastaPath">fastaPath: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="sc">sc: <span class="extype" name="org.apache.spark.SparkContext">SparkContext</span></span>, <span name="partialFasta">partialFasta: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="result">: <a href="ReferenceBroadcast.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceBroadcast">ReferenceBroadcast</a></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Build a map from contig name to broadcasted reference sequence</p><div class="fullcomment"><div class="comment cmt"><p>Build a map from contig name to broadcasted reference sequence</p></div><dl class="paramcmts block"><dt class="param">fastaPath</dt><dd class="cmt"><p>Local path to a FASTA file</p></dd><dt class="param">sc</dt><dd class="cmt"><p>SparkContext</p></dd><dt>returns</dt><dd class="cmt"><p>ReferenceBroadcast which maps contig/chromosome names to broadcasted sequences
+      <p class="shortcomment cmt">Load a ReferenceBroadcast, caching the result.</p><div class="fullcomment"><div class="comment cmt"><p>Load a ReferenceBroadcast, caching the result.
+</p></div><dl class="paramcmts block"><dt class="param">fastaPath</dt><dd class="cmt"><p>Local path to a FASTA file</p></dd><dt class="param">sc</dt><dd class="cmt"><p>the spark context</p></dd><dt class="param">partialFasta</dt><dd class="cmt"><p>is this a &quot;partial fasta&quot;? Partial fastas are used in tests to load only a subset of the
+                    reference. In production runs this will usually be false.</p></dd><dt>returns</dt><dd class="cmt"><p>ReferenceBroadcast which maps contig/chromosome names to broadcasted sequences
 </p></dd></dl></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
@@ -177,6 +221,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.reference.ReferenceBroadcast#cache" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="cache:scala.collection.mutable.HashMap[String,(org.apache.spark.SparkContext,org.hammerlab.guacamole.reference.ReferenceBroadcast)]"></a>
+      <a id="cache:HashMap[String,(SparkContext,ReferenceBroadcast)]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">cache</span><span class="result">: <span class="extype" name="scala.collection.mutable.HashMap">HashMap</span>[<span class="extype" name="scala.Predef.String">String</span>, (<span class="extype" name="org.apache.spark.SparkContext">SparkContext</span>, <a href="ReferenceBroadcast.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceBroadcast">ReferenceBroadcast</a>)]</span>
+      </span>
+      </h4>
+      
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>
       <a id="clone():AnyRef"></a>
@@ -319,6 +376,37 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.reference.ReferenceBroadcast#readFasta" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="readFasta(fastaPath:String,sc:org.apache.spark.SparkContext):org.hammerlab.guacamole.reference.ReferenceBroadcast"></a>
+      <a id="readFasta(String,SparkContext):ReferenceBroadcast"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">readFasta</span><span class="params">(<span name="fastaPath">fastaPath: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="sc">sc: <span class="extype" name="org.apache.spark.SparkContext">SparkContext</span></span>)</span><span class="result">: <a href="ReferenceBroadcast.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceBroadcast">ReferenceBroadcast</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Read a regular fasta file</p><div class="fullcomment"><div class="comment cmt"><p>Read a regular fasta file</p></div><dl class="paramcmts block"><dt class="param">fastaPath</dt><dd class="cmt"><p>local path to fasta</p></dd><dt class="param">sc</dt><dd class="cmt"><p>the spark context</p></dd><dt>returns</dt><dd class="cmt"><p>a ReferenceBroadcast instance containing ArrayBackedReferenceSequence objects.
+</p></dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.reference.ReferenceBroadcast#readPartialFasta" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="readPartialFasta(fastaPath:String,sc:org.apache.spark.SparkContext):org.hammerlab.guacamole.reference.ReferenceBroadcast"></a>
+      <a id="readPartialFasta(String,SparkContext):ReferenceBroadcast"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">readPartialFasta</span><span class="params">(<span name="fastaPath">fastaPath: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="sc">sc: <span class="extype" name="org.apache.spark.SparkContext">SparkContext</span></span>)</span><span class="result">: <a href="ReferenceBroadcast.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceBroadcast">ReferenceBroadcast</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Read a &quot;partial fasta&quot; from the given path.</p><div class="fullcomment"><div class="comment cmt"><p>Read a &quot;partial fasta&quot; from the given path.</p><p>A &quot;partial fasta&quot; is a fasta file where the reference names look like &quot;chr1:9242255-9242454/249250621&quot;. That gives
+the contig name, the start and end locus, and the total contig size. The associated sequence in the file gives the
+reference sequence for just the sites between start and end.</p><p>Partial fastas are used for testing to avoid distributing full reference genomes.
+</p></div><dl class="paramcmts block"><dt class="param">fastaPath</dt><dd class="cmt"><p>local path to partial fasta</p></dd><dt class="param">sc</dt><dd class="cmt"><p>the spark context</p></dd><dt>returns</dt><dd class="cmt"><p>a ReferenceBroadcast instance containing MapBackedReferenceSequence objects
+</p></dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
