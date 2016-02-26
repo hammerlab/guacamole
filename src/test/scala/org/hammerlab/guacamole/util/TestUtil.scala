@@ -78,6 +78,7 @@ object TestUtil extends Matchers {
 
     Read(
       sequence,
+      name = "read1",
       cigarString = cigar,
       mdTagString = Some(mdtag),
       start = start,
@@ -107,6 +108,7 @@ object TestUtil extends Matchers {
     PairedRead(
       Read(
         sequence,
+        name = "read1",
         cigarString = cigar,
         start = start,
         referenceContig = chr,
@@ -170,9 +172,14 @@ object TestUtil extends Matchers {
   def assertBases(bases1: Iterable[Byte], bases2: String) = Bases.basesToString(bases1) should equal(bases2)
 
   def testDataPath(filename: String): String = {
-    val resource = ClassLoader.getSystemClassLoader.getResource(filename)
-    if (resource == null) throw new RuntimeException("No such test data file: %s".format(filename))
-    resource.getFile
+    // If we have an absolute path, just return it.
+    if (new File(filename).isAbsolute) {
+      filename
+    } else {
+      val resource = ClassLoader.getSystemClassLoader.getResource(filename)
+      if (resource == null) throw new RuntimeException("No such test data file: %s".format(filename))
+      resource.getFile
+    }
   }
 
   def loadTumorNormalReads(sc: SparkContext,
@@ -199,6 +206,12 @@ object TestUtil extends Matchers {
     val contig = tumorReads(0).referenceContig
     assume(normalReads(0).referenceContig == contig)
     (Pileup(tumorReads, contig, locus), Pileup(normalReads, contig, locus))
+  }
+
+  def loadPileup(sc: SparkContext, filename: String, locus: Long = 0, contig: Option[String] = None): Pileup = {
+    val records = TestUtil.loadReads(sc, filename).mappedReads
+    val localReads = records.collect
+    Pileup(localReads, contig.getOrElse(localReads(0).referenceContig), locus)
   }
 
   def assertAlmostEqual(a: Double, b: Double, epsilon: Double = 1e-12) {

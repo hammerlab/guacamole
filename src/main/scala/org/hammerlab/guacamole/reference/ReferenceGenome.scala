@@ -8,13 +8,15 @@ trait ReferenceGenome {
 
   /**
    * Retrieve a full contig/chromosome sequence
+   *
    * @param contigName contig/chromosome to retrieve reference sequence from
    * @return Full sequence associated with the contig
    */
-  def getContig(contigName: String): Array[Byte]
+  def getContig(contigName: String): ContigSequence
 
   /**
    * Retrieve a reference base on a given contig at a given locus
+   *
    * @param contigName contig/chromosome to retrieve reference sequence from
    * @param locus position in the sequence to retrieve
    * @return Base at the given reference position
@@ -23,6 +25,7 @@ trait ReferenceGenome {
 
   /**
    * Get the reference base at the given reference location
+   *
    * @param contigName contig/chromosome to retrieve reference sequence from
    * @param startLocus 0-based inclusive start of the subsequence
    * @param endLocus 0-based exclusive end of the subsequence
@@ -32,6 +35,7 @@ trait ReferenceGenome {
 
   /**
    * Build a new MDTag from the reference and read sequence
+   *
    * @param readSequence Bases from the read
    * @param referenceContig Name of the reference contig or chromosome
    * @param referenceStart Start position of the read on the reference
@@ -45,5 +49,4 @@ trait ReferenceGenome {
       )
     MdTag(readSequence, referenceSequence, cigar, referenceStart).toString
   }
-
 }

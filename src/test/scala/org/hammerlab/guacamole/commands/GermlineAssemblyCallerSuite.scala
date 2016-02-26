@@ -37,7 +37,7 @@ class GermlineAssemblyCallerSuite extends FunSuite with Matchers with BeforeAndA
   }
 
   val referenceFastaPath = TestUtil.testDataPath("illumina-platinum-na12878/chr1.prefix.fa")
-  val loci = Common.loci(args)
+  val loci = Common.lociFromArguments(args)
 
   def discoverGenotypesAtLoci(loci: String): Seq[CalledAllele] = {
     val lociPartitions = DistributedUtil.partitionLociUniformly(

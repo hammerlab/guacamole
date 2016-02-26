@@ -27,6 +27,7 @@ class UnmappedReadSerializerSuite extends GuacFunSuite with Matchers {
   test("serialize / deserialize unmapped read") {
     val read = UnmappedRead(
       22, // token
+      "read1",
       "TCGACCCTCGA",
       Array[Byte]((10 to 20).map(_.toByte): _*),
       true,
@@ -45,6 +46,7 @@ class UnmappedReadSerializerSuite extends GuacFunSuite with Matchers {
 
     // So, instead, we'll compare each field ourselves:
     deserialized.token should equal(read.token)
+    deserialized.name should equal(read.name)
     deserialized.sequence should equal(read.sequence)
     deserialized.baseQualities should equal(read.baseQualities)
     deserialized.isDuplicate should equal(read.isDuplicate)

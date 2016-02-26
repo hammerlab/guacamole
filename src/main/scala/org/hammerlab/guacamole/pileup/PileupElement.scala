@@ -49,28 +49,28 @@ case class PileupElement(
   assume(locus >= read.start)
   assume(locus < read.end)
 
-  lazy val cigarElement = read.cigarElements(cigarElementIndex)
-  lazy val nextCigarElement =
+  def cigarElement = read.cigarElements(cigarElementIndex)
+  def nextCigarElement =
     if (cigarElementIndex + 1 < read.cigarElements.size) {
       Some(read.cigarElements(cigarElementIndex + 1))
     } else {
       None
     }
 
-  lazy val referenceStringIdx =
+  def referenceStringIdx =
     (cigarElementLocus - read.start).toInt +
       (if (cigarElement.getOperator.consumesReferenceBases()) indexWithinCigarElement else 0)
 
-  lazy val cigarElementReadLength = CigarUtils.getReadLength(cigarElement)
-  lazy val cigarElementReferenceLength = CigarUtils.getReferenceLength(cigarElement)
-  lazy val cigarElementEndLocus = cigarElementLocus + cigarElementReferenceLength
+  def cigarElementReadLength = CigarUtils.getReadLength(cigarElement)
+  def cigarElementReferenceLength = CigarUtils.getReferenceLength(cigarElement)
+  def cigarElementEndLocus = cigarElementLocus + cigarElementReferenceLength
+
+  /*
+   * True if this is the last base of the current cigar element.
+   */
+  def isFinalCigarBase: Boolean = indexWithinCigarElement == cigarElement.getLength - 1
 
   lazy val alignment: Alignment = {
-
-    /*
-     * True if this is the last base of the current cigar element.
-     */
-    def isFinalCigarBase: Boolean = indexWithinCigarElement == cigarElement.getLength - 1
     val cigarOperator = cigarElement.getOperator
     val nextBaseCigarElement = if (isFinalCigarBase) nextCigarElement else Some(cigarElement)
     val nextBaseCigarOperator = nextBaseCigarElement.map(_.getOperator)
@@ -137,11 +137,11 @@ case class PileupElement(
   /* If you only care about what kind of CigarOperator is at this position, but not its associated sequence, then you
    * can use these state variables.
    */
-  lazy val isInsertion = alignment match { case Insertion(_, _) => true; case _ => false }
-  lazy val isDeletion = alignment match { case Deletion(_, _) => true; case _ => false }
-  lazy val isMidDeletion = alignment match { case MidDeletion(_) => true; case _ => false }
-  lazy val isMismatch = alignment match { case Mismatch(_, _, _) => true; case _ => false }
-  lazy val isMatch = alignment match { case Match(_, _) => true; case _ => false }
+  def isInsertion = alignment match { case Insertion(_, _) => true; case _ => false }
+  def isDeletion = alignment match { case Deletion(_, _) => true; case _ => false }
+  def isMidDeletion = alignment match { case MidDeletion(_) => true; case _ => false }
+  def isMismatch = alignment match { case Mismatch(_, _, _) => true; case _ => false }
+  def isMatch = alignment match { case Match(_, _) => true; case _ => false }
 
   /**
    * The sequenced nucleotides at this element.
@@ -151,8 +151,8 @@ case class PileupElement(
    * the inserted sequence starting at the current locus. Otherwise, this is
    * an array of length 1.
    */
-  lazy val sequencedBases: Seq[Byte] = alignment.sequencedBases
-  lazy val referenceBases: Seq[Byte] = alignment.referenceBases
+  def sequencedBases: Seq[Byte] = alignment.sequencedBases
+  def referenceBases: Seq[Byte] = alignment.referenceBases
 
   lazy val allele: Allele = Allele(referenceBases, sequencedBases)
 
@@ -163,7 +163,7 @@ case class PileupElement(
    * For insertions this the minimum base quality score of all the bases in the insertion.
    * For deletions this is the mapping quality as there are no base quality scores available.
    */
-  lazy val qualityScore: Int = alignment match {
+  def qualityScore: Int = alignment match {
     case Clipped | MidDeletion(_) => read.alignmentQuality
     case Deletion(_, qs)          => qs
     case MatchOrMisMatch(_, qs)   => qs
@@ -252,7 +252,7 @@ case class PileupElement(
    * If the read was positive then the sequencing end also corresponds to the read end positions
    * If the read was negative, the sequencing end is the mapped start position
    */
-  lazy val distanceFromSequencingEnd = if (read.isPositiveStrand) read.end - locus else locus - read.start
+  def distanceFromSequencingEnd = if (read.isPositiveStrand) read.end - locus else locus - read.start
 
 }
 
