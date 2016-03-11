@@ -87,26 +87,26 @@ object GermlineAssemblyCaller {
                          startLocus: Int,
                          endLocus: Int,
                          kmerSize: Int,
-                         minOccurrence: Int) = {
+                         minOccurrence: Int): Iterable[Array[Byte]] = {
 
       // Filter to reads that entirely cover the region
       // Exclude reads that have any non-M Cigars (these don't have a 1 to 1 base mapping to the region)
       val overlapping = reads
-        .filter(r => r.cigarElements.count(el => el.getOperator != CigarOperator.M) == 0)
+        .filter(r => !r.cigarElements.exists(el => el.getOperator != CigarOperator.M))
         .filter(r => r.overlapsLocus(startLocus) && r.overlapsLocus(endLocus - 1))
 
       // Extract the sequences from each region
       val sequences = overlapping
-        .map(r => (r, getSequenceFromRead(r, startLocus, endLocus)))
+        .map(r => getSequenceFromRead(r, startLocus, endLocus))
 
       // Filter to sequences that appear at least `minOccurrence` times
       sequences
-        .map(_._2)
         .filter(_.size == kmerSize)
         .groupBy(identity)
         .map(kv => (kv._1, kv._2.length))
         .filter(_._2 >= minOccurrence)
-        .map(_._1.toArray).toList
+        .map(_._1.toArray)
+
     }
 
     /**
@@ -353,25 +353,25 @@ object GermlineAssemblyCaller {
                                kmerSize: Int,
                                minOccurrence: Int,
                                maxPaths: Int,
-                               debugPrint: Boolean = false) = {
+                               debugPrint: Boolean = false): Seq[DeBruijnGraph#Path] = {
       val referenceKmerSource = referenceSequence.take(kmerSize)
       val referenceKmerSink = referenceSequence.takeRight(kmerSize)
 
-      val sources: Set[Array[Byte]] = (referenceKmerSource :: getConsensusKmer(
+      val sources: Set[Array[Byte]] = (getConsensusKmer(
         reads,
         referenceStart,
         referenceStart + kmerSize,
         kmerSize = kmerSize,
         minOccurrence = minOccurrence
-      )).toSet
+      ) ++ Seq(referenceKmerSource)).toSet
 
-      val sinks: Set[Array[Byte]] = (referenceKmerSink :: getConsensusKmer(
+      val sinks: Set[Array[Byte]] = (getConsensusKmer(
         reads,
         referenceEnd - kmerSize,
         referenceEnd,
         kmerSize = kmerSize,
         minOccurrence = minOccurrence
-      )).toSet
+      ) ++ Seq(referenceKmerSink)).toSet
 
       val currentGraph: DeBruijnGraph = DeBruijnGraph(
         reads.map(_.sequence),
