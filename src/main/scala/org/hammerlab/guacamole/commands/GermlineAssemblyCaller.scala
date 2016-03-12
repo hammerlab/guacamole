@@ -86,13 +86,12 @@ object GermlineAssemblyCaller {
     def getConsensusKmer(reads: Seq[MappedRead],
                          startLocus: Int,
                          endLocus: Int,
-                         kmerSize: Int,
                          minOccurrence: Int): Iterable[Array[Byte]] = {
 
       // Filter to reads that entirely cover the region
       // Exclude reads that have any non-M Cigars (these don't have a 1 to 1 base mapping to the region)
       val overlapping = reads
-        .filter(r => !r.cigarElements.exists(el => el.getOperator != CigarOperator.M))
+        .filter(!_.cigarElements.exists(_.getOperator != CigarOperator.M))
         .filter(r => r.overlapsLocus(startLocus) && r.overlapsLocus(endLocus - 1))
 
       // Extract the sequences from each region
@@ -101,7 +100,6 @@ object GermlineAssemblyCaller {
 
       // Filter to sequences that appear at least `minOccurrence` times
       sequences
-        .filter(_.size == kmerSize)
         .groupBy(identity)
         .map(kv => (kv._1, kv._2.length))
         .filter(_._2 >= minOccurrence)
@@ -303,18 +301,18 @@ object GermlineAssemblyCaller {
           (graph, windows) => {
             val window = windows.head
 
-            // Find the reads the overlap the center locus
-            val centerReads =
+            // Find the reads the overlap the center locus/ current locus
+            val currentLocusReads =
               window
                 .currentRegions()
                 .filter(_.overlapsLocus(window.currentLocus))
             val variableReads =
-              centerReads
+              currentLocusReads
                 .count(read => read.cigar.numCigarElements() > 1 || read.mdTagOpt.get.countOfMismatches > 0)
 
-            // Computer the number reads with variant bases from the reads overlapping the center
-            val centerVAF = variableReads.toFloat / centerReads.length
-            if (centerVAF > minAreaVaf) {
+            // Compute the number reads with variant bases from the reads overlapping the currentLocus
+            val currentLocusVAF = variableReads.toFloat / currentLocusReads.length
+            if (currentLocusVAF > minAreaVaf) {
               val result = discoverHaplotypes(
                 None,
                 window,
@@ -353,7 +351,7 @@ object GermlineAssemblyCaller {
                                kmerSize: Int,
                                minOccurrence: Int,
                                maxPaths: Int,
-                               debugPrint: Boolean = false): Seq[DeBruijnGraph#Path] = {
+                               debugPrint: Boolean = false) = {
       val referenceKmerSource = referenceSequence.take(kmerSize)
       val referenceKmerSink = referenceSequence.takeRight(kmerSize)
 
@@ -361,7 +359,6 @@ object GermlineAssemblyCaller {
         reads,
         referenceStart,
         referenceStart + kmerSize,
-        kmerSize = kmerSize,
         minOccurrence = minOccurrence
       ) ++ Seq(referenceKmerSource)).toSet
 
@@ -369,7 +366,6 @@ object GermlineAssemblyCaller {
         reads,
         referenceEnd - kmerSize,
         referenceEnd,
-        kmerSize = kmerSize,
         minOccurrence = minOccurrence
       ) ++ Seq(referenceKmerSink)).toSet
 
@@ -381,8 +377,8 @@ object GermlineAssemblyCaller {
       )
 
       for {
-        source <- sources;
-        sink <- sinks;
+        source <- sources
+        sink <- sinks
         path <- currentGraph.depthFirstSearch(
           source,
           sink,
