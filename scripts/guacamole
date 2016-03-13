@@ -4,9 +4,9 @@
 # If $GUACAMOLE_JAR is defined, then will execute that jar. 
 #
 echo "$@" >> ~/.guacamole.invocations.log
-
+PROJDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd )"
 if [ -z "${GUACAMOLE_JAR}" ]; then
-    jar=$(ls -tc target/guacamole-with-dependencies-*.jar | head -n 1)
+    jar=$(ls -tc ${PROJDIR}/target/guacamole-with-dependencies-*.jar | head -n 1)
     if [ -z "$jar" ]; then
         echo "Couldn't find a Guacamole jar in the target/ directory."
         echo "Are you in the root directory of the Guacamole repo, and have you built Guacamole?"

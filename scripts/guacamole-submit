@@ -1,0 +1,95 @@
+#!/usr/bin/env bash
+#
+# Licensed to Big Data Genomics (BDG) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The BDG licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+# usage: guacamole-submit [<spark-args> --] <guacamole-args>
+
+set -e
+
+
+# Figure out where GUACAMOLE is installed
+SCRIPT_DIR="$(cd `dirname $0`/..; pwd)"
+
+
+# Split args into Spark and GUACAMOLE args
+DD=False  # DD is "double dash"
+PRE_DD=()
+POST_DD=()
+for ARG in "$@"; do
+  shift
+  if [[ $ARG == "--" ]]; then
+    DD=True
+    POST_DD=( "$@" )
+    break
+  fi
+  PRE_DD+=("$ARG")
+done
+
+if [[ $DD == True ]]; then
+  SPARK_ARGS="${PRE_DD[@]}"
+  GUACAMOLE_ARGS="${POST_DD[@]}"
+else
+  SPARK_ARGS=()
+  GUACAMOLE_ARGS="${PRE_DD[@]}"
+fi
+
+# does the user have GUACAMOLE_OPTS set? if yes, then warn
+if [[ $DD == False && -n "$GUACAMOLE_OPTS" ]]; then
+    echo "WARNING: Passing Spark arguments via GUACAMOLE_OPTS was recently removed."
+    echo "Run guacamole-submit instead as guacamole-submit <spark-args> -- <guacamole-args>"
+fi
+
+echo "$@" >> ~/.guacamole.invocations.log
+if [ -z "${GUACAMOLE_JAR}" ]; then
+    GUACAMOLE_JAR=$(ls -tc ${SCRIPT_DIR}/target/guacamole-with-dependencies-*.jar | head -n 1)
+    if [ -z "$GUACAMOLE_JAR" ]; then
+        echo "Couldn't find a Guacamole jar in the target/ directory."
+        echo "Are you in the root directory of the Guacamole repo, and have you built Guacamole?"
+        echo "To build, run: "
+        echo "    mvn package -DskipTests=true"
+        exit 1
+    fi
+    echo "Using most recently modified jar: $GUACAMOLE_JAR"
+fi
+
+# Allow main class to be overridden
+if [ -z "$GUACAMOLE_MAIN" ]; then
+  GUACAMOLE_MAIN="org.hammerlab.guacamole.Guacamole"
+fi
+echo "Using GUACAMOLE_MAIN=$GUACAMOLE_MAIN"
+
+# Find spark-submit script
+if [ -z "$SPARK_HOME" ]; then
+  SPARK_SUBMIT=$(which spark-submit || echo)
+else
+  SPARK_SUBMIT="$SPARK_HOME"/bin/spark-submit
+fi
+if [ -z "$SPARK_SUBMIT" ]; then
+  echo "SPARK_HOME not set and spark-submit not on PATH; Aborting."
+  exit 1
+fi
+echo "Using SPARK_SUBMIT=$SPARK_SUBMIT"
+
+# submit the job to Spark
+"$SPARK_SUBMIT" \
+  --conf spark.akka.heartbeat.interval=10000 \
+  --conf spark.executor.heartbeatInterval=10000 \
+  --class $GUACAMOLE_MAIN \
+  $SPARK_ARGS \
+  $GUACAMOLE_JAR \
+  $GUACAMOLE_ARGS

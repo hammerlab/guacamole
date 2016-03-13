@@ -31,11 +31,14 @@ import org.hammerlab.guacamole.reference.ReferenceBroadcast.MapBackedReferenceSe
 import org.hammerlab.guacamole.reference.{ ContigSequence, ReferenceBroadcast }
 import org.hammerlab.guacamole.{ Bases, GuacamoleKryoRegistrator, ReadSet }
 import org.scalatest._
+import scala.util.Random
 
 import scala.collection.mutable
 import scala.math._
 
 object TestUtil extends Matchers {
+
+  val rand = new Random(31)
 
   object Implicits {
     implicit def basesToString = Bases.basesToString _
@@ -99,7 +102,7 @@ object TestUtil extends Matchers {
 
     Read(
       sequence,
-      name = "read1",
+      name = "read_" + rand.nextString(10),
       cigarString = cigar,
       start = start,
       referenceContig = chr,
@@ -127,7 +130,7 @@ object TestUtil extends Matchers {
     PairedRead(
       Read(
         sequence,
-        name = "read1",
+        name = "read_" + rand.nextString(10),
         cigarString = cigar,
         start = start,
         referenceContig = chr,

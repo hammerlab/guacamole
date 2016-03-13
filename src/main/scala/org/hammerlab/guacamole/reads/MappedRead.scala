@@ -72,6 +72,29 @@ case class MappedRead(
     count
   }
 
+  private var misMatchQscoreSum: Option[Int] = None
+  def sumOfMismatchQscores(referenceContigSequence: ContigSequence): Int = {
+    val qscoreSum = misMatchQscoreSum.getOrElse(sumOfMismatchQscoresLazy(referenceContigSequence))
+    misMatchQscoreSum = Some(qscoreSum)
+    qscoreSum
+  }
+  /**
+   * Number of mismatching bases in this read. Does *not* include indels: only looks at read bases that align to a
+   * single base in the reference and do not match it.
+   *
+   * @param referenceContigSequence the reference sequence for this read's contig
+   * @return count of mismatching bases
+   */
+  private def sumOfMismatchQscoresLazy(referenceContigSequence: ContigSequence): Int = {
+    var element = PileupElement(this, start, referenceContigSequence)
+    var count = (if (element.isMismatch) element.qualityScore else 0)
+    while (element.locus < end - 1) {
+      element = element.advanceToLocus(element.locus + 1)
+      count += (if (element.isMismatch) element.qualityScore else 0)
+    }
+    count
+  }
+
   lazy val alignmentLikelihood = PhredUtils.phredToSuccessProbability(alignmentQuality)
 
   /** Individual components of the CIGAR string (e.g. "10M"), parsed, and as a Scala buffer. */
