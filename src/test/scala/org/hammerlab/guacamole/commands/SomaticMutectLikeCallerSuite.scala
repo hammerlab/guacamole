@@ -50,7 +50,7 @@ class SomaticMutectLikeCallerSuite extends GuacFunSuite with Matchers with Table
           normalPileup)
         val filteredCalledGenotypes = calledGenotypes.filter(call => {
           SomaticMutectLike.Caller.finalMutectDbSnpCosmicNoisyFilter(call,
-            somDbSnpThreshold = somDbSnpThreshold, somNovelThreshold = somNovelThreshold) &&
+            somDbSnpThreshold = somDbSnpLODThreshold, somNovelThreshold = somNovelLODThreshold) &&
             SomaticMutectLike.Caller.mutectHeuristicFiltersPreDbLookup(call)
         })
         val foundVariant = filteredCalledGenotypes.size > 0

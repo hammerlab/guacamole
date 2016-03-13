@@ -52,16 +52,73 @@ object SomaticMutectLike {
 
   protected class Arguments extends SomaticCallerArgs {
 
-    @Args4jOption(name = "--odds", usage = "Minimum log odds threshold for possible variant candidates")
-    var oddsThreshold: Int = 20
+    @Args4jOption(name = "--min-tumor-log-odds", usage = "Minimum log odds for possible variant candidates in the tumor")
+    var tumorLODThreshold: Double = DefaultMutectArgs.tumorLODThreshold
 
-    @Args4jOption(name = "--dbsnp-vcf", required = true, usage = "VCF file to identify DBSNP variants")
+    @Args4jOption(name = "--min-normal-dbsnp-log-odds", usage = "Minimum log odds not heterozygous in the normal given dbSNP")
+    var somDbSnpLODThreshold: Double = DefaultMutectArgs.somDbSnpLODThreshold
+
+    @Args4jOption(name = "--min-normal-novel-log-odds", usage = "Minimum log odds not heterozygous in the normal given novel")
+    var somNovelLODThreshold: Double = DefaultMutectArgs.somNovelLODThreshold
+
+    @Args4jOption(name = "--minAlignmentQuality", usage = "Minimum alignment quality for pileup filtering")
+    var minAlignmentQuality: Int = DefaultMutectArgs.minAlignmentQuality
+
+    @Args4jOption(name = "--minBaseQuality", usage = "Minimum base quality for pileup filtering")
+    var minBaseQuality: Int = DefaultMutectArgs.minBaseQuality
+
+    @Args4jOption(name = "--maxGapEventsThresholdForPointMutations", usage = "Maximum number of nearby indels to call a SNP")
+    var maxGapEventsThresholdForPointMutations: Int = DefaultMutectArgs.maxGapEventsThresholdForPointMutations
+
+    @Args4jOption(name = "--minPassStringentFiltersTumor", usage = "Minimum fraction of reads passing the tumor stringent filters")
+    var minPassStringentFiltersTumor: Double = DefaultMutectArgs.minPassStringentFiltersTumor
+
+    @Args4jOption(name = "--maxMapq0Fraction", usage = "Maximum fraction of mapq 0 reads to allow a site")
+    var maxMapq0Fraction: Double = DefaultMutectArgs.maxMapq0Fraction
+
+    @Args4jOption(name = "--minPhredSupportingMutant", usage = "Minimum phred score of base supporting a mutation")
+    var minPhredSupportingMutant: Int = DefaultMutectArgs.minPhredSupportingMutant
+
+    @Args4jOption(name = "--indelNearnessThresholdForPointMutations", usage = "How close is too close for an indel to a point mutation")
+    var indelNearnessThresholdForPointMutations: Int = DefaultMutectArgs.indelNearnessThresholdForPointMutations
+
+    @Args4jOption(name = "--maxPhredSumMismatchingBases", usage = "Maximum sum of phred scores of mismatching bases in a tumor read to allow it")
+    var maxPhredSumMismatchingBases: Int = DefaultMutectArgs.maxPhredSumMismatchingBases
+
+    @Args4jOption(name = "--maxFractionBasesSoftClippedTumor", usage = "Maximum fraction of bases soft/hard clipped from a tumor read")
+    var maxFractionBasesSoftClippedTumor: Double = DefaultMutectArgs.maxFractionBasesSoftClippedTumor
+
+    @Args4jOption(name = "--maxNormalSupportingFracToTriggerQscoreCheck", usage = "Maximum fraction of alt alleles in normal to trigger qscore check")
+    var maxNormalSupportingFracToTriggerQscoreCheck: Double = DefaultMutectArgs.maxNormalSupportingFracToTriggerQscoreCheck
+
+    @Args4jOption(name = "--maxNormalQscoreSumSupportingMutant", usage = "Max qscore sum of mutant in normal sample if triggered by fraction")
+    var maxNormalQscoreSumSupportingMutant: Int = DefaultMutectArgs.maxNormalQscoreSumSupportingMutant
+
+    @Args4jOption(name = "--minMedianDistanceFromReadEnd", usage = "Minimal median distance of allele from ends of reads")
+    var minMedianDistanceFromReadEnd: Int = DefaultMutectArgs.minMedianDistanceFromReadEnd
+
+    @Args4jOption(name = "--minMedianAbsoluteDeviationOfAlleleInRead", usage = "Minimal absolute deviation of allele in reads")
+    var minMedianAbsoluteDeviationOfAlleleInRead: Int = DefaultMutectArgs.minMedianAbsoluteDeviationOfAlleleInRead
+
+    @Args4jOption(name = "--errorForPowerCalculations", usage = "Assumed error rate in power calculations")
+    var errorForPowerCalculations: Double = DefaultMutectArgs.errorForPowerCalculations
+
+    @Args4jOption(name = "--minThetaForPowerCalc", usage = "Assumed theta in power calculations")
+    var minThetaForPowerCalc: Int = DefaultMutectArgs.minThetaForPowerCalc
+
+    //    @Args4jOption(name = "--contamFrac", usage = "Fraction of contaminating reads in normal/tumor samples")
+    //    var contamFrac: Double = DefaultMutectArgs.contamFrac.getOrElse(0.0)
+
+    @Args4jOption(name = "--maxReadDepth", usage = "Maximum read depth to consider")
+    var maxReadDepth: Int = DefaultMutectArgs.maxReadDepth
+
+    @Args4jOption(name = "--dbsnp-vcf", required = false, usage = "VCF file to identify DBSNP variants")
     var dbSnpVcf: String = ""
 
-    @Args4jOption(name = "--cosmic-vcf", required = true, usage = "VCF file to identify Cosmic variants")
+    @Args4jOption(name = "--cosmic-vcf", required = false, usage = "VCF file to identify Cosmic variants")
     var cosmicVcf: String = ""
 
-    @Args4jOption(name = "--noisy-muts-vcf", required = true, usage = "VCF file to filter noisy variants")
+    @Args4jOption(name = "--noisy-muts-vcf", required = false, usage = "VCF file to filter noisy variants")
     var noiseVcf: String = ""
 
     @Args4jOption(name = "--reference-fasta", required = false, usage = "Local path to a reference FASTA file")
@@ -72,24 +129,23 @@ object SomaticMutectLike {
   object DefaultMutectArgs {
     val minAlignmentQuality: Int = 1
     val minBaseQuality: Int = 5
-    val threshold: Double = 6.3
-    val somDbSnpThreshold: Double = 5.5
-    val somNovelThreshold: Double = 2.2
-    val maxGapEventsThreshold: Int = 3
-    val minPassStringentFiltersTumor: Double = 0.3
+    val tumorLODThreshold: Double = 6.3
+    val somDbSnpLODThreshold: Double = 5.5
+    val somNovelLODThreshold: Double = 2.2
+    val maxGapEventsThresholdForPointMutations: Int = 3
+    val minPassStringentFiltersTumor: Double = 0.7
     val maxMapq0Fraction: Double = 0.5
     val minPhredSupportingMutant: Int = 20
-    val indelNearnessThreshold: Int = 5
+    val indelNearnessThresholdForPointMutations: Int = 5
     val maxPhredSumMismatchingBases: Int = 100
     val maxFractionBasesSoftClippedTumor: Double = 0.3
     val maxNormalSupportingFracToTriggerQscoreCheck: Double = 0.015
     val maxNormalQscoreSumSupportingMutant: Int = 20
     val minMedianDistanceFromReadEnd: Int = 10
     val minMedianAbsoluteDeviationOfAlleleInRead: Int = 3
-    val onlyPointMutations: Boolean = true
     val errorForPowerCalculations: Double = 0.001
     val minThetaForPowerCalc: Int = 20
-    val f: Option[Double] = None
+    val contamFrac: Option[Double] = None
     val maxReadDepth: Int = Int.MaxValue
 
   }
@@ -102,7 +158,6 @@ object SomaticMutectLike {
 
       Common.validateArguments(args)
       val loci = Common.lociFromArguments(args)
-      import DefaultMutectArgs._
 
       val filters = Read.InputFilters(
         overlapsLoci = Some(loci),
@@ -140,10 +195,29 @@ object SomaticMutectLike {
           skipEmpty = true, // skip empty pileups
           function = (pileupTumor, pileupNormal) =>
             findPotentialVariantAtLocus(
-              pileupTumor,
-              pileupNormal).iterator,
+              rawTumorPileup = pileupTumor,
+              rawNormalPileup = pileupNormal,
+              minAlignmentQuality = args.minAlignmentQuality,
+              minBaseQuality = args.minBaseQuality,
+              tumorLODThreshold = args.tumorLODThreshold,
+              maxPhredSumMismatchingBases = args.maxPhredSumMismatchingBases,
+              indelNearnessThresholdForPointMutations = args.indelNearnessThresholdForPointMutations,
+              maxFractionBasesSoftClippedTumor = args.maxFractionBasesSoftClippedTumor,
+              errorForPowerCalculations = args.errorForPowerCalculations,
+              minThetaForPowerCalc = args.minThetaForPowerCalc,
+              //contamFrac = Some(args.contamFrac),
+              maxReadDepth = args.maxReadDepth).iterator,
           referenceGenome = reference
-        ).filter(mutectHeuristicFiltersPreDbLookup(_))
+        ).filter(c => mutectHeuristicFiltersPreDbLookup(call = c,
+            minThetaForPowerCalc = args.minThetaForPowerCalc,
+            maxGapEventsThresholdForPointMutations = args.maxGapEventsThresholdForPointMutations,
+            minPassStringentFiltersTumor = args.minPassStringentFiltersTumor,
+            maxMapq0Fraction = args.maxMapq0Fraction,
+            minPhredSupportingMutant = args.minPhredSupportingMutant,
+            maxNormalSupportingFracToTriggerQscoreCheck = args.maxNormalSupportingFracToTriggerQscoreCheck,
+            maxNormalQscoreSumSupportingMutant = args.maxNormalQscoreSumSupportingMutant,
+            minMedianDistanceFromReadEnd = args.minMedianDistanceFromReadEnd,
+            minMedianAbsoluteDeviationOfAlleleInRead = args.minMedianAbsoluteDeviationOfAlleleInRead))
 
       potentialGenotypes.persist()
       Common.progress("Computed %,d potential genotypes".format(potentialGenotypes.count))
@@ -184,7 +258,10 @@ object SomaticMutectLike {
           })
       }
 
-      val filteredGenotypes: RDD[CalledMutectSomaticAllele] = potentialGenotypes.filter(finalMutectDbSnpCosmicNoisyFilter(_, somDbSnpThreshold, somNovelThreshold))
+      val filteredGenotypes: RDD[CalledMutectSomaticAllele] = potentialGenotypes.filter(
+        finalMutectDbSnpCosmicNoisyFilter(_,
+          args.somDbSnpLODThreshold,
+          args.somNovelLODThreshold))
 
       Common.progress("Computed %,d genotypes after basic filtering".format(filteredGenotypes.count))
 
@@ -258,7 +335,7 @@ object SomaticMutectLike {
         val distanceToThisElementEnd = pe.cigarElement.getLength - distanceToThisElementBegin
         //1 + (2 + (3 + 4)) -> foldRight
         //((1 + 2) + 3) + 4 -> foldLeft
-        val distanceForward = pe.read.cigarElements.drop(pe.cigarElementIndex).foldLeft((true, distanceToThisElementEnd))((keepLookingSum, element) => {
+        val distanceForward = pe.read.cigarElements.drop(1 + pe.cigarElementIndex).foldLeft((true, distanceToThisElementEnd))((keepLookingSum, element) => {
           val (keepLooking, basesTraversed) = keepLookingSum
           if (keepLooking && element.getOperator != cigarOperator)
             (true, basesTraversed + element.getLength)
@@ -292,19 +369,19 @@ object SomaticMutectLike {
     }
 
     def mutectHeuristicFiltersPreDbLookup(call: CalledMutectSomaticAllele,
-                                          minThetaForPowerCalc: Int = 20,
-                                          maxGapEventsThreshold: Int = 3,
-                                          minPassStringentFiltersTumor: Double = 0.3,
-                                          maxMapq0Fraction: Double = 0.5,
-                                          minPhredSupportingMutant: Int = 20,
-                                          maxNormalSupportingFracToTriggerQscoreCheck: Double = 0.015,
-                                          maxNormalQscoreSumSupportingMutant: Int = 20,
-                                          minMedianDistanceFromReadEnd: Int = 10,
-                                          minMedianAbsoluteDeviationOfAlleleInRead: Int = 3): Boolean = {
+                                          minThetaForPowerCalc: Int = DefaultMutectArgs.minThetaForPowerCalc,
+                                          maxGapEventsThresholdForPointMutations: Int = DefaultMutectArgs.maxGapEventsThresholdForPointMutations,
+                                          minPassStringentFiltersTumor: Double = DefaultMutectArgs.minPassStringentFiltersTumor,
+                                          maxMapq0Fraction: Double = DefaultMutectArgs.maxMapq0Fraction,
+                                          minPhredSupportingMutant: Int = DefaultMutectArgs.minPhredSupportingMutant,
+                                          maxNormalSupportingFracToTriggerQscoreCheck: Double = DefaultMutectArgs.maxNormalSupportingFracToTriggerQscoreCheck,
+                                          maxNormalQscoreSumSupportingMutant: Int = DefaultMutectArgs.maxNormalQscoreSumSupportingMutant,
+                                          minMedianDistanceFromReadEnd: Int = DefaultMutectArgs.minMedianDistanceFromReadEnd,
+                                          minMedianAbsoluteDeviationOfAlleleInRead: Int = DefaultMutectArgs.minMedianAbsoluteDeviationOfAlleleInRead): Boolean = {
 
-      val passIndel: Boolean = call.mutectEvidence.nInsertions < maxGapEventsThreshold && call.mutectEvidence.nDeletions < maxGapEventsThreshold
+      val passIndel: Boolean = call.mutectEvidence.nInsertions < maxGapEventsThresholdForPointMutations && call.mutectEvidence.nDeletions < maxGapEventsThresholdForPointMutations || call.length > 1
 
-      val passStringentFilters = call.mutectEvidence.heavilyFilteredDepth / call.tumorVariantEvidence.readDepth.toDouble > (1.0 - minPassStringentFiltersTumor)
+      val passStringentFilters = call.mutectEvidence.heavilyFilteredDepth / call.tumorVariantEvidence.readDepth.toDouble > minPassStringentFiltersTumor
 
       // Try replacing this with a strict fischer's exact test?
       val passMaxNormalSupport = call.mutectEvidence.filteredNormalAltDepth.toDouble / call.mutectEvidence.filteredNormalDepth.toDouble <= maxNormalSupportingFracToTriggerQscoreCheck ||
@@ -329,15 +406,15 @@ object SomaticMutectLike {
 
     def findPotentialVariantAtLocus(rawTumorPileup: Pileup,
                                     rawNormalPileup: Pileup,
-                                    minAlignmentQuality: Int = 1,
-                                    minBaseQuality: Int = 5,
-                                    threshold: Double = 6.3,
-                                    maxPhredSumMismatchingBases: Int = 100,
-                                    indelNearnessThreshold: Int = 5,
-                                    maxFractionBasesSoftClippedTumor: Double = 0.3,
-                                    onlyPointMutations: Boolean = true,
-                                    errorForPowerCalculations: Double = 0.001,
-                                    f: Option[Double] = None,
+                                    minAlignmentQuality: Int = DefaultMutectArgs.minAlignmentQuality,
+                                    minBaseQuality: Int = DefaultMutectArgs.minBaseQuality,
+                                    tumorLODThreshold: Double = DefaultMutectArgs.tumorLODThreshold,
+                                    maxPhredSumMismatchingBases: Int = DefaultMutectArgs.maxPhredSumMismatchingBases,
+                                    indelNearnessThresholdForPointMutations: Int = DefaultMutectArgs.indelNearnessThresholdForPointMutations,
+                                    maxFractionBasesSoftClippedTumor: Double = DefaultMutectArgs.maxFractionBasesSoftClippedTumor,
+                                    errorForPowerCalculations: Double = DefaultMutectArgs.errorForPowerCalculations,
+                                    //contamFrac: Option[Double] = None, //TODO swap M0 for Mcontam model
+                                    minThetaForPowerCalc: Int = DefaultMutectArgs.minThetaForPowerCalc,
                                     maxReadDepth: Int = Int.MaxValue): Seq[CalledMutectSomaticAllele] = {
       val model = MutectLogOdds
       val somaticModel = MutectSomaticLogOdds
@@ -368,12 +445,12 @@ object SomaticMutectLike {
           {
             val logOdds = model.logOdds(Bases.basesToString(alt.refBases),
               Bases.basesToString(alt.altBases),
-              heavilyFilteredTumorPuElements, f)
+              heavilyFilteredTumorPuElements, None)
             (logOdds, alt)
           }
         }.toSeq.sorted.reverse
       //
-      val passingOddsAlts = rankedAlts.filter(oa => oa._1 >= threshold)
+      val passingOddsAlts = rankedAlts.filter(oa => oa._1 >= tumorLODThreshold)
 
       //
       if (passingOddsAlts.length == 1) {
@@ -383,8 +460,8 @@ object SomaticMutectLike {
         val normalNotHet = somaticModel.logOdds(Bases.basesToString(alt.refBases),
           Bases.basesToString(alt.altBases), mapqAndBaseqFilteredNormalPileup.elements, None)
 
-        val nInsertions = heavilyFilteredTumorPuElements.map(ao => if (distanceToNearestReadInsertionOrDeletion(ao, true).getOrElse(Int.MaxValue) <= indelNearnessThreshold) 1 else 0).sum
-        val nDeletions = heavilyFilteredTumorPuElements.map(ao => if (distanceToNearestReadInsertionOrDeletion(ao, false).getOrElse(Int.MaxValue) <= indelNearnessThreshold) 1 else 0).sum
+        val nInsertions = heavilyFilteredTumorPuElements.map(ao => if (distanceToNearestReadInsertionOrDeletion(ao, true).getOrElse(Int.MaxValue) <= indelNearnessThresholdForPointMutations) 1 else 0).sum
+        val nDeletions = heavilyFilteredTumorPuElements.map(ao => if (distanceToNearestReadInsertionOrDeletion(ao, false).getOrElse(Int.MaxValue) <= indelNearnessThresholdForPointMutations) 1 else 0).sum
 
         val heavilyFilteredDepth = heavilyFilteredTumorPuElements.length
 
@@ -414,8 +491,8 @@ object SomaticMutectLike {
         val lodPos = model.logOdds(Bases.basesToString(alt.refBases), Bases.basesToString(alt.altBases), tumorPos, Some(tPosFrac))
         val lodNeg = model.logOdds(Bases.basesToString(alt.refBases), Bases.basesToString(alt.altBases), tumorNeg, Some(tNegFrac))
 
-        val powerPos = calculateStrandPower(tumorPosDepth, alleleFrac)
-        val powerNeg = calculateStrandPower(tumorNegDepth, alleleFrac)
+        val powerPos = calculateStrandPower(tumorPosDepth, alleleFrac, minThetaForPowerCalc)
+        val powerNeg = calculateStrandPower(tumorNegDepth, alleleFrac, minThetaForPowerCalc)
 
         val forwardPositions: Seq[Double] = onlyTumorMut.map(_.readPosition.toDouble)
         val reversePositions: Seq[Double] = onlyTumorMut.map(ao => ao.read.sequence.length - ao.readPosition.toDouble - 1.0)
@@ -460,7 +537,8 @@ object SomaticMutectLike {
           somaticLogOdds = tumorSomaticOdds,
           tumorVariantEvidence = tumorVariantEvidence,
           normalReferenceEvidence = normalReferenceEvidence,
-          mutectEvidence = mutectEvidence
+          mutectEvidence = mutectEvidence,
+          length = Math.max(alt.refBases.length, alt.altBases.length)
         ))
 
       } else {
@@ -469,10 +547,12 @@ object SomaticMutectLike {
     }
   }
 
-  def calculateStrandPower(depth: Int, f: Double, errorForPowerCalculations: Double = 0.001, minThetaForPowerCalc: Int = 20): Double = {
+  def calculateStrandPower(depth: Int, f: Double,
+                           errorForPowerCalculations: Double = DefaultMutectArgs.errorForPowerCalculations,
+                           minThetaForPowerCalc: Int = DefaultMutectArgs.minThetaForPowerCalc): Double = {
     /* The power to detect a mutant is a function of depth, and the mutant allele fraction (unstranded).
         Basically you assume that the probability of observing a base error is uniform and 0.001 (phred score of 30).
-        You see how many reads you require to pass the LOD threshold of 2.0, and then you calculate the binomial
+        You see how many reads you require to pass the LOD tumorLODThreshold of 2.0, and then you calculate the binomial
         probability of observing that many or more reads would be observed given the allele fraction and depth.
         You also correct for the fact that the real result is somewhere between the minimum integer number to pass,
         and the number below it, so you scale your probability at k by 1 - (2.0 - lod_(k-1) )/(lod_(k) - lod_(k-1)).
