@@ -19,15 +19,12 @@
 package org.hammerlab.guacamole.commands
 
 import breeze.linalg.min
-import htsjdk.samtools.{ CigarElement, CigarOperator }
+import htsjdk.samtools.CigarOperator
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.rdd.ADAMContext
 import org.bdgenomics.formats.avro.DatabaseVariantAnnotation
 import org.hammerlab.guacamole.Common.Arguments.SomaticCallerArgs
-import org.hammerlab.guacamole.filters.PileupFilter.PileupFilterArguments
-import org.hammerlab.guacamole.filters.SomaticGenotypeFilter.SomaticGenotypeFilterArguments
-import org.hammerlab.guacamole.filters.{ PileupFilter, SomaticAlternateReadDepthFilter, SomaticGenotypeFilter, SomaticReadDepthFilter }
 import org.hammerlab.guacamole.likelihood._
 import org.hammerlab.guacamole.pileup.{ Pileup, PileupElement }
 import org.hammerlab.guacamole.reads.{ MDTagUtils, MappedRead, Read }
@@ -145,7 +142,7 @@ object SomaticMutectLike {
     val minMedianAbsoluteDeviationOfAlleleInRead: Int = 3
     val errorForPowerCalculations: Double = 0.001
     val minThetaForPowerCalc: Int = 20
-    val contamFrac: Option[Double] = None
+    //val contamFrac: Option[Double] = None
     val maxReadDepth: Int = Int.MaxValue
 
   }
@@ -301,7 +298,7 @@ object SomaticMutectLike {
           val noisyFilter = pe.read.mdTagOpt.map(m =>
             MDTagUtils.getMismatchingQscoreSum(m, pe.read.baseQualities, pe.read.cigar) >= maxPhredSumMismatchingBases
           ).getOrElse(false)
-          val mateRescueFilter = false //FIXME do we need to implement this?
+          val mateRescueFilter = false //TODO determine if we want to do XT=M tag filtering, only relevant for BWA
           clippedFilter || noisyFilter || mateRescueFilter
         })
       )
@@ -383,7 +380,6 @@ object SomaticMutectLike {
 
       val passStringentFilters = call.mutectEvidence.heavilyFilteredDepth / call.tumorVariantEvidence.readDepth.toDouble > minPassStringentFiltersTumor
 
-      // Try replacing this with a strict fischer's exact test?
       val passMaxNormalSupport = call.mutectEvidence.filteredNormalAltDepth.toDouble / call.mutectEvidence.filteredNormalDepth.toDouble <= maxNormalSupportingFracToTriggerQscoreCheck ||
         call.mutectEvidence.normalAltQscoreSum < maxNormalQscoreSumSupportingMutant
 
@@ -413,7 +409,8 @@ object SomaticMutectLike {
                                     indelNearnessThresholdForPointMutations: Int = DefaultMutectArgs.indelNearnessThresholdForPointMutations,
                                     maxFractionBasesSoftClippedTumor: Double = DefaultMutectArgs.maxFractionBasesSoftClippedTumor,
                                     errorForPowerCalculations: Double = DefaultMutectArgs.errorForPowerCalculations,
-                                    //contamFrac: Option[Double] = None, //TODO swap M0 for Mcontam model
+                                    //contamFrac: Option[Double] = None,
+                                    // TODO swap M0 for Mcontam model, basically test alleleFreq vs contamFreq rather than vs 0.0
                                     minThetaForPowerCalc: Int = DefaultMutectArgs.minThetaForPowerCalc,
                                     maxReadDepth: Int = Int.MaxValue): Seq[CalledMutectSomaticAllele] = {
       val model = MutectLogOdds
@@ -458,7 +455,7 @@ object SomaticMutectLike {
         val tumorSomaticOdds = passingOddsAlts(0)._1
 
         val normalNotHet = somaticModel.logOdds(Bases.basesToString(alt.refBases),
-          Bases.basesToString(alt.altBases), mapqAndBaseqFilteredNormalPileup.elements, None)
+          Bases.basesToString(alt.altBases), mapqBaseqAndOverlappingFragmentFilteredNormalPileup.elements, None)
 
         val nInsertions = heavilyFilteredTumorPuElements.map(ao => if (distanceToNearestReadInsertionOrDeletion(ao, true).getOrElse(Int.MaxValue) <= indelNearnessThresholdForPointMutations) 1 else 0).sum
         val nDeletions = heavilyFilteredTumorPuElements.map(ao => if (distanceToNearestReadInsertionOrDeletion(ao, false).getOrElse(Int.MaxValue) <= indelNearnessThresholdForPointMutations) 1 else 0).sum
@@ -472,9 +469,9 @@ object SomaticMutectLike {
         val onlyTumorMutRaw = rawTumorPileup.elements.filter(_.allele == alt)
         val maxAltQuality = onlyTumorMut.map(_.qualityScore).max
 
-        val normalAltQscoreSum = mapqAndBaseqFilteredNormalPileup.elements.filter(_.allele == alt).map(_.qualityScore).sum
-        val filteredNormalAltDepth = mapqAndBaseqFilteredNormalPileup.elements.filter(_.allele == alt).length
-        val filteredNormalDepth = mapqAndBaseqFilteredNormalPileup.depth
+        val normalAltQscoreSum = mapqBaseqAndOverlappingFragmentFilteredNormalPileup.elements.filter(_.allele == alt).map(_.qualityScore).sum
+        val filteredNormalAltDepth = mapqBaseqAndOverlappingFragmentFilteredNormalPileup.elements.filter(_.allele == alt).length
+        val filteredNormalDepth = mapqBaseqAndOverlappingFragmentFilteredNormalPileup.depth
 
         val tumorPos = mapqAndBaseqFilteredTumorPileup.elements.filter(_.read.isPositiveStrand)
         val tumorPosAlt = tumorPos.filter(_.allele == alt)
@@ -508,8 +505,8 @@ object SomaticMutectLike {
           odds / (1 + odds)
         }
 
-        val tumorVariantEvidence = AlleleEvidence(logOddsToP(tumorSomaticOdds), alt, mapqAndBaseqFilteredTumorPileup)
-        val normalReferenceEvidence = AlleleEvidence(logOddsToP(normalNotHet), Allele(alt.refBases, alt.refBases), mapqAndBaseqFilteredNormalPileup)
+        val tumorVariantEvidence = AlleleEvidence(logOddsToP(tumorSomaticOdds), alt, mapqBaseqAndOverlappingFragmentFilteredTumorPileup)
+        val normalReferenceEvidence = AlleleEvidence(logOddsToP(normalNotHet), Allele(alt.refBases, alt.refBases), mapqBaseqAndOverlappingFragmentFilteredNormalPileup)
         val mutectEvidence = MutectFilteringEvidence(mutLogOdds = normalNotHet,
           filteredNormalAltDepth = filteredNormalAltDepth,
           filteredNormalDepth = filteredNormalDepth,
