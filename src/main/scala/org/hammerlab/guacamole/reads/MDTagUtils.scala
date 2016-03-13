@@ -16,6 +16,62 @@ object MDTagUtils {
    *
    * Given a mdtag, read sequence, cigar, and a reference start position, returns the reference.
    *
+   * @param readQuals The qscore string of the read.
+   * @param cigar The cigar for the read.
+   * @return A sequence of bytes corresponding to the reference overlapping this read.
+   */
+  def getMismatchingQscoreSum(mdTag: MdTag,
+                              readQuals: Seq[Byte],
+                              cigar: Cigar): Int = {
+    var referencePos = mdTag.start
+    var readPos = 0
+    var mismatchQscoreSum = 0
+
+    // loop over all cigar elements
+    JavaConversions.asScalaBuffer(cigar.getCigarElements).foreach(cigarElement => {
+      cigarElement.getOperator match {
+        case CigarOperator.M | CigarOperator.EQ | CigarOperator.X => {
+          // if we are a match, loop over bases in element
+          for (i <- 0 until cigarElement.getLength) {
+            // if a mismatch, get from the mismatch set, else pull from read
+            mdTag.mismatches.get(referencePos) match {
+              case Some(_) => mismatchQscoreSum += readQuals(readPos).toInt
+              case _       => ()
+            }
+
+            readPos += 1
+            referencePos += 1
+          }
+        }
+        case CigarOperator.N => {
+          referencePos += cigarElement.getLength
+        }
+        case CigarOperator.D => {
+          referencePos += 1
+        }
+
+        case _ => {
+          // ignore inserts
+          if (cigarElement.getOperator.consumesReadBases) {
+            readPos += cigarElement.getLength
+          }
+          if (cigarElement.getOperator.consumesReferenceBases) {
+            throw new IllegalArgumentException("Cannot handle operator: " + cigarElement.getOperator)
+          }
+        }
+      }
+    })
+
+    mismatchQscoreSum
+  }
+
+  /**
+   * Adopted from ADAM's mdTag.getReference to operate on Seq[Byte] instead of strings
+   * Also we use a Buffer from spire here instead to avoid an additional array allocation and ensure
+   * we return an Array[Byte]
+   *
+   * Given a mdtag, read sequence, cigar, and a reference start position, returns the reference.
+   *
    * @param readSequence The base sequence of the read.
    * @param cigar The cigar for the read.
    * @return A sequence of bytes corresponding to the reference overlapping this read.

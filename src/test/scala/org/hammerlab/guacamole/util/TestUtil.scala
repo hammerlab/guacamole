@@ -29,10 +29,13 @@ import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads._
 import org.hammerlab.guacamole.{ Bases, GuacamoleKryoRegistrator, ReadSet }
 import org.scalatest._
+import scala.util.Random
 
 import scala.math._
 
 object TestUtil extends Matchers {
+
+  val rand = new Random(31)
 
   object Implicits {
     implicit def basesToString = Bases.basesToString _
@@ -78,7 +81,7 @@ object TestUtil extends Matchers {
 
     Read(
       sequence,
-      name = "read1",
+      name = "read_" + rand.nextString(10),
       cigarString = cigar,
       mdTagString = Some(mdtag),
       start = start,
@@ -108,7 +111,7 @@ object TestUtil extends Matchers {
     PairedRead(
       Read(
         sequence,
-        name = "read1",
+        name = "read_" + rand.nextString(10),
         cigarString = cigar,
         start = start,
         referenceContig = chr,
@@ -184,8 +187,9 @@ object TestUtil extends Matchers {
 
   def loadTumorNormalReads(sc: SparkContext,
                            tumorFile: String,
-                           normalFile: String): (Seq[MappedRead], Seq[MappedRead]) = {
-    val filters = Read.InputFilters(mapped = true, nonDuplicate = true, passedVendorQualityChecks = true)
+                           normalFile: String,
+                           mdFilter: Boolean = false): (Seq[MappedRead], Seq[MappedRead]) = {
+    val filters = Read.InputFilters(mapped = true, nonDuplicate = true, passedVendorQualityChecks = true, hasMdTag = mdFilter)
     (loadReads(sc, tumorFile, filters = filters).mappedReads.collect(), loadReads(sc, normalFile, filters = filters).mappedReads.collect())
   }
 

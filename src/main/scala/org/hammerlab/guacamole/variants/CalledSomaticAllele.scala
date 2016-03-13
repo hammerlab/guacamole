@@ -20,6 +20,20 @@ package org.hammerlab.guacamole.variants
 
 import org.bdgenomics.adam.util.PhredUtils
 
+trait CalledSomaticAlleleTrait extends ReferenceVariant {
+  val sampleName: String
+  val referenceContig: String
+  val start: Long
+  val allele: Allele
+  val somaticLogOdds: Double
+  val tumorVariantEvidence: AlleleEvidence
+  val normalReferenceEvidence: AlleleEvidence
+  val rsID: Option[Int]
+  val length: Int
+  val end: Long
+  val phredScaledSomaticLikelihood: Int
+}
+
 /**
  *
  * A variant that exists in a tumor sample, but not in the normal sample; includes supporting read statistics from both samples
@@ -34,6 +48,7 @@ import org.bdgenomics.adam.util.PhredUtils
  * @param rsID   identifier for the variant if it is in dbSNP
  * @param length length of the variant
  */
+
 case class CalledSomaticAllele(sampleName: String,
                                referenceContig: String,
                                start: Long,
@@ -42,7 +57,7 @@ case class CalledSomaticAllele(sampleName: String,
                                tumorVariantEvidence: AlleleEvidence,
                                normalReferenceEvidence: AlleleEvidence,
                                rsID: Option[Int] = None,
-                               length: Int = 1) extends ReferenceVariant {
+                               length: Int = 1) extends CalledSomaticAlleleTrait {
   val end: Long = start + 1L
 
   // P ( variant in tumor AND no variant in normal) = P(variant in tumor) * P(reference in normal)
