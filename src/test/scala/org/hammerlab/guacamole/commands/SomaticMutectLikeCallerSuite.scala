@@ -250,9 +250,9 @@ class SomaticMutectLikeCallerSuite extends GuacFunSuite with Matchers with Table
 
   test("Power calculations") {
     val errorQ30Alt3 = PhredUtils.phredToErrorProbability(30) / 3.0d
-    val power035 = SomaticMutectLike.calculateStrandPower(50, 0.35d, errorQ30Alt3, 6.3d)
+    val power035 = SomaticMutectLike.calculatePowerToDetect(50, 0.35d, errorQ30Alt3, 6.3d)
     assert(power035 === 0.9999994d)
-    val power005 = SomaticMutectLike.calculateStrandPower(50, 0.05d, errorQ30Alt3, 4.3d)
+    val power005 = SomaticMutectLike.calculatePowerToDetect(50, 0.05d, errorQ30Alt3, 4.3d)
     assert(power005 === 0.6068266d)
   }
 

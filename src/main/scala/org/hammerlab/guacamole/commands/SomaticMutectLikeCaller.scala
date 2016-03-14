@@ -488,8 +488,8 @@ object SomaticMutectLike {
         val lodPos = model.logOdds(Bases.basesToString(alt.refBases), Bases.basesToString(alt.altBases), tumorPos, Some(tPosFrac))
         val lodNeg = model.logOdds(Bases.basesToString(alt.refBases), Bases.basesToString(alt.altBases), tumorNeg, Some(tNegFrac))
 
-        val powerPos = calculateStrandPower(tumorPosDepth, alleleFrac, errorForPowerCalculations, minLodForPowerCalc)
-        val powerNeg = calculateStrandPower(tumorNegDepth, alleleFrac, errorForPowerCalculations, minLodForPowerCalc)
+        val powerPos = calculatePowerToDetect(tumorPosDepth, alleleFrac, errorForPowerCalculations, minLodForPowerCalc)
+        val powerNeg = calculatePowerToDetect(tumorNegDepth, alleleFrac, errorForPowerCalculations, minLodForPowerCalc)
 
         val forwardPositions: Seq[Double] = onlyTumorMut.map(_.readPosition.toDouble)
         val reversePositions: Seq[Double] = onlyTumorMut.map(ao => ao.read.sequence.length - ao.readPosition.toDouble - 1.0)
@@ -544,9 +544,9 @@ object SomaticMutectLike {
     }
   }
 
-  def calculateStrandPower(depth: Int, f: Double,
-                           errorForPowerCalculations: Double = DefaultMutectArgs.errorForPowerCalculations,
-                           minLodForPowerCalc: Double = DefaultMutectArgs.minLodForPowerCalc): Double = {
+  def calculatePowerToDetect(depth: Int, f: Double,
+                             errorForPowerCalculations: Double = DefaultMutectArgs.errorForPowerCalculations,
+                             minLodForPowerCalc: Double = DefaultMutectArgs.minLodForPowerCalc): Double = {
     /* The power to detect a mutant is a function of depth, and the mutant allele fraction (unstranded).
         Basically you assume that the probability of observing a base error is uniform and 0.001 (phred score of 30).
         You see how many reads you require to pass the LOD tumorLODThreshold of 2.0, and then you calculate the binomial
