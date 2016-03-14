@@ -100,8 +100,8 @@ object SomaticMutectLike {
     @Args4jOption(name = "--errorForPowerCalculations", usage = "Assumed error rate in power calculations")
     var errorForPowerCalculations: Double = DefaultMutectArgs.errorForPowerCalculations
 
-    @Args4jOption(name = "--minThetaForPowerCalc", usage = "Assumed theta in power calculations")
-    var minThetaForPowerCalc: Int = DefaultMutectArgs.minThetaForPowerCalc
+    @Args4jOption(name = "--minLodForPowerCalc", usage = "Assumed theta in power calculations")
+    var minLodForPowerCalc: Double = DefaultMutectArgs.minLodForPowerCalc
 
     //    @Args4jOption(name = "--contamFrac", usage = "Fraction of contaminating reads in normal/tumor samples")
     //    var contamFrac: Double = DefaultMutectArgs.contamFrac.getOrElse(0.0)
@@ -141,7 +141,7 @@ object SomaticMutectLike {
     val minMedianDistanceFromReadEnd: Int = 10
     val minMedianAbsoluteDeviationOfAlleleInRead: Int = 3
     val errorForPowerCalculations: Double = 0.001
-    val minThetaForPowerCalc: Int = 20
+    val minLodForPowerCalc: Double = 2.0d
     //val contamFrac: Option[Double] = None
     val maxReadDepth: Int = Int.MaxValue
 
@@ -201,12 +201,12 @@ object SomaticMutectLike {
               indelNearnessThresholdForPointMutations = args.indelNearnessThresholdForPointMutations,
               maxFractionBasesSoftClippedTumor = args.maxFractionBasesSoftClippedTumor,
               errorForPowerCalculations = args.errorForPowerCalculations,
-              minThetaForPowerCalc = args.minThetaForPowerCalc,
+              minLodForPowerCalc = args.minLodForPowerCalc,
               //contamFrac = Some(args.contamFrac),
               maxReadDepth = args.maxReadDepth).iterator,
           referenceGenome = reference
         ).filter(c => mutectHeuristicFiltersPreDbLookup(call = c,
-            minThetaForPowerCalc = args.minThetaForPowerCalc,
+            minLodForPowerCalc = args.minLodForPowerCalc,
             maxGapEventsThresholdForPointMutations = args.maxGapEventsThresholdForPointMutations,
             minPassStringentFiltersTumor = args.minPassStringentFiltersTumor,
             maxMapq0Fraction = args.maxMapq0Fraction,
@@ -366,7 +366,7 @@ object SomaticMutectLike {
     }
 
     def mutectHeuristicFiltersPreDbLookup(call: CalledMutectSomaticAllele,
-                                          minThetaForPowerCalc: Int = DefaultMutectArgs.minThetaForPowerCalc,
+                                          minLodForPowerCalc: Double = DefaultMutectArgs.minLodForPowerCalc,
                                           maxGapEventsThresholdForPointMutations: Int = DefaultMutectArgs.maxGapEventsThresholdForPointMutations,
                                           minPassStringentFiltersTumor: Double = DefaultMutectArgs.minPassStringentFiltersTumor,
                                           maxMapq0Fraction: Double = DefaultMutectArgs.maxMapq0Fraction,
@@ -388,8 +388,8 @@ object SomaticMutectLike {
 
       val passMaxMapqAlt = call.mutectEvidence.maxAltQuality >= minPhredSupportingMutant
 
-      val passingStrandBias = (call.mutectEvidence.powerPos < 0.9 || call.mutectEvidence.lodPos >= minThetaForPowerCalc) &&
-        (call.mutectEvidence.powerNeg < 0.9 || call.mutectEvidence.lodNeg >= minThetaForPowerCalc)
+      val passingStrandBias = (call.mutectEvidence.powerPos < 0.9 || call.mutectEvidence.lodPos >= minLodForPowerCalc) &&
+        (call.mutectEvidence.powerNeg < 0.9 || call.mutectEvidence.lodNeg >= minLodForPowerCalc)
 
       // Only pass mutations that do not cluster at the ends of reads
       val passEndClustering = (call.mutectEvidence.forwardMad > minMedianAbsoluteDeviationOfAlleleInRead || call.mutectEvidence.forwardMedian > minMedianAbsoluteDeviationOfAlleleInRead) &&
@@ -411,7 +411,7 @@ object SomaticMutectLike {
                                     errorForPowerCalculations: Double = DefaultMutectArgs.errorForPowerCalculations,
                                     //contamFrac: Option[Double] = None,
                                     // TODO swap M0 for Mcontam model, basically test alleleFreq vs contamFreq rather than vs 0.0
-                                    minThetaForPowerCalc: Int = DefaultMutectArgs.minThetaForPowerCalc,
+                                    minLodForPowerCalc: Double = DefaultMutectArgs.minLodForPowerCalc,
                                     maxReadDepth: Int = Int.MaxValue): Seq[CalledMutectSomaticAllele] = {
       val model = MutectLogOdds
       val somaticModel = MutectSomaticLogOdds
@@ -488,8 +488,8 @@ object SomaticMutectLike {
         val lodPos = model.logOdds(Bases.basesToString(alt.refBases), Bases.basesToString(alt.altBases), tumorPos, Some(tPosFrac))
         val lodNeg = model.logOdds(Bases.basesToString(alt.refBases), Bases.basesToString(alt.altBases), tumorNeg, Some(tNegFrac))
 
-        val powerPos = calculateStrandPower(tumorPosDepth, alleleFrac, minThetaForPowerCalc)
-        val powerNeg = calculateStrandPower(tumorNegDepth, alleleFrac, minThetaForPowerCalc)
+        val powerPos = calculateStrandPower(tumorPosDepth, alleleFrac, errorForPowerCalculations, minLodForPowerCalc)
+        val powerNeg = calculateStrandPower(tumorNegDepth, alleleFrac, errorForPowerCalculations, minLodForPowerCalc)
 
         val forwardPositions: Seq[Double] = onlyTumorMut.map(_.readPosition.toDouble)
         val reversePositions: Seq[Double] = onlyTumorMut.map(ao => ao.read.sequence.length - ao.readPosition.toDouble - 1.0)
@@ -546,7 +546,7 @@ object SomaticMutectLike {
 
   def calculateStrandPower(depth: Int, f: Double,
                            errorForPowerCalculations: Double = DefaultMutectArgs.errorForPowerCalculations,
-                           minThetaForPowerCalc: Int = DefaultMutectArgs.minThetaForPowerCalc): Double = {
+                           minLodForPowerCalc: Double = DefaultMutectArgs.minLodForPowerCalc): Double = {
     /* The power to detect a mutant is a function of depth, and the mutant allele fraction (unstranded).
         Basically you assume that the probability of observing a base error is uniform and 0.001 (phred score of 30).
         You see how many reads you require to pass the LOD tumorLODThreshold of 2.0, and then you calculate the binomial
@@ -576,8 +576,8 @@ object SomaticMutectLike {
         else {
           val mid = (begin + end) / 2
           val lod = getLod(mid)
-          val passingKupdate = if (lod >= minThetaForPowerCalc) Some((mid, lod)) else passingK
-          if (lod >= minThetaForPowerCalc && begin < end - 1) findMinPassingK(begin, mid, passingKupdate)
+          val passingKupdate = if (lod >= minLodForPowerCalc) Some((mid, lod)) else passingK
+          if (lod >= minLodForPowerCalc && begin < end - 1) findMinPassingK(begin, mid, passingKupdate)
           else if (begin < end - 1) findMinPassingK(mid, end, passingKupdate)
           else passingKupdate
         }
@@ -587,13 +587,19 @@ object SomaticMutectLike {
 
       if (kLodOpt.isDefined) {
         val (k, lod) = kLodOpt.get
-        val probabilities: Array[Double] = LogBinomial.calculateLogProbabilities(math.log(f), depth)
+        val probabilities: Array[Double] = LogBinomial.calculateLogProbabilities(math.log(f * (1 - errorForPowerCalculations) + (1 - f) * errorForPowerCalculations), depth)
         val binomials = probabilities.drop(k)
 
         val lodM1 = getLod(k - 1)
 
-        val partialLogPkM1: Double = probabilities(k - 1) + math.log(1.0 - (minThetaForPowerCalc - lodM1) / (lod - lodM1))
+        //val partialLogPkM1: Double = probabilities(k - 1) + math.log(1.0 - (minLodForPowerCalc - lodM1) / (lod - lodM1))
+        val lodM1MinLodDiff = (minLodForPowerCalc - lodM1)
+        val lodToLodM1Step = (lod - lodM1)
 
+        // if lod is barely more than minLodForPowerCalc then we have something like 0.999/1, we want to add a small slice of that
+        // on the other hand if lod >> minLodForPowerCalc then we have something like 0.01/1, we want to add a large slice of that
+
+        val partialLogPkM1 = probabilities(k - 1) + math.log(1.0 - (lodM1MinLodDiff / lodToLodM1Step))
         math.exp(LogUtils.sumLogProbabilities(partialLogPkM1 +: binomials))
 
       } else {

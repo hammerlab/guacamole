@@ -18,15 +18,18 @@
 
 package org.hammerlab.guacamole.commands
 
+import org.bdgenomics.adam.util.PhredUtils
 import org.hammerlab.guacamole.Bases
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.util.{ GuacFunSuite, TestUtil }
 import org.scalatest.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks
+import org.scalactic.TolerantNumerics
 import sext._
 
 class SomaticMutectLikeCallerSuite extends GuacFunSuite with Matchers with TableDrivenPropertyChecks {
+  implicit val doubleEq = TolerantNumerics.tolerantDoubleEquality(1e-6f)
 
   def loadPileup(filename: String, referenceName: String, locus: Long = 0): Pileup = {
     val records = TestUtil.loadReads(sc, filename).mappedReads
@@ -243,6 +246,14 @@ class SomaticMutectLikeCallerSuite extends GuacFunSuite with Matchers with Table
     testLocus("chr1", 14, "A", "ATC")
     testLocus("chr1", 16, "C", "CAAAA")
     testLocus("chr1", 18, "ATC", "A")
+  }
+
+  test("Power calculations") {
+    val errorQ30Alt3 = PhredUtils.phredToErrorProbability(30) / 3.0d
+    val power035 = SomaticMutectLike.calculateStrandPower(50, 0.35d, errorQ30Alt3, 6.3d)
+    assert(power035 === 0.9999994d)
+    val power005 = SomaticMutectLike.calculateStrandPower(50, 0.05d, errorQ30Alt3, 4.3d)
+    assert(power005 === 0.6068266d)
   }
 
 }

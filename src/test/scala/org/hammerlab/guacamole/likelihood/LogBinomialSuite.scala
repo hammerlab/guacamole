@@ -38,7 +38,7 @@ class LogBinomialSuite extends FunSuite {
       val binomialValues = LogBinomial.calculateLogProbabilities(log(p), n)
 
       (0 to n).foreach(j => {
-        binomialDist.logProbabilityOf(j) === binomialValues(j)
+        assert(binomialDist.logProbabilityOf(j) === binomialValues(j))
       })
     })
   }

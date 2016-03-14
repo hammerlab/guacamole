@@ -28,7 +28,7 @@ class LogUtilsSuite extends FunSuite {
 
   test("test our nifty log summer") {
     val sumLogs = LogUtils.sumLogProbabilities(Array(0.5, 0.25, 0.125, 0.1, 0.025).map(log(_)))
-    sumLogs === 0
+    assert(sumLogs === 0)
   }
 
   test("can we compute the sum of logs correctly?") {
@@ -40,7 +40,7 @@ class LogUtilsSuite extends FunSuite {
 
       val logPplusQ = LogUtils.logSum(log(p), log(q))
 
-      logPplusQ === log(p + q)
+      assert(logPplusQ === log(p + q))
     })
   }
 
@@ -52,7 +52,7 @@ class LogUtilsSuite extends FunSuite {
 
       val log1mP = LogUtils.logAdditiveInverse(log(p))
 
-      log1mP === log(1.0 - p)
+      assert(log1mP === log(1.0 - p))
     })
   }
 }

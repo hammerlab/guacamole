@@ -56,15 +56,15 @@ class MutectLikelihoodModelSuite extends FunSuite {
     // e = 10^(-p/10)
     // log10(prod(1-e))
     // > -0.001901013984
-    m0likelihood === -0.001901013984
-    mflikelihood === m0likelihood
+    assert(m0likelihood === -0.001901013984)
+    assert(mflikelihood === m0likelihood)
 
     val mhlikelihood = MHModel.logLikelihood("C", "A", all_c, None)
     // assuming f = 0.5 mhlikelihood
     // in R
     // log10(prod(0.5*(e/3) + 0.5*(1-e)))
     // -3.01156717
-    mhlikelihood === -3.01156717
+    assert(mhlikelihood === -3.01156717)
   }
   test("Likelihood of simple model, all errors, no reference or mutant sites") {
     val m0likelihood = M0Model.logLikelihood("T", "G", all_c, None)
@@ -78,9 +78,9 @@ class MutectLikelihoodModelSuite extends FunSuite {
     // e = 10^(-p/10)
     // log10(prod(e/3))
     // > -39.27121
-    m0likelihood === -39.27121255
-    mflikelihood === m0likelihood
-    mhlikelihood === m0likelihood
+    assert(m0likelihood === -39.27121255)
+    assert(mflikelihood === m0likelihood)
+    assert(mhlikelihood === m0likelihood)
 
   }
 
@@ -93,14 +93,14 @@ class MutectLikelihoodModelSuite extends FunSuite {
     // e = 10^(-p/10)
     // log10(prod(e/3))
     // > -39.27121
-    m0likelihood === -39.27121255
+    assert(m0likelihood === -39.27121255)
 
     val mhlikelihood = MHModel.logLikelihood("C", "A", all_c, None)
     // assuming f = 0.5 mhlikelihood
     // in R
     // log10(prod(0.5*(1-e) + 0.5*(e/3)))
     // -3.01156717
-    mhlikelihood === -3.01156717
+    assert(mhlikelihood === -3.01156717)
 
   }
 
@@ -117,22 +117,22 @@ class MutectLikelihoodModelSuite extends FunSuite {
     // er = 10^(-pr/10)
     // log10(prod(0.3*(1-em) + 0.7*(em/3))*prod( 0.3*(er/3) + 0.7*(1-er)))
     // -2.653910268
-    mflikelihood === -2.653910268
-    m03likelihood === mflikelihood //same if f properly calculated here
+    assert(mflikelihood === -2.653910268)
+    assert(m03likelihood === mflikelihood) //same if f properly calculated here
 
     // the no mutants model in R
     // log10(prod(0*(1-em) + 1*(em/3))*prod( 0*(er/3) + 1*(1-er)))
     // -10.73221105
-    m0likelihood === -10.73221105
+    assert(m0likelihood === -10.73221105)
     val logOddsMutant = MutectLogOdds.logOdds("C", "A", some_muts, None)
-    logOddsMutant === mflikelihood - m0likelihood
+    assert(logOddsMutant === mflikelihood - m0likelihood)
 
     // the heterozygous site model in R:
     // log10(prod(0.5*(1-em) + 0.5*(em/3))*prod( 0.5*(er/3) + 0.5*(1-er)))
     // -3.01156717
-    mhlikelihood === -3.01156717
+    assert(mhlikelihood === -3.01156717)
     val logOddsHet = MutectSomaticLogOdds.logOdds("C", "A", some_muts, None)
-    logOddsHet === m0likelihood - mhlikelihood
+    assert(logOddsHet === m0likelihood - mhlikelihood)
   }
 
 }
