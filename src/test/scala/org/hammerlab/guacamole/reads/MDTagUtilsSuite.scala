@@ -15,9 +15,18 @@ class MDTagUtilsSuite extends FunSuite with Matchers {
 
   test("rebuild reference with mismatches ") {
     val sequence = "GATGATTCGA"
+
     val read = TestUtil.makeRead(sequence, "10M", "0CC8")
     val (_, reference) = MDTagUtils.getReference(read, allowNBase = true)
     reference should be(Bases.stringToBases("CCTGATTCGA"))
+  }
+
+  test("Calculate mismatch qscore sum") {
+    val originalReference = "AAATTGATACTCGAACGA"
+    val read = TestUtil.makeRead(originalReference.substring(5, 15), "10M", "0C1C7", start = 5,
+      qualityScores = Some(Seq(31, 10, 32, 10, 10, 10, 10, 10, 10, 10)))
+    val mismatchQscoreSum = MDTagUtils.getMismatchingQscoreSum(read.mdTagOpt.get, read.baseQualities, read.cigar)
+    mismatchQscoreSum should be(63)
   }
 
   test("rebuild reference with indel") {
