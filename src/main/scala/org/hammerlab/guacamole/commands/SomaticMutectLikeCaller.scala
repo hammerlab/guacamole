@@ -36,7 +36,7 @@ import org.kohsuke.args4j.{ Option => Args4jOption }
 import scala.annotation.tailrec
 
 /**
- * Implementation of a Mutect like algorithm
+ * Implementation of a Mutect like algorithm. Please see docs/README_MutectLikeSomatic.md for more information.
  */
 object SomaticMutectLike {
 
@@ -138,7 +138,7 @@ object SomaticMutectLike {
     val minMedianAbsoluteDeviationOfAlleleInRead: Int = 3
     val errorForPowerCalculations: Double = 0.001
     val minLodForPowerCalc: Double = 2.0d
-    val contamFrac: Double = 0.02
+    val contamFrac: Double = 0.0
     val maxAltAllelesInNormalFilter: Int = 2
     val maxReadDepth: Int = Int.MaxValue
 
@@ -500,7 +500,7 @@ object SomaticMutectLike {
 
         val forwardPositions: Seq[Double] = onlyTumorMutHeavyFiltered.map(_.readPosition.toDouble)
         val reversePositions: Seq[Double] = onlyTumorMutHeavyFiltered.map(pileupElement =>
-            pileupElement.read.sequence.length - pileupElement.readPosition.toDouble - 1.0)
+          pileupElement.read.sequence.length - pileupElement.readPosition.toDouble - 1.0)
 
         val forwardMedian = median(forwardPositions)
         val reverseMedian = median(reversePositions)
