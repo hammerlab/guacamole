@@ -22,13 +22,15 @@ import org.scalatest.FunSuite
 import scala.math.log
 import scala.util.Random
 import org.scalactic.TolerantNumerics
+import org.scalactic.TolerantNumerics
 
 class LogUtilsSuite extends FunSuite {
-  import org.scalactic.TolerantNumerics
+  implicit val doubleEq = TolerantNumerics.tolerantDoubleEquality(1e-6f)
 
   test("test our nifty log summer") {
+
     val sumLogs = LogUtils.sumLogProbabilities(Array(0.5, 0.25, 0.125, 0.1, 0.025).map(log(_)))
-    assert(sumLogs === 0)
+    assert(sumLogs === 0.0d)
   }
 
   test("can we compute the sum of logs correctly?") {

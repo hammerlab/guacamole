@@ -390,8 +390,10 @@ object SomaticMutectLike {
 
       val passStringentFilters = call.mutectEvidence.heavilyFilteredDepth / call.tumorVariantEvidence.readDepth.toDouble > minPassStringentFiltersTumor
 
-      val passMaxNormalSupport = (call.mutectEvidence.filteredNormalAltDepth.toDouble / call.mutectEvidence.filteredNormalDepth.toDouble <= maxNormalSupportingFracToTriggerQscoreCheck ||
-        call.mutectEvidence.normalAltQscoreSum < maxNormalQscoreSumSupportingMutant) && call.mutectEvidence.filteredNormalAltDepth <= maxAltAllelesInNormalFilter
+      val normalAltF = call.mutectEvidence.filteredNormalAltDepth.toDouble / call.mutectEvidence.filteredNormalDepth.toDouble
+
+      val passMaxNormalSupport = if ((normalAltF >= maxNormalSupportingFracToTriggerQscoreCheck ||
+        call.mutectEvidence.filteredNormalAltDepth >= maxAltAllelesInNormalFilter) && (call.mutectEvidence.normalAltQscoreSum > maxNormalQscoreSumSupportingMutant)) false else true
 
       val passMapq0Filter = call.mutectEvidence.tumorMapq0Depth.toDouble / call.tumorVariantEvidence.readDepth.toDouble <= maxMapq0Fraction &&
         call.mutectEvidence.normalMapq0Depth.toDouble / call.tumorVariantEvidence.readDepth.toDouble <= maxMapq0Fraction
