@@ -109,6 +109,7 @@ class MutectLikelihoodModelSuite extends FunSuite {
     val m03likelihood = MfmModel.logLikelihood("C", "A", some_muts, Some(0.3))
     val mhlikelihood = MHModel.logLikelihood("C", "A", some_muts, None)
     val m0likelihood = M0Model.logLikelihood("C", "A", some_muts, None)
+    val m01likelihood = MfmModel.logLikelihood("C", "A", some_muts, Some(0.1))
     // f should be 0.3
     // in R
     // pm = seq(30,32)
@@ -120,6 +121,7 @@ class MutectLikelihoodModelSuite extends FunSuite {
     assert(mflikelihood === -2.653910268)
     assert(m03likelihood === mflikelihood) //same if f properly calculated here
 
+    assert(MutectContamLogOdds.logOdds("C", "A", some_muts, 0.1) === m03likelihood - m01likelihood)
     // the no mutants model in R
     // log10(prod(0*(1-em) + 1*(em/3))*prod( 0*(er/3) + 1*(1-er)))
     // -10.73221105
