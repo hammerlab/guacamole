@@ -36,18 +36,11 @@ import org.kohsuke.args4j.{ Option => Args4jOption }
 import scala.annotation.tailrec
 
 /**
- * Simple subtraction based somatic variant caller
- *
- * This takes two variant callers, calls variants on tumor and normal independently,
- * and outputs the variants in the tumor sample BUT NOT the normal sample.
- *
- * This assumes that both read sets only contain a single sample, otherwise we should compare
- * on a sample identifier when joining the genotypes
- *
+ * Implementation of a Mutect like algorithm
  */
 object SomaticMutectLike {
 
-  protected class Arguments extends SomaticCallerArgs {
+  protected class Arguments extends SomaticCallerArgs with Serializable {
 
     @Args4jOption(name = "--min-tumor-log-odds", usage = "Minimum log odds for possible variant candidates in the tumor")
     var tumorLODThreshold: Double = DefaultMutectArgs.tumorLODThreshold
@@ -286,23 +279,23 @@ object SomaticMutectLike {
       passSomatic && passNoiseFilter
     }
 
-    def mapqBaseqFilteredPu(pu: Pileup, minBaseQuality: Int, minAlignmentQuality: Int): Pileup = {
-      Pileup(pu.referenceName,
-        pu.locus,
-        pu.referenceBase,
-        pu.elements.filter(pe =>
-          pe.qualityScore >= minBaseQuality && pe.read.alignmentQuality >= minAlignmentQuality))
+    def mapqBaseqFilteredPu(pileup: Pileup, minBaseQuality: Int, minAlignmentQuality: Int): Pileup = {
+      Pileup(pileup.referenceName,
+        pileup.locus,
+        pileup.referenceBase,
+        pileup.elements.filter(pileupElement =>
+          pileupElement.qualityScore >= minBaseQuality && pileupElement.read.alignmentQuality >= minAlignmentQuality))
     }
 
-    def heavilyFilteredPu(pu: Pileup, maxFractionBasesSoftClippedTumor: Double, maxPhredSumMismatchingBases: Int): Pileup = {
-      Pileup(pu.referenceName,
-        pu.locus,
-        pu.referenceBase,
-        pu.elements.filterNot(pe => {
-          val clippedFilter = isReadHeavilyClipped(pe.read, maxFractionBasesSoftClippedTumor)
-          val noisyFilter = pe.read.mdTagOpt.map(m =>
-            MDTagUtils.getMismatchingQscoreSum(m, pe.read.baseQualities, pe.read.cigar) >= maxPhredSumMismatchingBases
-          ).getOrElse(false)
+    def heavilyFilteredPu(pileup: Pileup, maxFractionBasesSoftClippedTumor: Double, maxPhredSumMismatchingBases: Int): Pileup = {
+      Pileup(pileup.referenceName,
+        pileup.locus,
+        pileup.referenceBase,
+        pileup.elements.filterNot(pileupElement => {
+          val clippedFilter = isReadHeavilyClipped(pileupElement.read, maxFractionBasesSoftClippedTumor)
+          val noisyFilter = pileupElement.read.mdTagOpt.exists(m =>
+            MDTagUtils.getMismatchingQscoreSum(m, pileupElement.read.baseQualities, pileupElement.read.cigar) >= maxPhredSumMismatchingBases
+          )
           val mateRescueFilter = false //TODO determine if we want to do XT=M tag filtering, only relevant for BWA
           clippedFilter || noisyFilter || mateRescueFilter
         })
@@ -313,10 +306,11 @@ object SomaticMutectLike {
       Pileup(pu.referenceName,
         pu.locus,
         pu.referenceBase,
-        pu.elements.groupBy(pe => pe.read.name).map(nameSeq => {
+        pu.elements.groupBy(_.read.name).map(nameSeq => {
           val pileups = nameSeq._2
           pileups.tail.fold(pileups.head)(
-            (pu1: PileupElement, pu2: PileupElement) => if (pu1.qualityScore >= pu2.qualityScore) pu1 else pu2
+            (pileupElement1: PileupElement, pileupElement2: PileupElement) =>
+              if (pileupElement1.qualityScore >= pileupElement2.qualityScore) pileupElement1 else pileupElement2
           ) //chose the pileup element with the best quality score
         }).toSeq)
     }
@@ -446,8 +440,8 @@ object SomaticMutectLike {
         maxFractionBasesSoftClippedTumor, maxPhredSumMismatchingBases)
       val alleles = heavilyFilteredTumorPu.distinctAlleles.toSet
       val heavilyFilteredTumorPuElements = heavilyFilteredTumorPu.elements
-      def getFracHeavilyFiltered(a: Allele): Double = {
-        heavilyFilteredTumorPuElements.filter(_.allele == a).length / heavilyFilteredTumorPuElements.length.toDouble
+      def getFracHeavilyFiltered(allele: Allele): Double = {
+        heavilyFilteredTumorPuElements.filter(_.allele == allele).length / heavilyFilteredTumorPuElements.length.toDouble
       }
       //
       val rankedAlts: Seq[(Double, Allele)] =
@@ -461,7 +455,7 @@ object SomaticMutectLike {
           }
         }.toSeq.sorted.reverse
       //
-      val passingOddsAlts = rankedAlts.filter(oa => oa._1 >= tumorLODThreshold)
+      val passingOddsAlts = rankedAlts.filter(logOddsAltTuple => logOddsAltTuple._1 >= tumorLODThreshold)
 
       //
       if (passingOddsAlts.length == 1) {
@@ -471,8 +465,8 @@ object SomaticMutectLike {
         val normalNotHet = somaticModel.logOdds(Bases.basesToString(alt.refBases),
           Bases.basesToString(alt.altBases), mapqBaseqAndOverlappingFragmentFilteredNormalPileup.elements)
 
-        val nInsertions = heavilyFilteredTumorPuElements.map(ao => if (distanceToNearestReadInsertionOrDeletion(ao, true).getOrElse(Int.MaxValue) <= indelNearnessThresholdForPointMutations) 1 else 0).sum
-        val nDeletions = heavilyFilteredTumorPuElements.map(ao => if (distanceToNearestReadInsertionOrDeletion(ao, false).getOrElse(Int.MaxValue) <= indelNearnessThresholdForPointMutations) 1 else 0).sum
+        val nInsertions = heavilyFilteredTumorPuElements.map(pileupElement => if (distanceToNearestReadInsertionOrDeletion(pileupElement, true).getOrElse(Int.MaxValue) <= indelNearnessThresholdForPointMutations) 1 else 0).sum
+        val nDeletions = heavilyFilteredTumorPuElements.map(pileupElement => if (distanceToNearestReadInsertionOrDeletion(pileupElement, false).getOrElse(Int.MaxValue) <= indelNearnessThresholdForPointMutations) 1 else 0).sum
 
         val heavilyFilteredDepth = heavilyFilteredTumorPuElements.length
 
@@ -505,7 +499,8 @@ object SomaticMutectLike {
         val powerNeg = calculatePowerToDetect(tumorNegDepth, alleleFrac, errorForPowerCalculations, minLodForPowerCalc, contamFrac)
 
         val forwardPositions: Seq[Double] = onlyTumorMutHeavyFiltered.map(_.readPosition.toDouble)
-        val reversePositions: Seq[Double] = onlyTumorMutHeavyFiltered.map(ao => ao.read.sequence.length - ao.readPosition.toDouble - 1.0)
+        val reversePositions: Seq[Double] = onlyTumorMutHeavyFiltered.map(pileupElement =>
+            pileupElement.read.sequence.length - pileupElement.readPosition.toDouble - 1.0)
 
         val forwardMedian = median(forwardPositions)
         val reverseMedian = median(reversePositions)

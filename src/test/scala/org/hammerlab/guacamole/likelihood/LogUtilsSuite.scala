@@ -22,7 +22,6 @@ import org.scalatest.FunSuite
 import scala.math.log
 import scala.util.Random
 import org.scalactic.TolerantNumerics
-import org.scalactic.TolerantNumerics
 
 class LogUtilsSuite extends FunSuite {
   implicit val doubleEq = TolerantNumerics.tolerantDoubleEquality(1e-6f)
