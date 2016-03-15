@@ -268,7 +268,17 @@ object SomaticMutectLike {
       DelayedMessages.default.print()
     }
 
-    def finalMutectDbSnpCosmicNoisyFilter(somAllele: CalledMutectSomaticAllele, somDbSnpThreshold: Double, somNovelThreshold: Double): Boolean = {
+    /**
+      * A filter to apply to a CalledSomaticAllele based on dbsnp/cosmic/noisy site overlap
+      * @param somAllele The CalledMutectSomaticAllele to test
+      * @param somDbSnpThreshold dbsnp log odds threshold
+      * @param somNovelThreshold novel log odds threshold
+      * @return True if the site passes the final somatic calling threshold given dbsnp overlap
+      *           and also overlap with known problematic regions (noise filter). False otherwise
+      */
+    def finalMutectDbSnpCosmicNoisyFilter(somAllele: CalledMutectSomaticAllele,
+                                          somDbSnpThreshold: Double,
+                                          somNovelThreshold: Double): Boolean = {
       val recurrentMutSite = somAllele.cosOverlap.getOrElse(false)
       val noisyMutSite = somAllele.noiseOverlap.getOrElse(false)
       val dbSNPsite = somAllele.rsID.isDefined
@@ -279,6 +289,13 @@ object SomaticMutectLike {
       passSomatic && passNoiseFilter
     }
 
+    /**
+      * Filter a pileup based on a minimal base quality, and read mapping quality
+      * @param pileup Pileup to filter
+      * @param minBaseQuality
+      * @param minAlignmentQuality
+      * @return Filtered Pileup with failing elements removed
+      */
     def mapqBaseqFilteredPu(pileup: Pileup, minBaseQuality: Int, minAlignmentQuality: Int): Pileup = {
       Pileup(pileup.referenceName,
         pileup.locus,
@@ -287,6 +304,13 @@ object SomaticMutectLike {
           pileupElement.qualityScore >= minBaseQuality && pileupElement.read.alignmentQuality >= minAlignmentQuality))
     }
 
+    /**
+      * The heavy pileup filters (minus the mate rescue filter) as described in the mutect algorithm.
+      * @param pileup Pileup to filter
+      * @param maxFractionBasesSoftClippedTumor Reads with more than this fraction bases clipped are removed
+      * @param maxPhredSumMismatchingBases Reads with more than this phred score of mismatches are removed
+      * @return filtered Pileup
+      */
     def heavilyFilteredPu(pileup: Pileup, maxFractionBasesSoftClippedTumor: Double, maxPhredSumMismatchingBases: Int): Pileup = {
       Pileup(pileup.referenceName,
         pileup.locus,
@@ -302,11 +326,17 @@ object SomaticMutectLike {
       )
     }
 
-    def overlappingFragmentFilteredPileup(pu: Pileup): Pileup = {
-      Pileup(pu.referenceName,
-        pu.locus,
-        pu.referenceBase,
-        pu.elements.groupBy(_.read.name).map(nameSeq => {
+    /**
+      * For every overlpping fragment (pairs of reads overlaping the same position) return one of the pair with
+      *  the highest base quality score.
+      * @param pileup Pileup object to filter
+      * @return filtered Pileup object
+      */
+    def overlappingFragmentFilteredPileup(pileup: Pileup): Pileup = {
+      Pileup(pileup.referenceName,
+        pileup.locus,
+        pileup.referenceBase,
+        pileup.elements.groupBy(_.read.name).map(nameSeq => {
           val pileups = nameSeq._2
           pileups.tail.fold(pileups.head)(
             (pileupElement1: PileupElement, pileupElement2: PileupElement) =>
@@ -315,6 +345,13 @@ object SomaticMutectLike {
         }).toSeq)
     }
 
+    /**
+      * Function to determine if a read is heavily clipped --> more than a specified fraction of bases of this read
+      *   are Hard/Soft clipped
+      * @param read Read to examine
+      * @param maxFractionBasesSoftClippedTumor The fraction of bases in a clipped state to be considered heavily clipped
+      * @return True if at least maxFractionBasesSoftClilppedTumor are marked clipped in this read's cigar object
+      */
     def isReadHeavilyClipped(read: MappedRead, maxFractionBasesSoftClippedTumor: Double): Boolean = {
       def isClipped(cigarOperator: CigarOperator): Boolean = Set(CigarOperator.SOFT_CLIP, CigarOperator.HARD_CLIP).contains(cigarOperator)
 
@@ -325,23 +362,29 @@ object SomaticMutectLike {
       (trimmedBeginning + trimmedEnd) / (readLen + trimmedBeginning + trimmedEnd) >= maxFractionBasesSoftClippedTumor
     }
 
-    def distanceToNearestReadInsertionOrDeletion(pe: PileupElement, findInsertions: Boolean): Option[Int] = {
+    /**
+      * Find the distance from this pileup element within a read to the nearest insertion (or deletion) within this read
+      * @param pileupElement PileupElement to examine
+      * @param findInsertions True if you would like to find insertions, False for deletions.
+      * @return Optionally the minimal distance, None if no insertions (or deletions) found.
+      */
+    def distanceToNearestReadInsertionOrDeletion(pileupElement: PileupElement, findInsertions: Boolean): Option[Int] = {
       def readConsumedBases(ce: CigarElement): Int = {
         if (ce.getOperator.consumesReadBases) ce.getLength else 0
       }
       def distanceToCigarElement(cigarOperator: CigarOperator): Option[Int] = {
-        val distanceToThisElementBegin = if (pe.cigarElement.getOperator.consumesReadBases) pe.indexWithinCigarElement + 1 else 0
-        val distanceToThisElementEnd = if (pe.cigarElement.getOperator.consumesReadBases) (pe.cigarElement.getLength - pe.indexWithinCigarElement) else 0
+        val distanceToThisElementBegin = if (pileupElement.cigarElement.getOperator.consumesReadBases) pileupElement.indexWithinCigarElement + 1 else 0
+        val distanceToThisElementEnd = if (pileupElement.cigarElement.getOperator.consumesReadBases) (pileupElement.cigarElement.getLength - pileupElement.indexWithinCigarElement) else 0
         //1 + (2 + (3 + 4)) -> foldRight
         //((1 + 2) + 3) + 4 -> foldLeft
-        val distanceForward = pe.read.cigarElements.drop(1 + pe.cigarElementIndex).foldLeft((true, distanceToThisElementEnd))((keepLookingSum, element) => {
+        val distanceForward = pileupElement.read.cigarElements.drop(1 + pileupElement.cigarElementIndex).foldLeft((true, distanceToThisElementEnd))((keepLookingSum, element) => {
           val (keepLooking, basesTraversed) = keepLookingSum
           if (keepLooking && element.getOperator != cigarOperator)
             (true, basesTraversed + readConsumedBases(element))
           else
             (false, basesTraversed)
         })
-        val distanceReversed = pe.read.cigarElements.take(pe.cigarElementIndex).foldRight((true, distanceToThisElementBegin))((element, keepLookingSum) => {
+        val distanceReversed = pileupElement.read.cigarElements.take(pileupElement.cigarElementIndex).foldRight((true, distanceToThisElementBegin))((element, keepLookingSum) => {
           val (keepLooking, basesTraversed) = keepLookingSum
           if (keepLooking && element.getOperator != cigarOperator)
             (true, basesTraversed + readConsumedBases(element))
@@ -357,8 +400,8 @@ object SomaticMutectLike {
         }
 
       }
-      if ((pe.cigarElement.getOperator == CigarOperator.INSERTION && findInsertions) ||
-        (pe.cigarElement.getOperator == CigarOperator.DELETION && !findInsertions))
+      if ((pileupElement.cigarElement.getOperator == CigarOperator.INSERTION && findInsertions) ||
+        (pileupElement.cigarElement.getOperator == CigarOperator.DELETION && !findInsertions))
         Some(0)
       else {
         if (findInsertions)
@@ -368,6 +411,21 @@ object SomaticMutectLike {
       }
     }
 
+    /**
+      *
+      * @param call The CalledSomaticAllele to filter
+      * @param minLodForPowerCalc minimal LOD value to consider the strand-specific mutant LOD sufficient
+      * @param maxGapEventsThresholdForPointMutations Maximum number of nearby insertions or deletions to consider a point mutation in a problematic region
+      * @param minPassStringentFiltersTumor Minimal fraction of tumor reads that pass stringent filters to allow a call
+      * @param maxMapq0Fraction Maximum fraction of raw mapq0 reads to consider a call
+      * @param minPhredSupportingMutant Minimal phred score support of a mutation
+      * @param maxNormalSupportingFracToTriggerQscoreCheck maximal normal supporting fraction to trigger a normal qscore check
+      * @param maxNormalQscoreSumSupportingMutant  minimal sum of alternate allele in normal qscores to trigger a failure
+      * @param minMedianDistanceFromReadEnd minimum median distance from the end of reads to ensure the mutation is not too close to the ends
+      * @param minMedianAbsoluteDeviationOfAlleleInRead minimum median absolute deviation of the mutations to ensure that they are sufficiently unique by position
+      * @param maxAltAllelesInNormalFilter Maximum number of alt alleles in the normal sample at or above which a qscore sum check is enforced
+      * @return
+      */
     def mutectHeuristicFiltersPreDbLookup(call: CalledMutectSomaticAllele,
                                           minLodForPowerCalc: Double = DefaultMutectArgs.minLodForPowerCalc,
                                           maxGapEventsThresholdForPointMutations: Int = DefaultMutectArgs.maxGapEventsThresholdForPointMutations,
@@ -406,6 +464,23 @@ object SomaticMutectLike {
         passingStrandBias)
     }
 
+    /**
+      * Given a tumor/normal pileup, returns the raw called mutations, pre somatic filters or any other heuristic filters,
+      * but with all necessary information attached for those downstream filters to function efficiently.
+      * @param rawTumorPileup tumor pileup should be nearly completely unfiltered (maybe duplication/platform fail is ok)
+      * @param rawNormalPileup normal pileup should be nearly completely unfiltered (maybe duplication/platform fail is ok)
+      * @param minAlignmentQuality minimal alignment quality for the initial alignment quality filter
+      * @param minBaseQuality minimal base quality for the initial base quality filter
+      * @param tumorLODThreshold minimum LOD in the tumor sample to consider a mutant
+      * @param maxPhredSumMismatchingBases max phred sum of mismatching bases for stringent filters
+      * @param indelNearnessThresholdForPointMutations how close is too close for an indel to a read?
+      * @param maxFractionBasesSoftClippedTumor maximal fraction of bases that are soft clipped in a tumor
+      * @param errorForPowerCalculations assumed base error for power calculations related to strand filtering
+      * @param contamFrac fraction of tumor reads known to come from a contaminating source, used as the baseline allelic fraction for LOD calculation rather than 0
+      * @param minLodForPowerCalc minimal LOD value for the per-strand LOD calculation, assuming there is sufficient power to call strand-specific LOD
+      * @param maxReadDepth maximal read depth to consider this site.
+      * @return A Seq (0 or 1 length currently, only calling a single allele per site) with all necessary information for downstream filtering.
+      */
     def findPotentialVariantAtLocus(rawTumorPileup: Pileup,
                                     rawNormalPileup: Pileup,
                                     minAlignmentQuality: Int = DefaultMutectArgs.minAlignmentQuality,
@@ -552,6 +627,15 @@ object SomaticMutectLike {
     }
   }
 
+  /**
+    * The power to detect a
+    * @param depth depth for power calculation
+    * @param f fraction of bases alternate for power calculation
+    * @param errorForPowerCalculations error rate for power calc
+    * @param minLodForPowerCalc minimum LOD to calculate the power for
+    * @param contam the rate of contamination, we need to calculate the LOD beyond this contam fraction
+    * @return The power to call a site given the above minimums
+    */
   def calculatePowerToDetect(depth: Int, f: Double,
                              errorForPowerCalculations: Double = DefaultMutectArgs.errorForPowerCalculations,
                              minLodForPowerCalc: Double = DefaultMutectArgs.minLodForPowerCalc,
