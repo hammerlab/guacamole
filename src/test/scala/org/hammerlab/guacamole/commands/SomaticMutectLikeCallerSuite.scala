@@ -50,7 +50,8 @@ class SomaticMutectLikeCallerSuite extends GuacFunSuite with Matchers with Table
 
         val calledGenotypes = SomaticMutectLike.Caller.findPotentialVariantAtLocus(
           tumorPileup,
-          normalPileup)
+          normalPileup,
+          contamFrac = 0.0)
         val filteredCalledGenotypes = calledGenotypes.filter(call => {
           SomaticMutectLike.Caller.finalMutectDbSnpCosmicNoisyFilter(call,
             somDbSnpThreshold = somDbSnpLODThreshold, somNovelThreshold = somNovelLODThreshold) &&
@@ -116,7 +117,7 @@ class SomaticMutectLikeCallerSuite extends GuacFunSuite with Matchers with Table
     )
     val tumorPileup = Pileup(tumorReads, "chr1", 2)
 
-    SomaticMutectLike.Caller.findPotentialVariantAtLocus(tumorPileup, normalPileup).size should be(0)
+    SomaticMutectLike.Caller.findPotentialVariantAtLocus(tumorPileup, normalPileup, contamFrac = 0.0).size should be(0)
   }
 
   test("single-base deletion") {
@@ -132,7 +133,7 @@ class SomaticMutectLikeCallerSuite extends GuacFunSuite with Matchers with Table
       TestUtil.makeRead("TCGTCGA", "3M1D4M", "3^A4", 0))
     val tumorPileup = Pileup(tumorReads, "chr1", 2)
 
-    val alleles = SomaticMutectLike.Caller.findPotentialVariantAtLocus(tumorPileup, normalPileup)
+    val alleles = SomaticMutectLike.Caller.findPotentialVariantAtLocus(tumorPileup, normalPileup, contamFrac = 0.0)
     alleles.size should be(1)
 
     val allele = alleles(0).allele
@@ -155,7 +156,7 @@ class SomaticMutectLikeCallerSuite extends GuacFunSuite with Matchers with Table
     )
     val tumorPileup = Pileup(tumorReads, "chr1", 4)
 
-    val alleles = SomaticMutectLike.Caller.findPotentialVariantAtLocus(tumorPileup, normalPileup)
+    val alleles = SomaticMutectLike.Caller.findPotentialVariantAtLocus(tumorPileup, normalPileup, contamFrac = 0.0)
     alleles.size should be(1)
 
     val allele = alleles(0).allele
@@ -178,7 +179,7 @@ class SomaticMutectLikeCallerSuite extends GuacFunSuite with Matchers with Table
     )
     val tumorPileup = Pileup(tumorReads, "chr1", 3)
 
-    val alleles = SomaticMutectLike.Caller.findPotentialVariantAtLocus(tumorPileup, normalPileup)
+    val alleles = SomaticMutectLike.Caller.findPotentialVariantAtLocus(tumorPileup, normalPileup, contamFrac = 0.0)
     alleles.size should be(1)
 
     val allele = alleles(0).allele
@@ -200,7 +201,8 @@ class SomaticMutectLikeCallerSuite extends GuacFunSuite with Matchers with Table
     )
 
     val alleles = SomaticMutectLike.Caller.findPotentialVariantAtLocus(
-      Pileup(tumorReads, "chr1", 3), Pileup(normalReads, "chr1", 3)
+      Pileup(tumorReads, "chr1", 3), Pileup(normalReads, "chr1", 3),
+      contamFrac = 0.0
     )
     alleles.size should be(1)
 
@@ -233,7 +235,8 @@ class SomaticMutectLikeCallerSuite extends GuacFunSuite with Matchers with Table
       val normalPileup = Pileup(normalReads, referenceName, locus)
 
       val alleles = SomaticMutectLike.Caller.findPotentialVariantAtLocus(
-        Pileup(tumorReads, referenceName, locus), Pileup(normalReads, referenceName, locus)
+        Pileup(tumorReads, referenceName, locus), Pileup(normalReads, referenceName, locus),
+        contamFrac = 0.0
       )
       alleles.size should be(1)
 

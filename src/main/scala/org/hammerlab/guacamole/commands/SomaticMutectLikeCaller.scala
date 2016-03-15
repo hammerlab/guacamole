@@ -103,6 +103,9 @@ object SomaticMutectLike {
     @Args4jOption(name = "--minLodForPowerCalc", usage = "Assumed theta in power calculations")
     var minLodForPowerCalc: Double = DefaultMutectArgs.minLodForPowerCalc
 
+    @Args4jOption(name = "--maxAltAllelesInNormalFilter", usage = "Assumed theta in power calculations")
+    var maxAltAllelesInNormalFilter: Int = DefaultMutectArgs.maxAltAllelesInNormalFilter
+
     @Args4jOption(name = "--contamFrac", usage = "Fraction of contaminating reads in normal/tumor samples")
     var contamFrac: Double = DefaultMutectArgs.contamFrac
 
@@ -142,7 +145,8 @@ object SomaticMutectLike {
     val minMedianAbsoluteDeviationOfAlleleInRead: Int = 3
     val errorForPowerCalculations: Double = 0.001
     val minLodForPowerCalc: Double = 2.0d
-    val contamFrac: Double = 0.0
+    val contamFrac: Double = 0.02
+    val maxAltAllelesInNormalFilter: Int = 2
     val maxReadDepth: Int = Int.MaxValue
 
   }
@@ -214,7 +218,8 @@ object SomaticMutectLike {
             maxNormalSupportingFracToTriggerQscoreCheck = args.maxNormalSupportingFracToTriggerQscoreCheck,
             maxNormalQscoreSumSupportingMutant = args.maxNormalQscoreSumSupportingMutant,
             minMedianDistanceFromReadEnd = args.minMedianDistanceFromReadEnd,
-            minMedianAbsoluteDeviationOfAlleleInRead = args.minMedianAbsoluteDeviationOfAlleleInRead))
+            minMedianAbsoluteDeviationOfAlleleInRead = args.minMedianAbsoluteDeviationOfAlleleInRead,
+            maxAltAllelesInNormalFilter = args.maxAltAllelesInNormalFilter))
 
       potentialGenotypes.persist()
       Common.progress("Computed %,d potential genotypes".format(potentialGenotypes.count))
@@ -378,14 +383,15 @@ object SomaticMutectLike {
                                           maxNormalSupportingFracToTriggerQscoreCheck: Double = DefaultMutectArgs.maxNormalSupportingFracToTriggerQscoreCheck,
                                           maxNormalQscoreSumSupportingMutant: Int = DefaultMutectArgs.maxNormalQscoreSumSupportingMutant,
                                           minMedianDistanceFromReadEnd: Int = DefaultMutectArgs.minMedianDistanceFromReadEnd,
-                                          minMedianAbsoluteDeviationOfAlleleInRead: Int = DefaultMutectArgs.minMedianAbsoluteDeviationOfAlleleInRead): Boolean = {
+                                          minMedianAbsoluteDeviationOfAlleleInRead: Int = DefaultMutectArgs.minMedianAbsoluteDeviationOfAlleleInRead,
+                                          maxAltAllelesInNormalFilter: Int = DefaultMutectArgs.maxAltAllelesInNormalFilter): Boolean = {
 
       val passIndel: Boolean = call.mutectEvidence.nInsertions < maxGapEventsThresholdForPointMutations && call.mutectEvidence.nDeletions < maxGapEventsThresholdForPointMutations || call.length > 1
 
       val passStringentFilters = call.mutectEvidence.heavilyFilteredDepth / call.tumorVariantEvidence.readDepth.toDouble > minPassStringentFiltersTumor
 
-      val passMaxNormalSupport = call.mutectEvidence.filteredNormalAltDepth.toDouble / call.mutectEvidence.filteredNormalDepth.toDouble <= maxNormalSupportingFracToTriggerQscoreCheck ||
-        call.mutectEvidence.normalAltQscoreSum < maxNormalQscoreSumSupportingMutant
+      val passMaxNormalSupport = (call.mutectEvidence.filteredNormalAltDepth.toDouble / call.mutectEvidence.filteredNormalDepth.toDouble <= maxNormalSupportingFracToTriggerQscoreCheck ||
+        call.mutectEvidence.normalAltQscoreSum < maxNormalQscoreSumSupportingMutant) && call.mutectEvidence.filteredNormalAltDepth <= maxAltAllelesInNormalFilter
 
       val passMapq0Filter = call.mutectEvidence.tumorMapq0Depth.toDouble / call.tumorVariantEvidence.readDepth.toDouble <= maxMapq0Fraction &&
         call.mutectEvidence.normalMapq0Depth.toDouble / call.tumorVariantEvidence.readDepth.toDouble <= maxMapq0Fraction
