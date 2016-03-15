@@ -19,7 +19,7 @@
 package org.hammerlab.guacamole.commands
 
 import breeze.linalg.min
-import htsjdk.samtools.CigarOperator
+import htsjdk.samtools.{ CigarElement, CigarOperator }
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.rdd.ADAMContext
@@ -103,8 +103,8 @@ object SomaticMutectLike {
     @Args4jOption(name = "--minLodForPowerCalc", usage = "Assumed theta in power calculations")
     var minLodForPowerCalc: Double = DefaultMutectArgs.minLodForPowerCalc
 
-    //    @Args4jOption(name = "--contamFrac", usage = "Fraction of contaminating reads in normal/tumor samples")
-    //    var contamFrac: Double = DefaultMutectArgs.contamFrac.getOrElse(0.0)
+    @Args4jOption(name = "--contamFrac", usage = "Fraction of contaminating reads in normal/tumor samples")
+    var contamFrac: Double = DefaultMutectArgs.contamFrac
 
     @Args4jOption(name = "--maxReadDepth", usage = "Maximum read depth to consider")
     var maxReadDepth: Int = DefaultMutectArgs.maxReadDepth
@@ -136,13 +136,13 @@ object SomaticMutectLike {
     val indelNearnessThresholdForPointMutations: Int = 5
     val maxPhredSumMismatchingBases: Int = 100
     val maxFractionBasesSoftClippedTumor: Double = 0.3
-    val maxNormalSupportingFracToTriggerQscoreCheck: Double = 0.015
+    val maxNormalSupportingFracToTriggerQscoreCheck: Double = 0.03
     val maxNormalQscoreSumSupportingMutant: Int = 20
     val minMedianDistanceFromReadEnd: Int = 10
     val minMedianAbsoluteDeviationOfAlleleInRead: Int = 3
     val errorForPowerCalculations: Double = 0.001
     val minLodForPowerCalc: Double = 2.0d
-    //val contamFrac: Option[Double] = None
+    val contamFrac: Double = 0.0
     val maxReadDepth: Int = Int.MaxValue
 
   }
@@ -202,7 +202,7 @@ object SomaticMutectLike {
               maxFractionBasesSoftClippedTumor = args.maxFractionBasesSoftClippedTumor,
               errorForPowerCalculations = args.errorForPowerCalculations,
               minLodForPowerCalc = args.minLodForPowerCalc,
-              //contamFrac = Some(args.contamFrac),
+              contamFrac = args.contamFrac,
               maxReadDepth = args.maxReadDepth).iterator,
           referenceGenome = reference
         ).filter(c => mutectHeuristicFiltersPreDbLookup(call = c,
@@ -327,22 +327,25 @@ object SomaticMutectLike {
     }
 
     def distanceToNearestReadInsertionOrDeletion(pe: PileupElement, findInsertions: Boolean): Option[Int] = {
+      def readConsumedBases(ce: CigarElement): Int = {
+        if (ce.getOperator.consumesReadBases) ce.getLength else 0
+      }
       def distanceToCigarElement(cigarOperator: CigarOperator): Option[Int] = {
-        val distanceToThisElementBegin = pe.indexWithinCigarElement
-        val distanceToThisElementEnd = pe.cigarElement.getLength - distanceToThisElementBegin
+        val distanceToThisElementBegin = if (pe.cigarElement.getOperator.consumesReadBases) pe.indexWithinCigarElement + 1 else 0
+        val distanceToThisElementEnd = if (pe.cigarElement.getOperator.consumesReadBases) (pe.cigarElement.getLength - pe.indexWithinCigarElement) else 0
         //1 + (2 + (3 + 4)) -> foldRight
         //((1 + 2) + 3) + 4 -> foldLeft
         val distanceForward = pe.read.cigarElements.drop(1 + pe.cigarElementIndex).foldLeft((true, distanceToThisElementEnd))((keepLookingSum, element) => {
           val (keepLooking, basesTraversed) = keepLookingSum
           if (keepLooking && element.getOperator != cigarOperator)
-            (true, basesTraversed + element.getLength)
+            (true, basesTraversed + readConsumedBases(element))
           else
             (false, basesTraversed)
         })
         val distanceReversed = pe.read.cigarElements.take(pe.cigarElementIndex).foldRight((true, distanceToThisElementBegin))((element, keepLookingSum) => {
           val (keepLooking, basesTraversed) = keepLookingSum
           if (keepLooking && element.getOperator != cigarOperator)
-            (true, basesTraversed + element.getLength)
+            (true, basesTraversed + readConsumedBases(element))
           else
             (false, basesTraversed)
         })
@@ -355,7 +358,8 @@ object SomaticMutectLike {
         }
 
       }
-      if ((pe.isInsertion && findInsertions) || (pe.isDeletion && !findInsertions))
+      if ((pe.cigarElement.getOperator == CigarOperator.INSERTION && findInsertions) ||
+        (pe.cigarElement.getOperator == CigarOperator.DELETION && !findInsertions))
         Some(0)
       else {
         if (findInsertions)
@@ -409,11 +413,10 @@ object SomaticMutectLike {
                                     indelNearnessThresholdForPointMutations: Int = DefaultMutectArgs.indelNearnessThresholdForPointMutations,
                                     maxFractionBasesSoftClippedTumor: Double = DefaultMutectArgs.maxFractionBasesSoftClippedTumor,
                                     errorForPowerCalculations: Double = DefaultMutectArgs.errorForPowerCalculations,
-                                    //contamFrac: Option[Double] = None,
-                                    // TODO swap M0 for Mcontam model, basically test alleleFreq vs contamFreq rather than vs 0.0
+                                    contamFrac: Double = DefaultMutectArgs.contamFrac,
                                     minLodForPowerCalc: Double = DefaultMutectArgs.minLodForPowerCalc,
                                     maxReadDepth: Int = Int.MaxValue): Seq[CalledMutectSomaticAllele] = {
-      val model = MutectLogOdds
+      val contamModel = MutectContamLogOdds
       val somaticModel = MutectSomaticLogOdds
 
       val mapqAndBaseqFilteredNormalPileup = mapqBaseqFilteredPu(rawNormalPileup, minBaseQuality, minAlignmentQuality)
@@ -435,14 +438,17 @@ object SomaticMutectLike {
         maxFractionBasesSoftClippedTumor, maxPhredSumMismatchingBases)
       val alleles = heavilyFilteredTumorPu.distinctAlleles.toSet
       val heavilyFilteredTumorPuElements = heavilyFilteredTumorPu.elements
-
+      def getFracHeavilyFiltered(a: Allele): Double = {
+        heavilyFilteredTumorPuElements.filter(_.allele == a).length / heavilyFilteredTumorPuElements.length.toDouble
+      }
       //
       val rankedAlts: Seq[(Double, Allele)] =
         alleles.filter(_.isVariant).map { alt =>
           {
-            val logOdds = model.logOdds(Bases.basesToString(alt.refBases),
+            val logOdds = contamModel.logOdds(Bases.basesToString(alt.refBases),
               Bases.basesToString(alt.altBases),
-              heavilyFilteredTumorPuElements, None)
+              heavilyFilteredTumorPuElements,
+              math.min(contamFrac, getFracHeavilyFiltered(alt)))
             (logOdds, alt)
           }
         }.toSeq.sorted.reverse
@@ -455,7 +461,7 @@ object SomaticMutectLike {
         val tumorSomaticOdds = passingOddsAlts(0)._1
 
         val normalNotHet = somaticModel.logOdds(Bases.basesToString(alt.refBases),
-          Bases.basesToString(alt.altBases), mapqBaseqAndOverlappingFragmentFilteredNormalPileup.elements, None)
+          Bases.basesToString(alt.altBases), mapqBaseqAndOverlappingFragmentFilteredNormalPileup.elements)
 
         val nInsertions = heavilyFilteredTumorPuElements.map(ao => if (distanceToNearestReadInsertionOrDeletion(ao, true).getOrElse(Int.MaxValue) <= indelNearnessThresholdForPointMutations) 1 else 0).sum
         val nDeletions = heavilyFilteredTumorPuElements.map(ao => if (distanceToNearestReadInsertionOrDeletion(ao, false).getOrElse(Int.MaxValue) <= indelNearnessThresholdForPointMutations) 1 else 0).sum
@@ -465,9 +471,8 @@ object SomaticMutectLike {
         val tumorMapq0Depth = rawTumorPileup.elements.filter(_.read.alignmentQuality == 0).length
         val normalMapq0Depth = rawNormalPileup.elements.filter(_.read.alignmentQuality == 0).length
 
-        val onlyTumorMut = heavilyFilteredTumorPuElements.filter(_.allele == alt)
-        val onlyTumorMutRaw = rawTumorPileup.elements.filter(_.allele == alt)
-        val maxAltQuality = onlyTumorMut.map(_.qualityScore).max
+        val onlyTumorMutHeavyFiltered = heavilyFilteredTumorPuElements.filter(_.allele == alt)
+        val maxAltQuality = onlyTumorMutHeavyFiltered.map(_.qualityScore).max
 
         val normalAltQscoreSum = mapqBaseqAndOverlappingFragmentFilteredNormalPileup.elements.filter(_.allele == alt).map(_.qualityScore).sum
         val filteredNormalAltDepth = mapqBaseqAndOverlappingFragmentFilteredNormalPileup.elements.filter(_.allele == alt).length
@@ -478,21 +483,21 @@ object SomaticMutectLike {
         val tumorNeg = mapqAndBaseqFilteredTumorPileup.elements.filterNot(_.read.isPositiveStrand)
         val tumorNegAlt = tumorNeg.filter(_.allele == alt)
 
-        val alleleFrac = onlyTumorMut.length.toDouble / heavilyFilteredTumorPuElements.length.toDouble
+        val alleleFrac = onlyTumorMutHeavyFiltered.length.toDouble / heavilyFilteredTumorPuElements.length.toDouble
 
         val tumorPosDepth = tumorPos.size
         val tumorNegDepth = tumorNeg.size
         val tPosFrac = if (tumorPosDepth > 0) tumorPosAlt.size.toDouble / tumorPosDepth.toDouble else 0.0
         val tNegFrac = if (tumorNegDepth > 0) tumorNegAlt.size.toDouble / tumorNegDepth.toDouble else 0.0
 
-        val lodPos = model.logOdds(Bases.basesToString(alt.refBases), Bases.basesToString(alt.altBases), tumorPos, Some(tPosFrac))
-        val lodNeg = model.logOdds(Bases.basesToString(alt.refBases), Bases.basesToString(alt.altBases), tumorNeg, Some(tNegFrac))
+        val lodPos = contamModel.logOdds(Bases.basesToString(alt.refBases), Bases.basesToString(alt.altBases), tumorPos, math.min(tPosFrac, contamFrac))
+        val lodNeg = contamModel.logOdds(Bases.basesToString(alt.refBases), Bases.basesToString(alt.altBases), tumorNeg, math.min(tNegFrac, contamFrac))
 
-        val powerPos = calculatePowerToDetect(tumorPosDepth, alleleFrac, errorForPowerCalculations, minLodForPowerCalc)
-        val powerNeg = calculatePowerToDetect(tumorNegDepth, alleleFrac, errorForPowerCalculations, minLodForPowerCalc)
+        val powerPos = calculatePowerToDetect(tumorPosDepth, alleleFrac, errorForPowerCalculations, minLodForPowerCalc, contamFrac)
+        val powerNeg = calculatePowerToDetect(tumorNegDepth, alleleFrac, errorForPowerCalculations, minLodForPowerCalc, contamFrac)
 
-        val forwardPositions: Seq[Double] = onlyTumorMut.map(_.readPosition.toDouble)
-        val reversePositions: Seq[Double] = onlyTumorMut.map(ao => ao.read.sequence.length - ao.readPosition.toDouble - 1.0)
+        val forwardPositions: Seq[Double] = onlyTumorMutHeavyFiltered.map(_.readPosition.toDouble)
+        val reversePositions: Seq[Double] = onlyTumorMutHeavyFiltered.map(ao => ao.read.sequence.length - ao.readPosition.toDouble - 1.0)
 
         val forwardMedian = median(forwardPositions)
         val reverseMedian = median(reversePositions)
@@ -546,7 +551,8 @@ object SomaticMutectLike {
 
   def calculatePowerToDetect(depth: Int, f: Double,
                              errorForPowerCalculations: Double = DefaultMutectArgs.errorForPowerCalculations,
-                             minLodForPowerCalc: Double = DefaultMutectArgs.minLodForPowerCalc): Double = {
+                             minLodForPowerCalc: Double = DefaultMutectArgs.minLodForPowerCalc,
+                             contam: Double = DefaultMutectArgs.contamFrac): Double = {
     /* The power to detect a mutant is a function of depth, and the mutant allele fraction (unstranded).
         Basically you assume that the probability of observing a base error is uniform and 0.001 (phred score of 30).
         You see how many reads you require to pass the LOD tumorLODThreshold of 2.0, and then you calculate the binomial
@@ -558,15 +564,17 @@ object SomaticMutectLike {
       0.0
     } else {
 
+      def logLikelihoodSimple(nref: Int, nalts: Int, f: Double): Double = {
+        val pref = nref.toDouble * math.log10(f * errorForPowerCalculations + (1.0 - f) * (1.0 - errorForPowerCalculations))
+        val palt = nalts.toDouble * math.log10(f * (1.0 - errorForPowerCalculations) + (1.0 - f) * errorForPowerCalculations)
+        pref + palt
+      }
+
       def getLod(k: Int): Double = {
         val nref = depth - k
         val tf = k / depth.toDouble
-        val prefk = nref.toDouble * math.log10(tf * errorForPowerCalculations + (1.0 - tf) * (1.0 - errorForPowerCalculations))
-        val paltk = k.toDouble * math.log10(tf * (1.0 - errorForPowerCalculations) + (1.0 - tf) * errorForPowerCalculations)
-        val pkm = prefk + paltk
-        val pref0 = nref.toDouble * math.log10(1.0 - errorForPowerCalculations)
-        val palt0 = k.toDouble * math.log10(errorForPowerCalculations)
-        val p0 = pref0 + palt0
+        val pkm = logLikelihoodSimple(nref, k, tf)
+        val p0 = logLikelihoodSimple(nref, k, math.min(tf, contam))
         pkm - p0
       }
 

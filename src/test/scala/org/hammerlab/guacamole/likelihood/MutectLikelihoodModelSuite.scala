@@ -124,15 +124,19 @@ class MutectLikelihoodModelSuite extends FunSuite {
     // log10(prod(0*(1-em) + 1*(em/3))*prod( 0*(er/3) + 1*(1-er)))
     // -10.73221105
     assert(m0likelihood === -10.73221105)
-    val logOddsMutant = MutectLogOdds.logOdds("C", "A", some_muts, None)
+    val logOddsMutant = MutectLogOdds.logOdds("C", "A", some_muts)
     assert(logOddsMutant === mflikelihood - m0likelihood)
+
+    val logOddsMutant0Contam = MutectContamLogOdds.logOdds("C", "A", some_muts, 0.0)
+    assert(logOddsMutant === logOddsMutant0Contam)
 
     // the heterozygous site model in R:
     // log10(prod(0.5*(1-em) + 0.5*(em/3))*prod( 0.5*(er/3) + 0.5*(1-er)))
     // -3.01156717
     assert(mhlikelihood === -3.01156717)
-    val logOddsHet = MutectSomaticLogOdds.logOdds("C", "A", some_muts, None)
+    val logOddsHet = MutectSomaticLogOdds.logOdds("C", "A", some_muts)
     assert(logOddsHet === m0likelihood - mhlikelihood)
+
   }
 
 }

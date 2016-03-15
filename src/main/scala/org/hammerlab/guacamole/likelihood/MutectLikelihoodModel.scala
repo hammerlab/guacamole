@@ -34,13 +34,22 @@ trait LikelihoodModel extends Serializable {
 case class LogOdds(m1: LikelihoodModel, m2: LikelihoodModel) {
 
   def logOdds(ref: String, alt: String,
+              obs: Seq[PileupElement]): Double =
+    m1.logLikelihood(ref, alt, obs, None) - m2.logLikelihood(ref, alt, obs, None)
+}
+
+case class ContamLogOdds(val m1: LikelihoodModel, val m2: LikelihoodModel) {
+
+  def logOdds(ref: String, alt: String,
               obs: Seq[PileupElement],
-              f: Option[Double]): Double =
-    m1.logLikelihood(ref, alt, obs, f) - m2.logLikelihood(ref, alt, obs, f)
+              contam: Double): Double =
+    m1.logLikelihood(ref, alt, obs, None) - m2.logLikelihood(ref, alt, obs, Some(contam))
 }
 
 object MutectLogOdds extends LogOdds(MfmModel, M0Model) {
 }
+
+object MutectContamLogOdds extends ContamLogOdds(MfmModel, MfmModel)
 
 /**
  * Use for the log odds that a normal is not a heterozygous site

@@ -250,10 +250,29 @@ class SomaticMutectLikeCallerSuite extends GuacFunSuite with Matchers with Table
 
   test("Power calculations") {
     val errorQ30Alt3 = PhredUtils.phredToErrorProbability(30) / 3.0d
-    val power035 = SomaticMutectLike.calculatePowerToDetect(50, 0.35d, errorQ30Alt3, 6.3d)
+    val power035 = SomaticMutectLike.calculatePowerToDetect(50, 0.35d, errorQ30Alt3, 6.3d, 0.0)
     assert(power035 === 0.9999994d)
-    val power005 = SomaticMutectLike.calculatePowerToDetect(50, 0.05d, errorQ30Alt3, 4.3d)
+    val power005 = SomaticMutectLike.calculatePowerToDetect(50, 0.05d, errorQ30Alt3, 4.3d, 0.0)
     assert(power005 === 0.6068266d)
+    val power005contam = SomaticMutectLike.calculatePowerToDetect(50, 0.05d, errorQ30Alt3, 4.3d, 0.02)
+    assert(power005contam === 0.0039135)
+  }
+
+  test("Test distance to nearest indel") {
+    val tumorReads = Seq(
+      TestUtil.makeRead("TCATCTCAAAAGAGATCGA", "2M2D1M2I2M4I2M2D6M", "2^GA5^TC6", 10)
+    )
+    val tumorPileup11 = Pileup(tumorReads, "chr1", 11) // one position into the first match, actually carries the deletion, but technically is a match at this piont
+    val tumorPileup20 = Pileup(tumorReads, "chr1", 22) // two positions into the final 6M
+    val distanceInsertion11 = SomaticMutectLike.Caller.distanceToNearestReadInsertionOrDeletion(tumorPileup11.elements(0), true)
+    val distanceDeletion11 = SomaticMutectLike.Caller.distanceToNearestReadInsertionOrDeletion(tumorPileup11.elements(0), false)
+    val distanceInsertion20 = SomaticMutectLike.Caller.distanceToNearestReadInsertionOrDeletion(tumorPileup20.elements(0), true)
+    val distanceDeletion20 = SomaticMutectLike.Caller.distanceToNearestReadInsertionOrDeletion(tumorPileup20.elements(0), false)
+    assert(distanceInsertion11.getOrElse(-5) === 2)
+    assert(distanceDeletion11.getOrElse(-5) === 1)
+    assert(distanceInsertion20.getOrElse(-5) === 4)
+    assert(distanceDeletion20.getOrElse(-5) === 2)
+
   }
 
 }
