@@ -67,6 +67,8 @@
     method is more stringent and will fail if any combination of reads filtered due to the following three criteria 
     are over 0.3.
     1. soft-clipping
-    2. `XT=M` 
     3. the sum of mismatching allele quality scores is over 100
+3. We currently do not do `XT=M` filtering in our stringent pileup filter
+4. Rather than a default of 0.02 contamination fraction, we currently have this feature turned off by default.
+5. We currently do not output calls that fail any filters. This would be a great feature to add.
 
