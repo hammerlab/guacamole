@@ -59,6 +59,55 @@ object GermlineAssemblyCaller {
     override val description = "call germline variants by assembling the surrounding region of reads"
 
     /**
+     * Extract a subsequence from a read sequence
+     *
+     * NOTE: This assumes that the read entirely covers the reference region and does not check for insertions
+     * or deletion
+     *
+     * @param read Read to extract subsequence from
+     * @param startLocus Start (inclusive) locus on the reference
+     * @param endLocus End (exclusive) locus on the reference
+     * @return Subsequence overlapping [startLocus, endLocus)
+     */
+    def getSequenceFromRead(read: MappedRead, startLocus: Int, endLocus: Int) = {
+      read.sequence.slice(startLocus - read.unclippedStart.toInt, endLocus - read.unclippedStart.toInt)
+    }
+
+    /**
+     * For a given set of reads identify all kmers that appear in the specified reference region
+     *
+     * @param reads  Set of reads to extract sequence from
+     * @param startLocus Start (inclusive) locus on the reference
+     * @param endLocus End (exclusive) locus on the reference
+     * @param kmerSize Length of the subsequence
+     * @param minOccurrence Mininum number of times a subsequence needs to appear to be included
+     * @return List of subsequences overlapping [startLocus, endLocus) that appear at least `minOccurrence` time
+     */
+    def getConsensusKmer(reads: Seq[MappedRead],
+                         startLocus: Int,
+                         endLocus: Int,
+                         minOccurrence: Int): Iterable[Array[Byte]] = {
+
+      // Filter to reads that entirely cover the region
+      // Exclude reads that have any non-M Cigars (these don't have a 1 to 1 base mapping to the region)
+      val overlapping = reads
+        .filter(!_.cigarElements.exists(_.getOperator != CigarOperator.M))
+        .filter(r => r.overlapsLocus(startLocus) && r.overlapsLocus(endLocus - 1))
+
+      // Extract the sequences from each region
+      val sequences = overlapping
+        .map(r => getSequenceFromRead(r, startLocus, endLocus))
+
+      // Filter to sequences that appear at least `minOccurrence` times
+      sequences
+        .groupBy(identity)
+        .map(kv => (kv._1, kv._2.length))
+        .filter(_._2 >= minOccurrence)
+        .map(_._1.toArray)
+
+    }
+
+    /**
      *
      * @param graph An existing DeBruijn graph of the reads
      * @param currentWindow Window of reads that overlaps the current loci
@@ -76,7 +125,7 @@ object GermlineAssemblyCaller {
                            reference: ReferenceGenome,
                            minOccurrence: Int = 3,
                            expectedPloidy: Int = 2,
-                           maxPathsToScore: Int = 6,
+                           maxPathsToScore: Int = 16,
                            debugPrint: Boolean = false): (Option[DeBruijnGraph], Iterator[CalledAllele]) = {
 
       val locus = currentWindow.currentLocus
@@ -84,15 +133,6 @@ object GermlineAssemblyCaller {
 
       val sampleName = reads.head.sampleName
       val referenceContig = reads.head.referenceContig
-
-      // TODO: Should update graph instead of rebuilding it
-      // Need to keep track of reads removed from last update and reads added
-      val currentGraph: DeBruijnGraph = DeBruijnGraph(
-        reads.map(_.sequence),
-        kmerSize,
-        minOccurrence,
-        mergeNodes = true
-      )
 
       val referenceStart = (locus - currentWindow.halfWindowSize).toInt
       val referenceEnd = (locus + currentWindow.halfWindowSize).toInt
@@ -103,46 +143,33 @@ object GermlineAssemblyCaller {
         referenceEnd
       )
 
-      val referenceKmerSource = currentReference.take(kmerSize)
-      val referenceKmerSink = currentReference.takeRight(kmerSize)
-
-      // If the current window size doesn't cover the kmer size we won't be able to find the reference start/end
-      if (currentReference.size < kmerSize || referenceKmerSource == referenceKmerSink) {
-        log.warn(s"In window ${referenceContig}:${referenceStart}-$referenceEnd " +
-          s"the start and end source kmers were invalid. " +
-          s"Start: ${Bases.basesToString(referenceKmerSource)} End: ${Bases.basesToString(referenceKmerSink)}")
-        return (graph, Iterator.empty)
-      }
-
-      if (debugPrint) {
-        println(s"Source: ${Bases.basesToString(referenceKmerSource)}")
-        println(s"Sink: ${Bases.basesToString(referenceKmerSink)}")
-      }
-
-      val paths = currentGraph.depthFirstSearch(
-        referenceKmerSource,
-        referenceKmerSink,
-        debugPrint = debugPrint
-      )
+      val paths = discoverPathsFromReads(
+        reads,
+        referenceStart,
+        referenceEnd,
+        currentReference,
+        kmerSize = kmerSize,
+        minOccurrence = minOccurrence,
+        maxPaths = maxPathsToScore + 1,
+        debugPrint)
 
       // Score up to the maximum number of paths, by aligning them against the reference
       // Take the best aligning `expectedPloidy` paths
       val pathAndAlignments =
-        if (paths.length <= maxPathsToScore) {
+        if (paths.size <= maxPathsToScore) {
           paths.map(path => {
             val mergedPath = DeBruijnGraph.mergeOverlappingSequences(path, kmerSize)
             (mergedPath, AffineGapPenaltyAlignment.align(mergedPath, currentReference))
-          })
+          }).toSeq
             .sortBy(_._2.alignmentScore)
             .take(expectedPloidy)
         } else {
           log.warn(s"In window ${referenceContig}:${referenceStart}-$referenceEnd " +
-            s"there were ${paths.length} paths found, all variants skipped")
+            s"there were ${paths.size} paths found, all variants skipped")
           List.empty
         }
 
-      // Build a variant using the current offset and
-      // read evidence
+      // Build a variant using the current offset and read evidence
       def buildVariant(referenceOffset: Int,
                        referenceBases: Array[Byte],
                        alternateBases: Array[Byte]) = {
@@ -196,7 +223,7 @@ object GermlineAssemblyCaller {
                 val referenceAllele = currentReference.slice(referenceIndex, referenceIndex + referenceLength)
                 val alternateAllele = path.slice(pathIndex, pathIndex + pathLength)
                 Some(buildVariant(referenceIndex, referenceAllele, alternateAllele.toArray))
-              case (CigarOperator.I | CigarOperator.D) =>
+              case (CigarOperator.I | CigarOperator.D) if referenceIndex != 0 =>
                 // For insertions and deletions, report the variant with the last reference base attached
                 val referenceAllele = currentReference.slice(referenceIndex - 1, referenceIndex + referenceLength)
                 val alternateAllele = path.slice(pathIndex - 1, pathIndex + pathLength)
@@ -221,7 +248,7 @@ object GermlineAssemblyCaller {
       val readSet = Common.loadReadsFromArguments(
         args,
         sc,
-        Read.InputFilters(mapped = true, nonDuplicate = true))
+        Read.InputFilters(overlapsLoci = Some(loci), mapped = true, nonDuplicate = true))
 
       val minAlignmentQuality = args.minAlignmentQuality
       val qualityReads = readSet
@@ -230,24 +257,21 @@ object GermlineAssemblyCaller {
 
       val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
 
-      val minAreaVaf = args.minAreaVaf
       val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(
         args,
         loci.result(readSet.contigLengths),
         readSet.mappedReads
       )
 
-      val kmerSize = args.kmerSize
-      val minAverageBaseQuality = args.minAverageBaseQuality
       val genotypes: RDD[CalledAllele] = discoverGenotypes(
         qualityReads,
-        kmerSize,
+        kmerSize = args.kmerSize,
         snvWindowRange = args.snvWindowRange,
         minOccurrence = args.minOccurrence,
         minAreaVaf = args.minAreaVaf / 100.0f,
         reference,
-        lociPartitions,
-        parallelism = args.parallelism)
+        lociPartitions)
+
       genotypes.persist()
 
       Common.progress(s"Found ${genotypes.count} variants")
@@ -265,8 +289,7 @@ object GermlineAssemblyCaller {
                           minOccurrence: Int,
                           minAreaVaf: Float,
                           reference: ReferenceBroadcast,
-                          lociPartitions: LociMap[Long],
-                          parallelism: Int): RDD[CalledAllele] = {
+                          lociPartitions: LociMap[Long]): RDD[CalledAllele] = {
 
       val genotypes: RDD[CalledAllele] =
         DistributedUtil.windowFlatMapWithState[MappedRead, CalledAllele, Option[DeBruijnGraph]](
@@ -276,30 +299,95 @@ object GermlineAssemblyCaller {
           halfWindowSize = snvWindowRange,
           initialState = None,
           (graph, windows) => {
-            val window = windows(0)
-            val variableReads =
+            val window = windows.head
+
+            // Find the reads the overlap the center locus/ current locus
+            val currentLocusReads =
               window
                 .currentRegions()
+                .filter(_.overlapsLocus(window.currentLocus))
+            val variableReads =
+              currentLocusReads
                 .count(read => read.cigar.numCigarElements() > 1 || read.mdTagOpt.get.countOfMismatches > 0)
 
-            if ((variableReads.toFloat / window.currentRegions().length) > minAreaVaf) {
+            // Compute the number reads with variant bases from the reads overlapping the currentLocus
+            val currentLocusVAF = variableReads.toFloat / currentLocusReads.length
+            if (currentLocusVAF > minAreaVaf) {
               val result = discoverHaplotypes(
-                graph,
-                windows(0),
+                None,
+                window,
                 kmerSize,
                 reference,
                 minOccurrence
               )
+
               // Jump to the next region
               window.setCurrentLocus(window.currentLocus + snvWindowRange)
-
-              result
+              (graph, result._2)
             } else {
               (graph, Iterator.empty)
             }
           }
         )
       genotypes
+    }
+
+    /**
+     * Find paths through the reads given that represent the sequence covering referenceStart and referenceEnd
+     * @param reads Reads to use to build the graph
+     * @param referenceStart Start of the reference region corresponding to the reads
+     * @param referenceEnd End of the reference region corresponding to the reads
+     * @param referenceSequence Reference sequence overlapping [referenceStart, referenceEnd)
+     * @param kmerSize Length of kmers to use to traverse the paths
+     * @param minOccurrence Minimum number of occurrences of the each kmer
+     * @param maxPaths Maximum number of paths to find
+     * @param debugPrint Print debug statements (default: false)
+     * @return List of paths that traverse the region
+     */
+    def discoverPathsFromReads(reads: Seq[MappedRead],
+                               referenceStart: Int,
+                               referenceEnd: Int,
+                               referenceSequence: Array[Byte],
+                               kmerSize: Int,
+                               minOccurrence: Int,
+                               maxPaths: Int,
+                               debugPrint: Boolean = false) = {
+      val referenceKmerSource = referenceSequence.take(kmerSize)
+      val referenceKmerSink = referenceSequence.takeRight(kmerSize)
+
+      val sources: Set[Array[Byte]] = (getConsensusKmer(
+        reads,
+        referenceStart,
+        referenceStart + kmerSize,
+        minOccurrence = minOccurrence
+      ) ++ Seq(referenceKmerSource)).toSet
+
+      val sinks: Set[Array[Byte]] = (getConsensusKmer(
+        reads,
+        referenceEnd - kmerSize,
+        referenceEnd,
+        minOccurrence = minOccurrence
+      ) ++ Seq(referenceKmerSink)).toSet
+
+      val currentGraph: DeBruijnGraph = DeBruijnGraph(
+        reads.map(_.sequence),
+        kmerSize,
+        minOccurrence,
+        mergeNodes = true
+      )
+
+      for {
+        source <- sources
+        sink <- sinks
+        path <- currentGraph.depthFirstSearch(
+          source,
+          sink,
+          maxPaths = maxPaths,
+          debugPrint = debugPrint
+        )
+      } yield {
+        path
+      }
     }
   }
 }
