@@ -13,7 +13,7 @@ class GermlineAssemblyCallerSuite extends FunSuite with Matchers with BeforeAndA
 
   val args = new Arguments
 
-  val input = "illumina-platinum-na12878/NA12878.10k_variants.plus_chr1_3M-3.1M.bam"
+  val input = NA12878TestUtils.na12878SubsetBam
   args.reads = TestUtil.testDataPath(input)
   args.parallelism = 2
 
@@ -35,7 +35,7 @@ class GermlineAssemblyCallerSuite extends FunSuite with Matchers with BeforeAndA
     sc.stop()
   }
 
-  val referenceFastaPath = TestUtil.testDataPath("illumina-platinum-na12878/chr1.prefix.fa")
+  val referenceFastaPath = TestUtil.testDataPath(NA12878TestUtils.chr1PrefixFasta)
   val loci = Common.lociFromArguments(args)
 
   def discoverGenotypesAtLoci(loci: String,
