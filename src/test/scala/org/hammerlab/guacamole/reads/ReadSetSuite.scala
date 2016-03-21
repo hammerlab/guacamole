@@ -85,6 +85,9 @@ class ReadSetSuite extends GuacFunSuite with Matchers {
     readSet.reads.count should be(23)
   }
 
+  // This test is disabled for now since loading ADAM files is not a common use case in Guacamole, and the ADAM API
+  // is in flux.
+  /*
   sparkTest("load read from ADAM") {
     // First load reads from SAM using ADAM and save as ADAM
     val adamContext = new ADAMContext(sc)
@@ -107,6 +110,7 @@ class ReadSetSuite extends GuacFunSuite with Matchers {
     filteredReads.count() should be(3)
     filteredReads.collect().forall(_.token == 1) should be(true)
   }
+  */
 
   sparkTest("load and serialize / deserialize reads") {
     val reads = TestUtil.loadReads(sc, "mdtagissue.sam", Read.InputFilters(mapped = true)).mappedReads.collect()
