@@ -107,7 +107,7 @@ class LociSetSuite extends GuacFunSuite with Matchers {
   }
 
   sparkTest("loci argument parsing in Common") {
-    val read = TestUtil.makeRead("C", "1M", "1", 500, "20")
+    val read = TestUtil.makeRead("C", "1M", 500, "20")
     val reads: RDD[Read] = sc.parallelize(Seq(read))
     class TestArgs extends Common.Arguments.Base with Common.Arguments.Loci {}
 

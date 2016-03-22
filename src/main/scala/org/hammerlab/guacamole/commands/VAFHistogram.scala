@@ -12,10 +12,12 @@ import org.hammerlab.guacamole._
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.Read.InputFilters
 import org.hammerlab.guacamole.reads.{ MappedRead, Read }
+import org.hammerlab.guacamole.reference.{ ReferenceGenome, ReferenceBroadcast }
 import org.kohsuke.args4j.{ Argument, Option => Args4jOption }
 
 /**
  * VariantLocus is a locus and the variant allele frequency at that locus
+ *
  * @param locus Position of non-reference alleles
  * @param variantAlleleFrequency Frequency of non-reference alleles
  */
@@ -25,6 +27,7 @@ object VariantLocus {
 
   /**
    * Construct VariantLocus from a pileup
+   *
    * @param pileup Pileup of reads at a given locus
    * @return VariantLocus at reference position, locus
    */
@@ -76,6 +79,9 @@ object VAFHistogram {
       usage = "Percent of variant to use for the calculations (Default: 25)")
     var samplePercent: Int = 25
 
+    @Args4jOption(name = "--reference-fasta", required = true, usage = "Local path to a reference FASTA file")
+    var referenceFastaPath: String = ""
+
     @Argument(required = true, multiValued = true,
       usage = "BAMs")
     var bams: Array[String] = Array.empty
@@ -87,12 +93,13 @@ object VAFHistogram {
     override val description = "Compute and cluster the variant allele frequencies"
 
     override def run(args: Arguments, sc: SparkContext): Unit = {
+      val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
+
       val loci = Common.lociFromArguments(args)
       val filters = Read.InputFilters(
         overlapsLoci = Some(loci),
         nonDuplicate = true,
-        passedVendorQualityChecks = true,
-        hasMdTag = true)
+        passedVendorQualityChecks = true)
       val samplePercent = args.samplePercent
 
       val readSets: Seq[ReadSet] = args.bams.zipWithIndex.map(
@@ -100,11 +107,10 @@ object VAFHistogram {
           ReadSet(
             sc,
             bamFile._1,
-            requireMDTagsOnMappedReads = false,
             InputFilters.empty,
             token = bamFile._2,
             contigLengthsFromDictionary = true,
-            referenceGenome = None,
+            reference = reference,
             config = Common.Arguments.ReadLoadingConfigArgs.fromArguments(args)
           )
       )
@@ -120,6 +126,7 @@ object VAFHistogram {
       val variantLoci = readSets.map(readSet =>
         variantLociFromReads(
           readSet.mappedReads,
+          reference,
           lociPartitions,
           samplePercent,
           minReadDepth,
@@ -181,6 +188,7 @@ object VAFHistogram {
 
   /**
    * Generates a count of loci in each variant allele frequency bins
+   *
    * @param variantAlleleFrequencies RDD of loci with variant allele frequency > 0
    * @param bins Number of bins to group the VAFs into
    * @return Map of rounded variant allele frequency to number of loci with that value
@@ -197,7 +205,9 @@ object VAFHistogram {
 
   /**
    * Find all non-reference loci in the sample
+   *
    * @param reads RDD of mapped reads for the sample
+   * @param reference genome
    * @param lociPartitions Positions which to examine for non-reference loci
    * @param samplePercent Percent of non-reference loci to use for descriptive statistics
    * @param minReadDepth Minimum read depth before including variant allele frequency
@@ -206,6 +216,7 @@ object VAFHistogram {
    * @return RDD of VariantLocus, which contain the locus and non-zero variant allele frequency
    */
   def variantLociFromReads(reads: RDD[MappedRead],
+                           reference: ReferenceGenome,
                            lociPartitions: LociMap[Long],
                            samplePercent: Int = 100,
                            minReadDepth: Int = 0,
@@ -216,11 +227,11 @@ object VAFHistogram {
       reads,
       lociPartitions,
       skipEmpty = true,
-      function = pileup => VariantLocus(pileup)
+      function = (pileup => VariantLocus(pileup)
         .filter(locus => pileup.depth >= minReadDepth)
         .filter(_.variantAlleleFrequency >= (minVariantAlleleFrequency / 100.0))
-        .iterator
-    )
+        .iterator),
+      reference = reference)
     if (printStats) {
       variantLoci.persist(StorageLevel.MEMORY_ONLY)
 
@@ -256,6 +267,7 @@ object VAFHistogram {
 
   /**
    * Fit a Gaussian mixture model to the distribution of variant allele frequencies
+   *
    * @param variantAlleleFrequencies RDD of loci with variant allele frequency > 0
    * @param numClusters Number of Gaussian distributions to fit
    * @param maxIterations Maximum number of iterations to run EM

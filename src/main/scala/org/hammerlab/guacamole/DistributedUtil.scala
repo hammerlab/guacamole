@@ -27,7 +27,7 @@ import org.hammerlab.guacamole.Common.Arguments.{ Base, Loci }
 import org.hammerlab.guacamole.Common._
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.MappedRead
-import org.hammerlab.guacamole.reference.ReferenceGenome
+import org.hammerlab.guacamole.reference.{ ContigSequence, ReferenceGenome }
 import org.hammerlab.guacamole.windowing.{ SplitIterator, SlidingWindow }
 import org.kohsuke.args4j.{ Option => Args4jOption }
 
@@ -251,25 +251,19 @@ object DistributedUtil extends Logging {
   }
 
   /**
-   * Helper function. Given optionally an existing Pileup, and a sliding read window
-   *   - return a new Pileup at the given locus. If an existing Pileup is given as input, then the result will share
-   *     elements with that Pileup for efficiency.
+   * Helper function. Given optionally an existing Pileup, and a sliding read window return a new Pileup at the given
+   * locus. If an existing Pileup is given as input, then the result will share elements with that Pileup for efficiency.
    *
    *  If an existing Pileup is provided, then its locus must be <= the new locus.
    */
   private def initOrMovePileup(existing: Option[Pileup],
                                window: SlidingWindow[MappedRead],
-                               reference: Option[ReferenceGenome]): Pileup = {
+                               referenceContigSequence: ContigSequence): Pileup = {
     assume(window.halfWindowSize == 0)
-
-    val locus = window.currentLocus
-    val referenceBase =
-      reference.map(_.getReferenceBase(window.referenceName, locus.toInt))
-        .getOrElse(Pileup.referenceBaseAtLocus(window.currentRegions(), locus))
-
     existing match {
-      case None         => Pileup(window.currentRegions(), window.referenceName, locus, referenceBase)
-      case Some(pileup) => pileup.atGreaterLocus(locus, referenceBase, window.newRegions.iterator)
+      case None => Pileup(
+        window.currentRegions(), window.referenceName, window.currentLocus, referenceContigSequence)
+      case Some(pileup) => pileup.atGreaterLocus(window.currentLocus, window.newRegions.iterator)
     }
   }
 
@@ -281,7 +275,6 @@ object DistributedUtil extends Logging {
    *                  specified loci. In cases where whole contigs may have no reads mapped (e.g. if running on
    *                  only a single chromosome, but loading loci from a sequence dictionary that includes the
    *                  entire genome), this is an important optimization.
-   *
    * @see the windowTaskFlatMapMultipleRDDs function for other argument descriptions
    *
    */
@@ -290,7 +283,7 @@ object DistributedUtil extends Logging {
     lociPartitions: LociMap[Long],
     skipEmpty: Boolean,
     function: Pileup => Iterator[T],
-    reference: Option[ReferenceGenome] = None): RDD[T] = {
+    reference: ReferenceGenome): RDD[T] = {
     windowFlatMapWithState(
       Seq(reads),
       lociPartitions,
@@ -299,7 +292,7 @@ object DistributedUtil extends Logging {
       None,
       (maybePileup: Option[Pileup], windows: PerSample[SlidingWindow[MappedRead]]) => {
         assert(windows.length == 1)
-        val pileup = initOrMovePileup(maybePileup, windows(0), reference)
+        val pileup = initOrMovePileup(maybePileup, windows(0), reference.getContig(windows(0).referenceName))
         (Some(pileup), function(pileup))
       }
     )
@@ -309,7 +302,6 @@ object DistributedUtil extends Logging {
    * giving the pileup for the reads in each RDD at that locus.
    *
    * @param skipEmpty see [[pileupFlatMap]] for description.
-   *
    * @see the windowTaskFlatMapMultipleRDDs function for other argument descriptions.
    *
    */
@@ -319,7 +311,7 @@ object DistributedUtil extends Logging {
     lociPartitions: LociMap[Long],
     skipEmpty: Boolean,
     function: (Pileup, Pileup) => Iterator[T],
-    referenceGenome: Option[ReferenceGenome] = None): RDD[T] = {
+    reference: ReferenceGenome): RDD[T] = {
     windowFlatMapWithState(
       Seq(reads1, reads2),
       lociPartitions,
@@ -328,8 +320,9 @@ object DistributedUtil extends Logging {
       initialState = None,
       function = (maybePileups: Option[(Pileup, Pileup)], windows: PerSample[SlidingWindow[MappedRead]]) => {
         assert(windows.length == 2)
-        val pileup1 = initOrMovePileup(maybePileups.map(_._1), windows(0), referenceGenome)
-        val pileup2 = initOrMovePileup(maybePileups.map(_._2), windows(1), referenceGenome)
+        val contigSequence = reference.getContig(windows(0).referenceName)
+        val pileup1 = initOrMovePileup(maybePileups.map(_._1), windows(0), contigSequence)
+        val pileup2 = initOrMovePileup(maybePileups.map(_._2), windows(1), contigSequence)
         (Some((pileup1, pileup2)), function(pileup1, pileup2))
       })
   }
@@ -344,7 +337,7 @@ object DistributedUtil extends Logging {
     lociPartitions: LociMap[Long],
     skipEmpty: Boolean,
     function: Seq[Pileup] => Iterator[T],
-    referenceGenome: Option[ReferenceGenome] = None): RDD[T] = {
+    reference: ReferenceGenome): RDD[T] = {
     windowFlatMapWithState(
       readsRDDs,
       lociPartitions,
@@ -355,9 +348,12 @@ object DistributedUtil extends Logging {
         val advancedPileups = maybePileups match {
           case Some(existingPileups) => {
             existingPileups.zip(windows).map(
-              pileupAndWindow => initOrMovePileup(Some(pileupAndWindow._1), pileupAndWindow._2, referenceGenome))
+              pileupAndWindow => initOrMovePileup(
+                Some(pileupAndWindow._1),
+                pileupAndWindow._2,
+                reference.getContig(windows(0).referenceName)))
           }
-          case None => windows.map(initOrMovePileup(None, _, referenceGenome))
+          case None => windows.map(initOrMovePileup(None, _, reference.getContig(windows(0).referenceName)))
         }
         (Some(advancedPileups), function(advancedPileups))
       })

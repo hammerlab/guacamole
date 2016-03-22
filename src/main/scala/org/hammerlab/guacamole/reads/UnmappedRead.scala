@@ -36,6 +36,5 @@ case class UnmappedRead(
 
   override val isMapped = false
   override def asMappedRead = None
-  override val hasMdTag = false
 }
 

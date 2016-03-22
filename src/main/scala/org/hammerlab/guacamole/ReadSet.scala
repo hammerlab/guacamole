@@ -86,21 +86,18 @@ object ReadSet {
    *
    * @param sc spark context
    * @param filename bam or sam file to read from
-   * @param requireMDTagsOnMappedReads*
    * @param filters input filters to filter reads while reading.
    * @param token token field for the reads
    * @param contigLengthsFromDictionary see [[ReadSet]] doc for description
-   *
    * @return
    */
   def apply(
     sc: SparkContext,
     filename: String,
-    requireMDTagsOnMappedReads: Boolean,
     filters: Read.InputFilters = Read.InputFilters.empty,
     token: Int = 0,
     contigLengthsFromDictionary: Boolean = true,
-    referenceGenome: Option[ReferenceGenome] = None,
+    reference: ReferenceGenome,
     config: Read.ReadLoadingConfig = Read.ReadLoadingConfig.default): ReadSet = {
 
     val (reads, sequenceDictionary) =
@@ -109,8 +106,7 @@ object ReadSet {
         sc,
         token = token,
         filters = filters,
-        requireMDTagsOnMappedReads,
-        referenceGenome,
+        reference,
         config
       )
 

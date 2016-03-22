@@ -18,6 +18,7 @@
 
 package org.hammerlab.guacamole.likelihood
 
+import org.hammerlab.guacamole.reference.ContigSequence
 import org.hammerlab.guacamole.util.{ TestUtil, GuacFunSuite }
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.MappedRead
@@ -43,7 +44,8 @@ class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks with M
   }
 
   def testGenotypeLikelihoods(reads: Seq[MappedRead], genotypesMap: ((Char, Char), Double)*): Unit = {
-    val pileup = Pileup(reads, reads(0).referenceContig, 1)
+    val referenceContigSequence = referenceBroadcast(sc).getContig("chr1")
+    val pileup = Pileup(reads, reads(0).referenceContig, 1, referenceContigSequence)
     forAll(Table("genotype", genotypesMap: _*)) { pair =>
       TestUtil.assertAlmostEqual(
         Likelihood.likelihoodOfGenotype(
@@ -55,7 +57,7 @@ class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks with M
     }
   }
 
-  test("all reads ref") {
+  sparkTest("all reads ref") {
     testGenotypeLikelihoods(
       Seq(refRead(30), refRead(40), refRead(30)),
       ('C', 'C') -> (1 - errorPhred30) * (1 - errorPhred40) * (1 - errorPhred30),
@@ -66,7 +68,7 @@ class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks with M
     )
   }
 
-  test("two ref, one alt") {
+  sparkTest("two ref, one alt") {
     testGenotypeLikelihoods(
       Seq(refRead(30), refRead(40), altRead(30)),
       ('C', 'C') -> (1 - errorPhred30) * (1 - errorPhred40) * errorPhred30,
@@ -78,7 +80,7 @@ class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks with M
     )
   }
 
-  test("one ref, two alt") {
+  sparkTest("one ref, two alt") {
     testGenotypeLikelihoods(
       Seq(refRead(30), altRead(40), altRead(30)),
       ('C', 'C') -> (1 - errorPhred30) * errorPhred40 * errorPhred30,
@@ -90,7 +92,7 @@ class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks with M
     )
   }
 
-  test("all reads alt") {
+  sparkTest("all reads alt") {
     testGenotypeLikelihoods(
       Seq(altRead(30), altRead(40), altRead(30)),
       ('C', 'C') -> errorPhred30 * errorPhred40 * errorPhred30,
@@ -102,7 +104,8 @@ class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks with M
     )
   }
 
-  test("score genotype for single sample; all bases ref") {
+  sparkTest("score genotype for single sample; all bases ref") {
+    val referenceContigSequence = referenceBroadcast(sc).getContig("chr1")
 
     val reads = Seq(
       refRead(30),
@@ -110,7 +113,7 @@ class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks with M
       refRead(30)
     )
 
-    val pileup = Pileup(reads, "chr1", 1)
+    val pileup = Pileup(reads, "chr1", 1, referenceContigSequence)
 
     testLikelihoods(
       Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(pileup, Likelihood.probabilityCorrectIgnoringAlignment),
@@ -118,14 +121,16 @@ class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks with M
     )
   }
 
-  test("score genotype for single sample; mix of ref/non-ref bases") {
+  sparkTest("score genotype for single sample; mix of ref/non-ref bases") {
+    val referenceContigSequence = referenceBroadcast(sc).getContig("chr1")
+
     val reads = Seq(
       refRead(30),
       refRead(40),
       altRead(30)
     )
 
-    val pileup = Pileup(reads, "chr1", 1)
+    val pileup = Pileup(reads, "chr1", 1, referenceContigSequence)
 
     testLikelihoods(
       Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(pileup, Likelihood.probabilityCorrectIgnoringAlignment),
@@ -135,7 +140,8 @@ class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks with M
     )
   }
 
-  test("score genotype for single sample; all bases non-ref") {
+  sparkTest("score genotype for single sample; all bases non-ref") {
+    val referenceContigSequence = referenceBroadcast(sc).getContig("chr1")
 
     val reads = Seq(
       altRead(30),
@@ -143,7 +149,7 @@ class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks with M
       altRead(30)
     )
 
-    val pileup = Pileup(reads, "chr1", 1)
+    val pileup = Pileup(reads, "chr1", 1, referenceContigSequence)
 
     testLikelihoods(
       Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(pileup, Likelihood.probabilityCorrectIgnoringAlignment),
@@ -151,7 +157,8 @@ class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks with M
     )
   }
 
-  test("log score genotype for single sample; all bases ref") {
+  sparkTest("log score genotype for single sample; all bases ref") {
+    val referenceContigSequence = referenceBroadcast(sc).getContig("chr1")
 
     val reads = Seq(
       refRead(30),
@@ -159,7 +166,7 @@ class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks with M
       refRead(30)
     )
 
-    val pileup = Pileup(reads, "chr1", 1)
+    val pileup = Pileup(reads, "chr1", 1, referenceContigSequence)
 
     testLikelihoods(
       Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(
@@ -170,14 +177,16 @@ class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks with M
     )
   }
 
-  test("log score genotype for single sample; mix of ref/non-ref bases") {
+  sparkTest("log score genotype for single sample; mix of ref/non-ref bases") {
+    val referenceContigSequence = referenceBroadcast(sc).getContig("chr1")
+
     val reads = Seq(
       refRead(30),
       refRead(40),
       altRead(30)
     )
 
-    val pileup = Pileup(reads, "chr1", 1)
+    val pileup = Pileup(reads, "chr1", 1, referenceContigSequence)
 
     testLikelihoods(
       Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(
@@ -190,7 +199,8 @@ class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks with M
     )
   }
 
-  test("log score genotype for single sample; all bases non-ref") {
+  sparkTest("log score genotype for single sample; all bases non-ref") {
+    val referenceContigSequence = referenceBroadcast(sc).getContig("chr1")
 
     val reads = Seq(
       altRead(30),
@@ -198,7 +208,7 @@ class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks with M
       altRead(30)
     )
 
-    val pileup = Pileup(reads, "chr1", 1)
+    val pileup = Pileup(reads, "chr1", 1, referenceContigSequence)
 
     testLikelihoods(
       Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(

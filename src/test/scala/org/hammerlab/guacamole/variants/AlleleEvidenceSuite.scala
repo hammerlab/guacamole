@@ -6,12 +6,14 @@ import org.scalatest.Matchers
 
 class AlleleEvidenceSuite extends GuacFunSuite with Matchers {
 
-  test("allele evidence from pileup, all reads support") {
+  def reference = TestUtil.makeReference(sc, Seq(("chr1", 0, "NTAGATCGA")))
+
+  sparkTest("allele evidence from pileup, all reads support") {
     val reads = Seq(
-      TestUtil.makeRead("TCGATCGA", "8M", "1A6", 1, alignmentQuality = 30),
-      TestUtil.makeRead("TCGATCGA", "8M", "1A6", 1, alignmentQuality = 30),
-      TestUtil.makeRead("TCGACCCTCGA", "4M3I4M", "1A6", 1, alignmentQuality = 60))
-    val variantPileup = Pileup(reads, "chr1", 2)
+      TestUtil.makeRead("TCGATCGA", "8M", 1, alignmentQuality = 30),
+      TestUtil.makeRead("TCGATCGA", "8M", 1, alignmentQuality = 30),
+      TestUtil.makeRead("TCGACCCTCGA", "4M3I4M", 1, alignmentQuality = 60))
+    val variantPileup = Pileup(reads, "chr1", 2, reference.getContig("chr1"))
 
     val variantEvidence = AlleleEvidence(
       likelihood = 0.5,
@@ -24,12 +26,12 @@ class AlleleEvidenceSuite extends GuacFunSuite with Matchers {
     variantEvidence.medianMismatchesPerRead should be(1)
   }
 
-  test("allele evidence from pileup, one read supports") {
+  sparkTest("allele evidence from pileup, one read supports") {
     val reads = Seq(
-      TestUtil.makeRead("TAGATCGA", "8M", "8", 1, alignmentQuality = 30),
-      TestUtil.makeRead("TCGATCGA", "8M", "1A6", 1, alignmentQuality = 60),
-      TestUtil.makeRead("TAGACCCTCGA", "4M3I4M", "8", 1, alignmentQuality = 60))
-    val variantPileup = Pileup(reads, "chr1", 2)
+      TestUtil.makeRead("TAGATCGA", "8M", 1, alignmentQuality = 30),
+      TestUtil.makeRead("TCGATCGA", "8M", 1, alignmentQuality = 60),
+      TestUtil.makeRead("TAGACCCTCGA", "4M3I4M", 1, alignmentQuality = 60))
+    val variantPileup = Pileup(reads, "chr1", 2, reference.getContig("chr1"))
 
     val variantEvidence = AlleleEvidence(
       likelihood = 0.5,
@@ -42,12 +44,12 @@ class AlleleEvidenceSuite extends GuacFunSuite with Matchers {
     variantEvidence.medianMismatchesPerRead should be(1)
   }
 
-  test("allele evidence from pileup, no read supports") {
+  sparkTest("allele evidence from pileup, no read supports") {
     val reads = Seq(
-      TestUtil.makeRead("TAGATCGA", "8M", "8", 1, alignmentQuality = 30),
-      TestUtil.makeRead("TAGATCGA", "8M", "8", 1, alignmentQuality = 60),
-      TestUtil.makeRead("TAGACCCTCGA", "4M3I4M", "8", 1, alignmentQuality = 60))
-    val variantPileup = Pileup(reads, "chr1", 2)
+      TestUtil.makeRead("TAGATCGA", "8M", 1, alignmentQuality = 30),
+      TestUtil.makeRead("TAGATCGA", "8M", 1, alignmentQuality = 60),
+      TestUtil.makeRead("TAGACCCTCGA", "4M3I4M", 1, alignmentQuality = 60))
+    val variantPileup = Pileup(reads, "chr1", 2, reference.getContig("chr1"))
 
     val variantEvidence = AlleleEvidence(
       likelihood = 0.5,

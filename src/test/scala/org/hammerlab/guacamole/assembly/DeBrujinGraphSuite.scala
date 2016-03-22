@@ -1,7 +1,6 @@
 package org.hammerlab.guacamole.assembly
 
 import org.hammerlab.guacamole.Bases
-import org.hammerlab.guacamole.reads.MDTagUtils
 import org.hammerlab.guacamole.util.TestUtil.Implicits._
 import org.hammerlab.guacamole.util.{ GuacFunSuite, TestUtil }
 import org.scalatest.Matchers
@@ -380,21 +379,20 @@ class DeBruijnGraphSuite extends GuacFunSuite with Matchers {
   sparkTest("real reads data test") {
     val kmerSize = 55
 
+    val referenceString = "GAGGATCTGCCATGGCCGGGCGAGCTGGAGGAGGAGGAGGAGGAGGAGGAGGAGGAGGAGGAGGAAGAGGAGGAGGCTGCAGCGGCGGCGGCGGCGAACGTGGACGACGTAGTGGTCGTGGAGGAGGTGGAGGAAGAGGCGGGGCG"
+    val referenceBases = Bases.stringToBases(referenceString)
+    val reference = TestUtil.makeReference(sc, Seq(("chr2", 73613005, referenceString)), contigLengths = 73613152)
+
     lazy val snpReads = TestUtil.loadReads(
       sc,
-      "assemble-reads-set3-chr2-73613071.sam")
+      "assemble-reads-set3-chr2-73613071.sam",
+      reference = reference)
       .mappedReads
       .sortBy(_.start)
       .collect
 
-    val reference = MDTagUtils.getReference(
-      snpReads,
-      referenceStart = 73613005,
-      referenceEnd = 73613151
-    )
-
-    val referenceKmerSource = reference.take(kmerSize)
-    val referenceKmerSink = reference.takeRight(kmerSize)
+    val referenceKmerSource = referenceBases.take(kmerSize)
+    val referenceKmerSink = referenceBases.takeRight(kmerSize)
 
     val currentGraph: DeBruijnGraph = DeBruijnGraph(
       snpReads.map(_.sequence),

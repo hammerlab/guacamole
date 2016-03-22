@@ -54,8 +54,8 @@ object SomaticStandard {
     @Args4jOption(name = "--dbsnp-vcf", required = false, usage = "VCF file to identify DBSNP variants")
     var dbSnpVcf: String = ""
 
-    @Args4jOption(name = "--reference-fasta", required = false, usage = "Local path to a reference FASTA file")
-    var referenceFastaPath: String = null
+    @Args4jOption(name = "--reference-fasta", required = true, usage = "Local path to a reference FASTA file")
+    var referenceFastaPath: String = ""
 
   }
 
@@ -69,17 +69,15 @@ object SomaticStandard {
       val filters = Read.InputFilters(
         overlapsLoci = Some(loci),
         nonDuplicate = true,
-        passedVendorQualityChecks = true,
-        hasMdTag = true)
+        passedVendorQualityChecks = true)
 
-      val reference = Option(args.referenceFastaPath).map(ReferenceBroadcast(_, sc))
+      val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
 
       val (tumorReads, normalReads) =
         Common.loadTumorNormalReadsFromArguments(
           args,
           sc,
           filters,
-          requireMDTagsOnMappedReads = false,
           referenceGenome = reference
         )
 
@@ -115,7 +113,7 @@ object SomaticStandard {
               filterMultiAllelic,
               maxReadDepth
             ).iterator,
-          referenceGenome = reference
+          reference = reference
         )
 
       potentialGenotypes.persist()
