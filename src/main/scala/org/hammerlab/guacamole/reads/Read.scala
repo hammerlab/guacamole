@@ -478,7 +478,8 @@ object Read extends Logging {
 
     val adamContext = new ADAMContext(sc)
 
-    val adamRecords: RDD[AlignmentRecord] = adamContext.loadAlignments(filename, projection = None, stringency = ValidationStringency.LENIENT)
+    val adamRecords: RDD[AlignmentRecord] = adamContext.loadAlignments(
+      filename, projection = None, stringency = ValidationStringency.LENIENT).rdd
     val sequenceDictionary = new ADAMSpecificRecordSequenceDictionaryRDDAggregator(adamRecords).adamGetSequenceDictionary()
 
     val allReads: RDD[Read] = adamRecords.map(fromADAMRecord(_, token, referenceGenome))
@@ -546,7 +547,7 @@ object Read extends Logging {
       )
       else
         None
-      PairedRead(read, isFirstInPair = alignmentRecord.getReadNum == 1, mateAlignment)
+      PairedRead(read, isFirstInPair = alignmentRecord.getReadInFragment == 1, mateAlignment)
     } else {
       read
     }
