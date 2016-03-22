@@ -18,6 +18,7 @@
 
 package org.hammerlab.guacamole.commands
 
+import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.util.{ TestUtil, GuacFunSuite }
 import org.hammerlab.guacamole.Bases
 import org.hammerlab.guacamole.filters.SomaticGenotypeFilter
@@ -28,10 +29,18 @@ import org.scalatest.prop.TableDrivenPropertyChecks
 
 class SomaticStandardCallerSuite extends GuacFunSuite with Matchers with TableDrivenPropertyChecks {
 
-  def loadPileup(filename: String, referenceName: String, locus: Long = 0): Pileup = {
-    val records = TestUtil.loadReads(sc, filename).mappedReads
+  def grch37Reference = ReferenceBroadcast(TestUtil.testDataPath("grch37.partial.fasta"), sc, partialFasta = true)
+
+  def simpleReference = TestUtil.makeReference(sc, Seq(
+    ("chr1", 0, "TCGATCGACG"),
+    ("chr2", 0, "TCGAAGCTTCG"),
+    ("chr3", 10, "TCGAATCGATCGATCGA")))
+
+  def loadPileup(filename: String, contig: String, locus: Long = 0): Pileup = {
+    val contigReference = grch37Reference.getContig(contig)
+    val records = TestUtil.loadReads(sc, filename, reference = grch37Reference).mappedReads
     val localReads = records.collect
-    Pileup(localReads, referenceName, locus)
+    Pileup(localReads, contig, locus, contigReference)
   }
 
   /**
@@ -55,7 +64,11 @@ class SomaticStandardCallerSuite extends GuacFunSuite with Matchers with TableDr
     val positionsTable = Table("locus", positions: _*)
     forAll(positionsTable) {
       (locus: Long) =>
-        val (tumorPileup, normalPileup) = TestUtil.loadTumorNormalPileup(tumorReads, normalReads, locus)
+        val (tumorPileup, normalPileup) = TestUtil.loadTumorNormalPileup(
+          tumorReads,
+          normalReads,
+          locus,
+          reference = grch37Reference)
 
         val calledGenotypes = SomaticStandard.Caller.findPotentialVariantAtLocus(
           tumorPileup,
@@ -80,7 +93,10 @@ class SomaticStandardCallerSuite extends GuacFunSuite with Matchers with TableDr
   }
 
   sparkTest("testing simple positive variants") {
-    val (tumorReads, normalReads) = TestUtil.loadTumorNormalReads(sc, "tumor.chr20.tough.sam", "normal.chr20.tough.sam")
+    val (tumorReads, normalReads) = TestUtil.loadTumorNormalReads(sc,
+      "tumor.chr20.tough.sam",
+      "normal.chr20.tough.sam",
+      reference = grch37Reference)
     val positivePositions = Array[Long](42999694, 25031215, 44061033, 45175149, 755754, 1843813,
       3555766, 3868620, 9896926, 14017900, 17054263, 35951019, 50472935, 51858471, 58201903, 7087895,
       19772181, 30430960, 32150541, 42186626, 44973412, 46814443, 52311925, 53774355, 57280858, 62262870)
@@ -90,7 +106,8 @@ class SomaticStandardCallerSuite extends GuacFunSuite with Matchers with TableDr
   sparkTest("testing simple negative variants on syn1") {
     val (tumorReads, normalReads) = TestUtil.loadTumorNormalReads(sc,
       "synthetic.challenge.set1.tumor.v2.withMDTags.chr2.syn1fp.sam",
-      "synthetic.challenge.set1.normal.v2.withMDTags.chr2.syn1fp.sam")
+      "synthetic.challenge.set1.normal.v2.withMDTags.chr2.syn1fp.sam",
+      reference = grch37Reference)
     val negativePositions = Array[Long](216094721, 3529313, 8789794, 104043280, 104175801,
       126651101, 241901237, 57270796, 120757852)
     testVariants(tumorReads, normalReads, negativePositions, shouldFindVariant = false)
@@ -99,7 +116,8 @@ class SomaticStandardCallerSuite extends GuacFunSuite with Matchers with TableDr
   sparkTest("testing complex region negative variants on syn1") {
     val (tumorReads, normalReads) = TestUtil.loadTumorNormalReads(sc,
       "synthetic.challenge.set1.tumor.v2.withMDTags.chr2.complexvar.sam",
-      "synthetic.challenge.set1.normal.v2.withMDTags.chr2.complexvar.sam")
+      "synthetic.challenge.set1.normal.v2.withMDTags.chr2.complexvar.sam",
+      reference = grch37Reference)
     val negativePositions = Array[Long](148487667, 134307261, 90376213, 3638733, 109347468)
     testVariants(tumorReads, normalReads, negativePositions, shouldFindVariant = false)
 
@@ -109,41 +127,45 @@ class SomaticStandardCallerSuite extends GuacFunSuite with Matchers with TableDr
 
   sparkTest("difficult negative variants") {
 
-    val (tumorReads, normalReads) = TestUtil.loadTumorNormalReads(sc, "tumor.chr20.simplefp.sam", "normal.chr20.simplefp.sam")
+    val (tumorReads, normalReads) = TestUtil.loadTumorNormalReads(
+      sc,
+      "tumor.chr20.simplefp.sam",
+      "normal.chr20.simplefp.sam",
+      reference = grch37Reference)
     val negativeVariantPositions = Array[Long](26211835, 29652479, 54495768, 13046318, 25939088)
     testVariants(tumorReads, normalReads, negativeVariantPositions, shouldFindVariant = false)
   }
 
-  test("no indels") {
+  sparkTest("no indels") {
     val normalReads = Seq(
-      TestUtil.makeRead("TCGATCGA", "8M", "8", 0),
-      TestUtil.makeRead("TCGATCGA", "8M", "8", 0),
-      TestUtil.makeRead("TCGATCGA", "8M", "8", 0)
+      TestUtil.makeRead("TCGATCGA", "8M", 0),
+      TestUtil.makeRead("TCGATCGA", "8M", 0),
+      TestUtil.makeRead("TCGATCGA", "8M", 0)
     )
-    val normalPileup = Pileup(normalReads, "chr1", 2)
+    val normalPileup = Pileup(normalReads, "chr1", 2, referenceContigSequence = simpleReference.getContig("chr1"))
 
     val tumorReads = Seq(
-      TestUtil.makeRead("TCGGTCGA", "8M", "3G4", 0),
-      TestUtil.makeRead("TCGGTCGA", "8M", "3G4", 0),
-      TestUtil.makeRead("TCGGTCGA", "8M", "3G4", 0)
+      TestUtil.makeRead("TCGGTCGA", "8M", 0),
+      TestUtil.makeRead("TCGGTCGA", "8M", 0),
+      TestUtil.makeRead("TCGGTCGA", "8M", 0)
     )
-    val tumorPileup = Pileup(tumorReads, "chr1", 2)
+    val tumorPileup = Pileup(tumorReads, "chr1", 2, referenceContigSequence = simpleReference.getContig("chr1"))
 
     SomaticStandard.Caller.findPotentialVariantAtLocus(tumorPileup, normalPileup, oddsThreshold = 2).size should be(0)
   }
 
-  test("single-base deletion") {
+  sparkTest("single-base deletion") {
     val normalReads = Seq(
-      TestUtil.makeRead("TCGATCGA", "8M", "8", 0),
-      TestUtil.makeRead("TCGATCGA", "8M", "8", 0),
-      TestUtil.makeRead("TCGATCGA", "8M", "8", 0))
-    val normalPileup = Pileup(normalReads, "chr1", 2)
+      TestUtil.makeRead("TCGATCGA", "8M", 0),
+      TestUtil.makeRead("TCGATCGA", "8M", 0),
+      TestUtil.makeRead("TCGATCGA", "8M", 0))
+    val normalPileup = Pileup(normalReads, "chr1", 2, referenceContigSequence = simpleReference.getContig("chr1"))
 
     val tumorReads = Seq(
-      TestUtil.makeRead("TCGTCGA", "3M1D4M", "3^A4", 0),
-      TestUtil.makeRead("TCGTCGA", "3M1D4M", "3^A4", 0),
-      TestUtil.makeRead("TCGTCGA", "3M1D4M", "3^A4", 0))
-    val tumorPileup = Pileup(tumorReads, "chr1", 2)
+      TestUtil.makeRead("TCGTCGA", "3M1D4M", 0),
+      TestUtil.makeRead("TCGTCGA", "3M1D4M", 0),
+      TestUtil.makeRead("TCGTCGA", "3M1D4M", 0))
+    val tumorPileup = Pileup(tumorReads, "chr1", 2, referenceContigSequence = simpleReference.getContig("chr1"))
 
     val alleles = SomaticStandard.Caller.findPotentialVariantAtLocus(tumorPileup, normalPileup, oddsThreshold = 2)
     alleles.size should be(1)
@@ -153,20 +175,20 @@ class SomaticStandardCallerSuite extends GuacFunSuite with Matchers with TableDr
     Bases.basesToString(allele.altBases) should be("G")
   }
 
-  test("multiple-base deletion") {
+  sparkTest("multiple-base deletion") {
     val normalReads = Seq(
-      TestUtil.makeRead("TCGAAGCTTCGAAGCT", "16M", "16", 0),
-      TestUtil.makeRead("TCGAAGCTTCGAAGCT", "16M", "16", 0),
-      TestUtil.makeRead("TCGAAGCTTCGAAGCT", "16M", "16", 0)
+      TestUtil.makeRead("TCGAAGCTTCGAAGCT", "16M", 0),
+      TestUtil.makeRead("TCGAAGCTTCGAAGCT", "16M", 0),
+      TestUtil.makeRead("TCGAAGCTTCGAAGCT", "16M", 0)
     )
-    val normalPileup = Pileup(normalReads, "chr1", 4)
+    val normalPileup = Pileup(normalReads, "chr1", 4, referenceContigSequence = simpleReference.getContig("chr2"))
 
     val tumorReads = Seq(
-      TestUtil.makeRead("TCGAAAAGCT", "5M6D5M", "5^GCTTCG5", 0),
-      TestUtil.makeRead("TCGAAAAGCT", "5M6D5M", "5^GCTTCG5", 0),
-      TestUtil.makeRead("TCGAAAAGCT", "5M6D5M", "5^GCTTCG5", 0)
+      TestUtil.makeRead("TCGAAAAGCT", "5M6D5M", 0), // md tag: "5^GCTTCG5"
+      TestUtil.makeRead("TCGAAAAGCT", "5M6D5M", 0),
+      TestUtil.makeRead("TCGAAAAGCT", "5M6D5M", 0)
     )
-    val tumorPileup = Pileup(tumorReads, "chr1", 4)
+    val tumorPileup = Pileup(tumorReads, "chr1", 4, referenceContigSequence = simpleReference.getContig("chr2"))
 
     val alleles = SomaticStandard.Caller.findPotentialVariantAtLocus(tumorPileup, normalPileup, oddsThreshold = 2)
     alleles.size should be(1)
@@ -176,20 +198,20 @@ class SomaticStandardCallerSuite extends GuacFunSuite with Matchers with TableDr
     Bases.basesToString(allele.altBases) should be("A")
   }
 
-  test("single-base insertion") {
+  sparkTest("single-base insertion") {
     val normalReads = Seq(
-      TestUtil.makeRead("TCGATCGA", "8M", "8", 0),
-      TestUtil.makeRead("TCGATCGA", "8M", "8", 0),
-      TestUtil.makeRead("TCGATCGA", "8M", "8", 0)
+      TestUtil.makeRead("TCGATCGA", "8M", 0),
+      TestUtil.makeRead("TCGATCGA", "8M", 0),
+      TestUtil.makeRead("TCGATCGA", "8M", 0)
     )
-    val normalPileup = Pileup(normalReads, "chr1", 2)
+    val normalPileup = Pileup(normalReads, "chr1", 2, referenceContigSequence = simpleReference.getContig("chr1"))
 
     val tumorReads = Seq(
-      TestUtil.makeRead("TCGAGTCGA", "4M1I4M", "8", 0),
-      TestUtil.makeRead("TCGAGTCGA", "4M1I4M", "8", 0),
-      TestUtil.makeRead("TCGAGTCGA", "4M1I4M", "8", 0)
+      TestUtil.makeRead("TCGAGTCGA", "4M1I4M", 0),
+      TestUtil.makeRead("TCGAGTCGA", "4M1I4M", 0),
+      TestUtil.makeRead("TCGAGTCGA", "4M1I4M", 0)
     )
-    val tumorPileup = Pileup(tumorReads, "chr1", 3)
+    val tumorPileup = Pileup(tumorReads, "chr1", 3, referenceContigSequence = simpleReference.getContig("chr1"))
 
     val alleles = SomaticStandard.Caller.findPotentialVariantAtLocus(tumorPileup, normalPileup, oddsThreshold = 2)
     alleles.size should be(1)
@@ -199,21 +221,23 @@ class SomaticStandardCallerSuite extends GuacFunSuite with Matchers with TableDr
     Bases.basesToString(allele.altBases) should be("AG")
   }
 
-  test("multiple-base insertion") {
+  sparkTest("multiple-base insertion") {
     val normalReads = Seq(
-      TestUtil.makeRead("TCGATCGA", "8M", "8", 0),
-      TestUtil.makeRead("TCGATCGA", "8M", "8", 0),
-      TestUtil.makeRead("TCGATCGA", "8M", "8", 0)
+      TestUtil.makeRead("TCGATCGA", "8M", 0),
+      TestUtil.makeRead("TCGATCGA", "8M", 0),
+      TestUtil.makeRead("TCGATCGA", "8M", 0)
     )
 
     val tumorReads = Seq(
-      TestUtil.makeRead("TCGAGGTCTCGA", "4M4I4M", "8", 0),
-      TestUtil.makeRead("TCGAGGTCTCGA", "4M4I4M", "8", 0),
-      TestUtil.makeRead("TCGAGGTCTCGA", "4M4I4M", "8", 0)
+      TestUtil.makeRead("TCGAGGTCTCGA", "4M4I4M", 0),
+      TestUtil.makeRead("TCGAGGTCTCGA", "4M4I4M", 0),
+      TestUtil.makeRead("TCGAGGTCTCGA", "4M4I4M", 0)
     )
 
     val alleles = SomaticStandard.Caller.findPotentialVariantAtLocus(
-      Pileup(tumorReads, "chr1", 3), Pileup(normalReads, "chr1", 3), oddsThreshold = 2
+      Pileup(tumorReads, "chr1", 3, referenceContigSequence = simpleReference.getContig("chr1")),
+      Pileup(normalReads, "chr1", 3, referenceContigSequence = simpleReference.getContig("chr1")),
+      oddsThreshold = 2
     )
     alleles.size should be(1)
 
@@ -222,7 +246,7 @@ class SomaticStandardCallerSuite extends GuacFunSuite with Matchers with TableDr
     Bases.basesToString(allele.altBases) should be("AGGTC")
   }
 
-  test("insertions and deletions") {
+  sparkTest("insertions and deletions") {
     /*
     idx:  01234  56    7890123456
     ref:  TCGAA  TC    GATCGATCGA
@@ -230,23 +254,25 @@ class SomaticStandardCallerSuite extends GuacFunSuite with Matchers with TableDr
      */
 
     val normalReads = Seq(
-      TestUtil.makeRead("TCGAATCGATCGATCGA", "17M", "17", 10),
-      TestUtil.makeRead("TCGAATCGATCGATCGA", "17M", "17", 10),
-      TestUtil.makeRead("TCGAATCGATCGATCGA", "17M", "17", 10)
+      TestUtil.makeRead("TCGAATCGATCGATCGA", "17M", 10, chr = "chr3"),
+      TestUtil.makeRead("TCGAATCGATCGATCGA", "17M", 10, chr = "chr3"),
+      TestUtil.makeRead("TCGAATCGATCGATCGA", "17M", 10, chr = "chr3")
     )
 
     val tumorReads = Seq(
-      TestUtil.makeRead("TCATCTCAAAAGAGATCGA", "2M2D1M2I2M4I2M2D6M", "2^GA5^TC6", 10),
-      TestUtil.makeRead("TCATCTCAAAAGAGATCGA", "2M2D1M2I2M4I2M2D6M", "2^GA5^TC6", 10),
-      TestUtil.makeRead("TCATCTCAAAAGAGATCGA", "2M2D1M2I2M4I2M2D6M", "2^GA5^TC6", 10)
+      TestUtil.makeRead("TCATCTCAAAAGAGATCGA", "2M2D1M2I2M4I2M2D6M", 10, chr = "chr3"), // md tag: "2^GA5^TC6""
+      TestUtil.makeRead("TCATCTCAAAAGAGATCGA", "2M2D1M2I2M4I2M2D6M", 10, chr = "chr3"),
+      TestUtil.makeRead("TCATCTCAAAAGAGATCGA", "2M2D1M2I2M4I2M2D6M", 10, chr = "chr3")
     )
 
     def testLocus(referenceName: String, locus: Int, refBases: String, altBases: String) = {
-      val tumorPileup = Pileup(tumorReads, referenceName, locus)
-      val normalPileup = Pileup(normalReads, referenceName, locus)
+      val tumorPileup = Pileup(tumorReads, referenceName, locus, referenceContigSequence = simpleReference.getContig("chr2"))
+      val normalPileup = Pileup(normalReads, referenceName, locus, referenceContigSequence = simpleReference.getContig("chr2"))
 
       val alleles = SomaticStandard.Caller.findPotentialVariantAtLocus(
-        Pileup(tumorReads, referenceName, locus), Pileup(normalReads, referenceName, locus), oddsThreshold = 2
+        Pileup(tumorReads, referenceName, locus, referenceContigSequence = simpleReference.getContig("chr3")),
+        Pileup(normalReads, referenceName, locus, referenceContigSequence = simpleReference.getContig("chr3")),
+        oddsThreshold = 2
       )
       alleles.size should be(1)
 
@@ -255,10 +281,9 @@ class SomaticStandardCallerSuite extends GuacFunSuite with Matchers with TableDr
       Bases.basesToString(allele.altBases) should be(altBases)
     }
 
-    testLocus("chr1", 11, "CGA", "C")
-    testLocus("chr1", 14, "A", "ATC")
-    testLocus("chr1", 16, "C", "CAAAA")
-    testLocus("chr1", 18, "ATC", "A")
+    testLocus("chr3", 11, "CGA", "C")
+    testLocus("chr3", 14, "A", "ATC")
+    testLocus("chr3", 16, "C", "CAAAA")
+    testLocus("chr3", 18, "ATC", "A")
   }
-
 }

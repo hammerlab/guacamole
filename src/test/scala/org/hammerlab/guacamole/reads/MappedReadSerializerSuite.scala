@@ -37,7 +37,6 @@ class MappedReadSerializerSuite extends GuacFunSuite with Matchers {
       50,
       325352323,
       TextCigarCodec.decode(""),
-      mdTagString = Some("11"),
       false,
       isPositiveStrand = true,
       isPaired = true
@@ -62,7 +61,6 @@ class MappedReadSerializerSuite extends GuacFunSuite with Matchers {
     deserialized.alignmentQuality should equal(read.alignmentQuality)
     deserialized.start should equal(read.start)
     deserialized.cigar should equal(read.cigar)
-    deserialized.mdTagOpt should equal(read.mdTagOpt)
     deserialized.failedVendorQualityChecks should equal(read.failedVendorQualityChecks)
     deserialized.isPositiveStrand should equal(read.isPositiveStrand)
     deserialized.isPaired should equal(read.isPaired)
@@ -80,7 +78,6 @@ class MappedReadSerializerSuite extends GuacFunSuite with Matchers {
       50,
       325352323,
       TextCigarCodec.decode(""),
-      mdTagString = Some("11"),
       false,
       isPositiveStrand = true,
       isPaired = true
@@ -105,7 +102,6 @@ class MappedReadSerializerSuite extends GuacFunSuite with Matchers {
     deserialized.alignmentQuality should equal(read.alignmentQuality)
     deserialized.start should equal(read.start)
     deserialized.cigar should equal(read.cigar)
-    deserialized.mdTagOpt should equal(read.mdTagOpt)
     deserialized.failedVendorQualityChecks should equal(read.failedVendorQualityChecks)
     deserialized.isPositiveStrand should equal(read.isPositiveStrand)
     deserialized.isPaired should equal(read.isPaired)
@@ -123,7 +119,6 @@ class MappedReadSerializerSuite extends GuacFunSuite with Matchers {
       50,
       325352323,
       TextCigarCodec.decode(""),
-      mdTagString = Some("11"),
       false,
       isPositiveStrand = true,
       isPaired = true
@@ -148,7 +143,6 @@ class MappedReadSerializerSuite extends GuacFunSuite with Matchers {
     deserialized.alignmentQuality should equal(read.alignmentQuality)
     deserialized.start should equal(read.start)
     deserialized.cigar should equal(read.cigar)
-    deserialized.mdTagOpt should equal(read.mdTagOpt)
     deserialized.failedVendorQualityChecks should equal(read.failedVendorQualityChecks)
     deserialized.isPositiveStrand should equal(read.isPositiveStrand)
     deserialized.isPaired should equal(read.isPaired)

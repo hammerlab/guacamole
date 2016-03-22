@@ -16,16 +16,18 @@ class PileupStatsSuite extends GuacFunSuite with Matchers {
   }
 
   sparkTest("pileupstats likelihood computation") {
-    val ref = "NTCGATCGA"
+    val refString = "NTCGATCGA"
+    def reference = TestUtil.makeReference(sc, Seq(("chr1", 0, refString)))
+    def referenceContigSequence = reference.getContig("chr1")
 
     val reads = Seq(
-      TestUtil.makeRead("TCGATCGA", "8M", "8", 1, qualityScores = Some(Seq.fill(8)(10))),
-      TestUtil.makeRead("TCGATCGA", "8M", "8", 1, qualityScores = Some(Seq.fill(8)(20))),
-      TestUtil.makeRead("TCGCTCGA", "8M", "8", 1, qualityScores = Some(Seq.fill(8)(50))),
-      TestUtil.makeRead("TCGCTCGA", "8M", "8", 1, qualityScores = Some(Seq.fill(8)(50))),
-      TestUtil.makeRead("TCGCTCGA", "8M", "8", 1, qualityScores = Some(Seq.fill(8)(50))),
-      TestUtil.makeRead("TCGACCCTCGA", "4M3I4M", "8", 1, qualityScores = Some(Seq.fill(11)(30))))
-    val pileups = (0 until ref.length).map(locus => Pileup(reads, "chr1", locus))
+      TestUtil.makeRead("TCGATCGA", "8M", 1, qualityScores = Some(Seq.fill(8)(10))),
+      TestUtil.makeRead("TCGATCGA", "8M", 1, qualityScores = Some(Seq.fill(8)(20))),
+      TestUtil.makeRead("TCGCTCGA", "8M", 1, qualityScores = Some(Seq.fill(8)(50))),
+      TestUtil.makeRead("TCGCTCGA", "8M", 1, qualityScores = Some(Seq.fill(8)(50))),
+      TestUtil.makeRead("TCGCTCGA", "8M", 1, qualityScores = Some(Seq.fill(8)(50))),
+      TestUtil.makeRead("TCGACCCTCGA", "4M3I4M", 1, qualityScores = Some(Seq.fill(11)(30))))
+    val pileups = (0 until refString.length).map(locus => Pileup(reads, "chr1", locus, referenceContigSequence = referenceContigSequence))
 
     val stats1 = PileupStats.apply(pileups(2).elements, Bases.stringToBases("G"))
     stats1.totalDepthIncludingReadsContributingNoAlleles should equal(6)
