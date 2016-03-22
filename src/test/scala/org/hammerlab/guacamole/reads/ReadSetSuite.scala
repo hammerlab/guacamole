@@ -18,8 +18,9 @@
 
 package org.hammerlab.guacamole.reads
 
+import org.apache.parquet.hadoop.metadata.CompressionCodecName
 import org.apache.spark.rdd.RDD
-import org.bdgenomics.adam.rdd.ADAMContext
+import org.bdgenomics.adam.rdd.{ADAMSaveAnyArgs, ADAMContext}
 import org.bdgenomics.formats.avro.AlignmentRecord
 import org.hammerlab.guacamole.{ LociSet, Bases }
 import org.hammerlab.guacamole.reads.Read.InputFilters
@@ -88,11 +89,21 @@ class ReadSetSuite extends GuacFunSuite with Matchers {
   sparkTest("load read from ADAM") {
     // First load reads from SAM using ADAM and save as ADAM
     val adamContext = new ADAMContext(sc)
-    val adamAlignmentRecords: RDD[AlignmentRecord] = adamContext.loadAlignments(TestUtil.testDataPath("mdtagissue.sam"))
-    val origReads = TestUtil.loadReads(sc, "mdtagissue.sam").reads.collect()
+    val adamRecords = adamContext.loadBam(TestUtil.testDataPath("mdtagissue.sam"))
+
+    val origReadSet = TestUtil.loadReads(sc, "mdtagissue.sam")
 
     val adamOut = TestUtil.tmpFileName(".adam")
-    adamAlignmentRecords.adamParquetSave(adamOut)
+    val args = new ADAMSaveAnyArgs {
+      override var sortFastqOutput: Boolean = false
+      override var asSingleFile: Boolean = true
+      override var outputPath: String = adamOut
+      override var disableDictionaryEncoding: Boolean = false
+      override var blockSize: Int = 1024
+      override var pageSize: Int = 1024
+      override var compressionCodec: CompressionCodecName = CompressionCodecName.UNCOMPRESSED
+    }
+    adamRecords.rdd.saveAsParquet(args, adamRecords.sequences, adamRecords.recordGroups)
 
     val (allReads, _) = Read.loadReadRDDAndSequenceDictionaryFromADAM(adamOut, sc, token = 0)
     allReads.count() should be(8)

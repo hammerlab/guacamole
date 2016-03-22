@@ -195,7 +195,8 @@ object LociSet {
       if (contigLengths.nonEmpty) {
         rangesResult.foreach({
           case (contig, start, end) => contigLengths.get.get(contig) match {
-            case None => throw new IllegalArgumentException("No such contig: %s".format(contig))
+            case None => throw new IllegalArgumentException(
+              "No such contig: %s. Valid contigs: %s".format(contig, contigLengths.get.keys.mkString(", ")))
             case Some(contigLength) if end.exists(_ > contigLength) =>
               throw new IllegalArgumentException(
                 "Invalid range %d-%d for contig '%s' which has length %d".format(
