@@ -101,16 +101,26 @@ object SomaticJoint {
         forceCallLoci,
         args)
 
-      val calls = allCalls.map(_.onlyBest)
+      val preCalls = allCalls.map(_.onlyBest)
+
+      val calls = preCalls.coalesce(numPartitions = 1104, shuffle = true)
+
       calls.cache()
+
+      val pts = calls.mapPartitionsWithIndex((idx, it) => Iterator((idx, it.size))).collect.sortBy(-_._2)
+
+      Common.progress("Index, size of partitions")
+      Common.progress("%s".format(pts.mkString("\n")))
 
       Common.progress("Collecting evidence for %,d sites with calls".format(calls.count))
       val collectedCalls = calls.collect()
+      calls.unpersist()
 
       Common.progress("Called %,d germline and %,d somatic variants.".format(
         collectedCalls.count(_.alleleEvidences.exists(_.isGermlineCall)),
         collectedCalls.count(_.alleleEvidences.exists(_.isSomaticCall))))
 
+      /*
       writeCalls(
         collectedCalls,
         inputs,
@@ -120,6 +130,7 @@ object SomaticJoint {
         reference,
         out = args.out,
         outDir = args.outDir)
+        */
     }
   }
 

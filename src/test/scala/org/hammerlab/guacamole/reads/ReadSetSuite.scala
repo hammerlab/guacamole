@@ -20,7 +20,7 @@ package org.hammerlab.guacamole.reads
 
 import org.apache.parquet.hadoop.metadata.CompressionCodecName
 import org.apache.spark.rdd.RDD
-import org.bdgenomics.adam.rdd.{ADAMSaveAnyArgs, ADAMContext}
+import org.bdgenomics.adam.rdd.{ ADAMSaveAnyArgs, ADAMContext }
 import org.bdgenomics.formats.avro.AlignmentRecord
 import org.hammerlab.guacamole.{ LociSet, Bases }
 import org.hammerlab.guacamole.reads.Read.InputFilters

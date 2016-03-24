@@ -60,7 +60,7 @@
             <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
           </transformers>
           <shadedArtifactAttached>true</shadedArtifactAttached>
-          <finalName>guacamole-with-dependencies-${project.version}</finalName>
+          <finalName>guacamole-with-dependencies-${project.version}-exp1</finalName>
           <filters>
             <filter>
               <artifact>*:*</artifact>
