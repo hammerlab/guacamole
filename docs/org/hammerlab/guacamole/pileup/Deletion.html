@@ -40,8 +40,7 @@
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>For now, only emit a Deletion at the position immediately preceding the run of deleted bases, i.e. the position we
-would ultimately emit a variant at (by VCF convention).</p><p>For reads at loci in the middle of a deletion, emit MidDeletion below.</p><p>Deletion stores the reference bases of the entire deletion (pulled from MD tag), which are emitted with a deletion
-variant.
+would ultimately emit a variant at (by VCF convention).</p><p>For reads at loci in the middle of a deletion, emit MidDeletion below.</p><p>Deletion stores the reference bases of the entire deletion, including the base immediately before the deletion.
 </p></div><dl class="paramcmts block"><dt class="param">referenceBases</dt><dd class="cmt"><p>
 </p></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>

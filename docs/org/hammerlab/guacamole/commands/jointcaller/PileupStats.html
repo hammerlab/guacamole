@@ -84,7 +84,7 @@ establishes the reference length to be considered.
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="org.hammerlab.guacamole.commands.jointcaller.PileupStats#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="&lt;init&gt;(elements:Seq[org.hammerlab.guacamole.pileup.PileupElement],refSequence:Seq[Byte]):org.hammerlab.guacamole.commands.jointcaller.PileupStats"></a>
+      <a id="&lt;init&gt;(elements:Seq[org.hammerlab.guacamole.pileup.PileupElement],referenceSequence:Seq[Byte]):org.hammerlab.guacamole.commands.jointcaller.PileupStats"></a>
       <a id="&lt;init&gt;:PileupStats"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -92,11 +92,11 @@ establishes the reference length to be considered.
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">PileupStats</span><span class="params">(<span name="elements">elements: <span class="extype" name="scala.Seq">Seq</span>[<a href="../../pileup/PileupElement.html" class="extype" name="org.hammerlab.guacamole.pileup.PileupElement">PileupElement</a>]</span>, <span name="refSequence">refSequence: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>)</span>
+        <span class="name">PileupStats</span><span class="params">(<span name="elements">elements: <span class="extype" name="scala.Seq">Seq</span>[<a href="../../pileup/PileupElement.html" class="extype" name="org.hammerlab.guacamole.pileup.PileupElement">PileupElement</a>]</span>, <span name="referenceSequence">referenceSequence: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>)</span>
       </span>
       </h4>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">elements</dt><dd class="cmt"><p>elements from a pileup. They should all be positioned at the same locus. The alleles considered will
-                align at this locus + 1.</p></dd><dt class="param">refSequence</dt><dd class="cmt"><p>reference bases. The length determines the size of alleles to consider. The first element should
+                align at this locus + 1.</p></dd><dt class="param">referenceSequence</dt><dd class="cmt"><p>reference bases. The length determines the size of alleles to consider. The first element should
                    be the reference base at locus elements.head.locus + 1.
 </p></dd></dl></div>
     </li></ol>

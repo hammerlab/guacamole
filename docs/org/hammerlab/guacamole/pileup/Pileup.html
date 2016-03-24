@@ -35,14 +35,14 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">Pileup</span><span class="params">(<span name="referenceName">referenceName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="locus">locus: <span class="extype" name="scala.Long">Long</span></span>, <span name="referenceBase">referenceBase: <span class="extype" name="scala.Byte">Byte</span></span>, <span name="elements">elements: <span class="extype" name="scala.Seq">Seq</span>[<a href="PileupElement.html" class="extype" name="org.hammerlab.guacamole.pileup.PileupElement">PileupElement</a>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">Pileup</span><span class="params">(<span name="referenceName">referenceName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="locus">locus: <span class="extype" name="scala.Long">Long</span></span>, <span name="referenceContigSequence">referenceContigSequence: <a href="../reference/ContigSequence.html" class="extype" name="org.hammerlab.guacamole.reference.ContigSequence">ContigSequence</a></span>, <span name="elements">elements: <span class="extype" name="scala.Seq">Seq</span>[<a href="PileupElement.html" class="extype" name="org.hammerlab.guacamole.pileup.PileupElement">PileupElement</a>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>A <a href="" class="extype" name="org.hammerlab.guacamole.pileup.Pileup">Pileup</a> at a locus contains a sequence of <a href="PileupElement.html" class="extype" name="org.hammerlab.guacamole.pileup.PileupElement">PileupElement</a> instances, one for every read that overlaps that
 locus. Each <a href="PileupElement.html" class="extype" name="org.hammerlab.guacamole.pileup.PileupElement">PileupElement</a> specifies the base read at the given locus in a particular read. It also keeps track
 of the read itself and the offset of the base in the read.
-</p></div><dl class="paramcmts block"><dt class="param">referenceName</dt><dd class="cmt"><p>The contig name for all elements in this pileup.</p></dd><dt class="param">locus</dt><dd class="cmt"><p>The locus on the reference genome</p></dd><dt class="param">referenceBase</dt><dd class="cmt"><p>The reference base at <a href="#locus:Long" class="extmbr" name="org.hammerlab.guacamole.pileup.Pileup#locus">locus</a> on the reference genome</p></dd><dt class="param">elements</dt><dd class="cmt"><p>Sequence of <a href="PileupElement.html" class="extype" name="org.hammerlab.guacamole.pileup.PileupElement">PileupElement</a> instances giving the sequenced bases that align to a particular
+</p></div><dl class="paramcmts block"><dt class="param">referenceName</dt><dd class="cmt"><p>The contig name for all elements in this pileup.</p></dd><dt class="param">locus</dt><dd class="cmt"><p>The locus on the reference genome</p></dd><dt class="param">referenceContigSequence</dt><dd class="cmt"><p>The reference for this contig</p></dd><dt class="param">elements</dt><dd class="cmt"><p>Sequence of <a href="PileupElement.html" class="extype" name="org.hammerlab.guacamole.pileup.PileupElement">PileupElement</a> instances giving the sequenced bases that align to a particular
                 reference locus, in arbitrary order.
 </p></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
@@ -85,7 +85,7 @@ of the read itself and the offset of the base in the read.
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="org.hammerlab.guacamole.pileup.Pileup#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="&lt;init&gt;(referenceName:String,locus:Long,referenceBase:Byte,elements:Seq[org.hammerlab.guacamole.pileup.PileupElement]):org.hammerlab.guacamole.pileup.Pileup"></a>
+      <a id="&lt;init&gt;(referenceName:String,locus:Long,referenceContigSequence:org.hammerlab.guacamole.reference.ContigSequence,elements:Seq[org.hammerlab.guacamole.pileup.PileupElement]):org.hammerlab.guacamole.pileup.Pileup"></a>
       <a id="&lt;init&gt;:Pileup"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -93,10 +93,10 @@ of the read itself and the offset of the base in the read.
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">Pileup</span><span class="params">(<span name="referenceName">referenceName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="locus">locus: <span class="extype" name="scala.Long">Long</span></span>, <span name="referenceBase">referenceBase: <span class="extype" name="scala.Byte">Byte</span></span>, <span name="elements">elements: <span class="extype" name="scala.Seq">Seq</span>[<a href="PileupElement.html" class="extype" name="org.hammerlab.guacamole.pileup.PileupElement">PileupElement</a>]</span>)</span>
+        <span class="name">Pileup</span><span class="params">(<span name="referenceName">referenceName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="locus">locus: <span class="extype" name="scala.Long">Long</span></span>, <span name="referenceContigSequence">referenceContigSequence: <a href="../reference/ContigSequence.html" class="extype" name="org.hammerlab.guacamole.reference.ContigSequence">ContigSequence</a></span>, <span name="elements">elements: <span class="extype" name="scala.Seq">Seq</span>[<a href="PileupElement.html" class="extype" name="org.hammerlab.guacamole.pileup.PileupElement">PileupElement</a>]</span>)</span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">referenceName</dt><dd class="cmt"><p>The contig name for all elements in this pileup.</p></dd><dt class="param">locus</dt><dd class="cmt"><p>The locus on the reference genome</p></dd><dt class="param">referenceBase</dt><dd class="cmt"><p>The reference base at <a href="#locus:Long" class="extmbr" name="org.hammerlab.guacamole.pileup.Pileup#locus">locus</a> on the reference genome</p></dd><dt class="param">elements</dt><dd class="cmt"><p>Sequence of <a href="PileupElement.html" class="extype" name="org.hammerlab.guacamole.pileup.PileupElement">PileupElement</a> instances giving the sequenced bases that align to a particular
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">referenceName</dt><dd class="cmt"><p>The contig name for all elements in this pileup.</p></dd><dt class="param">locus</dt><dd class="cmt"><p>The locus on the reference genome</p></dd><dt class="param">referenceContigSequence</dt><dd class="cmt"><p>The reference for this contig</p></dd><dt class="param">elements</dt><dd class="cmt"><p>Sequence of <a href="PileupElement.html" class="extype" name="org.hammerlab.guacamole.pileup.PileupElement">PileupElement</a> instances giving the sequenced bases that align to a particular
                 reference locus, in arbitrary order.
 </p></dd></dl></div>
     </li></ol>
@@ -185,7 +185,9 @@ of the read itself and the offset of the base in the read.
         <span class="name">alleleReadDepthAndPositiveDepth</span><span class="params">(<span name="allele">allele: <a href="../variants/Allele.html" class="extype" name="org.hammerlab.guacamole.variants.Allele">Allele</a></span>)</span><span class="result">: (<span class="extype" name="scala.Int">Int</span>, <span class="extype" name="scala.Int">Int</span>)</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Compute depth and positive strand depth of a particular alternate base</p><div class="fullcomment"><div class="comment cmt"><p>Compute depth and positive strand depth of a particular alternate base</p></div><dl class="paramcmts block"><dt class="param">allele</dt><dd class="cmt"><p>allele to consider</p></dd><dt>returns</dt><dd class="cmt"><p>tuple of total depth and forward strand depth
+      <p class="shortcomment cmt">Compute depth and positive strand depth of a particular alternate base
+</p><div class="fullcomment"><div class="comment cmt"><p>Compute depth and positive strand depth of a particular alternate base
+</p></div><dl class="paramcmts block"><dt class="param">allele</dt><dd class="cmt"><p>allele to consider</p></dd><dt>returns</dt><dd class="cmt"><p>tuple of total depth and forward strand depth
 </p></dd></dl></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
@@ -201,19 +203,19 @@ of the read itself and the offset of the base in the read.
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li name="org.hammerlab.guacamole.pileup.Pileup#atGreaterLocus" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="atGreaterLocus(newLocus:Long,newReferenceBase:Byte,newReads:Iterator[org.hammerlab.guacamole.reads.MappedRead]):org.hammerlab.guacamole.pileup.Pileup"></a>
-      <a id="atGreaterLocus(Long,Byte,Iterator[MappedRead]):Pileup"></a>
+      <a id="atGreaterLocus(newLocus:Long,newReads:Iterator[org.hammerlab.guacamole.reads.MappedRead]):org.hammerlab.guacamole.pileup.Pileup"></a>
+      <a id="atGreaterLocus(Long,Iterator[MappedRead]):Pileup"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">atGreaterLocus</span><span class="params">(<span name="newLocus">newLocus: <span class="extype" name="scala.Long">Long</span></span>, <span name="newReferenceBase">newReferenceBase: <span class="extype" name="scala.Byte">Byte</span></span>, <span name="newReads">newReads: <span class="extype" name="scala.Iterator">Iterator</span>[<a href="../reads/MappedRead.html" class="extype" name="org.hammerlab.guacamole.reads.MappedRead">MappedRead</a>]</span>)</span><span class="result">: <a href="" class="extype" name="org.hammerlab.guacamole.pileup.Pileup">Pileup</a></span>
+        <span class="name">atGreaterLocus</span><span class="params">(<span name="newLocus">newLocus: <span class="extype" name="scala.Long">Long</span></span>, <span name="newReads">newReads: <span class="extype" name="scala.Iterator">Iterator</span>[<a href="../reads/MappedRead.html" class="extype" name="org.hammerlab.guacamole.reads.MappedRead">MappedRead</a>]</span>)</span><span class="result">: <a href="" class="extype" name="org.hammerlab.guacamole.pileup.Pileup">Pileup</a></span>
       </span>
       </h4>
       <p class="shortcomment cmt">Returns a new <a href="" class="extype" name="org.hammerlab.guacamole.pileup.Pileup">Pileup</a> at a different locus on the same contig.</p><div class="fullcomment"><div class="comment cmt"><p>Returns a new <a href="" class="extype" name="org.hammerlab.guacamole.pileup.Pileup">Pileup</a> at a different locus on the same contig.</p><p>To enable an efficient implementation, the new locus must be greater than the current locus.
-</p></div><dl class="paramcmts block"><dt class="param">newLocus</dt><dd class="cmt"><p>The locus to move forward to.</p></dd><dt class="param">newReferenceBase</dt><dd class="cmt"><p>The reference base at the newLocus</p></dd><dt class="param">newReads</dt><dd class="cmt"><p>The *new* reads, i.e. those that overlap the new locus, but not the current locus.</p></dd><dt>returns</dt><dd class="cmt"><p>A new <a href="" class="extype" name="org.hammerlab.guacamole.pileup.Pileup">Pileup</a> at the given locus.
+</p></div><dl class="paramcmts block"><dt class="param">newLocus</dt><dd class="cmt"><p>The locus to move forward to.</p></dd><dt class="param">newReads</dt><dd class="cmt"><p>The *new* reads, i.e. those that overlap the new locus, but not the current locus.</p></dd><dt>returns</dt><dd class="cmt"><p>A new <a href="" class="extype" name="org.hammerlab.guacamole.pileup.Pileup">Pileup</a> at the given locus.
 </p></dd></dl></div>
     </li><li name="org.hammerlab.guacamole.pileup.Pileup#bySample" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="bySample:Map[String,org.hammerlab.guacamole.pileup.Pileup]"></a>
@@ -454,7 +456,20 @@ with that token.
         <span class="name">referenceBase</span><span class="result">: <span class="extype" name="scala.Byte">Byte</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">The reference base at <a href="#locus:Long" class="extmbr" name="org.hammerlab.guacamole.pileup.Pileup#locus">locus</a> on the reference genome</p>
+      
+    </li><li name="org.hammerlab.guacamole.pileup.Pileup#referenceContigSequence" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="referenceContigSequence:org.hammerlab.guacamole.reference.ContigSequence"></a>
+      <a id="referenceContigSequence:ContigSequence"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">referenceContigSequence</span><span class="result">: <a href="../reference/ContigSequence.html" class="extype" name="org.hammerlab.guacamole.reference.ContigSequence">ContigSequence</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">The reference for this contig</p>
     </li><li name="org.hammerlab.guacamole.pileup.Pileup#referenceDepth" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="referenceDepth:Int"></a>
       <a id="referenceDepth:Int"></a>

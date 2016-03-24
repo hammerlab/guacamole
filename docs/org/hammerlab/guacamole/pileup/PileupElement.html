@@ -35,7 +35,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">PileupElement</span><span class="params">(<span name="read">read: <a href="../reads/MappedRead.html" class="extype" name="org.hammerlab.guacamole.reads.MappedRead">MappedRead</a></span>, <span name="locus">locus: <span class="extype" name="scala.Long">Long</span></span>, <span name="referenceBase">referenceBase: <span class="extype" name="scala.Byte">Byte</span></span>, <span name="readPosition">readPosition: <span class="extype" name="scala.Int">Int</span></span>, <span name="cigarElementIndex">cigarElementIndex: <span class="extype" name="scala.Int">Int</span></span>, <span name="cigarElementLocus">cigarElementLocus: <span class="extype" name="scala.Long">Long</span></span>, <span name="indexWithinCigarElement">indexWithinCigarElement: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">PileupElement</span><span class="params">(<span name="read">read: <a href="../reads/MappedRead.html" class="extype" name="org.hammerlab.guacamole.reads.MappedRead">MappedRead</a></span>, <span name="locus">locus: <span class="extype" name="scala.Long">Long</span></span>, <span name="readPosition">readPosition: <span class="extype" name="scala.Int">Int</span></span>, <span name="cigarElementIndex">cigarElementIndex: <span class="extype" name="scala.Int">Int</span></span>, <span name="cigarElementLocus">cigarElementLocus: <span class="extype" name="scala.Long">Long</span></span>, <span name="indexWithinCigarElement">indexWithinCigarElement: <span class="extype" name="scala.Int">Int</span></span>, <span name="referenceContigSequence">referenceContigSequence: <a href="../reference/ContigSequence.html" class="extype" name="org.hammerlab.guacamole.reference.ContigSequence">ContigSequence</a></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
@@ -84,7 +84,7 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="org.hammerlab.guacamole.pileup.PileupElement#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="&lt;init&gt;(read:org.hammerlab.guacamole.reads.MappedRead,locus:Long,referenceBase:Byte,readPosition:Int,cigarElementIndex:Int,cigarElementLocus:Long,indexWithinCigarElement:Int):org.hammerlab.guacamole.pileup.PileupElement"></a>
+      <a id="&lt;init&gt;(read:org.hammerlab.guacamole.reads.MappedRead,locus:Long,readPosition:Int,cigarElementIndex:Int,cigarElementLocus:Long,indexWithinCigarElement:Int,referenceContigSequence:org.hammerlab.guacamole.reference.ContigSequence):org.hammerlab.guacamole.pileup.PileupElement"></a>
       <a id="&lt;init&gt;:PileupElement"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -92,7 +92,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">PileupElement</span><span class="params">(<span name="read">read: <a href="../reads/MappedRead.html" class="extype" name="org.hammerlab.guacamole.reads.MappedRead">MappedRead</a></span>, <span name="locus">locus: <span class="extype" name="scala.Long">Long</span></span>, <span name="referenceBase">referenceBase: <span class="extype" name="scala.Byte">Byte</span></span>, <span name="readPosition">readPosition: <span class="extype" name="scala.Int">Int</span></span>, <span name="cigarElementIndex">cigarElementIndex: <span class="extype" name="scala.Int">Int</span></span>, <span name="cigarElementLocus">cigarElementLocus: <span class="extype" name="scala.Long">Long</span></span>, <span name="indexWithinCigarElement">indexWithinCigarElement: <span class="extype" name="scala.Int">Int</span></span>)</span>
+        <span class="name">PileupElement</span><span class="params">(<span name="read">read: <a href="../reads/MappedRead.html" class="extype" name="org.hammerlab.guacamole.reads.MappedRead">MappedRead</a></span>, <span name="locus">locus: <span class="extype" name="scala.Long">Long</span></span>, <span name="readPosition">readPosition: <span class="extype" name="scala.Int">Int</span></span>, <span name="cigarElementIndex">cigarElementIndex: <span class="extype" name="scala.Int">Int</span></span>, <span name="cigarElementLocus">cigarElementLocus: <span class="extype" name="scala.Long">Long</span></span>, <span name="indexWithinCigarElement">indexWithinCigarElement: <span class="extype" name="scala.Int">Int</span></span>, <span name="referenceContigSequence">referenceContigSequence: <a href="../reference/ContigSequence.html" class="extype" name="org.hammerlab.guacamole.reference.ContigSequence">ContigSequence</a></span>)</span>
       </span>
       </h4>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">read</dt><dd class="cmt"><p>The read this <a href="" class="extype" name="org.hammerlab.guacamole.pileup.PileupElement">PileupElement</a> is coming from.</p></dd><dt class="param">locus</dt><dd class="cmt"><p>The reference locus.</p></dd><dt class="param">readPosition</dt><dd class="cmt"><p>The offset into the sequence of bases in the read that this element corresponds to.</p></dd><dt class="param">cigarElementIndex</dt><dd class="cmt"><p>The index in the read's sequence of cigar elements (<a href="../reads/MappedRead.html#cigarElements:scala.collection.mutable.Buffer[htsjdk.samtools.CigarElement]" class="extmbr" name="org.hammerlab.guacamole.reads.MappedRead#cigarElements">org.hammerlab.guacamole.reads.MappedRead.cigarElements</a>)
@@ -174,21 +174,20 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li name="org.hammerlab.guacamole.pileup.PileupElement#advanceToLocus" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="advanceToLocus(newLocus:Long,newReferenceBase:Byte):org.hammerlab.guacamole.pileup.PileupElement"></a>
-      <a id="advanceToLocus(Long,Byte):PileupElement"></a>
+      <a id="advanceToLocus(newLocus:Long):org.hammerlab.guacamole.pileup.PileupElement"></a>
+      <a id="advanceToLocus(Long):PileupElement"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">advanceToLocus</span><span class="params">(<span name="newLocus">newLocus: <span class="extype" name="scala.Long">Long</span></span>, <span name="newReferenceBase">newReferenceBase: <span class="extype" name="scala.Byte">Byte</span></span>)</span><span class="result">: <a href="" class="extype" name="org.hammerlab.guacamole.pileup.PileupElement">PileupElement</a></span>
+        <span class="name">advanceToLocus</span><span class="params">(<span name="newLocus">newLocus: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <a href="" class="extype" name="org.hammerlab.guacamole.pileup.PileupElement">PileupElement</a></span>
       </span>
       </h4>
       <p class="shortcomment cmt">Returns a new <a href="" class="extype" name="org.hammerlab.guacamole.pileup.PileupElement">PileupElement</a> of the same read at a different locus.</p><div class="fullcomment"><div class="comment cmt"><p>Returns a new <a href="" class="extype" name="org.hammerlab.guacamole.pileup.PileupElement">PileupElement</a> of the same read at a different locus.</p><p>To enable an efficient implementation, newLocus must be greater than the current locus.
 </p></div><dl class="paramcmts block"><dt class="param">newLocus</dt><dd class="cmt"><p>The desired locus of the new <a href="" class="extype" name="org.hammerlab.guacamole.pileup.PileupElement">PileupElement</a>. It must be greater than the current locus, and
-                not past the end of the current read.</p></dd><dt class="param">newReferenceBase</dt><dd class="cmt"><p>The reference base at <span class="extype" name="newLocus">newLocus</span>
-</p></dd><dt>returns</dt><dd class="cmt"><p>A new <a href="" class="extype" name="org.hammerlab.guacamole.pileup.PileupElement">PileupElement</a> at the given locus.
+                not past the end of the current read.</p></dd><dt>returns</dt><dd class="cmt"><p>A new <a href="" class="extype" name="org.hammerlab.guacamole.pileup.PileupElement">PileupElement</a> at the given locus.
 </p></dd></dl><dl class="attributes block"> <dt>Annotations</dt><dd>
                 <span class="name">@tailrec</span><span class="args">()</span>
               
@@ -653,16 +652,29 @@ If the read was negative, the sequencing end is the mapped start position
       </span>
       </h4>
       
-    </li><li name="org.hammerlab.guacamole.pileup.PileupElement#referenceStringIdx" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="referenceStringIdx:Int"></a>
-      <a id="referenceStringIdx:Int"></a>
+    </li><li name="org.hammerlab.guacamole.pileup.PileupElement#referenceContigSequence" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="referenceContigSequence:org.hammerlab.guacamole.reference.ContigSequence"></a>
+      <a id="referenceContigSequence:ContigSequence"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">referenceContigSequence</span><span class="result">: <a href="../reference/ContigSequence.html" class="extype" name="org.hammerlab.guacamole.reference.ContigSequence">ContigSequence</a></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.pileup.PileupElement#referenceStringIndex" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="referenceStringIndex:Int"></a>
+      <a id="referenceStringIndex:Int"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">referenceStringIdx</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+        <span class="name">referenceStringIndex</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
       </span>
       </h4>
       

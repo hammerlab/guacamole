@@ -280,19 +280,19 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="org.hammerlab.guacamole.commands.jointcaller.ReadSubsequence#nextAlts" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="nextAlts(elements:Seq[org.hammerlab.guacamole.pileup.PileupElement],contigReferenceSequence:org.hammerlab.guacamole.reference.ContigSequence):Seq[org.hammerlab.guacamole.commands.jointcaller.ReadSubsequence]"></a>
-      <a id="nextAlts(Seq[PileupElement],ContigSequence):Seq[ReadSubsequence]"></a>
+      <a id="nextAlts(elements:Seq[org.hammerlab.guacamole.pileup.PileupElement]):Seq[org.hammerlab.guacamole.commands.jointcaller.ReadSubsequence]"></a>
+      <a id="nextAlts(Seq[PileupElement]):Seq[ReadSubsequence]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">nextAlts</span><span class="params">(<span name="elements">elements: <span class="extype" name="scala.Seq">Seq</span>[<a href="../../pileup/PileupElement.html" class="extype" name="org.hammerlab.guacamole.pileup.PileupElement">PileupElement</a>]</span>, <span name="contigReferenceSequence">contigReferenceSequence: <a href="../../reference/ContigSequence.html" class="extype" name="org.hammerlab.guacamole.reference.ContigSequence">ContigSequence</a></span>)</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<a href="ReadSubsequence.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.ReadSubsequence">ReadSubsequence</a>]</span>
+        <span class="name">nextAlts</span><span class="params">(<span name="elements">elements: <span class="extype" name="scala.Seq">Seq</span>[<a href="../../pileup/PileupElement.html" class="extype" name="org.hammerlab.guacamole.pileup.PileupElement">PileupElement</a>]</span>)</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<a href="ReadSubsequence.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.ReadSubsequence">ReadSubsequence</a>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Given any number of pileup elements, return all alternate alleles starting at the elements' locus + 1.</p><div class="fullcomment"><div class="comment cmt"><p>Given any number of pileup elements, return all alternate alleles starting at the elements' locus + 1.
-</p></div><dl class="paramcmts block"><dt class="param">elements</dt><dd class="cmt"><p>pileup element instances, should all be positioned at same locus</p></dd><dt class="param">contigReferenceSequence</dt><dd class="cmt"><p>reference sequence for entire contig</p></dd><dt>returns</dt><dd class="cmt"><p>ReadSubsequence instances giving the non-reference sequenced alleles at this position
+</p></div><dl class="paramcmts block"><dt class="param">elements</dt><dd class="cmt"><p>pileup element instances, should all be positioned at same locus</p></dd><dt>returns</dt><dd class="cmt"><p>ReadSubsequence instances giving the non-reference sequenced alleles at this position
 </p></dd></dl></div>
     </li><li name="scala.AnyRef#notify" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notify():Unit"></a>
@@ -321,40 +321,39 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="org.hammerlab.guacamole.commands.jointcaller.ReadSubsequence#ofFixedReferenceLength" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="ofFixedReferenceLength(element:org.hammerlab.guacamole.pileup.PileupElement,refSequence:Seq[Byte]):Option[org.hammerlab.guacamole.commands.jointcaller.ReadSubsequence]"></a>
-      <a id="ofFixedReferenceLength(PileupElement,Seq[Byte]):Option[ReadSubsequence]"></a>
+      <a id="ofFixedReferenceLength(element:org.hammerlab.guacamole.pileup.PileupElement,length:Int):Option[org.hammerlab.guacamole.commands.jointcaller.ReadSubsequence]"></a>
+      <a id="ofFixedReferenceLength(PileupElement,Int):Option[ReadSubsequence]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">ofFixedReferenceLength</span><span class="params">(<span name="element">element: <a href="../../pileup/PileupElement.html" class="extype" name="org.hammerlab.guacamole.pileup.PileupElement">PileupElement</a></span>, <span name="refSequence">refSequence: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<a href="ReadSubsequence.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.ReadSubsequence">ReadSubsequence</a>]</span>
+        <span class="name">ofFixedReferenceLength</span><span class="params">(<span name="element">element: <a href="../../pileup/PileupElement.html" class="extype" name="org.hammerlab.guacamole.pileup.PileupElement">PileupElement</a></span>, <span name="length">length: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<a href="ReadSubsequence.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.ReadSubsequence">ReadSubsequence</a>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Extract a sub-sequence of a particular length starting at a certain reference locus from a MappedRead.</p><div class="fullcomment"><div class="comment cmt"><p>Extract a sub-sequence of a particular length starting at a certain reference locus from a MappedRead.
-</p></div><dl class="paramcmts block"><dt class="param">element</dt><dd class="cmt"><p>PileupElement positioned at one reference base before the start of the desired sub-sequence</p></dd><dt class="param">refSequence</dt><dd class="cmt"><p>reference bases. First element is the reference base immediately following the PileupElement's
-                   locus. The length determines the reference length of the resulting ReadSubsequence.</p></dd><dt>returns</dt><dd class="cmt"><p>The sub-sequence of sequenced bases from element.read starting at reference position element.locus + 1
+</p></div><dl class="paramcmts block"><dt class="param">element</dt><dd class="cmt"><p>PileupElement positioned at one reference base before the start of the desired sub-sequence</p></dd><dt class="param">length</dt><dd class="cmt"><p>reference length of the desired ReadSubsequence.</p></dd><dt>returns</dt><dd class="cmt"><p>The sub-sequence of sequenced bases from element.read starting at reference position element.locus + 1
         and spanning reference length refSequence.length. If the base aligning to element.locus is non-reference
         base, or the read ends before the end of the reference region, the result is None.
 </p></dd></dl></div>
     </li><li name="org.hammerlab.guacamole.commands.jointcaller.ReadSubsequence#ofNextAltAllele" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="ofNextAltAllele(element:org.hammerlab.guacamole.pileup.PileupElement,contigReferenceSequence:org.hammerlab.guacamole.reference.ContigSequence):Option[org.hammerlab.guacamole.commands.jointcaller.ReadSubsequence]"></a>
-      <a id="ofNextAltAllele(PileupElement,ContigSequence):Option[ReadSubsequence]"></a>
+      <a id="ofNextAltAllele(element:org.hammerlab.guacamole.pileup.PileupElement):Option[org.hammerlab.guacamole.commands.jointcaller.ReadSubsequence]"></a>
+      <a id="ofNextAltAllele(PileupElement):Option[ReadSubsequence]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">ofNextAltAllele</span><span class="params">(<span name="element">element: <a href="../../pileup/PileupElement.html" class="extype" name="org.hammerlab.guacamole.pileup.PileupElement">PileupElement</a></span>, <span name="contigReferenceSequence">contigReferenceSequence: <a href="../../reference/ContigSequence.html" class="extype" name="org.hammerlab.guacamole.reference.ContigSequence">ContigSequence</a></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<a href="ReadSubsequence.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.ReadSubsequence">ReadSubsequence</a>]</span>
+        <span class="name">ofNextAltAllele</span><span class="params">(<span name="element">element: <a href="../../pileup/PileupElement.html" class="extype" name="org.hammerlab.guacamole.pileup.PileupElement">PileupElement</a></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<a href="ReadSubsequence.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.ReadSubsequence">ReadSubsequence</a>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Extract a sub-sequence containing an alternate allele, if there is one, from a PileupElement's subsequent position.</p><div class="fullcomment"><div class="comment cmt"><p>Extract a sub-sequence containing an alternate allele, if there is one, from a PileupElement's subsequent position.</p><p>If the element is currently NOT positioned at an alt, but the *following* base is an alt, then return a
 ReadSubsequence comprising the consecutive alternate sequenced bases, which could be any length. If the element's
 current position is at a non-reference-matching base, or the subsequent bases match the reference, or the read ends
 before a reference-matching base occurs, then return None.
-</p></div><dl class="paramcmts block"><dt class="param">element</dt><dd class="cmt"><p>PileupElement positioned at one reference base before the start of the desired sub-sequence</p></dd><dt class="param">contigReferenceSequence</dt><dd class="cmt"><p>reference for the entire contig</p></dd><dt>returns</dt><dd class="cmt"><p>ReadSubsequence for the alt allele, if one exists
+</p></div><dl class="paramcmts block"><dt class="param">element</dt><dd class="cmt"><p>PileupElement positioned at one reference base before the start of the desired sub-sequence</p></dd><dt>returns</dt><dd class="cmt"><p>ReadSubsequence for the alt allele, if one exists
 </p></dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
