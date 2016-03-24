@@ -6,8 +6,8 @@
 # and it is used by the tests. The command here regenerates this fasta (change
 # the FULL_FASTA_PATH appropriately).
 
-HG19_FULL_FASTA_PATH=/Users/tim/sinai/data/ucsc.hg19.fasta
-GRCH37_FULL_FASTA_PATH=/Users/tim/sinai/data/human_g1k_v37_reformatted.fasta
+HG19_FULL_FASTA_PATH=/path/to/ucsc.hg19.fasta
+GRCH37_FULL_FASTA_PATH=/path/to/human_g1k_v37.fasta
 
 set -e
 set -x

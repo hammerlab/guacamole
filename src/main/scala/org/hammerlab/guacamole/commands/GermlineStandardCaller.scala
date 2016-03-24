@@ -59,7 +59,7 @@ object GermlineStandard {
           overlapsLoci = Some(loci),
           mapped = true,
           nonDuplicate = true),
-        referenceGenome = reference)
+        reference = reference)
 
       readSet.mappedReads.persist()
       Common.progress(

@@ -66,13 +66,13 @@ object TestUtil extends Matchers {
   }
 
   /**
-    * Make a ReferenceBroadcast containing the specified sequences to be used in tests.
-    *
-    * @param sc
-    * @param contigStartSequences tuples of (contig name, start, reference sequence) giving the desired sequences
-    * @param contigLengths total length of each contigs (for simplicity all contigs are assumed to have the same length)
-    * @return a map acked ReferenceBroadcast containing the desired sequences
-    */
+   * Make a ReferenceBroadcast containing the specified sequences to be used in tests.
+   *
+   * @param sc
+   * @param contigStartSequences tuples of (contig name, start, reference sequence) giving the desired sequences
+   * @param contigLengths total length of each contigs (for simplicity all contigs are assumed to have the same length)
+   * @return a map acked ReferenceBroadcast containing the desired sequences
+   */
   def makeReference(sc: SparkContext, contigStartSequences: Seq[(String, Int, String)], contigLengths: Int = 1000): ReferenceBroadcast = {
     val map = mutable.HashMap[String, ContigSequence]()
     contigStartSequences.foreach({
