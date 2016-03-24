@@ -3,12 +3,15 @@ package org.hammerlab.guacamole.commands
 import org.hammerlab.guacamole.Bases
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.{ MappedRead, Read }
+import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.util.{ GuacFunSuite, TestUtil }
 import org.hammerlab.guacamole.windowing.SlidingWindow
 import org.scalatest.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks
 
 class VariantSupportSuite extends GuacFunSuite with Matchers with TableDrivenPropertyChecks {
+
+  def grch37Reference = ReferenceBroadcast(TestUtil.testDataPath("grch37.partial.fasta"), sc, partialFasta = true)
 
   def testAlleleCounts(window: SlidingWindow[MappedRead],
                        variantAlleleLoci: (String, Long, Map[String, Int])*) = {
@@ -21,7 +24,7 @@ class VariantSupportSuite extends GuacFunSuite with Matchers with TableDrivenPro
       (contig: String, locus: Long, alleleCountMap) =>
         {
           window.setCurrentLocus(locus)
-          val pileup = Pileup(window.currentRegions(), contig, locus, Bases.N)
+          val pileup = Pileup(window.currentRegions(), contig, locus, referenceContigSequence = grch37Reference.getContig(contig))
           assertAlleleCounts(pileup, alleleCountMap)
         }
     }
@@ -37,36 +40,37 @@ class VariantSupportSuite extends GuacFunSuite with Matchers with TableDrivenPro
     }
   }
 
-  lazy val gatk_reads = TestUtil.loadReads(
+  lazy val gatkReads = TestUtil.loadReads(
     sc,
     "gatk_mini_bundle_extract.bam",
-    Read.InputFilters(mapped = true, nonDuplicate = false, hasMdTag = true)).mappedReads.collect().sortBy(_.start)
+    Read.InputFilters(mapped = true, nonDuplicate = false),
+    reference = grch37Reference).mappedReads.collect().sortBy(_.start)
 
-  lazy val non_duplicate_gatk_reads = TestUtil.loadReads(
+  lazy val nonDuplicateGatkReads = TestUtil.loadReads(
     sc,
     "gatk_mini_bundle_extract.bam",
-    Read.InputFilters(mapped = true, nonDuplicate = true, hasMdTag = true)).mappedReads.collect().sortBy(_.start)
+    Read.InputFilters(mapped = true, nonDuplicate = true),
+    reference = grch37Reference
+  ).mappedReads.collect().sortBy(_.start)
 
-  lazy val rna_reads = TestUtil.loadReads(
+  lazy val RnaReads = TestUtil.loadReads(
     sc,
     "rna_chr17_41244936.sam",
-    Read.InputFilters(hasMdTag = true)).mappedReads.collect().sortBy(_.start)
+    reference = grch37Reference).mappedReads.collect().sortBy(_.start)
 
   sparkTest("read evidence for simple snvs") {
-
-    val pileup = Pileup(gatk_reads, "20", 10008951)
+    val pileup = Pileup(gatkReads, "20", 10008951, grch37Reference.getContig("20"))
     assertAlleleCounts(pileup, Map(("A", 1), ("C", 4)))
   }
 
   sparkTest("read evidence for mid-deletion") {
 
-    val pileup = Pileup(gatk_reads, "20", 10006822)
+    val pileup = Pileup(gatkReads, "20", 10006822, referenceContigSequence = grch37Reference.getContig("20"))
     assertAlleleCounts(pileup, Map(("", 5), ("C", 1)))
   }
 
   sparkTest("read evidence for simple snvs 2") {
-
-    val pileup = Pileup(gatk_reads, "20", 10009053)
+    val pileup = Pileup(gatkReads, "20", 10009053, referenceContigSequence = grch37Reference.getContig("20"))
     assertAlleleCounts(pileup, Map(("AT", 3)))
   }
 
@@ -77,7 +81,7 @@ class VariantSupportSuite extends GuacFunSuite with Matchers with TableDrivenPro
       ("20", 10009053L, Map(("AT", 3)))
     )
 
-    val window = SlidingWindow[MappedRead]("20", 0L, gatk_reads.toIterator)
+    val window = SlidingWindow[MappedRead]("20", 0L, gatkReads.toIterator)
     testAlleleCounts(window, loci: _*)
   }
 
@@ -89,7 +93,7 @@ class VariantSupportSuite extends GuacFunSuite with Matchers with TableDrivenPro
       ("20", 10260442L, Map(("T", 7)))
     )
 
-    val window = SlidingWindow[MappedRead]("20", 0L, gatk_reads.toIterator)
+    val window = SlidingWindow[MappedRead]("20", 0L, gatkReads.toIterator)
     testAlleleCounts(window, loci: _*)
 
   }
@@ -102,8 +106,7 @@ class VariantSupportSuite extends GuacFunSuite with Matchers with TableDrivenPro
       ("20", 10009053L, Map(("AT", 3)))
     )
 
-    val window = SlidingWindow[MappedRead]("20", 0L, non_duplicate_gatk_reads.toIterator)
+    val window = SlidingWindow[MappedRead]("20", 0L, nonDuplicateGatkReads.toIterator)
     testAlleleCounts(window, loci: _*)
-
   }
 }

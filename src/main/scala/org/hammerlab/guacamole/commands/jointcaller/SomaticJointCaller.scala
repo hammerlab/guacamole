@@ -46,11 +46,10 @@ object SomaticJoint {
       case (input, index) => ReadSet(
         sc,
         input.path,
-        false,
         Read.InputFilters(overlapsLoci = Some(loci)),
         token = index,
         contigLengthsFromDictionary = contigLengthsFromDictionary,
-        referenceGenome = Some(reference))
+        reference = reference)
     })
   }
 
@@ -167,7 +166,6 @@ object SomaticJoint {
         // We only call variants at a site if the reference base is a standard base (i.e. not N).
         if (Bases.isStandardBase(reference.getReferenceBase(contig, locus.toInt + 1))) {
           val possibleAlleles = AlleleAtLocus.variantAlleles(
-            reference,
             (inputs.normalDNA ++ inputs.tumorDNA).map(input => pileups(input.index)),
             anyAlleleMinSupportingReads = parameters.anyAlleleMinSupportingReads,
             anyAlleleMinSupportingPercent = parameters.anyAlleleMinSupportingPercent,
@@ -183,8 +181,7 @@ object SomaticJoint {
                 parameters,
                 allele,
                 pileups,
-                inputs,
-                reference)
+                inputs)
             })
             if (forceCall || evidences.exists(_.isCall)) {
               val groupedEvidence = MultipleAllelesEvidenceAcrossSamples(evidences)
@@ -198,7 +195,7 @@ object SomaticJoint {
         } else {
           Iterator.empty
         }
-      }, referenceGenome = Some(reference))
+      }, reference = reference)
     calls
   }
 

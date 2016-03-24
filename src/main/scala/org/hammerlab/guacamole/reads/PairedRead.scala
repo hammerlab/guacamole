@@ -25,5 +25,4 @@ case class PairedRead[+T <: Read](read: T,
   override val isPaired: Boolean = true
   override val isMapped = read.isMapped
   override def asMappedRead = read.asMappedRead
-  override val hasMdTag = read.hasMdTag
 }

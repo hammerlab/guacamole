@@ -20,7 +20,7 @@ package org.hammerlab.guacamole.pileup
 
 import org.hammerlab.guacamole.Bases
 import org.hammerlab.guacamole.reads.MappedRead
-import org.hammerlab.guacamole.reference.ReferenceBroadcast
+import org.hammerlab.guacamole.reference.{ ContigSequence, ReferenceBroadcast }
 import org.hammerlab.guacamole.variants.{ Allele, Genotype }
 
 /**
@@ -30,11 +30,13 @@ import org.hammerlab.guacamole.variants.{ Allele, Genotype }
  *
  * @param referenceName The contig name for all elements in this pileup.
  * @param locus The locus on the reference genome
- * @param referenceBase The reference base at [[locus]] on the reference genome
+ * @param referenceContigSequence The reference for this contig
  * @param elements Sequence of [[PileupElement]] instances giving the sequenced bases that align to a particular
  *                 reference locus, in arbitrary order.
  */
-case class Pileup(referenceName: String, locus: Long, referenceBase: Byte, elements: Seq[PileupElement]) {
+case class Pileup(referenceName: String, locus: Long, referenceContigSequence: ContigSequence, elements: Seq[PileupElement]) {
+  val referenceBase: Byte = referenceContigSequence(locus.toInt)
+
   /** The first element in the pileup. */
   lazy val head = {
     assume(elements.nonEmpty, "Empty pileup")
@@ -56,7 +58,7 @@ case class Pileup(referenceName: String, locus: Long, referenceBase: Byte, eleme
    */
   lazy val bySample: Map[String, Pileup] = {
     elements.groupBy(element => Option(element.read.sampleName).map(_.toString).getOrElse("default")).map({
-      case (sample, elems) => (sample, Pileup(referenceName, locus, referenceBase, elems))
+      case (sample, newElements) => (sample, Pileup(referenceName, locus, referenceContigSequence, newElements))
     })
   }
 
@@ -66,7 +68,7 @@ case class Pileup(referenceName: String, locus: Long, referenceBase: Byte, eleme
    */
   lazy val byToken: Map[Int, Pileup] = {
     elements.groupBy(element => element.read.token).map({
-      case (token, elems) => (token, Pileup(referenceName, locus, referenceBase, elems))
+      case (token, newElements) => (token, Pileup(referenceName, locus, referenceContigSequence, newElements))
     })
   }
 
@@ -96,17 +98,16 @@ case class Pileup(referenceName: String, locus: Long, referenceBase: Byte, eleme
    * To enable an efficient implementation, the new locus must be greater than the current locus.
    *
    * @param newLocus The locus to move forward to.
-   * @param newReferenceBase The reference base at the newLocus
    * @param newReads The *new* reads, i.e. those that overlap the new locus, but not the current locus.
    * @return A new [[Pileup]] at the given locus.
    */
-  def atGreaterLocus(newLocus: Long, newReferenceBase: Byte, newReads: Iterator[MappedRead]) = {
+  def atGreaterLocus(newLocus: Long, newReads: Iterator[MappedRead]) = {
     assume(elements.isEmpty || newLocus > locus,
       "New locus (%d) not greater than current locus (%d)".format(newLocus, locus))
     if (elements.isEmpty && newReads.isEmpty) {
       // Optimization for common case.
       // If there are no reads, we won't know what the reference base is
-      Pileup(referenceName, newLocus, newReferenceBase, Vector.empty[PileupElement])
+      Pileup(referenceName, newLocus, referenceContigSequence, Vector.empty[PileupElement])
     } else {
       // This code gets called many times. We are using while loops for performance.
       val builder = Vector.newBuilder[PileupElement]
@@ -117,22 +118,23 @@ case class Pileup(referenceName: String, locus: Long, referenceBase: Byte, eleme
       while (iterator.hasNext) {
         val element = iterator.next()
         if (element.read.overlapsLocus(newLocus)) {
-          builder += element.advanceToLocus(newLocus, newReferenceBase)
+          builder += element.advanceToLocus(newLocus)
         }
       }
 
       // Add elements for new reads.
       while (newReads.hasNext) {
-        builder += PileupElement(newReads.next(), newLocus, newReferenceBase)
+        builder += PileupElement(newReads.next(), newLocus, referenceContigSequence)
       }
 
       val newPileupElements = builder.result
-      Pileup(referenceName, newLocus, newReferenceBase, newPileupElements)
+      Pileup(referenceName, newLocus, referenceContigSequence, newPileupElements)
     }
   }
 
   /**
    * Compute depth and positive strand depth of a particular alternate base
+   *
    * @param allele allele to consider
    * @return tuple of total depth and forward strand depth
    */
@@ -145,43 +147,17 @@ case class Pileup(referenceName: String, locus: Long, referenceBase: Byte, eleme
   }
 }
 object Pileup {
-
-  /**
-   *
-   * Find the reference base at [[locus]] in the reads at this pileup
-   *
-   * @param reads collection of reads that overlap locus
-   * @param locus locus to find reference base at
-   * @return First non N reference base at this locus
-   */
-  def referenceBaseAtLocus(reads: Seq[MappedRead], locus: Long): Byte = {
-    // We take the reference base from the first read with a standard A, C, T, G base
-    // TODO: Is there a case where the reads disagree
-    val readWithStandardReferenceBase = reads.find(read => Bases.isStandardBase(read.getReferenceBaseAtLocus(locus)))
-    readWithStandardReferenceBase match {
-      case Some(read) => read.getReferenceBaseAtLocus(locus)
-      case None       => Bases.N
-    }
-  }
-
   /**
    * Given reads and a locus, returns a [[Pileup]] at the specified locus.
    *
    * @param reads Sequence of reads, in any order, that may or may not overlap the locus.
    * @param locus The locus to return a [[Pileup]] at.
-   * @param referenceBase The reference base at [[locus]]
+   * @param referenceContigSequence The reference for this pileup's contig
    * @return A [[Pileup]] at the given locus.
    */
-  def apply(reads: Seq[MappedRead], referenceName: String, locus: Long, referenceBase: Byte): Pileup = {
+  def apply(reads: Seq[MappedRead], referenceName: String, locus: Long, referenceContigSequence: ContigSequence): Pileup = {
     //TODO: Is this call to overlaps locus necessary?
-    val elements = reads.filter(_.overlapsLocus(locus)).map(PileupElement(_, locus, referenceBase))
-    Pileup(referenceName, locus, referenceBase, elements)
-  }
-
-  def apply(reads: Seq[MappedRead], referenceName: String, locus: Long): Pileup = {
-    val overlappingReads = reads.filter(_.overlapsLocus(locus))
-    val referenceBase = referenceBaseAtLocus(overlappingReads, locus)
-    val elements = overlappingReads.map(PileupElement(_, locus, referenceBase))
-    Pileup(referenceName, locus, referenceBase, elements)
+    val elements = reads.filter(_.overlapsLocus(locus)).map(PileupElement(_, locus, referenceContigSequence))
+    Pileup(referenceName, locus, referenceContigSequence, elements)
   }
 }

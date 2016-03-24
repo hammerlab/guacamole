@@ -89,9 +89,8 @@ object AlleleEvidence {
         medianMappingQuality = median(alignmentScores),
         meanBaseQuality = mean(baseQualityScores),
         medianBaseQuality = median(baseQualityScores),
-        medianMismatchesPerRead = median(DenseVector(alleleElements.map(_.read.mdTagOpt.get.countOfMismatches).toArray)
-        )
-      )
+        medianMismatchesPerRead = median(
+          DenseVector(alleleElements.map(_.read.countOfMismatches(pileup.referenceContigSequence)).toArray)))
   }
 
   def apply(likelihood: Double, allele: Allele, pileup: Pileup): AlleleEvidence = {

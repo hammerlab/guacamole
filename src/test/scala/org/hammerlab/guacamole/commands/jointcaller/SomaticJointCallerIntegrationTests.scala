@@ -80,11 +80,4 @@ class SomaticJointCallerIntegrationTests extends GuacFunSuite with Matchers {
       }
     }
   }
-
-  // Everything below are helper functions.
-  def loadPileup(filename: String, referenceName: String, locus: Long = 0): Pileup = {
-    val records = TestUtil.loadReads(sc, filename).mappedReads
-    val localReads = records.collect
-    Pileup(localReads, referenceName, locus)
-  }
 }

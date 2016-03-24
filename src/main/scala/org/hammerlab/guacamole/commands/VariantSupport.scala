@@ -26,6 +26,7 @@ import org.hammerlab.guacamole._
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.reads.Read.InputFilters
+import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.kohsuke.args4j.{ Argument, Option => Args4jOption }
 
 object VariantSupport {
@@ -42,6 +43,9 @@ object VariantSupport {
     @Argument(required = true, multiValued = true,
       usage = "Retrieve read data from BAMs at each variant position")
     var bams: Array[String] = Array.empty
+
+    @Args4jOption(name = "--reference-fasta", required = true, usage = "Local path to a reference FASTA file")
+    var referenceFastaPath: String = ""
 
   }
 
@@ -63,6 +67,8 @@ object VariantSupport {
 
     override def run(args: Arguments, sc: SparkContext): Unit = {
 
+      val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
+
       val adamContext = new ADAMContext(sc)
 
       val variants: RDD[Variant] = adamContext.loadVariants(args.variants)
@@ -71,11 +77,9 @@ object VariantSupport {
           ReadSet(
             sc,
             bamFile._1,
-            requireMDTagsOnMappedReads = false,
             InputFilters.empty,
             token = bamFile._2,
-            contigLengthsFromDictionary = false,
-            referenceGenome = None,
+            reference = reference,
             config = Common.Arguments.ReadLoadingConfigArgs.fromArguments(args)
           ).mappedReads
       )
@@ -94,7 +98,8 @@ object VariantSupport {
             sampleReads,
             lociPartitions,
             true,
-            pileupToAlleleCounts
+            pileupToAlleleCounts,
+            reference = reference
           )
         ).reduce(_ ++ _)
 
@@ -104,6 +109,7 @@ object VariantSupport {
 
     /**
      * Count alleles in a pileup
+     *
      * @param pileup Pileup of reads a given locu
      * @return Iterator of AlleleCount which contains pair of reference and alternate with a count
      */

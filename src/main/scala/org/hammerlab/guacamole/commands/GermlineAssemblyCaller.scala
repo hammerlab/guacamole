@@ -243,19 +243,18 @@ object GermlineAssemblyCaller {
     }
 
     override def run(args: Arguments, sc: SparkContext): Unit = {
-
+      val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
       val loci = Common.lociFromArguments(args)
       val readSet = Common.loadReadsFromArguments(
         args,
         sc,
-        Read.InputFilters(overlapsLoci = Some(loci), mapped = true, nonDuplicate = true))
+        Read.InputFilters(overlapsLoci = Some(loci), mapped = true, nonDuplicate = true),
+        reference = reference)
 
       val minAlignmentQuality = args.minAlignmentQuality
       val qualityReads = readSet
         .mappedReads
         .filter(_.alignmentQuality > minAlignmentQuality)
-
-      val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
 
       val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(
         args,
@@ -300,7 +299,6 @@ object GermlineAssemblyCaller {
           initialState = None,
           (graph, windows) => {
             val window = windows.head
-
             // Find the reads the overlap the center locus/ current locus
             val currentLocusReads =
               window
@@ -308,7 +306,8 @@ object GermlineAssemblyCaller {
                 .filter(_.overlapsLocus(window.currentLocus))
             val variableReads =
               currentLocusReads
-                .count(read => read.cigar.numCigarElements() > 1 || read.mdTagOpt.get.countOfMismatches > 0)
+                .count(read =>
+                  read.cigar.numCigarElements() > 1 || read.countOfMismatches(reference.getContig(window.referenceName)) > 0)
 
             // Compute the number reads with variant bases from the reads overlapping the currentLocus
             val currentLocusVAF = variableReads.toFloat / currentLocusReads.length

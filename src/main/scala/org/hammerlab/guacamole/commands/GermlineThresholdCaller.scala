@@ -50,8 +50,8 @@ object GermlineThreshold {
     @Args4jOption(name = "--emit-no-call", usage = "Output no call calls.")
     var emitNoCall: Boolean = false
 
-    @Args4jOption(name = "--reference-fasta", required = false, usage = "Local path to a reference FASTA file")
-    var referenceFastaPath: String = null
+    @Args4jOption(name = "--reference-fasta", required = true, usage = "Local path to a reference FASTA file")
+    var referenceFastaPath: String = ""
   }
 
   object Caller extends SparkCommand[Arguments] {
@@ -61,13 +61,12 @@ object GermlineThreshold {
 
     override def run(args: Arguments, sc: SparkContext): Unit = {
       Common.validateArguments(args)
-      val reference = Option(args.referenceFastaPath).map(ReferenceBroadcast(_, sc))
+      val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
       val loci = Common.lociFromArguments(args)
       val readSet = Common.loadReadsFromArguments(
         args, sc, Read.InputFilters(
-          overlapsLoci = Some(loci), nonDuplicate = true, hasMdTag = true),
-        requireMDTagsOnMappedReads = false,
-        referenceGenome = reference
+          overlapsLoci = Some(loci), nonDuplicate = true),
+        reference = reference
       )
 
       readSet.mappedReads.persist()
@@ -86,7 +85,7 @@ object GermlineThreshold {
           val genotypes = callVariantsAtLocus(pileup, threshold, emitRef, emitNoCall)
           numGenotypes += genotypes.length
           genotypes.iterator
-        })
+        }, reference = reference)
       readSet.mappedReads.unpersist()
       Common.writeVariantsFromArguments(args, genotypes)
       if (args.truthGenotypesFile != "")

@@ -11,7 +11,6 @@ import org.hammerlab.guacamole.{ LociSet, Bases }
 import scala.collection.mutable
 
 case class ReferenceBroadcast(broadcastedContigs: Map[String, ContigSequence]) extends ReferenceGenome {
-
   override def getContig(contigName: String): ContigSequence = {
     try {
       broadcastedContigs(contigName)
@@ -30,7 +29,6 @@ case class ReferenceBroadcast(broadcastedContigs: Map[String, ContigSequence]) e
 }
 
 object ReferenceBroadcast {
-
   /** The standard ContigSequence implementation, which is an Array of bases. */
   case class ArrayBackedReferenceSequence(wrapped: Broadcast[Array[Byte]]) extends ContigSequence {
     def apply(index: Int): Byte = wrapped.value(index)

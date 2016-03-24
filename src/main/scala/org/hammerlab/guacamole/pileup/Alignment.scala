@@ -64,8 +64,7 @@ case class Mismatch(override val base: Byte, override val baseQuality: Byte, ove
  *
  * For reads at loci in the middle of a deletion, emit MidDeletion below.
  *
- * Deletion stores the reference bases of the entire deletion (pulled from MD tag), which are emitted with a deletion
- * variant.
+ * Deletion stores the reference bases of the entire deletion, including the base immediately before the deletion.
  *
  * @param referenceBases
  */

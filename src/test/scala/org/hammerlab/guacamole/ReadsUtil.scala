@@ -18,6 +18,7 @@
 
 package org.hammerlab.guacamole
 
+import org.apache.spark.SparkContext
 import org.bdgenomics.adam.util.PhredUtils
 import org.hammerlab.guacamole.likelihood.LikelihoodSuite
 import org.hammerlab.guacamole.util.TestUtil
@@ -28,6 +29,7 @@ import org.hammerlab.guacamole.variants.{ Allele, Genotype }
  */
 object ReadsUtil {
 
+  def referenceBroadcast(sc: SparkContext) = TestUtil.makeReference(sc, Seq(("chr1", 1, "C")))
   val referenceBase = 'C'.toByte
 
   def makeGenotype(alleles: String*): Genotype = {
@@ -43,7 +45,7 @@ object ReadsUtil {
   val errorPhred30 = PhredUtils.phredToErrorProbability(30)
   val errorPhred40 = PhredUtils.phredToErrorProbability(40)
 
-  def refRead(phred: Int) = TestUtil.makeRead("C", "1M", "1", 1, "chr1", Some(Array(phred)))
-  def altRead(phred: Int) = TestUtil.makeRead("A", "1M", "0C0", 1, "chr1", Some(Array(phred)))
+  def refRead(phred: Int) = TestUtil.makeRead("C", "1M", 1, "chr1", Some(Array(phred)))
+  def altRead(phred: Int) = TestUtil.makeRead("A", "1M", 1, "chr1", Some(Array(phred)))
 
 }

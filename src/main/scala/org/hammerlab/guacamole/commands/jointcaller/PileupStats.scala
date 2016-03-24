@@ -17,15 +17,15 @@ import org.hammerlab.guacamole.pileup.PileupElement
  *
  * @param elements elements from a pileup. They should all be positioned at the same locus. The alleles considered will
  *                 align at this locus + 1.
- * @param refSequence reference bases. The length determines the size of alleles to consider. The first element should
+ * @param referenceSequence reference bases. The length determines the size of alleles to consider. The first element should
  *                    be the reference base at locus elements.head.locus + 1.
  */
-class PileupStats(elements: Seq[PileupElement], refSequence: Seq[Byte]) {
-  assume(refSequence.nonEmpty)
+class PileupStats(elements: Seq[PileupElement], referenceSequence: Seq[Byte]) {
+  assume(referenceSequence.nonEmpty)
   assume(elements.forall(_.locus == elements.head.locus))
 
   /** The reference sequence as a string. */
-  val ref = Bases.basesToString(refSequence)
+  val ref = Bases.basesToString(referenceSequence)
 
   /**
    * The sequenced alleles at this site as ReadSubsequence instances.
@@ -34,7 +34,7 @@ class PileupStats(elements: Seq[PileupElement], refSequence: Seq[Byte]) {
    * here.
    */
   val subsequences: Seq[ReadSubsequence] = elements.flatMap(
-    element => ReadSubsequence.ofFixedReferenceLength(element, refSequence))
+    element => ReadSubsequence.ofFixedReferenceLength(element, referenceSequence.length))
 
   /** Map from sequenced allele -> the ReadSubsequence instances for that allele. */
   val alleleToSubsequences: Map[String, Seq[ReadSubsequence]] = subsequences.groupBy(_.sequence)

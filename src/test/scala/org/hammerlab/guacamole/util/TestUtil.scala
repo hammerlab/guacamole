@@ -27,9 +27,12 @@ import org.apache.commons.io.FileUtils
 import org.apache.spark.SparkContext
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads._
+import org.hammerlab.guacamole.reference.ReferenceBroadcast.MapBackedReferenceSequence
+import org.hammerlab.guacamole.reference.{ ContigSequence, ReferenceBroadcast }
 import org.hammerlab.guacamole.{ Bases, GuacamoleKryoRegistrator, ReadSet }
 import org.scalatest._
 
+import scala.collection.mutable
 import scala.math._
 
 object TestUtil extends Matchers {
@@ -62,9 +65,27 @@ object TestUtil extends Matchers {
     deserialized should equal(item)
   }
 
+  /**
+   * Make a ReferenceBroadcast containing the specified sequences to be used in tests.
+   *
+   * @param sc
+   * @param contigStartSequences tuples of (contig name, start, reference sequence) giving the desired sequences
+   * @param contigLengths total length of each contigs (for simplicity all contigs are assumed to have the same length)
+   * @return a map acked ReferenceBroadcast containing the desired sequences
+   */
+  def makeReference(sc: SparkContext, contigStartSequences: Seq[(String, Int, String)], contigLengths: Int = 1000): ReferenceBroadcast = {
+    val map = mutable.HashMap[String, ContigSequence]()
+    contigStartSequences.foreach({
+      case (contig, start, sequence) => {
+        val locusToBase = Bases.stringToBases(sequence).zipWithIndex.map(pair => (pair._2 + start, pair._1)).toMap
+        map.put(contig, MapBackedReferenceSequence(contigLengths, sc.broadcast(locusToBase)))
+      }
+    })
+    new ReferenceBroadcast(map.toMap)
+  }
+
   def makeRead(sequence: String,
                cigar: String,
-               mdtag: String,
                start: Long = 1,
                chr: String = "chr1",
                qualityScores: Option[Seq[Int]] = None,
@@ -80,7 +101,6 @@ object TestUtil extends Matchers {
       sequence,
       name = "read1",
       cigarString = cigar,
-      mdTagString = Some(mdtag),
       start = start,
       referenceContig = chr,
       baseQualities = qualityScoreString,
@@ -100,7 +120,6 @@ object TestUtil extends Matchers {
     isMatePositiveStrand: Boolean = false,
     sequence: String = "ACTGACTGACTG",
     cigar: String = "12M",
-    mdTag: String = "12",
     inferredInsertSize: Option[Int]): PairedRead[MappedRead] = {
 
     val qualityScoreString = sequence.map(x => '@').mkString
@@ -112,7 +131,6 @@ object TestUtil extends Matchers {
         cigarString = cigar,
         start = start,
         referenceContig = chr,
-        mdTagString = Some(mdTag),
         isPositiveStrand = isPositiveStrand,
         baseQualities = qualityScoreString,
         alignmentQuality = alignmentQuality,
@@ -162,7 +180,7 @@ object TestUtil extends Matchers {
       makePairedRead(
         chr, start, alignmentQuality, isPositiveStrand, true,
         Some(mate.referenceContig), Some(mate.start), mate.isPositiveStrand,
-        sequence, cigar, mdTag, mate.inferredInsertSize).read,
+        sequence, cigar, mate.inferredInsertSize).read,
       isFirstInPair = true,
       inferredInsertSize = insertSize,
       mate = mate)
@@ -184,34 +202,40 @@ object TestUtil extends Matchers {
 
   def loadTumorNormalReads(sc: SparkContext,
                            tumorFile: String,
-                           normalFile: String): (Seq[MappedRead], Seq[MappedRead]) = {
+                           normalFile: String,
+                           reference: ReferenceBroadcast): (Seq[MappedRead], Seq[MappedRead]) = {
     val filters = Read.InputFilters(mapped = true, nonDuplicate = true, passedVendorQualityChecks = true)
-    (loadReads(sc, tumorFile, filters = filters).mappedReads.collect(), loadReads(sc, normalFile, filters = filters).mappedReads.collect())
+    (loadReads(sc, tumorFile, filters = filters, reference = reference).mappedReads.collect(),
+      loadReads(sc, normalFile, filters = filters, reference = reference).mappedReads.collect())
   }
 
   def loadReads(sc: SparkContext,
                 filename: String,
                 filters: Read.InputFilters = Read.InputFilters.empty,
+                reference: ReferenceBroadcast,
                 config: Read.ReadLoadingConfig = Read.ReadLoadingConfig.default): ReadSet = {
     /* grab the path to the SAM file we've stashed in the resources subdirectory */
     val path = testDataPath(filename)
     assert(sc != null)
     assert(sc.hadoopConfiguration != null)
-    ReadSet(sc, path, requireMDTagsOnMappedReads = false, filters = filters, config = config)
+    ReadSet(sc, path, reference = reference, filters = filters, config = config)
   }
 
   def loadTumorNormalPileup(tumorReads: Seq[MappedRead],
                             normalReads: Seq[MappedRead],
-                            locus: Long): (Pileup, Pileup) = {
+                            locus: Long,
+                            reference: ReferenceBroadcast): (Pileup, Pileup) = {
     val contig = tumorReads(0).referenceContig
     assume(normalReads(0).referenceContig == contig)
-    (Pileup(tumorReads, contig, locus), Pileup(normalReads, contig, locus))
+    (Pileup(tumorReads, contig, locus, reference.getContig(contig)),
+      Pileup(normalReads, contig, locus, reference.getContig(contig)))
   }
 
-  def loadPileup(sc: SparkContext, filename: String, locus: Long = 0, contig: Option[String] = None): Pileup = {
-    val records = TestUtil.loadReads(sc, filename).mappedReads
+  def loadPileup(sc: SparkContext, filename: String, reference: ReferenceBroadcast, locus: Long = 0, contig: Option[String] = None): Pileup = {
+    val records = TestUtil.loadReads(sc, filename, reference = reference).mappedReads
     val localReads = records.collect
-    Pileup(localReads, contig.getOrElse(localReads(0).referenceContig), locus)
+    val actualContig = contig.getOrElse(localReads(0).referenceContig)
+    Pileup(localReads, actualContig, locus, referenceContigSequence = reference.getContig(actualContig))
   }
 
   def assertAlmostEqual(a: Double, b: Double, epsilon: Double = 1e-12) {

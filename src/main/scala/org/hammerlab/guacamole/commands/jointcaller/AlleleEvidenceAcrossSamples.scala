@@ -148,22 +148,21 @@ object AlleleEvidenceAcrossSamples {
     parameters: Parameters,
     allele: AlleleAtLocus,
     pileups: PerSample[Pileup],
-    inputs: InputCollection,
-    reference: ReferenceBroadcast): AlleleEvidenceAcrossSamples = {
+    inputs: InputCollection): AlleleEvidenceAcrossSamples = {
 
-    val refSequence = reference.getContig(allele.referenceContig).slice(allele.start.toInt, allele.end.toInt)
+    val referenceSequence = pileups.head.referenceContigSequence.slice(allele.start.toInt, allele.end.toInt)
 
     val normalDNAPooledElements = inputs.normalDNA.map(input => pileups(input.index).elements).flatten
-    val normalDNAPooledStats = PileupStats(normalDNAPooledElements, refSequence)
+    val normalDNAPooledStats = PileupStats(normalDNAPooledElements, referenceSequence)
     val normalDNAPooledCharacterization = NormalDNASampleAlleleEvidence(allele, normalDNAPooledStats, parameters)
 
     val tumorDNAPooledElements = inputs.tumorDNA.map(input => pileups(input.index).elements).flatten
-    val tumorDNAPooledStats = PileupStats(tumorDNAPooledElements, refSequence)
+    val tumorDNAPooledStats = PileupStats(tumorDNAPooledElements, referenceSequence)
     val tumorDNAPooledCharacterization = TumorDNASampleAlleleEvidence(allele, tumorDNAPooledStats, parameters)
 
     val sampleEvidences = inputs.items.zip(pileups).map({
       case (input, pileup) =>
-        val stats = PileupStats(pileup.elements, Bases.stringToBases(allele.ref))
+        val stats = PileupStats(pileup.elements, referenceSequence)
         (input.tissueType, input.analyte) match {
           case (TissueType.Normal, Analyte.DNA) => NormalDNASampleAlleleEvidence(allele, stats, parameters)
           case (TissueType.Tumor, Analyte.DNA)  => TumorDNASampleAlleleEvidence(allele, stats, parameters)
