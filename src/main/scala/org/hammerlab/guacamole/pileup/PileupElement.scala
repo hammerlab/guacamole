@@ -19,6 +19,7 @@
 package org.hammerlab.guacamole.pileup
 
 import htsjdk.samtools.{ CigarElement, CigarOperator }
+import org.hammerlab.guacamole.reference.{ ContigSequence, ReferenceBroadcast }
 import org.hammerlab.guacamole.{ Bases, CigarUtils }
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.variants.Allele
@@ -40,14 +41,16 @@ import scala.annotation.tailrec
 case class PileupElement(
     read: MappedRead,
     locus: Long,
-    referenceBase: Byte,
     readPosition: Int,
     cigarElementIndex: Int,
     cigarElementLocus: Long,
-    indexWithinCigarElement: Int) {
+    indexWithinCigarElement: Int,
+    referenceContigSequence: ContigSequence) {
 
   assume(locus >= read.start)
   assume(locus < read.end)
+
+  val referenceBase: Byte = referenceContigSequence(locus.toInt)
 
   def cigarElement = read.cigarElements(cigarElementIndex)
   def nextCigarElement =
@@ -57,7 +60,7 @@ case class PileupElement(
       None
     }
 
-  def referenceStringIdx =
+  def referenceStringIndex =
     (cigarElementLocus - read.start).toInt +
       (if (cigarElement.getOperator.consumesReferenceBases()) indexWithinCigarElement else 0)
 
@@ -106,19 +109,15 @@ case class PileupElement(
       case (CigarOperator.I, _) => throw new InvalidCigarElementException(this)
 
       case (CigarOperator.M | CigarOperator.EQ | CigarOperator.X, Some(CigarOperator.D)) =>
-        val deletedBases =
-          referenceBase ::
-            (referenceStringIdx + 1 until referenceStringIdx + 1 + nextCigarElement.get.getLength)
-            .map(offset => read.mdTagOpt.get.deletions(read.start + offset).toByte).toList
+        val deletedBases = referenceContigSequence.slice(locus.toInt, locus.toInt + nextCigarElement.get.getLength + 1)
         val anchorBaseSequenceQuality = read.baseQualities(readPosition)
         Deletion(deletedBases, anchorBaseSequenceQuality)
       case (CigarOperator.D, _) =>
-        // TODO(ryan): can a cigar begin with a 'D' operator?
-        MidDeletion(read.mdTagOpt.get.deletions(locus).toByte)
+        MidDeletion(referenceBase)
       case (op, Some(CigarOperator.D)) =>
-        // TODO(ryan): are there sane cases where a 'D' is not preceded by an 'M'?
         throw new AssertionError(
-          "Found deletion preceded by cigar operator %s at PileupElement for read %s at locus %d".format(op, read.toString, locus)
+          "Found deletion preceded by cigar operator %s at PileupElement for read %s at locus %d".format(
+            op, read.toString, locus)
         )
       case (CigarOperator.M, _) | (CigarOperator.EQ, _) | (CigarOperator.X, _) =>
         val base: Byte = read.sequence(readPosition)
@@ -188,13 +187,12 @@ case class PileupElement(
     PileupElement(
       read,
       nextLocus,
-      Bases.N, // placeholder before we advance to a proper locus
       readPosition + readPositionOffset,
       cigarElementIndex + 1,
       cigarElementLocus + cigarElementReferenceLength,
       // Even if we are somewhere in the middle of the current cigar element, lock to the beginning of the next one.
-      indexWithinCigarElement = 0
-    )
+      indexWithinCigarElement = 0,
+      referenceContigSequence = referenceContigSequence)
   }
 
   /**
@@ -213,12 +211,10 @@ case class PileupElement(
    *
    * @param newLocus The desired locus of the new [[PileupElement]]. It must be greater than the current locus, and
    *                 not past the end of the current read.
-   * @param newReferenceBase The reference base at [[newLocus]]
-   *
    * @return A new [[PileupElement]] at the given locus.
    */
   @tailrec
-  final def advanceToLocus(newLocus: Long, newReferenceBase: Byte): PileupElement = {
+  final def advanceToLocus(newLocus: Long): PileupElement = {
     assume(newLocus >= locus, "Can't rewind to locus %d from %d. Pileups only advance.".format(newLocus, locus))
     assume(newLocus < read.end, "This read stops at position %d. Can't advance to %d".format(read.end, newLocus))
     if (currentCigarElementContainsLocus(newLocus)) {
@@ -233,7 +229,6 @@ case class PileupElement(
 
       this.copy(
         locus = newLocus,
-        referenceBase = newReferenceBase,
         readPosition = readPosition + readPositionOffset,
         indexWithinCigarElement = (newLocus - cigarElementLocus).toInt
       )
@@ -244,7 +239,7 @@ case class PileupElement(
       // [[advanceToLocus]] calls, since it represents a zero-width interval of reference bases.
       this
     } else
-      advanceToNextCigarElement.advanceToLocus(newLocus, newReferenceBase)
+      advanceToNextCigarElement.advanceToLocus(newLocus)
   }
 
   /**
@@ -257,20 +252,18 @@ case class PileupElement(
 }
 
 object PileupElement {
-
   /**
    * Create a new [[PileupElement]] backed by the given read at the specified locus. The read must overlap the locus.
    */
-  def apply(read: MappedRead, locus: Long, referenceBase: Byte): PileupElement = {
+  def apply(read: MappedRead, locus: Long, referenceContigSequence: ContigSequence): PileupElement = {
     PileupElement(
       read = read,
       locus = read.start,
-      referenceBase = Bases.N,
       readPosition = 0,
       cigarElementIndex = 0,
       cigarElementLocus = read.start,
-      indexWithinCigarElement = 0
-    ).advanceToLocus(locus, referenceBase)
+      indexWithinCigarElement = 0,
+      referenceContigSequence = referenceContigSequence).advanceToLocus(locus)
   }
 }
 

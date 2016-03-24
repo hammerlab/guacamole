@@ -74,7 +74,6 @@ object AlleleAtLocus {
    * throughout the joint caller: given a pileup at locus X we call variants that start at locus X + 1. This is done to
    * avoid calling variants in the middle of longer variants.
    *
-   * @param reference reference genome
    * @param pileups one or more pileups
    * @param anyAlleleMinSupportingReads minimum number of reads in a single sample an allele must have
    * @param anyAlleleMinSupportingPercent minimum percent of reads (i.e. between 0 and 100) an allele must have
@@ -86,8 +85,7 @@ object AlleleAtLocus {
    * @param onlyStandardBases only include alleles made entirely of standard bases (no N's)
    * @return the alleles sequenced at this site
    */
-  def variantAlleles(reference: ReferenceBroadcast,
-                     pileups: PerSample[Pileup],
+  def variantAlleles(pileups: PerSample[Pileup],
                      anyAlleleMinSupportingReads: Int,
                      anyAlleleMinSupportingPercent: Double,
                      maxAlleles: Option[Int] = None,
@@ -96,16 +94,18 @@ object AlleleAtLocus {
 
     assume(pileups.forall(_.locus == pileups.head.locus))
     assume(pileups.forall(_.referenceName == pileups.head.referenceName))
+    assume(pileups.nonEmpty)
+    val referenceContigSequence = pileups.head.referenceContigSequence
+
     val contig = pileups.head.referenceName
     val variantStart = pileups.head.locus + 1
-    val contigRefSequence = reference.getContig(contig)
     val alleleRequiredReadsActualReads = pileups.flatMap(pileup => {
       val requiredReads = math.max(
         anyAlleleMinSupportingReads,
         pileup.elements.size * anyAlleleMinSupportingPercent / 100.0)
 
       val subsequenceCounts =
-        ReadSubsequence.nextAlts(pileup.elements, contigRefSequence)
+        ReadSubsequence.nextAlts(pileup.elements)
           .filter(subsequence => !onlyStandardBases || subsequence.sequenceIsAllStandardBases)
           .groupBy(x => (x.endLocus, x.sequence))
           .map(pair => (pair._2.head -> pair._2.length))
@@ -114,7 +114,7 @@ object AlleleAtLocus {
 
       def subsequenceToAllele(subsequence: ReadSubsequence): AlleleAtLocus = {
         AlleleAtLocus(
-          contig, variantStart, subsequence.refSequence(contigRefSequence), subsequence.sequence)
+          contig, variantStart, subsequence.refSequence(referenceContigSequence), subsequence.sequence)
       }
 
       subsequenceCounts.map(pair => (subsequenceToAllele(pair._1), requiredReads, pair._2))
@@ -133,7 +133,7 @@ object AlleleAtLocus {
         Seq(AlleleAtLocus(
           contig,
           variantStart,
-          Bases.baseToString(contigRefSequence.apply(variantStart.toInt)),
+          Bases.baseToString(referenceContigSequence.apply(variantStart.toInt)),
           "N"))
       }
     } else if (maxAlleles.isDefined) {

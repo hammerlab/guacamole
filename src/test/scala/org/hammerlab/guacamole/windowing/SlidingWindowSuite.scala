@@ -27,9 +27,9 @@ class SlidingWindowSuite extends FunSuite with Matchers {
   test("test sliding read window, duplicate reads") {
 
     val reads = Seq(
-      TestUtil.makeRead("TCGATCGA", "8M", "8", 1),
-      TestUtil.makeRead("TCGATCGA", "8M", "8", 1),
-      TestUtil.makeRead("TCGATCGA", "8M", "8", 1))
+      TestUtil.makeRead("TCGATCGA", "8M", 1),
+      TestUtil.makeRead("TCGATCGA", "8M", 1),
+      TestUtil.makeRead("TCGATCGA", "8M", 1))
     val window = SlidingWindow("chr1", 2, reads.iterator)
     window.setCurrentLocus(0)
     assert(window.currentRegions.size === 3)
@@ -39,9 +39,9 @@ class SlidingWindowSuite extends FunSuite with Matchers {
   test("test sliding read window, diff contigs") {
 
     val reads = Seq(
-      TestUtil.makeRead("TCGATCGA", "8M", "8", 1, "chr1"),
-      TestUtil.makeRead("TCGATCGA", "8M", "8", 1, "chr2"),
-      TestUtil.makeRead("TCGATCGA", "8M", "8", 1, "chr3"))
+      TestUtil.makeRead("TCGATCGA", "8M", 1, "chr1"),
+      TestUtil.makeRead("TCGATCGA", "8M", 1, "chr2"),
+      TestUtil.makeRead("TCGATCGA", "8M", 1, "chr3"))
     val window = SlidingWindow("chr1", 2, reads.iterator)
     val caught = the[IllegalArgumentException] thrownBy { window.setCurrentLocus(0) }
     caught.getMessage should include("must have the same reference name")
@@ -51,9 +51,9 @@ class SlidingWindowSuite extends FunSuite with Matchers {
   test("test sliding read window, offset reads") {
 
     val reads = Seq(
-      TestUtil.makeRead("TCGATCGA", "8M", "8", 1),
-      TestUtil.makeRead("TCGATCGA", "8M", "8", 4),
-      TestUtil.makeRead("TCGATCGA", "8M", "8", 8))
+      TestUtil.makeRead("TCGATCGA", "8M", 1),
+      TestUtil.makeRead("TCGATCGA", "8M", 4),
+      TestUtil.makeRead("TCGATCGA", "8M", 8))
     val window = SlidingWindow("chr1", 2, reads.iterator)
 
     window.setCurrentLocus(0)
@@ -67,9 +67,9 @@ class SlidingWindowSuite extends FunSuite with Matchers {
   test("test sliding read window, reads are not sorted") {
 
     val reads = Seq(
-      TestUtil.makeRead("TCGATCGA", "8M", "8", 1),
-      TestUtil.makeRead("TCGATCGA", "8M", "8", 8),
-      TestUtil.makeRead("TCGATCGA", "8M", "8", 4))
+      TestUtil.makeRead("TCGATCGA", "8M", 1),
+      TestUtil.makeRead("TCGATCGA", "8M", 8),
+      TestUtil.makeRead("TCGATCGA", "8M", 4))
     val window = SlidingWindow("chr1", 8, reads.iterator)
     val caught = the[IllegalArgumentException] thrownBy { window.setCurrentLocus(0) }
     caught.getMessage should include("Regions must be sorted by start locus")
@@ -83,9 +83,9 @@ class SlidingWindowSuite extends FunSuite with Matchers {
     // .....TCG... #3
     // 01222333210 count
     val reads = Seq(
-      TestUtil.makeRead("TCGATCGA", "8M", "8", 1),
-      TestUtil.makeRead("CGATCGAT", "8M", "8", 2),
-      TestUtil.makeRead("TCG", "3M", "3", 5))
+      TestUtil.makeRead("TCGATCGA", "8M", 1),
+      TestUtil.makeRead("CGATCGAT", "8M", 2),
+      TestUtil.makeRead("TCG", "3M", 5))
     val window = SlidingWindow("chr1", 0, reads.iterator)
 
     window.setCurrentLocus(0)
@@ -129,9 +129,9 @@ class SlidingWindowSuite extends FunSuite with Matchers {
     // ......TCG.... #3
     // 0122233333210 count w/ hfS=1
     val reads = Seq(
-      TestUtil.makeRead("TCGATCGA", "8M", "8", 2),
-      TestUtil.makeRead("CGATCGAT", "8M", "8", 3),
-      TestUtil.makeRead("TCG", "3M", "3", 6))
+      TestUtil.makeRead("TCGATCGA", "8M", 2),
+      TestUtil.makeRead("CGATCGAT", "8M", 3),
+      TestUtil.makeRead("TCG", "3M", 6))
     val window = SlidingWindow("chr1", 1, reads.iterator)
 
     window.setCurrentLocus(0)
@@ -176,15 +176,15 @@ class SlidingWindowSuite extends FunSuite with Matchers {
 
   test("test sliding window advance multiple windows trivial 1") {
     val reads1 = Seq(
-      TestUtil.makeRead("TCGATCGA", "8M", "8", 2),
-      TestUtil.makeRead("CGATCGAT", "8M", "8", 3),
-      TestUtil.makeRead("TCG", "3M", "3", 6))
+      TestUtil.makeRead("TCGATCGA", "8M", 2),
+      TestUtil.makeRead("CGATCGAT", "8M", 3),
+      TestUtil.makeRead("TCG", "3M", 6))
     val window1 = SlidingWindow("chr1", 0, reads1.iterator)
 
     val reads2 = Seq(
-      TestUtil.makeRead("TCGATCGA", "8M", "8", 2),
-      TestUtil.makeRead("CGATCGAT", "8M", "8", 3),
-      TestUtil.makeRead("TCG", "3M", "3", 6))
+      TestUtil.makeRead("TCGATCGA", "8M", 2),
+      TestUtil.makeRead("CGATCGAT", "8M", 3),
+      TestUtil.makeRead("TCG", "3M", 6))
     val window2 = SlidingWindow("chr1", 0, reads2.iterator)
 
     val loci = LociSet.parse("chr1:0-3,chr1:20-30").result.onContig("chr1").iterator
@@ -202,15 +202,15 @@ class SlidingWindowSuite extends FunSuite with Matchers {
 
   test("test sliding window advance multiple windows trivial 2") {
     val reads1 = Seq(
-      TestUtil.makeRead("TCGATCGA", "8M", "8", 0),
-      TestUtil.makeRead("CGATCGAT", "8M", "8", 3),
-      TestUtil.makeRead("TCG", "3M", "3", 6))
+      TestUtil.makeRead("TCGATCGA", "8M", 0),
+      TestUtil.makeRead("CGATCGAT", "8M", 3),
+      TestUtil.makeRead("TCG", "3M", 6))
     val window1 = SlidingWindow("chr1", 1, reads1.iterator)
 
     val reads2 = Seq(
-      TestUtil.makeRead("TCGATCGA", "8M", "8", 2),
-      TestUtil.makeRead("CGATCGAT", "8M", "8", 3),
-      TestUtil.makeRead("TCG", "3M", "3", 6))
+      TestUtil.makeRead("TCGATCGA", "8M", 2),
+      TestUtil.makeRead("CGATCGAT", "8M", 3),
+      TestUtil.makeRead("TCG", "3M", 6))
     val window2 = SlidingWindow("chr1", 0, reads2.iterator)
 
     val loci = LociSet.parse("chr1:0-3,chr1:20-30").result.onContig("chr1").iterator
@@ -231,15 +231,15 @@ class SlidingWindowSuite extends FunSuite with Matchers {
 
   test("test sliding window advance multiple windows basic") {
     val reads1 = Seq(
-      TestUtil.makeRead("TCGATCGA", "8M", "8", 2),
-      TestUtil.makeRead("CGATCGAT", "8M", "8", 3),
-      TestUtil.makeRead("TCG", "3M", "3", 6))
+      TestUtil.makeRead("TCGATCGA", "8M", 2),
+      TestUtil.makeRead("CGATCGAT", "8M", 3),
+      TestUtil.makeRead("TCG", "3M", 6))
     val window1 = SlidingWindow("chr1", 0, reads1.iterator)
 
     val reads2 = Seq(
-      TestUtil.makeRead("TCGATCGA", "8M", "8", 5),
-      TestUtil.makeRead("CGATCGAT", "8M", "8", 80),
-      TestUtil.makeRead("TCG", "3M", "3", 100))
+      TestUtil.makeRead("TCGATCGA", "8M", 5),
+      TestUtil.makeRead("CGATCGAT", "8M", 80),
+      TestUtil.makeRead("TCG", "3M", 100))
     val window2 = SlidingWindow("chr1", 0, reads2.iterator)
 
     val loci = LociSet.parse("chr1:0-3,chr1:60-101").result.onContig("chr1").iterator

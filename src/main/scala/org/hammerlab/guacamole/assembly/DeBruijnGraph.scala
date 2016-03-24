@@ -181,8 +181,8 @@ class DeBruijnGraph(val kmerSize: Int,
                        avoidLoops: Boolean = true,
                        debugPrint: Boolean = false): List[(Path)] = {
 
-    assume(source.length == kmerSize, s"Source kmer ${Bases.basesToString(source)} has a size != $kmerSize")
-    assume(sink.length == kmerSize, s"Sink kmer ${Bases.basesToString(sink)} has a size != $kmerSize")
+    assume(source.length == kmerSize, s"Source kmer ${Bases.basesToString(source)} has size ${source.length} != $kmerSize")
+    assume(sink.length == kmerSize, s"Sink kmer ${Bases.basesToString(sink)} has size ${sink.length} != $kmerSize")
 
     var paths = List.empty[(Path)]
     var visited: mutable.Set[Kmer] = mutable.Set.empty

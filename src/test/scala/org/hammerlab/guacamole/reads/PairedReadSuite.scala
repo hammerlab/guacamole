@@ -72,7 +72,6 @@ class PairedReadSuite extends FunSuite with Matchers {
         50,
         325352323,
         TextCigarCodec.decode(""),
-        mdTagString = Some("11"),
         false,
         isPositiveStrand = true,
         isPaired = true),
