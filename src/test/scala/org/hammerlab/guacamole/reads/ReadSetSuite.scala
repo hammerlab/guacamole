@@ -18,6 +18,9 @@
 
 package org.hammerlab.guacamole.reads
 
+import org.apache.parquet.hadoop.metadata.CompressionCodecName
+import org.bdgenomics.adam.rdd.read.AlignmentRecordRDDFunctions
+import org.bdgenomics.adam.rdd.{ ADAMSaveAnyArgs, ADAMContext }
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.{ LociSet }
 import org.hammerlab.guacamole.reads.Read.InputFilters
@@ -65,21 +68,20 @@ class ReadSetSuite extends GuacFunSuite with Matchers {
       })
   }
 
-  /*
   sparkTest("load and test filters") {
-    val allReads = TestUtil.loadReads(sc, "mdtagissue.sam")
+    val allReads = TestUtil.loadReads(sc, "mdtagissue.sam", reference = chr22Fasta)
     allReads.reads.count() should be(8)
 
-    val mdTagReads = TestUtil.loadReads(sc, "mdtagissue.sam", Read.InputFilters(mapped = true))
+    val mdTagReads = TestUtil.loadReads(sc, "mdtagissue.sam", Read.InputFilters(mapped = true), reference = chr22Fasta)
     mdTagReads.reads.count() should be(5)
 
     val nonDuplicateReads = TestUtil.loadReads(
       sc,
       "mdtagissue.sam",
-      Read.InputFilters(mapped = true, nonDuplicate = true))
+      Read.InputFilters(mapped = true, nonDuplicate = true),
+      reference = chr22Fasta)
     nonDuplicateReads.reads.count() should be(3)
   }
-  */
 
   sparkTest("load RNA reads") {
     val chr17Reference = TestUtil.makeReference(sc, Seq(("chr17", 0, "")), 412449360)
@@ -87,13 +89,12 @@ class ReadSetSuite extends GuacFunSuite with Matchers {
     readSet.reads.count should be(23)
   }
 
-  /*
   sparkTest("load read from ADAM") {
     // First load reads from SAM using ADAM and save as ADAM
     val adamContext = new ADAMContext(sc)
     val adamRecords = adamContext.loadBam(TestUtil.testDataPath("mdtagissue.sam"))
 
-    val origReadSet = TestUtil.loadReads(sc, "mdtagissue.sam")
+    val origReadSet = TestUtil.loadReads(sc, "mdtagissue.sam", reference = chr22Fasta)
 
     val adamOut = TestUtil.tmpFileName(".adam")
     val args = new ADAMSaveAnyArgs {
@@ -105,9 +106,9 @@ class ReadSetSuite extends GuacFunSuite with Matchers {
       override var pageSize: Int = 1024
       override var compressionCodec: CompressionCodecName = CompressionCodecName.UNCOMPRESSED
     }
-    adamRecords.rdd.saveAsParquet(args, adamRecords.sequences, adamRecords.recordGroups)
+    new AlignmentRecordRDDFunctions(adamRecords.rdd).saveAsParquet(args, adamRecords.sequences, adamRecords.recordGroups)
 
-    val (allReads, _) = Read.loadReadRDDAndSequenceDictionaryFromADAM(adamOut, sc, token = 0)
+    val (allReads, _) = Read.loadReadRDDAndSequenceDictionaryFromADAM(adamOut, sc, token = 0, reference = chr22Fasta)
     allReads.count() should be(8)
     val collectedReads = allReads.collect()
 
@@ -116,11 +117,10 @@ class ReadSetSuite extends GuacFunSuite with Matchers {
       sc,
       1,
       Read.InputFilters(mapped = true, nonDuplicate = true),
-      requireMDTagsOnMappedReads = true)
+      reference = chr22Fasta)
     filteredReads.count() should be(3)
     filteredReads.collect().forall(_.token == 1) should be(true)
   }
-  */
 
   sparkTest("load and serialize / deserialize reads") {
     val chr17Reference = TestUtil.makeReference(sc, Seq(("chr17", 0, "")), 412449360)

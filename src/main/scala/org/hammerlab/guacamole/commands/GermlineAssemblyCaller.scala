@@ -249,7 +249,7 @@ object GermlineAssemblyCaller {
         args,
         sc,
         Read.InputFilters(overlapsLoci = Some(loci), mapped = true, nonDuplicate = true),
-        referenceGenome = reference)
+        reference = reference)
 
       val minAlignmentQuality = args.minAlignmentQuality
       val qualityReads = readSet

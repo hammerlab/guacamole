@@ -56,12 +56,12 @@ case class MappedRead(
   override def asMappedRead = Some(this)
 
   /**
-    * Number of mismatching bases in this read. Does *not* include indels: only looks at read bases that align to a
-    * single base in the reference and do not match it.
-    *
-    * @param referenceContigSequence the reference sequence for this read's contig
-    * @return count of mismatching bases
-    */
+   * Number of mismatching bases in this read. Does *not* include indels: only looks at read bases that align to a
+   * single base in the reference and do not match it.
+   *
+   * @param referenceContigSequence the reference sequence for this read's contig
+   * @return count of mismatching bases
+   */
   def countOfMismatches(referenceContigSequence: ContigSequence): Int = {
     var element = PileupElement(this, start, referenceContigSequence)
     var count = (if (element.isMismatch) 1 else 0)

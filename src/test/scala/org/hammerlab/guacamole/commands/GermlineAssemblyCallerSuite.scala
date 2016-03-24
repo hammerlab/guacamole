@@ -28,7 +28,7 @@ class GermlineAssemblyCallerSuite extends FunSuite with Matchers with BeforeAndA
       args,
       sc,
       Read.InputFilters(mapped = true, nonDuplicate = true),
-      referenceGenome = reference)
+      reference = reference)
     readSet.mappedReads.persist()
   }
 
