@@ -88,9 +88,9 @@ spark-submit \
 	--verbose \
 	/path/to/target/guacamole-with-dependencies-<x.y.z>.jar \
 	somatic-joint \
-    		src/test/resources/synth1.normal.100k-200k.withmd.bam \
-    		src/test/resources/synth1.tumor.100k-200k.withmd.bam \
-    		--reference-fasta /path/to/your/b37.fasta \
+    		/hdfs/path/to/normal.bam \
+    		/hdfs/path/to/tumor.bam \
+    		--reference-fasta /local/path/to/reference.bam \
     		--out /tmp/out.vcf 
 ```
 
