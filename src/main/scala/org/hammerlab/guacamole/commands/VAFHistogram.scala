@@ -110,7 +110,6 @@ object VAFHistogram {
             InputFilters.empty,
             token = bamFile._2,
             contigLengthsFromDictionary = true,
-            reference = reference,
             config = Common.Arguments.ReadLoadingConfigArgs.fromArguments(args)
           )
       )

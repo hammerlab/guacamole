@@ -218,7 +218,7 @@ object TestUtil extends Matchers {
     val path = testDataPath(filename)
     assert(sc != null)
     assert(sc.hadoopConfiguration != null)
-    ReadSet(sc, path, reference = reference, filters = filters, config = config)
+    ReadSet(sc, path, filters = filters, config = config)
   }
 
   def loadTumorNormalPileup(tumorReads: Seq[MappedRead],

@@ -28,8 +28,7 @@ import org.apache.spark.{ Logging, SparkContext }
 import org.bdgenomics.adam.models.SequenceDictionary
 import org.bdgenomics.adam.rdd.{ ADAMContext, ADAMSpecificRecordSequenceDictionaryRDDAggregator }
 import org.bdgenomics.formats.avro.AlignmentRecord
-import org.hammerlab.guacamole.{ Common, LociSet, Bases }
-import org.hammerlab.guacamole.reference.ReferenceGenome
+import org.hammerlab.guacamole.{ Bases, Common, LociSet }
 import org.seqdoop.hadoop_bam.util.SAMHeaderReader
 import org.seqdoop.hadoop_bam.{ AnySAMInputFormat, SAMRecordWritable }
 
@@ -209,8 +208,7 @@ object Read extends Logging {
    * @return
    */
   def fromSAMRecord(record: SAMRecord,
-                    token: Int,
-                    reference: ReferenceGenome): Read = {
+                    token: Int): Read = {
 
     val isMapped = (
       !record.getReadUnmappedFlag &&
@@ -307,14 +305,12 @@ object Read extends Logging {
    * @param sc spark context
    * @param token value to set the "token" field to in all the reads (default 0)
    * @param filters filters to apply
-   * @param reference
    * @return
    */
   def loadReadRDDAndSequenceDictionary(filename: String,
                                        sc: SparkContext,
                                        token: Int,
                                        filters: InputFilters,
-                                       reference: ReferenceGenome,
                                        config: ReadLoadingConfig = ReadLoadingConfig.default): (RDD[Read], SequenceDictionary) = {
     if (filename.endsWith(".bam") || filename.endsWith(".sam")) {
       loadReadRDDAndSequenceDictionaryFromBAM(
@@ -322,7 +318,6 @@ object Read extends Logging {
         sc,
         token,
         filters,
-        reference,
         config
       )
     } else {
@@ -331,7 +326,6 @@ object Read extends Logging {
         sc,
         token,
         filters,
-        reference,
         config
       )
     }
@@ -343,7 +337,6 @@ object Read extends Logging {
     sc: SparkContext,
     token: Int = 0,
     filters: InputFilters = InputFilters.empty,
-    reference: ReferenceGenome,
     config: ReadLoadingConfig = ReadLoadingConfig.default): (RDD[Read], SequenceDictionary) = {
 
     val path = new Path(filename)
@@ -395,7 +388,7 @@ object Read extends Logging {
             (filters.isPaired && !record.getReadPairedFlag)) {
           None
         } else {
-          val read = fromSAMRecord(record, token, reference)
+          val read = fromSAMRecord(record, token)
           assert(filters.overlapsLoci.isEmpty || read.isMapped)
           Some(read)
         }
@@ -413,8 +406,7 @@ object Read extends Logging {
         samRecords.map({
           case (k, v) => fromSAMRecord(
             v.get,
-            token,
-            reference)
+            token)
         })
       val reads = InputFilters.filterRDD(filters, allReads, sequenceDictionary)
       (reads, sequenceDictionary)
@@ -426,7 +418,6 @@ object Read extends Logging {
                                                sc: SparkContext,
                                                token: Int = 0,
                                                filters: InputFilters = InputFilters.empty,
-                                               reference: ReferenceGenome,
                                                config: ReadLoadingConfig = ReadLoadingConfig.default): (RDD[Read], SequenceDictionary) = {
 
     Common.progress("Using ADAM to read: %s".format(filename))
@@ -437,7 +428,7 @@ object Read extends Logging {
       filename, projection = None, stringency = ValidationStringency.LENIENT).rdd
     val sequenceDictionary = new ADAMSpecificRecordSequenceDictionaryRDDAggregator(adamRecords).adamGetSequenceDictionary()
 
-    val allReads: RDD[Read] = adamRecords.map(fromADAMRecord(_, token, reference))
+    val allReads: RDD[Read] = adamRecords.map(fromADAMRecord(_, token))
     val reads = InputFilters.filterRDD(filters, allReads, sequenceDictionary)
     (reads, sequenceDictionary)
   }
@@ -449,7 +440,7 @@ object Read extends Logging {
    * @param alignmentRecord ADAM Alignment Record (an aligned or unaligned read)
    * @return Mapped or Unmapped Read
    */
-  def fromADAMRecord(alignmentRecord: AlignmentRecord, token: Int, reference: ReferenceGenome): Read = {
+  def fromADAMRecord(alignmentRecord: AlignmentRecord, token: Int): Read = {
 
     val sequence = Bases.stringToBases(alignmentRecord.getSequence.toString)
     val baseQualities = baseQualityStringToArray(alignmentRecord.getQual.toString, sequence.length)
