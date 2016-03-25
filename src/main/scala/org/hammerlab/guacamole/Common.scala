@@ -29,14 +29,13 @@ import org.apache.hadoop.fs.{ FileSystem, Path }
 import org.apache.hadoop.mapred.FileAlreadyExistsException
 import org.apache.spark.rdd.RDD
 import org.apache.spark.{ Logging, SparkConf, SparkContext }
-import org.bdgenomics.utils.cli.{ Args4jBase, ParquetArgs }
 import org.bdgenomics.adam.rdd.ADAMContext._
 import org.bdgenomics.formats.avro.Genotype
+import org.bdgenomics.utils.cli.{ Args4jBase, ParquetArgs }
+import org.codehaus.jackson.JsonFactory
 import org.hammerlab.guacamole.Common.Arguments.ReadLoadingConfigArgs
 import org.hammerlab.guacamole.Concordance.ConcordanceArgs
 import org.hammerlab.guacamole.reads.Read
-import org.codehaus.jackson.JsonFactory
-import org.hammerlab.guacamole.reference.ReferenceGenome
 import org.kohsuke.args4j.{ Option => Args4jOption }
 
 /**
@@ -155,8 +154,7 @@ object Common extends Logging {
   def loadReadsFromArguments(
     args: Arguments.Reads,
     sc: SparkContext,
-    filters: Read.InputFilters,
-    reference: ReferenceGenome): ReadSet = {
+    filters: Read.InputFilters): ReadSet = {
 
     ReadSet(
       sc,
@@ -164,7 +162,6 @@ object Common extends Logging {
       filters,
       token = 0,
       contigLengthsFromDictionary = !args.noSequenceDictionary,
-      reference = reference,
       config = ReadLoadingConfigArgs.fromArguments(args))
   }
 
@@ -180,8 +177,7 @@ object Common extends Logging {
   def loadTumorNormalReadsFromArguments(
     args: Arguments.TumorNormalReads,
     sc: SparkContext,
-    filters: Read.InputFilters,
-    reference: ReferenceGenome): (ReadSet, ReadSet) = {
+    filters: Read.InputFilters): (ReadSet, ReadSet) = {
 
     val tumor = ReadSet(
       sc,
@@ -189,7 +185,6 @@ object Common extends Logging {
       filters,
       1,
       !args.noSequenceDictionary,
-      reference,
       ReadLoadingConfigArgs.fromArguments(args))
     val normal = ReadSet(
       sc,
@@ -197,7 +192,6 @@ object Common extends Logging {
       filters,
       2,
       !args.noSequenceDictionary,
-      reference,
       ReadLoadingConfigArgs.fromArguments(args))
     (tumor, normal)
   }

@@ -79,7 +79,6 @@ object VariantSupport {
             bamFile._1,
             InputFilters.empty,
             token = bamFile._2,
-            reference = reference,
             config = Common.Arguments.ReadLoadingConfigArgs.fromArguments(args)
           ).mappedReads
       )
