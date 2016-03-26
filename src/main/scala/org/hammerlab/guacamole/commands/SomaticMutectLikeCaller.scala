@@ -113,7 +113,7 @@ object SomaticMutectLike {
     @Args4jOption(name = "--noisy-muts-vcf", required = false, usage = "VCF file to filter noisy variants")
     var noiseVcf: String = ""
 
-    @Args4jOption(name = "--reference-fasta", required = false, usage = "Local path to a reference FASTA file")
+    @Args4jOption(name = "--reference-fasta", required = true, usage = "Local path to a reference FASTA file")
     var referenceFastaPath: String = null
 
   }
@@ -155,19 +155,16 @@ object SomaticMutectLike {
       val filters = Read.InputFilters(
         overlapsLoci = Some(loci),
         nonDuplicate = true,
-        passedVendorQualityChecks = true,
-        hasMdTag = true)
+        passedVendorQualityChecks = true)
 
-      val reference = Option(args.referenceFastaPath).map(ReferenceBroadcast(_, sc))
+      val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
 
       val (tumorReads, normalReads) =
         Common.loadTumorNormalReadsFromArguments(
           args,
           sc,
           filters,
-          requireMDTagsOnMappedReads = false,
-          referenceGenome = reference
-        )
+          reference = reference)
 
       assert(tumorReads.sequenceDictionary == normalReads.sequenceDictionary,
         "Tumor and normal samples have different sequence dictionaries. Tumor dictionary: %s.\nNormal dictionary: %s."
@@ -200,7 +197,7 @@ object SomaticMutectLike {
               minLodForPowerCalc = args.minLodForPowerCalc,
               contamFrac = args.contamFrac,
               maxReadDepth = args.maxReadDepth).iterator,
-          referenceGenome = reference
+          reference = reference
         ).filter(c => mutectHeuristicFiltersPreDbLookup(call = c,
             minLodForPowerCalc = args.minLodForPowerCalc,
             maxGapEventsThresholdForPointMutations = args.maxGapEventsThresholdForPointMutations,
@@ -298,7 +295,7 @@ object SomaticMutectLike {
     def mapqBaseqFilteredPu(pileup: Pileup, minBaseQuality: Int, minAlignmentQuality: Int): Pileup = {
       Pileup(pileup.referenceName,
         pileup.locus,
-        pileup.referenceBase,
+        pileup.referenceContigSequence,
         pileup.elements.filter(pileupElement =>
           pileupElement.qualityScore >= minBaseQuality && pileupElement.read.alignmentQuality >= minAlignmentQuality))
     }
@@ -314,10 +311,10 @@ object SomaticMutectLike {
     def heavilyFilteredPu(pileup: Pileup, maxFractionBasesSoftClippedTumor: Double, maxPhredSumMismatchingBases: Int): Pileup = {
       Pileup(pileup.referenceName,
         pileup.locus,
-        pileup.referenceBase,
+        pileup.referenceContigSequence,
         pileup.elements.filterNot(pileupElement => {
           val clippedFilter = isReadHeavilyClipped(pileupElement.read, maxFractionBasesSoftClippedTumor)
-          lazy val noisyFilter = pileupElement.read.misMatchQscoreSum.get >= maxPhredSumMismatchingBases
+          lazy val noisyFilter = pileupElement.read.sumOfMismatchQscores(pileup.referenceContigSequence) >= maxPhredSumMismatchingBases
           val mateRescueFilter = false //TODO determine if we want to do XT=M tag filtering, only relevant for BWA
           clippedFilter || noisyFilter || mateRescueFilter
         })
@@ -332,7 +329,7 @@ object SomaticMutectLike {
     def overlappingFragmentFilteredPileup(pileup: Pileup): Pileup = {
       Pileup(pileup.referenceName,
         pileup.locus,
-        pileup.referenceBase,
+        pileup.referenceContigSequence,
         pileup.elements.groupBy(_.read.name).map(nameSeq => {
           val pileups = nameSeq._2
           pileups.tail.fold(pileups.head)(

@@ -74,16 +74,22 @@ class MappedReadSuite extends GuacFunSuite with Matchers {
       isPositiveStrand = true,
       isPaired = true
     )
-    //    test("Calculate mismatch qscore sum") {
-    //      val originalReference = "AAATTGATACTCGAACGA"
-    //      val read = TestUtil.makeRead(originalReference.substring(5, 15), "10M", "0C1C7", start = 5,
-    //        qualityScores = Some(Seq(31, 10, 32, 10, 10, 10, 10, 10, 10, 10)))
-    //      val mismatchQscoreSum = MDTagUtils.getMismatchingQscoreSum(read.mdTagOpt.get, read.baseQualities, read.cigar)
-    //      mismatchQscoreSum should be(63)
-    //    }
+
     val collectionMappedReads: Seq[Read] = Seq(uread, mread)
     collectionMappedReads(0).isMapped should be(false)
     collectionMappedReads(1).isMapped should be(true)
+  }
+
+  sparkTest("Calculate mismatch qscore sum") {
+    val originalReference = "AAATTGATACTCGAACGA"
+    val mismatchRead = "CACTTGATAC"
+    def simpleReference = TestUtil.makeReference(sc, Seq(
+      ("chr1", 0, originalReference)))
+
+    val read = TestUtil.makeRead(mismatchRead, "10M", chr = "chr1", start = 0,
+      qualityScores = Some(Seq(31, 10, 32, 10, 10, 10, 10, 10, 10, 10)))
+    val mismatchQscoreSum = read.sumOfMismatchQscores(simpleReference.getContig("chr1"))
+    mismatchQscoreSum should be(63)
   }
 
 }
