@@ -87,9 +87,11 @@ spark-submit \
 	--class org.hammerlab.guacamole.Guacamole \
 	--verbose \
 	/path/to/target/guacamole-with-dependencies-<x.y.z>.jar \
-	germline-threshold \
-        --reads hdfs:///path/to/reads.bam \
-        --out hdfs:///path/to/result.vcf
+	somatic-joint \
+    		/hdfs/path/to/normal.bam \
+    		/hdfs/path/to/tumor.bam \
+    		--reference-fasta /local/path/to/reference.bam \
+    		--out /tmp/out.vcf 
 ```
 
 # Is this ready for production use?
