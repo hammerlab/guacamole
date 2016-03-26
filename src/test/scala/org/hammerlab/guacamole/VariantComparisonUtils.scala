@@ -114,12 +114,22 @@ object VariantComparisonUtils {
     }
   }
 
-  def compareToCSV(experimentalFile: String, expectedFile: String, referenceBroadcast: ReferenceBroadcast): Unit = {
+  /**
+   * Compute specificity and sensitivity of an experimental call set when compared against a CSV of known variants
+   * @param experimentalFile VCF file of called experimental variants
+   * @param expectedFile CSV file of expected variants
+   * @param referenceBroadcast Reference genome
+   * @param samplesToCompare Sample names to compare against in the expected variants file
+   */
+  def compareToCSV(experimentalFile: String,
+                   expectedFile: String,
+                   referenceBroadcast: ReferenceBroadcast,
+                   samplesToCompare: Set[String]): Unit = {
     val readerExperimental = new VCFFileReader(new File(experimentalFile), false)
     val recordsExperimental = vcfRecords(readerExperimental)
     val csvRecordsExpectedWithDecoys = csvRecords(expectedFile)
     val recordsExpected = csvRecordsExpectedWithDecoys
-      .filter(!_.tumor.contains("decoy"))
+      .filter(record => samplesToCompare.contains(record.tumor))
       .map(_.toHtsjdVariantContext(referenceBroadcast))
 
     println("Experimental calls: %,d. Gold calls: %,d.".format(recordsExperimental.length, recordsExpected.length))
