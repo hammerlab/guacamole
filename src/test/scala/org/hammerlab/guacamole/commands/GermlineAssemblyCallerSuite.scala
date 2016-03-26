@@ -1,21 +1,20 @@
 package org.hammerlab.guacamole.commands
 
 import org.apache.spark.SparkContext
+import org.hammerlab.guacamole._
 import org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Arguments
 import org.hammerlab.guacamole.reads.Read
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.util.TestUtil
 import org.hammerlab.guacamole.variants.CalledAllele
-import org.hammerlab.guacamole._
 import org.scalatest.{ BeforeAndAfter, FunSuite, Matchers }
 
 class GermlineAssemblyCallerSuite extends FunSuite with Matchers with BeforeAndAfter {
 
   val args = new Arguments
 
-  val input = "illumina-platinum-na12878/NA12878.10k_variants.plus_chr1_3M-3.1M.bam"
+  val input = NA12878TestUtils.na12878SubsetBam
   args.reads = TestUtil.testDataPath(input)
-  args.loci = "chr1:772754-772755"
   args.parallelism = 2
 
   var sc: SparkContext = _
@@ -28,7 +27,8 @@ class GermlineAssemblyCallerSuite extends FunSuite with Matchers with BeforeAndA
     readSet = Common.loadReadsFromArguments(
       args,
       sc,
-      Read.InputFilters(mapped = true, nonDuplicate = true))
+      Read.InputFilters(mapped = true, nonDuplicate = true),
+      reference = reference)
     readSet.mappedReads.persist()
   }
 
@@ -36,23 +36,28 @@ class GermlineAssemblyCallerSuite extends FunSuite with Matchers with BeforeAndA
     sc.stop()
   }
 
-  val referenceFastaPath = TestUtil.testDataPath("illumina-platinum-na12878/chr1.prefix.fa")
+  val referenceFastaPath = TestUtil.testDataPath(NA12878TestUtils.chr1PrefixFasta)
   val loci = Common.lociFromArguments(args)
 
-  def discoverGenotypesAtLoci(loci: String): Seq[CalledAllele] = {
+  def discoverGenotypesAtLoci(loci: String,
+                              readSetIn: ReadSet = readSet,
+                              referenceInput: ReferenceBroadcast = reference,
+                              kmerSize: Int = 31,
+                              snvWindowRange: Int = 55,
+                              minOccurrence: Int = 5,
+                              minVaf: Float = 0.1f): Seq[CalledAllele] = {
     val lociPartitions = DistributedUtil.partitionLociUniformly(
       tasks = args.parallelism,
-      loci = LociSet.parse(loci).result(readSet.contigLengths)
+      loci = LociSet.parse(loci).result(readSetIn.contigLengths)
     )
     GermlineAssemblyCaller.Caller.discoverGenotypes(
-      readSet.mappedReads,
-      kmerSize = 45,
-      snvWindowRange = 75,
-      minOccurrence = 3,
-      minAreaVaf = .1f,
-      reference = reference,
-      lociPartitions = lociPartitions,
-      parallelism = args.parallelism
+      readSetIn.mappedReads,
+      kmerSize = kmerSize,
+      snvWindowRange = snvWindowRange,
+      minOccurrence = minOccurrence,
+      minAreaVaf = minVaf,
+      reference = referenceInput,
+      lociPartitions = lociPartitions
     ).collect().sortBy(_.start)
   }
 
@@ -200,5 +205,4 @@ class GermlineAssemblyCallerSuite extends FunSuite with Matchers with BeforeAndA
     Bases.basesToString(variant.allele.altBases) should be("C")
 
   }
-
 }

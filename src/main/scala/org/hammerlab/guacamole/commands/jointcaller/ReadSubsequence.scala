@@ -54,23 +54,22 @@ object ReadSubsequence {
    * Extract a sub-sequence of a particular length starting at a certain reference locus from a MappedRead.
    *
    * @param element PileupElement positioned at one reference base before the start of the desired sub-sequence
-   * @param refSequence reference bases. First element is the reference base immediately following the PileupElement's
-   *                    locus. The length determines the reference length of the resulting ReadSubsequence.
+   * @param length reference length of the desired ReadSubsequence.
    * @return The sub-sequence of sequenced bases from element.read starting at reference position element.locus + 1
    *         and spanning reference length refSequence.length. If the base aligning to element.locus is non-reference
    *         base, or the read ends before the end of the reference region, the result is None.
    */
-  def ofFixedReferenceLength(element: PileupElement, refSequence: Seq[Byte]): Option[ReadSubsequence] = {
-    assume(refSequence.nonEmpty)
+  def ofFixedReferenceLength(element: PileupElement, length: Int): Option[ReadSubsequence] = {
+    assume(length > 0)
 
     if (element.allele.isVariant || element.locus >= element.read.end - 1) {
       None
     } else {
-      val firstElement = element.advanceToLocus(element.locus + 1, refSequence(0))
+      val firstElement = element.advanceToLocus(element.locus + 1)
       var currentElement = firstElement
       var refOffset = 1
-      while (currentElement.locus < currentElement.read.end - 1 && refOffset < refSequence.length) {
-        currentElement = currentElement.advanceToLocus(currentElement.locus + 1, refSequence(refOffset))
+      while (currentElement.locus < currentElement.read.end - 1 && refOffset < length) {
+        currentElement = currentElement.advanceToLocus(currentElement.locus + 1)
         refOffset += 1
       }
       if (currentElement.locus >= currentElement.read.end - 1) {
@@ -81,7 +80,7 @@ object ReadSubsequence {
           firstElement.locus,
           currentElement.locus + 1,
           firstElement.readPosition,
-          currentElement.advanceToLocus(currentElement.locus + 1, Bases.N).readPosition)
+          currentElement.advanceToLocus(currentElement.locus + 1).readPosition)
         Some(result)
       }
     }
@@ -96,10 +95,11 @@ object ReadSubsequence {
    * before a reference-matching base occurs, then return None.
    *
    * @param element PileupElement positioned at one reference base before the start of the desired sub-sequence
-   * @param contigReferenceSequence reference for the entire contig
    * @return ReadSubsequence for the alt allele, if one exists
    */
-  def ofNextAltAllele(element: PileupElement, contigReferenceSequence: ContigSequence): Option[ReadSubsequence] = {
+  def ofNextAltAllele(element: PileupElement): Option[ReadSubsequence] = {
+    val referenceContigSequence = element.referenceContigSequence
+
     def isVariantOrFollowedByDeletion(e: PileupElement): Boolean = {
       e.allele.isVariant || (
         e.isFinalCigarBase && e.nextCigarElement.exists(
@@ -109,12 +109,10 @@ object ReadSubsequence {
     if (isVariantOrFollowedByDeletion(element) || element.locus >= element.read.end - 1) {
       None
     } else {
-      val firstElement = element.advanceToLocus(element.locus + 1, contigReferenceSequence(element.locus.toInt + 1))
+      val firstElement = element.advanceToLocus(element.locus + 1)
       var currentElement = firstElement
       while (currentElement.locus < currentElement.read.end - 1 && isVariantOrFollowedByDeletion(currentElement)) {
-        currentElement = currentElement.advanceToLocus(
-          currentElement.locus + 1,
-          contigReferenceSequence(currentElement.locus.toInt + 1))
+        currentElement = currentElement.advanceToLocus(currentElement.locus + 1)
       }
       if (currentElement.locus == firstElement.locus || currentElement.locus == currentElement.read.end) {
         // We either have no variant here, or we hit the end of the read.
@@ -135,12 +133,11 @@ object ReadSubsequence {
    * Given any number of pileup elements, return all alternate alleles starting at the elements' locus + 1.
    *
    * @param elements pileup element instances, should all be positioned at same locus
-   * @param contigReferenceSequence reference sequence for entire contig
    * @return ReadSubsequence instances giving the non-reference sequenced alleles at this position
    */
-  def nextAlts(elements: Seq[PileupElement], contigReferenceSequence: ContigSequence): Seq[ReadSubsequence] = {
+  def nextAlts(elements: Seq[PileupElement]): Seq[ReadSubsequence] = {
     val startLocus = elements.headOption.map(_.locus)
     assume(elements.forall(_.locus == startLocus.get))
-    elements.flatMap(element => ofNextAltAllele(element, contigReferenceSequence))
+    elements.flatMap(element => ofNextAltAllele(element))
   }
 }

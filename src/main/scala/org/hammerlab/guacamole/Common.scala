@@ -74,17 +74,12 @@ object Common extends Logging {
       @Args4jOption(name = "--bam-reader-api",
         usage = "API to use for reading BAMs, one of: best (use samtools if file local), samtools, hadoopbam")
       var bamReaderAPI: String = "best"
-
-      @Args4jOption(name = "--recompute-md-tags",
-        usage = "Use the reference fasta to recompute the MD Tags on all mapped reads")
-      var recomputeMDTags: Boolean = false
     }
     object ReadLoadingConfigArgs {
       /** Given commandline arguments, return a ReadLoadingConfig. */
       def fromArguments(args: ReadLoadingConfigArgs): Read.ReadLoadingConfig = {
         Read.ReadLoadingConfig(
-          bamReaderAPI = Read.ReadLoadingConfig.BamReaderAPI.withNameCaseInsensitive(args.bamReaderAPI),
-          recomputeMDTags = args.recomputeMDTags)
+          bamReaderAPI = Read.ReadLoadingConfig.BamReaderAPI.withNameCaseInsensitive(args.bamReaderAPI))
       }
     }
 
@@ -155,24 +150,21 @@ object Common extends Logging {
    * @param args parsed arguments
    * @param sc spark context
    * @param filters input filters to apply
-   * @param requireMDTagsOnMappedReads If set, mapped reads without MDTags will throw.
    * @return
    */
   def loadReadsFromArguments(
     args: Arguments.Reads,
     sc: SparkContext,
     filters: Read.InputFilters,
-    requireMDTagsOnMappedReads: Boolean = false,
-    referenceGenome: Option[ReferenceGenome] = None): ReadSet = {
+    reference: ReferenceGenome): ReadSet = {
 
     ReadSet(
       sc,
       args.reads,
-      requireMDTagsOnMappedReads,
       filters,
       token = 0,
       contigLengthsFromDictionary = !args.noSequenceDictionary,
-      referenceGenome = referenceGenome,
+      reference = reference,
       config = ReadLoadingConfigArgs.fromArguments(args))
   }
 
@@ -189,26 +181,23 @@ object Common extends Logging {
     args: Arguments.TumorNormalReads,
     sc: SparkContext,
     filters: Read.InputFilters,
-    requireMDTagsOnMappedReads: Boolean = false,
-    referenceGenome: Option[ReferenceGenome] = None): (ReadSet, ReadSet) = {
+    reference: ReferenceGenome): (ReadSet, ReadSet) = {
 
     val tumor = ReadSet(
       sc,
       args.tumorReads,
-      requireMDTagsOnMappedReads,
       filters,
       1,
       !args.noSequenceDictionary,
-      referenceGenome,
+      reference,
       ReadLoadingConfigArgs.fromArguments(args))
     val normal = ReadSet(
       sc,
       args.normalReads,
-      requireMDTagsOnMappedReads,
       filters,
       2,
       !args.noSequenceDictionary,
-      referenceGenome,
+      reference,
       ReadLoadingConfigArgs.fromArguments(args))
     (tumor, normal)
   }

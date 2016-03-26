@@ -39,7 +39,6 @@ class MappedReadSerializer extends Serializer[MappedRead] {
     output.writeInt(obj.alignmentQuality, true)
     output.writeLong(obj.start, true)
     output.writeString(obj.cigar.toString)
-    output.writeString(obj.mdTagOpt.map(_.toString).orNull)
     output.writeBoolean(obj.failedVendorQualityChecks)
     output.writeBoolean(obj.isPositiveStrand)
     output.writeBoolean(obj.isPaired)
@@ -57,7 +56,6 @@ class MappedReadSerializer extends Serializer[MappedRead] {
     val alignmentQuality = input.readInt(true)
     val start = input.readLong(true)
     val cigarString = input.readString()
-    val mdTagStringOpt = Option(input.readString())
     val failedVendorQualityChecks = input.readBoolean()
     val isPositiveStrand = input.readBoolean()
     val cigar = TextCigarCodec.decode(cigarString)
@@ -75,7 +73,6 @@ class MappedReadSerializer extends Serializer[MappedRead] {
       alignmentQuality,
       start,
       cigar,
-      mdTagStringOpt,
       failedVendorQualityChecks,
       isPositiveStrand,
       isPaired

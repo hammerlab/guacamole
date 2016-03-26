@@ -6,7 +6,8 @@
 # and it is used by the tests. The command here regenerates this fasta (change
 # the FULL_FASTA_PATH appropriately).
 
-FULL_FASTA_PATH=/Users/tim/sinai/data/ucsc.hg19.fasta.gz
+HG19_FULL_FASTA_PATH=/path/to/ucsc.hg19.fasta
+GRCH37_FULL_FASTA_PATH=/path/to/human_g1k_v37.fasta
 
 set -e
 set -x
@@ -26,7 +27,21 @@ else
     echo "Using GUACAMOLE_JAR=$jar"
 fi
 
+# HG19 reference
 time java -Xmx6g -XX:MaxPermSize=512m "-Dspark.master=local[1]" -cp $jar org.hammerlab.guacamole.other_entrypoints.GeneratePartialFasta \
-    --reference-fasta $FULL_FASTA_PATH \
+    --reference-fasta $HG19_FULL_FASTA_PATH \
     --output src/test/resources/hg19.partial.fasta \
-    src/test/resources/cancer-wgs1/*.bam
+    src/test/resources/cancer-wgs1/*.bam \
+    src/test/resources/rna_chr17_41244936.sam
+
+# b37 reference
+time java -Xmx6g -XX:MaxPermSize=512m "-Dspark.master=local[1]" -cp $jar org.hammerlab.guacamole.other_entrypoints.GeneratePartialFasta \
+    --reference-fasta $GRCH37_FULL_FASTA_PATH \
+    --output src/test/resources/grch37.partial.fasta \
+    src/test/resources/synthetic.challenge.set1.*.sam \
+    src/test/resources/tumor.chr20.tough.sam \
+    src/test/resources/normal.chr20.tough.sam \
+    src/test/resources/tumor.chr20.simplefp.sam \
+    src/test/resources/normal.chr20.simplefp.sam \
+    src/test/resources/gatk_mini_bundle_extract.bam
+

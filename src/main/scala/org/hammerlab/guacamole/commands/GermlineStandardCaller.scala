@@ -42,7 +42,7 @@ object GermlineStandard {
     @Args4jOption(name = "--emit-ref", usage = "Output homozygous reference calls.")
     var emitRef: Boolean = false
 
-    @Args4jOption(name = "--reference-fasta", required = false, usage = "Local path to a reference FASTA file")
+    @Args4jOption(name = "--reference-fasta", required = true, usage = "Local path to a reference FASTA file")
     var referenceFastaPath: String = null
   }
 
@@ -52,16 +52,14 @@ object GermlineStandard {
 
     override def run(args: Arguments, sc: SparkContext): Unit = {
       Common.validateArguments(args)
-      val reference = Option(args.referenceFastaPath).map(ReferenceBroadcast(_, sc))
+      val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
       val loci = Common.lociFromArguments(args)
       val readSet = Common.loadReadsFromArguments(
         args, sc, Read.InputFilters(
           overlapsLoci = Some(loci),
           mapped = true,
-          nonDuplicate = true,
-          hasMdTag = true),
-        requireMDTagsOnMappedReads = false,
-        referenceGenome = reference)
+          nonDuplicate = true),
+        reference = reference)
 
       readSet.mappedReads.persist()
       Common.progress(
@@ -114,7 +112,7 @@ object GermlineStandard {
             return Seq.empty
           } else {
             val genotypeLikelihoods = Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(
-              Pileup(samplePileup.referenceName, samplePileup.locus, samplePileup.referenceBase, filteredPileupElements),
+              Pileup(samplePileup.referenceName, samplePileup.locus, samplePileup.referenceContigSequence, filteredPileupElements),
               logSpace = true,
               normalize = true)
 

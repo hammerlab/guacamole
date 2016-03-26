@@ -52,7 +52,7 @@ Change the reference fasta above to point to a local copy of the B37 human
 reference.
 
 This calls germline and somatic variants from some small test BAMs using the
-*joint-caller* variant caller, which can works with any number of tumor/normal
+*joint-caller* variant caller, which works with any number of tumor/normal
 samples from the same patient. It takes around 2 minutes to run on my 3.1 GHz,
 16gb memory Macbook.
 
@@ -87,9 +87,11 @@ spark-submit \
 	--class org.hammerlab.guacamole.Guacamole \
 	--verbose \
 	/path/to/target/guacamole-with-dependencies-<x.y.z>.jar \
-	germline-threshold \
-        --reads hdfs:///path/to/reads.bam \
-        --out hdfs:///path/to/result.vcf
+	somatic-joint \
+    		/hdfs/path/to/normal.bam \
+    		/hdfs/path/to/tumor.bam \
+    		--reference-fasta /local/path/to/reference.bam \
+    		--out /tmp/out.vcf 
 ```
 
 # Is this ready for production use?
