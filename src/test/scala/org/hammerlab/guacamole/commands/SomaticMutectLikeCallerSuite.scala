@@ -37,7 +37,8 @@ class SomaticMutectLikeCallerSuite extends GuacFunSuite with Matchers with Table
   def simpleReference = TestUtil.makeReference(sc, Seq(
     ("chr1", 0, "TCGATCGACG"),
     ("chr2", 0, "TCGAAGCTTCG"),
-    ("chr3", 10, "TCGAATCGATCGATCGA")))
+    ("chr3", 10, "TCGAATCGATCGATCGA"),
+    ("chr4", 0, "TCGAAGCTTCGAAGCT")))
 
   def loadPileup(filename: String, contig: String, locus: Long = 0): Pileup = {
     val contigReference = grch37Reference.getContig(contig)
@@ -164,19 +165,19 @@ class SomaticMutectLikeCallerSuite extends GuacFunSuite with Matchers with Table
 
   sparkTest("multiple-base deletion") {
     val normalReads = Seq(
-      TestUtil.makeRead("TCGAAGCTTCGAAGCT", "16M", 0),
-      TestUtil.makeRead("TCGAAGCTTCGAAGCT", "16M", 0),
-      TestUtil.makeRead("TCGAAGCTTCGAAGCT", "16M", 0)
+      TestUtil.makeRead("TCGAAGCTTCGAAGCT", "16M", 0, "chr4"),
+      TestUtil.makeRead("TCGAAGCTTCGAAGCT", "16M", 0, "chr4"),
+      TestUtil.makeRead("TCGAAGCTTCGAAGCT", "16M", 0, "chr4")
     )
-    val normalPileup = Pileup(normalReads, "chr1", 4, referenceContigSequence = simpleReference.getContig("chr2"))
+    //TCGAAGCTTCG
+    val normalPileup = Pileup(normalReads, "chr4", 4, referenceContigSequence = simpleReference.getContig("chr4"))
 
     val tumorReads = Seq(
-      TestUtil.makeRead("TCGAAAAGCT", "5M6D5M", 0), // md tag: "5^GCTTCG5"
-      TestUtil.makeRead("TCGAAAAGCT", "5M6D5M", 0),
-      TestUtil.makeRead("TCGAAAAGCT", "5M6D5M", 0)
+      TestUtil.makeRead("TCGAAAAGCT", "5M6D5M", 0, "chr4"), // md tag: "5^GCTTCG5"
+      TestUtil.makeRead("TCGAAAAGCT", "5M6D5M", 0, "chr4"),
+      TestUtil.makeRead("TCGAAAAGCT", "5M6D5M", 0, "chr4")
     )
-    val tumorPileup = Pileup(tumorReads, "chr1", 4, referenceContigSequence = simpleReference.getContig("chr2"))
-
+    val tumorPileup = Pileup(tumorReads, "chr4", 4, referenceContigSequence = simpleReference.getContig("chr4"))
     val alleles = SomaticMutectLike.Caller.findPotentialVariantAtLocus(tumorPileup, normalPileup,
       contamFrac = 0.0)
     alleles.size should be(1)

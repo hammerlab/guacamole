@@ -22,7 +22,7 @@ import htsjdk.samtools.{ CigarElement, CigarOperator }
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.rdd.ADAMContext
-import org.bdgenomics.formats.avro.DatabaseVariantAnnotation
+import org.bdgenomics.formats.avro.{ DatabaseVariantAnnotation, Variant }
 import org.hammerlab.guacamole.Common.Arguments.SomaticCallerArgs
 import org.hammerlab.guacamole.likelihood._
 import org.hammerlab.guacamole.pileup.{ Pileup, PileupElement }
@@ -215,36 +215,36 @@ object SomaticMutectLike {
 
       if (args.dbSnpVcf != "") {
         val adamContext = new ADAMContext(sc)
-        val dbSnpVariants = adamContext.loadVariantAnnotations(args.dbSnpVcf)
+        val dbSnpVariants = adamContext.loadVariants(args.dbSnpVcf, sd = tumorReads.sequenceDictionary)
         potentialGenotypes = potentialGenotypes
           .keyBy(_.adamVariant)
-          .leftOuterJoin(dbSnpVariants.keyBy(_.getVariant))
+          .leftOuterJoin(dbSnpVariants.keyBy((v: Variant) => v))
           .map(_._2).map({
-            case (calledAllele: CalledMutectSomaticAllele, dbSnpVariant: Option[DatabaseVariantAnnotation]) =>
-              calledAllele.copy(rsID = dbSnpVariant.map(_.getDbSnpId))
+            case (calledAllele: CalledMutectSomaticAllele, dbSnpVariant: Option[Variant]) =>
+              calledAllele.copy(rsID = dbSnpVariant.map(_ => 1))
           })
       }
 
       if (args.cosmicVcf != "") {
         val adamContext = new ADAMContext(sc)
-        val dbSnpVariants = adamContext.loadVariantAnnotations(args.cosmicVcf)
+        val dbSnpVariants = adamContext.loadVariants(args.cosmicVcf, sd = tumorReads.sequenceDictionary)
         potentialGenotypes = potentialGenotypes
           .keyBy(_.adamVariant)
-          .leftOuterJoin(dbSnpVariants.keyBy(_.getVariant))
+          .leftOuterJoin(dbSnpVariants.keyBy((v: Variant) => v))
           .map(_._2).map({
-            case (calledAllele: CalledMutectSomaticAllele, cosmicVariant: Option[DatabaseVariantAnnotation]) =>
+            case (calledAllele: CalledMutectSomaticAllele, cosmicVariant: Option[Variant]) =>
               calledAllele.copy(cosOverlap = cosmicVariant.map(_ => true))
           })
       }
 
       if (args.noiseVcf != "") {
         val adamContext = new ADAMContext(sc)
-        val dbSnpVariants = adamContext.loadVariantAnnotations(args.cosmicVcf)
+        val dbSnpVariants = adamContext.loadVariants(args.noiseVcf, sd = tumorReads.sequenceDictionary)
         potentialGenotypes = potentialGenotypes
           .keyBy(_.adamVariant)
-          .leftOuterJoin(dbSnpVariants.keyBy(_.getVariant))
+          .leftOuterJoin(dbSnpVariants.keyBy((v: Variant) => v))
           .map(_._2).map({
-            case (calledAllele: CalledMutectSomaticAllele, noiseVariant: Option[DatabaseVariantAnnotation]) =>
+            case (calledAllele: CalledMutectSomaticAllele, noiseVariant: Option[Variant]) =>
               calledAllele.copy(noiseOverlap = noiseVariant.map(_ => true))
           })
       }
@@ -352,7 +352,7 @@ object SomaticMutectLike {
       val cigar = read.cigarElements
       val trimmedBeginning = if (isClipped(cigar.head.getOperator)) cigar.head.getLength else 0
       val trimmedEnd = if (cigar.length > 1 && isClipped(cigar.last.getOperator)) cigar.last.getLength else 0
-      val readLen = read.cigarElements.filter(c => Set(CigarOperator.INSERTION, CigarOperator.MATCH_OR_MISMATCH).contains(c.getOperator)).map(_.getLength).sum
+      val readLen = read.cigarElements.filter(c => !isClipped(c.getOperator)).map(c => CigarUtils.getReadLength(c)).sum
       (trimmedBeginning + trimmedEnd) / (readLen + trimmedBeginning + trimmedEnd) >= maxFractionBasesSoftClippedTumor
     }
 
