@@ -1,4 +1,4 @@
-package org.hammerlab.guacamole.commands.jointcaller
+package org.hammerlab.guacamole.commands.jointcaller.pileup_summarization
 
 import org.apache.spark.Logging
 import org.hammerlab.guacamole.Bases
@@ -34,13 +34,19 @@ case class ReadSubsequence(read: MappedRead,
     Bases.allStandardBases(read.sequence.slice(startReadPosition, endReadPosition))
 
   /** The base qualities corresponding to the sequenced bases. */
-  def baseQualities(): Seq[Int] = read.baseQualities.slice(startReadPosition, endReadPosition).map(_.toInt)
+  def baseQualities(): Seq[Int] = if (startReadPosition == endReadPosition) {
+    // Technically no sequenced bases at this location (deletion). Use quality of previous base.
+    Seq(read.baseQualities(startReadPosition).toInt)
+  } else {
+    read.baseQualities.slice(startReadPosition, endReadPosition).map(_.toInt)
+  }
 
   /** Average base quality of the sequenced bases. */
   def meanBaseQuality(): Double = {
     val qualities = baseQualities
+    assert(qualities.nonEmpty)
     val result = qualities.sum.toDouble / qualities.length
-    assert(result >= 0)
+    assert(result >= 0, "Invalid base qualities: %s".format(qualities.map(_.toString).mkString(" ")))
     result
   }
 
