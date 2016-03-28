@@ -91,7 +91,7 @@ object SomaticJoint {
 
       val parameters = Parameters(args)
 
-      val allCalls = makeCalls(
+      val allCalls: RDD[MultipleAllelesEvidenceAcrossSamples] = makeCalls(
         sc,
         inputs,
         readSets,
@@ -101,36 +101,54 @@ object SomaticJoint {
         forceCallLoci,
         args)
 
-      val preCalls = allCalls.map(_.onlyBest)
+      //      val preCalls = allCalls.map(_.onlyBest)
+      //    val calls = preCalls.coalesce(numPartitions = 1104, shuffle = true)
 
-      val calls = preCalls.coalesce(numPartitions = 1104, shuffle = true)
+      // ** Cut/pasted from writeCalls()  **
+      def path(filename: String) = args.outDir + "/" + filename + ".vcf" // to do: fix
+      def anyForced(evidence: AlleleEvidenceAcrossSamples): Boolean = {
+        forceCallLoci.onContig(evidence.allele.referenceContig)
+          .intersects(evidence.allele.start, evidence.allele.end)
+      }
 
-      calls.cache()
+      val seqDict = readSets(0).sequenceDictionary.get.toSAMSequenceDictionary
 
-      val pts = calls.mapPartitionsWithIndex((idx, it) => Iterator((idx, it.size))).collect.sortBy(-_._2)
+      // calls : RDD[MultipleAllelesEvidenceAcrossSamples], but each MultipleAllelesEvidenceAcrossSamples only
+      // contains the best allele (Seq size 1)
+      val calls: RDD[MultipleAllelesEvidenceAcrossSamples] = allCalls.map(_.onlyBest)
+      MultipleAllelesEvidenceRddFunctions.saveAsVcf(path("all"), calls, seqDict, false, Option(1),
+        inputs.items, parameters, reference)
 
-      Common.progress("Index, size of partitions")
-      Common.progress("%s".format(pts.mkString("\n")))
+      val germline: RDD[MultipleAllelesEvidenceAcrossSamples] = calls.filter(_.alleleEvidences.exists(
+        evidence => evidence.isGermlineCall || anyForced(evidence)))
+      MultipleAllelesEvidenceRddFunctions.saveAsVcf(path("germline"), germline, seqDict, false,
+        Option(1), inputs.items, parameters, reference)
 
-      Common.progress("Collecting evidence for %,d sites with calls".format(calls.count))
-      val collectedCalls = calls.collect()
-      calls.unpersist()
+      val somaticCallsOrForced: RDD[MultipleAllelesEvidenceAcrossSamples] = calls.filter(_.alleleEvidences.exists(
+        evidence => evidence.isSomaticCall || anyForced(evidence)))
+      MultipleAllelesEvidenceRddFunctions.saveAsVcf(path("somatic.all_samples"), somaticCallsOrForced, seqDict,
+        false, Option(1), inputs.items, parameters, reference)
 
-      Common.progress("Called %,d germline and %,d somatic variants.".format(
-        collectedCalls.count(_.alleleEvidences.exists(_.isGermlineCall)),
-        collectedCalls.count(_.alleleEvidences.exists(_.isSomaticCall))))
+      MultipleAllelesEvidenceRddFunctions.saveAsVcf(path("all.tumor_pooled_dna"), somaticCallsOrForced, seqDict,
+        false, Option(1), Seq.empty, parameters, reference, Some(true))
 
-      /*
-      writeCalls(
-        collectedCalls,
-        inputs,
-        parameters,
-        readSets(0).sequenceDictionary.get.toSAMSequenceDictionary,
-        forceCallLoci,
-        reference,
-        out = args.out,
-        outDir = args.outDir)
-        */
+      inputs.items.foreach(input => {
+        MultipleAllelesEvidenceRddFunctions.saveAsVcf(path("all.%s.%s.%s".format(
+          input.sampleName, input.tissueType.toString, input.analyte.toString)),
+          calls,
+          seqDict,
+          false,
+          Option(1), Seq(input), parameters, reference)
+
+        MultipleAllelesEvidenceRddFunctions.saveAsVcf(path("somatic.%s.%s.%s".format(
+          input.sampleName, input.tissueType.toString, input.analyte.toString)),
+          somaticCallsOrForced,
+          seqDict,
+          false,
+          Option(1), Seq(input), parameters, reference)
+      })
+
+      Common.progress("Wrote all VCF's. Bye now!")
     }
   }
 
@@ -275,6 +293,7 @@ object SomaticJoint {
       val somaticCallsOrForced =
         calls.filter(_.alleleEvidences.exists(
           evidence => evidence.isSomaticCall || anyForced(evidence)))
+
       writeSome(path("somatic.all_samples"), somaticCallsOrForced, inputs.items)
 
       inputs.items.foreach(input => {

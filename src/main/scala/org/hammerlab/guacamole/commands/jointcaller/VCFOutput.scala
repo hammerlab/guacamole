@@ -6,13 +6,13 @@ import htsjdk.samtools.SAMSequenceDictionary
 import htsjdk.variant.variantcontext._
 import htsjdk.variant.variantcontext.writer.VariantContextWriterBuilder
 import htsjdk.variant.vcf._
-import org.hammerlab.guacamole.Bases
 import org.hammerlab.guacamole.commands.jointcaller.Input.{ Analyte, TissueType }
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 
 import scala.collection.{ JavaConversions, mutable }
 
 object VCFOutput {
+
   /**
    * Write a VCF to a local file.
    *
