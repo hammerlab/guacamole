@@ -622,7 +622,7 @@ object DistributedUtil extends Logging {
       })).repartitionAndSortWithinPartitions(new PartitionByKey(numTasks.toInt)).map(_._2)
 
     partitioned.mapPartitionsWithIndex((taskNum, values) => {
-      val iterators = SplitIterator.split(numRDDs, values)
+      val iterators = SplitIterator.split(numRDDs, values).toVector
       val taskLoci = lociPartitionsBoxed.value.asInverseMap(taskNum)
       lociAccumulator += taskLoci.count
       function(taskNum, taskLoci, iterators)

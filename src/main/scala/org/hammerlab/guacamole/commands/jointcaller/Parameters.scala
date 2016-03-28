@@ -1,7 +1,7 @@
 package org.hammerlab.guacamole.commands.jointcaller
 
 import org.hammerlab.guacamole.Common
-import org.kohsuke.args4j.{ Option => Args4jOption }
+import org.kohsuke.args4j.{Option => Args4jOption}
 
 /**
  * Model parameters for the joint caller. Anything that affects the math for the joint caller should go here.
@@ -10,14 +10,20 @@ import org.kohsuke.args4j.{ Option => Args4jOption }
  */
 case class Parameters(
     maxAllelesPerSite: Int,
+    maxCallsPerSite: Int,
     anyAlleleMinSupportingReads: Int,
     anyAlleleMinSupportingPercent: Double,
     germlineNegativeLog10HeterozygousPrior: Double,
     germlineNegativeLog10HomozygousAlternatePrior: Double,
     somaticNegativeLog10VariantPrior: Double,
+    somaticNegativeLog10VariantPriorRna: Double,
+    somaticNegativeLog10VariantPriorWithRnaEvidence: Double,
     somaticVafFloor: Double,
     somaticMaxGermlineErrorRatePercent: Double,
-    somaticGenotypePolicy: Parameters.SomaticGenotypePolicy.Value) {
+    somaticGenotypePolicy: Parameters.SomaticGenotypePolicy.Value,
+    filterStrandBiasPhred: Double,
+    filterSomaticNormalNonreferencePercent: Double,
+    filterSomaticNormalDepth: Int) {
 
   /**
    * Return the parameters as a sequence of (name, value) pairs. This is used to include the parameter metadata in the VCF.
@@ -43,11 +49,14 @@ object Parameters {
     @Args4jOption(name = "--max-alleles-per-site", usage = "maximum number of alt alleles to consider at a site")
     var maxAllelesPerSite: Int = 4
 
+    @Args4jOption(name = "--max-calls-per-site", usage = "maximum number of calls to make at a site. 0 indicates unlimited")
+    var maxCallsPerSite: Int = 1
+
     @Args4jOption(name = "--any-allele-min-supporting-reads", usage = "min reads to call any allele (somatic or germline)")
     var anyAlleleMinSupportingReads: Int = 2
 
     @Args4jOption(name = "--any-allele-min-supporting-percent", usage = "min percent of reads to call any allele (somatic or germline)")
-    var anyAlleleMinSupportingPercent: Double = 3.0
+    var anyAlleleMinSupportingPercent: Double = 2.0
 
     @Args4jOption(name = "--germline-negative-log10-heterozygous-prior", usage = "prior on a germline het call, higher number means fewer calls")
     var germlineNegativeLog10HeterozygousPrior: Double = 4
@@ -57,6 +66,13 @@ object Parameters {
 
     @Args4jOption(name = "--somatic-negative-log10-variant-prior", usage = "prior on somatic call, higher number means fewer calls")
     var somaticNegativeLog10VariantPrior: Double = 6
+
+    @Args4jOption(name = "--somatic-negative-log10-variant-prior-rna", usage = "")
+    var somaticNegativeLog10VariantPriorRna: Double = 1
+
+    @Args4jOption(name = "--somatic-negative-log10-variant-prior-with-rna-evidence",
+      usage = "")
+    var somaticNegativeLog10VariantPriorWithRnaEvidence: Double = 1
 
     @Args4jOption(name = "--somatic-vaf-floor", usage = "min VAF to use in the likelihood calculation")
     var somaticVafFloor: Double = 0.05
@@ -70,19 +86,39 @@ object Parameters {
         "(num variant reads > 0 and num variant reads > any other non-reference allele). " +
         "'trigger' will genotype a call as a het only if that sample actually triggered the call.")
     var somaticGenotypePolicy: String = "presence"
+
+    @Args4jOption(name = "--rna-vaf-threshold",
+      usage = "")
+    var rnaVafThreshold: Double = 0.05
+
+    @Args4jOption(name = "--filter-strand-bias-phred", usage = "")
+    var filterStrandBiasPhred: Double = 60
+
+    @Args4jOption(name = "--filter-somatic-normal-nonreference-percent", usage = "")
+    var filterSomaticNormalNonreferencePercent: Double = 3.0
+
+    @Args4jOption(name = "--filter-somatic-normal-depth", usage = "")
+    var filterSomaticNormalDepth: Int = 30
   }
 
   def apply(args: CommandlineArguments): Parameters = {
     new Parameters(
       maxAllelesPerSite = args.maxAllelesPerSite,
+      maxCallsPerSite = args.maxCallsPerSite,
       anyAlleleMinSupportingReads = args.anyAlleleMinSupportingReads,
       anyAlleleMinSupportingPercent = args.anyAlleleMinSupportingPercent,
       germlineNegativeLog10HeterozygousPrior = args.germlineNegativeLog10HeterozygousPrior,
       germlineNegativeLog10HomozygousAlternatePrior = args.germlineNegativeLog10HomozygousAlternatePrior,
       somaticNegativeLog10VariantPrior = args.somaticNegativeLog10VariantPrior,
+      somaticNegativeLog10VariantPriorRna = args.somaticNegativeLog10VariantPriorRna,
+      somaticNegativeLog10VariantPriorWithRnaEvidence = args.somaticNegativeLog10VariantPriorWithRnaEvidence,
       somaticVafFloor = args.somaticVafFloor,
       somaticMaxGermlineErrorRatePercent = args.somaticMaxGermlineErrorRatePercent,
-      somaticGenotypePolicy = SomaticGenotypePolicy.withName(args.somaticGenotypePolicy))
+      somaticGenotypePolicy = SomaticGenotypePolicy.withName(args.somaticGenotypePolicy),
+      filterStrandBiasPhred = args.filterStrandBiasPhred,
+      filterSomaticNormalNonreferencePercent = args.filterSomaticNormalNonreferencePercent,
+      filterSomaticNormalDepth = args.filterSomaticNormalDepth
+    )
   }
 
   val defaults = Parameters(new CommandlineArguments {})

@@ -8,7 +8,7 @@ import org.hammerlab.guacamole.DistributedUtil.PerSample
 import org.hammerlab.guacamole._
 import org.hammerlab.guacamole.reads._
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
-import org.kohsuke.args4j.{ Option => Args4jOption }
+import org.kohsuke.args4j.{Option => Args4jOption}
 
 object SomaticJoint {
   class Arguments extends Parameters.CommandlineArguments with DistributedUtil.Arguments with NoSequenceDictionary with InputCollection.Arguments {
@@ -30,6 +30,12 @@ object SomaticJoint {
 
     @Args4jOption(name = "--force-call-loci", usage = "Always call the given sites")
     var forceCallLoci: String = ""
+
+    @Args4jOption(name = "--only-somatic", usage = "Output only somatic calls, no germline calls")
+    var onlySomatic: Boolean = false
+
+    @Args4jOption(name = "--include-filtered", usage = "Include filtered calls")
+    var includeFiltered: Boolean = false
 
     @Args4jOption(name = "-q", usage = "Quiet: less stdout")
     var quiet: Boolean = false
@@ -72,9 +78,10 @@ object SomaticJoint {
 
       val readSets = inputsToReadSets(sc, inputs, loci, reference, !args.noSequenceDictionary)
 
-      assert(readSets.forall(_.sequenceDictionary == readSets(0).sequenceDictionary),
-        "Samples have different sequence dictionaries: %s."
+      if (!readSets.forall(_.sequenceDictionary == readSets(0).sequenceDictionary)) {
+        logWarning("Samples have different sequence dictionaries: %s."
           .format(readSets.map(_.sequenceDictionary.toString).mkString("\n")))
+      }
 
       val forceCallLoci = if (args.forceCallLoci.nonEmpty || args.forceCallLociFromFile.nonEmpty) {
         Common.loci(args.forceCallLoci, args.forceCallLociFromFile, readSets(0))
@@ -91,17 +98,18 @@ object SomaticJoint {
 
       val parameters = Parameters(args)
 
-      val allCalls = makeCalls(
+      val calls = makeCalls(
         sc,
         inputs,
         readSets,
         parameters,
         reference,
         loci.result(readSets(0).contigLengths),
-        forceCallLoci,
-        args)
+        forceCallLoci = forceCallLoci,
+        onlySomatic = args.onlySomatic,
+        includeFiltered = args.includeFiltered,
+        distributedUtilArguments = args)
 
-      val calls = allCalls.map(_.onlyBest)
       calls.cache()
 
       Common.progress("Collecting evidence for %,d sites with calls".format(calls.count))
@@ -118,6 +126,7 @@ object SomaticJoint {
         readSets(0).sequenceDictionary.get.toSAMSequenceDictionary,
         forceCallLoci,
         reference,
+        onlySomatic = args.onlySomatic,
         out = args.out,
         outDir = args.outDir)
     }
@@ -142,7 +151,9 @@ object SomaticJoint {
                 reference: ReferenceBroadcast,
                 loci: LociSet,
                 forceCallLoci: LociSet = LociSet.empty,
-                distributedUtilArguments: DistributedUtil.Arguments = new DistributedUtil.Arguments {}): RDD[MultipleAllelesEvidenceAcrossSamples] = {
+                onlySomatic: Boolean = false,
+                includeFiltered: Boolean = false,
+                distributedUtilArguments: DistributedUtil.Arguments = new DistributedUtil.Arguments {}): RDD[CallsAtSite] = {
 
     // When mapping over pileups, at locus x we call variants at locus x + 1. Therefore we subtract 1 from the user-
     // specified loci.
@@ -152,65 +163,34 @@ object SomaticJoint {
       lociSetMinusOne(loci),
       readSets.map(_.mappedReads): _*)
 
-    val calls = DistributedUtil.pileupFlatMapMultipleRDDs(
+    DistributedUtil.pileupFlatMapMultipleRDDs(
       readSets.map(_.mappedReads),
       lociPartitions,
       true, // skip empty. TODO: shouldn't skip empty positions if we might force call them. Need an efficient way to handle this.
-      pileups => {
-        val normalPileups = inputs.normalDNA.map(input => pileups(input.index))
-        val tumorDNAPileups = inputs.tumorDNA.map(input => pileups(input.index))
-        val forceCall = broadcastForceCallLoci.value.onContig(pileups(0).referenceName).contains(pileups(0).locus + 1)
-
-        val contig = normalPileups.head.referenceName
-        val locus = normalPileups.head.locus
-
-        // We only call variants at a site if the reference base is a standard base (i.e. not N).
-        if (Bases.isStandardBase(reference.getReferenceBase(contig, locus.toInt + 1))) {
-          val possibleAlleles = AlleleAtLocus.variantAlleles(
-            (inputs.normalDNA ++ inputs.tumorDNA).map(input => pileups(input.index)),
-            anyAlleleMinSupportingReads = parameters.anyAlleleMinSupportingReads,
-            anyAlleleMinSupportingPercent = parameters.anyAlleleMinSupportingPercent,
-            maxAlleles = Some(parameters.maxAllelesPerSite),
-            atLeastOneAllele = forceCall, // if force calling this site, always get at least one allele
-            onlyStandardBases = true)
-
-          if (forceCall) assert(possibleAlleles.nonEmpty)
-
-          if (possibleAlleles.nonEmpty) {
-            val evidences = possibleAlleles.map(allele => {
-              AlleleEvidenceAcrossSamples(
-                parameters,
-                allele,
-                pileups,
-                inputs)
-            })
-            if (forceCall || evidences.exists(_.isCall)) {
-              val groupedEvidence = MultipleAllelesEvidenceAcrossSamples(evidences)
-              Iterator(groupedEvidence)
-            } else {
-              Iterator.empty
-            }
-          } else {
-            Iterator.empty
-          }
-        } else {
-          Iterator.empty
-        }
+      rawPileups => {
+        CallsAtSite.make(
+          rawPileups,
+          inputs,
+          parameters,
+          reference,
+          broadcastForceCallLoci.value,
+          onlySomatic = onlySomatic,
+          includeFiltered = includeFiltered).toIterator
       }, reference = reference)
-    calls
   }
 
-  def writeCalls(calls: Seq[MultipleAllelesEvidenceAcrossSamples],
+  def writeCalls(calls: Seq[CallsAtSite],
                  inputs: InputCollection,
                  parameters: Parameters,
                  sequenceDictionary: SAMSequenceDictionary,
                  forceCallLoci: LociSet = LociSet.empty,
                  reference: ReferenceBroadcast,
+                 onlySomatic: Boolean = false,
                  out: String = "",
                  outDir: String = ""): Unit = {
 
     def writeSome(out: String,
-                  filteredCalls: Seq[MultipleAllelesEvidenceAcrossSamples],
+                  filteredCalls: Seq[CallsAtSite],
                   filteredInputs: PerSample[Input],
                   includePooledNormal: Option[Boolean] = None,
                   includePooledTumor: Option[Boolean] = None): Unit = {
@@ -253,11 +233,13 @@ object SomaticJoint {
 
       writeSome(path("all"), calls, inputs.items)
 
-      writeSome(
-        path("germline"),
-        calls.filter(_.alleleEvidences.exists(
-          evidence => evidence.isGermlineCall || anyForced(evidence))),
-        inputs.items)
+      if (!onlySomatic) {
+        writeSome(
+          path("germline"),
+          calls.filter(_.alleleEvidences.exists(
+            evidence => evidence.isGermlineCall || anyForced(evidence))),
+          inputs.items)
+      }
 
       val somaticCallsOrForced =
         calls.filter(_.alleleEvidences.exists(
@@ -265,11 +247,13 @@ object SomaticJoint {
       writeSome(path("somatic.all_samples"), somaticCallsOrForced, inputs.items)
 
       inputs.items.foreach(input => {
-        writeSome(
-          path("all.%s.%s.%s".format(
-            input.sampleName, input.tissueType.toString, input.analyte.toString)),
-          calls,
-          Vector(input))
+        if (!onlySomatic) {
+          writeSome(
+            path("all.%s.%s.%s".format(
+              input.sampleName, input.tissueType.toString, input.analyte.toString)),
+            calls,
+            Vector(input))
+        }
         writeSome(
           path("somatic.%s.%s.%s".format(
             input.sampleName, input.tissueType.toString, input.analyte.toString)),
