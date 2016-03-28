@@ -1,7 +1,6 @@
 package org.hammerlab.guacamole.commands.jointcaller
 
 import org.hammerlab.guacamole.VariantComparisonUtils.{ compareToCSV, compareToVCF, csvRecords }
-import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.util.{ GuacFunSuite, TestUtil }
 import org.hammerlab.guacamole.{ CancerWGSTestUtils, LociSet, NA12878TestUtils }
 import org.scalatest.Matchers
@@ -44,7 +43,8 @@ class SomaticJointCallerIntegrationTests extends GuacFunSuite with Matchers {
       compareToCSV(
         outDir + "/somatic.all_samples.vcf",
         CancerWGSTestUtils.cancerWGS1ExpectedSomaticCallsCSV,
-        CancerWGSTestUtils.referenceBroadcast(sc)
+        CancerWGSTestUtils.referenceBroadcast(sc),
+        Set("primary", "recurrence")
       )
     }
   }
