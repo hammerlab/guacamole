@@ -18,19 +18,19 @@
 
 package org.hammerlab.guacamole.commands
 
-import htsjdk.samtools.{ CigarElement, CigarOperator }
+import htsjdk.samtools.{CigarElement, CigarOperator}
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.rdd.ADAMContext
-import org.bdgenomics.formats.avro.{ DatabaseVariantAnnotation, Variant }
+import org.bdgenomics.formats.avro.{DatabaseVariantAnnotation, Variant}
 import org.hammerlab.guacamole.Common.Arguments.SomaticCallerArgs
 import org.hammerlab.guacamole.likelihood._
-import org.hammerlab.guacamole.pileup.{ Pileup, PileupElement }
-import org.hammerlab.guacamole.reads.{ MappedRead, Read }
-import org.hammerlab.guacamole.variants.{ CalledMutectSomaticAllele, _ }
+import org.hammerlab.guacamole.pileup.{Pileup, PileupElement}
+import org.hammerlab.guacamole.reads.{MappedRead, Read}
+import org.hammerlab.guacamole.variants.{Allele, CalledMutectSomaticAllele, _}
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole._
-import org.kohsuke.args4j.{ Option => Args4jOption }
+import org.kohsuke.args4j.{Option => Args4jOption}
 
 import scala.annotation.tailrec
 
@@ -599,28 +599,11 @@ object SomaticMutectLike {
           }
 
           lazy val tumorVariantEvidence =
-            AlleleEvidence(logOddsToP(tumorSomaticOdds),
-              mapqAndBaseqFilteredTumorPileup.depth,
-              tumorPosAlt.length + tumorNegAlt.length,
-              tumorPos.length,
-              tumorPosAlt.length,
-              -1.0,
-              -1.0,
-              -1.0,
-              -1.0,
-              -1.0)
-          //AlleleEvidence(logOddsToP(tumorSomaticOdds), alt, mapqBaseqAndOverlappingFragmentFilteredTumorPileup)
+            AlleleEvidence(logOddsToP(tumorSomaticOdds), alt, mapqBaseqAndOverlappingFragmentFilteredTumorPileup)
+
           lazy val normalReferenceEvidence =
-            AlleleEvidence(logOddsToP(normalNotHet),
-              mapqAndBaseqFilteredNormalPileup.depth,
-              normalAlts.length,
-              -1,
-              -1,
-              -1.0,
-              -1.0,
-              -1.0,
-              -1.0,
-              -1.0)
+            AlleleEvidence(logOddsToP(normalNotHet), Allele(alt.refBases, alt.refBases), mapqBaseqAndOverlappingFragmentFilteredNormalPileup)
+
           val mutectEvidence = MutectFilteringEvidence(mutLogOdds = normalNotHet,
             filteredNormalAltDepth = filteredNormalAltDepth,
             filteredNormalDepth = filteredNormalDepth,
