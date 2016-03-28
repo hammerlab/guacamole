@@ -127,6 +127,7 @@ class SomaticJointCallerSuite extends GuacFunSuite with Matchers {
     filtered46931061.head.bestAllele.isSomaticCall should be(true)
     filtered46931061.head.bestAllele.allele.ref should equal("G")
     filtered46931061.head.bestAllele.allele.alt should equal("A")
-
+    filtered46931061.head.bestAllele.tumorDNAPooledEvidence.allelicDepths.toSet should equal(Set("G" -> 90, "A" -> 2))
+    filtered46931061.head.bestAllele.normalDNAPooledEvidence.allelicDepths.toSet should equal(Set("G" -> 51))
   }
 }

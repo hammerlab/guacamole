@@ -34,8 +34,7 @@ object TumorRNASampleAlleleEvidence {
       else
         Seq.empty)
     val logLikelihoods = possibleMixtures.map(mixture => mixture -> stats.logLikelihoodPileup(mixture)).toMap
-    val topAlleles = stats.nonRefAlleles.take(parameters.maxAllelesPerSite).toSet
-    val truncatedAllelicDepths = stats.allelicDepths.filterKeys(topAlleles.contains _)
+    val truncatedAllelicDepths = stats.truncatedAllelicDepths(parameters.maxAllelesPerSite + 1)  // +1 for ref allele
     TumorRNASampleAlleleEvidence(allele, truncatedAllelicDepths, logLikelihoods)
   }
 }

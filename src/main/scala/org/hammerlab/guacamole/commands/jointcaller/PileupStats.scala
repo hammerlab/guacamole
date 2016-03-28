@@ -42,6 +42,10 @@ class PileupStats(elements: Seq[PileupElement], referenceSequence: Seq[Byte]) {
   /** Map from sequenced allele -> number of reads supporting that allele. */
   val allelicDepths = alleleToSubsequences.mapValues(_.size).withDefaultValue(0)
 
+  def truncatedAllelicDepths(max: Int): Map[String, Int] = {
+    allelicDepths.toSeq.sortBy(-1 * _._2).zipWithIndex.filter(_._2 < max).map(_._1).toMap
+  }
+
   /** Total depth, including reads that are NOT "anchored" by matching, non-variant bases. */
   val totalDepthIncludingReadsContributingNoAlleles = elements.size
 
