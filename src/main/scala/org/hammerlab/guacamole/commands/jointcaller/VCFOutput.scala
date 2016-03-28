@@ -56,7 +56,9 @@ object VCFOutput {
 
     // INFO
     headerLines.add(new VCFInfoHeaderLine("TRIGGER", 1, VCFHeaderLineType.String,
-      "Which likelihood ratio test triggered call: POOLED and/or INDIVIDUAL"))
+      "Which likelihood ratio test triggered call"))
+    headerLines.add(new VCFInfoHeaderLine("TUMOR_EXPRESSION", 1, VCFHeaderLineType.String,
+      "Was there tumor RNA expression for the variant"))
 
     val header = new VCFHeader(headerLines,
       JavaConversions.seqAsJavaList(
@@ -139,8 +141,8 @@ object VCFOutput {
         }
         case (TissueType.Tumor, Analyte.DNA) => {
           val tumorEvidence = samplesEvidence.allEvidences(input.index).asInstanceOf[TumorDNASampleAlleleEvidence]
-          val posteriors = samplesEvidence.perTumorSampleSomaticPosteriors(input.index)
-          val thisSampleTriggered = samplesEvidence.tumorSampleIndicesTriggered.contains(input.index)
+          val posteriors = samplesEvidence.perTumorDnaSampleSomaticPosteriors(input.index)
+          val thisSampleTriggered = samplesEvidence.tumorDnaSampleIndicesTriggered.contains(input.index)
           val sampleGenotype = samplesEvidence.parameters.somaticGenotypePolicy match {
             case Parameters.SomaticGenotypePolicy.Presence => {
               // Call an alt if there is any variant evidence in this sample and no other alt allele has more evidence.
@@ -169,6 +171,21 @@ object VCFOutput {
             .attribute("VAF", tumorEvidence.vaf)
             .DP(tumorEvidence.depth)
         }
+        case (TissueType.Tumor, Analyte.RNA) => {
+          val tumorEvidence = samplesEvidence.allEvidences(input.index).asInstanceOf[TumorRNASampleAlleleEvidence]
+          val posteriors = samplesEvidence.perTumorRnaSampleSomaticPosteriors(input.index)
+          val thisSampleExpressed = samplesEvidence.tumorRnaSampleExpressed.contains(input.index)
+          val sampleGenotype = if (thisSampleExpressed) Seq(allele.ref, allele.alt) else Seq(allele.ref, allele.ref)
+          genotypeBuilder.alleles(JavaConversions.seqAsJavaList(sampleGenotype.map(makeHtsjdkAllele _)))
+          genotypeBuilder.attribute("RL",
+            posteriors.map(pair => "[%s]->%.8g".format(mixtureToString(pair._1), pair._2)).mkString(" "))
+          genotypeBuilder.attribute("TRIGGERED", if (thisSampleExpressed) "EXPRESSED" else "NO")
+
+          genotypeBuilder
+            .attribute("ADP", allelicDepthString(tumorEvidence.allelicDepths))
+            .attribute("VAF", tumorEvidence.vaf)
+            .DP(tumorEvidence.depth)
+        }
         case other => throw new NotImplementedError("Not supported: %s %s".format(other._1.toString, other._2.toString))
       }
       genotypeBuilder.make
@@ -178,10 +195,10 @@ object VCFOutput {
     if (samplesEvidence.isGermlineCall) {
       triggersBuilder += "GERMLINE_POOLED"
     } else {
-      if (samplesEvidence.tumorSampleIndicesTriggered.contains(samplesEvidence.tumorDNAPooledIndex)) {
+      if (samplesEvidence.tumorDnaSampleIndicesTriggered.contains(samplesEvidence.tumorDNAPooledIndex)) {
         triggersBuilder += "SOMATIC_POOLED"
       }
-      if (samplesEvidence.tumorSampleIndicesTriggered.filter(_ != samplesEvidence.tumorDNAPooledIndex).nonEmpty) {
+      if (samplesEvidence.tumorDnaSampleIndicesTriggered.filter(_ != samplesEvidence.tumorDNAPooledIndex).nonEmpty) {
         triggersBuilder += "SOMATIC_INDIVIDUAL"
       }
     }
@@ -194,6 +211,7 @@ object VCFOutput {
       .genotypes(JavaConversions.seqAsJavaList(genotypes))
       .alleles(JavaConversions.seqAsJavaList(variantGenotypeAlleles.distinct.map(makeHtsjdkAllele _)))
       .attribute("TRIGGER", if (triggers.nonEmpty) triggers.mkString("+") else "NONE")
+      .attribute("TUMOR_EXPRESSION", if (samplesEvidence.tumorRnaSampleExpressed.nonEmpty) "YES" else "NO")
       .make
     variantContext
   }

@@ -15,6 +15,8 @@ case class Parameters(
     germlineNegativeLog10HeterozygousPrior: Double,
     germlineNegativeLog10HomozygousAlternatePrior: Double,
     somaticNegativeLog10VariantPrior: Double,
+    somaticNegativeLog10VariantPriorRna: Double,
+    somaticNegativeLog10VariantPriorWithRnaEvidence: Double,
     somaticVafFloor: Double,
     somaticMaxGermlineErrorRatePercent: Double,
     somaticGenotypePolicy: Parameters.SomaticGenotypePolicy.Value) {
@@ -58,6 +60,13 @@ object Parameters {
     @Args4jOption(name = "--somatic-negative-log10-variant-prior", usage = "prior on somatic call, higher number means fewer calls")
     var somaticNegativeLog10VariantPrior: Double = 6
 
+    @Args4jOption(name = "--somatic-negative-log10-variant-prior-rna", usage = "")
+    var somaticNegativeLog10VariantPriorRna: Double = 1
+
+    @Args4jOption(name = "--somatic-negative-log10-variant-prior-with-rna-evidence",
+      usage = "")
+    var somaticNegativeLog10VariantPriorWithRnaEvidence: Double = 1
+
     @Args4jOption(name = "--somatic-vaf-floor", usage = "min VAF to use in the likelihood calculation")
     var somaticVafFloor: Double = 0.05
 
@@ -70,6 +79,10 @@ object Parameters {
         "(num variant reads > 0 and num variant reads > any other non-reference allele). " +
         "'trigger' will genotype a call as a het only if that sample actually triggered the call.")
     var somaticGenotypePolicy: String = "presence"
+
+    @Args4jOption(name = "--rna-vaf-threshold",
+      usage = "")
+    var rnaVafThreshold: Double = 0.05
   }
 
   def apply(args: CommandlineArguments): Parameters = {
@@ -80,6 +93,8 @@ object Parameters {
       germlineNegativeLog10HeterozygousPrior = args.germlineNegativeLog10HeterozygousPrior,
       germlineNegativeLog10HomozygousAlternatePrior = args.germlineNegativeLog10HomozygousAlternatePrior,
       somaticNegativeLog10VariantPrior = args.somaticNegativeLog10VariantPrior,
+      somaticNegativeLog10VariantPriorRna = args.somaticNegativeLog10VariantPriorRna,
+      somaticNegativeLog10VariantPriorWithRnaEvidence = args.somaticNegativeLog10VariantPriorWithRnaEvidence,
       somaticVafFloor = args.somaticVafFloor,
       somaticMaxGermlineErrorRatePercent = args.somaticMaxGermlineErrorRatePercent,
       somaticGenotypePolicy = SomaticGenotypePolicy.withName(args.somaticGenotypePolicy))

@@ -71,9 +71,10 @@ object SomaticJoint {
 
       val readSets = inputsToReadSets(sc, inputs, loci, reference, !args.noSequenceDictionary)
 
-      assert(readSets.forall(_.sequenceDictionary == readSets(0).sequenceDictionary),
-        "Samples have different sequence dictionaries: %s."
+      if (!readSets.forall(_.sequenceDictionary == readSets(0).sequenceDictionary)) {
+        logWarning("Samples have different sequence dictionaries: %s."
           .format(readSets.map(_.sequenceDictionary.toString).mkString("\n")))
+      }
 
       val forceCallLoci = if (args.forceCallLoci.nonEmpty || args.forceCallLociFromFile.nonEmpty) {
         Common.loci(args.forceCallLoci, args.forceCallLociFromFile, readSets(0))

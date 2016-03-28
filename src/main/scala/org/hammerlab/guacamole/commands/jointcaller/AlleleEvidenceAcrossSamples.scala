@@ -93,40 +93,72 @@ case class AlleleEvidenceAcrossSamples(parameters: Parameters,
   /** Are we making a germline call here? */
   def isGermlineCall = germlineAlleles != (allele.ref, allele.ref)
 
-  /**
-   * Negative log10 prior probability for a somatic call on a given mixture. See germlinePrior.
-   */
-  private def somaticPrior(mixture: Map[String, Double]): Double = {
+  private def somaticPriorRna(mixture: Map[String, Double]): Double = {
     val contents = mixture.filter(_._2 > 0).keys.toSet
-    if (contents == Set(allele.ref))
+    if (contents == Set(allele.ref)) {
       0
-    else if (contents == Set(allele.ref, allele.alt))
-      parameters.somaticNegativeLog10VariantPrior
-    else Double.MaxValue
+    } else if (contents == Set(allele.ref, allele.alt)) {
+      parameters.somaticNegativeLog10VariantPriorRna
+    } else {
+      Double.MaxValue
+    }
   }
 
-  /**
-   * Log10 posterior probabilities for a somatic variant in each tumor sample. See perNormalSampleGermlinePosteriors.
-   * *
-   * @return Map {input index -> {{Allele -> Frequency} -> Posterior probability}
-   */
-  def perTumorSampleSomaticPosteriors: Map[Int, Map[AlleleMixture, Double]] = {
-    (inputs.items.filter(_.tumorDNA).map(_.index) ++ Seq(tumorDNAPooledIndex)).map(index => {
-      val likelihoods = allEvidences(index).asInstanceOf[TumorDNASampleAlleleEvidence].logLikelihoods
-      index -> likelihoods.map(kv => (kv._1 -> (kv._2 - somaticPrior(kv._1))))
+  def perTumorRnaSampleSomaticPosteriors: Map[Int, Map[AlleleMixture, Double]] = {
+    inputs.items.filter(_.tumorRNA).map(input => {
+      val likelihoods = allEvidences(input.index).asInstanceOf[TumorRNASampleAlleleEvidence].logLikelihoods
+      input.index -> likelihoods.map(kv => (kv._1 -> (kv._2 - somaticPriorRna(kv._1))))
     }).toMap
   }
 
   /** Maximum a posteriori somatic mixtures for each tumor sample. */
-  def perTumorSampleTopMixtures = perTumorSampleSomaticPosteriors.mapValues(_.maxBy(_._2)._1)
+  def perTumorRnaSampleTopMixtures = perTumorRnaSampleSomaticPosteriors.mapValues(_.maxBy(_._2)._1)
+
+  /** Indices of tumor rna samples with expression */
+  def tumorRnaSampleExpressed: Seq[Int] = perTumorRnaSampleTopMixtures
+    .filter(pair => pair._2.keys.toSet != Set(germlineAlleles._1, germlineAlleles._2))
+    .keys.toSeq
+
+  /**
+   * Negative log10 prior probability for a somatic call on a given mixture. See germlinePrior.
+   */
+  private def somaticPriorDna(mixture: Map[String, Double]): Double = {
+    val contents = mixture.filter(_._2 > 0).keys.toSet
+    if (contents == Set(allele.ref)) {
+      0
+    } else if (contents == Set(allele.ref, allele.alt)) {
+      if (tumorRnaSampleExpressed.nonEmpty)
+        parameters.somaticNegativeLog10VariantPriorWithRnaEvidence // we have RNA evidence so use less stringent prior
+      else
+        parameters.somaticNegativeLog10VariantPrior
+    } else {
+      Double.MaxValue
+    }
+  }
+
+  /**
+   * Log10 posterior probabilities for a somatic variant in each tumor DNA sample. See perNormalSampleGermlinePosteriors.
+   * *
+   *
+   * @return Map {input index -> {{Allele -> Frequency} -> Posterior probability}
+   */
+  def perTumorDnaSampleSomaticPosteriors: Map[Int, Map[AlleleMixture, Double]] = {
+    (inputs.items.filter(_.tumorDNA).map(_.index) ++ Seq(tumorDNAPooledIndex)).map(index => {
+      val likelihoods = allEvidences(index).asInstanceOf[TumorDNASampleAlleleEvidence].logLikelihoods
+      index -> likelihoods.map(kv => (kv._1 -> (kv._2 - somaticPriorDna(kv._1))))
+    }).toMap
+  }
+
+  /** Maximum a posteriori somatic mixtures for each tumor sample. */
+  def perTumorDnaSampleTopMixtures = perTumorDnaSampleSomaticPosteriors.mapValues(_.maxBy(_._2)._1)
 
   /** Indices of tumor samples that triggered a call. */
-  def tumorSampleIndicesTriggered: Seq[Int] = perTumorSampleTopMixtures
+  def tumorDnaSampleIndicesTriggered: Seq[Int] = perTumorDnaSampleTopMixtures
     .filter(pair => pair._2.keys.toSet != Set(germlineAlleles._1, germlineAlleles._2))
     .keys.toSeq
 
   /** Are we making a somatic call here? */
-  def isSomaticCall = !isGermlineCall && tumorSampleIndicesTriggered.nonEmpty
+  def isSomaticCall = !isGermlineCall && tumorDnaSampleIndicesTriggered.nonEmpty
 
   /** Are we making a germline or somatic call? */
   def isCall = isGermlineCall || isSomaticCall
@@ -165,8 +197,9 @@ object AlleleEvidenceAcrossSamples {
         val stats = PileupStats(pileup.elements, referenceSequence)
         (input.tissueType, input.analyte) match {
           case (TissueType.Normal, Analyte.DNA) => NormalDNASampleAlleleEvidence(allele, stats, parameters)
+          case (TissueType.Normal, Analyte.RNA) => throw new IllegalArgumentException("Normal RNA not supported")
           case (TissueType.Tumor, Analyte.DNA)  => TumorDNASampleAlleleEvidence(allele, stats, parameters)
-          // TODO: RNA
+          case (TissueType.Tumor, Analyte.RNA)  => TumorRNASampleAlleleEvidence(allele, stats, parameters)
         }
     })
     AlleleEvidenceAcrossSamples(

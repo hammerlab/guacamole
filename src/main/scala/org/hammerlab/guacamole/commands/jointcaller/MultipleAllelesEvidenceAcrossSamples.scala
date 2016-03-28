@@ -32,7 +32,7 @@ case class MultipleAllelesEvidenceAcrossSamples(alleleEvidences: Seq[AlleleEvide
       (evidence.isGermlineCall,
         evidence.isSomaticCall,
         evidence.pooledGermlinePosteriors.maxBy(_._2)._2 +
-        evidence.perTumorSampleSomaticPosteriors.values.map(x => x.maxBy(_._2)._2).max)
+        evidence.perTumorDnaSampleSomaticPosteriors.values.map(x => x.maxBy(_._2)._2).max)
     }).last
   }
 

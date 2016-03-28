@@ -4,6 +4,8 @@ import org.hammerlab.guacamole.commands.jointcaller.Input.{ Analyte, TissueType 
 import org.kohsuke.args4j.spi.StringArrayOptionHandler
 import org.kohsuke.args4j.{ Argument, Option => Args4jOption }
 
+import scala.collection.mutable
+
 /**
  * Convenience container for zero or more Input instances.
  */
@@ -22,15 +24,15 @@ object InputCollection {
 
     @Args4jOption(name = "--tissue-types", handler = classOf[StringArrayOptionHandler],
       usage = "[normal|tumor] ... [normal|tumor]")
-    var tissueTypes: List[String] = List.empty
+    var tissueTypes: Array[String] = Array.empty
 
     @Args4jOption(name = "--analytes", handler = classOf[StringArrayOptionHandler],
       usage = "[dna|rna] ... [dna|rna]")
-    var analytes: List[String] = List.empty
+    var analytes: Array[String] = Array.empty
 
     @Args4jOption(name = "--sample-names", handler = classOf[StringArrayOptionHandler],
       usage = "name1 ... nameN")
-    var sampleNames: List[String] = List.empty
+    var sampleNames: Array[String] = Array.empty
   }
 
   /**
