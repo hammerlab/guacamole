@@ -18,19 +18,19 @@
 
 package org.hammerlab.guacamole.commands
 
-import htsjdk.samtools.{CigarElement, CigarOperator}
+import htsjdk.samtools.{ CigarElement, CigarOperator }
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.rdd.ADAMContext
-import org.bdgenomics.formats.avro.{DatabaseVariantAnnotation, Variant}
+import org.bdgenomics.formats.avro.{ DatabaseVariantAnnotation, Variant }
 import org.hammerlab.guacamole.Common.Arguments.SomaticCallerArgs
 import org.hammerlab.guacamole.likelihood._
-import org.hammerlab.guacamole.pileup.{Pileup, PileupElement}
-import org.hammerlab.guacamole.reads.{MappedRead, Read}
-import org.hammerlab.guacamole.variants.{Allele, CalledMutectSomaticAllele, _}
+import org.hammerlab.guacamole.pileup.{ Pileup, PileupElement }
+import org.hammerlab.guacamole.reads.{ MappedRead, Read }
+import org.hammerlab.guacamole.variants.{ Allele, CalledMutectSomaticAllele, _ }
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole._
-import org.kohsuke.args4j.{Option => Args4jOption}
+import org.kohsuke.args4j.{ Option => Args4jOption }
 
 import scala.annotation.tailrec
 
