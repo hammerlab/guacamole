@@ -74,9 +74,11 @@ object VCFOutput {
     })
     writer.writeHeader(header)
 
-    val variantContexts = calls.flatMap(
-      _.alleleEvidences.map(evidence => makeHtsjdVariantContext(evidence, inputs, includePooledNormal, includePooledTumor, reference)))
-    variantContexts.sortBy(context => (context.getContig, context.getStart)).foreach(writer.add(_))
+    val sortedEvidences = calls.flatMap(_.alleleEvidences).sortBy(e => (e.allele.referenceContig, e.allele.start))
+    sortedEvidences.foreach(evidence => {
+      val variantContext = makeHtsjdVariantContext(evidence, inputs, includePooledNormal, includePooledTumor, reference)
+      writer.add(variantContext)
+    })
     writer.close()
   }
 

@@ -74,7 +74,7 @@ case class AlleleEvidenceAcrossSamples(parameters: Parameters,
    * The posteriors are plain log10 logprobs. They are negative. The maximum a posteriori estimate is the greatest
    * (i.e. least negative, closest to 0) posterior.
    */
-  def perNormalSampleGermlinePosteriors: Map[Int, Map[(String, String), Double]] = {
+  lazy val perNormalSampleGermlinePosteriors: Map[Int, Map[(String, String), Double]] = {
     (inputs.items.filter(_.normalDNA).map(_.index) ++ Seq(normalDNAPooledIndex)).map(index => {
       val likelihoods = allEvidences(index).asInstanceOf[NormalDNASampleAlleleEvidence].logLikelihoods
 
@@ -104,7 +104,7 @@ case class AlleleEvidenceAcrossSamples(parameters: Parameters,
     }
   }
 
-  def perTumorRnaSampleSomaticPosteriors: Map[Int, Map[AlleleMixture, Double]] = {
+  lazy val perTumorRnaSampleSomaticPosteriors: Map[Int, Map[AlleleMixture, Double]] = {
     inputs.items.filter(_.tumorRNA).map(input => {
       val likelihoods = allEvidences(input.index).asInstanceOf[TumorRNASampleAlleleEvidence].logLikelihoods
       input.index -> likelihoods.map(kv => (kv._1 -> (kv._2 - somaticPriorRna(kv._1))))
@@ -142,7 +142,7 @@ case class AlleleEvidenceAcrossSamples(parameters: Parameters,
    *
    * @return Map {input index -> {{Allele -> Frequency} -> Posterior probability}
    */
-  def perTumorDnaSampleSomaticPosteriors: Map[Int, Map[AlleleMixture, Double]] = {
+  lazy val perTumorDnaSampleSomaticPosteriors: Map[Int, Map[AlleleMixture, Double]] = {
     (inputs.items.filter(_.tumorDNA).map(_.index) ++ Seq(tumorDNAPooledIndex)).map(index => {
       val likelihoods = allEvidences(index).asInstanceOf[TumorDNASampleAlleleEvidence].logLikelihoods
       index -> likelihoods.map(kv => (kv._1 -> (kv._2 - somaticPriorDna(kv._1))))
