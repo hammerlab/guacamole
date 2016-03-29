@@ -632,7 +632,7 @@ object SomaticMutectLike {
             tumorVariantEvidence = tumorVariantEvidence,
             normalReferenceEvidence = normalReferenceEvidence,
             mutectEvidence = mutectEvidence,
-            length = Math.max(alt.refBases.length, alt.altBases.length)
+            length = math.max(alt.refBases.length, alt.altBases.length)
           ))
 
         } else {
