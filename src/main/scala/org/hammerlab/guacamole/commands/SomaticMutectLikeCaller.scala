@@ -266,6 +266,7 @@ object SomaticMutectLike {
 
     /**
      * A filter to apply to a CalledSomaticAllele based on dbsnp/cosmic/noisy site overlap
+     *
      * @param somAllele The CalledMutectSomaticAllele to test
      * @param somDbSnpThreshold dbsnp log odds threshold
      * @param somNovelThreshold novel log odds threshold
@@ -287,17 +288,19 @@ object SomaticMutectLike {
 
     /**
      * Filter a pileup based on a minimal base quality, and read mapping quality
+     *
      * @param pileup Pileup to filter
      * @param minBaseQuality
      * @param minAlignmentQuality
      * @return Filtered Pileup with failing elements removed
      */
-    def mapqBaseqFilteredPu(pileup: Pileup, minBaseQuality: Int, minAlignmentQuality: Int): Pileup = {
+    def mapqBaseqNullAlleleFilteredPu(pileup: Pileup, minBaseQuality: Int, minAlignmentQuality: Int): Pileup = {
       Pileup(pileup.referenceName,
         pileup.locus,
         pileup.referenceContigSequence,
         pileup.elements.filter(pileupElement =>
-          pileupElement.qualityScore >= minBaseQuality && pileupElement.read.alignmentQuality >= minAlignmentQuality))
+          pileupElement.qualityScore >= minBaseQuality && pileupElement.read.alignmentQuality >= minAlignmentQuality
+            && pileupElement.allele.refBases.length > 0 && pileupElement.allele.altBases.length > 0))
     }
 
     /**
@@ -323,6 +326,7 @@ object SomaticMutectLike {
     /**
      * For every overlpping fragment (pairs of reads overlaping the same position) return one of the pair with
      *  the highest base quality score.
+     *
      * @param pileup Pileup object to filter
      * @return filtered Pileup object
      */
@@ -342,6 +346,7 @@ object SomaticMutectLike {
     /**
      * Function to determine if a read is heavily clipped --> more than a specified fraction of bases of this read
      *   are Hard/Soft clipped
+     *
      * @param read Read to examine
      * @param maxFractionBasesSoftClippedTumor The fraction of bases in a clipped state to be considered heavily clipped
      * @return True if at least maxFractionBasesSoftClilppedTumor are marked clipped in this read's cigar object
@@ -358,6 +363,7 @@ object SomaticMutectLike {
 
     /**
      * Find the distance from this pileup element within a read to the nearest insertion (or deletion) within this read
+     *
      * @param pileupElement PileupElement to examine
      * @param findInsertions True if you would like to find insertions, False for deletions.
      * @return Optionally the minimal distance, None if no insertions (or deletions) found.
@@ -491,8 +497,8 @@ object SomaticMutectLike {
       val contamModel = MutectContamLogOdds
       val somaticModel = MutectSomaticLogOdds
 
-      lazy val mapqAndBaseqFilteredNormalPileup = mapqBaseqFilteredPu(rawNormalPileup, minBaseQuality, minAlignmentQuality)
-      lazy val mapqAndBaseqFilteredTumorPileup = mapqBaseqFilteredPu(rawTumorPileup, minBaseQuality, minAlignmentQuality)
+      lazy val mapqAndBaseqFilteredNormalPileup = mapqBaseqNullAlleleFilteredPu(rawNormalPileup, minBaseQuality, minAlignmentQuality)
+      lazy val mapqAndBaseqFilteredTumorPileup = mapqBaseqNullAlleleFilteredPu(rawTumorPileup, minBaseQuality, minAlignmentQuality)
 
       lazy val mapqBaseqAndOverlappingFragmentFilteredNormalPileup = overlappingFragmentFilteredPileup(mapqAndBaseqFilteredNormalPileup)
       lazy val mapqBaseqAndOverlappingFragmentFilteredTumorPileup = overlappingFragmentFilteredPileup(mapqAndBaseqFilteredTumorPileup)
