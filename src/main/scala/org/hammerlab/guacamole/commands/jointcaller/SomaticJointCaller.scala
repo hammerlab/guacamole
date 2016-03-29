@@ -30,6 +30,9 @@ object SomaticJoint {
     @Args4jOption(name = "--force-call-loci", usage = "Always call the given sites")
     var forceCallLoci: String = ""
 
+    @Args4jOption(name = "--only-somatic", usage = "Output only somatic calls, no germline calls")
+    var onlySomatic: Boolean = false
+
     @Args4jOption(name = "-q", usage = "Quiet: less stdout")
     var quiet: Boolean = false
   }
@@ -98,8 +101,9 @@ object SomaticJoint {
         parameters,
         reference,
         loci.result(readSets(0).contigLengths),
-        forceCallLoci,
-        args)
+        forceCallLoci = forceCallLoci,
+        onlySomatic = args.onlySomatic,
+        distributedUtilArguments = args)
 
       val calls = allCalls.map(_.onlyBest)
       calls.cache()
@@ -118,6 +122,7 @@ object SomaticJoint {
         readSets(0).sequenceDictionary.get.toSAMSequenceDictionary,
         forceCallLoci,
         reference,
+        onlySomatic = args.onlySomatic,
         out = args.out,
         outDir = args.outDir)
     }
@@ -142,6 +147,7 @@ object SomaticJoint {
                 reference: ReferenceBroadcast,
                 loci: LociSet,
                 forceCallLoci: LociSet = LociSet.empty,
+                onlySomatic: Boolean = false,
                 distributedUtilArguments: DistributedUtil.Arguments = new DistributedUtil.Arguments {}): RDD[MultipleAllelesEvidenceAcrossSamples] = {
 
     // When mapping over pileups, at locus x we call variants at locus x + 1. Therefore we subtract 1 from the user-
@@ -174,8 +180,6 @@ object SomaticJoint {
             atLeastOneAllele = forceCall, // if force calling this site, always get at least one allele
             onlyStandardBases = true)
 
-          if (forceCall) assert(possibleAlleles.nonEmpty)
-
           if (possibleAlleles.nonEmpty) {
             val evidences = possibleAlleles.map(allele => {
               AlleleEvidenceAcrossSamples(
@@ -184,13 +188,14 @@ object SomaticJoint {
                 pileups,
                 inputs)
             })
-            if (forceCall || evidences.exists(_.isCall)) {
+            if (forceCall || evidences.exists(_.isSomaticCall) || (!onlySomatic && evidences.exists(_.isGermlineCall))) {
               val groupedEvidence = MultipleAllelesEvidenceAcrossSamples(evidences)
               Iterator(groupedEvidence)
             } else {
               Iterator.empty
             }
           } else {
+            assert(!forceCall)
             Iterator.empty
           }
         } else {
@@ -206,6 +211,7 @@ object SomaticJoint {
                  sequenceDictionary: SAMSequenceDictionary,
                  forceCallLoci: LociSet = LociSet.empty,
                  reference: ReferenceBroadcast,
+                 onlySomatic: Boolean = false,
                  out: String = "",
                  outDir: String = ""): Unit = {
 
@@ -253,11 +259,13 @@ object SomaticJoint {
 
       writeSome(path("all"), calls, inputs.items)
 
-      writeSome(
-        path("germline"),
-        calls.filter(_.alleleEvidences.exists(
-          evidence => evidence.isGermlineCall || anyForced(evidence))),
-        inputs.items)
+      if (!onlySomatic) {
+        writeSome(
+          path("germline"),
+          calls.filter(_.alleleEvidences.exists(
+            evidence => evidence.isGermlineCall || anyForced(evidence))),
+          inputs.items)
+      }
 
       val somaticCallsOrForced =
         calls.filter(_.alleleEvidences.exists(
@@ -265,11 +273,13 @@ object SomaticJoint {
       writeSome(path("somatic.all_samples"), somaticCallsOrForced, inputs.items)
 
       inputs.items.foreach(input => {
-        writeSome(
-          path("all.%s.%s.%s".format(
-            input.sampleName, input.tissueType.toString, input.analyte.toString)),
-          calls,
-          Seq(input))
+        if (!onlySomatic) {
+          writeSome(
+            path("all.%s.%s.%s".format(
+              input.sampleName, input.tissueType.toString, input.analyte.toString)),
+            calls,
+            Seq(input))
+        }
         writeSome(
           path("somatic.%s.%s.%s".format(
             input.sampleName, input.tissueType.toString, input.analyte.toString)),

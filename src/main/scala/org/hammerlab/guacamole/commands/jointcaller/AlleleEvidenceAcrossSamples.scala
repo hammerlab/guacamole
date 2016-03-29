@@ -36,10 +36,10 @@ case class AlleleEvidenceAcrossSamples(parameters: Parameters,
    * samples. The normal dna pooled sample is found at index `normalDNAPooledIndex` and the tumor pooled is at index
    * `tumorDNAPooledIndex` in `allEvidences`.
    */
-  def allEvidences: PerSample[SampleAlleleEvidence] =
-    sampleEvidences ++ Seq(normalDNAPooledEvidence, tumorDNAPooledEvidence)
-  def normalDNAPooledIndex = sampleEvidences.length
-  def tumorDNAPooledIndex = normalDNAPooledIndex + 1
+  val allEvidences: Vector[SampleAlleleEvidence] =
+    sampleEvidences.toVector ++ Vector(normalDNAPooledEvidence, tumorDNAPooledEvidence)
+  val normalDNAPooledIndex = sampleEvidences.length
+  val tumorDNAPooledIndex = normalDNAPooledIndex + 1
 
   /**
    * The individual TumorDNASampleAlleleEvidence and NormalDNASampleAlleleEvidence instances calculate the mixture
@@ -74,7 +74,7 @@ case class AlleleEvidenceAcrossSamples(parameters: Parameters,
    * The posteriors are plain log10 logprobs. They are negative. The maximum a posteriori estimate is the greatest
    * (i.e. least negative, closest to 0) posterior.
    */
-  lazy val perNormalSampleGermlinePosteriors: Map[Int, Map[(String, String), Double]] = {
+  val perNormalSampleGermlinePosteriors: Map[Int, Map[(String, String), Double]] = {
     (inputs.items.filter(_.normalDNA).map(_.index) ++ Seq(normalDNAPooledIndex)).map(index => {
       val likelihoods = allEvidences(index).asInstanceOf[NormalDNASampleAlleleEvidence].logLikelihoods
 
@@ -83,15 +83,15 @@ case class AlleleEvidenceAcrossSamples(parameters: Parameters,
       index -> likelihoods.map((kv => (kv._1, kv._2 - germlinePrior(kv._1))))
     }).toMap
   }
-  def pooledGermlinePosteriors = perNormalSampleGermlinePosteriors(normalDNAPooledIndex)
+  val pooledGermlinePosteriors = perNormalSampleGermlinePosteriors(normalDNAPooledIndex)
 
   /**
    * Called germline genotype. We currently just use the maximum posterior from the pooled normal data.
    */
-  def germlineAlleles: (String, String) = pooledGermlinePosteriors.maxBy(_._2)._1
+  val germlineAlleles: (String, String) = pooledGermlinePosteriors.maxBy(_._2)._1
 
   /** Are we making a germline call here? */
-  def isGermlineCall = germlineAlleles != (allele.ref, allele.ref)
+  val isGermlineCall = germlineAlleles != (allele.ref, allele.ref)
 
   private def somaticPriorRna(mixture: Map[String, Double]): Double = {
     val contents = mixture.filter(_._2 > 0).keys.toSet
@@ -104,7 +104,7 @@ case class AlleleEvidenceAcrossSamples(parameters: Parameters,
     }
   }
 
-  lazy val perTumorRnaSampleSomaticPosteriors: Map[Int, Map[AlleleMixture, Double]] = {
+  val perTumorRnaSampleSomaticPosteriors: Map[Int, Map[AlleleMixture, Double]] = {
     inputs.items.filter(_.tumorRNA).map(input => {
       val likelihoods = allEvidences(input.index).asInstanceOf[TumorRNASampleAlleleEvidence].logLikelihoods
       input.index -> likelihoods.map(kv => (kv._1 -> (kv._2 - somaticPriorRna(kv._1))))
@@ -112,12 +112,12 @@ case class AlleleEvidenceAcrossSamples(parameters: Parameters,
   }
 
   /** Maximum a posteriori somatic mixtures for each tumor sample. */
-  def perTumorRnaSampleTopMixtures = perTumorRnaSampleSomaticPosteriors.mapValues(_.maxBy(_._2)._1)
+  val perTumorRnaSampleTopMixtures = perTumorRnaSampleSomaticPosteriors.mapValues(_.maxBy(_._2)._1)
 
   /** Indices of tumor rna samples with expression */
-  def tumorRnaSampleExpressed: Seq[Int] = perTumorRnaSampleTopMixtures
+  val tumorRnaSampleExpressed: Vector[Int] = perTumorRnaSampleTopMixtures
     .filter(pair => pair._2.keys.toSet != Set(germlineAlleles._1, germlineAlleles._2))
-    .keys.toSeq
+    .keys.toVector
 
   /**
    * Negative log10 prior probability for a somatic call on a given mixture. See germlinePrior.
@@ -142,7 +142,7 @@ case class AlleleEvidenceAcrossSamples(parameters: Parameters,
    *
    * @return Map {input index -> {{Allele -> Frequency} -> Posterior probability}
    */
-  lazy val perTumorDnaSampleSomaticPosteriors: Map[Int, Map[AlleleMixture, Double]] = {
+  val perTumorDnaSampleSomaticPosteriors: Map[Int, Map[AlleleMixture, Double]] = {
     (inputs.items.filter(_.tumorDNA).map(_.index) ++ Seq(tumorDNAPooledIndex)).map(index => {
       val likelihoods = allEvidences(index).asInstanceOf[TumorDNASampleAlleleEvidence].logLikelihoods
       index -> likelihoods.map(kv => (kv._1 -> (kv._2 - somaticPriorDna(kv._1))))
@@ -150,19 +150,18 @@ case class AlleleEvidenceAcrossSamples(parameters: Parameters,
   }
 
   /** Maximum a posteriori somatic mixtures for each tumor sample. */
-  def perTumorDnaSampleTopMixtures = perTumorDnaSampleSomaticPosteriors.mapValues(_.maxBy(_._2)._1)
+  val perTumorDnaSampleTopMixtures = perTumorDnaSampleSomaticPosteriors.mapValues(_.maxBy(_._2)._1)
 
   /** Indices of tumor samples that triggered a call. */
-  def tumorDnaSampleIndicesTriggered: Seq[Int] = perTumorDnaSampleTopMixtures
+  val tumorDnaSampleIndicesTriggered: Vector[Int] = perTumorDnaSampleTopMixtures
     .filter(pair => pair._2.keys.toSet != Set(germlineAlleles._1, germlineAlleles._2))
-    .keys.toSeq
+    .keys.toVector
 
   /** Are we making a somatic call here? */
-  def isSomaticCall = !isGermlineCall && tumorDnaSampleIndicesTriggered.nonEmpty
+  val isSomaticCall = !isGermlineCall && tumorDnaSampleIndicesTriggered.nonEmpty
 
   /** Are we making a germline or somatic call? */
-  def isCall = isGermlineCall || isSomaticCall
-
+  val isCall = isGermlineCall || isSomaticCall
 }
 object AlleleEvidenceAcrossSamples {
 
