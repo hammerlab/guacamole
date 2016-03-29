@@ -24,6 +24,8 @@ import org.hammerlab.guacamole.Bases
 import org.hammerlab.guacamole.Bases.BasesOrdering
 
 case class Allele(refBases: Seq[Byte], altBases: Seq[Byte]) extends Ordered[Allele] {
+  assume(refBases.length > 0)
+  assume(altBases.length > 0)
   lazy val isVariant = refBases != altBases
 
   override def toString: String = "Allele(%s,%s)".format(Bases.basesToString(refBases), Bases.basesToString(altBases))
