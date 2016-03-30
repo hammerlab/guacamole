@@ -5,6 +5,7 @@ import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole.Common.Arguments.NoSequenceDictionary
 import org.hammerlab.guacamole._
+import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads._
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.kohsuke.args4j.{ Option => Args4jOption }
@@ -32,6 +33,9 @@ object SomaticJoint {
 
     @Args4jOption(name = "--only-somatic", usage = "Output only somatic calls, no germline calls")
     var onlySomatic: Boolean = false
+
+    @Args4jOption(name = "--include-filtered", usage = "Include filtered calls")
+    var includeFiltered: Boolean = false
 
     @Args4jOption(name = "-q", usage = "Quiet: less stdout")
     var quiet: Boolean = false
@@ -103,6 +107,7 @@ object SomaticJoint {
         loci.result(readSets(0).contigLengths),
         forceCallLoci = forceCallLoci,
         onlySomatic = args.onlySomatic,
+        includeFiltered = args.includeFiltered,
         distributedUtilArguments = args)
 
       val calls = allCalls.map(_.onlyBest)
@@ -148,6 +153,7 @@ object SomaticJoint {
                 loci: LociSet,
                 forceCallLoci: LociSet = LociSet.empty,
                 onlySomatic: Boolean = false,
+                includeFiltered: Boolean = false,
                 distributedUtilArguments: DistributedUtil.Arguments = new DistributedUtil.Arguments {}): RDD[MultipleAllelesEvidenceAcrossSamples] = {
 
     // When mapping over pileups, at locus x we call variants at locus x + 1. Therefore we subtract 1 from the user-
@@ -162,7 +168,10 @@ object SomaticJoint {
       readSets.map(_.mappedReads),
       lociPartitions,
       true, // skip empty. TODO: shouldn't skip empty positions if we might force call them. Need an efficient way to handle this.
-      pileups => {
+      rawPileups => {
+        // We ignore clipped reads. Clipped reads include introns (cigar operator N) in RNA-seq.
+        val pileups: Vector[Pileup] = rawPileups.map(
+          pileup => pileup.copy(elements = pileup.elements.filter(!_.isClipped))).toVector
         val normalPileups = inputs.normalDNA.map(input => pileups(input.index))
         val tumorDNAPileups = inputs.tumorDNA.map(input => pileups(input.index))
         val forceCall = broadcastForceCallLoci.value.onContig(pileups(0).referenceName).contains(pileups(0).locus + 1)
@@ -189,8 +198,16 @@ object SomaticJoint {
                 inputs)
             })
             if (forceCall || evidences.exists(_.isSomaticCall) || (!onlySomatic && evidences.exists(_.isGermlineCall))) {
-              val groupedEvidence = MultipleAllelesEvidenceAcrossSamples(evidences)
-              Iterator(groupedEvidence)
+              val annotatedEvidences = evidences.map(_.withAnnotations(pileups, inputs))
+              val passingEvidences = if (forceCall || includeFiltered) {
+                annotatedEvidences
+              } else {
+                annotatedEvidences.filter(!_.failsFilters.getOrElse(false))
+              }
+              if (passingEvidences.nonEmpty)
+                Iterator(MultipleAllelesEvidenceAcrossSamples(passingEvidences))
+              else
+                Iterator.empty
             } else {
               Iterator.empty
             }

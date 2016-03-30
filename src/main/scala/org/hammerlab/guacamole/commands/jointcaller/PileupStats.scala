@@ -95,5 +95,7 @@ object PileupStats {
   type AlleleMixture = Map[String, Double]
 
   /** Create a PileupStats instance. */
-  def apply(elements: Seq[PileupElement], refSequence: Seq[Byte]): PileupStats = new PileupStats(elements, refSequence)
+  def apply(elements: Seq[PileupElement], refSequence: Seq[Byte]): PileupStats = {
+    new PileupStats(elements, refSequence)
+  }
 }

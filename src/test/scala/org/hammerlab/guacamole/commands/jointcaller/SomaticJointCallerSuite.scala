@@ -93,7 +93,6 @@ class SomaticJointCallerSuite extends GuacFunSuite with Matchers {
       SomaticJoint.inputsToReadSets(sc, inputsWithRNA, loci, b37Chromosome22Reference),
       parameters,
       b37Chromosome22Reference,
-      loci.result,
       loci.result).collect.filter(_.bestAllele.isCall)
 
     val inputsWithoutRNA = InputCollection(celsr1BAMs.take(2), analytes = Seq("dna", "dna"))
@@ -103,7 +102,6 @@ class SomaticJointCallerSuite extends GuacFunSuite with Matchers {
       SomaticJoint.inputsToReadSets(sc, inputsWithoutRNA, loci, b37Chromosome22Reference),
       parameters,
       b37Chromosome22Reference,
-      loci.result,
       loci.result).collect.filter(_.bestAllele.isCall)
 
     Map("with rna" -> callsWithRNA, "without rna" -> callsWithoutRNA).foreach({
@@ -130,4 +128,6 @@ class SomaticJointCallerSuite extends GuacFunSuite with Matchers {
     filtered46931061.head.bestAllele.tumorDNAPooledEvidence.allelicDepths.toSet should equal(Set("G" -> 90, "A" -> 2))
     filtered46931061.head.bestAllele.normalDNAPooledEvidence.allelicDepths.toSet should equal(Set("G" -> 51))
   }
+
+
 }

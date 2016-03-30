@@ -53,6 +53,9 @@ object VCFOutput {
     headerLines.add(new VCFFormatHeaderLine("VAF", 1, VCFHeaderLineType.Integer, "Variant allele frequency (percent)"))
     headerLines.add(new VCFFormatHeaderLine("TRIGGERED", 1, VCFHeaderLineType.Integer, "Did this sample trigger a call"))
     headerLines.add(new VCFFormatHeaderLine("ADP", 1, VCFHeaderLineType.String, "allelic depth as num postiive strand / num total"))
+    headerLines.add(new VCFFormatHeaderLine("FF", VCFHeaderLineCount.UNBOUNDED, VCFHeaderLineType.String, "failing filters for this sample"))
+
+    SampleAlleleEvidenceAnnotation.addVCFHeaders(headerLines)
 
     // INFO
     headerLines.add(new VCFInfoHeaderLine("TRIGGER", 1, VCFHeaderLineType.String,
@@ -171,6 +174,7 @@ object VCFOutput {
           genotypeBuilder
             .attribute("ADP", allelicDepthString(tumorEvidence.allelicDepths))
             .attribute("VAF", tumorEvidence.vaf)
+            .AD(Seq(allele.ref, allele.alt).map(allele => tumorEvidence.allelicDepths.getOrElse(allele, 0)).toArray)
             .DP(tumorEvidence.depth)
         }
         case (TissueType.Tumor, Analyte.RNA) => {
@@ -186,9 +190,14 @@ object VCFOutput {
           genotypeBuilder
             .attribute("ADP", allelicDepthString(tumorEvidence.allelicDepths))
             .attribute("VAF", tumorEvidence.vaf)
+            .AD(Seq(allele.ref, allele.alt).map(allele => tumorEvidence.allelicDepths.getOrElse(allele, 0)).toArray)
             .DP(tumorEvidence.depth)
         }
         case other => throw new NotImplementedError("Not supported: %s %s".format(other._1.toString, other._2.toString))
+      }
+      evidence.annotations.foreach({case (name, annotation) => annotation.annotate(genotypeBuilder)})
+      if (evidence.failingFilters.nonEmpty) {
+        genotypeBuilder.attribute("FF", JavaConversions.asJavaCollection(evidence.failingFilters.map(_._1)))
       }
       genotypeBuilder.make
     })
@@ -206,7 +215,7 @@ object VCFOutput {
     }
 
     val triggers = triggersBuilder.result()
-    val variantContext = new VariantContextBuilder()
+    val variantContextBuilder = new VariantContextBuilder()
       .chr(allele.referenceContig)
       .start(allele.start + 1) // +1 for one based based (inclusive)
       .stop(allele.end) // +1 for one-based and -1 for inclusive
@@ -214,8 +223,14 @@ object VCFOutput {
       .alleles(JavaConversions.seqAsJavaList(variantGenotypeAlleles.distinct.map(makeHtsjdkAllele _)))
       .attribute("TRIGGER", if (triggers.nonEmpty) triggers.mkString("+") else "NONE")
       .attribute("TUMOR_EXPRESSION", if (samplesEvidence.tumorRnaSampleExpressed.nonEmpty) "YES" else "NO")
-      .make
-    variantContext
+
+    samplesEvidence.failingFilterNames match {
+      case None => {}
+      case Some(names) if names.isEmpty => variantContextBuilder.passFilters()
+      case Some(names) => {
+        variantContextBuilder.filters(new util.HashSet[String](JavaConversions.asJavaCollection(names)))
+      }
+    }
+    variantContextBuilder.make
   }
 }
-

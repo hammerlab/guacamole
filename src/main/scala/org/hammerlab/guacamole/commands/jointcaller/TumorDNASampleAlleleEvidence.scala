@@ -1,6 +1,7 @@
 package org.hammerlab.guacamole.commands.jointcaller
 
 import org.hammerlab.guacamole.commands.jointcaller.PileupStats.AlleleMixture
+import org.hammerlab.guacamole.commands.jointcaller.SampleAlleleEvidenceAnnotation._
 
 /**
  *
@@ -12,7 +13,8 @@ import org.hammerlab.guacamole.commands.jointcaller.PileupStats.AlleleMixture
  */
 case class TumorDNASampleAlleleEvidence(allele: AlleleAtLocus,
                                         allelicDepths: Map[String, Int],
-                                        logLikelihoods: Map[AlleleMixture, Double])
+                                        logLikelihoods: Map[AlleleMixture, Double],
+                                        annotations: NamedAnnotations = emptyAnnotations)
     extends SampleAlleleEvidence {
 
   /** Total depth of all reads contributing an allele. */
@@ -20,6 +22,10 @@ case class TumorDNASampleAlleleEvidence(allele: AlleleAtLocus,
 
   /** Fraction of reads supporting this allele (variant allele frequency). */
   def vaf() = allelicDepths.getOrElse(allele.alt, 0).toDouble / depth
+
+  override def withAnnotations(newAnnotations: NamedAnnotations): TumorDNASampleAlleleEvidence = {
+    copy(annotations = annotations ++ newAnnotations)
+  }
 }
 object TumorDNASampleAlleleEvidence {
 
@@ -34,7 +40,7 @@ object TumorDNASampleAlleleEvidence {
       else
         Seq.empty)
     val logLikelihoods = possibleMixtures.map(mixture => mixture -> stats.logLikelihoodPileup(mixture)).toMap
-    val truncatedAllelicDepths = stats.truncatedAllelicDepths(parameters.maxAllelesPerSite + 1)  // +1 for ref allele
+    val truncatedAllelicDepths = stats.truncatedAllelicDepths(parameters.maxAllelesPerSite + 1) // +1 for ref allele
     TumorDNASampleAlleleEvidence(allele, truncatedAllelicDepths, logLikelihoods)
   }
 }

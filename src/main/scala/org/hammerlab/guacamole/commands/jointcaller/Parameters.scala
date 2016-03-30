@@ -19,7 +19,8 @@ case class Parameters(
     somaticNegativeLog10VariantPriorWithRnaEvidence: Double,
     somaticVafFloor: Double,
     somaticMaxGermlineErrorRatePercent: Double,
-    somaticGenotypePolicy: Parameters.SomaticGenotypePolicy.Value) {
+    somaticGenotypePolicy: Parameters.SomaticGenotypePolicy.Value,
+    filterStrandBiasPhred: Double) {
 
   /**
    * Return the parameters as a sequence of (name, value) pairs. This is used to include the parameter metadata in the VCF.
@@ -49,7 +50,7 @@ object Parameters {
     var anyAlleleMinSupportingReads: Int = 2
 
     @Args4jOption(name = "--any-allele-min-supporting-percent", usage = "min percent of reads to call any allele (somatic or germline)")
-    var anyAlleleMinSupportingPercent: Double = 3.0
+    var anyAlleleMinSupportingPercent: Double = 2.0
 
     @Args4jOption(name = "--germline-negative-log10-heterozygous-prior", usage = "prior on a germline het call, higher number means fewer calls")
     var germlineNegativeLog10HeterozygousPrior: Double = 4
@@ -83,6 +84,9 @@ object Parameters {
     @Args4jOption(name = "--rna-vaf-threshold",
       usage = "")
     var rnaVafThreshold: Double = 0.05
+
+    @Args4jOption(name = "--filter-strand-bias-phred", usage = "")
+    var filterStrandBiasPhred: Double = 60
   }
 
   def apply(args: CommandlineArguments): Parameters = {
@@ -97,7 +101,8 @@ object Parameters {
       somaticNegativeLog10VariantPriorWithRnaEvidence = args.somaticNegativeLog10VariantPriorWithRnaEvidence,
       somaticVafFloor = args.somaticVafFloor,
       somaticMaxGermlineErrorRatePercent = args.somaticMaxGermlineErrorRatePercent,
-      somaticGenotypePolicy = SomaticGenotypePolicy.withName(args.somaticGenotypePolicy))
+      somaticGenotypePolicy = SomaticGenotypePolicy.withName(args.somaticGenotypePolicy),
+      filterStrandBiasPhred = args.filterStrandBiasPhred)
   }
 
   val defaults = Parameters(new CommandlineArguments {})

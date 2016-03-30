@@ -90,7 +90,7 @@ object AlleleAtLocus {
                      anyAlleleMinSupportingPercent: Double,
                      maxAlleles: Option[Int] = None,
                      atLeastOneAllele: Boolean = false,
-                     onlyStandardBases: Boolean = true): Seq[AlleleAtLocus] = {
+                     onlyStandardBases: Boolean = true): Vector[AlleleAtLocus] = {
 
     assume(pileups.forall(_.locus == pileups.head.locus))
     assume(pileups.forall(_.referenceName == pileups.head.referenceName))
@@ -109,7 +109,7 @@ object AlleleAtLocus {
           .filter(subsequence => !onlyStandardBases || subsequence.sequenceIsAllStandardBases)
           .groupBy(x => (x.endLocus, x.sequence))
           .map(pair => (pair._2.head -> pair._2.length))
-          .toSeq
+          .toVector
           .sortBy(-1 * _._2)
 
       def subsequenceToAllele(subsequence: ReadSubsequence): AlleleAtLocus = {
@@ -119,7 +119,7 @@ object AlleleAtLocus {
 
       subsequenceCounts.map(pair => (subsequenceToAllele(pair._1), requiredReads, pair._2))
     })
-    val result = alleleRequiredReadsActualReads.filter(tpl => tpl._3 >= tpl._2).map(_._1).distinct
+    val result = alleleRequiredReadsActualReads.filter(tpl => tpl._3 >= tpl._2).map(_._1).distinct.toVector
     if (atLeastOneAllele && result.isEmpty) {
       val allelesSortedByTotal = alleleRequiredReadsActualReads
         .groupBy(_._1)
@@ -128,9 +128,9 @@ object AlleleAtLocus {
         .map(_._1)
 
       if (allelesSortedByTotal.nonEmpty) {
-        Seq(allelesSortedByTotal.head)
+        Vector(allelesSortedByTotal.head)
       } else {
-        Seq(AlleleAtLocus(
+        Vector(AlleleAtLocus(
           contig,
           variantStart,
           Bases.baseToString(referenceContigSequence.apply(variantStart.toInt)),
