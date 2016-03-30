@@ -1,6 +1,6 @@
 package org.hammerlab.guacamole.commands
 
-import breeze.linalg.DenseVector
+import breeze.linalg.{DenseVector, argtopk}
 import breeze.stats.{mean, median}
 import htsjdk.samtools.CigarOperator
 import org.apache.spark.SparkContext
@@ -9,14 +9,14 @@ import org.hammerlab.guacamole.Common.Arguments.GermlineCallerArgs
 import org.hammerlab.guacamole._
 import org.hammerlab.guacamole.alignment.AffineGapPenaltyAlignment
 import org.hammerlab.guacamole.assembly.DeBruijnGraph
+import org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociAccordingToArgs
+import org.hammerlab.guacamole.distributed.WindowFlatMapUtils.windowFlatMapWithState
 import org.hammerlab.guacamole.distributed.{LociPartitionUtils, WindowFlatMapUtils}
 import org.hammerlab.guacamole.loci.LociMap
-import LociPartitionUtils.partitionLociAccordingToArgs
 import org.hammerlab.guacamole.reads.{MappedRead, Read}
 import org.hammerlab.guacamole.reference.{ReferenceBroadcast, ReferenceGenome}
 import org.hammerlab.guacamole.variants.{Allele, AlleleConversions, AlleleEvidence, CalledAllele}
 import org.hammerlab.guacamole.windowing.SlidingWindow
-import WindowFlatMapUtils.windowFlatMapWithState
 import org.kohsuke.args4j.{Option => Args4jOption}
 
 import scala.collection.JavaConversions._
@@ -122,14 +122,14 @@ object GermlineAssemblyCaller {
      *         TODO: This currently passes along a graph as state, but rebuilds it each time
      *         This can be updated to use the existing graph and just update it
      */
-    def discoverHaplotypes(graph: Option[DeBruijnGraph],
-                           currentWindow: SlidingWindow[MappedRead],
-                           kmerSize: Int,
-                           reference: ReferenceGenome,
-                           minOccurrence: Int = 3,
-                           expectedPloidy: Int = 2,
-                           maxPathsToScore: Int = 16,
-                           debugPrint: Boolean = false): (Option[DeBruijnGraph], Iterator[CalledAllele]) = {
+    def discoverGermlineVariants(graph: Option[DeBruijnGraph],
+                                 currentWindow: SlidingWindow[MappedRead],
+                                 kmerSize: Int,
+                                 reference: ReferenceGenome,
+                                 minOccurrence: Int = 3,
+                                 expectedPloidy: Int = 2,
+                                 maxPathsToScore: Int = 16,
+                                 debugPrint: Boolean = false): (Option[DeBruijnGraph], Iterator[CalledAllele]) = {
 
       val locus = currentWindow.currentLocus
       val reads = currentWindow.currentRegions()
@@ -155,22 +155,30 @@ object GermlineAssemblyCaller {
         minOccurrence = minOccurrence,
         maxPaths = maxPathsToScore + 1,
         debugPrint)
+        .map(DeBruijnGraph.mergeOverlappingSequences(_, kmerSize))
+        .toVector
 
-      // Score up to the maximum number of paths, by aligning them against the reference
-      // Take the best aligning `expectedPloidy` paths
-      val pathAndAlignments =
-        if (paths.size <= maxPathsToScore) {
-          paths.map(path => {
-            val mergedPath = DeBruijnGraph.mergeOverlappingSequences(path, kmerSize)
-            (mergedPath, AffineGapPenaltyAlignment.align(mergedPath, currentReference))
-          }).toSeq
-            .sortBy(_._2.alignmentScore)
-            .take(expectedPloidy)
+      // Score up to the maximum number of paths
+      val topPaths =
+        if (paths.size <= expectedPloidy) {
+          paths
+        } else if (paths.size <= maxPathsToScore) {
+          val pathScores = DenseVector.zeros[Int](paths.size)
+          reads.foreach(
+            read => {
+              pathScores :+= DenseVector(paths.map(path => -AffineGapPenaltyAlignment.align(read.sequence, path).alignmentScore): _*)
+            })
+
+          argtopk(pathScores, expectedPloidy).map(paths(_))
+
         } else {
           log.warn(s"In window ${referenceContig}:${referenceStart}-$referenceEnd " +
             s"there were ${paths.size} paths found, all variants skipped")
           List.empty
         }
+
+      val pathsAndAlignments =
+        topPaths.map(path => (path, AffineGapPenaltyAlignment.align(path, currentReference)))
 
       // Build a variant using the current offset and read evidence
       def buildVariant(referenceOffset: Int,
@@ -205,7 +213,7 @@ object GermlineAssemblyCaller {
       }
 
       val variants =
-        pathAndAlignments.flatMap(kv => {
+        pathsAndAlignments.flatMap(kv => {
           val path = kv._1
           val alignment = kv._2
 
