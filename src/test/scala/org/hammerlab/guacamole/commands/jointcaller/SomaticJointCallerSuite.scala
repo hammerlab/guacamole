@@ -129,5 +129,4 @@ class SomaticJointCallerSuite extends GuacFunSuite with Matchers {
     filtered46931061.head.bestAllele.normalDNAPooledEvidence.allelicDepths.toSet should equal(Set("G" -> 51))
   }
 
-
 }

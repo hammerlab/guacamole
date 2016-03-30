@@ -3,7 +3,7 @@ package org.hammerlab.guacamole.commands.jointcaller
 import java.util
 
 import htsjdk.variant.variantcontext.GenotypeBuilder
-import htsjdk.variant.vcf.{VCFFilterHeaderLine, VCFHeaderLine, VCFHeaderLineType, VCFFormatHeaderLine}
+import htsjdk.variant.vcf.{ VCFFilterHeaderLine, VCFHeaderLine, VCFHeaderLineType, VCFFormatHeaderLine }
 import org.hammerlab.guacamole.filters.FishersExactTest
 
 trait SampleAlleleEvidenceAnnotation {
@@ -37,11 +37,11 @@ object SampleAlleleEvidenceAnnotation {
   }
 
   case class StrandBias(
-                         parameters: Parameters,
-                         variantForward: Int,
-                         variantReverse: Int,
-                         totalForward: Int,
-                         totalReverse: Int) extends SampleAlleleEvidenceAnnotation {
+      parameters: Parameters,
+      variantForward: Int,
+      variantReverse: Int,
+      totalForward: Int,
+      totalReverse: Int) extends SampleAlleleEvidenceAnnotation {
 
     val phredValue = 10.0 * FishersExactTest.asLog10(totalForward, totalReverse, variantForward, variantReverse)
 

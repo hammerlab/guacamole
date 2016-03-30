@@ -194,9 +194,9 @@ case class AlleleEvidenceAcrossSamples(parameters: Parameters,
 
     copy(
       normalDNAPooledEvidence = SampleAlleleEvidenceAnnotation.annotate(
-          normalDNAPooledStats, normalDNAPooledEvidence, parameters).asInstanceOf[NormalDNASampleAlleleEvidence],
+        normalDNAPooledStats, normalDNAPooledEvidence, parameters).asInstanceOf[NormalDNASampleAlleleEvidence],
       tumorDNAPooledEvidence = SampleAlleleEvidenceAnnotation.annotate(
-          tumorDNAPooledStats, tumorDNAPooledEvidence, parameters).asInstanceOf[TumorDNASampleAlleleEvidence],
+        tumorDNAPooledStats, tumorDNAPooledEvidence, parameters).asInstanceOf[TumorDNASampleAlleleEvidence],
       sampleEvidences = inputs.items.zip(pileups).zip(sampleEvidences).map({
         case ((input, pileup), evidence) => SampleAlleleEvidenceAnnotation.annotate(
           PileupStats(pileup.elements, referenceSequence), evidence, parameters)

@@ -195,7 +195,7 @@ object VCFOutput {
         }
         case other => throw new NotImplementedError("Not supported: %s %s".format(other._1.toString, other._2.toString))
       }
-      evidence.annotations.foreach({case (name, annotation) => annotation.annotate(genotypeBuilder)})
+      evidence.annotations.foreach({ case (name, annotation) => annotation.annotate(genotypeBuilder) })
       if (evidence.failingFilters.nonEmpty) {
         genotypeBuilder.attribute("FF", JavaConversions.asJavaCollection(evidence.failingFilters.map(_._1)))
       }
@@ -225,7 +225,7 @@ object VCFOutput {
       .attribute("TUMOR_EXPRESSION", if (samplesEvidence.tumorRnaSampleExpressed.nonEmpty) "YES" else "NO")
 
     samplesEvidence.failingFilterNames match {
-      case None => {}
+      case None                         => {}
       case Some(names) if names.isEmpty => variantContextBuilder.passFilters()
       case Some(names) => {
         variantContextBuilder.filters(new util.HashSet[String](JavaConversions.asJavaCollection(names)))
