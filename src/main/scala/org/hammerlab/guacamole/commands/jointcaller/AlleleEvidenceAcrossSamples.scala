@@ -4,7 +4,7 @@ import org.hammerlab.guacamole.Bases
 import org.hammerlab.guacamole.DistributedUtil._
 import org.hammerlab.guacamole.commands.jointcaller.Input.{ Analyte, TissueType }
 import org.hammerlab.guacamole.commands.jointcaller.PileupStats.AlleleMixture
-import org.hammerlab.guacamole.commands.jointcaller.SampleAlleleEvidenceAnnotation.NamedAnnotations
+import org.hammerlab.guacamole.commands.jointcaller.AlleleEvidenceAcrossSamplesAnnotation.NamedAnnotations
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 
@@ -27,7 +27,8 @@ case class AlleleEvidenceAcrossSamples(parameters: Parameters,
                                        inputs: InputCollection,
                                        normalDNAPooledEvidence: NormalDNASampleAlleleEvidence,
                                        tumorDNAPooledEvidence: TumorDNASampleAlleleEvidence,
-                                       sampleEvidences: PerSample[SampleAlleleEvidence]) {
+                                       sampleEvidences: PerSample[SampleAlleleEvidence],
+                                       annotations: NamedAnnotations) {
 
   assume(inputs.items.map(_.index) == (0 until inputs.items.length))
 
@@ -164,43 +165,35 @@ case class AlleleEvidenceAcrossSamples(parameters: Parameters,
   /** Are we making a germline or somatic call? */
   val isCall = isGermlineCall || isSomaticCall
 
-  def failingFilterNames: Option[Set[String]] = {
-    val evidences: Seq[SampleAlleleEvidence] = if (isGermlineCall) {
+  def failingFilterNames: Set[String] = {
+    val triggeringEvidences: Seq[SampleAlleleEvidence] = if (isGermlineCall) {
       Seq(normalDNAPooledEvidence)
     } else if (isSomaticCall) {
       tumorDnaSampleIndicesTriggered.map(index => allEvidences(index))
     } else {
-      return None
+      Seq.empty
     }
-    if (evidences.forall(_.annotations.exists(_._2.filtered))) {
-      Some(evidences.flatMap(_.annotations.filter(_._2.filtered).map(_._1)).toSet)
+    val triggerFailingFilters = if (triggeringEvidences.forall(_.annotations.exists(_._2.isFiltered))) {
+      triggeringEvidences.flatMap(_.annotations.filter(_._2.isFiltered).map(_._1)).toSet
     } else {
-      Some(Set.empty)
+      Set.empty
     }
+    triggerFailingFilters ++ annotations.filter(_._2.isFiltered).map(_._1).toSet
   }
 
-  def failsFilters: Option[Boolean] = failingFilterNames.map(_.nonEmpty)
+  def failsFilters: Boolean = failingFilterNames.nonEmpty
 
-  def withAnnotations(pileups: PerSample[Pileup],
-                      inputs: InputCollection): AlleleEvidenceAcrossSamples = {
-
-    val referenceSequence = pileups.head.referenceContigSequence.slice(allele.start.toInt, allele.end.toInt)
-
-    val normalDNAPooledElements = inputs.normalDNA.map(input => pileups(input.index).elements).flatten
-    val normalDNAPooledStats = PileupStats(normalDNAPooledElements, referenceSequence)
-
-    val tumorDNAPooledElements = inputs.tumorDNA.map(input => pileups(input.index).elements).flatten
-    val tumorDNAPooledStats = PileupStats(tumorDNAPooledElements, referenceSequence)
-
+  def computeAllAnnotations(multipleStats: MultiplePileupStats): AlleleEvidenceAcrossSamples = {
+    assume(multipleStats.singleSampleStats.forall(_.referenceSequence.length == allele.end - allele.start))
     copy(
       normalDNAPooledEvidence = SampleAlleleEvidenceAnnotation.annotate(
-        normalDNAPooledStats, normalDNAPooledEvidence, parameters).asInstanceOf[NormalDNASampleAlleleEvidence],
+        multipleStats.normalDNAPooled, normalDNAPooledEvidence, parameters).asInstanceOf[NormalDNASampleAlleleEvidence],
       tumorDNAPooledEvidence = SampleAlleleEvidenceAnnotation.annotate(
-        tumorDNAPooledStats, tumorDNAPooledEvidence, parameters).asInstanceOf[TumorDNASampleAlleleEvidence],
-      sampleEvidences = inputs.items.zip(pileups).zip(sampleEvidences).map({
-        case ((input, pileup), evidence) => SampleAlleleEvidenceAnnotation.annotate(
-          PileupStats(pileup.elements, referenceSequence), evidence, parameters)
-      }))
+        multipleStats.tumorlDNAPooled, tumorDNAPooledEvidence, parameters).asInstanceOf[TumorDNASampleAlleleEvidence],
+      sampleEvidences = inputs.items.zip(multipleStats.singleSampleStats).zip(sampleEvidences).map({
+        case ((input, stats), evidence) => SampleAlleleEvidenceAnnotation.annotate(stats, evidence, parameters)
+      }),
+      annotations = annotations ++ AlleleEvidenceAcrossSamplesAnnotation.makeAnnotations(multipleStats, this, parameters))
   }
 }
 object AlleleEvidenceAcrossSamples {
@@ -218,22 +211,10 @@ object AlleleEvidenceAcrossSamples {
   def apply(
     parameters: Parameters,
     allele: AlleleAtLocus,
-    pileups: PerSample[Pileup],
-    inputs: InputCollection): AlleleEvidenceAcrossSamples = {
+    stats: MultiplePileupStats): AlleleEvidenceAcrossSamples = {
 
-    val referenceSequence = pileups.head.referenceContigSequence.slice(allele.start.toInt, allele.end.toInt)
-
-    val normalDNAPooledElements = inputs.normalDNA.map(input => pileups(input.index).elements).flatten
-    val normalDNAPooledStats = PileupStats(normalDNAPooledElements, referenceSequence)
-    val normalDNAPooledCharacterization = NormalDNASampleAlleleEvidence(allele, normalDNAPooledStats, parameters)
-
-    val tumorDNAPooledElements = inputs.tumorDNA.map(input => pileups(input.index).elements).flatten
-    val tumorDNAPooledStats = PileupStats(tumorDNAPooledElements, referenceSequence)
-    val tumorDNAPooledCharacterization = TumorDNASampleAlleleEvidence(allele, tumorDNAPooledStats, parameters)
-
-    val sampleEvidences = inputs.items.zip(pileups).map({
-      case (input, pileup) =>
-        val stats = PileupStats(pileup.elements, referenceSequence)
+    val sampleEvidences = stats.inputs.items.zip(stats.singleSampleStats).map({
+      case (input, stats) =>
         (input.tissueType, input.analyte) match {
           case (TissueType.Normal, Analyte.DNA) => NormalDNASampleAlleleEvidence(allele, stats, parameters)
           case (TissueType.Normal, Analyte.RNA) => throw new IllegalArgumentException("Normal RNA not supported")
@@ -241,12 +222,16 @@ object AlleleEvidenceAcrossSamples {
           case (TissueType.Tumor, Analyte.RNA)  => TumorRNASampleAlleleEvidence(allele, stats, parameters)
         }
     })
+    val normalDNAPooledCharacterization = NormalDNASampleAlleleEvidence(allele, stats.normalDNAPooled, parameters)
+    val tumorDNAPooledCharacterization = TumorDNASampleAlleleEvidence(allele, stats.tumorlDNAPooled, parameters)
+
     AlleleEvidenceAcrossSamples(
       parameters,
       allele,
-      inputs,
+      stats.inputs,
       normalDNAPooledCharacterization,
       tumorDNAPooledCharacterization,
-      sampleEvidences)
+      sampleEvidences,
+      annotations = AlleleEvidenceAcrossSamplesAnnotation.emptyAnnotations)
   }
 }

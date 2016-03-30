@@ -20,7 +20,7 @@ import org.hammerlab.guacamole.pileup.PileupElement
  * @param referenceSequence reference bases. The length determines the size of alleles to consider. The first element should
  *                    be the reference base at locus elements.head.locus + 1.
  */
-class PileupStats(elements: Seq[PileupElement], referenceSequence: Seq[Byte]) {
+class PileupStats(val elements: Seq[PileupElement], val referenceSequence: Seq[Byte]) {
   assume(referenceSequence.nonEmpty)
   assume(elements.forall(_.locus == elements.head.locus))
 

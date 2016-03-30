@@ -56,6 +56,7 @@ object VCFOutput {
     headerLines.add(new VCFFormatHeaderLine("FF", VCFHeaderLineCount.UNBOUNDED, VCFHeaderLineType.String, "failing filters for this sample"))
 
     SampleAlleleEvidenceAnnotation.addVCFHeaders(headerLines)
+    AlleleEvidenceAcrossSamplesAnnotation.addVCFHeaders(headerLines)
 
     // INFO
     headerLines.add(new VCFInfoHeaderLine("TRIGGER", 1, VCFHeaderLineType.String,
@@ -195,7 +196,7 @@ object VCFOutput {
         }
         case other => throw new NotImplementedError("Not supported: %s %s".format(other._1.toString, other._2.toString))
       }
-      evidence.annotations.foreach({ case (name, annotation) => annotation.annotate(genotypeBuilder) })
+      evidence.annotations.foreach({ case (name, annotation) => annotation.addInfoToVCF(genotypeBuilder) })
       if (evidence.failingFilters.nonEmpty) {
         genotypeBuilder.attribute("FF", JavaConversions.asJavaCollection(evidence.failingFilters.map(_._1)))
       }
@@ -209,7 +210,7 @@ object VCFOutput {
       if (samplesEvidence.tumorDnaSampleIndicesTriggered.contains(samplesEvidence.tumorDNAPooledIndex)) {
         triggersBuilder += "SOMATIC_POOLED"
       }
-      if (samplesEvidence.tumorDnaSampleIndicesTriggered.filter(_ != samplesEvidence.tumorDNAPooledIndex).nonEmpty) {
+      if (samplesEvidence.tumorDnaSampleIndicesTriggered.exists(_ != samplesEvidence.tumorDNAPooledIndex)) {
         triggersBuilder += "SOMATIC_INDIVIDUAL"
       }
     }
@@ -224,12 +225,13 @@ object VCFOutput {
       .attribute("TRIGGER", if (triggers.nonEmpty) triggers.mkString("+") else "NONE")
       .attribute("TUMOR_EXPRESSION", if (samplesEvidence.tumorRnaSampleExpressed.nonEmpty) "YES" else "NO")
 
-    samplesEvidence.failingFilterNames match {
-      case None                         => {}
-      case Some(names) if names.isEmpty => variantContextBuilder.passFilters()
-      case Some(names) => {
-        variantContextBuilder.filters(new util.HashSet[String](JavaConversions.asJavaCollection(names)))
+    val failingFilterNames = samplesEvidence.failingFilterNames
+    if (failingFilterNames.isEmpty) {
+      if (samplesEvidence.isCall) {
+        variantContextBuilder.passFilters()
       }
+    } else {
+      variantContextBuilder.filters(new util.HashSet[String](JavaConversions.asJavaCollection(failingFilterNames)))
     }
     variantContextBuilder.make
   }

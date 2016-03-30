@@ -1,5 +1,6 @@
 package org.hammerlab.guacamole.commands.jointcaller
 
+import org.hammerlab.guacamole.DistributedUtil.PerSample
 import org.hammerlab.guacamole.commands.jointcaller.Input.{ Analyte, TissueType }
 import org.kohsuke.args4j.spi.StringArrayOptionHandler
 import org.kohsuke.args4j.{ Argument, Option => Args4jOption }
@@ -9,7 +10,7 @@ import scala.collection.mutable
 /**
  * Convenience container for zero or more Input instances.
  */
-case class InputCollection(items: Seq[Input]) {
+case class InputCollection(items: PerSample[Input]) {
   val normalDNA = items.filter(_.normalDNA)
   val normalRNA = items.filter(_.normalRNA)
   val tumorDNA = items.filter(_.tumorDNA)

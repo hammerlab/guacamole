@@ -20,7 +20,9 @@ case class Parameters(
     somaticVafFloor: Double,
     somaticMaxGermlineErrorRatePercent: Double,
     somaticGenotypePolicy: Parameters.SomaticGenotypePolicy.Value,
-    filterStrandBiasPhred: Double) {
+    filterStrandBiasPhred: Double,
+    filterSomaticNormalNonreferencePercent: Double,
+    filterSomaticNormalDepth: Int) {
 
   /**
    * Return the parameters as a sequence of (name, value) pairs. This is used to include the parameter metadata in the VCF.
@@ -87,6 +89,12 @@ object Parameters {
 
     @Args4jOption(name = "--filter-strand-bias-phred", usage = "")
     var filterStrandBiasPhred: Double = 60
+
+    @Args4jOption(name = "--filter-somatic-normal-nonreference-percent", usage = "")
+    var filterSomaticNormalNonreferencePercent: Double = 3.0
+
+    @Args4jOption(name = "--filter-somatic-normal-depth", usage = "")
+    var filterSomaticNormalDepth: Int = 30
   }
 
   def apply(args: CommandlineArguments): Parameters = {
@@ -102,7 +110,10 @@ object Parameters {
       somaticVafFloor = args.somaticVafFloor,
       somaticMaxGermlineErrorRatePercent = args.somaticMaxGermlineErrorRatePercent,
       somaticGenotypePolicy = SomaticGenotypePolicy.withName(args.somaticGenotypePolicy),
-      filterStrandBiasPhred = args.filterStrandBiasPhred)
+      filterStrandBiasPhred = args.filterStrandBiasPhred,
+      filterSomaticNormalNonreferencePercent = args.filterSomaticNormalNonreferencePercent,
+      filterSomaticNormalDepth = args.filterSomaticNormalDepth
+    )
   }
 
   val defaults = Parameters(new CommandlineArguments {})

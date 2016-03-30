@@ -4,7 +4,9 @@ import htsjdk.samtools.SAMSequenceDictionary
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole.Common.Arguments.NoSequenceDictionary
+import org.hammerlab.guacamole.DistributedUtil.PerSample
 import org.hammerlab.guacamole._
+import org.hammerlab.guacamole.commands.jointcaller.Input.{ Analyte, TissueType }
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads._
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
@@ -48,7 +50,7 @@ object SomaticJoint {
                        inputs: InputCollection,
                        loci: LociSet.Builder,
                        reference: ReferenceBroadcast,
-                       contigLengthsFromDictionary: Boolean = true): Seq[ReadSet] = {
+                       contigLengthsFromDictionary: Boolean = true): PerSample[ReadSet] = {
     inputs.items.zipWithIndex.map({
       case (input, index) => ReadSet(
         sc,
@@ -98,7 +100,7 @@ object SomaticJoint {
 
       val parameters = Parameters(args)
 
-      val allCalls = makeCalls(
+      val calls = makeCalls(
         sc,
         inputs,
         readSets,
@@ -110,7 +112,6 @@ object SomaticJoint {
         includeFiltered = args.includeFiltered,
         distributedUtilArguments = args)
 
-      val calls = allCalls.map(_.onlyBest)
       calls.cache()
 
       Common.progress("Collecting evidence for %,d sites with calls".format(calls.count))
@@ -147,7 +148,7 @@ object SomaticJoint {
 
   def makeCalls(sc: SparkContext,
                 inputs: InputCollection,
-                readSets: Seq[ReadSet],
+                readSets: PerSample[ReadSet],
                 parameters: Parameters,
                 reference: ReferenceBroadcast,
                 loci: LociSet,
@@ -190,22 +191,33 @@ object SomaticJoint {
             onlyStandardBases = true)
 
           if (possibleAlleles.nonEmpty) {
+            val multiplePileupStatsPerPossibleAlleleLocus = possibleAlleles
+              .map(allele => (allele.start.toInt, allele.end.toInt))
+              .distinct
+              .map(pair => {
+                val referenceSequence = pileups.head.referenceContigSequence.slice(pair._1, pair._2)
+                val stats = pileups.map(pileup => PileupStats(pileup.elements, refSequence = referenceSequence))
+                pair -> MultiplePileupStats(inputs, stats)
+              }).toMap
+
             val evidences = possibleAlleles.map(allele => {
               AlleleEvidenceAcrossSamples(
                 parameters,
                 allele,
-                pileups,
-                inputs)
+                multiplePileupStatsPerPossibleAlleleLocus((allele.start.toInt, allele.end.toInt)))
             })
             if (forceCall || evidences.exists(_.isSomaticCall) || (!onlySomatic && evidences.exists(_.isGermlineCall))) {
-              val annotatedEvidences = evidences.map(_.withAnnotations(pileups, inputs))
+              val annotatedEvidences = evidences.map(evidence => {
+                val allele = evidence.allele
+                evidence.computeAllAnnotations(multiplePileupStatsPerPossibleAlleleLocus((allele.start.toInt, allele.end.toInt)))
+              })
               val passingEvidences = if (forceCall || includeFiltered) {
                 annotatedEvidences
               } else {
-                annotatedEvidences.filter(!_.failsFilters.getOrElse(false))
+                annotatedEvidences.filter(!_.failsFilters)
               }
               if (passingEvidences.nonEmpty)
-                Iterator(MultipleAllelesEvidenceAcrossSamples(passingEvidences))
+                Iterator(MultipleAllelesEvidenceAcrossSamples(passingEvidences).onlyBest)
               else
                 Iterator.empty
             } else {
@@ -234,7 +246,7 @@ object SomaticJoint {
 
     def writeSome(out: String,
                   filteredCalls: Seq[MultipleAllelesEvidenceAcrossSamples],
-                  filteredInputs: Seq[Input],
+                  filteredInputs: PerSample[Input],
                   includePooledNormal: Option[Boolean] = None,
                   includePooledTumor: Option[Boolean] = None): Unit = {
 
@@ -295,15 +307,15 @@ object SomaticJoint {
             path("all.%s.%s.%s".format(
               input.sampleName, input.tissueType.toString, input.analyte.toString)),
             calls,
-            Seq(input))
+            Vector(input))
         }
         writeSome(
           path("somatic.%s.%s.%s".format(
             input.sampleName, input.tissueType.toString, input.analyte.toString)),
           somaticCallsOrForced,
-          Seq(input))
+          Vector(input))
       })
-      writeSome(path("all.tumor_pooled_dna"), somaticCallsOrForced, Seq.empty, includePooledTumor = Some(true))
+      writeSome(path("all.tumor_pooled_dna"), somaticCallsOrForced, Vector.empty, includePooledTumor = Some(true))
     }
   }
 }

@@ -19,6 +19,6 @@ trait SampleAlleleEvidence {
   def withAnnotations(annotations: NamedAnnotations): SampleAlleleEvidence
 
   def failingFilters: NamedAnnotations = {
-    annotations.filter(_._2.filtered)
+    annotations.filter(_._2.isFiltered)
   }
 }
