@@ -68,8 +68,8 @@ case class SlidingWindow[Region <: HasReferenceRegion](referenceName: String,
   }
 
   /** The regions that overlap the window surrounding [[currentLocus]]. */
-  def currentRegions(): Seq[Region] = {
-    currentRegionsPriorityQueue.toSeq
+  def currentRegions(): Vector[Region] = {
+    currentRegionsPriorityQueue.toVector
   }
 
   /**
@@ -80,7 +80,7 @@ case class SlidingWindow[Region <: HasReferenceRegion](referenceName: String,
    * @return The *new regions* that were added as a result of this call. Note that this is not the full set of regions
    *         in the window: you must examine [[currentRegions]] for that.
    */
-  def setCurrentLocus(locus: Long): Seq[Region] = {
+  def setCurrentLocus(locus: Long): Vector[Region] = {
     assume(locus >= currentLocus, "Pileup window can only move forward in locus")
     currentLocus = locus
 
@@ -106,7 +106,7 @@ case class SlidingWindow[Region <: HasReferenceRegion](referenceName: String,
       newRegionsBuilder.result
     }
     currentRegionsPriorityQueue.enqueue(newRegions: _*)
-    newRegions // We return the newly added regions.
+    newRegions.toVector // We return the newly added regions.
   }
 
   /**
