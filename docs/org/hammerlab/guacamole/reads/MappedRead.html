@@ -35,7 +35,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">MappedRead</span><span class="params">(<span name="token">token: <span class="extype" name="scala.Int">Int</span></span>, <span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="sequence">sequence: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>, <span name="baseQualities">baseQualities: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>, <span name="isDuplicate">isDuplicate: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="sampleName">sampleName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="referenceContig">referenceContig: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="alignmentQuality">alignmentQuality: <span class="extype" name="scala.Int">Int</span></span>, <span name="start">start: <span class="extype" name="scala.Long">Long</span></span>, <span name="cigar">cigar: <span class="extype" name="htsjdk.samtools.Cigar">Cigar</span></span>, <span name="failedVendorQualityChecks">failedVendorQualityChecks: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="isPositiveStrand">isPositiveStrand: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="isPaired">isPaired: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result"> extends <a href="Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a> with <a href="../HasReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.HasReferenceRegion">HasReferenceRegion</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">MappedRead</span><span class="params">(<span name="token">token: <span class="extype" name="scala.Int">Int</span></span>, <span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="sequence">sequence: <span class="extype" name="scala.IndexedSeq">IndexedSeq</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>, <span name="baseQualities">baseQualities: <span class="extype" name="scala.IndexedSeq">IndexedSeq</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>, <span name="isDuplicate">isDuplicate: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="sampleName">sampleName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="referenceContig">referenceContig: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="alignmentQuality">alignmentQuality: <span class="extype" name="scala.Int">Int</span></span>, <span name="start">start: <span class="extype" name="scala.Long">Long</span></span>, <span name="cigar">cigar: <span class="extype" name="htsjdk.samtools.Cigar">Cigar</span></span>, <span name="failedVendorQualityChecks">failedVendorQualityChecks: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="isPositiveStrand">isPositiveStrand: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="isPaired">isPaired: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result"> extends <a href="Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a> with <a href="../HasReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.HasReferenceRegion">HasReferenceRegion</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
@@ -82,7 +82,7 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="org.hammerlab.guacamole.reads.MappedRead#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="&lt;init&gt;(token:Int,name:String,sequence:Seq[Byte],baseQualities:Seq[Byte],isDuplicate:Boolean,sampleName:String,referenceContig:String,alignmentQuality:Int,start:Long,cigar:htsjdk.samtools.Cigar,failedVendorQualityChecks:Boolean,isPositiveStrand:Boolean,isPaired:Boolean):org.hammerlab.guacamole.reads.MappedRead"></a>
+      <a id="&lt;init&gt;(token:Int,name:String,sequence:IndexedSeq[Byte],baseQualities:IndexedSeq[Byte],isDuplicate:Boolean,sampleName:String,referenceContig:String,alignmentQuality:Int,start:Long,cigar:htsjdk.samtools.Cigar,failedVendorQualityChecks:Boolean,isPositiveStrand:Boolean,isPaired:Boolean):org.hammerlab.guacamole.reads.MappedRead"></a>
       <a id="&lt;init&gt;:MappedRead"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -90,7 +90,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">MappedRead</span><span class="params">(<span name="token">token: <span class="extype" name="scala.Int">Int</span></span>, <span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="sequence">sequence: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>, <span name="baseQualities">baseQualities: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>, <span name="isDuplicate">isDuplicate: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="sampleName">sampleName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="referenceContig">referenceContig: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="alignmentQuality">alignmentQuality: <span class="extype" name="scala.Int">Int</span></span>, <span name="start">start: <span class="extype" name="scala.Long">Long</span></span>, <span name="cigar">cigar: <span class="extype" name="htsjdk.samtools.Cigar">Cigar</span></span>, <span name="failedVendorQualityChecks">failedVendorQualityChecks: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="isPositiveStrand">isPositiveStrand: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="isPaired">isPaired: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span>
+        <span class="name">MappedRead</span><span class="params">(<span name="token">token: <span class="extype" name="scala.Int">Int</span></span>, <span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="sequence">sequence: <span class="extype" name="scala.IndexedSeq">IndexedSeq</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>, <span name="baseQualities">baseQualities: <span class="extype" name="scala.IndexedSeq">IndexedSeq</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>, <span name="isDuplicate">isDuplicate: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="sampleName">sampleName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="referenceContig">referenceContig: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="alignmentQuality">alignmentQuality: <span class="extype" name="scala.Int">Int</span></span>, <span name="start">start: <span class="extype" name="scala.Long">Long</span></span>, <span name="cigar">cigar: <span class="extype" name="htsjdk.samtools.Cigar">Cigar</span></span>, <span name="failedVendorQualityChecks">failedVendorQualityChecks: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="isPositiveStrand">isPositiveStrand: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="isPaired">isPaired: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span>
       </span>
       </h4>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">referenceContig</dt><dd class="cmt"><p>the contig name (e.g. &quot;chr12&quot;) that this read was mapped to.</p></dd><dt class="param">alignmentQuality</dt><dd class="cmt"><p>the mapping quality, phred scaled.</p></dd><dt class="param">start</dt><dd class="cmt"><p>the (0-based) reference locus that the first base in this read aligns to.</p></dd><dt class="param">cigar</dt><dd class="cmt"><p>parsed samtools CIGAR object.
@@ -222,15 +222,15 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.reads.MappedRead">MappedRead</a> → <a href="Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a></dd></dl></div>
     </li><li name="org.hammerlab.guacamole.reads.MappedRead#baseQualities" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="baseQualities:Seq[Byte]"></a>
-      <a id="baseQualities:Seq[Byte]"></a>
+      <a id="baseQualities:IndexedSeq[Byte]"></a>
+      <a id="baseQualities:IndexedSeq[Byte]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">baseQualities</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>
+        <span class="name">baseQualities</span><span class="result">: <span class="extype" name="scala.IndexedSeq">IndexedSeq</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">The base qualities, phred scaled.</p><div class="fullcomment"><div class="comment cmt"><p>The base qualities, phred scaled.  These are numbers, and are NOT character encoded.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.reads.MappedRead">MappedRead</a> → <a href="Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a></dd></dl></div>
@@ -556,15 +556,15 @@ included any of these three positions: locus - 1, locus, and locus + 1.
       </h4>
       <p class="shortcomment cmt">The sample (e.</p><div class="fullcomment"><div class="comment cmt"><p>The sample (e.g. &quot;tumor&quot; or &quot;patient3636&quot;) name.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.reads.MappedRead">MappedRead</a> → <a href="Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a></dd></dl></div>
     </li><li name="org.hammerlab.guacamole.reads.MappedRead#sequence" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="sequence:Seq[Byte]"></a>
-      <a id="sequence:Seq[Byte]"></a>
+      <a id="sequence:IndexedSeq[Byte]"></a>
+      <a id="sequence:IndexedSeq[Byte]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">sequence</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>
+        <span class="name">sequence</span><span class="result">: <span class="extype" name="scala.IndexedSeq">IndexedSeq</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">The nucleotide sequence.</p><div class="fullcomment"><div class="comment cmt"><p>The nucleotide sequence.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.reads.MappedRead">MappedRead</a> → <a href="Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a></dd></dl></div>

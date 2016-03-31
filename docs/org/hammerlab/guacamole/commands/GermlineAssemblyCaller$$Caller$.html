@@ -313,15 +313,15 @@
 </p></div><dl class="paramcmts block"><dt class="param">reads</dt><dd class="cmt"><p>Set of reads to extract sequence from</p></dd><dt class="param">startLocus</dt><dd class="cmt"><p>Start (inclusive) locus on the reference</p></dd><dt class="param">endLocus</dt><dd class="cmt"><p>End (exclusive) locus on the reference</p></dd><dt class="param">minOccurrence</dt><dd class="cmt"><p>Mininum number of times a subsequence needs to appear to be included</p></dd><dt>returns</dt><dd class="cmt"><p>List of subsequences overlapping [startLocus, endLocus) that appear at least <code>minOccurrence</code> time
 </p></dd></dl></div>
     </li><li name="org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Caller#getSequenceFromRead" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="getSequenceFromRead(read:org.hammerlab.guacamole.reads.MappedRead,startLocus:Int,endLocus:Int):Seq[Byte]"></a>
-      <a id="getSequenceFromRead(MappedRead,Int,Int):Seq[Byte]"></a>
+      <a id="getSequenceFromRead(read:org.hammerlab.guacamole.reads.MappedRead,startLocus:Int,endLocus:Int):IndexedSeq[Byte]"></a>
+      <a id="getSequenceFromRead(MappedRead,Int,Int):IndexedSeq[Byte]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getSequenceFromRead</span><span class="params">(<span name="read">read: <a href="../reads/MappedRead.html" class="extype" name="org.hammerlab.guacamole.reads.MappedRead">MappedRead</a></span>, <span name="startLocus">startLocus: <span class="extype" name="scala.Int">Int</span></span>, <span name="endLocus">endLocus: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.Seq">Seq</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>
+        <span class="name">getSequenceFromRead</span><span class="params">(<span name="read">read: <a href="../reads/MappedRead.html" class="extype" name="org.hammerlab.guacamole.reads.MappedRead">MappedRead</a></span>, <span name="startLocus">startLocus: <span class="extype" name="scala.Int">Int</span></span>, <span name="endLocus">endLocus: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.IndexedSeq">IndexedSeq</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Extract a subsequence from a read sequence</p><div class="fullcomment"><div class="comment cmt"><p>Extract a subsequence from a read sequence</p><p>NOTE: This assumes that the read entirely covers the reference region and does not check for insertions

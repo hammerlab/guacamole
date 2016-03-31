@@ -41,11 +41,11 @@
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Suppose we have a set of loci on a given contig and some objects that are mapped to that contig, and at each locus we
 want to look at the regions that overlap a window of a certain number of bases surrounding that locus. This class
-implements this &quot;sliding window&quot; functionality.</p><p>After instantiating this class, call <a href="#setCurrentLocus(locus:Long):Seq[Region]" class="extmbr" name="org.hammerlab.guacamole.windowing.SlidingWindow#setCurrentLocus">setCurrentLocus</a> repeatedly for each locus being considered. After calling
-this method, the <a href="#currentRegions():Seq[Region]" class="extmbr" name="org.hammerlab.guacamole.windowing.SlidingWindow#currentRegions">currentRegions</a> property will contain the objects that overlap the current locus.</p><p>To enable an efficient implementation, we require that both the sequence of loci to be considered and the iterator
+implements this &quot;sliding window&quot; functionality.</p><p>After instantiating this class, call <a href="#setCurrentLocus(locus:Long):Vector[Region]" class="extmbr" name="org.hammerlab.guacamole.windowing.SlidingWindow#setCurrentLocus">setCurrentLocus</a> repeatedly for each locus being considered. After calling
+this method, the <a href="#currentRegions():Vector[Region]" class="extmbr" name="org.hammerlab.guacamole.windowing.SlidingWindow#currentRegions">currentRegions</a> property will contain the objects that overlap the current locus.</p><p>To enable an efficient implementation, we require that both the sequence of loci to be considered and the iterator
 of objects are sorted.
 </p></div><dl class="paramcmts block"><dt class="param">halfWindowSize</dt><dd class="cmt"><p>Number of nucleotide bases to either side of the specified locus to provide regions for. For
-                      example, if <a href="#halfWindowSize:Long" class="extmbr" name="org.hammerlab.guacamole.windowing.SlidingWindow#halfWindowSize">halfWindowSize</a>=5, and our <a href="#currentLocus:Long" class="extmbr" name="org.hammerlab.guacamole.windowing.SlidingWindow#currentLocus">currentLocus</a>=100, then <a href="#currentRegions():Seq[Region]" class="extmbr" name="org.hammerlab.guacamole.windowing.SlidingWindow#currentRegions">currentRegions</a> will
+                      example, if <a href="#halfWindowSize:Long" class="extmbr" name="org.hammerlab.guacamole.windowing.SlidingWindow#halfWindowSize">halfWindowSize</a>=5, and our <a href="#currentLocus:Long" class="extmbr" name="org.hammerlab.guacamole.windowing.SlidingWindow#currentLocus">currentLocus</a>=100, then <a href="#currentRegions():Vector[Region]" class="extmbr" name="org.hammerlab.guacamole.windowing.SlidingWindow#currentRegions">currentRegions</a> will
                       include regions that map to anywhere between 95 and 105, inclusive. Set to 0 to consider only
                       regions that overlap the exact locus being considered, with no surrounding window.
 </p></dd><dt class="param">rawSortedRegions</dt><dd class="cmt"><p>Iterator of regions, sorted by the aligned start locus.
@@ -102,7 +102,7 @@ of objects are sorted.
       </span>
       </h4>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">halfWindowSize</dt><dd class="cmt"><p>Number of nucleotide bases to either side of the specified locus to provide regions for. For
-                      example, if <a href="#halfWindowSize:Long" class="extmbr" name="org.hammerlab.guacamole.windowing.SlidingWindow#halfWindowSize">halfWindowSize</a>=5, and our <a href="#currentLocus:Long" class="extmbr" name="org.hammerlab.guacamole.windowing.SlidingWindow#currentLocus">currentLocus</a>=100, then <a href="#currentRegions():Seq[Region]" class="extmbr" name="org.hammerlab.guacamole.windowing.SlidingWindow#currentRegions">currentRegions</a> will
+                      example, if <a href="#halfWindowSize:Long" class="extmbr" name="org.hammerlab.guacamole.windowing.SlidingWindow#halfWindowSize">halfWindowSize</a>=5, and our <a href="#currentLocus:Long" class="extmbr" name="org.hammerlab.guacamole.windowing.SlidingWindow#currentLocus">currentLocus</a>=100, then <a href="#currentRegions():Vector[Region]" class="extmbr" name="org.hammerlab.guacamole.windowing.SlidingWindow#currentRegions">currentRegions</a> will
                       include regions that map to anywhere between 95 and 105, inclusive. Set to 0 to consider only
                       regions that overlap the exact locus being considered, with no surrounding window.
 </p></dd><dt class="param">rawSortedRegions</dt><dd class="cmt"><p>Iterator of regions, sorted by the aligned start locus.
@@ -227,15 +227,15 @@ of objects are sorted.
       </h4>
       <p class="shortcomment cmt">The locus currently under consideration.</p>
     </li><li name="org.hammerlab.guacamole.windowing.SlidingWindow#currentRegions" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="currentRegions():Seq[Region]"></a>
-      <a id="currentRegions():Seq[Region]"></a>
+      <a id="currentRegions():Vector[Region]"></a>
+      <a id="currentRegions():Vector[Region]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">currentRegions</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="org.hammerlab.guacamole.windowing.SlidingWindow.Region">Region</span>]</span>
+        <span class="name">currentRegions</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Vector">Vector</span>[<span class="extype" name="org.hammerlab.guacamole.windowing.SlidingWindow.Region">Region</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">The regions that overlap the window surrounding <a href="#currentLocus:Long" class="extmbr" name="org.hammerlab.guacamole.windowing.SlidingWindow#currentLocus">currentLocus</a>.</p>
@@ -297,7 +297,7 @@ of objects are sorted.
       </span>
       </h4>
       <p class="shortcomment cmt">Number of nucleotide bases to either side of the specified locus to provide regions for.</p><div class="fullcomment"><div class="comment cmt"><p>Number of nucleotide bases to either side of the specified locus to provide regions for. For
-                      example, if <a href="#halfWindowSize:Long" class="extmbr" name="org.hammerlab.guacamole.windowing.SlidingWindow#halfWindowSize">halfWindowSize</a>=5, and our <a href="#currentLocus:Long" class="extmbr" name="org.hammerlab.guacamole.windowing.SlidingWindow#currentLocus">currentLocus</a>=100, then <a href="#currentRegions():Seq[Region]" class="extmbr" name="org.hammerlab.guacamole.windowing.SlidingWindow#currentRegions">currentRegions</a> will
+                      example, if <a href="#halfWindowSize:Long" class="extmbr" name="org.hammerlab.guacamole.windowing.SlidingWindow#halfWindowSize">halfWindowSize</a>=5, and our <a href="#currentLocus:Long" class="extmbr" name="org.hammerlab.guacamole.windowing.SlidingWindow#currentLocus">currentLocus</a>=100, then <a href="#currentRegions():Vector[Region]" class="extmbr" name="org.hammerlab.guacamole.windowing.SlidingWindow#currentRegions">currentRegions</a> will
                       include regions that map to anywhere between 95 and 105, inclusive. Set to 0 to consider only
                       regions that overlap the exact locus being considered, with no surrounding window.
 </p></div></div>
@@ -579,21 +579,21 @@ currentRegions.
       </h4>
       
     </li><li name="org.hammerlab.guacamole.windowing.SlidingWindow#setCurrentLocus" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="setCurrentLocus(locus:Long):Seq[Region]"></a>
-      <a id="setCurrentLocus(Long):Seq[Region]"></a>
+      <a id="setCurrentLocus(locus:Long):Vector[Region]"></a>
+      <a id="setCurrentLocus(Long):Vector[Region]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">setCurrentLocus</span><span class="params">(<span name="locus">locus: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="org.hammerlab.guacamole.windowing.SlidingWindow.Region">Region</span>]</span>
+        <span class="name">setCurrentLocus</span><span class="params">(<span name="locus">locus: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Vector">Vector</span>[<span class="extype" name="org.hammerlab.guacamole.windowing.SlidingWindow.Region">Region</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Advance to the specified locus, which must be greater than the current locus.</p><div class="fullcomment"><div class="comment cmt"><p>Advance to the specified locus, which must be greater than the current locus. After calling this, the
-<a href="#currentRegions():Seq[Region]" class="extmbr" name="org.hammerlab.guacamole.windowing.SlidingWindow#currentRegions">currentRegions</a> method will give the overlapping regions at the new locus.
+<a href="#currentRegions():Vector[Region]" class="extmbr" name="org.hammerlab.guacamole.windowing.SlidingWindow#currentRegions">currentRegions</a> method will give the overlapping regions at the new locus.
 </p></div><dl class="paramcmts block"><dt class="param">locus</dt><dd class="cmt"><p>Locus to advance to.</p></dd><dt>returns</dt><dd class="cmt"><p>The *new regions* that were added as a result of this call. Note that this is not the full set of regions
-        in the window: you must examine <a href="#currentRegions():Seq[Region]" class="extmbr" name="org.hammerlab.guacamole.windowing.SlidingWindow#currentRegions">currentRegions</a> for that.
+        in the window: you must examine <a href="#currentRegions():Vector[Region]" class="extmbr" name="org.hammerlab.guacamole.windowing.SlidingWindow#currentRegions">currentRegions</a> for that.
 </p></dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
