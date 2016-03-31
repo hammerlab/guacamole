@@ -1,7 +1,5 @@
 package org.hammerlab.guacamole.commands.jointcaller
 
-import org.apache.spark.SparkContext
-import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole.DistributedUtil._
 import org.hammerlab.guacamole.commands.jointcaller.CallsAtSiteAnnotation.NamedAnnotations
 import org.hammerlab.guacamole.pileup.Pileup
@@ -109,8 +107,13 @@ object CallsAtSite {
         multiplePileupStatsPerPossibleAlleleLocus((allele.start.toInt, allele.end.toInt)))
     })
 
-    if (!(forceCall || evidences.exists(_.isSomaticCall) || (!onlySomatic && evidences.exists(_.isGermlineCall)))) {
-      return None
+    if (!forceCall) {
+      if (!evidences.exists(_.isCall)) {
+        return None
+      }
+      if (onlySomatic && evidences.exists(_.isGermlineCall)) {
+        return None
+      }
     }
 
     val annotatedEvidences = evidences.map(evidence => {

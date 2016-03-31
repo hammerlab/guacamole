@@ -23,7 +23,6 @@ class SomaticJointCallerSuite extends GuacFunSuite with Matchers {
     ReferenceBroadcast(b37Chromosome22Fasta, sc, partialFasta = false)
   }
 
-  /*
   sparkTest("call a somatic variant") {
     val inputs = InputCollection(cancerWGS1Bams)
     val loci = LociSet.parse("chr12:65857040-65857041")
@@ -41,7 +40,14 @@ class SomaticJointCallerSuite extends GuacFunSuite with Matchers {
     val loci = LociSet.parse("chr5:82649006-82649009")
     val readSets = SomaticJoint.inputsToReadSets(sc, inputs, loci, hg19PartialReference)
     val calls = SomaticJoint.makeCalls(
-      sc, inputs, readSets, Parameters.defaults, hg19PartialReference, loci.result, LociSet.empty).collect
+      sc,
+      inputs,
+      readSets,
+      Parameters.defaults,
+      hg19PartialReference,
+      loci.result,
+      LociSet.empty,
+      includeFiltered = true).collect
 
     calls.length should equal(1)
     calls.head.alleleEvidences.length should equal(1)
@@ -80,7 +86,6 @@ class SomaticJointCallerSuite extends GuacFunSuite with Matchers {
 
     calls.collect.length should equal(0)
   }
-  */
 
   sparkTest("call a somatic variant using RNA evidence") {
     val parameters = Parameters.defaults.copy(somaticNegativeLog10VariantPriorWithRnaEvidence = 1)
