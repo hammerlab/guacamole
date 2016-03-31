@@ -138,6 +138,7 @@ case class PileupElement(
    */
   def isInsertion = alignment match { case Insertion(_, _) => true; case _ => false }
   def isDeletion = alignment match { case Deletion(_, _) => true; case _ => false }
+  def isClipped = alignment match { case Clipped => true; case _ => false }
   def isMidDeletion = alignment match { case MidDeletion(_) => true; case _ => false }
   def isMismatch = alignment match { case Mismatch(_, _, _) => true; case _ => false }
   def isMatch = alignment match { case Match(_, _) => true; case _ => false }

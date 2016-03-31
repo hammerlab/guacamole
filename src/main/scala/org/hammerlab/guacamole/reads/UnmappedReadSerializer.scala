@@ -41,8 +41,8 @@ class UnmappedReadSerializer extends Serializer[UnmappedRead] {
     val token = input.readInt()
     val name: String = input.readString()
     val count: Int = input.readInt(true)
-    val sequenceArray: Seq[Byte] = input.readBytes(count)
-    val qualityScoresArray = input.readBytes(count)
+    val sequenceArray: Vector[Byte] = input.readBytes(count).toVector
+    val qualityScoresArray = input.readBytes(count).toVector
     val isDuplicate = input.readBoolean()
     val sampleName = input.readString().intern()
     val failedVendorQualityChecks = input.readBoolean()

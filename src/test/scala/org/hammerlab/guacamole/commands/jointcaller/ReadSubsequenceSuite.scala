@@ -8,7 +8,7 @@ import org.hammerlab.guacamole.util.{ TestUtil, GuacFunSuite }
 import org.scalatest.Matchers
 
 class ReadSubsequenceSuite extends GuacFunSuite with Matchers {
-  val cancerWGS1Bams = Seq("normal.bam", "primary.bam", "recurrence.bam").map(
+  val cancerWGS1Bams = Vector("normal.bam", "primary.bam", "recurrence.bam").map(
     name => TestUtil.testDataPath("cancer-wgs1/" + name))
 
   def simpleReference = TestUtil.makeReference(sc, Seq(("chr1", 0, "NTCGATCGACG")))
