@@ -7,6 +7,7 @@ import org.scalatest.Matchers
 
 // This test currently does not make any assertions, but outputs a performance comparison. We may want to add assertions
 // on the accuracy later.
+@Ignore
 class SomaticJointCallerIntegrationTests extends GuacFunSuite with Matchers {
 
   var tempFileNum = 0
