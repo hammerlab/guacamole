@@ -188,7 +188,7 @@ class SlidingWindowSuite extends FunSuite with Matchers {
     val window2 = SlidingWindow("chr1", 0, reads2.iterator)
 
     val loci = LociSet.parse("chr1:0-3,chr1:20-30").result.onContig("chr1").iterator
-    val windows = Seq(window1, window2)
+    val windows = Vector(window1, window2)
 
     SlidingWindow.advanceMultipleWindows(windows, loci, skipEmpty = false) should be(Some(0))
     windows.map(_.currentLocus) should equal(Seq(0, 0))
@@ -214,7 +214,7 @@ class SlidingWindowSuite extends FunSuite with Matchers {
     val window2 = SlidingWindow("chr1", 0, reads2.iterator)
 
     val loci = LociSet.parse("chr1:0-3,chr1:20-30").result.onContig("chr1").iterator
-    val windows = Seq(window1, window2)
+    val windows = Vector(window1, window2)
 
     SlidingWindow.advanceMultipleWindows(windows, loci, skipEmpty = true) should be(Some(0))
     windows.map(_.currentLocus) should equal(Seq(0, 0))
@@ -243,7 +243,7 @@ class SlidingWindowSuite extends FunSuite with Matchers {
     val window2 = SlidingWindow("chr1", 0, reads2.iterator)
 
     val loci = LociSet.parse("chr1:0-3,chr1:60-101").result.onContig("chr1").iterator
-    val windows = Seq(window1, window2)
+    val windows = Vector(window1, window2)
 
     SlidingWindow.advanceMultipleWindows(windows, loci, skipEmpty = false) should be(Some(0))
     windows.map(_.currentLocus) should equal(Seq(0, 0))

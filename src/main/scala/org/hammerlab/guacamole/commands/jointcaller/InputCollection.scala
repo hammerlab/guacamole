@@ -1,5 +1,6 @@
 package org.hammerlab.guacamole.commands.jointcaller
 
+import org.hammerlab.guacamole.DistributedUtil.PerSample
 import org.hammerlab.guacamole.commands.jointcaller.Input.{ Analyte, TissueType }
 import org.kohsuke.args4j.spi.StringArrayOptionHandler
 import org.kohsuke.args4j.{ Argument, Option => Args4jOption }
@@ -7,7 +8,7 @@ import org.kohsuke.args4j.{ Argument, Option => Args4jOption }
 /**
  * Convenience container for zero or more Input instances.
  */
-case class InputCollection(items: Seq[Input]) {
+case class InputCollection(items: PerSample[Input]) {
   val normalDNA = items.filter(_.normalDNA)
   val normalRNA = items.filter(_.normalRNA)
   val tumorDNA = items.filter(_.tumorDNA)
@@ -37,7 +38,11 @@ object InputCollection {
    * Create an InputCollection from parsed commandline arguments.
    */
   def apply(args: Arguments): InputCollection = {
-    apply(paths = args.paths, sampleNames = args.sampleNames, tissueTypes = args.tissueTypes, analytes = args.analytes)
+    apply(
+      paths = args.paths.toVector,
+      sampleNames = args.sampleNames.toVector,
+      tissueTypes = args.tissueTypes.toVector,
+      analytes = args.analytes.toVector)
   }
 
   /**
@@ -53,10 +58,10 @@ object InputCollection {
    * @param analytes "dna" or "rna" for each input
    * @return resulting InputCollection
    */
-  def apply(paths: Seq[String],
-            sampleNames: Seq[String] = Seq.empty,
-            tissueTypes: Seq[String] = Seq.empty,
-            analytes: Seq[String] = Seq.empty): InputCollection = {
+  def apply(paths: PerSample[String],
+            sampleNames: PerSample[String] = Vector.empty,
+            tissueTypes: PerSample[String] = Vector.empty,
+            analytes: PerSample[String] = Vector.empty): InputCollection = {
 
     def checkLength(name: String, items: Seq[String]) = {
       if (items.length != paths.length) {

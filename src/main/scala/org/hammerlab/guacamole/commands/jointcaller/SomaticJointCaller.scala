@@ -4,6 +4,7 @@ import htsjdk.samtools.SAMSequenceDictionary
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole.Common.Arguments.NoSequenceDictionary
+import org.hammerlab.guacamole.DistributedUtil.PerSample
 import org.hammerlab.guacamole._
 import org.hammerlab.guacamole.reads._
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
@@ -41,7 +42,7 @@ object SomaticJoint {
                        inputs: InputCollection,
                        loci: LociSet.Builder,
                        reference: ReferenceBroadcast,
-                       contigLengthsFromDictionary: Boolean = true): Seq[ReadSet] = {
+                       contigLengthsFromDictionary: Boolean = true): PerSample[ReadSet] = {
     inputs.items.zipWithIndex.map({
       case (input, index) => ReadSet(
         sc,
@@ -136,7 +137,7 @@ object SomaticJoint {
 
   def makeCalls(sc: SparkContext,
                 inputs: InputCollection,
-                readSets: Seq[ReadSet],
+                readSets: PerSample[ReadSet],
                 parameters: Parameters,
                 reference: ReferenceBroadcast,
                 loci: LociSet,
@@ -210,7 +211,7 @@ object SomaticJoint {
 
     def writeSome(out: String,
                   filteredCalls: Seq[MultipleAllelesEvidenceAcrossSamples],
-                  filteredInputs: Seq[Input],
+                  filteredInputs: PerSample[Input],
                   includePooledNormal: Option[Boolean] = None,
                   includePooledTumor: Option[Boolean] = None): Unit = {
 
@@ -268,14 +269,14 @@ object SomaticJoint {
           path("all.%s.%s.%s".format(
             input.sampleName, input.tissueType.toString, input.analyte.toString)),
           calls,
-          Seq(input))
+          Vector(input))
         writeSome(
           path("somatic.%s.%s.%s".format(
             input.sampleName, input.tissueType.toString, input.analyte.toString)),
           somaticCallsOrForced,
-          Seq(input))
+          Vector(input))
       })
-      writeSome(path("all.tumor_pooled_dna"), somaticCallsOrForced, Seq.empty, includePooledTumor = Some(true))
+      writeSome(path("all.tumor_pooled_dna"), somaticCallsOrForced, Vector.empty, includePooledTumor = Some(true))
     }
   }
 }

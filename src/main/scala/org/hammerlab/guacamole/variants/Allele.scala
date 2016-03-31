@@ -24,7 +24,7 @@ import org.hammerlab.guacamole.Bases
 import org.hammerlab.guacamole.Bases.BasesOrdering
 
 case class Allele(refBases: Seq[Byte], altBases: Seq[Byte]) extends Ordered[Allele] {
-  lazy val isVariant = refBases != altBases
+  val isVariant = refBases != altBases
 
   override def toString: String = "Allele(%s,%s)".format(Bases.basesToString(refBases), Bases.basesToString(altBases))
 
@@ -52,9 +52,9 @@ class AlleleSerializer extends Serializer[Allele] {
 
   def read(kryo: Kryo, input: Input, klass: Class[Allele]): Allele = {
     val referenceBasesLength = input.readInt(true)
-    val referenceBases: Seq[Byte] = input.readBytes(referenceBasesLength)
+    val referenceBases: IndexedSeq[Byte] = input.readBytes(referenceBasesLength)
     val alternateLength = input.readInt(true)
-    val alternateBases: Seq[Byte] = input.readBytes(alternateLength)
+    val alternateBases: IndexedSeq[Byte] = input.readBytes(alternateLength)
     Allele(referenceBases, alternateBases)
   }
 }

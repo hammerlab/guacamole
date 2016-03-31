@@ -13,9 +13,9 @@ object SplitIterator {
    * @tparam V
    * @return a buffered iterator for each key in 0 .. num.
    */
-  def split[V](num: Int, iterator: Iterator[(Int, V)]): Seq[BufferedIterator[V]] = {
+  def split[V](num: Int, iterator: Iterator[(Int, V)]): Vector[BufferedIterator[V]] = {
     val buffers = (0 until num).map(_ => new collection.mutable.Queue[V])
-    (0 until num).map(index => new SplitIterator[V](index, buffers, iterator))
+    (0 until num).toVector.map(index => new SplitIterator[V](index, buffers, iterator))
   }
 }
 

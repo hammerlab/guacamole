@@ -451,8 +451,8 @@ object Read extends Logging {
    */
   def fromADAMRecord(alignmentRecord: AlignmentRecord, token: Int, reference: ReferenceGenome): Read = {
 
-    val sequence = Bases.stringToBases(alignmentRecord.getSequence.toString)
-    val baseQualities = baseQualityStringToArray(alignmentRecord.getQual.toString, sequence.length)
+    val sequence = Bases.stringToBases(alignmentRecord.getSequence)
+    val baseQualities = baseQualityStringToArray(alignmentRecord.getQual, sequence.length)
 
     val referenceContig = alignmentRecord.getContig.getContigName.intern
     val cigar = TextCigarCodec.decode(alignmentRecord.getCigar)
