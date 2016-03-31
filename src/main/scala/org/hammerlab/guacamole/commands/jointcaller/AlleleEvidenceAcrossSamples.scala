@@ -1,12 +1,9 @@
 package org.hammerlab.guacamole.commands.jointcaller
 
-import org.hammerlab.guacamole.Bases
 import org.hammerlab.guacamole.DistributedUtil._
-import org.hammerlab.guacamole.commands.jointcaller.Input.{ Analyte, TissueType }
-import org.hammerlab.guacamole.commands.jointcaller.PileupStats.AlleleMixture
 import org.hammerlab.guacamole.commands.jointcaller.AlleleEvidenceAcrossSamplesAnnotation.NamedAnnotations
-import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.reference.ReferenceBroadcast
+import org.hammerlab.guacamole.commands.jointcaller.Input.{Analyte, TissueType}
+import org.hammerlab.guacamole.commands.jointcaller.PileupStats.AlleleMixture
 
 import scala.collection.Set
 

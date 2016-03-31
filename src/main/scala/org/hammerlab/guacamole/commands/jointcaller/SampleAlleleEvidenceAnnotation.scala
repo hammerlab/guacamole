@@ -3,7 +3,7 @@ package org.hammerlab.guacamole.commands.jointcaller
 import java.util
 
 import htsjdk.variant.variantcontext.GenotypeBuilder
-import htsjdk.variant.vcf.{ VCFFilterHeaderLine, VCFHeaderLine, VCFHeaderLineType, VCFFormatHeaderLine }
+import htsjdk.variant.vcf.{VCFFilterHeaderLine, VCFFormatHeaderLine, VCFHeaderLine, VCFHeaderLineType}
 import org.hammerlab.guacamole.filters.FishersExactTest
 
 trait SampleAlleleEvidenceAnnotation {

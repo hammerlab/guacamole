@@ -1,11 +1,9 @@
 package org.hammerlab.guacamole.commands.jointcaller
 
 import org.hammerlab.guacamole.DistributedUtil.PerSample
-import org.hammerlab.guacamole.commands.jointcaller.Input.{ Analyte, TissueType }
+import org.hammerlab.guacamole.commands.jointcaller.Input.{Analyte, TissueType}
 import org.kohsuke.args4j.spi.StringArrayOptionHandler
-import org.kohsuke.args4j.{ Argument, Option => Args4jOption }
-
-import scala.collection.mutable
+import org.kohsuke.args4j.{Argument, Option => Args4jOption}
 
 /**
  * Convenience container for zero or more Input instances.

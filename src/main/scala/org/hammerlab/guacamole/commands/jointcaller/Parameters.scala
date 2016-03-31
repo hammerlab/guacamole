@@ -1,7 +1,7 @@
 package org.hammerlab.guacamole.commands.jointcaller
 
 import org.hammerlab.guacamole.Common
-import org.kohsuke.args4j.{ Option => Args4jOption }
+import org.kohsuke.args4j.{Option => Args4jOption}
 
 /**
  * Model parameters for the joint caller. Anything that affects the math for the joint caller should go here.

@@ -1,10 +1,10 @@
 package org.hammerlab.guacamole.commands.jointcaller
 
 import org.hammerlab.guacamole.DistributedUtil._
+import org.hammerlab.guacamole._
 import org.hammerlab.guacamole.commands.jointcaller.CallsAtSiteAnnotation.NamedAnnotations
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
-import org.hammerlab.guacamole._
 
 /**
  * A grouping of AlleleEvidenceAcrossSamples instances at the same locus.
@@ -16,8 +16,8 @@ import org.hammerlab.guacamole._
  */
 case class CallsAtSite(referenceContig: String,
                        start: Long,
-                        alleleEvidences: Seq[AlleleEvidenceAcrossSamples],
-                        annotations: NamedAnnotations = CallsAtSiteAnnotation.emptyAnnotations)
+                       alleleEvidences: Seq[AlleleEvidenceAcrossSamples],
+                       annotations: NamedAnnotations = CallsAtSiteAnnotation.emptyAnnotations)
     extends HasReferenceRegion {
 
   assume(alleleEvidences.forall(_.allele.referenceContig == referenceContig))
@@ -26,10 +26,10 @@ case class CallsAtSite(referenceContig: String,
   val end: Long = if (alleleEvidences.isEmpty) start else alleleEvidences.map(_.allele.end).max
 
   /**
-    * If we are going to consider only one allele at this site, pick the best one.
-    *
-    * TODO: this should probably do something more sophisticated.
-    */
+   * If we are going to consider only one allele at this site, pick the best one.
+   *
+   * TODO: this should probably do something more sophisticated.
+   */
   def bestAllele(): AlleleEvidenceAcrossSamples = {
     // We rank germline calls first, then somatic calls, then break ties with the sum of the best posteriors.
     alleleEvidences.sortBy(evidence => {
@@ -42,10 +42,9 @@ case class CallsAtSite(referenceContig: String,
     }).last
   }
 
-
   /**
-    * Return a new instance containing only the calls that pass filters.
-    */
+   * Return a new instance containing only the calls that pass filters.
+   */
   def onlyPassingFilters(): CallsAtSite = copy(alleleEvidences = alleleEvidences.filter(!_.failsFilters))
 
   def withAnnotations(annotations: NamedAnnotations): CallsAtSite = copy(
@@ -55,13 +54,13 @@ case class CallsAtSite(referenceContig: String,
 }
 object CallsAtSite {
   def make(
-             pileups: PerSample[Pileup],
-             inputs: InputCollection,
-             parameters: Parameters,
-             reference: ReferenceBroadcast,
-             forceCallLoci: LociSet = LociSet.empty,
-             onlySomatic: Boolean = false,
-             includeFiltered: Boolean = false): Option[CallsAtSite] = {
+    pileups: PerSample[Pileup],
+    inputs: InputCollection,
+    parameters: Parameters,
+    reference: ReferenceBroadcast,
+    forceCallLoci: LociSet = LociSet.empty,
+    onlySomatic: Boolean = false,
+    includeFiltered: Boolean = false): Option[CallsAtSite] = {
 
     // We ignore clipped reads. Clipped reads include introns (cigar operator N) in RNA-seq.
     val filteredPileups: Vector[Pileup] = pileups.map(

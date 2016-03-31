@@ -3,7 +3,7 @@ package org.hammerlab.guacamole.commands.jointcaller
 import java.util
 
 import htsjdk.variant.variantcontext.VariantContextBuilder
-import htsjdk.variant.vcf.{ VCFFilterHeaderLine, VCFHeaderLine }
+import htsjdk.variant.vcf.{VCFFilterHeaderLine, VCFHeaderLine}
 
 trait AlleleEvidenceAcrossSamplesAnnotation {
   def isFiltered: Boolean = false
@@ -66,9 +66,9 @@ object AlleleEvidenceAcrossSamplesAnnotation {
         val referenceReads = stats.allelicDepths.getOrElse(evidence.allele.ref, 0)
         Some(
           InsufficientNormal(
-          parameters,
-          referenceReads = referenceReads,
-          totalReads = stats.totalDepthIncludingReadsContributingNoAlleles))
+            parameters,
+            referenceReads = referenceReads,
+            totalReads = stats.totalDepthIncludingReadsContributingNoAlleles))
       }
     }
   }

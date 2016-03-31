@@ -3,7 +3,6 @@ package org.hammerlab.guacamole.commands.jointcaller
 import org.hammerlab.guacamole.Bases
 import org.hammerlab.guacamole.DistributedUtil.PerSample
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.reference.ReferenceBroadcast
 
 /**
  * An allele (alt) at a site in the genome. We also keep track of the reference allele (ref) at this site.

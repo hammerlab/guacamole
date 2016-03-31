@@ -2,7 +2,7 @@ package org.hammerlab.guacamole.commands.jointcaller
 
 import java.util
 
-import htsjdk.variant.vcf.{ VCFFilterHeaderLine, VCFHeaderLine }
+import htsjdk.variant.vcf.{VCFFilterHeaderLine, VCFHeaderLine}
 
 trait CallsAtSiteAnnotation extends AlleleEvidenceAcrossSamplesAnnotation {}
 
@@ -16,13 +16,13 @@ object CallsAtSiteAnnotation {
     val name: String
     def addVCFHeaders(headerLines: util.Set[VCFHeaderLine]): Unit
     def apply(
-               evidence: CallsAtSite,
-               parameters: Parameters): Option[CallsAtSiteAnnotation]
+      evidence: CallsAtSite,
+      parameters: Parameters): Option[CallsAtSiteAnnotation]
   }
 
   def makeAnnotations(
-                       evidence: CallsAtSite,
-                       parameters: Parameters): NamedAnnotations = {
+    evidence: CallsAtSite,
+    parameters: Parameters): NamedAnnotations = {
 
     availableAnnotations
       .map(annotation => (annotation.name, annotation(evidence, parameters)))
@@ -45,8 +45,8 @@ object CallsAtSiteAnnotation {
     }
 
     def apply(
-               evidence: CallsAtSite,
-               parameters: Parameters): Option[CallsAtSiteAnnotation] = {
+      evidence: CallsAtSite,
+      parameters: Parameters): Option[CallsAtSiteAnnotation] = {
       if (parameters.maxCallsPerSite == 0) {
         None
       } else {
