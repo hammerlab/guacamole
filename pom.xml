@@ -173,6 +173,7 @@
           <junitxml>.</junitxml>
           <filereports>GuacamoleTestSuite.txt</filereports>
           <argLine>-Xmx3072m</argLine>
+          <stdout>F</stdout>
         </configuration>
         <executions>
           <execution>
