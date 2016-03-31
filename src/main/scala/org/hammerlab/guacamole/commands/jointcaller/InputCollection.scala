@@ -59,9 +59,9 @@ object InputCollection {
    * @return resulting InputCollection
    */
   def apply(paths: PerSample[String],
-            sampleNames: PerSample[String] = Vector.empty,
-            tissueTypes: PerSample[String] = Vector.empty,
-            analytes: PerSample[String] = Vector.empty): InputCollection = {
+            sampleNames: PerSample[String] = Nil,
+            tissueTypes: PerSample[String] = Nil,
+            analytes: PerSample[String] = Nil): InputCollection = {
 
     def checkLength(name: String, items: Seq[String]) = {
       if (items.length != paths.length) {

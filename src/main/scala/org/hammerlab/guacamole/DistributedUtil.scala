@@ -47,7 +47,7 @@ object DistributedUtil extends Logging {
     var partitioningAccuracy: Int = 250
   }
 
-  type PerSample[A] = IndexedSeq[A]
+  type PerSample[A] = Seq[A]
 
   /**
    * Partition a LociSet among tasks according to the strategy specified in args.
