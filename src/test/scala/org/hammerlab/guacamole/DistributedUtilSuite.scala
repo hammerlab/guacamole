@@ -203,21 +203,21 @@ class DistributedUtilSuite extends GuacFunSuite with Matchers {
       TestUtil.makeRead("XZX", "3M", 99)))
 
     val resultPlain = DistributedUtil.pileupFlatMapMultipleRDDs[Seq[Seq[String]]](
-      Seq(reads1, reads2, reads3),
+      Vector(reads1, reads2, reads3),
       DistributedUtil.partitionLociUniformly(1, LociSet.parse("chr1:1-500,chr2:10-20").result),
       true, // skip empty pileups
       pileups => Iterator(pileups.map(_.elements.map(p => Bases.basesToString(p.sequencedBases)))),
       reference = TestUtil.makeReference(sc, Seq(("chr1", 0, "ATCGATCGA")))).collect.map(_.toList)
 
     val resultParallelized = DistributedUtil.pileupFlatMapMultipleRDDs[Seq[Seq[String]]](
-      Seq(reads1, reads2, reads3),
+      Vector(reads1, reads2, reads3),
       DistributedUtil.partitionLociUniformly(800, LociSet.parse("chr0:0-100,chr1:1-500,chr2:10-20").result),
       true, // skip empty pileups
       pileups => Iterator(pileups.map(_.elements.map(p => Bases.basesToString(p.sequencedBases)))),
       reference = TestUtil.makeReference(sc, Seq(("chr1", 0, "ATCGATCGA")))).collect.map(_.toList)
 
     val resultWithEmpty = DistributedUtil.pileupFlatMapMultipleRDDs[Seq[Seq[String]]](
-      Seq(reads1, reads2, reads3),
+      Vector(reads1, reads2, reads3),
       DistributedUtil.partitionLociUniformly(5, LociSet.parse("chr1:1-500,chr2:10-20").result),
       false, // don't skip empty pileups
       pileups => Iterator(pileups.map(_.elements.map(p => Bases.basesToString(p.sequencedBases)))),
@@ -406,7 +406,7 @@ class DistributedUtilSuite extends GuacFunSuite with Matchers {
       TestUtil.makeRead("GGGGGGG", "7M", 9)))
 
     val counts = DistributedUtil.windowFoldLoci(
-      Seq(reads),
+      Vector(reads),
       // Split loci in 5 partitions - we will compute an aggregate value per partition
       DistributedUtil.partitionLociUniformly(5, LociSet.parse("chr1:0-20").result),
       skipEmpty = false,

@@ -84,7 +84,7 @@ object Bases {
   }
 
   /** Convert a string (e.g. "AAAGGC") to a byte array. */
-  def stringToBases(string: String): Seq[Byte] = {
+  def stringToBases(string: String): IndexedSeq[Byte] = {
     string.toUpperCase.getBytes
   }
 
