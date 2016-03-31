@@ -7,7 +7,7 @@ import org.hammerlab.guacamole.util.{ GuacFunSuite, TestUtil }
 import org.scalatest.Matchers
 
 class SomaticJointCallerSuite extends GuacFunSuite with Matchers {
-  val cancerWGS1Bams = Seq("normal.bam", "primary.bam", "recurrence.bam").map(
+  val cancerWGS1Bams = Vector("normal.bam", "primary.bam", "recurrence.bam").map(
     name => TestUtil.testDataPath("cancer-wgs1/" + name))
 
   val partialFasta = TestUtil.testDataPath("hg19.partial.fasta")
@@ -41,7 +41,7 @@ class SomaticJointCallerSuite extends GuacFunSuite with Matchers {
   }
 
   sparkTest("call germline variants") {
-    val inputs = InputCollection(cancerWGS1Bams, tissueTypes = Seq("normal", "normal", "normal"))
+    val inputs = InputCollection(cancerWGS1Bams, tissueTypes = Vector("normal", "normal", "normal"))
     val loci = LociSet.parse("chr1,chr2,chr3")
     val readSets = SomaticJoint.inputsToReadSets(sc, inputs, loci, partialReference)
     val calls = SomaticJoint.makeCalls(

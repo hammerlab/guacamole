@@ -47,7 +47,7 @@ object DistributedUtil extends Logging {
     var partitioningAccuracy: Int = 250
   }
 
-  type PerSample[A] = Seq[A]
+  type PerSample[A] = IndexedSeq[A]
 
   /**
    * Partition a LociSet among tasks according to the strategy specified in args.
@@ -285,7 +285,7 @@ object DistributedUtil extends Logging {
     function: Pileup => Iterator[T],
     reference: ReferenceGenome): RDD[T] = {
     windowFlatMapWithState(
-      Seq(reads),
+      Vector(reads),
       lociPartitions,
       skipEmpty,
       0,
@@ -313,7 +313,7 @@ object DistributedUtil extends Logging {
     function: (Pileup, Pileup) => Iterator[T],
     reference: ReferenceGenome): RDD[T] = {
     windowFlatMapWithState(
-      Seq(reads1, reads2),
+      Vector(reads1, reads2),
       lociPartitions,
       skipEmpty,
       halfWindowSize = 0L,
@@ -333,10 +333,10 @@ object DistributedUtil extends Logging {
    * @see the windowTaskFlatMapMultipleRDDs function for other argument descriptions.
    */
   def pileupFlatMapMultipleRDDs[T: ClassTag](
-    readsRDDs: Seq[RDD[MappedRead]],
+    readsRDDs: PerSample[RDD[MappedRead]],
     lociPartitions: LociMap[Long],
     skipEmpty: Boolean,
-    function: Seq[Pileup] => Iterator[T],
+    function: PerSample[Pileup] => Iterator[T],
     reference: ReferenceGenome): RDD[T] = {
     windowFlatMapWithState(
       readsRDDs,
@@ -344,7 +344,7 @@ object DistributedUtil extends Logging {
       skipEmpty,
       halfWindowSize = 0L,
       initialState = None,
-      function = (maybePileups: Option[Seq[Pileup]], windows: PerSample[SlidingWindow[MappedRead]]) => {
+      function = (maybePileups: Option[PerSample[Pileup]], windows: PerSample[SlidingWindow[MappedRead]]) => {
         val advancedPileups = maybePileups match {
           case Some(existingPileups) => {
             existingPileups.zip(windows).map(

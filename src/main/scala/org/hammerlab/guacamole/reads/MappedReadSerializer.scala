@@ -48,8 +48,8 @@ class MappedReadSerializer extends Serializer[MappedRead] {
     val token = input.readInt()
     val name = input.readString()
     val count: Int = input.readInt(true)
-    val sequenceArray: Seq[Byte] = input.readBytes(count)
-    val qualityScoresArray: Seq[Byte] = input.readBytes(count)
+    val sequenceArray: IndexedSeq[Byte] = input.readBytes(count).toVector
+    val qualityScoresArray: IndexedSeq[Byte] = input.readBytes(count).toVector
     val isDuplicate = input.readBoolean()
     val sampleName = input.readString().intern()
     val referenceContig = input.readString().intern()
