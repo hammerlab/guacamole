@@ -17,7 +17,7 @@ class GermlineAssemblyCallerSuite extends FunSuite with Matchers with BeforeAndA
 
   val input = NA12878TestUtils.na12878SubsetBam
   args.reads = TestUtil.testDataPath(input)
-  args.parallelism = 2
+  args.parallelism = 1
 
   var sc: SparkContext = _
   var reference: ReferenceBroadcast = _
@@ -37,7 +37,7 @@ class GermlineAssemblyCallerSuite extends FunSuite with Matchers with BeforeAndA
   def verifyVariantsAtLocus(locus: Int,
                             contig: String = "chr1",
                             kmerSize: Int = 31,
-                            snvWindowRange: Int = 55,
+                            snvWindowRange: Int = 45,
                             minOccurrence: Int = 5,
                             minVaf: Float = 0.1f)(
                              expectedVariants: (String, Int, String, String)*
@@ -66,7 +66,7 @@ class GermlineAssemblyCallerSuite extends FunSuite with Matchers with BeforeAndA
       )
 
     val variants =
-      GermlineAssemblyCaller.Caller.discoverGenotypes(
+      GermlineAssemblyCaller.Caller.discoverGermlineVariants(
         readSet.mappedReads,
         kmerSize = kmerSize,
         snvWindowRange = snvWindowRange,
@@ -105,7 +105,6 @@ class GermlineAssemblyCallerSuite extends FunSuite with Matchers with BeforeAndA
   test (
     "test assembly caller: illumina platinum tests; 2 nearby homozygous snps") {
     verifyVariantsAtLocus(1316669) (
-      ("chr1", 1316647, "C", "T"),
       ("chr1", 1316647, "C", "T"),
       ("chr1", 1316669, "C", "G"),
       ("chr1", 1316673, "C", "T")
