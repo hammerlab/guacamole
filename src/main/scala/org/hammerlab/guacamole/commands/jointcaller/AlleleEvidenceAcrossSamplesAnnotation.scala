@@ -6,15 +6,14 @@ import htsjdk.variant.variantcontext.VariantContextBuilder
 import htsjdk.variant.vcf.{ VCFFilterHeaderLine, VCFHeaderLine }
 
 trait AlleleEvidenceAcrossSamplesAnnotation {
-  val parameters: Parameters
   def isFiltered: Boolean = false
-  def addInfoToVCF(builder: VariantContextBuilder): Unit
+  def addInfoToVCF(builder: VariantContextBuilder): Unit = {}
 }
 object AlleleEvidenceAcrossSamplesAnnotation {
   type NamedAnnotations = Map[String, AlleleEvidenceAcrossSamplesAnnotation]
   val emptyAnnotations = Map[String, AlleleEvidenceAcrossSamplesAnnotation]()
 
-  val availableAnnotations: Seq[Metadata] = Seq(InsufficientNormal)
+  val availableAnnotations: Seq[Metadata] = Vector(InsufficientNormal)
 
   trait Metadata {
     val name: String
@@ -49,8 +48,6 @@ object AlleleEvidenceAcrossSamplesAnnotation {
       totalReads < parameters.filterSomaticNormalDepth ||
         (totalReads - referenceReads) * 100.0 / totalReads > parameters.filterSomaticNormalNonreferencePercent
     }
-
-    def addInfoToVCF(builder: VariantContextBuilder): Unit = {}
   }
   object InsufficientNormal extends Metadata {
     val name = "INSUFFICIENT_NORMAL"

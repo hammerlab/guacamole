@@ -10,6 +10,7 @@ import org.kohsuke.args4j.{ Option => Args4jOption }
  */
 case class Parameters(
     maxAllelesPerSite: Int,
+    maxCallsPerSite: Int,
     anyAlleleMinSupportingReads: Int,
     anyAlleleMinSupportingPercent: Double,
     germlineNegativeLog10HeterozygousPrior: Double,
@@ -47,6 +48,9 @@ object Parameters {
   trait CommandlineArguments extends Common.Arguments.Base {
     @Args4jOption(name = "--max-alleles-per-site", usage = "maximum number of alt alleles to consider at a site")
     var maxAllelesPerSite: Int = 4
+
+    @Args4jOption(name = "--max-calls-per-site", usage = "maximum number of calls to make at a site. 0 indicates unlimited")
+    var maxCallsPerSite: Int = 1
 
     @Args4jOption(name = "--any-allele-min-supporting-reads", usage = "min reads to call any allele (somatic or germline)")
     var anyAlleleMinSupportingReads: Int = 2
@@ -100,6 +104,7 @@ object Parameters {
   def apply(args: CommandlineArguments): Parameters = {
     new Parameters(
       maxAllelesPerSite = args.maxAllelesPerSite,
+      maxCallsPerSite = args.maxCallsPerSite,
       anyAlleleMinSupportingReads = args.anyAlleleMinSupportingReads,
       anyAlleleMinSupportingPercent = args.anyAlleleMinSupportingPercent,
       germlineNegativeLog10HeterozygousPrior = args.germlineNegativeLog10HeterozygousPrior,

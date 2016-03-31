@@ -27,7 +27,7 @@ object VCFOutput {
    * @param reference reference genome
    */
   def writeVcf(path: String,
-               calls: Seq[MultipleAllelesEvidenceAcrossSamples],
+               calls: Seq[CallsAtSite],
                inputs: InputCollection,
                includePooledNormal: Boolean,
                includePooledTumor: Boolean,
