@@ -56,7 +56,7 @@ object GeneratePartialFasta extends Logging {
 
     val regions = reads.map(read => (read.referenceContig, read.start, read.end))
     regions.collect.foreach(triple => {
-      lociBuilder.put(triple._1, triple._2, Some(triple._3))
+      lociBuilder.put(triple._1, triple._2, triple._3)
     })
 
     val loci = lociBuilder.result
