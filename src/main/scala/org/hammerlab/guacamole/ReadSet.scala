@@ -73,10 +73,11 @@ case class ReadSet(
       sequenceDictionary.get.records.foreach(record => builder += ((record.name.toString, record.length)))
       builder.result
     } else {
-      mappedReads.map(read => Map(read.referenceContig -> read.end)).reduce((map1, map2) => {
-        val keys = map1.keySet.union(map2.keySet).toSeq
-        keys.map(key => key -> math.max(map1.getOrElse(key, 0L), map2.getOrElse(key, 0L))).toMap
-      }).toMap
+      mappedReads
+        .map(read => read.referenceContig → read.end)
+        .reduceByKey(math.max)
+        .collectAsMap()
+        .toMap
     }
   }
 }
