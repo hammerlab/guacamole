@@ -160,22 +160,33 @@ object LociSet {
     }
 
     /**
-     * Parse a loci expression and add it to the builder. Example expressions:
-     *  "all" (all sites on all contigs)
-     *  "none" (no loci, used as a default in some places)
-     *  "chr1,chr3" (all sites on contigs chr1 and chr3)
-     *  "chr1:10000-20000,chr2" (sites x where 10000 <= x < 20000 on chr1, all sites on chr2)
-     */
+      * Parse a loci expression and add it to the builder. Example expressions:
+      *
+      *  "all": all sites on all contigs.
+      *  "none": no loci, used as a default in some places.
+      *  "chr1,chr3": all sites on contigs chr1 and chr3.
+      *  "chr1:10000-20000,chr2": sites x where 10000 <= x < 20000 on chr1, all sites on chr2.
+      *  "chr1:10000": just chr1, position 10000; equivalent to "chr1:10000-10001".
+      *  "chr1:10000-": chr1, from position 10000 to the end of chr1; logically "chr1:10000-∞".
+      */
     def putExpression(loci: String): Builder = {
       if (loci == "all") {
         putAllContigs()
       } else if (loci != "none") {
-        val contigAndLoci = """^([\pL\pN._]+):(\pN+)-(\pN+)$""".r
+        val contigAndLoci = """^([\pL\pN._]+):(\pN+)(?:-(\pN*))?$""".r
         val contigOnly = """^([\pL\pN._]+)""".r
         val sets = loci.replaceAll("\\s", "").split(',').foreach({
           case ""                              => {}
-          case contigAndLoci(name, start, end) => put(name, start.toLong, end.toLong)
-          case contigOnly(contig)              => put(contig)
+          case contigAndLoci(name, startStr, endStrOpt) =>
+            val start = startStr.toLong
+            val end = Option(endStrOpt) match {
+              case Some("") ⇒ None
+              case Some(s) ⇒ Some(s.toLong)
+              case None ⇒ Some(start + 1)
+            }
+            put(name, start, end)
+          case contigOnly(contig) =>
+            put(contig)
           case other => {
             throw new IllegalArgumentException("Couldn't parse loci range: %s".format(other))
           }

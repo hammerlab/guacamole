@@ -70,6 +70,14 @@ class LociSetSuite extends GuacFunSuite with Matchers {
     set.onContig("chr21").iterator.toSeq should equal(100 until 200)
   }
 
+  test("single loci parsing") {
+    val set = LociSet.parse("chr1:10000").result
+    set.count should be(1)
+    set.onContig("chr1").contains( 9999) should be(false)
+    set.onContig("chr1").contains(10000) should be(true)
+    set.onContig("chr1").contains(10001) should be(false)
+  }
+
   sparkTest("loci set invariants") {
     val sets = List(
       "",
@@ -171,6 +179,10 @@ class LociSetSuite extends GuacFunSuite with Matchers {
     .toString should equal(
       "17:0-12,chr1:0-10,chr2:0-20,chr20:10-20"
     )
+  }
+
+  test("parse half-open interval") {
+    LociSet.parse("chr1:10000-").result("chr1" → 20000L).toString should be("chr1:10000-20000")
   }
 
   sparkTest("loci set single contig iterator basic") {
