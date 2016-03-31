@@ -160,9 +160,17 @@ class LociSetSuite extends GuacFunSuite with Matchers {
 
   sparkTest("loci set parsing with contig lengths") {
     LociSet.parse(
-      "chr1,chr2,17,chr2:3-5,chr20:10-20")
-      .result(Map("chr1" -> 10L, "chr2" -> 20L, "17" -> 12L, "chr20" -> 5000L)).toString should equal(
-        "17:0-12,chr1:0-10,chr2:0-20,chr20:10-20")
+      "chr1,chr2,17,chr2:3-5,chr20:10-20"
+    )
+    .result(
+      "chr1" → 10L,
+      "chr2" → 20L,
+      "17" → 12L,
+      "chr20" → 5000L
+    )
+    .toString should equal(
+      "17:0-12,chr1:0-10,chr2:0-20,chr20:10-20"
+    )
   }
 
   sparkTest("loci set single contig iterator basic") {

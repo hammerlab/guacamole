@@ -223,6 +223,13 @@ object LociSet {
     /* Convenience wrappers. */
     def result: LociSet = result(None) // enables omitting parentheses: builder.result instead of builder.result()
     def result(contigLengths: Map[String, Long]): LociSet = result(Some(contigLengths))
+    def result(contigLengths: (String, Long)*): LociSet =
+      result(
+        if (contigLengths.nonEmpty)
+          Some(contigLengths.toMap)
+        else
+          None
+      )
   }
 
   /** Return a LociSet of a single genomic interval. */
