@@ -146,6 +146,7 @@ object LociSet {
     /**
      * Add an interval to the Builder. If end is not specified, then it is taken to be the length of the contig.
      */
+    def put(contig: String, start: Long, end: Long): Builder = put(contig, start, Some(end))
     def put(contig: String, start: Long = 0, end: Option[Long] = None): Builder = {
       assume(start >= 0)
       assume(end.forall(_ >= start))
@@ -173,7 +174,7 @@ object LociSet {
         val contigOnly = """^([\pL\pN._]+)""".r
         val sets = loci.replaceAll("\\s", "").split(',').foreach({
           case ""                              => {}
-          case contigAndLoci(name, start, end) => put(name, start.toLong, Some(end.toLong))
+          case contigAndLoci(name, start, end) => put(name, start.toLong, end.toLong)
           case contigOnly(contig)              => put(contig)
           case other => {
             throw new IllegalArgumentException("Couldn't parse loci range: %s".format(other))
@@ -226,7 +227,7 @@ object LociSet {
 
   /** Return a LociSet of a single genomic interval. */
   def apply(contig: String, start: Long, end: Long): LociSet = {
-    (new Builder).put(contig, start, Some(end)).result
+    (new Builder).put(contig, start, end).result
   }
 
   /**
