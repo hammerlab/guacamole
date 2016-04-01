@@ -248,7 +248,11 @@ case class PileupElement(
    * If the read was positive then the sequencing end also corresponds to the read end positions
    * If the read was negative, the sequencing end is the mapped start position
    */
-  def distanceFromSequencingEnd = if (read.isPositiveStrand) read.end - locus else locus - read.start
+  def distanceFromSequencingEnd =
+    if (read.isPositiveStrand)
+      read.end - locus
+    else
+      locus - read.start
 
 }
 
@@ -256,7 +260,9 @@ object PileupElement {
   /**
    * Create a new [[PileupElement]] backed by the given read at the specified locus. The read must overlap the locus.
    */
-  def apply(read: MappedRead, locus: Long, referenceContigSequence: ContigSequence): PileupElement = {
+  def apply(read: MappedRead,
+            locus: Long,
+            referenceContigSequence: ContigSequence): PileupElement = {
     PileupElement(
       read = read,
       locus = read.start,
@@ -264,7 +270,8 @@ object PileupElement {
       cigarElementIndex = 0,
       cigarElementLocus = read.start,
       indexWithinCigarElement = 0,
-      referenceContigSequence = referenceContigSequence).advanceToLocus(locus)
+      referenceContigSequence = referenceContigSequence
+    ).advanceToLocus(locus)
   }
 }
 

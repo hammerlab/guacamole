@@ -14,7 +14,16 @@ case class MapBackedReferenceSequence(length: Int, wrapped: mutable.LinkedHashMa
   def apply(index: Int): Byte = wrapped.getOrElse(index, Bases.N)
 
   override def iterator: Iterator[Byte] = {
-    wrapped.valuesIterator
+    throw new NotImplementedError(
+      s"Iterating over all bases in a sparse, test-only representation of a contig is undefined."
+    )
+  }
+
+  override def equals(other: Any): Boolean = {
+    other match {
+      case o: MapBackedReferenceSequence ⇒ length == o.length && wrapped == o.wrapped
+      case _                             ⇒ false
+    }
   }
 
   override def slice(start: Int, end: Int): ContigSequence = (start until end).map(i ⇒ this(i))
