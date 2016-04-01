@@ -500,11 +500,11 @@ object SomaticMutectLike {
       val tumorVs0Model = MutectLogOdds
       val somaticModel = MutectSomaticLogOdds
 
-      lazy val mapqAndBaseqFilteredNormalPileup = mapqBaseqNullAlleleFilteredPu(rawNormalPileup, minBaseQuality, minAlignmentQuality)
-      lazy val mapqAndBaseqFilteredTumorPileup = mapqBaseqNullAlleleFilteredPu(rawTumorPileup, minBaseQuality, minAlignmentQuality)
+      lazy val rawTumorOverlapFilteredPileup = overlappingFragmentFilteredPileup(rawTumorPileup)
+      lazy val rawNormalOverlapFilteredPileup = overlappingFragmentFilteredPileup(rawNormalPileup)
 
-      lazy val mapqBaseqAndOverlappingFragmentFilteredNormalPileup = overlappingFragmentFilteredPileup(mapqAndBaseqFilteredNormalPileup)
-      lazy val mapqBaseqAndOverlappingFragmentFilteredTumorPileup = overlappingFragmentFilteredPileup(mapqAndBaseqFilteredTumorPileup)
+      lazy val mapqBaseqAndOverlappingFragmentFilteredNormalPileup = mapqBaseqNullAlleleFilteredPu(rawNormalOverlapFilteredPileup, minBaseQuality, minAlignmentQuality)
+      lazy val mapqBaseqAndOverlappingFragmentFilteredTumorPileup = mapqBaseqNullAlleleFilteredPu(rawTumorOverlapFilteredPileup, minBaseQuality, minAlignmentQuality)
 
       // For now, we skip loci that have no reads mapped. We may instead want to emit NoCall in this case.
       if (mapqBaseqAndOverlappingFragmentFilteredTumorPileup.elements.isEmpty
@@ -552,11 +552,11 @@ object SomaticMutectLike {
           val normalNotHet = somaticModel.logOdds(Bases.basesToString(alt.refBases),
             Bases.basesToString(alt.altBases), mapqBaseqAndOverlappingFragmentFilteredNormalPileup.elements)
 
-          val nInsertions = heavilyFilteredTumorPuElements.map(pileupElement =>
+          val nInsertions = rawTumorPileup.elements.map(pileupElement =>
             if (distanceToNearestReadInsertionOrDeletion(pileupElement, true).getOrElse(Int.MaxValue) <=
               indelNearnessThresholdForPointMutations) 1
             else 0).sum
-          val nDeletions = heavilyFilteredTumorPuElements.map(pileupElement =>
+          val nDeletions = rawTumorPileup.elements.map(pileupElement =>
             if (distanceToNearestReadInsertionOrDeletion(pileupElement, false).getOrElse(Int.MaxValue) <=
               indelNearnessThresholdForPointMutations) 1
             else 0).sum
@@ -566,13 +566,12 @@ object SomaticMutectLike {
           val tumorMapq0Depth = rawTumorPileup.elements.count(_.read.alignmentQuality == 0)
           val normalMapq0Depth = rawNormalPileup.elements.count(_.read.alignmentQuality == 0)
 
-
           val onlyTumorMutHeavyFiltered = heavilyFilteredTumorPuElements.filter(_.allele == alt)
           val maxAltQuality = onlyTumorMutHeavyFiltered.map(_.qualityScore).max
 
-          val contamLogOdds = if(contamFrac <= 0) 0.0 else {
-            val nContamAlleles:Int = math.floor(contamFrac * heavilyFilteredTumorPuElements.length).toInt
-            val onlyMutSortedByQualityScore = onlyTumorMutHeavyFiltered.sortBy(- _.qualityScore)
+          val contamLogOdds = if (contamFrac <= 0) 0.0 else {
+            val nContamAlleles: Int = math.floor(contamFrac * heavilyFilteredTumorPuElements.length).toInt
+            val onlyMutSortedByQualityScore = onlyTumorMutHeavyFiltered.sortBy(-_.qualityScore)
             val contamPileup = onlyMutSortedByQualityScore.take(nContamAlleles) ++ heavilyFilteredTumorPuElements ++
               heavilyFilteredTumorPuElements.take(onlyMutSortedByQualityScore.length - nContamAlleles)
             tumorVs0Model.logOdds(Bases.basesToString(alt.refBases), Bases.basesToString(alt.altBases), contamPileup, Some(math.min(alleleFrac, contamFrac)))
@@ -584,9 +583,9 @@ object SomaticMutectLike {
           val filteredNormalAltDepth = mapqBaseqAndOverlappingFragmentFilteredNormalPileup.elements.count(_.allele == alt)
           val filteredNormalDepth = mapqBaseqAndOverlappingFragmentFilteredNormalPileup.depth
 
-          val tumorPos = mapqAndBaseqFilteredTumorPileup.elements.filter(_.read.isPositiveStrand)
+          val tumorPos = rawTumorPileup.elements.filter(_.read.isPositiveStrand)
           val tumorPosAlt = tumorPos.filter(_.allele == alt)
-          val tumorNeg = mapqAndBaseqFilteredTumorPileup.elements.filterNot(_.read.isPositiveStrand)
+          val tumorNeg = rawTumorPileup.elements.filterNot(_.read.isPositiveStrand)
           val tumorNegAlt = tumorNeg.filter(_.allele == alt)
 
           val tumorPosDepth = tumorPos.size
