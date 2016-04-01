@@ -108,7 +108,7 @@ class ReadSetSuite extends GuacFunSuite with Matchers {
     }
     new AlignmentRecordRDDFunctions(adamRecords.rdd).saveAsParquet(args, adamRecords.sequences, adamRecords.recordGroups)
 
-    val (allReads, _) = Read.loadReadRDDAndSequenceDictionaryFromADAM(adamOut, sc, token = 0, reference = chr22Fasta)
+    val (allReads, _) = Read.loadReadRDDAndSequenceDictionaryFromADAM(adamOut, sc, token = 0)
     allReads.count() should be(8)
     val collectedReads = allReads.collect()
 
@@ -116,8 +116,7 @@ class ReadSetSuite extends GuacFunSuite with Matchers {
       adamOut,
       sc,
       1,
-      Read.InputFilters(mapped = true, nonDuplicate = true),
-      reference = chr22Fasta)
+      Read.InputFilters(mapped = true, nonDuplicate = true))
     filteredReads.count() should be(3)
     filteredReads.collect().forall(_.token == 1) should be(true)
   }

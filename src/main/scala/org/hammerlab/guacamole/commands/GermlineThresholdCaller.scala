@@ -65,8 +65,7 @@ object GermlineThreshold {
       val loci = Common.lociFromArguments(args)
       val readSet = Common.loadReadsFromArguments(
         args, sc, Read.InputFilters(
-          overlapsLoci = Some(loci), nonDuplicate = true),
-        reference = reference
+          overlapsLoci = Some(loci), nonDuplicate = true)
       )
 
       readSet.mappedReads.persist()
