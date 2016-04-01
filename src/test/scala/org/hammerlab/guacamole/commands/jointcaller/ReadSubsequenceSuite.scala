@@ -72,7 +72,7 @@ class ReadSubsequenceSuite extends GuacFunSuite with Matchers {
         TestUtil.loadPileup(
           sc,
           path,
-          contigOpt = Some(contigLocus._1),
+          maybeContig = Some(contigLocus._1),
           locus = contigLocus._2,
           reference = partialReference
         )
