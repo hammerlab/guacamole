@@ -167,7 +167,7 @@ object LociSet {
       *  "chr1,chr3": all sites on contigs chr1 and chr3.
       *  "chr1:10000-20000,chr2": sites x where 10000 <= x < 20000 on chr1, all sites on chr2.
       *  "chr1:10000": just chr1, position 10000; equivalent to "chr1:10000-10001".
-      *  "chr1:10000-": chr1, from position 10000 to the end of chr1; logically "chr1:10000-∞".
+      *  "chr1:10000-": chr1, from position 10000 to the end of chr1.
       */
     def putExpression(loci: String): Builder = {
       if (loci == "all") {
