@@ -65,7 +65,7 @@ class SomaticJointCallerSuite extends GuacFunSuite with Matchers {
     val emptyPartialReference =
       ReferenceGenome(
         Map(
-          "chr12" -> MapBackedReferenceSequence(500000000, Map.empty)
+          "chr12" -> MapBackedReferenceSequence(500000000, Nil)
         )
       )
     val readSets =

@@ -4,9 +4,10 @@ import java.io.File
 import java.util.NoSuchElementException
 
 import htsjdk.samtools.reference.FastaSequenceFile
-import org.hammerlab.guacamole.{ Bases, LociSet }
+import org.hammerlab.guacamole.{Bases, LociSet}
 
 import scala.collection.mutable
+import scala.collection.mutable.ArrayBuffer
 
 case class ReferenceGenome(contigs: Map[String, ContigSequence]) {
   def getContig(contigName: String): ContigSequence = {
@@ -65,7 +66,7 @@ object ReferenceGenome {
    */
   private def readPartialFasta(fastaPath: String): ReferenceGenome = {
     val raw = ReferenceGenome.readFasta(fastaPath)
-    val result = mutable.HashMap[String, mutable.HashMap[Int, Byte]]()
+    val result = mutable.HashMap[String, ArrayBuffer[(Int, Byte)]]()
     val contigLengths = mutable.HashMap[String, Int]()
 
     raw.contigs.foreach({
@@ -106,21 +107,25 @@ object ReferenceGenome {
             )
           )
         }
-        val sequenceMap = result.getOrElseUpdate(contig, mutable.HashMap[Int, Byte]())
-        region.onContig(contig).iterator.zip(sequence.toIterator).foreach(pair => {
-          sequenceMap.update(pair._1.toInt, pair._2)
-        })
+        val sequenceMap = result.getOrElseUpdate(contig, ArrayBuffer[(Int, Byte)]())
+        for {
+          (locus, base) ← region.onContig(contig).iterator.zip(sequence.toIterator)
+        } {
+          sequenceMap.append((locus.toInt, base))
+        }
       }
     })
+
     new ReferenceGenome(
-      result.map(
-        pair =>
-          pair._1 ->
-            MapBackedReferenceSequence(
-              contigLengths(pair._1),
-              pair._2.toMap
-            )
-      ).toMap
+      (for {
+        (contig, bases) ← result
+      } yield {
+        contig →
+          MapBackedReferenceSequence(
+            contigLengths(contig),
+            bases
+          )
+      }).toMap
     )
   }
 
