@@ -25,7 +25,7 @@ import org.bdgenomics.formats.avro.{ Contig, Genotype, GenotypeAllele, Variant }
 import org.hammerlab.guacamole.Common.Arguments.GermlineCallerArgs
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.Read
-import org.hammerlab.guacamole.reference.ReferenceBroadcast
+import org.hammerlab.guacamole.reference.ReferenceGenome
 import org.hammerlab.guacamole.variants.Allele
 import org.hammerlab.guacamole.{ Bases, Common, Concordance, DelayedMessages, DistributedUtil, SparkCommand }
 import org.kohsuke.args4j.{ Option => Args4jOption }
@@ -61,7 +61,7 @@ object GermlineThreshold {
 
     override def run(args: Arguments, sc: SparkContext): Unit = {
       Common.validateArguments(args)
-      val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
+      val reference = ReferenceGenome(args.referenceFastaPath)
       val loci = Common.lociFromArguments(args)
       val readSet = Common.loadReadsFromArguments(
         args, sc, Read.InputFilters(

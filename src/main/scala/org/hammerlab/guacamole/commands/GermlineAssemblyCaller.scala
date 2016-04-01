@@ -10,7 +10,7 @@ import org.hammerlab.guacamole._
 import org.hammerlab.guacamole.alignment.AffineGapPenaltyAlignment
 import org.hammerlab.guacamole.assembly.DeBruijnGraph
 import org.hammerlab.guacamole.reads.{ MappedRead, Read }
-import org.hammerlab.guacamole.reference.{ ReferenceBroadcast, ReferenceGenome }
+import org.hammerlab.guacamole.reference.{ ContigSequence, ReferenceGenome }
 import org.hammerlab.guacamole.variants.{ Allele, AlleleConversions, AlleleEvidence, CalledAllele }
 import org.hammerlab.guacamole.windowing.SlidingWindow
 import org.kohsuke.args4j.{ Option => Args4jOption }
@@ -79,14 +79,13 @@ object GermlineAssemblyCaller {
      * @param reads  Set of reads to extract sequence from
      * @param startLocus Start (inclusive) locus on the reference
      * @param endLocus End (exclusive) locus on the reference
-     * @param kmerSize Length of the subsequence
      * @param minOccurrence Mininum number of times a subsequence needs to appear to be included
      * @return List of subsequences overlapping [startLocus, endLocus) that appear at least `minOccurrence` time
      */
     def getConsensusKmer(reads: Seq[MappedRead],
                          startLocus: Int,
                          endLocus: Int,
-                         minOccurrence: Int): Iterable[Array[Byte]] = {
+                         minOccurrence: Int): Iterable[ContigSequence] = {
 
       // Filter to reads that entirely cover the region
       // Exclude reads that have any non-M Cigars (these don't have a 1 to 1 base mapping to the region)
@@ -103,8 +102,7 @@ object GermlineAssemblyCaller {
         .groupBy(identity)
         .map(kv => (kv._1, kv._2.length))
         .filter(_._2 >= minOccurrence)
-        .map(_._1.toArray)
-
+        .map(_._1.toArray: ContigSequence)
     }
 
     /**
@@ -137,21 +135,24 @@ object GermlineAssemblyCaller {
       val referenceStart = (locus - currentWindow.halfWindowSize).toInt
       val referenceEnd = (locus + currentWindow.halfWindowSize).toInt
 
-      val currentReference: Array[Byte] = reference.getReferenceSequence(
-        currentWindow.referenceName,
-        referenceStart,
-        referenceEnd
-      )
+      val currentReference: ContigSequence =
+        reference.getReferenceSequence(
+          currentWindow.referenceName,
+          referenceStart,
+          referenceEnd
+        )
 
-      val paths = discoverPathsFromReads(
-        reads,
-        referenceStart,
-        referenceEnd,
-        currentReference,
-        kmerSize = kmerSize,
-        minOccurrence = minOccurrence,
-        maxPaths = maxPathsToScore + 1,
-        debugPrint)
+      val paths =
+        discoverPathsFromReads(
+          reads,
+          referenceStart,
+          referenceEnd,
+          currentReference,
+          kmerSize = kmerSize,
+          minOccurrence = minOccurrence,
+          maxPaths = maxPathsToScore + 1,
+          debugPrint
+        )
 
       // Score up to the maximum number of paths, by aligning them against the reference
       // Take the best aligning `expectedPloidy` paths
@@ -171,8 +172,8 @@ object GermlineAssemblyCaller {
 
       // Build a variant using the current offset and read evidence
       def buildVariant(referenceOffset: Int,
-                       referenceBases: Array[Byte],
-                       alternateBases: Array[Byte]) = {
+                       referenceBases: ContigSequence,
+                       alternateBases: ContigSequence) = {
         val allele = Allele(
           referenceBases,
           alternateBases
@@ -243,7 +244,7 @@ object GermlineAssemblyCaller {
     }
 
     override def run(args: Arguments, sc: SparkContext): Unit = {
-      val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
+      val reference = ReferenceGenome(args.referenceFastaPath)
       val loci = Common.lociFromArguments(args)
       val readSet = Common.loadReadsFromArguments(
         args,
@@ -287,8 +288,10 @@ object GermlineAssemblyCaller {
                           snvWindowRange: Int,
                           minOccurrence: Int,
                           minAreaVaf: Float,
-                          reference: ReferenceBroadcast,
+                          reference: ReferenceGenome,
                           lociPartitions: LociMap[Long]): RDD[CalledAllele] = {
+
+      val referenceBC = reads.context.broadcast(reference)
 
       val genotypes: RDD[CalledAllele] =
         DistributedUtil.windowFlatMapWithState[MappedRead, CalledAllele, Option[DeBruijnGraph]](
@@ -304,6 +307,9 @@ object GermlineAssemblyCaller {
               window
                 .currentRegions()
                 .filter(_.overlapsLocus(window.currentLocus))
+
+            val reference = referenceBC.value
+
             val variableReads =
               currentLocusReads
                 .count(read =>
@@ -346,7 +352,7 @@ object GermlineAssemblyCaller {
     def discoverPathsFromReads(reads: Seq[MappedRead],
                                referenceStart: Int,
                                referenceEnd: Int,
-                               referenceSequence: Array[Byte],
+                               referenceSequence: ContigSequence,
                                kmerSize: Int,
                                minOccurrence: Int,
                                maxPaths: Int,
@@ -354,14 +360,15 @@ object GermlineAssemblyCaller {
       val referenceKmerSource = referenceSequence.take(kmerSize)
       val referenceKmerSink = referenceSequence.takeRight(kmerSize)
 
-      val sources: Set[Array[Byte]] = (getConsensusKmer(
-        reads,
-        referenceStart,
-        referenceStart + kmerSize,
-        minOccurrence = minOccurrence
-      ) ++ Seq(referenceKmerSource)).toSet
+      val sources: Set[ContigSequence] =
+        (getConsensusKmer(
+          reads,
+          referenceStart,
+          referenceStart + kmerSize,
+          minOccurrence = minOccurrence
+        ) ++ Seq(referenceKmerSource)).toSet
 
-      val sinks: Set[Array[Byte]] = (getConsensusKmer(
+      val sinks: Set[ContigSequence] = (getConsensusKmer(
         reads,
         referenceEnd - kmerSize,
         referenceEnd,

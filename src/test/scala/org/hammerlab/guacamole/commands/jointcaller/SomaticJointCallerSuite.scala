@@ -1,8 +1,7 @@
 package org.hammerlab.guacamole.commands.jointcaller
 
 import org.hammerlab.guacamole.LociSet
-import org.hammerlab.guacamole.reference.ReferenceBroadcast
-import org.hammerlab.guacamole.reference.ReferenceBroadcast.MapBackedReferenceSequence
+import org.hammerlab.guacamole.reference.{ MapBackedReferenceSequence, ReferenceGenome }
 import org.hammerlab.guacamole.util.{ GuacFunSuite, TestUtil }
 import org.scalatest.Matchers
 
@@ -12,7 +11,7 @@ class SomaticJointCallerSuite extends GuacFunSuite with Matchers {
 
   val partialFasta = TestUtil.testDataPath("hg19.partial.fasta")
   def partialReference = {
-    ReferenceBroadcast(partialFasta, sc, partialFasta = true)
+    ReferenceGenome(partialFasta, partialFasta = true)
   }
 
   sparkTest("call a somatic variant") {
@@ -63,9 +62,19 @@ class SomaticJointCallerSuite extends GuacFunSuite with Matchers {
   sparkTest("don't call variants with N as the reference base") {
     val inputs = InputCollection(cancerWGS1Bams)
     val loci = LociSet.parse("chr12:65857030-65857080")
-    val readSets = SomaticJoint.inputsToReadSets(sc, inputs, loci, partialReference)
-    val emptyPartialReference = ReferenceBroadcast(
-      Map("chr12" -> MapBackedReferenceSequence(500000000, sc.broadcast(Map.empty))))
+    val emptyPartialReference =
+      ReferenceGenome(
+        Map(
+          "chr12" -> MapBackedReferenceSequence(500000000, Map.empty)
+        )
+      )
+    val readSets =
+      SomaticJoint.inputsToReadSets(
+        sc,
+        inputs,
+        loci,
+        reference = emptyPartialReference
+      )
     val calls = SomaticJoint.makeCalls(
       sc, inputs, readSets, Parameters.defaults, emptyPartialReference, loci.result, loci.result)
 

@@ -20,16 +20,16 @@ package org.hammerlab.guacamole.reads
 
 import org.apache.parquet.hadoop.metadata.CompressionCodecName
 import org.bdgenomics.adam.rdd.read.AlignmentRecordRDDFunctions
-import org.bdgenomics.adam.rdd.{ ADAMSaveAnyArgs, ADAMContext }
-import org.hammerlab.guacamole.reference.ReferenceBroadcast
-import org.hammerlab.guacamole.{ LociSet }
+import org.bdgenomics.adam.rdd.{ADAMContext, ADAMSaveAnyArgs}
+import org.hammerlab.guacamole.LociSet
 import org.hammerlab.guacamole.reads.Read.InputFilters
-import org.hammerlab.guacamole.util.{ TestUtil, GuacFunSuite }
+import org.hammerlab.guacamole.reference.ReferenceGenome
+import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
 import org.scalatest.Matchers
 
 class ReadSetSuite extends GuacFunSuite with Matchers {
 
-  def chr22Fasta = ReferenceBroadcast.readFasta(TestUtil.testDataPath("chr22.fa.gz"), sc)
+  def chr22Fasta = ReferenceGenome.readFasta(TestUtil.testDataPath("chr22.fa.gz"))
 
   sparkTest("using different bam reading APIs on sam/bam files should give identical results") {
     def check(paths: Seq[String], filter: InputFilters): Unit = {
@@ -84,7 +84,7 @@ class ReadSetSuite extends GuacFunSuite with Matchers {
   }
 
   sparkTest("load RNA reads") {
-    val chr17Reference = TestUtil.makeReference(sc, Seq(("chr17", 0, "")), 412449360)
+    val chr17Reference = TestUtil.makeReference(Seq(("chr17", 0, "")), 412449360)
     val readSet = TestUtil.loadReads(sc, "rna_chr17_41244936.sam", reference = chr17Reference)
     readSet.reads.count should be(23)
   }
@@ -123,7 +123,7 @@ class ReadSetSuite extends GuacFunSuite with Matchers {
   }
 
   sparkTest("load and serialize / deserialize reads") {
-    val chr17Reference = TestUtil.makeReference(sc, Seq(("chr17", 0, "")), 412449360)
+    val chr17Reference = TestUtil.makeReference(Seq(("chr17", 0, "")), 412449360)
     val reads = TestUtil.loadReads(sc, "mdtagissue.sam", Read.InputFilters(mapped = true), reference = chr17Reference).mappedReads.collect()
     val serializedReads = reads.map(TestUtil.serialize)
     val deserializedReads: Seq[MappedRead] = serializedReads.map(TestUtil.deserialize[MappedRead](_))

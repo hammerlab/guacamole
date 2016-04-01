@@ -1,25 +1,22 @@
 package org.hammerlab.guacamole.commands.jointcaller
 
-import org.hammerlab.guacamole.Bases
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.reference.ReferenceBroadcast
-import org.hammerlab.guacamole.reference.ReferenceBroadcast.ArrayBackedReferenceSequence
-import org.hammerlab.guacamole.util.{ TestUtil, GuacFunSuite }
+import org.hammerlab.guacamole.reference.{ ContigSequence, ReferenceGenome }
+import org.hammerlab.guacamole.util.{ GuacFunSuite, TestUtil }
 import org.scalatest.Matchers
 
 class ReadSubsequenceSuite extends GuacFunSuite with Matchers {
   val cancerWGS1Bams = Vector("normal.bam", "primary.bam", "recurrence.bam").map(
     name => TestUtil.testDataPath("cancer-wgs1/" + name))
 
-  def simpleReference = TestUtil.makeReference(sc, Seq(("chr1", 0, "NTCGATCGACG")))
+  def simpleReference = TestUtil.makeReference(Seq(("chr1", 0, "NTCGATCGACG")))
 
   val partialFasta = TestUtil.testDataPath("hg19.partial.fasta")
   def partialReference = {
-    ReferenceBroadcast(partialFasta, sc, partialFasta = true)
+    ReferenceGenome(partialFasta, partialFasta = true)
   }
 
   sparkTest("ofFixedReferenceLength") {
-    val ref = ArrayBackedReferenceSequence(sc, "NTCGATCGA")
     val reads = Seq(
       TestUtil.makeRead("TCGATCGA", "8M", 1), // no variant
       TestUtil.makeRead("TCGACCCTCGA", "4M3I4M", 1), // insertion
@@ -35,7 +32,6 @@ class ReadSubsequenceSuite extends GuacFunSuite with Matchers {
   }
 
   sparkTest("ofNextAltAllele") {
-    val ref = ArrayBackedReferenceSequence(sc, "NTCGATCGA")
     val reads = Seq(
       TestUtil.makeRead("TCGATCGA", "8M", 1), // no variant
       TestUtil.makeRead("TCGAGCGA", "8M", 1), // snv
@@ -70,7 +66,6 @@ class ReadSubsequenceSuite extends GuacFunSuite with Matchers {
     val pileups = cancerWGS1Bams.map(
       path => TestUtil.loadPileup(sc, path, contig = Some(contigLocus._1), locus = contigLocus._2, reference = partialReference))
 
-    val reference = partialReference
     val subsequences = ReadSubsequence.nextAlts(pileups(1).elements)
     assert(subsequences.nonEmpty)
 

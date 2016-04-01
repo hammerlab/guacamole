@@ -1,7 +1,6 @@
 package org.hammerlab.guacamole
 
-import org.apache.spark.SparkContext
-import org.hammerlab.guacamole.reference.ReferenceBroadcast
+import org.hammerlab.guacamole.reference.ReferenceGenome
 import org.hammerlab.guacamole.util.TestUtil
 
 object CancerWGSTestUtils {
@@ -12,6 +11,6 @@ object CancerWGSTestUtils {
   val cancerWGS1ExpectedSomaticCallsCSV = TestUtil.testDataPath("cancer-wgs1/variants.csv")
 
   val referenceFastaPath = TestUtil.testDataPath("hg19.partial.fasta")
-  def referenceBroadcast(sc: SparkContext) = ReferenceBroadcast(referenceFastaPath, sc, partialFasta = true)
+  def referenceBroadcast = ReferenceGenome(referenceFastaPath)
 
 }

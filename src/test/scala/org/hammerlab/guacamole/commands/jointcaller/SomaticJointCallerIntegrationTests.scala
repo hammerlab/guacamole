@@ -43,7 +43,7 @@ class SomaticJointCallerIntegrationTests extends GuacFunSuite with Matchers {
       compareToCSV(
         outDir + "/somatic.all_samples.vcf",
         CancerWGSTestUtils.cancerWGS1ExpectedSomaticCallsCSV,
-        CancerWGSTestUtils.referenceBroadcast(sc),
+        CancerWGSTestUtils.referenceBroadcast,
         Set("primary", "recurrence")
       )
     }

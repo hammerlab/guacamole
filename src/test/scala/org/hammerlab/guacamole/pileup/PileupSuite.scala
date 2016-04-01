@@ -29,7 +29,7 @@ import org.scalatest.prop.TableDrivenPropertyChecks
 
 class PileupSuite extends GuacFunSuite with Matchers with TableDrivenPropertyChecks {
   // This must only be accessed from inside a spark test where SparkContext has been initialized
-  def reference = TestUtil.makeReference(sc,
+  def reference = TestUtil.makeReference(
     Seq(
       ("chr1", 0, "NTCGATCGACG"),
       ("artificial", 0, "A" * 34 + "G" * 10 + "A" * 5 + "G" * 15 + "A" * 15 + "ACGT" * 10),
@@ -244,7 +244,7 @@ class PileupSuite extends GuacFunSuite with Matchers with TableDrivenPropertyChe
       val e = pileupElementFromRead(null, 42)
     }
 
-    val reference = TestUtil.makeReference(sc,
+    val reference = TestUtil.makeReference(
       Seq(
         ("artificial", 0, "A" * 500)
       ))
@@ -377,7 +377,7 @@ class PileupSuite extends GuacFunSuite with Matchers with TableDrivenPropertyChe
   }
 
   sparkTest("create and advance pileup element from RNA read") {
-    val reference = TestUtil.makeReference(sc, Seq(("chr1", 229538779, "A" * 1000)), 229538779 + 1000)
+    val reference = TestUtil.makeReference(Seq(("chr1", 229538779, "A" * 1000)), 229538779 + 1000)
 
     val rnaRead = TestUtil.makeRead(
       sequence = "CCCCAGCCTAGGCCTTCGACACTGGGGGGCTGAGGGAAGGGGCACCTGCC",
@@ -402,7 +402,7 @@ class PileupSuite extends GuacFunSuite with Matchers with TableDrivenPropertyChe
   }
 
   sparkTest("create pileup from RNA reads") {
-    val reference = TestUtil.makeReference(sc, Seq(("1", 229538779, "A" * 1000)), 229538779 + 1000)
+    val reference = TestUtil.makeReference(Seq(("1", 229538779, "A" * 1000)), 229538779 + 1000)
     val rnaReadsPileup = loadPileup(sc, "testrna.sam", locus = 229580594, reference = reference)
 
     // 94 reads in the testrna.sam

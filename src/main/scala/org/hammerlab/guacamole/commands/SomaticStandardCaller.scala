@@ -30,7 +30,7 @@ import org.hammerlab.guacamole.likelihood.Likelihood
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.Read
 import org.hammerlab.guacamole.variants.{ Allele, AlleleConversions, AlleleEvidence, CalledSomaticAllele }
-import org.hammerlab.guacamole.reference.ReferenceBroadcast
+import org.hammerlab.guacamole.reference.ReferenceGenome
 import org.hammerlab.guacamole.{ Common, DelayedMessages, DistributedUtil, SparkCommand }
 import org.kohsuke.args4j.{ Option => Args4jOption }
 
@@ -71,7 +71,7 @@ object SomaticStandard {
         nonDuplicate = true,
         passedVendorQualityChecks = true)
 
-      val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
+      val reference = ReferenceGenome(args.referenceFastaPath)
 
       val (tumorReads, normalReads) =
         Common.loadTumorNormalReadsFromArguments(

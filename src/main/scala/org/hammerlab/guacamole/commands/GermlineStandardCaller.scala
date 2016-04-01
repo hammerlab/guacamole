@@ -27,7 +27,7 @@ import org.hammerlab.guacamole.filters.{ GenotypeFilter, QualityAlignedReadsFilt
 import org.hammerlab.guacamole.likelihood.Likelihood
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.Read
-import org.hammerlab.guacamole.reference.ReferenceBroadcast
+import org.hammerlab.guacamole.reference.ReferenceGenome
 import org.hammerlab.guacamole.variants.{ AlleleConversions, AlleleEvidence, CalledAllele }
 import org.hammerlab.guacamole.{ Common, Concordance, DelayedMessages, DistributedUtil, SparkCommand }
 import org.kohsuke.args4j.{ Option => Args4jOption }
@@ -52,7 +52,7 @@ object GermlineStandard {
 
     override def run(args: Arguments, sc: SparkContext): Unit = {
       Common.validateArguments(args)
-      val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
+      val reference = ReferenceGenome(args.referenceFastaPath)
       val loci = Common.lociFromArguments(args)
       val readSet = Common.loadReadsFromArguments(
         args, sc, Read.InputFilters(

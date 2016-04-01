@@ -1,11 +1,9 @@
 package org.hammerlab.guacamole.commands.jointcaller
 
-import org.hammerlab.guacamole.Bases
 import org.hammerlab.guacamole.DistributedUtil._
-import org.hammerlab.guacamole.commands.jointcaller.Input.{ Analyte, TissueType }
+import org.hammerlab.guacamole.commands.jointcaller.Input.{Analyte, TissueType}
 import org.hammerlab.guacamole.commands.jointcaller.PileupStats.AlleleMixture
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.reference.ReferenceBroadcast
 
 import scala.collection.Set
 
@@ -28,7 +26,7 @@ case class AlleleEvidenceAcrossSamples(parameters: Parameters,
                                        tumorDNAPooledEvidence: TumorDNASampleAlleleEvidence,
                                        sampleEvidences: PerSample[SampleAlleleEvidence]) {
 
-  assume(inputs.items.map(_.index) == (0 until inputs.items.length))
+  assume(inputs.items.map(_.index) == inputs.items.indices)
 
   /**
    * There are times when we want to treat all the per-sample evidences and pooled evidences together. We do this

@@ -168,7 +168,7 @@ object DistributedUtil extends Logging {
     // Step (1). Split loci uniformly into micro partitions.
     assume(tasks >= 1)
     assume(lociUsed.count > 0)
-    assume(regionRDDs.length > 0)
+    assume(regionRDDs.nonEmpty)
     val numMicroPartitions: Int = if (accuracy * tasks < lociUsed.count) accuracy * tasks else lociUsed.count.toInt
     progress("Splitting loci by region depth among %,d tasks using %,d micro partitions.".format(tasks, numMicroPartitions))
     val microPartitions = partitionLociUniformly(numMicroPartitions, lociUsed)
@@ -204,7 +204,7 @@ object DistributedUtil extends Logging {
     val builder = LociMap.newBuilder[Long]
     var regionsAssigned = 0.0
     var task = 0L
-    def regionsRemainingForThisTask = math.round(((task + 1) * regionsPerTask) - regionsAssigned).toLong
+    def regionsRemainingForThisTask = math.round(((task + 1) * regionsPerTask) - regionsAssigned)
     var microTask = 0
     while (microTask < numMicroPartitions) {
       var set = microPartitions.asInverseMap(microTask)
@@ -284,17 +284,26 @@ object DistributedUtil extends Logging {
     skipEmpty: Boolean,
     function: Pileup => Iterator[T],
     reference: ReferenceGenome): RDD[T] = {
+
+    val referenceBC = reads.context.broadcast(reference)
+
     windowFlatMapWithState(
       Vector(reads),
       lociPartitions,
       skipEmpty,
-      0,
-      None,
-      (maybePileup: Option[Pileup], windows: PerSample[SlidingWindow[MappedRead]]) => {
-        assert(windows.length == 1)
-        val pileup = initOrMovePileup(maybePileup, windows(0), reference.getContig(windows(0).referenceName))
-        (Some(pileup), function(pileup))
-      }
+      halfWindowSize = 0,
+      initialState = None,
+      function =
+        (maybePileup: Option[Pileup], windows: PerSample[SlidingWindow[MappedRead]]) => {
+          assert(windows.length == 1)
+          val contigSequence = referenceBC.value.getContig(windows(0).referenceName)
+          val pileup = initOrMovePileup(
+            maybePileup,
+            windows(0),
+            contigSequence
+          )
+          (Some(pileup), function(pileup))
+        }
     )
   }
   /**
@@ -312,19 +321,24 @@ object DistributedUtil extends Logging {
     skipEmpty: Boolean,
     function: (Pileup, Pileup) => Iterator[T],
     reference: ReferenceGenome): RDD[T] = {
+
+    val referenceBC = reads1.context.broadcast(reference)
+
     windowFlatMapWithState(
       Vector(reads1, reads2),
       lociPartitions,
       skipEmpty,
       halfWindowSize = 0L,
       initialState = None,
-      function = (maybePileups: Option[(Pileup, Pileup)], windows: PerSample[SlidingWindow[MappedRead]]) => {
-        assert(windows.length == 2)
-        val contigSequence = reference.getContig(windows(0).referenceName)
-        val pileup1 = initOrMovePileup(maybePileups.map(_._1), windows(0), contigSequence)
-        val pileup2 = initOrMovePileup(maybePileups.map(_._2), windows(1), contigSequence)
-        (Some((pileup1, pileup2)), function(pileup1, pileup2))
-      })
+      function =
+        (maybePileups: Option[(Pileup, Pileup)], windows: PerSample[SlidingWindow[MappedRead]]) => {
+          assert(windows.length == 2)
+          val contigSequence = referenceBC.value.getContig(windows(0).referenceName)
+          val pileup1 = initOrMovePileup(maybePileups.map(_._1), windows(0), contigSequence)
+          val pileup2 = initOrMovePileup(maybePileups.map(_._2), windows(1), contigSequence)
+          (Some((pileup1, pileup2)), function(pileup1, pileup2))
+        }
+    )
   }
 
   /**
@@ -336,8 +350,11 @@ object DistributedUtil extends Logging {
     readsRDDs: PerSample[RDD[MappedRead]],
     lociPartitions: LociMap[Long],
     skipEmpty: Boolean,
-    function: PerSample[Pileup] => Iterator[T],
+    function: (PerSample[Pileup], ContigSequence) => Iterator[T],
     reference: ReferenceGenome): RDD[T] = {
+
+    val referenceBC = readsRDDs.head.context.broadcast(reference)
+
     windowFlatMapWithState(
       readsRDDs,
       lociPartitions,
@@ -345,18 +362,25 @@ object DistributedUtil extends Logging {
       halfWindowSize = 0L,
       initialState = None,
       function = (maybePileups: Option[PerSample[Pileup]], windows: PerSample[SlidingWindow[MappedRead]]) => {
+
+        val referenceContig = referenceBC.value.getContig(windows(0).referenceName)
+
         val advancedPileups = maybePileups match {
-          case Some(existingPileups) => {
+          case Some(existingPileups) =>
             existingPileups.zip(windows).map(
               pileupAndWindow => initOrMovePileup(
                 Some(pileupAndWindow._1),
                 pileupAndWindow._2,
-                reference.getContig(windows(0).referenceName)))
-          }
-          case None => windows.map(initOrMovePileup(None, _, reference.getContig(windows(0).referenceName)))
+                referenceContig
+              )
+            )
+          case None => windows.map(
+            initOrMovePileup(None, _, referenceContig)
+          )
         }
-        (Some(advancedPileups), function(advancedPileups))
-      })
+        (Some(advancedPileups), function(advancedPileups, referenceContig))
+      }
+    )
   }
 
   /**

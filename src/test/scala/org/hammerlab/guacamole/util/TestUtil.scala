@@ -26,10 +26,10 @@ import com.twitter.chill.{ IKryoRegistrar, KryoInstantiator, KryoPool }
 import org.apache.commons.io.FileUtils
 import org.apache.spark.SparkContext
 import org.hammerlab.guacamole.pileup.Pileup
+import org.hammerlab.guacamole.reads.Read.InputFilters
 import org.hammerlab.guacamole.reads._
-import org.hammerlab.guacamole.reference.ReferenceBroadcast.MapBackedReferenceSequence
-import org.hammerlab.guacamole.reference.{ ContigSequence, ReferenceBroadcast }
-import org.hammerlab.guacamole.{ Bases, GuacamoleKryoRegistrator, ReadSet }
+import org.hammerlab.guacamole.reference.{ ContigSequence, MapBackedReferenceSequence, ReferenceGenome }
+import org.hammerlab.guacamole.{ Bases, GuacamoleKryoRegistrator, LociSet, ReadSet }
 import org.scalatest._
 
 import scala.collection.mutable
@@ -68,20 +68,20 @@ object TestUtil extends Matchers {
   /**
    * Make a ReferenceBroadcast containing the specified sequences to be used in tests.
    *
-   * @param sc
    * @param contigStartSequences tuples of (contig name, start, reference sequence) giving the desired sequences
    * @param contigLengths total length of each contigs (for simplicity all contigs are assumed to have the same length)
    * @return a map acked ReferenceBroadcast containing the desired sequences
    */
-  def makeReference(sc: SparkContext, contigStartSequences: Seq[(String, Int, String)], contigLengths: Int = 1000): ReferenceBroadcast = {
+  def makeReference(contigStartSequences: Seq[(String, Int, String)],
+                    contigLengths: Int = 1000): ReferenceGenome = {
     val map = mutable.HashMap[String, ContigSequence]()
     contigStartSequences.foreach({
       case (contig, start, sequence) => {
         val locusToBase = Bases.stringToBases(sequence).zipWithIndex.map(pair => (pair._2 + start, pair._1)).toMap
-        map.put(contig, MapBackedReferenceSequence(contigLengths, sc.broadcast(locusToBase)))
+        map.put(contig, MapBackedReferenceSequence(contigLengths, locusToBase))
       }
     })
-    new ReferenceBroadcast(map.toMap)
+    new ReferenceGenome(map.toMap)
   }
 
   def makeRead(sequence: String,
@@ -203,7 +203,7 @@ object TestUtil extends Matchers {
   def loadTumorNormalReads(sc: SparkContext,
                            tumorFile: String,
                            normalFile: String,
-                           reference: ReferenceBroadcast): (Seq[MappedRead], Seq[MappedRead]) = {
+                           reference: ReferenceGenome): (Seq[MappedRead], Seq[MappedRead]) = {
     val filters = Read.InputFilters(mapped = true, nonDuplicate = true, passedVendorQualityChecks = true)
     (loadReads(sc, tumorFile, filters = filters, reference = reference).mappedReads.collect(),
       loadReads(sc, normalFile, filters = filters, reference = reference).mappedReads.collect())
@@ -212,7 +212,7 @@ object TestUtil extends Matchers {
   def loadReads(sc: SparkContext,
                 filename: String,
                 filters: Read.InputFilters = Read.InputFilters.empty,
-                reference: ReferenceBroadcast,
+                reference: ReferenceGenome,
                 config: Read.ReadLoadingConfig = Read.ReadLoadingConfig.default): ReadSet = {
     /* grab the path to the SAM file we've stashed in the resources subdirectory */
     val path = testDataPath(filename)
@@ -224,15 +224,29 @@ object TestUtil extends Matchers {
   def loadTumorNormalPileup(tumorReads: Seq[MappedRead],
                             normalReads: Seq[MappedRead],
                             locus: Long,
-                            reference: ReferenceBroadcast): (Pileup, Pileup) = {
+                            reference: ReferenceGenome): (Pileup, Pileup) = {
     val contig = tumorReads(0).referenceContig
     assume(normalReads(0).referenceContig == contig)
     (Pileup(tumorReads, contig, locus, reference.getContig(contig)),
       Pileup(normalReads, contig, locus, reference.getContig(contig)))
   }
 
-  def loadPileup(sc: SparkContext, filename: String, reference: ReferenceBroadcast, locus: Long = 0, contig: Option[String] = None): Pileup = {
-    val records = TestUtil.loadReads(sc, filename, reference = reference).mappedReads
+  def loadPileup(sc: SparkContext,
+                 filename: String,
+                 reference: ReferenceGenome,
+                 locus: Long = 0,
+                 contig: Option[String] = None): Pileup = {
+    val records =
+      TestUtil.loadReads(
+        sc,
+        filename,
+        filters = InputFilters(
+          overlapsLoci = contig.map(
+            contig ⇒ LociSet.parse(s"$contig:$locus-${locus + 1}")
+          )
+        ),
+        reference = reference
+      ).mappedReads
     val localReads = records.collect
     val actualContig = contig.getOrElse(localReads(0).referenceContig)
     Pileup(localReads, actualContig, locus, referenceContigSequence = reference.getContig(actualContig))
