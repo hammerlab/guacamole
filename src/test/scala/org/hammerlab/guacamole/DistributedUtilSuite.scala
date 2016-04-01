@@ -206,7 +206,7 @@ class DistributedUtilSuite extends GuacFunSuite with Matchers {
       Vector(reads1, reads2, reads3),
       DistributedUtil.partitionLociUniformly(1, LociSet.parse("chr1:1-500,chr2:10-20").result),
       skipEmpty = true,
-      (pileups, _) => Iterator(pileups.map(_.elements.map(p => Bases.basesToString(p.sequencedBases)))),
+      pileups => Iterator(pileups.map(_.elements.map(p => Bases.basesToString(p.sequencedBases)))),
       reference = TestUtil.makeReference(Seq(("chr1", 0, "ATCGATCGA")))
     ).collect.map(_.toList)
 
@@ -214,7 +214,7 @@ class DistributedUtilSuite extends GuacFunSuite with Matchers {
       Vector(reads1, reads2, reads3),
       DistributedUtil.partitionLociUniformly(800, LociSet.parse("chr0:0-100,chr1:1-500,chr2:10-20").result),
       skipEmpty = true,
-      (pileups, _) => Iterator(pileups.map(_.elements.map(p => Bases.basesToString(p.sequencedBases)))),
+      pileups => Iterator(pileups.map(_.elements.map(p => Bases.basesToString(p.sequencedBases)))),
       reference = TestUtil.makeReference(Seq(("chr1", 0, "ATCGATCGA")))
     ).collect.map(_.toList)
 
@@ -222,7 +222,7 @@ class DistributedUtilSuite extends GuacFunSuite with Matchers {
       Vector(reads1, reads2, reads3),
       DistributedUtil.partitionLociUniformly(5, LociSet.parse("chr1:1-500,chr2:10-20").result),
       skipEmpty = false,
-      (pileups, _) => Iterator(pileups.map(_.elements.map(p => Bases.basesToString(p.sequencedBases)))),
+      pileups => Iterator(pileups.map(_.elements.map(p => Bases.basesToString(p.sequencedBases)))),
       reference = TestUtil.makeReference(Seq(("chr1", 0, "ATCGATCGA"), ("chr2", 0, "")))
     ).collect.map(_.toList)
 

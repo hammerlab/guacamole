@@ -33,7 +33,10 @@ import org.hammerlab.guacamole.variants.Allele
  * @param elements Sequence of [[PileupElement]] instances giving the sequenced bases that align to a particular
  *                 reference locus, in arbitrary order.
  */
-case class Pileup(referenceName: String, locus: Long, referenceContigSequence: ContigSequence, elements: Seq[PileupElement]) {
+case class Pileup(referenceName: String,
+                  locus: Long,
+                  referenceContigSequence: ContigSequence,
+                  elements: Seq[PileupElement]) {
   val referenceBase: Byte = referenceContigSequence(locus.toInt)
 
   /** The first element in the pileup. */

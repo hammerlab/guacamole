@@ -350,7 +350,7 @@ object DistributedUtil extends Logging {
     readsRDDs: PerSample[RDD[MappedRead]],
     lociPartitions: LociMap[Long],
     skipEmpty: Boolean,
-    function: (PerSample[Pileup], ContigSequence) => Iterator[T],
+    function: PerSample[Pileup] => Iterator[T],
     reference: ReferenceGenome): RDD[T] = {
 
     val referenceBroadcast = readsRDDs.head.context.broadcast(reference)
@@ -378,7 +378,7 @@ object DistributedUtil extends Logging {
             initOrMovePileup(None, _, referenceContig)
           )
         }
-        (Some(advancedPileups), function(advancedPileups, referenceContig))
+        (Some(advancedPileups), function(advancedPileups))
       }
     )
   }
