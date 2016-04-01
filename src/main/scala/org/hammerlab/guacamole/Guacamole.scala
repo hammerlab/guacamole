@@ -41,7 +41,9 @@ object Guacamole extends Logging {
     SomaticStandard.Caller,
     VariantSupport.Caller,
     VAFHistogram.Caller,
-    SomaticJoint.Caller)
+    SomaticJoint.Caller,
+    ExtractSequencingErrorReads.Caller
+  )
 
   private def printUsage() = {
     println("Usage: java ... <command> [other args]\n")
