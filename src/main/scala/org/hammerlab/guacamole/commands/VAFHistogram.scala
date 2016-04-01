@@ -199,7 +199,11 @@ object VAFHistogram {
       val variantPercent = (variantAlleleFrequency * 100).toInt
       variantPercent - (variantPercent % (100 / bins))
     }
-    variantAlleleFrequencies.map(vaf => roundToBin(vaf.variantAlleleFrequency)).countByValue().toMap
+    variantAlleleFrequencies
+      .map(vaf ⇒ roundToBin(vaf.variantAlleleFrequency) → 1L)
+      .reduceByKey(_ + _)
+      .collectAsMap
+      .toMap
   }
 
   /**
