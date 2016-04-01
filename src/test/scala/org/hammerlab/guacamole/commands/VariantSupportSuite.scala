@@ -40,23 +40,25 @@ class VariantSupportSuite extends GuacFunSuite with Matchers with TableDrivenPro
     }
   }
 
-  lazy val gatkReads = TestUtil.loadReads(
-    sc,
-    "gatk_mini_bundle_extract.bam",
-    Read.InputFilters(mapped = true, nonDuplicate = false),
-    reference = grch37Reference).mappedReads.collect().sortBy(_.start)
+  lazy val gatkReads =
+    TestUtil.loadReads(
+      sc,
+      "gatk_mini_bundle_extract.bam",
+      Read.InputFilters(mapped = true, nonDuplicate = false)
+    ).mappedReads.collect().sortBy(_.start)
 
-  lazy val nonDuplicateGatkReads = TestUtil.loadReads(
-    sc,
-    "gatk_mini_bundle_extract.bam",
-    Read.InputFilters(mapped = true, nonDuplicate = true),
-    reference = grch37Reference
-  ).mappedReads.collect().sortBy(_.start)
+  lazy val nonDuplicateGatkReads =
+    TestUtil.loadReads(
+      sc,
+      "gatk_mini_bundle_extract.bam",
+      Read.InputFilters(mapped = true, nonDuplicate = true)
+    ).mappedReads.collect().sortBy(_.start)
 
-  lazy val RnaReads = TestUtil.loadReads(
-    sc,
-    "rna_chr17_41244936.sam",
-    reference = grch37Reference).mappedReads.collect().sortBy(_.start)
+  lazy val RnaReads =
+    TestUtil.loadReads(
+      sc,
+      "rna_chr17_41244936.sam"
+    ).mappedReads.collect().sortBy(_.start)
 
   sparkTest("read evidence for simple snvs") {
     val pileup = Pileup(gatkReads, "20", 10008951, grch37Reference.getContig("20"))
