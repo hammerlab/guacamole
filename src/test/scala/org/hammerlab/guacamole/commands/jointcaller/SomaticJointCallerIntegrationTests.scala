@@ -1,9 +1,9 @@
 package org.hammerlab.guacamole.commands.jointcaller
 
-import org.hammerlab.guacamole.VariantComparisonUtils.{ compareToCSV, compareToVCF, csvRecords }
-import org.hammerlab.guacamole.util.{ GuacFunSuite, TestUtil }
-import org.hammerlab.guacamole.{ CancerWGSTestUtils, LociSet, NA12878TestUtils }
-import org.scalatest.Matchers
+import org.hammerlab.guacamole.VariantComparisonUtils.{compareToCSV, compareToVCF, csvRecords}
+import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
+import org.hammerlab.guacamole.{CancerWGSTestUtils, LociSet, NA12878TestUtils}
+import org.scalatest.{Ignore, Matchers}
 
 // This test currently does not make any assertions, but outputs a performance comparison. We may want to add assertions
 // on the accuracy later.
