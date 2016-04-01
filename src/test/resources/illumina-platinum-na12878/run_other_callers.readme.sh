@@ -3,15 +3,15 @@
 # Commands used to run other germline variant callers on the illumina platinum
 # subset test data. Run this from the root of the guacamole repository.
 
-# Change this to point to your GATK jar and reference.
-GATK_JAR=~/oss/gatk-binary/GenomeAnalysisTK.jar
-REFERENCE=~/sinai/data/ucsc.hg19.fasta
+if [ -z "$GATK_JAR" -o -z "$REFERENCE" ]; then
+  echo "Set \$GATK_JAR and \$REFERENCE" 1>&2
+  exit 1
+fi
 
 # Commands to generate index / dict for reference if needed:
-# PICARD_JAR=~/oss/picard/picard-tools-2.1.1/picard.jar
-# samtools faidx $REFERENCE
-# java -jar $PICARD_JAR CreateSequenceDictionary \
-#    REFERENCE=$REFERENCE \
+# samtools faidx "$REFERENCE"
+# java -jar "$PICARD_JAR" CreateSequenceDictionary \
+#    REFERENCE="$REFERENCE" \
 #    "OUTPUT=${REFERENCE}.dict"
 
 # Unified genotyper
