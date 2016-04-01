@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Some of our tests require a human reference genome, which is too big to
 # distribute. As a workaround we generate a "partial" fasta containing just the
@@ -6,14 +6,16 @@
 # and it is used by the tests. The command here regenerates this fasta (change
 # the FULL_FASTA_PATH appropriately).
 
-HG19_FULL_FASTA_PATH=/path/to/ucsc.hg19.fasta
-GRCH37_FULL_FASTA_PATH=/path/to/human_g1k_v37.fasta
+if [ -z "$HG19_FULL_FASTA_PATH" -o -z "$GRCH37_FULL_FASTA_PATH" ]; then
+  echo "Set \$HG19_FULL_FASTA_PATH and \$GRCH37_FULL_FASTA_PATH" 1>&2
+  exit 1
+fi
 
 set -e
 set -x
 
 if [ -z "${GUACAMOLE_JAR}" ]; then
-    jar=$(ls -tc target/guacamole-with-dependencies-*.jar | head -n 1)
+    jar="$(ls -tc target/guacamole-with-dependencies-*.jar | head -n 1)"
     if [ -z "$jar" ]; then
         echo "Couldn't find a Guacamole jar in the target/ directory."
         echo "Are you in the root directory of the Guacamole repo, and have you built Guacamole?"
@@ -23,20 +25,20 @@ if [ -z "${GUACAMOLE_JAR}" ]; then
     fi
     echo "Using most recently modified jar: $jar"
 else
-    jar=${GUACAMOLE_JAR}
+    jar="${GUACAMOLE_JAR}"
     echo "Using GUACAMOLE_JAR=$jar"
 fi
 
 # HG19 reference
-time java -Xmx6g -XX:MaxPermSize=512m "-Dspark.master=local[1]" -cp $jar org.hammerlab.guacamole.other_entrypoints.GeneratePartialFasta \
-    --reference-fasta $HG19_FULL_FASTA_PATH \
+time java -Xmx6g -XX:MaxPermSize=512m "-Dspark.master=local[1]" -cp "$jar" org.hammerlab.guacamole.other_entrypoints.GeneratePartialFasta \
+    --reference-fasta "$HG19_FULL_FASTA_PATH" \
     --output src/test/resources/hg19.partial.fasta \
     src/test/resources/cancer-wgs1/*.bam \
     src/test/resources/rna_chr17_41244936.sam
 
 # b37 reference
-time java -Xmx6g -XX:MaxPermSize=512m "-Dspark.master=local[1]" -cp $jar org.hammerlab.guacamole.other_entrypoints.GeneratePartialFasta \
-    --reference-fasta $GRCH37_FULL_FASTA_PATH \
+time java -Xmx6g -XX:MaxPermSize=512m "-Dspark.master=local[1]" -cp "$jar" org.hammerlab.guacamole.other_entrypoints.GeneratePartialFasta \
+    --reference-fasta "$GRCH37_FULL_FASTA_PATH" \
     --output src/test/resources/grch37.partial.fasta \
     src/test/resources/synthetic.challenge.set1.*.sam \
     src/test/resources/tumor.chr20.tough.sam \
