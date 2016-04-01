@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Some of our tests require a human reference genome, which is too big to
 # distribute. As a workaround we generate a "partial" fasta containing just the
@@ -17,7 +17,7 @@ GRCH37_FULL_FASTA_PATH="$2"
 MAIN_CLASS=org.hammerlab.guacamole.main.GeneratePartialFasta
 
 if [ -z "${GUACAMOLE_JAR}" ]; then
-    jar=$(ls -tc target/guacamole-with-dependencies-*.jar | head -n 1)
+    jar="$(ls -tc target/guacamole-with-dependencies-*.jar | head -n 1)"
     if [ -z "$jar" ]; then
         echo "Couldn't find a Guacamole jar in the target/ directory."
         echo "Are you in the root directory of the Guacamole repo, and have you built Guacamole?"

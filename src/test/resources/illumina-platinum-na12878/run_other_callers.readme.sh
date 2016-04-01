@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Commands used to run other germline variant callers on the illumina platinum
 # subset test data. Run this from the root of the guacamole repository.
@@ -15,18 +15,18 @@ REFERENCE=~/sinai/data/ucsc.hg19.fasta
 #    "OUTPUT=${REFERENCE}.dict"
 
 # Unified genotyper
-time java -jar $GATK_JAR \
+time java -jar "$GATK_JAR" \
     -T UnifiedGenotyper \
-    -R $REFERENCE \
+    -R "$REFERENCE" \
     -I src/test/resources/illumina-platinum-na12878/NA12878.10k_variants.plus_chr1_3M-3.1M.bam \
     -L chr1:1-6700000 \
     -glm BOTH \
     -o src/test/resources/illumina-platinum-na12878/unified_genotyper.vcf
 
 # Haplotype caller
-time java -jar $GATK_JAR \
+time java -jar "$GATK_JAR" \
     -T HaplotypeCaller \
-    -R $REFERENCE \
+    -R "$REFERENCE" \
     -I src/test/resources/illumina-platinum-na12878/NA12878.10k_variants.plus_chr1_3M-3.1M.bam \
     -L chr1:1-6700000 \
     --genotyping_mode DISCOVERY \
