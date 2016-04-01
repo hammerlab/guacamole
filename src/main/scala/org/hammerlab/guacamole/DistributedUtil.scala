@@ -285,7 +285,7 @@ object DistributedUtil extends Logging {
     function: Pileup => Iterator[T],
     reference: ReferenceGenome): RDD[T] = {
 
-    val referenceBC = reads.context.broadcast(reference)
+    val referenceBroadcast = reads.context.broadcast(reference)
 
     windowFlatMapWithState(
       Vector(reads),
@@ -296,7 +296,7 @@ object DistributedUtil extends Logging {
       function =
         (maybePileup: Option[Pileup], windows: PerSample[SlidingWindow[MappedRead]]) => {
           assert(windows.length == 1)
-          val contigSequence = referenceBC.value.getContig(windows(0).referenceName)
+          val contigSequence = referenceBroadcast.value.getContig(windows(0).referenceName)
           val pileup = initOrMovePileup(
             maybePileup,
             windows(0),
@@ -322,7 +322,7 @@ object DistributedUtil extends Logging {
     function: (Pileup, Pileup) => Iterator[T],
     reference: ReferenceGenome): RDD[T] = {
 
-    val referenceBC = reads1.context.broadcast(reference)
+    val referenceBroadcast = reads1.context.broadcast(reference)
 
     windowFlatMapWithState(
       Vector(reads1, reads2),
@@ -333,7 +333,7 @@ object DistributedUtil extends Logging {
       function =
         (maybePileups: Option[(Pileup, Pileup)], windows: PerSample[SlidingWindow[MappedRead]]) => {
           assert(windows.length == 2)
-          val contigSequence = referenceBC.value.getContig(windows(0).referenceName)
+          val contigSequence = referenceBroadcast.value.getContig(windows(0).referenceName)
           val pileup1 = initOrMovePileup(maybePileups.map(_._1), windows(0), contigSequence)
           val pileup2 = initOrMovePileup(maybePileups.map(_._2), windows(1), contigSequence)
           (Some((pileup1, pileup2)), function(pileup1, pileup2))
@@ -353,7 +353,7 @@ object DistributedUtil extends Logging {
     function: (PerSample[Pileup], ContigSequence) => Iterator[T],
     reference: ReferenceGenome): RDD[T] = {
 
-    val referenceBC = readsRDDs.head.context.broadcast(reference)
+    val referenceBroadcast = readsRDDs.head.context.broadcast(reference)
 
     windowFlatMapWithState(
       readsRDDs,
@@ -363,7 +363,7 @@ object DistributedUtil extends Logging {
       initialState = None,
       function = (maybePileups: Option[PerSample[Pileup]], windows: PerSample[SlidingWindow[MappedRead]]) => {
 
-        val referenceContig = referenceBC.value.getContig(windows(0).referenceName)
+        val referenceContig = referenceBroadcast.value.getContig(windows(0).referenceName)
 
         val advancedPileups = maybePileups match {
           case Some(existingPileups) =>

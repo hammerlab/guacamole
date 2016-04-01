@@ -291,7 +291,7 @@ object GermlineAssemblyCaller {
                           reference: ReferenceGenome,
                           lociPartitions: LociMap[Long]): RDD[CalledAllele] = {
 
-      val referenceBC = reads.context.broadcast(reference)
+      val referenceBroadcast = reads.context.broadcast(reference)
 
       val genotypes: RDD[CalledAllele] =
         DistributedUtil.windowFlatMapWithState[MappedRead, CalledAllele, Option[DeBruijnGraph]](
@@ -308,7 +308,7 @@ object GermlineAssemblyCaller {
                 .currentRegions()
                 .filter(_.overlapsLocus(window.currentLocus))
 
-            val reference = referenceBC.value
+            val reference = referenceBroadcast.value
 
             val variableReads =
               currentLocusReads
