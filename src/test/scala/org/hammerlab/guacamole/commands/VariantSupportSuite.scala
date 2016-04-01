@@ -17,7 +17,7 @@ class VariantSupportSuite extends GuacFunSuite with Matchers with TableDrivenPro
   def testAlleleCounts(window: SlidingWindow[MappedRead],
                        variantAlleleLoci: (String, Int, Seq[(String, String, Int)])*) = {
     for {
-      (contig, locus, alleleCounts) ← variantAlleleLoci
+      (contig, locus, alleleCounts) <- variantAlleleLoci
     } {
       withClue(s"$contig:$locus") {
 
@@ -39,13 +39,13 @@ class VariantSupportSuite extends GuacFunSuite with Matchers with TableDrivenPro
   def assertAlleleCounts(pileup: Pileup, alleleCounts: (String, String, Int)*): Unit = {
     val computedAlleleCounts =
       (for {
-        AlleleCount(_, _, _, ref, alternate, count) ← VariantSupport.Caller.pileupToAlleleCounts(pileup)
+        AlleleCount(_, _, _, ref, alternate, count) <- VariantSupport.Caller.pileupToAlleleCounts(pileup)
       } yield (ref, alternate, count)
       )
         .toArray
-        .sortBy(x ⇒ x)
+        .sortBy(x => x)
 
-    computedAlleleCounts should be(alleleCounts.sortBy(x ⇒ x))
+    computedAlleleCounts should be(alleleCounts.sortBy(x => x))
   }
 
   def gatkReads(loci: String) =
