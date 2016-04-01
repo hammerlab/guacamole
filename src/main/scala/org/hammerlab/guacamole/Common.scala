@@ -155,8 +155,7 @@ object Common extends Logging {
   def loadReadsFromArguments(
     args: Arguments.Reads,
     sc: SparkContext,
-    filters: Read.InputFilters,
-    reference: ReferenceGenome): ReadSet = {
+    filters: Read.InputFilters): ReadSet = {
 
     ReadSet(
       sc,
@@ -164,8 +163,8 @@ object Common extends Logging {
       filters,
       token = 0,
       contigLengthsFromDictionary = !args.noSequenceDictionary,
-      reference = reference,
-      config = ReadLoadingConfigArgs.fromArguments(args))
+      config = ReadLoadingConfigArgs.fromArguments(args)
+    )
   }
 
   /**
@@ -180,8 +179,7 @@ object Common extends Logging {
   def loadTumorNormalReadsFromArguments(
     args: Arguments.TumorNormalReads,
     sc: SparkContext,
-    filters: Read.InputFilters,
-    reference: ReferenceGenome): (ReadSet, ReadSet) = {
+    filters: Read.InputFilters): (ReadSet, ReadSet) = {
 
     val tumor = ReadSet(
       sc,
@@ -189,16 +187,17 @@ object Common extends Logging {
       filters,
       1,
       !args.noSequenceDictionary,
-      reference,
-      ReadLoadingConfigArgs.fromArguments(args))
+      ReadLoadingConfigArgs.fromArguments(args)
+    )
+
     val normal = ReadSet(
       sc,
       args.normalReads,
       filters,
       2,
       !args.noSequenceDictionary,
-      reference,
-      ReadLoadingConfigArgs.fromArguments(args))
+      ReadLoadingConfigArgs.fromArguments(args)
+    )
     (tumor, normal)
   }
 

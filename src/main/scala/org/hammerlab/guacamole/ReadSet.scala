@@ -97,7 +97,6 @@ object ReadSet {
     filters: Read.InputFilters = Read.InputFilters.empty,
     token: Int = 0,
     contigLengthsFromDictionary: Boolean = true,
-    reference: ReferenceGenome,
     config: Read.ReadLoadingConfig = Read.ReadLoadingConfig.default): ReadSet = {
 
     val (reads, sequenceDictionary) =
@@ -106,7 +105,6 @@ object ReadSet {
         sc,
         token = token,
         filters = filters,
-        reference,
         config
       )
 
