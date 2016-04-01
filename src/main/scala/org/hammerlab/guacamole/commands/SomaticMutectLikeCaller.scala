@@ -137,7 +137,7 @@ object SomaticMutectLike {
     val minMedianAbsoluteDeviationOfAlleleInRead: Int = 3
     val errorForPowerCalculations: Double = 0.001
     val minLodForPowerCalc: Double = 2.0d
-    val contamFrac: Double = 0.0
+    val contamFrac: Double = 0.02
     val maxAltAllelesInNormalFilter: Int = 2
     val maxReadDepth: Int = Int.MaxValue
 
@@ -436,7 +436,8 @@ object SomaticMutectLike {
                                           maxNormalQscoreSumSupportingMutant: Int = DefaultMutectArgs.maxNormalQscoreSumSupportingMutant,
                                           minMedianDistanceFromReadEnd: Int = DefaultMutectArgs.minMedianDistanceFromReadEnd,
                                           minMedianAbsoluteDeviationOfAlleleInRead: Int = DefaultMutectArgs.minMedianAbsoluteDeviationOfAlleleInRead,
-                                          maxAltAllelesInNormalFilter: Int = DefaultMutectArgs.maxAltAllelesInNormalFilter): Boolean = {
+                                          maxAltAllelesInNormalFilter: Int = DefaultMutectArgs.maxAltAllelesInNormalFilter,
+                                          tumorLODThreshold: Double = DefaultMutectArgs.tumorLODThreshold): Boolean = {
 
       val passIndel: Boolean = call.mutectEvidence.nInsertions < maxGapEventsThresholdForPointMutations && call.mutectEvidence.nDeletions < maxGapEventsThresholdForPointMutations || call.length > 1
 
@@ -455,13 +456,15 @@ object SomaticMutectLike {
       val passingStrandBias = (call.mutectEvidence.powerPos < 0.9 || call.mutectEvidence.lodPos >= minLodForPowerCalc) &&
         (call.mutectEvidence.powerNeg < 0.9 || call.mutectEvidence.lodNeg >= minLodForPowerCalc)
 
+      val passContamFilter = call.somaticLogOdds >= (tumorLODThreshold + call.mutectEvidence.contamLogOdds)
+
       // Only pass mutations that do not cluster at the ends of reads
       val passEndClustering = (call.mutectEvidence.forwardMad > minMedianAbsoluteDeviationOfAlleleInRead || call.mutectEvidence.forwardMedian > minMedianAbsoluteDeviationOfAlleleInRead) &&
         (call.mutectEvidence.reverseMad > minMedianAbsoluteDeviationOfAlleleInRead || call.mutectEvidence.reverseMedian > minMedianAbsoluteDeviationOfAlleleInRead)
 
       (passIndel && passStringentFilters && passMapq0Filter &&
         passMaxMapqAlt && passMaxNormalSupport && passEndClustering &&
-        passingStrandBias)
+        passingStrandBias && passContamFilter)
     }
 
     /**
@@ -494,7 +497,7 @@ object SomaticMutectLike {
                                     contamFrac: Double = DefaultMutectArgs.contamFrac,
                                     minLodForPowerCalc: Double = DefaultMutectArgs.minLodForPowerCalc,
                                     maxReadDepth: Int = Int.MaxValue): Seq[CalledMutectSomaticAllele] = {
-      val contamModel = MutectContamLogOdds
+      val tumorVs0Model = MutectLogOdds
       val somaticModel = MutectSomaticLogOdds
 
       lazy val mapqAndBaseqFilteredNormalPileup = mapqBaseqNullAlleleFilteredPu(rawNormalPileup, minBaseQuality, minAlignmentQuality)
@@ -528,10 +531,9 @@ object SomaticMutectLike {
               val altFrac = getFracHeavilyFiltered(alt)
               val logOdds =
                 if (altFrac > minFracAltToConsider)
-                  contamModel.logOdds(Bases.basesToString(alt.refBases),
+                  tumorVs0Model.logOdds(Bases.basesToString(alt.refBases),
                     Bases.basesToString(alt.altBases),
-                    heavilyFilteredTumorPuElements,
-                    math.min(contamFrac, altFrac))
+                    heavilyFilteredTumorPuElements)
                 else
                   0.0
               (logOdds, alt, altFrac)
@@ -564,8 +566,17 @@ object SomaticMutectLike {
           val tumorMapq0Depth = rawTumorPileup.elements.count(_.read.alignmentQuality == 0)
           val normalMapq0Depth = rawNormalPileup.elements.count(_.read.alignmentQuality == 0)
 
+
           val onlyTumorMutHeavyFiltered = heavilyFilteredTumorPuElements.filter(_.allele == alt)
           val maxAltQuality = onlyTumorMutHeavyFiltered.map(_.qualityScore).max
+
+          val contamLogOdds = if(contamFrac <= 0) 0.0 else {
+            val nContamAlleles:Int = math.floor(contamFrac * heavilyFilteredTumorPuElements.length).toInt
+            val onlyMutSortedByQualityScore = onlyTumorMutHeavyFiltered.sortBy(- _.qualityScore)
+            val contamPileup = onlyMutSortedByQualityScore.take(nContamAlleles) ++ heavilyFilteredTumorPuElements ++
+              heavilyFilteredTumorPuElements.take(onlyMutSortedByQualityScore.length - nContamAlleles)
+            tumorVs0Model.logOdds(Bases.basesToString(alt.refBases), Bases.basesToString(alt.altBases), contamPileup, Some(math.min(alleleFrac, contamFrac)))
+          }
 
           val normalAlts = mapqBaseqAndOverlappingFragmentFilteredNormalPileup.elements.filter(_.allele == alt)
 
@@ -583,11 +594,11 @@ object SomaticMutectLike {
           val tPosFrac = if (tumorPosDepth > 0) tumorPosAlt.size.toDouble / tumorPosDepth.toDouble else 0.0
           val tNegFrac = if (tumorNegDepth > 0) tumorNegAlt.size.toDouble / tumorNegDepth.toDouble else 0.0
 
-          val lodPos = contamModel.logOdds(Bases.basesToString(alt.refBases), Bases.basesToString(alt.altBases), tumorPos, math.min(tPosFrac, contamFrac))
-          val lodNeg = contamModel.logOdds(Bases.basesToString(alt.refBases), Bases.basesToString(alt.altBases), tumorNeg, math.min(tNegFrac, contamFrac))
+          val lodPos = tumorVs0Model.logOdds(Bases.basesToString(alt.refBases), Bases.basesToString(alt.altBases), tumorPos)
+          val lodNeg = tumorVs0Model.logOdds(Bases.basesToString(alt.refBases), Bases.basesToString(alt.altBases), tumorNeg)
 
-          val powerPos = cachingCalculatePowerToDetect(tumorPosDepth, alleleFrac, errorForPowerCalculations, minLodForPowerCalc, contamFrac)
-          val powerNeg = cachingCalculatePowerToDetect(tumorNegDepth, alleleFrac, errorForPowerCalculations, minLodForPowerCalc, contamFrac)
+          val powerPos = cachingCalculatePowerToDetect(tumorPosDepth, alleleFrac, errorForPowerCalculations, minLodForPowerCalc, 0.0)
+          val powerNeg = cachingCalculatePowerToDetect(tumorNegDepth, alleleFrac, errorForPowerCalculations, minLodForPowerCalc, 0.0)
 
           val forwardPositions: Seq[Double] = onlyTumorMutHeavyFiltered.map(_.readPosition.toDouble)
           val reversePositions: Seq[Double] = onlyTumorMutHeavyFiltered.map(pileupElement =>
@@ -611,6 +622,7 @@ object SomaticMutectLike {
             AlleleEvidence(logOddsToP(normalNotHet), Allele(alt.refBases, alt.refBases), mapqBaseqAndOverlappingFragmentFilteredNormalPileup)
 
           val mutectEvidence = MutectFilteringEvidence(mutLogOdds = normalNotHet,
+            contamLogOdds = contamLogOdds,
             filteredNormalAltDepth = filteredNormalAltDepth,
             filteredNormalDepth = filteredNormalDepth,
             forwardMad = forwardMad,

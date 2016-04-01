@@ -24,6 +24,7 @@ import org.bdgenomics.adam.util.PhredUtils
  * @param mutLogOdds log odds-ratio of the variant in the tumor being present vs absent
  */
 case class MutectFilteringEvidence(mutLogOdds: Double,
+                                   contamLogOdds: Double,
                                    filteredNormalAltDepth: Int,
                                    filteredNormalDepth: Int,
                                    forwardMad: Double,

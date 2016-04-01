@@ -34,8 +34,9 @@ trait LikelihoodModel extends Serializable {
 case class LogOdds(m1: LikelihoodModel, m2: LikelihoodModel) {
 
   def logOdds(ref: String, alt: String,
-              obs: Seq[PileupElement]): Double =
-    m1.logLikelihood(ref, alt, obs, None) - m2.logLikelihood(ref, alt, obs, None)
+              obs: Seq[PileupElement],
+              altf: Option[Double] = None): Double =
+    m1.logLikelihood(ref, alt, obs, altf) - m2.logLikelihood(ref, alt, obs, None)
 }
 
 case class ContamLogOdds(val m1: LikelihoodModel, val m2: LikelihoodModel) {
