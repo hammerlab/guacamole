@@ -7,9 +7,9 @@ import org.hammerlab.guacamole.reads.Read
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.util.TestUtil
 import org.hammerlab.guacamole.variants.CalledAllele
-import org.scalatest.{ BeforeAndAfter, FunSuite, Matchers }
+import org.scalatest.{BeforeAndAfterAll, FunSuite, Matchers}
 
-class GermlineAssemblyCallerSuite extends FunSuite with Matchers with BeforeAndAfter {
+class GermlineAssemblyCallerSuite extends FunSuite with Matchers with BeforeAndAfterAll {
 
   val args = new Arguments
 
@@ -21,188 +21,141 @@ class GermlineAssemblyCallerSuite extends FunSuite with Matchers with BeforeAndA
   var reference: ReferenceBroadcast = _
   var readSet: ReadSet = _
 
-  before {
+  override def beforeAll() {
     sc = Common.createSparkContext()
     reference = ReferenceBroadcast(referenceFastaPath, sc)
-    readSet = Common.loadReadsFromArguments(
-      args,
-      sc,
-      Read.InputFilters(mapped = true, nonDuplicate = true)
-    )
-    readSet.mappedReads.persist()
   }
 
-  after {
+  override def afterAll(): Unit = {
     sc.stop()
   }
 
   val referenceFastaPath = TestUtil.testDataPath(NA12878TestUtils.chr1PrefixFasta)
-  val loci = Common.lociFromArguments(args)
 
-  def discoverGenotypesAtLoci(loci: String,
-                              readSetIn: ReadSet = readSet,
-                              referenceInput: ReferenceBroadcast = reference,
-                              kmerSize: Int = 31,
-                              snvWindowRange: Int = 55,
-                              minOccurrence: Int = 5,
-                              minVaf: Float = 0.1f): Seq[CalledAllele] = {
-    val lociPartitions = DistributedUtil.partitionLociUniformly(
-      tasks = args.parallelism,
-      loci = LociSet.parse(loci).result(readSetIn.contigLengths)
-    )
-    GermlineAssemblyCaller.Caller.discoverGenotypes(
-      readSetIn.mappedReads,
-      kmerSize = kmerSize,
-      snvWindowRange = snvWindowRange,
-      minOccurrence = minOccurrence,
-      minAreaVaf = minVaf,
-      reference = referenceInput,
-      lociPartitions = lociPartitions
-    ).collect().sortBy(_.start)
-  }
+  def verifyVariantsAtLocus(name: String,
+                            locus: Int,
+                            contig: String = "chr1",
+                            kmerSize: Int = 31,
+                            snvWindowRange: Int = 55,
+                            minOccurrence: Int = 5,
+                            minVaf: Float = 0.1f)(
+    expectedVariants: (String, Int, String, String)*
+  ): Unit = {
 
-  test("test assembly caller: illumina platinum tests; homozygous snp") {
+    val windowStart = locus - snvWindowRange
+    val windowEnd = locus + snvWindowRange
 
-    val loci = "chr1:772754-772755"
-    val variants = discoverGenotypesAtLoci(loci)
+    test(name) {
+      val lociBuilder = LociSet.parse(s"$contig:$windowStart-$windowEnd")
 
-    variants.length should be(1)
-    val variant = variants(0)
-    variant.referenceContig should be("chr1")
-    variant.start should be(772754)
-    Bases.basesToString(variant.allele.refBases) should be("A")
-    Bases.basesToString(variant.allele.altBases) should be("C")
+      val readSet =
+        Common.loadReadsFromArguments(
+          args,
+          sc,
+          Read.InputFilters(
+            mapped = true,
+            nonDuplicate = true,
+            overlapsLoci = Some(lociBuilder)
+          )
+        )
 
-  }
+      val lociPartitions =
+        DistributedUtil.partitionLociUniformly(
+          tasks = args.parallelism,
+          loci = lociBuilder.result(readSet.contigLengths)
+        )
 
-  test("test assembly caller: illumina platinum tests; nearby homozygous snps") {
+      val variants =
+        GermlineAssemblyCaller.Caller.discoverGenotypes(
+          readSet.mappedReads,
+          kmerSize = kmerSize,
+          snvWindowRange = snvWindowRange,
+          minOccurrence = minOccurrence,
+          minAreaVaf = minVaf,
+          reference = reference,
+          lociPartitions = lociPartitions
+        ).collect().sortBy(_.start)
 
-    val loci = "chr1:1297212-1297213"
-    val variants = discoverGenotypesAtLoci(loci)
+      val actualVariants =
+        for {
+          CalledAllele(_, contig, start, allele, _, _, _) ← variants
+        } yield {
+          (contig, start, Bases.basesToString(allele.refBases), Bases.basesToString(allele.altBases))
+        }
 
-    variants.length should be(2)
-    val variant1 = variants(0)
-    variant1.referenceContig should be("chr1")
-    variant1.start should be(1297212)
-    Bases.basesToString(variant1.allele.refBases) should be("G")
-    Bases.basesToString(variant1.allele.altBases) should be("C")
-
-    val variant2 = variants(1)
-    variant2.referenceContig should be("chr1")
-    variant2.start should be(1297215)
-    Bases.basesToString(variant2.allele.refBases) should be("A")
-    Bases.basesToString(variant2.allele.altBases) should be("G")
-
-  }
-
-  test("test assembly caller: illumina platinum tests; 2 nearby homozygous snps") {
-
-    val loci = "chr1:1316669-1316670"
-    val variants = discoverGenotypesAtLoci(loci)
-
-    variants.length should be(3)
-    val variant1 = variants(0)
-    variant1.referenceContig should be("chr1")
-    variant1.start should be(1316647)
-    Bases.basesToString(variant1.allele.refBases) should be("C")
-    Bases.basesToString(variant1.allele.altBases) should be("T")
-
-    val variant2 = variants(1)
-    variant2.referenceContig should be("chr1")
-    variant2.start should be(1316669)
-    Bases.basesToString(variant2.allele.refBases) should be("C")
-    Bases.basesToString(variant2.allele.altBases) should be("G")
-
-    val variant3 = variants(2)
-    variant3.referenceContig should be("chr1")
-    variant3.start should be(1316673)
-    Bases.basesToString(variant3.allele.refBases) should be("C")
-    Bases.basesToString(variant3.allele.altBases) should be("T")
+      actualVariants should be(expectedVariants)
+    }
 
   }
 
-  test("test assembly caller: illumina platinum tests; het snp") {
+  verifyVariantsAtLocus(
+    "test assembly caller: illumina platinum tests; homozygous snp",
+    772754
+  )(
+    ("chr1", 772754, "A", "C")
+  )
 
-    val loci = "chr1:1342611-1342612"
-    val variants = discoverGenotypesAtLoci(loci)
+  verifyVariantsAtLocus(
+    "test assembly caller: illumina platinum tests; nearby homozygous snps",
+    1297212
+  )(
+    ("chr1", 1297212, "G", "C"),
+    ("chr1", 1297215, "A", "G")
+  )
 
-    variants.length should be(1)
-    val variant = variants(0)
-    variant.referenceContig should be("chr1")
-    variant.start should be(1342611)
-    Bases.basesToString(variant.allele.refBases) should be("G")
-    Bases.basesToString(variant.allele.altBases) should be("C")
-  }
+  verifyVariantsAtLocus(
+    "test assembly caller: illumina platinum tests; 2 nearby homozygous snps",
+    1316669
+  )(
+    ("chr1", 1316647, "C", "T"),
+    ("chr1", 1316669, "C", "G"),
+    ("chr1", 1316673, "C", "T")
+  )
 
-  test("test assembly caller: illumina platinum tests; homozygous deletion") {
+  verifyVariantsAtLocus(
+    "test assembly caller: illumina platinum tests; het snp",
+    1342611
+  )(
+    ("chr1", 1342611, "G", "C")
+  )
 
-    val loci = "chr1:1296368-1296369"
-    val variants = discoverGenotypesAtLoci(loci)
+  verifyVariantsAtLocus(
+    "test assembly caller: illumina platinum tests; homozygous deletion",
+    1296368
+  )(
+    ("chr1", 1296368, "GAC", "G")
+  )
 
-    variants.length should be(1)
-    val variant = variants(0)
-    variant.referenceContig should be("chr1")
-    variant.start should be(1296368)
-    Bases.basesToString(variant.allele.refBases) should be("GAC")
-    Bases.basesToString(variant.allele.altBases) should be("G")
-  }
+  verifyVariantsAtLocus(
+    "test assembly caller: illumina platinum tests; homozygous deletion 2",
+    1303426
+  )(
+    ("chr1", 1303426, "ACT", "A")
+  )
 
-  test("test assembly caller: illumina platinum tests; homozygous deletion 2") {
+  verifyVariantsAtLocus(
+    "test assembly caller: illumina platinum tests; homozygous insertion",
+    1321298
+  )(
+    ("chr1", 1321298, "A", "AG")
+  )
 
-    val loci = "chr1:1303426-1303427"
-    val variants = discoverGenotypesAtLoci(loci)
+  verifyVariantsAtLocus(
+    "test assembly caller: illumina platinum tests; homozygous insertion 2",
+    1302671
+  )(
+    ("chr1", 1302671, "A", "AGT")
+  )
 
-    variants.length should be(1)
-    val variant = variants(0)
-    variant.referenceContig should be("chr1")
-    variant.start should be(1303426)
-    Bases.basesToString(variant.allele.refBases) should be("ACT")
-    Bases.basesToString(variant.allele.altBases) should be("A")
-  }
+  verifyVariantsAtLocus(
+    "test assembly caller: empty region",
+    1303917
+  )()
 
-  test("test assembly caller: illumina platinum tests; homozygous insertion") {
-
-    val loci = "chr1:1321298-1321299"
-    val variants = discoverGenotypesAtLoci(loci)
-
-    variants.length should be(1)
-    val variant = variants(0)
-    variant.referenceContig should be("chr1")
-    variant.start should be(1321298)
-    Bases.basesToString(variant.allele.refBases) should be("A")
-    Bases.basesToString(variant.allele.altBases) should be("AG")
-  }
-
-  test("test assembly caller: illumina platinum tests; homozygous insertion 2") {
-
-    val loci = "chr1:1302671-1302672"
-    val variants = discoverGenotypesAtLoci(loci)
-
-    variants.length should be(1)
-    val variant = variants(0)
-    variant.referenceContig should be("chr1")
-    variant.start should be(1302671)
-    Bases.basesToString(variant.allele.refBases) should be("A")
-    Bases.basesToString(variant.allele.altBases) should be("AGT")
-  }
-
-  test("test assembly caller: empty region") {
-
-    val loci = "chr1:1303917-1303918"
-    val variants = discoverGenotypesAtLoci(loci)
-    variants.length should be(0)
-  }
-
-  test("test assembly caller: homozygous snp in a repeat region") {
-
-    val loci = "chr1:789255-789256"
-    val variants = discoverGenotypesAtLoci(loci)
-    variants.length should be(1)
-    val variant = variants(0)
-    variant.referenceContig should be("chr1")
-    variant.start should be(789255)
-    Bases.basesToString(variant.allele.refBases) should be("T")
-    Bases.basesToString(variant.allele.altBases) should be("C")
-
-  }
+  verifyVariantsAtLocus(
+    "test assembly caller: homozygous snp in a repeat region",
+    789255
+  )(
+    ("chr1", 789255, "T", "C")
+  )
 }
