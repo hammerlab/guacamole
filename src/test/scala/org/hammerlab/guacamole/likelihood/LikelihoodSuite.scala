@@ -18,12 +18,11 @@
 
 package org.hammerlab.guacamole.likelihood
 
-import org.hammerlab.guacamole.reference.ContigSequence
-import org.hammerlab.guacamole.util.{ TestUtil, GuacFunSuite }
+import org.hammerlab.guacamole.ReadsUtil._
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.MappedRead
+import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
 import org.hammerlab.guacamole.variants.Genotype
-import org.hammerlab.guacamole.ReadsUtil._
 import org.scalatest.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks
 
@@ -43,8 +42,10 @@ class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks with M
     }
   }
 
+  val reference = TestUtil.makeReference(Seq(("chr1", 1, "C")))
+
   def testGenotypeLikelihoods(reads: Seq[MappedRead], genotypesMap: ((Char, Char), Double)*): Unit = {
-    val referenceContigSequence = referenceBroadcast(sc).getContig("chr1")
+    val referenceContigSequence = reference.getContig("chr1")
     val pileup = Pileup(reads, reads(0).referenceContig, 1, referenceContigSequence)
     forAll(Table("genotype", genotypesMap: _*)) { pair =>
       TestUtil.assertAlmostEqual(
@@ -105,7 +106,7 @@ class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks with M
   }
 
   sparkTest("score genotype for single sample; all bases ref") {
-    val referenceContigSequence = referenceBroadcast(sc).getContig("chr1")
+    val referenceContigSequence = reference.getContig("chr1")
 
     val reads = Seq(
       refRead(30),
@@ -122,7 +123,7 @@ class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks with M
   }
 
   sparkTest("score genotype for single sample; mix of ref/non-ref bases") {
-    val referenceContigSequence = referenceBroadcast(sc).getContig("chr1")
+    val referenceContigSequence = reference.getContig("chr1")
 
     val reads = Seq(
       refRead(30),
@@ -141,7 +142,7 @@ class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks with M
   }
 
   sparkTest("score genotype for single sample; all bases non-ref") {
-    val referenceContigSequence = referenceBroadcast(sc).getContig("chr1")
+    val referenceContigSequence = reference.getContig("chr1")
 
     val reads = Seq(
       altRead(30),
@@ -158,7 +159,7 @@ class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks with M
   }
 
   sparkTest("log score genotype for single sample; all bases ref") {
-    val referenceContigSequence = referenceBroadcast(sc).getContig("chr1")
+    val referenceContigSequence = reference.getContig("chr1")
 
     val reads = Seq(
       refRead(30),
@@ -178,7 +179,7 @@ class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks with M
   }
 
   sparkTest("log score genotype for single sample; mix of ref/non-ref bases") {
-    val referenceContigSequence = referenceBroadcast(sc).getContig("chr1")
+    val referenceContigSequence = reference.getContig("chr1")
 
     val reads = Seq(
       refRead(30),
@@ -200,7 +201,7 @@ class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks with M
   }
 
   sparkTest("log score genotype for single sample; all bases non-ref") {
-    val referenceContigSequence = referenceBroadcast(sc).getContig("chr1")
+    val referenceContigSequence = reference.getContig("chr1")
 
     val reads = Seq(
       altRead(30),

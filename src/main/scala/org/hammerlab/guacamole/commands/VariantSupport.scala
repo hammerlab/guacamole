@@ -26,7 +26,7 @@ import org.hammerlab.guacamole._
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.reads.Read.InputFilters
-import org.hammerlab.guacamole.reference.ReferenceBroadcast
+import org.hammerlab.guacamole.reference.ReferenceGenome
 import org.kohsuke.args4j.{ Argument, Option => Args4jOption }
 
 object VariantSupport {
@@ -67,7 +67,7 @@ object VariantSupport {
 
     override def run(args: Arguments, sc: SparkContext): Unit = {
 
-      val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
+      val reference = ReferenceGenome(args.referenceFastaPath)
 
       val adamContext = new ADAMContext(sc)
 

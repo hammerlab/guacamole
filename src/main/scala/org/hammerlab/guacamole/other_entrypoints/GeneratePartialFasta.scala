@@ -6,7 +6,7 @@ import org.apache.spark.Logging
 import org.bdgenomics.utils.cli.Args4j
 import org.hammerlab.guacamole._
 import org.hammerlab.guacamole.reads.Read.InputFilters
-import org.hammerlab.guacamole.reference.{ ContigNotFound, ReferenceBroadcast }
+import org.hammerlab.guacamole.reference.{ ContigNotFound, ReferenceGenome }
 import org.kohsuke.args4j.{ Argument, Option => Args4jOption }
 
 /**
@@ -40,7 +40,7 @@ object GeneratePartialFasta extends Logging {
     val args = Args4j[Arguments](rawArgs)
     val sc = Common.createSparkContext(appName = Some("generate-partial-fasta"))
 
-    val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
+    val reference = ReferenceGenome(args.referenceFastaPath)
     val lociBuilder = Common.lociFromArguments(args, default = "none")
     val readSets = args.bams.zipWithIndex.map(fileAndIndex =>
       ReadSet(

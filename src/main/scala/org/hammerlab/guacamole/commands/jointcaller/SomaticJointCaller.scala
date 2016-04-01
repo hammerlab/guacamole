@@ -7,8 +7,8 @@ import org.hammerlab.guacamole.Common.Arguments.NoSequenceDictionary
 import org.hammerlab.guacamole.DistributedUtil.PerSample
 import org.hammerlab.guacamole._
 import org.hammerlab.guacamole.reads._
-import org.hammerlab.guacamole.reference.ReferenceBroadcast
-import org.kohsuke.args4j.{ Option => Args4jOption }
+import org.hammerlab.guacamole.reference.ReferenceGenome
+import org.kohsuke.args4j.{ Option ⇒ Args4jOption }
 
 object SomaticJoint {
   class Arguments extends Parameters.CommandlineArguments with DistributedUtil.Arguments with NoSequenceDictionary with InputCollection.Arguments {
@@ -41,17 +41,18 @@ object SomaticJoint {
   def inputsToReadSets(sc: SparkContext,
                        inputs: InputCollection,
                        loci: LociSet.Builder,
-                       reference: ReferenceBroadcast,
+                       reference: ReferenceGenome,
                        contigLengthsFromDictionary: Boolean = true): PerSample[ReadSet] = {
-    inputs.items.zipWithIndex.map({
-      case (input, index) => ReadSet(
-        sc,
-        input.path,
-        Read.InputFilters(overlapsLoci = Some(loci)),
-        token = index,
-        contigLengthsFromDictionary = contigLengthsFromDictionary
-      )
-    })
+    inputs.items.zipWithIndex.map {
+      case (input, index) =>
+        ReadSet(
+          sc,
+          input.path,
+          Read.InputFilters(overlapsLoci = Some(loci)),
+          token = index,
+          contigLengthsFromDictionary = contigLengthsFromDictionary
+        )
+    }
   }
 
   object Caller extends SparkCommand[Arguments] {
@@ -66,7 +67,7 @@ object SomaticJoint {
         inputs.items.foreach(input => println(input))
       }
 
-      val reference = ReferenceBroadcast(args.referenceFastaPath, sc, partialFasta = args.referenceFastaIsPartial)
+      val reference = ReferenceGenome(args.referenceFastaPath, partialFasta = args.referenceFastaIsPartial)
 
       val loci = Common.lociFromArguments(args)
 
@@ -139,7 +140,7 @@ object SomaticJoint {
                 inputs: InputCollection,
                 readSets: PerSample[ReadSet],
                 parameters: Parameters,
-                reference: ReferenceBroadcast,
+                reference: ReferenceGenome,
                 loci: LociSet,
                 forceCallLoci: LociSet = LociSet.empty,
                 distributedUtilArguments: DistributedUtil.Arguments = new DistributedUtil.Arguments {}): RDD[MultipleAllelesEvidenceAcrossSamples] = {
@@ -155,17 +156,15 @@ object SomaticJoint {
     val calls = DistributedUtil.pileupFlatMapMultipleRDDs(
       readSets.map(_.mappedReads),
       lociPartitions,
-      true, // skip empty. TODO: shouldn't skip empty positions if we might force call them. Need an efficient way to handle this.
-      pileups => {
+      skipEmpty = true, // TODO: shouldn't skip empty positions if we might force call them. Need an efficient way to handle this.
+      (pileups, referenceContig) => {
         val normalPileups = inputs.normalDNA.map(input => pileups(input.index))
-        val tumorDNAPileups = inputs.tumorDNA.map(input => pileups(input.index))
         val forceCall = broadcastForceCallLoci.value.onContig(pileups(0).referenceName).contains(pileups(0).locus + 1)
 
-        val contig = normalPileups.head.referenceName
         val locus = normalPileups.head.locus
 
         // We only call variants at a site if the reference base is a standard base (i.e. not N).
-        if (Bases.isStandardBase(reference.getReferenceBase(contig, locus.toInt + 1))) {
+        if (Bases.isStandardBase(referenceContig(locus.toInt + 1))) {
           val possibleAlleles = AlleleAtLocus.variantAlleles(
             (inputs.normalDNA ++ inputs.tumorDNA).map(input => pileups(input.index)),
             anyAlleleMinSupportingReads = parameters.anyAlleleMinSupportingReads,
@@ -205,7 +204,7 @@ object SomaticJoint {
                  parameters: Parameters,
                  sequenceDictionary: SAMSequenceDictionary,
                  forceCallLoci: LociSet = LociSet.empty,
-                 reference: ReferenceBroadcast,
+                 reference: ReferenceGenome,
                  out: String = "",
                  outDir: String = ""): Unit = {
 

@@ -1,9 +1,8 @@
 package org.hammerlab.guacamole.commands
 
-import org.hammerlab.guacamole.Bases
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.{ MappedRead, Read }
-import org.hammerlab.guacamole.reference.ReferenceBroadcast
+import org.hammerlab.guacamole.reference.ReferenceGenome
 import org.hammerlab.guacamole.util.{ GuacFunSuite, TestUtil }
 import org.hammerlab.guacamole.windowing.SlidingWindow
 import org.scalatest.Matchers
@@ -11,7 +10,7 @@ import org.scalatest.prop.TableDrivenPropertyChecks
 
 class VariantSupportSuite extends GuacFunSuite with Matchers with TableDrivenPropertyChecks {
 
-  def grch37Reference = ReferenceBroadcast(TestUtil.testDataPath("grch37.partial.fasta"), sc, partialFasta = true)
+  def grch37Reference = ReferenceGenome(TestUtil.testDataPath("grch37.partial.fasta"), partialFasta = true)
 
   def testAlleleCounts(window: SlidingWindow[MappedRead],
                        variantAlleleLoci: (String, Long, Map[String, Int])*) = {

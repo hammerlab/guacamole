@@ -6,7 +6,7 @@ import org.scalatest.Matchers
 
 class AlleleEvidenceSuite extends GuacFunSuite with Matchers {
 
-  def reference = TestUtil.makeReference(sc, Seq(("chr1", 0, "NTAGATCGA")))
+  def reference = TestUtil.makeReference(Seq(("chr1", 0, "NTAGATCGA")))
 
   sparkTest("allele evidence from pileup, all reads support") {
     val reads = Seq(
