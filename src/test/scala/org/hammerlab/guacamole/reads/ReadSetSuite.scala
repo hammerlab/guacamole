@@ -20,36 +20,75 @@ package org.hammerlab.guacamole.reads
 
 import org.apache.parquet.hadoop.metadata.CompressionCodecName
 import org.bdgenomics.adam.rdd.read.AlignmentRecordRDDFunctions
-import org.bdgenomics.adam.rdd.{ ADAMSaveAnyArgs, ADAMContext }
-import org.hammerlab.guacamole.reference.ReferenceBroadcast
-import org.hammerlab.guacamole.{ LociSet }
+import org.bdgenomics.adam.rdd.{ADAMContext, ADAMSaveAnyArgs}
+import org.hammerlab.guacamole.LociSet
 import org.hammerlab.guacamole.reads.Read.InputFilters
-import org.hammerlab.guacamole.util.{ TestUtil, GuacFunSuite }
+import org.hammerlab.guacamole.reference.ReferenceBroadcast
+import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
 import org.scalatest.Matchers
 
 class ReadSetSuite extends GuacFunSuite with Matchers {
 
   def chr22Fasta = ReferenceBroadcast.readFasta(TestUtil.testDataPath("chr22.fa.gz"), sc)
 
+  case class LazyMessage(msg: () => String) {
+    override def toString: String = msg()
+  }
+
   sparkTest("using different bam reading APIs on sam/bam files should give identical results") {
     def check(paths: Seq[String], filter: InputFilters): Unit = {
       withClue("using filter %s: ".format(filter)) {
-        val configs = Read.ReadLoadingConfig.BamReaderAPI.values.map(api => Read.ReadLoadingConfig(bamReaderAPI = api)).toSeq
-        val standard = TestUtil.loadReads(sc, paths(0), filter, config = configs(0), reference = chr22Fasta).reads.collect
-        configs.foreach(config => {
-          paths.foreach(path => {
-            withClue("file %s with config %s vs standard %s with config %s:\n".format(path, config, paths(0), configs(0))) {
-              val result = TestUtil.loadReads(sc, path, filter, config = config, reference = chr22Fasta).reads.collect
-              if (result.toSet != standard.toSet) {
-                val missing = standard.filter(!result.contains(_))
-                assert(missing.isEmpty, "Missing reads: %s".format(missing.map(_.toString).mkString("\n\t")))
-                val extra = result.filter(!standard.contains(_))
-                assert(extra.isEmpty, "Extra reads:\n\t%s".format(extra.map(_.toString).mkString("\n\t")))
-                assert(false, "shouldn't get here")
-              }
-            }
-          })
-        })
+
+        val firstPath = paths.head
+
+        val configs =
+          Read.ReadLoadingConfig.BamReaderAPI.values
+            .map(api => Read.ReadLoadingConfig(bamReaderAPI = api))
+
+        val firstConfig = configs.head
+
+        val standard =
+          TestUtil.loadReads(
+            sc,
+            paths.head,
+            filter,
+            config = configs.head,
+            reference = chr22Fasta
+          ).reads.collect
+
+        for {
+          config <- configs
+          path <- paths
+          if config != firstConfig || path != firstPath
+        } {
+          withClue(s"file $path with config $config vs standard ${firstPath} with config ${firstConfig}:\n") {
+
+            val result =
+              TestUtil.loadReads(
+                sc,
+                path,
+                filter,
+                config = config,
+                reference = chr22Fasta
+              ).reads.collect
+
+            assert(
+              result.sameElements(standard),
+              LazyMessage(
+                () => {
+                  val missing = standard.filter(!result.contains(_))
+                  val extra = result.filter(!standard.contains(_))
+                  List(
+                    "Missing reads:",
+                    missing.mkString("\t", "\n\t", "\n"),
+                    "Extra reads:",
+                    extra.mkString("\t", "\n\t", "\n")
+                  ).mkString("\n")
+                }
+              )
+            )
+          }
+        }
       }
     }
 
@@ -94,8 +133,6 @@ class ReadSetSuite extends GuacFunSuite with Matchers {
     val adamContext = new ADAMContext(sc)
     val adamRecords = adamContext.loadBam(TestUtil.testDataPath("mdtagissue.sam"))
 
-    val origReadSet = TestUtil.loadReads(sc, "mdtagissue.sam", reference = chr22Fasta)
-
     val adamOut = TestUtil.tmpFileName(".adam")
     val args = new ADAMSaveAnyArgs {
       override var sortFastqOutput: Boolean = false
@@ -110,7 +147,6 @@ class ReadSetSuite extends GuacFunSuite with Matchers {
 
     val (allReads, _) = Read.loadReadRDDAndSequenceDictionaryFromADAM(adamOut, sc, token = 0)
     allReads.count() should be(8)
-    val collectedReads = allReads.collect()
 
     val (filteredReads, _) = Read.loadReadRDDAndSequenceDictionary(
       adamOut,
