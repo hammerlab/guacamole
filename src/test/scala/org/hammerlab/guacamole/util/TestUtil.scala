@@ -26,10 +26,11 @@ import com.twitter.chill.{ IKryoRegistrar, KryoInstantiator, KryoPool }
 import org.apache.commons.io.FileUtils
 import org.apache.spark.SparkContext
 import org.hammerlab.guacamole.pileup.Pileup
+import org.hammerlab.guacamole.reads.Read.InputFilters
 import org.hammerlab.guacamole.reads._
 import org.hammerlab.guacamole.reference.ReferenceBroadcast.MapBackedReferenceSequence
 import org.hammerlab.guacamole.reference.{ ContigSequence, ReferenceBroadcast }
-import org.hammerlab.guacamole.{ Bases, GuacamoleKryoRegistrator, ReadSet }
+import org.hammerlab.guacamole.{ Bases, GuacamoleKryoRegistrator, LociSet, ReadSet }
 import org.scalatest._
 
 import scala.collection.mutable
@@ -231,11 +232,30 @@ object TestUtil extends Matchers {
       Pileup(normalReads, contig, locus, reference.getContig(contig)))
   }
 
-  def loadPileup(sc: SparkContext, filename: String, reference: ReferenceBroadcast, locus: Long = 0, contig: Option[String] = None): Pileup = {
-    val records = TestUtil.loadReads(sc, filename, reference = reference).mappedReads
+  def loadPileup(sc: SparkContext,
+                 filename: String,
+                 reference: ReferenceBroadcast,
+                 locus: Long = 0,
+                 contigOpt: Option[String] = None): Pileup = {
+    val records =
+      TestUtil.loadReads(
+        sc,
+        filename,
+        filters = InputFilters(
+          overlapsLoci = contigOpt.map(
+            contig ⇒ LociSet.parse(s"$contig:$locus-${locus + 1}")
+          )
+        ),
+        reference = reference
+      ).mappedReads
     val localReads = records.collect
-    val actualContig = contig.getOrElse(localReads(0).referenceContig)
-    Pileup(localReads, actualContig, locus, referenceContigSequence = reference.getContig(actualContig))
+    val actualContig = contigOpt.getOrElse(localReads(0).referenceContig)
+    Pileup(
+      localReads,
+      actualContig,
+      locus,
+      referenceContigSequence = reference.getContig(actualContig)
+    )
   }
 
   def assertAlmostEqual(a: Double, b: Double, epsilon: Double = 1e-12) {
