@@ -236,20 +236,20 @@ object TestUtil extends Matchers {
                  filename: String,
                  reference: ReferenceBroadcast,
                  locus: Long = 0,
-                 contigOpt: Option[String] = None): Pileup = {
+                 maybeContig: Option[String] = None): Pileup = {
     val records =
       TestUtil.loadReads(
         sc,
         filename,
         filters = InputFilters(
-          overlapsLoci = contigOpt.map(
+          overlapsLoci = maybeContig.map(
             contig ⇒ LociSet.parse(s"$contig:$locus-${locus + 1}")
           )
         ),
         reference = reference
       ).mappedReads
     val localReads = records.collect
-    val actualContig = contigOpt.getOrElse(localReads(0).referenceContig)
+    val actualContig = maybeContig.getOrElse(localReads(0).referenceContig)
     Pileup(
       localReads,
       actualContig,
