@@ -14,7 +14,9 @@ case class MapBackedReferenceSequence(length: Int, wrapped: ListMap[Int, Byte]) 
   def apply(index: Int): Byte = wrapped.getOrElse(index, Bases.N)
 
   override def iterator: Iterator[Byte] = {
-    wrapped.valuesIterator
+    throw new NotImplementedError(
+      s"Iterating over all bases in a sparse, test-only representation of a contig is undefined."
+    )
   }
 
   override def slice(start: Int, end: Int): ContigSequence = (start until end).map(i ⇒ this(i))
