@@ -352,30 +352,30 @@ characters. If truncation occurs, the string is terminated with ellipses.
 </p></div><dl class="paramcmts block"><dt class="param">path</dt><dd class="cmt"><p>path to VCF or ADAM genotypes</p></dd><dt class="param">sc</dt><dd class="cmt"><p>spark context</p></dd><dt>returns</dt><dd class="cmt"><p>RDD of ADAM Genotypes
 </p></dd></dl></div>
     </li><li name="org.hammerlab.guacamole.Common#loadReadsFromArguments" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="loadReadsFromArguments(args:org.hammerlab.guacamole.Common.Arguments.Reads,sc:org.apache.spark.SparkContext,filters:org.hammerlab.guacamole.reads.Read.InputFilters,reference:org.hammerlab.guacamole.reference.ReferenceGenome):org.hammerlab.guacamole.ReadSet"></a>
-      <a id="loadReadsFromArguments(Reads,SparkContext,InputFilters,ReferenceGenome):ReadSet"></a>
+      <a id="loadReadsFromArguments(args:org.hammerlab.guacamole.Common.Arguments.Reads,sc:org.apache.spark.SparkContext,filters:org.hammerlab.guacamole.reads.Read.InputFilters):org.hammerlab.guacamole.ReadSet"></a>
+      <a id="loadReadsFromArguments(Reads,SparkContext,InputFilters):ReadSet"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">loadReadsFromArguments</span><span class="params">(<span name="args">args: <a href="Common$$Arguments$$Reads.html" class="extype" name="org.hammerlab.guacamole.Common.Arguments.Reads">Reads</a></span>, <span name="sc">sc: <span class="extype" name="org.apache.spark.SparkContext">SparkContext</span></span>, <span name="filters">filters: <a href="reads/Read$$InputFilters.html" class="extype" name="org.hammerlab.guacamole.reads.Read.InputFilters">InputFilters</a></span>, <span name="reference">reference: <a href="reference/ReferenceGenome.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceGenome">ReferenceGenome</a></span>)</span><span class="result">: <a href="ReadSet.html" class="extype" name="org.hammerlab.guacamole.ReadSet">ReadSet</a></span>
+        <span class="name">loadReadsFromArguments</span><span class="params">(<span name="args">args: <a href="Common$$Arguments$$Reads.html" class="extype" name="org.hammerlab.guacamole.Common.Arguments.Reads">Reads</a></span>, <span name="sc">sc: <span class="extype" name="org.apache.spark.SparkContext">SparkContext</span></span>, <span name="filters">filters: <a href="reads/Read$$InputFilters.html" class="extype" name="org.hammerlab.guacamole.reads.Read.InputFilters">InputFilters</a></span>)</span><span class="result">: <a href="ReadSet.html" class="extype" name="org.hammerlab.guacamole.ReadSet">ReadSet</a></span>
       </span>
       </h4>
       <p class="shortcomment cmt">Given arguments for a single set of reads, and a spark context, return a ReadSet.</p><div class="fullcomment"><div class="comment cmt"><p>Given arguments for a single set of reads, and a spark context, return a ReadSet.
 </p></div><dl class="paramcmts block"><dt class="param">args</dt><dd class="cmt"><p>parsed arguments</p></dd><dt class="param">sc</dt><dd class="cmt"><p>spark context</p></dd><dt class="param">filters</dt><dd class="cmt"><p>input filters to apply</p></dd><dt>returns</dt><dd class="cmt"><p>
 </p></dd></dl></div>
     </li><li name="org.hammerlab.guacamole.Common#loadTumorNormalReadsFromArguments" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="loadTumorNormalReadsFromArguments(args:org.hammerlab.guacamole.Common.Arguments.TumorNormalReads,sc:org.apache.spark.SparkContext,filters:org.hammerlab.guacamole.reads.Read.InputFilters,reference:org.hammerlab.guacamole.reference.ReferenceGenome):(org.hammerlab.guacamole.ReadSet,org.hammerlab.guacamole.ReadSet)"></a>
-      <a id="loadTumorNormalReadsFromArguments(TumorNormalReads,SparkContext,InputFilters,ReferenceGenome):(ReadSet,ReadSet)"></a>
+      <a id="loadTumorNormalReadsFromArguments(args:org.hammerlab.guacamole.Common.Arguments.TumorNormalReads,sc:org.apache.spark.SparkContext,filters:org.hammerlab.guacamole.reads.Read.InputFilters):(org.hammerlab.guacamole.ReadSet,org.hammerlab.guacamole.ReadSet)"></a>
+      <a id="loadTumorNormalReadsFromArguments(TumorNormalReads,SparkContext,InputFilters):(ReadSet,ReadSet)"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">loadTumorNormalReadsFromArguments</span><span class="params">(<span name="args">args: <a href="Common$$Arguments$$TumorNormalReads.html" class="extype" name="org.hammerlab.guacamole.Common.Arguments.TumorNormalReads">TumorNormalReads</a></span>, <span name="sc">sc: <span class="extype" name="org.apache.spark.SparkContext">SparkContext</span></span>, <span name="filters">filters: <a href="reads/Read$$InputFilters.html" class="extype" name="org.hammerlab.guacamole.reads.Read.InputFilters">InputFilters</a></span>, <span name="reference">reference: <a href="reference/ReferenceGenome.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceGenome">ReferenceGenome</a></span>)</span><span class="result">: (<a href="ReadSet.html" class="extype" name="org.hammerlab.guacamole.ReadSet">ReadSet</a>, <a href="ReadSet.html" class="extype" name="org.hammerlab.guacamole.ReadSet">ReadSet</a>)</span>
+        <span class="name">loadTumorNormalReadsFromArguments</span><span class="params">(<span name="args">args: <a href="Common$$Arguments$$TumorNormalReads.html" class="extype" name="org.hammerlab.guacamole.Common.Arguments.TumorNormalReads">TumorNormalReads</a></span>, <span name="sc">sc: <span class="extype" name="org.apache.spark.SparkContext">SparkContext</span></span>, <span name="filters">filters: <a href="reads/Read$$InputFilters.html" class="extype" name="org.hammerlab.guacamole.reads.Read.InputFilters">InputFilters</a></span>)</span><span class="result">: (<a href="ReadSet.html" class="extype" name="org.hammerlab.guacamole.ReadSet">ReadSet</a>, <a href="ReadSet.html" class="extype" name="org.hammerlab.guacamole.ReadSet">ReadSet</a>)</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Given arguments for two sets of reads (tumor and normal), return a pair of (tumor, normal) read sets.</p><div class="fullcomment"><div class="comment cmt"><p>Given arguments for two sets of reads (tumor and normal), return a pair of (tumor, normal) read sets.</p><p>The 'token' field will be set to 1 in the tumor reads, and 2 in the normal reads.
