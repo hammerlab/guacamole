@@ -10,7 +10,7 @@ import org.hammerlab.guacamole._
 import org.hammerlab.guacamole.alignment.AffineGapPenaltyAlignment
 import org.hammerlab.guacamole.assembly.DeBruijnGraph
 import org.hammerlab.guacamole.reads.{ MappedRead, Read }
-import org.hammerlab.guacamole.reference.{ ContigSequence, ReferenceGenome }
+import org.hammerlab.guacamole.reference.{ ReferenceGenome, ContigSubsequence}
 import org.hammerlab.guacamole.variants.{ Allele, AlleleConversions, AlleleEvidence, CalledAllele }
 import org.hammerlab.guacamole.windowing.SlidingWindow
 import org.kohsuke.args4j.{ Option => Args4jOption }
@@ -85,7 +85,7 @@ object GermlineAssemblyCaller {
     def getConsensusKmer(reads: Seq[MappedRead],
                          startLocus: Int,
                          endLocus: Int,
-                         minOccurrence: Int): Iterable[ContigSequence] = {
+                         minOccurrence: Int): Iterable[ContigSubsequence] = {
 
       // Filter to reads that entirely cover the region
       // Exclude reads that have any non-M Cigars (these don't have a 1 to 1 base mapping to the region)
@@ -102,7 +102,7 @@ object GermlineAssemblyCaller {
         .groupBy(identity)
         .map(kv => (kv._1, kv._2.length))
         .filter(_._2 >= minOccurrence)
-        .map(_._1.toArray: ContigSequence)
+        .map(_._1.toArray: ContigSubsequence)
     }
 
     /**
@@ -135,7 +135,7 @@ object GermlineAssemblyCaller {
       val referenceStart = (locus - currentWindow.halfWindowSize).toInt
       val referenceEnd = (locus + currentWindow.halfWindowSize).toInt
 
-      val currentReference: ContigSequence =
+      val currentReference: ContigSubsequence =
         reference.getReferenceSequence(
           currentWindow.referenceName,
           referenceStart,
@@ -172,8 +172,8 @@ object GermlineAssemblyCaller {
 
       // Build a variant using the current offset and read evidence
       def buildVariant(referenceOffset: Int,
-                       referenceBases: ContigSequence,
-                       alternateBases: ContigSequence) = {
+                       referenceBases: ContigSubsequence,
+                       alternateBases: ContigSubsequence) = {
         val allele = Allele(
           referenceBases,
           alternateBases
@@ -339,6 +339,7 @@ object GermlineAssemblyCaller {
 
     /**
      * Find paths through the reads given that represent the sequence covering referenceStart and referenceEnd
+ *
      * @param reads Reads to use to build the graph
      * @param referenceStart Start of the reference region corresponding to the reads
      * @param referenceEnd End of the reference region corresponding to the reads
@@ -352,7 +353,7 @@ object GermlineAssemblyCaller {
     def discoverPathsFromReads(reads: Seq[MappedRead],
                                referenceStart: Int,
                                referenceEnd: Int,
-                               referenceSequence: ContigSequence,
+                               referenceSequence: ContigSubsequence,
                                kmerSize: Int,
                                minOccurrence: Int,
                                maxPaths: Int,
@@ -360,7 +361,7 @@ object GermlineAssemblyCaller {
       val referenceKmerSource = referenceSequence.take(kmerSize)
       val referenceKmerSink = referenceSequence.takeRight(kmerSize)
 
-      val sources: Set[ContigSequence] =
+      val sources: Set[ContigSubsequence] =
         (getConsensusKmer(
           reads,
           referenceStart,
@@ -368,7 +369,7 @@ object GermlineAssemblyCaller {
           minOccurrence = minOccurrence
         ) ++ Seq(referenceKmerSource)).toSet
 
-      val sinks: Set[ContigSequence] = (getConsensusKmer(
+      val sinks: Set[ContigSubsequence] = (getConsensusKmer(
         reads,
         referenceEnd - kmerSize,
         referenceEnd,
