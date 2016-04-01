@@ -13,7 +13,7 @@ import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.Read.InputFilters
 import org.hammerlab.guacamole.reads.{ MappedRead, Read }
 import org.hammerlab.guacamole.reference.ReferenceGenome
-import org.kohsuke.args4j.{ Argument, Option ⇒ Args4jOption }
+import org.kohsuke.args4j.{ Argument, Option => Args4jOption }
 
 /**
  * VariantLocus is a locus and the variant allele frequency at that locus

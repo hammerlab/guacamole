@@ -21,12 +21,12 @@ case class MapBackedReferenceSequence(length: Int, wrapped: mutable.LinkedHashMa
 
   override def equals(other: Any): Boolean = {
     other match {
-      case o: MapBackedReferenceSequence ⇒ length == o.length && wrapped == o.wrapped
-      case _                             ⇒ false
+      case o: MapBackedReferenceSequence => length == o.length && wrapped == o.wrapped
+      case _                             => false
     }
   }
 
-  override def slice(start: Int, end: Int): ContigSubsequence = (start until end).map(i ⇒ this(i))
+  override def slice(start: Int, end: Int): ContigSubsequence = (start until end).map(i => this(i))
 }
 
 object MapBackedReferenceSequence {

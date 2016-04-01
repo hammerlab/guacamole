@@ -8,7 +8,7 @@ import org.hammerlab.guacamole.DistributedUtil.PerSample
 import org.hammerlab.guacamole._
 import org.hammerlab.guacamole.reads._
 import org.hammerlab.guacamole.reference.ReferenceGenome
-import org.kohsuke.args4j.{ Option ⇒ Args4jOption }
+import org.kohsuke.args4j.{ Option => Args4jOption }
 
 object SomaticJoint {
   class Arguments extends Parameters.CommandlineArguments with DistributedUtil.Arguments with NoSequenceDictionary with InputCollection.Arguments {

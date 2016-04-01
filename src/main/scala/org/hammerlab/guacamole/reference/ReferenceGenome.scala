@@ -109,7 +109,7 @@ object ReferenceGenome {
         }
         val sequenceMap = result.getOrElseUpdate(contig, ArrayBuffer[(Int, Byte)]())
         for {
-          (locus, base) ← region.onContig(contig).iterator.zip(sequence.toIterator)
+          (locus, base) <- region.onContig(contig).iterator.zip(sequence.toIterator)
         } {
           sequenceMap.append((locus.toInt, base))
         }
@@ -118,9 +118,9 @@ object ReferenceGenome {
 
     new ReferenceGenome(
       (for {
-        (contig, bases) ← result
+        (contig, bases) <- result
       } yield {
-        contig →
+        contig ->
           MapBackedReferenceSequence(
             contigLengths(contig),
             bases

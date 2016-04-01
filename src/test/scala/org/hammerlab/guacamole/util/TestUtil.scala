@@ -242,7 +242,7 @@ object TestUtil extends Matchers {
         filename,
         filters = InputFilters(
           overlapsLoci = contig.map(
-            contig ⇒ LociSet.parse(s"$contig:$locus-${locus + 1}")
+            contig => LociSet.parse(s"$contig:$locus-${locus + 1}")
           )
         ),
         reference = reference
