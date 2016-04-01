@@ -77,7 +77,7 @@ object TestUtil extends Matchers {
     val map = mutable.HashMap[String, ContigSequence]()
     contigStartSequences.foreach({
       case (contig, start, sequence) => {
-        val locusToBase = Bases.stringToBases(sequence).zipWithIndex.map(pair => (pair._2 + start, pair._1)).toMap
+        val locusToBase = Bases.stringToBases(sequence).zipWithIndex.map(pair => (pair._2 + start, pair._1))
         map.put(contig, MapBackedReferenceSequence(contigLengths, locusToBase))
       }
     })
