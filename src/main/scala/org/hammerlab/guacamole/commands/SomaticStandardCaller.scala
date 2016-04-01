@@ -77,8 +77,7 @@ object SomaticStandard {
         Common.loadTumorNormalReadsFromArguments(
           args,
           sc,
-          filters,
-          reference = reference
+          filters
         )
 
       assert(tumorReads.sequenceDictionary == normalReads.sequenceDictionary,

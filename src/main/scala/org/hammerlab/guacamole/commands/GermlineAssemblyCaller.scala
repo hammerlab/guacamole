@@ -248,8 +248,8 @@ object GermlineAssemblyCaller {
       val readSet = Common.loadReadsFromArguments(
         args,
         sc,
-        Read.InputFilters(overlapsLoci = Some(loci), mapped = true, nonDuplicate = true),
-        reference = reference)
+        Read.InputFilters(overlapsLoci = Some(loci), mapped = true, nonDuplicate = true)
+      )
 
       val minAlignmentQuality = args.minAlignmentQuality
       val qualityReads = readSet
