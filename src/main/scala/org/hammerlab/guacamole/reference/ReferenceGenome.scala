@@ -22,7 +22,7 @@ case class ReferenceGenome(contigs: Map[String, ContigSequence]) {
     getContig(contigName)(locus)
   }
 
-  def getReferenceSequence(contigName: String, startLocus: Int, endLocus: Int): Seq[Byte] = {
+  def getReferenceSequence(contigName: String, startLocus: Int, endLocus: Int): ContigSequence = {
     getContig(contigName).slice(startLocus, endLocus)
   }
 }
