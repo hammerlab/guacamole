@@ -29,7 +29,7 @@ import org.bdgenomics.adam.models.SequenceDictionary
 import org.bdgenomics.adam.rdd.{ADAMContext, ADAMSpecificRecordSequenceDictionaryRDDAggregator}
 import org.bdgenomics.formats.avro.AlignmentRecord
 import org.hammerlab.guacamole.loci.LociSet
-import org.hammerlab.guacamole.{Bases, Common}
+import org.hammerlab.guacamole.{Bases, Common, ContigLengths}
 import org.seqdoop.hadoop_bam.util.SAMHeaderReader
 import org.seqdoop.hadoop_bam.{AnySAMInputFormat, SAMRecordWritable}
 
@@ -476,7 +476,7 @@ object Read extends Logging {
   }
 
   /** Extract the length of each contig from a sequence dictionary */
-  def contigLengths(sequenceDictionary: SequenceDictionary): Map[String, Long] = {
+  def contigLengths(sequenceDictionary: SequenceDictionary): ContigLengths = {
     val builder = Map.newBuilder[String, Long]
     sequenceDictionary.records.foreach(record => builder += ((record.name.toString, record.length)))
     builder.result

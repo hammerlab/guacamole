@@ -31,7 +31,7 @@ import org.hammerlab.guacamole.reads.Read.InputFilters
 import org.hammerlab.guacamole.reads._
 import org.hammerlab.guacamole.reference.ReferenceBroadcast.MapBackedReferenceSequence
 import org.hammerlab.guacamole.reference.{ContigSequence, ReferenceBroadcast}
-import org.hammerlab.guacamole.{Bases, GuacamoleKryoRegistrator, ReadSet}
+import org.hammerlab.guacamole.{Bases, GuacamoleKryoRegistrator, ReadSet, ReadsRDD}
 import org.scalatest._
 
 import scala.collection.mutable
@@ -217,12 +217,12 @@ object TestUtil extends Matchers {
   def loadReads(sc: SparkContext,
                 filename: String,
                 filters: Read.InputFilters = Read.InputFilters.empty,
-                config: Read.ReadLoadingConfig = Read.ReadLoadingConfig.default): ReadSet = {
+                config: Read.ReadLoadingConfig = Read.ReadLoadingConfig.default): ReadsRDD = {
     /* grab the path to the SAM file we've stashed in the resources subdirectory */
     val path = testDataPath(filename)
     assert(sc != null)
     assert(sc.hadoopConfiguration != null)
-    ReadSet(sc, path, filters = filters, config = config)
+    ReadSet(sc, path, filters = filters, config = config).reads
   }
 
   def loadTumorNormalPileup(tumorReads: Seq[MappedRead],

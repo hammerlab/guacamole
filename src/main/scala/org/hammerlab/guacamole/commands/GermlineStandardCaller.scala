@@ -21,14 +21,13 @@ package org.hammerlab.guacamole.commands
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole.Common.Arguments.GermlineCallerArgs
-import org.hammerlab.guacamole.distributed.{LociPartitionUtils, PileupFlatMapUtils}
+import org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociAccordingToArgs
+import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMap
 import org.hammerlab.guacamole.filters.GenotypeFilter.GenotypeFilterArguments
 import org.hammerlab.guacamole.filters.PileupFilter.PileupFilterArguments
 import org.hammerlab.guacamole.filters.{GenotypeFilter, QualityAlignedReadsFilter}
 import org.hammerlab.guacamole.likelihood.Likelihood
-import LociPartitionUtils.partitionLociAccordingToArgs
 import org.hammerlab.guacamole.pileup.Pileup
-import PileupFlatMapUtils.pileupFlatMap
 import org.hammerlab.guacamole.reads.Read
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.variants.{AlleleConversions, AlleleEvidence, CalledAllele}
@@ -57,34 +56,45 @@ object GermlineStandard {
       Common.validateArguments(args)
       val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
       val loci = Common.lociFromArguments(args)
-      val readSet = Common.loadReadsFromArguments(
-        args,
-        sc,
-        Read.InputFilters(
-          overlapsLoci = Some(loci),
-          mapped = true,
-          nonDuplicate = true
+      val (mappedReads, contigLengths) =
+        Common.loadReadsFromArguments(
+          args,
+          sc,
+          Read.InputFilters(
+            overlapsLoci = Some(loci),
+            mapped = true,
+            nonDuplicate = true
+          )
+        )
+
+      mappedReads.persist()
+
+      Common.progress(
+        "Loaded %,d mapped non-duplicate reads into %,d partitions."
+        .format(
+          mappedReads.count, mappedReads.partitions.length
         )
       )
 
-      readSet.mappedReads.persist()
-      Common.progress(
-        "Loaded %,d mapped non-duplicate reads into %,d partitions.".format(
-          readSet.mappedReads.count, readSet.mappedReads.partitions.length))
+      val lociPartitions =
+        partitionLociAccordingToArgs(
+          args,
+          loci.result(contigLengths),
+          mappedReads
+        )
 
-      val lociPartitions = partitionLociAccordingToArgs(
-        args, loci.result(readSet.contigLengths), readSet.mappedReads)
       val minAlignmentQuality = args.minAlignmentQuality
 
       val genotypes: RDD[CalledAllele] =
         pileupFlatMap[CalledAllele](
-          readSet.mappedReads,
+          mappedReads,
           lociPartitions,
           skipEmpty = true,
           pileup => callVariantsAtLocus(pileup, minAlignmentQuality).iterator,
           reference
         )
-      readSet.mappedReads.unpersist()
+
+      mappedReads.unpersist()
 
       val filteredGenotypes = GenotypeFilter(genotypes, args).flatMap(AlleleConversions.calledAlleleToADAMGenotype)
       Common.writeVariantsFromArguments(args, filteredGenotypes)

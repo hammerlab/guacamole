@@ -23,92 +23,49 @@ import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.models.SequenceDictionary
 import org.hammerlab.guacamole.reads.{ MappedRead, PairedRead, Read }
 
-/**
- * A ReadSet contains an RDD of reads along with some metadata about them.
- *
- * @param reads RDD of reads
- * @param sequenceDictionary optional, sequence dictionary giving contigs and lengths
- * @param source string describing where these reads came from. Usually a filename.
- * @param filters filters used when reading these reads.
- * @param contigLengthsFromDictionary if true, the contigLengths property will use the sequence dictionary to get the
- *                                    contig lengths. Otherwise, the reads themselves will be used.
- */
-case class ReadSet(
-    reads: RDD[Read],
-    sequenceDictionary: Option[SequenceDictionary],
-    source: String,
-    filters: Read.InputFilters,
-    contigLengthsFromDictionary: Boolean) {
-
-  /** Only mapped reads. */
-  lazy val mappedReads = reads.flatMap(read =>
-    read match {
+case class ReadsRDD(reads: RDD[Read]) {
+  lazy val mappedReads =
+    reads.flatMap {
       case r: MappedRead                   => Some(r)
       case PairedRead(r: MappedRead, _, _) => Some(r)
       case _                               => None
     }
-  )
 
-  lazy val mappedPairedReads: RDD[PairedRead[MappedRead]] = reads.flatMap(read =>
-    read match {
+  lazy val mappedPairedReads: RDD[PairedRead[MappedRead]] =
+    reads.flatMap {
       case rp: PairedRead[_] if rp.isMapped => Some(rp.asInstanceOf[PairedRead[MappedRead]])
       case _                                => None
     }
-  )
-
-  /**
-   * A map from contig name -> length of contig.
-   *
-   * Can come either from the sequence dictionary, or by looking at the reads themselves, according to the
-   * contigLengthsFromDictionary property.
-   *
-   */
-  lazy val contigLengths: Map[String, Long] = {
-    if (contigLengthsFromDictionary) {
-      assume(sequenceDictionary.isDefined)
-      val builder = Map.newBuilder[String, Long]
-      sequenceDictionary.get.records.foreach(record => builder += ((record.name.toString, record.length)))
-      builder.result
-    } else {
-      mappedReads
-        .map(read => read.referenceContig -> read.end)
-        .reduceByKey(math.max)
-        .collectAsMap()
-        .toMap
-    }
-  }
 }
+
+/**
+  * A ReadSet contains an RDD of reads along with some metadata about them.
+  *
+  * @param reads RDD of reads
+  */
+case class ReadSet(reads: ReadsRDD,
+                   sequenceDictionary: SequenceDictionary,
+                   contigLengths: ContigLengths)
+
 object ReadSet {
+
   /**
-   * Load reads from a file.
-   *
-   * @param sc spark context
-   * @param filename bam or sam file to read from
-   * @param filters input filters to filter reads while reading.
-   * @param contigLengthsFromDictionary see [[ReadSet]] doc for description
-   * @return
-   */
-  def apply(
-    sc: SparkContext,
-    filename: String,
-    filters: Read.InputFilters = Read.InputFilters.empty,
-    contigLengthsFromDictionary: Boolean = true,
-    config: Read.ReadLoadingConfig = Read.ReadLoadingConfig.default): ReadSet = {
+    * Load reads from a file.
+    *
+    * @param sc spark context
+    * @param filename bam or sam file to read from
+    * @param filters input filters to filter reads while reading.
+    * @param contigLengthsFromDictionary if true, the contigLengths property will use the sequence dictionary to get the
+    *                                    contig lengths. Otherwise, the reads themselves will be used.
+    */
+  def apply(sc: SparkContext,
+            filename: String,
+            filters: Read.InputFilters = Read.InputFilters.empty,
+            contigLengthsFromDictionary: Boolean = true,
+            config: Read.ReadLoadingConfig = Read.ReadLoadingConfig.default): ReadSet = {
+    val ReadSets(readsRDDs, sequenceDictionary, contigLengths) =
+      ReadSets(sc, Seq(filename), filters, contigLengthsFromDictionary, config)
 
-    val (reads, sequenceDictionary) =
-      Read.loadReadRDDAndSequenceDictionary(
-        filename,
-        sc,
-        filters = filters,
-        config
-      )
-
-    new ReadSet(
-      reads,
-      Some(sequenceDictionary),
-      filename,
-      filters,
-      contigLengthsFromDictionary
-    )
+    ReadSet(readsRDDs.head, sequenceDictionary, contigLengths)
   }
 }

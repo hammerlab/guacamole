@@ -38,6 +38,7 @@ import org.hammerlab.guacamole.Concordance.ConcordanceArgs
 import org.hammerlab.guacamole.distributed.LociPartitionUtils
 import org.hammerlab.guacamole.loci.LociSet
 import org.hammerlab.guacamole.reads.Read
+import org.hammerlab.guacamole.reads.{MappedRead, Read}
 import org.kohsuke.args4j.{Option => Args4jOption}
 
 /**
@@ -156,15 +157,18 @@ object Common extends Logging {
   def loadReadsFromArguments(
     args: Arguments.Reads,
     sc: SparkContext,
-    filters: Read.InputFilters): ReadSet = {
+    filters: Read.InputFilters): (RDD[MappedRead], ContigLengths) = {
 
-    ReadSet(
-      sc,
-      args.reads,
-      filters,
-      contigLengthsFromDictionary = !args.noSequenceDictionary,
-      config = ReadLoadingConfigArgs.fromArguments(args)
-    )
+    val ReadSet(reads, _, contigLengths) =
+      ReadSet(
+        sc,
+        args.reads,
+        filters,
+        contigLengthsFromDictionary = !args.noSequenceDictionary,
+        config = ReadLoadingConfigArgs.fromArguments(args)
+      )
+
+    (reads.mappedReads, contigLengths)
   }
 
   /**
@@ -177,24 +181,18 @@ object Common extends Logging {
   def loadTumorNormalReadsFromArguments(
     args: Arguments.TumorNormalReads,
     sc: SparkContext,
-    filters: Read.InputFilters): (ReadSet, ReadSet) = {
+    filters: Read.InputFilters): (ReadsRDD, ReadsRDD, ContigLengths) = {
 
-    val tumor = ReadSet(
-      sc,
-      args.tumorReads,
-      filters,
-      !args.noSequenceDictionary,
-      ReadLoadingConfigArgs.fromArguments(args)
-    )
+    val ReadSets(readsets, _, contigLengths) =
+      ReadSets(
+        sc,
+        Seq(args.tumorReads, args.normalReads),
+        filters,
+        !args.noSequenceDictionary,
+        ReadLoadingConfigArgs.fromArguments(args)
+      )
 
-    val normal = ReadSet(
-      sc,
-      args.normalReads,
-      filters,
-      !args.noSequenceDictionary,
-      ReadLoadingConfigArgs.fromArguments(args)
-    )
-    (tumor, normal)
+    (readsets(0), readsets(1), contigLengths)
   }
 
   /**
@@ -229,7 +227,7 @@ object Common extends Logging {
    * @param contigLengths contig lengths, by name
    * @return a LociSet
    */
-  def lociFromFile(filePath: String, contigLengths: Map[String, Long]): LociSet = {
+  def lociFromFile(filePath: String, contigLengths: ContigLengths): LociSet = {
     if (filePath.endsWith(".vcf")) {
       val builder = LociSet.newBuilder
       val reader = new VCFFileReader(new File(filePath), false)
@@ -247,7 +245,8 @@ object Common extends Logging {
       ).result(contigLengths)
     } else {
       throw new IllegalArgumentException(
-        "Couldn't guess format for file: %s. Expected file extensions: '.loci' or '.txt' for loci string format; '.vcf' for VCFs.".format(filePath))
+        s"Couldn't guess format for file: $filePath. Expected file extensions: '.loci' or '.txt' for loci string format; '.vcf' for VCFs."
+      )
     }
   }
 
@@ -261,7 +260,7 @@ object Common extends Logging {
    * @param contigLengths contig lengths, by name
    * @return a LociSet
    */
-  def loci(loci: String, lociFromFilePath: String, contigLengths: Map[String, Long]): LociSet = {
+  def loci(loci: String, lociFromFilePath: String, contigLengths: ContigLengths): LociSet = {
     if (loci.nonEmpty && lociFromFilePath.nonEmpty) {
       throw new IllegalArgumentException("Specify at most one of the 'loci' and 'loci-from-file' arguments")
     }
@@ -298,7 +297,13 @@ object Common extends Logging {
         val path = new Path(outputPath)
         filesystem.create(path, true)
       }
-      val coalescedSubsetGenotypes = if (args.outChunks > 0) subsetGenotypes.coalesce(args.outChunks) else subsetGenotypes
+
+      val coalescedSubsetGenotypes =
+        if (args.outChunks > 0)
+          subsetGenotypes.coalesce(args.outChunks)
+        else
+          subsetGenotypes
+
       coalescedSubsetGenotypes.persist()
 
       // Write each Genotype with a JsonEncoder.
@@ -326,7 +331,6 @@ object Common extends Logging {
       coalescedSubsetGenotypes.unpersist()
     } else if (outputPath.toLowerCase.endsWith(".vcf")) {
       progress("Writing genotypes to VCF file: %s.".format(outputPath))
-      val sc = subsetGenotypes.sparkContext
       subsetGenotypes.toVariantContext.coalesce(1, shuffle = true).saveAsVcf(outputPath)
     } else {
       progress("Writing genotypes to: %s.".format(outputPath))

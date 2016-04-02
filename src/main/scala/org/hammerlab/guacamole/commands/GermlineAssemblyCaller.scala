@@ -248,35 +248,37 @@ object GermlineAssemblyCaller {
     override def run(args: Arguments, sc: SparkContext): Unit = {
       val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
       val loci = Common.lociFromArguments(args)
-      val readSet = Common.loadReadsFromArguments(
-        args,
-        sc,
-        Read.InputFilters(
-          overlapsLoci = Some(loci),
-          mapped = true,
-          nonDuplicate = true
+      val (mappedReads, contigLengths) =
+        Common.loadReadsFromArguments(
+          args,
+          sc,
+          Read.InputFilters(
+            overlapsLoci = Some(loci),
+            mapped = true,
+            nonDuplicate = true
+          )
         )
-      )
 
       val minAlignmentQuality = args.minAlignmentQuality
-      val qualityReads = readSet
-        .mappedReads
-        .filter(_.alignmentQuality > minAlignmentQuality)
+      val qualityReads = mappedReads.filter(_.alignmentQuality > minAlignmentQuality)
 
-      val lociPartitions = partitionLociAccordingToArgs(
-        args,
-        loci.result(readSet.contigLengths),
-        readSet.mappedReads
-      )
+      val lociPartitions =
+        partitionLociAccordingToArgs(
+          args,
+          loci.result(contigLengths),
+          mappedReads
+        )
 
-      val genotypes: RDD[CalledAllele] = discoverGenotypes(
-        qualityReads,
-        kmerSize = args.kmerSize,
-        snvWindowRange = args.snvWindowRange,
-        minOccurrence = args.minOccurrence,
-        minAreaVaf = args.minAreaVaf / 100.0f,
-        reference,
-        lociPartitions)
+      val genotypes: RDD[CalledAllele] =
+        discoverGenotypes(
+          qualityReads,
+          kmerSize = args.kmerSize,
+          snvWindowRange = args.snvWindowRange,
+          minOccurrence = args.minOccurrence,
+          minAreaVaf = args.minAreaVaf / 100.0f,
+          reference,
+          lociPartitions
+        )
 
       genotypes.persist()
 

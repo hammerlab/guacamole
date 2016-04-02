@@ -22,12 +22,13 @@ import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.rdd.ADAMContext
 import org.bdgenomics.formats.avro.Variant
+import org.hammerlab.guacamole.Common.Arguments.ReadLoadingConfigArgs
 import org.hammerlab.guacamole._
+import org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociUniformly
+import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMap
 import org.hammerlab.guacamole.distributed.{LociPartitionUtils, PileupFlatMapUtils}
-import LociPartitionUtils.partitionLociUniformly
 import org.hammerlab.guacamole.loci.LociSet
 import org.hammerlab.guacamole.pileup.Pileup
-import PileupFlatMapUtils.pileupFlatMap
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.reads.Read.InputFilters
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
@@ -76,15 +77,15 @@ object VariantSupport {
       val adamContext = new ADAMContext(sc)
 
       val variants: RDD[Variant] = adamContext.loadVariants(args.variants)
-      val reads: Seq[RDD[MappedRead]] = args.bams.zipWithIndex.map(
-        bamFile =>
-          ReadSet(
-            sc,
-            bamFile._1,
-            InputFilters.empty,
-            config = Common.Arguments.ReadLoadingConfigArgs.fromArguments(args)
-          ).mappedReads
-      )
+
+      val reads: Seq[RDD[MappedRead]] =
+        ReadSets(
+          sc,
+          args.bams,
+          InputFilters.empty,
+          config = ReadLoadingConfigArgs.fromArguments(args)
+        ).mappedReads
+
 
       // Build a loci set from the variant positions
       val lociSet = LociSet.union(
@@ -99,7 +100,7 @@ object VariantSupport {
           pileupFlatMap[AlleleCount](
             sampleReads,
             lociPartitions,
-            true,
+            skipEmpty = true,
             pileupToAlleleCounts,
             reference = reference
           )

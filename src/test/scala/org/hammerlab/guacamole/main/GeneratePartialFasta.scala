@@ -43,17 +43,15 @@ object GeneratePartialFasta extends Logging {
 
     val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
     val lociBuilder = Common.lociFromArguments(args, default = "none")
-    val readSets = args.bams.zipWithIndex.map(fileAndIndex =>
-      ReadSet(
+    val readsets =
+      ReadSets(
         sc,
-        fileAndIndex._1,
+        args.bams,
         InputFilters.empty,
         config = Common.Arguments.ReadLoadingConfigArgs.fromArguments(args)
       )
-    )
 
-    val reads = sc.union(readSets.map(_.mappedReads))
-    val contigLengths = readSets.head.contigLengths
+    val reads = sc.union(readsets.mappedReads)
 
     val regions = reads.map(read => (read.referenceContig, read.start, read.end))
     regions.collect.foreach(triple => {
@@ -68,7 +66,7 @@ object GeneratePartialFasta extends Logging {
       loci.onContig(contig).ranges.foreach(range => {
         try {
           val sequence = Bases.basesToString(reference.getContig(contig).slice(range.start.toInt, range.end.toInt))
-          writer.write(">%s:%d-%d/%d\n".format(contig, range.start, range.end, contigLengths(contig)))
+          writer.write(">%s:%d-%d/%d\n".format(contig, range.start, range.end, readsets.contigLengths(contig)))
           writer.write(sequence)
           writer.write("\n")
         } catch {

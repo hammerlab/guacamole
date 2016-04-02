@@ -13,4 +13,5 @@ package org.hammerlab
  */
 package object guacamole {
   type PerSample[A] = IndexedSeq[A]
+  type ContigLengths = Map[String, Long]
 }

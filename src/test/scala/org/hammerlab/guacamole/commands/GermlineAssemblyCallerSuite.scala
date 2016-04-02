@@ -21,7 +21,6 @@ class GermlineAssemblyCallerSuite extends FunSuite with Matchers with BeforeAndA
 
   var sc: SparkContext = _
   var reference: ReferenceBroadcast = _
-  var readSet: ReadSet = _
 
   override def beforeAll() {
     sc = Common.createSparkContext()
@@ -48,7 +47,7 @@ class GermlineAssemblyCallerSuite extends FunSuite with Matchers with BeforeAndA
 
     val lociBuilder = LociSet.parse(s"$contig:$windowStart-$windowEnd")
 
-    val readSet =
+    val (mappedReads, contigLengths) =
       Common.loadReadsFromArguments(
         args,
         sc,
@@ -59,21 +58,22 @@ class GermlineAssemblyCallerSuite extends FunSuite with Matchers with BeforeAndA
         )
       )
 
+
     val lociPartitions =
       LociPartitionUtils.partitionLociUniformly(
         tasks = args.parallelism,
-        loci = lociBuilder.result(readSet.contigLengths)
+        loci = lociBuilder.result(contigLengths)
       )
 
     val variants =
       GermlineAssemblyCaller.Caller.discoverGenotypes(
-        readSet.mappedReads,
-        kmerSize = kmerSize,
-        snvWindowRange = snvWindowRange,
-        minOccurrence = minOccurrence,
-        minAreaVaf = minVaf,
-        reference = reference,
-        lociPartitions = lociPartitions
+        mappedReads,
+        kmerSize,
+        snvWindowRange,
+        minOccurrence,
+        minVaf,
+        reference,
+        lociPartitions
       ).collect().sortBy(_.start)
 
     val actualVariants =
@@ -84,7 +84,6 @@ class GermlineAssemblyCallerSuite extends FunSuite with Matchers with BeforeAndA
       }
 
     actualVariants should be(expectedVariants)
-
   }
 
   test (

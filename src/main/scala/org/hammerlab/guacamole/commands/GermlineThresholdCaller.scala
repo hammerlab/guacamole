@@ -23,10 +23,9 @@ import org.apache.spark.rdd.RDD
 import org.bdgenomics.formats.avro.GenotypeAllele.{Alt, NoCall, OtherAlt, Ref}
 import org.bdgenomics.formats.avro.{Contig, Genotype, GenotypeAllele, Variant}
 import org.hammerlab.guacamole.Common.Arguments.GermlineCallerArgs
-import org.hammerlab.guacamole.distributed.{LociPartitionUtils, PileupFlatMapUtils}
-import LociPartitionUtils.partitionLociAccordingToArgs
+import org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociAccordingToArgs
+import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMap
 import org.hammerlab.guacamole.pileup.Pileup
-import PileupFlatMapUtils.pileupFlatMap
 import org.hammerlab.guacamole.reads.Read
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.variants.Allele
@@ -66,26 +65,33 @@ object GermlineThreshold {
       Common.validateArguments(args)
       val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
       val loci = Common.lociFromArguments(args)
-      val readSet = Common.loadReadsFromArguments(
-        args,
-        sc,
-        Read.InputFilters(
-          overlapsLoci = Some(loci),
-          nonDuplicate = true
+      val (mappedReads, contigLengths) =
+        Common.loadReadsFromArguments(
+          args,
+          sc,
+          Read.InputFilters(
+            overlapsLoci = Some(loci),
+            nonDuplicate = true
+          )
+        )
+      mappedReads.persist()
+
+      Common.progress(
+        "Loaded %,d mapped non-duplicate MdTag-containing reads into %,d partitions."
+        .format(
+          mappedReads.count, mappedReads.partitions.length
         )
       )
-
-      readSet.mappedReads.persist()
-      Common.progress("Loaded %,d mapped non-duplicate MdTag-containing reads into %,d partitions.".format(
-        readSet.mappedReads.count, readSet.mappedReads.partitions.length))
 
       val (threshold, emitRef, emitNoCall) = (args.threshold, args.emitRef, args.emitNoCall)
       val numGenotypes = sc.accumulator(0L)
       DelayedMessages.default.say { () => "Called %,d genotypes.".format(numGenotypes.value) }
-      val lociPartitions = partitionLociAccordingToArgs(args, loci.result(readSet.contigLengths), readSet.mappedReads)
+
+      val lociPartitions = partitionLociAccordingToArgs(args, loci.result(contigLengths), mappedReads)
+
       val genotypes: RDD[Genotype] =
         pileupFlatMap[Genotype](
-          readSet.mappedReads,
+          mappedReads,
           lociPartitions,
           skipEmpty = true,
           pileup => {
@@ -95,11 +101,13 @@ object GermlineThreshold {
           },
           reference
         )
-      readSet.mappedReads.unpersist()
-      Common.writeVariantsFromArguments(args, genotypes)
-      if (args.truthGenotypesFile != "")
-        Concordance.printGenotypeConcordance(args, genotypes, sc)
 
+      mappedReads.unpersist()
+
+      Common.writeVariantsFromArguments(args, genotypes)
+      if (args.truthGenotypesFile != "") {
+        Concordance.printGenotypeConcordance(args, genotypes, sc)
+      }
       DelayedMessages.default.print()
     }
 

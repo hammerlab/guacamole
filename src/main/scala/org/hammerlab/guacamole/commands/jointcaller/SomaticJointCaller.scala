@@ -51,15 +51,13 @@ object SomaticJoint {
   def inputsToReadSets(sc: SparkContext,
                        inputs: InputCollection,
                        loci: LociSet.Builder,
-                       contigLengthsFromDictionary: Boolean = true): PerSample[ReadSet] = {
-    inputs.items.zipWithIndex.map({
-      case (input, index) => ReadSet(
-        sc,
-        input.path,
-        Read.InputFilters(overlapsLoci = Some(loci)),
-        contigLengthsFromDictionary = contigLengthsFromDictionary
-      )
-    })
+                       contigLengthsFromDictionary: Boolean = true): ReadSets = {
+    ReadSets(
+      sc,
+      inputs.items.map(_.path),
+      Read.InputFilters(overlapsLoci = Some(loci)),
+      contigLengthsFromDictionary = contigLengthsFromDictionary
+    )
   }
 
   object Caller extends SparkCommand[Arguments] {
@@ -78,24 +76,23 @@ object SomaticJoint {
 
       val loci = Common.lociFromArguments(args)
 
-      val readSets = inputsToReadSets(sc, inputs, loci, !args.noSequenceDictionary)
-
-      if (!readSets.forall(_.sequenceDictionary == readSets(0).sequenceDictionary)) {
-        logWarning("Samples have different sequence dictionaries: %s."
-          .format(readSets.map(_.sequenceDictionary.toString).mkString("\n")))
-      }
+      val ReadSets(readsRDDs, sequenceDictionary, contigLengths) =
+        inputsToReadSets(sc, inputs, loci, !args.noSequenceDictionary)
 
       val forceCallLoci = if (args.forceCallLoci.nonEmpty || args.forceCallLociFromFile.nonEmpty) {
-        Common.loci(args.forceCallLoci, args.forceCallLociFromFile, readSets(0).contigLengths)
+        Common.loci(args.forceCallLoci, args.forceCallLociFromFile, contigLengths)
       } else {
         LociSet.empty
       }
 
       if (forceCallLoci.nonEmpty) {
-        Common.progress("Force calling %,d loci across %,d contig(s): %s".format(
-          forceCallLoci.count,
-          forceCallLoci.contigs.length,
-          forceCallLoci.truncatedString()))
+        Common.progress(
+          "Force calling %,d loci across %,d contig(s): %s".format(
+            forceCallLoci.count,
+            forceCallLoci.contigs.length,
+            forceCallLoci.truncatedString()
+          )
+        )
       }
 
       val parameters = Parameters(args)
@@ -103,14 +100,15 @@ object SomaticJoint {
       val calls = makeCalls(
         sc,
         inputs,
-        readSets,
+        readsRDDs,
         parameters,
         reference,
-        loci.result(readSets(0).contigLengths),
+        loci.result(contigLengths),
         forceCallLoci = forceCallLoci,
         onlySomatic = args.onlySomatic,
         includeFiltered = args.includeFiltered,
-        distributedUtilArguments = args)
+        distributedUtilArguments = args
+      )
 
       calls.cache()
 
@@ -125,12 +123,13 @@ object SomaticJoint {
         collectedCalls,
         inputs,
         parameters,
-        readSets(0).sequenceDictionary.get.toSAMSequenceDictionary,
+        sequenceDictionary.toSAMSequenceDictionary,
         forceCallLoci,
         reference,
         onlySomatic = args.onlySomatic,
         out = args.out,
-        outDir = args.outDir)
+        outDir = args.outDir
+      )
     }
   }
 
@@ -148,7 +147,7 @@ object SomaticJoint {
 
   def makeCalls(sc: SparkContext,
                 inputs: InputCollection,
-                readSets: PerSample[ReadSet],
+                readsRDDs: PerSample[ReadsRDD],
                 parameters: Parameters,
                 reference: ReferenceBroadcast,
                 loci: LociSet,
@@ -160,15 +159,18 @@ object SomaticJoint {
     // When mapping over pileups, at locus x we call variants at locus x + 1. Therefore we subtract 1 from the user-
     // specified loci.
     val broadcastForceCallLoci = sc.broadcast(forceCallLoci)
+
+    val mappedReadRDDs = readsRDDs.map(_.mappedReads)
+
     val lociPartitions =
       partitionLociAccordingToArgs(
         distributedUtilArguments,
         lociSetMinusOne(loci),
-        readSets.map(_.mappedReads): _*
+        mappedReadRDDs: _*
       )
 
     pileupFlatMapMultipleRDDs(
-      readSets.map(_.mappedReads),
+      mappedReadRDDs,
       lociPartitions,
       skipEmpty = true,  // TODO: shouldn't skip empty positions if we might force call them. Need an efficient way to handle this.
       rawPileups => {

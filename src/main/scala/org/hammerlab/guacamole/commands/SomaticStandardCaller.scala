@@ -76,16 +76,12 @@ object SomaticStandard {
 
       val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
 
-      val (tumorReads, normalReads) =
+      val (tumorReads, normalReads, contigLengths) =
         Common.loadTumorNormalReadsFromArguments(
           args,
           sc,
           filters
         )
-
-      assert(tumorReads.sequenceDictionary == normalReads.sequenceDictionary,
-        "Tumor and normal samples have different sequence dictionaries. Tumor dictionary: %s.\nNormal dictionary: %s."
-          .format(tumorReads.sequenceDictionary, normalReads.sequenceDictionary))
 
       val filterMultiAllelic = args.filterMultiAllelic
       val minAlignmentQuality = args.minAlignmentQuality
@@ -95,7 +91,7 @@ object SomaticStandard {
 
       val lociPartitions = partitionLociAccordingToArgs(
         args,
-        loci.result(normalReads.contigLengths),
+        loci.result(contigLengths),
         tumorReads.mappedReads,
         normalReads.mappedReads
       )

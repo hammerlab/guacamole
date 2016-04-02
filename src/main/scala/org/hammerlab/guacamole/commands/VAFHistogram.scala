@@ -8,12 +8,13 @@ import org.apache.spark.mllib.clustering.{GaussianMixture, GaussianMixtureModel}
 import org.apache.spark.mllib.linalg.Vectors
 import org.apache.spark.rdd.RDD
 import org.apache.spark.storage.StorageLevel
+import org.hammerlab.guacamole.Common.Arguments.ReadLoadingConfigArgs
 import org.hammerlab.guacamole._
-import org.hammerlab.guacamole.distributed.{LociPartitionUtils, PileupFlatMapUtils}
-import LociPartitionUtils.partitionLociAccordingToArgs
+import org.hammerlab.guacamole.distributed.LociPartitionUtils
+import org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociAccordingToArgs
+import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMap
 import org.hammerlab.guacamole.loci.LociMap
 import org.hammerlab.guacamole.pileup.Pileup
-import PileupFlatMapUtils.pileupFlatMap
 import org.hammerlab.guacamole.reads.Read.InputFilters
 import org.hammerlab.guacamole.reads.{MappedRead, Read}
 import org.hammerlab.guacamole.reference.{ReferenceBroadcast, ReferenceGenome}
@@ -106,28 +107,26 @@ object VAFHistogram {
         passedVendorQualityChecks = true)
       val samplePercent = args.samplePercent
 
-      val readSets: Seq[ReadSet] = args.bams.zipWithIndex.map(
-        bamFile =>
-          ReadSet(
-            sc,
-            bamFile._1,
-            InputFilters.empty,
-            contigLengthsFromDictionary = true,
-            config = Common.Arguments.ReadLoadingConfigArgs.fromArguments(args)
-          )
-      )
+      val ReadSets(readsRDDs, _, contigLengths) =
+        ReadSets(
+          sc,
+          args.bams,
+          InputFilters.empty,
+          contigLengthsFromDictionary = true,
+          config = ReadLoadingConfigArgs.fromArguments(args)
+        )
 
       val lociPartitions = partitionLociAccordingToArgs(
         args,
-        loci.result(readSets(0).contigLengths),
-        readSets(0).mappedReads // Use the first set of reads as a proxy for read depth
+        loci.result(contigLengths),
+        readsRDDs(0).mappedReads  // Use the first set of reads as a proxy for read depth
       )
 
       val minReadDepth = args.minReadDepth
       val minVariantAlleleFrequency = args.minVAF
-      val variantLoci = readSets.map(readSet =>
+      val variantLoci = readsRDDs.map(reads =>
         variantLociFromReads(
-          readSet.mappedReads,
+          reads.mappedReads,
           reference,
           lociPartitions,
           samplePercent,
@@ -141,7 +140,7 @@ object VAFHistogram {
       val variantAlleleHistograms =
         variantLoci.map(variantLoci => generateVAFHistogram(variantLoci, bins))
 
-      val sampleAndFileNames = args.bams.zip(readSets.map(_.mappedReads.take(1)(0).sampleName))
+      val sampleAndFileNames = args.bams.zip(readsRDDs.map(_.mappedReads.take(1)(0).sampleName))
       val binSize = 100 / bins
 
       def histogramToString(kv: (Int, Long)): String = {
@@ -157,7 +156,7 @@ object VAFHistogram {
             val histogram = kv._2
             histogram.toSeq
               .sortBy(_._1)
-              .map(kv => s"$fileName, $sampleName, ${histogramToString(kv)}").toSeq
+              .map(kv => s"$fileName, $sampleName, ${histogramToString(kv)}")
           })
 
       if (args.localOutputPath != "") {
