@@ -21,8 +21,7 @@ package org.hammerlab.guacamole
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.models.SequenceDictionary
-import org.hammerlab.guacamole.reads.{ MappedRead, Read, PairedRead }
-import org.hammerlab.guacamole.reference.ReferenceGenome
+import org.hammerlab.guacamole.reads.{ MappedRead, PairedRead, Read }
 
 /**
  * A ReadSet contains an RDD of reads along with some metadata about them.
@@ -97,7 +96,6 @@ object ReadSet {
     filters: Read.InputFilters = Read.InputFilters.empty,
     token: Int = 0,
     contigLengthsFromDictionary: Boolean = true,
-    reference: ReferenceGenome,
     config: Read.ReadLoadingConfig = Read.ReadLoadingConfig.default): ReadSet = {
 
     val (reads, sequenceDictionary) =
@@ -106,7 +104,6 @@ object ReadSet {
         sc,
         token = token,
         filters = filters,
-        reference,
         config
       )
 

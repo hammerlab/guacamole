@@ -58,8 +58,8 @@ object GermlineStandard {
         args, sc, Read.InputFilters(
           overlapsLoci = Some(loci),
           mapped = true,
-          nonDuplicate = true),
-        reference = reference)
+          nonDuplicate = true)
+      )
 
       readSet.mappedReads.persist()
       Common.progress(
