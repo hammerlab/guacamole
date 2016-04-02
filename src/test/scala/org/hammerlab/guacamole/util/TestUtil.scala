@@ -179,7 +179,7 @@ object TestUtil extends Matchers {
     )
     PairedMappedRead(
       makePairedRead(
-        chr, start, alignmentQuality, isPositiveStrand, true,
+        chr, start, alignmentQuality, isPositiveStrand, isMateMapped = true,
         Some(mate.referenceContig), Some(mate.start), mate.isPositiveStrand,
         sequence, cigar, mate.inferredInsertSize).read,
       isFirstInPair = true,
@@ -236,20 +236,25 @@ object TestUtil extends Matchers {
                  filename: String,
                  reference: ReferenceBroadcast,
                  locus: Long = 0,
-                 contig: Option[String] = None): Pileup = {
+                 maybeContig: Option[String] = None): Pileup = {
     val records =
       TestUtil.loadReads(
         sc,
         filename,
         filters = InputFilters(
-          overlapsLoci = contig.map(
+          overlapsLoci = maybeContig.map(
             contig ⇒ LociSet.parse(s"$contig:$locus-${locus + 1}")
           )
         )
       ).mappedReads
     val localReads = records.collect
-    val actualContig = contig.getOrElse(localReads(0).referenceContig)
-    Pileup(localReads, actualContig, locus, referenceContigSequence = reference.getContig(actualContig))
+    val actualContig = maybeContig.getOrElse(localReads(0).referenceContig)
+    Pileup(
+      localReads,
+      actualContig,
+      locus,
+      referenceContigSequence = reference.getContig(actualContig)
+    )
   }
 
   def assertAlmostEqual(a: Double, b: Double, epsilon: Double = 1e-12) {
