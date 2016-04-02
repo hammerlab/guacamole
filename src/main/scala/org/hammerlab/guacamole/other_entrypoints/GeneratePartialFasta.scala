@@ -38,7 +38,7 @@ object GeneratePartialFasta extends Logging {
 
   def main(rawArgs: Array[String]): Unit = {
     val args = Args4j[Arguments](rawArgs)
-    val sc = Common.createSparkContext(appName = Some("generate-partial-fasta"))
+    val sc = Common.createSparkContext(appName = "generate-partial-fasta")
 
     val reference = ReferenceGenome(args.referenceFastaPath)
     val lociBuilder = Common.lociFromArguments(args, default = "none")

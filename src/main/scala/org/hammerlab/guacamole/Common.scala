@@ -365,6 +365,7 @@ object Common extends Logging {
    * @param appName
    * @return
    */
+  def createSparkContext(appName: String): SparkContext = createSparkContext(Some(appName))
   def createSparkContext(appName: Option[String] = None): SparkContext = {
     val config: SparkConf = new SparkConf()
     appName match {
