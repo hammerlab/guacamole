@@ -128,7 +128,7 @@ object SomaticJoint {
     loci.contigs.foreach(contig => {
       val contigSet = loci.onContig(contig)
       contigSet.ranges.foreach(range => {
-        builder.put(contig, math.max(0, range.start - 1), Some(range.end - 1))
+        builder.put(contig, math.max(0, range.start - 1), range.end - 1)
       })
     })
     builder.result
