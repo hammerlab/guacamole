@@ -22,32 +22,34 @@ object SomaticJointCallerIntegrationTests {
     val outDir = "/tmp/guacamole-somatic-joint-test"
 
     if (true) {
-      val args = new SomaticJoint.Arguments()
-      args.outDir = outDir
-      args.referenceFastaPath = CancerWGSTestUtils.referenceFastaPath
-      args.referenceFastaIsPartial = true
-      args.somaticGenotypePolicy = "trigger"
-      args.loci = ((1).until(22).map(i => "chr%d".format(i)) ++ Seq("chrX", "chrY")).mkString(",")
+      if (true) {
+        val args = new SomaticJoint.Arguments()
+        args.outDir = outDir
+        args.referenceFastaPath = CancerWGSTestUtils.referenceFastaPath
+        args.referenceFastaIsPartial = true
+        args.somaticGenotypePolicy = "trigger"
+        args.loci = ((1).until(22).map(i => "chr%d".format(i)) ++ Seq("chrX", "chrY")).mkString(",")
 
-      args.paths = CancerWGSTestUtils.cancerWGS1Bams.toArray
-      val forceCallLoci = LociSet.newBuilder
-      csvRecords(CancerWGSTestUtils.cancerWGS1ExpectedSomaticCallsCSV).filter(!_.tumor.contains("decoy")).foreach(record => {
-        forceCallLoci.put("chr" + record.contig,
-          if (record.alt.nonEmpty) record.interbaseStart else record.interbaseStart - 1,
-          if (record.alt.nonEmpty) Some(record.interbaseStart + 1) else Some(record.interbaseStart))
-      })
-      args.forceCallLoci = forceCallLoci.result.truncatedString(100000)
+        args.paths = CancerWGSTestUtils.cancerWGS1Bams.toArray
+        val forceCallLoci = LociSet.newBuilder
+        csvRecords(CancerWGSTestUtils.cancerWGS1ExpectedSomaticCallsCSV).filter(!_.tumor.contains("decoy")).foreach(record => {
+          forceCallLoci.put("chr" + record.contig,
+            if (record.alt.nonEmpty) record.interbaseStart else record.interbaseStart - 1,
+            if (record.alt.nonEmpty) Some(record.interbaseStart + 1) else Some(record.interbaseStart))
+        })
+        args.forceCallLoci = forceCallLoci.result.truncatedString(100000)
 
-      SomaticJoint.Caller.run(args, sc)
+        SomaticJoint.Caller.run(args, sc)
+      }
+      println("************* CANCER WGS1 SOMATIC CALLS *************")
+
+      compareToCSV(
+        outDir + "/somatic.all_samples.vcf",
+        CancerWGSTestUtils.cancerWGS1ExpectedSomaticCallsCSV,
+        CancerWGSTestUtils.referenceBroadcast(sc),
+        Set("primary", "recurrence")
+      )
     }
-    println("************* CANCER WGS1 SOMATIC CALLS *************")
-
-    compareToCSV(
-      outDir + "/somatic.all_samples.vcf",
-      CancerWGSTestUtils.cancerWGS1ExpectedSomaticCallsCSV,
-      CancerWGSTestUtils.referenceBroadcast(sc),
-      Set("primary", "recurrence")
-    )
 
     println("germline calling on subset of illumina platinum NA12878")
     if (true) {
