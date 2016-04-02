@@ -62,7 +62,7 @@ class ReadSetSuite extends GuacFunSuite with Matchers {
       })
 
     Seq(
-      InputFilters(overlapsLoci = Some(LociSet.parse("19:147033-147034")))
+      InputFilters(overlapsLoci = Some(LociSet.parse("19:147033")))
     ).foreach(filter => {
         check(Seq("synth1.normal.100k-200k.withmd.bam", "synth1.normal.100k-200k.withmd.sam"), filter)
       })
