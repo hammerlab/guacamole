@@ -50,7 +50,7 @@ abstract class Command[T <% Args4jBase: Manifest] extends Serializable with Logg
 
 abstract class SparkCommand[T <% Args4jBase: Manifest] extends Command[T] {
   override def run(args: T): Unit = {
-    val sc = Common.createSparkContext(appName = Some(name))
+    val sc = Common.createSparkContext(appName = name)
     try {
       run(args, sc)
     } finally {
