@@ -357,7 +357,7 @@ If false, we require contig lengths to be specified to the result method.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.LociSet.Builder#put" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="org.hammerlab.guacamole.LociSet.Builder#put" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="put(contig:String,start:Long,end:Option[Long]):org.hammerlab.guacamole.LociSet.Builder"></a>
       <a id="put(String,Long,Option[Long]):Builder"></a>
       <h4 class="signature">
@@ -367,6 +367,19 @@ If false, we require contig lengths to be specified to the result method.
       </span>
       <span class="symbol">
         <span class="name">put</span><span class="params">(<span name="contig">contig: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="start">start: <span class="extype" name="scala.Long">Long</span> = <span class="symbol">0</span></span>, <span name="end">end: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>] = <span class="symbol">None</span></span>)</span><span class="result">: <a href="" class="extype" name="org.hammerlab.guacamole.LociSet.Builder">Builder</a></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.LociSet.Builder#put" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="put(contig:String,start:Long,end:Long):org.hammerlab.guacamole.LociSet.Builder"></a>
+      <a id="put(String,Long,Long):Builder"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">put</span><span class="params">(<span name="contig">contig: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="start">start: <span class="extype" name="scala.Long">Long</span></span>, <span name="end">end: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <a href="" class="extype" name="org.hammerlab.guacamole.LociSet.Builder">Builder</a></span>
       </span>
       </h4>
       <p class="shortcomment cmt">Add an interval to the Builder.</p><div class="fullcomment"><div class="comment cmt"><p>Add an interval to the Builder. If end is not specified, then it is taken to be the length of the contig.
@@ -396,12 +409,26 @@ If false, we require contig lengths to be specified to the result method.
         <span class="name">putExpression</span><span class="params">(<span name="loci">loci: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="" class="extype" name="org.hammerlab.guacamole.LociSet.Builder">Builder</a></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Parse a loci expression and add it to the builder.</p><div class="fullcomment"><div class="comment cmt"><p>Parse a loci expression and add it to the builder. Example expressions:
- &quot;all&quot; (all sites on all contigs)
- &quot;none&quot; (no loci, used as a default in some places)
- &quot;chr1,chr3&quot; (all sites on contigs chr1 and chr3)
- &quot;chr1:10000-20000,chr2&quot; (sites x where 10000 &lt;= x &lt; 20000 on chr1, all sites on chr2)
+      <p class="shortcomment cmt">Parse a loci expression and add it to the builder.</p><div class="fullcomment"><div class="comment cmt"><p>Parse a loci expression and add it to the builder. Example expressions:</p><p> &quot;all&quot;: all sites on all contigs.
+ &quot;none&quot;: no loci, used as a default in some places.
+ &quot;chr1,chr3&quot;: all sites on contigs chr1 and chr3.
+ &quot;chr1:10000-20000,chr2&quot;: sites x where 10000 &lt;= x &lt; 20000 on chr1, all sites on chr2.
+ &quot;chr1:10000&quot;: just chr1, position 10000; equivalent to &quot;chr1:10000-10001&quot;.
+ &quot;chr1:10000-&quot;: chr1, from position 10000 to the end of chr1.
 </p></div></div>
+    </li><li name="org.hammerlab.guacamole.LociSet.Builder#result" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="result(contigLengths:(String,Long)*):org.hammerlab.guacamole.LociSet"></a>
+      <a id="result((String,Long)*):LociSet"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">result</span><span class="params">(<span name="contigLengths">contigLengths: (<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Long">Long</span>)*</span>)</span><span class="result">: <a href="LociSet.html" class="extype" name="org.hammerlab.guacamole.LociSet">LociSet</a></span>
+      </span>
+      </h4>
+      
     </li><li name="org.hammerlab.guacamole.LociSet.Builder#result" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="result(contigLengths:Map[String,Long]):org.hammerlab.guacamole.LociSet"></a>
       <a id="result(Map[String,Long]):LociSet"></a>
