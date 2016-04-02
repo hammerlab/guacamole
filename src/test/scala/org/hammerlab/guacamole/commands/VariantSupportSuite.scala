@@ -1,6 +1,7 @@
 package org.hammerlab.guacamole.commands
 
-import org.hammerlab.guacamole.Bases
+import org.hammerlab.guacamole.LociSet
+import org.hammerlab.guacamole.commands.VariantSupport.Caller.AlleleCount
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.{ MappedRead, Read }
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
@@ -14,99 +15,111 @@ class VariantSupportSuite extends GuacFunSuite with Matchers with TableDrivenPro
   def grch37Reference = ReferenceBroadcast(TestUtil.testDataPath("grch37.partial.fasta"), sc, partialFasta = true)
 
   def testAlleleCounts(window: SlidingWindow[MappedRead],
-                       variantAlleleLoci: (String, Long, Map[String, Int])*) = {
-    val variantAlleleLociTable = Table(
-      heading = ("contig", "locus", "alleleCounts"),
-      variantAlleleLoci: _*
+                       variantAlleleLoci: (String, Int, Seq[(String, String, Int)])*) = {
+    for {
+      (contig, locus, alleleCounts) <- variantAlleleLoci
+    } {
+      withClue(s"$contig:$locus") {
+
+        window.setCurrentLocus(locus)
+
+        val pileup =
+          Pileup(
+            window.currentRegions(),
+            contig,
+            locus,
+            referenceContigSequence = grch37Reference.getContig(contig)
+          )
+
+        assertAlleleCounts(pileup, alleleCounts: _*)
+      }
+    }
+  }
+
+  def assertAlleleCounts(pileup: Pileup, alleleCounts: (String, String, Int)*): Unit = {
+    val computedAlleleCounts =
+      (for {
+        AlleleCount(_, _, _, ref, alternate, count) <- VariantSupport.Caller.pileupToAlleleCounts(pileup)
+      } yield (ref, alternate, count)
+      )
+        .toArray
+        .sortBy(x => x)
+
+    computedAlleleCounts should be(alleleCounts.sortBy(x => x))
+  }
+
+  def gatkReads(loci: String) =
+    TestUtil.loadReads(
+      sc,
+      "gatk_mini_bundle_extract.bam",
+      Read.InputFilters(
+        mapped = true,
+        nonDuplicate = false,
+        overlapsLoci = Some(LociSet.parse(loci))
+      ),
+      reference = grch37Reference
+    ).mappedReads.collect().sortBy(_.start)
+
+  def nonDuplicateGatkReads(loci: String) =
+    TestUtil.loadReads(
+      sc,
+      "gatk_mini_bundle_extract.bam",
+      Read.InputFilters(
+        mapped = true,
+        nonDuplicate = true,
+        overlapsLoci = Some(LociSet.parse(loci))
+      ),
+      reference = grch37Reference
+    ).mappedReads.collect().sortBy(_.start)
+
+  lazy val RnaReads =
+    TestUtil.loadReads(
+      sc,
+      "rna_chr17_41244936.sam",
+      reference = grch37Reference
     )
-
-    forAll(variantAlleleLociTable) {
-      (contig: String, locus: Long, alleleCountMap) =>
-        {
-          window.setCurrentLocus(locus)
-          val pileup = Pileup(window.currentRegions(), contig, locus, referenceContigSequence = grch37Reference.getContig(contig))
-          assertAlleleCounts(pileup, alleleCountMap)
-        }
-    }
-  }
-
-  def assertAlleleCounts(pileup: Pileup,
-                         alleleCountMap: Map[String, Int]) = {
-    val computedAlleleCounts = VariantSupport.Caller.pileupToAlleleCounts(pileup)
-    computedAlleleCounts.size should be(alleleCountMap.size)
-
-    for (alleleCount <- computedAlleleCounts) {
-      alleleCount.count should be(alleleCountMap(alleleCount.alternate))
-    }
-  }
-
-  lazy val gatkReads = TestUtil.loadReads(
-    sc,
-    "gatk_mini_bundle_extract.bam",
-    Read.InputFilters(mapped = true, nonDuplicate = false),
-    reference = grch37Reference).mappedReads.collect().sortBy(_.start)
-
-  lazy val nonDuplicateGatkReads = TestUtil.loadReads(
-    sc,
-    "gatk_mini_bundle_extract.bam",
-    Read.InputFilters(mapped = true, nonDuplicate = true),
-    reference = grch37Reference
-  ).mappedReads.collect().sortBy(_.start)
-
-  lazy val RnaReads = TestUtil.loadReads(
-    sc,
-    "rna_chr17_41244936.sam",
-    reference = grch37Reference).mappedReads.collect().sortBy(_.start)
+      .mappedReads
+      .collect()
+      .sortBy(_.start)
 
   sparkTest("read evidence for simple snvs") {
-    val pileup = Pileup(gatkReads, "20", 10008951, grch37Reference.getContig("20"))
-    assertAlleleCounts(pileup, Map(("A", 1), ("C", 4)))
+    val pileup = Pileup(gatkReads("20:10008951-10008952"), "20", 10008951, grch37Reference.getContig("20"))
+    assertAlleleCounts(pileup, ("CACACACACACA", "C", 1), ("C", "C", 4))
   }
 
   sparkTest("read evidence for mid-deletion") {
-
-    val pileup = Pileup(gatkReads, "20", 10006822, referenceContigSequence = grch37Reference.getContig("20"))
-    assertAlleleCounts(pileup, Map(("", 5), ("C", 1)))
+    val pileup = Pileup(gatkReads("20:10006822-10006823"), "20", 10006822, referenceContigSequence = grch37Reference.getContig("20"))
+    assertAlleleCounts(pileup, ("C", "", 6), ("C", "C", 2))
   }
 
   sparkTest("read evidence for simple snvs 2") {
-    val pileup = Pileup(gatkReads, "20", 10009053, referenceContigSequence = grch37Reference.getContig("20"))
-    assertAlleleCounts(pileup, Map(("AT", 3)))
-  }
-
-  sparkTest("read evidence for simple snvs 3") {
-    val loci = Seq(
-      ("20", 10006822L, Map(("A", 2), ("", 6))),
-      ("20", 10008951L, Map(("A", 1), ("C", 4))),
-      ("20", 10009053L, Map(("AT", 3)))
-    )
-
-    val window = SlidingWindow[MappedRead]("20", 0L, gatkReads.toIterator)
-    testAlleleCounts(window, loci: _*)
+    val reads = gatkReads("20:10000624-10000625")
+    val pileup = Pileup(reads, "20", 10000624, referenceContigSequence = grch37Reference.getContig("20"))
+    assertAlleleCounts(pileup, ("T", "T", 6), ("T", "C", 1))
   }
 
   sparkTest("read evidence for simple snvs no filters") {
-    val loci = Seq(
-      ("20", 1L, Map[String, Int]()), // empty
-      ("20", 9999996L, Map(("ACT", 9))),
-      ("20", 10007174L, Map(("T", 5), ("C", 3))),
-      ("20", 10260442L, Map(("T", 7)))
-    )
+    val loci =
+      Seq(
+        ("20", 9999900, Nil), // empty
+        ("20", 9999995, Seq(("A", "ACT", 9))),
+        ("20", 10007174, Seq(("C", "T", 5), ("C", "C", 3))),
+        ("20", 10007175, Seq(("T", "T", 8)))
+      )
 
-    val window = SlidingWindow[MappedRead]("20", 0L, gatkReads.toIterator)
+    val window = SlidingWindow[MappedRead]("20", 0L, gatkReads("20:9999900-10007175").toIterator)
     testAlleleCounts(window, loci: _*)
 
   }
 
   sparkTest("read evidence for simple snvs duplicate filtering") {
-    val loci = Seq(
-      ("20", 9999996L, Map(("ACT", 8))),
-      ("20", 10006822L, Map(("", 5), ("C", 1))),
-      ("20", 10008920L, Map(("C", 2), ("CA", 1), ("CAA", 1))),
-      ("20", 10009053L, Map(("AT", 3)))
-    )
+    val loci =
+      Seq(
+        ("20", 9999995, Seq(("A", "ACT", 8))),
+        ("20", 10006822, Seq(("C", "", 5), ("C", "C", 1)))
+      )
 
-    val window = SlidingWindow[MappedRead]("20", 0L, nonDuplicateGatkReads.toIterator)
+    val window = SlidingWindow[MappedRead]("20", 0L, nonDuplicateGatkReads("20:9999995-10006822").toIterator)
     testAlleleCounts(window, loci: _*)
   }
 }
