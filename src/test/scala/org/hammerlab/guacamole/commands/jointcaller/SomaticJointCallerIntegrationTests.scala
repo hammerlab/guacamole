@@ -35,7 +35,7 @@ object SomaticJointCallerIntegrationTests {
         csvRecords(CancerWGSTestUtils.cancerWGS1ExpectedSomaticCallsCSV).filter(!_.tumor.contains("decoy")).foreach(record => {
           forceCallLoci.put("chr" + record.contig,
             if (record.alt.nonEmpty) record.interbaseStart else record.interbaseStart - 1,
-            if (record.alt.nonEmpty) Some(record.interbaseStart + 1) else Some(record.interbaseStart))
+            if (record.alt.nonEmpty) record.interbaseStart + 1 else record.interbaseStart)
         })
         args.forceCallLoci = forceCallLoci.result.truncatedString(100000)
 

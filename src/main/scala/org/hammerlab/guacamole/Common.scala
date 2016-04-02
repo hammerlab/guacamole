@@ -235,7 +235,7 @@ object Common extends Logging {
       val iterator = reader.iterator
       while (iterator.hasNext) {
         val value = iterator.next()
-        builder.put(value.getContig, value.getStart - 1, Some(value.getEnd.toLong))
+        builder.put(value.getContig, value.getStart - 1, value.getEnd.toLong)
       }
       builder.result
     } else if (filePath.endsWith(".loci") || filePath.endsWith(".txt")) {
