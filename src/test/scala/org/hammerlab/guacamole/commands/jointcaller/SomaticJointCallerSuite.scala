@@ -17,7 +17,7 @@ class SomaticJointCallerSuite extends GuacFunSuite with Matchers {
 
   sparkTest("call a somatic variant") {
     val inputs = InputCollection(cancerWGS1Bams)
-    val loci = LociSet.parse("chr12:65857040-65857041")
+    val loci = LociSet.parse("chr12:65857040")
     val readSets = SomaticJoint.inputsToReadSets(sc, inputs, loci)
     val calls = SomaticJoint.makeCalls(
       sc, inputs, readSets, Parameters.defaults, partialReference, loci.result, loci.result).collect
