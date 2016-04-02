@@ -208,7 +208,8 @@ object SomaticMutectLike {
             maxNormalQscoreSumSupportingMutant = args.maxNormalQscoreSumSupportingMutant,
             minMedianDistanceFromReadEnd = args.minMedianDistanceFromReadEnd,
             minMedianAbsoluteDeviationOfAlleleInRead = args.minMedianAbsoluteDeviationOfAlleleInRead,
-            maxAltAllelesInNormalFilter = args.maxAltAllelesInNormalFilter))
+            maxAltAllelesInNormalFilter = args.maxAltAllelesInNormalFilter,
+            tumorLODThreshold = args.tumorLODThreshold))
 
       potentialGenotypes.persist()
       Common.progress("Computed %,d potential genotypes".format(potentialGenotypes.count))
@@ -224,6 +225,7 @@ object SomaticMutectLike {
               calledAllele.copy(rsID = dbSnpVariant.map(_ => 1))
           })
       }
+
 
       if (args.cosmicVcf != "") {
         val adamContext = new ADAMContext(sc)
@@ -250,9 +252,10 @@ object SomaticMutectLike {
       }
 
       val filteredGenotypes: RDD[CalledMutectSomaticAllele] = potentialGenotypes.filter(
-        finalMutectDbSnpCosmicNoisyFilter(_,
-          args.somDbSnpLODThreshold,
-          args.somNovelLODThreshold))
+        c =>
+        finalMutectDbSnpCosmicNoisyFilter(somAllele = c,
+          somDbSnpThreshold = args.somDbSnpLODThreshold,
+          somNovelThreshold = args.somNovelLODThreshold))
 
       Common.progress("Computed %,d genotypes after basic filtering".format(filteredGenotypes.count))
 
@@ -552,19 +555,19 @@ object SomaticMutectLike {
           val normalNotHet = somaticModel.logOdds(Bases.basesToString(alt.refBases),
             Bases.basesToString(alt.altBases), mapqBaseqAndOverlappingFragmentFilteredNormalPileup.elements)
 
-          val nInsertions = rawTumorPileup.elements.map(pileupElement =>
+          val nInsertions = rawTumorOverlapFilteredPileup.elements.map(pileupElement =>
             if (distanceToNearestReadInsertionOrDeletion(pileupElement, true).getOrElse(Int.MaxValue) <=
               indelNearnessThresholdForPointMutations) 1
             else 0).sum
-          val nDeletions = rawTumorPileup.elements.map(pileupElement =>
+          val nDeletions = rawTumorOverlapFilteredPileup.elements.map(pileupElement =>
             if (distanceToNearestReadInsertionOrDeletion(pileupElement, false).getOrElse(Int.MaxValue) <=
               indelNearnessThresholdForPointMutations) 1
             else 0).sum
 
           val heavilyFilteredDepth = heavilyFilteredTumorPuElements.length
 
-          val tumorMapq0Depth = rawTumorPileup.elements.count(_.read.alignmentQuality == 0)
-          val normalMapq0Depth = rawNormalPileup.elements.count(_.read.alignmentQuality == 0)
+          val tumorMapq0Depth = rawTumorOverlapFilteredPileup.elements.count(_.read.alignmentQuality == 0)
+          val normalMapq0Depth = rawTumorOverlapFilteredPileup.elements.count(_.read.alignmentQuality == 0)
 
           val onlyTumorMutHeavyFiltered = heavilyFilteredTumorPuElements.filter(_.allele == alt)
           val maxAltQuality = onlyTumorMutHeavyFiltered.map(_.qualityScore).max
@@ -574,7 +577,7 @@ object SomaticMutectLike {
             val onlyMutSortedByQualityScore = onlyTumorMutHeavyFiltered.sortBy(-_.qualityScore)
             val contamPileup = onlyMutSortedByQualityScore.take(nContamAlleles) ++ heavilyFilteredTumorPuElements ++
               heavilyFilteredTumorPuElements.take(onlyMutSortedByQualityScore.length - nContamAlleles)
-            tumorVs0Model.logOdds(Bases.basesToString(alt.refBases), Bases.basesToString(alt.altBases), contamPileup, Some(math.min(alleleFrac, contamFrac)))
+            math.max(tumorVs0Model.logOdds(Bases.basesToString(alt.refBases), Bases.basesToString(alt.altBases), contamPileup, Some(math.min(alleleFrac, contamFrac))), 0.0)
           }
 
           val normalAlts = mapqBaseqAndOverlappingFragmentFilteredNormalPileup.elements.filter(_.allele == alt)
