@@ -38,7 +38,7 @@ class PileupSuite extends GuacFunSuite with Matchers with TableDrivenPropertyChe
       ("chr4", 0, "AATTGCAATTG")
     ))
 
-  def testAdamRecords = TestUtil.loadReads(sc, "different_start_reads.sam", reference = reference).mappedReads.collect()
+  def testAdamRecords = TestUtil.loadReads(sc, "different_start_reads.sam").mappedReads.collect()
 
   def pileupElementFromRead(read: MappedRead, locus: Long): PileupElement = {
     PileupElement(read, locus, reference.getContig(read.referenceContig))

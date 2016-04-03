@@ -48,7 +48,9 @@ object GeneratePartialFasta extends Logging {
         fileAndIndex._1,
         InputFilters.empty,
         token = fileAndIndex._2,
-        config = Common.Arguments.ReadLoadingConfigArgs.fromArguments(args)))
+        config = Common.Arguments.ReadLoadingConfigArgs.fromArguments(args)
+      )
+    )
 
     val reads = sc.union(readSets.map(_.mappedReads))
     val contigLengths = readSets.head.contigLengths

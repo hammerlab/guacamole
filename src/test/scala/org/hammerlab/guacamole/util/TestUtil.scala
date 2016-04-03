@@ -18,19 +18,19 @@
 
 package org.hammerlab.guacamole.util
 
-import java.io.{ File, FileNotFoundException }
+import java.io.{File, FileNotFoundException}
 import java.util.UUID
 
 import com.esotericsoftware.kryo.Kryo
-import com.twitter.chill.{ IKryoRegistrar, KryoInstantiator, KryoPool }
+import com.twitter.chill.{IKryoRegistrar, KryoInstantiator, KryoPool}
 import org.apache.commons.io.FileUtils
 import org.apache.spark.SparkContext
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.Read.InputFilters
 import org.hammerlab.guacamole.reads._
 import org.hammerlab.guacamole.reference.ReferenceBroadcast.MapBackedReferenceSequence
-import org.hammerlab.guacamole.reference.{ ContigSequence, ReferenceBroadcast }
-import org.hammerlab.guacamole.{ Bases, GuacamoleKryoRegistrator, LociSet, ReadSet }
+import org.hammerlab.guacamole.reference.{ContigSequence, ReferenceBroadcast}
+import org.hammerlab.guacamole.{Bases, GuacamoleKryoRegistrator, LociSet, ReadSet}
 import org.scalatest._
 
 import scala.collection.mutable
@@ -179,7 +179,7 @@ object TestUtil extends Matchers {
     )
     PairedMappedRead(
       makePairedRead(
-        chr, start, alignmentQuality, isPositiveStrand, true,
+        chr, start, alignmentQuality, isPositiveStrand, isMateMapped = true,
         Some(mate.referenceContig), Some(mate.start), mate.isPositiveStrand,
         sequence, cigar, mate.inferredInsertSize).read,
       isFirstInPair = true,
@@ -203,17 +203,17 @@ object TestUtil extends Matchers {
 
   def loadTumorNormalReads(sc: SparkContext,
                            tumorFile: String,
-                           normalFile: String,
-                           reference: ReferenceBroadcast): (Seq[MappedRead], Seq[MappedRead]) = {
+                           normalFile: String): (Seq[MappedRead], Seq[MappedRead]) = {
     val filters = Read.InputFilters(mapped = true, nonDuplicate = true, passedVendorQualityChecks = true)
-    (loadReads(sc, tumorFile, filters = filters, reference = reference).mappedReads.collect(),
-      loadReads(sc, normalFile, filters = filters, reference = reference).mappedReads.collect())
+    (
+      loadReads(sc, tumorFile, filters = filters).mappedReads.collect(),
+      loadReads(sc, normalFile, filters = filters).mappedReads.collect()
+    )
   }
 
   def loadReads(sc: SparkContext,
                 filename: String,
                 filters: Read.InputFilters = Read.InputFilters.empty,
-                reference: ReferenceBroadcast,
                 config: Read.ReadLoadingConfig = Read.ReadLoadingConfig.default): ReadSet = {
     /* grab the path to the SAM file we've stashed in the resources subdirectory */
     val path = testDataPath(filename)
@@ -245,8 +245,7 @@ object TestUtil extends Matchers {
           overlapsLoci = maybeContig.map(
             contig ⇒ LociSet.parse(s"$contig:$locus-${locus + 1}")
           )
-        ),
-        reference = reference
+        )
       ).mappedReads
     val localReads = records.collect
     val actualContig = maybeContig.getOrElse(localReads(0).referenceContig)
