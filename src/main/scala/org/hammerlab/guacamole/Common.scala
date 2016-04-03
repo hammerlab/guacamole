@@ -162,7 +162,8 @@ object Common extends Logging {
       filters,
       token = 0,
       contigLengthsFromDictionary = !args.noSequenceDictionary,
-      config = ReadLoadingConfigArgs.fromArguments(args))
+      config = ReadLoadingConfigArgs.fromArguments(args)
+    )
   }
 
   /**
@@ -185,14 +186,17 @@ object Common extends Logging {
       filters,
       1,
       !args.noSequenceDictionary,
-      ReadLoadingConfigArgs.fromArguments(args))
+      ReadLoadingConfigArgs.fromArguments(args)
+    )
+
     val normal = ReadSet(
       sc,
       args.normalReads,
       filters,
       2,
       !args.noSequenceDictionary,
-      ReadLoadingConfigArgs.fromArguments(args))
+      ReadLoadingConfigArgs.fromArguments(args)
+    )
     (tumor, normal)
   }
 
@@ -235,7 +239,7 @@ object Common extends Logging {
       val iterator = reader.iterator
       while (iterator.hasNext) {
         val value = iterator.next()
-        builder.put(value.getContig, value.getStart - 1, Some(value.getEnd.toLong))
+        builder.put(value.getContig, value.getStart - 1, value.getEnd.toLong)
       }
       builder.result
     } else if (filePath.endsWith(".loci") || filePath.endsWith(".txt")) {

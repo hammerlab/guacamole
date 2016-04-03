@@ -28,10 +28,6 @@ class DeBruijnGraphSuite extends GuacFunSuite with Matchers {
     val sequence = "TCATCTCAAAAGAGATCGA"
     val graph = DeBruijnGraph(Seq(sequence), kmerSize = 8)
 
-    val firstKmer = "TCATCTCA"
-    val nextKmer = "CATCTCAA"
-    val lastKmer = "GAGATCGA"
-
     TestUtil.assertBases(graph.kmerPrefix("TCATCTCA"), "TCATCTC")
     TestUtil.assertBases(graph.kmerPrefix("CATCTCAA"), "CATCTCA")
     TestUtil.assertBases(graph.kmerPrefix("GAGATCGA"), "GAGATCG")
@@ -54,10 +50,6 @@ class DeBruijnGraphSuite extends GuacFunSuite with Matchers {
 
     val sequence = "TCATCTTAAAAGACATAAA"
     val graph = DeBruijnGraph(Seq(sequence), kmerSize = 3)
-
-    val firstKmer = "TCA"
-    val nextKmer = "CAT"
-    val lastKmer = "AAA"
 
     val tcaChildren = graph.children("TCA")
     TestUtil.assertBases(graph.kmerSuffix("TCA"), "CA")
@@ -383,13 +375,12 @@ class DeBruijnGraphSuite extends GuacFunSuite with Matchers {
     val referenceBases = Bases.stringToBases(referenceString)
     val reference = TestUtil.makeReference(sc, Seq(("chr2", 73613005, referenceString)), contigLengths = 73613152)
 
-    lazy val snpReads = TestUtil.loadReads(
-      sc,
-      "assemble-reads-set3-chr2-73613071.sam",
-      reference = reference)
-      .mappedReads
-      .sortBy(_.start)
-      .collect
+    lazy val snpReads =
+      TestUtil
+        .loadReads(sc, "assemble-reads-set3-chr2-73613071.sam")
+        .mappedReads
+        .sortBy(_.start)
+        .collect
 
     val referenceKmerSource = referenceBases.take(kmerSize)
     val referenceKmerSink = referenceBases.takeRight(kmerSize)

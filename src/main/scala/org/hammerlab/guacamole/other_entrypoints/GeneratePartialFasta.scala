@@ -48,14 +48,16 @@ object GeneratePartialFasta extends Logging {
         fileAndIndex._1,
         InputFilters.empty,
         token = fileAndIndex._2,
-        config = Common.Arguments.ReadLoadingConfigArgs.fromArguments(args)))
+        config = Common.Arguments.ReadLoadingConfigArgs.fromArguments(args)
+      )
+    )
 
     val reads = sc.union(readSets.map(_.mappedReads))
     val contigLengths = readSets.head.contigLengths
 
     val regions = reads.map(read => (read.referenceContig, read.start, read.end))
     regions.collect.foreach(triple => {
-      lociBuilder.put(triple._1, triple._2, Some(triple._3))
+      lociBuilder.put(triple._1, triple._2, triple._3)
     })
 
     val loci = lociBuilder.result
