@@ -256,12 +256,7 @@ object Read extends Logging {
         record.getReadPairedFlag
       )
     }
-    if (record.getReadPairedFlag) {
-      val mateAlignment = MateAlignmentProperties(record)
-      PairedRead(read, isFirstInPair = record.getFirstOfPairFlag, mateAlignment)
-    } else {
-      read
-    }
+    read
   }
 
   /**
@@ -474,21 +469,7 @@ object Read extends Logging {
       )
     }
 
-    if (alignmentRecord.getReadPaired) {
-      val mateAlignment = if (alignmentRecord.getMateMapped) Some(
-        MateAlignmentProperties(
-          referenceContig = alignmentRecord.getMateContig.getContigName.intern(),
-          start = alignmentRecord.getMateAlignmentStart,
-          inferredInsertSize = if (alignmentRecord.getInferredInsertSize != 0 && alignmentRecord.getInferredInsertSize != null) Some(alignmentRecord.getInferredInsertSize.toInt) else None,
-          isPositiveStrand = !alignmentRecord.getMateNegativeStrand
-        )
-      )
-      else
-        None
-      PairedRead(read, isFirstInPair = alignmentRecord.getReadInFragment == 1, mateAlignment)
-    } else {
-      read
-    }
+    read
   }
 
   /** Is the given samtools CigarElement a (hard/soft) clip? */
