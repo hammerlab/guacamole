@@ -56,8 +56,7 @@ class VariantSupportSuite extends GuacFunSuite with Matchers with TableDrivenPro
         mapped = true,
         nonDuplicate = false,
         overlapsLoci = Some(LociSet.parse(loci))
-      ),
-      reference = grch37Reference
+      )
     ).mappedReads.collect().sortBy(_.start)
 
   def nonDuplicateGatkReads(loci: String) =
@@ -68,16 +67,12 @@ class VariantSupportSuite extends GuacFunSuite with Matchers with TableDrivenPro
         mapped = true,
         nonDuplicate = true,
         overlapsLoci = Some(LociSet.parse(loci))
-      ),
-      reference = grch37Reference
+      )
     ).mappedReads.collect().sortBy(_.start)
 
   lazy val RnaReads =
-    TestUtil.loadReads(
-      sc,
-      "rna_chr17_41244936.sam",
-      reference = grch37Reference
-    )
+    TestUtil
+      .loadReads(sc, "rna_chr17_41244936.sam")
       .mappedReads
       .collect()
       .sortBy(_.start)

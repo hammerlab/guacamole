@@ -10,7 +10,7 @@ import org.hammerlab.guacamole._
 import org.hammerlab.guacamole.alignment.AffineGapPenaltyAlignment
 import org.hammerlab.guacamole.assembly.DeBruijnGraph
 import org.hammerlab.guacamole.reads.{ MappedRead, Read }
-import org.hammerlab.guacamole.reference.{ ReferenceGenome, ContigSubsequence}
+import org.hammerlab.guacamole.reference.{ ReferenceGenome, ContigSubsequence }
 import org.hammerlab.guacamole.variants.{ Allele, AlleleConversions, AlleleEvidence, CalledAllele }
 import org.hammerlab.guacamole.windowing.SlidingWindow
 import org.kohsuke.args4j.{ Option => Args4jOption }
@@ -249,7 +249,11 @@ object GermlineAssemblyCaller {
       val readSet = Common.loadReadsFromArguments(
         args,
         sc,
-        Read.InputFilters(overlapsLoci = Some(loci), mapped = true, nonDuplicate = true)
+        Read.InputFilters(
+          overlapsLoci = Some(loci),
+          mapped = true,
+          nonDuplicate = true
+        )
       )
 
       val minAlignmentQuality = args.minAlignmentQuality
@@ -339,7 +343,7 @@ object GermlineAssemblyCaller {
 
     /**
      * Find paths through the reads given that represent the sequence covering referenceStart and referenceEnd
- *
+     *
      * @param reads Reads to use to build the graph
      * @param referenceStart Start of the reference region corresponding to the reads
      * @param referenceEnd End of the reference region corresponding to the reads

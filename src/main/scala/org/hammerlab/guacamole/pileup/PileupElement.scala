@@ -18,7 +18,7 @@
 
 package org.hammerlab.guacamole.pileup
 
-import htsjdk.samtools.{CigarElement, CigarOperator}
+import htsjdk.samtools.{ CigarElement, CigarOperator }
 import org.hammerlab.guacamole.CigarUtils
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.reference.ContigSequence

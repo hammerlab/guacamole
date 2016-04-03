@@ -64,7 +64,15 @@ class ReadSubsequenceSuite extends GuacFunSuite with Matchers {
     val parameters = Parameters.defaults
     val contigLocus = ("chr12", 65857039)
     val pileups = cancerWGS1Bams.map(
-      path => TestUtil.loadPileup(sc, path, contig = Some(contigLocus._1), locus = contigLocus._2, reference = partialReference))
+      path =>
+        TestUtil.loadPileup(
+          sc,
+          path,
+          maybeContig = Some(contigLocus._1),
+          locus = contigLocus._2,
+          reference = partialReference
+        )
+    )
 
     val subsequences = ReadSubsequence.nextAlts(pileups(1).elements)
     assert(subsequences.nonEmpty)

@@ -1,8 +1,8 @@
 package org.hammerlab.guacamole.commands.jointcaller
 
-import org.hammerlab.guacamole.VariantComparisonUtils.{compareToCSV, compareToVCF, csvRecords}
+import org.hammerlab.guacamole.VariantComparisonUtils.{ compareToCSV, compareToVCF, csvRecords }
 import org.hammerlab.guacamole.util.TestUtil
-import org.hammerlab.guacamole.{CancerWGSTestUtils, Common, LociSet, NA12878TestUtils}
+import org.hammerlab.guacamole.{ CancerWGSTestUtils, Common, LociSet, NA12878TestUtils }
 
 // This app outputs a performance comparison. We may want to add assertions on the accuracy later.
 object SomaticJointCallerIntegrationTests {
@@ -35,7 +35,7 @@ object SomaticJointCallerIntegrationTests {
         csvRecords(CancerWGSTestUtils.cancerWGS1ExpectedSomaticCallsCSV).filter(!_.tumor.contains("decoy")).foreach(record => {
           forceCallLoci.put("chr" + record.contig,
             if (record.alt.nonEmpty) record.interbaseStart else record.interbaseStart - 1,
-            if (record.alt.nonEmpty) Some(record.interbaseStart + 1) else Some(record.interbaseStart))
+            if (record.alt.nonEmpty) record.interbaseStart + 1 else record.interbaseStart)
         })
         args.forceCallLoci = forceCallLoci.result.truncatedString(100000)
 

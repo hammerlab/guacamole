@@ -41,7 +41,6 @@ object SomaticJoint {
   def inputsToReadSets(sc: SparkContext,
                        inputs: InputCollection,
                        loci: LociSet.Builder,
-                       reference: ReferenceGenome,
                        contigLengthsFromDictionary: Boolean = true): PerSample[ReadSet] = {
     inputs.items.zipWithIndex.map {
       case (input, index) =>
@@ -71,7 +70,7 @@ object SomaticJoint {
 
       val loci = Common.lociFromArguments(args)
 
-      val readSets = inputsToReadSets(sc, inputs, loci, reference, !args.noSequenceDictionary)
+      val readSets = inputsToReadSets(sc, inputs, loci, !args.noSequenceDictionary)
 
       assert(readSets.forall(_.sequenceDictionary == readSets(0).sequenceDictionary),
         "Samples have different sequence dictionaries: %s."
@@ -130,7 +129,7 @@ object SomaticJoint {
     loci.contigs.foreach(contig => {
       val contigSet = loci.onContig(contig)
       contigSet.ranges.foreach(range => {
-        builder.put(contig, math.max(0, range.start - 1), Some(range.end - 1))
+        builder.put(contig, math.max(0, range.start - 1), range.end - 1)
       })
     })
     builder.result

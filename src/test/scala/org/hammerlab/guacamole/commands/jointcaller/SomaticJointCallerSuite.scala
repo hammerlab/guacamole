@@ -16,8 +16,8 @@ class SomaticJointCallerSuite extends GuacFunSuite with Matchers {
 
   sparkTest("call a somatic variant") {
     val inputs = InputCollection(cancerWGS1Bams)
-    val loci = LociSet.parse("chr12:65857040-65857041")
-    val readSets = SomaticJoint.inputsToReadSets(sc, inputs, loci, partialReference)
+    val loci = LociSet.parse("chr12:65857040")
+    val readSets = SomaticJoint.inputsToReadSets(sc, inputs, loci)
     val calls = SomaticJoint.makeCalls(
       sc, inputs, readSets, Parameters.defaults, partialReference, loci.result, loci.result).collect
 
@@ -29,7 +29,7 @@ class SomaticJointCallerSuite extends GuacFunSuite with Matchers {
   sparkTest("call a somatic deletion") {
     val inputs = InputCollection(cancerWGS1Bams)
     val loci = LociSet.parse("chr5:82649006-82649009")
-    val readSets = SomaticJoint.inputsToReadSets(sc, inputs, loci, partialReference)
+    val readSets = SomaticJoint.inputsToReadSets(sc, inputs, loci)
     val calls = SomaticJoint.makeCalls(
       sc, inputs, readSets, Parameters.defaults, partialReference, loci.result, LociSet.empty).collect
 
@@ -42,7 +42,7 @@ class SomaticJointCallerSuite extends GuacFunSuite with Matchers {
   sparkTest("call germline variants") {
     val inputs = InputCollection(cancerWGS1Bams, tissueTypes = Vector("normal", "normal", "normal"))
     val loci = LociSet.parse("chr1,chr2,chr3")
-    val readSets = SomaticJoint.inputsToReadSets(sc, inputs, loci, partialReference)
+    val readSets = SomaticJoint.inputsToReadSets(sc, inputs, loci)
     val calls = SomaticJoint.makeCalls(
       sc,
       inputs,
@@ -68,13 +68,14 @@ class SomaticJointCallerSuite extends GuacFunSuite with Matchers {
           "chr12" -> MapBackedReferenceSequence(500000000, Nil)
         )
       )
+
     val readSets =
       SomaticJoint.inputsToReadSets(
         sc,
         inputs,
-        loci,
-        reference = emptyPartialReference
+        loci
       )
+
     val calls = SomaticJoint.makeCalls(
       sc, inputs, readSets, Parameters.defaults, emptyPartialReference, loci.result, loci.result)
 

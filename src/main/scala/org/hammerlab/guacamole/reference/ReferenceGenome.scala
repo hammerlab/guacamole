@@ -4,7 +4,7 @@ import java.io.File
 import java.util.NoSuchElementException
 
 import htsjdk.samtools.reference.FastaSequenceFile
-import org.hammerlab.guacamole.{Bases, LociSet}
+import org.hammerlab.guacamole.{ Bases, LociSet }
 
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer

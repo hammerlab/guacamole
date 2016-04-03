@@ -1,7 +1,7 @@
 package org.hammerlab.guacamole.commands.jointcaller
 
 import org.hammerlab.guacamole.DistributedUtil._
-import org.hammerlab.guacamole.commands.jointcaller.Input.{Analyte, TissueType}
+import org.hammerlab.guacamole.commands.jointcaller.Input.{ Analyte, TissueType }
 import org.hammerlab.guacamole.commands.jointcaller.PileupStats.AlleleMixture
 import org.hammerlab.guacamole.pileup.Pileup
 

@@ -7,7 +7,7 @@ import org.hammerlab.guacamole.reads.Read
 import org.hammerlab.guacamole.reference.ReferenceGenome
 import org.hammerlab.guacamole.util.TestUtil
 import org.hammerlab.guacamole.variants.CalledAllele
-import org.scalatest.{BeforeAndAfterAll, FunSuite, Matchers}
+import org.scalatest.{ BeforeAndAfterAll, FunSuite, Matchers }
 
 class GermlineAssemblyCallerSuite extends FunSuite with Matchers with BeforeAndAfterAll {
 
@@ -39,8 +39,7 @@ class GermlineAssemblyCallerSuite extends FunSuite with Matchers with BeforeAndA
                             snvWindowRange: Int = 55,
                             minOccurrence: Int = 5,
                             minVaf: Float = 0.1f)(
-    expectedVariants: (String, Int, String, String)*
-  ): Unit = {
+                              expectedVariants: (String, Int, String, String)*): Unit = {
 
     val windowStart = locus - snvWindowRange
     val windowEnd = locus + snvWindowRange
@@ -92,61 +91,61 @@ class GermlineAssemblyCallerSuite extends FunSuite with Matchers with BeforeAndA
     "test assembly caller: illumina platinum tests; homozygous snp",
     772754
   )(
-    ("chr1", 772754, "A", "C")
-  )
+      ("chr1", 772754, "A", "C")
+    )
 
   verifyVariantsAtLocus(
     "test assembly caller: illumina platinum tests; nearby homozygous snps",
     1297212
   )(
-    ("chr1", 1297212, "G", "C"),
-    ("chr1", 1297215, "A", "G")
-  )
+      ("chr1", 1297212, "G", "C"),
+      ("chr1", 1297215, "A", "G")
+    )
 
   verifyVariantsAtLocus(
     "test assembly caller: illumina platinum tests; 2 nearby homozygous snps",
     1316669
   )(
-    ("chr1", 1316647, "C", "T"),
-    ("chr1", 1316647, "C", "T"),
-    ("chr1", 1316669, "C", "G"),
-    ("chr1", 1316673, "C", "T")
-  )
+      ("chr1", 1316647, "C", "T"),
+      ("chr1", 1316647, "C", "T"),
+      ("chr1", 1316669, "C", "G"),
+      ("chr1", 1316673, "C", "T")
+    )
 
   verifyVariantsAtLocus(
     "test assembly caller: illumina platinum tests; het snp",
     1342611
   )(
-    ("chr1", 1342611, "G", "C")
-  )
+      ("chr1", 1342611, "G", "C")
+    )
 
   verifyVariantsAtLocus(
     "test assembly caller: illumina platinum tests; homozygous deletion",
     1296368
   )(
-    ("chr1", 1296368, "GAC", "G")
-  )
+      ("chr1", 1296368, "GAC", "G")
+    )
 
   verifyVariantsAtLocus(
     "test assembly caller: illumina platinum tests; homozygous deletion 2",
     1303426
   )(
-    ("chr1", 1303426, "ACT", "A")
-  )
+      ("chr1", 1303426, "ACT", "A")
+    )
 
   verifyVariantsAtLocus(
     "test assembly caller: illumina platinum tests; homozygous insertion",
     1321298
   )(
-    ("chr1", 1321298, "A", "AG")
-  )
+      ("chr1", 1321298, "A", "AG")
+    )
 
   verifyVariantsAtLocus(
     "test assembly caller: illumina platinum tests; homozygous insertion 2",
     1302671
   )(
-    ("chr1", 1302671, "A", "AGT")
-  )
+      ("chr1", 1302671, "A", "AGT")
+    )
 
   verifyVariantsAtLocus(
     "test assembly caller: empty region",
@@ -157,6 +156,6 @@ class GermlineAssemblyCallerSuite extends FunSuite with Matchers with BeforeAndA
     "test assembly caller: homozygous snp in a repeat region",
     789255
   )(
-    ("chr1", 789255, "T", "C")
-  )
+      ("chr1", 789255, "T", "C")
+    )
 }

@@ -178,7 +178,7 @@ object TestUtil extends Matchers {
     )
     PairedMappedRead(
       makePairedRead(
-        chr, start, alignmentQuality, isPositiveStrand, true,
+        chr, start, alignmentQuality, isPositiveStrand, isMateMapped = true,
         Some(mate.referenceContig), Some(mate.start), mate.isPositiveStrand,
         sequence, cigar, mate.inferredInsertSize).read,
       isFirstInPair = true,
@@ -202,17 +202,17 @@ object TestUtil extends Matchers {
 
   def loadTumorNormalReads(sc: SparkContext,
                            tumorFile: String,
-                           normalFile: String,
-                           reference: ReferenceGenome): (Seq[MappedRead], Seq[MappedRead]) = {
+                           normalFile: String): (Seq[MappedRead], Seq[MappedRead]) = {
     val filters = Read.InputFilters(mapped = true, nonDuplicate = true, passedVendorQualityChecks = true)
-    (loadReads(sc, tumorFile, filters = filters, reference = reference).mappedReads.collect(),
-      loadReads(sc, normalFile, filters = filters, reference = reference).mappedReads.collect())
+    (
+      loadReads(sc, tumorFile, filters = filters).mappedReads.collect(),
+      loadReads(sc, normalFile, filters = filters).mappedReads.collect()
+    )
   }
 
   def loadReads(sc: SparkContext,
                 filename: String,
                 filters: Read.InputFilters = Read.InputFilters.empty,
-                reference: ReferenceGenome,
                 config: Read.ReadLoadingConfig = Read.ReadLoadingConfig.default): ReadSet = {
     /* grab the path to the SAM file we've stashed in the resources subdirectory */
     val path = testDataPath(filename)
@@ -235,21 +235,25 @@ object TestUtil extends Matchers {
                  filename: String,
                  reference: ReferenceGenome,
                  locus: Long = 0,
-                 contig: Option[String] = None): Pileup = {
+                 maybeContig: Option[String] = None): Pileup = {
     val records =
       TestUtil.loadReads(
         sc,
         filename,
         filters = InputFilters(
-          overlapsLoci = contig.map(
-            contig => LociSet.parse(s"$contig:$locus-${locus + 1}")
+          overlapsLoci = maybeContig.map(
+            contig ⇒ LociSet.parse(s"$contig:$locus-${locus + 1}")
           )
-        ),
-        reference = reference
+        )
       ).mappedReads
     val localReads = records.collect
-    val actualContig = contig.getOrElse(localReads(0).referenceContig)
-    Pileup(localReads, actualContig, locus, referenceContigSequence = reference.getContig(actualContig))
+    val actualContig = maybeContig.getOrElse(localReads(0).referenceContig)
+    Pileup(
+      localReads,
+      actualContig,
+      locus,
+      referenceContigSequence = reference.getContig(actualContig)
+    )
   }
 
   def assertAlmostEqual(a: Double, b: Double, epsilon: Double = 1e-12) {
