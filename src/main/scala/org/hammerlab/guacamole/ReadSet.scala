@@ -30,7 +30,6 @@ import org.hammerlab.guacamole.reads.{ MappedRead, PairedRead, Read }
  * @param sequenceDictionary optional, sequence dictionary giving contigs and lengths
  * @param source string describing where these reads came from. Usually a filename.
  * @param filters filters used when reading these reads.
- * @param token token field for all of the reads in this set.
  * @param contigLengthsFromDictionary if true, the contigLengths property will use the sequence dictionary to get the
  *                                    contig lengths. Otherwise, the reads themselves will be used.
  */
@@ -39,7 +38,6 @@ case class ReadSet(
     sequenceDictionary: Option[SequenceDictionary],
     source: String,
     filters: Read.InputFilters,
-    token: Int,
     contigLengthsFromDictionary: Boolean) {
 
   /** Only mapped reads. */
@@ -86,7 +84,6 @@ object ReadSet {
    * @param sc spark context
    * @param filename bam or sam file to read from
    * @param filters input filters to filter reads while reading.
-   * @param token token field for the reads
    * @param contigLengthsFromDictionary see [[ReadSet]] doc for description
    * @return
    */
@@ -94,7 +91,6 @@ object ReadSet {
     sc: SparkContext,
     filename: String,
     filters: Read.InputFilters = Read.InputFilters.empty,
-    token: Int = 0,
     contigLengthsFromDictionary: Boolean = true,
     config: Read.ReadLoadingConfig = Read.ReadLoadingConfig.default): ReadSet = {
 
@@ -102,7 +98,6 @@ object ReadSet {
       Read.loadReadRDDAndSequenceDictionary(
         filename,
         sc,
-        token = token,
         filters = filters,
         config
       )
@@ -112,7 +107,6 @@ object ReadSet {
       Some(sequenceDictionary),
       filename,
       filters,
-      token,
       contigLengthsFromDictionary
     )
   }

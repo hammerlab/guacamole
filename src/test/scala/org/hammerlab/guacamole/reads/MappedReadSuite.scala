@@ -27,7 +27,6 @@ class MappedReadSuite extends GuacFunSuite with Matchers {
 
   test("mappedread is mapped") {
     val read = MappedRead(
-      5, // token
       "read1",
       "TCGACCCTCGA",
       Array[Byte]((10 to 20).map(_.toByte): _*),
@@ -49,7 +48,6 @@ class MappedReadSuite extends GuacFunSuite with Matchers {
 
   test("mixed collections mapped and unmapped reads") {
     val uread = UnmappedRead(
-      5, // token
       "read1",
       "TCGACCCTCGA",
       Array[Byte]((10 to 20).map(_.toByte): _*),
@@ -60,7 +58,6 @@ class MappedReadSuite extends GuacFunSuite with Matchers {
     )
 
     val mread = MappedRead(
-      5, // token
       "read1",
       "TCGACCCTCGA",
       Array[Byte]((10 to 20).map(_.toByte): _*),

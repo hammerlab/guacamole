@@ -15,7 +15,6 @@ case class PairedRead[+T <: Read](read: T,
                                   mateAlignmentProperties: Option[MateAlignmentProperties]) extends Read {
 
   val isMateMapped = mateAlignmentProperties.isDefined
-  override val token: Int = read.token
   override val name: String = read.name
   override val failedVendorQualityChecks: Boolean = read.failedVendorQualityChecks
   override val sampleName: String = read.sampleName
