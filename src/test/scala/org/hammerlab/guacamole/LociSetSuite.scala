@@ -70,6 +70,14 @@ class LociSetSuite extends GuacFunSuite with Matchers {
     set.onContig("chr21").iterator.toSeq should equal(100 until 200)
   }
 
+  test("single loci parsing") {
+    val set = LociSet.parse("chr1:10000").result
+    set.count should be(1)
+    set.onContig("chr1").contains( 9999) should be(false)
+    set.onContig("chr1").contains(10000) should be(true)
+    set.onContig("chr1").contains(10001) should be(false)
+  }
+
   sparkTest("loci set invariants") {
     val sets = List(
       "",
@@ -152,20 +160,32 @@ class LociSetSuite extends GuacFunSuite with Matchers {
     result should equal(sets.map(_.onContig("20").toString).toSeq)
   }
 
-  sparkTest("loci set union") {
+  test("loci set union") {
     val set1 = LociSet.parse("chr1:40-43").result
     val set2 = LociSet.parse("chr1:40-42").result
     set1.union(set2).toString should equal("chr1:40-43")
   }
 
-  sparkTest("loci set parsing with contig lengths") {
+  test("loci set parsing with contig lengths") {
     LociSet.parse(
-      "chr1,chr2,17,chr2:3-5,chr20:10-20")
-      .result(Map("chr1" -> 10L, "chr2" -> 20L, "17" -> 12L, "chr20" -> 5000L)).toString should equal(
-        "17:0-12,chr1:0-10,chr2:0-20,chr20:10-20")
+      "chr1,chr2,17,chr2:3-5,chr20:10-20"
+    )
+    .result(
+      "chr1" → 10L,
+      "chr2" → 20L,
+      "17" → 12L,
+      "chr20" → 5000L
+    )
+    .toString should equal(
+      "17:0-12,chr1:0-10,chr2:0-20,chr20:10-20"
+    )
   }
 
-  sparkTest("loci set single contig iterator basic") {
+  test("parse half-open interval") {
+    LociSet.parse("chr1:10000-").result("chr1" → 20000L).toString should be("chr1:10000-20000")
+  }
+
+  test("loci set single contig iterator basic") {
     val set = LociSet.parse("chr1:20-25,chr1:15-17,chr1:40-43,chr1:40-42,chr1:5-5,chr2:5-6,chr2:6-7,chr2:2-4").result
     set.onContig("chr1").iterator.toSeq should equal(Seq(15, 16, 20, 21, 22, 23, 24, 40, 41, 42))
     set.onContig("chr2").iterator.toSeq should equal(Seq(2, 3, 5, 6))
@@ -191,7 +211,7 @@ class LociSetSuite extends GuacFunSuite with Matchers {
     iter1.hasNext should be(false)
   }
 
-  sparkTest("loci set single contig iterator: test that skipTo implemented efficiently.") {
+  test("loci set single contig iterator: test that skipTo implemented efficiently.") {
     val set = LociSet.parse("chr1:2-3,chr1:10-15,chr1:100-100000000000").result
 
     val iter1 = set.onContig("chr1").iterator
@@ -216,16 +236,12 @@ class LociSetSuite extends GuacFunSuite with Matchers {
     iter3.hasNext() should be(false)
   }
 
-  // This test currently fails, because we do not provide java serialization for LociSet. Instead of 
-  // including LociSet instances in closures, we are currently getting around it by broadcasting
-  // these objects, which will use Kryo serialization (which we implement for LociSet). This approach
-  // may actually be more efficient anyway.
-  /*
+  // We do not provide java serialization for LociSet, instead broadcasting it (which uses Kryo serialization).
   sparkTest("serialization: a closure that includes a LociSet") {
     val set = LociSet.parse("chr21:100-200,chr20:0-10,chr20:8-15,chr20:100-120,empty:10-10").result
+    val setBC = sc.broadcast(set)
     val rdd = sc.parallelize(0L until 1000L)
-    val result = rdd.filter(i => set.onContig("chr21").contains(i)).collect
+    val result = rdd.filter(i => setBC.value.onContig("chr21").contains(i)).collect
     result should equal(100L until 200)
   }
-  */
 }

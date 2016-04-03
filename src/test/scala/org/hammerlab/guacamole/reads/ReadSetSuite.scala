@@ -52,8 +52,7 @@ class ReadSetSuite extends GuacFunSuite with Matchers {
             sc,
             paths.head,
             filter,
-            config = configs.head,
-            reference = chr22Fasta
+            config = configs.head
           ).reads.collect
 
         for {
@@ -68,8 +67,7 @@ class ReadSetSuite extends GuacFunSuite with Matchers {
                 sc,
                 path,
                 filter,
-                config = config,
-                reference = chr22Fasta
+                config = config
               ).reads.collect
 
             assert(
@@ -101,30 +99,29 @@ class ReadSetSuite extends GuacFunSuite with Matchers {
       })
 
     Seq(
-      InputFilters(overlapsLoci = Some(LociSet.parse("19:147033-147034")))
+      InputFilters(overlapsLoci = Some(LociSet.parse("19:147033")))
     ).foreach(filter => {
         check(Seq("synth1.normal.100k-200k.withmd.bam", "synth1.normal.100k-200k.withmd.sam"), filter)
       })
   }
 
   sparkTest("load and test filters") {
-    val allReads = TestUtil.loadReads(sc, "mdtagissue.sam", reference = chr22Fasta)
+    val allReads = TestUtil.loadReads(sc, "mdtagissue.sam")
     allReads.reads.count() should be(8)
 
-    val mdTagReads = TestUtil.loadReads(sc, "mdtagissue.sam", Read.InputFilters(mapped = true), reference = chr22Fasta)
+    val mdTagReads = TestUtil.loadReads(sc, "mdtagissue.sam", Read.InputFilters(mapped = true))
     mdTagReads.reads.count() should be(5)
 
     val nonDuplicateReads = TestUtil.loadReads(
       sc,
       "mdtagissue.sam",
-      Read.InputFilters(mapped = true, nonDuplicate = true),
-      reference = chr22Fasta)
+      Read.InputFilters(mapped = true, nonDuplicate = true)
+    )
     nonDuplicateReads.reads.count() should be(3)
   }
 
   sparkTest("load RNA reads") {
-    val chr17Reference = TestUtil.makeReference(sc, Seq(("chr17", 0, "")), 412449360)
-    val readSet = TestUtil.loadReads(sc, "rna_chr17_41244936.sam", reference = chr17Reference)
+    val readSet = TestUtil.loadReads(sc, "rna_chr17_41244936.sam")
     readSet.reads.count should be(23)
   }
 
@@ -152,14 +149,14 @@ class ReadSetSuite extends GuacFunSuite with Matchers {
       adamOut,
       sc,
       1,
-      Read.InputFilters(mapped = true, nonDuplicate = true))
+      Read.InputFilters(mapped = true, nonDuplicate = true)
+    )
     filteredReads.count() should be(3)
     filteredReads.collect().forall(_.token == 1) should be(true)
   }
 
   sparkTest("load and serialize / deserialize reads") {
-    val chr17Reference = TestUtil.makeReference(sc, Seq(("chr17", 0, "")), 412449360)
-    val reads = TestUtil.loadReads(sc, "mdtagissue.sam", Read.InputFilters(mapped = true), reference = chr17Reference).mappedReads.collect()
+    val reads = TestUtil.loadReads(sc, "mdtagissue.sam", Read.InputFilters(mapped = true)).mappedReads.collect()
     val serializedReads = reads.map(TestUtil.serialize)
     val deserializedReads: Seq[MappedRead] = serializedReads.map(TestUtil.deserialize[MappedRead](_))
     for ((read, deserialized) <- reads.zip(deserializedReads)) {
