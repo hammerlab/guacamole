@@ -38,7 +38,7 @@ object GeneratePartialFasta extends Logging {
 
   def main(rawArgs: Array[String]): Unit = {
     val args = Args4j[Arguments](rawArgs)
-    val sc = Common.createSparkContext(appName = Some("generate-partial-fasta"))
+    val sc = Common.createSparkContext(appName = "generate-partial-fasta")
 
     val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
     val lociBuilder = Common.lociFromArguments(args, default = "none")
@@ -48,15 +48,16 @@ object GeneratePartialFasta extends Logging {
         fileAndIndex._1,
         InputFilters.empty,
         token = fileAndIndex._2,
-        reference = reference,
-        config = Common.Arguments.ReadLoadingConfigArgs.fromArguments(args)))
+        config = Common.Arguments.ReadLoadingConfigArgs.fromArguments(args)
+      )
+    )
 
     val reads = sc.union(readSets.map(_.mappedReads))
     val contigLengths = readSets.head.contigLengths
 
     val regions = reads.map(read => (read.referenceContig, read.start, read.end))
     regions.collect.foreach(triple => {
-      lociBuilder.put(triple._1, triple._2, Some(triple._3))
+      lociBuilder.put(triple._1, triple._2, triple._3)
     })
 
     val loci = lociBuilder.result

@@ -25,8 +25,8 @@ class SomaticJointCallerSuite extends GuacFunSuite with Matchers {
 
   sparkTest("call a somatic variant") {
     val inputs = InputCollection(cancerWGS1Bams)
-    val loci = LociSet.parse("chr12:65857040-65857041")
-    val readSets = SomaticJoint.inputsToReadSets(sc, inputs, loci, hg19PartialReference)
+    val loci = LociSet.parse("chr12:65857040")
+    val readSets = SomaticJoint.inputsToReadSets(sc, inputs, loci)
     val calls = SomaticJoint.makeCalls(
       sc, inputs, readSets, Parameters.defaults, hg19PartialReference, loci.result, loci.result).collect
 
@@ -38,7 +38,7 @@ class SomaticJointCallerSuite extends GuacFunSuite with Matchers {
   sparkTest("call a somatic deletion") {
     val inputs = InputCollection(cancerWGS1Bams)
     val loci = LociSet.parse("chr5:82649006-82649009")
-    val readSets = SomaticJoint.inputsToReadSets(sc, inputs, loci, hg19PartialReference)
+    val readSets = SomaticJoint.inputsToReadSets(sc, inputs, loci)
     val calls = SomaticJoint.makeCalls(
       sc,
       inputs,
@@ -58,7 +58,7 @@ class SomaticJointCallerSuite extends GuacFunSuite with Matchers {
   sparkTest("call germline variants") {
     val inputs = InputCollection(cancerWGS1Bams, tissueTypes = Vector("normal", "normal", "normal"))
     val loci = LociSet.parse("chr1,chr2,chr3")
-    val readSets = SomaticJoint.inputsToReadSets(sc, inputs, loci, hg19PartialReference)
+    val readSets = SomaticJoint.inputsToReadSets(sc, inputs, loci)
     val calls = SomaticJoint.makeCalls(
       sc,
       inputs,
@@ -78,7 +78,7 @@ class SomaticJointCallerSuite extends GuacFunSuite with Matchers {
   sparkTest("don't call variants with N as the reference base") {
     val inputs = InputCollection(cancerWGS1Bams)
     val loci = LociSet.parse("chr12:65857030-65857080")
-    val readSets = SomaticJoint.inputsToReadSets(sc, inputs, loci, hg19PartialReference)
+    val readSets = SomaticJoint.inputsToReadSets(sc, inputs, loci)
     val emptyPartialReference = ReferenceBroadcast(
       Map("chr12" -> MapBackedReferenceSequence(500000000, sc.broadcast(Map.empty))))
     val calls = SomaticJoint.makeCalls(
@@ -95,7 +95,7 @@ class SomaticJointCallerSuite extends GuacFunSuite with Matchers {
     val callsWithRNA = SomaticJoint.makeCalls(
       sc,
       inputsWithRNA,
-      SomaticJoint.inputsToReadSets(sc, inputsWithRNA, loci, b37Chromosome22Reference),
+      SomaticJoint.inputsToReadSets(sc, inputsWithRNA, loci),
       parameters,
       b37Chromosome22Reference,
       loci.result).collect.filter(_.bestAllele.isCall)
@@ -104,12 +104,12 @@ class SomaticJointCallerSuite extends GuacFunSuite with Matchers {
     val callsWithoutRNA = SomaticJoint.makeCalls(
       sc,
       inputsWithoutRNA,
-      SomaticJoint.inputsToReadSets(sc, inputsWithoutRNA, loci, b37Chromosome22Reference),
+      SomaticJoint.inputsToReadSets(sc, inputsWithoutRNA, loci),
       parameters,
       b37Chromosome22Reference,
       loci.result).collect.filter(_.bestAllele.isCall)
 
-    Map("with rna" -> callsWithRNA, "without rna" -> callsWithoutRNA).foreach({
+    Map("with rna" -> callsWithRNA, "without rna" -> callsWithoutRNA).foreach {
       case (description, calls) => {
         withClue("germline variant %s".format(description)) {
           // There should be a germline homozygous call at 22:46931077 in one based, which is 22:46931076 in zero based.
@@ -121,7 +121,7 @@ class SomaticJointCallerSuite extends GuacFunSuite with Matchers {
           filtered46931076.head.bestAllele.germlineAlleles should equal("C", "C")
         }
       }
-    })
+    }
 
     // RNA should enable a call G->A call at 22:46931062 in one based, which is 22:46931061 in zero based.
     callsWithoutRNA.exists(call => call.start == 46931061 && call.end == 46931062) should be(false)

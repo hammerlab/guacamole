@@ -55,11 +55,14 @@ object GermlineStandard {
       val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
       val loci = Common.lociFromArguments(args)
       val readSet = Common.loadReadsFromArguments(
-        args, sc, Read.InputFilters(
+        args,
+        sc,
+        Read.InputFilters(
           overlapsLoci = Some(loci),
           mapped = true,
-          nonDuplicate = true),
-        reference = reference)
+          nonDuplicate = true
+        )
+      )
 
       readSet.mappedReads.persist()
       Common.progress(
