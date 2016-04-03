@@ -102,17 +102,15 @@ class ReadSetSuite extends GuacFunSuite with Matchers {
     }
     new AlignmentRecordRDDFunctions(adamRecords.rdd).saveAsParquet(args, adamRecords.sequences, adamRecords.recordGroups)
 
-    val (allReads, _) = Read.loadReadRDDAndSequenceDictionaryFromADAM(adamOut, sc, token = 0)
+    val (allReads, _) = Read.loadReadRDDAndSequenceDictionaryFromADAM(adamOut, sc)
     allReads.count() should be(8)
 
     val (filteredReads, _) = Read.loadReadRDDAndSequenceDictionary(
       adamOut,
       sc,
-      1,
       Read.InputFilters(mapped = true, nonDuplicate = true)
     )
     filteredReads.count() should be(3)
-    filteredReads.collect().forall(_.token == 1) should be(true)
   }
 
   sparkTest("load and serialize / deserialize reads") {
@@ -120,7 +118,6 @@ class ReadSetSuite extends GuacFunSuite with Matchers {
     val serializedReads = reads.map(TestUtil.serialize)
     val deserializedReads: Seq[MappedRead] = serializedReads.map(TestUtil.deserialize[MappedRead](_))
     for ((read, deserialized) <- reads.zip(deserializedReads)) {
-      deserialized.token should equal(read.token)
       deserialized.referenceContig should equal(read.referenceContig)
       deserialized.alignmentQuality should equal(read.alignmentQuality)
       deserialized.start should equal(read.start)
