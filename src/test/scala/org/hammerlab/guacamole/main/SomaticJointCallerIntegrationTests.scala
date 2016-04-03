@@ -1,6 +1,7 @@
-package org.hammerlab.guacamole.commands.jointcaller
+package org.hammerlab.guacamole.main
 
 import org.hammerlab.guacamole.VariantComparisonUtils.{compareToCSV, compareToVCF, csvRecords}
+import org.hammerlab.guacamole.commands.jointcaller.SomaticJoint
 import org.hammerlab.guacamole.util.TestUtil
 import org.hammerlab.guacamole.{CancerWGSTestUtils, Common, LociSet, NA12878TestUtils}
 
