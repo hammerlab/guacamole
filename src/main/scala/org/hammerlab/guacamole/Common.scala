@@ -224,10 +224,10 @@ object Common extends Logging {
    * @param filePath path to file containing loci. If it ends in '.vcf' then it is read as a VCF and the variant sites
    *                 are the loci. If it ends in '.loci' or '.txt' then it should be a file containing loci as
    *                 "chrX:5-10,chr12-10-20", etc. Whitespace is ignored.
-   * @param readSet readset to use for contig names
+   * @param contigLengths contig lengths, by name
    * @return a LociSet
    */
-  def lociFromFile(filePath: String, readSet: ReadSet): LociSet = {
+  def lociFromFile(filePath: String, contigLengths: Map[String, Long]): LociSet = {
     if (filePath.endsWith(".vcf")) {
       val builder = LociSet.newBuilder
       val reader = new VCFFileReader(new File(filePath), false)
@@ -241,7 +241,8 @@ object Common extends Logging {
       val filesystem = FileSystem.get(new Configuration())
       val path = new Path(filePath)
       LociSet.parse(
-        IOUtils.toString(new InputStreamReader(filesystem.open(path)))).result(readSet.contigLengths)
+        IOUtils.toString(new InputStreamReader(filesystem.open(path)))
+      ).result(contigLengths)
     } else {
       throw new IllegalArgumentException(
         "Couldn't guess format for file: %s. Expected file extensions: '.loci' or '.txt' for loci string format; '.vcf' for VCFs.".format(filePath))
@@ -255,20 +256,20 @@ object Common extends Logging {
    *
    * @param loci loci to load as a string
    * @param lociFromFilePath path to file containing loci to load
-   * @param readSet readset to use for contig names
+   * @param contigLengths contig lengths, by name
    * @return a LociSet
    */
-  def loci(loci: String, lociFromFilePath: String, readSet: ReadSet): LociSet = {
+  def loci(loci: String, lociFromFilePath: String, contigLengths: Map[String, Long]): LociSet = {
     if (loci.nonEmpty && lociFromFilePath.nonEmpty) {
       throw new IllegalArgumentException("Specify at most one of the 'loci' and 'loci-from-file' arguments")
     }
     if (loci.nonEmpty) {
-      LociSet.parse(loci).result(Some(readSet.contigLengths))
+      LociSet.parse(loci).result(Some(contigLengths))
     } else if (lociFromFilePath.nonEmpty) {
-      lociFromFile(lociFromFilePath, readSet)
+      lociFromFile(lociFromFilePath, contigLengths)
     } else {
       // Default is "all"
-      LociSet.parse("all").result(Some(readSet.contigLengths))
+      LociSet.parse("all").result(Some(contigLengths))
     }
   }
 
