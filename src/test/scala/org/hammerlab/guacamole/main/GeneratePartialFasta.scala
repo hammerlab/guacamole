@@ -1,13 +1,13 @@
-package org.hammerlab.guacamole.other_entrypoints
+package org.hammerlab.guacamole.main
 
-import java.io.{ BufferedWriter, File, FileWriter }
+import java.io.{BufferedWriter, File, FileWriter}
 
 import org.apache.spark.Logging
 import org.bdgenomics.utils.cli.Args4j
 import org.hammerlab.guacamole._
 import org.hammerlab.guacamole.reads.Read.InputFilters
 import org.hammerlab.guacamole.reference.{ ContigNotFound, ReferenceGenome }
-import org.kohsuke.args4j.{ Argument, Option => Args4jOption }
+import org.kohsuke.args4j.{Argument, Option => Args4jOption}
 
 /**
  * This command is used to generate a "partial fasta" which we use in our tests of variant callers. It should be run
