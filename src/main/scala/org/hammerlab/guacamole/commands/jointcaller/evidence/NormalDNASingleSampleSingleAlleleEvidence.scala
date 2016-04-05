@@ -1,7 +1,9 @@
 package org.hammerlab.guacamole.commands.jointcaller.evidence
 
 import org.hammerlab.guacamole.commands.jointcaller._
+import org.hammerlab.guacamole.commands.jointcaller.annotation.SingleSampleSingleAlleleEvidenceAnnotation.{NamedAnnotations, emptyAnnotations}
 import org.hammerlab.guacamole.commands.jointcaller.pileup_processing.PileupStats
+import org.hammerlab.guacamole.commands.jointcaller.pileup_processing.PileupStats.AlleleMixture
 
 /**
  * Summary of evidence for a particular germline allele in a single normal DNA sample.
@@ -13,7 +15,9 @@ import org.hammerlab.guacamole.commands.jointcaller.pileup_processing.PileupStat
 case class NormalDNASingleSampleSingleAlleleEvidence(allele: AlleleAtLocus,
                                                      allelicDepths: Map[String, Int],
                                                      logLikelihoods: Map[(String, String), Double],
-                                                     annotations: NamedAnnotations = emptyAnnotations) extends SingleSampleSingleAlleleEvidence {
+                                                     annotations: NamedAnnotations = emptyAnnotations)
+  extends SingleSampleSingleAlleleEvidence
+{
 
   /** Total depth of all reads contributing an allele. */
   def depth(): Int = allelicDepths.values.sum

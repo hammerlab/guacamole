@@ -1,7 +1,9 @@
 package org.hammerlab.guacamole.commands.jointcaller.evidence
 
 import org.hammerlab.guacamole.commands.jointcaller._
+import org.hammerlab.guacamole.commands.jointcaller.annotation.SingleSampleSingleAlleleEvidenceAnnotation.{ NamedAnnotations, emptyAnnotations }
 import org.hammerlab.guacamole.commands.jointcaller.pileup_processing.PileupStats
+import org.hammerlab.guacamole.commands.jointcaller.pileup_processing.PileupStats.AlleleMixture
 
 /**
  *

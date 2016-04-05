@@ -3,12 +3,14 @@ package org.hammerlab.guacamole.commands.jointcaller.evidence
 import org.hammerlab.guacamole.DistributedUtil._
 import org.hammerlab.guacamole._
 import org.hammerlab.guacamole.commands.jointcaller.annotation.MultiSampleMultiAlleleEvidenceAnnotation
+import org.hammerlab.guacamole.commands.jointcaller.annotation.MultiSampleMultiAlleleEvidenceAnnotation.NamedAnnotations
 import org.hammerlab.guacamole.commands.jointcaller.pileup_processing.{MultiplePileupStats, PileupStats}
+import org.hammerlab.guacamole.commands.jointcaller.{AlleleAtLocus, InputCollection, Parameters}
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 
 /**
- * A grouping of AlleleEvidenceAcrossSamples instances at the same locus.
+ * A grouping of AlleleEvidenceAcrossSamples instances (one for each allele) at the same site.
  *
  * Currently not much is done here, and we just write out VCF entries for all the called alleles separately. Later
  * we may want to use this as a place to decide which if any of a number of alleles called at the same site should be
