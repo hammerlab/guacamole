@@ -4,8 +4,8 @@ import java.util
 
 import htsjdk.variant.variantcontext.GenotypeBuilder
 import htsjdk.variant.vcf.{VCFFilterHeaderLine, VCFFormatHeaderLine, VCFHeaderLine, VCFHeaderLineType}
-import org.hammerlab.guacamole.commands.jointcaller.evidence.SingleSampleSingleAlleleEvidence
 import org.hammerlab.guacamole.commands.jointcaller.Parameters
+import org.hammerlab.guacamole.commands.jointcaller.evidence.SingleSampleSingleAlleleEvidence
 import org.hammerlab.guacamole.commands.jointcaller.pileup_processing.PileupStats
 import org.hammerlab.guacamole.filters.FishersExactTest
 

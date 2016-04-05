@@ -3,16 +3,18 @@ package org.hammerlab.guacamole.commands.jointcaller.annotation
 import java.util
 
 import htsjdk.variant.vcf.{VCFFilterHeaderLine, VCFHeaderLine}
-import org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleMultiAlleleEvidence
 import org.hammerlab.guacamole.commands.jointcaller.Parameters
+import org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleMultiAlleleEvidence
 
 /**
- * Annotation for multiple alleles at a single site.
+ * Annotation for multiple alleles across multiple samples at a single site.
  *
  * See AlleleEvidenceAcrossSamplesAnnotation for more information on annotaitons.
  *
  */
-trait MultiSampleMultiAlleleEvidenceAnnotation extends MultiSampleSingleAlleleEvidenceAnnotation {}
+trait MultiSampleMultiAlleleEvidenceAnnotation extends MultiSampleSingleAlleleEvidenceAnnotation {
+
+}
 
 object MultiSampleMultiAlleleEvidenceAnnotation {
   type NamedAnnotations = Map[String, MultiSampleMultiAlleleEvidenceAnnotation]

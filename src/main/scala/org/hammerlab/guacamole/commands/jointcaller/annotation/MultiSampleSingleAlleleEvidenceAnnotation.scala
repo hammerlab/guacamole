@@ -4,12 +4,12 @@ import java.util
 
 import htsjdk.variant.variantcontext.VariantContextBuilder
 import htsjdk.variant.vcf.{VCFFilterHeaderLine, VCFHeaderLine}
-import org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleSingleAlleleEvidence
 import org.hammerlab.guacamole.commands.jointcaller.Parameters
+import org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleSingleAlleleEvidence
 import org.hammerlab.guacamole.commands.jointcaller.pileup_processing.MultiplePileupStats
 
 /**
- * Annotation for multiple samples at a single allele and site.
+ * Annotation for multiple samples at a single allele and a single site.
  *
  * We use "annotations" to compute extra statistics about a call that can get put in the VCF. This enables us to
  * break variant calling into a cheaper operation where we compute likelihoods to see if a call can be made, and then

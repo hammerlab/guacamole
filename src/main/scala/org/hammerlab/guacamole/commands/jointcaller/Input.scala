@@ -1,6 +1,6 @@
 package org.hammerlab.guacamole.commands.jointcaller
 
-import org.hammerlab.guacamole.commands.jointcaller.Input.{ Analyte, TissueType }
+import org.hammerlab.guacamole.commands.jointcaller.Input.{Analyte, TissueType}
 
 /**
  * An input BAM to the joint variant caller.
