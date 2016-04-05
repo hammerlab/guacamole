@@ -4,8 +4,8 @@ import org.hammerlab.guacamole.DistributedUtil._
 import org.hammerlab.guacamole._
 import org.hammerlab.guacamole.commands.jointcaller.annotation.MultiSampleMultiAlleleAnnotation
 import org.hammerlab.guacamole.commands.jointcaller.annotation.MultiSampleMultiAlleleAnnotation.NamedAnnotations
-import org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.{MultiplePileupStats, PileupStats}
-import org.hammerlab.guacamole.commands.jointcaller.{AlleleAtLocus, InputCollection, Parameters}
+import org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.{ MultiplePileupStats, PileupStats }
+import org.hammerlab.guacamole.commands.jointcaller.{ AlleleAtLocus, InputCollection, Parameters }
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 
@@ -99,8 +99,11 @@ object MultiSampleMultiAlleleEvidence {
       return None
     }
 
-    // ADD COMMENTS HERE
-
+    // Collect possible alternate alleles to consider. These are any consecutive non-matching bases in the reads
+    // satisfying fairly permissive evidence criteria (typically, >=2 reads supporting a variant).
+    // This will return an empty seq if there are no alternate alleles sequenced. If we are force calling this site,
+    // we require that we always get back at least one allele (which will be N if there are no alternate alleles
+    // at all).
     val possibleAlleles = AlleleAtLocus.variantAlleles(
       (inputs.normalDNA ++ inputs.tumorDNA).map(input => filteredPileups(input.index)),
       anyAlleleMinSupportingReads = parameters.anyAlleleMinSupportingReads,
@@ -109,11 +112,15 @@ object MultiSampleMultiAlleleEvidence {
       atLeastOneAllele = forceCall, // if force calling this site, always get at least one allele
       onlyStandardBases = true)
 
+    // If we have no possible alternate alleles, don't call anything at this site.
     if (possibleAlleles.isEmpty) {
       assert(!forceCall)
       return None
     }
 
+    // We need a MultiplePileupStats instance for each allele. Since PileupStats (and MultiplePileupStats) don't depend
+    // on the actual alternate allele, but only its start and end positions, as an optimization we make one
+    // MultiplePileupStats per allele (start, end) position.
     val multiplePileupStatsPerPossibleAlleleLocus = possibleAlleles
       .map(allele => (allele.start.toInt, allele.end.toInt))
       .distinct
@@ -123,6 +130,7 @@ object MultiSampleMultiAlleleEvidence {
         pair -> MultiplePileupStats(inputs, stats)
       }).toMap
 
+    // Create a MultiSampleSingleAlleleEvidence for each alternate allele.
     val evidences = possibleAlleles.map(allele => {
       MultiSampleSingleAlleleEvidence(
         parameters,
@@ -130,6 +138,9 @@ object MultiSampleMultiAlleleEvidence {
         multiplePileupStatsPerPossibleAlleleLocus((allele.start.toInt, allele.end.toInt)))
     })
 
+    // Unless we're force calling, we want to skip this call if no alleles have a likelihood favoring a variant call.
+    // We also want to skip this call if we're only calling somatic variants and any of the alleles considered generate
+    // a germline call.
     if (!forceCall) {
       if (!evidences.exists(_.isCall)) {
         return None
@@ -139,22 +150,30 @@ object MultiSampleMultiAlleleEvidence {
       }
     }
 
+    // If we've made it to this point, then it's now time to run annotations (e.g. filters).
+    // First, annotate each individual MultiSampleSingleAlleleEvidence instance.
     val annotatedEvidences = evidences.map(evidence => {
       val allele = evidence.allele
       evidence.computeAllAnnotations(multiplePileupStatsPerPossibleAlleleLocus((allele.start.toInt, allele.end.toInt)))
     })
+
+    // Create a MultiSampleMultiAlleleEvidence to group all the alleles and their evidence.
     val calls = MultiSampleMultiAlleleEvidence(
       referenceContig = annotatedEvidences.head.allele.referenceContig,
       start = annotatedEvidences.head.allele.start,
       alleleEvidences = annotatedEvidences)
 
+    // Now annotate it.
     val annotatedCallsAtSite = calls.copy(annotations = MultiSampleMultiAlleleAnnotation.makeAnnotations(calls, parameters))
 
+    // If we are force calling this site or are including filtered calls, then we want to return all alleles resulting
+    // in calls. Otherwise, we return only the alleles that pass all the filters.
     val passingCalls = if (forceCall || includeFiltered)
       annotatedCallsAtSite
     else
       annotatedCallsAtSite.onlyPassingFilters()
 
+    // If we have no calls at this point, we aren't calling this site, so return None. Otherwise return the calls.
     if (passingCalls.alleleEvidences.isEmpty)
       None
     else
