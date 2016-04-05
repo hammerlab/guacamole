@@ -7,7 +7,7 @@ import htsjdk.variant.variantcontext._
 import htsjdk.variant.variantcontext.writer.VariantContextWriterBuilder
 import htsjdk.variant.vcf._
 import org.hammerlab.guacamole.commands.jointcaller.Input.{Analyte, TissueType}
-import org.hammerlab.guacamole.commands.jointcaller.annotation.{MultiSampleSingleAlleleEvidenceAnnotation, SingleSampleSingleAlleleEvidenceAnnotation}
+import org.hammerlab.guacamole.commands.jointcaller.annotation.{MultiSampleSingleAlleleAnnotation, SingleSampleSingleAlleleAnnotation}
 import org.hammerlab.guacamole.commands.jointcaller.evidence._
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 
@@ -56,8 +56,8 @@ object VCFOutput {
     headerLines.add(new VCFFormatHeaderLine("ADP", 1, VCFHeaderLineType.String, "allelic depth as num postiive strand / num total"))
     headerLines.add(new VCFFormatHeaderLine("FF", VCFHeaderLineCount.UNBOUNDED, VCFHeaderLineType.String, "failing filters for this sample"))
 
-    SingleSampleSingleAlleleEvidenceAnnotation.addVCFHeaders(headerLines)
-    MultiSampleSingleAlleleEvidenceAnnotation.addVCFHeaders(headerLines)
+    SingleSampleSingleAlleleAnnotation.addVCFHeaders(headerLines)
+    MultiSampleSingleAlleleAnnotation.addVCFHeaders(headerLines)
 
     // INFO
     headerLines.add(new VCFInfoHeaderLine("TRIGGER", 1, VCFHeaderLineType.String,

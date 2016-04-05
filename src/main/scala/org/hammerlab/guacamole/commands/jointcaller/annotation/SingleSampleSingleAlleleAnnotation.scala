@@ -6,7 +6,7 @@ import htsjdk.variant.variantcontext.GenotypeBuilder
 import htsjdk.variant.vcf.{VCFFilterHeaderLine, VCFFormatHeaderLine, VCFHeaderLine, VCFHeaderLineType}
 import org.hammerlab.guacamole.commands.jointcaller.Parameters
 import org.hammerlab.guacamole.commands.jointcaller.evidence.SingleSampleSingleAlleleEvidence
-import org.hammerlab.guacamole.commands.jointcaller.pileup_processing.PileupStats
+import org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.PileupStats
 import org.hammerlab.guacamole.filters.FishersExactTest
 
 /**
@@ -14,7 +14,7 @@ import org.hammerlab.guacamole.filters.FishersExactTest
  *
  * See AlleleEvidenceAcrossSamplesAnnotation for more info on annotations.
  */
-trait SingleSampleSingleAlleleEvidenceAnnotation {
+trait SingleSampleSingleAlleleAnnotation {
   val parameters: Parameters
 
   /** is this annotation a failing filter? */
@@ -24,9 +24,9 @@ trait SingleSampleSingleAlleleEvidenceAnnotation {
   def addInfoToVCF(builder: GenotypeBuilder): Unit
 }
 
-object SingleSampleSingleAlleleEvidenceAnnotation {
-  type NamedAnnotations = Map[String, SingleSampleSingleAlleleEvidenceAnnotation]
-  val emptyAnnotations = Map[String, SingleSampleSingleAlleleEvidenceAnnotation]()
+object SingleSampleSingleAlleleAnnotation {
+  type NamedAnnotations = Map[String, SingleSampleSingleAlleleAnnotation]
+  val emptyAnnotations = Map[String, SingleSampleSingleAlleleAnnotation]()
 
   val availableAnnotations: Seq[Metadata] = Seq(StrandBias)
 
@@ -34,7 +34,7 @@ object SingleSampleSingleAlleleEvidenceAnnotation {
   trait Metadata {
     val name: String
     def addVCFHeaders(headerLines: util.Set[VCFHeaderLine]): Unit
-    def apply(stats: PileupStats, evidence: SingleSampleSingleAlleleEvidence, parameters: Parameters): SingleSampleSingleAlleleEvidenceAnnotation
+    def apply(stats: PileupStats, evidence: SingleSampleSingleAlleleEvidence, parameters: Parameters): SingleSampleSingleAlleleAnnotation
   }
 
   /**
@@ -65,7 +65,7 @@ object SingleSampleSingleAlleleEvidenceAnnotation {
       variantForward: Int,
       variantReverse: Int,
       totalForward: Int,
-      totalReverse: Int) extends SingleSampleSingleAlleleEvidenceAnnotation {
+      totalReverse: Int) extends SingleSampleSingleAlleleAnnotation {
 
     val phredValue = 10.0 * FishersExactTest.asLog10(totalForward, totalReverse, variantForward, variantReverse)
 

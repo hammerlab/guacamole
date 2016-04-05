@@ -1,4 +1,4 @@
-package org.hammerlab.guacamole.commands.jointcaller.pileup_processing
+package org.hammerlab.guacamole.commands.jointcaller.pileup_summarization
 
 import org.hammerlab.guacamole.DistributedUtil.PerSample
 import org.hammerlab.guacamole.commands.jointcaller.InputCollection

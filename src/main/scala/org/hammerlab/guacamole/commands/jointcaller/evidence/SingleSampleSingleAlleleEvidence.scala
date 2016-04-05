@@ -1,7 +1,7 @@
 package org.hammerlab.guacamole.commands.jointcaller.evidence
 
 import org.hammerlab.guacamole.commands.jointcaller.AlleleAtLocus
-import org.hammerlab.guacamole.commands.jointcaller.annotation.SingleSampleSingleAlleleEvidenceAnnotation.NamedAnnotations
+import org.hammerlab.guacamole.commands.jointcaller.annotation.SingleSampleSingleAlleleAnnotation.NamedAnnotations
 
 /**
  * Summary of evidence for an allele at a site in a single sample. This trait is implemented by tissue- and

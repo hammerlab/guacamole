@@ -2,9 +2,9 @@ package org.hammerlab.guacamole.commands.jointcaller.evidence
 
 import org.hammerlab.guacamole.DistributedUtil._
 import org.hammerlab.guacamole._
-import org.hammerlab.guacamole.commands.jointcaller.annotation.MultiSampleMultiAlleleEvidenceAnnotation
-import org.hammerlab.guacamole.commands.jointcaller.annotation.MultiSampleMultiAlleleEvidenceAnnotation.NamedAnnotations
-import org.hammerlab.guacamole.commands.jointcaller.pileup_processing.{MultiplePileupStats, PileupStats}
+import org.hammerlab.guacamole.commands.jointcaller.annotation.MultiSampleMultiAlleleAnnotation
+import org.hammerlab.guacamole.commands.jointcaller.annotation.MultiSampleMultiAlleleAnnotation.NamedAnnotations
+import org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.{MultiplePileupStats, PileupStats}
 import org.hammerlab.guacamole.commands.jointcaller.{AlleleAtLocus, InputCollection, Parameters}
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
@@ -20,7 +20,7 @@ import org.hammerlab.guacamole.reference.ReferenceBroadcast
 case class MultiSampleMultiAlleleEvidence(referenceContig: String,
                                           start: Long,
                                           alleleEvidences: Seq[MultiSampleSingleAlleleEvidence],
-                                          annotations: NamedAnnotations = MultiSampleMultiAlleleEvidenceAnnotation.emptyAnnotations)
+                                          annotations: NamedAnnotations = MultiSampleMultiAlleleAnnotation.emptyAnnotations)
     extends HasReferenceRegion {
 
   assume(alleleEvidences.forall(_.allele.referenceContig == referenceContig))
@@ -148,7 +148,7 @@ object MultiSampleMultiAlleleEvidence {
       start = annotatedEvidences.head.allele.start,
       alleleEvidences = annotatedEvidences)
 
-    val annotatedCallsAtSite = calls.copy(annotations = MultiSampleMultiAlleleEvidenceAnnotation.makeAnnotations(calls, parameters))
+    val annotatedCallsAtSite = calls.copy(annotations = MultiSampleMultiAlleleAnnotation.makeAnnotations(calls, parameters))
 
     val passingCalls = if (forceCall || includeFiltered)
       annotatedCallsAtSite

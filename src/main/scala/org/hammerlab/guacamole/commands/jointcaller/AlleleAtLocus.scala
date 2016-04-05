@@ -2,7 +2,7 @@ package org.hammerlab.guacamole.commands.jointcaller
 
 import org.hammerlab.guacamole.Bases
 import org.hammerlab.guacamole.DistributedUtil.PerSample
-import org.hammerlab.guacamole.commands.jointcaller.pileup_processing.ReadSubsequence
+import org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.ReadSubsequence
 import org.hammerlab.guacamole.pileup.Pileup
 
 /**

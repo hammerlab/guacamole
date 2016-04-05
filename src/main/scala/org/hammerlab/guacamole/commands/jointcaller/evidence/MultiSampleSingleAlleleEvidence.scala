@@ -3,10 +3,10 @@ package org.hammerlab.guacamole.commands.jointcaller.evidence
 import org.hammerlab.guacamole.DistributedUtil._
 import org.hammerlab.guacamole.commands.jointcaller.Input.{Analyte, TissueType}
 import org.hammerlab.guacamole.commands.jointcaller._
-import org.hammerlab.guacamole.commands.jointcaller.annotation.MultiSampleSingleAlleleEvidenceAnnotation.NamedAnnotations
-import org.hammerlab.guacamole.commands.jointcaller.annotation.{MultiSampleSingleAlleleEvidenceAnnotation, SingleSampleSingleAlleleEvidenceAnnotation}
-import org.hammerlab.guacamole.commands.jointcaller.pileup_processing.MultiplePileupStats
-import org.hammerlab.guacamole.commands.jointcaller.pileup_processing.PileupStats.AlleleMixture
+import org.hammerlab.guacamole.commands.jointcaller.annotation.MultiSampleSingleAlleleAnnotation.NamedAnnotations
+import org.hammerlab.guacamole.commands.jointcaller.annotation.{MultiSampleSingleAlleleAnnotation, SingleSampleSingleAlleleAnnotation}
+import org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.MultiplePileupStats
+import org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.PileupStats.AlleleMixture
 
 import scala.collection.Set
 
@@ -209,14 +209,14 @@ case class MultiSampleSingleAlleleEvidence(parameters: Parameters,
   def computeAllAnnotations(multipleStats: MultiplePileupStats): MultiSampleSingleAlleleEvidence = {
     assume(multipleStats.singleSampleStats.forall(_.referenceSequence.length == allele.end - allele.start))
     copy(
-      normalDNAPooledEvidence = SingleSampleSingleAlleleEvidenceAnnotation.annotate(
+      normalDNAPooledEvidence = SingleSampleSingleAlleleAnnotation.annotate(
         multipleStats.normalDNAPooled, normalDNAPooledEvidence, parameters).asInstanceOf[NormalDNASingleSampleSingleAlleleEvidence],
-      tumorDNAPooledEvidence = SingleSampleSingleAlleleEvidenceAnnotation.annotate(
+      tumorDNAPooledEvidence = SingleSampleSingleAlleleAnnotation.annotate(
         multipleStats.tumorlDNAPooled, tumorDNAPooledEvidence, parameters).asInstanceOf[TumorDNASingleSampleSingleAlleleEvidence],
       sampleEvidences = inputs.items.zip(multipleStats.singleSampleStats).zip(sampleEvidences).map({
-        case ((input, stats), evidence) => SingleSampleSingleAlleleEvidenceAnnotation.annotate(stats, evidence, parameters)
+        case ((input, stats), evidence) => SingleSampleSingleAlleleAnnotation.annotate(stats, evidence, parameters)
       }),
-      annotations = annotations ++ MultiSampleSingleAlleleEvidenceAnnotation.makeAnnotations(multipleStats, this, parameters))
+      annotations = annotations ++ MultiSampleSingleAlleleAnnotation.makeAnnotations(multipleStats, this, parameters))
   }
 }
 object MultiSampleSingleAlleleEvidence {
@@ -255,6 +255,6 @@ object MultiSampleSingleAlleleEvidence {
       normalDNAPooledCharacterization,
       tumorDNAPooledCharacterization,
       sampleEvidences,
-      annotations = MultiSampleSingleAlleleEvidenceAnnotation.emptyAnnotations)
+      annotations = MultiSampleSingleAlleleAnnotation.emptyAnnotations)
   }
 }

@@ -12,13 +12,13 @@ import org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleMultiAll
  * See AlleleEvidenceAcrossSamplesAnnotation for more information on annotaitons.
  *
  */
-trait MultiSampleMultiAlleleEvidenceAnnotation extends MultiSampleSingleAlleleEvidenceAnnotation {
+trait MultiSampleMultiAlleleAnnotation extends MultiSampleSingleAlleleAnnotation {
 
 }
 
-object MultiSampleMultiAlleleEvidenceAnnotation {
-  type NamedAnnotations = Map[String, MultiSampleMultiAlleleEvidenceAnnotation]
-  val emptyAnnotations = Map[String, MultiSampleMultiAlleleEvidenceAnnotation]()
+object MultiSampleMultiAlleleAnnotation {
+  type NamedAnnotations = Map[String, MultiSampleMultiAlleleAnnotation]
+  val emptyAnnotations = Map[String, MultiSampleMultiAlleleAnnotation]()
 
   val availableAnnotations: Seq[Metadata] = Vector(TooManyCallsAtSite)
 
@@ -28,7 +28,7 @@ object MultiSampleMultiAlleleEvidenceAnnotation {
     def addVCFHeaders(headerLines: util.Set[VCFHeaderLine]): Unit
     def apply(
                evidence: MultiSampleMultiAlleleEvidence,
-               parameters: Parameters): Option[MultiSampleMultiAlleleEvidenceAnnotation]
+               parameters: Parameters): Option[MultiSampleMultiAlleleAnnotation]
   }
 
   /** Return all available annotations evaluated on the given AllelesAndEvidenceAtSite instance. */
@@ -50,7 +50,7 @@ object MultiSampleMultiAlleleEvidenceAnnotation {
    * @param parameters
    */
   case class TooManyCallsAtSite(numCalls: Int,
-                                parameters: Parameters) extends MultiSampleMultiAlleleEvidenceAnnotation {
+                                parameters: Parameters) extends MultiSampleMultiAlleleAnnotation {
     override val isFiltered = numCalls > parameters.maxCallsPerSite
   }
   object TooManyCallsAtSite extends Metadata {
@@ -60,7 +60,7 @@ object MultiSampleMultiAlleleEvidenceAnnotation {
     }
 
     def apply(evidence: MultiSampleMultiAlleleEvidence,
-              parameters: Parameters): Option[MultiSampleMultiAlleleEvidenceAnnotation] = {
+              parameters: Parameters): Option[MultiSampleMultiAlleleAnnotation] = {
       if (parameters.maxCallsPerSite == 0) {
         None
       } else {

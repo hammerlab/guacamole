@@ -6,7 +6,7 @@ import htsjdk.variant.variantcontext.VariantContextBuilder
 import htsjdk.variant.vcf.{VCFFilterHeaderLine, VCFHeaderLine}
 import org.hammerlab.guacamole.commands.jointcaller.Parameters
 import org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleSingleAlleleEvidence
-import org.hammerlab.guacamole.commands.jointcaller.pileup_processing.MultiplePileupStats
+import org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.MultiplePileupStats
 
 /**
  * Annotation for multiple samples at a single allele and a single site.
@@ -24,16 +24,16 @@ import org.hammerlab.guacamole.commands.jointcaller.pileup_processing.MultiplePi
  *   - Multiple alleles, multiple samples (AllelesAndEvidenceAtSiteAnnotation)
  *
  */
-trait MultiSampleSingleAlleleEvidenceAnnotation {
+trait MultiSampleSingleAlleleAnnotation {
   /** is this annotation a failing filter? */
   def isFiltered: Boolean = false
 
   /** update VCF with annotation fields */
   def addInfoToVCF(builder: VariantContextBuilder): Unit = {}
 }
-object MultiSampleSingleAlleleEvidenceAnnotation {
-  type NamedAnnotations = Map[String, MultiSampleSingleAlleleEvidenceAnnotation]
-  val emptyAnnotations = Map[String, MultiSampleSingleAlleleEvidenceAnnotation]()
+object MultiSampleSingleAlleleAnnotation {
+  type NamedAnnotations = Map[String, MultiSampleSingleAlleleAnnotation]
+  val emptyAnnotations = Map[String, MultiSampleSingleAlleleAnnotation]()
 
   val availableAnnotations: Seq[Metadata] = Vector(InsufficientNormal)
 
@@ -44,7 +44,7 @@ object MultiSampleSingleAlleleEvidenceAnnotation {
     def apply(
                allStats: MultiplePileupStats,
                evidence: MultiSampleSingleAlleleEvidence,
-               parameters: Parameters): Option[MultiSampleSingleAlleleEvidenceAnnotation]
+               parameters: Parameters): Option[MultiSampleSingleAlleleAnnotation]
   }
 
   def makeAnnotations(
@@ -75,7 +75,7 @@ object MultiSampleSingleAlleleEvidenceAnnotation {
   case class InsufficientNormal(
       parameters: Parameters,
       referenceReads: Int,
-      totalReads: Int) extends MultiSampleSingleAlleleEvidenceAnnotation {
+      totalReads: Int) extends MultiSampleSingleAlleleAnnotation {
 
     override val isFiltered = {
       totalReads < parameters.filterSomaticNormalDepth ||
@@ -91,7 +91,7 @@ object MultiSampleSingleAlleleEvidenceAnnotation {
     def apply(
                allStats: MultiplePileupStats,
                evidence: MultiSampleSingleAlleleEvidence,
-               parameters: Parameters): Option[MultiSampleSingleAlleleEvidenceAnnotation] = {
+               parameters: Parameters): Option[MultiSampleSingleAlleleAnnotation] = {
       if (evidence.isGermlineCall) {
         None
       } else {
