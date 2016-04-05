@@ -218,15 +218,18 @@ object VAFHistogram {
                            minVariantAlleleFrequency: Int = 0,
                            printStats: Boolean = false): RDD[VariantLocus] = {
     val sampleName = reads.take(1)(0).sampleName
-    val variantLoci = DistributedUtil.pileupFlatMap[VariantLocus](
-      reads,
-      lociPartitions,
-      skipEmpty = true,
-      function = (pileup => VariantLocus(pileup)
-        .filter(locus => pileup.depth >= minReadDepth)
-        .filter(_.variantAlleleFrequency >= (minVariantAlleleFrequency / 100.0))
-        .iterator),
-      reference = reference)
+    val variantLoci =
+      DistributedUtil.pileupFlatMap[VariantLocus](
+        reads,
+        lociPartitions,
+        skipEmpty = true,
+        reference,
+        pileup =>
+          VariantLocus(pileup)
+            .filter(locus => pileup.depth >= minReadDepth)
+            .filter(_.variantAlleleFrequency >= (minVariantAlleleFrequency / 100.0))
+            .iterator
+      )
     if (printStats) {
       variantLoci.persist(StorageLevel.MEMORY_ONLY)
 

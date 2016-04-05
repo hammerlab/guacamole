@@ -156,6 +156,7 @@ object SomaticJoint {
       readSets.map(_.mappedReads),
       lociPartitions,
       skipEmpty = true, // TODO: shouldn't skip empty positions if we might force call them. Need an efficient way to handle this.
+      reference,
       pileups => {
         val normalPileups = inputs.normalDNA.map(input => pileups(input.index))
         val forceCall = broadcastForceCallLoci.value.onContig(pileups(0).referenceName).contains(pileups(0).locus + 1)
@@ -196,7 +197,8 @@ object SomaticJoint {
         } else {
           Iterator.empty
         }
-      }, reference = reference)
+      }
+    )
     calls
   }
 

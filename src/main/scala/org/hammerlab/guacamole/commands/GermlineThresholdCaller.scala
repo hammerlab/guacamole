@@ -80,15 +80,18 @@ object GermlineThreshold {
       val numGenotypes = sc.accumulator(0L)
       DelayedMessages.default.say { () => "Called %,d genotypes.".format(numGenotypes.value) }
       val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(args, loci.result(readSet.contigLengths), readSet.mappedReads)
-      val genotypes: RDD[Genotype] = DistributedUtil.pileupFlatMap[Genotype](
-        readSet.mappedReads,
-        lociPartitions,
-        true, // skip empty pileups
-        pileup => {
-          val genotypes = callVariantsAtLocus(pileup, threshold, emitRef, emitNoCall)
-          numGenotypes += genotypes.length
-          genotypes.iterator
-        }, reference = reference)
+      val genotypes: RDD[Genotype] =
+        DistributedUtil.pileupFlatMap[Genotype](
+          readSet.mappedReads,
+          lociPartitions,
+          skipEmpty = true,
+          reference,
+          pileup => {
+            val genotypes = callVariantsAtLocus(pileup, threshold, emitRef, emitNoCall)
+            numGenotypes += genotypes.length
+            genotypes.iterator
+          }
+        )
       readSet.mappedReads.unpersist()
       Common.writeVariantsFromArguments(args, genotypes)
       if (args.truthGenotypesFile != "")

@@ -73,13 +73,14 @@ object GermlineStandard {
         args, loci.result(readSet.contigLengths), readSet.mappedReads)
       val minAlignmentQuality = args.minAlignmentQuality
 
-      val genotypes: RDD[CalledAllele] = DistributedUtil.pileupFlatMap[CalledAllele](
-        readSet.mappedReads,
-        lociPartitions,
-        skipEmpty = true, // skip empty pileups
-        function = pileup => callVariantsAtLocus(pileup, minAlignmentQuality).iterator,
-        reference = reference
-      )
+      val genotypes: RDD[CalledAllele] =
+        DistributedUtil.pileupFlatMap[CalledAllele](
+          readSet.mappedReads,
+          lociPartitions,
+          skipEmpty = true,
+          reference,
+          pileup => callVariantsAtLocus(pileup, minAlignmentQuality).iterator
+        )
       readSet.mappedReads.unpersist()
 
       val filteredGenotypes = GenotypeFilter(genotypes, args).flatMap(AlleleConversions.calledAlleleToADAMGenotype)

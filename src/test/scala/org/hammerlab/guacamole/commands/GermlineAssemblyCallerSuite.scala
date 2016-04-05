@@ -67,12 +67,12 @@ class GermlineAssemblyCallerSuite extends FunSuite with Matchers with BeforeAndA
       val variants =
         GermlineAssemblyCaller.Caller.discoverGenotypes(
           readSet.mappedReads,
-          kmerSize = kmerSize,
-          snvWindowRange = snvWindowRange,
-          minOccurrence = minOccurrence,
-          minAreaVaf = minVaf,
-          reference = reference,
-          lociPartitions = lociPartitions
+          kmerSize,
+          snvWindowRange,
+          minOccurrence,
+          minVaf,
+          reference,
+          lociPartitions
         ).collect().sortBy(_.start)
 
       val actualVariants =

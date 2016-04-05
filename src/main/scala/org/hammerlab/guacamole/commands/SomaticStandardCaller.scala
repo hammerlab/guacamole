@@ -102,8 +102,9 @@ object SomaticStandard {
           tumorReads.mappedReads,
           normalReads.mappedReads,
           lociPartitions,
-          skipEmpty = true, // skip empty pileups
-          function = (pileupTumor, pileupNormal) =>
+          skipEmpty = true,
+          reference,
+          (pileupTumor, pileupNormal) =>
             findPotentialVariantAtLocus(
               pileupTumor,
               pileupNormal,
@@ -111,8 +112,7 @@ object SomaticStandard {
               minAlignmentQuality,
               filterMultiAllelic,
               maxReadDepth
-            ).iterator,
-          reference = reference
+            ).iterator
         )
 
       potentialGenotypes.persist()

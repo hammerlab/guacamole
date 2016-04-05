@@ -278,14 +278,19 @@ object DistributedUtil extends Logging {
    * @see the windowTaskFlatMapMultipleRDDs function for other argument descriptions
    *
    */
-  def pileupFlatMap[T: ClassTag](
+  def pileupFlatMap[T: ClassTag](reads: RDD[MappedRead],
+                                 lociPartitions: LociMap[Long],
+                                 skipEmpty: Boolean,
+                                 reference: ReferenceGenome,
+                                 function: Pileup => Iterator[T]): RDD[T] =
+    pileupFlatMapBroadcast(reads, lociPartitions, skipEmpty, reads.context.broadcast(reference), function)
+
+  def pileupFlatMapBroadcast[T: ClassTag](
     reads: RDD[MappedRead],
     lociPartitions: LociMap[Long],
     skipEmpty: Boolean,
-    function: Pileup => Iterator[T],
-    reference: ReferenceGenome): RDD[T] = {
-
-    val referenceBroadcast = reads.context.broadcast(reference)
+    referenceBroadcast: Broadcast[ReferenceGenome],
+    function: Pileup => Iterator[T]): RDD[T] = {
 
     windowFlatMapWithState(
       Vector(reads),
@@ -314,15 +319,28 @@ object DistributedUtil extends Logging {
    * @see the windowTaskFlatMapMultipleRDDs function for other argument descriptions.
    *
    */
-  def pileupFlatMapTwoRDDs[T: ClassTag](
+  def pileupFlatMapTwoRDDs[T: ClassTag](reads1: RDD[MappedRead],
+                                        reads2: RDD[MappedRead],
+                                        lociPartitions: LociMap[Long],
+                                        skipEmpty: Boolean,
+                                        reference: ReferenceGenome,
+                                        function: (Pileup, Pileup) => Iterator[T]): RDD[T] =
+    pileupFlatMapTwoRDDsBroadcast(
+      reads1,
+      reads2,
+      lociPartitions,
+      skipEmpty,
+      reads1.context.broadcast(reference),
+      function
+    )
+
+  def pileupFlatMapTwoRDDsBroadcast[T: ClassTag](
     reads1: RDD[MappedRead],
     reads2: RDD[MappedRead],
     lociPartitions: LociMap[Long],
     skipEmpty: Boolean,
-    function: (Pileup, Pileup) => Iterator[T],
-    reference: ReferenceGenome): RDD[T] = {
-
-    val referenceBroadcast = reads1.context.broadcast(reference)
+    referenceBroadcast: Broadcast[ReferenceGenome],
+    function: (Pileup, Pileup) => Iterator[T]): RDD[T] = {
 
     windowFlatMapWithState(
       Vector(reads1, reads2),
@@ -350,10 +368,23 @@ object DistributedUtil extends Logging {
     readsRDDs: PerSample[RDD[MappedRead]],
     lociPartitions: LociMap[Long],
     skipEmpty: Boolean,
-    function: PerSample[Pileup] => Iterator[T],
-    reference: ReferenceGenome): RDD[T] = {
+    reference: ReferenceGenome,
+    function: PerSample[Pileup] => Iterator[T]
+  ): RDD[T] =
+    pileupFlatMapMultipleRDDsBroadcast(
+      readsRDDs,
+      lociPartitions,
+      skipEmpty,
+      readsRDDs.head.context.broadcast(reference),
+      function
+    )
 
-    val referenceBroadcast = readsRDDs.head.context.broadcast(reference)
+  def pileupFlatMapMultipleRDDsBroadcast[T: ClassTag](
+    readsRDDs: PerSample[RDD[MappedRead]],
+    lociPartitions: LociMap[Long],
+    skipEmpty: Boolean,
+    referenceBroadcast: Broadcast[ReferenceGenome],
+    function: PerSample[Pileup] => Iterator[T]): RDD[T] = {
 
     windowFlatMapWithState(
       readsRDDs,

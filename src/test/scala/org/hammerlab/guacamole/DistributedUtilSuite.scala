@@ -100,12 +100,14 @@ class DistributedUtilSuite extends GuacFunSuite with Matchers {
       TestUtil.makeRead("TCGATCGA", "8M", 1),
       TestUtil.makeRead("TCGATCGA", "8M", 1)))
 
-    val pileups = DistributedUtil.pileupFlatMap[Pileup](
-      reads,
-      DistributedUtil.partitionLociUniformly(reads.partitions.length, LociSet.parse("chr1:1-9").result),
-      skipEmpty = false,
-      pileup => Seq(pileup).iterator,
-      reference = TestUtil.makeReference(Seq(("chr1", 0, "ATCGATCGA")))).collect()
+    val pileups =
+      DistributedUtil.pileupFlatMap[Pileup](
+        reads,
+        DistributedUtil.partitionLociUniformly(reads.partitions.length, LociSet.parse("chr1:1-9").result),
+        skipEmpty = false,
+        reference = TestUtil.makeReference(Seq(("chr1", 0, "ATCGATCGA"))),
+        pileup => Seq(pileup).iterator
+      ).collect()
 
     pileups.length should be(8)
     val firstPileup = pileups.head
@@ -126,12 +128,14 @@ class DistributedUtilSuite extends GuacFunSuite with Matchers {
       TestUtil.makeRead("TCGATCGA", "8M", 1),
       TestUtil.makeRead("TCGATCGA", "8M", 1)))
 
-    val pileups = DistributedUtil.pileupFlatMap[Pileup](
-      reads,
-      DistributedUtil.partitionLociUniformly(5, LociSet.parse("chr1:1-9").result),
-      skipEmpty = false,
-      pileup => Seq(pileup).iterator,
-      reference = TestUtil.makeReference(Seq(("chr1", 0, "ATCGATCGA")))).collect()
+    val pileups =
+      DistributedUtil.pileupFlatMap[Pileup](
+        reads,
+        DistributedUtil.partitionLociUniformly(5, LociSet.parse("chr1:1-9").result),
+        skipEmpty = false,
+        reference = TestUtil.makeReference(Seq(("chr1", 0, "ATCGATCGA"))),
+        pileup => Seq(pileup).iterator
+      ).collect()
 
     val firstPileup = pileups.head
     firstPileup.locus should be(1L)
@@ -146,13 +150,14 @@ class DistributedUtilSuite extends GuacFunSuite with Matchers {
       TestUtil.makeRead("TCGATCGA", "8M", 1),
       TestUtil.makeRead("TCGATCGA", "8M", 1)))
 
-    val pileups = DistributedUtil.pileupFlatMap[Long](
-      reads,
-      DistributedUtil.partitionLociUniformly(5, LociSet.parse("chr0:5-10,chr1:0-100,chr2:0-1000,chr2:5000-6000").result),
-      skipEmpty = true,
-      pileup => {
-        Iterator(pileup.locus)
-      }, reference = TestUtil.makeReference(Seq(("chr1", 0, "ATCGATCGA")))).collect.toSeq
+    val pileups =
+      DistributedUtil.pileupFlatMap[Long](
+        reads,
+        DistributedUtil.partitionLociUniformly(5, LociSet.parse("chr0:5-10,chr1:0-100,chr2:0-1000,chr2:5000-6000").result),
+        skipEmpty = true,
+        reference = TestUtil.makeReference(Seq(("chr1", 0, "ATCGATCGA"))),
+        pileup => Iterator(pileup.locus)
+      ).collect.toSeq
     pileups should equal(Seq(1, 2, 3, 4, 5, 6, 7, 8))
   }
 
@@ -171,13 +176,15 @@ class DistributedUtilSuite extends GuacFunSuite with Matchers {
       TestUtil.makeRead("TTTTTTTT", "8M", 1),
       TestUtil.makeRead("XXX", "3M", 99)))
 
-    val loci = DistributedUtil.pileupFlatMapTwoRDDs[Long](
-      reads1,
-      reads2,
-      DistributedUtil.partitionLociUniformly(1, LociSet.parse("chr0:0-1000,chr1:1-500,chr2:10-20").result),
-      skipEmpty = true,
-      (pileup1, pileup2) => (Iterator(pileup1.locus)),
-      reference = TestUtil.makeReference(Seq(("chr1", 0, "ATCGATCGA")))).collect
+    val loci =
+      DistributedUtil.pileupFlatMapTwoRDDs[Long](
+        reads1,
+        reads2,
+        DistributedUtil.partitionLociUniformly(1, LociSet.parse("chr0:0-1000,chr1:1-500,chr2:10-20").result),
+        skipEmpty = true,
+        reference = TestUtil.makeReference(Seq(("chr1", 0, "ATCGATCGA"))),
+        (pileup1, _) => (Iterator(pileup1.locus))
+      ).collect
     loci.toSeq should equal(Seq(1, 2, 3, 4, 5, 6, 7, 8, 99, 100, 101, 102, 103, 104, 105, 106, 107))
   }
 
@@ -202,29 +209,31 @@ class DistributedUtilSuite extends GuacFunSuite with Matchers {
       TestUtil.makeRead("GGGGGGGG", "8M", 1),
       TestUtil.makeRead("XZX", "3M", 99)))
 
-    val resultPlain = DistributedUtil.pileupFlatMapMultipleRDDs[Seq[Seq[String]]](
-      Vector(reads1, reads2, reads3),
-      DistributedUtil.partitionLociUniformly(1, LociSet.parse("chr1:1-500,chr2:10-20").result),
-      skipEmpty = true,
-      pileups => Iterator(pileups.map(_.elements.map(p => Bases.basesToString(p.sequencedBases)))),
-      reference = TestUtil.makeReference(Seq(("chr1", 0, "ATCGATCGA")))
-    ).collect.map(_.toList)
+    val resultPlain =
+      DistributedUtil.pileupFlatMapMultipleRDDs[Seq[Seq[String]]](
+        Vector(reads1, reads2, reads3),
+        DistributedUtil.partitionLociUniformly(1, LociSet.parse("chr1:1-500,chr2:10-20").result),
+        skipEmpty = true,
+        reference = TestUtil.makeReference(Seq(("chr1", 0, "ATCGATCGA"))),
+        pileups => Iterator(pileups.map(_.elements.map(p => Bases.basesToString(p.sequencedBases))))
+      ).collect.map(_.toList)
 
     val resultParallelized = DistributedUtil.pileupFlatMapMultipleRDDs[Seq[Seq[String]]](
       Vector(reads1, reads2, reads3),
       DistributedUtil.partitionLociUniformly(800, LociSet.parse("chr0:0-100,chr1:1-500,chr2:10-20").result),
       skipEmpty = true,
-      pileups => Iterator(pileups.map(_.elements.map(p => Bases.basesToString(p.sequencedBases)))),
-      reference = TestUtil.makeReference(Seq(("chr1", 0, "ATCGATCGA")))
+      reference = TestUtil.makeReference(Seq(("chr1", 0, "ATCGATCGA"))),
+      pileups => Iterator(pileups.map(_.elements.map(p => Bases.basesToString(p.sequencedBases))))
     ).collect.map(_.toList)
 
-    val resultWithEmpty = DistributedUtil.pileupFlatMapMultipleRDDs[Seq[Seq[String]]](
-      Vector(reads1, reads2, reads3),
-      DistributedUtil.partitionLociUniformly(5, LociSet.parse("chr1:1-500,chr2:10-20").result),
-      skipEmpty = false,
-      pileups => Iterator(pileups.map(_.elements.map(p => Bases.basesToString(p.sequencedBases)))),
-      reference = TestUtil.makeReference(Seq(("chr1", 0, "ATCGATCGA"), ("chr2", 0, "")))
-    ).collect.map(_.toList)
+    val resultWithEmpty =
+      DistributedUtil.pileupFlatMapMultipleRDDs[Seq[Seq[String]]](
+        Vector(reads1, reads2, reads3),
+        DistributedUtil.partitionLociUniformly(5, LociSet.parse("chr1:1-500,chr2:10-20").result),
+        skipEmpty = false,
+        reference = TestUtil.makeReference(Seq(("chr1", 0, "ATCGATCGA"), ("chr2", 0, ""))),
+        pileups => Iterator(pileups.map(_.elements.map(p => Bases.basesToString(p.sequencedBases))))
+      ).collect.map(_.toList)
 
     resultPlain should equal(resultParallelized)
 
@@ -251,12 +260,14 @@ class DistributedUtilSuite extends GuacFunSuite with Matchers {
       TestUtil.makeRead("TCGATCGA", "8M", 1),
       TestUtil.makeRead("TCGATCGA", "8M", 1)))
 
-    val pileups = DistributedUtil.pileupFlatMap[PileupElement](
-      reads,
-      DistributedUtil.partitionLociUniformly(5, LociSet.parse("chr1:1-9").result),
-      skipEmpty = false,
-      pileup => pileup.elements.toIterator,
-      reference = TestUtil.makeReference(Seq(("chr1", 1, "TCGATCGA")))).collect()
+    val pileups =
+      DistributedUtil.pileupFlatMap[PileupElement](
+        reads,
+        DistributedUtil.partitionLociUniformly(5, LociSet.parse("chr1:1-9").result),
+        skipEmpty = false,
+        reference = TestUtil.makeReference(Seq(("chr1", 1, "TCGATCGA"))),
+        _.elements.toIterator
+      ).collect()
 
     pileups.length should be(24)
     pileups.forall(_.isMatch) should be(true)
@@ -277,13 +288,15 @@ class DistributedUtilSuite extends GuacFunSuite with Matchers {
       TestUtil.makeRead("TCGATCGA", "8M", 1),
       TestUtil.makeRead("AGG", "3M", 99)))
 
-    val elements = DistributedUtil.pileupFlatMapTwoRDDs[PileupElement](
-      reads1,
-      reads2,
-      DistributedUtil.partitionLociUniformly(1000, LociSet.parse("chr1:1-500").result),
-      skipEmpty = false,
-      (pileup1, pileup2) => (pileup1.elements ++ pileup2.elements).toIterator,
-      reference = TestUtil.makeReference(Seq(("chr1", 0, "ATCGATCGA" + "N" * 90 + "AGGGGGGGGGG")))).collect()
+    val elements =
+      DistributedUtil.pileupFlatMapTwoRDDs[PileupElement](
+        reads1,
+        reads2,
+        DistributedUtil.partitionLociUniformly(1000, LociSet.parse("chr1:1-500").result),
+        skipEmpty = false,
+        reference = TestUtil.makeReference(Seq(("chr1", 0, "ATCGATCGA" + "N" * 90 + "AGGGGGGGGGG"))),
+        (pileup1, pileup2) => (pileup1.elements ++ pileup2.elements).toIterator
+      ).collect()
 
     elements.map(_.isMatch) should equal(List.fill(elements.length)(true))
     assertBases(
@@ -299,12 +312,14 @@ class DistributedUtilSuite extends GuacFunSuite with Matchers {
       TestUtil.makeRead("TCGATCGA", "8M", 1),
       TestUtil.makeRead("TCGACCCTCGA", "4M3I4M", 1)))
 
-    val pileups = DistributedUtil.pileupFlatMap[PileupElement](
-      reads,
-      DistributedUtil.partitionLociUniformly(5, LociSet.parse("chr1:1-12").result),
-      skipEmpty = false,
-      pileup => pileup.elements.toIterator,
-      reference = TestUtil.makeReference(Seq(("chr1", 0, "ATCGATCGA")))).collect()
+    val pileups =
+      DistributedUtil.pileupFlatMap[PileupElement](
+        reads,
+        DistributedUtil.partitionLociUniformly(5, LociSet.parse("chr1:1-12").result),
+        skipEmpty = false,
+        reference = TestUtil.makeReference(Seq(("chr1", 0, "ATCGATCGA"))),
+        _.elements.toIterator
+      ).collect()
 
     pileups.length should be(24)
     val insertionPileups = pileups.filter(_.isInsertion)
@@ -318,12 +333,14 @@ class DistributedUtilSuite extends GuacFunSuite with Matchers {
       TestUtil.makeRead("TCGATCGA", "8M", 1),
       TestUtil.makeRead("TCGATCGA", "8M", 1)))
 
-    val genotypes = DistributedUtil.pileupFlatMap[Genotype](
-      reads,
-      DistributedUtil.partitionLociUniformly(reads.partitions.length, LociSet.parse("chr1:1-100").result),
-      skipEmpty = false,
-      pileup => GermlineThreshold.Caller.callVariantsAtLocus(pileup, 0, emitRef = false, emitNoCall = false).iterator,
-      reference = TestUtil.makeReference(Seq(("chr1", 0, "ATCGATCGA")))).collect()
+    val genotypes =
+      DistributedUtil.pileupFlatMap[Genotype](
+        reads,
+        DistributedUtil.partitionLociUniformly(reads.partitions.length, LociSet.parse("chr1:1-100").result),
+        skipEmpty = false,
+        reference = TestUtil.makeReference(Seq(("chr1", 0, "ATCGATCGA"))),
+        pileup => GermlineThreshold.Caller.callVariantsAtLocus(pileup, 0, emitRef = false, emitNoCall = false).iterator
+      ).collect()
 
     genotypes.length should be(0)
   }
@@ -335,12 +352,14 @@ class DistributedUtilSuite extends GuacFunSuite with Matchers {
       TestUtil.makeRead("TCGATCGA", "8M", 1),
       TestUtil.makeRead("TCGATCGA", "8M", 1)))
 
-    val genotypes = DistributedUtil.pileupFlatMap[Genotype](
-      reads,
-      DistributedUtil.partitionLociUniformly(3, LociSet.parse("chr1:1-100").result),
-      skipEmpty = false,
-      pileup => GermlineThreshold.Caller.callVariantsAtLocus(pileup, 0, emitRef = false, emitNoCall = false).iterator,
-      reference = TestUtil.makeReference(Seq(("chr1", 0, "ATCGATCGA")))).collect()
+    val genotypes =
+      DistributedUtil.pileupFlatMap[Genotype](
+        reads,
+        DistributedUtil.partitionLociUniformly(3, LociSet.parse("chr1:1-100").result),
+        skipEmpty = false,
+        reference = TestUtil.makeReference(Seq(("chr1", 0, "ATCGATCGA"))),
+        pileup => GermlineThreshold.Caller.callVariantsAtLocus(pileup, 0, emitRef = false, emitNoCall = false).iterator
+      ).collect()
 
     genotypes.length should be(0)
   }
@@ -352,12 +371,14 @@ class DistributedUtilSuite extends GuacFunSuite with Matchers {
       TestUtil.makeRead("TCGGTCGA", "8M", 1),
       TestUtil.makeRead("TCGGTCGA", "8M", 1)))
 
-    val genotypes = DistributedUtil.pileupFlatMap[Genotype](
-      reads,
-      DistributedUtil.partitionLociUniformly(3, LociSet.parse("chr1:1-100").result),
-      skipEmpty = false,
-      pileup => GermlineThreshold.Caller.callVariantsAtLocus(pileup, 0, emitRef = false, emitNoCall = false).iterator,
-      reference = TestUtil.makeReference(Seq(("chr1", 0, "ATCGATCGA")))).collect()
+    val genotypes =
+      DistributedUtil.pileupFlatMap[Genotype](
+        reads,
+        DistributedUtil.partitionLociUniformly(3, LociSet.parse("chr1:1-100").result),
+        skipEmpty = false,
+        reference = TestUtil.makeReference(Seq(("chr1", 0, "ATCGATCGA"))),
+        pileup => GermlineThreshold.Caller.callVariantsAtLocus(pileup, 0, emitRef = false, emitNoCall = false).iterator
+      ).collect()
 
     genotypes.length should be(1)
     genotypes.head.getVariant.getStart should be(4)
@@ -374,12 +395,14 @@ class DistributedUtilSuite extends GuacFunSuite with Matchers {
       TestUtil.makeRead("CCGATCGA", "8M", 1),
       TestUtil.makeRead("CCGATCGA", "8M", 1)))
 
-    val genotypes = DistributedUtil.pileupFlatMap[Genotype](
-      reads,
-      DistributedUtil.partitionLociUniformly(3, LociSet.parse("chr1:1-100").result),
-      skipEmpty = false,
-      pileup => GermlineThreshold.Caller.callVariantsAtLocus(pileup, 0, emitRef = false, emitNoCall = false).iterator,
-      reference = TestUtil.makeReference(Seq(("chr1", 0, "ATCGATCGA")))).collect()
+    val genotypes =
+      DistributedUtil.pileupFlatMap[Genotype](
+        reads,
+        DistributedUtil.partitionLociUniformly(3, LociSet.parse("chr1:1-100").result),
+        skipEmpty = false,
+        reference = TestUtil.makeReference(Seq(("chr1", 0, "ATCGATCGA"))),
+        pileup => GermlineThreshold.Caller.callVariantsAtLocus(pileup, 0, emitRef = false, emitNoCall = false).iterator
+      ).collect()
 
     genotypes.length should be(1)
     genotypes.head.getVariant.getStart should be(1)
@@ -422,10 +445,10 @@ class DistributedUtilSuite extends GuacFunSuite with Matchers {
     ).collect()
 
     counts.length should be(5)
-    counts(0) should be(7, 4) // average depth between [0, 3] is 7/4 = 2.75
-    counts(1) should be(12, 4) // average depth between [4, 7] is 12/4 = 3
-    counts(2) should be(8, 4) // average depth between [8, 11] is 8/4 = 2
-    counts(3) should be(4, 4) // average depth between [12, 15] is 4/4 = 2
-    counts(4) should be(0, 4) // average depth between [16, 19] is 0/4 = 0
+    counts(0) should be(7, 4)   // average depth between [0, 3] is 7/4 = 2.75
+    counts(1) should be(12, 4)  // average depth between [4, 7] is 12/4 = 3
+    counts(2) should be(8, 4)   // average depth between [8, 11] is 8/4 = 2
+    counts(3) should be(4, 4)   // average depth between [12, 15] is 4/4 = 2
+    counts(4) should be(0, 4)   // average depth between [16, 19] is 0/4 = 0
   }
 }
