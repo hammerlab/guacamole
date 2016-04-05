@@ -23,7 +23,6 @@ package org.hammerlab.guacamole.reads
  *
  */
 case class UnmappedRead(
-    token: Int,
     name: String,
     sequence: IndexedSeq[Byte],
     baseQualities: IndexedSeq[Byte],

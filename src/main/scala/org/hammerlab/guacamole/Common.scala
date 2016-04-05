@@ -160,7 +160,6 @@ object Common extends Logging {
       sc,
       args.reads,
       filters,
-      token = 0,
       contigLengthsFromDictionary = !args.noSequenceDictionary,
       config = ReadLoadingConfigArgs.fromArguments(args)
     )
@@ -168,8 +167,6 @@ object Common extends Logging {
 
   /**
    * Given arguments for two sets of reads (tumor and normal), return a pair of (tumor, normal) read sets.
-   *
-   * The 'token' field will be set to 1 in the tumor reads, and 2 in the normal reads.
    *
    * @param args parsed arguments
    * @param sc spark context
@@ -184,7 +181,6 @@ object Common extends Logging {
       sc,
       args.tumorReads,
       filters,
-      1,
       !args.noSequenceDictionary,
       ReadLoadingConfigArgs.fromArguments(args)
     )
@@ -193,7 +189,6 @@ object Common extends Logging {
       sc,
       args.normalReads,
       filters,
-      2,
       !args.noSequenceDictionary,
       ReadLoadingConfigArgs.fromArguments(args)
     )

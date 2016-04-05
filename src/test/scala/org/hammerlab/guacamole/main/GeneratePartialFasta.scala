@@ -47,7 +47,6 @@ object GeneratePartialFasta extends Logging {
         sc,
         fileAndIndex._1,
         InputFilters.empty,
-        token = fileAndIndex._2,
         config = Common.Arguments.ReadLoadingConfigArgs.fromArguments(args)
       )
     )
