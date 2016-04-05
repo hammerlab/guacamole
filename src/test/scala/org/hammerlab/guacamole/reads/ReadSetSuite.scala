@@ -26,7 +26,7 @@ import org.hammerlab.guacamole.reads.Read.InputFilters
 import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
 import org.scalatest.Matchers
 
-class ReadSetSuite extends GuacFunSuite with Matchers {
+class ReadSetSuite extends GuacFunSuite {
 
   case class LazyMessage(msg: () => String) {
     override def toString: String = msg()

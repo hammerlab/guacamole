@@ -5,8 +5,9 @@ import java.io.{BufferedWriter, File, FileWriter}
 import org.apache.spark.Logging
 import org.bdgenomics.utils.cli.Args4j
 import org.hammerlab.guacamole._
+import org.hammerlab.guacamole.dist.LociPartitionUtils
 import org.hammerlab.guacamole.reads.Read.InputFilters
-import org.hammerlab.guacamole.reference.{ ContigNotFound, ReferenceGenome }
+import org.hammerlab.guacamole.reference.{ContigNotFound, ReferenceGenome}
 import org.kohsuke.args4j.{Argument, Option => Args4jOption}
 
 /**
@@ -23,7 +24,7 @@ import org.kohsuke.args4j.{Argument, Option => Args4jOption}
  */
 object GeneratePartialFasta extends Logging {
 
-  protected class Arguments extends DistributedUtil.Arguments with Common.Arguments.ReadLoadingConfigArgs with Common.Arguments.Reference {
+  protected class Arguments extends LociPartitionUtils.Arguments with Common.Arguments.ReadLoadingConfigArgs with Common.Arguments.Reference {
     @Args4jOption(name = "--output", metaVar = "OUT", required = true, aliases = Array("-o"),
       usage = "Output path for partial fasta")
     var output: String = ""

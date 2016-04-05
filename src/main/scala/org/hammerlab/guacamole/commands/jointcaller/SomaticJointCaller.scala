@@ -4,14 +4,16 @@ import htsjdk.samtools.SAMSequenceDictionary
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole.Common.Arguments.NoSequenceDictionary
-import org.hammerlab.guacamole.DistributedUtil.PerSample
 import org.hammerlab.guacamole._
+import org.hammerlab.guacamole.dist.LociPartitionUtils
+import org.hammerlab.guacamole.dist.LociPartitionUtils.partitionLociAccordingToArgs
+import org.hammerlab.guacamole.dist.PileupFlatMapUtils.pileupFlatMapMultipleRDDs
 import org.hammerlab.guacamole.reads._
 import org.hammerlab.guacamole.reference.ReferenceGenome
-import org.kohsuke.args4j.{ Option => Args4jOption }
+import org.kohsuke.args4j.{Option => Args4jOption}
 
 object SomaticJoint {
-  class Arguments extends Parameters.CommandlineArguments with DistributedUtil.Arguments with NoSequenceDictionary with InputCollection.Arguments {
+  class Arguments extends Parameters.CommandlineArguments with LociPartitionUtils.Arguments with NoSequenceDictionary with InputCollection.Arguments {
     @Args4jOption(name = "--out", usage = "Output path for all variants in VCF. Default: no output")
     var out: String = ""
 
@@ -141,17 +143,19 @@ object SomaticJoint {
                 reference: ReferenceGenome,
                 loci: LociSet,
                 forceCallLoci: LociSet = LociSet.empty,
-                distributedUtilArguments: DistributedUtil.Arguments = new DistributedUtil.Arguments {}): RDD[MultipleAllelesEvidenceAcrossSamples] = {
+                distributedUtilArguments: LociPartitionUtils.Arguments = new LociPartitionUtils.Arguments {}): RDD[MultipleAllelesEvidenceAcrossSamples] = {
 
     // When mapping over pileups, at locus x we call variants at locus x + 1. Therefore we subtract 1 from the user-
     // specified loci.
     val broadcastForceCallLoci = sc.broadcast(forceCallLoci)
-    val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(
-      distributedUtilArguments,
-      lociSetMinusOne(loci),
-      readSets.map(_.mappedReads): _*)
+    val lociPartitions =
+      partitionLociAccordingToArgs(
+        distributedUtilArguments,
+        lociSetMinusOne(loci),
+        readSets.map(_.mappedReads): _*
+      )
 
-    val calls = DistributedUtil.pileupFlatMapMultipleRDDs(
+    val calls = pileupFlatMapMultipleRDDs(
       readSets.map(_.mappedReads),
       lociPartitions,
       skipEmpty = true, // TODO: shouldn't skip empty positions if we might force call them. Need an efficient way to handle this.

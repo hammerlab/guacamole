@@ -3,11 +3,12 @@ package org.hammerlab.guacamole.commands
 import org.apache.spark.SparkContext
 import org.hammerlab.guacamole._
 import org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Arguments
+import org.hammerlab.guacamole.dist.LociPartitionUtils
 import org.hammerlab.guacamole.reads.Read
 import org.hammerlab.guacamole.reference.ReferenceGenome
 import org.hammerlab.guacamole.util.TestUtil
 import org.hammerlab.guacamole.variants.CalledAllele
-import org.scalatest.{ BeforeAndAfterAll, FunSuite, Matchers }
+import org.scalatest.{BeforeAndAfterAll, FunSuite, Matchers}
 
 class GermlineAssemblyCallerSuite extends FunSuite with Matchers with BeforeAndAfterAll {
 
@@ -57,7 +58,7 @@ class GermlineAssemblyCallerSuite extends FunSuite with Matchers with BeforeAndA
       )
 
     val lociPartitions =
-      DistributedUtil.partitionLociUniformly(
+      LociPartitionUtils.partitionLociUniformly(
         tasks = args.parallelism,
         loci = lociBuilder.result(readSet.contigLengths)
       )

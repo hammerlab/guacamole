@@ -5,7 +5,7 @@ import org.hammerlab.guacamole.reference.{ MapBackedReferenceSequence, Reference
 import org.hammerlab.guacamole.util.{ GuacFunSuite, TestUtil }
 import org.scalatest.Matchers
 
-class SomaticJointCallerSuite extends GuacFunSuite with Matchers {
+class SomaticJointCallerSuite extends GuacFunSuite {
   val cancerWGS1Bams = Vector("normal.bam", "primary.bam", "recurrence.bam").map(
     name => TestUtil.testDataPath("cancer-wgs1/" + name))
 

@@ -10,7 +10,7 @@ import org.hammerlab.guacamole.windowing.SlidingWindow
 import org.scalatest.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks
 
-class VariantSupportSuite extends GuacFunSuite with Matchers with TableDrivenPropertyChecks {
+class VariantSupportSuite extends GuacFunSuite with TableDrivenPropertyChecks {
 
   def grch37Reference = ReferenceGenome(TestUtil.testDataPath("grch37.partial.fasta"), partialFasta = true)
 

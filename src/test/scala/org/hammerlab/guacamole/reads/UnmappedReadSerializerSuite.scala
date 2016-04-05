@@ -22,7 +22,7 @@ import org.hammerlab.guacamole.util.{ TestUtil, GuacFunSuite }
 import TestUtil.Implicits._
 import org.scalatest.Matchers
 
-class UnmappedReadSerializerSuite extends GuacFunSuite with Matchers {
+class UnmappedReadSerializerSuite extends GuacFunSuite {
 
   test("serialize / deserialize unmapped read") {
     val read = UnmappedRead(

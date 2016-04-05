@@ -27,7 +27,7 @@ import org.hammerlab.guacamole.variants.Allele
 import org.scalatest.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks
 
-class PileupSuite extends GuacFunSuite with Matchers with TableDrivenPropertyChecks {
+class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
   // This must only be accessed from inside a spark test where SparkContext has been initialized
   def reference = TestUtil.makeReference(
     Seq(
