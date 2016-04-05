@@ -1,7 +1,7 @@
 package org.hammerlab.guacamole.commands
 
 import breeze.linalg.DenseVector
-import breeze.stats.{ mean, median }
+import breeze.stats.{mean, median}
 import htsjdk.samtools.CigarOperator
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
@@ -9,11 +9,13 @@ import org.hammerlab.guacamole.Common.Arguments.GermlineCallerArgs
 import org.hammerlab.guacamole._
 import org.hammerlab.guacamole.alignment.AffineGapPenaltyAlignment
 import org.hammerlab.guacamole.assembly.DeBruijnGraph
-import org.hammerlab.guacamole.reads.{ MappedRead, Read }
-import org.hammerlab.guacamole.reference.{ ReferenceBroadcast, ReferenceGenome }
-import org.hammerlab.guacamole.variants.{ Allele, AlleleConversions, AlleleEvidence, CalledAllele }
+import org.hammerlab.guacamole.dist.LociPartitionUtils.partitionLociAccordingToArgs
+import org.hammerlab.guacamole.dist.WindowFlatMapUtils.windowFlatMapWithState
+import org.hammerlab.guacamole.reads.{MappedRead, Read}
+import org.hammerlab.guacamole.reference.{ReferenceBroadcast, ReferenceGenome}
+import org.hammerlab.guacamole.variants.{Allele, AlleleConversions, AlleleEvidence, CalledAllele}
 import org.hammerlab.guacamole.windowing.SlidingWindow
-import org.kohsuke.args4j.{ Option => Args4jOption }
+import org.kohsuke.args4j.{Option => Args4jOption}
 
 import scala.collection.JavaConversions._
 
@@ -259,7 +261,7 @@ object GermlineAssemblyCaller {
         .mappedReads
         .filter(_.alignmentQuality > minAlignmentQuality)
 
-      val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(
+      val lociPartitions = partitionLociAccordingToArgs(
         args,
         loci.result(readSet.contigLengths),
         readSet.mappedReads
@@ -294,7 +296,7 @@ object GermlineAssemblyCaller {
                           lociPartitions: LociMap[Long]): RDD[CalledAllele] = {
 
       val genotypes: RDD[CalledAllele] =
-        DistributedUtil.windowFlatMapWithState[MappedRead, CalledAllele, Option[DeBruijnGraph]](
+        windowFlatMapWithState[MappedRead, CalledAllele, Option[DeBruijnGraph]](
           Vector(reads),
           lociPartitions,
           skipEmpty = true,

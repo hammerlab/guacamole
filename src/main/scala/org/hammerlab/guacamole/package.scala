@@ -11,4 +11,6 @@ package org.hammerlab
  * sophisticated caller (for the somatic setting) that gives an example of most of the functionality in the rest of the
  * library.
  */
-package object guacamole {}
+package object guacamole {
+  type PerSample[A] = IndexedSeq[A]
+}
