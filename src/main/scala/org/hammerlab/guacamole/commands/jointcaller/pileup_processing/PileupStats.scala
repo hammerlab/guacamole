@@ -1,8 +1,7 @@
-package org.hammerlab.guacamole.commands.jointcaller
+package org.hammerlab.guacamole.commands.jointcaller.pileup_processing
 
 import org.bdgenomics.adam.util.PhredUtils
 import org.hammerlab.guacamole.Bases
-import org.hammerlab.guacamole.commands.jointcaller.PileupStats.AlleleMixture
 import org.hammerlab.guacamole.pileup.PileupElement
 
 /**

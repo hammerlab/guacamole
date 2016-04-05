@@ -1,8 +1,9 @@
-package org.hammerlab.guacamole.commands.jointcaller
+package org.hammerlab.guacamole.commands.jointcaller.evidence
 
 import org.hammerlab.guacamole.DistributedUtil._
 import org.hammerlab.guacamole._
-import org.hammerlab.guacamole.commands.jointcaller.AllelesAndEvidenceAtSiteAnnotation.NamedAnnotations
+import org.hammerlab.guacamole.commands.jointcaller.annotation.MultiSampleMultiAlleleEvidenceAnnotation
+import org.hammerlab.guacamole.commands.jointcaller.pileup_processing.{MultiplePileupStats, PileupStats}
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 
@@ -14,10 +15,10 @@ import org.hammerlab.guacamole.reference.ReferenceBroadcast
  * written out.
  *
  */
-case class AllelesAndEvidenceAtSite(referenceContig: String,
-                                    start: Long,
-                                    alleleEvidences: Seq[AlleleEvidenceAcrossSamples],
-                                    annotations: NamedAnnotations = AllelesAndEvidenceAtSiteAnnotation.emptyAnnotations)
+case class MultiSampleMultiAlleleEvidence(referenceContig: String,
+                                          start: Long,
+                                          alleleEvidences: Seq[MultiSampleSingleAlleleEvidence],
+                                          annotations: NamedAnnotations = MultiSampleMultiAlleleEvidenceAnnotation.emptyAnnotations)
     extends HasReferenceRegion {
 
   assume(alleleEvidences.forall(_.allele.referenceContig == referenceContig))
@@ -30,7 +31,7 @@ case class AllelesAndEvidenceAtSite(referenceContig: String,
    *
    * TODO: this should probably do something more sophisticated.
    */
-  def bestAllele(): AlleleEvidenceAcrossSamples = {
+  def bestAllele(): MultiSampleSingleAlleleEvidence = {
     // We rank germline calls first, then somatic calls, then break ties with the sum of the best posteriors.
     alleleEvidences.sortBy(evidence => {
       (evidence.isGermlineCall,
@@ -45,18 +46,18 @@ case class AllelesAndEvidenceAtSite(referenceContig: String,
   /**
    * Return a new instance containing only the calls that pass filters.
    */
-  def onlyPassingFilters(): AllelesAndEvidenceAtSite = copy(alleleEvidences = alleleEvidences.filter(!_.failsFilters))
+  def onlyPassingFilters(): MultiSampleMultiAlleleEvidence = copy(alleleEvidences = alleleEvidences.filter(!_.failsFilters))
 
   /**
    * Return a new instance with the given annotations.
    *
    * The new annotations are copied into all of the individual AlleleEvidenceAcrossSamples instances.
    */
-  def withAnnotations(annotations: NamedAnnotations): AllelesAndEvidenceAtSite = copy(
+  def withAnnotations(annotations: NamedAnnotations): MultiSampleMultiAlleleEvidence = copy(
     alleleEvidences = alleleEvidences.map(evidence => evidence.copy(annotations = evidence.annotations ++ annotations))
   )
 }
-object AllelesAndEvidenceAtSite {
+object MultiSampleMultiAlleleEvidence {
 
   /**
    * Maybe make a AllelesAndEvidenceAtSite instance given pileups for all samples at a particular site.
@@ -80,7 +81,7 @@ object AllelesAndEvidenceAtSite {
     reference: ReferenceBroadcast,
     forceCall: Boolean,
     onlySomatic: Boolean = false,
-    includeFiltered: Boolean = false): Option[AllelesAndEvidenceAtSite] = {
+    includeFiltered: Boolean = false): Option[MultiSampleMultiAlleleEvidence] = {
 
     // We ignore clipped reads. Clipped reads include introns (cigar operator N) in RNA-seq.
     val filteredPileups: Vector[Pileup] = pileups.map(
@@ -95,6 +96,8 @@ object AllelesAndEvidenceAtSite {
     if (!Bases.isStandardBase(reference.getReferenceBase(contig, locus.toInt + 1))) {
       return None
     }
+
+    // ADD COMMENTS HERE
 
     val possibleAlleles = AlleleAtLocus.variantAlleles(
       (inputs.normalDNA ++ inputs.tumorDNA).map(input => filteredPileups(input.index)),
@@ -119,7 +122,7 @@ object AllelesAndEvidenceAtSite {
       }).toMap
 
     val evidences = possibleAlleles.map(allele => {
-      AlleleEvidenceAcrossSamples(
+      MultiSampleSingleAlleleEvidence(
         parameters,
         allele,
         multiplePileupStatsPerPossibleAlleleLocus((allele.start.toInt, allele.end.toInt)))
@@ -138,12 +141,12 @@ object AllelesAndEvidenceAtSite {
       val allele = evidence.allele
       evidence.computeAllAnnotations(multiplePileupStatsPerPossibleAlleleLocus((allele.start.toInt, allele.end.toInt)))
     })
-    val calls = AllelesAndEvidenceAtSite(
+    val calls = MultiSampleMultiAlleleEvidence(
       referenceContig = annotatedEvidences.head.allele.referenceContig,
       start = annotatedEvidences.head.allele.start,
       alleleEvidences = annotatedEvidences)
 
-    val annotatedCallsAtSite = calls.copy(annotations = AllelesAndEvidenceAtSiteAnnotation.makeAnnotations(calls, parameters))
+    val annotatedCallsAtSite = calls.copy(annotations = MultiSampleMultiAlleleEvidenceAnnotation.makeAnnotations(calls, parameters))
 
     val passingCalls = if (forceCall || includeFiltered)
       annotatedCallsAtSite

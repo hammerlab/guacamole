@@ -6,9 +6,10 @@ import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole.Common.Arguments.NoSequenceDictionary
 import org.hammerlab.guacamole.DistributedUtil.PerSample
 import org.hammerlab.guacamole._
+import org.hammerlab.guacamole.commands.jointcaller.evidence.{MultiSampleMultiAlleleEvidence, MultiSampleSingleAlleleEvidence}
 import org.hammerlab.guacamole.reads._
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
-import org.kohsuke.args4j.{ Option => Args4jOption }
+import org.kohsuke.args4j.{Option => Args4jOption}
 
 object SomaticJoint {
   class Arguments extends Parameters.CommandlineArguments with DistributedUtil.Arguments with NoSequenceDictionary with InputCollection.Arguments {
@@ -152,7 +153,7 @@ object SomaticJoint {
                 forceCallLoci: LociSet = LociSet.empty,
                 onlySomatic: Boolean = false,
                 includeFiltered: Boolean = false,
-                distributedUtilArguments: DistributedUtil.Arguments = new DistributedUtil.Arguments {}): RDD[AllelesAndEvidenceAtSite] = {
+                distributedUtilArguments: DistributedUtil.Arguments = new DistributedUtil.Arguments {}): RDD[MultiSampleMultiAlleleEvidence] = {
 
     // When mapping over pileups, at locus x we call variants at locus x + 1. Therefore we subtract 1 from the user-
     // specified loci.
@@ -171,7 +172,7 @@ object SomaticJoint {
           broadcastForceCallLoci.value.onContig(rawPileups.head.referenceName)
             .contains(rawPileups.head.locus + 1)
 
-        AllelesAndEvidenceAtSite.make(
+        MultiSampleMultiAlleleEvidence.make(
           rawPileups,
           inputs,
           parameters,
@@ -182,7 +183,7 @@ object SomaticJoint {
       }, reference = reference)
   }
 
-  def writeCalls(calls: Seq[AllelesAndEvidenceAtSite],
+  def writeCalls(calls: Seq[MultiSampleMultiAlleleEvidence],
                  inputs: InputCollection,
                  parameters: Parameters,
                  sequenceDictionary: SAMSequenceDictionary,
@@ -193,7 +194,7 @@ object SomaticJoint {
                  outDir: String = ""): Unit = {
 
     def writeSome(out: String,
-                  filteredCalls: Seq[AllelesAndEvidenceAtSite],
+                  filteredCalls: Seq[MultiSampleMultiAlleleEvidence],
                   filteredInputs: PerSample[Input],
                   includePooledNormal: Option[Boolean] = None,
                   includePooledTumor: Option[Boolean] = None): Unit = {
@@ -223,7 +224,7 @@ object SomaticJoint {
     }
     if (outDir.nonEmpty) {
       def path(filename: String) = outDir + "/" + filename + ".vcf"
-      def anyForced(evidence: AlleleEvidenceAcrossSamples): Boolean = {
+      def anyForced(evidence: MultiSampleSingleAlleleEvidence): Boolean = {
         forceCallLoci.onContig(evidence.allele.referenceContig)
           .intersects(evidence.allele.start, evidence.allele.end)
       }

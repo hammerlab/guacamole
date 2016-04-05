@@ -1,8 +1,10 @@
-package org.hammerlab.guacamole.commands.jointcaller
+package org.hammerlab.guacamole.commands.jointcaller.annotation
 
 import java.util
 
-import htsjdk.variant.vcf.{ VCFFilterHeaderLine, VCFHeaderLine }
+import htsjdk.variant.vcf.{VCFFilterHeaderLine, VCFHeaderLine}
+import org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleMultiAlleleEvidence
+import org.hammerlab.guacamole.commands.jointcaller.Parameters
 
 /**
  * Annotation for multiple alleles at a single site.
@@ -10,11 +12,11 @@ import htsjdk.variant.vcf.{ VCFFilterHeaderLine, VCFHeaderLine }
  * See AlleleEvidenceAcrossSamplesAnnotation for more information on annotaitons.
  *
  */
-trait AllelesAndEvidenceAtSiteAnnotation extends AlleleEvidenceAcrossSamplesAnnotation {}
+trait MultiSampleMultiAlleleEvidenceAnnotation extends MultiSampleSingleAlleleEvidenceAnnotation {}
 
-object AllelesAndEvidenceAtSiteAnnotation {
-  type NamedAnnotations = Map[String, AllelesAndEvidenceAtSiteAnnotation]
-  val emptyAnnotations = Map[String, AllelesAndEvidenceAtSiteAnnotation]()
+object MultiSampleMultiAlleleEvidenceAnnotation {
+  type NamedAnnotations = Map[String, MultiSampleMultiAlleleEvidenceAnnotation]
+  val emptyAnnotations = Map[String, MultiSampleMultiAlleleEvidenceAnnotation]()
 
   val availableAnnotations: Seq[Metadata] = Vector(TooManyCallsAtSite)
 
@@ -23,12 +25,12 @@ object AllelesAndEvidenceAtSiteAnnotation {
     val name: String
     def addVCFHeaders(headerLines: util.Set[VCFHeaderLine]): Unit
     def apply(
-      evidence: AllelesAndEvidenceAtSite,
-      parameters: Parameters): Option[AllelesAndEvidenceAtSiteAnnotation]
+               evidence: MultiSampleMultiAlleleEvidence,
+               parameters: Parameters): Option[MultiSampleMultiAlleleEvidenceAnnotation]
   }
 
   /** Return all available annotations evaluated on the given AllelesAndEvidenceAtSite instance. */
-  def makeAnnotations(evidence: AllelesAndEvidenceAtSite, parameters: Parameters): NamedAnnotations = {
+  def makeAnnotations(evidence: MultiSampleMultiAlleleEvidence, parameters: Parameters): NamedAnnotations = {
     availableAnnotations
       .map(annotation => (annotation.name, annotation(evidence, parameters)))
       .flatMap(pair => pair._2.map(value => pair._1 -> value))
@@ -46,7 +48,7 @@ object AllelesAndEvidenceAtSiteAnnotation {
    * @param parameters
    */
   case class TooManyCallsAtSite(numCalls: Int,
-                                parameters: Parameters) extends AllelesAndEvidenceAtSiteAnnotation {
+                                parameters: Parameters) extends MultiSampleMultiAlleleEvidenceAnnotation {
     override val isFiltered = numCalls > parameters.maxCallsPerSite
   }
   object TooManyCallsAtSite extends Metadata {
@@ -55,8 +57,8 @@ object AllelesAndEvidenceAtSiteAnnotation {
       headerLines.add(new VCFFilterHeaderLine(name, "Too many variants are called at this site"))
     }
 
-    def apply(evidence: AllelesAndEvidenceAtSite,
-              parameters: Parameters): Option[AllelesAndEvidenceAtSiteAnnotation] = {
+    def apply(evidence: MultiSampleMultiAlleleEvidence,
+              parameters: Parameters): Option[MultiSampleMultiAlleleEvidenceAnnotation] = {
       if (parameters.maxCallsPerSite == 0) {
         None
       } else {

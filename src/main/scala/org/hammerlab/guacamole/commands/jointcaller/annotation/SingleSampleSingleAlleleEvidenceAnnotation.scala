@@ -1,9 +1,12 @@
-package org.hammerlab.guacamole.commands.jointcaller
+package org.hammerlab.guacamole.commands.jointcaller.annotation
 
 import java.util
 
 import htsjdk.variant.variantcontext.GenotypeBuilder
-import htsjdk.variant.vcf.{ VCFFilterHeaderLine, VCFFormatHeaderLine, VCFHeaderLine, VCFHeaderLineType }
+import htsjdk.variant.vcf.{VCFFilterHeaderLine, VCFFormatHeaderLine, VCFHeaderLine, VCFHeaderLineType}
+import org.hammerlab.guacamole.commands.jointcaller.evidence.SingleSampleSingleAlleleEvidence
+import org.hammerlab.guacamole.commands.jointcaller.Parameters
+import org.hammerlab.guacamole.commands.jointcaller.pileup_processing.PileupStats
 import org.hammerlab.guacamole.filters.FishersExactTest
 
 /**
@@ -11,7 +14,7 @@ import org.hammerlab.guacamole.filters.FishersExactTest
  *
  * See AlleleEvidenceAcrossSamplesAnnotation for more info on annotations.
  */
-trait SampleAlleleEvidenceAnnotation {
+trait SingleSampleSingleAlleleEvidenceAnnotation {
   val parameters: Parameters
 
   /** is this annotation a failing filter? */
@@ -21,9 +24,9 @@ trait SampleAlleleEvidenceAnnotation {
   def addInfoToVCF(builder: GenotypeBuilder): Unit
 }
 
-object SampleAlleleEvidenceAnnotation {
-  type NamedAnnotations = Map[String, SampleAlleleEvidenceAnnotation]
-  val emptyAnnotations = Map[String, SampleAlleleEvidenceAnnotation]()
+object SingleSampleSingleAlleleEvidenceAnnotation {
+  type NamedAnnotations = Map[String, SingleSampleSingleAlleleEvidenceAnnotation]
+  val emptyAnnotations = Map[String, SingleSampleSingleAlleleEvidenceAnnotation]()
 
   val availableAnnotations: Seq[Metadata] = Seq(StrandBias)
 
@@ -31,13 +34,13 @@ object SampleAlleleEvidenceAnnotation {
   trait Metadata {
     val name: String
     def addVCFHeaders(headerLines: util.Set[VCFHeaderLine]): Unit
-    def apply(stats: PileupStats, evidence: SampleAlleleEvidence, parameters: Parameters): SampleAlleleEvidenceAnnotation
+    def apply(stats: PileupStats, evidence: SingleSampleSingleAlleleEvidence, parameters: Parameters): SingleSampleSingleAlleleEvidenceAnnotation
   }
 
   /**
    * return a new SampleAlleleEvidence with all available annotations computed for it
    */
-  def annotate(stats: PileupStats, evidence: SampleAlleleEvidence, parameters: Parameters): SampleAlleleEvidence = {
+  def annotate(stats: PileupStats, evidence: SingleSampleSingleAlleleEvidence, parameters: Parameters): SingleSampleSingleAlleleEvidence = {
     val namedAnnotations = availableAnnotations.map(
       annotation => (annotation.name, annotation(stats, evidence, parameters))).toMap
     evidence.withAnnotations(namedAnnotations)
@@ -62,7 +65,7 @@ object SampleAlleleEvidenceAnnotation {
       variantForward: Int,
       variantReverse: Int,
       totalForward: Int,
-      totalReverse: Int) extends SampleAlleleEvidenceAnnotation {
+      totalReverse: Int) extends SingleSampleSingleAlleleEvidenceAnnotation {
 
     val phredValue = 10.0 * FishersExactTest.asLog10(totalForward, totalReverse, variantForward, variantReverse)
 
@@ -79,7 +82,7 @@ object SampleAlleleEvidenceAnnotation {
       headerLines.add(new VCFFilterHeaderLine(name, "Phred scaled strand bias (FS) exceeds threshold"))
     }
 
-    def apply(stats: PileupStats, evidence: SampleAlleleEvidence, parameters: Parameters): StrandBias = {
+    def apply(stats: PileupStats, evidence: SingleSampleSingleAlleleEvidence, parameters: Parameters): StrandBias = {
       val variantReads = stats.alleleToSubsequences.getOrElse(evidence.allele.alt, Seq.empty)
       val variantForward = variantReads.count(_.read.isPositiveStrand)
       val totalForward = stats.subsequences.count(_.read.isPositiveStrand)

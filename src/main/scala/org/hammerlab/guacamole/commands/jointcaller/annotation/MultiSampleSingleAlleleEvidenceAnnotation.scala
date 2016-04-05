@@ -1,9 +1,12 @@
-package org.hammerlab.guacamole.commands.jointcaller
+package org.hammerlab.guacamole.commands.jointcaller.annotation
 
 import java.util
 
 import htsjdk.variant.variantcontext.VariantContextBuilder
-import htsjdk.variant.vcf.{ VCFFilterHeaderLine, VCFHeaderLine }
+import htsjdk.variant.vcf.{VCFFilterHeaderLine, VCFHeaderLine}
+import org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleSingleAlleleEvidence
+import org.hammerlab.guacamole.commands.jointcaller.Parameters
+import org.hammerlab.guacamole.commands.jointcaller.pileup_processing.MultiplePileupStats
 
 /**
  * Annotation for multiple samples at a single allele and site.
@@ -21,16 +24,16 @@ import htsjdk.variant.vcf.{ VCFFilterHeaderLine, VCFHeaderLine }
  *   - Multiple alleles, multiple samples (AllelesAndEvidenceAtSiteAnnotation)
  *
  */
-trait AlleleEvidenceAcrossSamplesAnnotation {
+trait MultiSampleSingleAlleleEvidenceAnnotation {
   /** is this annotation a failing filter? */
   def isFiltered: Boolean = false
 
   /** update VCF with annotation fields */
   def addInfoToVCF(builder: VariantContextBuilder): Unit = {}
 }
-object AlleleEvidenceAcrossSamplesAnnotation {
-  type NamedAnnotations = Map[String, AlleleEvidenceAcrossSamplesAnnotation]
-  val emptyAnnotations = Map[String, AlleleEvidenceAcrossSamplesAnnotation]()
+object MultiSampleSingleAlleleEvidenceAnnotation {
+  type NamedAnnotations = Map[String, MultiSampleSingleAlleleEvidenceAnnotation]
+  val emptyAnnotations = Map[String, MultiSampleSingleAlleleEvidenceAnnotation]()
 
   val availableAnnotations: Seq[Metadata] = Vector(InsufficientNormal)
 
@@ -39,15 +42,15 @@ object AlleleEvidenceAcrossSamplesAnnotation {
     val name: String
     def addVCFHeaders(headerLines: util.Set[VCFHeaderLine]): Unit
     def apply(
-      allStats: MultiplePileupStats,
-      evidence: AlleleEvidenceAcrossSamples,
-      parameters: Parameters): Option[AlleleEvidenceAcrossSamplesAnnotation]
+               allStats: MultiplePileupStats,
+               evidence: MultiSampleSingleAlleleEvidence,
+               parameters: Parameters): Option[MultiSampleSingleAlleleEvidenceAnnotation]
   }
 
   def makeAnnotations(
-    allStats: MultiplePileupStats,
-    evidence: AlleleEvidenceAcrossSamples,
-    parameters: Parameters): NamedAnnotations = {
+                       allStats: MultiplePileupStats,
+                       evidence: MultiSampleSingleAlleleEvidence,
+                       parameters: Parameters): NamedAnnotations = {
 
     availableAnnotations
       .map(annotation => (annotation.name, annotation(allStats, evidence, parameters)))
@@ -72,7 +75,7 @@ object AlleleEvidenceAcrossSamplesAnnotation {
   case class InsufficientNormal(
       parameters: Parameters,
       referenceReads: Int,
-      totalReads: Int) extends AlleleEvidenceAcrossSamplesAnnotation {
+      totalReads: Int) extends MultiSampleSingleAlleleEvidenceAnnotation {
 
     override val isFiltered = {
       totalReads < parameters.filterSomaticNormalDepth ||
@@ -86,9 +89,9 @@ object AlleleEvidenceAcrossSamplesAnnotation {
     }
 
     def apply(
-      allStats: MultiplePileupStats,
-      evidence: AlleleEvidenceAcrossSamples,
-      parameters: Parameters): Option[AlleleEvidenceAcrossSamplesAnnotation] = {
+               allStats: MultiplePileupStats,
+               evidence: MultiSampleSingleAlleleEvidence,
+               parameters: Parameters): Option[MultiSampleSingleAlleleEvidenceAnnotation] = {
       if (evidence.isGermlineCall) {
         None
       } else {

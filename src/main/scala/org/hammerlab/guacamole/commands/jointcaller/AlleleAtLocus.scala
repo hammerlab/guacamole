@@ -2,6 +2,7 @@ package org.hammerlab.guacamole.commands.jointcaller
 
 import org.hammerlab.guacamole.Bases
 import org.hammerlab.guacamole.DistributedUtil.PerSample
+import org.hammerlab.guacamole.commands.jointcaller.pileup_processing.ReadSubsequence
 import org.hammerlab.guacamole.pileup.Pileup
 
 /**
@@ -23,11 +24,7 @@ import org.hammerlab.guacamole.pileup.Pileup
  * @param ref reference allele, must be nonempty
  * @param alt alternate allele, may be equal to reference
  */
-case class AlleleAtLocus(
-    referenceContig: String,
-    start: Long,
-    ref: String,
-    alt: String) {
+case class AlleleAtLocus(referenceContig: String, start: Long, ref: String, alt: String) {
 
   assume(ref.nonEmpty)
   assume(alt.nonEmpty)

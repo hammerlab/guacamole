@@ -1,7 +1,9 @@
-package org.hammerlab.guacamole.commands.jointcaller
+package org.hammerlab.guacamole.commands.jointcaller.evidence
 
-import org.hammerlab.guacamole.commands.jointcaller.PileupStats.AlleleMixture
-import org.hammerlab.guacamole.commands.jointcaller.SampleAlleleEvidenceAnnotation._
+import PileupStats.AlleleMixture
+import org.hammerlab.guacamole.commands.jointcaller._
+import org.hammerlab.guacamole.commands.jointcaller.annotation.SingleSampleSingleAlleleEvidenceAnnotation
+import org.hammerlab.guacamole.commands.jointcaller.pileup_processing.PileupStats
 
 /**
  * Summary of evidence for a particular germline allele in a single normal DNA sample.
@@ -10,10 +12,10 @@ import org.hammerlab.guacamole.commands.jointcaller.SampleAlleleEvidenceAnnotati
  * @param allelicDepths Map from sequenced bases -> number of reads supporting that allele
  * @param logLikelihoods Map from germline genotypes to log10 likelihoods
  */
-case class NormalDNASampleAlleleEvidence(allele: AlleleAtLocus,
-                                         allelicDepths: Map[String, Int],
-                                         logLikelihoods: Map[(String, String), Double],
-                                         annotations: NamedAnnotations = emptyAnnotations) extends SampleAlleleEvidence {
+case class NormalDNASingleSampleSingleAlleleEvidence(allele: AlleleAtLocus,
+                                                     allelicDepths: Map[String, Int],
+                                                     logLikelihoods: Map[(String, String), Double],
+                                                     annotations: NamedAnnotations = emptyAnnotations) extends SingleSampleSingleAlleleEvidence {
 
   /** Total depth of all reads contributing an allele. */
   def depth(): Int = allelicDepths.values.sum
@@ -21,11 +23,11 @@ case class NormalDNASampleAlleleEvidence(allele: AlleleAtLocus,
   /** Fraction of reads supporting this allele (variant allele frequency). */
   def vaf() = allelicDepths.getOrElse(allele.alt, 0).toDouble / depth
 
-  override def withAnnotations(newAnnotations: NamedAnnotations): NormalDNASampleAlleleEvidence = {
+  override def withAnnotations(newAnnotations: NamedAnnotations): NormalDNASingleSampleSingleAlleleEvidence = {
     copy(annotations = annotations ++ newAnnotations)
   }
 }
-object NormalDNASampleAlleleEvidence {
+object NormalDNASingleSampleSingleAlleleEvidence {
 
   /** Given a pair of alleles describing a (germline) genotype, return the equivalent allele mixture. */
   def allelesToMixture(alleles: (String, String)): AlleleMixture = {
@@ -36,7 +38,7 @@ object NormalDNASampleAlleleEvidence {
   }
 
   /** Create a (serializable) NormalDNASampleAlleleEvidence instance from (non-serializable) pileup statistics. */
-  def apply(allele: AlleleAtLocus, stats: PileupStats, parameters: Parameters): NormalDNASampleAlleleEvidence = {
+  def apply(allele: AlleleAtLocus, stats: PileupStats, parameters: Parameters): NormalDNASingleSampleSingleAlleleEvidence = {
     val possibleAllelePairs = Seq(
       (allele.ref, allele.ref), (allele.ref, allele.alt), (allele.alt, allele.alt))
 
@@ -45,6 +47,6 @@ object NormalDNASampleAlleleEvidence {
     }).toMap
 
     val truncatedAllelicDepths = stats.truncatedAllelicDepths(parameters.maxAllelesPerSite + 1) // +1 for ref allele
-    NormalDNASampleAlleleEvidence(allele, truncatedAllelicDepths, logLikelihoods)
+    NormalDNASingleSampleSingleAlleleEvidence(allele, truncatedAllelicDepths, logLikelihoods)
   }
 }

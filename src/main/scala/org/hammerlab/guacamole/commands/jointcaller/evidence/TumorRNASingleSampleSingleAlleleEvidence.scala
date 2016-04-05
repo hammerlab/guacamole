@@ -1,7 +1,8 @@
-package org.hammerlab.guacamole.commands.jointcaller
+package org.hammerlab.guacamole.commands.jointcaller.evidence
 
-import org.hammerlab.guacamole.commands.jointcaller.PileupStats.AlleleMixture
-import org.hammerlab.guacamole.commands.jointcaller.SampleAlleleEvidenceAnnotation._
+import PileupStats.AlleleMixture
+import org.hammerlab.guacamole.commands.jointcaller._
+import org.hammerlab.guacamole.commands.jointcaller.pileup_processing.PileupStats
 
 /**
  *
@@ -11,11 +12,11 @@ import org.hammerlab.guacamole.commands.jointcaller.SampleAlleleEvidenceAnnotati
  * @param allelicDepths Map from sequenced bases -> number of reads supporting that allele
  * @param logLikelihoods Map from allelic mixtures to log10 likelihoods
  */
-case class TumorRNASampleAlleleEvidence(allele: AlleleAtLocus,
-                                        allelicDepths: Map[String, Int],
-                                        logLikelihoods: Map[AlleleMixture, Double],
-                                        annotations: NamedAnnotations = emptyAnnotations)
-    extends SampleAlleleEvidence {
+case class TumorRNASingleSampleSingleAlleleEvidence(allele: AlleleAtLocus,
+                                                    allelicDepths: Map[String, Int],
+                                                    logLikelihoods: Map[AlleleMixture, Double],
+                                                    annotations: NamedAnnotations = emptyAnnotations)
+    extends SingleSampleSingleAlleleEvidence {
 
   /** Total depth of all reads contributing an allele. */
   def depth(): Int = allelicDepths.values.sum
@@ -23,14 +24,14 @@ case class TumorRNASampleAlleleEvidence(allele: AlleleAtLocus,
   /** Fraction of reads supporting this allele (variant allele frequency). */
   def vaf() = allelicDepths.getOrElse(allele.alt, 0).toDouble / depth
 
-  override def withAnnotations(newAnnotations: NamedAnnotations): TumorRNASampleAlleleEvidence = {
+  override def withAnnotations(newAnnotations: NamedAnnotations): TumorRNASingleSampleSingleAlleleEvidence = {
     copy(annotations = annotations ++ newAnnotations)
   }
 }
-object TumorRNASampleAlleleEvidence {
+object TumorRNASingleSampleSingleAlleleEvidence {
 
   /** Create a (serializable) TumorRNASampleAlleleEvidence instance from (non-serializable) pileup statistics. */
-  def apply(allele: AlleleAtLocus, stats: PileupStats, parameters: Parameters): TumorRNASampleAlleleEvidence = {
+  def apply(allele: AlleleAtLocus, stats: PileupStats, parameters: Parameters): TumorRNASingleSampleSingleAlleleEvidence = {
     assume(allele.ref == stats.ref, "%s != %s".format(allele.ref, stats.ref))
 
     val altVaf = math.max(parameters.somaticVafFloor, stats.vaf(allele.alt))
@@ -41,6 +42,6 @@ object TumorRNASampleAlleleEvidence {
         Seq.empty)
     val logLikelihoods = possibleMixtures.map(mixture => mixture -> stats.logLikelihoodPileup(mixture)).toMap
     val truncatedAllelicDepths = stats.truncatedAllelicDepths(parameters.maxAllelesPerSite + 1) // +1 for ref allele
-    TumorRNASampleAlleleEvidence(allele, truncatedAllelicDepths, logLikelihoods)
+    TumorRNASingleSampleSingleAlleleEvidence(allele, truncatedAllelicDepths, logLikelihoods)
   }
 }

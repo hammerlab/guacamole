@@ -1,4 +1,4 @@
-package org.hammerlab.guacamole.commands.jointcaller
+package org.hammerlab.guacamole.commands.jointcaller.pileup_processing
 
 import org.apache.spark.Logging
 import org.hammerlab.guacamole.Bases
