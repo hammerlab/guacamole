@@ -20,15 +20,17 @@ package org.hammerlab.guacamole.commands
 
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
-import org.bdgenomics.formats.avro.GenotypeAllele.{ Alt, NoCall, OtherAlt, Ref }
-import org.bdgenomics.formats.avro.{ Contig, Genotype, GenotypeAllele, Variant }
+import org.bdgenomics.formats.avro.GenotypeAllele.{Alt, NoCall, OtherAlt, Ref}
+import org.bdgenomics.formats.avro.{Contig, Genotype, GenotypeAllele, Variant}
 import org.hammerlab.guacamole.Common.Arguments.GermlineCallerArgs
+import org.hammerlab.guacamole.dist.LociPartitionUtils.partitionLociAccordingToArgs
+import org.hammerlab.guacamole.dist.PileupFlatMapUtils.pileupFlatMap
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.Read
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.variants.Allele
-import org.hammerlab.guacamole.{ Bases, Common, Concordance, DelayedMessages, DistributedUtil, SparkCommand }
-import org.kohsuke.args4j.{ Option => Args4jOption }
+import org.hammerlab.guacamole.{Bases, Common, Concordance, DelayedMessages, SparkCommand}
+import org.kohsuke.args4j.{Option => Args4jOption}
 
 import scala.collection.JavaConversions
 
@@ -79,16 +81,19 @@ object GermlineThreshold {
       val (threshold, emitRef, emitNoCall) = (args.threshold, args.emitRef, args.emitNoCall)
       val numGenotypes = sc.accumulator(0L)
       DelayedMessages.default.say { () => "Called %,d genotypes.".format(numGenotypes.value) }
-      val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(args, loci.result(readSet.contigLengths), readSet.mappedReads)
-      val genotypes: RDD[Genotype] = DistributedUtil.pileupFlatMap[Genotype](
-        readSet.mappedReads,
-        lociPartitions,
-        true, // skip empty pileups
-        pileup => {
-          val genotypes = callVariantsAtLocus(pileup, threshold, emitRef, emitNoCall)
-          numGenotypes += genotypes.length
-          genotypes.iterator
-        }, reference = reference)
+      val lociPartitions = partitionLociAccordingToArgs(args, loci.result(readSet.contigLengths), readSet.mappedReads)
+      val genotypes: RDD[Genotype] =
+        pileupFlatMap[Genotype](
+          readSet.mappedReads,
+          lociPartitions,
+          skipEmpty = true,
+          pileup => {
+            val genotypes = callVariantsAtLocus(pileup, threshold, emitRef, emitNoCall)
+            numGenotypes += genotypes.length
+            genotypes.iterator
+          },
+          reference
+        )
       readSet.mappedReads.unpersist()
       Common.writeVariantsFromArguments(args, genotypes)
       if (args.truthGenotypesFile != "")
