@@ -1,10 +1,8 @@
 package org.hammerlab.guacamole.commands.jointcaller
 
-import org.hammerlab.guacamole.Bases
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
-import org.hammerlab.guacamole.reference.ReferenceBroadcast.ArrayBackedReferenceSequence
-import org.hammerlab.guacamole.util.{ TestUtil, GuacFunSuite }
+import org.hammerlab.guacamole.util.{ GuacFunSuite, TestUtil }
 import org.scalatest.Matchers
 
 class ReadSubsequenceSuite extends GuacFunSuite with Matchers {
@@ -19,7 +17,6 @@ class ReadSubsequenceSuite extends GuacFunSuite with Matchers {
   }
 
   sparkTest("ofFixedReferenceLength") {
-    val ref = ArrayBackedReferenceSequence(sc, "NTCGATCGA")
     val reads = Seq(
       TestUtil.makeRead("TCGATCGA", "8M", 1),         // no variant
       TestUtil.makeRead("TCGACCCTCGA", "4M3I4M", 1),  // insertion
@@ -35,7 +32,6 @@ class ReadSubsequenceSuite extends GuacFunSuite with Matchers {
   }
 
   sparkTest("ofNextAltAllele") {
-    val ref = ArrayBackedReferenceSequence(sc, "NTCGATCGA")
     val reads = Seq(
       TestUtil.makeRead("TCGATCGA", "8M", 1),         // no variant
       TestUtil.makeRead("TCGAGCGA", "8M", 1),         // snv
@@ -78,7 +74,6 @@ class ReadSubsequenceSuite extends GuacFunSuite with Matchers {
         )
     )
 
-    val reference = partialReference
     val subsequences = ReadSubsequence.nextAlts(pileups(1).elements)
     assert(subsequences.nonEmpty)
 
