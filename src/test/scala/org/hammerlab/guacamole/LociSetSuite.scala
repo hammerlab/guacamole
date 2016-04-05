@@ -23,7 +23,7 @@ import org.hammerlab.guacamole.util.{ TestUtil, GuacFunSuite }
 import org.hammerlab.guacamole.reads.Read
 import org.scalatest.Matchers
 
-class LociSetSuite extends GuacFunSuite with Matchers {
+class LociSetSuite extends GuacFunSuite {
 
   test("properties of empty LociSet") {
     LociSet.empty.contigs should have length (0)

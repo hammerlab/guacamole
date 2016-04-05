@@ -26,7 +26,7 @@ import org.scalatest.Matchers
 
 import scala.collection.JavaConversions._
 
-class GermlineThresholdCallerSuite extends GuacFunSuite with Matchers {
+class GermlineThresholdCallerSuite extends GuacFunSuite {
 
   def reference = TestUtil.makeReference(sc, Seq(
     ("chr1", 0, "ATCGATCGA"),

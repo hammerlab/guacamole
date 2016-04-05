@@ -27,7 +27,7 @@ import org.hammerlab.guacamole.ReadsUtil._
 import org.scalatest.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks
 
-class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks with Matchers {
+class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks {
 
   def testLikelihoods(actualLikelihoods: Seq[(Genotype, Double)],
                       expectedLikelihoods: ((Char, Char), Double)*): Unit =

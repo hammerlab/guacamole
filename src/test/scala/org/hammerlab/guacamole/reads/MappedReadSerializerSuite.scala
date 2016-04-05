@@ -23,7 +23,7 @@ import htsjdk.samtools.TextCigarCodec
 import TestUtil.Implicits._
 import org.scalatest.Matchers
 
-class MappedReadSerializerSuite extends GuacFunSuite with Matchers {
+class MappedReadSerializerSuite extends GuacFunSuite {
 
   test("serialize / deserialize mapped read") {
     val read = MappedRead(

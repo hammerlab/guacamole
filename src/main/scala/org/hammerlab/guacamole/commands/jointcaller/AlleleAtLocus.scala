@@ -1,7 +1,6 @@
 package org.hammerlab.guacamole.commands.jointcaller
 
-import org.hammerlab.guacamole.Bases
-import org.hammerlab.guacamole.DistributedUtil.PerSample
+import org.hammerlab.guacamole.{Bases, PerSample}
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 

@@ -23,7 +23,7 @@ import org.hammerlab.guacamole.util.{ TestUtil, GuacFunSuite }
 import TestUtil.Implicits._
 import org.scalatest.Matchers
 
-class MappedReadSuite extends GuacFunSuite with Matchers {
+class MappedReadSuite extends GuacFunSuite {
 
   test("mappedread is mapped") {
     val read = MappedRead(
