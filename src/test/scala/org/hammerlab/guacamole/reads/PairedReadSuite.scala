@@ -8,13 +8,12 @@ class PairedReadSuite extends FunSuite with Matchers {
 
   test("unmappedread paired read is not mapped") {
     val unmappedRead = UnmappedRead(
-      5, // token
       "read1",
       "TCGACCCTCGA",
       Array[Byte]((10 to 20).map(_.toByte): _*),
-      true,
+      isDuplicate = true,
       "some sample name",
-      false,
+      failedVendorQualityChecks = false,
       isPaired = true)
 
     val read =
@@ -41,13 +40,12 @@ class PairedReadSuite extends FunSuite with Matchers {
   test("mixed collections mapped and unmapped read pairs") {
     val uread = PairedRead(
       UnmappedRead(
-        5, // token
         "read1",
         "TCGACCCTCGA",
         Array[Byte]((10 to 20).map(_.toByte): _*),
-        true,
+        isDuplicate = true,
         "some sample name",
-        false,
+        failedVendorQualityChecks = false,
         isPaired = true),
       isFirstInPair = true,
       mateAlignmentProperties = Some(
@@ -62,17 +60,16 @@ class PairedReadSuite extends FunSuite with Matchers {
 
     val mread = PairedRead(
       MappedRead(
-        5, // token
         "read1",
         "TCGACCCTCGA",
         Array[Byte]((10 to 20).map(_.toByte): _*),
-        true,
-        "some sample name",
-        "chr5",
-        50,
-        325352323,
-        TextCigarCodec.decode(""),
-        false,
+        isDuplicate = true,
+        sampleName = "some sample name",
+        referenceContig = "chr5",
+        alignmentQuality = 50,
+        start = 325352323,
+        cigar = TextCigarCodec.decode(""),
+        failedVendorQualityChecks = false,
         isPositiveStrand = true,
         isPaired = true),
       isFirstInPair = true,
