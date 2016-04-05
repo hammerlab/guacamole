@@ -48,7 +48,6 @@ object SomaticJoint {
           sc,
           input.path,
           Read.InputFilters(overlapsLoci = Some(loci)),
-          token = index,
           contigLengthsFromDictionary = contigLengthsFromDictionary
         )
     }

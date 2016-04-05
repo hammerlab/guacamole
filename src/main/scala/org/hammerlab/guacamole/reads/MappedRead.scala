@@ -35,7 +35,6 @@ import scala.collection.JavaConversions
  * @param cigar parsed samtools CIGAR object.
  */
 case class MappedRead(
-    token: Int,
     name: String,
     sequence: IndexedSeq[Byte],
     baseQualities: IndexedSeq[Byte],

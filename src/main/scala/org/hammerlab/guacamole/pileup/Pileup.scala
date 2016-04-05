@@ -65,16 +65,6 @@ case class Pileup(referenceName: String,
   }
 
   /**
-   * Split this [[Pileup]] by the read token. Returns a map from token to [[Pileup]] instances that use only reads
-   * with that token.
-   */
-  lazy val byToken: Map[Int, Pileup] = {
-    elements.groupBy(element => element.read.token).map({
-      case (token, newElements) => (token, Pileup(referenceName, locus, referenceContigSequence, newElements))
-    })
-  }
-
-  /**
    * Depth of pileup - number of reads at locus
    */
   lazy val depth: Int = elements.length

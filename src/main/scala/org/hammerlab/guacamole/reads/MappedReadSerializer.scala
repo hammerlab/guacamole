@@ -27,7 +27,6 @@ import org.bdgenomics.adam.util.MdTag
 class MappedReadSerializer extends Serializer[MappedRead] {
 
   def write(kryo: Kryo, output: Output, obj: MappedRead) = {
-    output.writeInt(obj.token)
     output.writeString(obj.name)
     assert(obj.sequence.length == obj.baseQualities.length)
     output.writeInt(obj.sequence.length, true)
@@ -45,7 +44,6 @@ class MappedReadSerializer extends Serializer[MappedRead] {
   }
 
   def read(kryo: Kryo, input: Input, klass: Class[MappedRead]): MappedRead = {
-    val token = input.readInt()
     val name = input.readString()
     val count: Int = input.readInt(true)
     val sequenceArray: IndexedSeq[Byte] = input.readBytes(count).toVector
@@ -63,7 +61,6 @@ class MappedReadSerializer extends Serializer[MappedRead] {
     val isPaired = input.readBoolean()
 
     MappedRead(
-      token,
       name,
       sequenceArray,
       qualityScoresArray,

@@ -104,7 +104,6 @@ object VAFHistogram {
             sc,
             bamFile._1,
             InputFilters.empty,
-            token = bamFile._2,
             contigLengthsFromDictionary = true,
             config = Common.Arguments.ReadLoadingConfigArgs.fromArguments(args)
           )
@@ -195,7 +194,11 @@ object VAFHistogram {
       val variantPercent = (variantAlleleFrequency * 100).toInt
       variantPercent - (variantPercent % (100 / bins))
     }
-    variantAlleleFrequencies.keyBy(vaf => roundToBin(vaf.variantAlleleFrequency)).countByKey().toMap
+    variantAlleleFrequencies
+      .map(vaf ⇒ roundToBin(vaf.variantAlleleFrequency) → 1L)
+      .reduceByKey(_ + _)
+      .collectAsMap
+      .toMap
   }
 
   /**

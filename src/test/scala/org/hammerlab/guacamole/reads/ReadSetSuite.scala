@@ -23,30 +23,67 @@ import org.bdgenomics.adam.rdd.read.AlignmentRecordRDDFunctions
 import org.bdgenomics.adam.rdd.{ ADAMContext, ADAMSaveAnyArgs }
 import org.hammerlab.guacamole.LociSet
 import org.hammerlab.guacamole.reads.Read.InputFilters
-import org.hammerlab.guacamole.util.{ GuacFunSuite, TestUtil }
+import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
 import org.scalatest.Matchers
 
 class ReadSetSuite extends GuacFunSuite with Matchers {
 
+  case class LazyMessage(msg: () => String) {
+    override def toString: String = msg()
+  }
+
   sparkTest("using different bam reading APIs on sam/bam files should give identical results") {
     def check(paths: Seq[String], filter: InputFilters): Unit = {
       withClue("using filter %s: ".format(filter)) {
-        val configs = Read.ReadLoadingConfig.BamReaderAPI.values.map(api => Read.ReadLoadingConfig(bamReaderAPI = api)).toSeq
-        val standard = TestUtil.loadReads(sc, paths(0), filter, config = configs(0)).reads.collect
-        configs.foreach(config => {
-          paths.foreach(path => {
-            withClue("file %s with config %s vs standard %s with config %s:\n".format(path, config, paths(0), configs(0))) {
-              val result = TestUtil.loadReads(sc, path, filter, config = config).reads.collect
-              if (result.toSet != standard.toSet) {
-                val missing = standard.filter(!result.contains(_))
-                assert(missing.isEmpty, "Missing reads: %s".format(missing.map(_.toString).mkString("\n\t")))
-                val extra = result.filter(!standard.contains(_))
-                assert(extra.isEmpty, "Extra reads:\n\t%s".format(extra.map(_.toString).mkString("\n\t")))
-                assert(false, "shouldn't get here")
-              }
-            }
-          })
-        })
+
+        val firstPath = paths.head
+
+        val configs =
+          Read.ReadLoadingConfig.BamReaderAPI.values
+            .map(api => Read.ReadLoadingConfig(bamReaderAPI = api))
+
+        val firstConfig = configs.head
+
+        val standard =
+          TestUtil.loadReads(
+            sc,
+            paths.head,
+            filter,
+            config = configs.head
+          ).reads.collect
+
+        for {
+          config <- configs
+          path <- paths
+          if config != firstConfig || path != firstPath
+        } {
+          withClue(s"file $path with config $config vs standard ${firstPath} with config ${firstConfig}:\n") {
+
+            val result =
+              TestUtil.loadReads(
+                sc,
+                path,
+                filter,
+                config = config
+              ).reads.collect
+
+            assert(
+              result.sameElements(standard),
+              LazyMessage(
+                () => {
+                  val missing = standard.filter(!result.contains(_))
+                  val extra = result.filter(!standard.contains(_))
+                  List(
+                    "Missing reads:",
+                    missing.mkString("\t", "\n\t", "\n"),
+                    "Extra reads:",
+                    extra.mkString("\t", "\n\t", "\n")
+                  ).mkString("\n")
+                }
+              )
+            )
+          }
+        }
       }
     }
 
@@ -102,17 +139,15 @@ class ReadSetSuite extends GuacFunSuite with Matchers {
     }
     new AlignmentRecordRDDFunctions(adamRecords.rdd).saveAsParquet(args, adamRecords.sequences, adamRecords.recordGroups)
 
-    val (allReads, _) = Read.loadReadRDDAndSequenceDictionaryFromADAM(adamOut, sc, token = 0)
+    val (allReads, _) = Read.loadReadRDDAndSequenceDictionaryFromADAM(adamOut, sc)
     allReads.count() should be(8)
 
     val (filteredReads, _) = Read.loadReadRDDAndSequenceDictionary(
       adamOut,
       sc,
-      1,
       Read.InputFilters(mapped = true, nonDuplicate = true)
     )
     filteredReads.count() should be(3)
-    filteredReads.collect().forall(_.token == 1) should be(true)
   }
 
   sparkTest("load and serialize / deserialize reads") {
@@ -120,7 +155,6 @@ class ReadSetSuite extends GuacFunSuite with Matchers {
     val serializedReads = reads.map(TestUtil.serialize)
     val deserializedReads: Seq[MappedRead] = serializedReads.map(TestUtil.deserialize[MappedRead](_))
     for ((read, deserialized) <- reads.zip(deserializedReads)) {
-      deserialized.token should equal(read.token)
       deserialized.referenceContig should equal(read.referenceContig)
       deserialized.alignmentQuality should equal(read.alignmentQuality)
       deserialized.start should equal(read.start)

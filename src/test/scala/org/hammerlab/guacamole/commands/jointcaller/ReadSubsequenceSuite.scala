@@ -1,8 +1,8 @@
 package org.hammerlab.guacamole.commands.jointcaller
 
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.reference.{ ContigSequence, ReferenceGenome }
-import org.hammerlab.guacamole.util.{ GuacFunSuite, TestUtil }
+import org.hammerlab.guacamole.reference.ReferenceGenome
+import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
 import org.scalatest.Matchers
 
 class ReadSubsequenceSuite extends GuacFunSuite with Matchers {
