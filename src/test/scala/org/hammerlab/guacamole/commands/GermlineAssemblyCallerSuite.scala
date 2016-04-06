@@ -76,7 +76,7 @@ class GermlineAssemblyCallerSuite extends FunSuite with Matchers with BeforeAndA
 
     val actualVariants =
       for {
-        CalledAllele(_, contig, start, allele, _, _, _) ← variants
+        CalledAllele(_, contig, start, allele, _, _, _) <- variants
       } yield {
         (contig, start, Bases.basesToString(allele.refBases), Bases.basesToString(allele.altBases))
       }

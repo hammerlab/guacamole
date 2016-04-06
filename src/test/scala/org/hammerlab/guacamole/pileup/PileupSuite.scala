@@ -251,7 +251,7 @@ class PileupSuite extends GuacFunSuite with Matchers with TableDrivenPropertyChe
 
     val decadentRead1 = testAdamRecords(0)
 
-    // read1 starts at SAM:6 → 0-based 5
+    // read1 starts at SAM:6 -> 0-based 5
     // and has CIGAR: 29M10D31M
     // so, the length is 70
     intercept[AssertionError] {
