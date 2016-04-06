@@ -71,7 +71,7 @@ case class ReadSet(
       builder.result
     } else {
       mappedReads
-        .map(read => read.referenceContig → read.end)
+        .map(read => read.referenceContig -> read.end)
         .reduceByKey(math.max)
         .collectAsMap()
         .toMap
