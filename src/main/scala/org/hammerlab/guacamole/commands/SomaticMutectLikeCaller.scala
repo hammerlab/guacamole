@@ -163,8 +163,7 @@ object SomaticMutectLike {
         Common.loadTumorNormalReadsFromArguments(
           args,
           sc,
-          filters,
-          reference = reference)
+          filters)
 
       assert(tumorReads.sequenceDictionary == normalReads.sequenceDictionary,
         "Tumor and normal samples have different sequence dictionaries. Tumor dictionary: %s.\nNormal dictionary: %s."
