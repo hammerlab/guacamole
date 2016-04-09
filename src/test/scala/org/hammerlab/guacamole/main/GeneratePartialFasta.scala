@@ -1,13 +1,13 @@
-package org.hammerlab.guacamole.other_entrypoints
+package org.hammerlab.guacamole.main
 
-import java.io.{ BufferedWriter, File, FileWriter }
+import java.io.{BufferedWriter, File, FileWriter}
 
 import org.apache.spark.Logging
 import org.bdgenomics.utils.cli.Args4j
 import org.hammerlab.guacamole._
 import org.hammerlab.guacamole.reads.Read.InputFilters
-import org.hammerlab.guacamole.reference.{ ContigNotFound, ReferenceBroadcast }
-import org.kohsuke.args4j.{ Argument, Option => Args4jOption }
+import org.hammerlab.guacamole.reference.{ContigNotFound, ReferenceBroadcast}
+import org.kohsuke.args4j.{Argument, Option => Args4jOption}
 
 /**
  * This command is used to generate a "partial fasta" which we use in our tests of variant callers. It should be run
@@ -38,7 +38,7 @@ object GeneratePartialFasta extends Logging {
 
   def main(rawArgs: Array[String]): Unit = {
     val args = Args4j[Arguments](rawArgs)
-    val sc = Common.createSparkContext(appName = Some("generate-partial-fasta"))
+    val sc = Common.createSparkContext(appName = "generate-partial-fasta")
 
     val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
     val lociBuilder = Common.lociFromArguments(args, default = "none")
@@ -47,16 +47,16 @@ object GeneratePartialFasta extends Logging {
         sc,
         fileAndIndex._1,
         InputFilters.empty,
-        token = fileAndIndex._2,
-        reference = reference,
-        config = Common.Arguments.ReadLoadingConfigArgs.fromArguments(args)))
+        config = Common.Arguments.ReadLoadingConfigArgs.fromArguments(args)
+      )
+    )
 
     val reads = sc.union(readSets.map(_.mappedReads))
     val contigLengths = readSets.head.contigLengths
 
     val regions = reads.map(read => (read.referenceContig, read.start, read.end))
     regions.collect.foreach(triple => {
-      lociBuilder.put(triple._1, triple._2, Some(triple._3))
+      lociBuilder.put(triple._1, triple._2, triple._3)
     })
 
     val loci = lociBuilder.result

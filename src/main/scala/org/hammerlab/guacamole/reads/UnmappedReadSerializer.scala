@@ -24,7 +24,6 @@ import com.esotericsoftware.kryo.{ Kryo, Serializer }
 // Serialization: UnmappedRead
 class UnmappedReadSerializer extends Serializer[UnmappedRead] {
   def write(kryo: Kryo, output: Output, obj: UnmappedRead) = {
-    output.writeInt(obj.token)
     output.writeString(obj.name)
     assert(obj.sequence.length == obj.baseQualities.length)
     output.writeInt(obj.sequence.length, true)
@@ -38,18 +37,16 @@ class UnmappedReadSerializer extends Serializer[UnmappedRead] {
   }
 
   def read(kryo: Kryo, input: Input, klass: Class[UnmappedRead]): UnmappedRead = {
-    val token = input.readInt()
     val name: String = input.readString()
     val count: Int = input.readInt(true)
-    val sequenceArray: Seq[Byte] = input.readBytes(count)
-    val qualityScoresArray = input.readBytes(count)
+    val sequenceArray: Vector[Byte] = input.readBytes(count).toVector
+    val qualityScoresArray = input.readBytes(count).toVector
     val isDuplicate = input.readBoolean()
     val sampleName = input.readString().intern()
     val failedVendorQualityChecks = input.readBoolean()
     val isPaired = input.readBoolean()
 
     UnmappedRead(
-      token,
       name,
       sequenceArray,
       qualityScoresArray,

@@ -24,14 +24,13 @@ import htsjdk.samtools._
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.io.LongWritable
 import org.apache.spark.rdd.RDD
-import org.apache.spark.{ Logging, SparkContext }
+import org.apache.spark.{Logging, SparkContext}
 import org.bdgenomics.adam.models.SequenceDictionary
-import org.bdgenomics.adam.rdd.{ ADAMContext, ADAMSpecificRecordSequenceDictionaryRDDAggregator }
+import org.bdgenomics.adam.rdd.{ADAMContext, ADAMSpecificRecordSequenceDictionaryRDDAggregator}
 import org.bdgenomics.formats.avro.AlignmentRecord
-import org.hammerlab.guacamole.{ Common, LociSet, Bases }
-import org.hammerlab.guacamole.reference.ReferenceGenome
+import org.hammerlab.guacamole.{Bases, Common, LociSet}
 import org.seqdoop.hadoop_bam.util.SAMHeaderReader
-import org.seqdoop.hadoop_bam.{ AnySAMInputFormat, SAMRecordWritable }
+import org.seqdoop.hadoop_bam.{AnySAMInputFormat, SAMRecordWritable}
 
 import scala.collection.JavaConversions
 
@@ -39,16 +38,6 @@ import scala.collection.JavaConversions
  * The fields in the Read trait are common to any read, whether mapped (aligned) or not.
  */
 trait Read {
-  /**
-   * Each read has a "token", which is an arbitrary integer for use by the application. Unlike the other fields,
-   * a read's token does NOT correspond to any underlying column in e.g. the BAM file.
-   *
-   * It's used, for example, to differentiate tumor/normal pairs in some somatic callers.
-   *
-   * This field can be set when reading in the reads, or modified at any point by the application.
-   *
-   */
-  def token: Int
 
   /* The template name. A read, its mate, and any alternate alignments have the same name. */
   def name: String
@@ -91,10 +80,10 @@ object Read extends Logging {
    * @param isPaired include only reads are paired-end reads
    */
   case class InputFilters(
-    val overlapsLoci: Option[LociSet.Builder],
-    val nonDuplicate: Boolean,
-    val passedVendorQualityChecks: Boolean,
-    val isPaired: Boolean) {}
+    overlapsLoci: Option[LociSet.Builder],
+    nonDuplicate: Boolean,
+    passedVendorQualityChecks: Boolean,
+    isPaired: Boolean) {}
   object InputFilters {
     val empty = InputFilters()
 
@@ -151,7 +140,6 @@ object Read extends Logging {
   def apply(
     sequence: String,
     name: String,
-    token: Int = 0,
     baseQualities: String = "",
     isDuplicate: Boolean = false,
     sampleName: String = "",
@@ -168,7 +156,6 @@ object Read extends Logging {
 
     val cigar = TextCigarCodec.decode(cigarString)
     MappedRead(
-      token,
       name,
       sequenceArray,
       qualityScoresArray,
@@ -208,9 +195,7 @@ object Read extends Logging {
    * @param record
    * @return
    */
-  def fromSAMRecord(record: SAMRecord,
-                    token: Int,
-                    reference: ReferenceGenome): Read = {
+  def fromSAMRecord(record: SAMRecord): Read = {
 
     val isMapped = (
       !record.getReadUnmappedFlag &&
@@ -227,7 +212,6 @@ object Read extends Logging {
 
     val read = if (isMapped) {
       val result = MappedRead(
-        token,
         record.getReadName,
         record.getReadString.getBytes,
         record.getBaseQualities,
@@ -249,7 +233,6 @@ object Read extends Logging {
       result
     } else {
       UnmappedRead(
-        token,
         record.getReadName,
         record.getReadString.getBytes,
         record.getBaseQualities,
@@ -305,33 +288,25 @@ object Read extends Logging {
    *
    * @param filename name of file containing reads
    * @param sc spark context
-   * @param token value to set the "token" field to in all the reads (default 0)
    * @param filters filters to apply
-   * @param reference
    * @return
    */
   def loadReadRDDAndSequenceDictionary(filename: String,
                                        sc: SparkContext,
-                                       token: Int,
                                        filters: InputFilters,
-                                       reference: ReferenceGenome,
                                        config: ReadLoadingConfig = ReadLoadingConfig.default): (RDD[Read], SequenceDictionary) = {
     if (filename.endsWith(".bam") || filename.endsWith(".sam")) {
       loadReadRDDAndSequenceDictionaryFromBAM(
         filename,
         sc,
-        token,
         filters,
-        reference,
         config
       )
     } else {
       loadReadRDDAndSequenceDictionaryFromADAM(
         filename,
         sc,
-        token,
         filters,
-        reference,
         config
       )
     }
@@ -341,9 +316,7 @@ object Read extends Logging {
   def loadReadRDDAndSequenceDictionaryFromBAM(
     filename: String,
     sc: SparkContext,
-    token: Int = 0,
     filters: InputFilters = InputFilters.empty,
-    reference: ReferenceGenome,
     config: ReadLoadingConfig = ReadLoadingConfig.default): (RDD[Read], SequenceDictionary) = {
 
     val path = new Path(filename)
@@ -395,7 +368,7 @@ object Read extends Logging {
             (filters.isPaired && !record.getReadPairedFlag)) {
           None
         } else {
-          val read = fromSAMRecord(record, token, reference)
+          val read = fromSAMRecord(record)
           assert(filters.overlapsLoci.isEmpty || read.isMapped)
           Some(read)
         }
@@ -410,12 +383,9 @@ object Read extends Logging {
       val samRecords: RDD[(LongWritable, SAMRecordWritable)] =
         sc.newAPIHadoopFile[LongWritable, SAMRecordWritable, AnySAMInputFormat](filename)
       val allReads: RDD[Read] =
-        samRecords.map({
-          case (k, v) => fromSAMRecord(
-            v.get,
-            token,
-            reference)
-        })
+        samRecords.map {
+          case (k, v) => fromSAMRecord(v.get)
+        }
       val reads = InputFilters.filterRDD(filters, allReads, sequenceDictionary)
       (reads, sequenceDictionary)
     }
@@ -424,9 +394,7 @@ object Read extends Logging {
   /** Returns an RDD of Reads and SequenceDictionary from reads in ADAM format **/
   def loadReadRDDAndSequenceDictionaryFromADAM(filename: String,
                                                sc: SparkContext,
-                                               token: Int = 0,
                                                filters: InputFilters = InputFilters.empty,
-                                               reference: ReferenceGenome,
                                                config: ReadLoadingConfig = ReadLoadingConfig.default): (RDD[Read], SequenceDictionary) = {
 
     Common.progress("Using ADAM to read: %s".format(filename))
@@ -437,7 +405,7 @@ object Read extends Logging {
       filename, projection = None, stringency = ValidationStringency.LENIENT).rdd
     val sequenceDictionary = new ADAMSpecificRecordSequenceDictionaryRDDAggregator(adamRecords).adamGetSequenceDictionary()
 
-    val allReads: RDD[Read] = adamRecords.map(fromADAMRecord(_, token, reference))
+    val allReads: RDD[Read] = adamRecords.map(fromADAMRecord(_))
     val reads = InputFilters.filterRDD(filters, allReads, sequenceDictionary)
     (reads, sequenceDictionary)
   }
@@ -449,22 +417,21 @@ object Read extends Logging {
    * @param alignmentRecord ADAM Alignment Record (an aligned or unaligned read)
    * @return Mapped or Unmapped Read
    */
-  def fromADAMRecord(alignmentRecord: AlignmentRecord, token: Int, reference: ReferenceGenome): Read = {
+  def fromADAMRecord(alignmentRecord: AlignmentRecord): Read = {
 
-    val sequence = Bases.stringToBases(alignmentRecord.getSequence.toString)
-    val baseQualities = baseQualityStringToArray(alignmentRecord.getQual.toString, sequence.length)
+    val sequence = Bases.stringToBases(alignmentRecord.getSequence)
+    val baseQualities = baseQualityStringToArray(alignmentRecord.getQual, sequence.length)
 
     val referenceContig = alignmentRecord.getContig.getContigName.intern
     val cigar = TextCigarCodec.decode(alignmentRecord.getCigar)
 
     val read = if (alignmentRecord.getReadMapped) {
       MappedRead(
-        token = token,
         name = alignmentRecord.getReadName,
         sequence = sequence,
         baseQualities = baseQualities,
         isDuplicate = alignmentRecord.getDuplicateRead,
-        sampleName = alignmentRecord.getRecordGroupSample.toString.intern(),
+        sampleName = alignmentRecord.getRecordGroupSample.intern(),
         referenceContig = referenceContig,
         alignmentQuality = alignmentRecord.getMapq,
         start = alignmentRecord.getStart,
@@ -475,12 +442,11 @@ object Read extends Logging {
       )
     } else {
       UnmappedRead(
-        token = token,
         name = alignmentRecord.getReadName,
         sequence = sequence,
         baseQualities = baseQualities,
         isDuplicate = alignmentRecord.getDuplicateRead,
-        sampleName = alignmentRecord.getRecordGroupSample.toString.intern(),
+        sampleName = alignmentRecord.getRecordGroupSample.intern(),
         failedVendorQualityChecks = alignmentRecord.getFailedVendorQualityChecks,
         alignmentRecord.getReadPaired
       )

@@ -29,7 +29,7 @@ object FishersExactTest {
       ArithmeticUtils.binomialCoefficientLog(totalA + totalB, conditionA + conditionB))
   }
 
-  /** Fisher's exact test, returned as log base 10 probability. */
+  /** Fisher's exact test, returned as -1 * log base 10 probability (i.e. a positive number). */
   def asLog10(totalA: Int, totalB: Int, conditionA: Int, conditionB: Int): Double = {
     (ArithmeticUtils.binomialCoefficientLog(totalA, conditionA) +
       ArithmeticUtils.binomialCoefficientLog(totalB, conditionB) -

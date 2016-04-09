@@ -23,10 +23,9 @@ package org.hammerlab.guacamole.reads
  *
  */
 case class UnmappedRead(
-    token: Int,
     name: String,
-    sequence: Seq[Byte],
-    baseQualities: Seq[Byte],
+    sequence: IndexedSeq[Byte],
+    baseQualities: IndexedSeq[Byte],
     isDuplicate: Boolean,
     sampleName: String,
     failedVendorQualityChecks: Boolean,

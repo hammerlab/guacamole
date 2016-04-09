@@ -1,22 +1,27 @@
-package org.hammerlab.guacamole.commands.jointcaller
+package org.hammerlab.guacamole.main
 
-import org.hammerlab.guacamole.VariantComparisonUtils.{ compareToCSV, compareToVCF, csvRecords }
-import org.hammerlab.guacamole.util.{ GuacFunSuite, TestUtil }
-import org.hammerlab.guacamole.{ CancerWGSTestUtils, LociSet, NA12878TestUtils }
-import org.scalatest.Matchers
+import org.hammerlab.guacamole.VariantComparisonUtils.{compareToCSV, compareToVCF, csvRecords}
+import org.hammerlab.guacamole.commands.jointcaller.SomaticJoint
+import org.hammerlab.guacamole.util.TestUtil
+import org.hammerlab.guacamole.{CancerWGSTestUtils, Common, LociSet, NA12878TestUtils}
 
-// This test currently does not make any assertions, but outputs a performance comparison. We may want to add assertions
-// on the accuracy later.
-class SomaticJointCallerIntegrationTests extends GuacFunSuite with Matchers {
+// This app outputs a performance comparison. We may want to add assertions on the accuracy later.
+object SomaticJointCallerIntegrationTests {
 
   var tempFileNum = 0
+
   def tempFile(suffix: String): String = {
     tempFileNum += 1
     "/tmp/test-somatic-joint-caller-%d.vcf".format(tempFileNum)
   }
 
-  sparkTest("somatic calling on subset of 3-sample cancer patient 1") {
+  def main(args: Array[String]): Unit = {
+
+    val sc = Common.createSparkContext("SomaticJointCallerIntegrationTest")
+
+    println("somatic calling on subset of 3-sample cancer patient 1")
     val outDir = "/tmp/guacamole-somatic-joint-test"
+
     if (true) {
       if (true) {
         val args = new SomaticJoint.Arguments()
@@ -31,13 +36,12 @@ class SomaticJointCallerIntegrationTests extends GuacFunSuite with Matchers {
         csvRecords(CancerWGSTestUtils.cancerWGS1ExpectedSomaticCallsCSV).filter(!_.tumor.contains("decoy")).foreach(record => {
           forceCallLoci.put("chr" + record.contig,
             if (record.alt.nonEmpty) record.interbaseStart else record.interbaseStart - 1,
-            if (record.alt.nonEmpty) Some(record.interbaseStart + 1) else Some(record.interbaseStart))
+            if (record.alt.nonEmpty) record.interbaseStart + 1 else record.interbaseStart)
         })
         args.forceCallLoci = forceCallLoci.result.truncatedString(100000)
 
         SomaticJoint.Caller.run(args, sc)
       }
-
       println("************* CANCER WGS1 SOMATIC CALLS *************")
 
       compareToCSV(
@@ -47,9 +51,8 @@ class SomaticJointCallerIntegrationTests extends GuacFunSuite with Matchers {
         Set("primary", "recurrence")
       )
     }
-  }
 
-  sparkTest("germline calling on subset of illumina platinum NA12878") {
+    println("germline calling on subset of illumina platinum NA12878")
     if (true) {
       val resultFile = tempFile(".vcf")
       println(resultFile)

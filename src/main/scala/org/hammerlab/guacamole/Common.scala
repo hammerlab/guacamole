@@ -29,14 +29,13 @@ import org.apache.hadoop.fs.{ FileSystem, Path }
 import org.apache.hadoop.mapred.FileAlreadyExistsException
 import org.apache.spark.rdd.RDD
 import org.apache.spark.{ Logging, SparkConf, SparkContext }
-import org.bdgenomics.utils.cli.{ Args4jBase, ParquetArgs }
 import org.bdgenomics.adam.rdd.ADAMContext._
 import org.bdgenomics.formats.avro.Genotype
+import org.bdgenomics.utils.cli.{ Args4jBase, ParquetArgs }
+import org.codehaus.jackson.JsonFactory
 import org.hammerlab.guacamole.Common.Arguments.ReadLoadingConfigArgs
 import org.hammerlab.guacamole.Concordance.ConcordanceArgs
 import org.hammerlab.guacamole.reads.Read
-import org.codehaus.jackson.JsonFactory
-import org.hammerlab.guacamole.reference.ReferenceGenome
 import org.kohsuke.args4j.{ Option => Args4jOption }
 
 /**
@@ -155,23 +154,19 @@ object Common extends Logging {
   def loadReadsFromArguments(
     args: Arguments.Reads,
     sc: SparkContext,
-    filters: Read.InputFilters,
-    reference: ReferenceGenome): ReadSet = {
+    filters: Read.InputFilters): ReadSet = {
 
     ReadSet(
       sc,
       args.reads,
       filters,
-      token = 0,
       contigLengthsFromDictionary = !args.noSequenceDictionary,
-      reference = reference,
-      config = ReadLoadingConfigArgs.fromArguments(args))
+      config = ReadLoadingConfigArgs.fromArguments(args)
+    )
   }
 
   /**
    * Given arguments for two sets of reads (tumor and normal), return a pair of (tumor, normal) read sets.
-   *
-   * The 'token' field will be set to 1 in the tumor reads, and 2 in the normal reads.
    *
    * @param args parsed arguments
    * @param sc spark context
@@ -180,25 +175,23 @@ object Common extends Logging {
   def loadTumorNormalReadsFromArguments(
     args: Arguments.TumorNormalReads,
     sc: SparkContext,
-    filters: Read.InputFilters,
-    reference: ReferenceGenome): (ReadSet, ReadSet) = {
+    filters: Read.InputFilters): (ReadSet, ReadSet) = {
 
     val tumor = ReadSet(
       sc,
       args.tumorReads,
       filters,
-      1,
       !args.noSequenceDictionary,
-      reference,
-      ReadLoadingConfigArgs.fromArguments(args))
+      ReadLoadingConfigArgs.fromArguments(args)
+    )
+
     val normal = ReadSet(
       sc,
       args.normalReads,
       filters,
-      2,
       !args.noSequenceDictionary,
-      reference,
-      ReadLoadingConfigArgs.fromArguments(args))
+      ReadLoadingConfigArgs.fromArguments(args)
+    )
     (tumor, normal)
   }
 
@@ -231,24 +224,25 @@ object Common extends Logging {
    * @param filePath path to file containing loci. If it ends in '.vcf' then it is read as a VCF and the variant sites
    *                 are the loci. If it ends in '.loci' or '.txt' then it should be a file containing loci as
    *                 "chrX:5-10,chr12-10-20", etc. Whitespace is ignored.
-   * @param readSet readset to use for contig names
+   * @param contigLengths contig lengths, by name
    * @return a LociSet
    */
-  def lociFromFile(filePath: String, readSet: ReadSet): LociSet = {
+  def lociFromFile(filePath: String, contigLengths: Map[String, Long]): LociSet = {
     if (filePath.endsWith(".vcf")) {
       val builder = LociSet.newBuilder
       val reader = new VCFFileReader(new File(filePath), false)
       val iterator = reader.iterator
       while (iterator.hasNext) {
         val value = iterator.next()
-        builder.put(value.getContig, value.getStart - 1, Some(value.getEnd.toLong))
+        builder.put(value.getContig, value.getStart - 1, value.getEnd.toLong)
       }
       builder.result
     } else if (filePath.endsWith(".loci") || filePath.endsWith(".txt")) {
       val filesystem = FileSystem.get(new Configuration())
       val path = new Path(filePath)
       LociSet.parse(
-        IOUtils.toString(new InputStreamReader(filesystem.open(path)))).result(readSet.contigLengths)
+        IOUtils.toString(new InputStreamReader(filesystem.open(path)))
+      ).result(contigLengths)
     } else {
       throw new IllegalArgumentException(
         "Couldn't guess format for file: %s. Expected file extensions: '.loci' or '.txt' for loci string format; '.vcf' for VCFs.".format(filePath))
@@ -262,20 +256,20 @@ object Common extends Logging {
    *
    * @param loci loci to load as a string
    * @param lociFromFilePath path to file containing loci to load
-   * @param readSet readset to use for contig names
+   * @param contigLengths contig lengths, by name
    * @return a LociSet
    */
-  def loci(loci: String, lociFromFilePath: String, readSet: ReadSet): LociSet = {
+  def loci(loci: String, lociFromFilePath: String, contigLengths: Map[String, Long]): LociSet = {
     if (loci.nonEmpty && lociFromFilePath.nonEmpty) {
       throw new IllegalArgumentException("Specify at most one of the 'loci' and 'loci-from-file' arguments")
     }
     if (loci.nonEmpty) {
-      LociSet.parse(loci).result(Some(readSet.contigLengths))
+      LociSet.parse(loci).result(Some(contigLengths))
     } else if (lociFromFilePath.nonEmpty) {
-      lociFromFile(lociFromFilePath, readSet)
+      lociFromFile(lociFromFilePath, contigLengths)
     } else {
       // Default is "all"
-      LociSet.parse("all").result(Some(readSet.contigLengths))
+      LociSet.parse("all").result(Some(contigLengths))
     }
   }
 
@@ -371,6 +365,7 @@ object Common extends Logging {
    * @param appName
    * @return
    */
+  def createSparkContext(appName: String): SparkContext = createSparkContext(Some(appName))
   def createSparkContext(appName: Option[String] = None): SparkContext = {
     val config: SparkConf = new SparkConf()
     appName match {

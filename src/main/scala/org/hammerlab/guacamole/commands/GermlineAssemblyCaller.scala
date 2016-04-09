@@ -79,7 +79,6 @@ object GermlineAssemblyCaller {
      * @param reads  Set of reads to extract sequence from
      * @param startLocus Start (inclusive) locus on the reference
      * @param endLocus End (exclusive) locus on the reference
-     * @param kmerSize Length of the subsequence
      * @param minOccurrence Mininum number of times a subsequence needs to appear to be included
      * @return List of subsequences overlapping [startLocus, endLocus) that appear at least `minOccurrence` time
      */
@@ -248,8 +247,12 @@ object GermlineAssemblyCaller {
       val readSet = Common.loadReadsFromArguments(
         args,
         sc,
-        Read.InputFilters(overlapsLoci = Some(loci), mapped = true, nonDuplicate = true),
-        reference = reference)
+        Read.InputFilters(
+          overlapsLoci = Some(loci),
+          mapped = true,
+          nonDuplicate = true
+        )
+      )
 
       val minAlignmentQuality = args.minAlignmentQuality
       val qualityReads = readSet
@@ -292,7 +295,7 @@ object GermlineAssemblyCaller {
 
       val genotypes: RDD[CalledAllele] =
         DistributedUtil.windowFlatMapWithState[MappedRead, CalledAllele, Option[DeBruijnGraph]](
-          Seq(reads),
+          Vector(reads),
           lociPartitions,
           skipEmpty = true,
           halfWindowSize = snvWindowRange,

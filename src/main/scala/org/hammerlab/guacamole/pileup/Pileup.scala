@@ -48,7 +48,7 @@ case class Pileup(referenceName: String, locus: Long, referenceContigSequence: C
       referenceName, elements.map(_.read.referenceContig).filter(_ != referenceName).mkString(",")))
   assume(elements.forall(_.locus == locus), "Reads in pileup have mismatching loci")
 
-  lazy val distinctAlleles: Seq[Allele] = elements.map(_.allele).distinct.sorted.toIndexedSeq
+  lazy val distinctAlleles: Seq[Allele] = elements.map(_.allele).distinct.sorted.toVector
 
   lazy val sampleName = elements.head.read.sampleName
 
@@ -59,16 +59,6 @@ case class Pileup(referenceName: String, locus: Long, referenceContigSequence: C
   lazy val bySample: Map[String, Pileup] = {
     elements.groupBy(element => Option(element.read.sampleName).map(_.toString).getOrElse("default")).map({
       case (sample, newElements) => (sample, Pileup(referenceName, locus, referenceContigSequence, newElements))
-    })
-  }
-
-  /**
-   * Split this [[Pileup]] by the read token. Returns a map from token to [[Pileup]] instances that use only reads
-   * with that token.
-   */
-  lazy val byToken: Map[Int, Pileup] = {
-    elements.groupBy(element => element.read.token).map({
-      case (token, newElements) => (token, Pileup(referenceName, locus, referenceContigSequence, newElements))
     })
   }
 
