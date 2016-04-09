@@ -228,10 +228,10 @@ object SomaticMutectLike {
 
       if (args.cosmicVcf != "") {
         val adamContext = new ADAMContext(sc)
-        val dbSnpVariants = adamContext.loadVariants(args.cosmicVcf, sd = tumorReads.sequenceDictionary)
+        val cosmicVariants = adamContext.loadVariants(args.cosmicVcf, sd = tumorReads.sequenceDictionary)
         potentialGenotypes = potentialGenotypes
           .keyBy(_.adamVariant)
-          .leftOuterJoin(dbSnpVariants.keyBy((v: Variant) => v))
+          .leftOuterJoin(cosmicVariants.keyBy((v: Variant) => v))
           .map(_._2).map({
             case (calledAllele: CalledMutectSomaticAllele, cosmicVariant: Option[Variant]) =>
               calledAllele.copy(cosOverlap = cosmicVariant.map(_ => true))
@@ -240,10 +240,10 @@ object SomaticMutectLike {
 
       if (args.noiseVcf != "") {
         val adamContext = new ADAMContext(sc)
-        val dbSnpVariants = adamContext.loadVariants(args.noiseVcf, sd = tumorReads.sequenceDictionary)
+        val noiseVariants = adamContext.loadVariants(args.noiseVcf, sd = tumorReads.sequenceDictionary)
         potentialGenotypes = potentialGenotypes
           .keyBy(_.adamVariant)
-          .leftOuterJoin(dbSnpVariants.keyBy((v: Variant) => v))
+          .leftOuterJoin(noiseVariants.keyBy((v: Variant) => v))
           .map(_._2).map({
             case (calledAllele: CalledMutectSomaticAllele, noiseVariant: Option[Variant]) =>
               calledAllele.copy(noiseOverlap = noiseVariant.map(_ => true))
