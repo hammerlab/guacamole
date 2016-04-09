@@ -136,7 +136,6 @@ object WindowFlatMapUtils {
     regionRDDs: PerSample[RDD[M]],
     lociPartitions: LociMap[Long],
     halfWindowSize: Long,
-    // TODO(ryan): factor this function type out (as a PartialFunction?)
     function: (Long, LociSet, PerSample[Iterator[M]]) => Iterator[T]): RDD[T] = {
 
     val numRDDs = regionRDDs.length
