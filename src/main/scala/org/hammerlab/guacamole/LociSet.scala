@@ -180,9 +180,9 @@ object LociSet {
           case contigAndLoci(name, startStr, endStrOpt) =>
             val start = startStr.toLong
             val end = Option(endStrOpt) match {
-              case Some("") ⇒ None
-              case Some(s) ⇒ Some(s.toLong)
-              case None ⇒ Some(start + 1)
+              case Some("") => None
+              case Some(s) => Some(s.toLong)
+              case None => Some(start + 1)
             }
             put(name, start, end)
           case contigOnly(contig) =>
