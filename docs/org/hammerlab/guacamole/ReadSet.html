@@ -35,12 +35,12 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">ReadSet</span><span class="params">(<span name="reads">reads: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<a href="reads/Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a>]</span>, <span name="sequenceDictionary">sequenceDictionary: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="org.bdgenomics.adam.models.SequenceDictionary">SequenceDictionary</span>]</span>, <span name="source">source: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="filters">filters: <a href="reads/Read$$InputFilters.html" class="extype" name="org.hammerlab.guacamole.reads.Read.InputFilters">InputFilters</a></span>, <span name="token">token: <span class="extype" name="scala.Int">Int</span></span>, <span name="contigLengthsFromDictionary">contigLengthsFromDictionary: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">ReadSet</span><span class="params">(<span name="reads">reads: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<a href="reads/Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a>]</span>, <span name="sequenceDictionary">sequenceDictionary: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="org.bdgenomics.adam.models.SequenceDictionary">SequenceDictionary</span>]</span>, <span name="source">source: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="filters">filters: <a href="reads/Read$$InputFilters.html" class="extype" name="org.hammerlab.guacamole.reads.Read.InputFilters">InputFilters</a></span>, <span name="contigLengthsFromDictionary">contigLengthsFromDictionary: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>A ReadSet contains an RDD of reads along with some metadata about them.
-</p></div><dl class="paramcmts block"><dt class="param">reads</dt><dd class="cmt"><p>RDD of reads</p></dd><dt class="param">sequenceDictionary</dt><dd class="cmt"><p>optional, sequence dictionary giving contigs and lengths</p></dd><dt class="param">source</dt><dd class="cmt"><p>string describing where these reads came from. Usually a filename.</p></dd><dt class="param">filters</dt><dd class="cmt"><p>filters used when reading these reads.</p></dd><dt class="param">token</dt><dd class="cmt"><p>token field for all of the reads in this set.</p></dd><dt class="param">contigLengthsFromDictionary</dt><dd class="cmt"><p>if true, the contigLengths property will use the sequence dictionary to get the
+</p></div><dl class="paramcmts block"><dt class="param">reads</dt><dd class="cmt"><p>RDD of reads</p></dd><dt class="param">sequenceDictionary</dt><dd class="cmt"><p>optional, sequence dictionary giving contigs and lengths</p></dd><dt class="param">source</dt><dd class="cmt"><p>string describing where these reads came from. Usually a filename.</p></dd><dt class="param">filters</dt><dd class="cmt"><p>filters used when reading these reads.</p></dd><dt class="param">contigLengthsFromDictionary</dt><dd class="cmt"><p>if true, the contigLengths property will use the sequence dictionary to get the
                                    contig lengths. Otherwise, the reads themselves will be used.
 </p></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
@@ -83,7 +83,7 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="org.hammerlab.guacamole.ReadSet#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="&lt;init&gt;(reads:org.apache.spark.rdd.RDD[org.hammerlab.guacamole.reads.Read],sequenceDictionary:Option[org.bdgenomics.adam.models.SequenceDictionary],source:String,filters:org.hammerlab.guacamole.reads.Read.InputFilters,token:Int,contigLengthsFromDictionary:Boolean):org.hammerlab.guacamole.ReadSet"></a>
+      <a id="&lt;init&gt;(reads:org.apache.spark.rdd.RDD[org.hammerlab.guacamole.reads.Read],sequenceDictionary:Option[org.bdgenomics.adam.models.SequenceDictionary],source:String,filters:org.hammerlab.guacamole.reads.Read.InputFilters,contigLengthsFromDictionary:Boolean):org.hammerlab.guacamole.ReadSet"></a>
       <a id="&lt;init&gt;:ReadSet"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -91,10 +91,10 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">ReadSet</span><span class="params">(<span name="reads">reads: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<a href="reads/Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a>]</span>, <span name="sequenceDictionary">sequenceDictionary: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="org.bdgenomics.adam.models.SequenceDictionary">SequenceDictionary</span>]</span>, <span name="source">source: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="filters">filters: <a href="reads/Read$$InputFilters.html" class="extype" name="org.hammerlab.guacamole.reads.Read.InputFilters">InputFilters</a></span>, <span name="token">token: <span class="extype" name="scala.Int">Int</span></span>, <span name="contigLengthsFromDictionary">contigLengthsFromDictionary: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span>
+        <span class="name">ReadSet</span><span class="params">(<span name="reads">reads: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<a href="reads/Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a>]</span>, <span name="sequenceDictionary">sequenceDictionary: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="org.bdgenomics.adam.models.SequenceDictionary">SequenceDictionary</span>]</span>, <span name="source">source: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="filters">filters: <a href="reads/Read$$InputFilters.html" class="extype" name="org.hammerlab.guacamole.reads.Read.InputFilters">InputFilters</a></span>, <span name="contigLengthsFromDictionary">contigLengthsFromDictionary: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">reads</dt><dd class="cmt"><p>RDD of reads</p></dd><dt class="param">sequenceDictionary</dt><dd class="cmt"><p>optional, sequence dictionary giving contigs and lengths</p></dd><dt class="param">source</dt><dd class="cmt"><p>string describing where these reads came from. Usually a filename.</p></dd><dt class="param">filters</dt><dd class="cmt"><p>filters used when reading these reads.</p></dd><dt class="param">token</dt><dd class="cmt"><p>token field for all of the reads in this set.</p></dd><dt class="param">contigLengthsFromDictionary</dt><dd class="cmt"><p>if true, the contigLengths property will use the sequence dictionary to get the
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">reads</dt><dd class="cmt"><p>RDD of reads</p></dd><dt class="param">sequenceDictionary</dt><dd class="cmt"><p>optional, sequence dictionary giving contigs and lengths</p></dd><dt class="param">source</dt><dd class="cmt"><p>string describing where these reads came from. Usually a filename.</p></dd><dt class="param">filters</dt><dd class="cmt"><p>filters used when reading these reads.</p></dd><dt class="param">contigLengthsFromDictionary</dt><dd class="cmt"><p>if true, the contigLengths property will use the sequence dictionary to get the
                                    contig lengths. Otherwise, the reads themselves will be used.
 </p></dd></dl></div>
     </li></ol>
@@ -421,19 +421,6 @@ contigLengthsFromDictionary property.</p></div></div>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.ReadSet#token" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="token:Int"></a>
-      <a id="token:Int"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">token</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">token field for all of the reads in this set.</p>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>
