@@ -16,14 +16,16 @@
  * limitations under the License.
  */
 
-package org.hammerlab.guacamole
+package org.hammerlab.guacamole.loci
 
+import com.esotericsoftware.kryo.io.{Input, Output}
+import com.esotericsoftware.kryo.{Kryo, Serializer}
 import com.google.common.collect._
-import scala.collection.immutable.{ SortedMap }
-import scala.collection.{ Iterator, mutable, JavaConversions }
-import com.esotericsoftware.kryo.{ Serializer, Kryo }
-import com.esotericsoftware.kryo.io.{ Input, Output }
+import org.hammerlab.guacamole.Common
+
+import scala.collection.immutable.SortedMap
 import scala.collection.mutable.ArrayBuffer
+import scala.collection.{Iterator, JavaConversions, mutable}
 
 /**
  * An immutable map from loci to a instances of an arbitrary type T.

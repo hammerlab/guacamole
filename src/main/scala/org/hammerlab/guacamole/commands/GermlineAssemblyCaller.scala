@@ -9,12 +9,13 @@ import org.hammerlab.guacamole.Common.Arguments.GermlineCallerArgs
 import org.hammerlab.guacamole._
 import org.hammerlab.guacamole.alignment.AffineGapPenaltyAlignment
 import org.hammerlab.guacamole.assembly.DeBruijnGraph
-import org.hammerlab.guacamole.dist.LociPartitionUtils.partitionLociAccordingToArgs
-import org.hammerlab.guacamole.dist.WindowFlatMapUtils.windowFlatMapWithState
+import org.hammerlab.guacamole.loci.LociMap
+import org.hammerlab.guacamole.loci.LociPartitionUtils.partitionLociAccordingToArgs
 import org.hammerlab.guacamole.reads.{MappedRead, Read}
 import org.hammerlab.guacamole.reference.{ReferenceBroadcast, ReferenceGenome}
 import org.hammerlab.guacamole.variants.{Allele, AlleleConversions, AlleleEvidence, CalledAllele}
 import org.hammerlab.guacamole.windowing.SlidingWindow
+import org.hammerlab.guacamole.windowing.WindowFlatMapUtils.windowFlatMapWithState
 import org.kohsuke.args4j.{Option => Args4jOption}
 
 import scala.collection.JavaConversions._
@@ -338,6 +339,7 @@ object GermlineAssemblyCaller {
 
     /**
      * Find paths through the reads given that represent the sequence covering referenceStart and referenceEnd
+     *
      * @param reads Reads to use to build the graph
      * @param referenceStart Start of the reference region corresponding to the reads
      * @param referenceEnd End of the reference region corresponding to the reads

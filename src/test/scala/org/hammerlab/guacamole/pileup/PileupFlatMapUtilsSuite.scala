@@ -16,14 +16,14 @@
  * limitations under the License.
  */
 
-package org.hammerlab.guacamole.dist
+package org.hammerlab.guacamole.pileup
 
 import org.bdgenomics.formats.avro.{Genotype, GenotypeAllele}
 import org.hammerlab.guacamole.commands.GermlineThreshold
-import org.hammerlab.guacamole.pileup.{Pileup, PileupElement}
-import org.hammerlab.guacamole.util.TestUtil.assertBases
+import org.hammerlab.guacamole.loci.{LociPartitionUtils, LociSet}
+import org.hammerlab.guacamole.util.TestUtil._
 import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
-import org.hammerlab.guacamole.{Bases, LociSet}
+import org.hammerlab.guacamole.Bases
 
 import scala.collection.JavaConversions._
 

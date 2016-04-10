@@ -1,9 +1,8 @@
-package org.hammerlab.guacamole.dist
+package org.hammerlab.guacamole.windowing
 
-import org.hammerlab.guacamole.LociSet
+import org.hammerlab.guacamole.loci.{LociPartitionUtils, LociSet}
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
-import org.hammerlab.guacamole.windowing.SlidingWindow
 
 class WindowFlatMapUtilsSuite extends GuacFunSuite {
   sparkTest("test window fold parallelism 5; average read depth") {

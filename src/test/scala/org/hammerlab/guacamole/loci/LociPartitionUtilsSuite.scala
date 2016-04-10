@@ -1,9 +1,8 @@
-package org.hammerlab.guacamole.dist
+package org.hammerlab.guacamole.loci
 
 import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
-import org.hammerlab.guacamole.{LociMap, LociSet}
 
 class LociPartitionUtilsSuite extends GuacFunSuite {
   test("partitionLociUniformly") {

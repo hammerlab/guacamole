@@ -1,4 +1,4 @@
-package org.hammerlab.guacamole.dist
+package org.hammerlab.guacamole.util
 
 /**
   * TaskPosition represents the task a read is assigned to and the start position on the reference genome of the read

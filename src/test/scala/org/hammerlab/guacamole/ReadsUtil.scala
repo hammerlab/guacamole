@@ -22,7 +22,7 @@ import org.apache.spark.SparkContext
 import org.bdgenomics.adam.util.PhredUtils
 import org.hammerlab.guacamole.likelihood.LikelihoodSuite
 import org.hammerlab.guacamole.util.TestUtil
-import org.hammerlab.guacamole.variants.{ Allele, Genotype }
+import org.hammerlab.guacamole.variants.{Allele, Genotype}
 
 /**
  * Some utility functions for [[LikelihoodSuite]].

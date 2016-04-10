@@ -1,4 +1,4 @@
-package org.hammerlab.guacamole.dist
+package org.hammerlab.guacamole.util
 
 import org.apache.spark.{AccumulatorParam, SparkConf}
 import org.apache.spark.serializer.JavaSerializer

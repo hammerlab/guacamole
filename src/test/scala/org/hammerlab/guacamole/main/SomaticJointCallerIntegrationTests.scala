@@ -2,8 +2,9 @@ package org.hammerlab.guacamole.main
 
 import org.hammerlab.guacamole.VariantComparisonUtils.{compareToCSV, compareToVCF, csvRecords}
 import org.hammerlab.guacamole.commands.jointcaller.SomaticJoint
+import org.hammerlab.guacamole.loci.LociSet
 import org.hammerlab.guacamole.util.TestUtil
-import org.hammerlab.guacamole.{CancerWGSTestUtils, Common, LociSet, NA12878TestUtils}
+import org.hammerlab.guacamole.{CancerWGSTestUtils, Common, NA12878TestUtils}
 
 // This app outputs a performance comparison. We may want to add assertions on the accuracy later.
 object SomaticJointCallerIntegrationTests {

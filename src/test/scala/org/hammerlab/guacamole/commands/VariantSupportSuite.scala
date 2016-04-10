@@ -1,13 +1,12 @@
 package org.hammerlab.guacamole.commands
 
-import org.hammerlab.guacamole.LociSet
 import org.hammerlab.guacamole.commands.VariantSupport.Caller.AlleleCount
+import org.hammerlab.guacamole.loci.LociSet
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.reads.{ MappedRead, Read }
+import org.hammerlab.guacamole.reads.{MappedRead, Read}
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
-import org.hammerlab.guacamole.util.{ GuacFunSuite, TestUtil }
+import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
 import org.hammerlab.guacamole.windowing.SlidingWindow
-import org.scalatest.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks
 
 class VariantSupportSuite extends GuacFunSuite with TableDrivenPropertyChecks {
