@@ -27,13 +27,14 @@ import com.twitter.chill.{IKryoRegistrar, KryoInstantiator, KryoPool}
 import htsjdk.samtools.TextCigarCodec
 import org.apache.commons.io.FileUtils
 import org.apache.spark.SparkContext
+import org.hammerlab.guacamole.kryo.GuacamoleKryoRegistrator
 import org.hammerlab.guacamole.loci.LociSet
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.ReadInputFilters
 import org.hammerlab.guacamole.reads._
 import org.hammerlab.guacamole.reference.ReferenceBroadcast.MapBackedReferenceSequence
 import org.hammerlab.guacamole.reference.{ContigSequence, ReferenceBroadcast}
-import org.hammerlab.guacamole.{Bases, GuacamoleKryoRegistrator, ReadSet}
+import org.hammerlab.guacamole.{Bases, ReadSet}
 import org.scalatest._
 
 import scala.collection.mutable
