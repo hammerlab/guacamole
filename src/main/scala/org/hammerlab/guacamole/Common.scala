@@ -39,6 +39,7 @@ import org.hammerlab.guacamole.distributed.LociPartitionUtils
 import org.hammerlab.guacamole.loci.LociSet
 import org.hammerlab.guacamole.reads.Read
 import org.hammerlab.guacamole.reads.{MappedRead, Read}
+import org.hammerlab.guacamole.readsets.{ReadSet, ReadSets, ReadsRDD}
 import org.kohsuke.args4j.{Option => Args4jOption}
 
 /**

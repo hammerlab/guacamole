@@ -1,7 +1,8 @@
-package org.hammerlab.guacamole
+package org.hammerlab.guacamole.readsets
 
 import org.apache.spark.SparkContext
 import org.bdgenomics.adam.models.SequenceDictionary
+import org.hammerlab.guacamole._
 import org.hammerlab.guacamole.reads.Read
 
 case class ReadSets(readsRDDs: PerSample[ReadsRDD],

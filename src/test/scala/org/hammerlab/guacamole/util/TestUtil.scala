@@ -29,9 +29,10 @@ import org.hammerlab.guacamole.loci.LociSet
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.Read.InputFilters
 import org.hammerlab.guacamole.reads._
+import org.hammerlab.guacamole.readsets.{ReadSet, ReadsRDD}
 import org.hammerlab.guacamole.reference.ReferenceBroadcast.MapBackedReferenceSequence
 import org.hammerlab.guacamole.reference.{ContigSequence, ReferenceBroadcast}
-import org.hammerlab.guacamole.{Bases, GuacamoleKryoRegistrator, ReadSet, ReadsRDD}
+import org.hammerlab.guacamole.{Bases, GuacamoleKryoRegistrator}
 import org.scalatest._
 
 import scala.collection.mutable
