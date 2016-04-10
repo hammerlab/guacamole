@@ -23,14 +23,16 @@ import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole.Common.Arguments.GermlineCallerArgs
 import org.hammerlab.guacamole.filters.GenotypeFilter.GenotypeFilterArguments
 import org.hammerlab.guacamole.filters.PileupFilter.PileupFilterArguments
-import org.hammerlab.guacamole.filters.{ GenotypeFilter, QualityAlignedReadsFilter }
+import org.hammerlab.guacamole.filters.{GenotypeFilter, QualityAlignedReadsFilter}
 import org.hammerlab.guacamole.likelihood.Likelihood
+import org.hammerlab.guacamole.logging.DelayedMessages
+import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.Read
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
-import org.hammerlab.guacamole.variants.{ AlleleConversions, AlleleEvidence, CalledAllele }
-import org.hammerlab.guacamole.{ Common, Concordance, DelayedMessages, DistributedUtil, SparkCommand }
-import org.kohsuke.args4j.{ Option => Args4jOption }
+import org.hammerlab.guacamole.variants.{AlleleConversions, AlleleEvidence, CalledAllele}
+import org.hammerlab.guacamole.{Common, Concordance, DistributedUtil, SparkCommand}
+import org.kohsuke.args4j.{Option => Args4jOption}
 
 /**
  * Simple Bayesian variant caller implementation that uses the base and read quality score
@@ -65,9 +67,10 @@ object GermlineStandard {
       )
 
       readSet.mappedReads.persist()
-      Common.progress(
+      progress(
         "Loaded %,d mapped non-duplicate reads into %,d partitions.".format(
-          readSet.mappedReads.count, readSet.mappedReads.partitions.length))
+          readSet.mappedReads.count, readSet.mappedReads.partitions.length)
+      )
 
       val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(
         args, loci.result(readSet.contigLengths), readSet.mappedReads)

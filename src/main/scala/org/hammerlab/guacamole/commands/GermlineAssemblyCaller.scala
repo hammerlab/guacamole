@@ -1,7 +1,7 @@
 package org.hammerlab.guacamole.commands
 
 import breeze.linalg.DenseVector
-import breeze.stats.{ mean, median }
+import breeze.stats.{mean, median}
 import htsjdk.samtools.CigarOperator
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
@@ -9,11 +9,13 @@ import org.hammerlab.guacamole.Common.Arguments.GermlineCallerArgs
 import org.hammerlab.guacamole._
 import org.hammerlab.guacamole.alignment.AffineGapPenaltyAlignment
 import org.hammerlab.guacamole.assembly.DeBruijnGraph
-import org.hammerlab.guacamole.reads.{ MappedRead, Read }
-import org.hammerlab.guacamole.reference.{ ReferenceBroadcast, ReferenceGenome }
-import org.hammerlab.guacamole.variants.{ Allele, AlleleConversions, AlleleEvidence, CalledAllele }
+import org.hammerlab.guacamole.logging.DelayedMessages
+import org.hammerlab.guacamole.logging.LoggingUtils.progress
+import org.hammerlab.guacamole.reads.{MappedRead, Read}
+import org.hammerlab.guacamole.reference.{ReferenceBroadcast, ReferenceGenome}
+import org.hammerlab.guacamole.variants.{Allele, AlleleConversions, AlleleEvidence, CalledAllele}
 import org.hammerlab.guacamole.windowing.SlidingWindow
-import org.kohsuke.args4j.{ Option => Args4jOption }
+import org.kohsuke.args4j.{Option => Args4jOption}
 
 import scala.collection.JavaConversions._
 
@@ -276,7 +278,7 @@ object GermlineAssemblyCaller {
 
       genotypes.persist()
 
-      Common.progress(s"Found ${genotypes.count} variants")
+      progress(s"Found ${genotypes.count} variants")
 
       val outputGenotypes =
         genotypes.flatMap(AlleleConversions.calledAlleleToADAMGenotype)

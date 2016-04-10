@@ -25,14 +25,16 @@ import org.bdgenomics.formats.avro.DatabaseVariantAnnotation
 import org.hammerlab.guacamole.Common.Arguments.SomaticCallerArgs
 import org.hammerlab.guacamole.filters.PileupFilter.PileupFilterArguments
 import org.hammerlab.guacamole.filters.SomaticGenotypeFilter.SomaticGenotypeFilterArguments
-import org.hammerlab.guacamole.filters.{ PileupFilter, SomaticAlternateReadDepthFilter, SomaticGenotypeFilter, SomaticReadDepthFilter }
+import org.hammerlab.guacamole.filters.{PileupFilter, SomaticAlternateReadDepthFilter, SomaticGenotypeFilter, SomaticReadDepthFilter}
 import org.hammerlab.guacamole.likelihood.Likelihood
+import org.hammerlab.guacamole.logging.DelayedMessages
+import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.Read
-import org.hammerlab.guacamole.variants.{ Allele, AlleleConversions, AlleleEvidence, CalledSomaticAllele }
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
-import org.hammerlab.guacamole.{ Common, DelayedMessages, DistributedUtil, SparkCommand }
-import org.kohsuke.args4j.{ Option => Args4jOption }
+import org.hammerlab.guacamole.variants.{Allele, AlleleConversions, AlleleEvidence, CalledSomaticAllele}
+import org.hammerlab.guacamole.{Common, DistributedUtil, SparkCommand}
+import org.kohsuke.args4j.{Option => Args4jOption}
 
 /**
  * Simple subtraction based somatic variant caller
@@ -116,7 +118,7 @@ object SomaticStandard {
         )
 
       potentialGenotypes.persist()
-      Common.progress("Computed %,d potential genotypes".format(potentialGenotypes.count))
+      progress("Computed %,d potential genotypes".format(potentialGenotypes.count))
 
       // Filter potential genotypes to min read values
       potentialGenotypes =
@@ -146,7 +148,7 @@ object SomaticStandard {
       }
 
       val filteredGenotypes: RDD[CalledSomaticAllele] = SomaticGenotypeFilter(potentialGenotypes, args)
-      Common.progress("Computed %,d genotypes after basic filtering".format(filteredGenotypes.count))
+      progress("Computed %,d genotypes after basic filtering".format(filteredGenotypes.count))
 
       Common.writeVariantsFromArguments(
         args,

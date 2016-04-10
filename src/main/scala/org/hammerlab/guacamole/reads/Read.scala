@@ -28,7 +28,8 @@ import org.apache.spark.{Logging, SparkContext}
 import org.bdgenomics.adam.models.SequenceDictionary
 import org.bdgenomics.adam.rdd.{ADAMContext, ADAMSpecificRecordSequenceDictionaryRDDAggregator}
 import org.bdgenomics.formats.avro.AlignmentRecord
-import org.hammerlab.guacamole.{Bases, Common, LociSet}
+import org.hammerlab.guacamole.logging.LoggingUtils.progress
+import org.hammerlab.guacamole.{Bases, LociSet}
 import org.seqdoop.hadoop_bam.util.SAMHeaderReader
 import org.seqdoop.hadoop_bam.{AnySAMInputFormat, SAMRecordWritable}
 
@@ -339,7 +340,7 @@ object Read extends Logging {
       val sequenceDictionary = SequenceDictionary.fromSAMSequenceDictionary(samSequenceDictionary)
       val loci = filters.overlapsLoci.map(_.result(contigLengths(sequenceDictionary)))
       val recordIterator: SAMRecordIterator = if (filters.overlapsLoci.nonEmpty && reader.hasIndex) {
-        Common.progress("Using samtools with BAM index to read: %s".format(filename))
+        progress(s"Using samtools with BAM index to read: $filename")
         requiresFilteringByLocus = false
         val queryIntervals = loci.get.contigs.flatMap(contig => {
           val contigIndex = samSequenceDictionary.getSequenceIndex(contig)
@@ -351,11 +352,15 @@ object Read extends Logging {
         val optimizedQueryIntervals = QueryInterval.optimizeIntervals(queryIntervals.toArray)
         reader.query(optimizedQueryIntervals, false) // Note: this can return unmapped reads, which we filter below.
       } else {
-        val skippedReason = if (reader.hasIndex)
-          "(index is available but not needed)"
-        else
-          "(index unavailable)"
-        Common.progress("Using samtools without BAM index %s to read: %s".format(skippedReason, filename))
+
+        val skippedReason =
+          if (reader.hasIndex)
+            "index is available but not needed"
+          else
+            "index unavailable"
+
+        progress(s"Using samtools without BAM index %($skippedReason) to read: $filename")
+
         reader.iterator
       }
       val reads = JavaConversions.asScalaIterator(recordIterator).flatMap(record => {
@@ -376,7 +381,7 @@ object Read extends Logging {
       (sc.parallelize(reads.toSeq), sequenceDictionary)
     } else {
       // Load with hadoop bam
-      Common.progress("Using hadoop bam to read: %s".format(filename))
+      progress(s"Using hadoop bam to read: $filename")
       val samHeader = SAMHeaderReader.readSAMHeaderFrom(path, sc.hadoopConfiguration)
       val sequenceDictionary = SequenceDictionary.fromSAMHeader(samHeader)
 
@@ -397,7 +402,7 @@ object Read extends Logging {
                                                filters: InputFilters = InputFilters.empty,
                                                config: ReadLoadingConfig = ReadLoadingConfig.default): (RDD[Read], SequenceDictionary) = {
 
-    Common.progress("Using ADAM to read: %s".format(filename))
+    progress(s"Using ADAM to read: $filename")
 
     val adamContext = new ADAMContext(sc)
 

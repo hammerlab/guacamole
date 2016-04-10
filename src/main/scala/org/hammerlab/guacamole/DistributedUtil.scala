@@ -19,19 +19,20 @@
 package org.hammerlab.guacamole
 
 import org.apache.commons.math3
-import org.apache.spark.rdd.RDD
-import org.apache.spark.{ Partitioner, AccumulatorParam, SparkConf, Logging }
 import org.apache.spark.broadcast.Broadcast
+import org.apache.spark.rdd.RDD
 import org.apache.spark.serializer.JavaSerializer
-import org.hammerlab.guacamole.Common.Arguments.{ Base, Loci }
-import org.hammerlab.guacamole.Common._
+import org.apache.spark.{AccumulatorParam, Logging, Partitioner, SparkConf}
+import org.hammerlab.guacamole.Common.Arguments.{Base, Loci}
+import org.hammerlab.guacamole.logging.DelayedMessages
+import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.MappedRead
-import org.hammerlab.guacamole.reference.{ ContigSequence, ReferenceGenome }
-import org.hammerlab.guacamole.windowing.{ SplitIterator, SlidingWindow }
-import org.kohsuke.args4j.{ Option => Args4jOption }
+import org.hammerlab.guacamole.reference.{ContigSequence, ReferenceGenome}
+import org.hammerlab.guacamole.windowing.{SlidingWindow, SplitIterator}
+import org.kohsuke.args4j.{Option => Args4jOption}
 
-import scala.collection.mutable.{ HashMap => MutableHashMap }
+import scala.collection.mutable.{HashMap => MutableHashMap}
 import scala.reflect.ClassTag
 
 /**
@@ -114,12 +115,18 @@ object DistributedUtil extends Logging {
   def filterLociWhoseContigsHaveNoRegions[M <: HasReferenceRegion](loci: LociSet, regions: RDD[M]): LociSet = {
     val contigsInLociSet = loci.contigs.toSet
     val contigsAndCounts = regions.map(_.referenceContig).filter(contigsInLociSet.contains(_)).countByValue.toMap.withDefaultValue(0L)
-    Common.progress("Region counts per contig: %s".format(
-      contigsAndCounts.toSeq.sorted.map(pair => "%s=%,d".format(pair._1, pair._2)).mkString(" ")))
+    progress(
+      "Region counts per contig: %s".format(
+        contigsAndCounts.toSeq.sorted.map(pair => "%s=%,d".format(pair._1, pair._2)).mkString(" ")
+      )
+    )
     val contigsWithoutRegions = loci.contigs.filter(contigsAndCounts(_) == 0L).toSet
     if (contigsWithoutRegions.nonEmpty) {
-      Common.progress("Filtering out these contigs, since they have no overlapping regions: %s".format(
-        contigsWithoutRegions.toSeq.sorted.mkString(", ")))
+      progress(
+        "Filtering out these contigs, since they have no overlapping regions: %s".format(
+          contigsWithoutRegions.toSeq.sorted.mkString(", ")
+        )
+      )
       loci.filterContigs(!contigsWithoutRegions.contains(_))
     } else {
       loci
