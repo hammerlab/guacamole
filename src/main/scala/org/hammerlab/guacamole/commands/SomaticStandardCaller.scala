@@ -23,13 +23,14 @@ import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.rdd.ADAMContext
 import org.bdgenomics.formats.avro.DatabaseVariantAnnotation
 import org.hammerlab.guacamole.Common.Arguments.SomaticCallerArgs
+import org.hammerlab.guacamole.distributed.{LociPartitionUtils, PileupFlatMapUtils}
 import org.hammerlab.guacamole.filters.PileupFilter.PileupFilterArguments
 import org.hammerlab.guacamole.filters.SomaticGenotypeFilter.SomaticGenotypeFilterArguments
 import org.hammerlab.guacamole.filters.{PileupFilter, SomaticAlternateReadDepthFilter, SomaticGenotypeFilter, SomaticReadDepthFilter}
 import org.hammerlab.guacamole.likelihood.Likelihood
-import org.hammerlab.guacamole.loci.LociPartitionUtils.partitionLociAccordingToArgs
+import LociPartitionUtils.partitionLociAccordingToArgs
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.pileup.PileupFlatMapUtils.pileupFlatMapTwoRDDs
+import PileupFlatMapUtils.pileupFlatMapTwoRDDs
 import org.hammerlab.guacamole.reads.Read
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.variants.{Allele, AlleleConversions, AlleleEvidence, CalledSomaticAllele}

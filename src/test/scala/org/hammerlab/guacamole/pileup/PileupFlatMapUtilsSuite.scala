@@ -20,10 +20,11 @@ package org.hammerlab.guacamole.pileup
 
 import org.bdgenomics.formats.avro.{Genotype, GenotypeAllele}
 import org.hammerlab.guacamole.commands.GermlineThreshold
-import org.hammerlab.guacamole.loci.{LociPartitionUtils, LociSet}
+import org.hammerlab.guacamole.loci.LociSet
 import org.hammerlab.guacamole.util.TestUtil._
 import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
 import org.hammerlab.guacamole.Bases
+import org.hammerlab.guacamole.distributed.{LociPartitionUtils, PileupFlatMapUtils}
 
 import scala.collection.JavaConversions._
 

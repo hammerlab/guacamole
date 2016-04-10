@@ -9,13 +9,14 @@ import org.hammerlab.guacamole.Common.Arguments.GermlineCallerArgs
 import org.hammerlab.guacamole._
 import org.hammerlab.guacamole.alignment.AffineGapPenaltyAlignment
 import org.hammerlab.guacamole.assembly.DeBruijnGraph
+import org.hammerlab.guacamole.distributed.{LociPartitionUtils, WindowFlatMapUtils}
 import org.hammerlab.guacamole.loci.LociMap
-import org.hammerlab.guacamole.loci.LociPartitionUtils.partitionLociAccordingToArgs
+import LociPartitionUtils.partitionLociAccordingToArgs
 import org.hammerlab.guacamole.reads.{MappedRead, Read}
 import org.hammerlab.guacamole.reference.{ReferenceBroadcast, ReferenceGenome}
 import org.hammerlab.guacamole.variants.{Allele, AlleleConversions, AlleleEvidence, CalledAllele}
 import org.hammerlab.guacamole.windowing.SlidingWindow
-import org.hammerlab.guacamole.windowing.WindowFlatMapUtils.windowFlatMapWithState
+import WindowFlatMapUtils.windowFlatMapWithState
 import org.kohsuke.args4j.{Option => Args4jOption}
 
 import scala.collection.JavaConversions._
