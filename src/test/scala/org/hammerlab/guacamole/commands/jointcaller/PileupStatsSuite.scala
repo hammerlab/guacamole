@@ -1,10 +1,10 @@
 package org.hammerlab.guacamole.commands.jointcaller
 
 import org.hammerlab.guacamole.Bases
+import org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.PileupStats
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reference.ReferenceGenome
-import org.hammerlab.guacamole.util.{ GuacFunSuite, TestUtil }
-import org.scalatest.Matchers
+import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
 
 class PileupStatsSuite extends GuacFunSuite {
   val cancerWGS1Bams = Seq("normal.bam", "primary.bam", "recurrence.bam").map(
