@@ -54,7 +54,7 @@ class VariantSupportSuite extends GuacFunSuite with TableDrivenPropertyChecks {
       ReadInputFilters(
         mapped = true,
         nonDuplicate = false,
-        overlapsLoci = Some(LociSet.parse(loci))
+        overlapsLoci = LociSet.parse(loci)
       )
     ).mappedReads.collect().sortBy(_.start)
 
@@ -65,7 +65,7 @@ class VariantSupportSuite extends GuacFunSuite with TableDrivenPropertyChecks {
       ReadInputFilters(
         mapped = true,
         nonDuplicate = true,
-        overlapsLoci = Some(LociSet.parse(loci))
+        overlapsLoci = LociSet.parse(loci)
       )
     ).mappedReads.collect().sortBy(_.start)
 

@@ -86,16 +86,16 @@ class ReadSetSuite extends GuacFunSuite {
     Seq(
       ReadInputFilters(),
       ReadInputFilters(mapped = true, nonDuplicate = true),
-      ReadInputFilters(overlapsLoci = Some(LociSet.parse("20:10220390-10220490")))
+      ReadInputFilters(overlapsLoci = LociSet.parse("20:10220390-10220490"))
     ).foreach(filter => {
-        check(Seq("gatk_mini_bundle_extract.bam", "gatk_mini_bundle_extract.sam"), filter)
-      })
+      check(Seq("gatk_mini_bundle_extract.bam", "gatk_mini_bundle_extract.sam"), filter)
+    })
 
     Seq(
-      ReadInputFilters(overlapsLoci = Some(LociSet.parse("19:147033")))
+      ReadInputFilters(overlapsLoci = LociSet.parse("19:147033"))
     ).foreach(filter => {
-        check(Seq("synth1.normal.100k-200k.withmd.bam", "synth1.normal.100k-200k.withmd.sam"), filter)
-      })
+      check(Seq("synth1.normal.100k-200k.withmd.bam", "synth1.normal.100k-200k.withmd.sam"), filter)
+    })
   }
 
   sparkTest("load and test filters") {

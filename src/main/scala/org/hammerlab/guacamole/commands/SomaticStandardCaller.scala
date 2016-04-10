@@ -72,7 +72,7 @@ object SomaticStandard {
       val loci = Common.lociFromArguments(args)
       val filters =
         ReadInputFilters(
-          overlapsLoci = Some(loci),
+          overlapsLoci = loci,
           nonDuplicate = true,
           passedVendorQualityChecks = true
         )
