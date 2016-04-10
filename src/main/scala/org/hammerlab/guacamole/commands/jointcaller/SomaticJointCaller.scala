@@ -10,6 +10,7 @@ import org.hammerlab.guacamole.distributed.LociPartitionUtils
 import org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociAccordingToArgs
 import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMapMultipleRDDs
 import org.hammerlab.guacamole.loci.LociSet
+import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.reads._
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.kohsuke.args4j.spi.StringArrayOptionHandler
@@ -100,10 +101,13 @@ object SomaticJoint {
       }
 
       if (forceCallLoci.nonEmpty) {
-        Common.progress("Force calling %,d loci across %,d contig(s): %s".format(
-          forceCallLoci.count,
-          forceCallLoci.contigs.length,
-          forceCallLoci.truncatedString()))
+        progress(
+          "Force calling %,d loci across %,d contig(s): %s".format(
+            forceCallLoci.count,
+            forceCallLoci.contigs.size,
+            forceCallLoci.truncatedString()
+          )
+        )
       }
 
       val parameters = Parameters(args)
@@ -122,12 +126,15 @@ object SomaticJoint {
 
       calls.cache()
 
-      Common.progress("Collecting evidence for %,d sites with calls".format(calls.count))
+      progress("Collecting evidence for %,d sites with calls".format(calls.count))
       val collectedCalls = calls.collect()
 
-      Common.progress("Called %,d germline and %,d somatic variants.".format(
-        collectedCalls.count(_.singleAlleleEvidences.exists(_.isGermlineCall)),
-        collectedCalls.count(_.singleAlleleEvidences.exists(_.isSomaticCall))))
+      progress(
+        "Called %,d germline and %,d somatic variants.".format(
+          collectedCalls.count(_.singleAlleleEvidences.exists(_.isGermlineCall)),
+          collectedCalls.count(_.singleAlleleEvidences.exists(_.isSomaticCall))
+        )
+      )
 
       val extraHeaderMetadata = args.headerMetadata.map(value => {
         val split = value.split("=")
@@ -229,9 +236,17 @@ object SomaticJoint {
       val actuallyIncludePooledTumor = includePooledTumor.getOrElse(filteredInputs.count(_.tumorDNA) > 1)
 
       val numPooled = Seq(actuallyIncludePooledNormal, actuallyIncludePooledTumor).count(identity)
-      val extra = if (numPooled > 0) "(plus %d pooled samples)".format(numPooled) else ""
-      Common.progress("Writing %,d calls across %,d samples %s to %s".format(
-        filteredCalls.length, filteredInputs.length, extra, out))
+      val extra =
+        if (numPooled > 0)
+          s"(plus $numPooled pooled samples)"
+        else
+          ""
+
+      progress(
+        "Writing %,d calls across %,d samples %s to %s".format(
+          filteredCalls.length, filteredInputs.length, extra, out
+        )
+      )
 
       VCFOutput.writeVcf(
         path = out,
@@ -242,8 +257,9 @@ object SomaticJoint {
         parameters = parameters,
         sequenceDictionary = sequenceDictionary,
         reference = reference,
-        extraHeaderMetadata = extraHeaderMetadata)
-      Common.progress("Done.")
+        extraHeaderMetadata = extraHeaderMetadata
+      )
+      progress("Done.")
     }
 
     if (out.nonEmpty) {
@@ -259,7 +275,7 @@ object SomaticJoint {
       val dir = new java.io.File(outDir)
       val dirCreated = dir.mkdir()
       if (dirCreated) {
-        Common.progress("Created directory: %s".format(dir))
+        progress(s"Created directory: $dir")
       }
 
       writeSome(path("all"), calls, inputs.items)

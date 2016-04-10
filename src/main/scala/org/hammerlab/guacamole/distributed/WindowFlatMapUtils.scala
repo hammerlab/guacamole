@@ -3,15 +3,17 @@ package org.hammerlab.guacamole.distributed
 import org.apache.commons.math3
 import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.rdd.RDD
-import org.hammerlab.guacamole.Common._
 import org.hammerlab.guacamole.loci.{LociMap, LociSet}
+import org.hammerlab.guacamole.logging.DelayedMessages
+import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.windowing.{SlidingWindow, SplitIterator}
-import org.hammerlab.guacamole.{DelayedMessages, HasReferenceRegion, PerSample}
+import org.hammerlab.guacamole.{HasReferenceRegion, PerSample}
 
 import scala.collection.mutable.{HashMap => MutableHashMap}
 import scala.reflect.ClassTag
 
 object WindowFlatMapUtils {
+
   /**
     * FlatMap across loci, and any number of RDDs of regions, where at each locus the provided function is passed a
     * sliding window instance for each RDD containing the regions overlapping an interval of halfWindowSize to either side
@@ -236,5 +238,4 @@ object WindowFlatMapUtils {
       generateFromWindows(taskLoci.onContig(contig), windows)
     }).iterator
   }
-
 }

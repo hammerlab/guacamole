@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.hammerlab.guacamole
+package org.hammerlab.guacamole.logging
 
 import scala.collection.mutable
 
