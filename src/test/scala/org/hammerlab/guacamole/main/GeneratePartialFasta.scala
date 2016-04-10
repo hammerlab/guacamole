@@ -7,7 +7,7 @@ import org.bdgenomics.utils.cli.Args4j
 import org.hammerlab.guacamole.Common.Arguments.{ReadLoadingConfigArgs, Reference}
 import org.hammerlab.guacamole.distributed.LociPartitionUtils
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
-import org.hammerlab.guacamole.reads.Read.InputFilters
+import org.hammerlab.guacamole.reads.InputFilters
 import org.hammerlab.guacamole.reference.{ContigNotFound, ReferenceBroadcast}
 import org.hammerlab.guacamole.{Bases, Common, ReadSet}
 import org.kohsuke.args4j.{Argument, Option => Args4jOption}

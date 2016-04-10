@@ -11,7 +11,7 @@ import org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociAccor
 import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMapMultipleRDDs
 import org.hammerlab.guacamole.loci.LociSet
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
-import org.hammerlab.guacamole.reads._
+import org.hammerlab.guacamole.reads.InputFilters
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.kohsuke.args4j.spi.StringArrayOptionHandler
 import org.kohsuke.args4j.{Option => Args4jOption}
@@ -65,7 +65,7 @@ object SomaticJoint {
       case (input, index) => ReadSet(
         sc,
         input.path,
-        Read.InputFilters(overlapsLoci = Some(loci)),
+        InputFilters(overlapsLoci = Some(loci)),
         contigLengthsFromDictionary = contigLengthsFromDictionary
       )
     })

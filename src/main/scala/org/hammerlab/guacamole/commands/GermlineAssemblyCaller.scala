@@ -17,6 +17,7 @@ import org.hammerlab.guacamole.logging.DelayedMessages
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.{MappedRead, Read}
+import org.hammerlab.guacamole.reads.{MappedRead, InputFilters}
 import org.hammerlab.guacamole.reference.{ReferenceBroadcast, ReferenceGenome}
 import org.hammerlab.guacamole.variants.{Allele, AlleleConversions, AlleleEvidence, CalledAllele}
 import org.hammerlab.guacamole.windowing.SlidingWindow
@@ -196,7 +197,7 @@ object GermlineAssemblyCaller {
       val readSet = Common.loadReadsFromArguments(
         args,
         sc,
-        Read.InputFilters(
+        InputFilters(
           overlapsLoci = Some(loci),
           mapped = true,
           nonDuplicate = true
