@@ -2,17 +2,17 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>LociSet - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.LociSet</title>
-          <meta name="description" content="LociSet - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.LociSet" />
-          <meta name="keywords" content="LociSet guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.LociSet" />
+          <title>TaskPosition - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.distributed.TaskPosition</title>
+          <meta name="description" content="TaskPosition - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.distributed.TaskPosition" />
+          <meta name="keywords" content="TaskPosition guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.distributed.TaskPosition" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
-      <link href="../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
-      <link href="../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
       <script type="text/javascript">
          if(top === self) {
-            var url = '../../../index.html';
-            var hash = 'org.hammerlab.guacamole.LociSet';
+            var url = '../../../../index.html';
+            var hash = 'org.hammerlab.guacamole.distributed.TaskPosition';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -24,9 +24,9 @@
         </head>
         <body class="type">
       <div id="definition">
-        <a href="LociSet$.html" title="Go to companion"><img src="../../../lib/class_to_object_big.png" /></a>
-        <p id="owner"><a href="../../package.html" class="extype" name="org">org</a>.<a href="../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a></p>
-        <h1><a href="LociSet$.html" title="Go to companion">LociSet</a></h1>
+        <img src="../../../../lib/class_big.png" />
+        <p id="owner"><a href="../../../package.html" class="extype" name="org">org</a>.<a href="../../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="../package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole.distributed">distributed</a></p>
+        <h1>TaskPosition</h1>
       </div>
 
       <h4 id="signature" class="signature">
@@ -35,15 +35,16 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">LociSet</span><span class="params">(<span name="map">map: <a href="LociMap.html" class="extype" name="org.hammerlab.guacamole.LociMap">LociMap</a>[<span class="extype" name="scala.Long">Long</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">TaskPosition</span><span class="params">(<span name="task">task: <span class="extype" name="scala.Int">Int</span></span>, <span name="referenceContig">referenceContig: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="locus">locus: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Ordered">Ordered</span>[<a href="" class="extype" name="org.hammerlab.guacamole.distributed.TaskPosition">TaskPosition</a>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>An immutable collection of genomic regions on any number of contigs.</p><p>Used, for example, to keep track of what loci to call variants at.</p><p>Since contiguous genomic intervals are a common case, this is implemented with sets of (start, end) intervals.</p><p>All intervals are half open: inclusive on start, exclusive on end.</p><p>We implement a set by wrapping a LociMap[Long], and ignoring the values of the map.
-</p></div><dl class="paramcmts block"><dt class="param">map</dt><dd class="cmt"><p>LociMap[Long] instance. The values are ignored, and the keys are the members of the LociSet.
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>TaskPosition represents the task a read is assigned to and the start position on the reference genome of the read
+Each read is assigned to a task and the reads are sorted by (referenceContig, locus) when they are processed
+</p></div><dl class="paramcmts block"><dt class="param">task</dt><dd class="cmt"><p>Task ID</p></dd><dt class="param">referenceContig</dt><dd class="cmt"><p>Reference or chromosome name for reads</p></dd><dt class="param">locus</dt><dd class="cmt"><p>The position in the reference contig at which the read starts
 </p></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <span class="extype" name="scala.math.Ordered">Ordered</span>[<a href="" class="extype" name="org.hammerlab.guacamole.distributed.TaskPosition">TaskPosition</a>], <span class="extype" name="java.lang.Comparable">Comparable</span>[<a href="" class="extype" name="org.hammerlab.guacamole.distributed.TaskPosition">TaskPosition</a>], <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -61,7 +62,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="org.hammerlab.guacamole.LociSet"><span>LociSet</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="org.hammerlab.guacamole.distributed.TaskPosition"><span>TaskPosition</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="scala.math.Ordered"><span>Ordered</span></li><li class="in" name="java.lang.Comparable"><span>Comparable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -81,19 +82,19 @@
         <div id="allMembers">
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
-              <ol><li name="org.hammerlab.guacamole.LociSet#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="&lt;init&gt;(map:org.hammerlab.guacamole.LociMap[Long]):org.hammerlab.guacamole.LociSet"></a>
-      <a id="&lt;init&gt;:LociSet"></a>
+              <ol><li name="org.hammerlab.guacamole.distributed.TaskPosition#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="&lt;init&gt;(task:Int,referenceContig:String,locus:Long):org.hammerlab.guacamole.distributed.TaskPosition"></a>
+      <a id="&lt;init&gt;:TaskPosition"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">LociSet</span><span class="params">(<span name="map">map: <a href="LociMap.html" class="extype" name="org.hammerlab.guacamole.LociMap">LociMap</a>[<span class="extype" name="scala.Long">Long</span>]</span>)</span>
+        <span class="name">TaskPosition</span><span class="params">(<span name="task">task: <span class="extype" name="scala.Int">Int</span></span>, <span name="referenceContig">referenceContig: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="locus">locus: <span class="extype" name="scala.Long">Long</span></span>)</span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">map</dt><dd class="cmt"><p>LociMap[Long] instance. The values are ignored, and the keys are the members of the LociSet.
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">task</dt><dd class="cmt"><p>Task ID</p></dd><dt class="param">referenceContig</dt><dd class="cmt"><p>Reference or chromosome name for reads</p></dd><dt class="param">locus</dt><dd class="cmt"><p>The position in the reference contig at which the read starts
 </p></dd></dl></div>
     </li></ol>
             </div>
@@ -143,6 +144,32 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scala.math.Ordered#&lt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="&lt;(that:A):Boolean"></a>
+      <a id="&lt;(TaskPosition):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $less" class="name">&lt;</span><span class="params">(<span name="that">that: <a href="" class="extype" name="org.hammerlab.guacamole.distributed.TaskPosition">TaskPosition</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Ordered</dd></dl></div>
+    </li><li name="scala.math.Ordered#&lt;=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="&lt;=(that:A):Boolean"></a>
+      <a id="&lt;=(TaskPosition):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $less$eq" class="name">&lt;=</span><span class="params">(<span name="that">that: <a href="" class="extype" name="org.hammerlab.guacamole.distributed.TaskPosition">TaskPosition</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Ordered</dd></dl></div>
     </li><li name="scala.AnyRef#==" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="==(x$1:AnyRef):Boolean"></a>
       <a id="==(AnyRef):Boolean"></a>
@@ -169,6 +196,32 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="scala.math.Ordered#&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="&gt;(that:A):Boolean"></a>
+      <a id="&gt;(TaskPosition):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $greater" class="name">&gt;</span><span class="params">(<span name="that">that: <a href="" class="extype" name="org.hammerlab.guacamole.distributed.TaskPosition">TaskPosition</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Ordered</dd></dl></div>
+    </li><li name="scala.math.Ordered#&gt;=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="&gt;=(that:A):Boolean"></a>
+      <a id="&gt;=(TaskPosition):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $greater$eq" class="name">&gt;=</span><span class="params">(<span name="that">that: <a href="" class="extype" name="org.hammerlab.guacamole.distributed.TaskPosition">TaskPosition</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Ordered</dd></dl></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -194,39 +247,39 @@
         <span class="name">clone</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
       <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.LociSet#contigs" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="contigs:Seq[String]"></a>
-      <a id="contigs:Seq[String]"></a>
+    </li><li name="org.hammerlab.guacamole.distributed.TaskPosition#compare" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="compare(other:org.hammerlab.guacamole.distributed.TaskPosition):Int"></a>
+      <a id="compare(TaskPosition):Int"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">contigs</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+        <span class="name">compare</span><span class="params">(<span name="other">other: <a href="" class="extype" name="org.hammerlab.guacamole.distributed.TaskPosition">TaskPosition</a></span>)</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">The contigs included in this LociSet with a nonempty set of loci.</p>
-    </li><li name="org.hammerlab.guacamole.LociSet#count" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="count:Long"></a>
-      <a id="count:Long"></a>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.distributed.TaskPosition">TaskPosition</a> → Ordered</dd></dl></div>
+    </li><li name="scala.math.Ordered#compareTo" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="compareTo(that:A):Int"></a>
+      <a id="compareTo(TaskPosition):Int"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">count</span><span class="result">: <span class="extype" name="scala.Long">Long</span></span>
+        <span class="name">compareTo</span><span class="params">(<span name="that">that: <a href="" class="extype" name="org.hammerlab.guacamole.distributed.TaskPosition">TaskPosition</a></span>)</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">The number of loci in this LociSet.</p>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Ordered → Comparable</dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -240,32 +293,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.LociSet#equals" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="equals(other:Any):Boolean"></a>
-      <a id="equals(Any):Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">equals</span><span class="params">(<span name="other">other: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.LociSet">LociSet</a> → Equals → AnyRef → Any</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.LociSet#filterContigs" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="filterContigs(function:String=&gt;Boolean):org.hammerlab.guacamole.LociSet"></a>
-      <a id="filterContigs((String)⇒Boolean):LociSet"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">filterContigs</span><span class="params">(<span name="function">function: (<span class="extype" name="scala.Predef.String">String</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <a href="" class="extype" name="org.hammerlab.guacamole.LociSet">LociSet</a></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Returns a LociSet containing only those contigs TODO</p>
     </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <a id="finalize():Unit"></a>
@@ -278,7 +305,7 @@
         <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
       <span class="symbol">classOf[java.lang.Throwable]</span>
@@ -298,32 +325,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.LociSet#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="hashCode():Int"></a>
-      <a id="hashCode():Int"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.LociSet">LociSet</a> → AnyRef → Any</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.LociSet#isEmpty" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="isEmpty:Boolean"></a>
-      <a id="isEmpty:Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">isEmpty</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Does count == 0?</p>
     </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <a id="isInstanceOf[T0]:Boolean"></a>
@@ -337,20 +338,20 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.LociSet#map" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="map:org.hammerlab.guacamole.LociMap[Long]"></a>
-      <a id="map:LociMap[Long]"></a>
+    </li><li name="org.hammerlab.guacamole.distributed.TaskPosition#locus" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="locus:Long"></a>
+      <a id="locus:Long"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">map</span><span class="result">: <a href="LociMap.html" class="extype" name="org.hammerlab.guacamole.LociMap">LociMap</a>[<span class="extype" name="scala.Long">Long</span>]</span>
+        <span class="name">locus</span><span class="result">: <span class="extype" name="scala.Long">Long</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">LociMap[Long] instance.</p><div class="fullcomment"><div class="comment cmt"><p>LociMap[Long] instance. The values are ignored, and the keys are the members of the LociSet.
-</p></div></div>
+      <p class="shortcomment cmt">The position in the reference contig at which the read starts
+</p>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -364,19 +365,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.LociSet#nonEmpty" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="nonEmpty:Boolean"></a>
-      <a id="nonEmpty:Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">nonEmpty</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      </h4>
-      
     </li><li name="scala.AnyRef#notify" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notify():Unit"></a>
       <a id="notify():Unit"></a>
@@ -403,19 +391,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.LociSet#onContig" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="onContig(contig:String):org.hammerlab.guacamole.LociSet.SingleContig"></a>
-      <a id="onContig(String):SingleContig"></a>
+    </li><li name="org.hammerlab.guacamole.distributed.TaskPosition#referenceContig" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="referenceContig:String"></a>
+      <a id="referenceContig:String"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">def</span>
+        <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">onContig</span><span class="params">(<span name="contig">contig: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="LociSet$$SingleContig.html" class="extype" name="org.hammerlab.guacamole.LociSet.SingleContig">SingleContig</a></span>
+        <span class="name">referenceContig</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Given a contig name, returns a <a href="LociSet$$SingleContig.html" class="extype" name="org.hammerlab.guacamole.LociSet.SingleContig">LociSet.SingleContig</a> giving the loci on that contig.</p>
+      <p class="shortcomment cmt">Reference or chromosome name for reads</p>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -429,61 +417,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.LociSet#take" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="take(numToTake:Long):(org.hammerlab.guacamole.LociSet,org.hammerlab.guacamole.LociSet)"></a>
-      <a id="take(Long):(LociSet,LociSet)"></a>
+    </li><li name="org.hammerlab.guacamole.distributed.TaskPosition#task" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="task:Int"></a>
+      <a id="task:Int"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">def</span>
+        <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">take</span><span class="params">(<span name="numToTake">numToTake: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: (<a href="" class="extype" name="org.hammerlab.guacamole.LociSet">LociSet</a>, <a href="" class="extype" name="org.hammerlab.guacamole.LociSet">LociSet</a>)</span>
+        <span class="name">task</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Split the LociSet into two sets, where the first one has <code>numToTake</code> elements, and the second one has the
-remaining elements.</p><div class="fullcomment"><div class="comment cmt"><p>Split the LociSet into two sets, where the first one has <code>numToTake</code> elements, and the second one has the
-remaining elements.
-</p></div><dl class="paramcmts block"><dt class="param">numToTake</dt><dd class="cmt"><p>number of elements to take. Must be &lt;= number of elements in the set.</p></dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.LociSet#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="toString():String"></a>
-      <a id="toString():String"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Returns a string representation of this LociSet, in the same format that LociSet.</p><div class="fullcomment"><div class="comment cmt"><p>Returns a string representation of this LociSet, in the same format that LociSet.parse expects.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.LociSet">LociSet</a> → AnyRef → Any</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.LociSet#truncatedString" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="truncatedString(maxLength:Int):String"></a>
-      <a id="truncatedString(Int):String"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">truncatedString</span><span class="params">(<span name="maxLength">maxLength: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">200</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">String representation, truncated to maxLength characters.</p>
-    </li><li name="org.hammerlab.guacamole.LociSet#union" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="union(other:org.hammerlab.guacamole.LociSet):org.hammerlab.guacamole.LociSet"></a>
-      <a id="union(LociSet):LociSet"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">union</span><span class="params">(<span name="other">other: <a href="" class="extype" name="org.hammerlab.guacamole.LociSet">LociSet</a></span>)</span><span class="result">: <a href="" class="extype" name="org.hammerlab.guacamole.LociSet">LociSet</a></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Returns the union of this LociSet with another.</p>
+      <p class="shortcomment cmt">Task ID</p>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>
@@ -558,6 +504,10 @@ remaining elements.
               <h3>Inherited from <span class="extype" name="scala.Product">Product</span></h3>
             </div><div class="parent" name="scala.Equals">
               <h3>Inherited from <span class="extype" name="scala.Equals">Equals</span></h3>
+            </div><div class="parent" name="scala.math.Ordered">
+              <h3>Inherited from <span class="extype" name="scala.math.Ordered">Ordered</span>[<a href="" class="extype" name="org.hammerlab.guacamole.distributed.TaskPosition">TaskPosition</a>]</h3>
+            </div><div class="parent" name="java.lang.Comparable">
+              <h3>Inherited from <span class="extype" name="java.lang.Comparable">Comparable</span>[<a href="" class="extype" name="org.hammerlab.guacamole.distributed.TaskPosition">TaskPosition</a>]</h3>
             </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
             </div><div class="parent" name="scala.Any">
@@ -578,6 +528,6 @@ remaining elements.
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../lib/template.js"></script>
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../lib/template.js"></script>
     </body>
       </html>

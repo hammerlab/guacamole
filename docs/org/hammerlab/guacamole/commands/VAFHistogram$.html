@@ -82,7 +82,7 @@
         <div id="types" class="types members">
               <h3>Type Members</h3>
               <ol><li name="org.hammerlab.guacamole.commands.VAFHistogram.Arguments" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="ArgumentsextendsArgs4jBasewithDistributedUtil.ArgumentswithCommon.Arguments.ReadLoadingConfigArgs"></a>
+      <a id="ArgumentsextendsArgs4jBasewithLociPartitionUtils.ArgumentswithCommon.Arguments.ReadLoadingConfigArgs"></a>
       <a id="Arguments:Arguments"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -90,7 +90,7 @@
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a href="VAFHistogram$$Arguments.html"><span class="name">Arguments</span></a><span class="result"> extends <span class="extype" name="org.bdgenomics.utils.cli.Args4jBase">Args4jBase</span> with <a href="../DistributedUtil$$Arguments.html" class="extype" name="org.hammerlab.guacamole.DistributedUtil.Arguments">DistributedUtil.Arguments</a> with <a href="../Common$$Arguments$$ReadLoadingConfigArgs.html" class="extype" name="org.hammerlab.guacamole.Common.Arguments.ReadLoadingConfigArgs">ReadLoadingConfigArgs</a></span>
+        <a href="VAFHistogram$$Arguments.html"><span class="name">Arguments</span></a><span class="result"> extends <span class="extype" name="org.bdgenomics.utils.cli.Args4jBase">Args4jBase</span> with <a href="../distributed/LociPartitionUtils$$Arguments.html" class="extype" name="org.hammerlab.guacamole.distributed.LociPartitionUtils.Arguments">distributed.LociPartitionUtils.Arguments</a> with <a href="../Common$$Arguments$$ReadLoadingConfigArgs.html" class="extype" name="org.hammerlab.guacamole.Common.Arguments.ReadLoadingConfigArgs">ReadLoadingConfigArgs</a></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
@@ -393,7 +393,7 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="org.hammerlab.guacamole.commands.VAFHistogram#variantLociFromReads" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="variantLociFromReads(reads:org.apache.spark.rdd.RDD[org.hammerlab.guacamole.reads.MappedRead],reference:org.hammerlab.guacamole.reference.ReferenceGenome,lociPartitions:org.hammerlab.guacamole.LociMap[Long],samplePercent:Int,minReadDepth:Int,minVariantAlleleFrequency:Int,printStats:Boolean):org.apache.spark.rdd.RDD[org.hammerlab.guacamole.commands.VariantLocus]"></a>
+      <a id="variantLociFromReads(reads:org.apache.spark.rdd.RDD[org.hammerlab.guacamole.reads.MappedRead],reference:org.hammerlab.guacamole.reference.ReferenceGenome,lociPartitions:org.hammerlab.guacamole.loci.LociMap[Long],samplePercent:Int,minReadDepth:Int,minVariantAlleleFrequency:Int,printStats:Boolean):org.apache.spark.rdd.RDD[org.hammerlab.guacamole.commands.VariantLocus]"></a>
       <a id="variantLociFromReads(RDD[MappedRead],ReferenceGenome,LociMap[Long],Int,Int,Int,Boolean):RDD[VariantLocus]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -401,7 +401,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">variantLociFromReads</span><span class="params">(<span name="reads">reads: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<a href="../reads/MappedRead.html" class="extype" name="org.hammerlab.guacamole.reads.MappedRead">MappedRead</a>]</span>, <span name="reference">reference: <a href="../reference/ReferenceGenome.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceGenome">ReferenceGenome</a></span>, <span name="lociPartitions">lociPartitions: <a href="../LociMap.html" class="extype" name="org.hammerlab.guacamole.LociMap">LociMap</a>[<span class="extype" name="scala.Long">Long</span>]</span>, <span name="samplePercent">samplePercent: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">100</span></span>, <span name="minReadDepth">minReadDepth: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">0</span></span>, <span name="minVariantAlleleFrequency">minVariantAlleleFrequency: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">0</span></span>, <span name="printStats">printStats: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="result">: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<a href="VariantLocus.html" class="extype" name="org.hammerlab.guacamole.commands.VariantLocus">VariantLocus</a>]</span>
+        <span class="name">variantLociFromReads</span><span class="params">(<span name="reads">reads: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<a href="../reads/MappedRead.html" class="extype" name="org.hammerlab.guacamole.reads.MappedRead">MappedRead</a>]</span>, <span name="reference">reference: <a href="../reference/ReferenceGenome.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceGenome">ReferenceGenome</a></span>, <span name="lociPartitions">lociPartitions: <a href="../loci/LociMap.html" class="extype" name="org.hammerlab.guacamole.loci.LociMap">LociMap</a>[<span class="extype" name="scala.Long">Long</span>]</span>, <span name="samplePercent">samplePercent: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">100</span></span>, <span name="minReadDepth">minReadDepth: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">0</span></span>, <span name="minVariantAlleleFrequency">minVariantAlleleFrequency: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">0</span></span>, <span name="printStats">printStats: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="result">: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<a href="VariantLocus.html" class="extype" name="org.hammerlab.guacamole.commands.VariantLocus">VariantLocus</a>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Find all non-reference loci in the sample

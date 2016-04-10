@@ -2,17 +2,17 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>HashMapAccumulatorParam - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.DistributedUtil.HashMapAccumulatorParam</title>
-          <meta name="description" content="HashMapAccumulatorParam - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.DistributedUtil.HashMapAccumulatorParam" />
-          <meta name="keywords" content="HashMapAccumulatorParam guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.DistributedUtil.HashMapAccumulatorParam" />
+          <title>Arguments - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.distributed.LociPartitionUtils.Arguments</title>
+          <meta name="description" content="Arguments - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.distributed.LociPartitionUtils.Arguments" />
+          <meta name="keywords" content="Arguments guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.distributed.LociPartitionUtils.Arguments" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
-      <link href="../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
-      <link href="../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
       <script type="text/javascript">
          if(top === self) {
-            var url = '../../../index.html';
-            var hash = 'org.hammerlab.guacamole.DistributedUtil$$HashMapAccumulatorParam';
+            var url = '../../../../index.html';
+            var hash = 'org.hammerlab.guacamole.distributed.LociPartitionUtils$$Arguments';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -24,25 +24,27 @@
         </head>
         <body class="type">
       <div id="definition">
-        <img src="../../../lib/class_big.png" />
-        <p id="owner"><a href="../../package.html" class="extype" name="org">org</a>.<a href="../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="DistributedUtil$.html" class="extype" name="org.hammerlab.guacamole.DistributedUtil">DistributedUtil</a></p>
-        <h1>HashMapAccumulatorParam</h1>
+        <img src="../../../../lib/trait_big.png" />
+        <p id="owner"><a href="../../../package.html" class="extype" name="org">org</a>.<a href="../../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="../package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole.distributed">distributed</a>.<a href="LociPartitionUtils$.html" class="extype" name="org.hammerlab.guacamole.distributed.LociPartitionUtils">LociPartitionUtils</a></p>
+        <h1>Arguments</h1>
       </div>
 
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">class</span>
+        <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <span class="name">HashMapAccumulatorParam</span><span class="result"> extends <span class="extype" name="org.apache.spark.AccumulatorParam">AccumulatorParam</span>[<span class="extype" name="scala.collection.mutable.HashMap">HashMap</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Long">Long</span>]]</span>
+        <span class="name">Arguments</span><span class="result"> extends <span class="extype" name="org.bdgenomics.utils.cli.Args4jBase">Args4jBase</span> with <a href="../Common$$Arguments$$Base.html" class="extype" name="org.hammerlab.guacamole.Common.Arguments.Base">Base</a> with <a href="../Common$$Arguments$$Loci.html" class="extype" name="org.hammerlab.guacamole.Common.Arguments.Loci">Loci</a></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Allows a mutable HashMap[String, Long] to be used as an accumulator in Spark.</p><p>When we put (k, v2) into an accumulator that already contains (k, v1), the result will be a HashMap containing
-(k, v1 + v2).</p></div><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="org.apache.spark.AccumulatorParam">AccumulatorParam</span>[<span class="extype" name="scala.collection.mutable.HashMap">HashMap</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Long">Long</span>]], <span class="extype" name="org.apache.spark.AccumulableParam">AccumulableParam</span>[<span class="extype" name="scala.collection.mutable.HashMap">HashMap</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Long">Long</span>], <span class="extype" name="scala.collection.mutable.HashMap">HashMap</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Long">Long</span>]], <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><a href="../Common$$Arguments$$Loci.html" class="extype" name="org.hammerlab.guacamole.Common.Arguments.Loci">Loci</a>, <a href="../Common$$Arguments$$Base.html" class="extype" name="org.hammerlab.guacamole.Common.Arguments.Base">Base</a>, <span class="extype" name="org.bdgenomics.utils.cli.ParquetArgs">ParquetArgs</span>, <span class="extype" name="org.bdgenomics.utils.cli.ParquetRDDArgs">ParquetRDDArgs</span>, <span class="extype" name="org.bdgenomics.utils.cli.Args4jBase">Args4jBase</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+        </div><div class="toggleContainer block">
+          <span class="toggle">Known Subclasses</span>
+          <div class="subClasses hiddenContent"><a href="../commands/jointcaller/SomaticJoint$$Arguments.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.SomaticJoint.Arguments">Arguments</a>, <a href="../commands/VariantSupport$$Arguments.html" class="extype" name="org.hammerlab.guacamole.commands.VariantSupport.Arguments">Arguments</a>, <a href="../commands/VAFHistogram$$Arguments.html" class="extype" name="org.hammerlab.guacamole.commands.VAFHistogram.Arguments">Arguments</a>, <a href="../commands/SomaticStandard$$Arguments.html" class="extype" name="org.hammerlab.guacamole.commands.SomaticStandard.Arguments">Arguments</a>, <a href="../commands/GermlineThreshold$$Arguments.html" class="extype" name="org.hammerlab.guacamole.commands.GermlineThreshold.Arguments">Arguments</a>, <a href="../commands/GermlineStandard$$Arguments.html" class="extype" name="org.hammerlab.guacamole.commands.GermlineStandard.Arguments">Arguments</a>, <a href="../commands/GermlineAssemblyCaller$$Arguments.html" class="extype" name="org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Arguments">Arguments</a>, <a href="../Common$$Arguments$$GermlineCallerArgs.html" class="extype" name="org.hammerlab.guacamole.Common.Arguments.GermlineCallerArgs">GermlineCallerArgs</a>, <a href="../Common$$Arguments$$SomaticCallerArgs.html" class="extype" name="org.hammerlab.guacamole.Common.Arguments.SomaticCallerArgs">SomaticCallerArgs</a></div>
         </div></div>
         
 
@@ -60,7 +62,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="org.hammerlab.guacamole.DistributedUtil.HashMapAccumulatorParam"><span>HashMapAccumulatorParam</span></li><li class="in" name="org.apache.spark.AccumulatorParam"><span>AccumulatorParam</span></li><li class="in" name="org.apache.spark.AccumulableParam"><span>AccumulableParam</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="org.hammerlab.guacamole.distributed.LociPartitionUtils.Arguments"><span>Arguments</span></li><li class="in" name="org.hammerlab.guacamole.Common.Arguments.Loci"><span>Loci</span></li><li class="in" name="org.hammerlab.guacamole.Common.Arguments.Base"><span>Base</span></li><li class="in" name="org.bdgenomics.utils.cli.ParquetArgs"><span>ParquetArgs</span></li><li class="in" name="org.bdgenomics.utils.cli.ParquetRDDArgs"><span>ParquetRDDArgs</span></li><li class="in" name="org.bdgenomics.utils.cli.Args4jBase"><span>Args4jBase</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -78,23 +80,7 @@
 
       <div id="template">
         <div id="allMembers">
-        <div id="constructors" class="members">
-              <h3>Instance Constructors</h3>
-              <ol><li name="org.hammerlab.guacamole.DistributedUtil.HashMapAccumulatorParam#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;():org.hammerlab.guacamole.DistributedUtil.HashMapAccumulatorParam"></a>
-      <a id="&lt;init&gt;:HashMapAccumulatorParam"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">new</span>
-      </span>
-      <span class="symbol">
-        <span class="name">HashMapAccumulatorParam</span><span class="params">()</span>
-      </span>
-      </h4>
-      
-    </li></ol>
-            </div>
+        
 
         
 
@@ -167,33 +153,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="org.apache.spark.AccumulatorParam#addAccumulator" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="addAccumulator(t1:T,t2:T):T"></a>
-      <a id="addAccumulator(HashMap[String,Long],HashMap[String,Long]):HashMap[String,Long]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">addAccumulator</span><span class="params">(<span name="t1">t1: <span class="extype" name="scala.collection.mutable.HashMap">HashMap</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Long">Long</span>]</span>, <span name="t2">t2: <span class="extype" name="scala.collection.mutable.HashMap">HashMap</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Long">Long</span>]</span>)</span><span class="result">: <span class="extype" name="scala.collection.mutable.HashMap">HashMap</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Long">Long</span>]</span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AccumulatorParam → AccumulableParam</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.DistributedUtil.HashMapAccumulatorParam#addInPlace" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="addInPlace(first:scala.collection.mutable.HashMap[String,Long],second:scala.collection.mutable.HashMap[String,Long]):scala.collection.mutable.HashMap[String,Long]"></a>
-      <a id="addInPlace(HashMap[String,Long],HashMap[String,Long]):HashMap[String,Long]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">addInPlace</span><span class="params">(<span name="first">first: <span class="extype" name="scala.collection.mutable.HashMap">HashMap</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Long">Long</span>]</span>, <span name="second">second: <span class="extype" name="scala.collection.mutable.HashMap">HashMap</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Long">Long</span>]</span>)</span><span class="result">: <span class="extype" name="scala.collection.mutable.HashMap">HashMap</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Long">Long</span>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Combine two accumulators.</p><div class="fullcomment"><div class="comment cmt"><p>Combine two accumulators. Adds the values in each hash map.</p><p>This method is allowed to modify and return the first value for efficiency.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.DistributedUtil.HashMapAccumulatorParam">HashMapAccumulatorParam</a> → AccumulableParam</dd><dt>See also</dt><dd><span class="cmt"><p>org.apache.spark.GrowableAccumulableParam.addInPlace(r1: R, r2: R): R</p></span></dd></dl></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -207,6 +166,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="org.bdgenomics.utils.cli.ParquetArgs#blockSize" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="blockSize:Int"></a>
+      <a id="blockSize:Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">var</span>
+      </span>
+      <span class="symbol">
+        <span class="name">blockSize</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>ParquetArgs → ParquetRDDArgs</dd></dl></div>
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>
       <a id="clone():AnyRef"></a>
@@ -219,13 +191,65 @@
         <span class="name">clone</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
       <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="org.bdgenomics.utils.cli.ParquetArgs#compressionCodec" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="compressionCodec:org.apache.parquet.hadoop.metadata.CompressionCodecName"></a>
+      <a id="compressionCodec:CompressionCodecName"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">var</span>
+      </span>
+      <span class="symbol">
+        <span class="name">compressionCodec</span><span class="result">: <span class="extype" name="org.apache.parquet.hadoop.metadata.CompressionCodecName">CompressionCodecName</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>ParquetArgs → ParquetRDDArgs</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.Common.Arguments.Base#debug" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="debug:Boolean"></a>
+      <a id="debug:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">var</span>
+      </span>
+      <span class="symbol">
+        <span class="name">debug</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../Common$$Arguments$$Base.html" class="extype" name="org.hammerlab.guacamole.Common.Arguments.Base">Base</a></dd></dl></div>
+    </li><li name="org.bdgenomics.utils.cli.ParquetArgs#disableDictionaryEncoding" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="disableDictionaryEncoding:Boolean"></a>
+      <a id="disableDictionaryEncoding:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">var</span>
+      </span>
+      <span class="symbol">
+        <span class="name">disableDictionaryEncoding</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>ParquetArgs → ParquetRDDArgs</dd></dl></div>
+    </li><li name="org.bdgenomics.utils.cli.Args4jBase#doPrintUsage" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="doPrintUsage:Boolean"></a>
+      <a id="doPrintUsage:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">var</span>
+      </span>
+      <span class="symbol">
+        <span class="name">doPrintUsage</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Args4jBase</dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -264,7 +288,7 @@
         <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
       <span class="symbol">classOf[java.lang.Throwable]</span>
@@ -310,6 +334,45 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.Common.Arguments.Loci#loci" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="loci:String"></a>
+      <a id="loci:String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">var</span>
+      </span>
+      <span class="symbol">
+        <span class="name">loci</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../Common$$Arguments$$Loci.html" class="extype" name="org.hammerlab.guacamole.Common.Arguments.Loci">Loci</a></dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.Common.Arguments.Loci#lociFromFile" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="lociFromFile:String"></a>
+      <a id="lociFromFile:String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">var</span>
+      </span>
+      <span class="symbol">
+        <span class="name">lociFromFile</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../Common$$Arguments$$Loci.html" class="extype" name="org.hammerlab.guacamole.Common.Arguments.Loci">Loci</a></dd></dl></div>
+    </li><li name="org.bdgenomics.utils.cli.ParquetArgs#logLevel" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="logLevel:String"></a>
+      <a id="logLevel:String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">var</span>
+      </span>
+      <span class="symbol">
+        <span class="name">logLevel</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>ParquetArgs</dd></dl></div>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -349,6 +412,58 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="org.bdgenomics.utils.cli.ParquetArgs#pageSize" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="pageSize:Int"></a>
+      <a id="pageSize:Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">var</span>
+      </span>
+      <span class="symbol">
+        <span class="name">pageSize</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>ParquetArgs → ParquetRDDArgs</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.distributed.LociPartitionUtils.Arguments#parallelism" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="parallelism:Int"></a>
+      <a id="parallelism:Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">var</span>
+      </span>
+      <span class="symbol">
+        <span class="name">parallelism</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.distributed.LociPartitionUtils.Arguments#partitioningAccuracy" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="partitioningAccuracy:Int"></a>
+      <a id="partitioningAccuracy:Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">var</span>
+      </span>
+      <span class="symbol">
+        <span class="name">partitioningAccuracy</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.bdgenomics.utils.cli.Args4jBase#printMetrics" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="printMetrics:Boolean"></a>
+      <a id="printMetrics:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">var</span>
+      </span>
+      <span class="symbol">
+        <span class="name">printMetrics</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Args4jBase</dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -432,20 +547,6 @@
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.DistributedUtil.HashMapAccumulatorParam#zero" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="zero(initialValue:scala.collection.mutable.HashMap[String,Long]):scala.collection.mutable.HashMap[String,Long]"></a>
-      <a id="zero(HashMap[String,Long]):HashMap[String,Long]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">zero</span><span class="params">(<span name="initialValue">initialValue: <span class="extype" name="scala.collection.mutable.HashMap">HashMap</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Long">Long</span>]</span>)</span><span class="result">: <span class="extype" name="scala.collection.mutable.HashMap">HashMap</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Long">Long</span>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Zero value for the accumulator: the empty hash map.</p><div class="fullcomment"><div class="comment cmt"><p>Zero value for the accumulator: the empty hash map.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.DistributedUtil.HashMapAccumulatorParam">HashMapAccumulatorParam</a> → AccumulableParam</dd><dt>See also</dt><dd><span class="cmt"><p>org.apache.spark.GrowableAccumulableParam.zero(initialValue: R): R</p></span></dd></dl></div>
     </li></ol>
             </div>
 
@@ -455,12 +556,16 @@
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="org.apache.spark.AccumulatorParam">
-              <h3>Inherited from <span class="extype" name="org.apache.spark.AccumulatorParam">AccumulatorParam</span>[<span class="extype" name="scala.collection.mutable.HashMap">HashMap</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Long">Long</span>]]</h3>
-            </div><div class="parent" name="org.apache.spark.AccumulableParam">
-              <h3>Inherited from <span class="extype" name="org.apache.spark.AccumulableParam">AccumulableParam</span>[<span class="extype" name="scala.collection.mutable.HashMap">HashMap</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Long">Long</span>], <span class="extype" name="scala.collection.mutable.HashMap">HashMap</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Long">Long</span>]]</h3>
-            </div><div class="parent" name="java.io.Serializable">
-              <h3>Inherited from <span class="extype" name="java.io.Serializable">Serializable</span></h3>
+        <div class="parent" name="org.hammerlab.guacamole.Common.Arguments.Loci">
+              <h3>Inherited from <a href="../Common$$Arguments$$Loci.html" class="extype" name="org.hammerlab.guacamole.Common.Arguments.Loci">Loci</a></h3>
+            </div><div class="parent" name="org.hammerlab.guacamole.Common.Arguments.Base">
+              <h3>Inherited from <a href="../Common$$Arguments$$Base.html" class="extype" name="org.hammerlab.guacamole.Common.Arguments.Base">Base</a></h3>
+            </div><div class="parent" name="org.bdgenomics.utils.cli.ParquetArgs">
+              <h3>Inherited from <span class="extype" name="org.bdgenomics.utils.cli.ParquetArgs">ParquetArgs</span></h3>
+            </div><div class="parent" name="org.bdgenomics.utils.cli.ParquetRDDArgs">
+              <h3>Inherited from <span class="extype" name="org.bdgenomics.utils.cli.ParquetRDDArgs">ParquetRDDArgs</span></h3>
+            </div><div class="parent" name="org.bdgenomics.utils.cli.Args4jBase">
+              <h3>Inherited from <span class="extype" name="org.bdgenomics.utils.cli.Args4jBase">Args4jBase</span></h3>
             </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
             </div><div class="parent" name="scala.Any">
@@ -481,6 +586,6 @@
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../lib/template.js"></script>
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../lib/template.js"></script>
     </body>
       </html>

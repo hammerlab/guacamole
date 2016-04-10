@@ -2,17 +2,17 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>PartitionByKey - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.DistributedUtil.PartitionByKey</title>
-          <meta name="description" content="PartitionByKey - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.DistributedUtil.PartitionByKey" />
-          <meta name="keywords" content="PartitionByKey guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.DistributedUtil.PartitionByKey" />
+          <title>Builder - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.loci.LociMap.Builder</title>
+          <meta name="description" content="Builder - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.loci.LociMap.Builder" />
+          <meta name="keywords" content="Builder guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.loci.LociMap.Builder" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
-      <link href="../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
-      <link href="../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
       <script type="text/javascript">
          if(top === self) {
-            var url = '../../../index.html';
-            var hash = 'org.hammerlab.guacamole.DistributedUtil$$PartitionByKey';
+            var url = '../../../../index.html';
+            var hash = 'org.hammerlab.guacamole.loci.LociMap$$Builder';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -24,9 +24,9 @@
         </head>
         <body class="type">
       <div id="definition">
-        <img src="../../../lib/class_big.png" />
-        <p id="owner"><a href="../../package.html" class="extype" name="org">org</a>.<a href="../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="DistributedUtil$.html" class="extype" name="org.hammerlab.guacamole.DistributedUtil">DistributedUtil</a></p>
-        <h1>PartitionByKey</h1>
+        <img src="../../../../lib/class_big.png" />
+        <p id="owner"><a href="../../../package.html" class="extype" name="org">org</a>.<a href="../../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="../package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole.loci">loci</a>.<a href="LociMap$.html" class="extype" name="org.hammerlab.guacamole.loci.LociMap">LociMap</a></p>
+        <h1>Builder</h1>
       </div>
 
       <h4 id="signature" class="signature">
@@ -35,15 +35,13 @@
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">PartitionByKey</span><span class="result"> extends <span class="extype" name="org.apache.spark.Partitioner">Partitioner</span></span>
+        <span class="name">Builder</span><span class="tparams">[<span name="T">T</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Spark partitioner for keyed RDDs that assigns each unique key its own partition.
-Used to partition an RDD of (task number: Long, read: MappedRead) pairs, giving each task its own partition.
-</p></div><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Class for building a LociMap</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="org.apache.spark.Partitioner">Partitioner</span>, <span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -61,7 +59,7 @@ Used to partition an RDD of (task number: Long, read: MappedRead) pairs, giving 
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="org.hammerlab.guacamole.DistributedUtil.PartitionByKey"><span>PartitionByKey</span></li><li class="in" name="org.apache.spark.Partitioner"><span>Partitioner</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="org.hammerlab.guacamole.loci.LociMap.Builder"><span>Builder</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -81,20 +79,19 @@ Used to partition an RDD of (task number: Long, read: MappedRead) pairs, giving 
         <div id="allMembers">
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
-              <ol><li name="org.hammerlab.guacamole.DistributedUtil.PartitionByKey#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="&lt;init&gt;(partitions:Int):org.hammerlab.guacamole.DistributedUtil.PartitionByKey"></a>
-      <a id="&lt;init&gt;:PartitionByKey"></a>
+              <ol><li name="org.hammerlab.guacamole.loci.LociMap.Builder#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="&lt;init&gt;():org.hammerlab.guacamole.loci.LociMap.Builder[T]"></a>
+      <a id="&lt;init&gt;:Builder[T]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">PartitionByKey</span><span class="params">(<span name="partitions">partitions: <span class="extype" name="scala.Int">Int</span></span>)</span>
+        <span class="name">Builder</span><span class="params">()</span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">partitions</dt><dd class="cmt"><p>total number of partitions
-</p></dd></dl></div>
+      
     </li></ol>
             </div>
 
@@ -194,13 +191,26 @@ Used to partition an RDD of (task number: Long, read: MappedRead) pairs, giving 
         <span class="name">clone</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
       <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.loci.LociMap.Builder#data" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="data:scala.collection.mutable.HashMap[String,scala.collection.mutable.ArrayBuffer[(Long,Long,T)]]"></a>
+      <a id="data:HashMap[String,ArrayBuffer[(Long,Long,T)]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">data</span><span class="result">: <span class="extype" name="scala.collection.mutable.HashMap">HashMap</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.collection.mutable.ArrayBuffer">ArrayBuffer</span>[(<span class="extype" name="scala.Long">Long</span>, <span class="extype" name="scala.Long">Long</span>, <span class="extype" name="org.hammerlab.guacamole.loci.LociMap.Builder.T">T</span>)]]</span>
+      </span>
+      </h4>
+      
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -214,8 +224,8 @@ Used to partition an RDD of (task number: Long, read: MappedRead) pairs, giving 
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.DistributedUtil.PartitionByKey#equals" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="equals(other:Any):Boolean"></a>
+    </li><li name="scala.AnyRef#equals" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="equals(x$1:Any):Boolean"></a>
       <a id="equals(Any):Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -223,10 +233,10 @@ Used to partition an RDD of (task number: Long, read: MappedRead) pairs, giving 
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">equals</span><span class="params">(<span name="other">other: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.DistributedUtil.PartitionByKey">PartitionByKey</a> → AnyRef → Any</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <a id="finalize():Unit"></a>
@@ -239,7 +249,7 @@ Used to partition an RDD of (task number: Long, read: MappedRead) pairs, giving 
         <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
       <span class="symbol">classOf[java.lang.Throwable]</span>
@@ -259,19 +269,6 @@ Used to partition an RDD of (task number: Long, read: MappedRead) pairs, giving 
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.DistributedUtil.PartitionByKey#getPartition" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="getPartition(key:Any):Int"></a>
-      <a id="getPartition(Any):Int"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">getPartition</span><span class="params">(<span name="key">key: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.DistributedUtil.PartitionByKey">PartitionByKey</a> → Partitioner</dd></dl></div>
     </li><li name="scala.AnyRef#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="hashCode():Int"></a>
       <a id="hashCode():Int"></a>
@@ -337,19 +334,45 @@ Used to partition an RDD of (task number: Long, read: MappedRead) pairs, giving 
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.DistributedUtil.PartitionByKey#numPartitions" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="numPartitions:Int"></a>
-      <a id="numPartitions:Int"></a>
+    </li><li name="org.hammerlab.guacamole.loci.LociMap.Builder#put" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="put(loci:org.hammerlab.guacamole.loci.LociSet,value:T):org.hammerlab.guacamole.loci.LociMap.Builder[T]"></a>
+      <a id="put(LociSet,T):Builder[T]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">numPartitions</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+        <span class="name">put</span><span class="params">(<span name="loci">loci: <a href="LociSet.html" class="extype" name="org.hammerlab.guacamole.loci.LociSet">LociSet</a></span>, <span name="value">value: <span class="extype" name="org.hammerlab.guacamole.loci.LociMap.Builder.T">T</span></span>)</span><span class="result">: <a href="" class="extype" name="org.hammerlab.guacamole.loci.LociMap.Builder">Builder</a>[<span class="extype" name="org.hammerlab.guacamole.loci.LociMap.Builder.T">T</span>]</span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.DistributedUtil.PartitionByKey">PartitionByKey</a> → Partitioner</dd></dl></div>
+      <p class="shortcomment cmt">Set the value for all loci in the given LociSet to the specified value in the LociMap under construction.</p>
+    </li><li name="org.hammerlab.guacamole.loci.LociMap.Builder#put" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="put(contig:String,start:Long,end:Long,value:T):org.hammerlab.guacamole.loci.LociMap.Builder[T]"></a>
+      <a id="put(String,Long,Long,T):Builder[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">put</span><span class="params">(<span name="contig">contig: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="start">start: <span class="extype" name="scala.Long">Long</span></span>, <span name="end">end: <span class="extype" name="scala.Long">Long</span></span>, <span name="value">value: <span class="extype" name="org.hammerlab.guacamole.loci.LociMap.Builder.T">T</span></span>)</span><span class="result">: <a href="" class="extype" name="org.hammerlab.guacamole.loci.LociMap.Builder">Builder</a>[<span class="extype" name="org.hammerlab.guacamole.loci.LociMap.Builder.T">T</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Set the value at the given locus range in the LociMap under construction.</p>
+    </li><li name="org.hammerlab.guacamole.loci.LociMap.Builder#result" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="result():org.hammerlab.guacamole.loci.LociMap[T]"></a>
+      <a id="result():LociMap[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">result</span><span class="params">()</span><span class="result">: <a href="LociMap.html" class="extype" name="org.hammerlab.guacamole.loci.LociMap">LociMap</a>[<span class="extype" name="org.hammerlab.guacamole.loci.LociMap.Builder.T">T</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Build the result.</p>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -442,13 +465,7 @@ Used to partition an RDD of (task number: Long, read: MappedRead) pairs, giving 
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="org.apache.spark.Partitioner">
-              <h3>Inherited from <span class="extype" name="org.apache.spark.Partitioner">Partitioner</span></h3>
-            </div><div class="parent" name="scala.Serializable">
-              <h3>Inherited from <span class="extype" name="scala.Serializable">Serializable</span></h3>
-            </div><div class="parent" name="java.io.Serializable">
-              <h3>Inherited from <span class="extype" name="java.io.Serializable">Serializable</span></h3>
-            </div><div class="parent" name="scala.AnyRef">
+        <div class="parent" name="scala.AnyRef">
               <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
             </div><div class="parent" name="scala.Any">
               <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
@@ -468,6 +485,6 @@ Used to partition an RDD of (task number: Long, read: MappedRead) pairs, giving 
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../lib/template.js"></script>
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../lib/template.js"></script>
     </body>
       </html>

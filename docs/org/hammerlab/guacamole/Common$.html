@@ -395,7 +395,7 @@ characters. If truncation occurs, the string is terminated with ellipses.
 </p></div><dl class="paramcmts block"><dt class="param">args</dt><dd class="cmt"><p>parsed arguments</p></dd><dt class="param">sc</dt><dd class="cmt"><p>spark context</p></dd><dt class="param">filters</dt><dd class="cmt"><p>input filters to apply
 </p></dd></dl></div>
     </li><li name="org.hammerlab.guacamole.Common#loci" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="loci(loci:String,lociFromFilePath:String,contigLengths:Map[String,Long]):org.hammerlab.guacamole.LociSet"></a>
+      <a id="loci(loci:String,lociFromFilePath:String,contigLengths:Map[String,Long]):org.hammerlab.guacamole.loci.LociSet"></a>
       <a id="loci(String,String,Map[String,Long]):LociSet"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -403,14 +403,14 @@ characters. If truncation occurs, the string is terminated with ellipses.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">loci</span><span class="params">(<span name="loci">loci: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="lociFromFilePath">lociFromFilePath: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="contigLengths">contigLengths: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Long">Long</span>]</span>)</span><span class="result">: <a href="LociSet.html" class="extype" name="org.hammerlab.guacamole.LociSet">LociSet</a></span>
+        <span class="name">loci</span><span class="params">(<span name="loci">loci: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="lociFromFilePath">lociFromFilePath: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="contigLengths">contigLengths: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Long">Long</span>]</span>)</span><span class="result">: <a href="loci/LociSet.html" class="extype" name="org.hammerlab.guacamole.loci.LociSet">LociSet</a></span>
       </span>
       </h4>
       <p class="shortcomment cmt">Load loci from a string or a path to a file.</p><div class="fullcomment"><div class="comment cmt"><p>Load loci from a string or a path to a file.</p><p>Specify at most one of loci or lociFromFilePath.
 </p></div><dl class="paramcmts block"><dt class="param">loci</dt><dd class="cmt"><p>loci to load as a string</p></dd><dt class="param">lociFromFilePath</dt><dd class="cmt"><p>path to file containing loci to load</p></dd><dt class="param">contigLengths</dt><dd class="cmt"><p>contig lengths, by name</p></dd><dt>returns</dt><dd class="cmt"><p>a LociSet
 </p></dd></dl></div>
     </li><li name="org.hammerlab.guacamole.Common#lociFromArguments" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="lociFromArguments(args:org.hammerlab.guacamole.Common.Arguments.Loci,default:String):org.hammerlab.guacamole.LociSet.Builder"></a>
+      <a id="lociFromArguments(args:org.hammerlab.guacamole.Common.Arguments.Loci,default:String):org.hammerlab.guacamole.loci.LociSet.Builder"></a>
       <a id="lociFromArguments(Loci,String):Builder"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -418,14 +418,14 @@ characters. If truncation occurs, the string is terminated with ellipses.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">lociFromArguments</span><span class="params">(<span name="args">args: <a href="Common$$Arguments$$Loci.html" class="extype" name="org.hammerlab.guacamole.Common.Arguments.Loci">Loci</a></span>, <span name="default">default: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;all&quot;</span></span>)</span><span class="result">: <a href="LociSet$$Builder.html" class="extype" name="org.hammerlab.guacamole.LociSet.Builder">Builder</a></span>
+        <span class="name">lociFromArguments</span><span class="params">(<span name="args">args: <a href="Common$$Arguments$$Loci.html" class="extype" name="org.hammerlab.guacamole.Common.Arguments.Loci">Loci</a></span>, <span name="default">default: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;all&quot;</span></span>)</span><span class="result">: <a href="loci/LociSet$$Builder.html" class="extype" name="org.hammerlab.guacamole.loci.LociSet.Builder">Builder</a></span>
       </span>
       </h4>
       <p class="shortcomment cmt">Return the loci specified by the user as a LociSet.</p><div class="fullcomment"><div class="comment cmt"><p>Return the loci specified by the user as a LociSet.Builder.
 </p></div><dl class="paramcmts block"><dt class="param">args</dt><dd class="cmt"><p>parsed arguments
 </p></dd></dl></div>
     </li><li name="org.hammerlab.guacamole.Common#lociFromFile" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="lociFromFile(filePath:String,contigLengths:Map[String,Long]):org.hammerlab.guacamole.LociSet"></a>
+      <a id="lociFromFile(filePath:String,contigLengths:Map[String,Long]):org.hammerlab.guacamole.loci.LociSet"></a>
       <a id="lociFromFile(String,Map[String,Long]):LociSet"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -433,7 +433,7 @@ characters. If truncation occurs, the string is terminated with ellipses.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">lociFromFile</span><span class="params">(<span name="filePath">filePath: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="contigLengths">contigLengths: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Long">Long</span>]</span>)</span><span class="result">: <a href="LociSet.html" class="extype" name="org.hammerlab.guacamole.LociSet">LociSet</a></span>
+        <span class="name">lociFromFile</span><span class="params">(<span name="filePath">filePath: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="contigLengths">contigLengths: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Long">Long</span>]</span>)</span><span class="result">: <a href="loci/LociSet.html" class="extype" name="org.hammerlab.guacamole.loci.LociSet">LociSet</a></span>
       </span>
       </h4>
       <p class="shortcomment cmt">Load a LociSet from the specified file, using the contig lengths from the given ReadSet.</p><div class="fullcomment"><div class="comment cmt"><p>Load a LociSet from the specified file, using the contig lengths from the given ReadSet.

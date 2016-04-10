@@ -2,17 +2,17 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>LociMapLongSerializer - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.LociMapLongSerializer</title>
-          <meta name="description" content="LociMapLongSerializer - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.LociMapLongSerializer" />
-          <meta name="keywords" content="LociMapLongSerializer guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.LociMapLongSerializer" />
+          <title>Builder - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.loci.LociSet.Builder</title>
+          <meta name="description" content="Builder - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.loci.LociSet.Builder" />
+          <meta name="keywords" content="Builder guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.loci.LociSet.Builder" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
-      <link href="../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
-      <link href="../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
       <script type="text/javascript">
          if(top === self) {
-            var url = '../../../index.html';
-            var hash = 'org.hammerlab.guacamole.LociMapLongSerializer';
+            var url = '../../../../index.html';
+            var hash = 'org.hammerlab.guacamole.loci.LociSet$$Builder';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -24,9 +24,9 @@
         </head>
         <body class="type">
       <div id="definition">
-        <img src="../../../lib/class_big.png" />
-        <p id="owner"><a href="../../package.html" class="extype" name="org">org</a>.<a href="../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a></p>
-        <h1>LociMapLongSerializer</h1>
+        <img src="../../../../lib/class_big.png" />
+        <p id="owner"><a href="../../../package.html" class="extype" name="org">org</a>.<a href="../../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="../package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole.loci">loci</a>.<a href="LociSet$.html" class="extype" name="org.hammerlab.guacamole.loci.LociSet">LociSet</a></p>
+        <h1>Builder</h1>
       </div>
 
       <h4 id="signature" class="signature">
@@ -35,13 +35,20 @@
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">LociMapLongSerializer</span><span class="result"> extends <span class="extype" name="com.esotericsoftware.kryo.Serializer">Serializer</span>[<a href="LociMap.html" class="extype" name="org.hammerlab.guacamole.LociMap">LociMap</a>[<span class="extype" name="scala.Long">Long</span>]]</span>
+        <span class="name">Builder</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Class for constructing a LociSet.</p><p>A LociSet always has an exact size, but a Builder supports specifications of loci sets before the contigs
+and their lengths are known. For example, a builder can specify &quot;all sites on all contigs&quot;, or &quot;all sites
+on chromosomes 1 and 2&quot;. To build such an &quot;unresolved&quot; LociSet, the contigs and their lengths must be provided to
+the result method.</p><p>This comes in handy when we want to pass a specification of loci to the BAM reading methods.
+We don't know the contigs and their lengths until we read in the BAM file, so we can't make a LociSet until
+we read the file header. At the same time, we want to use the BAM index to read only the loci of interest from
+the file. A LociSet.Builder is a convenient object to pass to the bam loading functions, as it is an object
+that specifies the loci of interest without requiring us to already know the contigs and their lengths.</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="com.esotericsoftware.kryo.Serializer">Serializer</span>[<a href="LociMap.html" class="extype" name="org.hammerlab.guacamole.LociMap">LociMap</a>[<span class="extype" name="scala.Long">Long</span>]], <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -59,7 +66,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="org.hammerlab.guacamole.LociMapLongSerializer"><span>LociMapLongSerializer</span></li><li class="in" name="com.esotericsoftware.kryo.Serializer"><span>Serializer</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="org.hammerlab.guacamole.loci.LociSet.Builder"><span>Builder</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -79,16 +86,16 @@
         <div id="allMembers">
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
-              <ol><li name="org.hammerlab.guacamole.LociMapLongSerializer#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;():org.hammerlab.guacamole.LociMapLongSerializer"></a>
-      <a id="&lt;init&gt;:LociMapLongSerializer"></a>
+              <ol><li name="org.hammerlab.guacamole.loci.LociSet.Builder#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="&lt;init&gt;():org.hammerlab.guacamole.loci.LociSet.Builder"></a>
+      <a id="&lt;init&gt;:Builder"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">LociMapLongSerializer</span><span class="params">()</span>
+        <span class="name">Builder</span><span class="params">()</span>
       </span>
       </h4>
       
@@ -191,26 +198,27 @@
         <span class="name">clone</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
       <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="com.esotericsoftware.kryo.Serializer#copy" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="copy(x$1:com.esotericsoftware.kryo.Kryo,x$2:T):T"></a>
-      <a id="copy(Kryo,LociMap[Long]):LociMap[Long]"></a>
+    </li><li name="org.hammerlab.guacamole.loci.LociSet.Builder#containsAll" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="containsAll:Boolean"></a>
+      <a id="containsAll:Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">def</span>
+        <span class="kind">var</span>
       </span>
       <span class="symbol">
-        <span class="name">copy</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="com.esotericsoftware.kryo.Kryo">Kryo</span></span>, <span name="arg1">arg1: <a href="LociMap.html" class="extype" name="org.hammerlab.guacamole.LociMap">LociMap</a>[<span class="extype" name="scala.Long">Long</span>]</span>)</span><span class="result">: <a href="LociMap.html" class="extype" name="org.hammerlab.guacamole.LociMap">LociMap</a>[<span class="extype" name="scala.Long">Long</span>]</span>
+        <span class="name">containsAll</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Serializer</dd></dl></div>
+      <p class="shortcomment cmt">Does this Builder contain all sites on all contigs?
+</p>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -249,26 +257,28 @@
         <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
       <span class="symbol">classOf[java.lang.Throwable]</span>
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="com.esotericsoftware.kryo.Serializer#getAcceptsNull" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="getAcceptsNull():Boolean"></a>
-      <a id="getAcceptsNull():Boolean"></a>
+    </li><li name="org.hammerlab.guacamole.loci.LociSet.Builder#fullyResolved" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="fullyResolved:Boolean"></a>
+      <a id="fullyResolved:Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">def</span>
+        <span class="kind">var</span>
       </span>
       <span class="symbol">
-        <span class="name">getAcceptsNull</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">fullyResolved</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Serializer</dd></dl></div>
+      <p class="shortcomment cmt">Does this Builder contain only loci ranges with exact ends (e.</p><div class="fullcomment"><div class="comment cmt"><p>Does this Builder contain only loci ranges with exact ends (e.g. &quot;chr:1-20000&quot; not &quot;all of chr1&quot;)?
+If false, we require contig lengths to be specified to the result method.
+</p></div></div>
     </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
       <a id="getClass():Class[_]"></a>
@@ -295,19 +305,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="com.esotericsoftware.kryo.Serializer#isImmutable" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="isImmutable():Boolean"></a>
-      <a id="isImmutable():Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">isImmutable</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Serializer</dd></dl></div>
     </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <a id="isInstanceOf[T0]:Boolean"></a>
@@ -360,58 +357,117 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.LociMapLongSerializer#read" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="read(kryo:com.esotericsoftware.kryo.Kryo,input:com.esotericsoftware.kryo.io.Input,klass:Class[org.hammerlab.guacamole.LociMap[Long]]):org.hammerlab.guacamole.LociMap[Long]"></a>
-      <a id="read(Kryo,Input,Class[LociMap[Long]]):LociMap[Long]"></a>
+    </li><li name="org.hammerlab.guacamole.loci.LociSet.Builder#put" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="put(contig:String,start:Long,end:Option[Long]):org.hammerlab.guacamole.loci.LociSet.Builder"></a>
+      <a id="put(String,Long,Option[Long]):Builder"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">read</span><span class="params">(<span name="kryo">kryo: <span class="extype" name="com.esotericsoftware.kryo.Kryo">Kryo</span></span>, <span name="input">input: <span class="extype" name="com.esotericsoftware.kryo.io.Input">Input</span></span>, <span name="klass">klass: <span class="extype" name="scala.Predef.Class">Class</span>[<a href="LociMap.html" class="extype" name="org.hammerlab.guacamole.LociMap">LociMap</a>[<span class="extype" name="scala.Long">Long</span>]]</span>)</span><span class="result">: <a href="LociMap.html" class="extype" name="org.hammerlab.guacamole.LociMap">LociMap</a>[<span class="extype" name="scala.Long">Long</span>]</span>
+        <span class="name">put</span><span class="params">(<span name="contig">contig: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="start">start: <span class="extype" name="scala.Long">Long</span> = <span class="symbol">0</span></span>, <span name="end">end: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>] = <span class="symbol">None</span></span>)</span><span class="result">: <a href="" class="extype" name="org.hammerlab.guacamole.loci.LociSet.Builder">Builder</a></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.LociMapLongSerializer">LociMapLongSerializer</a> → Serializer</dd></dl></div>
-    </li><li name="com.esotericsoftware.kryo.Serializer#setAcceptsNull" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="setAcceptsNull(x$1:Boolean):Unit"></a>
-      <a id="setAcceptsNull(Boolean):Unit"></a>
+      
+    </li><li name="org.hammerlab.guacamole.loci.LociSet.Builder#put" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="put(contig:String,start:Long,end:Long):org.hammerlab.guacamole.loci.LociSet.Builder"></a>
+      <a id="put(String,Long,Long):Builder"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">setAcceptsNull</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">put</span><span class="params">(<span name="contig">contig: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="start">start: <span class="extype" name="scala.Long">Long</span></span>, <span name="end">end: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <a href="" class="extype" name="org.hammerlab.guacamole.loci.LociSet.Builder">Builder</a></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Serializer</dd></dl></div>
-    </li><li name="com.esotericsoftware.kryo.Serializer#setGenerics" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="setGenerics(x$1:com.esotericsoftware.kryo.Kryo,x$2:Array[Class[_]]):Unit"></a>
-      <a id="setGenerics(Kryo,Array[Class[_]]):Unit"></a>
+      <p class="shortcomment cmt">Add an interval to the Builder.</p><div class="fullcomment"><div class="comment cmt"><p>Add an interval to the Builder. If end is not specified, then it is taken to be the length of the contig.
+</p></div></div>
+    </li><li name="org.hammerlab.guacamole.loci.LociSet.Builder#putAllContigs" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="putAllContigs():org.hammerlab.guacamole.loci.LociSet.Builder"></a>
+      <a id="putAllContigs():Builder"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">setGenerics</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="com.esotericsoftware.kryo.Kryo">Kryo</span></span>, <span name="arg1">arg1: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="java.lang.Class">Class</span>[_]]</span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">putAllContigs</span><span class="params">()</span><span class="result">: <a href="" class="extype" name="org.hammerlab.guacamole.loci.LociSet.Builder">Builder</a></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Serializer</dd></dl></div>
-    </li><li name="com.esotericsoftware.kryo.Serializer#setImmutable" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="setImmutable(x$1:Boolean):Unit"></a>
-      <a id="setImmutable(Boolean):Unit"></a>
+      <p class="shortcomment cmt">Specify that this builder contains all sites on all contigs.</p>
+    </li><li name="org.hammerlab.guacamole.loci.LociSet.Builder#putExpression" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="putExpression(loci:String):org.hammerlab.guacamole.loci.LociSet.Builder"></a>
+      <a id="putExpression(String):Builder"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">setImmutable</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">putExpression</span><span class="params">(<span name="loci">loci: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="" class="extype" name="org.hammerlab.guacamole.loci.LociSet.Builder">Builder</a></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Serializer</dd></dl></div>
+      <p class="shortcomment cmt">Parse a loci expression and add it to the builder.</p><div class="fullcomment"><div class="comment cmt"><p>Parse a loci expression and add it to the builder. Example expressions:</p><p> &quot;all&quot;: all sites on all contigs.
+ &quot;none&quot;: no loci, used as a default in some places.
+ &quot;chr1,chr3&quot;: all sites on contigs chr1 and chr3.
+ &quot;chr1:10000-20000,chr2&quot;: sites x where 10000 &lt;= x &lt; 20000 on chr1, all sites on chr2.
+ &quot;chr1:10000&quot;: just chr1, position 10000; equivalent to &quot;chr1:10000-10001&quot;.
+ &quot;chr1:10000-&quot;: chr1, from position 10000 to the end of chr1.
+</p></div></div>
+    </li><li name="org.hammerlab.guacamole.loci.LociSet.Builder#result" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="result(contigLengths:(String,Long)*):org.hammerlab.guacamole.loci.LociSet"></a>
+      <a id="result((String,Long)*):LociSet"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">result</span><span class="params">(<span name="contigLengths">contigLengths: (<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Long">Long</span>)*</span>)</span><span class="result">: <a href="LociSet.html" class="extype" name="org.hammerlab.guacamole.loci.LociSet">LociSet</a></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.loci.LociSet.Builder#result" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="result(contigLengths:Map[String,Long]):org.hammerlab.guacamole.loci.LociSet"></a>
+      <a id="result(Map[String,Long]):LociSet"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">result</span><span class="params">(<span name="contigLengths">contigLengths: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Long">Long</span>]</span>)</span><span class="result">: <a href="LociSet.html" class="extype" name="org.hammerlab.guacamole.loci.LociSet">LociSet</a></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.loci.LociSet.Builder#result" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="result:org.hammerlab.guacamole.loci.LociSet"></a>
+      <a id="result:LociSet"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">result</span><span class="result">: <a href="LociSet.html" class="extype" name="org.hammerlab.guacamole.loci.LociSet">LociSet</a></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.loci.LociSet.Builder#result" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="result(contigLengths:Option[Map[String,Long]]):org.hammerlab.guacamole.loci.LociSet"></a>
+      <a id="result(Option[Map[String,Long]]):LociSet"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">result</span><span class="params">(<span name="contigLengths">contigLengths: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Long">Long</span>]] = <span class="symbol">None</span></span>)</span><span class="result">: <a href="LociSet.html" class="extype" name="org.hammerlab.guacamole.loci.LociSet">LociSet</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Build the result.</p>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -495,19 +551,6 @@
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.LociMapLongSerializer#write" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="write(kryo:com.esotericsoftware.kryo.Kryo,output:com.esotericsoftware.kryo.io.Output,obj:org.hammerlab.guacamole.LociMap[Long]):Unit"></a>
-      <a id="write(Kryo,Output,LociMap[Long]):Unit"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">write</span><span class="params">(<span name="kryo">kryo: <span class="extype" name="com.esotericsoftware.kryo.Kryo">Kryo</span></span>, <span name="output">output: <span class="extype" name="com.esotericsoftware.kryo.io.Output">Output</span></span>, <span name="obj">obj: <a href="LociMap.html" class="extype" name="org.hammerlab.guacamole.LociMap">LociMap</a>[<span class="extype" name="scala.Long">Long</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.LociMapLongSerializer">LociMapLongSerializer</a> → Serializer</dd></dl></div>
     </li></ol>
             </div>
 
@@ -517,9 +560,7 @@
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="com.esotericsoftware.kryo.Serializer">
-              <h3>Inherited from <span class="extype" name="com.esotericsoftware.kryo.Serializer">Serializer</span>[<a href="LociMap.html" class="extype" name="org.hammerlab.guacamole.LociMap">LociMap</a>[<span class="extype" name="scala.Long">Long</span>]]</h3>
-            </div><div class="parent" name="scala.AnyRef">
+        <div class="parent" name="scala.AnyRef">
               <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
             </div><div class="parent" name="scala.Any">
               <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
@@ -539,6 +580,6 @@
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../lib/template.js"></script>
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../lib/template.js"></script>
     </body>
       </html>
