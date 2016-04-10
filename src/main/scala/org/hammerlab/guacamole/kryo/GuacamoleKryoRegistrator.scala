@@ -16,14 +16,14 @@
  * limitations under the License.
  */
 
-package org.hammerlab.guacamole
+package org.hammerlab.guacamole.kryo
 
 import com.esotericsoftware.kryo.Kryo
 import org.bdgenomics.adam.serialization.ADAMKryoRegistrator
-import org.hammerlab.guacamole.reads.{MappedRead, MappedReadSerializer, UnmappedRead, UnmappedReadSerializer}
-import org.hammerlab.guacamole.variants._
 import org.hammerlab.guacamole.DistributedUtil.TaskPosition
 import org.hammerlab.guacamole.loci.{LociMap, LociMapLongSerializer, LociMapLongSingleContigSerializer, LociSet, LociSetSerializer, LociSetSingleContigSerializer}
+import org.hammerlab.guacamole.reads.{MappedRead, MappedReadSerializer, UnmappedRead, UnmappedReadSerializer}
+import org.hammerlab.guacamole.variants._
 
 class GuacamoleKryoRegistrator extends ADAMKryoRegistrator {
   override def registerClasses(kryo: Kryo) {
