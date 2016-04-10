@@ -19,4 +19,3 @@ trait LociArgs extends DebugLogArgs {
   )
   var lociFromFile: String = ""
 }
-
