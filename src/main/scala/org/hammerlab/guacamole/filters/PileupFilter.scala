@@ -18,7 +18,7 @@
 
 package org.hammerlab.guacamole.filters
 
-import org.hammerlab.guacamole.Common.Arguments.Base
+import org.hammerlab.guacamole.logging.DebugLogArgs
 import org.hammerlab.guacamole.pileup.{ Pileup, PileupElement }
 import org.kohsuke.args4j.{ Option => Args4jOption }
 
@@ -45,7 +45,7 @@ object MultiAllelicPileupFilter {
 
 object PileupFilter {
 
-  trait PileupFilterArguments extends Base {
+  trait PileupFilterArguments extends DebugLogArgs {
 
     @Args4jOption(name = "--min-mapq", usage = "Minimum read mapping quality for a read (Phred-scaled). (default: 1)")
     var minAlignmentQuality: Int = 1

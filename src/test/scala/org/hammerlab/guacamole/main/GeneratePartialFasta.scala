@@ -4,11 +4,10 @@ import java.io.{BufferedWriter, File, FileWriter}
 
 import org.apache.spark.Logging
 import org.bdgenomics.utils.cli.Args4j
-import org.hammerlab.guacamole.Common.Arguments.{ReadLoadingConfigArgs, Reference}
 import org.hammerlab.guacamole.distributed.LociPartitionUtils
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
-import org.hammerlab.guacamole.reads.InputFilters
-import org.hammerlab.guacamole.reference.{ContigNotFound, ReferenceBroadcast}
+import org.hammerlab.guacamole.reads.{InputFilters, ReadLoadingConfigArgs}
+import org.hammerlab.guacamole.reference.{ContigNotFound, ReferenceArgs, ReferenceBroadcast}
 import org.hammerlab.guacamole.{Bases, Common, ReadSet}
 import org.kohsuke.args4j.{Argument, Option => Args4jOption}
 
@@ -28,7 +27,7 @@ object GeneratePartialFasta extends Logging {
   protected class Arguments
     extends LociPartitionUtils.Arguments
       with ReadLoadingConfigArgs
-      with Reference {
+      with ReferenceArgs {
 
     @Args4jOption(name = "--output", metaVar = "OUT", required = true, aliases = Array("-o"),
       usage = "Output path for partial fasta")
@@ -52,7 +51,7 @@ object GeneratePartialFasta extends Logging {
         sc,
         fileAndIndex._1,
         InputFilters.empty,
-        config = Common.Arguments.ReadLoadingConfigArgs.fromArguments(args)
+        config = ReadLoadingConfigArgs(args)
       )
     )
 
@@ -82,14 +81,5 @@ object GeneratePartialFasta extends Logging {
     })
     writer.close()
     progress(s"Wrote: ${args.output}")
-  }
-
-  private def printUsage() = {
-    println("Usage: java ... bam1.bam ... bamN.bam --output result.partial.fasta \n")
-    println(
-      """
-        |Given a full fasta and some loci (either specified directly or from reads), write out a fasta containing only
-        |the subset of the reference overlapped by the loci in a guacamole -specific fasta format
-      """.trim.stripMargin)
   }
 }

@@ -1,9 +1,9 @@
 package org.hammerlab.guacamole.distributed
 
 import org.apache.spark.rdd.RDD
-import org.hammerlab.guacamole.Common.Arguments.{Base, Loci}
 import org.hammerlab.guacamole.HasReferenceRegion
-import org.hammerlab.guacamole.loci.{LociMap, LociSet}
+import org.hammerlab.guacamole.loci.{LociArgs, LociMap, LociSet}
+import org.hammerlab.guacamole.logging.DebugLogArgs
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.kohsuke.args4j.{Option => Args4jOption}
 
@@ -11,7 +11,7 @@ import scala.reflect.ClassTag
 
 object LociPartitionUtils {
 
-  trait Arguments extends Base with Loci {
+  trait Arguments extends DebugLogArgs with LociArgs {
     @Args4jOption(name = "--parallelism", usage = "Num variant calling tasks. Set to 0 (default) to use the number of Spark partitions.")
     var parallelism: Int = 0
 
