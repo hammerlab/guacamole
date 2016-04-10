@@ -47,7 +47,7 @@ object SomaticJoint {
       case (input, index) => ReadSet(
         sc,
         input.path,
-        ReadInputFilters(overlapsLoci = Some(loci)),
+        ReadInputFilters(overlapsLoci = loci),
         contigLengthsFromDictionary = contigLengthsFromDictionary
       )
     })

@@ -96,10 +96,12 @@ object VAFHistogram {
       val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
 
       val loci = Common.lociFromArguments(args)
-      val filters = ReadInputFilters(
-        overlapsLoci = Some(loci),
-        nonDuplicate = true,
-        passedVendorQualityChecks = true)
+      val filters =
+        ReadInputFilters(
+          overlapsLoci = loci,
+          nonDuplicate = true,
+          passedVendorQualityChecks = true
+        )
       val samplePercent = args.samplePercent
 
       val readSets: Seq[ReadSet] = args.bams.zipWithIndex.map(

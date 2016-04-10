@@ -69,7 +69,7 @@ object GermlineThreshold {
         args,
         sc,
         ReadInputFilters(
-          overlapsLoci = Some(loci),
+          overlapsLoci = loci,
           nonDuplicate = true
         )
       )

@@ -53,7 +53,7 @@ class GermlineAssemblyCallerSuite extends FunSuite with Matchers with BeforeAndA
         ReadInputFilters(
           mapped = true,
           nonDuplicate = true,
-          overlapsLoci = Some(lociBuilder)
+          overlapsLoci = lociBuilder
         )
       )
 

@@ -244,7 +244,7 @@ object TestUtil extends Matchers {
         filters = ReadInputFilters(
           overlapsLoci = maybeContig.map(
             contig => LociSet.parse(s"$contig:$locus-${locus + 1}")
-          )
+          ).orNull
         )
       ).mappedReads
     val localReads = records.collect
