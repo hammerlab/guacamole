@@ -19,9 +19,8 @@
 package org.hammerlab.guacamole.windowing
 
 import org.apache.spark.Logging
-import org.hammerlab.guacamole.DistributedUtil.PerSample
-import org.hammerlab.guacamole.HasReferenceRegion
 import org.hammerlab.guacamole.loci.LociSet
+import org.hammerlab.guacamole.{HasReferenceRegion, PerSample}
 
 import scala.collection.mutable
 
@@ -175,15 +174,15 @@ object SlidingWindow {
         }
       }
       // No more loci remaining in the iterator. We're done.
-      return None
+      None
     } else if (loci.hasNext) {
       // Not skipping empty, and we have another locus in the iterator to go to.
       val nextLocus = loci.next()
       windows.foreach(_.setCurrentLocus(nextLocus))
-      return Some(nextLocus)
+      Some(nextLocus)
     } else {
       // We are out of loci.
-      return None
+      None
     }
   }
 }

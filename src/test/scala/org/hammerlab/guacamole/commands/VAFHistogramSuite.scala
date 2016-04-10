@@ -3,7 +3,7 @@ package org.hammerlab.guacamole.commands
 import org.hammerlab.guacamole.util.GuacFunSuite
 import org.scalatest.Matchers
 
-class VAFHistogramSuite extends GuacFunSuite with Matchers {
+class VAFHistogramSuite extends GuacFunSuite {
 
   sparkTest("generating the histogram") {
 

@@ -4,10 +4,11 @@ import java.io.{BufferedWriter, File, FileWriter}
 
 import org.apache.spark.Logging
 import org.bdgenomics.utils.cli.Args4j
+import org.hammerlab.guacamole.distributed.LociPartitionUtils
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.reads.{ReadInputFilters, ReadLoadingConfigArgs}
 import org.hammerlab.guacamole.reference.{ContigNotFound, ReferenceArgs, ReferenceBroadcast}
-import org.hammerlab.guacamole.{Bases, Common, DistributedUtil, ReadSet}
+import org.hammerlab.guacamole.{Bases, Common, ReadSet}
 import org.kohsuke.args4j.{Argument, Option => Args4jOption}
 
 /**
@@ -24,7 +25,7 @@ import org.kohsuke.args4j.{Argument, Option => Args4jOption}
 object GeneratePartialFasta extends Logging {
 
   protected class Arguments
-    extends DistributedUtil.Arguments
+    extends LociPartitionUtils.Arguments
       with ReadLoadingConfigArgs
       with ReferenceArgs {
 

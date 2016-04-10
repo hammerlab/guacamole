@@ -56,7 +56,7 @@ trait HasReferenceRegion {
 
   /**
    * Does the region overlap another reference region
- *
+   *
    * @param other another region on the genome
    * @return True if the the regions overlap
    */

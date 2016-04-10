@@ -29,8 +29,7 @@ import org.apache.spark.SparkContext
 import org.hammerlab.guacamole.kryo.GuacamoleKryoRegistrator
 import org.hammerlab.guacamole.loci.LociSet
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.reads.ReadInputFilters
-import org.hammerlab.guacamole.reads._
+import org.hammerlab.guacamole.reads.{ReadInputFilters, _}
 import org.hammerlab.guacamole.reference.ReferenceBroadcast.MapBackedReferenceSequence
 import org.hammerlab.guacamole.reference.{ContigSequence, ReferenceBroadcast}
 import org.hammerlab.guacamole.{Bases, ReadSet}
@@ -77,7 +76,9 @@ object TestUtil extends Matchers {
    * @param contigLengths total length of each contigs (for simplicity all contigs are assumed to have the same length)
    * @return a map acked ReferenceBroadcast containing the desired sequences
    */
-  def makeReference(sc: SparkContext, contigStartSequences: Seq[(String, Int, String)], contigLengths: Int = 1000): ReferenceBroadcast = {
+  def makeReference(sc: SparkContext,
+                    contigStartSequences: Seq[(String, Int, String)],
+                    contigLengths: Int = 1000): ReferenceBroadcast = {
     val map = mutable.HashMap[String, ContigSequence]()
     contigStartSequences.foreach({
       case (contig, start, sequence) => {

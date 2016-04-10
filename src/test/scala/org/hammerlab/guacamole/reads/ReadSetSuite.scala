@@ -22,11 +22,9 @@ import org.apache.parquet.hadoop.metadata.CompressionCodecName
 import org.bdgenomics.adam.rdd.read.AlignmentRecordRDDFunctions
 import org.bdgenomics.adam.rdd.{ADAMContext, ADAMSaveAnyArgs}
 import org.hammerlab.guacamole.loci.LociSet
-import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
-import org.scalatest.Matchers
 
-class ReadSetSuite extends GuacFunSuite with Matchers {
+class ReadSetSuite extends GuacFunSuite {
 
   case class LazyMessage(msg: () => String) {
     override def toString: String = msg()

@@ -59,7 +59,7 @@ case class LociSet(map: LociMap[Long]) {
   override def toString: String = truncatedString(Int.MaxValue)
 
   /** String representation, truncated to maxLength characters. */
-  def truncatedString(maxLength: Int = 200): String = map.truncatedString(maxLength, false)
+  def truncatedString(maxLength: Int = 200): String = map.truncatedString(maxLength, includeValues = false)
 
   /** Returns a LociSet containing only those contigs TODO*/
   def filterContigs(function: String => Boolean): LociSet = {
@@ -176,7 +176,7 @@ object LociSet {
       } else if (loci != "none") {
         val contigAndLoci = """^([\pL\pN._]+):(\pN+)(?:-(\pN*))?$""".r
         val contigOnly = """^([\pL\pN._]+)""".r
-        val sets = loci.replaceAll("\\s", "").split(',').foreach({
+        loci.replaceAll("\\s", "").split(',').foreach({
           case ""                              => {}
           case contigAndLoci(name, startStr, endStrOpt) =>
             val start = startStr.toLong
@@ -295,7 +295,7 @@ object LociSet {
     override def toString: String = truncatedString(Int.MaxValue)
 
     /** String representation, truncated to maxLength characters. */
-    def truncatedString(maxLength: Int = 100): String = map.truncatedString(maxLength, false)
+    def truncatedString(maxLength: Int = 100): String = map.truncatedString(maxLength, includeValues = false)
   }
   object SingleContig {
 
@@ -308,7 +308,7 @@ object LociSet {
      * @param loci loci to iterate over
      */
     class Iterator(loci: SingleContig) extends scala.BufferedIterator[Long] {
-      private var ranges = loci.ranges.iterator
+      private val ranges = loci.ranges.iterator
 
       /** The range for the next locus to be returned. */
       private var headRangeOption: Option[SimpleRange] = if (ranges.isEmpty) None else Some(ranges.next())

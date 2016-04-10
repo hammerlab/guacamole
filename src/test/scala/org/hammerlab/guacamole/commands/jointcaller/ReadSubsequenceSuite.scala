@@ -4,9 +4,8 @@ import org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.ReadSub
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
-import org.scalatest.Matchers
 
-class ReadSubsequenceSuite extends GuacFunSuite with Matchers {
+class ReadSubsequenceSuite extends GuacFunSuite {
   val cancerWGS1Bams = Vector("normal.bam", "primary.bam", "recurrence.bam").map(
     name => TestUtil.testDataPath("cancer-wgs1/" + name))
 

@@ -1,6 +1,5 @@
 package org.hammerlab.guacamole.commands.jointcaller.evidence
 
-import org.hammerlab.guacamole.DistributedUtil._
 import org.hammerlab.guacamole._
 import org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.{ MultiplePileupStats, PileupStats }
 import org.hammerlab.guacamole.commands.jointcaller.{ AlleleAtLocus, InputCollection, Parameters }
@@ -49,6 +48,7 @@ case class MultiSampleMultiAlleleEvidence(referenceContig: String,
     copy(singleAlleleEvidences = singleAlleleEvidences.filter(!_.failsFilters))
   }
 }
+
 object MultiSampleMultiAlleleEvidence {
 
   /**
@@ -79,7 +79,6 @@ object MultiSampleMultiAlleleEvidence {
     val filteredPileups: Vector[Pileup] = pileups.map(
       pileup => pileup.copy(elements = pileup.elements.filter(!_.isClipped))).toVector
     val normalPileups = inputs.normalDNA.map(input => filteredPileups(input.index))
-    val tumorDNAPileups = inputs.tumorDNA.map(input => filteredPileups(input.index))
 
     val contig = normalPileups.head.referenceName
     val locus = normalPileups.head.locus

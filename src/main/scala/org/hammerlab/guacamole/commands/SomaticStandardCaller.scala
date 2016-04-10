@@ -23,6 +23,8 @@ import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.rdd.ADAMContext
 import org.bdgenomics.formats.avro.DatabaseVariantAnnotation
 import org.hammerlab.guacamole.Common.SomaticCallerArgs
+import org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociAccordingToArgs
+import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMapTwoRDDs
 import org.hammerlab.guacamole.filters.PileupFilter.PileupFilterArguments
 import org.hammerlab.guacamole.filters.SomaticGenotypeFilter.SomaticGenotypeFilterArguments
 import org.hammerlab.guacamole.filters.{PileupFilter, SomaticAlternateReadDepthFilter, SomaticGenotypeFilter, SomaticReadDepthFilter}
@@ -33,7 +35,7 @@ import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.ReadInputFilters
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.variants.{Allele, AlleleConversions, AlleleEvidence, CalledSomaticAllele, VariantUtils}
-import org.hammerlab.guacamole.{Common, DistributedUtil, SparkCommand}
+import org.hammerlab.guacamole.{Common, SparkCommand}
 import org.kohsuke.args4j.{Option => Args4jOption}
 
 /**
@@ -48,7 +50,10 @@ import org.kohsuke.args4j.{Option => Args4jOption}
  */
 object SomaticStandard {
 
-  protected class Arguments extends SomaticCallerArgs with PileupFilterArguments with SomaticGenotypeFilterArguments {
+  protected class Arguments
+    extends SomaticCallerArgs
+      with PileupFilterArguments
+      with SomaticGenotypeFilterArguments {
 
     @Args4jOption(name = "--odds", usage = "Minimum log odds threshold for possible variant candidates")
     var oddsThreshold: Int = 20
@@ -94,7 +99,7 @@ object SomaticStandard {
 
       val oddsThreshold = args.oddsThreshold
 
-      val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(
+      val lociPartitions = partitionLociAccordingToArgs(
         args,
         loci.result(normalReads.contigLengths),
         tumorReads.mappedReads,
@@ -102,7 +107,7 @@ object SomaticStandard {
       )
 
       var potentialGenotypes: RDD[CalledSomaticAllele] =
-        DistributedUtil.pileupFlatMapTwoRDDs[CalledSomaticAllele](
+        pileupFlatMapTwoRDDs[CalledSomaticAllele](
           tumorReads.mappedReads,
           normalReads.mappedReads,
           lociPartitions,
@@ -215,7 +220,7 @@ object SomaticStandard {
       // genotypes in the normal sample.
       // TODO(ryan): in the future, we may want to pay closer attention to the likelihood of the most likely tumor
       // genotype in the normal sample.
-      lazy val normalVariantsTotalLikelihood = normalVariantGenotypes.map(_._2).sum
+      lazy val normalVariantsTotalLikelihood = normalVariantGenotypes.values.sum
       lazy val somaticOdds = mostLikelyTumorGenotypeLikelihood / normalVariantsTotalLikelihood
 
       if (mostLikelyTumorGenotype.hasVariantAllele

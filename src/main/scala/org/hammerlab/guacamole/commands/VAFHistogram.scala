@@ -9,6 +9,9 @@ import org.apache.spark.mllib.linalg.Vectors
 import org.apache.spark.rdd.RDD
 import org.apache.spark.storage.StorageLevel
 import org.hammerlab.guacamole._
+import org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociAccordingToArgs
+import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMap
+import org.hammerlab.guacamole.distributed.{LociPartitionUtils, PileupFlatMapUtils}
 import org.hammerlab.guacamole.loci.LociMap
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.pileup.Pileup
@@ -45,7 +48,7 @@ object VariantLocus {
 
 object VAFHistogram {
 
-  protected class Arguments extends DistributedUtil.Arguments with ReadLoadingConfigArgs {
+  protected class Arguments extends LociPartitionUtils.Arguments with ReadLoadingConfigArgs {
 
     @Args4jOption(name = "--out", required = false, forbids = Array("--local-out"),
       usage = "HDFS file path to save the variant allele frequency histogram")
@@ -117,7 +120,7 @@ object VAFHistogram {
           )
       )
 
-      val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(
+      val lociPartitions = partitionLociAccordingToArgs(
         args,
         loci.result(readSets(0).contigLengths),
         readSets(0).mappedReads // Use the first set of reads as a proxy for read depth
@@ -227,15 +230,18 @@ object VAFHistogram {
                            minVariantAlleleFrequency: Int = 0,
                            printStats: Boolean = false): RDD[VariantLocus] = {
     val sampleName = reads.take(1)(0).sampleName
-    val variantLoci = DistributedUtil.pileupFlatMap[VariantLocus](
-      reads,
-      lociPartitions,
-      skipEmpty = true,
-      function = (pileup => VariantLocus(pileup)
-        .filter(locus => pileup.depth >= minReadDepth)
-        .filter(_.variantAlleleFrequency >= (minVariantAlleleFrequency / 100.0))
-        .iterator),
-      reference = reference)
+    val variantLoci =
+      pileupFlatMap[VariantLocus](
+        reads,
+        lociPartitions,
+        skipEmpty = true,
+        pileup =>
+          VariantLocus(pileup)
+            .filter(locus => pileup.depth >= minReadDepth)
+            .filter(_.variantAlleleFrequency >= (minVariantAlleleFrequency / 100.0))
+            .iterator,
+        reference
+      )
     if (printStats) {
       variantLoci.persist(StorageLevel.MEMORY_ONLY)
 

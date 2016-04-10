@@ -22,16 +22,19 @@ import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.rdd.ADAMContext
 import org.bdgenomics.formats.avro.Variant
+import org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociUniformly
+import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMap
+import org.hammerlab.guacamole.distributed.{LociPartitionUtils, PileupFlatMapUtils}
 import org.hammerlab.guacamole.loci.LociSet
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.{MappedRead, ReadInputFilters, ReadLoadingConfigArgs}
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
-import org.hammerlab.guacamole.{Bases, DistributedUtil, ReadSet, SparkCommand}
+import org.hammerlab.guacamole.{Bases, ReadSet, SparkCommand}
 import org.kohsuke.args4j.{Argument, Option => Args4jOption}
 
 object VariantSupport {
 
-  protected class Arguments extends DistributedUtil.Arguments with ReadLoadingConfigArgs {
+  protected class Arguments extends LociPartitionUtils.Arguments with ReadLoadingConfigArgs {
     @Args4jOption(name = "--input-variant", required = true, aliases = Array("-v"),
       usage = "")
     var variants: String = ""
@@ -88,11 +91,11 @@ object VariantSupport {
           variant => LociSet(variant.getContig.getContigName, variant.getStart, variant.getEnd))
           .collect(): _*)
 
-      val lociPartitions = DistributedUtil.partitionLociUniformly(args.parallelism, lociSet)
+      val lociPartitions = partitionLociUniformly(args.parallelism, lociSet)
 
       val alleleCounts =
         reads.map(sampleReads =>
-          DistributedUtil.pileupFlatMap[AlleleCount](
+          pileupFlatMap[AlleleCount](
             sampleReads,
             lociPartitions,
             skipEmpty = true,

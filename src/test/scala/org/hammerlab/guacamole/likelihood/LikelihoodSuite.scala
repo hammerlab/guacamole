@@ -18,16 +18,14 @@
 
 package org.hammerlab.guacamole.likelihood
 
-import org.hammerlab.guacamole.reference.ContigSequence
-import org.hammerlab.guacamole.util.{ TestUtil, GuacFunSuite }
+import org.hammerlab.guacamole.likelihood.ReadsUtil._
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.MappedRead
+import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
 import org.hammerlab.guacamole.variants.Genotype
-import ReadsUtil._
-import org.scalatest.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks
 
-class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks with Matchers {
+class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks {
 
   def testLikelihoods(actualLikelihoods: Seq[(Genotype, Double)],
                       expectedLikelihoods: ((Char, Char), Double)*): Unit =
