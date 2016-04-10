@@ -16,15 +16,15 @@
  * limitations under the License.
  */
 
-package org.hammerlab.guacamole.pileup
+package org.hammerlab.guacamole.distributed
 
 import org.bdgenomics.formats.avro.{Genotype, GenotypeAllele}
+import org.hammerlab.guacamole.Bases
 import org.hammerlab.guacamole.commands.GermlineThreshold
 import org.hammerlab.guacamole.loci.LociSet
+import org.hammerlab.guacamole.pileup.{Pileup, PileupElement}
 import org.hammerlab.guacamole.util.TestUtil._
 import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
-import org.hammerlab.guacamole.Bases
-import org.hammerlab.guacamole.distributed.{LociPartitionUtils, PileupFlatMapUtils}
 
 import scala.collection.JavaConversions._
 
@@ -255,7 +255,7 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
         LociPartitionUtils.partitionLociUniformly(5, LociSet.parse("chr1:1-12").result),
         skipEmpty = false,
         _.elements.toIterator,
-        reference = TestUtil.makeReference(sc, Seq(("chr1", 0, "ATCGATCGA")))
+        reference = TestUtil.makeReference(sc, Seq(("chr1", 0, "ATCGATCGA ")))
       ).collect()
 
     pileups.length should be(24)
