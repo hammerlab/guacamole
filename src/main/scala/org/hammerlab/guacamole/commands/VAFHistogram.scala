@@ -1,19 +1,23 @@
 package org.hammerlab.guacamole.commands
 
-import java.io.{ BufferedWriter, FileWriter }
+import java.io.{BufferedWriter, FileWriter}
 
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics
 import org.apache.spark.SparkContext
-import org.apache.spark.mllib.clustering.{ GaussianMixture, GaussianMixtureModel }
+import org.apache.spark.mllib.clustering.{GaussianMixture, GaussianMixtureModel}
 import org.apache.spark.mllib.linalg.Vectors
 import org.apache.spark.rdd.RDD
 import org.apache.spark.storage.StorageLevel
 import org.hammerlab.guacamole._
+import org.hammerlab.guacamole.distributed.{LociPartitionUtils, PileupFlatMapUtils}
+import LociPartitionUtils.partitionLociAccordingToArgs
+import org.hammerlab.guacamole.loci.LociMap
 import org.hammerlab.guacamole.pileup.Pileup
+import PileupFlatMapUtils.pileupFlatMap
 import org.hammerlab.guacamole.reads.Read.InputFilters
-import org.hammerlab.guacamole.reads.{ MappedRead, Read }
-import org.hammerlab.guacamole.reference.{ ReferenceGenome, ReferenceBroadcast }
-import org.kohsuke.args4j.{ Argument, Option => Args4jOption }
+import org.hammerlab.guacamole.reads.{MappedRead, Read}
+import org.hammerlab.guacamole.reference.{ReferenceBroadcast, ReferenceGenome}
+import org.kohsuke.args4j.{Argument, Option => Args4jOption}
 
 /**
  * VariantLocus is a locus and the variant allele frequency at that locus
@@ -44,7 +48,7 @@ object VariantLocus {
 
 object VAFHistogram {
 
-  protected class Arguments extends DistributedUtil.Arguments with Common.Arguments.ReadLoadingConfigArgs {
+  protected class Arguments extends LociPartitionUtils.Arguments with Common.Arguments.ReadLoadingConfigArgs {
 
     @Args4jOption(name = "--out", required = false, forbids = Array("--local-out"),
       usage = "HDFS file path to save the variant allele frequency histogram")
@@ -113,7 +117,7 @@ object VAFHistogram {
           )
       )
 
-      val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(
+      val lociPartitions = partitionLociAccordingToArgs(
         args,
         loci.result(readSets(0).contigLengths),
         readSets(0).mappedReads // Use the first set of reads as a proxy for read depth
@@ -225,15 +229,18 @@ object VAFHistogram {
                            minVariantAlleleFrequency: Int = 0,
                            printStats: Boolean = false): RDD[VariantLocus] = {
     val sampleName = reads.take(1)(0).sampleName
-    val variantLoci = DistributedUtil.pileupFlatMap[VariantLocus](
-      reads,
-      lociPartitions,
-      skipEmpty = true,
-      function = (pileup => VariantLocus(pileup)
-        .filter(locus => pileup.depth >= minReadDepth)
-        .filter(_.variantAlleleFrequency >= (minVariantAlleleFrequency / 100.0))
-        .iterator),
-      reference = reference)
+    val variantLoci =
+      pileupFlatMap[VariantLocus](
+        reads,
+        lociPartitions,
+        skipEmpty = true,
+        pileup =>
+          VariantLocus(pileup)
+            .filter(locus => pileup.depth >= minReadDepth)
+            .filter(_.variantAlleleFrequency >= (minVariantAlleleFrequency / 100.0))
+            .iterator,
+        reference
+      )
     if (printStats) {
       variantLoci.persist(StorageLevel.MEMORY_ONLY)
 

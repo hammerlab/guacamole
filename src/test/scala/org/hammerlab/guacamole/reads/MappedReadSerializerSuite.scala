@@ -18,12 +18,11 @@
 
 package org.hammerlab.guacamole.reads
 
-import org.hammerlab.guacamole.util.{ TestUtil, GuacFunSuite }
 import htsjdk.samtools.TextCigarCodec
-import TestUtil.Implicits._
-import org.scalatest.Matchers
+import org.hammerlab.guacamole.util.TestUtil.Implicits._
+import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
 
-class MappedReadSerializerSuite extends GuacFunSuite with Matchers {
+class MappedReadSerializerSuite extends GuacFunSuite {
 
   test("serialize / deserialize mapped read") {
     val read = MappedRead(

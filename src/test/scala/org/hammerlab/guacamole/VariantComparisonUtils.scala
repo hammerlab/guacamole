@@ -2,7 +2,7 @@ package org.hammerlab.guacamole
 
 import java.io.File
 
-import htsjdk.variant.variantcontext.{ VariantContextBuilder, GenotypeBuilder, Allele, VariantContext }
+import htsjdk.variant.variantcontext.{Allele, GenotypeBuilder, VariantContext, VariantContextBuilder}
 import htsjdk.variant.vcf.VCFFileReader
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.util.VCFComparison

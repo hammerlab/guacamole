@@ -21,13 +21,14 @@ package org.hammerlab.guacamole.reads
 import org.apache.parquet.hadoop.metadata.CompressionCodecName
 import org.bdgenomics.adam.rdd.read.AlignmentRecordRDDFunctions
 import org.bdgenomics.adam.rdd.{ADAMContext, ADAMSaveAnyArgs}
-import org.hammerlab.guacamole.LociSet
+import org.hammerlab.guacamole.loci.LociSet
 import org.hammerlab.guacamole.reads.Read.InputFilters
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
+import org.hammerlab.guacamole.util.TestUtil
 import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
 import org.scalatest.Matchers
 
-class ReadSetSuite extends GuacFunSuite with Matchers {
+class ReadSetSuite extends GuacFunSuite {
 
   def chr22Fasta = ReferenceBroadcast.readFasta(TestUtil.testDataPath("chr22.fa.gz"), sc)
 

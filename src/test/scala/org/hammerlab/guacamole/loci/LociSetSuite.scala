@@ -16,14 +16,14 @@
  * limitations under the License.
  */
 
-package org.hammerlab.guacamole
+package org.hammerlab.guacamole.loci
 
 import org.apache.spark.rdd.RDD
-import org.hammerlab.guacamole.util.{ TestUtil, GuacFunSuite }
+import org.hammerlab.guacamole.Common
 import org.hammerlab.guacamole.reads.Read
-import org.scalatest.Matchers
+import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
 
-class LociSetSuite extends GuacFunSuite with Matchers {
+class LociSetSuite extends GuacFunSuite {
 
   test("properties of empty LociSet") {
     LociSet.empty.contigs should have length (0)
