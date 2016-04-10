@@ -1,8 +1,8 @@
-package org.hammerlab.guacamole.commands.jointcaller
+package org.hammerlab.guacamole.commands.jointcaller.pileup_summarization
 
 import org.bdgenomics.adam.util.PhredUtils
 import org.hammerlab.guacamole.Bases
-import org.hammerlab.guacamole.commands.jointcaller.PileupStats.AlleleMixture
+import org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.PileupStats.AlleleMixture
 import org.hammerlab.guacamole.pileup.PileupElement
 
 /**
@@ -20,7 +20,7 @@ import org.hammerlab.guacamole.pileup.PileupElement
  * @param referenceSequence reference bases. The length determines the size of alleles to consider. The first element should
  *                    be the reference base at locus elements.head.locus + 1.
  */
-class PileupStats(elements: Seq[PileupElement], referenceSequence: Seq[Byte]) {
+class PileupStats(val elements: Seq[PileupElement], val referenceSequence: Seq[Byte]) {
   assume(referenceSequence.nonEmpty)
   assume(elements.forall(_.locus == elements.head.locus))
 
@@ -41,6 +41,10 @@ class PileupStats(elements: Seq[PileupElement], referenceSequence: Seq[Byte]) {
 
   /** Map from sequenced allele -> number of reads supporting that allele. */
   val allelicDepths = alleleToSubsequences.mapValues(_.size).withDefaultValue(0)
+
+  def truncatedAllelicDepths(max: Int): Map[String, Int] = {
+    allelicDepths.toSeq.sortBy(-1 * _._2).zipWithIndex.filter(_._2 < max).map(_._1).toMap
+  }
 
   /** Total depth, including reads that are NOT "anchored" by matching, non-variant bases. */
   val totalDepthIncludingReadsContributingNoAlleles = elements.size
@@ -91,5 +95,7 @@ object PileupStats {
   type AlleleMixture = Map[String, Double]
 
   /** Create a PileupStats instance. */
-  def apply(elements: Seq[PileupElement], refSequence: Seq[Byte]): PileupStats = new PileupStats(elements, refSequence)
+  def apply(elements: Seq[PileupElement], refSequence: Seq[Byte]): PileupStats = {
+    new PileupStats(elements, refSequence)
+  }
 }
