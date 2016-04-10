@@ -22,7 +22,6 @@ import org.bdgenomics.formats.avro.GenotypeAllele
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.Read
 import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
-import org.scalatest.Matchers
 
 import scala.collection.JavaConversions._
 

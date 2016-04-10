@@ -1,4 +1,4 @@
-package org.hammerlab.guacamole.dist
+package org.hammerlab.guacamole.util
 
 import org.hammerlab.guacamole.HasReferenceRegion
 

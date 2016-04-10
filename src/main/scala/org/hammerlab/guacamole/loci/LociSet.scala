@@ -16,11 +16,12 @@
  * limitations under the License.
  */
 
-package org.hammerlab.guacamole
+package org.hammerlab.guacamole.loci
 
-import com.esotericsoftware.kryo.{ Serializer, Kryo }
-import com.esotericsoftware.kryo.io.{ Input, Output }
-import org.hammerlab.guacamole.LociMap.SimpleRange
+import com.esotericsoftware.kryo.io.{Input, Output}
+import com.esotericsoftware.kryo.{Kryo, Serializer}
+import org.hammerlab.guacamole.loci.LociMap.SimpleRange
+
 import scala.collection.mutable.ArrayBuffer
 
 /**
@@ -55,10 +56,10 @@ case class LociSet(map: LociMap[Long]) {
   def union(other: LociSet): LociSet = LociSet(map.union(other.map))
 
   /** Returns a string representation of this LociSet, in the same format that LociSet.parse expects. */
-  override def toString(): String = truncatedString(Int.MaxValue)
+  override def toString: String = truncatedString(Int.MaxValue)
 
   /** String representation, truncated to maxLength characters. */
-  def truncatedString(maxLength: Int = 200): String = map.truncatedString(maxLength, false)
+  def truncatedString(maxLength: Int = 200): String = map.truncatedString(maxLength, includeValues = false)
 
   /** Returns a LociSet containing only those contigs TODO*/
   def filterContigs(function: String => Boolean): LociSet = {
@@ -175,7 +176,7 @@ object LociSet {
       } else if (loci != "none") {
         val contigAndLoci = """^([\pL\pN._]+):(\pN+)(?:-(\pN*))?$""".r
         val contigOnly = """^([\pL\pN._]+)""".r
-        val sets = loci.replaceAll("\\s", "").split(',').foreach({
+        loci.replaceAll("\\s", "").split(',').foreach({
           case ""                              => {}
           case contigAndLoci(name, startStr, endStrOpt) =>
             val start = startStr.toLong
@@ -280,7 +281,7 @@ object LociSet {
     def count(): Long = map.count
 
     /** Is this set empty? */
-    def isEmpty(): Boolean = map.isEmpty
+    def isEmpty: Boolean = map.isEmpty
 
     /** Iterator through loci in this set, sorted. */
     def iterator(): SingleContig.Iterator = new SingleContig.Iterator(this)
@@ -289,12 +290,12 @@ object LociSet {
     def union(other: SingleContig): SingleContig = SingleContig(map.union(other.map))
 
     /** Returns whether a given genomic region overlaps with any loci in this LociSet. */
-    def intersects(start: Long, end: Long) = !map.getAll(start, end).isEmpty
+    def intersects(start: Long, end: Long) = map.getAll(start, end).nonEmpty
 
-    override def toString(): String = truncatedString(Int.MaxValue)
+    override def toString: String = truncatedString(Int.MaxValue)
 
     /** String representation, truncated to maxLength characters. */
-    def truncatedString(maxLength: Int = 100): String = map.truncatedString(maxLength, false)
+    def truncatedString(maxLength: Int = 100): String = map.truncatedString(maxLength, includeValues = false)
   }
   object SingleContig {
 
@@ -307,7 +308,7 @@ object LociSet {
      * @param loci loci to iterate over
      */
     class Iterator(loci: SingleContig) extends scala.BufferedIterator[Long] {
-      private var ranges = loci.ranges.iterator
+      private val ranges = loci.ranges.iterator
 
       /** The range for the next locus to be returned. */
       private var headRangeOption: Option[SimpleRange] = if (ranges.isEmpty) None else Some(ranges.next())

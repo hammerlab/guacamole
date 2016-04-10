@@ -18,6 +18,8 @@
 
 package org.hammerlab.guacamole
 
+import org.hammerlab.guacamole.loci.LociSet
+
 /**
  * Trait for objects that are associated with an interval on the genome. The most prominent example is a
  * [[org.hammerlab.guacamole.reads.MappedRead]], but there's also [[org.hammerlab.guacamole.variants.ReferenceVariant]].
@@ -54,6 +56,7 @@ trait HasReferenceRegion {
 
   /**
    * Does the region overlap another reference region
+   *
    * @param other another region on the genome
    * @return True if the the regions overlap
    */

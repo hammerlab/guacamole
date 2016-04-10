@@ -1,9 +1,9 @@
-package org.hammerlab.guacamole.dist
+package org.hammerlab.guacamole.loci
 
 import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole.Common.Arguments.{Base, Loci}
 import org.hammerlab.guacamole.Common._
-import org.hammerlab.guacamole.{HasReferenceRegion, LociMap, LociSet}
+import org.hammerlab.guacamole.HasReferenceRegion
 import org.kohsuke.args4j.{Option => Args4jOption}
 
 import scala.reflect.ClassTag

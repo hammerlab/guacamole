@@ -1,11 +1,12 @@
-package org.hammerlab.guacamole.dist
+package org.hammerlab.guacamole.windowing
 
 import org.apache.commons.math3
 import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole.Common._
-import org.hammerlab.guacamole.windowing.{SlidingWindow, SplitIterator}
-import org.hammerlab.guacamole.{DelayedMessages, LociMap, LociSet, _}
+import org.hammerlab.guacamole.loci.{LociMap, LociSet}
+import org.hammerlab.guacamole.util.{HashMapAccumulatorParam, KeyPartitioner, RegionsByContig, TaskPosition}
+import org.hammerlab.guacamole.{DelayedMessages, HasReferenceRegion, PerSample}
 
 import scala.collection.mutable.{HashMap => MutableHashMap}
 import scala.reflect.ClassTag
@@ -33,13 +34,12 @@ object WindowFlatMapUtils {
     * @tparam S state type
     * @return RDD[T] of flatmap results
     */
-  def windowFlatMapWithState[M <: HasReferenceRegion: ClassTag, T: ClassTag, S](
-                                                                                 regionRDDs: PerSample[RDD[M]],
-                                                                                 lociPartitions: LociMap[Long],
-                                                                                 skipEmpty: Boolean,
-                                                                                 halfWindowSize: Long,
-                                                                                 initialState: S,
-                                                                                 function: (S, PerSample[SlidingWindow[M]]) => (S, Iterator[T])): RDD[T] = {
+  def windowFlatMapWithState[M <: HasReferenceRegion: ClassTag, T: ClassTag, S](regionRDDs: PerSample[RDD[M]],
+                                                                                lociPartitions: LociMap[Long],
+                                                                                skipEmpty: Boolean,
+                                                                                halfWindowSize: Long,
+                                                                                initialState: S,
+                                                                                function: (S, PerSample[SlidingWindow[M]]) => (S, Iterator[T])): RDD[T] = {
     windowTaskFlatMapMultipleRDDs(
       regionRDDs,
       lociPartitions,
@@ -132,7 +132,7 @@ object WindowFlatMapUtils {
     * @tparam T type of value returned by function
     * @return flatMap results, RDD[T]
     */
-  private[dist] def windowTaskFlatMapMultipleRDDs[M <: HasReferenceRegion: ClassTag, T: ClassTag](
+  private[windowing] def windowTaskFlatMapMultipleRDDs[M <: HasReferenceRegion: ClassTag, T: ClassTag](
     regionRDDs: PerSample[RDD[M]],
     lociPartitions: LociMap[Long],
     halfWindowSize: Long,

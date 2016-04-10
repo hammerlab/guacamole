@@ -20,7 +20,8 @@ package org.hammerlab.guacamole
 
 import com.esotericsoftware.kryo.Kryo
 import org.bdgenomics.adam.serialization.ADAMKryoRegistrator
-import org.hammerlab.guacamole.dist.TaskPosition
+import org.hammerlab.guacamole.loci.{LociMap, LociMapLongSerializer, LociMapLongSingleContigSerializer, LociSet, LociSetSerializer, LociSetSingleContigSerializer}
+import org.hammerlab.guacamole.util.TaskPosition
 import org.hammerlab.guacamole.reads.{MappedRead, MappedReadSerializer, UnmappedRead, UnmappedReadSerializer}
 import org.hammerlab.guacamole.variants._
 

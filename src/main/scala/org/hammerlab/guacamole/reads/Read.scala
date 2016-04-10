@@ -28,7 +28,8 @@ import org.apache.spark.{Logging, SparkContext}
 import org.bdgenomics.adam.models.SequenceDictionary
 import org.bdgenomics.adam.rdd.{ADAMContext, ADAMSpecificRecordSequenceDictionaryRDDAggregator}
 import org.bdgenomics.formats.avro.AlignmentRecord
-import org.hammerlab.guacamole.{Bases, Common, LociSet}
+import org.hammerlab.guacamole.loci.LociSet
+import org.hammerlab.guacamole.{Bases, Common}
 import org.seqdoop.hadoop_bam.util.SAMHeaderReader
 import org.seqdoop.hadoop_bam.{AnySAMInputFormat, SAMRecordWritable}
 
