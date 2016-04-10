@@ -1,6 +1,7 @@
 package org.hammerlab.guacamole.windowing
 
-import org.hammerlab.guacamole.loci.{LociPartitionUtils, LociSet}
+import org.hammerlab.guacamole.distributed.{LociPartitionUtils, WindowFlatMapUtils}
+import org.hammerlab.guacamole.loci.LociSet
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
 

@@ -1,6 +1,7 @@
 package org.hammerlab.guacamole.loci
 
 import org.apache.spark.rdd.RDD
+import org.hammerlab.guacamole.distributed.LociPartitionUtils
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
 

@@ -5,10 +5,10 @@ import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole.Common.Arguments.NoSequenceDictionary
 import org.hammerlab.guacamole._
-import org.hammerlab.guacamole.pileup.PileupFlatMapUtils
-import PileupFlatMapUtils.pileupFlatMapMultipleRDDs
-import org.hammerlab.guacamole.loci.{LociPartitionUtils, LociSet}
-import org.hammerlab.guacamole.loci.LociPartitionUtils.partitionLociAccordingToArgs
+import org.hammerlab.guacamole.distributed.LociPartitionUtils
+import org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociAccordingToArgs
+import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMapMultipleRDDs
+import org.hammerlab.guacamole.loci.LociSet
 import org.hammerlab.guacamole.reads._
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.kohsuke.args4j.{Option => Args4jOption}

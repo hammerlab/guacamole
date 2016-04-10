@@ -1,7 +1,7 @@
-package org.hammerlab.guacamole.util
+package org.hammerlab.guacamole.distributed
 
-import org.apache.spark.{AccumulatorParam, SparkConf}
 import org.apache.spark.serializer.JavaSerializer
+import org.apache.spark.{AccumulatorParam, SparkConf}
 
 import scala.collection.mutable.{HashMap => MutableHashMap}
 

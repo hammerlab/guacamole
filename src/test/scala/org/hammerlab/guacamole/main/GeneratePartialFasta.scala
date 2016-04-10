@@ -5,7 +5,7 @@ import java.io.{BufferedWriter, File, FileWriter}
 import org.apache.spark.Logging
 import org.bdgenomics.utils.cli.Args4j
 import org.hammerlab.guacamole._
-import org.hammerlab.guacamole.loci.LociPartitionUtils
+import org.hammerlab.guacamole.distributed.LociPartitionUtils
 import org.hammerlab.guacamole.reads.Read.InputFilters
 import org.hammerlab.guacamole.reference.{ContigNotFound, ReferenceBroadcast}
 import org.kohsuke.args4j.{Argument, Option => Args4jOption}
