@@ -198,7 +198,7 @@ object GermlineAssemblyCaller {
         args,
         sc,
         InputFilters(
-          overlapsLoci = Some(loci),
+          overlapsLoci = loci,
           mapped = true,
           nonDuplicate = true
         )
