@@ -180,10 +180,10 @@ object Read extends Logging {
 
   /** Returns an RDD of Reads and SequenceDictionary from reads in BAM format **/
   def loadReadRDDAndSequenceDictionaryFromBAM(
-                                               filename: String,
-                                               sc: SparkContext,
-                                               filters: InputFilters = InputFilters.empty,
-                                               config: ReadLoadingConfig = ReadLoadingConfig.default): (RDD[Read], SequenceDictionary) = {
+    filename: String,
+    sc: SparkContext,
+    filters: InputFilters = InputFilters.empty,
+    config: ReadLoadingConfig = ReadLoadingConfig.default): (RDD[Read], SequenceDictionary) = {
 
     val path = new Path(filename)
     val scheme = path.getFileSystem(sc.hadoopConfiguration).getScheme
@@ -266,10 +266,11 @@ object Read extends Logging {
   }
 
   /** Returns an RDD of Reads and SequenceDictionary from reads in ADAM format **/
-  def loadReadRDDAndSequenceDictionaryFromADAM(filename: String,
-                                               sc: SparkContext,
-                                               filters: InputFilters = InputFilters.empty,
-                                               config: ReadLoadingConfig = ReadLoadingConfig.default): (RDD[Read], SequenceDictionary) = {
+  def loadReadRDDAndSequenceDictionaryFromADAM(
+    filename: String,
+    sc: SparkContext,
+    filters: InputFilters = InputFilters.empty,
+    config: ReadLoadingConfig = ReadLoadingConfig.default): (RDD[Read], SequenceDictionary) = {
 
     progress(s"Using ADAM to read: $filename")
 
@@ -277,7 +278,8 @@ object Read extends Logging {
 
     val adamRecords: RDD[AlignmentRecord] = adamContext.loadAlignments(
       filename, projection = None, stringency = ValidationStringency.LENIENT).rdd
-    val sequenceDictionary = new ADAMSpecificRecordSequenceDictionaryRDDAggregator(adamRecords).adamGetSequenceDictionary()
+    val sequenceDictionary =
+      new ADAMSpecificRecordSequenceDictionaryRDDAggregator(adamRecords).adamGetSequenceDictionary()
 
     val allReads: RDD[Read] = adamRecords.map(fromADAMRecord(_))
     val reads = InputFilters.filterRDD(filters, allReads, sequenceDictionary)
