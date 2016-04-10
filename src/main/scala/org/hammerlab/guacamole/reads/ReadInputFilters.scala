@@ -2,7 +2,7 @@ package org.hammerlab.guacamole.reads
 
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.models.SequenceDictionary
-import org.hammerlab.guacamole.LociSet
+import org.hammerlab.guacamole.loci.LociSet
 
 /**
  * Filtering reads while they are loaded can be an important optimization.

@@ -23,13 +23,12 @@ import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.rdd.ADAMContext
 import org.bdgenomics.formats.avro.Variant
 import org.hammerlab.guacamole._
-import org.hammerlab.guacamole.distributed.{LociPartitionUtils, PileupFlatMapUtils}
-import LociPartitionUtils.partitionLociUniformly
+import org.hammerlab.guacamole.distributed.LociPartitionUtils
+import org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociUniformly
+import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMap
 import org.hammerlab.guacamole.loci.LociSet
 import org.hammerlab.guacamole.pileup.Pileup
-import PileupFlatMapUtils.pileupFlatMap
-import org.hammerlab.guacamole.reads.MappedRead
-import org.hammerlab.guacamole.reads.ReadInputFilters
+import org.hammerlab.guacamole.reads.{MappedRead, ReadInputFilters}
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.kohsuke.args4j.{Argument, Option => Args4jOption}
 
