@@ -21,7 +21,7 @@ package org.hammerlab.guacamole
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.models.SequenceDictionary
-import org.hammerlab.guacamole.reads.{MappedRead, PairedRead, Read, ReadLoadingConfig}
+import org.hammerlab.guacamole.reads.{MappedRead, PairedRead, Read, InputFilters, ReadLoadingConfig}
 
 /**
  * A ReadSet contains an RDD of reads along with some metadata about them.
@@ -34,27 +34,25 @@ import org.hammerlab.guacamole.reads.{MappedRead, PairedRead, Read, ReadLoadingC
  *                                    contig lengths. Otherwise, the reads themselves will be used.
  */
 case class ReadSet(
-    reads: RDD[Read],
-    sequenceDictionary: Option[SequenceDictionary],
-    source: String,
-    filters: Read.InputFilters,
-    contigLengthsFromDictionary: Boolean) {
+                    reads: RDD[Read],
+                    sequenceDictionary: Option[SequenceDictionary],
+                    source: String,
+                    filters: InputFilters,
+                    contigLengthsFromDictionary: Boolean) {
 
   /** Only mapped reads. */
-  lazy val mappedReads = reads.flatMap(read =>
-    read match {
-      case r: MappedRead                   => Some(r)
+  lazy val mappedReads =
+    reads.flatMap {
+      case r: MappedRead => Some(r)
       case PairedRead(r: MappedRead, _, _) => Some(r)
-      case _                               => None
+      case _ => None
     }
-  )
 
-  lazy val mappedPairedReads: RDD[PairedRead[MappedRead]] = reads.flatMap(read =>
-    read match {
+  lazy val mappedPairedReads: RDD[PairedRead[MappedRead]] =
+    reads.flatMap {
       case rp: PairedRead[_] if rp.isMapped => Some(rp.asInstanceOf[PairedRead[MappedRead]])
-      case _                                => None
+      case _ => None
     }
-  )
 
   /**
    * A map from contig name -> length of contig.
@@ -89,11 +87,11 @@ object ReadSet {
    * @return
    */
   def apply(
-    sc: SparkContext,
-    filename: String,
-    filters: Read.InputFilters = Read.InputFilters.empty,
-    contigLengthsFromDictionary: Boolean = true,
-    config: ReadLoadingConfig = ReadLoadingConfig.default): ReadSet = {
+             sc: SparkContext,
+             filename: String,
+             filters: InputFilters = InputFilters.empty,
+             contigLengthsFromDictionary: Boolean = true,
+             config: ReadLoadingConfig = ReadLoadingConfig.default): ReadSet = {
 
     val (reads, sequenceDictionary) =
       Read.loadReadRDDAndSequenceDictionary(

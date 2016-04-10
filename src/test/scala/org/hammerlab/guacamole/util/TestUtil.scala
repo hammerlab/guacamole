@@ -28,7 +28,7 @@ import org.apache.commons.io.FileUtils
 import org.apache.spark.SparkContext
 import org.hammerlab.guacamole.loci.LociSet
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.reads.Read.InputFilters
+import org.hammerlab.guacamole.reads.InputFilters
 import org.hammerlab.guacamole.reads._
 import org.hammerlab.guacamole.reference.ReferenceBroadcast.MapBackedReferenceSequence
 import org.hammerlab.guacamole.reference.{ContigSequence, ReferenceBroadcast}
@@ -173,7 +173,7 @@ object TestUtil extends Matchers {
   def loadTumorNormalReads(sc: SparkContext,
                            tumorFile: String,
                            normalFile: String): (Seq[MappedRead], Seq[MappedRead]) = {
-    val filters = Read.InputFilters(mapped = true, nonDuplicate = true, passedVendorQualityChecks = true)
+    val filters = InputFilters(mapped = true, nonDuplicate = true, passedVendorQualityChecks = true)
     (
       loadReads(sc, tumorFile, filters = filters).mappedReads.collect(),
       loadReads(sc, normalFile, filters = filters).mappedReads.collect()
@@ -182,7 +182,7 @@ object TestUtil extends Matchers {
 
   def loadReads(sc: SparkContext,
                 filename: String,
-                filters: Read.InputFilters = Read.InputFilters.empty,
+                filters: InputFilters = InputFilters.empty,
                 config: ReadLoadingConfig = ReadLoadingConfig.default): ReadSet = {
     /* grab the path to the SAM file we've stashed in the resources subdirectory */
     val path = testDataPath(filename)

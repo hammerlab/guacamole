@@ -38,8 +38,7 @@ import org.hammerlab.guacamole.Concordance.ConcordanceArgs
 import org.hammerlab.guacamole.distributed.LociPartitionUtils
 import org.hammerlab.guacamole.loci.LociSet
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
-import org.hammerlab.guacamole.reads.BamReaderAPI.BamReaderAPI
-import org.hammerlab.guacamole.reads.{BamReaderAPI, Read, ReadLoadingConfig}
+import org.hammerlab.guacamole.reads.{BamReaderAPI, InputFilters, ReadLoadingConfig}
 import org.kohsuke.args4j.{Option => Args4jOption}
 
 /**
@@ -157,7 +156,7 @@ object Common extends Logging {
   def loadReadsFromArguments(
     args: Arguments.Reads,
     sc: SparkContext,
-    filters: Read.InputFilters): ReadSet = {
+    filters: InputFilters): ReadSet = {
 
     ReadSet(
       sc,
@@ -178,7 +177,7 @@ object Common extends Logging {
   def loadTumorNormalReadsFromArguments(
     args: Arguments.TumorNormalReads,
     sc: SparkContext,
-    filters: Read.InputFilters): (ReadSet, ReadSet) = {
+    filters: InputFilters): (ReadSet, ReadSet) = {
 
     val tumor = ReadSet(
       sc,
@@ -278,6 +277,7 @@ object Common extends Logging {
 
   /**
    * Write out an RDD of Genotype instances to a file.
+ *
    * @param args parsed arguments
    * @param genotypes ADAM genotypes (i.e. the variants)
    */
@@ -345,6 +345,7 @@ object Common extends Logging {
    * Parse spark environment variables from commandline. Copied from ADAM.
    *
    * Commandline format is -spark_env foo=1 -spark_env bar=2
+ *
    * @param envVariables The variables found on the commandline
    * @return array of (key, value) pairs parsed from the command line.
    */

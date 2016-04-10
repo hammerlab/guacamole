@@ -22,15 +22,9 @@ import org.apache.parquet.hadoop.metadata.CompressionCodecName
 import org.bdgenomics.adam.rdd.read.AlignmentRecordRDDFunctions
 import org.bdgenomics.adam.rdd.{ADAMContext, ADAMSaveAnyArgs}
 import org.hammerlab.guacamole.loci.LociSet
-import org.hammerlab.guacamole.reads.Read.InputFilters
-import org.hammerlab.guacamole.reference.ReferenceBroadcast
-import org.hammerlab.guacamole.util.TestUtil
 import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
-import org.scalatest.Matchers
 
 class ReadSetSuite extends GuacFunSuite {
-
-  def chr22Fasta = ReferenceBroadcast.readFasta(TestUtil.testDataPath("chr22.fa.gz"), sc)
 
   case class LazyMessage(msg: () => String) {
     override def toString: String = msg()
@@ -108,13 +102,13 @@ class ReadSetSuite extends GuacFunSuite {
     val allReads = TestUtil.loadReads(sc, "mdtagissue.sam")
     allReads.reads.count() should be(8)
 
-    val mdTagReads = TestUtil.loadReads(sc, "mdtagissue.sam", Read.InputFilters(mapped = true))
+    val mdTagReads = TestUtil.loadReads(sc, "mdtagissue.sam", InputFilters(mapped = true))
     mdTagReads.reads.count() should be(5)
 
     val nonDuplicateReads = TestUtil.loadReads(
       sc,
       "mdtagissue.sam",
-      Read.InputFilters(mapped = true, nonDuplicate = true)
+      InputFilters(mapped = true, nonDuplicate = true)
     )
     nonDuplicateReads.reads.count() should be(3)
   }
@@ -147,13 +141,13 @@ class ReadSetSuite extends GuacFunSuite {
     val (filteredReads, _) = Read.loadReadRDDAndSequenceDictionary(
       adamOut,
       sc,
-      Read.InputFilters(mapped = true, nonDuplicate = true)
+      InputFilters(mapped = true, nonDuplicate = true)
     )
     filteredReads.count() should be(3)
   }
 
   sparkTest("load and serialize / deserialize reads") {
-    val reads = TestUtil.loadReads(sc, "mdtagissue.sam", Read.InputFilters(mapped = true)).mappedReads.collect()
+    val reads = TestUtil.loadReads(sc, "mdtagissue.sam", InputFilters(mapped = true)).mappedReads.collect()
     val serializedReads = reads.map(TestUtil.serialize)
     val deserializedReads: Seq[MappedRead] = serializedReads.map(TestUtil.deserialize[MappedRead](_))
     for ((read, deserialized) <- reads.zip(deserializedReads)) {

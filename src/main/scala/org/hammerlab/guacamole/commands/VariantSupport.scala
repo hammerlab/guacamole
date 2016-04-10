@@ -29,7 +29,7 @@ import org.hammerlab.guacamole.loci.LociSet
 import org.hammerlab.guacamole.pileup.Pileup
 import PileupFlatMapUtils.pileupFlatMap
 import org.hammerlab.guacamole.reads.MappedRead
-import org.hammerlab.guacamole.reads.Read.InputFilters
+import org.hammerlab.guacamole.reads.InputFilters
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.kohsuke.args4j.{Argument, Option => Args4jOption}
 
