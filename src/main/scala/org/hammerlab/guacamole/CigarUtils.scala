@@ -18,7 +18,7 @@
 
 package org.hammerlab.guacamole
 
-import htsjdk.samtools.CigarElement
+import htsjdk.samtools.{CigarElement, CigarOperator}
 
 object CigarUtils {
   /**
@@ -39,5 +39,10 @@ object CigarUtils {
    */
   def getReferenceLength(element: CigarElement): Int = {
     if (element.getOperator.consumesReferenceBases) element.getLength else 0
+  }
+
+  /** Is the given samtools CigarElement a (hard/soft) clip? */
+  def isClipped(element: CigarElement): Boolean = {
+    element.getOperator == CigarOperator.SOFT_CLIP || element.getOperator == CigarOperator.HARD_CLIP
   }
 }
