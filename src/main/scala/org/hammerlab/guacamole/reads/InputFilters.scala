@@ -30,16 +30,16 @@ object InputFilters {
    *               overlapsLoci.
    */
   def apply(mapped: Boolean = false,
-            overlapsLoci: Option[LociSet.Builder] = None,
+            overlapsLoci: LociSet.Builder = null,
             nonDuplicate: Boolean = false,
             passedVendorQualityChecks: Boolean = false,
             isPaired: Boolean = false): InputFilters = {
     new InputFilters(
       overlapsLoci =
-        if (overlapsLoci.isEmpty && mapped)
+        if (overlapsLoci == null && mapped)
           Some(LociSet.newBuilder.putAllContigs)
         else
-          overlapsLoci,
+          Option(overlapsLoci),
       nonDuplicate,
       passedVendorQualityChecks,
       isPaired
