@@ -9,8 +9,10 @@ import org.hammerlab.guacamole.Common.Arguments.GermlineCallerArgs
 import org.hammerlab.guacamole._
 import org.hammerlab.guacamole.alignment.AffineGapPenaltyAlignment
 import org.hammerlab.guacamole.assembly.DeBruijnGraph
-import org.hammerlab.guacamole.dist.LociPartitionUtils.partitionLociAccordingToArgs
-import org.hammerlab.guacamole.dist.WindowFlatMapUtils.windowFlatMapWithState
+import org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociAccordingToArgs
+import org.hammerlab.guacamole.distributed.WindowFlatMapUtils.windowFlatMapWithState
+import org.hammerlab.guacamole.distributed.{LociPartitionUtils, WindowFlatMapUtils}
+import org.hammerlab.guacamole.loci.LociMap
 import org.hammerlab.guacamole.reads.{MappedRead, Read}
 import org.hammerlab.guacamole.reference.{ContigSubsequence, ReferenceGenome}
 import org.hammerlab.guacamole.variants.{Allele, AlleleConversions, AlleleEvidence, CalledAllele}

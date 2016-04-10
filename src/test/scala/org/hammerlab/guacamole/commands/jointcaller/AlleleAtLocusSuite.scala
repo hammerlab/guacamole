@@ -1,15 +1,15 @@
 package org.hammerlab.guacamole.commands.jointcaller
-import org.hammerlab.guacamole.reference.ReferenceBroadcast
-import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
-import org.scalatest.Matchers
 
-class AlleleAtLocusSuite extends GuacFunSuite with Matchers {
+import org.hammerlab.guacamole.reference.ReferenceGenome
+import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
+
+class AlleleAtLocusSuite extends GuacFunSuite {
   val celsr1BAMs = Vector("normal_0.bam", "tumor_wes_2.bam", "tumor_rna_11.bam").map(
     name => TestUtil.testDataPath("cancer-wes-and-rna-celsr1/" + name))
 
   val b37Chromosome22Fasta = TestUtil.testDataPath("chr22.fa.gz")
   def b37Chromosome22Reference = {
-    ReferenceBroadcast(b37Chromosome22Fasta, sc, partialFasta = false)
+    ReferenceGenome(b37Chromosome22Fasta, partialFasta = false)
   }
 
   sparkTest("AlleleAtLocus.variantAlleles for low vaf variant allele") {

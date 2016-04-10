@@ -18,18 +18,19 @@
 
 package org.hammerlab.guacamole.util
 
-import java.io.{ File, FileNotFoundException }
+import java.io.{File, FileNotFoundException}
 import java.util.UUID
 
 import com.esotericsoftware.kryo.Kryo
-import com.twitter.chill.{ IKryoRegistrar, KryoInstantiator, KryoPool }
+import com.twitter.chill.{IKryoRegistrar, KryoInstantiator, KryoPool}
 import org.apache.commons.io.FileUtils
 import org.apache.spark.SparkContext
+import org.hammerlab.guacamole.loci.LociSet
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.Read.InputFilters
 import org.hammerlab.guacamole.reads._
-import org.hammerlab.guacamole.reference.{ ContigSequence, MapBackedReferenceSequence, ReferenceGenome }
-import org.hammerlab.guacamole.{ Bases, GuacamoleKryoRegistrator, LociSet, ReadSet }
+import org.hammerlab.guacamole.reference.{ContigSequence, MapBackedReferenceSequence, ReferenceGenome}
+import org.hammerlab.guacamole.{Bases, GuacamoleKryoRegistrator, ReadSet}
 import org.scalatest._
 
 import scala.collection.mutable
@@ -66,11 +67,11 @@ object TestUtil extends Matchers {
   }
 
   /**
-   * Make a ReferenceBroadcast containing the specified sequences to be used in tests.
+   * Make a ReferenceGenome containing the specified sequences to be used in tests.
    *
    * @param contigStartSequences tuples of (contig name, start, reference sequence) giving the desired sequences
    * @param contigLengths total length of each contigs (for simplicity all contigs are assumed to have the same length)
-   * @return a map acked ReferenceBroadcast containing the desired sequences
+   * @return a map-backed ReferenceGenome containing the desired sequences
    */
   def makeReference(contigStartSequences: Seq[(String, Int, String)],
                     contigLengths: Int = 1000): ReferenceGenome = {

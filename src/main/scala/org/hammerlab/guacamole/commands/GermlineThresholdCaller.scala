@@ -23,8 +23,9 @@ import org.apache.spark.rdd.RDD
 import org.bdgenomics.formats.avro.GenotypeAllele.{Alt, NoCall, OtherAlt, Ref}
 import org.bdgenomics.formats.avro.{Contig, Genotype, GenotypeAllele, Variant}
 import org.hammerlab.guacamole.Common.Arguments.GermlineCallerArgs
-import org.hammerlab.guacamole.dist.LociPartitionUtils.partitionLociAccordingToArgs
-import org.hammerlab.guacamole.dist.PileupFlatMapUtils.pileupFlatMap
+import org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociAccordingToArgs
+import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMap
+import org.hammerlab.guacamole.distributed.{LociPartitionUtils, PileupFlatMapUtils}
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.Read
 import org.hammerlab.guacamole.reference.ReferenceGenome
@@ -87,12 +88,12 @@ object GermlineThreshold {
           readSet.mappedReads,
           lociPartitions,
           skipEmpty = true,
-          reference,
           pileup => {
             val genotypes = callVariantsAtLocus(pileup, threshold, emitRef, emitNoCall)
             numGenotypes += genotypes.length
             genotypes.iterator
-          }
+          },
+          reference
         )
       readSet.mappedReads.unpersist()
       Common.writeVariantsFromArguments(args, genotypes)

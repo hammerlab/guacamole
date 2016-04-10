@@ -21,8 +21,8 @@ package org.hammerlab.guacamole.commands
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole.Common.Arguments.GermlineCallerArgs
-import org.hammerlab.guacamole.dist.LociPartitionUtils.partitionLociAccordingToArgs
-import org.hammerlab.guacamole.dist.PileupFlatMapUtils.pileupFlatMap
+import org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociAccordingToArgs
+import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMap
 import org.hammerlab.guacamole.filters.GenotypeFilter.GenotypeFilterArguments
 import org.hammerlab.guacamole.filters.PileupFilter.PileupFilterArguments
 import org.hammerlab.guacamole.filters.{GenotypeFilter, QualityAlignedReadsFilter}
@@ -80,8 +80,8 @@ object GermlineStandard {
           readSet.mappedReads,
           lociPartitions,
           skipEmpty = true,
-          reference,
-          pileup => callVariantsAtLocus(pileup, minAlignmentQuality).iterator
+          pileup => callVariantsAtLocus(pileup, minAlignmentQuality).iterator,
+          reference
         )
       readSet.mappedReads.unpersist()
 

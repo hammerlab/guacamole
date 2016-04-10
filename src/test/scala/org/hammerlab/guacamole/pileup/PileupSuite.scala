@@ -21,10 +21,9 @@ package org.hammerlab.guacamole.pileup
 import org.hammerlab.guacamole.Bases
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.util.TestUtil.Implicits._
-import org.hammerlab.guacamole.util.TestUtil.{ assertBases, loadPileup }
-import org.hammerlab.guacamole.util.{ GuacFunSuite, TestUtil }
+import org.hammerlab.guacamole.util.TestUtil.{assertBases, loadPileup}
+import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
 import org.hammerlab.guacamole.variants.Allele
-import org.scalatest.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks
 
 class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {

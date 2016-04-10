@@ -19,7 +19,8 @@
 package org.hammerlab.guacamole.windowing
 
 import org.apache.spark.Logging
-import org.hammerlab.guacamole.{HasReferenceRegion, LociSet, PerSample}
+import org.hammerlab.guacamole.loci.LociSet
+import org.hammerlab.guacamole.{HasReferenceRegion, PerSample}
 
 import scala.collection.mutable
 

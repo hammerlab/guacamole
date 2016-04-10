@@ -5,10 +5,11 @@ import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole.Common.Arguments.NoSequenceDictionary
 import org.hammerlab.guacamole._
-import org.hammerlab.guacamole.dist.LociPartitionUtils
-import org.hammerlab.guacamole.dist.LociPartitionUtils.partitionLociAccordingToArgs
-import org.hammerlab.guacamole.dist.PileupFlatMapUtils.pileupFlatMapMultipleRDDs
-import org.hammerlab.guacamole.commands.jointcaller.evidence.{ MultiSampleMultiAlleleEvidence, MultiSampleSingleAlleleEvidence }
+import org.hammerlab.guacamole.commands.jointcaller.evidence.{MultiSampleMultiAlleleEvidence, MultiSampleSingleAlleleEvidence}
+import org.hammerlab.guacamole.distributed.LociPartitionUtils
+import org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociAccordingToArgs
+import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMapMultipleRDDs
+import org.hammerlab.guacamole.loci.LociSet
 import org.hammerlab.guacamole.reads._
 import org.hammerlab.guacamole.reference.ReferenceGenome
 import org.kohsuke.args4j.{Option => Args4jOption}
@@ -171,7 +172,6 @@ object SomaticJoint {
       readSets.map(_.mappedReads),
       lociPartitions,
       skipEmpty = true,  // TODO: shouldn't skip empty positions if we might force call them. Need an efficient way to handle this.
-      reference = reference,
       rawPileups => {
         val forceCall =
           broadcastForceCallLoci.value.onContig(rawPileups.head.referenceName)
@@ -185,7 +185,8 @@ object SomaticJoint {
           forceCall = forceCall,
           onlySomatic = onlySomatic,
           includeFiltered = includeFiltered).toIterator
-      }
+      },
+      reference = reference
     )
   }
 

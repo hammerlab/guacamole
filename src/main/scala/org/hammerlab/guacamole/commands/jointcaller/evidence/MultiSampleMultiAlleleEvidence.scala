@@ -1,11 +1,10 @@
 package org.hammerlab.guacamole.commands.jointcaller.evidence
 
-import org.hammerlab.guacamole.DistributedUtil._
 import org.hammerlab.guacamole._
-import org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.{ MultiplePileupStats, PileupStats }
-import org.hammerlab.guacamole.commands.jointcaller.{ AlleleAtLocus, InputCollection, Parameters }
+import org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.{MultiplePileupStats, PileupStats}
+import org.hammerlab.guacamole.commands.jointcaller.{AlleleAtLocus, InputCollection, Parameters}
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.reference.ReferenceBroadcast
+import org.hammerlab.guacamole.reference.ReferenceGenome
 
 /**
  * A grouping of AlleleEvidenceAcrossSamples instances (one for each allele) at the same site.
@@ -49,6 +48,7 @@ case class MultiSampleMultiAlleleEvidence(referenceContig: String,
     copy(singleAlleleEvidences = singleAlleleEvidences.filter(!_.failsFilters))
   }
 }
+
 object MultiSampleMultiAlleleEvidence {
 
   /**
@@ -66,20 +66,18 @@ object MultiSampleMultiAlleleEvidence {
    * @param includeFiltered return calls even if they are filtered
    * @return
    */
-  def make(
-    pileups: PerSample[Pileup],
-    inputs: InputCollection,
-    parameters: Parameters,
-    reference: ReferenceBroadcast,
-    forceCall: Boolean,
-    onlySomatic: Boolean = false,
-    includeFiltered: Boolean = false): Option[MultiSampleMultiAlleleEvidence] = {
+  def make(pileups: PerSample[Pileup],
+           inputs: InputCollection,
+           parameters: Parameters,
+           reference: ReferenceGenome,
+           forceCall: Boolean,
+           onlySomatic: Boolean = false,
+           includeFiltered: Boolean = false): Option[MultiSampleMultiAlleleEvidence] = {
 
     // We ignore clipped reads. Clipped reads include introns (cigar operator N) in RNA-seq.
     val filteredPileups: Vector[Pileup] = pileups.map(
       pileup => pileup.copy(elements = pileup.elements.filter(!_.isClipped))).toVector
     val normalPileups = inputs.normalDNA.map(input => filteredPileups(input.index))
-    val tumorDNAPileups = inputs.tumorDNA.map(input => filteredPileups(input.index))
 
     val contig = normalPileups.head.referenceName
     val locus = normalPileups.head.locus

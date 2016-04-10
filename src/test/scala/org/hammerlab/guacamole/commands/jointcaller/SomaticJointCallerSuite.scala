@@ -1,6 +1,6 @@
 package org.hammerlab.guacamole.commands.jointcaller
 
-import org.hammerlab.guacamole.LociSet
+import org.hammerlab.guacamole.loci.LociSet
 import org.hammerlab.guacamole.reference.{MapBackedReferenceSequence, ReferenceGenome}
 import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
 

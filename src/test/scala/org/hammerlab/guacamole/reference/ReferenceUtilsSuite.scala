@@ -1,7 +1,8 @@
 package org.hammerlab.guacamole.reference
 
 import org.hammerlab.guacamole.Bases
-import org.hammerlab.guacamole.util.{ TestUtil, GuacFunSuite }
+import org.hammerlab.guacamole.util.TestUtil
+import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
 
 class ReferenceUtilsSuite extends GuacFunSuite {
 

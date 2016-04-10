@@ -24,13 +24,14 @@ import htsjdk.samtools._
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.io.LongWritable
 import org.apache.spark.rdd.RDD
-import org.apache.spark.{ Logging, SparkContext }
+import org.apache.spark.{Logging, SparkContext}
 import org.bdgenomics.adam.models.SequenceDictionary
-import org.bdgenomics.adam.rdd.{ ADAMContext, ADAMSpecificRecordSequenceDictionaryRDDAggregator }
+import org.bdgenomics.adam.rdd.{ADAMContext, ADAMSpecificRecordSequenceDictionaryRDDAggregator}
 import org.bdgenomics.formats.avro.AlignmentRecord
-import org.hammerlab.guacamole.{ Bases, Common, LociSet }
+import org.hammerlab.guacamole.loci.LociSet
+import org.hammerlab.guacamole.{Bases, Common}
 import org.seqdoop.hadoop_bam.util.SAMHeaderReader
-import org.seqdoop.hadoop_bam.{ AnySAMInputFormat, SAMRecordWritable }
+import org.seqdoop.hadoop_bam.{AnySAMInputFormat, SAMRecordWritable}
 
 import scala.collection.JavaConversions
 

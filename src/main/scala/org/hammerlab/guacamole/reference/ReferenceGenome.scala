@@ -4,7 +4,8 @@ import java.io.File
 import java.util.NoSuchElementException
 
 import htsjdk.samtools.reference.FastaSequenceFile
-import org.hammerlab.guacamole.{ Bases, LociSet }
+import org.hammerlab.guacamole.Bases
+import org.hammerlab.guacamole.loci.LociSet
 
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
@@ -36,7 +37,7 @@ object ReferenceGenome {
    * Read a regular fasta file
    *
    * @param fastaPath local path to fasta
-   * @return a ReferenceBroadcast instance containing ContigSequence.
+   * @return a ReferenceGenome instance containing ContigSequence.
    */
   def readFasta(fastaPath: String): ReferenceGenome = {
     val referenceFasta = new FastaSequenceFile(new File(fastaPath), true)
@@ -62,7 +63,7 @@ object ReferenceGenome {
    * Partial fastas are used for testing to avoid distributing full reference genomes.
    *
    * @param fastaPath local path to partial fasta
-   * @return a ReferenceBroadcast instance containing MapBackedReferenceSequence objects
+   * @return a ReferenceGenome instance containing MapBackedReferenceSequence objects
    */
   private def readPartialFasta(fastaPath: String): ReferenceGenome = {
     val raw = ReferenceGenome.readFasta(fastaPath)
@@ -130,10 +131,10 @@ object ReferenceGenome {
   }
 
   /**
-   * Load a ReferenceBroadcast, caching the result.
+   * Load a ReferenceGenome, caching the result.
    *
    * @param fastaPath Local path to a FASTA file
-   * @return ReferenceBroadcast which maps contig/chromosome names to broadcasted sequences
+   * @return ReferenceGenome which maps contig/chromosome names to broadcasted sequences
    */
   def apply(fastaPath: String, partialFasta: Boolean = false): ReferenceGenome = {
     cache.getOrElseUpdate(

@@ -18,9 +18,8 @@
 
 package org.hammerlab.guacamole.reads
 
-import org.hammerlab.guacamole.util.{ TestUtil, GuacFunSuite }
-import TestUtil.Implicits._
-import org.scalatest.Matchers
+import org.hammerlab.guacamole.util.TestUtil.Implicits._
+import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
 
 class UnmappedReadSerializerSuite extends GuacFunSuite {
 

@@ -9,9 +9,10 @@ import org.apache.spark.mllib.linalg.Vectors
 import org.apache.spark.rdd.RDD
 import org.apache.spark.storage.StorageLevel
 import org.hammerlab.guacamole._
-import org.hammerlab.guacamole.dist.LociPartitionUtils
-import org.hammerlab.guacamole.dist.LociPartitionUtils.partitionLociAccordingToArgs
-import org.hammerlab.guacamole.dist.PileupFlatMapUtils.pileupFlatMap
+import org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociAccordingToArgs
+import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMap
+import org.hammerlab.guacamole.distributed.{LociPartitionUtils, PileupFlatMapUtils}
+import org.hammerlab.guacamole.loci.LociMap
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.reads.Read.InputFilters
@@ -229,12 +230,12 @@ object VAFHistogram {
         reads,
         lociPartitions,
         skipEmpty = true,
-        reference,
         pileup =>
           VariantLocus(pileup)
             .filter(locus => pileup.depth >= minReadDepth)
             .filter(_.variantAlleleFrequency >= (minVariantAlleleFrequency / 100.0))
-            .iterator
+            .iterator,
+        reference
       )
     if (printStats) {
       variantLoci.persist(StorageLevel.MEMORY_ONLY)

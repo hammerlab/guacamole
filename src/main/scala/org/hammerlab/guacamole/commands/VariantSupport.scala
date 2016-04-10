@@ -23,9 +23,10 @@ import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.rdd.ADAMContext
 import org.bdgenomics.formats.avro.Variant
 import org.hammerlab.guacamole._
-import org.hammerlab.guacamole.dist.LociPartitionUtils
-import org.hammerlab.guacamole.dist.LociPartitionUtils.partitionLociUniformly
-import org.hammerlab.guacamole.dist.PileupFlatMapUtils.pileupFlatMap
+import org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociUniformly
+import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMap
+import org.hammerlab.guacamole.distributed.{LociPartitionUtils, PileupFlatMapUtils}
+import org.hammerlab.guacamole.loci.LociSet
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.reads.Read.InputFilters
@@ -99,8 +100,8 @@ object VariantSupport {
             sampleReads,
             lociPartitions,
             skipEmpty = true,
-            reference,
-            pileupToAlleleCounts
+            pileupToAlleleCounts,
+            reference
           )
         ).reduce(_ ++ _)
 

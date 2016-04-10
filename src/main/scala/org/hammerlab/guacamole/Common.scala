@@ -35,7 +35,8 @@ import org.bdgenomics.utils.cli.{Args4jBase, ParquetArgs}
 import org.codehaus.jackson.JsonFactory
 import org.hammerlab.guacamole.Common.Arguments.ReadLoadingConfigArgs
 import org.hammerlab.guacamole.Concordance.ConcordanceArgs
-import org.hammerlab.guacamole.dist.LociPartitionUtils
+import org.hammerlab.guacamole.distributed.LociPartitionUtils
+import org.hammerlab.guacamole.loci.LociSet
 import org.hammerlab.guacamole.reads.Read
 import org.kohsuke.args4j.{Option => Args4jOption}
 
@@ -325,7 +326,6 @@ object Common extends Logging {
       coalescedSubsetGenotypes.unpersist()
     } else if (outputPath.toLowerCase.endsWith(".vcf")) {
       progress("Writing genotypes to VCF file: %s.".format(outputPath))
-      val sc = subsetGenotypes.sparkContext
       subsetGenotypes.toVariantContext.coalesce(1, shuffle = true).saveAsVcf(outputPath)
     } else {
       progress("Writing genotypes to: %s.".format(outputPath))

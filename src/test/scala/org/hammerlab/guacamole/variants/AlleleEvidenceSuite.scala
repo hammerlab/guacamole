@@ -1,7 +1,8 @@
 package org.hammerlab.guacamole.variants
 
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.util.{ GuacFunSuite, TestUtil }
+import org.hammerlab.guacamole.util.TestUtil
+import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
 import org.scalatest.Matchers
 
 class AlleleEvidenceSuite extends GuacFunSuite {

@@ -1,8 +1,8 @@
 package org.hammerlab.guacamole.reference
 
 import org.hammerlab.guacamole.Bases
-import org.hammerlab.guacamole.util.{ GuacFunSuite, TestUtil }
-import org.scalatest.{ FunSuite, Matchers }
+import org.hammerlab.guacamole.util.TestUtil
+import org.scalatest.{FunSuite, Matchers}
 
 class ReferenceGenomeSuite extends FunSuite with Matchers {
 
