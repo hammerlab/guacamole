@@ -2,10 +2,9 @@ package org.hammerlab.guacamole.assembly
 
 import org.hammerlab.guacamole.Bases
 import org.hammerlab.guacamole.util.TestUtil.Implicits._
-import org.hammerlab.guacamole.util.{ GuacFunSuite, TestUtil }
-import org.scalatest.Matchers
+import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
 
-class DeBruijnGraphSuite extends GuacFunSuite with Matchers {
+class DeBruijnGraphSuite extends GuacFunSuite {
 
   test("DeBruijnGraph.mergeKmers") {
     val kmers = Seq("TTTC", "TTCC", "TCCC", "CCCC").map(Bases.stringToBases)

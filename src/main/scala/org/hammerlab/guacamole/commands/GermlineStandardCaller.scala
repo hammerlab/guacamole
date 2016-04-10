@@ -21,16 +21,19 @@ package org.hammerlab.guacamole.commands
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole.Common.Arguments.GermlineCallerArgs
+import org.hammerlab.guacamole.distributed.{LociPartitionUtils, PileupFlatMapUtils}
 import org.hammerlab.guacamole.filters.GenotypeFilter.GenotypeFilterArguments
 import org.hammerlab.guacamole.filters.PileupFilter.PileupFilterArguments
-import org.hammerlab.guacamole.filters.{ GenotypeFilter, QualityAlignedReadsFilter }
+import org.hammerlab.guacamole.filters.{GenotypeFilter, QualityAlignedReadsFilter}
 import org.hammerlab.guacamole.likelihood.Likelihood
+import LociPartitionUtils.partitionLociAccordingToArgs
 import org.hammerlab.guacamole.pileup.Pileup
+import PileupFlatMapUtils.pileupFlatMap
 import org.hammerlab.guacamole.reads.Read
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
-import org.hammerlab.guacamole.variants.{ AlleleConversions, AlleleEvidence, CalledAllele }
-import org.hammerlab.guacamole.{ Common, Concordance, DelayedMessages, DistributedUtil, SparkCommand }
-import org.kohsuke.args4j.{ Option => Args4jOption }
+import org.hammerlab.guacamole.variants.{AlleleConversions, AlleleEvidence, CalledAllele}
+import org.hammerlab.guacamole.{Common, Concordance, DelayedMessages, SparkCommand}
+import org.kohsuke.args4j.{Option => Args4jOption}
 
 /**
  * Simple Bayesian variant caller implementation that uses the base and read quality score
@@ -69,17 +72,18 @@ object GermlineStandard {
         "Loaded %,d mapped non-duplicate reads into %,d partitions.".format(
           readSet.mappedReads.count, readSet.mappedReads.partitions.length))
 
-      val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(
+      val lociPartitions = partitionLociAccordingToArgs(
         args, loci.result(readSet.contigLengths), readSet.mappedReads)
       val minAlignmentQuality = args.minAlignmentQuality
 
-      val genotypes: RDD[CalledAllele] = DistributedUtil.pileupFlatMap[CalledAllele](
-        readSet.mappedReads,
-        lociPartitions,
-        skipEmpty = true, // skip empty pileups
-        function = pileup => callVariantsAtLocus(pileup, minAlignmentQuality).iterator,
-        reference = reference
-      )
+      val genotypes: RDD[CalledAllele] =
+        pileupFlatMap[CalledAllele](
+          readSet.mappedReads,
+          lociPartitions,
+          skipEmpty = true,
+          pileup => callVariantsAtLocus(pileup, minAlignmentQuality).iterator,
+          reference
+        )
       readSet.mappedReads.unpersist()
 
       val filteredGenotypes = GenotypeFilter(genotypes, args).flatMap(AlleleConversions.calledAlleleToADAMGenotype)

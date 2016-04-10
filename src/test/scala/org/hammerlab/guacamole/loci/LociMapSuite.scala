@@ -16,13 +16,12 @@
  * limitations under the License.
  */
 
-package org.hammerlab.guacamole
+package org.hammerlab.guacamole.loci
 
 import com.google.common.collect._
 import org.hammerlab.guacamole.util.GuacFunSuite
-import org.scalatest.Matchers
 
-class LociMapSuite extends GuacFunSuite with Matchers {
+class LociMapSuite extends GuacFunSuite {
 
   test("properties of empty LociMap") {
     val emptyMap = LociMap[String]()

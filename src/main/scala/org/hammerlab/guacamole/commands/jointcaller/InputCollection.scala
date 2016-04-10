@@ -1,9 +1,9 @@
 package org.hammerlab.guacamole.commands.jointcaller
 
-import org.hammerlab.guacamole.DistributedUtil.PerSample
-import org.hammerlab.guacamole.commands.jointcaller.Input.{ Analyte, TissueType }
+import org.hammerlab.guacamole.PerSample
+import org.hammerlab.guacamole.commands.jointcaller.Input.{Analyte, TissueType}
 import org.kohsuke.args4j.spi.StringArrayOptionHandler
-import org.kohsuke.args4j.{ Argument, Option => Args4jOption }
+import org.kohsuke.args4j.{Argument, Option => Args4jOption}
 
 /**
  * Convenience container for zero or more Input instances.
@@ -92,7 +92,7 @@ object InputCollection {
     }
     checkLength("sample names", defaultedSampleNames)
 
-    val inputs = (0 until paths.length).map(index => {
+    val inputs = paths.indices.map(index => {
       Input(
         index = index,
         sampleName = defaultedSampleNames(index),

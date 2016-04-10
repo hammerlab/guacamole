@@ -1,9 +1,9 @@
 package org.hammerlab.guacamole.commands.jointcaller.evidence
 
-import org.hammerlab.guacamole.DistributedUtil._
-import org.hammerlab.guacamole.commands.jointcaller.Input.{ Analyte, TissueType }
+import org.hammerlab.guacamole.PerSample
+import org.hammerlab.guacamole.commands.jointcaller.Input.{Analyte, TissueType}
 import org.hammerlab.guacamole.commands.jointcaller._
-import org.hammerlab.guacamole.commands.jointcaller.annotation.{ MultiSampleAnnotations, SingleSampleAnnotations }
+import org.hammerlab.guacamole.commands.jointcaller.annotation.{MultiSampleAnnotations, SingleSampleAnnotations}
 import org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.MultiplePileupStats
 import org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.PileupStats.AlleleMixture
 
@@ -29,7 +29,7 @@ case class MultiSampleSingleAlleleEvidence(parameters: Parameters,
                                            sampleEvidences: PerSample[SingleSampleSingleAlleleEvidence],
                                            annotations: Option[MultiSampleAnnotations]) {
 
-  assume(inputs.items.map(_.index) == (0 until inputs.items.length))
+  assume(inputs.items.map(_.index) == inputs.items.indices)
 
   /**
    * There are times when we want to treat all the per-sample evidences and pooled evidences together. We do this

@@ -1,6 +1,6 @@
 package org.hammerlab.guacamole.alignment
 
-import org.scalatest.{ FunSuite, Matchers }
+import org.scalatest.{FunSuite, Matchers}
 import org.hammerlab.guacamole.util.TestUtil.Implicits._
 
 class AffineGapPenaltyAlignmentSuite extends FunSuite with Matchers {
