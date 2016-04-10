@@ -19,11 +19,12 @@
 package org.hammerlab.guacamole
 
 import org.apache.spark.rdd.RDD
-import org.bdgenomics.formats.avro.{ Genotype, GenotypeAllele }
-import org.hammerlab.guacamole.util.{ TestUtil, GuacFunSuite }
+import org.bdgenomics.formats.avro.{Genotype, GenotypeAllele}
+import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
 import TestUtil.assertBases
 import org.hammerlab.guacamole.commands.GermlineThreshold
-import org.hammerlab.guacamole.pileup.{ Pileup, PileupElement }
+import org.hammerlab.guacamole.loci.{LociMap, LociSet}
+import org.hammerlab.guacamole.pileup.{Pileup, PileupElement}
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.windowing.SlidingWindow
 import org.scalatest.Matchers

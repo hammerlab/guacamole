@@ -35,6 +35,7 @@ import org.bdgenomics.utils.cli.{Args4jBase, ParquetArgs}
 import org.codehaus.jackson.JsonFactory
 import org.hammerlab.guacamole.Common.Arguments.ReadLoadingConfigArgs
 import org.hammerlab.guacamole.Concordance.ConcordanceArgs
+import org.hammerlab.guacamole.loci.LociSet
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.reads.{BamReaderAPI, ReadInputFilters, ReadLoadingConfig}
 import org.kohsuke.args4j.{Option => Args4jOption}

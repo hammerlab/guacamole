@@ -3,6 +3,7 @@ package org.hammerlab.guacamole.commands
 import org.apache.spark.SparkContext
 import org.hammerlab.guacamole._
 import org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Arguments
+import org.hammerlab.guacamole.loci.LociSet
 import org.hammerlab.guacamole.reads.ReadInputFilters
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.util.TestUtil

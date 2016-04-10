@@ -6,6 +6,7 @@ import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole.Common.Arguments.NoSequenceDictionary
 import org.hammerlab.guacamole.DistributedUtil.PerSample
 import org.hammerlab.guacamole._
+import org.hammerlab.guacamole.loci.LociSet
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.reads.ReadInputFilters
 import org.hammerlab.guacamole.reference.ReferenceBroadcast

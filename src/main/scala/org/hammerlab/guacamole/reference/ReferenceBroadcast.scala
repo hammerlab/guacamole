@@ -6,7 +6,8 @@ import java.util.NoSuchElementException
 import htsjdk.samtools.reference.FastaSequenceFile
 import org.apache.spark.SparkContext
 import org.apache.spark.broadcast.Broadcast
-import org.hammerlab.guacamole.{ LociSet, Bases }
+import org.hammerlab.guacamole.Bases
+import org.hammerlab.guacamole.loci.LociSet
 
 import scala.collection.mutable
 

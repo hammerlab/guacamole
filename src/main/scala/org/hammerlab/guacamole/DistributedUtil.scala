@@ -24,6 +24,7 @@ import org.apache.spark.rdd.RDD
 import org.apache.spark.serializer.JavaSerializer
 import org.apache.spark.{AccumulatorParam, Logging, Partitioner, SparkConf}
 import org.hammerlab.guacamole.Common.Arguments.{Base, Loci}
+import org.hammerlab.guacamole.loci.{LociMap, LociSet}
 import org.hammerlab.guacamole.logging.DelayedMessages
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.pileup.Pileup

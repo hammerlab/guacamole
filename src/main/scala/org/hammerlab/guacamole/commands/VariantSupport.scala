@@ -23,11 +23,12 @@ import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.rdd.ADAMContext
 import org.bdgenomics.formats.avro.Variant
 import org.hammerlab.guacamole._
+import org.hammerlab.guacamole.loci.LociSet
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.reads.ReadInputFilters
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
-import org.kohsuke.args4j.{ Argument, Option => Args4jOption }
+import org.kohsuke.args4j.{Argument, Option => Args4jOption}
 
 object VariantSupport {
 

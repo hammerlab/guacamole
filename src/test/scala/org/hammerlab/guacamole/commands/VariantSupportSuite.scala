@@ -1,7 +1,7 @@
 package org.hammerlab.guacamole.commands
 
-import org.hammerlab.guacamole.LociSet
 import org.hammerlab.guacamole.commands.VariantSupport.Caller.AlleleCount
+import org.hammerlab.guacamole.loci.LociSet
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.{MappedRead, ReadInputFilters}
 import org.hammerlab.guacamole.reference.ReferenceBroadcast

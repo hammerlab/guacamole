@@ -16,11 +16,12 @@
  * limitations under the License.
  */
 
-package org.hammerlab.guacamole
+package org.hammerlab.guacamole.loci
 
 import org.apache.spark.rdd.RDD
-import org.hammerlab.guacamole.util.{ TestUtil, GuacFunSuite }
+import org.hammerlab.guacamole.Common
 import org.hammerlab.guacamole.reads.Read
+import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
 import org.scalatest.Matchers
 
 class LociSetSuite extends GuacFunSuite with Matchers {
