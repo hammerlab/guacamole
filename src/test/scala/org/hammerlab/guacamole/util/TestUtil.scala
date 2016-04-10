@@ -24,6 +24,7 @@ import java.util.UUID
 
 import com.esotericsoftware.kryo.Kryo
 import com.twitter.chill.{IKryoRegistrar, KryoInstantiator, KryoPool}
+import htsjdk.samtools.TextCigarCodec
 import org.apache.commons.io.FileUtils
 import org.apache.spark.SparkContext
 import org.hammerlab.guacamole.loci.LociSet
@@ -89,6 +90,42 @@ object TestUtil extends Matchers {
     new ReferenceBroadcast(map.toMap, source=Some("test_values"))
   }
 
+  /**
+   * Convenience function to construct a Read from unparsed values.
+   */
+  private def read(sequence: String,
+                   name: String,
+                   baseQualities: String = "",
+                   isDuplicate: Boolean = false,
+                   sampleName: String = "",
+                   referenceContig: String = "",
+                   alignmentQuality: Int = -1,
+                   start: Long = -1L,
+                   cigarString: String = "",
+                   failedVendorQualityChecks: Boolean = false,
+                   isPositiveStrand: Boolean = true,
+                   isPaired: Boolean = true) = {
+
+    val sequenceArray = sequence.map(_.toByte).toArray
+    val qualityScoresArray = Read.baseQualityStringToArray(baseQualities, sequenceArray.length)
+
+    val cigar = TextCigarCodec.decode(cigarString)
+    MappedRead(
+      name,
+      sequenceArray,
+      qualityScoresArray,
+      isDuplicate,
+      sampleName.intern,
+      referenceContig,
+      alignmentQuality,
+      start,
+      cigar,
+      failedVendorQualityChecks,
+      isPositiveStrand,
+      isPaired
+    )
+  }
+
   def makeRead(sequence: String,
                cigar: String,
                start: Long = 1,
@@ -102,7 +139,7 @@ object TestUtil extends Matchers {
       sequence.map(x => '@').mkString
     }
 
-    Read(
+    read(
       sequence,
       name = "read1",
       cigarString = cigar,
@@ -130,7 +167,7 @@ object TestUtil extends Matchers {
     val qualityScoreString = sequence.map(x => '@').mkString
 
     PairedRead(
-      Read(
+      read(
         sequence,
         name = "read1",
         cigarString = cigar,
@@ -143,14 +180,15 @@ object TestUtil extends Matchers {
       ),
       isFirstInPair = true,
       mateAlignmentProperties =
-        if (isMateMapped) Some(
-          MateAlignmentProperties(
-            mateReferenceContig.get,
-            mateStart.get,
-            inferredInsertSize = inferredInsertSize,
-            isPositiveStrand = isMatePositiveStrand
+        if (isMateMapped)
+          Some(
+            MateAlignmentProperties(
+              mateReferenceContig.get,
+              mateStart.get,
+              inferredInsertSize = inferredInsertSize,
+              isPositiveStrand = isMatePositiveStrand
+            )
           )
-        )
         else
           None
     )
