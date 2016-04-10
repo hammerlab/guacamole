@@ -71,72 +71,6 @@ trait Read {
 
 object Read extends Logging {
   /**
-   * Filtering reads while they are loaded can be an important optimization.
-   *
-   * These fields are commonly used filters. For boolean fields, setting a field to true will result in filtering on
-   * that field. The result is the intersection of the filters (i.e. reads must satisfy ALL filters).
-   *
-   * @param overlapsLoci if not None, include only mapped reads that overlap the given loci
-   * @param nonDuplicate include only reads that do not have the duplicate bit set
-   * @param passedVendorQualityChecks include only reads that do not have the failedVendorQualityChecks bit set
-   * @param isPaired include only reads are paired-end reads
-   */
-  case class InputFilters(
-    overlapsLoci: Option[LociSet.Builder],
-    nonDuplicate: Boolean,
-    passedVendorQualityChecks: Boolean,
-    isPaired: Boolean) {}
-  object InputFilters {
-    val empty = InputFilters()
-
-    /**
-     * See InputFilters for full documentation.
-     * @param mapped include only mapped reads. Convenience argument that is equivalent to specifying all sites in
-     *               overlapsLoci.
-     */
-    def apply(mapped: Boolean = false,
-              overlapsLoci: Option[LociSet.Builder] = None,
-              nonDuplicate: Boolean = false,
-              passedVendorQualityChecks: Boolean = false,
-              isPaired: Boolean = false): InputFilters = {
-      new InputFilters(
-        overlapsLoci = if (overlapsLoci.isEmpty && mapped) Some(LociSet.newBuilder.putAllContigs) else overlapsLoci,
-        nonDuplicate = nonDuplicate,
-        passedVendorQualityChecks = passedVendorQualityChecks,
-        isPaired = isPaired)
-    }
-
-    /**
-     * Apply filters to an RDD of reads.
-     *
-     * @param filters
-     * @param reads
-     * @param sequenceDictionary
-     * @return filtered RDD
-     */
-    def filterRDD(filters: InputFilters, reads: RDD[Read], sequenceDictionary: SequenceDictionary): RDD[Read] = {
-      /* Note that the InputFilter properties are public, and some loaders directly apply
-       * the filters as the reads are loaded, instead of filtering an existing RDD as we do here. If more filters
-       * are added, be sure to update those implementations.
-       * 
-       * This is implemented as a static function instead of a method in InputFilters because the overlapsLoci
-       * attribute cannot be serialized.
-       */
-      var result = reads
-      if (filters.overlapsLoci.nonEmpty) {
-        val loci = filters.overlapsLoci.get.result(contigLengths(sequenceDictionary))
-        val broadcastLoci = reads.sparkContext.broadcast(loci)
-        result = result.filter(
-          read => read.isMapped && read.asMappedRead.get.overlapsLociSet(broadcastLoci.value))
-      }
-      if (filters.nonDuplicate) result = result.filter(!_.isDuplicate)
-      if (filters.passedVendorQualityChecks) result = result.filter(!_.failedVendorQualityChecks)
-      if (filters.isPaired) result = result.filter(_.isPaired)
-      result
-    }
-  }
-
-  /**
    * Convenience function (intended for test cases), to construct a Read from unparsed values.
    */
   def apply(
@@ -263,7 +197,7 @@ object Read extends Logging {
    */
   def loadReadRDDAndSequenceDictionary(filename: String,
                                        sc: SparkContext,
-                                       filters: InputFilters,
+                                       filters: ReadInputFilters,
                                        config: ReadLoadingConfig = ReadLoadingConfig.default): (RDD[Read], SequenceDictionary) = {
     if (filename.endsWith(".bam") || filename.endsWith(".sam")) {
       loadReadRDDAndSequenceDictionaryFromBAM(
@@ -286,7 +220,7 @@ object Read extends Logging {
   def loadReadRDDAndSequenceDictionaryFromBAM(
     filename: String,
     sc: SparkContext,
-    filters: InputFilters = InputFilters.empty,
+    filters: ReadInputFilters = ReadInputFilters.empty,
     config: ReadLoadingConfig = ReadLoadingConfig.default): (RDD[Read], SequenceDictionary) = {
 
     val path = new Path(filename)
@@ -364,7 +298,7 @@ object Read extends Logging {
         samRecords.map {
           case (k, v) => fromSAMRecord(v.get)
         }
-      val reads = InputFilters.filterRDD(filters, allReads, sequenceDictionary)
+      val reads = ReadInputFilters.filterRDD(filters, allReads, sequenceDictionary)
       (reads, sequenceDictionary)
     }
   }
@@ -372,7 +306,7 @@ object Read extends Logging {
   /** Returns an RDD of Reads and SequenceDictionary from reads in ADAM format **/
   def loadReadRDDAndSequenceDictionaryFromADAM(filename: String,
                                                sc: SparkContext,
-                                               filters: InputFilters = InputFilters.empty,
+                                               filters: ReadInputFilters = ReadInputFilters.empty,
                                                config: ReadLoadingConfig = ReadLoadingConfig.default): (RDD[Read], SequenceDictionary) = {
 
     progress(s"Using ADAM to read: $filename")
@@ -384,7 +318,7 @@ object Read extends Logging {
     val sequenceDictionary = new ADAMSpecificRecordSequenceDictionaryRDDAggregator(adamRecords).adamGetSequenceDictionary()
 
     val allReads: RDD[Read] = adamRecords.map(fromADAMRecord(_))
-    val reads = InputFilters.filterRDD(filters, allReads, sequenceDictionary)
+    val reads = ReadInputFilters.filterRDD(filters, allReads, sequenceDictionary)
     (reads, sequenceDictionary)
   }
 
