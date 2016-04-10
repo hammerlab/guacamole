@@ -18,10 +18,9 @@
 
 package org.hammerlab.guacamole.pileup
 
-import org.hammerlab.guacamole.Bases
 import org.hammerlab.guacamole.reads.MappedRead
-import org.hammerlab.guacamole.reference.{ ContigSequence, ReferenceBroadcast }
-import org.hammerlab.guacamole.variants.{ Allele, Genotype }
+import org.hammerlab.guacamole.reference.ContigSequence
+import org.hammerlab.guacamole.variants.Allele
 
 /**
  * A [[Pileup]] at a locus contains a sequence of [[PileupElement]] instances, one for every read that overlaps that
@@ -34,7 +33,10 @@ import org.hammerlab.guacamole.variants.{ Allele, Genotype }
  * @param elements Sequence of [[PileupElement]] instances giving the sequenced bases that align to a particular
  *                 reference locus, in arbitrary order.
  */
-case class Pileup(referenceName: String, locus: Long, referenceContigSequence: ContigSequence, elements: Seq[PileupElement]) {
+case class Pileup(referenceName: String,
+                  locus: Long,
+                  referenceContigSequence: ContigSequence,
+                  elements: Seq[PileupElement]) {
   val referenceBase: Byte = referenceContigSequence(locus.toInt)
 
   /** The first element in the pileup. */

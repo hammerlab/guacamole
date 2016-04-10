@@ -326,7 +326,6 @@ object Common extends Logging {
       coalescedSubsetGenotypes.unpersist()
     } else if (outputPath.toLowerCase.endsWith(".vcf")) {
       progress("Writing genotypes to VCF file: %s.".format(outputPath))
-      val sc = subsetGenotypes.sparkContext
       subsetGenotypes.toVariantContext.coalesce(1, shuffle = true).saveAsVcf(outputPath)
     } else {
       progress("Writing genotypes to: %s.".format(outputPath))

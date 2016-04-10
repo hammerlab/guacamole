@@ -4,7 +4,7 @@ import java.io.File
 
 import htsjdk.variant.variantcontext.{Allele, GenotypeBuilder, VariantContext, VariantContextBuilder}
 import htsjdk.variant.vcf.VCFFileReader
-import org.hammerlab.guacamole.reference.ReferenceBroadcast
+import org.hammerlab.guacamole.reference.ReferenceGenome
 import org.hammerlab.guacamole.util.VCFComparison
 
 import scala.collection.JavaConversions
@@ -22,7 +22,7 @@ case class VariantFromVarlensCSV(
     normal: String,
     validation: String) {
 
-  def toHtsjdVariantContext(reference: ReferenceBroadcast): VariantContext = {
+  def toHtsjdVariantContext(reference: ReferenceGenome): VariantContext = {
     val uncanonicalizedContig = "chr" + contig
 
     val (adjustedInterbaseStart, adjustedRef, adjustedAlt) = if (alt.nonEmpty) {
@@ -123,7 +123,7 @@ object VariantComparisonUtils {
    */
   def compareToCSV(experimentalFile: String,
                    expectedFile: String,
-                   referenceBroadcast: ReferenceBroadcast,
+                   referenceBroadcast: ReferenceGenome,
                    samplesToCompare: Set[String]): Unit = {
     val readerExperimental = new VCFFileReader(new File(experimentalFile), false)
     val recordsExperimental = vcfRecords(readerExperimental)

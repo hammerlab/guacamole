@@ -5,9 +5,9 @@ import org.hammerlab.guacamole._
 import org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Arguments
 import org.hammerlab.guacamole.distributed.LociPartitionUtils
 import org.hammerlab.guacamole.loci.LociSet
-import org.hammerlab.guacamole.util.TestUtil
 import org.hammerlab.guacamole.reads.Read
-import org.hammerlab.guacamole.reference.ReferenceBroadcast
+import org.hammerlab.guacamole.reference.ReferenceGenome
+import org.hammerlab.guacamole.util.TestUtil
 import org.hammerlab.guacamole.variants.CalledAllele
 import org.scalatest.{BeforeAndAfterAll, FunSuite, Matchers}
 
@@ -20,12 +20,12 @@ class GermlineAssemblyCallerSuite extends FunSuite with Matchers with BeforeAndA
   args.parallelism = 2
 
   var sc: SparkContext = _
-  var reference: ReferenceBroadcast = _
+  var reference: ReferenceGenome = _
   var readSet: ReadSet = _
 
   override def beforeAll() {
     sc = Common.createSparkContext()
-    reference = ReferenceBroadcast(referenceFastaPath, sc)
+    reference = ReferenceGenome(referenceFastaPath)
   }
 
   override def afterAll(): Unit = {
@@ -40,8 +40,7 @@ class GermlineAssemblyCallerSuite extends FunSuite with Matchers with BeforeAndA
                             snvWindowRange: Int = 55,
                             minOccurrence: Int = 5,
                             minVaf: Float = 0.1f)(
-                             expectedVariants: (String, Int, String, String)*
-                           ) = {
+                            expectedVariants: (String, Int, String, String)*): Unit = {
 
     val windowStart = locus - snvWindowRange
     val windowEnd = locus + snvWindowRange

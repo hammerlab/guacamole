@@ -29,7 +29,6 @@ import org.hammerlab.guacamole.variants.{Allele, Genotype}
  */
 object ReadsUtil {
 
-  def referenceBroadcast(sc: SparkContext) = TestUtil.makeReference(sc, Seq(("chr1", 1, "C")))
   val referenceBase = 'C'.toByte
 
   def makeGenotype(alleles: String*): Genotype = {

@@ -11,7 +11,7 @@ import org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociAccor
 import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMapMultipleRDDs
 import org.hammerlab.guacamole.loci.LociSet
 import org.hammerlab.guacamole.reads._
-import org.hammerlab.guacamole.reference.ReferenceBroadcast
+import org.hammerlab.guacamole.reference.ReferenceGenome
 import org.kohsuke.args4j.{Option => Args4jOption}
 
 object SomaticJoint {
@@ -52,14 +52,15 @@ object SomaticJoint {
                        inputs: InputCollection,
                        loci: LociSet.Builder,
                        contigLengthsFromDictionary: Boolean = true): PerSample[ReadSet] = {
-    inputs.items.zipWithIndex.map({
-      case (input, index) => ReadSet(
-        sc,
-        input.path,
-        Read.InputFilters(overlapsLoci = Some(loci)),
-        contigLengthsFromDictionary = contigLengthsFromDictionary
-      )
-    })
+    inputs.items.zipWithIndex.map {
+      case (input, index) =>
+        ReadSet(
+          sc,
+          input.path,
+          Read.InputFilters(overlapsLoci = Some(loci)),
+          contigLengthsFromDictionary = contigLengthsFromDictionary
+        )
+    }
   }
 
   object Caller extends SparkCommand[Arguments] {
@@ -74,7 +75,7 @@ object SomaticJoint {
         inputs.items.foreach(input => println(input))
       }
 
-      val reference = ReferenceBroadcast(args.referenceFastaPath, sc, partialFasta = args.referenceFastaIsPartial)
+      val reference = ReferenceGenome(args.referenceFastaPath, partialFasta = args.referenceFastaIsPartial)
 
       val loci = Common.lociFromArguments(args)
 
@@ -150,7 +151,7 @@ object SomaticJoint {
                 inputs: InputCollection,
                 readSets: PerSample[ReadSet],
                 parameters: Parameters,
-                reference: ReferenceBroadcast,
+                reference: ReferenceGenome,
                 loci: LociSet,
                 forceCallLoci: LociSet = LociSet.empty,
                 onlySomatic: Boolean = false,
@@ -194,7 +195,7 @@ object SomaticJoint {
                  parameters: Parameters,
                  sequenceDictionary: SAMSequenceDictionary,
                  forceCallLoci: LociSet = LociSet.empty,
-                 reference: ReferenceBroadcast,
+                 reference: ReferenceGenome,
                  onlySomatic: Boolean = false,
                  out: String = "",
                  outDir: String = ""): Unit = {

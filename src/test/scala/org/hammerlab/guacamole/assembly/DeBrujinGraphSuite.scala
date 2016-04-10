@@ -372,7 +372,7 @@ class DeBruijnGraphSuite extends GuacFunSuite {
 
     val referenceString = "GAGGATCTGCCATGGCCGGGCGAGCTGGAGGAGGAGGAGGAGGAGGAGGAGGAGGAGGAGGAGGAAGAGGAGGAGGCTGCAGCGGCGGCGGCGGCGAACGTGGACGACGTAGTGGTCGTGGAGGAGGTGGAGGAAGAGGCGGGGCG"
     val referenceBases = Bases.stringToBases(referenceString)
-    val reference = TestUtil.makeReference(sc, Seq(("chr2", 73613005, referenceString)), contigLengths = 73613152)
+    val reference = TestUtil.makeReference(Seq(("chr2", 73613005, referenceString)), contigLengths = 73613152)
 
     lazy val snpReads =
       TestUtil

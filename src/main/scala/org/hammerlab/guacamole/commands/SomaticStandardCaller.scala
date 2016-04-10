@@ -23,16 +23,16 @@ import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.rdd.ADAMContext
 import org.bdgenomics.formats.avro.DatabaseVariantAnnotation
 import org.hammerlab.guacamole.Common.Arguments.SomaticCallerArgs
+import org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociAccordingToArgs
+import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMapTwoRDDs
 import org.hammerlab.guacamole.distributed.{LociPartitionUtils, PileupFlatMapUtils}
 import org.hammerlab.guacamole.filters.PileupFilter.PileupFilterArguments
 import org.hammerlab.guacamole.filters.SomaticGenotypeFilter.SomaticGenotypeFilterArguments
 import org.hammerlab.guacamole.filters.{PileupFilter, SomaticAlternateReadDepthFilter, SomaticGenotypeFilter, SomaticReadDepthFilter}
 import org.hammerlab.guacamole.likelihood.Likelihood
-import LociPartitionUtils.partitionLociAccordingToArgs
 import org.hammerlab.guacamole.pileup.Pileup
-import PileupFlatMapUtils.pileupFlatMapTwoRDDs
 import org.hammerlab.guacamole.reads.Read
-import org.hammerlab.guacamole.reference.ReferenceBroadcast
+import org.hammerlab.guacamole.reference.ReferenceGenome
 import org.hammerlab.guacamole.variants.{Allele, AlleleConversions, AlleleEvidence, CalledSomaticAllele}
 import org.hammerlab.guacamole.{Common, DelayedMessages, SparkCommand}
 import org.kohsuke.args4j.{Option => Args4jOption}
@@ -74,7 +74,7 @@ object SomaticStandard {
         nonDuplicate = true,
         passedVendorQualityChecks = true)
 
-      val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
+      val reference = ReferenceGenome(args.referenceFastaPath)
 
       val (tumorReads, normalReads) =
         Common.loadTumorNormalReadsFromArguments(
@@ -105,8 +105,8 @@ object SomaticStandard {
           tumorReads.mappedReads,
           normalReads.mappedReads,
           lociPartitions,
-          skipEmpty = true, // skip empty pileups
-          function = (pileupTumor, pileupNormal) =>
+          skipEmpty = true,
+          (pileupTumor, pileupNormal) =>
             findPotentialVariantAtLocus(
               pileupTumor,
               pileupNormal,
@@ -115,7 +115,7 @@ object SomaticStandard {
               filterMultiAllelic,
               maxReadDepth
             ).iterator,
-          reference = reference
+          reference
         )
 
       potentialGenotypes.persist()

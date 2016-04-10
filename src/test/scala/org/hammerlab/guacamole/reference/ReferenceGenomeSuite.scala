@@ -2,25 +2,24 @@ package org.hammerlab.guacamole.reference
 
 import org.hammerlab.guacamole.Bases
 import org.hammerlab.guacamole.util.TestUtil
-import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
-import org.scalatest.Matchers
+import org.scalatest.{FunSuite, Matchers}
 
-class ReferenceBroadcastSuite extends GuacFunSuite with Matchers {
+class ReferenceGenomeSuite extends FunSuite with Matchers {
 
   val testFastaPath = TestUtil.testDataPath("sample.fasta")
 
-  sparkTest("loading and broadcasting reference") {
+  test("loading and broadcasting reference") {
 
-    val reference = ReferenceBroadcast(testFastaPath, sc)
-    reference.broadcastedContigs.keys.size should be(2)
+    val reference = ReferenceGenome(testFastaPath)
+    reference.contigs.keys.size should be(2)
 
-    reference.broadcastedContigs.keys should contain("1")
-    reference.broadcastedContigs.keys should contain("2")
+    reference.contigs.keys should contain("1")
+    reference.contigs.keys should contain("2")
 
   }
 
-  sparkTest("retrieving reference sequences") {
-    val reference = ReferenceBroadcast(testFastaPath, sc)
+  test("retrieving reference sequences") {
+    val reference = ReferenceGenome(testFastaPath)
 
     reference.getReferenceBase("1", 0) should be(Bases.N)
     reference.getReferenceBase("1", 80) should be(Bases.C)

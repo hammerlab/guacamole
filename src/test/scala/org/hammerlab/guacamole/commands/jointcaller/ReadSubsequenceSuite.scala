@@ -2,18 +2,18 @@ package org.hammerlab.guacamole.commands.jointcaller
 
 import org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.ReadSubsequence
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.reference.ReferenceBroadcast
+import org.hammerlab.guacamole.reference.ReferenceGenome
 import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
 
 class ReadSubsequenceSuite extends GuacFunSuite {
   val cancerWGS1Bams = Vector("normal.bam", "primary.bam", "recurrence.bam").map(
     name => TestUtil.testDataPath("cancer-wgs1/" + name))
 
-  def simpleReference = TestUtil.makeReference(sc, Seq(("chr1", 0, "NTCGATCGACG")))
+  def simpleReference = TestUtil.makeReference(Seq(("chr1", 0, "NTCGATCGACG")))
 
   val partialFasta = TestUtil.testDataPath("hg19.partial.fasta")
   def partialReference = {
-    ReferenceBroadcast(partialFasta, sc, partialFasta = true)
+    ReferenceGenome(partialFasta, partialFasta = true)
   }
 
   sparkTest("ofFixedReferenceLength") {

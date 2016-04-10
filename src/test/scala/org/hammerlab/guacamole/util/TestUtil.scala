@@ -29,8 +29,7 @@ import org.hammerlab.guacamole.loci.LociSet
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.Read.InputFilters
 import org.hammerlab.guacamole.reads._
-import org.hammerlab.guacamole.reference.ReferenceBroadcast.MapBackedReferenceSequence
-import org.hammerlab.guacamole.reference.{ContigSequence, ReferenceBroadcast}
+import org.hammerlab.guacamole.reference.{ContigSequence, MapBackedReferenceSequence, ReferenceGenome}
 import org.hammerlab.guacamole.{Bases, GuacamoleKryoRegistrator, ReadSet}
 import org.scalatest._
 
@@ -68,24 +67,22 @@ object TestUtil extends Matchers {
   }
 
   /**
-   * Make a ReferenceBroadcast containing the specified sequences to be used in tests.
+   * Make a ReferenceGenome containing the specified sequences to be used in tests.
    *
-   * @param sc
    * @param contigStartSequences tuples of (contig name, start, reference sequence) giving the desired sequences
    * @param contigLengths total length of each contigs (for simplicity all contigs are assumed to have the same length)
-   * @return a map acked ReferenceBroadcast containing the desired sequences
+   * @return a map-backed ReferenceGenome containing the desired sequences
    */
-  def makeReference(sc: SparkContext,
-                    contigStartSequences: Seq[(String, Int, String)],
-                    contigLengths: Int = 1000): ReferenceBroadcast = {
+  def makeReference(contigStartSequences: Seq[(String, Int, String)],
+                    contigLengths: Int = 1000): ReferenceGenome = {
     val map = mutable.HashMap[String, ContigSequence]()
     contigStartSequences.foreach({
       case (contig, start, sequence) => {
-        val locusToBase = Bases.stringToBases(sequence).zipWithIndex.map(pair => (pair._2 + start, pair._1)).toMap
-        map.put(contig, MapBackedReferenceSequence(contigLengths, sc.broadcast(locusToBase)))
+        val locusToBase = Bases.stringToBases(sequence).zipWithIndex.map(pair => (pair._2 + start, pair._1))
+        map.put(contig, MapBackedReferenceSequence(contigLengths, locusToBase))
       }
     })
-    new ReferenceBroadcast(map.toMap)
+    new ReferenceGenome(map.toMap)
   }
 
   def makeRead(sequence: String,
@@ -228,7 +225,7 @@ object TestUtil extends Matchers {
   def loadTumorNormalPileup(tumorReads: Seq[MappedRead],
                             normalReads: Seq[MappedRead],
                             locus: Long,
-                            reference: ReferenceBroadcast): (Pileup, Pileup) = {
+                            reference: ReferenceGenome): (Pileup, Pileup) = {
     val contig = tumorReads(0).referenceContig
     assume(normalReads(0).referenceContig == contig)
     (Pileup(tumorReads, contig, locus, reference.getContig(contig)),
@@ -237,7 +234,7 @@ object TestUtil extends Matchers {
 
   def loadPileup(sc: SparkContext,
                  filename: String,
-                 reference: ReferenceBroadcast,
+                 reference: ReferenceGenome,
                  locus: Long = 0,
                  maybeContig: Option[String] = None): Pileup = {
     val records =

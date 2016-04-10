@@ -9,14 +9,14 @@ import org.apache.spark.mllib.linalg.Vectors
 import org.apache.spark.rdd.RDD
 import org.apache.spark.storage.StorageLevel
 import org.hammerlab.guacamole._
+import org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociAccordingToArgs
+import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMap
 import org.hammerlab.guacamole.distributed.{LociPartitionUtils, PileupFlatMapUtils}
-import LociPartitionUtils.partitionLociAccordingToArgs
 import org.hammerlab.guacamole.loci.LociMap
 import org.hammerlab.guacamole.pileup.Pileup
-import PileupFlatMapUtils.pileupFlatMap
+import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.reads.Read.InputFilters
-import org.hammerlab.guacamole.reads.{MappedRead, Read}
-import org.hammerlab.guacamole.reference.{ReferenceBroadcast, ReferenceGenome}
+import org.hammerlab.guacamole.reference.ReferenceGenome
 import org.kohsuke.args4j.{Argument, Option => Args4jOption}
 
 /**
@@ -97,13 +97,9 @@ object VAFHistogram {
     override val description = "Compute and cluster the variant allele frequencies"
 
     override def run(args: Arguments, sc: SparkContext): Unit = {
-      val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
+      val reference = ReferenceGenome(args.referenceFastaPath)
 
       val loci = Common.lociFromArguments(args)
-      val filters = Read.InputFilters(
-        overlapsLoci = Some(loci),
-        nonDuplicate = true,
-        passedVendorQualityChecks = true)
       val samplePercent = args.samplePercent
 
       val readSets: Seq[ReadSet] = args.bams.zipWithIndex.map(
@@ -157,7 +153,7 @@ object VAFHistogram {
             val histogram = kv._2
             histogram.toSeq
               .sortBy(_._1)
-              .map(kv => s"$fileName, $sampleName, ${histogramToString(kv)}").toSeq
+              .map(kv => s"$fileName, $sampleName, ${histogramToString(kv)}")
           })
 
       if (args.localOutputPath != "") {

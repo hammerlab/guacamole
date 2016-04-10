@@ -18,10 +18,10 @@
 
 package org.hammerlab.guacamole.reads
 
-import htsjdk.samtools.{ SAMRecord, Cigar }
-import org.bdgenomics.adam.util.{ PhredUtils, MdTag }
+import htsjdk.samtools.Cigar
+import org.bdgenomics.adam.util.PhredUtils
 import org.hammerlab.guacamole.pileup.PileupElement
-import org.hammerlab.guacamole.reference.{ ContigSequence, ReferenceBroadcast }
+import org.hammerlab.guacamole.reference.ContigSequence
 import org.hammerlab.guacamole.{ Bases, HasReferenceRegion }
 
 import scala.collection.JavaConversions

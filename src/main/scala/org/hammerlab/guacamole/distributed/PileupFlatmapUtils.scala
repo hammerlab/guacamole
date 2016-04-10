@@ -84,7 +84,8 @@ object PileupFlatMapUtils {
         val pileup1 = initOrMovePileup(maybePileups.map(_._1), windows(0), contigSequence)
         val pileup2 = initOrMovePileup(maybePileups.map(_._2), windows(1), contigSequence)
         (Some((pileup1, pileup2)), function(pileup1, pileup2))
-      })
+      }
+    )
   }
 
   /**
@@ -115,6 +116,7 @@ object PileupFlatMapUtils {
           case None => windows.map(initOrMovePileup(None, _, reference.getContig(windows(0).referenceName)))
         }
         (Some(advancedPileups), function(advancedPileups))
-      })
+      }
+    )
   }
 }

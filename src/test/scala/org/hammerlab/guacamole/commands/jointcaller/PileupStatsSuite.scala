@@ -3,7 +3,7 @@ package org.hammerlab.guacamole.commands.jointcaller
 import org.hammerlab.guacamole.Bases
 import org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.PileupStats
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.reference.ReferenceBroadcast
+import org.hammerlab.guacamole.reference.ReferenceGenome
 import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
 
 class PileupStatsSuite extends GuacFunSuite {
@@ -12,12 +12,12 @@ class PileupStatsSuite extends GuacFunSuite {
 
   val partialFasta = TestUtil.testDataPath("hg19.partial.fasta")
   def partialReference = {
-    ReferenceBroadcast(partialFasta, sc, partialFasta = true)
+    ReferenceGenome(partialFasta, partialFasta = true)
   }
 
   sparkTest("pileupstats likelihood computation") {
     val refString = "NTCGATCGA"
-    def reference = TestUtil.makeReference(sc, Seq(("chr1", 0, refString)))
+    def reference = TestUtil.makeReference(Seq(("chr1", 0, refString)))
     def referenceContigSequence = reference.getContig("chr1")
 
     val reads = Seq(

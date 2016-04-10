@@ -27,7 +27,7 @@ import scala.collection.JavaConversions._
 
 class GermlineThresholdCallerSuite extends GuacFunSuite {
 
-  def reference = TestUtil.makeReference(sc, Seq(
+  def reference = TestUtil.makeReference(Seq(
     ("chr1", 0, "ATCGATCGA"),
     ("2", 16050070, "T")))
   def referenceContigSequence = reference.getContig("chr1")

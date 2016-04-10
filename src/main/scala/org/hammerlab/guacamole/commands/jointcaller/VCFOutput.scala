@@ -6,12 +6,12 @@ import htsjdk.samtools.SAMSequenceDictionary
 import htsjdk.variant.variantcontext._
 import htsjdk.variant.variantcontext.writer.VariantContextWriterBuilder
 import htsjdk.variant.vcf._
-import org.hammerlab.guacamole.commands.jointcaller.Input.{ Analyte, TissueType }
-import org.hammerlab.guacamole.commands.jointcaller.annotation.{ MultiSampleAnnotations, SingleSampleAnnotations }
+import org.hammerlab.guacamole.commands.jointcaller.Input.{Analyte, TissueType}
+import org.hammerlab.guacamole.commands.jointcaller.annotation.{MultiSampleAnnotations, SingleSampleAnnotations}
 import org.hammerlab.guacamole.commands.jointcaller.evidence._
-import org.hammerlab.guacamole.reference.ReferenceBroadcast
+import org.hammerlab.guacamole.reference.ReferenceGenome
 
-import scala.collection.{ JavaConversions, mutable }
+import scala.collection.{JavaConversions, mutable}
 
 object VCFOutput {
   /**
@@ -34,7 +34,7 @@ object VCFOutput {
                includePooledTumor: Boolean,
                parameters: Parameters,
                sequenceDictionary: SAMSequenceDictionary,
-               reference: ReferenceBroadcast): Unit = {
+               reference: ReferenceGenome): Unit = {
 
     val writer = new VariantContextWriterBuilder()
       .setOutputFile(path)
@@ -100,7 +100,7 @@ object VCFOutput {
                               subInputs: InputCollection,
                               includePooledNormal: Boolean,
                               includePooledTumor: Boolean,
-                              reference: ReferenceBroadcast): VariantContext = {
+                              reference: ReferenceGenome): VariantContext = {
 
     val allele = samplesEvidence.allele
 

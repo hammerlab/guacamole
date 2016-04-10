@@ -23,14 +23,14 @@ import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.rdd.ADAMContext
 import org.bdgenomics.formats.avro.Variant
 import org.hammerlab.guacamole._
+import org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociUniformly
+import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMap
 import org.hammerlab.guacamole.distributed.{LociPartitionUtils, PileupFlatMapUtils}
-import LociPartitionUtils.partitionLociUniformly
 import org.hammerlab.guacamole.loci.LociSet
 import org.hammerlab.guacamole.pileup.Pileup
-import PileupFlatMapUtils.pileupFlatMap
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.reads.Read.InputFilters
-import org.hammerlab.guacamole.reference.ReferenceBroadcast
+import org.hammerlab.guacamole.reference.ReferenceGenome
 import org.kohsuke.args4j.{Argument, Option => Args4jOption}
 
 object VariantSupport {
@@ -71,7 +71,7 @@ object VariantSupport {
 
     override def run(args: Arguments, sc: SparkContext): Unit = {
 
-      val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
+      val reference = ReferenceGenome(args.referenceFastaPath)
 
       val adamContext = new ADAMContext(sc)
 
@@ -99,9 +99,9 @@ object VariantSupport {
           pileupFlatMap[AlleleCount](
             sampleReads,
             lociPartitions,
-            true,
+            skipEmpty = true,
             pileupToAlleleCounts,
-            reference = reference
+            reference
           )
         ).reduce(_ ++ _)
 

@@ -43,7 +43,7 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
         LociPartitionUtils.partitionLociUniformly(reads.partitions.length, LociSet.parse("chr1:1-9").result),
         skipEmpty = false,
         pileup => Seq(pileup).iterator,
-        reference = TestUtil.makeReference(sc, Seq(("chr1", 0, "ATCGATCGA")))
+        reference = TestUtil.makeReference(Seq(("chr1", 0, "ATCGATCGA")))
       ).collect()
 
     pileups.length should be(8)
@@ -71,7 +71,7 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
         LociPartitionUtils.partitionLociUniformly(5, LociSet.parse("chr1:1-9").result),
         skipEmpty = false,
         pileup => Seq(pileup).iterator,
-        reference = TestUtil.makeReference(sc, Seq(("chr1", 0, "ATCGATCGA")))
+        reference = TestUtil.makeReference(Seq(("chr1", 0, "ATCGATCGA")))
       ).collect()
 
     val firstPileup = pileups.head
@@ -93,7 +93,7 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
         LociPartitionUtils.partitionLociUniformly(5, LociSet.parse("chr0:5-10,chr1:0-100,chr2:0-1000,chr2:5000-6000").result),
         skipEmpty = true,
         pileup => Iterator(pileup.locus),
-        reference = TestUtil.makeReference(sc, Seq(("chr1", 0, "ATCGATCGA")))
+        reference = TestUtil.makeReference(Seq(("chr1", 0, "ATCGATCGA")))
       ).collect.toSeq
     pileups should equal(Seq(1, 2, 3, 4, 5, 6, 7, 8))
   }
@@ -120,7 +120,7 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
         LociPartitionUtils.partitionLociUniformly(1, LociSet.parse("chr0:0-1000,chr1:1-500,chr2:10-20").result),
         skipEmpty = true,
         (pileup1, _) => (Iterator(pileup1.locus)),
-        reference = TestUtil.makeReference(sc, Seq(("chr1", 0, "ATCGATCGA")))
+        reference = TestUtil.makeReference(Seq(("chr1", 0, "ATCGATCGA")))
       ).collect
     loci.toSeq should equal(Seq(1, 2, 3, 4, 5, 6, 7, 8, 99, 100, 101, 102, 103, 104, 105, 106, 107))
   }
@@ -152,7 +152,7 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
         LociPartitionUtils.partitionLociUniformly(1, LociSet.parse("chr1:1-500,chr2:10-20").result),
         skipEmpty = true,
         pileups => Iterator(pileups.map(_.elements.map(p => Bases.basesToString(p.sequencedBases)))),
-        reference = TestUtil.makeReference(sc, Seq(("chr1", 0, "ATCGATCGA")))
+        reference = TestUtil.makeReference(Seq(("chr1", 0, "ATCGATCGA")))
       ).collect.map(_.toList)
 
     val resultParallelized = PileupFlatMapUtils.pileupFlatMapMultipleRDDs[Seq[Seq[String]]](
@@ -160,7 +160,7 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
       LociPartitionUtils.partitionLociUniformly(800, LociSet.parse("chr0:0-100,chr1:1-500,chr2:10-20").result),
       skipEmpty = true,
       pileups => Iterator(pileups.map(_.elements.map(p => Bases.basesToString(p.sequencedBases)))),
-      reference = TestUtil.makeReference(sc, Seq(("chr1", 0, "ATCGATCGA")))
+      reference = TestUtil.makeReference(Seq(("chr1", 0, "ATCGATCGA")))
     ).collect.map(_.toList)
 
     val resultWithEmpty =
@@ -169,7 +169,7 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
         LociPartitionUtils.partitionLociUniformly(5, LociSet.parse("chr1:1-500,chr2:10-20").result),
         skipEmpty = false,
         pileups => Iterator(pileups.map(_.elements.map(p => Bases.basesToString(p.sequencedBases)))),
-        reference = TestUtil.makeReference(sc, Seq(("chr1", 0, "ATCGATCGA"), ("chr2", 0, "")))
+        reference = TestUtil.makeReference(Seq(("chr1", 0, "ATCGATCGA"), ("chr2", 0, "")))
       ).collect.map(_.toList)
 
     resultPlain should equal(resultParallelized)
@@ -203,7 +203,7 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
         LociPartitionUtils.partitionLociUniformly(5, LociSet.parse("chr1:1-9").result),
         skipEmpty = false,
         _.elements.toIterator,
-        reference = TestUtil.makeReference(sc, Seq(("chr1", 1, "TCGATCGA")))
+        reference = TestUtil.makeReference(Seq(("chr1", 1, "TCGATCGA")))
       ).collect()
 
     pileups.length should be(24)
@@ -232,7 +232,7 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
         LociPartitionUtils.partitionLociUniformly(1000, LociSet.parse("chr1:1-500").result),
         skipEmpty = false,
         (pileup1, pileup2) => (pileup1.elements ++ pileup2.elements).toIterator,
-        reference = TestUtil.makeReference(sc, Seq(("chr1", 0, "ATCGATCGA" + "N" * 90 + "AGGGGGGGGGG")))
+        reference = TestUtil.makeReference(Seq(("chr1", 0, "ATCGATCGA" + "N" * 90 + "AGGGGGGGGGG")))
       ).collect()
 
     elements.map(_.isMatch) should equal(List.fill(elements.length)(true))
@@ -255,7 +255,7 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
         LociPartitionUtils.partitionLociUniformly(5, LociSet.parse("chr1:1-12").result),
         skipEmpty = false,
         _.elements.toIterator,
-        reference = TestUtil.makeReference(sc, Seq(("chr1", 0, "ATCGATCGA ")))
+        reference = TestUtil.makeReference(Seq(("chr1", 0, "ATCGATCGA")))
       ).collect()
 
     pileups.length should be(24)
@@ -276,7 +276,7 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
         LociPartitionUtils.partitionLociUniformly(reads.partitions.length, LociSet.parse("chr1:1-100").result),
         skipEmpty = false,
         pileup => GermlineThreshold.Caller.callVariantsAtLocus(pileup, 0, emitRef = false, emitNoCall = false).iterator,
-        reference = TestUtil.makeReference(sc, Seq(("chr1", 0, "ATCGATCGA")))
+        reference = TestUtil.makeReference(Seq(("chr1", 0, "ATCGATCGA")))
       ).collect()
 
     genotypes.length should be(0)
@@ -295,7 +295,7 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
         LociPartitionUtils.partitionLociUniformly(3, LociSet.parse("chr1:1-100").result),
         skipEmpty = false,
         pileup => GermlineThreshold.Caller.callVariantsAtLocus(pileup, 0, emitRef = false, emitNoCall = false).iterator,
-        reference = TestUtil.makeReference(sc, Seq(("chr1", 0, "ATCGATCGA")))
+        reference = TestUtil.makeReference(Seq(("chr1", 0, "ATCGATCGA")))
       ).collect()
 
     genotypes.length should be(0)
@@ -314,7 +314,7 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
         LociPartitionUtils.partitionLociUniformly(3, LociSet.parse("chr1:1-100").result),
         skipEmpty = false,
         pileup => GermlineThreshold.Caller.callVariantsAtLocus(pileup, 0, emitRef = false, emitNoCall = false).iterator,
-        reference = TestUtil.makeReference(sc, Seq(("chr1", 0, "ATCGATCGA")))
+        reference = TestUtil.makeReference(Seq(("chr1", 0, "ATCGATCGA")))
       ).collect()
 
     genotypes.length should be(1)
@@ -338,7 +338,7 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
         LociPartitionUtils.partitionLociUniformly(3, LociSet.parse("chr1:1-100").result),
         skipEmpty = false,
         pileup => GermlineThreshold.Caller.callVariantsAtLocus(pileup, 0, emitRef = false, emitNoCall = false).iterator,
-        reference = TestUtil.makeReference(sc, Seq(("chr1", 0, "ATCGATCGA")))
+        reference = TestUtil.makeReference(Seq(("chr1", 0, "ATCGATCGA")))
       ).collect()
 
     genotypes.length should be(1)
