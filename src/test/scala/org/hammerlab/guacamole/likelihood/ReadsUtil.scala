@@ -16,11 +16,11 @@
  * limitations under the License.
  */
 
-package org.hammerlab.guacamole
+package org.hammerlab.guacamole.likelihood
 
 import org.apache.spark.SparkContext
 import org.bdgenomics.adam.util.PhredUtils
-import org.hammerlab.guacamole.likelihood.LikelihoodSuite
+import org.hammerlab.guacamole.Bases
 import org.hammerlab.guacamole.util.TestUtil
 import org.hammerlab.guacamole.variants.{Allele, Genotype}
 

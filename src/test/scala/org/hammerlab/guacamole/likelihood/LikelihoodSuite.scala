@@ -18,7 +18,7 @@
 
 package org.hammerlab.guacamole.likelihood
 
-import org.hammerlab.guacamole.ReadsUtil._
+import org.hammerlab.guacamole.likelihood.ReadsUtil._
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
