@@ -22,19 +22,19 @@ import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.rdd.ADAMContext
 import org.bdgenomics.formats.avro.Variant
-import org.hammerlab.guacamole._
 import org.hammerlab.guacamole.distributed.LociPartitionUtils
 import org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociUniformly
 import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMap
 import org.hammerlab.guacamole.loci.LociSet
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.reads.{MappedRead, ReadInputFilters}
+import org.hammerlab.guacamole.reads.{MappedRead, ReadInputFilters, ReadLoadingConfigArgs}
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
+import org.hammerlab.guacamole.{Bases, ReadSet, SparkCommand}
 import org.kohsuke.args4j.{Argument, Option => Args4jOption}
 
 object VariantSupport {
 
-  protected class Arguments extends LociPartitionUtils.Arguments with Common.Arguments.ReadLoadingConfigArgs {
+  protected class Arguments extends LociPartitionUtils.Arguments with ReadLoadingConfigArgs {
     @Args4jOption(name = "--input-variant", required = true, aliases = Array("-v"),
       usage = "")
     var variants: String = ""
@@ -81,7 +81,7 @@ object VariantSupport {
             sc,
             bamFile._1,
             ReadInputFilters.empty,
-            config = Common.Arguments.ReadLoadingConfigArgs.fromArguments(args)
+            config = ReadLoadingConfigArgs(args)
           ).mappedReads
       )
 
@@ -98,7 +98,7 @@ object VariantSupport {
           pileupFlatMap[AlleleCount](
             sampleReads,
             lociPartitions,
-            true,
+            skipEmpty = true,
             pileupToAlleleCounts,
             reference = reference
           )

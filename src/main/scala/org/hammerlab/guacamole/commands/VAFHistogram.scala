@@ -15,7 +15,7 @@ import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMap
 import org.hammerlab.guacamole.loci.LociMap
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.reads.{MappedRead, ReadInputFilters}
+import org.hammerlab.guacamole.reads.{MappedRead, ReadInputFilters, ReadLoadingConfigArgs}
 import org.hammerlab.guacamole.reference.{ReferenceBroadcast, ReferenceGenome}
 import org.kohsuke.args4j.{Argument, Option => Args4jOption}
 
@@ -48,7 +48,7 @@ object VariantLocus {
 
 object VAFHistogram {
 
-  protected class Arguments extends LociPartitionUtils.Arguments with Common.Arguments.ReadLoadingConfigArgs {
+  protected class Arguments extends LociPartitionUtils.Arguments with ReadLoadingConfigArgs {
 
     @Args4jOption(name = "--out", required = false, forbids = Array("--local-out"),
       usage = "HDFS file path to save the variant allele frequency histogram")
@@ -106,6 +106,7 @@ object VAFHistogram {
           nonDuplicate = true,
           passedVendorQualityChecks = true
         )
+
       val samplePercent = args.samplePercent
 
       val readSets: Seq[ReadSet] = args.bams.zipWithIndex.map(
@@ -113,9 +114,9 @@ object VAFHistogram {
           ReadSet(
             sc,
             bamFile._1,
-            ReadInputFilters.empty,
+            filters,
             contigLengthsFromDictionary = true,
-            config = Common.Arguments.ReadLoadingConfigArgs.fromArguments(args)
+            config = ReadLoadingConfigArgs(args)
           )
       )
 
@@ -153,14 +154,12 @@ object VAFHistogram {
       val histogramOutput =
         sampleAndFileNames
           .zip(variantAlleleHistograms)
-          .flatMap(kv => {
-            val fileName = kv._1._1
-            val sampleName = kv._1._2
-            val histogram = kv._2
-            histogram.toSeq
-              .sortBy(_._1)
-              .map(kv => s"$fileName, $sampleName, ${histogramToString(kv)}").toSeq
-          })
+          .flatMap {
+            case ((filename, sampleName), histogram) =>
+              histogram.toSeq
+                .sortBy(_._1)
+                .map(kv => s"$filename, $sampleName, ${histogramToString(kv)}")
+          }
 
       if (args.localOutputPath != "") {
         val writer = new BufferedWriter(new FileWriter(args.localOutputPath))
