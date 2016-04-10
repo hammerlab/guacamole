@@ -18,10 +18,7 @@
 
 package org.hammerlab.guacamole
 
-import org.apache.spark.rdd.RDD
-import org.hammerlab.guacamole.util.{ TestUtil, GuacFunSuite }
-import org.hammerlab.guacamole.reads.Read
-import org.scalatest.Matchers
+import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
 
 class LociSetSuite extends GuacFunSuite {
 
@@ -116,7 +113,6 @@ class LociSetSuite extends GuacFunSuite {
 
   sparkTest("loci argument parsing in Common") {
     val read = TestUtil.makeRead("C", "1M", 500, "20")
-    val reads: RDD[Read] = sc.parallelize(Seq(read))
     class TestArgs extends Common.Arguments.Base with Common.Arguments.Loci {}
 
     // Test -loci argument
@@ -153,11 +149,11 @@ class LociSetSuite extends GuacFunSuite {
       "chr21:100-200,chr20:0-10,chr20:8-15,chr20:100-120").map(LociSet.parse(_).result)
     val rdd = sc.parallelize(sets)
     val result = rdd.map(set => {
-      set.onContig("21").contains(5) // no op
-      val ranges = set.onContig("21").ranges // no op
+      set.onContig("21").contains(5)  // no op
+      set.onContig("21").ranges       // no op
       set.onContig("20").toString
     }).collect.toSeq
-    result should equal(sets.map(_.onContig("20").toString).toSeq)
+    result should equal(sets.map(_.onContig("20").toString))
   }
 
   test("loci set union") {
@@ -170,19 +166,19 @@ class LociSetSuite extends GuacFunSuite {
     LociSet.parse(
       "chr1,chr2,17,chr2:3-5,chr20:10-20"
     )
-      .result(
-        "chr1" → 10L,
-        "chr2" → 20L,
-        "17" → 12L,
-        "chr20" → 5000L
-      )
-      .toString should equal(
-        "17:0-12,chr1:0-10,chr2:0-20,chr20:10-20"
-      )
+    .result(
+      "chr1"  -> 10L,
+      "chr2"  -> 20L,
+      "17"    -> 12L,
+      "chr20" -> 5000L
+    )
+    .toString should equal(
+      "17:0-12,chr1:0-10,chr2:0-20,chr20:10-20"
+    )
   }
 
   test("parse half-open interval") {
-    LociSet.parse("chr1:10000-").result("chr1" → 20000L).toString should be("chr1:10000-20000")
+    LociSet.parse("chr1:10000-").result("chr1" -> 20000L).toString should be("chr1:10000-20000")
   }
 
   test("loci set single contig iterator basic") {

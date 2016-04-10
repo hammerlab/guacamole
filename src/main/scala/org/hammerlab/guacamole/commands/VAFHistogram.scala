@@ -198,7 +198,7 @@ object VAFHistogram {
       variantPercent - (variantPercent % (100 / bins))
     }
     variantAlleleFrequencies
-      .map(vaf ⇒ roundToBin(vaf.variantAlleleFrequency) → 1L)
+      .map(vaf => roundToBin(vaf.variantAlleleFrequency) -> 1L)
       .reduceByKey(_ + _)
       .collectAsMap
       .toMap
