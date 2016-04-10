@@ -70,43 +70,6 @@ trait Read {
 
 object Read extends Logging {
   /**
-   * Convenience function (intended for test cases), to construct a Read from unparsed values.
-   */
-  def apply(
-    sequence: String,
-    name: String,
-    baseQualities: String = "",
-    isDuplicate: Boolean = false,
-    sampleName: String = "",
-    referenceContig: String = "",
-    alignmentQuality: Int = -1,
-    start: Long = -1L,
-    cigarString: String = "",
-    failedVendorQualityChecks: Boolean = false,
-    isPositiveStrand: Boolean = true,
-    isPaired: Boolean = true) = {
-
-    val sequenceArray = sequence.map(_.toByte).toArray
-    val qualityScoresArray = baseQualityStringToArray(baseQualities, sequenceArray.length)
-
-    val cigar = TextCigarCodec.decode(cigarString)
-    MappedRead(
-      name,
-      sequenceArray,
-      qualityScoresArray,
-      isDuplicate,
-      sampleName.intern,
-      referenceContig,
-      alignmentQuality,
-      start,
-      cigar,
-      failedVendorQualityChecks,
-      isPositiveStrand,
-      isPaired
-    )
-  }
-
-  /**
    * Converts the ascii-string encoded base qualities into an array of integers
    * quality scores in Phred-scale
    *
