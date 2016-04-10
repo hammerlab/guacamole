@@ -42,9 +42,7 @@ class ReadSetSuite extends GuacFunSuite {
 
         val firstPath = paths.head
 
-        val configs =
-          Read.ReadLoadingConfig.BamReaderAPI.values
-            .map(api => Read.ReadLoadingConfig(bamReaderAPI = api))
+        val configs = BamReaderAPI.values.map(ReadLoadingConfig(_))
 
         val firstConfig = configs.head
 
