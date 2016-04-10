@@ -446,11 +446,6 @@ object Read extends Logging {
     }
   }
 
-  /** Is the given samtools CigarElement a (hard/soft) clip? */
-  def cigarElementIsClipped(element: CigarElement): Boolean = {
-    element.getOperator == CigarOperator.SOFT_CLIP || element.getOperator == CigarOperator.HARD_CLIP
-  }
-
   /** Extract the length of each contig from a sequence dictionary */
   def contigLengths(sequenceDictionary: SequenceDictionary): Map[String, Long] = {
     val builder = Map.newBuilder[String, Long]
