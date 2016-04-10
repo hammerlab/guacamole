@@ -28,7 +28,7 @@ import org.hammerlab.guacamole.likelihood.Likelihood
 import org.hammerlab.guacamole.logging.DelayedMessages
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.reads.Read
+import org.hammerlab.guacamole.reads.ReadInputFilters
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.variants.{AlleleConversions, AlleleEvidence, CalledAllele}
 import org.hammerlab.guacamole.{Common, Concordance, DistributedUtil, SparkCommand}
@@ -59,7 +59,7 @@ object GermlineStandard {
       val readSet = Common.loadReadsFromArguments(
         args,
         sc,
-        Read.InputFilters(
+        ReadInputFilters(
           overlapsLoci = Some(loci),
           mapped = true,
           nonDuplicate = true

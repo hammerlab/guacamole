@@ -26,7 +26,7 @@ import com.twitter.chill.{IKryoRegistrar, KryoInstantiator, KryoPool}
 import org.apache.commons.io.FileUtils
 import org.apache.spark.SparkContext
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.reads.Read.InputFilters
+import org.hammerlab.guacamole.reads.ReadInputFilters
 import org.hammerlab.guacamole.reads._
 import org.hammerlab.guacamole.reference.ReferenceBroadcast.MapBackedReferenceSequence
 import org.hammerlab.guacamole.reference.{ContigSequence, ReferenceBroadcast}
@@ -204,7 +204,7 @@ object TestUtil extends Matchers {
   def loadTumorNormalReads(sc: SparkContext,
                            tumorFile: String,
                            normalFile: String): (Seq[MappedRead], Seq[MappedRead]) = {
-    val filters = Read.InputFilters(mapped = true, nonDuplicate = true, passedVendorQualityChecks = true)
+    val filters = ReadInputFilters(mapped = true, nonDuplicate = true, passedVendorQualityChecks = true)
     (
       loadReads(sc, tumorFile, filters = filters).mappedReads.collect(),
       loadReads(sc, normalFile, filters = filters).mappedReads.collect()
@@ -213,7 +213,7 @@ object TestUtil extends Matchers {
 
   def loadReads(sc: SparkContext,
                 filename: String,
-                filters: Read.InputFilters = Read.InputFilters.empty,
+                filters: ReadInputFilters = ReadInputFilters.empty,
                 config: ReadLoadingConfig = ReadLoadingConfig.default): ReadSet = {
     /* grab the path to the SAM file we've stashed in the resources subdirectory */
     val path = testDataPath(filename)
@@ -241,7 +241,7 @@ object TestUtil extends Matchers {
       TestUtil.loadReads(
         sc,
         filename,
-        filters = InputFilters(
+        filters = ReadInputFilters(
           overlapsLoci = maybeContig.map(
             contig => LociSet.parse(s"$contig:$locus-${locus + 1}")
           )

@@ -36,8 +36,7 @@ import org.codehaus.jackson.JsonFactory
 import org.hammerlab.guacamole.Common.Arguments.ReadLoadingConfigArgs
 import org.hammerlab.guacamole.Concordance.ConcordanceArgs
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
-import org.hammerlab.guacamole.reads.BamReaderAPI.BamReaderAPI
-import org.hammerlab.guacamole.reads.{BamReaderAPI, Read, ReadLoadingConfig}
+import org.hammerlab.guacamole.reads.{BamReaderAPI, ReadInputFilters, ReadLoadingConfig}
 import org.kohsuke.args4j.{Option => Args4jOption}
 
 /**
@@ -155,7 +154,7 @@ object Common extends Logging {
   def loadReadsFromArguments(
     args: Arguments.Reads,
     sc: SparkContext,
-    filters: Read.InputFilters): ReadSet = {
+    filters: ReadInputFilters): ReadSet = {
 
     ReadSet(
       sc,
@@ -176,7 +175,7 @@ object Common extends Logging {
   def loadTumorNormalReadsFromArguments(
     args: Arguments.TumorNormalReads,
     sc: SparkContext,
-    filters: Read.InputFilters): (ReadSet, ReadSet) = {
+    filters: ReadInputFilters): (ReadSet, ReadSet) = {
 
     val tumor = ReadSet(
       sc,

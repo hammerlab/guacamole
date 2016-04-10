@@ -26,7 +26,7 @@ import org.hammerlab.guacamole.Common.Arguments.GermlineCallerArgs
 import org.hammerlab.guacamole.logging.DelayedMessages
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.reads.Read
+import org.hammerlab.guacamole.reads.ReadInputFilters
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.variants.Allele
 import org.hammerlab.guacamole.{Bases, Common, Concordance, DistributedUtil, SparkCommand}
@@ -68,7 +68,7 @@ object GermlineThreshold {
       val readSet = Common.loadReadsFromArguments(
         args,
         sc,
-        Read.InputFilters(
+        ReadInputFilters(
           overlapsLoci = Some(loci),
           nonDuplicate = true
         )
@@ -84,11 +84,18 @@ object GermlineThreshold {
       val (threshold, emitRef, emitNoCall) = (args.threshold, args.emitRef, args.emitNoCall)
       val numGenotypes = sc.accumulator(0L)
       DelayedMessages.default.say { () => "Called %,d genotypes.".format(numGenotypes.value) }
-      val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(args, loci.result(readSet.contigLengths), readSet.mappedReads)
+
+      val lociPartitions =
+        DistributedUtil.partitionLociAccordingToArgs(
+          args,
+          loci.result(readSet.contigLengths),
+          readSet.mappedReads
+        )
+
       val genotypes: RDD[Genotype] = DistributedUtil.pileupFlatMap[Genotype](
         readSet.mappedReads,
         lociPartitions,
-        true, // skip empty pileups
+        skipEmpty = true,
         pileup => {
           val genotypes = callVariantsAtLocus(pileup, threshold, emitRef, emitNoCall)
           numGenotypes += genotypes.length

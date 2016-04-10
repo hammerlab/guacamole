@@ -3,9 +3,9 @@ package org.hammerlab.guacamole.commands
 import org.hammerlab.guacamole.LociSet
 import org.hammerlab.guacamole.commands.VariantSupport.Caller.AlleleCount
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.reads.{ MappedRead, Read }
+import org.hammerlab.guacamole.reads.{MappedRead, ReadInputFilters}
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
-import org.hammerlab.guacamole.util.{ GuacFunSuite, TestUtil }
+import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
 import org.hammerlab.guacamole.windowing.SlidingWindow
 import org.scalatest.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks
@@ -52,7 +52,7 @@ class VariantSupportSuite extends GuacFunSuite with Matchers with TableDrivenPro
     TestUtil.loadReads(
       sc,
       "gatk_mini_bundle_extract.bam",
-      Read.InputFilters(
+      ReadInputFilters(
         mapped = true,
         nonDuplicate = false,
         overlapsLoci = Some(LociSet.parse(loci))
@@ -63,7 +63,7 @@ class VariantSupportSuite extends GuacFunSuite with Matchers with TableDrivenPro
     TestUtil.loadReads(
       sc,
       "gatk_mini_bundle_extract.bam",
-      Read.InputFilters(
+      ReadInputFilters(
         mapped = true,
         nonDuplicate = true,
         overlapsLoci = Some(LociSet.parse(loci))

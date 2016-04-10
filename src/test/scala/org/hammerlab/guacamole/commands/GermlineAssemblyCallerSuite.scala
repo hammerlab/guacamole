@@ -3,7 +3,7 @@ package org.hammerlab.guacamole.commands
 import org.apache.spark.SparkContext
 import org.hammerlab.guacamole._
 import org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Arguments
-import org.hammerlab.guacamole.reads.Read
+import org.hammerlab.guacamole.reads.ReadInputFilters
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.util.TestUtil
 import org.hammerlab.guacamole.variants.CalledAllele
@@ -50,7 +50,7 @@ class GermlineAssemblyCallerSuite extends FunSuite with Matchers with BeforeAndA
       Common.loadReadsFromArguments(
         args,
         sc,
-        Read.InputFilters(
+        ReadInputFilters(
           mapped = true,
           nonDuplicate = true,
           overlapsLoci = Some(lociBuilder)

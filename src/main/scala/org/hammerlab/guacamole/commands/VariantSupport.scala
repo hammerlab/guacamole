@@ -25,7 +25,7 @@ import org.bdgenomics.formats.avro.Variant
 import org.hammerlab.guacamole._
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.MappedRead
-import org.hammerlab.guacamole.reads.Read.InputFilters
+import org.hammerlab.guacamole.reads.ReadInputFilters
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.kohsuke.args4j.{ Argument, Option => Args4jOption }
 
@@ -77,7 +77,7 @@ object VariantSupport {
           ReadSet(
             sc,
             bamFile._1,
-            InputFilters.empty,
+            ReadInputFilters.empty,
             config = Common.Arguments.ReadLoadingConfigArgs.fromArguments(args)
           ).mappedReads
       )

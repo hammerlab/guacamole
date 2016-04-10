@@ -20,7 +20,7 @@ package org.hammerlab.guacamole.commands
 
 import org.bdgenomics.formats.avro.GenotypeAllele
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.reads.Read
+import org.hammerlab.guacamole.reads.ReadInputFilters
 import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
 import org.scalatest.Matchers
 
@@ -108,7 +108,7 @@ class GermlineThresholdCallerSuite extends GuacFunSuite with Matchers {
 
   // Regression test for https://github.com/hammerlab/guacamole/issues/302
   sparkTest("heterozygous deletion") {
-    val filters = Read.InputFilters(mapped = true, nonDuplicate = true, passedVendorQualityChecks = true)
+    val filters = ReadInputFilters(mapped = true, nonDuplicate = true, passedVendorQualityChecks = true)
     val reads =
       TestUtil.loadReads(
         sc,

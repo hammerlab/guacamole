@@ -22,21 +22,18 @@ import org.apache.parquet.hadoop.metadata.CompressionCodecName
 import org.bdgenomics.adam.rdd.read.AlignmentRecordRDDFunctions
 import org.bdgenomics.adam.rdd.{ADAMContext, ADAMSaveAnyArgs}
 import org.hammerlab.guacamole.LociSet
-import org.hammerlab.guacamole.reads.Read.InputFilters
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
 import org.scalatest.Matchers
 
 class ReadSetSuite extends GuacFunSuite with Matchers {
 
-  def chr22Fasta = ReferenceBroadcast.readFasta(TestUtil.testDataPath("chr22.fa.gz"), sc)
-
   case class LazyMessage(msg: () => String) {
     override def toString: String = msg()
   }
 
   sparkTest("using different bam reading APIs on sam/bam files should give identical results") {
-    def check(paths: Seq[String], filter: InputFilters): Unit = {
+    def check(paths: Seq[String], filter: ReadInputFilters): Unit = {
       withClue("using filter %s: ".format(filter)) {
 
         val firstPath = paths.head
@@ -89,15 +86,15 @@ class ReadSetSuite extends GuacFunSuite with Matchers {
     }
 
     Seq(
-      InputFilters(),
-      InputFilters(mapped = true, nonDuplicate = true),
-      InputFilters(overlapsLoci = Some(LociSet.parse("20:10220390-10220490")))
+      ReadInputFilters(),
+      ReadInputFilters(mapped = true, nonDuplicate = true),
+      ReadInputFilters(overlapsLoci = Some(LociSet.parse("20:10220390-10220490")))
     ).foreach(filter => {
         check(Seq("gatk_mini_bundle_extract.bam", "gatk_mini_bundle_extract.sam"), filter)
       })
 
     Seq(
-      InputFilters(overlapsLoci = Some(LociSet.parse("19:147033")))
+      ReadInputFilters(overlapsLoci = Some(LociSet.parse("19:147033")))
     ).foreach(filter => {
         check(Seq("synth1.normal.100k-200k.withmd.bam", "synth1.normal.100k-200k.withmd.sam"), filter)
       })
@@ -107,13 +104,13 @@ class ReadSetSuite extends GuacFunSuite with Matchers {
     val allReads = TestUtil.loadReads(sc, "mdtagissue.sam")
     allReads.reads.count() should be(8)
 
-    val mdTagReads = TestUtil.loadReads(sc, "mdtagissue.sam", Read.InputFilters(mapped = true))
+    val mdTagReads = TestUtil.loadReads(sc, "mdtagissue.sam", ReadInputFilters(mapped = true))
     mdTagReads.reads.count() should be(5)
 
     val nonDuplicateReads = TestUtil.loadReads(
       sc,
       "mdtagissue.sam",
-      Read.InputFilters(mapped = true, nonDuplicate = true)
+      ReadInputFilters(mapped = true, nonDuplicate = true)
     )
     nonDuplicateReads.reads.count() should be(3)
   }
@@ -146,13 +143,13 @@ class ReadSetSuite extends GuacFunSuite with Matchers {
     val (filteredReads, _) = Read.loadReadRDDAndSequenceDictionary(
       adamOut,
       sc,
-      Read.InputFilters(mapped = true, nonDuplicate = true)
+      ReadInputFilters(mapped = true, nonDuplicate = true)
     )
     filteredReads.count() should be(3)
   }
 
   sparkTest("load and serialize / deserialize reads") {
-    val reads = TestUtil.loadReads(sc, "mdtagissue.sam", Read.InputFilters(mapped = true)).mappedReads.collect()
+    val reads = TestUtil.loadReads(sc, "mdtagissue.sam", ReadInputFilters(mapped = true)).mappedReads.collect()
     val serializedReads = reads.map(TestUtil.serialize)
     val deserializedReads: Seq[MappedRead] = serializedReads.map(TestUtil.deserialize[MappedRead](_))
     for ((read, deserialized) <- reads.zip(deserializedReads)) {

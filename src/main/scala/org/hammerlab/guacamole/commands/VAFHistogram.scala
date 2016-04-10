@@ -11,8 +11,7 @@ import org.apache.spark.storage.StorageLevel
 import org.hammerlab.guacamole._
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.reads.{MappedRead, Read}
-import org.hammerlab.guacamole.reads.Read.InputFilters
+import org.hammerlab.guacamole.reads.{MappedRead, ReadInputFilters}
 import org.hammerlab.guacamole.reference.{ReferenceBroadcast, ReferenceGenome}
 import org.kohsuke.args4j.{Argument, Option => Args4jOption}
 
@@ -97,7 +96,7 @@ object VAFHistogram {
       val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
 
       val loci = Common.lociFromArguments(args)
-      val filters = Read.InputFilters(
+      val filters = ReadInputFilters(
         overlapsLoci = Some(loci),
         nonDuplicate = true,
         passedVendorQualityChecks = true)
@@ -108,7 +107,7 @@ object VAFHistogram {
           ReadSet(
             sc,
             bamFile._1,
-            InputFilters.empty,
+            ReadInputFilters.empty,
             contigLengthsFromDictionary = true,
             config = Common.Arguments.ReadLoadingConfigArgs.fromArguments(args)
           )

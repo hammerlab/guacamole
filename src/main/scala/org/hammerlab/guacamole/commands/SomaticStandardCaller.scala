@@ -30,7 +30,7 @@ import org.hammerlab.guacamole.likelihood.Likelihood
 import org.hammerlab.guacamole.logging.DelayedMessages
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.reads.Read
+import org.hammerlab.guacamole.reads.ReadInputFilters
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.variants.{Allele, AlleleConversions, AlleleEvidence, CalledSomaticAllele}
 import org.hammerlab.guacamole.{Common, DistributedUtil, SparkCommand}
@@ -68,10 +68,12 @@ object SomaticStandard {
     override def run(args: Arguments, sc: SparkContext): Unit = {
       Common.validateArguments(args)
       val loci = Common.lociFromArguments(args)
-      val filters = Read.InputFilters(
-        overlapsLoci = Some(loci),
-        nonDuplicate = true,
-        passedVendorQualityChecks = true)
+      val filters =
+        ReadInputFilters(
+          overlapsLoci = Some(loci),
+          nonDuplicate = true,
+          passedVendorQualityChecks = true
+        )
 
       val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
 
