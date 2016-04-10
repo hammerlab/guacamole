@@ -83,7 +83,7 @@ case class LociMap[T](private val map: Map[String, LociMap.SingleContig[T]]) {
     LociMap.union(this, other)
   }
 
-  override def toString(): String = truncatedString(Int.MaxValue)
+  override def toString: String = truncatedString(Int.MaxValue)
 
   /**
    * String representation, truncated to maxLength characters.
@@ -338,7 +338,7 @@ object LociMap {
       })
     }
 
-    override def toString(): String = truncatedString(Int.MaxValue)
+    override def toString: String = truncatedString(Int.MaxValue)
   }
 }
 
