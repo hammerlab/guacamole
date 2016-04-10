@@ -71,19 +71,6 @@
       </span>
       </h4>
       <p class="comment cmt">An allele (alt) at a site in the genome.</p>
-    </li><li name="org.hammerlab.guacamole.commands.jointcaller.AlleleEvidenceAcrossSamples" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="AlleleEvidenceAcrossSamplesextendsProductwithSerializable"></a>
-      <a id="AlleleEvidenceAcrossSamples:AlleleEvidenceAcrossSamples"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">case class</span>
-      </span>
-      <span class="symbol">
-        <a href="AlleleEvidenceAcrossSamples.html"><span class="name">AlleleEvidenceAcrossSamples</span></a><span class="params">(<span name="parameters">parameters: <a href="Parameters.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.Parameters">Parameters</a></span>, <span name="allele">allele: <a href="AlleleAtLocus.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.AlleleAtLocus">AlleleAtLocus</a></span>, <span name="inputs">inputs: <a href="InputCollection.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.InputCollection">InputCollection</a></span>, <span name="normalDNAPooledEvidence">normalDNAPooledEvidence: <a href="NormalDNASampleAlleleEvidence.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.NormalDNASampleAlleleEvidence">NormalDNASampleAlleleEvidence</a></span>, <span name="tumorDNAPooledEvidence">tumorDNAPooledEvidence: <a href="TumorDNASampleAlleleEvidence.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.TumorDNASampleAlleleEvidence">TumorDNASampleAlleleEvidence</a></span>, <span name="sampleEvidences">sampleEvidences: <a href="../../DistributedUtil$.html#PerSample[A]=IndexedSeq[A]" class="extmbr" name="org.hammerlab.guacamole.DistributedUtil.PerSample">PerSample</a>[<a href="SampleAlleleEvidence.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.SampleAlleleEvidence">SampleAlleleEvidence</a>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
-      </span>
-      </h4>
-      <p class="comment cmt">Summarizes the evidence for a single allele across any number of samples.</p>
     </li><li name="org.hammerlab.guacamole.commands.jointcaller.Input" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="InputextendsProductwithSerializable"></a>
       <a id="Input:Input"></a>
@@ -110,32 +97,6 @@
       </span>
       </h4>
       <p class="comment cmt">Convenience container for zero or more Input instances.</p>
-    </li><li name="org.hammerlab.guacamole.commands.jointcaller.MultipleAllelesEvidenceAcrossSamples" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="MultipleAllelesEvidenceAcrossSamplesextendsHasReferenceRegionwithProductwithSerializable"></a>
-      <a id="MultipleAllelesEvidenceAcrossSamples:MultipleAllelesEvidenceAcrossSamples"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">case class</span>
-      </span>
-      <span class="symbol">
-        <a href="MultipleAllelesEvidenceAcrossSamples.html"><span class="name">MultipleAllelesEvidenceAcrossSamples</span></a><span class="params">(<span name="alleleEvidences">alleleEvidences: <span class="extype" name="scala.Seq">Seq</span>[<a href="AlleleEvidenceAcrossSamples.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.AlleleEvidenceAcrossSamples">AlleleEvidenceAcrossSamples</a>]</span>)</span><span class="result"> extends <a href="../../HasReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.HasReferenceRegion">HasReferenceRegion</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
-      </span>
-      </h4>
-      <p class="comment cmt">A grouping of AlleleEvidenceAcrossSamples instances at the same locus.</p>
-    </li><li name="org.hammerlab.guacamole.commands.jointcaller.NormalDNASampleAlleleEvidence" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="NormalDNASampleAlleleEvidenceextendsSampleAlleleEvidencewithProductwithSerializable"></a>
-      <a id="NormalDNASampleAlleleEvidence:NormalDNASampleAlleleEvidence"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">case class</span>
-      </span>
-      <span class="symbol">
-        <a href="NormalDNASampleAlleleEvidence.html"><span class="name">NormalDNASampleAlleleEvidence</span></a><span class="params">(<span name="allele">allele: <a href="AlleleAtLocus.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.AlleleAtLocus">AlleleAtLocus</a></span>, <span name="allelicDepths">allelicDepths: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Int">Int</span>]</span>, <span name="logLikelihoods">logLikelihoods: <span class="extype" name="scala.Predef.Map">Map</span>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.String">String</span>), <span class="extype" name="scala.Double">Double</span>]</span>)</span><span class="result"> extends <a href="SampleAlleleEvidence.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.SampleAlleleEvidence">SampleAlleleEvidence</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
-      </span>
-      </h4>
-      <p class="comment cmt">Summary of evidence for a particular germline allele in a single normal DNA sample.</p>
     </li><li name="org.hammerlab.guacamole.commands.jointcaller.Parameters" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="ParametersextendsProductwithSerializable"></a>
       <a id="Parameters:Parameters"></a>
@@ -145,62 +106,10 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="Parameters.html"><span class="name">Parameters</span></a><span class="params">(<span name="maxAllelesPerSite">maxAllelesPerSite: <span class="extype" name="scala.Int">Int</span></span>, <span name="anyAlleleMinSupportingReads">anyAlleleMinSupportingReads: <span class="extype" name="scala.Int">Int</span></span>, <span name="anyAlleleMinSupportingPercent">anyAlleleMinSupportingPercent: <span class="extype" name="scala.Double">Double</span></span>, <span name="germlineNegativeLog10HeterozygousPrior">germlineNegativeLog10HeterozygousPrior: <span class="extype" name="scala.Double">Double</span></span>, <span name="germlineNegativeLog10HomozygousAlternatePrior">germlineNegativeLog10HomozygousAlternatePrior: <span class="extype" name="scala.Double">Double</span></span>, <span name="somaticNegativeLog10VariantPrior">somaticNegativeLog10VariantPrior: <span class="extype" name="scala.Double">Double</span></span>, <span name="somaticVafFloor">somaticVafFloor: <span class="extype" name="scala.Double">Double</span></span>, <span name="somaticMaxGermlineErrorRatePercent">somaticMaxGermlineErrorRatePercent: <span class="extype" name="scala.Double">Double</span></span>, <span name="somaticGenotypePolicy">somaticGenotypePolicy: <a href="Parameters$$SomaticGenotypePolicy$.html#ValueextendsOrdered[Enumeration.this.Value]withSerializable" class="extmbr" name="org.hammerlab.guacamole.commands.jointcaller.Parameters.SomaticGenotypePolicy.Value">Parameters.SomaticGenotypePolicy.Value</a></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="Parameters.html"><span class="name">Parameters</span></a><span class="params">(<span name="maxAllelesPerSite">maxAllelesPerSite: <span class="extype" name="scala.Int">Int</span></span>, <span name="maxCallsPerSite">maxCallsPerSite: <span class="extype" name="scala.Int">Int</span></span>, <span name="anyAlleleMinSupportingReads">anyAlleleMinSupportingReads: <span class="extype" name="scala.Int">Int</span></span>, <span name="anyAlleleMinSupportingPercent">anyAlleleMinSupportingPercent: <span class="extype" name="scala.Double">Double</span></span>, <span name="germlineNegativeLog10HeterozygousPrior">germlineNegativeLog10HeterozygousPrior: <span class="extype" name="scala.Double">Double</span></span>, <span name="germlineNegativeLog10HomozygousAlternatePrior">germlineNegativeLog10HomozygousAlternatePrior: <span class="extype" name="scala.Double">Double</span></span>, <span name="somaticNegativeLog10VariantPrior">somaticNegativeLog10VariantPrior: <span class="extype" name="scala.Double">Double</span></span>, <span name="somaticNegativeLog10VariantPriorRna">somaticNegativeLog10VariantPriorRna: <span class="extype" name="scala.Double">Double</span></span>, <span name="somaticNegativeLog10VariantPriorWithRnaEvidence">somaticNegativeLog10VariantPriorWithRnaEvidence: <span class="extype" name="scala.Double">Double</span></span>, <span name="somaticVafFloor">somaticVafFloor: <span class="extype" name="scala.Double">Double</span></span>, <span name="somaticMaxGermlineErrorRatePercent">somaticMaxGermlineErrorRatePercent: <span class="extype" name="scala.Double">Double</span></span>, <span name="somaticGenotypePolicy">somaticGenotypePolicy: <a href="Parameters$$SomaticGenotypePolicy$.html#ValueextendsOrdered[Enumeration.this.Value]withSerializable" class="extmbr" name="org.hammerlab.guacamole.commands.jointcaller.Parameters.SomaticGenotypePolicy.Value">Parameters.SomaticGenotypePolicy.Value</a></span>, <span name="filterStrandBiasPhred">filterStrandBiasPhred: <span class="extype" name="scala.Double">Double</span></span>, <span name="filterSomaticNormalNonreferencePercent">filterSomaticNormalNonreferencePercent: <span class="extype" name="scala.Double">Double</span></span>, <span name="filterSomaticNormalDepth">filterSomaticNormalDepth: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       <p class="comment cmt">Model parameters for the joint caller.</p>
-    </li><li name="org.hammerlab.guacamole.commands.jointcaller.PileupStats" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="PileupStatsextendsAnyRef"></a>
-      <a id="PileupStats:PileupStats"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">class</span>
-      </span>
-      <span class="symbol">
-        <a href="PileupStats.html"><span class="name">PileupStats</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
-      </span>
-      </h4>
-      <p class="comment cmt">Statistics over a PileupElement instances (a pileup).</p>
-    </li><li name="org.hammerlab.guacamole.commands.jointcaller.ReadSubsequence" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="ReadSubsequenceextendsLoggingwithProductwithSerializable"></a>
-      <a id="ReadSubsequence:ReadSubsequence"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">case class</span>
-      </span>
-      <span class="symbol">
-        <a href="ReadSubsequence.html"><span class="name">ReadSubsequence</span></a><span class="params">(<span name="read">read: <a href="../../reads/MappedRead.html" class="extype" name="org.hammerlab.guacamole.reads.MappedRead">MappedRead</a></span>, <span name="startLocus">startLocus: <span class="extype" name="scala.Long">Long</span></span>, <span name="endLocus">endLocus: <span class="extype" name="scala.Long">Long</span></span>, <span name="startReadPosition">startReadPosition: <span class="extype" name="scala.Int">Int</span></span>, <span name="endReadPosition">endReadPosition: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result"> extends <span class="extype" name="org.apache.spark.Logging">Logging</span> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
-      </span>
-      </h4>
-      <p class="comment cmt">A sub-sequence of the bases sequenced by a MappedRead.</p>
-    </li><li name="org.hammerlab.guacamole.commands.jointcaller.SampleAlleleEvidence" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="SampleAlleleEvidenceextendsAnyRef"></a>
-      <a id="SampleAlleleEvidence:SampleAlleleEvidence"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">trait</span>
-      </span>
-      <span class="symbol">
-        <a href="SampleAlleleEvidence.html"><span class="name">SampleAlleleEvidence</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
-      </span>
-      </h4>
-      <p class="comment cmt">Summary of evidence for an allele at a site in a single sample.</p>
-    </li><li name="org.hammerlab.guacamole.commands.jointcaller.TumorDNASampleAlleleEvidence" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="TumorDNASampleAlleleEvidenceextendsSampleAlleleEvidencewithProductwithSerializable"></a>
-      <a id="TumorDNASampleAlleleEvidence:TumorDNASampleAlleleEvidence"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">case class</span>
-      </span>
-      <span class="symbol">
-        <a href="TumorDNASampleAlleleEvidence.html"><span class="name">TumorDNASampleAlleleEvidence</span></a><span class="params">(<span name="allele">allele: <a href="AlleleAtLocus.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.AlleleAtLocus">AlleleAtLocus</a></span>, <span name="allelicDepths">allelicDepths: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Int">Int</span>]</span>, <span name="logLikelihoods">logLikelihoods: <span class="extype" name="scala.Predef.Map">Map</span>[<a href="PileupStats$.html#AlleleMixture=Map[String,Double]" class="extmbr" name="org.hammerlab.guacamole.commands.jointcaller.PileupStats.AlleleMixture">AlleleMixture</a>, <span class="extype" name="scala.Double">Double</span>]</span>)</span><span class="result"> extends <a href="SampleAlleleEvidence.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.SampleAlleleEvidence">SampleAlleleEvidence</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
-      </span>
-      </h4>
-      <p class="comment cmt">Summary of evidence for a particular somatic allele in a single tumor DNA sample.</p>
     </li></ol>
             </div>
 
@@ -218,19 +127,6 @@
       </span>
       <span class="symbol">
         <a href="AlleleAtLocus$.html"><span class="name">AlleleAtLocus</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
-      </span>
-      </h4>
-      
-    </li><li name="org.hammerlab.guacamole.commands.jointcaller.AlleleEvidenceAcrossSamples" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="AlleleEvidenceAcrossSamples"></a>
-      <a id="AlleleEvidenceAcrossSamples:AlleleEvidenceAcrossSamples"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a href="AlleleEvidenceAcrossSamples$.html"><span class="name">AlleleEvidenceAcrossSamples</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
@@ -260,19 +156,6 @@
       </span>
       </h4>
       
-    </li><li name="org.hammerlab.guacamole.commands.jointcaller.NormalDNASampleAlleleEvidence" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="NormalDNASampleAlleleEvidence"></a>
-      <a id="NormalDNASampleAlleleEvidence:NormalDNASampleAlleleEvidence"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a href="NormalDNASampleAlleleEvidence$.html"><span class="name">NormalDNASampleAlleleEvidence</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
-      </span>
-      </h4>
-      
     </li><li name="org.hammerlab.guacamole.commands.jointcaller.Parameters" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="Parameters"></a>
       <a id="Parameters:Parameters"></a>
@@ -283,32 +166,6 @@
       </span>
       <span class="symbol">
         <a href="Parameters$.html"><span class="name">Parameters</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
-      </span>
-      </h4>
-      
-    </li><li name="org.hammerlab.guacamole.commands.jointcaller.PileupStats" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="PileupStats"></a>
-      <a id="PileupStats:PileupStats"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a href="PileupStats$.html"><span class="name">PileupStats</span></a>
-      </span>
-      </h4>
-      
-    </li><li name="org.hammerlab.guacamole.commands.jointcaller.ReadSubsequence" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="ReadSubsequence"></a>
-      <a id="ReadSubsequence:ReadSubsequence"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a href="ReadSubsequence$.html"><span class="name">ReadSubsequence</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
@@ -325,19 +182,6 @@
       </span>
       </h4>
       
-    </li><li name="org.hammerlab.guacamole.commands.jointcaller.TumorDNASampleAlleleEvidence" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="TumorDNASampleAlleleEvidence"></a>
-      <a id="TumorDNASampleAlleleEvidence:TumorDNASampleAlleleEvidence"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a href="TumorDNASampleAlleleEvidence$.html"><span class="name">TumorDNASampleAlleleEvidence</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
-      </span>
-      </h4>
-      
     </li><li name="org.hammerlab.guacamole.commands.jointcaller.VCFOutput" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="VCFOutput"></a>
       <a id="VCFOutput:VCFOutput"></a>
@@ -348,6 +192,45 @@
       </span>
       <span class="symbol">
         <a href="VCFOutput$.html"><span class="name">VCFOutput</span></a>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.commands.jointcaller.annotation" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="annotation"></a>
+      <a id="annotation:annotation"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="annotation/package.html"><span class="name">annotation</span></a>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.commands.jointcaller.evidence" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="evidence"></a>
+      <a id="evidence:evidence"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="evidence/package.html"><span class="name">evidence</span></a>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.commands.jointcaller.pileup_summarization" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="pileup_summarization"></a>
+      <a id="pileup_summarization:pileup_summarization"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="pileup_summarization/package.html"><span class="name">pileup_summarization</span></a>
       </span>
       </h4>
       

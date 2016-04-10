@@ -2,17 +2,17 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>PileupStats - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.commands.jointcaller.PileupStats</title>
-          <meta name="description" content="PileupStats - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.commands.jointcaller.PileupStats" />
-          <meta name="keywords" content="PileupStats guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.commands.jointcaller.PileupStats" />
+          <title>Annotation - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.commands.jointcaller.annotation.MultiSampleAnnotations.Annotation</title>
+          <meta name="description" content="Annotation - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.commands.jointcaller.annotation.MultiSampleAnnotations.Annotation" />
+          <meta name="keywords" content="Annotation guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.commands.jointcaller.annotation.MultiSampleAnnotations.Annotation" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
-      <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
-      <link href="../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <link href="../../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
       <script type="text/javascript">
          if(top === self) {
-            var url = '../../../../../index.html';
-            var hash = 'org.hammerlab.guacamole.commands.jointcaller.PileupStats';
+            var url = '../../../../../../index.html';
+            var hash = 'org.hammerlab.guacamole.commands.jointcaller.annotation.MultiSampleAnnotations$$Annotation';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -24,28 +24,27 @@
         </head>
         <body class="type">
       <div id="definition">
-        <a href="PileupStats$.html" title="Go to companion"><img src="../../../../../lib/class_to_object_big.png" /></a>
-        <p id="owner"><a href="../../../../package.html" class="extype" name="org">org</a>.<a href="../../../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="../../package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="../package.html" class="extype" name="org.hammerlab.guacamole.commands">commands</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller">jointcaller</a></p>
-        <h1><a href="PileupStats$.html" title="Go to companion">PileupStats</a></h1>
+        <img src="../../../../../../lib/trait_big.png" />
+        <p id="owner"><a href="../../../../../package.html" class="extype" name="org">org</a>.<a href="../../../../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="../../../package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="../../package.html" class="extype" name="org.hammerlab.guacamole.commands">commands</a>.<a href="../package.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller">jointcaller</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.annotation">annotation</a>.<a href="MultiSampleAnnotations$.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.annotation.MultiSampleAnnotations">MultiSampleAnnotations</a></p>
+        <h1>Annotation</h1>
       </div>
 
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">class</span>
+        <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <span class="name">PileupStats</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <span class="name">Annotation</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Statistics over a PileupElement instances (a pileup).</p><p>This is not a case class because we do not intend for it to be serialized, and we want to get an error if we try.</p><p>We can consider sequenced alleles of any reference length. For example, if we are evaluating support for a 10-base
-deletion, we want the keys returned by <code>allelicDepths</code> method to be the sequenced alleles aligning to that
-10-base region; in particular the reference allele would be length 10. The length of the <code>refSequence</code> attribute
-establishes the reference length to be considered.
-</p></div><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+        </div><div class="toggleContainer block">
+          <span class="toggle">Known Subclasses</span>
+          <div class="subClasses hiddenContent"><a href="InsufficientNormal.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.annotation.InsufficientNormal">InsufficientNormal</a>, <a href="TooManyCallsAtSite.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.annotation.TooManyCallsAtSite">TooManyCallsAtSite</a></div>
         </div></div>
         
 
@@ -63,7 +62,7 @@ establishes the reference length to be considered.
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="org.hammerlab.guacamole.commands.jointcaller.PileupStats"><span>PileupStats</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="org.hammerlab.guacamole.commands.jointcaller.annotation.MultiSampleAnnotations.Annotation"><span>Annotation</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -81,33 +80,30 @@ establishes the reference length to be considered.
 
       <div id="template">
         <div id="allMembers">
-        <div id="constructors" class="members">
-              <h3>Instance Constructors</h3>
-              <ol><li name="org.hammerlab.guacamole.commands.jointcaller.PileupStats#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="&lt;init&gt;(elements:Seq[org.hammerlab.guacamole.pileup.PileupElement],referenceSequence:Seq[Byte]):org.hammerlab.guacamole.commands.jointcaller.PileupStats"></a>
-      <a id="&lt;init&gt;:PileupStats"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">new</span>
-      </span>
-      <span class="symbol">
-        <span class="name">PileupStats</span><span class="params">(<span name="elements">elements: <span class="extype" name="scala.Seq">Seq</span>[<a href="../../pileup/PileupElement.html" class="extype" name="org.hammerlab.guacamole.pileup.PileupElement">PileupElement</a>]</span>, <span name="referenceSequence">referenceSequence: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>)</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">elements</dt><dd class="cmt"><p>elements from a pileup. They should all be positioned at the same locus. The alleles considered will
-                align at this locus + 1.</p></dd><dt class="param">referenceSequence</dt><dd class="cmt"><p>reference bases. The length determines the size of alleles to consider. The first element should
-                   be the reference base at locus elements.head.locus + 1.
-</p></dd></dl></div>
-    </li></ol>
-            </div>
-
         
 
         
 
         <div id="values" class="values members">
-              <h3>Value Members</h3>
+              <h3>Abstract Value Members</h3>
+              <ol><li name="org.hammerlab.guacamole.commands.jointcaller.annotation.MultiSampleAnnotations.Annotation#name" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="name:String"></a>
+      <a id="name:String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">name</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      </h4>
+      
+    </li></ol>
+            </div>
+
+        <div id="values" class="values members">
+              <h3>Concrete Value Members</h3>
               <ol><li name="scala.AnyRef#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="!=(x$1:AnyRef):Boolean"></a>
       <a id="!=(AnyRef):Boolean"></a>
@@ -173,32 +169,19 @@ establishes the reference length to be considered.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.commands.jointcaller.PileupStats#alleleToSubsequences" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="alleleToSubsequences:Map[String,Seq[org.hammerlab.guacamole.commands.jointcaller.ReadSubsequence]]"></a>
-      <a id="alleleToSubsequences:Map[String,Seq[ReadSubsequence]]"></a>
+    </li><li name="org.hammerlab.guacamole.commands.jointcaller.annotation.MultiSampleAnnotations.Annotation#addInfoToVCF" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="addInfoToVCF(builder:htsjdk.variant.variantcontext.VariantContextBuilder):Unit"></a>
+      <a id="addInfoToVCF(VariantContextBuilder):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">val</span>
+        <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">alleleToSubsequences</span><span class="result">: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Seq">Seq</span>[<a href="ReadSubsequence.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.ReadSubsequence">ReadSubsequence</a>]]</span>
+        <span class="name">addInfoToVCF</span><span class="params">(<span name="builder">builder: <span class="extype" name="htsjdk.variant.variantcontext.VariantContextBuilder">VariantContextBuilder</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Map from sequenced allele -&gt; the ReadSubsequence instances for that allele.</p>
-    </li><li name="org.hammerlab.guacamole.commands.jointcaller.PileupStats#allelicDepths" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="allelicDepths:scala.collection.immutable.Map[String,Int]"></a>
-      <a id="allelicDepths:Map[String,Int]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">allelicDepths</span><span class="result">: <span class="extype" name="scala.collection.immutable.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Int">Int</span>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Map from sequenced allele -&gt; number of reads supporting that allele.</p>
+      <p class="shortcomment cmt">update VCF with annotation fields</p>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -224,7 +207,7 @@ establishes the reference length to be considered.
         <span class="name">clone</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
       <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
@@ -269,7 +252,7 @@ establishes the reference length to be considered.
         <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
       <span class="symbol">classOf[java.lang.Throwable]</span>
@@ -302,6 +285,19 @@ establishes the reference length to be considered.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.commands.jointcaller.annotation.MultiSampleAnnotations.Annotation#isFiltered" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="isFiltered:Boolean"></a>
+      <a id="isFiltered:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isFiltered</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">is this annotation a failing filter?</p>
     </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <a id="isInstanceOf[T0]:Boolean"></a>
@@ -315,21 +311,6 @@ establishes the reference length to be considered.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.commands.jointcaller.PileupStats#logLikelihoodPileup" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="logLikelihoodPileup(mixture:org.hammerlab.guacamole.commands.jointcaller.PileupStats.AlleleMixture):Double"></a>
-      <a id="logLikelihoodPileup(AlleleMixture):Double"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">logLikelihoodPileup</span><span class="params">(<span name="mixture">mixture: <a href="PileupStats$.html#AlleleMixture=Map[String,Double]" class="extmbr" name="org.hammerlab.guacamole.commands.jointcaller.PileupStats.AlleleMixture">AlleleMixture</a></span>)</span><span class="result">: <span class="extype" name="scala.Double">Double</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Compute likelihood P(data|mixture) of the sequenced bases (data) given the specified mixture.</p><div class="fullcomment"><div class="comment cmt"><p>Compute likelihood P(data|mixture) of the sequenced bases (data) given the specified mixture.</p><p>Reads with mapping quality 0 are ignored.
-</p></div><dl class="paramcmts block"><dt class="param">mixture</dt><dd class="cmt"><p>Map from sequenced allele -&gt; variant allele fraction</p></dd><dt>returns</dt><dd class="cmt"><p>log10 likelihood probability, always non-positive
-</p></dd></dl></div>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -343,19 +324,6 @@ establishes the reference length to be considered.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.commands.jointcaller.PileupStats#nonRefAlleles" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="nonRefAlleles:Seq[String]"></a>
-      <a id="nonRefAlleles:Seq[String]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">nonRefAlleles</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">All sequenced alleles that are not the ref allele, sorted by decreasing allelic depth.</p>
     </li><li name="scala.AnyRef#notify" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notify():Unit"></a>
       <a id="notify():Unit"></a>
@@ -382,60 +350,6 @@ establishes the reference length to be considered.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.commands.jointcaller.PileupStats#readNamesByAllele" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="readNamesByAllele:scala.collection.immutable.Map[String,scala.collection.immutable.Set[String]]"></a>
-      <a id="readNamesByAllele:Map[String,Set[String]]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">lazy val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">readNamesByAllele</span><span class="result">: <span class="extype" name="scala.collection.immutable.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.collection.immutable.Set">Set</span>[<span class="extype" name="scala.Predef.String">String</span>]]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Map from allele to read names supporting that allele.</p>
-    </li><li name="org.hammerlab.guacamole.commands.jointcaller.PileupStats#ref" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="ref:String"></a>
-      <a id="ref:String"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">ref</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">The reference sequence as a string.</p>
-    </li><li name="org.hammerlab.guacamole.commands.jointcaller.PileupStats#secondAlt" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="secondAlt:String"></a>
-      <a id="secondAlt:String"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">secondAlt</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Alt allele with second-most reads.</p>
-    </li><li name="org.hammerlab.guacamole.commands.jointcaller.PileupStats#subsequences" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="subsequences:Seq[org.hammerlab.guacamole.commands.jointcaller.ReadSubsequence]"></a>
-      <a id="subsequences:Seq[ReadSubsequence]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">subsequences</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<a href="ReadSubsequence.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.ReadSubsequence">ReadSubsequence</a>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">The sequenced alleles at this site as ReadSubsequence instances.</p><div class="fullcomment"><div class="comment cmt"><p>The sequenced alleles at this site as ReadSubsequence instances.</p><p>Every read that is &quot;anchored&quot; on either side of the reference region by a matching, non-variant base is represented
-here.
-</p></div></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -462,45 +376,6 @@ here.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.commands.jointcaller.PileupStats#topAlt" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="topAlt:String"></a>
-      <a id="topAlt:String"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">topAlt</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Alt allele with most reads.</p>
-    </li><li name="org.hammerlab.guacamole.commands.jointcaller.PileupStats#totalDepthIncludingReadsContributingNoAlleles" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="totalDepthIncludingReadsContributingNoAlleles:Int"></a>
-      <a id="totalDepthIncludingReadsContributingNoAlleles:Int"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">totalDepthIncludingReadsContributingNoAlleles</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Total depth, including reads that are NOT &quot;anchored&quot; by matching, non-variant bases.</p>
-    </li><li name="org.hammerlab.guacamole.commands.jointcaller.PileupStats#vaf" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="vaf(allele:String):Double"></a>
-      <a id="vaf(String):Double"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">vaf</span><span class="params">(<span name="allele">allele: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Double">Double</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Fraction of reads supporting the given allele.</p>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>
@@ -587,6 +462,6 @@ here.
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../../lib/template.js"></script>
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../../../lib/template.js"></script>
     </body>
       </html>

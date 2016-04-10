@@ -2,17 +2,17 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>AlleleAtLocus - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.commands.jointcaller.AlleleAtLocus</title>
-          <meta name="description" content="AlleleAtLocus - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.commands.jointcaller.AlleleAtLocus" />
-          <meta name="keywords" content="AlleleAtLocus guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.commands.jointcaller.AlleleAtLocus" />
+          <title>InsufficientNormal - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.commands.jointcaller.annotation.InsufficientNormal</title>
+          <meta name="description" content="InsufficientNormal - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.commands.jointcaller.annotation.InsufficientNormal" />
+          <meta name="keywords" content="InsufficientNormal guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.commands.jointcaller.annotation.InsufficientNormal" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
-      <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
-      <link href="../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <link href="../../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
       <script type="text/javascript">
          if(top === self) {
-            var url = '../../../../../index.html';
-            var hash = 'org.hammerlab.guacamole.commands.jointcaller.AlleleAtLocus$';
+            var url = '../../../../../../index.html';
+            var hash = 'org.hammerlab.guacamole.commands.jointcaller.annotation.InsufficientNormal';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -22,26 +22,29 @@
    	  </script>
     
         </head>
-        <body class="value">
+        <body class="type">
       <div id="definition">
-        <a href="AlleleAtLocus.html" title="Go to companion"><img src="../../../../../lib/object_to_class_big.png" /></a>
-        <p id="owner"><a href="../../../../package.html" class="extype" name="org">org</a>.<a href="../../../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="../../package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="../package.html" class="extype" name="org.hammerlab.guacamole.commands">commands</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller">jointcaller</a></p>
-        <h1><a href="AlleleAtLocus.html" title="Go to companion">AlleleAtLocus</a></h1>
+        <a href="InsufficientNormal$.html" title="Go to companion"><img src="../../../../../../lib/class_to_object_big.png" /></a>
+        <p id="owner"><a href="../../../../../package.html" class="extype" name="org">org</a>.<a href="../../../../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="../../../package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="../../package.html" class="extype" name="org.hammerlab.guacamole.commands">commands</a>.<a href="../package.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller">jointcaller</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.annotation">annotation</a></p>
+        <h1><a href="InsufficientNormal$.html" title="Go to companion">InsufficientNormal</a></h1>
       </div>
 
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">object</span>
+        <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">AlleleAtLocus</span><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">InsufficientNormal</span><span class="params">(<span name="parameters">parameters: <a href="../Parameters.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.Parameters">Parameters</a></span>, <span name="referenceReads">referenceReads: <span class="extype" name="scala.Int">Int</span></span>, <span name="totalReads">totalReads: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result"> extends <a href="MultiSampleAnnotations$$Annotation.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.annotation.MultiSampleAnnotations.Annotation">Annotation</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Annotation and filter for insufficient normal evidence to make a somatic variant call.</p><p>There are many times when we have too little variant evidence in the normal to make a germline call
+but too much to comfortably make a somatic call. This filter removes such calls.
+</p></div><dl class="paramcmts block"><dt class="param">parameters</dt><dd class="cmt"></dd><dt class="param">referenceReads</dt><dd class="cmt"><p>number of reads matching reference allele in pooled normal dna</p></dd><dt class="param">totalReads</dt><dd class="cmt"><p>total number of reads in pooled normal dna
+</p></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <a href="MultiSampleAnnotations$$Annotation.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.annotation.MultiSampleAnnotations.Annotation">Annotation</a>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -59,7 +62,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="org.hammerlab.guacamole.commands.jointcaller.AlleleAtLocus"><span>AlleleAtLocus</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="org.hammerlab.guacamole.commands.jointcaller.annotation.InsufficientNormal"><span>InsufficientNormal</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="org.hammerlab.guacamole.commands.jointcaller.annotation.MultiSampleAnnotations.Annotation"><span>Annotation</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -77,7 +80,24 @@
 
       <div id="template">
         <div id="allMembers">
-        
+        <div id="constructors" class="members">
+              <h3>Instance Constructors</h3>
+              <ol><li name="org.hammerlab.guacamole.commands.jointcaller.annotation.InsufficientNormal#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="&lt;init&gt;(parameters:org.hammerlab.guacamole.commands.jointcaller.Parameters,referenceReads:Int,totalReads:Int):org.hammerlab.guacamole.commands.jointcaller.annotation.InsufficientNormal"></a>
+      <a id="&lt;init&gt;:InsufficientNormal"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">new</span>
+      </span>
+      <span class="symbol">
+        <span class="name">InsufficientNormal</span><span class="params">(<span name="parameters">parameters: <a href="../Parameters.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.Parameters">Parameters</a></span>, <span name="referenceReads">referenceReads: <span class="extype" name="scala.Int">Int</span></span>, <span name="totalReads">totalReads: <span class="extype" name="scala.Int">Int</span></span>)</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">parameters</dt><dd class="cmt"></dd><dt class="param">referenceReads</dt><dd class="cmt"><p>number of reads matching reference allele in pooled normal dna</p></dd><dt class="param">totalReads</dt><dd class="cmt"><p>total number of reads in pooled normal dna
+</p></dd></dl></div>
+    </li></ol>
+            </div>
 
         
 
@@ -150,6 +170,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.commands.jointcaller.annotation.MultiSampleAnnotations.Annotation#addInfoToVCF" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="addInfoToVCF(builder:htsjdk.variant.variantcontext.VariantContextBuilder):Unit"></a>
+      <a id="addInfoToVCF(VariantContextBuilder):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">addInfoToVCF</span><span class="params">(<span name="builder">builder: <span class="extype" name="htsjdk.variant.variantcontext.VariantContextBuilder">VariantContextBuilder</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">update VCF with annotation fields</p><div class="fullcomment"><div class="comment cmt"><p>update VCF with annotation fields</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="MultiSampleAnnotations$$Annotation.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.annotation.MultiSampleAnnotations.Annotation">Annotation</a></dd></dl></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -175,7 +208,7 @@
         <span class="name">clone</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
       <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
@@ -195,19 +228,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scala.AnyRef#equals" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="equals(x$1:Any):Boolean"></a>
-      <a id="equals(Any):Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <a id="finalize():Unit"></a>
@@ -220,7 +240,7 @@
         <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
       <span class="symbol">classOf[java.lang.Throwable]</span>
@@ -240,19 +260,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="scala.AnyRef#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="hashCode():Int"></a>
-      <a id="hashCode():Int"></a>
+    </li><li name="org.hammerlab.guacamole.commands.jointcaller.annotation.InsufficientNormal#isFiltered" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="isFiltered:Boolean"></a>
+      <a id="isFiltered:Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">def</span>
+        <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+        <span class="name">isFiltered</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+      <p class="shortcomment cmt">is this annotation a failing filter?</p><div class="fullcomment"><div class="comment cmt"><p>is this annotation a failing filter?</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.annotation.InsufficientNormal">InsufficientNormal</a> → <a href="MultiSampleAnnotations$$Annotation.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.annotation.MultiSampleAnnotations.Annotation">Annotation</a></dd></dl></div>
     </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <a id="isInstanceOf[T0]:Boolean"></a>
@@ -266,6 +286,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.commands.jointcaller.annotation.InsufficientNormal#name" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="name:String"></a>
+      <a id="name:String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">name</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.annotation.InsufficientNormal">InsufficientNormal</a> → <a href="MultiSampleAnnotations$$Annotation.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.annotation.MultiSampleAnnotations.Annotation">Annotation</a></dd></dl></div>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -305,6 +338,32 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.commands.jointcaller.annotation.InsufficientNormal#parameters" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="parameters:org.hammerlab.guacamole.commands.jointcaller.Parameters"></a>
+      <a id="parameters:Parameters"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">parameters</span><span class="result">: <a href="../Parameters.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.Parameters">Parameters</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt"></p>
+    </li><li name="org.hammerlab.guacamole.commands.jointcaller.annotation.InsufficientNormal#referenceReads" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="referenceReads:Int"></a>
+      <a id="referenceReads:Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">referenceReads</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">number of reads matching reference allele in pooled normal dna</p>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -318,42 +377,20 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scala.AnyRef#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="toString():String"></a>
-      <a id="toString():String"></a>
+    </li><li name="org.hammerlab.guacamole.commands.jointcaller.annotation.InsufficientNormal#totalReads" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="totalReads:Int"></a>
+      <a id="totalReads:Int"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">def</span>
+        <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
+        <span class="name">totalReads</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.commands.jointcaller.AlleleAtLocus#variantAlleles" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="variantAlleles(pileups:org.hammerlab.guacamole.DistributedUtil.PerSample[org.hammerlab.guacamole.pileup.Pileup],anyAlleleMinSupportingReads:Int,anyAlleleMinSupportingPercent:Double,maxAlleles:Option[Int],atLeastOneAllele:Boolean,onlyStandardBases:Boolean):Vector[org.hammerlab.guacamole.commands.jointcaller.AlleleAtLocus]"></a>
-      <a id="variantAlleles(PerSample[Pileup],Int,Double,Option[Int],Boolean,Boolean):Vector[AlleleAtLocus]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">variantAlleles</span><span class="params">(<span name="pileups">pileups: <a href="../../DistributedUtil$.html#PerSample[A]=IndexedSeq[A]" class="extmbr" name="org.hammerlab.guacamole.DistributedUtil.PerSample">PerSample</a>[<a href="../../pileup/Pileup.html" class="extype" name="org.hammerlab.guacamole.pileup.Pileup">Pileup</a>]</span>, <span name="anyAlleleMinSupportingReads">anyAlleleMinSupportingReads: <span class="extype" name="scala.Int">Int</span></span>, <span name="anyAlleleMinSupportingPercent">anyAlleleMinSupportingPercent: <span class="extype" name="scala.Double">Double</span></span>, <span name="maxAlleles">maxAlleles: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>] = <span class="symbol">None</span></span>, <span name="atLeastOneAllele">atLeastOneAllele: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>, <span name="onlyStandardBases">onlyStandardBases: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">true</span></span>)</span><span class="result">: <span class="extype" name="scala.Vector">Vector</span>[<a href="AlleleAtLocus.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.AlleleAtLocus">AlleleAtLocus</a>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Given one or more pileups, return a sequence of AlleleAtLocus instances giving the possible variant alleles at the
-*next site* in the pileups.</p><div class="fullcomment"><div class="comment cmt"><p>Given one or more pileups, return a sequence of AlleleAtLocus instances giving the possible variant alleles at the
-*next site* in the pileups.</p><p>Pileup elements whose *current* position is a variant are ignored here. The alleles returned start at the
-subsequent reference base and continue as long the bases do not match the reference. This is a pattern used
-throughout the joint caller: given a pileup at locus X we call variants that start at locus X + 1. This is done to
-avoid calling variants in the middle of longer variants.
-</p></div><dl class="paramcmts block"><dt class="param">pileups</dt><dd class="cmt"><p>one or more pileups</p></dd><dt class="param">anyAlleleMinSupportingReads</dt><dd class="cmt"><p>minimum number of reads in a single sample an allele must have</p></dd><dt class="param">anyAlleleMinSupportingPercent</dt><dd class="cmt"><p>minimum percent of reads (i.e. between 0 and 100) an allele must have</p></dd><dt class="param">maxAlleles</dt><dd class="cmt"><p>if not None, return at most this many alleles</p></dd><dt class="param">atLeastOneAllele</dt><dd class="cmt"><p>if true, then always return at least one allele (useful for force calling). If no
-                        alleles meet the minimum number of reads criteria, then the allele with the most
-                        reads (even though it doesn't meet the threshold) will be returned. If there are
-                        no alternate alleles at all, then the allele &quot;N&quot; is returned.</p></dd><dt class="param">onlyStandardBases</dt><dd class="cmt"><p>only include alleles made entirely of standard bases (no N's)</p></dd><dt>returns</dt><dd class="cmt"><p>the alleles sequenced at this site
-</p></dd></dl></div>
+      <p class="shortcomment cmt">total number of reads in pooled normal dna
+</p>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>
@@ -424,6 +461,12 @@ avoid calling variants in the middle of longer variants.
               <h3>Inherited from <span class="extype" name="scala.Serializable">Serializable</span></h3>
             </div><div class="parent" name="java.io.Serializable">
               <h3>Inherited from <span class="extype" name="java.io.Serializable">Serializable</span></h3>
+            </div><div class="parent" name="scala.Product">
+              <h3>Inherited from <span class="extype" name="scala.Product">Product</span></h3>
+            </div><div class="parent" name="scala.Equals">
+              <h3>Inherited from <span class="extype" name="scala.Equals">Equals</span></h3>
+            </div><div class="parent" name="org.hammerlab.guacamole.commands.jointcaller.annotation.MultiSampleAnnotations.Annotation">
+              <h3>Inherited from <a href="MultiSampleAnnotations$$Annotation.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.annotation.MultiSampleAnnotations.Annotation">Annotation</a></h3>
             </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
             </div><div class="parent" name="scala.Any">
@@ -444,6 +487,6 @@ avoid calling variants in the middle of longer variants.
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../../lib/template.js"></script>
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../../../lib/template.js"></script>
     </body>
       </html>

@@ -2,17 +2,17 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>AlleleAtLocus - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.commands.jointcaller.AlleleAtLocus</title>
-          <meta name="description" content="AlleleAtLocus - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.commands.jointcaller.AlleleAtLocus" />
-          <meta name="keywords" content="AlleleAtLocus guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.commands.jointcaller.AlleleAtLocus" />
+          <title>SingleSampleSingleAlleleEvidence - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.commands.jointcaller.evidence.SingleSampleSingleAlleleEvidence</title>
+          <meta name="description" content="SingleSampleSingleAlleleEvidence - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.commands.jointcaller.evidence.SingleSampleSingleAlleleEvidence" />
+          <meta name="keywords" content="SingleSampleSingleAlleleEvidence guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.commands.jointcaller.evidence.SingleSampleSingleAlleleEvidence" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
-      <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
-      <link href="../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <link href="../../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
       <script type="text/javascript">
          if(top === self) {
-            var url = '../../../../../index.html';
-            var hash = 'org.hammerlab.guacamole.commands.jointcaller.AlleleAtLocus$';
+            var url = '../../../../../../index.html';
+            var hash = 'org.hammerlab.guacamole.commands.jointcaller.evidence.SingleSampleSingleAlleleEvidence';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -22,26 +22,33 @@
    	  </script>
     
         </head>
-        <body class="value">
+        <body class="type">
       <div id="definition">
-        <a href="AlleleAtLocus.html" title="Go to companion"><img src="../../../../../lib/object_to_class_big.png" /></a>
-        <p id="owner"><a href="../../../../package.html" class="extype" name="org">org</a>.<a href="../../../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="../../package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="../package.html" class="extype" name="org.hammerlab.guacamole.commands">commands</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller">jointcaller</a></p>
-        <h1><a href="AlleleAtLocus.html" title="Go to companion">AlleleAtLocus</a></h1>
+        <img src="../../../../../../lib/trait_big.png" />
+        <p id="owner"><a href="../../../../../package.html" class="extype" name="org">org</a>.<a href="../../../../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="../../../package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="../../package.html" class="extype" name="org.hammerlab.guacamole.commands">commands</a>.<a href="../package.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller">jointcaller</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.evidence">evidence</a></p>
+        <h1>SingleSampleSingleAlleleEvidence</h1>
       </div>
 
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">object</span>
+        <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <span class="name">AlleleAtLocus</span><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">SingleSampleSingleAlleleEvidence</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Summary of evidence for an allele at a site in a single sample. This trait is implemented by tissue- and
+analyte-specific classes.</p><p>The classes implementing this should be serializable. They should gather all the per-sample information needed to
+call or not call a variant. They do not themselves call variants, however, as that requires looking across multiple
+samples.
+</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+        </div><div class="toggleContainer block">
+          <span class="toggle">Known Subclasses</span>
+          <div class="subClasses hiddenContent"><a href="NormalDNASingleSampleSingleAlleleEvidence.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.evidence.NormalDNASingleSampleSingleAlleleEvidence">NormalDNASingleSampleSingleAlleleEvidence</a>, <a href="TumorDNASingleSampleSingleAlleleEvidence.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.evidence.TumorDNASingleSampleSingleAlleleEvidence">TumorDNASingleSampleSingleAlleleEvidence</a>, <a href="TumorRNASingleSampleSingleAlleleEvidence.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.evidence.TumorRNASingleSampleSingleAlleleEvidence">TumorRNASingleSampleSingleAlleleEvidence</a></div>
         </div></div>
         
 
@@ -59,7 +66,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="org.hammerlab.guacamole.commands.jointcaller.AlleleAtLocus"><span>AlleleAtLocus</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="org.hammerlab.guacamole.commands.jointcaller.evidence.SingleSampleSingleAlleleEvidence"><span>SingleSampleSingleAlleleEvidence</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -81,10 +88,52 @@
 
         
 
-        
+        <div id="values" class="values members">
+              <h3>Abstract Value Members</h3>
+              <ol><li name="org.hammerlab.guacamole.commands.jointcaller.evidence.SingleSampleSingleAlleleEvidence#allele" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="allele:org.hammerlab.guacamole.commands.jointcaller.AlleleAtLocus"></a>
+      <a id="allele:AlleleAtLocus"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">allele</span><span class="result">: <a href="../AlleleAtLocus.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.AlleleAtLocus">AlleleAtLocus</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">The allele under consideration</p>
+    </li><li name="org.hammerlab.guacamole.commands.jointcaller.evidence.SingleSampleSingleAlleleEvidence#annotations" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="annotations:Option[org.hammerlab.guacamole.commands.jointcaller.annotation.SingleSampleAnnotations]"></a>
+      <a id="annotations:Option[SingleSampleAnnotations]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">annotations</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<a href="../annotation/SingleSampleAnnotations.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.annotation.SingleSampleAnnotations">SingleSampleAnnotations</a>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">extra information, including filters, we compute about a potential call</p>
+    </li><li name="org.hammerlab.guacamole.commands.jointcaller.evidence.SingleSampleSingleAlleleEvidence#withAnnotations" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="withAnnotations(annotations:org.hammerlab.guacamole.commands.jointcaller.annotation.SingleSampleAnnotations):org.hammerlab.guacamole.commands.jointcaller.evidence.SingleSampleSingleAlleleEvidence"></a>
+      <a id="withAnnotations(SingleSampleAnnotations):SingleSampleSingleAlleleEvidence"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">withAnnotations</span><span class="params">(<span name="annotations">annotations: <a href="../annotation/SingleSampleAnnotations.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.annotation.SingleSampleAnnotations">SingleSampleAnnotations</a></span>)</span><span class="result">: <a href="" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.evidence.SingleSampleSingleAlleleEvidence">SingleSampleSingleAlleleEvidence</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">return a new instance including the given annotations</p>
+    </li></ol>
+            </div>
 
         <div id="values" class="values members">
-              <h3>Value Members</h3>
+              <h3>Concrete Value Members</h3>
               <ol><li name="scala.AnyRef#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="!=(x$1:AnyRef):Boolean"></a>
       <a id="!=(AnyRef):Boolean"></a>
@@ -175,7 +224,7 @@
         <span class="name">clone</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
       <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
@@ -220,7 +269,7 @@
         <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
       <span class="symbol">classOf[java.lang.Throwable]</span>
@@ -331,29 +380,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.commands.jointcaller.AlleleAtLocus#variantAlleles" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="variantAlleles(pileups:org.hammerlab.guacamole.DistributedUtil.PerSample[org.hammerlab.guacamole.pileup.Pileup],anyAlleleMinSupportingReads:Int,anyAlleleMinSupportingPercent:Double,maxAlleles:Option[Int],atLeastOneAllele:Boolean,onlyStandardBases:Boolean):Vector[org.hammerlab.guacamole.commands.jointcaller.AlleleAtLocus]"></a>
-      <a id="variantAlleles(PerSample[Pileup],Int,Double,Option[Int],Boolean,Boolean):Vector[AlleleAtLocus]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">variantAlleles</span><span class="params">(<span name="pileups">pileups: <a href="../../DistributedUtil$.html#PerSample[A]=IndexedSeq[A]" class="extmbr" name="org.hammerlab.guacamole.DistributedUtil.PerSample">PerSample</a>[<a href="../../pileup/Pileup.html" class="extype" name="org.hammerlab.guacamole.pileup.Pileup">Pileup</a>]</span>, <span name="anyAlleleMinSupportingReads">anyAlleleMinSupportingReads: <span class="extype" name="scala.Int">Int</span></span>, <span name="anyAlleleMinSupportingPercent">anyAlleleMinSupportingPercent: <span class="extype" name="scala.Double">Double</span></span>, <span name="maxAlleles">maxAlleles: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>] = <span class="symbol">None</span></span>, <span name="atLeastOneAllele">atLeastOneAllele: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>, <span name="onlyStandardBases">onlyStandardBases: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">true</span></span>)</span><span class="result">: <span class="extype" name="scala.Vector">Vector</span>[<a href="AlleleAtLocus.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.AlleleAtLocus">AlleleAtLocus</a>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Given one or more pileups, return a sequence of AlleleAtLocus instances giving the possible variant alleles at the
-*next site* in the pileups.</p><div class="fullcomment"><div class="comment cmt"><p>Given one or more pileups, return a sequence of AlleleAtLocus instances giving the possible variant alleles at the
-*next site* in the pileups.</p><p>Pileup elements whose *current* position is a variant are ignored here. The alleles returned start at the
-subsequent reference base and continue as long the bases do not match the reference. This is a pattern used
-throughout the joint caller: given a pileup at locus X we call variants that start at locus X + 1. This is done to
-avoid calling variants in the middle of longer variants.
-</p></div><dl class="paramcmts block"><dt class="param">pileups</dt><dd class="cmt"><p>one or more pileups</p></dd><dt class="param">anyAlleleMinSupportingReads</dt><dd class="cmt"><p>minimum number of reads in a single sample an allele must have</p></dd><dt class="param">anyAlleleMinSupportingPercent</dt><dd class="cmt"><p>minimum percent of reads (i.e. between 0 and 100) an allele must have</p></dd><dt class="param">maxAlleles</dt><dd class="cmt"><p>if not None, return at most this many alleles</p></dd><dt class="param">atLeastOneAllele</dt><dd class="cmt"><p>if true, then always return at least one allele (useful for force calling). If no
-                        alleles meet the minimum number of reads criteria, then the allele with the most
-                        reads (even though it doesn't meet the threshold) will be returned. If there are
-                        no alternate alleles at all, then the allele &quot;N&quot; is returned.</p></dd><dt class="param">onlyStandardBases</dt><dd class="cmt"><p>only include alleles made entirely of standard bases (no N's)</p></dd><dt>returns</dt><dd class="cmt"><p>the alleles sequenced at this site
-</p></dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>
@@ -420,11 +446,7 @@ avoid calling variants in the middle of longer variants.
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="scala.Serializable">
-              <h3>Inherited from <span class="extype" name="scala.Serializable">Serializable</span></h3>
-            </div><div class="parent" name="java.io.Serializable">
-              <h3>Inherited from <span class="extype" name="java.io.Serializable">Serializable</span></h3>
-            </div><div class="parent" name="scala.AnyRef">
+        <div class="parent" name="scala.AnyRef">
               <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
             </div><div class="parent" name="scala.Any">
               <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
@@ -444,6 +466,6 @@ avoid calling variants in the middle of longer variants.
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../../lib/template.js"></script>
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../../../lib/template.js"></script>
     </body>
       </html>

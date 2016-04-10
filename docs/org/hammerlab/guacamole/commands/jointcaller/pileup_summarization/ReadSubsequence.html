@@ -2,17 +2,17 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>ReadSubsequence - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.commands.jointcaller.ReadSubsequence</title>
-          <meta name="description" content="ReadSubsequence - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.commands.jointcaller.ReadSubsequence" />
-          <meta name="keywords" content="ReadSubsequence guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.commands.jointcaller.ReadSubsequence" />
+          <title>ReadSubsequence - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.ReadSubsequence</title>
+          <meta name="description" content="ReadSubsequence - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.commands.jointcaller.pileup summarization.ReadSubsequence" />
+          <meta name="keywords" content="ReadSubsequence guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.commands.jointcaller.pileup summarization.ReadSubsequence" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
-      <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
-      <link href="../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <link href="../../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
       <script type="text/javascript">
          if(top === self) {
-            var url = '../../../../../index.html';
-            var hash = 'org.hammerlab.guacamole.commands.jointcaller.ReadSubsequence';
+            var url = '../../../../../../index.html';
+            var hash = 'org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.ReadSubsequence';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -24,8 +24,8 @@
         </head>
         <body class="type">
       <div id="definition">
-        <a href="ReadSubsequence$.html" title="Go to companion"><img src="../../../../../lib/class_to_object_big.png" /></a>
-        <p id="owner"><a href="../../../../package.html" class="extype" name="org">org</a>.<a href="../../../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="../../package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="../package.html" class="extype" name="org.hammerlab.guacamole.commands">commands</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller">jointcaller</a></p>
+        <a href="ReadSubsequence$.html" title="Go to companion"><img src="../../../../../../lib/class_to_object_big.png" /></a>
+        <p id="owner"><a href="../../../../../package.html" class="extype" name="org">org</a>.<a href="../../../../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="../../../package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="../../package.html" class="extype" name="org.hammerlab.guacamole.commands">commands</a>.<a href="../package.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller">jointcaller</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.pileup_summarization">pileup_summarization</a></p>
         <h1><a href="ReadSubsequence$.html" title="Go to companion">ReadSubsequence</a></h1>
       </div>
 
@@ -35,7 +35,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">ReadSubsequence</span><span class="params">(<span name="read">read: <a href="../../reads/MappedRead.html" class="extype" name="org.hammerlab.guacamole.reads.MappedRead">MappedRead</a></span>, <span name="startLocus">startLocus: <span class="extype" name="scala.Long">Long</span></span>, <span name="endLocus">endLocus: <span class="extype" name="scala.Long">Long</span></span>, <span name="startReadPosition">startReadPosition: <span class="extype" name="scala.Int">Int</span></span>, <span name="endReadPosition">endReadPosition: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result"> extends <span class="extype" name="org.apache.spark.Logging">Logging</span> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">ReadSubsequence</span><span class="params">(<span name="read">read: <a href="../../../reads/MappedRead.html" class="extype" name="org.hammerlab.guacamole.reads.MappedRead">MappedRead</a></span>, <span name="startLocus">startLocus: <span class="extype" name="scala.Long">Long</span></span>, <span name="endLocus">endLocus: <span class="extype" name="scala.Long">Long</span></span>, <span name="startReadPosition">startReadPosition: <span class="extype" name="scala.Int">Int</span></span>, <span name="endReadPosition">endReadPosition: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result"> extends <span class="extype" name="org.apache.spark.Logging">Logging</span> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
@@ -61,7 +61,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="org.hammerlab.guacamole.commands.jointcaller.ReadSubsequence"><span>ReadSubsequence</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="org.apache.spark.Logging"><span>Logging</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.ReadSubsequence"><span>ReadSubsequence</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="org.apache.spark.Logging"><span>Logging</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -81,8 +81,8 @@
         <div id="allMembers">
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
-              <ol><li name="org.hammerlab.guacamole.commands.jointcaller.ReadSubsequence#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="&lt;init&gt;(read:org.hammerlab.guacamole.reads.MappedRead,startLocus:Long,endLocus:Long,startReadPosition:Int,endReadPosition:Int):org.hammerlab.guacamole.commands.jointcaller.ReadSubsequence"></a>
+              <ol><li name="org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.ReadSubsequence#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="&lt;init&gt;(read:org.hammerlab.guacamole.reads.MappedRead,startLocus:Long,endLocus:Long,startReadPosition:Int,endReadPosition:Int):org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.ReadSubsequence"></a>
       <a id="&lt;init&gt;:ReadSubsequence"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -90,7 +90,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">ReadSubsequence</span><span class="params">(<span name="read">read: <a href="../../reads/MappedRead.html" class="extype" name="org.hammerlab.guacamole.reads.MappedRead">MappedRead</a></span>, <span name="startLocus">startLocus: <span class="extype" name="scala.Long">Long</span></span>, <span name="endLocus">endLocus: <span class="extype" name="scala.Long">Long</span></span>, <span name="startReadPosition">startReadPosition: <span class="extype" name="scala.Int">Int</span></span>, <span name="endReadPosition">endReadPosition: <span class="extype" name="scala.Int">Int</span></span>)</span>
+        <span class="name">ReadSubsequence</span><span class="params">(<span name="read">read: <a href="../../../reads/MappedRead.html" class="extype" name="org.hammerlab.guacamole.reads.MappedRead">MappedRead</a></span>, <span name="startLocus">startLocus: <span class="extype" name="scala.Long">Long</span></span>, <span name="endLocus">endLocus: <span class="extype" name="scala.Long">Long</span></span>, <span name="startReadPosition">startReadPosition: <span class="extype" name="scala.Int">Int</span></span>, <span name="endReadPosition">endReadPosition: <span class="extype" name="scala.Int">Int</span></span>)</span>
       </span>
       </h4>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">read</dt><dd class="cmt"><p>the mapped read</p></dd><dt class="param">startLocus</dt><dd class="cmt"><p>reference locus of the first base in the sub-sequence</p></dd><dt class="param">endLocus</dt><dd class="cmt"><p>one past the reference locus of the last base in the sub-sequence</p></dd><dt class="param">startReadPosition</dt><dd class="cmt"><p>offset into the read of the first base in the sub-sequence</p></dd><dt class="param">endReadPosition</dt><dd class="cmt"><p>one past the offset into the read of last base in the sub-sequence
@@ -182,7 +182,7 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.commands.jointcaller.ReadSubsequence#baseQualities" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.ReadSubsequence#baseQualities" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="baseQualities():Seq[Int]"></a>
       <a id="baseQualities():Seq[Int]"></a>
       <h4 class="signature">
@@ -207,14 +207,14 @@
         <span class="name">clone</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
       <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.commands.jointcaller.ReadSubsequence#endLocus" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.ReadSubsequence#endLocus" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="endLocus:Long"></a>
       <a id="endLocus:Long"></a>
       <h4 class="signature">
@@ -227,7 +227,7 @@
       </span>
       </h4>
       <p class="shortcomment cmt">one past the reference locus of the last base in the sub-sequence</p>
-    </li><li name="org.hammerlab.guacamole.commands.jointcaller.ReadSubsequence#endReadPosition" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.ReadSubsequence#endReadPosition" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="endReadPosition:Int"></a>
       <a id="endReadPosition:Int"></a>
       <h4 class="signature">
@@ -266,7 +266,7 @@
         <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
       <span class="symbol">classOf[java.lang.Throwable]</span>
@@ -468,7 +468,7 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd>Logging</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.commands.jointcaller.ReadSubsequence#meanBaseQuality" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.ReadSubsequence#meanBaseQuality" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="meanBaseQuality():Double"></a>
       <a id="meanBaseQuality():Double"></a>
       <h4 class="signature">
@@ -520,7 +520,7 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.commands.jointcaller.ReadSubsequence#read" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.ReadSubsequence#read" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="read:org.hammerlab.guacamole.reads.MappedRead"></a>
       <a id="read:MappedRead"></a>
       <h4 class="signature">
@@ -529,11 +529,11 @@
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">read</span><span class="result">: <a href="../../reads/MappedRead.html" class="extype" name="org.hammerlab.guacamole.reads.MappedRead">MappedRead</a></span>
+        <span class="name">read</span><span class="result">: <a href="../../../reads/MappedRead.html" class="extype" name="org.hammerlab.guacamole.reads.MappedRead">MappedRead</a></span>
       </span>
       </h4>
       <p class="shortcomment cmt">the mapped read</p>
-    </li><li name="org.hammerlab.guacamole.commands.jointcaller.ReadSubsequence#refSequence" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.ReadSubsequence#refSequence" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="refSequence(contigReferenceSequence:org.hammerlab.guacamole.reference.ContigSequence):String"></a>
       <a id="refSequence(ContigSequence):String"></a>
       <h4 class="signature">
@@ -542,11 +542,11 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">refSequence</span><span class="params">(<span name="contigReferenceSequence">contigReferenceSequence: <a href="../../reference/ContigSequence.html" class="extype" name="org.hammerlab.guacamole.reference.ContigSequence">ContigSequence</a></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+        <span class="name">refSequence</span><span class="params">(<span name="contigReferenceSequence">contigReferenceSequence: <a href="../../../reference/ContigSequence.html" class="extype" name="org.hammerlab.guacamole.reference.ContigSequence">ContigSequence</a></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
       </h4>
       <p class="shortcomment cmt">The reference sequence at this locus.</p>
-    </li><li name="org.hammerlab.guacamole.commands.jointcaller.ReadSubsequence#referenceLength" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.ReadSubsequence#referenceLength" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="referenceLength:Int"></a>
       <a id="referenceLength:Int"></a>
       <h4 class="signature">
@@ -559,7 +559,7 @@
       </span>
       </h4>
       <p class="shortcomment cmt">Number of reference bases spanned</p>
-    </li><li name="org.hammerlab.guacamole.commands.jointcaller.ReadSubsequence#sequence" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.ReadSubsequence#sequence" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="sequence():String"></a>
       <a id="sequence():String"></a>
       <h4 class="signature">
@@ -572,7 +572,7 @@
       </span>
       </h4>
       <p class="shortcomment cmt">The sequenced bases as a string</p>
-    </li><li name="org.hammerlab.guacamole.commands.jointcaller.ReadSubsequence#sequenceIsAllStandardBases" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.ReadSubsequence#sequenceIsAllStandardBases" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="sequenceIsAllStandardBases():Boolean"></a>
       <a id="sequenceIsAllStandardBases():Boolean"></a>
       <h4 class="signature">
@@ -585,7 +585,7 @@
       </span>
       </h4>
       <p class="shortcomment cmt">true if the sequence contains only A,C,G,T (e.</p><div class="fullcomment"><div class="comment cmt"><p>true if the sequence contains only A,C,G,T (e.g. no N's)</p></div></div>
-    </li><li name="org.hammerlab.guacamole.commands.jointcaller.ReadSubsequence#startLocus" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.ReadSubsequence#startLocus" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="startLocus:Long"></a>
       <a id="startLocus:Long"></a>
       <h4 class="signature">
@@ -598,7 +598,7 @@
       </span>
       </h4>
       <p class="shortcomment cmt">reference locus of the first base in the sub-sequence</p>
-    </li><li name="org.hammerlab.guacamole.commands.jointcaller.ReadSubsequence#startReadPosition" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.ReadSubsequence#startReadPosition" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="startReadPosition:Int"></a>
       <a id="startReadPosition:Int"></a>
       <h4 class="signature">
@@ -720,6 +720,6 @@
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../../lib/template.js"></script>
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../../../lib/template.js"></script>
     </body>
       </html>

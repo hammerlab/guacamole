@@ -2,17 +2,17 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>HasReferenceRegion - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.HasReferenceRegion</title>
-          <meta name="description" content="HasReferenceRegion - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.HasReferenceRegion" />
-          <meta name="keywords" content="HasReferenceRegion guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.HasReferenceRegion" />
+          <title>MultiSampleMultiAlleleEvidence - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleMultiAlleleEvidence</title>
+          <meta name="description" content="MultiSampleMultiAlleleEvidence - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleMultiAlleleEvidence" />
+          <meta name="keywords" content="MultiSampleMultiAlleleEvidence guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleMultiAlleleEvidence" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
-      <link href="../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
-      <link href="../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <link href="../../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
       <script type="text/javascript">
          if(top === self) {
-            var url = '../../../index.html';
-            var hash = 'org.hammerlab.guacamole.HasReferenceRegion';
+            var url = '../../../../../../index.html';
+            var hash = 'org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleMultiAlleleEvidence';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -24,30 +24,26 @@
         </head>
         <body class="type">
       <div id="definition">
-        <img src="../../../lib/trait_big.png" />
-        <p id="owner"><a href="../../package.html" class="extype" name="org">org</a>.<a href="../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a></p>
-        <h1>HasReferenceRegion</h1>
+        <a href="MultiSampleMultiAlleleEvidence$.html" title="Go to companion"><img src="../../../../../../lib/class_to_object_big.png" /></a>
+        <p id="owner"><a href="../../../../../package.html" class="extype" name="org">org</a>.<a href="../../../../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="../../../package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="../../package.html" class="extype" name="org.hammerlab.guacamole.commands">commands</a>.<a href="../package.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller">jointcaller</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.evidence">evidence</a></p>
+        <h1><a href="MultiSampleMultiAlleleEvidence$.html" title="Go to companion">MultiSampleMultiAlleleEvidence</a></h1>
       </div>
 
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">trait</span>
+        <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">HasReferenceRegion</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <span class="name">MultiSampleMultiAlleleEvidence</span><span class="params">(<span name="referenceContig">referenceContig: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="start">start: <span class="extype" name="scala.Long">Long</span></span>, <span name="singleAlleleEvidences">singleAlleleEvidences: <span class="extype" name="scala.Seq">Seq</span>[<a href="MultiSampleSingleAlleleEvidence.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleSingleAlleleEvidence">MultiSampleSingleAlleleEvidence</a>]</span>)</span><span class="result"> extends <a href="../../../HasReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.HasReferenceRegion">HasReferenceRegion</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Trait for objects that are associated with an interval on the genome. The most prominent example is a
-<a href="reads/MappedRead.html" class="extype" name="org.hammerlab.guacamole.reads.MappedRead">org.hammerlab.guacamole.reads.MappedRead</a>, but there's also <a href="variants/ReferenceVariant.html" class="extype" name="org.hammerlab.guacamole.variants.ReferenceVariant">org.hammerlab.guacamole.variants.ReferenceVariant</a>.
-</p></div><dl class="attributes block"> <dt>To do</dt><dd><span class="cmt"><p>replace with ReferenceRegion base class in ADAM
-</p></span></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>A grouping of AlleleEvidenceAcrossSamples instances (one for each allele) at the same site.</p><p>Currently not much is done here, and we just write out VCF entries for all the called alleles separately. Later
+we may want to use this as a place to decide which if any of a number of alleles called at the same site should be
+written out.</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
-        </div><div class="toggleContainer block">
-          <span class="toggle">Known Subclasses</span>
-          <div class="subClasses hiddenContent"><a href="variants/CalledAllele.html" class="extype" name="org.hammerlab.guacamole.variants.CalledAllele">CalledAllele</a>, <a href="variants/CalledSomaticAllele.html" class="extype" name="org.hammerlab.guacamole.variants.CalledSomaticAllele">CalledSomaticAllele</a>, <a href="reads/MappedRead.html" class="extype" name="org.hammerlab.guacamole.reads.MappedRead">MappedRead</a>, <a href="commands/jointcaller/evidence/MultiSampleMultiAlleleEvidence.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleMultiAlleleEvidence">MultiSampleMultiAlleleEvidence</a>, <a href="variants/ReferenceVariant.html" class="extype" name="org.hammerlab.guacamole.variants.ReferenceVariant">ReferenceVariant</a></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <a href="../../../HasReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.HasReferenceRegion">HasReferenceRegion</a>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -65,7 +61,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="org.hammerlab.guacamole.HasReferenceRegion"><span>HasReferenceRegion</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleMultiAlleleEvidence"><span>MultiSampleMultiAlleleEvidence</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="org.hammerlab.guacamole.HasReferenceRegion"><span>HasReferenceRegion</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -83,56 +79,30 @@
 
       <div id="template">
         <div id="allMembers">
-        
-
-        
-
-        <div id="values" class="values members">
-              <h3>Abstract Value Members</h3>
-              <ol><li name="org.hammerlab.guacamole.HasReferenceRegion#end" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
-      <a id="end:Long"></a>
-      <a id="end:Long"></a>
+        <div id="constructors" class="members">
+              <h3>Instance Constructors</h3>
+              <ol><li name="org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleMultiAlleleEvidence#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="&lt;init&gt;(referenceContig:String,start:Long,singleAlleleEvidences:Seq[org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleSingleAlleleEvidence]):org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleMultiAlleleEvidence"></a>
+      <a id="&lt;init&gt;:MultiSampleMultiAlleleEvidence"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">val</span>
+        <span class="modifier"></span>
+        <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">end</span><span class="result">: <span class="extype" name="scala.Long">Long</span></span>
+        <span class="name">MultiSampleMultiAlleleEvidence</span><span class="params">(<span name="referenceContig">referenceContig: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="start">start: <span class="extype" name="scala.Long">Long</span></span>, <span name="singleAlleleEvidences">singleAlleleEvidences: <span class="extype" name="scala.Seq">Seq</span>[<a href="MultiSampleSingleAlleleEvidence.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleSingleAlleleEvidence">MultiSampleSingleAlleleEvidence</a>]</span>)</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">The end position on the genome, *exclusive*.</p><div class="fullcomment"><div class="comment cmt"><p>The end position on the genome, *exclusive*. Must be non-negative.</p></div></div>
-    </li><li name="org.hammerlab.guacamole.HasReferenceRegion#referenceContig" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="referenceContig:String"></a>
-      <a id="referenceContig:String"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">referenceContig</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Name of the reference contig</p>
-    </li><li name="org.hammerlab.guacamole.HasReferenceRegion#start" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
-      <a id="start:Long"></a>
-      <a id="start:Long"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">start</span><span class="result">: <span class="extype" name="scala.Long">Long</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Start position on the genome, inclusive.</p><div class="fullcomment"><div class="comment cmt"><p>Start position on the genome, inclusive. Must be non-negative.</p></div></div>
+      
     </li></ol>
             </div>
 
+        
+
+        
+
         <div id="values" class="values members">
-              <h3>Concrete Value Members</h3>
+              <h3>Value Members</h3>
               <ol><li name="scala.AnyRef#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="!=(x$1:AnyRef):Boolean"></a>
       <a id="!=(AnyRef):Boolean"></a>
@@ -211,6 +181,20 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleMultiAlleleEvidence#bestAllele" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="bestAllele():org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleSingleAlleleEvidence"></a>
+      <a id="bestAllele():MultiSampleSingleAlleleEvidence"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">bestAllele</span><span class="params">()</span><span class="result">: <a href="MultiSampleSingleAlleleEvidence.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleSingleAlleleEvidence">MultiSampleSingleAlleleEvidence</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">If we are going to consider only one allele at this site, pick the best one.</p><div class="fullcomment"><div class="comment cmt"><p>If we are going to consider only one allele at this site, pick the best one.</p><p>TODO: this should probably do something more sophisticated.
+</p></div></div>
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>
       <a id="clone():AnyRef"></a>
@@ -223,13 +207,26 @@
         <span class="name">clone</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
       <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleMultiAlleleEvidence#end" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="end:Long"></a>
+      <a id="end:Long"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">end</span><span class="result">: <span class="extype" name="scala.Long">Long</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">The end position on the genome, *exclusive*.</p><div class="fullcomment"><div class="comment cmt"><p>The end position on the genome, *exclusive*. Must be non-negative.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleMultiAlleleEvidence">MultiSampleMultiAlleleEvidence</a> → <a href="../../../HasReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.HasReferenceRegion">HasReferenceRegion</a></dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -243,19 +240,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scala.AnyRef#equals" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="equals(x$1:Any):Boolean"></a>
-      <a id="equals(Any):Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <a id="finalize():Unit"></a>
@@ -268,7 +252,7 @@
         <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
       <span class="symbol">classOf[java.lang.Throwable]</span>
@@ -285,19 +269,6 @@
       </span>
       <span class="symbol">
         <span class="name">getClass</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.Class">Class</span>[_]</span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="scala.AnyRef#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="hashCode():Int"></a>
-      <a id="hashCode():Int"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -353,6 +324,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleMultiAlleleEvidence#onlyPassingFilters" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="onlyPassingFilters():org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleMultiAlleleEvidence"></a>
+      <a id="onlyPassingFilters():MultiSampleMultiAlleleEvidence"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">onlyPassingFilters</span><span class="params">()</span><span class="result">: <a href="" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleMultiAlleleEvidence">MultiSampleMultiAlleleEvidence</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Return a new instance containing only the calls that pass filters.</p>
     </li><li name="org.hammerlab.guacamole.HasReferenceRegion#overlaps" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="overlaps(other:org.hammerlab.guacamole.HasReferenceRegion):Boolean"></a>
       <a id="overlaps(HasReferenceRegion):Boolean"></a>
@@ -362,11 +346,11 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">overlaps</span><span class="params">(<span name="other">other: <a href="" class="extype" name="org.hammerlab.guacamole.HasReferenceRegion">HasReferenceRegion</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">overlaps</span><span class="params">(<span name="other">other: <a href="../../../HasReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.HasReferenceRegion">HasReferenceRegion</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
       <p class="shortcomment cmt">Does the region overlap another reference region</p><div class="fullcomment"><div class="comment cmt"><p>Does the region overlap another reference region</p></div><dl class="paramcmts block"><dt class="param">other</dt><dd class="cmt"><p>another region on the genome</p></dd><dt>returns</dt><dd class="cmt"><p>True if the the regions overlap
-</p></dd></dl></div>
+</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../HasReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.HasReferenceRegion">HasReferenceRegion</a></dd></dl></div>
     </li><li name="org.hammerlab.guacamole.HasReferenceRegion#overlapsLociSet" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="overlapsLociSet(loci:org.hammerlab.guacamole.LociSet,halfWindowSize:Long):Boolean"></a>
       <a id="overlapsLociSet(LociSet,Long):Boolean"></a>
@@ -376,13 +360,13 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">overlapsLociSet</span><span class="params">(<span name="loci">loci: <a href="LociSet.html" class="extype" name="org.hammerlab.guacamole.LociSet">LociSet</a></span>, <span name="halfWindowSize">halfWindowSize: <span class="extype" name="scala.Long">Long</span> = <span class="symbol">0</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">overlapsLociSet</span><span class="params">(<span name="loci">loci: <a href="../../../LociSet.html" class="extype" name="org.hammerlab.guacamole.LociSet">LociSet</a></span>, <span name="halfWindowSize">halfWindowSize: <span class="extype" name="scala.Long">Long</span> = <span class="symbol">0</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
       <p class="shortcomment cmt">Does this region overlap any of the given loci, with halfWindowSize padding?</p><div class="fullcomment"><div class="comment cmt"><p>Does this region overlap any of the given loci, with halfWindowSize padding?</p><p>The padding is inclusive on both ends, so for example if halfWindowSize=1, then a region would overlap if it
 included any of these three positions: locus - 1, locus, and locus + 1.
-</p></div></div>
-    </li><li name="org.hammerlab.guacamole.HasReferenceRegion#overlapsLocus" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../HasReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.HasReferenceRegion">HasReferenceRegion</a></dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.HasReferenceRegion#overlapsLocus" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="overlapsLocus(locus:Long,halfWindowSize:Long):Boolean"></a>
       <a id="overlapsLocus(Long,Long):Boolean"></a>
       <h4 class="signature">
@@ -395,7 +379,47 @@ included any of these three positions: locus - 1, locus, and locus + 1.
       </span>
       </h4>
       <p class="shortcomment cmt">Does the region overlap the given locus, with halfWindowSize padding?
-</p>
+</p><div class="fullcomment"><div class="comment cmt"><p>Does the region overlap the given locus, with halfWindowSize padding?
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../HasReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.HasReferenceRegion">HasReferenceRegion</a></dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleMultiAlleleEvidence#referenceContig" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="referenceContig:String"></a>
+      <a id="referenceContig:String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">referenceContig</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Name of the reference contig</p><div class="fullcomment"><div class="comment cmt"><p>Name of the reference contig</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleMultiAlleleEvidence">MultiSampleMultiAlleleEvidence</a> → <a href="../../../HasReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.HasReferenceRegion">HasReferenceRegion</a></dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleMultiAlleleEvidence#singleAlleleEvidences" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="singleAlleleEvidences:Seq[org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleSingleAlleleEvidence]"></a>
+      <a id="singleAlleleEvidences:Seq[MultiSampleSingleAlleleEvidence]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">singleAlleleEvidences</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<a href="MultiSampleSingleAlleleEvidence.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleSingleAlleleEvidence">MultiSampleSingleAlleleEvidence</a>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleMultiAlleleEvidence#start" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="start:Long"></a>
+      <a id="start:Long"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">start</span><span class="result">: <span class="extype" name="scala.Long">Long</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Start position on the genome, inclusive.</p><div class="fullcomment"><div class="comment cmt"><p>Start position on the genome, inclusive. Must be non-negative.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleMultiAlleleEvidence">MultiSampleMultiAlleleEvidence</a> → <a href="../../../HasReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.HasReferenceRegion">HasReferenceRegion</a></dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -409,19 +433,6 @@ included any of these three positions: locus - 1, locus, and locus + 1.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scala.AnyRef#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="toString():String"></a>
-      <a id="toString():String"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>
@@ -488,7 +499,17 @@ included any of these three positions: locus - 1, locus, and locus + 1.
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="scala.AnyRef">
+        <div class="parent" name="scala.Serializable">
+              <h3>Inherited from <span class="extype" name="scala.Serializable">Serializable</span></h3>
+            </div><div class="parent" name="java.io.Serializable">
+              <h3>Inherited from <span class="extype" name="java.io.Serializable">Serializable</span></h3>
+            </div><div class="parent" name="scala.Product">
+              <h3>Inherited from <span class="extype" name="scala.Product">Product</span></h3>
+            </div><div class="parent" name="scala.Equals">
+              <h3>Inherited from <span class="extype" name="scala.Equals">Equals</span></h3>
+            </div><div class="parent" name="org.hammerlab.guacamole.HasReferenceRegion">
+              <h3>Inherited from <a href="../../../HasReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.HasReferenceRegion">HasReferenceRegion</a></h3>
+            </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
             </div><div class="parent" name="scala.Any">
               <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
@@ -508,6 +529,6 @@ included any of these three positions: locus - 1, locus, and locus + 1.
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../lib/template.js"></script>
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../../../lib/template.js"></script>
     </body>
       </html>

@@ -2,17 +2,17 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>MultipleAllelesEvidenceAcrossSamples - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.commands.jointcaller.MultipleAllelesEvidenceAcrossSamples</title>
-          <meta name="description" content="MultipleAllelesEvidenceAcrossSamples - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.commands.jointcaller.MultipleAllelesEvidenceAcrossSamples" />
-          <meta name="keywords" content="MultipleAllelesEvidenceAcrossSamples guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.commands.jointcaller.MultipleAllelesEvidenceAcrossSamples" />
+          <title>NormalDNASingleSampleSingleAlleleEvidence - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.commands.jointcaller.evidence.NormalDNASingleSampleSingleAlleleEvidence</title>
+          <meta name="description" content="NormalDNASingleSampleSingleAlleleEvidence - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.commands.jointcaller.evidence.NormalDNASingleSampleSingleAlleleEvidence" />
+          <meta name="keywords" content="NormalDNASingleSampleSingleAlleleEvidence guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.commands.jointcaller.evidence.NormalDNASingleSampleSingleAlleleEvidence" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
-      <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
-      <link href="../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <link href="../../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
       <script type="text/javascript">
          if(top === self) {
-            var url = '../../../../../index.html';
-            var hash = 'org.hammerlab.guacamole.commands.jointcaller.MultipleAllelesEvidenceAcrossSamples';
+            var url = '../../../../../../index.html';
+            var hash = 'org.hammerlab.guacamole.commands.jointcaller.evidence.NormalDNASingleSampleSingleAlleleEvidence';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -24,9 +24,9 @@
         </head>
         <body class="type">
       <div id="definition">
-        <img src="../../../../../lib/class_big.png" />
-        <p id="owner"><a href="../../../../package.html" class="extype" name="org">org</a>.<a href="../../../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="../../package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="../package.html" class="extype" name="org.hammerlab.guacamole.commands">commands</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller">jointcaller</a></p>
-        <h1>MultipleAllelesEvidenceAcrossSamples</h1>
+        <a href="NormalDNASingleSampleSingleAlleleEvidence$.html" title="Go to companion"><img src="../../../../../../lib/class_to_object_big.png" /></a>
+        <p id="owner"><a href="../../../../../package.html" class="extype" name="org">org</a>.<a href="../../../../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="../../../package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="../../package.html" class="extype" name="org.hammerlab.guacamole.commands">commands</a>.<a href="../package.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller">jointcaller</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.evidence">evidence</a></p>
+        <h1><a href="NormalDNASingleSampleSingleAlleleEvidence$.html" title="Go to companion">NormalDNASingleSampleSingleAlleleEvidence</a></h1>
       </div>
 
       <h4 id="signature" class="signature">
@@ -35,15 +35,15 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">MultipleAllelesEvidenceAcrossSamples</span><span class="params">(<span name="alleleEvidences">alleleEvidences: <span class="extype" name="scala.Seq">Seq</span>[<a href="AlleleEvidenceAcrossSamples.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.AlleleEvidenceAcrossSamples">AlleleEvidenceAcrossSamples</a>]</span>)</span><span class="result"> extends <a href="../../HasReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.HasReferenceRegion">HasReferenceRegion</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">NormalDNASingleSampleSingleAlleleEvidence</span><span class="params">(<span name="allele">allele: <a href="../AlleleAtLocus.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.AlleleAtLocus">AlleleAtLocus</a></span>, <span name="allelicDepths">allelicDepths: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Int">Int</span>]</span>, <span name="logLikelihoods">logLikelihoods: <span class="extype" name="scala.Predef.Map">Map</span>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.String">String</span>), <span class="extype" name="scala.Double">Double</span>]</span>, <span name="annotations">annotations: <span class="extype" name="scala.Option">Option</span>[<a href="../annotation/SingleSampleAnnotations.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.annotation.SingleSampleAnnotations">SingleSampleAnnotations</a>] = <span class="symbol">scala.None</span></span>)</span><span class="result"> extends <a href="SingleSampleSingleAlleleEvidence.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.evidence.SingleSampleSingleAlleleEvidence">SingleSampleSingleAlleleEvidence</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>A grouping of AlleleEvidenceAcrossSamples instances at the same locus.</p><p>Currently not much is done here, and we just write out VCF entries for all the called alleles separately. Later
-we may want to use this as a place to decide which if any of a number of alleles called at the same site should be
-written out.</p></div><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Summary of evidence for a particular germline allele in a single normal DNA sample.
+</p></div><dl class="paramcmts block"><dt class="param">allele</dt><dd class="cmt"><p>allele under consideration</p></dd><dt class="param">allelicDepths</dt><dd class="cmt"><p>Map from sequenced bases -&gt; number of reads supporting that allele</p></dd><dt class="param">logLikelihoods</dt><dd class="cmt"><p>Map from germline genotypes to log10 likelihoods
+</p></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <a href="../../HasReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.HasReferenceRegion">HasReferenceRegion</a>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <a href="SingleSampleSingleAlleleEvidence.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.evidence.SingleSampleSingleAlleleEvidence">SingleSampleSingleAlleleEvidence</a>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -61,7 +61,7 @@ written out.</p></div><div class="toggleContainer block">
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="org.hammerlab.guacamole.commands.jointcaller.MultipleAllelesEvidenceAcrossSamples"><span>MultipleAllelesEvidenceAcrossSamples</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="org.hammerlab.guacamole.HasReferenceRegion"><span>HasReferenceRegion</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="org.hammerlab.guacamole.commands.jointcaller.evidence.NormalDNASingleSampleSingleAlleleEvidence"><span>NormalDNASingleSampleSingleAlleleEvidence</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="org.hammerlab.guacamole.commands.jointcaller.evidence.SingleSampleSingleAlleleEvidence"><span>SingleSampleSingleAlleleEvidence</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -81,19 +81,20 @@ written out.</p></div><div class="toggleContainer block">
         <div id="allMembers">
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
-              <ol><li name="org.hammerlab.guacamole.commands.jointcaller.MultipleAllelesEvidenceAcrossSamples#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(alleleEvidences:Seq[org.hammerlab.guacamole.commands.jointcaller.AlleleEvidenceAcrossSamples]):org.hammerlab.guacamole.commands.jointcaller.MultipleAllelesEvidenceAcrossSamples"></a>
-      <a id="&lt;init&gt;:MultipleAllelesEvidenceAcrossSamples"></a>
+              <ol><li name="org.hammerlab.guacamole.commands.jointcaller.evidence.NormalDNASingleSampleSingleAlleleEvidence#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="&lt;init&gt;(allele:org.hammerlab.guacamole.commands.jointcaller.AlleleAtLocus,allelicDepths:Map[String,Int],logLikelihoods:Map[(String,String),Double],annotations:Option[org.hammerlab.guacamole.commands.jointcaller.annotation.SingleSampleAnnotations]):org.hammerlab.guacamole.commands.jointcaller.evidence.NormalDNASingleSampleSingleAlleleEvidence"></a>
+      <a id="&lt;init&gt;:NormalDNASingleSampleSingleAlleleEvidence"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">MultipleAllelesEvidenceAcrossSamples</span><span class="params">(<span name="alleleEvidences">alleleEvidences: <span class="extype" name="scala.Seq">Seq</span>[<a href="AlleleEvidenceAcrossSamples.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.AlleleEvidenceAcrossSamples">AlleleEvidenceAcrossSamples</a>]</span>)</span>
+        <span class="name">NormalDNASingleSampleSingleAlleleEvidence</span><span class="params">(<span name="allele">allele: <a href="../AlleleAtLocus.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.AlleleAtLocus">AlleleAtLocus</a></span>, <span name="allelicDepths">allelicDepths: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Int">Int</span>]</span>, <span name="logLikelihoods">logLikelihoods: <span class="extype" name="scala.Predef.Map">Map</span>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.String">String</span>), <span class="extype" name="scala.Double">Double</span>]</span>, <span name="annotations">annotations: <span class="extype" name="scala.Option">Option</span>[<a href="../annotation/SingleSampleAnnotations.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.annotation.SingleSampleAnnotations">SingleSampleAnnotations</a>] = <span class="symbol">scala.None</span></span>)</span>
       </span>
       </h4>
-      
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">allele</dt><dd class="cmt"><p>allele under consideration</p></dd><dt class="param">allelicDepths</dt><dd class="cmt"><p>Map from sequenced bases -&gt; number of reads supporting that allele</p></dd><dt class="param">logLikelihoods</dt><dd class="cmt"><p>Map from germline genotypes to log10 likelihoods
+</p></dd></dl></div>
     </li></ol>
             </div>
 
@@ -168,19 +169,45 @@ written out.</p></div><div class="toggleContainer block">
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.commands.jointcaller.MultipleAllelesEvidenceAcrossSamples#alleleEvidences" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="alleleEvidences:Seq[org.hammerlab.guacamole.commands.jointcaller.AlleleEvidenceAcrossSamples]"></a>
-      <a id="alleleEvidences:Seq[AlleleEvidenceAcrossSamples]"></a>
+    </li><li name="org.hammerlab.guacamole.commands.jointcaller.evidence.NormalDNASingleSampleSingleAlleleEvidence#allele" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="allele:org.hammerlab.guacamole.commands.jointcaller.AlleleAtLocus"></a>
+      <a id="allele:AlleleAtLocus"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">alleleEvidences</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<a href="AlleleEvidenceAcrossSamples.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.AlleleEvidenceAcrossSamples">AlleleEvidenceAcrossSamples</a>]</span>
+        <span class="name">allele</span><span class="result">: <a href="../AlleleAtLocus.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.AlleleAtLocus">AlleleAtLocus</a></span>
       </span>
       </h4>
-      
+      <p class="shortcomment cmt">allele under consideration</p><div class="fullcomment"><div class="comment cmt"><p>allele under consideration</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.evidence.NormalDNASingleSampleSingleAlleleEvidence">NormalDNASingleSampleSingleAlleleEvidence</a> → <a href="SingleSampleSingleAlleleEvidence.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.evidence.SingleSampleSingleAlleleEvidence">SingleSampleSingleAlleleEvidence</a></dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.commands.jointcaller.evidence.NormalDNASingleSampleSingleAlleleEvidence#allelicDepths" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="allelicDepths:Map[String,Int]"></a>
+      <a id="allelicDepths:Map[String,Int]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">allelicDepths</span><span class="result">: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Int">Int</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Map from sequenced bases -&gt; number of reads supporting that allele</p>
+    </li><li name="org.hammerlab.guacamole.commands.jointcaller.evidence.NormalDNASingleSampleSingleAlleleEvidence#annotations" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="annotations:Option[org.hammerlab.guacamole.commands.jointcaller.annotation.SingleSampleAnnotations]"></a>
+      <a id="annotations:Option[SingleSampleAnnotations]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">annotations</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<a href="../annotation/SingleSampleAnnotations.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.annotation.SingleSampleAnnotations">SingleSampleAnnotations</a>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">extra information, including filters, we compute about a potential call</p><div class="fullcomment"><div class="comment cmt"><p>extra information, including filters, we compute about a potential call</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.evidence.NormalDNASingleSampleSingleAlleleEvidence">NormalDNASingleSampleSingleAlleleEvidence</a> → <a href="SingleSampleSingleAlleleEvidence.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.evidence.SingleSampleSingleAlleleEvidence">SingleSampleSingleAlleleEvidence</a></dd></dl></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -194,20 +221,6 @@ written out.</p></div><div class="toggleContainer block">
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.commands.jointcaller.MultipleAllelesEvidenceAcrossSamples#bestAllele" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="bestAllele():org.hammerlab.guacamole.commands.jointcaller.AlleleEvidenceAcrossSamples"></a>
-      <a id="bestAllele():AlleleEvidenceAcrossSamples"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">bestAllele</span><span class="params">()</span><span class="result">: <a href="AlleleEvidenceAcrossSamples.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.AlleleEvidenceAcrossSamples">AlleleEvidenceAcrossSamples</a></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">If we are going to consider only one allele at this site, pick the best one.</p><div class="fullcomment"><div class="comment cmt"><p>If we are going to consider only one allele at this site, pick the best one.</p><p>TODO: this should probably do something more sophisticated.
-</p></div></div>
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>
       <a id="clone():AnyRef"></a>
@@ -220,26 +233,26 @@ written out.</p></div><div class="toggleContainer block">
         <span class="name">clone</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
       <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.commands.jointcaller.MultipleAllelesEvidenceAcrossSamples#end" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="end:Long"></a>
-      <a id="end:Long"></a>
+    </li><li name="org.hammerlab.guacamole.commands.jointcaller.evidence.NormalDNASingleSampleSingleAlleleEvidence#depth" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="depth():Int"></a>
+      <a id="depth():Int"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">val</span>
+        <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">end</span><span class="result">: <span class="extype" name="scala.Long">Long</span></span>
+        <span class="name">depth</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">The end position on the genome, *exclusive*.</p><div class="fullcomment"><div class="comment cmt"><p>The end position on the genome, *exclusive*. Must be non-negative.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.MultipleAllelesEvidenceAcrossSamples">MultipleAllelesEvidenceAcrossSamples</a> → <a href="../../HasReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.HasReferenceRegion">HasReferenceRegion</a></dd></dl></div>
+      <p class="shortcomment cmt">Total depth of all reads contributing an allele.</p>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -265,7 +278,7 @@ written out.</p></div><div class="toggleContainer block">
         <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
       <span class="symbol">classOf[java.lang.Throwable]</span>
@@ -298,6 +311,20 @@ written out.</p></div><div class="toggleContainer block">
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.commands.jointcaller.evidence.NormalDNASingleSampleSingleAlleleEvidence#logLikelihoods" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="logLikelihoods:Map[(String,String),Double]"></a>
+      <a id="logLikelihoods:Map[(String,String),Double]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">logLikelihoods</span><span class="result">: <span class="extype" name="scala.Predef.Map">Map</span>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.String">String</span>), <span class="extype" name="scala.Double">Double</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Map from germline genotypes to log10 likelihoods
+</p>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -337,89 +364,6 @@ written out.</p></div><div class="toggleContainer block">
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.commands.jointcaller.MultipleAllelesEvidenceAcrossSamples#onlyBest" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="onlyBest():org.hammerlab.guacamole.commands.jointcaller.MultipleAllelesEvidenceAcrossSamples"></a>
-      <a id="onlyBest():MultipleAllelesEvidenceAcrossSamples"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">onlyBest</span><span class="params">()</span><span class="result">: <a href="" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.MultipleAllelesEvidenceAcrossSamples">MultipleAllelesEvidenceAcrossSamples</a></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Return a new instance containing only the best allele in the collection.</p>
-    </li><li name="org.hammerlab.guacamole.HasReferenceRegion#overlaps" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="overlaps(other:org.hammerlab.guacamole.HasReferenceRegion):Boolean"></a>
-      <a id="overlaps(HasReferenceRegion):Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">overlaps</span><span class="params">(<span name="other">other: <a href="../../HasReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.HasReferenceRegion">HasReferenceRegion</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Does the region overlap another reference region</p><div class="fullcomment"><div class="comment cmt"><p>Does the region overlap another reference region</p></div><dl class="paramcmts block"><dt class="param">other</dt><dd class="cmt"><p>another region on the genome</p></dd><dt>returns</dt><dd class="cmt"><p>True if the the regions overlap
-</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../HasReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.HasReferenceRegion">HasReferenceRegion</a></dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.HasReferenceRegion#overlapsLociSet" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="overlapsLociSet(loci:org.hammerlab.guacamole.LociSet,halfWindowSize:Long):Boolean"></a>
-      <a id="overlapsLociSet(LociSet,Long):Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">overlapsLociSet</span><span class="params">(<span name="loci">loci: <a href="../../LociSet.html" class="extype" name="org.hammerlab.guacamole.LociSet">LociSet</a></span>, <span name="halfWindowSize">halfWindowSize: <span class="extype" name="scala.Long">Long</span> = <span class="symbol">0</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Does this region overlap any of the given loci, with halfWindowSize padding?</p><div class="fullcomment"><div class="comment cmt"><p>Does this region overlap any of the given loci, with halfWindowSize padding?</p><p>The padding is inclusive on both ends, so for example if halfWindowSize=1, then a region would overlap if it
-included any of these three positions: locus - 1, locus, and locus + 1.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../HasReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.HasReferenceRegion">HasReferenceRegion</a></dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.HasReferenceRegion#overlapsLocus" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="overlapsLocus(locus:Long,halfWindowSize:Long):Boolean"></a>
-      <a id="overlapsLocus(Long,Long):Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">overlapsLocus</span><span class="params">(<span name="locus">locus: <span class="extype" name="scala.Long">Long</span></span>, <span name="halfWindowSize">halfWindowSize: <span class="extype" name="scala.Long">Long</span> = <span class="symbol">0</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Does the region overlap the given locus, with halfWindowSize padding?
-</p><div class="fullcomment"><div class="comment cmt"><p>Does the region overlap the given locus, with halfWindowSize padding?
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../HasReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.HasReferenceRegion">HasReferenceRegion</a></dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.commands.jointcaller.MultipleAllelesEvidenceAcrossSamples#referenceContig" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="referenceContig:String"></a>
-      <a id="referenceContig:String"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">referenceContig</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Name of the reference contig</p><div class="fullcomment"><div class="comment cmt"><p>Name of the reference contig</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.MultipleAllelesEvidenceAcrossSamples">MultipleAllelesEvidenceAcrossSamples</a> → <a href="../../HasReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.HasReferenceRegion">HasReferenceRegion</a></dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.commands.jointcaller.MultipleAllelesEvidenceAcrossSamples#start" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="start:Long"></a>
-      <a id="start:Long"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">start</span><span class="result">: <span class="extype" name="scala.Long">Long</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Start position on the genome, inclusive.</p><div class="fullcomment"><div class="comment cmt"><p>Start position on the genome, inclusive. Must be non-negative.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.MultipleAllelesEvidenceAcrossSamples">MultipleAllelesEvidenceAcrossSamples</a> → <a href="../../HasReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.HasReferenceRegion">HasReferenceRegion</a></dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -433,6 +377,19 @@ included any of these three positions: locus - 1, locus, and locus + 1.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.commands.jointcaller.evidence.NormalDNASingleSampleSingleAlleleEvidence#vaf" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="vaf():Double"></a>
+      <a id="vaf():Double"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">vaf</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Double">Double</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Fraction of reads supporting this allele (variant allele frequency).</p>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>
@@ -490,6 +447,19 @@ included any of these three positions: locus - 1, locus, and locus + 1.
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.commands.jointcaller.evidence.NormalDNASingleSampleSingleAlleleEvidence#withAnnotations" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="withAnnotations(newAnnotations:org.hammerlab.guacamole.commands.jointcaller.annotation.SingleSampleAnnotations):org.hammerlab.guacamole.commands.jointcaller.evidence.NormalDNASingleSampleSingleAlleleEvidence"></a>
+      <a id="withAnnotations(SingleSampleAnnotations):NormalDNASingleSampleSingleAlleleEvidence"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">withAnnotations</span><span class="params">(<span name="newAnnotations">newAnnotations: <a href="../annotation/SingleSampleAnnotations.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.annotation.SingleSampleAnnotations">SingleSampleAnnotations</a></span>)</span><span class="result">: <a href="" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.evidence.NormalDNASingleSampleSingleAlleleEvidence">NormalDNASingleSampleSingleAlleleEvidence</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">return a new instance including the given annotations</p><div class="fullcomment"><div class="comment cmt"><p>return a new instance including the given annotations</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.evidence.NormalDNASingleSampleSingleAlleleEvidence">NormalDNASingleSampleSingleAlleleEvidence</a> → <a href="SingleSampleSingleAlleleEvidence.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.evidence.SingleSampleSingleAlleleEvidence">SingleSampleSingleAlleleEvidence</a></dd></dl></div>
     </li></ol>
             </div>
 
@@ -507,8 +477,8 @@ included any of these three positions: locus - 1, locus, and locus + 1.
               <h3>Inherited from <span class="extype" name="scala.Product">Product</span></h3>
             </div><div class="parent" name="scala.Equals">
               <h3>Inherited from <span class="extype" name="scala.Equals">Equals</span></h3>
-            </div><div class="parent" name="org.hammerlab.guacamole.HasReferenceRegion">
-              <h3>Inherited from <a href="../../HasReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.HasReferenceRegion">HasReferenceRegion</a></h3>
+            </div><div class="parent" name="org.hammerlab.guacamole.commands.jointcaller.evidence.SingleSampleSingleAlleleEvidence">
+              <h3>Inherited from <a href="SingleSampleSingleAlleleEvidence.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.evidence.SingleSampleSingleAlleleEvidence">SingleSampleSingleAlleleEvidence</a></h3>
             </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
             </div><div class="parent" name="scala.Any">
@@ -529,6 +499,6 @@ included any of these three positions: locus - 1, locus, and locus + 1.
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../../lib/template.js"></script>
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../../../lib/template.js"></script>
     </body>
       </html>
