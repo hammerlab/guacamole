@@ -18,26 +18,19 @@
 
 package org.hammerlab.guacamole
 
-import java.io.{File, InputStreamReader, OutputStream}
+import java.io.{File, InputStreamReader}
 
 import htsjdk.variant.vcf.VCFFileReader
-import org.apache.avro.generic.GenericDatumWriter
-import org.apache.avro.io.EncoderFactory
 import org.apache.commons.io.IOUtils
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.{FileSystem, Path}
 import org.apache.hadoop.mapred.FileAlreadyExistsException
-import org.apache.spark.rdd.RDD
 import org.apache.spark.{Logging, SparkConf, SparkContext}
-import org.bdgenomics.adam.rdd.ADAMContext._
-import org.bdgenomics.formats.avro.Genotype
-import org.bdgenomics.utils.cli.{Args4jBase, ParquetArgs}
-import org.codehaus.jackson.JsonFactory
-import org.hammerlab.guacamole.Common.Arguments.ReadLoadingConfigArgs
-import org.hammerlab.guacamole.Concordance.ConcordanceArgs
-import org.hammerlab.guacamole.loci.LociSet
-import org.hammerlab.guacamole.logging.LoggingUtils.progress
-import org.hammerlab.guacamole.reads.{BamReaderAPI, ReadInputFilters, ReadLoadingConfig}
+import org.hammerlab.guacamole.loci.{LociArgs, LociSet}
+import org.hammerlab.guacamole.logging.DebugLogArgs
+import org.hammerlab.guacamole.reads.{ReadInputFilters, ReadLoadingConfigArgs}
+import org.hammerlab.guacamole.variants.Concordance.ConcordanceArgs
+import org.hammerlab.guacamole.variants.GenotypeOutputArgs
 import org.kohsuke.args4j.{Option => Args4jOption}
 
 /**
@@ -45,104 +38,33 @@ import org.kohsuke.args4j.{Option => Args4jOption}
  *
  */
 object Common extends Logging {
-  object Arguments {
-    /** Common argument(s) we always want.*/
-    trait Base extends Args4jBase with ParquetArgs {
-      @Args4jOption(name = "--debug", usage = "If set, prints a higher level of debug output.")
-      var debug = false
-    }
-
-    /** Argument for accepting a set of loci. */
-    trait Loci extends Base {
-      @Args4jOption(name = "--loci", usage = "Loci at which to call variants. Either 'all' or contig:start-end,contig:start-end,...",
-        forbids = Array("--loci-from-file"))
-      var loci: String = ""
-
-      @Args4jOption(name = "--loci-from-file", usage = "Path to file giving loci at which to call variants.",
-        forbids = Array("--loci"))
-      var lociFromFile: String = ""
-    }
-
-    /** Argument for using / not using sequence dictionaries to get contigs and lengths. */
-    trait NoSequenceDictionary extends Base {
-      @Args4jOption(name = "--no-sequence-dictionary",
-        usage = "If set, get contigs and lengths directly from reads instead of from sequence dictionary.")
-      var noSequenceDictionary: Boolean = false
-    }
-
-    /** Argument for configuring read loading with a ReadLoadingConfig object. */
-    trait ReadLoadingConfigArgs extends Base {
-      @Args4jOption(name = "--bam-reader-api",
-        usage = "API to use for reading BAMs, one of: best (use samtools if file local), samtools, hadoopbam")
-      var bamReaderAPI: String = "best"
-    }
-    object ReadLoadingConfigArgs {
-      /** Given commandline arguments, return a ReadLoadingConfig. */
-      def fromArguments(args: ReadLoadingConfigArgs): ReadLoadingConfig = {
-        ReadLoadingConfig(BamReaderAPI.withNameCaseInsensitive(args.bamReaderAPI))
-      }
-    }
-
-    /** Argument for accepting a single set of reads (for non-somatic variant calling). */
-    trait Reads extends Base with NoSequenceDictionary with ReadLoadingConfigArgs {
-      @Args4jOption(name = "--reads", metaVar = "X", required = true, usage = "Aligned reads")
-      var reads: String = ""
-    }
-
-    /** Arguments for accepting two sets of reads (tumor + normal). */
-    trait TumorNormalReads extends Base with NoSequenceDictionary with ReadLoadingConfigArgs {
-      @Args4jOption(name = "--normal-reads", metaVar = "X", required = true, usage = "Aligned reads: normal")
-      var normalReads: String = ""
-
-      @Args4jOption(name = "--tumor-reads", metaVar = "X", required = true, usage = "Aligned reads: tumor")
-      var tumorReads: String = ""
-    }
-
-    /** Argument for writing output genotypes. */
-    trait GenotypeOutput extends Base {
-      @Args4jOption(name = "--out", metaVar = "VARIANTS_OUT", required = false,
-        usage = "Variant output path. If not specified, print to screen.")
-      var variantOutput: String = ""
-
-      @Args4jOption(name = "--out-chunks", metaVar = "X", required = false,
-        usage = "When writing out to json format, number of chunks to coalesce the genotypes RDD into.")
-      var outChunks: Int = 1
-
-      @Args4jOption(name = "--max-genotypes", metaVar = "X", required = false,
-        usage = "Maximum number of genotypes to output. 0 (default) means output all genotypes.")
-      var maxGenotypes: Int = 0
-    }
-
-    /** Arguments for accepting a reference genome. */
-    trait Reference extends Base {
-      @Args4jOption(required = false, name = "--reference", usage = "ADAM or FASTA reference genome data")
-      var referenceInput: String = ""
-
-      @Args4jOption(required = false, name = "--fragment-length",
-        usage = "Sets maximum fragment length. Default value is 10,000. Values greater than 1e9 should be avoided.")
-      var fragmentLength: Long = 10000L
-    }
-
-    trait GermlineCallerArgs extends GenotypeOutput with Reads with ConcordanceArgs with DistributedUtil.Arguments
-
-    trait SomaticCallerArgs extends GenotypeOutput with TumorNormalReads with DistributedUtil.Arguments
+  /** Argument for using / not using sequence dictionaries to get contigs and lengths. */
+  trait NoSequenceDictionaryArgs extends DebugLogArgs {
+    @Args4jOption(
+      name = "--no-sequence-dictionary",
+      usage = "If set, get contigs and lengths directly from reads instead of from sequence dictionary."
+    )
+    var noSequenceDictionary: Boolean = false
   }
 
-  /**
-   *
-   * Load genotypes from ADAM Parquet or VCF file
-   *
-   * @param path path to VCF or ADAM genotypes
-   * @param sc spark context
-   * @return RDD of ADAM Genotypes
-   */
-  def loadGenotypes(path: String, sc: SparkContext): RDD[Genotype] = {
-    if (path.endsWith(".vcf")) {
-      sc.loadGenotypes(path)
-    } else {
-      sc.loadParquet(path)
-    }
+  /** Argument for accepting a single set of reads (for non-somatic variant calling). */
+  trait ReadsArgs extends DebugLogArgs with NoSequenceDictionaryArgs with ReadLoadingConfigArgs {
+    @Args4jOption(name = "--reads", metaVar = "X", required = true, usage = "Aligned reads")
+    var reads: String = ""
   }
+
+  /** Arguments for accepting two sets of reads (tumor + normal). */
+  trait TumorNormalReadsArgs extends DebugLogArgs with NoSequenceDictionaryArgs with ReadLoadingConfigArgs {
+    @Args4jOption(name = "--normal-reads", metaVar = "X", required = true, usage = "Aligned reads: normal")
+    var normalReads: String = ""
+
+    @Args4jOption(name = "--tumor-reads", metaVar = "X", required = true, usage = "Aligned reads: tumor")
+    var tumorReads: String = ""
+  }
+
+  trait GermlineCallerArgs extends GenotypeOutputArgs with ReadsArgs with ConcordanceArgs with DistributedUtil.Arguments
+
+  trait SomaticCallerArgs extends GenotypeOutputArgs with TumorNormalReadsArgs with DistributedUtil.Arguments
 
   /**
    * Given arguments for a single set of reads, and a spark context, return a ReadSet.
@@ -152,17 +74,15 @@ object Common extends Logging {
    * @param filters input filters to apply
    * @return
    */
-  def loadReadsFromArguments(
-    args: Arguments.Reads,
-    sc: SparkContext,
-    filters: ReadInputFilters): ReadSet = {
-
+  def loadReadsFromArguments(args: ReadsArgs,
+                             sc: SparkContext,
+                             filters: ReadInputFilters): ReadSet = {
     ReadSet(
       sc,
       args.reads,
       filters,
       contigLengthsFromDictionary = !args.noSequenceDictionary,
-      config = ReadLoadingConfigArgs.fromArguments(args)
+      config = ReadLoadingConfigArgs(args)
     )
   }
 
@@ -173,17 +93,16 @@ object Common extends Logging {
    * @param sc spark context
    * @param filters input filters to apply
    */
-  def loadTumorNormalReadsFromArguments(
-    args: Arguments.TumorNormalReads,
-    sc: SparkContext,
-    filters: ReadInputFilters): (ReadSet, ReadSet) = {
+  def loadTumorNormalReadsFromArguments(args: TumorNormalReadsArgs,
+                                        sc: SparkContext,
+                                        filters: ReadInputFilters): (ReadSet, ReadSet) = {
 
     val tumor = ReadSet(
       sc,
       args.tumorReads,
       filters,
       !args.noSequenceDictionary,
-      ReadLoadingConfigArgs.fromArguments(args)
+      ReadLoadingConfigArgs(args)
     )
 
     val normal = ReadSet(
@@ -191,8 +110,9 @@ object Common extends Logging {
       args.normalReads,
       filters,
       !args.noSequenceDictionary,
-      ReadLoadingConfigArgs.fromArguments(args)
+      ReadLoadingConfigArgs(args)
     )
+
     (tumor, normal)
   }
 
@@ -201,7 +121,7 @@ object Common extends Logging {
    *
    * @param args parsed arguments
    */
-  def lociFromArguments(args: Arguments.Loci, default: String = "all"): LociSet.Builder = {
+  def lociFromArguments(args: LociArgs, default: String = "all"): LociSet.Builder = {
     if (args.loci.nonEmpty && args.lociFromFile.nonEmpty) {
       throw new IllegalArgumentException("Specify at most one of the 'loci' and 'loci-from-file' arguments")
     }
@@ -216,7 +136,6 @@ object Common extends Logging {
       default
     }
     LociSet.parse(lociToParse)
-
   }
 
   /**
@@ -246,7 +165,8 @@ object Common extends Logging {
       ).result(contigLengths)
     } else {
       throw new IllegalArgumentException(
-        "Couldn't guess format for file: %s. Expected file extensions: '.loci' or '.txt' for loci string format; '.vcf' for VCFs.".format(filePath))
+        s"Couldn't guess format for file: $filePath. Expected file extensions: '.loci' or '.txt' for loci string format; '.vcf' for VCFs."
+      )
     }
   }
 
@@ -275,74 +195,10 @@ object Common extends Logging {
   }
 
   /**
-   * Write out an RDD of Genotype instances to a file.
-   * @param args parsed arguments
-   * @param genotypes ADAM genotypes (i.e. the variants)
-   */
-  def writeVariantsFromArguments(args: Arguments.GenotypeOutput, genotypes: RDD[Genotype]): Unit = {
-    val subsetGenotypes = if (args.maxGenotypes > 0) {
-      progress("Subsetting to %d genotypes.".format(args.maxGenotypes))
-      genotypes.sample(withReplacement = false, args.maxGenotypes, 0)
-    } else {
-      genotypes
-    }
-    val outputPath = args.variantOutput.stripMargin
-    if (outputPath.isEmpty || outputPath.toLowerCase.endsWith(".json")) {
-      val out: OutputStream = if (outputPath.isEmpty) {
-        progress("Writing genotypes to stdout.")
-        System.out
-      } else {
-        progress("Writing genotypes serially in json format to: %s.".format(outputPath))
-        val filesystem = FileSystem.get(new Configuration())
-        val path = new Path(outputPath)
-        filesystem.create(path, true)
-      }
-      val coalescedSubsetGenotypes = if (args.outChunks > 0) subsetGenotypes.coalesce(args.outChunks) else subsetGenotypes
-      coalescedSubsetGenotypes.persist()
-
-      // Write each Genotype with a JsonEncoder.
-      val schema = Genotype.getClassSchema
-      val writer = new GenericDatumWriter[Object](schema)
-      val encoder = EncoderFactory.get.jsonEncoder(schema, out)
-      val generator = new JsonFactory().createJsonGenerator(out)
-      generator.useDefaultPrettyPrinter()
-      encoder.configure(generator)
-      var partitionNum = 0
-      val numPartitions = coalescedSubsetGenotypes.partitions.length
-      while (partitionNum < numPartitions) {
-        progress("Collecting partition %d of %d.".format(partitionNum + 1, numPartitions))
-        val chunk = coalescedSubsetGenotypes.mapPartitionsWithIndex((num, genotypes) => {
-          if (num == partitionNum) genotypes else Iterator.empty
-        }).collect
-        chunk.foreach(genotype => {
-          writer.write(genotype, encoder)
-          encoder.flush()
-        })
-        partitionNum += 1
-      }
-      out.write("\n".getBytes())
-      generator.close()
-      coalescedSubsetGenotypes.unpersist()
-    } else if (outputPath.toLowerCase.endsWith(".vcf")) {
-      progress("Writing genotypes to VCF file: %s.".format(outputPath))
-      val sc = subsetGenotypes.sparkContext
-      subsetGenotypes.toVariantContext.coalesce(1, shuffle = true).saveAsVcf(outputPath)
-    } else {
-      progress("Writing genotypes to: %s.".format(outputPath))
-      subsetGenotypes.adamParquetSave(
-        outputPath,
-        args.blockSize,
-        args.pageSize,
-        args.compressionCodec,
-        args.disableDictionaryEncoding
-      )
-    }
-  }
-
-  /**
    * Parse spark environment variables from commandline. Copied from ADAM.
    *
    * Commandline format is -spark_env foo=1 -spark_env bar=2
+ *
    * @param envVariables The variables found on the commandline
    * @return array of (key, value) pairs parsed from the command line.
    */
@@ -424,7 +280,7 @@ object Common extends Logging {
    * Perform validation of command line arguments at startup.
    * This allows some late failures (e.g. output file already exists) to be surfaced more quickly.
    */
-  def validateArguments(args: Arguments.GenotypeOutput) = {
+  def validateArguments(args: GenotypeOutputArgs) = {
     val outputPath = args.variantOutput.stripMargin
     if (outputPath.toLowerCase.endsWith(".vcf")) {
       val filesystem = FileSystem.get(new Configuration())

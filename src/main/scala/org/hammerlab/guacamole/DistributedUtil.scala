@@ -23,9 +23,8 @@ import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.rdd.RDD
 import org.apache.spark.serializer.JavaSerializer
 import org.apache.spark.{AccumulatorParam, Logging, Partitioner, SparkConf}
-import org.hammerlab.guacamole.Common.Arguments.{Base, Loci}
-import org.hammerlab.guacamole.loci.{LociMap, LociSet}
-import org.hammerlab.guacamole.logging.DelayedMessages
+import org.hammerlab.guacamole.loci.{LociArgs, LociMap, LociSet}
+import org.hammerlab.guacamole.logging.{DebugLogArgs, DelayedMessages}
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.MappedRead
@@ -40,7 +39,7 @@ import scala.reflect.ClassTag
  * Primitives for analyzing mapped reads with Spark.
  */
 object DistributedUtil extends Logging {
-  trait Arguments extends Base with Loci {
+  trait Arguments extends DebugLogArgs with LociArgs {
     @Args4jOption(name = "--parallelism", usage = "Num variant calling tasks. Set to 0 (default) to use the number of Spark partitions.")
     var parallelism: Int = 0
 

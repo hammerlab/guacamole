@@ -3,7 +3,7 @@ package org.hammerlab.guacamole.commands.jointcaller
 import htsjdk.samtools.SAMSequenceDictionary
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
-import org.hammerlab.guacamole.Common.Arguments.NoSequenceDictionary
+import org.hammerlab.guacamole.Common.NoSequenceDictionaryArgs
 import org.hammerlab.guacamole.DistributedUtil.PerSample
 import org.hammerlab.guacamole._
 import org.hammerlab.guacamole.loci.LociSet
@@ -13,7 +13,12 @@ import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.kohsuke.args4j.{Option => Args4jOption}
 
 object SomaticJoint {
-  class Arguments extends Parameters.CommandlineArguments with DistributedUtil.Arguments with NoSequenceDictionary with InputCollection.Arguments {
+  class Arguments
+    extends Parameters.CommandlineArguments
+      with DistributedUtil.Arguments
+      with NoSequenceDictionaryArgs
+      with InputCollection.Arguments {
+
     @Args4jOption(name = "--out", usage = "Output path for all variants in VCF. Default: no output")
     var out: String = ""
 

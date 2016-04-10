@@ -20,7 +20,7 @@ package org.hammerlab.guacamole.commands
 
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
-import org.hammerlab.guacamole.Common.Arguments.GermlineCallerArgs
+import org.hammerlab.guacamole.Common.GermlineCallerArgs
 import org.hammerlab.guacamole.filters.GenotypeFilter.GenotypeFilterArguments
 import org.hammerlab.guacamole.filters.PileupFilter.PileupFilterArguments
 import org.hammerlab.guacamole.filters.{GenotypeFilter, QualityAlignedReadsFilter}
@@ -30,8 +30,8 @@ import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.ReadInputFilters
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
-import org.hammerlab.guacamole.variants.{AlleleConversions, AlleleEvidence, CalledAllele}
-import org.hammerlab.guacamole.{Common, Concordance, DistributedUtil, SparkCommand}
+import org.hammerlab.guacamole.variants.{AlleleConversions, AlleleEvidence, CalledAllele, Concordance, VariantUtils}
+import org.hammerlab.guacamole.{Common, DistributedUtil, SparkCommand}
 import org.kohsuke.args4j.{Option => Args4jOption}
 
 /**
@@ -86,7 +86,7 @@ object GermlineStandard {
       readSet.mappedReads.unpersist()
 
       val filteredGenotypes = GenotypeFilter(genotypes, args).flatMap(AlleleConversions.calledAlleleToADAMGenotype)
-      Common.writeVariantsFromArguments(args, filteredGenotypes)
+      VariantUtils.writeVariantsFromArguments(args, filteredGenotypes)
       if (args.truthGenotypesFile != "")
         Concordance.printGenotypeConcordance(args, filteredGenotypes, sc)
 

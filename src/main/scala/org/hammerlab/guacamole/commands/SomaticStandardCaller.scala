@@ -22,7 +22,7 @@ import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.rdd.ADAMContext
 import org.bdgenomics.formats.avro.DatabaseVariantAnnotation
-import org.hammerlab.guacamole.Common.Arguments.SomaticCallerArgs
+import org.hammerlab.guacamole.Common.SomaticCallerArgs
 import org.hammerlab.guacamole.filters.PileupFilter.PileupFilterArguments
 import org.hammerlab.guacamole.filters.SomaticGenotypeFilter.SomaticGenotypeFilterArguments
 import org.hammerlab.guacamole.filters.{PileupFilter, SomaticAlternateReadDepthFilter, SomaticGenotypeFilter, SomaticReadDepthFilter}
@@ -32,7 +32,7 @@ import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.ReadInputFilters
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
-import org.hammerlab.guacamole.variants.{Allele, AlleleConversions, AlleleEvidence, CalledSomaticAllele}
+import org.hammerlab.guacamole.variants.{Allele, AlleleConversions, AlleleEvidence, CalledSomaticAllele, VariantUtils}
 import org.hammerlab.guacamole.{Common, DistributedUtil, SparkCommand}
 import org.kohsuke.args4j.{Option => Args4jOption}
 
@@ -152,7 +152,7 @@ object SomaticStandard {
       val filteredGenotypes: RDD[CalledSomaticAllele] = SomaticGenotypeFilter(potentialGenotypes, args)
       progress("Computed %,d genotypes after basic filtering".format(filteredGenotypes.count))
 
-      Common.writeVariantsFromArguments(
+      VariantUtils.writeVariantsFromArguments(
         args,
         filteredGenotypes.flatMap(AlleleConversions.calledSomaticAlleleToADAMGenotype)
       )

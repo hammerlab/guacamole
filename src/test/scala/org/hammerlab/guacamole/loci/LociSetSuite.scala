@@ -20,6 +20,7 @@ package org.hammerlab.guacamole.loci
 
 import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole.Common
+import org.hammerlab.guacamole.logging.DebugLogArgs
 import org.hammerlab.guacamole.reads.Read
 import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
 import org.scalatest.Matchers
@@ -118,7 +119,7 @@ class LociSetSuite extends GuacFunSuite with Matchers {
   sparkTest("loci argument parsing in Common") {
     val read = TestUtil.makeRead("C", "1M", 500, "20")
     val reads: RDD[Read] = sc.parallelize(Seq(read))
-    class TestArgs extends Common.Arguments.Base with Common.Arguments.Loci {}
+    class TestArgs extends DebugLogArgs with LociArgs {}
 
     // Test -loci argument
     val args1 = new TestArgs()
