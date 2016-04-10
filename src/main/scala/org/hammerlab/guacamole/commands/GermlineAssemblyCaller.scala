@@ -13,6 +13,8 @@ import org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociAccor
 import org.hammerlab.guacamole.distributed.WindowFlatMapUtils.windowFlatMapWithState
 import org.hammerlab.guacamole.likelihood.Likelihood
 import org.hammerlab.guacamole.loci.LociMap
+import org.hammerlab.guacamole.logging.DelayedMessages
+import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.{MappedRead, Read}
 import org.hammerlab.guacamole.reference.{ReferenceBroadcast, ReferenceGenome}
@@ -225,7 +227,7 @@ object GermlineAssemblyCaller {
 
       genotypes.persist()
 
-      Common.progress(s"Found ${genotypes.count} variants")
+      progress(s"Found ${genotypes.count} variants")
 
       val outputGenotypes =
         genotypes.flatMap(AlleleConversions.calledAlleleToADAMGenotype)

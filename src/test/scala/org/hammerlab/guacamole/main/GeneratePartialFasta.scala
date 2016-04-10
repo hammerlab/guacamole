@@ -4,10 +4,12 @@ import java.io.{BufferedWriter, File, FileWriter}
 
 import org.apache.spark.Logging
 import org.bdgenomics.utils.cli.Args4j
-import org.hammerlab.guacamole._
+import org.hammerlab.guacamole.Common.Arguments.{ReadLoadingConfigArgs, Reference}
 import org.hammerlab.guacamole.distributed.LociPartitionUtils
+import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.reads.Read.InputFilters
 import org.hammerlab.guacamole.reference.{ContigNotFound, ReferenceBroadcast}
+import org.hammerlab.guacamole.{Bases, Common, ReadSet}
 import org.kohsuke.args4j.{Argument, Option => Args4jOption}
 
 /**
@@ -20,11 +22,14 @@ import org.kohsuke.args4j.{Argument, Option => Args4jOption}
  *
  * This lets us package up a subset of a reference fasta into a file that is small enough to version control and
  * distribute.
- *
  */
 object GeneratePartialFasta extends Logging {
 
-  protected class Arguments extends LociPartitionUtils.Arguments with Common.Arguments.ReadLoadingConfigArgs with Common.Arguments.Reference {
+  protected class Arguments
+    extends LociPartitionUtils.Arguments
+      with ReadLoadingConfigArgs
+      with Reference {
+
     @Args4jOption(name = "--output", metaVar = "OUT", required = true, aliases = Array("-o"),
       usage = "Output path for partial fasta")
     var output: String = ""
@@ -32,8 +37,7 @@ object GeneratePartialFasta extends Logging {
     @Args4jOption(name = "--reference-fasta", required = true, usage = "Local path to a reference FASTA file")
     var referenceFastaPath: String = null
 
-    @Argument(required = true, multiValued = true,
-      usage = "Reads to write out overlapping fasta sequence for")
+    @Argument(required = true, multiValued = true, usage = "Reads to write out overlapping fasta sequence for")
     var bams: Array[String] = Array.empty
   }
 
@@ -77,7 +81,7 @@ object GeneratePartialFasta extends Logging {
       })
     })
     writer.close()
-    Common.progress("Wrote: %s".format(args.output))
+    progress(s"Wrote: ${args.output}")
   }
 
   private def printUsage() = {

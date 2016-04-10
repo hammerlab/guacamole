@@ -37,6 +37,7 @@ import org.hammerlab.guacamole.Common.Arguments.ReadLoadingConfigArgs
 import org.hammerlab.guacamole.Concordance.ConcordanceArgs
 import org.hammerlab.guacamole.distributed.LociPartitionUtils
 import org.hammerlab.guacamole.loci.LociSet
+import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.reads.Read
 import org.kohsuke.args4j.{Option => Args4jOption}
 
@@ -396,25 +397,6 @@ object Common extends Logging {
     }
 
     new SparkContext(config)
-  }
-
-  /** Time in milliseconds of last progress message. */
-  var lastProgressTime: Long = 0
-
-  /**
-   * Print or log a progress message. For now, we just print to standard out, since ADAM's logging setup makes it
-   * difficult to see log messages at the INFO level without flooding ourselves with parquet messages.
-   * @param message String to print or log.
-   */
-  def progress(message: String): Unit = {
-    val current = System.currentTimeMillis
-    val time = if (lastProgressTime == 0)
-      java.util.Calendar.getInstance.getTime.toString
-    else
-      "%.2f sec. later".format((current - lastProgressTime) / 1000.0)
-    println("--> [%15s]: %s".format(time, message))
-    System.out.flush()
-    lastProgressTime = current
   }
 
   /**
