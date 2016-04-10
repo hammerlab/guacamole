@@ -19,12 +19,12 @@
 package org.hammerlab.guacamole.distributed
 
 import org.bdgenomics.formats.avro.{Genotype, GenotypeAllele}
-import org.hammerlab.guacamole.commands.GermlineThreshold
-import org.hammerlab.guacamole.pileup.{Pileup, PileupElement}
-import org.hammerlab.guacamole.util.TestUtil.assertBases
-import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
 import org.hammerlab.guacamole.Bases
+import org.hammerlab.guacamole.commands.GermlineThreshold
 import org.hammerlab.guacamole.loci.LociSet
+import org.hammerlab.guacamole.pileup.{Pileup, PileupElement}
+import org.hammerlab.guacamole.util.TestUtil._
+import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
 
 import scala.collection.JavaConversions._
 
@@ -260,7 +260,7 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
 
     pileups.length should be(24)
     val insertionPileups = pileups.filter(_.isInsertion)
-    insertionPileups.length should be(1)
+    insertionPileups.size should be(1)
   }
 
   sparkTest("test pileup flatmap parallelism 0; thresholdvariant caller; no variant") {
@@ -347,5 +347,4 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
     genotypes.head.getVariant.getAlternateAllele should be("C")
     genotypes.head.getAlleles.toList should be(List(GenotypeAllele.Alt, GenotypeAllele.Alt))
   }
-
 }
