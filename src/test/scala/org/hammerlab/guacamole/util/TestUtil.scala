@@ -214,7 +214,7 @@ object TestUtil extends Matchers {
   def loadReads(sc: SparkContext,
                 filename: String,
                 filters: Read.InputFilters = Read.InputFilters.empty,
-                config: Read.ReadLoadingConfig = Read.ReadLoadingConfig.default): ReadSet = {
+                config: ReadLoadingConfig = ReadLoadingConfig.default): ReadSet = {
     /* grab the path to the SAM file we've stashed in the resources subdirectory */
     val path = testDataPath(filename)
     assert(sc != null)

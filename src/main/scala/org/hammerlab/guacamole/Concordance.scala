@@ -123,7 +123,16 @@ object Concordance {
 
   def printGenotypeConcordance(args: ConcordanceArgs, genotypes: RDD[Genotype], sc: SparkContext) = {
     val trueGenotypes = Common.loadGenotypes(args.truthGenotypesFile, sc)
-    val (precision, recall, f1score) = computePrecisionAndRecall(genotypes, trueGenotypes, args.excludeSNVs, args.excludeIndels, args.chromosome)
+
+    val (precision, recall, f1score) =
+      computePrecisionAndRecall(
+        genotypes,
+        trueGenotypes,
+        args.excludeSNVs,
+        args.excludeIndels,
+        args.chromosome
+      )
+
     println("Precision\tRecall\tF1Score")
     println("%f\t%f\t%f".format(precision, recall, f1score))
   }
