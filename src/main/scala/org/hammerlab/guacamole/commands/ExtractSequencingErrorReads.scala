@@ -9,9 +9,12 @@ import org.apache.spark.mllib.linalg.Vectors
 import org.apache.spark.rdd.RDD
 import org.apache.spark.storage.StorageLevel
 import org.hammerlab.guacamole._
+import org.hammerlab.guacamole.distributed.LociPartitionUtils
+import org.hammerlab.guacamole.distributed.PileupFlatMapUtils._
+import org.hammerlab.guacamole.loci.LociMap
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.Read.InputFilters
-import org.hammerlab.guacamole.reads.{MappedRead, Read}
+import org.hammerlab.guacamole.reads.{MappedRead, PairedRead, Read}
 import org.hammerlab.guacamole.reference.{ReferenceBroadcast, ReferenceGenome}
 import org.kohsuke.args4j.{Argument, Option => Args4jOption}
 
@@ -23,16 +26,18 @@ object ExtractSequencingErrorReads {
                        contig: String,
                        startPosition: Long,
                        readSequence: String,
-                       qualities: Seq[Byte]) {
+                       qualities: Seq[Byte],
+                       isPositiveStrand: Boolean,
+                       isFirstInPair: Boolean) {
 
     override def toString: String = {
       val stringQualities = qualities.map(_.toInt.toString).mkString(" ")
-      s"${inputIndex}, ${isReference}, ${contig}, ${startPosition}, ${readSequence}, ${stringQualities}"
+      s"${inputIndex}, ${isReference}, ${contig}, ${startPosition}, ${readSequence}, ${stringQualities}, ${isPositiveStrand}, ${isFirstInPair}"
     }
   }
 
   object ResultRow {
-    val header = Seq("input, isReference, contig, startPosition, readSequence, qualities")
+    val header = Seq("input, isReference, contig, startPosition, readSequence, qualities, isPositiveStrand, isFirstInPair")
 
     def apply(inputIndex: Int, isReference: Boolean, read: MappedRead): ResultRow = {
       ResultRow(
@@ -41,12 +46,14 @@ object ExtractSequencingErrorReads {
         read.referenceContig,
         read.start,
         Bases.basesToString(read.sequence),
-        read.baseQualities
+        read.baseQualities,
+        read.isPositiveStrand,
+        read.isPaired && (read.asInstanceOf[PairedRead[MappedRead]].isFirstInPair)
       )
     }
   }
 
-  protected class Arguments extends DistributedUtil.Arguments with Common.Arguments.ReadLoadingConfigArgs {
+  protected class Arguments extends LociPartitionUtils.Arguments with Common.Arguments.ReadLoadingConfigArgs {
     @Args4jOption(name = "--out", required = true,
       usage = "Local file path to save the variant allele frequency histogram")
     var out: String = ""
@@ -83,13 +90,12 @@ object ExtractSequencingErrorReads {
             sc,
             bamFile._1,
             InputFilters.empty,
-            token = bamFile._2,
             contigLengthsFromDictionary = true,
             config = Common.Arguments.ReadLoadingConfigArgs.fromArguments(args)
           )
       )
 
-      val lociPartitions = DistributedUtil.partitionLociAccordingToArgs(
+      val lociPartitions = LociPartitionUtils.partitionLociAccordingToArgs(
         args,
         loci.result(readSets(0).contigLengths),
         readSets(0).mappedReads // Use the first set of reads as a proxy for read depth
@@ -117,8 +123,9 @@ object ExtractSequencingErrorReads {
     }
   }
 
+
   def process(reads: RDD[MappedRead], index: Int, loci: LociMap[Long], minReadDepth: Int, reference: ReferenceGenome): Seq[ResultRow] = {
-    val results = DistributedUtil.pileupFlatMap[ResultRow](
+    val results = pileupFlatMap[ResultRow](
       reads,
       loci,
       true,
