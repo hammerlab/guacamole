@@ -34,6 +34,37 @@ class ReadSetSuite extends GuacFunSuite {
     override def toString: String = msg()
   }
 
+  sparkTest("test BAM filtering by loci") {
+
+    def checkFilteredReadCount(loci: String, expectedCount: Int): Unit = {
+      withClue("filtering to loci %s: ".format(loci)) {
+        val reads = TestUtil.loadReads(
+          sc,
+          "gatk_mini_bundle_extract.bam",
+          filters = InputFilters(overlapsLoci = Some(LociSet.parse(loci)))
+        ).reads.collect
+
+        reads.length should be(expectedCount)
+      }
+    }
+
+    val lociAndExpectedCounts = Seq(
+      ("20:9999900", 0),
+      ("20:9999901", 1),
+      ("20:9999912", 2),
+      ("20:0-10000000", 9),
+      ("20:10270532", 1),
+      ("20:10270533", 0)
+    )
+
+
+    for {
+      (loci, expectedCount) <- lociAndExpectedCounts
+    } {
+      checkFilteredReadCount(loci, expectedCount)
+    }
+  }
+
   sparkTest("using different bam reading APIs on sam/bam files should give identical results") {
     def check(paths: Seq[String], filter: InputFilters): Unit = {
       withClue("using filter %s: ".format(filter)) {
@@ -50,7 +81,7 @@ class ReadSetSuite extends GuacFunSuite {
           path <- paths
           if path != firstPath
         } {
-          withClue(s"file $path vs standard ${firstPath}:\n") {
+          withClue(s"file $path vs standard $firstPath:\n") {
 
             val result =
               TestUtil.loadReads(

@@ -31,6 +31,8 @@ import org.hammerlab.guacamole.{Bases, Common}
 import org.seqdoop.hadoop_bam.util.SAMHeaderReader
 import org.seqdoop.hadoop_bam.{AnySAMInputFormat, BAMInputFormat, SAMRecordWritable}
 
+import scala.collection.JavaConversions._
+
 /**
  * The fields in the Read trait are common to any read, whether mapped (aligned) or not.
  */
@@ -289,8 +291,8 @@ object Read extends Logging {
     val sequenceDictionary = SequenceDictionary.fromSAMHeader(samHeader)
 
     if (filters.overlapsLoci.isEmpty || filename.endsWith(".bam")) {
-      val lociString = filters.overlapsLoci.map(_.result(contigLengths(sequenceDictionary)).toString)
-      lociString.foreach(conf.set(BAMInputFormat.INTERVALS_PROPERTY,_))
+      val bamIndexIntervals = filters.overlapsLoci.map(_.result(contigLengths(sequenceDictionary)).toHtsJDKIntervals)
+      bamIndexIntervals.foreach(BAMInputFormat.setIntervals(conf, _))
     } else if (filename.endsWith(".sam")) {
       log.warn(s"Loading SAM file: $filename with intervals specified. This requires parsing the entire file.")
     } else {
