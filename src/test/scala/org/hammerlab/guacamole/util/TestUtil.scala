@@ -29,7 +29,7 @@ import org.hammerlab.guacamole.loci.LociSet
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.Read.InputFilters
 import org.hammerlab.guacamole.reads._
-import org.hammerlab.guacamole.readsets.{ReadSet, ReadsRDD}
+import org.hammerlab.guacamole.readsets.{ReadSets, ReadsArgs, ReadsRDD}
 import org.hammerlab.guacamole.reference.ReferenceBroadcast.MapBackedReferenceSequence
 import org.hammerlab.guacamole.reference.{ContigSequence, ReferenceBroadcast}
 import org.hammerlab.guacamole.{Bases, GuacamoleKryoRegistrator}
@@ -219,11 +219,13 @@ object TestUtil extends Matchers {
                 filename: String,
                 filters: Read.InputFilters = Read.InputFilters.empty,
                 config: ReadLoadingConfig = ReadLoadingConfig.default): ReadsRDD = {
-    /* grab the path to the SAM file we've stashed in the resources subdirectory */
+    // Grab the path to the SAM file in the resources subdirectory.
     val path = testDataPath(filename)
     assert(sc != null)
     assert(sc.hadoopConfiguration != null)
-    ReadSet(sc, path, filters = filters, config = config).reads
+    val args = new ReadsArgs {}
+    args.reads = path
+    ReadSets.loadReads(args, sc, filters)._1
   }
 
   def loadTumorNormalPileup(tumorReads: Seq[MappedRead],

@@ -1,9 +1,10 @@
 package org.hammerlab.guacamole.readsets
 
 import org.apache.spark.SparkContext
+import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.models.SequenceDictionary
 import org.hammerlab.guacamole.{ContigLengths, PerSample}
-import org.hammerlab.guacamole.reads.{Read, ReadLoadingConfig}
+import org.hammerlab.guacamole.reads.{MappedRead, Read, ReadLoadingConfig}
 
 /**
  * A `ReadSets` contains reads from multiple inputs, and SequenceDictionary / contig-length information merged from
@@ -19,6 +20,7 @@ case class ReadSets(readsRDDs: PerSample[ReadsRDD],
 }
 
 object ReadSets {
+
   /**
     * Load reads from multiple files, merging their sequence dictionaries and verifying that they are consistent.
     */
@@ -53,10 +55,18 @@ object ReadSets {
       }
     }
 
-    ReadSets(readRDDs.map(ReadsRDD(_)).toVector, sequenceDictionary, contigLengths)
+    ReadSets(
+      readRDDs
+        .zip(filenames)
+        .map(ReadsRDD(_))
+        .toVector,
+      sequenceDictionary,
+      contigLengths
+    )
   }
 
-  def mergeSequenceDictionaries(filenames: Seq[String], dicts: Seq[SequenceDictionary]): SequenceDictionary = {
+  private[readsets] def mergeSequenceDictionaries(filenames: Seq[String],
+                                                  dicts: Seq[SequenceDictionary]): SequenceDictionary = {
     val records =
       (for {
         (filename, dict) <- filenames.zip(dicts)
@@ -91,7 +101,7 @@ object ReadSets {
   /**
     * Construct a map from contig name -> length of contig, using a SequenceDictionary.
     */
-  def getContigLengthsFromSequenceDictionary(sequenceDictionary: SequenceDictionary): ContigLengths = {
+  private def getContigLengthsFromSequenceDictionary(sequenceDictionary: SequenceDictionary): ContigLengths = {
     val builder = Map.newBuilder[String, Long]
     for {
       record <- sequenceDictionary.records
@@ -102,15 +112,43 @@ object ReadSets {
   }
 
   /**
+   * Load just the mapped reads from an input ReadSet.
+   */
+  def loadReads(args: ReadsArgs,
+                sc: SparkContext,
+                filters: Read.InputFilters): (ReadsRDD, ContigLengths) = {
+    val ReadSets(reads, _, contigLengths) =
+      ReadSets(
+        sc,
+        Seq(args.reads),
+        filters,
+        contigLengthsFromDictionary = !args.noSequenceDictionary,
+        config = ReadLoadingConfig(args)
+      )
+
+    (reads(0), contigLengths)
+  }
+
+  /**
+   * Load just the mapped reads from an input ReadSet.
+   */
+  def loadMappedReads(args: ReadsArgs,
+                      sc: SparkContext,
+                      filters: Read.InputFilters): (RDD[MappedRead], ContigLengths) = {
+    val (reads, contigLengths) = loadReads(args, sc, filters)
+    (reads.mappedReads, contigLengths)
+  }
+
+  /**
    * Given arguments for two sets of reads (tumor and normal), return a pair of (tumor, normal) read sets.
    *
    * @param args parsed arguments
    * @param sc spark context
    * @param filters input filters to apply
    */
-  def loadTumorNormalReadsFromArguments(args: TumorNormalReadsArgs,
-                                        sc: SparkContext,
-                                        filters: Read.InputFilters): (ReadsRDD, ReadsRDD, ContigLengths) = {
+  def loadTumorNormalReads(args: TumorNormalReadsArgs,
+                           sc: SparkContext,
+                           filters: Read.InputFilters): (ReadsRDD, ReadsRDD, ContigLengths) = {
 
     val ReadSets(readsets, _, contigLengths) =
       ReadSets(
@@ -118,7 +156,7 @@ object ReadSets {
         Seq(args.tumorReads, args.normalReads),
         filters,
         !args.noSequenceDictionary,
-        ReadLoadingConfigArgs.fromArguments(args)
+        ReadLoadingConfig(args)
       )
 
     (readsets(0), readsets(1), contigLengths)

@@ -81,14 +81,14 @@ object SomaticJoint {
 
       val loci = Common.lociFromArguments(args)
 
-      val ReadSets(readsRDDs, sequenceDictionary, contigLengths) =
-        inputsToReadSets(sc, inputs, loci, !args.noSequenceDictionary)
+      val readsets = inputsToReadSets(sc, inputs, loci, !args.noSequenceDictionary)
 
-      val forceCallLoci = if (args.forceCallLoci.nonEmpty || args.forceCallLociFromFile.nonEmpty) {
-        Common.loci(args.forceCallLoci, args.forceCallLociFromFile, contigLengths)
-      } else {
-        LociSet.empty
-      }
+      val forceCallLoci =
+        if (args.forceCallLoci.nonEmpty || args.forceCallLociFromFile.nonEmpty) {
+          Common.loci(args.forceCallLoci, args.forceCallLociFromFile, readsets.contigLengths)
+        } else {
+          LociSet.empty
+        }
 
       if (forceCallLoci.nonEmpty) {
         Common.progress(
@@ -105,10 +105,10 @@ object SomaticJoint {
       val calls = makeCalls(
         sc,
         inputs,
-        readsRDDs,
+        readsets,
         parameters,
         reference,
-        loci.result(contigLengths),
+        loci.result(readsets.contigLengths),
         forceCallLoci = forceCallLoci,
         onlySomatic = args.onlySomatic,
         includeFiltered = args.includeFiltered,
@@ -128,7 +128,7 @@ object SomaticJoint {
         collectedCalls,
         inputs,
         parameters,
-        sequenceDictionary.toSAMSequenceDictionary,
+        readsets.sequenceDictionary.toSAMSequenceDictionary,
         forceCallLoci,
         reference,
         onlySomatic = args.onlySomatic,
@@ -152,7 +152,7 @@ object SomaticJoint {
 
   def makeCalls(sc: SparkContext,
                 inputs: InputCollection,
-                readsRDDs: PerSample[ReadsRDD],
+                readsRDDs: ReadSets,
                 parameters: Parameters,
                 reference: ReferenceBroadcast,
                 loci: LociSet,
@@ -161,15 +161,15 @@ object SomaticJoint {
                 includeFiltered: Boolean = false,
                 distributedUtilArguments: LociPartitionUtils.Arguments = new LociPartitionUtils.Arguments {}): RDD[MultiSampleMultiAlleleEvidence] = {
 
-    // When mapping over pileups, at locus x we call variants at locus x + 1. Therefore we subtract 1 from the user-
-    // specified loci.
     val broadcastForceCallLoci = sc.broadcast(forceCallLoci)
 
-    val mappedReadRDDs = readsRDDs.map(_.mappedReads)
+    val mappedReadRDDs = readsRDDs.mappedReads
 
     val lociPartitions =
       partitionLociAccordingToArgs(
         distributedUtilArguments,
+        // When mapping over pileups, at locus x we call variants at locus x + 1. Therefore we subtract 1 from the user-
+        // specified loci.
         lociSetMinusOne(loci),
         mappedReadRDDs: _*
       )

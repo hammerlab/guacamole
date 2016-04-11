@@ -28,7 +28,7 @@ import org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociUnifo
 import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMap
 import org.hammerlab.guacamole.loci.LociSet
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.reads.MappedRead
+import org.hammerlab.guacamole.reads.{MappedRead, ReadLoadingConfig}
 import org.hammerlab.guacamole.reads.Read.InputFilters
 import org.hammerlab.guacamole.readsets.{ReadLoadingConfigArgs, ReadSets}
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
@@ -83,7 +83,7 @@ object VariantSupport {
           sc,
           args.bams,
           InputFilters.empty,
-          config = ReadLoadingConfigArgs.fromArguments(args)
+          config = ReadLoadingConfig(args)
         ).mappedReads
 
 

@@ -1,5 +1,7 @@
 package org.hammerlab.guacamole.reads
 
+import org.hammerlab.guacamole.readsets.ReadLoadingConfigArgs
+
 /**
  * Configuration for read loading. These options should affect performance but not results.
  *
@@ -9,5 +11,14 @@ case class ReadLoadingConfig(bamReaderAPI: BamReaderAPI.BamReaderAPI = BamReader
 
 object ReadLoadingConfig {
   val default = ReadLoadingConfig()
+
+  /** Given commandline arguments, return a ReadLoadingConfig. */
+  def apply(args: ReadLoadingConfigArgs): ReadLoadingConfig = {
+    ReadLoadingConfig(
+      BamReaderAPI.withNameCaseInsensitive(
+        args.bamReaderAPI
+      )
+    )
+  }
 }
 

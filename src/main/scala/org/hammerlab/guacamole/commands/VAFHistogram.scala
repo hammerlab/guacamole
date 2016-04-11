@@ -14,7 +14,7 @@ import org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociAccor
 import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMap
 import org.hammerlab.guacamole.loci.LociMap
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.reads.{MappedRead, Read}
+import org.hammerlab.guacamole.reads.{MappedRead, Read, ReadLoadingConfig}
 import org.hammerlab.guacamole.readsets.{ReadLoadingConfigArgs, ReadSets}
 import org.hammerlab.guacamole.reference.{ReferenceBroadcast, ReferenceGenome}
 import org.kohsuke.args4j.{Argument, Option => Args4jOption}
@@ -116,7 +116,7 @@ object VAFHistogram {
           args.bams,
           filters,
           contigLengthsFromDictionary = true,
-          config = ReadLoadingConfigArgs.fromArguments(args)
+          config = ReadLoadingConfig(args)
         )
 
       val lociPartitions = partitionLociAccordingToArgs(

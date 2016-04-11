@@ -12,7 +12,7 @@ import org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociAccor
 import org.hammerlab.guacamole.distributed.WindowFlatMapUtils.windowFlatMapWithState
 import org.hammerlab.guacamole.loci.LociMap
 import org.hammerlab.guacamole.reads.{MappedRead, Read}
-import org.hammerlab.guacamole.readsets.{GermlineCallerArgs, ReadSet}
+import org.hammerlab.guacamole.readsets.{GermlineCallerArgs, ReadSets}
 import org.hammerlab.guacamole.reference.{ReferenceBroadcast, ReferenceGenome}
 import org.hammerlab.guacamole.variants.{Allele, AlleleConversions, AlleleEvidence, CalledAllele}
 import org.hammerlab.guacamole.windowing.SlidingWindow
@@ -248,7 +248,7 @@ object GermlineAssemblyCaller {
       val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
       val loci = Common.lociFromArguments(args)
       val (mappedReads, contigLengths) =
-        ReadSet.loadMappedReadsFromArguments(
+        ReadSets.loadMappedReads(
           args,
           sc,
           Read.InputFilters(

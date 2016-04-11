@@ -26,7 +26,7 @@ import org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociAccor
 import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMap
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.Read
-import org.hammerlab.guacamole.readsets.{GermlineCallerArgs, ReadSet}
+import org.hammerlab.guacamole.readsets.{GermlineCallerArgs, ReadSets}
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.variants.Allele
 import org.hammerlab.guacamole.{Bases, Common, Concordance, DelayedMessages, SparkCommand}
@@ -66,7 +66,7 @@ object GermlineThreshold {
       val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
       val loci = Common.lociFromArguments(args)
       val (mappedReads, contigLengths) =
-        ReadSet.loadMappedReadsFromArguments(
+        ReadSets.loadMappedReads(
           args,
           sc,
           Read.InputFilters(

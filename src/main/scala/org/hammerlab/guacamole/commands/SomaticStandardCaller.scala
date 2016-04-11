@@ -77,7 +77,7 @@ object SomaticStandard {
       val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
 
       val (tumorReads, normalReads, contigLengths) =
-        ReadSets.loadTumorNormalReadsFromArguments(
+        ReadSets.loadTumorNormalReads(
           args,
           sc,
           filters
