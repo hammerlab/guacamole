@@ -48,7 +48,7 @@ object VariantLocus {
 
 object VAFHistogram {
 
-  protected class Arguments extends LociPartitionUtils.Arguments with Common.Arguments.ReadLoadingConfigArgs {
+  protected class Arguments extends LociPartitionUtils.Arguments {
 
     @Args4jOption(name = "--out", required = false, forbids = Array("--local-out"),
       usage = "HDFS file path to save the variant allele frequency histogram")
@@ -112,8 +112,7 @@ object VAFHistogram {
             sc,
             bamFile._1,
             InputFilters.empty,
-            contigLengthsFromDictionary = true,
-            config = Common.Arguments.ReadLoadingConfigArgs.fromArguments(args)
+            contigLengthsFromDictionary = true
           )
       )
 

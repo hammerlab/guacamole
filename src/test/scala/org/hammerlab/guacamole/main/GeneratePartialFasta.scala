@@ -24,7 +24,7 @@ import org.kohsuke.args4j.{Argument, Option => Args4jOption}
  */
 object GeneratePartialFasta extends Logging {
 
-  protected class Arguments extends LociPartitionUtils.Arguments with Common.Arguments.ReadLoadingConfigArgs with Common.Arguments.Reference {
+  protected class Arguments extends LociPartitionUtils.Arguments with Common.Arguments.Reference {
     @Args4jOption(name = "--output", metaVar = "OUT", required = true, aliases = Array("-o"),
       usage = "Output path for partial fasta")
     var output: String = ""
@@ -47,8 +47,7 @@ object GeneratePartialFasta extends Logging {
       ReadSet(
         sc,
         fileAndIndex._1,
-        InputFilters.empty,
-        config = Common.Arguments.ReadLoadingConfigArgs.fromArguments(args)
+        InputFilters.empty
       )
     )
 

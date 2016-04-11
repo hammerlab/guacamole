@@ -24,9 +24,7 @@ import org.bdgenomics.adam.rdd.{ADAMContext, ADAMSaveAnyArgs}
 import org.hammerlab.guacamole.loci.LociSet
 import org.hammerlab.guacamole.reads.Read.InputFilters
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
-import org.hammerlab.guacamole.util.TestUtil
 import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
-import org.scalatest.Matchers
 
 class ReadSetSuite extends GuacFunSuite {
 
@@ -41,34 +39,24 @@ class ReadSetSuite extends GuacFunSuite {
       withClue("using filter %s: ".format(filter)) {
 
         val firstPath = paths.head
-
-        val configs =
-          Read.ReadLoadingConfig.BamReaderAPI.values
-            .map(api => Read.ReadLoadingConfig(bamReaderAPI = api))
-
-        val firstConfig = configs.head
-
         val standard =
           TestUtil.loadReads(
             sc,
             paths.head,
-            filter,
-            config = configs.head
+            filter
           ).reads.collect
 
         for {
-          config <- configs
           path <- paths
-          if config != firstConfig || path != firstPath
+          if path != firstPath
         } {
-          withClue(s"file $path with config $config vs standard ${firstPath} with config ${firstConfig}:\n") {
+          withClue(s"file $path vs standard ${firstPath}:\n") {
 
             val result =
               TestUtil.loadReads(
                 sc,
                 path,
-                filter,
-                config = config
+                filter
               ).reads.collect
 
             assert(

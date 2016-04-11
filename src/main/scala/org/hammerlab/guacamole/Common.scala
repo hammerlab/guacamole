@@ -33,7 +33,6 @@ import org.bdgenomics.adam.rdd.ADAMContext._
 import org.bdgenomics.formats.avro.Genotype
 import org.bdgenomics.utils.cli.{Args4jBase, ParquetArgs}
 import org.codehaus.jackson.JsonFactory
-import org.hammerlab.guacamole.Common.Arguments.ReadLoadingConfigArgs
 import org.hammerlab.guacamole.Concordance.ConcordanceArgs
 import org.hammerlab.guacamole.distributed.LociPartitionUtils
 import org.hammerlab.guacamole.loci.LociSet
@@ -70,28 +69,14 @@ object Common extends Logging {
       var noSequenceDictionary: Boolean = false
     }
 
-    /** Argument for configuring read loading with a Read.ReadLoadingConfig object. */
-    trait ReadLoadingConfigArgs extends Base {
-      @Args4jOption(name = "--bam-reader-api",
-        usage = "API to use for reading BAMs, one of: best (use samtools if file local), samtools, hadoopbam")
-      var bamReaderAPI: String = "best"
-    }
-    object ReadLoadingConfigArgs {
-      /** Given commandline arguments, return a ReadLoadingConfig. */
-      def fromArguments(args: ReadLoadingConfigArgs): Read.ReadLoadingConfig = {
-        Read.ReadLoadingConfig(
-          bamReaderAPI = Read.ReadLoadingConfig.BamReaderAPI.withNameCaseInsensitive(args.bamReaderAPI))
-      }
-    }
-
     /** Argument for accepting a single set of reads (for non-somatic variant calling). */
-    trait Reads extends Base with NoSequenceDictionary with ReadLoadingConfigArgs {
+    trait Reads extends Base with NoSequenceDictionary  {
       @Args4jOption(name = "--reads", metaVar = "X", required = true, usage = "Aligned reads")
       var reads: String = ""
     }
 
     /** Arguments for accepting two sets of reads (tumor + normal). */
-    trait TumorNormalReads extends Base with NoSequenceDictionary with ReadLoadingConfigArgs {
+    trait TumorNormalReads extends Base with NoSequenceDictionary {
       @Args4jOption(name = "--normal-reads", metaVar = "X", required = true, usage = "Aligned reads: normal")
       var normalReads: String = ""
 
@@ -162,8 +147,7 @@ object Common extends Logging {
       sc,
       args.reads,
       filters,
-      contigLengthsFromDictionary = !args.noSequenceDictionary,
-      config = ReadLoadingConfigArgs.fromArguments(args)
+      contigLengthsFromDictionary = !args.noSequenceDictionary
     )
   }
 
@@ -183,16 +167,14 @@ object Common extends Logging {
       sc,
       args.tumorReads,
       filters,
-      !args.noSequenceDictionary,
-      ReadLoadingConfigArgs.fromArguments(args)
+      !args.noSequenceDictionary
     )
 
     val normal = ReadSet(
       sc,
       args.normalReads,
       filters,
-      !args.noSequenceDictionary,
-      ReadLoadingConfigArgs.fromArguments(args)
+      !args.noSequenceDictionary
     )
     (tumor, normal)
   }

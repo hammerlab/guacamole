@@ -35,7 +35,7 @@ import org.kohsuke.args4j.{Argument, Option => Args4jOption}
 
 object VariantSupport {
 
-  protected class Arguments extends LociPartitionUtils.Arguments with Common.Arguments.ReadLoadingConfigArgs {
+  protected class Arguments extends LociPartitionUtils.Arguments {
     @Args4jOption(name = "--input-variant", required = true, aliases = Array("-v"),
       usage = "")
     var variants: String = ""
@@ -81,8 +81,7 @@ object VariantSupport {
           ReadSet(
             sc,
             bamFile._1,
-            InputFilters.empty,
-            config = Common.Arguments.ReadLoadingConfigArgs.fromArguments(args)
+            InputFilters.empty
           ).mappedReads
       )
 
