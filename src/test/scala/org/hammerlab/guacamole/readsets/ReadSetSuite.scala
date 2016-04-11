@@ -19,6 +19,7 @@
 package org.hammerlab.guacamole.readsets
 
 import org.apache.parquet.hadoop.metadata.CompressionCodecName
+import org.bdgenomics.adam.models.{SequenceDictionary, SequenceRecord}
 import org.bdgenomics.adam.rdd.read.AlignmentRecordRDDFunctions
 import org.bdgenomics.adam.rdd.{ADAMContext, ADAMSaveAnyArgs}
 import org.hammerlab.guacamole.loci.LociSet
@@ -92,14 +93,14 @@ class ReadSetSuite extends GuacFunSuite {
       InputFilters(mapped = true, nonDuplicate = true),
       InputFilters(overlapsLoci = Some(LociSet.parse("20:10220390-10220490")))
     ).foreach(filter => {
-        check(Seq("gatk_mini_bundle_extract.bam", "gatk_mini_bundle_extract.sam"), filter)
-      })
+      check(Seq("gatk_mini_bundle_extract.bam", "gatk_mini_bundle_extract.sam"), filter)
+    })
 
     Seq(
       InputFilters(overlapsLoci = Some(LociSet.parse("19:147033")))
     ).foreach(filter => {
-        check(Seq("synth1.normal.100k-200k.withmd.bam", "synth1.normal.100k-200k.withmd.sam"), filter)
-      })
+      check(Seq("synth1.normal.100k-200k.withmd.bam", "synth1.normal.100k-200k.withmd.sam"), filter)
+    })
   }
 
   sparkTest("load and test filters") {
@@ -163,5 +164,42 @@ class ReadSetSuite extends GuacFunSuite {
       deserialized.isPositiveStrand should equal(read.isPositiveStrand)
       deserialized.isPaired should equal(read.isPaired)
     }
+  }
+
+  def sequenceDictionary(records: (String, Int, String)*): SequenceDictionary =
+    new SequenceDictionary(
+      for {
+        (name, length, md5) <- records.toVector
+      } yield {
+        SequenceRecord(name, length, md5)
+      }
+    )
+
+  test("merge identical seqdicts") {
+    val dict1 = sequenceDictionary(("1", 111, "aaa"), ("2", 222, "bbb"))
+    val dict2 = sequenceDictionary(("1", 111, "aaa"), ("2", 222, "bbb"))
+    val merged = ReadSets.mergeSequenceDictionaries(List("f1", "f2"), List(dict1, dict2))
+    merged should be(dict1)
+    merged should be(dict2)
+  }
+
+  test("merge different seqdicts") {
+    val dict1 = sequenceDictionary(("1", 111, "aaa"), ("2", 222, "bbb"))
+    val dict2 = sequenceDictionary(("1", 111, "aaa"), ("3", 333, "ccc"))
+
+    val merged = ReadSets.mergeSequenceDictionaries(List("f1", "f2"), List(dict1, dict2))
+
+    val expected = sequenceDictionary(("1", 111, "aaa"), ("2", 222, "bbb"), ("3", 333, "ccc"))
+
+    merged should be(expected)
+  }
+
+  test("throw on conflicting seqdicts") {
+    val dict1 = sequenceDictionary(("1", 111, "aaa"), ("2", 222, "bbb"))
+    val dict2 = sequenceDictionary(("1", 111, "aaa"), ("2", 333, "ccc"))
+
+    (intercept[IllegalArgumentException] {
+      ReadSets.mergeSequenceDictionaries(List("f1", "f2"), List(dict1, dict2))
+    }).getMessage should startWith("Conflicting sequence records for 2")
   }
 }
