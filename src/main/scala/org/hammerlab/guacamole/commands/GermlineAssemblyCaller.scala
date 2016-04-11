@@ -5,18 +5,17 @@ import breeze.stats.{mean, median}
 import htsjdk.samtools.CigarOperator
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
-import org.hammerlab.guacamole.Common.Arguments.GermlineCallerArgs
 import org.hammerlab.guacamole._
 import org.hammerlab.guacamole.alignment.AffineGapPenaltyAlignment
 import org.hammerlab.guacamole.assembly.DeBruijnGraph
-import org.hammerlab.guacamole.distributed.{LociPartitionUtils, WindowFlatMapUtils}
+import org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociAccordingToArgs
+import org.hammerlab.guacamole.distributed.WindowFlatMapUtils.windowFlatMapWithState
 import org.hammerlab.guacamole.loci.LociMap
-import LociPartitionUtils.partitionLociAccordingToArgs
 import org.hammerlab.guacamole.reads.{MappedRead, Read}
+import org.hammerlab.guacamole.readsets.{GermlineCallerArgs, ReadSet}
 import org.hammerlab.guacamole.reference.{ReferenceBroadcast, ReferenceGenome}
 import org.hammerlab.guacamole.variants.{Allele, AlleleConversions, AlleleEvidence, CalledAllele}
 import org.hammerlab.guacamole.windowing.SlidingWindow
-import WindowFlatMapUtils.windowFlatMapWithState
 import org.kohsuke.args4j.{Option => Args4jOption}
 
 import scala.collection.JavaConversions._
@@ -249,7 +248,7 @@ object GermlineAssemblyCaller {
       val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
       val loci = Common.lociFromArguments(args)
       val (mappedReads, contigLengths) =
-        Common.loadReadsFromArguments(
+        ReadSet.loadMappedReadsFromArguments(
           args,
           sc,
           Read.InputFilters(

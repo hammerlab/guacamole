@@ -7,7 +7,7 @@ import org.bdgenomics.utils.cli.Args4j
 import org.hammerlab.guacamole._
 import org.hammerlab.guacamole.distributed.LociPartitionUtils
 import org.hammerlab.guacamole.reads.Read.InputFilters
-import org.hammerlab.guacamole.readsets.ReadSets
+import org.hammerlab.guacamole.readsets.{ReadLoadingConfigArgs, ReadSets}
 import org.hammerlab.guacamole.reference.{ContigNotFound, ReferenceBroadcast}
 import org.kohsuke.args4j.{Argument, Option => Args4jOption}
 
@@ -25,7 +25,7 @@ import org.kohsuke.args4j.{Argument, Option => Args4jOption}
  */
 object GeneratePartialFasta extends Logging {
 
-  protected class Arguments extends LociPartitionUtils.Arguments with Common.Arguments.ReadLoadingConfigArgs with Common.Arguments.Reference {
+  protected class Arguments extends LociPartitionUtils.Arguments with ReadLoadingConfigArgs with Common.Arguments.Reference {
     @Args4jOption(name = "--output", metaVar = "OUT", required = true, aliases = Array("-o"),
       usage = "Output path for partial fasta")
     var output: String = ""
@@ -49,7 +49,7 @@ object GeneratePartialFasta extends Logging {
         sc,
         args.bams,
         InputFilters.empty,
-        config = Common.Arguments.ReadLoadingConfigArgs.fromArguments(args)
+        config = ReadLoadingConfigArgs.fromArguments(args)
       )
 
     val reads = sc.union(readsets.mappedReads)

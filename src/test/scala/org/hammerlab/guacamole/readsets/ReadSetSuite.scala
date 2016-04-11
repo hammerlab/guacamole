@@ -24,7 +24,7 @@ import org.bdgenomics.adam.rdd.read.AlignmentRecordRDDFunctions
 import org.bdgenomics.adam.rdd.{ADAMContext, ADAMSaveAnyArgs}
 import org.hammerlab.guacamole.loci.LociSet
 import org.hammerlab.guacamole.reads.Read.InputFilters
-import org.hammerlab.guacamole.reads.{MappedRead, Read}
+import org.hammerlab.guacamole.reads.{BamReaderAPI, MappedRead, Read, ReadLoadingConfig}
 import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
 
 class ReadSetSuite extends GuacFunSuite {
@@ -39,9 +39,7 @@ class ReadSetSuite extends GuacFunSuite {
 
         val firstPath = paths.head
 
-        val configs =
-          Read.ReadLoadingConfig.BamReaderAPI.values
-            .map(api => Read.ReadLoadingConfig(bamReaderAPI = api))
+        val configs = BamReaderAPI.values.map(api => ReadLoadingConfig(bamReaderAPI = api))
 
         val firstConfig = configs.head
 

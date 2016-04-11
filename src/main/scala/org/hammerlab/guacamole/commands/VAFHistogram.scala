@@ -8,16 +8,14 @@ import org.apache.spark.mllib.clustering.{GaussianMixture, GaussianMixtureModel}
 import org.apache.spark.mllib.linalg.Vectors
 import org.apache.spark.rdd.RDD
 import org.apache.spark.storage.StorageLevel
-import org.hammerlab.guacamole.Common.Arguments.ReadLoadingConfigArgs
 import org.hammerlab.guacamole._
 import org.hammerlab.guacamole.distributed.LociPartitionUtils
 import org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociAccordingToArgs
 import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMap
 import org.hammerlab.guacamole.loci.LociMap
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.reads.Read.InputFilters
 import org.hammerlab.guacamole.reads.{MappedRead, Read}
-import org.hammerlab.guacamole.readsets.ReadSets
+import org.hammerlab.guacamole.readsets.{ReadLoadingConfigArgs, ReadSets}
 import org.hammerlab.guacamole.reference.{ReferenceBroadcast, ReferenceGenome}
 import org.kohsuke.args4j.{Argument, Option => Args4jOption}
 
@@ -50,7 +48,7 @@ object VariantLocus {
 
 object VAFHistogram {
 
-  protected class Arguments extends LociPartitionUtils.Arguments with Common.Arguments.ReadLoadingConfigArgs {
+  protected class Arguments extends LociPartitionUtils.Arguments with ReadLoadingConfigArgs {
 
     @Args4jOption(name = "--out", required = false, forbids = Array("--local-out"),
       usage = "HDFS file path to save the variant allele frequency histogram")
@@ -102,17 +100,21 @@ object VAFHistogram {
       val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
 
       val loci = Common.lociFromArguments(args)
-      val filters = Read.InputFilters(
-        overlapsLoci = Some(loci),
-        nonDuplicate = true,
-        passedVendorQualityChecks = true)
+
+      val filters =
+        Read.InputFilters(
+          overlapsLoci = Some(loci),
+          nonDuplicate = true,
+          passedVendorQualityChecks = true
+        )
+
       val samplePercent = args.samplePercent
 
       val ReadSets(readsRDDs, _, contigLengths) =
         ReadSets(
           sc,
           args.bams,
-          InputFilters.empty,
+          filters,
           contigLengthsFromDictionary = true,
           config = ReadLoadingConfigArgs.fromArguments(args)
         )

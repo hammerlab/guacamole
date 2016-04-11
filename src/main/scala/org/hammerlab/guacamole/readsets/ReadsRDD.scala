@@ -3,6 +3,9 @@ package org.hammerlab.guacamole.readsets
 import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole.reads.{MappedRead, PairedRead, Read}
 
+/**
+ * A thin wrapper around an RDD[Read], with helpers to filter to mapped and paired-mapped reads.
+ */
 case class ReadsRDD(reads: RDD[Read]) {
   lazy val mappedReads =
     reads.flatMap {

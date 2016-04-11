@@ -22,22 +22,21 @@ import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.rdd.ADAMContext
 import org.bdgenomics.formats.avro.Variant
-import org.hammerlab.guacamole.Common.Arguments.ReadLoadingConfigArgs
 import org.hammerlab.guacamole._
+import org.hammerlab.guacamole.distributed.LociPartitionUtils
 import org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociUniformly
 import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMap
-import org.hammerlab.guacamole.distributed.{LociPartitionUtils, PileupFlatMapUtils}
 import org.hammerlab.guacamole.loci.LociSet
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.reads.Read.InputFilters
-import org.hammerlab.guacamole.readsets.ReadSets
+import org.hammerlab.guacamole.readsets.{ReadLoadingConfigArgs, ReadSets}
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.kohsuke.args4j.{Argument, Option => Args4jOption}
 
 object VariantSupport {
 
-  protected class Arguments extends LociPartitionUtils.Arguments with Common.Arguments.ReadLoadingConfigArgs {
+  protected class Arguments extends LociPartitionUtils.Arguments with ReadLoadingConfigArgs {
     @Args4jOption(name = "--input-variant", required = true, aliases = Array("-v"),
       usage = "")
     var variants: String = ""

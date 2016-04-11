@@ -84,7 +84,8 @@ object Read extends Logging {
     overlapsLoci: Option[LociSet.Builder],
     nonDuplicate: Boolean,
     passedVendorQualityChecks: Boolean,
-    isPaired: Boolean) {}
+    isPaired: Boolean)
+
   object InputFilters {
     val empty = InputFilters()
 
@@ -252,38 +253,6 @@ object Read extends Logging {
   }
 
   /**
-   * Configuration for read loading. These options should affect performance but not results.
-   *
-   * @param bamReaderAPI which library to use to load SAM and BAM files
-   */
-  case class ReadLoadingConfig(
-    bamReaderAPI: ReadLoadingConfig.BamReaderAPI.BamReaderAPI = ReadLoadingConfig.BamReaderAPI.Best) {}
-  object ReadLoadingConfig {
-    val default = ReadLoadingConfig()
-
-    /**
-     * Specification of which API to use when reading BAM and SAM files.
-     *
-     * Best - use Samtools when the file is on the local filesystem otherwise HadoopBAM
-     * Samtools - use Samtools. This supports using the bam index when available.
-     * HadoopBAM - use HadoopBAM. This supports reading the file in parallel when it is on HDFS.
-     */
-    object BamReaderAPI extends Enumeration {
-      type BamReaderAPI = Value
-      val Best, Samtools, HadoopBAM = Value
-
-      /**
-       * Like Enumeration.withName but case insensitive
-       */
-      def withNameCaseInsensitive(s: String): Value = {
-        val result = values.find(_.toString.compareToIgnoreCase(s) == 0)
-        result.getOrElse(throw new IllegalArgumentException(
-          "Unsupported bam reading API: %s. Valid APIs are: %s".format(s, values.map(_.toString).mkString(", "))))
-      }
-    }
-  }
-
-  /**
    * Given a filename and a spark context, return a pair (RDD, SequenceDictionary), where the first element is an RDD
    * of Reads, and the second element is the Sequence Dictionary giving info (e.g. length) about the contigs in the BAM.
    *
@@ -322,8 +291,9 @@ object Read extends Logging {
 
     val path = new Path(filename)
     val scheme = path.getFileSystem(sc.hadoopConfiguration).getScheme
-    val useSamtools = config.bamReaderAPI == ReadLoadingConfig.BamReaderAPI.Samtools ||
-      (config.bamReaderAPI == ReadLoadingConfig.BamReaderAPI.Best && scheme == "file")
+    val useSamtools =
+      config.bamReaderAPI == BamReaderAPI.Samtools ||
+        (config.bamReaderAPI == BamReaderAPI.Best && scheme == "file")
 
     if (useSamtools) {
       // Load with samtools

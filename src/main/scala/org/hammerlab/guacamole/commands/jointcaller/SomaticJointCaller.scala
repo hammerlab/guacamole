@@ -3,7 +3,6 @@ package org.hammerlab.guacamole.commands.jointcaller
 import htsjdk.samtools.SAMSequenceDictionary
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
-import org.hammerlab.guacamole.Common.Arguments.NoSequenceDictionary
 import org.hammerlab.guacamole._
 import org.hammerlab.guacamole.commands.jointcaller.evidence.{MultiSampleMultiAlleleEvidence, MultiSampleSingleAlleleEvidence}
 import org.hammerlab.guacamole.distributed.LociPartitionUtils
@@ -11,12 +10,17 @@ import org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociAccor
 import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMapMultipleRDDs
 import org.hammerlab.guacamole.loci.LociSet
 import org.hammerlab.guacamole.reads._
-import org.hammerlab.guacamole.readsets.{ReadSets, ReadsRDD}
+import org.hammerlab.guacamole.readsets.{NoSequenceDictionaryArgs, ReadSets, ReadsRDD}
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.kohsuke.args4j.{Option => Args4jOption}
 
 object SomaticJoint {
-  class Arguments extends Parameters.CommandlineArguments with LociPartitionUtils.Arguments with NoSequenceDictionary with InputCollection.Arguments {
+  class Arguments
+    extends Parameters.CommandlineArguments
+      with LociPartitionUtils.Arguments
+      with NoSequenceDictionaryArgs
+      with InputCollection.Arguments {
+
     @Args4jOption(name = "--out", usage = "Output path for all variants in VCF. Default: no output")
     var out: String = ""
 

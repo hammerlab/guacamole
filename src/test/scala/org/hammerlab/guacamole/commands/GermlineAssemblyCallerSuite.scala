@@ -7,6 +7,7 @@ import org.hammerlab.guacamole.distributed.LociPartitionUtils
 import org.hammerlab.guacamole.loci.LociSet
 import org.hammerlab.guacamole.util.TestUtil
 import org.hammerlab.guacamole.reads.Read
+import org.hammerlab.guacamole.readsets.ReadSet
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.variants.CalledAllele
 import org.scalatest.{BeforeAndAfterAll, FunSuite, Matchers}
@@ -48,7 +49,7 @@ class GermlineAssemblyCallerSuite extends FunSuite with Matchers with BeforeAndA
     val lociBuilder = LociSet.parse(s"$contig:$windowStart-$windowEnd")
 
     val (mappedReads, contigLengths) =
-      Common.loadReadsFromArguments(
+      ReadSet.loadMappedReadsFromArguments(
         args,
         sc,
         Read.InputFilters(

@@ -22,7 +22,6 @@ import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.rdd.ADAMContext
 import org.bdgenomics.formats.avro.DatabaseVariantAnnotation
-import org.hammerlab.guacamole.Common.Arguments.SomaticCallerArgs
 import org.hammerlab.guacamole.distributed.{LociPartitionUtils, PileupFlatMapUtils}
 import org.hammerlab.guacamole.filters.PileupFilter.PileupFilterArguments
 import org.hammerlab.guacamole.filters.SomaticGenotypeFilter.SomaticGenotypeFilterArguments
@@ -32,6 +31,7 @@ import LociPartitionUtils.partitionLociAccordingToArgs
 import org.hammerlab.guacamole.pileup.Pileup
 import PileupFlatMapUtils.pileupFlatMapTwoRDDs
 import org.hammerlab.guacamole.reads.Read
+import org.hammerlab.guacamole.readsets.{ReadSets, SomaticCallerArgs}
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.variants.{Allele, AlleleConversions, AlleleEvidence, CalledSomaticAllele}
 import org.hammerlab.guacamole.{Common, DelayedMessages, SparkCommand}
@@ -77,7 +77,7 @@ object SomaticStandard {
       val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
 
       val (tumorReads, normalReads, contigLengths) =
-        Common.loadTumorNormalReadsFromArguments(
+        ReadSets.loadTumorNormalReadsFromArguments(
           args,
           sc,
           filters

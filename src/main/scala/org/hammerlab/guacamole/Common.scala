@@ -33,13 +33,11 @@ import org.bdgenomics.adam.rdd.ADAMContext._
 import org.bdgenomics.formats.avro.Genotype
 import org.bdgenomics.utils.cli.{Args4jBase, ParquetArgs}
 import org.codehaus.jackson.JsonFactory
-import org.hammerlab.guacamole.Common.Arguments.ReadLoadingConfigArgs
 import org.hammerlab.guacamole.Concordance.ConcordanceArgs
 import org.hammerlab.guacamole.distributed.LociPartitionUtils
 import org.hammerlab.guacamole.loci.LociSet
 import org.hammerlab.guacamole.reads.Read
-import org.hammerlab.guacamole.reads.{MappedRead, Read}
-import org.hammerlab.guacamole.readsets.{ReadSet, ReadSets, ReadsRDD}
+import org.hammerlab.guacamole.readsets.{ReadLoadingConfigArgs, ReadSets, ReadsArgs, ReadsRDD, TumorNormalReadsArgs}
 import org.kohsuke.args4j.{Option => Args4jOption}
 
 /**
@@ -63,42 +61,6 @@ object Common extends Logging {
       @Args4jOption(name = "--loci-from-file", usage = "Path to file giving loci at which to call variants.",
         forbids = Array("--loci"))
       var lociFromFile: String = ""
-    }
-
-    /** Argument for using / not using sequence dictionaries to get contigs and lengths. */
-    trait NoSequenceDictionary extends Base {
-      @Args4jOption(name = "--no-sequence-dictionary",
-        usage = "If set, get contigs and lengths directly from reads instead of from sequence dictionary.")
-      var noSequenceDictionary: Boolean = false
-    }
-
-    /** Argument for configuring read loading with a Read.ReadLoadingConfig object. */
-    trait ReadLoadingConfigArgs extends Base {
-      @Args4jOption(name = "--bam-reader-api",
-        usage = "API to use for reading BAMs, one of: best (use samtools if file local), samtools, hadoopbam")
-      var bamReaderAPI: String = "best"
-    }
-    object ReadLoadingConfigArgs {
-      /** Given commandline arguments, return a ReadLoadingConfig. */
-      def fromArguments(args: ReadLoadingConfigArgs): Read.ReadLoadingConfig = {
-        Read.ReadLoadingConfig(
-          bamReaderAPI = Read.ReadLoadingConfig.BamReaderAPI.withNameCaseInsensitive(args.bamReaderAPI))
-      }
-    }
-
-    /** Argument for accepting a single set of reads (for non-somatic variant calling). */
-    trait Reads extends Base with NoSequenceDictionary with ReadLoadingConfigArgs {
-      @Args4jOption(name = "--reads", metaVar = "X", required = true, usage = "Aligned reads")
-      var reads: String = ""
-    }
-
-    /** Arguments for accepting two sets of reads (tumor + normal). */
-    trait TumorNormalReads extends Base with NoSequenceDictionary with ReadLoadingConfigArgs {
-      @Args4jOption(name = "--normal-reads", metaVar = "X", required = true, usage = "Aligned reads: normal")
-      var normalReads: String = ""
-
-      @Args4jOption(name = "--tumor-reads", metaVar = "X", required = true, usage = "Aligned reads: tumor")
-      var tumorReads: String = ""
     }
 
     /** Argument for writing output genotypes. */
@@ -125,10 +87,6 @@ object Common extends Logging {
         usage = "Sets maximum fragment length. Default value is 10,000. Values greater than 1e9 should be avoided.")
       var fragmentLength: Long = 10000L
     }
-
-    trait GermlineCallerArgs extends GenotypeOutput with Reads with ConcordanceArgs with LociPartitionUtils.Arguments
-
-    trait SomaticCallerArgs extends GenotypeOutput with TumorNormalReads with LociPartitionUtils.Arguments
   }
 
   /**
@@ -145,55 +103,6 @@ object Common extends Logging {
     } else {
       sc.loadParquet(path)
     }
-  }
-
-  /**
-   * Given arguments for a single set of reads, and a spark context, return a ReadSet.
-   *
-   * @param args parsed arguments
-   * @param sc spark context
-   * @param filters input filters to apply
-   * @return
-   */
-  def loadReadsFromArguments(
-    args: Arguments.Reads,
-    sc: SparkContext,
-    filters: Read.InputFilters): (RDD[MappedRead], ContigLengths) = {
-
-    val ReadSet(reads, _, contigLengths) =
-      ReadSet(
-        sc,
-        args.reads,
-        filters,
-        contigLengthsFromDictionary = !args.noSequenceDictionary,
-        config = ReadLoadingConfigArgs.fromArguments(args)
-      )
-
-    (reads.mappedReads, contigLengths)
-  }
-
-  /**
-   * Given arguments for two sets of reads (tumor and normal), return a pair of (tumor, normal) read sets.
-   *
-   * @param args parsed arguments
-   * @param sc spark context
-   * @param filters input filters to apply
-   */
-  def loadTumorNormalReadsFromArguments(
-    args: Arguments.TumorNormalReads,
-    sc: SparkContext,
-    filters: Read.InputFilters): (ReadsRDD, ReadsRDD, ContigLengths) = {
-
-    val ReadSets(readsets, _, contigLengths) =
-      ReadSets(
-        sc,
-        Seq(args.tumorReads, args.normalReads),
-        filters,
-        !args.noSequenceDictionary,
-        ReadLoadingConfigArgs.fromArguments(args)
-      )
-
-    (readsets(0), readsets(1), contigLengths)
   }
 
   /**
@@ -277,6 +186,7 @@ object Common extends Logging {
 
   /**
    * Write out an RDD of Genotype instances to a file.
+   *
    * @param args parsed arguments
    * @param genotypes ADAM genotypes (i.e. the variants)
    */
@@ -349,6 +259,7 @@ object Common extends Logging {
    * Parse spark environment variables from commandline. Copied from ADAM.
    *
    * Commandline format is -spark_env foo=1 -spark_env bar=2
+   *
    * @param envVariables The variables found on the commandline
    * @return array of (key, value) pairs parsed from the command line.
    */
@@ -409,6 +320,7 @@ object Common extends Logging {
   /**
    * Print or log a progress message. For now, we just print to standard out, since ADAM's logging setup makes it
    * difficult to see log messages at the INFO level without flooding ourselves with parquet messages.
+   *
    * @param message String to print or log.
    */
   def progress(message: String): Unit = {

@@ -1,0 +1,12 @@
+package org.hammerlab.guacamole.readsets
+
+import org.hammerlab.guacamole.Common.Arguments.Base
+import org.kohsuke.args4j.{Option => Args4jOption}
+
+/** Argument for using / not using sequence dictionaries to get contigs and lengths. */
+trait NoSequenceDictionaryArgs extends Base {
+  @Args4jOption(name = "--no-sequence-dictionary",
+    usage = "If set, get contigs and lengths directly from reads instead of from sequence dictionary.")
+  var noSequenceDictionary: Boolean = false
+}
+

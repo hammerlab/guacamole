@@ -1,10 +1,14 @@
 package org.hammerlab.guacamole.readsets
 
 import org.apache.spark.SparkContext
-import org.bdgenomics.adam.models.{SequenceDictionary, SequenceRecord}
-import org.hammerlab.guacamole._
-import org.hammerlab.guacamole.reads.Read
+import org.bdgenomics.adam.models.SequenceDictionary
+import org.hammerlab.guacamole.{ContigLengths, PerSample}
+import org.hammerlab.guacamole.reads.{Read, ReadLoadingConfig}
 
+/**
+ * A `ReadSets` contains reads from multiple inputs, and SequenceDictionary / contig-length information merged from
+ * them.
+ */
 case class ReadSets(readsRDDs: PerSample[ReadsRDD],
                     sequenceDictionary: SequenceDictionary,
                     contigLengths: ContigLengths) extends PerSample[ReadsRDD] {
@@ -16,13 +20,13 @@ case class ReadSets(readsRDDs: PerSample[ReadsRDD],
 
 object ReadSets {
   /**
-    * Load reads from multiple files, verifying that their sequence dictionaries match.
+    * Load reads from multiple files, merging their sequence dictionaries and verifying that they are consistent.
     */
   def apply(sc: SparkContext,
             filenames: Seq[String],
             filters: Read.InputFilters = Read.InputFilters.empty,
             contigLengthsFromDictionary: Boolean = true,
-            config: Read.ReadLoadingConfig = Read.ReadLoadingConfig.default): ReadSets = {
+            config: ReadLoadingConfig = ReadLoadingConfig.default): ReadSets = {
 
     val (readRDDs, sequenceDictionaries) =
       filenames.map(filename => {
@@ -97,4 +101,26 @@ object ReadSets {
     builder.result
   }
 
+  /**
+   * Given arguments for two sets of reads (tumor and normal), return a pair of (tumor, normal) read sets.
+   *
+   * @param args parsed arguments
+   * @param sc spark context
+   * @param filters input filters to apply
+   */
+  def loadTumorNormalReadsFromArguments(args: TumorNormalReadsArgs,
+                                        sc: SparkContext,
+                                        filters: Read.InputFilters): (ReadsRDD, ReadsRDD, ContigLengths) = {
+
+    val ReadSets(readsets, _, contigLengths) =
+      ReadSets(
+        sc,
+        Seq(args.tumorReads, args.normalReads),
+        filters,
+        !args.noSequenceDictionary,
+        ReadLoadingConfigArgs.fromArguments(args)
+      )
+
+    (readsets(0), readsets(1), contigLengths)
+  }
 }
