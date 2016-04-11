@@ -27,12 +27,11 @@ object ExtractSequencingErrorReads {
                        startPosition: Long,
                        readSequence: String,
                        qualities: Seq[Byte],
-                       isPositiveStrand: Boolean,
-                       isFirstInPair: Boolean) {
+                       isPositiveStrand: Boolean) {
 
     override def toString: String = {
       val stringQualities = qualities.map(_.toInt.toString).mkString(" ")
-      s"${inputIndex}, ${isReference}, ${contig}, ${startPosition}, ${readSequence}, ${stringQualities}, ${isPositiveStrand}, ${isFirstInPair}"
+      s"${inputIndex}, ${isReference}, ${contig}, ${startPosition}, ${readSequence}, ${stringQualities}, ${isPositiveStrand}"
     }
   }
 
@@ -47,9 +46,7 @@ object ExtractSequencingErrorReads {
         read.start,
         Bases.basesToString(read.sequence),
         read.baseQualities,
-        read.isPositiveStrand,
-        read.isPaired && (read.asInstanceOf[PairedRead[MappedRead]].isFirstInPair)
-      )
+        read.isPositiveStrand)
     }
   }
 
