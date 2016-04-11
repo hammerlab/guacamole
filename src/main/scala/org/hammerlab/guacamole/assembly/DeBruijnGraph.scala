@@ -1,15 +1,12 @@
 package org.hammerlab.guacamole.assembly
 
 import org.hammerlab.guacamole.Bases
+import org.hammerlab.guacamole.assembly.DeBruijnGraph.{Kmer, Path, Sequence, SubKmer}
 
 import scala.collection.mutable
 
 class DeBruijnGraph(val kmerSize: Int,
-                    val kmerCounts: mutable.Map[DeBruijnGraph#Kmer, Int]) {
-
-  type Kmer = Seq[Byte] // Sequence of length `kmerSize`
-  type SubKmer = Seq[Byte] // Sequence of bases < `kmerSize`
-  type Sequence = Seq[Byte]
+                    val kmerCounts: mutable.Map[Kmer, Int]) {
 
   // Table to store prefix to kmers that share that prefix
   val prefixTable: mutable.Map[SubKmer, List[Kmer]] =
@@ -161,8 +158,6 @@ class DeBruijnGraph(val kmerSize: Int,
   private[assembly] def mergeForward(kmer: Kmer) = findMergeable(kmer, searchForward = true).reverse
   private[assembly] def mergeBackward(kmer: Kmer) = findMergeable(kmer, searchForward = false)
 
-  type Path = List[Kmer]
-
   /**
    * Find a path from source to sink in the graph
    * @param source Kmer node to begin search
@@ -179,12 +174,12 @@ class DeBruijnGraph(val kmerSize: Int,
                        maxPathLength: Int = Int.MaxValue,
                        maxPaths: Int = 10,
                        avoidLoops: Boolean = true,
-                       debugPrint: Boolean = false): List[(Path)] = {
+                       debugPrint: Boolean = false): List[Path] = {
 
     assume(source.length == kmerSize, s"Source kmer ${Bases.basesToString(source)} has size ${source.length} != $kmerSize")
     assume(sink.length == kmerSize, s"Sink kmer ${Bases.basesToString(sink)} has size ${sink.length} != $kmerSize")
 
-    var paths = List.empty[(Path)]
+    var paths = List.empty[Path]
     var visited: mutable.Set[Kmer] = mutable.Set.empty
 
     // Add the source node to the frontier
@@ -321,14 +316,18 @@ class DeBruijnGraph(val kmerSize: Int,
 }
 
 object DeBruijnGraph {
-  type Sequence = DeBruijnGraph#Sequence
-  type Kmer = DeBruijnGraph#Kmer
+
+  type Kmer = Seq[Byte] // Sequence of length `kmerSize`
+  type SubKmer = Seq[Byte] // Sequence of bases < `kmerSize`
+  type Sequence = Seq[Byte]
+  type Path = List[Kmer]
+
   def apply(sequences: Seq[Sequence],
             kmerSize: Int,
             minOccurrence: Int = 1,
             mergeNodes: Boolean = false): DeBruijnGraph = {
 
-    val kmerCounts = mutable.Map.empty[DeBruijnGraph#Kmer, Int]
+    val kmerCounts = mutable.Map.empty[Kmer, Int]
 
     sequences.filter(Bases.allStandardBases(_))
       .foreach(
