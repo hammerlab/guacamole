@@ -88,8 +88,8 @@ object Read extends Logging {
 
     /**
      * See InputFilters for full documentation.
-      *
-      * @param mapped include only mapped reads. Convenience argument that is equivalent to specifying all sites in
+     *
+     * @param mapped include only mapped reads. Convenience argument that is equivalent to specifying all sites in
      *               overlapsLoci.
      */
     def apply(mapped: Boolean = false,
@@ -291,8 +291,10 @@ object Read extends Logging {
     val sequenceDictionary = SequenceDictionary.fromSAMHeader(samHeader)
 
     if (filters.overlapsLoci.isEmpty || filename.endsWith(".bam")) {
-      val bamIndexIntervals = filters.overlapsLoci.map(_.result(contigLengths(sequenceDictionary)).toHtsJDKIntervals)
-      bamIndexIntervals.foreach(BAMInputFormat.setIntervals(conf, _))
+      filters
+        .overlapsLoci
+        .map(_.result(contigLengths(sequenceDictionary)).toHtsJDKIntervals)
+        .foreach(BAMInputFormat.setIntervals(conf, _))
     } else if (filename.endsWith(".sam")) {
       log.warn(s"Loading SAM file: $filename with intervals specified. This requires parsing the entire file.")
     } else {
