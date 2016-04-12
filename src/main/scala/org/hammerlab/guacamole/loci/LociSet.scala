@@ -97,20 +97,20 @@ case class LociSet(map: LociMap[Long]) {
   /**
     * Build a collection of HTSJDK Intervals which are closed [start, end], 1-based intervals
     */
-  def toHtsJDKIntervals: List[Interval] = {
+  def toHtsJDKIntervals: Seq[Interval] = {
     map
       .contigs
-      .iterator
       .flatMap(
         contig => {
           map
             .onContig(contig)
             .asMap
             .iterator
-            // We had 1 to the start to move to 1-based coordinates
-            // Since the `Interval` end is inclusive, we are adding and subtracting 1, no-op
+            // We add 1 to the start to move to 1-based coordinates.
+            // Since the `Interval` end is inclusive, we are adding and subtracting 1, no-op.
             .map(pieces => new Interval(contig, pieces._1.start.toInt + 1, pieces._1.end.toInt))
-        }).toList
+        }
+      )
   }
 
   /**
