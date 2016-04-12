@@ -18,15 +18,11 @@
 
 package org.hammerlab.guacamole.distributed
 
-import org.bdgenomics.formats.avro.{Genotype, GenotypeAllele}
 import org.hammerlab.guacamole.Bases
-import org.hammerlab.guacamole.commands.GermlineThreshold
 import org.hammerlab.guacamole.loci.LociSet
 import org.hammerlab.guacamole.pileup.{Pileup, PileupElement}
 import org.hammerlab.guacamole.util.TestUtil._
 import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
-
-import scala.collection.JavaConversions._
 
 class PileupFlatMapUtilsSuite extends GuacFunSuite {
 
@@ -263,88 +259,4 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
     insertionPileups.size should be(1)
   }
 
-  sparkTest("test pileup flatmap parallelism 0; thresholdvariant caller; no variant") {
-
-    val reads = sc.parallelize(Seq(
-      TestUtil.makeRead("TCGATCGA", "8M", 1),
-      TestUtil.makeRead("TCGATCGA", "8M", 1),
-      TestUtil.makeRead("TCGATCGA", "8M", 1)))
-
-    val genotypes =
-      PileupFlatMapUtils.pileupFlatMap[Genotype](
-        reads,
-        LociPartitionUtils.partitionLociUniformly(reads.partitions.length, LociSet.parse("chr1:1-100").result),
-        skipEmpty = false,
-        pileup => GermlineThreshold.Caller.callVariantsAtLocus(pileup, 0, emitRef = false, emitNoCall = false).iterator,
-        reference = TestUtil.makeReference(sc, Seq(("chr1", 0, "ATCGATCGA")))
-      ).collect()
-
-    genotypes.length should be(0)
-  }
-
-  sparkTest("test pileup flatmap parallelism 3; thresholdvariant caller; no variant") {
-
-    val reads = sc.parallelize(Seq(
-      TestUtil.makeRead("TCGATCGA", "8M", 1),
-      TestUtil.makeRead("TCGATCGA", "8M", 1),
-      TestUtil.makeRead("TCGATCGA", "8M", 1)))
-
-    val genotypes =
-      PileupFlatMapUtils.pileupFlatMap[Genotype](
-        reads,
-        LociPartitionUtils.partitionLociUniformly(3, LociSet.parse("chr1:1-100").result),
-        skipEmpty = false,
-        pileup => GermlineThreshold.Caller.callVariantsAtLocus(pileup, 0, emitRef = false, emitNoCall = false).iterator,
-        reference = TestUtil.makeReference(sc, Seq(("chr1", 0, "ATCGATCGA")))
-      ).collect()
-
-    genotypes.length should be(0)
-  }
-
-  sparkTest("test pileup flatmap parallelism 3; thresholdvariant caller; one het variant") {
-
-    val reads = sc.parallelize(Seq(
-      TestUtil.makeRead("TCGATCGA", "8M", 1),
-      TestUtil.makeRead("TCGGTCGA", "8M", 1),
-      TestUtil.makeRead("TCGGTCGA", "8M", 1)))
-
-    val genotypes =
-      PileupFlatMapUtils.pileupFlatMap[Genotype](
-        reads,
-        LociPartitionUtils.partitionLociUniformly(3, LociSet.parse("chr1:1-100").result),
-        skipEmpty = false,
-        pileup => GermlineThreshold.Caller.callVariantsAtLocus(pileup, 0, emitRef = false, emitNoCall = false).iterator,
-        reference = TestUtil.makeReference(sc, Seq(("chr1", 0, "ATCGATCGA")))
-      ).collect()
-
-    genotypes.length should be(1)
-    genotypes.head.getVariant.getStart should be(4)
-    genotypes.head.getVariant.getReferenceAllele should be("A")
-    genotypes.head.getVariant.getAlternateAllele should be("G")
-
-    genotypes.head.getAlleles.toList should be(List(GenotypeAllele.Ref, GenotypeAllele.Alt))
-  }
-
-  sparkTest("test pileup flatmap parallelism 3; thresholdvariant caller; no reference bases observed") {
-
-    val reads = sc.parallelize(Seq(
-      TestUtil.makeRead("CCGATCGA", "8M", 1),
-      TestUtil.makeRead("CCGATCGA", "8M", 1),
-      TestUtil.makeRead("CCGATCGA", "8M", 1)))
-
-    val genotypes =
-      PileupFlatMapUtils.pileupFlatMap[Genotype](
-        reads,
-        LociPartitionUtils.partitionLociUniformly(3, LociSet.parse("chr1:1-100").result),
-        skipEmpty = false,
-        pileup => GermlineThreshold.Caller.callVariantsAtLocus(pileup, 0, emitRef = false, emitNoCall = false).iterator,
-        reference = TestUtil.makeReference(sc, Seq(("chr1", 0, "ATCGATCGA")))
-      ).collect()
-
-    genotypes.length should be(1)
-    genotypes.head.getVariant.getStart should be(1)
-    genotypes.head.getVariant.getReferenceAllele should be("T")
-    genotypes.head.getVariant.getAlternateAllele should be("C")
-    genotypes.head.getAlleles.toList should be(List(GenotypeAllele.Alt, GenotypeAllele.Alt))
-  }
 }

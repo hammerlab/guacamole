@@ -155,41 +155,6 @@ object TestUtil extends Matchers {
     )
   }
 
-  def makePairedMappedRead(
-    chr: String = "chr1",
-    start: Long = 1,
-    alignmentQuality: Int = 30,
-    isPositiveStrand: Boolean = true,
-    mateReferenceContig: String = "chr1",
-    mateStart: Long = 1,
-    isMatePositiveStrand: Boolean = false,
-    inferredInsertSize: Option[Int] = None,
-    sequence: String = "ACTGACTGACTG",
-    cigar: String = "12M",
-    mdTag: String = "12"): PairedMappedRead = {
-
-    val insertSize = inferredInsertSize.getOrElse({
-      val minStart = Math.min(start, mateStart)
-      val maxStart = Math.max(start, mateStart)
-      (maxStart - minStart).toInt + sequence.length
-    })
-
-    val mate = MateAlignmentProperties(
-      mateReferenceContig,
-      mateStart,
-      inferredInsertSize = Some(insertSize),
-      isPositiveStrand = isMatePositiveStrand
-    )
-    PairedMappedRead(
-      makePairedRead(
-        chr, start, alignmentQuality, isPositiveStrand, isMateMapped = true,
-        Some(mate.referenceContig), Some(mate.start), mate.isPositiveStrand,
-        sequence, cigar, mate.inferredInsertSize).read,
-      isFirstInPair = true,
-      inferredInsertSize = insertSize,
-      mate = mate)
-  }
-
   def assertBases(bases1: String, bases2: String) = bases1 should equal(bases2)
   def assertBases(bases1: Iterable[Byte], bases2: String) = Bases.basesToString(bases1) should equal(bases2)
 
