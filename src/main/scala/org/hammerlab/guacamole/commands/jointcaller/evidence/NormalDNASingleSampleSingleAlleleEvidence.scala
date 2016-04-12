@@ -28,6 +28,7 @@ case class NormalDNASingleSampleSingleAlleleEvidence(allele: AlleleAtLocus,
     copy(annotations = Some(newAnnotations))
   }
 }
+
 object NormalDNASingleSampleSingleAlleleEvidence {
 
   /** Given a pair of alleles describing a (germline) genotype, return the equivalent allele mixture. */

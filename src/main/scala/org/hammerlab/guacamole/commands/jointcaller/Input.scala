@@ -1,6 +1,6 @@
 package org.hammerlab.guacamole.commands.jointcaller
 
-import org.hammerlab.guacamole.commands.jointcaller.Input.{ Analyte, TissueType }
+import org.hammerlab.guacamole.commands.jointcaller.Input.{Analyte, TissueType}
 
 /**
  * An input BAM to the joint variant caller.
@@ -29,6 +29,7 @@ case class Input(index: Int, sampleName: String, path: String, tissueType: Tissu
   def normalRNA = normal && rna
   def tumorRNA = tumor && rna
 }
+
 object Input {
   /** Kind of tissue: tumor or normal. */
   object TissueType extends Enumeration {

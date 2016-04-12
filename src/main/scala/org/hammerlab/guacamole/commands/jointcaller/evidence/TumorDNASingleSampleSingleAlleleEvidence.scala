@@ -29,6 +29,7 @@ case class TumorDNASingleSampleSingleAlleleEvidence(allele: AlleleAtLocus,
     copy(annotations = Some(newAnnotations))
   }
 }
+
 object TumorDNASingleSampleSingleAlleleEvidence {
 
   /** Create a (serializable) TumorDNASampleAlleleEvidence instance from (non-serializable) pileup statistics. */

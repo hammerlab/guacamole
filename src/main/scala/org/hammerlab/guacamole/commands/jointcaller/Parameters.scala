@@ -31,13 +31,14 @@ case class Parameters(
   def asStringPairs(): Seq[(String, String)] = {
     // We use reflection to avoid re-specifying all the parameters.
     // See: http://stackoverflow.com/questions/7457972/getting-public-fields-and-their-respective-values-of-an-instance-in-scala-java
-    val fields = this.getClass.getDeclaredFields()
+    val fields = this.getClass.getDeclaredFields
     for (field <- fields) yield {
       field.setAccessible(true)
       (field.getName, field.get(this).toString)
     }
   }
 }
+
 object Parameters {
   object SomaticGenotypePolicy extends Enumeration {
     val Presence = Value("presence")

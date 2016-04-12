@@ -30,6 +30,7 @@ case class MultiSampleAnnotations(insufficientNormal: Option[InsufficientNormal]
     toSeq.foreach(_.addInfoToVCF(builder))
   }
 }
+
 object MultiSampleAnnotations {
   trait Annotation {
     val name: String
