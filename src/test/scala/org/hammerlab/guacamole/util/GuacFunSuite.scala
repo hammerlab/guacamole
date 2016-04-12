@@ -10,7 +10,9 @@ trait GuacFunSuite extends SparkFunSuite with Matchers {
       "spark.serializer" -> "org.apache.spark.serializer.KryoSerializer",
       "spark.kryo.registrator" -> "org.hammerlab.guacamole.GuacamoleKryoRegistrator",
       "spark.kryoserializer.buffer" -> "4",
-      "spark.kryo.referenceTracking" -> "true"
+      "spark.kryo.registrationRequired" -> "true",
+      "spark.kryo.referenceTracking" -> "true",
+      "spark.driver.host" -> "localhost"
     )
 
 }
