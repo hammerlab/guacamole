@@ -2,19 +2,15 @@ package org.hammerlab.guacamole.commands
 
 import java.io.{BufferedWriter, FileWriter}
 
-import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics
 import org.apache.spark.SparkContext
-import org.apache.spark.mllib.clustering.{GaussianMixture, GaussianMixtureModel}
-import org.apache.spark.mllib.linalg.Vectors
 import org.apache.spark.rdd.RDD
-import org.apache.spark.storage.StorageLevel
 import org.hammerlab.guacamole._
 import org.hammerlab.guacamole.distributed.LociPartitionUtils
 import org.hammerlab.guacamole.distributed.PileupFlatMapUtils._
 import org.hammerlab.guacamole.loci.LociMap
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.Read.InputFilters
-import org.hammerlab.guacamole.reads.{MappedRead, PairedRead, Read}
+import org.hammerlab.guacamole.reads.{MappedRead, Read}
 import org.hammerlab.guacamole.reference.{ReferenceBroadcast, ReferenceGenome}
 import org.kohsuke.args4j.{Argument, Option => Args4jOption}
 
@@ -27,16 +23,17 @@ object ExtractSequencingErrorReads {
                        startPosition: Long,
                        readSequence: String,
                        qualities: Seq[Byte],
-                       isPositiveStrand: Boolean) {
+                       isPositiveStrand: Boolean,
+                       alignmentQuality: Int) {
 
     override def toString: String = {
       val stringQualities = qualities.map(_.toInt.toString).mkString(" ")
-      s"${inputIndex}, ${isReference}, ${contig}, ${startPosition}, ${readSequence}, ${stringQualities}, ${isPositiveStrand}"
+      s"${inputIndex}, ${isReference}, ${contig}, ${startPosition}, ${readSequence}, ${stringQualities}, ${isPositiveStrand}, ${alignmentQuality}"
     }
   }
 
   object ResultRow {
-    val header = Seq("input, isReference, contig, startPosition, readSequence, qualities, isPositiveStrand, isFirstInPair")
+    val header = Seq("input, isReference, contig, startPosition, readSequence, qualities, isPositiveStrand, alignmentQuality")
 
     def apply(inputIndex: Int, isReference: Boolean, read: MappedRead): ResultRow = {
       ResultRow(
@@ -46,7 +43,8 @@ object ExtractSequencingErrorReads {
         read.start,
         Bases.basesToString(read.sequence),
         read.baseQualities,
-        read.isPositiveStrand)
+        read.isPositiveStrand,
+        read.alignmentQuality)
     }
   }
 
