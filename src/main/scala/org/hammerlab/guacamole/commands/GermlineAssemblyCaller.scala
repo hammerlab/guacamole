@@ -125,7 +125,7 @@ object GermlineAssemblyCaller {
      * @param minOccurrence Minimum times a kmer must appear to be in the DeBruijn graph
      * @param expectedPloidy Expected ploidy, or expected number of valid paths through the graph
      * @param maxPathsToScore Number of paths to align to the reference to score them
-     * @return
+     * @return Collection of paths through the reads
      */
     def discoverHaplotypes(graph: Option[DeBruijnGraph],
                            currentWindow: SlidingWindow[MappedRead],
@@ -276,7 +276,8 @@ object GermlineAssemblyCaller {
             if (currentLocusReads.isEmpty || pileupAltReads < minAltReads) {
               (lastCalledLocus, Iterator.empty)
             } else if (shortcutAssembly &&
-              currentLocusReads.count(r => r.countOfMismatches > 1 || r.cigar.numCigarElements() > 1) / currentLocusReads.size.toFloat < minAreaVaf) {
+              currentLocusReads.count(r =>
+                r.countOfMismatches(reference.getContig(referenceName)) > 1 || r.cigar.numCigarElements() > 1) / currentLocusReads.size.toFloat < minAreaVaf) {
               val variants = callPileupVariant(pileup).filter(_.evidence.phredScaledLikelihood > minPhredScaledLikelihood)
               (variants.lastOption.map(_.start).orElse(lastCalledLocus), variants.iterator)
             } else {

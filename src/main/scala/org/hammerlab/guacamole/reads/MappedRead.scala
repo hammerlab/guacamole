@@ -63,18 +63,18 @@ case class MappedRead(
    * @return count of mismatching bases
    */
 
-  var countOfMismatches = -1
+  private var cachedCountOfMismatches = -1
   def countOfMismatches(referenceContigSequence: ContigSequence): Int = {
-    if (countOfMismatches == -1) {
+    if (cachedCountOfMismatches == -1) {
       var element = PileupElement(this, start, referenceContigSequence)
       var count = (if (element.isMismatch) 1 else 0)
       while (element.locus < end - 1) {
         element = element.advanceToLocus(element.locus + 1)
         count += (if (element.isMismatch) 1 else 0)
       }
-      countOfMismatches = count
+      cachedCountOfMismatches = count
     }
-    countOfMismatches
+    cachedCountOfMismatches
   }
 
   lazy val alignmentLikelihood = PhredUtils.phredToSuccessProbability(alignmentQuality)
