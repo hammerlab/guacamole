@@ -37,10 +37,10 @@ case class MultiSampleSingleAlleleEvidence(parameters: Parameters,
    * samples. The normal dna pooled sample is found at index `normalDNAPooledIndex` and the tumor pooled is at index
    * `tumorDNAPooledIndex` in `allEvidences`.
    */
-  val allEvidences: Vector[SingleSampleSingleAlleleEvidence] =
+  @transient lazy val allEvidences: Vector[SingleSampleSingleAlleleEvidence] =
     sampleEvidences.toVector ++ Vector(normalDNAPooledEvidence, tumorDNAPooledEvidence)
-  val normalDNAPooledIndex = sampleEvidences.length
-  val tumorDNAPooledIndex = normalDNAPooledIndex + 1
+  @transient lazy val normalDNAPooledIndex = sampleEvidences.length
+  @transient lazy val tumorDNAPooledIndex = normalDNAPooledIndex + 1
 
   /**
    * The individual TumorDNASampleAlleleEvidence and NormalDNASampleAlleleEvidence instances calculate the mixture
@@ -89,10 +89,10 @@ case class MultiSampleSingleAlleleEvidence(parameters: Parameters,
   /**
    * Called germline genotype. We currently just use the maximum posterior from the pooled normal data.
    */
-  val germlineAlleles: (String, String) = pooledGermlinePosteriors.maxBy(_._2)._1
+  @transient lazy val germlineAlleles: (String, String) = pooledGermlinePosteriors.maxBy(_._2)._1
 
   /** Are we making a germline call here? */
-  val isGermlineCall = germlineAlleles != (allele.ref, allele.ref)
+  @transient lazy val isGermlineCall = germlineAlleles != (allele.ref, allele.ref)
 
   /** Negative log10 prior probability for the given mixture in RNA. */
   private def somaticPriorRna(mixture: Map[String, Double]): Double = {
@@ -107,7 +107,7 @@ case class MultiSampleSingleAlleleEvidence(parameters: Parameters,
   }
 
   /** Log10 posterior probabilities for a somatic variant in each tumor RNA sample.  */
-  val perTumorRnaSampleSomaticPosteriors: Map[Int, Map[AlleleMixture, Double]] = {
+  @transient lazy val perTumorRnaSampleSomaticPosteriors: Map[Int, Map[AlleleMixture, Double]] = {
     inputs.items.filter(_.tumorRNA).map(input => {
       val likelihoods = allEvidences(input.index).asInstanceOf[TumorRNASingleSampleSingleAlleleEvidence].logLikelihoods
       input.index -> likelihoods.map(kv => (kv._1 -> (kv._2 - somaticPriorRna(kv._1))))
@@ -115,10 +115,10 @@ case class MultiSampleSingleAlleleEvidence(parameters: Parameters,
   }
 
   /** Maximum a posteriori somatic mixtures for each tumor sample. */
-  val perTumorRnaSampleTopMixtures = perTumorRnaSampleSomaticPosteriors.mapValues(_.maxBy(_._2)._1)
+  @transient lazy val perTumorRnaSampleTopMixtures = perTumorRnaSampleSomaticPosteriors.mapValues(_.maxBy(_._2)._1)
 
   /** Indices of tumor rna samples with expression */
-  val tumorRnaSampleExpressed: Vector[Int] = perTumorRnaSampleTopMixtures
+  @transient lazy val tumorRnaSampleExpressed: Vector[Int] = perTumorRnaSampleTopMixtures
     .filter(pair => pair._2.keys.toSet != Set(germlineAlleles._1, germlineAlleles._2))
     .keys.toVector
 
@@ -144,7 +144,7 @@ case class MultiSampleSingleAlleleEvidence(parameters: Parameters,
    *
    * @return Map {input index -> {{Allele -> Frequency} -> Posterior probability}
    */
-  val perTumorDnaSampleSomaticPosteriors: Map[Int, Map[AlleleMixture, Double]] = {
+  @transient lazy val perTumorDnaSampleSomaticPosteriors: Map[Int, Map[AlleleMixture, Double]] = {
     (inputs.items.filter(_.tumorDNA).map(_.index) ++ Seq(tumorDNAPooledIndex)).map(index => {
       val likelihoods = allEvidences(index).asInstanceOf[TumorDNASingleSampleSingleAlleleEvidence].logLikelihoods
       index -> likelihoods.map(kv => (kv._1 -> (kv._2 - somaticPriorDna(kv._1))))
@@ -152,18 +152,18 @@ case class MultiSampleSingleAlleleEvidence(parameters: Parameters,
   }
 
   /** Maximum a posteriori somatic mixtures for each tumor sample. */
-  val perTumorDnaSampleTopMixtures = perTumorDnaSampleSomaticPosteriors.mapValues(_.maxBy(_._2)._1)
+  @transient lazy val perTumorDnaSampleTopMixtures = perTumorDnaSampleSomaticPosteriors.mapValues(_.maxBy(_._2)._1)
 
   /** Indices of tumor samples that triggered a call. */
-  val tumorDnaSampleIndicesTriggered: Vector[Int] = perTumorDnaSampleTopMixtures
+  @transient lazy val tumorDnaSampleIndicesTriggered: Vector[Int] = perTumorDnaSampleTopMixtures
     .filter(pair => pair._2.keys.toSet != Set(germlineAlleles._1, germlineAlleles._2))
     .keys.toVector
 
   /** Are we making a somatic call here? */
-  val isSomaticCall = !isGermlineCall && tumorDnaSampleIndicesTriggered.nonEmpty
+  @transient lazy val isSomaticCall = !isGermlineCall && tumorDnaSampleIndicesTriggered.nonEmpty
 
   /** Are we making a germline or somatic call? */
-  val isCall = isGermlineCall || isSomaticCall
+  @transient lazy val isCall = isGermlineCall || isSomaticCall
 
   /**
    * Names of filters that are causing this potential call to be considered filtered.
