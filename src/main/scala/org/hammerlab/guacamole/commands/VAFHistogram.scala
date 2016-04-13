@@ -9,11 +9,11 @@ import org.apache.spark.mllib.linalg.Vectors
 import org.apache.spark.rdd.RDD
 import org.apache.spark.storage.StorageLevel
 import org.hammerlab.guacamole._
-import org.hammerlab.guacamole.distributed.{LociPartitionUtils, PileupFlatMapUtils}
-import LociPartitionUtils.partitionLociAccordingToArgs
-import org.hammerlab.guacamole.loci.LociMap
+import org.hammerlab.guacamole.distributed.LociPartitionUtils
+import org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociAccordingToArgs
+import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMap
+import org.hammerlab.guacamole.loci.map.LociMap
 import org.hammerlab.guacamole.pileup.Pileup
-import PileupFlatMapUtils.pileupFlatMap
 import org.hammerlab.guacamole.reads.Read.InputFilters
 import org.hammerlab.guacamole.reads.{MappedRead, Read}
 import org.hammerlab.guacamole.reference.{ReferenceBroadcast, ReferenceGenome}

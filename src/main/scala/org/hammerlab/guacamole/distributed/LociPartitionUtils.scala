@@ -4,7 +4,8 @@ import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole.Common.Arguments.{Base, Loci}
 import org.hammerlab.guacamole.Common._
 import org.hammerlab.guacamole.HasReferenceRegion
-import org.hammerlab.guacamole.loci.{LociMap, LociSet}
+import org.hammerlab.guacamole.loci.map.LociMap
+import org.hammerlab.guacamole.loci.set.LociSet
 import org.kohsuke.args4j.{Option => Args4jOption}
 
 import scala.reflect.ClassTag

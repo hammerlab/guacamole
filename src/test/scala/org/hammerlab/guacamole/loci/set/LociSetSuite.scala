@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.hammerlab.guacamole.loci
+package org.hammerlab.guacamole.loci.set
 
 import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole.Common
@@ -143,7 +143,7 @@ class LociSetSuite extends GuacFunSuite {
     result should equal(sets.map(_.toString).toSeq)
   }
 
-  sparkTest("serialization: make an RDD[LociSet], and an RDD[LociSet.SingleContig]") {
+  sparkTest("serialization: make an RDD[LociSet], and an RDD[ContigLociSet]") {
     val sets = List(
       "",
       "empty:20-20,empty2:30-30",

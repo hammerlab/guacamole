@@ -1,7 +1,8 @@
 package org.hammerlab.guacamole.distributed
 
 import org.apache.spark.rdd.RDD
-import org.hammerlab.guacamole.loci.{LociMap, LociSet}
+import org.hammerlab.guacamole.loci.map.LociMap
+import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
 

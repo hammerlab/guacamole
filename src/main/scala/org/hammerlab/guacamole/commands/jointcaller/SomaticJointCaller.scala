@@ -9,7 +9,7 @@ import org.hammerlab.guacamole.commands.jointcaller.evidence.{MultiSampleMultiAl
 import org.hammerlab.guacamole.distributed.LociPartitionUtils
 import org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociAccordingToArgs
 import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMapMultipleRDDs
-import org.hammerlab.guacamole.loci.LociSet
+import org.hammerlab.guacamole.loci.set.{LociSet, Builder => LociSetBuilder}
 import org.hammerlab.guacamole.reads._
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.kohsuke.args4j.{Option => Args4jOption}
@@ -50,7 +50,7 @@ object SomaticJoint {
    */
   def inputsToReadSets(sc: SparkContext,
                        inputs: InputCollection,
-                       loci: LociSet.Builder,
+                       loci: LociSetBuilder,
                        contigLengthsFromDictionary: Boolean = true): PerSample[ReadSet] = {
     inputs.items.zipWithIndex.map({
       case (input, index) => ReadSet(

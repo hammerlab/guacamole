@@ -2,7 +2,7 @@ package org.hammerlab.guacamole.main
 
 import org.hammerlab.guacamole.VariantComparisonUtils.{compareToCSV, compareToVCF, csvRecords}
 import org.hammerlab.guacamole.commands.jointcaller.SomaticJoint
-import org.hammerlab.guacamole.loci.LociSet
+import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.util.TestUtil
 import org.hammerlab.guacamole.{CancerWGSTestUtils, Common, NA12878TestUtils}
 

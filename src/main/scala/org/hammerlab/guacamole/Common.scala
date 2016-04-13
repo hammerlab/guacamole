@@ -36,7 +36,7 @@ import org.codehaus.jackson.JsonFactory
 import org.hammerlab.guacamole.Common.Arguments.ReadLoadingConfigArgs
 import org.hammerlab.guacamole.Concordance.ConcordanceArgs
 import org.hammerlab.guacamole.distributed.LociPartitionUtils
-import org.hammerlab.guacamole.loci.LociSet
+import org.hammerlab.guacamole.loci.set.{LociSet, Builder => LociSetBuilder}
 import org.hammerlab.guacamole.reads.Read
 import org.kohsuke.args4j.{Option => Args4jOption}
 
@@ -198,11 +198,11 @@ object Common extends Logging {
   }
 
   /**
-   * Return the loci specified by the user as a LociSet.Builder.
+   * Return the loci specified by the user as a LociSetBuilder.
    *
    * @param args parsed arguments
    */
-  def lociFromArguments(args: Arguments.Loci, default: String = "all"): LociSet.Builder = {
+  def lociFromArguments(args: Arguments.Loci, default: String = "all"): LociSetBuilder = {
     if (args.loci.nonEmpty && args.lociFromFile.nonEmpty) {
       throw new IllegalArgumentException("Specify at most one of the 'loci' and 'loci-from-file' arguments")
     }
