@@ -41,9 +41,6 @@ class LociMapSuite extends GuacFunSuite {
     lociMap.toString should be("chr1:100-200=A,chr20:200-201=B")
     lociMap.contigs.map(_.name) should be(Seq("chr1", "chr20"))
 
-    lociMap should equal(LociMap.union(LociMap("chr1", 100, 200, "A"), LociMap("chr20", 200, 201, "B")))
-    lociMap should not equal (
-      LociMap.union(LociMap("chr1", 100, 200, "A"), LociMap("chr20", 200, 201, "C")))
     lociMap should not equal (LociMap[String]())
 
     lociMap.asInverseMap should equal(
@@ -85,15 +82,5 @@ class LociMapSuite extends GuacFunSuite {
       ("chr1", 180L, 240L, "A")
     )
     lociMap.toString should be("chr1:100-150=A,chr1:150-160=C,chr1:160-240=A,chr1:400-500=B")
-  }
-
-  test("union invariants") {
-    val lociMap = LociMap.union(
-      LociMap("chr1", 100, 200, "A"),
-      LociMap("chr2", 200, 300, "A"),
-      LociMap("chr3", 400, 500, "B"))
-
-    lociMap.union(lociMap) should equal(lociMap)
-    lociMap.union(LociMap[String]()) should equal(lociMap)  // union with empty map
   }
 }

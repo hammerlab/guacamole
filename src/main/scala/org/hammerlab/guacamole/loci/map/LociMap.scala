@@ -20,7 +20,7 @@ package org.hammerlab.guacamole.loci.map
 
 import java.lang.{Long => JLong}
 
-import com.google.common.collect._
+import com.google.common.collect.{ImmutableRangeMap, _}
 import org.hammerlab.guacamole.Common
 import org.hammerlab.guacamole.loci.SimpleRange
 import org.hammerlab.guacamole.loci.set.{LociSet, Builder => LociSetBuilder}
@@ -65,15 +65,7 @@ case class LociMap[T](private val map: SortedMap[String, Contig[T]]) {
    * @param contig The contig name
    * @return A [[Contig]] instance giving the loci mapping on the specified contig.
    */
-  def onContig(contig: String): Contig[T] = map.get(contig) match {
-    case Some(result) => result
-    case None         => Contig[T](contig, LociMap.emptyRangeMap[T]())
-  }
-
-  /** Returns the union of this LociMap with another. */
-  def union(other: LociMap[T]): LociMap[T] = {
-    LociMap.union(this, other)
-  }
+  def onContig(contig: String): Contig[T] = map.getOrElse(contig, Contig(contig, ImmutableRangeMap.of[JLong, T]()))
 
   override def toString: String = truncatedString()
 
@@ -89,34 +81,17 @@ case class LociMap[T](private val map: SortedMap[String, Contig[T]]) {
       maxLength
     )
   }
-
-  override def equals(other: Any) = other match {
-    case that: LociMap[T] => map.equals(that.map)
-    case _                => false
-  }
-  override def hashCode = map.hashCode
 }
 
 object LociMap {
-
-  /** Make an empty RangeMap of the given type. */
-  def empty[T](): LociMap[T] = newBuilder[T]().result
-
-  private def emptyRangeMap[T]() = ImmutableRangeMap.of[JLong, T]()
-
   /** Returns a new Builder instance for constructing a LociMap. */
   def newBuilder[T](): Builder[T] = new Builder[T]()
 
   /** Construct an empty LociMap. */
   def apply[T](): LociMap[T] = LociMap(TreeMap[String, Contig[T]]())
 
-  /** Return a LociMap of a single genomic interval. */
-  def apply[T](contig: String, start: Long, end: Long, value: T): LociMap[T] = {
-    (new Builder[T]).put(contig, start, end, value).result
-  }
-
-  /** Return a LociMap of a single genomic interval. */
-  def apply[T](contigs: (String, Long, Long, T)*): LociMap[T] = {
+  /** The following convenience constructors are only called by Builder. */
+  private[map] def apply[T](contigs: (String, Long, Long, T)*): LociMap[T] = {
     val builder = new Builder[T]
     for {
       (contig, start, end, value) <- contigs
@@ -126,16 +101,10 @@ object LociMap {
     builder.result()
   }
 
-  /** Returns union of specified [[LociMap]] instances. */
-  def union[T](lociMaps: LociMap[T]*): LociMap[T] = {
-    val builder = LociMap.newBuilder[T]
-    for {
-      lociMap <- lociMaps
-      contig <- lociMap.contigs
-      (SimpleRange(start, end), value) <- contig.asMap
-    } {
-      builder.put(contig.name, start, end, value)
-    }
-    builder.result
-  }
+  private[map] def apply[T](contigs: Iterable[Contig[T]]): LociMap[T] =
+    LociMap(
+      TreeMap(
+        contigs.map(contig => contig.name -> contig).toSeq: _*
+      )
+    )
 }
