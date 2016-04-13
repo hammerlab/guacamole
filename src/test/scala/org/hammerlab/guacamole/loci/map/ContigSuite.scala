@@ -11,11 +11,7 @@ class ContigSuite extends GuacFunSuite {
 
     contigMap.get(100) should be(None)
     contigMap.getAll(0, 10000) should equal(Set())
-    contigMap.contains(100) should be(false)
     contigMap.count should be(0)
-    contigMap.ranges should equal(Array())
-    contigMap.numRanges should be(0)
-    contigMap.isEmpty should be(true)
     contigMap.toString should be("")
   }
 
@@ -48,24 +44,8 @@ class ContigSuite extends GuacFunSuite {
     contigMap.getAll(200, 201) should equal(Set("B"))
     contigMap.getAll(0, 10000) should equal(Set("A", "B"))
 
-    contigMap.contains(0) should be(false)
-    contigMap.contains(99) should be(false)
-    contigMap.contains(100) should be(true)
-    contigMap.contains(200) should be(true)
-    contigMap.contains(299) should be(true)
-    contigMap.contains(300) should be(false)
-
     contigMap.count should be(200)
-    contigMap.isEmpty should be(false)
     contigMap.toString should be("chr1:100-200=A,chr1:200-300=B")
-
-    val emptyMap = new Contig("chr1", ImmutableRangeMap.builder[JLong, String]().build())
-    contigMap.union(contigMap) should equal(contigMap)
-    contigMap.union(emptyMap) should equal(contigMap)
-
-    val emptyMapWrongContig = new Contig("chr2", ImmutableRangeMap.builder[JLong, String]().build())
-    val caught = the[AssertionError] thrownBy { contigMap.union(emptyMapWrongContig) }
-    caught.getMessage should include("different contigs: chr1 and chr2")
   }
 
   test("getAll") {
