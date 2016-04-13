@@ -61,12 +61,6 @@ case class LociSet(private val map: SortedMap[String, Contig]) {
     )
   }
 
-  override def equals(other: Any) = other match {
-    case that: LociSet => map.equals(that.map)
-    case _             => false
-  }
-  override def hashCode = map.hashCode
-
   /**
    * Split the LociSet into two sets, where the first one has `numToTake` loci, and the second one has the
    * remaining loci.
@@ -118,16 +112,6 @@ case class LociSet(private val map: SortedMap[String, Contig]) {
 object LociSet {
   /** An empty LociSet. */
   val empty = LociSet(TreeMap.empty[String, Contig])
-
-  /**
-   * Return a new builder instance for constructing a LociSet.
-   */
-  def newBuilder(): Builder = new Builder()
-
-  /** Return a LociSet of a single genomic interval. */
-  def apply(contig: String, start: Long, end: Long): LociSet = {
-    (new Builder).put(contig, start, end).result
-  }
 
   def all(contigLengths: Map[String, Long]) = Builder.all.result(contigLengths)
 

@@ -53,7 +53,7 @@ case class LociMap[T](private val map: SortedMap[String, Contig[T]]) {
       (SimpleRange(start, end), value) <- contig.asMap
     } {
       mapOfBuilders
-        .getOrElseUpdate(value, LociSet.newBuilder())
+        .getOrElseUpdate(value, new LociSetBuilder)
         .put(contig.name, start, end)
     }
     mapOfBuilders.mapValues(_.result).toMap
