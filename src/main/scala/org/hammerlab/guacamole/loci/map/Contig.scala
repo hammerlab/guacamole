@@ -13,10 +13,10 @@ import scala.collection.immutable.{SortedMap, TreeMap}
 /**
  * A map from loci to instances of an arbitrary type where the loci are all on the same contig.
  *
- * @param contig The contig name
+ * @param name The contig name
  * @param rangeMap The range map of loci intervals -> values.
  */
-case class Contig[T](contig: String, private val rangeMap: RangeMap[JLong, T]) {
+case class Contig[T](name: String, private val rangeMap: RangeMap[JLong, T]) {
 
   /**
    * Get the value associated with the given locus. Returns Some(value) if the given locus is in this map, None
@@ -65,13 +65,17 @@ case class Contig[T](contig: String, private val rangeMap: RangeMap[JLong, T]) {
 
   /** Returns the union of this map with another. Both must be on the same contig. */
   def union(other: Contig[T]): Contig[T] = {
-    assume(contig == other.contig,
-      "Tried to union two LociMap.Contig on different contigs: %s and %s".format(contig, other.contig))
+    assume(
+      name == other.name,
+      s"Tried to union two LociMap Contigs on different contigs: $name and ${other.name}"
+    )
     val both = TreeRangeMap.create[JLong, T]()
     both.putAll(rangeMap)
     both.putAll(other.rangeMap)
-    Contig(contig, both)
+    Contig(name, both)
   }
+
+  override def toString: String = truncatedString(Int.MaxValue)
 
   /**
    * String representation, truncated to maxLength characters.
@@ -79,24 +83,18 @@ case class Contig[T](contig: String, private val rangeMap: RangeMap[JLong, T]) {
    * If includeValues is true (default), then also include the values mapped to by this LociMap. If it's false,
    * then only the keys are included.
    */
-  def truncatedString(maxLength: Int = 100, includeValues: Boolean = true): String = {
-    Common.assembleTruncatedString(stringPieces(includeValues), maxLength)
+  private def truncatedString(maxLength: Int = 100): String = {
+    Common.assembleTruncatedString(stringPieces, maxLength)
   }
 
   /**
    * Iterator over string representations of each range in the map.
-   *
-   * If includeValues is true (default), then also include the values mapped to by this LociMap. If it's false,
-   * then only the keys are included.
    */
-  def stringPieces(includeValues: Boolean = true) = {
-    asMap.iterator.map(pair => {
-      if (includeValues)
-        "%s:%d-%d=%s".format(contig, pair._1.start, pair._1.end, pair._2.toString)
-      else
-        "%s:%d-%d".format(contig, pair._1.start, pair._1.end)
-    })
+  private[map] def stringPieces = {
+    for {
+      (SimpleRange(start, end), value) <- asMap.iterator
+    } yield {
+      "%s:%d-%d=%s".format(name, start, end, value)
+    }
   }
-
-  override def toString: String = truncatedString(Int.MaxValue)
 }

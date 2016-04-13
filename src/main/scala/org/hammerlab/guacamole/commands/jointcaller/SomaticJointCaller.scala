@@ -94,7 +94,7 @@ object SomaticJoint {
       if (forceCallLoci.nonEmpty) {
         Common.progress("Force calling %,d loci across %,d contig(s): %s".format(
           forceCallLoci.count,
-          forceCallLoci.contigs.length,
+          forceCallLoci.contigs.size,
           forceCallLoci.truncatedString()))
       }
 
@@ -136,13 +136,13 @@ object SomaticJoint {
 
   /** Subtract 1 from all loci in a LociSet. */
   def lociSetMinusOne(loci: LociSet): LociSet = {
-    val builder = new LociSetBuilder
-    loci.contigs.foreach(contig => {
-      val contigSet = loci.onContig(contig)
-      contigSet.ranges.foreach(range => {
-        builder.put(contig, math.max(0, range.start - 1), range.end - 1)
-      })
-    })
+    val builder = LociSet.newBuilder
+    for {
+      contig <- loci.contigs
+      range <- contig.ranges
+    } {
+      builder.put(contig.name, math.max(0, range.start - 1), range.end - 1)
+    }
     builder.result
   }
 

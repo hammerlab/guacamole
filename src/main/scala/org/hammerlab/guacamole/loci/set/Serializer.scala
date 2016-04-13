@@ -2,15 +2,15 @@ package org.hammerlab.guacamole.loci.set
 
 import com.esotericsoftware.kryo.io.{Input, Output}
 import com.esotericsoftware.kryo.{Kryo, Serializer => KryoSerializer}
-import org.hammerlab.guacamole.loci.map.LociMap
 
-// Serialization: just delegate to LociMap[Long].
+// We just serialize the underlying contigs, which contain their names which are the string keys of LociSet.map.
 class Serializer extends KryoSerializer[LociSet] {
   def write(kryo: Kryo, output: Output, obj: LociSet) = {
-    kryo.writeObject(output, obj.map)
+    kryo.writeClassAndObject(output, obj.contigs)
   }
+
   def read(kryo: Kryo, input: Input, klass: Class[LociSet]): LociSet = {
-    LociSet(kryo.readObject(input, classOf[LociMap[Long]]))
+    val contigs = kryo.readClassAndObject(input).asInstanceOf[Iterable[Contig]]
+    LociSet(contigs.map(contig => contig.name -> contig))
   }
 }
-

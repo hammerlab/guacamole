@@ -25,8 +25,8 @@ import org.hammerlab.guacamole.Common
 import org.hammerlab.guacamole.loci.SimpleRange
 import org.hammerlab.guacamole.loci.set.{LociSet, Builder => LociSetBuilder}
 
-import scala.collection.immutable.SortedMap
-import scala.collection.mutable
+import scala.collection.immutable.TreeMap
+import scala.collection.{SortedMap, mutable}
 
 /**
  * An immutable map from loci to a instances of an arbitrary type T.
@@ -37,35 +37,26 @@ import scala.collection.mutable
  *
  * @param map Map from contig names to [[Contig]] instances giving the regions and values on that contig.
  */
-case class LociMap[T](private val map: Map[String, Contig[T]]) {
-
-  private val sortedMap = SortedMap[String, Contig[T]](map.filter(!_._2.isEmpty).toArray: _*)
+case class LociMap[T](private val map: SortedMap[String, Contig[T]]) {
 
   /** The contigs included in this LociMap with a nonempty set of loci. */
-  lazy val contigs: Seq[String] = sortedMap.keys.toSeq
+  lazy val contigs = map.values.toSeq
 
   /** The number of loci in this LociMap. */
-  lazy val count: Long = sortedMap.valuesIterator.map(_.count).sum
-
-  /** Does count == 0? */
-  lazy val isEmpty = count == 0
+  lazy val count: Long = contigs.map(_.count).sum
 
   /** The "inverse map", i.e. a T -> LociSet map that gives the loci that map to each value. */
   lazy val asInverseMap: Map[T, LociSet] = {
     val mapOfBuilders = new mutable.HashMap[T, LociSetBuilder]()
     for {
       contig <- contigs
-      (SimpleRange(start, end), value) <- onContig(contig).asMap
+      (SimpleRange(start, end), value) <- contig.asMap
     } {
       mapOfBuilders
-        .getOrElseUpdate(value, new LociSetBuilder)
-        .put(contig, start, end)
+        .getOrElseUpdate(value, LociSet.newBuilder())
+        .put(contig.name, start, end)
     }
     mapOfBuilders.mapValues(_.result).toMap
-  }
-
-  def filterContigs(function: String => Boolean): LociMap[T] = {
-    LociMap(map.filterKeys(function))
   }
 
   /**
@@ -74,7 +65,7 @@ case class LociMap[T](private val map: Map[String, Contig[T]]) {
    * @param contig The contig name
    * @return A [[Contig]] instance giving the loci mapping on the specified contig.
    */
-  def onContig(contig: String): Contig[T] = sortedMap.get(contig) match {
+  def onContig(contig: String): Contig[T] = map.get(contig) match {
     case Some(result) => result
     case None         => Contig[T](contig, LociMap.emptyRangeMap[T]())
   }
@@ -84,7 +75,7 @@ case class LociMap[T](private val map: Map[String, Contig[T]]) {
     LociMap.union(this, other)
   }
 
-  override def toString: String = truncatedString(Int.MaxValue)
+  override def toString: String = truncatedString()
 
   /**
    * String representation, truncated to maxLength characters.
@@ -92,61 +83,18 @@ case class LociMap[T](private val map: Map[String, Contig[T]]) {
    * If includeValues is true (default), then also include the values mapped to by this LociMap. If it's false,
    * then only the keys are included.
    */
-  def truncatedString(maxLength: Int = 500, includeValues: Boolean = true): String = {
+  def truncatedString(maxLength: Int = 500): String = {
     Common.assembleTruncatedString(
-      contigs.iterator.flatMap(contig => onContig(contig).stringPieces(includeValues)),
-      maxLength)
+      contigs.iterator.flatMap(_.stringPieces),
+      maxLength
+    )
   }
 
   override def equals(other: Any) = other match {
-    case that: LociMap[T] => sortedMap.equals(that.sortedMap)
+    case that: LociMap[T] => map.equals(that.map)
     case _                => false
   }
-  override def hashCode = sortedMap.hashCode
-
-  /**
-   * Split the LociMap into two maps, where the first one has `numToTake` elements, and the second one has the
-   * remaining elements.
-   *
-   * @param numToTake number of elements to take. Must be <= number of elements in the map.
-   */
-  def take(numToTake: Long): (LociMap[T], LociMap[T]) = {
-    assume(numToTake <= count, "Can't take %d loci from a map of size %d.".format(numToTake, count))
-
-    // Optimize for taking none or all:
-    if (numToTake == 0) return (LociMap.empty[T](), this)
-    if (numToTake == count) return (this, LociMap.empty[T]())
-
-    /* TODO: may want to optimize this to not fully construct two new maps. Could share singleContig instances between
-     * the current map and the split maps, for example.
-     */
-    val first = LociMap.newBuilder[T]()
-    val second = LociMap.newBuilder[T]()
-    var remaining = numToTake
-    var doneTaking = false
-    contigs.foreach(contig => {
-      onContig(contig).asMap.foreach({
-        case (range, value) => {
-          if (doneTaking) {
-            second.put(contig, range.start, range.end, value)
-          } else {
-            if (remaining >= range.length) {
-              first.put(contig, range.start, range.end, value)
-              remaining -= range.length
-            } else {
-              first.put(contig, range.start, range.start + remaining, value)
-              second.put(contig, range.start + remaining, range.end, value)
-              doneTaking = true
-            }
-          }
-        }
-      })
-    })
-    val (firstResult, secondResult) = (first.result, second.result)
-    assert(firstResult.count == numToTake)
-    assert(firstResult.count + secondResult.count == count)
-    (firstResult, secondResult)
-  }
+  override def hashCode = map.hashCode
 }
 
 object LociMap {
@@ -160,7 +108,7 @@ object LociMap {
   def newBuilder[T](): Builder[T] = new Builder[T]()
 
   /** Construct an empty LociMap. */
-  def apply[T](): LociMap[T] = LociMap[T](Map[String, Contig[T]]())
+  def apply[T](): LociMap[T] = LociMap(TreeMap[String, Contig[T]]())
 
   /** Return a LociMap of a single genomic interval. */
   def apply[T](contig: String, start: Long, end: Long, value: T): LociMap[T] = {
@@ -181,13 +129,13 @@ object LociMap {
   /** Returns union of specified [[LociMap]] instances. */
   def union[T](lociMaps: LociMap[T]*): LociMap[T] = {
     val builder = LociMap.newBuilder[T]
-    lociMaps.foreach(lociMap => {
-      lociMap.contigs.foreach(contig => {
-        lociMap.onContig(contig).asMap.foreach(pair => {
-          builder.put(contig, pair._1.start, pair._1.end, pair._2)
-        })
-      })
-    })
+    for {
+      lociMap <- lociMaps
+      contig <- lociMap.contigs
+      (SimpleRange(start, end), value) <- contig.asMap
+    } {
+      builder.put(contig.name, start, end, value)
+    }
     builder.result
   }
 }
