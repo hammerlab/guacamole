@@ -216,8 +216,8 @@ object Common extends Logging {
     } else {
       default
     }
-    LociSet.parse(lociToParse)
 
+    LociSetBuilder(lociToParse)
   }
 
   /**
@@ -231,7 +231,7 @@ object Common extends Logging {
    */
   def lociFromFile(filePath: String, contigLengths: Map[String, Long]): LociSet = {
     if (filePath.endsWith(".vcf")) {
-      val builder = LociSet.newBuilder
+      val builder = new LociSetBuilder
       val reader = new VCFFileReader(new File(filePath), false)
       val iterator = reader.iterator
       while (iterator.hasNext) {
@@ -242,7 +242,7 @@ object Common extends Logging {
     } else if (filePath.endsWith(".loci") || filePath.endsWith(".txt")) {
       val filesystem = FileSystem.get(new Configuration())
       val path = new Path(filePath)
-      LociSet.parse(
+      LociSetBuilder(
         IOUtils.toString(new InputStreamReader(filesystem.open(path)))
       ).result(contigLengths)
     } else {
@@ -266,12 +266,12 @@ object Common extends Logging {
       throw new IllegalArgumentException("Specify at most one of the 'loci' and 'loci-from-file' arguments")
     }
     if (loci.nonEmpty) {
-      LociSet.parse(loci).result(Some(contigLengths))
+      LociSetBuilder(loci).result(Some(contigLengths))
     } else if (lociFromFilePath.nonEmpty) {
       lociFromFile(lociFromFilePath, contigLengths)
     } else {
       // Default is "all"
-      LociSet.all(Some(contigLengths))
+      LociSet.all(contigLengths)
     }
   }
 

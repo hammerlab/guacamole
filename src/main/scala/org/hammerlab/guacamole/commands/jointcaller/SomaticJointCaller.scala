@@ -136,7 +136,7 @@ object SomaticJoint {
 
   /** Subtract 1 from all loci in a LociSet. */
   def lociSetMinusOne(loci: LociSet): LociSet = {
-    val builder = LociSet.newBuilder
+    val builder = new LociSetBuilder
     loci.contigs.foreach(contig => {
       val contigSet = loci.onContig(contig)
       contigSet.ranges.foreach(range => {

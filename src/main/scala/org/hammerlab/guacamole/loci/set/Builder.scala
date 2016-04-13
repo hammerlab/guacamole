@@ -142,4 +142,6 @@ object Builder {
   val all = new Builder()
   all.containsAll = true
   all.fullyResolved = false
+
+  def apply(lociStr: String): Builder = new Builder().putExpression(lociStr)
 }
