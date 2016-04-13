@@ -69,7 +69,12 @@ class ContigSuite extends GuacFunSuite {
   }
 
   test("getAll") {
-    val lociMap = LociMap.newBuilder[Long]().put("chrM", 0, 8286, 0L).put("chrM", 8286, 16571, 1L).result
+    val lociMap =
+      LociMap(
+        ("chrM",    0,  8286, 0L),
+        ("chrM", 8286, 16571, 1L)
+      )
+
     lociMap.onContig("chrM").getAll(5, 10) should equal(Set[Long](0L))
     lociMap.onContig("chrM").getAll(10000, 11000) should equal(Set[Long](1L))
   }
