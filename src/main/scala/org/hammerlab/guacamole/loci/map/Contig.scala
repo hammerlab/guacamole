@@ -2,11 +2,10 @@ package org.hammerlab.guacamole.loci.map
 
 import java.lang.{Long => JLong}
 
-import com.google.common.collect.{Range, RangeMap, TreeRangeMap}
+import com.google.common.collect.{Range, RangeMap}
 import org.hammerlab.guacamole.Common
 import org.hammerlab.guacamole.loci.SimpleRange
 
-import scala.collection.Iterator
 import scala.collection.JavaConversions._
 import scala.collection.immutable.{SortedMap, TreeMap}
 
@@ -34,9 +33,6 @@ case class Contig[T](name: String, private val rangeMap: RangeMap[JLong, T]) {
     rangeMap.subRangeMap(range).asMapOfRanges.values.iterator.toSet
   }
 
-  /** Does this map contain the given locus? */
-  def contains(locus: Long): Boolean = get(locus).isDefined
-
   /** This map as a regular scala immutable map from exclusive numeric ranges to values. */
   lazy val asMap: SortedMap[SimpleRange, T] = {
     TreeMap(
@@ -48,32 +44,8 @@ case class Contig[T](name: String, private val rangeMap: RangeMap[JLong, T]) {
     )
   }
 
-  /** Number of loci in this map. */
-  lazy val count = ranges.map(_.length).sum
-
-  /** Returns a sequence of ranges giving the intervals of this map. */
-  lazy val ranges: Array[SimpleRange] = asMap.keys.toArray
-
-  /** Number of ranges in this map. */
-  lazy val numRanges: Long = rangeMap.asMapOfRanges.size.toLong
-
-  /** Is this map empty? */
-  lazy val isEmpty: Boolean = asMap.isEmpty
-
-  /** Iterator through loci in this map, sorted. */
-  def lociIndividually(): Iterator[Long] = ranges.iterator.flatMap(_.iterator)
-
-  /** Returns the union of this map with another. Both must be on the same contig. */
-  def union(other: Contig[T]): Contig[T] = {
-    assume(
-      name == other.name,
-      s"Tried to union two LociMap Contigs on different contigs: $name and ${other.name}"
-    )
-    val both = TreeRangeMap.create[JLong, T]()
-    both.putAll(rangeMap)
-    both.putAll(other.rangeMap)
-    Contig(name, both)
-  }
+  /** Number of loci on this contig. */
+  private[map] lazy val count = asMap.keysIterator.map(_.length).sum
 
   override def toString: String = truncatedString(Int.MaxValue)
 
