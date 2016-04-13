@@ -87,7 +87,7 @@ object SomaticJoint {
 
       val forceCallLoci =
         if (args.forceCallLoci.nonEmpty || args.forceCallLociFromFile.nonEmpty) {
-          Common.loci(args.forceCallLoci, args.forceCallLociFromFile, readSets(0).contigLengths)
+          Common.loadLoci(args.forceCallLoci, args.forceCallLociFromFile, readSets(0).contigLengths)
         } else {
           LociSet()
         }
