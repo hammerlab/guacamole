@@ -2,7 +2,7 @@ package org.hammerlab.guacamole.main
 
 import org.hammerlab.guacamole.VariantComparisonUtils.{compareToCSV, compareToVCF, csvRecords}
 import org.hammerlab.guacamole.commands.jointcaller.SomaticJoint
-import org.hammerlab.guacamole.loci.set.LociSet
+import org.hammerlab.guacamole.loci.set.{Builder => LociSetBuilder}
 import org.hammerlab.guacamole.util.TestUtil
 import org.hammerlab.guacamole.{CancerWGSTestUtils, Common, NA12878TestUtils}
 
@@ -33,7 +33,7 @@ object SomaticJointCallerIntegrationTests {
         args.loci = ((1).until(22).map(i => "chr%d".format(i)) ++ Seq("chrX", "chrY")).mkString(",")
 
         args.paths = CancerWGSTestUtils.cancerWGS1Bams.toArray
-        val forceCallLoci = LociSet.newBuilder
+        val forceCallLoci = new LociSetBuilder
         csvRecords(CancerWGSTestUtils.cancerWGS1ExpectedSomaticCallsCSV).filter(!_.tumor.contains("decoy")).foreach(record => {
           forceCallLoci.put("chr" + record.contig,
             if (record.alt.nonEmpty) record.interbaseStart else record.interbaseStart - 1,

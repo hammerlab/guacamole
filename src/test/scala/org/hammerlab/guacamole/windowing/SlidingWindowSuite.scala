@@ -187,7 +187,7 @@ class SlidingWindowSuite extends FunSuite with Matchers {
       TestUtil.makeRead("TCG", "3M", 6))
     val window2 = SlidingWindow("chr1", 0, reads2.iterator)
 
-    val loci = LociSet.parse("chr1:0-3,chr1:20-30").result.onContig("chr1").iterator
+    val loci = LociSet("chr1:0-3,chr1:20-30").onContig("chr1").iterator
     val windows = Vector(window1, window2)
 
     SlidingWindow.advanceMultipleWindows(windows, loci, skipEmpty = false) should be(Some(0))
@@ -213,7 +213,7 @@ class SlidingWindowSuite extends FunSuite with Matchers {
       TestUtil.makeRead("TCG", "3M", 6))
     val window2 = SlidingWindow("chr1", 0, reads2.iterator)
 
-    val loci = LociSet.parse("chr1:0-3,chr1:20-30").result.onContig("chr1").iterator
+    val loci = LociSet("chr1:0-3,chr1:20-30").onContig("chr1").iterator
     val windows = Vector(window1, window2)
 
     SlidingWindow.advanceMultipleWindows(windows, loci, skipEmpty = true) should be(Some(0))
@@ -242,7 +242,7 @@ class SlidingWindowSuite extends FunSuite with Matchers {
       TestUtil.makeRead("TCG", "3M", 100))
     val window2 = SlidingWindow("chr1", 0, reads2.iterator)
 
-    val loci = LociSet.parse("chr1:0-3,chr1:60-101").result.onContig("chr1").iterator
+    val loci = LociSet("chr1:0-3,chr1:60-101").onContig("chr1").iterator
     val windows = Vector(window1, window2)
 
     SlidingWindow.advanceMultipleWindows(windows, loci, skipEmpty = false) should be(Some(0))

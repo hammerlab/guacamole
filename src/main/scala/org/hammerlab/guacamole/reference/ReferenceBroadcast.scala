@@ -106,7 +106,7 @@ object ReferenceBroadcast {
               .format(regionDescription))
         }
         val contigLength = pieces(1).toInt
-        val region = LociSet.parse(pieces(0)).result
+        val region = LociSet(pieces(0))
         if (region.contigs.length != 1) {
           throw new IllegalArgumentException("Region must have 1 contig for partial fasta: %s".format(pieces(0)))
         }
