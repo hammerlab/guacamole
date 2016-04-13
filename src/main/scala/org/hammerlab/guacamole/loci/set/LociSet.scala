@@ -119,5 +119,7 @@ object LociSet {
     })
     LociSet(wrapped.result)
   }
+
+  def all(contigLengths: Map[String, Long]) = Builder.all.result(contigLengths)
 }
 

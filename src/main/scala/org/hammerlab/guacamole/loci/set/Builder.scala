@@ -23,27 +23,18 @@ class Builder {
    * Does this Builder contain only loci ranges with exact ends (e.g. "chr:1-20000" not "all of chr1")?
    * If false, we require contig lengths to be specified to the result method.
    */
-  var fullyResolved = true
+  private var fullyResolved = true
 
   /**
    * Does this Builder contain all sites on all contigs?
    */
-  var containsAll = false
+  private var containsAll = false
 
   /**
    * (contig, start, end) ranges which have been added to this builder.
    * If end is None, it indicates "until the end of the contig"
    */
   private val ranges = ArrayBuffer[(String, Long, Option[Long])]()
-
-  /**
-   * Specify that this builder contains all sites on all contigs.
-   */
-  def putAllContigs(): Builder = {
-    containsAll = true
-    fullyResolved = false
-    this
-  }
 
   /**
    * Add an interval to the Builder.
@@ -73,8 +64,10 @@ class Builder {
    */
   def putExpression(loci: String): Builder = {
     if (loci == "all") {
-      putAllContigs()
-    } else if (loci != "none") {
+      Builder.all
+    } else if (loci == "none") {
+      new Builder()
+    } else {
       val contigAndLoci = """^([\pL\pN._]+):(\pN+)(?:-(\pN*))?$""".r
       val contigOnly = """^([\pL\pN._]+)""".r
       loci.replaceAll("\\s", "").split(',').foreach {
@@ -93,8 +86,8 @@ class Builder {
           throw new IllegalArgumentException("Couldn't parse loci range: %s".format(other))
         }
       }
+      this
     }
-    this
   }
 
   /**
@@ -145,3 +138,8 @@ class Builder {
     )
 }
 
+object Builder {
+  val all = new Builder()
+  all.containsAll = true
+  all.fullyResolved = false
+}

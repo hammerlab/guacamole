@@ -9,7 +9,7 @@ import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 
 /** Helper class for building a LociMap */
-private[map] class Builder[T] {
+private[loci] class Builder[T] {
   private val data = new mutable.HashMap[String, ArrayBuffer[(JLong, JLong, T)]]()
 
   /** Set the value at the given locus range in the LociMap under construction. */
