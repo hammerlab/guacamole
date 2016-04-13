@@ -99,7 +99,7 @@ object Read extends Logging {
               passedVendorQualityChecks: Boolean = false,
               isPaired: Boolean = false): InputFilters = {
       new InputFilters(
-        overlapsLoci = if (overlapsLoci.isEmpty && mapped) Some(LociSet.newBuilder.putAllContigs) else overlapsLoci,
+        overlapsLoci = if (overlapsLoci.isEmpty && mapped) Some(LociSetBuilder.all) else overlapsLoci,
         nonDuplicate = nonDuplicate,
         passedVendorQualityChecks = passedVendorQualityChecks,
         isPaired = isPaired)
