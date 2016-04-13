@@ -28,14 +28,14 @@ class LociMapSuite extends GuacFunSuite {
 
     emptyMap.count should be(0)
     emptyMap.toString() should be("")
-    emptyMap should equal(LociMap.newBuilder[String].result)
+    emptyMap should equal(LociMap[String]())
   }
 
   test("basic map operations") {
-    val lociMap = LociMap.newBuilder[String]
-      .put("chr1", 100, 200, "A")
-      .put("chr20", 200, 201, "B")
-      .result
+    val lociMap = LociMap(
+      ("chr1",  100L, 200L, "A"),
+      ("chr20", 200L, 201L, "B")
+    )
 
     lociMap.count should be(101)
     lociMap.toString should be("chr1:100-200=A,chr20:200-201=B")
@@ -62,10 +62,11 @@ class LociMapSuite extends GuacFunSuite {
   }
 
   test("asInverseMap with duplicate values") {
-    val lociMap = LociMap.union(
-      LociMap("chr1", 100, 200, "A"),
-      LociMap("chr2", 200, 300, "A"),
-      LociMap("chr3", 400, 500, "B"))
+    val lociMap = LociMap(
+      ("chr1", 100L, 200L, "A"),
+      ("chr2", 200L, 300L, "A"),
+      ("chr3", 400L, 500L, "B")
+    )
 
     // asInverseMap stuffs all Loci with the same value into a LociSet.
     lociMap.asInverseMap should equal(
@@ -77,11 +78,11 @@ class LociMapSuite extends GuacFunSuite {
   }
 
   test("range coalescing") {
-    val lociMap = LociMap.union(
-      LociMap("chr1", 100, 200, "A"),
-      LociMap("chr1", 400, 500, "B"),
-      LociMap("chr1", 150, 160, "C"),
-      LociMap("chr1", 180, 240, "A")
+    val lociMap = LociMap(
+      ("chr1", 100L, 200L, "A"),
+      ("chr1", 400L, 500L, "B"),
+      ("chr1", 150L, 160L, "C"),
+      ("chr1", 180L, 240L, "A")
     )
     lociMap.toString should be("chr1:100-150=A,chr1:150-160=C,chr1:160-240=A,chr1:400-500=B")
   }
