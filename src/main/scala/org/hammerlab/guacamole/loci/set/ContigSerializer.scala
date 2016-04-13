@@ -1,14 +1,27 @@
 package org.hammerlab.guacamole.loci.set
 
-import com.esotericsoftware.kryo.{Kryo, Serializer => KryoSerializer}
+import java.lang.{Long => JLong}
+
 import com.esotericsoftware.kryo.io.{Input, Output}
-import org.hammerlab.guacamole.loci.map
+import com.esotericsoftware.kryo.{Kryo, Serializer => KryoSerializer}
+import com.google.common.collect.{TreeRangeSet, Range => JRange}
+import org.hammerlab.guacamole.loci.SimpleRange
 
 class ContigSerializer extends KryoSerializer[Contig] {
   def write(kryo: Kryo, output: Output, obj: Contig) = {
-    kryo.writeObject(output, obj.map)
+    output.writeString(obj.name)
+    kryo.writeObject(output, obj.ranges)
   }
+
   def read(kryo: Kryo, input: Input, klass: Class[Contig]): Contig = {
-    Contig(kryo.readObject(input, classOf[map.Contig[Long]]))
+    val name = input.readString()
+    val ranges = kryo.readObject(input, classOf[Array[SimpleRange]])
+    val treeRangeSet = TreeRangeSet.create[JLong]()
+    for {
+      SimpleRange(start, end) <- ranges
+    } {
+      treeRangeSet.add(JRange.closedOpen(start, end))
+    }
+    Contig(name, treeRangeSet)
   }
 }

@@ -39,7 +39,7 @@ class LociMapSuite extends GuacFunSuite {
 
     lociMap.count should be(101)
     lociMap.toString should be("chr1:100-200=A,chr20:200-201=B")
-    lociMap.contigs should be(List("chr1", "chr20"))
+    lociMap.contigs.map(_.name) should be(Seq("chr1", "chr20"))
 
     lociMap should equal(LociMap.union(LociMap("chr1", 100, 200, "A"), LociMap("chr20", 200, 201, "B")))
     lociMap should not equal (
