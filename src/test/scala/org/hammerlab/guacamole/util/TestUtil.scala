@@ -25,7 +25,7 @@ import com.esotericsoftware.kryo.Kryo
 import com.twitter.chill.{IKryoRegistrar, KryoInstantiator, KryoPool}
 import org.apache.commons.io.FileUtils
 import org.apache.spark.SparkContext
-import org.hammerlab.guacamole.loci.set.LociSet
+import org.hammerlab.guacamole.loci.set.{Builder => LociSetBuilder}
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.Read.InputFilters
 import org.hammerlab.guacamole.reads._
@@ -246,7 +246,7 @@ object TestUtil extends Matchers {
         filename,
         filters = InputFilters(
           overlapsLoci = maybeContig.map(
-            contig => LociSet.parse(s"$contig:$locus-${locus + 1}")
+            contig => LociSetBuilder(s"$contig:$locus-${locus + 1}")
           )
         )
       ).mappedReads

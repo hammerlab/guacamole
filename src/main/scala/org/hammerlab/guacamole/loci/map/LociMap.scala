@@ -22,8 +22,8 @@ import java.lang.{Long => JLong}
 
 import com.google.common.collect._
 import org.hammerlab.guacamole.Common
-import org.hammerlab.guacamole.loci.set
-import org.hammerlab.guacamole.loci.set.LociSet
+import org.hammerlab.guacamole.loci.SimpleRange
+import org.hammerlab.guacamole.loci.set.{LociSet, Builder => LociSetBuilder}
 
 import scala.collection.immutable.SortedMap
 import scala.collection.mutable
@@ -52,15 +52,15 @@ case class LociMap[T](private val map: Map[String, Contig[T]]) {
 
   /** The "inverse map", i.e. a T -> LociSet map that gives the loci that map to each value. */
   lazy val asInverseMap: Map[T, LociSet] = {
-    val mapOfBuilders = new mutable.HashMap[T, set.Builder]()
-    contigs.foreach(contig => {
-      onContig(contig).asMap.foreach({
-        case (range, value) => mapOfBuilders.get(value) match {
-          case None          => mapOfBuilders.put(value, LociSet.newBuilder.put(contig, range.start, range.end))
-          case Some(builder) => builder.put(contig, range.start, range.end)
-        }
-      })
-    })
+    val mapOfBuilders = new mutable.HashMap[T, LociSetBuilder]()
+    for {
+      contig <- contigs
+      (SimpleRange(start, end), value) <- onContig(contig).asMap
+    } {
+      mapOfBuilders
+        .getOrElseUpdate(value, new LociSetBuilder)
+        .put(contig, start, end)
+    }
     mapOfBuilders.mapValues(_.result).toMap
   }
 

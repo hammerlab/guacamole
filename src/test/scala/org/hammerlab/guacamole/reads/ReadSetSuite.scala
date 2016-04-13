@@ -21,12 +21,10 @@ package org.hammerlab.guacamole.reads
 import org.apache.parquet.hadoop.metadata.CompressionCodecName
 import org.bdgenomics.adam.rdd.read.AlignmentRecordRDDFunctions
 import org.bdgenomics.adam.rdd.{ADAMContext, ADAMSaveAnyArgs}
-import org.hammerlab.guacamole.loci.set.LociSet
+import org.hammerlab.guacamole.loci.set.{Builder => LociSetBuilder}
 import org.hammerlab.guacamole.reads.Read.InputFilters
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
-import org.hammerlab.guacamole.util.TestUtil
 import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
-import org.scalatest.Matchers
 
 class ReadSetSuite extends GuacFunSuite {
 
@@ -94,16 +92,16 @@ class ReadSetSuite extends GuacFunSuite {
     Seq(
       InputFilters(),
       InputFilters(mapped = true, nonDuplicate = true),
-      InputFilters(overlapsLoci = Some(LociSet.parse("20:10220390-10220490")))
+      InputFilters(overlapsLoci = Some(LociSetBuilder("20:10220390-10220490")))
     ).foreach(filter => {
         check(Seq("gatk_mini_bundle_extract.bam", "gatk_mini_bundle_extract.sam"), filter)
       })
 
     Seq(
-      InputFilters(overlapsLoci = Some(LociSet.parse("19:147033")))
+      InputFilters(overlapsLoci = Some(LociSetBuilder("19:147033")))
     ).foreach(filter => {
-        check(Seq("synth1.normal.100k-200k.withmd.bam", "synth1.normal.100k-200k.withmd.sam"), filter)
-      })
+      check(Seq("synth1.normal.100k-200k.withmd.bam", "synth1.normal.100k-200k.withmd.sam"), filter)
+    })
   }
 
   sparkTest("load and test filters") {
