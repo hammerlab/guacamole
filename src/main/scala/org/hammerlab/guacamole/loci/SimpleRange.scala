@@ -1,5 +1,9 @@
 package org.hammerlab.guacamole.loci
 
+import java.lang.{Long => JLong}
+
+import com.google.common.collect.{Range => JRange}
+
 import scala.collection.Iterator
 
 /**
@@ -26,3 +30,6 @@ case class SimpleRange(start: Long, end: Long) extends Ordered[SimpleRange] {
   }
 }
 
+object SimpleRange {
+  def apply(range: JRange[JLong]): SimpleRange = SimpleRange(range.lowerEndpoint(), range.upperEndpoint())
+}

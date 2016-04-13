@@ -47,7 +47,11 @@ class LociMapSuite extends GuacFunSuite {
     lociMap should not equal (LociMap[String]())
 
     lociMap.asInverseMap should equal(
-      List("A" -> LociSet.parse("chr1:100-200").result, "B" -> LociSet.parse("chr20:200-201").result).toMap)
+      Map(
+        "A" -> LociSet.parse("chr1:100-200").result,
+        "B" -> LociSet.parse("chr20:200-201").result
+      )
+    )
 
     lociMap.onContig("chr1").toString should equal("chr1:100-200=A")
     lociMap.onContig("chr20").toString should equal("chr20:200-201=B")
@@ -65,7 +69,11 @@ class LociMapSuite extends GuacFunSuite {
 
     // asInverseMap stuffs all Loci with the same value into a LociSet.
     lociMap.asInverseMap should equal(
-      List("A" -> LociSet.parse("chr1:100-200,chr2:200-300").result, "B" -> LociSet.parse("chr3:400-500").result).toMap)
+      Map(
+        "A" -> LociSet.parse("chr1:100-200,chr2:200-300").result,
+        "B" -> LociSet.parse("chr3:400-500").result
+      )
+    )
   }
 
   test("range coalescing") {

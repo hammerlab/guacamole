@@ -1,13 +1,14 @@
 package org.hammerlab.guacamole.loci.map
 
+import java.lang.{Long => JLong}
+
 import com.google.common.collect.{Range, RangeMap, TreeRangeMap}
 import org.hammerlab.guacamole.Common
 import org.hammerlab.guacamole.loci.SimpleRange
 
-import scala.collection.{Iterator, JavaConversions}
-import scala.collection.immutable.SortedMap
-
-import java.lang.{Long => JLong}
+import scala.collection.Iterator
+import scala.collection.JavaConversions._
+import scala.collection.immutable.{SortedMap, TreeMap}
 
 /**
  * A map from loci to instances of an arbitrary type where the loci are all on the same contig.
@@ -30,7 +31,7 @@ case class Contig[T](contig: String, private val rangeMap: RangeMap[JLong, T]) {
    */
   def getAll(start: Long, end: Long): Set[T] = {
     val range = Range.closedOpen[JLong](start, end)
-    JavaConversions.asScalaIterator(rangeMap.subRangeMap(range).asMapOfRanges.values.iterator).toSet
+    rangeMap.subRangeMap(range).asMapOfRanges.values.iterator.toSet
   }
 
   /** Does this map contain the given locus? */
@@ -38,16 +39,20 @@ case class Contig[T](contig: String, private val rangeMap: RangeMap[JLong, T]) {
 
   /** This map as a regular scala immutable map from exclusive numeric ranges to values. */
   lazy val asMap: SortedMap[SimpleRange, T] = {
-    val result = JavaConversions.mapAsScalaMap(rangeMap.asMapOfRanges).map(
-      pair => (SimpleRange(pair._1.lowerEndpoint, pair._1.upperEndpoint), pair._2))
-    scala.collection.immutable.TreeMap[SimpleRange, T](result.toSeq: _*)
+    TreeMap(
+      (for {
+        (range, value) <- rangeMap.asMapOfRanges.toSeq
+      } yield {
+        SimpleRange(range) -> value
+      }): _*
+    )
   }
 
   /** Number of loci in this map. */
-  lazy val count: Long = ranges.toIterator.map(_.length).sum
+  lazy val count = ranges.map(_.length).sum
 
   /** Returns a sequence of ranges giving the intervals of this map. */
-  lazy val ranges: Iterable[SimpleRange] = asMap.keys
+  lazy val ranges: Array[SimpleRange] = asMap.keys.toArray
 
   /** Number of ranges in this map. */
   lazy val numRanges: Long = rangeMap.asMapOfRanges.size.toLong
@@ -86,8 +91,10 @@ case class Contig[T](contig: String, private val rangeMap: RangeMap[JLong, T]) {
    */
   def stringPieces(includeValues: Boolean = true) = {
     asMap.iterator.map(pair => {
-      if (includeValues) "%s:%d-%d=%s".format(contig, pair._1.start, pair._1.end, pair._2.toString)
-      else "%s:%d-%d".format(contig, pair._1.start, pair._1.end)
+      if (includeValues)
+        "%s:%d-%d=%s".format(contig, pair._1.start, pair._1.end, pair._2.toString)
+      else
+        "%s:%d-%d".format(contig, pair._1.start, pair._1.end)
     })
   }
 

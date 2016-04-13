@@ -12,21 +12,21 @@ case class Contig(map: LociMapContig[Long]) {
   def contains(locus: Long): Boolean = map.contains(locus)
 
   /** Returns a sequence of ranges giving the intervals of this set. */
-  def ranges(): Iterable[SimpleRange] = map.ranges
+  def ranges(): Array[SimpleRange] = map.ranges
 
-  /** Number of loci in this set. */
+  /** Number of loci on this contig. */
   def count(): Long = map.count
 
-  /** Is this set empty? */
+  /** Is this contig empty? */
   def isEmpty: Boolean = map.isEmpty
 
-  /** Iterator through loci in this set, sorted. */
-  def iterator(): ContigIterator = new ContigIterator(this)
+  /** Iterator through loci on this contig, sorted. */
+  def iterator = new ContigIterator(this)
 
   /** Returns the union of this set with another. Both must be on the same contig. */
   def union(other: Contig): Contig = Contig(map.union(other.map))
 
-  /** Returns whether a given genomic region overlaps with any loci in this LociSet. */
+  /** Returns whether a given genomic region overlaps with any loci on this contig. */
   def intersects(start: Long, end: Long) = map.getAll(start, end).nonEmpty
 
   override def toString: String = truncatedString(Int.MaxValue)
