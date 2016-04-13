@@ -138,7 +138,7 @@ class LociSetSuite extends GuacFunSuite {
       "chr21:100-200,chr20:0-10,chr20:8-15,chr20:100-120").map(LociSet.parse(_).result)
     val rdd = sc.parallelize(sets)
     val result = rdd.map(_.toString).collect.toSeq
-    result should equal(sets.map(_.toString).toSeq)
+    result should equal(sets.map(_.toString))
   }
 
   sparkTest("serialization: make an RDD[LociSet], and an RDD[ContigLociSet]") {
@@ -155,7 +155,7 @@ class LociSetSuite extends GuacFunSuite {
       val ranges = set.onContig("21").ranges // no op
       set.onContig("20").toString
     }).collect.toSeq
-    result should equal(sets.map(_.onContig("20").toString).toSeq)
+    result should equal(sets.map(_.onContig("20").toString))
   }
 
   test("loci set union") {

@@ -1,23 +1,24 @@
 package org.hammerlab.guacamole.loci.map
 
+import java.lang.{Long => JLong}
+
 import com.google.common.collect.{Range, TreeRangeMap}
 import org.hammerlab.guacamole.loci.set.LociSet
 
 import scala.collection.mutable
-import java.lang.{Long => JLong}
-
 import scala.collection.mutable.ArrayBuffer
 
-/** Class for building a LociMap */
-private[loci] class Builder[T] {
-  val data = new mutable.HashMap[String, mutable.ArrayBuffer[(Long, Long, T)]]()
+/** Helper class for building a LociMap */
+private[map] class Builder[T] {
+  private val data = new mutable.HashMap[String, ArrayBuffer[(JLong, JLong, T)]]()
 
   /** Set the value at the given locus range in the LociMap under construction. */
   def put(contig: String, start: Long, end: Long, value: T): Builder[T] = {
     assume(end >= start)
-    if (end > start) data.get(contig) match {
-      case None              => data.put(contig, ArrayBuffer[(Long, Long, T)]((start, end, value)))
-      case Some(arrayBuffer) => arrayBuffer += ((start, end, value))
+    if (end > start) {
+      data
+        .getOrElseUpdate(contig, ArrayBuffer())
+        .append((start, end, value))
     }
     this
   }
