@@ -18,6 +18,7 @@
 
 package org.hammerlab.guacamole.loci.map
 
+import org.hammerlab.guacamole.loci.SimpleRange
 import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.util.GuacFunSuite
 
@@ -52,13 +53,9 @@ class LociMapSuite extends GuacFunSuite {
 
     lociMap.onContig("chr1").toString should equal("chr1:100-200=A")
     lociMap.onContig("chr20").toString should equal("chr20:200-201=B")
-
-    // union clobbers the beginning of the first interval
-    lociMap.union(LociMap("chr1", 100, 140, "X")).toString should be("chr1:100-140=X,chr1:140-200=A,chr20:200-201=B")
-    lociMap.union(LociMap("chr1", 100, 140, "@")).toString should be("chr1:100-140=@,chr1:140-200=A,chr20:200-201=B")
   }
 
-  test("asInverseMap with duplicate values") {
+  test("asInverseMap with repeated values") {
     val lociMap = LociMap(
       ("chr1", 100L, 200L, "A"),
       ("chr2", 200L, 300L, "A"),
@@ -72,6 +69,9 @@ class LociMapSuite extends GuacFunSuite {
         "B" -> LociSet("chr3:400-500")
       )
     )
+
+    lociMap.count should be(300)
+    lociMap.toString should be("chr1:100-200=A,chr2:200-300=A,chr3:400-500=B")
   }
 
   test("range coalescing") {
@@ -81,6 +81,66 @@ class LociMapSuite extends GuacFunSuite {
       ("chr1", 150L, 160L, "C"),
       ("chr1", 180L, 240L, "A")
     )
+
+    lociMap.asInverseMap should be(
+      Map(
+        "A" -> LociSet("chr1:100-150,chr1:160-240"),
+        "B" -> LociSet("chr1:400-500"),
+        "C" -> LociSet("chr1:150-160")
+      )
+    )
+
+    lociMap.count should be(240)
     lociMap.toString should be("chr1:100-150=A,chr1:150-160=C,chr1:160-240=A,chr1:400-500=B")
+  }
+
+  test("spanning equal values merges") {
+    val map = LociMap(
+      ("chr1", 100L, 200L, "A"),
+      ("chr1", 400L, 500L, "B"),
+      ("chr1", 300L, 400L, "A"),
+      ("chr1", 199L, 301L, "A")
+    )
+
+    map.asInverseMap should be(
+      Map(
+        "A" -> LociSet("chr1:100-400"),
+        "B" -> LociSet("chr1:400-500")
+      )
+    )
+
+    map.onContig("chr1").asMap should be(
+      Map(
+        SimpleRange(100, 400) -> "A",
+        SimpleRange(400, 500) -> "B"
+      )
+    )
+
+    map.count should be(400)
+  }
+
+  test("bridging equal values merges") {
+    val map = LociMap(
+      ("chr1", 100L, 200L, "A"),
+      ("chr1", 400L, 500L, "B"),
+      ("chr1", 300L, 400L, "A"),
+      ("chr1", 200L, 300L, "A")
+    )
+
+    map.asInverseMap should be(
+      Map(
+        "A" -> LociSet("chr1:100-400"),
+        "B" -> LociSet("chr1:400-500")
+      )
+    )
+
+    map.onContig("chr1").asMap should be(
+      Map(
+        SimpleRange(100, 400) -> "A",
+        SimpleRange(400, 500) -> "B"
+      )
+    )
+
+    map.count should be(400)
   }
 }
