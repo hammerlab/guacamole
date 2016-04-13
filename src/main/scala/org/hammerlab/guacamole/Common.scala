@@ -127,16 +127,17 @@ object Common extends Logging {
     if (args.loci.nonEmpty && args.lociFromFile.nonEmpty) {
       throw new IllegalArgumentException("Specify at most one of the 'loci' and 'loci-from-file' arguments")
     }
-    val lociToParse = if (args.loci.nonEmpty) {
-      args.loci
-    } else if (args.lociFromFile.nonEmpty) {
-      // Load loci from file.
-      val filesystem = FileSystem.get(new Configuration())
-      val path = new Path(args.lociFromFile)
-      IOUtils.toString(new InputStreamReader(filesystem.open(path)))
-    } else {
-      default
-    }
+    val lociToParse =
+      if (args.loci.nonEmpty) {
+        args.loci
+      } else if (args.lociFromFile.nonEmpty) {
+        // Load loci from file.
+        val filesystem = FileSystem.get(new Configuration())
+        val path = new Path(args.lociFromFile)
+        IOUtils.toString(new InputStreamReader(filesystem.open(path)))
+      } else {
+        default
+      }
 
     LociParser(lociToParse)
   }
@@ -178,7 +179,7 @@ object Common extends Logging {
    * @param contigLengths contig lengths, by name
    * @return a LociSet
    */
-  def loci(loci: String, lociFromFilePath: String, contigLengths: Map[String, Long]): LociSet = {
+  def loadLoci(loci: String, lociFromFilePath: String, contigLengths: Map[String, Long]): LociSet = {
     if (loci.nonEmpty && lociFromFilePath.nonEmpty) {
       throw new IllegalArgumentException("Specify at most one of the 'loci' and 'loci-from-file' arguments")
     }
