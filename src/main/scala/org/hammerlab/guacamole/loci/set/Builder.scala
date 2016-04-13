@@ -5,8 +5,12 @@ import java.lang.{Long => JLong}
 import com.google.common.collect.{TreeRangeSet, Range => JRange}
 
 import scala.collection.immutable.TreeMap
+import com.google.common.collect.{TreeRangeSet, Range => JRange}
+
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
+
+import java.lang.{Long => JLong}
 
 /**
  * Class for constructing a LociSet.
@@ -96,11 +100,25 @@ class Builder {
 
   /**
    * Build the result.
+   *
+   * The wrappers here all delegate to the private implementation that follows.
    */
-  def result(contigLengths: Option[Map[String, Long]] = None): LociSet = {
+  def result: LociSet = result(None)  // enables omitting parentheses: builder.result instead of builder.result()
+  def result(contigLengths: Map[String, Long]): LociSet = result(Some(contigLengths))
+  def result(contigLengths: (String, Long)*): LociSet =
+    result(
+      // Calling .result() should pass None, not Some(Map.empty)
+      if (contigLengths.nonEmpty)
+        Some(contigLengths.toMap)
+      else
+        None
+    )
+
+  private def result(contigLengthsOpt: Option[Map[String, Long]] = None): LociSet = {
+
     // Check for invalid contigs.
     for {
-      contigLengths <- contigLengths.toList
+      contigLengths <- contigLengthsOpt.toList
       (contig, start, end) <- ranges
     } {
       contigLengths.get(contig) match {
@@ -120,7 +138,7 @@ class Builder {
 
     if (containsAll) {
       for {
-        (contig, length) <- contigLengths.get
+        (contig, length) <- contigLengthsOpt.get
       } {
         rangesByContig
           .getOrElseUpdate(contig, TreeRangeSet.create())
@@ -130,14 +148,14 @@ class Builder {
       for {
         (contig, start, end) <- ranges
       } {
-        val resolvedEnd = end.getOrElse(contigLengths.get(contig))
+        val resolvedEnd = end.getOrElse(contigLengthsOpt.get(contig))
         rangesByContig
           .getOrElseUpdate(contig, TreeRangeSet.create())
           .add(JRange.closedOpen(start, resolvedEnd))
       }
     }
 
-    val mapBuilder = TreeMap.newBuilder[String, Contig]
+    val mapBuilder = Map.newBuilder[String, Contig]
     for {
       (name, ranges) <- rangesByContig
       if !ranges.isEmpty
@@ -146,17 +164,6 @@ class Builder {
     }
     LociSet(mapBuilder.result())
   }
-
-  /* Convenience wrappers. */
-  def result: LociSet = result(None) // enables omitting parentheses: builder.result instead of builder.result()
-  def result(contigLengths: Map[String, Long]): LociSet = result(Some(contigLengths))
-  def result(contigLengths: (String, Long)*): LociSet =
-    result(
-      if (contigLengths.nonEmpty)
-        Some(contigLengths.toMap)
-      else
-        None
-    )
 }
 
 object Builder {
