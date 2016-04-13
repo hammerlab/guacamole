@@ -27,7 +27,8 @@ import org.apache.hadoop.fs.{FileSystem, Path}
 import org.apache.hadoop.mapred.FileAlreadyExistsException
 import org.apache.spark.{Logging, SparkConf, SparkContext}
 import org.hammerlab.guacamole.distributed.LociPartitionUtils
-import org.hammerlab.guacamole.loci.{LociArgs, LociSet}
+import org.hammerlab.guacamole.loci.LociArgs
+import org.hammerlab.guacamole.loci.set.{LociSet, Builder => LociSetBuilder}
 import org.hammerlab.guacamole.logging.DebugLogArgs
 import org.hammerlab.guacamole.reads.{InputFilters, ReadLoadingConfigArgs}
 import org.hammerlab.guacamole.variants.Concordance.ConcordanceArgs
@@ -118,11 +119,11 @@ object Common extends Logging {
   }
 
   /**
-   * Return the loci specified by the user as a LociSet.Builder.
+   * Return the loci specified by the user as a LociSetBuilder.
    *
    * @param args parsed arguments
    */
-  def lociFromArguments(args: LociArgs, default: String = "all"): LociSet.Builder = {
+  def lociFromArguments(args: LociArgs, default: String = "all"): LociSetBuilder = {
     if (args.loci.nonEmpty && args.lociFromFile.nonEmpty) {
       throw new IllegalArgumentException("Specify at most one of the 'loci' and 'loci-from-file' arguments")
     }

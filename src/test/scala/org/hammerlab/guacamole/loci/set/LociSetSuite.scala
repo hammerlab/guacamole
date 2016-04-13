@@ -16,12 +16,11 @@
  * limitations under the License.
  */
 
-package org.hammerlab.guacamole.loci
+package org.hammerlab.guacamole.loci.set
 
-import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole.Common
+import org.hammerlab.guacamole.loci.LociArgs
 import org.hammerlab.guacamole.logging.DebugLogArgs
-import org.hammerlab.guacamole.reads.Read
 import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
 
 class LociSetSuite extends GuacFunSuite {
@@ -116,8 +115,6 @@ class LociSetSuite extends GuacFunSuite {
   }
 
   sparkTest("loci argument parsing in Common") {
-    val read = TestUtil.makeRead("C", "1M", 500, "20")
-    val reads: RDD[Read] = sc.parallelize(Seq(read))
     class TestArgs extends DebugLogArgs with LociArgs {}
 
     // Test -loci argument
@@ -144,7 +141,7 @@ class LociSetSuite extends GuacFunSuite {
     result should equal(sets.map(_.toString).toSeq)
   }
 
-  sparkTest("serialization: make an RDD[LociSet], and an RDD[LociSet.SingleContig]") {
+  sparkTest("serialization: make an RDD[LociSet], and an RDD[ContigLociSet]") {
     val sets = List(
       "",
       "empty:20-20,empty2:30-30",
