@@ -18,7 +18,10 @@
 
 package org.hammerlab.guacamole.loci.set
 
-import org.hammerlab.guacamole.loci.map.LociMap
+import org.hammerlab.guacamole.Common
+
+import scala.collection.SortedMap
+import scala.collection.immutable.TreeMap
 
 /**
  * An immutable collection of genomic regions on any number of contigs.
@@ -29,37 +32,33 @@ import org.hammerlab.guacamole.loci.map.LociMap
  *
  * All intervals are half open: inclusive on start, exclusive on end.
  *
- * We implement a set by wrapping a LociMap[Long], and ignoring the values of the map.
- *
- * @param map LociMap[Long] instance. The values are ignored, and the keys are the members of the LociSet.
+ * @param map A map from contig-name to Contig, which is a set or genomic intervals as described above.
  */
-case class LociSet(map: LociMap[Long]) {
+case class LociSet(private val map: SortedMap[String, Contig]) {
 
   /** The contigs included in this LociSet with a nonempty set of loci. */
-  def contigs: Seq[String] = map.contigs
+  lazy val contigs = map.values.toSeq
 
   /** The number of loci in this LociSet. */
-  def count: Long = map.count
+  lazy val count: Long = contigs.map(_.count).sum
 
-  /** Does count == 0? */
   def isEmpty = map.isEmpty
-  def nonEmpty = !isEmpty
+  def nonEmpty = map.nonEmpty
 
   /** Given a contig name, returns a [[Contig]] giving the loci on that contig. */
-  def onContig(contig: String): Contig = Contig(map.onContig(contig))
-
-  /** Returns the union of this LociSet with another. */
-  def union(other: LociSet): LociSet = LociSet(map.union(other.map))
+  def onContig(contig: String): Contig = map.getOrElse(contig, Contig(contig))
 
   /** Returns a string representation of this LociSet, in the same format that Builder expects. */
   override def toString: String = truncatedString(Int.MaxValue)
 
-  /** String representation, truncated to maxLength characters. */
-  def truncatedString(maxLength: Int = 200): String = map.truncatedString(maxLength, includeValues = false)
-
-  /** Returns a LociSet containing only those contigs TODO*/
-  def filterContigs(function: String => Boolean): LociSet = {
-    LociSet(map.filterContigs(function))
+  /**
+   * String representation, truncated to maxLength characters.
+   */
+  def truncatedString(maxLength: Int = 500): String = {
+    Common.assembleTruncatedString(
+      contigs.iterator.flatMap(_.stringPieces),
+      maxLength
+    )
   }
 
   override def equals(other: Any) = other match {
@@ -83,15 +82,42 @@ case class LociSet(map: LociMap[Long]) {
     } else if (numToTake == count) {
       (this, LociSet.empty)
     } else {
-      val mapTake = map.take(numToTake)
-      (LociSet(mapTake._1), LociSet(mapTake._2))
+
+      /* TODO: may want to optimize this to not fully construct two new maps. Could share singleContig instances between
+       * the current map and the split maps, for example.
+       */
+      val first = new Builder()
+      val second = new Builder()
+      var remaining = numToTake
+      var doneTaking = false
+
+      for {
+        contig <- contigs
+        range <- contig.ranges
+      } {
+        if (doneTaking) {
+          second.put(contig.name, range.start, range.end)
+        } else if (remaining >= range.length) {
+          first.put(contig.name, range.start, range.end)
+          remaining -= range.length
+        } else {
+          first.put(contig.name, range.start, range.start + remaining)
+          second.put(contig.name, range.start + remaining, range.end)
+          doneTaking = true
+        }
+      }
+
+      val (firstSet, secondSet) = (first.result, second.result)
+      assert(firstSet.count == numToTake)
+      assert(firstSet.count + secondSet.count == count)
+      (firstSet, secondSet)
     }
   }
 }
 
 object LociSet {
   /** An empty LociSet. */
-  val empty = LociSet(LociMap[Long]())
+  val empty = LociSet(TreeMap.empty[String, Contig])
 
   /**
    * Return a new builder instance for constructing a LociSet.
@@ -103,17 +129,9 @@ object LociSet {
     (new Builder).put(contig, start, end).result
   }
 
-  /** Returns union of specified [[LociSet]] instances. */
-  def union(lociSets: LociSet*): LociSet = {
-    val wrapped = LociMap.newBuilder[Long]
-    lociSets.foreach(lociSet => {
-      wrapped.put(lociSet, 0)
-    })
-    LociSet(wrapped.result)
-  }
-
   def all(contigLengths: Map[String, Long]) = Builder.all.result(contigLengths)
 
   def apply(loci: String): LociSet = Builder(loci).result
-}
 
+  def apply(contigs: Iterable[(String, Contig)]): LociSet = LociSet(TreeMap(contigs.toSeq: _*))
+}

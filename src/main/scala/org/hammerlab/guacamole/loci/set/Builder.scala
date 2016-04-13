@@ -1,7 +1,11 @@
 package org.hammerlab.guacamole.loci.set
 
-import org.hammerlab.guacamole.loci.map.{Builder => LociMapBuilder}
+import java.lang.{Long => JLong}
 
+import com.google.common.collect.{TreeRangeSet, Range => JRange}
+
+import scala.collection.immutable.TreeMap
+import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 
 /**
@@ -94,36 +98,53 @@ class Builder {
    * Build the result.
    */
   def result(contigLengths: Option[Map[String, Long]] = None): LociSet = {
-    assume(contigLengths.nonEmpty || fullyResolved)
-    val wrapped = new LociMapBuilder[Long]
-    val rangesResult = ranges.result
-
     // Check for invalid contigs.
-    if (contigLengths.nonEmpty) {
-      rangesResult.foreach({
-        case (contig, start, end) => contigLengths.get.get(contig) match {
-          case None => throw new IllegalArgumentException(
-            "No such contig: %s. Valid contigs: %s".format(contig, contigLengths.get.keys.mkString(", ")))
-          case Some(contigLength) if end.exists(_ > contigLength) =>
-            throw new IllegalArgumentException(
-              "Invalid range %d-%d for contig '%s' which has length %d".format(
-                start, end.get, contig, contigLength))
-          case _ => {}
-        }
-      })
-    }
-    if (containsAll) {
-      contigLengths.get.foreach(
-        contigAndLength => wrapped.put(contigAndLength._1, 0, contigAndLength._2 - 1, 0))
-    } else {
-      rangesResult.foreach {
-        case (contig, start, end) => {
-          val resolvedEnd = end.getOrElse(contigLengths.get.apply(contig))
-          wrapped.put(contig, start, resolvedEnd, 0)
-        }
+    for {
+      contigLengths <- contigLengths.toList
+      (contig, start, end) <- ranges
+    } {
+      contigLengths.get(contig) match {
+        case None =>
+          throw new IllegalArgumentException(
+            s"No such contig: $contig. Valid contigs: ${contigLengths.keys.mkString(", ")}"
+          )
+        case Some(contigLength) if end.exists(_ > contigLength) =>
+          throw new IllegalArgumentException(
+            s"Invalid range $start-${end.get} for contig '$contig' which has length $contigLength"
+          )
+        case _ =>
       }
     }
-    LociSet(wrapped.result)
+
+    val rangesByContig = mutable.HashMap[String, TreeRangeSet[JLong]]()
+
+    if (containsAll) {
+      for {
+        (contig, length) <- contigLengths.get
+      } {
+        rangesByContig
+          .getOrElseUpdate(contig, TreeRangeSet.create())
+          .add(JRange.closedOpen(0L, length))
+      }
+    } else {
+      for {
+        (contig, start, end) <- ranges
+      } {
+        val resolvedEnd = end.getOrElse(contigLengths.get(contig))
+        rangesByContig
+          .getOrElseUpdate(contig, TreeRangeSet.create())
+          .add(JRange.closedOpen(start, resolvedEnd))
+      }
+    }
+
+    val mapBuilder = TreeMap.newBuilder[String, Contig]
+    for {
+      (name, ranges) <- rangesByContig
+      if !ranges.isEmpty
+    } {
+      mapBuilder += name -> Contig(name, ranges)
+    }
+    LociSet(mapBuilder.result())
   }
 
   /* Convenience wrappers. */

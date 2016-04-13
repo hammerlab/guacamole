@@ -64,12 +64,12 @@ object LociPartitionUtils {
     var task = 0L
     def remainingForThisTask = math.round(((task + 1) * lociPerTask) - lociAssigned)
     loci.contigs.foreach(contig => {
-      loci.onContig(contig).ranges.foreach(range => {
+      contig.ranges.foreach(range => {
         var start = range.start
         val end = range.end
         while (start < end) {
           val length: Long = math.min(remainingForThisTask, end - start)
-          builder.put(contig, start, start + length, task)
+          builder.put(contig.name, start, start + length, task)
           start += length
           lociAssigned += length
           if (remainingForThisTask == 0) task += 1

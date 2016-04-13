@@ -26,7 +26,7 @@ import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
 class LociSetSuite extends GuacFunSuite {
 
   test("properties of empty LociSet") {
-    LociSet.empty.contigs should have length (0)
+    LociSet.empty.contigs should have size (0)
     LociSet.empty.count should equal(0)
     LociSet.empty should equal(LociSet(""))
     LociSet.empty should equal(LociSet("empty1:30-30,empty2:40-40"))
@@ -34,7 +34,7 @@ class LociSetSuite extends GuacFunSuite {
 
   test("count, containment, intersection testing of a loci set") {
     val set = LociSet("chr21:100-200,chr20:0-10,chr20:8-15,chr20:100-120,empty:10-10")
-    set.contigs should equal(List("chr20", "chr21"))
+    set.contigs.map(_.name) should be(Seq("chr20", "chr21"))
     set.count should equal(135)
     set.onContig("chr20").contains(110) should be(true)
     set.onContig("chr20").contains(100) should be(true)
@@ -96,8 +96,6 @@ class LociSetSuite extends GuacFunSuite {
         LociSet(set.toString) should equal(set)
         LociSet(set.toString).toString should equal(set.toString)
         set should equal(set)
-        set should not equal (set.union(LociSet("abc123:30-40")))
-        set should equal (set.union(LociSet("empty:99-99")))
 
         // Test serialization. We hit all sorts of null pointer exceptions here at one point, so we are paranoid about
         // checking every pointer.
@@ -112,7 +110,6 @@ class LociSetSuite extends GuacFunSuite {
       }
     }
     sets.foreach(checkInvariants)
-    checkInvariants(LociSet.union(sets: _*))
   }
 
   sparkTest("loci argument parsing in Common") {
@@ -157,12 +154,6 @@ class LociSetSuite extends GuacFunSuite {
       set.onContig("20").toString
     }).collect.toSeq
     result should equal(sets.map(_.onContig("20").toString))
-  }
-
-  test("loci set union") {
-    val set1 = LociSet("chr1:40-43")
-    val set2 = LociSet("chr1:40-42")
-    set1.union(set2).toString should equal("chr1:40-43")
   }
 
   test("loci set parsing with contig lengths") {

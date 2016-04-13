@@ -8,7 +8,7 @@ import com.esotericsoftware.kryo.{Kryo, Serializer => KryoSerializer}
   */
 class ContigSerializer[T] extends KryoSerializer[Contig[T]] {
   def write(kryo: Kryo, output: Output, obj: Contig[T]) = {
-    output.writeString(obj.contig)
+    output.writeString(obj.name)
     output.writeLong(obj.asMap.size)
     obj.asMap.foreach {
       case (range, value) => {
