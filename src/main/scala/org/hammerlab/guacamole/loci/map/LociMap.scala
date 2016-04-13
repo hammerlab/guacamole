@@ -167,6 +167,17 @@ object LociMap {
     (new Builder[T]).put(contig, start, end, value).result
   }
 
+  /** Return a LociMap of a single genomic interval. */
+  def apply[T](contigs: (String, Long, Long, T)*): LociMap[T] = {
+    val builder = new Builder[T]
+    for {
+      (contig, start, end, value) <- contigs
+    } {
+      builder.put(contig, start, end, value)
+    }
+    builder.result()
+  }
+
   /** Returns union of specified [[LociMap]] instances. */
   def union[T](lociMaps: LociMap[T]*): LociMap[T] = {
     val builder = LociMap.newBuilder[T]
