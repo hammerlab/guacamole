@@ -69,14 +69,13 @@ case class LociSet(map: LociMap[Long]) {
   override def hashCode = map.hashCode
 
   /**
-   * Split the LociSet into two sets, where the first one has `numToTake` elements, and the second one has the
-   * remaining elements.
+   * Split the LociSet into two sets, where the first one has `numToTake` loci, and the second one has the
+   * remaining loci.
    *
-   * @param numToTake number of elements to take. Must be <= number of elements in the set.
-   *
+   * @param numToTake number of elements to take. Must be <= number of elements in the map.
    */
   def take(numToTake: Long): (LociSet, LociSet) = {
-    assume(numToTake <= count, "Can't take %d loci from a set of size %d.".format(numToTake, count))
+    assume(numToTake <= count, s"Can't take $numToTake loci from a set of size $count.")
 
     // Optimize for taking none or all:
     if (numToTake == 0) {
