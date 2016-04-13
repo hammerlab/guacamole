@@ -192,7 +192,7 @@ object Common extends Logging {
       lociFromFile(lociFromFilePath, contigLengths)
     } else {
       // Default is "all"
-      LociSet.parse("all").result(Some(contigLengths))
+      LociSet.all(contigLengths)
     }
   }
 

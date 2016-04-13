@@ -37,7 +37,7 @@ object InputFilters {
     new InputFilters(
       overlapsLoci =
         if (overlapsLoci == null && mapped)
-          Some(LociSet.newBuilder.putAllContigs)
+          Some(LociSetBuilder.all)
         else
           Option(overlapsLoci),
       nonDuplicate,
