@@ -145,7 +145,7 @@ object WindowFlatMapUtils {
     val numRDDs = regionRDDs.length
     assume(numRDDs > 0)
     val sc = regionRDDs(0).sparkContext
-    progress("Loci partitioning: %s".format(lociPartitions.truncatedString()))
+    progress(s"Loci partitioning: $lociPartitions")
     val lociPartitionsBoxed: Broadcast[LociMap[Long]] = sc.broadcast(lociPartitions)
     val numTasks = lociPartitions.asInverseMap.map(_._1).max + 1
 
@@ -234,9 +234,9 @@ object WindowFlatMapUtils {
     val regionSplitByContigPerSample: PerSample[RegionsByContig[M]] = taskRegionsPerSample.map(new RegionsByContig(_))
 
     taskLoci.contigs.flatMap(contig => {
-      val regionIterator: PerSample[Iterator[M]] = regionSplitByContigPerSample.map(_.next(contig))
-      val windows: PerSample[SlidingWindow[M]] = regionIterator.map(SlidingWindow[M](contig, halfWindowSize, _))
-      generateFromWindows(taskLoci.onContig(contig), windows)
+      val regionIterator: PerSample[Iterator[M]] = regionSplitByContigPerSample.map(_.next(contig.name))
+      val windows: PerSample[SlidingWindow[M]] = regionIterator.map(SlidingWindow[M](contig.name, halfWindowSize, _))
+      generateFromWindows(contig, windows)
     }).iterator
   }
 }

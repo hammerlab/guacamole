@@ -209,12 +209,13 @@ object Read extends Logging {
       val samSequenceDictionary = reader.getFileHeader.getSequenceDictionary
       val sequenceDictionary = SequenceDictionary.fromSAMSequenceDictionary(samSequenceDictionary)
       val loci = filters.overlapsLoci.map(_.result(contigLengths(sequenceDictionary)))
+
       val recordIterator: SAMRecordIterator = if (filters.overlapsLoci.nonEmpty && reader.hasIndex) {
         progress(s"Using samtools with BAM index to read: $filename")
         requiresFilteringByLocus = false
         val queryIntervals = loci.get.contigs.flatMap(contig => {
-          val contigIndex = samSequenceDictionary.getSequenceIndex(contig)
-          loci.get.onContig(contig).ranges().map(range =>
+          val contigIndex = samSequenceDictionary.getSequenceIndex(contig.name)
+          contig.ranges.map(range =>
             new QueryInterval(contigIndex,
               range.start.toInt + 1, // convert 0-indexed inclusive to 1-indexed inclusive
               range.end.toInt)) // "convert" 0-indexed exclusive to 1-indexed inclusive, which is a no-op)

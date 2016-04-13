@@ -5,6 +5,7 @@ import java.io.{BufferedWriter, File, FileWriter}
 import org.apache.spark.Logging
 import org.bdgenomics.utils.cli.Args4j
 import org.hammerlab.guacamole.distributed.LociPartitionUtils
+import org.hammerlab.guacamole.loci.SimpleRange
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.reads.{InputFilters, ReadLoadingConfigArgs}
 import org.hammerlab.guacamole.reference.{ContigNotFound, ReferenceArgs, ReferenceBroadcast}
@@ -67,18 +68,19 @@ object GeneratePartialFasta extends Logging {
 
     val fd = new File(args.output)
     val writer = new BufferedWriter(new FileWriter(fd))
-    loci.contigs.foreach(contig => {
-      loci.onContig(contig).ranges.foreach(range => {
-        try {
-          val sequence = Bases.basesToString(reference.getContig(contig).slice(range.start.toInt, range.end.toInt))
-          writer.write(">%s:%d-%d/%d\n".format(contig, range.start, range.end, contigLengths(contig)))
-          writer.write(sequence)
-          writer.write("\n")
-        } catch {
-          case e: ContigNotFound => log.warn("No such contig in reference: %s: %s".format(contig, e.toString))
-        }
-      })
-    })
+    for {
+      contig <- loci.contigs
+      SimpleRange(start, end) <- contig.ranges
+    } {
+      try {
+        val sequence = Bases.basesToString(reference.getContig(contig.name).slice(start.toInt, end.toInt))
+        writer.write(">%s:%d-%d/%d\n".format(contig, start, end, contigLengths(contig.name)))
+        writer.write(sequence)
+        writer.write("\n")
+      } catch {
+        case e: ContigNotFound => log.warn("No such contig in reference: %s: %s".format(contig, e.toString))
+      }
+    }
     writer.close()
     progress(s"Wrote: ${args.output}")
   }
