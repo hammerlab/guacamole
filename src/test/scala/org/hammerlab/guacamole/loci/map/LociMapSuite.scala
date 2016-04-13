@@ -48,8 +48,8 @@ class LociMapSuite extends GuacFunSuite {
 
     lociMap.asInverseMap should equal(
       Map(
-        "A" -> LociSet.parse("chr1:100-200").result,
-        "B" -> LociSet.parse("chr20:200-201").result
+        "A" -> LociSet("chr1:100-200"),
+        "B" -> LociSet("chr20:200-201")
       )
     )
 
@@ -71,8 +71,8 @@ class LociMapSuite extends GuacFunSuite {
     // asInverseMap stuffs all Loci with the same value into a LociSet.
     lociMap.asInverseMap should equal(
       Map(
-        "A" -> LociSet.parse("chr1:100-200,chr2:200-300").result,
-        "B" -> LociSet.parse("chr3:400-500").result
+        "A" -> LociSet("chr1:100-200,chr2:200-300"),
+        "B" -> LociSet("chr3:400-500")
       )
     )
   }

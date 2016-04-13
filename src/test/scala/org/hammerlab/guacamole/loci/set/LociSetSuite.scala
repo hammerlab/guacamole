@@ -28,12 +28,12 @@ class LociSetSuite extends GuacFunSuite {
   test("properties of empty LociSet") {
     LociSet.empty.contigs should have length (0)
     LociSet.empty.count should equal(0)
-    LociSet.empty should equal(LociSet.parse("").result)
-    LociSet.empty should equal(LociSet.parse("empty1:30-30,empty2:40-40").result)
+    LociSet.empty should equal(LociSet(""))
+    LociSet.empty should equal(LociSet("empty1:30-30,empty2:40-40"))
   }
 
   test("count, containment, intersection testing of a loci set") {
-    val set = LociSet.parse("chr21:100-200,chr20:0-10,chr20:8-15,chr20:100-120,empty:10-10").result
+    val set = LociSet("chr21:100-200,chr20:0-10,chr20:8-15,chr20:100-120,empty:10-10")
     set.contigs should equal(List("chr20", "chr21"))
     set.count should equal(135)
     set.onContig("chr20").contains(110) should be(true)
@@ -71,7 +71,7 @@ class LociSetSuite extends GuacFunSuite {
   }
 
   test("single loci parsing") {
-    val set = LociSet.parse("chr1:10000").result
+    val set = LociSet("chr1:10000")
     set.count should be(1)
     set.onContig("chr1").contains( 9999) should be(false)
     set.onContig("chr1").contains(10000) should be(true)
@@ -86,17 +86,18 @@ class LociSetSuite extends GuacFunSuite {
       "with_dots.and_underscores..2:100-200",
       "21:300-400",
       "X:5-17,X:19-22,Y:50-60",
-      "chr21:100-200,chr20:0-10,chr20:8-15,chr20:100-120").map(LociSet.parse(_).result)
+      "chr21:100-200,chr20:0-10,chr20:8-15,chr20:100-120"
+    ).map(LociSet(_))
 
     def checkInvariants(set: LociSet): Unit = {
       set should not be (null)
       set.toString should not be (null)
       withClue("invariants for: '%s'".format(set.toString)) {
-        LociSet.parse(set.toString).result should equal(set)
-        LociSet.parse(set.toString).result.toString should equal(set.toString)
+        LociSet(set.toString) should equal(set)
+        LociSet(set.toString).toString should equal(set.toString)
         set should equal(set)
-        set should not equal (set.union(LociSet.parse("abc123:30-40").result))
-        set should equal(set.union(LociSet.parse("empty:99-99").result))
+        set should not equal (set.union(LociSet("abc123:30-40")))
+        set should equal (set.union(LociSet("empty:99-99")))
 
         // Test serialization. We hit all sorts of null pointer exceptions here at one point, so we are paranoid about
         // checking every pointer.
@@ -120,7 +121,7 @@ class LociSetSuite extends GuacFunSuite {
     // Test -loci argument
     val args1 = new TestArgs()
     args1.loci = "20:100-200"
-    Common.lociFromArguments(args1).result should equal(LociSet.parse("20:100-200").result)
+    Common.lociFromArguments(args1).result should equal(LociSet("20:100-200"))
 
     // Test -loci-from-file argument. The test file gives a loci set equal to 20:100-200.
     val args2 = new TestArgs()
@@ -135,7 +136,7 @@ class LociSetSuite extends GuacFunSuite {
       "21:300-400",
       "with_dots._and_..underscores11:900-1000",
       "X:5-17,X:19-22,Y:50-60",
-      "chr21:100-200,chr20:0-10,chr20:8-15,chr20:100-120").map(LociSet.parse(_).result)
+      "chr21:100-200,chr20:0-10,chr20:8-15,chr20:100-120").map(LociSet(_))
     val rdd = sc.parallelize(sets)
     val result = rdd.map(_.toString).collect.toSeq
     result should equal(sets.map(_.toString))
@@ -148,7 +149,7 @@ class LociSetSuite extends GuacFunSuite {
       "20:100-200",
       "21:300-400",
       "X:5-17,X:19-22,Y:50-60",
-      "chr21:100-200,chr20:0-10,chr20:8-15,chr20:100-120").map(LociSet.parse(_).result)
+      "chr21:100-200,chr20:0-10,chr20:8-15,chr20:100-120").map(LociSet(_))
     val rdd = sc.parallelize(sets)
     val result = rdd.map(set => {
       set.onContig("21").contains(5) // no op
@@ -159,13 +160,13 @@ class LociSetSuite extends GuacFunSuite {
   }
 
   test("loci set union") {
-    val set1 = LociSet.parse("chr1:40-43").result
-    val set2 = LociSet.parse("chr1:40-42").result
+    val set1 = LociSet("chr1:40-43")
+    val set2 = LociSet("chr1:40-42")
     set1.union(set2).toString should equal("chr1:40-43")
   }
 
   test("loci set parsing with contig lengths") {
-    LociSet.parse(
+    Builder(
       "chr1,chr2,17,chr2:3-5,chr20:10-20"
     )
     .result(
@@ -180,11 +181,11 @@ class LociSetSuite extends GuacFunSuite {
   }
 
   test("parse half-open interval") {
-    LociSet.parse("chr1:10000-").result("chr1" -> 20000L).toString should be("chr1:10000-20000")
+    Builder("chr1:10000-").result("chr1" -> 20000L).toString should be("chr1:10000-20000")
   }
 
   test("loci set single contig iterator basic") {
-    val set = LociSet.parse("chr1:20-25,chr1:15-17,chr1:40-43,chr1:40-42,chr1:5-5,chr2:5-6,chr2:6-7,chr2:2-4").result
+    val set = LociSet("chr1:20-25,chr1:15-17,chr1:40-43,chr1:40-42,chr1:5-5,chr2:5-6,chr2:6-7,chr2:2-4")
     set.onContig("chr1").iterator.toSeq should equal(Seq(15, 16, 20, 21, 22, 23, 24, 40, 41, 42))
     set.onContig("chr2").iterator.toSeq should equal(Seq(2, 3, 5, 6))
 
@@ -210,7 +211,7 @@ class LociSetSuite extends GuacFunSuite {
   }
 
   test("loci set single contig iterator: test that skipTo implemented efficiently.") {
-    val set = LociSet.parse("chr1:2-3,chr1:10-15,chr1:100-100000000000").result
+    val set = LociSet("chr1:2-3,chr1:10-15,chr1:100-100000000000")
 
     val iter1 = set.onContig("chr1").iterator
     iter1.hasNext should be(true)
@@ -236,7 +237,7 @@ class LociSetSuite extends GuacFunSuite {
 
   // We do not provide java serialization for LociSet, instead broadcasting it (which uses Kryo serialization).
   sparkTest("serialization: a closure that includes a LociSet") {
-    val set = LociSet.parse("chr21:100-200,chr20:0-10,chr20:8-15,chr20:100-120,empty:10-10").result
+    val set = LociSet("chr21:100-200,chr20:0-10,chr20:8-15,chr20:100-120,empty:10-10")
     val setBC = sc.broadcast(set)
     val rdd = sc.parallelize(0L until 1000L)
     val result = rdd.filter(i => setBC.value.onContig("chr21").contains(i)).collect

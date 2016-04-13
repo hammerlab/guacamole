@@ -51,7 +51,7 @@ case class LociSet(map: LociMap[Long]) {
   /** Returns the union of this LociSet with another. */
   def union(other: LociSet): LociSet = LociSet(map.union(other.map))
 
-  /** Returns a string representation of this LociSet, in the same format that LociSet.parse expects. */
+  /** Returns a string representation of this LociSet, in the same format that Builder expects. */
   override def toString: String = truncatedString(Int.MaxValue)
 
   /** String representation, truncated to maxLength characters. */
@@ -103,14 +103,6 @@ object LociSet {
     (new Builder).put(contig, start, end).result
   }
 
-  /**
-   * Return a Builder parsed from a string representation.
-   * See Builder.putExpression for example expressions.
-   */
-  def parse(loci: String): Builder = {
-    LociSet.newBuilder.putExpression(loci)
-  }
-
   /** Returns union of specified [[LociSet]] instances. */
   def union(lociSets: LociSet*): LociSet = {
     val wrapped = LociMap.newBuilder[Long]
@@ -121,5 +113,7 @@ object LociSet {
   }
 
   def all(contigLengths: Map[String, Long]) = Builder.all.result(contigLengths)
+
+  def apply(loci: String): LociSet = Builder(loci).result
 }
 

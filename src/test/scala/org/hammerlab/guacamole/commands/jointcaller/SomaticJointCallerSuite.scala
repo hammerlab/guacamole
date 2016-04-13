@@ -1,6 +1,6 @@
 package org.hammerlab.guacamole.commands.jointcaller
 
-import org.hammerlab.guacamole.loci.set.LociSet
+import org.hammerlab.guacamole.loci.set.{LociSet, Builder => LociSetBuilder}
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.reference.ReferenceBroadcast.MapBackedReferenceSequence
 import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
@@ -24,7 +24,7 @@ class SomaticJointCallerSuite extends GuacFunSuite {
 
   sparkTest("call a somatic variant") {
     val inputs = InputCollection(cancerWGS1Bams)
-    val loci = LociSet.parse("chr12:65857040")
+    val loci = LociSetBuilder("chr12:65857040")
     val readSets = SomaticJoint.inputsToReadSets(sc, inputs, loci)
     val calls = SomaticJoint.makeCalls(
       sc, inputs, readSets, Parameters.defaults, hg19PartialReference, loci.result, loci.result).collect
@@ -36,7 +36,7 @@ class SomaticJointCallerSuite extends GuacFunSuite {
 
   sparkTest("call a somatic deletion") {
     val inputs = InputCollection(cancerWGS1Bams)
-    val loci = LociSet.parse("chr5:82649006-82649009")
+    val loci = LociSetBuilder("chr5:82649006-82649009")
     val readSets = SomaticJoint.inputsToReadSets(sc, inputs, loci)
     val calls = SomaticJoint.makeCalls(
       sc,
@@ -56,7 +56,7 @@ class SomaticJointCallerSuite extends GuacFunSuite {
 
   sparkTest("call germline variants") {
     val inputs = InputCollection(cancerWGS1Bams.take(1), tissueTypes = Vector("normal"))
-    val loci = LociSet.parse("chr1,chr2,chr3")
+    val loci = LociSetBuilder("chr1,chr2,chr3")
     val readSets = SomaticJoint.inputsToReadSets(sc, inputs, loci)
     val calls = SomaticJoint.makeCalls(
       sc,
@@ -89,7 +89,7 @@ class SomaticJointCallerSuite extends GuacFunSuite {
 
   sparkTest("don't call variants with N as the reference base") {
     val inputs = InputCollection(cancerWGS1Bams)
-    val loci = LociSet.parse("chr12:65857030-65857080")
+    val loci = LociSetBuilder("chr12:65857030-65857080")
     val readSets = SomaticJoint.inputsToReadSets(sc, inputs, loci)
     val emptyPartialReference = ReferenceBroadcast(
       Map("chr12" -> MapBackedReferenceSequence(500000000, sc.broadcast(Map.empty))))
@@ -102,7 +102,7 @@ class SomaticJointCallerSuite extends GuacFunSuite {
   sparkTest("call a somatic variant using RNA evidence") {
     val parameters = Parameters.defaults.copy(somaticNegativeLog10VariantPriorWithRnaEvidence = 1)
 
-    val loci = LociSet.parse("chr22:46931058-46931079")
+    val loci = LociSetBuilder("chr22:46931058-46931079")
     val inputsWithRNA = InputCollection(celsr1BAMs, analytes = Vector("dna", "dna", "rna"))
     val callsWithRNA = SomaticJoint.makeCalls(
       sc,

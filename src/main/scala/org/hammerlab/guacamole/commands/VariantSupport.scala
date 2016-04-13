@@ -25,7 +25,7 @@ import org.bdgenomics.formats.avro.Variant
 import org.hammerlab.guacamole.distributed.LociPartitionUtils
 import org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociUniformly
 import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMap
-import org.hammerlab.guacamole.loci.set.LociSet
+import org.hammerlab.guacamole.loci.set.{Builder => LociSetBuilder}
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.{InputFilters, MappedRead, ReadLoadingConfigArgs}
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
@@ -86,10 +86,15 @@ object VariantSupport {
       )
 
       // Build a loci set from the variant positions
-      val lociSet = LociSet.union(
-        variants.map(
-          variant => LociSet(variant.getContig.getContigName, variant.getStart, variant.getEnd))
-          .collect(): _*)
+      val builder = new LociSetBuilder
+      variants
+        .map(variant => (variant.getContig.getContigName, variant.getStart, variant.getEnd))
+        .collect()
+        .foreach {
+          case (contig, start, end) => builder.put(contig, start, end)
+        }
+
+      val lociSet = builder.result
 
       val lociPartitions = partitionLociUniformly(args.parallelism, lociSet)
 
