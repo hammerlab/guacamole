@@ -2,12 +2,12 @@ package org.hammerlab.guacamole.distributed
 
 import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole._
-import org.hammerlab.guacamole.loci.LociMap
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.reference.{ReferenceGenome, _}
 import org.hammerlab.guacamole.windowing.SlidingWindow
 import WindowFlatMapUtils.windowFlatMapWithState
+import org.hammerlab.guacamole.loci.map.LociMap
 
 import scala.reflect.ClassTag
 

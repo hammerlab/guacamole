@@ -2,7 +2,7 @@ package org.hammerlab.guacamole.reads
 
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.models.SequenceDictionary
-import org.hammerlab.guacamole.loci.LociSet
+import org.hammerlab.guacamole.loci.set.{LociSet, Builder => LociSetBuilder}
 
 /**
  * Filtering reads while they are loaded can be an important optimization.
@@ -15,7 +15,7 @@ import org.hammerlab.guacamole.loci.LociSet
  * @param passedVendorQualityChecks include only reads that do not have the failedVendorQualityChecks bit set
  * @param isPaired include only reads are paired-end reads
  */
-case class InputFilters(overlapsLoci: Option[LociSet.Builder],
+case class InputFilters(overlapsLoci: Option[LociSetBuilder],
                         nonDuplicate: Boolean,
                         passedVendorQualityChecks: Boolean,
                         isPaired: Boolean)
@@ -30,7 +30,7 @@ object InputFilters {
    *               overlapsLoci.
    */
   def apply(mapped: Boolean = false,
-            overlapsLoci: LociSet.Builder = null,
+            overlapsLoci: LociSetBuilder = null,
             nonDuplicate: Boolean = false,
             passedVendorQualityChecks: Boolean = false,
             isPaired: Boolean = false): InputFilters = {

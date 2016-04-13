@@ -18,7 +18,7 @@
 
 package org.hammerlab.guacamole.windowing
 
-import org.hammerlab.guacamole.loci.LociSet
+import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.util.TestUtil
 import org.scalatest.{FunSuite, Matchers}
 

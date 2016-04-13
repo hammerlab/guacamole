@@ -7,7 +7,7 @@ import htsjdk.samtools.reference.FastaSequenceFile
 import org.apache.spark.SparkContext
 import org.apache.spark.broadcast.Broadcast
 import org.hammerlab.guacamole.Bases
-import org.hammerlab.guacamole.loci.LociSet
+import org.hammerlab.guacamole.loci.set.LociSet
 
 import scala.collection.mutable
 

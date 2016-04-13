@@ -18,7 +18,7 @@
 
 package org.hammerlab.guacamole
 
-import org.hammerlab.guacamole.loci.LociSet
+import org.hammerlab.guacamole.loci.set.LociSet
 
 /**
  * Trait for objects that are associated with an interval on the genome. The most prominent example is a

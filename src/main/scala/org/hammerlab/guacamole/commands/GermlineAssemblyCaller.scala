@@ -11,11 +11,11 @@ import org.hammerlab.guacamole.assembly.DeBruijnGraph
 import org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociAccordingToArgs
 import org.hammerlab.guacamole.distributed.WindowFlatMapUtils.windowFlatMapWithState
 import org.hammerlab.guacamole.likelihood.Likelihood
-import org.hammerlab.guacamole.loci.LociMap
+import org.hammerlab.guacamole.loci.map.LociMap
 import org.hammerlab.guacamole.logging.DelayedMessages
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.reads.{MappedRead, InputFilters}
+import org.hammerlab.guacamole.reads.{InputFilters, MappedRead}
 import org.hammerlab.guacamole.reference.{ReferenceBroadcast, ReferenceGenome}
 import org.hammerlab.guacamole.variants.{Allele, AlleleConversions, AlleleEvidence, CalledAllele, VariantUtils}
 import org.hammerlab.guacamole.windowing.SlidingWindow

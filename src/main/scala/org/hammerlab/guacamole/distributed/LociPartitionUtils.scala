@@ -2,7 +2,9 @@ package org.hammerlab.guacamole.distributed
 
 import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole.HasReferenceRegion
-import org.hammerlab.guacamole.loci.{LociArgs, LociMap, LociSet}
+import org.hammerlab.guacamole.loci.LociArgs
+import org.hammerlab.guacamole.loci.map.LociMap
+import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.logging.DebugLogArgs
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.kohsuke.args4j.{Option => Args4jOption}
