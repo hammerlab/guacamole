@@ -18,7 +18,7 @@ class SerializerSuite extends GuacFunSuite {
 
       val beforeMap = LociMap[String](ranges: _*)
 
-      beforeMap.onContig("chr1").numRanges should be(numRanges)
+      beforeMap.onContig("chr1").asMap.size should be(numRanges)
       beforeMap.onContig("chr1").count should be(count)
 
       val bytes = serializer.serialize(beforeMap)
