@@ -266,7 +266,7 @@ object Common extends Logging {
       throw new IllegalArgumentException("Specify at most one of the 'loci' and 'loci-from-file' arguments")
     }
     if (loci.nonEmpty) {
-      LociSetBuilder(loci).result(Some(contigLengths))
+      LociSetBuilder(loci).result(contigLengths)
     } else if (lociFromFilePath.nonEmpty) {
       lociFromFile(lociFromFilePath, contigLengths)
     } else {
