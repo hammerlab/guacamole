@@ -106,7 +106,7 @@ object LociPartitionUtils {
     *  - Does not require a distributed sort.
     *
     * @param tasks number of partitions
-    * @param lociUsed loci to partition
+    * @param loci loci to partition
     * @param accuracy integer >= 1. Higher values of this will result in a more exact but also more expensive computation.
     *                 Specifically, this is the number of micro partitions to use per task to estimate the region depth.
     *                 In the extreme case, setting this to greater than the number of loci per task will result in an
@@ -116,18 +116,18 @@ object LociPartitionUtils {
     * @return LociMap of locus -> task assignments.
     */
   def partitionLociByApproximateDepth[M <: HasReferenceRegion: ClassTag](tasks: Int,
-                                                                         lociUsed: LociSet,
+                                                                         loci: LociSet,
                                                                          accuracy: Int,
                                                                          regionRDDs: RDD[M]*): LociMap[Long] = {
     val sc = regionRDDs(0).sparkContext
 
     // Step (1). Split loci uniformly into micro partitions.
     assume(tasks >= 1)
-    assume(lociUsed.count > 0)
+    assume(loci.count > 0)
     assume(regionRDDs.nonEmpty)
-    val numMicroPartitions: Int = if (accuracy * tasks < lociUsed.count) accuracy * tasks else lociUsed.count.toInt
+    val numMicroPartitions: Int = if (accuracy * tasks < loci.count) accuracy * tasks else loci.count.toInt
     progress("Splitting loci by region depth among %,d tasks using %,d micro partitions.".format(tasks, numMicroPartitions))
-    val microPartitions = partitionLociUniformly(numMicroPartitions, lociUsed)
+    val microPartitions = partitionLociUniformly(numMicroPartitions, loci)
     progress("Done calculating micro partitions.")
     val broadcastMicroPartitions = sc.broadcast(microPartitions)
 
@@ -202,7 +202,7 @@ object LociPartitionUtils {
       microTask += 1
     }
     val result = builder.result
-    assert(result.count == lociUsed.count)
+    assert(result.count == loci.count, s"Expected ${loci.count} loci, got ${result.count}")
     result
   }
 }

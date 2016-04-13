@@ -38,7 +38,7 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
         reads,
         LociPartitionUtils.partitionLociUniformly(reads.partitions.length, LociSet("chr1:1-9")),
         skipEmpty = false,
-        pileup => Seq(pileup).iterator,
+        pileup => Iterator(pileup),
         reference = TestUtil.makeReference(sc, Seq(("chr1", 0, "ATCGATCGA")))
       ).collect()
 
@@ -50,7 +50,7 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
     firstPileup.elements.forall(_.readPosition == 0L) should be(true)
     firstPileup.elements.forall(_.isMatch) should be(true)
 
-    pileups.forall(p => p.head.isMatch) should be(true)
+    pileups.forall(_.head.isMatch) should be(true)
 
   }
 
@@ -66,7 +66,7 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
         reads,
         LociPartitionUtils.partitionLociUniformly(5, LociSet("chr1:1-9")),
         skipEmpty = false,
-        pileup => Seq(pileup).iterator,
+        pileup => Iterator(pileup),
         reference = TestUtil.makeReference(sc, Seq(("chr1", 0, "ATCGATCGA")))
       ).collect()
 
@@ -74,7 +74,7 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
     firstPileup.locus should be(1L)
     firstPileup.referenceBase should be(Bases.T)
 
-    pileups.forall(p => p.head.isMatch) should be(true)
+    pileups.forall(_.head.isMatch) should be(true)
   }
 
   sparkTest("test pileup flatmap parallelism 5; skip empty pileups") {
@@ -83,15 +83,15 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
       TestUtil.makeRead("TCGATCGA", "8M", 1),
       TestUtil.makeRead("TCGATCGA", "8M", 1)))
 
-    val pileups =
+    val loci =
       PileupFlatMapUtils.pileupFlatMap[Long](
         reads,
         LociPartitionUtils.partitionLociUniformly(5, LociSet("chr0:5-10,chr1:0-100,chr2:0-1000,chr2:5000-6000")),
         skipEmpty = true,
         pileup => Iterator(pileup.locus),
         reference = TestUtil.makeReference(sc, Seq(("chr1", 0, "ATCGATCGA")))
-      ).collect.toSeq
-    pileups should equal(Seq(1, 2, 3, 4, 5, 6, 7, 8))
+      ).collect
+    loci should equal(Array(1, 2, 3, 4, 5, 6, 7, 8))
   }
 
   sparkTest("test pileup flatmap two rdds; skip empty pileups") {
@@ -118,7 +118,7 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
         (pileup1, _) => (Iterator(pileup1.locus)),
         reference = TestUtil.makeReference(sc, Seq(("chr1", 0, "ATCGATCGA")))
       ).collect
-    loci.toSeq should equal(Seq(1, 2, 3, 4, 5, 6, 7, 8, 99, 100, 101, 102, 103, 104, 105, 106, 107))
+    loci should equal(Seq(1, 2, 3, 4, 5, 6, 7, 8, 99, 100, 101, 102, 103, 104, 105, 106, 107))
   }
 
   sparkTest("test pileup flatmap multiple rdds; skip empty pileups") {
