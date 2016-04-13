@@ -17,7 +17,6 @@ import scala.collection.mutable.ArrayBuffer
  * we read the file header. At the same time, we want to use the BAM index to read only the loci of interest from
  * the file. A Builder is a convenient object to pass to the bam loading functions, as it is an object
  * that specifies the loci of interest without requiring us to already know the contigs and their lengths.
- *
  */
 class Builder {
   /**
@@ -35,7 +34,7 @@ class Builder {
    * (contig, start, end) ranges which have been added to this builder.
    * If end is None, it indicates "until the end of the contig"
    */
-  private val ranges = ArrayBuffer.newBuilder[(String, Long, Option[Long])]
+  private val ranges = ArrayBuffer[(String, Long, Option[Long])]()
 
   /**
    * Specify that this builder contains all sites on all contigs.
@@ -47,7 +46,7 @@ class Builder {
   }
 
   /**
-   * Add an interval to the Builder. If end is not specified, then it is taken to be the length of the contig.
+   * Add an interval to the Builder.
    */
   def put(contig: String, start: Long, end: Long): Builder = put(contig, start, Some(end))
   def put(contig: String, start: Long = 0, end: Option[Long] = None): Builder = {
@@ -78,7 +77,7 @@ class Builder {
     } else if (loci != "none") {
       val contigAndLoci = """^([\pL\pN._]+):(\pN+)(?:-(\pN*))?$""".r
       val contigOnly = """^([\pL\pN._]+)""".r
-      loci.replaceAll("\\s", "").split(',').foreach({
+      loci.replaceAll("\\s", "").split(',').foreach {
         case ""                              => {}
         case contigAndLoci(name, startStr, endStrOpt) =>
           val start = startStr.toLong
@@ -93,7 +92,7 @@ class Builder {
         case other => {
           throw new IllegalArgumentException("Couldn't parse loci range: %s".format(other))
         }
-      })
+      }
     }
     this
   }
@@ -124,12 +123,12 @@ class Builder {
       contigLengths.get.foreach(
         contigAndLength => wrapped.put(contigAndLength._1, 0, contigAndLength._2 - 1, 0))
     } else {
-      rangesResult.foreach({
+      rangesResult.foreach {
         case (contig, start, end) => {
           val resolvedEnd = end.getOrElse(contigLengths.get.apply(contig))
           wrapped.put(contig, start, resolvedEnd, 0)
         }
-      })
+      }
     }
     LociSet(wrapped.result)
   }

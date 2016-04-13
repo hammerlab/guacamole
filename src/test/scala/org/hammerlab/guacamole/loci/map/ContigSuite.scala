@@ -3,16 +3,17 @@ package org.hammerlab.guacamole.loci.map
 import com.google.common.collect.{ImmutableRangeMap, Range}
 import org.hammerlab.guacamole.util.GuacFunSuite
 
+import java.lang.{Long => JLong}
+
 class ContigSuite extends GuacFunSuite {
   test("empty") {
-    type JLong = java.lang.Long
     val contigMap = new Contig("chr1", ImmutableRangeMap.builder[JLong, String]().build())
 
     contigMap.get(100) should be(None)
     contigMap.getAll(0, 10000) should equal(Set())
     contigMap.contains(100) should be(false)
     contigMap.count should be(0)
-    contigMap.ranges should equal(Set())
+    contigMap.ranges should equal(Array())
     contigMap.numRanges should be(0)
     contigMap.isEmpty should be(true)
     contigMap.toString should be("")
@@ -23,8 +24,15 @@ class ContigSuite extends GuacFunSuite {
     val range100to200 = ImmutableRangeMap.of[JLong, String](Range.closedOpen[JLong](100, 200), "A")
     val range200to300 = ImmutableRangeMap.of[JLong, String](Range.closedOpen[JLong](200, 300), "B")
 
-    val contigMap = new Contig("chr1",
-      ImmutableRangeMap.builder[JLong, String]().putAll(range100to200).putAll(range200to300).build())
+    val contigMap =
+      new Contig(
+        "chr1",
+        ImmutableRangeMap
+          .builder[JLong, String]()
+          .putAll(range100to200)
+          .putAll(range200to300)
+          .build()
+      )
 
     contigMap.get(99) should be(None)
     contigMap.get(100) should be(Some("A"))

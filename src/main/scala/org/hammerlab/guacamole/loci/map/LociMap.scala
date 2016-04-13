@@ -18,6 +18,8 @@
 
 package org.hammerlab.guacamole.loci.map
 
+import java.lang.{Long => JLong}
+
 import com.google.common.collect._
 import org.hammerlab.guacamole.Common
 import org.hammerlab.guacamole.loci.set
@@ -152,8 +154,6 @@ object LociMap {
   /** Make an empty RangeMap of the given type. */
   def empty[T](): LociMap[T] = newBuilder[T]().result
 
-  // We're using Google's guava library, which is Java. We have to use java integer's instead of Scala's.
-  private type JLong = java.lang.Long
   private def emptyRangeMap[T]() = ImmutableRangeMap.of[JLong, T]()
 
   /** Returns a new Builder instance for constructing a LociMap. */
@@ -179,6 +179,4 @@ object LociMap {
     })
     builder.result
   }
-
 }
-

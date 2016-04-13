@@ -1,5 +1,9 @@
 package org.hammerlab.guacamole.loci
 
+import java.lang.{Long => JLong}
+
+import com.google.common.collect.{Range => JRange}
+
 import scala.collection.Iterator
 
 /**
@@ -18,7 +22,7 @@ case class SimpleRange(start: Long, end: Long) extends Ordered[SimpleRange] {
   def length: Long = end - start
 
   /** Comparisons between ranges. Order is DESCENDING (i.e. reversed) from by start. */
-  def compare(other: SimpleRange): Int = {
+  override def compare(other: SimpleRange): Int = {
     val diff = start - other.start
     if (diff < 0) -1
     else if (diff == 0) 0
@@ -26,3 +30,6 @@ case class SimpleRange(start: Long, end: Long) extends Ordered[SimpleRange] {
   }
 }
 
+object SimpleRange {
+  def apply(range: JRange[JLong]): SimpleRange = SimpleRange(range.lowerEndpoint(), range.upperEndpoint())
+}
