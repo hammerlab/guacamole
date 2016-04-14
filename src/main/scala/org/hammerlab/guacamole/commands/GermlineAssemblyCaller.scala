@@ -80,7 +80,7 @@ object GermlineAssemblyCaller {
      * @param endLocus End (exclusive) locus on the reference
      * @return Subsequence overlapping [startLocus, endLocus)
      */
-    def getSequenceFromRead(read: MappedRead, startLocus: Int, endLocus: Int) = {
+    private def getSequenceFromRead(read: MappedRead, startLocus: Int, endLocus: Int) = {
       read.sequence.slice(startLocus - read.unclippedStart.toInt, endLocus - read.unclippedStart.toInt)
     }
 
@@ -93,10 +93,10 @@ object GermlineAssemblyCaller {
      * @param minOccurrence Mininum number of times a subsequence needs to appear to be included
      * @return List of subsequences overlapping [startLocus, endLocus) that appear at least `minOccurrence` time
      */
-    def getConsensusKmer(reads: Seq[MappedRead],
-                         startLocus: Int,
-                         endLocus: Int,
-                         minOccurrence: Int): Iterable[Array[Byte]] = {
+    private def getConsensusKmer(reads: Seq[MappedRead],
+                                 startLocus: Int,
+                                 endLocus: Int,
+                                 minOccurrence: Int): Iterable[Array[Byte]] = {
 
       // Filter to reads that entirely cover the region
       // Exclude reads that have any non-M Cigars (these don't have a 1 to 1 base mapping to the region)
@@ -127,14 +127,14 @@ object GermlineAssemblyCaller {
      * @param maxPathsToScore Number of paths to align to the reference to score them
      * @return Collection of paths through the reads
      */
-    def discoverHaplotypes(graph: Option[DeBruijnGraph],
-                           currentWindow: SlidingWindow[MappedRead],
-                           kmerSize: Int,
-                           reference: ReferenceGenome,
-                           minOccurrence: Int = 3,
-                           expectedPloidy: Int = 2,
-                           maxPathsToScore: Int = 16,
-                           debugPrint: Boolean = false): Seq[DeBruijnGraph#Sequence] = {
+    private def discoverHaplotypes(graph: Option[DeBruijnGraph],
+                                   currentWindow: SlidingWindow[MappedRead],
+                                   kmerSize: Int,
+                                   reference: ReferenceGenome,
+                                   minOccurrence: Int = 3,
+                                   expectedPloidy: Int = 2,
+                                   maxPathsToScore: Int = 16,
+                                   debugPrint: Boolean = false): Seq[DeBruijnGraph#Sequence] = {
 
       val locus = currentWindow.currentLocus
       val reads = currentWindow.currentRegions()
@@ -163,9 +163,8 @@ object GermlineAssemblyCaller {
         .toVector
 
       // Score up to the maximum number of paths
-      if (paths.size == 0) {
-        log.warn(s"In window ${referenceContig}:${referenceStart}-$referenceEnd " +
-          s"assembly failed")
+      if (paths.isEmpty) {
+        log.warn(s"In window ${referenceContig}:${referenceStart}-$referenceEnd assembly failed")
         List.empty
       } else if (paths.size <= expectedPloidy) {
         paths
@@ -232,15 +231,15 @@ object GermlineAssemblyCaller {
     }
 
     def discoverGermlineVariants(reads: RDD[MappedRead],
-                          kmerSize: Int,
-                          snvWindowRange: Int,
-                          minOccurrence: Int,
-                          minAreaVaf: Float,
-                          reference: ReferenceBroadcast,
-                          lociPartitions: LociMap[Long],
-                          minAltReads: Int = 2,
-                          minPhredScaledLikelihood: Int = 0,
-                          shortcutAssembly: Boolean = false): RDD[CalledAllele] = {
+                                 kmerSize: Int,
+                                 snvWindowRange: Int,
+                                 minOccurrence: Int,
+                                 minAreaVaf: Float,
+                                 reference: ReferenceBroadcast,
+                                 lociPartitions: LociMap[Long],
+                                 minAltReads: Int = 2,
+                                 minPhredScaledLikelihood: Int = 0,
+                                 shortcutAssembly: Boolean = false): RDD[CalledAllele] = {
 
       val genotypes: RDD[CalledAllele] =
         windowFlatMapWithState[MappedRead, CalledAllele, Option[Long]](
@@ -263,21 +262,31 @@ object GermlineAssemblyCaller {
                 referenceEnd
               )
 
+            val referenceContig = reference.getContig(referenceName)
+
             // Find the reads the overlap the center locus/ current locus
             val currentLocusReads =
               window
                 .currentRegions()
                 .filter(_.overlapsLocus(window.currentLocus))
 
-            val pileup = Pileup(currentLocusReads, referenceName, window.currentLocus, reference.getContig(referenceName))
+            val pileup = Pileup(currentLocusReads, referenceName, window.currentLocus, referenceContig)
 
             // Compute the number reads with variant bases from the reads overlapping the currentLocus
             val pileupAltReads = (pileup.depth - pileup.referenceDepth)
             if (currentLocusReads.isEmpty || pileupAltReads < minAltReads) {
               (lastCalledLocus, Iterator.empty)
-            } else if (shortcutAssembly &&
-              currentLocusReads.count(r =>
-                r.countOfMismatches(reference.getContig(referenceName)) > 1 || r.cigar.numCigarElements() > 1) / currentLocusReads.size.toFloat < minAreaVaf) {
+            } else if (
+              shortcutAssembly &&
+                {
+                  val numReadsWithMismatches =
+                    currentLocusReads.count(r =>
+                      r.countOfMismatches(referenceContig) > 1 || r.cigar.numCigarElements() > 1
+                    )
+                  
+                  numReadsWithMismatches / currentLocusReads.size.toFloat < minAreaVaf
+                }
+            ) {
               val variants = callPileupVariant(pileup).filter(_.evidence.phredScaledLikelihood > minPhredScaledLikelihood)
               (variants.lastOption.map(_.start).orElse(lastCalledLocus), variants.iterator)
             } else {
@@ -299,8 +308,8 @@ object GermlineAssemblyCaller {
                     currentReference,
                     window.currentRegions()
                   )
-                    .filter(variant => lastCalledLocus.forall(_ < variant.start)) // Filter variants before last called
-                    .toSet // Remove any duplicate variants due to paths that have overlapping segments
+                  .filter(variant => lastCalledLocus.forall(_ < variant.start)) // Filter variants before last called
+
                 // Jump to the next region
                 window.setCurrentLocus(window.currentLocus + snvWindowRange)
                 (variants.lastOption.map(_.start).orElse(lastCalledLocus), variants.iterator)
@@ -326,14 +335,14 @@ object GermlineAssemblyCaller {
      * @param debugPrint Print debug statements (default: false)
      * @return List of paths that traverse the region
      */
-    def discoverPathsFromReads(reads: Seq[MappedRead],
-                               referenceStart: Int,
-                               referenceEnd: Int,
-                               referenceSequence: Array[Byte],
-                               kmerSize: Int,
-                               minOccurrence: Int,
-                               maxPaths: Int,
-                               debugPrint: Boolean = false) = {
+    private def discoverPathsFromReads(reads: Seq[MappedRead],
+                                       referenceStart: Int,
+                                       referenceEnd: Int,
+                                       referenceSequence: Array[Byte],
+                                       kmerSize: Int,
+                                       minOccurrence: Int,
+                                       maxPaths: Int,
+                                       debugPrint: Boolean = false) = {
       val referenceKmerSource = referenceSequence.take(kmerSize)
       val referenceKmerSink = referenceSequence.takeRight(kmerSize)
 
@@ -374,23 +383,23 @@ object GermlineAssemblyCaller {
   }
 
   /**
-    * Call variants from the paths discovered from the reads
-    * @param paths Sequence of possible paths through the reads
-    * @param sampleName Name of the sample
-    * @param referenceContig Reference contig or chromosome
-    * @param referenceStart Start locus on the reference contig or chromosome
-    * @param currentReference Reference sequence overlapping the reference region
-    * @param reads Set of reads used to build paths
-    * @return Possible sequence of called variants
-    */
-  def buildVariantsFromPaths(paths: Seq[DeBruijnGraph#Sequence],
-                             sampleName: String,
-                             referenceContig: String,
-                             referenceStart: Int,
-                             currentReference: Array[Byte],
-                             reads: Seq[MappedRead]): Set[CalledAllele] = {
+   * Call variants from the paths discovered from the reads
+   *
+   * @param paths Sequence of possible paths through the reads
+   * @param sampleName Name of the sample
+   * @param referenceContig Reference contig or chromosome
+   * @param referenceStart Start locus on the reference contig or chromosome
+   * @param currentReference Reference sequence overlapping the reference region
+   * @param reads Set of reads used to build paths
+   * @return Possible sequence of called variants
+   */
+  private def buildVariantsFromPaths(paths: Seq[DeBruijnGraph#Sequence],
+                                     sampleName: String,
+                                     referenceContig: String,
+                                     referenceStart: Int,
+                                     currentReference: Array[Byte],
+                                     reads: Seq[MappedRead]): Set[CalledAllele] = {
 
-    val pathsAndAlignments = paths.map(path => (path, AffineGapPenaltyAlignment.align(path, currentReference)))
     // Build a variant using the current offset and read evidence
     def buildVariant(referenceOffset: Int,
                      referenceBases: Array[Byte],
@@ -424,9 +433,8 @@ object GermlineAssemblyCaller {
     }
 
     val variants =
-      pathsAndAlignments.flatMap(kv => {
-        val path = kv._1
-        val alignment = kv._2
+      paths.flatMap(path => {
+        val alignment = AffineGapPenaltyAlignment.align(path, currentReference)
 
         var referenceIndex = alignment.refStartIdx
         var pathIndex = 0
@@ -458,17 +466,18 @@ object GermlineAssemblyCaller {
 
           possibleVariant
         })
-
       })
+
     variants.toSet
   }
 
   /**
-    * Call variants using a pileup and genotype likelihoods
-    * @param pileup Pileup at a given locus
-    * @return Possible set of called variants
-    */
-  def callPileupVariant(pileup: Pileup): Set[CalledAllele] = {
+   * Call variants using a pileup and genotype likelihoods
+   *
+   * @param pileup Pileup at a given locus
+   * @return Possible set of called variants
+   */
+  private def callPileupVariant(pileup: Pileup): Set[CalledAllele] = {
     val genotypeLikelihoods = Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(
       pileup,
       logSpace = true,
