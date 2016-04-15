@@ -4,13 +4,8 @@ import java.lang.{Long => JLong}
 
 import com.google.common.collect.{TreeRangeSet, Range => JRange}
 
-import scala.collection.immutable.TreeMap
-import com.google.common.collect.{TreeRangeSet, Range => JRange}
-
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
-
-import java.lang.{Long => JLong}
 
 /**
  * Class for constructing a LociSet.
@@ -48,17 +43,6 @@ class Builder {
    * Add an interval to the Builder.
    */
   def put(contig: String, start: Long, end: Long): Builder = put(contig, start, Some(end))
-  def put(contig: String, start: Long = 0, end: Option[Long] = None): Builder = {
-    assume(start >= 0)
-    assume(end.forall(_ >= start))
-    if (!containsAll) {
-      ranges += ((contig, start, end))
-      if (end.isEmpty) {
-        fullyResolved = false
-      }
-    }
-    this
-  }
 
   /**
    * Parse a loci expression and add it to the builder. Example expressions:
@@ -70,7 +54,7 @@ class Builder {
    *  "chr1:10000": just chr1, position 10000; equivalent to "chr1:10000-10001".
    *  "chr1:10000-": chr1, from position 10000 to the end of chr1.
    */
-  def putExpression(loci: String): Builder = {
+  def put(loci: String): Builder = {
     if (loci == "all") {
       Builder.all
     } else if (loci == "none") {
@@ -89,13 +73,25 @@ class Builder {
           }
           put(name, start, end)
         case contigOnly(contig) =>
-          put(contig)
+          put(contig, 0, None)
         case other => {
           throw new IllegalArgumentException("Couldn't parse loci range: %s".format(other))
         }
       }
       this
     }
+  }
+
+  private def put(contig: String, start: Long = 0, end: Option[Long] = None): Builder = {
+    assume(start >= 0)
+    assume(end.forall(_ >= start))
+    if (!containsAll) {
+      ranges += ((contig, start, end))
+      if (end.isEmpty) {
+        fullyResolved = false
+      }
+    }
+    this
   }
 
   /**
@@ -171,5 +167,5 @@ object Builder {
   all.containsAll = true
   all.fullyResolved = false
 
-  def apply(lociStr: String): Builder = new Builder().putExpression(lociStr)
+  def apply(lociStr: String): Builder = new Builder().put(lociStr)
 }
