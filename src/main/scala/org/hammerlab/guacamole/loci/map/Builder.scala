@@ -2,11 +2,9 @@ package org.hammerlab.guacamole.loci.map
 
 import java.lang.{Long => JLong}
 
-import com.google.common.collect.{Range, TreeRangeMap}
 import org.hammerlab.guacamole.loci.SimpleRange
 import org.hammerlab.guacamole.loci.set.LociSet
 
-import scala.collection.immutable.TreeMap
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 
@@ -37,36 +35,6 @@ private[map] class Builder[T] {
   }
 
   /** Build the result. */
-  def result(): LociMap[T] = {
-    LociMap(
-      TreeMap(
-        (for {
-          (contig, array) <- data.toSeq
-        } yield {
-          val mutableRangeMap = TreeRangeMap.create[JLong, T]()
-          array.foreach(item => {
-            var (start, end, value) = item
-            // If there is an existing entry associated *with the same value* in the map immediately before the range
-            // we're adding, we coalesce the two ranges by setting our start to be its start.
-            val existingStart = mutableRangeMap.getEntry(start - 1)
-            if (existingStart != null && existingStart.getValue == value) {
-              assert(existingStart.getKey.lowerEndpoint < start)
-              start = existingStart.getKey.lowerEndpoint
-            }
-
-            // Likewise for the end of the range.
-            val existingEnd = mutableRangeMap.getEntry(end)
-            if (existingEnd != null && existingEnd.getValue == value) {
-              assert(existingEnd.getKey.upperEndpoint > end)
-              end = existingEnd.getKey.upperEndpoint
-            }
-
-            mutableRangeMap.put(Range.closedOpen[JLong](start, end), value)
-          })
-          contig -> Contig(contig, mutableRangeMap)
-        }): _*
-      )
-    )
-  }
+  def result(): LociMap[T] = LociMap(data.map(Contig(_)))
 }
 
