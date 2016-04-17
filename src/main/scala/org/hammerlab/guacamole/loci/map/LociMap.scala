@@ -18,9 +18,6 @@
 
 package org.hammerlab.guacamole.loci.map
 
-import java.lang.{Long => JLong}
-
-import com.google.common.collect.{ImmutableRangeMap, _}
 import org.hammerlab.guacamole.Common
 import org.hammerlab.guacamole.loci.SimpleRange
 import org.hammerlab.guacamole.loci.set.{LociSet, Builder => LociSetBuilder}
@@ -65,7 +62,7 @@ case class LociMap[T](private val map: SortedMap[String, Contig[T]]) {
    * @param contig The contig name
    * @return A [[Contig]] instance giving the loci mapping on the specified contig.
    */
-  def onContig(contig: String): Contig[T] = map.getOrElse(contig, Contig(contig, ImmutableRangeMap.of[JLong, T]()))
+  def onContig(contig: String): Contig[T] = map.getOrElse(contig, Contig[T](contig))
 
   override def toString: String = truncatedString()
 
