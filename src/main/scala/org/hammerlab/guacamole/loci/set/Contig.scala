@@ -56,4 +56,15 @@ case class Contig(name: String, private val rangeSet: RangeSet[JLong]) {
 
 private[set] object Contig {
   def apply(name: String): Contig = Contig(name, TreeRangeSet.create[JLong]())
+
+  def apply(tuple: (String, Iterable[JRange[JLong]])): Contig = Contig(tuple._1, tuple._2)
+  def apply(name: String, ranges: Iterable[JRange[JLong]]): Contig =
+    Contig(
+      name,
+      {
+        val rangeSet = TreeRangeSet.create[JLong]()
+        ranges.foreach(rangeSet.add)
+        rangeSet
+      }
+    )
 }

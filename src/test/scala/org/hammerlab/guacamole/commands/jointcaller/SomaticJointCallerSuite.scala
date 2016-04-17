@@ -45,7 +45,7 @@ class SomaticJointCallerSuite extends GuacFunSuite {
       Parameters.defaults,
       hg19PartialReference,
       loci.result,
-      LociSet.empty,
+      LociSet(),
       includeFiltered = true).collect
 
     calls.length should equal(1)

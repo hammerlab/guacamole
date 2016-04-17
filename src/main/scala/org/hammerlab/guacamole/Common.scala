@@ -231,14 +231,9 @@ object Common extends Logging {
    */
   def lociFromFile(filePath: String, contigLengths: Map[String, Long]): LociSet = {
     if (filePath.endsWith(".vcf")) {
-      val builder = new LociSetBuilder
-      val reader = new VCFFileReader(new File(filePath), false)
-      val iterator = reader.iterator
-      while (iterator.hasNext) {
-        val value = iterator.next()
-        builder.put(value.getContig, value.getStart - 1, value.getEnd.toLong)
-      }
-      builder.result
+      LociSet(
+        new VCFFileReader(new File(filePath), false)
+      )
     } else if (filePath.endsWith(".loci") || filePath.endsWith(".txt")) {
       val filesystem = FileSystem.get(new Configuration())
       val path = new Path(filePath)
