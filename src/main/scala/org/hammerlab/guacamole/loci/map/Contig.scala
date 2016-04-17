@@ -15,7 +15,7 @@ import scala.collection.immutable.{SortedMap, TreeMap}
  * @param name The contig name
  * @param rangeMap The range map of loci intervals -> values.
  */
-case class Contig[T](name: String, private val rangeMap: RangeMap[JLong, T]) {
+case class Contig[T](name: String, private val rangeMap: RangeMap[JLong, T] = TreeRangeMap.create[JLong, T]()) {
 
   /**
    * Get the value associated with the given locus. Returns Some(value) if the given locus is in this map, None
@@ -68,5 +68,33 @@ case class Contig[T](name: String, private val rangeMap: RangeMap[JLong, T]) {
     } yield {
       "%s:%d-%d=%s".format(name, start, end, value)
     }
+  }
+}
+
+object Contig {
+  def apply[T](tuple: (String, Iterable[(JLong, JLong, T)])): Contig[T] = apply(tuple._1, tuple._2)
+  def apply[T](name: String, ranges: Iterable[(JLong, JLong, T)]): Contig[T] = {
+    val mutableRangeMap = TreeRangeMap.create[JLong, T]()
+    ranges.foreach(item => {
+      var (start, end, value) = item
+
+      // If there is an existing entry associated *with the same value* in the map immediately before the range
+      // we're adding, we coalesce the two ranges by setting our start to be its start.
+      val existingStart = mutableRangeMap.getEntry(start - 1)
+      if (existingStart != null && existingStart.getValue == value) {
+        assert(existingStart.getKey.lowerEndpoint < start)
+        start = existingStart.getKey.lowerEndpoint
+      }
+
+      // Likewise for the end of the range.
+      val existingEnd = mutableRangeMap.getEntry(end)
+      if (existingEnd != null && existingEnd.getValue == value) {
+        assert(existingEnd.getKey.upperEndpoint > end)
+        end = existingEnd.getKey.upperEndpoint
+      }
+
+      mutableRangeMap.put(Range.closedOpen[JLong](start, end), value)
+    })
+    Contig(name, mutableRangeMap)
   }
 }
