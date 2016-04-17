@@ -44,7 +44,7 @@ class LociMapSuite extends GuacFunSuite {
 
     lociMap should not equal (LociMap[String]())
 
-    lociMap.asInverseMap should equal(
+    lociMap.inverse should equal(
       Map(
         "A" -> LociSet("chr1:100-200"),
         "B" -> LociSet("chr20:200-201")
@@ -63,7 +63,7 @@ class LociMapSuite extends GuacFunSuite {
     )
 
     // asInverseMap stuffs all Loci with the same value into a LociSet.
-    lociMap.asInverseMap should equal(
+    lociMap.inverse should equal(
       Map(
         "A" -> LociSet("chr1:100-200,chr2:200-300"),
         "B" -> LociSet("chr3:400-500")
@@ -82,7 +82,7 @@ class LociMapSuite extends GuacFunSuite {
       ("chr1", 180L, 240L, "A")
     )
 
-    lociMap.asInverseMap should be(
+    lociMap.inverse should be(
       Map(
         "A" -> LociSet("chr1:100-150,chr1:160-240"),
         "B" -> LociSet("chr1:400-500"),
@@ -102,7 +102,7 @@ class LociMapSuite extends GuacFunSuite {
       ("chr1", 199L, 301L, "A")
     )
 
-    map.asInverseMap should be(
+    map.inverse should be(
       Map(
         "A" -> LociSet("chr1:100-400"),
         "B" -> LociSet("chr1:400-500")
@@ -127,7 +127,7 @@ class LociMapSuite extends GuacFunSuite {
       ("chr1", 200L, 300L, "A")
     )
 
-    map.asInverseMap should be(
+    map.inverse should be(
       Map(
         "A" -> LociSet("chr1:100-400"),
         "B" -> LociSet("chr1:400-500")

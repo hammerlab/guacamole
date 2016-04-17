@@ -46,7 +46,7 @@ case class LociMap[T](private val map: SortedMap[String, Contig[T]]) {
   lazy val count: Long = contigs.map(_.count).sum
 
   /** The "inverse map", i.e. a T -> LociSet map that gives the loci that map to each value. */
-  lazy val asInverseMap: Map[T, LociSet] = {
+  lazy val inverse: Map[T, LociSet] = {
     val mapOfBuilders = new mutable.HashMap[T, LociSetBuilder]()
     for {
       contig <- contigs

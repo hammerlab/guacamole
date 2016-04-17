@@ -9,10 +9,10 @@ import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
 class LociPartitionUtilsSuite extends GuacFunSuite {
   test("partitionLociUniformly") {
     val set = LociSet("chr21:100-200,chr20:0-10,chr20:8-15,chr20:100-121,empty:10-10")
-    val result1 = LociPartitionUtils.partitionLociUniformly(1, set).asInverseMap
+    val result1 = LociPartitionUtils.partitionLociUniformly(1, set).inverse
     result1(0) should equal(set)
 
-    val result2 = LociPartitionUtils.partitionLociUniformly(2, set).asInverseMap
+    val result2 = LociPartitionUtils.partitionLociUniformly(2, set).inverse
     result2(0).count should equal(set.count / 2)
     result2(1).count should equal(set.count / 2)
     result2(0) should not equal (result2(1))
@@ -42,7 +42,7 @@ class LociPartitionUtilsSuite extends GuacFunSuite {
 
     // These two calls should not take a noticeable amount of time.
     val bigSet = LociSet("chr21:0-3000000000")
-    LociPartitionUtils.partitionLociUniformly(2000, bigSet).asInverseMap
+    LociPartitionUtils.partitionLociUniformly(2000, bigSet).inverse
 
     val giantSet = LociSet(
       List(
@@ -135,7 +135,7 @@ class LociPartitionUtilsSuite extends GuacFunSuite {
       ).mkString(",")
     )
 
-    LociPartitionUtils.partitionLociUniformly(2000, giantSet).asInverseMap
+    LociPartitionUtils.partitionLociUniformly(2000, giantSet).inverse
   }
 
   sparkTest("partitionLociByApproximateReadDepth") {
