@@ -145,7 +145,7 @@ object WindowFlatMapUtils {
     val sc = regionRDDs(0).sparkContext
     progress(s"Loci partitioning: $lociPartitions")
     val lociPartitionsBoxed: Broadcast[LociMap[Long]] = sc.broadcast(lociPartitions)
-    val numTasks = lociPartitions.asInverseMap.map(_._1).max + 1
+    val numTasks = lociPartitions.inverse.map(_._1).max + 1
 
     // Counters
     val totalRegions = sc.accumulator(0L)
@@ -205,7 +205,7 @@ object WindowFlatMapUtils {
 
     partitioned.mapPartitionsWithIndex((taskNum, values) => {
       val iterators = SplitIterator.split(numRDDs, values)
-      val taskLoci = lociPartitionsBoxed.value.asInverseMap(taskNum)
+      val taskLoci = lociPartitionsBoxed.value.inverse(taskNum)
       lociAccumulator += taskLoci.count
       function(taskNum, taskLoci, iterators)
     })
