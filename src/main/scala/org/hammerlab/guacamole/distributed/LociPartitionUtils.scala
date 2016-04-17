@@ -155,7 +155,7 @@ object LociPartitionUtils {
 
     val maxIndex = counts.view.zipWithIndex.maxBy(_._1)._2
     progress("Regions per micro partition: min=%,d mean=%,.0f max=%,d at %s.".format(
-      counts.min, counts.sum.toDouble / counts.length, counts(maxIndex), microPartitions.asInverseMap(maxIndex)))
+      counts.min, counts.sum.toDouble / counts.length, counts(maxIndex), microPartitions.inverse(maxIndex)))
 
     val builder = LociMap.newBuilder[Long]
     var regionsAssigned = 0.0
@@ -163,7 +163,7 @@ object LociPartitionUtils {
     def regionsRemainingForThisTask = math.round(((task + 1) * regionsPerTask) - regionsAssigned)
     var microTask = 0
     while (microTask < numMicroPartitions) {
-      var set = microPartitions.asInverseMap(microTask)
+      var set = microPartitions.inverse(microTask)
       var regionsInSet = counts(microTask)
       while (!set.isEmpty) {
         if (regionsInSet == 0) {
