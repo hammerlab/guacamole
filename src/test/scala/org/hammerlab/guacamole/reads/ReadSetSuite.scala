@@ -131,7 +131,7 @@ class ReadSetSuite extends GuacFunSuite {
     val adamContext = new ADAMContext(sc)
     val adamRecords = adamContext.loadBam(TestUtil.testDataPath("mdtagissue.sam"))
 
-    val adamOut = TestUtil.tmpFileName(".adam")
+    val adamOut = TestUtil.tmpPath(".adam")
     val args = new ADAMSaveAnyArgs {
       override var sortFastqOutput: Boolean = false
       override var asSingleFile: Boolean = true
