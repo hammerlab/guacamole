@@ -99,11 +99,12 @@ object SomaticJoint {
           .format(readSets.map(_.sequenceDictionary.toString).mkString("\n")))
       }
 
-      val forceCallLoci = if (args.forceCallLoci.nonEmpty || args.forceCallLociFromFile.nonEmpty) {
-        Common.loci(args.forceCallLoci, args.forceCallLociFromFile, readSets(0).contigLengths)
-      } else {
-        LociSet.empty
-      }
+      val forceCallLoci =
+        if (args.forceCallLoci.nonEmpty || args.forceCallLociFromFile.nonEmpty) {
+          Common.loci(args.forceCallLoci, args.forceCallLociFromFile, readSets(0).contigLengths)
+        } else {
+          LociSet()
+        }
 
       if (forceCallLoci.nonEmpty) {
         progress(
@@ -165,14 +166,14 @@ object SomaticJoint {
 
   /** Subtract 1 from all loci in a LociSet. */
   def lociSetMinusOne(loci: LociSet): LociSet = {
-    val builder = new LociSetBuilder
-    for {
-      contig <- loci.contigs
-      range <- contig.ranges
-    } {
-      builder.put(contig.name, math.max(0, range.start - 1), range.end - 1)
-    }
-    builder.result
+    LociSet(
+      for {
+        contig <- loci.contigs
+        range <- contig.ranges
+      } yield {
+        (contig.name, math.max(0, range.start - 1), range.end - 1)
+      }
+    )
   }
 
   def makeCalls(sc: SparkContext,
@@ -181,7 +182,7 @@ object SomaticJoint {
                 parameters: Parameters,
                 reference: ReferenceBroadcast,
                 loci: LociSet,
-                forceCallLoci: LociSet = LociSet.empty,
+                forceCallLoci: LociSet = LociSet(),
                 onlySomatic: Boolean = false,
                 includeFiltered: Boolean = false,
                 distributedUtilArguments: LociPartitionUtils.Arguments = new LociPartitionUtils.Arguments {}): RDD[MultiSampleMultiAlleleEvidence] = {
@@ -224,7 +225,7 @@ object SomaticJoint {
                  inputs: InputCollection,
                  parameters: Parameters,
                  sequenceDictionary: SAMSequenceDictionary,
-                 forceCallLoci: LociSet = LociSet.empty,
+                 forceCallLoci: LociSet = LociSet(),
                  reference: ReferenceBroadcast,
                  onlySomatic: Boolean = false,
                  out: String = "",

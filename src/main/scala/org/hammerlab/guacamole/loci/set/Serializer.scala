@@ -11,6 +11,6 @@ class Serializer extends KryoSerializer[LociSet] {
 
   def read(kryo: Kryo, input: Input, klass: Class[LociSet]): LociSet = {
     val contigs = kryo.readClassAndObject(input).asInstanceOf[Iterable[Contig]]
-    LociSet(contigs.map(contig => contig.name -> contig))
+    LociSet.fromContigs(contigs)
   }
 }

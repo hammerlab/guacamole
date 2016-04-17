@@ -2,7 +2,7 @@ package org.hammerlab.guacamole.loci.map
 
 import java.lang.{Long => JLong}
 
-import com.google.common.collect.{Range, RangeMap}
+import com.google.common.collect.{Range, RangeMap, TreeRangeMap}
 import org.hammerlab.guacamole.Common
 import org.hammerlab.guacamole.loci.SimpleRange
 

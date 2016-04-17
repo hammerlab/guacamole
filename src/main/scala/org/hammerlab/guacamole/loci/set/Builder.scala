@@ -130,35 +130,20 @@ class Builder {
       }
     }
 
-    val rangesByContig = mutable.HashMap[String, TreeRangeSet[JLong]]()
+    val resolvedRanges =
+      if (containsAll)
+        for {
+          (contig, length) <- contigLengthsOpt.get
+        } yield
+          (contig, 0L, length)
+      else
+        for {
+          (contig, start, end) <- ranges
+          resolvedEnd = end.getOrElse(contigLengthsOpt.get(contig))
+        } yield
+          (contig, start, resolvedEnd)
 
-    if (containsAll) {
-      for {
-        (contig, length) <- contigLengthsOpt.get
-      } {
-        rangesByContig
-          .getOrElseUpdate(contig, TreeRangeSet.create())
-          .add(JRange.closedOpen(0L, length))
-      }
-    } else {
-      for {
-        (contig, start, end) <- ranges
-      } {
-        val resolvedEnd = end.getOrElse(contigLengthsOpt.get(contig))
-        rangesByContig
-          .getOrElseUpdate(contig, TreeRangeSet.create())
-          .add(JRange.closedOpen(start, resolvedEnd))
-      }
-    }
-
-    val mapBuilder = Map.newBuilder[String, Contig]
-    for {
-      (name, ranges) <- rangesByContig
-      if !ranges.isEmpty
-    } {
-      mapBuilder += name -> Contig(name, ranges)
-    }
-    LociSet(mapBuilder.result())
+    LociSet(resolvedRanges)
   }
 }
 

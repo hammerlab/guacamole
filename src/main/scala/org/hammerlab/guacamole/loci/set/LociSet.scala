@@ -18,8 +18,13 @@
 
 package org.hammerlab.guacamole.loci.set
 
+import java.lang.{Long => JLong}
+
+import com.google.common.collect.{Range => JRange}
+import htsjdk.variant.vcf.VCFFileReader
 import org.hammerlab.guacamole.Common
 
+import scala.collection.JavaConversions._
 import scala.collection.SortedMap
 import scala.collection.immutable.TreeMap
 
@@ -72,16 +77,16 @@ case class LociSet(private val map: SortedMap[String, Contig]) {
 
     // Optimize for taking none or all:
     if (numToTake == 0) {
-      (LociSet.empty, this)
+      (LociSet(), this)
     } else if (numToTake == count) {
-      (this, LociSet.empty)
+      (this, LociSet())
     } else {
 
       /* TODO: may want to optimize this to not fully construct two new maps. Could share singleContig instances between
        * the current map and the split maps, for example.
        */
-      val first = new Builder()
-      val second = new Builder()
+      val first = new Builder
+      val second = new Builder
       var remaining = numToTake
       var doneTaking = false
 
@@ -111,11 +116,47 @@ case class LociSet(private val map: SortedMap[String, Contig]) {
 
 object LociSet {
   /** An empty LociSet. */
-  val empty = LociSet(TreeMap.empty[String, Contig])
+  def apply(): LociSet = LociSet(TreeMap.empty[String, Contig])
 
   def all(contigLengths: Map[String, Long]) = Builder.all.result(contigLengths)
 
   def apply(loci: String): LociSet = Builder(loci).result
 
-  def apply(contigs: Iterable[(String, Contig)]): LociSet = LociSet(TreeMap(contigs.toSeq: _*))
+  /**
+    * These constructors build a LociSet directly from Contigs.
+    *
+    * They operate on an Iterator so that transformations to the data happen in one pass.
+    */
+  private[set] def fromContigs(contigs: Iterable[Contig]): LociSet = fromContigs(contigs.iterator)
+  private[set] def fromContigs(contigs: Iterator[Contig]): LociSet =
+    LociSet(
+      TreeMap(
+        contigs
+          .filterNot(_.isEmpty)
+          .map(contig => contig.name -> contig)
+          .toSeq: _*
+      )
+    )
+
+  def apply(contigs: Iterable[(String, Long, Long)]): LociSet =
+    LociSet.fromContigs({
+      (for {
+        (name, start, end) <- contigs
+        range = JRange.closedOpen[JLong](start, end)
+        if !range.isEmpty
+      } yield {
+        name -> range
+      })
+      .groupBy(_._1)
+      .mapValues(_.map(_._2))
+      .map(Contig(_))
+    })
+
+  def apply(reader: VCFFileReader): LociSet =
+    LociSet(
+      reader
+        .map(value =>
+          (value.getContig, value.getStart - 1L, value.getEnd.toLong)
+        )
+    )
 }

@@ -26,10 +26,12 @@ import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
 class LociSetSuite extends GuacFunSuite {
 
   test("properties of empty LociSet") {
-    LociSet.empty.contigs should have size (0)
-    LociSet.empty.count should equal(0)
-    LociSet.empty should equal(LociSet(""))
-    LociSet.empty should equal(LociSet("empty1:30-30,empty2:40-40"))
+    val empty = LociSet()
+    empty.contigs should have size (0)
+    empty.count should equal(0)
+    empty should equal(LociSet(""))
+    val empty2 = LociSet("empty1:30-30,empty2:40-40")
+    empty should equal(empty2)
   }
 
   test("count, containment, intersection testing of a loci set") {
