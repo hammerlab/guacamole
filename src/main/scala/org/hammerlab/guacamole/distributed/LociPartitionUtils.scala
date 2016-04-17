@@ -169,7 +169,7 @@ object LociPartitionUtils {
         if (regionsInSet == 0) {
           // Take the whole set if there are no regions assigned to it.
           builder.put(set, task)
-          set = LociSet.empty
+          set = LociSet()
         } else {
           // If we've allocated all regions for this task, move on to the next task.
           if (regionsRemainingForThisTask == 0)
