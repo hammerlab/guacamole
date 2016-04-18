@@ -28,7 +28,7 @@ import org.apache.hadoop.mapred.FileAlreadyExistsException
 import org.apache.spark.{Logging, SparkConf, SparkContext}
 import org.hammerlab.guacamole.distributed.LociPartitionUtils
 import org.hammerlab.guacamole.loci.LociArgs
-import org.hammerlab.guacamole.loci.set.{LociSet, Builder => LociSetBuilder}
+import org.hammerlab.guacamole.loci.set.{LociParser, LociSet}
 import org.hammerlab.guacamole.logging.DebugLogArgs
 import org.hammerlab.guacamole.reads.{InputFilters, ReadLoadingConfigArgs}
 import org.hammerlab.guacamole.variants.Concordance.ConcordanceArgs
@@ -119,11 +119,11 @@ object Common extends Logging {
   }
 
   /**
-   * Return the loci specified by the user as a LociSetBuilder.
+   * Return the loci specified by the user as a LociParser.
    *
    * @param args parsed arguments
    */
-  def lociFromArguments(args: LociArgs, default: String = "all"): LociSetBuilder = {
+  def lociFromArguments(args: LociArgs, default: String = "all"): LociParser = {
     if (args.loci.nonEmpty && args.lociFromFile.nonEmpty) {
       throw new IllegalArgumentException("Specify at most one of the 'loci' and 'loci-from-file' arguments")
     }
@@ -138,7 +138,7 @@ object Common extends Logging {
       default
     }
 
-    LociSetBuilder(lociToParse)
+    LociParser(lociToParse)
   }
 
   /**
@@ -158,7 +158,7 @@ object Common extends Logging {
     } else if (filePath.endsWith(".loci") || filePath.endsWith(".txt")) {
       val filesystem = FileSystem.get(new Configuration())
       val path = new Path(filePath)
-      LociSetBuilder(
+      LociParser(
         IOUtils.toString(new InputStreamReader(filesystem.open(path)))
       ).result(contigLengths)
     } else {
@@ -183,7 +183,7 @@ object Common extends Logging {
       throw new IllegalArgumentException("Specify at most one of the 'loci' and 'loci-from-file' arguments")
     }
     if (loci.nonEmpty) {
-      LociSetBuilder(loci).result(contigLengths)
+      LociParser(loci).result(contigLengths)
     } else if (lociFromFilePath.nonEmpty) {
       lociFromFile(lociFromFilePath, contigLengths)
     } else {

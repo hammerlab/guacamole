@@ -1,9 +1,9 @@
 package org.hammerlab.guacamole.commands
 
 import org.hammerlab.guacamole.commands.VariantSupport.Caller.AlleleCount
-import org.hammerlab.guacamole.loci.set.{Builder => LociSetBuilder, LociSet}
+import org.hammerlab.guacamole.loci.set.LociParser
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.reads.{MappedRead, InputFilters}
+import org.hammerlab.guacamole.reads.{InputFilters, MappedRead}
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
 import org.hammerlab.guacamole.windowing.SlidingWindow
@@ -54,7 +54,7 @@ class VariantSupportSuite extends GuacFunSuite with TableDrivenPropertyChecks {
       InputFilters(
         mapped = true,
         nonDuplicate = false,
-        overlapsLoci = LociSetBuilder(loci)
+        overlapsLoci = LociParser(loci)
       )
     ).mappedReads.collect().sortBy(_.start)
 
@@ -65,7 +65,7 @@ class VariantSupportSuite extends GuacFunSuite with TableDrivenPropertyChecks {
       InputFilters(
         mapped = true,
         nonDuplicate = true,
-        overlapsLoci = LociSetBuilder(loci)
+        overlapsLoci = LociParser(loci)
       )
     ).mappedReads.collect().sortBy(_.start)
 

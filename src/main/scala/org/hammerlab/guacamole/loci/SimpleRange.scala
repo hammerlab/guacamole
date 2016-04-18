@@ -28,6 +28,8 @@ case class SimpleRange(start: Long, end: Long) extends Ordered[SimpleRange] {
     else if (diff == 0) 0
     else 1
   }
+
+  def toJavaRange: JRange[JLong] = JRange.closedOpen(start, end)
 }
 
 object SimpleRange {

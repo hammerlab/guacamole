@@ -82,9 +82,6 @@ case class LociSet(private val map: SortedMap[String, Contig]) {
       (this, LociSet())
     } else {
 
-      /* TODO: may want to optimize this to not fully construct two new maps. Could share singleContig instances between
-       * the current map and the split maps, for example.
-       */
       val first = new Builder
       val second = new Builder
       var remaining = numToTake
@@ -92,16 +89,16 @@ case class LociSet(private val map: SortedMap[String, Contig]) {
 
       for {
         contig <- contigs
-        range <- contig.ranges
       } {
         if (doneTaking) {
-          second.put(contig.name, range.start, range.end)
-        } else if (remaining >= range.length) {
-          first.put(contig.name, range.start, range.end)
-          remaining -= range.length
+          second.add(contig)
+        } else if (contig.count < remaining) {
+          first.add(contig)
+          remaining -= contig.count
         } else {
-          first.put(contig.name, range.start, range.start + remaining)
-          second.put(contig.name, range.start + remaining, range.end)
+          val (takePartialContig, remainingPartialContig) = contig.take(remaining)
+          first.add(takePartialContig)
+          second.add(remainingPartialContig)
           doneTaking = true
         }
       }
@@ -118,9 +115,9 @@ object LociSet {
   /** An empty LociSet. */
   def apply(): LociSet = LociSet(TreeMap.empty[String, Contig])
 
-  def all(contigLengths: Map[String, Long]) = Builder.all.result(contigLengths)
+  def all(contigLengths: Map[String, Long]) = LociParser.all.result(contigLengths)
 
-  def apply(loci: String): LociSet = Builder(loci).result
+  def apply(loci: String): LociSet = LociParser(loci).result
 
   /**
     * These constructors build a LociSet directly from Contigs.
