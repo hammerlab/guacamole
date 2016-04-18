@@ -22,7 +22,7 @@ import java.lang.{Long => JLong}
 
 import com.google.common.collect.{Range => JRange}
 import htsjdk.variant.vcf.VCFFileReader
-import org.hammerlab.guacamole.Common
+import org.hammerlab.guacamole.strings.TruncatedToString
 
 import scala.collection.JavaConversions._
 import scala.collection.SortedMap
@@ -39,7 +39,7 @@ import scala.collection.immutable.TreeMap
  *
  * @param map A map from contig-name to Contig, which is a set or genomic intervals as described above.
  */
-case class LociSet(private val map: SortedMap[String, Contig]) {
+case class LociSet(private val map: SortedMap[String, Contig]) extends TruncatedToString {
 
   /** The contigs included in this LociSet with a nonempty set of loci. */
   lazy val contigs = map.values.toSeq
@@ -53,18 +53,8 @@ case class LociSet(private val map: SortedMap[String, Contig]) {
   /** Given a contig name, returns a [[Contig]] giving the loci on that contig. */
   def onContig(contig: String): Contig = map.getOrElse(contig, Contig(contig))
 
-  /** Returns a string representation of this LociSet, in the same format that Builder expects. */
-  override def toString: String = truncatedString(Int.MaxValue)
-
-  /**
-   * String representation, truncated to maxLength characters.
-   */
-  def truncatedString(maxLength: Int = 500): String = {
-    Common.assembleTruncatedString(
-      contigs.iterator.flatMap(_.stringPieces),
-      maxLength
-    )
-  }
+  /** Build a truncate-able toString() out of underlying contig pieces. */
+  def stringPieces: Iterator[String] = contigs.iterator.flatMap(_.stringPieces)
 
   /**
    * Split the LociSet into two sets, where the first one has `numToTake` loci, and the second one has the
