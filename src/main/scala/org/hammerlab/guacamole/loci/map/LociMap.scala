@@ -20,7 +20,7 @@ package org.hammerlab.guacamole.loci.map
 
 import org.hammerlab.guacamole.Common
 import org.hammerlab.guacamole.loci.SimpleRange
-import org.hammerlab.guacamole.loci.set.{LociSet, Builder => LociSetBuilder}
+import org.hammerlab.guacamole.loci.set.{LociParser, LociSet, Builder => LociSetBuilder}
 
 import scala.collection.immutable.TreeMap
 import scala.collection.{SortedMap, mutable}
@@ -47,11 +47,11 @@ case class LociMap[T](private val map: SortedMap[String, Contig[T]]) {
     val mapOfBuilders = new mutable.HashMap[T, LociSetBuilder]()
     for {
       contig <- contigs
-      (SimpleRange(start, end), value) <- contig.asMap
+      (value, setContig) <- contig.inverse
     } {
       mapOfBuilders
         .getOrElseUpdate(value, new LociSetBuilder)
-        .put(contig.name, start, end)
+        .add(setContig)
     }
     mapOfBuilders.mapValues(_.result).toMap
   }

@@ -27,7 +27,7 @@ import htsjdk.samtools.TextCigarCodec
 import org.apache.commons.io.FileUtils
 import org.apache.spark.SparkContext
 import org.hammerlab.guacamole.kryo.GuacamoleKryoRegistrator
-import org.hammerlab.guacamole.loci.set.{Builder => LociSetBuilder}
+import org.hammerlab.guacamole.loci.set.LociParser
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.{InputFilters, MappedRead, MateAlignmentProperties, PairedRead, Read, ReadLoadingConfig}
 import org.hammerlab.guacamole.reference.ReferenceBroadcast.MapBackedReferenceSequence
@@ -249,7 +249,7 @@ object TestUtil extends Matchers {
         filename,
         filters = InputFilters(
           overlapsLoci = maybeContig.map(
-            contig => LociSetBuilder(s"$contig:$locus-${locus + 1}")
+            contig => LociParser(s"$contig:$locus-${locus + 1}")
           ).orNull
         )
       ).mappedReads
