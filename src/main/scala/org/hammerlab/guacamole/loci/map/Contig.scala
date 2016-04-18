@@ -2,12 +2,10 @@ package org.hammerlab.guacamole.loci.map
 
 import java.lang.{Long => JLong}
 
-import com.google.common.collect.{Range => JRange}
-
-import com.google.common.collect.{Range, RangeMap, TreeRangeMap}
-import org.hammerlab.guacamole.Common
+import com.google.common.collect.{RangeMap, TreeRangeMap, Range => JRange}
 import org.hammerlab.guacamole.loci.SimpleRange
 import org.hammerlab.guacamole.loci.set.{Contig => LociSetContig}
+import org.hammerlab.guacamole.strings.TruncatedToString
 
 import scala.collection.JavaConversions._
 import scala.collection.immutable.{SortedMap, TreeMap}
@@ -20,7 +18,9 @@ import scala.collection.mutable.ArrayBuffer
  * @param name The contig name
  * @param rangeMap The range map of loci intervals -> values.
  */
-case class Contig[T](name: String, private val rangeMap: RangeMap[JLong, T] = TreeRangeMap.create[JLong, T]()) {
+case class Contig[T](name: String,
+                     private val rangeMap: RangeMap[JLong, T] = TreeRangeMap.create[JLong, T]())
+  extends TruncatedToString {
 
   /**
    * Get the value associated with the given locus. Returns Some(value) if the given locus is in this map, None
@@ -34,7 +34,7 @@ case class Contig[T](name: String, private val rangeMap: RangeMap[JLong, T] = Tr
    * Given a loci interval, return the set of all values mapped to by any loci in the interval.
    */
   def getAll(start: Long, end: Long): Set[T] = {
-    val range = Range.closedOpen[JLong](start, end)
+    val range = JRange.closedOpen[JLong](start, end)
     rangeMap.subRangeMap(range).asMapOfRanges.values.iterator.toSet
   }
 
@@ -64,22 +64,10 @@ case class Contig[T](name: String, private val rangeMap: RangeMap[JLong, T] = Tr
   /** Number of loci on this contig. */
   private[map] lazy val count = asMap.keysIterator.map(_.length).sum
 
-  override def toString: String = truncatedString(Int.MaxValue)
-
-  /**
-   * String representation, truncated to maxLength characters.
-   *
-   * If includeValues is true (default), then also include the values mapped to by this LociMap. If it's false,
-   * then only the keys are included.
-   */
-  private def truncatedString(maxLength: Int = 100): String = {
-    Common.assembleTruncatedString(stringPieces, maxLength)
-  }
-
   /**
    * Iterator over string representations of each range in the map.
    */
-  private[map] def stringPieces = {
+  def stringPieces = {
     for {
       (SimpleRange(start, end), value) <- asMap.iterator
     } yield {
@@ -110,7 +98,7 @@ object Contig {
         end = existingEnd.getKey.upperEndpoint
       }
 
-      mutableRangeMap.put(Range.closedOpen[JLong](start, end), value)
+      mutableRangeMap.put(JRange.closedOpen[JLong](start, end), value)
     })
     Contig(name, mutableRangeMap)
   }
