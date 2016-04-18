@@ -28,7 +28,7 @@ import org.apache.spark.{Logging, SparkContext}
 import org.bdgenomics.adam.models.SequenceDictionary
 import org.bdgenomics.adam.rdd.{ADAMContext, ADAMSpecificRecordSequenceDictionaryRDDAggregator}
 import org.bdgenomics.formats.avro.AlignmentRecord
-import org.hammerlab.guacamole.loci.set.{LociSet, Builder => LociSetBuilder}
+import org.hammerlab.guacamole.loci.set.LociParser
 import org.hammerlab.guacamole.{Bases, Common}
 import org.seqdoop.hadoop_bam.util.SAMHeaderReader
 import org.seqdoop.hadoop_bam.{AnySAMInputFormat, SAMRecordWritable}
@@ -81,7 +81,7 @@ object Read extends Logging {
    * @param isPaired include only reads are paired-end reads
    */
   case class InputFilters(
-    overlapsLoci: Option[LociSetBuilder],
+    overlapsLoci: Option[LociParser],
     nonDuplicate: Boolean,
     passedVendorQualityChecks: Boolean,
     isPaired: Boolean) {}
@@ -94,12 +94,12 @@ object Read extends Logging {
      *               overlapsLoci.
      */
     def apply(mapped: Boolean = false,
-              overlapsLoci: Option[LociSetBuilder] = None,
+              overlapsLoci: Option[LociParser] = None,
               nonDuplicate: Boolean = false,
               passedVendorQualityChecks: Boolean = false,
               isPaired: Boolean = false): InputFilters = {
       new InputFilters(
-        overlapsLoci = if (overlapsLoci.isEmpty && mapped) Some(LociSetBuilder.all) else overlapsLoci,
+        overlapsLoci = if (overlapsLoci.isEmpty && mapped) Some(LociParser.all) else overlapsLoci,
         nonDuplicate = nonDuplicate,
         passedVendorQualityChecks = passedVendorQualityChecks,
         isPaired = isPaired)

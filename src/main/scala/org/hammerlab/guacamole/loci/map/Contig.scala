@@ -2,12 +2,17 @@ package org.hammerlab.guacamole.loci.map
 
 import java.lang.{Long => JLong}
 
+import com.google.common.collect.{Range => JRange}
+
 import com.google.common.collect.{Range, RangeMap, TreeRangeMap}
 import org.hammerlab.guacamole.Common
 import org.hammerlab.guacamole.loci.SimpleRange
+import org.hammerlab.guacamole.loci.set.{Contig => LociSetContig}
 
 import scala.collection.JavaConversions._
 import scala.collection.immutable.{SortedMap, TreeMap}
+import scala.collection.mutable
+import scala.collection.mutable.ArrayBuffer
 
 /**
  * A map from loci to instances of an arbitrary type where the loci are all on the same contig.
@@ -42,6 +47,18 @@ case class Contig[T](name: String, private val rangeMap: RangeMap[JLong, T] = Tr
         SimpleRange(range) -> value
       }): _*
     )
+  }
+
+  lazy val inverse: Map[T, LociSetContig] = {
+    val map = mutable.HashMap[T, ArrayBuffer[JRange[JLong]]]()
+    for {
+      (range, value) <- asMap
+    } {
+      map
+        .getOrElseUpdate(value, ArrayBuffer())
+        .append(range.toJavaRange)
+    }
+    map.mapValues(ranges => LociSetContig.apply(name, ranges)).toMap
   }
 
   /** Number of loci on this contig. */

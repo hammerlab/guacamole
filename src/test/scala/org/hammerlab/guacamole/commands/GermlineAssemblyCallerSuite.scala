@@ -4,7 +4,7 @@ import org.apache.spark.SparkContext
 import org.hammerlab.guacamole._
 import org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Arguments
 import org.hammerlab.guacamole.distributed.LociPartitionUtils
-import org.hammerlab.guacamole.loci.set.{Builder => LociSetBuilder}
+import org.hammerlab.guacamole.loci.set.LociParser
 import org.hammerlab.guacamole.reads.Read
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.util.TestUtil
@@ -46,7 +46,7 @@ class GermlineAssemblyCallerSuite extends FunSuite with Matchers with BeforeAndA
     val windowStart = locus - snvWindowRange
     val windowEnd = locus + snvWindowRange
 
-    val lociBuilder = LociSetBuilder(s"$contig:$windowStart-$windowEnd")
+    val lociBuilder = LociParser(s"$contig:$windowStart-$windowEnd")
 
     val readSet =
       Common.loadReadsFromArguments(
