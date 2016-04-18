@@ -158,7 +158,7 @@ class LociSetSuite extends GuacFunSuite {
   }
 
   test("loci set parsing with contig lengths") {
-    Builder(
+    LociParser(
       "chr1,chr2,17,chr2:3-5,chr20:10-20"
     )
     .result(
@@ -173,7 +173,7 @@ class LociSetSuite extends GuacFunSuite {
   }
 
   test("parse half-open interval") {
-    Builder("chr1:10000-").result("chr1" -> 20000L).toString should be("chr1:10000-20000")
+    LociParser("chr1:10000-").result("chr1" -> 20000L).toString should be("chr1:10000-20000")
   }
 
   test("loci set single contig iterator basic") {

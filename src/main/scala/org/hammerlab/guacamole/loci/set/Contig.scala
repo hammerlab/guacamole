@@ -7,6 +7,7 @@ import org.hammerlab.guacamole.Common
 import org.hammerlab.guacamole.loci.SimpleRange
 
 import scala.collection.JavaConversions._
+import scala.collection.mutable.ArrayBuffer
 
 /**
   * A set of loci on a contig, stored/manipulated as loci ranges.
@@ -37,6 +38,35 @@ case class Contig(name: String, private val rangeSet: RangeSet[JLong]) {
   /** Returns whether a given genomic region overlaps with any loci on this contig. */
   def intersects(start: Long, end: Long) = !rangeSet.subRangeSet(JRange.closedOpen(start, end)).isEmpty
 
+  /**
+    * Make two new Contigs: one with the first @numToTake loci from this Contig, and the second with the rest.
+    *
+    * Used by LociSet.take.
+    */
+  private[set] def take(numToTake: Long): (Contig, Contig) = {
+    val firstRanges = ArrayBuffer[JRange[JLong]]()
+    val secondRanges = ArrayBuffer[JRange[JLong]]()
+
+    var remaining = numToTake
+    var doneTaking = false
+    for {
+      range <- ranges
+    } {
+      if (doneTaking) {
+        secondRanges.append(range.toJavaRange)
+      } else if (range.length < numToTake) {
+        firstRanges.append(range.toJavaRange)
+        remaining -= range.length
+      } else {
+        firstRanges.append(JRange.closedOpen(range.start, range.start + remaining))
+        secondRanges.append(JRange.closedOpen(range.start + remaining, range.end))
+        doneTaking = true
+      }
+    }
+
+    (Contig(name, firstRanges), Contig(name, secondRanges))
+  }
+
   override def toString: String = truncatedString(Int.MaxValue)
 
   /** String representation, truncated to maxLength characters. */
@@ -57,7 +87,7 @@ case class Contig(name: String, private val rangeSet: RangeSet[JLong]) {
   }
 }
 
-private[set] object Contig {
+private[loci] object Contig {
   // Empty-contig constructor, for convenience.
   def apply(name: String): Contig = Contig(name, TreeRangeSet.create[JLong]())
 
