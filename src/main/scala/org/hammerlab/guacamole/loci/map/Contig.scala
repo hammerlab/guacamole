@@ -18,9 +18,7 @@ import scala.collection.mutable.ArrayBuffer
  * @param name The contig name
  * @param rangeMap The range map of loci intervals -> values.
  */
-case class Contig[T](name: String,
-                     private val rangeMap: RangeMap[JLong, T] = TreeRangeMap.create[JLong, T]())
-  extends TruncatedToString {
+case class Contig[T](name: String, private val rangeMap: RangeMap[JLong, T]) extends TruncatedToString {
 
   /**
    * Get the value associated with the given locus. Returns Some(value) if the given locus is in this map, None
@@ -49,6 +47,9 @@ case class Contig[T](name: String,
     )
   }
 
+  /**
+    * Map from each value found in this Contig to a LociSet Contig representing the loci that map to that value.
+    */
   lazy val inverse: Map[T, LociSetContig] = {
     val map = mutable.HashMap[T, ArrayBuffer[JRange[JLong]]]()
     for {
@@ -61,7 +62,7 @@ case class Contig[T](name: String,
     map.mapValues(ranges => LociSetContig(name, ranges)).toMap
   }
 
-  /** Number of loci on this contig. */
+  /** Number of loci on this contig; exposed only to LociMap. */
   private[map] lazy val count = asMap.keysIterator.map(_.length).sum
 
   /**
@@ -77,6 +78,10 @@ case class Contig[T](name: String,
 }
 
 object Contig {
+
+  def apply[T](name: String): Contig[T] = Contig(name, TreeRangeMap.create[JLong, T]())
+
+  /** Convenience constructors for making a Contig from a name and some loci ranges. */
   def apply[T](tuple: (String, Iterable[(JLong, JLong, T)])): Contig[T] = apply(tuple._1, tuple._2)
   def apply[T](name: String, ranges: Iterable[(JLong, JLong, T)]): Contig[T] = {
     val mutableRangeMap = TreeRangeMap.create[JLong, T]()
