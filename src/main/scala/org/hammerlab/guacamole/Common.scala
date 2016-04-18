@@ -253,29 +253,6 @@ object Common extends Logging {
   }
 
   /**
-   * Like Scala's List.mkString method, but supports truncation.
-   *
-   * Return the concatenation of an iterator over strings, separated by separator, truncated to at most maxLength
-   * characters. If truncation occurs, the string is terminated with ellipses.
-   */
-  def assembleTruncatedString(
-    pieces: Iterator[String],
-    maxLength: Int,
-    separator: String = ",",
-    ellipses: String = " [...]"): String = {
-    val builder = StringBuilder.newBuilder
-    var remaining: Int = maxLength
-    while (pieces.hasNext && remaining > ellipses.length) {
-      val string = pieces.next()
-      builder.append(string)
-      if (pieces.hasNext) builder.append(separator)
-      remaining -= string.length + separator.length
-    }
-    if (pieces.hasNext) builder.append(ellipses)
-    builder.result
-  }
-
-  /**
    * Perform validation of command line arguments at startup.
    * This allows some late failures (e.g. output file already exists) to be surfaced more quickly.
    */

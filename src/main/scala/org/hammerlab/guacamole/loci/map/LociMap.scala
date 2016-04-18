@@ -18,9 +18,8 @@
 
 package org.hammerlab.guacamole.loci.map
 
-import org.hammerlab.guacamole.Common
-import org.hammerlab.guacamole.loci.SimpleRange
-import org.hammerlab.guacamole.loci.set.{LociParser, LociSet, Builder => LociSetBuilder}
+import org.hammerlab.guacamole.loci.set.{LociSet, Builder => LociSetBuilder}
+import org.hammerlab.guacamole.strings.TruncatedToString
 
 import scala.collection.immutable.TreeMap
 import scala.collection.{SortedMap, mutable}
@@ -34,7 +33,7 @@ import scala.collection.{SortedMap, mutable}
  *
  * @param map Map from contig names to [[Contig]] instances giving the regions and values on that contig.
  */
-case class LociMap[T](private val map: SortedMap[String, Contig[T]]) {
+case class LociMap[T](private val map: SortedMap[String, Contig[T]]) extends TruncatedToString {
 
   /** The contigs included in this LociMap with a nonempty set of loci. */
   lazy val contigs = map.values.toSeq
@@ -64,20 +63,8 @@ case class LociMap[T](private val map: SortedMap[String, Contig[T]]) {
    */
   def onContig(contig: String): Contig[T] = map.getOrElse(contig, Contig[T](contig))
 
-  override def toString: String = truncatedString()
-
-  /**
-   * String representation, truncated to maxLength characters.
-   *
-   * If includeValues is true (default), then also include the values mapped to by this LociMap. If it's false,
-   * then only the keys are included.
-   */
-  def truncatedString(maxLength: Int = 500): String = {
-    Common.assembleTruncatedString(
-      contigs.iterator.flatMap(_.stringPieces),
-      maxLength
-    )
-  }
+  /** Build a truncate-able toString() out of underlying contig pieces. */
+  def stringPieces: Iterator[String] = contigs.iterator.flatMap(_.stringPieces)
 }
 
 object LociMap {
