@@ -255,11 +255,6 @@
       <version>${adam.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.bdgenomics.adam</groupId>
-      <artifactId>adam-cli_${scala.version.prefix}</artifactId>
-      <version>${adam.version}</version>
-    </dependency>
-    <dependency>
       <groupId>org.bdgenomics.bdg-formats</groupId>
       <artifactId>bdg-formats</artifactId>
       <version>${bdg-formats.version}</version>
