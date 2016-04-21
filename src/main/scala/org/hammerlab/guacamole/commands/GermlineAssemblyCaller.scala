@@ -1,6 +1,6 @@
 package org.hammerlab.guacamole.commands
 
-import breeze.linalg.{DenseVector, argtopk}
+import breeze.linalg.DenseVector
 import breeze.stats.{mean, median}
 import htsjdk.samtools.CigarOperator
 import org.apache.spark.SparkContext
@@ -169,13 +169,17 @@ object GermlineAssemblyCaller {
       } else if (paths.size <= expectedPloidy) {
         paths
       } else if (paths.size <= maxPathsToScore) {
-        val pathScores = DenseVector.zeros[Int](paths.size)
-        reads.foreach(
-          read => {
-            pathScores :+= DenseVector(paths.map(path => -AffineGapPenaltyAlignment.align(read.sequence, path).alignmentScore): _*)
-          })
-
-        argtopk(pathScores, expectedPloidy).map(paths(_))
+        (for {
+          path <- paths
+        } yield {
+          reads.map(
+            read =>
+              -AffineGapPenaltyAlignment.align(read.sequence, path).alignmentScore
+          ).sum -> path
+        })
+          .sortBy(-_._1)
+          .take(expectedPloidy)
+          .map(_._2)
 
       } else {
         log.warn(s"In window ${referenceContig}:${referenceStart}-$referenceEnd " +
@@ -483,7 +487,6 @@ object GermlineAssemblyCaller {
       logSpace = true,
       normalize = true
     )
-
 
     // If we did not have any valid genotypes to evaluate
     // we do not return any variants
