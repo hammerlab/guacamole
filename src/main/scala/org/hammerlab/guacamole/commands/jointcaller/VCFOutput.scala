@@ -45,23 +45,21 @@ object VCFOutput {
     headerLines.add(new VCFFormatHeaderLine("GT", 1, VCFHeaderLineType.String, "Genotype"))
     headerLines.add(new VCFFormatHeaderLine("AD", VCFHeaderLineCount.UNBOUNDED, VCFHeaderLineType.Integer,
       "Allelic depths for the ref and alt alleles"))
-    headerLines.add(new VCFFormatHeaderLine("PL", VCFHeaderLineCount.G, VCFHeaderLineType.Integer,
-      "Phred scaled genotype likelihoods"))
     headerLines.add(new VCFFormatHeaderLine("DP", 1, VCFHeaderLineType.Integer, "Total depth"))
     headerLines.add(new VCFFormatHeaderLine("GQ", 1, VCFHeaderLineType.Integer, "Genotype quality"))
 
     // nonstandard
-    headerLines.add(new VCFFormatHeaderLine("RL", 1, VCFHeaderLineType.String, "Unnormalized log10 genotype posteriors"))
+    headerLines.add(new VCFFormatHeaderLine("RL", VCFHeaderLineCount.UNBOUNDED, VCFHeaderLineType.String, "Unnormalized log10 genotype posteriors"))
     headerLines.add(new VCFFormatHeaderLine("VAF", 1, VCFHeaderLineType.Integer, "Variant allele frequency (percent)"))
-    headerLines.add(new VCFFormatHeaderLine("TRIGGERED", 1, VCFHeaderLineType.Integer, "Did this sample trigger a call"))
-    headerLines.add(new VCFFormatHeaderLine("ADP", 1, VCFHeaderLineType.String, "allelic depth as num postiive strand / num total"))
+    headerLines.add(new VCFFormatHeaderLine("TRIGGERED", 1, VCFHeaderLineType.String, "Did this sample trigger a call"))
+    headerLines.add(new VCFFormatHeaderLine("ADP", VCFHeaderLineCount.UNBOUNDED, VCFHeaderLineType.String, "allelic depth for all alleles"))
     headerLines.add(new VCFFormatHeaderLine("FF", VCFHeaderLineCount.UNBOUNDED, VCFHeaderLineType.String, "failing filters for this sample"))
 
     SingleSampleAnnotations.addVCFHeaders(headerLines)
     MultiSampleAnnotations.addVCFHeaders(headerLines)
 
     // INFO
-    headerLines.add(new VCFInfoHeaderLine("TRIGGER", 1, VCFHeaderLineType.String,
+    headerLines.add(new VCFInfoHeaderLine("TRIGGER", VCFHeaderLineCount.UNBOUNDED, VCFHeaderLineType.String,
       "Which likelihood ratio test triggered call"))
     headerLines.add(new VCFInfoHeaderLine("TUMOR_EXPRESSION", 1, VCFHeaderLineType.String,
       "Was there tumor RNA expression for the variant"))
@@ -114,7 +112,7 @@ object VCFOutput {
 
     def allelicDepthString(depths: Map[String, Int]): String = {
       val allAlleles = (Seq(allele.ref, allele.alt) ++ depths.keys.toSeq).distinct
-      allAlleles.map(x => "%s=%d".format(if (x.isEmpty) "." else x, depths.getOrElse(x, 0))).mkString(" ")
+      allAlleles.map(x => "%s=%d".format(if (x.isEmpty) "." else x, depths.getOrElse(x, 0))).mkString(",")
     }
 
     val variantGenotypeAlleles = Seq(allele.ref, allele.alt)
@@ -131,7 +129,7 @@ object VCFOutput {
       def alleleToString(x: String) = if (x.isEmpty) "." else x
       def mixtureToString(mixture: Map[String, Double]) = mixture.map(pair => {
         "%s->%.2f".format(alleleToString(pair._1), pair._2)
-      }).mkString(" ")
+      }).mkString("|")
 
       val evidence = samplesEvidence.allEvidences(input.index)
       val genotypeBuilder = new GenotypeBuilder()
@@ -144,7 +142,7 @@ object VCFOutput {
           genotypeBuilder.alleles(JavaConversions.seqAsJavaList(
             Seq(makeHtsjdkAllele(alleleGenotype._1), makeHtsjdkAllele(alleleGenotype._2))))
           genotypeBuilder.attribute("RL",
-            posteriors.map(pair => "[%s/%s]->%.8g".format(pair._1._1, pair._1._2, pair._2)).mkString(" "))
+            posteriors.map(pair => "[%s/%s]=%.8g".format(pair._1._1, pair._1._2, pair._2)).mkString(","))
           genotypeBuilder
             .AD(Seq(allele.ref, allele.alt).map(allele => germlineEvidence.allelicDepths.getOrElse(allele, 0)).toArray)
             .DP(germlineEvidence.depth)
@@ -175,8 +173,8 @@ object VCFOutput {
           }
           genotypeBuilder.alleles(JavaConversions.seqAsJavaList(sampleGenotype.map(makeHtsjdkAllele _)))
           genotypeBuilder.attribute("RL",
-            posteriors.map(pair => "[%s]->%.8g".format(mixtureToString(pair._1), pair._2)).mkString(" "))
-          genotypeBuilder.attribute("TRIGGERED", if (thisSampleTriggered) "TRIGGER" else "NO")
+            posteriors.map(pair => "[%s]=%.8g".format(mixtureToString(pair._1), pair._2)).mkString(","))
+          genotypeBuilder.attribute("TRIGGERED", if (thisSampleTriggered) "YES" else "NO")
 
           genotypeBuilder
             .attribute("ADP", allelicDepthString(tumorEvidence.allelicDepths))
@@ -191,7 +189,7 @@ object VCFOutput {
           val sampleGenotype = if (thisSampleExpressed) Seq(allele.ref, allele.alt) else Seq(allele.ref, allele.ref)
           genotypeBuilder.alleles(JavaConversions.seqAsJavaList(sampleGenotype.map(makeHtsjdkAllele _)))
           genotypeBuilder.attribute("RL",
-            posteriors.map(pair => "[%s]->%.8g".format(mixtureToString(pair._1), pair._2)).mkString(" "))
+            posteriors.map(pair => "[%s]=%.8g".format(mixtureToString(pair._1), pair._2)).mkString(","))
           genotypeBuilder.attribute("TRIGGERED", if (thisSampleExpressed) "EXPRESSED" else "NO")
 
           genotypeBuilder
@@ -230,7 +228,7 @@ object VCFOutput {
       .stop(allele.end) // +1 for one-based and -1 for inclusive
       .genotypes(JavaConversions.seqAsJavaList(genotypes))
       .alleles(JavaConversions.seqAsJavaList(variantGenotypeAlleles.distinct.map(makeHtsjdkAllele _)))
-      .attribute("TRIGGER", if (triggers.nonEmpty) triggers.mkString("+") else "NONE")
+      .attribute("TRIGGER", triggers.mkString(","))
       .attribute("TUMOR_EXPRESSION", if (samplesEvidence.tumorRnaSampleExpressed.nonEmpty) "YES" else "NO")
 
     val failingFilterNames = samplesEvidence.failingFilterNames
