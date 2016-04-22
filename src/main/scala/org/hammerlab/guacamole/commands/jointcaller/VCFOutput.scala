@@ -34,7 +34,8 @@ object VCFOutput {
                includePooledTumor: Boolean,
                parameters: Parameters,
                sequenceDictionary: SAMSequenceDictionary,
-               reference: ReferenceBroadcast): Unit = {
+               reference: ReferenceBroadcast,
+               extraHeaderMetadata: Seq[(String, String)] = Seq.empty): Unit = {
 
     val writer = new VariantContextWriterBuilder()
       .setOutputFile(path)
@@ -42,7 +43,7 @@ object VCFOutput {
       .build
     val headerLines = new util.HashSet[VCFHeaderLine]()
     headerLines.add(new VCFFormatHeaderLine("GT", 1, VCFHeaderLineType.String, "Genotype"))
-    headerLines.add(new VCFFormatHeaderLine("AD", VCFHeaderLineCount.R, VCFHeaderLineType.Integer,
+    headerLines.add(new VCFFormatHeaderLine("AD", VCFHeaderLineCount.UNBOUNDED, VCFHeaderLineType.Integer,
       "Allelic depths for the ref and alt alleles"))
     headerLines.add(new VCFFormatHeaderLine("PL", VCFHeaderLineCount.G, VCFHeaderLineType.Integer,
       "Phred scaled genotype likelihoods"))
@@ -77,6 +78,10 @@ object VCFOutput {
     parameters.asStringPairs.foreach(kv => {
       header.addMetaDataLine(new VCFHeaderLine("parameter." + kv._1, kv._2))
     })
+    extraHeaderMetadata.foreach(kv => {
+      header.addMetaDataLine(new VCFHeaderLine(kv._1, kv._2))
+    })
+    header.addMetaDataLine(new VCFHeaderLine("reference", reference.source))
     writer.writeHeader(header)
 
     val sortedEvidences = calls.flatMap(_.singleAlleleEvidences).sortBy(e => (e.allele.referenceContig, e.allele.start))
