@@ -11,7 +11,7 @@ import org.hammerlab.guacamole.loci.LociSet
 
 import scala.collection.mutable
 
-case class ReferenceBroadcast(broadcastedContigs: Map[String, ContigSequence]) extends ReferenceGenome {
+case class ReferenceBroadcast(broadcastedContigs: Map[String, ContigSequence], source: String) extends ReferenceGenome {
   override def getContig(contigName: String): ContigSequence = {
     try {
       broadcastedContigs(contigName)
@@ -74,7 +74,7 @@ object ReferenceBroadcast {
       broadcastedSequences += ((sequenceName, broadcastedSequence))
       nextSequence = referenceFasta.nextSequence()
     }
-    ReferenceBroadcast(broadcastedSequences.result)
+    ReferenceBroadcast(broadcastedSequences.result, fastaPath)
   }
 
   /**
@@ -131,8 +131,10 @@ object ReferenceBroadcast {
         })
       }
     })
-    new ReferenceBroadcast(result.map(
-      pair => pair._1 -> MapBackedReferenceSequence(contigLengths(pair._1), sc.broadcast(pair._2.toMap))).toMap)
+    new ReferenceBroadcast(
+      result.map(
+        pair => pair._1 -> MapBackedReferenceSequence(contigLengths(pair._1), sc.broadcast(pair._2.toMap))).toMap,
+      fastaPath)
   }
 
   /**
@@ -155,6 +157,10 @@ object ReferenceBroadcast {
       cache.put(fastaPath, (sc, result))
       result
     }
+  }
+
+  def apply(broadcastedContigs: Map[String, ContigSequence]): ReferenceBroadcast = {
+    ReferenceBroadcast(broadcastedContigs, source = "unknown_source")
   }
 }
 
