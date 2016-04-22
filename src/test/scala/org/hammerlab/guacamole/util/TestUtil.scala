@@ -85,7 +85,7 @@ object TestUtil extends Matchers {
         map.put(contig, MapBackedReferenceSequence(contigLengths, sc.broadcast(locusToBase)))
       }
     })
-    new ReferenceBroadcast(map.toMap)
+    new ReferenceBroadcast(map.toMap, source="test_values")
   }
 
   def makeRead(sequence: String,
