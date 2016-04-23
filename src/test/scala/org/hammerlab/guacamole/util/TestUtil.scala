@@ -19,6 +19,7 @@
 package org.hammerlab.guacamole.util
 
 import java.io.{File, FileNotFoundException}
+import java.nio.file.{Files, Path}
 import java.util.UUID
 
 import com.esotericsoftware.kryo.Kryo
@@ -44,8 +45,8 @@ object TestUtil extends Matchers {
     implicit def stringToBases = Bases.stringToBases _
   }
 
-  def tmpFileName(suffix: String): String = {
-    "TestUtil." + UUID.randomUUID() + suffix
+  def tmpPath(suffix: String): String = {
+    new File(Files.createTempDirectory("TestUtil").toFile, s"TestUtil$suffix").getAbsolutePath
   }
 
   // Serialization helper functions.
