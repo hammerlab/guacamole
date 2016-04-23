@@ -132,7 +132,7 @@ object ExtractSequencingErrorReads {
   }
 
   def extractRows(index: Int, pileup: Pileup, minReadDepth: Int = 0): Iterator[ResultRow] = {
-    if (pileup.elements.length < minReadDepth || pileup.elements.count(_.read.alignmentQuality == 0) >= 2) {
+    if (pileup.elements.length < minReadDepth || pileup.elements.count(_.read.alignmentQuality == 0) > 0) {
       return Iterator.empty
     }
 
@@ -146,7 +146,7 @@ object ExtractSequencingErrorReads {
       return Iterator.empty
     }
 
-    val groupedMismatchingDuplicates = mismatchingDuplicates.groupBy(_.read.start)
+    val groupedMismatchingDuplicates = mismatchingDuplicates.filter(_.read.isPositiveStrand).groupBy(_.read.start)
     if (groupedMismatchingDuplicates.exists(_._2.length > 1)) {
       // Single fragment with multiple errors, seems suspicious may be pcr error
       return Iterator.empty
@@ -158,6 +158,7 @@ object ExtractSequencingErrorReads {
       .toMap
 
     groupedMismatchingDuplicates
+      .take(1)
       .filterKeys(start => matchingNonDuplicatesByStart.contains(start))
       .flatMap(pair => {
         val mismatchingRead = pair._2.head.read
