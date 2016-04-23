@@ -2,6 +2,7 @@ package org.hammerlab.guacamole.commands
 
 import java.io.{BufferedWriter, FileWriter}
 
+import breeze.linalg.DenseVector
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole._
@@ -132,7 +133,11 @@ object ExtractSequencingErrorReads {
   }
 
   def extractRows(index: Int, pileup: Pileup, minReadDepth: Int = 0): Iterator[ResultRow] = {
-    if (pileup.elements.length < minReadDepth || pileup.elements.count(_.read.alignmentQuality == 0) > 0) {
+    if (pileup.elements.length < minReadDepth
+      || pileup.elements.count(_.read.alignmentQuality == 0) > 0
+      || pileup.referenceDepth < Seq(20.0, pileup.depth.toDouble * .95).max
+      || pileup.elements.map(_.read.countOfMismatches(pileup.referenceContigSequence)).sum > 2.0 * pileup.depth
+    ) {
       return Iterator.empty
     }
 
@@ -141,19 +146,21 @@ object ExtractSequencingErrorReads {
       return Iterator.empty
     }
 
-    val mismatchingDuplicates =  pileup.elements.filter(!_.isMatch)
+    val positiveStrandReads = pileup.elements.filter(_.read.isPositiveStrand)
+
+    val mismatchingDuplicates =  positiveStrandReads.filter(!_.isMatch)
     if (mismatchingDuplicates.isEmpty) {
       return Iterator.empty
     }
 
-    val groupedMismatchingDuplicates = mismatchingDuplicates.filter(_.read.isPositiveStrand).groupBy(_.read.start)
+    val groupedMismatchingDuplicates = mismatchingDuplicates.groupBy(_.read.start)
     if (groupedMismatchingDuplicates.exists(_._2.length > 1)) {
       // Single fragment with multiple errors, seems suspicious may be pcr error
       return Iterator.empty
     }
 
-    val matchingNonDuplicatesByStart = pileup.elements
-      .filter(e => !e.read.isDuplicate && e.isMatch)
+    val matchingNonDuplicatesByStart = positiveStrandReads
+      .filter(e => !e.read.isDuplicate && e.isMatch && e.read.countOfMismatches(pileup.referenceContigSequence) == 0)
       .map(e => e.read.start -> e.read)
       .toMap
 
