@@ -17,7 +17,7 @@ class GermlineAssemblyCallerSuite extends FunSuite with Matchers with BeforeAndA
 
   val input = NA12878TestUtils.na12878SubsetBam
   args.reads = TestUtil.testDataPath(input)
-  args.parallelism = 2
+  args.parallelism = 1
 
   var sc: SparkContext = _
   var reference: ReferenceBroadcast = _
@@ -37,9 +37,10 @@ class GermlineAssemblyCallerSuite extends FunSuite with Matchers with BeforeAndA
   def verifyVariantsAtLocus(locus: Int,
                             contig: String = "chr1",
                             kmerSize: Int = 31,
-                            snvWindowRange: Int = 55,
+                            snvWindowRange: Int = 45,
                             minOccurrence: Int = 5,
-                            minVaf: Float = 0.1f)(
+                            minVaf: Float = 0.1f,
+                            shortcutAssembly: Boolean = false)(
                              expectedVariants: (String, Int, String, String)*
                            ) = {
 
@@ -66,14 +67,15 @@ class GermlineAssemblyCallerSuite extends FunSuite with Matchers with BeforeAndA
       )
 
     val variants =
-      GermlineAssemblyCaller.Caller.discoverGenotypes(
+      GermlineAssemblyCaller.Caller.discoverGermlineVariants(
         readSet.mappedReads,
         kmerSize = kmerSize,
         snvWindowRange = snvWindowRange,
         minOccurrence = minOccurrence,
         minAreaVaf = minVaf,
         reference = reference,
-        lociPartitions = lociPartitions
+        lociPartitions = lociPartitions,
+        shortcutAssembly = shortcutAssembly
       ).collect().sortBy(_.start)
 
     val actualVariants =
@@ -94,6 +96,14 @@ class GermlineAssemblyCallerSuite extends FunSuite with Matchers with BeforeAndA
     )
   }
 
+
+  test (
+    "test assembly caller: illumina platinum tests; homozygous snp; shortcut assembly") {
+    verifyVariantsAtLocus(772754, shortcutAssembly = true) (
+      ("chr1", 772754, "A", "C")
+    )
+  }
+
   test (
     "test assembly caller: illumina platinum tests; nearby homozygous snps") {
     verifyVariantsAtLocus(1297212) (
@@ -106,6 +116,14 @@ class GermlineAssemblyCallerSuite extends FunSuite with Matchers with BeforeAndA
     "test assembly caller: illumina platinum tests; 2 nearby homozygous snps") {
     verifyVariantsAtLocus(1316669) (
       ("chr1", 1316647, "C", "T"),
+      ("chr1", 1316669, "C", "G"),
+      ("chr1", 1316673, "C", "T")
+    )
+  }
+
+  test (
+    "test assembly caller: illumina platinum tests; 2 nearby homozygous snps; shortcut assembly") {
+    verifyVariantsAtLocus(1316669, shortcutAssembly = true) (
       ("chr1", 1316647, "C", "T"),
       ("chr1", 1316669, "C", "G"),
       ("chr1", 1316673, "C", "T")
@@ -122,6 +140,13 @@ class GermlineAssemblyCallerSuite extends FunSuite with Matchers with BeforeAndA
   test (
     "test assembly caller: illumina platinum tests; homozygous deletion") {
     verifyVariantsAtLocus(1296368) (
+      ("chr1", 1296368, "GAC", "G")
+    )
+  }
+
+  test (
+    "test assembly caller: illumina platinum tests; homozygous deletion; shortcut assembly") {
+    verifyVariantsAtLocus(1296368, shortcutAssembly = true) (
       ("chr1", 1296368, "GAC", "G")
     )
   }
@@ -156,6 +181,23 @@ class GermlineAssemblyCallerSuite extends FunSuite with Matchers with BeforeAndA
     "test assembly caller: homozygous snp in a repeat region") {
     verifyVariantsAtLocus(789255) (
       ("chr1", 789255, "T", "C")
+    )
+  }
+
+  test (
+      "test assembly caller: het variant near homozygous variant") {
+      verifyVariantsAtLocus(743020, snvWindowRange = 55) (
+        ("chr1", 743020, "T", "C"),
+        ("chr1", 743071, "C", "A")
+      )
+  }
+
+  test (
+    "test assembly caller: het variant in between two homozygous variants") {
+    verifyVariantsAtLocus(821925, snvWindowRange = 55) (
+      ("chr1", 821886, "A", "G"),
+      ("chr1", 821925, "C", "G"),
+      ("chr1", 821947, "T", "C")
     )
   }
 }

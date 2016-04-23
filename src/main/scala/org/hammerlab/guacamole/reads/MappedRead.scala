@@ -18,11 +18,11 @@
 
 package org.hammerlab.guacamole.reads
 
-import htsjdk.samtools.{ SAMRecord, Cigar }
-import org.bdgenomics.adam.util.{ PhredUtils, MdTag }
+import htsjdk.samtools.Cigar
+import org.bdgenomics.adam.util.PhredUtils
 import org.hammerlab.guacamole.pileup.PileupElement
-import org.hammerlab.guacamole.reference.{ ContigSequence, ReferenceBroadcast }
-import org.hammerlab.guacamole.{ Bases, HasReferenceRegion }
+import org.hammerlab.guacamole.reference.ContigSequence
+import org.hammerlab.guacamole.{Bases, HasReferenceRegion}
 
 import scala.collection.JavaConversions
 
@@ -54,6 +54,7 @@ case class MappedRead(
   override val isMapped = true
   override def asMappedRead = Some(this)
 
+
   /**
    * Number of mismatching bases in this read. Does *not* include indels: only looks at read bases that align to a
    * single base in the reference and do not match it.
@@ -61,14 +62,19 @@ case class MappedRead(
    * @param referenceContigSequence the reference sequence for this read's contig
    * @return count of mismatching bases
    */
+
+  private var cachedCountOfMismatches = -1
   def countOfMismatches(referenceContigSequence: ContigSequence): Int = {
-    var element = PileupElement(this, start, referenceContigSequence)
-    var count = (if (element.isMismatch) 1 else 0)
-    while (element.locus < end - 1) {
-      element = element.advanceToLocus(element.locus + 1)
-      count += (if (element.isMismatch) 1 else 0)
+    if (cachedCountOfMismatches == -1) {
+      var element = PileupElement(this, start, referenceContigSequence)
+      var count = (if (element.isMismatch) 1 else 0)
+      while (element.locus < end - 1) {
+        element = element.advanceToLocus(element.locus + 1)
+        count += (if (element.isMismatch) 1 else 0)
+      }
+      cachedCountOfMismatches = count
     }
-    count
+    cachedCountOfMismatches
   }
 
   lazy val alignmentLikelihood = PhredUtils.phredToSuccessProbability(alignmentQuality)
