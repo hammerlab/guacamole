@@ -20,6 +20,7 @@ package org.hammerlab.guacamole.loci
 
 import com.esotericsoftware.kryo.io.{Input, Output}
 import com.esotericsoftware.kryo.{Kryo, Serializer}
+import htsjdk.samtools.util.Interval
 import org.hammerlab.guacamole.loci.LociMap.SimpleRange
 
 import scala.collection.mutable.ArrayBuffer
@@ -92,7 +93,34 @@ case class LociSet(map: LociMap[Long]) {
       (LociSet(mapTake._1), LociSet(mapTake._2))
     }
   }
+
+  /**
+    * Build a collection of HTSJDK Intervals which are closed [start, end], 1-based intervals
+    */
+  def toHtsJDKIntervals: Seq[Interval] = {
+    map
+      .contigs
+      .flatMap(
+        contig => {
+          map
+            .onContig(contig)
+            .asMap
+            .iterator
+            // We add 1 to the start to move to 1-based coordinates.
+            // Since the `Interval` end is inclusive, we are adding and subtracting 1, no-op.
+            .map(pieces => new Interval(contig, pieces._1.start.toInt + 1, pieces._1.end.toInt))
+        }
+      )
+  }
+
+  /**
+    * String representation of HTSJDK intervals which are closed [start, end], 1-based intervals
+    */
+  def toHtsJDKIntervalString: String = {
+    toHtsJDKIntervals.map(_.toString).mkString(",")
+  }
 }
+
 object LociSet {
   /** An empty LociSet. */
   val empty = LociSet(LociMap[Long]())

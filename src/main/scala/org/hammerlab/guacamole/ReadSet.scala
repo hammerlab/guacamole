@@ -92,15 +92,13 @@ object ReadSet {
     sc: SparkContext,
     filename: String,
     filters: Read.InputFilters = Read.InputFilters.empty,
-    contigLengthsFromDictionary: Boolean = true,
-    config: Read.ReadLoadingConfig = Read.ReadLoadingConfig.default): ReadSet = {
+    contigLengthsFromDictionary: Boolean = true): ReadSet = {
 
     val (reads, sequenceDictionary) =
       Read.loadReadRDDAndSequenceDictionary(
         filename,
         sc,
-        filters = filters,
-        config
+        filters = filters
       )
 
     new ReadSet(

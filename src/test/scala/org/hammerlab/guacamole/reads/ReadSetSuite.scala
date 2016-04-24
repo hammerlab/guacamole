@@ -24,9 +24,7 @@ import org.bdgenomics.adam.rdd.{ADAMContext, ADAMSaveAnyArgs}
 import org.hammerlab.guacamole.loci.LociSet
 import org.hammerlab.guacamole.reads.Read.InputFilters
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
-import org.hammerlab.guacamole.util.TestUtil
 import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
-import org.scalatest.Matchers
 
 class ReadSetSuite extends GuacFunSuite {
 
@@ -36,39 +34,63 @@ class ReadSetSuite extends GuacFunSuite {
     override def toString: String = msg()
   }
 
+  sparkTest("test BAM filtering by loci") {
+
+    def checkFilteredReadCount(loci: String, expectedCount: Int): Unit = {
+      withClue("filtering to loci %s: ".format(loci)) {
+        val reads = TestUtil.loadReads(
+          sc,
+          "gatk_mini_bundle_extract.bam",
+          filters = InputFilters(overlapsLoci = Some(LociSet.parse(loci)))
+        ).reads.collect
+
+        reads.length should be(expectedCount)
+      }
+    }
+
+    val lociAndExpectedCounts = Seq(
+      ("20:9999900", 0),
+      ("20:9999901", 1),
+      ("20:9999912", 2),
+      ("20:0-10000000", 9),
+      ("20:10270532", 1),
+      ("20:10270533", 0),
+      ("20:0-10000000,20:10270532", 10),
+      ("20:0-10000000,20:10270533", 9),
+      ("20:9999901,20:9999912", 2)
+    )
+
+
+    for {
+      (loci, expectedCount) <- lociAndExpectedCounts
+    } {
+      checkFilteredReadCount(loci, expectedCount)
+    }
+  }
+
   sparkTest("using different bam reading APIs on sam/bam files should give identical results") {
     def check(paths: Seq[String], filter: InputFilters): Unit = {
       withClue("using filter %s: ".format(filter)) {
 
         val firstPath = paths.head
-
-        val configs =
-          Read.ReadLoadingConfig.BamReaderAPI.values
-            .map(api => Read.ReadLoadingConfig(bamReaderAPI = api))
-
-        val firstConfig = configs.head
-
         val standard =
           TestUtil.loadReads(
             sc,
             paths.head,
-            filter,
-            config = configs.head
+            filter
           ).reads.collect
 
         for {
-          config <- configs
           path <- paths
-          if config != firstConfig || path != firstPath
+          if path != firstPath
         } {
-          withClue(s"file $path with config $config vs standard ${firstPath} with config ${firstConfig}:\n") {
+          withClue(s"file $path vs standard $firstPath:\n") {
 
             val result =
               TestUtil.loadReads(
                 sc,
                 path,
-                filter,
-                config = config
+                filter
               ).reads.collect
 
             assert(
