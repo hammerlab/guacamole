@@ -37,6 +37,7 @@ object Guacamole extends Logging {
   private val commands: Seq[Command[_]] = List(
     GermlineAssemblyCaller.Caller,
     SomaticStandard.Caller,
+    SomaticMutectLike.Caller,
     VariantSupport.Caller,
     VAFHistogram.Caller,
     SomaticJoint.Caller)

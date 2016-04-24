@@ -44,7 +44,7 @@ object AlleleConversions {
     )
   }
 
-  def calledSomaticAlleleToADAMGenotype(calledAllele: CalledSomaticAllele): Seq[ADAMGenotype] = {
+  def calledSomaticAlleleToADAMGenotype[A <: CalledSomaticAlleleTrait](calledAllele: A): Seq[ADAMGenotype] = {
     Seq(
       ADAMGenotype.newBuilder
         .setAlleles(JavaConversions.seqAsJavaList(Seq(GenotypeAllele.Ref, GenotypeAllele.Alt)))

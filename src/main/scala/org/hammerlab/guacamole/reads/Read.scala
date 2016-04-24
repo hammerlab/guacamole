@@ -374,7 +374,7 @@ object Read extends Logging {
           Some(read)
         }
       })
-      (sc.parallelize(reads.toSeq), sequenceDictionary)
+      (sc.parallelize(reads.toStream), sequenceDictionary)
     } else {
       // Load with hadoop bam
       Common.progress("Using hadoop bam to read: %s".format(filename))

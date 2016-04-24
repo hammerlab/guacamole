@@ -76,4 +76,16 @@ class MappedReadSuite extends GuacFunSuite {
     collectionMappedReads(1).isMapped should be(true)
   }
 
+  sparkTest("Calculate mismatch qscore sum") {
+    val originalReference = "AAATTGATACTCGAACGA"
+    val mismatchRead = "CACTTGATAC"
+    def simpleReference = TestUtil.makeReference(sc, Seq(
+      ("chr1", 0, originalReference)))
+
+    val read = TestUtil.makeRead(mismatchRead, "10M", chr = "chr1", start = 0,
+      qualityScores = Some(Seq(31, 10, 32, 10, 10, 10, 10, 10, 10, 10)))
+    val mismatchQscoreSum = read.sumOfMismatchQscores(simpleReference.getContig("chr1"))
+    mismatchQscoreSum should be(63)
+  }
+
 }
