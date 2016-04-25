@@ -12,7 +12,7 @@ import org.hammerlab.guacamole._
 import org.hammerlab.guacamole.distributed.LociPartitionUtils
 import org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociAccordingToArgs
 import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMap
-import org.hammerlab.guacamole.loci.LociMap
+import org.hammerlab.guacamole.loci.map.LociMap
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.{InputFilters, MappedRead, ReadLoadingConfigArgs}
