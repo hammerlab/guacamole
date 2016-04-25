@@ -16,16 +16,18 @@
  * limitations under the License.
  */
 
-package org.hammerlab.guacamole
+package org.hammerlab.guacamole.variants
 
 import java.util.EnumSet
 
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
+import org.bdgenomics.adam.rdd.ADAMContext._
 import org.bdgenomics.adam.rich.RichVariant
-import org.bdgenomics.formats.avro.{ Genotype, GenotypeType }
-import org.bdgenomics.qc.rdd.variation.{ ConcordanceTable, GenotypeConcordanceRDDFunctions }
-import org.kohsuke.args4j.{ Option => Args4jOption }
+import org.bdgenomics.formats.avro.{GenotypeType, Genotype => BDGGenotype}
+import org.bdgenomics.qc.rdd.variation.{ConcordanceTable, GenotypeConcordanceRDDFunctions}
+import org.hammerlab.guacamole.logging.DebugLogArgs
+import org.kohsuke.args4j.{Option => Args4jOption}
 
 /**
  * As a convenience to users experimenting with different callers, some variant callers include functionality to compare
@@ -37,7 +39,7 @@ object Concordance {
   /**
    * Arguments that callers can include to support concordance calculations.
    */
-  trait ConcordanceArgs extends Common.Arguments.Base {
+  trait ConcordanceArgs extends DebugLogArgs {
     @Args4jOption(name = "--truth", metaVar = "truth", usage = "The truth ADAM or VCF genotypes file")
     var truthGenotypesFile: String = ""
 
@@ -69,25 +71,41 @@ object Concordance {
    * @param chromosome name of a chromosome, if any, to filter to (default: null)
    * @return  precision, recall and f1score
    */
-  def computePrecisionAndRecall(calledGenotypes: RDD[Genotype],
-                                trueGenotypes: RDD[Genotype],
+  def computePrecisionAndRecall(calledGenotypes: RDD[BDGGenotype],
+                                trueGenotypes: RDD[BDGGenotype],
                                 excludeSNVs: Boolean = false,
                                 excludeIndels: Boolean = true,
                                 chromosome: String = null): (Double, Double, Double) = {
-    val chromosomeFilter: (Genotype => Boolean) = chromosome == "" || _.getVariant.getContig.getContigName.toString == chromosome
-    val variantTypeFilter: (Genotype => Boolean) = genotype => {
+
+    def chromosomeFilter(genotype: BDGGenotype): Boolean =
+      chromosome == "" ||
+        genotype.getVariant.getContig.getContigName == chromosome
+
+    def variantTypeFilter(genotype: BDGGenotype): Boolean = {
       val variant = new RichVariant(genotype.getVariant)
-      (!excludeSNVs && variant.isSingleNucleotideVariant()) || (!excludeIndels && (variant.isInsertion() || variant.isDeletion()))
+      (
+        !excludeSNVs &&
+        variant.isSingleNucleotideVariant()
+      ) ||
+      (
+        !excludeIndels &&
+        (variant.isInsertion() || variant.isDeletion())
+      )
     }
 
-    val relevantVariants: (Genotype => Boolean) = v => chromosomeFilter(v) && variantTypeFilter(v)
+    def relevantVariants(genotype: BDGGenotype): Boolean =
+      chromosomeFilter(genotype) &&
+        variantTypeFilter(genotype)
 
     val filteredCalledAlleles = calledGenotypes.filter(relevantVariants)
     val filteredTrueGenotypes = trueGenotypes.filter(relevantVariants)
 
-    val sampleName = filteredCalledAlleles.take(1)(0).getSampleId.toString
+    val sampleName = filteredCalledAlleles.take(1)(0).getSampleId
 
-    val sampleAccuracy = new GenotypeConcordanceRDDFunctions(filteredCalledAlleles).concordanceWith(filteredTrueGenotypes).collectAsMap()(sampleName)
+    val sampleAccuracy =
+      new GenotypeConcordanceRDDFunctions(filteredCalledAlleles)
+        .concordanceWith(filteredTrueGenotypes)
+        .collectAsMap()(sampleName)
 
     // We called AND it was called in truth
     val truePositives = sampleAccuracy.total(ConcordanceTable.CALLED, ConcordanceTable.CALLED)
@@ -121,11 +139,34 @@ object Concordance {
    * @param sc spark context
    */
 
-  def printGenotypeConcordance(args: ConcordanceArgs, genotypes: RDD[Genotype], sc: SparkContext) = {
-    val trueGenotypes = Common.loadGenotypes(args.truthGenotypesFile, sc)
-    val (precision, recall, f1score) = computePrecisionAndRecall(genotypes, trueGenotypes, args.excludeSNVs, args.excludeIndels, args.chromosome)
+  def printGenotypeConcordance(args: ConcordanceArgs, genotypes: RDD[BDGGenotype], sc: SparkContext) = {
+    val trueGenotypes = loadGenotypes(args.truthGenotypesFile, sc)
+
+    val (precision, recall, f1score) =
+      computePrecisionAndRecall(
+        genotypes,
+        trueGenotypes,
+        args.excludeSNVs,
+        args.excludeIndels,
+        args.chromosome
+      )
+
     println("Precision\tRecall\tF1Score")
     println("%f\t%f\t%f".format(precision, recall, f1score))
   }
 
+  /**
+   * Load genotypes from ADAM Parquet or VCF file
+   *
+   * @param path path to VCF or ADAM genotypes
+   * @param sc spark context
+   * @return RDD of ADAM Genotypes
+   */
+  def loadGenotypes(path: String, sc: SparkContext): RDD[BDGGenotype] = {
+    if (path.endsWith(".vcf")) {
+      sc.loadGenotypes(path)
+    } else {
+      sc.loadParquet(path)
+    }
+  }
 }

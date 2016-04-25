@@ -19,10 +19,10 @@
 package org.hammerlab.guacamole.filters
 
 import org.apache.spark.rdd.RDD
-import org.hammerlab.guacamole.Common.Arguments.Base
-import org.hammerlab.guacamole._
+import org.hammerlab.guacamole.logging.DebugLogArgs
+import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.variants.CalledSomaticAllele
-import org.kohsuke.args4j.{ Option => Args4jOption }
+import org.kohsuke.args4j.{Option => Args4jOption}
 
 /**
  * Filter to remove genotypes where the somatic likelihood is low
@@ -82,7 +82,11 @@ object SomaticReadDepthFilter {
             maxTumorReadDepth: Int,
             minNormalReadDepth: Int,
             debug: Boolean = false): RDD[CalledSomaticAllele] = {
-    var filteredGenotypes = genotypes.filter(withinReadDepthRange(_, minTumorReadDepth, maxTumorReadDepth, minNormalReadDepth))
+    val filteredGenotypes =
+      genotypes.filter(
+        withinReadDepthRange(_, minTumorReadDepth, maxTumorReadDepth, minNormalReadDepth)
+      )
+
     if (debug) SomaticGenotypeFilter.printFilterProgress(filteredGenotypes)
     filteredGenotypes
   }
@@ -239,10 +243,10 @@ object SomaticGenotypeFilter {
 
   def printFilterProgress(filteredGenotypes: RDD[CalledSomaticAllele]) = {
     filteredGenotypes.persist()
-    Common.progress("Filtered genotypes down to %d genotypes".format(filteredGenotypes.count()))
+    progress(s"Filtered genotypes down to ${filteredGenotypes.count} genotypes")
   }
 
-  trait SomaticGenotypeFilterArguments extends Base {
+  trait SomaticGenotypeFilterArguments extends DebugLogArgs {
 
     @Args4jOption(name = "--min-likelihood", usage = "Minimum likelihood (Phred-scaled)")
     var minLikelihood: Int = 0

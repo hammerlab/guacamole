@@ -1,7 +1,7 @@
 package org.hammerlab.guacamole.commands.jointcaller
 
-import org.hammerlab.guacamole.Common
-import org.kohsuke.args4j.{ Option => Args4jOption }
+import org.hammerlab.guacamole.logging.DebugLogArgs
+import org.kohsuke.args4j.{Option => Args4jOption}
 
 /**
  * Model parameters for the joint caller. Anything that affects the math for the joint caller should go here.
@@ -31,7 +31,7 @@ case class Parameters(
   def asStringPairs(): Seq[(String, String)] = {
     // We use reflection to avoid re-specifying all the parameters.
     // See: http://stackoverflow.com/questions/7457972/getting-public-fields-and-their-respective-values-of-an-instance-in-scala-java
-    val fields = this.getClass.getDeclaredFields()
+    val fields = this.getClass.getDeclaredFields
     for (field <- fields) yield {
       field.setAccessible(true)
       (field.getName, field.get(this).toString)
@@ -45,7 +45,7 @@ object Parameters {
   }
 
   /** Commandline arguments to specify each parameter. */
-  trait CommandlineArguments extends Common.Arguments.Base {
+  trait CommandlineArguments extends DebugLogArgs {
     @Args4jOption(name = "--max-alleles-per-site",
       usage = "maximum number of alt alleles to consider at a site")
     var maxAllelesPerSite: Int = 4

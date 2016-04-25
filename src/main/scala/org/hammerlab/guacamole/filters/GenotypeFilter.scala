@@ -19,10 +19,10 @@
 package org.hammerlab.guacamole.filters
 
 import org.apache.spark.rdd.RDD
-import org.hammerlab.guacamole.Common
-import org.hammerlab.guacamole.Common.Arguments.Base
-import org.hammerlab.guacamole.variants.{ AlleleEvidence, CalledAllele }
-import org.kohsuke.args4j.{ Option => Args4jOption }
+import org.hammerlab.guacamole.logging.DebugLogArgs
+import org.hammerlab.guacamole.logging.LoggingUtils.progress
+import org.hammerlab.guacamole.variants.{AlleleEvidence, CalledAllele}
+import org.kohsuke.args4j.{Option => Args4jOption}
 
 /**
  * Filter to remove genotypes where the likelihood is low
@@ -168,10 +168,10 @@ object GenotypeFilter {
 
   def printFilterProgress(filteredGenotypes: RDD[CalledAllele]) = {
     filteredGenotypes.persist()
-    Common.progress("Filtered genotypes down to %d genotypes".format(filteredGenotypes.count()))
+    progress(s"Filtered genotypes down to ${filteredGenotypes.count} genotypes")
   }
 
-  trait GenotypeFilterArguments extends Base {
+  trait GenotypeFilterArguments extends DebugLogArgs {
 
     @Args4jOption(name = "--min-read-depth", usage = "Minimum number of reads for a genotype call")
     var minReadDepth: Int = 0

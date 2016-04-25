@@ -24,15 +24,17 @@ import java.util.UUID
 
 import com.esotericsoftware.kryo.Kryo
 import com.twitter.chill.{IKryoRegistrar, KryoInstantiator, KryoPool}
+import htsjdk.samtools.TextCigarCodec
 import org.apache.commons.io.FileUtils
 import org.apache.spark.SparkContext
+import org.hammerlab.guacamole.kryo.GuacamoleKryoRegistrator
 import org.hammerlab.guacamole.loci.LociSet
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.reads.Read.InputFilters
+import org.hammerlab.guacamole.reads.InputFilters
 import org.hammerlab.guacamole.reads._
 import org.hammerlab.guacamole.reference.ReferenceBroadcast.MapBackedReferenceSequence
 import org.hammerlab.guacamole.reference.{ContigSequence, ReferenceBroadcast}
-import org.hammerlab.guacamole.{Bases, GuacamoleKryoRegistrator, ReadSet}
+import org.hammerlab.guacamole.{Bases, ReadSet}
 import org.scalatest._
 
 import scala.collection.mutable
@@ -89,6 +91,42 @@ object TestUtil extends Matchers {
     new ReferenceBroadcast(map.toMap, source=Some("test_values"))
   }
 
+  /**
+   * Convenience function to construct a Read from unparsed values.
+   */
+  private def read(sequence: String,
+                   name: String,
+                   baseQualities: String = "",
+                   isDuplicate: Boolean = false,
+                   sampleName: String = "",
+                   referenceContig: String = "",
+                   alignmentQuality: Int = -1,
+                   start: Long = -1L,
+                   cigarString: String = "",
+                   failedVendorQualityChecks: Boolean = false,
+                   isPositiveStrand: Boolean = true,
+                   isPaired: Boolean = true) = {
+
+    val sequenceArray = sequence.map(_.toByte).toArray
+    val qualityScoresArray = Read.baseQualityStringToArray(baseQualities, sequenceArray.length)
+
+    val cigar = TextCigarCodec.decode(cigarString)
+    MappedRead(
+      name,
+      sequenceArray,
+      qualityScoresArray,
+      isDuplicate,
+      sampleName.intern,
+      referenceContig,
+      alignmentQuality,
+      start,
+      cigar,
+      failedVendorQualityChecks,
+      isPositiveStrand,
+      isPaired
+    )
+  }
+
   def makeRead(sequence: String,
                cigar: String,
                start: Long = 1,
@@ -102,7 +140,7 @@ object TestUtil extends Matchers {
       sequence.map(x => '@').mkString
     }
 
-    Read(
+    read(
       sequence,
       name = "read1",
       cigarString = cigar,
@@ -130,7 +168,7 @@ object TestUtil extends Matchers {
     val qualityScoreString = sequence.map(x => '@').mkString
 
     PairedRead(
-      Read(
+      read(
         sequence,
         name = "read1",
         cigarString = cigar,
@@ -143,14 +181,15 @@ object TestUtil extends Matchers {
       ),
       isFirstInPair = true,
       mateAlignmentProperties =
-        if (isMateMapped) Some(
-          MateAlignmentProperties(
-            mateReferenceContig.get,
-            mateStart.get,
-            inferredInsertSize = inferredInsertSize,
-            isPositiveStrand = isMatePositiveStrand
+        if (isMateMapped)
+          Some(
+            MateAlignmentProperties(
+              mateReferenceContig.get,
+              mateStart.get,
+              inferredInsertSize = inferredInsertSize,
+              isPositiveStrand = isMatePositiveStrand
+            )
           )
-        )
         else
           None
     )
@@ -173,7 +212,7 @@ object TestUtil extends Matchers {
   def loadTumorNormalReads(sc: SparkContext,
                            tumorFile: String,
                            normalFile: String): (Seq[MappedRead], Seq[MappedRead]) = {
-    val filters = Read.InputFilters(mapped = true, nonDuplicate = true, passedVendorQualityChecks = true)
+    val filters = InputFilters(mapped = true, nonDuplicate = true, passedVendorQualityChecks = true)
     (
       loadReads(sc, tumorFile, filters = filters).mappedReads.collect(),
       loadReads(sc, normalFile, filters = filters).mappedReads.collect()
@@ -182,8 +221,8 @@ object TestUtil extends Matchers {
 
   def loadReads(sc: SparkContext,
                 filename: String,
-                filters: Read.InputFilters = Read.InputFilters.empty,
-                config: Read.ReadLoadingConfig = Read.ReadLoadingConfig.default): ReadSet = {
+                filters: InputFilters = InputFilters.empty,
+                config: ReadLoadingConfig = ReadLoadingConfig.default): ReadSet = {
     /* grab the path to the SAM file we've stashed in the resources subdirectory */
     val path = testDataPath(filename)
     assert(sc != null)
@@ -213,7 +252,7 @@ object TestUtil extends Matchers {
         filters = InputFilters(
           overlapsLoci = maybeContig.map(
             contig => LociSet.parse(s"$contig:$locus-${locus + 1}")
-          )
+          ).orNull
         )
       ).mappedReads
     val localReads = records.collect

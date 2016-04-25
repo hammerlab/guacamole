@@ -28,8 +28,8 @@ import org.apache.spark.{Logging, SparkContext}
 import org.bdgenomics.adam.models.SequenceDictionary
 import org.bdgenomics.adam.rdd.{ADAMContext, ADAMSpecificRecordSequenceDictionaryRDDAggregator}
 import org.bdgenomics.formats.avro.AlignmentRecord
-import org.hammerlab.guacamole.loci.LociSet
-import org.hammerlab.guacamole.{Bases, Common}
+import org.hammerlab.guacamole.Bases
+import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.seqdoop.hadoop_bam.util.SAMHeaderReader
 import org.seqdoop.hadoop_bam.{AnySAMInputFormat, SAMRecordWritable}
 
@@ -69,109 +69,6 @@ trait Read {
 }
 
 object Read extends Logging {
-  /**
-   * Filtering reads while they are loaded can be an important optimization.
-   *
-   * These fields are commonly used filters. For boolean fields, setting a field to true will result in filtering on
-   * that field. The result is the intersection of the filters (i.e. reads must satisfy ALL filters).
-   *
-   * @param overlapsLoci if not None, include only mapped reads that overlap the given loci
-   * @param nonDuplicate include only reads that do not have the duplicate bit set
-   * @param passedVendorQualityChecks include only reads that do not have the failedVendorQualityChecks bit set
-   * @param isPaired include only reads are paired-end reads
-   */
-  case class InputFilters(
-    overlapsLoci: Option[LociSet.Builder],
-    nonDuplicate: Boolean,
-    passedVendorQualityChecks: Boolean,
-    isPaired: Boolean) {}
-  object InputFilters {
-    val empty = InputFilters()
-
-    /**
-     * See InputFilters for full documentation.
-     * @param mapped include only mapped reads. Convenience argument that is equivalent to specifying all sites in
-     *               overlapsLoci.
-     */
-    def apply(mapped: Boolean = false,
-              overlapsLoci: Option[LociSet.Builder] = None,
-              nonDuplicate: Boolean = false,
-              passedVendorQualityChecks: Boolean = false,
-              isPaired: Boolean = false): InputFilters = {
-      new InputFilters(
-        overlapsLoci = if (overlapsLoci.isEmpty && mapped) Some(LociSet.newBuilder.putAllContigs) else overlapsLoci,
-        nonDuplicate = nonDuplicate,
-        passedVendorQualityChecks = passedVendorQualityChecks,
-        isPaired = isPaired)
-    }
-
-    /**
-     * Apply filters to an RDD of reads.
-     *
-     * @param filters
-     * @param reads
-     * @param sequenceDictionary
-     * @return filtered RDD
-     */
-    def filterRDD(filters: InputFilters, reads: RDD[Read], sequenceDictionary: SequenceDictionary): RDD[Read] = {
-      /* Note that the InputFilter properties are public, and some loaders directly apply
-       * the filters as the reads are loaded, instead of filtering an existing RDD as we do here. If more filters
-       * are added, be sure to update those implementations.
-       * 
-       * This is implemented as a static function instead of a method in InputFilters because the overlapsLoci
-       * attribute cannot be serialized.
-       */
-      var result = reads
-      if (filters.overlapsLoci.nonEmpty) {
-        val loci = filters.overlapsLoci.get.result(contigLengths(sequenceDictionary))
-        val broadcastLoci = reads.sparkContext.broadcast(loci)
-        result = result.filter(
-          read => read.isMapped && read.asMappedRead.get.overlapsLociSet(broadcastLoci.value))
-      }
-      if (filters.nonDuplicate) result = result.filter(!_.isDuplicate)
-      if (filters.passedVendorQualityChecks) result = result.filter(!_.failedVendorQualityChecks)
-      if (filters.isPaired) result = result.filter(_.isPaired)
-      result
-    }
-  }
-
-  /**
-   * Convenience function (intended for test cases), to construct a Read from unparsed values.
-   */
-  def apply(
-    sequence: String,
-    name: String,
-    baseQualities: String = "",
-    isDuplicate: Boolean = false,
-    sampleName: String = "",
-    referenceContig: String = "",
-    alignmentQuality: Int = -1,
-    start: Long = -1L,
-    cigarString: String = "",
-    failedVendorQualityChecks: Boolean = false,
-    isPositiveStrand: Boolean = true,
-    isPaired: Boolean = true) = {
-
-    val sequenceArray = sequence.map(_.toByte).toArray
-    val qualityScoresArray = baseQualityStringToArray(baseQualities, sequenceArray.length)
-
-    val cigar = TextCigarCodec.decode(cigarString)
-    MappedRead(
-      name,
-      sequenceArray,
-      qualityScoresArray,
-      isDuplicate,
-      sampleName.intern,
-      referenceContig,
-      alignmentQuality,
-      start,
-      cigar,
-      failedVendorQualityChecks,
-      isPositiveStrand,
-      isPaired
-    )
-  }
-
   /**
    * Converts the ascii-string encoded base qualities into an array of integers
    * quality scores in Phred-scale
@@ -252,38 +149,6 @@ object Read extends Logging {
   }
 
   /**
-   * Configuration for read loading. These options should affect performance but not results.
-   *
-   * @param bamReaderAPI which library to use to load SAM and BAM files
-   */
-  case class ReadLoadingConfig(
-    bamReaderAPI: ReadLoadingConfig.BamReaderAPI.BamReaderAPI = ReadLoadingConfig.BamReaderAPI.Best) {}
-  object ReadLoadingConfig {
-    val default = ReadLoadingConfig()
-
-    /**
-     * Specification of which API to use when reading BAM and SAM files.
-     *
-     * Best - use Samtools when the file is on the local filesystem otherwise HadoopBAM
-     * Samtools - use Samtools. This supports using the bam index when available.
-     * HadoopBAM - use HadoopBAM. This supports reading the file in parallel when it is on HDFS.
-     */
-    object BamReaderAPI extends Enumeration {
-      type BamReaderAPI = Value
-      val Best, Samtools, HadoopBAM = Value
-
-      /**
-       * Like Enumeration.withName but case insensitive
-       */
-      def withNameCaseInsensitive(s: String): Value = {
-        val result = values.find(_.toString.compareToIgnoreCase(s) == 0)
-        result.getOrElse(throw new IllegalArgumentException(
-          "Unsupported bam reading API: %s. Valid APIs are: %s".format(s, values.map(_.toString).mkString(", "))))
-      }
-    }
-  }
-
-  /**
    * Given a filename and a spark context, return a pair (RDD, SequenceDictionary), where the first element is an RDD
    * of Reads, and the second element is the Sequence Dictionary giving info (e.g. length) about the contigs in the BAM.
    *
@@ -322,8 +187,12 @@ object Read extends Logging {
 
     val path = new Path(filename)
     val scheme = path.getFileSystem(sc.hadoopConfiguration).getScheme
-    val useSamtools = config.bamReaderAPI == ReadLoadingConfig.BamReaderAPI.Samtools ||
-      (config.bamReaderAPI == ReadLoadingConfig.BamReaderAPI.Best && scheme == "file")
+    val useSamtools =
+      config.bamReaderAPI == BamReaderAPI.Samtools ||
+        (
+          config.bamReaderAPI == BamReaderAPI.Best &&
+          scheme == "file"
+        )
 
     if (useSamtools) {
       // Load with samtools
@@ -340,7 +209,7 @@ object Read extends Logging {
       val sequenceDictionary = SequenceDictionary.fromSAMSequenceDictionary(samSequenceDictionary)
       val loci = filters.overlapsLoci.map(_.result(contigLengths(sequenceDictionary)))
       val recordIterator: SAMRecordIterator = if (filters.overlapsLoci.nonEmpty && reader.hasIndex) {
-        Common.progress("Using samtools with BAM index to read: %s".format(filename))
+        progress(s"Using samtools with BAM index to read: $filename")
         requiresFilteringByLocus = false
         val queryIntervals = loci.get.contigs.flatMap(contig => {
           val contigIndex = samSequenceDictionary.getSequenceIndex(contig)
@@ -352,11 +221,15 @@ object Read extends Logging {
         val optimizedQueryIntervals = QueryInterval.optimizeIntervals(queryIntervals.toArray)
         reader.query(optimizedQueryIntervals, false) // Note: this can return unmapped reads, which we filter below.
       } else {
-        val skippedReason = if (reader.hasIndex)
-          "(index is available but not needed)"
-        else
-          "(index unavailable)"
-        Common.progress("Using samtools without BAM index %s to read: %s".format(skippedReason, filename))
+
+        val skippedReason =
+          if (reader.hasIndex)
+            "index is available but not needed"
+          else
+            "index unavailable"
+
+        progress(s"Using samtools without BAM index %($skippedReason) to read: $filename")
+
         reader.iterator
       }
       val reads = JavaConversions.asScalaIterator(recordIterator).flatMap(record => {
@@ -377,7 +250,7 @@ object Read extends Logging {
       (sc.parallelize(reads.toSeq), sequenceDictionary)
     } else {
       // Load with hadoop bam
-      Common.progress("Using hadoop bam to read: %s".format(filename))
+      progress(s"Using hadoop bam to read: $filename")
       val samHeader = SAMHeaderReader.readSAMHeaderFrom(path, sc.hadoopConfiguration)
       val sequenceDictionary = SequenceDictionary.fromSAMHeader(samHeader)
 
@@ -393,18 +266,20 @@ object Read extends Logging {
   }
 
   /** Returns an RDD of Reads and SequenceDictionary from reads in ADAM format **/
-  def loadReadRDDAndSequenceDictionaryFromADAM(filename: String,
-                                               sc: SparkContext,
-                                               filters: InputFilters = InputFilters.empty,
-                                               config: ReadLoadingConfig = ReadLoadingConfig.default): (RDD[Read], SequenceDictionary) = {
+  def loadReadRDDAndSequenceDictionaryFromADAM(
+    filename: String,
+    sc: SparkContext,
+    filters: InputFilters = InputFilters.empty,
+    config: ReadLoadingConfig = ReadLoadingConfig.default): (RDD[Read], SequenceDictionary) = {
 
-    Common.progress("Using ADAM to read: %s".format(filename))
+    progress(s"Using ADAM to read: $filename")
 
     val adamContext = new ADAMContext(sc)
 
     val adamRecords: RDD[AlignmentRecord] = adamContext.loadAlignments(
       filename, projection = None, stringency = ValidationStringency.LENIENT).rdd
-    val sequenceDictionary = new ADAMSpecificRecordSequenceDictionaryRDDAggregator(adamRecords).adamGetSequenceDictionary()
+    val sequenceDictionary =
+      new ADAMSpecificRecordSequenceDictionaryRDDAggregator(adamRecords).adamGetSequenceDictionary()
 
     val allReads: RDD[Read] = adamRecords.map(fromADAMRecord(_))
     val reads = InputFilters.filterRDD(filters, allReads, sequenceDictionary)
@@ -468,11 +343,6 @@ object Read extends Logging {
     } else {
       read
     }
-  }
-
-  /** Is the given samtools CigarElement a (hard/soft) clip? */
-  def cigarElementIsClipped(element: CigarElement): Boolean = {
-    element.getOperator == CigarOperator.SOFT_CLIP || element.getOperator == CigarOperator.HARD_CLIP
   }
 
   /** Extract the length of each contig from a sequence dictionary */

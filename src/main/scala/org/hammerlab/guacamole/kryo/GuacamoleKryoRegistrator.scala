@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.hammerlab.guacamole
+package org.hammerlab.guacamole.kryo
 
 import com.esotericsoftware.kryo.Kryo
 import org.bdgenomics.adam.serialization.ADAMKryoRegistrator

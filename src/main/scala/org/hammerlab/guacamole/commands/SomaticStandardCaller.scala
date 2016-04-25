@@ -22,19 +22,20 @@ import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.rdd.ADAMContext
 import org.bdgenomics.formats.avro.DatabaseVariantAnnotation
-import org.hammerlab.guacamole.Common.Arguments.SomaticCallerArgs
-import org.hammerlab.guacamole.distributed.{LociPartitionUtils, PileupFlatMapUtils}
+import org.hammerlab.guacamole.Common.SomaticCallerArgs
+import org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociAccordingToArgs
+import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMapTwoRDDs
 import org.hammerlab.guacamole.filters.PileupFilter.PileupFilterArguments
 import org.hammerlab.guacamole.filters.SomaticGenotypeFilter.SomaticGenotypeFilterArguments
 import org.hammerlab.guacamole.filters.{PileupFilter, SomaticAlternateReadDepthFilter, SomaticGenotypeFilter, SomaticReadDepthFilter}
 import org.hammerlab.guacamole.likelihood.Likelihood
-import LociPartitionUtils.partitionLociAccordingToArgs
+import org.hammerlab.guacamole.logging.DelayedMessages
+import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.pileup.Pileup
-import PileupFlatMapUtils.pileupFlatMapTwoRDDs
-import org.hammerlab.guacamole.reads.Read
+import org.hammerlab.guacamole.reads.InputFilters
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
-import org.hammerlab.guacamole.variants.{Allele, AlleleConversions, AlleleEvidence, CalledSomaticAllele}
-import org.hammerlab.guacamole.{Common, DelayedMessages, SparkCommand}
+import org.hammerlab.guacamole.variants.{Allele, AlleleConversions, AlleleEvidence, CalledSomaticAllele, VariantUtils}
+import org.hammerlab.guacamole.{Common, SparkCommand}
 import org.kohsuke.args4j.{Option => Args4jOption}
 
 /**
@@ -69,10 +70,12 @@ object SomaticStandard {
     override def run(args: Arguments, sc: SparkContext): Unit = {
       Common.validateArguments(args)
       val loci = Common.lociFromArguments(args)
-      val filters = Read.InputFilters(
-        overlapsLoci = Some(loci),
-        nonDuplicate = true,
-        passedVendorQualityChecks = true)
+      val filters =
+        InputFilters(
+          overlapsLoci = loci,
+          nonDuplicate = true,
+          passedVendorQualityChecks = true
+        )
 
       val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
 
@@ -119,7 +122,7 @@ object SomaticStandard {
         )
 
       potentialGenotypes.persist()
-      Common.progress("Computed %,d potential genotypes".format(potentialGenotypes.count))
+      progress("Computed %,d potential genotypes".format(potentialGenotypes.count))
 
       // Filter potential genotypes to min read values
       potentialGenotypes =
@@ -149,9 +152,9 @@ object SomaticStandard {
       }
 
       val filteredGenotypes: RDD[CalledSomaticAllele] = SomaticGenotypeFilter(potentialGenotypes, args)
-      Common.progress("Computed %,d genotypes after basic filtering".format(filteredGenotypes.count))
+      progress("Computed %,d genotypes after basic filtering".format(filteredGenotypes.count))
 
-      Common.writeVariantsFromArguments(
+      VariantUtils.writeVariantsFromArguments(
         args,
         filteredGenotypes.flatMap(AlleleConversions.calledSomaticAlleleToADAMGenotype)
       )
