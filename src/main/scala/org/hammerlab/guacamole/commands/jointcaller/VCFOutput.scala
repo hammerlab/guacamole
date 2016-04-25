@@ -79,7 +79,9 @@ object VCFOutput {
     extraHeaderMetadata.foreach(kv => {
       header.addMetaDataLine(new VCFHeaderLine(kv._1, kv._2))
     })
-    header.addMetaDataLine(new VCFHeaderLine("reference", reference.source))
+    if (reference.source.isDefined) {
+      header.addMetaDataLine(new VCFHeaderLine("reference", reference.source.get))
+    }
     writer.writeHeader(header)
 
     val sortedEvidences = calls.flatMap(_.singleAlleleEvidences).sortBy(e => (e.allele.referenceContig, e.allele.start))
