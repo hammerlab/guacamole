@@ -12,6 +12,7 @@ import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMapMulti
 import org.hammerlab.guacamole.loci.LociSet
 import org.hammerlab.guacamole.reads._
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
+import org.kohsuke.args4j.spi.StringArrayOptionHandler
 import org.kohsuke.args4j.{Option => Args4jOption}
 
 object SomaticJoint {
@@ -43,6 +44,13 @@ object SomaticJoint {
 
     @Args4jOption(name = "-q", usage = "Quiet: less stdout")
     var quiet: Boolean = false
+
+    // For example:
+    //  --header-metadata kind=tuning_test version=4
+    @Args4jOption(name = "--header-metadata",
+      usage = "Extra header metadata for VCF output in format KEY=VALUE KEY=VALUE ...",
+      handler = classOf[StringArrayOptionHandler])
+    var headerMetadata: Array[String] = Array.empty
   }
 
   /**
@@ -121,6 +129,14 @@ object SomaticJoint {
         collectedCalls.count(_.singleAlleleEvidences.exists(_.isGermlineCall)),
         collectedCalls.count(_.singleAlleleEvidences.exists(_.isSomaticCall))))
 
+      val extraHeaderMetadata = args.headerMetadata.map(value => {
+        val split = value.split("=")
+        if (split.length != 2) {
+          throw new RuntimeException(s"Invalid header metadata item $value, expected KEY=VALUE")
+        }
+        (split(0), split(1))
+      })
+
       writeCalls(
         collectedCalls,
         inputs,
@@ -130,7 +146,8 @@ object SomaticJoint {
         reference,
         onlySomatic = args.onlySomatic,
         out = args.out,
-        outDir = args.outDir)
+        outDir = args.outDir,
+        extraHeaderMetadata = extraHeaderMetadata)
     }
   }
 
@@ -156,6 +173,8 @@ object SomaticJoint {
                 onlySomatic: Boolean = false,
                 includeFiltered: Boolean = false,
                 distributedUtilArguments: LociPartitionUtils.Arguments = new LociPartitionUtils.Arguments {}): RDD[MultiSampleMultiAlleleEvidence] = {
+
+    assume(loci.nonEmpty)
 
     // When mapping over pileups, at locus x we call variants at locus x + 1. Therefore we subtract 1 from the user-
     // specified loci.
@@ -197,7 +216,8 @@ object SomaticJoint {
                  reference: ReferenceBroadcast,
                  onlySomatic: Boolean = false,
                  out: String = "",
-                 outDir: String = ""): Unit = {
+                 outDir: String = "",
+                 extraHeaderMetadata: Seq[(String, String)] = Seq.empty): Unit = {
 
     def writeSome(out: String,
                   filteredCalls: Seq[MultiSampleMultiAlleleEvidence],
@@ -221,7 +241,8 @@ object SomaticJoint {
         includePooledTumor = actuallyIncludePooledTumor,
         parameters = parameters,
         sequenceDictionary = sequenceDictionary,
-        reference = reference)
+        reference = reference,
+        extraHeaderMetadata = extraHeaderMetadata)
       Common.progress("Done.")
     }
 
