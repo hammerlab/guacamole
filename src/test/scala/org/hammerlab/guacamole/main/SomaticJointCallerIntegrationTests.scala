@@ -6,7 +6,17 @@ import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.util.TestUtil
 import org.hammerlab.guacamole.{CancerWGSTestUtils, Common, NA12878TestUtils}
 
-// This app outputs a performance comparison. We may want to add assertions on the accuracy later.
+/**
+ * Somatic joint-caller integration "tests" that output various statistics to stdout.
+ *
+ * To run:
+ *
+ *   mvn package
+ *   mvn test-compile
+ *   java \
+ *     -cp target/guacamole-with-dependencies-0.0.1-SNAPSHOT.jar:target/scala-2.10.5/test-classes \
+ *     org.hammerlab.guacamole.main.SomaticJointCallerIntegrationTests
+ */
 object SomaticJointCallerIntegrationTests {
 
   var tempFileNum = 0
