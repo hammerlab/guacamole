@@ -2,17 +2,17 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>DelayedMessages - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.DelayedMessages</title>
-          <meta name="description" content="DelayedMessages - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.DelayedMessages" />
-          <meta name="keywords" content="DelayedMessages guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.DelayedMessages" />
+          <title>GuacamoleKryoRegistrator - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.kryo.GuacamoleKryoRegistrator</title>
+          <meta name="description" content="GuacamoleKryoRegistrator - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.kryo.GuacamoleKryoRegistrator" />
+          <meta name="keywords" content="GuacamoleKryoRegistrator guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.kryo.GuacamoleKryoRegistrator" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
-      <link href="../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
-      <link href="../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
       <script type="text/javascript">
          if(top === self) {
-            var url = '../../../index.html';
-            var hash = 'org.hammerlab.guacamole.DelayedMessages';
+            var url = '../../../../index.html';
+            var hash = 'org.hammerlab.guacamole.kryo.GuacamoleKryoRegistrator';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -24,9 +24,9 @@
         </head>
         <body class="type">
       <div id="definition">
-        <a href="DelayedMessages$.html" title="Go to companion"><img src="../../../lib/class_to_object_big.png" /></a>
-        <p id="owner"><a href="../../package.html" class="extype" name="org">org</a>.<a href="../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a></p>
-        <h1><a href="DelayedMessages$.html" title="Go to companion">DelayedMessages</a></h1>
+        <img src="../../../../lib/class_big.png" />
+        <p id="owner"><a href="../../../package.html" class="extype" name="org">org</a>.<a href="../../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="../package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole.kryo">kryo</a></p>
+        <h1>GuacamoleKryoRegistrator</h1>
       </div>
 
       <h4 id="signature" class="signature">
@@ -35,16 +35,13 @@
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">DelayedMessages</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <span class="name">GuacamoleKryoRegistrator</span><span class="result"> extends <span class="extype" name="org.bdgenomics.adam.serialization.ADAMKryoRegistrator">ADAMKryoRegistrator</span></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p> It's often useful to output counts of certain events that occur in RDD operations. The functions that operate on
- RDDs, however, can't print these counters since the transformations they apply to the RDDs may not execute until
- much later (Spark RDD transformations are lazy). This class provides a simple mechanism to register a message to be
- outputted at program termination, after all RDD transformations have been forced.</p></div><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="org.bdgenomics.adam.serialization.ADAMKryoRegistrator">ADAMKryoRegistrator</span>, <span class="extype" name="org.apache.spark.serializer.KryoRegistrator">KryoRegistrator</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -62,7 +59,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="org.hammerlab.guacamole.DelayedMessages"><span>DelayedMessages</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="org.hammerlab.guacamole.kryo.GuacamoleKryoRegistrator"><span>GuacamoleKryoRegistrator</span></li><li class="in" name="org.bdgenomics.adam.serialization.ADAMKryoRegistrator"><span>ADAMKryoRegistrator</span></li><li class="in" name="org.apache.spark.serializer.KryoRegistrator"><span>KryoRegistrator</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -82,16 +79,16 @@
         <div id="allMembers">
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
-              <ol><li name="org.hammerlab.guacamole.DelayedMessages#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;():org.hammerlab.guacamole.DelayedMessages"></a>
-      <a id="&lt;init&gt;:DelayedMessages"></a>
+              <ol><li name="org.hammerlab.guacamole.kryo.GuacamoleKryoRegistrator#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="&lt;init&gt;():org.hammerlab.guacamole.kryo.GuacamoleKryoRegistrator"></a>
+      <a id="&lt;init&gt;:GuacamoleKryoRegistrator"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">DelayedMessages</span><span class="params">()</span>
+        <span class="name">GuacamoleKryoRegistrator</span><span class="params">()</span>
       </span>
       </h4>
       
@@ -194,7 +191,7 @@
         <span class="name">clone</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
       <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
@@ -239,7 +236,7 @@
         <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
       <span class="symbol">classOf[java.lang.Throwable]</span>
@@ -324,32 +321,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.DelayedMessages#print" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="print():Unit"></a>
-      <a id="print():Unit"></a>
+    </li><li name="org.hammerlab.guacamole.kryo.GuacamoleKryoRegistrator#registerClasses" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="registerClasses(kryo:com.esotericsoftware.kryo.Kryo):Unit"></a>
+      <a id="registerClasses(Kryo):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">print</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">registerClasses</span><span class="params">(<span name="kryo">kryo: <span class="extype" name="com.esotericsoftware.kryo.Kryo">Kryo</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Print to stdout all queued messages, and empty the queue.</p>
-    </li><li name="org.hammerlab.guacamole.DelayedMessages#say" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="say(message:()=&gt;String):Unit"></a>
-      <a id="say(()⇒String):Unit"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">say</span><span class="params">(<span name="message">message: () ⇒ <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Enqueue a () =&gt; String function whose value will be printed at program termination.</p>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.kryo.GuacamoleKryoRegistrator">GuacamoleKryoRegistrator</a> → ADAMKryoRegistrator → KryoRegistrator</dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -442,7 +426,11 @@
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="scala.AnyRef">
+        <div class="parent" name="org.bdgenomics.adam.serialization.ADAMKryoRegistrator">
+              <h3>Inherited from <span class="extype" name="org.bdgenomics.adam.serialization.ADAMKryoRegistrator">ADAMKryoRegistrator</span></h3>
+            </div><div class="parent" name="org.apache.spark.serializer.KryoRegistrator">
+              <h3>Inherited from <span class="extype" name="org.apache.spark.serializer.KryoRegistrator">KryoRegistrator</span></h3>
+            </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
             </div><div class="parent" name="scala.Any">
               <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
@@ -462,6 +450,6 @@
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../lib/template.js"></script>
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../lib/template.js"></script>
     </body>
       </html>

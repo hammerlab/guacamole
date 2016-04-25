@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>BamReaderAPI - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.reads.Read.ReadLoadingConfig.BamReaderAPI</title>
-          <meta name="description" content="BamReaderAPI - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.reads.Read.ReadLoadingConfig.BamReaderAPI" />
-          <meta name="keywords" content="BamReaderAPI guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.reads.Read.ReadLoadingConfig.BamReaderAPI" />
+          <title>InputFilters - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.reads.InputFilters</title>
+          <meta name="description" content="InputFilters - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.reads.InputFilters" />
+          <meta name="keywords" content="InputFilters guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.reads.InputFilters" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -12,7 +12,7 @@
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../index.html';
-            var hash = 'org.hammerlab.guacamole.reads.Read$$ReadLoadingConfig$$BamReaderAPI$';
+            var hash = 'org.hammerlab.guacamole.reads.InputFilters$';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -24,9 +24,9 @@
         </head>
         <body class="value">
       <div id="definition">
-        <img src="../../../../lib/object_big.png" />
-        <p id="owner"><a href="../../../package.html" class="extype" name="org">org</a>.<a href="../../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="../package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole.reads">reads</a>.<a href="Read$.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a>.<a href="Read$$ReadLoadingConfig$.html" class="extype" name="org.hammerlab.guacamole.reads.Read.ReadLoadingConfig">ReadLoadingConfig</a></p>
-        <h1>BamReaderAPI</h1>
+        <a href="InputFilters.html" title="Go to companion"><img src="../../../../lib/object_to_class_big.png" /></a>
+        <p id="owner"><a href="../../../package.html" class="extype" name="org">org</a>.<a href="../../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="../package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole.reads">reads</a></p>
+        <h1><a href="InputFilters.html" title="Go to companion">InputFilters</a></h1>
       </div>
 
       <h4 id="signature" class="signature">
@@ -35,16 +35,13 @@
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <span class="name">BamReaderAPI</span><span class="result"> extends <span class="extype" name="scala.Enumeration">Enumeration</span></span>
+        <span class="name">InputFilters</span><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Specification of which API to use when reading BAM and SAM files.</p><p>Best - use Samtools when the file is on the local filesystem otherwise HadoopBAM
-Samtools - use Samtools. This supports using the bam index when available.
-HadoopBAM - use HadoopBAM. This supports reading the file in parallel when it is on HDFS.
-</p></div><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.Enumeration">Enumeration</span>, <span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -62,7 +59,7 @@ HadoopBAM - use HadoopBAM. This supports reading the file in parallel when it is
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="org.hammerlab.guacamole.reads.Read.ReadLoadingConfig.BamReaderAPI"><span>BamReaderAPI</span></li><li class="in" name="scala.Enumeration"><span>Enumeration</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="org.hammerlab.guacamole.reads.InputFilters"><span>InputFilters</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -82,74 +79,7 @@ HadoopBAM - use HadoopBAM. This supports reading the file in parallel when it is
         <div id="allMembers">
         
 
-        <div id="types" class="types members">
-              <h3>Type Members</h3>
-              <ol><li name="org.hammerlab.guacamole.reads.Read.ReadLoadingConfig.BamReaderAPI.BamReaderAPI" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="BamReaderAPI=org.hammerlab.guacamole.reads.Read.ReadLoadingConfig.BamReaderAPI.Value"></a>
-      <a id="BamReaderAPI:BamReaderAPI"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">type</span>
-      </span>
-      <span class="symbol">
-        <span class="name">BamReaderAPI</span><span class="result"> = <a href="#ValueextendsOrdered[Enumeration.this.Value]withSerializable" class="extmbr" name="org.hammerlab.guacamole.reads.Read.ReadLoadingConfig.BamReaderAPI.Value">Value</a></span>
-      </span>
-      </h4>
-      
-    </li><li name="scala.Enumeration.Val" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="ValextendsEnumeration.this.ValuewithSerializable"></a>
-      <a id="Val:Val"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">class</span>
-      </span>
-      <span class="symbol">
-        <span class="name">Val</span><span class="result"> extends <span class="extype" name="scala.Enumeration.Value">Value</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd>Enumeration</dd><dt>Annotations</dt><dd>
-                <span class="name">@SerialVersionUID</span><span class="args">(<span>
-      
-      <span class="symbol">-3501153230598116017L</span>
-    </span>)</span>
-              
-        </dd></dl></div>
-    </li><li name="scala.Enumeration.Value" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
-      <a id="ValueextendsOrdered[Enumeration.this.Value]withSerializable"></a>
-      <a id="Value:Value"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">class</span>
-      </span>
-      <span class="symbol">
-        <span class="name">Value</span><span class="result"> extends <span class="extype" name="scala.Ordered">Ordered</span>[<span class="extype" name="scala.Enumeration.Value">Value</span>] with <span class="extype" name="scala.Serializable">Serializable</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Enumeration</dd><dt>Annotations</dt><dd>
-                <span class="name">@SerialVersionUID</span><span class="args">(<span>
-      
-      <span class="symbol">7091335633555234129L</span>
-    </span>)</span>
-              
-        </dd></dl></div>
-    </li><li name="scala.Enumeration.ValueSet" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="ValueSetextendsAbstractSet[Enumeration.this.Value]withSortedSet[Enumeration.this.Value]withSortedSetLike[Enumeration.this.Value,Enumeration.this.ValueSet]withSerializable"></a>
-      <a id="ValueSet:ValueSet"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">class</span>
-      </span>
-      <span class="symbol">
-        <span class="name">ValueSet</span><span class="result"> extends <span class="extype" name="scala.collection.AbstractSet">AbstractSet</span>[<span class="extype" name="scala.Enumeration.Value">Value</span>] with <span class="extype" name="scala.collection.immutable.SortedSet">SortedSet</span>[<span class="extype" name="scala.Enumeration.Value">Value</span>] with <span class="extype" name="scala.collection.SortedSetLike">SortedSetLike</span>[<span class="extype" name="scala.Enumeration.Value">Value</span>, <span class="extype" name="scala.Enumeration.ValueSet">ValueSet</span>] with <span class="extype" name="scala.Serializable">Serializable</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Enumeration</dd></dl></div>
-    </li></ol>
-            </div>
+        
 
         
 
@@ -220,123 +150,22 @@ HadoopBAM - use HadoopBAM. This supports reading the file in parallel when it is
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.reads.Read.ReadLoadingConfig.BamReaderAPI#Best" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="Best:org.hammerlab.guacamole.reads.Read.ReadLoadingConfig.BamReaderAPI.Value"></a>
-      <a id="Best:Value"></a>
+    </li><li name="org.hammerlab.guacamole.reads.InputFilters#apply" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="apply(mapped:Boolean,overlapsLoci:org.hammerlab.guacamole.loci.LociSet.Builder,nonDuplicate:Boolean,passedVendorQualityChecks:Boolean,isPaired:Boolean):org.hammerlab.guacamole.reads.InputFilters"></a>
+      <a id="apply(Boolean,Builder,Boolean,Boolean,Boolean):InputFilters"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">Best</span><span class="result">: <a href="#ValueextendsOrdered[Enumeration.this.Value]withSerializable" class="extmbr" name="org.hammerlab.guacamole.reads.Read.ReadLoadingConfig.BamReaderAPI.Value">Value</a></span>
-      </span>
-      </h4>
-      
-    </li><li name="org.hammerlab.guacamole.reads.Read.ReadLoadingConfig.BamReaderAPI#HadoopBAM" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="HadoopBAM:org.hammerlab.guacamole.reads.Read.ReadLoadingConfig.BamReaderAPI.Value"></a>
-      <a id="HadoopBAM:Value"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">HadoopBAM</span><span class="result">: <a href="#ValueextendsOrdered[Enumeration.this.Value]withSerializable" class="extmbr" name="org.hammerlab.guacamole.reads.Read.ReadLoadingConfig.BamReaderAPI.Value">Value</a></span>
-      </span>
-      </h4>
-      
-    </li><li name="org.hammerlab.guacamole.reads.Read.ReadLoadingConfig.BamReaderAPI#Samtools" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="Samtools:org.hammerlab.guacamole.reads.Read.ReadLoadingConfig.BamReaderAPI.Value"></a>
-      <a id="Samtools:Value"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">Samtools</span><span class="result">: <a href="#ValueextendsOrdered[Enumeration.this.Value]withSerializable" class="extmbr" name="org.hammerlab.guacamole.reads.Read.ReadLoadingConfig.BamReaderAPI.Value">Value</a></span>
-      </span>
-      </h4>
-      
-    </li><li name="scala.Enumeration#Value" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="Value(i:Int,name:String):Enumeration.this.Value"></a>
-      <a id="Value(Int,String):Value"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">Value</span><span class="params">(<span name="i">i: <span class="extype" name="scala.Int">Int</span></span>, <span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="#ValueextendsOrdered[Enumeration.this.Value]withSerializable" class="extmbr" name="org.hammerlab.guacamole.reads.Read.ReadLoadingConfig.BamReaderAPI.Value">Value</a></span>
+        <span class="name">apply</span><span class="params">(<span name="mapped">mapped: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>, <span name="overlapsLoci">overlapsLoci: <a href="../loci/LociSet$$Builder.html" class="extype" name="org.hammerlab.guacamole.loci.LociSet.Builder">Builder</a> = <span class="symbol">null</span></span>, <span name="nonDuplicate">nonDuplicate: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>, <span name="passedVendorQualityChecks">passedVendorQualityChecks: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>, <span name="isPaired">isPaired: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="result">: <a href="InputFilters.html" class="extype" name="org.hammerlab.guacamole.reads.InputFilters">InputFilters</a></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd>Enumeration</dd></dl></div>
-    </li><li name="scala.Enumeration#Value" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="Value(name:String):Enumeration.this.Value"></a>
-      <a id="Value(String):Value"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">Value</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="#ValueextendsOrdered[Enumeration.this.Value]withSerializable" class="extmbr" name="org.hammerlab.guacamole.reads.Read.ReadLoadingConfig.BamReaderAPI.Value">Value</a></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd>Enumeration</dd></dl></div>
-    </li><li name="scala.Enumeration#Value" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="Value(i:Int):Enumeration.this.Value"></a>
-      <a id="Value(Int):Value"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">Value</span><span class="params">(<span name="i">i: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <a href="#ValueextendsOrdered[Enumeration.this.Value]withSerializable" class="extmbr" name="org.hammerlab.guacamole.reads.Read.ReadLoadingConfig.BamReaderAPI.Value">Value</a></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd>Enumeration</dd></dl></div>
-    </li><li name="scala.Enumeration#Value" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="Value:Enumeration.this.Value"></a>
-      <a id="Value:Value"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">Value</span><span class="result">: <a href="#ValueextendsOrdered[Enumeration.this.Value]withSerializable" class="extmbr" name="org.hammerlab.guacamole.reads.Read.ReadLoadingConfig.BamReaderAPI.Value">Value</a></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd>Enumeration</dd></dl></div>
-    </li><li name="scala.Enumeration.ValueSet" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="ValueSet"></a>
-      <a id="ValueSet:ValueSet"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <span class="name">ValueSet</span><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Enumeration</dd></dl></div>
-    </li><li name="scala.Enumeration#apply" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="apply(x:&lt;?&gt;):Enumeration.this.Value"></a>
-      <a id="apply(Int):Value"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">apply</span><span class="params">(<span name="x">x: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <a href="#ValueextendsOrdered[Enumeration.this.Value]withSerializable" class="extmbr" name="org.hammerlab.guacamole.reads.Read.ReadLoadingConfig.BamReaderAPI.Value">Value</a></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Enumeration</dd></dl></div>
+      <p class="shortcomment cmt">See InputFilters for full documentation.</p><div class="fullcomment"><div class="comment cmt"><p>See InputFilters for full documentation.
+</p></div><dl class="paramcmts block"><dt class="param">mapped</dt><dd class="cmt"><p>include only mapped reads. Convenience argument that is equivalent to specifying all sites in
+              overlapsLoci.
+</p></dd></dl></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -369,6 +198,19 @@ HadoopBAM - use HadoopBAM. This supports reading the file in parallel when it is
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.reads.InputFilters#empty" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="empty:org.hammerlab.guacamole.reads.InputFilters"></a>
+      <a id="empty:InputFilters"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">empty</span><span class="result">: <a href="InputFilters.html" class="extype" name="org.hammerlab.guacamole.reads.InputFilters">InputFilters</a></span>
+      </span>
+      </h4>
+      
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -395,6 +237,21 @@ HadoopBAM - use HadoopBAM. This supports reading the file in parallel when it is
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.reads.InputFilters#filterRDD" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="filterRDD(filters:org.hammerlab.guacamole.reads.InputFilters,reads:org.apache.spark.rdd.RDD[org.hammerlab.guacamole.reads.Read],sequenceDictionary:org.bdgenomics.adam.models.SequenceDictionary):org.apache.spark.rdd.RDD[org.hammerlab.guacamole.reads.Read]"></a>
+      <a id="filterRDD(InputFilters,RDD[Read],SequenceDictionary):RDD[Read]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">filterRDD</span><span class="params">(<span name="filters">filters: <a href="InputFilters.html" class="extype" name="org.hammerlab.guacamole.reads.InputFilters">InputFilters</a></span>, <span name="reads">reads: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<a href="Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a>]</span>, <span name="sequenceDictionary">sequenceDictionary: <span class="extype" name="org.bdgenomics.adam.models.SequenceDictionary">SequenceDictionary</span></span>)</span><span class="result">: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<a href="Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Apply filters to an RDD of reads.</p><div class="fullcomment"><div class="comment cmt"><p>Apply filters to an RDD of reads.
+</p></div><dl class="paramcmts block"><dt class="param">filters</dt><dd class="cmt"></dd><dt class="param">reads</dt><dd class="cmt"></dd><dt class="param">sequenceDictionary</dt><dd class="cmt"></dd><dt>returns</dt><dd class="cmt"><p>filtered RDD
+</p></dd></dl></div>
     </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <a id="finalize():Unit"></a>
@@ -453,19 +310,6 @@ HadoopBAM - use HadoopBAM. This supports reading the file in parallel when it is
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="scala.Enumeration#maxId" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="maxId:Int"></a>
-      <a id="maxId:Int"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">maxId</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Enumeration</dd></dl></div>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -479,32 +323,6 @@ HadoopBAM - use HadoopBAM. This supports reading the file in parallel when it is
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scala.Enumeration#nextId" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="nextId:Int"></a>
-      <a id="nextId:Int"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">var</span>
-      </span>
-      <span class="symbol">
-        <span class="name">nextId</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd>Enumeration</dd></dl></div>
-    </li><li name="scala.Enumeration#nextName" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="nextName:Iterator[String]"></a>
-      <a id="nextName:Iterator[String]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">var</span>
-      </span>
-      <span class="symbol">
-        <span class="name">nextName</span><span class="result">: <span class="extype" name="scala.Iterator">Iterator</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd>Enumeration</dd></dl></div>
     </li><li name="scala.AnyRef#notify" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notify():Unit"></a>
       <a id="notify():Unit"></a>
@@ -531,19 +349,6 @@ HadoopBAM - use HadoopBAM. This supports reading the file in parallel when it is
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scala.Enumeration#readResolve" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="readResolve():AnyRef"></a>
-      <a id="readResolve():AnyRef"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">readResolve</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.AnyRef">AnyRef</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd>Enumeration</dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -557,7 +362,7 @@ HadoopBAM - use HadoopBAM. This supports reading the file in parallel when it is
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scala.Enumeration#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="scala.AnyRef#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toString():String"></a>
       <a id="toString():String"></a>
       <h4 class="signature">
@@ -569,20 +374,7 @@ HadoopBAM - use HadoopBAM. This supports reading the file in parallel when it is
         <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Enumeration → AnyRef → Any</dd></dl></div>
-    </li><li name="scala.Enumeration#values" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="values:Enumeration.this.ValueSet"></a>
-      <a id="values:ValueSet"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">values</span><span class="result">: <a href="#ValueSetextendsAbstractSet[Enumeration.this.Value]withSortedSet[Enumeration.this.Value]withSortedSetLike[Enumeration.this.Value,Enumeration.this.ValueSet]withSerializable" class="extmbr" name="org.hammerlab.guacamole.reads.Read.ReadLoadingConfig.BamReaderAPI.ValueSet">ValueSet</a></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Enumeration</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>
@@ -640,33 +432,6 @@ HadoopBAM - use HadoopBAM. This supports reading the file in parallel when it is
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="scala.Enumeration#withName" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="withName(s:String):Enumeration.this.Value"></a>
-      <a id="withName(String):Value"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">withName</span><span class="params">(<span name="s">s: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="#ValueextendsOrdered[Enumeration.this.Value]withSerializable" class="extmbr" name="org.hammerlab.guacamole.reads.Read.ReadLoadingConfig.BamReaderAPI.Value">Value</a></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Enumeration</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.reads.Read.ReadLoadingConfig.BamReaderAPI#withNameCaseInsensitive" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="withNameCaseInsensitive(s:String):org.hammerlab.guacamole.reads.Read.ReadLoadingConfig.BamReaderAPI.Value"></a>
-      <a id="withNameCaseInsensitive(String):Value"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">withNameCaseInsensitive</span><span class="params">(<span name="s">s: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="#ValueextendsOrdered[Enumeration.this.Value]withSerializable" class="extmbr" name="org.hammerlab.guacamole.reads.Read.ReadLoadingConfig.BamReaderAPI.Value">Value</a></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Like Enumeration.</p><div class="fullcomment"><div class="comment cmt"><p>Like Enumeration.withName but case insensitive
-</p></div></div>
     </li></ol>
             </div>
 
@@ -676,9 +441,7 @@ HadoopBAM - use HadoopBAM. This supports reading the file in parallel when it is
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="scala.Enumeration">
-              <h3>Inherited from <span class="extype" name="scala.Enumeration">Enumeration</span></h3>
-            </div><div class="parent" name="scala.Serializable">
+        <div class="parent" name="scala.Serializable">
               <h3>Inherited from <span class="extype" name="scala.Serializable">Serializable</span></h3>
             </div><div class="parent" name="java.io.Serializable">
               <h3>Inherited from <span class="extype" name="java.io.Serializable">Serializable</span></h3>

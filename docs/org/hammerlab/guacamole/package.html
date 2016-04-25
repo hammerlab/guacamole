@@ -101,32 +101,6 @@ library.
       </span>
       </h4>
       <p class="comment cmt">Interface for running a command from command line arguments.</p>
-    </li><li name="org.hammerlab.guacamole.DelayedMessages" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="DelayedMessagesextendsAnyRef"></a>
-      <a id="DelayedMessages:DelayedMessages"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">class</span>
-      </span>
-      <span class="symbol">
-        <a href="DelayedMessages.html"><span class="name">DelayedMessages</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
-      </span>
-      </h4>
-      <p class="comment cmt"> It's often useful to output counts of certain events that occur in RDD operations.</p>
-    </li><li name="org.hammerlab.guacamole.GuacamoleKryoRegistrator" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="GuacamoleKryoRegistratorextendsADAMKryoRegistrator"></a>
-      <a id="GuacamoleKryoRegistrator:GuacamoleKryoRegistrator"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">class</span>
-      </span>
-      <span class="symbol">
-        <a href="GuacamoleKryoRegistrator.html"><span class="name">GuacamoleKryoRegistrator</span></a><span class="result"> extends <span class="extype" name="org.bdgenomics.adam.serialization.ADAMKryoRegistrator">ADAMKryoRegistrator</span></span>
-      </span>
-      </h4>
-      
     </li><li name="org.hammerlab.guacamole.HasReferenceRegion" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="HasReferenceRegionextendsAnyRef"></a>
       <a id="HasReferenceRegion:HasReferenceRegion"></a>
@@ -162,7 +136,7 @@ library.
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="ReadSet.html"><span class="name">ReadSet</span></a><span class="params">(<span name="reads">reads: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<a href="reads/Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a>]</span>, <span name="sequenceDictionary">sequenceDictionary: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="org.bdgenomics.adam.models.SequenceDictionary">SequenceDictionary</span>]</span>, <span name="source">source: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="filters">filters: <a href="reads/Read$$InputFilters.html" class="extype" name="org.hammerlab.guacamole.reads.Read.InputFilters">InputFilters</a></span>, <span name="contigLengthsFromDictionary">contigLengthsFromDictionary: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="ReadSet.html"><span class="name">ReadSet</span></a><span class="params">(<span name="reads">reads: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<a href="reads/Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a>]</span>, <span name="sequenceDictionary">sequenceDictionary: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="org.bdgenomics.adam.models.SequenceDictionary">SequenceDictionary</span>]</span>, <span name="source">source: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="filters">filters: <a href="reads/InputFilters.html" class="extype" name="org.hammerlab.guacamole.reads.InputFilters">InputFilters</a></span>, <span name="contigLengthsFromDictionary">contigLengthsFromDictionary: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       <p class="comment cmt">A ReadSet contains an RDD of reads along with some metadata about them.</p>
@@ -226,33 +200,6 @@ base (for example: A, C, T, G).</p>
       </span>
       </h4>
       <p class="comment cmt">Basic functions that most commands need, and specifications of command-line arguments that they use.</p>
-    </li><li name="org.hammerlab.guacamole.Concordance" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="Concordance"></a>
-      <a id="Concordance:Concordance"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a href="Concordance$.html"><span class="name">Concordance</span></a>
-      </span>
-      </h4>
-      <p class="comment cmt">As a convenience to users experimenting with different callers, some variant callers include functionality to compare
-the called variants to a gold standard VCF after they are computed, in the same job.</p>
-    </li><li name="org.hammerlab.guacamole.DelayedMessages" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="DelayedMessages"></a>
-      <a id="DelayedMessages:DelayedMessages"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a href="DelayedMessages$.html"><span class="name">DelayedMessages</span></a>
-      </span>
-      </h4>
-      
     </li><li name="org.hammerlab.guacamole.Guacamole" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="Guacamole"></a>
       <a id="Guacamole:Guacamole"></a>
@@ -345,6 +292,19 @@ the called variants to a gold standard VCF after they are computed, in the same 
       </h4>
       <p class="comment cmt">Strategies for filtering reads, filtering bases within reads, and filtering the results of variant calling (called
 genotypes).</p>
+    </li><li name="org.hammerlab.guacamole.kryo" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="kryo"></a>
+      <a id="kryo:kryo"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="kryo/package.html"><span class="name">kryo</span></a>
+      </span>
+      </h4>
+      
     </li><li name="org.hammerlab.guacamole.likelihood" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="likelihood"></a>
       <a id="likelihood:likelihood"></a>
@@ -368,6 +328,19 @@ genotypes).</p>
       </span>
       <span class="symbol">
         <a href="loci/package.html"><span class="name">loci</span></a>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.logging" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="logging"></a>
+      <a id="logging:logging"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="logging/package.html"><span class="name">logging</span></a>
       </span>
       </h4>
       

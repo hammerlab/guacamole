@@ -2,17 +2,17 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>ReadSet - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.ReadSet</title>
-          <meta name="description" content="ReadSet - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.ReadSet" />
-          <meta name="keywords" content="ReadSet guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.ReadSet" />
+          <title>Concordance - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.variants.Concordance</title>
+          <meta name="description" content="Concordance - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.variants.Concordance" />
+          <meta name="keywords" content="Concordance guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.variants.Concordance" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
-      <link href="../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
-      <link href="../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
       <script type="text/javascript">
          if(top === self) {
-            var url = '../../../index.html';
-            var hash = 'org.hammerlab.guacamole.ReadSet';
+            var url = '../../../../index.html';
+            var hash = 'org.hammerlab.guacamole.variants.Concordance$';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -22,29 +22,27 @@
    	  </script>
     
         </head>
-        <body class="type">
+        <body class="value">
       <div id="definition">
-        <a href="ReadSet$.html" title="Go to companion"><img src="../../../lib/class_to_object_big.png" /></a>
-        <p id="owner"><a href="../../package.html" class="extype" name="org">org</a>.<a href="../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a></p>
-        <h1><a href="ReadSet$.html" title="Go to companion">ReadSet</a></h1>
+        <img src="../../../../lib/object_big.png" />
+        <p id="owner"><a href="../../../package.html" class="extype" name="org">org</a>.<a href="../../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="../package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole.variants">variants</a></p>
+        <h1>Concordance</h1>
       </div>
 
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">case class</span>
+        <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <span class="name">ReadSet</span><span class="params">(<span name="reads">reads: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<a href="reads/Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a>]</span>, <span name="sequenceDictionary">sequenceDictionary: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="org.bdgenomics.adam.models.SequenceDictionary">SequenceDictionary</span>]</span>, <span name="source">source: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="filters">filters: <a href="reads/InputFilters.html" class="extype" name="org.hammerlab.guacamole.reads.InputFilters">InputFilters</a></span>, <span name="contigLengthsFromDictionary">contigLengthsFromDictionary: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">Concordance</span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>A ReadSet contains an RDD of reads along with some metadata about them.
-</p></div><dl class="paramcmts block"><dt class="param">reads</dt><dd class="cmt"><p>RDD of reads</p></dd><dt class="param">sequenceDictionary</dt><dd class="cmt"><p>optional, sequence dictionary giving contigs and lengths</p></dd><dt class="param">source</dt><dd class="cmt"><p>string describing where these reads came from. Usually a filename.</p></dd><dt class="param">filters</dt><dd class="cmt"><p>filters used when reading these reads.</p></dd><dt class="param">contigLengthsFromDictionary</dt><dd class="cmt"><p>if true, the contigLengths property will use the sequence dictionary to get the
-                                   contig lengths. Otherwise, the reads themselves will be used.
-</p></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>As a convenience to users experimenting with different callers, some variant callers include functionality to compare
+the called variants to a gold standard VCF after they are computed, in the same job. We implement that logic here.</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -62,7 +60,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="org.hammerlab.guacamole.ReadSet"><span>ReadSet</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="org.hammerlab.guacamole.variants.Concordance"><span>Concordance</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -80,27 +78,25 @@
 
       <div id="template">
         <div id="allMembers">
-        <div id="constructors" class="members">
-              <h3>Instance Constructors</h3>
-              <ol><li name="org.hammerlab.guacamole.ReadSet#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="&lt;init&gt;(reads:org.apache.spark.rdd.RDD[org.hammerlab.guacamole.reads.Read],sequenceDictionary:Option[org.bdgenomics.adam.models.SequenceDictionary],source:String,filters:org.hammerlab.guacamole.reads.InputFilters,contigLengthsFromDictionary:Boolean):org.hammerlab.guacamole.ReadSet"></a>
-      <a id="&lt;init&gt;:ReadSet"></a>
+        
+
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="org.hammerlab.guacamole.variants.Concordance.ConcordanceArgs" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="ConcordanceArgsextendsArgs4jBasewithDebugLogArgs"></a>
+      <a id="ConcordanceArgs:ConcordanceArgs"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">new</span>
+        <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <span class="name">ReadSet</span><span class="params">(<span name="reads">reads: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<a href="reads/Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a>]</span>, <span name="sequenceDictionary">sequenceDictionary: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="org.bdgenomics.adam.models.SequenceDictionary">SequenceDictionary</span>]</span>, <span name="source">source: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="filters">filters: <a href="reads/InputFilters.html" class="extype" name="org.hammerlab.guacamole.reads.InputFilters">InputFilters</a></span>, <span name="contigLengthsFromDictionary">contigLengthsFromDictionary: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span>
+        <a href="Concordance$$ConcordanceArgs.html"><span class="name">ConcordanceArgs</span></a><span class="result"> extends <span class="extype" name="org.bdgenomics.utils.cli.Args4jBase">Args4jBase</span> with <a href="../logging/DebugLogArgs.html" class="extype" name="org.hammerlab.guacamole.logging.DebugLogArgs">DebugLogArgs</a></span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">reads</dt><dd class="cmt"><p>RDD of reads</p></dd><dt class="param">sequenceDictionary</dt><dd class="cmt"><p>optional, sequence dictionary giving contigs and lengths</p></dd><dt class="param">source</dt><dd class="cmt"><p>string describing where these reads came from. Usually a filename.</p></dd><dt class="param">filters</dt><dd class="cmt"><p>filters used when reading these reads.</p></dd><dt class="param">contigLengthsFromDictionary</dt><dd class="cmt"><p>if true, the contigLengths property will use the sequence dictionary to get the
-                                   contig lengths. Otherwise, the reads themselves will be used.
-</p></dd></dl></div>
+      <p class="comment cmt">Arguments that callers can include to support concordance calculations.</p>
     </li></ol>
             </div>
-
-        
 
         
 
@@ -196,43 +192,29 @@
         <span class="name">clone</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
       <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.ReadSet#contigLengths" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="contigLengths:Map[String,Long]"></a>
-      <a id="contigLengths:Map[String,Long]"></a>
+    </li><li name="org.hammerlab.guacamole.variants.Concordance#computePrecisionAndRecall" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="computePrecisionAndRecall(calledGenotypes:org.apache.spark.rdd.RDD[org.bdgenomics.formats.avro.Genotype],trueGenotypes:org.apache.spark.rdd.RDD[org.bdgenomics.formats.avro.Genotype],excludeSNVs:Boolean,excludeIndels:Boolean,chromosome:String):(Double,Double,Double)"></a>
+      <a id="computePrecisionAndRecall(RDD[bdgenomics.formats.avro.Genotype],RDD[bdgenomics.formats.avro.Genotype],Boolean,Boolean,String):(Double,Double,Double)"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">lazy val</span>
+        <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">contigLengths</span><span class="result">: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Long">Long</span>]</span>
+        <span class="name">computePrecisionAndRecall</span><span class="params">(<span name="calledGenotypes">calledGenotypes: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<span class="extype" name="org.bdgenomics.formats.avro.Genotype">bdgenomics.formats.avro.Genotype</span>]</span>, <span name="trueGenotypes">trueGenotypes: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<span class="extype" name="org.bdgenomics.formats.avro.Genotype">bdgenomics.formats.avro.Genotype</span>]</span>, <span name="excludeSNVs">excludeSNVs: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>, <span name="excludeIndels">excludeIndels: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">true</span></span>, <span name="chromosome">chromosome: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">null</span></span>)</span><span class="result">: (<span class="extype" name="scala.Double">Double</span>, <span class="extype" name="scala.Double">Double</span>, <span class="extype" name="scala.Double">Double</span>)</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">A map from contig name -&gt; length of contig.</p><div class="fullcomment"><div class="comment cmt"><p>A map from contig name -&gt; length of contig.</p><p>Can come either from the sequence dictionary, or by looking at the reads themselves, according to the
-contigLengthsFromDictionary property.</p></div></div>
-    </li><li name="org.hammerlab.guacamole.ReadSet#contigLengthsFromDictionary" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="contigLengthsFromDictionary:Boolean"></a>
-      <a id="contigLengthsFromDictionary:Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">contigLengthsFromDictionary</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">if true, the contigLengths property will use the sequence dictionary to get the
-                                   contig lengths.</p><div class="fullcomment"><div class="comment cmt"><p>if true, the contigLengths property will use the sequence dictionary to get the
-                                   contig lengths. Otherwise, the reads themselves will be used.
-</p></div></div>
+      <p class="shortcomment cmt">Evaluate a set of called genotypes by computing precision, recall and F1-Score</p><div class="fullcomment"><div class="comment cmt"><p>Evaluate a set of called genotypes by computing precision, recall and F1-Score</p><p>Precision = Correct Calls / All Calls Made = Correct Calls / (Correct Calls + Incorrect Calls)
+Recall =  Correct Calls  / All True Variants = Correct Calls / (Correct Calls + Incorrect Omissions)</p><p>F1-Score = 2 * (Precision * Recall) / (Precision + Recall)</p><p>All three metrics range from 0 to 1, where 1 would be perfect.
+</p></div><dl class="paramcmts block"><dt class="param">calledGenotypes</dt><dd class="cmt"><p>Genotypes to test</p></dd><dt class="param">trueGenotypes</dt><dd class="cmt"><p>Known-set of validated genotypes</p></dd><dt class="param">excludeSNVs</dt><dd class="cmt"><p>true if want to exclude single nucleotides polymorphism in the evaluation (default: false)</p></dd><dt class="param">excludeIndels</dt><dd class="cmt"><p>true if want to exclude insertions in the evaluation in the evaluation (default: true)</p></dd><dt class="param">chromosome</dt><dd class="cmt"><p>name of a chromosome, if any, to filter to (default: null)</p></dd><dt>returns</dt><dd class="cmt"><p>precision, recall and f1score
+</p></dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -246,19 +228,19 @@ contigLengthsFromDictionary property.</p></div></div>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.ReadSet#filters" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="filters:org.hammerlab.guacamole.reads.InputFilters"></a>
-      <a id="filters:InputFilters"></a>
+    </li><li name="scala.AnyRef#equals" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="equals(x$1:Any):Boolean"></a>
+      <a id="equals(Any):Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">val</span>
+        <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">filters</span><span class="result">: <a href="reads/InputFilters.html" class="extype" name="org.hammerlab.guacamole.reads.InputFilters">InputFilters</a></span>
+        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">filters used when reading these reads.</p>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <a id="finalize():Unit"></a>
@@ -271,7 +253,7 @@ contigLengthsFromDictionary property.</p></div></div>
         <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
       <span class="symbol">classOf[java.lang.Throwable]</span>
@@ -291,6 +273,19 @@ contigLengthsFromDictionary property.</p></div></div>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scala.AnyRef#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="hashCode():Int"></a>
+      <a id="hashCode():Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <a id="isInstanceOf[T0]:Boolean"></a>
@@ -304,32 +299,22 @@ contigLengthsFromDictionary property.</p></div></div>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.ReadSet#mappedPairedReads" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="mappedPairedReads:org.apache.spark.rdd.RDD[org.hammerlab.guacamole.reads.PairedRead[org.hammerlab.guacamole.reads.MappedRead]]"></a>
-      <a id="mappedPairedReads:RDD[PairedRead[MappedRead]]"></a>
+    </li><li name="org.hammerlab.guacamole.variants.Concordance#loadGenotypes" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="loadGenotypes(path:String,sc:org.apache.spark.SparkContext):org.apache.spark.rdd.RDD[org.bdgenomics.formats.avro.Genotype]"></a>
+      <a id="loadGenotypes(String,SparkContext):RDD[bdgenomics.formats.avro.Genotype]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">lazy val</span>
+        <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">mappedPairedReads</span><span class="result">: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<a href="reads/PairedRead.html" class="extype" name="org.hammerlab.guacamole.reads.PairedRead">PairedRead</a>[<a href="reads/MappedRead.html" class="extype" name="org.hammerlab.guacamole.reads.MappedRead">MappedRead</a>]]</span>
+        <span class="name">loadGenotypes</span><span class="params">(<span name="path">path: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="sc">sc: <span class="extype" name="org.apache.spark.SparkContext">SparkContext</span></span>)</span><span class="result">: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<span class="extype" name="org.bdgenomics.formats.avro.Genotype">bdgenomics.formats.avro.Genotype</span>]</span>
       </span>
       </h4>
-      
-    </li><li name="org.hammerlab.guacamole.ReadSet#mappedReads" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="mappedReads:org.apache.spark.rdd.RDD[org.hammerlab.guacamole.reads.MappedRead]"></a>
-      <a id="mappedReads:RDD[MappedRead]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">lazy val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">mappedReads</span><span class="result">: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<a href="reads/MappedRead.html" class="extype" name="org.hammerlab.guacamole.reads.MappedRead">MappedRead</a>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Only mapped reads.</p>
+      <p class="shortcomment cmt">Load genotypes from ADAM Parquet or VCF file
+</p><div class="fullcomment"><div class="comment cmt"><p>Load genotypes from ADAM Parquet or VCF file
+</p></div><dl class="paramcmts block"><dt class="param">path</dt><dd class="cmt"><p>path to VCF or ADAM genotypes</p></dd><dt class="param">sc</dt><dd class="cmt"><p>spark context</p></dd><dt>returns</dt><dd class="cmt"><p>RDD of ADAM Genotypes
+</p></dd></dl></div>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -369,45 +354,22 @@ contigLengthsFromDictionary property.</p></div></div>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.ReadSet#reads" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="reads:org.apache.spark.rdd.RDD[org.hammerlab.guacamole.reads.Read]"></a>
-      <a id="reads:RDD[Read]"></a>
+    </li><li name="org.hammerlab.guacamole.variants.Concordance#printGenotypeConcordance" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="printGenotypeConcordance(args:org.hammerlab.guacamole.variants.Concordance.ConcordanceArgs,genotypes:org.apache.spark.rdd.RDD[org.bdgenomics.formats.avro.Genotype],sc:org.apache.spark.SparkContext):Unit"></a>
+      <a id="printGenotypeConcordance(ConcordanceArgs,RDD[bdgenomics.formats.avro.Genotype],SparkContext):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">val</span>
+        <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">reads</span><span class="result">: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<a href="reads/Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a>]</span>
+        <span class="name">printGenotypeConcordance</span><span class="params">(<span name="args">args: <a href="Concordance$$ConcordanceArgs.html" class="extype" name="org.hammerlab.guacamole.variants.Concordance.ConcordanceArgs">ConcordanceArgs</a></span>, <span name="genotypes">genotypes: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<span class="extype" name="org.bdgenomics.formats.avro.Genotype">bdgenomics.formats.avro.Genotype</span>]</span>, <span name="sc">sc: <span class="extype" name="org.apache.spark.SparkContext">SparkContext</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">RDD of reads</p>
-    </li><li name="org.hammerlab.guacamole.ReadSet#sequenceDictionary" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="sequenceDictionary:Option[org.bdgenomics.adam.models.SequenceDictionary]"></a>
-      <a id="sequenceDictionary:Option[SequenceDictionary]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">sequenceDictionary</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="org.bdgenomics.adam.models.SequenceDictionary">SequenceDictionary</span>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">optional, sequence dictionary giving contigs and lengths</p>
-    </li><li name="org.hammerlab.guacamole.ReadSet#source" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="source:String"></a>
-      <a id="source:String"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">source</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">string describing where these reads came from.</p><div class="fullcomment"><div class="comment cmt"><p>string describing where these reads came from. Usually a filename.</p></div></div>
+      <p class="shortcomment cmt">Evaluate a set of called genotypes and print precision, recall and F1-Score
+</p><div class="fullcomment"><div class="comment cmt"><p>Evaluate a set of called genotypes and print precision, recall and F1-Score
+</p></div><dl class="paramcmts block"><dt class="param">args</dt><dd class="cmt"><p>parsed arguments</p></dd><dt class="param">genotypes</dt><dd class="cmt"><p>ADAM genotypes (i.e. the variants)</p></dd><dt class="param">sc</dt><dd class="cmt"><p>spark context
+</p></dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -421,6 +383,19 @@ contigLengthsFromDictionary property.</p></div></div>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="toString():String"></a>
+      <a id="toString():String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>
@@ -487,15 +462,7 @@ contigLengthsFromDictionary property.</p></div></div>
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="scala.Serializable">
-              <h3>Inherited from <span class="extype" name="scala.Serializable">Serializable</span></h3>
-            </div><div class="parent" name="java.io.Serializable">
-              <h3>Inherited from <span class="extype" name="java.io.Serializable">Serializable</span></h3>
-            </div><div class="parent" name="scala.Product">
-              <h3>Inherited from <span class="extype" name="scala.Product">Product</span></h3>
-            </div><div class="parent" name="scala.Equals">
-              <h3>Inherited from <span class="extype" name="scala.Equals">Equals</span></h3>
-            </div><div class="parent" name="scala.AnyRef">
+        <div class="parent" name="scala.AnyRef">
               <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
             </div><div class="parent" name="scala.Any">
               <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
@@ -515,6 +482,6 @@ contigLengthsFromDictionary property.</p></div></div>
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../lib/template.js"></script>
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../lib/template.js"></script>
     </body>
       </html>
