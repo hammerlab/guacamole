@@ -26,6 +26,7 @@ object LociPartitionUtils {
   def partitionLociAccordingToArgs[M <: HasReferenceRegion: ClassTag](args: Arguments,
                                                                       loci: LociSet,
                                                                       regionRDDs: RDD[M]*): LociMap[Long] = {
+    assume(loci.nonEmpty)
     val sc = regionRDDs.head.sparkContext
     val tasks = if (args.parallelism > 0) args.parallelism else sc.defaultParallelism
     if (args.partitioningAccuracy == 0) {
