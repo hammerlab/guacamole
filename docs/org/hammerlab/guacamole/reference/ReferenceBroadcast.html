@@ -35,7 +35,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">ReferenceBroadcast</span><span class="params">(<span name="broadcastedContigs">broadcastedContigs: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <a href="ContigSequence.html" class="extype" name="org.hammerlab.guacamole.reference.ContigSequence">ContigSequence</a>]</span>)</span><span class="result"> extends <a href="ReferenceGenome.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceGenome">ReferenceGenome</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">ReferenceBroadcast</span><span class="params">(<span name="broadcastedContigs">broadcastedContigs: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <a href="ContigSequence.html" class="extype" name="org.hammerlab.guacamole.reference.ContigSequence">ContigSequence</a>]</span>, <span name="source">source: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result"> extends <a href="ReferenceGenome.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceGenome">ReferenceGenome</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
@@ -80,7 +80,7 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="org.hammerlab.guacamole.reference.ReferenceBroadcast#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(broadcastedContigs:Map[String,org.hammerlab.guacamole.reference.ContigSequence]):org.hammerlab.guacamole.reference.ReferenceBroadcast"></a>
+      <a id="&lt;init&gt;(broadcastedContigs:Map[String,org.hammerlab.guacamole.reference.ContigSequence],source:Option[String]):org.hammerlab.guacamole.reference.ReferenceBroadcast"></a>
       <a id="&lt;init&gt;:ReferenceBroadcast"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -88,7 +88,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">ReferenceBroadcast</span><span class="params">(<span name="broadcastedContigs">broadcastedContigs: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <a href="ContigSequence.html" class="extype" name="org.hammerlab.guacamole.reference.ContigSequence">ContigSequence</a>]</span>)</span>
+        <span class="name">ReferenceBroadcast</span><span class="params">(<span name="broadcastedContigs">broadcastedContigs: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <a href="ContigSequence.html" class="extype" name="org.hammerlab.guacamole.reference.ContigSequence">ContigSequence</a>]</span>, <span name="source">source: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span>
       </span>
       </h4>
       
@@ -372,6 +372,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.reference.ReferenceBroadcast#source" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="source:Option[String]"></a>
+      <a id="source:Option[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">source</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Path where this reference was loaded from, or other description of its provenance (optional).</p><div class="fullcomment"><div class="comment cmt"><p>Path where this reference was loaded from, or other description of its provenance (optional).</p><p>For provenance tracking only. Not guaranteed to be a valid path or on a filesystem that is currently accessible.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.reference.ReferenceBroadcast">ReferenceBroadcast</a> → <a href="ReferenceGenome.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceGenome">ReferenceGenome</a></dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
