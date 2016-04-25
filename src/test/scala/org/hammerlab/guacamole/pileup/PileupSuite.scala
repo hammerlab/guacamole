@@ -21,8 +21,8 @@ package org.hammerlab.guacamole.pileup
 import org.hammerlab.guacamole.Bases
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.util.TestUtil.Implicits._
-import org.hammerlab.guacamole.util.TestUtil.{assertBases, loadPileup}
-import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
+import org.hammerlab.guacamole.util.TestUtil.loadPileup
+import org.hammerlab.guacamole.util.{AssertBases, GuacFunSuite, TestUtil}
 import org.hammerlab.guacamole.variants.Allele
 import org.scalatest.prop.TableDrivenPropertyChecks
 
@@ -75,12 +75,12 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
     insertPileup.elements.exists(_.isInsertion) should be(true)
     insertPileup.elements.exists(_.qualityScore == 5) should be(true)
 
-    insertPileup.elements.forall(
+    insertPileup.elements.foreach(
       _.alignment match {
-        case Match(_, quality)       => quality == 25
-        case Insertion(_, qualities) => qualities.sameElements(Seq(25, 5, 5, 5))
-        case _                       => false
-      }) should be(true)
+        case Match(_, quality)       => quality should be(25)
+        case Insertion(_, qualities) => qualities should be(Seq(25, 5, 5, 5))
+        case a                       => assert(false, s"Unexpected Alignment: $a")
+      })
   }
 
   sparkTest("create pileup from long insert reads, right after insertion") {
@@ -106,7 +106,7 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
       TestUtil.makeRead("TCGATCGA", "8M", 1),
       TestUtil.makeRead("TCGACCCTCGA", "4M3I4M", 1))
     val lastPileup = Pileup(reads, "chr1", 7, reference.getContig("chr1"))
-    lastPileup.elements.foreach(e => assertBases(e.sequencedBases, "G"))
+    lastPileup.elements.foreach(e => AssertBases(e.sequencedBases, "G"))
     lastPileup.elements.forall(_.isMatch) should be(true)
   }
 
@@ -118,7 +118,7 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
       TestUtil.makeRead("TCGACCCTCGA", "4M3I4M", 1, "chr1", Some(Seq(10, 15, 20, 25, 5, 5, 5, 10, 15, 20, 25))))
 
     val lastPileup = Pileup(reads, "chr1", 8, reference.getContig("chr1"))
-    lastPileup.elements.foreach(e => assertBases(e.sequencedBases, "A"))
+    lastPileup.elements.foreach(e => AssertBases(e.sequencedBases, "A"))
     lastPileup.elements.forall(_.sequencedBases.headOption.exists(_ == Bases.A)) should be(true)
 
     lastPileup.elements.forall(_.isMatch) should be(true)
@@ -264,7 +264,7 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
     }
     val at5 = pileupElementFromRead(decadentRead1, 5)
     assert(at5 != null)
-    assertBases(at5.sequencedBases, "A")
+    AssertBases(at5.sequencedBases, "A")
     assert(at5.sequencedBases.headOption.exists(_ == Bases.A))
 
     // At the end of the read:
@@ -283,7 +283,7 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
     val at38 = pileupElementFromRead(decadentRead1, 5 + 38)
     assert(at38.sequencedBases.size === 0)
     // Just after the deletion
-    assertBases(pileupElementFromRead(decadentRead1, 5 + 39).sequencedBases, "A")
+    AssertBases(pileupElementFromRead(decadentRead1, 5 + 39).sequencedBases, "A")
 
     // advanceToLocus is a no-op on the same locus,
     // and fails in lower loci
@@ -301,11 +301,11 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
     val read3Record = testAdamRecords(2) // read3
     val read3At15 = pileupElementFromRead(read3Record, 15)
     assert(read3At15 != null)
-    assertBases(read3At15.sequencedBases, "A")
-    assertBases(read3At15.advanceToLocus(16).sequencedBases, "T")
-    assertBases(read3At15.advanceToLocus(17).sequencedBases, "C")
-    assertBases(read3At15.advanceToLocus(16).advanceToLocus(17).sequencedBases, "C")
-    assertBases(read3At15.advanceToLocus(18).sequencedBases, "G")
+    AssertBases(read3At15.sequencedBases, "A")
+    AssertBases(read3At15.advanceToLocus(16).sequencedBases, "T")
+    AssertBases(read3At15.advanceToLocus(17).sequencedBases, "C")
+    AssertBases(read3At15.advanceToLocus(16).advanceToLocus(17).sequencedBases, "C")
+    AssertBases(read3At15.advanceToLocus(18).sequencedBases, "G")
   }
 
   sparkTest("Read4 has CIGAR: 10M10I10D40M. It's ACGT repeated 15 times") {
@@ -330,14 +330,14 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
     val decadentRead5 = testAdamRecords(4)
     val read5At10 = pileupElementFromRead(decadentRead5, 10)
     assert(read5At10 != null)
-    assertBases(read5At10.advanceToLocus(10).sequencedBases, "A")
-    assertBases(read5At10.advanceToLocus(14).sequencedBases, "A")
-    assertBases(read5At10.advanceToLocus(18).sequencedBases, "A")
-    assertBases(read5At10.advanceToLocus(19).sequencedBases, "C")
-    assertBases(read5At10.advanceToLocus(20).sequencedBases, "G")
-    assertBases(read5At10.advanceToLocus(21).sequencedBases, "T")
-    assertBases(read5At10.advanceToLocus(22).sequencedBases, "A")
-    assertBases(read5At10.advanceToLocus(24).sequencedBases, "G")
+    AssertBases(read5At10.advanceToLocus(10).sequencedBases, "A")
+    AssertBases(read5At10.advanceToLocus(14).sequencedBases, "A")
+    AssertBases(read5At10.advanceToLocus(18).sequencedBases, "A")
+    AssertBases(read5At10.advanceToLocus(19).sequencedBases, "C")
+    AssertBases(read5At10.advanceToLocus(20).sequencedBases, "G")
+    AssertBases(read5At10.advanceToLocus(21).sequencedBases, "T")
+    AssertBases(read5At10.advanceToLocus(22).sequencedBases, "A")
+    AssertBases(read5At10.advanceToLocus(24).sequencedBases, "G")
   }
 
   sparkTest("read6: ACGTACGTACGT 4=1N4=4S") {
@@ -347,13 +347,13 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
     val read6At99 = pileupElementFromRead(decadentRead6, 99)
 
     assert(read6At99 != null)
-    assertBases(read6At99.advanceToLocus(99).sequencedBases, "A")
-    assertBases(read6At99.advanceToLocus(100).sequencedBases, "C")
-    assertBases(read6At99.advanceToLocus(101).sequencedBases, "G")
-    assertBases(read6At99.advanceToLocus(102).sequencedBases, "T")
-    assertBases(read6At99.advanceToLocus(103).sequencedBases, "")
-    assertBases(read6At99.advanceToLocus(104).sequencedBases, "A")
-    assertBases(read6At99.advanceToLocus(107).sequencedBases, "T")
+    AssertBases(read6At99.advanceToLocus(99).sequencedBases, "A")
+    AssertBases(read6At99.advanceToLocus(100).sequencedBases, "C")
+    AssertBases(read6At99.advanceToLocus(101).sequencedBases, "G")
+    AssertBases(read6At99.advanceToLocus(102).sequencedBases, "T")
+    AssertBases(read6At99.advanceToLocus(103).sequencedBases, "")
+    AssertBases(read6At99.advanceToLocus(104).sequencedBases, "A")
+    AssertBases(read6At99.advanceToLocus(107).sequencedBases, "T")
     intercept[AssertionError] {
       read6At99.advanceToLocus(49).sequencedBases
     }
@@ -363,13 +363,13 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
     val decadentRead7 = testAdamRecords(6)
     val read7At99 = pileupElementFromRead(decadentRead7, 99)
     assert(read7At99 != null)
-    assertBases(read7At99.advanceToLocus(99).sequencedBases, "A")
-    assertBases(read7At99.advanceToLocus(100).sequencedBases, "C")
-    assertBases(read7At99.advanceToLocus(101).sequencedBases, "G")
-    assertBases(read7At99.advanceToLocus(102).sequencedBases, "T")
-    assertBases(read7At99.advanceToLocus(103).sequencedBases, "")
-    assertBases(read7At99.advanceToLocus(104).sequencedBases, "A")
-    assertBases(read7At99.advanceToLocus(107).sequencedBases, "T")
+    AssertBases(read7At99.advanceToLocus(99).sequencedBases, "A")
+    AssertBases(read7At99.advanceToLocus(100).sequencedBases, "C")
+    AssertBases(read7At99.advanceToLocus(101).sequencedBases, "G")
+    AssertBases(read7At99.advanceToLocus(102).sequencedBases, "T")
+    AssertBases(read7At99.advanceToLocus(103).sequencedBases, "")
+    AssertBases(read7At99.advanceToLocus(104).sequencedBases, "A")
+    AssertBases(read7At99.advanceToLocus(107).sequencedBases, "T")
     intercept[AssertionError] {
       read7At99.advanceToLocus(49).sequencedBases
     }
@@ -387,16 +387,16 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
     val rnaPileupElement = PileupElement(rnaRead, 229538779L, referenceContigSequence = reference.getContig("chr1"))
 
     // Second base
-    assertBases(rnaPileupElement.advanceToLocus(229538780L).sequencedBases, "C")
+    AssertBases(rnaPileupElement.advanceToLocus(229538780L).sequencedBases, "C")
 
     // Third base
-    assertBases(rnaPileupElement.advanceToLocus(229538781L).sequencedBases, "C")
+    AssertBases(rnaPileupElement.advanceToLocus(229538781L).sequencedBases, "C")
 
     // In intron
-    assertBases(rnaPileupElement.advanceToLocus(229539779L).sequencedBases, "")
+    AssertBases(rnaPileupElement.advanceToLocus(229539779L).sequencedBases, "")
 
     // Last base
-    assertBases(rnaPileupElement.advanceToLocus(229729912L).sequencedBases, "C")
+    AssertBases(rnaPileupElement.advanceToLocus(229729912L).sequencedBases, "C")
 
   }
 

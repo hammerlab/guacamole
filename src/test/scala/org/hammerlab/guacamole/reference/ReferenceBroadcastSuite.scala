@@ -1,8 +1,7 @@
 package org.hammerlab.guacamole.reference
 
 import org.hammerlab.guacamole.Bases
-import org.hammerlab.guacamole.util.TestUtil
-import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
+import org.hammerlab.guacamole.util.{AssertBases, GuacFunSuite, TestUtil}
 import org.scalatest.Matchers
 
 class ReferenceBroadcastSuite extends GuacFunSuite with Matchers {
@@ -33,15 +32,15 @@ class ReferenceBroadcastSuite extends GuacFunSuite with Matchers {
     reference.getReferenceBase("2", 160) should be(Bases.C)
     reference.getReferenceBase("2", 240) should be(Bases.G)
 
-    TestUtil.assertBases(
+    AssertBases(
       reference.getReferenceSequence("1", 80, 160),
       "CATCAAAATACCACCATCATTCTTCACAGAACTAGAAAAAACAAGGCTAAAATTCACATGGAACCAAAAAAGAGCCCACA")
 
-    TestUtil.assertBases(
+    AssertBases(
       reference.getReferenceSequence("2", 240, 320),
       "GACGTTCATTCAGAATGCCACCTAACTAGGCCAGTTTTTGGACTGTATGCCAGCCTCTTTCTGCGGGATGTAATCTCAAT")
 
-    TestUtil.assertBases(
+    AssertBases(
       reference.getReferenceSequence("2", 720, 800),
       "CTGATGATCGCACCTGCATAACTGCTACCAGACCTGCTAAGGGGGAGCCTGGCCCAGCCATCTCTTCTTTGTGGTCACAA")
 

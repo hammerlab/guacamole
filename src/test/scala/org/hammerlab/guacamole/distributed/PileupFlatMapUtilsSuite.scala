@@ -21,8 +21,7 @@ package org.hammerlab.guacamole.distributed
 import org.hammerlab.guacamole.Bases
 import org.hammerlab.guacamole.loci.LociSet
 import org.hammerlab.guacamole.pileup.{Pileup, PileupElement}
-import org.hammerlab.guacamole.util.TestUtil._
-import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
+import org.hammerlab.guacamole.util.{AssertBases, GuacFunSuite, TestUtil}
 
 class PileupFlatMapUtilsSuite extends GuacFunSuite {
 
@@ -232,7 +231,7 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
       ).collect()
 
     elements.map(_.isMatch) should equal(List.fill(elements.length)(true))
-    assertBases(
+    AssertBases(
       elements.flatMap(_.sequencedBases).toSeq,
       "TTTTTTCCCCCCGGGGGGAAAAAATTTTTTCCCCCCGGGGGGAAAAAAAGGGGGGGGGGGGGGGGGGGGGGGGGG"
     )
