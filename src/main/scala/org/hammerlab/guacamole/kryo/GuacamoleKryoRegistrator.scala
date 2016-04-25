@@ -21,7 +21,8 @@ package org.hammerlab.guacamole.kryo
 import com.esotericsoftware.kryo.Kryo
 import org.bdgenomics.adam.serialization.ADAMKryoRegistrator
 import org.hammerlab.guacamole.distributed.TaskPosition
-import org.hammerlab.guacamole.loci.{LociMap, LociMapLongSerializer, LociMapLongSingleContigSerializer, LociSet, LociSetSerializer, LociSetSingleContigSerializer}
+import org.hammerlab.guacamole.loci.map.{LociMap, Contig => LociMapContig, ContigSerializer => LociMapContigSerializer, Serializer => LociMapSerializer}
+import org.hammerlab.guacamole.loci.set.{LociSet, Contig => LociSetContig, ContigSerializer => LociSetContigSerializer, Serializer => LociSetSerializer}
 import org.hammerlab.guacamole.reads.{MappedRead, MappedReadSerializer, UnmappedRead, UnmappedReadSerializer}
 import org.hammerlab.guacamole.variants._
 
@@ -42,9 +43,9 @@ class GuacamoleKryoRegistrator extends ADAMKryoRegistrator {
     kryo.register(classOf[MappedRead], new MappedReadSerializer)
     kryo.register(classOf[UnmappedRead], new UnmappedReadSerializer)
     kryo.register(classOf[LociSet], new LociSetSerializer)
-    kryo.register(classOf[LociSet.SingleContig], new LociSetSingleContigSerializer)
-    kryo.register(classOf[LociMap[Long]], new LociMapLongSerializer)
-    kryo.register(classOf[LociMap.SingleContig[Long]], new LociMapLongSingleContigSerializer)
+    kryo.register(classOf[LociSetContig], new LociSetContigSerializer)
+    kryo.register(classOf[LociMap[Long]], new LociMapSerializer)
+    kryo.register(classOf[LociMapContig[Long]], new LociMapContigSerializer[Long])
     kryo.register(classOf[Allele], new AlleleSerializer)
     kryo.register(classOf[Genotype], new GenotypeSerializer)
     kryo.register(classOf[TaskPosition])

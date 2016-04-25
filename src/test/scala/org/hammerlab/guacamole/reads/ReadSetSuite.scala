@@ -21,7 +21,7 @@ package org.hammerlab.guacamole.reads
 import org.apache.parquet.hadoop.metadata.CompressionCodecName
 import org.bdgenomics.adam.rdd.read.AlignmentRecordRDDFunctions
 import org.bdgenomics.adam.rdd.{ADAMContext, ADAMSaveAnyArgs}
-import org.hammerlab.guacamole.loci.LociSet
+import org.hammerlab.guacamole.loci.set.LociParser
 import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
 
 class ReadSetSuite extends GuacFunSuite {
@@ -86,13 +86,13 @@ class ReadSetSuite extends GuacFunSuite {
     Seq(
       InputFilters(),
       InputFilters(mapped = true, nonDuplicate = true),
-      InputFilters(overlapsLoci = LociSet.parse("20:10220390-10220490"))
+      InputFilters(overlapsLoci = LociParser("20:10220390-10220490"))
     ).foreach(filter => {
       check(Seq("gatk_mini_bundle_extract.bam", "gatk_mini_bundle_extract.sam"), filter)
     })
 
     Seq(
-      InputFilters(overlapsLoci = LociSet.parse("19:147033"))
+      InputFilters(overlapsLoci = LociParser("19:147033"))
     ).foreach(filter => {
       check(Seq("synth1.normal.100k-200k.withmd.bam", "synth1.normal.100k-200k.withmd.sam"), filter)
     })

@@ -27,7 +27,8 @@ import org.apache.hadoop.fs.{FileSystem, Path}
 import org.apache.hadoop.mapred.FileAlreadyExistsException
 import org.apache.spark.{Logging, SparkConf, SparkContext}
 import org.hammerlab.guacamole.distributed.LociPartitionUtils
-import org.hammerlab.guacamole.loci.{LociArgs, LociSet}
+import org.hammerlab.guacamole.loci.LociArgs
+import org.hammerlab.guacamole.loci.set.{LociParser, LociSet}
 import org.hammerlab.guacamole.logging.DebugLogArgs
 import org.hammerlab.guacamole.reads.{InputFilters, ReadLoadingConfigArgs}
 import org.hammerlab.guacamole.variants.Concordance.ConcordanceArgs
@@ -118,25 +119,27 @@ object Common extends Logging {
   }
 
   /**
-   * Return the loci specified by the user as a LociSet.Builder.
+   * Return the loci specified by the user as a LociParser.
    *
    * @param args parsed arguments
    */
-  def lociFromArguments(args: LociArgs, default: String = "all"): LociSet.Builder = {
+  def lociFromArguments(args: LociArgs, default: String = "all"): LociParser = {
     if (args.loci.nonEmpty && args.lociFromFile.nonEmpty) {
       throw new IllegalArgumentException("Specify at most one of the 'loci' and 'loci-from-file' arguments")
     }
-    val lociToParse = if (args.loci.nonEmpty) {
-      args.loci
-    } else if (args.lociFromFile.nonEmpty) {
-      // Load loci from file.
-      val filesystem = FileSystem.get(new Configuration())
-      val path = new Path(args.lociFromFile)
-      IOUtils.toString(new InputStreamReader(filesystem.open(path)))
-    } else {
-      default
-    }
-    LociSet.parse(lociToParse)
+    val lociToParse =
+      if (args.loci.nonEmpty) {
+        args.loci
+      } else if (args.lociFromFile.nonEmpty) {
+        // Load loci from file.
+        val filesystem = FileSystem.get(new Configuration())
+        val path = new Path(args.lociFromFile)
+        IOUtils.toString(new InputStreamReader(filesystem.open(path)))
+      } else {
+        default
+      }
+
+    LociParser(lociToParse)
   }
 
   /**
@@ -150,18 +153,13 @@ object Common extends Logging {
    */
   def lociFromFile(filePath: String, contigLengths: Map[String, Long]): LociSet = {
     if (filePath.endsWith(".vcf")) {
-      val builder = LociSet.newBuilder
-      val reader = new VCFFileReader(new File(filePath), false)
-      val iterator = reader.iterator
-      while (iterator.hasNext) {
-        val value = iterator.next()
-        builder.put(value.getContig, value.getStart - 1, value.getEnd.toLong)
-      }
-      builder.result
+      LociSet(
+        new VCFFileReader(new File(filePath), false)
+      )
     } else if (filePath.endsWith(".loci") || filePath.endsWith(".txt")) {
       val filesystem = FileSystem.get(new Configuration())
       val path = new Path(filePath)
-      LociSet.parse(
+      LociParser(
         IOUtils.toString(new InputStreamReader(filesystem.open(path)))
       ).result(contigLengths)
     } else {
@@ -181,17 +179,17 @@ object Common extends Logging {
    * @param contigLengths contig lengths, by name
    * @return a LociSet
    */
-  def loci(loci: String, lociFromFilePath: String, contigLengths: Map[String, Long]): LociSet = {
+  def loadLoci(loci: String, lociFromFilePath: String, contigLengths: Map[String, Long]): LociSet = {
     if (loci.nonEmpty && lociFromFilePath.nonEmpty) {
       throw new IllegalArgumentException("Specify at most one of the 'loci' and 'loci-from-file' arguments")
     }
     if (loci.nonEmpty) {
-      LociSet.parse(loci).result(Some(contigLengths))
+      LociParser(loci).result(contigLengths)
     } else if (lociFromFilePath.nonEmpty) {
       lociFromFile(lociFromFilePath, contigLengths)
     } else {
       // Default is "all"
-      LociSet.parse("all").result(Some(contigLengths))
+      LociSet.all(contigLengths)
     }
   }
 
@@ -252,29 +250,6 @@ object Common extends Logging {
     }
 
     new SparkContext(config)
-  }
-
-  /**
-   * Like Scala's List.mkString method, but supports truncation.
-   *
-   * Return the concatenation of an iterator over strings, separated by separator, truncated to at most maxLength
-   * characters. If truncation occurs, the string is terminated with ellipses.
-   */
-  def assembleTruncatedString(
-    pieces: Iterator[String],
-    maxLength: Int,
-    separator: String = ",",
-    ellipses: String = " [...]"): String = {
-    val builder = StringBuilder.newBuilder
-    var remaining: Int = maxLength
-    while (pieces.hasNext && remaining > ellipses.length) {
-      val string = pieces.next()
-      builder.append(string)
-      if (pieces.hasNext) builder.append(separator)
-      remaining -= string.length + separator.length
-    }
-    if (pieces.hasNext) builder.append(ellipses)
-    builder.result
   }
 
   /**

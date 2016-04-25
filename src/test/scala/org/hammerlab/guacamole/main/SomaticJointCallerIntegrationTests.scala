@@ -2,7 +2,7 @@ package org.hammerlab.guacamole.main
 
 import org.hammerlab.guacamole.VariantComparisonUtils.{compareToCSV, compareToVCF, csvRecords}
 import org.hammerlab.guacamole.commands.jointcaller.SomaticJoint
-import org.hammerlab.guacamole.loci.LociSet
+import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.util.TestUtil
 import org.hammerlab.guacamole.{CancerWGSTestUtils, Common, NA12878TestUtils}
 
@@ -33,13 +33,21 @@ object SomaticJointCallerIntegrationTests {
         args.loci = ((1).until(22).map(i => "chr%d".format(i)) ++ Seq("chrX", "chrY")).mkString(",")
 
         args.paths = CancerWGSTestUtils.cancerWGS1Bams.toArray
-        val forceCallLoci = LociSet.newBuilder
-        csvRecords(CancerWGSTestUtils.cancerWGS1ExpectedSomaticCallsCSV).filter(!_.tumor.contains("decoy")).foreach(record => {
-          forceCallLoci.put("chr" + record.contig,
-            if (record.alt.nonEmpty) record.interbaseStart else record.interbaseStart - 1,
-            if (record.alt.nonEmpty) record.interbaseStart + 1 else record.interbaseStart)
-        })
-        args.forceCallLoci = forceCallLoci.result.truncatedString(100000)
+
+        val forceCallLoci =
+          LociSet(
+            csvRecords(CancerWGSTestUtils.cancerWGS1ExpectedSomaticCallsCSV)
+              .filterNot(_.tumor.contains("decoy"))
+              .map(record => {
+                (
+                  "chr" + record.contig,
+                  if (record.alt.nonEmpty) record.interbaseStart else record.interbaseStart - 1L,
+                  if (record.alt.nonEmpty) record.interbaseStart + 1L else record.interbaseStart
+                )
+              })
+          )
+
+        args.forceCallLoci = forceCallLoci.truncatedString(100000)
 
         SomaticJoint.Caller.run(args, sc)
       }

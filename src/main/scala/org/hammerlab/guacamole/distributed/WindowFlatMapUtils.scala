@@ -3,7 +3,8 @@ package org.hammerlab.guacamole.distributed
 import org.apache.commons.math3
 import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.rdd.RDD
-import org.hammerlab.guacamole.loci.{LociMap, LociSet}
+import org.hammerlab.guacamole.loci.map.LociMap
+import org.hammerlab.guacamole.loci.set.{Contig, LociSet}
 import org.hammerlab.guacamole.logging.DelayedMessages
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.windowing.{SlidingWindow, SplitIterator}
@@ -144,9 +145,9 @@ object WindowFlatMapUtils {
     val numRDDs = regionRDDs.length
     assume(numRDDs > 0)
     val sc = regionRDDs(0).sparkContext
-    progress("Loci partitioning: %s".format(lociPartitions.truncatedString()))
+    progress(s"Loci partitioning: $lociPartitions")
     val lociPartitionsBoxed: Broadcast[LociMap[Long]] = sc.broadcast(lociPartitions)
-    val numTasks = lociPartitions.asInverseMap.map(_._1).max + 1
+    val numTasks = lociPartitions.inverse.map(_._1).max + 1
 
     // Counters
     val totalRegions = sc.accumulator(0L)
@@ -206,7 +207,7 @@ object WindowFlatMapUtils {
 
     partitioned.mapPartitionsWithIndex((taskNum, values) => {
       val iterators = SplitIterator.split(numRDDs, values)
-      val taskLoci = lociPartitionsBoxed.value.asInverseMap(taskNum)
+      val taskLoci = lociPartitionsBoxed.value.inverse(taskNum)
       lociAccumulator += taskLoci.count
       function(taskNum, taskLoci, iterators)
     })
@@ -228,14 +229,14 @@ object WindowFlatMapUtils {
     taskRegionsPerSample: PerSample[Iterator[M]],
     taskLoci: LociSet,
     halfWindowSize: Long,
-    generateFromWindows: (LociSet.SingleContig, PerSample[SlidingWindow[M]]) => Iterator[T]): Iterator[T] = {
+    generateFromWindows: (Contig, PerSample[SlidingWindow[M]]) => Iterator[T]): Iterator[T] = {
 
     val regionSplitByContigPerSample: PerSample[RegionsByContig[M]] = taskRegionsPerSample.map(new RegionsByContig(_))
 
     taskLoci.contigs.flatMap(contig => {
-      val regionIterator: PerSample[Iterator[M]] = regionSplitByContigPerSample.map(_.next(contig))
-      val windows: PerSample[SlidingWindow[M]] = regionIterator.map(SlidingWindow[M](contig, halfWindowSize, _))
-      generateFromWindows(taskLoci.onContig(contig), windows)
+      val regionIterator: PerSample[Iterator[M]] = regionSplitByContigPerSample.map(_.next(contig.name))
+      val windows: PerSample[SlidingWindow[M]] = regionIterator.map(SlidingWindow[M](contig.name, halfWindowSize, _))
+      generateFromWindows(contig, windows)
     }).iterator
   }
 }
