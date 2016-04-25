@@ -5,19 +5,21 @@ import breeze.stats.{mean, median}
 import htsjdk.samtools.CigarOperator
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
-import org.hammerlab.guacamole.Common.Arguments.GermlineCallerArgs
-import org.hammerlab.guacamole._
+import org.hammerlab.guacamole.Common.GermlineCallerArgs
 import org.hammerlab.guacamole.alignment.AffineGapPenaltyAlignment
 import org.hammerlab.guacamole.assembly.DeBruijnGraph
 import org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociAccordingToArgs
 import org.hammerlab.guacamole.distributed.WindowFlatMapUtils.windowFlatMapWithState
 import org.hammerlab.guacamole.likelihood.Likelihood
 import org.hammerlab.guacamole.loci.LociMap
+import org.hammerlab.guacamole.logging.DelayedMessages
+import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.reads.{MappedRead, Read}
+import org.hammerlab.guacamole.reads.{MappedRead, InputFilters}
 import org.hammerlab.guacamole.reference.{ReferenceBroadcast, ReferenceGenome}
-import org.hammerlab.guacamole.variants.{Allele, AlleleConversions, AlleleEvidence, CalledAllele}
+import org.hammerlab.guacamole.variants.{Allele, AlleleConversions, AlleleEvidence, CalledAllele, VariantUtils}
 import org.hammerlab.guacamole.windowing.SlidingWindow
+import org.hammerlab.guacamole.{CigarUtils, Common, SparkCommand}
 import org.kohsuke.args4j.{Option => Args4jOption}
 
 import scala.collection.JavaConversions._
@@ -194,8 +196,8 @@ object GermlineAssemblyCaller {
       val readSet = Common.loadReadsFromArguments(
         args,
         sc,
-        Read.InputFilters(
-          overlapsLoci = Some(loci),
+        InputFilters(
+          overlapsLoci = loci,
           mapped = true,
           nonDuplicate = true
         )
@@ -225,12 +227,12 @@ object GermlineAssemblyCaller {
 
       genotypes.persist()
 
-      Common.progress(s"Found ${genotypes.count} variants")
+      progress(s"Found ${genotypes.count} variants")
 
       val outputGenotypes =
         genotypes.flatMap(AlleleConversions.calledAlleleToADAMGenotype)
 
-      Common.writeVariantsFromArguments(args, outputGenotypes)
+      VariantUtils.writeVariantsFromArguments(args, outputGenotypes)
       DelayedMessages.default.print()
     }
 

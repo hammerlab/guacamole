@@ -16,18 +16,18 @@
  * limitations under the License.
  */
 
-package org.hammerlab.guacamole
+package org.hammerlab.guacamole.likelihood
 
 import org.apache.spark.SparkContext
 import org.bdgenomics.adam.util.PhredUtils
-import org.hammerlab.guacamole.likelihood.LikelihoodSuite
+import org.hammerlab.guacamole.Bases
 import org.hammerlab.guacamole.util.TestUtil
 import org.hammerlab.guacamole.variants.{Allele, Genotype}
 
 /**
  * Some utility functions for [[LikelihoodSuite]].
  */
-object ReadsUtil {
+object LikelihoodUtil {
 
   def referenceBroadcast(sc: SparkContext) = TestUtil.makeReference(sc, Seq(("chr1", 1, "C")))
   val referenceBase = 'C'.toByte

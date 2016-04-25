@@ -22,7 +22,7 @@ import htsjdk.samtools.Cigar
 import org.bdgenomics.adam.util.PhredUtils
 import org.hammerlab.guacamole.pileup.PileupElement
 import org.hammerlab.guacamole.reference.ContigSequence
-import org.hammerlab.guacamole.{Bases, HasReferenceRegion}
+import org.hammerlab.guacamole.{Bases, CigarUtils, HasReferenceRegion}
 
 import scala.collection.JavaConversions
 
@@ -62,7 +62,6 @@ case class MappedRead(
    * @param referenceContigSequence the reference sequence for this read's contig
    * @return count of mismatching bases
    */
-
   private var cachedCountOfMismatches = -1
   def countOfMismatches(referenceContigSequence: ContigSequence): Int = {
     if (cachedCountOfMismatches == -1) {
@@ -92,14 +91,14 @@ case class MappedRead(
    * A read can be "clipped", meaning that some prefix or suffix of it did not align. This is the start of the whole
    * read's alignment, including any initial clipped bases.
    */
-  val unclippedStart = cigarElements.takeWhile(Read.cigarElementIsClipped).foldLeft(start)({
+  val unclippedStart = cigarElements.takeWhile(CigarUtils.isClipped).foldLeft(start)({
     (pos, element) => pos - element.getLength
   })
 
   /**
    * The end of the read's alignment, including any final clipped bases, exclusive.
    */
-  val unclippedEnd = cigarElements.reverse.takeWhile(Read.cigarElementIsClipped).foldLeft(end)({
+  val unclippedEnd = cigarElements.reverse.takeWhile(CigarUtils.isClipped).foldLeft(end)({
     (pos, element) => pos + element.getLength
   })
 
