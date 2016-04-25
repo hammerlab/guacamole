@@ -45,6 +45,8 @@ object SomaticJoint {
     @Args4jOption(name = "-q", usage = "Quiet: less stdout")
     var quiet: Boolean = false
 
+    // For example:
+    //  --header-metadata kind=tuning_test version=4
     @Args4jOption(name = "--header-metadata",
       usage = "Extra header metadata for VCF output in format KEY=VALUE KEY=VALUE ...",
       handler = classOf[StringArrayOptionHandler])
