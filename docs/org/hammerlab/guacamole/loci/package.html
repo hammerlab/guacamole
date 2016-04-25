@@ -71,84 +71,19 @@
       </span>
       </h4>
       <p class="comment cmt">Argument for accepting a set of loci.</p>
-    </li><li name="org.hammerlab.guacamole.loci.LociMap" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="LociMap[T]extendsProductwithSerializable"></a>
-      <a id="LociMap[T]:LociMap[T]"></a>
+    </li><li name="org.hammerlab.guacamole.loci.SimpleRange" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="SimpleRangeextendsOrdered[org.hammerlab.guacamole.loci.SimpleRange]withProductwithSerializable"></a>
+      <a id="SimpleRange:SimpleRange"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="LociMap.html"><span class="name">LociMap</span></a><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="map">map: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <a href="LociMap$$SingleContig.html" class="extype" name="org.hammerlab.guacamole.loci.LociMap.SingleContig">SingleContig</a>[<span class="extype" name="org.hammerlab.guacamole.loci.LociMap.T">T</span>]]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="SimpleRange.html"><span class="name">SimpleRange</span></a><span class="params">(<span name="start">start: <span class="extype" name="scala.Long">Long</span></span>, <span name="end">end: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Ordered">Ordered</span>[<a href="SimpleRange.html" class="extype" name="org.hammerlab.guacamole.loci.SimpleRange">SimpleRange</a>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
-      <p class="comment cmt">An immutable map from loci to a instances of an arbitrary type T.</p>
-    </li><li name="org.hammerlab.guacamole.loci.LociMapLongSerializer" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="LociMapLongSerializerextendsSerializer[org.hammerlab.guacamole.loci.LociMap[Long]]"></a>
-      <a id="LociMapLongSerializer:LociMapLongSerializer"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">class</span>
-      </span>
-      <span class="symbol">
-        <a href="LociMapLongSerializer.html"><span class="name">LociMapLongSerializer</span></a><span class="result"> extends <span class="extype" name="com.esotericsoftware.kryo.Serializer">Serializer</span>[<a href="LociMap.html" class="extype" name="org.hammerlab.guacamole.loci.LociMap">LociMap</a>[<span class="extype" name="scala.Long">Long</span>]]</span>
-      </span>
-      </h4>
-      
-    </li><li name="org.hammerlab.guacamole.loci.LociMapLongSingleContigSerializer" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="LociMapLongSingleContigSerializerextendsSerializer[org.hammerlab.guacamole.loci.LociMap.SingleContig[Long]]"></a>
-      <a id="LociMapLongSingleContigSerializer:LociMapLongSingleContigSerializer"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">class</span>
-      </span>
-      <span class="symbol">
-        <a href="LociMapLongSingleContigSerializer.html"><span class="name">LociMapLongSingleContigSerializer</span></a><span class="result"> extends <span class="extype" name="com.esotericsoftware.kryo.Serializer">Serializer</span>[<a href="LociMap$$SingleContig.html" class="extype" name="org.hammerlab.guacamole.loci.LociMap.SingleContig">SingleContig</a>[<span class="extype" name="scala.Long">Long</span>]]</span>
-      </span>
-      </h4>
-      
-    </li><li name="org.hammerlab.guacamole.loci.LociSet" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="LociSetextendsProductwithSerializable"></a>
-      <a id="LociSet:LociSet"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">case class</span>
-      </span>
-      <span class="symbol">
-        <a href="LociSet.html"><span class="name">LociSet</span></a><span class="params">(<span name="map">map: <a href="LociMap.html" class="extype" name="org.hammerlab.guacamole.loci.LociMap">LociMap</a>[<span class="extype" name="scala.Long">Long</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
-      </span>
-      </h4>
-      <p class="comment cmt">An immutable collection of genomic regions on any number of contigs.</p>
-    </li><li name="org.hammerlab.guacamole.loci.LociSetSerializer" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="LociSetSerializerextendsSerializer[org.hammerlab.guacamole.loci.LociSet]"></a>
-      <a id="LociSetSerializer:LociSetSerializer"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">class</span>
-      </span>
-      <span class="symbol">
-        <a href="LociSetSerializer.html"><span class="name">LociSetSerializer</span></a><span class="result"> extends <span class="extype" name="com.esotericsoftware.kryo.Serializer">Serializer</span>[<a href="LociSet.html" class="extype" name="org.hammerlab.guacamole.loci.LociSet">LociSet</a>]</span>
-      </span>
-      </h4>
-      
-    </li><li name="org.hammerlab.guacamole.loci.LociSetSingleContigSerializer" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="LociSetSingleContigSerializerextendsSerializer[org.hammerlab.guacamole.loci.LociSet.SingleContig]"></a>
-      <a id="LociSetSingleContigSerializer:LociSetSingleContigSerializer"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">class</span>
-      </span>
-      <span class="symbol">
-        <a href="LociSetSingleContigSerializer.html"><span class="name">LociSetSingleContigSerializer</span></a><span class="result"> extends <span class="extype" name="com.esotericsoftware.kryo.Serializer">Serializer</span>[<a href="LociSet$$SingleContig.html" class="extype" name="org.hammerlab.guacamole.loci.LociSet.SingleContig">SingleContig</a>]</span>
-      </span>
-      </h4>
-      
+      <p class="comment cmt">A range of Longs.</p>
     </li></ol>
             </div>
 
@@ -156,29 +91,42 @@
 
         <div id="values" class="values members">
               <h3>Value Members</h3>
-              <ol><li name="org.hammerlab.guacamole.loci.LociMap" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="LociMap"></a>
-      <a id="LociMap:LociMap"></a>
+              <ol><li name="org.hammerlab.guacamole.loci.SimpleRange" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="SimpleRange"></a>
+      <a id="SimpleRange:SimpleRange"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a href="LociMap$.html"><span class="name">LociMap</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="SimpleRange$.html"><span class="name">SimpleRange</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
-    </li><li name="org.hammerlab.guacamole.loci.LociSet" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="LociSet"></a>
-      <a id="LociSet:LociSet"></a>
+    </li><li name="org.hammerlab.guacamole.loci.map" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="map"></a>
+      <a id="map:map"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">object</span>
+        <span class="kind">package</span>
       </span>
       <span class="symbol">
-        <a href="LociSet$.html"><span class="name">LociSet</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="map/package.html"><span class="name">map</span></a>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.loci.set" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="set"></a>
+      <a id="set:set"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="set/package.html"><span class="name">set</span></a>
       </span>
       </h4>
       

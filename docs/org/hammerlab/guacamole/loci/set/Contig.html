@@ -2,17 +2,17 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>SingleContig - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.loci.LociMap.SingleContig</title>
-          <meta name="description" content="SingleContig - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.loci.LociMap.SingleContig" />
-          <meta name="keywords" content="SingleContig guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.loci.LociMap.SingleContig" />
+          <title>Contig - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.loci.set.Contig</title>
+          <meta name="description" content="Contig - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.loci.set.Contig" />
+          <meta name="keywords" content="Contig guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.loci.set.Contig" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
-      <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
-      <link href="../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
       <script type="text/javascript">
          if(top === self) {
-            var url = '../../../../index.html';
-            var hash = 'org.hammerlab.guacamole.loci.LociMap$$SingleContig';
+            var url = '../../../../../index.html';
+            var hash = 'org.hammerlab.guacamole.loci.set.Contig';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -24,9 +24,9 @@
         </head>
         <body class="type">
       <div id="definition">
-        <img src="../../../../lib/class_big.png" />
-        <p id="owner"><a href="../../../package.html" class="extype" name="org">org</a>.<a href="../../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="../package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole.loci">loci</a>.<a href="LociMap$.html" class="extype" name="org.hammerlab.guacamole.loci.LociMap">LociMap</a></p>
-        <h1>SingleContig</h1>
+        <img src="../../../../../lib/class_big.png" />
+        <p id="owner"><a href="../../../../package.html" class="extype" name="org">org</a>.<a href="../../../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="../../package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="../package.html" class="extype" name="org.hammerlab.guacamole.loci">loci</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole.loci.set">set</a></p>
+        <h1>Contig</h1>
       </div>
 
       <h4 id="signature" class="signature">
@@ -35,14 +35,14 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">SingleContig</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="contig">contig: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="rangeMap">rangeMap: <span class="extype" name="com.google.common.collect.RangeMap">RangeMap</span>[<span class="extype" name="org.hammerlab.guacamole.loci.LociMap.JLong">JLong</span>, <span class="extype" name="org.hammerlab.guacamole.loci.LociMap.SingleContig.T">T</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">Contig</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="rangeSet">rangeSet: <span class="extype" name="com.google.common.collect.RangeSet">RangeSet</span>[<span class="extype" name="java.lang.Long">Long</span>]</span>)</span><span class="result"> extends <a href="../../strings/TruncatedToString.html" class="extype" name="org.hammerlab.guacamole.strings.TruncatedToString">TruncatedToString</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>A map from loci to instances of an arbitrary type where the loci are all on the same contig.</p></div><dl class="paramcmts block"><dt class="param">contig</dt><dd class="cmt"><p>The contig name</p></dd><dt class="param">rangeMap</dt><dd class="cmt"><p>The range map of loci intervals -&gt; values.
-</p></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>A set of loci on a contig, stored/manipulated as loci ranges.
+</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <a href="../../strings/TruncatedToString.html" class="extype" name="org.hammerlab.guacamole.strings.TruncatedToString">TruncatedToString</a>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -60,7 +60,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="org.hammerlab.guacamole.loci.LociMap.SingleContig"><span>SingleContig</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="org.hammerlab.guacamole.loci.set.Contig"><span>Contig</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="org.hammerlab.guacamole.strings.TruncatedToString"><span>TruncatedToString</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -80,20 +80,19 @@
         <div id="allMembers">
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
-              <ol><li name="org.hammerlab.guacamole.loci.LociMap.SingleContig#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="&lt;init&gt;(contig:String,rangeMap:com.google.common.collect.RangeMap[org.hammerlab.guacamole.loci.LociMap.JLong,T]):org.hammerlab.guacamole.loci.LociMap.SingleContig[T]"></a>
-      <a id="&lt;init&gt;:SingleContig[T]"></a>
+              <ol><li name="org.hammerlab.guacamole.loci.set.Contig#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="&lt;init&gt;(name:String,rangeSet:com.google.common.collect.RangeSet[Long]):org.hammerlab.guacamole.loci.set.Contig"></a>
+      <a id="&lt;init&gt;:Contig"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">SingleContig</span><span class="params">(<span name="contig">contig: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="rangeMap">rangeMap: <span class="extype" name="com.google.common.collect.RangeMap">RangeMap</span>[<span class="extype" name="org.hammerlab.guacamole.loci.LociMap.JLong">JLong</span>, <span class="extype" name="org.hammerlab.guacamole.loci.LociMap.SingleContig.T">T</span>]</span>)</span>
+        <span class="name">Contig</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="rangeSet">rangeSet: <span class="extype" name="com.google.common.collect.RangeSet">RangeSet</span>[<span class="extype" name="java.lang.Long">Long</span>]</span>)</span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">contig</dt><dd class="cmt"><p>The contig name</p></dd><dt class="param">rangeMap</dt><dd class="cmt"><p>The range map of loci intervals -&gt; values.
-</p></dd></dl></div>
+      
     </li></ol>
             </div>
 
@@ -181,19 +180,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.loci.LociMap.SingleContig#asMap" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="asMap:scala.collection.immutable.SortedMap[org.hammerlab.guacamole.loci.LociMap.SimpleRange,T]"></a>
-      <a id="asMap:SortedMap[SimpleRange,T]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">lazy val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">asMap</span><span class="result">: <span class="extype" name="scala.collection.immutable.SortedMap">SortedMap</span>[<a href="LociMap$$SimpleRange.html" class="extype" name="org.hammerlab.guacamole.loci.LociMap.SimpleRange">SimpleRange</a>, <span class="extype" name="org.hammerlab.guacamole.loci.LociMap.SingleContig.T">T</span>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">This map as a regular scala immutable map from exclusive numeric ranges to values.</p>
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>
       <a id="clone():AnyRef"></a>
@@ -206,14 +192,14 @@
         <span class="name">clone</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
       <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.loci.LociMap.SingleContig#contains" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="org.hammerlab.guacamole.loci.set.Contig#contains" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="contains(locus:Long):Boolean"></a>
       <a id="contains(Long):Boolean"></a>
       <h4 class="signature">
@@ -225,33 +211,20 @@
         <span class="name">contains</span><span class="params">(<span name="locus">locus: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Does this map contain the given locus?</p>
-    </li><li name="org.hammerlab.guacamole.loci.LociMap.SingleContig#contig" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="contig:String"></a>
-      <a id="contig:String"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">contig</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">The contig name</p>
-    </li><li name="org.hammerlab.guacamole.loci.LociMap.SingleContig#count" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <p class="shortcomment cmt">Is the given locus contained in this set?</p>
+    </li><li name="org.hammerlab.guacamole.loci.set.Contig#count" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="count:Long"></a>
       <a id="count:Long"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">lazy val</span>
+        <span class="kind">def</span>
       </span>
       <span class="symbol">
         <span class="name">count</span><span class="result">: <span class="extype" name="scala.Long">Long</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Number of loci in this map.</p>
+      <p class="shortcomment cmt">Number of loci on this contig.</p>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -277,41 +250,13 @@
         <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
       <span class="symbol">classOf[java.lang.Throwable]</span>
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.loci.LociMap.SingleContig#get" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="get(locus:Long):Option[T]"></a>
-      <a id="get(Long):Option[T]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">get</span><span class="params">(<span name="locus">locus: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="org.hammerlab.guacamole.loci.LociMap.SingleContig.T">T</span>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Get the value associated with the given locus.</p><div class="fullcomment"><div class="comment cmt"><p>Get the value associated with the given locus. Returns Some(value) if the given locus is in this map, None
-otherwise.
-</p></div></div>
-    </li><li name="org.hammerlab.guacamole.loci.LociMap.SingleContig#getAll" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="getAll(start:Long,end:Long):Set[T]"></a>
-      <a id="getAll(Long,Long):Set[T]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">getAll</span><span class="params">(<span name="start">start: <span class="extype" name="scala.Long">Long</span></span>, <span name="end">end: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="org.hammerlab.guacamole.loci.LociMap.SingleContig.T">T</span>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Given a loci interval, return the set of all values mapped to by any loci in the interval.</p>
     </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
       <a id="getClass():Class[_]"></a>
@@ -325,19 +270,32 @@ otherwise.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.loci.LociMap.SingleContig#isEmpty" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="org.hammerlab.guacamole.loci.set.Contig#intersects" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="intersects(start:Long,end:Long):Boolean"></a>
+      <a id="intersects(Long,Long):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">intersects</span><span class="params">(<span name="start">start: <span class="extype" name="scala.Long">Long</span></span>, <span name="end">end: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Returns whether a given genomic region overlaps with any loci on this contig.</p>
+    </li><li name="org.hammerlab.guacamole.loci.set.Contig#isEmpty" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="isEmpty:Boolean"></a>
       <a id="isEmpty:Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">lazy val</span>
+        <span class="kind">def</span>
       </span>
       <span class="symbol">
         <span class="name">isEmpty</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Is this map empty?</p>
+      <p class="shortcomment cmt">Is this contig empty?</p>
     </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <a id="isInstanceOf[T0]:Boolean"></a>
@@ -351,19 +309,32 @@ otherwise.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.loci.LociMap.SingleContig#lociIndividually" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="lociIndividually():Iterator[Long]"></a>
-      <a id="lociIndividually():Iterator[Long]"></a>
+    </li><li name="org.hammerlab.guacamole.loci.set.Contig#iterator" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="iterator:org.hammerlab.guacamole.loci.set.ContigIterator"></a>
+      <a id="iterator:ContigIterator"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">lociIndividually</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.collection.Iterator">Iterator</span>[<span class="extype" name="scala.Long">Long</span>]</span>
+        <span class="name">iterator</span><span class="result">: <a href="ContigIterator.html" class="extype" name="org.hammerlab.guacamole.loci.set.ContigIterator">ContigIterator</a></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Iterator through loci in this map, sorted.</p>
+      <p class="shortcomment cmt">Iterator through loci on this contig, sorted.</p>
+    </li><li name="org.hammerlab.guacamole.loci.set.Contig#name" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="name:String"></a>
+      <a id="name:String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">name</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      </h4>
+      
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -403,47 +374,34 @@ otherwise.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.loci.LociMap.SingleContig#numRanges" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="numRanges:Long"></a>
-      <a id="numRanges:Long"></a>
+    </li><li name="org.hammerlab.guacamole.loci.set.Contig#ranges" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ranges:Array[org.hammerlab.guacamole.loci.SimpleRange]"></a>
+      <a id="ranges:Array[SimpleRange]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">lazy val</span>
       </span>
       <span class="symbol">
-        <span class="name">numRanges</span><span class="result">: <span class="extype" name="scala.Long">Long</span></span>
+        <span class="name">ranges</span><span class="result">: <span class="extype" name="scala.Array">Array</span>[<a href="../SimpleRange.html" class="extype" name="org.hammerlab.guacamole.loci.SimpleRange">SimpleRange</a>]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Number of ranges in this map.</p>
-    </li><li name="org.hammerlab.guacamole.loci.LociMap.SingleContig#ranges" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="ranges:Iterable[org.hammerlab.guacamole.loci.LociMap.SimpleRange]"></a>
-      <a id="ranges:Iterable[SimpleRange]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">lazy val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">ranges</span><span class="result">: <span class="extype" name="scala.Iterable">Iterable</span>[<a href="LociMap$$SimpleRange.html" class="extype" name="org.hammerlab.guacamole.loci.LociMap.SimpleRange">SimpleRange</a>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Returns a sequence of ranges giving the intervals of this map.</p>
-    </li><li name="org.hammerlab.guacamole.loci.LociMap.SingleContig#stringPieces" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="stringPieces(includeValues:Boolean):Iterator[String]"></a>
-      <a id="stringPieces(Boolean):Iterator[String]"></a>
+      <p class="shortcomment cmt">This set as a regular scala array of ranges.</p>
+    </li><li name="org.hammerlab.guacamole.loci.set.Contig#stringPieces" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="stringPieces:Iterator[String]"></a>
+      <a id="stringPieces:Iterator[String]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">stringPieces</span><span class="params">(<span name="includeValues">includeValues: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">true</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.Iterator">Iterator</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+        <span class="name">stringPieces</span><span class="result">: <span class="extype" name="scala.collection.Iterator">Iterator</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Iterator over string representations of each range in the map.</p><div class="fullcomment"><div class="comment cmt"><p>Iterator over string representations of each range in the map.</p><p>If includeValues is true (default), then also include the values mapped to by this LociMap. If it's false,
-then only the keys are included.
-</p></div></div>
+      <p class="shortcomment cmt">Iterator over string representations of each range in the map, used to assemble (possibly truncated) .</p><div class="fullcomment"><div class="comment cmt"><p>Iterator over string representations of each range in the map, used to assemble (possibly truncated) .toString()
+output.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.loci.set.Contig">Contig</a> → <a href="../../strings/TruncatedToString.html" class="extype" name="org.hammerlab.guacamole.strings.TruncatedToString">TruncatedToString</a></dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -457,7 +415,7 @@ then only the keys are included.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.loci.LociMap.SingleContig#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="org.hammerlab.guacamole.strings.TruncatedToString#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toString():String"></a>
       <a id="toString():String"></a>
       <h4 class="signature">
@@ -469,35 +427,20 @@ then only the keys are included.
         <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.loci.LociMap.SingleContig">SingleContig</a> → AnyRef → Any</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.loci.LociMap.SingleContig#truncatedString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="truncatedString(maxLength:Int,includeValues:Boolean):String"></a>
-      <a id="truncatedString(Int,Boolean):String"></a>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../strings/TruncatedToString.html" class="extype" name="org.hammerlab.guacamole.strings.TruncatedToString">TruncatedToString</a> → AnyRef → Any</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.strings.TruncatedToString#truncatedString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="truncatedString(maxLength:Int):String"></a>
+      <a id="truncatedString(Int):String"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">truncatedString</span><span class="params">(<span name="maxLength">maxLength: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">100</span></span>, <span name="includeValues">includeValues: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">true</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+        <span class="name">truncatedString</span><span class="params">(<span name="maxLength">maxLength: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">500</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">String representation, truncated to maxLength characters.</p><div class="fullcomment"><div class="comment cmt"><p>String representation, truncated to maxLength characters.</p><p>If includeValues is true (default), then also include the values mapped to by this LociMap. If it's false,
-then only the keys are included.
-</p></div></div>
-    </li><li name="org.hammerlab.guacamole.loci.LociMap.SingleContig#union" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="union(other:org.hammerlab.guacamole.loci.LociMap.SingleContig[T]):org.hammerlab.guacamole.loci.LociMap.SingleContig[T]"></a>
-      <a id="union(SingleContig[T]):SingleContig[T]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">union</span><span class="params">(<span name="other">other: <a href="" class="extype" name="org.hammerlab.guacamole.loci.LociMap.SingleContig">SingleContig</a>[<span class="extype" name="org.hammerlab.guacamole.loci.LociMap.SingleContig.T">T</span>]</span>)</span><span class="result">: <a href="" class="extype" name="org.hammerlab.guacamole.loci.LociMap.SingleContig">SingleContig</a>[<span class="extype" name="org.hammerlab.guacamole.loci.LociMap.SingleContig.T">T</span>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Returns the union of this map with another.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the union of this map with another. Both must be on the same contig.</p></div></div>
+      <p class="shortcomment cmt">String representation, truncated to maxLength characters.</p><div class="fullcomment"><div class="comment cmt"><p>String representation, truncated to maxLength characters.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../strings/TruncatedToString.html" class="extype" name="org.hammerlab.guacamole.strings.TruncatedToString">TruncatedToString</a></dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>
@@ -572,6 +515,8 @@ then only the keys are included.
               <h3>Inherited from <span class="extype" name="scala.Product">Product</span></h3>
             </div><div class="parent" name="scala.Equals">
               <h3>Inherited from <span class="extype" name="scala.Equals">Equals</span></h3>
+            </div><div class="parent" name="org.hammerlab.guacamole.strings.TruncatedToString">
+              <h3>Inherited from <a href="../../strings/TruncatedToString.html" class="extype" name="org.hammerlab.guacamole.strings.TruncatedToString">TruncatedToString</a></h3>
             </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
             </div><div class="parent" name="scala.Any">
@@ -592,6 +537,6 @@ then only the keys are included.
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../lib/template.js"></script>
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../../lib/template.js"></script>
     </body>
       </html>
