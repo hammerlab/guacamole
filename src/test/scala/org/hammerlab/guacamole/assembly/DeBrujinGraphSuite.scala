@@ -2,7 +2,7 @@ package org.hammerlab.guacamole.assembly
 
 import org.hammerlab.guacamole.Bases
 import org.hammerlab.guacamole.util.TestUtil.Implicits._
-import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
+import org.hammerlab.guacamole.util.{AssertBases, GuacFunSuite, TestUtil}
 
 class DeBruijnGraphSuite extends GuacFunSuite {
 
@@ -11,7 +11,7 @@ class DeBruijnGraphSuite extends GuacFunSuite {
     val longerKmer = DeBruijnGraph.mergeOverlappingSequences(kmers, 4)
 
     longerKmer.length should be(7)
-    TestUtil.assertBases(longerKmer, "TTTCCCC")
+    AssertBases(longerKmer, "TTTCCCC")
   }
 
   test("build graph") {
@@ -27,13 +27,13 @@ class DeBruijnGraphSuite extends GuacFunSuite {
     val sequence = "TCATCTCAAAAGAGATCGA"
     val graph = DeBruijnGraph(Seq(sequence), kmerSize = 8)
 
-    TestUtil.assertBases(graph.kmerPrefix("TCATCTCA"), "TCATCTC")
-    TestUtil.assertBases(graph.kmerPrefix("CATCTCAA"), "CATCTCA")
-    TestUtil.assertBases(graph.kmerPrefix("GAGATCGA"), "GAGATCG")
+    AssertBases(graph.kmerPrefix("TCATCTCA"), "TCATCTC")
+    AssertBases(graph.kmerPrefix("CATCTCAA"), "CATCTCA")
+    AssertBases(graph.kmerPrefix("GAGATCGA"), "GAGATCG")
 
-    TestUtil.assertBases(graph.kmerSuffix("TCATCTCA"), "CATCTCA")
-    TestUtil.assertBases(graph.kmerSuffix("CATCTCAA"), "ATCTCAA")
-    TestUtil.assertBases(graph.kmerSuffix("GAGATCGA"), "AGATCGA")
+    AssertBases(graph.kmerSuffix("TCATCTCA"), "CATCTCA")
+    AssertBases(graph.kmerSuffix("CATCTCAA"), "ATCTCAA")
+    AssertBases(graph.kmerSuffix("GAGATCGA"), "AGATCGA")
 
   }
 
@@ -51,26 +51,26 @@ class DeBruijnGraphSuite extends GuacFunSuite {
     val graph = DeBruijnGraph(Seq(sequence), kmerSize = 3)
 
     val tcaChildren = graph.children("TCA")
-    TestUtil.assertBases(graph.kmerSuffix("TCA"), "CA")
+    AssertBases(graph.kmerSuffix("TCA"), "CA")
     tcaChildren.length should be(1) // CA is the suffix and CAT is the only kmer
-    TestUtil.assertBases(tcaChildren(0), "CAT")
+    AssertBases(tcaChildren(0), "CAT")
 
     val tcaParents = graph.parents("TCA")
-    TestUtil.assertBases(graph.kmerPrefix("TCA"), "TC")
+    AssertBases(graph.kmerPrefix("TCA"), "TC")
     tcaParents.length should be(1) // TC is the prefix and ATC is the only kmer
-    TestUtil.assertBases(tcaParents(0), "ATC")
+    AssertBases(tcaParents(0), "ATC")
 
     val catParents = graph.parents("CAT")
-    TestUtil.assertBases(graph.kmerPrefix("CAT"), "CA")
+    AssertBases(graph.kmerPrefix("CAT"), "CA")
     catParents.length should be(2) // CA is the prefix, TCA and ACA are parents
-    TestUtil.assertBases(catParents(0), "ACA")
-    TestUtil.assertBases(catParents(1), "TCA")
+    AssertBases(catParents(0), "ACA")
+    AssertBases(catParents(1), "TCA")
 
     val catChildren = graph.children("CAT")
-    TestUtil.assertBases(graph.kmerSuffix("CAT"), "AT")
+    AssertBases(graph.kmerSuffix("CAT"), "AT")
     catChildren.length should be(2) // CA is the suffix, ATC and ATA are children
-    TestUtil.assertBases(catChildren(0), "ATA")
-    TestUtil.assertBases(catChildren(1), "ATC")
+    AssertBases(catChildren(0), "ATA")
+    AssertBases(catChildren(1), "ATC")
   }
 
   test("build graph with all unique kmers") {
@@ -108,7 +108,7 @@ class DeBruijnGraphSuite extends GuacFunSuite {
 
     val mergedReference: Seq[Byte] = DeBruijnGraph.mergeOverlappingSequences(mergeableReverse, 4)
 
-    TestUtil.assertBases(mergedReference, sequence)
+    AssertBases(mergedReference, sequence)
   }
 
   test("find forward unique path; with bubble at end") {
@@ -125,7 +125,7 @@ class DeBruijnGraphSuite extends GuacFunSuite {
 
     val mergeableForward = graph.mergeForward(firstKmer)
     mergeableForward.size should be(7)
-    TestUtil.assertBases(DeBruijnGraph.mergeOverlappingSequences(mergeableForward, 4), "AAATCCCTGG")
+    AssertBases(DeBruijnGraph.mergeOverlappingSequences(mergeableForward, 4), "AAATCCCTGG")
   }
 
   test("find forward unique path; with bubble in middle") {
@@ -142,7 +142,7 @@ class DeBruijnGraphSuite extends GuacFunSuite {
 
     val mergeableForward = graph.mergeForward(firstKmer)
     mergeableForward.size should be(2)
-    TestUtil.assertBases(DeBruijnGraph.mergeOverlappingSequences(mergeableForward, 4), "AAATC")
+    AssertBases(DeBruijnGraph.mergeOverlappingSequences(mergeableForward, 4), "AAATC")
   }
 
   test("find forward unique path; with bubble in first kmer") {
@@ -155,7 +155,7 @@ class DeBruijnGraphSuite extends GuacFunSuite {
 
     val mergeableForward = graph.mergeForward(firstKmer)
     mergeableForward.size should be(2)
-    TestUtil.assertBases(DeBruijnGraph.mergeOverlappingSequences(mergeableForward, 4), "AAATC")
+    AssertBases(DeBruijnGraph.mergeOverlappingSequences(mergeableForward, 4), "AAATC")
   }
 
   test("find backward unique path; with bubble at end") {
@@ -168,12 +168,12 @@ class DeBruijnGraphSuite extends GuacFunSuite {
 
     val seq1mergeableReverse = graph.mergeBackward(seq1End)
     seq1mergeableReverse.size should be(2)
-    TestUtil.assertBases(DeBruijnGraph.mergeOverlappingSequences(seq1mergeableReverse, 4), "TGGGT")
+    AssertBases(DeBruijnGraph.mergeOverlappingSequences(seq1mergeableReverse, 4), "TGGGT")
 
     val seq2End = "GGAT"
     val seq2mergeableReverse = graph.mergeBackward(seq2End)
     seq2mergeableReverse.size should be(2)
-    TestUtil.assertBases(DeBruijnGraph.mergeOverlappingSequences(seq2mergeableReverse, 4), "TGGAT")
+    AssertBases(DeBruijnGraph.mergeOverlappingSequences(seq2mergeableReverse, 4), "TGGAT")
 
   }
 
@@ -187,7 +187,7 @@ class DeBruijnGraphSuite extends GuacFunSuite {
 
     val mergeableReverse = graph.mergeBackward(lastKmer)
     mergeableReverse.size should be(3)
-    TestUtil.assertBases(DeBruijnGraph.mergeOverlappingSequences(mergeableReverse, 4), "CTGGGT")
+    AssertBases(DeBruijnGraph.mergeOverlappingSequences(mergeableReverse, 4), "CTGGGT")
   }
 
   test("test merge nodes; full graph") {
@@ -200,7 +200,7 @@ class DeBruijnGraphSuite extends GuacFunSuite {
 
     graph.mergeNodes()
     graph.kmerCounts.keys.size should be(1)
-    TestUtil.assertBases(graph.kmerCounts.keys.head, "AAATCCCTGGGT")
+    AssertBases(graph.kmerCounts.keys.head, "AAATCCCTGGGT")
 
   }
 
@@ -274,12 +274,12 @@ class DeBruijnGraphSuite extends GuacFunSuite {
     val paths = graph.depthFirstSearch(referenceKmerSource, referenceKmerSink)
 
     paths.length should be(1)
-    TestUtil.assertBases(DeBruijnGraph.mergeOverlappingSequences(paths(0), kmerSize), reference)
+    AssertBases(DeBruijnGraph.mergeOverlappingSequences(paths(0), kmerSize), reference)
 
     graph.mergeNodes()
     val pathsAfterMerging = graph.depthFirstSearch(referenceKmerSource, referenceKmerSink)
     pathsAfterMerging.length should be(1)
-    TestUtil.assertBases(DeBruijnGraph.mergeOverlappingSequences(pathsAfterMerging(0), kmerSize), reference)
+    AssertBases(DeBruijnGraph.mergeOverlappingSequences(pathsAfterMerging(0), kmerSize), reference)
 
   }
 
@@ -315,12 +315,12 @@ class DeBruijnGraphSuite extends GuacFunSuite {
     val paths = graph.depthFirstSearch(referenceKmerSource, referenceKmerSink)
 
     paths.length should be(1)
-    TestUtil.assertBases(DeBruijnGraph.mergeOverlappingSequences(paths(0), kmerSize), reference)
+    AssertBases(DeBruijnGraph.mergeOverlappingSequences(paths(0), kmerSize), reference)
 
     graph.mergeNodes()
     val pathsAfterMerging = graph.depthFirstSearch(referenceKmerSource, referenceKmerSink)
     pathsAfterMerging.length should be(1)
-    TestUtil.assertBases(DeBruijnGraph.mergeOverlappingSequences(pathsAfterMerging(0), kmerSize), reference)
+    AssertBases(DeBruijnGraph.mergeOverlappingSequences(pathsAfterMerging(0), kmerSize), reference)
 
   }
 
@@ -358,12 +358,12 @@ class DeBruijnGraphSuite extends GuacFunSuite {
     val paths = graph.depthFirstSearch(referenceKmerSource, referenceKmerSink)
 
     paths.length should be(1)
-    TestUtil.assertBases(DeBruijnGraph.mergeOverlappingSequences(paths(0), kmerSize), reference)
+    AssertBases(DeBruijnGraph.mergeOverlappingSequences(paths(0), kmerSize), reference)
 
     graph.mergeNodes()
     val pathsAfterMerging = graph.depthFirstSearch(referenceKmerSource, referenceKmerSink)
     pathsAfterMerging.length should be(1)
-    TestUtil.assertBases(DeBruijnGraph.mergeOverlappingSequences(pathsAfterMerging(0), kmerSize), reference)
+    AssertBases(DeBruijnGraph.mergeOverlappingSequences(pathsAfterMerging(0), kmerSize), reference)
 
   }
 

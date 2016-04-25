@@ -38,7 +38,7 @@ import org.scalatest._
 import scala.collection.mutable
 import scala.math._
 
-object TestUtil extends Matchers {
+object TestUtil {
 
   object Implicits {
     implicit def basesToString = Bases.basesToString _
@@ -61,11 +61,6 @@ object TestUtil extends Matchers {
   }
   def deserialize[T](bytes: Array[Byte]): T = {
     kryoPool.fromBytes(bytes).asInstanceOf[T]
-  }
-  def testSerialization[T](item: T): Unit = {
-    val serialized = serialize(item)
-    val deserialized = deserialize[T](serialized)
-    deserialized should equal(item)
   }
 
   /**
@@ -155,9 +150,6 @@ object TestUtil extends Matchers {
           None
     )
   }
-
-  def assertBases(bases1: String, bases2: String) = bases1 should equal(bases2)
-  def assertBases(bases1: Iterable[Byte], bases2: String) = Bases.basesToString(bases1) should equal(bases2)
 
   def testDataPath(filename: String): String = {
     // If we have an absolute path, just return it.
