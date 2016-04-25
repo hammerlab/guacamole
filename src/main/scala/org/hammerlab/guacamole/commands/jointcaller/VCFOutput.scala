@@ -230,7 +230,7 @@ object VCFOutput {
       .stop(allele.end) // +1 for one-based and -1 for inclusive
       .genotypes(JavaConversions.seqAsJavaList(genotypes))
       .alleles(JavaConversions.seqAsJavaList(variantGenotypeAlleles.distinct.map(makeHtsjdkAllele _)))
-      .attribute("TRIGGER", triggers.mkString(","))
+      .attribute("TRIGGER", if (triggers.nonEmpty) triggers.mkString(",") else "NONE")
       .attribute("TUMOR_EXPRESSION", if (samplesEvidence.tumorRnaSampleExpressed.nonEmpty) "YES" else "NO")
 
     val failingFilterNames = samplesEvidence.failingFilterNames
