@@ -38,7 +38,7 @@ import org.hammerlab.guacamole.reads.{MappedRead, MappedReadSerializer, MateAlig
 import org.hammerlab.guacamole.reference.ReferenceBroadcast.MapBackedReferenceSequence
 import org.hammerlab.guacamole.variants._
 
-class GuacamoleKryoRegistrator extends KryoRegistrator {
+class GuacamoleKryoRegistrar extends KryoRegistrator {
   override def registerClasses(kryo: Kryo) {
 
     // Register ADAM serializers.
