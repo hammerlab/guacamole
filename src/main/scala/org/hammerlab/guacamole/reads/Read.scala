@@ -278,11 +278,13 @@ object Read extends Logging {
 
     val adamRecords: RDD[AlignmentRecord] = adamContext.loadAlignments(
       filename, projection = None, stringency = ValidationStringency.LENIENT).rdd
+
     val sequenceDictionary =
       new ADAMSpecificRecordSequenceDictionaryRDDAggregator(adamRecords).adamGetSequenceDictionary()
 
     val allReads: RDD[Read] = adamRecords.map(fromADAMRecord(_))
     val reads = InputFilters.filterRDD(filters, allReads, sequenceDictionary)
+
     (reads, sequenceDictionary)
   }
 
