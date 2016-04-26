@@ -26,7 +26,7 @@ import com.twitter.chill.{IKryoRegistrar, KryoInstantiator, KryoPool}
 import htsjdk.samtools.TextCigarCodec
 import org.apache.commons.io.FileUtils
 import org.apache.spark.SparkContext
-import org.hammerlab.guacamole.kryo.GuacamoleKryoRegistrator
+import org.hammerlab.guacamole.kryo.GuacamoleKryoRegistrar
 import org.hammerlab.guacamole.loci.set.LociParser
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.{InputFilters, MappedRead, MateAlignmentProperties, PairedRead, Read, ReadLoadingConfig}
@@ -52,7 +52,7 @@ object TestUtil {
   // Serialization helper functions.
   lazy val kryoPool = {
     val instantiator = new KryoInstantiator().setRegistrationRequired(true).withRegistrar(new IKryoRegistrar {
-      override def apply(kryo: Kryo): Unit = new GuacamoleKryoRegistrator().registerClasses(kryo)
+      override def apply(kryo: Kryo): Unit = new GuacamoleKryoRegistrar().registerClasses(kryo)
     })
     KryoPool.withByteArrayOutputStream(1, instantiator)
   }
