@@ -42,7 +42,7 @@ import scala.collection.immutable.TreeMap
 case class LociSet(private val map: SortedMap[String, Contig]) extends TruncatedToString {
 
   /** The contigs included in this LociSet with a nonempty set of loci. */
-  lazy val contigs = map.values.toSeq
+  lazy val contigs = map.values.toArray
 
   /** The number of loci in this LociSet. */
   lazy val count: Long = contigs.map(_.count).sum

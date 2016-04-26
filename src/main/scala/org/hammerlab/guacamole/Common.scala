@@ -238,7 +238,7 @@ object Common extends Logging {
     }
 
     if (config.getOption("spark.kryo.registrator").isEmpty) {
-      config.set("spark.kryo.registrator", "org.hammerlab.guacamole.kryo.GuacamoleKryoRegistrator")
+      config.set("spark.kryo.registrator", "org.hammerlab.guacamole.kryo.GuacamoleKryoRegistrar")
     }
 
     if (config.getOption("spark.kryoserializer.buffer").isEmpty) {
