@@ -80,13 +80,14 @@ object GeneratePartialFasta extends Logging {
 
     val fd = new File(args.output)
     val writer = new BufferedWriter(new FileWriter(fd))
+
     for {
       contig <- loci.contigs
       SimpleRange(start, end) <- contig.ranges
     } {
       try {
         val sequence = Bases.basesToString(reference.getContig(contig.name).slice(start.toInt, end.toInt))
-        writer.write(">%s:%d-%d/%d\n".format(contig, start, end, contigLengths(contig.name)))
+        writer.write(">%s:%d-%d/%d\n".format(contig.name, start, end, contigLengths(contig.name)))
         writer.write(sequence)
         writer.write("\n")
       } catch {

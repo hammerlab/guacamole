@@ -222,14 +222,13 @@ object Read extends Logging {
         val optimizedQueryIntervals = QueryInterval.optimizeIntervals(queryIntervals.toArray)
         reader.query(optimizedQueryIntervals, false) // Note: this can return unmapped reads, which we filter below.
       } else {
-
         val skippedReason =
           if (reader.hasIndex)
             "index is available but not needed"
           else
             "index unavailable"
 
-        progress(s"Using samtools without BAM index %($skippedReason) to read: $filename")
+        progress(s"Using samtools without BAM index ($skippedReason) to read: $filename")
 
         reader.iterator
       }
