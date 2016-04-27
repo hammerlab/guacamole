@@ -34,9 +34,14 @@ class PileupFlatMapUtilsSuiteRegistrar extends KryoTestRegistrar {
     kryo.register(classOf[PileupElement])
     kryo.register(classOf[Array[PileupElement]])
 
+    // Closed over by PileupElement
     kryo.register(classOf[MapBackedReferenceSequence])
     kryo.register(Class.forName("org.apache.spark.broadcast.TorrentBroadcast"))
     kryo.register(classOf[BroadcastBlockId])
+    kryo.register(classOf[Map[_, _]])
+
+    // "test pileup flatmap multiple rdds; skip empty pileups" collects an RDD of Arrays
+    kryo.register(classOf[Array[Seq[_]]])
   }
 }
 

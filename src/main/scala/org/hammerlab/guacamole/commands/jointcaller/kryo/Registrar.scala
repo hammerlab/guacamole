@@ -16,6 +16,7 @@ class Registrar extends KryoRegistrator {
     kryo.register(Class.forName("scala.collection.immutable.MapLike$$anon$2"))  // MapLike.MappedValues?
     kryo.register(Class.forName("org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleSingleAlleleEvidence$$anonfun$16"))
     kryo.register(Class.forName("org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleSingleAlleleEvidence$$anonfun$10"))
+    kryo.register(Map.empty.getClass)
 
     kryo.register(classOf[Parameters])
     kryo.register(Class.forName("scala.Enumeration$Val"))

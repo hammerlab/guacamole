@@ -21,19 +21,15 @@ package org.hammerlab.guacamole.util
 import java.io.{File, FileNotFoundException}
 import java.nio.file.Files
 
-import com.esotericsoftware.kryo.Kryo
-import com.twitter.chill.{IKryoRegistrar, KryoInstantiator, KryoPool}
 import htsjdk.samtools.TextCigarCodec
 import org.apache.commons.io.FileUtils
 import org.apache.spark.SparkContext
-import org.hammerlab.guacamole.kryo.GuacamoleKryoRegistrar
+import org.hammerlab.guacamole.ReadSet
 import org.hammerlab.guacamole.loci.set.LociParser
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.{InputFilters, MappedRead, MateAlignmentProperties, PairedRead, Read, ReadLoadingConfig}
 import org.hammerlab.guacamole.reference.ReferenceBroadcast.MapBackedReferenceSequence
 import org.hammerlab.guacamole.reference.{ContigSequence, ReferenceBroadcast}
-import org.hammerlab.guacamole.ReadSet
-import org.scalatest._
 
 import scala.collection.mutable
 import scala.math._
@@ -47,20 +43,6 @@ object TestUtil {
 
   def tmpPath(suffix: String): String = {
     new File(Files.createTempDirectory("TestUtil").toFile, s"TestUtil$suffix").getAbsolutePath
-  }
-
-  // Serialization helper functions.
-  lazy val kryoPool = {
-    val instantiator = new KryoInstantiator().setRegistrationRequired(true).withRegistrar(new IKryoRegistrar {
-      override def apply(kryo: Kryo): Unit = new GuacamoleKryoRegistrar().registerClasses(kryo)
-    })
-    KryoPool.withByteArrayOutputStream(1, instantiator)
-  }
-  def serialize(item: Any): Array[Byte] = {
-    kryoPool.toBytesWithClass(item)
-  }
-  def deserialize[T](bytes: Array[Byte]): T = {
-    kryoPool.fromBytes(bytes).asInstanceOf[T]
   }
 
   /**
