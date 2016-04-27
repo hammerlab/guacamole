@@ -12,8 +12,8 @@ if [ "$#" -ne 2 ]; then
     exit 1
 fi
 
-HG19_FULL_FASTA_PATH=$1
-GRCH37_FULL_FASTA_PATH=$2
+HG19_FULL_FASTA_PATH="$1"
+GRCH37_FULL_FASTA_PATH="$2"
 MAIN_CLASS=org.hammerlab.guacamole.main.GeneratePartialFasta
 
 if [ -z "${GUACAMOLE_JAR}" ]; then
@@ -28,25 +28,25 @@ if [ -z "${GUACAMOLE_JAR}" ]; then
     fi
     echo "Using most recently modified jar: $jar"
 else
-    jar=${GUACAMOLE_JAR}
+    jar="${GUACAMOLE_JAR}"
     echo "Using GUACAMOLE_JAR=$jar"
 fi
 
 set -e
 set -x
 
-full_jar=$jar:target/scala-2.10.5/test-classes
+full_jar="$jar:target/scala-2.10.5/test-classes"
 
 # HG19 reference
-time java -Xmx6g -XX:MaxPermSize=512m "-Dspark.master=local[1]" -cp $full_jar $MAIN_CLASS \
-    --reference-fasta $HG19_FULL_FASTA_PATH \
+time java -Xmx6g -XX:MaxPermSize=512m "-Dspark.master=local[1]" -cp "$full_jar" "$MAIN_CLASS" \
+    --reference-fasta "$HG19_FULL_FASTA_PATH" \
     --output src/test/resources/hg19.partial.fasta \
     src/test/resources/cancer-wgs1/*.bam \
     src/test/resources/rna_chr17_41244936.sam
 
 # b37 reference
-time java -Xmx6g -XX:MaxPermSize=512m "-Dspark.master=local[1]" -cp $full_jar $MAIN_CLASS \
-    --reference-fasta $GRCH37_FULL_FASTA_PATH \
+time java -Xmx6g -XX:MaxPermSize=512m "-Dspark.master=local[1]" -cp "$full_jar" "$MAIN_CLASS" \
+    --reference-fasta "$GRCH37_FULL_FASTA_PATH" \
     --output src/test/resources/grch37.partial.fasta \
     src/test/resources/synthetic.challenge.set1.*.sam \
     src/test/resources/tumor.chr20.tough.sam \
