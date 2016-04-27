@@ -29,7 +29,7 @@ import org.hammerlab.guacamole.loci.set.{LociSet, Contig => LociSetContig, Conti
 import org.hammerlab.guacamole.reads.{MappedRead, MappedReadSerializer, MateAlignmentProperties, PairedRead, Read, UnmappedRead, UnmappedReadSerializer}
 import org.hammerlab.guacamole.variants.{Allele, AlleleEvidence, AlleleSerializer, CalledAllele}
 
-class GuacamoleKryoRegistrar extends KryoRegistrator {
+class Registrar extends KryoRegistrator {
   override def registerClasses(kryo: Kryo) {
 
     // Register ADAM serializers.

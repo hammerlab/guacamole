@@ -6,7 +6,7 @@ import org.scalatest.{FunSuite, Matchers}
 trait GuacFunSuite extends FunSuite with SharedSparkContext with Matchers with SparkSerializerSuite {
   conf.setAppName("guacamole")
 
-  def registrar = "org.hammerlab.guacamole.kryo.GuacamoleKryoRegistrar"
+  def registrar = "org.hammerlab.guacamole.kryo.Registrar"
 
   val properties: Map[String, String] =
     Map(
