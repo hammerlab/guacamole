@@ -1,9 +1,24 @@
 package org.hammerlab.guacamole.loci.set
 
-import org.hammerlab.guacamole.util.GuacFunSuite
+import com.esotericsoftware.kryo.Kryo
+import org.hammerlab.guacamole.util.{GuacFunSuite, KryoTestRegistrar}
+
+class SerializerSuiteRegistrar extends KryoTestRegistrar {
+  override def registerTestClasses(kryo: Kryo): Unit = {
+    // "a closure that includes a LociSet" parallelizes some Range[Long]s.
+    kryo.register(Class.forName("scala.math.Numeric$LongIsIntegral$"))
+
+    // "make an RDD[LociSet] and an RDD[Contig]" collects some Strings.
+    kryo.register(classOf[Array[String]])
+  }
+}
 
 class SerializerSuite extends GuacFunSuite {
+
+  override def registrar = "org.hammerlab.guacamole.loci.set.SerializerSuiteRegistrar"
+
   test("make an RDD[LociSet]") {
+
     val sets =
       List(
         "",
@@ -40,5 +55,13 @@ class SerializerSuite extends GuacFunSuite {
     }).collect.toSeq
 
     result should equal(sets.map(_.onContig("20").toString))
+  }
+
+  test("a closure that includes a LociSet") {
+    val set = LociSet("chr21:100-200,chr20:0-10,chr20:8-15,chr20:100-120,empty:10-10")
+    val setBC = sc.broadcast(set)
+    val rdd = sc.parallelize(0L until 1000L)
+    val result = rdd.filter(i => setBC.value.onContig("chr21").contains(i)).collect
+    result should equal(100L until 200)
   }
 }

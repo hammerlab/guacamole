@@ -34,8 +34,8 @@ class UnmappedReadSerializerSuite extends GuacFunSuite {
       isPaired = true
     )
 
-    val serialized = TestUtil.serialize(read)
-    val deserialized = TestUtil.deserialize[UnmappedRead](serialized)
+    val serialized = serialize(read)
+    val deserialized = deserialize[UnmappedRead](serialized)
 
     // We *should* be able to just use MappedRead's equality implementation, since Scala should implement the equals
     // method for case classes. Somehow, something goes wrong though, and this fails:

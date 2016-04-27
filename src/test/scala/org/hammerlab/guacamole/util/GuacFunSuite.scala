@@ -3,10 +3,10 @@ package org.hammerlab.guacamole.util
 import com.holdenkarau.spark.testing.SharedSparkContext
 import org.scalatest.{FunSuite, Matchers}
 
-trait GuacFunSuite extends FunSuite with SharedSparkContext with Matchers {
+trait GuacFunSuite extends FunSuite with SharedSparkContext with Matchers with SparkSerializerSuite {
   conf.setAppName("guacamole")
 
-  def registrar = "org.hammerlab.guacamole.util.KryoTestRegistrar"
+  def registrar = "org.hammerlab.guacamole.kryo.GuacamoleKryoRegistrar"
 
   val properties: Map[String, String] =
     Map(

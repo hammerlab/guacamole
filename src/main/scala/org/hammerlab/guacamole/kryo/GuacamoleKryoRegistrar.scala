@@ -20,19 +20,14 @@ package org.hammerlab.guacamole.kryo
 
 import com.esotericsoftware.kryo.Kryo
 import org.apache.spark.serializer.KryoRegistrator
-import org.apache.spark.storage.BroadcastBlockId
-import org.bdgenomics.adam.models.{ReferenceRegion, SequenceDictionary, SequenceRecord}
+import org.bdgenomics.adam.models.{SequenceDictionary, SequenceRecord}
 import org.bdgenomics.adam.serialization.ADAMKryoRegistrator
-import org.bdgenomics.formats.avro.{AlignmentRecord, Genotype => BDGGenotype}
-import org.hammerlab.guacamole.commands.VariantLocus
 import org.hammerlab.guacamole.commands.jointcaller.kryo.{Registrar => JointCallerRegistrar}
 import org.hammerlab.guacamole.distributed.TaskPosition
-import org.hammerlab.guacamole.loci.SimpleRange
 import org.hammerlab.guacamole.loci.map.{LociMap, Contig => LociMapContig, ContigSerializer => LociMapContigSerializer, Serializer => LociMapSerializer}
 import org.hammerlab.guacamole.loci.set.{LociSet, Contig => LociSetContig, ContigSerializer => LociSetContigSerializer, Serializer => LociSetSerializer}
 import org.hammerlab.guacamole.reads.{MappedRead, MappedReadSerializer, MateAlignmentProperties, PairedRead, Read, UnmappedRead, UnmappedReadSerializer}
-import org.hammerlab.guacamole.reference.ReferenceBroadcast.MapBackedReferenceSequence
-import org.hammerlab.guacamole.variants._
+import org.hammerlab.guacamole.variants.{Allele, AlleleEvidence, AlleleSerializer, CalledAllele}
 
 class GuacamoleKryoRegistrar extends KryoRegistrator {
   override def registerClasses(kryo: Kryo) {
@@ -48,12 +43,15 @@ class GuacamoleKryoRegistrar extends KryoRegistrator {
     kryo.register(classOf[SequenceDictionary])
     kryo.register(classOf[SequenceRecord])
 
+    // Reads
     kryo.register(classOf[MappedRead], new MappedReadSerializer)
     kryo.register(classOf[Array[MappedRead]])
-    kryo.register(classOf[PairedRead[_]])
     kryo.register(classOf[MateAlignmentProperties])
     kryo.register(classOf[Array[Read]])
     kryo.register(classOf[UnmappedRead], new UnmappedReadSerializer)
+
+    kryo.register(classOf[PairedRead[_]])
+    kryo.register(classOf[scala.collection.mutable.WrappedArray.ofByte])  // PairedRead
 
     // LociSet is serialized when broadcast in InputFilters.filterRDD. Serde'ing a LociSet delegates to an Array of
     // Contigs.
@@ -66,46 +64,17 @@ class GuacamoleKryoRegistrar extends KryoRegistrator {
     kryo.register(classOf[LociMap[Long]], new LociMapSerializer)
     kryo.register(classOf[LociMapContig[Long]], new LociMapContigSerializer[Long])
 
-    kryo.register(classOf[SimpleRange])
-    kryo.register(classOf[Array[SimpleRange]])
-
+    // Serialized in WindowFlatMapUtils.
     kryo.register(classOf[TaskPosition])
-
-    kryo.register(classOf[Array[VariantLocus]])
-    kryo.register(classOf[VariantLocus])
-
-    kryo.register(classOf[Genotype], new GenotypeSerializer)
 
     // Germline-assembly caller flatmaps some CalledAlleles.
     kryo.register(classOf[Array[CalledAllele]])
-    kryo.register(classOf[Allele], new AlleleSerializer)
     kryo.register(classOf[CalledAllele])
+    kryo.register(classOf[Allele], new AlleleSerializer)
     kryo.register(classOf[AlleleEvidence])
 
-    kryo.register(classOf[Map[_, _]])
-    kryo.register(Map.empty.getClass)
-    kryo.register(scala.math.Numeric.LongIsIntegral.getClass)
-
-    kryo.register(classOf[Vector[_]])
-    kryo.register(classOf[Array[Vector[_]]])
-
-    kryo.register(classOf[Array[Seq[_]]])
-
-    kryo.register(classOf[scala.collection.mutable.WrappedArray.ofLong])
-    kryo.register(classOf[scala.collection.mutable.WrappedArray.ofByte])
-    kryo.register(classOf[scala.collection.mutable.WrappedArray.ofChar])
+    // Seems to be used when collecting RDDs of Objects of various kinds.
     kryo.register(classOf[scala.collection.mutable.WrappedArray.ofRef[_]])
-
-    kryo.register(classOf[Array[Array[Byte]]])
-    kryo.register(classOf[Array[Char]])
-    kryo.register(classOf[Array[String]])
-    kryo.register(classOf[Array[Int]])
-    kryo.register(classOf[Array[Object]])
-
-    // Tuple2[Long, Any], afaict?
-    // "J" == Long (obviously). https://github.com/twitter/chill/blob/6d03f6976f33f6e2e16b8e254fead1625720c281/chill-scala/src/main/scala/com/twitter/chill/TupleSerializers.scala#L861
-    kryo.register(Class.forName("scala.Tuple2$mcJZ$sp"))
-    kryo.register(Class.forName("scala.Tuple2$mcIZ$sp"))
 
     // https://mail-archives.apache.org/mod_mbox/spark-user/201504.mbox/%3CCAC95X6JgXQ3neXF6otj6a+F_MwJ9jbj9P-Ssw3Oqkf518_eT1w@mail.gmail.com%3E
     kryo.register(Class.forName("scala.reflect.ClassTag$$anon$1"))

@@ -1,9 +1,19 @@
 package org.hammerlab.guacamole.commands
 
-import org.hammerlab.guacamole.util.GuacFunSuite
+import com.esotericsoftware.kryo.Kryo
+import org.hammerlab.guacamole.util.{GuacFunSuite, KryoTestRegistrar}
 import org.scalatest.Matchers
 
+class VAFHistogramSuiteRegistrar extends KryoTestRegistrar {
+  override def registerTestClasses(kryo: Kryo): Unit = {
+    kryo.register(classOf[Array[VariantLocus]])
+    kryo.register(classOf[VariantLocus])
+  }
+}
+
 class VAFHistogramSuite extends GuacFunSuite {
+
+  override def registrar = "org.hammerlab.guacamole.commands.VAFHistogramSuiteRegistrar"
 
   test("generating the histogram") {
 
