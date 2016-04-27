@@ -127,37 +127,6 @@ class LociSetSuite extends GuacFunSuite {
     args2.lociFromFile = TestUtil.testDataPath("loci.txt")
   }
 
-  sparkTest("serialization: make an RDD[LociSet]") {
-    val sets = List(
-      "",
-      "empty:20-20,empty2:30-30",
-      "20:100-200",
-      "21:300-400",
-      "with_dots._and_..underscores11:900-1000",
-      "X:5-17,X:19-22,Y:50-60",
-      "chr21:100-200,chr20:0-10,chr20:8-15,chr20:100-120").map(LociSet(_))
-    val rdd = sc.parallelize(sets)
-    val result = rdd.map(_.toString).collect.toSeq
-    result should equal(sets.map(_.toString))
-  }
-
-  sparkTest("serialization: make an RDD[LociSet], and an RDD[ContigLociSet]") {
-    val sets = List(
-      "",
-      "empty:20-20,empty2:30-30",
-      "20:100-200",
-      "21:300-400",
-      "X:5-17,X:19-22,Y:50-60",
-      "chr21:100-200,chr20:0-10,chr20:8-15,chr20:100-120").map(LociSet(_))
-    val rdd = sc.parallelize(sets)
-    val result = rdd.map(set => {
-      set.onContig("21").contains(5) // no op
-      val ranges = set.onContig("21").ranges // no op
-      set.onContig("20").toString
-    }).collect.toSeq
-    result should equal(sets.map(_.onContig("20").toString))
-  }
-
   test("loci set parsing with contig lengths") {
     LociParser(
       "chr1,chr2,17,chr2:3-5,chr20:10-20"
