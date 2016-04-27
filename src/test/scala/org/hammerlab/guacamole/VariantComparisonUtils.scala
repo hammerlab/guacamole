@@ -29,10 +29,10 @@ case class VariantFromVarlensCSV(
       (interbaseStart, ref, alt)
     } else {
       // Deletion.
-      val refSeqeunce = Bases.basesToString(
+      val refSequence = Bases.basesToString(
         reference.getReferenceSequence(
-          uncanonicalizedContig, interbaseStart.toInt - 1, interbaseStart.toInt + 1)).toUpperCase
-      (interbaseStart - 1, refSeqeunce, refSeqeunce(0) + alt)
+          uncanonicalizedContig, interbaseStart.toInt - 1, interbaseEnd.toInt)).toUpperCase
+      (interbaseStart - 1, refSequence, refSequence(0) + alt)
     }
 
     val alleles = Seq(adjustedRef, adjustedAlt).distinct
