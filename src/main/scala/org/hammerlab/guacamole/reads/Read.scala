@@ -18,22 +18,10 @@
 
 package org.hammerlab.guacamole.reads
 
-import java.io.File
-
 import htsjdk.samtools._
-import org.apache.hadoop.fs.Path
-import org.apache.hadoop.io.LongWritable
-import org.apache.spark.rdd.RDD
-import org.apache.spark.{Logging, SparkContext}
-import org.bdgenomics.adam.models.SequenceDictionary
-import org.bdgenomics.adam.rdd.{ADAMContext, ADAMSpecificRecordSequenceDictionaryRDDAggregator}
+import org.apache.spark.Logging
 import org.bdgenomics.formats.avro.AlignmentRecord
-import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.util.Bases
-import org.seqdoop.hadoop_bam.util.SAMHeaderReader
-import org.seqdoop.hadoop_bam.{AnySAMInputFormat, SAMRecordWritable}
-
-import scala.collection.JavaConversions
 
 /**
  * The fields in the Read trait are common to any read, whether mapped (aligned) or not.
@@ -93,7 +81,7 @@ object Read extends Logging {
    * @param record
    * @return
    */
-  def fromSAMRecord(record: SAMRecord): Read = {
+  def apply(record: SAMRecord): Read = {
 
     val isMapped = (
       !record.getReadUnmappedFlag &&
@@ -149,153 +137,13 @@ object Read extends Logging {
   }
 
   /**
-   * Given a filename and a spark context, return a pair (RDD, SequenceDictionary), where the first element is an RDD
-   * of Reads, and the second element is the Sequence Dictionary giving info (e.g. length) about the contigs in the BAM.
-   *
-   * @param filename name of file containing reads
-   * @param sc spark context
-   * @param filters filters to apply
-   * @return
-   */
-  def loadReadRDDAndSequenceDictionary(filename: String,
-                                       sc: SparkContext,
-                                       filters: InputFilters,
-                                       config: ReadLoadingConfig = ReadLoadingConfig.default): (RDD[Read], SequenceDictionary) = {
-    if (filename.endsWith(".bam") || filename.endsWith(".sam")) {
-      loadReadRDDAndSequenceDictionaryFromBAM(
-        filename,
-        sc,
-        filters,
-        config
-      )
-    } else {
-      loadReadRDDAndSequenceDictionaryFromADAM(
-        filename,
-        sc,
-        filters,
-        config
-      )
-    }
-  }
-
-  /** Returns an RDD of Reads and SequenceDictionary from reads in BAM format **/
-  def loadReadRDDAndSequenceDictionaryFromBAM(
-    filename: String,
-    sc: SparkContext,
-    filters: InputFilters = InputFilters.empty,
-    config: ReadLoadingConfig = ReadLoadingConfig.default): (RDD[Read], SequenceDictionary) = {
-
-    val path = new Path(filename)
-    val scheme = path.getFileSystem(sc.hadoopConfiguration).getScheme
-    val useSamtools =
-      config.bamReaderAPI == BamReaderAPI.Samtools ||
-        (
-          config.bamReaderAPI == BamReaderAPI.Best &&
-          scheme == "file"
-        )
-
-    if (useSamtools) {
-      // Load with samtools
-      if (scheme != "file") {
-        throw new IllegalArgumentException(
-          "Samtools API can only be used to read local files (i.e. scheme='file'), not: scheme='%s'".format(scheme))
-      }
-      var requiresFilteringByLocus = filters.overlapsLoci.nonEmpty
-
-      SamReaderFactory.setDefaultValidationStringency(ValidationStringency.SILENT)
-      val factory = SamReaderFactory.makeDefault
-      val reader = factory.open(new File(path.toUri.getPath))
-      val samSequenceDictionary = reader.getFileHeader.getSequenceDictionary
-      val sequenceDictionary = SequenceDictionary.fromSAMSequenceDictionary(samSequenceDictionary)
-      val loci = filters.overlapsLoci.map(_.result(contigLengths(sequenceDictionary)))
-
-      val recordIterator: SAMRecordIterator = if (filters.overlapsLoci.nonEmpty && reader.hasIndex) {
-        progress(s"Using samtools with BAM index to read: $filename")
-        requiresFilteringByLocus = false
-        val queryIntervals = loci.get.contigs.flatMap(contig => {
-          val contigIndex = samSequenceDictionary.getSequenceIndex(contig.name)
-          contig.ranges.map(range =>
-            new QueryInterval(contigIndex,
-              range.start.toInt + 1, // convert 0-indexed inclusive to 1-indexed inclusive
-              range.end.toInt)) // "convert" 0-indexed exclusive to 1-indexed inclusive, which is a no-op)
-        })
-        val optimizedQueryIntervals = QueryInterval.optimizeIntervals(queryIntervals.toArray)
-        reader.query(optimizedQueryIntervals, false) // Note: this can return unmapped reads, which we filter below.
-      } else {
-        val skippedReason =
-          if (reader.hasIndex)
-            "index is available but not needed"
-          else
-            "index unavailable"
-
-        progress(s"Using samtools without BAM index ($skippedReason) to read: $filename")
-
-        reader.iterator
-      }
-      val reads = JavaConversions.asScalaIterator(recordIterator).flatMap(record => {
-        // Optimization: some of the filters are easy to run on the raw SamRecord, so we avoid making a Read.
-        if ((filters.overlapsLoci.nonEmpty && record.getReadUnmappedFlag) ||
-          (requiresFilteringByLocus &&
-            !loci.get.onContig(record.getContig).intersects(record.getStart - 1, record.getEnd)) ||
-            (filters.nonDuplicate && record.getDuplicateReadFlag) ||
-            (filters.passedVendorQualityChecks && record.getReadFailsVendorQualityCheckFlag) ||
-            (filters.isPaired && !record.getReadPairedFlag)) {
-          None
-        } else {
-          val read = fromSAMRecord(record)
-          assert(filters.overlapsLoci.isEmpty || read.isMapped)
-          Some(read)
-        }
-      })
-      (sc.parallelize(reads.toSeq), sequenceDictionary)
-    } else {
-      // Load with hadoop bam
-      progress(s"Using hadoop bam to read: $filename")
-      val samHeader = SAMHeaderReader.readSAMHeaderFrom(path, sc.hadoopConfiguration)
-      val sequenceDictionary = SequenceDictionary.fromSAMHeader(samHeader)
-
-      val samRecords: RDD[(LongWritable, SAMRecordWritable)] =
-        sc.newAPIHadoopFile[LongWritable, SAMRecordWritable, AnySAMInputFormat](filename)
-      val allReads: RDD[Read] =
-        samRecords.map {
-          case (k, v) => fromSAMRecord(v.get)
-        }
-      val reads = InputFilters.filterRDD(filters, allReads, sequenceDictionary)
-      (reads, sequenceDictionary)
-    }
-  }
-
-  /** Returns an RDD of Reads and SequenceDictionary from reads in ADAM format **/
-  def loadReadRDDAndSequenceDictionaryFromADAM(
-    filename: String,
-    sc: SparkContext,
-    filters: InputFilters = InputFilters.empty,
-    config: ReadLoadingConfig = ReadLoadingConfig.default): (RDD[Read], SequenceDictionary) = {
-
-    progress(s"Using ADAM to read: $filename")
-
-    val adamContext = new ADAMContext(sc)
-
-    val adamRecords: RDD[AlignmentRecord] = adamContext.loadAlignments(
-      filename, projection = None, stringency = ValidationStringency.LENIENT).rdd
-
-    val sequenceDictionary =
-      new ADAMSpecificRecordSequenceDictionaryRDDAggregator(adamRecords).adamGetSequenceDictionary()
-
-    val allReads: RDD[Read] = adamRecords.map(fromADAMRecord(_))
-    val reads = InputFilters.filterRDD(filters, allReads, sequenceDictionary)
-
-    (reads, sequenceDictionary)
-  }
-
-  /**
    *
    * Builds a Guacamole Read from and ADAM Alignment Record
    *
    * @param alignmentRecord ADAM Alignment Record (an aligned or unaligned read)
    * @return Mapped or Unmapped Read
    */
-  def fromADAMRecord(alignmentRecord: AlignmentRecord): Read = {
+  def apply(alignmentRecord: AlignmentRecord): Read = {
 
     val sequence = Bases.stringToBases(alignmentRecord.getSequence)
     val baseQualities = baseQualityStringToArray(alignmentRecord.getQual, sequence.length)
@@ -345,13 +193,6 @@ object Read extends Logging {
     } else {
       read
     }
-  }
-
-  /** Extract the length of each contig from a sequence dictionary */
-  def contigLengths(sequenceDictionary: SequenceDictionary): Map[String, Long] = {
-    val builder = Map.newBuilder[String, Long]
-    sequenceDictionary.records.foreach(record => builder += ((record.name.toString, record.length)))
-    builder.result
   }
 
 }

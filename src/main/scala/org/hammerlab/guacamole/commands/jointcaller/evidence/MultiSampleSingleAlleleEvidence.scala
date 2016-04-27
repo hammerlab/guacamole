@@ -1,11 +1,11 @@
 package org.hammerlab.guacamole.commands.jointcaller.evidence
 
-import org.hammerlab.guacamole.PerSample
 import org.hammerlab.guacamole.commands.jointcaller.Input.{Analyte, TissueType}
 import org.hammerlab.guacamole.commands.jointcaller._
 import org.hammerlab.guacamole.commands.jointcaller.annotation.{MultiSampleAnnotations, SingleSampleAnnotations}
 import org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.MultiplePileupStats
 import org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.PileupStats.AlleleMixture
+import org.hammerlab.guacamole.readsets.PerSample
 
 import scala.collection.Set
 
