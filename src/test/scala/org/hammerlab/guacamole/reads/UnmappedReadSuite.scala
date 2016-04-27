@@ -28,9 +28,9 @@ class UnmappedReadSuite extends GuacFunSuite {
       "read1",
       "TCGACCCTCGA",
       Array[Byte]((10 to 20).map(_.toByte): _*),
-      true,
+      isDuplicate = true,
       "some sample name",
-      false,
+      failedVendorQualityChecks = false,
       isPaired = false
     )
 

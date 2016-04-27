@@ -58,14 +58,16 @@ class SomaticJointCallerSuite extends GuacFunSuite {
     val inputs = InputCollection(cancerWGS1Bams.take(1), tissueTypes = Vector("normal"))
     val loci = LociParser("chr1,chr2,chr3")
     val readSets = SomaticJoint.inputsToReadSets(sc, inputs, loci)
-    val calls = SomaticJoint.makeCalls(
-      sc,
-      inputs,
-      readSets,
-      includeFiltered = true,
-      parameters = Parameters.defaults.copy(filterStrandBiasPhred = 20),
-      reference = hg19PartialReference,
-      loci = loci.result(readSets.head.contigLengths))
+    val calls =
+      SomaticJoint.makeCalls(
+        sc,
+        inputs,
+        readSets,
+        includeFiltered = true,
+        parameters = Parameters.defaults.copy(filterStrandBiasPhred = 20),
+        reference = hg19PartialReference,
+        loci = loci.result(readSets.contigLengths)
+      )
       .collect
       .map(call => (call.referenceContig, call.start) -> call)
       .toMap
