@@ -5,7 +5,7 @@ import org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Arguments
 import org.hammerlab.guacamole.data.NA12878TestUtil
 import org.hammerlab.guacamole.distributed.LociPartitionUtils
 import org.hammerlab.guacamole.loci.set.LociParser
-import org.hammerlab.guacamole.reads.InputFilters
+import org.hammerlab.guacamole.readsets.{InputFilters, ReadSets}
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.util.{Bases, GuacFunSuite, TestUtil}
 import org.hammerlab.guacamole.variants.CalledAllele
@@ -20,7 +20,6 @@ class GermlineAssemblyCallerSuite extends GuacFunSuite with BeforeAndAfterAll {
   args.parallelism = 1
 
   var reference: ReferenceBroadcast = _
-  var readSet: ReadSet = _
 
   override def beforeAll() {
     super.beforeAll()
@@ -44,8 +43,8 @@ class GermlineAssemblyCallerSuite extends GuacFunSuite with BeforeAndAfterAll {
 
     val lociParser = LociParser(s"$contig:$windowStart-$windowEnd")
 
-    val readSet =
-      Common.loadReadsFromArguments(
+    val (mappedReads, contigLengths) =
+      ReadSets.loadMappedReads(
         args,
         sc,
         InputFilters(
@@ -55,22 +54,22 @@ class GermlineAssemblyCallerSuite extends GuacFunSuite with BeforeAndAfterAll {
         )
       )
 
+
     val lociPartitions =
       LociPartitionUtils.partitionLociUniformly(
         tasks = args.parallelism,
-        loci = lociParser.result(readSet.contigLengths)
+        loci = lociParser.result(contigLengths)
       )
 
     val variants =
       GermlineAssemblyCaller.Caller.discoverGermlineVariants(
-        readSet.mappedReads,
-        kmerSize = kmerSize,
-        snvWindowRange = snvWindowRange,
-        minOccurrence = minOccurrence,
-        minAreaVaf = minVaf,
-        reference = reference,
-        lociPartitions = lociPartitions,
-        shortcutAssembly = shortcutAssembly
+        mappedReads,
+        kmerSize,
+        snvWindowRange,
+        minOccurrence,
+        minVaf,
+        reference,
+        lociPartitions
       ).collect().sortBy(_.start)
 
     val actualVariants =
@@ -81,7 +80,6 @@ class GermlineAssemblyCallerSuite extends GuacFunSuite with BeforeAndAfterAll {
       }
 
     actualVariants should be(expectedVariants)
-
   }
 
   test (

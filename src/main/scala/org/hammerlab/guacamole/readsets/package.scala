@@ -1,4 +1,4 @@
-package org.hammerlab
+package org.hammerlab.guacamole
 
 /**
  * Guacamole is a framework for writing variant callers on the Apache Spark platform. Several variant callers are
@@ -11,6 +11,7 @@ package org.hammerlab
  * sophisticated caller (for the somatic setting) that gives an example of most of the functionality in the rest of the
  * library.
  */
-package object guacamole {
+package object readsets {
   type PerSample[A] = IndexedSeq[A]
+  type ContigLengths = Map[String, Long]
 }

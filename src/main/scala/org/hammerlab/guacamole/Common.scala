@@ -24,98 +24,16 @@ import htsjdk.variant.vcf.VCFFileReader
 import org.apache.commons.io.IOUtils
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.{FileSystem, Path}
-import org.apache.spark.{Logging, SparkContext}
-import org.hammerlab.guacamole.distributed.LociPartitionUtils
+import org.apache.spark.Logging
 import org.hammerlab.guacamole.loci.LociArgs
 import org.hammerlab.guacamole.loci.set.{LociParser, LociSet}
-import org.hammerlab.guacamole.logging.DebugLogArgs
-import org.hammerlab.guacamole.reads.{InputFilters, ReadLoadingConfigArgs}
-import org.hammerlab.guacamole.variants.Concordance.ConcordanceArgs
-import org.hammerlab.guacamole.variants.GenotypeOutputArgs
-import org.kohsuke.args4j.{Option => Args4jOption}
+import org.hammerlab.guacamole.readsets.ContigLengths
 
 /**
  * Basic functions that most commands need, and specifications of command-line arguments that they use.
  *
  */
 object Common extends Logging {
-  /** Argument for using / not using sequence dictionaries to get contigs and lengths. */
-  trait NoSequenceDictionaryArgs extends DebugLogArgs {
-    @Args4jOption(
-      name = "--no-sequence-dictionary",
-      usage = "If set, get contigs and lengths directly from reads instead of from sequence dictionary."
-    )
-    var noSequenceDictionary: Boolean = false
-  }
-
-  /** Argument for accepting a single set of reads (for non-somatic variant calling). */
-  trait ReadsArgs extends DebugLogArgs with NoSequenceDictionaryArgs with ReadLoadingConfigArgs {
-    @Args4jOption(name = "--reads", metaVar = "X", required = true, usage = "Aligned reads")
-    var reads: String = ""
-  }
-
-  /** Arguments for accepting two sets of reads (tumor + normal). */
-  trait TumorNormalReadsArgs extends DebugLogArgs with NoSequenceDictionaryArgs with ReadLoadingConfigArgs {
-    @Args4jOption(name = "--normal-reads", metaVar = "X", required = true, usage = "Aligned reads: normal")
-    var normalReads: String = ""
-
-    @Args4jOption(name = "--tumor-reads", metaVar = "X", required = true, usage = "Aligned reads: tumor")
-    var tumorReads: String = ""
-  }
-
-  trait GermlineCallerArgs extends GenotypeOutputArgs with ReadsArgs with ConcordanceArgs with LociPartitionUtils.Arguments
-
-  trait SomaticCallerArgs extends GenotypeOutputArgs with TumorNormalReadsArgs with LociPartitionUtils.Arguments
-
-  /**
-   * Given arguments for a single set of reads, and a spark context, return a ReadSet.
-   *
-   * @param args parsed arguments
-   * @param sc spark context
-   * @param filters input filters to apply
-   * @return
-   */
-  def loadReadsFromArguments(args: ReadsArgs,
-                             sc: SparkContext,
-                             filters: InputFilters): ReadSet = {
-    ReadSet(
-      sc,
-      args.reads,
-      filters,
-      contigLengthsFromDictionary = !args.noSequenceDictionary,
-      config = ReadLoadingConfigArgs(args)
-    )
-  }
-
-  /**
-   * Given arguments for two sets of reads (tumor and normal), return a pair of (tumor, normal) read sets.
-   *
-   * @param args parsed arguments
-   * @param sc spark context
-   * @param filters input filters to apply
-   */
-  def loadTumorNormalReadsFromArguments(args: TumorNormalReadsArgs,
-                                        sc: SparkContext,
-                                        filters: InputFilters): (ReadSet, ReadSet) = {
-
-    val tumor = ReadSet(
-      sc,
-      args.tumorReads,
-      filters,
-      !args.noSequenceDictionary,
-      ReadLoadingConfigArgs(args)
-    )
-
-    val normal = ReadSet(
-      sc,
-      args.normalReads,
-      filters,
-      !args.noSequenceDictionary,
-      ReadLoadingConfigArgs(args)
-    )
-
-    (tumor, normal)
-  }
 
   /**
    * Return the loci specified by the user as a LociParser.
@@ -150,7 +68,7 @@ object Common extends Logging {
    * @param contigLengths contig lengths, by name
    * @return a LociSet
    */
-  def lociFromFile(filePath: String, contigLengths: Map[String, Long]): LociSet = {
+  def lociFromFile(filePath: String, contigLengths: ContigLengths): LociSet = {
     if (filePath.endsWith(".vcf")) {
       LociSet(
         new VCFFileReader(new File(filePath), false)
@@ -178,7 +96,7 @@ object Common extends Logging {
    * @param contigLengths contig lengths, by name
    * @return a LociSet
    */
-  def loadLoci(loci: String, lociFromFilePath: String, contigLengths: Map[String, Long]): LociSet = {
+  def loadLoci(loci: String, lociFromFilePath: String, contigLengths: ContigLengths): LociSet = {
     if (loci.nonEmpty && lociFromFilePath.nonEmpty) {
       throw new IllegalArgumentException("Specify at most one of the 'loci' and 'loci-from-file' arguments")
     }
