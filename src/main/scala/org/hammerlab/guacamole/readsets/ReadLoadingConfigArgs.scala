@@ -1,4 +1,4 @@
-package org.hammerlab.guacamole.reads
+package org.hammerlab.guacamole.readsets
 
 import org.hammerlab.guacamole.logging.DebugLogArgs
 import org.kohsuke.args4j.{Option => Args4jOption}
@@ -11,11 +11,3 @@ trait ReadLoadingConfigArgs extends DebugLogArgs {
   )
   var bamReaderAPI: String = "best"
 }
-
-object ReadLoadingConfigArgs {
-  /** Given commandline arguments, return a ReadLoadingConfig. */
-  def apply(args: ReadLoadingConfigArgs): ReadLoadingConfig = {
-    ReadLoadingConfig(BamReaderAPI.withNameCaseInsensitive(args.bamReaderAPI))
-  }
-}
-

@@ -1,4 +1,4 @@
-package org.hammerlab.guacamole.reads
+package org.hammerlab.guacamole.readsets
 
 /**
  * Specification of which API to use when reading BAM and SAM files.
@@ -20,4 +20,3 @@ object BamReaderAPI extends Enumeration {
       "Unsupported bam reading API: %s. Valid APIs are: %s".format(s, values.map(_.toString).mkString(", "))))
   }
 }
-

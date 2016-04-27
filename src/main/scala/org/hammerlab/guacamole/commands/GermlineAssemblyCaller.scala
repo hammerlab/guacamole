@@ -4,8 +4,6 @@ import breeze.linalg.DenseVector
 import breeze.stats.{mean, median}
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
-import org.hammerlab.guacamole.Common
-import org.hammerlab.guacamole.Common.GermlineCallerArgs
 import org.hammerlab.guacamole.alignment.AffineGapPenaltyAlignment
 import org.hammerlab.guacamole.assembly.AssemblyUtils
 import org.hammerlab.guacamole.distributed.LociPartitionUtils.{LociPartitioning, partitionLociAccordingToArgs}
@@ -14,9 +12,10 @@ import org.hammerlab.guacamole.likelihood.Likelihood
 import org.hammerlab.guacamole.logging.DelayedMessages
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.reads.{InputFilters, MappedRead}
+import org.hammerlab.guacamole.reads.MappedRead
+import org.hammerlab.guacamole.readsets.{GermlineCallerArgs, InputFilters, ReadSets}
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
-import org.hammerlab.guacamole.variants._
+import org.hammerlab.guacamole.variants.{Allele, AlleleConversions, AlleleEvidence, CalledAllele, VariantUtils}
 import org.kohsuke.args4j.{Option => Args4jOption}
 
 /**
@@ -69,25 +68,24 @@ object GermlineAssemblyCaller {
     override def run(args: Arguments, sc: SparkContext): Unit = {
       val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
       val loci = args.parseLoci(sc.hadoopConfiguration)
-      val readSet = Common.loadReadsFromArguments(
-        args,
-        sc,
-        InputFilters(
-          overlapsLoci = loci,
-          mapped = true,
-          nonDuplicate = true
+      val (mappedReads, contigLengths) =
+        ReadSets.loadMappedReads(
+          args,
+          sc,
+          InputFilters(
+            overlapsLoci = loci,
+            mapped = true,
+            nonDuplicate = true
+          )
         )
-      )
 
       val minAlignmentQuality = args.minAlignmentQuality
-      val qualityReads = readSet
-        .mappedReads
-        .filter(_.alignmentQuality > minAlignmentQuality)
+      val qualityReads = mappedReads.filter(_.alignmentQuality > minAlignmentQuality)
 
       val lociPartitions = partitionLociAccordingToArgs(
         args,
-        loci.result(readSet.contigLengths),
-        readSet.mappedReads
+        loci.result(contigLengths),
+        mappedReads
       )
 
       val genotypes: RDD[CalledAllele] = discoverGermlineVariants(

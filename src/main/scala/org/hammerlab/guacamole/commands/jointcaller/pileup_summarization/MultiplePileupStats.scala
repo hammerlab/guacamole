@@ -1,7 +1,7 @@
 package org.hammerlab.guacamole.commands.jointcaller.pileup_summarization
 
-import org.hammerlab.guacamole.PerSample
 import org.hammerlab.guacamole.commands.jointcaller.InputCollection
+import org.hammerlab.guacamole.readsets.PerSample
 
 /**
  * Collection of per-sample PileupStats instances plus pooled normal and tumor DNA PileupStats.

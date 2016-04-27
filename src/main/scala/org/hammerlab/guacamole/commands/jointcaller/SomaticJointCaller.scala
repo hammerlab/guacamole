@@ -3,7 +3,6 @@ package org.hammerlab.guacamole.commands.jointcaller
 import htsjdk.samtools.SAMSequenceDictionary
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
-import org.hammerlab.guacamole.Common.NoSequenceDictionaryArgs
 import org.hammerlab.guacamole._
 import org.hammerlab.guacamole.commands.SparkCommand
 import org.hammerlab.guacamole.commands.jointcaller.evidence.{MultiSampleMultiAlleleEvidence, MultiSampleSingleAlleleEvidence}
@@ -12,7 +11,7 @@ import org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociAccor
 import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMapMultipleRDDs
 import org.hammerlab.guacamole.loci.set.{LociParser, LociSet}
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
-import org.hammerlab.guacamole.reads.InputFilters
+import org.hammerlab.guacamole.readsets.{InputFilters, NoSequenceDictionaryArgs, PerSample, ReadSets}
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.kohsuke.args4j.spi.StringArrayOptionHandler
 import org.kohsuke.args4j.{Option => Args4jOption}
@@ -66,15 +65,13 @@ object SomaticJoint {
   def inputsToReadSets(sc: SparkContext,
                        inputs: InputCollection,
                        loci: LociParser,
-                       contigLengthsFromDictionary: Boolean = true): PerSample[ReadSet] = {
-    inputs.items.zipWithIndex.map({
-      case (input, index) => ReadSet(
-        sc,
-        input.path,
-        InputFilters(overlapsLoci = loci),
-        contigLengthsFromDictionary = contigLengthsFromDictionary
-      )
-    })
+                       contigLengthsFromDictionary: Boolean = true): ReadSets = {
+    ReadSets(
+      sc,
+      inputs.items.map(_.path),
+      InputFilters(overlapsLoci = loci),
+      contigLengthsFromDictionary = contigLengthsFromDictionary
+    )
   }
 
   object Caller extends SparkCommand[Arguments] {
@@ -93,16 +90,11 @@ object SomaticJoint {
 
       val loci = args.parseLoci(sc.hadoopConfiguration)
 
-      val readSets = inputsToReadSets(sc, inputs, loci, !args.noSequenceDictionary)
-
-      if (!readSets.forall(_.sequenceDictionary == readSets(0).sequenceDictionary)) {
-        logWarning("Samples have different sequence dictionaries: %s."
-          .format(readSets.map(_.sequenceDictionary.toString).mkString("\n")))
-      }
+      val readsets = inputsToReadSets(sc, inputs, loci, !args.noSequenceDictionary)
 
       val forceCallLoci =
         if (args.forceCallLoci.nonEmpty || args.forceCallLociFromFile.nonEmpty) {
-          LociSet.load(args.forceCallLoci, args.forceCallLociFromFile, readSets(0).contigLengths)
+          LociSet.load(args.forceCallLoci, args.forceCallLociFromFile, readsets.contigLengths)
         } else {
           LociSet()
         }
@@ -111,7 +103,7 @@ object SomaticJoint {
         progress(
           "Force calling %,d loci across %,d contig(s): %s".format(
             forceCallLoci.count,
-            forceCallLoci.contigs.size,
+            forceCallLoci.contigs.length,
             forceCallLoci.truncatedString()
           )
         )
@@ -122,14 +114,15 @@ object SomaticJoint {
       val calls = makeCalls(
         sc,
         inputs,
-        readSets,
+        readsets,
         parameters,
         reference,
-        loci.result(readSets(0).contigLengths),
+        loci.result(readsets.contigLengths),
         forceCallLoci = forceCallLoci,
         onlySomatic = args.onlySomatic,
         includeFiltered = args.includeFiltered,
-        distributedUtilArguments = args)
+        distributedUtilArguments = args
+      )
 
       calls.cache()
 
@@ -155,13 +148,14 @@ object SomaticJoint {
         collectedCalls,
         inputs,
         parameters,
-        readSets(0).sequenceDictionary.get.toSAMSequenceDictionary,
+        readsets.sequenceDictionary.toSAMSequenceDictionary,
         forceCallLoci,
         reference,
         onlySomatic = args.onlySomatic,
         out = args.out,
         outDir = args.outDir,
-        extraHeaderMetadata = extraHeaderMetadata)
+        extraHeaderMetadata = extraHeaderMetadata
+      )
     }
   }
 
@@ -179,7 +173,7 @@ object SomaticJoint {
 
   def makeCalls(sc: SparkContext,
                 inputs: InputCollection,
-                readSets: PerSample[ReadSet],
+                readsRDDs: ReadSets,
                 parameters: Parameters,
                 reference: ReferenceBroadcast,
                 loci: LociSet,
@@ -193,15 +187,20 @@ object SomaticJoint {
     // When mapping over pileups, at locus x we call variants at locus x + 1. Therefore we subtract 1 from the user-
     // specified loci.
     val broadcastForceCallLoci = sc.broadcast(forceCallLoci)
+
+    val mappedReadRDDs = readsRDDs.mappedReads
+
     val lociPartitions =
       partitionLociAccordingToArgs(
         distributedUtilArguments,
+        // When mapping over pileups, at locus x we call variants at locus x + 1. Therefore we subtract 1 from the user-
+        // specified loci.
         lociSetMinusOne(loci),
-        readSets.map(_.mappedReads)
+        mappedReadRDDs
       )
 
     pileupFlatMapMultipleRDDs(
-      readSets.map(_.mappedReads),
+      mappedReadRDDs,
       lociPartitions,
       skipEmpty = true,  // TODO: shouldn't skip empty positions if we might force call them. Need an efficient way to handle this.
       rawPileups => {

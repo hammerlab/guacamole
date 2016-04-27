@@ -22,8 +22,6 @@ import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.rdd.ADAMContext
 import org.bdgenomics.formats.avro.DatabaseVariantAnnotation
-import org.hammerlab.guacamole.Common
-import org.hammerlab.guacamole.Common.SomaticCallerArgs
 import org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociAccordingToArgs
 import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMapTwoRDDs
 import org.hammerlab.guacamole.filters.PileupFilter.PileupFilterArguments
@@ -33,9 +31,9 @@ import org.hammerlab.guacamole.likelihood.Likelihood
 import org.hammerlab.guacamole.logging.DelayedMessages
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.reads.InputFilters
+import org.hammerlab.guacamole.readsets.{InputFilters, ReadSets, SomaticCallerArgs}
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
-import org.hammerlab.guacamole.variants.{Allele, AlleleConversions, AlleleEvidence, CalledSomaticAllele, VariantUtils}
+import org.hammerlab.guacamole.variants.{Allele, AlleleConversions, AlleleEvidence, CalledSomaticAllele, GenotypeOutputArgs, VariantUtils}
 import org.kohsuke.args4j.{Option => Args4jOption}
 
 /**
@@ -50,7 +48,11 @@ import org.kohsuke.args4j.{Option => Args4jOption}
  */
 object SomaticStandard {
 
-  protected class Arguments extends SomaticCallerArgs with PileupFilterArguments with SomaticGenotypeFilterArguments {
+  protected class Arguments
+    extends SomaticCallerArgs
+      with PileupFilterArguments
+      with SomaticGenotypeFilterArguments
+      with GenotypeOutputArgs {
 
     @Args4jOption(name = "--odds", usage = "Minimum log odds threshold for possible variant candidates")
     var oddsThreshold: Int = 20
@@ -79,16 +81,12 @@ object SomaticStandard {
 
       val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
 
-      val (tumorReads, normalReads) =
-        Common.loadTumorNormalReadsFromArguments(
+      val (tumorReads, normalReads, contigLengths) =
+        ReadSets.loadTumorNormalReads(
           args,
           sc,
           filters
         )
-
-      assert(tumorReads.sequenceDictionary == normalReads.sequenceDictionary,
-        "Tumor and normal samples have different sequence dictionaries. Tumor dictionary: %s.\nNormal dictionary: %s."
-          .format(tumorReads.sequenceDictionary, normalReads.sequenceDictionary))
 
       val filterMultiAllelic = args.filterMultiAllelic
       val minAlignmentQuality = args.minAlignmentQuality
@@ -96,11 +94,12 @@ object SomaticStandard {
 
       val oddsThreshold = args.oddsThreshold
 
-      val lociPartitions = partitionLociAccordingToArgs(
-        args,
-        loci.result(normalReads.contigLengths),
-        Vector(tumorReads.mappedReads, normalReads.mappedReads)
-      )
+      val lociPartitions =
+        partitionLociAccordingToArgs(
+          args,
+          loci.result(contigLengths),
+          Vector(tumorReads.mappedReads, normalReads.mappedReads)
+        )
 
       var potentialGenotypes: RDD[CalledSomaticAllele] =
         pileupFlatMapTwoRDDs[CalledSomaticAllele](

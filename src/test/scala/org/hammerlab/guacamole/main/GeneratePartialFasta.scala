@@ -8,7 +8,7 @@ import org.hammerlab.guacamole.commands.SparkCommand
 import org.hammerlab.guacamole.distributed.LociPartitionUtils
 import org.hammerlab.guacamole.loci.SimpleRange
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
-import org.hammerlab.guacamole.reads.{InputFilters, ReadLoadingConfigArgs}
+import org.hammerlab.guacamole.readsets.{InputFilters, ReadLoadingConfig, ReadLoadingConfigArgs, ReadSets}
 import org.hammerlab.guacamole.reference.{ContigNotFound, ReferenceArgs, ReferenceBroadcast}
 import org.hammerlab.guacamole.util.Bases
 import org.kohsuke.args4j.{Argument, Option => Args4jOption}
@@ -63,17 +63,15 @@ object GeneratePartialFasta extends SparkCommand[GeneratePartialFastaArguments] 
 
     val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
     val parsedLoci = args.parseLoci(sc.hadoopConfiguration, fallback = "none")
-    val readSets = args.bams.zipWithIndex.map(fileAndIndex =>
-      ReadSet(
+    val readsets =
+      ReadSets(
         sc,
-        fileAndIndex._1,
+        args.bams,
         InputFilters.empty,
-        config = ReadLoadingConfigArgs(args)
+        config = ReadLoadingConfig(args)
       )
-    )
 
-    val reads = sc.union(readSets.map(_.mappedReads))
-    val contigLengths = readSets.head.contigLengths
+    val reads = sc.union(readsets.mappedReads)
 
     val regions = reads.map(read => (read.referenceContig, read.start, read.end))
     regions.collect.foreach(triple => {
@@ -91,7 +89,7 @@ object GeneratePartialFasta extends SparkCommand[GeneratePartialFastaArguments] 
     } {
       try {
         val sequence = Bases.basesToString(reference.getContig(contig.name).slice(start.toInt, end.toInt))
-        writer.write(">%s:%d-%d/%d\n".format(contig.name, start, end, contigLengths(contig.name)))
+        writer.write(">%s:%d-%d/%d\n".format(contig.name, start, end, readsets.contigLengths(contig.name)))
         writer.write(sequence)
         writer.write("\n")
       } catch {
