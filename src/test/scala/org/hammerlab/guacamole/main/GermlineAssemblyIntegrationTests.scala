@@ -5,8 +5,18 @@ import org.hammerlab.guacamole.commands.GermlineAssemblyCaller
 import org.hammerlab.guacamole.util.TestUtil
 import org.hammerlab.guacamole.{Common, NA12878TestUtils}
 
+/**
+ * Germline assembly caller integration "tests" that output various statistics to stdout.
+ *
+ * To run:
+ *
+ *   mvn package
+ *   mvn test-compile
+ *   java \
+ *     -cp target/guacamole-with-dependencies-0.0.1-SNAPSHOT.jar:target/scala-2.10.5/test-classes \
+ *     org.hammerlab.guacamole.main.GermlineAssemblyIntegrationTests
+ */
 object GermlineAssemblyIntegrationTests {
-
 
   def main(args: Array[String]): Unit = {
 
@@ -34,10 +44,7 @@ object GermlineAssemblyIntegrationTests {
     args.minLikelihood = 70
     args.minOccurrence = 3
 
-    GermlineAssemblyCaller.Caller.run(
-      args,
-      sc
-    )
+    GermlineAssemblyCaller.Caller.run(args, sc)
 
     val resultFile = args.variantOutput + "/part-r-00000"
     println("************* GUACAMOLE GermlineAssembly *************")

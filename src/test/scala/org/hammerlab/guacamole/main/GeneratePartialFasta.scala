@@ -22,6 +22,18 @@ import org.kohsuke.args4j.{Argument, Option => Args4jOption}
  *
  * This lets us package up a subset of a reference fasta into a file that is small enough to version control and
  * distribute.
+ *
+ * To run this command, build the main Guacamole package, compile test-classes, and run this class with both the
+ * assembly JAR and test-classes on the classpath:
+ *
+ *   mvn package -DskipTests
+ *   mvn test-compile
+ *   java \
+ *     -cp target/guacamole-with-dependencies-0.0.1-SNAPSHOT.jar:target/scala-2.10.5/test-classes \
+ *     org.hammerlab.guacamole.main.GeneratePartialFasta \
+ *     -o <output path> \
+ *     --reference-fasta <fasta path> \
+ *     <bam path> [bam path...]
  */
 object GeneratePartialFasta extends Logging {
 
@@ -68,13 +80,14 @@ object GeneratePartialFasta extends Logging {
 
     val fd = new File(args.output)
     val writer = new BufferedWriter(new FileWriter(fd))
+
     for {
       contig <- loci.contigs
       SimpleRange(start, end) <- contig.ranges
     } {
       try {
         val sequence = Bases.basesToString(reference.getContig(contig.name).slice(start.toInt, end.toInt))
-        writer.write(">%s:%d-%d/%d\n".format(contig, start, end, contigLengths(contig.name)))
+        writer.write(">%s:%d-%d/%d\n".format(contig.name, start, end, contigLengths(contig.name)))
         writer.write(sequence)
         writer.write("\n")
       } catch {
