@@ -18,7 +18,6 @@
 
 package org.hammerlab.guacamole.loci.set
 
-import org.hammerlab.guacamole.Common
 import org.hammerlab.guacamole.loci.LociArgs
 import org.hammerlab.guacamole.logging.DebugLogArgs
 import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}

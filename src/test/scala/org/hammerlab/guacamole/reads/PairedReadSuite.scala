@@ -59,30 +59,32 @@ class PairedReadSuite extends FunSuite with Matchers {
       )
     )
 
-    val mread = PairedRead(
-      MappedRead(
-        "read1",
-        "TCGACCCTCGA",
-        Array[Byte]((10 to 20).map(_.toByte): _*),
-        isDuplicate = true,
-        sampleName = "some sample name",
-        referenceContig = "chr5",
-        alignmentQuality = 50,
-        start = 325352323,
-        cigar = TextCigarCodec.decode(""),
-        failedVendorQualityChecks = false,
-        isPositiveStrand = true,
-        isPaired = true),
-      isFirstInPair = true,
-      mateAlignmentProperties = Some(
-        MateAlignmentProperties(
-          inferredInsertSize = Some(300),
+    val mread =
+      PairedRead(
+        MappedRead(
+          "read1",
+          "TCGACCCTCGA",
+          Array[Byte]((10 to 20).map(_.toByte): _*),
+          isDuplicate = true,
+          sampleName = "some sample name",
           referenceContig = "chr5",
-          start = 100L,
-          isPositiveStrand = false
+          alignmentQuality = 50,
+          start = 325352323,
+          cigar = TextCigarCodec.decode(""),
+          failedVendorQualityChecks = false,
+          isPositiveStrand = true,
+          isPaired = true
+        ),
+        isFirstInPair = true,
+        mateAlignmentProperties = Some(
+          MateAlignmentProperties(
+            inferredInsertSize = Some(300),
+            referenceContig = "chr5",
+            start = 100L,
+            isPositiveStrand = false
+          )
         )
       )
-    )
 
     val collectionMappedReads: Seq[Read] = Seq(uread, mread)
     collectionMappedReads(0).isMapped should be(false)
