@@ -62,7 +62,7 @@ object GeneratePartialFasta extends SparkCommand[GeneratePartialFastaArguments] 
   override def run(args: GeneratePartialFastaArguments, sc: SparkContext): Unit = {
 
     val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
-    val lociBuilder = Common.lociFromArguments(args, default = "none")
+    val parsedLoci = args.parseLoci(fallback = "none")
     val readSets = args.bams.zipWithIndex.map(fileAndIndex =>
       ReadSet(
         sc,
@@ -77,10 +77,10 @@ object GeneratePartialFasta extends SparkCommand[GeneratePartialFastaArguments] 
 
     val regions = reads.map(read => (read.referenceContig, read.start, read.end))
     regions.collect.foreach(triple => {
-      lociBuilder.put(triple._1, triple._2, triple._3)
+      parsedLoci.put(triple._1, triple._2, triple._3)
     })
 
-    val loci = lociBuilder.result
+    val loci = parsedLoci.result
 
     val fd = new File(args.output)
     val writer = new BufferedWriter(new FileWriter(fd))
