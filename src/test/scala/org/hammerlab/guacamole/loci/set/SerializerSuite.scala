@@ -3,7 +3,7 @@ package org.hammerlab.guacamole.loci.set
 import org.hammerlab.guacamole.util.GuacFunSuite
 
 class SerializerSuite extends GuacFunSuite {
-  sparkTest("make an RDD[LociSet]") {
+  test("make an RDD[LociSet]") {
     val sets =
       List(
         "",
@@ -20,7 +20,7 @@ class SerializerSuite extends GuacFunSuite {
     result should equal(sets.map(_.toString))
   }
 
-  sparkTest("make an RDD[LociSet], and an RDD[Contig]") {
+  test("make an RDD[LociSet], and an RDD[Contig]") {
     val sets =
       List(
         "",

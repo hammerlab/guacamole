@@ -138,7 +138,7 @@ class LociPartitionUtilsSuite extends GuacFunSuite {
     LociPartitionUtils.partitionLociUniformly(2000, giantSet).inverse
   }
 
-  sparkTest("partitionLociByApproximateReadDepth") {
+  test("partitionLociByApproximateReadDepth") {
     def makeRead(start: Long, length: Long) = {
       TestUtil.makeRead("A" * length.toInt, "%sM".format(length), start, "chr1")
     }

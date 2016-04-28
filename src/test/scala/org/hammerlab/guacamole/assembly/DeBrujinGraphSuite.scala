@@ -367,7 +367,7 @@ class DeBruijnGraphSuite extends GuacFunSuite {
 
   }
 
-  sparkTest("real reads data test") {
+  test("real reads data test") {
     val kmerSize = 55
 
     val referenceString = "GAGGATCTGCCATGGCCGGGCGAGCTGGAGGAGGAGGAGGAGGAGGAGGAGGAGGAGGAGGAGGAAGAGGAGGAGGCTGCAGCGGCGGCGGCGGCGAACGTGGACGACGTAGTGGTCGTGGAGGAGGTGGAGGAAGAGGCGGGGCG"

@@ -13,7 +13,7 @@ class SerializerSuite extends GuacFunSuite {
     numRanges: Int,
     count: Int
   ) = {
-    sparkTest(name) {
+    test(name) {
       val serializer = SparkEnv.get.serializer.newInstance()
 
       val beforeMap = LociMap[String](ranges: _*)

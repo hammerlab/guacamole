@@ -80,7 +80,7 @@ class LociSetSuite extends GuacFunSuite {
     set.onContig("chr1").contains(10001) should be(false)
   }
 
-  sparkTest("loci set invariants") {
+  test("loci set invariants") {
     val sets = List(
       "",
       "empty:20-20,empty2:30-30",
@@ -114,7 +114,7 @@ class LociSetSuite extends GuacFunSuite {
     sets.foreach(checkInvariants)
   }
 
-  sparkTest("loci argument parsing in Common") {
+  test("loci argument parsing in Common") {
     class TestArgs extends DebugLogArgs with LociArgs {}
 
     // Test -loci argument
@@ -198,7 +198,7 @@ class LociSetSuite extends GuacFunSuite {
   }
 
   // We do not provide java serialization for LociSet, instead broadcasting it (which uses Kryo serialization).
-  sparkTest("serialization: a closure that includes a LociSet") {
+  test("serialization: a closure that includes a LociSet") {
     val set = LociSet("chr21:100-200,chr20:0-10,chr20:8-15,chr20:100-120,empty:10-10")
     val setBC = sc.broadcast(set)
     val rdd = sc.parallelize(0L until 1000L)

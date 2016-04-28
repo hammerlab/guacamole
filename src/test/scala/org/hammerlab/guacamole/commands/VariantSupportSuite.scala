@@ -76,23 +76,23 @@ class VariantSupportSuite extends GuacFunSuite with TableDrivenPropertyChecks {
       .collect()
       .sortBy(_.start)
 
-  sparkTest("read evidence for simple snvs") {
+  test("read evidence for simple snvs") {
     val pileup = Pileup(gatkReads("20:10008951-10008952"), "20", 10008951, grch37Reference.getContig("20"))
     assertAlleleCounts(pileup, ("CACACACACACA", "C", 1), ("C", "C", 4))
   }
 
-  sparkTest("read evidence for mid-deletion") {
+  test("read evidence for mid-deletion") {
     val pileup = Pileup(gatkReads("20:10006822-10006823"), "20", 10006822, referenceContigSequence = grch37Reference.getContig("20"))
     assertAlleleCounts(pileup, ("C", "", 6), ("C", "C", 2))
   }
 
-  sparkTest("read evidence for simple snvs 2") {
+  test("read evidence for simple snvs 2") {
     val reads = gatkReads("20:10000624-10000625")
     val pileup = Pileup(reads, "20", 10000624, referenceContigSequence = grch37Reference.getContig("20"))
     assertAlleleCounts(pileup, ("T", "T", 6), ("T", "C", 1))
   }
 
-  sparkTest("read evidence for simple snvs no filters") {
+  test("read evidence for simple snvs no filters") {
     val loci =
       Seq(
         ("20", 9999900, Nil), // empty
@@ -106,7 +106,7 @@ class VariantSupportSuite extends GuacFunSuite with TableDrivenPropertyChecks {
 
   }
 
-  sparkTest("read evidence for simple snvs duplicate filtering") {
+  test("read evidence for simple snvs duplicate filtering") {
     val loci =
       Seq(
         ("20", 9999995, Seq(("A", "ACT", 8))),

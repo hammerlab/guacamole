@@ -6,7 +6,7 @@ import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
 import org.hammerlab.guacamole.windowing.SlidingWindow
 
 class WindowFlatMapUtilsSuite extends GuacFunSuite {
-  sparkTest("test window fold parallelism 5; average read depth") {
+  test("test window fold parallelism 5; average read depth") {
 
     // 4 overlapping reads starting at loci = 0
     //     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6
