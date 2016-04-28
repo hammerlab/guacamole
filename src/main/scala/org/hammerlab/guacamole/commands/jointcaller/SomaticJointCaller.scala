@@ -91,7 +91,7 @@ object SomaticJoint {
 
       val reference = ReferenceBroadcast(args.referenceFastaPath, sc, partialFasta = args.referenceFastaIsPartial)
 
-      val loci = Common.lociFromArguments(args)
+      val loci = args.parseLoci()
 
       val readSets = inputsToReadSets(sc, inputs, loci, !args.noSequenceDictionary)
 
@@ -102,7 +102,7 @@ object SomaticJoint {
 
       val forceCallLoci =
         if (args.forceCallLoci.nonEmpty || args.forceCallLociFromFile.nonEmpty) {
-          Common.loadLoci(args.forceCallLoci, args.forceCallLociFromFile, readSets(0).contigLengths)
+          LociSet.load(args.forceCallLoci, args.forceCallLociFromFile, readSets(0).contigLengths)
         } else {
           LociSet()
         }
