@@ -62,7 +62,7 @@ object GeneratePartialFasta extends SparkCommand[GeneratePartialFastaArguments] 
   override def run(args: GeneratePartialFastaArguments, sc: SparkContext): Unit = {
 
     val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
-    val lociBuilder = Common.lociFromArguments(args, default = "none")
+    val lociBuilder = args.parse(default = "none")
     val readSets = args.bams.zipWithIndex.map(fileAndIndex =>
       ReadSet(
         sc,
