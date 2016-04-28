@@ -5,7 +5,7 @@ import org.scalatest.Matchers
 
 class VAFHistogramSuite extends GuacFunSuite {
 
-  sparkTest("generating the histogram") {
+  test("generating the histogram") {
 
     val loci = sc.parallelize(Seq(
       VariantLocus("chr1", 1L, 0.25f),

@@ -43,7 +43,7 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
     PileupElement(read, locus, reference.getContig(read.referenceContig))
   }
 
-  sparkTest("create pileup from long insert reads") {
+  test("create pileup from long insert reads") {
     val reads = Seq(
       TestUtil.makeRead("TCGATCGA", "8M", 1),
       TestUtil.makeRead("TCGATCGA", "8M", 1),
@@ -65,7 +65,7 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
     insertPileup.elements(2).alignment should equal(Insertion("ACCC", Seq(31, 31, 31, 31).map(_.toByte)))
   }
 
-  sparkTest("create pileup from long insert reads; different qualities in insertion") {
+  test("create pileup from long insert reads; different qualities in insertion") {
     val reads = Seq(
       TestUtil.makeRead("TCGATCGA", "8M", 1, "chr1", Some(Seq(10, 15, 20, 25, 10, 15, 20, 25))),
       TestUtil.makeRead("TCGATCGA", "8M", 1, "chr1", Some(Seq(10, 15, 20, 25, 10, 15, 20, 25))),
@@ -83,7 +83,7 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
       })
   }
 
-  sparkTest("create pileup from long insert reads, right after insertion") {
+  test("create pileup from long insert reads, right after insertion") {
     val reads = Seq(
       TestUtil.makeRead("TCGATCGA", "8M", 1, "chr1", Some(Seq(10, 15, 20, 25, 10, 15, 20, 25))),
       TestUtil.makeRead("TCGATCGA", "8M", 1, "chr1", Some(Seq(10, 15, 20, 25, 10, 15, 20, 25))),
@@ -100,7 +100,7 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
 
   }
 
-  sparkTest("create pileup from long insert reads; after insertion") {
+  test("create pileup from long insert reads; after insertion") {
     val reads = Seq(
       TestUtil.makeRead("TCGATCGA", "8M", 1),
       TestUtil.makeRead("TCGATCGA", "8M", 1),
@@ -110,7 +110,7 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
     lastPileup.elements.forall(_.isMatch) should be(true)
   }
 
-  sparkTest("create pileup from long insert reads; end of read") {
+  test("create pileup from long insert reads; end of read") {
 
     val reads = Seq(
       TestUtil.makeRead("TCGATCGA", "8M", 1, "chr1", Some(Seq(10, 15, 20, 25, 10, 15, 20, 25))),
@@ -125,12 +125,12 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
     lastPileup.elements.forall(_.qualityScore == 25) should be(true)
   }
 
-  sparkTest("Load pileup from SAM file") {
+  test("Load pileup from SAM file") {
     val pileup = loadPileup(sc, "same_start_reads.sam", locus = 0, reference = reference)
     pileup.elements.length should be(10)
   }
 
-  sparkTest("First 60 loci should have all 10 reads") {
+  test("First 60 loci should have all 10 reads") {
     val pileup = loadPileup(sc, "same_start_reads.sam", locus = 0, reference = reference)
     for (i <- 1 to 59) {
       val nextPileup = pileup.atGreaterLocus(i, Seq.empty.iterator)
@@ -138,7 +138,7 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
     }
   }
 
-  sparkTest("test pileup element creation") {
+  test("test pileup element creation") {
     val read = TestUtil.makeRead("AATTG", "5M", 0, "chr2")
     val firstElement = pileupElementFromRead(read, 0)
 
@@ -155,7 +155,7 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
 
   }
 
-  sparkTest("test pileup element creation with multiple cigar elements") {
+  test("test pileup element creation with multiple cigar elements") {
     val read = TestUtil.makeRead("AAATTT", "3M3M", 0, "chr3")
 
     val secondMatch = pileupElementFromRead(read, 3)
@@ -168,13 +168,13 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
 
   }
 
-  sparkTest("insertion at contig start includes trailing base") {
+  test("insertion at contig start includes trailing base") {
     val contigStartInsertionRead = TestUtil.makeRead("AAAAAACGT", "5I4M", 0, "chr1")
     val pileup = pileupElementFromRead(contigStartInsertionRead, 0)
     pileup.alignment should equal(Insertion("AAAAAA", List(31, 31, 31, 31, 31, 31)))
   }
 
-  sparkTest("pileup alignment at insertion cigar-element throws") {
+  test("pileup alignment at insertion cigar-element throws") {
     val contigStartInsertionRead = TestUtil.makeRead("AAAAAACGT", "5I4M", 0, "chr1")
     val pileup = PileupElement(
       read = contigStartInsertionRead,
@@ -188,7 +188,7 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
     the[InvalidCigarElementException] thrownBy pileup.alignment
   }
 
-  sparkTest("test pileup element creation with deletion cigar elements") {
+  test("test pileup element creation with deletion cigar elements") {
     val read = TestUtil.makeRead("AATTGAATTG", "5M1D5M", 0, "chr4")
     val firstElement = pileupElementFromRead(read, 0)
 
@@ -214,7 +214,7 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
 
   }
 
-  sparkTest("Loci 10-19 deleted from half of the reads") {
+  test("Loci 10-19 deleted from half of the reads") {
     val pileup = loadPileup(sc, "same_start_reads.sam", locus = 0, reference = reference)
     val deletionPileup = pileup.atGreaterLocus(9, Seq.empty.iterator)
     deletionPileup.elements.map(_.alignment).count {
@@ -230,7 +230,7 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
     }
   }
 
-  sparkTest("Loci 60-69 have 5 reads") {
+  test("Loci 60-69 have 5 reads") {
     val pileup = loadPileup(sc, "same_start_reads.sam", locus = 0, reference = reference)
     for (i <- 60 to 69) {
       val nextPileup = pileup.atGreaterLocus(i, Seq.empty.iterator)
@@ -238,7 +238,7 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
     }
   }
 
-  sparkTest("Pileup.Element basic test") {
+  test("Pileup.Element basic test") {
     intercept[NullPointerException] {
       val e = pileupElementFromRead(null, 42)
     }
@@ -308,7 +308,7 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
     AssertBases(read3At15.advanceToLocus(18).sequencedBases, "G")
   }
 
-  sparkTest("Read4 has CIGAR: 10M10I10D40M. It's ACGT repeated 15 times") {
+  test("Read4 has CIGAR: 10M10I10D40M. It's ACGT repeated 15 times") {
     val decadentRead4 = testAdamRecords(3)
     val read4At20 = pileupElementFromRead(decadentRead4, 20)
     assert(read4At20 != null)
@@ -324,7 +324,7 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
     (read4At30.sequencedBases: String) should equal("CGTACGTACGT")
   }
 
-  sparkTest("Read5: ACGTACGTACGTACG, 5M4=1X5=") {
+  test("Read5: ACGTACGTACGTACG, 5M4=1X5=") {
     // Read5: ACGTACGTACGTACG, 5M4=1X5=, [10; 25[
     //        MMMMM====G=====
     val decadentRead5 = testAdamRecords(4)
@@ -340,7 +340,7 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
     AssertBases(read5At10.advanceToLocus(24).sequencedBases, "G")
   }
 
-  sparkTest("read6: ACGTACGTACGT 4=1N4=4S") {
+  test("read6: ACGTACGTACGT 4=1N4=4S") {
     // Read6: ACGTACGTACGT 4=1N4=4S
     // one `N` and soft-clipping at the end
     val decadentRead6 = testAdamRecords(5)
@@ -359,7 +359,7 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
     }
   }
 
-  sparkTest("read7: ACGTACGT 4=1N4=4H, one `N` and hard-clipping at the end") {
+  test("read7: ACGTACGT 4=1N4=4H, one `N` and hard-clipping at the end") {
     val decadentRead7 = testAdamRecords(6)
     val read7At99 = pileupElementFromRead(decadentRead7, 99)
     assert(read7At99 != null)
@@ -375,7 +375,7 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
     }
   }
 
-  sparkTest("create and advance pileup element from RNA read") {
+  test("create and advance pileup element from RNA read") {
     val reference = TestUtil.makeReference(sc, Seq(("chr1", 229538779, "A" * 1000)), 229538779 + 1000)
 
     val rnaRead = TestUtil.makeRead(
@@ -400,7 +400,7 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
 
   }
 
-  sparkTest("create pileup from RNA reads") {
+  test("create pileup from RNA reads") {
     val reference = TestUtil.makeReference(sc, Seq(("1", 229538779, "A" * 1000)), 229538779 + 1000)
     val rnaReadsPileup = loadPileup(sc, "testrna.sam", locus = 229580594, reference = reference)
 
@@ -414,7 +414,7 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
     movedRnaReadsPileup.atGreaterLocus(229580707, Iterator.empty).depth should be(1)
   }
 
-  sparkTest("pileup in the middle of a deletion") {
+  test("pileup in the middle of a deletion") {
     val reads = Seq(
       TestUtil.makeRead("TCGAAAAGCT", "5M6D5M", 0),
       TestUtil.makeRead("TCGAAAAGCT", "5M6D5M", 0),

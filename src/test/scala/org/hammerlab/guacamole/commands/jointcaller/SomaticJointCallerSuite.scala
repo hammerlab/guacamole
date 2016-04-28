@@ -22,7 +22,7 @@ class SomaticJointCallerSuite extends GuacFunSuite {
     ReferenceBroadcast(b37Chromosome22Fasta, sc, partialFasta = false)
   }
 
-  sparkTest("call a somatic variant") {
+  test("call a somatic variant") {
     val inputs = InputCollection(cancerWGS1Bams)
     val loci = LociParser("chr12:65857040")
     val readSets = SomaticJoint.inputsToReadSets(sc, inputs, loci)
@@ -34,7 +34,7 @@ class SomaticJointCallerSuite extends GuacFunSuite {
     calls.head.singleAlleleEvidences.map(_.allele.ref) should equal(Seq("G"))
   }
 
-  sparkTest("call a somatic deletion") {
+  test("call a somatic deletion") {
     val inputs = InputCollection(cancerWGS1Bams)
     val loci = LociParser("chr5:82649006-82649009")
     val readSets = SomaticJoint.inputsToReadSets(sc, inputs, loci)
@@ -54,7 +54,7 @@ class SomaticJointCallerSuite extends GuacFunSuite {
     calls.head.singleAlleleEvidences.head.allele.alt should equal("T")
   }
 
-  sparkTest("call germline variants") {
+  test("call germline variants") {
     val inputs = InputCollection(cancerWGS1Bams.take(1), tissueTypes = Vector("normal"))
     val loci = LociParser("chr1,chr2,chr3")
     val readSets = SomaticJoint.inputsToReadSets(sc, inputs, loci)
@@ -87,7 +87,7 @@ class SomaticJointCallerSuite extends GuacFunSuite {
     calls(("chr1", 167190087)).bestAllele.failingFilterNames.contains("STRAND_BIAS") should be(true)
   }
 
-  sparkTest("don't call variants with N as the reference base") {
+  test("don't call variants with N as the reference base") {
     val inputs = InputCollection(cancerWGS1Bams)
     val loci = LociParser("chr12:65857030-65857080")
     val readSets = SomaticJoint.inputsToReadSets(sc, inputs, loci)
@@ -99,7 +99,7 @@ class SomaticJointCallerSuite extends GuacFunSuite {
     calls.collect.length should equal(0)
   }
 
-  sparkTest("call a somatic variant using RNA evidence") {
+  test("call a somatic variant using RNA evidence") {
     val parameters = Parameters.defaults.copy(somaticNegativeLog10VariantPriorWithRnaEvidence = 1)
 
     val loci = LociParser("chr22:46931058-46931079")
