@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/usr/bin/env bash
 # Executes the most recently modified guacamole jar. Run this from the guacamole root directory.
 #
 # If $GUACAMOLE_JAR is defined, then will execute that jar. 
@@ -6,19 +6,21 @@
 echo "$@" >> ~/.guacamole.invocations.log
 
 if [ -z "${GUACAMOLE_JAR}" ]; then
-    jar=$(ls -tc target/guacamole-with-dependencies-*.jar | head -n 1)
+    jar="$(ls -tc target/guacamole-with-dependencies-*.jar | head -n 1)"
     if [ -z "$jar" ]; then
-        echo "Couldn't find a Guacamole jar in the target/ directory."
-        echo "Are you in the root directory of the Guacamole repo, and have you built Guacamole?"
-        echo "To build, run: "
-        echo "    mvn package -DskipTests=true"
+        cat 1>&2 << EOF
+Couldn't find a Guacamole jar in the target/ directory.
+Are you in the root directory of the Guacamole repo, and have you built Guacamole?
+To build, run:
+    mvn package -DskipTests=true"
+EOF
         exit 1
     fi
     echo "Using most recently modified jar: $jar"
 else
-    jar=${GUACAMOLE_JAR}
+    jar="${GUACAMOLE_JAR}"
     echo "Using GUACAMOLE_JAR=$jar"
 fi
 
-exec time java -Xmx4g -XX:MaxPermSize=512m "-Dspark.master=local[1]" -cp $jar org.hammerlab.guacamole.Guacamole "$@"
+exec time java -Xmx4g -XX:MaxPermSize=512m "-Dspark.master=local[1]" -cp "$jar" org.hammerlab.guacamole.Guacamole "$@"
 
