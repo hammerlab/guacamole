@@ -58,7 +58,7 @@ object GeneratePartialFasta extends Logging {
     val sc = Common.createSparkContext(appName = "generate-partial-fasta")
 
     val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
-    val lociBuilder = Common.lociFromArguments(args, default = "none")
+    val lociBuilder = args.parse(default = "none")
     val readSets = args.bams.zipWithIndex.map(fileAndIndex =>
       ReadSet(
         sc,
