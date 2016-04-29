@@ -99,8 +99,7 @@ object SomaticStandard {
       val lociPartitions = partitionLociAccordingToArgs(
         args,
         loci.result(normalReads.contigLengths),
-        tumorReads.mappedReads,
-        normalReads.mappedReads
+        Vector(tumorReads.mappedReads, normalReads.mappedReads)
       )
 
       var potentialGenotypes: RDD[CalledSomaticAllele] =
