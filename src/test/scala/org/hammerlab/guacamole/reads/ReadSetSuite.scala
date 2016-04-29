@@ -30,7 +30,7 @@ class ReadSetSuite extends GuacFunSuite {
     override def toString: String = msg()
   }
 
-  sparkTest("using different bam reading APIs on sam/bam files should give identical results") {
+  test("using different bam reading APIs on sam/bam files should give identical results") {
     def check(paths: Seq[String], filter: InputFilters): Unit = {
       withClue("using filter %s: ".format(filter)) {
 
@@ -98,7 +98,7 @@ class ReadSetSuite extends GuacFunSuite {
     })
   }
 
-  sparkTest("load and test filters") {
+  test("load and test filters") {
     val allReads = TestUtil.loadReads(sc, "mdtagissue.sam")
     allReads.reads.count() should be(8)
 
@@ -113,12 +113,12 @@ class ReadSetSuite extends GuacFunSuite {
     nonDuplicateReads.reads.count() should be(3)
   }
 
-  sparkTest("load RNA reads") {
+  test("load RNA reads") {
     val readSet = TestUtil.loadReads(sc, "rna_chr17_41244936.sam")
     readSet.reads.count should be(23)
   }
 
-  sparkTest("load read from ADAM") {
+  test("load read from ADAM") {
     // First load reads from SAM using ADAM and save as ADAM
     val adamContext = new ADAMContext(sc)
     val adamRecords = adamContext.loadBam(TestUtil.testDataPath("mdtagissue.sam"))
@@ -146,7 +146,7 @@ class ReadSetSuite extends GuacFunSuite {
     filteredReads.count() should be(3)
   }
 
-  sparkTest("load and serialize / deserialize reads") {
+  test("load and serialize / deserialize reads") {
     val reads = TestUtil.loadReads(sc, "mdtagissue.sam", InputFilters(mapped = true)).mappedReads.collect()
     val serializedReads = reads.map(TestUtil.serialize)
     val deserializedReads: Seq[MappedRead] = serializedReads.map(TestUtil.deserialize[MappedRead](_))

@@ -25,7 +25,7 @@ import org.hammerlab.guacamole.util.{AssertBases, GuacFunSuite, TestUtil}
 
 class PileupFlatMapUtilsSuite extends GuacFunSuite {
 
-  sparkTest("test pileup flatmap parallelism 0; create pileups") {
+  test("test pileup flatmap parallelism 0; create pileups") {
 
     val reads = sc.parallelize(Seq(
       TestUtil.makeRead("TCGATCGA", "8M", 1),
@@ -53,7 +53,7 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
 
   }
 
-  sparkTest("test pileup flatmap parallelism 5; create pileups") {
+  test("test pileup flatmap parallelism 5; create pileups") {
 
     val reads = sc.parallelize(Seq(
       TestUtil.makeRead("TCGATCGA", "8M", 1),
@@ -76,7 +76,7 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
     pileups.forall(_.head.isMatch) should be(true)
   }
 
-  sparkTest("test pileup flatmap parallelism 5; skip empty pileups") {
+  test("test pileup flatmap parallelism 5; skip empty pileups") {
     val reads = sc.parallelize(Seq(
       TestUtil.makeRead("TCGATCGA", "8M", 1),
       TestUtil.makeRead("TCGATCGA", "8M", 1),
@@ -93,7 +93,7 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
     loci should equal(Array(1, 2, 3, 4, 5, 6, 7, 8))
   }
 
-  sparkTest("test pileup flatmap two rdds; skip empty pileups") {
+  test("test pileup flatmap two rdds; skip empty pileups") {
     val reads1 = sc.parallelize(Seq(
       TestUtil.makeRead("TCGATCGA", "8M", 1),
       TestUtil.makeRead("TCGATCGA", "8M", 1),
@@ -120,7 +120,7 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
     loci should equal(Seq(1, 2, 3, 4, 5, 6, 7, 8, 99, 100, 101, 102, 103, 104, 105, 106, 107))
   }
 
-  sparkTest("test pileup flatmap multiple rdds; skip empty pileups") {
+  test("test pileup flatmap multiple rdds; skip empty pileups") {
     val reads1 = sc.parallelize(Seq(
       TestUtil.makeRead("TCGATCGA", "8M", 1),
       TestUtil.makeRead("TCGATCGA", "8M", 1),
@@ -185,7 +185,7 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
     resultPlain(10) should equal(Seq(Seq("G", "G", "G"), Seq("X"), Seq("X")))
   }
 
-  sparkTest("test pileup flatmap parallelism 5; create pileup elements") {
+  test("test pileup flatmap parallelism 5; create pileup elements") {
 
     val reads = sc.parallelize(Seq(
       TestUtil.makeRead("TCGATCGA", "8M", 1),
@@ -205,7 +205,7 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
     pileups.forall(_.isMatch) should be(true)
   }
 
-  sparkTest("test two-rdd pileup flatmap; create pileup elements") {
+  test("test two-rdd pileup flatmap; create pileup elements") {
     val reads1 = sc.parallelize(Seq(
       TestUtil.makeRead("TCGATCGA", "8M", 1),
       TestUtil.makeRead("TCGATCGA", "8M", 1),
@@ -237,7 +237,7 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
     )
   }
 
-  sparkTest("test pileup flatmap parallelism 5; create pileup elements; with indel") {
+  test("test pileup flatmap parallelism 5; create pileup elements; with indel") {
 
     val reads = sc.parallelize(Seq(
       TestUtil.makeRead("TCGATCGA", "8M", 1),

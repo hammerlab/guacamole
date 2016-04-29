@@ -55,7 +55,7 @@ class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks {
     }
   }
 
-  sparkTest("all reads ref") {
+  test("all reads ref") {
     testGenotypeLikelihoods(
       Seq(refRead(30), refRead(40), refRead(30)),
       ('C', 'C') -> (1 - errorPhred30) * (1 - errorPhred40) * (1 - errorPhred30),
@@ -66,7 +66,7 @@ class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks {
     )
   }
 
-  sparkTest("two ref, one alt") {
+  test("two ref, one alt") {
     testGenotypeLikelihoods(
       Seq(refRead(30), refRead(40), altRead(30)),
       ('C', 'C') -> (1 - errorPhred30) * (1 - errorPhred40) * errorPhred30,
@@ -78,7 +78,7 @@ class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks {
     )
   }
 
-  sparkTest("one ref, two alt") {
+  test("one ref, two alt") {
     testGenotypeLikelihoods(
       Seq(refRead(30), altRead(40), altRead(30)),
       ('C', 'C') -> (1 - errorPhred30) * errorPhred40 * errorPhred30,
@@ -90,7 +90,7 @@ class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks {
     )
   }
 
-  sparkTest("all reads alt") {
+  test("all reads alt") {
     testGenotypeLikelihoods(
       Seq(altRead(30), altRead(40), altRead(30)),
       ('C', 'C') -> errorPhred30 * errorPhred40 * errorPhred30,
@@ -102,7 +102,7 @@ class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks {
     )
   }
 
-  sparkTest("score genotype for single sample; all bases ref") {
+  test("score genotype for single sample; all bases ref") {
     val referenceContigSequence = referenceBroadcast(sc).getContig("chr1")
 
     val reads = Seq(
@@ -119,7 +119,7 @@ class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks {
     )
   }
 
-  sparkTest("score genotype for single sample; mix of ref/non-ref bases") {
+  test("score genotype for single sample; mix of ref/non-ref bases") {
     val referenceContigSequence = referenceBroadcast(sc).getContig("chr1")
 
     val reads = Seq(
@@ -138,7 +138,7 @@ class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks {
     )
   }
 
-  sparkTest("score genotype for single sample; all bases non-ref") {
+  test("score genotype for single sample; all bases non-ref") {
     val referenceContigSequence = referenceBroadcast(sc).getContig("chr1")
 
     val reads = Seq(
@@ -155,7 +155,7 @@ class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks {
     )
   }
 
-  sparkTest("log score genotype for single sample; all bases ref") {
+  test("log score genotype for single sample; all bases ref") {
     val referenceContigSequence = referenceBroadcast(sc).getContig("chr1")
 
     val reads = Seq(
@@ -175,7 +175,7 @@ class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks {
     )
   }
 
-  sparkTest("log score genotype for single sample; mix of ref/non-ref bases") {
+  test("log score genotype for single sample; mix of ref/non-ref bases") {
     val referenceContigSequence = referenceBroadcast(sc).getContig("chr1")
 
     val reads = Seq(
@@ -197,7 +197,7 @@ class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks {
     )
   }
 
-  sparkTest("log score genotype for single sample; all bases non-ref") {
+  test("log score genotype for single sample; all bases non-ref") {
     val referenceContigSequence = referenceBroadcast(sc).getContig("chr1")
 
     val reads = Seq(

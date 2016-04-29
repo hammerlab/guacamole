@@ -16,7 +16,7 @@ class ReadSubsequenceSuite extends GuacFunSuite {
     ReferenceBroadcast(partialFasta, sc, partialFasta = true)
   }
 
-  sparkTest("ofFixedReferenceLength") {
+  test("ofFixedReferenceLength") {
     val reads = Seq(
       TestUtil.makeRead("TCGATCGA", "8M", 1), // no variant
       TestUtil.makeRead("TCGACCCTCGA", "4M3I4M", 1), // insertion
@@ -31,7 +31,7 @@ class ReadSubsequenceSuite extends GuacFunSuite {
     ReadSubsequence.ofFixedReferenceLength(pileups(3).head, 1).get.sequenceIsAllStandardBases should equal(false)
   }
 
-  sparkTest("ofNextAltAllele") {
+  test("ofNextAltAllele") {
     val reads = Seq(
       TestUtil.makeRead("TCGATCGA", "8M", 1), // no variant
       TestUtil.makeRead("TCGAGCGA", "8M", 1), // snv
@@ -59,7 +59,7 @@ class ReadSubsequenceSuite extends GuacFunSuite {
     ReadSubsequence.ofNextAltAllele(pileups(5).elements(0)).get.sequenceIsAllStandardBases should equal(false)
   }
 
-  sparkTest("gathering possible alleles") {
+  test("gathering possible alleles") {
     val inputs = InputCollection(cancerWGS1Bams)
     val parameters = Parameters.defaults
     val contigLocus = ("chr12", 65857039)
