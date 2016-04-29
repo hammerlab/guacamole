@@ -56,7 +56,7 @@ class GermlineAssemblyCallerSuite extends GuacFunSuite with BeforeAndAfterAll {
 
     val lociPartitions =
       LociPartitionUtils.partitionLociUniformly(
-        tasks = args.parallelism,
+        numPartitions = args.parallelism,
         loci = lociParser.result(readSet.contigLengths)
       )
 
