@@ -1,11 +1,12 @@
 package org.hammerlab.guacamole.util
 
-import org.bdgenomics.utils.misc.SparkFunSuite
-import org.scalatest.Matchers
+import com.holdenkarau.spark.testing.SharedSparkContext
+import org.scalatest.{FunSuite, Matchers}
 
-trait GuacFunSuite extends SparkFunSuite with Matchers {
-  override val appName: String = "guacamole"
-  override val properties: Map[String, String] =
+trait GuacFunSuite extends FunSuite with SharedSparkContext with Matchers {
+  conf.setAppName("guacamole")
+
+  val properties: Map[String, String] =
     Map(
       "spark.serializer" -> "org.apache.spark.serializer.KryoSerializer",
       "spark.kryo.registrator" -> "org.hammerlab.guacamole.kryo.GuacamoleKryoRegistrar",
@@ -15,5 +16,10 @@ trait GuacFunSuite extends SparkFunSuite with Matchers {
       "spark.driver.host" -> "localhost"
     )
 
+  for {
+    (k, v) <- properties
+  } {
+    conf.set(k, v)
+  }
 }
 

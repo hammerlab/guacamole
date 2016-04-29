@@ -15,7 +15,7 @@ class PileupStatsSuite extends GuacFunSuite {
     ReferenceBroadcast(partialFasta, sc, partialFasta = true)
   }
 
-  sparkTest("pileupstats likelihood computation") {
+  test("pileupstats likelihood computation") {
     val refString = "NTCGATCGA"
     def reference = TestUtil.makeReference(sc, Seq(("chr1", 0, refString)))
     def referenceContigSequence = reference.getContig("chr1")
