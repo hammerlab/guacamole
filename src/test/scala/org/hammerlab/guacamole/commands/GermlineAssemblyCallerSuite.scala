@@ -62,7 +62,7 @@ class GermlineAssemblyCallerSuite extends FunSuite with Matchers with BeforeAndA
 
     val lociPartitions =
       LociPartitionUtils.partitionLociUniformly(
-        tasks = args.parallelism,
+        numPartitions = args.parallelism,
         loci = lociBuilder.result(readSet.contigLengths)
       )
 

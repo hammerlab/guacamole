@@ -196,7 +196,7 @@ object SomaticJoint {
       partitionLociAccordingToArgs(
         distributedUtilArguments,
         lociSetMinusOne(loci),
-        readSets.map(_.mappedReads): _*
+        readSets.map(_.mappedReads)
       )
 
     pileupFlatMapMultipleRDDs(
