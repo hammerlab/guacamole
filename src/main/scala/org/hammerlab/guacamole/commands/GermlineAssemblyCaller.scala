@@ -9,10 +9,9 @@ import org.hammerlab.guacamole.Common
 import org.hammerlab.guacamole.Common.GermlineCallerArgs
 import org.hammerlab.guacamole.alignment.AffineGapPenaltyAlignment
 import org.hammerlab.guacamole.assembly.DeBruijnGraph
-import org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociAccordingToArgs
+import org.hammerlab.guacamole.distributed.LociPartitionUtils.{LociPartitioning, partitionLociAccordingToArgs}
 import org.hammerlab.guacamole.distributed.WindowFlatMapUtils.windowFlatMapWithState
 import org.hammerlab.guacamole.likelihood.Likelihood
-import org.hammerlab.guacamole.loci.map.LociMap
 import org.hammerlab.guacamole.logging.DelayedMessages
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.pileup.Pileup
@@ -244,7 +243,7 @@ object GermlineAssemblyCaller {
                                  minOccurrence: Int,
                                  minAreaVaf: Float,
                                  reference: ReferenceBroadcast,
-                                 lociPartitions: LociMap[Long],
+                                 lociPartitions: LociPartitioning,
                                  minAltReads: Int = 2,
                                  minPhredScaledLikelihood: Int = 0,
                                  shortcutAssembly: Boolean = false): RDD[CalledAllele] = {
