@@ -1,6 +1,7 @@
 package org.hammerlab.guacamole.distributed
 
 import org.apache.spark.rdd.RDD
+import org.hammerlab.guacamole.distributed.LociPartitionUtils.PartitionIndex
 import org.hammerlab.guacamole.loci.map.LociMap
 import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.reads.MappedRead
@@ -21,7 +22,7 @@ class LociPartitionUtilsSuite extends GuacFunSuite {
     result3.toString should equal("chrM:0-4143=0,chrM:4143-8286=1,chrM:8286-12428=2,chrM:12428-16571=3")
 
     val result4 = LociPartitionUtils.partitionLociUniformly(100, LociSet("chrM:1000-1100"))
-    val expectedBuilder4 = LociMap.newBuilder[Long]
+    val expectedBuilder4 = LociMap.newBuilder[PartitionIndex]
     for (i <- 0 until 100) {
       expectedBuilder4.put("chrM", i + 1000, i + 1001, i)
     }
@@ -145,15 +146,14 @@ class LociPartitionUtilsSuite extends GuacFunSuite {
     def pairsToReads(pairs: Seq[(Long, Long)]): RDD[MappedRead] = {
       sc.parallelize(pairs.map(pair => makeRead(pair._1, pair._2)))
     }
-    {
-      val reads = pairsToReads(Seq(
-        (5L, 1L),
-        (6L, 1L),
-        (7L, 1L),
-        (8L, 1L)))
-      val loci = LociSet("chr1:0-100")
-      val result = LociPartitionUtils.partitionLociByApproximateDepth(2, loci, 100, reads)
-      result.toString should equal("chr1:0-7=0,chr1:7-100=1")
-    }
+
+    val reads = pairsToReads(Seq(
+      (5L, 1L),
+      (6L, 1L),
+      (7L, 1L),
+      (8L, 1L)))
+    val loci = LociSet("chr1:0-100")
+    val result = LociPartitionUtils.partitionLociByApproximateDepth(2, loci, 100, Vector(reads))
+    result.toString should equal("chr1:0-7=0,chr1:7-100=1")
   }
 }
