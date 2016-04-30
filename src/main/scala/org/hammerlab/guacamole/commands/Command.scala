@@ -16,10 +16,10 @@
  * limitations under the License.
  */
 
-package org.hammerlab.guacamole
+package org.hammerlab.guacamole.commands
 
-import org.apache.spark.{ SparkContext, Logging }
-import org.bdgenomics.utils.cli.{ Args4j, Args4jBase }
+import org.apache.spark.Logging
+import org.bdgenomics.utils.cli.{Args4j, Args4jBase}
 
 /**
  * Interface for running a command from command line arguments.
@@ -46,17 +46,4 @@ abstract class Command[T <% Args4jBase: Manifest] extends Serializable with Logg
   def run(args: Array[String]): Unit = run(Args4j[T](args))
 
   def run(args: T): Unit
-}
-
-abstract class SparkCommand[T <% Args4jBase: Manifest] extends Command[T] {
-  override def run(args: T): Unit = {
-    val sc = Common.createSparkContext(appName = name)
-    try {
-      run(args, sc)
-    } finally {
-      sc.stop()
-    }
-  }
-
-  def run(args: T, sc: SparkContext): Unit
 }
