@@ -8,7 +8,8 @@ import org.hammerlab.guacamole.loci.set.{Contig, LociSet}
 import org.hammerlab.guacamole.logging.DelayedMessages
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.windowing.{SlidingWindow, SplitIterator}
-import org.hammerlab.guacamole.{HasReferenceRegion, PerSample}
+import org.hammerlab.guacamole.PerSample
+import org.hammerlab.guacamole.reference.ReferenceRegion
 
 import scala.collection.mutable.{HashMap => MutableHashMap}
 import scala.reflect.ClassTag
@@ -33,23 +34,23 @@ object WindowFlatMapUtils {
     *                       then it is included.
     * @param initialState initial state to use for each task and each contig analyzed within a task.
     * @param function function to flatmap, of type (state, sliding windows) -> (new state, result data)
-    * @tparam M region data type (e.g. MappedRead)
+    * @tparam R region data type (e.g. MappedRead)
     * @tparam T result data type
     * @tparam S state type
     * @return RDD[T] of flatmap results
     */
-  def windowFlatMapWithState[M <: HasReferenceRegion: ClassTag, T: ClassTag, S](regionRDDs: PerSample[RDD[M]],
-                                                                                lociPartitions: LociMap[Long],
-                                                                                skipEmpty: Boolean,
-                                                                                halfWindowSize: Long,
-                                                                                initialState: S,
-                                                                                function: (S, PerSample[SlidingWindow[M]]) => (S, Iterator[T])): RDD[T] = {
+  def windowFlatMapWithState[R <: ReferenceRegion: ClassTag, T: ClassTag, S](regionRDDs: PerSample[RDD[R]],
+                                                                             lociPartitions: LociMap[Long],
+                                                                             skipEmpty: Boolean,
+                                                                             halfWindowSize: Long,
+                                                                             initialState: S,
+                                                                             function: (S, PerSample[SlidingWindow[R]]) => (S, Iterator[T])): RDD[T] = {
     windowTaskFlatMapMultipleRDDs(
       regionRDDs,
       lociPartitions,
       halfWindowSize,
-      (task, taskLoci, taskRegionsPerSample: PerSample[Iterator[M]]) => {
-        collectByContig[M, T](
+      (task, taskLoci, taskRegionsPerSample: PerSample[Iterator[R]]) => {
+        collectByContig[R, T](
           taskRegionsPerSample,
           taskLoci,
           halfWindowSize,
@@ -83,18 +84,18 @@ object WindowFlatMapUtils {
     * @tparam T Type of the aggregation value
     * @return Iterator[T], the aggregate values collected over contigs
     */
-  def windowFoldLoci[M <: HasReferenceRegion: ClassTag, T: ClassTag](regionRDDs: PerSample[RDD[M]],
-                                                                     lociPartitions: LociMap[Long],
-                                                                     skipEmpty: Boolean,
-                                                                     halfWindowSize: Long,
-                                                                     initialValue: T,
-                                                                     aggFunction: (T, PerSample[SlidingWindow[M]]) => T): RDD[T] = {
+  def windowFoldLoci[R <: ReferenceRegion: ClassTag, T: ClassTag](regionRDDs: PerSample[RDD[R]],
+                                                                  lociPartitions: LociMap[Long],
+                                                                  skipEmpty: Boolean,
+                                                                  halfWindowSize: Long,
+                                                                  initialValue: T,
+                                                                  aggFunction: (T, PerSample[SlidingWindow[R]]) => T): RDD[T] = {
     windowTaskFlatMapMultipleRDDs(
       regionRDDs,
       lociPartitions,
       halfWindowSize,
-      (task, taskLoci, taskRegionsPerSample: PerSample[Iterator[M]]) => {
-        collectByContig[M, T](
+      (task, taskLoci, taskRegionsPerSample: PerSample[Iterator[R]]) => {
+        collectByContig[R, T](
           taskRegionsPerSample,
           taskLoci,
           halfWindowSize,
@@ -136,11 +137,11 @@ object WindowFlatMapUtils {
     * @tparam T type of value returned by function
     * @return flatMap results, RDD[T]
     */
-  private[distributed] def windowTaskFlatMapMultipleRDDs[M <: HasReferenceRegion: ClassTag, T: ClassTag](
-    regionRDDs: PerSample[RDD[M]],
+  private[distributed] def windowTaskFlatMapMultipleRDDs[R <: ReferenceRegion: ClassTag, T: ClassTag](
+    regionRDDs: PerSample[RDD[R]],
     lociPartitions: LociMap[Long],
     halfWindowSize: Long,
-    function: (Long, LociSet, PerSample[Iterator[M]]) => Iterator[T]): RDD[T] = {
+    function: (Long, LociSet, PerSample[Iterator[R]]) => Iterator[T]): RDD[T] = {
 
     val numRDDs = regionRDDs.length
     assume(numRDDs > 0)
@@ -162,7 +163,7 @@ object WindowFlatMapUtils {
     }
 
     // Expand regions into (task, region) pairs for each region RDD.
-    val taskNumberRegionPairsRDDs: PerSample[RDD[(TaskPosition, M)]] =
+    val taskNumberRegionPairsRDDs: PerSample[RDD[(TaskPosition, R)]] =
       regionRDDs.map(_.flatMap(region => {
         val singleContig = lociPartitionsBoxed.value.onContig(region.referenceContig)
         val thisRegionsTasks = singleContig.getAll(region.start - halfWindowSize, region.end + halfWindowSize)
@@ -225,17 +226,17 @@ object WindowFlatMapUtils {
     * @tparam T result data type
     * @return Iterator[T] collected from each contig
     */
-  def collectByContig[M <: HasReferenceRegion: ClassTag, T: ClassTag](
-    taskRegionsPerSample: PerSample[Iterator[M]],
+  def collectByContig[R <: ReferenceRegion: ClassTag, T: ClassTag](
+    taskRegionsPerSample: PerSample[Iterator[R]],
     taskLoci: LociSet,
     halfWindowSize: Long,
-    generateFromWindows: (Contig, PerSample[SlidingWindow[M]]) => Iterator[T]): Iterator[T] = {
+    generateFromWindows: (Contig, PerSample[SlidingWindow[R]]) => Iterator[T]): Iterator[T] = {
 
-    val regionSplitByContigPerSample: PerSample[RegionsByContig[M]] = taskRegionsPerSample.map(new RegionsByContig(_))
+    val regionSplitByContigPerSample: PerSample[RegionsByContig[R]] = taskRegionsPerSample.map(new RegionsByContig(_))
 
     taskLoci.contigs.flatMap(contig => {
-      val regionIterator: PerSample[Iterator[M]] = regionSplitByContigPerSample.map(_.next(contig.name))
-      val windows: PerSample[SlidingWindow[M]] = regionIterator.map(SlidingWindow[M](contig.name, halfWindowSize, _))
+      val regionIterator: PerSample[Iterator[R]] = regionSplitByContigPerSample.map(_.next(contig.name))
+      val windows: PerSample[SlidingWindow[R]] = regionIterator.map(SlidingWindow[R](contig.name, halfWindowSize, _))
       generateFromWindows(contig, windows)
     }).iterator
   }
