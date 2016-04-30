@@ -22,6 +22,7 @@ import java.lang.{Long => JLong}
 
 import com.google.common.collect.{Range => JRange}
 import htsjdk.variant.vcf.VCFFileReader
+import org.hammerlab.guacamole.HasReferenceRegion
 import org.hammerlab.guacamole.strings.TruncatedToString
 
 import scala.collection.JavaConversions._
@@ -55,6 +56,9 @@ case class LociSet(private val map: SortedMap[String, Contig]) extends Truncated
 
   /** Build a truncate-able toString() out of underlying contig pieces. */
   def stringPieces: Iterator[String] = contigs.iterator.flatMap(_.stringPieces)
+
+  def intersects(region: HasReferenceRegion): Boolean =
+    onContig(region.referenceContig).intersects(region.start, region.end)
 
   /**
    * Split the LociSet into two sets, where the first one has `numToTake` loci, and the second one has the
