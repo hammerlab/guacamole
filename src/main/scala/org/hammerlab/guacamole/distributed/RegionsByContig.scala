@@ -1,6 +1,6 @@
 package org.hammerlab.guacamole.distributed
 
-import org.hammerlab.guacamole.HasReferenceRegion
+import org.hammerlab.guacamole.reference.Region
 
 /**
   * Using an iterator of regions sorted by (contig, start locus), this class exposes a way to get separate iterators
@@ -19,11 +19,11 @@ import org.hammerlab.guacamole.HasReferenceRegion
   *
   * @param regionIterator regions, sorted by contig and start locus.
   */
-class RegionsByContig[Mapped <: HasReferenceRegion](regionIterator: Iterator[Mapped]) {
+class RegionsByContig[R <: Region](regionIterator: Iterator[R]) {
   private val buffered = regionIterator.buffered
   private var seenContigs = List.empty[String]
-  private var prevIterator: Option[SingleContigRegionIterator[Mapped]] = None
-  def next(contig: String): Iterator[Mapped] = {
+  private var prevIterator: Option[SingleContigRegionIterator[R]] = None
+  def next(contig: String): Iterator[R] = {
     // We must first march the previous iterator we returned to the end.
     while (prevIterator.exists(_.hasNext)) prevIterator.get.next()
 

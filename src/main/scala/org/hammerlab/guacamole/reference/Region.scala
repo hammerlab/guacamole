@@ -16,17 +16,13 @@
  * limitations under the License.
  */
 
-package org.hammerlab.guacamole
-
-import org.hammerlab.guacamole.loci.set.LociSet
+package org.hammerlab.guacamole.reference
 
 /**
  * Trait for objects that are associated with an interval on the genome. The most prominent example is a
  * [[org.hammerlab.guacamole.reads.MappedRead]], but there's also [[org.hammerlab.guacamole.variants.ReferenceVariant]].
- *
- * @todo replace with ReferenceRegion base class in ADAM
  */
-trait HasReferenceRegion {
+trait Region {
 
   /** Name of the reference contig */
   val referenceContig: String
@@ -50,7 +46,7 @@ trait HasReferenceRegion {
    * @param other another region on the genome
    * @return True if the the regions overlap
    */
-  def overlaps(other: HasReferenceRegion): Boolean = {
+  def overlaps(other: Region): Boolean = {
     other.referenceContig == referenceContig && (overlapsLocus(other.start) || other.overlapsLocus(start))
   }
 }

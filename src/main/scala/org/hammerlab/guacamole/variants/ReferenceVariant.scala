@@ -19,13 +19,13 @@
 package org.hammerlab.guacamole.variants
 
 import org.bdgenomics.formats.avro.{Contig, DatabaseVariantAnnotation, Variant}
-import org.hammerlab.guacamole.HasReferenceRegion
+import org.hammerlab.guacamole.reference.Region
 import org.hammerlab.guacamole.util.Bases
 
 /**
  * Base properties of a genomic change in a sequence sample from a reference genome
  */
-trait ReferenceVariant extends HasReferenceRegion {
+trait ReferenceVariant extends Region {
 
   val sampleName: String
 
