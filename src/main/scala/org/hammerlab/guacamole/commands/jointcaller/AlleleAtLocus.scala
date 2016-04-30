@@ -1,8 +1,9 @@
 package org.hammerlab.guacamole.commands.jointcaller
 
-import org.hammerlab.guacamole.{Bases, PerSample}
+import org.hammerlab.guacamole.PerSample
 import org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.ReadSubsequence
 import org.hammerlab.guacamole.pileup.Pileup
+import org.hammerlab.guacamole.util.Bases
 
 /**
  * An allele (alt) at a site in the genome. We also keep track of the reference allele (ref) at this site.

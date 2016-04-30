@@ -22,7 +22,8 @@ import htsjdk.samtools.Cigar
 import org.bdgenomics.adam.util.PhredUtils
 import org.hammerlab.guacamole.pileup.PileupElement
 import org.hammerlab.guacamole.reference.ContigSequence
-import org.hammerlab.guacamole.{Bases, CigarUtils, HasReferenceRegion}
+import org.hammerlab.guacamole.util.{Bases, CigarUtils}
+import org.hammerlab.guacamole.HasReferenceRegion
 
 import scala.collection.JavaConversions
 

@@ -1,11 +1,12 @@
 package org.hammerlab.guacamole.reference
 
-import org.hammerlab.guacamole.Bases
+import org.hammerlab.guacamole.util.Bases
 
 object ReferenceUtils {
 
   /**
    * Compute the fraction of each base in the sequence
+ *
    * @param sequence Array of reference bases
    * @return Map of base to fraction
    */
@@ -16,6 +17,7 @@ object ReferenceUtils {
 
   /**
    * Compute the fraction of bases that are G or C in a reference sequence
+   *
    * @param sequence Array of reference bases
    * @return Fraction of G  C compared to all bases
    */
@@ -26,6 +28,7 @@ object ReferenceUtils {
 
   /**
    * Compute the fraction of bases that are A or T in a reference sequence
+   *
    * @param sequence Array of reference bases
    * @return Fraction of A  T compared to all bases
    */

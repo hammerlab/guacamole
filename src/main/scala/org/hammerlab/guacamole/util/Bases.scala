@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.hammerlab.guacamole
+package org.hammerlab.guacamole.util
 
 /**
  * We represent a nucleotide base as a Byte, whose value is equal to the ASCII value of the character representing the

@@ -2,7 +2,7 @@ package org.hammerlab.guacamole.reference
 
 import htsjdk.samtools.Cigar
 import org.bdgenomics.adam.util.MdTag
-import org.hammerlab.guacamole.Bases
+import org.hammerlab.guacamole.util.Bases
 
 trait ReferenceGenome {
 

@@ -9,7 +9,8 @@ import org.hammerlab.guacamole.loci.SimpleRange
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.reads.{InputFilters, ReadLoadingConfigArgs}
 import org.hammerlab.guacamole.reference.{ContigNotFound, ReferenceArgs, ReferenceBroadcast}
-import org.hammerlab.guacamole.{Bases, Common, ReadSet}
+import org.hammerlab.guacamole.util.Bases
+import org.hammerlab.guacamole.{Common, ReadSet}
 import org.kohsuke.args4j.{Argument, Option => Args4jOption}
 
 /**
