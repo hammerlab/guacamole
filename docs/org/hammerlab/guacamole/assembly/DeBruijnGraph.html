@@ -246,7 +246,9 @@
         <span class="name">children</span><span class="params">(<span name="node">node: <a href="#Kmer=Seq[Byte]" class="extmbr" name="org.hammerlab.guacamole.assembly.DeBruijnGraph.Kmer">Kmer</a></span>)</span><span class="result">: <span class="extype" name="scala.List">List</span>[<a href="#Kmer=Seq[Byte]" class="extmbr" name="org.hammerlab.guacamole.assembly.DeBruijnGraph.Kmer">Kmer</a>]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Find all children of a given node</p><div class="fullcomment"><div class="comment cmt"><p>Find all children of a given node</p></div><dl class="paramcmts block"><dt class="param">node</dt><dd class="cmt"><p>Kmer to find parents of</p></dd><dt>returns</dt><dd class="cmt"><p>List of Kmers where their prefix matches this node's suffix
+      <p class="shortcomment cmt">Find all children of a given node
+</p><div class="fullcomment"><div class="comment cmt"><p>Find all children of a given node
+</p></div><dl class="paramcmts block"><dt class="param">node</dt><dd class="cmt"><p>Kmer to find parents of</p></dd><dt>returns</dt><dd class="cmt"><p>List of Kmers where their prefix matches this node's suffix
 </p></dd></dl></div>
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>
@@ -279,7 +281,9 @@
         <span class="name">depthFirstSearch</span><span class="params">(<span name="source">source: <a href="#Kmer=Seq[Byte]" class="extmbr" name="org.hammerlab.guacamole.assembly.DeBruijnGraph.Kmer">Kmer</a></span>, <span name="sink">sink: <a href="#Kmer=Seq[Byte]" class="extmbr" name="org.hammerlab.guacamole.assembly.DeBruijnGraph.Kmer">Kmer</a></span>, <span name="minPathLength">minPathLength: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">1</span></span>, <span name="maxPathLength">maxPathLength: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">Int.MaxValue</span></span>, <span name="maxPaths">maxPaths: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">10</span></span>, <span name="avoidLoops">avoidLoops: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">true</span></span>, <span name="debugPrint">debugPrint: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="result">: <span class="extype" name="scala.List">List</span>[<a href="#Path=List[DeBruijnGraph.this.Kmer]" class="extmbr" name="org.hammerlab.guacamole.assembly.DeBruijnGraph.Path">Path</a>]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Find a path from source to sink in the graph</p><div class="fullcomment"><div class="comment cmt"><p>Find a path from source to sink in the graph</p></div><dl class="paramcmts block"><dt class="param">source</dt><dd class="cmt"><p>Kmer node to begin search</p></dd><dt class="param">sink</dt><dd class="cmt"><p>Kmer to search for</p></dd><dt class="param">minPathLength</dt><dd class="cmt"><p>Minimum number of kmers to traverse before finding the sink</p></dd><dt class="param">maxPathLength</dt><dd class="cmt"><p>Maximum number of kmers to traverse before finding the sink</p></dd><dt class="param">maxPaths</dt><dd class="cmt"><p>Maximum number of paths to find from source to sink</p></dd><dt class="param">avoidLoops</dt><dd class="cmt"><p>If avoiding loops, skip nodes that have already been visited</p></dd><dt>returns</dt><dd class="cmt"><p>Set
+      <p class="shortcomment cmt">Find a path from source to sink in the graph
+</p><div class="fullcomment"><div class="comment cmt"><p>Find a path from source to sink in the graph
+</p></div><dl class="paramcmts block"><dt class="param">source</dt><dd class="cmt"><p>Kmer node to begin search</p></dd><dt class="param">sink</dt><dd class="cmt"><p>Kmer to search for</p></dd><dt class="param">minPathLength</dt><dd class="cmt"><p>Minimum number of kmers to traverse before finding the sink</p></dd><dt class="param">maxPathLength</dt><dd class="cmt"><p>Maximum number of kmers to traverse before finding the sink</p></dd><dt class="param">maxPaths</dt><dd class="cmt"><p>Maximum number of paths to find from source to sink</p></dd><dt class="param">avoidLoops</dt><dd class="cmt"><p>If avoiding loops, skip nodes that have already been visited</p></dd><dt>returns</dt><dd class="cmt"><p>Set
 </p></dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
@@ -455,7 +459,9 @@
         <span class="name">parents</span><span class="params">(<span name="node">node: <a href="#Kmer=Seq[Byte]" class="extmbr" name="org.hammerlab.guacamole.assembly.DeBruijnGraph.Kmer">Kmer</a></span>)</span><span class="result">: <span class="extype" name="scala.List">List</span>[<a href="#Kmer=Seq[Byte]" class="extmbr" name="org.hammerlab.guacamole.assembly.DeBruijnGraph.Kmer">Kmer</a>]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Find all parents of a given node</p><div class="fullcomment"><div class="comment cmt"><p>Find all parents of a given node</p></div><dl class="paramcmts block"><dt class="param">node</dt><dd class="cmt"><p>Kmer to find parents of</p></dd><dt>returns</dt><dd class="cmt"><p>List of Kmers where their suffix matches this nodes prefix
+      <p class="shortcomment cmt">Find all parents of a given node
+</p><div class="fullcomment"><div class="comment cmt"><p>Find all parents of a given node
+</p></div><dl class="paramcmts block"><dt class="param">node</dt><dd class="cmt"><p>Kmer to find parents of</p></dd><dt>returns</dt><dd class="cmt"><p>List of Kmers where their suffix matches this nodes prefix
 </p></dd></dl></div>
     </li><li name="org.hammerlab.guacamole.assembly.DeBruijnGraph#prefixTable" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="prefixTable:scala.collection.mutable.Map[DeBruijnGraph.this.SubKmer,List[DeBruijnGraph.this.Kmer]]"></a>
@@ -482,7 +488,9 @@
         <span class="name">roots</span><span class="result">: <span class="extype" name="scala.Iterable">Iterable</span>[<a href="#Kmer=Seq[Byte]" class="extmbr" name="org.hammerlab.guacamole.assembly.DeBruijnGraph.Kmer">Kmer</a>]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Find all nodes that have in-degree = 0</p><div class="fullcomment"><div class="comment cmt"><p>Find all nodes that have in-degree = 0</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>
+      <p class="shortcomment cmt">Find all nodes that have in-degree = 0
+</p><div class="fullcomment"><div class="comment cmt"><p>Find all nodes that have in-degree = 0
+</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>
 </p></dd></dl></div>
     </li><li name="org.hammerlab.guacamole.assembly.DeBruijnGraph#suffixTable" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="suffixTable:scala.collection.mutable.Map[DeBruijnGraph.this.SubKmer,List[DeBruijnGraph.this.Kmer]]"></a>
