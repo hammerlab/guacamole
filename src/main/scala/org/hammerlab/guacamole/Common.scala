@@ -191,24 +191,5 @@ object Common extends Logging {
       LociSet.all(contigLengths)
     }
   }
-
-  /**
-   * Parse spark environment variables from commandline. Copied from ADAM.
-   *
-   * Commandline format is -spark_env foo=1 -spark_env bar=2
-   *
-   * @param envVariables The variables found on the commandline
-   * @return array of (key, value) pairs parsed from the command line.
-   */
-  def parseEnvVariables(envVariables: Seq[String]): Seq[(String, String)] = {
-    envVariables.foldLeft(Seq[(String, String)]()) {
-      (a, kv) =>
-        val kvSplit = kv.split("=")
-        if (kvSplit.size != 2) {
-          throw new IllegalArgumentException("Env variables should be key=value syntax, e.g. -spark_env foo=bar")
-        }
-        a :+ (kvSplit(0), kvSplit(1))
-    }
-  }
 }
 
