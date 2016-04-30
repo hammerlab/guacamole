@@ -3,8 +3,9 @@ package org.hammerlab.guacamole.commands
 import org.apache.spark.SparkContext
 import org.hammerlab.guacamole._
 import org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Arguments
+import org.hammerlab.guacamole.data.NA12878
 import org.hammerlab.guacamole.distributed.LociPartitionUtils
-import org.hammerlab.guacamole.loci.set.{LociParser, Builder => LociSetBuilder}
+import org.hammerlab.guacamole.loci.set.LociParser
 import org.hammerlab.guacamole.reads.InputFilters
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.util.TestUtil
@@ -15,7 +16,7 @@ class GermlineAssemblyCallerSuite extends FunSuite with Matchers with BeforeAndA
 
   val args = new Arguments
 
-  val input = NA12878TestUtils.na12878SubsetBam
+  val input = NA12878.subsetBam
   args.reads = TestUtil.testDataPath(input)
   args.parallelism = 1
 
@@ -32,7 +33,7 @@ class GermlineAssemblyCallerSuite extends FunSuite with Matchers with BeforeAndA
     sc.stop()
   }
 
-  val referenceFastaPath = TestUtil.testDataPath(NA12878TestUtils.chr1PrefixFasta)
+  val referenceFastaPath = TestUtil.testDataPath(NA12878.chr1PrefixFasta)
 
   def verifyVariantsAtLocus(locus: Int,
                             contig: String = "chr1",

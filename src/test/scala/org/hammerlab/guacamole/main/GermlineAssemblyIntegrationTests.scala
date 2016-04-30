@@ -1,9 +1,11 @@
 package org.hammerlab.guacamole.main
 
+import org.hammerlab.guacamole.Common
 import org.hammerlab.guacamole.VariantComparisonUtils.compareToVCF
 import org.hammerlab.guacamole.commands.GermlineAssemblyCaller
+import org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Arguments
+import org.hammerlab.guacamole.data.NA12878
 import org.hammerlab.guacamole.util.TestUtil
-import org.hammerlab.guacamole.{Common, NA12878TestUtils}
 
 /**
  * Germline assembly caller integration "tests" that output various statistics to stdout.
@@ -23,10 +25,10 @@ object GermlineAssemblyIntegrationTests {
     val sc = Common.createSparkContext("GermlineAssemblyIntegrationTest")
 
     println("Germline assembly calling on subset of illumina platinum NA12878")
-    val args = new GermlineAssemblyCaller.Arguments()
+    val args = new Arguments()
     // Input/output config
-    args.reads = NA12878TestUtils.na12878SubsetBam
-    args.referenceFastaPath = NA12878TestUtils.chr1PrefixFasta
+    args.reads = NA12878.subsetBam
+    args.referenceFastaPath = NA12878.chr1PrefixFasta
     args.loci = "chr1:0-6700000"
     args.variantOutput = "/tmp/germline-assembly-na12878-guacamole-tests.vcf"
 
@@ -48,17 +50,17 @@ object GermlineAssemblyIntegrationTests {
 
     val resultFile = args.variantOutput + "/part-r-00000"
     println("************* GUACAMOLE GermlineAssembly *************")
-    compareToVCF(resultFile, NA12878TestUtils.na12878ExpectedCallsVCF)
+    compareToVCF(resultFile, NA12878.expectedCallsVCF)
 
     println("************* UNIFIED GENOTYPER *************")
     compareToVCF(TestUtil.testDataPath(
       "illumina-platinum-na12878/unified_genotyper.vcf"),
-      NA12878TestUtils.na12878ExpectedCallsVCF)
+      NA12878.expectedCallsVCF)
 
     println("************* HaplotypeCaller *************")
     compareToVCF(TestUtil.testDataPath(
       "illumina-platinum-na12878/haplotype_caller.vcf"),
-      NA12878TestUtils.na12878ExpectedCallsVCF)
+      NA12878.expectedCallsVCF)
 
   }
 }
