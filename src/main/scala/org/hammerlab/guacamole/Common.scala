@@ -25,7 +25,7 @@ import org.apache.commons.io.IOUtils
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.{FileSystem, Path}
 import org.apache.hadoop.mapred.FileAlreadyExistsException
-import org.apache.spark.{Logging, SparkConf, SparkContext}
+import org.apache.spark.{Logging, SparkContext}
 import org.hammerlab.guacamole.distributed.LociPartitionUtils
 import org.hammerlab.guacamole.loci.LociArgs
 import org.hammerlab.guacamole.loci.set.{LociParser, LociSet}
@@ -210,46 +210,6 @@ object Common extends Logging {
         }
         a :+ (kvSplit(0), kvSplit(1))
     }
-  }
-
-  /**
-   *
-   * Return a spark context.
-   *
-   * NOTE: Most properties are set through config file
-   *
-   * @param appName
-   * @return
-   */
-  def createSparkContext(appName: String): SparkContext = createSparkContext(Some(appName))
-  def createSparkContext(appName: Option[String] = None): SparkContext = {
-    val config: SparkConf = new SparkConf()
-    appName match {
-      case Some(name) => config.setAppName("guacamole: %s".format(name))
-      case _          => config.setAppName("guacamole")
-    }
-
-    if (config.getOption("spark.master").isEmpty) {
-      config.setMaster("local[%d]".format(Runtime.getRuntime.availableProcessors()))
-    }
-
-    if (config.getOption("spark.serializer").isEmpty) {
-      config.set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
-    }
-
-    if (config.getOption("spark.kryo.registrator").isEmpty) {
-      config.set("spark.kryo.registrator", "org.hammerlab.guacamole.kryo.GuacamoleKryoRegistrar")
-    }
-
-    if (config.getOption("spark.kryoserializer.buffer").isEmpty) {
-      config.set("spark.kryoserializer.buffer", "4mb")
-    }
-
-    if (config.getOption("spark.kryo.referenceTracking").isEmpty) {
-      config.set("spark.kryo.referenceTracking", "true")
-    }
-
-    new SparkContext(config)
   }
 
   /**

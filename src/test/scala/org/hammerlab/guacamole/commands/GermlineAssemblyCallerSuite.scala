@@ -1,17 +1,16 @@
 package org.hammerlab.guacamole.commands
 
-import org.apache.spark.SparkContext
 import org.hammerlab.guacamole._
 import org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Arguments
 import org.hammerlab.guacamole.distributed.LociPartitionUtils
-import org.hammerlab.guacamole.loci.set.{LociParser, Builder => LociSetBuilder}
+import org.hammerlab.guacamole.loci.set.LociParser
 import org.hammerlab.guacamole.reads.InputFilters
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
-import org.hammerlab.guacamole.util.{Bases, TestUtil}
+import org.hammerlab.guacamole.util.{Bases, GuacFunSuite, TestUtil}
 import org.hammerlab.guacamole.variants.CalledAllele
-import org.scalatest.{BeforeAndAfterAll, FunSuite, Matchers}
+import org.scalatest.BeforeAndAfterAll
 
-class GermlineAssemblyCallerSuite extends FunSuite with Matchers with BeforeAndAfterAll {
+class GermlineAssemblyCallerSuite extends GuacFunSuite with BeforeAndAfterAll {
 
   val args = new Arguments
 
@@ -19,17 +18,12 @@ class GermlineAssemblyCallerSuite extends FunSuite with Matchers with BeforeAndA
   args.reads = TestUtil.testDataPath(input)
   args.parallelism = 1
 
-  var sc: SparkContext = _
   var reference: ReferenceBroadcast = _
   var readSet: ReadSet = _
 
   override def beforeAll() {
-    sc = Common.createSparkContext()
+    super.beforeAll()
     reference = ReferenceBroadcast(referenceFastaPath, sc)
-  }
-
-  override def afterAll(): Unit = {
-    sc.stop()
   }
 
   val referenceFastaPath = TestUtil.testDataPath(NA12878TestUtils.chr1PrefixFasta)
@@ -47,7 +41,7 @@ class GermlineAssemblyCallerSuite extends FunSuite with Matchers with BeforeAndA
     val windowStart = locus - snvWindowRange
     val windowEnd = locus + snvWindowRange
 
-    val lociBuilder = LociParser(s"$contig:$windowStart-$windowEnd")
+    val lociParser = LociParser(s"$contig:$windowStart-$windowEnd")
 
     val readSet =
       Common.loadReadsFromArguments(
@@ -56,14 +50,14 @@ class GermlineAssemblyCallerSuite extends FunSuite with Matchers with BeforeAndA
         InputFilters(
           mapped = true,
           nonDuplicate = true,
-          overlapsLoci = lociBuilder
+          overlapsLoci = lociParser
         )
       )
 
     val lociPartitions =
       LociPartitionUtils.partitionLociUniformly(
         tasks = args.parallelism,
-        loci = lociBuilder.result(readSet.contigLengths)
+        loci = lociParser.result(readSet.contigLengths)
       )
 
     val variants =

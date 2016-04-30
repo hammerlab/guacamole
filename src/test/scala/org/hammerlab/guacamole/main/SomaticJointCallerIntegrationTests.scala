@@ -1,10 +1,13 @@
 package org.hammerlab.guacamole.main
 
-import org.hammerlab.guacamole.VariantComparisonUtils.{compareToCSV, compareToVCF, csvRecords}
+import org.apache.spark.SparkContext
+import org.hammerlab.guacamole.commands.SparkCommand
 import org.hammerlab.guacamole.commands.jointcaller.SomaticJoint
+import org.hammerlab.guacamole.commands.jointcaller.SomaticJoint.Arguments
 import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.util.TestUtil
-import org.hammerlab.guacamole.{CancerWGSTestUtils, Common, NA12878TestUtils}
+import org.hammerlab.guacamole.variants.VariantComparisonTest
+import org.hammerlab.guacamole.{CancerWGSTestUtils, NA12878TestUtils}
 
 /**
  * Somatic joint-caller integration "tests" that output various statistics to stdout.
@@ -17,7 +20,7 @@ import org.hammerlab.guacamole.{CancerWGSTestUtils, Common, NA12878TestUtils}
  *     -cp target/guacamole-with-dependencies-0.0.1-SNAPSHOT.jar:target/scala-2.10.5/test-classes \
  *     org.hammerlab.guacamole.main.SomaticJointCallerIntegrationTests
  */
-object SomaticJointCallerIntegrationTests {
+object SomaticJointCallerIntegrationTests extends SparkCommand[Arguments] with VariantComparisonTest {
 
   var tempFileNum = 0
 
@@ -26,16 +29,19 @@ object SomaticJointCallerIntegrationTests {
     "/tmp/test-somatic-joint-caller-%d.vcf".format(tempFileNum)
   }
 
-  def main(args: Array[String]): Unit = {
+  override val name: String = "germline-assembly-integration-test"
+  override val description: String = "output various statistics to stdout"
 
-    val sc = Common.createSparkContext("SomaticJointCallerIntegrationTest")
+  def main(args: Array[String]): Unit = run(args)
+
+  override def run(args: Arguments, sc: SparkContext): Unit = {
 
     println("somatic calling on subset of 3-sample cancer patient 1")
     val outDir = "/tmp/guacamole-somatic-joint-test"
 
     if (true) {
       if (true) {
-        val args = new SomaticJoint.Arguments()
+        val args = new Arguments()
         args.outDir = outDir
         args.referenceFastaPath = CancerWGSTestUtils.referenceFastaPath
         args.referenceFastaIsPartial = true
