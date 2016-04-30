@@ -1,6 +1,5 @@
 package org.hammerlab.guacamole.util
 
-import org.hammerlab.guacamole.Bases
 import org.scalatest.Matchers
 
 object AssertBases extends Matchers {

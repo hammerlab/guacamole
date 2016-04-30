@@ -7,7 +7,7 @@ import org.hammerlab.guacamole.distributed.LociPartitionUtils
 import org.hammerlab.guacamole.loci.set.{LociParser, Builder => LociSetBuilder}
 import org.hammerlab.guacamole.reads.InputFilters
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
-import org.hammerlab.guacamole.util.TestUtil
+import org.hammerlab.guacamole.util.{Bases, TestUtil}
 import org.hammerlab.guacamole.variants.CalledAllele
 import org.scalatest.{BeforeAndAfterAll, FunSuite, Matchers}
 

@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.hammerlab.guacamole
+package org.hammerlab.guacamole.util
 
 import htsjdk.samtools.{CigarElement, CigarOperator}
 
