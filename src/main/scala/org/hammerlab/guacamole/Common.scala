@@ -251,20 +251,5 @@ object Common extends Logging {
 
     new SparkContext(config)
   }
-
-  /**
-   * Perform validation of command line arguments at startup.
-   * This allows some late failures (e.g. output file already exists) to be surfaced more quickly.
-   */
-  def validateArguments(args: GenotypeOutputArgs) = {
-    val outputPath = args.variantOutput.stripMargin
-    if (outputPath.toLowerCase.endsWith(".vcf")) {
-      val filesystem = FileSystem.get(new Configuration())
-      val path = new Path(outputPath)
-      if (filesystem.exists(path)) {
-        throw new FileAlreadyExistsException("Output directory " + path + " already exists")
-      }
-    }
-  }
 }
 
