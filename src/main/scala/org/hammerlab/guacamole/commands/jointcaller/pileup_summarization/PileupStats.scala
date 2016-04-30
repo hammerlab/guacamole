@@ -1,9 +1,9 @@
 package org.hammerlab.guacamole.commands.jointcaller.pileup_summarization
 
 import org.bdgenomics.adam.util.PhredUtils
-import org.hammerlab.guacamole.Bases
 import org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.PileupStats.AlleleMixture
 import org.hammerlab.guacamole.pileup.PileupElement
+import org.hammerlab.guacamole.util.Bases
 
 /**
  * Statistics over a PileupElement instances (a pileup).

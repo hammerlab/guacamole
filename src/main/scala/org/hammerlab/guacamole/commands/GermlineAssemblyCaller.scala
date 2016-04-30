@@ -17,9 +17,10 @@ import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.{InputFilters, MappedRead}
 import org.hammerlab.guacamole.reference.{ReferenceBroadcast, ReferenceGenome}
+import org.hammerlab.guacamole.util.CigarUtils
 import org.hammerlab.guacamole.variants.{Allele, AlleleConversions, AlleleEvidence, CalledAllele, VariantUtils}
 import org.hammerlab.guacamole.windowing.SlidingWindow
-import org.hammerlab.guacamole.{CigarUtils, Common, SparkCommand}
+import org.hammerlab.guacamole.{Common, SparkCommand}
 import org.kohsuke.args4j.{Option => Args4jOption}
 
 import scala.collection.JavaConversions._

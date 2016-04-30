@@ -5,7 +5,7 @@ import java.io.File
 import htsjdk.variant.variantcontext.{Allele, GenotypeBuilder, VariantContext, VariantContextBuilder}
 import htsjdk.variant.vcf.VCFFileReader
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
-import org.hammerlab.guacamole.util.VCFComparison
+import org.hammerlab.guacamole.util.{Bases, VCFComparison}
 
 import scala.collection.JavaConversions
 import scala.collection.mutable.ArrayBuffer

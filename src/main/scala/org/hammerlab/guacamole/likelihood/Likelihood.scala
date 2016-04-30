@@ -21,9 +21,9 @@ package org.hammerlab.guacamole.likelihood
 import cern.colt.matrix.impl.DenseDoubleMatrix2D
 import cern.jet.math.Functions
 import org.bdgenomics.adam.util.PhredUtils
-import org.hammerlab.guacamole.Bases
-import org.hammerlab.guacamole.pileup.{ PileupElement, Pileup }
-import org.hammerlab.guacamole.variants.{ Allele, Genotype }
+import org.hammerlab.guacamole.pileup.{Pileup, PileupElement}
+import org.hammerlab.guacamole.util.Bases
+import org.hammerlab.guacamole.variants.{Allele, Genotype}
 
 /**
  * Functions for calculating the likelihood of a genotype given some read evidence (pileup elements).

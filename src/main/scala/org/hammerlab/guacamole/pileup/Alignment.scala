@@ -18,7 +18,7 @@
 
 package org.hammerlab.guacamole.pileup
 
-import org.hammerlab.guacamole.Bases
+import org.hammerlab.guacamole.util.Bases
 
 /**
  * The Alignment of a read at a particular locus specifies:
