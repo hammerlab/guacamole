@@ -1,12 +1,12 @@
 package org.hammerlab.guacamole.distributed
 
 import org.apache.spark.rdd.RDD
-import org.hammerlab.guacamole.HasReferenceRegion
 import org.hammerlab.guacamole.loci.LociArgs
 import org.hammerlab.guacamole.loci.map.LociMap
 import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.logging.DebugLogArgs
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
+import org.hammerlab.guacamole.reference.ReferenceRegion
 import org.kohsuke.args4j.{Option => Args4jOption}
 
 import scala.reflect.ClassTag
@@ -25,9 +25,9 @@ object LociPartitionUtils {
   /**
     * Partition a LociSet among tasks according to the strategy specified in args.
     */
-  def partitionLociAccordingToArgs[M <: HasReferenceRegion: ClassTag](args: Arguments,
-                                                                      loci: LociSet,
-                                                                      regionRDDs: RDD[M]*): LociMap[Long] = {
+  def partitionLociAccordingToArgs[R <: ReferenceRegion: ClassTag](args: Arguments,
+                                                                   loci: LociSet,
+                                                                   regionRDDs: RDD[R]*): LociMap[Long] = {
     assume(loci.nonEmpty)
     val sc = regionRDDs.head.sparkContext
     val tasks = if (args.parallelism > 0) args.parallelism else sc.defaultParallelism
@@ -112,13 +112,13 @@ object LociPartitionUtils {
     *                 In the extreme case, setting this to greater than the number of loci per task will result in an
     *                 exact calculation.
     * @param regionRDDs: region RDD 1, region RDD 2, ...
-    *                Any number RDD[ReferenceRegion] arguments giving the regions to base the partitioning on.
+    *                Any number RDD[Region] arguments giving the regions to base the partitioning on.
     * @return LociMap of locus -> task assignments.
     */
-  def partitionLociByApproximateDepth[M <: HasReferenceRegion: ClassTag](tasks: Int,
-                                                                         loci: LociSet,
-                                                                         accuracy: Int,
-                                                                         regionRDDs: RDD[M]*): LociMap[Long] = {
+  def partitionLociByApproximateDepth[R <: ReferenceRegion: ClassTag](tasks: Int,
+                                                                      loci: LociSet,
+                                                                      accuracy: Int,
+                                                                      regionRDDs: RDD[R]*): LociMap[Long] = {
     val sc = regionRDDs(0).sparkContext
 
     // Step (1). Split loci uniformly into micro partitions.
