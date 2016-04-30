@@ -163,6 +163,7 @@ class GermlineAssemblyCallerSuite extends GuacFunSuite with BeforeAndAfterAll {
   test (
     "test assembly caller: illumina platinum tests; homozygous insertion 2") {
     verifyVariantsAtLocus(1302671) (
+      ("chr1",1302554,"C", "T"),
       ("chr1", 1302671, "A", "AGT")
     )
   }
