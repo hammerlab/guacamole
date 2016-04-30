@@ -1,10 +1,10 @@
 package org.hammerlab.guacamole.commands.jointcaller.evidence
 
 import org.hammerlab.guacamole._
-import org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.{ MultiplePileupStats, PileupStats }
-import org.hammerlab.guacamole.commands.jointcaller.{ AlleleAtLocus, InputCollection, Parameters }
+import org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.{MultiplePileupStats, PileupStats}
+import org.hammerlab.guacamole.commands.jointcaller.{AlleleAtLocus, InputCollection, Parameters}
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.reference.ReferenceBroadcast
+import org.hammerlab.guacamole.reference.{ReferenceBroadcast, Region}
 
 /**
  * A grouping of AlleleEvidenceAcrossSamples instances (one for each allele) at the same site.
@@ -17,7 +17,7 @@ import org.hammerlab.guacamole.reference.ReferenceBroadcast
 case class MultiSampleMultiAlleleEvidence(referenceContig: String,
                                           start: Long,
                                           singleAlleleEvidences: Seq[MultiSampleSingleAlleleEvidence])
-    extends HasReferenceRegion {
+    extends Region {
 
   assume(singleAlleleEvidences.forall(_.allele.referenceContig == referenceContig))
   assume(singleAlleleEvidences.forall(_.allele.start == start))

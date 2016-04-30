@@ -20,7 +20,8 @@ package org.hammerlab.guacamole.windowing
 
 import org.apache.spark.Logging
 import org.hammerlab.guacamole.loci.set.ContigIterator
-import org.hammerlab.guacamole.{HasReferenceRegion, PerSample}
+import org.hammerlab.guacamole.PerSample
+import org.hammerlab.guacamole.reference.Region
 
 import scala.collection.mutable
 
@@ -31,7 +32,7 @@ import scala.collection.mutable
  *
  * After instantiating this class, call [[setCurrentLocus]] repeatedly for each locus being considered. After calling
  * this method, the [[currentRegions]] property will contain the objects that overlap the current locus.
- *
+ *s
  * To enable an efficient implementation, we require that both the sequence of loci to be considered and the iterator
  * of objects are sorted.
  *
@@ -39,19 +40,18 @@ import scala.collection.mutable
  *                       example, if [[halfWindowSize]]=5, and our [[currentLocus]]=100, then [[currentRegions]] will
  *                       include regions that map to anywhere between 95 and 105, inclusive. Set to 0 to consider only
  *                       regions that overlap the exact locus being considered, with no surrounding window.
- *
  * @param rawSortedRegions Iterator of regions, sorted by the aligned start locus.
  */
-case class SlidingWindow[Region <: HasReferenceRegion](referenceName: String,
-                                                       halfWindowSize: Long,
-                                                       rawSortedRegions: Iterator[Region]) extends Logging {
+case class SlidingWindow[R <: Region](referenceName: String,
+                                      halfWindowSize: Long,
+                                      rawSortedRegions: Iterator[R]) extends Logging {
   /** The locus currently under consideration. */
   var currentLocus = -1L
   /** The new regions that were added to currentRegions as a result of the most recent call to setCurrentLocus. */
-  var newRegions: Seq[Region] = Seq.empty
+  var newRegions: Seq[R] = Seq.empty
 
   private var mostRecentRegionStart: Long = 0
-  private val sortedRegions: BufferedIterator[Region] = rawSortedRegions.map(region => {
+  private val sortedRegions: BufferedIterator[R] = rawSortedRegions.map(region => {
     require(region.referenceContig == referenceName, "Regions must have the same reference name")
     require(region.start >= mostRecentRegionStart, "Regions must be sorted by start locus")
     mostRecentRegionStart = region.start
@@ -61,14 +61,14 @@ case class SlidingWindow[Region <: HasReferenceRegion](referenceName: String,
 
   private val currentRegionsPriorityQueue = {
     // Order regions by end locus, increasing.
-    def regionOrdering = new Ordering[Region] {
-      def compare(first: Region, second: Region) = second.end.compare(first.end)
+    def regionOrdering = new Ordering[R] {
+      def compare(first: R, second: R) = second.end.compare(first.end)
     }
-    new mutable.PriorityQueue[Region]()(regionOrdering)
+    new mutable.PriorityQueue[R]()(regionOrdering)
   }
 
   /** The regions that overlap the window surrounding [[currentLocus]]. */
-  def currentRegions(): Vector[Region] = {
+  def currentRegions(): Vector[R] = {
     currentRegionsPriorityQueue.toVector
   }
 
@@ -80,7 +80,7 @@ case class SlidingWindow[Region <: HasReferenceRegion](referenceName: String,
    * @return The *new regions* that were added as a result of this call. Note that this is not the full set of regions
    *         in the window: you must examine [[currentRegions]] for that.
    */
-  def setCurrentLocus(locus: Long): Vector[Region] = {
+  def setCurrentLocus(locus: Long): Vector[R] = {
     assume(locus >= currentLocus, "Pileup window can only move forward in locus")
     currentLocus = locus
 
@@ -98,7 +98,7 @@ case class SlidingWindow[Region <: HasReferenceRegion](referenceName: String,
       // Build up a list of new regions that are now in the window.
       // Note that the start of a region is inclusive, so e.g. if halfWindowSize=0 and head.start=locus we want to
       // include it.
-      val newRegionsBuilder = mutable.ArrayBuffer.newBuilder[Region]
+      val newRegionsBuilder = mutable.ArrayBuffer.newBuilder[R]
       while (sortedRegions.nonEmpty && sortedRegions.head.start <= locus + halfWindowSize) {
         val region = sortedRegions.next()
         if (region.overlapsLocus(locus, halfWindowSize)) newRegionsBuilder += region
@@ -146,9 +146,9 @@ object SlidingWindow {
    * @param skipEmpty whether to skip over loci for which no window has any regions
    * @return Some(locus) if there was another locus left to process, otherwise None
    */
-  def advanceMultipleWindows[Region <: HasReferenceRegion](windows: PerSample[SlidingWindow[Region]],
-                                                           loci: ContigIterator,
-                                                           skipEmpty: Boolean = true): Option[Long] = {
+  def advanceMultipleWindows[R <: Region](windows: PerSample[SlidingWindow[R]],
+                                          loci: ContigIterator,
+                                          skipEmpty: Boolean = true): Option[Long] = {
     if (skipEmpty) {
       while (loci.hasNext) {
         val nextNonEmptyLocus = windows.flatMap(_.nextLocusWithRegions).reduceOption(_ min _)
