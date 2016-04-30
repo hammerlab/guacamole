@@ -18,10 +18,10 @@
 
 package org.hammerlab.guacamole.variants
 
-import com.esotericsoftware.kryo.io.{ Input, Output }
-import com.esotericsoftware.kryo.{ Kryo, Serializer }
-import org.hammerlab.guacamole.Bases
-import org.hammerlab.guacamole.Bases.BasesOrdering
+import com.esotericsoftware.kryo.io.{Input, Output}
+import com.esotericsoftware.kryo.{Kryo, Serializer}
+import org.hammerlab.guacamole.util.Bases
+import org.hammerlab.guacamole.util.Bases.BasesOrdering
 
 case class Allele(refBases: Seq[Byte], altBases: Seq[Byte]) extends Ordered[Allele] {
   val isVariant = refBases != altBases

@@ -1,6 +1,6 @@
 package org.hammerlab.guacamole.assembly
 
-import org.hammerlab.guacamole.Bases
+import org.hammerlab.guacamole.util.Bases
 
 import scala.collection.mutable
 
@@ -49,6 +49,7 @@ class DeBruijnGraph(val kmerSize: Int,
   /**
    * Remove a kmer from the graph
    * Removes it from the count, prefix and suffix tables
+   *
    * @param kmer Kmer to remove
    */
   private[assembly] def removeKmer(kmer: Kmer) = {
@@ -72,6 +73,7 @@ class DeBruijnGraph(val kmerSize: Int,
 
   /**
    * Remove kmers that are not in at least minSupport reads
+   *
    * @param minSupport minimum of reads a kmer should appear in
    */
   private[assembly] def pruneKmers(minSupport: Int) = {
@@ -122,6 +124,7 @@ class DeBruijnGraph(val kmerSize: Int,
 
   /**
    *  Searches forward or backward from a node to find those connected by a unique path
+   *
    * @param kmer Kmer to search from
    * @param searchForward If true, search children of node, otherwise parents
    * @param avoidLoops If true, only explore a node once
@@ -165,6 +168,7 @@ class DeBruijnGraph(val kmerSize: Int,
 
   /**
    * Find a path from source to sink in the graph
+   *
    * @param source Kmer node to begin search
    * @param sink Kmer to search for
    * @param minPathLength Minimum number of kmers to traverse before finding the sink
@@ -294,6 +298,7 @@ class DeBruijnGraph(val kmerSize: Int,
 
   /**
    * Find all nodes that have in-degree = 0
+   *
    * @return
    */
   def roots: Iterable[Kmer] = {
@@ -302,6 +307,7 @@ class DeBruijnGraph(val kmerSize: Int,
 
   /**
    * Find all children of a given node
+   *
    * @param node Kmer to find parents of
    * @return  List of Kmers where their prefix matches this node's suffix
    */
@@ -311,6 +317,7 @@ class DeBruijnGraph(val kmerSize: Int,
 
   /**
    * Find all parents of a given node
+   *
    * @param node Kmer to find parents of
    * @return List of Kmers where their suffix matches this nodes prefix
    */
@@ -352,7 +359,6 @@ object DeBruijnGraph {
    * @param sequences Set of sequences that we would like to combine into a single sequence
    * @param overlapSize The amount of the sequences we expect to overlap (The number of bases the last sequence overlaps
    *                    with the next. For a standard kmer graph, this is the length of the kmer length - 1
-   *
    * @return A single merged sequence
    */
   def mergeOverlappingSequences(sequences: Seq[Sequence], overlapSize: Int): Sequence = {

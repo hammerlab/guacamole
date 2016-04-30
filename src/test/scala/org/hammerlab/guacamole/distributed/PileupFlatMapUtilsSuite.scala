@@ -18,10 +18,9 @@
 
 package org.hammerlab.guacamole.distributed
 
-import org.hammerlab.guacamole.Bases
 import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.pileup.{Pileup, PileupElement}
-import org.hammerlab.guacamole.util.{AssertBases, GuacFunSuite, TestUtil}
+import org.hammerlab.guacamole.util.{AssertBases, Bases, GuacFunSuite, TestUtil}
 
 class PileupFlatMapUtilsSuite extends GuacFunSuite {
 
