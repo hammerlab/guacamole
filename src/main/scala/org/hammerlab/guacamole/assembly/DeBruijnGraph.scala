@@ -449,8 +449,8 @@ object DeBruijnGraph {
                              minOccurrence: Int,
                              maxPaths: Int,
                              debugPrint: Boolean = false) = {
-    val referenceKmerSource = referenceSequence.take(kmerSize).toVector
-    val referenceKmerSink = referenceSequence.takeRight(kmerSize).toVector
+    val referenceKmerSource = referenceSequence.take(kmerSize)
+    val referenceKmerSink = referenceSequence.takeRight(kmerSize)
 
     val currentGraph: DeBruijnGraph = DeBruijnGraph(
       reads.map(_.sequence),
@@ -459,33 +459,11 @@ object DeBruijnGraph {
       mergeNodes = true
     )
 
-    val sources: Set[Vector[Byte]] = (getConsensusKmer(
-      reads,
-      referenceStart,
-      referenceStart + kmerSize,
-      minOccurrence = minOccurrence
-    ) ++ Seq(referenceKmerSource)).toSet
-
-    val sinks: Set[Vector[Byte]] = (getConsensusKmer(
-      reads,
-      referenceEnd - kmerSize,
-      referenceEnd,
-      minOccurrence = minOccurrence
-    ) ++ Seq(referenceKmerSink)).toSet
-
-    for {
-      source <- sources
-      sink <- sinks
-      if source != sink
-      path <- currentGraph.depthFirstSearch(
-        source,
-        sink,
-        maxPaths = maxPaths,
-        debugPrint = debugPrint
-      )
-    } yield {
-      path
-    }
+    currentGraph.depthFirstSearch(
+      referenceKmerSource,
+      referenceKmerSink,
+      maxPaths = maxPaths,
+      debugPrint = debugPrint
+    )
   }
-
 }
