@@ -35,13 +35,13 @@
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <span class="name">Caller</span><span class="result"> extends <a href="../../SparkCommand.html" class="extype" name="org.hammerlab.guacamole.SparkCommand">SparkCommand</a>[<a href="SomaticJoint$$Arguments.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.SomaticJoint.Arguments">Arguments</a>]</span>
+        <span class="name">Caller</span><span class="result"> extends <a href="../SparkCommand.html" class="extype" name="org.hammerlab.guacamole.commands.SparkCommand">SparkCommand</a>[<a href="SomaticJoint$$Arguments.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.SomaticJoint.Arguments">Arguments</a>]</span>
       </span>
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><a href="../../SparkCommand.html" class="extype" name="org.hammerlab.guacamole.SparkCommand">SparkCommand</a>[<a href="SomaticJoint$$Arguments.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.SomaticJoint.Arguments">Arguments</a>], <a href="../../Command.html" class="extype" name="org.hammerlab.guacamole.Command">Command</a>[<a href="SomaticJoint$$Arguments.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.SomaticJoint.Arguments">Arguments</a>], <span class="extype" name="org.apache.spark.Logging">Logging</span>, <span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><a href="../SparkCommand.html" class="extype" name="org.hammerlab.guacamole.commands.SparkCommand">SparkCommand</a>[<a href="SomaticJoint$$Arguments.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.SomaticJoint.Arguments">Arguments</a>], <a href="../Command.html" class="extype" name="org.hammerlab.guacamole.commands.Command">Command</a>[<a href="SomaticJoint$$Arguments.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.SomaticJoint.Arguments">Arguments</a>], <span class="extype" name="org.apache.spark.Logging">Logging</span>, <span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -59,7 +59,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="org.hammerlab.guacamole.commands.jointcaller.SomaticJoint.Caller"><span>Caller</span></li><li class="in" name="org.hammerlab.guacamole.SparkCommand"><span>SparkCommand</span></li><li class="in" name="org.hammerlab.guacamole.Command"><span>Command</span></li><li class="in" name="org.apache.spark.Logging"><span>Logging</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="org.hammerlab.guacamole.commands.jointcaller.SomaticJoint.Caller"><span>Caller</span></li><li class="in" name="org.hammerlab.guacamole.commands.SparkCommand"><span>SparkCommand</span></li><li class="in" name="org.hammerlab.guacamole.commands.Command"><span>Command</span></li><li class="in" name="org.apache.spark.Logging"><span>Logging</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -182,6 +182,34 @@
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.commands.SparkCommand#createSparkContext" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="createSparkContext(appName:Option[String]):org.apache.spark.SparkContext"></a>
+      <a id="createSparkContext(Option[String]):SparkContext"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">createSparkContext</span><span class="params">(<span name="appName">appName: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="symbol">None</span></span>)</span><span class="result">: <span class="extype" name="org.apache.spark.SparkContext">SparkContext</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../SparkCommand.html" class="extype" name="org.hammerlab.guacamole.commands.SparkCommand">SparkCommand</a></dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.commands.SparkCommand#createSparkContext" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="createSparkContext(appName:String):org.apache.spark.SparkContext"></a>
+      <a id="createSparkContext(String):SparkContext"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">createSparkContext</span><span class="params">(<span name="appName">appName: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="org.apache.spark.SparkContext">SparkContext</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Return a spark context.</p><div class="fullcomment"><div class="comment cmt"><p>Return a spark context.</p><p>NOTE: Most properties are set through config file
+</p></div><dl class="paramcmts block"><dt class="param">appName</dt><dd class="cmt"></dd><dt>returns</dt><dd class="cmt"><p>
+</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../SparkCommand.html" class="extype" name="org.hammerlab.guacamole.commands.SparkCommand">SparkCommand</a></dd></dl></div>
     </li><li name="org.hammerlab.guacamole.commands.jointcaller.SomaticJoint.Caller#description" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="description:String"></a>
       <a id="description:String"></a>
@@ -194,7 +222,7 @@
         <span class="name">description</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">A short description of the command, for display in the usage info on the command line.</p><div class="fullcomment"><div class="comment cmt"><p>A short description of the command, for display in the usage info on the command line.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.SomaticJoint.Caller">Caller</a> → <a href="../../Command.html" class="extype" name="org.hammerlab.guacamole.Command">Command</a></dd></dl></div>
+      <p class="shortcomment cmt">A short description of the command, for display in the usage info on the command line.</p><div class="fullcomment"><div class="comment cmt"><p>A short description of the command, for display in the usage info on the command line.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.SomaticJoint.Caller">Caller</a> → <a href="../Command.html" class="extype" name="org.hammerlab.guacamole.commands.Command">Command</a></dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -460,7 +488,7 @@
         <span class="name">name</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">The name of the command, as it will be specified on the command line.</p><div class="fullcomment"><div class="comment cmt"><p>The name of the command, as it will be specified on the command line.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.SomaticJoint.Caller">Caller</a> → <a href="../../Command.html" class="extype" name="org.hammerlab.guacamole.Command">Command</a></dd></dl></div>
+      <p class="shortcomment cmt">The name of the command, as it will be specified on the command line.</p><div class="fullcomment"><div class="comment cmt"><p>The name of the command, as it will be specified on the command line.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.SomaticJoint.Caller">Caller</a> → <a href="../Command.html" class="extype" name="org.hammerlab.guacamole.commands.Command">Command</a></dd></dl></div>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -512,8 +540,8 @@
         <span class="name">run</span><span class="params">(<span name="args">args: <a href="SomaticJoint$$Arguments.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.SomaticJoint.Arguments">Arguments</a></span>, <span name="sc">sc: <span class="extype" name="org.apache.spark.SparkContext">SparkContext</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.SomaticJoint.Caller">Caller</a> → <a href="../../SparkCommand.html" class="extype" name="org.hammerlab.guacamole.SparkCommand">SparkCommand</a></dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.SparkCommand#run" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.SomaticJoint.Caller">Caller</a> → <a href="../SparkCommand.html" class="extype" name="org.hammerlab.guacamole.commands.SparkCommand">SparkCommand</a></dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.commands.SparkCommand#run" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="run(args:T):Unit"></a>
       <a id="run(Arguments):Unit"></a>
       <h4 class="signature">
@@ -525,8 +553,8 @@
         <span class="name">run</span><span class="params">(<span name="args">args: <a href="SomaticJoint$$Arguments.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.SomaticJoint.Arguments">Arguments</a></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../SparkCommand.html" class="extype" name="org.hammerlab.guacamole.SparkCommand">SparkCommand</a> → <a href="../../Command.html" class="extype" name="org.hammerlab.guacamole.Command">Command</a></dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.Command#run" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../SparkCommand.html" class="extype" name="org.hammerlab.guacamole.commands.SparkCommand">SparkCommand</a> → <a href="../Command.html" class="extype" name="org.hammerlab.guacamole.commands.Command">Command</a></dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.commands.Command#run" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="run(args:Array[String]):Unit"></a>
       <a id="run(Array[String]):Unit"></a>
       <h4 class="signature">
@@ -541,7 +569,7 @@
       <p class="shortcomment cmt">Run the command.</p><div class="fullcomment"><div class="comment cmt"><p>Run the command.
 </p></div><dl class="paramcmts block"><dt class="param">args</dt><dd class="cmt"><p>the command line arguments, with the first one chopped off. The first argument specifies which
             command to run, and is therefore already consumed by Guacamole.
-</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../Command.html" class="extype" name="org.hammerlab.guacamole.Command">Command</a></dd></dl></div>
+</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../Command.html" class="extype" name="org.hammerlab.guacamole.commands.Command">Command</a></dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -634,10 +662,10 @@
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="org.hammerlab.guacamole.SparkCommand">
-              <h3>Inherited from <a href="../../SparkCommand.html" class="extype" name="org.hammerlab.guacamole.SparkCommand">SparkCommand</a>[<a href="SomaticJoint$$Arguments.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.SomaticJoint.Arguments">Arguments</a>]</h3>
-            </div><div class="parent" name="org.hammerlab.guacamole.Command">
-              <h3>Inherited from <a href="../../Command.html" class="extype" name="org.hammerlab.guacamole.Command">Command</a>[<a href="SomaticJoint$$Arguments.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.SomaticJoint.Arguments">Arguments</a>]</h3>
+        <div class="parent" name="org.hammerlab.guacamole.commands.SparkCommand">
+              <h3>Inherited from <a href="../SparkCommand.html" class="extype" name="org.hammerlab.guacamole.commands.SparkCommand">SparkCommand</a>[<a href="SomaticJoint$$Arguments.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.SomaticJoint.Arguments">Arguments</a>]</h3>
+            </div><div class="parent" name="org.hammerlab.guacamole.commands.Command">
+              <h3>Inherited from <a href="../Command.html" class="extype" name="org.hammerlab.guacamole.commands.Command">Command</a>[<a href="SomaticJoint$$Arguments.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.SomaticJoint.Arguments">Arguments</a>]</h3>
             </div><div class="parent" name="org.apache.spark.Logging">
               <h3>Inherited from <span class="extype" name="org.apache.spark.Logging">Logging</span></h3>
             </div><div class="parent" name="scala.Serializable">
