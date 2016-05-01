@@ -128,9 +128,16 @@ class LociSetSuite extends GuacFunSuite {
     // Test -loci-from-file argument. The test file gives a loci set equal to 20:100-200.
     val args2 = new TestArgs()
     args2.lociFromFile = TestUtil.testDataPath("loci.txt")
+<<<<<<< Updated upstream:src/test/scala/org/hammerlab/guacamole/loci/LociSetSuite.scala
+<<<<<<< Updated upstream:src/test/scala/org/hammerlab/guacamole/loci/LociSetSuite.scala
     Common.lociFromArguments(args2).result should equal(LociSet.parse("20:100-200").result)
+=======
+    Common.lociFromArguments(args2).result should equal(LociSet("20:100-200"))
+>>>>>>> Stashed changes:src/test/scala/org/hammerlab/guacamole/loci/set/LociSetSuite.scala
+=======
+    Common.lociFromArguments(args2).result should equal(LociSet("20:100-200"))
+>>>>>>> Stashed changes:src/test/scala/org/hammerlab/guacamole/loci/set/LociSetSuite.scala
   }
-
   sparkTest("serialization: make an RDD[LociSet]") {
     val sets = List(
       "",
