@@ -84,7 +84,7 @@ spark-submit \
 	--driver-memory 10g \
 	--num-executors 1000 \
 	--executor-cores 1 \
-	--class org.hammerlab.guacamole.Guacamole \
+	--class org.hammerlab.guacamole.Main \
 	--verbose \
 	/path/to/target/guacamole-with-dependencies-<x.y.z>.jar \
 	somatic-joint \
