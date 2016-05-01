@@ -22,6 +22,7 @@ import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.rdd.ADAMContext
 import org.bdgenomics.formats.avro.Variant
+import org.hammerlab.guacamole.ReadSet
 import org.hammerlab.guacamole.distributed.LociPartitionUtils
 import org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociUniformly
 import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMap
@@ -30,7 +31,6 @@ import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.{InputFilters, MappedRead, ReadLoadingConfigArgs}
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.util.Bases
-import org.hammerlab.guacamole.{ReadSet, SparkCommand}
 import org.kohsuke.args4j.{Argument, Option => Args4jOption}
 
 object VariantSupport {

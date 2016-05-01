@@ -107,6 +107,11 @@ class GuacamoleKryoRegistrar extends KryoRegistrator {
     kryo.register(classOf[Genotype], new GenotypeSerializer)
     kryo.register(classOf[TaskPosition])
 
+    // Germline-assembly caller flatmaps some CalledAlleles.
+    kryo.register(classOf[Array[CalledAllele]])
+    kryo.register(classOf[CalledAllele])
+    kryo.register(classOf[AlleleEvidence])
+
     kryo.register(classOf[Array[LociSet]])
     kryo.register(classOf[Map[_, _]])
     kryo.register(Map.empty.getClass)

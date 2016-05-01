@@ -1,9 +1,11 @@
 package org.hammerlab.guacamole.main
 
-import org.hammerlab.guacamole.VariantComparisonUtils.compareToVCF
-import org.hammerlab.guacamole.commands.GermlineAssemblyCaller
+import org.apache.spark.SparkContext
+import org.hammerlab.guacamole.NA12878TestUtils
+import org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Arguments
+import org.hammerlab.guacamole.commands.{GermlineAssemblyCaller, SparkCommand}
 import org.hammerlab.guacamole.util.TestUtil
-import org.hammerlab.guacamole.{Common, NA12878TestUtils}
+import org.hammerlab.guacamole.variants.VariantComparisonTest
 
 /**
  * Germline assembly caller integration "tests" that output various statistics to stdout.
@@ -16,11 +18,14 @@ import org.hammerlab.guacamole.{Common, NA12878TestUtils}
  *     -cp target/guacamole-with-dependencies-0.0.1-SNAPSHOT.jar:target/scala-2.10.5/test-classes \
  *     org.hammerlab.guacamole.main.GermlineAssemblyIntegrationTests
  */
-object GermlineAssemblyIntegrationTests {
+object GermlineAssemblyIntegrationTests extends SparkCommand[Arguments] with VariantComparisonTest {
 
-  def main(args: Array[String]): Unit = {
+  override val name: String = "germline-assembly-integration-test"
+  override val description: String = "output various statistics to stdout"
 
-    val sc = Common.createSparkContext("GermlineAssemblyIntegrationTest")
+  def main(args: Array[String]): Unit = run(args)
+
+  override def run(args: Arguments, sc: SparkContext): Unit = {
 
     println("Germline assembly calling on subset of illumina platinum NA12878")
     val args = new GermlineAssemblyCaller.Arguments()
