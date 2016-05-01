@@ -68,7 +68,7 @@ object SomaticStandard {
     override val description = "call somatic variants using independent callers on tumor and normal"
 
     override def run(args: Arguments, sc: SparkContext): Unit = {
-      Common.validateArguments(args)
+      VariantUtils.validateArguments(args)
       val loci = Common.lociFromArguments(args)
       val filters =
         InputFilters(

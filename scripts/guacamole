@@ -22,5 +22,5 @@ else
     echo "Using GUACAMOLE_JAR=$jar"
 fi
 
-exec time java -Xmx4g -XX:MaxPermSize=512m "-Dspark.master=local[1]" -cp "$jar" org.hammerlab.guacamole.Guacamole "$@"
+exec time java -Xmx4g -XX:MaxPermSize=512m "-Dspark.master=local[1]" -cp "$jar" org.hammerlab.guacamole.Main "$@"
 
