@@ -48,8 +48,8 @@ case class Contig[T](name: String, private val rangeMap: RangeMap[JLong, T]) ext
   }
 
   /**
-    * Map from each value found in this Contig to a LociSet Contig representing the loci that map to that value.
-    */
+   * Map from each value found in this Contig to a LociSet Contig representing the loci that map to that value.
+   */
   lazy val inverse: Map[T, LociSetContig] = {
     val map = mutable.HashMap[T, ArrayBuffer[JRange[JLong]]]()
     for {

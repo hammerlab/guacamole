@@ -6,8 +6,8 @@ import com.esotericsoftware.kryo.{Kryo, Serializer => KryoSerializer}
 import scala.collection.immutable.TreeMap
 
 /**
-  * We serialize a LociMap simply by writing out all of its Contigs.
-  */
+ * We serialize a LociMap simply by writing out all of its Contigs.
+ */
 class Serializer[T] extends KryoSerializer[LociMap[T]] {
   def write(kryo: Kryo, output: Output, obj: LociMap[T]) = {
     output.writeLong(obj.contigs.size)
