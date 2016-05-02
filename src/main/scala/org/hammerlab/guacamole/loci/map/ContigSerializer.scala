@@ -4,8 +4,8 @@ import com.esotericsoftware.kryo.io.{Input, Output}
 import com.esotericsoftware.kryo.{Kryo, Serializer => KryoSerializer}
 
 /**
-  * We serialize a Contig as its name, the number of ranges, and the ranges themselves (two longs and a value each).
-  */
+ * We serialize a Contig as its name, the number of ranges, and the ranges themselves (two longs and a value each).
+ */
 class ContigSerializer[T] extends KryoSerializer[Contig[T]] {
   def write(kryo: Kryo, output: Output, obj: Contig[T]) = {
     output.writeString(obj.name)

@@ -9,18 +9,18 @@ trait TruncatedToString {
   }
 
   /**
-    * Iterator over string representations of
-    */
+   * Iterator over string representations of
+   */
   def stringPieces: Iterator[String]
 }
 
 object TruncatedToString {
   /**
-    * Like Scala's List.mkString method, but supports truncation.
-    *
-    * Return the concatenation of an iterator over strings, separated by separator, truncated to at most maxLength
-    * characters. If truncation occurs, the string is terminated with ellipses.
-    */
+   * Like Scala's List.mkString method, but supports truncation.
+   *
+   * Return the concatenation of an iterator over strings, separated by separator, truncated to at most maxLength
+   * characters. If truncation occurs, the string is terminated with ellipses.
+   */
   def apply(pieces: Iterator[String],
             maxLength: Int,
             separator: String = ",",
