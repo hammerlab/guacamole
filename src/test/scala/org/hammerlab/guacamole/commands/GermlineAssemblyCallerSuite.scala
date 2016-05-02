@@ -63,12 +63,14 @@ class GermlineAssemblyCallerSuite extends GuacFunSuite with BeforeAndAfterAll {
     val variants =
       GermlineAssemblyCaller.Caller.discoverGermlineVariants(
         mappedReads,
-        kmerSize,
-        snvWindowRange,
-        minOccurrence,
-        minVaf,
-        reference,
-        lociPartitions
+        kmerSize = kmerSize,
+        snvWindowRange = snvWindowRange,
+        minOccurrence = minOccurrence,
+        minMeanKmerQuality = 20,
+        minAreaVaf = minVaf,
+        reference = reference,
+        lociPartitions = lociPartitions,
+        shortcutAssembly = shortcutAssembly
       ).collect().sortBy(_.start)
 
     val actualVariants =
