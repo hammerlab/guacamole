@@ -112,31 +112,31 @@ object WindowFlatMapUtils {
   }
 
   /**
-    * FlatMap across sets of regions (e.g. reads) overlapping genomic partitions, on multiple RDDs.
-    *
-    * This function works as follows:
-    *
-    *  (1) Assign regions to partitions. A region may overlap multiple partitions, and therefore be assigned to multiple
-    *      partitions.
-    *
-    *  (2) For each partition, call the provided function. The arguments to this function are the task number, the loci
-    *      assigned to this task, and a sequence of iterators giving the regions overlapping those loci (within the
-    *      specified halfWindowSize) from each corresponding input RDD. The loci assigned to this task are always unique
-    *      to this task, but the same regions may be provided to multiple tasks, since regions may overlap loci partition
-    *      boundaries.
-    *
-    *  (3) The results of the provided function are concatenated into an RDD, which is returned.
-    *
-    * @param regionRDDs RDDs of reads, one per sample.
-    * @param lociPartitions map from locus -> task number. This argument specifies both the loci to be considered and how
-    *                       they should be split among tasks. regions that don't overlap these loci are discarded.
-    * @param halfWindowSize if a region overlaps a region of halfWindowSize to either side of a locus under consideration,
-    *                       then it is included.
-    * @param function function to flatMap: (task number, loci, iterators of regions that overlap a window around these
-    *                 loci (one region-iterator per sample)) -> T
-    * @tparam T type of value returned by function
-    * @return flatMap results, RDD[T]
-    */
+   * FlatMap across sets of regions (e.g. reads) overlapping genomic partitions, on multiple RDDs.
+   *
+   * This function works as follows:
+   *
+   *  (1) Assign regions to partitions. A region may overlap multiple partitions, and therefore be assigned to multiple
+   *      partitions.
+   *
+   *  (2) For each partition, call the provided function. The arguments to this function are the task number, the loci
+   *      assigned to this task, and a sequence of iterators giving the regions overlapping those loci (within the
+   *      specified halfWindowSize) from each corresponding input RDD. The loci assigned to this task are always unique
+   *      to this task, but the same regions may be provided to multiple tasks, since regions may overlap loci partition
+   *      boundaries.
+   *
+   *  (3) The results of the provided function are concatenated into an RDD, which is returned.
+   *
+   * @param regionRDDs RDDs of reads, one per sample.
+   * @param lociPartitions map from locus -> task number. This argument specifies both the loci to be considered and how
+   *                       they should be split among tasks. regions that don't overlap these loci are discarded.
+   * @param halfWindowSize if a region overlaps a region of halfWindowSize to either side of a locus under
+   *                       consideration, then it is included.
+   * @param function function to flatMap: (task number, loci, iterators of regions that overlap a window around these
+   *                 loci (one region-iterator per sample)) -> T
+   * @tparam T type of value returned by function
+   * @return flatMap results, RDD[T]
+   */
   private[distributed] def windowTaskFlatMapMultipleRDDs[R <: ReferenceRegion: ClassTag, T: ClassTag](
     regionRDDs: PerSample[RDD[R]],
     lociPartitions: LociMap[Long],
@@ -215,17 +215,17 @@ object WindowFlatMapUtils {
   }
 
   /**
-    *
-    * Generates a sequence of results from each task (using the `generateFromWindows` function)
-    * and collects them into a single iterator
-    *
-    * @param taskRegionsPerSample for each sample, elements of type M to process for this task
-    * @param taskLoci Set of loci to process for this task
-    * @param halfWindowSize A window centered at locus = l will contain regions overlapping l +/- halfWindowSize
-    * @param generateFromWindows Function that maps windows to result type
-    * @tparam T result data type
-    * @return Iterator[T] collected from each contig
-    */
+   *
+   * Generates a sequence of results from each task (using the `generateFromWindows` function)
+   * and collects them into a single iterator
+   *
+   * @param taskRegionsPerSample for each sample, elements of type M to process for this task
+   * @param taskLoci Set of loci to process for this task
+   * @param halfWindowSize A window centered at locus = l will contain regions overlapping l +/- halfWindowSize
+   * @param generateFromWindows Function that maps windows to result type
+   * @tparam T result data type
+   * @return Iterator[T] collected from each contig
+   */
   def collectByContig[R <: ReferenceRegion: ClassTag, T: ClassTag](
     taskRegionsPerSample: PerSample[Iterator[R]],
     taskLoci: LociSet,

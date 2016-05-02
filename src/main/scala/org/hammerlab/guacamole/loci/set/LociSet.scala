@@ -114,10 +114,10 @@ object LociSet {
   def apply(loci: String): LociSet = LociParser(loci).result
 
   /**
-    * These constructors build a LociSet directly from Contigs.
-    *
-    * They operate on an Iterator so that transformations to the data happen in one pass.
-    */
+   * These constructors build a LociSet directly from Contigs.
+   *
+   * They operate on an Iterator so that transformations to the data happen in one pass.
+   */
   private[set] def fromContigs(contigs: Iterable[Contig]): LociSet = fromContigs(contigs.iterator)
   private[set] def fromContigs(contigs: Iterator[Contig]): LociSet =
     LociSet(

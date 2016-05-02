@@ -23,8 +23,8 @@ object LociPartitionUtils {
   }
 
   /**
-    * Partition a LociSet among tasks according to the strategy specified in args.
-    */
+   * Partition a LociSet among tasks according to the strategy specified in args.
+   */
   def partitionLociAccordingToArgs[R <: ReferenceRegion: ClassTag](args: Arguments,
                                                                    loci: LociSet,
                                                                    regionRDDs: RDD[R]*): LociMap[Long] = {
@@ -44,17 +44,17 @@ object LociPartitionUtils {
   }
 
   /**
-    * Assign loci from a LociSet to partitions. Contiguous intervals of loci will tend to get assigned to the same
-    * partition.
-    *
-    * This implementation assigns loci uniformly, i.e. each task gets about the same number of loci. A smarter
-    * implementation would know about the regions (depth of coverage), and try to assign each task loci corresponding to
-    * about the same number of regions.
-    *
-    * @param tasks number of partitions
-    * @param loci loci to partition
-    * @return LociMap of locus -> task assignments
-    */
+   * Assign loci from a LociSet to partitions. Contiguous intervals of loci will tend to get assigned to the same
+   * partition.
+   *
+   * This implementation assigns loci uniformly, i.e. each task gets about the same number of loci. A smarter
+   * implementation would know about the regions (depth of coverage), and try to assign each task loci corresponding to
+   * about the same number of regions.
+   *
+   * @param tasks number of partitions
+   * @param loci loci to partition
+   * @return LociMap of locus -> task assignments
+   */
   def partitionLociUniformly(tasks: Long, loci: LociSet): LociMap[Long] = {
     assume(tasks >= 1, "`tasks` (--parallelism) should be >= 1")
     val lociPerTask = math.max(1, loci.count.toDouble / tasks.toDouble)
@@ -83,38 +83,38 @@ object LociPartitionUtils {
   }
 
   /**
-    * Assign loci from a LociSet to partitions, where each partition overlaps about the same number of regions.
-    *
-    * The approach we take is:
-    *
-    *  (1) chop up the loci uniformly into many genomic "micro partitions."
-    *
-    *  (2) for each micro partition, calculate the number of regions that overlap it.
-    *
-    *  (3) using these counts, assign loci to real ("macro") partitions, making the approximation of uniform depth within
-    *      each micro partition.
-    *
-    *  Some advantages of this approach are:
-    *
-    *  - Stages (1) and (3), which are done locally by the Spark master, are constant time with respect to the number
-    *    of regions.
-    *
-    *  - Stage (2), where runtime does depend on the number of regions, is done in parallel with Spark.
-    *
-    *  - We can tune the accuracy vs. performance trade off by setting `microTasks`.
-    *
-    *  - Does not require a distributed sort.
-    *
-    * @param tasks number of partitions
-    * @param loci loci to partition
-    * @param accuracy integer >= 1. Higher values of this will result in a more exact but also more expensive computation.
-    *                 Specifically, this is the number of micro partitions to use per task to estimate the region depth.
-    *                 In the extreme case, setting this to greater than the number of loci per task will result in an
-    *                 exact calculation.
-    * @param regionRDDs: region RDD 1, region RDD 2, ...
-    *                Any number RDD[Region] arguments giving the regions to base the partitioning on.
-    * @return LociMap of locus -> task assignments.
-    */
+   * Assign loci from a LociSet to partitions, where each partition overlaps about the same number of regions.
+   *
+   * The approach we take is:
+   *
+   *  (1) chop up the loci uniformly into many genomic "micro partitions."
+   *
+   *  (2) for each micro partition, calculate the number of regions that overlap it.
+   *
+   *  (3) using these counts, assign loci to real ("macro") partitions, making the approximation of uniform depth within
+   *      each micro partition.
+   *
+   *  Some advantages of this approach are:
+   *
+   *  - Stages (1) and (3), which are done locally by the Spark master, are constant time with respect to the number
+   *    of regions.
+   *
+   *  - Stage (2), where runtime does depend on the number of regions, is done in parallel with Spark.
+   *
+   *  - We can tune the accuracy vs. performance trade off by setting `microTasks`.
+   *
+   *  - Does not require a distributed sort.
+   *
+   * @param tasks number of partitions
+   * @param loci loci to partition
+   * @param accuracy integer >= 1. Higher values of this will result in a more exact but also more expensive computation.
+   *                 Specifically, this is the number of micro partitions to use per task to estimate the region depth.
+   *                 In the extreme case, setting this to greater than the number of loci per task will result in an
+   *                 exact calculation.
+   * @param regionRDDs: region RDD 1, region RDD 2, ...
+   *                Any number RDD[Region] arguments giving the regions to base the partitioning on.
+   * @return LociMap of locus -> task assignments.
+   */
   def partitionLociByApproximateDepth[R <: ReferenceRegion: ClassTag](tasks: Int,
                                                                       loci: LociSet,
                                                                       accuracy: Int,

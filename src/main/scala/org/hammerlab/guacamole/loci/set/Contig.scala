@@ -11,8 +11,8 @@ import scala.collection.JavaConversions._
 import scala.collection.mutable.ArrayBuffer
 
 /**
-  * A set of loci on a contig, stored/manipulated as loci ranges.
-  */
+ * A set of loci on a contig, stored/manipulated as loci ranges.
+ */
 case class Contig(name: String, private val rangeSet: RangeSet[JLong]) extends TruncatedToString {
 
   /** Is the given locus contained in this set? */
@@ -40,10 +40,10 @@ case class Contig(name: String, private val rangeSet: RangeSet[JLong]) extends T
   def intersects(start: Long, end: Long): Boolean = !rangeSet.subRangeSet(JRange.closedOpen(start, end)).isEmpty
 
   /**
-    * Make two new Contigs: one with the first @numToTake loci from this Contig, and the second with the rest.
-    *
-    * Used by LociSet.take.
-    */
+   * Make two new Contigs: one with the first @numToTake loci from this Contig, and the second with the rest.
+   *
+   * Used by LociSet.take.
+   */
   private[set] def take(numToTake: Long): (Contig, Contig) = {
     val firstRanges = ArrayBuffer[JRange[JLong]]()
     val secondRanges = ArrayBuffer[JRange[JLong]]()
@@ -69,9 +69,9 @@ case class Contig(name: String, private val rangeSet: RangeSet[JLong]) extends T
   }
 
   /**
-    * Iterator over string representations of each range in the map, used to assemble (possibly truncated) .toString()
-    * output.
-    */
+   * Iterator over string representations of each range in the map, used to assemble (possibly truncated) .toString()
+   * output.
+   */
   def stringPieces = {
     ranges.iterator.map(pair =>
       "%s:%d-%d".format(name, pair.start, pair.end)
