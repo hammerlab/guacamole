@@ -8,6 +8,7 @@ import org.hammerlab.guacamole.commands.jointcaller.Parameters
 import org.hammerlab.guacamole.commands.jointcaller.annotation.SingleSampleAnnotations.Annotation
 import org.hammerlab.guacamole.commands.jointcaller.evidence.SingleSampleSingleAlleleEvidence
 import org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.PileupStats
+import org.hammerlab.guacamole.reference.ContigSequence
 
 /**
  * Extra information, such as filters, we compute about a potential call.
@@ -15,9 +16,9 @@ import org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.PileupS
  * See MultiSampleAnnotations for more info on annotations.
  */
 case class SingleSampleAnnotations(
-    strandBias: StrandBias) {
+    strandBias: StrandBias, proximalGap: ProximalGap) {
 
-  def toSeq: Seq[Annotation] = Seq(strandBias)
+  def toSeq: Seq[Annotation] = Seq(strandBias, proximalGap)
 
   def annotationsFailingFilters = toSeq.filter(_.isFiltered)
 
@@ -41,13 +42,16 @@ object SingleSampleAnnotations {
    */
   def apply(stats: PileupStats,
             evidence: SingleSampleSingleAlleleEvidence,
-            parameters: Parameters): SingleSampleAnnotations = {
+            parameters: Parameters,
+            referenceContigSequence: ContigSequence): SingleSampleAnnotations = {
     SingleSampleAnnotations(
-      StrandBias(stats, evidence, parameters))
+      StrandBias(stats, evidence, parameters),
+      ProximalGap(stats, evidence, parameters, referenceContigSequence))
   }
 
   /** setup headers for fields written out by annotations in their addInfoToVCF methods. */
   def addVCFHeaders(headerLines: util.Set[VCFHeaderLine]): Unit = {
     StrandBias.addVCFHeaders(headerLines)
+    ProximalGap.addVCFHeaders(headerLines)
   }
 }

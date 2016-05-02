@@ -23,7 +23,12 @@ case class Parameters(
     somaticGenotypePolicy: Parameters.SomaticGenotypePolicy.Value,
     filterStrandBiasPhred: Double,
     filterSomaticNormalNonreferencePercent: Double,
-    filterSomaticNormalDepth: Int) {
+    filterSomaticNormalDepth: Int,
+    filterMaxProximalInsertions: Int,
+    filterMaxProximalDeletions: Int,
+    filterProximalWindow: Int,
+    filterPoorMappingReadsFraction: Double,
+    filterMinimumMappingConfidence: Int) {
 
   /**
    * Return the parameters as a sequence of (name, value) pairs. This is used to include the parameter metadata in the VCF.
@@ -107,6 +112,27 @@ object Parameters {
     @Args4jOption(name = "--filter-somatic-normal-depth",
       usage = "filter somatic calls with total pooled normal dna depth lower than this value")
     var filterSomaticNormalDepth: Int = 30
+
+    @Args4jOption(name = "--filter-max-proximal-insertions",
+      usage = "filter somatic calls for possible misalignment they have more than this number of nearby small insertions")
+    var filterMaxProximalInsertions: Int = 3
+
+    @Args4jOption(name = "--filter-max-proximal-deletions",
+      usage = "filter somatic calls for possible misalignment they have more than this number of nearby small deletions")
+    var filterMaxProximalDeletions: Int = 3
+
+    @Args4jOption(name = "--filter-proximal-window",
+      usage = "filter somatic calls for small indels within this window centered at the locus")
+    var filterProximalWindow: Int = 11
+
+    @Args4jOption(name = "--filter-poor-mapping-fraction",
+      usage = "filter candidates if more than this percentage of reads in the tumor and normal samples " +
+        "have a mapping quality of zero")
+    var filterPoorMappingReadsFraction: Double = 0.5
+
+    @Args4jOption(name = "--filter-min-allele-alignment-quality",
+      usage = "")
+    var filterMinimumMappingConfidence: Int = 20
   }
 
   def apply(args: CommandlineArguments): Parameters = {
@@ -125,7 +151,12 @@ object Parameters {
       somaticGenotypePolicy = SomaticGenotypePolicy.withName(args.somaticGenotypePolicy),
       filterStrandBiasPhred = args.filterStrandBiasPhred,
       filterSomaticNormalNonreferencePercent = args.filterSomaticNormalNonreferencePercent,
-      filterSomaticNormalDepth = args.filterSomaticNormalDepth
+      filterSomaticNormalDepth = args.filterSomaticNormalDepth,
+      filterMaxProximalInsertions = args.filterMaxProximalInsertions,
+      filterMaxProximalDeletions = args.filterMaxProximalDeletions,
+      filterProximalWindow = args.filterProximalWindow,
+      filterPoorMappingReadsFraction = args.filterPoorMappingReadsFraction,
+      filterMinimumMappingConfidence = args.filterMinimumMappingConfidence
     )
   }
 

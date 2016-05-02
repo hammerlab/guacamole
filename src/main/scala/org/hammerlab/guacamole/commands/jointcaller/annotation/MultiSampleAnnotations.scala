@@ -20,9 +20,10 @@ import org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.Multipl
  * considered filtered.
  *
  */
-case class MultiSampleAnnotations(insufficientNormal: Option[InsufficientNormal]) {
+case class MultiSampleAnnotations(insufficientNormal: Option[InsufficientNormal],
+                                  tooManyCallsAtSite: Option[TooManyCallsAtSite]) {
 
-  def toSeq: Seq[Annotation] = insufficientNormal.toSeq
+  def toSeq: Seq[Annotation] = Seq(insufficientNormal.get, tooManyCallsAtSite.get)
 
   def annotationsFailingFilters = toSeq.filter(_.isFiltered)
 
@@ -49,7 +50,8 @@ object MultiSampleAnnotations {
             allStats: MultiplePileupStats,
             parameters: Parameters): MultiSampleAnnotations = {
     MultiSampleAnnotations(
-      InsufficientNormal(allStats, singleAlleleEvidence, parameters))
+      InsufficientNormal(allStats, singleAlleleEvidence, parameters),
+      TooManyCallsAtSite(multiAlleleEvidence, parameters))
   }
 
   /** setup headers for fields written out by annotations in their addInfoToVCF methods. */

@@ -2,6 +2,7 @@ package org.hammerlab.guacamole.commands.jointcaller.annotation
 
 import java.util
 
+import htsjdk.variant.variantcontext.GenotypeBuilder
 import htsjdk.variant.vcf.{ VCFFilterHeaderLine, VCFHeaderLine }
 import org.hammerlab.guacamole.commands.jointcaller.Parameters
 import org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleMultiAlleleEvidence
@@ -17,6 +18,11 @@ case class TooManyCallsAtSite(numCalls: Int,
 
   override val name = TooManyCallsAtSite.name
   override val isFiltered = numCalls > parameters.maxCallsPerSite
+
+  def addInfoToVCF(builder: GenotypeBuilder): Unit = {
+    builder.attribute("TM", numCalls)
+  }
+
 }
 object TooManyCallsAtSite {
   val name = "TOO_MANY_CALLS_AT_SITE"
