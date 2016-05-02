@@ -1,7 +1,9 @@
 package org.hammerlab.guacamole.assembly
 
+import breeze.linalg.DenseVector
+import breeze.stats.mean
 import htsjdk.samtools.CigarOperator
-import org.hammerlab.guacamole.reads.MappedRead
+import org.hammerlab.guacamole.reads.{MappedRead, Read}
 import org.hammerlab.guacamole.util.Bases
 
 import scala.collection.mutable
@@ -338,22 +340,31 @@ object DeBruijnGraph {
   type Sequence = DeBruijnGraph#Sequence
   type Kmer = DeBruijnGraph#Kmer
 
-  def apply(sequences: Seq[Sequence],
+  def apply(reads: Seq[Read],
             kmerSize: Int,
             minOccurrence: Int = 1,
+            minMeanKmerBaseQuality: Int = 0,
             mergeNodes: Boolean = false): DeBruijnGraph = {
 
     val kmerCounts = mutable.Map.empty[DeBruijnGraph#Kmer, Int]
 
-    sequences
-      .filter(Bases.allStandardBases(_))
-      .foreach(
-        _.sliding(kmerSize)
-          .foreach(seq => {
-            val count = kmerCounts.getOrElse(seq, 0)
-            kmerCounts.update(seq, count + 1)
-          })
-      )
+    reads.foreach(
+      read => {
+        read.sequence
+          .sliding(kmerSize)
+          .zipWithIndex
+          .foreach(
+            { case (seq, index) =>
+              val baseQualities = DenseVector(read.baseQualities.slice(index, index + kmerSize).map(_.toFloat).toArray)
+              val meanBaseQuality = mean(baseQualities)
+              if (meanBaseQuality > minMeanKmerBaseQuality) {
+                val count = kmerCounts.getOrElse(seq, 0)
+                kmerCounts.update(seq, count + 1)
+              }
+            }
+          )
+      }
+    )
 
     val graph = new DeBruijnGraph(kmerSize, kmerCounts.filter(_._2 >= minOccurrence))
 
@@ -431,14 +442,17 @@ object DeBruijnGraph {
                              kmerSize: Int,
                              minOccurrence: Int,
                              maxPaths: Int,
+                             minMeanKmerBaseQuality: Int,
                              debugPrint: Boolean = false) = {
     val referenceKmerSource = referenceSequence.take(kmerSize)
     val referenceKmerSink = referenceSequence.takeRight(kmerSize)
 
+
     val currentGraph: DeBruijnGraph = DeBruijnGraph(
-      reads.map(_.sequence),
+      reads,
       kmerSize,
       minOccurrence,
+      minMeanKmerBaseQuality,
       mergeNodes = true
     )
 

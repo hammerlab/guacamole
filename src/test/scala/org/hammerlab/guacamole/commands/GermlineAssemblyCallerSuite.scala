@@ -67,6 +67,7 @@ class GermlineAssemblyCallerSuite extends GuacFunSuite with BeforeAndAfterAll {
         kmerSize = kmerSize,
         snvWindowRange = snvWindowRange,
         minOccurrence = minOccurrence,
+        minMeanKmerQuality = 20,
         minAreaVaf = minVaf,
         reference = reference,
         lociPartitions = lociPartitions,

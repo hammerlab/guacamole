@@ -27,7 +27,7 @@ import org.apache.spark.SparkContext
 import org.hammerlab.guacamole.ReadSet
 import org.hammerlab.guacamole.loci.set.LociParser
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.reads.{InputFilters, MappedRead, MateAlignmentProperties, PairedRead, Read, ReadLoadingConfig}
+import org.hammerlab.guacamole.reads._
 import org.hammerlab.guacamole.reference.ReferenceBroadcast.MapBackedReferenceSequence
 import org.hammerlab.guacamole.reference.{ContigSequence, ReferenceBroadcast}
 
@@ -103,7 +103,7 @@ object TestUtil {
   }
 
   def makeRead(sequence: String,
-               cigar: String,
+               cigar: String = "",
                start: Long = 1,
                chr: String = "chr1",
                qualityScores: Option[Seq[Int]] = None,
