@@ -18,11 +18,36 @@
 
 package org.hammerlab.guacamole.distributed
 
+import com.esotericsoftware.kryo.Kryo
+import org.apache.spark.storage.BroadcastBlockId
 import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.pileup.{Pileup, PileupElement}
-import org.hammerlab.guacamole.util.{AssertBases, Bases, GuacFunSuite, TestUtil}
+import org.hammerlab.guacamole.reference.ReferenceBroadcast.MapBackedReferenceSequence
+import org.hammerlab.guacamole.util.{AssertBases, Bases, GuacFunSuite, KryoTestRegistrar, TestUtil}
+
+class PileupFlatMapUtilsSuiteRegistrar extends KryoTestRegistrar {
+  override def registerTestClasses(kryo: Kryo): Unit = {
+    // In some test cases below, we serialize Pileups, which requires PileupElements and MapBackedReferenceSequences.
+    kryo.register(classOf[Pileup])
+    kryo.register(classOf[Array[Pileup]])
+
+    kryo.register(classOf[PileupElement])
+    kryo.register(classOf[Array[PileupElement]])
+
+    // Closed over by PileupElement
+    kryo.register(classOf[MapBackedReferenceSequence])
+    kryo.register(Class.forName("org.apache.spark.broadcast.TorrentBroadcast"))
+    kryo.register(classOf[BroadcastBlockId])
+    kryo.register(classOf[Map[_, _]])
+
+    // "test pileup flatmap multiple rdds; skip empty pileups" collects an RDD of Arrays
+    kryo.register(classOf[Array[Seq[_]]])
+  }
+}
 
 class PileupFlatMapUtilsSuite extends GuacFunSuite {
+
+  override def registrar: String = "org.hammerlab.guacamole.distributed.PileupFlatMapUtilsSuiteRegistrar"
 
   test("test pileup flatmap parallelism 0; create pileups") {
 
@@ -254,6 +279,6 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
 
     pileups.length should be(24)
     val insertionPileups = pileups.filter(_.isInsertion)
-    insertionPileups.size should be(1)
+    insertionPileups.length should be(1)
   }
 }
