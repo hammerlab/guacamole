@@ -24,7 +24,7 @@ import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
 
 class MappedReadSerializerSuite extends GuacFunSuite {
 
-  test("serialize / deserialize mapped read") {
+  test("mapped read") {
     val read = MappedRead(
       "read1",
       "TCGACCCTCGA",
@@ -40,8 +40,8 @@ class MappedReadSerializerSuite extends GuacFunSuite {
       isPaired = true
     )
 
-    val serialized = TestUtil.serialize(read)
-    val deserialized = TestUtil.deserialize[MappedRead](serialized)
+    val serialized = serialize(read)
+    val deserialized = deserialize[MappedRead](serialized)
 
     // We *should* be able to just use MappedRead's equality implementation, since Scala should implement the equals
     // method for case classes. Somehow, something goes wrong though, and this fails:
@@ -63,7 +63,7 @@ class MappedReadSerializerSuite extends GuacFunSuite {
     deserialized.isPaired should equal(read.isPaired)
   }
 
-  test("serialize / deserialize mapped read with mdtag") {
+  test("mapped read with mdtag") {
     val read = MappedRead(
       "read1",
       "TCGACCCTCGA",
@@ -79,8 +79,8 @@ class MappedReadSerializerSuite extends GuacFunSuite {
       isPaired = true
     )
 
-    val serialized = TestUtil.serialize(read)
-    val deserialized = TestUtil.deserialize[MappedRead](serialized)
+    val serialized = serialize(read)
+    val deserialized = deserialize[MappedRead](serialized)
 
     // We *should* be able to just use MappedRead's equality implementation, since Scala should implement the equals
     // method for case classes. Somehow, something goes wrong though, and this fails:
@@ -102,7 +102,7 @@ class MappedReadSerializerSuite extends GuacFunSuite {
     deserialized.isPaired should equal(read.isPaired)
   }
 
-  test("serialize / deserialize mapped read with unmapped pair") {
+  test("mapped read with unmapped pair") {
     val read = MappedRead(
       "read1",
       "TCGACCCTCGA",
@@ -118,8 +118,8 @@ class MappedReadSerializerSuite extends GuacFunSuite {
       isPaired = true
     )
 
-    val serialized = TestUtil.serialize(read)
-    val deserialized = TestUtil.deserialize[MappedRead](serialized)
+    val serialized = serialize(read)
+    val deserialized = deserialize[MappedRead](serialized)
 
     // We *should* be able to just use MappedRead's equality implementation, since Scala should implement the equals
     // method for case classes. Somehow, something goes wrong though, and this fails:

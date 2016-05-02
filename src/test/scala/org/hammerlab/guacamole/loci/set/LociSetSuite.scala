@@ -196,13 +196,4 @@ class LociSetSuite extends GuacFunSuite {
     iter3.next() should be(100000000000L - 1L)
     iter3.hasNext() should be(false)
   }
-
-  // We do not provide java serialization for LociSet, instead broadcasting it (which uses Kryo serialization).
-  test("serialization: a closure that includes a LociSet") {
-    val set = LociSet("chr21:100-200,chr20:0-10,chr20:8-15,chr20:100-120,empty:10-10")
-    val setBC = sc.broadcast(set)
-    val rdd = sc.parallelize(0L until 1000L)
-    val result = rdd.filter(i => setBC.value.onContig("chr21").contains(i)).collect
-    result should equal(100L until 200)
-  }
 }

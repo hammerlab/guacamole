@@ -11,18 +11,22 @@ import org.hammerlab.guacamole.loci.SimpleRange
 class ContigSerializer extends KryoSerializer[Contig] {
   def write(kryo: Kryo, output: Output, obj: Contig) = {
     output.writeString(obj.name)
-    kryo.writeObject(output, obj.ranges)
+    output.writeInt(obj.ranges.length)
+    for {
+      SimpleRange(start, end) <- obj.ranges
+    } {
+      output.writeLong(start)
+      output.writeLong(end)
+    }
   }
 
   def read(kryo: Kryo, input: Input, klass: Class[Contig]): Contig = {
     val name = input.readString()
-    val ranges = kryo.readObject(input, classOf[Array[SimpleRange]])
+    val length = input.readInt()
     val treeRangeSet = TreeRangeSet.create[JLong]()
-    for {
-      SimpleRange(start, end) <- ranges
-    } {
-      treeRangeSet.add(JRange.closedOpen(start, end))
-    }
+    val ranges = (0 until length).foreach(_ => {
+      treeRangeSet.add(JRange.closedOpen(input.readLong(), input.readLong()))
+    })
     Contig(name, treeRangeSet)
   }
 }
