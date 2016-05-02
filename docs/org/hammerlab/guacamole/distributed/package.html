@@ -85,29 +85,29 @@
       </h4>
       <p class="comment cmt">Spark partitioner for keyed RDDs that assigns each unique key its own partition.</p>
     </li><li name="org.hammerlab.guacamole.distributed.RegionsByContig" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="RegionsByContig[Mapped&lt;:org.hammerlab.guacamole.HasReferenceRegion]extendsAnyRef"></a>
-      <a id="RegionsByContig[Mapped&lt;:HasReferenceRegion]:RegionsByContig[Mapped]"></a>
+      <a id="RegionsByContig[R&lt;:org.hammerlab.guacamole.reference.ReferenceRegion]extendsAnyRef"></a>
+      <a id="RegionsByContig[R&lt;:ReferenceRegion]:RegionsByContig[R]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a href="RegionsByContig.html"><span class="name">RegionsByContig</span></a><span class="tparams">[<span name="Mapped">Mapped &lt;: <a href="../HasReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.HasReferenceRegion">HasReferenceRegion</a></span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <a href="RegionsByContig.html"><span class="name">RegionsByContig</span></a><span class="tparams">[<span name="R">R &lt;: <a href="../reference/ReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceRegion">ReferenceRegion</a></span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       </h4>
       <p class="comment cmt">Using an iterator of regions sorted by (contig, start locus), this class exposes a way to get separate iterators
 over the regions in each contig.</p>
     </li><li name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="SingleContigRegionIterator[Mapped&lt;:org.hammerlab.guacamole.HasReferenceRegion]extendsIterator[Mapped]"></a>
-      <a id="SingleContigRegionIterator[Mapped&lt;:HasReferenceRegion]:SingleContigRegionIterator[Mapped]"></a>
+      <a id="SingleContigRegionIterator[R&lt;:org.hammerlab.guacamole.reference.ReferenceRegion]extendsIterator[R]"></a>
+      <a id="SingleContigRegionIterator[R&lt;:ReferenceRegion]:SingleContigRegionIterator[R]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a href="SingleContigRegionIterator.html"><span class="name">SingleContigRegionIterator</span></a><span class="tparams">[<span name="Mapped">Mapped &lt;: <a href="../HasReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.HasReferenceRegion">HasReferenceRegion</a></span>]</span><span class="result"> extends <span class="extype" name="scala.Iterator">Iterator</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>]</span>
+        <a href="SingleContigRegionIterator.html"><span class="name">SingleContigRegionIterator</span></a><span class="tparams">[<span name="R">R &lt;: <a href="../reference/ReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceRegion">ReferenceRegion</a></span>]</span><span class="result"> extends <span class="extype" name="scala.Iterator">Iterator</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>]</span>
       </span>
       </h4>
       <p class="comment cmt">Wraps an iterator of regions sorted by contig name.</p>

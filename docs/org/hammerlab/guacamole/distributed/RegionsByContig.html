@@ -35,7 +35,7 @@
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">RegionsByContig</span><span class="tparams">[<span name="Mapped">Mapped &lt;: <a href="../HasReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.HasReferenceRegion">HasReferenceRegion</a></span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <span class="name">RegionsByContig</span><span class="tparams">[<span name="R">R &lt;: <a href="../reference/ReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceRegion">ReferenceRegion</a></span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       </h4>
       
@@ -85,15 +85,15 @@ buffer anything -- it just walks forward in the regions using the iterator you g
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="org.hammerlab.guacamole.distributed.RegionsByContig#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="&lt;init&gt;(regionIterator:Iterator[Mapped]):org.hammerlab.guacamole.distributed.RegionsByContig[Mapped]"></a>
-      <a id="&lt;init&gt;:RegionsByContig[Mapped]"></a>
+      <a id="&lt;init&gt;(regionIterator:Iterator[R]):org.hammerlab.guacamole.distributed.RegionsByContig[R]"></a>
+      <a id="&lt;init&gt;:RegionsByContig[R]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">RegionsByContig</span><span class="params">(<span name="regionIterator">regionIterator: <span class="extype" name="scala.Iterator">Iterator</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.RegionsByContig.Mapped">Mapped</span>]</span>)</span>
+        <span class="name">RegionsByContig</span><span class="params">(<span name="regionIterator">regionIterator: <span class="extype" name="scala.Iterator">Iterator</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.RegionsByContig.R">R</span>]</span>)</span>
       </span>
       </h4>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">regionIterator</dt><dd class="cmt"><p>regions, sorted by contig and start locus.
@@ -302,15 +302,15 @@ buffer anything -- it just walks forward in the regions using the iterator you g
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="org.hammerlab.guacamole.distributed.RegionsByContig#next" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="next(contig:String):Iterator[Mapped]"></a>
-      <a id="next(String):Iterator[Mapped]"></a>
+      <a id="next(contig:String):Iterator[R]"></a>
+      <a id="next(String):Iterator[R]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">next</span><span class="params">(<span name="contig">contig: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Iterator">Iterator</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.RegionsByContig.Mapped">Mapped</span>]</span>
+        <span class="name">next</span><span class="params">(<span name="contig">contig: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Iterator">Iterator</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.RegionsByContig.R">R</span>]</span>
       </span>
       </h4>
       

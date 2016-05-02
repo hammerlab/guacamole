@@ -35,7 +35,7 @@
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">SingleContigRegionIterator</span><span class="tparams">[<span name="Mapped">Mapped &lt;: <a href="../HasReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.HasReferenceRegion">HasReferenceRegion</a></span>]</span><span class="result"> extends <span class="extype" name="scala.Iterator">Iterator</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>]</span>
+        <span class="name">SingleContigRegionIterator</span><span class="tparams">[<span name="R">R &lt;: <a href="../reference/ReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceRegion">ReferenceRegion</a></span>]</span><span class="result"> extends <span class="extype" name="scala.Iterator">Iterator</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>]</span>
       </span>
       </h4>
       
@@ -43,7 +43,7 @@
 contig name, then stops.
 </p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.collection.Iterator">Iterator</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>], <span class="extype" name="scala.collection.TraversableOnce">TraversableOnce</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>], <span class="extype" name="scala.collection.GenTraversableOnce">GenTraversableOnce</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>], <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.collection.Iterator">Iterator</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>], <span class="extype" name="scala.collection.TraversableOnce">TraversableOnce</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>], <span class="extype" name="scala.collection.GenTraversableOnce">GenTraversableOnce</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>], <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -82,15 +82,15 @@ contig name, then stops.
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(contig:String,iterator:BufferedIterator[Mapped]):org.hammerlab.guacamole.distributed.SingleContigRegionIterator[Mapped]"></a>
-      <a id="&lt;init&gt;:SingleContigRegionIterator[Mapped]"></a>
+      <a id="&lt;init&gt;(contig:String,iterator:BufferedIterator[R]):org.hammerlab.guacamole.distributed.SingleContigRegionIterator[R]"></a>
+      <a id="&lt;init&gt;:SingleContigRegionIterator[R]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">SingleContigRegionIterator</span><span class="params">(<span name="contig">contig: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="iterator">iterator: <span class="extype" name="scala.BufferedIterator">BufferedIterator</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>]</span>)</span>
+        <span class="name">SingleContigRegionIterator</span><span class="params">(<span name="contig">contig: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="iterator">iterator: <span class="extype" name="scala.BufferedIterator">BufferedIterator</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>]</span>)</span>
       </span>
       </h4>
       
@@ -160,40 +160,40 @@ contig name, then stops.
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.collection.Iterator#++" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="++[B&gt;:A](that:=&gt;scala.collection.GenTraversableOnce[B]):Iterator[B]"></a>
-      <a id="++[B&gt;:Mapped](⇒GenTraversableOnce[B]):Iterator[B]"></a>
+      <a id="++[B&gt;:R](⇒GenTraversableOnce[B]):Iterator[B]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $plus$plus" class="name">++</span><span class="tparams">[<span name="B">B &gt;: <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span></span>]</span><span class="params">(<span name="that">that: ⇒ <span class="extype" name="scala.collection.GenTraversableOnce">GenTraversableOnce</span>[<span class="extype" name="scala.collection.Iterator.++.B">B</span>]</span>)</span><span class="result">: <span class="extype" name="scala.collection.Iterator">Iterator</span>[<span class="extype" name="scala.collection.Iterator.++.B">B</span>]</span>
+        <span title="gt4s: $plus$plus" class="name">++</span><span class="tparams">[<span name="B">B &gt;: <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span></span>]</span><span class="params">(<span name="that">that: ⇒ <span class="extype" name="scala.collection.GenTraversableOnce">GenTraversableOnce</span>[<span class="extype" name="scala.collection.Iterator.++.B">B</span>]</span>)</span><span class="result">: <span class="extype" name="scala.collection.Iterator">Iterator</span>[<span class="extype" name="scala.collection.Iterator.++.B">B</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Iterator</dd></dl></div>
     </li><li name="scala.collection.TraversableOnce#/:" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="/:[B](z:B)(op:(B,A)=&gt;B):B"></a>
-      <a id="/:[B](B)((B,Mapped)⇒B):B"></a>
+      <a id="/:[B](B)((B,R)⇒B):B"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $div$colon" class="name">/:</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="z">z: <span class="extype" name="scala.collection.TraversableOnce./:.B">B</span></span>)</span><span class="params">(<span name="op">op: (<span class="extype" name="scala.collection.TraversableOnce./:.B">B</span>, <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>) ⇒ <span class="extype" name="scala.collection.TraversableOnce./:.B">B</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.TraversableOnce./:.B">B</span></span>
+        <span title="gt4s: $div$colon" class="name">/:</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="z">z: <span class="extype" name="scala.collection.TraversableOnce./:.B">B</span></span>)</span><span class="params">(<span name="op">op: (<span class="extype" name="scala.collection.TraversableOnce./:.B">B</span>, <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>) ⇒ <span class="extype" name="scala.collection.TraversableOnce./:.B">B</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.TraversableOnce./:.B">B</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
     </li><li name="scala.collection.TraversableOnce#:\" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id=":\[B](z:B)(op:(A,B)=&gt;B):B"></a>
-      <a id=":\[B](B)((Mapped,B)⇒B):B"></a>
+      <a id=":\[B](B)((R,B)⇒B):B"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $colon$bslash" class="name">:\</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="z">z: <span class="extype" name="scala.collection.TraversableOnce.:\.B">B</span></span>)</span><span class="params">(<span name="op">op: (<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>, <span class="extype" name="scala.collection.TraversableOnce.:\.B">B</span>) ⇒ <span class="extype" name="scala.collection.TraversableOnce.:\.B">B</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.TraversableOnce.:\.B">B</span></span>
+        <span title="gt4s: $colon$bslash" class="name">:\</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="z">z: <span class="extype" name="scala.collection.TraversableOnce.:\.B">B</span></span>)</span><span class="params">(<span name="op">op: (<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>, <span class="extype" name="scala.collection.TraversableOnce.:\.B">B</span>) ⇒ <span class="extype" name="scala.collection.TraversableOnce.:\.B">B</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.TraversableOnce.:\.B">B</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
@@ -264,14 +264,14 @@ contig name, then stops.
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce</dd></dl></div>
     </li><li name="scala.collection.TraversableOnce#aggregate" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="aggregate[B](z:B)(seqop:(B,A)=&gt;B,combop:(B,B)=&gt;B):B"></a>
-      <a id="aggregate[B](B)((B,Mapped)⇒B,(B,B)⇒B):B"></a>
+      <a id="aggregate[B](B)((B,R)⇒B,(B,B)⇒B):B"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">aggregate</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="z">z: <span class="extype" name="scala.collection.TraversableOnce.aggregate.B">B</span></span>)</span><span class="params">(<span name="seqop">seqop: (<span class="extype" name="scala.collection.TraversableOnce.aggregate.B">B</span>, <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>) ⇒ <span class="extype" name="scala.collection.TraversableOnce.aggregate.B">B</span></span>, <span name="combop">combop: (<span class="extype" name="scala.collection.TraversableOnce.aggregate.B">B</span>, <span class="extype" name="scala.collection.TraversableOnce.aggregate.B">B</span>) ⇒ <span class="extype" name="scala.collection.TraversableOnce.aggregate.B">B</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.TraversableOnce.aggregate.B">B</span></span>
+        <span class="name">aggregate</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="z">z: <span class="extype" name="scala.collection.TraversableOnce.aggregate.B">B</span></span>)</span><span class="params">(<span name="seqop">seqop: (<span class="extype" name="scala.collection.TraversableOnce.aggregate.B">B</span>, <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>) ⇒ <span class="extype" name="scala.collection.TraversableOnce.aggregate.B">B</span></span>, <span name="combop">combop: (<span class="extype" name="scala.collection.TraversableOnce.aggregate.B">B</span>, <span class="extype" name="scala.collection.TraversableOnce.aggregate.B">B</span>) ⇒ <span class="extype" name="scala.collection.TraversableOnce.aggregate.B">B</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.TraversableOnce.aggregate.B">B</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
@@ -290,14 +290,14 @@ contig name, then stops.
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li name="scala.collection.Iterator#buffered" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="buffered:scala.collection.BufferedIterator[A]"></a>
-      <a id="buffered:BufferedIterator[Mapped]"></a>
+      <a id="buffered:BufferedIterator[R]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">buffered</span><span class="result">: <span class="extype" name="scala.collection.BufferedIterator">BufferedIterator</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>]</span>
+        <span class="name">buffered</span><span class="result">: <span class="extype" name="scala.collection.BufferedIterator">BufferedIterator</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Iterator</dd></dl></div>
@@ -322,14 +322,14 @@ contig name, then stops.
         </dd></dl></div>
     </li><li name="scala.collection.Iterator#collect" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="collect[B](pf:PartialFunction[A,B]):Iterator[B]"></a>
-      <a id="collect[B](PartialFunction[Mapped,B]):Iterator[B]"></a>
+      <a id="collect[B](PartialFunction[R,B]):Iterator[B]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">collect</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="pf">pf: <span class="extype" name="scala.PartialFunction">PartialFunction</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>, <span class="extype" name="scala.collection.Iterator.collect.B">B</span>]</span>)</span><span class="result">: <span class="extype" name="scala.collection.Iterator">Iterator</span>[<span class="extype" name="scala.collection.Iterator.collect.B">B</span>]</span>
+        <span class="name">collect</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="pf">pf: <span class="extype" name="scala.PartialFunction">PartialFunction</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>, <span class="extype" name="scala.collection.Iterator.collect.B">B</span>]</span>)</span><span class="result">: <span class="extype" name="scala.collection.Iterator">Iterator</span>[<span class="extype" name="scala.collection.Iterator.collect.B">B</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Iterator</dd><dt>Annotations</dt><dd>
@@ -338,14 +338,14 @@ contig name, then stops.
         </dd><dt>Migration</dt><dd class="cmt"><p><i>(Changed in version 2.8.0)</i> <code>collect</code> has changed. The previous behavior can be reproduced with <code>toSeq</code>.</p></dd></dl></div>
     </li><li name="scala.collection.TraversableOnce#collectFirst" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="collectFirst[B](pf:PartialFunction[A,B]):Option[B]"></a>
-      <a id="collectFirst[B](PartialFunction[Mapped,B]):Option[B]"></a>
+      <a id="collectFirst[B](PartialFunction[R,B]):Option[B]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">collectFirst</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="pf">pf: <span class="extype" name="scala.PartialFunction">PartialFunction</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>, <span class="extype" name="scala.collection.TraversableOnce.collectFirst.B">B</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.collection.TraversableOnce.collectFirst.B">B</span>]</span>
+        <span class="name">collectFirst</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="pf">pf: <span class="extype" name="scala.PartialFunction">PartialFunction</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>, <span class="extype" name="scala.collection.TraversableOnce.collectFirst.B">B</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.collection.TraversableOnce.collectFirst.B">B</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce</dd></dl></div>
@@ -364,118 +364,118 @@ contig name, then stops.
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Iterator</dd></dl></div>
     </li><li name="scala.collection.Iterator#copyToArray" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="copyToArray[B&gt;:A](xs:Array[B],start:Int,len:Int):Unit"></a>
-      <a id="copyToArray[B&gt;:Mapped](Array[B],Int,Int):Unit"></a>
+      <a id="copyToArray[B&gt;:R](Array[B],Int,Int):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">copyToArray</span><span class="tparams">[<span name="B">B &gt;: <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span></span>]</span><span class="params">(<span name="xs">xs: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.collection.Iterator.copyToArray.B">B</span>]</span>, <span name="start">start: <span class="extype" name="scala.Int">Int</span></span>, <span name="len">len: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">copyToArray</span><span class="tparams">[<span name="B">B &gt;: <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span></span>]</span><span class="params">(<span name="xs">xs: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.collection.Iterator.copyToArray.B">B</span>]</span>, <span name="start">start: <span class="extype" name="scala.Int">Int</span></span>, <span name="len">len: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Iterator → TraversableOnce → GenTraversableOnce</dd></dl></div>
     </li><li name="scala.collection.TraversableOnce#copyToArray" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="copyToArray[B&gt;:A](xs:Array[B]):Unit"></a>
-      <a id="copyToArray[B&gt;:Mapped](Array[B]):Unit"></a>
+      <a id="copyToArray[B&gt;:R](Array[B]):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">copyToArray</span><span class="tparams">[<span name="B">B &gt;: <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span></span>]</span><span class="params">(<span name="xs">xs: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.collection.TraversableOnce.copyToArray.B">B</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">copyToArray</span><span class="tparams">[<span name="B">B &gt;: <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span></span>]</span><span class="params">(<span name="xs">xs: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.collection.TraversableOnce.copyToArray.B">B</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
     </li><li name="scala.collection.TraversableOnce#copyToArray" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="copyToArray[B&gt;:A](xs:Array[B],start:Int):Unit"></a>
-      <a id="copyToArray[B&gt;:Mapped](Array[B],Int):Unit"></a>
+      <a id="copyToArray[B&gt;:R](Array[B],Int):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">copyToArray</span><span class="tparams">[<span name="B">B &gt;: <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span></span>]</span><span class="params">(<span name="xs">xs: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.collection.TraversableOnce.copyToArray.B">B</span>]</span>, <span name="start">start: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">copyToArray</span><span class="tparams">[<span name="B">B &gt;: <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span></span>]</span><span class="params">(<span name="xs">xs: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.collection.TraversableOnce.copyToArray.B">B</span>]</span>, <span name="start">start: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
     </li><li name="scala.collection.TraversableOnce#copyToBuffer" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="copyToBuffer[B&gt;:A](dest:scala.collection.mutable.Buffer[B]):Unit"></a>
-      <a id="copyToBuffer[B&gt;:Mapped](Buffer[B]):Unit"></a>
+      <a id="copyToBuffer[B&gt;:R](Buffer[B]):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">copyToBuffer</span><span class="tparams">[<span name="B">B &gt;: <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span></span>]</span><span class="params">(<span name="dest">dest: <span class="extype" name="scala.collection.mutable.Buffer">Buffer</span>[<span class="extype" name="scala.collection.TraversableOnce.copyToBuffer.B">B</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">copyToBuffer</span><span class="tparams">[<span name="B">B &gt;: <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span></span>]</span><span class="params">(<span name="dest">dest: <span class="extype" name="scala.collection.mutable.Buffer">Buffer</span>[<span class="extype" name="scala.collection.TraversableOnce.copyToBuffer.B">B</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce</dd></dl></div>
     </li><li name="scala.collection.Iterator#corresponds" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="corresponds[B](that:scala.collection.GenTraversableOnce[B])(p:(A,B)=&gt;Boolean):Boolean"></a>
-      <a id="corresponds[B](GenTraversableOnce[B])((Mapped,B)⇒Boolean):Boolean"></a>
+      <a id="corresponds[B](GenTraversableOnce[B])((R,B)⇒Boolean):Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">corresponds</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="that">that: <span class="extype" name="scala.collection.GenTraversableOnce">GenTraversableOnce</span>[<span class="extype" name="scala.collection.Iterator.corresponds.B">B</span>]</span>)</span><span class="params">(<span name="p">p: (<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>, <span class="extype" name="scala.collection.Iterator.corresponds.B">B</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">corresponds</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="that">that: <span class="extype" name="scala.collection.GenTraversableOnce">GenTraversableOnce</span>[<span class="extype" name="scala.collection.Iterator.corresponds.B">B</span>]</span>)</span><span class="params">(<span name="p">p: (<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>, <span class="extype" name="scala.collection.Iterator.corresponds.B">B</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Iterator</dd></dl></div>
     </li><li name="scala.collection.TraversableOnce#count" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="count(p:A=&gt;Boolean):Int"></a>
-      <a id="count((Mapped)⇒Boolean):Int"></a>
+      <a id="count((R)⇒Boolean):Int"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">count</span><span class="params">(<span name="p">p: (<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+        <span class="name">count</span><span class="params">(<span name="p">p: (<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
     </li><li name="scala.collection.Iterator#drop" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="drop(n:Int):Iterator[A]"></a>
-      <a id="drop(Int):Iterator[Mapped]"></a>
+      <a id="drop(Int):Iterator[R]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">drop</span><span class="params">(<span name="n">n: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.Iterator">Iterator</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>]</span>
+        <span class="name">drop</span><span class="params">(<span name="n">n: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.Iterator">Iterator</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Iterator</dd></dl></div>
     </li><li name="scala.collection.Iterator#dropWhile" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="dropWhile(p:A=&gt;Boolean):Iterator[A]"></a>
-      <a id="dropWhile((Mapped)⇒Boolean):Iterator[Mapped]"></a>
+      <a id="dropWhile((R)⇒Boolean):Iterator[R]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">dropWhile</span><span class="params">(<span name="p">p: (<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.Iterator">Iterator</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>]</span>
+        <span class="name">dropWhile</span><span class="params">(<span name="p">p: (<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.Iterator">Iterator</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Iterator</dd></dl></div>
     </li><li name="scala.collection.Iterator#duplicate" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="duplicate:(Iterator[A],Iterator[A])"></a>
-      <a id="duplicate:(Iterator[Mapped],Iterator[Mapped])"></a>
+      <a id="duplicate:(Iterator[R],Iterator[R])"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">duplicate</span><span class="result">: (<span class="extype" name="scala.collection.Iterator">Iterator</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>], <span class="extype" name="scala.collection.Iterator">Iterator</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>])</span>
+        <span class="name">duplicate</span><span class="result">: (<span class="extype" name="scala.collection.Iterator">Iterator</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>], <span class="extype" name="scala.collection.Iterator">Iterator</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>])</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Iterator</dd></dl></div>
@@ -507,40 +507,40 @@ contig name, then stops.
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.collection.Iterator#exists" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="exists(p:A=&gt;Boolean):Boolean"></a>
-      <a id="exists((Mapped)⇒Boolean):Boolean"></a>
+      <a id="exists((R)⇒Boolean):Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">exists</span><span class="params">(<span name="p">p: (<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">exists</span><span class="params">(<span name="p">p: (<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Iterator → TraversableOnce → GenTraversableOnce</dd></dl></div>
     </li><li name="scala.collection.Iterator#filter" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="filter(p:A=&gt;Boolean):Iterator[A]"></a>
-      <a id="filter((Mapped)⇒Boolean):Iterator[Mapped]"></a>
+      <a id="filter((R)⇒Boolean):Iterator[R]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">filter</span><span class="params">(<span name="p">p: (<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.Iterator">Iterator</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>]</span>
+        <span class="name">filter</span><span class="params">(<span name="p">p: (<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.Iterator">Iterator</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Iterator</dd></dl></div>
     </li><li name="scala.collection.Iterator#filterNot" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="filterNot(p:A=&gt;Boolean):Iterator[A]"></a>
-      <a id="filterNot((Mapped)⇒Boolean):Iterator[Mapped]"></a>
+      <a id="filterNot((R)⇒Boolean):Iterator[R]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">filterNot</span><span class="params">(<span name="p">p: (<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.Iterator">Iterator</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>]</span>
+        <span class="name">filterNot</span><span class="params">(<span name="p">p: (<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.Iterator">Iterator</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Iterator</dd></dl></div>
@@ -565,92 +565,92 @@ contig name, then stops.
         </dd></dl></div>
     </li><li name="scala.collection.Iterator#find" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="find(p:A=&gt;Boolean):Option[A]"></a>
-      <a id="find((Mapped)⇒Boolean):Option[Mapped]"></a>
+      <a id="find((R)⇒Boolean):Option[R]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">find</span><span class="params">(<span name="p">p: (<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>]</span>
+        <span class="name">find</span><span class="params">(<span name="p">p: (<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Iterator → TraversableOnce → GenTraversableOnce</dd></dl></div>
     </li><li name="scala.collection.Iterator#flatMap" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="flatMap[B](f:A=&gt;scala.collection.GenTraversableOnce[B]):Iterator[B]"></a>
-      <a id="flatMap[B]((Mapped)⇒GenTraversableOnce[B]):Iterator[B]"></a>
+      <a id="flatMap[B]((R)⇒GenTraversableOnce[B]):Iterator[B]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">flatMap</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>) ⇒ <span class="extype" name="scala.collection.GenTraversableOnce">GenTraversableOnce</span>[<span class="extype" name="scala.collection.Iterator.flatMap.B">B</span>]</span>)</span><span class="result">: <span class="extype" name="scala.collection.Iterator">Iterator</span>[<span class="extype" name="scala.collection.Iterator.flatMap.B">B</span>]</span>
+        <span class="name">flatMap</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>) ⇒ <span class="extype" name="scala.collection.GenTraversableOnce">GenTraversableOnce</span>[<span class="extype" name="scala.collection.Iterator.flatMap.B">B</span>]</span>)</span><span class="result">: <span class="extype" name="scala.collection.Iterator">Iterator</span>[<span class="extype" name="scala.collection.Iterator.flatMap.B">B</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Iterator</dd></dl></div>
     </li><li name="scala.collection.TraversableOnce#fold" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="fold[A1&gt;:A](z:A1)(op:(A1,A1)=&gt;A1):A1"></a>
-      <a id="fold[A1&gt;:Mapped](A1)((A1,A1)⇒A1):A1"></a>
+      <a id="fold[A1&gt;:R](A1)((A1,A1)⇒A1):A1"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">fold</span><span class="tparams">[<span name="A1">A1 &gt;: <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span></span>]</span><span class="params">(<span name="z">z: <span class="extype" name="scala.collection.TraversableOnce.fold.A1">A1</span></span>)</span><span class="params">(<span name="op">op: (<span class="extype" name="scala.collection.TraversableOnce.fold.A1">A1</span>, <span class="extype" name="scala.collection.TraversableOnce.fold.A1">A1</span>) ⇒ <span class="extype" name="scala.collection.TraversableOnce.fold.A1">A1</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.TraversableOnce.fold.A1">A1</span></span>
+        <span class="name">fold</span><span class="tparams">[<span name="A1">A1 &gt;: <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span></span>]</span><span class="params">(<span name="z">z: <span class="extype" name="scala.collection.TraversableOnce.fold.A1">A1</span></span>)</span><span class="params">(<span name="op">op: (<span class="extype" name="scala.collection.TraversableOnce.fold.A1">A1</span>, <span class="extype" name="scala.collection.TraversableOnce.fold.A1">A1</span>) ⇒ <span class="extype" name="scala.collection.TraversableOnce.fold.A1">A1</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.TraversableOnce.fold.A1">A1</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
     </li><li name="scala.collection.TraversableOnce#foldLeft" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="foldLeft[B](z:B)(op:(B,A)=&gt;B):B"></a>
-      <a id="foldLeft[B](B)((B,Mapped)⇒B):B"></a>
+      <a id="foldLeft[B](B)((B,R)⇒B):B"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">foldLeft</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="z">z: <span class="extype" name="scala.collection.TraversableOnce.foldLeft.B">B</span></span>)</span><span class="params">(<span name="op">op: (<span class="extype" name="scala.collection.TraversableOnce.foldLeft.B">B</span>, <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>) ⇒ <span class="extype" name="scala.collection.TraversableOnce.foldLeft.B">B</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.TraversableOnce.foldLeft.B">B</span></span>
+        <span class="name">foldLeft</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="z">z: <span class="extype" name="scala.collection.TraversableOnce.foldLeft.B">B</span></span>)</span><span class="params">(<span name="op">op: (<span class="extype" name="scala.collection.TraversableOnce.foldLeft.B">B</span>, <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>) ⇒ <span class="extype" name="scala.collection.TraversableOnce.foldLeft.B">B</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.TraversableOnce.foldLeft.B">B</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
     </li><li name="scala.collection.TraversableOnce#foldRight" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="foldRight[B](z:B)(op:(A,B)=&gt;B):B"></a>
-      <a id="foldRight[B](B)((Mapped,B)⇒B):B"></a>
+      <a id="foldRight[B](B)((R,B)⇒B):B"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">foldRight</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="z">z: <span class="extype" name="scala.collection.TraversableOnce.foldRight.B">B</span></span>)</span><span class="params">(<span name="op">op: (<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>, <span class="extype" name="scala.collection.TraversableOnce.foldRight.B">B</span>) ⇒ <span class="extype" name="scala.collection.TraversableOnce.foldRight.B">B</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.TraversableOnce.foldRight.B">B</span></span>
+        <span class="name">foldRight</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="z">z: <span class="extype" name="scala.collection.TraversableOnce.foldRight.B">B</span></span>)</span><span class="params">(<span name="op">op: (<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>, <span class="extype" name="scala.collection.TraversableOnce.foldRight.B">B</span>) ⇒ <span class="extype" name="scala.collection.TraversableOnce.foldRight.B">B</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.TraversableOnce.foldRight.B">B</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
     </li><li name="scala.collection.Iterator#forall" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="forall(p:A=&gt;Boolean):Boolean"></a>
-      <a id="forall((Mapped)⇒Boolean):Boolean"></a>
+      <a id="forall((R)⇒Boolean):Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">forall</span><span class="params">(<span name="p">p: (<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">forall</span><span class="params">(<span name="p">p: (<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Iterator → TraversableOnce → GenTraversableOnce</dd></dl></div>
     </li><li name="scala.collection.Iterator#foreach" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="foreach[U](f:A=&gt;U):Unit"></a>
-      <a id="foreach[U]((Mapped)⇒U):Unit"></a>
+      <a id="foreach[U]((R)⇒U):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">foreach</span><span class="tparams">[<span name="U">U</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>) ⇒ <span class="extype" name="scala.collection.Iterator.foreach.U">U</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">foreach</span><span class="tparams">[<span name="U">U</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>) ⇒ <span class="extype" name="scala.collection.Iterator.foreach.U">U</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Iterator → TraversableOnce → GenTraversableOnce</dd></dl></div>
@@ -669,14 +669,14 @@ contig name, then stops.
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.collection.Iterator#grouped" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="grouped[B&gt;:A](size:Int):Iterator.this.GroupedIterator[B]"></a>
-      <a id="grouped[B&gt;:Mapped](Int):GroupedIterator[B]"></a>
+      <a id="grouped[B&gt;:R](Int):GroupedIterator[B]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">grouped</span><span class="tparams">[<span name="B">B &gt;: <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span></span>]</span><span class="params">(<span name="size">size: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <a href="#GroupedIterator[B&gt;:A]extendsAbstractIterator[Seq[B]]withIterator[Seq[B]]" class="extmbr" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.GroupedIterator">GroupedIterator</a>[<span class="extype" name="scala.collection.Iterator.grouped.B">B</span>]</span>
+        <span class="name">grouped</span><span class="tparams">[<span name="B">B &gt;: <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span></span>]</span><span class="params">(<span name="size">size: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <a href="#GroupedIterator[B&gt;:A]extendsAbstractIterator[Seq[B]]withIterator[Seq[B]]" class="extmbr" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.GroupedIterator">GroupedIterator</a>[<span class="extype" name="scala.collection.Iterator.grouped.B">B</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Iterator</dd></dl></div>
@@ -721,27 +721,27 @@ contig name, then stops.
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.collection.Iterator#indexOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="indexOf[B&gt;:A](elem:B):Int"></a>
-      <a id="indexOf[B&gt;:Mapped](B):Int"></a>
+      <a id="indexOf[B&gt;:R](B):Int"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">indexOf</span><span class="tparams">[<span name="B">B &gt;: <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span></span>]</span><span class="params">(<span name="elem">elem: <span class="extype" name="scala.collection.Iterator.indexOf.B">B</span></span>)</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+        <span class="name">indexOf</span><span class="tparams">[<span name="B">B &gt;: <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span></span>]</span><span class="params">(<span name="elem">elem: <span class="extype" name="scala.collection.Iterator.indexOf.B">B</span></span>)</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Iterator</dd></dl></div>
     </li><li name="scala.collection.Iterator#indexWhere" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="indexWhere(p:A=&gt;Boolean):Int"></a>
-      <a id="indexWhere((Mapped)⇒Boolean):Int"></a>
+      <a id="indexWhere((R)⇒Boolean):Int"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">indexWhere</span><span class="params">(<span name="p">p: (<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+        <span class="name">indexWhere</span><span class="params">(<span name="p">p: (<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Iterator</dd></dl></div>
@@ -799,66 +799,66 @@ contig name, then stops.
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Iterator</dd></dl></div>
     </li><li name="scala.collection.Iterator#map" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="map[B](f:A=&gt;B):Iterator[B]"></a>
-      <a id="map[B]((Mapped)⇒B):Iterator[B]"></a>
+      <a id="map[B]((R)⇒B):Iterator[B]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">map</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>) ⇒ <span class="extype" name="scala.collection.Iterator.map.B">B</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.Iterator">Iterator</span>[<span class="extype" name="scala.collection.Iterator.map.B">B</span>]</span>
+        <span class="name">map</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>) ⇒ <span class="extype" name="scala.collection.Iterator.map.B">B</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.Iterator">Iterator</span>[<span class="extype" name="scala.collection.Iterator.map.B">B</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Iterator</dd></dl></div>
     </li><li name="scala.collection.TraversableOnce#max" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="max[B&gt;:A](implicitcmp:Ordering[B]):A"></a>
-      <a id="max[B&gt;:Mapped](Ordering[B]):Mapped"></a>
+      <a id="max[B&gt;:R](Ordering[B]):R"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">max</span><span class="tparams">[<span name="B">B &gt;: <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="cmp">cmp: <span class="extype" name="scala.Ordering">Ordering</span>[<span class="extype" name="scala.collection.TraversableOnce.max.B">B</span>]</span>)</span><span class="result">: <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span></span>
+        <span class="name">max</span><span class="tparams">[<span name="B">B &gt;: <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="cmp">cmp: <span class="extype" name="scala.Ordering">Ordering</span>[<span class="extype" name="scala.collection.TraversableOnce.max.B">B</span>]</span>)</span><span class="result">: <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
     </li><li name="scala.collection.TraversableOnce#maxBy" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="maxBy[B](f:A=&gt;B)(implicitcmp:Ordering[B]):A"></a>
-      <a id="maxBy[B]((Mapped)⇒B)(Ordering[B]):Mapped"></a>
+      <a id="maxBy[B]((R)⇒B)(Ordering[B]):R"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">maxBy</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>) ⇒ <span class="extype" name="scala.collection.TraversableOnce.maxBy.B">B</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="cmp">cmp: <span class="extype" name="scala.Ordering">Ordering</span>[<span class="extype" name="scala.collection.TraversableOnce.maxBy.B">B</span>]</span>)</span><span class="result">: <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span></span>
+        <span class="name">maxBy</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>) ⇒ <span class="extype" name="scala.collection.TraversableOnce.maxBy.B">B</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="cmp">cmp: <span class="extype" name="scala.Ordering">Ordering</span>[<span class="extype" name="scala.collection.TraversableOnce.maxBy.B">B</span>]</span>)</span><span class="result">: <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
     </li><li name="scala.collection.TraversableOnce#min" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="min[B&gt;:A](implicitcmp:Ordering[B]):A"></a>
-      <a id="min[B&gt;:Mapped](Ordering[B]):Mapped"></a>
+      <a id="min[B&gt;:R](Ordering[B]):R"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">min</span><span class="tparams">[<span name="B">B &gt;: <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="cmp">cmp: <span class="extype" name="scala.Ordering">Ordering</span>[<span class="extype" name="scala.collection.TraversableOnce.min.B">B</span>]</span>)</span><span class="result">: <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span></span>
+        <span class="name">min</span><span class="tparams">[<span name="B">B &gt;: <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="cmp">cmp: <span class="extype" name="scala.Ordering">Ordering</span>[<span class="extype" name="scala.collection.TraversableOnce.min.B">B</span>]</span>)</span><span class="result">: <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
     </li><li name="scala.collection.TraversableOnce#minBy" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="minBy[B](f:A=&gt;B)(implicitcmp:Ordering[B]):A"></a>
-      <a id="minBy[B]((Mapped)⇒B)(Ordering[B]):Mapped"></a>
+      <a id="minBy[B]((R)⇒B)(Ordering[B]):R"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">minBy</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>) ⇒ <span class="extype" name="scala.collection.TraversableOnce.minBy.B">B</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="cmp">cmp: <span class="extype" name="scala.Ordering">Ordering</span>[<span class="extype" name="scala.collection.TraversableOnce.minBy.B">B</span>]</span>)</span><span class="result">: <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span></span>
+        <span class="name">minBy</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>) ⇒ <span class="extype" name="scala.collection.TraversableOnce.minBy.B">B</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="cmp">cmp: <span class="extype" name="scala.Ordering">Ordering</span>[<span class="extype" name="scala.collection.TraversableOnce.minBy.B">B</span>]</span>)</span><span class="result">: <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
@@ -915,15 +915,15 @@ contig name, then stops.
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator#next" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="next():Mapped"></a>
-      <a id="next():Mapped"></a>
+      <a id="next():R"></a>
+      <a id="next():R"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">next</span><span class="params">()</span><span class="result">: <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span></span>
+        <span class="name">next</span><span class="params">()</span><span class="result">: <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator">SingleContigRegionIterator</a> → Iterator</dd></dl></div>
@@ -968,144 +968,144 @@ contig name, then stops.
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="scala.collection.Iterator#padTo" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="padTo[A1&gt;:A](len:Int,elem:A1):Iterator[A1]"></a>
-      <a id="padTo[A1&gt;:Mapped](Int,A1):Iterator[A1]"></a>
+      <a id="padTo[A1&gt;:R](Int,A1):Iterator[A1]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">padTo</span><span class="tparams">[<span name="A1">A1 &gt;: <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span></span>]</span><span class="params">(<span name="len">len: <span class="extype" name="scala.Int">Int</span></span>, <span name="elem">elem: <span class="extype" name="scala.collection.Iterator.padTo.A1">A1</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.Iterator">Iterator</span>[<span class="extype" name="scala.collection.Iterator.padTo.A1">A1</span>]</span>
+        <span class="name">padTo</span><span class="tparams">[<span name="A1">A1 &gt;: <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span></span>]</span><span class="params">(<span name="len">len: <span class="extype" name="scala.Int">Int</span></span>, <span name="elem">elem: <span class="extype" name="scala.collection.Iterator.padTo.A1">A1</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.Iterator">Iterator</span>[<span class="extype" name="scala.collection.Iterator.padTo.A1">A1</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Iterator</dd></dl></div>
     </li><li name="scala.collection.Iterator#partition" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="partition(p:A=&gt;Boolean):(Iterator[A],Iterator[A])"></a>
-      <a id="partition((Mapped)⇒Boolean):(Iterator[Mapped],Iterator[Mapped])"></a>
+      <a id="partition((R)⇒Boolean):(Iterator[R],Iterator[R])"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">partition</span><span class="params">(<span name="p">p: (<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: (<span class="extype" name="scala.collection.Iterator">Iterator</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>], <span class="extype" name="scala.collection.Iterator">Iterator</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>])</span>
+        <span class="name">partition</span><span class="params">(<span name="p">p: (<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: (<span class="extype" name="scala.collection.Iterator">Iterator</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>], <span class="extype" name="scala.collection.Iterator">Iterator</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>])</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Iterator</dd></dl></div>
     </li><li name="scala.collection.Iterator#patch" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="patch[B&gt;:A](from:Int,patchElems:Iterator[B],replaced:Int):Iterator[B]"></a>
-      <a id="patch[B&gt;:Mapped](Int,Iterator[B],Int):Iterator[B]"></a>
+      <a id="patch[B&gt;:R](Int,Iterator[B],Int):Iterator[B]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">patch</span><span class="tparams">[<span name="B">B &gt;: <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span></span>]</span><span class="params">(<span name="from">from: <span class="extype" name="scala.Int">Int</span></span>, <span name="patchElems">patchElems: <span class="extype" name="scala.collection.Iterator">Iterator</span>[<span class="extype" name="scala.collection.Iterator.patch.B">B</span>]</span>, <span name="replaced">replaced: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.Iterator">Iterator</span>[<span class="extype" name="scala.collection.Iterator.patch.B">B</span>]</span>
+        <span class="name">patch</span><span class="tparams">[<span name="B">B &gt;: <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span></span>]</span><span class="params">(<span name="from">from: <span class="extype" name="scala.Int">Int</span></span>, <span name="patchElems">patchElems: <span class="extype" name="scala.collection.Iterator">Iterator</span>[<span class="extype" name="scala.collection.Iterator.patch.B">B</span>]</span>, <span name="replaced">replaced: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.Iterator">Iterator</span>[<span class="extype" name="scala.collection.Iterator.patch.B">B</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Iterator</dd></dl></div>
     </li><li name="scala.collection.TraversableOnce#product" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="product[B&gt;:A](implicitnum:Numeric[B]):B"></a>
-      <a id="product[B&gt;:Mapped](Numeric[B]):B"></a>
+      <a id="product[B&gt;:R](Numeric[B]):B"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">product</span><span class="tparams">[<span name="B">B &gt;: <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="num">num: <span class="extype" name="scala.Numeric">Numeric</span>[<span class="extype" name="scala.collection.TraversableOnce.product.B">B</span>]</span>)</span><span class="result">: <span class="extype" name="scala.collection.TraversableOnce.product.B">B</span></span>
+        <span class="name">product</span><span class="tparams">[<span name="B">B &gt;: <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="num">num: <span class="extype" name="scala.Numeric">Numeric</span>[<span class="extype" name="scala.collection.TraversableOnce.product.B">B</span>]</span>)</span><span class="result">: <span class="extype" name="scala.collection.TraversableOnce.product.B">B</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
     </li><li name="scala.collection.TraversableOnce#reduce" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="reduce[A1&gt;:A](op:(A1,A1)=&gt;A1):A1"></a>
-      <a id="reduce[A1&gt;:Mapped]((A1,A1)⇒A1):A1"></a>
+      <a id="reduce[A1&gt;:R]((A1,A1)⇒A1):A1"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">reduce</span><span class="tparams">[<span name="A1">A1 &gt;: <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span></span>]</span><span class="params">(<span name="op">op: (<span class="extype" name="scala.collection.TraversableOnce.reduce.A1">A1</span>, <span class="extype" name="scala.collection.TraversableOnce.reduce.A1">A1</span>) ⇒ <span class="extype" name="scala.collection.TraversableOnce.reduce.A1">A1</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.TraversableOnce.reduce.A1">A1</span></span>
+        <span class="name">reduce</span><span class="tparams">[<span name="A1">A1 &gt;: <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span></span>]</span><span class="params">(<span name="op">op: (<span class="extype" name="scala.collection.TraversableOnce.reduce.A1">A1</span>, <span class="extype" name="scala.collection.TraversableOnce.reduce.A1">A1</span>) ⇒ <span class="extype" name="scala.collection.TraversableOnce.reduce.A1">A1</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.TraversableOnce.reduce.A1">A1</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
     </li><li name="scala.collection.TraversableOnce#reduceLeft" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="reduceLeft[B&gt;:A](op:(B,A)=&gt;B):B"></a>
-      <a id="reduceLeft[B&gt;:Mapped]((B,Mapped)⇒B):B"></a>
+      <a id="reduceLeft[B&gt;:R]((B,R)⇒B):B"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">reduceLeft</span><span class="tparams">[<span name="B">B &gt;: <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span></span>]</span><span class="params">(<span name="op">op: (<span class="extype" name="scala.collection.TraversableOnce.reduceLeft.B">B</span>, <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>) ⇒ <span class="extype" name="scala.collection.TraversableOnce.reduceLeft.B">B</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.TraversableOnce.reduceLeft.B">B</span></span>
+        <span class="name">reduceLeft</span><span class="tparams">[<span name="B">B &gt;: <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span></span>]</span><span class="params">(<span name="op">op: (<span class="extype" name="scala.collection.TraversableOnce.reduceLeft.B">B</span>, <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>) ⇒ <span class="extype" name="scala.collection.TraversableOnce.reduceLeft.B">B</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.TraversableOnce.reduceLeft.B">B</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce</dd></dl></div>
     </li><li name="scala.collection.TraversableOnce#reduceLeftOption" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="reduceLeftOption[B&gt;:A](op:(B,A)=&gt;B):Option[B]"></a>
-      <a id="reduceLeftOption[B&gt;:Mapped]((B,Mapped)⇒B):Option[B]"></a>
+      <a id="reduceLeftOption[B&gt;:R]((B,R)⇒B):Option[B]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">reduceLeftOption</span><span class="tparams">[<span name="B">B &gt;: <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span></span>]</span><span class="params">(<span name="op">op: (<span class="extype" name="scala.collection.TraversableOnce.reduceLeftOption.B">B</span>, <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>) ⇒ <span class="extype" name="scala.collection.TraversableOnce.reduceLeftOption.B">B</span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.collection.TraversableOnce.reduceLeftOption.B">B</span>]</span>
+        <span class="name">reduceLeftOption</span><span class="tparams">[<span name="B">B &gt;: <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span></span>]</span><span class="params">(<span name="op">op: (<span class="extype" name="scala.collection.TraversableOnce.reduceLeftOption.B">B</span>, <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>) ⇒ <span class="extype" name="scala.collection.TraversableOnce.reduceLeftOption.B">B</span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.collection.TraversableOnce.reduceLeftOption.B">B</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
     </li><li name="scala.collection.TraversableOnce#reduceOption" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="reduceOption[A1&gt;:A](op:(A1,A1)=&gt;A1):Option[A1]"></a>
-      <a id="reduceOption[A1&gt;:Mapped]((A1,A1)⇒A1):Option[A1]"></a>
+      <a id="reduceOption[A1&gt;:R]((A1,A1)⇒A1):Option[A1]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">reduceOption</span><span class="tparams">[<span name="A1">A1 &gt;: <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span></span>]</span><span class="params">(<span name="op">op: (<span class="extype" name="scala.collection.TraversableOnce.reduceOption.A1">A1</span>, <span class="extype" name="scala.collection.TraversableOnce.reduceOption.A1">A1</span>) ⇒ <span class="extype" name="scala.collection.TraversableOnce.reduceOption.A1">A1</span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.collection.TraversableOnce.reduceOption.A1">A1</span>]</span>
+        <span class="name">reduceOption</span><span class="tparams">[<span name="A1">A1 &gt;: <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span></span>]</span><span class="params">(<span name="op">op: (<span class="extype" name="scala.collection.TraversableOnce.reduceOption.A1">A1</span>, <span class="extype" name="scala.collection.TraversableOnce.reduceOption.A1">A1</span>) ⇒ <span class="extype" name="scala.collection.TraversableOnce.reduceOption.A1">A1</span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.collection.TraversableOnce.reduceOption.A1">A1</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
     </li><li name="scala.collection.TraversableOnce#reduceRight" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="reduceRight[B&gt;:A](op:(A,B)=&gt;B):B"></a>
-      <a id="reduceRight[B&gt;:Mapped]((Mapped,B)⇒B):B"></a>
+      <a id="reduceRight[B&gt;:R]((R,B)⇒B):B"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">reduceRight</span><span class="tparams">[<span name="B">B &gt;: <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span></span>]</span><span class="params">(<span name="op">op: (<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>, <span class="extype" name="scala.collection.TraversableOnce.reduceRight.B">B</span>) ⇒ <span class="extype" name="scala.collection.TraversableOnce.reduceRight.B">B</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.TraversableOnce.reduceRight.B">B</span></span>
+        <span class="name">reduceRight</span><span class="tparams">[<span name="B">B &gt;: <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span></span>]</span><span class="params">(<span name="op">op: (<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>, <span class="extype" name="scala.collection.TraversableOnce.reduceRight.B">B</span>) ⇒ <span class="extype" name="scala.collection.TraversableOnce.reduceRight.B">B</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.TraversableOnce.reduceRight.B">B</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
     </li><li name="scala.collection.TraversableOnce#reduceRightOption" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="reduceRightOption[B&gt;:A](op:(A,B)=&gt;B):Option[B]"></a>
-      <a id="reduceRightOption[B&gt;:Mapped]((Mapped,B)⇒B):Option[B]"></a>
+      <a id="reduceRightOption[B&gt;:R]((R,B)⇒B):Option[B]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">reduceRightOption</span><span class="tparams">[<span name="B">B &gt;: <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span></span>]</span><span class="params">(<span name="op">op: (<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>, <span class="extype" name="scala.collection.TraversableOnce.reduceRightOption.B">B</span>) ⇒ <span class="extype" name="scala.collection.TraversableOnce.reduceRightOption.B">B</span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.collection.TraversableOnce.reduceRightOption.B">B</span>]</span>
+        <span class="name">reduceRightOption</span><span class="tparams">[<span name="B">B &gt;: <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span></span>]</span><span class="params">(<span name="op">op: (<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>, <span class="extype" name="scala.collection.TraversableOnce.reduceRightOption.B">B</span>) ⇒ <span class="extype" name="scala.collection.TraversableOnce.reduceRightOption.B">B</span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.collection.TraversableOnce.reduceRightOption.B">B</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
     </li><li name="scala.collection.TraversableOnce#reversed" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="reversed:List[A]"></a>
-      <a id="reversed:List[Mapped]"></a>
+      <a id="reversed:List[R]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">reversed</span><span class="result">: <span class="extype" name="scala.List">List</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>]</span>
+        <span class="name">reversed</span><span class="result">: <span class="extype" name="scala.List">List</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd>TraversableOnce</dd></dl></div>
@@ -1124,40 +1124,40 @@ contig name, then stops.
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Iterator</dd></dl></div>
     </li><li name="scala.collection.Iterator#scanLeft" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="scanLeft[B](z:B)(op:(B,A)=&gt;B):Iterator[B]"></a>
-      <a id="scanLeft[B](B)((B,Mapped)⇒B):Iterator[B]"></a>
+      <a id="scanLeft[B](B)((B,R)⇒B):Iterator[B]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">scanLeft</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="z">z: <span class="extype" name="scala.collection.Iterator.scanLeft.B">B</span></span>)</span><span class="params">(<span name="op">op: (<span class="extype" name="scala.collection.Iterator.scanLeft.B">B</span>, <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>) ⇒ <span class="extype" name="scala.collection.Iterator.scanLeft.B">B</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.Iterator">Iterator</span>[<span class="extype" name="scala.collection.Iterator.scanLeft.B">B</span>]</span>
+        <span class="name">scanLeft</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="z">z: <span class="extype" name="scala.collection.Iterator.scanLeft.B">B</span></span>)</span><span class="params">(<span name="op">op: (<span class="extype" name="scala.collection.Iterator.scanLeft.B">B</span>, <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>) ⇒ <span class="extype" name="scala.collection.Iterator.scanLeft.B">B</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.Iterator">Iterator</span>[<span class="extype" name="scala.collection.Iterator.scanLeft.B">B</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Iterator</dd></dl></div>
     </li><li name="scala.collection.Iterator#scanRight" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="scanRight[B](z:B)(op:(A,B)=&gt;B):Iterator[B]"></a>
-      <a id="scanRight[B](B)((Mapped,B)⇒B):Iterator[B]"></a>
+      <a id="scanRight[B](B)((R,B)⇒B):Iterator[B]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">scanRight</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="z">z: <span class="extype" name="scala.collection.Iterator.scanRight.B">B</span></span>)</span><span class="params">(<span name="op">op: (<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>, <span class="extype" name="scala.collection.Iterator.scanRight.B">B</span>) ⇒ <span class="extype" name="scala.collection.Iterator.scanRight.B">B</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.Iterator">Iterator</span>[<span class="extype" name="scala.collection.Iterator.scanRight.B">B</span>]</span>
+        <span class="name">scanRight</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="z">z: <span class="extype" name="scala.collection.Iterator.scanRight.B">B</span></span>)</span><span class="params">(<span name="op">op: (<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>, <span class="extype" name="scala.collection.Iterator.scanRight.B">B</span>) ⇒ <span class="extype" name="scala.collection.Iterator.scanRight.B">B</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.Iterator">Iterator</span>[<span class="extype" name="scala.collection.Iterator.scanRight.B">B</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Iterator</dd></dl></div>
     </li><li name="scala.collection.Iterator#seq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="seq:Iterator[A]"></a>
-      <a id="seq:Iterator[Mapped]"></a>
+      <a id="seq:Iterator[R]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">seq</span><span class="result">: <span class="extype" name="scala.collection.Iterator">Iterator</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>]</span>
+        <span class="name">seq</span><span class="result">: <span class="extype" name="scala.collection.Iterator">Iterator</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Iterator → TraversableOnce → GenTraversableOnce</dd></dl></div>
@@ -1176,53 +1176,53 @@ contig name, then stops.
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
     </li><li name="scala.collection.Iterator#slice" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="slice(from:Int,until:Int):Iterator[A]"></a>
-      <a id="slice(Int,Int):Iterator[Mapped]"></a>
+      <a id="slice(Int,Int):Iterator[R]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">slice</span><span class="params">(<span name="from">from: <span class="extype" name="scala.Int">Int</span></span>, <span name="until">until: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.Iterator">Iterator</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>]</span>
+        <span class="name">slice</span><span class="params">(<span name="from">from: <span class="extype" name="scala.Int">Int</span></span>, <span name="until">until: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.Iterator">Iterator</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Iterator</dd></dl></div>
     </li><li name="scala.collection.Iterator#sliding" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="sliding[B&gt;:A](size:Int,step:Int):Iterator.this.GroupedIterator[B]"></a>
-      <a id="sliding[B&gt;:Mapped](Int,Int):GroupedIterator[B]"></a>
+      <a id="sliding[B&gt;:R](Int,Int):GroupedIterator[B]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">sliding</span><span class="tparams">[<span name="B">B &gt;: <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span></span>]</span><span class="params">(<span name="size">size: <span class="extype" name="scala.Int">Int</span></span>, <span name="step">step: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <a href="#GroupedIterator[B&gt;:A]extendsAbstractIterator[Seq[B]]withIterator[Seq[B]]" class="extmbr" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.GroupedIterator">GroupedIterator</a>[<span class="extype" name="scala.collection.Iterator.sliding.B">B</span>]</span>
+        <span class="name">sliding</span><span class="tparams">[<span name="B">B &gt;: <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span></span>]</span><span class="params">(<span name="size">size: <span class="extype" name="scala.Int">Int</span></span>, <span name="step">step: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <a href="#GroupedIterator[B&gt;:A]extendsAbstractIterator[Seq[B]]withIterator[Seq[B]]" class="extmbr" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.GroupedIterator">GroupedIterator</a>[<span class="extype" name="scala.collection.Iterator.sliding.B">B</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Iterator</dd></dl></div>
     </li><li name="scala.collection.Iterator#span" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="span(p:A=&gt;Boolean):(Iterator[A],Iterator[A])"></a>
-      <a id="span((Mapped)⇒Boolean):(Iterator[Mapped],Iterator[Mapped])"></a>
+      <a id="span((R)⇒Boolean):(Iterator[R],Iterator[R])"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">span</span><span class="params">(<span name="p">p: (<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: (<span class="extype" name="scala.collection.Iterator">Iterator</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>], <span class="extype" name="scala.collection.Iterator">Iterator</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>])</span>
+        <span class="name">span</span><span class="params">(<span name="p">p: (<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: (<span class="extype" name="scala.collection.Iterator">Iterator</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>], <span class="extype" name="scala.collection.Iterator">Iterator</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>])</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Iterator</dd></dl></div>
     </li><li name="scala.collection.TraversableOnce#sum" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="sum[B&gt;:A](implicitnum:Numeric[B]):B"></a>
-      <a id="sum[B&gt;:Mapped](Numeric[B]):B"></a>
+      <a id="sum[B&gt;:R](Numeric[B]):B"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">sum</span><span class="tparams">[<span name="B">B &gt;: <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="num">num: <span class="extype" name="scala.Numeric">Numeric</span>[<span class="extype" name="scala.collection.TraversableOnce.sum.B">B</span>]</span>)</span><span class="result">: <span class="extype" name="scala.collection.TraversableOnce.sum.B">B</span></span>
+        <span class="name">sum</span><span class="tparams">[<span name="B">B &gt;: <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="num">num: <span class="extype" name="scala.Numeric">Numeric</span>[<span class="extype" name="scala.collection.TraversableOnce.sum.B">B</span>]</span>)</span><span class="result">: <span class="extype" name="scala.collection.TraversableOnce.sum.B">B</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
@@ -1241,170 +1241,170 @@ contig name, then stops.
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="scala.collection.Iterator#take" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="take(n:Int):Iterator[A]"></a>
-      <a id="take(Int):Iterator[Mapped]"></a>
+      <a id="take(Int):Iterator[R]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">take</span><span class="params">(<span name="n">n: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.Iterator">Iterator</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>]</span>
+        <span class="name">take</span><span class="params">(<span name="n">n: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.Iterator">Iterator</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Iterator</dd></dl></div>
     </li><li name="scala.collection.Iterator#takeWhile" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="takeWhile(p:A=&gt;Boolean):Iterator[A]"></a>
-      <a id="takeWhile((Mapped)⇒Boolean):Iterator[Mapped]"></a>
+      <a id="takeWhile((R)⇒Boolean):Iterator[R]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">takeWhile</span><span class="params">(<span name="p">p: (<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.Iterator">Iterator</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>]</span>
+        <span class="name">takeWhile</span><span class="params">(<span name="p">p: (<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.Iterator">Iterator</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Iterator</dd></dl></div>
     </li><li name="scala.collection.TraversableOnce#to" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="to[Col[_]](implicitcbf:scala.collection.generic.CanBuildFrom[Nothing,A,Col[A@scala.annotation.unchecked.uncheckedVariance]]):Col[A@scala.annotation.unchecked.uncheckedVariance]"></a>
-      <a id="to[Col[_]](CanBuildFrom[Nothing,Mapped,Col[Mapped]]):Col[Mapped]"></a>
+      <a id="to[Col[_]](CanBuildFrom[Nothing,R,Col[R]]):Col[R]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">to</span><span class="tparams">[<span name="Col">Col<span class="tparams">[<span name="_">_</span>]</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="cbf">cbf: <span class="extype" name="scala.collection.generic.CanBuildFrom">CanBuildFrom</span>[<span class="extype" name="scala.Nothing">Nothing</span>, <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>, <span class="extype" name="scala.collection.TraversableOnce.to.Col">Col</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>]]</span>)</span><span class="result">: <span class="extype" name="scala.collection.TraversableOnce.to.Col">Col</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>]</span>
+        <span class="name">to</span><span class="tparams">[<span name="Col">Col<span class="tparams">[<span name="_">_</span>]</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="cbf">cbf: <span class="extype" name="scala.collection.generic.CanBuildFrom">CanBuildFrom</span>[<span class="extype" name="scala.Nothing">Nothing</span>, <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>, <span class="extype" name="scala.collection.TraversableOnce.to.Col">Col</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>]]</span>)</span><span class="result">: <span class="extype" name="scala.collection.TraversableOnce.to.Col">Col</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
     </li><li name="scala.collection.TraversableOnce#toArray" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toArray[B&gt;:A](implicitevidence$1:scala.reflect.ClassTag[B]):Array[B]"></a>
-      <a id="toArray[B&gt;:Mapped](ClassTag[B]):Array[B]"></a>
+      <a id="toArray[B&gt;:R](ClassTag[B]):Array[B]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">toArray</span><span class="tparams">[<span name="B">B &gt;: <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.reflect.ClassTag">ClassTag</span>[<span class="extype" name="scala.collection.TraversableOnce.toArray.B">B</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.collection.TraversableOnce.toArray.B">B</span>]</span>
+        <span class="name">toArray</span><span class="tparams">[<span name="B">B &gt;: <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.reflect.ClassTag">ClassTag</span>[<span class="extype" name="scala.collection.TraversableOnce.toArray.B">B</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.collection.TraversableOnce.toArray.B">B</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
     </li><li name="scala.collection.TraversableOnce#toBuffer" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toBuffer[B&gt;:A]:scala.collection.mutable.Buffer[B]"></a>
-      <a id="toBuffer[B&gt;:Mapped]:Buffer[B]"></a>
+      <a id="toBuffer[B&gt;:R]:Buffer[B]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">toBuffer</span><span class="tparams">[<span name="B">B &gt;: <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span></span>]</span><span class="result">: <span class="extype" name="scala.collection.mutable.Buffer">Buffer</span>[<span class="extype" name="scala.collection.TraversableOnce.toBuffer.B">B</span>]</span>
+        <span class="name">toBuffer</span><span class="tparams">[<span name="B">B &gt;: <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span></span>]</span><span class="result">: <span class="extype" name="scala.collection.mutable.Buffer">Buffer</span>[<span class="extype" name="scala.collection.TraversableOnce.toBuffer.B">B</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
     </li><li name="scala.collection.TraversableOnce#toIndexedSeq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toIndexedSeq:scala.collection.immutable.IndexedSeq[A]"></a>
-      <a id="toIndexedSeq:IndexedSeq[Mapped]"></a>
+      <a id="toIndexedSeq:IndexedSeq[R]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">toIndexedSeq</span><span class="result">: <span class="extype" name="scala.collection.immutable.IndexedSeq">IndexedSeq</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>]</span>
+        <span class="name">toIndexedSeq</span><span class="result">: <span class="extype" name="scala.collection.immutable.IndexedSeq">IndexedSeq</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
     </li><li name="scala.collection.TraversableOnce#toIterable" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toIterable:Iterable[A]"></a>
-      <a id="toIterable:Iterable[Mapped]"></a>
+      <a id="toIterable:Iterable[R]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">toIterable</span><span class="result">: <span class="extype" name="scala.collection.Iterable">Iterable</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>]</span>
+        <span class="name">toIterable</span><span class="result">: <span class="extype" name="scala.collection.Iterable">Iterable</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
     </li><li name="scala.collection.Iterator#toIterator" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toIterator:Iterator[A]"></a>
-      <a id="toIterator:Iterator[Mapped]"></a>
+      <a id="toIterator:Iterator[R]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">toIterator</span><span class="result">: <span class="extype" name="scala.collection.Iterator">Iterator</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>]</span>
+        <span class="name">toIterator</span><span class="result">: <span class="extype" name="scala.collection.Iterator">Iterator</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Iterator → GenTraversableOnce</dd></dl></div>
     </li><li name="scala.collection.TraversableOnce#toList" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toList:List[A]"></a>
-      <a id="toList:List[Mapped]"></a>
+      <a id="toList:List[R]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">toList</span><span class="result">: <span class="extype" name="scala.List">List</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>]</span>
+        <span class="name">toList</span><span class="result">: <span class="extype" name="scala.List">List</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
     </li><li name="scala.collection.TraversableOnce#toMap" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toMap[T,U](implicitev:&lt;:&lt;[A,(T,U)]):scala.collection.immutable.Map[T,U]"></a>
-      <a id="toMap[T,U](&lt;:&lt;[Mapped,(T,U)]):Map[T,U]"></a>
+      <a id="toMap[T,U](&lt;:&lt;[R,(T,U)]):Map[T,U]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">toMap</span><span class="tparams">[<span name="T">T</span>, <span name="U">U</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="ev">ev: <span class="extype" name="scala.Predef.&lt;:&lt;">&lt;:&lt;</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>, (<span class="extype" name="scala.collection.TraversableOnce.toMap.T">T</span>, <span class="extype" name="scala.collection.TraversableOnce.toMap.U">U</span>)]</span>)</span><span class="result">: <span class="extype" name="scala.collection.immutable.Map">Map</span>[<span class="extype" name="scala.collection.TraversableOnce.toMap.T">T</span>, <span class="extype" name="scala.collection.TraversableOnce.toMap.U">U</span>]</span>
+        <span class="name">toMap</span><span class="tparams">[<span name="T">T</span>, <span name="U">U</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="ev">ev: <span class="extype" name="scala.Predef.&lt;:&lt;">&lt;:&lt;</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>, (<span class="extype" name="scala.collection.TraversableOnce.toMap.T">T</span>, <span class="extype" name="scala.collection.TraversableOnce.toMap.U">U</span>)]</span>)</span><span class="result">: <span class="extype" name="scala.collection.immutable.Map">Map</span>[<span class="extype" name="scala.collection.TraversableOnce.toMap.T">T</span>, <span class="extype" name="scala.collection.TraversableOnce.toMap.U">U</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
     </li><li name="scala.collection.TraversableOnce#toSeq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toSeq:Seq[A]"></a>
-      <a id="toSeq:Seq[Mapped]"></a>
+      <a id="toSeq:Seq[R]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">toSeq</span><span class="result">: <span class="extype" name="scala.collection.Seq">Seq</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>]</span>
+        <span class="name">toSeq</span><span class="result">: <span class="extype" name="scala.collection.Seq">Seq</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
     </li><li name="scala.collection.TraversableOnce#toSet" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toSet[B&gt;:A]:scala.collection.immutable.Set[B]"></a>
-      <a id="toSet[B&gt;:Mapped]:Set[B]"></a>
+      <a id="toSet[B&gt;:R]:Set[B]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">toSet</span><span class="tparams">[<span name="B">B &gt;: <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span></span>]</span><span class="result">: <span class="extype" name="scala.collection.immutable.Set">Set</span>[<span class="extype" name="scala.collection.TraversableOnce.toSet.B">B</span>]</span>
+        <span class="name">toSet</span><span class="tparams">[<span name="B">B &gt;: <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span></span>]</span><span class="result">: <span class="extype" name="scala.collection.immutable.Set">Set</span>[<span class="extype" name="scala.collection.TraversableOnce.toSet.B">B</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
     </li><li name="scala.collection.Iterator#toStream" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toStream:scala.collection.immutable.Stream[A]"></a>
-      <a id="toStream:Stream[Mapped]"></a>
+      <a id="toStream:Stream[R]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">toStream</span><span class="result">: <span class="extype" name="scala.collection.immutable.Stream">Stream</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>]</span>
+        <span class="name">toStream</span><span class="result">: <span class="extype" name="scala.collection.immutable.Stream">Stream</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Iterator → GenTraversableOnce</dd></dl></div>
@@ -1423,27 +1423,27 @@ contig name, then stops.
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Iterator → AnyRef → Any</dd></dl></div>
     </li><li name="scala.collection.Iterator#toTraversable" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toTraversable:Traversable[A]"></a>
-      <a id="toTraversable:Traversable[Mapped]"></a>
+      <a id="toTraversable:Traversable[R]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">toTraversable</span><span class="result">: <span class="extype" name="scala.collection.Traversable">Traversable</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>]</span>
+        <span class="name">toTraversable</span><span class="result">: <span class="extype" name="scala.collection.Traversable">Traversable</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Iterator → TraversableOnce → GenTraversableOnce</dd></dl></div>
     </li><li name="scala.collection.TraversableOnce#toVector" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toVector:Vector[A]"></a>
-      <a id="toVector:Vector[Mapped]"></a>
+      <a id="toVector:Vector[R]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">toVector</span><span class="result">: <span class="extype" name="scala.Vector">Vector</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>]</span>
+        <span class="name">toVector</span><span class="result">: <span class="extype" name="scala.Vector">Vector</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
@@ -1506,53 +1506,53 @@ contig name, then stops.
         </dd></dl></div>
     </li><li name="scala.collection.Iterator#withFilter" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="withFilter(p:A=&gt;Boolean):Iterator[A]"></a>
-      <a id="withFilter((Mapped)⇒Boolean):Iterator[Mapped]"></a>
+      <a id="withFilter((R)⇒Boolean):Iterator[R]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">withFilter</span><span class="params">(<span name="p">p: (<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.Iterator">Iterator</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>]</span>
+        <span class="name">withFilter</span><span class="params">(<span name="p">p: (<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.Iterator">Iterator</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Iterator</dd></dl></div>
     </li><li name="scala.collection.Iterator#zip" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="zip[B](that:Iterator[B]):Iterator[(A,B)]"></a>
-      <a id="zip[B](Iterator[B]):Iterator[(Mapped,B)]"></a>
+      <a id="zip[B](Iterator[B]):Iterator[(R,B)]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">zip</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="that">that: <span class="extype" name="scala.collection.Iterator">Iterator</span>[<span class="extype" name="scala.collection.Iterator.zip.B">B</span>]</span>)</span><span class="result">: <span class="extype" name="scala.collection.Iterator">Iterator</span>[(<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>, <span class="extype" name="scala.collection.Iterator.zip.B">B</span>)]</span>
+        <span class="name">zip</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="that">that: <span class="extype" name="scala.collection.Iterator">Iterator</span>[<span class="extype" name="scala.collection.Iterator.zip.B">B</span>]</span>)</span><span class="result">: <span class="extype" name="scala.collection.Iterator">Iterator</span>[(<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>, <span class="extype" name="scala.collection.Iterator.zip.B">B</span>)]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Iterator</dd></dl></div>
     </li><li name="scala.collection.Iterator#zipAll" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="zipAll[B,A1&gt;:A,B1&gt;:B](that:Iterator[B],thisElem:A1,thatElem:B1):Iterator[(A1,B1)]"></a>
-      <a id="zipAll[B,A1&gt;:Mapped,B1&gt;:B](Iterator[B],A1,B1):Iterator[(A1,B1)]"></a>
+      <a id="zipAll[B,A1&gt;:R,B1&gt;:B](Iterator[B],A1,B1):Iterator[(A1,B1)]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">zipAll</span><span class="tparams">[<span name="B">B</span>, <span name="A1">A1 &gt;: <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span></span>, <span name="B1">B1 &gt;: <span class="extype" name="scala.collection.Iterator.zipAll.B">B</span></span>]</span><span class="params">(<span name="that">that: <span class="extype" name="scala.collection.Iterator">Iterator</span>[<span class="extype" name="scala.collection.Iterator.zipAll.B">B</span>]</span>, <span name="thisElem">thisElem: <span class="extype" name="scala.collection.Iterator.zipAll.A1">A1</span></span>, <span name="thatElem">thatElem: <span class="extype" name="scala.collection.Iterator.zipAll.B1">B1</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.Iterator">Iterator</span>[(<span class="extype" name="scala.collection.Iterator.zipAll.A1">A1</span>, <span class="extype" name="scala.collection.Iterator.zipAll.B1">B1</span>)]</span>
+        <span class="name">zipAll</span><span class="tparams">[<span name="B">B</span>, <span name="A1">A1 &gt;: <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span></span>, <span name="B1">B1 &gt;: <span class="extype" name="scala.collection.Iterator.zipAll.B">B</span></span>]</span><span class="params">(<span name="that">that: <span class="extype" name="scala.collection.Iterator">Iterator</span>[<span class="extype" name="scala.collection.Iterator.zipAll.B">B</span>]</span>, <span name="thisElem">thisElem: <span class="extype" name="scala.collection.Iterator.zipAll.A1">A1</span></span>, <span name="thatElem">thatElem: <span class="extype" name="scala.collection.Iterator.zipAll.B1">B1</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.Iterator">Iterator</span>[(<span class="extype" name="scala.collection.Iterator.zipAll.A1">A1</span>, <span class="extype" name="scala.collection.Iterator.zipAll.B1">B1</span>)]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Iterator</dd></dl></div>
     </li><li name="scala.collection.Iterator#zipWithIndex" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="zipWithIndex:Iterator[(A,Int)]"></a>
-      <a id="zipWithIndex:Iterator[(Mapped,Int)]"></a>
+      <a id="zipWithIndex:Iterator[(R,Int)]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">zipWithIndex</span><span class="result">: <span class="extype" name="scala.collection.Iterator">Iterator</span>[(<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>, <span class="extype" name="scala.Int">Int</span>)]</span>
+        <span class="name">zipWithIndex</span><span class="result">: <span class="extype" name="scala.collection.Iterator">Iterator</span>[(<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>, <span class="extype" name="scala.Int">Int</span>)]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Iterator</dd></dl></div>
@@ -1565,14 +1565,14 @@ contig name, then stops.
               <h3>Deprecated Value Members</h3>
               <ol><li name="scala.collection.GenTraversableOnce#/:\" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="/:\[A1&gt;:A](z:A1)(op:(A1,A1)=&gt;A1):A1"></a>
-      <a id="/:\[A1&gt;:Mapped](A1)((A1,A1)⇒A1):A1"></a>
+      <a id="/:\[A1&gt;:R](A1)((A1,A1)⇒A1):A1"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $div$colon$bslash. Deprecated: (Since version 2.10.0) use fold instead" class="name deprecated">/:\</span><span class="tparams">[<span name="A1">A1 &gt;: <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span></span>]</span><span class="params">(<span name="z">z: <span class="extype" name="scala.collection.GenTraversableOnce./:\.A1">A1</span></span>)</span><span class="params">(<span name="op">op: (<span class="extype" name="scala.collection.GenTraversableOnce./:\.A1">A1</span>, <span class="extype" name="scala.collection.GenTraversableOnce./:\.A1">A1</span>) ⇒ <span class="extype" name="scala.collection.GenTraversableOnce./:\.A1">A1</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.GenTraversableOnce./:\.A1">A1</span></span>
+        <span title="gt4s: $div$colon$bslash. Deprecated: (Since version 2.10.0) use fold instead" class="name deprecated">/:\</span><span class="tparams">[<span name="A1">A1 &gt;: <span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span></span>]</span><span class="params">(<span name="z">z: <span class="extype" name="scala.collection.GenTraversableOnce./:\.A1">A1</span></span>)</span><span class="params">(<span name="op">op: (<span class="extype" name="scala.collection.GenTraversableOnce./:\.A1">A1</span>, <span class="extype" name="scala.collection.GenTraversableOnce./:\.A1">A1</span>) ⇒ <span class="extype" name="scala.collection.GenTraversableOnce./:\.A1">A1</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.GenTraversableOnce./:\.A1">A1</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>GenTraversableOnce</dd><dt>Annotations</dt><dd>
@@ -1585,11 +1585,11 @@ contig name, then stops.
 
         <div id="inheritedMembers">
         <div class="parent" name="scala.collection.Iterator">
-              <h3>Inherited from <span class="extype" name="scala.collection.Iterator">Iterator</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>]</h3>
+              <h3>Inherited from <span class="extype" name="scala.collection.Iterator">Iterator</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>]</h3>
             </div><div class="parent" name="scala.collection.TraversableOnce">
-              <h3>Inherited from <span class="extype" name="scala.collection.TraversableOnce">TraversableOnce</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>]</h3>
+              <h3>Inherited from <span class="extype" name="scala.collection.TraversableOnce">TraversableOnce</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>]</h3>
             </div><div class="parent" name="scala.collection.GenTraversableOnce">
-              <h3>Inherited from <span class="extype" name="scala.collection.GenTraversableOnce">GenTraversableOnce</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.Mapped">Mapped</span>]</h3>
+              <h3>Inherited from <span class="extype" name="scala.collection.GenTraversableOnce">GenTraversableOnce</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.SingleContigRegionIterator.R">R</span>]</h3>
             </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
             </div><div class="parent" name="scala.Any">
