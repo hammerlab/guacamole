@@ -4,7 +4,7 @@ import org.hammerlab.guacamole._
 import org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.{MultiplePileupStats, PileupStats}
 import org.hammerlab.guacamole.commands.jointcaller.{AlleleAtLocus, InputCollection, Parameters}
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.reference.ReferenceBroadcast
+import org.hammerlab.guacamole.reference.{ReferenceBroadcast, ReferenceRegion}
 import org.hammerlab.guacamole.util.Bases
 
 /**
@@ -18,7 +18,7 @@ import org.hammerlab.guacamole.util.Bases
 case class MultiSampleMultiAlleleEvidence(referenceContig: String,
                                           start: Long,
                                           singleAlleleEvidences: Seq[MultiSampleSingleAlleleEvidence])
-    extends HasReferenceRegion {
+    extends ReferenceRegion {
 
   assume(singleAlleleEvidences.forall(_.allele.referenceContig == referenceContig))
   assume(singleAlleleEvidences.forall(_.allele.start == start))
