@@ -125,13 +125,13 @@ class DeBruijnGraph(val kmerSize: Int,
   }
 
   /**
-    *  Searches forward or backward from a node to find those connected by a unique path
+   *  Searches forward or backward from a node to find those connected by a unique path
    *
    * @param kmer Kmer to search from
-    * @param searchForward If true, search children of node, otherwise parents
-    * @param avoidLoops If true, only explore a node once
-    * @return List of kmers, that can be merged starting with `kmer`
-    */
+   * @param searchForward If true, search children of node, otherwise parents
+   * @param avoidLoops If true, only explore a node once
+   * @return List of kmers, that can be merged starting with `kmer`
+   */
   private[assembly] def findMergeable(kmer: Kmer,
                                       searchForward: Boolean,
                                       avoidLoops: Boolean = true): Seq[Kmer] = {
@@ -169,16 +169,16 @@ class DeBruijnGraph(val kmerSize: Int,
   type Path = List[Kmer]
 
   /**
-    * Find a path from source to sink in the graph
+   * Find a path from source to sink in the graph
    *
    * @param source Kmer node to begin search
-    * @param sink Kmer to search for
-    * @param minPathLength Minimum number of kmers to traverse before finding the sink
-    * @param maxPathLength Maximum number of kmers to traverse before finding the sink
-    * @param maxPaths Maximum number of paths to find from source to sink
-    * @param avoidLoops If avoiding loops, skip nodes that have already been visited
-    * @return Set
-    */
+   * @param sink Kmer to search for
+   * @param minPathLength Minimum number of kmers to traverse before finding the sink
+   * @param maxPathLength Maximum number of kmers to traverse before finding the sink
+   * @param maxPaths Maximum number of paths to find from source to sink
+   * @param avoidLoops If avoiding loops, skip nodes that have already been visited
+   * @return Set
+   */
   def depthFirstSearch(source: Kmer,
                        sink: Kmer,
                        minPathLength: Int = 1,
@@ -317,21 +317,21 @@ class DeBruijnGraph(val kmerSize: Int,
   }
 
   /**
-    * Find all children of a given node
+   * Find all children of a given node
    *
    * @param node Kmer to find parents of
-    * @return  List of Kmers where their prefix matches this node's suffix
-    */
+   * @return  List of Kmers where their prefix matches this node's suffix
+   */
   def children(node: Kmer): List[Kmer] = {
     prefixTable.getOrElse(kmerSuffix(node), List.empty)
   }
 
   /**
-    * Find all parents of a given node
+   * Find all parents of a given node
    *
    * @param node Kmer to find parents of
-    * @return List of Kmers where their suffix matches this nodes prefix
-    */
+   * @return List of Kmers where their suffix matches this nodes prefix
+   */
   def parents(node: Kmer): List[Kmer] = {
     suffixTable.getOrElse(kmerPrefix(node), List.empty)
   }
@@ -367,14 +367,14 @@ object DeBruijnGraph {
   }
 
   /**
-    * Merge sequences where we expect consecutive entries to overlap by `overlapSize` bases.
-    *
-    * @param sequences Set of sequences that we would like to combine into a single sequence
-    * @param overlapSize The amount of the sequences we expect to overlap (The number of bases the last sequence overlaps
-    *                    with the next. For a standard kmer graph, this is the length of the kmer length - 1
-    *
-    * @return A single merged sequence
-    */
+   * Merge sequences where we expect consecutive entries to overlap by `overlapSize` bases.
+   *
+   * @param sequences Set of sequences that we would like to combine into a single sequence
+   * @param overlapSize The amount of the sequences we expect to overlap (The number of bases the last sequence overlaps
+   *                    with the next. For a standard kmer graph, this is the length of the kmer length - 1
+   *
+   * @return A single merged sequence
+   */
   def mergeOverlappingSequences(sequences: Seq[Sequence], overlapSize: Int): Sequence = {
     val head = sequences.headOption.getOrElse(Seq.empty)
     val rest = sequences.tail.flatMap(sequence => sequence.takeRight(sequence.length - overlapSize + 1))
