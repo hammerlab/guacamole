@@ -1,9 +1,9 @@
-package org.hammerlab.guacamole
+package org.hammerlab.guacamole.reference
 
 import org.hammerlab.guacamole.util.TestUtil
 import org.scalatest.{FunSuite, Matchers}
 
-class HasReferenceRegionSuite extends FunSuite with Matchers {
+class RegionSuite extends FunSuite with Matchers {
 
   test("overlapping reads") {
     val read1 = TestUtil.makeRead("TCGATCGA", cigar = "8M", start = 1L)

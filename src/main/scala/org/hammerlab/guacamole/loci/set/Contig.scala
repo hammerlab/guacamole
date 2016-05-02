@@ -4,6 +4,7 @@ import java.lang.{Long => JLong}
 
 import com.google.common.collect.{RangeSet, TreeRangeSet, Range => JRange}
 import org.hammerlab.guacamole.loci.SimpleRange
+import org.hammerlab.guacamole.reference.ReferenceRegion
 import org.hammerlab.guacamole.strings.TruncatedToString
 
 import scala.collection.JavaConversions._
@@ -36,7 +37,7 @@ case class Contig(name: String, private val rangeSet: RangeSet[JLong]) extends T
   def count = ranges.map(_.length).sum
 
   /** Returns whether a given genomic region overlaps with any loci on this contig. */
-  def intersects(start: Long, end: Long) = !rangeSet.subRangeSet(JRange.closedOpen(start, end)).isEmpty
+  def intersects(start: Long, end: Long): Boolean = !rangeSet.subRangeSet(JRange.closedOpen(start, end)).isEmpty
 
   /**
     * Make two new Contigs: one with the first @numToTake loci from this Contig, and the second with the rest.
