@@ -1,9 +1,15 @@
 package org.hammerlab.guacamole.assembly
 
+import org.hammerlab.guacamole.reads.{Read, UnmappedRead}
 import org.hammerlab.guacamole.util.TestUtil.Implicits._
 import org.hammerlab.guacamole.util.{AssertBases, Bases, GuacFunSuite, TestUtil}
+import org.hammerlab.guacamole.util.TestUtil._
 
 class DeBruijnGraphSuite extends GuacFunSuite {
+
+  def read(seq: String): Read = {
+    new UnmappedRead("read", seq, "#" * seq.length, isDuplicate = false, sampleName = "sample", failedVendorQualityChecks = false, isPaired =false)
+  }
 
   test("DeBruijnGraph.mergeKmers") {
     val kmers = Seq("TTTC", "TTCC", "TCCC", "CCCC").map(Bases.stringToBases)
@@ -15,7 +21,7 @@ class DeBruijnGraphSuite extends GuacFunSuite {
 
   test("build graph") {
 
-    val sequence = Bases.stringToBases("TCATCTCAAAAGAGATCGA")
+    val sequence = makeRead(Bases.stringToBases("TCATCTCAAAAGAGATCGA"))
     val graph = DeBruijnGraph(Seq(sequence), kmerSize = 8)
 
     graph.kmerCounts === Map("TCATCTCA" -> 1, "CATCTCAA" -> 1, "GAGATCGA" -> 1)
@@ -23,7 +29,7 @@ class DeBruijnGraphSuite extends GuacFunSuite {
 
   test("build graph test prefix/suffix") {
 
-    val sequence = "TCATCTCAAAAGAGATCGA"
+    val sequence = makeRead("TCATCTCAAAAGAGATCGA")
     val graph = DeBruijnGraph(Seq(sequence), kmerSize = 8)
 
     AssertBases(graph.kmerPrefix("TCATCTCA"), "TCATCTC")
@@ -38,7 +44,7 @@ class DeBruijnGraphSuite extends GuacFunSuite {
 
   test("build graph with short kmers and correct counts") {
 
-    val sequence = Bases.stringToBases("TCATCTTAAAAGACATAAA")
+    val sequence = makeRead("TCATCTTAAAAGACATAAA")
     val graph = DeBruijnGraph(Seq(sequence), kmerSize = 3)
 
     graph.kmerCounts === Map("TCA" -> 1, "CAT" -> 2, "AAA" -> 3)
@@ -46,7 +52,7 @@ class DeBruijnGraphSuite extends GuacFunSuite {
 
   test("build graph with short kmers and correct children/parents") {
 
-    val sequence = "TCATCTTAAAAGACATAAA"
+    val sequence = makeRead("TCATCTTAAAAGACATAAA")
     val graph = DeBruijnGraph(Seq(sequence), kmerSize = 3)
 
     val tcaChildren = graph.children("TCA")
@@ -73,9 +79,9 @@ class DeBruijnGraphSuite extends GuacFunSuite {
   }
 
   test("build graph with all unique kmers") {
-    val sequence = Bases.stringToBases("AAATCCCTTTTA")
+    val sequence = "AAATCCCTTTTA"
     val kmerSize = 4
-    val graph = DeBruijnGraph(Seq(sequence), kmerSize)
+    val graph = DeBruijnGraph(Seq(makeRead(sequence)), kmerSize)
     graph.kmerCounts.keys.size should be(sequence.length - kmerSize + 1)
 
     graph.kmerCounts.foreach(_._2 should be(1))
@@ -84,21 +90,21 @@ class DeBruijnGraphSuite extends GuacFunSuite {
 
   test("find forward unique path; full graph") {
 
-    val sequence = Bases.stringToBases("AAATCCCTGGGT")
-    val graph = DeBruijnGraph(Seq(sequence), kmerSize = 4)
+    val sequence = "AAATCCCTGGGT"
+    val graph = DeBruijnGraph(Seq(makeRead(sequence)), kmerSize = 4)
 
     val firstKmer = "AAAT"
 
     val mergeableForward = graph.mergeForward(firstKmer)
     mergeableForward.size should be(9)
 
-    DeBruijnGraph.mergeOverlappingSequences(mergeableForward, 4) should be(sequence)
+    DeBruijnGraph.mergeOverlappingSequences(mergeableForward, 4) should be(Bases.stringToBases(sequence))
   }
 
   test("find backward unique path; full graph") {
 
     val sequence = "AAATCCCTGGGT"
-    val graph = DeBruijnGraph(Seq(Bases.stringToBases(sequence)), kmerSize = 4)
+    val graph = DeBruijnGraph(Seq(makeRead(sequence)), kmerSize = 4)
 
     val lastKmer = "GGGT"
 
@@ -116,8 +122,8 @@ class DeBruijnGraphSuite extends GuacFunSuite {
     val variantSequence = "AAATCCCTGGAT"
     val graph = DeBruijnGraph(
       Seq(
-        Bases.stringToBases(sequence),
-        Bases.stringToBases(variantSequence)
+        makeRead(sequence),
+        makeRead(variantSequence)
       ), kmerSize = 4)
 
     val firstKmer = "AAAT"
@@ -133,8 +139,8 @@ class DeBruijnGraphSuite extends GuacFunSuite {
     val variantSequence = "AAATCGCTGGGT"
     val graph = DeBruijnGraph(
       Seq(
-        Bases.stringToBases(sequence),
-        Bases.stringToBases(variantSequence)
+        makeRead(sequence),
+        makeRead(variantSequence)
       ), kmerSize = 4)
 
     val firstKmer = "AAAT"
@@ -146,8 +152,8 @@ class DeBruijnGraphSuite extends GuacFunSuite {
 
   test("find forward unique path; with bubble in first kmer") {
 
-    val sequence = "AAATCCCTGGGT"
-    val variantSequence = "ACATCCCTGGGT"
+    val sequence = makeRead("AAATCCCTGGGT")
+    val variantSequence = makeRead("ACATCCCTGGGT")
     val graph = DeBruijnGraph(Seq(sequence, variantSequence), kmerSize = 4)
 
     val firstKmer = "AAAT"
@@ -159,8 +165,8 @@ class DeBruijnGraphSuite extends GuacFunSuite {
 
   test("find backward unique path; with bubble at end") {
 
-    val sequence = "AAATCCCTGGGT"
-    val variantSequence = "AAATCCCTGGAT"
+    val sequence = makeRead("AAATCCCTGGGT")
+    val variantSequence = makeRead("AAATCCCTGGAT")
     val graph = DeBruijnGraph(Seq(sequence, variantSequence), kmerSize = 4)
 
     val seq1End = "GGGT"
@@ -178,8 +184,8 @@ class DeBruijnGraphSuite extends GuacFunSuite {
 
   test("find backward unique path; with bubble in middle") {
 
-    val sequence = "AAATCCCTGGGT"
-    val variantSequence = "AAATCGCTGGGT"
+    val sequence = makeRead("AAATCCCTGGGT")
+    val variantSequence = makeRead("AAATCGCTGGGT")
     val graph = DeBruijnGraph(Seq(sequence, variantSequence), kmerSize = 4)
 
     val lastKmer = "GGGT"
@@ -191,7 +197,7 @@ class DeBruijnGraphSuite extends GuacFunSuite {
 
   test("test merge nodes; full graph") {
 
-    val sequence = "AAATCCCTGGGT"
+    val sequence = makeRead("AAATCCCTGGGT")
     val kmerSize = 4
     val graph = DeBruijnGraph(Seq(sequence), kmerSize)
 
@@ -205,8 +211,8 @@ class DeBruijnGraphSuite extends GuacFunSuite {
 
   test("test merge nodes; with variant") {
 
-    val sequence = "AAATCCCTGGGT"
-    val variantSequence = "AAATCCCTGGAT"
+    val sequence = makeRead("AAATCCCTGGGT")
+    val variantSequence = makeRead("AAATCCCTGGAT")
     val kmerSize = 4
     val graph = DeBruijnGraph(Seq(sequence, variantSequence), kmerSize)
 
@@ -220,7 +226,7 @@ class DeBruijnGraphSuite extends GuacFunSuite {
 
   test("merging kmers and checking mergeIndex") {
     val longRead =
-      Bases.stringToBases(
+      makeRead(
         "TGCATGGTGCTGTGAGATCAGCGTGTGTGTGTGTGCAGTGCATGGTGCTGTGTGAGATCAGCATGTGTGTGTGTGCAGTGCATGGTGCTGTGAGATCAGCGTGTGTGTGCAGCGCATGGTGCTGTGTGAGA"
       )
     val kmerSize = 45
@@ -232,11 +238,12 @@ class DeBruijnGraphSuite extends GuacFunSuite {
     )
 
     longRead
+      .sequence
       .sliding(kmerSize)
       .zipWithIndex.foreach {
         case (kmer, idx) => {
           val mergedNode = graph.mergeIndex(kmer)
-          mergedNode._1 should be(longRead)
+          mergedNode._1 should be(longRead.sequence)
           mergedNode._2 should be(idx)
         }
       }
@@ -262,7 +269,7 @@ class DeBruijnGraphSuite extends GuacFunSuite {
 
     val kmerSize = 15
     val graph: DeBruijnGraph = DeBruijnGraph(
-      reads.map(Bases.stringToBases),
+      reads.map(makeRead(_)),
       kmerSize,
       minOccurrence = 1,
       mergeNodes = false
@@ -303,7 +310,7 @@ class DeBruijnGraphSuite extends GuacFunSuite {
 
     val kmerSize = 15
     val graph: DeBruijnGraph = DeBruijnGraph(
-      reads.map(Bases.stringToBases),
+      reads.map(makeRead(_)),
       kmerSize,
       minOccurrence = 1,
       mergeNodes = false
@@ -346,7 +353,7 @@ class DeBruijnGraphSuite extends GuacFunSuite {
 
     val kmerSize = 15
     val graph: DeBruijnGraph = DeBruijnGraph(
-      reads.map(Bases.stringToBases),
+      reads.map(makeRead(_)),
       kmerSize,
       minOccurrence = 1,
       mergeNodes = false
@@ -384,7 +391,7 @@ class DeBruijnGraphSuite extends GuacFunSuite {
     val referenceKmerSink = referenceBases.takeRight(kmerSize)
 
     val currentGraph: DeBruijnGraph = DeBruijnGraph(
-      snpReads.map(_.sequence),
+      snpReads,
       kmerSize,
       minOccurrence = 3,
       mergeNodes = false
