@@ -220,7 +220,7 @@ object GermlineAssemblyCaller {
 
                 val lastVariantCallLocus = variants.view.map(_.start).reduceOption(_ max _).orElse(lastCalledLocus)
                 // Jump to the next region
-                window.setCurrentLocus(window.currentLocus + snvWindowRange)
+                window.setCurrentLocus(window.currentLocus + snvWindowRange - kmerSize)
                 (lastVariantCallLocus, variants.iterator)
               } else {
                 (lastCalledLocus, Iterator.empty)
