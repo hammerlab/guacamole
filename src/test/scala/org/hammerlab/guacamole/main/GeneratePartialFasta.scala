@@ -24,6 +24,9 @@ class GeneratePartialFastaArguments
   @Args4jOption(name = "--reference-fasta", required = true, usage = "Local path to a reference FASTA file")
   var referenceFastaPath: String = null
 
+  @Args4jOption(name = "--padding", required = false, usage = "Number of bases to pad the reference around the loci")
+  var padding: Int = 0
+
   @Argument(required = true, multiValued = true, usage = "Reads to write out overlapping fasta sequence for")
   var bams: Array[String] = Array.empty
 }
@@ -82,13 +85,16 @@ object GeneratePartialFasta extends SparkCommand[GeneratePartialFastaArguments] 
     val fd = new File(args.output)
     val writer = new BufferedWriter(new FileWriter(fd))
 
+    val padding = args.padding
     for {
       contig <- loci.contigs
       SimpleRange(start, end) <- contig.ranges
     } {
       try {
-        val sequence = Bases.basesToString(reference.getContig(contig.name).slice(start.toInt, end.toInt))
-        writer.write(">%s:%d-%d/%d\n".format(contig.name, start, end, readsets.contigLengths(contig.name)))
+        val paddedStart = start.toInt - padding
+        val paddedEnd = end.toInt + padding
+        val sequence = Bases.basesToString(reference.getContig(contig.name).slice(paddedStart, paddedEnd))
+        writer.write(">%s:%d-%d/%d\n".format(contig.name, paddedStart, paddedEnd, readsets.contigLengths(contig.name)))
         writer.write(sequence)
         writer.write("\n")
       } catch {
