@@ -1,5 +1,7 @@
 package org.hammerlab.guacamole.assembly
 
+import htsjdk.samtools.CigarOperator
+import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.util.Bases
 
 import scala.collection.mutable
@@ -298,11 +300,16 @@ class DeBruijnGraph(val kmerSize: Int,
 
   /**
    * Find all nodes that have in-degree = 0
-   *
-   * @return
    */
-  def roots: Iterable[Kmer] = {
-    kmerCounts.keys.filter(parents(_).isEmpty)
+  def sources: Iterable[Kmer] = {
+    kmerCounts.keys.filter(parents(_).isEmpty).map(_.take(kmerSize))
+  }
+
+  /**
+   * Find all nodes that have out-degree = 0
+   */
+  def sinks: Iterable[Kmer] = {
+    kmerCounts.keys.filter(children(_).isEmpty).map(_.takeRight(kmerSize))
   }
 
   /**
@@ -330,6 +337,7 @@ class DeBruijnGraph(val kmerSize: Int,
 object DeBruijnGraph {
   type Sequence = DeBruijnGraph#Sequence
   type Kmer = DeBruijnGraph#Kmer
+
   def apply(sequences: Seq[Sequence],
             kmerSize: Int,
             minOccurrence: Int = 1,
@@ -337,7 +345,8 @@ object DeBruijnGraph {
 
     val kmerCounts = mutable.Map.empty[DeBruijnGraph#Kmer, Int]
 
-    sequences.filter(Bases.allStandardBases(_))
+    sequences
+      .filter(Bases.allStandardBases(_))
       .foreach(
         _.sliding(kmerSize)
           .foreach(seq => {
@@ -359,6 +368,7 @@ object DeBruijnGraph {
    * @param sequences Set of sequences that we would like to combine into a single sequence
    * @param overlapSize The amount of the sequences we expect to overlap (The number of bases the last sequence overlaps
    *                    with the next. For a standard kmer graph, this is the length of the kmer length - 1
+   *
    * @return A single merged sequence
    */
   def mergeOverlappingSequences(sequences: Seq[Sequence], overlapSize: Int): Sequence = {
@@ -367,4 +377,76 @@ object DeBruijnGraph {
     head ++ rest
   }
 
+  /**
+   * For a given set of reads identify all kmers that appear in the specified reference region
+   *
+   * @param reads  Set of reads to extract sequence from
+   * @param startLocus Start (inclusive) locus on the reference
+   * @param endLocus End (exclusive) locus on the reference
+   * @param minOccurrence Minimum number of times a subsequence needs to appear to be included
+   * @return List of subsequences overlapping [startLocus, endLocus) that appear at least `minOccurrence` time
+   */
+  private def getConsensusKmer(reads: Seq[MappedRead],
+                               startLocus: Int,
+                               endLocus: Int,
+                               minOccurrence: Int): Iterable[Vector[Byte]] = {
+
+    // Filter to reads that entirely cover the region.
+    // Exclude reads that have any non-M Cigars (these don't have a 1-to-1 base mapping to the region).
+    val sequences =
+      for {
+        read <- reads
+        if !read.cigarElements.exists(_.getOperator != CigarOperator.M)
+        if read.overlapsLocus(startLocus) && read.overlapsLocus(endLocus - 1)
+        unclippedStart = read.unclippedStart.toInt
+      } yield {
+        read.sequence.slice(startLocus - unclippedStart, endLocus - unclippedStart)
+      }
+
+    // Filter to sequences that appear at least `minOccurrence` times
+    sequences
+      .groupBy(identity)
+      .map(kv => (kv._1, kv._2.length))
+      .filter(_._2 >= minOccurrence)
+      .map(_._1.toVector)
+  }
+
+  /**
+   * Find paths through the reads given that represent the sequence covering referenceStart and referenceEnd
+   *
+   * @param reads Reads to use to build the graph
+   * @param referenceStart Start of the reference region corresponding to the reads
+   * @param referenceEnd End of the reference region corresponding to the reads
+   * @param referenceSequence Reference sequence overlapping [referenceStart, referenceEnd)
+   * @param kmerSize Length of kmers to use to traverse the paths
+   * @param minOccurrence Minimum number of occurrences of the each kmer
+   * @param maxPaths Maximum number of paths to find
+   * @param debugPrint Print debug statements (default: false)
+   * @return List of paths that traverse the region
+   */
+  def discoverPathsFromReads(reads: Seq[MappedRead],
+                             referenceStart: Int,
+                             referenceEnd: Int,
+                             referenceSequence: Array[Byte],
+                             kmerSize: Int,
+                             minOccurrence: Int,
+                             maxPaths: Int,
+                             debugPrint: Boolean = false) = {
+    val referenceKmerSource = referenceSequence.take(kmerSize)
+    val referenceKmerSink = referenceSequence.takeRight(kmerSize)
+
+    val currentGraph: DeBruijnGraph = DeBruijnGraph(
+      reads.map(_.sequence),
+      kmerSize,
+      minOccurrence,
+      mergeNodes = true
+    )
+
+    currentGraph.depthFirstSearch(
+      referenceKmerSource,
+      referenceKmerSink,
+      maxPaths = maxPaths,
+      debugPrint = debugPrint
+    )
+  }
 }
