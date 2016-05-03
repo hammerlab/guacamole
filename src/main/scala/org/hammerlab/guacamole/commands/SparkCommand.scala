@@ -41,7 +41,7 @@ abstract class SparkCommand[T <% Args4jBase: Manifest] extends Command[T] {
     }
 
     if (config.getOption("spark.kryo.registrator").isEmpty) {
-      config.set("spark.kryo.registrator", "org.hammerlab.guacamole.kryo.GuacamoleKryoRegistrar")
+      config.set("spark.kryo.registrator", "org.hammerlab.guacamole.kryo.Registrar")
     }
 
     if (config.getOption("spark.kryoserializer.buffer").isEmpty) {
