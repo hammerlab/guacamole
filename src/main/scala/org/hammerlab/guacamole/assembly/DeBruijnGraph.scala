@@ -300,8 +300,6 @@ class DeBruijnGraph(val kmerSize: Int,
 
   /**
    * Find all nodes that have in-degree = 0
-   *
-   * @return
    */
   def sources: Iterable[Kmer] = {
     kmerCounts.keys.filter(parents(_).isEmpty).map(_.take(kmerSize))
@@ -309,8 +307,6 @@ class DeBruijnGraph(val kmerSize: Int,
 
   /**
    * Find all nodes that have out-degree = 0
-   *
-   * @return
    */
   def sinks: Iterable[Kmer] = {
     kmerCounts.keys.filter(children(_).isEmpty).map(_.takeRight(kmerSize))
@@ -382,21 +378,6 @@ object DeBruijnGraph {
   }
 
   /**
-   * Extract a subsequence from a read sequence
-   *
-   * NOTE: This assumes that the read entirely covers the reference region and does not check for insertions
-   * or deletion
-   *
-   * @param read Read to extract subsequence from
-   * @param startLocus Start (inclusive) locus on the reference
-   * @param endLocus End (exclusive) locus on the reference
-   * @return Subsequence overlapping [startLocus, endLocus)
-   */
-  private def getSequenceFromRead(read: MappedRead, startLocus: Int, endLocus: Int) = {
-    read.sequence.slice(startLocus - read.unclippedStart.toInt, endLocus - read.unclippedStart.toInt)
-  }
-
-  /**
    * For a given set of reads identify all kmers that appear in the specified reference region
    *
    * @param reads  Set of reads to extract sequence from
@@ -410,15 +391,17 @@ object DeBruijnGraph {
                                endLocus: Int,
                                minOccurrence: Int): Iterable[Vector[Byte]] = {
 
-    // Filter to reads that entirely cover the region
-    // Exclude reads that have any non-M Cigars (these don't have a 1 to 1 base mapping to the region)
-    val overlapping = reads
-      .filter(!_.cigarElements.exists(_.getOperator != CigarOperator.M))
-      .filter(r => r.overlapsLocus(startLocus) && r.overlapsLocus(endLocus - 1))
-
-    // Extract the sequences from each region
-    val sequences = overlapping
-      .map(r => getSequenceFromRead(r, startLocus, endLocus))
+    // Filter to reads that entirely cover the region.
+    // Exclude reads that have any non-M Cigars (these don't have a 1-to-1 base mapping to the region).
+    val sequences =
+      for {
+        read <- reads
+        if !read.cigarElements.exists(_.getOperator != CigarOperator.M)
+        if read.overlapsLocus(startLocus) && read.overlapsLocus(endLocus - 1)
+        unclippedStart = read.unclippedStart.toInt
+      } yield {
+        read.sequence.slice(startLocus - unclippedStart, endLocus - unclippedStart)
+      }
 
     // Filter to sequences that appear at least `minOccurrence` times
     sequences
