@@ -31,8 +31,8 @@ class GermlineAssemblyCallerSuite extends GuacFunSuite with BeforeAndAfterAll {
 
   def verifyVariantsAtLocus(locus: Int,
                             contig: String = "chr1",
-                            kmerSize: Int = 31,
-                            snvWindowRange: Int = 45,
+                            kmerSize: Int = 47,
+                            snvWindowRange: Int = 120,
                             minOccurrence: Int = 5,
                             minVaf: Float = 0.1f,
                             shortcutAssembly: Boolean = false)(
@@ -163,6 +163,7 @@ class GermlineAssemblyCallerSuite extends GuacFunSuite with BeforeAndAfterAll {
   test (
     "test assembly caller: illumina platinum tests; homozygous insertion 2") {
     verifyVariantsAtLocus(1302671) (
+      ("chr1", 1302554, "C", "T"),
       ("chr1", 1302671, "A", "AGT")
     )
   }
@@ -175,13 +176,14 @@ class GermlineAssemblyCallerSuite extends GuacFunSuite with BeforeAndAfterAll {
   test (
     "test assembly caller: homozygous snp in a repeat region") {
     verifyVariantsAtLocus(789255) (
+      ("chr1", 789192, "C", "G"),
       ("chr1", 789255, "T", "C")
     )
   }
 
   test (
       "test assembly caller: het variant near homozygous variant") {
-      verifyVariantsAtLocus(743020, snvWindowRange = 55) (
+      verifyVariantsAtLocus(743020) (
         ("chr1", 743020, "T", "C"),
         ("chr1", 743071, "C", "A")
       )
@@ -189,7 +191,7 @@ class GermlineAssemblyCallerSuite extends GuacFunSuite with BeforeAndAfterAll {
 
   test (
     "test assembly caller: het variant in between two homozygous variants") {
-    verifyVariantsAtLocus(821925, snvWindowRange = 55) (
+    verifyVariantsAtLocus(821925) (
       ("chr1", 821886, "A", "G"),
       ("chr1", 821925, "C", "G"),
       ("chr1", 821947, "T", "C")
