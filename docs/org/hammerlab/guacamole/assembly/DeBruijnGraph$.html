@@ -224,6 +224,22 @@
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.assembly.DeBruijnGraph#discoverPathsFromReads" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="discoverPathsFromReads(reads:Seq[org.hammerlab.guacamole.reads.MappedRead],referenceStart:Int,referenceEnd:Int,referenceSequence:Array[Byte],kmerSize:Int,minOccurrence:Int,maxPaths:Int,debugPrint:Boolean):List[List[Seq[Byte]]]"></a>
+      <a id="discoverPathsFromReads(Seq[MappedRead],Int,Int,Array[Byte],Int,Int,Int,Boolean):List[List[Seq[Byte]]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">discoverPathsFromReads</span><span class="params">(<span name="reads">reads: <span class="extype" name="scala.Seq">Seq</span>[<a href="../reads/MappedRead.html" class="extype" name="org.hammerlab.guacamole.reads.MappedRead">MappedRead</a>]</span>, <span name="referenceStart">referenceStart: <span class="extype" name="scala.Int">Int</span></span>, <span name="referenceEnd">referenceEnd: <span class="extype" name="scala.Int">Int</span></span>, <span name="referenceSequence">referenceSequence: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>, <span name="kmerSize">kmerSize: <span class="extype" name="scala.Int">Int</span></span>, <span name="minOccurrence">minOccurrence: <span class="extype" name="scala.Int">Int</span></span>, <span name="maxPaths">maxPaths: <span class="extype" name="scala.Int">Int</span></span>, <span name="debugPrint">debugPrint: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.immutable.List">List</span>[<span class="extype" name="scala.collection.immutable.List">List</span>[<span class="extype" name="scala.collection.Seq">Seq</span>[<span class="extype" name="scala.Byte">Byte</span>]]]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Find paths through the reads given that represent the sequence covering referenceStart and referenceEnd
+</p><div class="fullcomment"><div class="comment cmt"><p>Find paths through the reads given that represent the sequence covering referenceStart and referenceEnd
+</p></div><dl class="paramcmts block"><dt class="param">reads</dt><dd class="cmt"><p>Reads to use to build the graph</p></dd><dt class="param">referenceStart</dt><dd class="cmt"><p>Start of the reference region corresponding to the reads</p></dd><dt class="param">referenceEnd</dt><dd class="cmt"><p>End of the reference region corresponding to the reads</p></dd><dt class="param">referenceSequence</dt><dd class="cmt"><p>Reference sequence overlapping [referenceStart, referenceEnd)</p></dd><dt class="param">kmerSize</dt><dd class="cmt"><p>Length of kmers to use to traverse the paths</p></dd><dt class="param">minOccurrence</dt><dd class="cmt"><p>Minimum number of occurrences of the each kmer</p></dd><dt class="param">maxPaths</dt><dd class="cmt"><p>Maximum number of paths to find</p></dd><dt class="param">debugPrint</dt><dd class="cmt"><p>Print debug statements (default: false)</p></dd><dt>returns</dt><dd class="cmt"><p>List of paths that traverse the region
+</p></dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -322,7 +338,8 @@
       </h4>
       <p class="shortcomment cmt">Merge sequences where we expect consecutive entries to overlap by <code>overlapSize</code> bases.</p><div class="fullcomment"><div class="comment cmt"><p>Merge sequences where we expect consecutive entries to overlap by <code>overlapSize</code> bases.
 </p></div><dl class="paramcmts block"><dt class="param">sequences</dt><dd class="cmt"><p>Set of sequences that we would like to combine into a single sequence</p></dd><dt class="param">overlapSize</dt><dd class="cmt"><p>The amount of the sequences we expect to overlap (The number of bases the last sequence overlaps
-                   with the next. For a standard kmer graph, this is the length of the kmer length - 1</p></dd><dt>returns</dt><dd class="cmt"><p>A single merged sequence
+                   with the next. For a standard kmer graph, this is the length of the kmer length - 1
+</p></dd><dt>returns</dt><dd class="cmt"><p>A single merged sequence
 </p></dd></dl></div>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>

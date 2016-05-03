@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>DeBruijnGraph - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.assembly.DeBruijnGraph</title>
-          <meta name="description" content="DeBruijnGraph - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.assembly.DeBruijnGraph" />
-          <meta name="keywords" content="DeBruijnGraph guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.assembly.DeBruijnGraph" />
+          <title>AssemblyUtils - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.assembly.AssemblyUtils</title>
+          <meta name="description" content="AssemblyUtils - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.assembly.AssemblyUtils" />
+          <meta name="keywords" content="AssemblyUtils guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.assembly.AssemblyUtils" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -12,7 +12,7 @@
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../index.html';
-            var hash = 'org.hammerlab.guacamole.assembly.DeBruijnGraph';
+            var hash = 'org.hammerlab.guacamole.assembly.AssemblyUtils$';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -22,26 +22,26 @@
    	  </script>
     
         </head>
-        <body class="type">
+        <body class="value">
       <div id="definition">
-        <a href="DeBruijnGraph$.html" title="Go to companion"><img src="../../../../lib/class_to_object_big.png" /></a>
+        <img src="../../../../lib/object_big.png" />
         <p id="owner"><a href="../../../package.html" class="extype" name="org">org</a>.<a href="../../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="../package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole.assembly">assembly</a></p>
-        <h1><a href="DeBruijnGraph$.html" title="Go to companion">DeBruijnGraph</a></h1>
+        <h1>AssemblyUtils</h1>
       </div>
 
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">class</span>
+        <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <span class="name">DeBruijnGraph</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <span class="name">AssemblyUtils</span><span class="result"> extends <span class="extype" name="org.apache.spark.Logging">Logging</span></span>
       </span>
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="org.apache.spark.Logging">Logging</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -59,7 +59,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="org.hammerlab.guacamole.assembly.DeBruijnGraph"><span>DeBruijnGraph</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="org.hammerlab.guacamole.assembly.AssemblyUtils"><span>AssemblyUtils</span></li><li class="in" name="org.apache.spark.Logging"><span>Logging</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -77,80 +77,9 @@
 
       <div id="template">
         <div id="allMembers">
-        <div id="constructors" class="members">
-              <h3>Instance Constructors</h3>
-              <ol><li name="org.hammerlab.guacamole.assembly.DeBruijnGraph#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(kmerSize:Int,kmerCounts:scala.collection.mutable.Map[Seq[Byte],Int]):org.hammerlab.guacamole.assembly.DeBruijnGraph"></a>
-      <a id="&lt;init&gt;:DeBruijnGraph"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">new</span>
-      </span>
-      <span class="symbol">
-        <span class="name">DeBruijnGraph</span><span class="params">(<span name="kmerSize">kmerSize: <span class="extype" name="scala.Int">Int</span></span>, <span name="kmerCounts">kmerCounts: <span class="extype" name="scala.collection.mutable.Map">Map</span>[<span class="extype" name="scala.collection.Seq">Seq</span>[<span class="extype" name="scala.Byte">Byte</span>], <span class="extype" name="scala.Int">Int</span>]</span>)</span>
-      </span>
-      </h4>
-      
-    </li></ol>
-            </div>
+        
 
-        <div id="types" class="types members">
-              <h3>Type Members</h3>
-              <ol><li name="org.hammerlab.guacamole.assembly.DeBruijnGraph.Kmer" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="Kmer=Seq[Byte]"></a>
-      <a id="Kmer:Kmer"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">type</span>
-      </span>
-      <span class="symbol">
-        <span class="name">Kmer</span><span class="result"> = <span class="extype" name="scala.collection.Seq">Seq</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>
-      </span>
-      </h4>
-      
-    </li><li name="org.hammerlab.guacamole.assembly.DeBruijnGraph.Path" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="Path=List[DeBruijnGraph.this.Kmer]"></a>
-      <a id="Path:Path"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">type</span>
-      </span>
-      <span class="symbol">
-        <span class="name">Path</span><span class="result"> = <span class="extype" name="scala.collection.immutable.List">List</span>[<a href="#Kmer=Seq[Byte]" class="extmbr" name="org.hammerlab.guacamole.assembly.DeBruijnGraph.Kmer">Kmer</a>]</span>
-      </span>
-      </h4>
-      
-    </li><li name="org.hammerlab.guacamole.assembly.DeBruijnGraph.Sequence" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="Sequence=Seq[Byte]"></a>
-      <a id="Sequence:Sequence"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">type</span>
-      </span>
-      <span class="symbol">
-        <span class="name">Sequence</span><span class="result"> = <span class="extype" name="scala.collection.Seq">Seq</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>
-      </span>
-      </h4>
-      
-    </li><li name="org.hammerlab.guacamole.assembly.DeBruijnGraph.SubKmer" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="SubKmer=Seq[Byte]"></a>
-      <a id="SubKmer:SubKmer"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">type</span>
-      </span>
-      <span class="symbol">
-        <span class="name">SubKmer</span><span class="result"> = <span class="extype" name="scala.collection.Seq">Seq</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>
-      </span>
-      </h4>
-      
-    </li></ol>
-            </div>
+        
 
         
 
@@ -234,21 +163,21 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.assembly.DeBruijnGraph#children" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="children(node:DeBruijnGraph.this.Kmer):List[DeBruijnGraph.this.Kmer]"></a>
-      <a id="children(Kmer):List[Kmer]"></a>
+    </li><li name="org.hammerlab.guacamole.assembly.AssemblyUtils#buildVariantsFromPath" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="buildVariantsFromPath[T&lt;:org.hammerlab.guacamole.variants.ReferenceVariant](path:Seq[Byte],referenceStart:Int,referenceContig:org.hammerlab.guacamole.reference.ContigSequence,alignPath:Seq[Byte]=&gt;org.hammerlab.guacamole.alignment.ReadAlignment,buildVariant:(Int,Array[Byte],Array[Byte])=&gt;T,allowReferenceVariant:Boolean):Seq[T]"></a>
+      <a id="buildVariantsFromPath[T&lt;:ReferenceVariant](Seq[Byte],Int,ContigSequence,(Seq[Byte])⇒ReadAlignment,(Int,Array[Byte],Array[Byte])⇒T,Boolean):Seq[T]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">children</span><span class="params">(<span name="node">node: <a href="#Kmer=Seq[Byte]" class="extmbr" name="org.hammerlab.guacamole.assembly.DeBruijnGraph.Kmer">Kmer</a></span>)</span><span class="result">: <span class="extype" name="scala.List">List</span>[<a href="#Kmer=Seq[Byte]" class="extmbr" name="org.hammerlab.guacamole.assembly.DeBruijnGraph.Kmer">Kmer</a>]</span>
+        <span class="name">buildVariantsFromPath</span><span class="tparams">[<span name="T">T &lt;: <a href="../variants/ReferenceVariant.html" class="extype" name="org.hammerlab.guacamole.variants.ReferenceVariant">ReferenceVariant</a></span>]</span><span class="params">(<span name="path">path: <span class="extype" name="scala.collection.Seq">Seq</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>, <span name="referenceStart">referenceStart: <span class="extype" name="scala.Int">Int</span></span>, <span name="referenceContig">referenceContig: <a href="../reference/ContigSequence.html" class="extype" name="org.hammerlab.guacamole.reference.ContigSequence">ContigSequence</a></span>, <span name="alignPath">alignPath: (<span class="extype" name="scala.collection.Seq">Seq</span>[<span class="extype" name="scala.Byte">Byte</span>]) ⇒ <a href="../alignment/ReadAlignment.html" class="extype" name="org.hammerlab.guacamole.alignment.ReadAlignment">ReadAlignment</a></span>, <span name="buildVariant">buildVariant: (<span class="extype" name="scala.Int">Int</span>, <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Byte">Byte</span>], <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Byte">Byte</span>]) ⇒ <span class="extype" name="org.hammerlab.guacamole.assembly.AssemblyUtils.buildVariantsFromPath.T">T</span></span>, <span name="allowReferenceVariant">allowReferenceVariant: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="org.hammerlab.guacamole.assembly.AssemblyUtils.buildVariantsFromPath.T">T</span>]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Find all children of a given node
-</p><div class="fullcomment"><div class="comment cmt"><p>Find all children of a given node
-</p></div><dl class="paramcmts block"><dt class="param">node</dt><dd class="cmt"><p>Kmer to find parents of</p></dd><dt>returns</dt><dd class="cmt"><p>List of Kmers where their prefix matches this node's suffix
+      <p class="shortcomment cmt">Call variants from a path discovered from the reads
+</p><div class="fullcomment"><div class="comment cmt"><p>Call variants from a path discovered from the reads
+</p></div><dl class="paramcmts block"><dt class="param">path</dt><dd class="cmt"><p>Possible paths through the reads</p></dd><dt class="param">referenceStart</dt><dd class="cmt"><p>Start locus on the reference contig or chromosome</p></dd><dt class="param">referenceContig</dt><dd class="cmt"><p>Reference sequence overlapping the reference region</p></dd><dt class="param">alignPath</dt><dd class="cmt"><p>Function that returns a ReadAlignment from the path</p></dd><dt class="param">buildVariant</dt><dd class="cmt"><p>Function to build a called variant from the (Locus, ReferenceAllele, Alternate)</p></dd><dt class="param">allowReferenceVariant</dt><dd class="cmt"><p>If true, output variants where the reference and alternate are the same</p></dd><dt>returns</dt><dd class="cmt"><p>Possible sequence of called variants
 </p></dd></dl></div>
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>
@@ -269,21 +198,19 @@
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.assembly.DeBruijnGraph#depthFirstSearch" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="depthFirstSearch(source:DeBruijnGraph.this.Kmer,sink:DeBruijnGraph.this.Kmer,minPathLength:Int,maxPathLength:Int,maxPaths:Int,avoidLoops:Boolean,debugPrint:Boolean):List[DeBruijnGraph.this.Path]"></a>
-      <a id="depthFirstSearch(Kmer,Kmer,Int,Int,Int,Boolean,Boolean):List[Path]"></a>
+    </li><li name="org.hammerlab.guacamole.assembly.AssemblyUtils#discoverHaplotypes" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="discoverHaplotypes(currentWindow:org.hammerlab.guacamole.windowing.SlidingWindow[org.hammerlab.guacamole.reads.MappedRead],kmerSize:Int,reference:org.hammerlab.guacamole.reference.ReferenceGenome,minOccurrence:Int,expectedPloidy:Int,maxPathsToScore:Int,debugPrint:Boolean):Seq[Seq[Byte]]"></a>
+      <a id="discoverHaplotypes(SlidingWindow[MappedRead],Int,ReferenceGenome,Int,Int,Int,Boolean):Seq[Seq[Byte]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">depthFirstSearch</span><span class="params">(<span name="source">source: <a href="#Kmer=Seq[Byte]" class="extmbr" name="org.hammerlab.guacamole.assembly.DeBruijnGraph.Kmer">Kmer</a></span>, <span name="sink">sink: <a href="#Kmer=Seq[Byte]" class="extmbr" name="org.hammerlab.guacamole.assembly.DeBruijnGraph.Kmer">Kmer</a></span>, <span name="minPathLength">minPathLength: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">1</span></span>, <span name="maxPathLength">maxPathLength: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">Int.MaxValue</span></span>, <span name="maxPaths">maxPaths: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">10</span></span>, <span name="avoidLoops">avoidLoops: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">true</span></span>, <span name="debugPrint">debugPrint: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="result">: <span class="extype" name="scala.List">List</span>[<a href="#Path=List[DeBruijnGraph.this.Kmer]" class="extmbr" name="org.hammerlab.guacamole.assembly.DeBruijnGraph.Path">Path</a>]</span>
+        <span class="name">discoverHaplotypes</span><span class="params">(<span name="currentWindow">currentWindow: <a href="../windowing/SlidingWindow.html" class="extype" name="org.hammerlab.guacamole.windowing.SlidingWindow">SlidingWindow</a>[<a href="../reads/MappedRead.html" class="extype" name="org.hammerlab.guacamole.reads.MappedRead">MappedRead</a>]</span>, <span name="kmerSize">kmerSize: <span class="extype" name="scala.Int">Int</span></span>, <span name="reference">reference: <a href="../reference/ReferenceGenome.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceGenome">ReferenceGenome</a></span>, <span name="minOccurrence">minOccurrence: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">3</span></span>, <span name="expectedPloidy">expectedPloidy: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">2</span></span>, <span name="maxPathsToScore">maxPathsToScore: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">16</span></span>, <span name="debugPrint">debugPrint: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.collection.Seq">Seq</span>[<span class="extype" name="scala.Byte">Byte</span>]]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Find a path from source to sink in the graph
-</p><div class="fullcomment"><div class="comment cmt"><p>Find a path from source to sink in the graph
-</p></div><dl class="paramcmts block"><dt class="param">source</dt><dd class="cmt"><p>Kmer node to begin search</p></dd><dt class="param">sink</dt><dd class="cmt"><p>Kmer to search for</p></dd><dt class="param">minPathLength</dt><dd class="cmt"><p>Minimum number of kmers to traverse before finding the sink</p></dd><dt class="param">maxPathLength</dt><dd class="cmt"><p>Maximum number of kmers to traverse before finding the sink</p></dd><dt class="param">maxPaths</dt><dd class="cmt"><p>Maximum number of paths to find from source to sink</p></dd><dt class="param">avoidLoops</dt><dd class="cmt"><p>If avoiding loops, skip nodes that have already been visited</p></dd><dt>returns</dt><dd class="cmt"><p>Set
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">currentWindow</dt><dd class="cmt"><p>Window of reads that overlaps the current loci</p></dd><dt class="param">kmerSize</dt><dd class="cmt"><p>Length kmers in the DeBruijn graph</p></dd><dt class="param">minOccurrence</dt><dd class="cmt"><p>Minimum times a kmer must appear to be in the DeBruijn graph</p></dd><dt class="param">expectedPloidy</dt><dd class="cmt"><p>Expected ploidy, or expected number of valid paths through the graph</p></dd><dt class="param">maxPathsToScore</dt><dd class="cmt"><p>Number of paths to align to the reference to score them</p></dd><dt>returns</dt><dd class="cmt"><p>Collection of paths through the reads
 </p></dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
@@ -356,6 +283,24 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.assembly.AssemblyUtils#isActiveRegion" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="isActiveRegion(reads:Seq[org.hammerlab.guacamole.reads.MappedRead],referenceContig:org.hammerlab.guacamole.reference.ContigSequence,minAreaVaf:Float):Boolean"></a>
+      <a id="isActiveRegion(Seq[MappedRead],ContigSequence,Float):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isActiveRegion</span><span class="params">(<span name="reads">reads: <span class="extype" name="scala.Seq">Seq</span>[<a href="../reads/MappedRead.html" class="extype" name="org.hammerlab.guacamole.reads.MappedRead">MappedRead</a>]</span>, <span name="referenceContig">referenceContig: <a href="../reference/ContigSequence.html" class="extype" name="org.hammerlab.guacamole.reference.ContigSequence">ContigSequence</a></span>, <span name="minAreaVaf">minAreaVaf: <span class="extype" name="scala.Float">Float</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Heuristic to determine when a region has a complex collection of region alignments
+This is based on reads with multiple mismatches or insertion / deletion alignments
+</p><div class="fullcomment"><div class="comment cmt"><p>Heuristic to determine when a region has a complex collection of region alignments
+This is based on reads with multiple mismatches or insertion / deletion alignments
+</p></div><dl class="paramcmts block"><dt class="param">reads</dt><dd class="cmt"><p>Set of reads in a reference region</p></dd><dt class="param">referenceContig</dt><dd class="cmt"><p>Reference contig for the region</p></dd><dt class="param">minAreaVaf</dt><dd class="cmt"><p>Minimum fraction of reads needed</p></dd><dt>returns</dt><dd class="cmt"><p>True if the 'active' region
+</p></dd></dl></div>
     </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <a id="isInstanceOf[T0]:Boolean"></a>
@@ -369,45 +314,175 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.assembly.DeBruijnGraph#kmerCounts" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="kmerCounts:scala.collection.mutable.Map[Seq[Byte],Int]"></a>
-      <a id="kmerCounts:Map[Seq[Byte],Int]"></a>
+    </li><li name="org.apache.spark.Logging#isTraceEnabled" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="isTraceEnabled():Boolean"></a>
+      <a id="isTraceEnabled():Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">val</span>
+        <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">kmerCounts</span><span class="result">: <span class="extype" name="scala.collection.mutable.Map">Map</span>[<span class="extype" name="scala.collection.Seq">Seq</span>[<span class="extype" name="scala.Byte">Byte</span>], <span class="extype" name="scala.Int">Int</span>]</span>
+        <span class="name">isTraceEnabled</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
-      
-    </li><li name="org.hammerlab.guacamole.assembly.DeBruijnGraph#kmerSize" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="kmerSize:Int"></a>
-      <a id="kmerSize:Int"></a>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd>Logging</dd></dl></div>
+    </li><li name="org.apache.spark.Logging#log" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="log:org.slf4j.Logger"></a>
+      <a id="log:Logger"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">val</span>
+        <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">kmerSize</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+        <span class="name">log</span><span class="result">: <span class="extype" name="org.slf4j.Logger">Logger</span></span>
       </span>
       </h4>
-      
-    </li><li name="org.hammerlab.guacamole.assembly.DeBruijnGraph#mergeIndex" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="mergeIndex:scala.collection.mutable.Map[DeBruijnGraph.this.Kmer,(DeBruijnGraph.this.Sequence,Int)]"></a>
-      <a id="mergeIndex:Map[Kmer,(Sequence,Int)]"></a>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd>Logging</dd></dl></div>
+    </li><li name="org.apache.spark.Logging#logDebug" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="logDebug(msg:=&gt;String,throwable:Throwable):Unit"></a>
+      <a id="logDebug(⇒String,Throwable):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">val</span>
+        <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">mergeIndex</span><span class="result">: <span class="extype" name="scala.collection.mutable.Map">Map</span>[<a href="#Kmer=Seq[Byte]" class="extmbr" name="org.hammerlab.guacamole.assembly.DeBruijnGraph.Kmer">Kmer</a>, (<a href="#Sequence=Seq[Byte]" class="extmbr" name="org.hammerlab.guacamole.assembly.DeBruijnGraph.Sequence">Sequence</a>, <span class="extype" name="scala.Int">Int</span>)]</span>
+        <span class="name">logDebug</span><span class="params">(<span name="msg">msg: ⇒ <span class="extype" name="scala.Predef.String">String</span></span>, <span name="throwable">throwable: <span class="extype" name="scala.Throwable">Throwable</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd>Logging</dd></dl></div>
+    </li><li name="org.apache.spark.Logging#logDebug" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="logDebug(msg:=&gt;String):Unit"></a>
+      <a id="logDebug(⇒String):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">logDebug</span><span class="params">(<span name="msg">msg: ⇒ <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd>Logging</dd></dl></div>
+    </li><li name="org.apache.spark.Logging#logError" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="logError(msg:=&gt;String,throwable:Throwable):Unit"></a>
+      <a id="logError(⇒String,Throwable):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">logError</span><span class="params">(<span name="msg">msg: ⇒ <span class="extype" name="scala.Predef.String">String</span></span>, <span name="throwable">throwable: <span class="extype" name="scala.Throwable">Throwable</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd>Logging</dd></dl></div>
+    </li><li name="org.apache.spark.Logging#logError" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="logError(msg:=&gt;String):Unit"></a>
+      <a id="logError(⇒String):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">logError</span><span class="params">(<span name="msg">msg: ⇒ <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd>Logging</dd></dl></div>
+    </li><li name="org.apache.spark.Logging#logInfo" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="logInfo(msg:=&gt;String,throwable:Throwable):Unit"></a>
+      <a id="logInfo(⇒String,Throwable):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">logInfo</span><span class="params">(<span name="msg">msg: ⇒ <span class="extype" name="scala.Predef.String">String</span></span>, <span name="throwable">throwable: <span class="extype" name="scala.Throwable">Throwable</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd>Logging</dd></dl></div>
+    </li><li name="org.apache.spark.Logging#logInfo" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="logInfo(msg:=&gt;String):Unit"></a>
+      <a id="logInfo(⇒String):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">logInfo</span><span class="params">(<span name="msg">msg: ⇒ <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd>Logging</dd></dl></div>
+    </li><li name="org.apache.spark.Logging#logName" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="logName:String"></a>
+      <a id="logName:String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">logName</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd>Logging</dd></dl></div>
+    </li><li name="org.apache.spark.Logging#logTrace" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="logTrace(msg:=&gt;String,throwable:Throwable):Unit"></a>
+      <a id="logTrace(⇒String,Throwable):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">logTrace</span><span class="params">(<span name="msg">msg: ⇒ <span class="extype" name="scala.Predef.String">String</span></span>, <span name="throwable">throwable: <span class="extype" name="scala.Throwable">Throwable</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd>Logging</dd></dl></div>
+    </li><li name="org.apache.spark.Logging#logTrace" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="logTrace(msg:=&gt;String):Unit"></a>
+      <a id="logTrace(⇒String):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">logTrace</span><span class="params">(<span name="msg">msg: ⇒ <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd>Logging</dd></dl></div>
+    </li><li name="org.apache.spark.Logging#logWarning" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="logWarning(msg:=&gt;String,throwable:Throwable):Unit"></a>
+      <a id="logWarning(⇒String,Throwable):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">logWarning</span><span class="params">(<span name="msg">msg: ⇒ <span class="extype" name="scala.Predef.String">String</span></span>, <span name="throwable">throwable: <span class="extype" name="scala.Throwable">Throwable</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd>Logging</dd></dl></div>
+    </li><li name="org.apache.spark.Logging#logWarning" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="logWarning(msg:=&gt;String):Unit"></a>
+      <a id="logWarning(⇒String):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">logWarning</span><span class="params">(<span name="msg">msg: ⇒ <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd>Logging</dd></dl></div>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -447,76 +522,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.assembly.DeBruijnGraph#parents" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="parents(node:DeBruijnGraph.this.Kmer):List[DeBruijnGraph.this.Kmer]"></a>
-      <a id="parents(Kmer):List[Kmer]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">parents</span><span class="params">(<span name="node">node: <a href="#Kmer=Seq[Byte]" class="extmbr" name="org.hammerlab.guacamole.assembly.DeBruijnGraph.Kmer">Kmer</a></span>)</span><span class="result">: <span class="extype" name="scala.List">List</span>[<a href="#Kmer=Seq[Byte]" class="extmbr" name="org.hammerlab.guacamole.assembly.DeBruijnGraph.Kmer">Kmer</a>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Find all parents of a given node
-</p><div class="fullcomment"><div class="comment cmt"><p>Find all parents of a given node
-</p></div><dl class="paramcmts block"><dt class="param">node</dt><dd class="cmt"><p>Kmer to find parents of</p></dd><dt>returns</dt><dd class="cmt"><p>List of Kmers where their suffix matches this nodes prefix
-</p></dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.assembly.DeBruijnGraph#prefixTable" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="prefixTable:scala.collection.mutable.Map[DeBruijnGraph.this.SubKmer,List[DeBruijnGraph.this.Kmer]]"></a>
-      <a id="prefixTable:Map[SubKmer,List[Kmer]]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">prefixTable</span><span class="result">: <span class="extype" name="scala.collection.mutable.Map">Map</span>[<a href="#SubKmer=Seq[Byte]" class="extmbr" name="org.hammerlab.guacamole.assembly.DeBruijnGraph.SubKmer">SubKmer</a>, <span class="extype" name="scala.List">List</span>[<a href="#Kmer=Seq[Byte]" class="extmbr" name="org.hammerlab.guacamole.assembly.DeBruijnGraph.Kmer">Kmer</a>]]</span>
-      </span>
-      </h4>
-      
-    </li><li name="org.hammerlab.guacamole.assembly.DeBruijnGraph#sinks" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="sinks:Iterable[DeBruijnGraph.this.Kmer]"></a>
-      <a id="sinks:Iterable[Kmer]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">sinks</span><span class="result">: <span class="extype" name="scala.Iterable">Iterable</span>[<a href="#Kmer=Seq[Byte]" class="extmbr" name="org.hammerlab.guacamole.assembly.DeBruijnGraph.Kmer">Kmer</a>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Find all nodes that have out-degree = 0
-</p>
-    </li><li name="org.hammerlab.guacamole.assembly.DeBruijnGraph#sources" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="sources:Iterable[DeBruijnGraph.this.Kmer]"></a>
-      <a id="sources:Iterable[Kmer]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">sources</span><span class="result">: <span class="extype" name="scala.Iterable">Iterable</span>[<a href="#Kmer=Seq[Byte]" class="extmbr" name="org.hammerlab.guacamole.assembly.DeBruijnGraph.Kmer">Kmer</a>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Find all nodes that have in-degree = 0
-</p>
-    </li><li name="org.hammerlab.guacamole.assembly.DeBruijnGraph#suffixTable" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="suffixTable:scala.collection.mutable.Map[DeBruijnGraph.this.SubKmer,List[DeBruijnGraph.this.Kmer]]"></a>
-      <a id="suffixTable:Map[SubKmer,List[Kmer]]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">suffixTable</span><span class="result">: <span class="extype" name="scala.collection.mutable.Map">Map</span>[<a href="#SubKmer=Seq[Byte]" class="extmbr" name="org.hammerlab.guacamole.assembly.DeBruijnGraph.SubKmer">SubKmer</a>, <span class="extype" name="scala.List">List</span>[<a href="#Kmer=Seq[Byte]" class="extmbr" name="org.hammerlab.guacamole.assembly.DeBruijnGraph.Kmer">Kmer</a>]]</span>
-      </span>
-      </h4>
-      
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -609,7 +614,9 @@
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="scala.AnyRef">
+        <div class="parent" name="org.apache.spark.Logging">
+              <h3>Inherited from <span class="extype" name="org.apache.spark.Logging">Logging</span></h3>
+            </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
             </div><div class="parent" name="scala.Any">
               <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
