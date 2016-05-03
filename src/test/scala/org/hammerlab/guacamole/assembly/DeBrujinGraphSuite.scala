@@ -1,15 +1,11 @@
 package org.hammerlab.guacamole.assembly
 
-import org.hammerlab.guacamole.reads.{Read, UnmappedRead}
 import org.hammerlab.guacamole.util.TestUtil.Implicits._
-import org.hammerlab.guacamole.util.{AssertBases, Bases, GuacFunSuite, TestUtil}
 import org.hammerlab.guacamole.util.TestUtil._
+import org.hammerlab.guacamole.util.{AssertBases, Bases, GuacFunSuite, TestUtil}
 
 class DeBruijnGraphSuite extends GuacFunSuite {
 
-  def read(seq: String): Read = {
-    new UnmappedRead("read", seq, "#" * seq.length, isDuplicate = false, sampleName = "sample", failedVendorQualityChecks = false, isPaired =false)
-  }
 
   test("DeBruijnGraph.mergeKmers") {
     val kmers = Seq("TTTC", "TTCC", "TCCC", "CCCC").map(Bases.stringToBases)
@@ -48,6 +44,58 @@ class DeBruijnGraphSuite extends GuacFunSuite {
     val graph = DeBruijnGraph(Seq(sequence), kmerSize = 3)
 
     graph.kmerCounts === Map("TCA" -> 1, "CAT" -> 2, "AAA" -> 3)
+  }
+
+  test("build graph and prune sequence based on kmer quality") {
+
+    val highQualitySequence = makeRead(
+      "TCATCTTAAAAGACATAAA",
+      qualityScores = Some((0 until 19).map(_ => 30)) // All base qualities are 30
+    )
+
+    val lowQualitySequence = makeRead(
+      "TCATCTTAAAAGACATAAA",
+      qualityScores = Some((0 until 19).map(_ => 10)) // All base qualities are 10
+    )
+
+    val graph = DeBruijnGraph(
+      Seq(highQualitySequence, lowQualitySequence),
+      kmerSize = 3,
+      minMeanKmerBaseQuality = 15
+    )
+
+    graph.kmerCounts === Map("TCA" -> 1, "CAT" -> 2, "AAA" -> 3)
+  }
+
+  test("build graph and prune kmers with different base quality thresholds") {
+
+    val highQualitySequence = makeRead(
+      "TCATCTTAAAAGACATAAA",
+      qualityScores = Some((0 until 19).map(_ => 30)) // All base qualities are 30
+    )
+
+    val lowQualitySequence = makeRead(
+          "TCATCTTAA" + // Base quality 30
+          "AAGACA" +    // Base quality 5
+          "TAAA",       // Base quality 30
+      qualityScores = Some((0 until 10).map(_ => 30) ++ (10 until 15).map(_ => 5) ++  (15 until 19).map(_ => 30))
+    )
+
+    val lowThresholdGraph = DeBruijnGraph(
+      Seq(highQualitySequence, lowQualitySequence),
+      kmerSize = 3,
+      minMeanKmerBaseQuality = 15
+    )
+
+    lowThresholdGraph.kmerCounts === Map("TCA" -> 2, "CAT" -> 3, "AAA" -> 5)
+
+    val highThresholdGraph = DeBruijnGraph(
+      Seq(highQualitySequence, lowQualitySequence),
+      kmerSize = 3,
+      minMeanKmerBaseQuality = 25
+    )
+
+    highThresholdGraph.kmerCounts === Map("TCA" -> 2, "CAT" -> 3, "AAA" -> 4)
   }
 
   test("build graph with short kmers and correct children/parents") {
