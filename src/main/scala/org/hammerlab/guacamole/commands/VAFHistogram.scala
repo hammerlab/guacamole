@@ -10,9 +10,8 @@ import org.apache.spark.rdd.RDD
 import org.apache.spark.storage.StorageLevel
 import org.hammerlab.guacamole._
 import org.hammerlab.guacamole.distributed.LociPartitionUtils
-import org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociAccordingToArgs
+import org.hammerlab.guacamole.distributed.LociPartitionUtils.{LociPartitioning, partitionLociAccordingToArgs}
 import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMap
-import org.hammerlab.guacamole.loci.map.LociMap
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.{InputFilters, MappedRead, ReadLoadingConfigArgs}
@@ -123,7 +122,7 @@ object VAFHistogram {
       val lociPartitions = partitionLociAccordingToArgs(
         args,
         loci.result(readSets(0).contigLengths),
-        readSets(0).mappedReads // Use the first set of reads as a proxy for read depth
+        readSets(0).mappedReads  // Use the first set of reads as a proxy for read depth
       )
 
       val minReadDepth = args.minReadDepth
@@ -224,7 +223,7 @@ object VAFHistogram {
    */
   def variantLociFromReads(reads: RDD[MappedRead],
                            reference: ReferenceGenome,
-                           lociPartitions: LociMap[Long],
+                           lociPartitions: LociPartitioning,
                            samplePercent: Int = 100,
                            minReadDepth: Int = 0,
                            minVariantAlleleFrequency: Int = 0,
