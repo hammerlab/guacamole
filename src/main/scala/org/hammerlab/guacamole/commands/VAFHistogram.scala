@@ -98,7 +98,7 @@ object VAFHistogram {
     override def run(args: Arguments, sc: SparkContext): Unit = {
       val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
 
-      val loci = Common.lociFromArguments(args)
+      val loci = args.parseLoci()
       val filters =
         InputFilters(
           overlapsLoci = loci,

@@ -120,7 +120,7 @@ class LociSetSuite extends GuacFunSuite {
     // Test -loci argument
     val args1 = new TestArgs()
     args1.loci = "20:100-200"
-    Common.lociFromArguments(args1).result should equal(LociSet("20:100-200"))
+    args1.parseLoci().result should equal(LociSet("20:100-200"))
 
     // Test -loci-from-file argument. The test file gives a loci set equal to 20:100-200.
     val args2 = new TestArgs()
