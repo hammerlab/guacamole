@@ -1,4 +1,5 @@
 package org.hammerlab.guacamole.commands.jointcaller
+
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
 import org.scalatest.Matchers

@@ -2,12 +2,12 @@ package org.hammerlab.guacamole.distributed
 
 import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole._
+import org.hammerlab.guacamole.distributed.LociPartitionUtils.LociPartitioning
+import org.hammerlab.guacamole.distributed.WindowFlatMapUtils.windowFlatMapWithState
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.reference.{ReferenceGenome, _}
 import org.hammerlab.guacamole.windowing.SlidingWindow
-import WindowFlatMapUtils.windowFlatMapWithState
-import org.hammerlab.guacamole.loci.map.LociMap
 
 import scala.reflect.ClassTag
 
@@ -41,7 +41,7 @@ object PileupFlatMapUtils {
    *
    */
   def pileupFlatMap[T: ClassTag](reads: RDD[MappedRead],
-                                 lociPartitions: LociMap[Long],
+                                 lociPartitions: LociPartitioning,
                                  skipEmpty: Boolean,
                                  function: Pileup => Iterator[T],
                                  reference: ReferenceGenome): RDD[T] = {
@@ -68,7 +68,7 @@ object PileupFlatMapUtils {
    */
   def pileupFlatMapTwoRDDs[T: ClassTag](reads1: RDD[MappedRead],
                                         reads2: RDD[MappedRead],
-                                        lociPartitions: LociMap[Long],
+                                        lociPartitions: LociPartitioning,
                                         skipEmpty: Boolean,
                                         function: (Pileup, Pileup) => Iterator[T],
                                         reference: ReferenceGenome): RDD[T] = {
@@ -93,7 +93,7 @@ object PileupFlatMapUtils {
    * @see the windowTaskFlatMapMultipleRDDs function for other argument descriptions.
    */
   def pileupFlatMapMultipleRDDs[T: ClassTag](readsRDDs: PerSample[RDD[MappedRead]],
-                                             lociPartitions: LociMap[Long],
+                                             lociPartitions: LociPartitioning,
                                              skipEmpty: Boolean,
                                              function: PerSample[Pileup] => Iterator[T],
                                              reference: ReferenceGenome): RDD[T] = {

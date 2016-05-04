@@ -3,7 +3,7 @@ package org.hammerlab.guacamole.distributed
 import org.apache.commons.math3
 import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.rdd.RDD
-import org.hammerlab.guacamole.loci.map.LociMap
+import org.hammerlab.guacamole.distributed.LociPartitionUtils.LociPartitioning
 import org.hammerlab.guacamole.loci.set.{Contig, LociSet}
 import org.hammerlab.guacamole.logging.DelayedMessages
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
@@ -40,7 +40,7 @@ object WindowFlatMapUtils {
     * @return RDD[T] of flatmap results
     */
   def windowFlatMapWithState[R <: ReferenceRegion: ClassTag, T: ClassTag, S](regionRDDs: PerSample[RDD[R]],
-                                                                             lociPartitions: LociMap[Long],
+                                                                             lociPartitions: LociPartitioning,
                                                                              skipEmpty: Boolean,
                                                                              halfWindowSize: Long,
                                                                              initialState: S,
@@ -85,7 +85,7 @@ object WindowFlatMapUtils {
     * @return Iterator[T], the aggregate values collected over contigs
     */
   def windowFoldLoci[R <: ReferenceRegion: ClassTag, T: ClassTag](regionRDDs: PerSample[RDD[R]],
-                                                                  lociPartitions: LociMap[Long],
+                                                                  lociPartitions: LociPartitioning,
                                                                   skipEmpty: Boolean,
                                                                   halfWindowSize: Long,
                                                                   initialValue: T,
@@ -139,7 +139,7 @@ object WindowFlatMapUtils {
     */
   private[distributed] def windowTaskFlatMapMultipleRDDs[R <: ReferenceRegion: ClassTag, T: ClassTag](
     regionRDDs: PerSample[RDD[R]],
-    lociPartitions: LociMap[Long],
+    lociPartitions: LociPartitioning,
     halfWindowSize: Long,
     function: (Long, LociSet, PerSample[Iterator[R]]) => Iterator[T]): RDD[T] = {
 
@@ -147,7 +147,7 @@ object WindowFlatMapUtils {
     assume(numRDDs > 0)
     val sc = regionRDDs(0).sparkContext
     progress(s"Loci partitioning: $lociPartitions")
-    val lociPartitionsBoxed: Broadcast[LociMap[Long]] = sc.broadcast(lociPartitions)
+    val lociPartitionsBoxed: Broadcast[LociPartitioning] = sc.broadcast(lociPartitions)
     val numTasks = lociPartitions.inverse.map(_._1).max + 1
 
     // Counters
@@ -174,7 +174,7 @@ object WindowFlatMapUtils {
         expandedRegions += thisRegionsTasks.size
 
         // Return this region, duplicated for each task it is assigned to.
-        thisRegionsTasks.map(task => (TaskPosition(task.toInt, region.referenceContig, region.start), region))
+        thisRegionsTasks.map(task => (TaskPosition(task, region.referenceContig, region.start), region))
       }))
 
     // Run the task on each partition. Keep track of the number of regions assigned to each task in an accumulator, so
@@ -204,7 +204,7 @@ object WindowFlatMapUtils {
         case (taskNumberRegionPairs, rddIndex: Int) => {
           taskNumberRegionPairs.map(pair => (pair._1, (rddIndex, pair._2)))
         }
-      })).repartitionAndSortWithinPartitions(new KeyPartitioner(numTasks.toInt)).map(_._2)
+      })).repartitionAndSortWithinPartitions(KeyPartitioner(numTasks)).map(_._2)
 
     partitioned.mapPartitionsWithIndex((taskNum, values) => {
       val iterators = SplitIterator.split(numRDDs, values)
