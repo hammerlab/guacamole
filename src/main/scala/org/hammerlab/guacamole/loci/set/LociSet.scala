@@ -18,10 +18,14 @@
 
 package org.hammerlab.guacamole.loci.set
 
+import java.io.{File, InputStreamReader}
 import java.lang.{Long => JLong}
 
 import com.google.common.collect.{Range => JRange}
 import htsjdk.variant.vcf.VCFFileReader
+import org.apache.commons.io.IOUtils
+import org.apache.hadoop.conf.Configuration
+import org.apache.hadoop.fs.{FileSystem, Path}
 import org.hammerlab.guacamole.reference.ReferenceRegion
 import org.hammerlab.guacamole.strings.TruncatedToString
 
@@ -150,4 +154,55 @@ object LociSet {
           (value.getContig, value.getStart - 1L, value.getEnd.toLong)
         )
     )
+
+  /**
+   * Load a LociSet from the specified file, using the contig lengths from the given ReadSet.
+   *
+   * @param filePath path to file containing loci. If it ends in '.vcf' then it is read as a VCF and the variant sites
+   *                 are the loci. If it ends in '.loci' or '.txt' then it should be a file containing loci as
+   *                 "chrX:5-10,chr12-10-20", etc. Whitespace is ignored.
+   * @param contigLengths contig lengths, by name
+   * @return a LociSet
+   */
+  private def loadFromFile(filePath: String, contigLengths: Map[String, Long]): LociSet = {
+    if (filePath.endsWith(".vcf")) {
+      LociSet(
+        new VCFFileReader(new File(filePath), false)
+      )
+    } else if (filePath.endsWith(".loci") || filePath.endsWith(".txt")) {
+      val filesystem = FileSystem.get(new Configuration())
+      val path = new Path(filePath)
+      LociParser(
+        IOUtils.toString(new InputStreamReader(filesystem.open(path)))
+      ).result(contigLengths)
+    } else {
+      throw new IllegalArgumentException(
+        s"Couldn't guess format for file: $filePath. Expected file extensions: '.loci' or '.txt' for loci string format; '.vcf' for VCFs."
+      )
+    }
+  }
+
+  /**
+   * Load loci from a string or a path to a file.
+   *
+   * Specify at most one of loci or lociFromFilePath.
+   *
+   * @param loci loci to load as a string
+   * @param lociFromFilePath path to file containing loci to load
+   * @param contigLengths contig lengths, by name
+   * @return a LociSet
+   */
+  def load(loci: String, lociFromFilePath: String, contigLengths: Map[String, Long]): LociSet = {
+    if (loci.nonEmpty && lociFromFilePath.nonEmpty) {
+      throw new IllegalArgumentException("Specify at most one of the 'loci' and 'loci-from-file' arguments")
+    }
+    if (loci.nonEmpty) {
+      LociParser(loci).result(contigLengths)
+    } else if (lociFromFilePath.nonEmpty) {
+      loadFromFile(lociFromFilePath, contigLengths)
+    } else {
+      // Default is "all"
+      LociSet.all(contigLengths)
+    }
+  }
 }
