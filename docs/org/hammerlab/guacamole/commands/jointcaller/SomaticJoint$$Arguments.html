@@ -673,28 +673,47 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>ParquetArgs → ParquetRDDArgs</dd></dl></div>
     </li><li name="org.hammerlab.guacamole.distributed.LociPartitionUtils.Arguments#parallelism" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="parallelism:Int"></a>
-      <a id="parallelism:Int"></a>
+      <a id="parallelism:org.hammerlab.guacamole.distributed.LociPartitionUtils.NumPartitions"></a>
+      <a id="parallelism:NumPartitions"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">var</span>
       </span>
       <span class="symbol">
-        <span class="name">parallelism</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+        <span class="name">parallelism</span><span class="result">: <a href="../../distributed/LociPartitionUtils$.html#NumPartitions=Int" class="extmbr" name="org.hammerlab.guacamole.distributed.LociPartitionUtils.NumPartitions">NumPartitions</a></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../distributed/LociPartitionUtils$$Arguments.html" class="extype" name="org.hammerlab.guacamole.distributed.LociPartitionUtils.Arguments">Arguments</a></dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.loci.LociArgs#parseLoci" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="parseLoci(fallback:String):org.hammerlab.guacamole.loci.set.LociParser"></a>
+      <a id="parseLoci(String):LociParser"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">parseLoci</span><span class="params">(<span name="fallback">fallback: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;all&quot;</span></span>)</span><span class="result">: <a href="../../loci/set/LociParser.html" class="extype" name="org.hammerlab.guacamole.loci.set.LociParser">LociParser</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Parse string representations of loci ranges, either from the &quot;--loci&quot; cmdline parameter or a file specified by the
+&quot;--loci-from-file&quot; parameter, and return a LociParser encapsulating the result.</p><div class="fullcomment"><div class="comment cmt"><p>Parse string representations of loci ranges, either from the &quot;--loci&quot; cmdline parameter or a file specified by the
+&quot;--loci-from-file&quot; parameter, and return a LociParser encapsulating the result. The latter can then be converted
+into a LociSet when contig-lengths are available / have been parsed from read-sets.
+</p></div><dl class="paramcmts block"><dt class="param">fallback</dt><dd class="cmt"><p>If neither &quot;--loci&quot; nor &quot;--loci-from-file&quot; were provided, fall back to this string representation
+                of the loci that should be considered.</p></dd><dt>returns</dt><dd class="cmt"><p>a LociParser wrapping the appropriate loci ranges.
+</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../loci/LociArgs.html" class="extype" name="org.hammerlab.guacamole.loci.LociArgs">LociArgs</a></dd></dl></div>
     </li><li name="org.hammerlab.guacamole.distributed.LociPartitionUtils.Arguments#partitioningAccuracy" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="partitioningAccuracy:Int"></a>
-      <a id="partitioningAccuracy:Int"></a>
+      <a id="partitioningAccuracy:org.hammerlab.guacamole.distributed.LociPartitionUtils.NumMicroPartitions"></a>
+      <a id="partitioningAccuracy:NumMicroPartitions"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">var</span>
       </span>
       <span class="symbol">
-        <span class="name">partitioningAccuracy</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+        <span class="name">partitioningAccuracy</span><span class="result">: <a href="../../distributed/LociPartitionUtils$.html#NumMicroPartitions=Long" class="extmbr" name="org.hammerlab.guacamole.distributed.LociPartitionUtils.NumMicroPartitions">NumMicroPartitions</a></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../distributed/LociPartitionUtils$$Arguments.html" class="extype" name="org.hammerlab.guacamole.distributed.LociPartitionUtils.Arguments">Arguments</a></dd></dl></div>

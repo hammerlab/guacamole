@@ -94,6 +94,71 @@
       </span>
       </h4>
       
+    </li><li name="org.hammerlab.guacamole.distributed.LociPartitionUtils.LociPartitioning" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="LociPartitioning=org.hammerlab.guacamole.loci.map.LociMap[org.hammerlab.guacamole.distributed.LociPartitionUtils.PartitionIndex]"></a>
+      <a id="LociPartitioning:LociPartitioning"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">type</span>
+      </span>
+      <span class="symbol">
+        <span class="name">LociPartitioning</span><span class="result"> = <a href="../loci/map/LociMap.html" class="extype" name="org.hammerlab.guacamole.loci.map.LociMap">LociMap</a>[<a href="#PartitionIndex=Int" class="extmbr" name="org.hammerlab.guacamole.distributed.LociPartitionUtils.PartitionIndex">PartitionIndex</a>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.distributed.LociPartitionUtils.MicroPartitionIndex" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="MicroPartitionIndex=Long"></a>
+      <a id="MicroPartitionIndex:MicroPartitionIndex"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">type</span>
+      </span>
+      <span class="symbol">
+        <span class="name">MicroPartitionIndex</span><span class="result"> = <span class="extype" name="scala.Long">Long</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.distributed.LociPartitionUtils.NumMicroPartitions" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="NumMicroPartitions=Long"></a>
+      <a id="NumMicroPartitions:NumMicroPartitions"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">type</span>
+      </span>
+      <span class="symbol">
+        <span class="name">NumMicroPartitions</span><span class="result"> = <span class="extype" name="scala.Long">Long</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.distributed.LociPartitionUtils.NumPartitions" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="NumPartitions=Int"></a>
+      <a id="NumPartitions:NumPartitions"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">type</span>
+      </span>
+      <span class="symbol">
+        <span class="name">NumPartitions</span><span class="result"> = <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.distributed.LociPartitionUtils.PartitionIndex" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="PartitionIndex=Int"></a>
+      <a id="PartitionIndex:PartitionIndex"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">type</span>
+      </span>
+      <span class="symbol">
+        <span class="name">PartitionIndex</span><span class="result"> = <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4>
+      
     </li></ol>
             </div>
 
@@ -322,55 +387,73 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="org.hammerlab.guacamole.distributed.LociPartitionUtils#partitionLociAccordingToArgs" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="partitionLociAccordingToArgs[R&lt;:org.hammerlab.guacamole.reference.ReferenceRegion](args:org.hammerlab.guacamole.distributed.LociPartitionUtils.Arguments,loci:org.hammerlab.guacamole.loci.set.LociSet,regionRDDs:org.apache.spark.rdd.RDD[R]*)(implicitevidence$1:scala.reflect.ClassTag[R]):org.hammerlab.guacamole.loci.map.LociMap[Long]"></a>
-      <a id="partitionLociAccordingToArgs[R&lt;:ReferenceRegion](Arguments,LociSet,RDD[R]*)(ClassTag[R]):LociMap[Long]"></a>
+      <a id="partitionLociAccordingToArgs[R&lt;:org.hammerlab.guacamole.reference.ReferenceRegion](args:org.hammerlab.guacamole.distributed.LociPartitionUtils.Arguments,loci:org.hammerlab.guacamole.loci.set.LociSet,regionRDDs:org.hammerlab.guacamole.PerSample[org.apache.spark.rdd.RDD[R]])(implicitevidence$2:scala.reflect.ClassTag[R]):org.hammerlab.guacamole.distributed.LociPartitionUtils.LociPartitioning"></a>
+      <a id="partitionLociAccordingToArgs[R&lt;:ReferenceRegion](Arguments,LociSet,PerSample[RDD[R]])(ClassTag[R]):LociPartitioning"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">partitionLociAccordingToArgs</span><span class="tparams">[<span name="R">R &lt;: <a href="../reference/ReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceRegion">ReferenceRegion</a></span>]</span><span class="params">(<span name="args">args: <a href="LociPartitionUtils$$Arguments.html" class="extype" name="org.hammerlab.guacamole.distributed.LociPartitionUtils.Arguments">Arguments</a></span>, <span name="loci">loci: <a href="../loci/set/LociSet.html" class="extype" name="org.hammerlab.guacamole.loci.set.LociSet">LociSet</a></span>, <span name="regionRDDs">regionRDDs: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociAccordingToArgs.R">R</span>]*</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.reflect.ClassTag">ClassTag</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociAccordingToArgs.R">R</span>]</span>)</span><span class="result">: <a href="../loci/map/LociMap.html" class="extype" name="org.hammerlab.guacamole.loci.map.LociMap">LociMap</a>[<span class="extype" name="scala.Long">Long</span>]</span>
+        <span class="name">partitionLociAccordingToArgs</span><span class="tparams">[<span name="R">R &lt;: <a href="../reference/ReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceRegion">ReferenceRegion</a></span>]</span><span class="params">(<span name="args">args: <a href="LociPartitionUtils$$Arguments.html" class="extype" name="org.hammerlab.guacamole.distributed.LociPartitionUtils.Arguments">Arguments</a></span>, <span name="loci">loci: <a href="../loci/set/LociSet.html" class="extype" name="org.hammerlab.guacamole.loci.set.LociSet">LociSet</a></span>, <span name="regionRDDs">regionRDDs: <a href="../package.html#PerSample[A]=IndexedSeq[A]" class="extmbr" name="org.hammerlab.guacamole.PerSample">PerSample</a>[<span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociAccordingToArgs.R">R</span>]]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.reflect.ClassTag">ClassTag</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociAccordingToArgs.R">R</span>]</span>)</span><span class="result">: <a href="#LociPartitioning=org.hammerlab.guacamole.loci.map.LociMap[org.hammerlab.guacamole.distributed.LociPartitionUtils.PartitionIndex]" class="extmbr" name="org.hammerlab.guacamole.distributed.LociPartitionUtils.LociPartitioning">LociPartitioning</a></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Partition a LociSet among tasks according to the strategy specified in args.</p>
+      
+    </li><li name="org.hammerlab.guacamole.distributed.LociPartitionUtils#partitionLociAccordingToArgs" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="partitionLociAccordingToArgs[R&lt;:org.hammerlab.guacamole.reference.ReferenceRegion](args:org.hammerlab.guacamole.distributed.LociPartitionUtils.Arguments,loci:org.hammerlab.guacamole.loci.set.LociSet,regionRDD:org.apache.spark.rdd.RDD[R])(implicitevidence$1:scala.reflect.ClassTag[R]):org.hammerlab.guacamole.distributed.LociPartitionUtils.LociPartitioning"></a>
+      <a id="partitionLociAccordingToArgs[R&lt;:ReferenceRegion](Arguments,LociSet,RDD[R])(ClassTag[R]):LociPartitioning"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">partitionLociAccordingToArgs</span><span class="tparams">[<span name="R">R &lt;: <a href="../reference/ReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceRegion">ReferenceRegion</a></span>]</span><span class="params">(<span name="args">args: <a href="LociPartitionUtils$$Arguments.html" class="extype" name="org.hammerlab.guacamole.distributed.LociPartitionUtils.Arguments">Arguments</a></span>, <span name="loci">loci: <a href="../loci/set/LociSet.html" class="extype" name="org.hammerlab.guacamole.loci.set.LociSet">LociSet</a></span>, <span name="regionRDD">regionRDD: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociAccordingToArgs.R">R</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.reflect.ClassTag">ClassTag</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociAccordingToArgs.R">R</span>]</span>)</span><span class="result">: <a href="#LociPartitioning=org.hammerlab.guacamole.loci.map.LociMap[org.hammerlab.guacamole.distributed.LociPartitionUtils.PartitionIndex]" class="extmbr" name="org.hammerlab.guacamole.distributed.LociPartitionUtils.LociPartitioning">LociPartitioning</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Partition a LociSet according to the strategy specified in args.</p>
     </li><li name="org.hammerlab.guacamole.distributed.LociPartitionUtils#partitionLociByApproximateDepth" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="partitionLociByApproximateDepth[R&lt;:org.hammerlab.guacamole.reference.ReferenceRegion](tasks:Int,loci:org.hammerlab.guacamole.loci.set.LociSet,accuracy:Int,regionRDDs:org.apache.spark.rdd.RDD[R]*)(implicitevidence$2:scala.reflect.ClassTag[R]):org.hammerlab.guacamole.loci.map.LociMap[Long]"></a>
-      <a id="partitionLociByApproximateDepth[R&lt;:ReferenceRegion](Int,LociSet,Int,RDD[R]*)(ClassTag[R]):LociMap[Long]"></a>
+      <a id="partitionLociByApproximateDepth[R&lt;:org.hammerlab.guacamole.reference.ReferenceRegion](numPartitions:org.hammerlab.guacamole.distributed.LociPartitionUtils.PartitionIndex,loci:org.hammerlab.guacamole.loci.set.LociSet,microPartitionsPerPartition:org.hammerlab.guacamole.distributed.LociPartitionUtils.NumMicroPartitions,regionRDDs:org.hammerlab.guacamole.PerSample[org.apache.spark.rdd.RDD[R]])(implicitevidence$4:scala.reflect.ClassTag[R]):org.hammerlab.guacamole.distributed.LociPartitionUtils.LociPartitioning"></a>
+      <a id="partitionLociByApproximateDepth[R&lt;:ReferenceRegion](PartitionIndex,LociSet,NumMicroPartitions,PerSample[RDD[R]])(ClassTag[R]):LociPartitioning"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">partitionLociByApproximateDepth</span><span class="tparams">[<span name="R">R &lt;: <a href="../reference/ReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceRegion">ReferenceRegion</a></span>]</span><span class="params">(<span name="tasks">tasks: <span class="extype" name="scala.Int">Int</span></span>, <span name="loci">loci: <a href="../loci/set/LociSet.html" class="extype" name="org.hammerlab.guacamole.loci.set.LociSet">LociSet</a></span>, <span name="accuracy">accuracy: <span class="extype" name="scala.Int">Int</span></span>, <span name="regionRDDs">regionRDDs: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociByApproximateDepth.R">R</span>]*</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.reflect.ClassTag">ClassTag</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociByApproximateDepth.R">R</span>]</span>)</span><span class="result">: <a href="../loci/map/LociMap.html" class="extype" name="org.hammerlab.guacamole.loci.map.LociMap">LociMap</a>[<span class="extype" name="scala.Long">Long</span>]</span>
+        <span class="name">partitionLociByApproximateDepth</span><span class="tparams">[<span name="R">R &lt;: <a href="../reference/ReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceRegion">ReferenceRegion</a></span>]</span><span class="params">(<span name="numPartitions">numPartitions: <a href="#PartitionIndex=Int" class="extmbr" name="org.hammerlab.guacamole.distributed.LociPartitionUtils.PartitionIndex">PartitionIndex</a></span>, <span name="loci">loci: <a href="../loci/set/LociSet.html" class="extype" name="org.hammerlab.guacamole.loci.set.LociSet">LociSet</a></span>, <span name="microPartitionsPerPartition">microPartitionsPerPartition: <a href="#NumMicroPartitions=Long" class="extmbr" name="org.hammerlab.guacamole.distributed.LociPartitionUtils.NumMicroPartitions">NumMicroPartitions</a></span>, <span name="regionRDDs">regionRDDs: <a href="../package.html#PerSample[A]=IndexedSeq[A]" class="extmbr" name="org.hammerlab.guacamole.PerSample">PerSample</a>[<span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociByApproximateDepth.R">R</span>]]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.reflect.ClassTag">ClassTag</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociByApproximateDepth.R">R</span>]</span>)</span><span class="result">: <a href="#LociPartitioning=org.hammerlab.guacamole.loci.map.LociMap[org.hammerlab.guacamole.distributed.LociPartitionUtils.PartitionIndex]" class="extmbr" name="org.hammerlab.guacamole.distributed.LociPartitionUtils.LociPartitioning">LociPartitioning</a></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Assign loci from a LociSet to partitions, where each partition overlaps about the same number of regions.</p><div class="fullcomment"><div class="comment cmt"><p>Assign loci from a LociSet to partitions, where each partition overlaps about the same number of regions.</p><p>The approach we take is:</p><p> (1) chop up the loci uniformly into many genomic &quot;micro partitions.&quot;</p><p> (2) for each micro partition, calculate the number of regions that overlap it.</p><p> (3) using these counts, assign loci to real (&quot;macro&quot;) partitions, making the approximation of uniform depth within
-     each micro partition.</p><p> Some advantages of this approach are:</p><ul><li>Stages (1) and (3), which are done locally by the Spark master, are constant time with respect to the number
-   of regions.</li><li>Stage (2), where runtime does depend on the number of regions, is done in parallel with Spark.</li><li>We can tune the accuracy vs. performance trade off by setting <code>microTasks</code>.</li><li>Does not require a distributed sort.
-</li></ul></div><dl class="paramcmts block"><dt class="param">tasks</dt><dd class="cmt"><p>number of partitions</p></dd><dt class="param">loci</dt><dd class="cmt"><p>loci to partition</p></dd><dt class="param">accuracy</dt><dd class="cmt"><p>integer &gt;= 1. Higher values of this will result in a more exact but also more expensive computation.
-                Specifically, this is the number of micro partitions to use per task to estimate the region depth.
-                In the extreme case, setting this to greater than the number of loci per task will result in an
-                exact calculation.</p></dd><dt>returns</dt><dd class="cmt"><p>LociMap of locus -&gt; task assignments.
+      <p class="shortcomment cmt">Assign loci from a LociSet to partitions, where each partition overlaps approximately the same number of &quot;regions&quot;
+(reads mapped to a reference genome).</p><div class="fullcomment"><div class="comment cmt"><p>Assign loci from a LociSet to partitions, where each partition overlaps approximately the same number of &quot;regions&quot;
+(reads mapped to a reference genome).</p><p>The approach we take is:</p><p> (1) chop up the loci uniformly into many genomic &quot;micro partitions.&quot;</p><p> (2) for each micro partition, calculate the number of regions that overlap it.</p><p> (3) using these counts, assign loci to real (Spark) partitions, assuming approximately uniform depth within each
+     micro partition.</p><p> Some advantages of this approach are:</p><ul><li>Stages (1) and (3), which are done locally by the Spark master, are constant time with respect to the number
+   of regions (though linear in the number of micro-partitions).</li><li>Stage (2), where runtime does depend on the number of regions, is done in parallel with Spark.</li><li>Accuracy vs. performance can be tuned by setting <code>accuracy</code>.</li><li>Does not require a distributed sort.
+</li></ul></div><dl class="paramcmts block"><dt class="param">numPartitions</dt><dd class="cmt"><p>Number of partitions to split reads into.</p></dd><dt class="param">loci</dt><dd class="cmt"><p>Only consider reads overlapping these loci.</p></dd><dt class="param">microPartitionsPerPartition</dt><dd class="cmt"><p>Long &gt;= 1. Number of micro-partitions generated for each of the <code>numPartitions</code>
+                                   Spark partitions that will be computed. Higher values of this will result in a
+                                   more exact but more expensive computation.
+                                   In the extreme, setting this to greater than the number of loci (per partition)
+                                   will result in an exact calculation.</p></dd><dt>returns</dt><dd class="cmt"><p>LociMap of locus -&gt; partition assignments.
 </p></dd></dl></div>
     </li><li name="org.hammerlab.guacamole.distributed.LociPartitionUtils#partitionLociUniformly" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="partitionLociUniformly(tasks:Long,loci:org.hammerlab.guacamole.loci.set.LociSet):org.hammerlab.guacamole.loci.map.LociMap[Long]"></a>
-      <a id="partitionLociUniformly(Long,LociSet):LociMap[Long]"></a>
+      <a id="partitionLociUniformly[N](numPartitions:N,loci:org.hammerlab.guacamole.loci.set.LociSet)(implicitevidence$3:spire.math.Integral[N]):org.hammerlab.guacamole.loci.map.LociMap[N]"></a>
+      <a id="partitionLociUniformly[N](N,LociSet)(Integral[N]):LociMap[N]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">partitionLociUniformly</span><span class="params">(<span name="tasks">tasks: <span class="extype" name="scala.Long">Long</span></span>, <span name="loci">loci: <a href="../loci/set/LociSet.html" class="extype" name="org.hammerlab.guacamole.loci.set.LociSet">LociSet</a></span>)</span><span class="result">: <a href="../loci/map/LociMap.html" class="extype" name="org.hammerlab.guacamole.loci.map.LociMap">LociMap</a>[<span class="extype" name="scala.Long">Long</span>]</span>
+        <span class="name">partitionLociUniformly</span><span class="tparams">[<span name="N">N</span>]</span><span class="params">(<span name="numPartitions">numPartitions: <span class="extype" name="org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociUniformly.N">N</span></span>, <span name="loci">loci: <a href="../loci/set/LociSet.html" class="extype" name="org.hammerlab.guacamole.loci.set.LociSet">LociSet</a></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="spire.math.Integral">Integral</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociUniformly.N">N</span>]</span>)</span><span class="result">: <a href="../loci/map/LociMap.html" class="extype" name="org.hammerlab.guacamole.loci.map.LociMap">LociMap</a>[<span class="extype" name="org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociUniformly.N">N</span>]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Assign loci from a LociSet to partitions.</p><div class="fullcomment"><div class="comment cmt"><p>Assign loci from a LociSet to partitions. Contiguous intervals of loci will tend to get assigned to the same
-partition.</p><p>This implementation assigns loci uniformly, i.e. each task gets about the same number of loci. A smarter
-implementation would know about the regions (depth of coverage), and try to assign each task loci corresponding to
-about the same number of regions.
-</p></div><dl class="paramcmts block"><dt class="param">tasks</dt><dd class="cmt"><p>number of partitions</p></dd><dt class="param">loci</dt><dd class="cmt"><p>loci to partition</p></dd><dt>returns</dt><dd class="cmt"><p>LociMap of locus -&gt; task assignments
+      <p class="shortcomment cmt">Assign loci to partitions.</p><div class="fullcomment"><div class="comment cmt"><p>Assign loci to partitions. Contiguous intervals of loci will tend to get assigned to the same partition.</p><p>This implementation assigns loci uniformly, i.e. each partition gets about the same number of loci. A smarter
+implementation, partitionLociByApproximateDepth, can be found below; it considers the depth of coverage at each
+locus and assigns each partition loci corresponding to approximately the same number of regions.
+</p></div><dl class="paramcmts block"><dt class="tparam">N</dt><dd class="cmt"><p>Long or Int; partitionLociByApproximateDepth calls this to assign a (Long) number of micro-partitions;
+          elsewhere (partitionLociAccordingToArgs) an (Int) number of Spark partitions is computed directly.</p></dd><dt class="param">numPartitions</dt><dd class="cmt"><p>Number of partitions; these needn't map directly to a number of Spark partitions, since e.g.
+                     partitionLociByApproximateDepth does post-processing on a large number of &quot;micro-partitions&quot;
+                     computed here, combining them to generate partitions that are passed to Spark.</p></dd><dt class="param">loci</dt><dd class="cmt"><p>Loci to partition</p></dd><dt>returns</dt><dd class="cmt"><p>LociMap of locus -&gt; partition assignments
 </p></dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>

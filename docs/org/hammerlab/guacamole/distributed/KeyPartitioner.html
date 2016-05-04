@@ -32,18 +32,19 @@
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">class</span>
+        <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">KeyPartitioner</span><span class="result"> extends <span class="extype" name="org.apache.spark.Partitioner">Partitioner</span></span>
+        <span class="name">KeyPartitioner</span><span class="params">(<span name="numPartitions">numPartitions: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result"> extends <span class="extype" name="org.apache.spark.Partitioner">Partitioner</span> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Spark partitioner for keyed RDDs that assigns each unique key its own partition.
 Used to partition an RDD of (task number: Long, read: MappedRead) pairs, giving each task its own partition.
-</p></div><div class="toggleContainer block">
+</p></div><dl class="paramcmts block"><dt class="param">numPartitions</dt><dd class="cmt"><p>total number of partitions
+</p></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="org.apache.spark.Partitioner">Partitioner</span>, <span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <span class="extype" name="org.apache.spark.Partitioner">Partitioner</span>, <span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -61,7 +62,7 @@ Used to partition an RDD of (task number: Long, read: MappedRead) pairs, giving 
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="org.hammerlab.guacamole.distributed.KeyPartitioner"><span>KeyPartitioner</span></li><li class="in" name="org.apache.spark.Partitioner"><span>Partitioner</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="org.hammerlab.guacamole.distributed.KeyPartitioner"><span>KeyPartitioner</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="org.apache.spark.Partitioner"><span>Partitioner</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -82,7 +83,7 @@ Used to partition an RDD of (task number: Long, read: MappedRead) pairs, giving 
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="org.hammerlab.guacamole.distributed.KeyPartitioner#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="&lt;init&gt;(partitions:Int):org.hammerlab.guacamole.distributed.KeyPartitioner"></a>
+      <a id="&lt;init&gt;(numPartitions:Int):org.hammerlab.guacamole.distributed.KeyPartitioner"></a>
       <a id="&lt;init&gt;:KeyPartitioner"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -90,10 +91,10 @@ Used to partition an RDD of (task number: Long, read: MappedRead) pairs, giving 
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">KeyPartitioner</span><span class="params">(<span name="partitions">partitions: <span class="extype" name="scala.Int">Int</span></span>)</span>
+        <span class="name">KeyPartitioner</span><span class="params">(<span name="numPartitions">numPartitions: <span class="extype" name="scala.Int">Int</span></span>)</span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">partitions</dt><dd class="cmt"><p>total number of partitions
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">numPartitions</dt><dd class="cmt"><p>total number of partitions
 </p></dd></dl></div>
     </li></ol>
             </div>
@@ -226,7 +227,7 @@ Used to partition an RDD of (task number: Long, read: MappedRead) pairs, giving 
         <span class="name">equals</span><span class="params">(<span name="other">other: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.distributed.KeyPartitioner">KeyPartitioner</a> → AnyRef → Any</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.distributed.KeyPartitioner">KeyPartitioner</a> → Equals → AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <a id="finalize():Unit"></a>
@@ -272,19 +273,6 @@ Used to partition an RDD of (task number: Long, read: MappedRead) pairs, giving 
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.distributed.KeyPartitioner">KeyPartitioner</a> → Partitioner</dd></dl></div>
-    </li><li name="scala.AnyRef#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="hashCode():Int"></a>
-      <a id="hashCode():Int"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <a id="isInstanceOf[T0]:Boolean"></a>
@@ -343,13 +331,15 @@ Used to partition an RDD of (task number: Long, read: MappedRead) pairs, giving 
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">def</span>
+        <span class="kind">val</span>
       </span>
       <span class="symbol">
         <span class="name">numPartitions</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.distributed.KeyPartitioner">KeyPartitioner</a> → Partitioner</dd></dl></div>
+      <p class="shortcomment cmt">total number of partitions
+</p><div class="fullcomment"><div class="comment cmt"><p>total number of partitions
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.distributed.KeyPartitioner">KeyPartitioner</a> → Partitioner</dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -363,19 +353,6 @@ Used to partition an RDD of (task number: Long, read: MappedRead) pairs, giving 
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scala.AnyRef#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="toString():String"></a>
-      <a id="toString():String"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>
@@ -442,7 +419,11 @@ Used to partition an RDD of (task number: Long, read: MappedRead) pairs, giving 
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="org.apache.spark.Partitioner">
+        <div class="parent" name="scala.Product">
+              <h3>Inherited from <span class="extype" name="scala.Product">Product</span></h3>
+            </div><div class="parent" name="scala.Equals">
+              <h3>Inherited from <span class="extype" name="scala.Equals">Equals</span></h3>
+            </div><div class="parent" name="org.apache.spark.Partitioner">
               <h3>Inherited from <span class="extype" name="org.apache.spark.Partitioner">Partitioner</span></h3>
             </div><div class="parent" name="scala.Serializable">
               <h3>Inherited from <span class="extype" name="scala.Serializable">Serializable</span></h3>
