@@ -3,8 +3,8 @@ package org.hammerlab.guacamole.loci.set
 import scala.collection.SortedMap
 
 /**
-  * Build a LociSet out of Contigs.
-  */
+ * Build a LociSet out of Contigs.
+ */
 private[loci] class Builder {
   private val map = SortedMap.newBuilder[String, Contig]
 
