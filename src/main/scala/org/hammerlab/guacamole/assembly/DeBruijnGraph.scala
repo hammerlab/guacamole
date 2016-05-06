@@ -1,6 +1,5 @@
 package org.hammerlab.guacamole.assembly
 
-import breeze.linalg.DenseVector
 import breeze.stats.mean
 import htsjdk.samtools.CigarOperator
 import org.hammerlab.guacamole.reads.{MappedRead, Read}
@@ -355,7 +354,7 @@ object DeBruijnGraph {
           .zipWithIndex
           .foreach(
             { case (seq, index) =>
-              val baseQualities = DenseVector(read.baseQualities.slice(index, index + kmerSize).map(_.toFloat).toArray)
+              val baseQualities = read.baseQualities.slice(index, index + kmerSize).map(_.toFloat)
               val meanBaseQuality = mean(baseQualities)
               if (meanBaseQuality > minMeanKmerBaseQuality) {
                 val count = kmerCounts.getOrElse(seq, 0)
