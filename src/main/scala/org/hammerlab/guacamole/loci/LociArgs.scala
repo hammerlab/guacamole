@@ -4,7 +4,7 @@ import java.io.InputStreamReader
 
 import org.apache.commons.io.IOUtils
 import org.apache.hadoop.conf.Configuration
-import org.apache.hadoop.fs.{FileSystem, Path}
+import org.apache.hadoop.fs.Path
 import org.hammerlab.guacamole.loci.set.LociParser
 import org.hammerlab.guacamole.logging.DebugLogArgs
 import org.kohsuke.args4j.{Option => Args4jOption}
@@ -34,7 +34,7 @@ trait LociArgs extends DebugLogArgs {
    *                 of the loci that should be considered.
    * @return a LociParser wrapping the appropriate loci ranges.
    */
-  def parseLoci(fallback: String = "all"): LociParser = {
+  def parseLoci(hadoopConfiguration: Configuration, fallback: String = "all"): LociParser = {
     if (loci.nonEmpty && lociFromFile.nonEmpty) {
       throw new IllegalArgumentException("Specify at most one of the 'loci' and 'loci-from-file' arguments")
     }
@@ -43,8 +43,8 @@ trait LociArgs extends DebugLogArgs {
         loci
       } else if (lociFromFile.nonEmpty) {
         // Load loci from file.
-        val filesystem = FileSystem.get(new Configuration())
         val path = new Path(lociFromFile)
+        val filesystem = path.getFileSystem(hadoopConfiguration)
         IOUtils.toString(new InputStreamReader(filesystem.open(path)))
       } else {
         fallback
