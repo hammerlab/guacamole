@@ -1,8 +1,5 @@
 package org.hammerlab.guacamole.reads
 
-import htsjdk.samtools.SAMRecord
-import org.hammerlab.guacamole.reference.ReferenceGenome
-
 /**
  * PairedRead is a MappedRead or UnmappedRead with the additional mate information
  * @param read Unmapped or MappedRead base read
@@ -18,9 +15,9 @@ case class PairedRead[+T <: Read](read: T,
   override val name: String = read.name
   override val failedVendorQualityChecks: Boolean = read.failedVendorQualityChecks
   override val sampleName: String = read.sampleName
-  override val baseQualities: Seq[Byte] = read.baseQualities
+  override val baseQualities: IndexedSeq[Byte] = read.baseQualities
   override val isDuplicate: Boolean = read.isDuplicate
-  override val sequence: Seq[Byte] = read.sequence
+  override val sequence: IndexedSeq[Byte] = read.sequence
   override val isPaired: Boolean = true
   override val isMapped = read.isMapped
   override def asMappedRead = read.asMappedRead
