@@ -215,7 +215,7 @@ object Read extends Logging {
       val result = MappedRead(
         record.getReadName,
         record.getReadString.getBytes,
-        record.getBaseQualities,
+        record.getOriginalBaseQualities,
         record.getDuplicateReadFlag,
         sampleName.intern,
         record.getReferenceName.intern,
@@ -236,7 +236,7 @@ object Read extends Logging {
       UnmappedRead(
         record.getReadName,
         record.getReadString.getBytes,
-        record.getBaseQualities,
+        record.getOriginalBaseQualities,
         record.getDuplicateReadFlag,
         sampleName,
         record.getReadFailsVendorQualityCheckFlag,
