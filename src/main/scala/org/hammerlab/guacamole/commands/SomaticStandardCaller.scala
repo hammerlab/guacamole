@@ -69,7 +69,7 @@ object SomaticStandard {
 
     override def run(args: Arguments, sc: SparkContext): Unit = {
       VariantUtils.validateArguments(args)
-      val loci = args.parseLoci()
+      val loci = args.parseLoci(sc.hadoopConfiguration)
       val filters =
         InputFilters(
           overlapsLoci = loci,

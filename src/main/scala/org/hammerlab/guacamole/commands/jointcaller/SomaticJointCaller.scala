@@ -91,7 +91,7 @@ object SomaticJoint {
 
       val reference = ReferenceBroadcast(args.referenceFastaPath, sc, partialFasta = args.referenceFastaIsPartial)
 
-      val loci = args.parseLoci()
+      val loci = args.parseLoci(sc.hadoopConfiguration)
 
       val readSets = inputsToReadSets(sc, inputs, loci, !args.noSequenceDictionary)
 
