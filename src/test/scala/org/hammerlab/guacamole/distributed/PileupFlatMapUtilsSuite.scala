@@ -18,14 +18,38 @@
 
 package org.hammerlab.guacamole.distributed
 
-import org.hammerlab.guacamole.Bases
-import org.hammerlab.guacamole.loci.LociSet
+import com.esotericsoftware.kryo.Kryo
+import org.apache.spark.storage.BroadcastBlockId
+import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.pileup.{Pileup, PileupElement}
-import org.hammerlab.guacamole.util.{AssertBases, GuacFunSuite, TestUtil}
+import org.hammerlab.guacamole.reference.ReferenceBroadcast.MapBackedReferenceSequence
+import org.hammerlab.guacamole.util.{AssertBases, Bases, GuacFunSuite, KryoTestRegistrar, TestUtil}
+
+class PileupFlatMapUtilsSuiteRegistrar extends KryoTestRegistrar {
+  override def registerTestClasses(kryo: Kryo): Unit = {
+    // In some test cases below, we serialize Pileups, which requires PileupElements and MapBackedReferenceSequences.
+    kryo.register(classOf[Pileup])
+    kryo.register(classOf[Array[Pileup]])
+
+    kryo.register(classOf[PileupElement])
+    kryo.register(classOf[Array[PileupElement]])
+
+    // Closed over by PileupElement
+    kryo.register(classOf[MapBackedReferenceSequence])
+    kryo.register(Class.forName("org.apache.spark.broadcast.TorrentBroadcast"))
+    kryo.register(classOf[BroadcastBlockId])
+    kryo.register(classOf[Map[_, _]])
+
+    // "test pileup flatmap multiple rdds; skip empty pileups" collects an RDD of Arrays
+    kryo.register(classOf[Array[Seq[_]]])
+  }
+}
 
 class PileupFlatMapUtilsSuite extends GuacFunSuite {
 
-  sparkTest("test pileup flatmap parallelism 0; create pileups") {
+  override def registrar: String = "org.hammerlab.guacamole.distributed.PileupFlatMapUtilsSuiteRegistrar"
+
+  test("test pileup flatmap parallelism 0; create pileups") {
 
     val reads = sc.parallelize(Seq(
       TestUtil.makeRead("TCGATCGA", "8M", 1),
@@ -35,9 +59,9 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
     val pileups =
       PileupFlatMapUtils.pileupFlatMap[Pileup](
         reads,
-        LociPartitionUtils.partitionLociUniformly(reads.partitions.length, LociSet.parse("chr1:1-9").result),
+        LociPartitionUtils.partitionLociUniformly(reads.partitions.length, LociSet("chr1:1-9")),
         skipEmpty = false,
-        pileup => Seq(pileup).iterator,
+        pileup => Iterator(pileup),
         reference = TestUtil.makeReference(sc, Seq(("chr1", 0, "ATCGATCGA")))
       ).collect()
 
@@ -49,11 +73,11 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
     firstPileup.elements.forall(_.readPosition == 0L) should be(true)
     firstPileup.elements.forall(_.isMatch) should be(true)
 
-    pileups.forall(p => p.head.isMatch) should be(true)
+    pileups.forall(_.head.isMatch) should be(true)
 
   }
 
-  sparkTest("test pileup flatmap parallelism 5; create pileups") {
+  test("test pileup flatmap parallelism 5; create pileups") {
 
     val reads = sc.parallelize(Seq(
       TestUtil.makeRead("TCGATCGA", "8M", 1),
@@ -63,9 +87,9 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
     val pileups =
       PileupFlatMapUtils.pileupFlatMap[Pileup](
         reads,
-        LociPartitionUtils.partitionLociUniformly(5, LociSet.parse("chr1:1-9").result),
+        LociPartitionUtils.partitionLociUniformly(5, LociSet("chr1:1-9")),
         skipEmpty = false,
-        pileup => Seq(pileup).iterator,
+        pileup => Iterator(pileup),
         reference = TestUtil.makeReference(sc, Seq(("chr1", 0, "ATCGATCGA")))
       ).collect()
 
@@ -73,27 +97,27 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
     firstPileup.locus should be(1L)
     firstPileup.referenceBase should be(Bases.T)
 
-    pileups.forall(p => p.head.isMatch) should be(true)
+    pileups.forall(_.head.isMatch) should be(true)
   }
 
-  sparkTest("test pileup flatmap parallelism 5; skip empty pileups") {
+  test("test pileup flatmap parallelism 5; skip empty pileups") {
     val reads = sc.parallelize(Seq(
       TestUtil.makeRead("TCGATCGA", "8M", 1),
       TestUtil.makeRead("TCGATCGA", "8M", 1),
       TestUtil.makeRead("TCGATCGA", "8M", 1)))
 
-    val pileups =
+    val loci =
       PileupFlatMapUtils.pileupFlatMap[Long](
         reads,
-        LociPartitionUtils.partitionLociUniformly(5, LociSet.parse("chr0:5-10,chr1:0-100,chr2:0-1000,chr2:5000-6000").result),
+        LociPartitionUtils.partitionLociUniformly(5, LociSet("chr0:5-10,chr1:0-100,chr2:0-1000,chr2:5000-6000")),
         skipEmpty = true,
         pileup => Iterator(pileup.locus),
         reference = TestUtil.makeReference(sc, Seq(("chr1", 0, "ATCGATCGA")))
-      ).collect.toSeq
-    pileups should equal(Seq(1, 2, 3, 4, 5, 6, 7, 8))
+      ).collect
+    loci should equal(Array(1, 2, 3, 4, 5, 6, 7, 8))
   }
 
-  sparkTest("test pileup flatmap two rdds; skip empty pileups") {
+  test("test pileup flatmap two rdds; skip empty pileups") {
     val reads1 = sc.parallelize(Seq(
       TestUtil.makeRead("TCGATCGA", "8M", 1),
       TestUtil.makeRead("TCGATCGA", "8M", 1),
@@ -112,15 +136,15 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
       PileupFlatMapUtils.pileupFlatMapTwoRDDs[Long](
         reads1,
         reads2,
-        LociPartitionUtils.partitionLociUniformly(1, LociSet.parse("chr0:0-1000,chr1:1-500,chr2:10-20").result),
+        LociPartitionUtils.partitionLociUniformly(1, LociSet("chr0:0-1000,chr1:1-500,chr2:10-20")),
         skipEmpty = true,
         (pileup1, _) => (Iterator(pileup1.locus)),
         reference = TestUtil.makeReference(sc, Seq(("chr1", 0, "ATCGATCGA")))
       ).collect
-    loci.toSeq should equal(Seq(1, 2, 3, 4, 5, 6, 7, 8, 99, 100, 101, 102, 103, 104, 105, 106, 107))
+    loci should equal(Seq(1, 2, 3, 4, 5, 6, 7, 8, 99, 100, 101, 102, 103, 104, 105, 106, 107))
   }
 
-  sparkTest("test pileup flatmap multiple rdds; skip empty pileups") {
+  test("test pileup flatmap multiple rdds; skip empty pileups") {
     val reads1 = sc.parallelize(Seq(
       TestUtil.makeRead("TCGATCGA", "8M", 1),
       TestUtil.makeRead("TCGATCGA", "8M", 1),
@@ -144,7 +168,7 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
     val resultPlain =
       PileupFlatMapUtils.pileupFlatMapMultipleRDDs[Seq[Seq[String]]](
         Vector(reads1, reads2, reads3),
-        LociPartitionUtils.partitionLociUniformly(1, LociSet.parse("chr1:1-500,chr2:10-20").result),
+        LociPartitionUtils.partitionLociUniformly(1, LociSet("chr1:1-500,chr2:10-20")),
         skipEmpty = true,
         pileups => Iterator(pileups.map(_.elements.map(p => Bases.basesToString(p.sequencedBases)))),
         reference = TestUtil.makeReference(sc, Seq(("chr1", 0, "ATCGATCGA")))
@@ -152,7 +176,7 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
 
     val resultParallelized = PileupFlatMapUtils.pileupFlatMapMultipleRDDs[Seq[Seq[String]]](
       Vector(reads1, reads2, reads3),
-      LociPartitionUtils.partitionLociUniformly(800, LociSet.parse("chr0:0-100,chr1:1-500,chr2:10-20").result),
+      LociPartitionUtils.partitionLociUniformly(800, LociSet("chr0:0-100,chr1:1-500,chr2:10-20")),
       skipEmpty = true,
       pileups => Iterator(pileups.map(_.elements.map(p => Bases.basesToString(p.sequencedBases)))),
       reference = TestUtil.makeReference(sc, Seq(("chr1", 0, "ATCGATCGA")))
@@ -161,7 +185,7 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
     val resultWithEmpty =
       PileupFlatMapUtils.pileupFlatMapMultipleRDDs[Seq[Seq[String]]](
         Vector(reads1, reads2, reads3),
-        LociPartitionUtils.partitionLociUniformly(5, LociSet.parse("chr1:1-500,chr2:10-20").result),
+        LociPartitionUtils.partitionLociUniformly(5, LociSet("chr1:1-500,chr2:10-20")),
         skipEmpty = false,
         pileups => Iterator(pileups.map(_.elements.map(p => Bases.basesToString(p.sequencedBases)))),
         reference = TestUtil.makeReference(sc, Seq(("chr1", 0, "ATCGATCGA"), ("chr2", 0, "")))
@@ -185,7 +209,7 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
     resultPlain(10) should equal(Seq(Seq("G", "G", "G"), Seq("X"), Seq("X")))
   }
 
-  sparkTest("test pileup flatmap parallelism 5; create pileup elements") {
+  test("test pileup flatmap parallelism 5; create pileup elements") {
 
     val reads = sc.parallelize(Seq(
       TestUtil.makeRead("TCGATCGA", "8M", 1),
@@ -195,7 +219,7 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
     val pileups =
       PileupFlatMapUtils.pileupFlatMap[PileupElement](
         reads,
-        LociPartitionUtils.partitionLociUniformly(5, LociSet.parse("chr1:1-9").result),
+        LociPartitionUtils.partitionLociUniformly(5, LociSet("chr1:1-9")),
         skipEmpty = false,
         _.elements.toIterator,
         reference = TestUtil.makeReference(sc, Seq(("chr1", 1, "TCGATCGA")))
@@ -205,7 +229,7 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
     pileups.forall(_.isMatch) should be(true)
   }
 
-  sparkTest("test two-rdd pileup flatmap; create pileup elements") {
+  test("test two-rdd pileup flatmap; create pileup elements") {
     val reads1 = sc.parallelize(Seq(
       TestUtil.makeRead("TCGATCGA", "8M", 1),
       TestUtil.makeRead("TCGATCGA", "8M", 1),
@@ -224,7 +248,7 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
       PileupFlatMapUtils.pileupFlatMapTwoRDDs[PileupElement](
         reads1,
         reads2,
-        LociPartitionUtils.partitionLociUniformly(1000, LociSet.parse("chr1:1-500").result),
+        LociPartitionUtils.partitionLociUniformly(1000, LociSet("chr1:1-500")),
         skipEmpty = false,
         (pileup1, pileup2) => (pileup1.elements ++ pileup2.elements).toIterator,
         reference = TestUtil.makeReference(sc, Seq(("chr1", 0, "ATCGATCGA" + "N" * 90 + "AGGGGGGGGGG")))
@@ -237,7 +261,7 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
     )
   }
 
-  sparkTest("test pileup flatmap parallelism 5; create pileup elements; with indel") {
+  test("test pileup flatmap parallelism 5; create pileup elements; with indel") {
 
     val reads = sc.parallelize(Seq(
       TestUtil.makeRead("TCGATCGA", "8M", 1),
@@ -247,7 +271,7 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
     val pileups =
       PileupFlatMapUtils.pileupFlatMap[PileupElement](
         reads,
-        LociPartitionUtils.partitionLociUniformly(5, LociSet.parse("chr1:1-12").result),
+        LociPartitionUtils.partitionLociUniformly(5, LociSet("chr1:1-12")),
         skipEmpty = false,
         _.elements.toIterator,
         reference = TestUtil.makeReference(sc, Seq(("chr1", 0, "ATCGATCGA ")))
@@ -255,7 +279,6 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
 
     pileups.length should be(24)
     val insertionPileups = pileups.filter(_.isInsertion)
-    insertionPileups.size should be(1)
+    insertionPileups.length should be(1)
   }
-
 }

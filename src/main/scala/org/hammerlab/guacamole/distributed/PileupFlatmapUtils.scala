@@ -2,22 +2,22 @@ package org.hammerlab.guacamole.distributed
 
 import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole._
-import org.hammerlab.guacamole.loci.LociMap
+import org.hammerlab.guacamole.distributed.LociPartitionUtils.LociPartitioning
+import org.hammerlab.guacamole.distributed.WindowFlatMapUtils.windowFlatMapWithState
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.reference.{ReferenceGenome, _}
 import org.hammerlab.guacamole.windowing.SlidingWindow
-import WindowFlatMapUtils.windowFlatMapWithState
 
 import scala.reflect.ClassTag
 
 object PileupFlatMapUtils {
   /**
-    * Helper function. Given optionally an existing Pileup, and a sliding read window return a new Pileup at the given
-    * locus. If an existing Pileup is given as input, then the result will share elements with that Pileup for efficiency.
-    *
-    *  If an existing Pileup is provided, then its locus must be <= the new locus.
-    */
+   * Helper function. Given optionally an existing Pileup, and a sliding read window return a new Pileup at the given
+   * locus. If an existing Pileup is given as input, then the result will share elements with that Pileup for efficiency.
+   *
+   *  If an existing Pileup is provided, then its locus must be <= the new locus.
+   */
   private def initOrMovePileup(existing: Option[Pileup],
                                window: SlidingWindow[MappedRead],
                                referenceContigSequence: ContigSequence): Pileup = {
@@ -41,7 +41,7 @@ object PileupFlatMapUtils {
    *
    */
   def pileupFlatMap[T: ClassTag](reads: RDD[MappedRead],
-                                 lociPartitions: LociMap[Long],
+                                 lociPartitions: LociPartitioning,
                                  skipEmpty: Boolean,
                                  function: Pileup => Iterator[T],
                                  reference: ReferenceGenome): RDD[T] = {
@@ -58,6 +58,7 @@ object PileupFlatMapUtils {
       }
     )
   }
+
   /**
    * Flatmap across loci on two RDDs of MappedReads. At each locus the provided function is passed two Pileup instances,
    * giving the pileup for the reads in each RDD at that locus.
@@ -68,7 +69,7 @@ object PileupFlatMapUtils {
    */
   def pileupFlatMapTwoRDDs[T: ClassTag](reads1: RDD[MappedRead],
                                         reads2: RDD[MappedRead],
-                                        lociPartitions: LociMap[Long],
+                                        lociPartitions: LociPartitioning,
                                         skipEmpty: Boolean,
                                         function: (Pileup, Pileup) => Iterator[T],
                                         reference: ReferenceGenome): RDD[T] = {
@@ -93,7 +94,7 @@ object PileupFlatMapUtils {
    * @see the windowTaskFlatMapMultipleRDDs function for other argument descriptions.
    */
   def pileupFlatMapMultipleRDDs[T: ClassTag](readsRDDs: PerSample[RDD[MappedRead]],
-                                             lociPartitions: LociMap[Long],
+                                             lociPartitions: LociPartitioning,
                                              skipEmpty: Boolean,
                                              function: PerSample[Pileup] => Iterator[T],
                                              reference: ReferenceGenome): RDD[T] = {

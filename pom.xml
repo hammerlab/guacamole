@@ -52,7 +52,7 @@
         <configuration>
           <transformers>
             <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-              <mainClass>org.hammerlab.guacamole.Guacamole</mainClass>
+              <mainClass>org.hammerlab.guacamole.Main</mainClass>
             </transformer>
             <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
               <resource>reference.conf</resource>
@@ -276,6 +276,11 @@
       <version>1.2.0</version>
     </dependency>
     <dependency>
+      <groupId>org.spire-math</groupId>
+      <artifactId>spire_2.10</artifactId>
+      <version>0.11.0</version>
+    </dependency>
+    <dependency>
       <groupId>org.apache.spark</groupId>
       <artifactId>spark-core_${scala.version.prefix}</artifactId>
       <version>${spark.version}</version>
@@ -306,19 +311,6 @@
       <version>3.0</version>
     </dependency>
     <dependency>
-      <groupId>org.scalatest</groupId>
-      <artifactId>scalatest_${scala.version.prefix}</artifactId>
-      <version>2.2.1</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.bdgenomics.bdg-utils</groupId>
-      <artifactId>bdg-utils-misc</artifactId>
-      <version>0.1.1</version>
-      <type>test-jar</type>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-client</artifactId>
       <version>${hadoop.version}</version>
@@ -342,6 +334,27 @@
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
       <version>2.4</version>
+    </dependency>
+
+    <!-- Test deps -->
+    <dependency>
+      <groupId>com.holdenkarau</groupId>
+      <artifactId>spark-testing-base_2.10</artifactId>
+      <version>${spark.version}_0.3.3</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.scalatest</groupId>
+      <artifactId>scalatest_${scala.version.prefix}</artifactId>
+      <version>2.2.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.bdgenomics.bdg-utils</groupId>
+      <artifactId>bdg-utils-misc</artifactId>
+      <version>0.1.1</version>
+      <type>test-jar</type>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 

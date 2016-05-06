@@ -3,11 +3,13 @@ package org.hammerlab.guacamole.distributed
 import org.apache.commons.math3
 import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.rdd.RDD
-import org.hammerlab.guacamole.loci.{LociMap, LociSet}
+import org.hammerlab.guacamole.distributed.LociPartitionUtils.LociPartitioning
+import org.hammerlab.guacamole.loci.set.{Contig, LociSet}
 import org.hammerlab.guacamole.logging.DelayedMessages
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.windowing.{SlidingWindow, SplitIterator}
-import org.hammerlab.guacamole.{HasReferenceRegion, PerSample}
+import org.hammerlab.guacamole.PerSample
+import org.hammerlab.guacamole.reference.ReferenceRegion
 
 import scala.collection.mutable.{HashMap => MutableHashMap}
 import scala.reflect.ClassTag
@@ -32,23 +34,23 @@ object WindowFlatMapUtils {
     *                       then it is included.
     * @param initialState initial state to use for each task and each contig analyzed within a task.
     * @param function function to flatmap, of type (state, sliding windows) -> (new state, result data)
-    * @tparam M region data type (e.g. MappedRead)
+    * @tparam R region data type (e.g. MappedRead)
     * @tparam T result data type
     * @tparam S state type
     * @return RDD[T] of flatmap results
     */
-  def windowFlatMapWithState[M <: HasReferenceRegion: ClassTag, T: ClassTag, S](regionRDDs: PerSample[RDD[M]],
-                                                                                lociPartitions: LociMap[Long],
-                                                                                skipEmpty: Boolean,
-                                                                                halfWindowSize: Long,
-                                                                                initialState: S,
-                                                                                function: (S, PerSample[SlidingWindow[M]]) => (S, Iterator[T])): RDD[T] = {
+  def windowFlatMapWithState[R <: ReferenceRegion: ClassTag, T: ClassTag, S](regionRDDs: PerSample[RDD[R]],
+                                                                             lociPartitions: LociPartitioning,
+                                                                             skipEmpty: Boolean,
+                                                                             halfWindowSize: Long,
+                                                                             initialState: S,
+                                                                             function: (S, PerSample[SlidingWindow[R]]) => (S, Iterator[T])): RDD[T] = {
     windowTaskFlatMapMultipleRDDs(
       regionRDDs,
       lociPartitions,
       halfWindowSize,
-      (task, taskLoci, taskRegionsPerSample: PerSample[Iterator[M]]) => {
-        collectByContig[M, T](
+      (task, taskLoci, taskRegionsPerSample: PerSample[Iterator[R]]) => {
+        collectByContig[R, T](
           taskRegionsPerSample,
           taskLoci,
           halfWindowSize,
@@ -82,18 +84,18 @@ object WindowFlatMapUtils {
     * @tparam T Type of the aggregation value
     * @return Iterator[T], the aggregate values collected over contigs
     */
-  def windowFoldLoci[M <: HasReferenceRegion: ClassTag, T: ClassTag](regionRDDs: PerSample[RDD[M]],
-                                                                     lociPartitions: LociMap[Long],
-                                                                     skipEmpty: Boolean,
-                                                                     halfWindowSize: Long,
-                                                                     initialValue: T,
-                                                                     aggFunction: (T, PerSample[SlidingWindow[M]]) => T): RDD[T] = {
+  def windowFoldLoci[R <: ReferenceRegion: ClassTag, T: ClassTag](regionRDDs: PerSample[RDD[R]],
+                                                                  lociPartitions: LociPartitioning,
+                                                                  skipEmpty: Boolean,
+                                                                  halfWindowSize: Long,
+                                                                  initialValue: T,
+                                                                  aggFunction: (T, PerSample[SlidingWindow[R]]) => T): RDD[T] = {
     windowTaskFlatMapMultipleRDDs(
       regionRDDs,
       lociPartitions,
       halfWindowSize,
-      (task, taskLoci, taskRegionsPerSample: PerSample[Iterator[M]]) => {
-        collectByContig[M, T](
+      (task, taskLoci, taskRegionsPerSample: PerSample[Iterator[R]]) => {
+        collectByContig[R, T](
           taskRegionsPerSample,
           taskLoci,
           halfWindowSize,
@@ -110,43 +112,43 @@ object WindowFlatMapUtils {
   }
 
   /**
-    * FlatMap across sets of regions (e.g. reads) overlapping genomic partitions, on multiple RDDs.
-    *
-    * This function works as follows:
-    *
-    *  (1) Assign regions to partitions. A region may overlap multiple partitions, and therefore be assigned to multiple
-    *      partitions.
-    *
-    *  (2) For each partition, call the provided function. The arguments to this function are the task number, the loci
-    *      assigned to this task, and a sequence of iterators giving the regions overlapping those loci (within the
-    *      specified halfWindowSize) from each corresponding input RDD. The loci assigned to this task are always unique
-    *      to this task, but the same regions may be provided to multiple tasks, since regions may overlap loci partition
-    *      boundaries.
-    *
-    *  (3) The results of the provided function are concatenated into an RDD, which is returned.
-    *
-    * @param regionRDDs RDDs of reads, one per sample.
-    * @param lociPartitions map from locus -> task number. This argument specifies both the loci to be considered and how
-    *                       they should be split among tasks. regions that don't overlap these loci are discarded.
-    * @param halfWindowSize if a region overlaps a region of halfWindowSize to either side of a locus under consideration,
-    *                       then it is included.
-    * @param function function to flatMap: (task number, loci, iterators of regions that overlap a window around these
-    *                 loci (one region-iterator per sample)) -> T
-    * @tparam T type of value returned by function
-    * @return flatMap results, RDD[T]
-    */
-  private[distributed] def windowTaskFlatMapMultipleRDDs[M <: HasReferenceRegion: ClassTag, T: ClassTag](
-    regionRDDs: PerSample[RDD[M]],
-    lociPartitions: LociMap[Long],
+   * FlatMap across sets of regions (e.g. reads) overlapping genomic partitions, on multiple RDDs.
+   *
+   * This function works as follows:
+   *
+   *  (1) Assign regions to partitions. A region may overlap multiple partitions, and therefore be assigned to multiple
+   *      partitions.
+   *
+   *  (2) For each partition, call the provided function. The arguments to this function are the task number, the loci
+   *      assigned to this task, and a sequence of iterators giving the regions overlapping those loci (within the
+   *      specified halfWindowSize) from each corresponding input RDD. The loci assigned to this task are always unique
+   *      to this task, but the same regions may be provided to multiple tasks, since regions may overlap loci partition
+   *      boundaries.
+   *
+   *  (3) The results of the provided function are concatenated into an RDD, which is returned.
+   *
+   * @param regionRDDs RDDs of reads, one per sample.
+   * @param lociPartitions map from locus -> task number. This argument specifies both the loci to be considered and how
+   *                       they should be split among tasks. regions that don't overlap these loci are discarded.
+   * @param halfWindowSize if a region overlaps a region of halfWindowSize to either side of a locus under
+   *                       consideration, then it is included.
+   * @param function function to flatMap: (task number, loci, iterators of regions that overlap a window around these
+   *                 loci (one region-iterator per sample)) -> T
+   * @tparam T type of value returned by function
+   * @return flatMap results, RDD[T]
+   */
+  private[distributed] def windowTaskFlatMapMultipleRDDs[R <: ReferenceRegion: ClassTag, T: ClassTag](
+    regionRDDs: PerSample[RDD[R]],
+    lociPartitions: LociPartitioning,
     halfWindowSize: Long,
-    function: (Long, LociSet, PerSample[Iterator[M]]) => Iterator[T]): RDD[T] = {
+    function: (Long, LociSet, PerSample[Iterator[R]]) => Iterator[T]): RDD[T] = {
 
     val numRDDs = regionRDDs.length
     assume(numRDDs > 0)
     val sc = regionRDDs(0).sparkContext
-    progress("Loci partitioning: %s".format(lociPartitions.truncatedString()))
-    val lociPartitionsBoxed: Broadcast[LociMap[Long]] = sc.broadcast(lociPartitions)
-    val numTasks = lociPartitions.asInverseMap.map(_._1).max + 1
+    progress(s"Loci partitioning: $lociPartitions")
+    val lociPartitionsBoxed: Broadcast[LociPartitioning] = sc.broadcast(lociPartitions)
+    val numTasks = lociPartitions.inverse.map(_._1).max + 1
 
     // Counters
     val totalRegions = sc.accumulator(0L)
@@ -161,7 +163,7 @@ object WindowFlatMapUtils {
     }
 
     // Expand regions into (task, region) pairs for each region RDD.
-    val taskNumberRegionPairsRDDs: PerSample[RDD[(TaskPosition, M)]] =
+    val taskNumberRegionPairsRDDs: PerSample[RDD[(TaskPosition, R)]] =
       regionRDDs.map(_.flatMap(region => {
         val singleContig = lociPartitionsBoxed.value.onContig(region.referenceContig)
         val thisRegionsTasks = singleContig.getAll(region.start - halfWindowSize, region.end + halfWindowSize)
@@ -172,7 +174,7 @@ object WindowFlatMapUtils {
         expandedRegions += thisRegionsTasks.size
 
         // Return this region, duplicated for each task it is assigned to.
-        thisRegionsTasks.map(task => (TaskPosition(task.toInt, region.referenceContig, region.start), region))
+        thisRegionsTasks.map(task => (TaskPosition(task, region.referenceContig, region.start), region))
       }))
 
     // Run the task on each partition. Keep track of the number of regions assigned to each task in an accumulator, so
@@ -202,40 +204,40 @@ object WindowFlatMapUtils {
         case (taskNumberRegionPairs, rddIndex: Int) => {
           taskNumberRegionPairs.map(pair => (pair._1, (rddIndex, pair._2)))
         }
-      })).repartitionAndSortWithinPartitions(new KeyPartitioner(numTasks.toInt)).map(_._2)
+      })).repartitionAndSortWithinPartitions(KeyPartitioner(numTasks)).map(_._2)
 
     partitioned.mapPartitionsWithIndex((taskNum, values) => {
       val iterators = SplitIterator.split(numRDDs, values)
-      val taskLoci = lociPartitionsBoxed.value.asInverseMap(taskNum)
+      val taskLoci = lociPartitionsBoxed.value.inverse(taskNum)
       lociAccumulator += taskLoci.count
       function(taskNum, taskLoci, iterators)
     })
   }
 
   /**
-    *
-    * Generates a sequence of results from each task (using the `generateFromWindows` function)
-    * and collects them into a single iterator
-    *
-    * @param taskRegionsPerSample for each sample, elements of type M to process for this task
-    * @param taskLoci Set of loci to process for this task
-    * @param halfWindowSize A window centered at locus = l will contain regions overlapping l +/- halfWindowSize
-    * @param generateFromWindows Function that maps windows to result type
-    * @tparam T result data type
-    * @return Iterator[T] collected from each contig
-    */
-  def collectByContig[M <: HasReferenceRegion: ClassTag, T: ClassTag](
-    taskRegionsPerSample: PerSample[Iterator[M]],
+   *
+   * Generates a sequence of results from each task (using the `generateFromWindows` function)
+   * and collects them into a single iterator
+   *
+   * @param taskRegionsPerSample for each sample, elements of type M to process for this task
+   * @param taskLoci Set of loci to process for this task
+   * @param halfWindowSize A window centered at locus = l will contain regions overlapping l +/- halfWindowSize
+   * @param generateFromWindows Function that maps windows to result type
+   * @tparam T result data type
+   * @return Iterator[T] collected from each contig
+   */
+  def collectByContig[R <: ReferenceRegion: ClassTag, T: ClassTag](
+    taskRegionsPerSample: PerSample[Iterator[R]],
     taskLoci: LociSet,
     halfWindowSize: Long,
-    generateFromWindows: (LociSet.SingleContig, PerSample[SlidingWindow[M]]) => Iterator[T]): Iterator[T] = {
+    generateFromWindows: (Contig, PerSample[SlidingWindow[R]]) => Iterator[T]): Iterator[T] = {
 
-    val regionSplitByContigPerSample: PerSample[RegionsByContig[M]] = taskRegionsPerSample.map(new RegionsByContig(_))
+    val regionSplitByContigPerSample: PerSample[RegionsByContig[R]] = taskRegionsPerSample.map(new RegionsByContig(_))
 
     taskLoci.contigs.flatMap(contig => {
-      val regionIterator: PerSample[Iterator[M]] = regionSplitByContigPerSample.map(_.next(contig))
-      val windows: PerSample[SlidingWindow[M]] = regionIterator.map(SlidingWindow[M](contig, halfWindowSize, _))
-      generateFromWindows(taskLoci.onContig(contig), windows)
+      val regionIterator: PerSample[Iterator[R]] = regionSplitByContigPerSample.map(_.next(contig.name))
+      val windows: PerSample[SlidingWindow[R]] = regionIterator.map(SlidingWindow[R](contig.name, halfWindowSize, _))
+      generateFromWindows(contig, windows)
     }).iterator
   }
 }

@@ -1,11 +1,11 @@
-package org.hammerlab.guacamole
+package org.hammerlab.guacamole.variants
 
 import java.io.File
 
-import htsjdk.variant.variantcontext.{Allele, GenotypeBuilder, VariantContext, VariantContextBuilder}
+import htsjdk.variant.variantcontext.{GenotypeBuilder, VariantContext, VariantContextBuilder, Allele => HTSJDKAllele}
 import htsjdk.variant.vcf.VCFFileReader
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
-import org.hammerlab.guacamole.util.VCFComparison
+import org.hammerlab.guacamole.util.{Bases, VCFComparison}
 
 import scala.collection.JavaConversions
 import scala.collection.mutable.ArrayBuffer
@@ -29,15 +29,15 @@ case class VariantFromVarlensCSV(
       (interbaseStart, ref, alt)
     } else {
       // Deletion.
-      val refSeqeunce = Bases.basesToString(
+      val refSequence = Bases.basesToString(
         reference.getReferenceSequence(
-          uncanonicalizedContig, interbaseStart.toInt - 1, interbaseStart.toInt + 1)).toUpperCase
-      (interbaseStart - 1, refSeqeunce, refSeqeunce(0) + alt)
+          uncanonicalizedContig, interbaseStart.toInt - 1, interbaseEnd.toInt)).toUpperCase
+      (interbaseStart - 1, refSequence, refSequence(0) + alt)
     }
 
     val alleles = Seq(adjustedRef, adjustedAlt).distinct
 
-    def makeHtsjdkAllele(allele: String): Allele = Allele.create(allele, allele == adjustedRef)
+    def makeHtsjdkAllele(allele: String): HTSJDKAllele = HTSJDKAllele.create(allele, allele == adjustedRef)
 
     val genotype = new GenotypeBuilder(tumor)
       .alleles(JavaConversions.seqAsJavaList(Seq(adjustedRef, adjustedAlt).map(makeHtsjdkAllele _)))
@@ -53,7 +53,7 @@ case class VariantFromVarlensCSV(
   }
 }
 
-object VariantComparisonUtils {
+trait VariantComparisonTest {
 
   def printSamplePairs(pairs: Seq[(VariantContext, VariantContext)], num: Int = 20): Unit = {
     val sample = pairs.take(num)
@@ -62,10 +62,10 @@ object VariantComparisonUtils {
       case (pair, num) => {
         println("(%4d) %20s vs %20s \tDETAILS: %20s vs %20s".format(
           num + 1,
-          VCFComparison.variantToString(pair._1, false),
-          VCFComparison.variantToString(pair._2, false),
-          VCFComparison.variantToString(pair._1, true),
-          VCFComparison.variantToString(pair._2, true)))
+          VCFComparison.variantToString(pair._1, verbose = false),
+          VCFComparison.variantToString(pair._2, verbose = false),
+          VCFComparison.variantToString(pair._1, verbose = true),
+          VCFComparison.variantToString(pair._2, verbose = true)))
       }
     })
   }
@@ -77,8 +77,8 @@ object VariantComparisonUtils {
       case (item, num) => {
         println("(%4d) %20s \tDETAILS: %29s".format(
           num + 1,
-          VCFComparison.variantToString(item, false),
-          VCFComparison.variantToString(item, true)))
+          VCFComparison.variantToString(item, verbose = false),
+          VCFComparison.variantToString(item, verbose = true)))
       }
     })
   }

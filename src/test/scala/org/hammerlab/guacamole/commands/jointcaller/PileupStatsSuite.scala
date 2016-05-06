@@ -1,10 +1,9 @@
 package org.hammerlab.guacamole.commands.jointcaller
 
-import org.hammerlab.guacamole.Bases
 import org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.PileupStats
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
-import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
+import org.hammerlab.guacamole.util.{Bases, GuacFunSuite, TestUtil}
 
 class PileupStatsSuite extends GuacFunSuite {
   val cancerWGS1Bams = Seq("normal.bam", "primary.bam", "recurrence.bam").map(
@@ -15,7 +14,7 @@ class PileupStatsSuite extends GuacFunSuite {
     ReferenceBroadcast(partialFasta, sc, partialFasta = true)
   }
 
-  sparkTest("pileupstats likelihood computation") {
+  test("pileupstats likelihood computation") {
     val refString = "NTCGATCGA"
     def reference = TestUtil.makeReference(sc, Seq(("chr1", 0, refString)))
     def referenceContigSequence = reference.getContig("chr1")

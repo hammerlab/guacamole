@@ -1,4 +1,5 @@
 package org.hammerlab.guacamole.commands.jointcaller
+
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
 import org.scalatest.Matchers
@@ -12,7 +13,7 @@ class AlleleAtLocusSuite extends GuacFunSuite with Matchers {
     ReferenceBroadcast(b37Chromosome22Fasta, sc, partialFasta = false)
   }
 
-  sparkTest("AlleleAtLocus.variantAlleles for low vaf variant allele") {
+  test("AlleleAtLocus.variantAlleles for low vaf variant allele") {
     val inputs = InputCollection(celsr1BAMs, analytes = Vector("dna", "dna", "rna"))
     val pileups = (inputs.normalDNA ++ inputs.tumorDNA).map(input =>
       TestUtil.loadPileup(sc, input.path, b37Chromosome22Reference, 46931060, Some("chr22")))

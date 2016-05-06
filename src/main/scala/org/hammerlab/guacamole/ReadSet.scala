@@ -33,12 +33,11 @@ import org.hammerlab.guacamole.reads.{MappedRead, PairedRead, Read, InputFilters
  * @param contigLengthsFromDictionary if true, the contigLengths property will use the sequence dictionary to get the
  *                                    contig lengths. Otherwise, the reads themselves will be used.
  */
-case class ReadSet(
-                    reads: RDD[Read],
-                    sequenceDictionary: Option[SequenceDictionary],
-                    source: String,
-                    filters: InputFilters,
-                    contigLengthsFromDictionary: Boolean) {
+case class ReadSet(reads: RDD[Read],
+                   sequenceDictionary: Option[SequenceDictionary],
+                   source: String,
+                   filters: InputFilters,
+                   contigLengthsFromDictionary: Boolean) {
 
   /** Only mapped reads. */
   lazy val mappedReads =
@@ -86,12 +85,11 @@ object ReadSet {
    * @param contigLengthsFromDictionary see [[ReadSet]] doc for description
    * @return
    */
-  def apply(
-             sc: SparkContext,
-             filename: String,
-             filters: InputFilters = InputFilters.empty,
-             contigLengthsFromDictionary: Boolean = true,
-             config: ReadLoadingConfig = ReadLoadingConfig.default): ReadSet = {
+  def apply(sc: SparkContext,
+            filename: String,
+            filters: InputFilters = InputFilters.empty,
+            contigLengthsFromDictionary: Boolean = true,
+            config: ReadLoadingConfig = ReadLoadingConfig.default): ReadSet = {
 
     val (reads, sequenceDictionary) =
       Read.loadReadRDDAndSequenceDictionary(

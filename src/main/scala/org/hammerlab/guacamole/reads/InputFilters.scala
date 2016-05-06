@@ -2,7 +2,7 @@ package org.hammerlab.guacamole.reads
 
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.models.SequenceDictionary
-import org.hammerlab.guacamole.loci.LociSet
+import org.hammerlab.guacamole.loci.set.LociParser
 
 /**
  * Filtering reads while they are loaded can be an important optimization.
@@ -15,7 +15,7 @@ import org.hammerlab.guacamole.loci.LociSet
  * @param passedVendorQualityChecks include only reads that do not have the failedVendorQualityChecks bit set
  * @param isPaired include only reads are paired-end reads
  */
-case class InputFilters(overlapsLoci: Option[LociSet.Builder],
+case class InputFilters(overlapsLoci: Option[LociParser],
                         nonDuplicate: Boolean,
                         passedVendorQualityChecks: Boolean,
                         isPaired: Boolean)
@@ -30,14 +30,14 @@ object InputFilters {
    *               overlapsLoci.
    */
   def apply(mapped: Boolean = false,
-            overlapsLoci: LociSet.Builder = null,
+            overlapsLoci: LociParser = null,
             nonDuplicate: Boolean = false,
             passedVendorQualityChecks: Boolean = false,
             isPaired: Boolean = false): InputFilters = {
     new InputFilters(
       overlapsLoci =
         if (overlapsLoci == null && mapped)
-          Some(LociSet.newBuilder.putAllContigs)
+          Some(LociParser.all)
         else
           Option(overlapsLoci),
       nonDuplicate,
@@ -66,8 +66,7 @@ object InputFilters {
     if (filters.overlapsLoci.nonEmpty) {
       val loci = filters.overlapsLoci.get.result(Read.contigLengths(sequenceDictionary))
       val broadcastLoci = reads.sparkContext.broadcast(loci)
-      result = result.filter(
-        read => read.isMapped && read.asMappedRead.get.overlapsLociSet(broadcastLoci.value))
+      result = result.filter(_.asMappedRead.exists(broadcastLoci.value.intersects))
     }
     if (filters.nonDuplicate) result = result.filter(!_.isDuplicate)
     if (filters.passedVendorQualityChecks) result = result.filter(!_.failedVendorQualityChecks)

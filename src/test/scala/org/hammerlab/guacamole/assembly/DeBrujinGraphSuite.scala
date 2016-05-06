@@ -1,8 +1,7 @@
 package org.hammerlab.guacamole.assembly
 
-import org.hammerlab.guacamole.Bases
 import org.hammerlab.guacamole.util.TestUtil.Implicits._
-import org.hammerlab.guacamole.util.{AssertBases, GuacFunSuite, TestUtil}
+import org.hammerlab.guacamole.util.{AssertBases, Bases, GuacFunSuite, TestUtil}
 
 class DeBruijnGraphSuite extends GuacFunSuite {
 
@@ -367,7 +366,7 @@ class DeBruijnGraphSuite extends GuacFunSuite {
 
   }
 
-  sparkTest("real reads data test") {
+  test("real reads data test") {
     val kmerSize = 55
 
     val referenceString = "GAGGATCTGCCATGGCCGGGCGAGCTGGAGGAGGAGGAGGAGGAGGAGGAGGAGGAGGAGGAGGAAGAGGAGGAGGCTGCAGCGGCGGCGGCGGCGAACGTGGACGACGTAGTGGTCGTGGAGGAGGTGGAGGAAGAGGCGGGGCG"

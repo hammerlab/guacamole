@@ -2,16 +2,16 @@ package org.hammerlab.guacamole.reference
 
 import htsjdk.samtools.Cigar
 import org.bdgenomics.adam.util.MdTag
-import org.hammerlab.guacamole.Bases
+import org.hammerlab.guacamole.util.Bases
 
 trait ReferenceGenome {
 
   /**
-    * Path where this reference was loaded from, or other description of its provenance (optional).
-    *
-    * For provenance tracking only. Not guaranteed to be a valid path or on a filesystem that is currently accessible.
-    *
-    */
+   * Path where this reference was loaded from, or other description of its provenance (optional).
+   *
+   * For provenance tracking only. Not guaranteed to be a valid path or on a filesystem that is currently accessible.
+   *
+   */
   val source: Option[String]
 
   /**

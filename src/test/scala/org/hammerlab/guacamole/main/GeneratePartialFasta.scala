@@ -2,14 +2,32 @@ package org.hammerlab.guacamole.main
 
 import java.io.{BufferedWriter, File, FileWriter}
 
-import org.apache.spark.Logging
-import org.bdgenomics.utils.cli.Args4j
+import org.apache.spark.SparkContext
+import org.hammerlab.guacamole.ReadSet
+import org.hammerlab.guacamole.commands.SparkCommand
 import org.hammerlab.guacamole.distributed.LociPartitionUtils
+import org.hammerlab.guacamole.loci.SimpleRange
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.reads.{InputFilters, ReadLoadingConfigArgs}
 import org.hammerlab.guacamole.reference.{ContigNotFound, ReferenceArgs, ReferenceBroadcast}
-import org.hammerlab.guacamole.{Bases, Common, ReadSet}
+import org.hammerlab.guacamole.util.Bases
 import org.kohsuke.args4j.{Argument, Option => Args4jOption}
+
+class GeneratePartialFastaArguments
+  extends LociPartitionUtils.Arguments
+    with ReadLoadingConfigArgs
+    with ReferenceArgs {
+
+  @Args4jOption(name = "--output", metaVar = "OUT", required = true, aliases = Array("-o"),
+    usage = "Output path for partial fasta")
+  var output: String = ""
+
+  @Args4jOption(name = "--reference-fasta", required = true, usage = "Local path to a reference FASTA file")
+  var referenceFastaPath: String = null
+
+  @Argument(required = true, multiValued = true, usage = "Reads to write out overlapping fasta sequence for")
+  var bams: Array[String] = Array.empty
+}
 
 /**
  * This command is used to generate a "partial fasta" which we use in our tests of variant callers. It should be run
@@ -21,31 +39,30 @@ import org.kohsuke.args4j.{Argument, Option => Args4jOption}
  *
  * This lets us package up a subset of a reference fasta into a file that is small enough to version control and
  * distribute.
+ *
+ * To run this command, build the main Guacamole package, compile test-classes, and run this class with both the
+ * assembly JAR and test-classes on the classpath:
+ *
+ *   mvn package -DskipTests
+ *   mvn test-compile
+ *   java \
+ *     -cp target/guacamole-with-dependencies-0.0.1-SNAPSHOT.jar:target/scala-2.10.5/test-classes \
+ *     org.hammerlab.guacamole.main.GeneratePartialFasta \
+ *     -o <output path> \
+ *     --reference-fasta <fasta path> \
+ *     <bam path> [bam path...]
  */
-object GeneratePartialFasta extends Logging {
+object GeneratePartialFasta extends SparkCommand[GeneratePartialFastaArguments] {
 
-  protected class Arguments
-    extends LociPartitionUtils.Arguments
-      with ReadLoadingConfigArgs
-      with ReferenceArgs {
+  override val name: String = "generate-partial-fasta"
+  override val description: String = "generate \"partial fasta\"s for use in our tests of variant callers"
 
-    @Args4jOption(name = "--output", metaVar = "OUT", required = true, aliases = Array("-o"),
-      usage = "Output path for partial fasta")
-    var output: String = ""
+  def main(args: Array[String]): Unit = run(args)
 
-    @Args4jOption(name = "--reference-fasta", required = true, usage = "Local path to a reference FASTA file")
-    var referenceFastaPath: String = null
-
-    @Argument(required = true, multiValued = true, usage = "Reads to write out overlapping fasta sequence for")
-    var bams: Array[String] = Array.empty
-  }
-
-  def main(rawArgs: Array[String]): Unit = {
-    val args = Args4j[Arguments](rawArgs)
-    val sc = Common.createSparkContext(appName = "generate-partial-fasta")
+  override def run(args: GeneratePartialFastaArguments, sc: SparkContext): Unit = {
 
     val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
-    val lociBuilder = Common.lociFromArguments(args, default = "none")
+    val parsedLoci = args.parseLoci(sc.hadoopConfiguration, fallback = "none")
     val readSets = args.bams.zipWithIndex.map(fileAndIndex =>
       ReadSet(
         sc,
@@ -60,25 +77,27 @@ object GeneratePartialFasta extends Logging {
 
     val regions = reads.map(read => (read.referenceContig, read.start, read.end))
     regions.collect.foreach(triple => {
-      lociBuilder.put(triple._1, triple._2, triple._3)
+      parsedLoci.put(triple._1, triple._2, triple._3)
     })
 
-    val loci = lociBuilder.result
+    val loci = parsedLoci.result
 
     val fd = new File(args.output)
     val writer = new BufferedWriter(new FileWriter(fd))
-    loci.contigs.foreach(contig => {
-      loci.onContig(contig).ranges.foreach(range => {
-        try {
-          val sequence = Bases.basesToString(reference.getContig(contig).slice(range.start.toInt, range.end.toInt))
-          writer.write(">%s:%d-%d/%d\n".format(contig, range.start, range.end, contigLengths(contig)))
-          writer.write(sequence)
-          writer.write("\n")
-        } catch {
-          case e: ContigNotFound => log.warn("No such contig in reference: %s: %s".format(contig, e.toString))
-        }
-      })
-    })
+
+    for {
+      contig <- loci.contigs
+      SimpleRange(start, end) <- contig.ranges
+    } {
+      try {
+        val sequence = Bases.basesToString(reference.getContig(contig.name).slice(start.toInt, end.toInt))
+        writer.write(">%s:%d-%d/%d\n".format(contig.name, start, end, contigLengths(contig.name)))
+        writer.write(sequence)
+        writer.write("\n")
+      } catch {
+        case e: ContigNotFound => log.warn("No such contig in reference: %s: %s".format(contig, e.toString))
+      }
+    }
     writer.close()
     progress(s"Wrote: ${args.output}")
   }

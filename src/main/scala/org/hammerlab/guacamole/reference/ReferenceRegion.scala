@@ -16,17 +16,13 @@
  * limitations under the License.
  */
 
-package org.hammerlab.guacamole
-
-import org.hammerlab.guacamole.loci.LociSet
+package org.hammerlab.guacamole.reference
 
 /**
  * Trait for objects that are associated with an interval on the genome. The most prominent example is a
  * [[org.hammerlab.guacamole.reads.MappedRead]], but there's also [[org.hammerlab.guacamole.variants.ReferenceVariant]].
- *
- * @todo replace with ReferenceRegion base class in ADAM
  */
-trait HasReferenceRegion {
+trait ReferenceRegion {
 
   /** Name of the reference contig */
   val referenceContig: String
@@ -36,16 +32,6 @@ trait HasReferenceRegion {
 
   /** The end position on the genome, *exclusive*. Must be non-negative. */
   val end: Long
-
-  /**
-   * Does this region overlap any of the given loci, with halfWindowSize padding?
-   *
-   * The padding is inclusive on both ends, so for example if halfWindowSize=1, then a region would overlap if it
-   * included any of these three positions: locus - 1, locus, and locus + 1.
-   */
-  def overlapsLociSet(loci: LociSet, halfWindowSize: Long = 0): Boolean = {
-    loci.onContig(referenceContig).intersects(math.max(0, start - halfWindowSize), end + halfWindowSize)
-  }
 
   /**
    * Does the region overlap the given locus, with halfWindowSize padding?
@@ -60,7 +46,7 @@ trait HasReferenceRegion {
    * @param other another region on the genome
    * @return True if the the regions overlap
    */
-  def overlaps(other: HasReferenceRegion): Boolean = {
+  def overlaps(other: ReferenceRegion): Boolean = {
     other.referenceContig == referenceContig && (overlapsLocus(other.start) || other.overlapsLocus(start))
   }
 }

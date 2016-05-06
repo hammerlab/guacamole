@@ -21,8 +21,8 @@ package org.hammerlab.guacamole.reads
 import htsjdk.samtools.Cigar
 import org.bdgenomics.adam.util.PhredUtils
 import org.hammerlab.guacamole.pileup.PileupElement
-import org.hammerlab.guacamole.reference.ContigSequence
-import org.hammerlab.guacamole.{Bases, CigarUtils, HasReferenceRegion}
+import org.hammerlab.guacamole.reference.{ContigSequence, ReferenceRegion}
+import org.hammerlab.guacamole.util.{Bases, CigarUtils}
 
 import scala.collection.JavaConversions
 
@@ -46,7 +46,7 @@ case class MappedRead(
     cigar: Cigar,
     failedVendorQualityChecks: Boolean,
     isPositiveStrand: Boolean,
-    isPaired: Boolean) extends Read with HasReferenceRegion {
+    isPaired: Boolean) extends Read with ReferenceRegion {
 
   assert(baseQualities.length == sequence.length,
     "Base qualities have length %d but sequence has length %d".format(baseQualities.length, sequence.length))

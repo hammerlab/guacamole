@@ -1,13 +1,26 @@
 package org.hammerlab.guacamole.main
 
-import org.hammerlab.guacamole.VariantComparisonUtils.{compareToCSV, compareToVCF, csvRecords}
+import org.apache.spark.SparkContext
+import org.hammerlab.guacamole.commands.SparkCommand
 import org.hammerlab.guacamole.commands.jointcaller.SomaticJoint
-import org.hammerlab.guacamole.loci.LociSet
+import org.hammerlab.guacamole.commands.jointcaller.SomaticJoint.Arguments
+import org.hammerlab.guacamole.data.{CancerWGSTestUtil, NA12878TestUtil}
+import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.util.TestUtil
-import org.hammerlab.guacamole.{CancerWGSTestUtils, Common, NA12878TestUtils}
+import org.hammerlab.guacamole.variants.VariantComparisonTest
 
-// This app outputs a performance comparison. We may want to add assertions on the accuracy later.
-object SomaticJointCallerIntegrationTests {
+/**
+ * Somatic joint-caller integration "tests" that output various statistics to stdout.
+ *
+ * To run:
+ *
+ *   mvn package
+ *   mvn test-compile
+ *   java \
+ *     -cp target/guacamole-with-dependencies-0.0.1-SNAPSHOT.jar:target/scala-2.10.5/test-classes \
+ *     org.hammerlab.guacamole.main.SomaticJointCallerIntegrationTests
+ */
+object SomaticJointCallerIntegrationTests extends SparkCommand[Arguments] with VariantComparisonTest {
 
   var tempFileNum = 0
 
@@ -16,30 +29,41 @@ object SomaticJointCallerIntegrationTests {
     "/tmp/test-somatic-joint-caller-%d.vcf".format(tempFileNum)
   }
 
-  def main(args: Array[String]): Unit = {
+  override val name: String = "germline-assembly-integration-test"
+  override val description: String = "output various statistics to stdout"
 
-    val sc = Common.createSparkContext("SomaticJointCallerIntegrationTest")
+  def main(args: Array[String]): Unit = run(args)
+
+  override def run(args: Arguments, sc: SparkContext): Unit = {
 
     println("somatic calling on subset of 3-sample cancer patient 1")
     val outDir = "/tmp/guacamole-somatic-joint-test"
 
     if (true) {
       if (true) {
-        val args = new SomaticJoint.Arguments()
+        val args = new Arguments()
         args.outDir = outDir
-        args.referenceFastaPath = CancerWGSTestUtils.referenceFastaPath
+        args.referenceFastaPath = CancerWGSTestUtil.referenceFastaPath
         args.referenceFastaIsPartial = true
         args.somaticGenotypePolicy = "trigger"
         args.loci = ((1).until(22).map(i => "chr%d".format(i)) ++ Seq("chrX", "chrY")).mkString(",")
 
-        args.paths = CancerWGSTestUtils.cancerWGS1Bams.toArray
-        val forceCallLoci = LociSet.newBuilder
-        csvRecords(CancerWGSTestUtils.cancerWGS1ExpectedSomaticCallsCSV).filter(!_.tumor.contains("decoy")).foreach(record => {
-          forceCallLoci.put("chr" + record.contig,
-            if (record.alt.nonEmpty) record.interbaseStart else record.interbaseStart - 1,
-            if (record.alt.nonEmpty) record.interbaseStart + 1 else record.interbaseStart)
-        })
-        args.forceCallLoci = forceCallLoci.result.truncatedString(100000)
+        args.paths = CancerWGSTestUtil.bams.toArray
+
+        val forceCallLoci =
+          LociSet(
+            csvRecords(CancerWGSTestUtil.expectedSomaticCallsCSV)
+              .filterNot(_.tumor.contains("decoy"))
+              .map(record => {
+                (
+                  "chr" + record.contig,
+                  if (record.alt.nonEmpty) record.interbaseStart else record.interbaseStart - 1L,
+                  if (record.alt.nonEmpty) record.interbaseStart + 1L else record.interbaseStart
+                )
+              })
+          )
+
+        args.forceCallLoci = forceCallLoci.truncatedString(100000)
 
         SomaticJoint.Caller.run(args, sc)
       }
@@ -47,8 +71,8 @@ object SomaticJointCallerIntegrationTests {
 
       compareToCSV(
         outDir + "/somatic.all_samples.vcf",
-        CancerWGSTestUtils.cancerWGS1ExpectedSomaticCallsCSV,
-        CancerWGSTestUtils.referenceBroadcast(sc),
+        CancerWGSTestUtil.expectedSomaticCallsCSV,
+        CancerWGSTestUtil.referenceBroadcast(sc),
         Set("primary", "recurrence")
       )
     }
@@ -61,26 +85,26 @@ object SomaticJointCallerIntegrationTests {
       if (true) {
         val args = new SomaticJoint.Arguments()
         args.out = resultFile
-        args.paths = Seq(NA12878TestUtils.na12878SubsetBam).toArray
+        args.paths = Seq(NA12878TestUtil.subsetBam).toArray
         args.loci = "chr1:0-6700000"
-        args.forceCallLociFromFile = NA12878TestUtils.na12878ExpectedCallsVCF
-        args.referenceFastaPath = NA12878TestUtils.chr1PrefixFasta
+        args.forceCallLociFromFile = NA12878TestUtil.expectedCallsVCF
+        args.referenceFastaPath = NA12878TestUtil.chr1PrefixFasta
         SomaticJoint.Caller.run(args, sc)
       }
 
       println("************* GUACAMOLE *************")
-      compareToVCF(resultFile, NA12878TestUtils.na12878ExpectedCallsVCF)
+      compareToVCF(resultFile, NA12878TestUtil.expectedCallsVCF)
 
       if (false) {
         println("************* UNIFIED GENOTYPER *************")
         compareToVCF(TestUtil.testDataPath(
           "illumina-platinum-na12878/unified_genotyper.vcf"),
-          NA12878TestUtils.na12878ExpectedCallsVCF)
+          NA12878TestUtil.expectedCallsVCF)
 
         println("************* HaplotypeCaller *************")
         compareToVCF(TestUtil.testDataPath(
           "illumina-platinum-na12878/haplotype_caller.vcf"),
-          NA12878TestUtils.na12878ExpectedCallsVCF)
+          NA12878TestUtil.expectedCallsVCF)
       }
     }
   }

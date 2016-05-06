@@ -1,5 +1,11 @@
 package org.hammerlab.guacamole.loci
 
+import java.io.InputStreamReader
+
+import org.apache.commons.io.IOUtils
+import org.apache.hadoop.conf.Configuration
+import org.apache.hadoop.fs.Path
+import org.hammerlab.guacamole.loci.set.LociParser
 import org.hammerlab.guacamole.logging.DebugLogArgs
 import org.kohsuke.args4j.{Option => Args4jOption}
 
@@ -18,5 +24,33 @@ trait LociArgs extends DebugLogArgs {
     forbids = Array("--loci")
   )
   var lociFromFile: String = ""
+
+  /**
+   * Parse string representations of loci ranges, either from the "--loci" cmdline parameter or a file specified by the
+   * "--loci-from-file" parameter, and return a LociParser encapsulating the result. The latter can then be converted
+   * into a LociSet when contig-lengths are available / have been parsed from read-sets.
+   *
+   * @param fallback If neither "--loci" nor "--loci-from-file" were provided, fall back to this string representation
+   *                 of the loci that should be considered.
+   * @return a LociParser wrapping the appropriate loci ranges.
+   */
+  def parseLoci(hadoopConfiguration: Configuration, fallback: String = "all"): LociParser = {
+    if (loci.nonEmpty && lociFromFile.nonEmpty) {
+      throw new IllegalArgumentException("Specify at most one of the 'loci' and 'loci-from-file' arguments")
+    }
+    val lociToParse =
+      if (loci.nonEmpty) {
+        loci
+      } else if (lociFromFile.nonEmpty) {
+        // Load loci from file.
+        val path = new Path(lociFromFile)
+        val filesystem = path.getFileSystem(hadoopConfiguration)
+        IOUtils.toString(new InputStreamReader(filesystem.open(path)))
+      } else {
+        fallback
+      }
+
+    LociParser(lociToParse)
+  }
 }
 

@@ -6,8 +6,8 @@ import java.util.NoSuchElementException
 import htsjdk.samtools.reference.FastaSequenceFile
 import org.apache.spark.SparkContext
 import org.apache.spark.broadcast.Broadcast
-import org.hammerlab.guacamole.Bases
-import org.hammerlab.guacamole.loci.LociSet
+import org.hammerlab.guacamole.loci.set.LociSet
+import org.hammerlab.guacamole.util.Bases
 
 import scala.collection.mutable
 
@@ -106,27 +106,27 @@ object ReferenceBroadcast {
               .format(regionDescription))
         }
         val contigLength = pieces(1).toInt
-        val region = LociSet.parse(pieces(0)).result
-        if (region.contigs.length != 1) {
+        val region = LociSet(pieces(0))
+        if (region.contigs.size != 1) {
           throw new IllegalArgumentException("Region must have 1 contig for partial fasta: %s".format(pieces(0)))
         }
         val contig = region.contigs.head
-        val regionLength = region.onContig(contig).count
+        val regionLength = contig.count
         if (regionLength != sequence.length) {
           throw new IllegalArgumentException("In partial fasta, region %s is length %,d but its sequence is length %,d".format(
             pieces(0), regionLength, sequence.length))
         }
-        val maxRegion = region.onContig(contig).ranges.map(_.end).max
+        val maxRegion = contig.ranges.map(_.end).max
         if (maxRegion > contigLength) {
           throw new IllegalArgumentException("In partial fasta, region %s (max=%,d) exceeds contig length %,d".format(
             pieces(0), maxRegion, contigLength))
         }
-        if (contigLengths.getOrElseUpdate(contig, contigLength) != contigLength) {
+        if (contigLengths.getOrElseUpdate(contig.name, contigLength) != contigLength) {
           throw new IllegalArgumentException("In partial fasta, contig lengths for %s are inconsistent (%d vs %d)".format(
-            contig, contigLength, contigLengths(contig)))
+            contig, contigLength, contigLengths(contig.name)))
         }
-        val sequenceMap = result.getOrElseUpdate(contig, mutable.HashMap[Int, Byte]())
-        region.onContig(contig).iterator.zip(sequence.iterator).foreach(pair => {
+        val sequenceMap = result.getOrElseUpdate(contig.name, mutable.HashMap[Int, Byte]())
+        contig.iterator.zip(sequence.iterator).foreach(pair => {
           sequenceMap.update(pair._1.toInt, pair._2)
         })
       }

@@ -22,14 +22,15 @@ import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.rdd.ADAMContext
 import org.bdgenomics.formats.avro.Variant
+import org.hammerlab.guacamole.ReadSet
 import org.hammerlab.guacamole.distributed.LociPartitionUtils
 import org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociUniformly
 import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMap
-import org.hammerlab.guacamole.loci.LociSet
+import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.reads.{MappedRead, InputFilters, ReadLoadingConfigArgs}
+import org.hammerlab.guacamole.reads.{InputFilters, MappedRead, ReadLoadingConfigArgs}
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
-import org.hammerlab.guacamole.{Bases, ReadSet, SparkCommand}
+import org.hammerlab.guacamole.util.Bases
 import org.kohsuke.args4j.{Argument, Option => Args4jOption}
 
 object VariantSupport {
@@ -86,10 +87,12 @@ object VariantSupport {
       )
 
       // Build a loci set from the variant positions
-      val lociSet = LociSet.union(
-        variants.map(
-          variant => LociSet(variant.getContig.getContigName, variant.getStart, variant.getEnd))
-          .collect(): _*)
+      val lociSet =
+        LociSet(
+          variants
+            .map(variant => (variant.getContig.getContigName, variant.getStart: Long, variant.getEnd: Long))
+            .collect()
+        )
 
       val lociPartitions = partitionLociUniformly(args.parallelism, lociSet)
 

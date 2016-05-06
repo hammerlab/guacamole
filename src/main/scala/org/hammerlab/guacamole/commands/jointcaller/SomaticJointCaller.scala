@@ -5,11 +5,12 @@ import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole.Common.NoSequenceDictionaryArgs
 import org.hammerlab.guacamole._
+import org.hammerlab.guacamole.commands.SparkCommand
 import org.hammerlab.guacamole.commands.jointcaller.evidence.{MultiSampleMultiAlleleEvidence, MultiSampleSingleAlleleEvidence}
 import org.hammerlab.guacamole.distributed.LociPartitionUtils
 import org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociAccordingToArgs
 import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMapMultipleRDDs
-import org.hammerlab.guacamole.loci.LociSet
+import org.hammerlab.guacamole.loci.set.{LociParser, LociSet}
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.reads.InputFilters
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
@@ -64,7 +65,7 @@ object SomaticJoint {
    */
   def inputsToReadSets(sc: SparkContext,
                        inputs: InputCollection,
-                       loci: LociSet.Builder,
+                       loci: LociParser,
                        contigLengthsFromDictionary: Boolean = true): PerSample[ReadSet] = {
     inputs.items.zipWithIndex.map({
       case (input, index) => ReadSet(
@@ -90,7 +91,7 @@ object SomaticJoint {
 
       val reference = ReferenceBroadcast(args.referenceFastaPath, sc, partialFasta = args.referenceFastaIsPartial)
 
-      val loci = Common.lociFromArguments(args)
+      val loci = args.parseLoci(sc.hadoopConfiguration)
 
       val readSets = inputsToReadSets(sc, inputs, loci, !args.noSequenceDictionary)
 
@@ -99,11 +100,12 @@ object SomaticJoint {
           .format(readSets.map(_.sequenceDictionary.toString).mkString("\n")))
       }
 
-      val forceCallLoci = if (args.forceCallLoci.nonEmpty || args.forceCallLociFromFile.nonEmpty) {
-        Common.loci(args.forceCallLoci, args.forceCallLociFromFile, readSets(0).contigLengths)
-      } else {
-        LociSet.empty
-      }
+      val forceCallLoci =
+        if (args.forceCallLoci.nonEmpty || args.forceCallLociFromFile.nonEmpty) {
+          LociSet.load(args.forceCallLoci, args.forceCallLociFromFile, readSets(0).contigLengths)
+        } else {
+          LociSet()
+        }
 
       if (forceCallLoci.nonEmpty) {
         progress(
@@ -165,14 +167,14 @@ object SomaticJoint {
 
   /** Subtract 1 from all loci in a LociSet. */
   def lociSetMinusOne(loci: LociSet): LociSet = {
-    val builder = LociSet.newBuilder
-    loci.contigs.foreach(contig => {
-      val contigSet = loci.onContig(contig)
-      contigSet.ranges.foreach(range => {
-        builder.put(contig, math.max(0, range.start - 1), range.end - 1)
-      })
-    })
-    builder.result
+    LociSet(
+      for {
+        contig <- loci.contigs
+        range <- contig.ranges
+      } yield {
+        (contig.name, math.max(0, range.start - 1), range.end - 1)
+      }
+    )
   }
 
   def makeCalls(sc: SparkContext,
@@ -181,7 +183,7 @@ object SomaticJoint {
                 parameters: Parameters,
                 reference: ReferenceBroadcast,
                 loci: LociSet,
-                forceCallLoci: LociSet = LociSet.empty,
+                forceCallLoci: LociSet = LociSet(),
                 onlySomatic: Boolean = false,
                 includeFiltered: Boolean = false,
                 distributedUtilArguments: LociPartitionUtils.Arguments = new LociPartitionUtils.Arguments {}): RDD[MultiSampleMultiAlleleEvidence] = {
@@ -195,7 +197,7 @@ object SomaticJoint {
       partitionLociAccordingToArgs(
         distributedUtilArguments,
         lociSetMinusOne(loci),
-        readSets.map(_.mappedReads): _*
+        readSets.map(_.mappedReads)
       )
 
     pileupFlatMapMultipleRDDs(
@@ -224,7 +226,7 @@ object SomaticJoint {
                  inputs: InputCollection,
                  parameters: Parameters,
                  sequenceDictionary: SAMSequenceDictionary,
-                 forceCallLoci: LociSet = LociSet.empty,
+                 forceCallLoci: LociSet = LociSet(),
                  reference: ReferenceBroadcast,
                  onlySomatic: Boolean = false,
                  out: String = "",

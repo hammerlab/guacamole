@@ -1,12 +1,12 @@
 package org.hammerlab.guacamole.distributed
 
-import org.hammerlab.guacamole.loci.LociSet
+import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
 import org.hammerlab.guacamole.windowing.SlidingWindow
 
 class WindowFlatMapUtilsSuite extends GuacFunSuite {
-  sparkTest("test window fold parallelism 5; average read depth") {
+  test("test window fold parallelism 5; average read depth") {
 
     // 4 overlapping reads starting at loci = 0
     //     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6
@@ -28,7 +28,7 @@ class WindowFlatMapUtilsSuite extends GuacFunSuite {
     val counts = WindowFlatMapUtils.windowFoldLoci(
       Vector(reads),
       // Split loci in 5 partitions - we will compute an aggregate value per partition
-      LociPartitionUtils.partitionLociUniformly(5, LociSet.parse("chr1:0-20").result),
+      LociPartitionUtils.partitionLociUniformly(5, LociSet("chr1:0-20")),
       skipEmpty = false,
       halfWindowSize = 0,
       initialValue = (0L, 0L),

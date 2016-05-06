@@ -9,7 +9,7 @@ class AlleleEvidenceSuite extends GuacFunSuite {
 
   def reference = TestUtil.makeReference(sc, Seq(("chr1", 0, "NTAGATCGA")))
 
-  sparkTest("allele evidence from pileup, all reads support") {
+  test("allele evidence from pileup, all reads support") {
     val reads = Seq(
       TestUtil.makeRead("TCGATCGA", "8M", 1, alignmentQuality = 30),
       TestUtil.makeRead("TCGATCGA", "8M", 1, alignmentQuality = 30),
@@ -27,7 +27,7 @@ class AlleleEvidenceSuite extends GuacFunSuite {
     variantEvidence.medianMismatchesPerRead should be(1)
   }
 
-  sparkTest("allele evidence from pileup, one read supports") {
+  test("allele evidence from pileup, one read supports") {
     val reads = Seq(
       TestUtil.makeRead("TAGATCGA", "8M", 1, alignmentQuality = 30),
       TestUtil.makeRead("TCGATCGA", "8M", 1, alignmentQuality = 60),
@@ -45,7 +45,7 @@ class AlleleEvidenceSuite extends GuacFunSuite {
     variantEvidence.medianMismatchesPerRead should be(1)
   }
 
-  sparkTest("allele evidence from pileup, no read supports") {
+  test("allele evidence from pileup, no read supports") {
     val reads = Seq(
       TestUtil.makeRead("TAGATCGA", "8M", 1, alignmentQuality = 30),
       TestUtil.makeRead("TAGATCGA", "8M", 1, alignmentQuality = 60),

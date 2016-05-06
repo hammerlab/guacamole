@@ -1,43 +1,38 @@
 package org.hammerlab.guacamole.commands
 
-import org.apache.spark.SparkContext
 import org.hammerlab.guacamole._
 import org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Arguments
+import org.hammerlab.guacamole.data.NA12878TestUtil
 import org.hammerlab.guacamole.distributed.LociPartitionUtils
-import org.hammerlab.guacamole.loci.LociSet
+import org.hammerlab.guacamole.loci.set.LociParser
 import org.hammerlab.guacamole.reads.InputFilters
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
-import org.hammerlab.guacamole.util.TestUtil
+import org.hammerlab.guacamole.util.{Bases, GuacFunSuite, TestUtil}
 import org.hammerlab.guacamole.variants.CalledAllele
-import org.scalatest.{BeforeAndAfterAll, FunSuite, Matchers}
+import org.scalatest.BeforeAndAfterAll
 
-class GermlineAssemblyCallerSuite extends FunSuite with Matchers with BeforeAndAfterAll {
+class GermlineAssemblyCallerSuite extends GuacFunSuite with BeforeAndAfterAll {
 
   val args = new Arguments
 
-  val input = NA12878TestUtils.na12878SubsetBam
+  val input = NA12878TestUtil.subsetBam
   args.reads = TestUtil.testDataPath(input)
   args.parallelism = 1
 
-  var sc: SparkContext = _
   var reference: ReferenceBroadcast = _
   var readSet: ReadSet = _
 
   override def beforeAll() {
-    sc = Common.createSparkContext()
+    super.beforeAll()
     reference = ReferenceBroadcast(referenceFastaPath, sc)
   }
 
-  override def afterAll(): Unit = {
-    sc.stop()
-  }
-
-  val referenceFastaPath = TestUtil.testDataPath(NA12878TestUtils.chr1PrefixFasta)
+  val referenceFastaPath = TestUtil.testDataPath(NA12878TestUtil.chr1PrefixFasta)
 
   def verifyVariantsAtLocus(locus: Int,
                             contig: String = "chr1",
-                            kmerSize: Int = 31,
-                            snvWindowRange: Int = 45,
+                            kmerSize: Int = 47,
+                            snvWindowRange: Int = 120,
                             minOccurrence: Int = 5,
                             minVaf: Float = 0.1f,
                             shortcutAssembly: Boolean = false)(
@@ -47,7 +42,7 @@ class GermlineAssemblyCallerSuite extends FunSuite with Matchers with BeforeAndA
     val windowStart = locus - snvWindowRange
     val windowEnd = locus + snvWindowRange
 
-    val lociBuilder = LociSet.parse(s"$contig:$windowStart-$windowEnd")
+    val lociParser = LociParser(s"$contig:$windowStart-$windowEnd")
 
     val readSet =
       Common.loadReadsFromArguments(
@@ -56,14 +51,14 @@ class GermlineAssemblyCallerSuite extends FunSuite with Matchers with BeforeAndA
         InputFilters(
           mapped = true,
           nonDuplicate = true,
-          overlapsLoci = lociBuilder
+          overlapsLoci = lociParser
         )
       )
 
     val lociPartitions =
       LociPartitionUtils.partitionLociUniformly(
-        tasks = args.parallelism,
-        loci = lociBuilder.result(readSet.contigLengths)
+        numPartitions = args.parallelism,
+        loci = lociParser.result(readSet.contigLengths)
       )
 
     val variants =
@@ -168,6 +163,7 @@ class GermlineAssemblyCallerSuite extends FunSuite with Matchers with BeforeAndA
   test (
     "test assembly caller: illumina platinum tests; homozygous insertion 2") {
     verifyVariantsAtLocus(1302671) (
+      ("chr1", 1302554, "C", "T"),
       ("chr1", 1302671, "A", "AGT")
     )
   }
@@ -180,13 +176,14 @@ class GermlineAssemblyCallerSuite extends FunSuite with Matchers with BeforeAndA
   test (
     "test assembly caller: homozygous snp in a repeat region") {
     verifyVariantsAtLocus(789255) (
+      ("chr1", 789192, "C", "G"),
       ("chr1", 789255, "T", "C")
     )
   }
 
   test (
       "test assembly caller: het variant near homozygous variant") {
-      verifyVariantsAtLocus(743020, snvWindowRange = 55) (
+      verifyVariantsAtLocus(743020) (
         ("chr1", 743020, "T", "C"),
         ("chr1", 743071, "C", "A")
       )
@@ -194,7 +191,7 @@ class GermlineAssemblyCallerSuite extends FunSuite with Matchers with BeforeAndA
 
   test (
     "test assembly caller: het variant in between two homozygous variants") {
-    verifyVariantsAtLocus(821925, snvWindowRange = 55) (
+    verifyVariantsAtLocus(821925) (
       ("chr1", 821886, "A", "G"),
       ("chr1", 821925, "C", "G"),
       ("chr1", 821947, "T", "C")

@@ -28,8 +28,8 @@ import org.apache.spark.{Logging, SparkContext}
 import org.bdgenomics.adam.models.SequenceDictionary
 import org.bdgenomics.adam.rdd.{ADAMContext, ADAMSpecificRecordSequenceDictionaryRDDAggregator}
 import org.bdgenomics.formats.avro.AlignmentRecord
-import org.hammerlab.guacamole.Bases
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
+import org.hammerlab.guacamole.util.Bases
 import org.seqdoop.hadoop_bam.util.SAMHeaderReader
 import org.seqdoop.hadoop_bam.{AnySAMInputFormat, SAMRecordWritable}
 
@@ -208,12 +208,13 @@ object Read extends Logging {
       val samSequenceDictionary = reader.getFileHeader.getSequenceDictionary
       val sequenceDictionary = SequenceDictionary.fromSAMSequenceDictionary(samSequenceDictionary)
       val loci = filters.overlapsLoci.map(_.result(contigLengths(sequenceDictionary)))
+
       val recordIterator: SAMRecordIterator = if (filters.overlapsLoci.nonEmpty && reader.hasIndex) {
         progress(s"Using samtools with BAM index to read: $filename")
         requiresFilteringByLocus = false
         val queryIntervals = loci.get.contigs.flatMap(contig => {
-          val contigIndex = samSequenceDictionary.getSequenceIndex(contig)
-          loci.get.onContig(contig).ranges().map(range =>
+          val contigIndex = samSequenceDictionary.getSequenceIndex(contig.name)
+          contig.ranges.map(range =>
             new QueryInterval(contigIndex,
               range.start.toInt + 1, // convert 0-indexed inclusive to 1-indexed inclusive
               range.end.toInt)) // "convert" 0-indexed exclusive to 1-indexed inclusive, which is a no-op)
@@ -221,14 +222,13 @@ object Read extends Logging {
         val optimizedQueryIntervals = QueryInterval.optimizeIntervals(queryIntervals.toArray)
         reader.query(optimizedQueryIntervals, false) // Note: this can return unmapped reads, which we filter below.
       } else {
-
         val skippedReason =
           if (reader.hasIndex)
             "index is available but not needed"
           else
             "index unavailable"
 
-        progress(s"Using samtools without BAM index %($skippedReason) to read: $filename")
+        progress(s"Using samtools without BAM index ($skippedReason) to read: $filename")
 
         reader.iterator
       }
@@ -278,11 +278,13 @@ object Read extends Logging {
 
     val adamRecords: RDD[AlignmentRecord] = adamContext.loadAlignments(
       filename, projection = None, stringency = ValidationStringency.LENIENT).rdd
+
     val sequenceDictionary =
       new ADAMSpecificRecordSequenceDictionaryRDDAggregator(adamRecords).adamGetSequenceDictionary()
 
     val allReads: RDD[Read] = adamRecords.map(fromADAMRecord(_))
     val reads = InputFilters.filterRDD(filters, allReads, sequenceDictionary)
+
     (reads, sequenceDictionary)
   }
 

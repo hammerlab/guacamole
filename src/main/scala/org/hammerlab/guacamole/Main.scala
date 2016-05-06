@@ -29,7 +29,7 @@ import org.hammerlab.guacamole.commands.jointcaller.SomaticJoint
 /**
  * Guacamole main class.
  */
-object Guacamole extends Logging {
+object Main extends Logging {
 
   /**
    * Commands (e.g. variant caller implementations) that are part of Guacamole. If you add a new command, update this.

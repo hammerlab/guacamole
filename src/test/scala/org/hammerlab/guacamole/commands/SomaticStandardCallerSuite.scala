@@ -19,12 +19,10 @@
 package org.hammerlab.guacamole.commands
 
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
-import org.hammerlab.guacamole.util.TestUtil
-import org.hammerlab.guacamole.Bases
+import org.hammerlab.guacamole.util.{Bases, GuacFunSuite, TestUtil}
 import org.hammerlab.guacamole.filters.SomaticGenotypeFilter
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.MappedRead
-import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
 import org.scalatest.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks
 
@@ -94,7 +92,7 @@ class SomaticStandardCallerSuite extends GuacFunSuite with TableDrivenPropertyCh
     }
   }
 
-  sparkTest("testing simple positive variants") {
+  test("testing simple positive variants") {
     val (tumorReads, normalReads) =
       TestUtil.loadTumorNormalReads(
         sc,
@@ -131,7 +129,7 @@ class SomaticStandardCallerSuite extends GuacFunSuite with TableDrivenPropertyCh
     testVariants(tumorReads, normalReads, positivePositions, shouldFindVariant = true)
   }
 
-  sparkTest("testing simple negative variants on syn1") {
+  test("testing simple negative variants on syn1") {
     val (tumorReads, normalReads) =
       TestUtil.loadTumorNormalReads(
         sc,
@@ -152,7 +150,7 @@ class SomaticStandardCallerSuite extends GuacFunSuite with TableDrivenPropertyCh
     testVariants(tumorReads, normalReads, negativePositions, shouldFindVariant = false)
   }
 
-  sparkTest("testing complex region negative variants on syn1") {
+  test("testing complex region negative variants on syn1") {
     val (tumorReads, normalReads) =
       TestUtil.loadTumorNormalReads(
         sc,
@@ -172,7 +170,7 @@ class SomaticStandardCallerSuite extends GuacFunSuite with TableDrivenPropertyCh
     testVariants(tumorReads, normalReads, positivePositions, shouldFindVariant = true)
   }
 
-  sparkTest("difficult negative variants") {
+  test("difficult negative variants") {
 
     val (tumorReads, normalReads) =
       TestUtil.loadTumorNormalReads(
@@ -190,7 +188,7 @@ class SomaticStandardCallerSuite extends GuacFunSuite with TableDrivenPropertyCh
     testVariants(tumorReads, normalReads, negativeVariantPositions, shouldFindVariant = false)
   }
 
-  sparkTest("no indels") {
+  test("no indels") {
     val normalReads = Seq(
       TestUtil.makeRead("TCGATCGA", "8M", 0),
       TestUtil.makeRead("TCGATCGA", "8M", 0),
@@ -208,7 +206,7 @@ class SomaticStandardCallerSuite extends GuacFunSuite with TableDrivenPropertyCh
     SomaticStandard.Caller.findPotentialVariantAtLocus(tumorPileup, normalPileup, oddsThreshold = 2).size should be(0)
   }
 
-  sparkTest("single-base deletion") {
+  test("single-base deletion") {
     val normalReads = Seq(
       TestUtil.makeRead("TCGATCGA", "8M", 0),
       TestUtil.makeRead("TCGATCGA", "8M", 0),
@@ -229,7 +227,7 @@ class SomaticStandardCallerSuite extends GuacFunSuite with TableDrivenPropertyCh
     Bases.basesToString(allele.altBases) should be("G")
   }
 
-  sparkTest("multiple-base deletion") {
+  test("multiple-base deletion") {
     val normalReads = Seq(
       TestUtil.makeRead("TCGAAGCTTCGAAGCT", "16M", 0, chr = "chr4"),
       TestUtil.makeRead("TCGAAGCTTCGAAGCT", "16M", 0, chr = "chr4"),
@@ -252,7 +250,7 @@ class SomaticStandardCallerSuite extends GuacFunSuite with TableDrivenPropertyCh
     Bases.basesToString(allele.altBases) should be("A")
   }
 
-  sparkTest("single-base insertion") {
+  test("single-base insertion") {
     val normalReads = Seq(
       TestUtil.makeRead("TCGATCGA", "8M", 0),
       TestUtil.makeRead("TCGATCGA", "8M", 0),
@@ -275,7 +273,7 @@ class SomaticStandardCallerSuite extends GuacFunSuite with TableDrivenPropertyCh
     Bases.basesToString(allele.altBases) should be("AG")
   }
 
-  sparkTest("multiple-base insertion") {
+  test("multiple-base insertion") {
     val normalReads = Seq(
       TestUtil.makeRead("TCGATCGA", "8M", 0),
       TestUtil.makeRead("TCGATCGA", "8M", 0),
@@ -300,7 +298,7 @@ class SomaticStandardCallerSuite extends GuacFunSuite with TableDrivenPropertyCh
     Bases.basesToString(allele.altBases) should be("AGGTC")
   }
 
-  sparkTest("insertions and deletions") {
+  test("insertions and deletions") {
     /*
     idx:  01234  56    7890123456
     ref:  TCGAA  TC    GATCGATCGA
