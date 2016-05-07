@@ -31,6 +31,7 @@ case class PoorMapping(zeroQualityReadsFraction: Double,
       altAlleleConfidentMapCount > 0
   }
   def addInfoToVCF(builder: GenotypeBuilder): Unit = {
+    // TO DO just truncate using %
     val floored = (math floor zeroQualityReadsFraction*100) / 100
     builder.attribute("PM", s"$floored $altAlleleConfidentMapCount")
   }
@@ -47,10 +48,10 @@ object PoorMapping {
   def apply(stats: PileupStats,
             evidence: SingleSampleSingleAlleleEvidence,
             parameters: Parameters) = {
-    val subseqs = stats.subsequences
+    val subsequences = stats.subsequences
 
-    val numReads = subseqs.length
-    val numZeroQuality: Double = subseqs.count(rss => rss.read.alignmentQuality == 0)
+    val numReads = subsequences.length
+    val numZeroQuality: Double = subsequences.count(rss => rss.read.alignmentQuality == 0)
     val fractionZero = numZeroQuality / numReads
 
     val allele = evidence.allele

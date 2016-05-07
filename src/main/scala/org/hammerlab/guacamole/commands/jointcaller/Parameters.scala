@@ -28,7 +28,10 @@ case class Parameters(
     filterMaxProximalDeletions: Int,
     filterProximalWindow: Int,
     filterPoorMappingReadsFraction: Double,
-    filterMinimumMappingConfidence: Int) {
+    filterMinimumMappingConfidence: Int,
+    filterClusteredPositionMedian: Int,
+    filterClusteredPositionMedianDeviation: Int,
+    filterMaximumMedianMismatches: Int) {
 
   /**
    * Return the parameters as a sequence of (name, value) pairs. This is used to include the parameter metadata in the VCF.
@@ -133,6 +136,18 @@ object Parameters {
     @Args4jOption(name = "--filter-min-allele-alignment-quality",
       usage = "")
     var filterMinimumMappingConfidence: Int = 20
+
+    @Args4jOption(name = "--filter-clustered-position-end-median",
+      usage = "")
+    var filterClusteredPositionMedian: Int = 10
+
+    @Args4jOption(name = "--filter-clustered-position-clustered-median",
+      usage = "")
+    var filterClusteredPositionMedianDeviation: Int = 3
+
+    @Args4jOption(name = "--filter-max-median-mismatches",
+      usage = "")
+    var filterMaximumMedianMismatches = 10
   }
 
   def apply(args: CommandlineArguments): Parameters = {
@@ -156,7 +171,10 @@ object Parameters {
       filterMaxProximalDeletions = args.filterMaxProximalDeletions,
       filterProximalWindow = args.filterProximalWindow,
       filterPoorMappingReadsFraction = args.filterPoorMappingReadsFraction,
-      filterMinimumMappingConfidence = args.filterMinimumMappingConfidence
+      filterMinimumMappingConfidence = args.filterMinimumMappingConfidence,
+      filterClusteredPositionMedian = args.filterClusteredPositionMedian,
+      filterClusteredPositionMedianDeviation = args.filterClusteredPositionMedianDeviation,
+      filterMaximumMedianMismatches = args.filterMaximumMedianMismatches
     )
   }
 

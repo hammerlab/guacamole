@@ -64,17 +64,18 @@ object ProximalGap {
 
     val halfWindow = (parameters.filterProximalWindow-1)/2 // 5
     val windowStart = alleleStart - halfWindow
-
+    // TO DO use pileupelements instead of the subsequences(?) to be
+    // able to access their referenceContigSequence
     val subsequences: Seq[ReadSubsequence] = stats.subsequences
 
     // check all positions in the window except alleleStart
     val steps = List.range(0, halfWindow) ++ List.range(halfWindow+1, parameters.filterProximalWindow)
     var step = -1;
     for ( step <- steps ) {
-      subsequences.map( rss => {
-        val newPe = PileupElement(rss.read, windowStart + step, referenceContigSequence)
-        if (newPe.isDeletion) deletionCount += 1
-        else if (newPe.isInsertion) insertionCount += 1
+      subsequences.map( readsubsequence => {
+        val pileupElement = PileupElement(readsubsequence.read, windowStart + step, referenceContigSequence)
+        if (pileupElement.isDeletion) deletionCount += 1
+        else if (pileupElement.isInsertion) insertionCount += 1
       })
     }
 

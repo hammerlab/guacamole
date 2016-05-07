@@ -3,9 +3,8 @@ package org.hammerlab.guacamole.commands.jointcaller.annotation
 import java.util
 
 import htsjdk.variant.variantcontext.GenotypeBuilder
-import htsjdk.variant.vcf.{ VCFFilterHeaderLine, VCFFormatHeaderLine, VCFHeaderLine, VCFHeaderLineType }
+import htsjdk.variant.vcf.{VCFFilterHeaderLine, VCFFormatHeaderLine, VCFHeaderLine, VCFHeaderLineType}
 import org.hammerlab.guacamole.commands.jointcaller.Parameters
-import org.hammerlab.guacamole.commands.jointcaller.annotation.SingleSampleAnnotations.Annotation
 import org.hammerlab.guacamole.commands.jointcaller.evidence.SingleSampleSingleAlleleEvidence
 import org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.PileupStats
 import org.hammerlab.guacamole.filters.FishersExactTest
@@ -24,7 +23,7 @@ case class StrandBias(
     variantForward: Int,
     variantReverse: Int,
     totalForward: Int,
-    totalReverse: Int) extends Annotation {
+    totalReverse: Int) extends SingleSampleAnnotations.Annotation {
 
   val name = StrandBias.name
 
