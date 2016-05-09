@@ -1,8 +1,8 @@
 package org.hammerlab.guacamole.commands.jointcaller
 
-import org.hammerlab.guacamole.PerSample
 import org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.ReadSubsequence
 import org.hammerlab.guacamole.pileup.Pileup
+import org.hammerlab.guacamole.readsets.PerSample
 import org.hammerlab.guacamole.util.Bases
 
 /**

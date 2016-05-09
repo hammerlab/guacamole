@@ -14,7 +14,8 @@ import org.hammerlab.guacamole.distributed.LociPartitionUtils.{LociPartitioning,
 import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMap
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.reads.{InputFilters, MappedRead, ReadLoadingConfigArgs}
+import org.hammerlab.guacamole.reads.MappedRead
+import org.hammerlab.guacamole.readsets.{InputFilters, ReadLoadingConfig, ReadLoadingConfigArgs, ReadSets}
 import org.hammerlab.guacamole.reference.{ReferenceBroadcast, ReferenceGenome}
 import org.kohsuke.args4j.{Argument, Option => Args4jOption}
 
@@ -108,28 +109,26 @@ object VAFHistogram {
 
       val samplePercent = args.samplePercent
 
-      val readSets: Seq[ReadSet] = args.bams.zipWithIndex.map(
-        bamFile =>
-          ReadSet(
-            sc,
-            bamFile._1,
-            filters,
-            contigLengthsFromDictionary = true,
-            config = ReadLoadingConfigArgs(args)
-          )
-      )
+      val ReadSets(readsRDDs, _, contigLengths) =
+        ReadSets(
+          sc,
+          args.bams,
+          filters,
+          contigLengthsFromDictionary = true,
+          config = ReadLoadingConfig(args)
+        )
 
       val lociPartitions = partitionLociAccordingToArgs(
         args,
-        loci.result(readSets(0).contigLengths),
-        readSets(0).mappedReads  // Use the first set of reads as a proxy for read depth
+        loci.result(contigLengths),
+        readsRDDs(0).mappedReads  // Use the first set of reads as a proxy for read depth
       )
 
       val minReadDepth = args.minReadDepth
       val minVariantAlleleFrequency = args.minVAF
-      val variantLoci = readSets.map(readSet =>
+      val variantLoci = readsRDDs.map(reads =>
         variantLociFromReads(
-          readSet.mappedReads,
+          reads.mappedReads,
           reference,
           lociPartitions,
           samplePercent,
@@ -143,7 +142,7 @@ object VAFHistogram {
       val variantAlleleHistograms =
         variantLoci.map(variantLoci => generateVAFHistogram(variantLoci, bins))
 
-      val sampleAndFileNames = args.bams.zip(readSets.map(_.mappedReads.take(1)(0).sampleName))
+      val sampleAndFileNames = args.bams.zip(readsRDDs.map(_.mappedReads.take(1)(0).sampleName))
       val binSize = 100 / bins
 
       def histogramToString(kv: (Int, Long)): String = {
@@ -155,7 +154,8 @@ object VAFHistogram {
           .zip(variantAlleleHistograms)
           .flatMap {
             case ((filename, sampleName), histogram) =>
-              histogram.toSeq
+              histogram
+                .toSeq
                 .sortBy(_._1)
                 .map(kv => s"$filename, $sampleName, ${histogramToString(kv)}")
           }
