@@ -1,12 +1,12 @@
 package org.hammerlab.guacamole.distributed
 
 import org.apache.spark.rdd.RDD
-import org.hammerlab.guacamole.PerSample
 import org.hammerlab.guacamole.loci.LociArgs
 import org.hammerlab.guacamole.loci.map.LociMap
 import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.logging.DebugLogArgs
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
+import org.hammerlab.guacamole.readsets.PerSample
 import org.hammerlab.guacamole.reference.ReferenceRegion
 import org.kohsuke.args4j.{Option => Args4jOption}
 import spire.implicits._
