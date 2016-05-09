@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>InputFilters - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.reads.InputFilters</title>
-          <meta name="description" content="InputFilters - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.reads.InputFilters" />
-          <meta name="keywords" content="InputFilters guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.reads.InputFilters" />
+          <title>ReadLoadingConfig - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.readsets.ReadLoadingConfig</title>
+          <meta name="description" content="ReadLoadingConfig - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.readsets.ReadLoadingConfig" />
+          <meta name="keywords" content="ReadLoadingConfig guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.readsets.ReadLoadingConfig" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -12,7 +12,7 @@
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../index.html';
-            var hash = 'org.hammerlab.guacamole.reads.InputFilters$';
+            var hash = 'org.hammerlab.guacamole.readsets.ReadLoadingConfig';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -22,26 +22,28 @@
    	  </script>
     
         </head>
-        <body class="value">
+        <body class="type">
       <div id="definition">
-        <a href="InputFilters.html" title="Go to companion"><img src="../../../../lib/object_to_class_big.png" /></a>
-        <p id="owner"><a href="../../../package.html" class="extype" name="org">org</a>.<a href="../../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="../package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole.reads">reads</a></p>
-        <h1><a href="InputFilters.html" title="Go to companion">InputFilters</a></h1>
+        <a href="ReadLoadingConfig$.html" title="Go to companion"><img src="../../../../lib/class_to_object_big.png" /></a>
+        <p id="owner"><a href="../../../package.html" class="extype" name="org">org</a>.<a href="../../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="../package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole.readsets">readsets</a></p>
+        <h1><a href="ReadLoadingConfig$.html" title="Go to companion">ReadLoadingConfig</a></h1>
       </div>
 
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">object</span>
+        <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">InputFilters</span><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">ReadLoadingConfig</span><span class="params">(<span name="bamReaderAPI">bamReaderAPI: <a href="BamReaderAPI$.html#BamReaderAPI=org.hammerlab.guacamole.readsets.BamReaderAPI.Value" class="extmbr" name="org.hammerlab.guacamole.readsets.BamReaderAPI.BamReaderAPI">BamReaderAPI</a> = <span class="symbol">BamReaderAPI.Best</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Configuration for read loading. These options should affect performance but not results.
+</p></div><dl class="paramcmts block"><dt class="param">bamReaderAPI</dt><dd class="cmt"><p>which library to use to load SAM and BAM files
+</p></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -59,7 +61,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="org.hammerlab.guacamole.reads.InputFilters"><span>InputFilters</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="org.hammerlab.guacamole.readsets.ReadLoadingConfig"><span>ReadLoadingConfig</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -77,7 +79,24 @@
 
       <div id="template">
         <div id="allMembers">
-        
+        <div id="constructors" class="members">
+              <h3>Instance Constructors</h3>
+              <ol><li name="org.hammerlab.guacamole.readsets.ReadLoadingConfig#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="&lt;init&gt;(bamReaderAPI:org.hammerlab.guacamole.readsets.BamReaderAPI.BamReaderAPI):org.hammerlab.guacamole.readsets.ReadLoadingConfig"></a>
+      <a id="&lt;init&gt;:ReadLoadingConfig"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">new</span>
+      </span>
+      <span class="symbol">
+        <span class="name">ReadLoadingConfig</span><span class="params">(<span name="bamReaderAPI">bamReaderAPI: <a href="BamReaderAPI$.html#BamReaderAPI=org.hammerlab.guacamole.readsets.BamReaderAPI.Value" class="extmbr" name="org.hammerlab.guacamole.readsets.BamReaderAPI.BamReaderAPI">BamReaderAPI</a> = <span class="symbol">BamReaderAPI.Best</span></span>)</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">bamReaderAPI</dt><dd class="cmt"><p>which library to use to load SAM and BAM files
+</p></dd></dl></div>
+    </li></ol>
+            </div>
 
         
 
@@ -150,22 +169,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.reads.InputFilters#apply" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="apply(mapped:Boolean,overlapsLoci:org.hammerlab.guacamole.loci.set.LociParser,nonDuplicate:Boolean,passedVendorQualityChecks:Boolean,isPaired:Boolean):org.hammerlab.guacamole.reads.InputFilters"></a>
-      <a id="apply(Boolean,LociParser,Boolean,Boolean,Boolean):InputFilters"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">apply</span><span class="params">(<span name="mapped">mapped: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>, <span name="overlapsLoci">overlapsLoci: <a href="../loci/set/LociParser.html" class="extype" name="org.hammerlab.guacamole.loci.set.LociParser">LociParser</a> = <span class="symbol">null</span></span>, <span name="nonDuplicate">nonDuplicate: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>, <span name="passedVendorQualityChecks">passedVendorQualityChecks: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>, <span name="isPaired">isPaired: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="result">: <a href="InputFilters.html" class="extype" name="org.hammerlab.guacamole.reads.InputFilters">InputFilters</a></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">See InputFilters for full documentation.</p><div class="fullcomment"><div class="comment cmt"><p>See InputFilters for full documentation.
-</p></div><dl class="paramcmts block"><dt class="param">mapped</dt><dd class="cmt"><p>include only mapped reads. Convenience argument that is equivalent to specifying all sites in
-              overlapsLoci.
-</p></dd></dl></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -179,6 +182,20 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.readsets.ReadLoadingConfig#bamReaderAPI" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="bamReaderAPI:org.hammerlab.guacamole.readsets.BamReaderAPI.BamReaderAPI"></a>
+      <a id="bamReaderAPI:BamReaderAPI"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">bamReaderAPI</span><span class="result">: <a href="BamReaderAPI$.html#BamReaderAPI=org.hammerlab.guacamole.readsets.BamReaderAPI.Value" class="extmbr" name="org.hammerlab.guacamole.readsets.BamReaderAPI.BamReaderAPI">BamReaderAPI</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">which library to use to load SAM and BAM files
+</p>
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>
       <a id="clone():AnyRef"></a>
@@ -198,19 +215,6 @@
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.reads.InputFilters#empty" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="empty:org.hammerlab.guacamole.reads.InputFilters"></a>
-      <a id="empty:InputFilters"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">empty</span><span class="result">: <a href="InputFilters.html" class="extype" name="org.hammerlab.guacamole.reads.InputFilters">InputFilters</a></span>
-      </span>
-      </h4>
-      
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -224,34 +228,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scala.AnyRef#equals" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="equals(x$1:Any):Boolean"></a>
-      <a id="equals(Any):Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.reads.InputFilters#filterRDD" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="filterRDD(filters:org.hammerlab.guacamole.reads.InputFilters,reads:org.apache.spark.rdd.RDD[org.hammerlab.guacamole.reads.Read],sequenceDictionary:org.bdgenomics.adam.models.SequenceDictionary):org.apache.spark.rdd.RDD[org.hammerlab.guacamole.reads.Read]"></a>
-      <a id="filterRDD(InputFilters,RDD[Read],SequenceDictionary):RDD[Read]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">filterRDD</span><span class="params">(<span name="filters">filters: <a href="InputFilters.html" class="extype" name="org.hammerlab.guacamole.reads.InputFilters">InputFilters</a></span>, <span name="reads">reads: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<a href="Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a>]</span>, <span name="sequenceDictionary">sequenceDictionary: <span class="extype" name="org.bdgenomics.adam.models.SequenceDictionary">SequenceDictionary</span></span>)</span><span class="result">: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<a href="Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Apply filters to an RDD of reads.</p><div class="fullcomment"><div class="comment cmt"><p>Apply filters to an RDD of reads.
-</p></div><dl class="paramcmts block"><dt class="param">filters</dt><dd class="cmt"></dd><dt class="param">reads</dt><dd class="cmt"></dd><dt class="param">sequenceDictionary</dt><dd class="cmt"></dd><dt>returns</dt><dd class="cmt"><p>filtered RDD
-</p></dd></dl></div>
     </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <a id="finalize():Unit"></a>
@@ -281,19 +257,6 @@
       </span>
       <span class="symbol">
         <span class="name">getClass</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.Class">Class</span>[_]</span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="scala.AnyRef#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="hashCode():Int"></a>
-      <a id="hashCode():Int"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -362,19 +325,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scala.AnyRef#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="toString():String"></a>
-      <a id="toString():String"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>
@@ -445,6 +395,10 @@
               <h3>Inherited from <span class="extype" name="scala.Serializable">Serializable</span></h3>
             </div><div class="parent" name="java.io.Serializable">
               <h3>Inherited from <span class="extype" name="java.io.Serializable">Serializable</span></h3>
+            </div><div class="parent" name="scala.Product">
+              <h3>Inherited from <span class="extype" name="scala.Product">Product</span></h3>
+            </div><div class="parent" name="scala.Equals">
+              <h3>Inherited from <span class="extype" name="scala.Equals">Equals</span></h3>
             </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
             </div><div class="parent" name="scala.Any">

@@ -2,17 +2,17 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>ReadsArgs - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.Common.ReadsArgs</title>
-          <meta name="description" content="ReadsArgs - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.Common.ReadsArgs" />
-          <meta name="keywords" content="ReadsArgs guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.Common.ReadsArgs" />
+          <title>SomaticCallerArgs - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.readsets.SomaticCallerArgs</title>
+          <meta name="description" content="SomaticCallerArgs - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.readsets.SomaticCallerArgs" />
+          <meta name="keywords" content="SomaticCallerArgs guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.readsets.SomaticCallerArgs" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
-      <link href="../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
-      <link href="../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
       <script type="text/javascript">
          if(top === self) {
-            var url = '../../../index.html';
-            var hash = 'org.hammerlab.guacamole.Common$$ReadsArgs';
+            var url = '../../../../index.html';
+            var hash = 'org.hammerlab.guacamole.readsets.SomaticCallerArgs';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -24,9 +24,9 @@
         </head>
         <body class="type">
       <div id="definition">
-        <img src="../../../lib/trait_big.png" />
-        <p id="owner"><a href="../../package.html" class="extype" name="org">org</a>.<a href="../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="Common$.html" class="extype" name="org.hammerlab.guacamole.Common">Common</a></p>
-        <h1>ReadsArgs</h1>
+        <img src="../../../../lib/trait_big.png" />
+        <p id="owner"><a href="../../../package.html" class="extype" name="org">org</a>.<a href="../../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="../package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole.readsets">readsets</a></p>
+        <h1>SomaticCallerArgs</h1>
       </div>
 
       <h4 id="signature" class="signature">
@@ -35,16 +35,16 @@
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <span class="name">ReadsArgs</span><span class="result"> extends <span class="extype" name="org.bdgenomics.utils.cli.Args4jBase">Args4jBase</span> with <a href="logging/DebugLogArgs.html" class="extype" name="org.hammerlab.guacamole.logging.DebugLogArgs">DebugLogArgs</a> with <a href="Common$$NoSequenceDictionaryArgs.html" class="extype" name="org.hammerlab.guacamole.Common.NoSequenceDictionaryArgs">NoSequenceDictionaryArgs</a> with <a href="reads/ReadLoadingConfigArgs.html" class="extype" name="org.hammerlab.guacamole.reads.ReadLoadingConfigArgs">ReadLoadingConfigArgs</a></span>
+        <span class="name">SomaticCallerArgs</span><span class="result"> extends <span class="extype" name="org.bdgenomics.utils.cli.Args4jBase">Args4jBase</span> with <a href="../variants/GenotypeOutputArgs.html" class="extype" name="org.hammerlab.guacamole.variants.GenotypeOutputArgs">GenotypeOutputArgs</a> with <a href="TumorNormalReadsArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.TumorNormalReadsArgs">TumorNormalReadsArgs</a> with <a href="../distributed/LociPartitionUtils$$Arguments.html" class="extype" name="org.hammerlab.guacamole.distributed.LociPartitionUtils.Arguments">Arguments</a></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Argument for accepting a single set of reads (for non-somatic variant calling).</p></div><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><a href="reads/ReadLoadingConfigArgs.html" class="extype" name="org.hammerlab.guacamole.reads.ReadLoadingConfigArgs">ReadLoadingConfigArgs</a>, <a href="Common$$NoSequenceDictionaryArgs.html" class="extype" name="org.hammerlab.guacamole.Common.NoSequenceDictionaryArgs">NoSequenceDictionaryArgs</a>, <a href="logging/DebugLogArgs.html" class="extype" name="org.hammerlab.guacamole.logging.DebugLogArgs">DebugLogArgs</a>, <span class="extype" name="org.bdgenomics.utils.cli.ParquetArgs">ParquetArgs</span>, <span class="extype" name="org.bdgenomics.utils.cli.ParquetRDDArgs">ParquetRDDArgs</span>, <span class="extype" name="org.bdgenomics.utils.cli.Args4jBase">Args4jBase</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><a href="../distributed/LociPartitionUtils$$Arguments.html" class="extype" name="org.hammerlab.guacamole.distributed.LociPartitionUtils.Arguments">Arguments</a>, <a href="../loci/LociArgs.html" class="extype" name="org.hammerlab.guacamole.loci.LociArgs">LociArgs</a>, <a href="TumorNormalReadsArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.TumorNormalReadsArgs">TumorNormalReadsArgs</a>, <a href="ReadLoadingConfigArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.ReadLoadingConfigArgs">ReadLoadingConfigArgs</a>, <a href="NoSequenceDictionaryArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.NoSequenceDictionaryArgs">NoSequenceDictionaryArgs</a>, <a href="../variants/GenotypeOutputArgs.html" class="extype" name="org.hammerlab.guacamole.variants.GenotypeOutputArgs">GenotypeOutputArgs</a>, <a href="../logging/DebugLogArgs.html" class="extype" name="org.hammerlab.guacamole.logging.DebugLogArgs">DebugLogArgs</a>, <span class="extype" name="org.bdgenomics.utils.cli.ParquetArgs">ParquetArgs</span>, <span class="extype" name="org.bdgenomics.utils.cli.ParquetRDDArgs">ParquetRDDArgs</span>, <span class="extype" name="org.bdgenomics.utils.cli.Args4jBase">Args4jBase</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div><div class="toggleContainer block">
           <span class="toggle">Known Subclasses</span>
-          <div class="subClasses hiddenContent"><a href="commands/GermlineAssemblyCaller$$Arguments.html" class="extype" name="org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Arguments">Arguments</a>, <a href="Common$$GermlineCallerArgs.html" class="extype" name="org.hammerlab.guacamole.Common.GermlineCallerArgs">GermlineCallerArgs</a></div>
+          <div class="subClasses hiddenContent"><a href="../commands/SomaticStandard$$Arguments.html" class="extype" name="org.hammerlab.guacamole.commands.SomaticStandard.Arguments">Arguments</a></div>
         </div></div>
         
 
@@ -62,7 +62,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="org.hammerlab.guacamole.Common.ReadsArgs"><span>ReadsArgs</span></li><li class="in" name="org.hammerlab.guacamole.reads.ReadLoadingConfigArgs"><span>ReadLoadingConfigArgs</span></li><li class="in" name="org.hammerlab.guacamole.Common.NoSequenceDictionaryArgs"><span>NoSequenceDictionaryArgs</span></li><li class="in" name="org.hammerlab.guacamole.logging.DebugLogArgs"><span>DebugLogArgs</span></li><li class="in" name="org.bdgenomics.utils.cli.ParquetArgs"><span>ParquetArgs</span></li><li class="in" name="org.bdgenomics.utils.cli.ParquetRDDArgs"><span>ParquetRDDArgs</span></li><li class="in" name="org.bdgenomics.utils.cli.Args4jBase"><span>Args4jBase</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="org.hammerlab.guacamole.readsets.SomaticCallerArgs"><span>SomaticCallerArgs</span></li><li class="in" name="org.hammerlab.guacamole.distributed.LociPartitionUtils.Arguments"><span>Arguments</span></li><li class="in" name="org.hammerlab.guacamole.loci.LociArgs"><span>LociArgs</span></li><li class="in" name="org.hammerlab.guacamole.readsets.TumorNormalReadsArgs"><span>TumorNormalReadsArgs</span></li><li class="in" name="org.hammerlab.guacamole.readsets.ReadLoadingConfigArgs"><span>ReadLoadingConfigArgs</span></li><li class="in" name="org.hammerlab.guacamole.readsets.NoSequenceDictionaryArgs"><span>NoSequenceDictionaryArgs</span></li><li class="in" name="org.hammerlab.guacamole.variants.GenotypeOutputArgs"><span>GenotypeOutputArgs</span></li><li class="in" name="org.hammerlab.guacamole.logging.DebugLogArgs"><span>DebugLogArgs</span></li><li class="in" name="org.bdgenomics.utils.cli.ParquetArgs"><span>ParquetArgs</span></li><li class="in" name="org.bdgenomics.utils.cli.ParquetRDDArgs"><span>ParquetRDDArgs</span></li><li class="in" name="org.bdgenomics.utils.cli.Args4jBase"><span>Args4jBase</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -166,7 +166,7 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.reads.ReadLoadingConfigArgs#bamReaderAPI" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="org.hammerlab.guacamole.readsets.ReadLoadingConfigArgs#bamReaderAPI" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="bamReaderAPI:String"></a>
       <a id="bamReaderAPI:String"></a>
       <h4 class="signature">
@@ -178,7 +178,7 @@
         <span class="name">bamReaderAPI</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="reads/ReadLoadingConfigArgs.html" class="extype" name="org.hammerlab.guacamole.reads.ReadLoadingConfigArgs">ReadLoadingConfigArgs</a></dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ReadLoadingConfigArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.ReadLoadingConfigArgs">ReadLoadingConfigArgs</a></dd></dl></div>
     </li><li name="org.bdgenomics.utils.cli.ParquetArgs#blockSize" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="blockSize:Int"></a>
       <a id="blockSize:Int"></a>
@@ -204,7 +204,7 @@
         <span class="name">clone</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
       <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
@@ -236,7 +236,7 @@
         <span class="name">debug</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="logging/DebugLogArgs.html" class="extype" name="org.hammerlab.guacamole.logging.DebugLogArgs">DebugLogArgs</a></dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../logging/DebugLogArgs.html" class="extype" name="org.hammerlab.guacamole.logging.DebugLogArgs">DebugLogArgs</a></dd></dl></div>
     </li><li name="org.bdgenomics.utils.cli.ParquetArgs#disableDictionaryEncoding" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="disableDictionaryEncoding:Boolean"></a>
       <a id="disableDictionaryEncoding:Boolean"></a>
@@ -301,7 +301,7 @@
         <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
       <span class="symbol">classOf[java.lang.Throwable]</span>
@@ -347,6 +347,32 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.loci.LociArgs#loci" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="loci:String"></a>
+      <a id="loci:String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">var</span>
+      </span>
+      <span class="symbol">
+        <span class="name">loci</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../loci/LociArgs.html" class="extype" name="org.hammerlab.guacamole.loci.LociArgs">LociArgs</a></dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.loci.LociArgs#lociFromFile" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="lociFromFile:String"></a>
+      <a id="lociFromFile:String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">var</span>
+      </span>
+      <span class="symbol">
+        <span class="name">lociFromFile</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../loci/LociArgs.html" class="extype" name="org.hammerlab.guacamole.loci.LociArgs">LociArgs</a></dd></dl></div>
     </li><li name="org.bdgenomics.utils.cli.ParquetArgs#logLevel" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="logLevel:String"></a>
       <a id="logLevel:String"></a>
@@ -360,6 +386,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>ParquetArgs</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.variants.GenotypeOutputArgs#maxGenotypes" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="maxGenotypes:Int"></a>
+      <a id="maxGenotypes:Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">var</span>
+      </span>
+      <span class="symbol">
+        <span class="name">maxGenotypes</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../variants/GenotypeOutputArgs.html" class="extype" name="org.hammerlab.guacamole.variants.GenotypeOutputArgs">GenotypeOutputArgs</a></dd></dl></div>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -373,7 +412,7 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.Common.NoSequenceDictionaryArgs#noSequenceDictionary" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="org.hammerlab.guacamole.readsets.NoSequenceDictionaryArgs#noSequenceDictionary" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="noSequenceDictionary:Boolean"></a>
       <a id="noSequenceDictionary:Boolean"></a>
       <h4 class="signature">
@@ -385,7 +424,20 @@
         <span class="name">noSequenceDictionary</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Common$$NoSequenceDictionaryArgs.html" class="extype" name="org.hammerlab.guacamole.Common.NoSequenceDictionaryArgs">NoSequenceDictionaryArgs</a></dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="NoSequenceDictionaryArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.NoSequenceDictionaryArgs">NoSequenceDictionaryArgs</a></dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.readsets.TumorNormalReadsArgs#normalReads" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="normalReads:String"></a>
+      <a id="normalReads:String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">var</span>
+      </span>
+      <span class="symbol">
+        <span class="name">normalReads</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="TumorNormalReadsArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.TumorNormalReadsArgs">TumorNormalReadsArgs</a></dd></dl></div>
     </li><li name="scala.AnyRef#notify" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notify():Unit"></a>
       <a id="notify():Unit"></a>
@@ -412,6 +464,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.variants.GenotypeOutputArgs#outChunks" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="outChunks:Int"></a>
+      <a id="outChunks:Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">var</span>
+      </span>
+      <span class="symbol">
+        <span class="name">outChunks</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../variants/GenotypeOutputArgs.html" class="extype" name="org.hammerlab.guacamole.variants.GenotypeOutputArgs">GenotypeOutputArgs</a></dd></dl></div>
     </li><li name="org.bdgenomics.utils.cli.ParquetArgs#pageSize" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="pageSize:Int"></a>
       <a id="pageSize:Int"></a>
@@ -425,6 +490,51 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>ParquetArgs → ParquetRDDArgs</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.distributed.LociPartitionUtils.Arguments#parallelism" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="parallelism:org.hammerlab.guacamole.distributed.LociPartitionUtils.NumPartitions"></a>
+      <a id="parallelism:NumPartitions"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">var</span>
+      </span>
+      <span class="symbol">
+        <span class="name">parallelism</span><span class="result">: <a href="../distributed/LociPartitionUtils$.html#NumPartitions=Int" class="extmbr" name="org.hammerlab.guacamole.distributed.LociPartitionUtils.NumPartitions">NumPartitions</a></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../distributed/LociPartitionUtils$$Arguments.html" class="extype" name="org.hammerlab.guacamole.distributed.LociPartitionUtils.Arguments">Arguments</a></dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.loci.LociArgs#parseLoci" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="parseLoci(hadoopConfiguration:org.apache.hadoop.conf.Configuration,fallback:String):org.hammerlab.guacamole.loci.set.LociParser"></a>
+      <a id="parseLoci(Configuration,String):LociParser"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">parseLoci</span><span class="params">(<span name="hadoopConfiguration">hadoopConfiguration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>, <span name="fallback">fallback: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;all&quot;</span></span>)</span><span class="result">: <a href="../loci/set/LociParser.html" class="extype" name="org.hammerlab.guacamole.loci.set.LociParser">LociParser</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Parse string representations of loci ranges, either from the &quot;--loci&quot; cmdline parameter or a file specified by the
+&quot;--loci-from-file&quot; parameter, and return a LociParser encapsulating the result.</p><div class="fullcomment"><div class="comment cmt"><p>Parse string representations of loci ranges, either from the &quot;--loci&quot; cmdline parameter or a file specified by the
+&quot;--loci-from-file&quot; parameter, and return a LociParser encapsulating the result. The latter can then be converted
+into a LociSet when contig-lengths are available / have been parsed from read-sets.
+</p></div><dl class="paramcmts block"><dt class="param">fallback</dt><dd class="cmt"><p>If neither &quot;--loci&quot; nor &quot;--loci-from-file&quot; were provided, fall back to this string representation
+                of the loci that should be considered.</p></dd><dt>returns</dt><dd class="cmt"><p>a LociParser wrapping the appropriate loci ranges.
+</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../loci/LociArgs.html" class="extype" name="org.hammerlab.guacamole.loci.LociArgs">LociArgs</a></dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.distributed.LociPartitionUtils.Arguments#partitioningAccuracy" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="partitioningAccuracy:org.hammerlab.guacamole.distributed.LociPartitionUtils.NumMicroPartitions"></a>
+      <a id="partitioningAccuracy:NumMicroPartitions"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">var</span>
+      </span>
+      <span class="symbol">
+        <span class="name">partitioningAccuracy</span><span class="result">: <a href="../distributed/LociPartitionUtils$.html#NumMicroPartitions=Long" class="extmbr" name="org.hammerlab.guacamole.distributed.LociPartitionUtils.NumMicroPartitions">NumMicroPartitions</a></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../distributed/LociPartitionUtils$$Arguments.html" class="extype" name="org.hammerlab.guacamole.distributed.LociPartitionUtils.Arguments">Arguments</a></dd></dl></div>
     </li><li name="org.bdgenomics.utils.cli.Args4jBase#printMetrics" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="printMetrics:Boolean"></a>
       <a id="printMetrics:Boolean"></a>
@@ -438,19 +548,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Args4jBase</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.Common.ReadsArgs#reads" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="reads:String"></a>
-      <a id="reads:String"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">var</span>
-      </span>
-      <span class="symbol">
-        <span class="name">reads</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
-      </span>
-      </h4>
-      
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -477,6 +574,32 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.readsets.TumorNormalReadsArgs#tumorReads" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="tumorReads:String"></a>
+      <a id="tumorReads:String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">var</span>
+      </span>
+      <span class="symbol">
+        <span class="name">tumorReads</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="TumorNormalReadsArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.TumorNormalReadsArgs">TumorNormalReadsArgs</a></dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.variants.GenotypeOutputArgs#variantOutput" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="variantOutput:String"></a>
+      <a id="variantOutput:String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">var</span>
+      </span>
+      <span class="symbol">
+        <span class="name">variantOutput</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../variants/GenotypeOutputArgs.html" class="extype" name="org.hammerlab.guacamole.variants.GenotypeOutputArgs">GenotypeOutputArgs</a></dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>
@@ -543,12 +666,20 @@
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="org.hammerlab.guacamole.reads.ReadLoadingConfigArgs">
-              <h3>Inherited from <a href="reads/ReadLoadingConfigArgs.html" class="extype" name="org.hammerlab.guacamole.reads.ReadLoadingConfigArgs">ReadLoadingConfigArgs</a></h3>
-            </div><div class="parent" name="org.hammerlab.guacamole.Common.NoSequenceDictionaryArgs">
-              <h3>Inherited from <a href="Common$$NoSequenceDictionaryArgs.html" class="extype" name="org.hammerlab.guacamole.Common.NoSequenceDictionaryArgs">NoSequenceDictionaryArgs</a></h3>
+        <div class="parent" name="org.hammerlab.guacamole.distributed.LociPartitionUtils.Arguments">
+              <h3>Inherited from <a href="../distributed/LociPartitionUtils$$Arguments.html" class="extype" name="org.hammerlab.guacamole.distributed.LociPartitionUtils.Arguments">Arguments</a></h3>
+            </div><div class="parent" name="org.hammerlab.guacamole.loci.LociArgs">
+              <h3>Inherited from <a href="../loci/LociArgs.html" class="extype" name="org.hammerlab.guacamole.loci.LociArgs">LociArgs</a></h3>
+            </div><div class="parent" name="org.hammerlab.guacamole.readsets.TumorNormalReadsArgs">
+              <h3>Inherited from <a href="TumorNormalReadsArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.TumorNormalReadsArgs">TumorNormalReadsArgs</a></h3>
+            </div><div class="parent" name="org.hammerlab.guacamole.readsets.ReadLoadingConfigArgs">
+              <h3>Inherited from <a href="ReadLoadingConfigArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.ReadLoadingConfigArgs">ReadLoadingConfigArgs</a></h3>
+            </div><div class="parent" name="org.hammerlab.guacamole.readsets.NoSequenceDictionaryArgs">
+              <h3>Inherited from <a href="NoSequenceDictionaryArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.NoSequenceDictionaryArgs">NoSequenceDictionaryArgs</a></h3>
+            </div><div class="parent" name="org.hammerlab.guacamole.variants.GenotypeOutputArgs">
+              <h3>Inherited from <a href="../variants/GenotypeOutputArgs.html" class="extype" name="org.hammerlab.guacamole.variants.GenotypeOutputArgs">GenotypeOutputArgs</a></h3>
             </div><div class="parent" name="org.hammerlab.guacamole.logging.DebugLogArgs">
-              <h3>Inherited from <a href="logging/DebugLogArgs.html" class="extype" name="org.hammerlab.guacamole.logging.DebugLogArgs">DebugLogArgs</a></h3>
+              <h3>Inherited from <a href="../logging/DebugLogArgs.html" class="extype" name="org.hammerlab.guacamole.logging.DebugLogArgs">DebugLogArgs</a></h3>
             </div><div class="parent" name="org.bdgenomics.utils.cli.ParquetArgs">
               <h3>Inherited from <span class="extype" name="org.bdgenomics.utils.cli.ParquetArgs">ParquetArgs</span></h3>
             </div><div class="parent" name="org.bdgenomics.utils.cli.ParquetRDDArgs">
@@ -575,6 +706,6 @@
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../lib/template.js"></script>
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../lib/template.js"></script>
     </body>
       </html>
