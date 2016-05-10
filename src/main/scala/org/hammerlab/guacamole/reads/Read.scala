@@ -32,10 +32,10 @@ trait Read {
   def name: String
 
   /** The nucleotide sequence. */
-  def sequence: Seq[Byte]
+  def sequence: IndexedSeq[Byte]
 
   /** The base qualities, phred scaled.  These are numbers, and are NOT character encoded. */
-  def baseQualities: Seq[Byte]
+  def baseQualities: IndexedSeq[Byte]
 
   /** Is this read a duplicate of another? */
   def isDuplicate: Boolean

@@ -103,7 +103,7 @@ object TestUtil {
   }
 
   def makeRead(sequence: String,
-               cigar: String,
+               cigar: String = "",
                start: Long = 1,
                chr: String = "chr1",
                qualityScores: Option[Seq[Int]] = None,
