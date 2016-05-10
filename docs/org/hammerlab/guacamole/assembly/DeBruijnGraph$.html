@@ -180,15 +180,15 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li name="org.hammerlab.guacamole.assembly.DeBruijnGraph#apply" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="apply(sequences:Seq[org.hammerlab.guacamole.assembly.DeBruijnGraph.Sequence],kmerSize:Int,minOccurrence:Int,mergeNodes:Boolean):org.hammerlab.guacamole.assembly.DeBruijnGraph"></a>
-      <a id="apply(Seq[Sequence],Int,Int,Boolean):DeBruijnGraph"></a>
+      <a id="apply(reads:Seq[org.hammerlab.guacamole.reads.Read],kmerSize:Int,minOccurrence:Int,minMeanKmerBaseQuality:Int,mergeNodes:Boolean):org.hammerlab.guacamole.assembly.DeBruijnGraph"></a>
+      <a id="apply(Seq[Read],Int,Int,Int,Boolean):DeBruijnGraph"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">apply</span><span class="params">(<span name="sequences">sequences: <span class="extype" name="scala.Seq">Seq</span>[<a href="#Sequence=Seq[Byte]" class="extmbr" name="org.hammerlab.guacamole.assembly.DeBruijnGraph.Sequence">Sequence</a>]</span>, <span name="kmerSize">kmerSize: <span class="extype" name="scala.Int">Int</span></span>, <span name="minOccurrence">minOccurrence: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">1</span></span>, <span name="mergeNodes">mergeNodes: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="result">: <a href="DeBruijnGraph.html" class="extype" name="org.hammerlab.guacamole.assembly.DeBruijnGraph">DeBruijnGraph</a></span>
+        <span class="name">apply</span><span class="params">(<span name="reads">reads: <span class="extype" name="scala.Seq">Seq</span>[<a href="../reads/Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a>]</span>, <span name="kmerSize">kmerSize: <span class="extype" name="scala.Int">Int</span></span>, <span name="minOccurrence">minOccurrence: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">1</span></span>, <span name="minMeanKmerBaseQuality">minMeanKmerBaseQuality: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">0</span></span>, <span name="mergeNodes">mergeNodes: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="result">: <a href="DeBruijnGraph.html" class="extype" name="org.hammerlab.guacamole.assembly.DeBruijnGraph">DeBruijnGraph</a></span>
       </span>
       </h4>
       
@@ -225,15 +225,15 @@
               
         </dd></dl></div>
     </li><li name="org.hammerlab.guacamole.assembly.DeBruijnGraph#discoverPathsFromReads" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="discoverPathsFromReads(reads:Seq[org.hammerlab.guacamole.reads.MappedRead],referenceStart:Int,referenceEnd:Int,referenceSequence:Array[Byte],kmerSize:Int,minOccurrence:Int,maxPaths:Int,debugPrint:Boolean):List[List[Seq[Byte]]]"></a>
-      <a id="discoverPathsFromReads(Seq[MappedRead],Int,Int,Array[Byte],Int,Int,Int,Boolean):List[List[Seq[Byte]]]"></a>
+      <a id="discoverPathsFromReads(reads:Seq[org.hammerlab.guacamole.reads.MappedRead],referenceStart:Int,referenceEnd:Int,referenceSequence:Array[Byte],kmerSize:Int,minOccurrence:Int,maxPaths:Int,minMeanKmerBaseQuality:Int,debugPrint:Boolean):List[List[Seq[Byte]]]"></a>
+      <a id="discoverPathsFromReads(Seq[MappedRead],Int,Int,Array[Byte],Int,Int,Int,Int,Boolean):List[List[Seq[Byte]]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">discoverPathsFromReads</span><span class="params">(<span name="reads">reads: <span class="extype" name="scala.Seq">Seq</span>[<a href="../reads/MappedRead.html" class="extype" name="org.hammerlab.guacamole.reads.MappedRead">MappedRead</a>]</span>, <span name="referenceStart">referenceStart: <span class="extype" name="scala.Int">Int</span></span>, <span name="referenceEnd">referenceEnd: <span class="extype" name="scala.Int">Int</span></span>, <span name="referenceSequence">referenceSequence: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>, <span name="kmerSize">kmerSize: <span class="extype" name="scala.Int">Int</span></span>, <span name="minOccurrence">minOccurrence: <span class="extype" name="scala.Int">Int</span></span>, <span name="maxPaths">maxPaths: <span class="extype" name="scala.Int">Int</span></span>, <span name="debugPrint">debugPrint: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.immutable.List">List</span>[<span class="extype" name="scala.collection.immutable.List">List</span>[<span class="extype" name="scala.collection.Seq">Seq</span>[<span class="extype" name="scala.Byte">Byte</span>]]]</span>
+        <span class="name">discoverPathsFromReads</span><span class="params">(<span name="reads">reads: <span class="extype" name="scala.Seq">Seq</span>[<a href="../reads/MappedRead.html" class="extype" name="org.hammerlab.guacamole.reads.MappedRead">MappedRead</a>]</span>, <span name="referenceStart">referenceStart: <span class="extype" name="scala.Int">Int</span></span>, <span name="referenceEnd">referenceEnd: <span class="extype" name="scala.Int">Int</span></span>, <span name="referenceSequence">referenceSequence: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>, <span name="kmerSize">kmerSize: <span class="extype" name="scala.Int">Int</span></span>, <span name="minOccurrence">minOccurrence: <span class="extype" name="scala.Int">Int</span></span>, <span name="maxPaths">maxPaths: <span class="extype" name="scala.Int">Int</span></span>, <span name="minMeanKmerBaseQuality">minMeanKmerBaseQuality: <span class="extype" name="scala.Int">Int</span></span>, <span name="debugPrint">debugPrint: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.immutable.List">List</span>[<span class="extype" name="scala.collection.immutable.List">List</span>[<span class="extype" name="scala.collection.Seq">Seq</span>[<span class="extype" name="scala.Byte">Byte</span>]]]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Find paths through the reads given that represent the sequence covering referenceStart and referenceEnd
