@@ -17,16 +17,16 @@ class DeBruijnGraphSuite extends GuacFunSuite {
 
   test("build graph") {
 
-    val sequence = makeRead(Bases.stringToBases("TCATCTCAAAAGAGATCGA"))
-    val graph = DeBruijnGraph(Seq(sequence), kmerSize = 8)
+    val read = makeRead(Bases.stringToBases("TCATCTCAAAAGAGATCGA"))
+    val graph = DeBruijnGraph(Seq(read), kmerSize = 8)
 
     graph.kmerCounts === Map("TCATCTCA" -> 1, "CATCTCAA" -> 1, "GAGATCGA" -> 1)
   }
 
   test("build graph test prefix/suffix") {
 
-    val sequence = makeRead("TCATCTCAAAAGAGATCGA")
-    val graph = DeBruijnGraph(Seq(sequence), kmerSize = 8)
+    val read = makeRead("TCATCTCAAAAGAGATCGA")
+    val graph = DeBruijnGraph(Seq(read), kmerSize = 8)
 
     AssertBases(graph.kmerPrefix("TCATCTCA"), "TCATCTC")
     AssertBases(graph.kmerPrefix("CATCTCAA"), "CATCTCA")
@@ -40,26 +40,26 @@ class DeBruijnGraphSuite extends GuacFunSuite {
 
   test("build graph with short kmers and correct counts") {
 
-    val sequence = makeRead("TCATCTTAAAAGACATAAA")
-    val graph = DeBruijnGraph(Seq(sequence), kmerSize = 3)
+    val read = makeRead("TCATCTTAAAAGACATAAA")
+    val graph = DeBruijnGraph(Seq(read), kmerSize = 3)
 
     graph.kmerCounts === Map("TCA" -> 1, "CAT" -> 2, "AAA" -> 3)
   }
 
-  test("build graph and prune sequence based on kmer quality") {
+  test("build graph and prune read based on kmer quality") {
 
-    val highQualitySequence = makeRead(
+    val highQualityRead = makeRead(
       "TCATCTTAAAAGACATAAA",
-      qualityScores = Some((0 until 19).map(_ => 30)) // All base qualities are 30
+      qualityScores = Some((0 until 19).map(_ => 30))  // All base qualities are 30
     )
 
-    val lowQualitySequence = makeRead(
+    val lowQualityRead = makeRead(
       "TCATCTTAAAAGACATAAA",
-      qualityScores = Some((0 until 19).map(_ => 10)) // All base qualities are 10
+      qualityScores = Some((0 until 19).map(_ => 10))  // All base qualities are 10
     )
 
     val graph = DeBruijnGraph(
-      Seq(highQualitySequence, lowQualitySequence),
+      Seq(highQualityRead, lowQualityRead),
       kmerSize = 3,
       minMeanKmerBaseQuality = 15
     )
@@ -69,12 +69,12 @@ class DeBruijnGraphSuite extends GuacFunSuite {
 
   test("build graph and prune kmers with different base quality thresholds") {
 
-    val highQualitySequence = makeRead(
+    val highQualityRead = makeRead(
       "TCATCTTAAAAGACATAAA",
-      qualityScores = Some((0 until 19).map(_ => 30)) // All base qualities are 30
+      qualityScores = Some((0 until 19).map(_ => 30))  // All base qualities are 30
     )
 
-    val lowQualitySequence = makeRead(
+    val lowQualityRead = makeRead(
           "TCATCTTAA" + // Base quality 30
           "AAGACA" +    // Base quality 5
           "TAAA",       // Base quality 30
@@ -82,7 +82,7 @@ class DeBruijnGraphSuite extends GuacFunSuite {
     )
 
     val lowThresholdGraph = DeBruijnGraph(
-      Seq(highQualitySequence, lowQualitySequence),
+      Seq(highQualityRead, lowQualityRead),
       kmerSize = 3,
       minMeanKmerBaseQuality = 15
     )
@@ -90,7 +90,7 @@ class DeBruijnGraphSuite extends GuacFunSuite {
     lowThresholdGraph.kmerCounts === Map("TCA" -> 2, "CAT" -> 3, "AAA" -> 5)
 
     val highThresholdGraph = DeBruijnGraph(
-      Seq(highQualitySequence, lowQualitySequence),
+      Seq(highQualityRead, lowQualityRead),
       kmerSize = 3,
       minMeanKmerBaseQuality = 25
     )
@@ -100,8 +100,8 @@ class DeBruijnGraphSuite extends GuacFunSuite {
 
   test("build graph with short kmers and correct children/parents") {
 
-    val sequence = makeRead("TCATCTTAAAAGACATAAA")
-    val graph = DeBruijnGraph(Seq(sequence), kmerSize = 3)
+    val read = makeRead("TCATCTTAAAAGACATAAA")
+    val graph = DeBruijnGraph(Seq(read), kmerSize = 3)
 
     val tcaChildren = graph.children("TCA")
     AssertBases(graph.kmerSuffix("TCA"), "CA")
@@ -200,9 +200,9 @@ class DeBruijnGraphSuite extends GuacFunSuite {
 
   test("find forward unique path; with bubble in first kmer") {
 
-    val sequence = makeRead("AAATCCCTGGGT")
-    val variantSequence = makeRead("ACATCCCTGGGT")
-    val graph = DeBruijnGraph(Seq(sequence, variantSequence), kmerSize = 4)
+    val read = makeRead("AAATCCCTGGGT")
+    val variantRead = makeRead("ACATCCCTGGGT")
+    val graph = DeBruijnGraph(Seq(read, variantRead), kmerSize = 4)
 
     val firstKmer = "AAAT"
 
@@ -213,9 +213,9 @@ class DeBruijnGraphSuite extends GuacFunSuite {
 
   test("find backward unique path; with bubble at end") {
 
-    val sequence = makeRead("AAATCCCTGGGT")
-    val variantSequence = makeRead("AAATCCCTGGAT")
-    val graph = DeBruijnGraph(Seq(sequence, variantSequence), kmerSize = 4)
+    val read = makeRead("AAATCCCTGGGT")
+    val variantRead = makeRead("AAATCCCTGGAT")
+    val graph = DeBruijnGraph(Seq(read, variantRead), kmerSize = 4)
 
     val seq1End = "GGGT"
 
@@ -232,9 +232,9 @@ class DeBruijnGraphSuite extends GuacFunSuite {
 
   test("find backward unique path; with bubble in middle") {
 
-    val sequence = makeRead("AAATCCCTGGGT")
-    val variantSequence = makeRead("AAATCGCTGGGT")
-    val graph = DeBruijnGraph(Seq(sequence, variantSequence), kmerSize = 4)
+    val read = makeRead("AAATCCCTGGGT")
+    val variantRead = makeRead("AAATCGCTGGGT")
+    val graph = DeBruijnGraph(Seq(read, variantRead), kmerSize = 4)
 
     val lastKmer = "GGGT"
 
@@ -245,9 +245,9 @@ class DeBruijnGraphSuite extends GuacFunSuite {
 
   test("test merge nodes; full graph") {
 
-    val sequence = makeRead("AAATCCCTGGGT")
+    val read = makeRead("AAATCCCTGGGT")
     val kmerSize = 4
-    val graph = DeBruijnGraph(Seq(sequence), kmerSize)
+    val graph = DeBruijnGraph(Seq(read), kmerSize)
 
     graph.kmerCounts.keys.size should be(9)
 
@@ -259,10 +259,10 @@ class DeBruijnGraphSuite extends GuacFunSuite {
 
   test("test merge nodes; with variant") {
 
-    val sequence = makeRead("AAATCCCTGGGT")
-    val variantSequence = makeRead("AAATCCCTGGAT")
+    val read = makeRead("AAATCCCTGGGT")
+    val variantRead = makeRead("AAATCCCTGGAT")
     val kmerSize = 4
-    val graph = DeBruijnGraph(Seq(sequence, variantSequence), kmerSize)
+    val graph = DeBruijnGraph(Seq(read, variantRead), kmerSize)
 
     graph.kmerCounts.keys.size should be(11)
 
