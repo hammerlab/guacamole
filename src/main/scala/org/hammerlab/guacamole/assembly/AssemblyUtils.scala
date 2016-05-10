@@ -48,7 +48,8 @@ object AssemblyUtils extends Logging {
   def discoverHaplotypes(currentWindow: SlidingWindow[MappedRead],
                          kmerSize: Int,
                          reference: ReferenceGenome,
-                         minOccurrence: Int = 3,
+                         minOccurrence: Int,
+                         minMeanKmerQuality: Int,
                          expectedPloidy: Int = 2,
                          maxPathsToScore: Int = 16,
                          debugPrint: Boolean = false): Seq[DeBruijnGraph#Sequence] = {
@@ -75,6 +76,7 @@ object AssemblyUtils extends Logging {
       kmerSize = kmerSize,
       minOccurrence = minOccurrence,
       maxPaths = maxPathsToScore + 1,
+      minMeanKmerBaseQuality = minMeanKmerQuality,
       debugPrint)
       .map(DeBruijnGraph.mergeOverlappingSequences(_, kmerSize))
       .toVector

@@ -56,6 +56,9 @@ object GermlineAssemblyCaller {
     @Args4jOption(name = "--min-likelihood", usage = "Minimum Phred-scaled likelihood. Default: 0 (off)")
     var minLikelihood: Int = 0
 
+    @Args4jOption(name = "--min-mean-kmer-quality", usage = "Minimum mean base quality to include a kmer")
+    var minMeanKmerQuality: Int = 0
+
     @Args4jOption(name = "--shortcut-assembly", required = false, usage = "Skip assembly process in inactive regions")
     var shortcutAssembly: Boolean = false
 
@@ -96,6 +99,7 @@ object GermlineAssemblyCaller {
         minAreaVaf = args.minAreaVaf / 100.0f,
         reference = reference,
         lociPartitions = lociPartitions,
+        minMeanKmerQuality = args.minMeanKmerQuality,
         minPhredScaledLikelihood = args.minLikelihood,
         shortcutAssembly = args.shortcutAssembly)
 
@@ -117,6 +121,7 @@ object GermlineAssemblyCaller {
                                  minAreaVaf: Float,
                                  reference: ReferenceBroadcast,
                                  lociPartitions: LociPartitioning,
+                                 minMeanKmerQuality: Int,
                                  minAltReads: Int = 2,
                                  minPhredScaledLikelihood: Int = 0,
                                  shortcutAssembly: Boolean = false): RDD[CalledAllele] = {
@@ -165,7 +170,8 @@ object GermlineAssemblyCaller {
                 window,
                 kmerSize,
                 reference,
-                minOccurrence
+                minOccurrence,
+                minMeanKmerQuality
               )
 
               if (paths.nonEmpty) {
