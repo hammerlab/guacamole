@@ -1,0 +1,1 @@
+*.bam filter=lfs diff=lfs merge=lfs
