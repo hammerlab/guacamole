@@ -30,15 +30,15 @@ class GermlineAssemblyCallerSuite extends GuacFunSuite with BeforeAndAfterAll {
   def verifyVariantsAtLocus(locus: Int,
                             contig: String = "chr1",
                             kmerSize: Int = 47,
-                            snvWindowRange: Int = 120,
+                            assemblyWindowRange: Int = 120,
                             minOccurrence: Int = 5,
                             minVaf: Float = 0.1f,
                             shortcutAssembly: Boolean = false)(
                              expectedVariants: (String, Int, String, String)*
                            ) = {
 
-    val windowStart = locus - snvWindowRange
-    val windowEnd = locus + snvWindowRange
+    val windowStart = locus - assemblyWindowRange
+    val windowEnd = locus + assemblyWindowRange
 
     val lociParser = LociParser(s"$contig:$windowStart-$windowEnd")
 
@@ -64,7 +64,7 @@ class GermlineAssemblyCallerSuite extends GuacFunSuite with BeforeAndAfterAll {
       GermlineAssemblyCaller.Caller.discoverGermlineVariants(
         mappedReads,
         kmerSize = kmerSize,
-        snvWindowRange = snvWindowRange,
+        assemblyWindowRange = assemblyWindowRange,
         minOccurrence = minOccurrence,
         minMeanKmerQuality = 20,
         minAreaVaf = minVaf,

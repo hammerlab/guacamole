@@ -30,13 +30,7 @@ import org.kohsuke.args4j.{Option => Args4jOption}
  */
 object GermlineAssemblyCaller {
 
-  class Arguments extends GermlineCallerArgs {
-
-    @Args4jOption(name = "--kmer-size", usage = "Length of kmer used for DeBrujin Graph assembly")
-    var kmerSize: Int = 45
-
-    @Args4jOption(name = "--snv-window-range", usage = "Number of bases before and after to check for additional matches or deletions")
-    var snvWindowRange: Int = 20
+  class Arguments extends AssemblyUtils.Arguments with GermlineCallerArgs {
 
     @Args4jOption(name = "--min-average-base-quality", usage = "Minimum average of base qualities in the read")
     var minAverageBaseQuality: Int = 20
@@ -47,20 +41,8 @@ object GermlineAssemblyCaller {
     @Args4jOption(name = "--reference-fasta", required = true, usage = "Local path to a reference FASTA file")
     var referenceFastaPath: String = null
 
-    @Args4jOption(name = "--min-area-vaf", required = false, usage = "Minimum variant allele frequency to investigate area")
-    var minAreaVaf: Int = 5
-
-    @Args4jOption(name = "--min-occurrence", required = false, usage = "Minimum occurrences to include a kmer ")
-    var minOccurrence: Int = 3
-
     @Args4jOption(name = "--min-likelihood", usage = "Minimum Phred-scaled likelihood. Default: 0 (off)")
     var minLikelihood: Int = 0
-
-    @Args4jOption(name = "--min-mean-kmer-quality", usage = "Minimum mean base quality to include a kmer")
-    var minMeanKmerQuality: Int = 0
-
-    @Args4jOption(name = "--shortcut-assembly", required = false, usage = "Skip assembly process in inactive regions")
-    var shortcutAssembly: Boolean = false
 
   }
 
@@ -94,7 +76,7 @@ object GermlineAssemblyCaller {
       val genotypes: RDD[CalledAllele] = discoverGermlineVariants(
         qualityReads,
         kmerSize = args.kmerSize,
-        snvWindowRange = args.snvWindowRange,
+        assemblyWindowRange = args.assemblyWindowRange,
         minOccurrence = args.minOccurrence,
         minAreaVaf = args.minAreaVaf / 100.0f,
         reference = reference,
@@ -116,7 +98,7 @@ object GermlineAssemblyCaller {
 
     def discoverGermlineVariants(reads: RDD[MappedRead],
                                  kmerSize: Int,
-                                 snvWindowRange: Int,
+                                 assemblyWindowRange: Int,
                                  minOccurrence: Int,
                                  minAreaVaf: Float,
                                  reference: ReferenceBroadcast,
@@ -131,7 +113,7 @@ object GermlineAssemblyCaller {
           Vector(reads),
           lociPartitions,
           skipEmpty = true,
-          halfWindowSize = snvWindowRange,
+          halfWindowSize = assemblyWindowRange,
           initialState = None,
           (lastCalledLocus, windows) => {
             val window = windows.head
@@ -223,7 +205,7 @@ object GermlineAssemblyCaller {
 
                 val lastVariantCallLocus = variants.view.map(_.start).reduceOption(_ max _).orElse(lastCalledLocus)
                 // Jump to the next region
-                window.setCurrentLocus(window.currentLocus + snvWindowRange - kmerSize)
+                window.setCurrentLocus(window.currentLocus + assemblyWindowRange - kmerSize)
                 (lastVariantCallLocus, variants.iterator)
               } else {
                 (lastCalledLocus, Iterator.empty)
