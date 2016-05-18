@@ -18,7 +18,7 @@
 
 package org.hammerlab.guacamole.reads
 
-import htsjdk.samtools.Cigar
+import htsjdk.samtools.{Cigar, CigarElement}
 import org.bdgenomics.adam.util.PhredUtils
 import org.hammerlab.guacamole.pileup.PileupElement
 import org.hammerlab.guacamole.reference.{ContigSequence, ReferenceRegion}
@@ -101,6 +101,54 @@ case class MappedRead(
   val unclippedEnd = cigarElements.reverse.takeWhile(CigarUtils.isClipped).foldLeft(end)({
     (pos, element) => pos + element.getLength
   })
+
+  def slice(from: Long, until: Long, referenceContigSequence: ContigSequence): Option[MappedRead] = {
+    if (from >= end || until < start) {
+      None
+    } else if (from <= start && until >= end) {
+      Some(this)
+    } else {
+
+      val referenceStart = math.max(from, start)
+      val referenceEnd = math.min(until - 1, end - 1)
+
+      val el = PileupElement(this, start, referenceContigSequence)
+      val startElement = el.advanceToLocus(referenceStart)
+      val readStartIndex = startElement.readPosition
+      val startCigarIndex = startElement.cigarElementIndex
+      val startIndexWithinCigarElement = startElement.indexWithinCigarElement
+      val startCigarElement = cigarElements(startCigarIndex)
+      val slicedStartCigar = new CigarElement(startCigarElement.getLength - startIndexWithinCigarElement, startCigarElement.getOperator)
+
+      val endElement = el.advanceToLocus(referenceEnd)
+      val readEndIndex = endElement.readPosition
+      val endCigarIndex = endElement.cigarElementIndex
+      val endIndexWithinCigarElement = endElement.indexWithinCigarElement
+      val endCigarElement = cigarElements(endCigarIndex)
+
+      val slicedSequence = sequence.slice(readStartIndex, readEndIndex + 1)
+      val slicedBaseQualities = baseQualities.slice(readStartIndex, readEndIndex + 1)
+
+      val slicedCigar =
+        if (endCigarIndex == startCigarIndex)
+          new Cigar(JavaConversions.seqAsJavaList(
+            Seq(new CigarElement(endIndexWithinCigarElement - startIndexWithinCigarElement + 1, startCigarElement.getOperator))
+          ))
+        else
+          new Cigar(JavaConversions.seqAsJavaList(
+            Seq(slicedStartCigar) ++
+              cigarElements.slice(startCigarIndex + 1, endCigarIndex) ++
+              Seq(new CigarElement(endIndexWithinCigarElement + 1, endCigarElement.getOperator)))
+          )
+
+      Some(this.copy(
+        sequence = slicedSequence,
+        baseQualities = slicedBaseQualities,
+        start = referenceStart,
+        cigar = slicedCigar
+      ))
+    }
+  }
 
   override def toString(): String =
     "MappedRead(%s:%d, %s, %s)".format(
