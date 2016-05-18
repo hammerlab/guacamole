@@ -38,11 +38,11 @@ set -x
 full_jar="$jar:target/scala-2.10.5/test-classes"
 
 # HG19 reference
-time java -Xmx4g -XX:MaxPermSize=512m "-Dspark.master=local[1]" -cp "$full_jar" "$MAIN_CLASS" \
+time java -Xmx6g -XX:MaxPermSize=512m "-Dspark.master=local[1]" -cp "$full_jar" "$MAIN_CLASS" \
     --reference-fasta "$HG19_FULL_FASTA_PATH" \
     --output src/test/resources/hg19.partial.fasta \
-	--bam-reader-api hadoopbam \
-	--padding 180 \
+    --bam-reader-api hadoopbam \
+    --padding 180 \
     src/test/resources/cancer-wgs1/*.bam \
     src/test/resources/rna_chr17_41244936.sam
 
