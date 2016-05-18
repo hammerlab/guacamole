@@ -102,6 +102,15 @@ case class MappedRead(
     (pos, element) => pos + element.getLength
   })
 
+  /**
+   * Take a subsequence or slice of a read [from, until)
+   * Returns None if the provided coordinates do not overlap the read
+   *
+   * @param from reference locus to start the new read
+   * @param until reference locus to slice up to (exclusive end)
+   * @param referenceContigSequence reference sequence for the read's contig
+   * @return A read which spans [from, until) or None if the provided coordinates do not overlap the read
+   */
   def slice(from: Long, until: Long, referenceContigSequence: ContigSequence): Option[MappedRead] = {
     if (from >= end || until < start) {
       None
