@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>GermlineAssemblyCaller - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.commands.GermlineAssemblyCaller</title>
-          <meta name="description" content="GermlineAssemblyCaller - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.commands.GermlineAssemblyCaller" />
-          <meta name="keywords" content="GermlineAssemblyCaller guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.commands.GermlineAssemblyCaller" />
+          <title>AssemblyArgs - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.assembly.AssemblyArgs</title>
+          <meta name="description" content="AssemblyArgs - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.assembly.AssemblyArgs" />
+          <meta name="keywords" content="AssemblyArgs guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.assembly.AssemblyArgs" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -12,7 +12,7 @@
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../index.html';
-            var hash = 'org.hammerlab.guacamole.commands.GermlineAssemblyCaller$';
+            var hash = 'org.hammerlab.guacamole.assembly.AssemblyArgs';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -22,30 +22,29 @@
    	  </script>
     
         </head>
-        <body class="value">
+        <body class="type">
       <div id="definition">
-        <img src="../../../../lib/object_big.png" />
-        <p id="owner"><a href="../../../package.html" class="extype" name="org">org</a>.<a href="../../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="../package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole.commands">commands</a></p>
-        <h1>GermlineAssemblyCaller</h1>
+        <img src="../../../../lib/trait_big.png" />
+        <p id="owner"><a href="../../../package.html" class="extype" name="org">org</a>.<a href="../../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="../package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole.assembly">assembly</a></p>
+        <h1>AssemblyArgs</h1>
       </div>
 
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">object</span>
+        <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <span class="name">GermlineAssemblyCaller</span>
+        <span class="name">AssemblyArgs</span><span class="result"> extends <span class="extype" name="org.bdgenomics.utils.cli.Args4jBase">Args4jBase</span></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Simple assembly based germline variant caller</p><p>Overview:
-- Find areas where &gt; <code>min-area-vaf</code> %  of the reads show a variant
-- Place the reads in the <code>snv-window-range</code>-base window into a DeBruijn graph
-  and find paths between the start and end of the reference sequence that covers that region
-- Align those paths to the reference sequence to discover variants</p></div><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="org.bdgenomics.utils.cli.Args4jBase">Args4jBase</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+        </div><div class="toggleContainer block">
+          <span class="toggle">Known Subclasses</span>
+          <div class="subClasses hiddenContent"><a href="../commands/GermlineAssemblyCaller$$Arguments.html" class="extype" name="org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Arguments">Arguments</a></div>
         </div></div>
         
 
@@ -63,7 +62,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="org.hammerlab.guacamole.commands.GermlineAssemblyCaller"><span>GermlineAssemblyCaller</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="org.hammerlab.guacamole.assembly.AssemblyArgs"><span>AssemblyArgs</span></li><li class="in" name="org.bdgenomics.utils.cli.Args4jBase"><span>Args4jBase</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -83,23 +82,7 @@
         <div id="allMembers">
         
 
-        <div id="types" class="types members">
-              <h3>Type Members</h3>
-              <ol><li name="org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Arguments" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="ArgumentsextendsArgs4jBasewithAssemblyArgswithGermlineCallerArgs"></a>
-      <a id="Arguments:Arguments"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">class</span>
-      </span>
-      <span class="symbol">
-        <a href="GermlineAssemblyCaller$$Arguments.html"><span class="name">Arguments</span></a><span class="result"> extends <span class="extype" name="org.bdgenomics.utils.cli.Args4jBase">Args4jBase</span> with <a href="../assembly/AssemblyArgs.html" class="extype" name="org.hammerlab.guacamole.assembly.AssemblyArgs">AssemblyArgs</a> with <a href="../readsets/GermlineCallerArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.GermlineCallerArgs">GermlineCallerArgs</a></span>
-      </span>
-      </h4>
-      
-    </li></ol>
-            </div>
+        
 
         
 
@@ -170,19 +153,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Caller" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="Caller"></a>
-      <a id="Caller:Caller"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a href="GermlineAssemblyCaller$$Caller$.html"><span class="name">Caller</span></a><span class="result"> extends <a href="SparkCommand.html" class="extype" name="org.hammerlab.guacamole.commands.SparkCommand">SparkCommand</a>[<a href="GermlineAssemblyCaller$$Arguments.html" class="extype" name="org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Arguments">Arguments</a>]</span>
-      </span>
-      </h4>
-      
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -196,6 +166,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.assembly.AssemblyArgs#assemblyWindowRange" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="assemblyWindowRange:Int"></a>
+      <a id="assemblyWindowRange:Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">var</span>
+      </span>
+      <span class="symbol">
+        <span class="name">assemblyWindowRange</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4>
+      
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>
       <a id="clone():AnyRef"></a>
@@ -215,6 +198,19 @@
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="org.bdgenomics.utils.cli.Args4jBase#doPrintUsage" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="doPrintUsage:Boolean"></a>
+      <a id="doPrintUsage:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">var</span>
+      </span>
+      <span class="symbol">
+        <span class="name">doPrintUsage</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Args4jBase</dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -299,6 +295,58 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.assembly.AssemblyArgs#kmerSize" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="kmerSize:Int"></a>
+      <a id="kmerSize:Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">var</span>
+      </span>
+      <span class="symbol">
+        <span class="name">kmerSize</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.assembly.AssemblyArgs#minAreaVaf" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="minAreaVaf:Int"></a>
+      <a id="minAreaVaf:Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">var</span>
+      </span>
+      <span class="symbol">
+        <span class="name">minAreaVaf</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.assembly.AssemblyArgs#minMeanKmerQuality" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="minMeanKmerQuality:Int"></a>
+      <a id="minMeanKmerQuality:Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">var</span>
+      </span>
+      <span class="symbol">
+        <span class="name">minMeanKmerQuality</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.assembly.AssemblyArgs#minOccurrence" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="minOccurrence:Int"></a>
+      <a id="minOccurrence:Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">var</span>
+      </span>
+      <span class="symbol">
+        <span class="name">minOccurrence</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4>
+      
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -338,6 +386,32 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="org.bdgenomics.utils.cli.Args4jBase#printMetrics" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="printMetrics:Boolean"></a>
+      <a id="printMetrics:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">var</span>
+      </span>
+      <span class="symbol">
+        <span class="name">printMetrics</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Args4jBase</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.assembly.AssemblyArgs#shortcutAssembly" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="shortcutAssembly:Boolean"></a>
+      <a id="shortcutAssembly:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">var</span>
+      </span>
+      <span class="symbol">
+        <span class="name">shortcutAssembly</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -430,7 +504,9 @@
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="scala.AnyRef">
+        <div class="parent" name="org.bdgenomics.utils.cli.Args4jBase">
+              <h3>Inherited from <span class="extype" name="org.bdgenomics.utils.cli.Args4jBase">Args4jBase</span></h3>
+            </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
             </div><div class="parent" name="scala.Any">
               <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
