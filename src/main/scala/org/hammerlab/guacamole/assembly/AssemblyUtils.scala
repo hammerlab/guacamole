@@ -2,39 +2,17 @@ package org.hammerlab.guacamole.assembly
 
 import htsjdk.samtools.CigarOperator
 import org.apache.spark.Logging
-import org.bdgenomics.utils.cli.Args4jBase
 import org.hammerlab.guacamole.alignment.{AffineGapPenaltyAlignment, ReadAlignment}
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.reference.{ContigSequence, ReferenceGenome}
 import org.hammerlab.guacamole.util.CigarUtils
 import org.hammerlab.guacamole.variants.ReferenceVariant
 import org.hammerlab.guacamole.windowing.SlidingWindow
-import org.kohsuke.args4j.{Option => Args4jOption}
 
 import scala.collection.JavaConversions._
 
 
 object AssemblyUtils extends Logging {
-
-  trait Arguments extends Args4jBase {
-    @Args4jOption(name = "--kmer-size", usage = "Length of kmer used for DeBrujin Graph assembly")
-    var kmerSize: Int = 45
-
-    @Args4jOption(name = "--assembly-window-range", usage = "Number of bases before and after to check for additional matches or deletions")
-    var assemblyWindowRange: Int = 20
-
-    @Args4jOption(name = "--min-occurrence", required = false, usage = "Minimum occurrences to include a kmer ")
-    var minOccurrence: Int = 3
-
-    @Args4jOption(name = "--min-area-vaf", required = false, usage = "Minimum variant allele frequency to investigate area")
-    var minAreaVaf: Int = 5
-
-    @Args4jOption(name = "--min-mean-kmer-quality", usage = "Minimum mean base quality to include a kmer")
-    var minMeanKmerQuality: Int = 0
-
-    @Args4jOption(name = "--shortcut-assembly", required = false, usage = "Skip assembly process in inactive regions")
-    var shortcutAssembly: Boolean = false
-  }
 
   /**
    * Heuristic to determine when a region has a complex collection of region alignments

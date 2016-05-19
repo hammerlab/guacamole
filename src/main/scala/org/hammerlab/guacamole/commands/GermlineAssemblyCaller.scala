@@ -5,7 +5,7 @@ import breeze.stats.{mean, median}
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole.alignment.AffineGapPenaltyAlignment
-import org.hammerlab.guacamole.assembly.AssemblyUtils
+import org.hammerlab.guacamole.assembly.{AssemblyArgs, AssemblyUtils}
 import org.hammerlab.guacamole.distributed.LociPartitionUtils.{LociPartitioning, partitionLociAccordingToArgs}
 import org.hammerlab.guacamole.distributed.WindowFlatMapUtils.windowFlatMapWithState
 import org.hammerlab.guacamole.likelihood.Likelihood
@@ -30,7 +30,7 @@ import org.kohsuke.args4j.{Option => Args4jOption}
  */
 object GermlineAssemblyCaller {
 
-  class Arguments extends AssemblyUtils.Arguments with GermlineCallerArgs {
+  class Arguments extends AssemblyArgs with GermlineCallerArgs {
 
     @Args4jOption(name = "--min-average-base-quality", usage = "Minimum average of base qualities in the read")
     var minAverageBaseQuality: Int = 20
