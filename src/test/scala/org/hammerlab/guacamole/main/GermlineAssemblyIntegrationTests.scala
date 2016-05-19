@@ -43,7 +43,7 @@ object GermlineAssemblyIntegrationTests extends SparkCommand[Arguments] with Var
 
     // Germline assembly config
     args.kmerSize = 31
-    args.snvWindowRange = 41
+    args.assemblyWindowRange = 41
     args.minAreaVaf = 40
     args.shortcutAssembly = true
     args.minLikelihood = 70
