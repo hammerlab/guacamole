@@ -552,6 +552,24 @@ base in this read.
       </span>
       </h4>
       <p class="shortcomment cmt">The nucleotide sequence.</p><div class="fullcomment"><div class="comment cmt"><p>The nucleotide sequence.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.reads.MappedRead">MappedRead</a> → <a href="Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a></dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.reads.MappedRead#slice" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="slice(from:Long,until:Long,referenceContigSequence:org.hammerlab.guacamole.reference.ContigSequence):Option[org.hammerlab.guacamole.reads.MappedRead]"></a>
+      <a id="slice(Long,Long,ContigSequence):Option[MappedRead]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">slice</span><span class="params">(<span name="from">from: <span class="extype" name="scala.Long">Long</span></span>, <span name="until">until: <span class="extype" name="scala.Long">Long</span></span>, <span name="referenceContigSequence">referenceContigSequence: <a href="../reference/ContigSequence.html" class="extype" name="org.hammerlab.guacamole.reference.ContigSequence">ContigSequence</a></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<a href="" class="extype" name="org.hammerlab.guacamole.reads.MappedRead">MappedRead</a>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Take a subsequence or slice of a read [from, until)
+Returns None if the provided coordinates do not overlap the read
+</p><div class="fullcomment"><div class="comment cmt"><p>Take a subsequence or slice of a read [from, until)
+Returns None if the provided coordinates do not overlap the read
+</p></div><dl class="paramcmts block"><dt class="param">from</dt><dd class="cmt"><p>reference locus to start the new read</p></dd><dt class="param">until</dt><dd class="cmt"><p>reference locus to slice up to (exclusive end)</p></dd><dt class="param">referenceContigSequence</dt><dd class="cmt"><p>reference sequence for the read's contig</p></dd><dt>returns</dt><dd class="cmt"><p>A read which spans [from, until) or None if the provided coordinates do not overlap the read
+</p></dd></dl></div>
     </li><li name="org.hammerlab.guacamole.reads.MappedRead#start" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="start:Long"></a>
       <a id="start:Long"></a>
