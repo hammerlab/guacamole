@@ -24,6 +24,7 @@
     <hadoop.version>2.7.0</hadoop.version>
     <spark.version>1.6.1</spark.version>
     <maven.release.plugin.version>2.4.1</maven.release.plugin.version>
+    <shade.plugin.version>2.1</shade.plugin.version>
   </properties>
 
   <licenses>
@@ -48,19 +49,13 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
-        <version>2.1</version>
+        <version>${shade.plugin.version}</version>
         <configuration>
           <transformers>
             <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
               <mainClass>org.hammerlab.guacamole.Main</mainClass>
             </transformer>
-            <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
-              <resource>reference.conf</resource>
-            </transformer>
-            <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
           </transformers>
-          <shadedArtifactAttached>true</shadedArtifactAttached>
-          <finalName>guacamole-with-dependencies-${project.version}</finalName>
           <filters>
             <filter>
               <artifact>*:*</artifact>
@@ -80,24 +75,7 @@
               <exclude>org.apache.maven:lib:tests</exclude>
             </excludes>
           </artifactSet>
-          <relocations>
-            <relocation>
-              <pattern>com.google.common</pattern>
-              <shadedPattern>org.bdgenomics.guavarelocated</shadedPattern>
-              <includes>
-                <include>com.google.common.**</include>
-              </includes>
-            </relocation>
-          </relocations>
         </configuration>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
       <plugin>
         <groupId>net.alchim31.maven</groupId>
@@ -359,6 +337,49 @@
   </dependencies>
 
   <profiles>
+    <profile>
+      <!-- Default profile: build Guacamole jar with shaded Guava. -->
+      <id>guac</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-shade-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>default</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>shade</goal>
+                </goals>
+                <configuration>
+                  <finalName>guacamole-${project.version}</finalName>
+                  <relocations>
+                    <relocation>
+                      <pattern>com.google.common</pattern>
+                      <shadedPattern>org.hammerlab.guavarelocated</shadedPattern>
+                      <includes>
+                        <include>com.google.common.**</include>
+                      </includes>
+                    </relocation>
+                  </relocations>
+                  <artifactSet>
+                    <includes>
+                      <include>org.hammerlab.guacamole:*</include>
+                      <include>com.google.guava:*</include>
+                    </includes>
+                  </artifactSet>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
     <!-- Only build coverage in when we want to run coverage -->
     <profile>
       <id>coverage</id>
@@ -395,7 +416,6 @@
         </plugins>
       </build>
     </profile>
-
     <profile>
       <id>cluster</id>
       <dependencies>
@@ -455,6 +475,68 @@
                 <goals>
                   <goal>sign</goal>
                 </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <!-- "uber" profile: build a JAR with Guacamole and all transitive dependencies shaded, and Guava relocated. -->
+      <id>uber</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-shade-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>deps</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>shade</goal>
+                </goals>
+                <configuration>
+                  <finalName>guacamole-with-deps-${project.version}</finalName>
+                  <relocations>
+                    <relocation>
+                      <pattern>com.google.common</pattern>
+                      <shadedPattern>org.hammerlab.guavarelocated</shadedPattern>
+                      <includes>
+                        <include>com.google.common.**</include>
+                      </includes>
+                    </relocation>
+                  </relocations>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <!-- "deps" profile: build a JAR with just Guacamole's transitive dependencies. -->
+      <id>deps</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-shade-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>deps</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>shade</goal>
+                </goals>
+                <configuration>
+                  <finalName>guacamole-deps-only-${project.version}</finalName>
+                  <artifactSet>
+                    <excludes>
+                      <exclude>org.hammerlab.guacamole:*</exclude>
+                    </excludes>
+                  </artifactSet>
+                </configuration>
               </execution>
             </executions>
           </plugin>
