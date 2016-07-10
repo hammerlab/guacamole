@@ -6,8 +6,8 @@
 echo "$@" >> ~/.guacamole.invocations.log
 
 if [ -z "${GUACAMOLE_JAR}" ]; then
-    jar="$(ls -tc target/guacamole-with-dependencies-*.jar | head -n 1)"
-    if [ -z "$jar" ]; then
+    GUACAMOLE_JAR="$(ls -tc target/guacamole-*.jar | grep -v deps | head -n 1)"
+    if [ -z "$GUACAMOLE_JAR" ]; then
         cat 1>&2 << EOF
 Couldn't find a Guacamole jar in the target/ directory.
 Are you in the root directory of the Guacamole repo, and have you built Guacamole?
@@ -16,11 +16,25 @@ To build, run:
 EOF
         exit 1
     fi
-    echo "Using most recently modified jar: $jar"
+    echo "Found guac jar: $GUACAMOLE_JAR"
 else
-    jar="${GUACAMOLE_JAR}"
-    echo "Using GUACAMOLE_JAR=$jar"
+    echo "Using GUACAMOLE_JAR=$GUACAMOLE_JAR"
 fi
 
-exec time java -Xmx4g -XX:MaxPermSize=512m "-Dspark.master=local[1]" -cp "$jar" org.hammerlab.guacamole.Main "$@"
+if [ -z "$GUACAMOLE_DEPS_JAR" ]; then
+  GUACAMOLE_DEPS_JAR="$(ls -tc target/guacamole-deps-*.jar | head -n 1)"
+  if [ -z "$GUACAMOLE_DEPS_JAR" ]; then
+        cat 1>&2 << EOF
+Couldn't find a Guacamole deps jar in the target/ directory.
+Are you in the root directory of the Guacamole repo, and have you built Guacamole?
+To build, run:
+    mvn package -DskipTests=true"
+EOF
+        exit 1
+  fi
+else
+  echo "Using GUACAMOLE_DEPS_JAR=$GUACAMOLE_DEPS_JAR"
+fi
+
+exec time java -Xmx4g -XX:MaxPermSize=512m "-Dspark.master=local[1]" -cp "$GUACAMOLE_JAR:$GUACAMOLE_DEPS_JAR" org.hammerlab.guacamole.Main "$@"
 

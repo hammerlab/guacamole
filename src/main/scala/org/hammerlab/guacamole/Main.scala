@@ -64,7 +64,7 @@ object Main extends Logging {
     commands.find(_.name == commandName) match {
       case Some(command) => {
         progress("Guacamole starting.")
-        ParquetLogger.hadoopLoggerLevel(Level.SEVERE) // Quiet parquet logging.
+        ParquetLogger.hadoopLoggerLevel(Level.SEVERE)  // Quiet parquet logging.
         command.run(args.drop(1))
       }
       case None => {

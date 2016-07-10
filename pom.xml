@@ -24,6 +24,8 @@
     <hadoop.version>2.7.0</hadoop.version>
     <spark.version>1.6.1</spark.version>
     <maven.release.plugin.version>2.4.1</maven.release.plugin.version>
+    <shade.plugin.version>2.1</shade.plugin.version>
+    <guava.version>18.0</guava.version>
   </properties>
 
   <licenses>
@@ -48,7 +50,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
-        <version>2.1</version>
+        <version>${shade.plugin.version}</version>
         <configuration>
           <transformers>
             <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
@@ -59,8 +61,16 @@
             </transformer>
             <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
           </transformers>
-          <shadedArtifactAttached>true</shadedArtifactAttached>
-          <finalName>guacamole-with-dependencies-${project.version}</finalName>
+          <shadedArtifactAttached>false</shadedArtifactAttached>
+          <relocations>
+            <relocation>
+              <pattern>com.google.common</pattern>
+              <shadedPattern>org.bdgenomics.guavarelocated</shadedPattern>
+              <includes>
+                <include>com.google.common.**</include>
+              </includes>
+            </relocation>
+          </relocations>
           <filters>
             <filter>
               <artifact>*:*</artifact>
@@ -80,24 +90,7 @@
               <exclude>org.apache.maven:lib:tests</exclude>
             </excludes>
           </artifactSet>
-          <relocations>
-            <relocation>
-              <pattern>com.google.common</pattern>
-              <shadedPattern>org.bdgenomics.guavarelocated</shadedPattern>
-              <includes>
-                <include>com.google.common.**</include>
-              </includes>
-            </relocation>
-          </relocations>
         </configuration>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
       <plugin>
         <groupId>net.alchim31.maven</groupId>
@@ -172,7 +165,7 @@
           <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
           <junitxml>.</junitxml>
           <filereports>GuacamoleTestSuite.txt</filereports>
-          <argLine>-Xmx3072m</argLine>
+          <argLine>-Xmx3g -XX:MaxPermSize=512m</argLine>
           <stdout>F</stdout>
         </configuration>
         <executions>
@@ -259,6 +252,12 @@
       <groupId>org.bdgenomics.adam</groupId>
       <artifactId>adam-core_${scala.version.prefix}</artifactId>
       <version>${adam.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.bdgenomics.bdg-formats</groupId>
@@ -281,9 +280,25 @@
       <version>0.11.0</version>
     </dependency>
     <dependency>
+      <groupId>com.github.samtools</groupId>
+      <artifactId>htsjdk</artifactId>
+      <version>1.139</version>
+    </dependency>
+    <dependency>
       <groupId>org.apache.spark</groupId>
       <artifactId>spark-core_${scala.version.prefix}</artifactId>
       <version>${spark.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.xerial.snappy</groupId>
+      <artifactId>snappy-java</artifactId>
+      <version>1.1.2</version>
     </dependency>
     <dependency>
       <groupId>org.apache.spark</groupId>
@@ -297,13 +312,14 @@
     </dependency>
     <dependency>
       <groupId>org.seqdoop</groupId>
-      <artifactId>htsjdk</artifactId>
-      <version>1.118</version>
-    </dependency>
-    <dependency>
-      <groupId>org.seqdoop</groupId>
       <artifactId>hadoop-bam</artifactId>
       <version>7.0.0</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.seqdoop</groupId>
+          <artifactId>htsjdk</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -314,11 +330,17 @@
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-client</artifactId>
       <version>${hadoop.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>18.0</version>
+      <version>${guava.version}</version>
     </dependency>
     <dependency>
       <groupId>org.spire-math</groupId>
@@ -342,6 +364,12 @@
       <artifactId>spark-testing-base_2.10</artifactId>
       <version>${spark.version}_0.3.3</version>
       <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.scalatest</groupId>
@@ -359,6 +387,49 @@
   </dependencies>
 
   <profiles>
+    <profile>
+      <!-- Default profile: build Guacamole jar with shaded Guava. -->
+      <id>guac</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-shade-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>default</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>shade</goal>
+                </goals>
+                <configuration>
+                  <finalName>guacamole-${project.version}</finalName>
+                  <relocations>
+                    <relocation>
+                      <pattern>com.google.common</pattern>
+                      <shadedPattern>org.hammerlab.guavarelocated</shadedPattern>
+                      <includes>
+                        <include>com.google.common.**</include>
+                      </includes>
+                    </relocation>
+                  </relocations>
+                  <artifactSet>
+                    <includes>
+                      <include>org.hammerlab.guacamole:*</include>
+                      <include>com.google.guava:*</include>
+                    </includes>
+                  </artifactSet>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
     <!-- Only build coverage in when we want to run coverage -->
     <profile>
       <id>coverage</id>
@@ -395,7 +466,6 @@
         </plugins>
       </build>
     </profile>
-
     <profile>
       <id>cluster</id>
       <dependencies>
@@ -455,6 +525,68 @@
                 <goals>
                   <goal>sign</goal>
                 </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <!-- "uber" profile: build a JAR with Guacamole and all transitive dependencies shaded, and Guava relocated. -->
+      <id>uber</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-shade-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>deps</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>shade</goal>
+                </goals>
+                <configuration>
+                  <finalName>guacamole-with-deps-${project.version}</finalName>
+                  <relocations>
+                    <relocation>
+                      <pattern>com.google.common</pattern>
+                      <shadedPattern>org.hammerlab.guavarelocated</shadedPattern>
+                      <includes>
+                        <include>com.google.common.**</include>
+                      </includes>
+                    </relocation>
+                  </relocations>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <!-- "deps" profile: build a JAR with just Guacamole's transitive dependencies. -->
+      <id>deps</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-shade-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>deps</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>shade</goal>
+                </goals>
+                <configuration>
+                  <finalName>guacamole-deps-${project.version}</finalName>
+                  <artifactSet>
+                    <excludes>
+                      <exclude>org.hammerlab.guacamole:*</exclude>
+                    </excludes>
+                  </artifactSet>
+                </configuration>
               </execution>
             </executions>
           </plugin>
