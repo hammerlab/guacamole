@@ -5,7 +5,7 @@ import org.bdgenomics.utils.cli.Args4jBase
 
 import scala.collection.mutable
 
-abstract class SparkCommand[T <% Args4jBase: Manifest] extends Command[T] {
+abstract class SparkCommand[T <: Args4jBase: Manifest] extends Command[T] {
   override def run(args: T): Unit = {
     val sc = createSparkContext(appName = name)
     try {
