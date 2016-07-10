@@ -3,7 +3,7 @@ package org.hammerlab.guacamole.commands
 import org.apache.spark.{SparkConf, SparkContext}
 import org.bdgenomics.utils.cli.Args4jBase
 
-abstract class SparkCommand[T <% Args4jBase: Manifest] extends Command[T] {
+abstract class SparkCommand[T <: Args4jBase: Manifest] extends Command[T] {
   override def run(args: T): Unit = {
     val sc = createSparkContext(appName = name)
     try {
