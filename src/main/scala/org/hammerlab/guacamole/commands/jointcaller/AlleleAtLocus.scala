@@ -3,6 +3,8 @@ package org.hammerlab.guacamole.commands.jointcaller
 import org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.ReadSubsequence
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.readsets.PerSample
+import org.hammerlab.guacamole.reference.Contig
+import org.hammerlab.guacamole.reference.Position.Locus
 import org.hammerlab.guacamole.util.Bases
 
 /**
@@ -19,18 +21,18 @@ import org.hammerlab.guacamole.util.Bases
  * are always just a reference and at most one alternate allele. If we extend this to mixtures with multiple alts, we
  * should change this class to contain any nuber of alts.
  *
- * @param referenceContig the contig (chromosome)
+ * @param contig the contig (chromosome)
  * @param start the position of the allele
  * @param ref reference allele, must be nonempty
  * @param alt alternate allele, may be equal to reference
  */
-case class AlleleAtLocus(referenceContig: String, start: Long, ref: String, alt: String) {
+case class AlleleAtLocus(contig: Contig, start: Locus, ref: String, alt: String) {
 
   assume(ref.nonEmpty)
   assume(alt.nonEmpty)
 
   lazy val id = "%s:%d-%d %s>%s".format(
-    referenceContig,
+    contig,
     start,
     end,
     ref,
@@ -50,7 +52,8 @@ case class AlleleAtLocus(referenceContig: String, start: Long, ref: String, alt:
    * @param startEndTransform transformation function on (start, end) pairs.
    * @return a new AlleleAtLocus instance
    */
-  def transform(alleleTransform: String => String, startEndTransform: (Long, Long) => (Long, Long)): AlleleAtLocus = {
+  def transform(alleleTransform: String => String,
+                startEndTransform: (Locus, Locus) => (Locus, Locus)): AlleleAtLocus = {
     val newRef = alleleTransform(ref)
     val newAlt = alleleTransform(alt)
     val (newStart, newEnd) = startEndTransform(start, end)

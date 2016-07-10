@@ -84,7 +84,7 @@ object VCFOutput {
     }
     writer.writeHeader(header)
 
-    val sortedEvidences = calls.flatMap(_.singleAlleleEvidences).sortBy(e => (e.allele.referenceContig, e.allele.start))
+    val sortedEvidences = calls.flatMap(_.singleAlleleEvidences).sortBy(e => (e.allele.contig, e.allele.start))
     sortedEvidences.foreach(evidence => {
       val variantContext = makeHtsjdVariantContext(evidence, inputs, includePooledNormal, includePooledTumor, reference)
       writer.add(variantContext)
@@ -225,7 +225,7 @@ object VCFOutput {
 
     val triggers = triggersBuilder.result()
     val variantContextBuilder = new VariantContextBuilder()
-      .chr(allele.referenceContig)
+      .chr(allele.contig)
       .start(allele.start + 1) // +1 for one based based (inclusive)
       .stop(allele.end) // +1 for one-based and -1 for inclusive
       .genotypes(JavaConversions.seqAsJavaList(genotypes))
