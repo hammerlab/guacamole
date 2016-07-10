@@ -235,7 +235,7 @@ object TestUtil {
       localReads,
       actualContig,
       locus,
-      referenceContigSequence = reference.getContig(actualContig)
+      reference = reference.getContig(actualContig)
     )
   }
 

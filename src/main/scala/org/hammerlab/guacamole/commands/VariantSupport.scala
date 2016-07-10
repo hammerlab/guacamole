@@ -120,7 +120,7 @@ object VariantSupport {
     def pileupToAlleleCounts(pileup: Pileup): Iterator[AlleleCount] = {
       val alleles = pileup.elements.groupBy(_.allele)
       alleles.map(kv => AlleleCount(pileup.sampleName,
-        pileup.referenceName,
+        pileup.contig,
         pileup.locus,
         Bases.basesToString(kv._1.refBases),
         Bases.basesToString(kv._1.altBases),

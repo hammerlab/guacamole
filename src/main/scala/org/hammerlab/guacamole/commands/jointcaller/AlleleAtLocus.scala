@@ -89,11 +89,11 @@ object AlleleAtLocus {
                      onlyStandardBases: Boolean = true): Vector[AlleleAtLocus] = {
 
     assume(pileups.forall(_.locus == pileups.head.locus))
-    assume(pileups.forall(_.referenceName == pileups.head.referenceName))
+    assume(pileups.forall(_.contig == pileups.head.contig))
     assume(pileups.nonEmpty)
-    val referenceContigSequence = pileups.head.referenceContigSequence
+    val referenceContigSequence = pileups.head.reference
 
-    val contig = pileups.head.referenceName
+    val contig = pileups.head.contig
     val variantStart = pileups.head.locus + 1
     val alleleRequiredReadsActualReads = pileups.flatMap(pileup => {
       val requiredReads = math.max(

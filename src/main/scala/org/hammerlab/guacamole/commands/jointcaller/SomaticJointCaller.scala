@@ -205,7 +205,7 @@ object SomaticJoint {
       skipEmpty = true,  // TODO: shouldn't skip empty positions if we might force call them. Need an efficient way to handle this.
       rawPileups => {
         val forceCall =
-          broadcastForceCallLoci.value.onContig(rawPileups.head.referenceName)
+          broadcastForceCallLoci.value.onContig(rawPileups.head.contig)
             .contains(rawPileups.head.locus + 1)
 
         MultiSampleMultiAlleleEvidence.make(

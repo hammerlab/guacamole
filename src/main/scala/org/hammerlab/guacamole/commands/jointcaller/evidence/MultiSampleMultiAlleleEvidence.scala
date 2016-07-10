@@ -81,7 +81,7 @@ object MultiSampleMultiAlleleEvidence {
       pileup => pileup.copy(elements = pileup.elements.filter(!_.isClipped))).toVector
     val normalPileups = inputs.normalDNA.map(input => filteredPileups(input.index))
 
-    val contig = normalPileups.head.referenceName
+    val contig = normalPileups.head.contig
     val locus = normalPileups.head.locus
 
     // We only call variants at a site if the reference base is a standard base (i.e. not N).
@@ -115,7 +115,7 @@ object MultiSampleMultiAlleleEvidence {
       .map(allele => (allele.start.toInt, allele.end.toInt))
       .distinct
       .map(pair => {
-        val referenceSequence = filteredPileups.head.referenceContigSequence.slice(pair._1, pair._2)
+        val referenceSequence = filteredPileups.head.reference.slice(pair._1, pair._2)
         val stats = filteredPileups.map(pileup => PileupStats(pileup.elements, refSequence = referenceSequence))
         pair -> MultiplePileupStats(inputs, stats)
       }).toMap

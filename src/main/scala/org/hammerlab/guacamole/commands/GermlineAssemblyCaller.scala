@@ -247,7 +247,7 @@ object GermlineAssemblyCaller {
           .map(allele => {
             CalledAllele(
               pileup.head.read.sampleName,
-              pileup.referenceName,
+              pileup.contig,
               pileup.locus,
               allele,
               AlleleEvidence(probability, allele, pileup))
