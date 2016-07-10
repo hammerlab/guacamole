@@ -18,6 +18,8 @@
 
 package org.hammerlab.guacamole.reference
 
+import org.hammerlab.guacamole.reference.Position.Locus
+
 /**
  * Trait for objects that are associated with an interval on the genome. The most prominent example is a
  * [[org.hammerlab.guacamole.reads.MappedRead]], but there's also [[org.hammerlab.guacamole.variants.ReferenceVariant]].
@@ -28,15 +30,15 @@ trait ReferenceRegion {
   val contig: Contig
 
   /** Start position on the genome, inclusive. Must be non-negative. */
-  val start: Long
+  val start: Locus
 
   /** The end position on the genome, *exclusive*. Must be non-negative. */
-  val end: Long
+  val end: Locus
 
   /**
    * Does the region overlap the given locus, with halfWindowSize padding?
    */
-  def overlapsLocus(locus: Long, halfWindowSize: Long = 0): Boolean = {
+  def overlapsLocus(locus: Locus, halfWindowSize: Locus = 0): Boolean = {
     start - halfWindowSize <= locus && end + halfWindowSize > locus
   }
 
