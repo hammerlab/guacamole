@@ -18,6 +18,9 @@
 
 package org.hammerlab.guacamole.variants
 
+import org.hammerlab.guacamole.reference.Contig
+import org.hammerlab.guacamole.reference.Position.Locus
+
 /**
  *
  * A variant that exists in the sample; includes supporting read statistics
@@ -30,12 +33,11 @@ package org.hammerlab.guacamole.variants
  * @param length length of the variant
  */
 case class CalledAllele(sampleName: String,
-                        contig: String,
-                        start: Long,
+                        contig: Contig,
+                        start: Locus,
                         allele: Allele,
                         evidence: AlleleEvidence,
                         rsID: Option[Int] = None,
                         length: Int = 1) extends ReferenceVariant {
-  val end: Long = start + 1L
-
+  val end: Locus = start + 1L
 }

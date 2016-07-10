@@ -21,7 +21,8 @@ package org.hammerlab.guacamole.reads
 import htsjdk.samtools.{Cigar, CigarElement}
 import org.bdgenomics.adam.util.PhredUtils
 import org.hammerlab.guacamole.pileup.PileupElement
-import org.hammerlab.guacamole.reference.{ContigSequence, ReferenceRegion}
+import org.hammerlab.guacamole.reference.Position.Locus
+import org.hammerlab.guacamole.reference.{Contig, ContigSequence, ReferenceRegion}
 import org.hammerlab.guacamole.util.{Bases, CigarUtils}
 
 import scala.collection.JavaConversions
@@ -35,18 +36,18 @@ import scala.collection.JavaConversions
  * @param cigar parsed samtools CIGAR object.
  */
 case class MappedRead(
-                       name: String,
-                       sequence: IndexedSeq[Byte],
-                       baseQualities: IndexedSeq[Byte],
-                       isDuplicate: Boolean,
-                       sampleName: String,
-                       contig: String,
-                       alignmentQuality: Int,
-                       start: Long,
-                       cigar: Cigar,
-                       failedVendorQualityChecks: Boolean,
-                       isPositiveStrand: Boolean,
-                       isPaired: Boolean) extends Read with ReferenceRegion {
+  name: String,
+  sequence: IndexedSeq[Byte],
+  baseQualities: IndexedSeq[Byte],
+  isDuplicate: Boolean,
+  sampleName: String,
+  contig: Contig,
+  alignmentQuality: Int,
+  start: Locus,
+  cigar: Cigar,
+  failedVendorQualityChecks: Boolean,
+  isPositiveStrand: Boolean,
+  isPaired: Boolean) extends Read with ReferenceRegion {
 
   assert(baseQualities.length == sequence.length,
     "Base qualities have length %d but sequence has length %d".format(baseQualities.length, sequence.length))
@@ -159,7 +160,7 @@ case class MappedRead(
     }
   }
 
-  override def toString(): String =
+  override def toString: String =
     "MappedRead(%s:%d, %s, %s)".format(
       contig, start,
       cigar.toString,

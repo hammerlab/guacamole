@@ -4,7 +4,8 @@ import java.lang.{Long => JLong}
 
 import com.google.common.collect.{RangeSet, TreeRangeSet, Range => JRange}
 import org.hammerlab.guacamole.loci.SimpleRange
-import org.hammerlab.guacamole.reference.ReferenceRegion
+import org.hammerlab.guacamole.reference.Position.Locus
+import org.hammerlab.guacamole.reference.{Contig => ContigName}
 import org.hammerlab.guacamole.strings.TruncatedToString
 
 import scala.collection.JavaConversions._
@@ -13,10 +14,10 @@ import scala.collection.mutable.ArrayBuffer
 /**
  * A set of loci on a contig, stored/manipulated as loci ranges.
  */
-case class Contig(name: String, private val rangeSet: RangeSet[JLong]) extends TruncatedToString {
+case class Contig(name: ContigName, private val rangeSet: RangeSet[JLong]) extends TruncatedToString {
 
   /** Is the given locus contained in this set? */
-  def contains(locus: Long): Boolean = rangeSet.contains(locus)
+  def contains(locus: Locus): Boolean = rangeSet.contains(locus)
 
   /** This set as a regular scala array of ranges. */
   lazy val ranges: Array[SimpleRange] = {
@@ -81,11 +82,11 @@ case class Contig(name: String, private val rangeSet: RangeSet[JLong]) extends T
 
 private[loci] object Contig {
   // Empty-contig constructor, for convenience.
-  def apply(name: String): Contig = Contig(name, TreeRangeSet.create[JLong]())
+  def apply(name: ContigName): Contig = Contig(name, TreeRangeSet.create[JLong]())
 
   // Constructors that make a Contig from its name and some ranges.
-  def apply(tuple: (String, Iterable[JRange[JLong]])): Contig = Contig(tuple._1, tuple._2)
-  def apply(name: String, ranges: Iterable[JRange[JLong]]): Contig =
+  def apply(tuple: (ContigName, Iterable[JRange[JLong]])): Contig = Contig(tuple._1, tuple._2)
+  def apply(name: ContigName, ranges: Iterable[JRange[JLong]]): Contig =
     Contig(
       name,
       {

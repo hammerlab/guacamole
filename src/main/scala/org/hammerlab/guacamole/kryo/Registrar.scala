@@ -28,6 +28,8 @@ import org.hammerlab.guacamole.distributed.TaskPosition
 import org.hammerlab.guacamole.loci.map.{LociMap, Contig => LociMapContig, ContigSerializer => LociMapContigSerializer, Serializer => LociMapSerializer}
 import org.hammerlab.guacamole.loci.set.{LociSet, Contig => LociSetContig, ContigSerializer => LociSetContigSerializer, Serializer => LociSetSerializer}
 import org.hammerlab.guacamole.reads.{MappedRead, MappedReadSerializer, MateAlignmentProperties, PairedRead, Read, UnmappedRead, UnmappedReadSerializer}
+import org.hammerlab.guacamole.readsets.ContigLengths
+import org.hammerlab.guacamole.reference.{Contig, Position}
 import org.hammerlab.guacamole.variants.{Allele, AlleleEvidence, AlleleSerializer, CalledAllele}
 
 class Registrar extends KryoRegistrator {
@@ -43,6 +45,9 @@ class Registrar extends KryoRegistrator {
     // Read.ADAMSequenceDictionaryRDDAggregator. ADAM should register these itself.
     kryo.register(classOf[SequenceDictionary])
     kryo.register(classOf[SequenceRecord])
+
+    kryo.register(classOf[ContigLengths])
+    kryo.register(classOf[Contig])
 
     // Reads
     kryo.register(classOf[MappedRead], new MappedReadSerializer)
@@ -60,6 +65,9 @@ class Registrar extends KryoRegistrator {
     kryo.register(classOf[Array[LociSet]])
     kryo.register(classOf[LociSetContig], new LociSetContigSerializer)
     kryo.register(classOf[Array[LociSetContig]])
+
+    kryo.register(classOf[Array[Position]])
+    kryo.register(classOf[Position])
 
     // LociMap is serialized when broadcast in LociPartitionUtils.partitionLociByApproximateDepth.
     kryo.register(classOf[LociPartitioning], new LociMapSerializer[PartitionIndex])

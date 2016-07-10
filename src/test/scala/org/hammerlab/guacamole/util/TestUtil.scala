@@ -28,8 +28,9 @@ import org.hammerlab.guacamole.loci.set.LociParser
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.{MappedRead, MateAlignmentProperties, PairedRead, Read}
 import org.hammerlab.guacamole.readsets.{InputFilters, ReadLoadingConfig, ReadSets, ReadsArgs, ReadsRDD}
+import org.hammerlab.guacamole.reference.Position.Locus
 import org.hammerlab.guacamole.reference.ReferenceBroadcast.MapBackedReferenceSequence
-import org.hammerlab.guacamole.reference.{ContigSequence, ReferenceBroadcast}
+import org.hammerlab.guacamole.reference.{Contig, ContigSequence, ReferenceBroadcast}
 
 import scala.collection.mutable
 import scala.math._
@@ -54,7 +55,7 @@ object TestUtil {
    * @return a map acked ReferenceBroadcast containing the desired sequences
    */
   def makeReference(sc: SparkContext,
-                    contigStartSequences: Seq[(String, Int, String)],
+                    contigStartSequences: Seq[(Contig, Int, String)],
                     contigLengths: Int = 1000): ReferenceBroadcast = {
     val map = mutable.HashMap[String, ContigSequence]()
     contigStartSequences.foreach({
@@ -74,9 +75,9 @@ object TestUtil {
                    baseQualities: String = "",
                    isDuplicate: Boolean = false,
                    sampleName: String = "",
-                   referenceContig: String = "",
+                   referenceContig: Contig = "",
                    alignmentQuality: Int = -1,
-                   start: Long = -1L,
+                   start: Locus = -1L,
                    cigarString: String = "",
                    failedVendorQualityChecks: Boolean = false,
                    isPositiveStrand: Boolean = true,
@@ -104,8 +105,8 @@ object TestUtil {
 
   def makeRead(sequence: String,
                cigar: String = "",
-               start: Long = 1,
-               chr: String = "chr1",
+               start: Locus = 1,
+               chr: Contig = "chr1",
                qualityScores: Option[Seq[Int]] = None,
                alignmentQuality: Int = 30): MappedRead = {
 
@@ -128,8 +129,8 @@ object TestUtil {
   }
 
   def makePairedRead(
-    chr: String = "chr1",
-    start: Long = 1,
+    chr: Contig = "chr1",
+    start: Locus = 1,
     alignmentQuality: Int = 30,
     isPositiveStrand: Boolean = true,
     isMateMapped: Boolean = false,
@@ -206,19 +207,21 @@ object TestUtil {
 
   def loadTumorNormalPileup(tumorReads: Seq[MappedRead],
                             normalReads: Seq[MappedRead],
-                            locus: Long,
+                            locus: Locus,
                             reference: ReferenceBroadcast): (Pileup, Pileup) = {
     val contig = tumorReads(0).contig
     assume(normalReads(0).contig == contig)
-    (Pileup(tumorReads, contig, locus, reference.getContig(contig)),
-      Pileup(normalReads, contig, locus, reference.getContig(contig)))
+    (
+      Pileup(tumorReads, contig, locus, reference.getContig(contig)),
+      Pileup(normalReads, contig, locus, reference.getContig(contig))
+    )
   }
 
   def loadPileup(sc: SparkContext,
                  filename: String,
                  reference: ReferenceBroadcast,
-                 locus: Long = 0,
-                 maybeContig: Option[String] = None): Pileup = {
+                 locus: Locus = 0,
+                 maybeContig: Option[Contig] = None): Pileup = {
     val records =
       TestUtil.loadReads(
         sc,

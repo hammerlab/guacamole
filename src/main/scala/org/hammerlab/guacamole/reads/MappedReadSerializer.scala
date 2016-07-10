@@ -18,10 +18,9 @@
 
 package org.hammerlab.guacamole.reads
 
-import com.esotericsoftware.kryo.io.{ Input, Output }
-import com.esotericsoftware.kryo.{ Kryo, Serializer }
+import com.esotericsoftware.kryo.io.{Input, Output}
+import com.esotericsoftware.kryo.{Kryo, Serializer}
 import htsjdk.samtools.TextCigarCodec
-import org.bdgenomics.adam.util.MdTag
 
 // Serialization: MappedRead
 class MappedReadSerializer extends Serializer[MappedRead] {

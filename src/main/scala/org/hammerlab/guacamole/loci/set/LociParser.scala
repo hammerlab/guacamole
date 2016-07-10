@@ -1,10 +1,9 @@
 package org.hammerlab.guacamole.loci.set
 
-import java.lang.{Long => JLong}
+import org.hammerlab.guacamole.readsets.ContigLengths
+import org.hammerlab.guacamole.reference.Position.{Locus, NumLoci}
+import org.hammerlab.guacamole.reference.{Contig => ContigName}
 
-import com.google.common.collect.{TreeRangeSet, Range => JRange}
-
-import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 
 /**
@@ -37,12 +36,12 @@ class LociParser {
    * (contig, start, end) ranges which have been added to this builder.
    * If end is None, it indicates "until the end of the contig"
    */
-  private val ranges = ArrayBuffer[(String, Long, Option[Long])]()
+  private val ranges = ArrayBuffer[(ContigName, Locus, Option[Locus])]()
 
   /**
    * Add an interval to this LociParser.
    */
-  def put(contig: String, start: Long, end: Long): LociParser = put(contig, start, Some(end))
+  def put(contig: ContigName, start: Locus, end: Locus): LociParser = put(contig, start, Some(end))
 
   /**
    * Parse a (string) loci expression and add it to the builder. Example expressions:
@@ -54,15 +53,15 @@ class LociParser {
    *  "chr1:10000": just chr1, position 10000; equivalent to "chr1:10000-10001".
    *  "chr1:10000-": chr1, from position 10000 to the end of chr1.
    */
-  def put(loci: String): LociParser = {
-    if (loci == "all") {
+  def put(lociStr: String): LociParser = {
+    if (lociStr == "all") {
       LociParser.all
-    } else if (loci == "none") {
+    } else if (lociStr == "none") {
       new LociParser()
     } else {
       val contigAndLoci = """^([\pL\pN._]+):(\pN+)(?:-(\pN*))?$""".r
       val contigOnly = """^([\pL\pN._]+)""".r
-      loci.replaceAll("\\s", "").split(',').foreach {
+      lociStr.replaceAll("\\s", "").split(',').foreach {
         case ""                              => {}
         case contigAndLoci(name, startStr, endStrOpt) =>
           val start = startStr.toLong
@@ -82,7 +81,7 @@ class LociParser {
     }
   }
 
-  private def put(contig: String, start: Long = 0, end: Option[Long] = None): LociParser = {
+  private def put(contig: ContigName, start: Locus = 0, end: Option[Locus] = None): LociParser = {
     assume(start >= 0)
     assume(end.forall(_ >= start))
     if (!containsAll) {
@@ -100,8 +99,8 @@ class LociParser {
    * The wrappers here all delegate to the private implementation that follows.
    */
   def result: LociSet = result(None)  // enables omitting parentheses: builder.result instead of builder.result()
-  def result(contigLengths: Map[String, Long]): LociSet = result(Some(contigLengths))
-  def result(contigLengths: (String, Long)*): LociSet =
+  def result(contigLengths: ContigLengths): LociSet = result(Some(contigLengths))
+  def result(contigLengths: (ContigName, NumLoci)*): LociSet =
     result(
       // Calling .result() should pass None, not Some(Map.empty)
       if (contigLengths.nonEmpty)
@@ -110,7 +109,7 @@ class LociParser {
         None
     )
 
-  private def result(contigLengthsOpt: Option[Map[String, Long]] = None): LociSet = {
+  private def result(contigLengthsOpt: Option[ContigLengths] = None): LociSet = {
 
     // Check for invalid contigs.
     for {

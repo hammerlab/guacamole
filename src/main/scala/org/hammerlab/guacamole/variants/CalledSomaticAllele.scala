@@ -19,6 +19,8 @@
 package org.hammerlab.guacamole.variants
 
 import org.bdgenomics.adam.util.PhredUtils
+import org.hammerlab.guacamole.reference.Contig
+import org.hammerlab.guacamole.reference.Position.Locus
 
 /**
  *
@@ -35,15 +37,15 @@ import org.bdgenomics.adam.util.PhredUtils
  * @param length length of the variant
  */
 case class CalledSomaticAllele(sampleName: String,
-                               contig: String,
-                               start: Long,
+                               contig: Contig,
+                               start: Locus,
                                allele: Allele,
                                somaticLogOdds: Double,
                                tumorVariantEvidence: AlleleEvidence,
                                normalReferenceEvidence: AlleleEvidence,
                                rsID: Option[Int] = None,
                                length: Int = 1) extends ReferenceVariant {
-  val end: Long = start + 1L
+  val end: Locus = start + 1L
 
   // P ( variant in tumor AND no variant in normal) = P(variant in tumor) * P(reference in normal)
   lazy val phredScaledSomaticLikelihood =

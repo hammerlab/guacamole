@@ -26,7 +26,9 @@ import htsjdk.variant.vcf.VCFFileReader
 import org.apache.commons.io.IOUtils
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.{FileSystem, Path}
-import org.hammerlab.guacamole.reference.ReferenceRegion
+import org.hammerlab.guacamole.readsets.ContigLengths
+import org.hammerlab.guacamole.reference.Position.{Locus, NumLoci}
+import org.hammerlab.guacamole.reference.{ReferenceRegion, Contig => ContigName}
 import org.hammerlab.guacamole.strings.TruncatedToString
 
 import scala.collection.JavaConversions._
@@ -44,19 +46,19 @@ import scala.collection.immutable.TreeMap
  *
  * @param map A map from contig-name to Contig, which is a set or genomic intervals as described above.
  */
-case class LociSet(private val map: SortedMap[String, Contig]) extends TruncatedToString {
+case class LociSet(private val map: SortedMap[ContigName, Contig]) extends TruncatedToString {
 
   /** The contigs included in this LociSet with a nonempty set of loci. */
   lazy val contigs = map.values.toArray
 
   /** The number of loci in this LociSet. */
-  lazy val count: Long = contigs.map(_.count).sum
+  lazy val count: NumLoci = contigs.map(_.count).sum
 
   def isEmpty = map.isEmpty
   def nonEmpty = map.nonEmpty
 
   /** Given a contig name, returns a [[Contig]] giving the loci on that contig. */
-  def onContig(contig: String): Contig = map.getOrElse(contig, Contig(contig))
+  def onContig(contig: ContigName): Contig = map.getOrElse(contig, Contig(contig))
 
   /** Build a truncate-able toString() out of underlying contig pieces. */
   def stringPieces: Iterator[String] = contigs.iterator.flatMap(_.stringPieces)
@@ -70,7 +72,7 @@ case class LociSet(private val map: SortedMap[String, Contig]) extends Truncated
    *
    * @param numToTake number of elements to take. Must be <= number of elements in the map.
    */
-  def take(numToTake: Long): (LociSet, LociSet) = {
+  def take(numToTake: NumLoci): (LociSet, LociSet) = {
     assume(numToTake <= count, s"Can't take $numToTake loci from a set of size $count.")
 
     // Optimize for taking none or all:
@@ -111,11 +113,11 @@ case class LociSet(private val map: SortedMap[String, Contig]) extends Truncated
 
 object LociSet {
   /** An empty LociSet. */
-  def apply(): LociSet = LociSet(TreeMap.empty[String, Contig])
+  def apply(): LociSet = LociSet(TreeMap.empty[ContigName, Contig])
 
-  def all(contigLengths: Map[String, Long]) = LociParser.all.result(contigLengths)
+  def all(contigLengths: ContigLengths) = LociParser.all.result(contigLengths)
 
-  def apply(loci: String): LociSet = LociParser(loci).result
+  def apply(lociStr: String): LociSet = LociParser(lociStr).result
 
   /**
    * These constructors build a LociSet directly from Contigs.
@@ -133,7 +135,7 @@ object LociSet {
       )
     )
 
-  def apply(contigs: Iterable[(String, Long, Long)]): LociSet =
+  def apply(contigs: Iterable[(ContigName, Locus, Locus)]): LociSet =
     LociSet.fromContigs({
       (for {
         (name, start, end) <- contigs
@@ -164,7 +166,7 @@ object LociSet {
    * @param contigLengths contig lengths, by name
    * @return a LociSet
    */
-  private def loadFromFile(filePath: String, contigLengths: Map[String, Long]): LociSet = {
+  private def loadFromFile(filePath: String, contigLengths: ContigLengths): LociSet = {
     if (filePath.endsWith(".vcf")) {
       LociSet(
         new VCFFileReader(new File(filePath), false)
@@ -187,17 +189,17 @@ object LociSet {
    *
    * Specify at most one of loci or lociFromFilePath.
    *
-   * @param loci loci to load as a string
+   * @param lociStr loci to load as a string
    * @param lociFromFilePath path to file containing loci to load
    * @param contigLengths contig lengths, by name
    * @return a LociSet
    */
-  def load(loci: String, lociFromFilePath: String, contigLengths: Map[String, Long]): LociSet = {
-    if (loci.nonEmpty && lociFromFilePath.nonEmpty) {
+  def load(lociStr: String, lociFromFilePath: String, contigLengths: ContigLengths): LociSet = {
+    if (lociStr.nonEmpty && lociFromFilePath.nonEmpty) {
       throw new IllegalArgumentException("Specify at most one of the 'loci' and 'loci-from-file' arguments")
     }
-    if (loci.nonEmpty) {
-      LociParser(loci).result(contigLengths)
+    if (lociStr.nonEmpty) {
+      LociParser(lociStr).result(contigLengths)
     } else if (lociFromFilePath.nonEmpty) {
       loadFromFile(lociFromFilePath, contigLengths)
     } else {

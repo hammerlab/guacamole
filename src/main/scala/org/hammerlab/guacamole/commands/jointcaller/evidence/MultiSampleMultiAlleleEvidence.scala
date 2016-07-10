@@ -4,7 +4,8 @@ import org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.{Multip
 import org.hammerlab.guacamole.commands.jointcaller.{AlleleAtLocus, InputCollection, Parameters}
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.readsets.PerSample
-import org.hammerlab.guacamole.reference.{ReferenceBroadcast, ReferenceRegion}
+import org.hammerlab.guacamole.reference.Position.Locus
+import org.hammerlab.guacamole.reference.{Contig, ReferenceBroadcast, ReferenceRegion}
 import org.hammerlab.guacamole.util.Bases
 
 /**
@@ -15,15 +16,19 @@ import org.hammerlab.guacamole.util.Bases
  * written out.
  *
  */
-case class MultiSampleMultiAlleleEvidence(contig: String,
-                                          start: Long,
+case class MultiSampleMultiAlleleEvidence(contig: Contig,
+                                          start: Locus,
                                           singleAlleleEvidences: Seq[MultiSampleSingleAlleleEvidence])
     extends ReferenceRegion {
 
   assume(singleAlleleEvidences.forall(_.allele.contig == contig))
   assume(singleAlleleEvidences.forall(_.allele.start == start))
 
-  val end: Long = if (singleAlleleEvidences.isEmpty) start else singleAlleleEvidences.map(_.allele.end).max
+  val end: Long =
+    if (singleAlleleEvidences.isEmpty)
+      start
+    else
+      singleAlleleEvidences.map(_.allele.end).max
 
   /**
    * If we are going to consider only one allele at this site, pick the best one.
