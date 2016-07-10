@@ -204,7 +204,7 @@ object LociPartitionUtils {
           regions
             .flatMap(region =>
               broadcastMicroPartitions.value
-                .onContig(region.referenceContig)
+                .onContig(region.contigName)
                 .getAll(region.start, region.end)
             )
             .countByValue()

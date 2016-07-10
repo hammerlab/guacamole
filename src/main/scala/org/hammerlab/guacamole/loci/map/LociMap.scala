@@ -19,6 +19,7 @@
 package org.hammerlab.guacamole.loci.map
 
 import org.hammerlab.guacamole.loci.set.{LociSet, Builder => LociSetBuilder}
+import org.hammerlab.guacamole.reference.{ContigName => ContigName}
 import org.hammerlab.guacamole.strings.TruncatedToString
 
 import scala.collection.immutable.TreeMap
@@ -33,7 +34,7 @@ import scala.collection.{SortedMap, mutable}
  *
  * @param map Map from contig names to [[Contig]] instances giving the regions and values on that contig.
  */
-case class LociMap[T](private val map: SortedMap[String, Contig[T]]) extends TruncatedToString {
+case class LociMap[T](private val map: SortedMap[ContigName, Contig[T]]) extends TruncatedToString {
 
   /** The contigs included in this LociMap with a nonempty set of loci. */
   lazy val contigs = map.values.toSeq
@@ -72,7 +73,7 @@ object LociMap {
   def newBuilder[T](): Builder[T] = new Builder[T]()
 
   /** Construct an empty LociMap. */
-  def apply[T](): LociMap[T] = LociMap(TreeMap[String, Contig[T]]())
+  def apply[T](): LociMap[T] = LociMap(TreeMap[ContigName, Contig[T]]())
 
   /** The following convenience constructors are only called by Builder. */
   private[map] def apply[T](contigs: (String, Long, Long, T)*): LociMap[T] = {

@@ -21,7 +21,7 @@ package org.hammerlab.guacamole.windowing
 import org.apache.spark.Logging
 import org.hammerlab.guacamole.loci.set.ContigIterator
 import org.hammerlab.guacamole.readsets.PerSample
-import org.hammerlab.guacamole.reference.ReferenceRegion
+import org.hammerlab.guacamole.reference.{ContigName, ReferenceRegion}
 
 import scala.collection.mutable
 
@@ -42,7 +42,7 @@ import scala.collection.mutable
  *                       regions that overlap the exact locus being considered, with no surrounding window.
  * @param rawSortedRegions Iterator of regions, sorted by the aligned start locus.
  */
-case class SlidingWindow[R <: ReferenceRegion](referenceName: String,
+case class SlidingWindow[R <: ReferenceRegion](contigName: ContigName,
                                                halfWindowSize: Long,
                                                rawSortedRegions: Iterator[R]) extends Logging {
   /** The locus currently under consideration. */
@@ -52,7 +52,7 @@ case class SlidingWindow[R <: ReferenceRegion](referenceName: String,
 
   private var mostRecentRegionStart: Long = 0
   private val sortedRegions: BufferedIterator[R] = rawSortedRegions.map(region => {
-    require(region.referenceContig == referenceName, "Regions must have the same reference name")
+    require(region.contigName == contigName, "Regions must have the same reference name")
     require(region.start >= mostRecentRegionStart, "Regions must be sorted by start locus")
     mostRecentRegionStart = region.start
 

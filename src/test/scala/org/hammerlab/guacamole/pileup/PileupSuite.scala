@@ -39,7 +39,7 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
   def testAdamRecords = TestUtil.loadReads(sc, "different_start_reads.sam").mappedReads.collect()
 
   def pileupElementFromRead(read: MappedRead, locus: Long): PileupElement = {
-    PileupElement(read, locus, reference.getContig(read.referenceContig))
+    PileupElement(read, locus, reference.getContig(read.contigName))
   }
 
   test("create pileup from long insert reads") {

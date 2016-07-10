@@ -25,18 +25,18 @@ package org.hammerlab.guacamole.reference
 trait ReferenceRegion {
 
   /** Name of the reference contig */
-  val referenceContig: String
+  val contigName: ContigName
 
   /** Start position on the genome, inclusive. Must be non-negative. */
-  val start: Long
+  val start: Locus
 
   /** The end position on the genome, *exclusive*. Must be non-negative. */
-  val end: Long
+  val end: Locus
 
   /**
    * Does the region overlap the given locus, with halfWindowSize padding?
    */
-  def overlapsLocus(locus: Long, halfWindowSize: Long = 0): Boolean = {
+  def overlapsLocus(locus: Locus, halfWindowSize: Locus = 0): Boolean = {
     start - halfWindowSize <= locus && end + halfWindowSize > locus
   }
 
@@ -47,7 +47,7 @@ trait ReferenceRegion {
    * @return True if the the regions overlap
    */
   def overlaps(other: ReferenceRegion): Boolean = {
-    other.referenceContig == referenceContig && (overlapsLocus(other.start) || other.overlapsLocus(start))
+    other.contigName == contigName && (overlapsLocus(other.start) || other.overlapsLocus(start))
   }
 }
 

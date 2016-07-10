@@ -4,7 +4,8 @@ import org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.{Multip
 import org.hammerlab.guacamole.commands.jointcaller.{AlleleAtLocus, InputCollection, Parameters}
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.readsets.PerSample
-import org.hammerlab.guacamole.reference.{ReferenceBroadcast, ReferenceRegion}
+import org.hammerlab.guacamole.reference.Locus
+import org.hammerlab.guacamole.reference.{ContigName, ReferenceBroadcast, ReferenceRegion}
 import org.hammerlab.guacamole.util.Bases
 
 /**
@@ -15,15 +16,19 @@ import org.hammerlab.guacamole.util.Bases
  * written out.
  *
  */
-case class MultiSampleMultiAlleleEvidence(referenceContig: String,
-                                          start: Long,
+case class MultiSampleMultiAlleleEvidence(contigName: ContigName,
+                                          start: Locus,
                                           singleAlleleEvidences: Seq[MultiSampleSingleAlleleEvidence])
     extends ReferenceRegion {
 
-  assume(singleAlleleEvidences.forall(_.allele.referenceContig == referenceContig))
+  assume(singleAlleleEvidences.forall(_.allele.contigName == contigName))
   assume(singleAlleleEvidences.forall(_.allele.start == start))
 
-  val end: Long = if (singleAlleleEvidences.isEmpty) start else singleAlleleEvidences.map(_.allele.end).max
+  val end: Long =
+    if (singleAlleleEvidences.isEmpty)
+      start
+    else
+      singleAlleleEvidences.map(_.allele.end).max
 
   /**
    * If we are going to consider only one allele at this site, pick the best one.
@@ -81,7 +86,7 @@ object MultiSampleMultiAlleleEvidence {
       pileup => pileup.copy(elements = pileup.elements.filter(!_.isClipped))).toVector
     val normalPileups = inputs.normalDNA.map(input => filteredPileups(input.index))
 
-    val contig = normalPileups.head.referenceName
+    val contig = normalPileups.head.contigName
     val locus = normalPileups.head.locus
 
     // We only call variants at a site if the reference base is a standard base (i.e. not N).
@@ -115,7 +120,7 @@ object MultiSampleMultiAlleleEvidence {
       .map(allele => (allele.start.toInt, allele.end.toInt))
       .distinct
       .map(pair => {
-        val referenceSequence = filteredPileups.head.referenceContigSequence.slice(pair._1, pair._2)
+        val referenceSequence = filteredPileups.head.contigSequence.slice(pair._1, pair._2)
         val stats = filteredPileups.map(pileup => PileupStats(pileup.elements, refSequence = referenceSequence))
         pair -> MultiplePileupStats(inputs, stats)
       }).toMap
@@ -145,7 +150,7 @@ object MultiSampleMultiAlleleEvidence {
 
     // Create a MultiSampleMultiAlleleEvidence to group all the alleles and their evidence.
     val calls = MultiSampleMultiAlleleEvidence(
-      referenceContig = evidences.head.allele.referenceContig,
+      contigName = evidences.head.allele.contigName,
       start = evidences.head.allele.start,
       singleAlleleEvidences = evidences)
 

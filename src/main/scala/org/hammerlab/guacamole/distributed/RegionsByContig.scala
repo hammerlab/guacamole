@@ -1,6 +1,6 @@
 package org.hammerlab.guacamole.distributed
 
-import org.hammerlab.guacamole.reference.ReferenceRegion
+import org.hammerlab.guacamole.reference.{ContigName, ReferenceRegion}
 
 /**
  * Using an iterator of regions sorted by (contig, start locus), this class exposes a way to get separate iterators
@@ -21,20 +21,20 @@ import org.hammerlab.guacamole.reference.ReferenceRegion
  */
 class RegionsByContig[R <: ReferenceRegion](regionIterator: Iterator[R]) {
   private val buffered = regionIterator.buffered
-  private var seenContigs = List.empty[String]
+  private var seenContigs = List.empty[ContigName]
   private var prevIterator: Option[SingleContigRegionIterator[R]] = None
-  def next(contig: String): Iterator[R] = {
+  def next(contigName: ContigName): Iterator[R] = {
     // We must first march the previous iterator we returned to the end.
     while (prevIterator.exists(_.hasNext)) prevIterator.get.next()
 
     // The next element from the iterator should have a contig we haven't seen so far.
-    assert(buffered.isEmpty || !seenContigs.contains(buffered.head.referenceContig),
+    assert(buffered.isEmpty || !seenContigs.contains(buffered.head.contigName),
       "Regions are not sorted by contig. Contigs requested so far: %s. Next regions's contig: %s.".format(
-        seenContigs.reverse.toString, buffered.head.referenceContig))
-    seenContigs ::= contig
+        seenContigs.reverse.toString, buffered.head.contigName))
+    seenContigs ::= contigName
 
     // Wrap our iterator and return it.
-    prevIterator = Some(new SingleContigRegionIterator(contig, buffered))
+    prevIterator = Some(new SingleContigRegionIterator(contigName, buffered))
     prevIterator.get
   }
 }
