@@ -34,7 +34,7 @@ class MappedReadSerializer extends Serializer[MappedRead] {
     output.writeBytes(obj.baseQualities.toArray)
     output.writeBoolean(obj.isDuplicate)
     output.writeString(obj.sampleName)
-    output.writeString(obj.referenceContig)
+    output.writeString(obj.contig)
     output.writeInt(obj.alignmentQuality, true)
     output.writeLong(obj.start, true)
     output.writeString(obj.cigar.toString)

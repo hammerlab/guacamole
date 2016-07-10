@@ -15,12 +15,12 @@ import org.hammerlab.guacamole.util.Bases
  * written out.
  *
  */
-case class MultiSampleMultiAlleleEvidence(referenceContig: String,
+case class MultiSampleMultiAlleleEvidence(contig: String,
                                           start: Long,
                                           singleAlleleEvidences: Seq[MultiSampleSingleAlleleEvidence])
     extends ReferenceRegion {
 
-  assume(singleAlleleEvidences.forall(_.allele.referenceContig == referenceContig))
+  assume(singleAlleleEvidences.forall(_.allele.referenceContig == contig))
   assume(singleAlleleEvidences.forall(_.allele.start == start))
 
   val end: Long = if (singleAlleleEvidences.isEmpty) start else singleAlleleEvidences.map(_.allele.end).max
@@ -145,7 +145,7 @@ object MultiSampleMultiAlleleEvidence {
 
     // Create a MultiSampleMultiAlleleEvidence to group all the alleles and their evidence.
     val calls = MultiSampleMultiAlleleEvidence(
-      referenceContig = evidences.head.allele.referenceContig,
+      contig = evidences.head.allele.referenceContig,
       start = evidences.head.allele.start,
       singleAlleleEvidences = evidences)
 

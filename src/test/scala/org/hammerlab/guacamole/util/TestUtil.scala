@@ -208,8 +208,8 @@ object TestUtil {
                             normalReads: Seq[MappedRead],
                             locus: Long,
                             reference: ReferenceBroadcast): (Pileup, Pileup) = {
-    val contig = tumorReads(0).referenceContig
-    assume(normalReads(0).referenceContig == contig)
+    val contig = tumorReads(0).contig
+    assume(normalReads(0).contig == contig)
     (Pileup(tumorReads, contig, locus, reference.getContig(contig)),
       Pileup(normalReads, contig, locus, reference.getContig(contig)))
   }
@@ -230,7 +230,7 @@ object TestUtil {
         )
       ).mappedReads
     val localReads = records.collect
-    val actualContig = maybeContig.getOrElse(localReads(0).referenceContig)
+    val actualContig = maybeContig.getOrElse(localReads(0).contig)
     Pileup(
       localReads,
       actualContig,

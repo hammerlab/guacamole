@@ -158,7 +158,7 @@ object Read extends Logging {
         baseQualities = baseQualities,
         isDuplicate = alignmentRecord.getDuplicateRead,
         sampleName = alignmentRecord.getRecordGroupSample.intern(),
-        referenceContig = referenceContig,
+        contig = referenceContig,
         alignmentQuality = alignmentRecord.getMapq,
         start = alignmentRecord.getStart,
         cigar = cigar,

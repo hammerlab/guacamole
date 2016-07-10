@@ -62,7 +62,7 @@ case class LociSet(private val map: SortedMap[String, Contig]) extends Truncated
   def stringPieces: Iterator[String] = contigs.iterator.flatMap(_.stringPieces)
 
   def intersects(region: ReferenceRegion): Boolean =
-    onContig(region.referenceContig).intersects(region.start, region.end)
+    onContig(region.contig).intersects(region.start, region.end)
 
   /**
    * Split the LociSet into two sets, where the first one has `numToTake` loci, and the second one has the

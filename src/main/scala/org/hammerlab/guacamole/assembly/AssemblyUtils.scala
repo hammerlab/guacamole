@@ -57,7 +57,7 @@ object AssemblyUtils extends Logging {
     val locus = currentWindow.currentLocus
     val reads = currentWindow.currentRegions()
 
-    val referenceContig = reads.head.referenceContig
+    val referenceContig = reads.head.contig
 
     val referenceStart = (locus - currentWindow.halfWindowSize).toInt
     val referenceEnd = (locus + currentWindow.halfWindowSize).toInt

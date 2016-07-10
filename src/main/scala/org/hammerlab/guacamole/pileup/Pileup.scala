@@ -47,9 +47,9 @@ case class Pileup(referenceName: String,
     elements.head
   }
 
-  assume(elements.forall(_.read.referenceContig == referenceName),
+  assume(elements.forall(_.read.contig == referenceName),
     "Pileup reference name '%s' does not match read reference name(s): %s".format(
-      referenceName, elements.map(_.read.referenceContig).filter(_ != referenceName).mkString(",")))
+      referenceName, elements.map(_.read.contig).filter(_ != referenceName).mkString(",")))
   assume(elements.forall(_.locus == locus), "Reads in pileup have mismatching loci")
 
   lazy val distinctAlleles: Seq[Allele] = elements.map(_.allele).distinct.sorted.toVector
