@@ -117,7 +117,7 @@ object GermlineAssemblyCaller {
           initialState = None,
           (lastCalledLocus, windows) => {
             val window = windows.head
-            val referenceName = window.referenceName
+            val referenceName = window.contig
             val locus = window.currentLocus
 
             val referenceStart = (locus - window.halfWindowSize).toInt
@@ -125,7 +125,7 @@ object GermlineAssemblyCaller {
 
             val currentReference =
               reference.getReferenceSequence(
-                window.referenceName,
+                window.contig,
                 referenceStart,
                 referenceEnd
               )

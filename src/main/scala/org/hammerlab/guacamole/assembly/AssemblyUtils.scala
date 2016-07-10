@@ -63,7 +63,7 @@ object AssemblyUtils extends Logging {
     val referenceEnd = (locus + currentWindow.halfWindowSize).toInt
 
     val currentReference: Array[Byte] = reference.getReferenceSequence(
-      currentWindow.referenceName,
+      currentWindow.contig,
       referenceStart,
       referenceEnd
     )
