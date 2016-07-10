@@ -231,7 +231,7 @@ object SomaticStandard {
         } yield {
           CalledSomaticAllele(
             tumorPileup.sampleName,
-            tumorPileup.referenceName,
+            tumorPileup.contigName,
             tumorPileup.locus,
             allele,
             math.log(somaticOdds),

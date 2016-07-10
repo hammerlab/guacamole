@@ -12,6 +12,7 @@ import org.bdgenomics.adam.rdd.{ADAMContext, ADAMSpecificRecordSequenceDictionar
 import org.bdgenomics.formats.avro.AlignmentRecord
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.reads.{MappedRead, Read}
+import org.hammerlab.guacamole.reference.{ContigName, Locus}
 import org.seqdoop.hadoop_bam.util.SAMHeaderReader
 import org.seqdoop.hadoop_bam.{AnySAMInputFormat, SAMRecordWritable}
 
@@ -120,7 +121,7 @@ object ReadSets {
       } else {
         sc.union(readRDDs)
           .flatMap(_.asMappedRead)
-          .map(read => read.referenceContig -> read.end)
+          .map(read => read.contigName -> read.end)
           .reduceByKey(math.max)
           .collectAsMap()
           .toMap
@@ -269,7 +270,7 @@ object ReadSets {
 
   /** Extract the length of each contig from a sequence dictionary */
   private def contigLengths(sequenceDictionary: SequenceDictionary): ContigLengths = {
-    val builder = Map.newBuilder[String, Long]
+    val builder = Map.newBuilder[ContigName, Locus]
     sequenceDictionary.records.foreach(record => builder += ((record.name.toString, record.length)))
     builder.result
   }
@@ -354,7 +355,7 @@ object ReadSets {
     * Construct a map from contig name -> length of contig, using a SequenceDictionary.
     */
   private def getContigLengthsFromSequenceDictionary(sequenceDictionary: SequenceDictionary): ContigLengths = {
-    val builder = Map.newBuilder[String, Long]
+    val builder = Map.newBuilder[ContigName, Locus]
     for {
       record <- sequenceDictionary.records
     } {
