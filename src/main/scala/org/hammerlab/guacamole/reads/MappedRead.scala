@@ -21,7 +21,8 @@ package org.hammerlab.guacamole.reads
 import htsjdk.samtools.{Cigar, CigarElement}
 import org.bdgenomics.adam.util.PhredUtils
 import org.hammerlab.guacamole.pileup.PileupElement
-import org.hammerlab.guacamole.reference.{ContigSequence, ReferenceRegion}
+import org.hammerlab.guacamole.reference.Locus
+import org.hammerlab.guacamole.reference.{ContigName, ContigSequence, ReferenceRegion}
 import org.hammerlab.guacamole.util.{Bases, CigarUtils}
 
 import scala.collection.JavaConversions
@@ -29,24 +30,24 @@ import scala.collection.JavaConversions
 /**
  * A mapped read. See the [[Read]] trait for some of the field descriptions.
  *
- * @param referenceContig the contig name (e.g. "chr12") that this read was mapped to.
+ * @param contigName the contig name (e.g. "chr12") that this read was mapped to.
  * @param alignmentQuality the mapping quality, phred scaled.
  * @param start the (0-based) reference locus that the first base in this read aligns to.
  * @param cigar parsed samtools CIGAR object.
  */
 case class MappedRead(
-    name: String,
-    sequence: IndexedSeq[Byte],
-    baseQualities: IndexedSeq[Byte],
-    isDuplicate: Boolean,
-    sampleName: String,
-    referenceContig: String,
-    alignmentQuality: Int,
-    start: Long,
-    cigar: Cigar,
-    failedVendorQualityChecks: Boolean,
-    isPositiveStrand: Boolean,
-    isPaired: Boolean) extends Read with ReferenceRegion {
+                       name: String,
+                       sequence: IndexedSeq[Byte],
+                       baseQualities: IndexedSeq[Byte],
+                       isDuplicate: Boolean,
+                       sampleName: String,
+                       contigName: ContigName,
+                       alignmentQuality: Int,
+                       start: Locus,
+                       cigar: Cigar,
+                       failedVendorQualityChecks: Boolean,
+                       isPositiveStrand: Boolean,
+                       isPaired: Boolean) extends Read with ReferenceRegion {
 
   assert(baseQualities.length == sequence.length,
     "Base qualities have length %d but sequence has length %d".format(baseQualities.length, sequence.length))
@@ -159,9 +160,9 @@ case class MappedRead(
     }
   }
 
-  override def toString(): String =
+  override def toString: String =
     "MappedRead(%s:%d, %s, %s)".format(
-      referenceContig, start,
+      contigName, start,
       cigar.toString,
       Bases.basesToString(sequence)
     )

@@ -37,8 +37,14 @@ object VariantLocus {
    */
   def apply(pileup: Pileup): Option[VariantLocus] = {
     if (pileup.referenceDepth != pileup.depth) {
-      val contig = pileup.elements.head.read.referenceContig
-      Some(VariantLocus(contig, pileup.locus, (pileup.depth - pileup.referenceDepth).toFloat / pileup.depth))
+      val contigName = pileup.elements.head.read.contigName
+      Some(
+        VariantLocus(
+          contigName,
+          pileup.locus,
+          (pileup.depth - pileup.referenceDepth).toFloat / pileup.depth
+        )
+      )
     } else {
       None
     }

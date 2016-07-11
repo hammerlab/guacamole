@@ -205,7 +205,7 @@ object SomaticJoint {
       skipEmpty = true,  // TODO: shouldn't skip empty positions if we might force call them. Need an efficient way to handle this.
       rawPileups => {
         val forceCall =
-          broadcastForceCallLoci.value.onContig(rawPileups.head.referenceName)
+          broadcastForceCallLoci.value.onContig(rawPileups.head.contigName)
             .contains(rawPileups.head.locus + 1)
 
         MultiSampleMultiAlleleEvidence.make(
@@ -274,7 +274,7 @@ object SomaticJoint {
     if (outDir.nonEmpty) {
       def path(filename: String) = outDir + "/" + filename + ".vcf"
       def anyForced(evidence: MultiSampleSingleAlleleEvidence): Boolean = {
-        forceCallLoci.onContig(evidence.allele.referenceContig)
+        forceCallLoci.onContig(evidence.allele.contigName)
           .intersects(evidence.allele.start, evidence.allele.end)
       }
 

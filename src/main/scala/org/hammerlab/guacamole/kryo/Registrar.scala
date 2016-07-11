@@ -25,9 +25,10 @@ import org.bdgenomics.adam.serialization.ADAMKryoRegistrator
 import org.hammerlab.guacamole.commands.jointcaller.kryo.{Registrar => JointCallerRegistrar}
 import org.hammerlab.guacamole.distributed.LociPartitionUtils.{LociPartitioning, MicroPartitionIndex, PartitionIndex}
 import org.hammerlab.guacamole.distributed.TaskPosition
-import org.hammerlab.guacamole.loci.map.{LociMap, Contig => LociMapContig, ContigSerializer => LociMapContigSerializer, Serializer => LociMapSerializer}
+import org.hammerlab.guacamole.loci.map.{Contig => LociMapContig, ContigSerializer => LociMapContigSerializer, Serializer => LociMapSerializer}
 import org.hammerlab.guacamole.loci.set.{LociSet, Contig => LociSetContig, ContigSerializer => LociSetContigSerializer, Serializer => LociSetSerializer}
 import org.hammerlab.guacamole.reads.{MappedRead, MappedReadSerializer, MateAlignmentProperties, PairedRead, Read, UnmappedRead, UnmappedReadSerializer}
+import org.hammerlab.guacamole.readsets.ContigLengths
 import org.hammerlab.guacamole.variants.{Allele, AlleleEvidence, AlleleSerializer, CalledAllele}
 
 class Registrar extends KryoRegistrator {
@@ -43,6 +44,8 @@ class Registrar extends KryoRegistrator {
     // Read.ADAMSequenceDictionaryRDDAggregator. ADAM should register these itself.
     kryo.register(classOf[SequenceDictionary])
     kryo.register(classOf[SequenceRecord])
+
+    kryo.register(classOf[ContigLengths])
 
     // Reads
     kryo.register(classOf[MappedRead], new MappedReadSerializer)

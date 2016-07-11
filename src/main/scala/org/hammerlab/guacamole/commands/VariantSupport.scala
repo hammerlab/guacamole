@@ -29,7 +29,7 @@ import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.readsets.{InputFilters, ReadLoadingConfig, ReadLoadingConfigArgs, ReadSets}
-import org.hammerlab.guacamole.reference.ReferenceBroadcast
+import org.hammerlab.guacamole.reference.{ContigName, Locus, ReferenceBroadcast}
 import org.hammerlab.guacamole.util.Bases
 import org.kohsuke.args4j.{Argument, Option => Args4jOption}
 
@@ -58,14 +58,14 @@ object VariantSupport {
     override val name = "variant-support"
     override val description = "Find number of reads that support each variant across BAMs"
 
-    case class AlleleCount(sample: String,
-                           contig: String,
-                           locus: Long,
+    case class AlleleCount(sampleName: String,
+                           contigName: ContigName,
+                           locus: Locus,
                            reference: String,
                            alternate: String,
                            count: Int) {
       override def toString: String = {
-        s"$sample, $contig, $locus, $reference, $alternate, $count"
+        s"$sampleName, $contigName, $locus, $reference, $alternate, $count"
       }
     }
 
@@ -120,7 +120,7 @@ object VariantSupport {
     def pileupToAlleleCounts(pileup: Pileup): Iterator[AlleleCount] = {
       val alleles = pileup.elements.groupBy(_.allele)
       alleles.map(kv => AlleleCount(pileup.sampleName,
-        pileup.referenceName,
+        pileup.contigName,
         pileup.locus,
         Bases.basesToString(kv._1.refBases),
         Bases.basesToString(kv._1.altBases),
