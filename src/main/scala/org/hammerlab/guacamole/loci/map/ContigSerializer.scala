@@ -20,7 +20,7 @@ class ContigSerializer[T] extends KryoSerializer[Contig[T]] {
   }
 
   def read(kryo: Kryo, input: Input, klass: Class[Contig[T]]): Contig[T] = {
-    val builder = LociMap.newBuilder[T]()
+    val builder = LociMap.newBuilder[T]
     val contig = input.readString()
     val count = input.readLong()
     (0L until count).foreach(_ => {

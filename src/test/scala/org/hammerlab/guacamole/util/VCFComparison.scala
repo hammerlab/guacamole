@@ -63,7 +63,7 @@ object VCFComparison {
   }
 
   private def makeLociMap(records: Seq[VariantContext]): LociMap[VariantContext] = {
-    val builder = LociMap.newBuilder[VariantContext]()
+    val builder = LociMap.newBuilder[VariantContext]
     records.foreach(record => {
       // Switch from zero based inclusive to interbase coordinates.
       builder.put(record.getContig, record.getStart, record.getEnd + 1, record)
