@@ -11,6 +11,6 @@ class SingleContigRegionIterator[R <: ReferenceRegion](contigName: ContigName,
   extends Iterator[R] {
 
   def hasNext = iterator.hasNext && iterator.head.contigName == contigName
+
   def next() = if (hasNext) iterator.next() else throw new NoSuchElementException
 }
-

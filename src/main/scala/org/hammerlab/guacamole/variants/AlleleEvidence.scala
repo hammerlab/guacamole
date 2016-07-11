@@ -65,7 +65,7 @@ object AlleleEvidence {
     val alignmentScores = DenseVector(alleleElements.map(_.read.alignmentQuality.toDouble).toArray)
     val baseQualityScores = DenseVector(alleleElements.map(_.qualityScore.toDouble).toArray)
 
-    if (alleleElements.length == 0)
+    if (alleleElements.isEmpty)
       AlleleEvidence(
         likelihood,
         pileup.depth,
