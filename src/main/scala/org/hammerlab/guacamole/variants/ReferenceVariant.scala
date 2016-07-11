@@ -28,7 +28,7 @@ import org.hammerlab.guacamole.util.Bases
  */
 trait ReferenceVariant extends ReferenceRegion {
 
-  val sampleName: String
+  def sampleName: String
 
   def contig: ContigName
 
@@ -36,9 +36,9 @@ trait ReferenceVariant extends ReferenceRegion {
   def start: Locus
 
   /** reference and sequenced bases for this variant */
-  val allele: Allele
+  def allele: Allele
 
-  val length: Int
+  def length: Int
 
   /** Conversion to ADAMVariant */
   def adamVariant = Variant.newBuilder
@@ -49,7 +49,7 @@ trait ReferenceVariant extends ReferenceRegion {
     .setContig(Contig.newBuilder.setContigName(contig).build)
     .build
 
-  val rsID: Option[Int]
+  def rsID: Option[Int]
 
   def adamVariantDatabase = {
     val builder = DatabaseVariantAnnotation.newBuilder

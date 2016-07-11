@@ -6,8 +6,7 @@ import org.hammerlab.guacamole.reference.{Contig, ReferenceRegion}
  * Wraps an iterator of regions sorted by contig name. Implements an iterator that gives regions only for the specified
  * contig name, then stops.
  */
-class SingleContigRegionIterator[R <: ReferenceRegion](contig: Contig,
-                                                       iterator: BufferedIterator[R])
+class SingleContigRegionIterator[R <: ReferenceRegion](contig: Contig, iterator: BufferedIterator[R])
   extends Iterator[R] {
 
   def hasNext = iterator.hasNext && iterator.head.contig == contig
