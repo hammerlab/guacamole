@@ -319,19 +319,19 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="org.hammerlab.guacamole.logging.LoggingUtils#progress" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="progress(message:String):Unit"></a>
-      <a id="progress(String):Unit"></a>
+      <a id="progress(messages:String*):Unit"></a>
+      <a id="progress(String*):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">progress</span><span class="params">(<span name="message">message: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">progress</span><span class="params">(<span name="messages">messages: <span class="extype" name="scala.Predef.String">String</span>*</span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
       <p class="shortcomment cmt">Print or log a progress message.</p><div class="fullcomment"><div class="comment cmt"><p>Print or log a progress message. For now, we just print to standard out, since ADAM's logging setup makes it
-difficult to see log messages at the INFO level without flooding ourselves with parquet messages.</p></div><dl class="paramcmts block"><dt class="param">message</dt><dd class="cmt"><p>String to print or log.
+difficult to see log messages at the INFO level without flooding ourselves with parquet messages.</p></div><dl class="paramcmts block"><dt class="param">messages</dt><dd class="cmt"><p>Strings to print or log, one per line.
 </p></dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
