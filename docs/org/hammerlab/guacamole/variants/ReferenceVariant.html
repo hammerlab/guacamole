@@ -100,16 +100,29 @@
       </span>
       </h4>
       <p class="shortcomment cmt">reference and sequenced bases for this variant</p>
-    </li><li name="org.hammerlab.guacamole.reference.ReferenceRegion#end" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
-      <a id="end:Long"></a>
-      <a id="end:Long"></a>
+    </li><li name="org.hammerlab.guacamole.variants.ReferenceVariant#contigName" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="contigName:org.hammerlab.guacamole.reference.ContigName"></a>
+      <a id="contigName:ContigName"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">abstract </span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">end</span><span class="result">: <span class="extype" name="scala.Long">Long</span></span>
+        <span class="name">contigName</span><span class="result">: <a href="../reference/package.html#ContigName=String" class="extmbr" name="org.hammerlab.guacamole.reference.ContigName">ContigName</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Name of the reference contig</p><div class="fullcomment"><div class="comment cmt"><p>Name of the reference contig</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.variants.ReferenceVariant">ReferenceVariant</a> → <a href="../reference/ReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceRegion">ReferenceRegion</a></dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.reference.ReferenceRegion#end" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="end:org.hammerlab.guacamole.reference.Locus"></a>
+      <a id="end:Locus"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">end</span><span class="result">: <a href="../reference/package.html#Locus=Long" class="extmbr" name="org.hammerlab.guacamole.reference.Locus">Locus</a></span>
       </span>
       </h4>
       <p class="shortcomment cmt">The end position on the genome, *exclusive*.</p><div class="fullcomment"><div class="comment cmt"><p>The end position on the genome, *exclusive*. Must be non-negative.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../reference/ReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceRegion">ReferenceRegion</a></dd></dl></div>
@@ -126,19 +139,6 @@
       </span>
       </h4>
       
-    </li><li name="org.hammerlab.guacamole.variants.ReferenceVariant#referenceContig" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
-      <a id="referenceContig:String"></a>
-      <a id="referenceContig:String"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">referenceContig</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Name of the reference contig</p><div class="fullcomment"><div class="comment cmt"><p>Name of the reference contig</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.variants.ReferenceVariant">ReferenceVariant</a> → <a href="../reference/ReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceRegion">ReferenceRegion</a></dd></dl></div>
     </li><li name="org.hammerlab.guacamole.variants.ReferenceVariant#rsID" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="rsID:Option[Int]"></a>
       <a id="rsID:Option[Int]"></a>
@@ -166,15 +166,15 @@
       </h4>
       
     </li><li name="org.hammerlab.guacamole.variants.ReferenceVariant#start" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
-      <a id="start:Long"></a>
-      <a id="start:Long"></a>
+      <a id="start:org.hammerlab.guacamole.reference.Locus"></a>
+      <a id="start:Locus"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">abstract </span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">start</span><span class="result">: <span class="extype" name="scala.Long">Long</span></span>
+        <span class="name">start</span><span class="result">: <a href="../reference/package.html#Locus=Long" class="extmbr" name="org.hammerlab.guacamole.reference.Locus">Locus</a></span>
       </span>
       </h4>
       <p class="shortcomment cmt">start locus of the variant</p><div class="fullcomment"><div class="comment cmt"><p>start locus of the variant</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.variants.ReferenceVariant">ReferenceVariant</a> → <a href="../reference/ReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceRegion">ReferenceRegion</a></dd></dl></div>
@@ -446,15 +446,15 @@
 </p></div><dl class="paramcmts block"><dt class="param">other</dt><dd class="cmt"><p>another region on the genome</p></dd><dt>returns</dt><dd class="cmt"><p>True if the the regions overlap
 </p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../reference/ReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceRegion">ReferenceRegion</a></dd></dl></div>
     </li><li name="org.hammerlab.guacamole.reference.ReferenceRegion#overlapsLocus" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="overlapsLocus(locus:Long,halfWindowSize:Long):Boolean"></a>
-      <a id="overlapsLocus(Long,Long):Boolean"></a>
+      <a id="overlapsLocus(locus:org.hammerlab.guacamole.reference.Locus,halfWindowSize:org.hammerlab.guacamole.reference.Locus):Boolean"></a>
+      <a id="overlapsLocus(Locus,Locus):Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">overlapsLocus</span><span class="params">(<span name="locus">locus: <span class="extype" name="scala.Long">Long</span></span>, <span name="halfWindowSize">halfWindowSize: <span class="extype" name="scala.Long">Long</span> = <span class="symbol">0</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">overlapsLocus</span><span class="params">(<span name="locus">locus: <a href="../reference/package.html#Locus=Long" class="extmbr" name="org.hammerlab.guacamole.reference.Locus">Locus</a></span>, <span name="halfWindowSize">halfWindowSize: <a href="../reference/package.html#Locus=Long" class="extmbr" name="org.hammerlab.guacamole.reference.Locus">Locus</a> = <span class="symbol">0</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
       <p class="shortcomment cmt">Does the region overlap the given locus, with halfWindowSize padding?

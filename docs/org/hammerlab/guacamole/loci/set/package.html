@@ -67,12 +67,12 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="Contig.html"><span class="name">Contig</span></a><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="rangeSet">rangeSet: <span class="extype" name="com.google.common.collect.RangeSet">RangeSet</span>[<span class="extype" name="java.lang.Long">Long</span>]</span>)</span><span class="result"> extends <a href="../../strings/TruncatedToString.html" class="extype" name="org.hammerlab.guacamole.strings.TruncatedToString">TruncatedToString</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="Contig.html"><span class="name">Contig</span></a><span class="params">(<span name="name">name: <a href="../../reference/package.html#ContigName=String" class="extmbr" name="org.hammerlab.guacamole.reference.ContigName">ContigName</a></span>, <span name="rangeSet">rangeSet: <span class="extype" name="com.google.common.collect.RangeSet">RangeSet</span>[<span class="extype" name="java.lang.Long">Long</span>]</span>)</span><span class="result"> extends <a href="../../strings/TruncatedToString.html" class="extype" name="org.hammerlab.guacamole.strings.TruncatedToString">TruncatedToString</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       <p class="comment cmt">A set of loci on a contig, stored/manipulated as loci ranges.</p>
     </li><li name="org.hammerlab.guacamole.loci.set.ContigIterator" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="ContigIteratorextendsBufferedIterator[Long]"></a>
+      <a id="ContigIteratorextendsBufferedIterator[org.hammerlab.guacamole.reference.Locus]"></a>
       <a id="ContigIterator:ContigIterator"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -80,7 +80,7 @@
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a href="ContigIterator.html"><span class="name">ContigIterator</span></a><span class="result"> extends <span class="extype" name="scala.BufferedIterator">BufferedIterator</span>[<span class="extype" name="scala.Long">Long</span>]</span>
+        <a href="ContigIterator.html"><span class="name">ContigIterator</span></a><span class="result"> extends <span class="extype" name="scala.BufferedIterator">BufferedIterator</span>[<a href="../../reference/package.html#Locus=Long" class="extmbr" name="org.hammerlab.guacamole.reference.Locus">Locus</a>]</span>
       </span>
       </h4>
       <p class="comment cmt">An iterator over loci on a single contig.</p>
@@ -119,7 +119,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="LociSet.html"><span class="name">LociSet</span></a><span class="params">(<span name="map">map: <span class="extype" name="scala.collection.SortedMap">SortedMap</span>[<span class="extype" name="scala.Predef.String">String</span>, <a href="Contig.html" class="extype" name="org.hammerlab.guacamole.loci.set.Contig">Contig</a>]</span>)</span><span class="result"> extends <a href="../../strings/TruncatedToString.html" class="extype" name="org.hammerlab.guacamole.strings.TruncatedToString">TruncatedToString</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="LociSet.html"><span class="name">LociSet</span></a><span class="params">(<span name="map">map: <span class="extype" name="scala.collection.SortedMap">SortedMap</span>[<a href="../../reference/package.html#ContigName=String" class="extmbr" name="org.hammerlab.guacamole.reference.ContigName">ContigName</a>, <a href="Contig.html" class="extype" name="org.hammerlab.guacamole.loci.set.Contig">Contig</a>]</span>)</span><span class="result"> extends <a href="../../strings/TruncatedToString.html" class="extype" name="org.hammerlab.guacamole.strings.TruncatedToString">TruncatedToString</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       <p class="comment cmt">An immutable collection of genomic regions on any number of contigs.</p>

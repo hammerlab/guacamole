@@ -330,7 +330,7 @@ that specifies the loci of interest without requiring us to already know the con
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="org.hammerlab.guacamole.loci.set.LociParser#put" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="put(loci:String):org.hammerlab.guacamole.loci.set.LociParser"></a>
+      <a id="put(lociStr:String):org.hammerlab.guacamole.loci.set.LociParser"></a>
       <a id="put(String):LociParser"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -338,7 +338,7 @@ that specifies the loci of interest without requiring us to already know the con
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">put</span><span class="params">(<span name="loci">loci: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="" class="extype" name="org.hammerlab.guacamole.loci.set.LociParser">LociParser</a></span>
+        <span class="name">put</span><span class="params">(<span name="lociStr">lociStr: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="" class="extype" name="org.hammerlab.guacamole.loci.set.LociParser">LociParser</a></span>
       </span>
       </h4>
       <p class="shortcomment cmt">Parse a (string) loci expression and add it to the builder.</p><div class="fullcomment"><div class="comment cmt"><p>Parse a (string) loci expression and add it to the builder. Example expressions:</p><p> &quot;all&quot;: all sites on all contigs.
@@ -349,41 +349,41 @@ that specifies the loci of interest without requiring us to already know the con
  &quot;chr1:10000-&quot;: chr1, from position 10000 to the end of chr1.
 </p></div></div>
     </li><li name="org.hammerlab.guacamole.loci.set.LociParser#put" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="put(contig:String,start:Long,end:Long):org.hammerlab.guacamole.loci.set.LociParser"></a>
-      <a id="put(String,Long,Long):LociParser"></a>
+      <a id="put(contigName:org.hammerlab.guacamole.reference.ContigName,start:org.hammerlab.guacamole.reference.Locus,end:org.hammerlab.guacamole.reference.Locus):org.hammerlab.guacamole.loci.set.LociParser"></a>
+      <a id="put(ContigName,Locus,Locus):LociParser"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">put</span><span class="params">(<span name="contig">contig: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="start">start: <span class="extype" name="scala.Long">Long</span></span>, <span name="end">end: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <a href="" class="extype" name="org.hammerlab.guacamole.loci.set.LociParser">LociParser</a></span>
+        <span class="name">put</span><span class="params">(<span name="contigName">contigName: <a href="../../reference/package.html#ContigName=String" class="extmbr" name="org.hammerlab.guacamole.reference.ContigName">ContigName</a></span>, <span name="start">start: <a href="../../reference/package.html#Locus=Long" class="extmbr" name="org.hammerlab.guacamole.reference.Locus">Locus</a></span>, <span name="end">end: <a href="../../reference/package.html#Locus=Long" class="extmbr" name="org.hammerlab.guacamole.reference.Locus">Locus</a></span>)</span><span class="result">: <a href="" class="extype" name="org.hammerlab.guacamole.loci.set.LociParser">LociParser</a></span>
       </span>
       </h4>
       <p class="shortcomment cmt">Add an interval to this LociParser.</p>
     </li><li name="org.hammerlab.guacamole.loci.set.LociParser#result" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="result(contigLengths:(String,Long)*):org.hammerlab.guacamole.loci.set.LociSet"></a>
-      <a id="result((String,Long)*):LociSet"></a>
+      <a id="result(contigLengths:(org.hammerlab.guacamole.reference.ContigName,org.hammerlab.guacamole.reference.NumLoci)*):org.hammerlab.guacamole.loci.set.LociSet"></a>
+      <a id="result((ContigName,NumLoci)*):LociSet"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">result</span><span class="params">(<span name="contigLengths">contigLengths: (<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Long">Long</span>)*</span>)</span><span class="result">: <a href="LociSet.html" class="extype" name="org.hammerlab.guacamole.loci.set.LociSet">LociSet</a></span>
+        <span class="name">result</span><span class="params">(<span name="contigLengths">contigLengths: (<a href="../../reference/package.html#ContigName=String" class="extmbr" name="org.hammerlab.guacamole.reference.ContigName">ContigName</a>, <a href="../../reference/package.html#NumLoci=Long" class="extmbr" name="org.hammerlab.guacamole.reference.NumLoci">NumLoci</a>)*</span>)</span><span class="result">: <a href="LociSet.html" class="extype" name="org.hammerlab.guacamole.loci.set.LociSet">LociSet</a></span>
       </span>
       </h4>
       
     </li><li name="org.hammerlab.guacamole.loci.set.LociParser#result" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="result(contigLengths:Map[String,Long]):org.hammerlab.guacamole.loci.set.LociSet"></a>
-      <a id="result(Map[String,Long]):LociSet"></a>
+      <a id="result(contigLengths:org.hammerlab.guacamole.readsets.ContigLengths):org.hammerlab.guacamole.loci.set.LociSet"></a>
+      <a id="result(ContigLengths):LociSet"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">result</span><span class="params">(<span name="contigLengths">contigLengths: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Long">Long</span>]</span>)</span><span class="result">: <a href="LociSet.html" class="extype" name="org.hammerlab.guacamole.loci.set.LociSet">LociSet</a></span>
+        <span class="name">result</span><span class="params">(<span name="contigLengths">contigLengths: <a href="../../readsets/package.html#ContigLengths=Map[org.hammerlab.guacamole.reference.ContigName,org.hammerlab.guacamole.reference.NumLoci]" class="extmbr" name="org.hammerlab.guacamole.readsets.ContigLengths">ContigLengths</a></span>)</span><span class="result">: <a href="LociSet.html" class="extype" name="org.hammerlab.guacamole.loci.set.LociSet">LociSet</a></span>
       </span>
       </h4>
       

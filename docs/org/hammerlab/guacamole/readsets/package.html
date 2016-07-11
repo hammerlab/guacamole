@@ -89,7 +89,7 @@ library.
         <div id="types" class="types members">
               <h3>Type Members</h3>
               <ol><li name="org.hammerlab.guacamole.readsets.ContigLengths" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="ContigLengths=Map[String,Long]"></a>
+      <a id="ContigLengths=Map[org.hammerlab.guacamole.reference.ContigName,org.hammerlab.guacamole.reference.NumLoci]"></a>
       <a id="ContigLengths:ContigLengths"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -97,7 +97,7 @@ library.
         <span class="kind">type</span>
       </span>
       <span class="symbol">
-        <span class="name">ContigLengths</span><span class="result"> = <span class="extype" name="scala.collection.immutable.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Long">Long</span>]</span>
+        <span class="name">ContigLengths</span><span class="result"> = <span class="extype" name="scala.collection.immutable.Map">Map</span>[<a href="../reference/package.html#ContigName=String" class="extmbr" name="org.hammerlab.guacamole.reference.ContigName">ContigName</a>, <a href="../reference/package.html#NumLoci=Long" class="extmbr" name="org.hammerlab.guacamole.reference.NumLoci">NumLoci</a>]</span>
       </span>
       </h4>
       
@@ -188,7 +188,7 @@ library.
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="ReadSets.html"><span class="name">ReadSets</span></a><span class="params">(<span name="readsRDDs">readsRDDs: <a href="#PerSample[A]=IndexedSeq[A]" class="extmbr" name="org.hammerlab.guacamole.readsets.PerSample">PerSample</a>[<a href="ReadsRDD.html" class="extype" name="org.hammerlab.guacamole.readsets.ReadsRDD">ReadsRDD</a>]</span>, <span name="sequenceDictionary">sequenceDictionary: <span class="extype" name="org.bdgenomics.adam.models.SequenceDictionary">SequenceDictionary</span></span>, <span name="contigLengths">contigLengths: <a href="#ContigLengths=Map[String,Long]" class="extmbr" name="org.hammerlab.guacamole.readsets.ContigLengths">ContigLengths</a></span>)</span><span class="result"> extends <a href="#PerSample[A]=IndexedSeq[A]" class="extmbr" name="org.hammerlab.guacamole.readsets.PerSample">PerSample</a>[<a href="ReadsRDD.html" class="extype" name="org.hammerlab.guacamole.readsets.ReadsRDD">ReadsRDD</a>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="ReadSets.html"><span class="name">ReadSets</span></a><span class="params">(<span name="readsRDDs">readsRDDs: <a href="#PerSample[A]=IndexedSeq[A]" class="extmbr" name="org.hammerlab.guacamole.readsets.PerSample">PerSample</a>[<a href="ReadsRDD.html" class="extype" name="org.hammerlab.guacamole.readsets.ReadsRDD">ReadsRDD</a>]</span>, <span name="sequenceDictionary">sequenceDictionary: <span class="extype" name="org.bdgenomics.adam.models.SequenceDictionary">SequenceDictionary</span></span>, <span name="contigLengths">contigLengths: <a href="#ContigLengths=Map[org.hammerlab.guacamole.reference.ContigName,org.hammerlab.guacamole.reference.NumLoci]" class="extmbr" name="org.hammerlab.guacamole.readsets.ContigLengths">ContigLengths</a></span>)</span><span class="result"> extends <a href="#PerSample[A]=IndexedSeq[A]" class="extmbr" name="org.hammerlab.guacamole.readsets.PerSample">PerSample</a>[<a href="ReadsRDD.html" class="extype" name="org.hammerlab.guacamole.readsets.ReadsRDD">ReadsRDD</a>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       <p class="comment cmt">A <code>ReadSets</code> contains reads from multiple inputs, and SequenceDictionary / contig-length information merged from

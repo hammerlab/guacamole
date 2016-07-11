@@ -35,7 +35,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">MultiSampleMultiAlleleEvidence</span><span class="params">(<span name="referenceContig">referenceContig: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="start">start: <span class="extype" name="scala.Long">Long</span></span>, <span name="singleAlleleEvidences">singleAlleleEvidences: <span class="extype" name="scala.Seq">Seq</span>[<a href="MultiSampleSingleAlleleEvidence.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleSingleAlleleEvidence">MultiSampleSingleAlleleEvidence</a>]</span>)</span><span class="result"> extends <a href="../../../reference/ReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceRegion">ReferenceRegion</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">MultiSampleMultiAlleleEvidence</span><span class="params">(<span name="contigName">contigName: <a href="../../../reference/package.html#ContigName=String" class="extmbr" name="org.hammerlab.guacamole.reference.ContigName">ContigName</a></span>, <span name="start">start: <a href="../../../reference/package.html#Locus=Long" class="extmbr" name="org.hammerlab.guacamole.reference.Locus">Locus</a></span>, <span name="singleAlleleEvidences">singleAlleleEvidences: <span class="extype" name="scala.Seq">Seq</span>[<a href="MultiSampleSingleAlleleEvidence.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleSingleAlleleEvidence">MultiSampleSingleAlleleEvidence</a>]</span>)</span><span class="result"> extends <a href="../../../reference/ReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceRegion">ReferenceRegion</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
@@ -82,7 +82,7 @@ written out.</p></div><div class="toggleContainer block">
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleMultiAlleleEvidence#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(referenceContig:String,start:Long,singleAlleleEvidences:Seq[org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleSingleAlleleEvidence]):org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleMultiAlleleEvidence"></a>
+      <a id="&lt;init&gt;(contigName:org.hammerlab.guacamole.reference.ContigName,start:org.hammerlab.guacamole.reference.Locus,singleAlleleEvidences:Seq[org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleSingleAlleleEvidence]):org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleMultiAlleleEvidence"></a>
       <a id="&lt;init&gt;:MultiSampleMultiAlleleEvidence"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -90,7 +90,7 @@ written out.</p></div><div class="toggleContainer block">
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">MultiSampleMultiAlleleEvidence</span><span class="params">(<span name="referenceContig">referenceContig: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="start">start: <span class="extype" name="scala.Long">Long</span></span>, <span name="singleAlleleEvidences">singleAlleleEvidences: <span class="extype" name="scala.Seq">Seq</span>[<a href="MultiSampleSingleAlleleEvidence.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleSingleAlleleEvidence">MultiSampleSingleAlleleEvidence</a>]</span>)</span>
+        <span class="name">MultiSampleMultiAlleleEvidence</span><span class="params">(<span name="contigName">contigName: <a href="../../../reference/package.html#ContigName=String" class="extmbr" name="org.hammerlab.guacamole.reference.ContigName">ContigName</a></span>, <span name="start">start: <a href="../../../reference/package.html#Locus=Long" class="extmbr" name="org.hammerlab.guacamole.reference.Locus">Locus</a></span>, <span name="singleAlleleEvidences">singleAlleleEvidences: <span class="extype" name="scala.Seq">Seq</span>[<a href="MultiSampleSingleAlleleEvidence.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleSingleAlleleEvidence">MultiSampleSingleAlleleEvidence</a>]</span>)</span>
       </span>
       </h4>
       
@@ -214,6 +214,19 @@ written out.</p></div><div class="toggleContainer block">
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleMultiAlleleEvidence#contigName" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="contigName:org.hammerlab.guacamole.reference.ContigName"></a>
+      <a id="contigName:ContigName"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">contigName</span><span class="result">: <a href="../../../reference/package.html#ContigName=String" class="extmbr" name="org.hammerlab.guacamole.reference.ContigName">ContigName</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Name of the reference contig</p><div class="fullcomment"><div class="comment cmt"><p>Name of the reference contig</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleMultiAlleleEvidence">MultiSampleMultiAlleleEvidence</a> → <a href="../../../reference/ReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceRegion">ReferenceRegion</a></dd></dl></div>
     </li><li name="org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleMultiAlleleEvidence#end" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="end:Long"></a>
       <a id="end:Long"></a>
@@ -354,33 +367,20 @@ written out.</p></div><div class="toggleContainer block">
 </p></div><dl class="paramcmts block"><dt class="param">other</dt><dd class="cmt"><p>another region on the genome</p></dd><dt>returns</dt><dd class="cmt"><p>True if the the regions overlap
 </p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../reference/ReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceRegion">ReferenceRegion</a></dd></dl></div>
     </li><li name="org.hammerlab.guacamole.reference.ReferenceRegion#overlapsLocus" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="overlapsLocus(locus:Long,halfWindowSize:Long):Boolean"></a>
-      <a id="overlapsLocus(Long,Long):Boolean"></a>
+      <a id="overlapsLocus(locus:org.hammerlab.guacamole.reference.Locus,halfWindowSize:org.hammerlab.guacamole.reference.Locus):Boolean"></a>
+      <a id="overlapsLocus(Locus,Locus):Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">overlapsLocus</span><span class="params">(<span name="locus">locus: <span class="extype" name="scala.Long">Long</span></span>, <span name="halfWindowSize">halfWindowSize: <span class="extype" name="scala.Long">Long</span> = <span class="symbol">0</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">overlapsLocus</span><span class="params">(<span name="locus">locus: <a href="../../../reference/package.html#Locus=Long" class="extmbr" name="org.hammerlab.guacamole.reference.Locus">Locus</a></span>, <span name="halfWindowSize">halfWindowSize: <a href="../../../reference/package.html#Locus=Long" class="extmbr" name="org.hammerlab.guacamole.reference.Locus">Locus</a> = <span class="symbol">0</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
       <p class="shortcomment cmt">Does the region overlap the given locus, with halfWindowSize padding?
 </p><div class="fullcomment"><div class="comment cmt"><p>Does the region overlap the given locus, with halfWindowSize padding?
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../reference/ReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceRegion">ReferenceRegion</a></dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleMultiAlleleEvidence#referenceContig" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="referenceContig:String"></a>
-      <a id="referenceContig:String"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">referenceContig</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Name of the reference contig</p><div class="fullcomment"><div class="comment cmt"><p>Name of the reference contig</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleMultiAlleleEvidence">MultiSampleMultiAlleleEvidence</a> → <a href="../../../reference/ReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceRegion">ReferenceRegion</a></dd></dl></div>
     </li><li name="org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleMultiAlleleEvidence#singleAlleleEvidences" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="singleAlleleEvidences:Seq[org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleSingleAlleleEvidence]"></a>
       <a id="singleAlleleEvidences:Seq[MultiSampleSingleAlleleEvidence]"></a>
@@ -395,15 +395,15 @@ written out.</p></div><div class="toggleContainer block">
       </h4>
       
     </li><li name="org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleMultiAlleleEvidence#start" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="start:Long"></a>
-      <a id="start:Long"></a>
+      <a id="start:org.hammerlab.guacamole.reference.Locus"></a>
+      <a id="start:Locus"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">start</span><span class="result">: <span class="extype" name="scala.Long">Long</span></span>
+        <span class="name">start</span><span class="result">: <a href="../../../reference/package.html#Locus=Long" class="extmbr" name="org.hammerlab.guacamole.reference.Locus">Locus</a></span>
       </span>
       </h4>
       <p class="shortcomment cmt">Start position on the genome, inclusive.</p><div class="fullcomment"><div class="comment cmt"><p>Start position on the genome, inclusive. Must be non-negative.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleMultiAlleleEvidence">MultiSampleMultiAlleleEvidence</a> → <a href="../../../reference/ReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceRegion">ReferenceRegion</a></dd></dl></div>

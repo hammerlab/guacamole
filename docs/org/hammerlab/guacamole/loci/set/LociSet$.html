@@ -151,15 +151,15 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li name="org.hammerlab.guacamole.loci.set.LociSet#all" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="all(contigLengths:Map[String,Long]):org.hammerlab.guacamole.loci.set.LociSet"></a>
-      <a id="all(Map[String,Long]):LociSet"></a>
+      <a id="all(contigLengths:org.hammerlab.guacamole.readsets.ContigLengths):org.hammerlab.guacamole.loci.set.LociSet"></a>
+      <a id="all(ContigLengths):LociSet"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">all</span><span class="params">(<span name="contigLengths">contigLengths: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Long">Long</span>]</span>)</span><span class="result">: <a href="LociSet.html" class="extype" name="org.hammerlab.guacamole.loci.set.LociSet">LociSet</a></span>
+        <span class="name">all</span><span class="params">(<span name="contigLengths">contigLengths: <a href="../../readsets/package.html#ContigLengths=Map[org.hammerlab.guacamole.reference.ContigName,org.hammerlab.guacamole.reference.NumLoci]" class="extmbr" name="org.hammerlab.guacamole.readsets.ContigLengths">ContigLengths</a></span>)</span><span class="result">: <a href="LociSet.html" class="extype" name="org.hammerlab.guacamole.loci.set.LociSet">LociSet</a></span>
       </span>
       </h4>
       
@@ -177,20 +177,20 @@
       </h4>
       
     </li><li name="org.hammerlab.guacamole.loci.set.LociSet#apply" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="apply(contigs:Iterable[(String,Long,Long)]):org.hammerlab.guacamole.loci.set.LociSet"></a>
-      <a id="apply(Iterable[(String,Long,Long)]):LociSet"></a>
+      <a id="apply(contigs:Iterable[(org.hammerlab.guacamole.reference.ContigName,org.hammerlab.guacamole.reference.Locus,org.hammerlab.guacamole.reference.Locus)]):org.hammerlab.guacamole.loci.set.LociSet"></a>
+      <a id="apply(Iterable[(ContigName,Locus,Locus)]):LociSet"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">apply</span><span class="params">(<span name="contigs">contigs: <span class="extype" name="scala.Iterable">Iterable</span>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Long">Long</span>, <span class="extype" name="scala.Long">Long</span>)]</span>)</span><span class="result">: <a href="LociSet.html" class="extype" name="org.hammerlab.guacamole.loci.set.LociSet">LociSet</a></span>
+        <span class="name">apply</span><span class="params">(<span name="contigs">contigs: <span class="extype" name="scala.Iterable">Iterable</span>[(<a href="../../reference/package.html#ContigName=String" class="extmbr" name="org.hammerlab.guacamole.reference.ContigName">ContigName</a>, <a href="../../reference/package.html#Locus=Long" class="extmbr" name="org.hammerlab.guacamole.reference.Locus">Locus</a>, <a href="../../reference/package.html#Locus=Long" class="extmbr" name="org.hammerlab.guacamole.reference.Locus">Locus</a>)]</span>)</span><span class="result">: <a href="LociSet.html" class="extype" name="org.hammerlab.guacamole.loci.set.LociSet">LociSet</a></span>
       </span>
       </h4>
       
     </li><li name="org.hammerlab.guacamole.loci.set.LociSet#apply" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="apply(loci:String):org.hammerlab.guacamole.loci.set.LociSet"></a>
+      <a id="apply(lociStr:String):org.hammerlab.guacamole.loci.set.LociSet"></a>
       <a id="apply(String):LociSet"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -198,7 +198,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">apply</span><span class="params">(<span name="loci">loci: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="LociSet.html" class="extype" name="org.hammerlab.guacamole.loci.set.LociSet">LociSet</a></span>
+        <span class="name">apply</span><span class="params">(<span name="lociStr">lociStr: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="LociSet.html" class="extype" name="org.hammerlab.guacamole.loci.set.LociSet">LociSet</a></span>
       </span>
       </h4>
       
@@ -332,19 +332,19 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li name="org.hammerlab.guacamole.loci.set.LociSet#load" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="load(loci:String,lociFromFilePath:String,contigLengths:Map[String,Long]):org.hammerlab.guacamole.loci.set.LociSet"></a>
-      <a id="load(String,String,Map[String,Long]):LociSet"></a>
+      <a id="load(lociStr:String,lociFromFilePath:String,contigLengths:org.hammerlab.guacamole.readsets.ContigLengths):org.hammerlab.guacamole.loci.set.LociSet"></a>
+      <a id="load(String,String,ContigLengths):LociSet"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">load</span><span class="params">(<span name="loci">loci: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="lociFromFilePath">lociFromFilePath: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="contigLengths">contigLengths: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Long">Long</span>]</span>)</span><span class="result">: <a href="LociSet.html" class="extype" name="org.hammerlab.guacamole.loci.set.LociSet">LociSet</a></span>
+        <span class="name">load</span><span class="params">(<span name="lociStr">lociStr: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="lociFromFilePath">lociFromFilePath: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="contigLengths">contigLengths: <a href="../../readsets/package.html#ContigLengths=Map[org.hammerlab.guacamole.reference.ContigName,org.hammerlab.guacamole.reference.NumLoci]" class="extmbr" name="org.hammerlab.guacamole.readsets.ContigLengths">ContigLengths</a></span>)</span><span class="result">: <a href="LociSet.html" class="extype" name="org.hammerlab.guacamole.loci.set.LociSet">LociSet</a></span>
       </span>
       </h4>
       <p class="shortcomment cmt">Load loci from a string or a path to a file.</p><div class="fullcomment"><div class="comment cmt"><p>Load loci from a string or a path to a file.</p><p>Specify at most one of loci or lociFromFilePath.
-</p></div><dl class="paramcmts block"><dt class="param">loci</dt><dd class="cmt"><p>loci to load as a string</p></dd><dt class="param">lociFromFilePath</dt><dd class="cmt"><p>path to file containing loci to load</p></dd><dt class="param">contigLengths</dt><dd class="cmt"><p>contig lengths, by name</p></dd><dt>returns</dt><dd class="cmt"><p>a LociSet
+</p></div><dl class="paramcmts block"><dt class="param">lociStr</dt><dd class="cmt"><p>loci to load as a string</p></dd><dt class="param">lociFromFilePath</dt><dd class="cmt"><p>path to file containing loci to load</p></dd><dt class="param">contigLengths</dt><dd class="cmt"><p>contig lengths, by name</p></dd><dt>returns</dt><dd class="cmt"><p>a LociSet
 </p></dd></dl></div>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>

@@ -35,7 +35,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">AlleleAtLocus</span><span class="params">(<span name="referenceContig">referenceContig: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="start">start: <span class="extype" name="scala.Long">Long</span></span>, <span name="ref">ref: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="alt">alt: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">AlleleAtLocus</span><span class="params">(<span name="contigName">contigName: <a href="../../reference/package.html#ContigName=String" class="extmbr" name="org.hammerlab.guacamole.reference.ContigName">ContigName</a></span>, <span name="start">start: <a href="../../reference/package.html#Locus=Long" class="extmbr" name="org.hammerlab.guacamole.reference.Locus">Locus</a></span>, <span name="ref">ref: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="alt">alt: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
@@ -45,7 +45,7 @@ alt == ref.</p><p>Indels are supported in the usual VCF style, in which ref.leng
 reference allele determines the size of the region.</p><p>NOTE: We currently evaluate only a single alternate at each site at a time, i.e. the mixtures whose likelihoods we compute
 are always just a reference and at most one alternate allele. If we extend this to mixtures with multiple alts, we
 should change this class to contain any nuber of alts.
-</p></div><dl class="paramcmts block"><dt class="param">referenceContig</dt><dd class="cmt"><p>the contig (chromosome)</p></dd><dt class="param">start</dt><dd class="cmt"><p>the position of the allele</p></dd><dt class="param">ref</dt><dd class="cmt"><p>reference allele, must be nonempty</p></dd><dt class="param">alt</dt><dd class="cmt"><p>alternate allele, may be equal to reference
+</p></div><dl class="paramcmts block"><dt class="param">contigName</dt><dd class="cmt"><p>the contig (chromosome)</p></dd><dt class="param">start</dt><dd class="cmt"><p>the position of the allele</p></dd><dt class="param">ref</dt><dd class="cmt"><p>reference allele, must be nonempty</p></dd><dt class="param">alt</dt><dd class="cmt"><p>alternate allele, may be equal to reference
 </p></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
@@ -87,7 +87,7 @@ should change this class to contain any nuber of alts.
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="org.hammerlab.guacamole.commands.jointcaller.AlleleAtLocus#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="&lt;init&gt;(referenceContig:String,start:Long,ref:String,alt:String):org.hammerlab.guacamole.commands.jointcaller.AlleleAtLocus"></a>
+      <a id="&lt;init&gt;(contigName:org.hammerlab.guacamole.reference.ContigName,start:org.hammerlab.guacamole.reference.Locus,ref:String,alt:String):org.hammerlab.guacamole.commands.jointcaller.AlleleAtLocus"></a>
       <a id="&lt;init&gt;:AlleleAtLocus"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -95,10 +95,10 @@ should change this class to contain any nuber of alts.
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">AlleleAtLocus</span><span class="params">(<span name="referenceContig">referenceContig: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="start">start: <span class="extype" name="scala.Long">Long</span></span>, <span name="ref">ref: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="alt">alt: <span class="extype" name="scala.Predef.String">String</span></span>)</span>
+        <span class="name">AlleleAtLocus</span><span class="params">(<span name="contigName">contigName: <a href="../../reference/package.html#ContigName=String" class="extmbr" name="org.hammerlab.guacamole.reference.ContigName">ContigName</a></span>, <span name="start">start: <a href="../../reference/package.html#Locus=Long" class="extmbr" name="org.hammerlab.guacamole.reference.Locus">Locus</a></span>, <span name="ref">ref: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="alt">alt: <span class="extype" name="scala.Predef.String">String</span></span>)</span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">referenceContig</dt><dd class="cmt"><p>the contig (chromosome)</p></dd><dt class="param">start</dt><dd class="cmt"><p>the position of the allele</p></dd><dt class="param">ref</dt><dd class="cmt"><p>reference allele, must be nonempty</p></dd><dt class="param">alt</dt><dd class="cmt"><p>alternate allele, may be equal to reference
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">contigName</dt><dd class="cmt"><p>the contig (chromosome)</p></dd><dt class="param">start</dt><dd class="cmt"><p>the position of the allele</p></dd><dt class="param">ref</dt><dd class="cmt"><p>reference allele, must be nonempty</p></dd><dt class="param">alt</dt><dd class="cmt"><p>alternate allele, may be equal to reference
 </p></dd></dl></div>
     </li></ol>
             </div>
@@ -220,6 +220,19 @@ should change this class to contain any nuber of alts.
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.commands.jointcaller.AlleleAtLocus#contigName" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="contigName:org.hammerlab.guacamole.reference.ContigName"></a>
+      <a id="contigName:ContigName"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">contigName</span><span class="result">: <a href="../../reference/package.html#ContigName=String" class="extmbr" name="org.hammerlab.guacamole.reference.ContigName">ContigName</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">the contig (chromosome)</p>
     </li><li name="org.hammerlab.guacamole.commands.jointcaller.AlleleAtLocus#end" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="end:Long"></a>
       <a id="end:Long"></a>
@@ -356,29 +369,16 @@ should change this class to contain any nuber of alts.
       </span>
       </h4>
       <p class="shortcomment cmt">reference allele, must be nonempty</p>
-    </li><li name="org.hammerlab.guacamole.commands.jointcaller.AlleleAtLocus#referenceContig" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="referenceContig:String"></a>
-      <a id="referenceContig:String"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">referenceContig</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">the contig (chromosome)</p>
     </li><li name="org.hammerlab.guacamole.commands.jointcaller.AlleleAtLocus#start" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="start:Long"></a>
-      <a id="start:Long"></a>
+      <a id="start:org.hammerlab.guacamole.reference.Locus"></a>
+      <a id="start:Locus"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">start</span><span class="result">: <span class="extype" name="scala.Long">Long</span></span>
+        <span class="name">start</span><span class="result">: <a href="../../reference/package.html#Locus=Long" class="extmbr" name="org.hammerlab.guacamole.reference.Locus">Locus</a></span>
       </span>
       </h4>
       <p class="shortcomment cmt">the position of the allele</p>
@@ -396,15 +396,15 @@ should change this class to contain any nuber of alts.
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="org.hammerlab.guacamole.commands.jointcaller.AlleleAtLocus#transform" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="transform(alleleTransform:String=&gt;String,startEndTransform:(Long,Long)=&gt;(Long,Long)):org.hammerlab.guacamole.commands.jointcaller.AlleleAtLocus"></a>
-      <a id="transform((String)⇒String,(Long,Long)⇒(Long,Long)):AlleleAtLocus"></a>
+      <a id="transform(alleleTransform:String=&gt;String,startEndTransform:(org.hammerlab.guacamole.reference.Locus,org.hammerlab.guacamole.reference.Locus)=&gt;(org.hammerlab.guacamole.reference.Locus,org.hammerlab.guacamole.reference.Locus)):org.hammerlab.guacamole.commands.jointcaller.AlleleAtLocus"></a>
+      <a id="transform((String)⇒String,(Locus,Locus)⇒(Locus,Locus)):AlleleAtLocus"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">transform</span><span class="params">(<span name="alleleTransform">alleleTransform: (<span class="extype" name="scala.Predef.String">String</span>) ⇒ <span class="extype" name="scala.Predef.String">String</span></span>, <span name="startEndTransform">startEndTransform: (<span class="extype" name="scala.Long">Long</span>, <span class="extype" name="scala.Long">Long</span>) ⇒ (<span class="extype" name="scala.Long">Long</span>, <span class="extype" name="scala.Long">Long</span>)</span>)</span><span class="result">: <a href="" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.AlleleAtLocus">AlleleAtLocus</a></span>
+        <span class="name">transform</span><span class="params">(<span name="alleleTransform">alleleTransform: (<span class="extype" name="scala.Predef.String">String</span>) ⇒ <span class="extype" name="scala.Predef.String">String</span></span>, <span name="startEndTransform">startEndTransform: (<a href="../../reference/package.html#Locus=Long" class="extmbr" name="org.hammerlab.guacamole.reference.Locus">Locus</a>, <a href="../../reference/package.html#Locus=Long" class="extmbr" name="org.hammerlab.guacamole.reference.Locus">Locus</a>) ⇒ (<a href="../../reference/package.html#Locus=Long" class="extmbr" name="org.hammerlab.guacamole.reference.Locus">Locus</a>, <a href="../../reference/package.html#Locus=Long" class="extmbr" name="org.hammerlab.guacamole.reference.Locus">Locus</a>)</span>)</span><span class="result">: <a href="" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.AlleleAtLocus">AlleleAtLocus</a></span>
       </span>
       </h4>
       <p class="shortcomment cmt">Apply a transformation function to the alleles (ref and alt) and also the start and end coordinates, returning

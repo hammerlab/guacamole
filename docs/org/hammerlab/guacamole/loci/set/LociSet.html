@@ -35,7 +35,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">LociSet</span><span class="params">(<span name="map">map: <span class="extype" name="scala.collection.SortedMap">SortedMap</span>[<span class="extype" name="scala.Predef.String">String</span>, <a href="Contig.html" class="extype" name="org.hammerlab.guacamole.loci.set.Contig">Contig</a>]</span>)</span><span class="result"> extends <a href="../../strings/TruncatedToString.html" class="extype" name="org.hammerlab.guacamole.strings.TruncatedToString">TruncatedToString</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">LociSet</span><span class="params">(<span name="map">map: <span class="extype" name="scala.collection.SortedMap">SortedMap</span>[<a href="../../reference/package.html#ContigName=String" class="extmbr" name="org.hammerlab.guacamole.reference.ContigName">ContigName</a>, <a href="Contig.html" class="extype" name="org.hammerlab.guacamole.loci.set.Contig">Contig</a>]</span>)</span><span class="result"> extends <a href="../../strings/TruncatedToString.html" class="extype" name="org.hammerlab.guacamole.strings.TruncatedToString">TruncatedToString</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
@@ -82,7 +82,7 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="org.hammerlab.guacamole.loci.set.LociSet#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="&lt;init&gt;(map:scala.collection.SortedMap[String,org.hammerlab.guacamole.loci.set.Contig]):org.hammerlab.guacamole.loci.set.LociSet"></a>
+      <a id="&lt;init&gt;(map:scala.collection.SortedMap[org.hammerlab.guacamole.reference.ContigName,org.hammerlab.guacamole.loci.set.Contig]):org.hammerlab.guacamole.loci.set.LociSet"></a>
       <a id="&lt;init&gt;:LociSet"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -90,7 +90,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">LociSet</span><span class="params">(<span name="map">map: <span class="extype" name="scala.collection.SortedMap">SortedMap</span>[<span class="extype" name="scala.Predef.String">String</span>, <a href="Contig.html" class="extype" name="org.hammerlab.guacamole.loci.set.Contig">Contig</a>]</span>)</span>
+        <span class="name">LociSet</span><span class="params">(<span name="map">map: <span class="extype" name="scala.collection.SortedMap">SortedMap</span>[<a href="../../reference/package.html#ContigName=String" class="extmbr" name="org.hammerlab.guacamole.reference.ContigName">ContigName</a>, <a href="Contig.html" class="extype" name="org.hammerlab.guacamole.loci.set.Contig">Contig</a>]</span>)</span>
       </span>
       </h4>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">map</dt><dd class="cmt"><p>A map from contig-name to Contig, which is a set or genomic intervals as described above.
@@ -215,15 +215,15 @@
       </h4>
       <p class="shortcomment cmt">The contigs included in this LociSet with a nonempty set of loci.</p>
     </li><li name="org.hammerlab.guacamole.loci.set.LociSet#count" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="count:Long"></a>
-      <a id="count:Long"></a>
+      <a id="count:org.hammerlab.guacamole.reference.NumLoci"></a>
+      <a id="count:NumLoci"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">lazy val</span>
       </span>
       <span class="symbol">
-        <span class="name">count</span><span class="result">: <span class="extype" name="scala.Long">Long</span></span>
+        <span class="name">count</span><span class="result">: <a href="../../reference/package.html#NumLoci=Long" class="extmbr" name="org.hammerlab.guacamole.reference.NumLoci">NumLoci</a></span>
       </span>
       </h4>
       <p class="shortcomment cmt">The number of loci in this LociSet.</p>
@@ -364,15 +364,15 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="org.hammerlab.guacamole.loci.set.LociSet#onContig" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="onContig(contig:String):org.hammerlab.guacamole.loci.set.Contig"></a>
-      <a id="onContig(String):Contig"></a>
+      <a id="onContig(name:org.hammerlab.guacamole.reference.ContigName):org.hammerlab.guacamole.loci.set.Contig"></a>
+      <a id="onContig(ContigName):Contig"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">onContig</span><span class="params">(<span name="contig">contig: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="Contig.html" class="extype" name="org.hammerlab.guacamole.loci.set.Contig">Contig</a></span>
+        <span class="name">onContig</span><span class="params">(<span name="name">name: <a href="../../reference/package.html#ContigName=String" class="extmbr" name="org.hammerlab.guacamole.reference.ContigName">ContigName</a></span>)</span><span class="result">: <a href="Contig.html" class="extype" name="org.hammerlab.guacamole.loci.set.Contig">Contig</a></span>
       </span>
       </h4>
       <p class="shortcomment cmt">Given a contig name, returns a <a href="Contig.html" class="extype" name="org.hammerlab.guacamole.loci.set.Contig">Contig</a> giving the loci on that contig.</p>
@@ -403,15 +403,15 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="org.hammerlab.guacamole.loci.set.LociSet#take" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="take(numToTake:Long):(org.hammerlab.guacamole.loci.set.LociSet,org.hammerlab.guacamole.loci.set.LociSet)"></a>
-      <a id="take(Long):(LociSet,LociSet)"></a>
+      <a id="take(numToTake:org.hammerlab.guacamole.reference.NumLoci):(org.hammerlab.guacamole.loci.set.LociSet,org.hammerlab.guacamole.loci.set.LociSet)"></a>
+      <a id="take(NumLoci):(LociSet,LociSet)"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">take</span><span class="params">(<span name="numToTake">numToTake: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: (<a href="" class="extype" name="org.hammerlab.guacamole.loci.set.LociSet">LociSet</a>, <a href="" class="extype" name="org.hammerlab.guacamole.loci.set.LociSet">LociSet</a>)</span>
+        <span class="name">take</span><span class="params">(<span name="numToTake">numToTake: <a href="../../reference/package.html#NumLoci=Long" class="extmbr" name="org.hammerlab.guacamole.reference.NumLoci">NumLoci</a></span>)</span><span class="result">: (<a href="" class="extype" name="org.hammerlab.guacamole.loci.set.LociSet">LociSet</a>, <a href="" class="extype" name="org.hammerlab.guacamole.loci.set.LociSet">LociSet</a>)</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Split the LociSet into two sets, where the first one has <code>numToTake</code> loci, and the second one has the

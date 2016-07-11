@@ -35,12 +35,12 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">MappedRead</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="sequence">sequence: <span class="extype" name="scala.IndexedSeq">IndexedSeq</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>, <span name="baseQualities">baseQualities: <span class="extype" name="scala.IndexedSeq">IndexedSeq</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>, <span name="isDuplicate">isDuplicate: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="sampleName">sampleName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="referenceContig">referenceContig: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="alignmentQuality">alignmentQuality: <span class="extype" name="scala.Int">Int</span></span>, <span name="start">start: <span class="extype" name="scala.Long">Long</span></span>, <span name="cigar">cigar: <span class="extype" name="htsjdk.samtools.Cigar">Cigar</span></span>, <span name="failedVendorQualityChecks">failedVendorQualityChecks: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="isPositiveStrand">isPositiveStrand: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="isPaired">isPaired: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result"> extends <a href="Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a> with <a href="../reference/ReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceRegion">ReferenceRegion</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">MappedRead</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="sequence">sequence: <span class="extype" name="scala.IndexedSeq">IndexedSeq</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>, <span name="baseQualities">baseQualities: <span class="extype" name="scala.IndexedSeq">IndexedSeq</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>, <span name="isDuplicate">isDuplicate: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="sampleName">sampleName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="contigName">contigName: <a href="../reference/package.html#ContigName=String" class="extmbr" name="org.hammerlab.guacamole.reference.ContigName">ContigName</a></span>, <span name="alignmentQuality">alignmentQuality: <span class="extype" name="scala.Int">Int</span></span>, <span name="start">start: <a href="../reference/package.html#Locus=Long" class="extmbr" name="org.hammerlab.guacamole.reference.Locus">Locus</a></span>, <span name="cigar">cigar: <span class="extype" name="htsjdk.samtools.Cigar">Cigar</span></span>, <span name="failedVendorQualityChecks">failedVendorQualityChecks: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="isPositiveStrand">isPositiveStrand: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="isPaired">isPaired: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result"> extends <a href="Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a> with <a href="../reference/ReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceRegion">ReferenceRegion</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>A mapped read. See the <a href="Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a> trait for some of the field descriptions.
-</p></div><dl class="paramcmts block"><dt class="param">referenceContig</dt><dd class="cmt"><p>the contig name (e.g. &quot;chr12&quot;) that this read was mapped to.</p></dd><dt class="param">alignmentQuality</dt><dd class="cmt"><p>the mapping quality, phred scaled.</p></dd><dt class="param">start</dt><dd class="cmt"><p>the (0-based) reference locus that the first base in this read aligns to.</p></dd><dt class="param">cigar</dt><dd class="cmt"><p>parsed samtools CIGAR object.
+</p></div><dl class="paramcmts block"><dt class="param">contigName</dt><dd class="cmt"><p>the contig name (e.g. &quot;chr12&quot;) that this read was mapped to.</p></dd><dt class="param">alignmentQuality</dt><dd class="cmt"><p>the mapping quality, phred scaled.</p></dd><dt class="param">start</dt><dd class="cmt"><p>the (0-based) reference locus that the first base in this read aligns to.</p></dd><dt class="param">cigar</dt><dd class="cmt"><p>parsed samtools CIGAR object.
 </p></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <a href="../reference/ReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceRegion">ReferenceRegion</a>, <a href="Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
@@ -82,7 +82,7 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="org.hammerlab.guacamole.reads.MappedRead#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="&lt;init&gt;(name:String,sequence:IndexedSeq[Byte],baseQualities:IndexedSeq[Byte],isDuplicate:Boolean,sampleName:String,referenceContig:String,alignmentQuality:Int,start:Long,cigar:htsjdk.samtools.Cigar,failedVendorQualityChecks:Boolean,isPositiveStrand:Boolean,isPaired:Boolean):org.hammerlab.guacamole.reads.MappedRead"></a>
+      <a id="&lt;init&gt;(name:String,sequence:IndexedSeq[Byte],baseQualities:IndexedSeq[Byte],isDuplicate:Boolean,sampleName:String,contigName:org.hammerlab.guacamole.reference.ContigName,alignmentQuality:Int,start:org.hammerlab.guacamole.reference.Locus,cigar:htsjdk.samtools.Cigar,failedVendorQualityChecks:Boolean,isPositiveStrand:Boolean,isPaired:Boolean):org.hammerlab.guacamole.reads.MappedRead"></a>
       <a id="&lt;init&gt;:MappedRead"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -90,10 +90,10 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">MappedRead</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="sequence">sequence: <span class="extype" name="scala.IndexedSeq">IndexedSeq</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>, <span name="baseQualities">baseQualities: <span class="extype" name="scala.IndexedSeq">IndexedSeq</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>, <span name="isDuplicate">isDuplicate: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="sampleName">sampleName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="referenceContig">referenceContig: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="alignmentQuality">alignmentQuality: <span class="extype" name="scala.Int">Int</span></span>, <span name="start">start: <span class="extype" name="scala.Long">Long</span></span>, <span name="cigar">cigar: <span class="extype" name="htsjdk.samtools.Cigar">Cigar</span></span>, <span name="failedVendorQualityChecks">failedVendorQualityChecks: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="isPositiveStrand">isPositiveStrand: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="isPaired">isPaired: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span>
+        <span class="name">MappedRead</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="sequence">sequence: <span class="extype" name="scala.IndexedSeq">IndexedSeq</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>, <span name="baseQualities">baseQualities: <span class="extype" name="scala.IndexedSeq">IndexedSeq</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>, <span name="isDuplicate">isDuplicate: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="sampleName">sampleName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="contigName">contigName: <a href="../reference/package.html#ContigName=String" class="extmbr" name="org.hammerlab.guacamole.reference.ContigName">ContigName</a></span>, <span name="alignmentQuality">alignmentQuality: <span class="extype" name="scala.Int">Int</span></span>, <span name="start">start: <a href="../reference/package.html#Locus=Long" class="extmbr" name="org.hammerlab.guacamole.reference.Locus">Locus</a></span>, <span name="cigar">cigar: <span class="extype" name="htsjdk.samtools.Cigar">Cigar</span></span>, <span name="failedVendorQualityChecks">failedVendorQualityChecks: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="isPositiveStrand">isPositiveStrand: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="isPaired">isPaired: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">referenceContig</dt><dd class="cmt"><p>the contig name (e.g. &quot;chr12&quot;) that this read was mapped to.</p></dd><dt class="param">alignmentQuality</dt><dd class="cmt"><p>the mapping quality, phred scaled.</p></dd><dt class="param">start</dt><dd class="cmt"><p>the (0-based) reference locus that the first base in this read aligns to.</p></dd><dt class="param">cigar</dt><dd class="cmt"><p>parsed samtools CIGAR object.
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">contigName</dt><dd class="cmt"><p>the contig name (e.g. &quot;chr12&quot;) that this read was mapped to.</p></dd><dt class="param">alignmentQuality</dt><dd class="cmt"><p>the mapping quality, phred scaled.</p></dd><dt class="param">start</dt><dd class="cmt"><p>the (0-based) reference locus that the first base in this read aligns to.</p></dd><dt class="param">cigar</dt><dd class="cmt"><p>parsed samtools CIGAR object.
 </p></dd></dl></div>
     </li></ol>
             </div>
@@ -279,6 +279,19 @@
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.reads.MappedRead#contigName" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="contigName:org.hammerlab.guacamole.reference.ContigName"></a>
+      <a id="contigName:ContigName"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">contigName</span><span class="result">: <a href="../reference/package.html#ContigName=String" class="extmbr" name="org.hammerlab.guacamole.reference.ContigName">ContigName</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">the contig name (e.</p><div class="fullcomment"><div class="comment cmt"><p>the contig name (e.g. &quot;chr12&quot;) that this read was mapped to.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.reads.MappedRead">MappedRead</a> → <a href="../reference/ReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceRegion">ReferenceRegion</a></dd></dl></div>
     </li><li name="org.hammerlab.guacamole.reads.MappedRead#countOfMismatches" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="countOfMismatches(referenceContigSequence:org.hammerlab.guacamole.reference.ContigSequence):Int"></a>
       <a id="countOfMismatches(ContigSequence):Int"></a>
@@ -499,33 +512,20 @@ base in this read.
 </p></div><dl class="paramcmts block"><dt class="param">other</dt><dd class="cmt"><p>another region on the genome</p></dd><dt>returns</dt><dd class="cmt"><p>True if the the regions overlap
 </p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../reference/ReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceRegion">ReferenceRegion</a></dd></dl></div>
     </li><li name="org.hammerlab.guacamole.reference.ReferenceRegion#overlapsLocus" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="overlapsLocus(locus:Long,halfWindowSize:Long):Boolean"></a>
-      <a id="overlapsLocus(Long,Long):Boolean"></a>
+      <a id="overlapsLocus(locus:org.hammerlab.guacamole.reference.Locus,halfWindowSize:org.hammerlab.guacamole.reference.Locus):Boolean"></a>
+      <a id="overlapsLocus(Locus,Locus):Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">overlapsLocus</span><span class="params">(<span name="locus">locus: <span class="extype" name="scala.Long">Long</span></span>, <span name="halfWindowSize">halfWindowSize: <span class="extype" name="scala.Long">Long</span> = <span class="symbol">0</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">overlapsLocus</span><span class="params">(<span name="locus">locus: <a href="../reference/package.html#Locus=Long" class="extmbr" name="org.hammerlab.guacamole.reference.Locus">Locus</a></span>, <span name="halfWindowSize">halfWindowSize: <a href="../reference/package.html#Locus=Long" class="extmbr" name="org.hammerlab.guacamole.reference.Locus">Locus</a> = <span class="symbol">0</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
       <p class="shortcomment cmt">Does the region overlap the given locus, with halfWindowSize padding?
 </p><div class="fullcomment"><div class="comment cmt"><p>Does the region overlap the given locus, with halfWindowSize padding?
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../reference/ReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceRegion">ReferenceRegion</a></dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.reads.MappedRead#referenceContig" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="referenceContig:String"></a>
-      <a id="referenceContig:String"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">referenceContig</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">the contig name (e.</p><div class="fullcomment"><div class="comment cmt"><p>the contig name (e.g. &quot;chr12&quot;) that this read was mapped to.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.reads.MappedRead">MappedRead</a> → <a href="../reference/ReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceRegion">ReferenceRegion</a></dd></dl></div>
     </li><li name="org.hammerlab.guacamole.reads.MappedRead#sampleName" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="sampleName:String"></a>
       <a id="sampleName:String"></a>
@@ -571,15 +571,15 @@ Returns None if the provided coordinates do not overlap the read
 </p></div><dl class="paramcmts block"><dt class="param">from</dt><dd class="cmt"><p>reference locus to start the new read</p></dd><dt class="param">until</dt><dd class="cmt"><p>reference locus to slice up to (exclusive end)</p></dd><dt class="param">referenceContigSequence</dt><dd class="cmt"><p>reference sequence for the read's contig</p></dd><dt>returns</dt><dd class="cmt"><p>A read which spans [from, until) or None if the provided coordinates do not overlap the read
 </p></dd></dl></div>
     </li><li name="org.hammerlab.guacamole.reads.MappedRead#start" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="start:Long"></a>
-      <a id="start:Long"></a>
+      <a id="start:org.hammerlab.guacamole.reference.Locus"></a>
+      <a id="start:Locus"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">start</span><span class="result">: <span class="extype" name="scala.Long">Long</span></span>
+        <span class="name">start</span><span class="result">: <a href="../reference/package.html#Locus=Long" class="extmbr" name="org.hammerlab.guacamole.reference.Locus">Locus</a></span>
       </span>
       </h4>
       <p class="shortcomment cmt">the (0-based) reference locus that the first base in this read aligns to.</p><div class="fullcomment"><div class="comment cmt"><p>the (0-based) reference locus that the first base in this read aligns to.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.reads.MappedRead">MappedRead</a> → <a href="../reference/ReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceRegion">ReferenceRegion</a></dd></dl></div>
@@ -623,15 +623,15 @@ Returns None if the provided coordinates do not overlap the read
       </h4>
       <p class="shortcomment cmt">The end of the read's alignment, including any final clipped bases, exclusive.</p>
     </li><li name="org.hammerlab.guacamole.reads.MappedRead#unclippedStart" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="unclippedStart:Long"></a>
-      <a id="unclippedStart:Long"></a>
+      <a id="unclippedStart:org.hammerlab.guacamole.reference.Locus"></a>
+      <a id="unclippedStart:Locus"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">unclippedStart</span><span class="result">: <span class="extype" name="scala.Long">Long</span></span>
+        <span class="name">unclippedStart</span><span class="result">: <a href="../reference/package.html#Locus=Long" class="extmbr" name="org.hammerlab.guacamole.reference.Locus">Locus</a></span>
       </span>
       </h4>
       <p class="shortcomment cmt">A read can be &quot;clipped&quot;, meaning that some prefix or suffix of it did not align.</p><div class="fullcomment"><div class="comment cmt"><p>A read can be &quot;clipped&quot;, meaning that some prefix or suffix of it did not align. This is the start of the whole
