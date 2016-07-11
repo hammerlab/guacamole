@@ -24,6 +24,7 @@ import org.bdgenomics.adam.rdd.read.AlignmentRecordRDDFunctions
 import org.bdgenomics.adam.rdd.{ADAMContext, ADAMSaveAnyArgs}
 import org.hammerlab.guacamole.loci.set.LociParser
 import org.hammerlab.guacamole.reads.{MappedRead, Read}
+import org.hammerlab.guacamole.readsets.loading.{BamReaderAPI, InputFilters, ReadLoadingConfig}
 import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
 
 class ReadSetSuite extends GuacFunSuite {
@@ -137,9 +138,9 @@ class ReadSetSuite extends GuacFunSuite {
     }
     new AlignmentRecordRDDFunctions(adamRecords.rdd).saveAsParquet(args, adamRecords.sequences, adamRecords.recordGroups)
 
-    ReadSets.load(adamOut, sc, InputFilters.empty)._1.count() should be(8)
+    ReadSets.load(adamOut, sc, 0, InputFilters.empty)._1.count() should be(8)
 
-    ReadSets.load(adamOut, sc, InputFilters(mapped = true, nonDuplicate = true))._1.count() should be(3)
+    ReadSets.load(adamOut, sc, 0, InputFilters(mapped = true, nonDuplicate = true))._1.count() should be(3)
   }
 
   test("load and serialize / deserialize reads") {

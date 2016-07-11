@@ -20,7 +20,7 @@ import org.hammerlab.guacamole.util.Bases
  * @param referenceSequence reference bases. The length determines the size of alleles to consider. The first element should
  *                    be the reference base at locus elements.head.locus + 1.
  */
-class PileupStats(val elements: Seq[PileupElement], val referenceSequence: Seq[Byte]) {
+class PileupStats(val elements: Iterable[PileupElement], val referenceSequence: Seq[Byte]) {
   assume(referenceSequence.nonEmpty)
   assume(elements.forall(_.locus == elements.head.locus))
 
@@ -33,11 +33,11 @@ class PileupStats(val elements: Seq[PileupElement], val referenceSequence: Seq[B
    * Every read that is "anchored" on either side of the reference region by a matching, non-variant base is represented
    * here.
    */
-  val subsequences: Seq[ReadSubsequence] = elements.flatMap(
+  val subsequences: Iterable[ReadSubsequence] = elements.flatMap(
     element => ReadSubsequence.ofFixedReferenceLength(element, referenceSequence.length))
 
   /** Map from sequenced allele -> the ReadSubsequence instances for that allele. */
-  val alleleToSubsequences: Map[String, Seq[ReadSubsequence]] = subsequences.groupBy(_.sequence)
+  val alleleToSubsequences: Map[String, Iterable[ReadSubsequence]] = subsequences.groupBy(_.sequence)
 
   /** Map from sequenced allele -> number of reads supporting that allele. */
   val allelicDepths = alleleToSubsequences.mapValues(_.size).withDefaultValue(0)
@@ -95,7 +95,7 @@ object PileupStats {
   type AlleleMixture = Map[String, Double]
 
   /** Create a PileupStats instance. */
-  def apply(elements: Seq[PileupElement], refSequence: Seq[Byte]): PileupStats = {
+  def apply(elements: Iterable[PileupElement], refSequence: Seq[Byte]): PileupStats = {
     new PileupStats(elements, refSequence)
   }
 }

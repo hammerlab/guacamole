@@ -22,20 +22,24 @@ import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.rdd.ADAMContext
 import org.bdgenomics.formats.avro.Variant
-import org.hammerlab.guacamole.distributed.LociPartitionUtils
-import org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociUniformly
 import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMap
+import org.hammerlab.guacamole.loci.partitioning.{AllLociPartitionerArgs, UniformPartitioner, UniformPartitionerArgs}
 import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.MappedRead
-import org.hammerlab.guacamole.readsets.{InputFilters, ReadLoadingConfig, ReadLoadingConfigArgs, ReadSets}
-import org.hammerlab.guacamole.reference.ReferenceBroadcast
+import org.hammerlab.guacamole.readsets.loading.{InputFilters, ReadLoadingConfig, ReadLoadingConfigArgs}
+import org.hammerlab.guacamole.readsets.rdd.PartitionedRegions
+import org.hammerlab.guacamole.readsets.{NumSamples, ReadSets, SampleId}
+import org.hammerlab.guacamole.reference.{Contig, ReferenceBroadcast}
 import org.hammerlab.guacamole.util.Bases
-import org.kohsuke.args4j.{Argument, Option => Args4jOption}
+import org.kohsuke.args4j.{Option => Args4jOption}
 
 object VariantSupport {
 
-  protected class Arguments extends LociPartitionUtils.Arguments with ReadLoadingConfigArgs {
+  protected class Arguments
+    extends AllLociPartitionerArgs
+      with ReadLoadingConfigArgs
+      with ReadSets.Arguments {
     @Args4jOption(name = "--input-variant", required = true, aliases = Array("-v"),
       usage = "")
     var variants: String = ""
@@ -44,13 +48,8 @@ object VariantSupport {
       usage = "Output path for CSV")
     var output: String = ""
 
-    @Argument(required = true, multiValued = true,
-      usage = "Retrieve read data from BAMs at each variant position")
-    var bams: Array[String] = Array.empty
-
     @Args4jOption(name = "--reference-fasta", required = true, usage = "Local path to a reference FASTA file")
     var referenceFastaPath: String = ""
-
   }
 
   object Caller extends SparkCommand[Arguments] {
@@ -77,38 +76,40 @@ object VariantSupport {
 
       val variants: RDD[Variant] = adamContext.loadVariants(args.variants)
 
-      val reads: Seq[RDD[MappedRead]] =
+      val readsets =
         ReadSets(
           sc,
-          args.bams,
+          args.pathsAndSampleNames,
           InputFilters.empty,
           config = ReadLoadingConfig(args)
-        ).mappedReads
+        )
 
 
       // Build a loci set from the variant positions
-      val lociSet =
+      val loci =
         LociSet(
           variants
             .map(variant => (variant.getContig.getContigName, variant.getStart: Long, variant.getEnd: Long))
             .collect()
         )
 
-      val lociPartitions = partitionLociUniformly(args.parallelism, lociSet)
+      val partitionedReads =
+        PartitionedRegions(
+          readsets.allMappedReads,
+          loci,
+          args,
+          halfWindowSize = 0
+        )
 
       val alleleCounts =
-        reads.map(sampleReads =>
-          pileupFlatMap[AlleleCount](
-            sampleReads,
-            lociPartitions,
-            skipEmpty = true,
-            pileupToAlleleCounts,
-            reference = reference
-          )
-        ).reduce(_ ++ _)
+        pileupFlatMap[AlleleCount](
+          partitionedReads,
+          skipEmpty = true,
+          pileupToAlleleCounts,
+          reference = reference
+        )
 
       alleleCounts.saveAsTextFile(args.output)
-
     }
 
     /**
@@ -117,14 +118,19 @@ object VariantSupport {
      * @param pileup Pileup of reads a given locu
      * @return Iterator of AlleleCount which contains pair of reference and alternate with a count
      */
-    def pileupToAlleleCounts(pileup: Pileup): Iterator[AlleleCount] = {
-      val alleles = pileup.elements.groupBy(_.allele)
-      alleles.map(kv => AlleleCount(pileup.sampleName,
-        pileup.contig,
-        pileup.locus,
-        Bases.basesToString(kv._1.refBases),
-        Bases.basesToString(kv._1.altBases),
-        kv._2.size)).iterator
-    }
+    def pileupToAlleleCounts(pileup: Pileup): Iterator[AlleleCount] =
+      (for {
+        (sampleId, samplePileup) <- pileup.bySampleMap
+        (allele, elements) <- samplePileup.elements.groupBy(_.allele)
+      } yield
+        AlleleCount(
+          pileup.sampleName,
+          pileup.contig,
+          pileup.locus,
+          Bases.basesToString(allele.refBases),
+          Bases.basesToString(allele.altBases),
+          elements.size
+        )
+      ).iterator
   }
 }

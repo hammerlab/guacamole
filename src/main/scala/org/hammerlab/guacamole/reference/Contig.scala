@@ -1,7 +1,11 @@
 package org.hammerlab.guacamole.reference
 
+/**
+ * Helpers for dealing with contig-name strings.
+ */
 object Contig {
 
+  // Sort order: chr1, chr2, …, chr22, chrX, chrY, <other>.
   implicit val ordering: Ordering[Contig] =
     new Ordering[Contig] {
       override def compare(x: Contig, y: Contig): Int =

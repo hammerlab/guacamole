@@ -1,7 +1,7 @@
 package org.hammerlab.guacamole.commands.jointcaller
 
 import org.hammerlab.guacamole.commands.jointcaller.Input.{Analyte, TissueType}
-import org.hammerlab.guacamole.readsets.PerSample
+import org.hammerlab.guacamole.readsets.{PerSample, ReadSets}
 import org.kohsuke.args4j.spi.StringArrayOptionHandler
 import org.kohsuke.args4j.{Argument, Option => Args4jOption}
 
@@ -13,14 +13,12 @@ case class InputCollection(items: PerSample[Input]) {
   val normalRNA = items.filter(_.normalRNA)
   val tumorDNA = items.filter(_.tumorDNA)
   val tumorRNA = items.filter(_.tumorRNA)
+
+  def paths = items.map(_.path)
 }
 
 object InputCollection {
-  trait Arguments {
-    @Argument(required = true, multiValued = true,
-      usage = "FILE1 FILE2 FILE3")
-    var paths: Array[String] = Array.empty
-
+  trait Arguments extends ReadSets.Arguments {
     @Args4jOption(name = "--tissue-types", handler = classOf[StringArrayOptionHandler],
       usage = "[normal|tumor] ... [normal|tumor]")
     var tissueTypes: Array[String] = Array.empty
@@ -28,10 +26,6 @@ object InputCollection {
     @Args4jOption(name = "--analytes", handler = classOf[StringArrayOptionHandler],
       usage = "[dna|rna] ... [dna|rna]")
     var analytes: Array[String] = Array.empty
-
-    @Args4jOption(name = "--sample-names", handler = classOf[StringArrayOptionHandler],
-      usage = "name1 ... nameN")
-    var sampleNames: Array[String] = Array.empty
   }
 
   /**

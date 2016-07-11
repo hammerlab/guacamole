@@ -3,6 +3,7 @@ import org.hammerlab.guacamole.reference.Position.Locus
 
 import scala.math.PartiallyOrdered
 
+// Base trait for classes that logically exist at one genomic locus.
 trait PositionI extends ReferenceRegion with PartiallyOrdered[PositionI] {
   def contig: Contig
   def locus: Locus

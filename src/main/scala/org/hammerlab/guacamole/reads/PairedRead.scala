@@ -14,6 +14,7 @@ case class PairedRead[+T <: Read](read: T,
   val isMateMapped = mateAlignmentProperties.isDefined
   override val name: String = read.name
   override val failedVendorQualityChecks: Boolean = read.failedVendorQualityChecks
+  override val sampleId: Int = read.sampleId
   override val sampleName: String = read.sampleName
   override val baseQualities: IndexedSeq[Byte] = read.baseQualities
   override val isDuplicate: Boolean = read.isDuplicate

@@ -21,6 +21,7 @@ package org.hammerlab.guacamole.reads
 import htsjdk.samtools.{Cigar, CigarElement}
 import org.bdgenomics.adam.util.PhredUtils
 import org.hammerlab.guacamole.pileup.PileupElement
+import org.hammerlab.guacamole.readsets.SampleId
 import org.hammerlab.guacamole.reference.Position.Locus
 import org.hammerlab.guacamole.reference.{Contig, ContigSequence, ReferenceRegion}
 import org.hammerlab.guacamole.util.{Bases, CigarUtils}
@@ -40,6 +41,7 @@ case class MappedRead(
   sequence: IndexedSeq[Byte],
   baseQualities: IndexedSeq[Byte],
   isDuplicate: Boolean,
+  sampleId: SampleId,
   sampleName: String,
   contig: Contig,
   alignmentQuality: Int,

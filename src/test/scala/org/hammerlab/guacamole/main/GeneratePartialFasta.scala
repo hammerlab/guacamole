@@ -4,16 +4,17 @@ import java.io.{BufferedWriter, File, FileWriter}
 
 import org.apache.spark.SparkContext
 import org.hammerlab.guacamole.commands.SparkCommand
-import org.hammerlab.guacamole.distributed.LociPartitionUtils
 import org.hammerlab.guacamole.loci.SimpleRange
+import org.hammerlab.guacamole.loci.partitioning.ApproximatePartitionerArgs
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
-import org.hammerlab.guacamole.readsets.{InputFilters, ReadLoadingConfig, ReadLoadingConfigArgs, ReadSets}
+import org.hammerlab.guacamole.readsets.loading.{InputFilters, ReadLoadingConfig, ReadLoadingConfigArgs}
+import org.hammerlab.guacamole.readsets.ReadSets
 import org.hammerlab.guacamole.reference.{ContigNotFound, ReferenceArgs, ReferenceBroadcast}
 import org.hammerlab.guacamole.util.Bases
 import org.kohsuke.args4j.{Argument, Option => Args4jOption}
 
 class GeneratePartialFastaArguments
-  extends LociPartitionUtils.Arguments
+  extends ApproximatePartitionerArgs
     with ReadLoadingConfigArgs
     with ReferenceArgs {
 
@@ -27,7 +28,12 @@ class GeneratePartialFastaArguments
   @Args4jOption(name = "--padding", required = false, usage = "Number of bases to pad the reference around the loci")
   var padding: Int = 0
 
-  @Argument(required = true, multiValued = true, usage = "Reads to write out overlapping fasta sequence for")
+  @Argument(
+    required = false,
+    multiValued = true,
+    metaVar = "bams",
+    usage = "Reads to write out overlapping fasta sequence for"
+  )
   var bams: Array[String] = Array.empty
 }
 
@@ -68,12 +74,12 @@ object GeneratePartialFasta extends SparkCommand[GeneratePartialFastaArguments] 
     val readsets =
       ReadSets(
         sc,
-        args.bams,
+        args.bams.zip(args.bams),
         InputFilters.empty,
         config = ReadLoadingConfig(args)
       )
 
-    val reads = sc.union(readsets.mappedReads)
+    val reads = readsets.allMappedReads
 
     val regions = reads.map(read => (read.contig, read.start, read.end))
     regions.collect.foreach(triple => {

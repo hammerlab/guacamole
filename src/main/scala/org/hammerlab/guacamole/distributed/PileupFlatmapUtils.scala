@@ -1,15 +1,12 @@
 package org.hammerlab.guacamole.distributed
 
 import org.apache.spark.rdd.RDD
-import org.hammerlab.guacamole._
-import org.hammerlab.guacamole.distributed.LociPartitionUtils.LociPartitioning
 import org.hammerlab.guacamole.distributed.WindowFlatMapUtils.windowFlatMapWithState
-import org.hammerlab.guacamole.distributed.WindowFlatMapUtils.windowFlatMapWithState
-import org.hammerlab.guacamole.loci.map.LociMap
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.MappedRead
-import org.hammerlab.guacamole.readsets.PerSample
-import org.hammerlab.guacamole.reference.{ReferenceGenome, _}
+import org.hammerlab.guacamole.readsets.PartitionedReads
+import org.hammerlab.guacamole.readsets.{NumSamples, PerSample}
+import org.hammerlab.guacamole.reference.{ContigSequence, ReferenceGenome}
 import org.hammerlab.guacamole.windowing.SlidingWindow
 
 import scala.reflect.ClassTag
@@ -17,7 +14,8 @@ import scala.reflect.ClassTag
 object PileupFlatMapUtils {
   /**
    * Helper function. Given optionally an existing Pileup, and a sliding read window return a new Pileup at the given
-   * locus. If an existing Pileup is given as input, then the result will share elements with that Pileup for efficiency.
+   * locus. If an existing Pileup is given as input, then the result will share elements with that Pileup for
+   * efficiency.
    *
    *  If an existing Pileup is provided, then its locus must be <= the new locus.
    */
@@ -43,17 +41,16 @@ object PileupFlatMapUtils {
    * @see the windowTaskFlatMapMultipleRDDs function for other argument descriptions
    *
    */
-  def pileupFlatMap[T: ClassTag](reads: RDD[MappedRead],
-                                 lociPartitions: LociPartitioning,
+  def pileupFlatMap[T: ClassTag](partitionedReads: PartitionedReads,
                                  skipEmpty: Boolean,
                                  function: Pileup => Iterator[T],
                                  reference: ReferenceGenome): RDD[T] = {
     windowFlatMapWithState(
-      Vector(reads),
-      lociPartitions,
+      numSamples = 1,
+      partitionedReads,
       skipEmpty,
-      0,
-      None,
+      halfWindowSize = 0,
+      initialState = None,
       (maybePileup: Option[Pileup], windows: PerSample[SlidingWindow[MappedRead]]) => {
         assert(windows.length == 1)
         val pileup = initOrMovePileup(maybePileup, windows(0), reference.getContig(windows(0).contig))
@@ -70,17 +67,15 @@ object PileupFlatMapUtils {
    * @see the windowTaskFlatMapMultipleRDDs function for other argument descriptions.
    *
    */
-  def pileupFlatMapTwoRDDs[T: ClassTag](reads1: RDD[MappedRead],
-                                        reads2: RDD[MappedRead],
-                                        lociPartitions: LociPartitioning,
+  def pileupFlatMapTwoRDDs[T: ClassTag](partitionedReads: PartitionedReads,
                                         skipEmpty: Boolean,
                                         function: (Pileup, Pileup) => Iterator[T],
                                         reference: ReferenceGenome): RDD[T] = {
     windowFlatMapWithState(
-      Vector(reads1, reads2),
-      lociPartitions,
+      numSamples = 2,
+      partitionedReads,
       skipEmpty,
-      halfWindowSize = 0L,
+      halfWindowSize = 0,
       initialState = None,
       function = (maybePileups: Option[(Pileup, Pileup)], windows: PerSample[SlidingWindow[MappedRead]]) => {
         assert(windows.length == 2)
@@ -96,27 +91,34 @@ object PileupFlatMapUtils {
    *
    * @see the windowTaskFlatMapMultipleRDDs function for other argument descriptions.
    */
-  def pileupFlatMapMultipleRDDs[T: ClassTag](readsRDDs: PerSample[RDD[MappedRead]],
-                                             lociPartitions: LociPartitioning,
+  def pileupFlatMapMultipleRDDs[T: ClassTag](numSamples: NumSamples,
+                                             partitionedReads: PartitionedReads,
                                              skipEmpty: Boolean,
                                              function: PerSample[Pileup] => Iterator[T],
                                              reference: ReferenceGenome): RDD[T] = {
     windowFlatMapWithState(
-      readsRDDs,
-      lociPartitions,
+      numSamples,
+      partitionedReads,
       skipEmpty,
-      halfWindowSize = 0L,
+      halfWindowSize = 0,
       initialState = None,
       function = (maybePileups: Option[PerSample[Pileup]], windows: PerSample[SlidingWindow[MappedRead]]) => {
-        val advancedPileups = maybePileups match {
-          case Some(existingPileups) => {
-            existingPileups.zip(windows).map(
-              pileupAndWindow => initOrMovePileup(
-                Some(pileupAndWindow._1),
-                pileupAndWindow._2,
-                reference.getContig(windows(0).contig)))
-          }
-          case None => windows.map(initOrMovePileup(None, _, reference.getContig(windows(0).contig)))
+        val advancedPileups =
+          maybePileups match {
+
+            case Some(existingPileups) =>
+              existingPileups
+                .zip(windows)
+                .map(
+                  pileupAndWindow => initOrMovePileup(
+                    Some(pileupAndWindow._1),
+                    pileupAndWindow._2,
+                    reference.getContig(windows(0).contig)
+                  )
+                )
+
+            case None =>
+              windows.map(initOrMovePileup(None, _, reference.getContig(windows(0).contig)))
         }
         (Some(advancedPileups), function(advancedPileups))
       })

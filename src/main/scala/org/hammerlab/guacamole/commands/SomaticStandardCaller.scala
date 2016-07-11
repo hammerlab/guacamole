@@ -22,7 +22,6 @@ import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.rdd.ADAMContext
 import org.bdgenomics.formats.avro.DatabaseVariantAnnotation
-import org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociAccordingToArgs
 import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMapTwoRDDs
 import org.hammerlab.guacamole.filters.PileupFilter.PileupFilterArguments
 import org.hammerlab.guacamole.filters.SomaticGenotypeFilter.SomaticGenotypeFilterArguments
@@ -31,7 +30,11 @@ import org.hammerlab.guacamole.likelihood.Likelihood
 import org.hammerlab.guacamole.logging.DelayedMessages
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.readsets.{InputFilters, ReadSets, SomaticCallerArgs}
+import org.hammerlab.guacamole.reads.MappedRead
+import org.hammerlab.guacamole.readsets.args.SomaticCallerArgs
+import org.hammerlab.guacamole.readsets.rdd.PartitionedRegions
+import org.hammerlab.guacamole.readsets.ReadSets
+import org.hammerlab.guacamole.readsets.loading.InputFilters
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.variants.{Allele, AlleleConversions, AlleleEvidence, CalledSomaticAllele, GenotypeOutputArgs, VariantUtils}
 import org.kohsuke.args4j.{Option => Args4jOption}
@@ -94,18 +97,17 @@ object SomaticStandard {
 
       val oddsThreshold = args.oddsThreshold
 
-      val lociPartitions =
-        partitionLociAccordingToArgs(
-          args,
+      val partitionedReads =
+        PartitionedRegions(
+          tumorReads.mappedReads ++ normalReads.mappedReads,
           loci.result(contigLengths),
-          Vector(tumorReads.mappedReads, normalReads.mappedReads)
+          args,
+          halfWindowSize = 0
         )
 
       var potentialGenotypes: RDD[CalledSomaticAllele] =
         pileupFlatMapTwoRDDs[CalledSomaticAllele](
-          tumorReads.mappedReads,
-          normalReads.mappedReads,
-          lociPartitions,
+          partitionedReads,
           skipEmpty = true, // skip empty pileups
           function = (pileupTumor, pileupNormal) =>
             findPotentialVariantAtLocus(

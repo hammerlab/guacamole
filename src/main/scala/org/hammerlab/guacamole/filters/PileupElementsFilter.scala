@@ -29,7 +29,7 @@ object QualityAlignedReadsFilter {
    * @param minimumAlignmentQuality Threshold to define whether a read was poorly aligned
    * @return filtered sequence of elements - those who had higher than minimumAlignmentQuality alignmentQuality
    */
-  def apply(elements: Seq[PileupElement], minimumAlignmentQuality: Int): Seq[PileupElement] = {
+  def apply(elements: Iterable[PileupElement], minimumAlignmentQuality: Int): Iterable[PileupElement] = {
     elements.filter(_.read.alignmentQuality >= minimumAlignmentQuality)
   }
 
@@ -45,7 +45,7 @@ object EdgeBaseFilter {
    * @param minimumDistanceFromEndFromRead Threshold of distance from base to edge of read
    * @return filtered sequence of elements - those who were further from directional end minimumDistanceFromEndFromRead
    */
-  def apply(elements: Seq[PileupElement], minimumDistanceFromEndFromRead: Int): Seq[PileupElement] = {
+  def apply(elements: Iterable[PileupElement], minimumDistanceFromEndFromRead: Int): Iterable[PileupElement] = {
     elements.filter(_.distanceFromSequencingEnd >= minimumDistanceFromEndFromRead)
   }
 }

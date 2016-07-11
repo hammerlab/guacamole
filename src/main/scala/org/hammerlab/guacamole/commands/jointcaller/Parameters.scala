@@ -89,11 +89,10 @@ object Parameters {
       usage = "max germline error rate percent to have a somatic call")
     var somaticMaxGermlineErrorRatePercent: Double = 4.0
 
-    @Args4jOption(name = "--somatic-genotype-policy",
-      usage = "how to genotype (e.g. 0/0 vs. 0/1) somatic calls. Valid options: 'presence' (default), 'trigger'. " +
-        "'presence' will genotype as a het (0/1) if there is any evidence for that call in the sample " +
-        "(num variant reads > 0 and num variant reads > any other non-reference allele). " +
-        "'trigger' will genotype a call as a het only if that sample actually triggered the call.")
+    @Args4jOption(
+      name = "--somatic-genotype-policy",
+      usage = "how to genotype (e.g. 0/0 vs. 0/1) somatic calls. Valid options: 'presence' (default), 'trigger'. 'presence' will genotype as a het (0/1) if there is any evidence for that call in the sample (num variant reads > 0 and num variant reads > any other non-reference allele). 'trigger' will genotype a call as a het only if that sample actually triggered the call."
+    )
     var somaticGenotypePolicy: String = "presence"
 
     @Args4jOption(name = "--filter-strand-bias-phred",

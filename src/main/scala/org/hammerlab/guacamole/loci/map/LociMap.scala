@@ -18,9 +18,13 @@
 
 package org.hammerlab.guacamole.loci.map
 
+import java.io.{InputStream, OutputStream, PrintStream}
+
+import org.hammerlab.guacamole.loci.partitioning.LociPartitioner.PartitionIndex
 import org.hammerlab.guacamole.loci.set.{LociSet, Builder => LociSetBuilder}
-import org.hammerlab.guacamole.reference.{Contig => ContigName}
+import org.hammerlab.guacamole.reference.{ReferenceRegion, Contig => ContigName}
 import org.hammerlab.guacamole.strings.TruncatedToString
+import org.hammerlab.magic.iterator.LinesIterator
 
 import scala.collection.immutable.TreeMap
 import scala.collection.{SortedMap, mutable}
@@ -57,6 +61,9 @@ case class LociMap[T] private(@transient private val map: SortedMap[ContigName, 
     mapOfBuilders.mapValues(_.result).toMap
   }
 
+  def getAll(r: ReferenceRegion, halfWindowSize: Int = 0): Set[T] =
+    onContig(r.contig).getAll(r.start - halfWindowSize, r.end + halfWindowSize)
+
   /**
    * Returns the loci map on the specified contig.
    *
@@ -67,6 +74,16 @@ case class LociMap[T] private(@transient private val map: SortedMap[ContigName, 
 
   /** Build a truncate-able toString() out of underlying contig pieces. */
   def stringPieces: Iterator[String] = contigs.iterator.flatMap(_.stringPieces)
+
+  def prettyPrint(os: OutputStream): Unit = {
+    val ps =
+      os match {
+        case ps: PrintStream => ps
+        case _ => new PrintStream(os)
+      }
+
+    stringPieces.foreach(ps.println)
+  }
 }
 
 object LociMap {
@@ -75,6 +92,26 @@ object LociMap {
 
   /** Construct an empty LociMap. */
   def apply[T](): LociMap[T] = LociMap(TreeMap[ContigName, Contig[T]]())
+
+  def load(is: InputStream): LociMap[PartitionIndex] = {
+    fromLines(LinesIterator(is))
+  }
+
+  def fromLines(lines: TraversableOnce[String]): LociMap[PartitionIndex] = {
+    val builder = newBuilder[PartitionIndex]
+    val re = """([^:]+):(\d+)-(\d+)=(\d+)""".r
+    for {
+      line <- lines
+      m <- re.findFirstMatchIn(line)
+      contig = m.group(1)
+      start = m.group(2).toLong
+      end = m.group(3).toLong
+      partition = m.group(4).toInt
+    } {
+      builder.put(contig, start, end, partition)
+    }
+    builder.result()
+  }
 
   /** The following convenience constructors are only called by Builder. */
   private[map] def apply[T](contigs: (String, Long, Long, T)*): LociMap[T] = {

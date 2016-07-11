@@ -1,11 +1,12 @@
 package org.hammerlab.guacamole.commands.jointcaller
 
 import org.hammerlab.guacamole.loci.set.{LociParser, LociSet}
+import org.hammerlab.guacamole.readsets.rdd.ReadsRDDUtil
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.reference.ReferenceBroadcast.MapBackedReferenceSequence
 import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
 
-class SomaticJointCallerSuite extends GuacFunSuite {
+class SomaticJointCallerSuite extends GuacFunSuite with ReadsRDDUtil {
   val cancerWGS1Bams = Vector("normal.bam", "primary.bam", "recurrence.bam").map(
     name => TestUtil.testDataPath("cancer-wgs1/" + name))
 
@@ -22,22 +23,27 @@ class SomaticJointCallerSuite extends GuacFunSuite {
     ReferenceBroadcast(b37Chromosome22Fasta, sc, partialFasta = false)
   }
 
-  test("call a somatic variant") {
+  test("force-call a non-variant locus") {
     val inputs = InputCollection(cancerWGS1Bams)
     val loci = LociParser("chr12:65857040")
-    val readSets = SomaticJoint.inputsToReadSets(sc, inputs, loci)
+    val readSets = makeReadSets(inputs.paths, loci)
     val calls = SomaticJoint.makeCalls(
       sc, inputs, readSets, Parameters.defaults, hg19PartialReference, loci.result, loci.result).collect
 
     calls.length should equal(1)
-    calls.head.singleAlleleEvidences.length should equal(1)
-    calls.head.singleAlleleEvidences.map(_.allele.ref) should equal(Seq("G"))
+
+    val evidences = calls.head.singleAlleleEvidences
+    evidences.length should equal(1)
+
+    val allele = evidences.head.allele
+    allele.start should be(65857040)
+    allele.ref should be("G")
   }
 
   test("call a somatic deletion") {
     val inputs = InputCollection(cancerWGS1Bams)
     val loci = LociParser("chr5:82649006-82649009")
-    val readSets = SomaticJoint.inputsToReadSets(sc, inputs, loci)
+    val readSets = makeReadSets(inputs.paths, loci)
     val calls = SomaticJoint.makeCalls(
       sc,
       inputs,
@@ -57,7 +63,7 @@ class SomaticJointCallerSuite extends GuacFunSuite {
   test("call germline variants") {
     val inputs = InputCollection(cancerWGS1Bams.take(1), tissueTypes = Vector("normal"))
     val loci = LociParser("chr1,chr2,chr3")
-    val readSets = SomaticJoint.inputsToReadSets(sc, inputs, loci)
+    val readSets = makeReadSets(inputs.paths, loci)
     val calls =
       SomaticJoint.makeCalls(
         sc,
@@ -95,7 +101,7 @@ class SomaticJointCallerSuite extends GuacFunSuite {
   test("don't call variants with N as the reference base") {
     val inputs = InputCollection(cancerWGS1Bams)
     val loci = LociParser("chr12:65857030-65857080")
-    val readSets = SomaticJoint.inputsToReadSets(sc, inputs, loci)
+    val readSets = makeReadSets(inputs.paths, loci)
     val emptyPartialReference = ReferenceBroadcast(
       Map("chr12" -> MapBackedReferenceSequence(500000000, sc.broadcast(Map.empty))))
     val calls = SomaticJoint.makeCalls(
@@ -112,7 +118,7 @@ class SomaticJointCallerSuite extends GuacFunSuite {
     val callsWithRNA = SomaticJoint.makeCalls(
       sc,
       inputsWithRNA,
-      SomaticJoint.inputsToReadSets(sc, inputsWithRNA, loci),
+      makeReadSets(inputsWithRNA.paths, loci),
       parameters,
       b37Chromosome22Reference,
       loci.result).collect.filter(_.bestAllele.isCall)
@@ -121,7 +127,7 @@ class SomaticJointCallerSuite extends GuacFunSuite {
     val callsWithoutRNA = SomaticJoint.makeCalls(
       sc,
       inputsWithoutRNA,
-      SomaticJoint.inputsToReadSets(sc, inputsWithoutRNA, loci),
+      makeReadSets(inputsWithoutRNA.paths, loci),
       parameters,
       b37Chromosome22Reference,
       loci.result).collect.filter(_.bestAllele.isCall)

@@ -19,10 +19,13 @@
 package org.hammerlab.guacamole.pileup
 
 import org.hammerlab.guacamole.reads.MappedRead
+import org.hammerlab.guacamole.readsets.{NumSamples, PerSample, SampleId}
 import org.hammerlab.guacamole.reference.Position.Locus
-import org.hammerlab.guacamole.reference.{Contig, ContigSequence, ReferenceBroadcast}
-import org.hammerlab.guacamole.util.Bases
-import org.hammerlab.guacamole.variants.{Allele, Genotype}
+import org.hammerlab.guacamole.reference.{Contig, ContigSequence, Position, PositionI}
+import org.hammerlab.guacamole.variants.Allele
+
+import scala.collection.mutable.ArrayBuffer
+import scala.math.PartiallyOrdered
 
 /**
  * A [[Pileup]] at a locus contains a sequence of [[PileupElement]] instances, one for every read that overlaps that
@@ -38,7 +41,7 @@ import org.hammerlab.guacamole.variants.{Allele, Genotype}
 case class Pileup(contig: Contig,
                   locus: Locus,
                   reference: ContigSequence,
-                  elements: Seq[PileupElement]) {
+                  elements: Iterable[PileupElement]) extends PositionI {
 
   val referenceBase: Byte = reference(locus.toInt)
 
@@ -53,7 +56,7 @@ case class Pileup(contig: Contig,
       contig, elements.map(_.read.contig).filter(_ != contig).mkString(",")))
   assume(elements.forall(_.locus == locus), "Reads in pileup have mismatching loci")
 
-  lazy val distinctAlleles: Seq[Allele] = elements.map(_.allele).distinct.sorted.toVector
+  lazy val distinctAlleles: Seq[Allele] = elements.map(_.allele).toVector.distinct.sorted
 
   lazy val sampleName = elements.head.read.sampleName
 
@@ -61,16 +64,23 @@ case class Pileup(contig: Contig,
    * Split this [[Pileup]] by sample name. Returns a map from sample name to [[Pileup]] instances that use only reads
    * from that sample.
    */
-  lazy val bySample: Map[String, Pileup] = {
-    elements.groupBy(element => Option(element.read.sampleName).map(_.toString).getOrElse("default")).map({
-      case (sample, newElements) => (sample, Pileup(contig, locus, reference, newElements))
-    })
+  def bySample(numSamples: NumSamples): PerSample[Pileup] = {
+    val elementBuffers = Vector.fill(numSamples)(ArrayBuffer[PileupElement]())
+    for {
+      element <- elements
+    } {
+      elementBuffers(element.read.sampleId) += element
+    }
+    elementBuffers.map(Pileup(contig, locus, reference, _))
   }
+
+  lazy val bySampleMap: Map[SampleId, Pileup] =
+    elements.groupBy(_.read.sampleId).mapValues(Pileup(contig, locus, reference, _))
 
   /**
    * Depth of pileup - number of reads at locus
    */
-  lazy val depth: Int = elements.length
+  lazy val depth: Int = elements.size
 
   /**
    * Number of positively stranded reads
@@ -141,6 +151,7 @@ case class Pileup(contig: Contig,
     (alleleElements.size, numAllelePositiveElements)
   }
 }
+
 object Pileup {
   /**
    * Given reads and a locus, returns a [[Pileup]] at the specified locus.
@@ -150,9 +161,9 @@ object Pileup {
    * @param reference The reference for this pileup's contig
    * @return A [[Pileup]] at the given locus.
    */
-  def apply(reads: Seq[MappedRead], contig: Contig, locus: Locus, reference: ContigSequence): Pileup = {
+  def apply(reads: Iterable[MappedRead], contig: Contig, locus: Locus, reference: ContigSequence): Pileup = {
     //TODO: Is this call to overlaps locus necessary?
-    val elements = reads.filter(_.overlapsLocus(locus)).map(PileupElement(_, locus, reference))
-    Pileup(contig, locus, reference, elements.toIndexedSeq)
+    val elements = reads.map(PileupElement(_, locus, reference))
+    Pileup(contig, locus, reference, elements)
   }
 }
