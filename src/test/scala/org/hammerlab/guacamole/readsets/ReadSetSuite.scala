@@ -147,7 +147,7 @@ class ReadSetSuite extends GuacFunSuite {
     val serializedReads = reads.map(serialize)
     val deserializedReads: Seq[MappedRead] = serializedReads.map(deserialize[MappedRead](_))
     for ((read, deserialized) <- reads.zip(deserializedReads)) {
-      deserialized.referenceContig should equal(read.referenceContig)
+      deserialized.contig should equal(read.contig)
       deserialized.alignmentQuality should equal(read.alignmentQuality)
       deserialized.start should equal(read.start)
       deserialized.cigar should equal(read.cigar)

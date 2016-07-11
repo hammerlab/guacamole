@@ -165,7 +165,7 @@ object WindowFlatMapUtils {
     // Expand regions into (task, region) pairs for each region RDD.
     val taskNumberRegionPairsRDDs: PerSample[RDD[(TaskPosition, R)]] =
       regionRDDs.map(_.flatMap(region => {
-        val singleContig = lociPartitionsBoxed.value.onContig(region.referenceContig)
+        val singleContig = lociPartitionsBoxed.value.onContig(region.contig)
         val thisRegionsTasks = singleContig.getAll(region.start - halfWindowSize, region.end + halfWindowSize)
 
         // Update counters
@@ -174,7 +174,7 @@ object WindowFlatMapUtils {
         expandedRegions += thisRegionsTasks.size
 
         // Return this region, duplicated for each task it is assigned to.
-        thisRegionsTasks.map(task => (TaskPosition(task, region.referenceContig, region.start), region))
+        thisRegionsTasks.map(task => (TaskPosition(task, region.contig, region.start), region))
       }))
 
     // Run the task on each partition. Keep track of the number of regions assigned to each task in an accumulator, so

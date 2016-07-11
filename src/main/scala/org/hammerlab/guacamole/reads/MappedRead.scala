@@ -29,24 +29,24 @@ import scala.collection.JavaConversions
 /**
  * A mapped read. See the [[Read]] trait for some of the field descriptions.
  *
- * @param referenceContig the contig name (e.g. "chr12") that this read was mapped to.
+ * @param contig the contig name (e.g. "chr12") that this read was mapped to.
  * @param alignmentQuality the mapping quality, phred scaled.
  * @param start the (0-based) reference locus that the first base in this read aligns to.
  * @param cigar parsed samtools CIGAR object.
  */
 case class MappedRead(
-    name: String,
-    sequence: IndexedSeq[Byte],
-    baseQualities: IndexedSeq[Byte],
-    isDuplicate: Boolean,
-    sampleName: String,
-    referenceContig: String,
-    alignmentQuality: Int,
-    start: Long,
-    cigar: Cigar,
-    failedVendorQualityChecks: Boolean,
-    isPositiveStrand: Boolean,
-    isPaired: Boolean) extends Read with ReferenceRegion {
+                       name: String,
+                       sequence: IndexedSeq[Byte],
+                       baseQualities: IndexedSeq[Byte],
+                       isDuplicate: Boolean,
+                       sampleName: String,
+                       contig: String,
+                       alignmentQuality: Int,
+                       start: Long,
+                       cigar: Cigar,
+                       failedVendorQualityChecks: Boolean,
+                       isPositiveStrand: Boolean,
+                       isPaired: Boolean) extends Read with ReferenceRegion {
 
   assert(baseQualities.length == sequence.length,
     "Base qualities have length %d but sequence has length %d".format(baseQualities.length, sequence.length))
@@ -161,7 +161,7 @@ case class MappedRead(
 
   override def toString(): String =
     "MappedRead(%s:%d, %s, %s)".format(
-      referenceContig, start,
+      contig, start,
       cigar.toString,
       Bases.basesToString(sequence)
     )
