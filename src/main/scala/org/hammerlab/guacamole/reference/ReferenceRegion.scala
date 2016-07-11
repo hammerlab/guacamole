@@ -25,13 +25,13 @@ package org.hammerlab.guacamole.reference
 trait ReferenceRegion {
 
   /** Name of the reference contig */
-  val referenceContig: String
+  def referenceContig: String
 
   /** Start position on the genome, inclusive. Must be non-negative. */
-  val start: Long
+  def start: Long
 
   /** The end position on the genome, *exclusive*. Must be non-negative. */
-  val end: Long
+  def end: Long
 
   /**
    * Does the region overlap the given locus, with halfWindowSize padding?

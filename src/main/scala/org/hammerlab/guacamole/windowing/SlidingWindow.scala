@@ -87,7 +87,7 @@ case class SlidingWindow[R <: ReferenceRegion](referenceName: String,
     // Remove regions that are no longer in the window.
     // Note that the end of a region is exclusive, so e.g. if halfWindowSize=0 and head.end=locus, we do want to drop
     // that read.
-    while (!currentRegionsPriorityQueue.isEmpty && currentRegionsPriorityQueue.head.end <= locus - halfWindowSize) {
+    while (currentRegionsPriorityQueue.nonEmpty && currentRegionsPriorityQueue.head.end <= locus - halfWindowSize) {
       val dropped = currentRegionsPriorityQueue.dequeue()
       assert(!dropped.overlapsLocus(locus, halfWindowSize))
     }
@@ -174,15 +174,15 @@ object SlidingWindow {
         }
       }
       // No more loci remaining in the iterator. We're done.
-      return None
+      None
     } else if (loci.hasNext) {
       // Not skipping empty, and we have another locus in the iterator to go to.
       val nextLocus = loci.next()
       windows.foreach(_.setCurrentLocus(nextLocus))
-      return Some(nextLocus)
+      Some(nextLocus)
     } else {
       // We are out of loci.
-      return None
+      None
     }
   }
 }
