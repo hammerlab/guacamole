@@ -91,6 +91,6 @@ object LociMap {
     LociMap(
       TreeMap(
         contigs.map(contig => contig.name -> contig).toSeq: _*
-      )
+      )(ContigName.ordering)
     )
 }

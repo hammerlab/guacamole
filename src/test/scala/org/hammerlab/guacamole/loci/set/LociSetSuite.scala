@@ -135,7 +135,7 @@ class LociSetSuite extends GuacFunSuite with Util {
       "chr20" -> 5000L
     )
     .toString should equal(
-      "17:0-12,chr1:0-10,chr2:0-20,chr20:10-20"
+      "chr1:0-10,chr2:0-20,17:0-12,chr20:10-20"
     )
   }
 

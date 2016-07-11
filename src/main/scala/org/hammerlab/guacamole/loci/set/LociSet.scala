@@ -132,7 +132,7 @@ object LociSet {
           .filterNot(_.isEmpty)
           .map(contig => contig.name -> contig)
           .toSeq: _*
-      )
+      )(ContigName.ordering)
     )
 
   def apply(contigs: Iterable[(ContigName, Locus, Locus)]): LociSet =
