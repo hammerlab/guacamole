@@ -39,7 +39,10 @@ object Main extends Logging {
     SomaticStandard.Caller,
     VariantSupport.Caller,
     VAFHistogram.Caller,
-    SomaticJoint.Caller)
+    SomaticJoint.Caller,
+    PartitionReads,
+    CountPileups
+  )
 
   private def printUsage() = {
     println("Usage: java ... <command> [other args]\n")

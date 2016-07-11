@@ -27,8 +27,11 @@ import org.apache.spark.SparkContext
 import org.hammerlab.guacamole.loci.set.LociParser
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.{MappedRead, MateAlignmentProperties, PairedRead, Read}
-import org.hammerlab.guacamole.readsets.{InputFilters, ReadLoadingConfig, ReadSets, ReadsArgs, ReadsRDD}
-import org.hammerlab.guacamole.reference.Locus
+import org.hammerlab.guacamole.readsets.ReadSets
+import org.hammerlab.guacamole.readsets.args.ReadsArgs
+import org.hammerlab.guacamole.readsets.loading.{InputFilters, ReadLoadingConfig}
+import org.hammerlab.guacamole.readsets.rdd.ReadsRDD
+import org.hammerlab.guacamole.reference.Position.Locus
 import org.hammerlab.guacamole.reference.ReferenceBroadcast.MapBackedReferenceSequence
 import org.hammerlab.guacamole.reference.{ContigName, ContigSequence, ReferenceBroadcast}
 
@@ -81,6 +84,7 @@ object TestUtil {
                    name: String,
                    baseQualities: String = "",
                    isDuplicate: Boolean = false,
+                   sampleId: Int = 0,
                    sampleName: String = "",
                    contigName: ContigName = "",
                    alignmentQuality: Int = -1,
@@ -99,6 +103,7 @@ object TestUtil {
       sequenceArray,
       qualityScoresArray,
       isDuplicate,
+      sampleId,
       sampleName.intern,
       contigName,
       alignmentQuality,
@@ -115,7 +120,8 @@ object TestUtil {
                start: Locus = 1,
                chr: ContigName = "chr1",
                qualityScores: Option[Seq[Int]] = None,
-               alignmentQuality: Int = 30): MappedRead = {
+               alignmentQuality: Int = 30,
+               sampleId: Int = 0): MappedRead = {
 
     val qualityScoreString = if (qualityScores.isDefined) {
       qualityScores.get.map(q => q + 33).map(_.toChar).mkString
@@ -128,6 +134,7 @@ object TestUtil {
       name = "read1",
       cigarString = cigar,
       start = start,
+      sampleId = sampleId,
       contigName = chr,
       baseQualities = qualityScoreString,
       alignmentQuality = alignmentQuality
@@ -218,8 +225,10 @@ object TestUtil {
                             reference: ReferenceBroadcast): (Pileup, Pileup) = {
     val contig = tumorReads(0).contigName
     assume(normalReads(0).contigName == contig)
-    (Pileup(tumorReads, contig, locus, reference.getContig(contig)),
-      Pileup(normalReads, contig, locus, reference.getContig(contig)))
+    (
+      Pileup(tumorReads.filter(_.overlapsLocus(locus)), contig, locus, reference.getContig(contig)),
+      Pileup(normalReads.filter(_.overlapsLocus(locus)), contig, locus, reference.getContig(contig))
+    )
   }
 
   def loadPileup(sc: SparkContext,
@@ -243,7 +252,7 @@ object TestUtil {
       localReads,
       actualContig,
       locus,
-      referenceContigSequence = reference.getContig(actualContig)
+      reference.getContig(actualContig)
     )
   }
 

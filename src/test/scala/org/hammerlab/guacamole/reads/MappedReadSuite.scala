@@ -31,6 +31,7 @@ class MappedReadSuite extends GuacFunSuite {
       "TCGACCCTCGA",
       Array[Byte]((10 to 20).map(_.toByte): _*),
       true,
+      123,
       "some sample name",
       "chr5",
       50,
@@ -52,6 +53,7 @@ class MappedReadSuite extends GuacFunSuite {
       "TCGACCCTCGA",
       Array[Byte]((10 to 20).map(_.toByte): _*),
       isDuplicate = true,
+      123,
       "some sample name",
       failedVendorQualityChecks = false,
       isPaired = true
@@ -62,6 +64,7 @@ class MappedReadSuite extends GuacFunSuite {
       "TCGACCCTCGA",
       Array[Byte]((10 to 20).map(_.toByte): _*),
       isDuplicate = true,
+      123,
       "some sample name",
       "chr5",
       50,

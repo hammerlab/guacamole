@@ -21,12 +21,13 @@ package org.hammerlab.guacamole.reads
 import htsjdk.samtools._
 import org.apache.spark.Logging
 import org.bdgenomics.formats.avro.AlignmentRecord
+import org.hammerlab.guacamole.readsets.iterator.overlaps.per_sample.HasSampleId
 import org.hammerlab.guacamole.util.Bases
 
 /**
  * The fields in the Read trait are common to any read, whether mapped (aligned) or not.
  */
-trait Read {
+trait Read extends HasSampleId {
 
   /* The template name. A read, its mate, and any alternate alignments have the same name. */
   def name: String
@@ -45,6 +46,8 @@ trait Read {
 
   def asMappedRead: Option[MappedRead]
 
+  def sampleId: Int
+
   /** The sample (e.g. "tumor" or "patient3636") name. */
   def sampleName: String
 
@@ -57,6 +60,7 @@ trait Read {
 }
 
 object Read extends Logging {
+
   /**
    * Converts the ascii-string encoded base qualities into an array of integers
    * quality scores in Phred-scale
@@ -81,53 +85,59 @@ object Read extends Logging {
    * @param record
    * @return
    */
-  def apply(record: SAMRecord): Read = {
+  def apply(record: SAMRecord, sampleId: Int): Read = {
 
-    val isMapped = (
+    val isMapped =
       !record.getReadUnmappedFlag &&
       record.getReferenceName != null &&
       record.getReferenceIndex >= SAMRecord.NO_ALIGNMENT_REFERENCE_INDEX &&
       record.getAlignmentStart >= 0 &&
-      record.getUnclippedStart >= 0)
+      record.getUnclippedStart >= 0
 
-    val sampleName = (if (record.getReadGroup != null && record.getReadGroup.getSample != null) {
-      record.getReadGroup.getSample
-    } else {
-      "default"
-    }).intern
+    val sampleName =
+      (if (record.getReadGroup != null && record.getReadGroup.getSample != null) {
+        record.getReadGroup.getSample
+      } else {
+        "default"
+      }).intern
 
-    val read = if (isMapped) {
-      val result = MappedRead(
-        record.getReadName,
-        record.getReadString.getBytes,
-        record.getBaseQualities,
-        record.getDuplicateReadFlag,
-        sampleName.intern,
-        record.getReferenceName.intern,
-        record.getMappingQuality,
-        record.getAlignmentStart - 1,
-        cigar = record.getCigar,
-        failedVendorQualityChecks = record.getReadFailsVendorQualityCheckFlag,
-        isPositiveStrand = !record.getReadNegativeStrandFlag,
-        isPaired = record.getReadPairedFlag
-      )
+    val read =
+      if (isMapped) {
+        val result =
+          MappedRead(
+            record.getReadName,
+            record.getReadString.getBytes,
+            record.getBaseQualities,
+            record.getDuplicateReadFlag,
+            sampleId,
+            sampleName.intern,
+            record.getReferenceName.intern,
+            record.getMappingQuality,
+            record.getAlignmentStart - 1,
+            cigar = record.getCigar,
+            failedVendorQualityChecks = record.getReadFailsVendorQualityCheckFlag,
+            isPositiveStrand = !record.getReadNegativeStrandFlag,
+            isPaired = record.getReadPairedFlag
+          )
 
-      // We subtract 1 from start, since samtools is 1-based and we're 0-based.
-      if (result.unclippedStart != record.getUnclippedStart - 1)
-        log.warn("Computed read 'unclippedStart' %d != samtools read end %d.".format(
-          result.unclippedStart, record.getUnclippedStart - 1))
-      result
-    } else {
-      UnmappedRead(
-        record.getReadName,
-        record.getReadString.getBytes,
-        record.getBaseQualities,
-        record.getDuplicateReadFlag,
-        sampleName,
-        record.getReadFailsVendorQualityCheckFlag,
-        record.getReadPairedFlag
-      )
-    }
+        // We subtract 1 from start, since samtools is 1-based and we're 0-based.
+        if (result.unclippedStart != record.getUnclippedStart - 1)
+          log.warn("Computed read 'unclippedStart' %d != samtools read end %d.".format(
+            result.unclippedStart, record.getUnclippedStart - 1))
+        result
+      } else {
+        UnmappedRead(
+          record.getReadName,
+          record.getReadString.getBytes,
+          record.getBaseQualities,
+          record.getDuplicateReadFlag,
+          sampleId,
+          sampleName,
+          record.getReadFailsVendorQualityCheckFlag,
+          record.getReadPairedFlag
+        )
+      }
+
     if (record.getReadPairedFlag) {
       val mateAlignment = MateAlignmentProperties(record)
       PairedRead(read, isFirstInPair = record.getFirstOfPairFlag, mateAlignment)
@@ -143,7 +153,7 @@ object Read extends Logging {
    * @param alignmentRecord ADAM Alignment Record (an aligned or unaligned read)
    * @return Mapped or Unmapped Read
    */
-  def apply(alignmentRecord: AlignmentRecord): Read = {
+  def apply(alignmentRecord: AlignmentRecord, sampleId: Int): Read = {
 
     val sequence = Bases.stringToBases(alignmentRecord.getSequence)
     val baseQualities = baseQualityStringToArray(alignmentRecord.getQual, sequence.length)
@@ -157,6 +167,7 @@ object Read extends Logging {
         sequence = sequence,
         baseQualities = baseQualities,
         isDuplicate = alignmentRecord.getDuplicateRead,
+        sampleId = sampleId,
         sampleName = alignmentRecord.getRecordGroupSample.intern(),
         contigName = referenceContig,
         alignmentQuality = alignmentRecord.getMapq,
@@ -172,6 +183,7 @@ object Read extends Logging {
         sequence = sequence,
         baseQualities = baseQualities,
         isDuplicate = alignmentRecord.getDuplicateRead,
+        sampleId = sampleId,
         sampleName = alignmentRecord.getRecordGroupSample.intern(),
         failedVendorQualityChecks = alignmentRecord.getFailedVendorQualityChecks,
         alignmentRecord.getReadPaired

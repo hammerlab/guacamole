@@ -57,8 +57,10 @@ case class Contig(var name: ContigName, private var rangeSet: RangeSet[JLong]) e
   /** Is this contig empty? */
   def isEmpty: Boolean = rangeSet.isEmpty
 
+  def nonEmpty: Boolean = !isEmpty
+
   /** Iterator through loci on this contig, sorted. */
-  def iterator = new ContigIterator(this)
+  def iterator = new LociIterator(ranges.iterator.buffered)
 
   /** Number of loci on this contig. */
   def count = ranges.map(_.length).sum

@@ -1,6 +1,9 @@
 package org.hammerlab.guacamole
 
-import org.hammerlab.guacamole.reference.{ContigName, NumLoci}
+import org.hammerlab.guacamole.reads.MappedRead
+import org.hammerlab.guacamole.readsets.rdd.PartitionedRegions
+import org.hammerlab.guacamole.reference.ContigName
+import org.hammerlab.guacamole.reference.Position.NumLoci
 
 /**
  * Guacamole is a framework for writing variant callers on the Apache Spark platform. Several variant callers are
@@ -16,4 +19,7 @@ import org.hammerlab.guacamole.reference.{ContigName, NumLoci}
 package object readsets {
   type PerSample[A] = IndexedSeq[A]
   type ContigLengths = Map[ContigName, NumLoci]
+  type SampleId = Int
+  type NumSamples = Int
+  type PartitionedReads = PartitionedRegions[MappedRead]
 }
