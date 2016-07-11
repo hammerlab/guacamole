@@ -69,7 +69,7 @@ case class LociMap[T](private val map: SortedMap[String, Contig[T]]) extends Tru
 
 object LociMap {
   /** Returns a new Builder instance for constructing a LociMap. */
-  def newBuilder[T](): Builder[T] = new Builder[T]()
+  def newBuilder[T]: Builder[T] = new Builder[T]()
 
   /** Construct an empty LociMap. */
   def apply[T](): LociMap[T] = LociMap(TreeMap[String, Contig[T]]())
