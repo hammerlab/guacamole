@@ -100,14 +100,6 @@ class LociParser {
    */
   def result: LociSet = result(None)  // enables omitting parentheses: builder.result instead of builder.result()
   def result(contigLengths: ContigLengths): LociSet = result(Some(contigLengths))
-  def result(contigLengths: (ContigName, NumLoci)*): LociSet =
-    result(
-      // Calling .result() should pass None, not Some(Map.empty)
-      if (contigLengths.nonEmpty)
-        Some(contigLengths.toMap)
-      else
-        None
-    )
 
   private def result(contigLengthsOpt: Option[ContigLengths] = None): LociSet = {
 
