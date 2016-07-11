@@ -60,10 +60,17 @@ object TestUtil {
     val map = mutable.HashMap[String, ContigSequence]()
     contigStartSequences.foreach({
       case (contig, start, sequence) => {
-        val locusToBase = Bases.stringToBases(sequence).zipWithIndex.map(pair => (pair._2 + start, pair._1)).toMap
+        val locusToBase: Map[Int, Byte] =
+          (for {
+            (base, locus) <- Bases.stringToBases(sequence).zipWithIndex
+          } yield
+            (locus + start) -> base
+          ).toMap
+
         map.put(contig, MapBackedReferenceSequence(contigLengths, sc.broadcast(locusToBase)))
       }
     })
+
     new ReferenceBroadcast(map.toMap, source=Some("test_values"))
   }
 

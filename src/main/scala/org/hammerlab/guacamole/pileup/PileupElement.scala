@@ -216,7 +216,7 @@ case class PileupElement(
    */
   @tailrec
   final def advanceToLocus(newLocus: Long): PileupElement = {
-    assume(newLocus >= locus, "Can't rewind to locus %d from %d. Pileups only advance.".format(newLocus, locus))
+    assume(newLocus >= locus, s"Can't rewind to locus $newLocus from $locus. Pileups only advance. $read")
     assume(newLocus < read.end, "This read stops at position %d. Can't advance to %d".format(read.end, newLocus))
     if (currentCigarElementContainsLocus(newLocus)) {
       // Aside: the current cigar element must consume reference bases if we've gotten here.
@@ -256,7 +256,7 @@ object PileupElement {
   /**
    * Create a new [[PileupElement]] backed by the given read at the specified locus. The read must overlap the locus.
    */
-  def apply(read: MappedRead, locus: Long, referenceContigSequence: ContigSequence): PileupElement = {
+  def apply(read: MappedRead, locus: Long, referenceContigSequence: ContigSequence): PileupElement =
     PileupElement(
       read = read,
       locus = read.start,
@@ -264,8 +264,8 @@ object PileupElement {
       cigarElementIndex = 0,
       cigarElementLocus = read.start,
       indexWithinCigarElement = 0,
-      referenceContigSequence = referenceContigSequence).advanceToLocus(locus)
-  }
+      referenceContigSequence = referenceContigSequence
+    ).advanceToLocus(locus)
 }
 
 case class InvalidCigarElementException(elem: PileupElement)

@@ -180,19 +180,19 @@ class LociSetSuite extends GuacFunSuite {
     iter1.next() should be(2)
     iter1.next() should be(10)
     iter1.next() should be(11)
-    iter1.skipTo(6000000000L) // will hang if it steps through each locus.
+    iter1.skipTo(6000000000L)  // will hang if it steps through each locus.
     iter1.next() should be(6000000000L)
     iter1.next() should be(6000000001L)
-    iter1.hasNext() should be(true)
+    iter1.hasNext should be(true)
 
     val iter2 = set.onContig("chr1").iterator
     iter2.skipTo(100000000000L)
-    iter2.hasNext() should be(false)
+    iter2.hasNext should be(false)
 
     val iter3 = set.onContig("chr1").iterator
     iter3.skipTo(100000000000L - 1L)
-    iter3.hasNext() should be(true)
+    iter3.hasNext should be(true)
     iter3.next() should be(100000000000L - 1L)
-    iter3.hasNext() should be(false)
+    iter3.hasNext should be(false)
   }
 }
