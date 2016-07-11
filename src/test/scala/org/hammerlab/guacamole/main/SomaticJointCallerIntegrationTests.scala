@@ -14,9 +14,10 @@ import org.hammerlab.guacamole.variants.VariantComparisonTest
  *
  * To run:
  *
- *   mvn package
+ *   mvn package -DskipTests
  *   mvn test-compile
  *   java \
+ *     -Xmx4g \
  *     -cp target/guacamole-with-dependencies-0.0.1-SNAPSHOT.jar:target/scala-2.10.5/test-classes \
  *     org.hammerlab.guacamole.main.SomaticJointCallerIntegrationTests
  */
@@ -32,23 +33,30 @@ object SomaticJointCallerIntegrationTests extends SparkCommand[Arguments] with V
   override val name: String = "germline-assembly-integration-test"
   override val description: String = "output various statistics to stdout"
 
-  def main(args: Array[String]): Unit = run(args)
+  val outDir = "/tmp/guacamole-somatic-joint-test"
+
+  // The NA12878 tests use a 100MB BAM and ship all reads to executors, which makes for too-large tasks if we don't
+  // increase the parallelism.
+  setDefaultConf("spark.default.parallelism", "24")
+
+  def main(args: Array[String]): Unit = {
+    val args = new Arguments()
+    args.outDir = outDir
+    args.referenceFastaPath = CancerWGSTestUtil.referenceFastaPath
+    args.referenceFastaIsPartial = true
+    args.somaticGenotypePolicy = "trigger"
+    args.loci = ((1).until(22).map(i => "chr%d".format(i)) ++ Seq("chrX", "chrY")).mkString(",")
+
+    args.paths = CancerWGSTestUtil.bams.toArray
+    run(args)
+  }
 
   override def run(args: Arguments, sc: SparkContext): Unit = {
 
-    println("somatic calling on subset of 3-sample cancer patient 1")
-    val outDir = "/tmp/guacamole-somatic-joint-test"
-
     if (true) {
-      if (true) {
-        val args = new Arguments()
-        args.outDir = outDir
-        args.referenceFastaPath = CancerWGSTestUtil.referenceFastaPath
-        args.referenceFastaIsPartial = true
-        args.somaticGenotypePolicy = "trigger"
-        args.loci = ((1).until(22).map(i => "chr%d".format(i)) ++ Seq("chrX", "chrY")).mkString(",")
+      println("somatic calling on subset of 3-sample cancer patient 1")
 
-        args.paths = CancerWGSTestUtil.bams.toArray
+      if (true) {
 
         val forceCallLoci =
           LociSet(
