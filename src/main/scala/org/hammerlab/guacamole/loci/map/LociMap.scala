@@ -34,16 +34,17 @@ import scala.collection.{SortedMap, mutable}
  *
  * @param map Map from contig names to [[Contig]] instances giving the regions and values on that contig.
  */
-case class LociMap[T](private val map: SortedMap[ContigName, Contig[T]]) extends TruncatedToString {
+case class LociMap[T] private(@transient private val map: SortedMap[ContigName, Contig[T]])
+  extends TruncatedToString {
 
   /** The contigs included in this LociMap with a nonempty set of loci. */
-  lazy val contigs = map.values.toSeq
+  @transient lazy val contigs = map.values.toSeq
 
   /** The number of loci in this LociMap. */
-  lazy val count: Long = contigs.map(_.count).sum
+  @transient lazy val count: Long = contigs.map(_.count).sum
 
   /** The "inverse map", i.e. a T -> LociSet map that gives the loci that map to each value. */
-  lazy val inverse: Map[T, LociSet] = {
+  @transient lazy val inverse: Map[T, LociSet] = {
     val mapOfBuilders = new mutable.HashMap[T, LociSetBuilder]()
     for {
       contig <- contigs

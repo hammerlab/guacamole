@@ -1,5 +1,7 @@
 package org.hammerlab.guacamole.loci.set
 
+import java.io.{ByteArrayInputStream, ByteArrayOutputStream, ObjectInputStream, ObjectOutputStream}
+
 import com.esotericsoftware.kryo.Kryo
 import org.hammerlab.guacamole.util.{GuacFunSuite, KryoTestRegistrar}
 
@@ -63,5 +65,23 @@ class SerializerSuite extends GuacFunSuite {
     val rdd = sc.parallelize(0L until 1000L)
     val result = rdd.filter(i => setBC.value.onContig("chr21").contains(i)).collect
     result should equal(100L until 200)
+  }
+
+  test("java serialization") {
+    val loci = LociSet("chr21:100-200,chr20:0-10,chr20:8-15,chr20:100-120,empty:10-10")
+
+    val baos = new ByteArrayOutputStream()
+    val oos = new ObjectOutputStream(baos)
+
+    oos.writeObject(loci)
+    oos.close()
+
+    val bytes = baos.toByteArray
+    val bais = new ByteArrayInputStream(bytes)
+    val ois = new ObjectInputStream(bais)
+
+    val loci2 = ois.readObject().asInstanceOf[LociSet]
+
+    loci2 should be(loci)
   }
 }

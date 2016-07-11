@@ -19,11 +19,10 @@ class Serializer[T] extends KryoSerializer[LociMap[T]] {
 
   def read(kryo: Kryo, input: Input, klass: Class[LociMap[T]]): LociMap[T] = {
     val count: Long = input.readLong()
-    val pairs = (0L until count).map(i => {
-      val obj = kryo.readObject(input, classOf[Contig[T]])
-      obj.name -> obj
+    val contigs = (0L until count).map(i => {
+      kryo.readObject(input, classOf[Contig[T]])
     })
-    LociMap[T](TreeMap[String, Contig[T]](pairs: _*))
+    LociMap[T](contigs)
   }
 }
 
