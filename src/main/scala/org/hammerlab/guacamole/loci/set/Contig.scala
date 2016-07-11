@@ -1,5 +1,6 @@
 package org.hammerlab.guacamole.loci.set
 
+import java.io.{ObjectInputStream, ObjectOutputStream}
 import java.lang.{Long => JLong}
 
 import com.google.common.collect.{RangeSet, TreeRangeSet, Range => JRange}
@@ -14,7 +15,32 @@ import scala.collection.mutable.ArrayBuffer
 /**
  * A set of loci on a contig, stored/manipulated as loci ranges.
  */
-case class Contig(name: ContigName, private val rangeSet: RangeSet[JLong]) extends TruncatedToString {
+case class Contig(var name: ContigName, private var rangeSet: RangeSet[JLong]) extends TruncatedToString {
+
+  private def readObject(in: ObjectInputStream): Unit = {
+    name = in.readUTF()
+    val num = in.readInt()
+    rangeSet = TreeRangeSet.create[JLong]()
+    for {
+      i <- 0 until num
+    } {
+      val start = in.readLong()
+      val end = in.readLong()
+      val range = JRange.closedOpen[JLong](start, end)
+      rangeSet.add(range)
+    }
+  }
+
+  private def writeObject(out: ObjectOutputStream): Unit = {
+    out.writeUTF(name)
+    out.writeInt(ranges.length)
+    for {
+      SimpleRange(start, end) <- ranges
+    } {
+      out.writeLong(start)
+      out.writeLong(end)
+    }
+  }
 
   /** Is the given locus contained in this set? */
   def contains(locus: Locus): Boolean = rangeSet.contains(locus)
