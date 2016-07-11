@@ -5,9 +5,9 @@ import org.bdgenomics.utils.cli.Args4jBase
 
 import scala.collection.mutable
 
-abstract class SparkCommand[T <% Args4jBase: Manifest] extends Command[T] {
+abstract class SparkCommand[T <: Args4jBase: Manifest] extends Command[T] {
   override def run(args: T): Unit = {
-    val sc = createSparkContext(appName = name)
+    val sc = createSparkContext()
     try {
       run(args, sc)
     } finally {
@@ -23,21 +23,17 @@ abstract class SparkCommand[T <% Args4jBase: Manifest] extends Command[T] {
   }
 
   /**
-   *
    * Return a spark context.
    *
-   * NOTE: Most properties are set through config file
-   *
-   * @param appName
+   * Typically, most properties are set through config file / cmd-line.
    * @return
    */
-  def createSparkContext(appName: String): SparkContext = createSparkContext(Some(appName))
-  def createSparkContext(appName: Option[String] = None): SparkContext = {
+  def createSparkContext(): SparkContext = {
     val config: SparkConf = new SparkConf()
 
-    appName match {
-      case Some(name) => config.setAppName("guacamole: %s".format(name))
-      case _          => config.setAppName("guacamole")
+    config.getOption("spark.app.name") match {
+      case Some(cmdLineName) => config.setAppName(s"guacamole: $name ($cmdLineName)")
+      case _                 => config.setAppName("guacamole: $name")
     }
 
     if (config.getOption("spark.master").isEmpty) {
