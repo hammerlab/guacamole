@@ -27,7 +27,7 @@ object PileupFlatMapUtils {
     assume(window.halfWindowSize == 0)
     existing match {
       case None => Pileup(
-        window.currentRegions(), window.referenceName, window.currentLocus, referenceContigSequence)
+        window.currentRegions(), window.contigName, window.currentLocus, referenceContigSequence)
       case Some(pileup) => pileup.atGreaterLocus(window.currentLocus, window.newRegions.iterator)
     }
   }
@@ -56,7 +56,7 @@ object PileupFlatMapUtils {
       None,
       (maybePileup: Option[Pileup], windows: PerSample[SlidingWindow[MappedRead]]) => {
         assert(windows.length == 1)
-        val pileup = initOrMovePileup(maybePileup, windows(0), reference.getContig(windows(0).referenceName))
+        val pileup = initOrMovePileup(maybePileup, windows(0), reference.getContig(windows(0).contigName))
         (Some(pileup), function(pileup))
       }
     )
@@ -84,7 +84,7 @@ object PileupFlatMapUtils {
       initialState = None,
       function = (maybePileups: Option[(Pileup, Pileup)], windows: PerSample[SlidingWindow[MappedRead]]) => {
         assert(windows.length == 2)
-        val contigSequence = reference.getContig(windows(0).referenceName)
+        val contigSequence = reference.getContig(windows(0).contigName)
         val pileup1 = initOrMovePileup(maybePileups.map(_._1), windows(0), contigSequence)
         val pileup2 = initOrMovePileup(maybePileups.map(_._2), windows(1), contigSequence)
         (Some((pileup1, pileup2)), function(pileup1, pileup2))
@@ -114,9 +114,9 @@ object PileupFlatMapUtils {
               pileupAndWindow => initOrMovePileup(
                 Some(pileupAndWindow._1),
                 pileupAndWindow._2,
-                reference.getContig(windows(0).referenceName)))
+                reference.getContig(windows(0).contigName)))
           }
-          case None => windows.map(initOrMovePileup(None, _, reference.getContig(windows(0).referenceName)))
+          case None => windows.map(initOrMovePileup(None, _, reference.getContig(windows(0).contigName)))
         }
         (Some(advancedPileups), function(advancedPileups))
       })

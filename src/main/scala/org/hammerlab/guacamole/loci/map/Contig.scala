@@ -6,7 +6,7 @@ import com.google.common.collect.{RangeMap, TreeRangeMap, Range => JRange}
 import org.hammerlab.guacamole.loci.SimpleRange
 import org.hammerlab.guacamole.loci.set.{Contig => LociSetContig}
 import org.hammerlab.guacamole.strings.TruncatedToString
-
+import org.hammerlab.guacamole.reference.{ContigName => ContigName}
 import scala.collection.JavaConversions._
 import scala.collection.immutable.{SortedMap, TreeMap}
 import scala.collection.mutable
@@ -18,7 +18,7 @@ import scala.collection.mutable.ArrayBuffer
  * @param name The contig name
  * @param rangeMap The range map of loci intervals -> values.
  */
-case class Contig[T](name: String, private val rangeMap: RangeMap[JLong, T]) extends TruncatedToString {
+case class Contig[T](name: ContigName, private val rangeMap: RangeMap[JLong, T]) extends TruncatedToString {
 
   /**
    * Get the value associated with the given locus. Returns Some(value) if the given locus is in this map, None

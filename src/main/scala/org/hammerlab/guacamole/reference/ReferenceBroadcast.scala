@@ -92,8 +92,8 @@ object ReferenceBroadcast {
    */
   def readPartialFasta(fastaPath: String, sc: SparkContext): ReferenceBroadcast = {
     val raw = readFasta(fastaPath, sc)
-    val result = mutable.HashMap[String, mutable.HashMap[Int, Byte]]()
-    val contigLengths = mutable.HashMap[String, Int]()
+    val result = mutable.HashMap[ContigName, mutable.HashMap[Int, Byte]]()
+    val contigLengths = mutable.HashMap[ContigName, Int]()
 
     raw.broadcastedContigs.foreach({
       case (regionDescription, broadcastSequence) => {

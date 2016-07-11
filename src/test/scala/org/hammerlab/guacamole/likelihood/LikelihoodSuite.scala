@@ -43,7 +43,7 @@ class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks {
 
   def testGenotypeLikelihoods(reads: Seq[MappedRead], genotypesMap: ((Char, Char), Double)*): Unit = {
     val referenceContigSequence = referenceBroadcast(sc).getContig("chr1")
-    val pileup = Pileup(reads, reads(0).referenceContig, 1, referenceContigSequence)
+    val pileup = Pileup(reads, reads(0).contigName, 1, referenceContigSequence)
     forAll(Table("genotype", genotypesMap: _*)) { pair =>
       TestUtil.assertAlmostEqual(
         Likelihood.likelihoodOfGenotype(

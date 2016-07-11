@@ -69,7 +69,7 @@ class SomaticJointCallerSuite extends GuacFunSuite {
         loci = loci.result(readSets.contigLengths)
       )
       .collect
-      .map(call => (call.referenceContig, call.start) -> call)
+      .map(call => (call.contigName, call.start) -> call)
       .toMap
 
     calls(("chr1", 179895860)).singleAlleleEvidences.length should equal(1)
