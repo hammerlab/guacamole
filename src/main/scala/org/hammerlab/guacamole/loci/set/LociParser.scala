@@ -1,10 +1,5 @@
 package org.hammerlab.guacamole.loci.set
 
-import java.lang.{Long => JLong}
-
-import com.google.common.collect.{TreeRangeSet, Range => JRange}
-
-import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 
 /**
@@ -101,14 +96,6 @@ class LociParser {
    */
   def result: LociSet = result(None)  // enables omitting parentheses: builder.result instead of builder.result()
   def result(contigLengths: Map[String, Long]): LociSet = result(Some(contigLengths))
-  def result(contigLengths: (String, Long)*): LociSet =
-    result(
-      // Calling .result() should pass None, not Some(Map.empty)
-      if (contigLengths.nonEmpty)
-        Some(contigLengths.toMap)
-      else
-        None
-    )
 
   private def result(contigLengthsOpt: Option[Map[String, Long]] = None): LociSet = {
 

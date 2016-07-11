@@ -26,7 +26,7 @@ import htsjdk.variant.vcf.VCFFileReader
 import org.apache.commons.io.IOUtils
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.{FileSystem, Path}
-import org.hammerlab.guacamole.reference.ReferenceRegion
+import org.hammerlab.guacamole.reference.{ContigName, ReferenceRegion}
 import org.hammerlab.guacamole.strings.TruncatedToString
 
 import scala.collection.JavaConversions._
@@ -130,7 +130,7 @@ object LociSet {
           .filterNot(_.isEmpty)
           .map(contig => contig.name -> contig)
           .toSeq: _*
-      )
+      )(ContigName.ordering)
     )
 
   def apply(contigs: Iterable[(String, Long, Long)]): LociSet =

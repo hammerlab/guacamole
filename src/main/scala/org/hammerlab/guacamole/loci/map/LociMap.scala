@@ -19,6 +19,7 @@
 package org.hammerlab.guacamole.loci.map
 
 import org.hammerlab.guacamole.loci.set.{LociSet, Builder => LociSetBuilder}
+import org.hammerlab.guacamole.reference.ContigName
 import org.hammerlab.guacamole.strings.TruncatedToString
 
 import scala.collection.immutable.TreeMap
@@ -89,6 +90,6 @@ object LociMap {
     LociMap(
       TreeMap(
         contigs.map(contig => contig.name -> contig).toSeq: _*
-      )
+      )(ContigName.ordering)
     )
 }
