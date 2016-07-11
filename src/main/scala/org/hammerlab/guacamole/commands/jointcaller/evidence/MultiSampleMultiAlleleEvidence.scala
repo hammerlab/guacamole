@@ -15,12 +15,12 @@ import org.hammerlab.guacamole.util.Bases
  * written out.
  *
  */
-case class MultiSampleMultiAlleleEvidence(referenceContig: String,
+case class MultiSampleMultiAlleleEvidence(contig: String,
                                           start: Long,
                                           singleAlleleEvidences: Seq[MultiSampleSingleAlleleEvidence])
     extends ReferenceRegion {
 
-  assume(singleAlleleEvidences.forall(_.allele.referenceContig == referenceContig))
+  assume(singleAlleleEvidences.forall(_.allele.contig == contig))
   assume(singleAlleleEvidences.forall(_.allele.start == start))
 
   val end: Long = if (singleAlleleEvidences.isEmpty) start else singleAlleleEvidences.map(_.allele.end).max
@@ -81,7 +81,7 @@ object MultiSampleMultiAlleleEvidence {
       pileup => pileup.copy(elements = pileup.elements.filter(!_.isClipped))).toVector
     val normalPileups = inputs.normalDNA.map(input => filteredPileups(input.index))
 
-    val contig = normalPileups.head.referenceName
+    val contig = normalPileups.head.contig
     val locus = normalPileups.head.locus
 
     // We only call variants at a site if the reference base is a standard base (i.e. not N).
@@ -115,7 +115,7 @@ object MultiSampleMultiAlleleEvidence {
       .map(allele => (allele.start.toInt, allele.end.toInt))
       .distinct
       .map(pair => {
-        val referenceSequence = filteredPileups.head.referenceContigSequence.slice(pair._1, pair._2)
+        val referenceSequence = filteredPileups.head.reference.slice(pair._1, pair._2)
         val stats = filteredPileups.map(pileup => PileupStats(pileup.elements, refSequence = referenceSequence))
         pair -> MultiplePileupStats(inputs, stats)
       }).toMap
@@ -145,7 +145,7 @@ object MultiSampleMultiAlleleEvidence {
 
     // Create a MultiSampleMultiAlleleEvidence to group all the alleles and their evidence.
     val calls = MultiSampleMultiAlleleEvidence(
-      referenceContig = evidences.head.allele.referenceContig,
+      contig = evidences.head.allele.contig,
       start = evidences.head.allele.start,
       singleAlleleEvidences = evidences)
 

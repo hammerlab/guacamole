@@ -75,7 +75,7 @@ object GeneratePartialFasta extends SparkCommand[GeneratePartialFastaArguments] 
 
     val reads = sc.union(readsets.mappedReads)
 
-    val regions = reads.map(read => (read.referenceContig, read.start, read.end))
+    val regions = reads.map(read => (read.contig, read.start, read.end))
     regions.collect.foreach(triple => {
       parsedLoci.put(triple._1, triple._2, triple._3)
     })

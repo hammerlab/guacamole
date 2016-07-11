@@ -19,18 +19,18 @@ import org.hammerlab.guacamole.util.Bases
  * are always just a reference and at most one alternate allele. If we extend this to mixtures with multiple alts, we
  * should change this class to contain any nuber of alts.
  *
- * @param referenceContig the contig (chromosome)
+ * @param contig the contig (chromosome)
  * @param start the position of the allele
  * @param ref reference allele, must be nonempty
  * @param alt alternate allele, may be equal to reference
  */
-case class AlleleAtLocus(referenceContig: String, start: Long, ref: String, alt: String) {
+case class AlleleAtLocus(contig: String, start: Long, ref: String, alt: String) {
 
   assume(ref.nonEmpty)
   assume(alt.nonEmpty)
 
   lazy val id = "%s:%d-%d %s>%s".format(
-    referenceContig,
+    contig,
     start,
     end,
     ref,
@@ -50,7 +50,8 @@ case class AlleleAtLocus(referenceContig: String, start: Long, ref: String, alt:
    * @param startEndTransform transformation function on (start, end) pairs.
    * @return a new AlleleAtLocus instance
    */
-  def transform(alleleTransform: String => String, startEndTransform: (Long, Long) => (Long, Long)): AlleleAtLocus = {
+  def transform(alleleTransform: String => String,
+                startEndTransform: (Long, Long) => (Long, Long)): AlleleAtLocus = {
     val newRef = alleleTransform(ref)
     val newAlt = alleleTransform(alt)
     val (newStart, newEnd) = startEndTransform(start, end)
@@ -89,11 +90,11 @@ object AlleleAtLocus {
                      onlyStandardBases: Boolean = true): Vector[AlleleAtLocus] = {
 
     assume(pileups.forall(_.locus == pileups.head.locus))
-    assume(pileups.forall(_.referenceName == pileups.head.referenceName))
+    assume(pileups.forall(_.contig == pileups.head.contig))
     assume(pileups.nonEmpty)
-    val referenceContigSequence = pileups.head.referenceContigSequence
+    val referenceContigSequence = pileups.head.reference
 
-    val contig = pileups.head.referenceName
+    val contig = pileups.head.contig
     val variantStart = pileups.head.locus + 1
     val alleleRequiredReadsActualReads = pileups.flatMap(pileup => {
       val requiredReads = math.max(

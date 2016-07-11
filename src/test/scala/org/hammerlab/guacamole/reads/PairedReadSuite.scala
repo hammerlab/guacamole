@@ -67,7 +67,7 @@ class PairedReadSuite extends FunSuite with Matchers {
           Array[Byte]((10 to 20).map(_.toByte): _*),
           isDuplicate = true,
           sampleName = "some sample name",
-          referenceContig = "chr5",
+          contig = "chr5",
           alignmentQuality = 50,
           start = 325352323,
           cigar = TextCigarCodec.decode(""),

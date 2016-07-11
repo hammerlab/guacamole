@@ -58,14 +58,14 @@ object VariantSupport {
     override val name = "variant-support"
     override val description = "Find number of reads that support each variant across BAMs"
 
-    case class AlleleCount(sample: String,
+    case class AlleleCount(sampleName: String,
                            contig: String,
                            locus: Long,
                            reference: String,
                            alternate: String,
                            count: Int) {
       override def toString: String = {
-        s"$sample, $contig, $locus, $reference, $alternate, $count"
+        s"$sampleName, $contig, $locus, $reference, $alternate, $count"
       }
     }
 
@@ -120,7 +120,7 @@ object VariantSupport {
     def pileupToAlleleCounts(pileup: Pileup): Iterator[AlleleCount] = {
       val alleles = pileup.elements.groupBy(_.allele)
       alleles.map(kv => AlleleCount(pileup.sampleName,
-        pileup.referenceName,
+        pileup.contig,
         pileup.locus,
         Bases.basesToString(kv._1.refBases),
         Bases.basesToString(kv._1.altBases),

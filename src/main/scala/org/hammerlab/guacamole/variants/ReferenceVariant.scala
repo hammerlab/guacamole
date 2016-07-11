@@ -29,7 +29,7 @@ trait ReferenceVariant extends ReferenceRegion {
 
   val sampleName: String
 
-  val referenceContig: String
+  val contig: String
 
   /** start locus of the variant */
   val start: Long
@@ -45,7 +45,7 @@ trait ReferenceVariant extends ReferenceRegion {
     .setEnd(end)
     .setReferenceAllele(Bases.basesToString(allele.refBases))
     .setAlternateAllele(Bases.basesToString(allele.altBases))
-    .setContig(Contig.newBuilder.setContigName(referenceContig).build)
+    .setContig(Contig.newBuilder.setContigName(contig).build)
     .build
 
   val rsID: Option[Int]

@@ -120,7 +120,7 @@ object ReadSets {
       } else {
         sc.union(readRDDs)
           .flatMap(_.asMappedRead)
-          .map(read => read.referenceContig -> read.end)
+          .map(read => read.contig -> read.end)
           .reduceByKey(math.max)
           .collectAsMap()
           .toMap

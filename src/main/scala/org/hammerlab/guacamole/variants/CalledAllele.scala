@@ -23,14 +23,14 @@ package org.hammerlab.guacamole.variants
  * A variant that exists in the sample; includes supporting read statistics
  *
  * @param sampleName sample the variant was called on
- * @param referenceContig chromosome or genome contig of the variant
+ * @param contig chromosome or genome contig of the variant
  * @param start start position of the variant (0-based)
  * @param allele allele (ref + seq bases) for this variant
  * @param evidence supporting statistics for the variant
  * @param length length of the variant
  */
 case class CalledAllele(sampleName: String,
-                        referenceContig: String,
+                        contig: String,
                         start: Long,
                         allele: Allele,
                         evidence: AlleleEvidence,

@@ -57,13 +57,13 @@ object AssemblyUtils extends Logging {
     val locus = currentWindow.currentLocus
     val reads = currentWindow.currentRegions()
 
-    val referenceContig = reads.head.referenceContig
+    val contig = reads.head.contig
 
     val referenceStart = (locus - currentWindow.halfWindowSize).toInt
     val referenceEnd = (locus + currentWindow.halfWindowSize).toInt
 
     val currentReference: Array[Byte] = reference.getReferenceSequence(
-      currentWindow.referenceName,
+      currentWindow.contig,
       referenceStart,
       referenceEnd
     )
@@ -83,7 +83,7 @@ object AssemblyUtils extends Logging {
 
     // Score up to the maximum number of paths
     if (paths.isEmpty) {
-      log.warn(s"In window ${referenceContig}:${referenceStart}-$referenceEnd assembly failed")
+      log.warn(s"In window $contig:$referenceStart-$referenceEnd assembly failed")
       List.empty
     } else if (paths.size <= expectedPloidy) {
       paths
@@ -101,7 +101,7 @@ object AssemblyUtils extends Logging {
         .map(_._2)
 
     } else {
-      log.warn(s"In window ${referenceContig}:${referenceStart}-$referenceEnd " +
+      log.warn(s"In window $contig:$referenceStart-$referenceEnd " +
         s"there were ${paths.size} paths found, all variants skipped")
       List.empty
     }

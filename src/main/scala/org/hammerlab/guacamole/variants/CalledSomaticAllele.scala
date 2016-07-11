@@ -25,7 +25,7 @@ import org.bdgenomics.adam.util.PhredUtils
  * A variant that exists in a tumor sample, but not in the normal sample; includes supporting read statistics from both samples
  *
  * @param sampleName sample the variant was called on
- * @param referenceContig chromosome or genome contig of the variant
+ * @param contig chromosome or genome contig of the variant
  * @param start start position of the variant (0-based)
  * @param allele reference and sequence bases of this variant
  * @param somaticLogOdds log odds-ratio of the variant in the tumor compared to the normal sample
@@ -35,7 +35,7 @@ import org.bdgenomics.adam.util.PhredUtils
  * @param length length of the variant
  */
 case class CalledSomaticAllele(sampleName: String,
-                               referenceContig: String,
+                               contig: String,
                                start: Long,
                                allele: Allele,
                                somaticLogOdds: Double,
