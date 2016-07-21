@@ -4,8 +4,8 @@ import java.io.{BufferedWriter, File, FileWriter}
 
 import org.apache.spark.SparkContext
 import org.hammerlab.guacamole.commands.SparkCommand
-import org.hammerlab.guacamole.distributed.LociPartitionUtils
 import org.hammerlab.guacamole.loci.SimpleRange
+import org.hammerlab.guacamole.loci.partitioning.LociPartitionerArgs
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.readsets.{InputFilters, ReadLoadingConfig, ReadLoadingConfigArgs, ReadSets}
 import org.hammerlab.guacamole.reference.{ContigNotFound, ReferenceArgs, ReferenceBroadcast}
@@ -13,7 +13,7 @@ import org.hammerlab.guacamole.util.Bases
 import org.kohsuke.args4j.{Argument, Option => Args4jOption}
 
 class GeneratePartialFastaArguments
-  extends LociPartitionUtils.Arguments
+  extends LociPartitionerArgs
     with ReadLoadingConfigArgs
     with ReferenceArgs {
 

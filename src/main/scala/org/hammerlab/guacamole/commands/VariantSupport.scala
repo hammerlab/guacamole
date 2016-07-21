@@ -22,12 +22,10 @@ import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.rdd.ADAMContext
 import org.bdgenomics.formats.avro.Variant
-import org.hammerlab.guacamole.distributed.LociPartitionUtils
-import org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociUniformly
 import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMap
+import org.hammerlab.guacamole.loci.partitioning.LociPartitionerArgs
 import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.readsets.{InputFilters, ReadLoadingConfig, ReadLoadingConfigArgs, ReadSets}
 import org.hammerlab.guacamole.reference.{ContigName, Locus, ReferenceBroadcast}
 import org.hammerlab.guacamole.util.Bases
@@ -35,7 +33,7 @@ import org.kohsuke.args4j.{Argument, Option => Args4jOption}
 
 object VariantSupport {
 
-  protected class Arguments extends LociPartitionUtils.Arguments with ReadLoadingConfigArgs {
+  protected class Arguments extends LociPartitionerArgs with ReadLoadingConfigArgs {
     @Args4jOption(name = "--input-variant", required = true, aliases = Array("-v"),
       usage = "")
     var variants: String = ""
@@ -77,27 +75,30 @@ object VariantSupport {
 
       val variants: RDD[Variant] = adamContext.loadVariants(args.variants)
 
-      val reads: Seq[RDD[MappedRead]] =
+      val readsets =
         ReadSets(
           sc,
           args.bams,
           InputFilters.empty,
           config = ReadLoadingConfig(args)
-        ).mappedReads
-
+        )
 
       // Build a loci set from the variant positions
-      val lociSet =
+      val loci =
         LociSet(
           variants
             .map(variant => (variant.getContig.getContigName, variant.getStart: Long, variant.getEnd: Long))
             .collect()
         )
 
-      val lociPartitions = partitionLociUniformly(args.parallelism, lociSet)
+      val lociPartitions =
+        args
+          .getPartitioner(readsets.allMappedReads)
+          .partition(loci)
+
 
       val alleleCounts =
-        reads.map(sampleReads =>
+        readsets.mappedReads.map(sampleReads =>
           pileupFlatMap[AlleleCount](
             sampleReads,
             lociPartitions,

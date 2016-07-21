@@ -6,9 +6,9 @@ import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole.alignment.AffineGapPenaltyAlignment
 import org.hammerlab.guacamole.assembly.{AssemblyArgs, AssemblyUtils}
-import org.hammerlab.guacamole.distributed.LociPartitionUtils.{LociPartitioning, partitionLociAccordingToArgs}
 import org.hammerlab.guacamole.distributed.WindowFlatMapUtils.windowFlatMapWithState
 import org.hammerlab.guacamole.likelihood.Likelihood
+import org.hammerlab.guacamole.loci.partitioning.LociPartitioning
 import org.hammerlab.guacamole.logging.DelayedMessages
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.pileup.Pileup
@@ -67,11 +67,10 @@ object GermlineAssemblyCaller {
       val minAlignmentQuality = args.minAlignmentQuality
       val qualityReads = mappedReads.filter(_.alignmentQuality > minAlignmentQuality)
 
-      val lociPartitions = partitionLociAccordingToArgs(
-        args,
-        loci.result(contigLengths),
-        mappedReads
-      )
+      val lociPartitions =
+        args
+          .getPartitioner(mappedReads, args.assemblyWindowRange)
+          .partition(loci.result(contigLengths))
 
       val genotypes: RDD[CalledAllele] = discoverGermlineVariants(
         qualityReads,
