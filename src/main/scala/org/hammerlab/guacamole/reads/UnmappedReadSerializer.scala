@@ -30,6 +30,7 @@ class UnmappedReadSerializer extends Serializer[UnmappedRead] {
     output.writeBytes(obj.sequence.toArray)
     output.writeBytes(obj.baseQualities.toArray)
     output.writeBoolean(obj.isDuplicate)
+    output.writeInt(obj.sampleId)
     output.writeString(obj.sampleName)
     output.writeBoolean(obj.failedVendorQualityChecks)
     output.writeBoolean(obj.isPaired)
@@ -42,6 +43,7 @@ class UnmappedReadSerializer extends Serializer[UnmappedRead] {
     val sequenceArray: Vector[Byte] = input.readBytes(count).toVector
     val qualityScoresArray = input.readBytes(count).toVector
     val isDuplicate = input.readBoolean()
+    val sampleId = input.readInt()
     val sampleName = input.readString().intern()
     val failedVendorQualityChecks = input.readBoolean()
     val isPaired = input.readBoolean()
@@ -51,6 +53,7 @@ class UnmappedReadSerializer extends Serializer[UnmappedRead] {
       sequenceArray,
       qualityScoresArray,
       isDuplicate,
+      sampleId,
       sampleName.intern,
       failedVendorQualityChecks,
       isPaired

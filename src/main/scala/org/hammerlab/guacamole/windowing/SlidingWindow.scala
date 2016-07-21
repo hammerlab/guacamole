@@ -19,7 +19,7 @@
 package org.hammerlab.guacamole.windowing
 
 import org.apache.spark.Logging
-import org.hammerlab.guacamole.loci.set.ContigIterator
+import org.hammerlab.guacamole.loci.set.LociIterator
 import org.hammerlab.guacamole.readsets.PerSample
 import org.hammerlab.guacamole.reference.{ContigName, ReferenceRegion}
 
@@ -43,7 +43,7 @@ import scala.collection.mutable
  * @param rawSortedRegions Iterator of regions, sorted by the aligned start locus.
  */
 case class SlidingWindow[R <: ReferenceRegion](contigName: ContigName,
-                                               halfWindowSize: Long,
+                                               halfWindowSize: Int,
                                                rawSortedRegions: Iterator[R]) extends Logging {
   /** The locus currently under consideration. */
   var currentLocus = -1L
@@ -59,13 +59,7 @@ case class SlidingWindow[R <: ReferenceRegion](contigName: ContigName,
     region
   }).buffered
 
-  private val currentRegionsPriorityQueue = {
-    // Order regions by end locus, increasing.
-    def regionOrdering = new Ordering[R] {
-      def compare(first: R, second: R) = second.end.compare(first.end)
-    }
-    new mutable.PriorityQueue[R]()(regionOrdering)
-  }
+  private val currentRegionsPriorityQueue = new mutable.PriorityQueue[R]()(ReferenceRegion.orderByEnd)
 
   /** The regions that overlap the window surrounding [[currentLocus]]. */
   def currentRegions(): Vector[R] = {
@@ -147,7 +141,7 @@ object SlidingWindow {
    * @return Some(locus) if there was another locus left to process, otherwise None
    */
   def advanceMultipleWindows[R <: ReferenceRegion](windows: PerSample[SlidingWindow[R]],
-                                                   loci: ContigIterator,
+                                                   loci: LociIterator,
                                                    skipEmpty: Boolean = true): Option[Long] = {
     if (skipEmpty) {
       while (loci.hasNext) {

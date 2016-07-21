@@ -48,9 +48,6 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
       TestUtil.makeRead("TCGATCGA", "8M", 1),
       TestUtil.makeRead("TCGACCCTCGA", "4M3I4M", 1))
 
-    val noPileup = Pileup(reads, "chr1", 0, reference.getContig("chr1")).elements
-    assert(noPileup.size === 0)
-
     val firstPileup = Pileup(reads, "chr1", 1, reference.getContig("chr1"))
     firstPileup.elements.forall(_.isMatch) should be(true)
     firstPileup.elements.forall(_.qualityScore == 31) should be(true)
@@ -59,9 +56,9 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
     insertPileup.elements.exists(_.isInsertion) should be(true)
     insertPileup.elements.forall(_.qualityScore == 31) should be(true)
 
-    insertPileup.elements(0).alignment should equal(Match('A', 31.toByte))
-    insertPileup.elements(1).alignment should equal(Match('A', 31.toByte))
-    insertPileup.elements(2).alignment should equal(Insertion("ACCC", Seq(31, 31, 31, 31).map(_.toByte)))
+    insertPileup.elements.toSeq(0).alignment should equal(Match('A', 31.toByte))
+    insertPileup.elements.toSeq(1).alignment should equal(Match('A', 31.toByte))
+    insertPileup.elements.toSeq(2).alignment should equal(Insertion("ACCC", Seq(31, 31, 31, 31).map(_.toByte)))
   }
 
   test("create pileup from long insert reads; different qualities in insertion") {
@@ -88,9 +85,6 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
       TestUtil.makeRead("TCGATCGA", "8M", 1, "chr1", Some(Seq(10, 15, 20, 25, 10, 15, 20, 25))),
       TestUtil.makeRead("TCGACCCTCGA", "4M3I4M", 1, "chr1", Some(Seq(10, 15, 20, 25, 5, 5, 5, 10, 15, 20, 25)))
     )
-
-    val noPileup = Pileup(reads, "chr1", 0, reference.getContig("chr1")).elements
-    noPileup.size should be(0)
 
     val pastInsertPileup = Pileup(reads, "chr1", 5, reference.getContig("chr1"))
     pastInsertPileup.elements.foreach(_.isMatch should be(true))
@@ -126,14 +120,14 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
 
   test("Load pileup from SAM file") {
     val pileup = loadPileup(sc, "same_start_reads.sam", locus = 0, reference = reference)
-    pileup.elements.length should be(10)
+    pileup.elements.size should be(10)
   }
 
   test("First 60 loci should have all 10 reads") {
     val pileup = loadPileup(sc, "same_start_reads.sam", locus = 0, reference = reference)
     for (i <- 1 to 59) {
       val nextPileup = pileup.atGreaterLocus(i, Seq.empty.iterator)
-      nextPileup.elements.length should be(10)
+      nextPileup.elements.size should be(10)
     }
   }
 
@@ -233,7 +227,7 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
     val pileup = loadPileup(sc, "same_start_reads.sam", locus = 0, reference = reference)
     for (i <- 60 to 69) {
       val nextPileup = pileup.atGreaterLocus(i, Seq.empty.iterator)
-      nextPileup.elements.length should be(5)
+      nextPileup.elements.size should be(5)
     }
   }
 

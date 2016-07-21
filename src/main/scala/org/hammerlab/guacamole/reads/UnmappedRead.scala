@@ -27,6 +27,7 @@ case class UnmappedRead(
     sequence: IndexedSeq[Byte],
     baseQualities: IndexedSeq[Byte],
     isDuplicate: Boolean,
+    sampleId: Int,
     sampleName: String,
     failedVendorQualityChecks: Boolean,
     isPaired: Boolean) extends Read {

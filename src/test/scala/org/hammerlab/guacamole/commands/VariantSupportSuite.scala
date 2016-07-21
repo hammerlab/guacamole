@@ -4,7 +4,7 @@ import org.hammerlab.guacamole.commands.VariantSupport.Caller.AlleleCount
 import org.hammerlab.guacamole.loci.set.LociParser
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.MappedRead
-import org.hammerlab.guacamole.readsets.InputFilters
+import org.hammerlab.guacamole.readsets.loading.InputFilters
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
 import org.hammerlab.guacamole.windowing.SlidingWindow
@@ -28,7 +28,7 @@ class VariantSupportSuite extends GuacFunSuite with TableDrivenPropertyChecks {
             window.currentRegions(),
             contig,
             locus,
-            referenceContigSequence = grch37Reference.getContig(contig)
+            grch37Reference.getContig(contig)
           )
 
         assertAlleleCounts(pileup, alleleCounts: _*)
@@ -83,13 +83,13 @@ class VariantSupportSuite extends GuacFunSuite with TableDrivenPropertyChecks {
   }
 
   test("read evidence for mid-deletion") {
-    val pileup = Pileup(gatkReads("20:10006822-10006823"), "20", 10006822, referenceContigSequence = grch37Reference.getContig("20"))
+    val pileup = Pileup(gatkReads("20:10006822-10006823"), "20", 10006822, grch37Reference.getContig("20"))
     assertAlleleCounts(pileup, ("C", "", 6), ("C", "C", 2))
   }
 
   test("read evidence for simple snvs 2") {
     val reads = gatkReads("20:10000624-10000625")
-    val pileup = Pileup(reads, "20", 10000624, referenceContigSequence = grch37Reference.getContig("20"))
+    val pileup = Pileup(reads, "20", 10000624, grch37Reference.getContig("20"))
     assertAlleleCounts(pileup, ("T", "T", 6), ("T", "C", 1))
   }
 
@@ -102,7 +102,7 @@ class VariantSupportSuite extends GuacFunSuite with TableDrivenPropertyChecks {
         ("20", 10007175, Seq(("T", "T", 8)))
       )
 
-    val window = SlidingWindow[MappedRead]("20", 0L, gatkReads("20:9999900-10007175").toIterator)
+    val window = SlidingWindow[MappedRead]("20", 0, gatkReads("20:9999900-10007175").toIterator)
     testAlleleCounts(window, loci: _*)
 
   }
@@ -114,7 +114,7 @@ class VariantSupportSuite extends GuacFunSuite with TableDrivenPropertyChecks {
         ("20", 10006822, Seq(("C", "", 5), ("C", "C", 1)))
       )
 
-    val window = SlidingWindow[MappedRead]("20", 0L, nonDuplicateGatkReads("20:9999995-10006822").toIterator)
+    val window = SlidingWindow[MappedRead]("20", 0, nonDuplicateGatkReads("20:9999995-10006822").toIterator)
     testAlleleCounts(window, loci: _*)
   }
 }

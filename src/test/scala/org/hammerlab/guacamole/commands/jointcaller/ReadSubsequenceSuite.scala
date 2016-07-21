@@ -42,21 +42,21 @@ class ReadSubsequenceSuite extends GuacFunSuite {
     )
     val pileups = reads.map(read => Pileup(Seq(read), "chr1", 1, simpleReference.getContig("chr1")))
 
-    ReadSubsequence.ofNextAltAllele(pileups(0).elements(0)) should equal(None)
+    ReadSubsequence.ofNextAltAllele(pileups(0).elements.head) should equal(None)
 
     ReadSubsequence.ofNextAltAllele(
-      pileups(1).atGreaterLocus(4, Iterator.empty).elements(0)).get.sequence should equal("G")
+      pileups(1).atGreaterLocus(4, Iterator.empty).elements.head).get.sequence should equal("G")
 
     ReadSubsequence.ofNextAltAllele(
-      pileups(2).atGreaterLocus(3, Iterator.empty).elements(0)).get.sequence should equal("ACCC")
+      pileups(2).atGreaterLocus(3, Iterator.empty).elements.head).get.sequence should equal("ACCC")
 
     ReadSubsequence.ofNextAltAllele(
-      pileups(3).atGreaterLocus(3, Iterator.empty).elements(0)).get.sequence should equal("GCCC")
+      pileups(3).atGreaterLocus(3, Iterator.empty).elements.head).get.sequence should equal("GCCC")
 
     ReadSubsequence.ofNextAltAllele(
-      pileups(4).atGreaterLocus(2, Iterator.empty).elements(0)).get.sequence should equal("AGCCC")
+      pileups(4).atGreaterLocus(2, Iterator.empty).elements.head).get.sequence should equal("AGCCC")
 
-    ReadSubsequence.ofNextAltAllele(pileups(5).elements(0)).get.sequenceIsAllStandardBases should equal(false)
+    ReadSubsequence.ofNextAltAllele(pileups(5).elements.head).get.sequenceIsAllStandardBases should equal(false)
   }
 
   test("gathering possible alleles") {

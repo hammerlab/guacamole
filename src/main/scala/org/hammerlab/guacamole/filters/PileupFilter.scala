@@ -34,8 +34,8 @@ object MultiAllelicPileupFilter {
    * @param maxPloidy number of alleles to expect (> maxPloidy would mean multiple possible alternates) default: 2
    * @return Empty sequence if there are > maxPloidy possible allelee, otherwise original set of elements
    */
-  def apply(elements: Seq[PileupElement], maxPloidy: Int = 2): Seq[PileupElement] = {
-    if (elements.map(_.allele).distinct.length > maxPloidy) {
+  def apply(elements: Iterable[PileupElement], maxPloidy: Int = 2): Iterable[PileupElement] = {
+    if (elements.map(_.allele).toSet.size > maxPloidy) {
       Seq.empty
     } else {
       elements
@@ -71,7 +71,7 @@ object PileupFilter {
             minAlignmentQuality: Int,
             minEdgeDistance: Int): Pileup = {
 
-    var elements: Seq[PileupElement] = pileup.elements
+    var elements: Iterable[PileupElement] = pileup.elements
 
     if (filterMultiAllelic) {
       elements = MultiAllelicPileupFilter(elements)

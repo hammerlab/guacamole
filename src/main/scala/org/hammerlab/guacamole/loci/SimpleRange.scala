@@ -3,13 +3,14 @@ package org.hammerlab.guacamole.loci
 import java.lang.{Long => JLong}
 
 import com.google.common.collect.{Range => JRange}
+import org.hammerlab.guacamole.reference.Interval
 
 import scala.collection.Iterator
 
 /**
  * A range of Longs. Inclusive on start, exclusive on end.
  */
-case class SimpleRange(start: Long, end: Long) extends Ordered[SimpleRange] {
+case class SimpleRange(start: Long, end: Long) extends Ordered[SimpleRange] with Interval {
   /** Iterate through elements in the range. */
   def iterator(): Iterator[Long] = new Iterator[Long] {
     private var i = start

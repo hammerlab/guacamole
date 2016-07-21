@@ -29,6 +29,7 @@ class UnmappedReadSerializerSuite extends GuacFunSuite {
       "TCGACCCTCGA",
       Array[Byte]((10 to 20).map(_.toByte): _*),
       isDuplicate = true,
+      123,
       "some sample name",
       failedVendorQualityChecks = false,
       isPaired = true

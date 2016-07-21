@@ -1,8 +1,7 @@
 package org.hammerlab.guacamole.loci.set
 
 import org.hammerlab.guacamole.readsets.ContigLengths
-import org.hammerlab.guacamole.reference.{Locus, NumLoci}
-import org.hammerlab.guacamole.reference.{ContigName => ContigName}
+import org.hammerlab.guacamole.reference.{ContigName, Locus, NumLoci}
 
 import scala.collection.mutable.ArrayBuffer
 
@@ -100,14 +99,6 @@ class LociParser {
    */
   def result: LociSet = result(None)  // enables omitting parentheses: builder.result instead of builder.result()
   def result(contigLengths: ContigLengths): LociSet = result(Some(contigLengths))
-  def result(contigLengths: (ContigName, NumLoci)*): LociSet =
-    result(
-      // Calling .result() should pass None, not Some(Map.empty)
-      if (contigLengths.nonEmpty)
-        Some(contigLengths.toMap)
-      else
-        None
-    )
 
   private def result(contigLengthsOpt: Option[ContigLengths] = None): LociSet = {
 

@@ -141,7 +141,7 @@ object ReadSubsequence {
    * @param elements pileup element instances, should all be positioned at same locus
    * @return ReadSubsequence instances giving the non-reference sequenced alleles at this position
    */
-  def nextAlts(elements: Seq[PileupElement]): Seq[ReadSubsequence] = {
+  def nextAlts(elements: Iterable[PileupElement]): Iterable[ReadSubsequence] = {
     val startLocus = elements.headOption.map(_.locus)
     assume(elements.forall(_.locus == startLocus.get))
     elements.flatMap(element => ofNextAltAllele(element))

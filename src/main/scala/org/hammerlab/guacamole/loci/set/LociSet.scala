@@ -27,8 +27,7 @@ import org.apache.commons.io.IOUtils
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.{FileSystem, Path}
 import org.hammerlab.guacamole.readsets.ContigLengths
-import org.hammerlab.guacamole.reference.{Locus, NumLoci}
-import org.hammerlab.guacamole.reference.{ReferenceRegion, ContigName => ContigName}
+import org.hammerlab.guacamole.reference.{ContigName, Locus, NumLoci, ReferenceRegion}
 import org.hammerlab.guacamole.strings.TruncatedToString
 
 import scala.collection.JavaConversions._

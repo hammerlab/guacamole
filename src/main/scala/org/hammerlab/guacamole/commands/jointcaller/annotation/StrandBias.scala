@@ -51,9 +51,9 @@ object StrandBias {
     StrandBias(
       parameters,
       variantForward = variantForward,
-      variantReverse = variantReads.length - variantForward,
+      variantReverse = variantReads.size - variantForward,
       totalForward = totalForward,
-      totalReverse = stats.subsequences.length - totalForward
+      totalReverse = stats.subsequences.size - totalForward
     )
   }
 }
