@@ -109,13 +109,17 @@ class SomaticJointCallerSuite extends GuacFunSuite {
 
     val loci = LociParser("chr22:46931058-46931079")
     val inputsWithRNA = InputCollection(celsr1BAMs, analytes = Vector("dna", "dna", "rna"))
-    val callsWithRNA = SomaticJoint.makeCalls(
-      sc,
-      inputsWithRNA,
-      SomaticJoint.inputsToReadSets(sc, inputsWithRNA, loci),
-      parameters,
-      b37Chromosome22Reference,
-      loci.result).collect.filter(_.bestAllele.isCall)
+    val callsWithRNA =
+      SomaticJoint.makeCalls(
+        sc,
+        inputsWithRNA,
+        SomaticJoint.inputsToReadSets(sc, inputsWithRNA, loci),
+        parameters,
+        b37Chromosome22Reference,
+        loci.result
+      )
+      .collect
+      .filter(_.bestAllele.isCall)
 
     val inputsWithoutRNA = InputCollection(celsr1BAMs.take(2), analytes = Vector("dna", "dna"))
     val callsWithoutRNA = SomaticJoint.makeCalls(

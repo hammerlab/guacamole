@@ -22,7 +22,6 @@ import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.rdd.ADAMContext
 import org.bdgenomics.formats.avro.DatabaseVariantAnnotation
-import org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociAccordingToArgs
 import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMapTwoRDDs
 import org.hammerlab.guacamole.filters.PileupFilter.PileupFilterArguments
 import org.hammerlab.guacamole.filters.SomaticGenotypeFilter.SomaticGenotypeFilterArguments
@@ -95,11 +94,9 @@ object SomaticStandard {
       val oddsThreshold = args.oddsThreshold
 
       val lociPartitions =
-        partitionLociAccordingToArgs(
-          args,
-          loci.result(contigLengths),
-          Vector(tumorReads.mappedReads, normalReads.mappedReads)
-        )
+        args
+          .getPartitioner(tumorReads.mappedReads ++ normalReads.mappedReads)
+          .partition(loci.result(contigLengths))
 
       var potentialGenotypes: RDD[CalledSomaticAllele] =
         pileupFlatMapTwoRDDs[CalledSomaticAllele](
