@@ -175,8 +175,8 @@ object ReadSets {
       config.bamReaderAPI == BamReaderAPI.Samtools ||
         (
           config.bamReaderAPI == BamReaderAPI.Best &&
-            scheme == "file"
-          )
+          scheme == "file"
+        )
 
     if (useSamtools) {
       // Load with samtools
@@ -193,44 +193,48 @@ object ReadSets {
       val sequenceDictionary = SequenceDictionary.fromSAMSequenceDictionary(samSequenceDictionary)
       val loci = filters.overlapsLoci.map(_.result(contigLengths(sequenceDictionary)))
 
-      val recordIterator: SAMRecordIterator = if (filters.overlapsLoci.nonEmpty && reader.hasIndex) {
-        progress(s"Using samtools with BAM index to read: $filename")
-        requiresFilteringByLocus = false
-        val queryIntervals = loci.get.contigs.flatMap(contig => {
-          val contigIndex = samSequenceDictionary.getSequenceIndex(contig.name)
-          contig.ranges.map(range =>
-            new QueryInterval(contigIndex,
-              range.start.toInt + 1,  // convert 0-indexed inclusive to 1-indexed inclusive
-              range.end.toInt))       // "convert" 0-indexed exclusive to 1-indexed inclusive, which is a no-op)
-        })
-        val optimizedQueryIntervals = QueryInterval.optimizeIntervals(queryIntervals)
-        reader.query(optimizedQueryIntervals, false) // Note: this can return unmapped reads, which we filter below.
-      } else {
-        val skippedReason =
-          if (reader.hasIndex)
-            "index is available but not needed"
-          else
-            "index unavailable"
-
-        progress(s"Using samtools without BAM index ($skippedReason) to read: $filename")
-
-        reader.iterator
-      }
-      val reads = JavaConversions.asScalaIterator(recordIterator).flatMap(record => {
-        // Optimization: some of the filters are easy to run on the raw SamRecord, so we avoid making a Read.
-        if ((filters.overlapsLoci.nonEmpty && record.getReadUnmappedFlag) ||
-          (requiresFilteringByLocus &&
-            !loci.get.onContig(record.getContig).intersects(record.getStart - 1, record.getEnd)) ||
-          (filters.nonDuplicate && record.getDuplicateReadFlag) ||
-          (filters.passedVendorQualityChecks && record.getReadFailsVendorQualityCheckFlag) ||
-          (filters.isPaired && !record.getReadPairedFlag)) {
-          None
+      val recordIterator: SAMRecordIterator =
+        if (filters.overlapsLoci.nonEmpty && reader.hasIndex) {
+          progress(s"Using samtools with BAM index to read: $filename")
+          requiresFilteringByLocus = false
+          val queryIntervals = loci.get.contigs.flatMap(contig => {
+            val contigIndex = samSequenceDictionary.getSequenceIndex(contig.name)
+            contig.ranges.map(range =>
+              new QueryInterval(contigIndex,
+                range.start.toInt + 1,  // convert 0-indexed inclusive to 1-indexed inclusive
+                range.end.toInt))       // "convert" 0-indexed exclusive to 1-indexed inclusive, which is a no-op)
+          })
+          val optimizedQueryIntervals = QueryInterval.optimizeIntervals(queryIntervals)
+          reader.query(optimizedQueryIntervals, false) // Note: this can return unmapped reads, which we filter below.
         } else {
-          val read = Read(record)
-          assert(filters.overlapsLoci.isEmpty || read.isMapped)
-          Some(read)
+          val skippedReason =
+            if (reader.hasIndex)
+              "index is available but not needed"
+            else
+              "index unavailable"
+
+          progress(s"Using samtools without BAM index ($skippedReason) to read: $filename")
+
+          reader.iterator
         }
-      })
+
+      val reads =
+        JavaConversions.asScalaIterator(recordIterator).flatMap(record => {
+          // Optimization: some of the filters are easy to run on the raw SamRecord, so we avoid making a Read.
+          if ((filters.overlapsLoci.nonEmpty && record.getReadUnmappedFlag) ||
+            (requiresFilteringByLocus &&
+              !loci.get.onContig(record.getContig).intersects(record.getStart - 1, record.getEnd)) ||
+            (filters.nonDuplicate && record.getDuplicateReadFlag) ||
+            (filters.passedVendorQualityChecks && record.getReadFailsVendorQualityCheckFlag) ||
+            (filters.isPaired && !record.getReadPairedFlag)) {
+            None
+          } else {
+            val read = Read(record)
+            assert(filters.overlapsLoci.isEmpty || read.isMapped)
+            Some(read)
+          }
+        })
+
       (sc.parallelize(reads.toSeq), sequenceDictionary)
     } else {
       // Load with hadoop bam

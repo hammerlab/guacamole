@@ -20,22 +20,31 @@ import org.hammerlab.guacamole.reference.{ContigName, ReferenceRegion}
  * @param regionIterator regions, sorted by contig and start locus.
  */
 class RegionsByContig[R <: ReferenceRegion](regionIterator: Iterator[R]) {
+
   private val buffered = regionIterator.buffered
+
   private var seenContigs = List.empty[ContigName]
-  private var prevIterator: Option[SingleContigRegionIterator[R]] = None
+  private var curIterator: SingleContigRegionIterator[R] = _
+
   def next(contigName: ContigName): Iterator[R] = {
-    // We must first march the previous iterator we returned to the end.
-    while (prevIterator.exists(_.hasNext)) prevIterator.get.next()
+
+    // Drop any remaining regions from the previous contig (which drops them from the underlying regionIterator), as the
+    // new SingleContigRegionIterator assumes it receives regionIterator pointing at the start of a fresh contig.
+    while (curIterator != null && curIterator.hasNext) curIterator.next()
 
     // The next element from the iterator should have a contig we haven't seen so far.
-    assert(buffered.isEmpty || !seenContigs.contains(buffered.head.contigName),
+    assert(
+      buffered.isEmpty || !seenContigs.contains(buffered.head.contigName),
       "Regions are not sorted by contig. Contigs requested so far: %s. Next regions's contig: %s.".format(
-        seenContigs.reverse.toString, buffered.head.contigName))
+        seenContigs.reverse.toString, buffered.head.contigName
+      )
+    )
+
     seenContigs ::= contigName
 
     // Wrap our iterator and return it.
-    prevIterator = Some(new SingleContigRegionIterator(contigName, buffered))
-    prevIterator.get
+    curIterator = new SingleContigRegionIterator(contigName, buffered)
+    curIterator
   }
 }
 

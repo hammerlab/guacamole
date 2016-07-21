@@ -42,7 +42,7 @@ class LociMapSuite extends GuacFunSuite {
     lociMap.toString should be("chr1:100-200=A,chr20:200-201=B")
     lociMap.contigs.map(_.name) should be(Seq("chr1", "chr20"))
 
-    lociMap should not equal (LociMap[String]())
+    lociMap should not equal LociMap[String]()
 
     lociMap.inverse should equal(
       Map(
