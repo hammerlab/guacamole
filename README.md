@@ -27,18 +27,41 @@ inspiration from the [Avocado][] project.
 
 For hacking Guacamole, see our [code docs][].
 
-# Running Guacamole on a Single Node
+## Building
 
-Guacamole requires [Apache Maven][maven] (version 3.0.4 or higher).
+Building Guacamole requires [Apache Maven][maven] (version 3.0.4 or higher).
 
-Build:
+You'll generally want two JARs to be on your classpath when you run Guacamole:
+
+- the main Guacamole JAR, and
+- a shaded JAR with all of Guacamole's transitive dependencies.
+
+The former can be built in any of the following ways:
 
 ```
 mvn package
+mvn package -DskipTests  # don't run tests, just package the JAR.
+mvn package -Pguac       # this is the default Maven profile, but can be useful for combining with other profiles as examples below demonstrate.
 ```
 
-This will build a guacamole JAR file in the `target` directory. You can use the
-`guacamole` script to run locally:
+The latter can be built using the `deps` profile:
+
+```
+mvn package -Pdeps
+mvn package -Pdeps -DskipTests
+```
+
+You can also build both at once:
+
+```
+mvn package -Pguac,deps
+mvn package -Pguac,deps -DskipTests
+```
+
+## Running
+
+### Running Locally
+`scripts/guacamole` makes it easy to run locally:
 
 ```
 scripts/guacamole somatic-joint \
@@ -67,26 +90,26 @@ scripts/guacamole <caller> -h
 ```
 for help on a particular variant caller.
 
-# Running Guacamole on a Hadoop Cluster
+### Running on a Hadoop Cluster
 
-See Guacamole's [pom.xml](/pom.xml) file for the versions of Hadoop and Spark
-that Guacamole expects to find on your cluster.
+Guacamole currently builds against Spark 1.6.1 and Hadoop 2.7.0, though it will likely run fine with versions close to those.
 
 Here is an example command to get started using Guacamole in Spark's yarn
 cluster mode. You'll probably have to modify it for your environment. 
 
 ```
+version=0.0.1-SNAPSHOT
 spark-submit \
 	--master yarn \
 	--deploy-mode cluster \
-	--driver-java-options -Dlog4j.configuration=/path/to/guacamole/scripts/log4j.properties \
 	--executor-memory 4g \
 	--driver-memory 10g \
 	--num-executors 1000 \
 	--executor-cores 1 \
 	--class org.hammerlab.guacamole.Main \
+	--jars target/guacamole-deps-only-$version.jar \
 	--verbose \
-	/path/to/target/guacamole-with-dependencies-<x.y.z>.jar \
+	target/guacamole-$version.jar \
 	somatic-joint \
     		/hdfs/path/to/normal.bam \
     		/hdfs/path/to/tumor.bam \
