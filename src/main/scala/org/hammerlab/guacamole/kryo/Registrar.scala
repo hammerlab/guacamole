@@ -23,9 +23,11 @@ import org.apache.spark.serializer.KryoRegistrator
 import org.bdgenomics.adam.models.{SequenceDictionary, SequenceRecord}
 import org.bdgenomics.adam.serialization.ADAMKryoRegistrator
 import org.hammerlab.guacamole.commands.jointcaller.kryo.{Registrar => JointCallerRegistrar}
-import org.hammerlab.guacamole.distributed.LociPartitionUtils.{LociPartitioning, MicroPartitionIndex, PartitionIndex}
 import org.hammerlab.guacamole.distributed.TaskPosition
-import org.hammerlab.guacamole.loci.map.{Contig => LociMapContig, ContigSerializer => LociMapContigSerializer, Serializer => LociMapSerializer}
+import org.hammerlab.guacamole.loci.map.{LociMap, Contig => LociMapContig, ContigSerializer => LociMapContigSerializer, Serializer => LociMapSerializer}
+import org.hammerlab.guacamole.loci.partitioning.ApproximatePartitioner.MicroPartitionIndex
+import org.hammerlab.guacamole.loci.partitioning.LociPartitioner.PartitionIndex
+import org.hammerlab.guacamole.loci.partitioning.LociPartitioning
 import org.hammerlab.guacamole.loci.set.{LociSet, Contig => LociSetContig, ContigSerializer => LociSetContigSerializer, Serializer => LociSetSerializer}
 import org.hammerlab.guacamole.reads.{MappedRead, MappedReadSerializer, MateAlignmentProperties, PairedRead, Read, UnmappedRead, UnmappedReadSerializer}
 import org.hammerlab.guacamole.readsets.ContigLengths
@@ -65,7 +67,8 @@ class Registrar extends KryoRegistrator {
     kryo.register(classOf[Array[LociSetContig]])
 
     // LociMap is serialized when broadcast in LociPartitionUtils.partitionLociByApproximateDepth.
-    kryo.register(classOf[LociPartitioning], new LociMapSerializer[PartitionIndex])
+    kryo.register(classOf[LociPartitioning])
+    kryo.register(classOf[LociMap[PartitionIndex]], new LociMapSerializer[PartitionIndex])
     kryo.register(classOf[LociMapContig[PartitionIndex]], new LociMapContigSerializer[PartitionIndex])
     kryo.register(classOf[LociMapContig[MicroPartitionIndex]], new LociMapContigSerializer[MicroPartitionIndex])
 

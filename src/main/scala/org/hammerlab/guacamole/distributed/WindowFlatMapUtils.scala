@@ -3,7 +3,7 @@ package org.hammerlab.guacamole.distributed
 import org.apache.commons.math3
 import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.rdd.RDD
-import org.hammerlab.guacamole.distributed.LociPartitionUtils.LociPartitioning
+import org.hammerlab.guacamole.loci.partitioning.LociPartitioning
 import org.hammerlab.guacamole.loci.set.{Contig, LociSet}
 import org.hammerlab.guacamole.logging.DelayedMessages
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
