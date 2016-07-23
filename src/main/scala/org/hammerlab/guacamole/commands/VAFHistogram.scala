@@ -102,8 +102,6 @@ object VAFHistogram {
     override val description = "Compute and cluster the variant allele frequencies"
 
     override def run(args: Arguments, sc: SparkContext): Unit = {
-      val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
-
       val loci = args.parseLoci(sc.hadoopConfiguration)
       val filters =
         InputFilters(
@@ -129,6 +127,8 @@ object VAFHistogram {
         args
           .getPartitioner(readsets.allMappedReads)
           .partition(loci.result(contigLengths))
+
+      val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
 
       val minReadDepth = args.minReadDepth
       val minVariantAlleleFrequency = args.minVAF
@@ -297,12 +297,15 @@ object VAFHistogram {
                         numClusters: Int,
                         maxIterations: Int = 50,
                         convergenceTol: Double = 1e-2): GaussianMixtureModel = {
+
     val vafVectors = variantAlleleFrequencies.map(vaf => Vectors.dense(vaf.variantAlleleFrequency))
-    val model = new GaussianMixture()
-      .setK(numClusters)
-      .setConvergenceTol(convergenceTol)
-      .setMaxIterations(maxIterations)
-      .run(vafVectors)
+
+    val model =
+      new GaussianMixture()
+        .setK(numClusters)
+        .setConvergenceTol(convergenceTol)
+        .setMaxIterations(maxIterations)
+        .run(vafVectors)
 
     for (i <- 0 until model.k) {
       println(s"Cluster $i: mean=${model.gaussians(i).mu(0)}, std. deviation=${model.gaussians(i).sigma}, weight=${model.weights(i)}")
