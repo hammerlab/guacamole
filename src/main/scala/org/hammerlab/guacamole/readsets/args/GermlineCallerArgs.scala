@@ -8,4 +8,3 @@ trait GermlineCallerArgs
   extends GenotypeOutputArgs
     with SingleSampleArgs
     with ConcordanceArgs
-    with LociPartitionerArgs

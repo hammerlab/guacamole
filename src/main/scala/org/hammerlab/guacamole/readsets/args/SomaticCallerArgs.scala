@@ -6,4 +6,3 @@ import org.hammerlab.guacamole.variants.GenotypeOutputArgs
 trait SomaticCallerArgs
   extends GenotypeOutputArgs
     with TumorNormalReadsArgs
-    with LociPartitionerArgs
