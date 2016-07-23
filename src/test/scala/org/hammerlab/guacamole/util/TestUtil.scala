@@ -28,9 +28,8 @@ import org.hammerlab.guacamole.loci.set.LociParser
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.{MappedRead, MateAlignmentProperties, PairedRead, Read}
 import org.hammerlab.guacamole.readsets.{InputFilters, ReadLoadingConfig, ReadSets, ReadsArgs, ReadsRDD}
-import org.hammerlab.guacamole.reference.Locus
 import org.hammerlab.guacamole.reference.ReferenceBroadcast.MapBackedReferenceSequence
-import org.hammerlab.guacamole.reference.{ContigName, ContigSequence, ReferenceBroadcast}
+import org.hammerlab.guacamole.reference.{ContigName, ContigSequence, Locus, ReferenceBroadcast}
 
 import scala.collection.mutable
 import scala.math._
@@ -239,11 +238,12 @@ object TestUtil {
       ).mappedReads
     val localReads = records.collect
     val actualContig = maybeContig.getOrElse(localReads(0).contigName)
+
     Pileup(
       localReads,
       actualContig,
       locus,
-      referenceContigSequence = reference.getContig(actualContig)
+      reference.getContig(actualContig)
     )
   }
 

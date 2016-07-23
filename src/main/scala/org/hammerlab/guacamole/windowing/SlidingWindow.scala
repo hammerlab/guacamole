@@ -151,7 +151,7 @@ object SlidingWindow {
                                                    skipEmpty: Boolean = true): Option[Long] = {
     if (skipEmpty) {
       while (loci.hasNext) {
-        val nextNonEmptyLocus = windows.flatMap(_.nextLocusWithRegions).reduceOption(_ min _)
+        val nextNonEmptyLocus = windows.flatMap(_.nextLocusWithRegions()).reduceOption(_ min _)
         if (nextNonEmptyLocus.isEmpty) {
           // Our windows are out of regions. We're done.
           return None
@@ -164,7 +164,7 @@ object SlidingWindow {
           // Windows may still be empty here, because the next locus with regions may have been before the next locus,
           // and now we just fast-forwarded past the regions into an empty area of the genome.
           // If any window is nonempty, we're done. If not, we continue looping.
-          if (windows.exists(_.currentRegions.nonEmpty)) {
+          if (windows.exists(_.currentRegions().nonEmpty)) {
             return Some(nextLocus)
           }
         } else {

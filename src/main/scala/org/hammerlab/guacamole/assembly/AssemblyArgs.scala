@@ -1,9 +1,8 @@
 package org.hammerlab.guacamole.assembly
 
-import org.bdgenomics.utils.cli.Args4jBase
 import org.kohsuke.args4j.{Option => Args4jOption}
 
-trait AssemblyArgs extends Args4jBase {
+trait AssemblyArgs {
   @Args4jOption(name = "--kmer-size", usage = "Length of kmer used for DeBruijn Graph assembly")
   var kmerSize: Int = 45
 

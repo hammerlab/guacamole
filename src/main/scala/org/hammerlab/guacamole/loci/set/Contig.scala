@@ -5,8 +5,7 @@ import java.lang.{Long => JLong}
 
 import com.google.common.collect.{RangeSet, TreeRangeSet, Range => JRange}
 import org.hammerlab.guacamole.loci.SimpleRange
-import org.hammerlab.guacamole.reference.Locus
-import org.hammerlab.guacamole.reference.{ContigName => ContigName}
+import org.hammerlab.guacamole.reference.{ContigName, Locus}
 import org.hammerlab.guacamole.strings.TruncatedToString
 
 import scala.collection.JavaConversions._

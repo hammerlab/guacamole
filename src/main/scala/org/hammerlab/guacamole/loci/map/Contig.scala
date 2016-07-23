@@ -5,8 +5,9 @@ import java.lang.{Long => JLong}
 import com.google.common.collect.{RangeMap, TreeRangeMap, Range => JRange}
 import org.hammerlab.guacamole.loci.SimpleRange
 import org.hammerlab.guacamole.loci.set.{Contig => LociSetContig}
+import org.hammerlab.guacamole.reference.ContigName
 import org.hammerlab.guacamole.strings.TruncatedToString
-import org.hammerlab.guacamole.reference.{ContigName => ContigName}
+
 import scala.collection.JavaConversions._
 import scala.collection.immutable.{SortedMap, TreeMap}
 import scala.collection.mutable

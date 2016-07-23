@@ -4,6 +4,7 @@ import breeze.linalg.DenseVector
 import breeze.stats.{mean, median}
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
+import org.bdgenomics.utils.cli.Args4jBase
 import org.hammerlab.guacamole.alignment.AffineGapPenaltyAlignment
 import org.hammerlab.guacamole.assembly.{AssemblyArgs, AssemblyUtils}
 import org.hammerlab.guacamole.distributed.WindowFlatMapUtils.windowFlatMapWithState
@@ -30,7 +31,7 @@ import org.kohsuke.args4j.{Option => Args4jOption}
  */
 object GermlineAssemblyCaller {
 
-  class Arguments extends AssemblyArgs with GermlineCallerArgs {
+  class Arguments extends Args4jBase with AssemblyArgs with GermlineCallerArgs {
 
     @Args4jOption(name = "--min-average-base-quality", usage = "Minimum average of base qualities in the read")
     var minAverageBaseQuality: Int = 20
@@ -72,17 +73,19 @@ object GermlineAssemblyCaller {
           .getPartitioner(mappedReads, args.assemblyWindowRange)
           .partition(loci.result(contigLengths))
 
-      val genotypes: RDD[CalledAllele] = discoverGermlineVariants(
-        qualityReads,
-        kmerSize = args.kmerSize,
-        assemblyWindowRange = args.assemblyWindowRange,
-        minOccurrence = args.minOccurrence,
-        minAreaVaf = args.minAreaVaf / 100.0f,
-        reference = reference,
-        lociPartitions = lociPartitions,
-        minMeanKmerQuality = args.minMeanKmerQuality,
-        minPhredScaledLikelihood = args.minLikelihood,
-        shortcutAssembly = args.shortcutAssembly)
+      val genotypes: RDD[CalledAllele] =
+        discoverGermlineVariants(
+          qualityReads,
+          kmerSize = args.kmerSize,
+          assemblyWindowRange = args.assemblyWindowRange,
+          minOccurrence = args.minOccurrence,
+          minAreaVaf = args.minAreaVaf / 100.0f,
+          reference = reference,
+          lociPartitions = lociPartitions,
+          minMeanKmerQuality = args.minMeanKmerQuality,
+          minPhredScaledLikelihood = args.minLikelihood,
+          shortcutAssembly = args.shortcutAssembly
+        )
 
       genotypes.persist()
 
@@ -140,7 +143,7 @@ object GermlineAssemblyCaller {
             val pileup = Pileup(currentLocusReads, referenceName, window.currentLocus, referenceContig)
 
             // Compute the number reads with variant bases from the reads overlapping the currentLocus
-            val pileupAltReads = (pileup.depth - pileup.referenceDepth)
+            val pileupAltReads = pileup.depth - pileup.referenceDepth
             if (currentLocusReads.isEmpty || pileupAltReads < minAltReads) {
               (lastCalledLocus, Iterator.empty)
             } else if (shortcutAssembly && !AssemblyUtils.isActiveRegion(currentLocusReads, referenceContig, minAreaVaf)) {

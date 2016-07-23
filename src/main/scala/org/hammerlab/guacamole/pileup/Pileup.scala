@@ -19,9 +19,8 @@
 package org.hammerlab.guacamole.pileup
 
 import org.hammerlab.guacamole.reads.MappedRead
-import org.hammerlab.guacamole.reference.{ContigName, ContigSequence, Locus, ReferenceBroadcast}
-import org.hammerlab.guacamole.util.Bases
-import org.hammerlab.guacamole.variants.{Allele, Genotype}
+import org.hammerlab.guacamole.reference.{ContigName, ContigSequence, Locus}
+import org.hammerlab.guacamole.variants.Allele
 
 /**
  * A [[Pileup]] at a locus contains a sequence of [[PileupElement]] instances, one for every read that overlaps that
@@ -55,16 +54,6 @@ case class Pileup(contigName: ContigName,
   lazy val distinctAlleles: Seq[Allele] = elements.map(_.allele).distinct.sorted.toVector
 
   lazy val sampleName = elements.head.read.sampleName
-
-  /**
-   * Split this [[Pileup]] by sample name. Returns a map from sample name to [[Pileup]] instances that use only reads
-   * from that sample.
-   */
-  lazy val bySample: Map[String, Pileup] = {
-    elements.groupBy(element => Option(element.read.sampleName).map(_.toString).getOrElse("default")).map({
-      case (sample, newElements) => (sample, Pileup(contigName, locus, contigSequence, newElements))
-    })
-  }
 
   /**
    * Depth of pileup - number of reads at locus
@@ -140,18 +129,23 @@ case class Pileup(contigName: ContigName,
     (alleleElements.size, numAllelePositiveElements)
   }
 }
+
 object Pileup {
   /**
    * Given reads and a locus, returns a [[Pileup]] at the specified locus.
    *
    * @param reads Sequence of reads, in any order, that may or may not overlap the locus.
+   * @param contigName The contig these reads lie on.
    * @param locus The locus to return a [[Pileup]] at.
-   * @param referenceContigSequence The reference for this pileup's contig
+   * @param contigSequence The reference for this pileup's contig
    * @return A [[Pileup]] at the given locus.
    */
-  def apply(reads: Seq[MappedRead], referenceName: String, locus: Long, referenceContigSequence: ContigSequence): Pileup = {
+  def apply(reads: Seq[MappedRead],
+            contigName: ContigName,
+            locus: Locus,
+            contigSequence: ContigSequence): Pileup = {
     //TODO: Is this call to overlaps locus necessary?
-    val elements = reads.filter(_.overlapsLocus(locus)).map(PileupElement(_, locus, referenceContigSequence))
-    Pileup(referenceName, locus, referenceContigSequence, elements.toIndexedSeq)
+    val elements = reads.filter(_.overlapsLocus(locus)).map(PileupElement(_, locus, contigSequence))
+    Pileup(contigName, locus, contigSequence, elements.toIndexedSeq)
   }
 }
