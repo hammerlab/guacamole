@@ -1,4 +1,4 @@
-package org.hammerlab.guacamole.readsets
+package org.hammerlab.guacamole.readsets.io
 
 import org.hammerlab.guacamole.loci.set.LociParser
 

@@ -4,7 +4,8 @@ import org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Arguments
 import org.hammerlab.guacamole.data.NA12878TestUtil
 import org.hammerlab.guacamole.loci.partitioning.UniformPartitioner
 import org.hammerlab.guacamole.loci.set.LociParser
-import org.hammerlab.guacamole.readsets.{InputFilters, ReadSets}
+import org.hammerlab.guacamole.readsets.ReadSets
+import org.hammerlab.guacamole.readsets.io.InputFilters
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.util.{Bases, GuacFunSuite, TestUtil}
 import org.hammerlab.guacamole.variants.CalledAllele
