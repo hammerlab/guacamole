@@ -12,6 +12,9 @@ import org.bdgenomics.adam.rdd.{ADAMContext, ADAMSpecificRecordSequenceDictionar
 import org.bdgenomics.formats.avro.AlignmentRecord
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.reads.{MappedRead, Read}
+import org.hammerlab.guacamole.readsets.args.{SingleSampleArgs, TumorNormalReadsArgs}
+import org.hammerlab.guacamole.readsets.loading.{BamReaderAPI, InputFilters, ReadLoadingConfig}
+import org.hammerlab.guacamole.readsets.rdd.ReadsRDD
 import org.hammerlab.guacamole.reference.{ContigName, Locus}
 import org.seqdoop.hadoop_bam.util.SAMHeaderReader
 import org.seqdoop.hadoop_bam.{AnySAMInputFormat, SAMRecordWritable}
@@ -44,7 +47,7 @@ object ReadSets {
   /**
    * Load one read-set from an input file.
    */
-  def loadReads(args: ReadsArgs,
+  def loadReads(args: SingleSampleArgs,
                 sc: SparkContext,
                 filters: InputFilters): (ReadsRDD, ContigLengths) = {
 
@@ -63,7 +66,7 @@ object ReadSets {
   /**
    * Load just the mapped reads from an input ReadSet.
    */
-  def loadMappedReads(args: ReadsArgs,
+  def loadMappedReads(args: SingleSampleArgs,
                       sc: SparkContext,
                       filters: InputFilters): (RDD[MappedRead], ContigLengths) = {
     val (reads, contigLengths) = loadReads(args, sc, filters)

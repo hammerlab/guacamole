@@ -1,4 +1,4 @@
-package org.hammerlab.guacamole.readsets
+package org.hammerlab.guacamole.readsets.rdd
 
 import java.io.File
 

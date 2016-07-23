@@ -24,9 +24,10 @@ import org.bdgenomics.adam.rdd.read.AlignmentRecordRDDFunctions
 import org.bdgenomics.adam.rdd.{ADAMContext, ADAMSaveAnyArgs}
 import org.hammerlab.guacamole.loci.set.LociParser
 import org.hammerlab.guacamole.reads.{MappedRead, Read}
+import org.hammerlab.guacamole.readsets.loading.{BamReaderAPI, InputFilters, ReadLoadingConfig}
 import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
 
-class ReadSetSuite extends GuacFunSuite {
+class ReadSetsSuite extends GuacFunSuite {
 
   case class LazyMessage(msg: () => String) {
     override def toString: String = msg()

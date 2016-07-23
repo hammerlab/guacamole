@@ -13,7 +13,9 @@ import org.hammerlab.guacamole.logging.DelayedMessages
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.MappedRead
-import org.hammerlab.guacamole.readsets.{GermlineCallerArgs, InputFilters, ReadSets}
+import org.hammerlab.guacamole.readsets.ReadSets
+import org.hammerlab.guacamole.readsets.args.GermlineCallerArgs
+import org.hammerlab.guacamole.readsets.loading.InputFilters
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.variants.{Allele, AlleleConversions, AlleleEvidence, CalledAllele, VariantUtils}
 import org.kohsuke.args4j.{Option => Args4jOption}

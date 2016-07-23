@@ -1,4 +1,4 @@
-package org.hammerlab.guacamole.readsets
+package org.hammerlab.guacamole.readsets.loading
 
 /**
  * Configuration for read loading. These options should affect performance but not results.

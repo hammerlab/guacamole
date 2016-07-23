@@ -27,10 +27,12 @@ import org.apache.spark.SparkContext
 import org.hammerlab.guacamole.loci.set.LociParser
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.{MappedRead, MateAlignmentProperties, PairedRead, Read}
-import org.hammerlab.guacamole.readsets.{InputFilters, ReadLoadingConfig, ReadSets, ReadsArgs, ReadsRDD}
-import org.hammerlab.guacamole.reference.Locus
+import org.hammerlab.guacamole.readsets.ReadSets
+import org.hammerlab.guacamole.readsets.args.SingleSampleArgs
+import org.hammerlab.guacamole.readsets.loading.{InputFilters, ReadLoadingConfig}
+import org.hammerlab.guacamole.readsets.rdd.ReadsRDD
 import org.hammerlab.guacamole.reference.ReferenceBroadcast.MapBackedReferenceSequence
-import org.hammerlab.guacamole.reference.{ContigName, ContigSequence, ReferenceBroadcast}
+import org.hammerlab.guacamole.reference.{ContigName, ContigSequence, Locus, ReferenceBroadcast}
 
 import scala.collection.mutable
 import scala.math._
@@ -207,7 +209,7 @@ object TestUtil {
     val path = testDataPath(filename)
     assert(sc != null)
     assert(sc.hadoopConfiguration != null)
-    val args = new ReadsArgs {}
+    val args = new SingleSampleArgs {}
     args.reads = path
     ReadSets.loadReads(args, sc, filters)._1
   }

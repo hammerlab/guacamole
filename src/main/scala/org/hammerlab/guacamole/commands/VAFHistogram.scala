@@ -13,7 +13,8 @@ import org.hammerlab.guacamole.loci.partitioning.{LociPartitionerArgs, LociParti
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.MappedRead
-import org.hammerlab.guacamole.readsets.{InputFilters, ReadLoadingConfig, ReadLoadingConfigArgs, ReadSets}
+import org.hammerlab.guacamole.readsets.loading.{InputFilters, ReadLoadingConfig, ReadLoadingConfigArgs}
+import org.hammerlab.guacamole.readsets.ReadSets
 import org.hammerlab.guacamole.reference.{ReferenceBroadcast, ReferenceGenome}
 import org.kohsuke.args4j.{Argument, Option => Args4jOption}
 
