@@ -4,17 +4,16 @@ import java.io.{BufferedWriter, File, FileWriter}
 
 import org.apache.spark.SparkContext
 import org.hammerlab.guacamole.commands.SparkCommand
-import org.hammerlab.guacamole.loci.partitioning.LociPartitionerArgs
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.readsets.ReadSets
-import org.hammerlab.guacamole.readsets.io.{InputFilters, ReadLoadingConfig, ReadLoadingConfigArgs}
+import org.hammerlab.guacamole.readsets.args.{Arguments => ReadSetsArguments}
+import org.hammerlab.guacamole.readsets.io.{InputFilters, ReadLoadingConfig}
 import org.hammerlab.guacamole.reference.{ContigNotFound, Interval, ReferenceArgs, ReferenceBroadcast}
 import org.hammerlab.guacamole.util.Bases
-import org.kohsuke.args4j.{Argument, Option => Args4jOption}
+import org.kohsuke.args4j.{Option => Args4jOption}
 
 class GeneratePartialFastaArguments
-  extends LociPartitionerArgs
-    with ReadLoadingConfigArgs
+  extends ReadSetsArguments
     with ReferenceArgs {
 
   @Args4jOption(name = "--output", metaVar = "OUT", required = true, aliases = Array("-o"),
@@ -26,9 +25,6 @@ class GeneratePartialFastaArguments
 
   @Args4jOption(name = "--padding", required = false, usage = "Number of bases to pad the reference around the loci")
   var padding: Int = 0
-
-  @Argument(required = true, multiValued = true, usage = "Reads to write out overlapping fasta sequence for")
-  var bams: Array[String] = Array.empty
 }
 
 /**
@@ -68,12 +64,12 @@ object GeneratePartialFasta extends SparkCommand[GeneratePartialFastaArguments] 
     val readsets =
       ReadSets(
         sc,
-        args.bams,
+        args.inputs,
         InputFilters.empty,
         config = ReadLoadingConfig(args)
       )
 
-    val reads = sc.union(readsets.mappedReads)
+    val reads = readsets.allMappedReads
 
     val regions = reads.map(read => (read.contigName, read.start, read.end))
     regions.collect.foreach(triple => {

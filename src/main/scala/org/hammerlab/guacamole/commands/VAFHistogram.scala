@@ -9,14 +9,15 @@ import org.apache.spark.mllib.linalg.Vectors
 import org.apache.spark.rdd.RDD
 import org.apache.spark.storage.StorageLevel
 import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMap
-import org.hammerlab.guacamole.loci.partitioning.{LociPartitionerArgs, LociPartitioning}
+import org.hammerlab.guacamole.loci.partitioning.LociPartitioning
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.MappedRead
-import org.hammerlab.guacamole.readsets.io.{InputFilters, ReadLoadingConfig, ReadLoadingConfigArgs}
-import org.hammerlab.guacamole.readsets.ReadSets
-import org.hammerlab.guacamole.reference.{ContigName, Locus, ReferenceBroadcast, ReferenceGenome}
-import org.kohsuke.args4j.{Argument, Option => Args4jOption}
+import org.hammerlab.guacamole.readsets.args.{Arguments => ReadSetsArguments}
+import org.hammerlab.guacamole.readsets.io.{Input, InputFilters, ReadLoadingConfig}
+import org.hammerlab.guacamole.readsets.{ReadSets, SampleName}
+import org.hammerlab.guacamole.reference.{ContigName, Locus, NumLoci, ReferenceBroadcast, ReferenceGenome}
+import org.kohsuke.args4j.{Option => Args4jOption}
 
 /**
  * VariantLocus is a locus and the variant allele frequency at that locus
@@ -53,7 +54,7 @@ object VariantLocus {
 
 object VAFHistogram {
 
-  protected class Arguments extends LociPartitionerArgs with ReadLoadingConfigArgs {
+  protected class Arguments extends ReadSetsArguments {
 
     @Args4jOption(name = "--out", required = false, forbids = Array("--local-out"),
       usage = "HDFS file path to save the variant allele frequency histogram")
@@ -90,11 +91,6 @@ object VAFHistogram {
 
     @Args4jOption(name = "--reference-fasta", required = true, usage = "Local path to a reference FASTA file")
     var referenceFastaPath: String = ""
-
-    @Argument(required = true, multiValued = true,
-      usage = "BAMs")
-    var bams: Array[String] = Array.empty
-
   }
 
   object Caller extends SparkCommand[Arguments] {
@@ -115,13 +111,15 @@ object VAFHistogram {
       val readsets =
         ReadSets(
           sc,
-          args.bams,
+          args.inputs,
           filters,
           contigLengthsFromDictionary = true,
           config = ReadLoadingConfig(args)
         )
 
-      val ReadSets(readsRDDs, _, contigLengths) = readsets
+      val ReadSets(_, _, contigLengths) = readsets
+
+      val mappedReadsRDDs = readsets.mappedReadsRDDs
 
       val lociPartitions =
         args
@@ -134,9 +132,12 @@ object VAFHistogram {
       val minVariantAlleleFrequency = args.minVAF
 
       val variantLoci =
-        readsRDDs.map(reads =>
+        for {
+          (mappedReadsRDD, Input(sampleName, _)) <- mappedReadsRDDs.zip(args.inputs)
+        } yield
           variantLociFromReads(
-            reads.mappedReads,
+            mappedReadsRDD,
+            sampleName,
             reference,
             lociPartitions,
             samplePercent,
@@ -144,29 +145,23 @@ object VAFHistogram {
             minVariantAlleleFrequency,
             printStats = args.printStats
           )
-        )
 
       val bins = args.bins
       val variantAlleleHistograms =
         variantLoci.map(variantLoci => generateVAFHistogram(variantLoci, bins))
 
-      val sampleAndFileNames = args.bams.zip(readsRDDs.map(_.mappedReads.take(1)(0).sampleName))
       val binSize = 100 / bins
 
-      def histogramToString(kv: (Int, Long)): String = {
-        s"${kv._1}, ${math.min(kv._1 + binSize, 100)}, ${kv._2}"
-      }
+      def histogramToString(bin: Int, numLoci: NumLoci): String =
+        s"$bin, ${math.min(bin + binSize, 100)}, $numLoci"
 
       val histogramOutput =
-        sampleAndFileNames
-          .zip(variantAlleleHistograms)
-          .flatMap {
-            case ((filename, sampleName), histogram) =>
-              histogram
-                .toSeq
-                .sortBy(_._1)
-                .map(kv => s"$filename, $sampleName, ${histogramToString(kv)}")
-          }
+        for {
+          (Input(sampleName, filename), histogram) <- args.inputs.zip(variantAlleleHistograms)
+          sortedHist = histogram.toSeq.sortBy(_._1)
+          (bin, numLoci) <- sortedHist
+        } yield
+          s"$filename, $sampleName, ${histogramToString(bin, numLoci)}"
 
       if (args.localOutputPath != "") {
         val writer = new BufferedWriter(new FileWriter(args.localOutputPath))
@@ -183,9 +178,13 @@ object VAFHistogram {
         sc.parallelize(histogramOutput).saveAsTextFile(args.output)
       } else {
         // Print histograms to standard out
-        variantAlleleHistograms.foreach(histogram =>
-          histogram.toSeq.sortBy(_._1).foreach(kv => println(histogramToString(kv)))
-        )
+        for {
+          histogram <- variantAlleleHistograms
+          sortedHist = histogram.toSeq.sortBy(_._1)
+          (bin, numLoci) <- sortedHist
+        } {
+          println(histogramToString(bin, numLoci))
+        }
       }
 
       if (args.cluster) {
@@ -203,13 +202,14 @@ object VAFHistogram {
    * @param bins Number of bins to group the VAFs into
    * @return Map of rounded variant allele frequency to number of loci with that value
    */
-  def generateVAFHistogram(variantAlleleFrequencies: RDD[VariantLocus], bins: Int): Map[Int, Long] = {
+  def generateVAFHistogram(variantAlleleFrequencies: RDD[VariantLocus], bins: Int): Map[Int, NumLoci] = {
     assume(bins <= 100 && bins >= 1, "Bins should be between 1 and 100")
 
     def roundToBin(variantAlleleFrequency: Float) = {
       val variantPercent = (variantAlleleFrequency * 100).toInt
       variantPercent - (variantPercent % (100 / bins))
     }
+
     variantAlleleFrequencies
       .map(vaf => roundToBin(vaf.variantAlleleFrequency) -> 1L)
       .reduceByKey(_ + _)
@@ -230,13 +230,14 @@ object VAFHistogram {
    * @return RDD of VariantLocus, which contain the locus and non-zero variant allele frequency
    */
   def variantLociFromReads(reads: RDD[MappedRead],
+                           sampleName: SampleName,
                            reference: ReferenceGenome,
                            lociPartitions: LociPartitioning,
                            samplePercent: Int = 100,
                            minReadDepth: Int = 0,
                            minVariantAlleleFrequency: Int = 0,
                            printStats: Boolean = false): RDD[VariantLocus] = {
-    val sampleName = reads.take(1)(0).sampleName
+
     val variantLoci =
       pileupFlatMap[VariantLocus](
         reads,
@@ -297,12 +298,15 @@ object VAFHistogram {
                         numClusters: Int,
                         maxIterations: Int = 50,
                         convergenceTol: Double = 1e-2): GaussianMixtureModel = {
+
     val vafVectors = variantAlleleFrequencies.map(vaf => Vectors.dense(vaf.variantAlleleFrequency))
-    val model = new GaussianMixture()
-      .setK(numClusters)
-      .setConvergenceTol(convergenceTol)
-      .setMaxIterations(maxIterations)
-      .run(vafVectors)
+
+    val model =
+      new GaussianMixture()
+        .setK(numClusters)
+        .setConvergenceTol(convergenceTol)
+        .setMaxIterations(maxIterations)
+        .run(vafVectors)
 
     for (i <- 0 until model.k) {
       println(s"Cluster $i: mean=${model.gaussians(i).mu(0)}, std. deviation=${model.gaussians(i).sigma}, weight=${model.weights(i)}")

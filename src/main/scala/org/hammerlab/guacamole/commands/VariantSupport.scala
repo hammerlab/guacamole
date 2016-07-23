@@ -23,18 +23,18 @@ import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.rdd.ADAMContext
 import org.bdgenomics.formats.avro.Variant
 import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMap
-import org.hammerlab.guacamole.loci.partitioning.LociPartitionerArgs
 import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.pileup.Pileup
+import org.hammerlab.guacamole.readsets.args.{Arguments => ReadSetsArguments}
+import org.hammerlab.guacamole.readsets.io.{InputFilters, ReadLoadingConfig}
 import org.hammerlab.guacamole.readsets.{ReadSets, SampleName}
-import org.hammerlab.guacamole.readsets.io.{InputFilters, ReadLoadingConfig, ReadLoadingConfigArgs}
 import org.hammerlab.guacamole.reference.{ContigName, Locus, ReferenceBroadcast}
 import org.hammerlab.guacamole.util.Bases
-import org.kohsuke.args4j.{Argument, Option => Args4jOption}
+import org.kohsuke.args4j.{Option => Args4jOption}
 
 object VariantSupport {
 
-  protected class Arguments extends LociPartitionerArgs with ReadLoadingConfigArgs {
+  protected class Arguments extends ReadSetsArguments {
     @Args4jOption(name = "--input-variant", required = true, aliases = Array("-v"),
       usage = "")
     var variants: String = ""
@@ -42,10 +42,6 @@ object VariantSupport {
     @Args4jOption(name = "--output", metaVar = "OUT", required = true, aliases = Array("-o"),
       usage = "Output path for CSV")
     var output: String = ""
-
-    @Argument(required = true, multiValued = true,
-      usage = "Retrieve read data from BAMs at each variant position")
-    var bams: Array[String] = Array.empty
 
     @Args4jOption(name = "--reference-fasta", required = true, usage = "Local path to a reference FASTA file")
     var referenceFastaPath: String = ""
@@ -79,7 +75,7 @@ object VariantSupport {
       val readsets =
         ReadSets(
           sc,
-          args.bams,
+          args.inputs,
           InputFilters.empty,
           config = ReadLoadingConfig(args)
         )
@@ -99,15 +95,19 @@ object VariantSupport {
 
 
       val alleleCounts =
-        readsets.mappedReads.map(sampleReads =>
-          pileupFlatMap[AlleleCount](
-            sampleReads,
-            lociPartitions,
-            skipEmpty = true,
-            pileupToAlleleCounts,
-            reference = reference
+        readsets
+          .mappedReadsRDDs
+          .map(
+            sampleReads =>
+              pileupFlatMap[AlleleCount](
+                sampleReads,
+                lociPartitions,
+                skipEmpty = true,
+                pileupToAlleleCounts,
+                reference = reference
+              )
           )
-        ).reduce(_ ++ _)
+          .reduce(_ ++ _)
 
       alleleCounts.saveAsTextFile(args.output)
 
@@ -121,12 +121,16 @@ object VariantSupport {
      */
     def pileupToAlleleCounts(pileup: Pileup): Iterator[AlleleCount] = {
       val alleles = pileup.elements.groupBy(_.allele)
-      alleles.map(kv => AlleleCount(pileup.sampleName,
-        pileup.contigName,
-        pileup.locus,
-        Bases.basesToString(kv._1.refBases),
-        Bases.basesToString(kv._1.altBases),
-        kv._2.size)).iterator
+      alleles.map(kv =>
+        AlleleCount(
+          pileup.sampleName,
+          pileup.contigName,
+          pileup.locus,
+          Bases.basesToString(kv._1.refBases),
+          Bases.basesToString(kv._1.altBases),
+          kv._2.size
+        )
+      ).iterator
     }
   }
 }

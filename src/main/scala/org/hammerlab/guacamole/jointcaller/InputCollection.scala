@@ -2,8 +2,9 @@ package org.hammerlab.guacamole.jointcaller
 
 import org.hammerlab.guacamole.jointcaller.Input.{Analyte, TissueType}
 import org.hammerlab.guacamole.readsets.{PerSample, SampleName}
+import org.hammerlab.guacamole.readsets.args.{Arguments => ReadSetsArguments}
 import org.kohsuke.args4j.spi.StringArrayOptionHandler
-import org.kohsuke.args4j.{Argument, Option => Args4jOption}
+import org.kohsuke.args4j.{Option => Args4jOption}
 
 /**
  * Convenience container for zero or more Input instances.
@@ -16,11 +17,7 @@ case class InputCollection(items: PerSample[Input]) {
 }
 
 object InputCollection {
-  trait Arguments {
-    @Argument(required = true, multiValued = true,
-      usage = "FILE1 FILE2 FILE3")
-    var paths: Array[String] = Array.empty
-
+  trait Arguments extends ReadSetsArguments {
     @Args4jOption(name = "--tissue-types", handler = classOf[StringArrayOptionHandler],
       usage = "[normal|tumor] ... [normal|tumor]")
     var tissueTypes: Array[String] = Array.empty
@@ -28,10 +25,6 @@ object InputCollection {
     @Args4jOption(name = "--analytes", handler = classOf[StringArrayOptionHandler],
       usage = "[dna|rna] ... [dna|rna]")
     var analytes: Array[String] = Array.empty
-
-    @Args4jOption(name = "--sample-names", handler = classOf[StringArrayOptionHandler],
-      usage = "name1 ... nameN")
-    var sampleNames: Array[String] = Array.empty
   }
 
   /**
