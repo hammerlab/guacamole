@@ -22,7 +22,7 @@ class GeneratePartialFastaArguments
   var output: String = ""
 
   @Args4jOption(name = "--reference-fasta", required = true, usage = "Local path to a reference FASTA file")
-  var referenceFastaPath: String = null
+  var referenceFastaPath: String = _
 
   @Args4jOption(name = "--padding", required = false, usage = "Number of bases to pad the reference around the loci")
   var padding: Int = 0

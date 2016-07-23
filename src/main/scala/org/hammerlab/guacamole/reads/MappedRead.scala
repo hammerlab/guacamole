@@ -24,6 +24,7 @@ import org.hammerlab.guacamole.pileup.PileupElement
 import org.hammerlab.guacamole.readsets.SampleName
 import org.hammerlab.guacamole.reference.Locus
 import org.hammerlab.guacamole.reference.{ContigName, ContigSequence, ReferenceRegion}
+import org.hammerlab.guacamole.reference.{ContigName, ContigSequence, Locus, ReferenceRegion}
 import org.hammerlab.guacamole.util.{Bases, CigarUtils}
 
 import scala.collection.JavaConversions
@@ -50,7 +51,6 @@ case class MappedRead(
     isPositiveStrand: Boolean,
     isPaired: Boolean)
   extends Read
-
     with ReferenceRegion {
 
   assert(baseQualities.length == sequence.length,
