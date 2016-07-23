@@ -185,8 +185,6 @@ object SomaticJoint {
 
     assume(loci.nonEmpty)
 
-    // When mapping over pileups, at locus x we call variants at locus x + 1. Therefore we subtract 1 from the user-
-    // specified loci.
     val broadcastForceCallLoci = sc.broadcast(forceCallLoci)
 
     val lociPartitions =

@@ -241,11 +241,12 @@ object TestUtil {
       ).mappedReads
     val localReads = records.collect
     val actualContig = maybeContig.getOrElse(localReads(0).contigName)
+
     Pileup(
       localReads,
       actualContig,
       locus,
-      referenceContigSequence = reference.getContig(actualContig)
+      reference.getContig(actualContig)
     )
   }
 
