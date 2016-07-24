@@ -36,7 +36,7 @@ trait ReferenceRegion {
   /**
    * Does the region overlap the given locus, with halfWindowSize padding?
    */
-  def overlapsLocus(locus: Locus, halfWindowSize: Locus = 0): Boolean = {
+  def overlapsLocus(locus: Locus, halfWindowSize: Int = 0): Boolean = {
     start - halfWindowSize <= locus && end + halfWindowSize > locus
   }
 
