@@ -5,14 +5,16 @@ import org.hammerlab.guacamole.loci.LociArgs
 import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.reference.ReferenceRegion
 import org.hammerlab.magic.args4j.StringOptionHandler
+import org.kohsuke.args4j.spi.BooleanOptionHandler
 import org.kohsuke.args4j.{Option => Args4JOption}
 
 import scala.reflect.ClassTag
 
 trait LociPartitionerArgs
   extends LociArgs
-  with ApproximatePartitionerArgs
-  with UniformPartitionerArgs {
+    with ApproximatePartitionerArgs
+    with ExactPartitionerArgs
+    with UniformPartitionerArgs {
 
   @Args4JOption(
     name = "--loci-partitioning",
@@ -23,9 +25,9 @@ trait LociPartitionerArgs
 
   @Args4JOption(
     name = "--loci-partitioner",
-    usage = "Loci partitioner to use: 'approximate' or 'uniform' (default: 'approximate')."
+    usage = "Loci partitioner to use: 'exact', 'approximate', or 'uniform' (default: 'exact')."
   )
-  var lociPartitionerName: String = "approximate"
+  var lociPartitionerName: String = "exact"
 
   def getPartitioner[R <: ReferenceRegion: ClassTag](regions: RDD[R], halfWindowSize: Int = 0): LociPartitioner = {
     val sc = regions.sparkContext
@@ -36,6 +38,8 @@ trait LociPartitionerArgs
         parallelism
 
     lociPartitionerName match {
+      case "exact" =>
+        new ExactPartitioner(regions, halfWindowSize, maxReadsPerPartition, printStats = !quiet)
       case "approximate" =>
         new ApproximatePartitioner(regions, halfWindowSize, numPartitions, partitioningAccuracy)
       case "uniform" =>
@@ -44,6 +48,14 @@ trait LociPartitionerArgs
         throw new IllegalArgumentException(s"Unrecognized --loci-partitioner: $lociPartitionerName")
     }
   }
+
+  @Args4JOption(
+    name = "--quiet",
+    aliases = Array("-q"),
+    usage = "Whether to compute additional statistics about the partitioned reads (default: false).",
+    handler = classOf[BooleanOptionHandler]
+  )
+  var quiet: Boolean = false
 }
 
 trait LociPartitioner {
