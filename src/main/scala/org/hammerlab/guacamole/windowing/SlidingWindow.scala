@@ -43,7 +43,7 @@ import scala.collection.mutable
  * @param rawSortedRegions Iterator of regions, sorted by the aligned start locus.
  */
 case class SlidingWindow[R <: ReferenceRegion](contigName: ContigName,
-                                               halfWindowSize: Long,
+                                               halfWindowSize: Int,
                                                rawSortedRegions: Iterator[R]) extends Logging {
   /** The locus currently under consideration. */
   var currentLocus = -1L
