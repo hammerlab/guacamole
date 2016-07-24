@@ -24,6 +24,7 @@ import org.bdgenomics.adam.models.{SequenceDictionary, SequenceRecord}
 import org.bdgenomics.adam.serialization.ADAMKryoRegistrator
 import org.hammerlab.guacamole.commands.jointcaller.kryo.{Registrar => JointCallerRegistrar}
 import org.hammerlab.guacamole.distributed.TaskPosition
+import org.hammerlab.guacamole.loci.Coverage
 import org.hammerlab.guacamole.loci.map.{LociMap, Contig => LociMapContig, ContigSerializer => LociMapContigSerializer, Serializer => LociMapSerializer}
 import org.hammerlab.guacamole.loci.partitioning.LociPartitioner.PartitionIndex
 import org.hammerlab.guacamole.loci.partitioning.LociPartitioning
@@ -31,13 +32,17 @@ import org.hammerlab.guacamole.loci.partitioning.MicroRegionPartitioner.MicroPar
 import org.hammerlab.guacamole.loci.set.{LociSet, Contig => LociSetContig, ContigSerializer => LociSetContigSerializer, Serializer => LociSetSerializer}
 import org.hammerlab.guacamole.reads.{MappedRead, MappedReadSerializer, MateAlignmentProperties, PairedRead, Read, UnmappedRead, UnmappedReadSerializer}
 import org.hammerlab.guacamole.readsets.ContigLengths
+import org.hammerlab.guacamole.reference.Position
 import org.hammerlab.guacamole.variants.{Allele, AlleleEvidence, AlleleSerializer, CalledAllele}
+import org.hammerlab.magic.kryo.{Registrar => MagicRDDRegistrar}
 
 class Registrar extends KryoRegistrator {
   override def registerClasses(kryo: Kryo) {
 
     // Register ADAM serializers.
     new ADAMKryoRegistrator().registerClasses(kryo)
+
+    new MagicRDDRegistrar().registerClasses(kryo)
 
     // Register Joint-Caller serializers.
     new JointCallerRegistrar().registerClasses(kryo)
@@ -65,6 +70,10 @@ class Registrar extends KryoRegistrator {
     kryo.register(classOf[Array[LociSet]])
     kryo.register(classOf[LociSetContig], new LociSetContigSerializer)
     kryo.register(classOf[Array[LociSetContig]])
+
+    kryo.register(classOf[Coverage])
+
+    Position.registerKryo(kryo)
 
     // LociMap is serialized when broadcast in LociPartitionUtils.partitionLociByApproximateDepth.
     kryo.register(classOf[LociPartitioning])

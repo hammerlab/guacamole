@@ -42,6 +42,8 @@ object Interval {
 
   def apply(start: Locus, end: Locus): Interval = IntervalImpl(start, end)
 
+  def apply(t: (Locus, Locus)): Interval = Interval(t._1, t._2)
+
   def unapply(i: Interval): Option[(Locus, Locus)] = Some((i.start, i.end))
 
   def orderByEndDesc[I <: Interval] = new Ordering[I] {

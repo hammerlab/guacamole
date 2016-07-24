@@ -19,8 +19,7 @@
 package org.hammerlab.guacamole.variants
 
 import org.bdgenomics.formats.avro.{Contig, DatabaseVariantAnnotation, Variant}
-import org.hammerlab.guacamole.reference.Locus
-import org.hammerlab.guacamole.reference.{ReferenceRegion, ContigName => ContigName}
+import org.hammerlab.guacamole.reference.{ContigName, ReferenceRegion}
 import org.hammerlab.guacamole.util.Bases
 
 /**

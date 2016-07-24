@@ -6,6 +6,8 @@ import org.hammerlab.guacamole.reference.Locus
 
 class LociIterator(intervals: BufferedIterator[Interval]) extends SkippableLociIterator[Locus] {
 
+  override def locusFn: (Locus) => Locus = x => x
+
   override def _advance: Option[Locus] = {
     if (!intervals.hasNext)
       None
