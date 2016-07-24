@@ -22,12 +22,12 @@ import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.rdd.ADAMContext
 import org.bdgenomics.formats.avro.Variant
-import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMap
+import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMapMultipleRDDs
 import org.hammerlab.guacamole.loci.partitioning.LociPartitionerArgs
 import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.readsets.{ReadSets, SampleName}
 import org.hammerlab.guacamole.readsets.io.{InputFilters, ReadLoadingConfig, ReadLoadingConfigArgs}
+import org.hammerlab.guacamole.readsets.{PerSample, ReadSets, SampleName}
 import org.hammerlab.guacamole.reference.{ContigName, Locus, ReferenceBroadcast}
 import org.hammerlab.guacamole.util.Bases
 import org.kohsuke.args4j.{Argument, Option => Args4jOption}
@@ -99,34 +99,36 @@ object VariantSupport {
 
 
       val alleleCounts =
-        readsets.mappedReadsRDDs.map(sampleReads =>
-          pileupFlatMap[AlleleCount](
-            sampleReads,
-            lociPartitions,
-            skipEmpty = true,
-            pileupToAlleleCounts,
-            reference = reference
-          )
-        ).reduce(_ ++ _)
+        pileupFlatMapMultipleRDDs[AlleleCount](
+          readsets.mappedReadsRDDs,
+          lociPartitions,
+          skipEmpty = true,
+          pileupToAlleleCounts,
+          reference
+        )
 
       alleleCounts.saveAsTextFile(args.output)
-
     }
 
     /**
      * Count alleles in a pileup
      *
-     * @param pileup Pileup of reads a given locus.
+     * @param pileups Per-sample pileups of reads a given locus.
      * @return Iterator of AlleleCount which contains pair of reference and alternate with a count.
      */
-    def pileupToAlleleCounts(pileup: Pileup): Iterator[AlleleCount] = {
-      val alleles = pileup.elements.groupBy(_.allele)
-      alleles.map(kv => AlleleCount(pileup.sampleName,
-        pileup.contigName,
-        pileup.locus,
-        Bases.basesToString(kv._1.refBases),
-        Bases.basesToString(kv._1.altBases),
-        kv._2.size)).iterator
-    }
+    def pileupToAlleleCounts(pileups: PerSample[Pileup]): Iterator[AlleleCount] =
+      (for {
+        pileup <- pileups
+        (allele, elements) <- pileup.elements.groupBy(_.allele)
+      } yield
+        AlleleCount(
+          pileup.sampleName,
+          pileup.contigName,
+          pileup.locus,
+          Bases.basesToString(allele.refBases),
+          Bases.basesToString(allele.altBases),
+          elements.size
+        )
+      ).iterator
   }
 }
