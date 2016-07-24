@@ -19,7 +19,7 @@
 package org.hammerlab.guacamole.windowing
 
 import org.apache.spark.Logging
-import org.hammerlab.guacamole.loci.set.ContigIterator
+import org.hammerlab.guacamole.loci.set.LociIterator
 import org.hammerlab.guacamole.readsets.PerSample
 import org.hammerlab.guacamole.reference.{ContigName, ReferenceRegion}
 
@@ -147,7 +147,7 @@ object SlidingWindow {
    * @return Some(locus) if there was another locus left to process, otherwise None
    */
   def advanceMultipleWindows[R <: ReferenceRegion](windows: PerSample[SlidingWindow[R]],
-                                                   loci: ContigIterator,
+                                                   loci: LociIterator,
                                                    skipEmpty: Boolean = true): Option[Long] = {
     if (skipEmpty) {
       while (loci.hasNext) {
