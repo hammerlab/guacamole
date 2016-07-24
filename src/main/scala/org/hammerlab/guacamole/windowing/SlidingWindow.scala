@@ -21,7 +21,7 @@ package org.hammerlab.guacamole.windowing
 import org.apache.spark.Logging
 import org.hammerlab.guacamole.loci.set.LociIterator
 import org.hammerlab.guacamole.readsets.PerSample
-import org.hammerlab.guacamole.reference.{ContigName, ReferenceRegion}
+import org.hammerlab.guacamole.reference.{ContigName, Interval, ReferenceRegion}
 
 import scala.collection.mutable
 
@@ -59,13 +59,7 @@ case class SlidingWindow[R <: ReferenceRegion](contigName: ContigName,
     region
   }).buffered
 
-  private val currentRegionsPriorityQueue = {
-    // Order regions by end locus, increasing.
-    def regionOrdering = new Ordering[R] {
-      def compare(first: R, second: R) = second.end.compare(first.end)
-    }
-    new mutable.PriorityQueue[R]()(regionOrdering)
-  }
+  private val currentRegionsPriorityQueue = new mutable.PriorityQueue[R]()(Interval.orderByEndDesc)
 
   /** The regions that overlap the window surrounding [[currentLocus]]. */
   def currentRegions(): Vector[R] = {
