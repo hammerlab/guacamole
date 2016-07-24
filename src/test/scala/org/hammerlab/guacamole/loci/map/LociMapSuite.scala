@@ -18,8 +18,8 @@
 
 package org.hammerlab.guacamole.loci.map
 
-import org.hammerlab.guacamole.loci.SimpleRange
 import org.hammerlab.guacamole.loci.set.LociSet
+import org.hammerlab.guacamole.reference.Interval
 import org.hammerlab.guacamole.util.GuacFunSuite
 
 class LociMapSuite extends GuacFunSuite {
@@ -111,8 +111,8 @@ class LociMapSuite extends GuacFunSuite {
 
     map.onContig("chr1").asMap should be(
       Map(
-        SimpleRange(100, 400) -> "A",
-        SimpleRange(400, 500) -> "B"
+        Interval(100, 400) -> "A",
+        Interval(400, 500) -> "B"
       )
     )
 
@@ -136,8 +136,8 @@ class LociMapSuite extends GuacFunSuite {
 
     map.onContig("chr1").asMap should be(
       Map(
-        SimpleRange(100, 400) -> "A",
-        SimpleRange(400, 500) -> "B"
+        Interval(100, 400) -> "A",
+        Interval(400, 500) -> "B"
       )
     )
 
