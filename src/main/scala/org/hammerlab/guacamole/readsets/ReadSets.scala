@@ -242,11 +242,17 @@ object ReadSets {
       val samHeader = SAMHeaderReader.readSAMHeaderFrom(path, sc.hadoopConfiguration)
       val sequenceDictionary = SequenceDictionary.fromSAMHeader(samHeader)
 
+      val basename = new File(filename).getName
+      val shortName = basename.substring(0, math.min(basename.length, 100))
+
       val reads: RDD[Read] =
         sc
           .newAPIHadoopFile[LongWritable, SAMRecordWritable, AnySAMInputFormat](filename)
+          .setName(s"Hadoop file: $shortName")
           .values
+          .setName(s"Hadoop reads: $shortName")
           .map(r => Read(r.get))
+          .setName(s"Guac reads: $shortName")
 
       (reads, sequenceDictionary)
     }
