@@ -104,34 +104,38 @@ object AlleleAtLocus {
       val subsequenceCounts =
         ReadSubsequence.nextAlts(pileup.elements)
           .filter(subsequence => !onlyStandardBases || subsequence.sequenceIsAllStandardBases)
-          .groupBy(x => (x.endLocus, x.sequence))
-          .map(pair => (pair._2.head -> pair._2.length))
+          .groupBy(x => (x.endLocus, x.sequence()))
+          .map(pair => pair._2.head -> pair._2.length)
           .toVector
           .sortBy(-1 * _._2)
 
       def subsequenceToAllele(subsequence: ReadSubsequence): AlleleAtLocus = {
         AlleleAtLocus(
-          contig, variantStart, subsequence.refSequence(referenceContigSequence), subsequence.sequence)
+          contig, variantStart, subsequence.refSequence(referenceContigSequence), subsequence.sequence())
       }
 
       subsequenceCounts.map(pair => (subsequenceToAllele(pair._1), requiredReads, pair._2))
     })
-    val result = alleleRequiredReadsActualReads.filter(tpl => tpl._3 >= tpl._2).map(_._1).distinct.toVector
+    val result = alleleRequiredReadsActualReads.filter(tpl => (tpl._3 >= tpl._2)).map(_._1).distinct.toVector
     if (atLeastOneAllele && result.isEmpty) {
-      val allelesSortedByTotal = alleleRequiredReadsActualReads
-        .groupBy(_._1)
-        .toSeq
-        .sortBy(-1 * _._2.map(_._3).sum)
-        .map(_._1)
+      val allelesSortedByTotal =
+        alleleRequiredReadsActualReads
+          .groupBy(_._1)
+          .toSeq
+          .sortBy(-1 * _._2.map(_._3).sum)
+          .map(_._1)
 
       if (allelesSortedByTotal.nonEmpty) {
         Vector(allelesSortedByTotal.head)
       } else {
-        Vector(AlleleAtLocus(
-          contig,
-          variantStart,
-          Bases.baseToString(referenceContigSequence.apply(variantStart.toInt)),
-          "N"))
+        Vector(
+          AlleleAtLocus(
+            contig,
+            variantStart,
+            Bases.baseToString(referenceContigSequence.apply(variantStart.toInt)),
+            "N"
+          )
+        )
       }
     } else if (maxAlleles.isDefined) {
       assume(maxAlleles.get > 0)
