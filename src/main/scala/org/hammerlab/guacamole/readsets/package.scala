@@ -14,6 +14,8 @@ import org.hammerlab.guacamole.reference.{ContigName, NumLoci}
  * library.
  */
 package object readsets {
-  type PerSample[A] = IndexedSeq[A]
+  type PerSample[+A] = IndexedSeq[A]
   type ContigLengths = Map[ContigName, NumLoci]
+  type SampleId = Int
+  type NumSamples = Int
 }
