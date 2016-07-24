@@ -24,9 +24,15 @@ object PileupFlatMapUtils {
                                referenceContigSequence: ContigSequence): Pileup = {
     assume(window.halfWindowSize == 0)
     existing match {
-      case None => Pileup(
-        window.currentRegions(), window.contigName, window.currentLocus, referenceContigSequence)
-      case Some(pileup) => pileup.atGreaterLocus(window.currentLocus, window.newRegions.iterator)
+      case None =>
+        Pileup(
+          window.currentRegions(),
+          window.contigName,
+          window.currentLocus,
+          referenceContigSequence
+        )
+      case Some(pileup) =>
+        pileup.atGreaterLocus(window.currentLocus, window.newRegions.iterator)
     }
   }
 
@@ -105,7 +111,7 @@ object PileupFlatMapUtils {
       skipEmpty,
       halfWindowSize = 0,
       initialState = None,
-      function = (maybePileups: Option[PerSample[Pileup]], windows: PerSample[SlidingWindow[MappedRead]]) => {
+      (maybePileups: Option[PerSample[Pileup]], windows: PerSample[SlidingWindow[MappedRead]]) => {
         val advancedPileups =
           maybePileups match {
 
@@ -113,16 +119,21 @@ object PileupFlatMapUtils {
               for {
                 (pileup, window) <- existingPileups.zip(windows)
               } yield
-                initOrMovePileup(
-                  Some(pileup),
-                  window,
-                  reference.getContig(windows(0).contigName)
-                )
+                pileup.atGreaterLocus(window.currentLocus, window.newRegions.iterator)
 
             case None =>
-              windows.map(initOrMovePileup(None, _, reference.getContig(windows(0).contigName)))
+              for {
+                window <- windows
+              } yield
+                Pileup(
+                  window.currentRegions(),
+                  window.contigName,
+                  window.currentLocus,
+                  reference.getContig(windows(0).contigName)
+                )
         }
         (Some(advancedPileups), function(advancedPileups))
-      })
+      }
+    )
   }
 }
