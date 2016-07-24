@@ -39,11 +39,12 @@ class VariantSupportSuite extends GuacFunSuite with TableDrivenPropertyChecks {
   def assertAlleleCounts(pileup: Pileup, alleleCounts: (String, String, Int)*): Unit = {
     val computedAlleleCounts =
       (for {
-        AlleleCount(_, _, _, ref, alternate, count) <- VariantSupport.Caller.pileupToAlleleCounts(pileup)
-      } yield (ref, alternate, count)
+        AlleleCount(_, _, _, ref, alternate, count) <- VariantSupport.Caller.pileupToAlleleCounts(Vector(pileup))
+      } yield
+        (ref, alternate, count)
       )
-        .toArray
-        .sortBy(x => x)
+      .toArray
+      .sortBy(x => x)
 
     computedAlleleCounts should be(alleleCounts.sortBy(x => x))
   }
