@@ -2,8 +2,8 @@ package org.hammerlab.guacamole.loci.map
 
 import java.lang.{Long => JLong}
 
-import org.hammerlab.guacamole.loci.SimpleRange
 import org.hammerlab.guacamole.loci.set.LociSet
+import org.hammerlab.guacamole.reference.Interval
 
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
@@ -27,7 +27,7 @@ private[loci] class Builder[T] {
   def put(loci: LociSet, value: T): Builder[T] = {
     for {
       contig <- loci.contigs
-      SimpleRange(start, end) <- contig.ranges
+      Interval(start, end) <- contig.ranges
     } {
       put(contig.name, start, end, value)
     }
