@@ -30,15 +30,8 @@ trait ReferenceVariant extends ReferenceRegion {
 
   def sampleName: String
 
-  val contigName: ContigName
-
-  /** start locus of the variant */
-  val start: Locus
-
   /** reference and sequenced bases for this variant */
   def allele: Allele
-
-  def length: Int
 
   /** Conversion to ADAMVariant */
   def adamVariant = Variant.newBuilder

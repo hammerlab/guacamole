@@ -4,9 +4,7 @@ import java.io.{ObjectInputStream, ObjectOutputStream}
 import java.lang.{Long => JLong}
 
 import com.google.common.collect.{RangeSet, TreeRangeSet, Range => JRange}
-import org.hammerlab.guacamole.loci.SimpleRange
-import org.hammerlab.guacamole.reference.Locus
-import org.hammerlab.guacamole.reference.{ContigName => ContigName}
+import org.hammerlab.guacamole.reference.{ContigName, Interval, Locus}
 import org.hammerlab.guacamole.strings.TruncatedToString
 
 import scala.collection.JavaConversions._
@@ -35,7 +33,7 @@ case class Contig(var name: ContigName, private var rangeSet: RangeSet[JLong]) e
     out.writeUTF(name)
     out.writeInt(ranges.length)
     for {
-      SimpleRange(start, end) <- ranges
+      Interval(start, end) <- ranges
     } {
       out.writeLong(start)
       out.writeLong(end)
@@ -46,11 +44,11 @@ case class Contig(var name: ContigName, private var rangeSet: RangeSet[JLong]) e
   def contains(locus: Locus): Boolean = rangeSet.contains(locus)
 
   /** This set as a regular scala array of ranges. */
-  lazy val ranges: Array[SimpleRange] = {
+  lazy val ranges: Vector[Interval] = {
     rangeSet
       .asRanges()
-      .map(SimpleRange(_))
-      .toArray
+      .map(Interval(_))
+      .toVector
       .sortBy(x => x)
   }
 
