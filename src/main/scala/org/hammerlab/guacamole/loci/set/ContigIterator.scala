@@ -1,7 +1,6 @@
 package org.hammerlab.guacamole.loci.set
 
-import org.hammerlab.guacamole.loci.SimpleRange
-import org.hammerlab.guacamole.reference.Locus
+import org.hammerlab.guacamole.reference.{Interval, Locus}
 
 /**
  * An iterator over loci on a single contig. Loci from this iterator are sorted (monotonically increasing).
@@ -15,7 +14,7 @@ class ContigIterator(loci: Contig) extends scala.BufferedIterator[Locus] {
   private val ranges = loci.ranges.iterator
 
   /** The range for the next locus to be returned. */
-  private var headRangeOption: Option[SimpleRange] = if (ranges.isEmpty) None else Some(ranges.next())
+  private var headRangeOption: Option[Interval] = if (ranges.isEmpty) None else Some(ranges.next())
 
   /** The index in the range for the next locus. */
   private var headIndex = 0L
@@ -70,7 +69,7 @@ class ContigIterator(loci: Contig) extends scala.BufferedIterator[Locus] {
   /**
    * Advance past all loci in the current head range. Return the next range if one exists.
    */
-  private def nextRange(): Option[SimpleRange] = {
+  private def nextRange(): Option[Interval] = {
     headIndex = 0
     headRangeOption = if (ranges.hasNext) Some(ranges.next()) else None
     headRangeOption

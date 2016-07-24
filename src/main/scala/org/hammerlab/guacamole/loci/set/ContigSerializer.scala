@@ -5,7 +5,7 @@ import java.lang.{Long => JLong}
 import com.esotericsoftware.kryo.io.{Input, Output}
 import com.esotericsoftware.kryo.{Kryo, Serializer => KryoSerializer}
 import com.google.common.collect.{TreeRangeSet, Range => JRange}
-import org.hammerlab.guacamole.loci.SimpleRange
+import org.hammerlab.guacamole.reference.Interval
 
 // We serialize a LociSet simply by writing out its constituent Contigs.
 class ContigSerializer extends KryoSerializer[Contig] {
@@ -13,7 +13,7 @@ class ContigSerializer extends KryoSerializer[Contig] {
     output.writeString(obj.name)
     output.writeInt(obj.ranges.length)
     for {
-      SimpleRange(start, end) <- obj.ranges
+      Interval(start, end) <- obj.ranges
     } {
       output.writeLong(start)
       output.writeLong(end)
