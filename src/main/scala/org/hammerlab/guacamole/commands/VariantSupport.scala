@@ -98,7 +98,7 @@ object VariantSupport {
 
 
       val alleleCounts =
-        readsets.mappedReads.map(sampleReads =>
+        readsets.mappedReadsRDDs.map(sampleReads =>
           pileupFlatMap[AlleleCount](
             sampleReads,
             lociPartitions,

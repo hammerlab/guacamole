@@ -8,12 +8,12 @@ import org.apache.spark.mllib.clustering.{GaussianMixture, GaussianMixtureModel}
 import org.apache.spark.mllib.linalg.Vectors
 import org.apache.spark.rdd.RDD
 import org.apache.spark.storage.StorageLevel
-import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMap
+import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMapMultipleRDDs
 import org.hammerlab.guacamole.loci.partitioning.{LociPartitionerArgs, LociPartitioning}
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.MappedRead
-import org.hammerlab.guacamole.readsets.{InputFilters, ReadLoadingConfig, ReadLoadingConfigArgs, ReadSets}
+import org.hammerlab.guacamole.readsets.{InputFilters, PerSample, ReadLoadingConfig, ReadLoadingConfigArgs, ReadSets}
 import org.hammerlab.guacamole.reference.{ReferenceBroadcast, ReferenceGenome}
 import org.kohsuke.args4j.{Argument, Option => Args4jOption}
 
@@ -23,7 +23,7 @@ import org.kohsuke.args4j.{Argument, Option => Args4jOption}
  * @param locus Position of non-reference alleles
  * @param variantAlleleFrequency Frequency of non-reference alleles
  */
-case class VariantLocus(contig: String, locus: Long, variantAlleleFrequency: Float)
+case class VariantLocus(sampleName: String, contig: String, locus: Long, variantAlleleFrequency: Float)
 
 object VariantLocus {
 
@@ -38,6 +38,7 @@ object VariantLocus {
       val contigName = pileup.elements.head.read.contigName
       Some(
         VariantLocus(
+          pileup.sampleName,
           contigName,
           pileup.locus,
           (pileup.depth - pileup.referenceDepth).toFloat / pileup.depth
@@ -133,21 +134,19 @@ object VAFHistogram {
       val minVariantAlleleFrequency = args.minVAF
 
       val variantLoci =
-        readsRDDs.map(reads =>
-          variantLociFromReads(
-            reads.mappedReads,
-            reference,
-            lociPartitions,
-            samplePercent,
-            minReadDepth,
-            minVariantAlleleFrequency,
-            printStats = args.printStats
-          )
+        variantLociFromReads(
+          readsets.mappedReadsRDDs,
+          reference,
+          lociPartitions,
+          samplePercent,
+          minReadDepth,
+          minVariantAlleleFrequency,
+          printStats = args.printStats
         )
 
       val bins = args.bins
-      val variantAlleleHistograms =
-        variantLoci.map(variantLoci => generateVAFHistogram(variantLoci, bins))
+
+      val variantAlleleHistograms = generateVAFHistogram(variantLoci, bins)
 
       val sampleAndFileNames = args.bams.zip(readsRDDs.map(_.mappedReads.take(1)(0).sampleName))
       val binSize = 100 / bins
@@ -157,15 +156,15 @@ object VAFHistogram {
       }
 
       val histogramOutput =
-        sampleAndFileNames
-          .zip(variantAlleleHistograms)
-          .flatMap {
-            case ((filename, sampleName), histogram) =>
-              histogram
-                .toSeq
-                .sortBy(_._1)
-                .map(kv => s"$filename, $sampleName, ${histogramToString(kv)}")
-          }
+        (for {
+          (sampleName, filename) <- sampleAndFileNames
+          histogram = variantAlleleHistograms(sampleName)
+        } yield {
+          histogram
+            .toSeq
+            .sortBy(_._1)
+            .map(kv => s"$filename, $sampleName, ${histogramToString(kv)}")
+        }).flatten
 
       if (args.localOutputPath != "") {
         val writer = new BufferedWriter(new FileWriter(args.localOutputPath))
@@ -182,14 +181,15 @@ object VAFHistogram {
         sc.parallelize(histogramOutput).saveAsTextFile(args.output)
       } else {
         // Print histograms to standard out
-        variantAlleleHistograms.foreach(histogram =>
+        for {
+          (_, histogram) <- variantAlleleHistograms
+        } {
           histogram.toSeq.sortBy(_._1).foreach(kv => println(histogramToString(kv)))
-        )
+        }
       }
 
       if (args.cluster) {
-        val numClusters = args.numClusters
-        variantLoci.foreach(buildMixtureModel(_, numClusters))
+        buildMixtureModel(variantLoci, args.numClusters)
       }
 
     }
@@ -202,16 +202,19 @@ object VAFHistogram {
    * @param bins Number of bins to group the VAFs into
    * @return Map of rounded variant allele frequency to number of loci with that value
    */
-  def generateVAFHistogram(variantAlleleFrequencies: RDD[VariantLocus], bins: Int): Map[Int, Long] = {
+  def generateVAFHistogram(variantAlleleFrequencies: RDD[VariantLocus], bins: Int): Map[String, Map[Int, Long]] = {
     assume(bins <= 100 && bins >= 1, "Bins should be between 1 and 100")
 
     def roundToBin(variantAlleleFrequency: Float) = {
       val variantPercent = (variantAlleleFrequency * 100).toInt
       variantPercent - (variantPercent % (100 / bins))
     }
+
     variantAlleleFrequencies
-      .map(vaf => roundToBin(vaf.variantAlleleFrequency) -> 1L)
+      .map(vaf => (vaf.sampleName, roundToBin(vaf.variantAlleleFrequency)) -> 1L)
       .reduceByKey(_ + _)
+      .map(t => t._1._1 -> Map(t._1._2 -> t._2))
+      .reduceByKey(_ ++ _)
       .collectAsMap
       .toMap
   }
@@ -219,7 +222,7 @@ object VAFHistogram {
   /**
    * Find all non-reference loci in the sample
    *
-   * @param reads RDD of mapped reads for the sample
+   * @param readsRDDs RDD of mapped reads for all samples
    * @param reference genome
    * @param lociPartitions Positions which to examine for non-reference loci
    * @param samplePercent Percent of non-reference loci to use for descriptive statistics
@@ -228,56 +231,70 @@ object VAFHistogram {
    * @param printStats Print descriptive statistics for the variant allele frequency distribution
    * @return RDD of VariantLocus, which contain the locus and non-zero variant allele frequency
    */
-  def variantLociFromReads(reads: RDD[MappedRead],
+  def variantLociFromReads(readsRDDs: PerSample[RDD[MappedRead]],
                            reference: ReferenceGenome,
                            lociPartitions: LociPartitioning,
                            samplePercent: Int = 100,
                            minReadDepth: Int = 0,
                            minVariantAlleleFrequency: Int = 0,
                            printStats: Boolean = false): RDD[VariantLocus] = {
-    val sampleName = reads.take(1)(0).sampleName
     val variantLoci =
-      pileupFlatMap[VariantLocus](
-        reads,
+      pileupFlatMapMultipleRDDs[VariantLocus](
+        readsRDDs,
         lociPartitions,
         skipEmpty = true,
-        pileup =>
-          VariantLocus(pileup)
-            .filter(locus => pileup.depth >= minReadDepth)
-            .filter(_.variantAlleleFrequency >= (minVariantAlleleFrequency / 100.0))
-            .iterator,
+        pileups =>
+          pileups
+            .iterator
+            .flatMap(pileup =>
+              VariantLocus(pileup)
+                .filter(locus => pileup.depth >= minReadDepth)
+                .filter(_.variantAlleleFrequency >= (minVariantAlleleFrequency / 100.0))
+            ),
         reference
       )
+
     if (printStats) {
       variantLoci.persist(StorageLevel.MEMORY_ONLY)
 
-      val numVariantLoci = variantLoci.count
-      progress(s"$numVariantLoci non-zero variant loci in sample $sampleName")
+      val numVariantLociBySample = variantLoci.map(_.sampleName -> 1L).reduceByKey(_ + _).collect()
+      progress(
+        "non-zero variant loci per-sample:",
+        numVariantLociBySample.map(t => s"${t._1}:\t${t._2}").mkString("\n")
+      )
+
+      val sampleNames = numVariantLociBySample.map(_._1)
 
       // Sample variant loci to compute descriptive statistics
       val sampledVAFs =
         if (samplePercent < 100)
           variantLoci
-            .sample(withReplacement = false, fraction = samplePercent / 100.0)
+            .keyBy(_.sampleName)
+            .sampleByKey(withReplacement = false, fractions = sampleNames.map(_ -> samplePercent / 100.0).toMap)
+            .groupByKey()
             .collect()
         else
-          variantLoci.collect()
+          variantLoci.groupBy(_.sampleName).collect()
 
-      val stats = new DescriptiveStatistics()
-      sampledVAFs.foreach(v => stats.addValue(v.variantAlleleFrequency))
+      for {
+        (sampleName, vafs) <- sampledVAFs
+      } {
+        val stats = new DescriptiveStatistics()
+        vafs.foreach(v => stats.addValue(v.variantAlleleFrequency))
 
-      // Print out descriptive statistics for the variant allele frequency distribution
-      progress(
-        "Variant loci stats for %s (min: %f, max: %f, median: %f, mean: %f, 25Pct: %f, 75Pct: %f)".format(
-          sampleName,
-          stats.getMin,
-          stats.getMax,
-          stats.getPercentile(50),
-          stats.getMean,
-          stats.getPercentile(25),
-          stats.getPercentile(75)
+        // Print out descriptive statistics for the variant allele frequency distribution
+        progress(
+          "Variant loci stats for %s (min: %f, max: %f, median: %f, mean: %f, 25Pct: %f, 75Pct: %f)".format(
+            sampleName,
+            stats.getMin,
+            stats.getMax,
+            stats.getPercentile(50),
+            stats.getMean,
+            stats.getPercentile(25),
+            stats.getPercentile(75)
+          )
         )
-      )
+      }
     }
 
     variantLoci

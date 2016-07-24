@@ -73,7 +73,7 @@ object GeneratePartialFasta extends SparkCommand[GeneratePartialFastaArguments] 
         config = ReadLoadingConfig(args)
       )
 
-    val reads = sc.union(readsets.mappedReads)
+    val reads = sc.union(readsets.mappedReadsRDDs)
 
     val regions = reads.map(read => (read.contigName, read.start, read.end))
     regions.collect.foreach(triple => {
