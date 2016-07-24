@@ -98,7 +98,7 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
     firstPileup.elements.forall(_.readPosition == 0L) should be(true)
     firstPileup.elements.forall(_.isMatch) should be(true)
 
-    pileups.forall(_.head.isMatch) should be(true)
+    pileups.forall(_.elements.head.isMatch) should be(true)
 
   }
 
@@ -124,7 +124,7 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
     firstPileup.locus should be(1L)
     firstPileup.referenceBase should be(Bases.T)
 
-    pileups.forall(_.head.isMatch) should be(true)
+    pileups.forall(_.elements.head.isMatch) should be(true)
   }
 
   test("test pileup flatmap parallelism 5; skip empty pileups") {
