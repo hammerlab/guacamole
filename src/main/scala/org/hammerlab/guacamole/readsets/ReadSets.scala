@@ -35,9 +35,7 @@ case class ReadSets(readsRDDs: PerSample[ReadsRDD],
 
   def sc = readsRDDs.head.reads.sparkContext
 
-  val mappedReads = readsRDDs.map(_.mappedReads)
-
-  lazy val (mappedReadsRDDs, sourceFiles) = readsRDDs.map(readsRDD => (readsRDD.mappedReads, readsRDD.sourceFile)).unzip
+  lazy val mappedReadsRDDs = readsRDDs.map(_.mappedReads)
 
   lazy val allMappedReads = sc.union(mappedReadsRDDs).setName("unioned reads")
 }

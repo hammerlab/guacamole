@@ -214,7 +214,7 @@ object SomaticJoint {
     }
 
     pileupFlatMapMultipleRDDs(
-      readsets.mappedReads,
+      readsets.mappedReadsRDDs,
       lociPartitions,
       skipEmpty = true,  // TODO: shouldn't skip empty positions if we might force call them. Need an efficient way to handle this.
       callPileups,
