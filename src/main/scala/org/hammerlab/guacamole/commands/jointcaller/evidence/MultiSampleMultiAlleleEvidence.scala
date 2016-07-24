@@ -82,8 +82,15 @@ object MultiSampleMultiAlleleEvidence {
     includeFiltered: Boolean = false): Option[MultiSampleMultiAlleleEvidence] = {
 
     // We ignore clipped reads. Clipped reads include introns (cigar operator N) in RNA-seq.
-    val filteredPileups: Vector[Pileup] = pileups.map(
-      pileup => pileup.copy(elements = pileup.elements.filter(!_.isClipped))).toVector
+    val filteredPileups: PerSample[Pileup] =
+      pileups
+        .map(
+          pileup =>
+            pileup.copy(
+              elements = pileup.elements.filter(!_.isClipped)
+            )
+        )
+
     val normalPileups = inputs.normalDNA.map(input => filteredPileups(input.index))
 
     val contig = normalPileups.head.contigName
