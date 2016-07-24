@@ -164,19 +164,21 @@ object SomaticStandard {
                                     filterMultiAllelic: Boolean = false,
                                     maxReadDepth: Int = Int.MaxValue): Seq[CalledSomaticAllele] = {
 
-      val filteredNormalPileup = PileupFilter(
-        normalPileup,
-        filterMultiAllelic,
-        minAlignmentQuality,
-        minEdgeDistance = 0
-      )
+      val filteredNormalPileup =
+        PileupFilter(
+          normalPileup,
+          filterMultiAllelic,
+          minAlignmentQuality,
+          minEdgeDistance = 0
+        )
 
-      val filteredTumorPileup = PileupFilter(
-        tumorPileup,
-        filterMultiAllelic,
-        minAlignmentQuality,
-        minEdgeDistance = 0
-      )
+      val filteredTumorPileup =
+        PileupFilter(
+          tumorPileup,
+          filterMultiAllelic,
+          minAlignmentQuality,
+          minEdgeDistance = 0
+        )
 
       // For now, we skip loci that have no reads mapped. We may instead want to emit NoCall in this case.
       if (filteredTumorPileup.elements.isEmpty
@@ -191,10 +193,13 @@ object SomaticStandard {
        * Find the most likely genotype in the tumor sample
        * This is either the reference genotype or an heterozygous genotype with some alternate base
        */
-      val genotypesAndLikelihoods = Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(
-        filteredTumorPileup,
-        Likelihood.probabilityCorrectIncludingAlignment,
-        normalize = true)
+      val genotypesAndLikelihoods =
+        Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(
+          filteredTumorPileup,
+          Likelihood.probabilityCorrectIncludingAlignment,
+          normalize = true
+        )
+
       if (genotypesAndLikelihoods.isEmpty)
         return Seq.empty
 
@@ -205,7 +210,9 @@ object SomaticStandard {
         Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(
           filteredNormalPileup,
           Likelihood.probabilityCorrectIgnoringAlignment,
-          normalize = true).toMap
+          normalize = true
+        ).toMap
+
       lazy val normalVariantGenotypes = normalLikelihoods.filter(_._1.hasVariantAllele)
 
       // NOTE(ryan): for now, compare non-reference alleles found in tumor to the sum of all likelihoods of variant
@@ -215,8 +222,7 @@ object SomaticStandard {
       lazy val normalVariantsTotalLikelihood = normalVariantGenotypes.values.sum
       lazy val somaticOdds = mostLikelyTumorGenotypeLikelihood / normalVariantsTotalLikelihood
 
-      if (mostLikelyTumorGenotype.hasVariantAllele
-        && somaticOdds * 100 >= oddsThreshold) {
+      if (mostLikelyTumorGenotype.hasVariantAllele && somaticOdds * 100 >= oddsThreshold) {
         for {
           // NOTE(ryan): currently only look at the first non-ref allele in the most likely tumor genotype.
           // removeCorrelatedGenotypes depends on there only being one variant per locus.
@@ -224,7 +230,12 @@ object SomaticStandard {
           // non-reference alleles here and rework downstream assumptions accordingly.
           allele <- mostLikelyTumorGenotype.getNonReferenceAlleles.find(_.altBases.nonEmpty).toSeq
           tumorVariantEvidence = AlleleEvidence(mostLikelyTumorGenotypeLikelihood, allele, filteredTumorPileup)
-          normalReferenceEvidence = AlleleEvidence(1 - normalVariantsTotalLikelihood, Allele(allele.refBases, allele.refBases), filteredNormalPileup)
+          normalReferenceEvidence =
+            AlleleEvidence(
+              1 - normalVariantsTotalLikelihood,
+              Allele(allele.refBases, allele.refBases),
+              filteredNormalPileup
+            )
         } yield {
           CalledSomaticAllele(
             tumorPileup.sampleName,

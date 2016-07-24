@@ -119,7 +119,7 @@ object GermlineAssemblyCaller {
           initialState = None,
           (lastCalledLocus, windows) => {
             val window = windows.head
-            val referenceName = window.contigName
+            val contigName = window.contigName
             val locus = window.currentLocus
 
             val referenceStart = (locus - window.halfWindowSize).toInt
@@ -132,7 +132,7 @@ object GermlineAssemblyCaller {
                 referenceEnd
               )
 
-            val referenceContig = reference.getContig(referenceName)
+            val referenceContig = reference.getContig(contigName)
 
             val regionReads = window.currentRegions()
             // Find the reads the overlap the center locus/ current locus
@@ -140,23 +140,36 @@ object GermlineAssemblyCaller {
               regionReads
                 .filter(_.overlapsLocus(window.currentLocus))
 
-            val pileup = Pileup(currentLocusReads, referenceName, window.currentLocus, referenceContig)
+            val pileup =
+              Pileup(
+                currentLocusReads,
+                contigName,
+                window.currentLocus,
+                referenceContig
+              )
 
             // Compute the number reads with variant bases from the reads overlapping the currentLocus
             val pileupAltReads = pileup.depth - pileup.referenceDepth
             if (currentLocusReads.isEmpty || pileupAltReads < minAltReads) {
               (lastCalledLocus, Iterator.empty)
-            } else if (shortcutAssembly && !AssemblyUtils.isActiveRegion(currentLocusReads, referenceContig, minAreaVaf)) {
-              val variants = callPileupVariant(pileup).filter(_.evidence.phredScaledLikelihood > minPhredScaledLikelihood)
+            } else if (
+              shortcutAssembly &&
+                !AssemblyUtils.isActiveRegion(currentLocusReads, referenceContig, minAreaVaf)) {
+
+              val variants =
+                callPileupVariant(pileup)
+                  .filter(_.evidence.phredScaledLikelihood > minPhredScaledLikelihood)
+
               (variants.lastOption.map(_.start).orElse(lastCalledLocus), variants.iterator)
             } else {
-              val paths = AssemblyUtils.discoverHaplotypes(
-                window,
-                kmerSize,
-                reference,
-                minOccurrence,
-                minMeanKmerQuality
-              )
+              val paths =
+                AssemblyUtils.discoverHaplotypes(
+                  window,
+                  kmerSize,
+                  reference,
+                  minOccurrence,
+                  minMeanKmerQuality
+                )
 
               if (paths.nonEmpty) {
                 val sampleName = currentLocusReads.head.sampleName
@@ -164,17 +177,19 @@ object GermlineAssemblyCaller {
                 def buildVariant(variantLocus: Int,
                                  referenceBases: Array[Byte],
                                  alternateBases: Array[Byte]) = {
-                  val allele = Allele(
-                    referenceBases,
-                    alternateBases
-                  )
+                  val allele =
+                    Allele(
+                      referenceBases,
+                      alternateBases
+                    )
 
                   val depth = regionReads.length
                   val mappingQualities = DenseVector(regionReads.map(_.alignmentQuality.toFloat).toArray)
                   val baseQualities = DenseVector(regionReads.flatMap(_.baseQualities).map(_.toFloat).toArray)
+
                   CalledAllele(
                     sampleName,
-                    referenceName,
+                    contigName,
                     variantLocus,
                     allele,
                     AlleleEvidence(
@@ -227,11 +242,12 @@ object GermlineAssemblyCaller {
      * @return Possible set of called variants
      */
     private def callPileupVariant(pileup: Pileup): Set[CalledAllele] = {
-      val genotypeLikelihoods = Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(
-        pileup,
-        logSpace = true,
-        normalize = true
-      )
+      val genotypeLikelihoods =
+        Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(
+          pileup,
+          logSpace = true,
+          normalize = true
+        )
 
       // If we did not have any valid genotypes to evaluate
       // we do not return any variants
@@ -244,11 +260,11 @@ object GermlineAssemblyCaller {
         val probability = math.exp(mostLikelyGenotypeAndProbability._2)
         genotype
           .getNonReferenceAlleles
-          .toSet // Collapse homozygous genotypes
+          .toSet  // Collapse homozygous genotypes
           .filter(_.altBases.nonEmpty)
           .map(allele => {
             CalledAllele(
-              pileup.head.read.sampleName,
+              pileup.elements.head.read.sampleName,
               pileup.contigName,
               pileup.locus,
               allele,
