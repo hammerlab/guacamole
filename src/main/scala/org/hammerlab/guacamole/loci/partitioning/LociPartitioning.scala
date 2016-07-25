@@ -19,6 +19,10 @@ import scala.reflect.ClassTag
  * Includes some functionality for saving to / loading from disk.
  */
 case class LociPartitioning(map: LociMap[PartitionIndex]) extends Saveable {
+
+  @transient lazy val partitionsMap: Map[PartitionIndex, LociSet] = map.inverse
+  @transient lazy val numPartitions = partitionsMap.size
+
   /**
    * Write the wrapped [[map]] to the provided [[OutputStream]].
    */

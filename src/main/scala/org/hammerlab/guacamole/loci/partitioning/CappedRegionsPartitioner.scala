@@ -91,8 +91,8 @@ class CappedRegionsPartitioner[R <: ReferenceRegion: ClassTag](regions: RDD[R],
 
           val str =
             GroupRunsIterator[(NumLoci, Boolean)](runs, _._1 < avgRunLength)
-            .map(runsStr)
-            .mkString("\t\n")
+              .map(runsStr)
+              .mkString("\t\n")
 
           s"$contig:\t$str"
         }).mkString("\n")
