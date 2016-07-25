@@ -4,16 +4,41 @@ import org.apache.commons.math3
 import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole.distributed.LociPartitionUtils.LociPartitioning
-import org.hammerlab.guacamole.distributed.{HashMapAccumulatorParam, KeyPartitioner, TaskPosition}
+import org.hammerlab.guacamole.distributed.{HashMapAccumulatorParam, KeyPartitioner, PileupFlatMapUtils, TaskPosition, WindowFlatMapUtils}
 import org.hammerlab.guacamole.logging.DelayedMessages
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.readsets.PerSample
 import org.hammerlab.guacamole.reference.ReferenceRegion
+import org.hammerlab.guacamole.windowing.SlidingWindow
 
 import scala.collection.mutable.{HashMap => MutableHashMap}
 import scala.reflect.ClassTag
 
+/**
+ * This object encapsulates functionality for partitioning reference-mapped regions for processing as "pileups".
+ *
+ * Given an RDD of regions, it:
+ *
+ *   - partitions them by genomic loci,
+ *   - makes multiple copies of regions that straddle partition boundaries.
+ *
+ * The result is that, given knowledge of which ranges of genomic loci correspond to which partition of the resulting
+ * RDD, downstream code can iterate over the partitions emitted here and build full pileups for the loci that each
+ * partition corresponds to.
+ *
+ * [[WindowFlatMapUtils]] calls this, and uses [[SlidingWindow]] to iterate over the partitioned regions in a manner
+ * suitable for pileup-construction by [[PileupFlatMapUtils]].
+ */
 object PartitionedRegions {
+  /**
+   * @param regionRDDs RDDs of regions to partition.
+   * @param lociPartitionsBoxed Spark broadcast of a [[LociPartitioning]] describing which ranges of genomic loci should
+   *                            be mapped to each Spark partition.
+   * @param halfWindowSize Send a copy of a region to a partition if it passes within this distance of that partition's
+   *                       designated loci.
+   * @tparam R ReferenceRegion type.
+   * @return RDD of regions, keyed by the "sample ID" in @regionRDDs that they came from.
+   */
   def apply[R <: ReferenceRegion: ClassTag](regionRDDs: PerSample[RDD[R]],
                                             lociPartitionsBoxed: Broadcast[LociPartitioning],
                                             halfWindowSize: Int): RDD[(Int, R)] = {
@@ -39,8 +64,9 @@ object PartitionedRegions {
         expandedRegions.value)
     }
 
-    // Expand regions into (task, region) pairs for each region RDD.
-    val taskNumberRegionPairsRDDs: PerSample[RDD[(TaskPosition, R)]] =
+    // Expand regions into (TaskPosition, region) pairs for each region RDD; the TaskPosition keys' `partition` field
+    // will guide each pair to the designated partition in the `repartitionAndSortWithinPartitions` step below.
+    val keyedRegionRDDs: PerSample[RDD[(TaskPosition, R)]] =
       regionRDDs.map(
         _.flatMap(region => {
           val singleContig = lociPartitionsBoxed.value.onContig(region.contigName)
@@ -56,31 +82,11 @@ object PartitionedRegions {
         })
       )
 
-    // Run the task on each partition. Keep track of the number of regions assigned to each task in an accumulator, so
-    // we can print out a summary of the skew.
-    val regionsByTask = sc.accumulator(MutableHashMap.empty[String, Long])(new HashMapAccumulatorParam)
-
-    DelayedMessages.default.say {
-      () => {
-        val stats = new math3.stat.descriptive.DescriptiveStatistics()
-        regionsByTask.value.valuesIterator.foreach(stats.addValue(_))
-        "Regions per task: min=%,.0f 25%%=%,.0f median=%,.0f (mean=%,.0f) 75%%=%,.0f max=%,.0f. Max is %,.2f%% more than mean.".format(
-          stats.getMin,
-          stats.getPercentile(25),
-          stats.getPercentile(50),
-          stats.getMean,
-          stats.getPercentile(75),
-          stats.getMax,
-          (stats.getMax - stats.getMean) * 100.0 / stats.getMean
-        )
-      }
-    }
-
-    // Build an RDD of (read set num, read), take union of this over all RDDs, and partition by task.
+    // Build RDDs of (read-set index, read) and merge these into one RDD,
     sc
       .union(
         for {
-          (keyedRegionsRDD, sampleId) <- taskNumberRegionPairsRDDs.zipWithIndex
+          (keyedRegionsRDD, sampleId) <- keyedRegionRDDs.zipWithIndex
         } yield {
           for {
             (taskPosition, read) <- keyedRegionsRDD
@@ -88,7 +94,7 @@ object PartitionedRegions {
             taskPosition -> (sampleId, read)
         }
       )
-      .repartitionAndSortWithinPartitions(KeyPartitioner(numTasks))
-      .values
+      .repartitionAndSortWithinPartitions(KeyPartitioner(numTasks))  // partition by TaskPosition.partition
+      .values  // Drop TaskPosition keys, leave behind just (read-set index, region) pairs.
   }
 }
