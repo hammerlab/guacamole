@@ -46,10 +46,10 @@ object WindowFlatMapUtils {
       regionRDDs,
       lociPartitions,
       halfWindowSize,
-      (task, taskLoci, taskRegionsPerSample: PerSample[Iterator[R]]) => {
+      (_, partitionLoci, taskRegionsPerSample: PerSample[Iterator[R]]) => {
         collectByContig[R, T](
           taskRegionsPerSample,
-          taskLoci,
+          partitionLoci,
           halfWindowSize,
           (loci, windows) => {
             val lociIterator = loci.iterator
@@ -91,10 +91,10 @@ object WindowFlatMapUtils {
       regionRDDs,
       lociPartitions,
       halfWindowSize,
-      (task, taskLoci, taskRegionsPerSample: PerSample[Iterator[R]]) => {
+      (task, partitionLoci, taskRegionsPerSample: PerSample[Iterator[R]]) => {
         collectByContig[R, T](
           taskRegionsPerSample,
-          taskLoci,
+          partitionLoci,
           halfWindowSize,
           (loci, windows) => {
             val lociIterator = loci.iterator
@@ -155,9 +155,9 @@ object WindowFlatMapUtils {
     partitionedRegions
       .mapPartitionsWithIndex((partitionIdx, keyedReads) => {
         val iterators = SplitIterator.split(numRDDs, keyedReads)
-        val taskLoci = lociPartitionsBoxed.value.inverse(partitionIdx)
-        lociAccumulator += taskLoci.count
-        function(partitionIdx, taskLoci, iterators)
+        val partitionLoci = lociPartitionsBoxed.value.inverse(partitionIdx)
+        lociAccumulator += partitionLoci.count
+        function(partitionIdx, partitionLoci, iterators)
       })
   }
 
@@ -167,7 +167,7 @@ object WindowFlatMapUtils {
    * and collects them into a single iterator
    *
    * @param taskRegionsPerSample for each sample, elements of type M to process for this task
-   * @param taskLoci Set of loci to process for this task
+   * @param partitionLoci Set of loci to process for this task
    * @param halfWindowSize A window centered at locus = l will contain regions overlapping l +/- halfWindowSize
    * @param generateFromWindows Function that maps windows to result type
    * @tparam T result data type
@@ -175,13 +175,13 @@ object WindowFlatMapUtils {
    */
   def collectByContig[R <: ReferenceRegion: ClassTag, T: ClassTag](
     taskRegionsPerSample: PerSample[Iterator[R]],
-    taskLoci: LociSet,
+    partitionLoci: LociSet,
     halfWindowSize: Int,
     generateFromWindows: (Contig, PerSample[SlidingWindow[R]]) => Iterator[T]): Iterator[T] = {
 
     val regionSplitByContigPerSample: PerSample[RegionsByContig[R]] = taskRegionsPerSample.map(new RegionsByContig(_))
 
-    taskLoci.contigs.flatMap(contig => {
+    partitionLoci.contigs.flatMap(contig => {
       val regionIterator: PerSample[Iterator[R]] = regionSplitByContigPerSample.map(_.next(contig.name))
       val windows: PerSample[SlidingWindow[R]] = regionIterator.map(SlidingWindow[R](contig.name, halfWindowSize, _))
       generateFromWindows(contig, windows)
