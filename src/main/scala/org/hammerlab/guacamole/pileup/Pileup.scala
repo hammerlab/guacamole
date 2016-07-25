@@ -19,9 +19,8 @@
 package org.hammerlab.guacamole.pileup
 
 import org.hammerlab.guacamole.reads.MappedRead
-import org.hammerlab.guacamole.reference.{ContigName, ContigSequence, Locus, ReferenceBroadcast}
-import org.hammerlab.guacamole.util.Bases
-import org.hammerlab.guacamole.variants.{Allele, Genotype}
+import org.hammerlab.guacamole.reference.{ContigName, ContigSequence, Locus}
+import org.hammerlab.guacamole.variants.Allele
 
 /**
  * A [[Pileup]] at a locus contains a sequence of [[PileupElement]] instances, one for every read that overlaps that
@@ -144,14 +143,15 @@ object Pileup {
   /**
    * Given reads and a locus, returns a [[Pileup]] at the specified locus.
    *
-   * @param reads Sequence of reads, in any order, that may or may not overlap the locus.
+   * @param reads Sequence of reads, in any order, that must overlap the locus.
    * @param locus The locus to return a [[Pileup]] at.
    * @param referenceContigSequence The reference for this pileup's contig
    * @return A [[Pileup]] at the given locus.
    */
-  def apply(reads: Seq[MappedRead], referenceName: String, locus: Long, referenceContigSequence: ContigSequence): Pileup = {
-    //TODO: Is this call to overlaps locus necessary?
-    val elements = reads.filter(_.overlapsLocus(locus)).map(PileupElement(_, locus, referenceContigSequence))
-    Pileup(referenceName, locus, referenceContigSequence, elements.toIndexedSeq)
+  def apply(reads: Seq[MappedRead],
+            contigName: ContigName,
+            locus: Locus, referenceContigSequence: ContigSequence): Pileup = {
+    val elements = reads.map(PileupElement(_, locus, referenceContigSequence))
+    Pileup(contigName, locus, referenceContigSequence, elements.toIndexedSeq)
   }
 }
