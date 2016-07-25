@@ -90,10 +90,18 @@ object LociMap {
   /** Construct an empty LociMap. */
   def apply[T](): LociMap[T] = LociMap(TreeMap[ContigName, Contig[T]]())
 
+  /**
+   * Load a LociMap output by [[LociMap.prettyPrint]].
+   * @param is [[InputStream]] reading from e.g. a file.
+   */
   def load(is: InputStream): LociMap[PartitionIndex] = {
     fromLines(LinesIterator(is))
   }
 
+  /**
+   * Read in a [[LociMap]] of partition indices from some strings, each one representing a genomic range.
+   * @param lines string representations of genomic ranges.
+   */
   def fromLines(lines: TraversableOnce[String]): LociMap[PartitionIndex] = {
     val builder = newBuilder[PartitionIndex]
     val re = """([^:]+):(\d+)-(\d+)=(\d+)""".r
