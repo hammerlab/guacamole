@@ -38,10 +38,8 @@ class ExactPartitioner[R <: ReferenceRegion: ClassTag](regions: RDD[R],
     val lociSetsRDD = regions.makeCappedLociSets(halfWindowSize, loci, maxRegionsPerPartition)
 
     if (printStats) {
-      val depthRunsRDD = regions.partitionDepths(halfWindowSize, loci, maxRegionsPerPartition)
-      val (validLoci, invalidLoci) = RegionRDD.validLociCounts(depthRunsRDD)
-
-      val totalLoci = validLoci + invalidLoci
+      val (depthRunsRDD, validLoci, invalidLoci) =
+        regions.validLociCounts(halfWindowSize, loci, maxRegionsPerPartition)
 
       val numDepthRuns = depthRunsRDD.count
       val numDepthRunsToTake = 1000
@@ -56,12 +54,12 @@ class ExactPartitioner[R <: ReferenceRegion: ClassTag](regions: RDD[R],
 
       val depthRunsByContig =
         depthRuns
-        .groupBy(_._1._1)
-        .mapValues(_.map {
-          case ((_, valid), num) => num -> valid
-        })
-        .toArray
-        .sorted(new KeyOrdering[ContigName, Array[(Int, Boolean)]](ContigName.ordering))
+          .groupBy(_._1._1)
+          .mapValues(_.map {
+            case ((_, valid), num) => num -> valid
+          })
+          .toArray
+          .sorted(new KeyOrdering[ContigName, Array[(Int, Boolean)]](ContigName.ordering))
 
       val overflowMsg =
         if (numDepthRuns > numDepthRunsToTake)
@@ -83,8 +81,10 @@ class ExactPartitioner[R <: ReferenceRegion: ClassTag](regions: RDD[R],
         }
       }
 
+      val totalLoci = validLoci + invalidLoci
+
       progress(
-        s"$validLoci (%.1f%%) valid loci, $invalidLoci invalid ($totalLoci total of ${loci.count} eligible)${overflowMsg}"
+        s"$validLoci (%.1f%%) loci with depth ≤$maxRegionsPerPartition, $invalidLoci other; $totalLoci total of ${loci.count} eligible)${overflowMsg}"
         .format(100.0 * validLoci / totalLoci),
         (for {
           (contig, runs) <- depthRunsByContig
