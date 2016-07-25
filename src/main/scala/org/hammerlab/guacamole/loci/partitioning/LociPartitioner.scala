@@ -16,8 +16,7 @@ trait LociPartitionerArgs
 
   @Args4JOption(
     name = "--loci-partitioning",
-    usage = "Directory path within which to save the partitioned reads and accompanying LociMap partitioning.",
-    forbids = Array("--partitioning-dir"),
+    usage = "If set: load a LociPartitioning from this path if it exists; write a computed partitioning to this path if it doesn't.",
     handler = classOf[StringOptionHandler]
   )
   var lociPartitioningPathOpt: Option[String] = None
@@ -40,7 +39,7 @@ trait LociPartitionerArgs
       case "approximate" =>
         new ApproximatePartitioner(regions, halfWindowSize, numPartitions, partitioningAccuracy)
       case "uniform" =>
-        new UniformPartitioner(numPartitions)
+        UniformPartitioner(numPartitions)
       case _ =>
         throw new IllegalArgumentException(s"Unrecognized --loci-partitioner: $lociPartitionerName")
     }

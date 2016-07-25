@@ -8,7 +8,7 @@ import org.hammerlab.guacamole.util.GuacFunSuite
 class UniformPartitionerSuite extends GuacFunSuite {
 
   def partition(numPartitions: NumPartitions, loci: LociSet): LociPartitioning =
-    new UniformPartitioner(numPartitions).partition(loci)
+    UniformPartitioner(numPartitions).partition(loci)
 
   test("partitionLociUniformly") {
     val set = LociSet("chr21:100-200,chr20:0-10,chr20:8-15,chr20:100-121,empty:10-10")

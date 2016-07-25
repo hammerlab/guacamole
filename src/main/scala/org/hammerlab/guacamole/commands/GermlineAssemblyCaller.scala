@@ -39,7 +39,7 @@ object GermlineAssemblyCaller {
     var minAlignmentQuality: Int = 30
 
     @Args4jOption(name = "--reference-fasta", required = true, usage = "Local path to a reference FASTA file")
-    var referenceFastaPath: String = _
+    var referenceFastaPath: String = null
 
     @Args4jOption(name = "--min-likelihood", usage = "Minimum Phred-scaled likelihood. Default: 0 (off)")
     var minLikelihood: Int = 0
