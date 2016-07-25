@@ -23,7 +23,6 @@ import org.apache.spark.serializer.KryoRegistrator
 import org.bdgenomics.adam.models.{SequenceDictionary, SequenceRecord}
 import org.bdgenomics.adam.serialization.ADAMKryoRegistrator
 import org.hammerlab.guacamole.commands.jointcaller.kryo.{Registrar => JointCallerRegistrar}
-import org.hammerlab.guacamole.distributed.TaskPosition
 import org.hammerlab.guacamole.loci.Coverage
 import org.hammerlab.guacamole.loci.map.{LociMap, Contig => LociMapContig, ContigSerializer => LociMapContigSerializer, Serializer => LociMapSerializer}
 import org.hammerlab.guacamole.loci.partitioning.LociPartitioner.PartitionIndex
@@ -34,6 +33,7 @@ import org.hammerlab.guacamole.reads.{MappedRead, MappedReadSerializer, MateAlig
 import org.hammerlab.guacamole.readsets.ContigLengths
 import org.hammerlab.guacamole.reference.Position
 import org.hammerlab.guacamole.variants.{Allele, AlleleEvidence, AlleleSerializer, CalledAllele}
+import org.hammerlab.magic.accumulables.{HashMap => MagicHashMap}
 import org.hammerlab.magic.kryo.{Registrar => MagicRDDRegistrar}
 
 class Registrar extends KryoRegistrator {
@@ -81,8 +81,7 @@ class Registrar extends KryoRegistrator {
     kryo.register(classOf[LociMapContig[PartitionIndex]], new LociMapContigSerializer[PartitionIndex])
     kryo.register(classOf[LociMapContig[MicroPartitionIndex]], new LociMapContigSerializer[MicroPartitionIndex])
 
-    // Serialized in WindowFlatMapUtils.
-    kryo.register(classOf[TaskPosition])
+    kryo.register(classOf[MagicHashMap[_, _]])
 
     // Germline-assembly caller flatmaps some CalledAlleles.
     kryo.register(classOf[Array[CalledAllele]])
