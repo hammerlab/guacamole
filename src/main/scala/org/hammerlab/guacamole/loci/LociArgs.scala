@@ -14,36 +14,44 @@ trait LociArgs extends DebugLogArgs {
   @Args4jOption(
     name = "--loci",
     usage = "Loci at which to call variants. Either 'all' or contig:start-end,contig:start-end,...",
-    forbids = Array("--loci-from-file")
+    forbids = Array("--loci-file")
   )
   var loci: String = ""
 
   @Args4jOption(
-    name = "--loci-from-file",
+    name = "--loci-file",
     usage = "Path to file giving loci at which to call variants.",
     forbids = Array("--loci")
   )
-  var lociFromFile: String = ""
+  var lociFile: String = ""
 
+  def parseLoci(hadoopConfiguration: Configuration, fallback: String = "all"): LociParser =
+    LociArgs.parseLoci(loci, lociFile, hadoopConfiguration)
+}
+
+object LociArgs {
   /**
    * Parse string representations of loci ranges, either from the "--loci" cmdline parameter or a file specified by the
-   * "--loci-from-file" parameter, and return a LociParser encapsulating the result. The latter can then be converted
+   * "--loci-file" parameter, and return a LociParser encapsulating the result. The latter can then be converted
    * into a LociSet when contig-lengths are available / have been parsed from read-sets.
    *
-   * @param fallback If neither "--loci" nor "--loci-from-file" were provided, fall back to this string representation
+   * @param fallback If neither "--loci" nor "--loci-file" were provided, fall back to this string representation
    *                 of the loci that should be considered.
    * @return a LociParser wrapping the appropriate loci ranges.
    */
-  def parseLoci(hadoopConfiguration: Configuration, fallback: String = "all"): LociParser = {
-    if (loci.nonEmpty && lociFromFile.nonEmpty) {
-      throw new IllegalArgumentException("Specify at most one of the 'loci' and 'loci-from-file' arguments")
+  def parseLoci(loci: String,
+                lociFile: String,
+                hadoopConfiguration: Configuration,
+                fallback: String = "all"): LociParser = {
+    if (loci.nonEmpty && lociFile.nonEmpty) {
+      throw new IllegalArgumentException("Specify at most one of the 'loci' and 'loci-file' arguments")
     }
     val lociToParse =
       if (loci.nonEmpty) {
         loci
-      } else if (lociFromFile.nonEmpty) {
+      } else if (lociFile.nonEmpty) {
         // Load loci from file.
-        val path = new Path(lociFromFile)
+        val path = new Path(lociFile)
         val filesystem = path.getFileSystem(hadoopConfiguration)
         IOUtils.toString(new InputStreamReader(filesystem.open(path)))
       } else {
@@ -53,4 +61,3 @@ trait LociArgs extends DebugLogArgs {
     LociParser(lociToParse)
   }
 }
-
