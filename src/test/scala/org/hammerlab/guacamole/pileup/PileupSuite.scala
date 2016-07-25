@@ -49,9 +49,6 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
       TestUtil.makeRead("TCGATCGA", "8M", 1),
       TestUtil.makeRead("TCGACCCTCGA", "4M3I4M", 1))
 
-    val noPileup = Pileup(reads, "chr1", 0, reference.getContig("chr1")).elements
-    assert(noPileup.size === 0)
-
     val firstPileup = Pileup(reads, "chr1", 1, reference.getContig("chr1"))
     firstPileup.elements.forall(_.isMatch) should be(true)
     firstPileup.elements.forall(_.qualityScore == 31) should be(true)
@@ -89,9 +86,6 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
       TestUtil.makeRead("TCGATCGA", "8M", 1, "chr1", Some(Seq(10, 15, 20, 25, 10, 15, 20, 25))),
       TestUtil.makeRead("TCGACCCTCGA", "4M3I4M", 1, "chr1", Some(Seq(10, 15, 20, 25, 5, 5, 5, 10, 15, 20, 25)))
     )
-
-    val noPileup = Pileup(reads, "chr1", 0, reference.getContig("chr1")).elements
-    noPileup.size should be(0)
 
     val pastInsertPileup = Pileup(reads, "chr1", 5, reference.getContig("chr1"))
     pastInsertPileup.elements.foreach(_.isMatch should be(true))
