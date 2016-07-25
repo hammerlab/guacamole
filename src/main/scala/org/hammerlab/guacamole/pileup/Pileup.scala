@@ -150,8 +150,7 @@ object Pileup {
    * @return A [[Pileup]] at the given locus.
    */
   def apply(reads: Seq[MappedRead], referenceName: String, locus: Long, referenceContigSequence: ContigSequence): Pileup = {
-    //TODO: Is this call to overlaps locus necessary?
-    val elements = reads.filter(_.overlapsLocus(locus)).map(PileupElement(_, locus, referenceContigSequence))
+    val elements = reads.map(PileupElement(_, locus, referenceContigSequence))
     Pileup(referenceName, locus, referenceContigSequence, elements.toIndexedSeq)
   }
 }
