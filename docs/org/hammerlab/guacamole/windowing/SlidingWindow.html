@@ -35,7 +35,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">SlidingWindow</span><span class="tparams">[<span name="R">R &lt;: <a href="../reference/ReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceRegion">ReferenceRegion</a></span>]</span><span class="params">(<span name="contigName">contigName: <a href="../reference/package.html#ContigName=String" class="extmbr" name="org.hammerlab.guacamole.reference.ContigName">ContigName</a></span>, <span name="halfWindowSize">halfWindowSize: <span class="extype" name="scala.Long">Long</span></span>, <span name="rawSortedRegions">rawSortedRegions: <span class="extype" name="scala.Iterator">Iterator</span>[<span class="extype" name="org.hammerlab.guacamole.windowing.SlidingWindow.R">R</span>]</span>)</span><span class="result"> extends <span class="extype" name="org.apache.spark.Logging">Logging</span> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">SlidingWindow</span><span class="tparams">[<span name="R">R &lt;: <a href="../reference/ReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceRegion">ReferenceRegion</a></span>]</span><span class="params">(<span name="contigName">contigName: <a href="../reference/package.html#ContigName=String" class="extmbr" name="org.hammerlab.guacamole.reference.ContigName">ContigName</a></span>, <span name="halfWindowSize">halfWindowSize: <span class="extype" name="scala.Int">Int</span></span>, <span name="rawSortedRegions">rawSortedRegions: <span class="extype" name="scala.Iterator">Iterator</span>[<span class="extype" name="org.hammerlab.guacamole.windowing.SlidingWindow.R">R</span>]</span>)</span><span class="result"> extends <span class="extype" name="org.apache.spark.Logging">Logging</span> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
@@ -47,7 +47,7 @@ s
 To enable an efficient implementation, we require that both the sequence of loci to be considered and the iterator
 of objects are sorted.
 </p></div><dl class="paramcmts block"><dt class="param">halfWindowSize</dt><dd class="cmt"><p>Number of nucleotide bases to either side of the specified locus to provide regions for. For
-                      example, if <a href="#halfWindowSize:Long" class="extmbr" name="org.hammerlab.guacamole.windowing.SlidingWindow#halfWindowSize">halfWindowSize</a>=5, and our <a href="#currentLocus:Long" class="extmbr" name="org.hammerlab.guacamole.windowing.SlidingWindow#currentLocus">currentLocus</a>=100, then <a href="#currentRegions():Vector[R]" class="extmbr" name="org.hammerlab.guacamole.windowing.SlidingWindow#currentRegions">currentRegions</a> will
+                      example, if <a href="#halfWindowSize:Int" class="extmbr" name="org.hammerlab.guacamole.windowing.SlidingWindow#halfWindowSize">halfWindowSize</a>=5, and our <a href="#currentLocus:Long" class="extmbr" name="org.hammerlab.guacamole.windowing.SlidingWindow#currentLocus">currentLocus</a>=100, then <a href="#currentRegions():Vector[R]" class="extmbr" name="org.hammerlab.guacamole.windowing.SlidingWindow#currentRegions">currentRegions</a> will
                       include regions that map to anywhere between 95 and 105, inclusive. Set to 0 to consider only
                       regions that overlap the exact locus being considered, with no surrounding window.</p></dd><dt class="param">rawSortedRegions</dt><dd class="cmt"><p>Iterator of regions, sorted by the aligned start locus.
 </p></dd></dl><div class="toggleContainer block">
@@ -91,7 +91,7 @@ of objects are sorted.
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="org.hammerlab.guacamole.windowing.SlidingWindow#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="&lt;init&gt;(contigName:org.hammerlab.guacamole.reference.ContigName,halfWindowSize:Long,rawSortedRegions:Iterator[R]):org.hammerlab.guacamole.windowing.SlidingWindow[R]"></a>
+      <a id="&lt;init&gt;(contigName:org.hammerlab.guacamole.reference.ContigName,halfWindowSize:Int,rawSortedRegions:Iterator[R]):org.hammerlab.guacamole.windowing.SlidingWindow[R]"></a>
       <a id="&lt;init&gt;:SlidingWindow[R]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -99,11 +99,11 @@ of objects are sorted.
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">SlidingWindow</span><span class="params">(<span name="contigName">contigName: <a href="../reference/package.html#ContigName=String" class="extmbr" name="org.hammerlab.guacamole.reference.ContigName">ContigName</a></span>, <span name="halfWindowSize">halfWindowSize: <span class="extype" name="scala.Long">Long</span></span>, <span name="rawSortedRegions">rawSortedRegions: <span class="extype" name="scala.Iterator">Iterator</span>[<span class="extype" name="org.hammerlab.guacamole.windowing.SlidingWindow.R">R</span>]</span>)</span>
+        <span class="name">SlidingWindow</span><span class="params">(<span name="contigName">contigName: <a href="../reference/package.html#ContigName=String" class="extmbr" name="org.hammerlab.guacamole.reference.ContigName">ContigName</a></span>, <span name="halfWindowSize">halfWindowSize: <span class="extype" name="scala.Int">Int</span></span>, <span name="rawSortedRegions">rawSortedRegions: <span class="extype" name="scala.Iterator">Iterator</span>[<span class="extype" name="org.hammerlab.guacamole.windowing.SlidingWindow.R">R</span>]</span>)</span>
       </span>
       </h4>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">halfWindowSize</dt><dd class="cmt"><p>Number of nucleotide bases to either side of the specified locus to provide regions for. For
-                      example, if <a href="#halfWindowSize:Long" class="extmbr" name="org.hammerlab.guacamole.windowing.SlidingWindow#halfWindowSize">halfWindowSize</a>=5, and our <a href="#currentLocus:Long" class="extmbr" name="org.hammerlab.guacamole.windowing.SlidingWindow#currentLocus">currentLocus</a>=100, then <a href="#currentRegions():Vector[R]" class="extmbr" name="org.hammerlab.guacamole.windowing.SlidingWindow#currentRegions">currentRegions</a> will
+                      example, if <a href="#halfWindowSize:Int" class="extmbr" name="org.hammerlab.guacamole.windowing.SlidingWindow#halfWindowSize">halfWindowSize</a>=5, and our <a href="#currentLocus:Long" class="extmbr" name="org.hammerlab.guacamole.windowing.SlidingWindow#currentLocus">currentLocus</a>=100, then <a href="#currentRegions():Vector[R]" class="extmbr" name="org.hammerlab.guacamole.windowing.SlidingWindow#currentRegions">currentRegions</a> will
                       include regions that map to anywhere between 95 and 105, inclusive. Set to 0 to consider only
                       regions that overlap the exact locus being considered, with no surrounding window.</p></dd><dt class="param">rawSortedRegions</dt><dd class="cmt"><p>Iterator of regions, sorted by the aligned start locus.
 </p></dd></dl></div>
@@ -298,19 +298,19 @@ of objects are sorted.
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="org.hammerlab.guacamole.windowing.SlidingWindow#halfWindowSize" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="halfWindowSize:Long"></a>
-      <a id="halfWindowSize:Long"></a>
+      <a id="halfWindowSize:Int"></a>
+      <a id="halfWindowSize:Int"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">halfWindowSize</span><span class="result">: <span class="extype" name="scala.Long">Long</span></span>
+        <span class="name">halfWindowSize</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
       </span>
       </h4>
       <p class="shortcomment cmt">Number of nucleotide bases to either side of the specified locus to provide regions for.</p><div class="fullcomment"><div class="comment cmt"><p>Number of nucleotide bases to either side of the specified locus to provide regions for. For
-                      example, if <a href="#halfWindowSize:Long" class="extmbr" name="org.hammerlab.guacamole.windowing.SlidingWindow#halfWindowSize">halfWindowSize</a>=5, and our <a href="#currentLocus:Long" class="extmbr" name="org.hammerlab.guacamole.windowing.SlidingWindow#currentLocus">currentLocus</a>=100, then <a href="#currentRegions():Vector[R]" class="extmbr" name="org.hammerlab.guacamole.windowing.SlidingWindow#currentRegions">currentRegions</a> will
+                      example, if <a href="#halfWindowSize:Int" class="extmbr" name="org.hammerlab.guacamole.windowing.SlidingWindow#halfWindowSize">halfWindowSize</a>=5, and our <a href="#currentLocus:Long" class="extmbr" name="org.hammerlab.guacamole.windowing.SlidingWindow#currentLocus">currentLocus</a>=100, then <a href="#currentRegions():Vector[R]" class="extmbr" name="org.hammerlab.guacamole.windowing.SlidingWindow#currentRegions">currentRegions</a> will
                       include regions that map to anywhere between 95 and 105, inclusive. Set to 0 to consider only
                       regions that overlap the exact locus being considered, with no surrounding window.</p></div></div>
     </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
