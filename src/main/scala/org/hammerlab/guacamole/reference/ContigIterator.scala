@@ -19,7 +19,7 @@ case class ContigIterator[+R <: ReferenceRegion](contigName: ContigName, regions
   }
 
   override def next(): R = {
-    val n = regions.head
+    val n = head
     regions.next()
     n
   }
@@ -30,4 +30,3 @@ object ContigIterator {
     ContigIterator(regions.head.contigName, regions)
   }
 }
-
