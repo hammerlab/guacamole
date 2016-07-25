@@ -29,7 +29,7 @@ class WindowFlatMapUtilsSuite extends GuacFunSuite {
     val counts = WindowFlatMapUtils.windowFoldLoci(
       Vector(reads),
       // Split loci in 5 partitions - we will compute an aggregate value per partition
-      new UniformPartitioner(5).partition(LociSet("chr1:0-20")),
+      UniformPartitioner(5).partition(LociSet("chr1:0-20")),
       skipEmpty = false,
       halfWindowSize = 0,
       initialValue = (0L, 0L),
