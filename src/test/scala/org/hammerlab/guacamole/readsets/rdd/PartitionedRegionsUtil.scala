@@ -15,6 +15,8 @@ trait PartitionedRegionsUtil {
       readsRDDs,
       lociPartitioning,
       halfWindowSize = 0,
+      partitionedRegionsPathOpt = None,
+      compress = false,
       printStats = false
     )
   }
