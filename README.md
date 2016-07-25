@@ -124,13 +124,6 @@ Guacamole contains many small BAMs for testing. The full test suite can be run w
 mvn test
 ```
 
-BAMs that are used for testing are stored in `git lfs`. To execute the tests with these BAMs, please:
-
-1. [Install git lfs](https://help.github.com/articles/installing-git-large-file-storage/)
-1. Download the test BAMs with `git lfs pull`
-
-If you see the following error when running the test suite: `java.lang.RuntimeException: Cannot use index file with textual SAM file`, you likely have not downloaded the test BAMs from git lfs.
-
 # Is this ready for production use?
 
 Not currently. Everything here is experimental. Please use a standard tool if
