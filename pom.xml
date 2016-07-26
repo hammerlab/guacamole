@@ -55,6 +55,15 @@
             <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
               <mainClass>org.hammerlab.guacamole.Main</mainClass>
             </transformer>
+
+            <!-- Akka (which Spark depends on) needs this reference.conf munging in order to work correctly in -->
+            <!-- shaded JARs, cf. http://stackoverflow.com/questions/31011243/#31011315 -->
+            <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+              <resource>reference.conf</resource>
+            </transformer>
+
+            <!-- Necessary for Hadoop to load local files correctly, cf. http://stackoverflow.com/a/27532248/544236 -->
+            <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
           </transformers>
           <filters>
             <filter>
