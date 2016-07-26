@@ -1,9 +1,10 @@
 package org.hammerlab.guacamole.loci.set
 
+import htsjdk.variant.vcf.VCFFileReader
 import org.hammerlab.guacamole.readsets.ContigLengths
-import org.hammerlab.guacamole.reference.{Locus, NumLoci}
-import org.hammerlab.guacamole.reference.{ContigName => ContigName}
+import org.hammerlab.guacamole.reference.{ContigName, Locus, NumLoci}
 
+import scala.collection.JavaConversions._
 import scala.collection.mutable.ArrayBuffer
 
 /**
@@ -152,4 +153,17 @@ object LociParser {
   all.fullyResolved = false
 
   def apply(lociStr: String): LociParser = new LociParser().put(lociStr)
+
+  def apply(reader: VCFFileReader): LociParser = {
+    val loci = new LociParser()
+    reader
+      .foreach(variant =>
+        loci.put(
+          variant.getContig,
+          variant.getStart - 1L,
+          variant.getEnd.toLong
+        )
+      )
+    loci
+  }
 }

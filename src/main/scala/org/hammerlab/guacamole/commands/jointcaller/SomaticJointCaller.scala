@@ -3,12 +3,12 @@ package org.hammerlab.guacamole.commands.jointcaller
 import htsjdk.samtools.SAMSequenceDictionary
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
-import org.hammerlab.guacamole._
 import org.hammerlab.guacamole.commands.SparkCommand
 import org.hammerlab.guacamole.commands.jointcaller.evidence.{MultiSampleMultiAlleleEvidence, MultiSampleSingleAlleleEvidence}
 import org.hammerlab.guacamole.distributed.LociPartitionUtils
 import org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociAccordingToArgs
 import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMapMultipleRDDs
+import org.hammerlab.guacamole.loci.LociArgs
 import org.hammerlab.guacamole.loci.set.{LociParser, LociSet}
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.readsets.{InputFilters, NoSequenceDictionaryArgs, PerSample, ReadSets}
@@ -36,8 +36,8 @@ object SomaticJoint {
     @Args4jOption(name = "--reference-fasta-is-partial", usage = "Treat the reference fasta as a partial reference")
     var referenceFastaIsPartial: Boolean = false
 
-    @Args4jOption(name = "--force-call-loci-from-file", usage = "Always call the given sites")
-    var forceCallLociFromFile: String = ""
+    @Args4jOption(name = "--force-call-loci-file", usage = "Always call the given sites")
+    var forceCallLociFile: String = ""
 
     @Args4jOption(name = "--force-call-loci", usage = "Always call the given sites")
     var forceCallLoci: String = ""
@@ -92,12 +92,15 @@ object SomaticJoint {
 
       val readsets = inputsToReadSets(sc, inputs, loci, !args.noSequenceDictionary)
 
+      val contigLengths = readsets.contigLengths
+
       val forceCallLoci =
-        if (args.forceCallLoci.nonEmpty || args.forceCallLociFromFile.nonEmpty) {
-          LociSet.load(args.forceCallLoci, args.forceCallLociFromFile, readsets.contigLengths)
-        } else {
-          LociSet()
-        }
+        LociArgs.parseLoci(
+          args.forceCallLoci,
+          args.forceCallLociFile,
+          sc.hadoopConfiguration,
+          fallback = ""
+        ).result(contigLengths)
 
       if (forceCallLoci.nonEmpty) {
         progress(
@@ -117,7 +120,7 @@ object SomaticJoint {
         readsets,
         parameters,
         reference,
-        loci.result(readsets.contigLengths),
+        loci.result(contigLengths),
         forceCallLoci = forceCallLoci,
         onlySomatic = args.onlySomatic,
         includeFiltered = args.includeFiltered,
@@ -188,7 +191,7 @@ object SomaticJoint {
     // specified loci.
     val broadcastForceCallLoci = sc.broadcast(forceCallLoci)
 
-    val mappedReadRDDs = readsRDDs.mappedReads
+    val mappedReadsRDDs = readsRDDs.mappedReads
 
     val lociPartitions =
       partitionLociAccordingToArgs(
@@ -196,11 +199,11 @@ object SomaticJoint {
         // When mapping over pileups, at locus x we call variants at locus x + 1. Therefore we subtract 1 from the user-
         // specified loci.
         lociSetMinusOne(loci),
-        mappedReadRDDs
+        mappedReadsRDDs
       )
 
     pileupFlatMapMultipleRDDs(
-      mappedReadRDDs,
+      mappedReadsRDDs,
       lociPartitions,
       skipEmpty = true,  // TODO: shouldn't skip empty positions if we might force call them. Need an efficient way to handle this.
       rawPileups => {
