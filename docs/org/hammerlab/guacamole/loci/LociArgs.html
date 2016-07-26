@@ -24,9 +24,9 @@
         </head>
         <body class="type">
       <div id="definition">
-        <img src="../../../../lib/trait_big.png" />
+        <a href="LociArgs$.html" title="Go to companion"><img src="../../../../lib/trait_to_object_big.png" /></a>
         <p id="owner"><a href="../../../package.html" class="extype" name="org">org</a>.<a href="../../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="../package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole.loci">loci</a></p>
-        <h1>LociArgs</h1>
+        <h1><a href="LociArgs$.html" title="Go to companion">LociArgs</a></h1>
       </div>
 
       <h4 id="signature" class="signature">
@@ -347,16 +347,16 @@
       </span>
       </h4>
       
-    </li><li name="org.hammerlab.guacamole.loci.LociArgs#lociFromFile" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="lociFromFile:String"></a>
-      <a id="lociFromFile:String"></a>
+    </li><li name="org.hammerlab.guacamole.loci.LociArgs#lociFile" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="lociFile:String"></a>
+      <a id="lociFile:String"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">var</span>
       </span>
       <span class="symbol">
-        <span class="name">lociFromFile</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+        <span class="name">lociFile</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
       </h4>
       
@@ -425,7 +425,7 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>ParquetArgs → ParquetRDDArgs</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.loci.LociArgs#parseLoci" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="org.hammerlab.guacamole.loci.LociArgs#parseLoci" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="parseLoci(hadoopConfiguration:org.apache.hadoop.conf.Configuration,fallback:String):org.hammerlab.guacamole.loci.set.LociParser"></a>
       <a id="parseLoci(Configuration,String):LociParser"></a>
       <h4 class="signature">
@@ -437,13 +437,7 @@
         <span class="name">parseLoci</span><span class="params">(<span name="hadoopConfiguration">hadoopConfiguration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>, <span name="fallback">fallback: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;all&quot;</span></span>)</span><span class="result">: <a href="set/LociParser.html" class="extype" name="org.hammerlab.guacamole.loci.set.LociParser">LociParser</a></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Parse string representations of loci ranges, either from the &quot;--loci&quot; cmdline parameter or a file specified by the
-&quot;--loci-from-file&quot; parameter, and return a LociParser encapsulating the result.</p><div class="fullcomment"><div class="comment cmt"><p>Parse string representations of loci ranges, either from the &quot;--loci&quot; cmdline parameter or a file specified by the
-&quot;--loci-from-file&quot; parameter, and return a LociParser encapsulating the result. The latter can then be converted
-into a LociSet when contig-lengths are available / have been parsed from read-sets.
-</p></div><dl class="paramcmts block"><dt class="param">fallback</dt><dd class="cmt"><p>If neither &quot;--loci&quot; nor &quot;--loci-from-file&quot; were provided, fall back to this string representation
-                of the loci that should be considered.</p></dd><dt>returns</dt><dd class="cmt"><p>a LociParser wrapping the appropriate loci ranges.
-</p></dd></dl></div>
+      
     </li><li name="org.bdgenomics.utils.cli.Args4jBase#printMetrics" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="printMetrics:Boolean"></a>
       <a id="printMetrics:Boolean"></a>
