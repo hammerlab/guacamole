@@ -1,5 +1,7 @@
 package org.hammerlab.guacamole.commands.jointcaller
 
+import java.nio.file.Files
+
 import org.hammerlab.guacamole.loci.set.{LociParser, LociSet}
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.reference.ReferenceBroadcast.MapBackedReferenceSequence
