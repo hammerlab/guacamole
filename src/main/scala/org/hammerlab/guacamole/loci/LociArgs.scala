@@ -1,9 +1,9 @@
 package org.hammerlab.guacamole.loci
 
-import java.io.{File, InputStreamReader}
+import java.io.{BufferedReader, File}
 
+import breeze.io.TextReader.InputStreamReader
 import htsjdk.variant.vcf.VCFFileReader
-import org.apache.commons.io.IOUtils
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.{FileSystem, Path}
 import org.hammerlab.guacamole.loci.set.LociParser
@@ -74,10 +74,13 @@ object LociArgs {
       )
     } else if (filePath.endsWith(".loci") || filePath.endsWith(".txt")) {
       val filesystem = FileSystem.get(hadoopConfiguration)
-      val path = new Path(filePath)
-      LociParser(
-        IOUtils.toString(new InputStreamReader(filesystem.open(path)))
-      )
+      val is = filesystem.open(new Path(filePath))
+      val loci =
+        LociParser(
+          new InputStreamReader(is).readRemaining()
+        )
+      is.close()
+      loci
     } else {
       throw new IllegalArgumentException(
         s"Couldn't guess format for file: $filePath. Expected file extensions: '.loci' or '.txt' for loci string format; '.vcf' for VCFs."
