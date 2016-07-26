@@ -1,10 +1,11 @@
 package org.hammerlab.guacamole.loci
 
-import java.io.InputStreamReader
+import java.io.{File, InputStreamReader}
 
+import htsjdk.variant.vcf.VCFFileReader
 import org.apache.commons.io.IOUtils
 import org.apache.hadoop.conf.Configuration
-import org.apache.hadoop.fs.Path
+import org.apache.hadoop.fs.{FileSystem, Path}
 import org.hammerlab.guacamole.loci.set.LociParser
 import org.hammerlab.guacamole.logging.DebugLogArgs
 import org.kohsuke.args4j.{Option => Args4jOption}
@@ -14,43 +15,73 @@ trait LociArgs extends DebugLogArgs {
   @Args4jOption(
     name = "--loci",
     usage = "Loci at which to call variants. Either 'all' or contig:start-end,contig:start-end,...",
-    forbids = Array("--loci-from-file")
+    forbids = Array("--loci-file")
   )
   var loci: String = ""
 
   @Args4jOption(
-    name = "--loci-from-file",
+    name = "--loci-file",
     usage = "Path to file giving loci at which to call variants.",
     forbids = Array("--loci")
   )
-  var lociFromFile: String = ""
+  var lociFile: String = ""
 
+  def parseLoci(hadoopConfiguration: Configuration, fallback: String = "all"): LociParser =
+    LociArgs.parseLoci(loci, lociFile, hadoopConfiguration)
+}
+
+object LociArgs {
   /**
    * Parse string representations of loci ranges, either from the "--loci" cmdline parameter or a file specified by the
-   * "--loci-from-file" parameter, and return a LociParser encapsulating the result. The latter can then be converted
+   * "--loci-file" parameter, and return a LociParser encapsulating the result. The latter can then be converted
    * into a LociSet when contig-lengths are available / have been parsed from read-sets.
    *
-   * @param fallback If neither "--loci" nor "--loci-from-file" were provided, fall back to this string representation
+   * @param fallback If neither "--loci" nor "--loci-file" were provided, fall back to this string representation
    *                 of the loci that should be considered.
    * @return a LociParser wrapping the appropriate loci ranges.
    */
-  def parseLoci(hadoopConfiguration: Configuration, fallback: String = "all"): LociParser = {
-    if (loci.nonEmpty && lociFromFile.nonEmpty) {
-      throw new IllegalArgumentException("Specify at most one of the 'loci' and 'loci-from-file' arguments")
+  def parseLoci(loci: String,
+                lociFile: String,
+                hadoopConfiguration: Configuration,
+                fallback: String = "all"): LociParser = {
+    if (loci.nonEmpty && lociFile.nonEmpty) {
+      throw new IllegalArgumentException("Specify at most one of the 'loci' and 'loci-file' arguments")
     }
-    val lociToParse =
-      if (loci.nonEmpty) {
-        loci
-      } else if (lociFromFile.nonEmpty) {
-        // Load loci from file.
-        val path = new Path(lociFromFile)
-        val filesystem = path.getFileSystem(hadoopConfiguration)
-        IOUtils.toString(new InputStreamReader(filesystem.open(path)))
-      } else {
-        fallback
-      }
 
-    LociParser(lociToParse)
+    if (loci.nonEmpty) {
+      LociParser(loci)
+    } else if (lociFile.nonEmpty) {
+      loadFromFile(lociFile, hadoopConfiguration)
+    } else {
+      LociParser(fallback)
+    }
+  }
+
+  /**
+   * Load a LociSet from the specified file, using the contig lengths from the given ReadSet.
+   *
+   * @param filePath path to file containing loci. If it ends in '.vcf' then it is read as a VCF and the variant sites
+   *                 are the loci. If it ends in '.loci' or '.txt' then it should be a file containing loci as
+   *                 "chrX:5-10,chr12-10-20", etc. Whitespace is ignored.
+   * @return a LociSet
+   */
+  private def loadFromFile(filePath: String, hadoopConfiguration: Configuration): LociParser = {
+    if (filePath.endsWith(".vcf")) {
+      // VCF-reading currently only works for local files, requires "file://" scheme to not be present.
+      // TODO: use hadoop-bam to load VCF from local filesystem or HDFS.
+      LociParser(
+        new VCFFileReader(new File(filePath), false)
+      )
+    } else if (filePath.endsWith(".loci") || filePath.endsWith(".txt")) {
+      val filesystem = FileSystem.get(hadoopConfiguration)
+      val path = new Path(filePath)
+      LociParser(
+        IOUtils.toString(new InputStreamReader(filesystem.open(path)))
+      )
+    } else {
+      throw new IllegalArgumentException(
+        s"Couldn't guess format for file: $filePath. Expected file extensions: '.loci' or '.txt' for loci string format; '.vcf' for VCFs."
+      )
+    }
   }
 }
-
