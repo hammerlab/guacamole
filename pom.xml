@@ -150,7 +150,7 @@
           <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
           <junitxml>.</junitxml>
           <filereports>GuacamoleTestSuite.txt</filereports>
-          <argLine>-Xmx3072m</argLine>
+          <argLine>-Xmx4g -XX:MaxPermSize=256m</argLine>
           <stdout>F</stdout>
         </configuration>
         <executions>
