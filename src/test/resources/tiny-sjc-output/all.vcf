@@ -1,0 +1,117 @@
+##fileformat=VCFv4.2
+##Caller=Guacamole
+##FILTER=<ID=INSUFFICIENT_NORMAL,Description="Insufficient normal evidence to make call">
+##FILTER=<ID=STRAND_BIAS,Description="Phred scaled strand bias (FS) exceeds threshold">
+##FORMAT=<ID=AD,Number=.,Type=Integer,Description="Allelic depths for the ref and alt alleles">
+##FORMAT=<ID=ADP,Number=.,Type=String,Description="allelic depth for all alleles">
+##FORMAT=<ID=DP,Number=1,Type=Integer,Description="Total depth">
+##FORMAT=<ID=FF,Number=.,Type=String,Description="failing filters for this sample">
+##FORMAT=<ID=FS,Number=1,Type=Integer,Description="Phred scaled strand bias">
+##FORMAT=<ID=GQ,Number=1,Type=Integer,Description="Genotype quality">
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+##FORMAT=<ID=RL,Number=.,Type=String,Description="Unnormalized log10 genotype posteriors">
+##FORMAT=<ID=TRIGGERED,Number=1,Type=String,Description="Did this sample trigger a call">
+##FORMAT=<ID=VAF,Number=1,Type=Integer,Description="Variant allele frequency (percent)">
+##INFO=<ID=TRIGGER,Number=.,Type=String,Description="Which likelihood ratio test triggered call">
+##INFO=<ID=TUMOR_EXPRESSION,Number=1,Type=String,Description="Was there tumor RNA expression for the variant">
+##contig=<ID=chr1,length=249250621>
+##contig=<ID=chr2,length=243199373>
+##contig=<ID=chr3,length=198022430>
+##contig=<ID=chr4,length=191154276>
+##contig=<ID=chr5,length=180915260>
+##contig=<ID=chr6,length=171115067>
+##contig=<ID=chr7,length=159138663>
+##contig=<ID=chr8,length=146364022>
+##contig=<ID=chr9,length=141213431>
+##contig=<ID=chr10,length=135534747>
+##contig=<ID=chr11,length=135006516>
+##contig=<ID=chr12,length=133851895>
+##contig=<ID=chr13,length=115169878>
+##contig=<ID=chr14,length=107349540>
+##contig=<ID=chr15,length=102531392>
+##contig=<ID=chr16,length=90354753>
+##contig=<ID=chr17,length=81195210>
+##contig=<ID=chr18,length=78077248>
+##contig=<ID=chr19,length=59128983>
+##contig=<ID=chr20,length=63025520>
+##contig=<ID=chr21,length=48129895>
+##contig=<ID=chr22,length=51304566>
+##contig=<ID=chrX,length=155270560>
+##contig=<ID=chrY,length=59373566>
+##contig=<ID=GL000191.1,length=106433>
+##contig=<ID=GL000192.1,length=547496>
+##contig=<ID=GL000193.1,length=189789>
+##contig=<ID=GL000194.1,length=191469>
+##contig=<ID=GL000195.1,length=182896>
+##contig=<ID=GL000196.1,length=38914>
+##contig=<ID=GL000197.1,length=37175>
+##contig=<ID=GL000198.1,length=90085>
+##contig=<ID=GL000199.1,length=169874>
+##contig=<ID=GL000200.1,length=187035>
+##contig=<ID=GL000201.1,length=36148>
+##contig=<ID=GL000202.1,length=40103>
+##contig=<ID=GL000203.1,length=37498>
+##contig=<ID=GL000204.1,length=81310>
+##contig=<ID=GL000205.1,length=174588>
+##contig=<ID=GL000206.1,length=41001>
+##contig=<ID=GL000207.1,length=4262>
+##contig=<ID=GL000208.1,length=92689>
+##contig=<ID=GL000209.1,length=159169>
+##contig=<ID=GL000210.1,length=27682>
+##contig=<ID=GL000211.1,length=166566>
+##contig=<ID=GL000212.1,length=186858>
+##contig=<ID=GL000213.1,length=164239>
+##contig=<ID=GL000214.1,length=137718>
+##contig=<ID=GL000215.1,length=172545>
+##contig=<ID=GL000216.1,length=172294>
+##contig=<ID=GL000217.1,length=172149>
+##contig=<ID=GL000218.1,length=161147>
+##contig=<ID=GL000219.1,length=179198>
+##contig=<ID=GL000220.1,length=161802>
+##contig=<ID=GL000221.1,length=155397>
+##contig=<ID=GL000222.1,length=186861>
+##contig=<ID=GL000223.1,length=180455>
+##contig=<ID=GL000224.1,length=179693>
+##contig=<ID=GL000225.1,length=211173>
+##contig=<ID=GL000226.1,length=15008>
+##contig=<ID=GL000227.1,length=128374>
+##contig=<ID=GL000228.1,length=129120>
+##contig=<ID=GL000229.1,length=19913>
+##contig=<ID=GL000230.1,length=43691>
+##contig=<ID=GL000231.1,length=27386>
+##contig=<ID=GL000232.1,length=40652>
+##contig=<ID=GL000233.1,length=45941>
+##contig=<ID=GL000234.1,length=40531>
+##contig=<ID=GL000235.1,length=34474>
+##contig=<ID=GL000236.1,length=41934>
+##contig=<ID=GL000237.1,length=45867>
+##contig=<ID=GL000238.1,length=39939>
+##contig=<ID=GL000239.1,length=33824>
+##contig=<ID=GL000240.1,length=41933>
+##contig=<ID=GL000241.1,length=42152>
+##contig=<ID=GL000242.1,length=43523>
+##contig=<ID=GL000243.1,length=43341>
+##contig=<ID=GL000244.1,length=39929>
+##contig=<ID=GL000245.1,length=36651>
+##contig=<ID=GL000246.1,length=38154>
+##contig=<ID=GL000247.1,length=36422>
+##contig=<ID=GL000248.1,length=39786>
+##contig=<ID=GL000249.1,length=38502>
+##contig=<ID=chrMT,length=16569>
+##parameter.anyAlleleMinSupportingPercent=2.0
+##parameter.anyAlleleMinSupportingReads=2
+##parameter.filterSomaticNormalDepth=30
+##parameter.filterSomaticNormalNonreferencePercent=3.0
+##parameter.filterStrandBiasPhred=60.0
+##parameter.germlineNegativeLog10HeterozygousPrior=4.0
+##parameter.germlineNegativeLog10HomozygousAlternatePrior=5.0
+##parameter.maxAllelesPerSite=4
+##parameter.maxCallsPerSite=1
+##parameter.somaticGenotypePolicy=presence
+##parameter.somaticMaxGermlineErrorRatePercent=4.0
+##parameter.somaticNegativeLog10VariantPrior=6.0
+##parameter.somaticNegativeLog10VariantPriorRna=1.0
+##parameter.somaticNegativeLog10VariantPriorWithRnaEvidence=1.0
+##parameter.somaticVafFloor=0.05
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	normal	primary	recurrence	pooled_tumor
+chr12	65857040	.	G	N	.	INSUFFICIENT_NORMAL	TRIGGER=NONE;TUMOR_EXPRESSION=NO	GT:AD:ADP:DP:FS:RL:TRIGGERED:VAF	0/0:23,0:G=23,N=0:23:0:[G/G]=-0.0072313716,[G/N]=-10.923690,[N/N]=-86.749695:.:0.00	0/0:56,0:G=56,N=0:56:0:[G->1.00]=-0.44401944,[N->0.05|G->0.95]=-7.6534926:NO:0.00	0/0:65,0:G=65,N=0:65:0:[G->1.00]=-0.96758142,[N->0.05|G->0.95]=-8.3350079:NO:0.00	0/0:121,0:G=121,N=0:121:0:[G->1.00]=-1.4116009,[N->0.05|G->0.95]=-9.9885005:NO:0.00
