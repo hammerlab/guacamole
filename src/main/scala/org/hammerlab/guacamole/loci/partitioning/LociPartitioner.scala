@@ -11,7 +11,7 @@ import scala.reflect.ClassTag
 
 trait LociPartitionerArgs
   extends LociArgs
-  with ApproximatePartitionerArgs
+  with MicroRegionPartitionerArgs
   with UniformPartitionerArgs {
 
   @Args4JOption(

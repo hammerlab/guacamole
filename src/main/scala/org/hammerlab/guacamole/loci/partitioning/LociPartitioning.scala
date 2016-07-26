@@ -7,6 +7,7 @@ import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole.loci.map.LociMap
 import org.hammerlab.guacamole.loci.partitioning.LociPartitioner.PartitionIndex
 import org.hammerlab.guacamole.loci.set.LociSet
+import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.reference.ReferenceRegion
 import org.hammerlab.magic.util.Saveable
 
@@ -41,16 +42,19 @@ object LociPartitioning {
       val path = new Path(lociPartitioningPath)
       val fs = path.getFileSystem(regions.sparkContext.hadoopConfiguration)
       if (fs.exists(path)) {
+        progress(s"Loading loci partitioning from $lociPartitioningPath")
         return load(fs.open(path))
       }
     }
 
+    progress(s"Partitioning loci")
     val lp =
       args
         .getPartitioner(regions, halfWindowSize)
         .partition(loci)
 
     for (lociPartitioningPath <- args.lociPartitioningPathOpt) {
+      progress(s"Saving loci partitioning to $lociPartitioningPath")
       lp.save(
         FileSystem
           .get(regions.sparkContext.hadoopConfiguration)

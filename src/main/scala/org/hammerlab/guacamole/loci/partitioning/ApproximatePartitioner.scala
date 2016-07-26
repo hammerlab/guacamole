@@ -12,7 +12,7 @@ import org.kohsuke.args4j.{Option => Args4jOption}
 import scala.collection.Map
 import scala.reflect.ClassTag
 
-trait ApproximatePartitionerArgs extends UniformPartitionerArgs {
+trait MicroRegionPartitionerArgs extends UniformPartitionerArgs {
 
   /**
    * Long >= 1. Number of micro-partitions generated for each of the `numPartitions` Spark partitions that will be
@@ -142,26 +142,33 @@ class ApproximatePartitioner[R <: ReferenceRegion: ClassTag](regions: RDD[R],
           builder.put(set, partition)
           set = LociSet()
         } else {
+
           // If we've allocated all regions for this partition, move on to the next partition.
           if (regionsRemainingForThisPartition() == 0)
             partition += 1
           assert(regionsRemainingForThisPartition() > 0)
           assert(partition < numPartitions)
 
-          // Making the approximation of uniform depth within each micro partition, we assign a proportional number of
-          // loci and regions to the current partition. The proportion of loci we assign is the ratio of how many
-          // regions we have remaining to allocate for the current partition vs. how many regions are remaining in the
-          // current micro partition.
-
-          // Here we calculate the fraction of the current micro partition we are going to assign to the current
-          // partition.
-          //
-          // May be 1.0, in which case all loci (and therefore regions) for this micro partition will be assigned to the
-          // current partition.
+          /**
+           * Making the approximation of uniform depth within each micro partition, we assign a proportional number of
+           * loci and regions to the current partition. The proportion of loci we assign is the ratio of how many
+           * regions we have remaining to allocate for the current partition vs. how many regions are remaining in the
+           * current micro partition.
+           *
+           * Here we calculate the fraction of the current micro partition we are going to assign to the current
+           * partition.
+           *
+           * May be 1.0, in which case all loci (and therefore regions) for this micro partition will be assigned to the
+           * current partition.
+           *
+           */
           val fractionToTake = math.min(1.0, regionsRemainingForThisPartition().toDouble / regionsInSet.toDouble)
 
-          // Based on fractionToTake, we set the number of loci and regions to assign.
-          // We always take at least 1 locus to ensure we continue to make progress.
+          /**
+           * Based on fractionToTake, we set the number of loci and regions to assign.
+           *
+           * We always take at least 1 locus to ensure we continue to make progress.
+           */
           val lociToTake = math.max(1, (fractionToTake * set.count).toLong)
           val regionsToTake = (fractionToTake * regionsInSet).toLong
 
@@ -182,9 +189,13 @@ class ApproximatePartitioner[R <: ReferenceRegion: ClassTag](regions: RDD[R],
 }
 
 object ApproximatePartitioner {
-  // Convenience types representing "micro-partitions" indices, or numbers of micro-partitions.
-  // Micro-partitions can be as numerous as loci in the genome, so we use Longs to represent them.
-  // Many of them can be combined into individual Spark partitions (which are Ints).
+  /**
+   * Convenience types representing "micro-partitions" indices, or numbers of micro-partitions.
+   *
+   * Micro-partitions can be as numerous as loci in the genome, so we use Longs to represent them.
+   *
+   * Many of them can be combined into individual Spark partitions (which are Ints).
+   */
   type MicroPartitionIndex = Long
   type NumMicroPartitions = Long
 }
