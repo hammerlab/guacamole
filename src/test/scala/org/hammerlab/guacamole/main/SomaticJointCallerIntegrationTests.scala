@@ -95,7 +95,7 @@ object SomaticJointCallerIntegrationTests extends SparkCommand[Arguments] with V
         args.out = resultFile
         args.paths = Seq(NA12878TestUtil.subsetBam).toArray
         args.loci = "chr1:0-6700000"
-        args.forceCallLociFromFile = NA12878TestUtil.expectedCallsVCF
+        args.forceCallLociFile = NA12878TestUtil.expectedCallsVCF
         args.referenceFastaPath = NA12878TestUtil.chr1PrefixFasta
         SomaticJoint.Caller.run(args, sc)
       }
