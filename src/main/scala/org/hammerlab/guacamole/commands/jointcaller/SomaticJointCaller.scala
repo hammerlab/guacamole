@@ -5,10 +5,9 @@ import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole.commands.SparkCommand
 import org.hammerlab.guacamole.commands.jointcaller.evidence.{MultiSampleMultiAlleleEvidence, MultiSampleSingleAlleleEvidence}
-import org.hammerlab.guacamole.distributed.LociPartitionUtils
-import org.hammerlab.guacamole.distributed.LociPartitionUtils.partitionLociAccordingToArgs
 import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMapMultipleRDDs
 import org.hammerlab.guacamole.loci.LociArgs
+import org.hammerlab.guacamole.loci.partitioning.LociPartitionerArgs
 import org.hammerlab.guacamole.loci.set.{LociParser, LociSet}
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.readsets.{InputFilters, NoSequenceDictionaryArgs, PerSample, ReadSets}
@@ -19,7 +18,7 @@ import org.kohsuke.args4j.{Option => Args4jOption}
 object SomaticJoint {
   class Arguments
     extends Parameters.CommandlineArguments
-      with LociPartitionUtils.Arguments
+      with LociPartitionerArgs
       with NoSequenceDictionaryArgs
       with InputCollection.Arguments {
 
@@ -121,10 +120,10 @@ object SomaticJoint {
         parameters,
         reference,
         loci.result(contigLengths),
-        forceCallLoci = forceCallLoci,
-        onlySomatic = args.onlySomatic,
-        includeFiltered = args.includeFiltered,
-        distributedUtilArguments = args
+        forceCallLoci,
+        args.onlySomatic,
+        args.includeFiltered,
+        args
       )
 
       calls.cache()
@@ -176,14 +175,14 @@ object SomaticJoint {
 
   def makeCalls(sc: SparkContext,
                 inputs: InputCollection,
-                readsRDDs: ReadSets,
+                readsets: ReadSets,
                 parameters: Parameters,
                 reference: ReferenceBroadcast,
                 loci: LociSet,
                 forceCallLoci: LociSet = LociSet(),
                 onlySomatic: Boolean = false,
                 includeFiltered: Boolean = false,
-                distributedUtilArguments: LociPartitionUtils.Arguments = new LociPartitionUtils.Arguments {}): RDD[MultiSampleMultiAlleleEvidence] = {
+                args: LociPartitionerArgs = new LociPartitionerArgs {}): RDD[MultiSampleMultiAlleleEvidence] = {
 
     assume(loci.nonEmpty)
 
@@ -191,19 +190,15 @@ object SomaticJoint {
     // specified loci.
     val broadcastForceCallLoci = sc.broadcast(forceCallLoci)
 
-    val mappedReadsRDDs = readsRDDs.mappedReads
-
     val lociPartitions =
-      partitionLociAccordingToArgs(
-        distributedUtilArguments,
+      args
+        .getPartitioner(readsets.allMappedReads)
         // When mapping over pileups, at locus x we call variants at locus x + 1. Therefore we subtract 1 from the user-
         // specified loci.
-        lociSetMinusOne(loci),
-        mappedReadsRDDs
-      )
+        .partition(lociSetMinusOne(loci))
 
     pileupFlatMapMultipleRDDs(
-      mappedReadsRDDs,
+      readsets.mappedReads,
       lociPartitions,
       skipEmpty = true,  // TODO: shouldn't skip empty positions if we might force call them. Need an efficient way to handle this.
       rawPileups => {

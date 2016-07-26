@@ -24,11 +24,19 @@ import scala.collection.JavaConversions
  */
 case class ReadSets(readsRDDs: PerSample[ReadsRDD],
                     sequenceDictionary: SequenceDictionary,
-                    contigLengths: ContigLengths) extends PerSample[ReadsRDD] {
+                    contigLengths: ContigLengths)
+  extends PerSample[ReadsRDD] {
+
   override def length: Int = readsRDDs.length
   override def apply(idx: Int): ReadsRDD = readsRDDs(idx)
 
+  def sc = readsRDDs.head.reads.sparkContext
+
   val mappedReads = readsRDDs.map(_.mappedReads)
+
+  lazy val (mappedReadsRDDs, sourceFiles) = readsRDDs.map(readsRDD => (readsRDD.mappedReads, readsRDD.sourceFile)).unzip
+
+  lazy val allMappedReads = sc.union(mappedReadsRDDs).setName("unioned reads")
 }
 
 object ReadSets {

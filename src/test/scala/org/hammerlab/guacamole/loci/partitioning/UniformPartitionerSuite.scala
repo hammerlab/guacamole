@@ -1,40 +1,42 @@
-package org.hammerlab.guacamole.distributed
+package org.hammerlab.guacamole.loci.partitioning
 
-import org.apache.spark.rdd.RDD
-import org.hammerlab.guacamole.distributed.LociPartitionUtils.PartitionIndex
 import org.hammerlab.guacamole.loci.map.LociMap
+import org.hammerlab.guacamole.loci.partitioning.LociPartitioner.{NumPartitions, PartitionIndex}
 import org.hammerlab.guacamole.loci.set.LociSet
-import org.hammerlab.guacamole.reads.MappedRead
-import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
+import org.hammerlab.guacamole.util.GuacFunSuite
 
-class LociPartitionUtilsSuite extends GuacFunSuite {
+class UniformPartitionerSuite extends GuacFunSuite {
+
+  def partition(numPartitions: NumPartitions, loci: LociSet): LociPartitioning =
+    UniformPartitioner(numPartitions).partition(loci)
+
   test("partitionLociUniformly") {
     val set = LociSet("chr21:100-200,chr20:0-10,chr20:8-15,chr20:100-121,empty:10-10")
-    val result1 = LociPartitionUtils.partitionLociUniformly(1, set).inverse
+    val result1 = partition(1, set).inverse
     result1(0) should equal(set)
 
-    val result2 = LociPartitionUtils.partitionLociUniformly(2, set).inverse
+    val result2 = partition(2, set).inverse
     result2(0).count should equal(set.count / 2)
     result2(1).count should equal(set.count / 2)
-    result2(0) should not equal (result2(1))
+    result2(0) should not equal result2(1)
 
-    val result3 = LociPartitionUtils.partitionLociUniformly(4, LociSet("chrM:0-16571"))
+    val result3 = partition(4, LociSet("chrM:0-16571"))
     result3.toString should equal("chrM:0-4143=0,chrM:4143-8286=1,chrM:8286-12428=2,chrM:12428-16571=3")
 
-    val result4 = LociPartitionUtils.partitionLociUniformly(100, LociSet("chrM:1000-1100"))
+    val result4 = partition(100, LociSet("chrM:1000-1100"))
     val expectedBuilder4 = LociMap.newBuilder[PartitionIndex]
     for (i <- 0 until 100) {
       expectedBuilder4.put("chrM", i + 1000, i + 1001, i)
     }
-    result4 should equal(expectedBuilder4.result)
+    result4.map should equal(expectedBuilder4.result())
 
-    val result5 = LociPartitionUtils.partitionLociUniformly(3, LociSet("chrM:0-10"))
+    val result5 = partition(3, LociSet("chrM:0-10"))
     result5.toString should equal("chrM:0-3=0,chrM:3-7=1,chrM:7-10=2")
 
-    val result6 = LociPartitionUtils.partitionLociUniformly(4, LociSet("chrM:0-3"))
+    val result6 = partition(4, LociSet("chrM:0-3"))
     result6.toString should equal("chrM:0-1=0,chrM:1-2=1,chrM:2-3=2")
 
-    val result7 = LociPartitionUtils.partitionLociUniformly(4, LociSet("empty:10-10"))
+    val result7 = partition(4, LociSet("empty:10-10"))
     result7.toString should equal("")
   }
 
@@ -43,7 +45,7 @@ class LociPartitionUtilsSuite extends GuacFunSuite {
 
     // These two calls should not take a noticeable amount of time.
     val bigSet = LociSet("chr21:0-3000000000")
-    LociPartitionUtils.partitionLociUniformly(2000, bigSet).inverse
+    partition(2000, bigSet).inverse
 
     val giantSet = LociSet(
       List(
@@ -136,24 +138,6 @@ class LociPartitionUtilsSuite extends GuacFunSuite {
       ).mkString(",")
     )
 
-    LociPartitionUtils.partitionLociUniformly(2000, giantSet).inverse
-  }
-
-  test("partitionLociByApproximateReadDepth") {
-    def makeRead(start: Long, length: Long) = {
-      TestUtil.makeRead("A" * length.toInt, "%sM".format(length), start, "chr1")
-    }
-    def pairsToReads(pairs: Seq[(Long, Long)]): RDD[MappedRead] = {
-      sc.parallelize(pairs.map(pair => makeRead(pair._1, pair._2)))
-    }
-
-    val reads = pairsToReads(Seq(
-      (5L, 1L),
-      (6L, 1L),
-      (7L, 1L),
-      (8L, 1L)))
-    val loci = LociSet("chr1:0-100")
-    val result = LociPartitionUtils.partitionLociByApproximateDepth(2, loci, 100, Vector(reads))
-    result.toString should equal("chr1:0-7=0,chr1:7-100=1")
+    partition(2000, giantSet).inverse
   }
 }
