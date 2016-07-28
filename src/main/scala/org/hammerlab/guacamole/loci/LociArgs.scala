@@ -1,11 +1,11 @@
 package org.hammerlab.guacamole.loci
 
-import java.io.{BufferedReader, File}
+import java.io.File
 
 import breeze.io.TextReader.InputStreamReader
 import htsjdk.variant.vcf.VCFFileReader
 import org.apache.hadoop.conf.Configuration
-import org.apache.hadoop.fs.{FileSystem, Path}
+import org.apache.hadoop.fs.Path
 import org.hammerlab.guacamole.loci.set.LociParser
 import org.hammerlab.guacamole.logging.DebugLogArgs
 import org.kohsuke.args4j.{Option => Args4jOption}
@@ -73,8 +73,9 @@ object LociArgs {
         new VCFFileReader(new File(filePath), false)
       )
     } else if (filePath.endsWith(".loci") || filePath.endsWith(".txt")) {
-      val filesystem = FileSystem.get(hadoopConfiguration)
-      val is = filesystem.open(new Path(filePath))
+      val path = new Path(filePath)
+      val filesystem = path.getFileSystem(hadoopConfiguration)
+      val is = filesystem.open(path)
       val loci =
         LociParser(
           new InputStreamReader(is).readRemaining()
