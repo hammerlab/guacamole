@@ -1,17 +1,14 @@
 package org.hammerlab.guacamole.distributed
 
-import org.apache.commons.math3
 import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole.loci.partitioning.LociPartitioning
 import org.hammerlab.guacamole.loci.set.{Contig, LociSet}
-import org.hammerlab.guacamole.logging.DelayedMessages
-import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.readsets.PerSample
+import org.hammerlab.guacamole.readsets.rdd.PartitionedRegions
 import org.hammerlab.guacamole.reference.ReferenceRegion
 import org.hammerlab.guacamole.windowing.{SlidingWindow, SplitIterator}
 
-import scala.collection.mutable.{HashMap => MutableHashMap}
 import scala.reflect.ClassTag
 
 object WindowFlatMapUtils {
@@ -49,10 +46,10 @@ object WindowFlatMapUtils {
       regionRDDs,
       lociPartitions,
       halfWindowSize,
-      (task, taskLoci, taskRegionsPerSample: PerSample[Iterator[R]]) => {
+      (_, partitionLoci, taskRegionsPerSample: PerSample[Iterator[R]]) => {
         collectByContig[R, T](
           taskRegionsPerSample,
-          taskLoci,
+          partitionLoci,
           halfWindowSize,
           (loci, windows) => {
             val lociIterator = loci.iterator
@@ -94,10 +91,10 @@ object WindowFlatMapUtils {
       regionRDDs,
       lociPartitions,
       halfWindowSize,
-      (task, taskLoci, taskRegionsPerSample: PerSample[Iterator[R]]) => {
+      (task, partitionLoci, taskRegionsPerSample: PerSample[Iterator[R]]) => {
         collectByContig[R, T](
           taskRegionsPerSample,
-          taskLoci,
+          partitionLoci,
           halfWindowSize,
           (loci, windows) => {
             val lociIterator = loci.iterator
@@ -145,73 +142,23 @@ object WindowFlatMapUtils {
 
     val numRDDs = regionRDDs.length
     assume(numRDDs > 0)
+
     val sc = regionRDDs(0).sparkContext
-    progress(s"Loci partitioning: $lociPartitions")
+
     val lociPartitionsBoxed: Broadcast[LociPartitioning] = sc.broadcast(lociPartitions)
-    val numTasks = lociPartitions.inverse.map(_._1).max + 1
 
-    // Counters
-    val totalRegions = sc.accumulator(0L)
-    val relevantRegions = sc.accumulator(0L)
-    val expandedRegions = sc.accumulator(0L)
-    DelayedMessages.default.say { () =>
-      "Region counts: filtered %,d total regions to %,d relevant regions, expanded for overlaps by %,.2f%% to %,d".format(
-        totalRegions.value,
-        relevantRegions.value,
-        (expandedRegions.value - relevantRegions.value) * 100.0 / relevantRegions.value,
-        expandedRegions.value)
-    }
-
-    // Expand regions into (task, region) pairs for each region RDD.
-    val taskNumberRegionPairsRDDs: PerSample[RDD[(TaskPosition, R)]] =
-      regionRDDs.map(_.flatMap(region => {
-        val singleContig = lociPartitionsBoxed.value.onContig(region.contigName)
-        val thisRegionsTasks = singleContig.getAll(region.start - halfWindowSize, region.end + halfWindowSize)
-
-        // Update counters
-        totalRegions += 1
-        if (thisRegionsTasks.nonEmpty) relevantRegions += 1
-        expandedRegions += thisRegionsTasks.size
-
-        // Return this region, duplicated for each task it is assigned to.
-        thisRegionsTasks.map(task => (TaskPosition(task, region.contigName, region.start), region))
-      }))
-
-    // Run the task on each partition. Keep track of the number of regions assigned to each task in an accumulator, so
-    // we can print out a summary of the skew.
-    val regionsByTask = sc.accumulator(MutableHashMap.empty[String, Long])(new HashMapAccumulatorParam)
-    DelayedMessages.default.say {
-      () => {
-        val stats = new math3.stat.descriptive.DescriptiveStatistics()
-        regionsByTask.value.valuesIterator.foreach(stats.addValue(_))
-        "Regions per task: min=%,.0f 25%%=%,.0f median=%,.0f (mean=%,.0f) 75%%=%,.0f max=%,.0f. Max is %,.2f%% more than mean.".format(
-          stats.getMin,
-          stats.getPercentile(25),
-          stats.getPercentile(50),
-          stats.getMean,
-          stats.getPercentile(75),
-          stats.getMax,
-          ((stats.getMax - stats.getMean) * 100.0) / stats.getMean)
-      }
-    }
+    val partitionedRegions = PartitionedRegions(regionRDDs, lociPartitionsBoxed, halfWindowSize)
 
     // Accumulator to track the number of loci in each task
     val lociAccumulator = sc.accumulator[Long](0, "NumLoci")
 
-    // Build an RDD of (read set num, read), take union of this over all RDDs, and partition by task.
-    val partitioned = sc.union(
-      taskNumberRegionPairsRDDs.zipWithIndex.map({
-        case (taskNumberRegionPairs, rddIndex: Int) => {
-          taskNumberRegionPairs.map(pair => (pair._1, (rddIndex, pair._2)))
-        }
-      })).repartitionAndSortWithinPartitions(KeyPartitioner(numTasks)).map(_._2)
-
-    partitioned.mapPartitionsWithIndex((taskNum, values) => {
-      val iterators = SplitIterator.split(numRDDs, values)
-      val taskLoci = lociPartitionsBoxed.value.inverse(taskNum)
-      lociAccumulator += taskLoci.count
-      function(taskNum, taskLoci, iterators)
-    })
+    partitionedRegions
+      .mapPartitionsWithIndex((partitionIdx, keyedReads) => {
+        val iterators = SplitIterator.split(numRDDs, keyedReads)
+        val partitionLoci = lociPartitionsBoxed.value.inverse(partitionIdx)
+        lociAccumulator += partitionLoci.count
+        function(partitionIdx, partitionLoci, iterators)
+      })
   }
 
   /**
@@ -220,7 +167,7 @@ object WindowFlatMapUtils {
    * and collects them into a single iterator
    *
    * @param taskRegionsPerSample for each sample, elements of type M to process for this task
-   * @param taskLoci Set of loci to process for this task
+   * @param partitionLoci Set of loci to process for this task
    * @param halfWindowSize A window centered at locus = l will contain regions overlapping l +/- halfWindowSize
    * @param generateFromWindows Function that maps windows to result type
    * @tparam T result data type
@@ -228,13 +175,13 @@ object WindowFlatMapUtils {
    */
   def collectByContig[R <: ReferenceRegion: ClassTag, T: ClassTag](
     taskRegionsPerSample: PerSample[Iterator[R]],
-    taskLoci: LociSet,
+    partitionLoci: LociSet,
     halfWindowSize: Int,
     generateFromWindows: (Contig, PerSample[SlidingWindow[R]]) => Iterator[T]): Iterator[T] = {
 
     val regionSplitByContigPerSample: PerSample[RegionsByContig[R]] = taskRegionsPerSample.map(new RegionsByContig(_))
 
-    taskLoci.contigs.flatMap(contig => {
+    partitionLoci.contigs.flatMap(contig => {
       val regionIterator: PerSample[Iterator[R]] = regionSplitByContigPerSample.map(_.next(contig.name))
       val windows: PerSample[SlidingWindow[R]] = regionIterator.map(SlidingWindow[R](contig.name, halfWindowSize, _))
       generateFromWindows(contig, windows)
