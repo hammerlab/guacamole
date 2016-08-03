@@ -19,8 +19,7 @@
 package org.hammerlab.guacamole.variants
 
 import org.bdgenomics.adam.util.PhredUtils
-import org.hammerlab.guacamole.reference.ContigName
-import org.hammerlab.guacamole.reference.Locus
+import org.hammerlab.guacamole.reference.{ContigName, Locus, NumLoci}
 
 /**
  *
@@ -44,7 +43,7 @@ case class CalledSomaticAllele(sampleName: String,
                                tumorVariantEvidence: AlleleEvidence,
                                normalReferenceEvidence: AlleleEvidence,
                                rsID: Option[Int] = None,
-                               length: Int = 1) extends ReferenceVariant {
+                               override val length: NumLoci = 1) extends ReferenceVariant {
   val end: Locus = start + 1L
 
   // P ( variant in tumor AND no variant in normal) = P(variant in tumor) * P(reference in normal)

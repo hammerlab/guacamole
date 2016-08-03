@@ -94,14 +94,14 @@ class MicroRegionPartitioner[R <: ReferenceRegion: ClassTag](regions: RDD[R],
 
     // Step 2: total up regions overlapping each micro partition. We keep the totals as an array of Longs.
     val regionsPerMicroPartition: Map[MicroPartitionIndex, Long] =
-    regions
-      .flatMap(region =>
-        broadcastMicroPartitions
-          .value
-          .onContig(region.contigName)
-          .getAll(region.start, region.end)
-      )
-      .countByValue()
+      regions
+        .flatMap(region =>
+          broadcastMicroPartitions
+            .value
+            .onContig(region.contigName)
+            .getAll(region.start, region.end)
+        )
+        .countByValue()
 
     // Step 3: assign loci to partitions, taking into account region depth in each micro partition.
     val totalRegions = regionsPerMicroPartition.values.sum

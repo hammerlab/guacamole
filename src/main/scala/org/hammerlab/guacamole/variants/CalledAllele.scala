@@ -18,8 +18,7 @@
 
 package org.hammerlab.guacamole.variants
 
-import org.hammerlab.guacamole.reference.ContigName
-import org.hammerlab.guacamole.reference.Locus
+import org.hammerlab.guacamole.reference.{ContigName, Locus, NumLoci}
 
 /**
  *
@@ -38,6 +37,6 @@ case class CalledAllele(sampleName: String,
                         allele: Allele,
                         evidence: AlleleEvidence,
                         rsID: Option[Int] = None,
-                        length: Int = 1) extends ReferenceVariant {
+                        override val length: NumLoci = 1) extends ReferenceVariant {
   val end: Locus = start + 1L
 }

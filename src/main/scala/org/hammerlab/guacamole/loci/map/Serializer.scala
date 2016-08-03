@@ -2,9 +2,7 @@ package org.hammerlab.guacamole.loci.map
 
 import com.esotericsoftware.kryo.io.{Input, Output}
 import com.esotericsoftware.kryo.{Kryo, Serializer => KryoSerializer}
-import org.hammerlab.guacamole.reference.{ContigName => ContigName}
-
-import scala.collection.immutable.TreeMap
+import org.hammerlab.guacamole.reference.ContigName
 
 /**
  * We serialize a LociMap simply by writing out all of its Contigs.

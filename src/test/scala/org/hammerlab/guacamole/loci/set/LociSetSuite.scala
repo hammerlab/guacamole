@@ -162,8 +162,6 @@ class LociSetSuite extends GuacFunSuite {
     iter1.skipTo(23)
     iter1.next() should be(23)
     iter1.head should be(24)
-    iter1.skipTo(5)
-    iter1.head should be(24)
     iter1.skipTo(38)
     iter1.head should be(40)
     iter1.hasNext should be(true)

@@ -19,8 +19,7 @@
 package org.hammerlab.guacamole.variants
 
 import org.bdgenomics.formats.avro.{Contig, DatabaseVariantAnnotation, Variant}
-import org.hammerlab.guacamole.reference.Locus
-import org.hammerlab.guacamole.reference.{ReferenceRegion, ContigName => ContigName}
+import org.hammerlab.guacamole.reference.{ContigName, ReferenceRegion}
 import org.hammerlab.guacamole.util.Bases
 
 /**
@@ -30,15 +29,8 @@ trait ReferenceVariant extends ReferenceRegion {
 
   def sampleName: String
 
-  val contigName: ContigName
-
-  /** start locus of the variant */
-  val start: Locus
-
   /** reference and sequenced bases for this variant */
   def allele: Allele
-
-  def length: Int
 
   /** Conversion to ADAMVariant */
   def adamVariant = Variant.newBuilder
