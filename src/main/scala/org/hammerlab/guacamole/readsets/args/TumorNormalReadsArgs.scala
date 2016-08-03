@@ -1,6 +1,7 @@
-package org.hammerlab.guacamole.readsets
+package org.hammerlab.guacamole.readsets.args
 
 import org.hammerlab.guacamole.logging.DebugLogArgs
+import org.hammerlab.guacamole.readsets.io.ReadLoadingConfigArgs
 import org.kohsuke.args4j.{Option => Args4jOption}
 
 /** Arguments for accepting two sets of reads (tumor + normal). */
