@@ -1,4 +1,4 @@
-package org.hammerlab.guacamole.readsets
+package org.hammerlab.guacamole.readsets.io
 
 /**
  * Specification of which API to use when reading BAM and SAM files.
