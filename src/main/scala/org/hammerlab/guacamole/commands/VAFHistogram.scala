@@ -202,11 +202,12 @@ object VAFHistogram {
   /**
    * Generates a count of loci in each variant allele frequency bins
    *
-   * @param variantAlleleFrequencies RDD of loci with variant allele frequency > 0
-   * @param bins Number of bins to group the VAFs into
-   * @return Map of rounded variant allele frequency to number of loci with that value
+   * @param variantAlleleFrequencies RDD of loci with variant allele frequency > 0.
+   * @param bins Number of bins to group the VAFs into.
+   * @return Map from sample name to per-sample map of [rounded variant allele frequency] to [number of loci with that
+   *         value].
    */
-  def generateVAFHistogram(variantAlleleFrequencies: RDD[VariantLocus], bins: Int): Map[String, Map[Int, Long]] = {
+  def generateVAFHistogram(variantAlleleFrequencies: RDD[VariantLocus], bins: Int): Map[SampleName, Map[Int, Long]] = {
     assume(bins <= 100 && bins >= 1, "Bins should be between 1 and 100")
 
     def roundToBin(variantAlleleFrequency: Float) = {
@@ -217,7 +218,7 @@ object VAFHistogram {
     variantAlleleFrequencies
       .map(vaf => (vaf.sampleName, roundToBin(vaf.variantAlleleFrequency)) -> 1L)
       .reduceByKey(_ + _)
-      .map(t => t._1._1 -> Map(t._1._2 -> t._2))
+      .map { case ((sampleName, bin), count) => sampleName -> Map(bin -> count) }
       .reduceByKey(_ ++ _)
       .collectAsMap
       .toMap
@@ -261,10 +262,15 @@ object VAFHistogram {
     if (printStats) {
       variantLoci.persist(StorageLevel.MEMORY_ONLY)
 
-      val numVariantLociBySample = variantLoci.map(_.sampleName -> 1L).reduceByKey(_ + _).collect()
+      val numVariantLociBySample = variantLoci.map(_.sampleName).countByValue()
       progress(
         "non-zero variant loci per-sample:",
-        numVariantLociBySample.map(t => s"${t._1}:\t${t._2}").mkString("\n")
+        (
+          for {
+            (sampleName, count) <- numVariantLociBySample
+          } yield
+            s"$sampleName:\t$count"
+        ).mkString("\n")
       )
 
       val sampleNames = numVariantLociBySample.map(_._1)
