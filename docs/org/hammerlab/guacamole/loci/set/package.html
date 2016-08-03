@@ -71,19 +71,6 @@
       </span>
       </h4>
       <p class="comment cmt">A set of loci on a contig, stored/manipulated as loci ranges.</p>
-    </li><li name="org.hammerlab.guacamole.loci.set.ContigIterator" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="ContigIteratorextendsBufferedIterator[org.hammerlab.guacamole.reference.Locus]"></a>
-      <a id="ContigIterator:ContigIterator"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">class</span>
-      </span>
-      <span class="symbol">
-        <a href="ContigIterator.html"><span class="name">ContigIterator</span></a><span class="result"> extends <span class="extype" name="scala.BufferedIterator">BufferedIterator</span>[<a href="../../reference/package.html#Locus=Long" class="extmbr" name="org.hammerlab.guacamole.reference.Locus">Locus</a>]</span>
-      </span>
-      </h4>
-      <p class="comment cmt">An iterator over loci on a single contig.</p>
     </li><li name="org.hammerlab.guacamole.loci.set.ContigSerializer" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="ContigSerializerextendsSerializer[org.hammerlab.guacamole.loci.set.Contig]"></a>
       <a id="ContigSerializer:ContigSerializer"></a>
@@ -94,6 +81,19 @@
       </span>
       <span class="symbol">
         <a href="ContigSerializer.html"><span class="name">ContigSerializer</span></a><span class="result"> extends <span class="extype" name="com.esotericsoftware.kryo.Serializer">com.esotericsoftware.kryo.Serializer</span>[<a href="Contig.html" class="extype" name="org.hammerlab.guacamole.loci.set.Contig">Contig</a>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.loci.set.LociIterator" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="LociIteratorextendsSkippableLociIterator[org.hammerlab.guacamole.reference.Locus]"></a>
+      <a id="LociIterator:LociIterator"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="LociIterator.html"><span class="name">LociIterator</span></a><span class="result"> extends <a href="../iterator/SkippableLociIterator.html" class="extype" name="org.hammerlab.guacamole.loci.iterator.SkippableLociIterator">SkippableLociIterator</a>[<a href="../../reference/package.html#Locus=Long" class="extmbr" name="org.hammerlab.guacamole.reference.Locus">Locus</a>]</span>
       </span>
       </h4>
       
@@ -136,6 +136,20 @@
       </span>
       </h4>
       
+    </li><li name="org.hammerlab.guacamole.loci.set.TakeLociIterator" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="TakeLociIteratorextendsSimpleBufferedIterator[org.hammerlab.guacamole.loci.set.LociSet]"></a>
+      <a id="TakeLociIterator:TakeLociIterator"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="TakeLociIterator.html"><span class="name">TakeLociIterator</span></a><span class="result"> extends <span class="extype" name="org.hammerlab.magic.iterator.SimpleBufferedIterator">SimpleBufferedIterator</span>[<a href="LociSet.html" class="extype" name="org.hammerlab.guacamole.loci.set.LociSet">LociSet</a>]</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Given <span class="extype" name="Position">Position</span>s and their corresponding <a href="../Coverage.html" class="extype" name="org.hammerlab.guacamole.loci.Coverage">Coverage</a>s, emit a sequence of <a href="LociSet.html" class="extype" name="org.hammerlab.guacamole.loci.set.LociSet">LociSet</a>s such that no more than
+<span class="extype" name="maxRegionsPerPartition">maxRegionsPerPartition</span> regions overlap each <a href="LociSet.html" class="extype" name="org.hammerlab.guacamole.loci.set.LociSet">LociSet</a>.</p>
     </li></ol>
             </div>
 

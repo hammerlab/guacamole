@@ -81,7 +81,21 @@
 
         <div id="types" class="types members">
               <h3>Type Members</h3>
-              <ol><li name="org.hammerlab.guacamole.reference.ContigName" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+              <ol><li name="org.hammerlab.guacamole.reference.ContigIterator" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ContigIterator[+T]extendsBufferedIterator[T]"></a>
+      <a id="ContigIterator[+T]:ContigIterator[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="ContigIterator.html"><span class="name">ContigIterator</span></a><span class="tparams">[<span name="T">+T</span>]</span><span class="result"> extends <span class="extype" name="scala.BufferedIterator">BufferedIterator</span>[<span class="extype" name="org.hammerlab.guacamole.reference.ContigIterator.T">T</span>]</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Given some elements and a function for extracting a <a href="#ContigName=String" class="extmbr" name="org.hammerlab.guacamole.reference.ContigName">ContigName</a> from them, return an iterator that is restricted
+to the given contig.</p>
+    </li><li name="org.hammerlab.guacamole.reference.ContigName" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="ContigName=String"></a>
       <a id="ContigName:ContigName"></a>
       <h4 class="signature">
@@ -120,6 +134,45 @@
       </span>
       </h4>
       
+    </li><li name="org.hammerlab.guacamole.reference.HasContig" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="HasContigextendsAnyRef"></a>
+      <a id="HasContig:HasContig"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="HasContig.html"><span class="name">HasContig</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.reference.HasLocus" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="HasLocusextendsAnyRef"></a>
+      <a id="HasLocus:HasLocus"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="HasLocus.html"><span class="name">HasLocus</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.reference.Interval" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="IntervalextendsOrdered[org.hammerlab.guacamole.reference.Interval]"></a>
+      <a id="Interval:Interval"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="Interval.html"><span class="name">Interval</span></a><span class="result"> extends <span class="extype" name="scala.Ordered">Ordered</span>[<a href="Interval.html" class="extype" name="org.hammerlab.guacamole.reference.Interval">Interval</a>]</span>
+      </span>
+      </h4>
+      
     </li><li name="org.hammerlab.guacamole.reference.Locus" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="Locus=Long"></a>
       <a id="Locus:Locus"></a>
@@ -143,6 +196,19 @@
       </span>
       <span class="symbol">
         <span class="name">NumLoci</span><span class="result"> = <span class="extype" name="scala.Long">Long</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.reference.Position" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="PositionextendsReferenceRegionwithHasLocuswithPartiallyOrdered[org.hammerlab.guacamole.reference.Position]"></a>
+      <a id="Position:Position"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="Position.html"><span class="name">Position</span></a><span class="result"> extends <a href="ReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceRegion">ReferenceRegion</a> with <a href="HasLocus.html" class="extype" name="org.hammerlab.guacamole.reference.HasLocus">HasLocus</a> with <span class="extype" name="scala.math.PartiallyOrdered">PartiallyOrdered</span>[<a href="Position.html" class="extype" name="org.hammerlab.guacamole.reference.Position">Position</a>]</span>
       </span>
       </h4>
       
@@ -186,7 +252,7 @@
       </h4>
       
     </li><li name="org.hammerlab.guacamole.reference.ReferenceRegion" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="ReferenceRegionextendsAnyRef"></a>
+      <a id="ReferenceRegionextendsHasContigwithInterval"></a>
       <a id="ReferenceRegion:ReferenceRegion"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -194,7 +260,7 @@
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="ReferenceRegion.html"><span class="name">ReferenceRegion</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <a href="ReferenceRegion.html"><span class="name">ReferenceRegion</span></a><span class="result"> extends <a href="HasContig.html" class="extype" name="org.hammerlab.guacamole.reference.HasContig">HasContig</a> with <a href="Interval.html" class="extype" name="org.hammerlab.guacamole.reference.Interval">Interval</a></span>
       </span>
       </h4>
       <p class="comment cmt">Trait for objects that are associated with an interval on the genome.</p>
@@ -205,7 +271,72 @@
 
         <div id="values" class="values members">
               <h3>Value Members</h3>
-              <ol><li name="org.hammerlab.guacamole.reference.ReferenceBroadcast" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+              <ol><li name="org.hammerlab.guacamole.reference.ContigIterator" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ContigIterator"></a>
+      <a id="ContigIterator:ContigIterator"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="ContigIterator$.html"><span class="name">ContigIterator</span></a>
+      </span>
+      </h4>
+      <p class="comment cmt">Public <a href="ContigIterator.html" class="extype" name="org.hammerlab.guacamole.reference.ContigIterator">ContigIterator</a> constructors that infer the <a href="#ContigName=String" class="extmbr" name="org.hammerlab.guacamole.reference.ContigName">ContigName</a>-function from the iterator-type T.</p>
+    </li><li name="org.hammerlab.guacamole.reference.ContigName" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ContigName"></a>
+      <a id="ContigName:ContigName"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="ContigName$.html"><span class="name">ContigName</span></a>
+      </span>
+      </h4>
+      <p class="comment cmt">Helpers for dealing with contig-name strings.</p>
+    </li><li name="org.hammerlab.guacamole.reference.HasLocus" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="HasLocus"></a>
+      <a id="HasLocus:HasLocus"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="HasLocus$.html"><span class="name">HasLocus</span></a>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.reference.Interval" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Interval"></a>
+      <a id="Interval:Interval"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Interval$.html"><span class="name">Interval</span></a>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.reference.Position" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Position"></a>
+      <a id="Position:Position"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Position$.html"><span class="name">Position</span></a>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.reference.ReferenceBroadcast" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="ReferenceBroadcast"></a>
       <a id="ReferenceBroadcast:ReferenceBroadcast"></a>
       <h4 class="signature">
@@ -215,6 +346,19 @@
       </span>
       <span class="symbol">
         <a href="ReferenceBroadcast$.html"><span class="name">ReferenceBroadcast</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.reference.ReferenceRegion" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ReferenceRegion"></a>
+      <a id="ReferenceRegion:ReferenceRegion"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="ReferenceRegion$.html"><span class="name">ReferenceRegion</span></a>
       </span>
       </h4>
       

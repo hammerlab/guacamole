@@ -140,16 +140,29 @@ library.
       </span>
       </h4>
       <p class="comment cmt">Argument for using / not using sequence dictionaries to get contigs and lengths.</p>
-    </li><li name="org.hammerlab.guacamole.readsets.PerSample" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="PerSample[A]=IndexedSeq[A]"></a>
-      <a id="PerSample[A]:PerSample[A]"></a>
+    </li><li name="org.hammerlab.guacamole.readsets.NumSamples" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="NumSamples=Int"></a>
+      <a id="NumSamples:NumSamples"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">type</span>
       </span>
       <span class="symbol">
-        <span class="name">PerSample</span><span class="tparams">[<span name="A">A</span>]</span><span class="result"> = <span class="extype" name="scala.collection.IndexedSeq">IndexedSeq</span>[<span class="extype" name="org.hammerlab.guacamole.readsets.PerSample.A">A</span>]</span>
+        <span class="name">NumSamples</span><span class="result"> = <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.readsets.PerSample" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="PerSample[+A]=IndexedSeq[A]"></a>
+      <a id="PerSample[+A]:PerSample[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">type</span>
+      </span>
+      <span class="symbol">
+        <span class="name">PerSample</span><span class="tparams">[<span name="A">+A</span>]</span><span class="result"> = <span class="extype" name="scala.collection.IndexedSeq">IndexedSeq</span>[<span class="extype" name="org.hammerlab.guacamole.readsets.PerSample.A">A</span>]</span>
       </span>
       </h4>
       
@@ -188,7 +201,7 @@ library.
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="ReadSets.html"><span class="name">ReadSets</span></a><span class="params">(<span name="readsRDDs">readsRDDs: <a href="#PerSample[A]=IndexedSeq[A]" class="extmbr" name="org.hammerlab.guacamole.readsets.PerSample">PerSample</a>[<a href="ReadsRDD.html" class="extype" name="org.hammerlab.guacamole.readsets.ReadsRDD">ReadsRDD</a>]</span>, <span name="sequenceDictionary">sequenceDictionary: <span class="extype" name="org.bdgenomics.adam.models.SequenceDictionary">SequenceDictionary</span></span>, <span name="contigLengths">contigLengths: <a href="#ContigLengths=Map[org.hammerlab.guacamole.reference.ContigName,org.hammerlab.guacamole.reference.NumLoci]" class="extmbr" name="org.hammerlab.guacamole.readsets.ContigLengths">ContigLengths</a></span>)</span><span class="result"> extends <a href="#PerSample[A]=IndexedSeq[A]" class="extmbr" name="org.hammerlab.guacamole.readsets.PerSample">PerSample</a>[<a href="ReadsRDD.html" class="extype" name="org.hammerlab.guacamole.readsets.ReadsRDD">ReadsRDD</a>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="ReadSets.html"><span class="name">ReadSets</span></a><span class="params">(<span name="readsRDDs">readsRDDs: <a href="#PerSample[+A]=IndexedSeq[A]" class="extmbr" name="org.hammerlab.guacamole.readsets.PerSample">PerSample</a>[<a href="ReadsRDD.html" class="extype" name="org.hammerlab.guacamole.readsets.ReadsRDD">ReadsRDD</a>]</span>, <span name="sequenceDictionary">sequenceDictionary: <span class="extype" name="org.bdgenomics.adam.models.SequenceDictionary">SequenceDictionary</span></span>, <span name="contigLengths">contigLengths: <a href="#ContigLengths=Map[org.hammerlab.guacamole.reference.ContigName,org.hammerlab.guacamole.reference.NumLoci]" class="extmbr" name="org.hammerlab.guacamole.readsets.ContigLengths">ContigLengths</a></span>)</span><span class="result"> extends <a href="#PerSample[+A]=IndexedSeq[A]" class="extmbr" name="org.hammerlab.guacamole.readsets.PerSample">PerSample</a>[<a href="ReadsRDD.html" class="extype" name="org.hammerlab.guacamole.readsets.ReadsRDD">ReadsRDD</a>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       <p class="comment cmt">A <code>ReadSets</code> contains reads from multiple inputs, and SequenceDictionary / contig-length information merged from
@@ -219,6 +232,19 @@ them.</p>
       </span>
       </h4>
       <p class="comment cmt">A thin wrapper around an RDD[Read], with helpers to filter to mapped and paired-mapped reads.</p>
+    </li><li name="org.hammerlab.guacamole.readsets.SampleId" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="SampleId=Int"></a>
+      <a id="SampleId:SampleId"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">type</span>
+      </span>
+      <span class="symbol">
+        <span class="name">SampleId</span><span class="result"> = <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4>
+      
     </li><li name="org.hammerlab.guacamole.readsets.SomaticCallerArgs" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="SomaticCallerArgsextendsArgs4jBasewithGenotypeOutputArgswithTumorNormalReadsArgswithLociPartitionerArgs"></a>
       <a id="SomaticCallerArgs:SomaticCallerArgs"></a>
@@ -314,6 +340,32 @@ them.</p>
       </span>
       <span class="symbol">
         <a href="ReadsRDD$.html"><span class="name">ReadsRDD</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.readsets.iterator" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="iterator"></a>
+      <a id="iterator:iterator"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="iterator/package.html"><span class="name">iterator</span></a>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.readsets.rdd" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="rdd"></a>
+      <a id="rdd:rdd"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="rdd/package.html"><span class="name">rdd</span></a>
       </span>
       </h4>
       

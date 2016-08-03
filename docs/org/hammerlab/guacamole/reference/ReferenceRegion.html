@@ -24,9 +24,9 @@
         </head>
         <body class="type">
       <div id="definition">
-        <img src="../../../../lib/trait_big.png" />
+        <a href="ReferenceRegion$.html" title="Go to companion"><img src="../../../../lib/trait_to_object_big.png" /></a>
         <p id="owner"><a href="../../../package.html" class="extype" name="org">org</a>.<a href="../../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="../package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole.reference">reference</a></p>
-        <h1>ReferenceRegion</h1>
+        <h1><a href="ReferenceRegion$.html" title="Go to companion">ReferenceRegion</a></h1>
       </div>
 
       <h4 id="signature" class="signature">
@@ -35,7 +35,7 @@
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <span class="name">ReferenceRegion</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <span class="name">ReferenceRegion</span><span class="result"> extends <a href="HasContig.html" class="extype" name="org.hammerlab.guacamole.reference.HasContig">HasContig</a> with <a href="Interval.html" class="extype" name="org.hammerlab.guacamole.reference.Interval">Interval</a></span>
       </span>
       </h4>
       
@@ -43,10 +43,10 @@
 <a href="../reads/MappedRead.html" class="extype" name="org.hammerlab.guacamole.reads.MappedRead">org.hammerlab.guacamole.reads.MappedRead</a>, but there's also <a href="../variants/ReferenceVariant.html" class="extype" name="org.hammerlab.guacamole.variants.ReferenceVariant">org.hammerlab.guacamole.variants.ReferenceVariant</a>.
 </p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><a href="Interval.html" class="extype" name="org.hammerlab.guacamole.reference.Interval">Interval</a>, <span class="extype" name="scala.math.Ordered">Ordered</span>[<a href="Interval.html" class="extype" name="org.hammerlab.guacamole.reference.Interval">Interval</a>], <span class="extype" name="java.lang.Comparable">Comparable</span>[<a href="Interval.html" class="extype" name="org.hammerlab.guacamole.reference.Interval">Interval</a>], <a href="HasContig.html" class="extype" name="org.hammerlab.guacamole.reference.HasContig">HasContig</a>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div><div class="toggleContainer block">
           <span class="toggle">Known Subclasses</span>
-          <div class="subClasses hiddenContent"><a href="../variants/CalledAllele.html" class="extype" name="org.hammerlab.guacamole.variants.CalledAllele">CalledAllele</a>, <a href="../variants/CalledSomaticAllele.html" class="extype" name="org.hammerlab.guacamole.variants.CalledSomaticAllele">CalledSomaticAllele</a>, <a href="../reads/MappedRead.html" class="extype" name="org.hammerlab.guacamole.reads.MappedRead">MappedRead</a>, <a href="../commands/jointcaller/evidence/MultiSampleMultiAlleleEvidence.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleMultiAlleleEvidence">MultiSampleMultiAlleleEvidence</a>, <a href="../variants/ReferenceVariant.html" class="extype" name="org.hammerlab.guacamole.variants.ReferenceVariant">ReferenceVariant</a></div>
+          <div class="subClasses hiddenContent"><a href="../variants/CalledAllele.html" class="extype" name="org.hammerlab.guacamole.variants.CalledAllele">CalledAllele</a>, <a href="../variants/CalledSomaticAllele.html" class="extype" name="org.hammerlab.guacamole.variants.CalledSomaticAllele">CalledSomaticAllele</a>, <a href="../reads/MappedRead.html" class="extype" name="org.hammerlab.guacamole.reads.MappedRead">MappedRead</a>, <a href="../commands/jointcaller/evidence/MultiSampleMultiAlleleEvidence.html" class="extype" name="org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleMultiAlleleEvidence">MultiSampleMultiAlleleEvidence</a>, <a href="Position.html" class="extype" name="org.hammerlab.guacamole.reference.Position">Position</a>, <a href="../variants/ReferenceVariant.html" class="extype" name="org.hammerlab.guacamole.variants.ReferenceVariant">ReferenceVariant</a></div>
         </div></div>
         
 
@@ -64,7 +64,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="org.hammerlab.guacamole.reference.ReferenceRegion"><span>ReferenceRegion</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="org.hammerlab.guacamole.reference.ReferenceRegion"><span>ReferenceRegion</span></li><li class="in" name="org.hammerlab.guacamole.reference.Interval"><span>Interval</span></li><li class="in" name="scala.math.Ordered"><span>Ordered</span></li><li class="in" name="java.lang.Comparable"><span>Comparable</span></li><li class="in" name="org.hammerlab.guacamole.reference.HasContig"><span>HasContig</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -88,7 +88,7 @@
 
         <div id="values" class="values members">
               <h3>Abstract Value Members</h3>
-              <ol><li name="org.hammerlab.guacamole.reference.ReferenceRegion#contigName" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+              <ol><li name="org.hammerlab.guacamole.reference.ReferenceRegion#contigName" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
       <a id="contigName:org.hammerlab.guacamole.reference.ContigName"></a>
       <a id="contigName:ContigName"></a>
       <h4 class="signature">
@@ -100,8 +100,8 @@
         <span class="name">contigName</span><span class="result">: <a href="package.html#ContigName=String" class="extmbr" name="org.hammerlab.guacamole.reference.ContigName">ContigName</a></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Name of the reference contig</p>
-    </li><li name="org.hammerlab.guacamole.reference.ReferenceRegion#end" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <p class="shortcomment cmt">Name of the reference contig</p><div class="fullcomment"><div class="comment cmt"><p>Name of the reference contig</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.reference.ReferenceRegion">ReferenceRegion</a> → <a href="HasContig.html" class="extype" name="org.hammerlab.guacamole.reference.HasContig">HasContig</a></dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.reference.Interval#end" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
       <a id="end:org.hammerlab.guacamole.reference.Locus"></a>
       <a id="end:Locus"></a>
       <h4 class="signature">
@@ -113,8 +113,8 @@
         <span class="name">end</span><span class="result">: <a href="package.html#Locus=Long" class="extmbr" name="org.hammerlab.guacamole.reference.Locus">Locus</a></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">The end position on the genome, *exclusive*.</p><div class="fullcomment"><div class="comment cmt"><p>The end position on the genome, *exclusive*. Must be non-negative.</p></div></div>
-    </li><li name="org.hammerlab.guacamole.reference.ReferenceRegion#start" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <p class="shortcomment cmt">The end position on the genome, *exclusive*.</p><div class="fullcomment"><div class="comment cmt"><p>The end position on the genome, *exclusive*. Must be non-negative.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Interval.html" class="extype" name="org.hammerlab.guacamole.reference.Interval">Interval</a></dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.reference.Interval#start" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
       <a id="start:org.hammerlab.guacamole.reference.Locus"></a>
       <a id="start:Locus"></a>
       <h4 class="signature">
@@ -126,7 +126,7 @@
         <span class="name">start</span><span class="result">: <a href="package.html#Locus=Long" class="extmbr" name="org.hammerlab.guacamole.reference.Locus">Locus</a></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Start position on the genome, inclusive.</p><div class="fullcomment"><div class="comment cmt"><p>Start position on the genome, inclusive. Must be non-negative.</p></div></div>
+      <p class="shortcomment cmt">Start position on the genome, inclusive.</p><div class="fullcomment"><div class="comment cmt"><p>Start position on the genome, inclusive. Must be non-negative.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Interval.html" class="extype" name="org.hammerlab.guacamole.reference.Interval">Interval</a></dd></dl></div>
     </li></ol>
             </div>
 
@@ -171,6 +171,32 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scala.math.Ordered#&lt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="&lt;(that:A):Boolean"></a>
+      <a id="&lt;(Interval):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $less" class="name">&lt;</span><span class="params">(<span name="that">that: <a href="Interval.html" class="extype" name="org.hammerlab.guacamole.reference.Interval">Interval</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Ordered</dd></dl></div>
+    </li><li name="scala.math.Ordered#&lt;=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="&lt;=(that:A):Boolean"></a>
+      <a id="&lt;=(Interval):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $less$eq" class="name">&lt;=</span><span class="params">(<span name="that">that: <a href="Interval.html" class="extype" name="org.hammerlab.guacamole.reference.Interval">Interval</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Ordered</dd></dl></div>
     </li><li name="scala.AnyRef#==" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="==(x$1:AnyRef):Boolean"></a>
       <a id="==(AnyRef):Boolean"></a>
@@ -197,6 +223,32 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="scala.math.Ordered#&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="&gt;(that:A):Boolean"></a>
+      <a id="&gt;(Interval):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $greater" class="name">&gt;</span><span class="params">(<span name="that">that: <a href="Interval.html" class="extype" name="org.hammerlab.guacamole.reference.Interval">Interval</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Ordered</dd></dl></div>
+    </li><li name="scala.math.Ordered#&gt;=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="&gt;=(that:A):Boolean"></a>
+      <a id="&gt;=(Interval):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $greater$eq" class="name">&gt;=</span><span class="params">(<span name="that">that: <a href="Interval.html" class="extype" name="org.hammerlab.guacamole.reference.Interval">Interval</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Ordered</dd></dl></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -229,6 +281,45 @@
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.reference.Interval#compare" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="compare(other:org.hammerlab.guacamole.reference.Interval):Int"></a>
+      <a id="compare(Interval):Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">compare</span><span class="params">(<span name="other">other: <a href="Interval.html" class="extype" name="org.hammerlab.guacamole.reference.Interval">Interval</a></span>)</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Comparisons between ranges.</p><div class="fullcomment"><div class="comment cmt"><p>Comparisons between ranges. Order is DESCENDING (i.e. reversed) from by start.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Interval.html" class="extype" name="org.hammerlab.guacamole.reference.Interval">Interval</a> → Ordered</dd></dl></div>
+    </li><li name="scala.math.Ordered#compareTo" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="compareTo(that:A):Int"></a>
+      <a id="compareTo(Interval):Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">compareTo</span><span class="params">(<span name="that">that: <a href="Interval.html" class="extype" name="org.hammerlab.guacamole.reference.Interval">Interval</a></span>)</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Ordered → Comparable</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.reference.Interval#contains" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="contains(locus:org.hammerlab.guacamole.reference.Locus):Boolean"></a>
+      <a id="contains(Locus):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">contains</span><span class="params">(<span name="locus">locus: <a href="package.html#Locus=Long" class="extmbr" name="org.hammerlab.guacamole.reference.Locus">Locus</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Interval.html" class="extype" name="org.hammerlab.guacamole.reference.Interval">Interval</a></dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -313,6 +404,32 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.reference.Interval#iterator" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="iterator():Iterator[Long]"></a>
+      <a id="iterator():Iterator[Long]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">iterator</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.collection.Iterator">Iterator</span>[<span class="extype" name="scala.Long">Long</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Iterate through elements in the range.</p><div class="fullcomment"><div class="comment cmt"><p>Iterate through elements in the range.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Interval.html" class="extype" name="org.hammerlab.guacamole.reference.Interval">Interval</a></dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.reference.Interval#length" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="length:org.hammerlab.guacamole.reference.NumLoci"></a>
+      <a id="length:NumLoci"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">length</span><span class="result">: <a href="package.html#NumLoci=Long" class="extmbr" name="org.hammerlab.guacamole.reference.NumLoci">NumLoci</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Number of elements in the range.</p><div class="fullcomment"><div class="comment cmt"><p>Number of elements in the range.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Interval.html" class="extype" name="org.hammerlab.guacamole.reference.Interval">Interval</a></dd></dl></div>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -382,6 +499,19 @@
       </h4>
       <p class="shortcomment cmt">Does the region overlap the given locus, with halfWindowSize padding?
 </p>
+    </li><li name="org.hammerlab.guacamole.reference.ReferenceRegion#regionStr" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="regionStr:String"></a>
+      <a id="regionStr:String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">regionStr</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      </h4>
+      
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -395,6 +525,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.reference.Interval#toJavaRange" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="toJavaRange:com.google.common.collect.Range[Long]"></a>
+      <a id="toJavaRange:Range[Long]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">toJavaRange</span><span class="result">: <span class="extype" name="com.google.common.collect.Range">Range</span>[<span class="extype" name="java.lang.Long">Long</span>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Interval.html" class="extype" name="org.hammerlab.guacamole.reference.Interval">Interval</a></dd></dl></div>
     </li><li name="scala.AnyRef#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toString():String"></a>
       <a id="toString():String"></a>
@@ -474,7 +617,15 @@
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="scala.AnyRef">
+        <div class="parent" name="org.hammerlab.guacamole.reference.Interval">
+              <h3>Inherited from <a href="Interval.html" class="extype" name="org.hammerlab.guacamole.reference.Interval">Interval</a></h3>
+            </div><div class="parent" name="scala.math.Ordered">
+              <h3>Inherited from <span class="extype" name="scala.math.Ordered">Ordered</span>[<a href="Interval.html" class="extype" name="org.hammerlab.guacamole.reference.Interval">Interval</a>]</h3>
+            </div><div class="parent" name="java.lang.Comparable">
+              <h3>Inherited from <span class="extype" name="java.lang.Comparable">Comparable</span>[<a href="Interval.html" class="extype" name="org.hammerlab.guacamole.reference.Interval">Interval</a>]</h3>
+            </div><div class="parent" name="org.hammerlab.guacamole.reference.HasContig">
+              <h3>Inherited from <a href="HasContig.html" class="extype" name="org.hammerlab.guacamole.reference.HasContig">HasContig</a></h3>
+            </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
             </div><div class="parent" name="scala.Any">
               <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>

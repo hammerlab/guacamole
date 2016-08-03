@@ -213,15 +213,15 @@
       </h4>
       <p class="shortcomment cmt">Is the given locus contained in this set?</p>
     </li><li name="org.hammerlab.guacamole.loci.set.Contig#count" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="count:Long"></a>
-      <a id="count:Long"></a>
+      <a id="count:org.hammerlab.guacamole.reference.NumLoci"></a>
+      <a id="count:NumLoci"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">count</span><span class="result">: <span class="extype" name="scala.Long">Long</span></span>
+        <span class="name">count</span><span class="result">: <a href="../../reference/package.html#NumLoci=Long" class="extmbr" name="org.hammerlab.guacamole.reference.NumLoci">NumLoci</a></span>
       </span>
       </h4>
       <p class="shortcomment cmt">Number of loci on this contig.</p>
@@ -310,15 +310,15 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li name="org.hammerlab.guacamole.loci.set.Contig#iterator" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="iterator:org.hammerlab.guacamole.loci.set.ContigIterator"></a>
-      <a id="iterator:ContigIterator"></a>
+      <a id="iterator:org.hammerlab.guacamole.loci.set.LociIterator"></a>
+      <a id="iterator:LociIterator"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">iterator</span><span class="result">: <a href="ContigIterator.html" class="extype" name="org.hammerlab.guacamole.loci.set.ContigIterator">ContigIterator</a></span>
+        <span class="name">iterator</span><span class="result">: <a href="LociIterator.html" class="extype" name="org.hammerlab.guacamole.loci.set.LociIterator">LociIterator</a></span>
       </span>
       </h4>
       <p class="shortcomment cmt">Iterator through loci on this contig, sorted.</p>
@@ -348,6 +348,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.loci.set.Contig#nonEmpty" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="nonEmpty:Boolean"></a>
+      <a id="nonEmpty:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">nonEmpty</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      
     </li><li name="scala.AnyRef#notify" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notify():Unit"></a>
       <a id="notify():Unit"></a>
@@ -375,15 +388,15 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="org.hammerlab.guacamole.loci.set.Contig#ranges" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="ranges:Array[org.hammerlab.guacamole.loci.SimpleRange]"></a>
-      <a id="ranges:Array[SimpleRange]"></a>
+      <a id="ranges:Vector[org.hammerlab.guacamole.reference.Interval]"></a>
+      <a id="ranges:Vector[Interval]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">lazy val</span>
       </span>
       <span class="symbol">
-        <span class="name">ranges</span><span class="result">: <span class="extype" name="scala.Array">Array</span>[<a href="../SimpleRange.html" class="extype" name="org.hammerlab.guacamole.loci.SimpleRange">SimpleRange</a>]</span>
+        <span class="name">ranges</span><span class="result">: <span class="extype" name="scala.Vector">Vector</span>[<a href="../../reference/Interval.html" class="extype" name="org.hammerlab.guacamole.reference.Interval">Interval</a>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">This set as a regular scala array of ranges.</p>

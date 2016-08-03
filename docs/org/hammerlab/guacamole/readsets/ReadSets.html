@@ -35,7 +35,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">ReadSets</span><span class="params">(<span name="readsRDDs">readsRDDs: <a href="package.html#PerSample[A]=IndexedSeq[A]" class="extmbr" name="org.hammerlab.guacamole.readsets.PerSample">PerSample</a>[<a href="ReadsRDD.html" class="extype" name="org.hammerlab.guacamole.readsets.ReadsRDD">ReadsRDD</a>]</span>, <span name="sequenceDictionary">sequenceDictionary: <span class="extype" name="org.bdgenomics.adam.models.SequenceDictionary">SequenceDictionary</span></span>, <span name="contigLengths">contigLengths: <a href="package.html#ContigLengths=Map[org.hammerlab.guacamole.reference.ContigName,org.hammerlab.guacamole.reference.NumLoci]" class="extmbr" name="org.hammerlab.guacamole.readsets.ContigLengths">ContigLengths</a></span>)</span><span class="result"> extends <a href="package.html#PerSample[A]=IndexedSeq[A]" class="extmbr" name="org.hammerlab.guacamole.readsets.PerSample">PerSample</a>[<a href="ReadsRDD.html" class="extype" name="org.hammerlab.guacamole.readsets.ReadsRDD">ReadsRDD</a>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">ReadSets</span><span class="params">(<span name="readsRDDs">readsRDDs: <a href="package.html#PerSample[+A]=IndexedSeq[A]" class="extmbr" name="org.hammerlab.guacamole.readsets.PerSample">PerSample</a>[<a href="ReadsRDD.html" class="extype" name="org.hammerlab.guacamole.readsets.ReadsRDD">ReadsRDD</a>]</span>, <span name="sequenceDictionary">sequenceDictionary: <span class="extype" name="org.bdgenomics.adam.models.SequenceDictionary">SequenceDictionary</span></span>, <span name="contigLengths">contigLengths: <a href="package.html#ContigLengths=Map[org.hammerlab.guacamole.reference.ContigName,org.hammerlab.guacamole.reference.NumLoci]" class="extmbr" name="org.hammerlab.guacamole.readsets.ContigLengths">ContigLengths</a></span>)</span><span class="result"> extends <a href="package.html#PerSample[+A]=IndexedSeq[A]" class="extmbr" name="org.hammerlab.guacamole.readsets.PerSample">PerSample</a>[<a href="ReadsRDD.html" class="extype" name="org.hammerlab.guacamole.readsets.ReadsRDD">ReadsRDD</a>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
@@ -90,7 +90,7 @@ them.
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">ReadSets</span><span class="params">(<span name="readsRDDs">readsRDDs: <a href="package.html#PerSample[A]=IndexedSeq[A]" class="extmbr" name="org.hammerlab.guacamole.readsets.PerSample">PerSample</a>[<a href="ReadsRDD.html" class="extype" name="org.hammerlab.guacamole.readsets.ReadsRDD">ReadsRDD</a>]</span>, <span name="sequenceDictionary">sequenceDictionary: <span class="extype" name="org.bdgenomics.adam.models.SequenceDictionary">SequenceDictionary</span></span>, <span name="contigLengths">contigLengths: <a href="package.html#ContigLengths=Map[org.hammerlab.guacamole.reference.ContigName,org.hammerlab.guacamole.reference.NumLoci]" class="extmbr" name="org.hammerlab.guacamole.readsets.ContigLengths">ContigLengths</a></span>)</span>
+        <span class="name">ReadSets</span><span class="params">(<span name="readsRDDs">readsRDDs: <a href="package.html#PerSample[+A]=IndexedSeq[A]" class="extmbr" name="org.hammerlab.guacamole.readsets.PerSample">PerSample</a>[<a href="ReadsRDD.html" class="extype" name="org.hammerlab.guacamole.readsets.ReadsRDD">ReadsRDD</a>]</span>, <span name="sequenceDictionary">sequenceDictionary: <span class="extype" name="org.bdgenomics.adam.models.SequenceDictionary">SequenceDictionary</span></span>, <span name="contigLengths">contigLengths: <a href="package.html#ContigLengths=Map[org.hammerlab.guacamole.reference.ContigName,org.hammerlab.guacamole.reference.NumLoci]" class="extmbr" name="org.hammerlab.guacamole.readsets.ContigLengths">ContigLengths</a></span>)</span>
       </span>
       </h4>
       
@@ -470,7 +470,7 @@ them.
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableLike → GenTraversableLike</dd></dl></div>
     </li><li name="scala.collection.TraversableOnce#collectFirst" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="collectFirst[B&lt;:&lt;?&gt;](pf:&lt;?&gt;):Option[B]"></a>
+      <a id="collectFirst[B](pf:PartialFunction[A,B]):Option[B]"></a>
       <a id="collectFirst[B](PartialFunction[ReadsRDD,B]):Option[B]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -603,7 +603,7 @@ them.
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
     </li><li name="scala.collection.TraversableOnce#copyToBuffer" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="copyToBuffer[B&lt;:&lt;?&gt;](dest:&lt;?&gt;):Unit"></a>
+      <a id="copyToBuffer[B&gt;:A](dest:scala.collection.mutable.Buffer[B]):Unit"></a>
       <a id="copyToBuffer[B&gt;:ReadsRDD](Buffer[B]):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -1670,7 +1670,7 @@ them.
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">readsRDDs</span><span class="result">: <a href="package.html#PerSample[A]=IndexedSeq[A]" class="extmbr" name="org.hammerlab.guacamole.readsets.PerSample">PerSample</a>[<a href="ReadsRDD.html" class="extype" name="org.hammerlab.guacamole.readsets.ReadsRDD">ReadsRDD</a>]</span>
+        <span class="name">readsRDDs</span><span class="result">: <a href="package.html#PerSample[+A]=IndexedSeq[A]" class="extmbr" name="org.hammerlab.guacamole.readsets.PerSample">PerSample</a>[<a href="ReadsRDD.html" class="extype" name="org.hammerlab.guacamole.readsets.ReadsRDD">ReadsRDD</a>]</span>
       </span>
       </h4>
       
@@ -1688,7 +1688,7 @@ them.
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableOnce → GenTraversableOnce</dd></dl></div>
     </li><li name="scala.collection.TraversableOnce#reduceLeft" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="reduceLeft[B&lt;:&lt;?&gt;](op:&lt;?&gt;):B"></a>
+      <a id="reduceLeft[B&gt;:A](op:(B,A)=&gt;B):B"></a>
       <a id="reduceLeft[B&gt;:ReadsRDD]((B,ReadsRDD)⇒B):B"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -2616,7 +2616,7 @@ them.
         <div id="values" class="values members">
               <h3>Deprecated Value Members</h3>
               <ol><li name="scala.collection.GenTraversableOnce#/:\" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="/:\[A1&lt;:&lt;?&gt;](z:&lt;?&gt;)(op:&lt;?&gt;):A1"></a>
+      <a id="/:\[A1&gt;:A](z:A1)(op:(A1,A1)=&gt;A1):A1"></a>
       <a id="/:\[A1&gt;:ReadsRDD](A1)((A1,A1)⇒A1):A1"></a>
       <h4 class="signature">
       <span class="modifier_kind">

@@ -1,0 +1,148 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+        <head>
+          <title>iterator - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.readsets.iterator</title>
+          <meta name="description" content="iterator - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.readsets.iterator" />
+          <meta name="keywords" content="iterator guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.readsets.iterator" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../../../../index.html';
+            var hash = 'org.hammerlab.guacamole.readsets.iterator.package';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
+    
+        </head>
+        <body class="value">
+      <div id="definition">
+        <img src="../../../../../lib/package_big.png" />
+        <p id="owner"><a href="../../../../package.html" class="extype" name="org">org</a>.<a href="../../../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="../../package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="../package.html" class="extype" name="org.hammerlab.guacamole.readsets">readsets</a></p>
+        <h1>iterator</h1>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <span class="name">iterator</span>
+      </span>
+      </h4>
+      
+          <div id="comment" class="fullcommenttop"></div>
+        
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        
+        
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="org.hammerlab.guacamole.readsets.iterator.ContigCoverageIterator" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ContigCoverageIteratorextendsSkippableLocusKeyedIterator[org.hammerlab.guacamole.loci.Coverage]withProductwithSerializable"></a>
+      <a id="ContigCoverageIterator:ContigCoverageIterator"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="ContigCoverageIterator.html"><span class="name">ContigCoverageIterator</span></a><span class="params">(<span name="halfWindowSize">halfWindowSize: <span class="extype" name="scala.Int">Int</span></span>, <span name="regions">regions: <a href="../../reference/ContigIterator.html" class="extype" name="org.hammerlab.guacamole.reference.ContigIterator">ContigIterator</a>[<a href="../../reference/ReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceRegion">ReferenceRegion</a>]</span>)</span><span class="result"> extends <a href="../../loci/iterator/SkippableLocusKeyedIterator.html" class="extype" name="org.hammerlab.guacamole.loci.iterator.SkippableLocusKeyedIterator">SkippableLocusKeyedIterator</a>[<a href="../../loci/Coverage.html" class="extype" name="org.hammerlab.guacamole.loci.Coverage">Coverage</a>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.readsets.iterator.ContigsIterator" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ContigsIterator[T]extendsSimpleBufferedIterator[(org.hammerlab.guacamole.reference.ContigName,org.hammerlab.guacamole.reference.ContigIterator[T])]"></a>
+      <a id="ContigsIterator[T]:ContigsIterator[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="ContigsIterator.html"><span class="name">ContigsIterator</span></a><span class="tparams">[<span name="T">T</span>]</span><span class="result"> extends <span class="extype" name="org.hammerlab.magic.iterator.SimpleBufferedIterator">SimpleBufferedIterator</span>[(<a href="../../reference/package.html#ContigName=String" class="extmbr" name="org.hammerlab.guacamole.reference.ContigName">ContigName</a>, <a href="../../reference/ContigIterator.html" class="extype" name="org.hammerlab.guacamole.reference.ContigIterator">ContigIterator</a>[<span class="extype" name="org.hammerlab.guacamole.readsets.iterator.ContigsIterator.T">T</span>])]</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Divide an iterator into a series of contig-restricted iterators.</p>
+    </li></ol>
+            </div>
+
+        
+
+        <div id="values" class="values members">
+              <h3>Value Members</h3>
+              <ol><li name="org.hammerlab.guacamole.readsets.iterator.ContigsIterator" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ContigsIterator"></a>
+      <a id="ContigsIterator:ContigsIterator"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="ContigsIterator$.html"><span class="name">ContigsIterator</span></a>
+      </span>
+      </h4>
+      <p class="comment cmt">Public <a href="ContigsIterator.html" class="extype" name="org.hammerlab.guacamole.readsets.iterator.ContigsIterator">ContigsIterator</a> constructors infer the <span class="extype" name="ContigName">ContigName</span>-function from a <span class="extype" name="HasContig">HasContig</span> or a
+<span class="extype" name="(HasContig,">T)</span>.</p>
+    </li><li name="org.hammerlab.guacamole.readsets.iterator.overlaps" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="overlaps"></a>
+      <a id="overlaps:overlaps"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="overlaps/package.html"><span class="name">overlaps</span></a>
+      </span>
+      </h4>
+      
+    </li></ol>
+            </div>
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../../lib/template.js"></script>
+    </body>
+      </html>
