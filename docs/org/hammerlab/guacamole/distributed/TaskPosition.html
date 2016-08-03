@@ -35,13 +35,13 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">TaskPosition</span><span class="params">(<span name="task">task: <span class="extype" name="scala.Int">Int</span></span>, <span name="referenceContig">referenceContig: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="locus">locus: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Ordered">Ordered</span>[<a href="" class="extype" name="org.hammerlab.guacamole.distributed.TaskPosition">TaskPosition</a>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">TaskPosition</span><span class="params">(<span name="partition">partition: <a href="../loci/partitioning/LociPartitioner$.html#PartitionIndex=Int" class="extmbr" name="org.hammerlab.guacamole.loci.partitioning.LociPartitioner.PartitionIndex">PartitionIndex</a></span>, <span name="referenceContig">referenceContig: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="locus">locus: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Ordered">Ordered</span>[<a href="" class="extype" name="org.hammerlab.guacamole.distributed.TaskPosition">TaskPosition</a>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>TaskPosition represents the task a read is assigned to and the start position on the reference genome of the read
 Each read is assigned to a task and the reads are sorted by (referenceContig, locus) when they are processed
-</p></div><dl class="paramcmts block"><dt class="param">task</dt><dd class="cmt"><p>Task ID</p></dd><dt class="param">referenceContig</dt><dd class="cmt"><p>Reference or chromosome name for reads</p></dd><dt class="param">locus</dt><dd class="cmt"><p>The position in the reference contig at which the read starts
+</p></div><dl class="paramcmts block"><dt class="param">partition</dt><dd class="cmt"><p>Task ID</p></dd><dt class="param">referenceContig</dt><dd class="cmt"><p>Reference or chromosome name for reads</p></dd><dt class="param">locus</dt><dd class="cmt"><p>The position in the reference contig at which the read starts
 </p></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <span class="extype" name="scala.math.Ordered">Ordered</span>[<a href="" class="extype" name="org.hammerlab.guacamole.distributed.TaskPosition">TaskPosition</a>], <span class="extype" name="java.lang.Comparable">Comparable</span>[<a href="" class="extype" name="org.hammerlab.guacamole.distributed.TaskPosition">TaskPosition</a>], <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
@@ -83,7 +83,7 @@ Each read is assigned to a task and the reads are sorted by (referenceContig, lo
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="org.hammerlab.guacamole.distributed.TaskPosition#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="&lt;init&gt;(task:Int,referenceContig:String,locus:Long):org.hammerlab.guacamole.distributed.TaskPosition"></a>
+      <a id="&lt;init&gt;(partition:org.hammerlab.guacamole.loci.partitioning.LociPartitioner.PartitionIndex,referenceContig:String,locus:Long):org.hammerlab.guacamole.distributed.TaskPosition"></a>
       <a id="&lt;init&gt;:TaskPosition"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -91,10 +91,10 @@ Each read is assigned to a task and the reads are sorted by (referenceContig, lo
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">TaskPosition</span><span class="params">(<span name="task">task: <span class="extype" name="scala.Int">Int</span></span>, <span name="referenceContig">referenceContig: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="locus">locus: <span class="extype" name="scala.Long">Long</span></span>)</span>
+        <span class="name">TaskPosition</span><span class="params">(<span name="partition">partition: <a href="../loci/partitioning/LociPartitioner$.html#PartitionIndex=Int" class="extmbr" name="org.hammerlab.guacamole.loci.partitioning.LociPartitioner.PartitionIndex">PartitionIndex</a></span>, <span name="referenceContig">referenceContig: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="locus">locus: <span class="extype" name="scala.Long">Long</span></span>)</span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">task</dt><dd class="cmt"><p>Task ID</p></dd><dt class="param">referenceContig</dt><dd class="cmt"><p>Reference or chromosome name for reads</p></dd><dt class="param">locus</dt><dd class="cmt"><p>The position in the reference contig at which the read starts
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">partition</dt><dd class="cmt"><p>Task ID</p></dd><dt class="param">referenceContig</dt><dd class="cmt"><p>Reference or chromosome name for reads</p></dd><dt class="param">locus</dt><dd class="cmt"><p>The position in the reference contig at which the read starts
 </p></dd></dl></div>
     </li></ol>
             </div>
@@ -391,6 +391,19 @@ Each read is assigned to a task and the reads are sorted by (referenceContig, lo
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.distributed.TaskPosition#partition" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="partition:org.hammerlab.guacamole.loci.partitioning.LociPartitioner.PartitionIndex"></a>
+      <a id="partition:PartitionIndex"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">partition</span><span class="result">: <a href="../loci/partitioning/LociPartitioner$.html#PartitionIndex=Int" class="extmbr" name="org.hammerlab.guacamole.loci.partitioning.LociPartitioner.PartitionIndex">PartitionIndex</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Task ID</p>
     </li><li name="org.hammerlab.guacamole.distributed.TaskPosition#referenceContig" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="referenceContig:String"></a>
       <a id="referenceContig:String"></a>
@@ -417,19 +430,6 @@ Each read is assigned to a task and the reads are sorted by (referenceContig, lo
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.distributed.TaskPosition#task" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="task:Int"></a>
-      <a id="task:Int"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">task</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Task ID</p>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>

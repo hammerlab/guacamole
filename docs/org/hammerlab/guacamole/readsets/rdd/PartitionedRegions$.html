@@ -2,17 +2,17 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>WindowFlatMapUtils - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.distributed.WindowFlatMapUtils</title>
-          <meta name="description" content="WindowFlatMapUtils - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.distributed.WindowFlatMapUtils" />
-          <meta name="keywords" content="WindowFlatMapUtils guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.distributed.WindowFlatMapUtils" />
+          <title>PartitionedRegions - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.readsets.rdd.PartitionedRegions</title>
+          <meta name="description" content="PartitionedRegions - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.readsets.rdd.PartitionedRegions" />
+          <meta name="keywords" content="PartitionedRegions guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.readsets.rdd.PartitionedRegions" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
-      <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
-      <link href="../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
       <script type="text/javascript">
          if(top === self) {
-            var url = '../../../../index.html';
-            var hash = 'org.hammerlab.guacamole.distributed.WindowFlatMapUtils$';
+            var url = '../../../../../index.html';
+            var hash = 'org.hammerlab.guacamole.readsets.rdd.PartitionedRegions$';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -24,9 +24,9 @@
         </head>
         <body class="value">
       <div id="definition">
-        <img src="../../../../lib/object_big.png" />
-        <p id="owner"><a href="../../../package.html" class="extype" name="org">org</a>.<a href="../../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="../package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole.distributed">distributed</a></p>
-        <h1>WindowFlatMapUtils</h1>
+        <img src="../../../../../lib/object_big.png" />
+        <p id="owner"><a href="../../../../package.html" class="extype" name="org">org</a>.<a href="../../../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="../../package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="../package.html" class="extype" name="org.hammerlab.guacamole.readsets">readsets</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole.readsets.rdd">rdd</a></p>
+        <h1>PartitionedRegions</h1>
       </div>
 
       <h4 id="signature" class="signature">
@@ -35,11 +35,15 @@
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <span class="name">WindowFlatMapUtils</span>
+        <span class="name">PartitionedRegions</span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>This object encapsulates functionality for partitioning reference-mapped regions for processing as &quot;pileups&quot;.</p><p>Given an RDD of regions, it:</p><ul><li>partitions them by genomic loci,</li><li>makes multiple copies of regions that straddle partition boundaries.</li></ul><p>The result is that, given knowledge of which ranges of genomic loci correspond to which partition of the resulting
+RDD, downstream code can iterate over the partitions emitted here and build full pileups for the loci that each
+partition corresponds to.</p><p><span class="extype" name="WindowFlatMapUtils">WindowFlatMapUtils</span> calls this, and uses <span class="extype" name="SlidingWindow">SlidingWindow</span> to iterate over the partitioned regions in a manner
+suitable for pileup-construction by <span class="extype" name="PileupFlatMapUtils">PileupFlatMapUtils</span>.
+</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
@@ -59,7 +63,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="org.hammerlab.guacamole.distributed.WindowFlatMapUtils"><span>WindowFlatMapUtils</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions"><span>PartitionedRegions</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -150,6 +154,22 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions#apply" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="apply[R&lt;:org.hammerlab.guacamole.reference.ReferenceRegion](regionRDDs:org.hammerlab.guacamole.readsets.PerSample[org.apache.spark.rdd.RDD[R]],lociPartitionsBoxed:org.apache.spark.broadcast.Broadcast[org.hammerlab.guacamole.loci.partitioning.LociPartitioning],halfWindowSize:Int)(implicitevidence$1:scala.reflect.ClassTag[R]):org.apache.spark.rdd.RDD[(Int,R)]"></a>
+      <a id="apply[R&lt;:ReferenceRegion](PerSample[RDD[R]],Broadcast[LociPartitioning],Int)(ClassTag[R]):RDD[(Int,R)]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">apply</span><span class="tparams">[<span name="R">R &lt;: <a href="../../reference/ReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceRegion">ReferenceRegion</a></span>]</span><span class="params">(<span name="regionRDDs">regionRDDs: <a href="../package.html#PerSample[+A]=IndexedSeq[A]" class="extmbr" name="org.hammerlab.guacamole.readsets.PerSample">PerSample</a>[<span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<span class="extype" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions.apply.R">R</span>]]</span>, <span name="lociPartitionsBoxed">lociPartitionsBoxed: <span class="extype" name="org.apache.spark.broadcast.Broadcast">Broadcast</span>[<a href="../../loci/partitioning/LociPartitioning.html" class="extype" name="org.hammerlab.guacamole.loci.partitioning.LociPartitioning">LociPartitioning</a>]</span>, <span name="halfWindowSize">halfWindowSize: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.reflect.ClassTag">ClassTag</span>[<span class="extype" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions.apply.R">R</span>]</span>)</span><span class="result">: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[(<span class="extype" name="scala.Int">Int</span>, <span class="extype" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions.apply.R">R</span>)]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="tparam">R</dt><dd class="cmt"><p>ReferenceRegion type.</p></dd><dt class="param">regionRDDs</dt><dd class="cmt"><p>RDDs of regions to partition.</p></dd><dt class="param">lociPartitionsBoxed</dt><dd class="cmt"><p>Spark broadcast of a <span class="extype" name="LociPartitioning">LociPartitioning</span> describing which ranges of genomic loci should
+                           be mapped to each Spark partition.</p></dd><dt class="param">halfWindowSize</dt><dd class="cmt"><p>Send a copy of a region to a partition if it passes within this distance of that partition's
+                      designated loci.</p></dd><dt>returns</dt><dd class="cmt"><p>RDD of regions, keyed by the &quot;sample ID&quot; in @regionRDDs that they came from.
+</p></dd></dl></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -175,31 +195,13 @@
         <span class="name">clone</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
       <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.distributed.WindowFlatMapUtils#collectByContig" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="collectByContig[R&lt;:org.hammerlab.guacamole.reference.ReferenceRegion,T](taskRegionsPerSample:org.hammerlab.guacamole.readsets.PerSample[Iterator[R]],partitionLoci:org.hammerlab.guacamole.loci.set.LociSet,halfWindowSize:Int,generateFromWindows:(org.hammerlab.guacamole.loci.set.Contig,org.hammerlab.guacamole.readsets.PerSample[org.hammerlab.guacamole.windowing.SlidingWindow[R]])=&gt;Iterator[T])(implicitevidence$7:scala.reflect.ClassTag[R],implicitevidence$8:scala.reflect.ClassTag[T]):Iterator[T]"></a>
-      <a id="collectByContig[R&lt;:ReferenceRegion,T](PerSample[Iterator[R]],LociSet,Int,(Contig,PerSample[SlidingWindow[R]])⇒Iterator[T])(ClassTag[R],ClassTag[T]):Iterator[T]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">collectByContig</span><span class="tparams">[<span name="R">R &lt;: <a href="../reference/ReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceRegion">ReferenceRegion</a></span>, <span name="T">T</span>]</span><span class="params">(<span name="taskRegionsPerSample">taskRegionsPerSample: <a href="../readsets/package.html#PerSample[+A]=IndexedSeq[A]" class="extmbr" name="org.hammerlab.guacamole.readsets.PerSample">PerSample</a>[<span class="extype" name="scala.Iterator">Iterator</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.WindowFlatMapUtils.collectByContig.R">R</span>]]</span>, <span name="partitionLoci">partitionLoci: <a href="../loci/set/LociSet.html" class="extype" name="org.hammerlab.guacamole.loci.set.LociSet">LociSet</a></span>, <span name="halfWindowSize">halfWindowSize: <span class="extype" name="scala.Int">Int</span></span>, <span name="generateFromWindows">generateFromWindows: (<a href="../loci/set/Contig.html" class="extype" name="org.hammerlab.guacamole.loci.set.Contig">Contig</a>, <a href="../readsets/package.html#PerSample[+A]=IndexedSeq[A]" class="extmbr" name="org.hammerlab.guacamole.readsets.PerSample">PerSample</a>[<a href="../windowing/SlidingWindow.html" class="extype" name="org.hammerlab.guacamole.windowing.SlidingWindow">SlidingWindow</a>[<span class="extype" name="org.hammerlab.guacamole.distributed.WindowFlatMapUtils.collectByContig.R">R</span>]]) ⇒ <span class="extype" name="scala.Iterator">Iterator</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.WindowFlatMapUtils.collectByContig.T">T</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.reflect.ClassTag">ClassTag</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.WindowFlatMapUtils.collectByContig.R">R</span>]</span>, <span name="arg1">arg1: <span class="extype" name="scala.reflect.ClassTag">ClassTag</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.WindowFlatMapUtils.collectByContig.T">T</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Iterator">Iterator</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.WindowFlatMapUtils.collectByContig.T">T</span>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Generates a sequence of results from each task (using the <code>generateFromWindows</code> function)
-and collects them into a single iterator
-</p><div class="fullcomment"><div class="comment cmt"><p>Generates a sequence of results from each task (using the <code>generateFromWindows</code> function)
-and collects them into a single iterator
-</p></div><dl class="paramcmts block"><dt class="tparam">T</dt><dd class="cmt"><p>result data type</p></dd><dt class="param">taskRegionsPerSample</dt><dd class="cmt"><p>for each sample, elements of type M to process for this task</p></dd><dt class="param">partitionLoci</dt><dd class="cmt"><p>Set of loci to process for this task</p></dd><dt class="param">halfWindowSize</dt><dd class="cmt"><p>A window centered at locus = l will contain regions overlapping l +/- halfWindowSize</p></dd><dt class="param">generateFromWindows</dt><dd class="cmt"><p>Function that maps windows to result type</p></dd><dt>returns</dt><dd class="cmt"><p>Iterator[T] collected from each contig
-</p></dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -238,7 +240,7 @@ and collects them into a single iterator
         <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
       <span class="symbol">classOf[java.lang.Throwable]</span>
@@ -406,48 +408,6 @@ and collects them into a single iterator
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.distributed.WindowFlatMapUtils#windowFlatMapWithState" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="windowFlatMapWithState[R&lt;:org.hammerlab.guacamole.reference.ReferenceRegion,T,S](regionRDDs:org.hammerlab.guacamole.readsets.PerSample[org.apache.spark.rdd.RDD[R]],lociPartitions:org.hammerlab.guacamole.loci.partitioning.LociPartitioning,skipEmpty:Boolean,halfWindowSize:Int,initialState:S,function:(S,org.hammerlab.guacamole.readsets.PerSample[org.hammerlab.guacamole.windowing.SlidingWindow[R]])=&gt;(S,Iterator[T]))(implicitevidence$1:scala.reflect.ClassTag[R],implicitevidence$2:scala.reflect.ClassTag[T]):org.apache.spark.rdd.RDD[T]"></a>
-      <a id="windowFlatMapWithState[R&lt;:ReferenceRegion,T,S](PerSample[RDD[R]],LociPartitioning,Boolean,Int,S,(S,PerSample[SlidingWindow[R]])⇒(S,Iterator[T]))(ClassTag[R],ClassTag[T]):RDD[T]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">windowFlatMapWithState</span><span class="tparams">[<span name="R">R &lt;: <a href="../reference/ReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceRegion">ReferenceRegion</a></span>, <span name="T">T</span>, <span name="S">S</span>]</span><span class="params">(<span name="regionRDDs">regionRDDs: <a href="../readsets/package.html#PerSample[+A]=IndexedSeq[A]" class="extmbr" name="org.hammerlab.guacamole.readsets.PerSample">PerSample</a>[<span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.WindowFlatMapUtils.windowFlatMapWithState.R">R</span>]]</span>, <span name="lociPartitions">lociPartitions: <a href="../loci/partitioning/LociPartitioning.html" class="extype" name="org.hammerlab.guacamole.loci.partitioning.LociPartitioning">LociPartitioning</a></span>, <span name="skipEmpty">skipEmpty: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="halfWindowSize">halfWindowSize: <span class="extype" name="scala.Int">Int</span></span>, <span name="initialState">initialState: <span class="extype" name="org.hammerlab.guacamole.distributed.WindowFlatMapUtils.windowFlatMapWithState.S">S</span></span>, <span name="function">function: (<span class="extype" name="org.hammerlab.guacamole.distributed.WindowFlatMapUtils.windowFlatMapWithState.S">S</span>, <a href="../readsets/package.html#PerSample[+A]=IndexedSeq[A]" class="extmbr" name="org.hammerlab.guacamole.readsets.PerSample">PerSample</a>[<a href="../windowing/SlidingWindow.html" class="extype" name="org.hammerlab.guacamole.windowing.SlidingWindow">SlidingWindow</a>[<span class="extype" name="org.hammerlab.guacamole.distributed.WindowFlatMapUtils.windowFlatMapWithState.R">R</span>]]) ⇒ (<span class="extype" name="org.hammerlab.guacamole.distributed.WindowFlatMapUtils.windowFlatMapWithState.S">S</span>, <span class="extype" name="scala.Iterator">Iterator</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.WindowFlatMapUtils.windowFlatMapWithState.T">T</span>])</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.reflect.ClassTag">ClassTag</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.WindowFlatMapUtils.windowFlatMapWithState.R">R</span>]</span>, <span name="arg1">arg1: <span class="extype" name="scala.reflect.ClassTag">ClassTag</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.WindowFlatMapUtils.windowFlatMapWithState.T">T</span>]</span>)</span><span class="result">: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.WindowFlatMapUtils.windowFlatMapWithState.T">T</span>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">FlatMap across loci, and any number of RDDs of regions, where at each locus the provided function is passed a
-sliding window instance for each RDD containing the regions overlapping an interval of halfWindowSize to either side
-of a locus.</p><div class="fullcomment"><div class="comment cmt"><p>FlatMap across loci, and any number of RDDs of regions, where at each locus the provided function is passed a
-sliding window instance for each RDD containing the regions overlapping an interval of halfWindowSize to either side
-of a locus.</p><p>This function supports maintaining some state from one locus to another within a task. The state maintained is of type
-S. The user function will receive the current state in addition to the sliding windows, and returns a pair of
-(new state, result data). The state is initialized to initialState for each task, and for each new contig handled
-by a single task.
-</p></div><dl class="paramcmts block"><dt class="tparam">R</dt><dd class="cmt"><p>region data type (e.g. MappedRead)</p></dd><dt class="tparam">T</dt><dd class="cmt"><p>result data type</p></dd><dt class="tparam">S</dt><dd class="cmt"><p>state type</p></dd><dt class="param">regionRDDs</dt><dd class="cmt"><p>RDDs of reads, one per sample</p></dd><dt class="param">lociPartitions</dt><dd class="cmt"><p>loci to consider, partitioned into tasks</p></dd><dt class="param">skipEmpty</dt><dd class="cmt"><p>If True, then the function will only be called on loci where at least one region maps within a
-                 window around the locus. If False, then the function will be called at all loci in lociPartitions.</p></dd><dt class="param">halfWindowSize</dt><dd class="cmt"><p>if another region overlaps a halfWindowSize to either side of a locus under consideration,
-                      then it is included.</p></dd><dt class="param">initialState</dt><dd class="cmt"><p>initial state to use for each task and each contig analyzed within a task.</p></dd><dt class="param">function</dt><dd class="cmt"><p>function to flatmap, of type (state, sliding windows) -&gt; (new state, result data)</p></dd><dt>returns</dt><dd class="cmt"><p>RDD[T] of flatmap results
-</p></dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.distributed.WindowFlatMapUtils#windowFoldLoci" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="windowFoldLoci[R&lt;:org.hammerlab.guacamole.reference.ReferenceRegion,T](regionRDDs:org.hammerlab.guacamole.readsets.PerSample[org.apache.spark.rdd.RDD[R]],lociPartitions:org.hammerlab.guacamole.loci.partitioning.LociPartitioning,skipEmpty:Boolean,halfWindowSize:Int,initialValue:T,aggFunction:(T,org.hammerlab.guacamole.readsets.PerSample[org.hammerlab.guacamole.windowing.SlidingWindow[R]])=&gt;T)(implicitevidence$3:scala.reflect.ClassTag[R],implicitevidence$4:scala.reflect.ClassTag[T]):org.apache.spark.rdd.RDD[T]"></a>
-      <a id="windowFoldLoci[R&lt;:ReferenceRegion,T](PerSample[RDD[R]],LociPartitioning,Boolean,Int,T,(T,PerSample[SlidingWindow[R]])⇒T)(ClassTag[R],ClassTag[T]):RDD[T]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">windowFoldLoci</span><span class="tparams">[<span name="R">R &lt;: <a href="../reference/ReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceRegion">ReferenceRegion</a></span>, <span name="T">T</span>]</span><span class="params">(<span name="regionRDDs">regionRDDs: <a href="../readsets/package.html#PerSample[+A]=IndexedSeq[A]" class="extmbr" name="org.hammerlab.guacamole.readsets.PerSample">PerSample</a>[<span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.WindowFlatMapUtils.windowFoldLoci.R">R</span>]]</span>, <span name="lociPartitions">lociPartitions: <a href="../loci/partitioning/LociPartitioning.html" class="extype" name="org.hammerlab.guacamole.loci.partitioning.LociPartitioning">LociPartitioning</a></span>, <span name="skipEmpty">skipEmpty: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="halfWindowSize">halfWindowSize: <span class="extype" name="scala.Int">Int</span></span>, <span name="initialValue">initialValue: <span class="extype" name="org.hammerlab.guacamole.distributed.WindowFlatMapUtils.windowFoldLoci.T">T</span></span>, <span name="aggFunction">aggFunction: (<span class="extype" name="org.hammerlab.guacamole.distributed.WindowFlatMapUtils.windowFoldLoci.T">T</span>, <a href="../readsets/package.html#PerSample[+A]=IndexedSeq[A]" class="extmbr" name="org.hammerlab.guacamole.readsets.PerSample">PerSample</a>[<a href="../windowing/SlidingWindow.html" class="extype" name="org.hammerlab.guacamole.windowing.SlidingWindow">SlidingWindow</a>[<span class="extype" name="org.hammerlab.guacamole.distributed.WindowFlatMapUtils.windowFoldLoci.R">R</span>]]) ⇒ <span class="extype" name="org.hammerlab.guacamole.distributed.WindowFlatMapUtils.windowFoldLoci.T">T</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.reflect.ClassTag">ClassTag</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.WindowFlatMapUtils.windowFoldLoci.R">R</span>]</span>, <span name="arg1">arg1: <span class="extype" name="scala.reflect.ClassTag">ClassTag</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.WindowFlatMapUtils.windowFoldLoci.T">T</span>]</span>)</span><span class="result">: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<span class="extype" name="org.hammerlab.guacamole.distributed.WindowFlatMapUtils.windowFoldLoci.T">T</span>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Computes an aggregate over each task and contig
-The user specified aggFunction is used to accumulate a result starting with <code>initialValue</code>
-</p><div class="fullcomment"><div class="comment cmt"><p>Computes an aggregate over each task and contig
-The user specified aggFunction is used to accumulate a result starting with <code>initialValue</code>
-</p></div><dl class="paramcmts block"><dt class="tparam">T</dt><dd class="cmt"><p>Type of the aggregation value</p></dd><dt class="param">regionRDDs</dt><dd class="cmt"><p>RDDs of reads, one per sample</p></dd><dt class="param">lociPartitions</dt><dd class="cmt"><p>loci to consider, partitioned into tasks</p></dd><dt class="param">skipEmpty</dt><dd class="cmt"><p>If True, empty windows (no regions within the window) will be skipped</p></dd><dt class="param">halfWindowSize</dt><dd class="cmt"><p>A window centered at locus = l will contain regions overlapping l +/- halfWindowSize</p></dd><dt class="param">initialValue</dt><dd class="cmt"><p>Initial value for aggregation</p></dd><dt class="param">aggFunction</dt><dd class="cmt"><p>Function to aggregate windows, folds the windows into the aggregate value so far</p></dd><dt>returns</dt><dd class="cmt"><p>Iterator[T], the aggregate values collected over contigs
-</p></dd></dl></div>
     </li></ol>
             </div>
 
@@ -477,6 +437,6 @@ The user specified aggFunction is used to accumulate a result starting with <cod
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../lib/template.js"></script>
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../../lib/template.js"></script>
     </body>
       </html>
