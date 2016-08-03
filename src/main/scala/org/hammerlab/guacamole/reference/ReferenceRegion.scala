@@ -22,16 +22,10 @@ package org.hammerlab.guacamole.reference
  * Trait for objects that are associated with an interval on the genome. The most prominent example is a
  * [[org.hammerlab.guacamole.reads.MappedRead]], but there's also [[org.hammerlab.guacamole.variants.ReferenceVariant]].
  */
-trait ReferenceRegion {
+trait ReferenceRegion extends HasContig with Interval {
 
   /** Name of the reference contig */
   def contigName: ContigName
-
-  /** Start position on the genome, inclusive. Must be non-negative. */
-  def start: Locus
-
-  /** The end position on the genome, *exclusive*. Must be non-negative. */
-  def end: Locus
 
   /**
    * Does the region overlap the given locus, with halfWindowSize padding?
@@ -49,5 +43,22 @@ trait ReferenceRegion {
   def overlaps(other: ReferenceRegion): Boolean = {
     other.contigName == contigName && (overlapsLocus(other.start) || other.overlapsLocus(start))
   }
+
+  def regionStr: String = s"$contigName:[$start-$end)"
 }
 
+object ReferenceRegion {
+  implicit def intraContigPartialOrdering[R <: ReferenceRegion] =
+    new PartialOrdering[R] {
+      override def tryCompare(x: R, y: R): Option[Int] = {
+        if (x.contigName == y.contigName)
+          Some(x.start.compare(y.start))
+        else
+          None
+      }
+
+      override def lteq(x: R, y: R): Boolean = {
+        x.contigName == y.contigName && x.start <= y.start
+      }
+    }
+}
