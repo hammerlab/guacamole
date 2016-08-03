@@ -101,45 +101,6 @@ library.
       </span>
       </h4>
       
-    </li><li name="org.hammerlab.guacamole.readsets.GermlineCallerArgs" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="GermlineCallerArgsextendsArgs4jBasewithGenotypeOutputArgswithReadsArgswithConcordance.ConcordanceArgswithLociPartitionerArgs"></a>
-      <a id="GermlineCallerArgs:GermlineCallerArgs"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">trait</span>
-      </span>
-      <span class="symbol">
-        <a href="GermlineCallerArgs.html"><span class="name">GermlineCallerArgs</span></a><span class="result"> extends <span class="extype" name="org.bdgenomics.utils.cli.Args4jBase">Args4jBase</span> with <a href="../variants/GenotypeOutputArgs.html" class="extype" name="org.hammerlab.guacamole.variants.GenotypeOutputArgs">GenotypeOutputArgs</a> with <a href="ReadsArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.ReadsArgs">ReadsArgs</a> with <a href="../variants/Concordance$$ConcordanceArgs.html" class="extype" name="org.hammerlab.guacamole.variants.Concordance.ConcordanceArgs">ConcordanceArgs</a> with <a href="../loci/partitioning/LociPartitionerArgs.html" class="extype" name="org.hammerlab.guacamole.loci.partitioning.LociPartitionerArgs">LociPartitionerArgs</a></span>
-      </span>
-      </h4>
-      
-    </li><li name="org.hammerlab.guacamole.readsets.InputFilters" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="InputFiltersextendsProductwithSerializable"></a>
-      <a id="InputFilters:InputFilters"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">case class</span>
-      </span>
-      <span class="symbol">
-        <a href="InputFilters.html"><span class="name">InputFilters</span></a><span class="params">(<span name="overlapsLoci">overlapsLoci: <span class="extype" name="scala.Option">Option</span>[<a href="../loci/set/LociParser.html" class="extype" name="org.hammerlab.guacamole.loci.set.LociParser">LociParser</a>]</span>, <span name="nonDuplicate">nonDuplicate: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="passedVendorQualityChecks">passedVendorQualityChecks: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="isPaired">isPaired: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
-      </span>
-      </h4>
-      <p class="comment cmt">Filtering reads while they are loaded can be an important optimization.</p>
-    </li><li name="org.hammerlab.guacamole.readsets.NoSequenceDictionaryArgs" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="NoSequenceDictionaryArgsextendsArgs4jBasewithDebugLogArgs"></a>
-      <a id="NoSequenceDictionaryArgs:NoSequenceDictionaryArgs"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">trait</span>
-      </span>
-      <span class="symbol">
-        <a href="NoSequenceDictionaryArgs.html"><span class="name">NoSequenceDictionaryArgs</span></a><span class="result"> extends <span class="extype" name="org.bdgenomics.utils.cli.Args4jBase">Args4jBase</span> with <a href="../logging/DebugLogArgs.html" class="extype" name="org.hammerlab.guacamole.logging.DebugLogArgs">DebugLogArgs</a></span>
-      </span>
-      </h4>
-      <p class="comment cmt">Argument for using / not using sequence dictionaries to get contigs and lengths.</p>
     </li><li name="org.hammerlab.guacamole.readsets.NumSamples" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="NumSamples=Int"></a>
       <a id="NumSamples:NumSamples"></a>
@@ -166,34 +127,8 @@ library.
       </span>
       </h4>
       
-    </li><li name="org.hammerlab.guacamole.readsets.ReadLoadingConfig" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="ReadLoadingConfigextendsProductwithSerializable"></a>
-      <a id="ReadLoadingConfig:ReadLoadingConfig"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">case class</span>
-      </span>
-      <span class="symbol">
-        <a href="ReadLoadingConfig.html"><span class="name">ReadLoadingConfig</span></a><span class="params">(<span name="bamReaderAPI">bamReaderAPI: <a href="BamReaderAPI$.html#BamReaderAPI=org.hammerlab.guacamole.readsets.BamReaderAPI.Value" class="extmbr" name="org.hammerlab.guacamole.readsets.BamReaderAPI.BamReaderAPI">BamReaderAPI</a> = <span class="symbol">BamReaderAPI.Best</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
-      </span>
-      </h4>
-      <p class="comment cmt">Configuration for read loading.</p>
-    </li><li name="org.hammerlab.guacamole.readsets.ReadLoadingConfigArgs" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="ReadLoadingConfigArgsextendsArgs4jBasewithDebugLogArgs"></a>
-      <a id="ReadLoadingConfigArgs:ReadLoadingConfigArgs"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">trait</span>
-      </span>
-      <span class="symbol">
-        <a href="ReadLoadingConfigArgs.html"><span class="name">ReadLoadingConfigArgs</span></a><span class="result"> extends <span class="extype" name="org.bdgenomics.utils.cli.Args4jBase">Args4jBase</span> with <a href="../logging/DebugLogArgs.html" class="extype" name="org.hammerlab.guacamole.logging.DebugLogArgs">DebugLogArgs</a></span>
-      </span>
-      </h4>
-      <p class="comment cmt">Arguments for configuring read loading with a ReadLoadingConfig object.</p>
     </li><li name="org.hammerlab.guacamole.readsets.ReadSets" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="ReadSetsextendsorg.hammerlab.guacamole.readsets.PerSample[org.hammerlab.guacamole.readsets.ReadsRDD]withProductwithSerializable"></a>
+      <a id="ReadSetsextendsorg.hammerlab.guacamole.readsets.PerSample[org.hammerlab.guacamole.readsets.rdd.ReadsRDD]withProductwithSerializable"></a>
       <a id="ReadSets:ReadSets"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -201,37 +136,11 @@ library.
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="ReadSets.html"><span class="name">ReadSets</span></a><span class="params">(<span name="readsRDDs">readsRDDs: <a href="#PerSample[+A]=IndexedSeq[A]" class="extmbr" name="org.hammerlab.guacamole.readsets.PerSample">PerSample</a>[<a href="ReadsRDD.html" class="extype" name="org.hammerlab.guacamole.readsets.ReadsRDD">ReadsRDD</a>]</span>, <span name="sequenceDictionary">sequenceDictionary: <span class="extype" name="org.bdgenomics.adam.models.SequenceDictionary">SequenceDictionary</span></span>, <span name="contigLengths">contigLengths: <a href="#ContigLengths=Map[org.hammerlab.guacamole.reference.ContigName,org.hammerlab.guacamole.reference.NumLoci]" class="extmbr" name="org.hammerlab.guacamole.readsets.ContigLengths">ContigLengths</a></span>)</span><span class="result"> extends <a href="#PerSample[+A]=IndexedSeq[A]" class="extmbr" name="org.hammerlab.guacamole.readsets.PerSample">PerSample</a>[<a href="ReadsRDD.html" class="extype" name="org.hammerlab.guacamole.readsets.ReadsRDD">ReadsRDD</a>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="ReadSets.html"><span class="name">ReadSets</span></a><span class="params">(<span name="readsRDDs">readsRDDs: <a href="#PerSample[+A]=IndexedSeq[A]" class="extmbr" name="org.hammerlab.guacamole.readsets.PerSample">PerSample</a>[<a href="rdd/ReadsRDD.html" class="extype" name="org.hammerlab.guacamole.readsets.rdd.ReadsRDD">ReadsRDD</a>]</span>, <span name="sequenceDictionary">sequenceDictionary: <span class="extype" name="org.bdgenomics.adam.models.SequenceDictionary">SequenceDictionary</span></span>, <span name="contigLengths">contigLengths: <a href="#ContigLengths=Map[org.hammerlab.guacamole.reference.ContigName,org.hammerlab.guacamole.reference.NumLoci]" class="extmbr" name="org.hammerlab.guacamole.readsets.ContigLengths">ContigLengths</a></span>)</span><span class="result"> extends <a href="#PerSample[+A]=IndexedSeq[A]" class="extmbr" name="org.hammerlab.guacamole.readsets.PerSample">PerSample</a>[<a href="rdd/ReadsRDD.html" class="extype" name="org.hammerlab.guacamole.readsets.rdd.ReadsRDD">ReadsRDD</a>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       <p class="comment cmt">A <code>ReadSets</code> contains reads from multiple inputs, and SequenceDictionary / contig-length information merged from
 them.</p>
-    </li><li name="org.hammerlab.guacamole.readsets.ReadsArgs" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="ReadsArgsextendsArgs4jBasewithDebugLogArgswithNoSequenceDictionaryArgswithReadLoadingConfigArgs"></a>
-      <a id="ReadsArgs:ReadsArgs"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">trait</span>
-      </span>
-      <span class="symbol">
-        <a href="ReadsArgs.html"><span class="name">ReadsArgs</span></a><span class="result"> extends <span class="extype" name="org.bdgenomics.utils.cli.Args4jBase">Args4jBase</span> with <a href="../logging/DebugLogArgs.html" class="extype" name="org.hammerlab.guacamole.logging.DebugLogArgs">DebugLogArgs</a> with <a href="NoSequenceDictionaryArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.NoSequenceDictionaryArgs">NoSequenceDictionaryArgs</a> with <a href="ReadLoadingConfigArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.ReadLoadingConfigArgs">ReadLoadingConfigArgs</a></span>
-      </span>
-      </h4>
-      <p class="comment cmt">Argument for accepting a single set of reads (for non-somatic variant calling).</p>
-    </li><li name="org.hammerlab.guacamole.readsets.ReadsRDD" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="ReadsRDDextendsProductwithSerializable"></a>
-      <a id="ReadsRDD:ReadsRDD"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">case class</span>
-      </span>
-      <span class="symbol">
-        <a href="ReadsRDD.html"><span class="name">ReadsRDD</span></a><span class="params">(<span name="reads">reads: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<a href="../reads/Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a>]</span>, <span name="sourceFile">sourceFile: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
-      </span>
-      </h4>
-      <p class="comment cmt">A thin wrapper around an RDD[Read], with helpers to filter to mapped and paired-mapped reads.</p>
     </li><li name="org.hammerlab.guacamole.readsets.SampleId" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="SampleId=Int"></a>
       <a id="SampleId:SampleId"></a>
@@ -245,32 +154,6 @@ them.</p>
       </span>
       </h4>
       
-    </li><li name="org.hammerlab.guacamole.readsets.SomaticCallerArgs" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="SomaticCallerArgsextendsArgs4jBasewithGenotypeOutputArgswithTumorNormalReadsArgswithLociPartitionerArgs"></a>
-      <a id="SomaticCallerArgs:SomaticCallerArgs"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">trait</span>
-      </span>
-      <span class="symbol">
-        <a href="SomaticCallerArgs.html"><span class="name">SomaticCallerArgs</span></a><span class="result"> extends <span class="extype" name="org.bdgenomics.utils.cli.Args4jBase">Args4jBase</span> with <a href="../variants/GenotypeOutputArgs.html" class="extype" name="org.hammerlab.guacamole.variants.GenotypeOutputArgs">GenotypeOutputArgs</a> with <a href="TumorNormalReadsArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.TumorNormalReadsArgs">TumorNormalReadsArgs</a> with <a href="../loci/partitioning/LociPartitionerArgs.html" class="extype" name="org.hammerlab.guacamole.loci.partitioning.LociPartitionerArgs">LociPartitionerArgs</a></span>
-      </span>
-      </h4>
-      
-    </li><li name="org.hammerlab.guacamole.readsets.TumorNormalReadsArgs" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="TumorNormalReadsArgsextendsArgs4jBasewithDebugLogArgswithNoSequenceDictionaryArgswithReadLoadingConfigArgs"></a>
-      <a id="TumorNormalReadsArgs:TumorNormalReadsArgs"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">trait</span>
-      </span>
-      <span class="symbol">
-        <a href="TumorNormalReadsArgs.html"><span class="name">TumorNormalReadsArgs</span></a><span class="result"> extends <span class="extype" name="org.bdgenomics.utils.cli.Args4jBase">Args4jBase</span> with <a href="../logging/DebugLogArgs.html" class="extype" name="org.hammerlab.guacamole.logging.DebugLogArgs">DebugLogArgs</a> with <a href="NoSequenceDictionaryArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.NoSequenceDictionaryArgs">NoSequenceDictionaryArgs</a> with <a href="ReadLoadingConfigArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.ReadLoadingConfigArgs">ReadLoadingConfigArgs</a></span>
-      </span>
-      </h4>
-      <p class="comment cmt">Arguments for accepting two sets of reads (tumor + normal).</p>
     </li></ol>
             </div>
 
@@ -278,46 +161,7 @@ them.</p>
 
         <div id="values" class="values members">
               <h3>Value Members</h3>
-              <ol><li name="org.hammerlab.guacamole.readsets.BamReaderAPI" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="BamReaderAPI"></a>
-      <a id="BamReaderAPI:BamReaderAPI"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a href="BamReaderAPI$.html"><span class="name">BamReaderAPI</span></a><span class="result"> extends <span class="extype" name="scala.Enumeration">Enumeration</span></span>
-      </span>
-      </h4>
-      <p class="comment cmt">Specification of which API to use when reading BAM and SAM files.</p>
-    </li><li name="org.hammerlab.guacamole.readsets.InputFilters" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="InputFilters"></a>
-      <a id="InputFilters:InputFilters"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a href="InputFilters$.html"><span class="name">InputFilters</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
-      </span>
-      </h4>
-      
-    </li><li name="org.hammerlab.guacamole.readsets.ReadLoadingConfig" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="ReadLoadingConfig"></a>
-      <a id="ReadLoadingConfig:ReadLoadingConfig"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a href="ReadLoadingConfig$.html"><span class="name">ReadLoadingConfig</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
-      </span>
-      </h4>
-      
-    </li><li name="org.hammerlab.guacamole.readsets.ReadSets" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+              <ol><li name="org.hammerlab.guacamole.readsets.ReadSets" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="ReadSets"></a>
       <a id="ReadSets:ReadSets"></a>
       <h4 class="signature">
@@ -330,16 +174,29 @@ them.</p>
       </span>
       </h4>
       
-    </li><li name="org.hammerlab.guacamole.readsets.ReadsRDD" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="ReadsRDD"></a>
-      <a id="ReadsRDD:ReadsRDD"></a>
+    </li><li name="org.hammerlab.guacamole.readsets.args" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="args"></a>
+      <a id="args:args"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">object</span>
+        <span class="kind">package</span>
       </span>
       <span class="symbol">
-        <a href="ReadsRDD$.html"><span class="name">ReadsRDD</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="args/package.html"><span class="name">args</span></a>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.readsets.io" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="io"></a>
+      <a id="io:io"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="io/package.html"><span class="name">io</span></a>
       </span>
       </h4>
       
