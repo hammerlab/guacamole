@@ -27,7 +27,8 @@ object SomaticJoint {
     @Args4jOption(name = "--out", usage = "Output path for all variants in VCF. Default: no output")
     var out: String = ""
 
-    @Args4jOption(name = "--out-dir",
+    @Args4jOption(
+      name = "--out-dir",
       usage = "Output dir for all variants, split into separate files for somatic/germline")
     var outDir: String = ""
 
@@ -283,34 +284,57 @@ object SomaticJoint {
 
       writeSome(path("all"), calls, inputs.items)
 
-      if (!onlySomatic) {
+      if (!onlySomatic)
         writeSome(
           path("germline"),
-          calls.filter(_.singleAlleleEvidences.exists(
-            evidence => evidence.isGermlineCall || anyForced(evidence))),
-          inputs.items)
-      }
+          calls.filter(
+            _.singleAlleleEvidences.exists(
+              evidence => evidence.isGermlineCall || anyForced(evidence)
+            )
+          ),
+          inputs.items
+        )
 
       val somaticCallsOrForced =
-        calls.filter(_.singleAlleleEvidences.exists(
-          evidence => evidence.isSomaticCall || anyForced(evidence)))
+        calls.filter(
+          _.singleAlleleEvidences.exists(
+            evidence => evidence.isSomaticCall || anyForced(evidence)
+          )
+        )
+
       writeSome(path("somatic.all_samples"), somaticCallsOrForced, inputs.items)
 
-      inputs.items.foreach(input => {
-        if (!onlySomatic) {
+      inputs.items.foreach(
+        input => {
+          if (!onlySomatic) {
+            writeSome(
+              path("all.%s.%s.%s".format(
+                input.sampleName, input.tissueType.toString, input.analyte.toString)),
+              calls,
+              Vector(input)
+            )
+          }
+
           writeSome(
-            path("all.%s.%s.%s".format(
-              input.sampleName, input.tissueType.toString, input.analyte.toString)),
-            calls,
-            Vector(input))
+            path(
+              "somatic.%s.%s.%s".format(
+                input.sampleName,
+                input.tissueType.toString,
+                input.analyte.toString
+              )
+            ),
+            somaticCallsOrForced,
+            Vector(input)
+          )
         }
-        writeSome(
-          path("somatic.%s.%s.%s".format(
-            input.sampleName, input.tissueType.toString, input.analyte.toString)),
-          somaticCallsOrForced,
-          Vector(input))
-      })
-      writeSome(path("all.tumor_pooled_dna"), somaticCallsOrForced, Vector.empty, includePooledTumor = Some(true))
+      )
+
+      writeSome(
+        path("all.tumor_pooled_dna"),
+        somaticCallsOrForced,
+        Vector.empty,
+        includePooledTumor = Some(true)
+      )
     }
   }
 }
