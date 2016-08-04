@@ -217,21 +217,6 @@ of the read itself and the offset of the base in the read.
       <p class="shortcomment cmt">Returns a new <a href="" class="extype" name="org.hammerlab.guacamole.pileup.Pileup">Pileup</a> at a different locus on the same contig.</p><div class="fullcomment"><div class="comment cmt"><p>Returns a new <a href="" class="extype" name="org.hammerlab.guacamole.pileup.Pileup">Pileup</a> at a different locus on the same contig.</p><p>To enable an efficient implementation, the new locus must be greater than the current locus.
 </p></div><dl class="paramcmts block"><dt class="param">newLocus</dt><dd class="cmt"><p>The locus to move forward to.</p></dd><dt class="param">newReads</dt><dd class="cmt"><p>The *new* reads, i.e. those that overlap the new locus, but not the current locus.</p></dd><dt>returns</dt><dd class="cmt"><p>A new <a href="" class="extype" name="org.hammerlab.guacamole.pileup.Pileup">Pileup</a> at the given locus.
 </p></dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.pileup.Pileup#bySample" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="bySample:Map[String,org.hammerlab.guacamole.pileup.Pileup]"></a>
-      <a id="bySample:Map[String,Pileup]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">lazy val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">bySample</span><span class="result">: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <a href="" class="extype" name="org.hammerlab.guacamole.pileup.Pileup">Pileup</a>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Split this <a href="" class="extype" name="org.hammerlab.guacamole.pileup.Pileup">Pileup</a> by sample name.</p><div class="fullcomment"><div class="comment cmt"><p>Split this <a href="" class="extype" name="org.hammerlab.guacamole.pileup.Pileup">Pileup</a> by sample name. Returns a map from sample name to <a href="" class="extype" name="org.hammerlab.guacamole.pileup.Pileup">Pileup</a> instances that use only reads
-from that sample.
-</p></div></div>
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>
       <a id="clone():AnyRef"></a>
