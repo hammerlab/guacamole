@@ -1,7 +1,7 @@
 package org.hammerlab.guacamole.commands.jointcaller
 
 import org.hammerlab.guacamole.commands.jointcaller.Input.{Analyte, TissueType}
-import org.hammerlab.guacamole.readsets.PerSample
+import org.hammerlab.guacamole.readsets.{PerSample, SampleName}
 import org.kohsuke.args4j.spi.StringArrayOptionHandler
 import org.kohsuke.args4j.{Argument, Option => Args4jOption}
 
@@ -42,7 +42,8 @@ object InputCollection {
       paths = args.paths.toVector,
       sampleNames = args.sampleNames.toVector,
       tissueTypes = args.tissueTypes.toVector,
-      analytes = args.analytes.toVector)
+      analytes = args.analytes.toVector
+    )
   }
 
   /**
@@ -59,7 +60,7 @@ object InputCollection {
    * @return resulting InputCollection
    */
   def apply(paths: PerSample[String],
-            sampleNames: PerSample[String] = Vector.empty,
+            sampleNames: PerSample[SampleName] = Vector.empty,
             tissueTypes: PerSample[String] = Vector.empty,
             analytes: PerSample[String] = Vector.empty): InputCollection = {
 
@@ -86,20 +87,23 @@ object InputCollection {
     }
     checkLength("analytes", defaultedAnalytes)
 
-    val defaultedSampleNames: Seq[String] = sampleNames match {
+    val defaultedSampleNames: PerSample[SampleName] = sampleNames match {
       case Seq() => paths.map(filepath => filepath.split('/').last.stripSuffix(".bam"))
       case other => other
     }
     checkLength("sample names", defaultedSampleNames)
 
-    val inputs = paths.indices.map(index => {
-      Input(
-        index = index,
-        sampleName = defaultedSampleNames(index),
-        path = paths(index),
-        tissueType = TissueType.withName(defaultedTissueTypes(index)),
-        analyte = Analyte.withName(defaultedAnalytes(index)))
-    })
+    val inputs =
+      paths.indices.map(index => {
+        Input(
+          index = index,
+          sampleName = defaultedSampleNames(index),
+          path = paths(index),
+          tissueType = TissueType.withName(defaultedTissueTypes(index)),
+          analyte = Analyte.withName(defaultedAnalytes(index))
+        )
+      })
+
     InputCollection(inputs)
   }
 }

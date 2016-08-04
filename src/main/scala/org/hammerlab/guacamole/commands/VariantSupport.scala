@@ -26,7 +26,7 @@ import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMap
 import org.hammerlab.guacamole.loci.partitioning.LociPartitionerArgs
 import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.readsets.ReadSets
+import org.hammerlab.guacamole.readsets.{ReadSets, SampleName}
 import org.hammerlab.guacamole.readsets.io.{InputFilters, ReadLoadingConfig, ReadLoadingConfigArgs}
 import org.hammerlab.guacamole.reference.{ContigName, Locus, ReferenceBroadcast}
 import org.hammerlab.guacamole.util.Bases
@@ -57,7 +57,7 @@ object VariantSupport {
     override val name = "variant-support"
     override val description = "Find number of reads that support each variant across BAMs"
 
-    case class AlleleCount(sampleName: String,
+    case class AlleleCount(sampleName: SampleName,
                            contigName: ContigName,
                            locus: Locus,
                            reference: String,

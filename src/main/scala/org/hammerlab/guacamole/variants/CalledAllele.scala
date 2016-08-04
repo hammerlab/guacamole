@@ -18,6 +18,7 @@
 
 package org.hammerlab.guacamole.variants
 
+import org.hammerlab.guacamole.readsets.SampleName
 import org.hammerlab.guacamole.reference.{ContigName, Locus, NumLoci}
 
 /**
@@ -31,7 +32,7 @@ import org.hammerlab.guacamole.reference.{ContigName, Locus, NumLoci}
  * @param evidence supporting statistics for the variant
  * @param length length of the variant
  */
-case class CalledAllele(sampleName: String,
+case class CalledAllele(sampleName: SampleName,
                         contigName: ContigName,
                         start: Locus,
                         allele: Allele,
