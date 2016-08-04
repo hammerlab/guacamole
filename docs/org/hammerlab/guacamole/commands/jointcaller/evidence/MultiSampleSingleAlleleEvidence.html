@@ -515,71 +515,71 @@ just up to proportionality and do not need to sum to 1.
       </h4>
       <p class="shortcomment cmt">joint caller parameters</p>
     </li><li name="org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleSingleAlleleEvidence#perNormalSampleGermlinePosteriors" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="perNormalSampleGermlinePosteriors:Map[Int,Map[(String,String),Double]]"></a>
-      <a id="perNormalSampleGermlinePosteriors:Map[Int,Map[(String,String),Double]]"></a>
+      <a id="perNormalSampleGermlinePosteriors:Map[org.hammerlab.guacamole.readsets.SampleId,Map[(String,String),Double]]"></a>
+      <a id="perNormalSampleGermlinePosteriors:Map[SampleId,Map[(String,String),Double]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">perNormalSampleGermlinePosteriors</span><span class="result">: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Int">Int</span>, <span class="extype" name="scala.Predef.Map">Map</span>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.String">String</span>), <span class="extype" name="scala.Double">Double</span>]]</span>
+        <span class="name">perNormalSampleGermlinePosteriors</span><span class="result">: <span class="extype" name="scala.Predef.Map">Map</span>[<a href="../../../readsets/package.html#SampleId=Int" class="extmbr" name="org.hammerlab.guacamole.readsets.SampleId">SampleId</a>, <span class="extype" name="scala.Predef.Map">Map</span>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.String">String</span>), <span class="extype" name="scala.Double">Double</span>]]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Log10 posterior probabilities for each possible germline genotype in each normal sample.</p><div class="fullcomment"><div class="comment cmt"><p>Log10 posterior probabilities for each possible germline genotype in each normal sample.</p><p>Map is from input index (i.e. index into inputs and sampleEvidences) to mixture posteriors.</p><p>The posteriors are plain log10 logprobs. They are negative. The maximum a posteriori estimate is the greatest
 (i.e. least negative, closest to 0) posterior.
 </p></div></div>
     </li><li name="org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleSingleAlleleEvidence#perTumorDnaSampleSomaticPosteriors" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="perTumorDnaSampleSomaticPosteriors:Map[Int,Map[org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.PileupStats.AlleleMixture,Double]]"></a>
-      <a id="perTumorDnaSampleSomaticPosteriors:Map[Int,Map[AlleleMixture,Double]]"></a>
+      <a id="perTumorDnaSampleSomaticPosteriors:Map[org.hammerlab.guacamole.readsets.SampleId,Map[org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.PileupStats.AlleleMixture,Double]]"></a>
+      <a id="perTumorDnaSampleSomaticPosteriors:Map[SampleId,Map[AlleleMixture,Double]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">perTumorDnaSampleSomaticPosteriors</span><span class="result">: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Int">Int</span>, <span class="extype" name="scala.Predef.Map">Map</span>[<a href="../pileup_summarization/PileupStats$.html#AlleleMixture=Map[String,Double]" class="extmbr" name="org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.PileupStats.AlleleMixture">AlleleMixture</a>, <span class="extype" name="scala.Double">Double</span>]]</span>
+        <span class="name">perTumorDnaSampleSomaticPosteriors</span><span class="result">: <span class="extype" name="scala.Predef.Map">Map</span>[<a href="../../../readsets/package.html#SampleId=Int" class="extmbr" name="org.hammerlab.guacamole.readsets.SampleId">SampleId</a>, <span class="extype" name="scala.Predef.Map">Map</span>[<a href="../pileup_summarization/PileupStats$.html#AlleleMixture=Map[String,Double]" class="extmbr" name="org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.PileupStats.AlleleMixture">AlleleMixture</a>, <span class="extype" name="scala.Double">Double</span>]]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Log10 posterior probabilities for a somatic variant in each tumor DNA sample.</p><div class="fullcomment"><div class="comment cmt"><p>Log10 posterior probabilities for a somatic variant in each tumor DNA sample. See perNormalSampleGermlinePosteriors.
 </p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>Map {input index -&gt; {{Allele -&gt; Frequency} -&gt; Posterior probability}
 </p></dd></dl></div>
     </li><li name="org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleSingleAlleleEvidence#perTumorDnaSampleTopMixtures" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="perTumorDnaSampleTopMixtures:scala.collection.immutable.Map[Int,org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.PileupStats.AlleleMixture]"></a>
-      <a id="perTumorDnaSampleTopMixtures:Map[Int,AlleleMixture]"></a>
+      <a id="perTumorDnaSampleTopMixtures:scala.collection.immutable.Map[org.hammerlab.guacamole.readsets.SampleId,org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.PileupStats.AlleleMixture]"></a>
+      <a id="perTumorDnaSampleTopMixtures:Map[SampleId,AlleleMixture]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">perTumorDnaSampleTopMixtures</span><span class="result">: <span class="extype" name="scala.collection.immutable.Map">Map</span>[<span class="extype" name="scala.Int">Int</span>, <a href="../pileup_summarization/PileupStats$.html#AlleleMixture=Map[String,Double]" class="extmbr" name="org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.PileupStats.AlleleMixture">AlleleMixture</a>]</span>
+        <span class="name">perTumorDnaSampleTopMixtures</span><span class="result">: <span class="extype" name="scala.collection.immutable.Map">Map</span>[<a href="../../../readsets/package.html#SampleId=Int" class="extmbr" name="org.hammerlab.guacamole.readsets.SampleId">SampleId</a>, <a href="../pileup_summarization/PileupStats$.html#AlleleMixture=Map[String,Double]" class="extmbr" name="org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.PileupStats.AlleleMixture">AlleleMixture</a>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Maximum a posteriori somatic mixtures for each tumor sample.</p>
     </li><li name="org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleSingleAlleleEvidence#perTumorRnaSampleSomaticPosteriors" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="perTumorRnaSampleSomaticPosteriors:Map[Int,Map[org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.PileupStats.AlleleMixture,Double]]"></a>
-      <a id="perTumorRnaSampleSomaticPosteriors:Map[Int,Map[AlleleMixture,Double]]"></a>
+      <a id="perTumorRnaSampleSomaticPosteriors:Map[org.hammerlab.guacamole.readsets.SampleId,Map[org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.PileupStats.AlleleMixture,Double]]"></a>
+      <a id="perTumorRnaSampleSomaticPosteriors:Map[SampleId,Map[AlleleMixture,Double]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">perTumorRnaSampleSomaticPosteriors</span><span class="result">: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Int">Int</span>, <span class="extype" name="scala.Predef.Map">Map</span>[<a href="../pileup_summarization/PileupStats$.html#AlleleMixture=Map[String,Double]" class="extmbr" name="org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.PileupStats.AlleleMixture">AlleleMixture</a>, <span class="extype" name="scala.Double">Double</span>]]</span>
+        <span class="name">perTumorRnaSampleSomaticPosteriors</span><span class="result">: <span class="extype" name="scala.Predef.Map">Map</span>[<a href="../../../readsets/package.html#SampleId=Int" class="extmbr" name="org.hammerlab.guacamole.readsets.SampleId">SampleId</a>, <span class="extype" name="scala.Predef.Map">Map</span>[<a href="../pileup_summarization/PileupStats$.html#AlleleMixture=Map[String,Double]" class="extmbr" name="org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.PileupStats.AlleleMixture">AlleleMixture</a>, <span class="extype" name="scala.Double">Double</span>]]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Log10 posterior probabilities for a somatic variant in each tumor RNA sample.</p>
     </li><li name="org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleSingleAlleleEvidence#perTumorRnaSampleTopMixtures" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="perTumorRnaSampleTopMixtures:scala.collection.immutable.Map[Int,org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.PileupStats.AlleleMixture]"></a>
-      <a id="perTumorRnaSampleTopMixtures:Map[Int,AlleleMixture]"></a>
+      <a id="perTumorRnaSampleTopMixtures:scala.collection.immutable.Map[org.hammerlab.guacamole.readsets.SampleId,org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.PileupStats.AlleleMixture]"></a>
+      <a id="perTumorRnaSampleTopMixtures:Map[SampleId,AlleleMixture]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">perTumorRnaSampleTopMixtures</span><span class="result">: <span class="extype" name="scala.collection.immutable.Map">Map</span>[<span class="extype" name="scala.Int">Int</span>, <a href="../pileup_summarization/PileupStats$.html#AlleleMixture=Map[String,Double]" class="extmbr" name="org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.PileupStats.AlleleMixture">AlleleMixture</a>]</span>
+        <span class="name">perTumorRnaSampleTopMixtures</span><span class="result">: <span class="extype" name="scala.collection.immutable.Map">Map</span>[<a href="../../../readsets/package.html#SampleId=Int" class="extmbr" name="org.hammerlab.guacamole.readsets.SampleId">SampleId</a>, <a href="../pileup_summarization/PileupStats$.html#AlleleMixture=Map[String,Double]" class="extmbr" name="org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.PileupStats.AlleleMixture">AlleleMixture</a>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Maximum a posteriori somatic mixtures for each tumor sample.</p>
@@ -650,28 +650,28 @@ just up to proportionality and do not need to sum to 1.
       </h4>
       
     </li><li name="org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleSingleAlleleEvidence#tumorDnaSampleIndicesTriggered" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="tumorDnaSampleIndicesTriggered:Vector[Int]"></a>
-      <a id="tumorDnaSampleIndicesTriggered:Vector[Int]"></a>
+      <a id="tumorDnaSampleIndicesTriggered:Vector[org.hammerlab.guacamole.readsets.SampleId]"></a>
+      <a id="tumorDnaSampleIndicesTriggered:Vector[SampleId]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">tumorDnaSampleIndicesTriggered</span><span class="result">: <span class="extype" name="scala.Vector">Vector</span>[<span class="extype" name="scala.Int">Int</span>]</span>
+        <span class="name">tumorDnaSampleIndicesTriggered</span><span class="result">: <span class="extype" name="scala.Vector">Vector</span>[<a href="../../../readsets/package.html#SampleId=Int" class="extmbr" name="org.hammerlab.guacamole.readsets.SampleId">SampleId</a>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Indices of tumor samples that triggered a call.</p>
     </li><li name="org.hammerlab.guacamole.commands.jointcaller.evidence.MultiSampleSingleAlleleEvidence#tumorRnaSampleExpressed" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="tumorRnaSampleExpressed:Vector[Int]"></a>
-      <a id="tumorRnaSampleExpressed:Vector[Int]"></a>
+      <a id="tumorRnaSampleExpressed:org.hammerlab.guacamole.readsets.PerSample[org.hammerlab.guacamole.readsets.SampleId]"></a>
+      <a id="tumorRnaSampleExpressed:PerSample[SampleId]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">tumorRnaSampleExpressed</span><span class="result">: <span class="extype" name="scala.Vector">Vector</span>[<span class="extype" name="scala.Int">Int</span>]</span>
+        <span class="name">tumorRnaSampleExpressed</span><span class="result">: <a href="../../../readsets/package.html#PerSample[+A]=IndexedSeq[A]" class="extmbr" name="org.hammerlab.guacamole.readsets.PerSample">PerSample</a>[<a href="../../../readsets/package.html#SampleId=Int" class="extmbr" name="org.hammerlab.guacamole.readsets.SampleId">SampleId</a>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Indices of tumor rna samples with expression</p>
