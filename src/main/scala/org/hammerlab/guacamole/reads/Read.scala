@@ -21,6 +21,7 @@ package org.hammerlab.guacamole.reads
 import htsjdk.samtools._
 import org.apache.spark.Logging
 import org.bdgenomics.formats.avro.AlignmentRecord
+import org.hammerlab.guacamole.readsets.SampleName
 import org.hammerlab.guacamole.util.Bases
 
 /**
@@ -46,7 +47,7 @@ trait Read {
   def asMappedRead: Option[MappedRead]
 
   /** The sample (e.g. "tumor" or "patient3636") name. */
-  def sampleName: String
+  def sampleName: SampleName
 
   /** Whether the read failed predefined vendor checks for quality */
   def failedVendorQualityChecks: Boolean

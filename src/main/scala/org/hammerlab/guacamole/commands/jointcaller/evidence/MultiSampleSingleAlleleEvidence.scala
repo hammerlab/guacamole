@@ -5,7 +5,7 @@ import org.hammerlab.guacamole.commands.jointcaller._
 import org.hammerlab.guacamole.commands.jointcaller.annotation.{MultiSampleAnnotations, SingleSampleAnnotations}
 import org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.MultiplePileupStats
 import org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.PileupStats.AlleleMixture
-import org.hammerlab.guacamole.readsets.PerSample
+import org.hammerlab.guacamole.readsets.{PerSample, SampleId}
 
 import scala.collection.Set
 
@@ -75,7 +75,7 @@ case class MultiSampleSingleAlleleEvidence(parameters: Parameters,
    * The posteriors are plain log10 logprobs. They are negative. The maximum a posteriori estimate is the greatest
    * (i.e. least negative, closest to 0) posterior.
    */
-  val perNormalSampleGermlinePosteriors: Map[Int, Map[(String, String), Double]] = {
+  val perNormalSampleGermlinePosteriors: Map[SampleId, Map[(String, String), Double]] = {
     (inputs.items.filter(_.normalDNA).map(_.index) ++ Seq(normalDNAPooledIndex)).map(index => {
       val likelihoods = allEvidences(index).asInstanceOf[NormalDNASingleSampleSingleAlleleEvidence].logLikelihoods
 
@@ -107,7 +107,7 @@ case class MultiSampleSingleAlleleEvidence(parameters: Parameters,
   }
 
   /** Log10 posterior probabilities for a somatic variant in each tumor RNA sample.  */
-  val perTumorRnaSampleSomaticPosteriors: Map[Int, Map[AlleleMixture, Double]] = {
+  val perTumorRnaSampleSomaticPosteriors: Map[SampleId, Map[AlleleMixture, Double]] = {
     inputs.items.filter(_.tumorRNA).map(input => {
       val likelihoods = allEvidences(input.index).asInstanceOf[TumorRNASingleSampleSingleAlleleEvidence].logLikelihoods
       input.index -> likelihoods.map(kv => (kv._1 -> (kv._2 - somaticPriorRna(kv._1))))
@@ -118,7 +118,7 @@ case class MultiSampleSingleAlleleEvidence(parameters: Parameters,
   val perTumorRnaSampleTopMixtures = perTumorRnaSampleSomaticPosteriors.mapValues(_.maxBy(_._2)._1)
 
   /** Indices of tumor rna samples with expression */
-  val tumorRnaSampleExpressed: Vector[Int] = perTumorRnaSampleTopMixtures
+  val tumorRnaSampleExpressed: PerSample[SampleId] = perTumorRnaSampleTopMixtures
     .filter(pair => pair._2.keys.toSet != Set(germlineAlleles._1, germlineAlleles._2))
     .keys.toVector
 
@@ -144,7 +144,7 @@ case class MultiSampleSingleAlleleEvidence(parameters: Parameters,
    *
    * @return Map {input index -> {{Allele -> Frequency} -> Posterior probability}
    */
-  val perTumorDnaSampleSomaticPosteriors: Map[Int, Map[AlleleMixture, Double]] = {
+  val perTumorDnaSampleSomaticPosteriors: Map[SampleId, Map[AlleleMixture, Double]] = {
     (inputs.items.filter(_.tumorDNA).map(_.index) ++ Seq(tumorDNAPooledIndex)).map(index => {
       val likelihoods = allEvidences(index).asInstanceOf[TumorDNASingleSampleSingleAlleleEvidence].logLikelihoods
       index -> likelihoods.map(kv => (kv._1 -> (kv._2 - somaticPriorDna(kv._1))))
@@ -155,7 +155,7 @@ case class MultiSampleSingleAlleleEvidence(parameters: Parameters,
   val perTumorDnaSampleTopMixtures = perTumorDnaSampleSomaticPosteriors.mapValues(_.maxBy(_._2)._1)
 
   /** Indices of tumor samples that triggered a call. */
-  val tumorDnaSampleIndicesTriggered: Vector[Int] = perTumorDnaSampleTopMixtures
+  val tumorDnaSampleIndicesTriggered: Vector[SampleId] = perTumorDnaSampleTopMixtures
     .filter(pair => pair._2.keys.toSet != Set(germlineAlleles._1, germlineAlleles._2))
     .keys.toVector
 

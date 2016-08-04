@@ -27,7 +27,7 @@ import org.apache.spark.SparkContext
 import org.hammerlab.guacamole.loci.set.LociParser
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.{MappedRead, MateAlignmentProperties, PairedRead, Read}
-import org.hammerlab.guacamole.readsets.ReadSets
+import org.hammerlab.guacamole.readsets.{ReadSets, SampleName}
 import org.hammerlab.guacamole.readsets.args.SingleSampleArgs
 import org.hammerlab.guacamole.readsets.io.{InputFilters, ReadLoadingConfig}
 import org.hammerlab.guacamole.readsets.rdd.ReadsRDD
@@ -83,7 +83,7 @@ object TestUtil {
                    name: String,
                    baseQualities: String = "",
                    isDuplicate: Boolean = false,
-                   sampleName: String = "",
+                   sampleName: SampleName = "",
                    contigName: ContigName = "",
                    alignmentQuality: Int = -1,
                    start: Locus = -1L,

@@ -1,7 +1,10 @@
 package org.hammerlab.guacamole.reads
 
+import org.hammerlab.guacamole.readsets.SampleName
+
 /**
  * PairedRead is a MappedRead or UnmappedRead with the additional mate information
+ *
  * @param read Unmapped or MappedRead base read
  * @param isFirstInPair Whether the read is earlier that the the mate read
  * @param mateAlignmentProperties Alignment location of the mate if it the mate is aligned
@@ -14,7 +17,7 @@ case class PairedRead[+T <: Read](read: T,
   val isMateMapped = mateAlignmentProperties.isDefined
   override val name: String = read.name
   override val failedVendorQualityChecks: Boolean = read.failedVendorQualityChecks
-  override val sampleName: String = read.sampleName
+  override val sampleName: SampleName = read.sampleName
   override val baseQualities: IndexedSeq[Byte] = read.baseQualities
   override val isDuplicate: Boolean = read.isDuplicate
   override val sequence: IndexedSeq[Byte] = read.sequence
