@@ -57,16 +57,6 @@ case class Pileup(contigName: ContigName,
   lazy val sampleName = elements.head.read.sampleName
 
   /**
-   * Split this [[Pileup]] by sample name. Returns a map from sample name to [[Pileup]] instances that use only reads
-   * from that sample.
-   */
-  lazy val bySample: Map[String, Pileup] = {
-    elements.groupBy(element => Option(element.read.sampleName).map(_.toString).getOrElse("default")).map({
-      case (sample, newElements) => (sample, Pileup(contigName, locus, contigSequence, newElements))
-    })
-  }
-
-  /**
    * Depth of pileup - number of reads at locus
    */
   lazy val depth: Int = elements.length
