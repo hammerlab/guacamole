@@ -211,6 +211,7 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
   test("Loci 10-19 deleted from half of the reads") {
     val pileup = loadPileup(sc, "same_start_reads.sam", locus = 0, reference = reference)
     val deletionPileup = pileup.atGreaterLocus(9, Seq.empty.iterator)
+
     deletionPileup.elements.map(_.alignment).count {
       case Deletion(bases, _) => {
         Bases.basesToString(bases) should equal("AAAAAAAAAAA")
@@ -218,6 +219,7 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
       }
       case _ => false
     } should be(5)
+
     for (i <- 10 to 19) {
       val nextPileup = pileup.atGreaterLocus(i, Seq.empty.iterator)
       nextPileup.elements.count(_.isMidDeletion) should be(5)
@@ -229,6 +231,22 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
     for (i <- 60 to 69) {
       val nextPileup = pileup.atGreaterLocus(i, Seq.empty.iterator)
       nextPileup.elements.length should be(5)
+    }
+  }
+
+  test("Pileup.apply throws on non-overlapping reads") {
+    val read = TestUtil.makeRead("AATTGAATTG", "5M1D5M", 1, "chr4")
+
+    intercept[AssertionError] {
+      Pileup(Seq(read), "chr4", 0, reference.getContig("chr4"))
+    }
+
+    intercept[AssertionError] {
+      Pileup(Seq(read), "chr4", 12, reference.getContig("chr4"))
+    }
+
+    intercept[AssertionError] {
+      Pileup(Seq(read), "chr5", 1, reference.getContig("chr4"))
     }
   }
 
