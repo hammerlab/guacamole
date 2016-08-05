@@ -150,7 +150,8 @@ object Pileup {
    */
   def apply(reads: Seq[MappedRead],
             contigName: ContigName,
-            locus: Locus, referenceContigSequence: ContigSequence): Pileup = {
+            locus: Locus,
+            referenceContigSequence: ContigSequence): Pileup = {
     val elements = reads.map(PileupElement(_, locus, referenceContigSequence))
     Pileup(contigName, locus, referenceContigSequence, elements.toIndexedSeq)
   }
