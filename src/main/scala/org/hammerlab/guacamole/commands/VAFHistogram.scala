@@ -15,7 +15,7 @@ import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.readsets.io.{InputFilters, ReadLoadingConfig, ReadLoadingConfigArgs}
 import org.hammerlab.guacamole.readsets.{PerSample, ReadSets, SampleName}
-import org.hammerlab.guacamole.reference.{ContigName, Locus, ReferenceBroadcast, ReferenceGenome}
+import org.hammerlab.guacamole.reference.{ContigName, Locus, NumLoci, ReferenceBroadcast, ReferenceGenome}
 import org.kohsuke.args4j.{Argument, Option => Args4jOption}
 
 /**
@@ -52,7 +52,6 @@ object VariantLocus {
       None
     }
   }
-
 }
 
 object VAFHistogram {
@@ -150,25 +149,21 @@ object VAFHistogram {
 
       val bins = args.bins
 
-      val variantAlleleHistograms = generateVAFHistogram(variantLoci, bins)
+      val variantAlleleHistograms = generateVAFHistograms(variantLoci, bins)
 
       val sampleAndFileNames = args.bams.zip(readsRDDs.map(_.mappedReads.take(1)(0).sampleName))
+
       val binSize = 100 / bins
 
-      def histogramToString(kv: (Int, Long)): String = {
-        s"${kv._1}, ${math.min(kv._1 + binSize, 100)}, ${kv._2}"
-      }
+      def histogramEntryString(bin: Int, numLoci: NumLoci): String =
+        s"$bin, ${math.min(bin * binSize, 100)}, $numLoci"
 
       val histogramOutput =
-        (for {
+        for {
           (sampleName, filename) <- sampleAndFileNames
-          histogram = variantAlleleHistograms(sampleName)
-        } yield {
-          histogram
-            .toSeq
-            .sortBy(_._1)
-            .map(kv => s"$filename, $sampleName, ${histogramToString(kv)}")
-        }).flatten
+          (bin, numLoci) <- variantAlleleHistograms(sampleName)
+        } yield
+          s"$filename, $sampleName, ${histogramEntryString(bin, numLoci)}"
 
       if (args.localOutputPath != "") {
         val writer = new BufferedWriter(new FileWriter(args.localOutputPath))
@@ -187,8 +182,9 @@ object VAFHistogram {
         // Print histograms to standard out
         for {
           (_, histogram) <- variantAlleleHistograms
+          (bin, numLoci) <- histogram
         } {
-          histogram.toSeq.sortBy(_._1).foreach(kv => println(histogramToString(kv)))
+          println(histogramEntryString(bin, numLoci))
         }
       }
 
@@ -204,10 +200,12 @@ object VAFHistogram {
    *
    * @param variantAlleleFrequencies RDD of loci with variant allele frequency > 0.
    * @param bins Number of bins to group the VAFs into.
-   * @return Map from sample name to per-sample map of [rounded variant allele frequency] to [number of loci with that
-   *         value].
+   * @return Map from sample name to per-sample sorted [[Vector]] of tuples containing a [rounded variant allele
+   *         frequency] and [the number of loci with that VAF].
    */
-  def generateVAFHistogram(variantAlleleFrequencies: RDD[VariantLocus], bins: Int): Map[SampleName, Map[Int, Long]] = {
+  def generateVAFHistograms(variantAlleleFrequencies: RDD[VariantLocus],
+                            bins: Int): Map[SampleName, Vector[(Int, Long)]] = {
+
     assume(bins <= 100 && bins >= 1, "Bins should be between 1 and 100")
 
     def roundToBin(variantAlleleFrequency: Float) = {
@@ -222,6 +220,7 @@ object VAFHistogram {
       .reduceByKey(_ ++ _)
       .collectAsMap
       .toMap
+      .mapValues(_.toVector.sortBy(_._1))
   }
 
   /**
@@ -263,6 +262,7 @@ object VAFHistogram {
       variantLoci.persist(StorageLevel.MEMORY_ONLY)
 
       val numVariantLociBySample = variantLoci.map(_.sampleName).countByValue()
+
       progress(
         "non-zero variant loci per-sample:",
         (
@@ -280,7 +280,10 @@ object VAFHistogram {
         if (samplePercent < 100)
           variantLoci
             .keyBy(_.sampleName)
-            .sampleByKey(withReplacement = false, fractions = sampleNames.map(_ -> samplePercent / 100.0).toMap)
+            .sampleByKey(
+              withReplacement = false,
+              fractions = sampleNames.map(_ -> samplePercent / 100.0).toMap
+            )
             .groupByKey()
             .collect()
         else
@@ -324,11 +327,12 @@ object VAFHistogram {
                         maxIterations: Int = 50,
                         convergenceTol: Double = 1e-2): GaussianMixtureModel = {
     val vafVectors = variantAlleleFrequencies.map(vaf => Vectors.dense(vaf.variantAlleleFrequency))
-    val model = new GaussianMixture()
-      .setK(numClusters)
-      .setConvergenceTol(convergenceTol)
-      .setMaxIterations(maxIterations)
-      .run(vafVectors)
+    val model =
+      new GaussianMixture()
+        .setK(numClusters)
+        .setConvergenceTol(convergenceTol)
+        .setMaxIterations(maxIterations)
+        .run(vafVectors)
 
     for (i <- 0 until model.k) {
       println(s"Cluster $i: mean=${model.gaussians(i).mu(0)}, std. deviation=${model.gaussians(i).sigma}, weight=${model.weights(i)}")
@@ -336,6 +340,5 @@ object VAFHistogram {
 
     model
   }
-
 }
 
