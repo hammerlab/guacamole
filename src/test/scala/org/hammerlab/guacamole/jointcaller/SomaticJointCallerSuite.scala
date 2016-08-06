@@ -2,12 +2,14 @@ package org.hammerlab.guacamole.jointcaller
 
 import org.hammerlab.guacamole.commands.SomaticJoint
 import org.hammerlab.guacamole.loci.set.{LociParser, LociSet}
-import org.hammerlab.guacamole.readsets.rdd.ReadsRDDUtil
+import org.hammerlab.guacamole.readsets.ReadSetsUtil
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.reference.ReferenceBroadcast.MapBackedReferenceSequence
 import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
 
-class SomaticJointCallerSuite extends GuacFunSuite with ReadsRDDUtil {
+class SomaticJointCallerSuite
+  extends GuacFunSuite
+    with ReadSetsUtil {
 
   val cancerWGS1Bams = Vector("normal.bam", "primary.bam", "recurrence.bam").map(
     name => TestUtil.testDataPath("cancer-wgs1/" + name))
@@ -168,5 +170,4 @@ class SomaticJointCallerSuite extends GuacFunSuite with ReadsRDDUtil {
     bestAllele.tumorDNAPooledEvidence.allelicDepths.toSet should equal(Set("G" -> 90, "A" -> 2))
     bestAllele.normalDNAPooledEvidence.allelicDepths.toSet should equal(Set("G" -> 51))
   }
-
 }
