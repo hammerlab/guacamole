@@ -4,7 +4,7 @@ import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole.distributed.WindowFlatMapUtils.windowFlatMapWithState
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.MappedRead
-import org.hammerlab.guacamole.readsets.{PartitionedReads, PerSample}
+import org.hammerlab.guacamole.readsets.{NumSamples, PartitionedReads, PerSample, SampleName}
 import org.hammerlab.guacamole.reference.{ContigSequence, ReferenceGenome}
 import org.hammerlab.guacamole.windowing.SlidingWindow
 
@@ -37,7 +37,7 @@ object PileupFlatMapUtils {
    *                  specified loci. In cases where whole contigs may have no reads mapped (e.g. if running on
    *                  only a single chromosome, but loading loci from a sequence dictionary that includes the
    *                  entire genome), this is an important optimization.
-   * @see the windowTaskFlatMapMultipleRDDs function for other argument descriptions
+   * @see the splitSamplesAndMap function for other argument descriptions
    *
    */
   def pileupFlatMapOneSample[T: ClassTag](partitionedReads: PartitionedReads,
@@ -45,6 +45,7 @@ object PileupFlatMapUtils {
                                           function: Pileup => Iterator[T],
                                           reference: ReferenceGenome): RDD[T] = {
     windowFlatMapWithState(
+      numSamples = 1,
       partitionedReads,
       skipEmpty,
       halfWindowSize = 0,
@@ -62,7 +63,7 @@ object PileupFlatMapUtils {
    * giving the pileup for the reads in each RDD at that locus.
    *
    * @param skipEmpty see [[pileupFlatMapOneSample]] for description.
-   * @see the windowTaskFlatMapMultipleRDDs function for other argument descriptions.
+   * @see the splitSamplesAndMap function for other argument descriptions.
    *
    */
   def pileupFlatMapTwoSamples[T: ClassTag](partitionedReads: PartitionedReads,
@@ -70,6 +71,7 @@ object PileupFlatMapUtils {
                                            function: (Pileup, Pileup) => Iterator[T],
                                            reference: ReferenceGenome): RDD[T] = {
     windowFlatMapWithState(
+      numSamples = 2,
       partitionedReads,
       skipEmpty,
       halfWindowSize = 0,
@@ -86,13 +88,15 @@ object PileupFlatMapUtils {
   /**
    * Flatmap across loci and any number of RDDs of MappedReads.
    *
-   * @see the windowTaskFlatMapMultipleRDDs function for other argument descriptions.
+   * @see the splitSamplesAndMap function for other argument descriptions.
    */
-  def pileupFlatMapMultipleSamples[T: ClassTag](partitionedReads: PartitionedReads,
+  def pileupFlatMapMultipleSamples[T: ClassTag](numSamples: NumSamples,
+                                                partitionedReads: PartitionedReads,
                                                 skipEmpty: Boolean,
                                                 function: PerSample[Pileup] => Iterator[T],
                                                 reference: ReferenceGenome): RDD[T] = {
     windowFlatMapWithState(
+      numSamples,
       partitionedReads,
       skipEmpty,
       halfWindowSize = 0,

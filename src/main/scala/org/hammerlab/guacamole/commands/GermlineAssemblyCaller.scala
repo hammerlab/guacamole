@@ -71,7 +71,7 @@ object GermlineAssemblyCaller {
 
       val partitionedReads =
         PartitionedRegions(
-          Vector(qualityReads),
+          qualityReads,
           loci.result(contigLengths),
           args,
           args.assemblyWindowRange
@@ -116,6 +116,7 @@ object GermlineAssemblyCaller {
 
       val genotypes: RDD[CalledAllele] =
         windowFlatMapWithState[MappedRead, CalledAllele, Option[Long]](
+          numSamples = 1,
           partitionedReads,
           skipEmpty = true,
           halfWindowSize = assemblyWindowRange,
