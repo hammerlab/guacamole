@@ -128,9 +128,9 @@ class ReadSetsSuite
     new AlignmentRecordRDDFunctions(adamRecords.rdd)
       .saveAsParquet(args, adamRecords.sequences, adamRecords.recordGroups)
 
-    ReadSets.load(adamOut, sc, InputFilters.empty)._1.count() should be(8)
+    ReadSets.load(adamOut, sc, 0, InputFilters.empty)._1.count() should be(8)
 
-    ReadSets.load(adamOut, sc, InputFilters(mapped = true, nonDuplicate = true))._1.count() should be(3)
+    ReadSets.load(adamOut, sc, 0, InputFilters(mapped = true, nonDuplicate = true))._1.count() should be(3)
   }
 
   test("load and serialize / deserialize reads") {
@@ -159,8 +159,8 @@ class ReadSetsSuite
 
   val inputs =
     List(
-      Input("f1", "1"),
-      Input("f2", "2")
+      Input(0, "f1", "1"),
+      Input(1, "f2", "2")
     )
 
   test("merge identical seqdicts") {

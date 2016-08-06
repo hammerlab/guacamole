@@ -59,7 +59,7 @@ class GermlineAssemblyCallerSuite
 
     val lociPartitioning = new UniformPartitioner(args.parallelism).partition(lociParser.result(contigLengths))
 
-    val partitionedReads = partitionReads(Vector(mappedReads), lociPartitioning)
+    val partitionedReads = partitionReads(mappedReads, lociPartitioning)
 
     val variants =
       GermlineAssemblyCaller.Caller.discoverGermlineVariants(

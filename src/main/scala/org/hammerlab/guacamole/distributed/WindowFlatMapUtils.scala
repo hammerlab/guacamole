@@ -2,8 +2,9 @@ package org.hammerlab.guacamole.distributed
 
 import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole.loci.set.{Contig, LociSet}
-import org.hammerlab.guacamole.readsets.PerSample
+import org.hammerlab.guacamole.reads.SampleRegion
 import org.hammerlab.guacamole.readsets.rdd.PartitionedRegions
+import org.hammerlab.guacamole.readsets.{NumSamples, PerSample}
 import org.hammerlab.guacamole.reference.ReferenceRegion
 import org.hammerlab.guacamole.windowing.{SlidingWindow, SplitIterator}
 
@@ -21,6 +22,7 @@ object WindowFlatMapUtils {
    * (new state, result data). The state is initialized to initialState for each task, and for each new contig handled
    * by a single task.
    *
+   * @param numSamples number of samples / input-files whose reads are in @partitionedReads.
    * @param partitionedReads partitioned reads RDD; reads that straddle partition boundaries will occur more than once
    *                         herein.
    * @param skipEmpty If True, then the function will only be called on loci where at least one region maps within a
@@ -34,14 +36,16 @@ object WindowFlatMapUtils {
    * @tparam S state type
    * @return RDD[T] of flatmap results
    */
-  def windowFlatMapWithState[R <: ReferenceRegion: ClassTag, T: ClassTag, S](
+  def windowFlatMapWithState[R <: SampleRegion: ClassTag, T: ClassTag, S](
+    numSamples: NumSamples,
     partitionedReads: PartitionedRegions[R],
     skipEmpty: Boolean,
     halfWindowSize: Int,
     initialState: S,
     function: (S, PerSample[SlidingWindow[R]]) => (S, Iterator[T])): RDD[T] = {
 
-    windowTaskFlatMapMultipleRDDs(
+    splitSamplesAndMap(
+      numSamples,
       partitionedReads,
       (partitionLoci, taskRegionsPerSample: PerSample[Iterator[R]]) => {
         collectByContig[R, T](
@@ -69,6 +73,7 @@ object WindowFlatMapUtils {
    * Computes an aggregate over each task and contig
    * The user specified aggFunction is used to accumulate a result starting with `initialValue`
    *
+   * @param numSamples number of samples / input-files whose reads are in @partitionedReads.
    * @param partitionedReads partitioned reads RDD; reads that straddle partition boundaries will occur more than once
    *                         herein.
    * @param skipEmpty If True, empty windows (no regions within the window) will be skipped
@@ -78,14 +83,16 @@ object WindowFlatMapUtils {
    * @tparam T Type of the aggregation value
    * @return Iterator[T], the aggregate values collected over contigs
    */
-  def windowFoldLoci[R <: ReferenceRegion: ClassTag, T: ClassTag](
+  def windowFoldLoci[R <: SampleRegion: ClassTag, T: ClassTag](
+    numSamples: NumSamples,
     partitionedReads: PartitionedRegions[R],
     skipEmpty: Boolean,
     halfWindowSize: Int,
     initialValue: T,
     aggFunction: (T, PerSample[SlidingWindow[R]]) => T): RDD[T] = {
 
-    windowTaskFlatMapMultipleRDDs(
+    splitSamplesAndMap(
+      numSamples,
       partitionedReads,
       (partitionLoci, taskRegionsPerSample: PerSample[Iterator[R]]) => {
         collectByContig[R, T](
@@ -120,6 +127,7 @@ object WindowFlatMapUtils {
    *
    *  (3) The results of the provided function are concatenated into an RDD, which is returned.
    *
+   * @param numSamples number of samples / input-files whose reads are in @partitionedReads.
    * @param partitionedReads partitioned reads RDD; reads that straddle partition boundaries will occur more than once
    *                         herein.
    * @param function function to flatMap: (task number, loci, iterators of regions that overlap a window around these
@@ -127,7 +135,8 @@ object WindowFlatMapUtils {
    * @tparam T type of value returned by function
    * @return flatMap results, RDD[T]
    */
-  private[distributed] def windowTaskFlatMapMultipleRDDs[R <: ReferenceRegion: ClassTag, T: ClassTag](
+  private[distributed] def splitSamplesAndMap[R <: SampleRegion: ClassTag, T: ClassTag](
+    numSamples: NumSamples,
     partitionedReads: PartitionedRegions[R],
     function: (LociSet, PerSample[Iterator[R]]) => Iterator[T]): RDD[T] = {
 
@@ -136,7 +145,7 @@ object WindowFlatMapUtils {
         (reads, loci) =>
           function(
             loci,
-            SplitIterator.split[R](partitionedReads.numSamples, reads)
+            SplitIterator.split[R](numSamples, reads, _.sampleId)
           )
       )
   }
