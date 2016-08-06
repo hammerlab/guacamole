@@ -19,7 +19,4 @@ trait ReadsRDDUtil extends ReadsUtil {
       } yield
         makeRead(sequence, cigar, start)
     )
-
-  def makeReadSets(inputs: InputCollection, loci: LociParser): ReadSets =
-    ReadSets(sc, inputs.items, filters = InputFilters(overlapsLoci = loci))
 }
