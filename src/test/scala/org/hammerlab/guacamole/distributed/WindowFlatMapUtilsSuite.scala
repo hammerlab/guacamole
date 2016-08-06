@@ -36,13 +36,14 @@ class WindowFlatMapUtilsSuite
     val partitioning = UniformPartitioner(5).partition(LociSet("chr1:0-20"))
     val partitionedReads =
       partitionReads(
-        Vector(reads),
+        reads,
         // Split loci in 5 partitions - we will compute an aggregate value per partition
         partitioning
       )
 
     val counts =
       windowFoldLoci(
+        numSamples = 1,
         partitionedReads,
         skipEmpty = false,
         halfWindowSize = 0,

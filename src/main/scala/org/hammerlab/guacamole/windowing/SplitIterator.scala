@@ -13,9 +13,9 @@ object SplitIterator {
    * @tparam V
    * @return a buffered iterator for each key in 0 .. num.
    */
-  def split[V](num: Int, iterator: Iterator[(Int, V)]): Vector[BufferedIterator[V]] = {
+  def split[V](num: Int, iterator: Iterator[V], idxFn: V => Int): Vector[BufferedIterator[V]] = {
     val buffers = (0 until num).map(_ => new collection.mutable.Queue[V])
-    (0 until num).toVector.map(index => new SplitIterator[V](index, buffers, iterator))
+    (0 until num).toVector.map(index => new SplitIterator[V](index, buffers, iterator, idxFn))
   }
 }
 
@@ -30,7 +30,8 @@ object SplitIterator {
  */
 private class SplitIterator[V](myIndex: Int,
                                buffers: Seq[collection.mutable.Queue[V]],
-                               source: Iterator[(Int, V)]) extends BufferedIterator[V] {
+                               source: Iterator[V],
+                               idxFn: V => Int) extends BufferedIterator[V] {
 
   val myBuffer = buffers(myIndex)
 
@@ -55,8 +56,8 @@ private class SplitIterator[V](myIndex: Int,
   }
 
   private def advance(): Unit = {
-    val (index, element) = source.next() // may throw.
-    buffers(index) += element
+    val element = source.next() // may throw.
+    buffers(idxFn(element)) += element
   }
 }
 
