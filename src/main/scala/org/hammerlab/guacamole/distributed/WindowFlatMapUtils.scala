@@ -1,8 +1,6 @@
 package org.hammerlab.guacamole.distributed
 
-import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.rdd.RDD
-import org.hammerlab.guacamole.loci.partitioning.LociPartitioning
 import org.hammerlab.guacamole.loci.set.{Contig, LociSet}
 import org.hammerlab.guacamole.readsets.PerSample
 import org.hammerlab.guacamole.readsets.rdd.PartitionedRegions
@@ -23,8 +21,8 @@ object WindowFlatMapUtils {
    * (new state, result data). The state is initialized to initialState for each task, and for each new contig handled
    * by a single task.
    *
-   * @param regionRDDs RDDs of reads, one per sample
-   * @param lociPartitions loci to consider, partitioned into tasks
+   * @param partitionedReads partitioned reads RDD; reads that straddle partition boundaries will occur more than once
+   *                         herein.
    * @param skipEmpty If True, then the function will only be called on loci where at least one region maps within a
    *                  window around the locus. If False, then the function will be called at all loci in lociPartitions.
    * @param halfWindowSize if another region overlaps a halfWindowSize to either side of a locus under consideration,
@@ -37,18 +35,15 @@ object WindowFlatMapUtils {
    * @return RDD[T] of flatmap results
    */
   def windowFlatMapWithState[R <: ReferenceRegion: ClassTag, T: ClassTag, S](
-    regionRDDs: PerSample[RDD[R]],
-    lociPartitions: LociPartitioning,
+    partitionedReads: PartitionedRegions[R],
     skipEmpty: Boolean,
     halfWindowSize: Int,
     initialState: S,
     function: (S, PerSample[SlidingWindow[R]]) => (S, Iterator[T])): RDD[T] = {
 
     windowTaskFlatMapMultipleRDDs(
-      regionRDDs,
-      lociPartitions,
-      halfWindowSize,
-      (_, partitionLoci, taskRegionsPerSample: PerSample[Iterator[R]]) => {
+      partitionedReads,
+      (partitionLoci, taskRegionsPerSample: PerSample[Iterator[R]]) => {
         collectByContig[R, T](
           taskRegionsPerSample,
           partitionLoci,
@@ -74,8 +69,8 @@ object WindowFlatMapUtils {
    * Computes an aggregate over each task and contig
    * The user specified aggFunction is used to accumulate a result starting with `initialValue`
    *
-   * @param regionRDDs RDDs of reads, one per sample
-   * @param lociPartitions loci to consider, partitioned into tasks
+   * @param partitionedReads partitioned reads RDD; reads that straddle partition boundaries will occur more than once
+   *                         herein.
    * @param skipEmpty If True, empty windows (no regions within the window) will be skipped
    * @param halfWindowSize A window centered at locus = l will contain regions overlapping l +/- halfWindowSize
    * @param initialValue Initial value for aggregation
@@ -84,18 +79,15 @@ object WindowFlatMapUtils {
    * @return Iterator[T], the aggregate values collected over contigs
    */
   def windowFoldLoci[R <: ReferenceRegion: ClassTag, T: ClassTag](
-    regionRDDs: PerSample[RDD[R]],
-    lociPartitions: LociPartitioning,
+    partitionedReads: PartitionedRegions[R],
     skipEmpty: Boolean,
     halfWindowSize: Int,
     initialValue: T,
     aggFunction: (T, PerSample[SlidingWindow[R]]) => T): RDD[T] = {
 
     windowTaskFlatMapMultipleRDDs(
-      regionRDDs,
-      lociPartitions,
-      halfWindowSize,
-      (task, partitionLoci, taskRegionsPerSample: PerSample[Iterator[R]]) => {
+      partitionedReads,
+      (partitionLoci, taskRegionsPerSample: PerSample[Iterator[R]]) => {
         collectByContig[R, T](
           taskRegionsPerSample,
           partitionLoci,
@@ -128,45 +120,28 @@ object WindowFlatMapUtils {
    *
    *  (3) The results of the provided function are concatenated into an RDD, which is returned.
    *
-   * @param regionRDDs RDDs of reads, one per sample.
-   * @param lociPartitions map from locus -> task number. This argument specifies both the loci to be considered and how
-   *                       they should be split among tasks. regions that don't overlap these loci are discarded.
-   * @param halfWindowSize if a region overlaps a region of halfWindowSize to either side of a locus under
-   *                       consideration, then it is included.
+   * @param partitionedReads partitioned reads RDD; reads that straddle partition boundaries will occur more than once
+   *                         herein.
    * @param function function to flatMap: (task number, loci, iterators of regions that overlap a window around these
    *                 loci (one region-iterator per sample)) -> T
    * @tparam T type of value returned by function
    * @return flatMap results, RDD[T]
    */
   private[distributed] def windowTaskFlatMapMultipleRDDs[R <: ReferenceRegion: ClassTag, T: ClassTag](
-    regionRDDs: PerSample[RDD[R]],
-    lociPartitions: LociPartitioning,
-    halfWindowSize: Int,
-    function: (Long, LociSet, PerSample[Iterator[R]]) => Iterator[T]): RDD[T] = {
+    partitionedReads: PartitionedRegions[R],
+    function: (LociSet, PerSample[Iterator[R]]) => Iterator[T]): RDD[T] = {
 
-    val numRDDs = regionRDDs.length
-    assume(numRDDs > 0)
-
-    val sc = regionRDDs(0).sparkContext
-
-    val lociPartitionsBoxed: Broadcast[LociPartitioning] = sc.broadcast(lociPartitions)
-
-    val partitionedRegions = PartitionedRegions(regionRDDs, lociPartitionsBoxed, halfWindowSize)
-
-    // Accumulator to track the number of loci in each task
-    val lociAccumulator = sc.accumulator[Long](0, "NumLoci")
-
-    partitionedRegions
-      .mapPartitionsWithIndex((partitionIdx, keyedReads) => {
-        val iterators = SplitIterator.split(numRDDs, keyedReads)
-        val partitionLoci = lociPartitionsBoxed.value.inverse(partitionIdx)
-        lociAccumulator += partitionLoci.count
-        function(partitionIdx, partitionLoci, iterators)
-      })
+    partitionedReads
+      .mapPartitions(
+        (reads, loci) =>
+          function(
+            loci,
+            SplitIterator.split[R](partitionedReads.numSamples, reads)
+          )
+      )
   }
 
   /**
-   *
    * Generates a sequence of results from each task (using the `generateFromWindows` function)
    * and collects them into a single iterator
    *

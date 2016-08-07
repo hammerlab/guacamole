@@ -22,7 +22,7 @@ import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.rdd.ADAMContext
 import org.bdgenomics.formats.avro.DatabaseVariantAnnotation
-import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMapTwoRDDs
+import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMapTwoSamples
 import org.hammerlab.guacamole.filters.PileupFilter.PileupFilterArguments
 import org.hammerlab.guacamole.filters.SomaticGenotypeFilter.SomaticGenotypeFilterArguments
 import org.hammerlab.guacamole.filters.{PileupFilter, SomaticAlternateReadDepthFilter, SomaticGenotypeFilter, SomaticReadDepthFilter}
@@ -33,6 +33,7 @@ import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.readsets.ReadSets
 import org.hammerlab.guacamole.readsets.args.SomaticCallerArgs
 import org.hammerlab.guacamole.readsets.io.InputFilters
+import org.hammerlab.guacamole.readsets.rdd.PartitionedRegions
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.variants.{Allele, AlleleConversions, AlleleEvidence, CalledSomaticAllele, GenotypeOutputArgs, VariantUtils}
 import org.kohsuke.args4j.{Option => Args4jOption}
@@ -95,16 +96,17 @@ object SomaticStandard {
 
       val oddsThreshold = args.oddsThreshold
 
-      val lociPartitions =
-        args
-          .getPartitioner(tumorReads.mappedReads ++ normalReads.mappedReads)
-          .partition(loci.result(contigLengths))
+      val partitionedReads =
+        PartitionedRegions(
+          Vector(tumorReads.mappedReads, normalReads.mappedReads),
+          loci.result(contigLengths),
+          args,
+          halfWindowSize = 0
+        )
 
       var potentialGenotypes: RDD[CalledSomaticAllele] =
-        pileupFlatMapTwoRDDs[CalledSomaticAllele](
-          tumorReads.mappedReads,
-          normalReads.mappedReads,
-          lociPartitions,
+        pileupFlatMapTwoSamples[CalledSomaticAllele](
+          partitionedReads,
           skipEmpty = true, // skip empty pileups
           function = (pileupTumor, pileupNormal) =>
             findPotentialVariantAtLocus(

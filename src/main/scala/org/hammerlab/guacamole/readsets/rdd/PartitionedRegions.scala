@@ -1,15 +1,13 @@
 package org.hammerlab.guacamole.readsets.rdd
 
-import org.apache.spark.Accumulable
-import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.rdd.RDD
-import org.hammerlab.guacamole.distributed.{PileupFlatMapUtils, WindowFlatMapUtils}
+import org.apache.spark.{Accumulable, SparkContext}
 import org.hammerlab.guacamole.loci.partitioning.LociPartitioner.PartitionIndex
-import org.hammerlab.guacamole.loci.partitioning.LociPartitioning
+import org.hammerlab.guacamole.loci.partitioning.{LociPartitionerArgs, LociPartitioning}
+import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
-import org.hammerlab.guacamole.readsets.{PerSample, SampleId}
+import org.hammerlab.guacamole.readsets.{NumSamples, PerSample, SampleId}
 import org.hammerlab.guacamole.reference.ReferenceRegion
-import org.hammerlab.guacamole.windowing.SlidingWindow
 import org.hammerlab.magic.accumulables.{HistogramParam, HashMap => MagicHashMap}
 import org.hammerlab.magic.rdd.KeyPartitioner
 import org.hammerlab.magic.stats.Stats
@@ -17,20 +15,57 @@ import org.hammerlab.magic.stats.Stats
 import scala.reflect.ClassTag
 
 /**
- * This object encapsulates functionality for partitioning reference-mapped regions for processing as "pileups".
+ * Groups a [[LociPartitioning]] with an [[RDD[ReferenceRegion]]] that has already been partitioned according to that
+ * partitioning.
  *
- * Given an RDD of regions, it:
- *
- *   - partitions them by genomic loci,
- *   - makes multiple copies of regions that straddle partition boundaries.
- *
- * The result is that, given knowledge of which ranges of genomic loci correspond to which partition of the resulting
- * RDD, downstream code can iterate over the partitions emitted here and build full pileups for the loci that each
- * partition corresponds to.
- *
- * [[WindowFlatMapUtils]] calls this, and uses [[SlidingWindow]] to iterate over the partitioned regions in a manner
- * suitable for pileup-construction by [[PileupFlatMapUtils]].
+ * This means some regions will occur multiple times in the RDD (due to regions straddling partition boundaries, so it's
+ * important not to confuse this with a regular RDD[ReferenceRegion].
  */
+class PartitionedRegions[R <: ReferenceRegion: ClassTag](val numSamples: NumSamples,
+                                                         @transient keyedRegions: RDD[(SampleId, R)],
+                                                         @transient partitioning: LociPartitioning)
+  extends Serializable {
+
+  assert(
+    keyedRegions.getNumPartitions == lociSetsRDD.getNumPartitions,
+    s"reads partitions: ${keyedRegions.getNumPartitions}, loci partitions: ${lociSetsRDD.getNumPartitions}"
+  )
+
+  def sc: SparkContext = keyedRegions.sparkContext
+
+  val numLoci = sc.accumulator(0L, "numLoci")
+
+  def mapPartitions[V: ClassTag](f: (Iterator[(SampleId, R)], LociSet) => Iterator[V]): RDD[V] =
+    keyedRegions
+      .zipPartitions(
+        lociSetsRDD,
+        preservesPartitioning = true
+      )(
+        (regionsIter, lociIter) => {
+          val loci = lociIter.next()
+          if (lociIter.hasNext) {
+            throw new Exception(s"Expected 1 LociSet, found ${1 + lociIter.size}.\n$loci")
+          }
+
+          numLoci += loci.count
+
+          f(regionsIter, loci)
+        }
+      )
+
+  private lazy val partitionLociSets: Array[LociSet] =
+    partitioning
+      .inverse
+      .toArray
+      .sortBy(_._1)
+      .map(_._2)
+
+  lazy val lociSetsRDD: RDD[LociSet] =
+    sc
+      .parallelize(partitionLociSets, partitionLociSets.length)
+      .setName("lociSetsRDD")
+}
+
 object PartitionedRegions {
 
   type IntHist = MagicHashMap[Int, Long]
@@ -38,22 +73,58 @@ object PartitionedRegions {
   def IntHist(): IntHist = MagicHashMap[Int, Long]()
 
   /**
-   * @param regionRDDs RDDs of regions to partition.
-   * @param partitioningBroadcast Spark broadcast of a [[LociPartitioning]] describing which ranges of genomic loci
-   *                              should be mapped to each Spark partition.
-   * @param halfWindowSize Send a copy of a region to a partition if it passes within this distance of that partition's
-   *                       designated loci.
+   * @param regionRDDs RDD of regions to partition.
+   * @param loci A [[LociPartitioning]] describing which ranges of genomic loci should be mapped to each Spark
+   *             partition.
+   * @param args Parameters dictating how `loci` should be partitioned.
    * @tparam R ReferenceRegion type.
-   * @return RDD of regions, keyed by the "sample ID" in @regionRDDs that they came from.
    */
   def apply[R <: ReferenceRegion: ClassTag](regionRDDs: PerSample[RDD[R]],
-                                            partitioningBroadcast: Broadcast[LociPartitioning],
+                                            loci: LociSet,
+                                            args: LociPartitionerArgs): PartitionedRegions[R] =
+    apply(regionRDDs, loci, args, halfWindowSize = 0)
+
+  /**
+   * @param regionRDDs RDD of regions to partition.
+   * @param loci A [[LociPartitioning]] describing which ranges of genomic loci should be mapped to each Spark
+   *             partition.
+   * @param halfWindowSize Send a copy of a region to a partition if it passes within this distance of that partition's
+   *                       designated loci.
+   * @param args Parameters dictating how `loci` should be partitioned.
+   * @tparam R ReferenceRegion type.
+   */
+  def apply[R <: ReferenceRegion: ClassTag](regionRDDs: PerSample[RDD[R]],
+                                            loci: LociSet,
+                                            args: LociPartitionerArgs,
+                                            halfWindowSize: Int): PartitionedRegions[R] = {
+    val sc = regionRDDs.head.sparkContext
+    val lociPartitioning = LociPartitioning(sc.union(regionRDDs), loci, args, halfWindowSize)
+
+    progress(
+      s"Partitioned loci: ${lociPartitioning.numPartitions} partitions.",
+      "Partition-size stats:",
+      lociPartitioning.partitionSizeStats.toString(),
+      "",
+      "Contigs-spanned-per-partition stats:",
+      lociPartitioning.partitionContigStats.toString()
+    )
+
+    apply(
+      regionRDDs,
+      lociPartitioning,
+      halfWindowSize,
+      !args.quiet
+    )
+  }
+
+  def apply[R <: ReferenceRegion: ClassTag](regionRDDs: PerSample[RDD[R]],
+                                            lociPartitioning: LociPartitioning,
                                             halfWindowSize: Int,
-                                            printStats: Boolean = true): RDD[(SampleId, R)] = {
+                                            printStats: Boolean): PartitionedRegions[R] = {
 
     val sc = regionRDDs(0).sparkContext
 
-    val lociPartitioning = partitioningBroadcast.value
+    val partitioningBroadcast = sc.broadcast(lociPartitioning)
 
     val numPartitions = lociPartitioning.numPartitions
 
@@ -127,10 +198,10 @@ object PartitionedRegions {
 
       progress(
         s"Placed $readsPlaced of $originalReads (%.1f%%), %.1fx copies on avg; copies per read histogram:"
-        .format(
-          100.0 * readsPlaced / originalReads,
-          totalReadCopies * 1.0 / readsPlaced
-        ),
+          .format(
+            100.0 * readsPlaced / originalReads,
+            totalReadCopies * 1.0 / readsPlaced
+          ),
         Stats.fromHist(regionCopies).toString(),
         "",
         "Reads per partition stats:",
@@ -138,6 +209,6 @@ object PartitionedRegions {
       )
     }
 
-    partitionedRegions
+    new PartitionedRegions(regionRDDs.length, partitionedRegions, lociPartitioning)
   }
 }
