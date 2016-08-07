@@ -84,7 +84,7 @@ case class Pileup(contigName: ContigName,
    * @param newReads The *new* reads, i.e. those that overlap the new locus, but not the current locus.
    * @return A new [[Pileup]] at the given locus.
    */
-  def atGreaterLocus(newLocus: Long, newReads: Iterator[MappedRead]) = {
+  def atGreaterLocus(newLocus: Locus, newReads: Iterator[MappedRead]) = {
     assume(elements.isEmpty || newLocus > locus,
       "New locus (%d) not greater than current locus (%d)".format(newLocus, locus))
     if (elements.isEmpty && newReads.isEmpty) {

@@ -1,7 +1,7 @@
 package org.hammerlab.guacamole.distributed
 
 import org.hammerlab.guacamole.loci.partitioning.LociPartitioner.PartitionIndex
-import org.hammerlab.guacamole.reference.ContigName
+import org.hammerlab.guacamole.reference.{ContigName, Locus}
 
 /**
  * TaskPosition represents the task a read is assigned to and the start position on the reference genome of the read
@@ -13,7 +13,7 @@ import org.hammerlab.guacamole.reference.ContigName
  */
 case class TaskPosition(partition: PartitionIndex,
                         contigName: ContigName,
-                        locus: Long)
+                        locus: Locus)
   extends Ordered[TaskPosition] {
 
   // Sorting is performed by first sorting on task, secondly on contig and lastly on the start locus

@@ -35,7 +35,7 @@ class SomaticStandardCallerSuite extends GuacFunSuite with TableDrivenPropertyCh
     ("chr3", 10, "TCGAATCGATCGATCGA"),
     ("chr4", 0, "TCGAAGCTTCGAAGCT")))
 
-  def loadPileup(filename: String, contig: String, locus: Long = 0): Pileup = {
+  def loadPileup(filename: String, contig: String, locus: Locus = 0): Pileup = {
     val contigReference = grch37Reference.getContig(contig)
     val records = TestUtil.loadReads(sc, filename).mappedReads
     val localReads = records.collect
@@ -60,7 +60,7 @@ class SomaticStandardCallerSuite extends GuacFunSuite with TableDrivenPropertyCh
   val minVAF = 5
 
   def testVariants(tumorReads: Seq[MappedRead], normalReads: Seq[MappedRead], positions: Array[Long], shouldFindVariant: Boolean = false) = {
-    positions.foreach((locus: Long) => {
+    positions.foreach((locus: Locus) => {
         val (tumorPileup, normalPileup) =
           TestUtil.loadTumorNormalPileup(
             tumorReads,

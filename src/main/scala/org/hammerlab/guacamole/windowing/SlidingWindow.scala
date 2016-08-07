@@ -21,7 +21,7 @@ package org.hammerlab.guacamole.windowing
 import org.apache.spark.Logging
 import org.hammerlab.guacamole.loci.set.LociIterator
 import org.hammerlab.guacamole.readsets.PerSample
-import org.hammerlab.guacamole.reference.{ContigName, Interval, ReferenceRegion}
+import org.hammerlab.guacamole.reference.{ContigName, Interval, Locus, ReferenceRegion}
 
 import scala.collection.mutable
 
@@ -74,7 +74,7 @@ case class SlidingWindow[R <: ReferenceRegion](contigName: ContigName,
    * @return The *new regions* that were added as a result of this call. Note that this is not the full set of regions
    *         in the window: you must examine [[currentRegions]] for that.
    */
-  def setCurrentLocus(locus: Long): Vector[R] = {
+  def setCurrentLocus(locus: Locus): Vector[R] = {
     assume(locus >= currentLocus, "Pileup window can only move forward in locus")
     currentLocus = locus
 
