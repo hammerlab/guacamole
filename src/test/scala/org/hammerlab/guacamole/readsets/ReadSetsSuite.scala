@@ -56,7 +56,7 @@ class ReadSetsSuite extends GuacFunSuite {
           path <- paths
           if config != firstConfig || path != firstPath
         } {
-          withClue(s"file $path with config $config vs standard ${firstPath} with config ${firstConfig}:\n") {
+          withClue(s"file $path with config $config vs standard $firstPath with config $firstConfig:\n") {
 
             val result =
               TestUtil.loadReads(
