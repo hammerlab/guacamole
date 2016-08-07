@@ -2,10 +2,14 @@ package org.hammerlab.guacamole.jointcaller
 
 import org.hammerlab.guacamole.jointcaller.pileup_summarization.PileupStats
 import org.hammerlab.guacamole.pileup.Pileup
+import org.hammerlab.guacamole.reads.ReadsUtil
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.util.{Bases, GuacFunSuite, TestUtil}
 
-class PileupStatsSuite extends GuacFunSuite {
+class PileupStatsSuite
+  extends GuacFunSuite
+    with ReadsUtil {
+
   val cancerWGS1Bams = Seq("normal.bam", "primary.bam", "recurrence.bam").map(
     name => TestUtil.testDataPath("cancer-wgs1/" + name))
 
@@ -19,13 +23,15 @@ class PileupStatsSuite extends GuacFunSuite {
     def reference = TestUtil.makeReference(sc, Seq(("chr1", 0, refString)))
     def contigSequence = reference.getContig("chr1")
 
-    val reads = Seq(
-      TestUtil.makeRead("TCGATCGA", "8M", 1, qualityScores = Some(Seq.fill(8)(10))),
-      TestUtil.makeRead("TCGATCGA", "8M", 1, qualityScores = Some(Seq.fill(8)(20))),
-      TestUtil.makeRead("TCGCTCGA", "8M", 1, qualityScores = Some(Seq.fill(8)(50))),
-      TestUtil.makeRead("TCGCTCGA", "8M", 1, qualityScores = Some(Seq.fill(8)(50))),
-      TestUtil.makeRead("TCGCTCGA", "8M", 1, qualityScores = Some(Seq.fill(8)(50))),
-      TestUtil.makeRead("TCGACCCTCGA", "4M3I4M", 1, qualityScores = Some(Seq.fill(11)(30))))
+    val reads =
+      Seq(
+        makeRead(   "TCGATCGA",     "8M", qualityScores = Seq.fill( 8)(10)),
+        makeRead(   "TCGATCGA",     "8M", qualityScores = Seq.fill( 8)(20)),
+        makeRead(   "TCGCTCGA",     "8M", qualityScores = Seq.fill( 8)(50)),
+        makeRead(   "TCGCTCGA",     "8M", qualityScores = Seq.fill( 8)(50)),
+        makeRead(   "TCGCTCGA",     "8M", qualityScores = Seq.fill( 8)(50)),
+        makeRead("TCGACCCTCGA", "4M3I4M", qualityScores = Seq.fill(11)(30))
+      )
 
     val pileups = (1 until refString.length).map(locus => Pileup(reads, "chr1", locus, contigSequence))
 

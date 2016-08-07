@@ -1,11 +1,12 @@
 package org.hammerlab.guacamole.assembly
 
+import org.hammerlab.guacamole.reads.ReadsUtil
 import org.hammerlab.guacamole.util.TestUtil.Implicits._
-import org.hammerlab.guacamole.util.TestUtil._
 import org.hammerlab.guacamole.util.{AssertBases, Bases, GuacFunSuite, TestUtil}
 
-class DeBruijnGraphSuite extends GuacFunSuite {
-
+class DeBruijnGraphSuite
+  extends GuacFunSuite
+    with ReadsUtil {
 
   test("DeBruijnGraph.mergeKmers") {
     val kmers = Seq("TTTC", "TTCC", "TCCC", "CCCC").map(Bases.stringToBases)

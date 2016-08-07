@@ -1,13 +1,12 @@
 package org.hammerlab.guacamole.loci.iterator
 
 import org.hammerlab.guacamole.loci.set.LociIterator
-import org.hammerlab.guacamole.reads.ReadsUtil
 import org.hammerlab.guacamole.reference.{Interval, IntervalsUtil, Locus}
-import org.scalatest.FunSuite
+import org.scalatest.{FunSuite, Matchers}
 
 class SkippableLociIteratorSuite
   extends FunSuite
-    with ReadsUtil
+    with Matchers
     with IntervalsUtil {
 
   def strs =

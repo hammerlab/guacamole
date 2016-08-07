@@ -20,12 +20,15 @@ package org.hammerlab.guacamole.commands
 
 import org.hammerlab.guacamole.filters.SomaticGenotypeFilter
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.reads.MappedRead
+import org.hammerlab.guacamole.reads.{MappedRead, ReadsUtil}
 import org.hammerlab.guacamole.reference.{ContigName, Locus, ReferenceBroadcast}
 import org.hammerlab.guacamole.util.{Bases, GuacFunSuite, TestUtil}
 import org.scalatest.prop.TableDrivenPropertyChecks
 
-class SomaticStandardCallerSuite extends GuacFunSuite with TableDrivenPropertyChecks {
+class SomaticStandardCallerSuite
+  extends GuacFunSuite
+    with TableDrivenPropertyChecks
+    with ReadsUtil {
 
   def grch37Reference = ReferenceBroadcast(TestUtil.testDataPath("grch37.partial.fasta"), sc, partialFasta = true)
 
@@ -197,19 +200,21 @@ class SomaticStandardCallerSuite extends GuacFunSuite with TableDrivenPropertyCh
   }
 
   test("no indels") {
-    val normalReads = Seq(
-      TestUtil.makeRead("TCGATCGA", "8M", 0),
-      TestUtil.makeRead("TCGATCGA", "8M", 0),
-      TestUtil.makeRead("TCGATCGA", "8M", 0)
-    )
+    val normalReads =
+      makeReads(
+        ("TCGATCGA", "8M", 0),
+        ("TCGATCGA", "8M", 0),
+        ("TCGATCGA", "8M", 0)
+      )
 
     val normalPileup = Pileup(normalReads, "chr1", 2, simpleReference.getContig("chr1"))
 
-    val tumorReads = Seq(
-      TestUtil.makeRead("TCGGTCGA", "8M", 0),
-      TestUtil.makeRead("TCGGTCGA", "8M", 0),
-      TestUtil.makeRead("TCGGTCGA", "8M", 0)
-    )
+    val tumorReads =
+      makeReads(
+        ("TCGGTCGA", "8M", 0),
+        ("TCGGTCGA", "8M", 0),
+        ("TCGGTCGA", "8M", 0)
+      )
 
     val tumorPileup = Pileup(tumorReads, "chr1", 2, simpleReference.getContig("chr1"))
 
@@ -217,16 +222,22 @@ class SomaticStandardCallerSuite extends GuacFunSuite with TableDrivenPropertyCh
   }
 
   test("single-base deletion") {
-    val normalReads = Seq(
-      TestUtil.makeRead("TCGATCGA", "8M", 0),
-      TestUtil.makeRead("TCGATCGA", "8M", 0),
-      TestUtil.makeRead("TCGATCGA", "8M", 0))
+    val normalReads =
+      makeReads(
+        ("TCGATCGA", "8M", 0),
+        ("TCGATCGA", "8M", 0),
+        ("TCGATCGA", "8M", 0)
+      )
+
     val normalPileup = Pileup(normalReads, "chr1", 2, simpleReference.getContig("chr1"))
 
-    val tumorReads = Seq(
-      TestUtil.makeRead("TCGTCGA", "3M1D4M", 0),
-      TestUtil.makeRead("TCGTCGA", "3M1D4M", 0),
-      TestUtil.makeRead("TCGTCGA", "3M1D4M", 0))
+    val tumorReads =
+      makeReads(
+        ("TCGTCGA", "3M1D4M", 0),
+        ("TCGTCGA", "3M1D4M", 0),
+        ("TCGTCGA", "3M1D4M", 0)
+      )
+
     val tumorPileup = Pileup(tumorReads, "chr1", 2, simpleReference.getContig("chr1"))
 
     val alleles = SomaticStandard.Caller.findPotentialVariantAtLocus(tumorPileup, normalPileup, oddsThreshold = 2)
@@ -238,18 +249,24 @@ class SomaticStandardCallerSuite extends GuacFunSuite with TableDrivenPropertyCh
   }
 
   test("multiple-base deletion") {
-    val normalReads = Seq(
-      TestUtil.makeRead("TCGAAGCTTCGAAGCT", "16M", 0, chr = "chr4"),
-      TestUtil.makeRead("TCGAAGCTTCGAAGCT", "16M", 0, chr = "chr4"),
-      TestUtil.makeRead("TCGAAGCTTCGAAGCT", "16M", 0, chr = "chr4")
-    )
+    val normalReads =
+      makeReads(
+        "chr4",
+        ("TCGAAGCTTCGAAGCT", "16M", 0),
+        ("TCGAAGCTTCGAAGCT", "16M", 0),
+        ("TCGAAGCTTCGAAGCT", "16M", 0)
+      )
+
     val normalPileup = Pileup(normalReads, "chr4", 4, simpleReference.getContig("chr4"))
 
-    val tumorReads = Seq(
-      TestUtil.makeRead("TCGAAAAGCT", "5M6D5M", 0, chr = "chr4"), // md tag: "5^GCTTCG5"
-      TestUtil.makeRead("TCGAAAAGCT", "5M6D5M", 0, chr = "chr4"),
-      TestUtil.makeRead("TCGAAAAGCT", "5M6D5M", 0, chr = "chr4")
-    )
+    val tumorReads =
+      makeReads(
+        "chr4",
+        ("TCGAAAAGCT", "5M6D5M", 0),  // md tag: "5^GCTTCG5"
+        ("TCGAAAAGCT", "5M6D5M", 0),
+        ("TCGAAAAGCT", "5M6D5M", 0)
+      )
+
     val tumorPileup = Pileup(tumorReads, "chr4", 4, simpleReference.getContig("chr4"))
 
     val alleles = SomaticStandard.Caller.findPotentialVariantAtLocus(tumorPileup, normalPileup, oddsThreshold = 2)
@@ -261,18 +278,22 @@ class SomaticStandardCallerSuite extends GuacFunSuite with TableDrivenPropertyCh
   }
 
   test("single-base insertion") {
-    val normalReads = Seq(
-      TestUtil.makeRead("TCGATCGA", "8M", 0),
-      TestUtil.makeRead("TCGATCGA", "8M", 0),
-      TestUtil.makeRead("TCGATCGA", "8M", 0)
-    )
+    val normalReads =
+      makeReads(
+        ("TCGATCGA", "8M", 0),
+        ("TCGATCGA", "8M", 0),
+        ("TCGATCGA", "8M", 0)
+      )
+
     val normalPileup = Pileup(normalReads, "chr1", 2, simpleReference.getContig("chr1"))
 
-    val tumorReads = Seq(
-      TestUtil.makeRead("TCGAGTCGA", "4M1I4M", 0),
-      TestUtil.makeRead("TCGAGTCGA", "4M1I4M", 0),
-      TestUtil.makeRead("TCGAGTCGA", "4M1I4M", 0)
-    )
+    val tumorReads =
+      makeReads(
+        ("TCGAGTCGA", "4M1I4M", 0),
+        ("TCGAGTCGA", "4M1I4M", 0),
+        ("TCGAGTCGA", "4M1I4M", 0)
+      )
+
     val tumorPileup = Pileup(tumorReads, "chr1", 3, simpleReference.getContig("chr1"))
 
     val alleles = SomaticStandard.Caller.findPotentialVariantAtLocus(tumorPileup, normalPileup, oddsThreshold = 2)
@@ -284,17 +305,19 @@ class SomaticStandardCallerSuite extends GuacFunSuite with TableDrivenPropertyCh
   }
 
   test("multiple-base insertion") {
-    val normalReads = Seq(
-      TestUtil.makeRead("TCGATCGA", "8M", 0),
-      TestUtil.makeRead("TCGATCGA", "8M", 0),
-      TestUtil.makeRead("TCGATCGA", "8M", 0)
-    )
+    val normalReads =
+      makeReads(
+        ("TCGATCGA", "8M", 0),
+        ("TCGATCGA", "8M", 0),
+        ("TCGATCGA", "8M", 0)
+      )
 
-    val tumorReads = Seq(
-      TestUtil.makeRead("TCGAGGTCTCGA", "4M4I4M", 0),
-      TestUtil.makeRead("TCGAGGTCTCGA", "4M4I4M", 0),
-      TestUtil.makeRead("TCGAGGTCTCGA", "4M4I4M", 0)
-    )
+    val tumorReads =
+      makeReads(
+        ("TCGAGGTCTCGA", "4M4I4M", 0),
+        ("TCGAGGTCTCGA", "4M4I4M", 0),
+        ("TCGAGGTCTCGA", "4M4I4M", 0)
+      )
 
     val alleles = SomaticStandard.Caller.findPotentialVariantAtLocus(
       Pileup(tumorReads, "chr1", 3, simpleReference.getContig("chr1")),
@@ -315,17 +338,21 @@ class SomaticStandardCallerSuite extends GuacFunSuite with TableDrivenPropertyCh
     seq:  TC  ATCTCAAAAGA  GATCGA
      */
 
-    val normalReads = Seq(
-      TestUtil.makeRead("TCGAATCGATCGATCGA", "17M", 10, chr = "chr3"),
-      TestUtil.makeRead("TCGAATCGATCGATCGA", "17M", 10, chr = "chr3"),
-      TestUtil.makeRead("TCGAATCGATCGATCGA", "17M", 10, chr = "chr3")
-    )
+    val normalReads =
+      makeReads(
+        "chr3",
+        ("TCGAATCGATCGATCGA", "17M", 10),
+        ("TCGAATCGATCGATCGA", "17M", 10),
+        ("TCGAATCGATCGATCGA", "17M", 10)
+      )
 
-    val tumorReads = Seq(
-      TestUtil.makeRead("TCATCTCAAAAGAGATCGA", "2M2D1M2I2M4I2M2D6M", 10, chr = "chr3"),  // md tag: "2^GA5^TC6""
-      TestUtil.makeRead("TCATCTCAAAAGAGATCGA", "2M2D1M2I2M4I2M2D6M", 10, chr = "chr3"),
-      TestUtil.makeRead("TCATCTCAAAAGAGATCGA", "2M2D1M2I2M4I2M2D6M", 10, chr = "chr3")
-    )
+    val tumorReads =
+      makeReads(
+        "chr3",
+        ("TCATCTCAAAAGAGATCGA", "2M2D1M2I2M4I2M2D6M", 10),  // md tag: "2^GA5^TC6""
+        ("TCATCTCAAAAGAGATCGA", "2M2D1M2I2M4I2M2D6M", 10),
+        ("TCATCTCAAAAGAGATCGA", "2M2D1M2I2M4I2M2D6M", 10)
+      )
 
     def testLocus(contigName: ContigName, locus: Locus, refBases: String, altBases: String) = {
       val alleles = SomaticStandard.Caller.findPotentialVariantAtLocus(
