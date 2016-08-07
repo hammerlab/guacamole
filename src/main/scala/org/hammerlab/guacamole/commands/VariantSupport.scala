@@ -116,8 +116,8 @@ object VariantSupport {
     /**
      * Count alleles in a pileup
      *
-     * @param pileup Pileup of reads a given locu
-     * @return Iterator of AlleleCount which contains pair of reference and alternate with a count
+     * @param pileup Pileup of reads a given locus.
+     * @return Iterator of AlleleCount which contains pair of reference and alternate with a count.
      */
     def pileupToAlleleCounts(pileup: Pileup): Iterator[AlleleCount] = {
       val alleles = pileup.elements.groupBy(_.allele)
