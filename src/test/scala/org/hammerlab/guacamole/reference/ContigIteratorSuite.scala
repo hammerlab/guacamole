@@ -1,12 +1,15 @@
 package org.hammerlab.guacamole.reference
 
-import org.hammerlab.guacamole.reads.{ReadsUtil, TestRegion}
-import org.scalatest.{FunSuite, Matchers}
+import org.hammerlab.guacamole.reads.TestRegion
+import org.hammerlab.guacamole.util.GuacFunSuite
 
-class ContigIteratorSuite extends FunSuite with Matchers with ReadsUtil {
+class ContigIteratorSuite
+  extends GuacFunSuite
+    with RegionsUtil {
+
   test("simple") {
     ContigIterator(
-      makeReads(
+      makeRegions(
         List(
           ("chr1", 100, 200, 2),
           ("chr1", 110, 210, 1),
@@ -25,7 +28,7 @@ class ContigIteratorSuite extends FunSuite with Matchers with ReadsUtil {
   test("next past end") {
     val it =
       ContigIterator(
-        makeReads(
+        makeRegions(
           List(
             ("chr1", 100, 200, 1),
             ("chr1", 110, 210, 1),
