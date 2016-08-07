@@ -3,7 +3,7 @@ package org.hammerlab.guacamole.commands.jointcaller.pileup_summarization
 import org.apache.spark.Logging
 import org.hammerlab.guacamole.pileup.PileupElement
 import org.hammerlab.guacamole.reads.MappedRead
-import org.hammerlab.guacamole.reference.ContigSequence
+import org.hammerlab.guacamole.reference.{ContigSequence, Locus}
 import org.hammerlab.guacamole.util.Bases
 
 /**
@@ -16,8 +16,8 @@ import org.hammerlab.guacamole.util.Bases
  * @param endReadPosition one past the offset into the read of last base in the sub-sequence
  */
 case class ReadSubsequence(read: MappedRead,
-                           startLocus: Long,
-                           endLocus: Long,
+                           startLocus: Locus,
+                           endLocus: Locus,
                            startReadPosition: Int,
                            endReadPosition: Int) extends Logging {
 
