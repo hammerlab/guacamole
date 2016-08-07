@@ -247,7 +247,7 @@ object GermlineAssemblyCaller {
           .filter(_.altBases.nonEmpty)
           .map(allele => {
             CalledAllele(
-              pileup.head.read.sampleName,
+              pileup.sampleName,
               pileup.contigName,
               pileup.locus,
               allele,
