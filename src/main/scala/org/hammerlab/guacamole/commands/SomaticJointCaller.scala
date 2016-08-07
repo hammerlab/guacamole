@@ -3,13 +3,14 @@ package org.hammerlab.guacamole.commands
 import htsjdk.samtools.SAMSequenceDictionary
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
-import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMapMultipleRDDs
+import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMapMultipleSamples
 import org.hammerlab.guacamole.jointcaller.evidence.{MultiSampleMultiAlleleEvidence, MultiSampleSingleAlleleEvidence}
 import org.hammerlab.guacamole.jointcaller.{Input, InputCollection, Parameters, VCFOutput}
 import org.hammerlab.guacamole.loci.LociArgs
 import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.pileup.Pileup
+import org.hammerlab.guacamole.readsets.rdd.PartitionedRegions
 import org.hammerlab.guacamole.readsets.{PerSample, ReadSets}
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.kohsuke.args4j.spi.StringArrayOptionHandler
@@ -162,12 +163,13 @@ object SomaticJoint {
 
     assume(loci.nonEmpty)
 
-    val lociPartitions =
-      args
-        .getPartitioner(readsets.allMappedReads)
-        // When mapping over pileups, at locus x we call variants at locus x + 1. Therefore we subtract 1 from the user-
-        // specified loci.
-        .partition(lociSetMinusOne(loci))
+    val partitionedReads =
+      PartitionedRegions(
+        readsets.mappedReadsRDDs,
+        lociSetMinusOne(loci),
+        args,
+        halfWindowSize = 0
+      )
 
     val broadcastForceCallLoci = sc.broadcast(forceCallLoci)
 
@@ -178,20 +180,21 @@ object SomaticJoint {
           .onContig(pileups.head.contigName)
           .contains(pileups.head.locus + 1)
 
-      MultiSampleMultiAlleleEvidence.make(
-        pileups,
-        inputs,
-        parameters,
-        reference,
-        forceCall,
-        onlySomatic,
-        includeFiltered
-      ).toIterator
+      MultiSampleMultiAlleleEvidence
+        .make(
+          pileups,
+          inputs,
+          parameters,
+          reference,
+          forceCall,
+          onlySomatic,
+          includeFiltered
+        )
+        .iterator
     }
 
-    pileupFlatMapMultipleRDDs(
-      readsets.mappedReadsRDDs,
-      lociPartitions,
+    pileupFlatMapMultipleSamples(
+      partitionedReads,
       skipEmpty = true,  // TODO: shouldn't skip empty positions if we might force call them. Need an efficient way to handle this.
       callPileups,
       reference = reference

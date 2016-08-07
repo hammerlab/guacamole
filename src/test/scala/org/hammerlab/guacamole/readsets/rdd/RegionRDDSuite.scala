@@ -85,7 +85,7 @@ class RegionRDDSuite extends GuacFunSuite with ReadsRDDUtil with ContigLengthsUt
 
   test("coverage") {
     val readsRDD =
-      makeReadsRDD(
+      makeRegionsRDD(
         numPartitions = 1,
         ("chr1", 100, 105,  1),
         ("chr1", 101, 106,  1),
