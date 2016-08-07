@@ -18,12 +18,11 @@
 
 package org.hammerlab.guacamole.commands
 
-import org.hammerlab.guacamole.reference.ReferenceBroadcast
-import org.hammerlab.guacamole.util.{Bases, GuacFunSuite, TestUtil}
 import org.hammerlab.guacamole.filters.SomaticGenotypeFilter
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.MappedRead
-import org.scalatest.Matchers
+import org.hammerlab.guacamole.reference.{ContigName, Locus, ReferenceBroadcast}
+import org.hammerlab.guacamole.util.{Bases, GuacFunSuite, TestUtil}
 import org.scalatest.prop.TableDrivenPropertyChecks
 
 class SomaticStandardCallerSuite extends GuacFunSuite with TableDrivenPropertyChecks {
@@ -328,10 +327,10 @@ class SomaticStandardCallerSuite extends GuacFunSuite with TableDrivenPropertyCh
       TestUtil.makeRead("TCATCTCAAAAGAGATCGA", "2M2D1M2I2M4I2M2D6M", 10, chr = "chr3")
     )
 
-    def testLocus(referenceName: String, locus: Int, refBases: String, altBases: String) = {
+    def testLocus(contigName: ContigName, locus: Locus, refBases: String, altBases: String) = {
       val alleles = SomaticStandard.Caller.findPotentialVariantAtLocus(
-        Pileup(tumorReads, referenceName, locus, simpleReference.getContig("chr3")),
-        Pileup(normalReads, referenceName, locus, simpleReference.getContig("chr3")),
+        Pileup(tumorReads, contigName, locus, simpleReference.getContig("chr3")),
+        Pileup(normalReads, contigName, locus, simpleReference.getContig("chr3")),
         oddsThreshold = 2
       )
       alleles.size should be(1)
