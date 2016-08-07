@@ -49,7 +49,6 @@ object VariantSupport {
 
     @Args4jOption(name = "--reference-fasta", required = true, usage = "Local path to a reference FASTA file")
     var referenceFastaPath: String = ""
-
   }
 
   object Caller extends SparkCommand[Arguments] {
@@ -110,7 +109,6 @@ object VariantSupport {
         ).reduce(_ ++ _)
 
       alleleCounts.saveAsTextFile(args.output)
-
     }
 
     /**
@@ -119,14 +117,18 @@ object VariantSupport {
      * @param pileup Pileup of reads a given locus.
      * @return Iterator of AlleleCount which contains pair of reference and alternate with a count.
      */
-    def pileupToAlleleCounts(pileup: Pileup): Iterator[AlleleCount] = {
-      val alleles = pileup.elements.groupBy(_.allele)
-      alleles.map(kv => AlleleCount(pileup.sampleName,
-        pileup.contigName,
-        pileup.locus,
-        Bases.basesToString(kv._1.refBases),
-        Bases.basesToString(kv._1.altBases),
-        kv._2.size)).iterator
-    }
+    def pileupToAlleleCounts(pileup: Pileup): Iterator[AlleleCount] =
+      (for {
+        (allele, elements) <- pileup.elements.groupBy(_.allele)
+      } yield
+        AlleleCount(
+          pileup.sampleName,
+          pileup.contigName,
+          pileup.locus,
+          Bases.basesToString(allele.refBases),
+          Bases.basesToString(allele.altBases),
+          elements.size
+        )
+      ).iterator
   }
 }

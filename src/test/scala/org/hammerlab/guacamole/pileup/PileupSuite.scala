@@ -66,10 +66,12 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
   }
 
   test("create pileup from long insert reads; different qualities in insertion") {
-    val reads = Seq(
-      TestUtil.makeRead("TCGATCGA", "8M", 1, "chr1", Some(Seq(10, 15, 20, 25, 10, 15, 20, 25))),
-      TestUtil.makeRead("TCGATCGA", "8M", 1, "chr1", Some(Seq(10, 15, 20, 25, 10, 15, 20, 25))),
-      TestUtil.makeRead("TCGACCCTCGA", "4M3I4M", 1, "chr1", Some(Seq(10, 15, 20, 25, 5, 5, 5, 10, 15, 20, 25))))
+    val reads =
+      Seq(
+        TestUtil.makeRead("TCGATCGA", "8M", 1, "chr1", Some(Seq(10, 15, 20, 25, 10, 15, 20, 25))),
+        TestUtil.makeRead("TCGATCGA", "8M", 1, "chr1", Some(Seq(10, 15, 20, 25, 10, 15, 20, 25))),
+        TestUtil.makeRead("TCGACCCTCGA", "4M3I4M", 1, "chr1", Some(Seq(10, 15, 20, 25, 5, 5, 5, 10, 15, 20, 25)))
+      )
 
     val insertPileup = Pileup(reads, "chr1", 4, reference.getContig("chr1"))
     insertPileup.elements.exists(_.isInsertion) should be(true)
@@ -95,9 +97,7 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
 
     val pastInsertPileup = Pileup(reads, "chr1", 5, reference.getContig("chr1"))
     pastInsertPileup.elements.foreach(_.isMatch should be(true))
-
     pastInsertPileup.elements.foreach(_.qualityScore should be(10))
-
   }
 
   test("create pileup from long insert reads; after insertion") {
@@ -218,10 +218,9 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
     val pileup = loadPileup(sc, "same_start_reads.sam", locus = 0, reference = reference)
     val deletionPileup = pileup.atGreaterLocus(9, Seq.empty.iterator)
     deletionPileup.elements.map(_.alignment).count {
-      case Deletion(bases, _) => {
+      case Deletion(bases, _) =>
         Bases.basesToString(bases) should equal("AAAAAAAAAAA")
         true
-      }
       case _ => false
     } should be(5)
     for (i <- 10 to 19) {
@@ -240,13 +239,8 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
 
   test("Pileup.Element basic test") {
     intercept[NullPointerException] {
-      val e = pileupElementFromRead(null, 42)
+      pileupElementFromRead(null, 42)
     }
-
-    val reference = TestUtil.makeReference(sc,
-      Seq(
-        ("artificial", 0, "A" * 500)
-      ))
 
     val decadentRead1 = testAdamRecords(0)
 

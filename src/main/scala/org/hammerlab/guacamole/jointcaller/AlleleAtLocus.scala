@@ -118,20 +118,24 @@ object AlleleAtLocus {
     })
     val result = alleleRequiredReadsActualReads.filter(tpl => tpl._3 >= tpl._2).map(_._1).distinct.toVector
     if (atLeastOneAllele && result.isEmpty) {
-      val allelesSortedByTotal = alleleRequiredReadsActualReads
-        .groupBy(_._1)
-        .toSeq
-        .sortBy(-1 * _._2.map(_._3).sum)
-        .map(_._1)
+      val allelesSortedByTotal =
+        alleleRequiredReadsActualReads
+          .groupBy(_._1)
+          .toSeq
+          .sortBy(-1 * _._2.map(_._3).sum)
+          .map(_._1)
 
       if (allelesSortedByTotal.nonEmpty) {
         Vector(allelesSortedByTotal.head)
       } else {
-        Vector(AlleleAtLocus(
-          contig,
-          variantStart,
-          Bases.baseToString(contigSequence.apply(variantStart.toInt)),
-          "N"))
+        Vector(
+          AlleleAtLocus(
+            contig,
+            variantStart,
+            Bases.baseToString(contigSequence.apply(variantStart.toInt)),
+            "N"
+          )
+        )
       }
     } else if (maxAlleles.isDefined) {
       assume(maxAlleles.get > 0)

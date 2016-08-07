@@ -86,14 +86,15 @@ class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks {
 
     val pileup = Pileup(reads, reads(0).contigName, 1, contigSequence)
 
-    forAll(Table("genotype", genotypesMap: _*)) { pair =>
-      TestUtil.assertAlmostEqual(
-        Likelihood.likelihoodOfGenotype(
-          pileup.elements,
-          makeGenotype(pair._1), // genotype
-          Likelihood.probabilityCorrectIgnoringAlignment),
-        pair._2
-      )
+    forAll(Table("genotype", genotypesMap: _*)) {
+      pair =>
+        TestUtil.assertAlmostEqual(
+          Likelihood.likelihoodOfGenotype(
+            pileup.elements,
+            makeGenotype(pair._1), // genotype
+            Likelihood.probabilityCorrectIgnoringAlignment),
+          pair._2
+        )
     }
   }
 
