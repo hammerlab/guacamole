@@ -23,9 +23,15 @@ object PileupFlatMapUtils {
                                contigSequence: ContigSequence): Pileup = {
     assume(window.halfWindowSize == 0)
     existing match {
-      case None => Pileup(
-        window.currentRegions(), window.contigName, window.currentLocus, contigSequence)
-      case Some(pileup) => pileup.atGreaterLocus(window.currentLocus, window.newRegions.iterator)
+      case None =>
+        Pileup(
+          window.currentRegions(),
+          window.contigName,
+          window.currentLocus,
+          contigSequence
+        )
+      case Some(pileup) =>
+        pileup.atGreaterLocus(window.currentLocus, window.newRegions.iterator)
     }
   }
 
@@ -124,6 +130,7 @@ object PileupFlatMapUtils {
                 )
         }
         (Some(advancedPileups), function(advancedPileups))
-      })
+      }
+    )
   }
 }

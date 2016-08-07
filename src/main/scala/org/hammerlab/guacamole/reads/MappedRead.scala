@@ -32,7 +32,6 @@ case class MappedRead(
     isPositiveStrand: Boolean,
     isPaired: Boolean)
   extends Read
-
     with ReferenceRegion {
 
   assert(baseQualities.length == sequence.length,
