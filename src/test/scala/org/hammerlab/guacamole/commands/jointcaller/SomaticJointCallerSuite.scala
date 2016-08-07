@@ -1,7 +1,5 @@
 package org.hammerlab.guacamole.commands.jointcaller
 
-import java.nio.file.Files
-
 import org.hammerlab.guacamole.loci.set.{LociParser, LociSet}
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.reference.ReferenceBroadcast.MapBackedReferenceSequence
@@ -15,14 +13,14 @@ class SomaticJointCallerSuite extends GuacFunSuite {
     name => TestUtil.testDataPath("cancer-wes-and-rna-celsr1/" + name))
 
   val hg19PartialFasta = TestUtil.testDataPath("hg19.partial.fasta")
-  def hg19PartialReference = {
+
+  def hg19PartialReference =
     ReferenceBroadcast(hg19PartialFasta, sc, partialFasta = true)
-  }
 
   val b37Chromosome22Fasta = TestUtil.testDataPath("chr22.fa.gz")
-  def b37Chromosome22Reference = {
+  
+  def b37Chromosome22Reference =
     ReferenceBroadcast(b37Chromosome22Fasta, sc, partialFasta = false)
-  }
 
   test("call a somatic variant") {
     val inputs = InputCollection(cancerWGS1Bams)
@@ -75,13 +73,16 @@ class SomaticJointCallerSuite extends GuacFunSuite {
       .toMap
 
     calls(("chr1", 179895860)).singleAlleleEvidences.length should equal(1)
-    calls(("chr1", 179895860)).bestAllele.isSomaticCall should be(false)
-    calls(("chr1", 179895860)).bestAllele.isGermlineCall should be(true)
-    calls(("chr1", 179895860)).bestAllele.allele.ref should equal("T")
-    calls(("chr1", 179895860)).bestAllele.allele.alt should equal("C")
-    calls(("chr1", 179895860)).bestAllele.allEvidences.head.annotations.get.strandBias.phredValue should equal(0)
-    calls(("chr1", 179895860)).bestAllele.allEvidences.head.annotations.get.annotationsFailingFilters should equal(Seq.empty)
-    calls(("chr1", 179895860)).bestAllele.annotations.get.annotationsFailingFilters should equal(Seq.empty)
+
+    val bestAllele = calls(("chr1", 179895860)).bestAllele()
+
+    bestAllele.isSomaticCall should be(false)
+    bestAllele.isGermlineCall should be(true)
+    bestAllele.allele.ref should equal("T")
+    bestAllele.allele.alt should equal("C")
+    bestAllele.allEvidences.head.annotations.get.strandBias.phredValue should equal(0)
+    bestAllele.allEvidences.head.annotations.get.annotationsFailingFilters should equal(Seq.empty)
+    bestAllele.annotations.get.annotationsFailingFilters should equal(Seq.empty)
 
 
 //    TODO: after PR#479 this test fails as the test data no longer contains a germline variant
@@ -150,11 +151,14 @@ class SomaticJointCallerSuite extends GuacFunSuite {
     callsWithoutRNA.exists(call => call.start == 46931061 && call.end == 46931062) should be(false)
     val filtered46931061 = callsWithRNA.filter(call => call.start == 46931061 && call.end == 46931062)
     filtered46931061.length should be(1)
-    filtered46931061.head.bestAllele.isSomaticCall should be(true)
-    filtered46931061.head.bestAllele.allele.ref should equal("G")
-    filtered46931061.head.bestAllele.allele.alt should equal("A")
-    filtered46931061.head.bestAllele.tumorDNAPooledEvidence.allelicDepths.toSet should equal(Set("G" -> 90, "A" -> 2))
-    filtered46931061.head.bestAllele.normalDNAPooledEvidence.allelicDepths.toSet should equal(Set("G" -> 51))
+
+    val bestAllele = filtered46931061.head.bestAllele
+
+    bestAllele.isSomaticCall should be(true)
+    bestAllele.allele.ref should equal("G")
+    bestAllele.allele.alt should equal("A")
+    bestAllele.tumorDNAPooledEvidence.allelicDepths.toSet should equal(Set("G" -> 90, "A" -> 2))
+    bestAllele.normalDNAPooledEvidence.allelicDepths.toSet should equal(Set("G" -> 51))
   }
 
 }
