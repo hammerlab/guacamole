@@ -19,9 +19,8 @@
 package org.hammerlab.guacamole.pileup
 
 import org.hammerlab.guacamole.reads.MappedRead
-import org.hammerlab.guacamole.reference.{ContigName, ContigSequence, Locus, ReferenceBroadcast}
-import org.hammerlab.guacamole.util.Bases
-import org.hammerlab.guacamole.variants.{Allele, Genotype}
+import org.hammerlab.guacamole.reference.{ContigName, ContigSequence, Locus}
+import org.hammerlab.guacamole.variants.Allele
 
 /**
  * A [[Pileup]] at a locus contains a sequence of [[PileupElement]] instances, one for every read that overlaps that
