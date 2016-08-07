@@ -137,6 +137,7 @@ object PileupFlatMapUtils {
                 )
         }
         (Some(advancedPileups), function(advancedPileups))
-      })
+      }
+    )
   }
 }

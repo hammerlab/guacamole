@@ -135,19 +135,21 @@ object SomaticStandard {
                                     filterMultiAllelic: Boolean = false,
                                     maxReadDepth: Int = Int.MaxValue): Seq[CalledSomaticAllele] = {
 
-      val filteredNormalPileup = PileupFilter(
-        normalPileup,
-        filterMultiAllelic,
-        minAlignmentQuality,
-        minEdgeDistance = 0
-      )
+      val filteredNormalPileup =
+        PileupFilter(
+          normalPileup,
+          filterMultiAllelic,
+          minAlignmentQuality,
+          minEdgeDistance = 0
+        )
 
-      val filteredTumorPileup = PileupFilter(
-        tumorPileup,
-        filterMultiAllelic,
-        minAlignmentQuality,
-        minEdgeDistance = 0
-      )
+      val filteredTumorPileup =
+        PileupFilter(
+          tumorPileup,
+          filterMultiAllelic,
+          minAlignmentQuality,
+          minEdgeDistance = 0
+        )
 
       // For now, we skip loci that have no reads mapped. We may instead want to emit NoCall in this case.
       if (filteredTumorPileup.elements.isEmpty
@@ -191,7 +193,8 @@ object SomaticStandard {
       lazy val normalVariantsTotalLikelihood = normalVariantGenotypes.values.sum
       lazy val somaticOdds = mostLikelyTumorGenotypeLikelihood / normalVariantsTotalLikelihood
 
-      if (mostLikelyTumorGenotype.hasVariantAllele && somaticOdds * 100 >= oddsThreshold)
+      if (mostLikelyTumorGenotype.hasVariantAllele &&
+          somaticOdds * 100 >= oddsThreshold)
         for {
           // NOTE(ryan): currently only look at the first non-ref allele in the most likely tumor genotype.
           // removeCorrelatedGenotypes depends on there only being one variant per locus.
