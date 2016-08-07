@@ -105,7 +105,7 @@ object Likelihood {
 
     val alleles = pileup.distinctAlleles.filter(allele => allele.altBases.forall((Bases.isStandardBase _)))
     val genotypes = for {
-      i <- 0 until alleles.size
+      i <- alleles.indices
       j <- i until alleles.size
     } yield Genotype(alleles(i), alleles(j))
     val likelihoods = likelihoodsOfGenotypes(pileup.elements, genotypes, probabilityCorrect, prior, logSpace, normalize)
