@@ -45,12 +45,12 @@ case class PileupElement(
     cigarElementIndex: Int,
     cigarElementLocus: Long,
     indexWithinCigarElement: Int,
-    referenceContigSequence: ContigSequence) {
+    contigSequence: ContigSequence) {
 
   assume(locus >= read.start)
   assume(locus < read.end)
 
-  val referenceBase: Byte = referenceContigSequence(locus.toInt)
+  val referenceBase: Byte = contigSequence(locus.toInt)
 
   def cigarElement = read.cigarElements(cigarElementIndex)
   def nextCigarElement =
@@ -109,7 +109,7 @@ case class PileupElement(
       case (CigarOperator.I, _) => throw new InvalidCigarElementException(this)
 
       case (CigarOperator.M | CigarOperator.EQ | CigarOperator.X, Some(CigarOperator.D)) =>
-        val deletedBases = referenceContigSequence.slice(locus.toInt, locus.toInt + nextCigarElement.get.getLength + 1)
+        val deletedBases = contigSequence.slice(locus.toInt, locus.toInt + nextCigarElement.get.getLength + 1)
         val anchorBaseSequenceQuality = read.baseQualities(readPosition)
         Deletion(deletedBases, anchorBaseSequenceQuality)
       case (CigarOperator.D, _) =>
@@ -185,6 +185,7 @@ case class PileupElement(
       }
 
     val nextLocus = locus + (cigarElementReferenceLength - indexWithinCigarElement)
+
     PileupElement(
       read,
       nextLocus,
@@ -193,7 +194,8 @@ case class PileupElement(
       cigarElementLocus + cigarElementReferenceLength,
       // Even if we are somewhere in the middle of the current cigar element, lock to the beginning of the next one.
       indexWithinCigarElement = 0,
-      referenceContigSequence = referenceContigSequence)
+      contigSequence
+    )
   }
 
   /**
@@ -256,7 +258,7 @@ object PileupElement {
   /**
    * Create a new [[PileupElement]] backed by the given read at the specified locus. The read must overlap the locus.
    */
-  def apply(read: MappedRead, locus: Long, referenceContigSequence: ContigSequence): PileupElement =
+  def apply(read: MappedRead, locus: Long, contigSequence: ContigSequence): PileupElement =
     PileupElement(
       read = read,
       locus = read.start,
@@ -264,7 +266,7 @@ object PileupElement {
       cigarElementIndex = 0,
       cigarElementLocus = read.start,
       indexWithinCigarElement = 0,
-      referenceContigSequence = referenceContigSequence
+      contigSequence
     ).advanceToLocus(locus)
 }
 

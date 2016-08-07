@@ -82,9 +82,9 @@ class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks {
 
   def testGenotypeLikelihoods(reads: Seq[MappedRead], genotypesMap: ((Char, Char), Double)*): Unit = {
 
-    val referenceContigSequence = reference.getContig("chr1")
+    val contigSequence = reference.getContig("chr1")
 
-    val pileup = Pileup(reads, reads(0).contigName, 1, referenceContigSequence)
+    val pileup = Pileup(reads, reads(0).contigName, 1, contigSequence)
 
     forAll(Table("genotype", genotypesMap: _*)) { pair =>
       TestUtil.assertAlmostEqual(
@@ -145,7 +145,7 @@ class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks {
   }
 
   test("score genotype for single sample; all bases ref") {
-    val referenceContigSequence = reference.getContig("chr1")
+    val contigSequence = reference.getContig("chr1")
 
     val reads = Seq(
       refRead(30),
@@ -153,7 +153,7 @@ class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks {
       refRead(30)
     )
 
-    val pileup = Pileup(reads, "chr1", 1, referenceContigSequence)
+    val pileup = Pileup(reads, "chr1", 1, contigSequence)
 
     testLikelihoods(
       Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(pileup, Likelihood.probabilityCorrectIgnoringAlignment),
@@ -162,7 +162,7 @@ class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks {
   }
 
   test("score genotype for single sample; mix of ref/non-ref bases") {
-    val referenceContigSequence = reference.getContig("chr1")
+    val contigSequence = reference.getContig("chr1")
 
     val reads = Seq(
       refRead(30),
@@ -170,7 +170,7 @@ class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks {
       altRead(30)
     )
 
-    val pileup = Pileup(reads, "chr1", 1, referenceContigSequence)
+    val pileup = Pileup(reads, "chr1", 1, contigSequence)
 
     testLikelihoods(
       Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(pileup, Likelihood.probabilityCorrectIgnoringAlignment),
@@ -181,7 +181,7 @@ class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks {
   }
 
   test("score genotype for single sample; all bases non-ref") {
-    val referenceContigSequence = reference.getContig("chr1")
+    val contigSequence = reference.getContig("chr1")
 
     val reads = Seq(
       altRead(30),
@@ -189,7 +189,7 @@ class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks {
       altRead(30)
     )
 
-    val pileup = Pileup(reads, "chr1", 1, referenceContigSequence)
+    val pileup = Pileup(reads, "chr1", 1, contigSequence)
 
     testLikelihoods(
       Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(pileup, Likelihood.probabilityCorrectIgnoringAlignment),
@@ -198,7 +198,7 @@ class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks {
   }
 
   test("log score genotype for single sample; all bases ref") {
-    val referenceContigSequence = reference.getContig("chr1")
+    val contigSequence = reference.getContig("chr1")
 
     val reads = Seq(
       refRead(30),
@@ -206,7 +206,7 @@ class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks {
       refRead(30)
     )
 
-    val pileup = Pileup(reads, "chr1", 1, referenceContigSequence)
+    val pileup = Pileup(reads, "chr1", 1, contigSequence)
 
     testLikelihoods(
       Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(
@@ -218,7 +218,7 @@ class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks {
   }
 
   test("log score genotype for single sample; mix of ref/non-ref bases") {
-    val referenceContigSequence = reference.getContig("chr1")
+    val contigSequence = reference.getContig("chr1")
 
     val reads = Seq(
       refRead(30),
@@ -226,7 +226,7 @@ class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks {
       altRead(30)
     )
 
-    val pileup = Pileup(reads, "chr1", 1, referenceContigSequence)
+    val pileup = Pileup(reads, "chr1", 1, contigSequence)
 
     testLikelihoods(
       Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(
@@ -240,7 +240,7 @@ class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks {
   }
 
   test("log score genotype for single sample; all bases non-ref") {
-    val referenceContigSequence = reference.getContig("chr1")
+    val contigSequence = reference.getContig("chr1")
 
     val reads = Seq(
       altRead(30),
@@ -248,7 +248,7 @@ class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks {
       altRead(30)
     )
 
-    val pileup = Pileup(reads, "chr1", 1, referenceContigSequence)
+    val pileup = Pileup(reads, "chr1", 1, contigSequence)
 
     testLikelihoods(
       Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(
