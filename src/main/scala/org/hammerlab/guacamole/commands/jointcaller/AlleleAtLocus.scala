@@ -92,7 +92,7 @@ object AlleleAtLocus {
     assume(pileups.forall(_.locus == pileups.head.locus))
     assume(pileups.forall(_.contigName == pileups.head.contigName))
     assume(pileups.nonEmpty)
-    val referenceContigSequence = pileups.head.contigSequence
+    val contigSequence = pileups.head.contigSequence
 
     val contig = pileups.head.contigName
     val variantStart = pileups.head.locus + 1
@@ -111,7 +111,7 @@ object AlleleAtLocus {
 
       def subsequenceToAllele(subsequence: ReadSubsequence): AlleleAtLocus = {
         AlleleAtLocus(
-          contig, variantStart, subsequence.refSequence(referenceContigSequence), subsequence.sequence)
+          contig, variantStart, subsequence.refSequence(contigSequence), subsequence.sequence)
       }
 
       subsequenceCounts.map(pair => (subsequenceToAllele(pair._1), requiredReads, pair._2))
@@ -130,7 +130,7 @@ object AlleleAtLocus {
         Vector(AlleleAtLocus(
           contig,
           variantStart,
-          Bases.baseToString(referenceContigSequence.apply(variantStart.toInt)),
+          Bases.baseToString(contigSequence.apply(variantStart.toInt)),
           "N"))
       }
     } else if (maxAlleles.isDefined) {

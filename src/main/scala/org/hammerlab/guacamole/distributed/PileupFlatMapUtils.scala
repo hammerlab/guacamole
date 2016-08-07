@@ -20,11 +20,11 @@ object PileupFlatMapUtils {
    */
   private def initOrMovePileup(existing: Option[Pileup],
                                window: SlidingWindow[MappedRead],
-                               referenceContigSequence: ContigSequence): Pileup = {
+                               contigSequence: ContigSequence): Pileup = {
     assume(window.halfWindowSize == 0)
     existing match {
       case None => Pileup(
-        window.currentRegions(), window.contigName, window.currentLocus, referenceContigSequence)
+        window.currentRegions(), window.contigName, window.currentLocus, contigSequence)
       case Some(pileup) => pileup.atGreaterLocus(window.currentLocus, window.newRegions.iterator)
     }
   }

@@ -104,7 +104,7 @@ object ReadSubsequence {
    * @return ReadSubsequence for the alt allele, if one exists
    */
   def ofNextAltAllele(element: PileupElement): Option[ReadSubsequence] = {
-    val referenceContigSequence = element.referenceContigSequence
+    val contigSequence = element.contigSequence
 
     def isVariantOrFollowedByDeletion(e: PileupElement): Boolean = {
       e.allele.isVariant || (

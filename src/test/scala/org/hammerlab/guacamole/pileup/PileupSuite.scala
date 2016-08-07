@@ -178,7 +178,7 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
     val pileup = PileupElement(
       read = contigStartInsertionRead,
       locus = 1,
-      referenceContigSequence = reference.getContig("chr1"),
+      contigSequence = reference.getContig("chr1"),
       readPosition = 0,
       cigarElementIndex = 0,
       cigarElementLocus = 1,
@@ -383,7 +383,7 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
       start = 229538779,
       chr = "chr1")
 
-    val rnaPileupElement = PileupElement(rnaRead, 229538779L, referenceContigSequence = reference.getContig("chr1"))
+    val rnaPileupElement = PileupElement(rnaRead, 229538779L, reference.getContig("chr1"))
 
     // Second base
     AssertBases(rnaPileupElement.advanceToLocus(229538780L).sequencedBases, "C")
