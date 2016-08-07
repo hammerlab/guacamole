@@ -118,7 +118,7 @@ object GermlineAssemblyCaller {
           initialState = None,
           (lastCalledLocus, windows) => {
             val window = windows.head
-            val referenceName = window.contigName
+            val contigName = window.contigName
             val locus = window.currentLocus
 
             val referenceStart = (locus - window.halfWindowSize).toInt
@@ -131,7 +131,7 @@ object GermlineAssemblyCaller {
                 referenceEnd
               )
 
-            val referenceContig = reference.getContig(referenceName)
+            val referenceContig = reference.getContig(contigName)
 
             val regionReads = window.currentRegions()
             // Find the reads the overlap the center locus/ current locus
@@ -139,7 +139,13 @@ object GermlineAssemblyCaller {
               regionReads
                 .filter(_.overlapsLocus(window.currentLocus))
 
-            val pileup = Pileup(currentLocusReads, referenceName, window.currentLocus, referenceContig)
+            val pileup =
+              Pileup(
+                currentLocusReads,
+                contigName,
+                window.currentLocus,
+                referenceContig
+              )
 
             // Compute the number reads with variant bases from the reads overlapping the currentLocus
             val pileupAltReads = (pileup.depth - pileup.referenceDepth)
@@ -173,7 +179,7 @@ object GermlineAssemblyCaller {
                   val baseQualities = DenseVector(regionReads.flatMap(_.baseQualities).map(_.toFloat).toArray)
                   CalledAllele(
                     sampleName,
-                    referenceName,
+                    contigName,
                     variantLocus,
                     allele,
                     AlleleEvidence(

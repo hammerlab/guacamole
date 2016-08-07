@@ -129,18 +129,23 @@ case class Pileup(contigName: ContigName,
     (alleleElements.size, numAllelePositiveElements)
   }
 }
+
 object Pileup {
   /**
    * Given reads and a locus, returns a [[Pileup]] at the specified locus.
    *
    * @param reads Sequence of reads, in any order, that may or may not overlap the locus.
+   * @param contigName The contig these reads lie on.
    * @param locus The locus to return a [[Pileup]] at.
-   * @param referenceContigSequence The reference for this pileup's contig
+   * @param contigSequence The reference for this pileup's contig
    * @return A [[Pileup]] at the given locus.
    */
-  def apply(reads: Seq[MappedRead], referenceName: String, locus: Long, referenceContigSequence: ContigSequence): Pileup = {
+  def apply(reads: Seq[MappedRead],
+            contigName: ContigName,
+            locus: Locus,
+            contigSequence: ContigSequence): Pileup = {
     //TODO: Is this call to overlaps locus necessary?
-    val elements = reads.filter(_.overlapsLocus(locus)).map(PileupElement(_, locus, referenceContigSequence))
-    Pileup(referenceName, locus, referenceContigSequence, elements.toIndexedSeq)
+    val elements = reads.filter(_.overlapsLocus(locus)).map(PileupElement(_, locus, contigSequence))
+    Pileup(contigName, locus, contigSequence, elements.toIndexedSeq)
   }
 }
