@@ -153,7 +153,7 @@ object GermlineAssemblyCaller {
               )
 
             // Compute the number reads with variant bases from the reads overlapping the currentLocus
-            val pileupAltReads = (pileup.depth - pileup.referenceDepth)
+            val pileupAltReads = pileup.depth - pileup.referenceDepth
             if (currentLocusReads.isEmpty || pileupAltReads < minAltReads) {
               (lastCalledLocus, Iterator.empty)
             } else if (shortcutAssembly && !AssemblyUtils.isActiveRegion(currentLocusReads, referenceContig, minAreaVaf)) {
