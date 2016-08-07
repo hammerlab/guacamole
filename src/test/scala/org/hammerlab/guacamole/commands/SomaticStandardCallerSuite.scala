@@ -18,12 +18,11 @@
 
 package org.hammerlab.guacamole.commands
 
-import org.hammerlab.guacamole.reference.ReferenceBroadcast
-import org.hammerlab.guacamole.util.{Bases, GuacFunSuite, TestUtil}
 import org.hammerlab.guacamole.filters.SomaticGenotypeFilter
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.MappedRead
-import org.scalatest.Matchers
+import org.hammerlab.guacamole.reference.ReferenceBroadcast
+import org.hammerlab.guacamole.util.{Bases, GuacFunSuite, TestUtil}
 import org.scalatest.prop.TableDrivenPropertyChecks
 
 class SomaticStandardCallerSuite extends GuacFunSuite with TableDrivenPropertyChecks {

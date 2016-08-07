@@ -5,13 +5,15 @@ import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole.commands.SparkCommand
 import org.hammerlab.guacamole.commands.jointcaller.evidence.{MultiSampleMultiAlleleEvidence, MultiSampleSingleAlleleEvidence}
-import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMapMultipleRDDs
+import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMapMultipleSamples
 import org.hammerlab.guacamole.loci.LociArgs
 import org.hammerlab.guacamole.loci.partitioning.LociPartitionerArgs
 import org.hammerlab.guacamole.loci.set.{LociParser, LociSet}
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
+import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.readsets.args.NoSequenceDictionaryArgs
 import org.hammerlab.guacamole.readsets.io.InputFilters
+import org.hammerlab.guacamole.readsets.rdd.PartitionedRegions
 import org.hammerlab.guacamole.readsets.{PerSample, ReadSets}
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.kohsuke.args4j.spi.StringArrayOptionHandler
@@ -185,20 +187,38 @@ object SomaticJoint {
 
     assume(loci.nonEmpty)
 
-    // When mapping over pileups, at locus x we call variants at locus x + 1. Therefore we subtract 1 from the user-
-    // specified loci.
+    val partitionedReads =
+      PartitionedRegions(
+        readsets.mappedReadsRDDs,
+        lociSetMinusOne(loci),
+        args,
+        halfWindowSize = 0
+      )
+
     val broadcastForceCallLoci = sc.broadcast(forceCallLoci)
 
-    val lociPartitions =
-      args
-        .getPartitioner(readsets.allMappedReads)
-        // When mapping over pileups, at locus x we call variants at locus x + 1. Therefore we subtract 1 from the user-
-        // specified loci.
-        .partition(lociSetMinusOne(loci))
+    def callPileups(pileups: PerSample[Pileup]): Iterator[MultiSampleMultiAlleleEvidence] = {
+      val forceCall =
+        broadcastForceCallLoci
+          .value
+          .onContig(pileups.head.contigName)
+          .contains(pileups.head.locus + 1)
 
-    pileupFlatMapMultipleRDDs(
-      readsets.mappedReads,
-      lociPartitions,
+      MultiSampleMultiAlleleEvidence
+        .make(
+          pileups,
+          inputs,
+          parameters,
+          reference,
+          forceCall,
+          onlySomatic,
+          includeFiltered
+        )
+        .iterator
+    }
+
+    pileupFlatMapMultipleSamples(
+      partitionedReads,
       skipEmpty = true,  // TODO: shouldn't skip empty positions if we might force call them. Need an efficient way to handle this.
       rawPileups => {
         val forceCall =
