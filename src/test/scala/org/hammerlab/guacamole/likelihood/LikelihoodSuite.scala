@@ -1,7 +1,7 @@
 package org.hammerlab.guacamole.likelihood
 
 import org.bdgenomics.adam.util.PhredUtils
-import org.hammerlab.guacamole.pileup.Pileup
+import org.hammerlab.guacamole.pileup.{Util => PileupUtil}
 import org.hammerlab.guacamole.reads.{MappedRead, ReadsUtil}
 import org.hammerlab.guacamole.util.{Bases, GuacFunSuite, TestUtil}
 import org.hammerlab.guacamole.variants.{Allele, Genotype}
@@ -10,9 +10,11 @@ import org.scalatest.prop.TableDrivenPropertyChecks
 class LikelihoodSuite
   extends GuacFunSuite
     with TableDrivenPropertyChecks
-    with ReadsUtil {
+    with ReadsUtil
+    with PileupUtil {
 
-  lazy val reference = TestUtil.makeReference(sc, Seq(("chr1", 1, "C")))
+  // Implicit reference used for creating PIleups in makePileup.
+  implicit lazy val reference = TestUtil.makeReference(sc, Seq(("chr1", 1, "C")))
 
   val referenceBase = 'C'.toByte
 
@@ -78,9 +80,9 @@ class LikelihoodSuite
 
   def testGenotypeLikelihoods(reads: Seq[MappedRead], genotypesMap: ((Char, Char), Double)*): Unit = {
 
-    val contigSequence = reference.getContig("chr1")
+    val referenceContigSequence = reference.getContig("chr1")
 
-    val pileup = Pileup(reads, reads(0).contigName, 1, contigSequence)
+    val pileup = makePileup(reads, reads(0).contigName, 1)
 
     forAll(
       Table(
@@ -148,15 +150,13 @@ class LikelihoodSuite
   }
 
   test("score genotype for single sample; all bases ref") {
-    val contigSequence = reference.getContig("chr1")
-
     val reads = Seq(
       refRead(30),
       refRead(40),
       refRead(30)
     )
 
-    val pileup = Pileup(reads, "chr1", 1, contigSequence)
+    val pileup = makePileup(reads, "chr1", 1)
 
     testLikelihoods(
       Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(pileup, Likelihood.probabilityCorrectIgnoringAlignment),
@@ -165,15 +165,13 @@ class LikelihoodSuite
   }
 
   test("score genotype for single sample; mix of ref/non-ref bases") {
-    val contigSequence = reference.getContig("chr1")
-
     val reads = Seq(
       refRead(30),
       refRead(40),
       altRead(30)
     )
 
-    val pileup = Pileup(reads, "chr1", 1, contigSequence)
+    val pileup = makePileup(reads, "chr1", 1)
 
     testLikelihoods(
       Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(pileup, Likelihood.probabilityCorrectIgnoringAlignment),
@@ -184,15 +182,13 @@ class LikelihoodSuite
   }
 
   test("score genotype for single sample; all bases non-ref") {
-    val contigSequence = reference.getContig("chr1")
-
     val reads = Seq(
       altRead(30),
       altRead(40),
       altRead(30)
     )
 
-    val pileup = Pileup(reads, "chr1", 1, contigSequence)
+    val pileup = makePileup(reads, "chr1", 1)
 
     testLikelihoods(
       Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(pileup, Likelihood.probabilityCorrectIgnoringAlignment),
@@ -201,15 +197,13 @@ class LikelihoodSuite
   }
 
   test("log score genotype for single sample; all bases ref") {
-    val contigSequence = reference.getContig("chr1")
-
     val reads = Seq(
       refRead(30),
       refRead(40),
       refRead(30)
     )
 
-    val pileup = Pileup(reads, "chr1", 1, contigSequence)
+    val pileup = makePileup(reads, "chr1", 1)
 
     testLikelihoods(
       Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(
@@ -221,15 +215,13 @@ class LikelihoodSuite
   }
 
   test("log score genotype for single sample; mix of ref/non-ref bases") {
-    val contigSequence = reference.getContig("chr1")
-
     val reads = Seq(
       refRead(30),
       refRead(40),
       altRead(30)
     )
 
-    val pileup = Pileup(reads, "chr1", 1, contigSequence)
+    val pileup = makePileup(reads, "chr1", 1)
 
     testLikelihoods(
       Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(
@@ -243,15 +235,13 @@ class LikelihoodSuite
   }
 
   test("log score genotype for single sample; all bases non-ref") {
-    val contigSequence = reference.getContig("chr1")
-
     val reads = Seq(
       altRead(30),
       altRead(40),
       altRead(30)
     )
 
-    val pileup = Pileup(reads, "chr1", 1, contigSequence)
+    val pileup = makePileup(reads, "chr1", 1)
 
     testLikelihoods(
       Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(
