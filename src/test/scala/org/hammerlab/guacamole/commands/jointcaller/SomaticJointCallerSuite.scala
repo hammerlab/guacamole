@@ -20,11 +20,15 @@ class SomaticJointCallerSuite extends GuacFunSuite {
   }
 
   val b37Chromosome22Fasta = TestUtil.testDataPath("chr22.fa.gz")
-  def b37Chromosome22Reference = {
-    ReferenceBroadcast(b37Chromosome22Fasta, sc, partialFasta = false)
-  }
 
-  test("call a somatic variant") {
+  def b37Chromosome22Reference =
+    ReferenceBroadcast(
+      b37Chromosome22Fasta,
+      sc,
+      partialFasta = false
+    )
+
+  test("force-call a non-variant locus") {
     val inputs = InputCollection(cancerWGS1Bams)
     val loci = LociParser("chr12:65857040")
     val readSets = SomaticJoint.inputsToReadSets(sc, inputs, loci)
@@ -32,8 +36,13 @@ class SomaticJointCallerSuite extends GuacFunSuite {
       sc, inputs, readSets, Parameters.defaults, hg19PartialReference, loci.result, loci.result).collect
 
     calls.length should equal(1)
-    calls.head.singleAlleleEvidences.length should equal(1)
-    calls.head.singleAlleleEvidences.map(_.allele.ref) should equal(Seq("G"))
+
+    val evidences = calls.head.singleAlleleEvidences
+    evidences.length should equal(1)
+
+    val allele = evidences.head.allele
+    allele.start should be(65857040)
+    allele.ref should be("G")
   }
 
   test("call a somatic deletion") {
