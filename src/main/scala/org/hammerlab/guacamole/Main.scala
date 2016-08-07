@@ -23,7 +23,6 @@ import java.util.logging.Level
 import org.apache.spark.Logging
 import org.bdgenomics.adam.util.ParquetLogger
 import org.hammerlab.guacamole.commands._
-import org.hammerlab.guacamole.commands.jointcaller.SomaticJoint
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 
 /**

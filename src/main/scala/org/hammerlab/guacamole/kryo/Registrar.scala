@@ -22,7 +22,7 @@ import com.esotericsoftware.kryo.Kryo
 import org.apache.spark.serializer.KryoRegistrator
 import org.bdgenomics.adam.models.{SequenceDictionary, SequenceRecord}
 import org.bdgenomics.adam.serialization.ADAMKryoRegistrator
-import org.hammerlab.guacamole.commands.jointcaller.kryo.{Registrar => JointCallerRegistrar}
+import org.hammerlab.guacamole.jointcaller.kryo.{Registrar => JointCallerRegistrar}
 import org.hammerlab.guacamole.distributed.TaskPosition
 import org.hammerlab.guacamole.loci.Coverage
 import org.hammerlab.guacamole.loci.map.{LociMap, Contig => LociMapContig, ContigSerializer => LociMapContigSerializer, Serializer => LociMapSerializer}
