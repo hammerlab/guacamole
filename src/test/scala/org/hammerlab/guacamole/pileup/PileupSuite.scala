@@ -19,6 +19,7 @@
 package org.hammerlab.guacamole.pileup
 
 import org.hammerlab.guacamole.reads.MappedRead
+import org.hammerlab.guacamole.reference.Locus
 import org.hammerlab.guacamole.util.TestUtil.Implicits._
 import org.hammerlab.guacamole.util.TestUtil.loadPileup
 import org.hammerlab.guacamole.util.{AssertBases, Bases, GuacFunSuite, TestUtil}
@@ -38,7 +39,7 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
 
   def testAdamRecords = TestUtil.loadReads(sc, "different_start_reads.sam").mappedReads.collect()
 
-  def pileupElementFromRead(read: MappedRead, locus: Long): PileupElement = {
+  def pileupElementFromRead(read: MappedRead, locus: Locus): PileupElement = {
     PileupElement(read, locus, reference.getContig(read.contigName))
   }
 

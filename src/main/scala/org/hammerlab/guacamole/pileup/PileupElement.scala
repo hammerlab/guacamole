@@ -20,7 +20,7 @@ package org.hammerlab.guacamole.pileup
 
 import htsjdk.samtools.{CigarElement, CigarOperator}
 import org.hammerlab.guacamole.reads.MappedRead
-import org.hammerlab.guacamole.reference.ContigSequence
+import org.hammerlab.guacamole.reference.{ContigSequence, Locus}
 import org.hammerlab.guacamole.util.CigarUtils
 import org.hammerlab.guacamole.variants.Allele
 
@@ -40,10 +40,10 @@ import scala.annotation.tailrec
  */
 case class PileupElement(
     read: MappedRead,
-    locus: Long,
+    locus: Locus,
     readPosition: Int,
     cigarElementIndex: Int,
-    cigarElementLocus: Long,
+    cigarElementLocus: Locus,
     indexWithinCigarElement: Int,
     contigSequence: ContigSequence) {
 
@@ -203,7 +203,7 @@ case class PileupElement(
    *
    * Can only return true if the cigar element consumes reference bases.
    */
-  def currentCigarElementContainsLocus(referenceLocus: Long): Boolean = {
+  def currentCigarElementContainsLocus(referenceLocus: Locus): Boolean = {
     cigarElementLocus <= referenceLocus && referenceLocus < cigarElementEndLocus
   }
 
@@ -217,7 +217,7 @@ case class PileupElement(
    * @return A new [[PileupElement]] at the given locus.
    */
   @tailrec
-  final def advanceToLocus(newLocus: Long): PileupElement = {
+  final def advanceToLocus(newLocus: Locus): PileupElement = {
     assume(newLocus >= locus, s"Can't rewind to locus $newLocus from $locus. Pileups only advance. $read")
     assume(newLocus < read.end, "This read stops at position %d. Can't advance to %d".format(read.end, newLocus))
     if (currentCigarElementContainsLocus(newLocus)) {
@@ -258,7 +258,7 @@ object PileupElement {
   /**
    * Create a new [[PileupElement]] backed by the given read at the specified locus. The read must overlap the locus.
    */
-  def apply(read: MappedRead, locus: Long, contigSequence: ContigSequence): PileupElement =
+  def apply(read: MappedRead, locus: Locus, contigSequence: ContigSequence): PileupElement =
     PileupElement(
       read = read,
       locus = read.start,
