@@ -102,8 +102,6 @@ object VAFHistogram {
     override val description = "Compute and cluster the variant allele frequencies"
 
     override def run(args: Arguments, sc: SparkContext): Unit = {
-      val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
-
       val loci = args.parseLoci(sc.hadoopConfiguration)
       val filters =
         InputFilters(
@@ -129,6 +127,8 @@ object VAFHistogram {
         args
           .getPartitioner(readsets.allMappedReads)
           .partition(loci.result(contigLengths))
+
+      val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
 
       val minReadDepth = args.minReadDepth
       val minVariantAlleleFrequency = args.minVAF
