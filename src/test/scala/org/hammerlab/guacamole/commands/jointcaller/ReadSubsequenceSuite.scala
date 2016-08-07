@@ -25,10 +25,10 @@ class ReadSubsequenceSuite extends GuacFunSuite {
     )
     val pileups = reads.map(read => Pileup(Seq(read), "chr1", 1, simpleReference.getContig("chr1")))
 
-    ReadSubsequence.ofFixedReferenceLength(pileups(0).head, 1).get.sequence should equal("C")
-    ReadSubsequence.ofFixedReferenceLength(pileups(0).head, 2).get.sequence should equal("CG")
-    ReadSubsequence.ofFixedReferenceLength(pileups(1).head, 6).get.sequence should equal("CGACCCTCG")
-    ReadSubsequence.ofFixedReferenceLength(pileups(3).head, 1).get.sequenceIsAllStandardBases should equal(false)
+    ReadSubsequence.ofFixedReferenceLength(pileups(0).elements.head, 1).get.sequence should equal("C")
+    ReadSubsequence.ofFixedReferenceLength(pileups(0).elements.head, 2).get.sequence should equal("CG")
+    ReadSubsequence.ofFixedReferenceLength(pileups(1).elements.head, 6).get.sequence should equal("CGACCCTCG")
+    ReadSubsequence.ofFixedReferenceLength(pileups(3).elements.head, 1).get.sequenceIsAllStandardBases should equal(false)
   }
 
   test("ofNextAltAllele") {
