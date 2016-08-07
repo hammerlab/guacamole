@@ -20,6 +20,7 @@ package org.hammerlab.guacamole.distributed
 
 import com.esotericsoftware.kryo.Kryo
 import org.apache.spark.storage.BroadcastBlockId
+import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.{pileupFlatMap, pileupFlatMapMultipleRDDs, pileupFlatMapTwoRDDs}
 import org.hammerlab.guacamole.loci.partitioning.UniformPartitioner
 import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.pileup.{Pileup, PileupElement}
@@ -58,7 +59,7 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
       TestUtil.makeRead("TCGATCGA", "8M", 1)))
 
     val pileups =
-      PileupFlatMapUtils.pileupFlatMap[Pileup](
+      pileupFlatMap[Pileup](
         reads,
         UniformPartitioner(reads.getNumPartitions).partition(LociSet("chr1:1-9")),
         skipEmpty = false,
@@ -86,7 +87,7 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
       TestUtil.makeRead("TCGATCGA", "8M", 1)))
 
     val pileups =
-      PileupFlatMapUtils.pileupFlatMap[Pileup](
+      pileupFlatMap[Pileup](
         reads,
         UniformPartitioner(5).partition(LociSet("chr1:1-9")),
         skipEmpty = false,
@@ -108,7 +109,7 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
       TestUtil.makeRead("TCGATCGA", "8M", 1)))
 
     val loci =
-      PileupFlatMapUtils.pileupFlatMap[Long](
+      pileupFlatMap[Long](
         reads,
         UniformPartitioner(5).partition(LociSet("chr0:5-10,chr1:0-100,chr2:0-1000,chr2:5000-6000")),
         skipEmpty = true,
@@ -134,7 +135,7 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
       TestUtil.makeRead("XXX", "3M", 99)))
 
     val loci =
-      PileupFlatMapUtils.pileupFlatMapTwoRDDs[Long](
+      pileupFlatMapTwoRDDs[Long](
         reads1,
         reads2,
         UniformPartitioner(1).partition(LociSet("chr0:0-1000,chr1:1-500,chr2:10-20")),
@@ -167,7 +168,7 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
       TestUtil.makeRead("XZX", "3M", 99)))
 
     val resultPlain =
-      PileupFlatMapUtils.pileupFlatMapMultipleRDDs[Seq[Seq[String]]](
+      pileupFlatMapMultipleRDDs[Seq[Seq[String]]](
         Vector(reads1, reads2, reads3),
         UniformPartitioner(1).partition(LociSet("chr1:1-500,chr2:10-20")),
         skipEmpty = true,
@@ -175,16 +176,17 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
         reference = TestUtil.makeReference(sc, Seq(("chr1", 0, "ATCGATCGA")))
       ).collect.map(_.toList)
 
-    val resultParallelized = PileupFlatMapUtils.pileupFlatMapMultipleRDDs[Seq[Seq[String]]](
-      Vector(reads1, reads2, reads3),
-      UniformPartitioner(800).partition(LociSet("chr0:0-100,chr1:1-500,chr2:10-20")),
-      skipEmpty = true,
-      pileups => Iterator(pileups.map(_.elements.map(p => Bases.basesToString(p.sequencedBases)))),
-      reference = TestUtil.makeReference(sc, Seq(("chr1", 0, "ATCGATCGA")))
-    ).collect.map(_.toList)
+    val resultParallelized =
+      pileupFlatMapMultipleRDDs[Seq[Seq[String]]](
+        Vector(reads1, reads2, reads3),
+        UniformPartitioner(800).partition(LociSet("chr0:0-100,chr1:1-500,chr2:10-20")),
+        skipEmpty = true,
+        pileups => Iterator(pileups.map(_.elements.map(p => Bases.basesToString(p.sequencedBases)))),
+        reference = TestUtil.makeReference(sc, Seq(("chr1", 0, "ATCGATCGA")))
+      ).collect.map(_.toList)
 
     val resultWithEmpty =
-      PileupFlatMapUtils.pileupFlatMapMultipleRDDs[Seq[Seq[String]]](
+      pileupFlatMapMultipleRDDs[Seq[Seq[String]]](
         Vector(reads1, reads2, reads3),
         UniformPartitioner(5).partition(LociSet("chr1:1-500,chr2:10-20")),
         skipEmpty = false,
@@ -218,7 +220,7 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
       TestUtil.makeRead("TCGATCGA", "8M", 1)))
 
     val pileups =
-      PileupFlatMapUtils.pileupFlatMap[PileupElement](
+      pileupFlatMap[PileupElement](
         reads,
         UniformPartitioner(5).partition(LociSet("chr1:1-9")),
         skipEmpty = false,
@@ -246,7 +248,7 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
       TestUtil.makeRead("AGG", "3M", 99)))
 
     val elements =
-      PileupFlatMapUtils.pileupFlatMapTwoRDDs[PileupElement](
+      pileupFlatMapTwoRDDs[PileupElement](
         reads1,
         reads2,
         UniformPartitioner(1000).partition(LociSet("chr1:1-500")),
@@ -270,7 +272,7 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
       TestUtil.makeRead("TCGACCCTCGA", "4M3I4M", 1)))
 
     val pileups =
-      PileupFlatMapUtils.pileupFlatMap[PileupElement](
+      pileupFlatMap[PileupElement](
         reads,
         UniformPartitioner(5).partition(LociSet("chr1:1-12")),
         skipEmpty = false,
