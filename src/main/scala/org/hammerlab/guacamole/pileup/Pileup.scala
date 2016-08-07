@@ -40,12 +40,6 @@ case class Pileup(contigName: ContigName,
 
   val referenceBase: Byte = contigSequence(locus.toInt)
 
-  /** The first element in the pileup. */
-  lazy val head = {
-    assume(elements.nonEmpty, "Empty pileup")
-    elements.head
-  }
-
   assume(elements.forall(_.read.contigName == contigName),
     "Pileup reference name '%s' does not match read reference name(s): %s".format(
       contigName, elements.map(_.read.contigName).filter(_ != contigName).mkString(",")))
