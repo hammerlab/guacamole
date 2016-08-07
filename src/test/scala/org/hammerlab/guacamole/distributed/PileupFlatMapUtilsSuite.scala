@@ -19,15 +19,14 @@
 package org.hammerlab.guacamole.distributed
 
 import com.esotericsoftware.kryo.Kryo
-import org.apache.spark.rdd.RDD
 import org.apache.spark.storage.BroadcastBlockId
 import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.{pileupFlatMap, pileupFlatMapMultipleRDDs, pileupFlatMapTwoRDDs}
 import org.hammerlab.guacamole.distributed.Util.pileupsToElementStrings
 import org.hammerlab.guacamole.loci.partitioning.UniformPartitioner
 import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.pileup.{Pileup, PileupElement}
-import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.readsets.PerSample
+import org.hammerlab.guacamole.readsets.rdd.ReadsRDDUtil
 import org.hammerlab.guacamole.reference.ReferenceBroadcast.MapBackedReferenceSequence
 import org.hammerlab.guacamole.util.{AssertBases, Bases, GuacFunSuite, KryoTestRegistrar, TestUtil}
 
@@ -60,17 +59,11 @@ private object Util {
     Iterator(pileups.map(_.elements.map(p => Bases.basesToString(p.sequencedBases))))
 }
 
-class PileupFlatMapUtilsSuite extends GuacFunSuite {
+class PileupFlatMapUtilsSuite
+  extends GuacFunSuite
+    with ReadsRDDUtil {
 
   override def registrar: String = "org.hammerlab.guacamole.distributed.PileupFlatMapUtilsSuiteRegistrar"
-
-  def makeReadsRDD(reads: (String, String, Int)*): RDD[MappedRead] =
-    sc.parallelize(
-      for {
-        (seq, cigar, start) <- reads
-      } yield
-        TestUtil.makeRead(seq, cigar, start)
-    )
 
   test("test pileup flatmap parallelism 0; create pileups") {
 
