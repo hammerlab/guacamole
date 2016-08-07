@@ -1,113 +1,134 @@
 package org.hammerlab.guacamole.reads
 
-import org.hammerlab.guacamole.reference.{Interval, Position, TestInterval}
-import org.hammerlab.magic.iterator.RunLengthIterator
-import org.scalatest.Matchers
+import htsjdk.samtools.TextCigarCodec
+import org.hammerlab.guacamole.readsets.SampleName
+import org.hammerlab.guacamole.reference.{ContigName, Locus}
 
-import scala.collection.SortedMap
-import scala.reflect.ClassTag
+trait ReadsUtil {
+  /**
+   * Convenience function to construct a Read from unparsed values.
+   */
+  private def read(sequence: String,
+                   name: String,
+                   baseQualities: String = "",
+                   isDuplicate: Boolean = false,
+                   sampleName: SampleName = "",
+                   contigName: ContigName = "",
+                   alignmentQuality: Int = -1,
+                   start: Locus = -1L,
+                   cigarString: String = "",
+                   failedVendorQualityChecks: Boolean = false,
+                   isPositiveStrand: Boolean = true,
+                   isPaired: Boolean = true) = {
 
-trait ReadsUtil extends Matchers {
-  def checkReads[I <: Interval: ClassTag](pileups: Iterator[(Position, Iterable[I])],
-                                          expectedStrs: Map[(String, Int), String]): Unit = {
+    val sequenceArray = sequence.map(_.toByte).toArray
+    val qualityScoresArray = Read.baseQualityStringToArray(baseQualities, sequenceArray.length)
 
-    val expected = expectedStrs.map(t => Position(t._1._1, t._1._2) -> t._2)
-
-    val actual: List[(Position, String)] = windowIteratorStrings(pileups)
-    val actualMap = SortedMap(actual: _*)
-
-    val extraLoci =
-      (for {
-        (k, v) <- actualMap
-        if !expected.contains(k)
-      } yield
-        k -> v
-      )
-      .toArray
-      .sortBy(x => x)
-
-    val missingLoci =
-      (for {
-        (k, v) <- expected
-        if !actualMap.contains(k)
-      } yield
-        k -> v
-      )
-      .toArray
-      .sortBy(x => x)
-
-    val msg =
-      (
-        List(
-          s"expected ${expected.size} loci."
-        ) ++
-          (
-            if (extraLoci.nonEmpty)
-              List(
-                s"${extraLoci.length} extra loci found:",
-                s"\t${extraLoci.mkString("\n\t")}"
-              )
-            else
-              Nil
-          ) ++
-          (
-            if (missingLoci.nonEmpty)
-              List(
-                s"${missingLoci.length} missing loci:",
-                s"\t${missingLoci.mkString("\n\t")}"
-              )
-            else
-              Nil
-          )
-        ).mkString("\n")
-
-    withClue(msg) {
-      missingLoci.length should be(0)
-      extraLoci.length should be(0)
-    }
-
-    val incorrectLoci =
-      (for {
-        (k, e) <- expected
-        a <- actualMap.get(k)
-        if a != e
-      } yield
-        k -> (a, e)
-      )
-      .toArray
-      .sortBy(_._1)
-
-    val incorrectLociStr =
-      (for {
-        (k, (a, e)) <- incorrectLoci
-      } yield
-        s"$k:\tactual: $a\texpected: $e"
-      ).mkString("\n")
-
-    withClue(s"differing loci:\n$incorrectLociStr") {
-      incorrectLoci.length should be(0)
-    }
+    val cigar = TextCigarCodec.decode(cigarString)
+    MappedRead(
+      name,
+      sequenceArray,
+      qualityScoresArray,
+      isDuplicate,
+      sampleName.intern,
+      contigName,
+      alignmentQuality,
+      start,
+      cigar,
+      failedVendorQualityChecks,
+      isPositiveStrand,
+      isPaired
+    )
   }
 
-  def windowIteratorStrings[I <: Interval: ClassTag](
-    windowIterator: Iterator[(Position, Iterable[I])]
-  ): List[(Position, String)] =
-    (for {
-      (pos, reads) <- windowIterator
-    } yield {
-      pos ->
-        (for {
-          (region, count) <- RunLengthIterator(reads.toArray.sortBy(_.start).iterator)
-        } yield {
-          s"[${region.start},${region.end})${if (count > 1) s"*$count" else ""}"
-        }).mkString(", ")
-    }).toList
+  def makeRead(sequence: String,
+               cigar: String,
+               start: Locus,
+               chr: ContigName,
+               qualityScores: Seq[Int]): MappedRead =
+    makeRead(
+      sequence,
+      cigar,
+      start,
+      chr,
+      Some(qualityScores)
+    )
 
-  def makeReads(reads: Seq[(String, Int, Int, Int)]): BufferedIterator[TestRegion] =
-    (for {
-      (contig, start, end, num) <- reads
-      i <- 0 until num
+  def makeRead(sequence: String,
+               cigar: String = "",
+               start: Locus = 1,
+               chr: ContigName = "chr1",
+               qualityScores: Option[Seq[Int]] = None,
+               alignmentQuality: Int = 30): MappedRead = {
+
+    val qualityScoreString =
+      if (qualityScores.isDefined)
+        qualityScores.get.map(q => q + 33).map(_.toChar).mkString
+      else
+        sequence.map(x => '@').mkString
+
+    read(
+      sequence,
+      name = "read1",
+      cigarString = cigar,
+      start = start,
+      contigName = chr,
+      baseQualities = qualityScoreString,
+      alignmentQuality = alignmentQuality
+    )
+  }
+
+  def makePairedRead(chr: ContigName = "chr1",
+                     start: Locus = 1,
+                     alignmentQuality: Int = 30,
+                     isPositiveStrand: Boolean = true,
+                     isMateMapped: Boolean = false,
+                     mateReferenceContig: Option[String] = None,
+                     mateStart: Option[Long] = None,
+                     isMatePositiveStrand: Boolean = false,
+                     sequence: String = "ACTGACTGACTG",
+                     cigar: String = "12M",
+                     inferredInsertSize: Option[Int]): PairedRead[MappedRead] = {
+
+    val qualityScoreString = sequence.map(x => '@').mkString
+
+    PairedRead(
+      read(
+        sequence,
+        name = "read1",
+        cigarString = cigar,
+        start = start,
+        contigName = chr,
+        isPositiveStrand = isPositiveStrand,
+        baseQualities = qualityScoreString,
+        alignmentQuality = alignmentQuality,
+        isPaired = true
+      ),
+      isFirstInPair = true,
+      mateAlignmentProperties =
+        if (isMateMapped)
+          Some(
+            MateAlignmentProperties(
+              mateReferenceContig.get,
+              mateStart.get,
+              inferredInsertSize = inferredInsertSize,
+              isPositiveStrand = isMatePositiveStrand
+            )
+          )
+        else
+          None
+    )
+  }
+
+  def makeReads(contigName: ContigName, reads: (String, String, Int)*): Seq[MappedRead] =
+    for {
+      (sequence, cigar, start) <- reads
     } yield
-      TestRegion(contig, start, end)
-    ).iterator.buffered
+      makeRead(sequence, cigar, start, chr = contigName)
+
+  def makeReads(reads: (String, String, Int)*): Seq[MappedRead] =
+    for {
+      (sequence, cigar, start) <- reads
+    } yield
+      makeRead(sequence, cigar, start)
 }

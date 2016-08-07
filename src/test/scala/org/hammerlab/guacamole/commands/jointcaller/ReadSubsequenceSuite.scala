@@ -2,10 +2,15 @@ package org.hammerlab.guacamole.commands.jointcaller
 
 import org.hammerlab.guacamole.commands.jointcaller.pileup_summarization.ReadSubsequence
 import org.hammerlab.guacamole.pileup.{Util => PileupUtil}
+import org.hammerlab.guacamole.reads.ReadsUtil
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
 
-class ReadSubsequenceSuite extends GuacFunSuite with PileupUtil {
+class ReadSubsequenceSuite
+  extends GuacFunSuite
+    with PileupUtil
+    with ReadsUtil {
+
   val cancerWGS1Bams = Vector("normal.bam", "primary.bam", "recurrence.bam").map(
     name => TestUtil.testDataPath("cancer-wgs1/" + name))
 
@@ -17,12 +22,14 @@ class ReadSubsequenceSuite extends GuacFunSuite with PileupUtil {
   }
 
   test("ofFixedReferenceLength") {
-    val reads = Seq(
-      TestUtil.makeRead("TCGATCGA", "8M", 1), // no variant
-      TestUtil.makeRead("TCGACCCTCGA", "4M3I4M", 1), // insertion
-      TestUtil.makeRead("TCGAGCGA", "8M", 1), // snv
-      TestUtil.makeRead("TNGAGCGA", "8M", 1) // contains N base
-    )
+    val reads =
+      makeReads(
+        ("TCGATCGA", "8M", 1),  // no variant
+        ("TCGACCCTCGA", "4M3I4M", 1),  // insertion
+        ("TCGAGCGA", "8M", 1),  // snv
+        ("TNGAGCGA", "8M", 1)  // contains N base
+      )
+
     val pileups = reads.map(read => makePileup(Seq(read), "chr1", 1))
 
     ReadSubsequence.ofFixedReferenceLength(pileups(0).elements.head, 1).get.sequence should equal("C")
@@ -32,14 +39,16 @@ class ReadSubsequenceSuite extends GuacFunSuite with PileupUtil {
   }
 
   test("ofNextAltAllele") {
-    val reads = Seq(
-      TestUtil.makeRead("TCGATCGA", "8M", 1), // no variant
-      TestUtil.makeRead("TCGAGCGA", "8M", 1), // snv
-      TestUtil.makeRead("TCGACCCTCGA", "4M3I4M", 1), // insertion
-      TestUtil.makeRead("TCGGCCCTCGA", "4M3I4M", 1), // insertion
-      TestUtil.makeRead("TCAGCCCTCGA", "4M3I4M", 1), // insertion
-      TestUtil.makeRead("TNGAGCGA", "8M", 1) // contains N
-    )
+    val reads =
+      makeReads(
+        ("TCGATCGA", "8M", 1),  // no variant
+        ("TCGAGCGA", "8M", 1),  // snv
+        ("TCGACCCTCGA", "4M3I4M", 1),  // insertion
+        ("TCGGCCCTCGA", "4M3I4M", 1),  // insertion
+        ("TCAGCCCTCGA", "4M3I4M", 1),  // insertion
+        ("TNGAGCGA", "8M", 1)  // contains N
+      )
+
     val pileups = reads.map(read => makePileup(Seq(read), "chr1", 1))
 
     ReadSubsequence.ofNextAltAllele(pileups(0).elements(0)) should equal(None)

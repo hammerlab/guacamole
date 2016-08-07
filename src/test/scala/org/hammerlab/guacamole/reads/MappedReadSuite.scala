@@ -21,9 +21,10 @@ package org.hammerlab.guacamole.reads
 import htsjdk.samtools.TextCigarCodec
 import org.hammerlab.guacamole.util.{AssertBases, GuacFunSuite, TestUtil}
 import org.hammerlab.guacamole.util.TestUtil.Implicits._
-import org.hammerlab.guacamole.util.TestUtil.makeRead
 
-class MappedReadSuite extends GuacFunSuite {
+class MappedReadSuite
+  extends GuacFunSuite
+    with ReadsUtil {
 
   test("mappedread is mapped") {
     val read = MappedRead(
@@ -43,7 +44,6 @@ class MappedReadSuite extends GuacFunSuite {
 
     read.isMapped should be(true)
     read.asInstanceOf[Read].isMapped should be(true)
-
   }
 
   test("mixed collections mapped and unmapped reads") {
@@ -78,10 +78,13 @@ class MappedReadSuite extends GuacFunSuite {
   }
 
   // This must only be accessed from inside a spark test where SparkContext has been initialized
-  def reference = TestUtil.makeReference(sc,
-    Seq(
-      ("chr1", 8, "GGTCGATCGATCAA")
-    ))
+  def reference =
+    TestUtil.makeReference(
+      sc,
+      Seq(
+        ("chr1", 8, "GGTCGATCGATCAA")
+      )
+    )
 
   test("slice read matching read") {
     val chr1Contig = reference.getContig("chr1")
@@ -112,7 +115,6 @@ class MappedReadSuite extends GuacFunSuite {
     AssertBases(sliceLastFive.sequence, "CGATC")
     sliceLastFive.cigar.toString should be ("5M")
     sliceLastFive.end should be (20L)
-
   }
 
   test("slice read with deletion") {
@@ -138,7 +140,6 @@ class MappedReadSuite extends GuacFunSuite {
     AssertBases(sliceInDeletion.sequence, "TC")
     sliceInDeletion.cigar.toString should be ("2D2M")
     sliceInDeletion.end should be (20L)
-
   }
 
   test("slice read with insertion") {

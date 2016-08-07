@@ -6,8 +6,12 @@ import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
 import org.hammerlab.guacamole.windowing.SlidingWindow
 import WindowFlatMapUtils.windowFoldLoci
+import org.hammerlab.guacamole.readsets.rdd.ReadsRDDUtil
 
-class WindowFlatMapUtilsSuite extends GuacFunSuite {
+class WindowFlatMapUtilsSuite
+  extends GuacFunSuite
+  with ReadsRDDUtil {
+
   test("test window fold parallelism 5; average read depth") {
 
     // 4 overlapping reads starting at loci = 0
@@ -21,14 +25,12 @@ class WindowFlatMapUtilsSuite extends GuacFunSuite {
     // At pos = 4 through 7, the depth is 3
     // At pos = 8 - 11 through 11, the depth is 2
 
-    val reads = 
-      sc.parallelize(
-        Seq(
-          TestUtil.makeRead("TCGATCGGC", "8M", 0),
-          TestUtil.makeRead("CCCCCCCC", "8M", 1),
-          TestUtil.makeRead("TCGATCGA", "8M", 4),
-          TestUtil.makeRead("GGGGGGG", "7M", 9)
-        )
+    val reads =
+      makeReadsRDD(
+        ("TCGATCGGC", "8M", 0),
+        ("CCCCCCCC", "8M", 1),
+        ("TCGATCGA", "8M", 4),
+        ("GGGGGGG", "7M", 9)
       )
 
     val counts =

@@ -14,6 +14,6 @@ trait ReadsRDDUtil extends ReadsUtil {
       for {
         (seq, cigar, start) <- reads
       } yield
-        TestUtil.makeRead(seq, cigar, start)
+        makeRead(seq, cigar, start)
     )
 }

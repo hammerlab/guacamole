@@ -20,56 +20,97 @@ package org.hammerlab.guacamole.likelihood
 
 import org.bdgenomics.adam.util.PhredUtils
 import org.hammerlab.guacamole.pileup.{Util => PileupUtil}
-import org.hammerlab.guacamole.reads.MappedRead
+import org.hammerlab.guacamole.reads.{MappedRead, ReadsUtil}
 import org.hammerlab.guacamole.util.{Bases, GuacFunSuite, TestUtil}
 import org.hammerlab.guacamole.variants.{Allele, Genotype}
 import org.scalatest.prop.TableDrivenPropertyChecks
 
-class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks with PileupUtil {
+class LikelihoodSuite
+  extends GuacFunSuite
+    with TableDrivenPropertyChecks
+    with PileupUtil
+    with ReadsUtil {
 
   implicit lazy val reference = TestUtil.makeReference(sc, Seq(("chr1", 1, "C")))
 
   val referenceBase = 'C'.toByte
 
-  def makeGenotype(alleles: String*): Genotype = {
+  def makeGenotype(alleles: String*): Genotype =
     // If we later change Genotype to work with Array[byte] instead of strings, we can use this function to convert
     // to byte arrays.
-    Genotype(alleles.map(allele => Allele(Seq(referenceBase), Bases.stringToBases(allele))): _*)
-  }
+    Genotype(
+      alleles.map(
+        allele =>
+          Allele(
+            Seq(referenceBase),
+            Bases.stringToBases(allele)
+          )
+      ): _*
+    )
 
-  def makeGenotype(alleles: (Char, Char)): Genotype = {
-    makeGenotype(alleles.productIterator.map(_.toString).toList: _*)
-  }
+  def makeGenotype(alleles: (Char, Char)): Genotype =
+    makeGenotype(
+      alleles
+        .productIterator
+        .map(_.toString)
+        .toList: _*
+    )
 
   val errorPhred30 = PhredUtils.phredToErrorProbability(30)
   val errorPhred40 = PhredUtils.phredToErrorProbability(40)
 
-  def refRead(phred: Int) = TestUtil.makeRead("C", "1M", 1, "chr1", Some(Array(phred)))
-  def altRead(phred: Int) = TestUtil.makeRead("A", "1M", 1, "chr1", Some(Array(phred)))
+  def refRead(phred: Int) = makeRead("C", "1M", 1, "chr1", Array(phred))
+  def altRead(phred: Int) = makeRead("A", "1M", 1, "chr1", Array(phred))
 
   def testLikelihoods(actualLikelihoods: Seq[(Genotype, Double)],
                       expectedLikelihoods: ((Char, Char), Double)*): Unit =
-    testLikelihoods(actualLikelihoods, expectedLikelihoods.toList.map(p => makeGenotype(p._1) -> p._2).toMap)
+    testLikelihoods(
+      actualLikelihoods,
+      (for {
+        (alleles, probability) <- expectedLikelihoods.toList
+      } yield
+        makeGenotype(alleles) -> probability
+      ).toMap
+    )
 
   def testLikelihoods(actualLikelihoods: Seq[(Genotype, Double)],
                       expectedLikelihoods: Map[Genotype, Double],
                       acceptableError: Double = 1e-12): Unit = {
+
     actualLikelihoods.size should equal(expectedLikelihoods.size)
+
     val actualLikelihoodsMap = actualLikelihoods.toMap
-    forAll(Table("genotype", expectedLikelihoods.toList: _*)) {
-      l => TestUtil.assertAlmostEqual(actualLikelihoodsMap(l._1), l._2, acceptableError)
+
+    forAll(
+      Table(
+        "genotype",
+        expectedLikelihoods.toList: _*
+      )
+    ) {
+      l =>
+        TestUtil.assertAlmostEqual(
+          actualLikelihoodsMap(l._1),
+          l._2,
+          acceptableError
+        )
     }
   }
 
   def testGenotypeLikelihoods(reads: Seq[MappedRead], genotypesMap: ((Char, Char), Double)*): Unit = {
     val pileup = makePileup(reads, reads(0).contigName, 1)
-    forAll(Table("genotype", genotypesMap: _*)) {
+    forAll(
+      Table(
+        "genotype",
+        genotypesMap: _*
+      )
+    ) {
       pair =>
         TestUtil.assertAlmostEqual(
           Likelihood.likelihoodOfGenotype(
             pileup.elements,
-            makeGenotype(pair._1), // genotype
-            Likelihood.probabilityCorrectIgnoringAlignment),
+            makeGenotype(pair._1),  // genotype
+            Likelihood.probabilityCorrectIgnoringAlignment
+          ),
           pair._2
         )
     }
