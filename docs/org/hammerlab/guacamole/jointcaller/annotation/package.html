@@ -1,0 +1,226 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+        <head>
+          <title>annotation - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.jointcaller.annotation</title>
+          <meta name="description" content="annotation - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.jointcaller.annotation" />
+          <meta name="keywords" content="annotation guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.jointcaller.annotation" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../../../../index.html';
+            var hash = 'org.hammerlab.guacamole.jointcaller.annotation.package';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
+    
+        </head>
+        <body class="value">
+      <div id="definition">
+        <img src="../../../../../lib/package_big.png" />
+        <p id="owner"><a href="../../../../package.html" class="extype" name="org">org</a>.<a href="../../../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="../../package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="../package.html" class="extype" name="org.hammerlab.guacamole.jointcaller">jointcaller</a></p>
+        <h1>annotation</h1>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <span class="name">annotation</span>
+      </span>
+      </h4>
+      
+          <div id="comment" class="fullcommenttop"></div>
+        
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        
+        
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="org.hammerlab.guacamole.jointcaller.annotation.InsufficientNormal" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="InsufficientNormalextendsMultiSampleAnnotations.AnnotationwithProductwithSerializable"></a>
+      <a id="InsufficientNormal:InsufficientNormal"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="InsufficientNormal.html"><span class="name">InsufficientNormal</span></a><span class="params">(<span name="parameters">parameters: <a href="../Parameters.html" class="extype" name="org.hammerlab.guacamole.jointcaller.Parameters">Parameters</a></span>, <span name="referenceReads">referenceReads: <span class="extype" name="scala.Int">Int</span></span>, <span name="totalReads">totalReads: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result"> extends <a href="MultiSampleAnnotations$$Annotation.html" class="extype" name="org.hammerlab.guacamole.jointcaller.annotation.MultiSampleAnnotations.Annotation">Annotation</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Annotation and filter for insufficient normal evidence to make a somatic variant call.</p>
+    </li><li name="org.hammerlab.guacamole.jointcaller.annotation.MultiSampleAnnotations" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="MultiSampleAnnotationsextendsProductwithSerializable"></a>
+      <a id="MultiSampleAnnotations:MultiSampleAnnotations"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="MultiSampleAnnotations.html"><span class="name">MultiSampleAnnotations</span></a><span class="params">(<span name="insufficientNormal">insufficientNormal: <span class="extype" name="scala.Option">Option</span>[<a href="InsufficientNormal.html" class="extype" name="org.hammerlab.guacamole.jointcaller.annotation.InsufficientNormal">InsufficientNormal</a>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Annotation for multiple samples at a single allele and a single site.</p>
+    </li><li name="org.hammerlab.guacamole.jointcaller.annotation.SingleSampleAnnotations" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="SingleSampleAnnotationsextendsProductwithSerializable"></a>
+      <a id="SingleSampleAnnotations:SingleSampleAnnotations"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="SingleSampleAnnotations.html"><span class="name">SingleSampleAnnotations</span></a><span class="params">(<span name="strandBias">strandBias: <a href="StrandBias.html" class="extype" name="org.hammerlab.guacamole.jointcaller.annotation.StrandBias">StrandBias</a></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Extra information, such as filters, we compute about a potential call.</p>
+    </li><li name="org.hammerlab.guacamole.jointcaller.annotation.StrandBias" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="StrandBiasextendsSingleSampleAnnotations.AnnotationwithProductwithSerializable"></a>
+      <a id="StrandBias:StrandBias"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="StrandBias.html"><span class="name">StrandBias</span></a><span class="params">(<span name="parameters">parameters: <a href="../Parameters.html" class="extype" name="org.hammerlab.guacamole.jointcaller.Parameters">Parameters</a></span>, <span name="variantForward">variantForward: <span class="extype" name="scala.Int">Int</span></span>, <span name="variantReverse">variantReverse: <span class="extype" name="scala.Int">Int</span></span>, <span name="totalForward">totalForward: <span class="extype" name="scala.Int">Int</span></span>, <span name="totalReverse">totalReverse: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result"> extends <a href="SingleSampleAnnotations$$Annotation.html" class="extype" name="org.hammerlab.guacamole.jointcaller.annotation.SingleSampleAnnotations.Annotation">Annotation</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Strand bias annotation and filter
+</p>
+    </li><li name="org.hammerlab.guacamole.jointcaller.annotation.TooManyCallsAtSite" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="TooManyCallsAtSiteextendsMultiSampleAnnotations.AnnotationwithProductwithSerializable"></a>
+      <a id="TooManyCallsAtSite:TooManyCallsAtSite"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="TooManyCallsAtSite.html"><span class="name">TooManyCallsAtSite</span></a><span class="params">(<span name="numCalls">numCalls: <span class="extype" name="scala.Int">Int</span></span>, <span name="parameters">parameters: <a href="../Parameters.html" class="extype" name="org.hammerlab.guacamole.jointcaller.Parameters">Parameters</a></span>)</span><span class="result"> extends <a href="MultiSampleAnnotations$$Annotation.html" class="extype" name="org.hammerlab.guacamole.jointcaller.annotation.MultiSampleAnnotations.Annotation">Annotation</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Filter sites where the number of calls exceeds a threshold (usually 1).</p>
+    </li></ol>
+            </div>
+
+        
+
+        <div id="values" class="values members">
+              <h3>Value Members</h3>
+              <ol><li name="org.hammerlab.guacamole.jointcaller.annotation.InsufficientNormal" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="InsufficientNormal"></a>
+      <a id="InsufficientNormal:InsufficientNormal"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="InsufficientNormal$.html"><span class="name">InsufficientNormal</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.jointcaller.annotation.MultiSampleAnnotations" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="MultiSampleAnnotations"></a>
+      <a id="MultiSampleAnnotations:MultiSampleAnnotations"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="MultiSampleAnnotations$.html"><span class="name">MultiSampleAnnotations</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.jointcaller.annotation.SingleSampleAnnotations" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="SingleSampleAnnotations"></a>
+      <a id="SingleSampleAnnotations:SingleSampleAnnotations"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="SingleSampleAnnotations$.html"><span class="name">SingleSampleAnnotations</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.jointcaller.annotation.StrandBias" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="StrandBias"></a>
+      <a id="StrandBias:StrandBias"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="StrandBias$.html"><span class="name">StrandBias</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.jointcaller.annotation.TooManyCallsAtSite" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="TooManyCallsAtSite"></a>
+      <a id="TooManyCallsAtSite:TooManyCallsAtSite"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="TooManyCallsAtSite$.html"><span class="name">TooManyCallsAtSite</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li></ol>
+            </div>
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../../lib/template.js"></script>
+    </body>
+      </html>

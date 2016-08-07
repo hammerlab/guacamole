@@ -1,0 +1,264 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+        <head>
+          <title>jointcaller - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.jointcaller</title>
+          <meta name="description" content="jointcaller - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.jointcaller" />
+          <meta name="keywords" content="jointcaller guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.jointcaller" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../../../index.html';
+            var hash = 'org.hammerlab.guacamole.jointcaller.package';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
+    
+        </head>
+        <body class="value">
+      <div id="definition">
+        <img src="../../../../lib/package_big.png" />
+        <p id="owner"><a href="../../../package.html" class="extype" name="org">org</a>.<a href="../../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="../package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a></p>
+        <h1>jointcaller</h1>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <span class="name">jointcaller</span>
+      </span>
+      </h4>
+      
+          <div id="comment" class="fullcommenttop"></div>
+        
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        
+        
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="org.hammerlab.guacamole.jointcaller.AlleleAtLocus" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="AlleleAtLocusextendsProductwithSerializable"></a>
+      <a id="AlleleAtLocus:AlleleAtLocus"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="AlleleAtLocus.html"><span class="name">AlleleAtLocus</span></a><span class="params">(<span name="contigName">contigName: <a href="../reference/package.html#ContigName=String" class="extmbr" name="org.hammerlab.guacamole.reference.ContigName">ContigName</a></span>, <span name="start">start: <a href="../reference/package.html#Locus=Long" class="extmbr" name="org.hammerlab.guacamole.reference.Locus">Locus</a></span>, <span name="ref">ref: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="alt">alt: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">An allele (alt) at a site in the genome.</p>
+    </li><li name="org.hammerlab.guacamole.jointcaller.Input" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="InputextendsProductwithSerializable"></a>
+      <a id="Input:Input"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Input.html"><span class="name">Input</span></a><span class="params">(<span name="index">index: <a href="../readsets/package.html#SampleId=Int" class="extmbr" name="org.hammerlab.guacamole.readsets.SampleId">SampleId</a></span>, <span name="sampleName">sampleName: <a href="../readsets/package.html#SampleName=String" class="extmbr" name="org.hammerlab.guacamole.readsets.SampleName">SampleName</a></span>, <span name="path">path: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="tissueType">tissueType: <a href="Input$$TissueType$.html#ValueextendsOrdered[Enumeration.this.Value]withSerializable" class="extmbr" name="org.hammerlab.guacamole.jointcaller.Input.TissueType.Value">Input.TissueType.Value</a></span>, <span name="analyte">analyte: <a href="Input$$Analyte$.html#ValueextendsOrdered[Enumeration.this.Value]withSerializable" class="extmbr" name="org.hammerlab.guacamole.jointcaller.Input.Analyte.Value">Input.Analyte.Value</a></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">An input BAM to the joint variant caller.</p>
+    </li><li name="org.hammerlab.guacamole.jointcaller.InputCollection" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="InputCollectionextendsProductwithSerializable"></a>
+      <a id="InputCollection:InputCollection"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="InputCollection.html"><span class="name">InputCollection</span></a><span class="params">(<span name="items">items: <a href="../readsets/package.html#PerSample[+A]=IndexedSeq[A]" class="extmbr" name="org.hammerlab.guacamole.readsets.PerSample">PerSample</a>[<a href="Input.html" class="extype" name="org.hammerlab.guacamole.jointcaller.Input">Input</a>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Convenience container for zero or more Input instances.</p>
+    </li><li name="org.hammerlab.guacamole.jointcaller.Parameters" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ParametersextendsProductwithSerializable"></a>
+      <a id="Parameters:Parameters"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Parameters.html"><span class="name">Parameters</span></a><span class="params">(<span name="maxAllelesPerSite">maxAllelesPerSite: <span class="extype" name="scala.Int">Int</span></span>, <span name="maxCallsPerSite">maxCallsPerSite: <span class="extype" name="scala.Int">Int</span></span>, <span name="anyAlleleMinSupportingReads">anyAlleleMinSupportingReads: <span class="extype" name="scala.Int">Int</span></span>, <span name="anyAlleleMinSupportingPercent">anyAlleleMinSupportingPercent: <span class="extype" name="scala.Double">Double</span></span>, <span name="germlineNegativeLog10HeterozygousPrior">germlineNegativeLog10HeterozygousPrior: <span class="extype" name="scala.Double">Double</span></span>, <span name="germlineNegativeLog10HomozygousAlternatePrior">germlineNegativeLog10HomozygousAlternatePrior: <span class="extype" name="scala.Double">Double</span></span>, <span name="somaticNegativeLog10VariantPrior">somaticNegativeLog10VariantPrior: <span class="extype" name="scala.Double">Double</span></span>, <span name="somaticNegativeLog10VariantPriorRna">somaticNegativeLog10VariantPriorRna: <span class="extype" name="scala.Double">Double</span></span>, <span name="somaticNegativeLog10VariantPriorWithRnaEvidence">somaticNegativeLog10VariantPriorWithRnaEvidence: <span class="extype" name="scala.Double">Double</span></span>, <span name="somaticVafFloor">somaticVafFloor: <span class="extype" name="scala.Double">Double</span></span>, <span name="somaticMaxGermlineErrorRatePercent">somaticMaxGermlineErrorRatePercent: <span class="extype" name="scala.Double">Double</span></span>, <span name="somaticGenotypePolicy">somaticGenotypePolicy: <a href="Parameters$$SomaticGenotypePolicy$.html#ValueextendsOrdered[Enumeration.this.Value]withSerializable" class="extmbr" name="org.hammerlab.guacamole.jointcaller.Parameters.SomaticGenotypePolicy.Value">Parameters.SomaticGenotypePolicy.Value</a></span>, <span name="filterStrandBiasPhred">filterStrandBiasPhred: <span class="extype" name="scala.Double">Double</span></span>, <span name="filterSomaticNormalNonreferencePercent">filterSomaticNormalNonreferencePercent: <span class="extype" name="scala.Double">Double</span></span>, <span name="filterSomaticNormalDepth">filterSomaticNormalDepth: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Model parameters for the joint caller.</p>
+    </li></ol>
+            </div>
+
+        
+
+        <div id="values" class="values members">
+              <h3>Value Members</h3>
+              <ol><li name="org.hammerlab.guacamole.jointcaller.AlleleAtLocus" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="AlleleAtLocus"></a>
+      <a id="AlleleAtLocus:AlleleAtLocus"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="AlleleAtLocus$.html"><span class="name">AlleleAtLocus</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.jointcaller.Input" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Input"></a>
+      <a id="Input:Input"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Input$.html"><span class="name">Input</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.jointcaller.InputCollection" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="InputCollection"></a>
+      <a id="InputCollection:InputCollection"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="InputCollection$.html"><span class="name">InputCollection</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.jointcaller.Parameters" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Parameters"></a>
+      <a id="Parameters:Parameters"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Parameters$.html"><span class="name">Parameters</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.jointcaller.VCFOutput" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="VCFOutput"></a>
+      <a id="VCFOutput:VCFOutput"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="VCFOutput$.html"><span class="name">VCFOutput</span></a>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.jointcaller.annotation" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="annotation"></a>
+      <a id="annotation:annotation"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="annotation/package.html"><span class="name">annotation</span></a>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.jointcaller.evidence" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="evidence"></a>
+      <a id="evidence:evidence"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="evidence/package.html"><span class="name">evidence</span></a>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.jointcaller.kryo" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="kryo"></a>
+      <a id="kryo:kryo"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="kryo/package.html"><span class="name">kryo</span></a>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.jointcaller.pileup_summarization" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="pileup_summarization"></a>
+      <a id="pileup_summarization:pileup_summarization"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="pileup_summarization/package.html"><span class="name">pileup_summarization</span></a>
+      </span>
+      </h4>
+      
+    </li></ol>
+            </div>
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../lib/template.js"></script>
+    </body>
+      </html>
