@@ -28,11 +28,12 @@ import org.scalatest.prop.TableDrivenPropertyChecks
 
 class PileupSuite
   extends GuacFunSuite
+    with TableDrivenPropertyChecks
     with ReadsUtil
-    with TableDrivenPropertyChecks {
+    with Util {
 
   // This must only be accessed from inside a spark test where SparkContext has been initialized
-  def reference = TestUtil.makeReference(sc,
+  implicit lazy val reference = TestUtil.makeReference(sc,
     Seq(
       ("chr1", 0, "NTCGATCGACG"),
       ("artificial", 0, "A" * 34 + "G" * 10 + "A" * 5 + "G" * 15 + "A" * 15 + "ACGT" * 10),
@@ -55,11 +56,11 @@ class PileupSuite
         ("TCGACCCTCGA", "4M3I4M", 1)
       )
 
-    val firstPileup = Pileup(reads, "chr1", 1, reference.getContig("chr1"))
+    val firstPileup = makePileup(reads, "chr1", 1)
     firstPileup.elements.forall(_.isMatch) should be(true)
     firstPileup.elements.forall(_.qualityScore == 31) should be(true)
 
-    val insertPileup = Pileup(reads, "chr1", 4, reference.getContig("chr1"))
+    val insertPileup = makePileup(reads, "chr1", 4)
     insertPileup.elements.exists(_.isInsertion) should be(true)
     insertPileup.elements.forall(_.qualityScore == 31) should be(true)
 
@@ -76,7 +77,7 @@ class PileupSuite
         makeRead("TCGACCCTCGA", "4M3I4M", 1, "chr1", Seq(10, 15, 20, 25, 5, 5, 5, 10, 15, 20, 25))
       )
 
-    val insertPileup = Pileup(reads, "chr1", 4, reference.getContig("chr1"))
+    val insertPileup = makePileup(reads, "chr1", 4)
     insertPileup.elements.exists(_.isInsertion) should be(true)
     insertPileup.elements.exists(_.qualityScore == 5) should be(true)
 
@@ -96,11 +97,9 @@ class PileupSuite
         makeRead("TCGACCCTCGA", "4M3I4M", 1, "chr1", Seq(10, 15, 20, 25, 5, 5, 5, 10, 15, 20, 25))
       )
 
-    val pastInsertPileup = Pileup(reads, "chr1", 5, reference.getContig("chr1"))
+    val pastInsertPileup = makePileup(reads, "chr1", 5)
     pastInsertPileup.elements.foreach(_.isMatch should be(true))
-
     pastInsertPileup.elements.foreach(_.qualityScore should be(10))
-
   }
 
   test("create pileup from long insert reads; after insertion") {
@@ -111,7 +110,7 @@ class PileupSuite
         ("TCGACCCTCGA", "4M3I4M", 1)
       )
 
-    val lastPileup = Pileup(reads, "chr1", 7, reference.getContig("chr1"))
+    val lastPileup = makePileup(reads, "chr1", 7)
     lastPileup.elements.foreach(e => AssertBases(e.sequencedBases, "G"))
     lastPileup.elements.forall(_.isMatch) should be(true)
   }
@@ -125,7 +124,7 @@ class PileupSuite
         makeRead("TCGACCCTCGA", "4M3I4M", 1, "chr1", Seq(10, 15, 20, 25, 5, 5, 5, 10, 15, 20, 25))
       )
 
-    val lastPileup = Pileup(reads, "chr1", 8, reference.getContig("chr1"))
+    val lastPileup = makePileup(reads, "chr1", 8)
     lastPileup.elements.foreach(e => AssertBases(e.sequencedBases, "A"))
     lastPileup.elements.forall(_.sequencedBases.headOption.exists(_ == Bases.A)) should be(true)
 
@@ -445,12 +444,12 @@ class PileupSuite
         ("TCGAAAAGCT", "5M6D5M", 0)
       )
 
-    val deletionPileup = Pileup(reads, "chr1", 4, reference.getContig("chr1"))
+    val deletionPileup = makePileup(reads, "chr1", 4)
     val deletionAlleles = deletionPileup.distinctAlleles
     deletionAlleles.size should be(1)
     deletionAlleles(0) should be(Allele("ATCGACG", "A"))
 
-    val midDeletionPileup = Pileup(reads, "chr1", 5, reference.getContig("chr1"))
+    val midDeletionPileup = makePileup(reads, "chr1", 5)
     val midAlleles = midDeletionPileup.distinctAlleles
     midAlleles.size should be(1)
     midAlleles(0) should be(Allele("T", ""))

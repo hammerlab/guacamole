@@ -1,19 +1,21 @@
 package org.hammerlab.guacamole.jointcaller
 
 import org.hammerlab.guacamole.jointcaller.pileup_summarization.ReadSubsequence
-import org.hammerlab.guacamole.pileup.Pileup
+import org.hammerlab.guacamole.pileup.{Util => PileupUtil}
 import org.hammerlab.guacamole.reads.ReadsUtil
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
 
+
 class ReadSubsequenceSuite
   extends GuacFunSuite
-    with ReadsUtil {
+    with ReadsUtil
+    with PileupUtil {
 
   val cancerWGS1Bams = Vector("normal.bam", "primary.bam", "recurrence.bam").map(
     name => TestUtil.testDataPath("cancer-wgs1/" + name))
 
-  def simpleReference = TestUtil.makeReference(sc, Seq(("chr1", 0, "NTCGATCGACG")))
+  implicit lazy val reference = TestUtil.makeReference(sc, Seq(("chr1", 0, "NTCGATCGACG")))
 
   val partialFasta = TestUtil.testDataPath("hg19.partial.fasta")
   def partialReference = {
@@ -29,7 +31,7 @@ class ReadSubsequenceSuite
         ("TNGAGCGA", "8M", 1)  // contains N base
       )
 
-    val pileups = reads.map(read => Pileup(Seq(read), "chr1", 1, simpleReference.getContig("chr1")))
+    val pileups = reads.map(read => makePileup(Seq(read), "chr1", 1))
 
     ReadSubsequence.ofFixedReferenceLength(pileups(0).elements.head, 1).get.sequence should equal("C")
     ReadSubsequence.ofFixedReferenceLength(pileups(0).elements.head, 2).get.sequence should equal("CG")
@@ -48,7 +50,7 @@ class ReadSubsequenceSuite
         ("TNGAGCGA", "8M", 1)  // contains N
       )
 
-    val pileups = reads.map(read => Pileup(Seq(read), "chr1", 1, simpleReference.getContig("chr1")))
+    val pileups = reads.map(read => makePileup(Seq(read), "chr1", 1))
 
     ReadSubsequence.ofNextAltAllele(pileups(0).elements(0)) should equal(None)
 
