@@ -146,7 +146,7 @@ class ReadSetsSuite extends GuacFunSuite {
   test("load and serialize / deserialize reads") {
     val reads = TestUtil.loadReads(sc, "mdtagissue.sam", InputFilters(mapped = true)).mappedReads.collect()
     val serializedReads = reads.map(serialize)
-    val deserializedReads: Seq[MappedRead] = serializedReads.map(deserialize[MappedRead](_))
+    val deserializedReads: Seq[MappedRead] = serializedReads.map(deserialize[MappedRead])
     for ((read, deserialized) <- reads.zip(deserializedReads)) {
       deserialized.contigName should equal(read.contigName)
       deserialized.alignmentQuality should equal(read.alignmentQuality)
