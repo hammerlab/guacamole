@@ -24,7 +24,7 @@ case class MultiSampleMultiAlleleEvidence(contigName: ContigName,
   assume(singleAlleleEvidences.forall(_.allele.contigName == contigName))
   assume(singleAlleleEvidences.forall(_.allele.start == start))
 
-  val end: Long =
+  val end: Locus =
     if (singleAlleleEvidences.isEmpty)
       start
     else
@@ -35,7 +35,7 @@ case class MultiSampleMultiAlleleEvidence(contigName: ContigName,
    *
    * TODO: this should probably do something more sophisticated.
    */
-  def bestAllele(): MultiSampleSingleAlleleEvidence = {
+  def bestAllele: MultiSampleSingleAlleleEvidence = {
     // We rank germline calls first, then somatic calls, then break ties with the sum of the best posteriors.
     singleAlleleEvidences.sortBy(evidence => {
       (evidence.isGermlineCall,
@@ -82,8 +82,15 @@ object MultiSampleMultiAlleleEvidence {
     includeFiltered: Boolean = false): Option[MultiSampleMultiAlleleEvidence] = {
 
     // We ignore clipped reads. Clipped reads include introns (cigar operator N) in RNA-seq.
-    val filteredPileups: Vector[Pileup] = pileups.map(
-      pileup => pileup.copy(elements = pileup.elements.filter(!_.isClipped))).toVector
+    val filteredPileups: PerSample[Pileup] =
+      pileups
+        .map(
+          pileup =>
+            pileup.copy(
+              elements = pileup.elements.filter(!_.isClipped)
+            )
+        )
+
     val normalPileups = inputs.normalDNA.map(input => filteredPileups(input.index))
 
     val contig = normalPileups.head.contigName

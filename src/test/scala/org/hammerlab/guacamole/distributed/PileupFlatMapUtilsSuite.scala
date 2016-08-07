@@ -19,10 +19,15 @@
 package org.hammerlab.guacamole.distributed
 
 import com.esotericsoftware.kryo.Kryo
+import org.apache.spark.rdd.RDD
 import org.apache.spark.storage.BroadcastBlockId
+import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.{pileupFlatMap, pileupFlatMapMultipleRDDs, pileupFlatMapTwoRDDs}
+import org.hammerlab.guacamole.distributed.Util.pileupsToElementStrings
 import org.hammerlab.guacamole.loci.partitioning.UniformPartitioner
 import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.pileup.{Pileup, PileupElement}
+import org.hammerlab.guacamole.reads.MappedRead
+import org.hammerlab.guacamole.readsets.PerSample
 import org.hammerlab.guacamole.reference.ReferenceBroadcast.MapBackedReferenceSequence
 import org.hammerlab.guacamole.util.{AssertBases, Bases, GuacFunSuite, KryoTestRegistrar, TestUtil}
 
@@ -35,6 +40,8 @@ class PileupFlatMapUtilsSuiteRegistrar extends KryoTestRegistrar {
     kryo.register(classOf[PileupElement])
     kryo.register(classOf[Array[PileupElement]])
 
+    kryo.register(classOf[Array[PerSample[_]]])
+
     // Closed over by PileupElement
     kryo.register(classOf[MapBackedReferenceSequence])
     kryo.register(Class.forName("org.apache.spark.broadcast.TorrentBroadcast"))
@@ -46,19 +53,36 @@ class PileupFlatMapUtilsSuiteRegistrar extends KryoTestRegistrar {
   }
 }
 
+private object Util {
+  // This helper function is in its own object here to avoid serializing `PileupFlatMapUtilsSuite`, which is not
+  // serializable due to mixing in `Matchers`.
+  def pileupsToElementStrings(pileups: PerSample[Pileup]): Iterator[PerSample[Seq[String]]] =
+    Iterator(pileups.map(_.elements.map(p => Bases.basesToString(p.sequencedBases))))
+}
+
 class PileupFlatMapUtilsSuite extends GuacFunSuite {
 
   override def registrar: String = "org.hammerlab.guacamole.distributed.PileupFlatMapUtilsSuiteRegistrar"
 
+  def makeReadsRDD(reads: (String, String, Int)*): RDD[MappedRead] =
+    sc.parallelize(
+      for {
+        (seq, cigar, start) <- reads
+      } yield
+        TestUtil.makeRead(seq, cigar, start)
+    )
+
   test("test pileup flatmap parallelism 0; create pileups") {
 
-    val reads = sc.parallelize(Seq(
-      TestUtil.makeRead("TCGATCGA", "8M", 1),
-      TestUtil.makeRead("TCGATCGA", "8M", 1),
-      TestUtil.makeRead("TCGATCGA", "8M", 1)))
+    val reads =
+      makeReadsRDD(
+        ("TCGATCGA", "8M", 1),
+        ("TCGATCGA", "8M", 1),
+        ("TCGATCGA", "8M", 1)
+      )
 
     val pileups =
-      PileupFlatMapUtils.pileupFlatMap[Pileup](
+      pileupFlatMap[Pileup](
         reads,
         UniformPartitioner(reads.getNumPartitions).partition(LociSet("chr1:1-9")),
         skipEmpty = false,
@@ -74,19 +98,21 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
     firstPileup.elements.forall(_.readPosition == 0L) should be(true)
     firstPileup.elements.forall(_.isMatch) should be(true)
 
-    pileups.forall(_.head.isMatch) should be(true)
+    pileups.forall(_.elements.head.isMatch) should be(true)
 
   }
 
   test("test pileup flatmap parallelism 5; create pileups") {
 
-    val reads = sc.parallelize(Seq(
-      TestUtil.makeRead("TCGATCGA", "8M", 1),
-      TestUtil.makeRead("TCGATCGA", "8M", 1),
-      TestUtil.makeRead("TCGATCGA", "8M", 1)))
+    val reads =
+      makeReadsRDD(
+        ("TCGATCGA", "8M", 1),
+        ("TCGATCGA", "8M", 1),
+        ("TCGATCGA", "8M", 1)
+      )
 
     val pileups =
-      PileupFlatMapUtils.pileupFlatMap[Pileup](
+      pileupFlatMap[Pileup](
         reads,
         UniformPartitioner(5).partition(LociSet("chr1:1-9")),
         skipEmpty = false,
@@ -98,17 +124,19 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
     firstPileup.locus should be(1L)
     firstPileup.referenceBase should be(Bases.T)
 
-    pileups.forall(_.head.isMatch) should be(true)
+    pileups.forall(_.elements.head.isMatch) should be(true)
   }
 
   test("test pileup flatmap parallelism 5; skip empty pileups") {
-    val reads = sc.parallelize(Seq(
-      TestUtil.makeRead("TCGATCGA", "8M", 1),
-      TestUtil.makeRead("TCGATCGA", "8M", 1),
-      TestUtil.makeRead("TCGATCGA", "8M", 1)))
+    val reads =
+      makeReadsRDD(
+        ("TCGATCGA", "8M", 1),
+        ("TCGATCGA", "8M", 1),
+        ("TCGATCGA", "8M", 1)
+      )
 
     val loci =
-      PileupFlatMapUtils.pileupFlatMap[Long](
+      pileupFlatMap[Long](
         reads,
         UniformPartitioner(5).partition(LociSet("chr0:5-10,chr1:0-100,chr2:0-1000,chr2:5000-6000")),
         skipEmpty = true,
@@ -119,22 +147,26 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
   }
 
   test("test pileup flatmap two rdds; skip empty pileups") {
-    val reads1 = sc.parallelize(Seq(
-      TestUtil.makeRead("TCGATCGA", "8M", 1),
-      TestUtil.makeRead("TCGATCGA", "8M", 1),
-      TestUtil.makeRead("TCGATCGA", "8M", 1),
-      TestUtil.makeRead("GGGGGGGG", "8M", 100),
-      TestUtil.makeRead("GGGGGGGG", "8M", 100),
-      TestUtil.makeRead("GGGGGGGG", "8M", 100)))
+    val reads1 =
+      makeReadsRDD(
+        ("TCGATCGA", "8M", 1),
+        ("TCGATCGA", "8M", 1),
+        ("TCGATCGA", "8M", 1),
+        ("GGGGGGGG", "8M", 100),
+        ("GGGGGGGG", "8M", 100),
+        ("GGGGGGGG", "8M", 100)
+      )
 
-    val reads2 = sc.parallelize(Seq(
-      TestUtil.makeRead("AAAAAAAA", "8M", 1),
-      TestUtil.makeRead("CCCCCCCC", "8M", 1),
-      TestUtil.makeRead("TTTTTTTT", "8M", 1),
-      TestUtil.makeRead("XXX", "3M", 99)))
+    val reads2 =
+      makeReadsRDD(
+        ("AAAAAAAA", "8M", 1),
+        ("CCCCCCCC", "8M", 1),
+        ("TTTTTTTT", "8M", 1),
+        ("XXX", "3M", 99)
+      )
 
     val loci =
-      PileupFlatMapUtils.pileupFlatMapTwoRDDs[Long](
+      pileupFlatMapTwoRDDs[Long](
         reads1,
         reads2,
         UniformPartitioner(1).partition(LociSet("chr0:0-1000,chr1:1-500,chr2:10-20")),
@@ -146,49 +178,58 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
   }
 
   test("test pileup flatmap multiple rdds; skip empty pileups") {
-    val reads1 = sc.parallelize(Seq(
-      TestUtil.makeRead("TCGATCGA", "8M", 1),
-      TestUtil.makeRead("TCGATCGA", "8M", 1),
-      TestUtil.makeRead("TCGATCGA", "8M", 1),
-      TestUtil.makeRead("GGGGGGGG", "8M", 100),
-      TestUtil.makeRead("GGGGGGGG", "8M", 100),
-      TestUtil.makeRead("GGGGGGGG", "8M", 100)))
+    val reads1 =
+      makeReadsRDD(
+        ("TCGATCGA", "8M", 1),
+        ("TCGATCGA", "8M", 1),
+        ("TCGATCGA", "8M", 1),
+        ("GGGGGGGG", "8M", 100),
+        ("GGGGGGGG", "8M", 100),
+        ("GGGGGGGG", "8M", 100)
+      )
 
-    val reads2 = sc.parallelize(Seq(
-      TestUtil.makeRead("AAAAAAAA", "8M", 1),
-      TestUtil.makeRead("CCCCCCCC", "8M", 1),
-      TestUtil.makeRead("TTTTTTTT", "8M", 1),
-      TestUtil.makeRead("XYX", "3M", 99)))
+    val reads2 =
+      makeReadsRDD(
+        ("AAAAAAAA", "8M", 1),
+        ("CCCCCCCC", "8M", 1),
+        ("TTTTTTTT", "8M", 1),
+        ("XYX", "3M", 99)
+      )
 
-    val reads3 = sc.parallelize(Seq(
-      TestUtil.makeRead("AAGGCCTT", "8M", 1),
-      TestUtil.makeRead("GGAATTCC", "8M", 1),
-      TestUtil.makeRead("GGGGGGGG", "8M", 1),
-      TestUtil.makeRead("XZX", "3M", 99)))
+    val reads3 =
+      makeReadsRDD(
+        ("AAGGCCTT", "8M", 1),
+        ("GGAATTCC", "8M", 1),
+        ("GGGGGGGG", "8M", 1),
+        ("XZX", "3M", 99)
+      )
+
+    val reads = Vector(reads1, reads2, reads3)
 
     val resultPlain =
-      PileupFlatMapUtils.pileupFlatMapMultipleRDDs[Seq[Seq[String]]](
-        Vector(reads1, reads2, reads3),
+      pileupFlatMapMultipleRDDs[PerSample[Seq[String]]](
+        reads,
         UniformPartitioner(1).partition(LociSet("chr1:1-500,chr2:10-20")),
         skipEmpty = true,
-        pileups => Iterator(pileups.map(_.elements.map(p => Bases.basesToString(p.sequencedBases)))),
+        pileupsToElementStrings,
         reference = TestUtil.makeReference(sc, Seq(("chr1", 0, "ATCGATCGA")))
       ).collect.map(_.toList)
 
-    val resultParallelized = PileupFlatMapUtils.pileupFlatMapMultipleRDDs[Seq[Seq[String]]](
-      Vector(reads1, reads2, reads3),
-      UniformPartitioner(800).partition(LociSet("chr0:0-100,chr1:1-500,chr2:10-20")),
-      skipEmpty = true,
-      pileups => Iterator(pileups.map(_.elements.map(p => Bases.basesToString(p.sequencedBases)))),
-      reference = TestUtil.makeReference(sc, Seq(("chr1", 0, "ATCGATCGA")))
-    ).collect.map(_.toList)
+    val resultParallelized =
+      pileupFlatMapMultipleRDDs[PerSample[Seq[String]]](
+        reads,
+        UniformPartitioner(800).partition(LociSet("chr0:0-100,chr1:1-500,chr2:10-20")),
+        skipEmpty = true,
+        pileupsToElementStrings,
+        reference = TestUtil.makeReference(sc, Seq(("chr1", 0, "ATCGATCGA")))
+      ).collect.map(_.toList)
 
     val resultWithEmpty =
-      PileupFlatMapUtils.pileupFlatMapMultipleRDDs[Seq[Seq[String]]](
-        Vector(reads1, reads2, reads3),
+      pileupFlatMapMultipleRDDs[PerSample[Seq[String]]](
+        reads,
         UniformPartitioner(5).partition(LociSet("chr1:1-500,chr2:10-20")),
         skipEmpty = false,
-        pileups => Iterator(pileups.map(_.elements.map(p => Bases.basesToString(p.sequencedBases)))),
+        pileupsToElementStrings,
         reference = TestUtil.makeReference(sc, Seq(("chr1", 0, "ATCGATCGA"), ("chr2", 0, "")))
       ).collect.map(_.toList)
 
@@ -212,13 +253,15 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
 
   test("test pileup flatmap parallelism 5; create pileup elements") {
 
-    val reads = sc.parallelize(Seq(
-      TestUtil.makeRead("TCGATCGA", "8M", 1),
-      TestUtil.makeRead("TCGATCGA", "8M", 1),
-      TestUtil.makeRead("TCGATCGA", "8M", 1)))
+    val reads =
+      makeReadsRDD(
+        ("TCGATCGA", "8M", 1),
+        ("TCGATCGA", "8M", 1),
+        ("TCGATCGA", "8M", 1)
+      )
 
     val pileups =
-      PileupFlatMapUtils.pileupFlatMap[PileupElement](
+      pileupFlatMap[PileupElement](
         reads,
         UniformPartitioner(5).partition(LociSet("chr1:1-9")),
         skipEmpty = false,
@@ -231,22 +274,26 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
   }
 
   test("test two-rdd pileup flatmap; create pileup elements") {
-    val reads1 = sc.parallelize(Seq(
-      TestUtil.makeRead("TCGATCGA", "8M", 1),
-      TestUtil.makeRead("TCGATCGA", "8M", 1),
-      TestUtil.makeRead("TCGATCGA", "8M", 1),
-      TestUtil.makeRead("GGGGGGGG", "8M", 100),
-      TestUtil.makeRead("GGGGGGGG", "8M", 100),
-      TestUtil.makeRead("GGGGGGGG", "8M", 100)))
+    val reads1 =
+      makeReadsRDD(
+        ("TCGATCGA", "8M", 1),
+        ("TCGATCGA", "8M", 1),
+        ("TCGATCGA", "8M", 1),
+        ("GGGGGGGG", "8M", 100),
+        ("GGGGGGGG", "8M", 100),
+        ("GGGGGGGG", "8M", 100)
+      )
 
-    val reads2 = sc.parallelize(Seq(
-      TestUtil.makeRead("TCGATCGA", "8M", 1),
-      TestUtil.makeRead("TCGATCGA", "8M", 1),
-      TestUtil.makeRead("TCGATCGA", "8M", 1),
-      TestUtil.makeRead("AGG", "3M", 99)))
+    val reads2 =
+      makeReadsRDD(
+        ("TCGATCGA", "8M", 1),
+        ("TCGATCGA", "8M", 1),
+        ("TCGATCGA", "8M", 1),
+        ("AGG", "3M", 99)
+      )
 
     val elements =
-      PileupFlatMapUtils.pileupFlatMapTwoRDDs[PileupElement](
+      pileupFlatMapTwoRDDs[PileupElement](
         reads1,
         reads2,
         UniformPartitioner(1000).partition(LociSet("chr1:1-500")),
@@ -264,13 +311,15 @@ class PileupFlatMapUtilsSuite extends GuacFunSuite {
 
   test("test pileup flatmap parallelism 5; create pileup elements; with indel") {
 
-    val reads = sc.parallelize(Seq(
-      TestUtil.makeRead("TCGATCGA", "8M", 1),
-      TestUtil.makeRead("TCGATCGA", "8M", 1),
-      TestUtil.makeRead("TCGACCCTCGA", "4M3I4M", 1)))
+    val reads =
+      makeReadsRDD(
+        ("TCGATCGA", "8M", 1),
+        ("TCGATCGA", "8M", 1),
+        ("TCGACCCTCGA", "4M3I4M", 1)
+      )
 
     val pileups =
-      PileupFlatMapUtils.pileupFlatMap[PileupElement](
+      pileupFlatMap[PileupElement](
         reads,
         UniformPartitioner(5).partition(LociSet("chr1:1-12")),
         skipEmpty = false,

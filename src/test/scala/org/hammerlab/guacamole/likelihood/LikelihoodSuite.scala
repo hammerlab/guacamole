@@ -18,14 +18,34 @@
 
 package org.hammerlab.guacamole.likelihood
 
-import org.hammerlab.guacamole.likelihood.LikelihoodUtil._
-import org.hammerlab.guacamole.pileup.Pileup
+import org.bdgenomics.adam.util.PhredUtils
+import org.hammerlab.guacamole.pileup.{Util => PileupUtil}
 import org.hammerlab.guacamole.reads.MappedRead
-import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
-import org.hammerlab.guacamole.variants.Genotype
+import org.hammerlab.guacamole.util.{Bases, GuacFunSuite, TestUtil}
+import org.hammerlab.guacamole.variants.{Allele, Genotype}
 import org.scalatest.prop.TableDrivenPropertyChecks
 
-class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks {
+class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks with PileupUtil {
+
+  implicit lazy val reference = TestUtil.makeReference(sc, Seq(("chr1", 1, "C")))
+
+  val referenceBase = 'C'.toByte
+
+  def makeGenotype(alleles: String*): Genotype = {
+    // If we later change Genotype to work with Array[byte] instead of strings, we can use this function to convert
+    // to byte arrays.
+    Genotype(alleles.map(allele => Allele(Seq(referenceBase), Bases.stringToBases(allele))): _*)
+  }
+
+  def makeGenotype(alleles: (Char, Char)): Genotype = {
+    makeGenotype(alleles.productIterator.map(_.toString).toList: _*)
+  }
+
+  val errorPhred30 = PhredUtils.phredToErrorProbability(30)
+  val errorPhred40 = PhredUtils.phredToErrorProbability(40)
+
+  def refRead(phred: Int) = TestUtil.makeRead("C", "1M", 1, "chr1", Some(Array(phred)))
+  def altRead(phred: Int) = TestUtil.makeRead("A", "1M", 1, "chr1", Some(Array(phred)))
 
   def testLikelihoods(actualLikelihoods: Seq[(Genotype, Double)],
                       expectedLikelihoods: ((Char, Char), Double)*): Unit =
@@ -42,16 +62,16 @@ class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks {
   }
 
   def testGenotypeLikelihoods(reads: Seq[MappedRead], genotypesMap: ((Char, Char), Double)*): Unit = {
-    val referenceContigSequence = referenceBroadcast(sc).getContig("chr1")
-    val pileup = Pileup(reads, reads(0).contigName, 1, referenceContigSequence)
-    forAll(Table("genotype", genotypesMap: _*)) { pair =>
-      TestUtil.assertAlmostEqual(
-        Likelihood.likelihoodOfGenotype(
-          pileup.elements,
-          makeGenotype(pair._1), // genotype
-          Likelihood.probabilityCorrectIgnoringAlignment),
-        pair._2
-      )
+    val pileup = makePileup(reads, reads(0).contigName, 1)
+    forAll(Table("genotype", genotypesMap: _*)) {
+      pair =>
+        TestUtil.assertAlmostEqual(
+          Likelihood.likelihoodOfGenotype(
+            pileup.elements,
+            makeGenotype(pair._1), // genotype
+            Likelihood.probabilityCorrectIgnoringAlignment),
+          pair._2
+        )
     }
   }
 
@@ -103,15 +123,13 @@ class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks {
   }
 
   test("score genotype for single sample; all bases ref") {
-    val referenceContigSequence = referenceBroadcast(sc).getContig("chr1")
-
     val reads = Seq(
       refRead(30),
       refRead(40),
       refRead(30)
     )
 
-    val pileup = Pileup(reads, "chr1", 1, referenceContigSequence)
+    val pileup = makePileup(reads, "chr1", 1)
 
     testLikelihoods(
       Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(pileup, Likelihood.probabilityCorrectIgnoringAlignment),
@@ -120,15 +138,13 @@ class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks {
   }
 
   test("score genotype for single sample; mix of ref/non-ref bases") {
-    val referenceContigSequence = referenceBroadcast(sc).getContig("chr1")
-
     val reads = Seq(
       refRead(30),
       refRead(40),
       altRead(30)
     )
 
-    val pileup = Pileup(reads, "chr1", 1, referenceContigSequence)
+    val pileup = makePileup(reads, "chr1", 1)
 
     testLikelihoods(
       Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(pileup, Likelihood.probabilityCorrectIgnoringAlignment),
@@ -139,15 +155,13 @@ class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks {
   }
 
   test("score genotype for single sample; all bases non-ref") {
-    val referenceContigSequence = referenceBroadcast(sc).getContig("chr1")
-
     val reads = Seq(
       altRead(30),
       altRead(40),
       altRead(30)
     )
 
-    val pileup = Pileup(reads, "chr1", 1, referenceContigSequence)
+    val pileup = makePileup(reads, "chr1", 1)
 
     testLikelihoods(
       Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(pileup, Likelihood.probabilityCorrectIgnoringAlignment),
@@ -156,15 +170,13 @@ class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks {
   }
 
   test("log score genotype for single sample; all bases ref") {
-    val referenceContigSequence = referenceBroadcast(sc).getContig("chr1")
-
     val reads = Seq(
       refRead(30),
       refRead(40),
       refRead(30)
     )
 
-    val pileup = Pileup(reads, "chr1", 1, referenceContigSequence)
+    val pileup = makePileup(reads, "chr1", 1)
 
     testLikelihoods(
       Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(
@@ -176,15 +188,13 @@ class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks {
   }
 
   test("log score genotype for single sample; mix of ref/non-ref bases") {
-    val referenceContigSequence = referenceBroadcast(sc).getContig("chr1")
-
     val reads = Seq(
       refRead(30),
       refRead(40),
       altRead(30)
     )
 
-    val pileup = Pileup(reads, "chr1", 1, referenceContigSequence)
+    val pileup = makePileup(reads, "chr1", 1)
 
     testLikelihoods(
       Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(
@@ -198,15 +208,13 @@ class LikelihoodSuite extends GuacFunSuite with TableDrivenPropertyChecks {
   }
 
   test("log score genotype for single sample; all bases non-ref") {
-    val referenceContigSequence = referenceBroadcast(sc).getContig("chr1")
-
     val reads = Seq(
       altRead(30),
       altRead(40),
       altRead(30)
     )
 
-    val pileup = Pileup(reads, "chr1", 1, referenceContigSequence)
+    val pileup = makePileup(reads, "chr1", 1)
 
     testLikelihoods(
       Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(

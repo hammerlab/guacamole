@@ -2,7 +2,7 @@ package org.hammerlab.guacamole.commands
 
 import org.hammerlab.guacamole.commands.VariantSupport.Caller.AlleleCount
 import org.hammerlab.guacamole.loci.set.LociParser
-import org.hammerlab.guacamole.pileup.Pileup
+import org.hammerlab.guacamole.pileup.{Pileup, Util => PileupUtil}
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.readsets.io.InputFilters
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
@@ -10,9 +10,14 @@ import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
 import org.hammerlab.guacamole.windowing.SlidingWindow
 import org.scalatest.prop.TableDrivenPropertyChecks
 
-class VariantSupportSuite extends GuacFunSuite with TableDrivenPropertyChecks {
+class VariantSupportSuite extends GuacFunSuite with TableDrivenPropertyChecks with PileupUtil {
 
-  def grch37Reference = ReferenceBroadcast(TestUtil.testDataPath("grch37.partial.fasta"), sc, partialFasta = true)
+  implicit lazy val grch37Reference =
+    ReferenceBroadcast(
+      TestUtil.testDataPath("grch37.partial.fasta"),
+      sc,
+      partialFasta = true
+    )
 
   def testAlleleCounts(window: SlidingWindow[MappedRead],
                        variantAlleleLoci: (String, Int, Seq[(String, String, Int)])*) = {
@@ -28,7 +33,7 @@ class VariantSupportSuite extends GuacFunSuite with TableDrivenPropertyChecks {
             window.currentRegions(),
             contig,
             locus,
-            referenceContigSequence = grch37Reference.getContig(contig)
+            grch37Reference.getContig(contig)
           )
 
         assertAlleleCounts(pileup, alleleCounts: _*)
@@ -78,18 +83,18 @@ class VariantSupportSuite extends GuacFunSuite with TableDrivenPropertyChecks {
       .sortBy(_.start)
 
   test("read evidence for simple snvs") {
-    val pileup = Pileup(gatkReads("20:10008951-10008952"), "20", 10008951, grch37Reference.getContig("20"))
+    val pileup = makePileup(gatkReads("20:10008951-10008952"), "20", 10008951)
     assertAlleleCounts(pileup, ("CACACACACACA", "C", 1), ("C", "C", 4))
   }
 
   test("read evidence for mid-deletion") {
-    val pileup = Pileup(gatkReads("20:10006822-10006823"), "20", 10006822, referenceContigSequence = grch37Reference.getContig("20"))
+    val pileup = makePileup(gatkReads("20:10006822-10006823"), "20", 10006822)
     assertAlleleCounts(pileup, ("C", "", 6), ("C", "C", 2))
   }
 
   test("read evidence for simple snvs 2") {
     val reads = gatkReads("20:10000624-10000625")
-    val pileup = Pileup(reads, "20", 10000624, referenceContigSequence = grch37Reference.getContig("20"))
+    val pileup = makePileup(reads, "20", 10000624)
     assertAlleleCounts(pileup, ("T", "T", 6), ("T", "C", 1))
   }
 

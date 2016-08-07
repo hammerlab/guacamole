@@ -8,6 +8,7 @@ import org.hammerlab.guacamole.reference.ReferenceBroadcast.MapBackedReferenceSe
 import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
 
 class SomaticJointCallerSuite extends GuacFunSuite {
+
   val cancerWGS1Bams = Vector("normal.bam", "primary.bam", "recurrence.bam").map(
     name => TestUtil.testDataPath("cancer-wgs1/" + name))
 
@@ -24,7 +25,7 @@ class SomaticJointCallerSuite extends GuacFunSuite {
     ReferenceBroadcast(b37Chromosome22Fasta, sc, partialFasta = false)
   }
 
-  test("call a somatic variant") {
+  test("force-call a non-variant locus") {
     val inputs = InputCollection(cancerWGS1Bams)
     val loci = LociParser("chr12:65857040")
     val readSets = SomaticJoint.inputsToReadSets(sc, inputs, loci)
@@ -32,8 +33,13 @@ class SomaticJointCallerSuite extends GuacFunSuite {
       sc, inputs, readSets, Parameters.defaults, hg19PartialReference, loci.result, loci.result).collect
 
     calls.length should equal(1)
-    calls.head.singleAlleleEvidences.length should equal(1)
-    calls.head.singleAlleleEvidences.map(_.allele.ref) should equal(Seq("G"))
+
+    val evidences = calls.head.singleAlleleEvidences
+    evidences.length should equal(1)
+
+    val allele = evidences.head.allele
+    allele.start should be(65857040)
+    allele.ref should be("G")
   }
 
   test("call a somatic deletion") {
@@ -132,8 +138,11 @@ class SomaticJointCallerSuite extends GuacFunSuite {
       b37Chromosome22Reference,
       loci.result).collect.filter(_.bestAllele.isCall)
 
-    Map("with rna" -> callsWithRNA, "without rna" -> callsWithoutRNA).foreach({
-      case (description, calls) => {
+    Map(
+      "with rna" -> callsWithRNA,
+      "without rna" -> callsWithoutRNA
+    ).foreach {
+      case (description, calls) =>
         withClue("germline variant %s".format(description)) {
           // There should be a germline homozygous call at 22:46931077 in one based, which is 22:46931076 in zero based.
           val filtered46931076 = calls.filter(call => call.start == 46931076 && call.end == 46931077)
@@ -143,8 +152,7 @@ class SomaticJointCallerSuite extends GuacFunSuite {
           filtered46931076.head.bestAllele.allele.alt should equal("C")
           filtered46931076.head.bestAllele.germlineAlleles should equal("C", "C")
         }
-      }
-    })
+    }
 
     // RNA should enable a call G->A call at 22:46931062 in one based, which is 22:46931061 in zero based.
     callsWithoutRNA.exists(call => call.start == 46931061 && call.end == 46931062) should be(false)

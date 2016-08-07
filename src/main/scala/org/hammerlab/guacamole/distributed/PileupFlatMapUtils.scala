@@ -6,7 +6,7 @@ import org.hammerlab.guacamole.loci.partitioning.LociPartitioning
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.readsets.PerSample
-import org.hammerlab.guacamole.reference.{ReferenceGenome, _}
+import org.hammerlab.guacamole.reference.{ContigSequence, ReferenceGenome}
 import org.hammerlab.guacamole.windowing.SlidingWindow
 
 import scala.reflect.ClassTag
@@ -14,7 +14,8 @@ import scala.reflect.ClassTag
 object PileupFlatMapUtils {
   /**
    * Helper function. Given optionally an existing Pileup, and a sliding read window return a new Pileup at the given
-   * locus. If an existing Pileup is given as input, then the result will share elements with that Pileup for efficiency.
+   * locus. If an existing Pileup is given as input, then the result will share elements with that Pileup for
+   * efficiency.
    *
    *  If an existing Pileup is provided, then its locus must be <= the new locus.
    */
@@ -23,9 +24,15 @@ object PileupFlatMapUtils {
                                referenceContigSequence: ContigSequence): Pileup = {
     assume(window.halfWindowSize == 0)
     existing match {
-      case None => Pileup(
-        window.currentRegions(), window.contigName, window.currentLocus, referenceContigSequence)
-      case Some(pileup) => pileup.atGreaterLocus(window.currentLocus, window.newRegions.iterator)
+      case None =>
+        Pileup(
+          window.currentRegions(),
+          window.contigName,
+          window.currentLocus,
+          referenceContigSequence
+        )
+      case Some(pileup) =>
+        pileup.atGreaterLocus(window.currentLocus, window.newRegions.iterator)
     }
   }
 
@@ -49,8 +56,8 @@ object PileupFlatMapUtils {
       Vector(reads),
       lociPartitions,
       skipEmpty,
-      0,
-      None,
+      halfWindowSize = 0,
+      initialState = None,
       (maybePileup: Option[Pileup], windows: PerSample[SlidingWindow[MappedRead]]) => {
         assert(windows.length == 1)
         val pileup = initOrMovePileup(maybePileup, windows(0), reference.getContig(windows(0).contigName))
@@ -104,18 +111,29 @@ object PileupFlatMapUtils {
       skipEmpty,
       halfWindowSize = 0,
       initialState = None,
-      function = (maybePileups: Option[PerSample[Pileup]], windows: PerSample[SlidingWindow[MappedRead]]) => {
-        val advancedPileups = maybePileups match {
-          case Some(existingPileups) => {
-            existingPileups.zip(windows).map(
-              pileupAndWindow => initOrMovePileup(
-                Some(pileupAndWindow._1),
-                pileupAndWindow._2,
-                reference.getContig(windows(0).contigName)))
-          }
-          case None => windows.map(initOrMovePileup(None, _, reference.getContig(windows(0).contigName)))
+      (maybePileups: Option[PerSample[Pileup]], windows: PerSample[SlidingWindow[MappedRead]]) => {
+        val advancedPileups =
+          maybePileups match {
+
+            case Some(existingPileups) =>
+              for {
+                (pileup, window) <- existingPileups.zip(windows)
+              } yield
+                pileup.atGreaterLocus(window.currentLocus, window.newRegions.iterator)
+
+            case None =>
+              for {
+                window <- windows
+              } yield
+                Pileup(
+                  window.currentRegions(),
+                  window.contigName,
+                  window.currentLocus,
+                  reference.getContig(windows(0).contigName)
+                )
         }
         (Some(advancedPileups), function(advancedPileups))
-      })
+      }
+    )
   }
 }

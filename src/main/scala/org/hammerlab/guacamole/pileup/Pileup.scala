@@ -19,9 +19,8 @@
 package org.hammerlab.guacamole.pileup
 
 import org.hammerlab.guacamole.reads.MappedRead
-import org.hammerlab.guacamole.reference.{ContigName, ContigSequence, Locus, ReferenceBroadcast}
-import org.hammerlab.guacamole.util.Bases
-import org.hammerlab.guacamole.variants.{Allele, Genotype}
+import org.hammerlab.guacamole.reference.{ContigName, ContigSequence, Locus}
+import org.hammerlab.guacamole.variants.Allele
 
 /**
  * A [[Pileup]] at a locus contains a sequence of [[PileupElement]] instances, one for every read that overlaps that
@@ -39,14 +38,6 @@ case class Pileup(contigName: ContigName,
                   contigSequence: ContigSequence,
                   elements: Seq[PileupElement]) {
 
-  val referenceBase: Byte = contigSequence(locus.toInt)
-
-  /** The first element in the pileup. */
-  lazy val head = {
-    assume(elements.nonEmpty, "Empty pileup")
-    elements.head
-  }
-
   assume(elements.forall(_.read.contigName == contigName),
     "Pileup reference name '%s' does not match read reference name(s): %s".format(
       contigName, elements.map(_.read.contigName).filter(_ != contigName).mkString(",")))
@@ -55,6 +46,8 @@ case class Pileup(contigName: ContigName,
   lazy val distinctAlleles: Seq[Allele] = elements.map(_.allele).distinct.sorted.toVector
 
   lazy val sampleName = elements.head.read.sampleName
+
+  lazy val referenceBase: Byte = contigSequence(locus.toInt)
 
   /**
    * Depth of pileup - number of reads at locus
@@ -85,7 +78,7 @@ case class Pileup(contigName: ContigName,
    * @param newReads The *new* reads, i.e. those that overlap the new locus, but not the current locus.
    * @return A new [[Pileup]] at the given locus.
    */
-  def atGreaterLocus(newLocus: Long, newReads: Iterator[MappedRead]) = {
+  def atGreaterLocus(newLocus: Locus, newReads: Iterator[MappedRead]) = {
     assume(elements.isEmpty || newLocus > locus,
       "New locus (%d) not greater than current locus (%d)".format(newLocus, locus))
     if (elements.isEmpty && newReads.isEmpty) {
@@ -130,18 +123,23 @@ case class Pileup(contigName: ContigName,
     (alleleElements.size, numAllelePositiveElements)
   }
 }
+
 object Pileup {
   /**
    * Given reads and a locus, returns a [[Pileup]] at the specified locus.
    *
    * @param reads Sequence of reads, in any order, that may or may not overlap the locus.
+   * @param contigName The contig these reads lie on.
    * @param locus The locus to return a [[Pileup]] at.
-   * @param referenceContigSequence The reference for this pileup's contig
+   * @param contigSequence The reference for this pileup's contig
    * @return A [[Pileup]] at the given locus.
    */
-  def apply(reads: Seq[MappedRead], referenceName: String, locus: Long, referenceContigSequence: ContigSequence): Pileup = {
+  def apply(reads: Seq[MappedRead],
+            contigName: ContigName,
+            locus: Locus,
+            contigSequence: ContigSequence): Pileup = {
     //TODO: Is this call to overlaps locus necessary?
-    val elements = reads.filter(_.overlapsLocus(locus)).map(PileupElement(_, locus, referenceContigSequence))
-    Pileup(referenceName, locus, referenceContigSequence, elements.toIndexedSeq)
+    val elements = reads.filter(_.overlapsLocus(locus)).map(PileupElement(_, locus, contigSequence))
+    Pileup(contigName, locus, contigSequence, elements.toIndexedSeq)
   }
 }
