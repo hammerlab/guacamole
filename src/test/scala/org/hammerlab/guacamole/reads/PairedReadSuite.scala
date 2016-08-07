@@ -24,7 +24,7 @@ class PairedReadSuite extends FunSuite with Matchers {
         mateAlignmentProperties = Some(
           MateAlignmentProperties(
             inferredInsertSize = Some(300),
-            referenceContig = "chr5",
+            contigName = "chr5",
             start = 100L,
             isPositiveStrand = false
           )
@@ -52,7 +52,7 @@ class PairedReadSuite extends FunSuite with Matchers {
       mateAlignmentProperties = Some(
         MateAlignmentProperties(
           inferredInsertSize = Some(300),
-          referenceContig = "chr5",
+          contigName = "chr5",
           start = 100L,
           isPositiveStrand = false
         )
@@ -79,7 +79,7 @@ class PairedReadSuite extends FunSuite with Matchers {
         mateAlignmentProperties = Some(
           MateAlignmentProperties(
             inferredInsertSize = Some(300),
-            referenceContig = "chr5",
+            contigName = "chr5",
             start = 100L,
             isPositiveStrand = false
           )
