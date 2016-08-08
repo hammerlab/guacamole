@@ -82,7 +82,7 @@
         <div id="types" class="types members">
               <h3>Type Members</h3>
               <ol><li name="org.hammerlab.guacamole.commands.VAFHistogram.Arguments" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="ArgumentsextendsArgs4jBasewithLociPartitionerArgswithReadLoadingConfigArgs"></a>
+      <a id="ArgumentsextendsArgs4jBasewithArguments"></a>
       <a id="Arguments:Arguments"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -90,7 +90,7 @@
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a href="VAFHistogram$$Arguments.html"><span class="name">Arguments</span></a><span class="result"> extends <span class="extype" name="org.bdgenomics.utils.cli.Args4jBase">Args4jBase</span> with <a href="../loci/partitioning/LociPartitionerArgs.html" class="extype" name="org.hammerlab.guacamole.loci.partitioning.LociPartitionerArgs">LociPartitionerArgs</a> with <a href="../readsets/io/ReadLoadingConfigArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.io.ReadLoadingConfigArgs">ReadLoadingConfigArgs</a></span>
+        <a href="VAFHistogram$$Arguments.html"><span class="name">Arguments</span></a><span class="result"> extends <span class="extype" name="org.bdgenomics.utils.cli.Args4jBase">Args4jBase</span> with <a href="../readsets/args/Arguments.html" class="extype" name="org.hammerlab.guacamole.readsets.args.Arguments">readsets.args.Arguments</a></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
@@ -273,15 +273,15 @@
               
         </dd></dl></div>
     </li><li name="org.hammerlab.guacamole.commands.VAFHistogram#generateVAFHistogram" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="generateVAFHistogram(variantAlleleFrequencies:org.apache.spark.rdd.RDD[org.hammerlab.guacamole.commands.VariantLocus],bins:Int):Map[Int,Long]"></a>
-      <a id="generateVAFHistogram(RDD[VariantLocus],Int):Map[Int,Long]"></a>
+      <a id="generateVAFHistogram(variantAlleleFrequencies:org.apache.spark.rdd.RDD[org.hammerlab.guacamole.commands.VariantLocus],bins:Int):Map[Int,org.hammerlab.guacamole.reference.NumLoci]"></a>
+      <a id="generateVAFHistogram(RDD[VariantLocus],Int):Map[Int,NumLoci]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">generateVAFHistogram</span><span class="params">(<span name="variantAlleleFrequencies">variantAlleleFrequencies: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<a href="VariantLocus.html" class="extype" name="org.hammerlab.guacamole.commands.VariantLocus">VariantLocus</a>]</span>, <span name="bins">bins: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Int">Int</span>, <span class="extype" name="scala.Long">Long</span>]</span>
+        <span class="name">generateVAFHistogram</span><span class="params">(<span name="variantAlleleFrequencies">variantAlleleFrequencies: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<a href="VariantLocus.html" class="extype" name="org.hammerlab.guacamole.commands.VariantLocus">VariantLocus</a>]</span>, <span name="bins">bins: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Int">Int</span>, <a href="../reference/package.html#NumLoci=Long" class="extmbr" name="org.hammerlab.guacamole.reference.NumLoci">NumLoci</a>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Generates a count of loci in each variant allele frequency bins
@@ -393,15 +393,15 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="org.hammerlab.guacamole.commands.VAFHistogram#variantLociFromReads" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="variantLociFromReads(reads:org.apache.spark.rdd.RDD[org.hammerlab.guacamole.reads.MappedRead],reference:org.hammerlab.guacamole.reference.ReferenceGenome,lociPartitions:org.hammerlab.guacamole.loci.partitioning.LociPartitioning,samplePercent:Int,minReadDepth:Int,minVariantAlleleFrequency:Int,printStats:Boolean):org.apache.spark.rdd.RDD[org.hammerlab.guacamole.commands.VariantLocus]"></a>
-      <a id="variantLociFromReads(RDD[MappedRead],ReferenceGenome,LociPartitioning,Int,Int,Int,Boolean):RDD[VariantLocus]"></a>
+      <a id="variantLociFromReads(reads:org.apache.spark.rdd.RDD[org.hammerlab.guacamole.reads.MappedRead],sampleName:org.hammerlab.guacamole.readsets.SampleName,reference:org.hammerlab.guacamole.reference.ReferenceGenome,lociPartitions:org.hammerlab.guacamole.loci.partitioning.LociPartitioning,samplePercent:Int,minReadDepth:Int,minVariantAlleleFrequency:Int,printStats:Boolean):org.apache.spark.rdd.RDD[org.hammerlab.guacamole.commands.VariantLocus]"></a>
+      <a id="variantLociFromReads(RDD[MappedRead],SampleName,ReferenceGenome,LociPartitioning,Int,Int,Int,Boolean):RDD[VariantLocus]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">variantLociFromReads</span><span class="params">(<span name="reads">reads: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<a href="../reads/MappedRead.html" class="extype" name="org.hammerlab.guacamole.reads.MappedRead">MappedRead</a>]</span>, <span name="reference">reference: <a href="../reference/ReferenceGenome.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceGenome">ReferenceGenome</a></span>, <span name="lociPartitions">lociPartitions: <a href="../loci/partitioning/LociPartitioning.html" class="extype" name="org.hammerlab.guacamole.loci.partitioning.LociPartitioning">LociPartitioning</a></span>, <span name="samplePercent">samplePercent: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">100</span></span>, <span name="minReadDepth">minReadDepth: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">0</span></span>, <span name="minVariantAlleleFrequency">minVariantAlleleFrequency: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">0</span></span>, <span name="printStats">printStats: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="result">: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<a href="VariantLocus.html" class="extype" name="org.hammerlab.guacamole.commands.VariantLocus">VariantLocus</a>]</span>
+        <span class="name">variantLociFromReads</span><span class="params">(<span name="reads">reads: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<a href="../reads/MappedRead.html" class="extype" name="org.hammerlab.guacamole.reads.MappedRead">MappedRead</a>]</span>, <span name="sampleName">sampleName: <a href="../readsets/package.html#SampleName=String" class="extmbr" name="org.hammerlab.guacamole.readsets.SampleName">SampleName</a></span>, <span name="reference">reference: <a href="../reference/ReferenceGenome.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceGenome">ReferenceGenome</a></span>, <span name="lociPartitions">lociPartitions: <a href="../loci/partitioning/LociPartitioning.html" class="extype" name="org.hammerlab.guacamole.loci.partitioning.LociPartitioning">LociPartitioning</a></span>, <span name="samplePercent">samplePercent: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">100</span></span>, <span name="minReadDepth">minReadDepth: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">0</span></span>, <span name="minVariantAlleleFrequency">minVariantAlleleFrequency: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">0</span></span>, <span name="printStats">printStats: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="result">: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<a href="VariantLocus.html" class="extype" name="org.hammerlab.guacamole.commands.VariantLocus">VariantLocus</a>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Find all non-reference loci in the sample

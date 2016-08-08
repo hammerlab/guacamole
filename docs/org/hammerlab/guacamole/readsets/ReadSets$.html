@@ -151,31 +151,70 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li name="org.hammerlab.guacamole.readsets.ReadSets#apply" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="apply(sc:org.apache.spark.SparkContext,inputs:Seq[(String,org.hammerlab.guacamole.readsets.io.InputFilters)],contigLengthsFromDictionary:Boolean,config:org.hammerlab.guacamole.readsets.io.ReadLoadingConfig):org.hammerlab.guacamole.readsets.ReadSets"></a>
-      <a id="apply(SparkContext,Seq[(String,InputFilters)],Boolean,ReadLoadingConfig):ReadSets"></a>
+      <a id="apply(readsRDDs:org.hammerlab.guacamole.readsets.PerSample[org.hammerlab.guacamole.readsets.rdd.ReadsRDD],sequenceDictionary:org.bdgenomics.adam.models.SequenceDictionary):org.hammerlab.guacamole.readsets.ReadSets"></a>
+      <a id="apply(PerSample[ReadsRDD],SequenceDictionary):ReadSets"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">apply</span><span class="params">(<span name="sc">sc: <span class="extype" name="org.apache.spark.SparkContext">SparkContext</span></span>, <span name="inputs">inputs: <span class="extype" name="scala.Seq">Seq</span>[(<span class="extype" name="scala.Predef.String">String</span>, <a href="io/InputFilters.html" class="extype" name="org.hammerlab.guacamole.readsets.io.InputFilters">InputFilters</a>)]</span>, <span name="contigLengthsFromDictionary">contigLengthsFromDictionary: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="config">config: <a href="io/ReadLoadingConfig.html" class="extype" name="org.hammerlab.guacamole.readsets.io.ReadLoadingConfig">ReadLoadingConfig</a></span>)</span><span class="result">: <a href="ReadSets.html" class="extype" name="org.hammerlab.guacamole.readsets.ReadSets">ReadSets</a></span>
+        <span class="name">apply</span><span class="params">(<span name="readsRDDs">readsRDDs: <a href="package.html#PerSample[+A]=IndexedSeq[A]" class="extmbr" name="org.hammerlab.guacamole.readsets.PerSample">PerSample</a>[<a href="rdd/ReadsRDD.html" class="extype" name="org.hammerlab.guacamole.readsets.rdd.ReadsRDD">ReadsRDD</a>]</span>, <span name="sequenceDictionary">sequenceDictionary: <span class="extype" name="org.bdgenomics.adam.models.SequenceDictionary">SequenceDictionary</span></span>)</span><span class="result">: <a href="ReadSets.html" class="extype" name="org.hammerlab.guacamole.readsets.ReadSets">ReadSets</a></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.readsets.ReadSets#apply" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="apply(sc:org.apache.spark.SparkContext,inputsAndFilters:org.hammerlab.guacamole.readsets.PerSample[(org.hammerlab.guacamole.readsets.io.Input,org.hammerlab.guacamole.readsets.io.InputFilters)],contigLengthsFromDictionary:Boolean,config:org.hammerlab.guacamole.readsets.io.ReadLoadingConfig):org.hammerlab.guacamole.readsets.ReadSets"></a>
+      <a id="apply(SparkContext,PerSample[(Input,InputFilters)],Boolean,ReadLoadingConfig):ReadSets"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">apply</span><span class="params">(<span name="sc">sc: <span class="extype" name="org.apache.spark.SparkContext">SparkContext</span></span>, <span name="inputsAndFilters">inputsAndFilters: <a href="package.html#PerSample[+A]=IndexedSeq[A]" class="extmbr" name="org.hammerlab.guacamole.readsets.PerSample">PerSample</a>[(<a href="io/Input.html" class="extype" name="org.hammerlab.guacamole.readsets.io.Input">Input</a>, <a href="io/InputFilters.html" class="extype" name="org.hammerlab.guacamole.readsets.io.InputFilters">InputFilters</a>)]</span>, <span name="contigLengthsFromDictionary">contigLengthsFromDictionary: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="config">config: <a href="io/ReadLoadingConfig.html" class="extype" name="org.hammerlab.guacamole.readsets.io.ReadLoadingConfig">ReadLoadingConfig</a></span>)</span><span class="result">: <a href="ReadSets.html" class="extype" name="org.hammerlab.guacamole.readsets.ReadSets">ReadSets</a></span>
       </span>
       </h4>
       <p class="shortcomment cmt">Load reads from multiple files, allowing different filters to be applied to each file.</p>
     </li><li name="org.hammerlab.guacamole.readsets.ReadSets#apply" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="apply(sc:org.apache.spark.SparkContext,filenames:Seq[String],filters:org.hammerlab.guacamole.readsets.io.InputFilters,contigLengthsFromDictionary:Boolean,config:org.hammerlab.guacamole.readsets.io.ReadLoadingConfig):org.hammerlab.guacamole.readsets.ReadSets"></a>
-      <a id="apply(SparkContext,Seq[String],InputFilters,Boolean,ReadLoadingConfig):ReadSets"></a>
+      <a id="apply(sc:org.apache.spark.SparkContext,inputs:org.hammerlab.guacamole.readsets.PerSample[org.hammerlab.guacamole.readsets.io.Input],filters:org.hammerlab.guacamole.readsets.io.InputFilters,contigLengthsFromDictionary:Boolean,config:org.hammerlab.guacamole.readsets.io.ReadLoadingConfig):org.hammerlab.guacamole.readsets.ReadSets"></a>
+      <a id="apply(SparkContext,PerSample[Input],InputFilters,Boolean,ReadLoadingConfig):ReadSets"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">apply</span><span class="params">(<span name="sc">sc: <span class="extype" name="org.apache.spark.SparkContext">SparkContext</span></span>, <span name="filenames">filenames: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="filters">filters: <a href="io/InputFilters.html" class="extype" name="org.hammerlab.guacamole.readsets.io.InputFilters">InputFilters</a> = <span class="symbol"><span class="name"><a href="../../../package.html">InputFilters.empty</a></span></span></span>, <span name="contigLengthsFromDictionary">contigLengthsFromDictionary: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">true</span></span>, <span name="config">config: <a href="io/ReadLoadingConfig.html" class="extype" name="org.hammerlab.guacamole.readsets.io.ReadLoadingConfig">ReadLoadingConfig</a> = <span class="symbol"><span class="name"><a href="../../../package.html">ReadLoadingConfig.default</a></span></span></span>)</span><span class="result">: <a href="ReadSets.html" class="extype" name="org.hammerlab.guacamole.readsets.ReadSets">ReadSets</a></span>
+        <span class="name">apply</span><span class="params">(<span name="sc">sc: <span class="extype" name="org.apache.spark.SparkContext">SparkContext</span></span>, <span name="inputs">inputs: <a href="package.html#PerSample[+A]=IndexedSeq[A]" class="extmbr" name="org.hammerlab.guacamole.readsets.PerSample">PerSample</a>[<a href="io/Input.html" class="extype" name="org.hammerlab.guacamole.readsets.io.Input">Input</a>]</span>, <span name="filters">filters: <a href="io/InputFilters.html" class="extype" name="org.hammerlab.guacamole.readsets.io.InputFilters">InputFilters</a> = <span class="symbol"><span class="name"><a href="../../../package.html">InputFilters.empty</a></span></span></span>, <span name="contigLengthsFromDictionary">contigLengthsFromDictionary: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">true</span></span>, <span name="config">config: <a href="io/ReadLoadingConfig.html" class="extype" name="org.hammerlab.guacamole.readsets.io.ReadLoadingConfig">ReadLoadingConfig</a> = <span class="symbol"><span class="name"><a href="../../../package.html">ReadLoadingConfig.default</a></span></span></span>)</span><span class="result">: <a href="ReadSets.html" class="extype" name="org.hammerlab.guacamole.readsets.ReadSets">ReadSets</a></span>
       </span>
       </h4>
       <p class="shortcomment cmt">Load reads from multiple files, merging their sequence dictionaries and verifying that they are consistent.</p>
+    </li><li name="org.hammerlab.guacamole.readsets.ReadSets#apply" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="apply(sc:org.apache.spark.SparkContext,args:org.hammerlab.guacamole.readsets.args.Arguments):(org.hammerlab.guacamole.readsets.ReadSets,org.hammerlab.guacamole.loci.set.LociSet)"></a>
+      <a id="apply(SparkContext,Arguments):(ReadSets,LociSet)"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">apply</span><span class="params">(<span name="sc">sc: <span class="extype" name="org.apache.spark.SparkContext">SparkContext</span></span>, <span name="args">args: <a href="args/Arguments.html" class="extype" name="org.hammerlab.guacamole.readsets.args.Arguments">Arguments</a></span>)</span><span class="result">: (<a href="ReadSets.html" class="extype" name="org.hammerlab.guacamole.readsets.ReadSets">ReadSets</a>, <a href="../loci/set/LociSet.html" class="extype" name="org.hammerlab.guacamole.loci.set.LociSet">LociSet</a>)</span>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.readsets.ReadSets#apply" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="apply(sc:org.apache.spark.SparkContext,inputs:org.hammerlab.guacamole.readsets.PerSample[org.hammerlab.guacamole.readsets.io.Input],loci:org.hammerlab.guacamole.loci.set.LociParser,contigLengthsFromDictionary:Boolean):org.hammerlab.guacamole.readsets.ReadSets"></a>
+      <a id="apply(SparkContext,PerSample[Input],LociParser,Boolean):ReadSets"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">apply</span><span class="params">(<span name="sc">sc: <span class="extype" name="org.apache.spark.SparkContext">SparkContext</span></span>, <span name="inputs">inputs: <a href="package.html#PerSample[+A]=IndexedSeq[A]" class="extmbr" name="org.hammerlab.guacamole.readsets.PerSample">PerSample</a>[<a href="io/Input.html" class="extype" name="org.hammerlab.guacamole.readsets.io.Input">Input</a>]</span>, <span name="loci">loci: <a href="../loci/set/LociParser.html" class="extype" name="org.hammerlab.guacamole.loci.set.LociParser">LociParser</a></span>, <span name="contigLengthsFromDictionary">contigLengthsFromDictionary: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <a href="ReadSets.html" class="extype" name="org.hammerlab.guacamole.readsets.ReadSets">ReadSets</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Load ReadSet instances from user-specified BAMs (specified as an InputCollection).</p>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>

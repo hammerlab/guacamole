@@ -24,9 +24,9 @@
         </head>
         <body class="type">
       <div id="definition">
-        <a href="ReadsRDD$.html" title="Go to companion"><img src="../../../../../lib/class_to_object_big.png" /></a>
+        <img src="../../../../../lib/class_big.png" />
         <p id="owner"><a href="../../../../package.html" class="extype" name="org">org</a>.<a href="../../../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="../../package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="../package.html" class="extype" name="org.hammerlab.guacamole.readsets">readsets</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole.readsets.rdd">rdd</a></p>
-        <h1><a href="ReadsRDD$.html" title="Go to companion">ReadsRDD</a></h1>
+        <h1>ReadsRDD</h1>
       </div>
 
       <h4 id="signature" class="signature">
@@ -35,7 +35,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">ReadsRDD</span><span class="params">(<span name="reads">reads: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<a href="../../reads/Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a>]</span>, <span name="sourceFile">sourceFile: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">ReadsRDD</span><span class="params">(<span name="reads">reads: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<a href="../../reads/Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a>]</span>, <span name="input">input: <a href="../io/Input.html" class="extype" name="org.hammerlab.guacamole.readsets.io.Input">Input</a></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
@@ -81,7 +81,7 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="org.hammerlab.guacamole.readsets.rdd.ReadsRDD#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(reads:org.apache.spark.rdd.RDD[org.hammerlab.guacamole.reads.Read],sourceFile:String):org.hammerlab.guacamole.readsets.rdd.ReadsRDD"></a>
+      <a id="&lt;init&gt;(reads:org.apache.spark.rdd.RDD[org.hammerlab.guacamole.reads.Read],input:org.hammerlab.guacamole.readsets.io.Input):org.hammerlab.guacamole.readsets.rdd.ReadsRDD"></a>
       <a id="&lt;init&gt;:ReadsRDD"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -89,7 +89,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">ReadsRDD</span><span class="params">(<span name="reads">reads: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<a href="../../reads/Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a>]</span>, <span name="sourceFile">sourceFile: <span class="extype" name="scala.Predef.String">String</span></span>)</span>
+        <span class="name">ReadsRDD</span><span class="params">(<span name="reads">reads: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<a href="../../reads/Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a>]</span>, <span name="input">input: <a href="../io/Input.html" class="extype" name="org.hammerlab.guacamole.readsets.io.Input">Input</a></span>)</span>
       </span>
       </h4>
       
@@ -257,6 +257,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.readsets.rdd.ReadsRDD#input" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="input:org.hammerlab.guacamole.readsets.io.Input"></a>
+      <a id="input:Input"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">input</span><span class="result">: <a href="../io/Input.html" class="extype" name="org.hammerlab.guacamole.readsets.io.Input">Input</a></span>
+      </span>
+      </h4>
+      
     </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <a id="isInstanceOf[T0]:Boolean"></a>
@@ -358,19 +371,6 @@
       </span>
       <span class="symbol">
         <span class="name">shortName</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
-      </span>
-      </h4>
-      
-    </li><li name="org.hammerlab.guacamole.readsets.rdd.ReadsRDD#sourceFile" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="sourceFile:String"></a>
-      <a id="sourceFile:String"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">sourceFile</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
       </h4>
       

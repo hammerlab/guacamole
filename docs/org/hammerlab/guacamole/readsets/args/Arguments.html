@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>TumorNormalReadsArgs - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.readsets.args.TumorNormalReadsArgs</title>
-          <meta name="description" content="TumorNormalReadsArgs - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.readsets.args.TumorNormalReadsArgs" />
-          <meta name="keywords" content="TumorNormalReadsArgs guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.readsets.args.TumorNormalReadsArgs" />
+          <title>Arguments - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.readsets.args.Arguments</title>
+          <meta name="description" content="Arguments - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.readsets.args.Arguments" />
+          <meta name="keywords" content="Arguments guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.readsets.args.Arguments" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -12,7 +12,7 @@
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../../index.html';
-            var hash = 'org.hammerlab.guacamole.readsets.args.TumorNormalReadsArgs';
+            var hash = 'org.hammerlab.guacamole.readsets.args.Arguments';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -26,7 +26,7 @@
       <div id="definition">
         <img src="../../../../../lib/trait_big.png" />
         <p id="owner"><a href="../../../../package.html" class="extype" name="org">org</a>.<a href="../../../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="../../package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="../package.html" class="extype" name="org.hammerlab.guacamole.readsets">readsets</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole.readsets.args">args</a></p>
-        <h1>TumorNormalReadsArgs</h1>
+        <h1>Arguments</h1>
       </div>
 
       <h4 id="signature" class="signature">
@@ -35,16 +35,17 @@
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <span class="name">TumorNormalReadsArgs</span><span class="result"> extends <span class="extype" name="org.bdgenomics.utils.cli.Args4jBase">Args4jBase</span> with <a href="Base.html" class="extype" name="org.hammerlab.guacamole.readsets.args.Base">Base</a></span>
+        <span class="name">Arguments</span><span class="result"> extends <span class="extype" name="org.bdgenomics.utils.cli.Args4jBase">Args4jBase</span> with <a href="Base.html" class="extype" name="org.hammerlab.guacamole.readsets.args.Base">Base</a></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Arguments for accepting two sets of reads (tumor + normal).</p></div><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Common command-line arguments for loading in one or more sets of reads, and associating a sample-name with each.
+</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><a href="Base.html" class="extype" name="org.hammerlab.guacamole.readsets.args.Base">Base</a>, <a href="../io/ReadLoadingConfigArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.io.ReadLoadingConfigArgs">ReadLoadingConfigArgs</a>, <a href="NoSequenceDictionaryArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.args.NoSequenceDictionaryArgs">NoSequenceDictionaryArgs</a>, <a href="../../loci/partitioning/LociPartitionerArgs.html" class="extype" name="org.hammerlab.guacamole.loci.partitioning.LociPartitionerArgs">LociPartitionerArgs</a>, <a href="../../loci/partitioning/CappedRegionsPartitionerArgs.html" class="extype" name="org.hammerlab.guacamole.loci.partitioning.CappedRegionsPartitionerArgs">CappedRegionsPartitionerArgs</a>, <a href="../../loci/partitioning/MicroRegionPartitionerArgs.html" class="extype" name="org.hammerlab.guacamole.loci.partitioning.MicroRegionPartitionerArgs">MicroRegionPartitionerArgs</a>, <a href="../../loci/partitioning/UniformPartitionerArgs.html" class="extype" name="org.hammerlab.guacamole.loci.partitioning.UniformPartitionerArgs">UniformPartitionerArgs</a>, <a href="../../loci/LociArgs.html" class="extype" name="org.hammerlab.guacamole.loci.LociArgs">LociArgs</a>, <a href="../../logging/DebugLogArgs.html" class="extype" name="org.hammerlab.guacamole.logging.DebugLogArgs">DebugLogArgs</a>, <span class="extype" name="org.bdgenomics.utils.cli.ParquetArgs">ParquetArgs</span>, <span class="extype" name="org.bdgenomics.utils.cli.ParquetRDDArgs">ParquetRDDArgs</span>, <span class="extype" name="org.bdgenomics.utils.cli.Args4jBase">Args4jBase</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div><div class="toggleContainer block">
           <span class="toggle">Known Subclasses</span>
-          <div class="subClasses hiddenContent"><a href="../../commands/SomaticStandard$$Arguments.html" class="extype" name="org.hammerlab.guacamole.commands.SomaticStandard.Arguments">Arguments</a>, <a href="SomaticCallerArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.args.SomaticCallerArgs">SomaticCallerArgs</a></div>
+          <div class="subClasses hiddenContent"><a href="../../jointcaller/InputCollection$$Arguments.html" class="extype" name="org.hammerlab.guacamole.jointcaller.InputCollection.Arguments">Arguments</a>, <a href="../../commands/VariantSupport$$Arguments.html" class="extype" name="org.hammerlab.guacamole.commands.VariantSupport.Arguments">Arguments</a>, <a href="../../commands/VAFHistogram$$Arguments.html" class="extype" name="org.hammerlab.guacamole.commands.VAFHistogram.Arguments">Arguments</a>, <a href="../../commands/SomaticJoint$$Arguments.html" class="extype" name="org.hammerlab.guacamole.commands.SomaticJoint.Arguments">Arguments</a></div>
         </div></div>
         
 
@@ -62,7 +63,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="org.hammerlab.guacamole.readsets.args.TumorNormalReadsArgs"><span>TumorNormalReadsArgs</span></li><li class="in" name="org.hammerlab.guacamole.readsets.args.Base"><span>Base</span></li><li class="in" name="org.hammerlab.guacamole.readsets.io.ReadLoadingConfigArgs"><span>ReadLoadingConfigArgs</span></li><li class="in" name="org.hammerlab.guacamole.readsets.args.NoSequenceDictionaryArgs"><span>NoSequenceDictionaryArgs</span></li><li class="in" name="org.hammerlab.guacamole.loci.partitioning.LociPartitionerArgs"><span>LociPartitionerArgs</span></li><li class="in" name="org.hammerlab.guacamole.loci.partitioning.CappedRegionsPartitionerArgs"><span>CappedRegionsPartitionerArgs</span></li><li class="in" name="org.hammerlab.guacamole.loci.partitioning.MicroRegionPartitionerArgs"><span>MicroRegionPartitionerArgs</span></li><li class="in" name="org.hammerlab.guacamole.loci.partitioning.UniformPartitionerArgs"><span>UniformPartitionerArgs</span></li><li class="in" name="org.hammerlab.guacamole.loci.LociArgs"><span>LociArgs</span></li><li class="in" name="org.hammerlab.guacamole.logging.DebugLogArgs"><span>DebugLogArgs</span></li><li class="in" name="org.bdgenomics.utils.cli.ParquetArgs"><span>ParquetArgs</span></li><li class="in" name="org.bdgenomics.utils.cli.ParquetRDDArgs"><span>ParquetRDDArgs</span></li><li class="in" name="org.bdgenomics.utils.cli.Args4jBase"><span>Args4jBase</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="org.hammerlab.guacamole.readsets.args.Arguments"><span>Arguments</span></li><li class="in" name="org.hammerlab.guacamole.readsets.args.Base"><span>Base</span></li><li class="in" name="org.hammerlab.guacamole.readsets.io.ReadLoadingConfigArgs"><span>ReadLoadingConfigArgs</span></li><li class="in" name="org.hammerlab.guacamole.readsets.args.NoSequenceDictionaryArgs"><span>NoSequenceDictionaryArgs</span></li><li class="in" name="org.hammerlab.guacamole.loci.partitioning.LociPartitionerArgs"><span>LociPartitionerArgs</span></li><li class="in" name="org.hammerlab.guacamole.loci.partitioning.CappedRegionsPartitionerArgs"><span>CappedRegionsPartitionerArgs</span></li><li class="in" name="org.hammerlab.guacamole.loci.partitioning.MicroRegionPartitionerArgs"><span>MicroRegionPartitionerArgs</span></li><li class="in" name="org.hammerlab.guacamole.loci.partitioning.UniformPartitionerArgs"><span>UniformPartitionerArgs</span></li><li class="in" name="org.hammerlab.guacamole.loci.LociArgs"><span>LociArgs</span></li><li class="in" name="org.hammerlab.guacamole.logging.DebugLogArgs"><span>DebugLogArgs</span></li><li class="in" name="org.bdgenomics.utils.cli.ParquetArgs"><span>ParquetArgs</span></li><li class="in" name="org.bdgenomics.utils.cli.ParquetRDDArgs"><span>ParquetRDDArgs</span></li><li class="in" name="org.bdgenomics.utils.cli.Args4jBase"><span>Args4jBase</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -477,19 +478,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="NoSequenceDictionaryArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.args.NoSequenceDictionaryArgs">NoSequenceDictionaryArgs</a></dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.readsets.args.TumorNormalReadsArgs#normalReads" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="normalReads:String"></a>
-      <a id="normalReads:String"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">var</span>
-      </span>
-      <span class="symbol">
-        <span class="name">normalReads</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
-      </span>
-      </h4>
-      
     </li><li name="scala.AnyRef#notify" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notify():Unit"></a>
       <a id="notify():Unit"></a>
@@ -572,19 +560,19 @@ computed. Higher values of this will result in a more exact but more expensive c
 In the extreme, setting this to greater than the number of loci (per partition) will result in an exact
 calculation.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../loci/partitioning/MicroRegionPartitionerArgs.html" class="extype" name="org.hammerlab.guacamole.loci.partitioning.MicroRegionPartitionerArgs">MicroRegionPartitionerArgs</a></dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.readsets.args.TumorNormalReadsArgs#paths" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="org.hammerlab.guacamole.readsets.args.Arguments#paths" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="paths:Array[String]"></a>
       <a id="paths:Array[String]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">def</span>
+        <span class="kind">var</span>
       </span>
       <span class="symbol">
         <span class="name">paths</span><span class="result">: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.readsets.args.TumorNormalReadsArgs">TumorNormalReadsArgs</a> → <a href="Base.html" class="extype" name="org.hammerlab.guacamole.readsets.args.Base">Base</a></dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.readsets.args.Arguments">Arguments</a> → <a href="Base.html" class="extype" name="org.hammerlab.guacamole.readsets.args.Base">Base</a></dd></dl></div>
     </li><li name="org.bdgenomics.utils.cli.Args4jBase#printMetrics" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="printMetrics:Boolean"></a>
       <a id="printMetrics:Boolean"></a>
@@ -611,19 +599,19 @@ calculation.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../loci/partitioning/LociPartitionerArgs.html" class="extype" name="org.hammerlab.guacamole.loci.partitioning.LociPartitionerArgs">LociPartitionerArgs</a></dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.readsets.args.TumorNormalReadsArgs#sampleNames" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="org.hammerlab.guacamole.readsets.args.Arguments#sampleNames" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="sampleNames:Array[String]"></a>
       <a id="sampleNames:Array[String]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">def</span>
+        <span class="kind">var</span>
       </span>
       <span class="symbol">
-        <span class="name">sampleNames</span><span class="result">: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="java.lang.String">String</span>]</span>
+        <span class="name">sampleNames</span><span class="result">: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.readsets.args.TumorNormalReadsArgs">TumorNormalReadsArgs</a> → <a href="Base.html" class="extype" name="org.hammerlab.guacamole.readsets.args.Base">Base</a></dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.readsets.args.Arguments">Arguments</a> → <a href="Base.html" class="extype" name="org.hammerlab.guacamole.readsets.args.Base">Base</a></dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -650,19 +638,6 @@ calculation.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.readsets.args.TumorNormalReadsArgs#tumorReads" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="tumorReads:String"></a>
-      <a id="tumorReads:String"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">var</span>
-      </span>
-      <span class="symbol">
-        <span class="name">tumorReads</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
-      </span>
-      </h4>
-      
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>

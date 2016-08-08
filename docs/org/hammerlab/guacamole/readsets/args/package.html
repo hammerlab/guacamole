@@ -58,8 +58,34 @@
 
         <div id="types" class="types members">
               <h3>Type Members</h3>
-              <ol><li name="org.hammerlab.guacamole.readsets.args.GermlineCallerArgs" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="GermlineCallerArgsextendsArgs4jBasewithGenotypeOutputArgswithSingleSampleArgswithConcordance.ConcordanceArgswithLociPartitionerArgs"></a>
+              <ol><li name="org.hammerlab.guacamole.readsets.args.Arguments" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="ArgumentsextendsArgs4jBasewithBase"></a>
+      <a id="Arguments:Arguments"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="Arguments.html"><span class="name">Arguments</span></a><span class="result"> extends <span class="extype" name="org.bdgenomics.utils.cli.Args4jBase">Args4jBase</span> with <a href="Base.html" class="extype" name="org.hammerlab.guacamole.readsets.args.Base">Base</a></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Common command-line arguments for loading in one or more sets of reads, and associating a sample-name with each.</p>
+    </li><li name="org.hammerlab.guacamole.readsets.args.Base" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="BaseextendsArgs4jBasewithLociPartitionerArgswithNoSequenceDictionaryArgswithReadLoadingConfigArgs"></a>
+      <a id="Base:Base"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="Base.html"><span class="name">Base</span></a><span class="result"> extends <span class="extype" name="org.bdgenomics.utils.cli.Args4jBase">Args4jBase</span> with <a href="../../loci/partitioning/LociPartitionerArgs.html" class="extype" name="org.hammerlab.guacamole.loci.partitioning.LociPartitionerArgs">LociPartitionerArgs</a> with <a href="NoSequenceDictionaryArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.args.NoSequenceDictionaryArgs">NoSequenceDictionaryArgs</a> with <a href="../io/ReadLoadingConfigArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.io.ReadLoadingConfigArgs">ReadLoadingConfigArgs</a></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.readsets.args.GermlineCallerArgs" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="GermlineCallerArgsextendsArgs4jBasewithGenotypeOutputArgswithSingleSampleArgswithConcordance.ConcordanceArgs"></a>
       <a id="GermlineCallerArgs:GermlineCallerArgs"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -67,12 +93,12 @@
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="GermlineCallerArgs.html"><span class="name">GermlineCallerArgs</span></a><span class="result"> extends <span class="extype" name="org.bdgenomics.utils.cli.Args4jBase">Args4jBase</span> with <a href="../../variants/GenotypeOutputArgs.html" class="extype" name="org.hammerlab.guacamole.variants.GenotypeOutputArgs">GenotypeOutputArgs</a> with <a href="SingleSampleArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.args.SingleSampleArgs">SingleSampleArgs</a> with <a href="../../variants/Concordance$$ConcordanceArgs.html" class="extype" name="org.hammerlab.guacamole.variants.Concordance.ConcordanceArgs">ConcordanceArgs</a> with <a href="../../loci/partitioning/LociPartitionerArgs.html" class="extype" name="org.hammerlab.guacamole.loci.partitioning.LociPartitionerArgs">LociPartitionerArgs</a></span>
+        <a href="GermlineCallerArgs.html"><span class="name">GermlineCallerArgs</span></a><span class="result"> extends <span class="extype" name="org.bdgenomics.utils.cli.Args4jBase">Args4jBase</span> with <a href="../../variants/GenotypeOutputArgs.html" class="extype" name="org.hammerlab.guacamole.variants.GenotypeOutputArgs">GenotypeOutputArgs</a> with <a href="SingleSampleArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.args.SingleSampleArgs">SingleSampleArgs</a> with <a href="../../variants/Concordance$$ConcordanceArgs.html" class="extype" name="org.hammerlab.guacamole.variants.Concordance.ConcordanceArgs">ConcordanceArgs</a></span>
       </span>
       </h4>
       
     </li><li name="org.hammerlab.guacamole.readsets.args.NoSequenceDictionaryArgs" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="NoSequenceDictionaryArgsextendsArgs4jBasewithDebugLogArgs"></a>
+      <a id="NoSequenceDictionaryArgsextendsAnyRef"></a>
       <a id="NoSequenceDictionaryArgs:NoSequenceDictionaryArgs"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -80,12 +106,12 @@
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="NoSequenceDictionaryArgs.html"><span class="name">NoSequenceDictionaryArgs</span></a><span class="result"> extends <span class="extype" name="org.bdgenomics.utils.cli.Args4jBase">Args4jBase</span> with <a href="../../logging/DebugLogArgs.html" class="extype" name="org.hammerlab.guacamole.logging.DebugLogArgs">DebugLogArgs</a></span>
+        <a href="NoSequenceDictionaryArgs.html"><span class="name">NoSequenceDictionaryArgs</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       </h4>
       <p class="comment cmt">Argument for using / not using sequence dictionaries to get contigs and lengths.</p>
     </li><li name="org.hammerlab.guacamole.readsets.args.SingleSampleArgs" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="SingleSampleArgsextendsArgs4jBasewithDebugLogArgswithNoSequenceDictionaryArgswithReadLoadingConfigArgs"></a>
+      <a id="SingleSampleArgsextendsArgs4jBasewithBase"></a>
       <a id="SingleSampleArgs:SingleSampleArgs"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -93,12 +119,12 @@
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="SingleSampleArgs.html"><span class="name">SingleSampleArgs</span></a><span class="result"> extends <span class="extype" name="org.bdgenomics.utils.cli.Args4jBase">Args4jBase</span> with <a href="../../logging/DebugLogArgs.html" class="extype" name="org.hammerlab.guacamole.logging.DebugLogArgs">DebugLogArgs</a> with <a href="NoSequenceDictionaryArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.args.NoSequenceDictionaryArgs">NoSequenceDictionaryArgs</a> with <a href="../io/ReadLoadingConfigArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.io.ReadLoadingConfigArgs">ReadLoadingConfigArgs</a></span>
+        <a href="SingleSampleArgs.html"><span class="name">SingleSampleArgs</span></a><span class="result"> extends <span class="extype" name="org.bdgenomics.utils.cli.Args4jBase">Args4jBase</span> with <a href="Base.html" class="extype" name="org.hammerlab.guacamole.readsets.args.Base">Base</a></span>
       </span>
       </h4>
       <p class="comment cmt">Argument for accepting a single set of reads (for non-somatic variant calling).</p>
     </li><li name="org.hammerlab.guacamole.readsets.args.SomaticCallerArgs" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="SomaticCallerArgsextendsArgs4jBasewithGenotypeOutputArgswithTumorNormalReadsArgswithLociPartitionerArgs"></a>
+      <a id="SomaticCallerArgsextendsArgs4jBasewithGenotypeOutputArgswithTumorNormalReadsArgs"></a>
       <a id="SomaticCallerArgs:SomaticCallerArgs"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -106,12 +132,12 @@
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="SomaticCallerArgs.html"><span class="name">SomaticCallerArgs</span></a><span class="result"> extends <span class="extype" name="org.bdgenomics.utils.cli.Args4jBase">Args4jBase</span> with <a href="../../variants/GenotypeOutputArgs.html" class="extype" name="org.hammerlab.guacamole.variants.GenotypeOutputArgs">GenotypeOutputArgs</a> with <a href="TumorNormalReadsArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.args.TumorNormalReadsArgs">TumorNormalReadsArgs</a> with <a href="../../loci/partitioning/LociPartitionerArgs.html" class="extype" name="org.hammerlab.guacamole.loci.partitioning.LociPartitionerArgs">LociPartitionerArgs</a></span>
+        <a href="SomaticCallerArgs.html"><span class="name">SomaticCallerArgs</span></a><span class="result"> extends <span class="extype" name="org.bdgenomics.utils.cli.Args4jBase">Args4jBase</span> with <a href="../../variants/GenotypeOutputArgs.html" class="extype" name="org.hammerlab.guacamole.variants.GenotypeOutputArgs">GenotypeOutputArgs</a> with <a href="TumorNormalReadsArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.args.TumorNormalReadsArgs">TumorNormalReadsArgs</a></span>
       </span>
       </h4>
       
     </li><li name="org.hammerlab.guacamole.readsets.args.TumorNormalReadsArgs" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="TumorNormalReadsArgsextendsArgs4jBasewithDebugLogArgswithNoSequenceDictionaryArgswithReadLoadingConfigArgs"></a>
+      <a id="TumorNormalReadsArgsextendsArgs4jBasewithBase"></a>
       <a id="TumorNormalReadsArgs:TumorNormalReadsArgs"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -119,7 +145,7 @@
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="TumorNormalReadsArgs.html"><span class="name">TumorNormalReadsArgs</span></a><span class="result"> extends <span class="extype" name="org.bdgenomics.utils.cli.Args4jBase">Args4jBase</span> with <a href="../../logging/DebugLogArgs.html" class="extype" name="org.hammerlab.guacamole.logging.DebugLogArgs">DebugLogArgs</a> with <a href="NoSequenceDictionaryArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.args.NoSequenceDictionaryArgs">NoSequenceDictionaryArgs</a> with <a href="../io/ReadLoadingConfigArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.io.ReadLoadingConfigArgs">ReadLoadingConfigArgs</a></span>
+        <a href="TumorNormalReadsArgs.html"><span class="name">TumorNormalReadsArgs</span></a><span class="result"> extends <span class="extype" name="org.bdgenomics.utils.cli.Args4jBase">Args4jBase</span> with <a href="Base.html" class="extype" name="org.hammerlab.guacamole.readsets.args.Base">Base</a></span>
       </span>
       </h4>
       <p class="comment cmt">Arguments for accepting two sets of reads (tumor + normal).</p>
