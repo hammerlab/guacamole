@@ -4,7 +4,7 @@ import java.lang.{Long => JLong}
 
 import com.google.common.collect.{RangeMap, TreeRangeMap, Range => JRange}
 import org.hammerlab.guacamole.loci.set.{Contig => LociSetContig}
-import org.hammerlab.guacamole.reference.{ContigName, Interval}
+import org.hammerlab.guacamole.reference.{ContigName, Interval, Locus}
 import org.hammerlab.guacamole.strings.TruncatedToString
 
 import scala.collection.JavaConversions._
@@ -24,7 +24,7 @@ case class Contig[T](name: ContigName, private val rangeMap: RangeMap[JLong, T])
    * Get the value associated with the given locus. Returns Some(value) if the given locus is in this map, None
    * otherwise.
    */
-  def get(locus: Long): Option[T] = {
+  def get(locus: Locus): Option[T] = {
     Option(rangeMap.get(locus))
   }
 

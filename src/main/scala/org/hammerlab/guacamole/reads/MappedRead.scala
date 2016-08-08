@@ -63,13 +63,13 @@ case class MappedRead(
    * Number of mismatching bases in this read. Does *not* include indels: only looks at read bases that align to a
    * single base in the reference and do not match it.
    *
-   * @param referenceContigSequence the reference sequence for this read's contig
+   * @param contigSequence the reference sequence for this read's contig
    * @return count of mismatching bases
    */
   private var cachedCountOfMismatches = -1
-  def countOfMismatches(referenceContigSequence: ContigSequence): Int = {
+  def countOfMismatches(contigSequence: ContigSequence): Int = {
     if (cachedCountOfMismatches == -1) {
-      var element = PileupElement(this, start, referenceContigSequence)
+      var element = PileupElement(this, start, contigSequence)
       var count = (if (element.isMismatch) 1 else 0)
       while (element.locus < end - 1) {
         element = element.advanceToLocus(element.locus + 1)
@@ -112,10 +112,10 @@ case class MappedRead(
    *
    * @param from reference locus to start the new read
    * @param until reference locus to slice up to (exclusive end)
-   * @param referenceContigSequence reference sequence for the read's contig
+   * @param contigSequence reference sequence for the read's contig
    * @return A read which spans [from, until) or None if the provided coordinates do not overlap the read
    */
-  def slice(from: Long, until: Long, referenceContigSequence: ContigSequence): Option[MappedRead] = {
+  def slice(from: Long, until: Long, contigSequence: ContigSequence): Option[MappedRead] = {
     if (from >= end || until < start) {
       None
     } else if (from <= start && until >= end) {
@@ -125,7 +125,7 @@ case class MappedRead(
       val referenceStart = math.max(from, start)
       val referenceEnd = math.min(until - 1, end - 1)
 
-      val el = PileupElement(this, start, referenceContigSequence)
+      val el = PileupElement(this, start, contigSequence)
       val startElement = el.advanceToLocus(referenceStart)
       val readStartIndex = startElement.readPosition
       val startCigarIndex = startElement.cigarElementIndex

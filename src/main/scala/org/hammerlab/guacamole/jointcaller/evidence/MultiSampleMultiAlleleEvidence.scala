@@ -24,7 +24,7 @@ case class MultiSampleMultiAlleleEvidence(contigName: ContigName,
   assume(singleAlleleEvidences.forall(_.allele.contigName == contigName))
   assume(singleAlleleEvidences.forall(_.allele.start == start))
 
-  val end: Long =
+  val end: Locus =
     if (singleAlleleEvidences.isEmpty)
       start
     else
