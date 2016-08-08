@@ -35,11 +35,11 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">MateAlignmentProperties</span><span class="params">(<span name="referenceContig">referenceContig: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="start">start: <span class="extype" name="scala.Long">Long</span></span>, <span name="inferredInsertSize">inferredInsertSize: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>]</span>, <span name="isPositiveStrand">isPositiveStrand: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">MateAlignmentProperties</span><span class="params">(<span name="contigName">contigName: <a href="../reference/package.html#ContigName=String" class="extmbr" name="org.hammerlab.guacamole.reference.ContigName">ContigName</a></span>, <span name="start">start: <a href="../reference/package.html#Locus=Long" class="extmbr" name="org.hammerlab.guacamole.reference.Locus">Locus</a></span>, <span name="inferredInsertSize">inferredInsertSize: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>]</span>, <span name="isPositiveStrand">isPositiveStrand: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Details of the mate read alignment</p></div><dl class="paramcmts block"><dt class="param">referenceContig</dt><dd class="cmt"><p>Contig/chromosome of the mate read</p></dd><dt class="param">start</dt><dd class="cmt"><p>0-based start position of the mate read</p></dd><dt class="param">inferredInsertSize</dt><dd class="cmt"><p>Insert size between the reads if defined</p></dd><dt class="param">isPositiveStrand</dt><dd class="cmt"><p>Whether the mate is on the positive strand
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Details of the mate read alignment</p></div><dl class="paramcmts block"><dt class="param">contigName</dt><dd class="cmt"><p>Contig/chromosome of the mate read</p></dd><dt class="param">start</dt><dd class="cmt"><p>0-based start position of the mate read</p></dd><dt class="param">inferredInsertSize</dt><dd class="cmt"><p>Insert size between the reads if defined</p></dd><dt class="param">isPositiveStrand</dt><dd class="cmt"><p>Whether the mate is on the positive strand
 </p></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
@@ -81,7 +81,7 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="org.hammerlab.guacamole.reads.MateAlignmentProperties#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="&lt;init&gt;(referenceContig:String,start:Long,inferredInsertSize:Option[Int],isPositiveStrand:Boolean):org.hammerlab.guacamole.reads.MateAlignmentProperties"></a>
+      <a id="&lt;init&gt;(contigName:org.hammerlab.guacamole.reference.ContigName,start:org.hammerlab.guacamole.reference.Locus,inferredInsertSize:Option[Int],isPositiveStrand:Boolean):org.hammerlab.guacamole.reads.MateAlignmentProperties"></a>
       <a id="&lt;init&gt;:MateAlignmentProperties"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -89,10 +89,10 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">MateAlignmentProperties</span><span class="params">(<span name="referenceContig">referenceContig: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="start">start: <span class="extype" name="scala.Long">Long</span></span>, <span name="inferredInsertSize">inferredInsertSize: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>]</span>, <span name="isPositiveStrand">isPositiveStrand: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span>
+        <span class="name">MateAlignmentProperties</span><span class="params">(<span name="contigName">contigName: <a href="../reference/package.html#ContigName=String" class="extmbr" name="org.hammerlab.guacamole.reference.ContigName">ContigName</a></span>, <span name="start">start: <a href="../reference/package.html#Locus=Long" class="extmbr" name="org.hammerlab.guacamole.reference.Locus">Locus</a></span>, <span name="inferredInsertSize">inferredInsertSize: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>]</span>, <span name="isPositiveStrand">isPositiveStrand: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">referenceContig</dt><dd class="cmt"><p>Contig/chromosome of the mate read</p></dd><dt class="param">start</dt><dd class="cmt"><p>0-based start position of the mate read</p></dd><dt class="param">inferredInsertSize</dt><dd class="cmt"><p>Insert size between the reads if defined</p></dd><dt class="param">isPositiveStrand</dt><dd class="cmt"><p>Whether the mate is on the positive strand
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">contigName</dt><dd class="cmt"><p>Contig/chromosome of the mate read</p></dd><dt class="param">start</dt><dd class="cmt"><p>0-based start position of the mate read</p></dd><dt class="param">inferredInsertSize</dt><dd class="cmt"><p>Insert size between the reads if defined</p></dd><dt class="param">isPositiveStrand</dt><dd class="cmt"><p>Whether the mate is on the positive strand
 </p></dd></dl></div>
     </li></ol>
             </div>
@@ -200,6 +200,19 @@
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.reads.MateAlignmentProperties#contigName" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="contigName:org.hammerlab.guacamole.reference.ContigName"></a>
+      <a id="contigName:ContigName"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">contigName</span><span class="result">: <a href="../reference/package.html#ContigName=String" class="extmbr" name="org.hammerlab.guacamole.reference.ContigName">ContigName</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Contig/chromosome of the mate read</p>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -324,29 +337,16 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.reads.MateAlignmentProperties#referenceContig" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="referenceContig:String"></a>
-      <a id="referenceContig:String"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">referenceContig</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Contig/chromosome of the mate read</p>
     </li><li name="org.hammerlab.guacamole.reads.MateAlignmentProperties#start" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="start:Long"></a>
-      <a id="start:Long"></a>
+      <a id="start:org.hammerlab.guacamole.reference.Locus"></a>
+      <a id="start:Locus"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">start</span><span class="result">: <span class="extype" name="scala.Long">Long</span></span>
+        <span class="name">start</span><span class="result">: <a href="../reference/package.html#Locus=Long" class="extmbr" name="org.hammerlab.guacamole.reference.Locus">Locus</a></span>
       </span>
       </h4>
       <p class="shortcomment cmt">0-based start position of the mate read</p>
