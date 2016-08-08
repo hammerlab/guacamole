@@ -13,7 +13,7 @@ import org.hammerlab.guacamole.logging.DelayedMessages
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.MappedRead
-import org.hammerlab.guacamole.readsets.ReadSets
+import org.hammerlab.guacamole.readsets.{ReadSets, SampleName}
 import org.hammerlab.guacamole.readsets.args.GermlineCallerArgs
 import org.hammerlab.guacamole.readsets.io.InputFilters
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
@@ -74,17 +74,20 @@ object GermlineAssemblyCaller {
           .getPartitioner(mappedReads, args.assemblyWindowRange)
           .partition(loci.result(contigLengths))
 
-      val genotypes: RDD[CalledAllele] = discoverGermlineVariants(
-        qualityReads,
-        kmerSize = args.kmerSize,
-        assemblyWindowRange = args.assemblyWindowRange,
-        minOccurrence = args.minOccurrence,
-        minAreaVaf = args.minAreaVaf / 100.0f,
-        reference = reference,
-        lociPartitions = lociPartitions,
-        minMeanKmerQuality = args.minMeanKmerQuality,
-        minPhredScaledLikelihood = args.minLikelihood,
-        shortcutAssembly = args.shortcutAssembly)
+      val genotypes: RDD[CalledAllele] =
+        discoverGermlineVariants(
+          qualityReads,
+          args.sampleName,
+          kmerSize = args.kmerSize,
+          assemblyWindowRange = args.assemblyWindowRange,
+          minOccurrence = args.minOccurrence,
+          minAreaVaf = args.minAreaVaf / 100.0f,
+          reference = reference,
+          lociPartitions = lociPartitions,
+          minMeanKmerQuality = args.minMeanKmerQuality,
+          minPhredScaledLikelihood = args.minLikelihood,
+          shortcutAssembly = args.shortcutAssembly
+        )
 
       genotypes.persist()
 
@@ -98,6 +101,7 @@ object GermlineAssemblyCaller {
     }
 
     def discoverGermlineVariants(reads: RDD[MappedRead],
+                                 sampleName: SampleName,
                                  kmerSize: Int,
                                  assemblyWindowRange: Int,
                                  minOccurrence: Int,
@@ -164,8 +168,6 @@ object GermlineAssemblyCaller {
               )
 
               if (paths.nonEmpty) {
-                val sampleName = currentLocusReads.head.sampleName
-
                 def buildVariant(variantLocus: Int,
                                  referenceBases: Array[Byte],
                                  alternateBases: Array[Byte]) = {

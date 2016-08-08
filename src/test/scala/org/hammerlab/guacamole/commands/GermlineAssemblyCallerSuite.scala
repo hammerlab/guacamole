@@ -61,6 +61,7 @@ class GermlineAssemblyCallerSuite extends GuacFunSuite with BeforeAndAfterAll {
     val variants =
       GermlineAssemblyCaller.Caller.discoverGermlineVariants(
         mappedReads,
+        args.sampleName,
         kmerSize = kmerSize,
         assemblyWindowRange = assemblyWindowRange,
         minOccurrence = minOccurrence,

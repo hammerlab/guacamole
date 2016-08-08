@@ -2,7 +2,6 @@ package org.hammerlab.guacamole.commands
 
 import com.esotericsoftware.kryo.Kryo
 import org.hammerlab.guacamole.util.{GuacFunSuite, KryoTestRegistrar}
-import org.scalatest.Matchers
 
 class VAFHistogramSuiteRegistrar extends KryoTestRegistrar {
   override def registerTestClasses(kryo: Kryo): Unit = {

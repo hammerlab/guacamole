@@ -1,6 +1,7 @@
 package org.hammerlab.guacamole.jointcaller
 
 import org.hammerlab.guacamole.jointcaller.Input.{Analyte, TissueType}
+import org.hammerlab.guacamole.readsets.io.{Input => RSInput}
 import org.hammerlab.guacamole.readsets.{SampleId, SampleName}
 
 /**
@@ -16,10 +17,11 @@ import org.hammerlab.guacamole.readsets.{SampleId, SampleName}
  * @param analyte rna or dna
  */
 case class Input(index: SampleId,
-                 sampleName: SampleName,
-                 path: String,
+                 override val sampleName: SampleName,
+                 override val path: String,
                  tissueType: TissueType.Value,
-                 analyte: Analyte.Value) {
+                 analyte: Analyte.Value)
+  extends RSInput(sampleName, path) {
 
   override def toString: String = {
     "<Input #%d '%s' of %s %s at %s >".format(index, sampleName, tissueType, analyte, path)
