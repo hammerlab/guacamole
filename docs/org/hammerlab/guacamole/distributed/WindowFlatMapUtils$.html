@@ -419,11 +419,11 @@ and collects them into a single iterator
       </span>
       </h4>
       <p class="shortcomment cmt">FlatMap across loci, and any number of RDDs of regions, where at each locus the provided function is passed a
-sliding window instance for each RDD containing the regions overlapping an interval of halfWindowSize to either side
-of a locus.</p><div class="fullcomment"><div class="comment cmt"><p>FlatMap across loci, and any number of RDDs of regions, where at each locus the provided function is passed a
-sliding window instance for each RDD containing the regions overlapping an interval of halfWindowSize to either side
-of a locus.</p><p>This function supports maintaining some state from one locus to another within a task. The state maintained is of type
-S. The user function will receive the current state in addition to the sliding windows, and returns a pair of
+sliding window instance for each RDD containing the regions overlapping an interval of halfWindowSize to either
+side of a locus.</p><div class="fullcomment"><div class="comment cmt"><p>FlatMap across loci, and any number of RDDs of regions, where at each locus the provided function is passed a
+sliding window instance for each RDD containing the regions overlapping an interval of halfWindowSize to either
+side of a locus.</p><p>This function supports maintaining some state from one locus to another within a task. The state maintained is of
+type S. The user function will receive the current state in addition to the sliding windows, and returns a pair of
 (new state, result data). The state is initialized to initialState for each task, and for each new contig handled
 by a single task.
 </p></div><dl class="paramcmts block"><dt class="tparam">R</dt><dd class="cmt"><p>region data type (e.g. MappedRead)</p></dd><dt class="tparam">T</dt><dd class="cmt"><p>result data type</p></dd><dt class="tparam">S</dt><dd class="cmt"><p>state type</p></dd><dt class="param">regionRDDs</dt><dd class="cmt"><p>RDDs of reads, one per sample</p></dd><dt class="param">lociPartitions</dt><dd class="cmt"><p>loci to consider, partitioned into tasks</p></dd><dt class="param">skipEmpty</dt><dd class="cmt"><p>If True, then the function will only be called on loci where at least one region maps within a
