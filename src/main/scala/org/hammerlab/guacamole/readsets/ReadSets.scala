@@ -10,10 +10,11 @@ import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.models.SequenceDictionary
 import org.bdgenomics.adam.rdd.{ADAMContext, ADAMSpecificRecordSequenceDictionaryRDDAggregator}
 import org.bdgenomics.formats.avro.AlignmentRecord
+import org.hammerlab.guacamole.loci.set.{LociParser, LociSet}
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.reads.{MappedRead, Read}
-import org.hammerlab.guacamole.readsets.args.{SingleSampleArgs, TumorNormalReadsArgs}
-import org.hammerlab.guacamole.readsets.io.{BamReaderAPI, InputFilters, ReadLoadingConfig}
+import org.hammerlab.guacamole.readsets.args.{Arguments, SingleSampleArgs, TumorNormalReadsArgs}
+import org.hammerlab.guacamole.readsets.io.{BamReaderAPI, Input, InputFilters, ReadLoadingConfig}
 import org.hammerlab.guacamole.readsets.rdd.ReadsRDD
 import org.hammerlab.guacamole.reference.{ContigName, Locus}
 import org.seqdoop.hadoop_bam.util.SAMHeaderReader
@@ -35,9 +36,7 @@ case class ReadSets(readsRDDs: PerSample[ReadsRDD],
 
   def sc = readsRDDs.head.reads.sparkContext
 
-  val mappedReads = readsRDDs.map(_.mappedReads)
-
-  lazy val (mappedReadsRDDs, sourceFiles) = readsRDDs.map(readsRDD => (readsRDD.mappedReads, readsRDD.sourceFile)).unzip
+  lazy val mappedReadsRDDs = readsRDDs.map(_.mappedReads)
 
   lazy val allMappedReads = sc.union(mappedReadsRDDs).setName("unioned reads")
 }
@@ -54,7 +53,7 @@ object ReadSets {
     val ReadSets(reads, _, contigLengths) =
       ReadSets(
         sc,
-        Seq(args.reads),
+        args.inputs,
         filters,
         contigLengthsFromDictionary = !args.noSequenceDictionary,
         config = ReadLoadingConfig(args)
@@ -87,7 +86,7 @@ object ReadSets {
     val ReadSets(readsets, _, contigLengths) =
       ReadSets(
         sc,
-        Seq(args.tumorReads, args.normalReads),
+        args.inputs,
         filters,
         !args.noSequenceDictionary,
         ReadLoadingConfig(args)
@@ -97,57 +96,86 @@ object ReadSets {
   }
 
   /**
+   * Load ReadSet instances from user-specified BAMs (specified as an InputCollection).
+   */
+  def apply(sc: SparkContext,
+            inputs: PerSample[Input],
+            loci: LociParser,
+            contigLengthsFromDictionary: Boolean): ReadSets = {
+    ReadSets(
+      sc,
+      inputs,
+      InputFilters(overlapsLoci = loci),
+      contigLengthsFromDictionary = contigLengthsFromDictionary
+    )
+  }
+
+  def apply(sc: SparkContext, args: Arguments): (ReadSets, LociSet) = {
+    val loci = args.parseLoci(sc.hadoopConfiguration)
+
+    val readsets = apply(sc, args.inputs, loci, !args.noSequenceDictionary)
+
+    (readsets, loci.result(readsets.contigLengths))
+  }
+
+  /**
     * Load reads from multiple files, merging their sequence dictionaries and verifying that they are consistent.
     */
   def apply(sc: SparkContext,
-            filenames: Seq[String],
+            inputs: PerSample[Input],
             filters: InputFilters = InputFilters.empty,
             contigLengthsFromDictionary: Boolean = true,
             config: ReadLoadingConfig = ReadLoadingConfig.default): ReadSets = {
-    apply(sc, filenames.map((_, filters)), contigLengthsFromDictionary, config)
+    apply(sc, inputs.map((_, filters)), contigLengthsFromDictionary, config)
   }
 
   /**
    * Load reads from multiple files, allowing different filters to be applied to each file.
    */
   def apply(sc: SparkContext,
-            inputs: Seq[(String, InputFilters)],
+            inputsAndFilters: PerSample[(Input, InputFilters)],
             contigLengthsFromDictionary: Boolean,
             config: ReadLoadingConfig): ReadSets = {
 
-    val (filenames, filters) = inputs.unzip
+    val (inputs, _) = inputsAndFilters.unzip
 
-    val (readRDDs, sequenceDictionaries) =
+    val (readsRDDs, sequenceDictionaries) =
       (for {
-        (filename, filters) <- inputs
+        (Input(sampleName, filename), filters) <- inputsAndFilters
       } yield
         load(filename, sc, filters, config)
       ).unzip
 
-    val sequenceDictionary = mergeSequenceDictionaries(filenames, sequenceDictionaries)
+    val sequenceDictionary = mergeSequenceDictionaries(inputs, sequenceDictionaries)
 
-    val contigLengths: ContigLengths = {
-      if (contigLengthsFromDictionary) {
+    val contigLengths: ContigLengths =
+      if (contigLengthsFromDictionary)
         getContigLengthsFromSequenceDictionary(sequenceDictionary)
-      } else {
-        sc.union(readRDDs)
+      else
+        sc.union(readsRDDs)
           .flatMap(_.asMappedRead)
           .map(read => read.contigName -> read.end)
           .reduceByKey(math.max)
           .collectAsMap()
           .toMap
-      }
-    }
 
     ReadSets(
-      readRDDs
-        .zip(filenames)
-        .map(ReadsRDD(_))
-        .toVector,
+      (for {
+        (reads, input) <- readsRDDs.zip(inputs)
+      } yield
+       ReadsRDD(reads, input)
+      ).toVector,
       sequenceDictionary,
       contigLengths
     )
   }
+
+  def apply(readsRDDs: PerSample[ReadsRDD], sequenceDictionary: SequenceDictionary): ReadSets =
+    ReadSets(
+      readsRDDs,
+      sequenceDictionary,
+      contigLengths(sequenceDictionary)
+    )
 
   /**
    * Given a filename and a spark context, return a pair (RDD, SequenceDictionary), where the first element is an RDD
@@ -307,33 +335,33 @@ object ReadSets {
    *
    * This function performs all of the above.
    *
-   * @param filenames Files, each representing a set of reads.
+   * @param inputs Input files, each containing a set of reads.
    * @param dicts SequenceDictionaries that have been parsed from @filenames.
    * @return a SequenceDictionary that has been merged and validated from the inputs.
    */
-  private[readsets] def mergeSequenceDictionaries(filenames: Seq[String],
+  private[readsets] def mergeSequenceDictionaries(inputs: Seq[Input],
                                                   dicts: Seq[SequenceDictionary]): SequenceDictionary = {
     val records =
       (for {
-        (filename, dict) <- filenames.zip(dicts)
+        (input, dict) <- inputs.zip(dicts)
         record <- dict.records
       } yield {
-        filename -> record
+        input -> record
       })
       .groupBy(_._2.name)
       .values
       .map(values => {
-        val (filename, record) = values.head
+        val (input, record) = values.head
 
         // Verify that all records for a given contig are equal.
         values.tail.toList.filter(_._2 != record) match {
-          case Nil => {}
+          case Nil =>
           case mismatched =>
             throw new IllegalArgumentException(
               (
                 s"Conflicting sequence records for ${record.name}:" ::
-                s"$filename: $record" ::
-                mismatched.map { case (otherFile, otherRecord) => s"${otherFile}: $otherRecord" }
+                s"${input.path}: $record" ::
+                mismatched.map { case (otherFile, otherRecord) => s"$otherFile: $otherRecord" }
               ).mkString("\n\t")
             )
         }

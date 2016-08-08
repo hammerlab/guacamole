@@ -23,8 +23,8 @@ import org.bdgenomics.adam.models.{SequenceDictionary, SequenceRecord}
 import org.bdgenomics.adam.rdd.read.AlignmentRecordRDDFunctions
 import org.bdgenomics.adam.rdd.{ADAMContext, ADAMSaveAnyArgs}
 import org.hammerlab.guacamole.loci.set.LociParser
-import org.hammerlab.guacamole.reads.{MappedRead, Read}
-import org.hammerlab.guacamole.readsets.io.{BamReaderAPI, InputFilters, ReadLoadingConfig}
+import org.hammerlab.guacamole.reads.MappedRead
+import org.hammerlab.guacamole.readsets.io.{BamReaderAPI, Input, InputFilters, ReadLoadingConfig}
 import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
 
 class ReadSetsSuite extends GuacFunSuite {
@@ -167,10 +167,16 @@ class ReadSetsSuite extends GuacFunSuite {
       }
     )
 
+  val inputs =
+    List(
+      Input("f1", "1"),
+      Input("f2", "2")
+    )
+
   test("merge identical seqdicts") {
     val dict1 = sequenceDictionary(("1", 111, "aaa"), ("2", 222, "bbb"))
     val dict2 = sequenceDictionary(("1", 111, "aaa"), ("2", 222, "bbb"))
-    val merged = ReadSets.mergeSequenceDictionaries(List("f1", "f2"), List(dict1, dict2))
+    val merged = ReadSets.mergeSequenceDictionaries(inputs, List(dict1, dict2))
     merged should be(dict1)
     merged should be(dict2)
   }
@@ -179,7 +185,7 @@ class ReadSetsSuite extends GuacFunSuite {
     val dict1 = sequenceDictionary(("1", 111, "aaa"), ("2", 222, "bbb"))
     val dict2 = sequenceDictionary(("1", 111, "aaa"), ("3", 333, "ccc"))
 
-    val merged = ReadSets.mergeSequenceDictionaries(List("f1", "f2"), List(dict1, dict2))
+    val merged = ReadSets.mergeSequenceDictionaries(inputs, List(dict1, dict2))
 
     val expected = sequenceDictionary(("1", 111, "aaa"), ("2", 222, "bbb"), ("3", 333, "ccc"))
 
@@ -190,8 +196,8 @@ class ReadSetsSuite extends GuacFunSuite {
     val dict1 = sequenceDictionary(("1", 111, "aaa"), ("2", 222, "bbb"))
     val dict2 = sequenceDictionary(("1", 111, "aaa"), ("2", 333, "ccc"))
 
-    (intercept[IllegalArgumentException] {
-      ReadSets.mergeSequenceDictionaries(List("f1", "f2"), List(dict1, dict2))
-    }).getMessage should startWith("Conflicting sequence records for 2")
+    intercept[IllegalArgumentException] {
+      ReadSets.mergeSequenceDictionaries(inputs, List(dict1, dict2))
+    }.getMessage should startWith("Conflicting sequence records for 2")
   }
 }
