@@ -181,6 +181,8 @@ object WindowFlatMapUtils {
 
     val regionSplitByContigPerSample: PerSample[RegionsByContig[R]] = taskRegionsPerSample.map(new RegionsByContig(_))
 
+    // NOTE: we rely here on the reads having been sorted lexicographically by contig-name in the
+    // repartitionAndSortWithinPartitions above, and also in LociSet.contigs.
     partitionLoci.contigs.flatMap(contig => {
       val regionIterator: PerSample[Iterator[R]] = regionSplitByContigPerSample.map(_.next(contig.name))
       val windows: PerSample[SlidingWindow[R]] = regionIterator.map(SlidingWindow[R](contig.name, halfWindowSize, _))
