@@ -41,7 +41,7 @@
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Suppose we have a set of loci on a given contig and some objects that are mapped to that contig, and at each locus we
 want to look at the regions that overlap a window of a certain number of bases surrounding that locus. This class
-implements this &quot;sliding window&quot; functionality.</p><p>After instantiating this class, call <a href="#setCurrentLocus(locus:org.hammerlab.guacamole.reference.Locus):Vector[R]" class="extmbr" name="org.hammerlab.guacamole.windowing.SlidingWindow#setCurrentLocus">setCurrentLocus</a> repeatedly for each locus being considered. After calling
+implements this &quot;sliding window&quot; functionality.</p><p>After instantiating this class, call <a href="#setCurrentLocus(locus:Long):Vector[R]" class="extmbr" name="org.hammerlab.guacamole.windowing.SlidingWindow#setCurrentLocus">setCurrentLocus</a> repeatedly for each locus being considered. After calling
 this method, the <a href="#currentRegions():Vector[R]" class="extmbr" name="org.hammerlab.guacamole.windowing.SlidingWindow#currentRegions">currentRegions</a> property will contain the objects that overlap the current locus.
 s
 To enable an efficient implementation, we require that both the sequence of loci to be considered and the iterator
@@ -578,15 +578,15 @@ currentRegions.
       </h4>
       <p class="shortcomment cmt">Iterator of regions, sorted by the aligned start locus.</p>
     </li><li name="org.hammerlab.guacamole.windowing.SlidingWindow#setCurrentLocus" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="setCurrentLocus(locus:org.hammerlab.guacamole.reference.Locus):Vector[R]"></a>
-      <a id="setCurrentLocus(Locus):Vector[R]"></a>
+      <a id="setCurrentLocus(locus:Long):Vector[R]"></a>
+      <a id="setCurrentLocus(Long):Vector[R]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">setCurrentLocus</span><span class="params">(<span name="locus">locus: <a href="../reference/package.html#Locus=Long" class="extmbr" name="org.hammerlab.guacamole.reference.Locus">Locus</a></span>)</span><span class="result">: <span class="extype" name="scala.Vector">Vector</span>[<span class="extype" name="org.hammerlab.guacamole.windowing.SlidingWindow.R">R</span>]</span>
+        <span class="name">setCurrentLocus</span><span class="params">(<span name="locus">locus: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Vector">Vector</span>[<span class="extype" name="org.hammerlab.guacamole.windowing.SlidingWindow.R">R</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Advance to the specified locus, which must be greater than the current locus.</p><div class="fullcomment"><div class="comment cmt"><p>Advance to the specified locus, which must be greater than the current locus. After calling this, the
