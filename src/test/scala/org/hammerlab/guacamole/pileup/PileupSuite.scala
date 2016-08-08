@@ -19,6 +19,7 @@
 package org.hammerlab.guacamole.pileup
 
 import org.hammerlab.guacamole.reads.MappedRead
+import org.hammerlab.guacamole.reference.Locus
 import org.hammerlab.guacamole.util.TestUtil.Implicits._
 import org.hammerlab.guacamole.util.TestUtil.loadPileup
 import org.hammerlab.guacamole.util.{AssertBases, Bases, GuacFunSuite, TestUtil}
@@ -38,7 +39,7 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
 
   def testAdamRecords = TestUtil.loadReads(sc, "different_start_reads.sam").mappedReads.collect()
 
-  def pileupElementFromRead(read: MappedRead, locus: Long): PileupElement = {
+  def pileupElementFromRead(read: MappedRead, locus: Locus): PileupElement = {
     PileupElement(read, locus, reference.getContig(read.contigName))
   }
 
@@ -178,7 +179,7 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
     val pileup = PileupElement(
       read = contigStartInsertionRead,
       locus = 1,
-      referenceContigSequence = reference.getContig("chr1"),
+      contigSequence = reference.getContig("chr1"),
       readPosition = 0,
       cigarElementIndex = 0,
       cigarElementLocus = 1,
@@ -383,7 +384,7 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
       start = 229538779,
       chr = "chr1")
 
-    val rnaPileupElement = PileupElement(rnaRead, 229538779L, referenceContigSequence = reference.getContig("chr1"))
+    val rnaPileupElement = PileupElement(rnaRead, 229538779L, reference.getContig("chr1"))
 
     // Second base
     AssertBases(rnaPileupElement.advanceToLocus(229538780L).sequencedBases, "C")

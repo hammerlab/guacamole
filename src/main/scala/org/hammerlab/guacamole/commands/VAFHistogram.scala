@@ -15,7 +15,7 @@ import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.readsets.io.{InputFilters, ReadLoadingConfig, ReadLoadingConfigArgs}
 import org.hammerlab.guacamole.readsets.ReadSets
-import org.hammerlab.guacamole.reference.{ReferenceBroadcast, ReferenceGenome}
+import org.hammerlab.guacamole.reference.{ContigName, Locus, ReferenceBroadcast, ReferenceGenome}
 import org.kohsuke.args4j.{Argument, Option => Args4jOption}
 
 /**
@@ -24,7 +24,7 @@ import org.kohsuke.args4j.{Argument, Option => Args4jOption}
  * @param locus Position of non-reference alleles
  * @param variantAlleleFrequency Frequency of non-reference alleles
  */
-case class VariantLocus(contig: String, locus: Long, variantAlleleFrequency: Float)
+case class VariantLocus(contig: ContigName, locus: Locus, variantAlleleFrequency: Float)
 
 object VariantLocus {
 
