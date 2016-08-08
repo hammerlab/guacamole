@@ -35,7 +35,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">ReadSubsequence</span><span class="params">(<span name="read">read: <a href="../../reads/MappedRead.html" class="extype" name="org.hammerlab.guacamole.reads.MappedRead">MappedRead</a></span>, <span name="startLocus">startLocus: <span class="extype" name="scala.Long">Long</span></span>, <span name="endLocus">endLocus: <span class="extype" name="scala.Long">Long</span></span>, <span name="startReadPosition">startReadPosition: <span class="extype" name="scala.Int">Int</span></span>, <span name="endReadPosition">endReadPosition: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result"> extends <span class="extype" name="org.apache.spark.Logging">Logging</span> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">ReadSubsequence</span><span class="params">(<span name="read">read: <a href="../../reads/MappedRead.html" class="extype" name="org.hammerlab.guacamole.reads.MappedRead">MappedRead</a></span>, <span name="startLocus">startLocus: <a href="../../reference/package.html#Locus=Long" class="extmbr" name="org.hammerlab.guacamole.reference.Locus">Locus</a></span>, <span name="endLocus">endLocus: <a href="../../reference/package.html#Locus=Long" class="extmbr" name="org.hammerlab.guacamole.reference.Locus">Locus</a></span>, <span name="startReadPosition">startReadPosition: <span class="extype" name="scala.Int">Int</span></span>, <span name="endReadPosition">endReadPosition: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result"> extends <span class="extype" name="org.apache.spark.Logging">Logging</span> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
@@ -82,7 +82,7 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="org.hammerlab.guacamole.jointcaller.pileup_summarization.ReadSubsequence#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="&lt;init&gt;(read:org.hammerlab.guacamole.reads.MappedRead,startLocus:Long,endLocus:Long,startReadPosition:Int,endReadPosition:Int):org.hammerlab.guacamole.jointcaller.pileup_summarization.ReadSubsequence"></a>
+      <a id="&lt;init&gt;(read:org.hammerlab.guacamole.reads.MappedRead,startLocus:org.hammerlab.guacamole.reference.Locus,endLocus:org.hammerlab.guacamole.reference.Locus,startReadPosition:Int,endReadPosition:Int):org.hammerlab.guacamole.jointcaller.pileup_summarization.ReadSubsequence"></a>
       <a id="&lt;init&gt;:ReadSubsequence"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -90,7 +90,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">ReadSubsequence</span><span class="params">(<span name="read">read: <a href="../../reads/MappedRead.html" class="extype" name="org.hammerlab.guacamole.reads.MappedRead">MappedRead</a></span>, <span name="startLocus">startLocus: <span class="extype" name="scala.Long">Long</span></span>, <span name="endLocus">endLocus: <span class="extype" name="scala.Long">Long</span></span>, <span name="startReadPosition">startReadPosition: <span class="extype" name="scala.Int">Int</span></span>, <span name="endReadPosition">endReadPosition: <span class="extype" name="scala.Int">Int</span></span>)</span>
+        <span class="name">ReadSubsequence</span><span class="params">(<span name="read">read: <a href="../../reads/MappedRead.html" class="extype" name="org.hammerlab.guacamole.reads.MappedRead">MappedRead</a></span>, <span name="startLocus">startLocus: <a href="../../reference/package.html#Locus=Long" class="extmbr" name="org.hammerlab.guacamole.reference.Locus">Locus</a></span>, <span name="endLocus">endLocus: <a href="../../reference/package.html#Locus=Long" class="extmbr" name="org.hammerlab.guacamole.reference.Locus">Locus</a></span>, <span name="startReadPosition">startReadPosition: <span class="extype" name="scala.Int">Int</span></span>, <span name="endReadPosition">endReadPosition: <span class="extype" name="scala.Int">Int</span></span>)</span>
       </span>
       </h4>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">read</dt><dd class="cmt"><p>the mapped read</p></dd><dt class="param">startLocus</dt><dd class="cmt"><p>reference locus of the first base in the sub-sequence</p></dd><dt class="param">endLocus</dt><dd class="cmt"><p>one past the reference locus of the last base in the sub-sequence</p></dd><dt class="param">startReadPosition</dt><dd class="cmt"><p>offset into the read of the first base in the sub-sequence</p></dd><dt class="param">endReadPosition</dt><dd class="cmt"><p>one past the offset into the read of last base in the sub-sequence
@@ -215,15 +215,15 @@
               
         </dd></dl></div>
     </li><li name="org.hammerlab.guacamole.jointcaller.pileup_summarization.ReadSubsequence#endLocus" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="endLocus:Long"></a>
-      <a id="endLocus:Long"></a>
+      <a id="endLocus:org.hammerlab.guacamole.reference.Locus"></a>
+      <a id="endLocus:Locus"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">endLocus</span><span class="result">: <span class="extype" name="scala.Long">Long</span></span>
+        <span class="name">endLocus</span><span class="result">: <a href="../../reference/package.html#Locus=Long" class="extmbr" name="org.hammerlab.guacamole.reference.Locus">Locus</a></span>
       </span>
       </h4>
       <p class="shortcomment cmt">one past the reference locus of the last base in the sub-sequence</p>
@@ -586,15 +586,15 @@
       </h4>
       <p class="shortcomment cmt">true if the sequence contains only A,C,G,T (e.</p><div class="fullcomment"><div class="comment cmt"><p>true if the sequence contains only A,C,G,T (e.g. no N's)</p></div></div>
     </li><li name="org.hammerlab.guacamole.jointcaller.pileup_summarization.ReadSubsequence#startLocus" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="startLocus:Long"></a>
-      <a id="startLocus:Long"></a>
+      <a id="startLocus:org.hammerlab.guacamole.reference.Locus"></a>
+      <a id="startLocus:Locus"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">startLocus</span><span class="result">: <span class="extype" name="scala.Long">Long</span></span>
+        <span class="name">startLocus</span><span class="result">: <a href="../../reference/package.html#Locus=Long" class="extmbr" name="org.hammerlab.guacamole.reference.Locus">Locus</a></span>
       </span>
       </h4>
       <p class="shortcomment cmt">reference locus of the first base in the sub-sequence</p>

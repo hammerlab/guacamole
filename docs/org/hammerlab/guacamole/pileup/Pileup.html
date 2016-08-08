@@ -203,15 +203,15 @@ of the read itself and the offset of the base in the read.
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li name="org.hammerlab.guacamole.pileup.Pileup#atGreaterLocus" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="atGreaterLocus(newLocus:Long,newReads:Iterator[org.hammerlab.guacamole.reads.MappedRead]):org.hammerlab.guacamole.pileup.Pileup"></a>
-      <a id="atGreaterLocus(Long,Iterator[MappedRead]):Pileup"></a>
+      <a id="atGreaterLocus(newLocus:org.hammerlab.guacamole.reference.Locus,newReads:Iterator[org.hammerlab.guacamole.reads.MappedRead]):org.hammerlab.guacamole.pileup.Pileup"></a>
+      <a id="atGreaterLocus(Locus,Iterator[MappedRead]):Pileup"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">atGreaterLocus</span><span class="params">(<span name="newLocus">newLocus: <span class="extype" name="scala.Long">Long</span></span>, <span name="newReads">newReads: <span class="extype" name="scala.Iterator">Iterator</span>[<a href="../reads/MappedRead.html" class="extype" name="org.hammerlab.guacamole.reads.MappedRead">MappedRead</a>]</span>)</span><span class="result">: <a href="" class="extype" name="org.hammerlab.guacamole.pileup.Pileup">Pileup</a></span>
+        <span class="name">atGreaterLocus</span><span class="params">(<span name="newLocus">newLocus: <a href="../reference/package.html#Locus=Long" class="extmbr" name="org.hammerlab.guacamole.reference.Locus">Locus</a></span>, <span name="newReads">newReads: <span class="extype" name="scala.Iterator">Iterator</span>[<a href="../reads/MappedRead.html" class="extype" name="org.hammerlab.guacamole.reads.MappedRead">MappedRead</a>]</span>)</span><span class="result">: <a href="" class="extype" name="org.hammerlab.guacamole.pileup.Pileup">Pileup</a></span>
       </span>
       </h4>
       <p class="shortcomment cmt">Returns a new <a href="" class="extype" name="org.hammerlab.guacamole.pileup.Pileup">Pileup</a> at a different locus on the same contig.</p><div class="fullcomment"><div class="comment cmt"><p>Returns a new <a href="" class="extype" name="org.hammerlab.guacamole.pileup.Pileup">Pileup</a> at a different locus on the same contig.</p><p>To enable an efficient implementation, the new locus must be greater than the current locus.
