@@ -14,7 +14,8 @@ import scala.reflect.ClassTag
 object PileupFlatMapUtils {
   /**
    * Helper function. Given optionally an existing Pileup, and a sliding read window return a new Pileup at the given
-   * locus. If an existing Pileup is given as input, then the result will share elements with that Pileup for efficiency.
+   * locus. If an existing Pileup is given as input, then the result will share elements with that Pileup for
+   * efficiency.
    *
    *  If an existing Pileup is provided, then its locus must be <= the new locus.
    */
