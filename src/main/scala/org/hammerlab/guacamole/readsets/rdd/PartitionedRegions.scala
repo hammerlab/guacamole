@@ -18,8 +18,14 @@ import scala.reflect.ClassTag
  * Groups a [[LociPartitioning]] with an [[RDD[ReferenceRegion]]] that has already been partitioned according to that
  * partitioning.
  *
- * This means some regions will occur multiple times in the RDD (due to regions straddling partition boundaries, so it's
- * important not to confuse this with a regular RDD[ReferenceRegion].
+ * This means some regions will occur multiple times in the RDD (due to regions straddling partition boundaries), so
+ * it's important not to confuse this with a regular [[RDD[ReferenceRegion]]].
+ *
+ * The main API exposed here is [[mapPartitions]], which lets the caller apply a function to a [[LociSet]] as well as
+ * all region copies that overlap those loci.
+ *
+ * Note: the containing [[PartitionedRegions]] gets picked up by the closure-cleaner and serialized when
+ * [[mapPartitions]] is called.
  */
 class PartitionedRegions[R <: ReferenceRegion: ClassTag](val numSamples: NumSamples,
                                                          @transient keyedRegions: RDD[(SampleId, R)],
@@ -33,8 +39,18 @@ class PartitionedRegions[R <: ReferenceRegion: ClassTag](val numSamples: NumSamp
 
   def sc: SparkContext = keyedRegions.sparkContext
 
+  // Accumulator that is used in `mapPartitions` below.
   val numLoci = sc.accumulator(0L, "numLoci")
 
+  /**
+   * For each partition, apply a function to the set of loci assigned to that partition as well as all regions that
+   * overlap those loci (possibly with a grace-window baked in upstream; see [[PartitionedRegions]] constructors below).
+   *
+   * @param f function that operates on the regions and loci corresponding to a partition, emiting an output iterator of
+   *          arbitrary type [[V]].
+   * @return [[RDD[V]]], with partitions comprised of the [[Iterator[V]]]'s returned by application of `f` to each
+   *        partition.
+   */
   def mapPartitions[V: ClassTag](f: (Iterator[(SampleId, R)], LociSet) => Iterator[V]): RDD[V] =
     keyedRegions
       .zipPartitions(
@@ -53,17 +69,18 @@ class PartitionedRegions[R <: ReferenceRegion: ClassTag](val numSamples: NumSamp
         }
       )
 
-  private lazy val partitionLociSets: Array[LociSet] =
+  // An RDD[LociSet] with one LociSet per partition.
+  @transient private lazy val lociSetsRDD: RDD[LociSet] =
+    sc
+      .parallelize(partitionLociSets, partitionLociSets.length)
+      .setName("lociSetsRDD")
+
+  @transient private lazy val partitionLociSets: Array[LociSet] =
     partitioning
       .inverse
       .toArray
       .sortBy(_._1)
       .map(_._2)
-
-  lazy val lociSetsRDD: RDD[LociSet] =
-    sc
-      .parallelize(partitionLociSets, partitionLociSets.length)
-      .setName("lociSetsRDD")
 }
 
 object PartitionedRegions {
@@ -73,30 +90,24 @@ object PartitionedRegions {
   def IntHist(): IntHist = MagicHashMap[Int, Long]()
 
   /**
-   * @param regionRDDs RDD of regions to partition.
-   * @param loci A [[LociPartitioning]] describing which ranges of genomic loci should be mapped to each Spark
-   *             partition.
-   * @param args Parameters dictating how `loci` should be partitioned.
-   * @tparam R ReferenceRegion type.
-   */
-  def apply[R <: ReferenceRegion: ClassTag](regionRDDs: PerSample[RDD[R]],
-                                            loci: LociSet,
-                                            args: LociPartitionerArgs): PartitionedRegions[R] =
-    apply(regionRDDs, loci, args, halfWindowSize = 0)
-
-  /**
-   * @param regionRDDs RDD of regions to partition.
-   * @param loci A [[LociPartitioning]] describing which ranges of genomic loci should be mapped to each Spark
-   *             partition.
-   * @param halfWindowSize Send a copy of a region to a partition if it passes within this distance of that partition's
-   *                       designated loci.
+   * Main [[PartitionedRegions]] constructor: given some regions and loci, assign the loci to Spark partitions, and then
+   * partition the regions according to which partitions' loci they overlap.
+   *
+   * Computes a [[LociPartitioning]] and delegates to the other constructor below.
+   *
+   * @param regionRDDs RDDs of regions to partition.
+   * @param loci Genomic loci to operate on; these will be split among Spark partitions and coupled with all regions
+   *             from `regionRDDs` that overlap them (module the half-window described below).
+   * @param halfWindowSize A region is considered to overlap a partition's loci if it passes within this distance of any
+   *                       of them, in which case a copy of that region will be sent to that partition (possibly among
+   *                       others).
    * @param args Parameters dictating how `loci` should be partitioned.
    * @tparam R ReferenceRegion type.
    */
   def apply[R <: ReferenceRegion: ClassTag](regionRDDs: PerSample[RDD[R]],
                                             loci: LociSet,
                                             args: LociPartitionerArgs,
-                                            halfWindowSize: Int): PartitionedRegions[R] = {
+                                            halfWindowSize: Int = 0): PartitionedRegions[R] = {
     val sc = regionRDDs.head.sparkContext
     val lociPartitioning = LociPartitioning(sc.union(regionRDDs), loci, args, halfWindowSize)
 
@@ -117,10 +128,14 @@ object PartitionedRegions {
     )
   }
 
-  def apply[R <: ReferenceRegion: ClassTag](regionRDDs: PerSample[RDD[R]],
-                                            lociPartitioning: LociPartitioning,
-                                            halfWindowSize: Int,
-                                            printStats: Boolean): PartitionedRegions[R] = {
+  /**
+   * Internal [[PartitionedRegions]] constructor: takes already-partitioned loci, partitions regions, and optionally
+   * prints some stats.
+   */
+  private[rdd] def apply[R <: ReferenceRegion: ClassTag](regionRDDs: PerSample[RDD[R]],
+                                                         lociPartitioning: LociPartitioning,
+                                                         halfWindowSize: Int,
+                                                         printStats: Boolean): PartitionedRegions[R] = {
 
     val sc = regionRDDs(0).sparkContext
 

@@ -16,6 +16,7 @@ import org.hammerlab.guacamole.readsets.io.{Input, InputFilters, ReadLoadingConf
 import org.hammerlab.guacamole.readsets.rdd.PartitionedRegions
 import org.hammerlab.guacamole.readsets.{PartitionedReads, ReadSets, SampleId}
 import org.hammerlab.guacamole.reference.{ContigName, Locus, NumLoci, ReferenceBroadcast, ReferenceGenome}
+import org.hammerlab.magic.rdd.SplitByKeyRDD._
 import org.kohsuke.args4j.{Option => Args4jOption}
 
 /**
@@ -138,7 +139,7 @@ object VAFHistogram {
 
       val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
 
-      val variantLoci =
+      val (variantLoci, numVariantsPerSample) =
         variantLociFromReads(
           partitionedReads,
           reference,
@@ -188,7 +189,12 @@ object VAFHistogram {
       }
 
       if (args.cluster) {
-        buildMixtureModel(variantLoci, args.numClusters)
+        val variantsPerSample = variantLoci.keyBy(_.sampleId).splitByKey(numVariantsPerSample)
+        for {
+          (sampleId, variants) <- variantsPerSample
+        } {
+          buildMixtureModel(variants, args.numClusters)
+        }
       }
     }
   }
@@ -200,7 +206,8 @@ object VAFHistogram {
    * @param bins Number of bins to group the VAFs into
    * @return Map of rounded variant allele frequency to number of loci with that value
    */
-  def generateVAFHistograms(variantAlleleFrequencies: RDD[VariantLocus], bins: Int): Map[SampleId, Vector[(Int, Long)]] = {
+  def generateVAFHistograms(variantAlleleFrequencies: RDD[VariantLocus],
+                            bins: Int): Map[SampleId, Vector[(Int, Long)]] = {
     assume(bins <= 100 && bins >= 1, "Bins should be between 1 and 100")
 
     def roundToBin(variantAlleleFrequency: Float) = {
@@ -234,7 +241,7 @@ object VAFHistogram {
                            samplePercent: Int = 100,
                            minReadDepth: Int = 0,
                            minVariantAlleleFrequency: Int = 0,
-                           printStats: Boolean = false): RDD[VariantLocus] = {
+                           printStats: Boolean = false): (RDD[VariantLocus], Map[SampleId, Long]) = {
 
     val variantLoci =
       pileupFlatMapMultipleSamples[VariantLocus](
@@ -252,20 +259,19 @@ object VAFHistogram {
         reference
       )
 
+    val numVariantsBySample =
+      variantLoci
+        .map(_.sampleId)
+        .countByValue()
+        .toMap
+
     if (printStats) {
       variantLoci.persist(StorageLevel.MEMORY_ONLY)
-
-      val numVariantsBySample =
-        variantLoci
-          .map(_.sampleId)
-          .countByValue()
-          .toVector
-          .sorted
 
       progress(
         "variant loci per sample:",
         (for {
-          (sampleId, num) <- numVariantsBySample
+          (sampleId, num) <- numVariantsBySample.toVector.sorted
         } yield
           s"$sampleId:\t$num"
         ).mkString("\n")
@@ -310,7 +316,7 @@ object VAFHistogram {
       }
     }
 
-    variantLoci
+    (variantLoci, numVariantsBySample)
   }
 
   /**
