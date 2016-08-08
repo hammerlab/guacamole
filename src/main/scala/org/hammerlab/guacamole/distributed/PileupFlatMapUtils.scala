@@ -50,8 +50,8 @@ object PileupFlatMapUtils {
       Vector(reads),
       lociPartitions,
       skipEmpty,
-      0,
-      None,
+      halfWindowSize = 0,
+      initialState = None,
       (maybePileup: Option[Pileup], windows: PerSample[SlidingWindow[MappedRead]]) => {
         assert(windows.length == 1)
         val pileup = initOrMovePileup(maybePileup, windows(0), reference.getContig(windows(0).contigName))
