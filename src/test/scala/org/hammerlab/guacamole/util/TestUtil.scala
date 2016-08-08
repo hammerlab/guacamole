@@ -220,8 +220,10 @@ object TestUtil {
                             reference: ReferenceBroadcast): (Pileup, Pileup) = {
     val contig = tumorReads(0).contigName
     assume(normalReads(0).contigName == contig)
-    (Pileup(tumorReads, contig, locus, reference.getContig(contig)),
-      Pileup(normalReads, contig, locus, reference.getContig(contig)))
+    (
+      Pileup(tumorReads.filter(_.overlapsLocus(locus)), contig, locus, reference.getContig(contig)),
+      Pileup(normalReads.filter(_.overlapsLocus(locus)), contig, locus, reference.getContig(contig))
+    )
   }
 
   def loadPileup(sc: SparkContext,

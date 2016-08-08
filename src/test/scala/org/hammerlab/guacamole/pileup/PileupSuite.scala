@@ -49,9 +49,6 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
       TestUtil.makeRead("TCGATCGA", "8M", 1),
       TestUtil.makeRead("TCGACCCTCGA", "4M3I4M", 1))
 
-    val noPileup = Pileup(reads, "chr1", 0, reference.getContig("chr1")).elements
-    assert(noPileup.size === 0)
-
     val firstPileup = Pileup(reads, "chr1", 1, reference.getContig("chr1"))
     firstPileup.elements.forall(_.isMatch) should be(true)
     firstPileup.elements.forall(_.qualityScore == 31) should be(true)
@@ -89,9 +86,6 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
       TestUtil.makeRead("TCGATCGA", "8M", 1, "chr1", Some(Seq(10, 15, 20, 25, 10, 15, 20, 25))),
       TestUtil.makeRead("TCGACCCTCGA", "4M3I4M", 1, "chr1", Some(Seq(10, 15, 20, 25, 5, 5, 5, 10, 15, 20, 25)))
     )
-
-    val noPileup = Pileup(reads, "chr1", 0, reference.getContig("chr1")).elements
-    noPileup.size should be(0)
 
     val pastInsertPileup = Pileup(reads, "chr1", 5, reference.getContig("chr1"))
     pastInsertPileup.elements.foreach(_.isMatch should be(true))
@@ -217,6 +211,7 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
   test("Loci 10-19 deleted from half of the reads") {
     val pileup = loadPileup(sc, "same_start_reads.sam", locus = 0, reference = reference)
     val deletionPileup = pileup.atGreaterLocus(9, Seq.empty.iterator)
+
     deletionPileup.elements.map(_.alignment).count {
       case Deletion(bases, _) => {
         Bases.basesToString(bases) should equal("AAAAAAAAAAA")
@@ -224,6 +219,7 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
       }
       case _ => false
     } should be(5)
+
     for (i <- 10 to 19) {
       val nextPileup = pileup.atGreaterLocus(i, Seq.empty.iterator)
       nextPileup.elements.count(_.isMidDeletion) should be(5)
@@ -235,6 +231,22 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
     for (i <- 60 to 69) {
       val nextPileup = pileup.atGreaterLocus(i, Seq.empty.iterator)
       nextPileup.elements.length should be(5)
+    }
+  }
+
+  test("Pileup.apply throws on non-overlapping reads") {
+    val read = TestUtil.makeRead("AATTGAATTG", "5M1D5M", 1, "chr4")
+
+    intercept[AssertionError] {
+      Pileup(Seq(read), "chr4", 0, reference.getContig("chr4"))
+    }
+
+    intercept[AssertionError] {
+      Pileup(Seq(read), "chr4", 12, reference.getContig("chr4"))
+    }
+
+    intercept[AssertionError] {
+      Pileup(Seq(read), "chr5", 1, reference.getContig("chr4"))
     }
   }
 
