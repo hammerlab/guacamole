@@ -39,7 +39,13 @@ trait LociPartitionerArgs
 
     lociPartitionerName match {
       case "exact" =>
-        new CappedRegionsPartitioner(regions, halfWindowSize, maxReadsPerPartition, printStats = !quiet)
+        new CappedRegionsPartitioner(
+          regions,
+          halfWindowSize,
+          maxReadsPerPartition,
+          printStats = !quiet,
+          requireRegionsGroupedByContig = !allowUngroupedContigs
+        )
       case "approximate" =>
         new MicroRegionPartitioner(regions, halfWindowSize, numPartitions, partitioningAccuracy)
       case "uniform" =>
@@ -56,6 +62,13 @@ trait LociPartitionerArgs
     handler = classOf[BooleanOptionHandler]
   )
   var quiet: Boolean = false
+
+  @Args4JOption(
+    name = "--allow-ungrouped-contigs",
+    usage = "Loosen requirement that regions are grouped by contigs.",
+    handler = classOf[BooleanOptionHandler]
+  )
+  var allowUngroupedContigs = false
 }
 
 trait LociPartitioner {

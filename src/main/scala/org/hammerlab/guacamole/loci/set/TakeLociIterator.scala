@@ -18,11 +18,12 @@ import scala.collection.mutable.ArrayBuffer
  * @param maxRegionsPerPartition Maximum regions allowed to overlap each [[LociSet]].
  */
 class TakeLociIterator(it: BufferedIterator[(Position, Coverage)],
-                       maxRegionsPerPartition: Int)
+                       maxRegionsPerPartition: Int,
+                       requireRegionsGroupedByContig: Boolean = true)
   extends SimpleBufferedIterator[LociSet] {
 
   // Segment the input into per-contig Iterators.
-  val contigsCoverages = ContigsIterator.byKey(it)
+  val contigsCoverages = ContigsIterator.byKey(it, requireRegionsGroupedByContig)
 
   override def _advance: Option[LociSet] = {
 

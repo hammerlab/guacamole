@@ -20,7 +20,7 @@ class Serializer[T] extends KryoSerializer[LociMap[T]] {
     val contigs = (0L until count).map(i => {
       kryo.readObject(input, classOf[Contig[T]])
     })
-    LociMap[T](contigs)
+    LociMap.fromContigs(contigs)
   }
 }
 

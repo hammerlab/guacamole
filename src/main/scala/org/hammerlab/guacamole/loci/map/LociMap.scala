@@ -99,6 +99,19 @@ object LociMap {
   }
 
   /**
+   * Build a map from some LociSets, mapping each set's loci to that sets index in `lociSets`.
+   */
+  def apply(lociSets: Iterable[LociSet]): LociMap[PartitionIndex] = {
+    val lociMapBuilder = LociMap.newBuilder[PartitionIndex]
+    for {
+      (loci, idx) <- lociSets.zipWithIndex
+    } {
+      lociMapBuilder.put(loci, idx)
+    }
+    lociMapBuilder.result()
+  }
+
+  /**
    * Read in a [[LociMap]] of partition indices from some strings, each one representing a genomic range.
    * @param lines string representations of genomic ranges.
    */
@@ -129,7 +142,7 @@ object LociMap {
     builder.result()
   }
 
-  private[map] def apply[T](contigs: Iterable[Contig[T]]): LociMap[T] =
+  private[map] def fromContigs[T](contigs: Iterable[Contig[T]]): LociMap[T] =
     LociMap(
       TreeMap(
         contigs.map(contig => contig.name -> contig).toSeq: _*

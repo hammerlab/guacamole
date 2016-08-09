@@ -6,7 +6,6 @@ import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole.loci.Coverage
 import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.reads.TestRegion
-import org.hammerlab.guacamole.readsets.rdd.RegionRDD._
 import org.hammerlab.guacamole.readsets.{ContigLengths, ContigLengthsUtil}
 import org.hammerlab.guacamole.reference.{ContigName, Position, ReferenceRegion}
 import org.hammerlab.guacamole.util.{GuacFunSuite, KryoTestRegistrar}
@@ -15,7 +14,7 @@ import org.hammerlab.magic.rdd.cmp.EqualsRDD._
 
 import scala.collection.SortedMap
 
-class RegionRDDSuiteRegistrar extends KryoTestRegistrar {
+class CoverageRDDSuiteRegistrar extends KryoTestRegistrar {
   override def registerTestClasses(kryo: Kryo): Unit = {
     kryo.register(classOf[Array[TestRegion]])
     kryo.register(classOf[TestRegion])
@@ -27,9 +26,9 @@ class RegionRDDSuiteRegistrar extends KryoTestRegistrar {
   }
 }
 
-class RegionRDDSuite extends GuacFunSuite with ReadsRDDUtil with ContigLengthsUtil {
+class CoverageRDDSuite extends GuacFunSuite with ReadsRDDUtil with ContigLengthsUtil {
 
-  override def registrar = "org.hammerlab.guacamole.readsets.rdd.RegionRDDSuiteRegistrar"
+  override def registrar = "org.hammerlab.guacamole.readsets.rdd.CoverageRDDSuiteRegistrar"
 
   def testLoci[T, U](actual: Array[(Position, T)],
                      actualStrs: Array[(String, U)],
@@ -96,11 +95,13 @@ class RegionRDDSuite extends GuacFunSuite with ReadsRDDUtil with ContigLengthsUt
         ("chr5",  90,  91, 10)
       )
 
+    val coverageRDD = new CoverageRDD(readsRDD, requireRegionsGroupedByContig = true)
+
     val contigLengths: ContigLengths = makeContigLengths("chr1" -> 1000, "chr2" -> 1000, "chr5" -> 1000)
     implicit val contigLengthsBroadcast: Broadcast[ContigLengths] = sc.broadcast(contigLengths)
 
     val rdd =
-      readsRDD.coverage(
+      coverageRDD.coverage(
         halfWindowSize = 0,
         LociSet.all(contigLengths)
       )
@@ -123,7 +124,7 @@ class RegionRDDSuite extends GuacFunSuite with ReadsRDDUtil with ContigLengthsUt
          "chr5:90" -> (10, 10)
       )
 
-    val shuffled = readsRDD.shuffleCoverage(0, contigLengthsBroadcast)
+    val shuffled = coverageRDD.shuffleCoverage(0, contigLengthsBroadcast)
 
     checkCoverage(rdd, expected)
     checkCoverage(shuffled, expected)

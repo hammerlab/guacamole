@@ -14,8 +14,11 @@ import scala.reflect.ClassTag
 
 /**
  * Augment an RDD[ReferenceRegion] with some useful methods for e.g. computing coverage depth.
+ *
+ * @param requireRegionsGroupedByContig when true, require regions to be grouped by contig within each partition; this
+ *                                      is necessary for some of our iteration to work efficiently.
  */
-class RegionRDD[R <: ReferenceRegion: ClassTag](@transient rdd: RDD[R])
+class CoverageRDD[R <: ReferenceRegion: ClassTag](@transient rdd: RDD[R], requireRegionsGroupedByContig: Boolean)
   extends Serializable {
 
   @transient val sc = rdd.sparkContext
@@ -26,11 +29,12 @@ class RegionRDD[R <: ReferenceRegion: ClassTag](@transient rdd: RDD[R])
   def coverage(halfWindowSize: Int, loci: LociSet): RDD[(Position, Coverage)] =
     coverage(halfWindowSize, sc.broadcast(loci))
 
-  def coverage(halfWindowSize: Int, lociBroadcast: Broadcast[LociSet]): RDD[(Position, Coverage)] =
+  def coverage(halfWindowSize: Int,
+               lociBroadcast: Broadcast[LociSet]): RDD[(Position, Coverage)] =
     rdd
       .mapPartitions(it =>
         for {
-          (contigName, contigRegions) <- ContigsIterator(it.buffered)
+          (contigName, contigRegions) <- ContigsIterator(it.buffered, requireRegionsGroupedByContig)
           contigCoverages = ContigCoverageIterator(halfWindowSize, contigRegions)
           lociContig = lociBroadcast.value.onContig(contigName).iterator
           (locus, coverage) <- contigCoverages.intersect(lociContig)
@@ -50,11 +54,14 @@ class RegionRDD[R <: ReferenceRegion: ClassTag](@transient rdd: RDD[R])
   def makeCappedLociSets(halfWindowSize: Int,
                          loci: LociSet,
                          maxRegionsPerPartition: Int): RDD[LociSet] =
-    coverage(halfWindowSize, sc.broadcast(loci))
-      .mapPartitionsWithIndex(
-        (idx, it) =>
-          new TakeLociIterator(it.buffered, maxRegionsPerPartition)
-      )
+    coverage(
+      halfWindowSize,
+      sc.broadcast(loci)
+    )
+    .mapPartitionsWithIndex(
+      (idx, it) =>
+        new TakeLociIterator(it.buffered, maxRegionsPerPartition, requireRegionsGroupedByContig)
+    )
 
   /**
    * Compute the depth at each locus in @rdd, then group loci into runs that are uniformly below (true) or above (false)
@@ -132,8 +139,4 @@ class RegionRDD[R <: ReferenceRegion: ClassTag](@transient rdd: RDD[R])
       .reduceByKey(_ + _)
       .sortByKey()
   }
-}
-
-object RegionRDD {
-  implicit def rddToRegionRDD[R <: ReferenceRegion: ClassTag](rdd: RDD[R]): RegionRDD[R] = new RegionRDD[R](rdd)
 }
