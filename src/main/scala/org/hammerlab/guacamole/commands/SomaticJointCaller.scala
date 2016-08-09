@@ -114,13 +114,14 @@ object SomaticJoint {
         )
       )
 
+      // User defined additional VCF headers, plus the Spark applicationId.
       val extraHeaderMetadata = args.headerMetadata.map(value => {
         val split = value.split("=")
         if (split.length != 2) {
           throw new RuntimeException(s"Invalid header metadata item $value, expected KEY=VALUE")
         }
         (split(0), split(1))
-      })
+      }) ++ Seq(("applicationId", sc.applicationId))
 
       writeCalls(
         collectedCalls,
