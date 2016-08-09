@@ -35,6 +35,6 @@ private[loci] class Builder[T] {
   }
 
   /** Build the result. */
-  def result(): LociMap[T] = LociMap(data.map(Contig(_)))
+  def result(): LociMap[T] = LociMap.fromContigs(data.map(Contig(_)))
 }
 
