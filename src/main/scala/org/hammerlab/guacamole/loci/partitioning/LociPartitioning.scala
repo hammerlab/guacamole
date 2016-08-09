@@ -9,6 +9,7 @@ import org.hammerlab.guacamole.loci.partitioning.LociPartitioner.PartitionIndex
 import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.reference.{NumLoci, ReferenceRegion}
+import org.hammerlab.magic.iterator.LinesIterator
 import org.hammerlab.magic.stats.Stats
 import org.hammerlab.magic.util.Saveable
 
@@ -54,7 +55,44 @@ case class LociPartitioning(map: LociMap[PartitionIndex]) extends Saveable {
 
 object LociPartitioning {
 
-  def load(is: InputStream): LociPartitioning = LociPartitioning(LociMap.load(is))
+  /**
+   * Load a LociMap output by [[LociMap.prettyPrint]].
+   * @param is [[InputStream]] reading from e.g. a file.
+   */
+  def load(is: InputStream): LociPartitioning = {
+    fromLines(LinesIterator(is))
+  }
+
+  /**
+   * Read in a [[LociPartitioning]] of partition indices from some strings, each one representing a genomic range.
+   * @param lines string representations of genomic ranges.
+   */
+  def fromLines(lines: TraversableOnce[String]): LociPartitioning = {
+    val builder = LociMap.newBuilder[PartitionIndex]
+    val re = """([^:]+):(\d+)-(\d+)=(\d+)""".r
+    for {
+      line <- lines
+      m <- re.findFirstMatchIn(line)
+      contig = m.group(1)
+      start = m.group(2).toLong
+      end = m.group(3).toLong
+      partition = m.group(4).toInt
+    } {
+      builder.put(contig, start, end, partition)
+    }
+    builder.result()
+  }
+
+  // Build a LociPartitioning with each partition's loci mapped to the partition index.
+  def apply(lociSets: Iterable[LociSet]): LociPartitioning = {
+    val lociMapBuilder = LociMap.newBuilder[PartitionIndex]
+    for {
+      (loci, idx) <- lociSets.zipWithIndex
+    } {
+      lociMapBuilder.put(loci, idx)
+    }
+    lociMapBuilder.result()
+  }
 
   def apply[R <: ReferenceRegion: ClassTag](regions: RDD[R],
                                             loci: LociSet,
@@ -70,6 +108,7 @@ object LociPartitioning {
     }
 
     progress(s"Partitioning loci")
+
     val lp =
       args
         .getPartitioner(regions, halfWindowSize)

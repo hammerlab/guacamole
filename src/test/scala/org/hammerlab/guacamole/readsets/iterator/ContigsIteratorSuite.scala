@@ -51,4 +51,17 @@ class ContigsIteratorSuite extends FunSuite with Matchers with ReadsUtil {
     chr2Name should be("chr2")
     chr2.toList should be(List(TestRegion("chr2", 50, 60)))
   }
+
+  test("throw on repeat contigs") {
+    intercept[RepeatedContigException] {
+      ContigsIterator(
+        Iterator[TestRegion](
+          ("chr1", 10, 20),
+          ("chr1", 30, 40),
+          ("chr2", 50, 60),
+          ("chr1", 70, 80)
+        ).buffered
+      ).toList
+    }
+  }
 }
