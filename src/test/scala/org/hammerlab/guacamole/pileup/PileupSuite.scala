@@ -18,7 +18,7 @@
 
 package org.hammerlab.guacamole.pileup
 
-import org.hammerlab.guacamole.reads.MappedRead
+import org.hammerlab.guacamole.reads.{MappedRead, ReadsUtil}
 import org.hammerlab.guacamole.reference.Locus
 import org.hammerlab.guacamole.util.TestUtil.Implicits._
 import org.hammerlab.guacamole.util.TestUtil.loadPileup
@@ -26,7 +26,11 @@ import org.hammerlab.guacamole.util.{AssertBases, Bases, GuacFunSuite, TestUtil}
 import org.hammerlab.guacamole.variants.Allele
 import org.scalatest.prop.TableDrivenPropertyChecks
 
-class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
+class PileupSuite
+  extends GuacFunSuite
+    with ReadsUtil
+    with TableDrivenPropertyChecks {
+
   // This must only be accessed from inside a spark test where SparkContext has been initialized
   def reference = TestUtil.makeReference(sc,
     Seq(
@@ -44,10 +48,12 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
   }
 
   test("create pileup from long insert reads") {
-    val reads = Seq(
-      TestUtil.makeRead("TCGATCGA", "8M", 1),
-      TestUtil.makeRead("TCGATCGA", "8M", 1),
-      TestUtil.makeRead("TCGACCCTCGA", "4M3I4M", 1))
+    val reads =
+      makeReads(
+        ("TCGATCGA", "8M", 1),
+        ("TCGATCGA", "8M", 1),
+        ("TCGACCCTCGA", "4M3I4M", 1)
+      )
 
     val firstPileup = Pileup(reads, "chr1", 1, reference.getContig("chr1"))
     firstPileup.elements.forall(_.isMatch) should be(true)
@@ -63,10 +69,12 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
   }
 
   test("create pileup from long insert reads; different qualities in insertion") {
-    val reads = Seq(
-      TestUtil.makeRead("TCGATCGA", "8M", 1, "chr1", Some(Seq(10, 15, 20, 25, 10, 15, 20, 25))),
-      TestUtil.makeRead("TCGATCGA", "8M", 1, "chr1", Some(Seq(10, 15, 20, 25, 10, 15, 20, 25))),
-      TestUtil.makeRead("TCGACCCTCGA", "4M3I4M", 1, "chr1", Some(Seq(10, 15, 20, 25, 5, 5, 5, 10, 15, 20, 25))))
+    val reads =
+      Seq(
+        makeRead("TCGATCGA", "8M", 1, "chr1", Seq(10, 15, 20, 25, 10, 15, 20, 25)),
+        makeRead("TCGATCGA", "8M", 1, "chr1", Seq(10, 15, 20, 25, 10, 15, 20, 25)),
+        makeRead("TCGACCCTCGA", "4M3I4M", 1, "chr1", Seq(10, 15, 20, 25, 5, 5, 5, 10, 15, 20, 25))
+      )
 
     val insertPileup = Pileup(reads, "chr1", 4, reference.getContig("chr1"))
     insertPileup.elements.exists(_.isInsertion) should be(true)
@@ -81,11 +89,12 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
   }
 
   test("create pileup from long insert reads, right after insertion") {
-    val reads = Seq(
-      TestUtil.makeRead("TCGATCGA", "8M", 1, "chr1", Some(Seq(10, 15, 20, 25, 10, 15, 20, 25))),
-      TestUtil.makeRead("TCGATCGA", "8M", 1, "chr1", Some(Seq(10, 15, 20, 25, 10, 15, 20, 25))),
-      TestUtil.makeRead("TCGACCCTCGA", "4M3I4M", 1, "chr1", Some(Seq(10, 15, 20, 25, 5, 5, 5, 10, 15, 20, 25)))
-    )
+    val reads =
+      Seq(
+        makeRead("TCGATCGA", "8M", 1, "chr1", Seq(10, 15, 20, 25, 10, 15, 20, 25)),
+        makeRead("TCGATCGA", "8M", 1, "chr1", Seq(10, 15, 20, 25, 10, 15, 20, 25)),
+        makeRead("TCGACCCTCGA", "4M3I4M", 1, "chr1", Seq(10, 15, 20, 25, 5, 5, 5, 10, 15, 20, 25))
+      )
 
     val pastInsertPileup = Pileup(reads, "chr1", 5, reference.getContig("chr1"))
     pastInsertPileup.elements.foreach(_.isMatch should be(true))
@@ -95,10 +104,13 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
   }
 
   test("create pileup from long insert reads; after insertion") {
-    val reads = Seq(
-      TestUtil.makeRead("TCGATCGA", "8M", 1),
-      TestUtil.makeRead("TCGATCGA", "8M", 1),
-      TestUtil.makeRead("TCGACCCTCGA", "4M3I4M", 1))
+    val reads =
+      makeReads(
+        ("TCGATCGA", "8M", 1),
+        ("TCGATCGA", "8M", 1),
+        ("TCGACCCTCGA", "4M3I4M", 1)
+      )
+
     val lastPileup = Pileup(reads, "chr1", 7, reference.getContig("chr1"))
     lastPileup.elements.foreach(e => AssertBases(e.sequencedBases, "G"))
     lastPileup.elements.forall(_.isMatch) should be(true)
@@ -106,10 +118,12 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
 
   test("create pileup from long insert reads; end of read") {
 
-    val reads = Seq(
-      TestUtil.makeRead("TCGATCGA", "8M", 1, "chr1", Some(Seq(10, 15, 20, 25, 10, 15, 20, 25))),
-      TestUtil.makeRead("TCGATCGA", "8M", 1, "chr1", Some(Seq(10, 15, 20, 25, 10, 15, 20, 25))),
-      TestUtil.makeRead("TCGACCCTCGA", "4M3I4M", 1, "chr1", Some(Seq(10, 15, 20, 25, 5, 5, 5, 10, 15, 20, 25))))
+    val reads =
+      Seq(
+        makeRead("TCGATCGA", "8M", 1, "chr1", Seq(10, 15, 20, 25, 10, 15, 20, 25)),
+        makeRead("TCGATCGA", "8M", 1, "chr1", Seq(10, 15, 20, 25, 10, 15, 20, 25)),
+        makeRead("TCGACCCTCGA", "4M3I4M", 1, "chr1", Seq(10, 15, 20, 25, 5, 5, 5, 10, 15, 20, 25))
+      )
 
     val lastPileup = Pileup(reads, "chr1", 8, reference.getContig("chr1"))
     lastPileup.elements.foreach(e => AssertBases(e.sequencedBases, "A"))
@@ -133,7 +147,7 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
   }
 
   test("test pileup element creation") {
-    val read = TestUtil.makeRead("AATTG", "5M", 0, "chr2")
+    val read = makeRead("AATTG", "5M", 0, "chr2")
     val firstElement = pileupElementFromRead(read, 0)
 
     firstElement.isMatch should be(true)
@@ -150,7 +164,7 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
   }
 
   test("test pileup element creation with multiple cigar elements") {
-    val read = TestUtil.makeRead("AAATTT", "3M3M", 0, "chr3")
+    val read = makeRead("AAATTT", "3M3M", 0, "chr3")
 
     val secondMatch = pileupElementFromRead(read, 3)
     secondMatch.isMatch should be(true)
@@ -163,13 +177,13 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
   }
 
   test("insertion at contig start includes trailing base") {
-    val contigStartInsertionRead = TestUtil.makeRead("AAAAAACGT", "5I4M", 0, "chr1")
+    val contigStartInsertionRead = makeRead("AAAAAACGT", "5I4M", 0, "chr1")
     val pileup = pileupElementFromRead(contigStartInsertionRead, 0)
     pileup.alignment should equal(Insertion("AAAAAA", List(31, 31, 31, 31, 31, 31)))
   }
 
   test("pileup alignment at insertion cigar-element throws") {
-    val contigStartInsertionRead = TestUtil.makeRead("AAAAAACGT", "5I4M", 0, "chr1")
+    val contigStartInsertionRead = makeRead("AAAAAACGT", "5I4M", 0, "chr1")
     val pileup = PileupElement(
       read = contigStartInsertionRead,
       locus = 1,
@@ -183,7 +197,7 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
   }
 
   test("test pileup element creation with deletion cigar elements") {
-    val read = TestUtil.makeRead("AATTGAATTG", "5M1D5M", 0, "chr4")
+    val read = makeRead("AATTGAATTG", "5M1D5M", 0, "chr4")
     val firstElement = pileupElementFromRead(read, 0)
 
     firstElement.isMatch should be(true)
@@ -235,7 +249,7 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
   }
 
   test("Pileup.apply throws on non-overlapping reads") {
-    val read = TestUtil.makeRead("AATTGAATTG", "5M1D5M", 1, "chr4")
+    val read = makeRead("AATTGAATTG", "5M1D5M", 1, "chr4")
 
     intercept[AssertionError] {
       Pileup(Seq(read), "chr4", 0, reference.getContig("chr4"))
@@ -252,13 +266,8 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
 
   test("Pileup.Element basic test") {
     intercept[NullPointerException] {
-      val e = pileupElementFromRead(null, 42)
+      pileupElementFromRead(null, 42)
     }
-
-    val reference = TestUtil.makeReference(sc,
-      Seq(
-        ("artificial", 0, "A" * 500)
-      ))
 
     val decadentRead1 = testAdamRecords(0)
 
@@ -390,11 +399,13 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
   test("create and advance pileup element from RNA read") {
     val reference = TestUtil.makeReference(sc, Seq(("chr1", 229538779, "A" * 1000)), 229538779 + 1000)
 
-    val rnaRead = TestUtil.makeRead(
-      sequence = "CCCCAGCCTAGGCCTTCGACACTGGGGGGCTGAGGGAAGGGGCACCTGCC",
-      cigar = "7M191084N43M",
-      start = 229538779,
-      chr = "chr1")
+    val rnaRead =
+      makeRead(
+        sequence = "CCCCAGCCTAGGCCTTCGACACTGGGGGGCTGAGGGAAGGGGCACCTGCC",
+        cigar = "7M191084N43M",
+        start = 229538779,
+        chr = "chr1"
+      )
 
     val rnaPileupElement = PileupElement(rnaRead, 229538779L, reference.getContig("chr1"))
 
@@ -427,11 +438,13 @@ class PileupSuite extends GuacFunSuite with TableDrivenPropertyChecks {
   }
 
   test("pileup in the middle of a deletion") {
-    val reads = Seq(
-      TestUtil.makeRead("TCGAAAAGCT", "5M6D5M", 0),
-      TestUtil.makeRead("TCGAAAAGCT", "5M6D5M", 0),
-      TestUtil.makeRead("TCGAAAAGCT", "5M6D5M", 0)
-    )
+    val reads =
+      makeReads(
+        ("TCGAAAAGCT", "5M6D5M", 0),
+        ("TCGAAAAGCT", "5M6D5M", 0),
+        ("TCGAAAAGCT", "5M6D5M", 0)
+      )
+
     val deletionPileup = Pileup(reads, "chr1", 4, reference.getContig("chr1"))
     val deletionAlleles = deletionPileup.distinctAlleles
     deletionAlleles.size should be(1)
