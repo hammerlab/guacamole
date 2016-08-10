@@ -9,6 +9,7 @@ import org.hammerlab.guacamole.readsets.iterator.{ContigCoverageIterator, Contig
 import org.hammerlab.guacamole.reference.{ContigName, NumLoci, Position, ReferenceRegion}
 import org.hammerlab.magic.rdd.RunLengthRDD._
 
+import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 import scala.reflect.ClassTag
 
@@ -26,19 +27,23 @@ class RegionRDD[R <: ReferenceRegion: ClassTag](@transient rdd: RDD[R])
   def coverage(halfWindowSize: Int, loci: LociSet): RDD[(Position, Coverage)] =
     coverage(halfWindowSize, sc.broadcast(loci))
 
+  private val _coveragesCache = mutable.HashMap[(Int, LociSet), RDD[(Position, Coverage)]]()
   def coverage(halfWindowSize: Int, lociBroadcast: Broadcast[LociSet]): RDD[(Position, Coverage)] =
-    rdd
-      .mapPartitions(it =>
-        for {
-          (contigName, contigRegions) <- ContigsIterator(it.buffered)
-          contigCoverages = ContigCoverageIterator(halfWindowSize, contigRegions)
-          lociContig = lociBroadcast.value.onContig(contigName).iterator
-          (locus, coverage) <- contigCoverages.intersect(lociContig)
-        } yield
-          Position(contigName, locus) -> coverage
-      )
-    .reduceByKey(_ + _)
-    .sortByKey()
+    _coveragesCache.getOrElseUpdate(
+      (halfWindowSize, lociBroadcast.value),
+      rdd
+        .mapPartitions(it =>
+          for {
+            (contigName, contigRegions) <- ContigsIterator(it.buffered)
+            contigCoverages = ContigCoverageIterator(halfWindowSize, contigRegions)
+            lociContig = lociBroadcast.value.onContig(contigName).iterator
+            (locus, coverage) <- contigCoverages.intersect(lociContig)
+          } yield
+            Position(contigName, locus) -> coverage
+        )
+        .reduceByKey(_ + _)
+        .sortByKey()
+    )
 
   /**
    * Break the input @loci into smaller LociSets such that the number of reads (with a @halfWindowSize grace-window)
