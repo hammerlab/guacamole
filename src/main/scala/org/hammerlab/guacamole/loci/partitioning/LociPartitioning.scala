@@ -8,7 +8,8 @@ import org.hammerlab.guacamole.loci.map.LociMap
 import org.hammerlab.guacamole.loci.partitioning.LociPartitioner.PartitionIndex
 import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
-import org.hammerlab.guacamole.reference.ReferenceRegion
+import org.hammerlab.guacamole.reference.{NumLoci, ReferenceRegion}
+import org.hammerlab.magic.stats.Stats
 import org.hammerlab.magic.util.Saveable
 
 import scala.reflect.ClassTag
@@ -19,6 +20,27 @@ import scala.reflect.ClassTag
  * Includes some functionality for saving to / loading from disk.
  */
 case class LociPartitioning(map: LociMap[PartitionIndex]) extends Saveable {
+
+  @transient lazy val numPartitions = partitionsMap.size
+
+  @transient lazy val partitionSizeStats = Stats(partitionSizesMap.values)
+
+  @transient lazy val partitionContigStats = Stats(partitionContigsMap.values)
+
+  @transient private lazy val partitionsMap: Map[PartitionIndex, LociSet] = map.inverse
+
+  @transient private lazy val partitionSizesMap: Map[PartitionIndex, NumLoci] =
+    for {
+      (partition, loci) <- partitionsMap
+    } yield
+      partition -> loci.count
+
+  @transient private lazy val partitionContigsMap: Map[PartitionIndex, Int] =
+    for {
+      (partition, loci) <- partitionsMap
+    } yield
+      partition -> loci.contigs.length
+
   /**
    * Write the wrapped [[map]] to the provided [[OutputStream]].
    */
