@@ -2,6 +2,7 @@ package org.hammerlab.guacamole.loci.partitioning
 
 import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole.loci.map.LociMap
+import org.hammerlab.guacamole.loci.partitioning.LociPartitioner.PartitionIndex
 import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.readsets.rdd.CoverageRDD
@@ -117,7 +118,6 @@ class CappedRegionsPartitioner[R <: ReferenceRegion: ClassTag](regions: RDD[R],
         )
         .collect()
 
-    // Build a LociMap with each partition's loci mapped to the partition index.
-    LociMap(lociSets)
+    LociPartitioning(lociSets)
   }
 }
