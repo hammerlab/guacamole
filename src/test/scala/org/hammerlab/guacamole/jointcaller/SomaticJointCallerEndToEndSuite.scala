@@ -12,8 +12,8 @@ class SomaticJointCallerEndToEndSuite extends FunSuite with Matchers with Before
   val cancerWGS1Bams = Vector("normal.tiny.bam", "primary.tiny.bam", "recurrence.tiny.bam").map(
     name => TestUtil.testDataPath("cancer-wgs1/" + name))
 
-  def readFile(path: String): String =
-    scala.io.Source.fromFile(path).getLines().filterNot(_.startsWith("##reference")).mkString("\n")
+  def vcfContentsIgnoringHeaders(path: String): String =
+    scala.io.Source.fromFile(path).getLines().filterNot(_.startsWith("##")).mkString("\n")
 
   val outDirPath = Files.createTempDirectory("TestUtil")
   val outDir = outDirPath.toString
@@ -38,6 +38,6 @@ class SomaticJointCallerEndToEndSuite extends FunSuite with Matchers with Before
       ) ++ cancerWGS1Bams
     )
 
-    readFile(outDir + "/all.vcf") should be(readFile(TestUtil.testDataPath("tiny-sjc-output/all.vcf")))
+    vcfContentsIgnoringHeaders(outDir + "/all.vcf") should be(vcfContentsIgnoringHeaders(TestUtil.testDataPath("tiny-sjc-output/all.vcf")))
   }
 }
