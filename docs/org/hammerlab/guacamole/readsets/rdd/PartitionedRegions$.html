@@ -24,9 +24,9 @@
         </head>
         <body class="value">
       <div id="definition">
-        <img src="../../../../../lib/object_big.png" />
+        <a href="PartitionedRegions.html" title="Go to companion"><img src="../../../../../lib/object_to_class_big.png" /></a>
         <p id="owner"><a href="../../../../package.html" class="extype" name="org">org</a>.<a href="../../../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="../../package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="../package.html" class="extype" name="org.hammerlab.guacamole.readsets">readsets</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole.readsets.rdd">rdd</a></p>
-        <h1>PartitionedRegions</h1>
+        <h1><a href="PartitionedRegions.html" title="Go to companion">PartitionedRegions</a></h1>
       </div>
 
       <h4 id="signature" class="signature">
@@ -35,17 +35,13 @@
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <span class="name">PartitionedRegions</span>
+        <span class="name">PartitionedRegions</span><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>This object encapsulates functionality for partitioning reference-mapped regions for processing as &quot;pileups&quot;.</p><p>Given an RDD of regions, it:</p><ul><li>partitions them by genomic loci,</li><li>makes multiple copies of regions that straddle partition boundaries.</li></ul><p>The result is that, given knowledge of which ranges of genomic loci correspond to which partition of the resulting
-RDD, downstream code can iterate over the partitions emitted here and build full pileups for the loci that each
-partition corresponds to.</p><p><span class="extype" name="WindowFlatMapUtils">WindowFlatMapUtils</span> calls this, and uses <span class="extype" name="SlidingWindow">SlidingWindow</span> to iterate over the partitioned regions in a manner
-suitable for pileup-construction by <span class="extype" name="PileupFlatMapUtils">PileupFlatMapUtils</span>.
-</p></div><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -63,7 +59,7 @@ suitable for pileup-construction by <span class="extype" name="PileupFlatMapUtil
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions"><span>PartitionedRegions</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions"><span>PartitionedRegions</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -83,7 +79,23 @@ suitable for pileup-construction by <span class="extype" name="PileupFlatMapUtil
         <div id="allMembers">
         
 
-        
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions.IntHist" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="IntHist=org.hammerlab.magic.accumulables.HashMap[Int,Long]"></a>
+      <a id="IntHist:IntHist"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">type</span>
+      </span>
+      <span class="symbol">
+        <span class="name">IntHist</span><span class="result"> = <span class="extype" name="org.hammerlab.magic.accumulables.HashMap">HashMap</span>[<span class="extype" name="scala.Int">Int</span>, <span class="extype" name="scala.Long">Long</span>]</span>
+      </span>
+      </h4>
+      
+    </li></ol>
+            </div>
 
         
 
@@ -154,22 +166,39 @@ suitable for pileup-construction by <span class="extype" name="PileupFlatMapUtil
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions#apply" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="apply[R&lt;:org.hammerlab.guacamole.reference.ReferenceRegion](regionRDDs:org.hammerlab.guacamole.readsets.PerSample[org.apache.spark.rdd.RDD[R]],lociPartitionsBoxed:org.apache.spark.broadcast.Broadcast[org.hammerlab.guacamole.loci.partitioning.LociPartitioning],halfWindowSize:Int)(implicitevidence$1:scala.reflect.ClassTag[R]):org.apache.spark.rdd.RDD[(Int,R)]"></a>
-      <a id="apply[R&lt;:ReferenceRegion](PerSample[RDD[R]],Broadcast[LociPartitioning],Int)(ClassTag[R]):RDD[(Int,R)]"></a>
+    </li><li name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions#IntHist" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="IntHist():org.hammerlab.guacamole.readsets.rdd.PartitionedRegions.IntHist"></a>
+      <a id="IntHist():IntHist"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">apply</span><span class="tparams">[<span name="R">R &lt;: <a href="../../reference/ReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceRegion">ReferenceRegion</a></span>]</span><span class="params">(<span name="regionRDDs">regionRDDs: <a href="../package.html#PerSample[+A]=IndexedSeq[A]" class="extmbr" name="org.hammerlab.guacamole.readsets.PerSample">PerSample</a>[<span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<span class="extype" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions.apply.R">R</span>]]</span>, <span name="lociPartitionsBoxed">lociPartitionsBoxed: <span class="extype" name="org.apache.spark.broadcast.Broadcast">Broadcast</span>[<a href="../../loci/partitioning/LociPartitioning.html" class="extype" name="org.hammerlab.guacamole.loci.partitioning.LociPartitioning">LociPartitioning</a>]</span>, <span name="halfWindowSize">halfWindowSize: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.reflect.ClassTag">ClassTag</span>[<span class="extype" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions.apply.R">R</span>]</span>)</span><span class="result">: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[(<span class="extype" name="scala.Int">Int</span>, <span class="extype" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions.apply.R">R</span>)]</span>
+        <span class="name">IntHist</span><span class="params">()</span><span class="result">: <a href="#IntHist=org.hammerlab.magic.accumulables.HashMap[Int,Long]" class="extmbr" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions.IntHist">IntHist</a></span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="tparam">R</dt><dd class="cmt"><p>ReferenceRegion type.</p></dd><dt class="param">regionRDDs</dt><dd class="cmt"><p>RDDs of regions to partition.</p></dd><dt class="param">lociPartitionsBoxed</dt><dd class="cmt"><p>Spark broadcast of a <span class="extype" name="LociPartitioning">LociPartitioning</span> describing which ranges of genomic loci should
-                           be mapped to each Spark partition.</p></dd><dt class="param">halfWindowSize</dt><dd class="cmt"><p>Send a copy of a region to a partition if it passes within this distance of that partition's
-                      designated loci.</p></dd><dt>returns</dt><dd class="cmt"><p>RDD of regions, keyed by the &quot;sample ID&quot; in @regionRDDs that they came from.
-</p></dd></dl></div>
+      
+    </li><li name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions#apply" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="apply[R&lt;:org.hammerlab.guacamole.reference.ReferenceRegion](regionRDDs:org.hammerlab.guacamole.readsets.PerSample[org.apache.spark.rdd.RDD[R]],loci:org.hammerlab.guacamole.loci.set.LociSet,args:org.hammerlab.guacamole.loci.partitioning.LociPartitionerArgs,halfWindowSize:Int)(implicitevidence$3:scala.reflect.ClassTag[R]):org.hammerlab.guacamole.readsets.rdd.PartitionedRegions[R]"></a>
+      <a id="apply[R&lt;:ReferenceRegion](PerSample[RDD[R]],LociSet,LociPartitionerArgs,Int)(ClassTag[R]):PartitionedRegions[R]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">apply</span><span class="tparams">[<span name="R">R &lt;: <a href="../../reference/ReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceRegion">ReferenceRegion</a></span>]</span><span class="params">(<span name="regionRDDs">regionRDDs: <a href="../package.html#PerSample[+A]=IndexedSeq[A]" class="extmbr" name="org.hammerlab.guacamole.readsets.PerSample">PerSample</a>[<span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<span class="extype" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions.apply.R">R</span>]]</span>, <span name="loci">loci: <a href="../../loci/set/LociSet.html" class="extype" name="org.hammerlab.guacamole.loci.set.LociSet">LociSet</a></span>, <span name="args">args: <a href="../../loci/partitioning/LociPartitionerArgs.html" class="extype" name="org.hammerlab.guacamole.loci.partitioning.LociPartitionerArgs">LociPartitionerArgs</a></span>, <span name="halfWindowSize">halfWindowSize: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">0</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.reflect.ClassTag">ClassTag</span>[<span class="extype" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions.apply.R">R</span>]</span>)</span><span class="result">: <a href="PartitionedRegions.html" class="extype" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions">PartitionedRegions</a>[<span class="extype" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions.apply.R">R</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Main <a href="PartitionedRegions.html" class="extype" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions">PartitionedRegions</a> constructor: given some regions and loci, assign the loci to Spark partitions, and then
+partition the regions according to which partitions' loci they overlap.</p><div class="fullcomment"><div class="comment cmt"><p>Main <a href="PartitionedRegions.html" class="extype" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions">PartitionedRegions</a> constructor: given some regions and loci, assign the loci to Spark partitions, and then
+partition the regions according to which partitions' loci they overlap.</p><p>Computes a <span class="extype" name="LociPartitioning">LociPartitioning</span> and delegates to the other constructor below.
+</p></div><dl class="paramcmts block"><dt class="tparam">R</dt><dd class="cmt"><p>ReferenceRegion type.
+</p></dd><dt class="param">regionRDDs</dt><dd class="cmt"><p>RDDs of regions to partition.</p></dd><dt class="param">loci</dt><dd class="cmt"><p>Genomic loci to operate on; these will be split among Spark partitions and coupled with all regions
+            from <code>regionRDDs</code> that overlap them (module the half-window described below).</p></dd><dt class="param">args</dt><dd class="cmt"><p>Parameters dictating how <code>loci</code> should be partitioned.</p></dd><dt class="param">halfWindowSize</dt><dd class="cmt"><p>A region is considered to overlap a partition's loci if it passes within this distance of any
+                      of them, in which case a copy of that region will be sent to that partition (possibly among
+                      others).</p></dd></dl></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -417,7 +446,11 @@ suitable for pileup-construction by <span class="extype" name="PileupFlatMapUtil
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="scala.AnyRef">
+        <div class="parent" name="scala.Serializable">
+              <h3>Inherited from <span class="extype" name="scala.Serializable">Serializable</span></h3>
+            </div><div class="parent" name="java.io.Serializable">
+              <h3>Inherited from <span class="extype" name="java.io.Serializable">Serializable</span></h3>
+            </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
             </div><div class="parent" name="scala.Any">
               <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>

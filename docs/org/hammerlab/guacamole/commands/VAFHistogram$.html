@@ -193,7 +193,7 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li name="org.hammerlab.guacamole.commands.VAFHistogram#buildMixtureModel" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="buildMixtureModel(variantAlleleFrequencies:org.apache.spark.rdd.RDD[org.hammerlab.guacamole.commands.VariantLocus],numClusters:Int,maxIterations:Int,convergenceTol:Double):org.apache.spark.mllib.clustering.GaussianMixtureModel"></a>
+      <a id="buildMixtureModel(variantLoci:org.apache.spark.rdd.RDD[org.hammerlab.guacamole.commands.VariantLocus],numClusters:Int,maxIterations:Int,convergenceTol:Double):org.apache.spark.mllib.clustering.GaussianMixtureModel"></a>
       <a id="buildMixtureModel(RDD[VariantLocus],Int,Int,Double):GaussianMixtureModel"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -201,12 +201,12 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">buildMixtureModel</span><span class="params">(<span name="variantAlleleFrequencies">variantAlleleFrequencies: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<a href="VariantLocus.html" class="extype" name="org.hammerlab.guacamole.commands.VariantLocus">VariantLocus</a>]</span>, <span name="numClusters">numClusters: <span class="extype" name="scala.Int">Int</span></span>, <span name="maxIterations">maxIterations: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">50</span></span>, <span name="convergenceTol">convergenceTol: <span class="extype" name="scala.Double">Double</span> = <span class="symbol">1e-2</span></span>)</span><span class="result">: <span class="extype" name="org.apache.spark.mllib.clustering.GaussianMixtureModel">GaussianMixtureModel</span></span>
+        <span class="name">buildMixtureModel</span><span class="params">(<span name="variantLoci">variantLoci: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<a href="VariantLocus.html" class="extype" name="org.hammerlab.guacamole.commands.VariantLocus">VariantLocus</a>]</span>, <span name="numClusters">numClusters: <span class="extype" name="scala.Int">Int</span></span>, <span name="maxIterations">maxIterations: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">50</span></span>, <span name="convergenceTol">convergenceTol: <span class="extype" name="scala.Double">Double</span> = <span class="symbol">1e-2</span></span>)</span><span class="result">: <span class="extype" name="org.apache.spark.mllib.clustering.GaussianMixtureModel">GaussianMixtureModel</span></span>
       </span>
       </h4>
       <p class="shortcomment cmt">Fit a Gaussian mixture model to the distribution of variant allele frequencies
 </p><div class="fullcomment"><div class="comment cmt"><p>Fit a Gaussian mixture model to the distribution of variant allele frequencies
-</p></div><dl class="paramcmts block"><dt class="param">variantAlleleFrequencies</dt><dd class="cmt"><p>RDD of loci with variant allele frequency &gt; 0</p></dd><dt class="param">numClusters</dt><dd class="cmt"><p>Number of Gaussian distributions to fit</p></dd><dt class="param">maxIterations</dt><dd class="cmt"><p>Maximum number of iterations to run EM</p></dd><dt class="param">convergenceTol</dt><dd class="cmt"><p>Largest change in log-likelihood before convergence</p></dd><dt>returns</dt><dd class="cmt"><p>GaussianMixtureModel
+</p></div><dl class="paramcmts block"><dt class="param">variantLoci</dt><dd class="cmt"><p>RDD of loci with variant allele frequency &gt; 0</p></dd><dt class="param">numClusters</dt><dd class="cmt"><p>Number of Gaussian distributions to fit</p></dd><dt class="param">maxIterations</dt><dd class="cmt"><p>Maximum number of iterations to run EM</p></dd><dt class="param">convergenceTol</dt><dd class="cmt"><p>Largest change in log-likelihood before convergence</p></dd><dt>returns</dt><dd class="cmt"><p>GaussianMixtureModel
 </p></dd></dl></div>
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>
@@ -272,16 +272,16 @@
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.commands.VAFHistogram#generateVAFHistogram" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="generateVAFHistogram(variantAlleleFrequencies:org.apache.spark.rdd.RDD[org.hammerlab.guacamole.commands.VariantLocus],bins:Int):Map[Int,org.hammerlab.guacamole.reference.NumLoci]"></a>
-      <a id="generateVAFHistogram(RDD[VariantLocus],Int):Map[Int,NumLoci]"></a>
+    </li><li name="org.hammerlab.guacamole.commands.VAFHistogram#generateVAFHistograms" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="generateVAFHistograms(variantAlleleFrequencies:org.apache.spark.rdd.RDD[org.hammerlab.guacamole.commands.VariantLocus],bins:Int):Map[org.hammerlab.guacamole.readsets.SampleId,Vector[(Int,Long)]]"></a>
+      <a id="generateVAFHistograms(RDD[VariantLocus],Int):Map[SampleId,Vector[(Int,Long)]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">generateVAFHistogram</span><span class="params">(<span name="variantAlleleFrequencies">variantAlleleFrequencies: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<a href="VariantLocus.html" class="extype" name="org.hammerlab.guacamole.commands.VariantLocus">VariantLocus</a>]</span>, <span name="bins">bins: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Int">Int</span>, <a href="../reference/package.html#NumLoci=Long" class="extmbr" name="org.hammerlab.guacamole.reference.NumLoci">NumLoci</a>]</span>
+        <span class="name">generateVAFHistograms</span><span class="params">(<span name="variantAlleleFrequencies">variantAlleleFrequencies: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<a href="VariantLocus.html" class="extype" name="org.hammerlab.guacamole.commands.VariantLocus">VariantLocus</a>]</span>, <span name="bins">bins: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.Map">Map</span>[<a href="../readsets/package.html#SampleId=Int" class="extmbr" name="org.hammerlab.guacamole.readsets.SampleId">SampleId</a>, <span class="extype" name="scala.Vector">Vector</span>[(<span class="extype" name="scala.Int">Int</span>, <span class="extype" name="scala.Long">Long</span>)]]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Generates a count of loci in each variant allele frequency bins
@@ -393,20 +393,20 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="org.hammerlab.guacamole.commands.VAFHistogram#variantLociFromReads" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="variantLociFromReads(reads:org.apache.spark.rdd.RDD[org.hammerlab.guacamole.reads.MappedRead],sampleName:org.hammerlab.guacamole.readsets.SampleName,reference:org.hammerlab.guacamole.reference.ReferenceGenome,lociPartitions:org.hammerlab.guacamole.loci.partitioning.LociPartitioning,samplePercent:Int,minReadDepth:Int,minVariantAlleleFrequency:Int,printStats:Boolean):org.apache.spark.rdd.RDD[org.hammerlab.guacamole.commands.VariantLocus]"></a>
-      <a id="variantLociFromReads(RDD[MappedRead],SampleName,ReferenceGenome,LociPartitioning,Int,Int,Int,Boolean):RDD[VariantLocus]"></a>
+      <a id="variantLociFromReads(partitionedReads:org.hammerlab.guacamole.readsets.PartitionedReads,reference:org.hammerlab.guacamole.reference.ReferenceGenome,samplePercent:Int,minReadDepth:Int,minVariantAlleleFrequency:Int,printStats:Boolean):(org.apache.spark.rdd.RDD[org.hammerlab.guacamole.commands.VariantLocus],Map[org.hammerlab.guacamole.readsets.SampleId,Long])"></a>
+      <a id="variantLociFromReads(PartitionedReads,ReferenceGenome,Int,Int,Int,Boolean):(RDD[VariantLocus],Map[SampleId,Long])"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">variantLociFromReads</span><span class="params">(<span name="reads">reads: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<a href="../reads/MappedRead.html" class="extype" name="org.hammerlab.guacamole.reads.MappedRead">MappedRead</a>]</span>, <span name="sampleName">sampleName: <a href="../readsets/package.html#SampleName=String" class="extmbr" name="org.hammerlab.guacamole.readsets.SampleName">SampleName</a></span>, <span name="reference">reference: <a href="../reference/ReferenceGenome.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceGenome">ReferenceGenome</a></span>, <span name="lociPartitions">lociPartitions: <a href="../loci/partitioning/LociPartitioning.html" class="extype" name="org.hammerlab.guacamole.loci.partitioning.LociPartitioning">LociPartitioning</a></span>, <span name="samplePercent">samplePercent: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">100</span></span>, <span name="minReadDepth">minReadDepth: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">0</span></span>, <span name="minVariantAlleleFrequency">minVariantAlleleFrequency: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">0</span></span>, <span name="printStats">printStats: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="result">: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<a href="VariantLocus.html" class="extype" name="org.hammerlab.guacamole.commands.VariantLocus">VariantLocus</a>]</span>
+        <span class="name">variantLociFromReads</span><span class="params">(<span name="partitionedReads">partitionedReads: <a href="../readsets/package.html#PartitionedReads=org.hammerlab.guacamole.readsets.rdd.PartitionedRegions[org.hammerlab.guacamole.reads.MappedRead]" class="extmbr" name="org.hammerlab.guacamole.readsets.PartitionedReads">PartitionedReads</a></span>, <span name="reference">reference: <a href="../reference/ReferenceGenome.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceGenome">ReferenceGenome</a></span>, <span name="samplePercent">samplePercent: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">100</span></span>, <span name="minReadDepth">minReadDepth: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">0</span></span>, <span name="minVariantAlleleFrequency">minVariantAlleleFrequency: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">0</span></span>, <span name="printStats">printStats: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="result">: (<span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<a href="VariantLocus.html" class="extype" name="org.hammerlab.guacamole.commands.VariantLocus">VariantLocus</a>], <span class="extype" name="scala.Predef.Map">Map</span>[<a href="../readsets/package.html#SampleId=Int" class="extmbr" name="org.hammerlab.guacamole.readsets.SampleId">SampleId</a>, <span class="extype" name="scala.Long">Long</span>])</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Find all non-reference loci in the sample
 </p><div class="fullcomment"><div class="comment cmt"><p>Find all non-reference loci in the sample
-</p></div><dl class="paramcmts block"><dt class="param">reads</dt><dd class="cmt"><p>RDD of mapped reads for the sample</p></dd><dt class="param">reference</dt><dd class="cmt"><p>genome</p></dd><dt class="param">lociPartitions</dt><dd class="cmt"><p>Positions which to examine for non-reference loci</p></dd><dt class="param">samplePercent</dt><dd class="cmt"><p>Percent of non-reference loci to use for descriptive statistics</p></dd><dt class="param">minReadDepth</dt><dd class="cmt"><p>Minimum read depth before including variant allele frequency</p></dd><dt class="param">minVariantAlleleFrequency</dt><dd class="cmt"><p>Minimum variant allele frequency to include</p></dd><dt class="param">printStats</dt><dd class="cmt"><p>Print descriptive statistics for the variant allele frequency distribution</p></dd><dt>returns</dt><dd class="cmt"><p>RDD of VariantLocus, which contain the locus and non-zero variant allele frequency
+</p></div><dl class="paramcmts block"><dt class="param">partitionedReads</dt><dd class="cmt"><p>partitioned, mapped reads</p></dd><dt class="param">reference</dt><dd class="cmt"><p>genome</p></dd><dt class="param">samplePercent</dt><dd class="cmt"><p>Percent of non-reference loci to use for descriptive statistics</p></dd><dt class="param">minReadDepth</dt><dd class="cmt"><p>Minimum read depth before including variant allele frequency</p></dd><dt class="param">minVariantAlleleFrequency</dt><dd class="cmt"><p>Minimum variant allele frequency to include</p></dd><dt class="param">printStats</dt><dd class="cmt"><p>Print descriptive statistics for the variant allele frequency distribution</p></dd><dt>returns</dt><dd class="cmt"><p>RDD of VariantLocus, which contain the locus and non-zero variant allele frequency
 </p></dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>

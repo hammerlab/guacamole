@@ -530,21 +530,21 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.commands.VariantSupport.Caller#pileupToAlleleCounts" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="pileupToAlleleCounts(pileup:org.hammerlab.guacamole.pileup.Pileup):Iterator[org.hammerlab.guacamole.commands.VariantSupport.Caller.AlleleCount]"></a>
-      <a id="pileupToAlleleCounts(Pileup):Iterator[AlleleCount]"></a>
+    </li><li name="org.hammerlab.guacamole.commands.VariantSupport.Caller#pileupsToAlleleCounts" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="pileupsToAlleleCounts(pileups:org.hammerlab.guacamole.readsets.PerSample[org.hammerlab.guacamole.pileup.Pileup]):Iterator[org.hammerlab.guacamole.commands.VariantSupport.Caller.AlleleCount]"></a>
+      <a id="pileupsToAlleleCounts(PerSample[Pileup]):Iterator[AlleleCount]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">pileupToAlleleCounts</span><span class="params">(<span name="pileup">pileup: <a href="../pileup/Pileup.html" class="extype" name="org.hammerlab.guacamole.pileup.Pileup">Pileup</a></span>)</span><span class="result">: <span class="extype" name="scala.Iterator">Iterator</span>[<a href="VariantSupport$$Caller$$AlleleCount.html" class="extype" name="org.hammerlab.guacamole.commands.VariantSupport.Caller.AlleleCount">AlleleCount</a>]</span>
+        <span class="name">pileupsToAlleleCounts</span><span class="params">(<span name="pileups">pileups: <a href="../readsets/package.html#PerSample[+A]=IndexedSeq[A]" class="extmbr" name="org.hammerlab.guacamole.readsets.PerSample">PerSample</a>[<a href="../pileup/Pileup.html" class="extype" name="org.hammerlab.guacamole.pileup.Pileup">Pileup</a>]</span>)</span><span class="result">: <span class="extype" name="scala.Iterator">Iterator</span>[<a href="VariantSupport$$Caller$$AlleleCount.html" class="extype" name="org.hammerlab.guacamole.commands.VariantSupport.Caller.AlleleCount">AlleleCount</a>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Count alleles in a pileup
 </p><div class="fullcomment"><div class="comment cmt"><p>Count alleles in a pileup
-</p></div><dl class="paramcmts block"><dt class="param">pileup</dt><dd class="cmt"><p>Pileup of reads a given locus.</p></dd><dt>returns</dt><dd class="cmt"><p>Iterator of AlleleCount which contains pair of reference and alternate with a count.
+</p></div><dl class="paramcmts block"><dt class="param">pileups</dt><dd class="cmt"><p>Per-sample pileups of reads at a given locus.</p></dd><dt>returns</dt><dd class="cmt"><p>Iterator of AlleleCount which contains pair of reference and alternate with a count.
 </p></dd></dl></div>
     </li><li name="org.hammerlab.guacamole.commands.VariantSupport.Caller#run" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="run(args:org.hammerlab.guacamole.commands.VariantSupport.Arguments,sc:org.apache.spark.SparkContext):Unit"></a>

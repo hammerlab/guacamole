@@ -2,17 +2,17 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>TaskPosition - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.distributed.TaskPosition</title>
-          <meta name="description" content="TaskPosition - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.distributed.TaskPosition" />
-          <meta name="keywords" content="TaskPosition guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.distributed.TaskPosition" />
+          <title>PartitionedRegions - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.readsets.rdd.PartitionedRegions</title>
+          <meta name="description" content="PartitionedRegions - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.readsets.rdd.PartitionedRegions" />
+          <meta name="keywords" content="PartitionedRegions guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.readsets.rdd.PartitionedRegions" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
-      <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
-      <link href="../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
       <script type="text/javascript">
          if(top === self) {
-            var url = '../../../../index.html';
-            var hash = 'org.hammerlab.guacamole.distributed.TaskPosition';
+            var url = '../../../../../index.html';
+            var hash = 'org.hammerlab.guacamole.readsets.rdd.PartitionedRegions';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -24,27 +24,29 @@
         </head>
         <body class="type">
       <div id="definition">
-        <img src="../../../../lib/class_big.png" />
-        <p id="owner"><a href="../../../package.html" class="extype" name="org">org</a>.<a href="../../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="../package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole.distributed">distributed</a></p>
-        <h1>TaskPosition</h1>
+        <a href="PartitionedRegions$.html" title="Go to companion"><img src="../../../../../lib/class_to_object_big.png" /></a>
+        <p id="owner"><a href="../../../../package.html" class="extype" name="org">org</a>.<a href="../../../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="../../package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="../package.html" class="extype" name="org.hammerlab.guacamole.readsets">readsets</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole.readsets.rdd">rdd</a></p>
+        <h1><a href="PartitionedRegions$.html" title="Go to companion">PartitionedRegions</a></h1>
       </div>
 
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">case class</span>
+        <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">TaskPosition</span><span class="params">(<span name="partition">partition: <a href="../loci/partitioning/LociPartitioner$.html#PartitionIndex=Int" class="extmbr" name="org.hammerlab.guacamole.loci.partitioning.LociPartitioner.PartitionIndex">PartitionIndex</a></span>, <span name="contigName">contigName: <a href="../reference/package.html#ContigName=String" class="extmbr" name="org.hammerlab.guacamole.reference.ContigName">ContigName</a></span>, <span name="locus">locus: <a href="../reference/package.html#Locus=Long" class="extmbr" name="org.hammerlab.guacamole.reference.Locus">Locus</a></span>)</span><span class="result"> extends <span class="extype" name="scala.Ordered">Ordered</span>[<a href="" class="extype" name="org.hammerlab.guacamole.distributed.TaskPosition">TaskPosition</a>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">PartitionedRegions</span><span class="tparams">[<span name="R">R &lt;: <a href="../../reference/ReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceRegion">ReferenceRegion</a></span>]</span><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>TaskPosition represents the task a read is assigned to and the start position on the reference genome of the read
-Each read is assigned to a task and the reads are sorted by (referenceContig, locus) when they are processed
-</p></div><dl class="paramcmts block"><dt class="param">partition</dt><dd class="cmt"><p>Partition index</p></dd><dt class="param">contigName</dt><dd class="cmt"><p>Reference or chromosome name for reads</p></dd><dt class="param">locus</dt><dd class="cmt"><p>The position in the reference contig at which the read starts
-</p></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Groups a <span class="extype" name="LociPartitioning">LociPartitioning</span> with an <span class="extype" name="RDD[ReferenceRegion">RDD[ReferenceRegion</span>] that has already been partitioned according to that
+partitioning.</p><p>This means some regions will occur multiple times in the RDD (due to regions straddling partition boundaries), so
+it's important not to confuse this with a regular <span class="extype" name="RDD[ReferenceRegion">RDD[ReferenceRegion</span>].</p><p>The main API exposed here is <a href="#mapPartitions[V](f:(Iterator[(org.hammerlab.guacamole.readsets.SampleId,R)],org.hammerlab.guacamole.loci.set.LociSet)=&gt;Iterator[V])(implicitevidence$2:scala.reflect.ClassTag[V]):org.apache.spark.rdd.RDD[V]" class="extmbr" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions#mapPartitions">mapPartitions</a>, which lets the caller apply a function to a <span class="extype" name="LociSet">LociSet</span> as well as
+all region copies that overlap those loci.</p><p>Note: the containing <a href="" class="extype" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions">PartitionedRegions</a> gets picked up by the closure-cleaner and serialized when
+<a href="#mapPartitions[V](f:(Iterator[(org.hammerlab.guacamole.readsets.SampleId,R)],org.hammerlab.guacamole.loci.set.LociSet)=&gt;Iterator[V])(implicitevidence$2:scala.reflect.ClassTag[V]):org.apache.spark.rdd.RDD[V]" class="extmbr" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions#mapPartitions">mapPartitions</a> is called.
+</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <span class="extype" name="scala.math.Ordered">Ordered</span>[<a href="" class="extype" name="org.hammerlab.guacamole.distributed.TaskPosition">TaskPosition</a>], <span class="extype" name="java.lang.Comparable">Comparable</span>[<a href="" class="extype" name="org.hammerlab.guacamole.distributed.TaskPosition">TaskPosition</a>], <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -62,7 +64,7 @@ Each read is assigned to a task and the reads are sorted by (referenceContig, lo
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="org.hammerlab.guacamole.distributed.TaskPosition"><span>TaskPosition</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="scala.math.Ordered"><span>Ordered</span></li><li class="in" name="java.lang.Comparable"><span>Comparable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions"><span>PartitionedRegions</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -82,20 +84,19 @@ Each read is assigned to a task and the reads are sorted by (referenceContig, lo
         <div id="allMembers">
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
-              <ol><li name="org.hammerlab.guacamole.distributed.TaskPosition#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="&lt;init&gt;(partition:org.hammerlab.guacamole.loci.partitioning.LociPartitioner.PartitionIndex,contigName:org.hammerlab.guacamole.reference.ContigName,locus:org.hammerlab.guacamole.reference.Locus):org.hammerlab.guacamole.distributed.TaskPosition"></a>
-      <a id="&lt;init&gt;:TaskPosition"></a>
+              <ol><li name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="&lt;init&gt;(numSamples:org.hammerlab.guacamole.readsets.NumSamples,keyedRegions:org.apache.spark.rdd.RDD[(org.hammerlab.guacamole.readsets.SampleId,R)],partitioning:org.hammerlab.guacamole.loci.partitioning.LociPartitioning)(implicitevidence$1:scala.reflect.ClassTag[R]):org.hammerlab.guacamole.readsets.rdd.PartitionedRegions[R]"></a>
+      <a id="&lt;init&gt;:PartitionedRegions[R]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">TaskPosition</span><span class="params">(<span name="partition">partition: <a href="../loci/partitioning/LociPartitioner$.html#PartitionIndex=Int" class="extmbr" name="org.hammerlab.guacamole.loci.partitioning.LociPartitioner.PartitionIndex">PartitionIndex</a></span>, <span name="contigName">contigName: <a href="../reference/package.html#ContigName=String" class="extmbr" name="org.hammerlab.guacamole.reference.ContigName">ContigName</a></span>, <span name="locus">locus: <a href="../reference/package.html#Locus=Long" class="extmbr" name="org.hammerlab.guacamole.reference.Locus">Locus</a></span>)</span>
+        <span class="name">PartitionedRegions</span><span class="params">(<span name="numSamples">numSamples: <a href="../package.html#NumSamples=Int" class="extmbr" name="org.hammerlab.guacamole.readsets.NumSamples">NumSamples</a></span>, <span name="keyedRegions">keyedRegions: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[(<a href="../package.html#SampleId=Int" class="extmbr" name="org.hammerlab.guacamole.readsets.SampleId">SampleId</a>, <span class="extype" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions.R">R</span>)]</span>, <span name="partitioning">partitioning: <a href="../../loci/partitioning/LociPartitioning.html" class="extype" name="org.hammerlab.guacamole.loci.partitioning.LociPartitioning">LociPartitioning</a></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.reflect.ClassTag">ClassTag</span>[<span class="extype" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions.R">R</span>]</span>)</span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">partition</dt><dd class="cmt"><p>Partition index</p></dd><dt class="param">contigName</dt><dd class="cmt"><p>Reference or chromosome name for reads</p></dd><dt class="param">locus</dt><dd class="cmt"><p>The position in the reference contig at which the read starts
-</p></dd></dl></div>
+      
     </li></ol>
             </div>
 
@@ -144,32 +145,6 @@ Each read is assigned to a task and the reads are sorted by (referenceContig, lo
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="scala.math.Ordered#&lt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="&lt;(that:A):Boolean"></a>
-      <a id="&lt;(TaskPosition):Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span title="gt4s: $less" class="name">&lt;</span><span class="params">(<span name="that">that: <a href="" class="extype" name="org.hammerlab.guacamole.distributed.TaskPosition">TaskPosition</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Ordered</dd></dl></div>
-    </li><li name="scala.math.Ordered#&lt;=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="&lt;=(that:A):Boolean"></a>
-      <a id="&lt;=(TaskPosition):Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span title="gt4s: $less$eq" class="name">&lt;=</span><span class="params">(<span name="that">that: <a href="" class="extype" name="org.hammerlab.guacamole.distributed.TaskPosition">TaskPosition</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Ordered</dd></dl></div>
     </li><li name="scala.AnyRef#==" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="==(x$1:AnyRef):Boolean"></a>
       <a id="==(AnyRef):Boolean"></a>
@@ -196,32 +171,6 @@ Each read is assigned to a task and the reads are sorted by (referenceContig, lo
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="scala.math.Ordered#&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="&gt;(that:A):Boolean"></a>
-      <a id="&gt;(TaskPosition):Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span title="gt4s: $greater" class="name">&gt;</span><span class="params">(<span name="that">that: <a href="" class="extype" name="org.hammerlab.guacamole.distributed.TaskPosition">TaskPosition</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Ordered</dd></dl></div>
-    </li><li name="scala.math.Ordered#&gt;=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="&gt;=(that:A):Boolean"></a>
-      <a id="&gt;=(TaskPosition):Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span title="gt4s: $greater$eq" class="name">&gt;=</span><span class="params">(<span name="that">that: <a href="" class="extype" name="org.hammerlab.guacamole.distributed.TaskPosition">TaskPosition</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Ordered</dd></dl></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -247,52 +196,13 @@ Each read is assigned to a task and the reads are sorted by (referenceContig, lo
         <span class="name">clone</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
       <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.distributed.TaskPosition#compare" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="compare(other:org.hammerlab.guacamole.distributed.TaskPosition):Int"></a>
-      <a id="compare(TaskPosition):Int"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">compare</span><span class="params">(<span name="other">other: <a href="" class="extype" name="org.hammerlab.guacamole.distributed.TaskPosition">TaskPosition</a></span>)</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.distributed.TaskPosition">TaskPosition</a> → Ordered</dd></dl></div>
-    </li><li name="scala.math.Ordered#compareTo" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="compareTo(that:A):Int"></a>
-      <a id="compareTo(TaskPosition):Int"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">compareTo</span><span class="params">(<span name="that">that: <a href="" class="extype" name="org.hammerlab.guacamole.distributed.TaskPosition">TaskPosition</a></span>)</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Ordered → Comparable</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.distributed.TaskPosition#contigName" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="contigName:org.hammerlab.guacamole.reference.ContigName"></a>
-      <a id="contigName:ContigName"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">contigName</span><span class="result">: <a href="../reference/package.html#ContigName=String" class="extmbr" name="org.hammerlab.guacamole.reference.ContigName">ContigName</a></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Reference or chromosome name for reads</p>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -306,6 +216,19 @@ Each read is assigned to a task and the reads are sorted by (referenceContig, lo
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#equals" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="equals(x$1:Any):Boolean"></a>
+      <a id="equals(Any):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <a id="finalize():Unit"></a>
@@ -318,7 +241,7 @@ Each read is assigned to a task and the reads are sorted by (referenceContig, lo
         <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
       <span class="symbol">classOf[java.lang.Throwable]</span>
@@ -338,6 +261,19 @@ Each read is assigned to a task and the reads are sorted by (referenceContig, lo
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scala.AnyRef#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="hashCode():Int"></a>
+      <a id="hashCode():Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <a id="isInstanceOf[T0]:Boolean"></a>
@@ -351,20 +287,25 @@ Each read is assigned to a task and the reads are sorted by (referenceContig, lo
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.distributed.TaskPosition#locus" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="locus:org.hammerlab.guacamole.reference.Locus"></a>
-      <a id="locus:Locus"></a>
+    </li><li name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions#mapPartitions" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="mapPartitions[V](f:(Iterator[(org.hammerlab.guacamole.readsets.SampleId,R)],org.hammerlab.guacamole.loci.set.LociSet)=&gt;Iterator[V])(implicitevidence$2:scala.reflect.ClassTag[V]):org.apache.spark.rdd.RDD[V]"></a>
+      <a id="mapPartitions[V]((Iterator[(SampleId,R)],LociSet)⇒Iterator[V])(ClassTag[V]):RDD[V]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">val</span>
+        <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">locus</span><span class="result">: <a href="../reference/package.html#Locus=Long" class="extmbr" name="org.hammerlab.guacamole.reference.Locus">Locus</a></span>
+        <span class="name">mapPartitions</span><span class="tparams">[<span name="V">V</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="scala.Iterator">Iterator</span>[(<a href="../package.html#SampleId=Int" class="extmbr" name="org.hammerlab.guacamole.readsets.SampleId">SampleId</a>, <span class="extype" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions.R">R</span>)], <a href="../../loci/set/LociSet.html" class="extype" name="org.hammerlab.guacamole.loci.set.LociSet">LociSet</a>) ⇒ <span class="extype" name="scala.Iterator">Iterator</span>[<span class="extype" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions.mapPartitions.V">V</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.reflect.ClassTag">ClassTag</span>[<span class="extype" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions.mapPartitions.V">V</span>]</span>)</span><span class="result">: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<span class="extype" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions.mapPartitions.V">V</span>]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">The position in the reference contig at which the read starts
-</p>
+      <p class="shortcomment cmt">For each partition, apply a function to the set of loci assigned to that partition as well as all regions that
+overlap those loci (possibly with a grace-window baked in upstream; see <a href="" class="extype" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions">PartitionedRegions</a> constructors below).</p><div class="fullcomment"><div class="comment cmt"><p>For each partition, apply a function to the set of loci assigned to that partition as well as all regions that
+overlap those loci (possibly with a grace-window baked in upstream; see <a href="" class="extype" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions">PartitionedRegions</a> constructors below).
+</p></div><dl class="paramcmts block"><dt class="param">f</dt><dd class="cmt"><p>function that operates on the regions and loci corresponding to a partition, emiting an output iterator of
+         arbitrary type <span class="extype" name="V">V</span>.</p></dd><dt>returns</dt><dd class="cmt"><p><span class="extype" name="RDD[V">RDD[V</span>], with partitions comprised of the <span class="extype" name="Iterator[V">Iterator[V</span>]'s returned by application of <code>f</code> to each
+       partition.
+</p></dd></dl></div>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -404,19 +345,45 @@ Each read is assigned to a task and the reads are sorted by (referenceContig, lo
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.distributed.TaskPosition#partition" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="partition:org.hammerlab.guacamole.loci.partitioning.LociPartitioner.PartitionIndex"></a>
-      <a id="partition:PartitionIndex"></a>
+    </li><li name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions#numLoci" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="numLoci:org.apache.spark.Accumulator[Long]"></a>
+      <a id="numLoci:Accumulator[Long]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">partition</span><span class="result">: <a href="../loci/partitioning/LociPartitioner$.html#PartitionIndex=Int" class="extmbr" name="org.hammerlab.guacamole.loci.partitioning.LociPartitioner.PartitionIndex">PartitionIndex</a></span>
+        <span class="name">numLoci</span><span class="result">: <span class="extype" name="org.apache.spark.Accumulator">Accumulator</span>[<span class="extype" name="scala.Long">Long</span>]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Partition index</p>
+      
+    </li><li name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions#numSamples" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="numSamples:org.hammerlab.guacamole.readsets.NumSamples"></a>
+      <a id="numSamples:NumSamples"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">numSamples</span><span class="result">: <a href="../package.html#NumSamples=Int" class="extmbr" name="org.hammerlab.guacamole.readsets.NumSamples">NumSamples</a></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions#sc" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="sc:org.apache.spark.SparkContext"></a>
+      <a id="sc:SparkContext"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">sc</span><span class="result">: <span class="extype" name="org.apache.spark.SparkContext">SparkContext</span></span>
+      </span>
+      </h4>
+      
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -430,6 +397,19 @@ Each read is assigned to a task and the reads are sorted by (referenceContig, lo
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="toString():String"></a>
+      <a id="toString():String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>
@@ -500,14 +480,6 @@ Each read is assigned to a task and the reads are sorted by (referenceContig, lo
               <h3>Inherited from <span class="extype" name="scala.Serializable">Serializable</span></h3>
             </div><div class="parent" name="java.io.Serializable">
               <h3>Inherited from <span class="extype" name="java.io.Serializable">Serializable</span></h3>
-            </div><div class="parent" name="scala.Product">
-              <h3>Inherited from <span class="extype" name="scala.Product">Product</span></h3>
-            </div><div class="parent" name="scala.Equals">
-              <h3>Inherited from <span class="extype" name="scala.Equals">Equals</span></h3>
-            </div><div class="parent" name="scala.math.Ordered">
-              <h3>Inherited from <span class="extype" name="scala.math.Ordered">Ordered</span>[<a href="" class="extype" name="org.hammerlab.guacamole.distributed.TaskPosition">TaskPosition</a>]</h3>
-            </div><div class="parent" name="java.lang.Comparable">
-              <h3>Inherited from <span class="extype" name="java.lang.Comparable">Comparable</span>[<a href="" class="extype" name="org.hammerlab.guacamole.distributed.TaskPosition">TaskPosition</a>]</h3>
             </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
             </div><div class="parent" name="scala.Any">
@@ -528,6 +500,6 @@ Each read is assigned to a task and the reads are sorted by (referenceContig, lo
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../lib/template.js"></script>
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../../lib/template.js"></script>
     </body>
       </html>
