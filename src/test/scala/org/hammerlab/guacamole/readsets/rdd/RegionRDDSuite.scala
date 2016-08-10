@@ -27,7 +27,10 @@ class RegionRDDSuiteRegistrar extends KryoTestRegistrar {
   }
 }
 
-class RegionRDDSuite extends GuacFunSuite with ReadsRDDUtil with ContigLengthsUtil {
+class RegionRDDSuite
+  extends GuacFunSuite
+    with RegionsRDDUtil
+    with ContigLengthsUtil {
 
   override def registrar = "org.hammerlab.guacamole.readsets.rdd.RegionRDDSuiteRegistrar"
 
@@ -85,7 +88,7 @@ class RegionRDDSuite extends GuacFunSuite with ReadsRDDUtil with ContigLengthsUt
 
   test("coverage") {
     val readsRDD =
-      makeReadsRDD(
+      makeRegionsRDD(
         numPartitions = 1,
         ("chr1", 100, 105,  1),
         ("chr1", 101, 106,  1),

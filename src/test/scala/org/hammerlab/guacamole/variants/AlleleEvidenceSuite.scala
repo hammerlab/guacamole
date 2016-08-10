@@ -1,19 +1,23 @@
 package org.hammerlab.guacamole.variants
 
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.util.TestUtil
+import org.hammerlab.guacamole.reads.ReadsUtil
 import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
-import org.scalatest.Matchers
 
-class AlleleEvidenceSuite extends GuacFunSuite {
+class AlleleEvidenceSuite
+  extends GuacFunSuite
+    with ReadsUtil {
 
   def reference = TestUtil.makeReference(sc, Seq(("chr1", 0, "NTAGATCGA")))
 
   test("allele evidence from pileup, all reads support") {
-    val reads = Seq(
-      TestUtil.makeRead("TCGATCGA", "8M", 1, alignmentQuality = 30),
-      TestUtil.makeRead("TCGATCGA", "8M", 1, alignmentQuality = 30),
-      TestUtil.makeRead("TCGACCCTCGA", "4M3I4M", 1, alignmentQuality = 60))
+    val reads =
+      Seq(
+        makeRead("TCGATCGA", "8M", 1, alignmentQuality = 30),
+        makeRead("TCGATCGA", "8M", 1, alignmentQuality = 30),
+        makeRead("TCGACCCTCGA", "4M3I4M", 1, alignmentQuality = 60)
+      )
+
     val variantPileup = Pileup(reads, "chr1", 2, reference.getContig("chr1"))
 
     val variantEvidence = AlleleEvidence(
@@ -28,10 +32,13 @@ class AlleleEvidenceSuite extends GuacFunSuite {
   }
 
   test("allele evidence from pileup, one read supports") {
-    val reads = Seq(
-      TestUtil.makeRead("TAGATCGA", "8M", 1, alignmentQuality = 30),
-      TestUtil.makeRead("TCGATCGA", "8M", 1, alignmentQuality = 60),
-      TestUtil.makeRead("TAGACCCTCGA", "4M3I4M", 1, alignmentQuality = 60))
+    val reads =
+      Seq(
+        makeRead("TAGATCGA", "8M", 1, alignmentQuality = 30),
+        makeRead("TCGATCGA", "8M", 1, alignmentQuality = 60),
+        makeRead("TAGACCCTCGA", "4M3I4M", 1, alignmentQuality = 60)
+      )
+
     val variantPileup = Pileup(reads, "chr1", 2, reference.getContig("chr1"))
 
     val variantEvidence = AlleleEvidence(
@@ -46,10 +53,13 @@ class AlleleEvidenceSuite extends GuacFunSuite {
   }
 
   test("allele evidence from pileup, no read supports") {
-    val reads = Seq(
-      TestUtil.makeRead("TAGATCGA", "8M", 1, alignmentQuality = 30),
-      TestUtil.makeRead("TAGATCGA", "8M", 1, alignmentQuality = 60),
-      TestUtil.makeRead("TAGACCCTCGA", "4M3I4M", 1, alignmentQuality = 60))
+    val reads =
+      Seq(
+        makeRead("TAGATCGA", "8M", 1, alignmentQuality = 30),
+        makeRead("TAGATCGA", "8M", 1, alignmentQuality = 60),
+        makeRead("TAGACCCTCGA", "4M3I4M", 1, alignmentQuality = 60)
+      )
+
     val variantPileup = Pileup(reads, "chr1", 2, reference.getContig("chr1"))
 
     val variantEvidence = AlleleEvidence(
@@ -62,5 +72,4 @@ class AlleleEvidenceSuite extends GuacFunSuite {
     variantEvidence.medianMappingQuality.toString should be("NaN")
     variantEvidence.medianMismatchesPerRead.toString should be("NaN")
   }
-
 }

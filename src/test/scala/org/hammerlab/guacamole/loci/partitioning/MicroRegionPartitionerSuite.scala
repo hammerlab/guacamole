@@ -2,19 +2,26 @@ package org.hammerlab.guacamole.loci.partitioning
 
 import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole.loci.set.LociSet
-import org.hammerlab.guacamole.reads.MappedRead
-import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
+import org.hammerlab.guacamole.reads.{MappedRead, ReadsUtil}
+import org.hammerlab.guacamole.util.GuacFunSuite
 
-class MicroRegionPartitionerSuite extends GuacFunSuite {
+class MicroRegionPartitionerSuite
+  extends GuacFunSuite
+    with ReadsUtil {
 
   test("partition") {
-    def makeRead(start: Long, length: Long) = {
-      TestUtil.makeRead("A" * length.toInt, "%sM".format(length), start, "chr1")
-    }
 
-    def pairsToReads(pairs: Seq[(Long, Long)]): RDD[MappedRead] = {
-      sc.parallelize(pairs.map(pair => makeRead(pair._1, pair._2)))
-    }
+    def pairsToReads(pairs: Seq[(Long, Long)]): RDD[MappedRead] =
+      sc.parallelize(
+        for {
+          (start, length) <- pairs
+        } yield
+          makeRead(
+            sequence = "A" * length.toInt,
+            cigar = "%sM".format(length),
+            start = start
+          )
+      )
 
     val reads =
       pairsToReads(
