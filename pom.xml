@@ -320,7 +320,7 @@
     <dependency>
       <groupId>org.hammerlab</groupId>
       <artifactId>magic-rdds</artifactId>
-      <version>1.0.0-20160801.033044-3</version>
+      <version>1.0.0-20160808.045743-4</version>
     </dependency>
 
     <!-- Test deps -->

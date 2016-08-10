@@ -22,7 +22,7 @@ import java.io.{InputStream, OutputStream, PrintStream}
 
 import org.hammerlab.guacamole.loci.partitioning.LociPartitioner.PartitionIndex
 import org.hammerlab.guacamole.loci.set.{LociSet, Builder => LociSetBuilder}
-import org.hammerlab.guacamole.reference.ContigName
+import org.hammerlab.guacamole.reference.{ContigName, ReferenceRegion}
 import org.hammerlab.guacamole.strings.TruncatedToString
 import org.hammerlab.magic.iterator.LinesIterator
 
@@ -60,6 +60,13 @@ case class LociMap[T](@transient private val map: SortedMap[ContigName, Contig[T
     }
     mapOfBuilders.mapValues(_.result).toMap
   }
+
+  /**
+   * Return values corresponding to any ranges that overlap the given [[ReferenceRegion]], with a `halfWindowSize`
+   * margin of error.
+   */
+  def getAll(r: ReferenceRegion, halfWindowSize: Int = 0): Set[T] =
+    onContig(r.contigName).getAll(r.start - halfWindowSize, r.end + halfWindowSize)
 
   /**
    * Returns the loci map on the specified contig.
