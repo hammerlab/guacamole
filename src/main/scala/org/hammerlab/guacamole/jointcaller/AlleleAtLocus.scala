@@ -116,7 +116,14 @@ object AlleleAtLocus {
 
       subsequenceCounts.map(pair => (subsequenceToAllele(pair._1), requiredReads, pair._2))
     })
-    val result = alleleRequiredReadsActualReads.filter(tpl => tpl._3 >= tpl._2).map(_._1).distinct.toVector
+
+    val result =
+      alleleRequiredReadsActualReads
+        .filter(tpl => tpl._3 >= tpl._2)
+        .map(_._1)
+        .distinct  // Reduce to distinct alleles
+        .toVector
+
     if (atLeastOneAllele && result.isEmpty) {
       val allelesSortedByTotal = alleleRequiredReadsActualReads
         .groupBy(_._1)
