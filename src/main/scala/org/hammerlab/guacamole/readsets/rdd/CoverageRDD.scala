@@ -9,16 +9,12 @@ import org.hammerlab.guacamole.readsets.iterator.{ContigCoverageIterator, Contig
 import org.hammerlab.guacamole.reference.{ContigName, NumLoci, Position, ReferenceRegion}
 import org.hammerlab.magic.rdd.RunLengthRDD._
 
-import scala.collection.mutable.ArrayBuffer
 import scala.reflect.ClassTag
 
 /**
- * Augment an RDD[ReferenceRegion] with some useful methods for e.g. computing coverage depth.
- *
- * @param requireRegionsGroupedByContig when true, require regions to be grouped by contig within each partition; this
- *                                      is necessary for some of our iteration to work efficiently.
+ * Augment an [[RDD[ReferenceRegion]]] with methods for computing coverage depth, .
  */
-class CoverageRDD[R <: ReferenceRegion: ClassTag](@transient rdd: RDD[R], requireRegionsGroupedByContig: Boolean)
+class CoverageRDD[R <: ReferenceRegion: ClassTag](@transient rdd: RDD[R])
   extends Serializable {
 
   @transient val sc = rdd.sparkContext
@@ -34,7 +30,7 @@ class CoverageRDD[R <: ReferenceRegion: ClassTag](@transient rdd: RDD[R], requir
     rdd
       .mapPartitions(it =>
         for {
-          (contigName, contigRegions) <- ContigsIterator(it.buffered, requireRegionsGroupedByContig)
+          (contigName, contigRegions) <- ContigsIterator(it.buffered)
           contigCoverages = ContigCoverageIterator(halfWindowSize, contigRegions)
           lociContig = lociBroadcast.value.onContig(contigName).iterator
           (locus, coverage) <- contigCoverages.intersect(lociContig)
@@ -60,7 +56,7 @@ class CoverageRDD[R <: ReferenceRegion: ClassTag](@transient rdd: RDD[R], requir
     )
     .mapPartitionsWithIndex(
       (idx, it) =>
-        new TakeLociIterator(it.buffered, maxRegionsPerPartition, requireRegionsGroupedByContig)
+        new TakeLociIterator(it.buffered, maxRegionsPerPartition)
     )
 
   /**
@@ -115,28 +111,40 @@ class CoverageRDD[R <: ReferenceRegion: ClassTag](@transient rdd: RDD[R], requir
    * a sanity check.
    */
   def shuffleCoverage(halfWindowSize: Int,
-                      contigLengthsBroadcast: Broadcast[ContigLengths]): RDD[(Position, Coverage)] = {
-    rdd
-      .flatMap(r => {
-        val c = r.contigName
-        val length = contigLengthsBroadcast.value(c)
+                      contigLengthsBroadcast: Broadcast[ContigLengths]): RDD[(Position, Coverage)] =
+    (for {
 
-        val lowerBound = math.max(0, r.start - halfWindowSize)
-        val upperBound = math.min(length, r.end + halfWindowSize)
+      // For each region…
+      ReferenceRegion(contigName, start, end) <- rdd
 
-        val outs = ArrayBuffer[(Position, Coverage)]()
+      // Compute the bounds of loci that this region should contribute 1 unit of coverage-depth to.
+      contigLength = contigLengthsBroadcast.value(contigName)
+      lowerBound = math.max(0, start - halfWindowSize)
+      upperBound = math.min(contigLength, end + halfWindowSize)
 
-        outs += Position(c, lowerBound) -> Coverage(starts = 1)
+      // For each such locus…
+      locus <- lowerBound until upperBound
 
-        for {
-          l <- lowerBound until upperBound
-        } {
-          outs += Position(c, l) -> Coverage(depth = 1)
-        }
+      position = Position(contigName, locus)
 
-        outs.iterator
-      })
-      .reduceByKey(_ + _)
-      .sortByKey()
-  }
+      // All covered loci should get one unit of coverage-depth recorded due to this region.
+      depthCoverage = Coverage(depth = 1)
+
+      // The first locus should also record one unit of "region-start depth", which is also recorded by `Coverage`
+      // objects, and read downstream by code computing the number of regions straddling partition boundaries.
+      coverages =
+        if (locus == lowerBound)
+          List(Coverage(starts = 1), depthCoverage)
+        else
+          List(depthCoverage)
+
+      // For each of the (1 or 2) Coverages above…
+      coverage <- coverages
+
+    } yield
+      // Emit the Coverage, keyed by the current genomic position.
+      position -> coverage
+    )
+    .reduceByKey(_ + _)  // sum all Coverages for each Position
+    .sortByKey()  // sort by Position
 }

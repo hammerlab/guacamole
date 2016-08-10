@@ -1,24 +1,22 @@
 package org.hammerlab.guacamole.loci.partitioning
 
 import org.apache.spark.rdd.RDD
-import org.hammerlab.guacamole.loci.map.LociMap
-import org.hammerlab.guacamole.loci.partitioning.LociPartitioner.PartitionIndex
 import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.readsets.rdd.CoverageRDD
 import org.hammerlab.guacamole.reference.{ContigName, NumLoci, ReferenceRegion}
 import org.hammerlab.magic.iterator.GroupRunsIterator
 import org.hammerlab.magic.util.KeyOrdering
-import org.kohsuke.args4j.{Option => Args4jOption}
+import org.kohsuke.args4j.{Option => Args4JOption}
 
 import scala.reflect.ClassTag
 
 trait CappedRegionsPartitionerArgs {
-  @Args4jOption(
+  @Args4JOption(
     name = "--max-reads-per-partition",
     usage = "Maximum number of reads to allow any one partition to have. Loci that have more depth than this will be dropped."
   )
-  var maxReadsPerPartition: Int = 500000
+  var maxReadsPerPartition: Int = 100000
 }
 
 /**
@@ -32,19 +30,16 @@ trait CappedRegionsPartitionerArgs {
  * @param maxRegionsPerPartition cap partitions at this many regions.
  * @param printStats print some statistics about the computed partitioning; adds several Spark stages so should be
  *                   skipped for performance-critical runs.
- * @param requireRegionsGroupedByContig should generally be true; coverage-depth iteration is likely much less efficient
- *                                      if regions are not grouped by contig.
  */
 class CappedRegionsPartitioner[R <: ReferenceRegion: ClassTag](regions: RDD[R],
                                                                halfWindowSize: Int,
                                                                maxRegionsPerPartition: Int,
-                                                               printStats: Boolean,
-                                                               requireRegionsGroupedByContig: Boolean)
+                                                               printStats: Boolean)
   extends LociPartitioner {
 
   def partition(loci: LociSet): LociPartitioning = {
 
-    val coverageRDD = new CoverageRDD(regions, requireRegionsGroupedByContig)
+    val coverageRDD = new CoverageRDD(regions)
 
     if (printStats) {
       val (depthRunsRDD, validLoci, invalidLoci) =
@@ -93,7 +88,7 @@ class CappedRegionsPartitioner[R <: ReferenceRegion: ClassTag](regions: RDD[R],
       val totalLoci = validLoci + invalidLoci
 
       progress(
-        s"$validLoci (%.1f%%) loci with depth ≤$maxRegionsPerPartition, $invalidLoci other; $totalLoci total of ${loci.count} eligible)${overflowMsg}"
+        s"$validLoci (%.1f%%) loci with depth ≤$maxRegionsPerPartition, $invalidLoci other; $totalLoci total of ${loci.count} eligible)$overflowMsg"
           .format(100.0 * validLoci / totalLoci),
         (for {
           (contig, runs) <- depthRunsByContig

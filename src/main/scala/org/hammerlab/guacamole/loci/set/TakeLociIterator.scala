@@ -18,12 +18,11 @@ import scala.collection.mutable.ArrayBuffer
  * @param maxRegionsPerPartition Maximum regions allowed to overlap each [[LociSet]].
  */
 class TakeLociIterator(it: BufferedIterator[(Position, Coverage)],
-                       maxRegionsPerPartition: Int,
-                       requireRegionsGroupedByContig: Boolean = true)
+                       maxRegionsPerPartition: Int)
   extends SimpleBufferedIterator[LociSet] {
 
   // Segment the input into per-contig Iterators.
-  val contigsCoverages = ContigsIterator.byKey(it, requireRegionsGroupedByContig)
+  val contigsCoverages = ContigsIterator.byKey(it)
 
   override def _advance: Option[LociSet] = {
 
@@ -149,7 +148,7 @@ class TakeLociIterator(it: BufferedIterator[(Position, Coverage)],
 
       if (curNumRegions + newRegions > numRegions) {
         // If the current locus pushed us over the maximum allowed `numRegions`, add the current in-progress Interval.
-        maybeAddInterval
+        maybeAddInterval()
 
         if (newRegions > dropAbove)
           // If this locus exceeds the `dropAbove` threshold, no LociSet will be able to incorporate it, so we just skip
@@ -170,12 +169,12 @@ class TakeLociIterator(it: BufferedIterator[(Position, Coverage)],
         curIntervalOpt =
           curIntervalOpt match {
             // Extend the current interval, if possible.
-            case Some((start, end)) if (locus == end) =>
+            case Some((start, end)) if locus == end =>
               Some(start -> (locus + 1))
 
             // Otherwise, commit the current interval if it exists, and start a new one.
             case _ =>
-              maybeAddInterval
+              maybeAddInterval()
               Some(locus -> (locus + 1))
           }
         it.next()
@@ -184,7 +183,7 @@ class TakeLociIterator(it: BufferedIterator[(Position, Coverage)],
 
     // We end up here if we ran out of loci on this contig before we reached the maximum allowed number of regions. In
     // this case, commit any in-progress interval, build the Contig, and return.
-    maybeAddInterval
+    maybeAddInterval()
     result
   }
 }

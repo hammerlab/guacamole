@@ -1,6 +1,5 @@
 package org.hammerlab.guacamole.readsets.iterator
 
-import org.apache.spark.Logging
 import org.hammerlab.guacamole.reference.{ContigIterator, ContigName, HasContig}
 import org.hammerlab.magic.iterator.SimpleBufferedIterator
 
@@ -16,10 +15,8 @@ import scala.collection.mutable
  * See companion object for public constructors.
  */
 class ContigsIterator[T] private(it: BufferedIterator[T],
-                                 contigNameFn: T => ContigName,
-                                 throwOnContigRepeat: Boolean = true)
-  extends SimpleBufferedIterator[(ContigName, ContigIterator[T])]
-    with Logging {
+                                 contigNameFn: T => ContigName)
+  extends SimpleBufferedIterator[(ContigName, ContigIterator[T])] {
 
   var contigRegions: ContigIterator[T] = _
 
@@ -40,12 +37,9 @@ class ContigsIterator[T] private(it: BufferedIterator[T],
       val contigName = contigRegions.contigName
 
       if (seenContigs(contigName))
-        if (throwOnContigRepeat)
-          throw RepeatedContigException(
-            s"Repeating $contigName after seeing contigs: ${seenContigs.mkString(",")}"
-          )
-        else
-          log.warn(s"Repeating contig: $contigName")
+        throw RepeatedContigException(
+          s"Repeating $contigName after seeing contigs: ${seenContigs.mkString(",")}"
+        )
       else
         seenContigs += contigName
 
@@ -60,12 +54,10 @@ class ContigsIterator[T] private(it: BufferedIterator[T],
  */
 object ContigsIterator {
 
-  def apply[T <: HasContig](it: BufferedIterator[T],
-                            requireRegionsGroupedByContig: Boolean = true): ContigsIterator[T] =
-    new ContigsIterator(it, _.contigName, requireRegionsGroupedByContig)
+  def apply[T <: HasContig](it: BufferedIterator[T]): ContigsIterator[T] =
+    new ContigsIterator(it, _.contigName)
 
-  def byKey[C <: HasContig, T](it: BufferedIterator[(C, T)],
-                               requireRegionsGroupedByContig: Boolean = true): ContigsIterator[(C, T)] =
+  def byKey[C <: HasContig, T](it: BufferedIterator[(C, T)]): ContigsIterator[(C, T)] =
     new ContigsIterator(it, _._1.contigName)
 }
 

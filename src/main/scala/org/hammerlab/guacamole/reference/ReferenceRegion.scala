@@ -22,7 +22,9 @@ package org.hammerlab.guacamole.reference
  * Trait for objects that are associated with an interval on the genome. The most prominent example is a
  * [[org.hammerlab.guacamole.reads.MappedRead]], but there's also [[org.hammerlab.guacamole.variants.ReferenceVariant]].
  */
-trait ReferenceRegion extends HasContig with Interval {
+trait ReferenceRegion
+  extends HasContig
+    with Interval {
 
   /** Name of the reference contig */
   def contigName: ContigName
@@ -61,4 +63,11 @@ object ReferenceRegion {
         x.contigName == y.contigName && x.start <= y.start
       }
     }
+
+  def unapply(region: ReferenceRegion): Option[(ContigName, Locus, Locus)] =
+    Some(
+      region.contigName,
+      region.start,
+      region.end
+    )
 }

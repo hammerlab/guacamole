@@ -95,7 +95,7 @@ class CoverageRDDSuite extends GuacFunSuite with ReadsRDDUtil with ContigLengths
         ("chr5",  90,  91, 10)
       )
 
-    val coverageRDD = new CoverageRDD(readsRDD, requireRegionsGroupedByContig = true)
+    val coverageRDD = new CoverageRDD(readsRDD)
 
     val contigLengths: ContigLengths = makeContigLengths("chr1" -> 1000, "chr2" -> 1000, "chr5" -> 1000)
     implicit val contigLengthsBroadcast: Broadcast[ContigLengths] = sc.broadcast(contigLengths)

@@ -62,13 +62,6 @@ trait LociPartitionerArgs
     handler = classOf[BooleanOptionHandler]
   )
   var quiet: Boolean = false
-
-  @Args4JOption(
-    name = "--allow-ungrouped-contigs",
-    usage = "Loosen requirement that regions are grouped by contigs.",
-    handler = classOf[BooleanOptionHandler]
-  )
-  var allowUngroupedContigs = false
 }
 
 trait LociPartitioner {
