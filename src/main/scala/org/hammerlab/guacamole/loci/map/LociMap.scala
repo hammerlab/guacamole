@@ -61,6 +61,10 @@ case class LociMap[T](@transient private val map: SortedMap[ContigName, Contig[T
     mapOfBuilders.mapValues(_.result).toMap
   }
 
+  /**
+   * Return values corresponding to any ranges that overlap the given [[ReferenceRegion]], with a `halfWindowSize`
+   * margin of error.
+   */
   def getAll(r: ReferenceRegion, halfWindowSize: Int = 0): Set[T] =
     onContig(r.contigName).getAll(r.start - halfWindowSize, r.end + halfWindowSize)
 
