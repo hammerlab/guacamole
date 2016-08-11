@@ -58,7 +58,20 @@
 
         <div id="types" class="types members">
               <h3>Type Members</h3>
-              <ol><li name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+              <ol><li name="org.hammerlab.guacamole.readsets.rdd.CoverageRDD" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CoverageRDD[R&lt;:org.hammerlab.guacamole.reference.ReferenceRegion]extendsSerializable"></a>
+      <a id="CoverageRDD[R&lt;:ReferenceRegion]:CoverageRDD[R]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="CoverageRDD.html"><span class="name">CoverageRDD</span></a><span class="tparams">[<span name="R">R &lt;: <a href="../../reference/ReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceRegion">ReferenceRegion</a></span>]</span><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Augment an <span class="extype" name="RDD[ReferenceRegion">RDD[ReferenceRegion</span>] with methods for computing coverage depth, .</p>
+    </li><li name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="PartitionedRegions[R&lt;:org.hammerlab.guacamole.reference.ReferenceRegion]extendsSerializable"></a>
       <a id="PartitionedRegions[R&lt;:ReferenceRegion]:PartitionedRegions[R]"></a>
       <h4 class="signature">
@@ -85,19 +98,6 @@ partitioning.</p>
       </span>
       </h4>
       <p class="comment cmt">A thin wrapper around an RDD[Read], with helpers to filter to mapped and paired-mapped reads.</p>
-    </li><li name="org.hammerlab.guacamole.readsets.rdd.RegionRDD" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="RegionRDD[R&lt;:org.hammerlab.guacamole.reference.ReferenceRegion]extendsSerializable"></a>
-      <a id="RegionRDD[R&lt;:ReferenceRegion]:RegionRDD[R]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">class</span>
-      </span>
-      <span class="symbol">
-        <a href="RegionRDD.html"><span class="name">RegionRDD</span></a><span class="tparams">[<span name="R">R &lt;: <a href="../../reference/ReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceRegion">ReferenceRegion</a></span>]</span><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
-      </span>
-      </h4>
-      <p class="comment cmt">Augment an RDD[ReferenceRegion] with some useful methods for e.</p>
     </li></ol>
             </div>
 
@@ -115,19 +115,6 @@ partitioning.</p>
       </span>
       <span class="symbol">
         <a href="PartitionedRegions$.html"><span class="name">PartitionedRegions</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
-      </span>
-      </h4>
-      
-    </li><li name="org.hammerlab.guacamole.readsets.rdd.RegionRDD" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="RegionRDD"></a>
-      <a id="RegionRDD:RegionRDD"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a href="RegionRDD$.html"><span class="name">RegionRDD</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       

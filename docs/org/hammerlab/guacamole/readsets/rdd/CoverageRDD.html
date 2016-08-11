@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>LociPartitioning - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.loci.partitioning.LociPartitioning</title>
-          <meta name="description" content="LociPartitioning - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.loci.partitioning.LociPartitioning" />
-          <meta name="keywords" content="LociPartitioning guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.loci.partitioning.LociPartitioning" />
+          <title>CoverageRDD - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.readsets.rdd.CoverageRDD</title>
+          <meta name="description" content="CoverageRDD - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.readsets.rdd.CoverageRDD" />
+          <meta name="keywords" content="CoverageRDD guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.readsets.rdd.CoverageRDD" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -12,7 +12,7 @@
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../../index.html';
-            var hash = 'org.hammerlab.guacamole.loci.partitioning.LociPartitioning$';
+            var hash = 'org.hammerlab.guacamole.readsets.rdd.CoverageRDD';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -22,24 +22,25 @@
    	  </script>
     
         </head>
-        <body class="value">
+        <body class="type">
       <div id="definition">
-        <a href="LociPartitioning.html" title="Go to companion"><img src="../../../../../lib/object_to_class_big.png" /></a>
-        <p id="owner"><a href="../../../../package.html" class="extype" name="org">org</a>.<a href="../../../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="../../package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="../package.html" class="extype" name="org.hammerlab.guacamole.loci">loci</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole.loci.partitioning">partitioning</a></p>
-        <h1><a href="LociPartitioning.html" title="Go to companion">LociPartitioning</a></h1>
+        <img src="../../../../../lib/class_big.png" />
+        <p id="owner"><a href="../../../../package.html" class="extype" name="org">org</a>.<a href="../../../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="../../package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="../package.html" class="extype" name="org.hammerlab.guacamole.readsets">readsets</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole.readsets.rdd">rdd</a></p>
+        <h1>CoverageRDD</h1>
       </div>
 
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">object</span>
+        <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">LociPartitioning</span><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">CoverageRDD</span><span class="tparams">[<span name="R">R &lt;: <a href="../../reference/ReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceRegion">ReferenceRegion</a></span>]</span><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Augment an <span class="extype" name="RDD[ReferenceRegion">RDD[ReferenceRegion</span>] with methods for computing coverage depth, .
+</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
@@ -59,7 +60,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="org.hammerlab.guacamole.loci.partitioning.LociPartitioning"><span>LociPartitioning</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="org.hammerlab.guacamole.readsets.rdd.CoverageRDD"><span>CoverageRDD</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -77,7 +78,23 @@
 
       <div id="template">
         <div id="allMembers">
-        
+        <div id="constructors" class="members">
+              <h3>Instance Constructors</h3>
+              <ol><li name="org.hammerlab.guacamole.readsets.rdd.CoverageRDD#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="&lt;init&gt;(rdd:org.apache.spark.rdd.RDD[R])(implicitevidence$1:scala.reflect.ClassTag[R]):org.hammerlab.guacamole.readsets.rdd.CoverageRDD[R]"></a>
+      <a id="&lt;init&gt;:CoverageRDD[R]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">new</span>
+      </span>
+      <span class="symbol">
+        <span class="name">CoverageRDD</span><span class="params">(<span name="rdd">rdd: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<span class="extype" name="org.hammerlab.guacamole.readsets.rdd.CoverageRDD.R">R</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.reflect.ClassTag">ClassTag</span>[<span class="extype" name="org.hammerlab.guacamole.readsets.rdd.CoverageRDD.R">R</span>]</span>)</span>
+      </span>
+      </h4>
+      
+    </li></ol>
+            </div>
 
         
 
@@ -150,32 +167,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.loci.partitioning.LociPartitioning#apply" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="apply[R&lt;:org.hammerlab.guacamole.reference.ReferenceRegion](regions:org.apache.spark.rdd.RDD[R],loci:org.hammerlab.guacamole.loci.set.LociSet,args:org.hammerlab.guacamole.loci.partitioning.LociPartitionerArgs,halfWindowSize:Int)(implicitevidence$1:scala.reflect.ClassTag[R]):org.hammerlab.guacamole.loci.partitioning.LociPartitioning"></a>
-      <a id="apply[R&lt;:ReferenceRegion](RDD[R],LociSet,LociPartitionerArgs,Int)(ClassTag[R]):LociPartitioning"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">apply</span><span class="tparams">[<span name="R">R &lt;: <a href="../../reference/ReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceRegion">ReferenceRegion</a></span>]</span><span class="params">(<span name="regions">regions: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<span class="extype" name="org.hammerlab.guacamole.loci.partitioning.LociPartitioning.apply.R">R</span>]</span>, <span name="loci">loci: <a href="../set/LociSet.html" class="extype" name="org.hammerlab.guacamole.loci.set.LociSet">LociSet</a></span>, <span name="args">args: <a href="LociPartitionerArgs.html" class="extype" name="org.hammerlab.guacamole.loci.partitioning.LociPartitionerArgs">LociPartitionerArgs</a></span>, <span name="halfWindowSize">halfWindowSize: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">0</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.reflect.ClassTag">ClassTag</span>[<span class="extype" name="org.hammerlab.guacamole.loci.partitioning.LociPartitioning.apply.R">R</span>]</span>)</span><span class="result">: <a href="LociPartitioning.html" class="extype" name="org.hammerlab.guacamole.loci.partitioning.LociPartitioning">LociPartitioning</a></span>
-      </span>
-      </h4>
-      
-    </li><li name="org.hammerlab.guacamole.loci.partitioning.LociPartitioning#apply" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="apply(lociSets:Iterable[org.hammerlab.guacamole.loci.set.LociSet]):org.hammerlab.guacamole.loci.partitioning.LociPartitioning"></a>
-      <a id="apply(Iterable[LociSet]):LociPartitioning"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">apply</span><span class="params">(<span name="lociSets">lociSets: <span class="extype" name="scala.Iterable">Iterable</span>[<a href="../set/LociSet.html" class="extype" name="org.hammerlab.guacamole.loci.set.LociSet">LociSet</a>]</span>)</span><span class="result">: <a href="LociPartitioning.html" class="extype" name="org.hammerlab.guacamole.loci.partitioning.LociPartitioning">LociPartitioning</a></span>
-      </span>
-      </h4>
-      
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -208,6 +199,32 @@
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.readsets.rdd.CoverageRDD#coverage" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="coverage(halfWindowSize:Int,lociBroadcast:org.apache.spark.broadcast.Broadcast[org.hammerlab.guacamole.loci.set.LociSet]):org.apache.spark.rdd.RDD[(org.hammerlab.guacamole.reference.Position,org.hammerlab.guacamole.loci.Coverage)]"></a>
+      <a id="coverage(Int,Broadcast[LociSet]):RDD[(Position,Coverage)]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">coverage</span><span class="params">(<span name="halfWindowSize">halfWindowSize: <span class="extype" name="scala.Int">Int</span></span>, <span name="lociBroadcast">lociBroadcast: <span class="extype" name="org.apache.spark.broadcast.Broadcast">Broadcast</span>[<a href="../../loci/set/LociSet.html" class="extype" name="org.hammerlab.guacamole.loci.set.LociSet">LociSet</a>]</span>)</span><span class="result">: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[(<a href="../../reference/Position.html" class="extype" name="org.hammerlab.guacamole.reference.Position">Position</a>, <a href="../../loci/Coverage.html" class="extype" name="org.hammerlab.guacamole.loci.Coverage">Coverage</a>)]</span>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.readsets.rdd.CoverageRDD#coverage" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="coverage(halfWindowSize:Int,loci:org.hammerlab.guacamole.loci.set.LociSet):org.apache.spark.rdd.RDD[(org.hammerlab.guacamole.reference.Position,org.hammerlab.guacamole.loci.Coverage)]"></a>
+      <a id="coverage(Int,LociSet):RDD[(Position,Coverage)]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">coverage</span><span class="params">(<span name="halfWindowSize">halfWindowSize: <span class="extype" name="scala.Int">Int</span></span>, <span name="loci">loci: <a href="../../loci/set/LociSet.html" class="extype" name="org.hammerlab.guacamole.loci.set.LociSet">LociSet</a></span>)</span><span class="result">: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[(<a href="../../reference/Position.html" class="extype" name="org.hammerlab.guacamole.reference.Position">Position</a>, <a href="../../loci/Coverage.html" class="extype" name="org.hammerlab.guacamole.loci.Coverage">Coverage</a>)]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Compute a PositionCoverage for every position in @loci, allowing a half-window of @halfWindowSize.</p>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -253,20 +270,6 @@
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.loci.partitioning.LociPartitioning#fromLines" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="fromLines(lines:TraversableOnce[String]):org.hammerlab.guacamole.loci.partitioning.LociPartitioning"></a>
-      <a id="fromLines(TraversableOnce[String]):LociPartitioning"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">fromLines</span><span class="params">(<span name="lines">lines: <span class="extype" name="scala.TraversableOnce">TraversableOnce</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result">: <a href="LociPartitioning.html" class="extype" name="org.hammerlab.guacamole.loci.partitioning.LociPartitioning">LociPartitioning</a></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Read in a <a href="LociPartitioning.html" class="extype" name="org.hammerlab.guacamole.loci.partitioning.LociPartitioning">LociPartitioning</a> of partition indices from some strings, each one representing a genomic range.</p><div class="fullcomment"><div class="comment cmt"><p>Read in a <a href="LociPartitioning.html" class="extype" name="org.hammerlab.guacamole.loci.partitioning.LociPartitioning">LociPartitioning</a> of partition indices from some strings, each one representing a genomic range.</p></div><dl class="paramcmts block"><dt class="param">lines</dt><dd class="cmt"><p>string representations of genomic ranges.
-</p></dd></dl></div>
     </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
       <a id="getClass():Class[_]"></a>
@@ -306,46 +309,23 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.loci.partitioning.LociPartitioning#load" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="load(is:java.io.InputStream):org.hammerlab.guacamole.loci.partitioning.LociPartitioning"></a>
-      <a id="load(InputStream):LociPartitioning"></a>
+    </li><li name="org.hammerlab.guacamole.readsets.rdd.CoverageRDD#makeCappedLociSets" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="makeCappedLociSets(halfWindowSize:Int,loci:org.hammerlab.guacamole.loci.set.LociSet,maxRegionsPerPartition:Int):org.apache.spark.rdd.RDD[org.hammerlab.guacamole.loci.set.LociSet]"></a>
+      <a id="makeCappedLociSets(Int,LociSet,Int):RDD[LociSet]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">load</span><span class="params">(<span name="is">is: <span class="extype" name="java.io.InputStream">InputStream</span></span>)</span><span class="result">: <a href="LociPartitioning.html" class="extype" name="org.hammerlab.guacamole.loci.partitioning.LociPartitioning">LociPartitioning</a></span>
+        <span class="name">makeCappedLociSets</span><span class="params">(<span name="halfWindowSize">halfWindowSize: <span class="extype" name="scala.Int">Int</span></span>, <span name="loci">loci: <a href="../../loci/set/LociSet.html" class="extype" name="org.hammerlab.guacamole.loci.set.LociSet">LociSet</a></span>, <span name="maxRegionsPerPartition">maxRegionsPerPartition: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<a href="../../loci/set/LociSet.html" class="extype" name="org.hammerlab.guacamole.loci.set.LociSet">LociSet</a>]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Load a LociMap output by <span class="extype" name="LociMap.prettyPrint">LociMap.prettyPrint</span>.</p><div class="fullcomment"><div class="comment cmt"><p>Load a LociMap output by <span class="extype" name="LociMap.prettyPrint">LociMap.prettyPrint</span>.</p></div><dl class="paramcmts block"><dt class="param">is</dt><dd class="cmt"><p><span class="extype" name="InputStream">InputStream</span> reading from e.g. a file.
-</p></dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.loci.partitioning.LociPartitioning#lociMapToLociPartitioning" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="lociMapToLociPartitioning(map:org.hammerlab.guacamole.loci.map.LociMap[org.hammerlab.guacamole.loci.partitioning.LociPartitioner.PartitionIndex]):org.hammerlab.guacamole.loci.partitioning.LociPartitioning"></a>
-      <a id="lociMapToLociPartitioning(LociMap[PartitionIndex]):LociPartitioning"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">lociMapToLociPartitioning</span><span class="params">(<span name="map">map: <a href="../map/LociMap.html" class="extype" name="org.hammerlab.guacamole.loci.map.LociMap">LociMap</a>[<a href="LociPartitioner$.html#PartitionIndex=Int" class="extmbr" name="org.hammerlab.guacamole.loci.partitioning.LociPartitioner.PartitionIndex">PartitionIndex</a>]</span>)</span><span class="result">: <a href="LociPartitioning.html" class="extype" name="org.hammerlab.guacamole.loci.partitioning.LociPartitioning">LociPartitioning</a></span>
-      </span>
-      </h4>
-      
-    </li><li name="org.hammerlab.guacamole.loci.partitioning.LociPartitioning#lociPartitioningToLociMap" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="lociPartitioningToLociMap(partitioning:org.hammerlab.guacamole.loci.partitioning.LociPartitioning):org.hammerlab.guacamole.loci.map.LociMap[org.hammerlab.guacamole.loci.partitioning.LociPartitioner.PartitionIndex]"></a>
-      <a id="lociPartitioningToLociMap(LociPartitioning):LociMap[PartitionIndex]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">lociPartitioningToLociMap</span><span class="params">(<span name="partitioning">partitioning: <a href="LociPartitioning.html" class="extype" name="org.hammerlab.guacamole.loci.partitioning.LociPartitioning">LociPartitioning</a></span>)</span><span class="result">: <a href="../map/LociMap.html" class="extype" name="org.hammerlab.guacamole.loci.map.LociMap">LociMap</a>[<a href="LociPartitioner$.html#PartitionIndex=Int" class="extmbr" name="org.hammerlab.guacamole.loci.partitioning.LociPartitioner.PartitionIndex">PartitionIndex</a>]</span>
-      </span>
-      </h4>
-      
+      <p class="shortcomment cmt">Break the input @loci into smaller LociSets such that the number of reads (with a @halfWindowSize grace-window)
+overlapping each set is ≤ @maxRegionsPerPartition.</p><div class="fullcomment"><div class="comment cmt"><p>Break the input @loci into smaller LociSets such that the number of reads (with a @halfWindowSize grace-window)
+overlapping each set is ≤ @maxRegionsPerPartition.</p><p>First obtains the &quot;coverage&quot; RDD, then takes reads greedily, meaning the end of each partition of the coverage-RDD
+will tend to have a &quot;remainder&quot; LociSet that has ≈half the maximum regions per partition.
+</p></div></div>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -385,6 +365,53 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.readsets.rdd.CoverageRDD#partitionDepths" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="partitionDepths(halfWindowSize:Int,loci:org.hammerlab.guacamole.loci.set.LociSet,depthCutoff:Int):org.apache.spark.rdd.RDD[((org.hammerlab.guacamole.reference.ContigName,Boolean),Long)]"></a>
+      <a id="partitionDepths(Int,LociSet,Int):RDD[((ContigName,Boolean),Long)]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">partitionDepths</span><span class="params">(<span name="halfWindowSize">halfWindowSize: <span class="extype" name="scala.Int">Int</span></span>, <span name="loci">loci: <a href="../../loci/set/LociSet.html" class="extype" name="org.hammerlab.guacamole.loci.set.LociSet">LociSet</a></span>, <span name="depthCutoff">depthCutoff: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[((<a href="../../reference/package.html#ContigName=String" class="extmbr" name="org.hammerlab.guacamole.reference.ContigName">ContigName</a>, <span class="extype" name="scala.Boolean">Boolean</span>), <span class="extype" name="scala.Long">Long</span>)]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Compute the depth at each locus in @rdd, then group loci into runs that are uniformly below (true) or above (false)
+<code>depthCutoff</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Compute the depth at each locus in @rdd, then group loci into runs that are uniformly below (true) or above (false)
+<code>depthCutoff</code>.</p><p>Useful for getting a sense of which parts of the genome have exceedingly high coverage.
+</p></div><dl class="paramcmts block"><dt class="param">halfWindowSize</dt><dd class="cmt"><p>see <a href="#coverage(halfWindowSize:Int,lociBroadcast:org.apache.spark.broadcast.Broadcast[org.hammerlab.guacamole.loci.set.LociSet]):org.apache.spark.rdd.RDD[(org.hammerlab.guacamole.reference.Position,org.hammerlab.guacamole.loci.Coverage)]" class="extmbr" name="org.hammerlab.guacamole.readsets.rdd.CoverageRDD#coverage">coverage</a>.</p></dd><dt class="param">loci</dt><dd class="cmt"><p>see <a href="#coverage(halfWindowSize:Int,lociBroadcast:org.apache.spark.broadcast.Broadcast[org.hammerlab.guacamole.loci.set.LociSet]):org.apache.spark.rdd.RDD[(org.hammerlab.guacamole.reference.Position,org.hammerlab.guacamole.loci.Coverage)]" class="extmbr" name="org.hammerlab.guacamole.readsets.rdd.CoverageRDD#coverage">coverage</a>.</p></dd><dt class="param">depthCutoff</dt><dd class="cmt"><p>separate runs of loci that are uniformly below (or equal to) vs. above (&gt;) this cutoff.</p></dd><dt>returns</dt><dd class="cmt"><p><span class="extype" name="RDD">RDD</span> whose elements have:</p><ul><li>a key consisting of a contig name and a boolean indicating whether loci represented by this element have
+         coverage depth ≤ <code>depthCutoff</code>, and</li><li>a value indicating the length of a run of loci with depth above or below <code>depthCutoff</code>, as described
+         above.
+</li></ul></dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.readsets.rdd.CoverageRDD#sc" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="sc:org.apache.spark.SparkContext"></a>
+      <a id="sc:SparkContext"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">sc</span><span class="result">: <span class="extype" name="org.apache.spark.SparkContext">SparkContext</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.readsets.rdd.CoverageRDD#shuffleCoverage" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="shuffleCoverage(halfWindowSize:Int,contigLengthsBroadcast:org.apache.spark.broadcast.Broadcast[org.hammerlab.guacamole.readsets.ContigLengths]):org.apache.spark.rdd.RDD[(org.hammerlab.guacamole.reference.Position,org.hammerlab.guacamole.loci.Coverage)]"></a>
+      <a id="shuffleCoverage(Int,Broadcast[ContigLengths]):RDD[(Position,Coverage)]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">shuffleCoverage</span><span class="params">(<span name="halfWindowSize">halfWindowSize: <span class="extype" name="scala.Int">Int</span></span>, <span name="contigLengthsBroadcast">contigLengthsBroadcast: <span class="extype" name="org.apache.spark.broadcast.Broadcast">Broadcast</span>[<a href="../package.html#ContigLengths=Map[org.hammerlab.guacamole.reference.ContigName,org.hammerlab.guacamole.reference.NumLoci]" class="extmbr" name="org.hammerlab.guacamole.readsets.ContigLengths">ContigLengths</a>]</span>)</span><span class="result">: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[(<a href="../../reference/Position.html" class="extype" name="org.hammerlab.guacamole.reference.Position">Position</a>, <a href="../../loci/Coverage.html" class="extype" name="org.hammerlab.guacamole.loci.Coverage">Coverage</a>)]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Alternative implementation of this.</p><div class="fullcomment"><div class="comment cmt"><p>Alternative implementation of this.coverage; will generally perform significantly worse on sorted inputs. Useful as
+a sanity check.
+</p></div></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -411,6 +438,22 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.readsets.rdd.CoverageRDD#validLociCounts" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="validLociCounts(halfWindowSize:Int,loci:org.hammerlab.guacamole.loci.set.LociSet,depthCutoff:Int):(org.apache.spark.rdd.RDD[((org.hammerlab.guacamole.reference.ContigName,Boolean),org.hammerlab.guacamole.reference.NumLoci)],org.hammerlab.guacamole.reference.NumLoci,org.hammerlab.guacamole.reference.NumLoci)"></a>
+      <a id="validLociCounts(Int,LociSet,Int):(RDD[((ContigName,Boolean),NumLoci)],NumLoci,NumLoci)"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">validLociCounts</span><span class="params">(<span name="halfWindowSize">halfWindowSize: <span class="extype" name="scala.Int">Int</span></span>, <span name="loci">loci: <a href="../../loci/set/LociSet.html" class="extype" name="org.hammerlab.guacamole.loci.set.LociSet">LociSet</a></span>, <span name="depthCutoff">depthCutoff: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: (<span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[((<a href="../../reference/package.html#ContigName=String" class="extmbr" name="org.hammerlab.guacamole.reference.ContigName">ContigName</a>, <span class="extype" name="scala.Boolean">Boolean</span>), <a href="../../reference/package.html#NumLoci=Long" class="extmbr" name="org.hammerlab.guacamole.reference.NumLoci">NumLoci</a>)], <a href="../../reference/package.html#NumLoci=Long" class="extmbr" name="org.hammerlab.guacamole.reference.NumLoci">NumLoci</a>, <a href="../../reference/package.html#NumLoci=Long" class="extmbr" name="org.hammerlab.guacamole.reference.NumLoci">NumLoci</a>)</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Compute the coverage-depth at each locus, then aggregate loci into runs that are all above or below <code>depthCutoff</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Compute the coverage-depth at each locus, then aggregate loci into runs that are all above or below <code>depthCutoff</code>.
+</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>tuple containing an <span class="extype" name="RDD">RDD</span> returned by <a href="#partitionDepths(halfWindowSize:Int,loci:org.hammerlab.guacamole.loci.set.LociSet,depthCutoff:Int):org.apache.spark.rdd.RDD[((org.hammerlab.guacamole.reference.ContigName,Boolean),Long)]" class="extmbr" name="org.hammerlab.guacamole.readsets.rdd.CoverageRDD#partitionDepths">partitionDepths</a> as well as the total numbers of loci with depth
+        below (or equal to) <code>depthCutoff</code> (resp. above <code>depthCutoff</code>).
+</p></dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>
