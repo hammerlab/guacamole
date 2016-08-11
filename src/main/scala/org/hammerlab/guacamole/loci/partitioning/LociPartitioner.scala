@@ -31,6 +31,7 @@ trait LociPartitionerArgs
 
   def getPartitioner[R <: ReferenceRegion: ClassTag](regions: RDD[R], halfWindowSize: Int = 0): LociPartitioner = {
     val sc = regions.sparkContext
+
     val numPartitions =
       if (parallelism == 0)
         sc.defaultParallelism
@@ -39,7 +40,12 @@ trait LociPartitionerArgs
 
     lociPartitionerName match {
       case "exact" =>
-        new CappedRegionsPartitioner(regions, halfWindowSize, maxReadsPerPartition, printStats = !quiet)
+        new CappedRegionsPartitioner(
+          regions,
+          halfWindowSize,
+          maxReadsPerPartition,
+          printStats = !quiet
+        )
       case "approximate" =>
         new MicroRegionPartitioner(regions, halfWindowSize, numPartitions, partitioningAccuracy)
       case "uniform" =>
