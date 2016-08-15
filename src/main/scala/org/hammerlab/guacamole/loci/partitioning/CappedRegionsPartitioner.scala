@@ -28,20 +28,20 @@ trait CappedRegionsPartitionerArgs {
  * @param regions regions to partition loci based on.
  * @param halfWindowSize consider regions to overlap loci that their ends are within this many base-pairs of.
  * @param maxRegionsPerPartition cap partitions at this many regions.
- * @param printStats print some statistics about the computed partitioning; adds several Spark stages so should be
+ * @param printPartitioningStats print some statistics about the computed partitioning; adds several Spark stages so should be
  *                   skipped for performance-critical runs.
  */
 class CappedRegionsPartitioner[R <: ReferenceRegion: ClassTag](regions: RDD[R],
                                                                halfWindowSize: Int,
                                                                maxRegionsPerPartition: Int,
-                                                               printStats: Boolean)
+                                                               printPartitioningStats: Boolean)
   extends LociPartitioner {
 
   def partition(loci: LociSet): LociPartitioning = {
 
     val coverageRDD = new CoverageRDD(regions)
 
-    if (printStats) {
+    if (printPartitioningStats) {
       val (depthRunsRDD, validLoci, invalidLoci) =
         coverageRDD.validLociCounts(halfWindowSize, loci, maxRegionsPerPartition)
 

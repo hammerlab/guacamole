@@ -64,10 +64,9 @@ object SomaticJoint {
 
       val (readsets, loci) = ReadSets(sc, args)
 
-      if (!args.quiet) {
-        println(s"Running on ${inputs.items.length} inputs:")
-        inputs.items.foreach(println)
-      }
+      log.info(
+        (s"Running on ${inputs.items.length} inputs:" :: inputs.items.toList).mkString("\n")
+      )
 
       val forceCallLoci =
         LociArgs.parseLoci(
