@@ -44,7 +44,7 @@ trait LociPartitionerArgs
           regions,
           halfWindowSize,
           maxReadsPerPartition,
-          printStats = !quiet
+          printPartitioningStats
         )
       case "approximate" =>
         new MicroRegionPartitioner(regions, halfWindowSize, numPartitions, partitioningAccuracy)
@@ -56,12 +56,12 @@ trait LociPartitionerArgs
   }
 
   @Args4JOption(
-    name = "--quiet",
-    aliases = Array("-q"),
-    usage = "Whether to compute additional statistics about the partitioned reads (default: false).",
+    name = "--partitioning-stats",
+    usage = "Compute additional statistics about the partitioned loci and reads; causes additional Spark jobs to be run, " +
+      "so should be disabled in performance-critical environments. Default: false.",
     handler = classOf[BooleanOptionHandler]
   )
-  var quiet: Boolean = false
+  var printPartitioningStats: Boolean = false
 }
 
 trait LociPartitioner {
