@@ -124,7 +124,7 @@ object PartitionedRegions {
       regionRDDs,
       lociPartitioning,
       halfWindowSize,
-      !args.quiet
+      args.printPartitioningStats
     )
   }
 
