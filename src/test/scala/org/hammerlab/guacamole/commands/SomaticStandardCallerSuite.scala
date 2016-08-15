@@ -18,7 +18,7 @@
 
 package org.hammerlab.guacamole.commands
 
-import org.hammerlab.guacamole.filters.SomaticGenotypeFilter
+import org.hammerlab.guacamole.filters.somatic.SomaticGenotypeFilter
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.{MappedRead, ReadsUtil}
 import org.hammerlab.guacamole.reference.{ContigName, Locus, ReferenceBroadcast}
