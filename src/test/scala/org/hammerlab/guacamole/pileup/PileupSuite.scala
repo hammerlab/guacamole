@@ -3,20 +3,21 @@ package org.hammerlab.guacamole.pileup
 import org.hammerlab.guacamole.reads.{MappedRead, ReadsUtil}
 import org.hammerlab.guacamole.reference.Locus
 import org.hammerlab.guacamole.util.TestUtil.Implicits._
-import org.hammerlab.guacamole.util.TestUtil.loadPileup
 import org.hammerlab.guacamole.util.{AssertBases, Bases, GuacFunSuite, TestUtil}
 import org.hammerlab.guacamole.variants.Allele
 import org.scalatest.prop.TableDrivenPropertyChecks
 
 class PileupSuite
   extends GuacFunSuite
+    with TableDrivenPropertyChecks
     with ReadsUtil
-    with TableDrivenPropertyChecks {
+    with Util {
 
   // This must only be accessed from inside a spark test where SparkContext has been initialized
-  def reference = TestUtil.makeReference(sc,
+  override lazy val reference = TestUtil.makeReference(sc,
     Seq(
       ("chr1", 0, "NTCGATCGACG"),
+      ("1", 229538779, "A" * 1000),
       ("artificial", 0, "A" * 34 + "G" * 10 + "A" * 5 + "G" * 15 + "A" * 15 + "ACGT" * 10),
       ("chr2", 0, "AATTG"),
       ("chr3", 0, "AAATTT"),
@@ -37,11 +38,11 @@ class PileupSuite
         ("TCGACCCTCGA", "4M3I4M", 1)
       )
 
-    val firstPileup = Pileup(reads, "chr1", 1, reference.getContig("chr1"))
+    val firstPileup = makePileup(reads, "chr1", 1)
     firstPileup.elements.forall(_.isMatch) should be(true)
     firstPileup.elements.forall(_.qualityScore == 31) should be(true)
 
-    val insertPileup = Pileup(reads, "chr1", 4, reference.getContig("chr1"))
+    val insertPileup = makePileup(reads, "chr1", 4)
     insertPileup.elements.exists(_.isInsertion) should be(true)
     insertPileup.elements.forall(_.qualityScore == 31) should be(true)
 
@@ -58,7 +59,7 @@ class PileupSuite
         makeRead("TCGACCCTCGA", "4M3I4M", 1, "chr1", Seq(10, 15, 20, 25, 5, 5, 5, 10, 15, 20, 25))
       )
 
-    val insertPileup = Pileup(reads, "chr1", 4, reference.getContig("chr1"))
+    val insertPileup = makePileup(reads, "chr1", 4)
     insertPileup.elements.exists(_.isInsertion) should be(true)
     insertPileup.elements.exists(_.qualityScore == 5) should be(true)
 
@@ -78,11 +79,9 @@ class PileupSuite
         makeRead("TCGACCCTCGA", "4M3I4M", 1, "chr1", Seq(10, 15, 20, 25, 5, 5, 5, 10, 15, 20, 25))
       )
 
-    val pastInsertPileup = Pileup(reads, "chr1", 5, reference.getContig("chr1"))
+    val pastInsertPileup = makePileup(reads, "chr1", 5)
     pastInsertPileup.elements.foreach(_.isMatch should be(true))
-
     pastInsertPileup.elements.foreach(_.qualityScore should be(10))
-
   }
 
   test("create pileup from long insert reads; after insertion") {
@@ -93,7 +92,7 @@ class PileupSuite
         ("TCGACCCTCGA", "4M3I4M", 1)
       )
 
-    val lastPileup = Pileup(reads, "chr1", 7, reference.getContig("chr1"))
+    val lastPileup = makePileup(reads, "chr1", 7)
     lastPileup.elements.foreach(e => AssertBases(e.sequencedBases, "G"))
     lastPileup.elements.forall(_.isMatch) should be(true)
   }
@@ -107,7 +106,7 @@ class PileupSuite
         makeRead("TCGACCCTCGA", "4M3I4M", 1, "chr1", Seq(10, 15, 20, 25, 5, 5, 5, 10, 15, 20, 25))
       )
 
-    val lastPileup = Pileup(reads, "chr1", 8, reference.getContig("chr1"))
+    val lastPileup = makePileup(reads, "chr1", 8)
     lastPileup.elements.foreach(e => AssertBases(e.sequencedBases, "A"))
     lastPileup.elements.forall(_.sequencedBases.headOption.exists(_ == Bases.A)) should be(true)
 
@@ -116,12 +115,12 @@ class PileupSuite
   }
 
   test("Load pileup from SAM file") {
-    val pileup = loadPileup(sc, "same_start_reads.sam", locus = 0, reference = reference)
+    val pileup = loadPileup(sc, "same_start_reads.sam", locus = 0)
     pileup.elements.length should be(10)
   }
 
   test("First 60 loci should have all 10 reads") {
-    val pileup = loadPileup(sc, "same_start_reads.sam", locus = 0, reference = reference)
+    val pileup = loadPileup(sc, "same_start_reads.sam", locus = 0)
     for (i <- 1 to 59) {
       val nextPileup = pileup.atGreaterLocus(i, Seq.empty.iterator)
       nextPileup.elements.length should be(10)
@@ -205,7 +204,7 @@ class PileupSuite
   }
 
   test("Loci 10-19 deleted from half of the reads") {
-    val pileup = loadPileup(sc, "same_start_reads.sam", locus = 0, reference = reference)
+    val pileup = loadPileup(sc, "same_start_reads.sam", locus = 0)
     val deletionPileup = pileup.atGreaterLocus(9, Seq.empty.iterator)
 
     deletionPileup.elements.map(_.alignment).count {
@@ -223,7 +222,7 @@ class PileupSuite
   }
 
   test("Loci 60-69 have 5 reads") {
-    val pileup = loadPileup(sc, "same_start_reads.sam", locus = 0, reference = reference)
+    val pileup = loadPileup(sc, "same_start_reads.sam", locus = 0)
     for (i <- 60 to 69) {
       val nextPileup = pileup.atGreaterLocus(i, Seq.empty.iterator)
       nextPileup.elements.length should be(5)
@@ -379,17 +378,15 @@ class PileupSuite
   }
 
   test("create and advance pileup element from RNA read") {
-    val reference = TestUtil.makeReference(sc, Seq(("chr1", 229538779, "A" * 1000)), 229538779 + 1000)
-
     val rnaRead =
       makeRead(
         sequence = "CCCCAGCCTAGGCCTTCGACACTGGGGGGCTGAGGGAAGGGGCACCTGCC",
         cigar = "7M191084N43M",
         start = 229538779,
-        chr = "chr1"
+        chr = "1"
       )
 
-    val rnaPileupElement = PileupElement(rnaRead, 229538779L, reference.getContig("chr1"))
+    val rnaPileupElement = PileupElement(rnaRead, 229538779L, reference.getContig("1"))
 
     // Second base
     AssertBases(rnaPileupElement.advanceToLocus(229538780L).sequencedBases, "C")
@@ -406,8 +403,7 @@ class PileupSuite
   }
 
   test("create pileup from RNA reads") {
-    val reference = TestUtil.makeReference(sc, Seq(("1", 229538779, "A" * 1000)), 229538779 + 1000)
-    val rnaReadsPileup = loadPileup(sc, "testrna.sam", locus = 229580594, reference = reference)
+    val rnaReadsPileup = loadPileup(sc, "testrna.sam", locus = 229580594)
 
     // 94 reads in the testrna.sam
     // 3 reads end at 229580707 and 1 extends further
@@ -427,12 +423,12 @@ class PileupSuite
         ("TCGAAAAGCT", "5M6D5M", 0)
       )
 
-    val deletionPileup = Pileup(reads, "chr1", 4, reference.getContig("chr1"))
+    val deletionPileup = makePileup(reads, "chr1", 4)
     val deletionAlleles = deletionPileup.distinctAlleles
     deletionAlleles.size should be(1)
     deletionAlleles(0) should be(Allele("ATCGACG", "A"))
 
-    val midDeletionPileup = Pileup(reads, "chr1", 5, reference.getContig("chr1"))
+    val midDeletionPileup = makePileup(reads, "chr1", 5)
     val midAlleles = midDeletionPileup.distinctAlleles
     midAlleles.size should be(1)
     midAlleles(0) should be(Allele("T", ""))

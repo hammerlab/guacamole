@@ -3,18 +3,15 @@ package org.hammerlab.guacamole.util
 import java.io.{File, FileNotFoundException}
 import java.nio.file.Files
 
-import htsjdk.samtools.TextCigarCodec
 import org.apache.commons.io.FileUtils
 import org.apache.spark.SparkContext
-import org.hammerlab.guacamole.loci.set.LociParser
-import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.reads.{MappedRead, MateAlignmentProperties, PairedRead, Read}
-import org.hammerlab.guacamole.readsets.{ReadSets, SampleName}
+import org.hammerlab.guacamole.reads.MappedRead
+import org.hammerlab.guacamole.readsets.ReadSets
 import org.hammerlab.guacamole.readsets.args.SingleSampleArgs
 import org.hammerlab.guacamole.readsets.io.{InputFilters, ReadLoadingConfig}
 import org.hammerlab.guacamole.readsets.rdd.ReadsRDD
 import org.hammerlab.guacamole.reference.ReferenceBroadcast.MapBackedReferenceSequence
-import org.hammerlab.guacamole.reference.{ContigName, ContigSequence, Locus, ReferenceBroadcast}
+import org.hammerlab.guacamole.reference.{ContigName, ContigSequence, ReferenceBroadcast}
 
 import scala.collection.mutable
 import scala.math._
@@ -90,43 +87,6 @@ object TestUtil {
     val args = new SingleSampleArgs {}
     args.reads = path
     ReadSets.loadReads(args, sc, filters)._1
-  }
-
-  def loadTumorNormalPileup(tumorReads: Seq[MappedRead],
-                            normalReads: Seq[MappedRead],
-                            locus: Locus,
-                            reference: ReferenceBroadcast): (Pileup, Pileup) = {
-    val contig = tumorReads(0).contigName
-    assume(normalReads(0).contigName == contig)
-    (
-      Pileup(tumorReads.filter(_.overlapsLocus(locus)), contig, locus, reference.getContig(contig)),
-      Pileup(normalReads.filter(_.overlapsLocus(locus)), contig, locus, reference.getContig(contig))
-    )
-  }
-
-  def loadPileup(sc: SparkContext,
-                 filename: String,
-                 reference: ReferenceBroadcast,
-                 locus: Locus = 0,
-                 maybeContig: Option[ContigName] = None): Pileup = {
-    val records =
-      TestUtil.loadReads(
-        sc,
-        filename,
-        filters = InputFilters(
-          overlapsLoci = maybeContig.map(
-            contig => LociParser(s"$contig:$locus-${locus + 1}")
-          ).orNull
-        )
-      ).mappedReads
-    val localReads = records.collect
-    val actualContig = maybeContig.getOrElse(localReads(0).contigName)
-    Pileup(
-      localReads,
-      actualContig,
-      locus,
-      reference.getContig(actualContig)
-    )
   }
 
   def assertAlmostEqual(a: Double, b: Double, epsilon: Double = 1e-12) {
