@@ -9,7 +9,7 @@ class AlleleEvidenceSuite
     with ReadsUtil
     with PileupUtil {
 
-  implicit lazy val reference = TestUtil.makeReference(sc, Seq(("chr1", 0, "NTAGATCGA")))
+  override lazy val reference = TestUtil.makeReference(sc, Seq(("chr1", 0, "NTAGATCGA")))
 
   test("allele evidence from pileup, all reads support") {
     val reads =

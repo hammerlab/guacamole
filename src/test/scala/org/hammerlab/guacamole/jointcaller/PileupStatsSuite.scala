@@ -21,7 +21,7 @@ class PileupStatsSuite
   }
 
   val refString = "NTCGATCGA"
-  implicit lazy val reference = TestUtil.makeReference(sc, Seq(("chr1", 0, refString)))
+  override lazy val reference = TestUtil.makeReference(sc, Seq(("chr1", 0, refString)))
 
   test("pileupstats likelihood computation") {
 

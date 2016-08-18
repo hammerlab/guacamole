@@ -16,7 +16,7 @@ class VariantSupportSuite
     with TableDrivenPropertyChecks{
 
   // Used implicitly by makePileup.
-  implicit lazy val grch37Reference =
+  override lazy val reference =
     ReferenceBroadcast(
       TestUtil.testDataPath("grch37.partial.fasta"),
       sc,
@@ -32,13 +32,7 @@ class VariantSupportSuite
 
         window.setCurrentLocus(locus)
 
-        val pileup =
-          Pileup(
-            window.currentRegions(),
-            contig,
-            locus,
-            grch37Reference.getContig(contig)
-          )
+        val pileup = makePileup(window.currentRegions(), contig, locus)
 
         assertAlleleCounts(pileup, alleleCounts: _*)
       }
@@ -49,10 +43,11 @@ class VariantSupportSuite
     val computedAlleleCounts =
       (for {
         AlleleCount(_, _, _, ref, alternate, count) <- VariantSupport.Caller.pileupsToAlleleCounts(Vector(pileup))
-      } yield (ref, alternate, count)
+      } yield
+        (ref, alternate, count)
       )
-        .toArray
-        .sortBy(x => x)
+      .toArray
+      .sortBy(x => x)
 
     computedAlleleCounts should be(alleleCounts.sortBy(x => x))
   }
