@@ -2,7 +2,7 @@ package org.hammerlab.guacamole.commands
 
 import org.hammerlab.guacamole.commands.VariantSupport.Caller.AlleleCount
 import org.hammerlab.guacamole.loci.set.LociParser
-import org.hammerlab.guacamole.pileup.Pileup
+import org.hammerlab.guacamole.pileup.{Pileup, Util => PileupUtil}
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.readsets.io.InputFilters
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
@@ -10,9 +10,18 @@ import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
 import org.hammerlab.guacamole.windowing.SlidingWindow
 import org.scalatest.prop.TableDrivenPropertyChecks
 
-class VariantSupportSuite extends GuacFunSuite with TableDrivenPropertyChecks {
+class VariantSupportSuite
+  extends GuacFunSuite
+    with PileupUtil
+    with TableDrivenPropertyChecks{
 
-  def grch37Reference = ReferenceBroadcast(TestUtil.testDataPath("grch37.partial.fasta"), sc, partialFasta = true)
+  // Used implicitly by makePileup.
+  override lazy val reference =
+    ReferenceBroadcast(
+      TestUtil.testDataPath("grch37.partial.fasta"),
+      sc,
+      partialFasta = true
+    )
 
   def testAlleleCounts(window: SlidingWindow[MappedRead],
                        variantAlleleLoci: (String, Int, Seq[(String, String, Int)])*) = {
@@ -23,13 +32,7 @@ class VariantSupportSuite extends GuacFunSuite with TableDrivenPropertyChecks {
 
         window.setCurrentLocus(locus)
 
-        val pileup =
-          Pileup(
-            window.currentRegions(),
-            contig,
-            locus,
-            grch37Reference.getContig(contig)
-          )
+        val pileup = makePileup(window.currentRegions(), contig, locus)
 
         assertAlleleCounts(pileup, alleleCounts: _*)
       }
@@ -40,10 +43,11 @@ class VariantSupportSuite extends GuacFunSuite with TableDrivenPropertyChecks {
     val computedAlleleCounts =
       (for {
         AlleleCount(_, _, _, ref, alternate, count) <- VariantSupport.Caller.pileupsToAlleleCounts(Vector(pileup))
-      } yield (ref, alternate, count)
+      } yield
+        (ref, alternate, count)
       )
-        .toArray
-        .sortBy(x => x)
+      .toArray
+      .sortBy(x => x)
 
     computedAlleleCounts should be(alleleCounts.sortBy(x => x))
   }
@@ -78,18 +82,18 @@ class VariantSupportSuite extends GuacFunSuite with TableDrivenPropertyChecks {
       .sortBy(_.start)
 
   test("read evidence for simple snvs") {
-    val pileup = Pileup(gatkReads("20:10008951-10008952"), "20", 10008951, grch37Reference.getContig("20"))
+    val pileup = makePileup(gatkReads("20:10008951-10008952"), "20", 10008951)
     assertAlleleCounts(pileup, ("CACACACACACA", "C", 1), ("C", "C", 4))
   }
 
   test("read evidence for mid-deletion") {
-    val pileup = Pileup(gatkReads("20:10006822-10006823"), "20", 10006822, grch37Reference.getContig("20"))
+    val pileup = makePileup(gatkReads("20:10006822-10006823"), "20", 10006822)
     assertAlleleCounts(pileup, ("C", "", 6), ("C", "C", 2))
   }
 
   test("read evidence for simple snvs 2") {
     val reads = gatkReads("20:10000624-10000625")
-    val pileup = Pileup(reads, "20", 10000624, grch37Reference.getContig("20"))
+    val pileup = makePileup(reads, "20", 10000624)
     assertAlleleCounts(pileup, ("T", "T", 6), ("T", "C", 1))
   }
 

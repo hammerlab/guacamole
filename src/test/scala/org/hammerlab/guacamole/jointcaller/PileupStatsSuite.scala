@@ -1,14 +1,16 @@
 package org.hammerlab.guacamole.jointcaller
 
 import org.hammerlab.guacamole.jointcaller.pileup_summarization.PileupStats
-import org.hammerlab.guacamole.pileup.Pileup
+import org.hammerlab.guacamole.pileup.{Util => PileupUtil}
 import org.hammerlab.guacamole.reads.ReadsUtil
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.util.{Bases, GuacFunSuite, TestUtil}
 
+
 class PileupStatsSuite
   extends GuacFunSuite
-    with ReadsUtil {
+    with ReadsUtil
+    with PileupUtil {
 
   val cancerWGS1Bams = Seq("normal.bam", "primary.bam", "recurrence.bam").map(
     name => TestUtil.testDataPath("cancer-wgs1/" + name))
@@ -18,10 +20,10 @@ class PileupStatsSuite
     ReferenceBroadcast(partialFasta, sc, partialFasta = true)
   }
 
+  val refString = "NTCGATCGA"
+  override lazy val reference = TestUtil.makeReference(sc, Seq(("chr1", 0, refString)))
+
   test("pileupstats likelihood computation") {
-    val refString = "NTCGATCGA"
-    def reference = TestUtil.makeReference(sc, Seq(("chr1", 0, refString)))
-    def contigSequence = reference.getContig("chr1")
 
     val reads =
       Seq(
@@ -33,7 +35,7 @@ class PileupStatsSuite
         makeRead("TCGACCCTCGA", "4M3I4M", qualityScores = Seq.fill(11)(30))
       )
 
-    val pileups = (1 until refString.length).map(locus => Pileup(reads, "chr1", locus, contigSequence))
+    val pileups = (1 until refString.length).map(locus => makePileup(reads, "chr1", locus))
 
     val stats1 = PileupStats.apply(pileups(1).elements, Bases.stringToBases("G"))
     stats1.totalDepthIncludingReadsContributingNoAlleles should equal(6)
