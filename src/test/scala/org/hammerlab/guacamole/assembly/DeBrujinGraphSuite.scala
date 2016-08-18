@@ -1,12 +1,14 @@
 package org.hammerlab.guacamole.assembly
 
 import org.hammerlab.guacamole.reads.ReadsUtil
+import org.hammerlab.guacamole.reference.ReferenceUtil
 import org.hammerlab.guacamole.util.TestUtil.Implicits._
 import org.hammerlab.guacamole.util.{AssertBases, Bases, GuacFunSuite, TestUtil}
 
 class DeBruijnGraphSuite
   extends GuacFunSuite
-    with ReadsUtil {
+    with ReadsUtil
+    with ReferenceUtil {
 
   test("DeBruijnGraph.mergeKmers") {
     val kmers = Seq("TTTC", "TTCC", "TCCC", "CCCC").map(Bases.stringToBases)
@@ -427,7 +429,7 @@ class DeBruijnGraphSuite
 
     val referenceString = "GAGGATCTGCCATGGCCGGGCGAGCTGGAGGAGGAGGAGGAGGAGGAGGAGGAGGAGGAGGAGGAAGAGGAGGAGGCTGCAGCGGCGGCGGCGGCGAACGTGGACGACGTAGTGGTCGTGGAGGAGGTGGAGGAAGAGGCGGGGCG"
     val referenceBases = Bases.stringToBases(referenceString)
-    val reference = TestUtil.makeReference(sc, Seq(("chr2", 73613005, referenceString)), contigLengths = 73613152)
+    val reference = makeReference(sc, Seq(("chr2", 73613005, referenceString)), contigLengths = 73613152)
 
     lazy val snpReads =
       TestUtil

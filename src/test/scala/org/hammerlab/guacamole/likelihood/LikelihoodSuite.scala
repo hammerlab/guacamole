@@ -3,6 +3,7 @@ package org.hammerlab.guacamole.likelihood
 import org.bdgenomics.adam.util.PhredUtils
 import org.hammerlab.guacamole.pileup.{Util => PileupUtil}
 import org.hammerlab.guacamole.reads.{MappedRead, ReadsUtil}
+import org.hammerlab.guacamole.reference.ReferenceUtil
 import org.hammerlab.guacamole.util.{Bases, GuacFunSuite, TestUtil}
 import org.hammerlab.guacamole.variants.{Allele, Genotype}
 import org.scalatest.prop.TableDrivenPropertyChecks
@@ -11,10 +12,11 @@ class LikelihoodSuite
   extends GuacFunSuite
     with TableDrivenPropertyChecks
     with ReadsUtil
-    with PileupUtil {
+    with PileupUtil
+    with ReferenceUtil {
 
   // Implicit reference used for creating PIleups in makePileup.
-  override lazy val reference = TestUtil.makeReference(sc, Seq(("chr1", 1, "C")))
+  override lazy val reference = makeReference(sc, Seq(("chr1", 1, "C")))
 
   val referenceBase = 'C'.toByte
 

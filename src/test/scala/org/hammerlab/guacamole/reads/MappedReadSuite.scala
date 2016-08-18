@@ -1,25 +1,27 @@
 package org.hammerlab.guacamole.reads
 
 import htsjdk.samtools.TextCigarCodec
+import org.hammerlab.guacamole.reference.ReferenceUtil
 import org.hammerlab.guacamole.util.{AssertBases, GuacFunSuite, TestUtil}
 import org.hammerlab.guacamole.util.TestUtil.Implicits._
 
 class MappedReadSuite
   extends GuacFunSuite
-    with ReadsUtil {
+    with ReadsUtil
+    with ReferenceUtil {
 
   test("mappedread is mapped") {
     val read = MappedRead(
       "read1",
       "TCGACCCTCGA",
       Array[Byte]((10 to 20).map(_.toByte): _*),
-      true,
+      isDuplicate = true,
       "some sample name",
       "chr5",
       50,
       325352323,
       TextCigarCodec.decode(""),
-      false,
+      failedVendorQualityChecks = false,
       isPositiveStrand = true,
       isPaired = true
     )
@@ -61,7 +63,7 @@ class MappedReadSuite
 
   // This must only be accessed from inside a spark test where SparkContext has been initialized
   def reference =
-    TestUtil.makeReference(
+    makeReference(
       sc,
       Seq(
         ("chr1", 8, "GGTCGATCGATCAA")

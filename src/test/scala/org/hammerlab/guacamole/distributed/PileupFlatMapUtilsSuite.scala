@@ -10,7 +10,8 @@ import org.hammerlab.guacamole.pileup.{Pileup, PileupElement}
 import org.hammerlab.guacamole.readsets.rdd.{PartitionedRegionsUtil, ReadsRDDUtil}
 import org.hammerlab.guacamole.readsets.{PartitionedReads, PerSample}
 import org.hammerlab.guacamole.reference.ReferenceBroadcast.MapBackedReferenceSequence
-import org.hammerlab.guacamole.util.{AssertBases, Bases, GuacFunSuite, KryoTestRegistrar, TestUtil}
+import org.hammerlab.guacamole.reference.ReferenceUtil
+import org.hammerlab.guacamole.util.{AssertBases, Bases, GuacFunSuite, KryoTestRegistrar}
 
 class PileupFlatMapUtilsSuiteRegistrar extends KryoTestRegistrar {
   override def registerTestClasses(kryo: Kryo): Unit = {
@@ -42,9 +43,12 @@ private object Util {
 class PileupFlatMapUtilsSuite
   extends GuacFunSuite
     with ReadsRDDUtil
-    with PartitionedRegionsUtil {
+    with PartitionedRegionsUtil
+    with ReferenceUtil {
 
   override def registrar: String = "org.hammerlab.guacamole.distributed.PileupFlatMapUtilsSuiteRegistrar"
+
+  lazy val reference = makeReference(sc, Seq(("chr1", 0, "ATCGATCGA")))
 
   def dummyReadsRDD =
     makeReadsRDD(
@@ -80,7 +84,7 @@ class PileupFlatMapUtilsSuite
         partitionedReads,
         skipEmpty = false,
         pileup => Iterator(pileup),
-        reference = TestUtil.makeReference(sc, Seq(("chr1", 0, "ATCGATCGA")))
+        reference = reference
       ).collect()
 
     pileups.length should be(8)
@@ -103,7 +107,7 @@ class PileupFlatMapUtilsSuite
         partitionedReads,
         skipEmpty = false,
         pileup => Iterator(pileup),
-        reference = TestUtil.makeReference(sc, Seq(("chr1", 0, "ATCGATCGA")))
+        reference = reference
       ).collect()
 
     val firstPileup = pileups.head
@@ -122,7 +126,7 @@ class PileupFlatMapUtilsSuite
         partitionedReads,
         skipEmpty = true,
         pileup => Iterator(pileup.locus),
-        reference = TestUtil.makeReference(sc, Seq(("chr1", 0, "ATCGATCGA")))
+        reference = reference
       ).collect
 
     loci should equal(Array(1, 2, 3, 4, 5, 6, 7, 8))
@@ -158,7 +162,7 @@ class PileupFlatMapUtilsSuite
         partitionedReads,
         skipEmpty = true,
         (pileup1, _) => Iterator(pileup1.locus),
-        reference = TestUtil.makeReference(sc, Seq(("chr1", 0, "ATCGATCGA")))
+        reference = reference
       ).collect
 
     loci should equal(Seq(1, 2, 3, 4, 5, 6, 7, 8, 99, 100, 101, 102, 103, 104, 105, 106, 107))
@@ -200,7 +204,7 @@ class PileupFlatMapUtilsSuite
         partitionReads(readsRDDs, UniformPartitioner(1).partition(loci)),
         skipEmpty = true,
         pileupsToElementStrings,
-        reference = TestUtil.makeReference(sc, Seq(("chr1", 0, "ATCGATCGA")))
+        reference = reference
       ).collect.map(_.toList)
 
     val resultParallelized =
@@ -208,7 +212,7 @@ class PileupFlatMapUtilsSuite
         partitionReads(readsRDDs, UniformPartitioner(800).partition(loci)),
         skipEmpty = true,
         pileupsToElementStrings,
-        reference = TestUtil.makeReference(sc, Seq(("chr1", 0, "ATCGATCGA")))
+        reference = reference
       ).collect.map(_.toList)
 
     val resultWithEmpty =
@@ -216,7 +220,7 @@ class PileupFlatMapUtilsSuite
         partitionReads(readsRDDs, UniformPartitioner(5).partition(loci)),
         skipEmpty = false,
         pileupsToElementStrings,
-        reference = TestUtil.makeReference(sc, Seq(("chr1", 0, "ATCGATCGA"), ("chr2", 0, "")))
+        reference = makeReference(sc, Seq(("chr1", 0, "ATCGATCGA"), ("chr2", 0, "")))
       ).collect.map(_.toList)
 
     resultPlain should equal(resultParallelized)
@@ -246,7 +250,7 @@ class PileupFlatMapUtilsSuite
         partitionedReads,
         skipEmpty = false,
         _.elements.toIterator,
-        reference = TestUtil.makeReference(sc, Seq(("chr1", 1, "TCGATCGA")))
+        reference = makeReference(sc, Seq(("chr1", 1, "TCGATCGA")))
       ).collect()
 
     pileups.length should be(24)
@@ -283,7 +287,7 @@ class PileupFlatMapUtilsSuite
         partitionedReads,
         skipEmpty = false,
         (pileup1, pileup2) => (pileup1.elements ++ pileup2.elements).toIterator,
-        reference = TestUtil.makeReference(sc, Seq(("chr1", 0, "ATCGATCGA" + "N" * 90 + "AGGGGGGGGGG")))
+        reference = makeReference(sc, Seq(("chr1", 0, "ATCGATCGA" + "N" * 90 + "AGGGGGGGGGG")))
       ).collect()
 
     elements.map(_.isMatch) should equal(List.fill(elements.length)(true))
@@ -310,7 +314,7 @@ class PileupFlatMapUtilsSuite
         ),
         skipEmpty = false,
         _.elements.toIterator,
-        reference = TestUtil.makeReference(sc, Seq(("chr1", 0, "ATCGATCGA ")))
+        reference = makeReference(sc, Seq(("chr1", 0, "ATCGATCGA")))
       ).collect()
 
     pileups.length should be(24)

@@ -3,14 +3,15 @@ package org.hammerlab.guacamole.jointcaller
 import org.hammerlab.guacamole.jointcaller.pileup_summarization.PileupStats
 import org.hammerlab.guacamole.pileup.{Util => PileupUtil}
 import org.hammerlab.guacamole.reads.ReadsUtil
-import org.hammerlab.guacamole.reference.ReferenceBroadcast
+import org.hammerlab.guacamole.reference.{ReferenceBroadcast, ReferenceUtil}
 import org.hammerlab.guacamole.util.{Bases, GuacFunSuite, TestUtil}
 
 
 class PileupStatsSuite
   extends GuacFunSuite
     with ReadsUtil
-    with PileupUtil {
+    with PileupUtil
+    with ReferenceUtil {
 
   val cancerWGS1Bams = Seq("normal.bam", "primary.bam", "recurrence.bam").map(
     name => TestUtil.testDataPath("cancer-wgs1/" + name))
@@ -21,7 +22,7 @@ class PileupStatsSuite
   }
 
   val refString = "NTCGATCGA"
-  override lazy val reference = TestUtil.makeReference(sc, Seq(("chr1", 0, refString)))
+  override lazy val reference = makeReference(sc, Seq(("chr1", 0, refString)))
 
   test("pileupstats likelihood computation") {
 
