@@ -10,10 +10,7 @@ import org.hammerlab.guacamole.readsets.ReadSets
 import org.hammerlab.guacamole.readsets.args.SingleSampleArgs
 import org.hammerlab.guacamole.readsets.io.{InputFilters, ReadLoadingConfig}
 import org.hammerlab.guacamole.readsets.rdd.ReadsRDD
-import org.hammerlab.guacamole.reference.ReferenceBroadcast.MapBackedReferenceSequence
-import org.hammerlab.guacamole.reference.{ContigName, ContigSequence, ReferenceBroadcast}
 
-import scala.collection.mutable
 import scala.math._
 
 object TestUtil {
@@ -25,34 +22,6 @@ object TestUtil {
 
   def tmpPath(suffix: String): String = {
     new File(Files.createTempDirectory("TestUtil").toFile, s"TestUtil$suffix").getAbsolutePath
-  }
-
-  /**
-   * Make a ReferenceBroadcast containing the specified sequences to be used in tests.
-   *
-   * @param sc
-   * @param contigStartSequences tuples of (contig name, start, reference sequence) giving the desired sequences
-   * @param contigLengths total length of each contigs (for simplicity all contigs are assumed to have the same length)
-   * @return a map acked ReferenceBroadcast containing the desired sequences
-   */
-  def makeReference(sc: SparkContext,
-                    contigStartSequences: Seq[(ContigName, Int, String)],
-                    contigLengths: Int = 1000): ReferenceBroadcast = {
-    val map = mutable.HashMap[String, ContigSequence]()
-    contigStartSequences.foreach({
-      case (contig, start, sequence) => {
-        val locusToBase: Map[Int, Byte] =
-          (for {
-            (base, locus) <- Bases.stringToBases(sequence).zipWithIndex
-          } yield
-            (locus + start) -> base
-          ).toMap
-
-        map.put(contig, MapBackedReferenceSequence(contigLengths, sc.broadcast(locusToBase)))
-      }
-    })
-
-    new ReferenceBroadcast(map.toMap, source=Some("test_values"))
   }
 
   def testDataPath(filename: String): String = {

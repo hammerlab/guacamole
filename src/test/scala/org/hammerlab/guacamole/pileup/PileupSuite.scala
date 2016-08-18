@@ -1,7 +1,7 @@
 package org.hammerlab.guacamole.pileup
 
 import org.hammerlab.guacamole.reads.{MappedRead, ReadsUtil}
-import org.hammerlab.guacamole.reference.Locus
+import org.hammerlab.guacamole.reference.{Locus, ReferenceUtil}
 import org.hammerlab.guacamole.util.TestUtil.Implicits._
 import org.hammerlab.guacamole.util.{AssertBases, Bases, GuacFunSuite, TestUtil}
 import org.hammerlab.guacamole.variants.Allele
@@ -11,10 +11,11 @@ class PileupSuite
   extends GuacFunSuite
     with TableDrivenPropertyChecks
     with ReadsUtil
-    with Util {
+    with Util
+    with ReferenceUtil {
 
   // This must only be accessed from inside a spark test where SparkContext has been initialized
-  override lazy val reference = TestUtil.makeReference(sc,
+  override lazy val reference = makeReference(sc,
     Seq(
       ("chr1", 0, "NTCGATCGACG"),
       ("1", 229538779, "A" * 1000),

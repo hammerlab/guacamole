@@ -3,15 +3,18 @@ package org.hammerlab.guacamole.likelihood
 import org.apache.spark.SparkContext
 import org.bdgenomics.adam.util.PhredUtils
 import org.hammerlab.guacamole.reads.ReadsUtil
+import org.hammerlab.guacamole.reference.ReferenceUtil
 import org.hammerlab.guacamole.util.{Bases, TestUtil}
 import org.hammerlab.guacamole.variants.{Allele, Genotype}
 
 /**
  * Some utility functions for [[LikelihoodSuite]].
  */
-object LikelihoodUtil extends ReadsUtil {
+object LikelihoodUtil
+  extends ReadsUtil
+    with ReferenceUtil {
 
-  def referenceBroadcast(sc: SparkContext) = TestUtil.makeReference(sc, Seq(("chr1", 1, "C")))
+  def referenceBroadcast(sc: SparkContext) = makeReference(sc, Seq(("chr1", 1, "C")))
   val referenceBase = 'C'.toByte
 
   def makeGenotype(alleles: String*): Genotype = {
