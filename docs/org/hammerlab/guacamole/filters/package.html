@@ -88,49 +88,7 @@ whose base quality is above a threshold, and called variants that exceed a certa
 
         <div id="values" class="values members">
               <h3>Value Members</h3>
-              <ol><li name="org.hammerlab.guacamole.filters.AverageBaseQualityFilter" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="AverageBaseQualityFilter"></a>
-      <a id="AverageBaseQualityFilter:AverageBaseQualityFilter"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a href="AverageBaseQualityFilter$.html"><span class="name">AverageBaseQualityFilter</span></a>
-      </span>
-      </h4>
-      <p class="comment cmt">Filter to remove genotypes when the mean base quality of the bases is low
-</p>
-    </li><li name="org.hammerlab.guacamole.filters.AverageMappingQualityFilter" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="AverageMappingQualityFilter"></a>
-      <a id="AverageMappingQualityFilter:AverageMappingQualityFilter"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a href="AverageMappingQualityFilter$.html"><span class="name">AverageMappingQualityFilter</span></a>
-      </span>
-      </h4>
-      <p class="comment cmt">Filter to remove genotypes when the mean mapping quality of the reads is low
-</p>
-    </li><li name="org.hammerlab.guacamole.filters.EdgeBaseFilter" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="EdgeBaseFilter"></a>
-      <a id="EdgeBaseFilter:EdgeBaseFilter"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a href="EdgeBaseFilter$.html"><span class="name">EdgeBaseFilter</span></a>
-      </span>
-      </h4>
-      <p class="comment cmt">Filter to remove pileup elements close to edge of reads
-</p>
-    </li><li name="org.hammerlab.guacamole.filters.FishersExactTest" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+              <ol><li name="org.hammerlab.guacamole.filters.FishersExactTest" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="FishersExactTest"></a>
       <a id="FishersExactTest:FishersExactTest"></a>
       <h4 class="signature">
@@ -143,217 +101,42 @@ whose base quality is above a threshold, and called variants that exceed a certa
       </span>
       </h4>
       
-    </li><li name="org.hammerlab.guacamole.filters.GenotypeFilter" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="GenotypeFilter"></a>
-      <a id="GenotypeFilter:GenotypeFilter"></a>
+    </li><li name="org.hammerlab.guacamole.filters.genotype" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="genotype"></a>
+      <a id="genotype:genotype"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">object</span>
+        <span class="kind">package</span>
       </span>
       <span class="symbol">
-        <a href="GenotypeFilter$.html"><span class="name">GenotypeFilter</span></a>
+        <a href="genotype/package.html"><span class="name">genotype</span></a>
       </span>
       </h4>
       
-    </li><li name="org.hammerlab.guacamole.filters.MinimumAlternateReadDepthFilter" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="MinimumAlternateReadDepthFilter"></a>
-      <a id="MinimumAlternateReadDepthFilter:MinimumAlternateReadDepthFilter"></a>
+    </li><li name="org.hammerlab.guacamole.filters.pileup" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="pileup"></a>
+      <a id="pileup:pileup"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">object</span>
+        <span class="kind">package</span>
       </span>
       <span class="symbol">
-        <a href="MinimumAlternateReadDepthFilter$.html"><span class="name">MinimumAlternateReadDepthFilter</span></a>
-      </span>
-      </h4>
-      <p class="comment cmt">Filter to remove genotypes where the number of reads to support the alternate allele is low
-</p>
-    </li><li name="org.hammerlab.guacamole.filters.MinimumLikelihoodFilter" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="MinimumLikelihoodFilter"></a>
-      <a id="MinimumLikelihoodFilter:MinimumLikelihoodFilter"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a href="MinimumLikelihoodFilter$.html"><span class="name">MinimumLikelihoodFilter</span></a>
-      </span>
-      </h4>
-      <p class="comment cmt">Filter to remove genotypes where the likelihood is low
-</p>
-    </li><li name="org.hammerlab.guacamole.filters.MultiAllelicPileupFilter" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="MultiAllelicPileupFilter"></a>
-      <a id="MultiAllelicPileupFilter:MultiAllelicPileupFilter"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a href="MultiAllelicPileupFilter$.html"><span class="name">MultiAllelicPileupFilter</span></a>
-      </span>
-      </h4>
-      <p class="comment cmt">Filter to remove pileups which may produce multi-allelic variant calls.</p>
-    </li><li name="org.hammerlab.guacamole.filters.PileupFilter" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="PileupFilter"></a>
-      <a id="PileupFilter:PileupFilter"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a href="PileupFilter$.html"><span class="name">PileupFilter</span></a>
+        <a href="pileup/package.html"><span class="name">pileup</span></a>
       </span>
       </h4>
       
-    </li><li name="org.hammerlab.guacamole.filters.QualityAlignedReadsFilter" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="QualityAlignedReadsFilter"></a>
-      <a id="QualityAlignedReadsFilter:QualityAlignedReadsFilter"></a>
+    </li><li name="org.hammerlab.guacamole.filters.somatic" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="somatic"></a>
+      <a id="somatic:somatic"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">object</span>
+        <span class="kind">package</span>
       </span>
       <span class="symbol">
-        <a href="QualityAlignedReadsFilter$.html"><span class="name">QualityAlignedReadsFilter</span></a>
-      </span>
-      </h4>
-      <p class="comment cmt">Filter to remove pileup elements with low alignment quality
-</p>
-    </li><li name="org.hammerlab.guacamole.filters.ReadDepthFilter" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="ReadDepthFilter"></a>
-      <a id="ReadDepthFilter:ReadDepthFilter"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a href="ReadDepthFilter$.html"><span class="name">ReadDepthFilter</span></a>
-      </span>
-      </h4>
-      <p class="comment cmt">Filter to remove genotypes where the number of reads at the locus is too low or too high
-</p>
-    </li><li name="org.hammerlab.guacamole.filters.SomaticAlternateReadDepthFilter" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="SomaticAlternateReadDepthFilter"></a>
-      <a id="SomaticAlternateReadDepthFilter:SomaticAlternateReadDepthFilter"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a href="SomaticAlternateReadDepthFilter$.html"><span class="name">SomaticAlternateReadDepthFilter</span></a>
-      </span>
-      </h4>
-      
-    </li><li name="org.hammerlab.guacamole.filters.SomaticAverageBaseQualityFilter" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="SomaticAverageBaseQualityFilter"></a>
-      <a id="SomaticAverageBaseQualityFilter:SomaticAverageBaseQualityFilter"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a href="SomaticAverageBaseQualityFilter$.html"><span class="name">SomaticAverageBaseQualityFilter</span></a>
-      </span>
-      </h4>
-      
-    </li><li name="org.hammerlab.guacamole.filters.SomaticAverageMappingQualityFilter" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="SomaticAverageMappingQualityFilter"></a>
-      <a id="SomaticAverageMappingQualityFilter:SomaticAverageMappingQualityFilter"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a href="SomaticAverageMappingQualityFilter$.html"><span class="name">SomaticAverageMappingQualityFilter</span></a>
-      </span>
-      </h4>
-      
-    </li><li name="org.hammerlab.guacamole.filters.SomaticGenotypeFilter" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="SomaticGenotypeFilter"></a>
-      <a id="SomaticGenotypeFilter:SomaticGenotypeFilter"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a href="SomaticGenotypeFilter$.html"><span class="name">SomaticGenotypeFilter</span></a>
-      </span>
-      </h4>
-      
-    </li><li name="org.hammerlab.guacamole.filters.SomaticLogOddsFilter" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="SomaticLogOddsFilter"></a>
-      <a id="SomaticLogOddsFilter:SomaticLogOddsFilter"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a href="SomaticLogOddsFilter$.html"><span class="name">SomaticLogOddsFilter</span></a>
-      </span>
-      </h4>
-      
-    </li><li name="org.hammerlab.guacamole.filters.SomaticMedianMismatchFilter" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="SomaticMedianMismatchFilter"></a>
-      <a id="SomaticMedianMismatchFilter:SomaticMedianMismatchFilter"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a href="SomaticMedianMismatchFilter$.html"><span class="name">SomaticMedianMismatchFilter</span></a>
-      </span>
-      </h4>
-      
-    </li><li name="org.hammerlab.guacamole.filters.SomaticMinimumLikelihoodFilter" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="SomaticMinimumLikelihoodFilter"></a>
-      <a id="SomaticMinimumLikelihoodFilter:SomaticMinimumLikelihoodFilter"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a href="SomaticMinimumLikelihoodFilter$.html"><span class="name">SomaticMinimumLikelihoodFilter</span></a>
-      </span>
-      </h4>
-      <p class="comment cmt">Filter to remove genotypes where the somatic likelihood is low
-</p>
-    </li><li name="org.hammerlab.guacamole.filters.SomaticReadDepthFilter" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="SomaticReadDepthFilter"></a>
-      <a id="SomaticReadDepthFilter:SomaticReadDepthFilter"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a href="SomaticReadDepthFilter$.html"><span class="name">SomaticReadDepthFilter</span></a>
-      </span>
-      </h4>
-      <p class="comment cmt">Filter to remove genotypes where the number of reads at the locus is too low or too high
-</p>
-    </li><li name="org.hammerlab.guacamole.filters.SomaticVAFFilter" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="SomaticVAFFilter"></a>
-      <a id="SomaticVAFFilter:SomaticVAFFilter"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a href="SomaticVAFFilter$.html"><span class="name">SomaticVAFFilter</span></a>
+        <a href="somatic/package.html"><span class="name">somatic</span></a>
       </span>
       </h4>
       
