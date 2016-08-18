@@ -1,11 +1,11 @@
 package org.hammerlab.guacamole.readsets.args
 
-import org.hammerlab.guacamole.loci.partitioning.LociPartitionerArgs
 import org.hammerlab.guacamole.readsets.PerSample
 import org.hammerlab.guacamole.readsets.io.{Input, ReadLoadingConfigArgs}
+import org.hammerlab.guacamole.readsets.rdd.PartitionedRegionsArgs
 
 trait Base
-  extends LociPartitionerArgs
+  extends PartitionedRegionsArgs
     with NoSequenceDictionaryArgs
     with ReadLoadingConfigArgs {
 

@@ -3,6 +3,7 @@ package org.hammerlab.guacamole.loci.partitioning
 import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole.loci.LociArgs
 import org.hammerlab.guacamole.loci.set.LociSet
+import org.hammerlab.guacamole.readsets.rdd.PartitionedRegionsArgs
 import org.hammerlab.guacamole.reference.ReferenceRegion
 import org.hammerlab.magic.args4j.StringOptionHandler
 import org.kohsuke.args4j.spi.BooleanOptionHandler
@@ -18,10 +19,16 @@ trait LociPartitionerArgs
 
   @Args4JOption(
     name = "--loci-partitioning",
-    usage = "If set: load a LociPartitioning from this path if it exists; write a computed partitioning to this path if it doesn't.",
+    usage = "Load a LociPartitioning from this path if it exists; else write a computed partitioning to this path.",
     handler = classOf[StringOptionHandler]
   )
-  var lociPartitioningPathOpt: Option[String] = None
+  protected var _lociPartitioningPathOpt: Option[String] = None
+
+  /**
+   * Simple getter interface here supports overriding behavior here to support different resolution logic, cf.
+   * [[PartitionedRegionsArgs]].
+   */
+  def lociPartitioningPathOpt: Option[String] = _lociPartitioningPathOpt
 
   @Args4JOption(
     name = "--loci-partitioner",
