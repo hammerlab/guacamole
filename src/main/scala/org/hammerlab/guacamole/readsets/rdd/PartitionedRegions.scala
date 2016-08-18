@@ -200,7 +200,10 @@ object PartitionedRegions {
 
     val numPartitions = lociPartitioning.numPartitions
 
-    progress(s"Partitioning reads according to loci partitioning:\n$lociPartitioning")
+    progress(
+      s"Partitioning reads into $numPartitions partitions according to loci partitioning:",
+      lociPartitioning.truncatedString()
+    )
 
     implicit val accumulableParam = new HistogramParam[Int, Long]
 
