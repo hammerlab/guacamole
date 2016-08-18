@@ -9,6 +9,7 @@ import org.hammerlab.guacamole.loci.partitioning.LociPartitioner.PartitionIndex
 import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.reference.{NumLoci, ReferenceRegion}
+import org.hammerlab.guacamole.strings.TruncatedToString
 import org.hammerlab.magic.iterator.LinesIterator
 import org.hammerlab.magic.stats.Stats
 import org.hammerlab.magic.util.Saveable
@@ -20,7 +21,9 @@ import scala.reflect.ClassTag
  *
  * Includes some functionality for saving to / loading from disk.
  */
-case class LociPartitioning(map: LociMap[PartitionIndex]) extends Saveable {
+case class LociPartitioning(map: LociMap[PartitionIndex])
+  extends Saveable
+    with TruncatedToString {
 
   @transient lazy val numPartitions = partitionsMap.size
 
@@ -51,6 +54,8 @@ case class LociPartitioning(map: LociMap[PartitionIndex]) extends Saveable {
   }
 
   override def toString: String = map.toString
+
+  override def stringPieces: Iterator[String] = map.stringPieces
 }
 
 object LociPartitioning {
