@@ -180,15 +180,15 @@
       </h4>
       
     </li><li name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions#apply" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="apply[R&lt;:org.hammerlab.guacamole.reference.ReferenceRegion](regionRDDs:org.hammerlab.guacamole.readsets.PerSample[org.apache.spark.rdd.RDD[R]],loci:org.hammerlab.guacamole.loci.set.LociSet,args:org.hammerlab.guacamole.loci.partitioning.LociPartitionerArgs,halfWindowSize:Int)(implicitevidence$3:scala.reflect.ClassTag[R]):org.hammerlab.guacamole.readsets.rdd.PartitionedRegions[R]"></a>
-      <a id="apply[R&lt;:ReferenceRegion](PerSample[RDD[R]],LociSet,LociPartitionerArgs,Int)(ClassTag[R]):PartitionedRegions[R]"></a>
+      <a id="apply[R&lt;:org.hammerlab.guacamole.reference.ReferenceRegion](regionRDDs:org.hammerlab.guacamole.readsets.PerSample[org.apache.spark.rdd.RDD[R]],loci:org.hammerlab.guacamole.loci.set.LociSet,args:org.hammerlab.guacamole.readsets.rdd.PartitionedRegionsArgs,halfWindowSize:Int)(implicitevidence$4:scala.reflect.ClassTag[R]):org.hammerlab.guacamole.readsets.rdd.PartitionedRegions[R]"></a>
+      <a id="apply[R&lt;:ReferenceRegion](PerSample[RDD[R]],LociSet,PartitionedRegionsArgs,Int)(ClassTag[R]):PartitionedRegions[R]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">apply</span><span class="tparams">[<span name="R">R &lt;: <a href="../../reference/ReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceRegion">ReferenceRegion</a></span>]</span><span class="params">(<span name="regionRDDs">regionRDDs: <a href="../package.html#PerSample[+A]=IndexedSeq[A]" class="extmbr" name="org.hammerlab.guacamole.readsets.PerSample">PerSample</a>[<span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<span class="extype" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions.apply.R">R</span>]]</span>, <span name="loci">loci: <a href="../../loci/set/LociSet.html" class="extype" name="org.hammerlab.guacamole.loci.set.LociSet">LociSet</a></span>, <span name="args">args: <a href="../../loci/partitioning/LociPartitionerArgs.html" class="extype" name="org.hammerlab.guacamole.loci.partitioning.LociPartitionerArgs">LociPartitionerArgs</a></span>, <span name="halfWindowSize">halfWindowSize: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">0</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.reflect.ClassTag">ClassTag</span>[<span class="extype" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions.apply.R">R</span>]</span>)</span><span class="result">: <a href="PartitionedRegions.html" class="extype" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions">PartitionedRegions</a>[<span class="extype" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions.apply.R">R</span>]</span>
+        <span class="name">apply</span><span class="tparams">[<span name="R">R &lt;: <a href="../../reference/ReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceRegion">ReferenceRegion</a></span>]</span><span class="params">(<span name="regionRDDs">regionRDDs: <a href="../package.html#PerSample[+A]=IndexedSeq[A]" class="extmbr" name="org.hammerlab.guacamole.readsets.PerSample">PerSample</a>[<span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<span class="extype" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions.apply.R">R</span>]]</span>, <span name="loci">loci: <a href="../../loci/set/LociSet.html" class="extype" name="org.hammerlab.guacamole.loci.set.LociSet">LociSet</a></span>, <span name="args">args: <a href="PartitionedRegionsArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegionsArgs">PartitionedRegionsArgs</a></span>, <span name="halfWindowSize">halfWindowSize: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">0</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.reflect.ClassTag">ClassTag</span>[<span class="extype" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions.apply.R">R</span>]</span>)</span><span class="result">: <a href="PartitionedRegions.html" class="extype" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions">PartitionedRegions</a>[<span class="extype" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions.apply.R">R</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Main <a href="PartitionedRegions.html" class="extype" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions">PartitionedRegions</a> constructor: given some regions and loci, assign the loci to Spark partitions, and then
@@ -315,6 +315,19 @@ partition the regions according to which partitions' loci they overlap.</p><p>Co
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions#load" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="load[R&lt;:org.hammerlab.guacamole.reference.ReferenceRegion](sc:org.apache.spark.SparkContext,numSamples:org.hammerlab.guacamole.readsets.NumSamples,filename:String,partitioning:org.hammerlab.guacamole.loci.partitioning.LociPartitioning)(implicitevidence$3:scala.reflect.ClassTag[R]):org.hammerlab.guacamole.readsets.rdd.PartitionedRegions[R]"></a>
+      <a id="load[R&lt;:ReferenceRegion](SparkContext,NumSamples,String,LociPartitioning)(ClassTag[R]):PartitionedRegions[R]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">load</span><span class="tparams">[<span name="R">R &lt;: <a href="../../reference/ReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceRegion">ReferenceRegion</a></span>]</span><span class="params">(<span name="sc">sc: <span class="extype" name="org.apache.spark.SparkContext">SparkContext</span></span>, <span name="numSamples">numSamples: <a href="../package.html#NumSamples=Int" class="extmbr" name="org.hammerlab.guacamole.readsets.NumSamples">NumSamples</a></span>, <span name="filename">filename: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="partitioning">partitioning: <a href="../../loci/partitioning/LociPartitioning.html" class="extype" name="org.hammerlab.guacamole.loci.partitioning.LociPartitioning">LociPartitioning</a></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.reflect.ClassTag">ClassTag</span>[<span class="extype" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions.load.R">R</span>]</span>)</span><span class="result">: <a href="PartitionedRegions.html" class="extype" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions">PartitionedRegions</a>[<span class="extype" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions.load.R">R</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Load an <span class="extype" name="RDD">RDD</span> of partitioned regions from a file.</p>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
