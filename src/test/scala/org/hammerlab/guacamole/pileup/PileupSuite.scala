@@ -3,7 +3,6 @@ package org.hammerlab.guacamole.pileup
 import org.hammerlab.guacamole.reads.{MappedRead, ReadsUtil}
 import org.hammerlab.guacamole.reference.Locus
 import org.hammerlab.guacamole.util.TestUtil.Implicits._
-import org.hammerlab.guacamole.util.TestUtil.loadPileup
 import org.hammerlab.guacamole.util.{AssertBases, Bases, GuacFunSuite, TestUtil}
 import org.hammerlab.guacamole.variants.Allele
 import org.scalatest.prop.TableDrivenPropertyChecks
@@ -15,9 +14,10 @@ class PileupSuite
     with Util {
 
   // This must only be accessed from inside a spark test where SparkContext has been initialized
-  implicit lazy val reference = TestUtil.makeReference(sc,
+  override lazy val reference = TestUtil.makeReference(sc,
     Seq(
       ("chr1", 0, "NTCGATCGACG"),
+      ("1", 229538779, "A" * 1000),
       ("artificial", 0, "A" * 34 + "G" * 10 + "A" * 5 + "G" * 15 + "A" * 15 + "ACGT" * 10),
       ("chr2", 0, "AATTG"),
       ("chr3", 0, "AAATTT"),
@@ -115,12 +115,12 @@ class PileupSuite
   }
 
   test("Load pileup from SAM file") {
-    val pileup = loadPileup(sc, "same_start_reads.sam", locus = 0, reference = reference)
+    val pileup = loadPileup(sc, "same_start_reads.sam", locus = 0)
     pileup.elements.length should be(10)
   }
 
   test("First 60 loci should have all 10 reads") {
-    val pileup = loadPileup(sc, "same_start_reads.sam", locus = 0, reference = reference)
+    val pileup = loadPileup(sc, "same_start_reads.sam", locus = 0)
     for (i <- 1 to 59) {
       val nextPileup = pileup.atGreaterLocus(i, Seq.empty.iterator)
       nextPileup.elements.length should be(10)
@@ -204,7 +204,7 @@ class PileupSuite
   }
 
   test("Loci 10-19 deleted from half of the reads") {
-    val pileup = loadPileup(sc, "same_start_reads.sam", locus = 0, reference = reference)
+    val pileup = loadPileup(sc, "same_start_reads.sam", locus = 0)
     val deletionPileup = pileup.atGreaterLocus(9, Seq.empty.iterator)
 
     deletionPileup.elements.map(_.alignment).count {
@@ -222,7 +222,7 @@ class PileupSuite
   }
 
   test("Loci 60-69 have 5 reads") {
-    val pileup = loadPileup(sc, "same_start_reads.sam", locus = 0, reference = reference)
+    val pileup = loadPileup(sc, "same_start_reads.sam", locus = 0)
     for (i <- 60 to 69) {
       val nextPileup = pileup.atGreaterLocus(i, Seq.empty.iterator)
       nextPileup.elements.length should be(5)
@@ -378,17 +378,15 @@ class PileupSuite
   }
 
   test("create and advance pileup element from RNA read") {
-    val reference = TestUtil.makeReference(sc, Seq(("chr1", 229538779, "A" * 1000)), 229538779 + 1000)
-
     val rnaRead =
       makeRead(
         sequence = "CCCCAGCCTAGGCCTTCGACACTGGGGGGCTGAGGGAAGGGGCACCTGCC",
         cigar = "7M191084N43M",
         start = 229538779,
-        chr = "chr1"
+        chr = "1"
       )
 
-    val rnaPileupElement = PileupElement(rnaRead, 229538779L, reference.getContig("chr1"))
+    val rnaPileupElement = PileupElement(rnaRead, 229538779L, reference.getContig("1"))
 
     // Second base
     AssertBases(rnaPileupElement.advanceToLocus(229538780L).sequencedBases, "C")
@@ -405,8 +403,7 @@ class PileupSuite
   }
 
   test("create pileup from RNA reads") {
-    val reference = TestUtil.makeReference(sc, Seq(("1", 229538779, "A" * 1000)), 229538779 + 1000)
-    val rnaReadsPileup = loadPileup(sc, "testrna.sam", locus = 229580594, reference = reference)
+    val rnaReadsPileup = loadPileup(sc, "testrna.sam", locus = 229580594)
 
     // 94 reads in the testrna.sam
     // 3 reads end at 229580707 and 1 extends further

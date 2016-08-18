@@ -14,7 +14,7 @@ class LikelihoodSuite
     with PileupUtil {
 
   // Implicit reference used for creating PIleups in makePileup.
-  implicit lazy val reference = TestUtil.makeReference(sc, Seq(("chr1", 1, "C")))
+  override lazy val reference = TestUtil.makeReference(sc, Seq(("chr1", 1, "C")))
 
   val referenceBase = 'C'.toByte
 

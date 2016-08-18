@@ -6,7 +6,6 @@ import org.hammerlab.guacamole.reads.ReadsUtil
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
 
-
 class ReadSubsequenceSuite
   extends GuacFunSuite
     with ReadsUtil
@@ -15,12 +14,11 @@ class ReadSubsequenceSuite
   val cancerWGS1Bams = Vector("normal.bam", "primary.bam", "recurrence.bam").map(
     name => TestUtil.testDataPath("cancer-wgs1/" + name))
 
-  implicit lazy val reference = TestUtil.makeReference(sc, Seq(("chr1", 0, "NTCGATCGACG")))
+  override lazy val reference = TestUtil.makeReference(sc, Seq(("chr1", 0, "NTCGATCGACG")))
 
   val partialFasta = TestUtil.testDataPath("hg19.partial.fasta")
-  def partialReference = {
+  def partialReference =
     ReferenceBroadcast(partialFasta, sc, partialFasta = true)
-  }
 
   test("ofFixedReferenceLength") {
     val reads =
@@ -75,7 +73,7 @@ class ReadSubsequenceSuite
     val contigLocus = ("chr12", 65857039)
     val pileups = cancerWGS1Bams.map(
       path =>
-        TestUtil.loadPileup(
+        loadPileup(
           sc,
           path,
           maybeContig = Some(contigLocus._1),
@@ -87,15 +85,16 @@ class ReadSubsequenceSuite
     val subsequences = ReadSubsequence.nextAlts(pileups(1).elements)
     assert(subsequences.nonEmpty)
 
-    val alleles = AlleleAtLocus.variantAlleles(
-      (inputs.normalDNA ++ inputs.tumorDNA).map(input => pileups(input.index)),
-      anyAlleleMinSupportingReads = parameters.anyAlleleMinSupportingReads,
-      anyAlleleMinSupportingPercent = parameters.anyAlleleMinSupportingPercent)
+    val alleles =
+      AlleleAtLocus.variantAlleles(
+        (inputs.normalDNA ++ inputs.tumorDNA).map(input => pileups(input.index)),
+        anyAlleleMinSupportingReads = parameters.anyAlleleMinSupportingReads,
+        anyAlleleMinSupportingPercent = parameters.anyAlleleMinSupportingPercent
+      )
 
     assert(alleles.nonEmpty)
 
     alleles.map(_.alt) should equal(Seq("C"))
     alleles.map(_.ref) should equal(Seq("G"))
   }
-
 }

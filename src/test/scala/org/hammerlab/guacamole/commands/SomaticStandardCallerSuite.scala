@@ -1,26 +1,16 @@
 package org.hammerlab.guacamole.commands
 
-import org.hammerlab.guacamole.filters.somatic.SomaticGenotypeFilter
 import org.hammerlab.guacamole.pileup.{Util => PileupUtil}
-import org.hammerlab.guacamole.reads.{MappedRead, ReadsUtil}
-import org.hammerlab.guacamole.reference.{ContigName, Locus, ReferenceBroadcast}
+import org.hammerlab.guacamole.reads.ReadsUtil
+import org.hammerlab.guacamole.reference.{ContigName, Locus}
 import org.hammerlab.guacamole.util.{Bases, GuacFunSuite, TestUtil}
-import org.scalatest.prop.TableDrivenPropertyChecks
 
 class SomaticStandardCallerSuite
   extends GuacFunSuite
-    with TableDrivenPropertyChecks
     with ReadsUtil
     with PileupUtil {
 
-  lazy val grch37Reference =
-    ReferenceBroadcast(
-      TestUtil.testDataPath("grch37.partial.fasta"),
-      sc,
-      partialFasta = true
-    )
-
-  implicit lazy val reference =
+  override lazy val reference =
     TestUtil.makeReference(
       sc,
       Seq(
@@ -31,160 +21,6 @@ class SomaticStandardCallerSuite
       )
     )
 
-  /**
-   * Common algorithm parameters - fixed for all tests
-   */
-  val logOddsThreshold = 120
-  val minAlignmentQuality = 1
-  val minTumorReadDepth = 8
-  val minNormalReadDepth = 4
-  val maxTumorReadDepth = 200
-  val minTumorAlternateReadDepth = 3
-  val maxMappingComplexity = 20
-  val minAlignmentForComplexity = 1
-
-  val filterMultiAllelic = false
-
-  val minLikelihood = 70
-  val minVAF = 5
-
-  def testVariants(tumorReads: Seq[MappedRead], normalReads: Seq[MappedRead], positions: Array[Long], shouldFindVariant: Boolean = false) = {
-    positions.foreach((locus: Locus) => {
-        val (tumorPileup, normalPileup) =
-          TestUtil.loadTumorNormalPileup(
-            tumorReads,
-            normalReads,
-            locus,
-            grch37Reference
-          )
-
-        val calledGenotypes =
-          SomaticStandard.Caller.findPotentialVariantAtLocus(
-            tumorPileup,
-            normalPileup,
-            logOddsThreshold,
-            minAlignmentQuality,
-            filterMultiAllelic
-          )
-
-        val foundVariant = SomaticGenotypeFilter(
-          calledGenotypes,
-          minTumorReadDepth,
-          maxTumorReadDepth,
-          minNormalReadDepth,
-          minTumorAlternateReadDepth,
-          logOddsThreshold,
-          minVAF = minVAF,
-          minLikelihood).nonEmpty
-
-        foundVariant should be(shouldFindVariant)
-    })
-  }
-
-  test("testing simple positive variants") {
-    val (tumorReads, normalReads) =
-      TestUtil.loadTumorNormalReads(
-        sc,
-        "tumor.chr20.tough.sam",
-        "normal.chr20.tough.sam"
-      )
-
-    val positivePositions = Array[Long](
-        755754,
-       1843813,
-       3555766,
-       3868620,
-       7087895,
-       9896926,
-      14017900,
-      17054263,
-      19772181,
-      25031215,
-      30430960,
-      32150541,
-      35951019,
-      42186626,
-      42999694,
-      44061033,
-      44973412,
-      45175149,
-      46814443,
-      50472935,
-      51858471,
-      52311925,
-      53774355,
-      57280858,
-      58201903
-    )
-
-    testVariants(tumorReads, normalReads, positivePositions, shouldFindVariant = true)
-  }
-
-  test("testing simple negative variants on syn1") {
-    val (tumorReads, normalReads) =
-      TestUtil.loadTumorNormalReads(
-        sc,
-        "synthetic.challenge.set1.tumor.v2.withMDTags.chr2.syn1fp.sam",
-        "synthetic.challenge.set1.normal.v2.withMDTags.chr2.syn1fp.sam"
-      )
-
-    val negativePositions = Array[Long](
-      216094721,
-        3529313,
-        8789794,
-      104043280,
-      104175801,
-      126651101,
-      241901237,
-       57270796,
-      120757852
-    )
-
-    testVariants(tumorReads, normalReads, negativePositions, shouldFindVariant = false)
-  }
-
-  test("testing complex region negative variants on syn1") {
-    val (tumorReads, normalReads) =
-      TestUtil.loadTumorNormalReads(
-        sc,
-        "synthetic.challenge.set1.tumor.v2.withMDTags.chr2.complexvar.sam",
-        "synthetic.challenge.set1.normal.v2.withMDTags.chr2.complexvar.sam"
-      )
-
-    val negativePositions = Array[Long](
-      148487667,
-      134307261,
-       90376213,
-        3638733,
-      109347468
-    )
-
-    testVariants(tumorReads, normalReads, negativePositions, shouldFindVariant = false)
-
-    val positivePositions = Array[Long](82949713, 130919744)
-    testVariants(tumorReads, normalReads, positivePositions, shouldFindVariant = true)
-  }
-
-  test("difficult negative variants") {
-
-    val (tumorReads, normalReads) =
-      TestUtil.loadTumorNormalReads(
-        sc,
-        "tumor.chr20.simplefp.sam",
-        "normal.chr20.simplefp.sam"
-      )
-
-    val negativeVariantPositions = Array[Long](
-      13046318,
-      25939088,
-      26211835,
-      29652479,
-      54495768
-    )
-
-    testVariants(tumorReads, normalReads, negativeVariantPositions, shouldFindVariant = false)
-  }
-
   test("no indels") {
     val normalReads =
       makeReads(
@@ -193,7 +29,7 @@ class SomaticStandardCallerSuite
         ("TCGATCGA", "8M", 0)
       )
 
-    val normalPileup = makePileup(normalReads)
+    val normalPileup = makePileup(normalReads, "chr1", 2)
 
     val tumorReads =
       makeReads(
@@ -202,7 +38,7 @@ class SomaticStandardCallerSuite
         ("TCGGTCGA", "8M", 0)
       )
 
-    val tumorPileup = makePileup(tumorReads)
+    val tumorPileup = makePileup(tumorReads, "chr1", 2)
 
     SomaticStandard.Caller.findPotentialVariantAtLocus(tumorPileup, normalPileup, oddsThreshold = 2).size should be(0)
   }
@@ -215,7 +51,7 @@ class SomaticStandardCallerSuite
         ("TCGATCGA", "8M", 0)
       )
 
-    val normalPileup = makePileup(normalReads)
+    val normalPileup = makePileup(normalReads, "chr1", 2)
 
     val tumorReads =
       makeReads(
@@ -224,7 +60,7 @@ class SomaticStandardCallerSuite
         ("TCGTCGA", "3M1D4M", 0)
       )
 
-    val tumorPileup = makePileup(tumorReads)
+    val tumorPileup = makePileup(tumorReads, "chr1", 2)
 
     val alleles = SomaticStandard.Caller.findPotentialVariantAtLocus(tumorPileup, normalPileup, oddsThreshold = 2)
     alleles.size should be(1)
@@ -271,7 +107,7 @@ class SomaticStandardCallerSuite
         ("TCGATCGA", "8M", 0)
       )
 
-    val normalPileup = makePileup(normalReads)
+    val normalPileup = makePileup(normalReads, "chr1", 2)
 
     val tumorReads =
       makeReads(
@@ -280,7 +116,7 @@ class SomaticStandardCallerSuite
         ("TCGAGTCGA", "4M1I4M", 0)
       )
 
-    val tumorPileup = makePileup(tumorReads, 3)
+    val tumorPileup = makePileup(tumorReads, "chr1", 3)
 
     val alleles = SomaticStandard.Caller.findPotentialVariantAtLocus(tumorPileup, normalPileup, oddsThreshold = 2)
     alleles.size should be(1)
@@ -306,8 +142,8 @@ class SomaticStandardCallerSuite
       )
 
     val alleles = SomaticStandard.Caller.findPotentialVariantAtLocus(
-      makePileup(tumorReads, 3),
-      makePileup(normalReads, 3),
+      makePileup(tumorReads, "chr1", 3),
+      makePileup(normalReads, "chr1", 3),
       oddsThreshold = 2
     )
     alleles.size should be(1)
@@ -342,8 +178,8 @@ class SomaticStandardCallerSuite
 
     def testLocus(contigName: ContigName, locus: Locus, refBases: String, altBases: String) = {
       val alleles = SomaticStandard.Caller.findPotentialVariantAtLocus(
-        makePileup(tumorReads, locus, contigName),
-        makePileup(normalReads, locus, contigName),
+        makePileup(tumorReads, contigName, locus),
+        makePileup(normalReads, contigName, locus),
         oddsThreshold = 2
       )
       alleles.size should be(1)
@@ -359,3 +195,4 @@ class SomaticStandardCallerSuite
     testLocus("chr3", 18, "ATC", "A")
   }
 }
+
