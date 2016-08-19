@@ -78,19 +78,19 @@ class SomaticStandardCallerRealDataSuite
 
   test("testing simple positive variants") {
     val (tumorReads, normalReads) =
-      TestUtil.loadTumorNormalReads(
+      loadTumorNormalReads(
         sc,
         "tumor.chr20.tough.sam",
         "normal.chr20.tough.sam"
       )
 
     val positivePositions = Array[Long](
-      755754,
-      1843813,
-      3555766,
-      3868620,
-      7087895,
-      9896926,
+        755754,
+       1843813,
+       3555766,
+       3868620,
+       7087895,
+       9896926,
       14017900,
       17054263,
       19772181,
@@ -117,7 +117,7 @@ class SomaticStandardCallerRealDataSuite
 
   test("testing simple negative variants on syn1") {
     val (tumorReads, normalReads) =
-      TestUtil.loadTumorNormalReads(
+      loadTumorNormalReads(
         sc,
         "synthetic.challenge.set1.tumor.v2.withMDTags.chr2.syn1fp.sam",
         "synthetic.challenge.set1.normal.v2.withMDTags.chr2.syn1fp.sam"
@@ -125,13 +125,13 @@ class SomaticStandardCallerRealDataSuite
 
     val negativePositions = Array[Long](
       216094721,
-      3529313,
-      8789794,
+        3529313,
+        8789794,
       104043280,
       104175801,
       126651101,
       241901237,
-      57270796,
+       57270796,
       120757852
     )
 
@@ -140,7 +140,7 @@ class SomaticStandardCallerRealDataSuite
 
   test("testing complex region negative variants on syn1") {
     val (tumorReads, normalReads) =
-      TestUtil.loadTumorNormalReads(
+      loadTumorNormalReads(
         sc,
         "synthetic.challenge.set1.tumor.v2.withMDTags.chr2.complexvar.sam",
         "synthetic.challenge.set1.normal.v2.withMDTags.chr2.complexvar.sam"
@@ -149,8 +149,8 @@ class SomaticStandardCallerRealDataSuite
     val negativePositions = Array[Long](
       148487667,
       134307261,
-      90376213,
-      3638733,
+       90376213,
+        3638733,
       109347468
     )
 
@@ -163,7 +163,7 @@ class SomaticStandardCallerRealDataSuite
   test("difficult negative variants") {
 
     val (tumorReads, normalReads) =
-      TestUtil.loadTumorNormalReads(
+      loadTumorNormalReads(
         sc,
         "tumor.chr20.simplefp.sam",
         "normal.chr20.simplefp.sam"

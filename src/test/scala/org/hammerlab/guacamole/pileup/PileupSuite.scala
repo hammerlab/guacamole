@@ -25,7 +25,7 @@ class PileupSuite
       ("chr4", 0, "AATTGCAATTG")
     ))
 
-  def testAdamRecords = TestUtil.loadReads(sc, "different_start_reads.sam").mappedReads.collect()
+  def testAdamRecords = loadReadsRDD(sc, "different_start_reads.sam").mappedReads.collect()
 
   def pileupElementFromRead(read: MappedRead, locus: Locus): PileupElement = {
     PileupElement(read, locus, reference.getContig(read.contigName))

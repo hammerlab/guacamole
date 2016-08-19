@@ -1,13 +1,15 @@
 package org.hammerlab.guacamole.assembly
 
 import org.hammerlab.guacamole.reads.ReadsUtil
+import org.hammerlab.guacamole.readsets.rdd.ReadsRDDUtil
 import org.hammerlab.guacamole.reference.ReferenceUtil
 import org.hammerlab.guacamole.util.TestUtil.Implicits._
-import org.hammerlab.guacamole.util.{AssertBases, Bases, GuacFunSuite, TestUtil}
+import org.hammerlab.guacamole.util.{AssertBases, Bases, GuacFunSuite}
 
 class DeBruijnGraphSuite
   extends GuacFunSuite
     with ReadsUtil
+    with ReadsRDDUtil
     with ReferenceUtil {
 
   test("DeBruijnGraph.mergeKmers") {
@@ -378,7 +380,6 @@ class DeBruijnGraphSuite
     val pathsAfterMerging = graph.depthFirstSearch(referenceKmerSource, referenceKmerSink)
     pathsAfterMerging.length should be(1)
     AssertBases(DeBruijnGraph.mergeOverlappingSequences(pathsAfterMerging(0), kmerSize), reference)
-
   }
 
   test("find single unique path; with multiple dead end paths/splits") {
@@ -429,11 +430,9 @@ class DeBruijnGraphSuite
 
     val referenceString = "GAGGATCTGCCATGGCCGGGCGAGCTGGAGGAGGAGGAGGAGGAGGAGGAGGAGGAGGAGGAGGAAGAGGAGGAGGCTGCAGCGGCGGCGGCGGCGAACGTGGACGACGTAGTGGTCGTGGAGGAGGTGGAGGAAGAGGCGGGGCG"
     val referenceBases = Bases.stringToBases(referenceString)
-    val reference = makeReference(sc, Seq(("chr2", 73613005, referenceString)), contigLengths = 73613152)
 
     lazy val snpReads =
-      TestUtil
-        .loadReads(sc, "assemble-reads-set3-chr2-73613071.sam")
+      loadReadsRDD(sc, "assemble-reads-set3-chr2-73613071.sam")
         .mappedReads
         .sortBy(_.start)
         .collect
@@ -441,19 +440,20 @@ class DeBruijnGraphSuite
     val referenceKmerSource = referenceBases.take(kmerSize)
     val referenceKmerSink = referenceBases.takeRight(kmerSize)
 
-    val currentGraph: DeBruijnGraph = DeBruijnGraph(
-      snpReads,
-      kmerSize,
-      minOccurrence = 3,
-      mergeNodes = false
-    )
+    val currentGraph: DeBruijnGraph =
+      DeBruijnGraph(
+        snpReads,
+        kmerSize,
+        minOccurrence = 3,
+        mergeNodes = false
+      )
 
-    val paths = currentGraph.depthFirstSearch(
-      referenceKmerSource,
-      referenceKmerSink
-    )
+    val paths =
+      currentGraph.depthFirstSearch(
+        referenceKmerSource,
+        referenceKmerSink
+      )
 
     paths.length should be(1)
-
   }
 }
