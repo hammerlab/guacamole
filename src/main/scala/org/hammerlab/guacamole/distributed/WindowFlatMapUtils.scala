@@ -75,47 +75,6 @@ object WindowFlatMapUtils {
   }
 
   /**
-   * Aggregate over partitioned loci and reads, reducing each partition to a single value.
-   *
-   * @param numSamples number of samples / input-files whose reads are in @partitionedReads.
-   * @param partitionedReads partitioned reads RDD; reads that straddle partition boundaries will occur more than once
-   *                         herein.
-   * @param skipEmpty If True, empty windows (no regions within the window) will be skipped
-   * @param halfWindowSize A window centered at locus = l will contain regions overlapping l +/- halfWindowSize
-   * @param initialValue Initial value for aggregation
-   * @param aggFunction Function to aggregate windows, folds the windows into the aggregate value so far
-   * @tparam T Type of the aggregation value
-   * @return Iterator[T], the aggregate values collected over contigs
-   */
-  def windowFoldLoci[R <: SampleRegion: ClassTag, T: ClassTag](
-    numSamples: NumSamples,
-    partitionedReads: PartitionedRegions[R],
-    skipEmpty: Boolean,
-    halfWindowSize: Int,
-    initialValue: T,
-    aggFunction: (T, PerSample[SlidingWindow[R]]) => T): RDD[T] = {
-
-    splitSamplesAndMap(
-      numSamples,
-      partitionedReads,
-      (partitionLoci, taskRegionsPerSample: PerSample[Iterator[R]]) => {
-        splitPartitionByContigAndMap[R, T](
-          taskRegionsPerSample,
-          partitionLoci,
-          halfWindowSize,
-          (contigLoci, perSampleWindows) => {
-            var value = initialValue
-            while (SlidingWindow.advanceMultipleWindows(perSampleWindows, contigLoci, skipEmpty).isDefined) {
-              value = aggFunction(value, perSampleWindows)
-            }
-            Iterator.single(value)
-          }
-        )
-      }
-    )
-  }
-
-  /**
    * Map over partitioned reads, splitting them by logical sample.
    *
    * For each partition, pass that partition's loci and regions (split by sample) to `function`. The loci assigned
