@@ -264,7 +264,7 @@
     </dependency>
     <dependency>
       <groupId>org.spire-math</groupId>
-      <artifactId>spire_2.10</artifactId>
+      <artifactId>spire_${scala.version.prefix}</artifactId>
       <version>0.11.0</version>
     </dependency>
     <dependency>
@@ -314,7 +314,7 @@
     </dependency>
     <dependency>
       <groupId>com.assembla.scala-incubator</groupId>
-      <artifactId>graph-core_2.10</artifactId>
+      <artifactId>graph-core_${scala.version.prefix}</artifactId>
       <version>1.9.1</version>
     </dependency>
     <dependency>
@@ -326,7 +326,7 @@
     <!-- Test deps -->
     <dependency>
       <groupId>com.holdenkarau</groupId>
-      <artifactId>spark-testing-base_2.10</artifactId>
+      <artifactId>spark-testing-base_${scala.version.prefix}</artifactId>
       <version>${spark.version}_0.3.3</version>
       <scope>test</scope>
     </dependency>
