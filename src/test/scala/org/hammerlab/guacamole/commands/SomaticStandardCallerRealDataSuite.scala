@@ -4,7 +4,8 @@ import org.hammerlab.guacamole.filters.somatic.SomaticGenotypeFilter
 import org.hammerlab.guacamole.pileup.{Util => PileupUtil}
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.reference.{Locus, ReferenceBroadcast}
-import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
+import org.hammerlab.guacamole.util.GuacFunSuite
+import org.hammerlab.guacamole.util.TestUtil.resourcePath
 import org.scalatest.prop.TableDrivenPropertyChecks
 
 /**
@@ -17,7 +18,7 @@ class SomaticStandardCallerRealDataSuite
 
   lazy val reference =
     ReferenceBroadcast(
-      TestUtil.testDataPath("grch37.partial.fasta"),
+      resourcePath("grch37.partial.fasta"),
       sc,
       partialFasta = true
     )

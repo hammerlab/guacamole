@@ -8,10 +8,13 @@ import org.hammerlab.guacamole.loci.set.LociParser
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.readsets.io.{BamReaderAPI, Input, InputFilters, ReadLoadingConfig}
 import org.hammerlab.guacamole.readsets.rdd.ReadsRDDUtil
-import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
+import org.hammerlab.guacamole.util.GuacFunSuite
+import org.hammerlab.guacamole.util.TestUtil.resourcePath
+import org.hammerlab.magic.test.TmpFiles
 
 class ReadSetsSuite
   extends GuacFunSuite
+    with TmpFiles
     with ReadsRDDUtil {
 
   case class LazyMessage(msg: () => String) {
@@ -109,9 +112,9 @@ class ReadSetsSuite
   test("load read from ADAM") {
     // First load reads from SAM using ADAM and save as ADAM
     val adamContext = new ADAMContext(sc)
-    val adamRecords = adamContext.loadBam(TestUtil.testDataPath("mdtagissue.sam"))
+    val adamRecords = adamContext.loadBam(resourcePath("mdtagissue.sam"))
 
-    val adamOut = TestUtil.tmpPath(".adam")
+    val adamOut = tmpPath(suffix = ".adam")
     val args = new ADAMSaveAnyArgs {
       override var sortFastqOutput: Boolean = false
       override var asSingleFile: Boolean = true
@@ -121,7 +124,9 @@ class ReadSetsSuite
       override var pageSize: Int = 1024
       override var compressionCodec: CompressionCodecName = CompressionCodecName.UNCOMPRESSED
     }
-    new AlignmentRecordRDDFunctions(adamRecords.rdd).saveAsParquet(args, adamRecords.sequences, adamRecords.recordGroups)
+
+    new AlignmentRecordRDDFunctions(adamRecords.rdd)
+      .saveAsParquet(args, adamRecords.sequences, adamRecords.recordGroups)
 
     ReadSets.load(adamOut, sc, InputFilters.empty)._1.count() should be(8)
 

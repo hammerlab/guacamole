@@ -2,17 +2,18 @@ package org.hammerlab.guacamole.jointcaller
 
 import org.hammerlab.guacamole.pileup.{Util => PileupUtil}
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
-import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
-import org.scalatest.Matchers
+import org.hammerlab.guacamole.util.GuacFunSuite
+import org.hammerlab.guacamole.util.TestUtil.resourcePath
 
 class AlleleAtLocusSuite
   extends GuacFunSuite
     with PileupUtil {
 
-  val celsr1BAMs = Vector("normal_0.bam", "tumor_wes_2.bam", "tumor_rna_11.bam").map(
-    name => TestUtil.testDataPath("cancer-wes-and-rna-celsr1/" + name))
+  val celsr1BAMs =
+    Vector("normal_0.bam", "tumor_wes_2.bam", "tumor_rna_11.bam")
+      .map(name => s"cancer-wes-and-rna-celsr1/$name")
 
-  val b37Chromosome22Fasta = TestUtil.testDataPath("chr22.fa.gz")
+  val b37Chromosome22Fasta = resourcePath("chr22.fa.gz")
 
   override lazy val reference =
     ReferenceBroadcast(b37Chromosome22Fasta, sc, partialFasta = false)

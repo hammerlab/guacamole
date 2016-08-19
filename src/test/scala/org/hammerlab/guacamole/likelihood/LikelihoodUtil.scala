@@ -4,7 +4,7 @@ import org.apache.spark.SparkContext
 import org.bdgenomics.adam.util.PhredUtils
 import org.hammerlab.guacamole.reads.ReadsUtil
 import org.hammerlab.guacamole.reference.ReferenceUtil
-import org.hammerlab.guacamole.util.{Bases, TestUtil}
+import org.hammerlab.guacamole.util.Bases
 import org.hammerlab.guacamole.variants.{Allele, Genotype}
 
 /**

@@ -7,7 +7,8 @@ import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.readsets.io.InputFilters
 import org.hammerlab.guacamole.readsets.rdd.ReadsRDDUtil
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
-import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
+import org.hammerlab.guacamole.util.GuacFunSuite
+import org.hammerlab.guacamole.util.TestUtil.resourcePath
 import org.hammerlab.guacamole.windowing.SlidingWindow
 import org.scalatest.prop.TableDrivenPropertyChecks
 
@@ -20,7 +21,7 @@ class VariantSupportSuite
   // Used implicitly by makePileup.
   override lazy val reference =
     ReferenceBroadcast(
-      TestUtil.testDataPath("grch37.partial.fasta"),
+      resourcePath("grch37.partial.fasta"),
       sc,
       partialFasta = true
     )
