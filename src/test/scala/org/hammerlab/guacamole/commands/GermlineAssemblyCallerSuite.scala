@@ -8,7 +8,7 @@ import org.hammerlab.guacamole.readsets.ReadSets
 import org.hammerlab.guacamole.readsets.io.InputFilters
 import org.hammerlab.guacamole.readsets.rdd.PartitionedRegionsUtil
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
-import org.hammerlab.guacamole.util.{Bases, GuacFunSuite, TestUtil}
+import org.hammerlab.guacamole.util.{Bases, GuacFunSuite}
 import org.hammerlab.guacamole.variants.CalledAllele
 import org.scalatest.BeforeAndAfterAll
 
@@ -19,8 +19,7 @@ class GermlineAssemblyCallerSuite
 
   val args = new Arguments
 
-  val input = NA12878TestUtil.subsetBam
-  args.reads = TestUtil.testDataPath(input)
+  args.reads = NA12878TestUtil.subsetBam
   args.parallelism = 1
 
   var reference: ReferenceBroadcast = _
@@ -30,7 +29,7 @@ class GermlineAssemblyCallerSuite
     reference = ReferenceBroadcast(referenceFastaPath, sc)
   }
 
-  val referenceFastaPath = TestUtil.testDataPath(NA12878TestUtil.chr1PrefixFasta)
+  val referenceFastaPath = NA12878TestUtil.chr1PrefixFasta
 
   def verifyVariantsAtLocus(locus: Int,
                             contig: String = "chr1",

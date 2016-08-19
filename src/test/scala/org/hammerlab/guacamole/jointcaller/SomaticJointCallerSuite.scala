@@ -2,25 +2,28 @@ package org.hammerlab.guacamole.jointcaller
 
 import org.hammerlab.guacamole.commands.SomaticJoint
 import org.hammerlab.guacamole.loci.set.{LociParser, LociSet}
-import org.hammerlab.guacamole.readsets.rdd.ReadsRDDUtil
+import org.hammerlab.guacamole.readsets.ReadSetsUtil
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.reference.ReferenceBroadcast.MapBackedReferenceSequence
-import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
+import org.hammerlab.guacamole.util.GuacFunSuite
+import org.hammerlab.guacamole.util.TestUtil.resourcePath
 
-class SomaticJointCallerSuite extends GuacFunSuite with ReadsRDDUtil {
+class SomaticJointCallerSuite
+  extends GuacFunSuite
+    with ReadSetsUtil {
 
   val cancerWGS1Bams = Vector("normal.bam", "primary.bam", "recurrence.bam").map(
-    name => TestUtil.testDataPath("cancer-wgs1/" + name))
+    name => resourcePath("cancer-wgs1/" + name))
 
   val celsr1BAMs = Vector("normal_0.bam", "tumor_wes_2.bam", "tumor_rna_11.bam").map(
-    name => TestUtil.testDataPath("cancer-wes-and-rna-celsr1/" + name))
+    name => resourcePath("cancer-wes-and-rna-celsr1/" + name))
 
-  val hg19PartialFasta = TestUtil.testDataPath("hg19.partial.fasta")
+  val hg19PartialFasta = resourcePath("hg19.partial.fasta")
 
   def hg19PartialReference =
     ReferenceBroadcast(hg19PartialFasta, sc, partialFasta = true)
 
-  val b37Chromosome22Fasta = TestUtil.testDataPath("chr22.fa.gz")
+  val b37Chromosome22Fasta = resourcePath("chr22.fa.gz")
 
   def b37Chromosome22Reference =
     ReferenceBroadcast(b37Chromosome22Fasta, sc, partialFasta = false)
@@ -168,5 +171,4 @@ class SomaticJointCallerSuite extends GuacFunSuite with ReadsRDDUtil {
     bestAllele.tumorDNAPooledEvidence.allelicDepths.toSet should equal(Set("G" -> 90, "A" -> 2))
     bestAllele.normalDNAPooledEvidence.allelicDepths.toSet should equal(Set("G" -> 51))
   }
-
 }

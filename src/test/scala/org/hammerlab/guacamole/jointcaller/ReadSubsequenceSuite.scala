@@ -3,20 +3,25 @@ package org.hammerlab.guacamole.jointcaller
 import org.hammerlab.guacamole.jointcaller.pileup_summarization.ReadSubsequence
 import org.hammerlab.guacamole.pileup.{Util => PileupUtil}
 import org.hammerlab.guacamole.reads.ReadsUtil
-import org.hammerlab.guacamole.reference.ReferenceBroadcast
-import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
+import org.hammerlab.guacamole.reference.{ReferenceBroadcast, ReferenceUtil}
+import org.hammerlab.guacamole.util.GuacFunSuite
+import org.hammerlab.guacamole.util.TestUtil.resourcePath
 
 class ReadSubsequenceSuite
   extends GuacFunSuite
     with ReadsUtil
-    with PileupUtil {
+    with PileupUtil
+    with ReferenceUtil {
 
-  val cancerWGS1Bams = Vector("normal.bam", "primary.bam", "recurrence.bam").map(
-    name => TestUtil.testDataPath("cancer-wgs1/" + name))
+  val cancerWGS1Bams =
+    Vector("normal.bam", "primary.bam", "recurrence.bam")
+      .map(
+        name => s"cancer-wgs1/$name"
+      )
 
-  override lazy val reference = TestUtil.makeReference(sc, Seq(("chr1", 0, "NTCGATCGACG")))
+  override lazy val reference = makeReference(sc, Seq(("chr1", 0, "NTCGATCGACG")))
 
-  val partialFasta = TestUtil.testDataPath("hg19.partial.fasta")
+  val partialFasta = resourcePath("hg19.partial.fasta")
   def partialReference =
     ReferenceBroadcast(partialFasta, sc, partialFasta = true)
 

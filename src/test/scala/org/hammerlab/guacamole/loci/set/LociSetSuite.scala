@@ -2,7 +2,8 @@ package org.hammerlab.guacamole.loci.set
 
 import org.hammerlab.guacamole.loci.LociArgs
 import org.hammerlab.guacamole.logging.DebugLogArgs
-import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
+import org.hammerlab.guacamole.util.GuacFunSuite
+import org.hammerlab.guacamole.util.TestUtil.resourcePath
 
 class LociSetSuite extends GuacFunSuite {
 
@@ -108,7 +109,7 @@ class LociSetSuite extends GuacFunSuite {
 
     // Test --loci-file argument. The test file gives a loci set equal to 20:100-200.
     val args2 = new TestArgs()
-    args2.lociFile = TestUtil.testDataPath("loci.txt")
+    args2.lociFile = resourcePath("loci.txt")
   }
 
   test("loci set parsing with contig lengths") {

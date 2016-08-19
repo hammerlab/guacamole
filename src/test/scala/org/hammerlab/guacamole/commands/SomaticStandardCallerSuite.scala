@@ -2,16 +2,17 @@ package org.hammerlab.guacamole.commands
 
 import org.hammerlab.guacamole.pileup.{Util => PileupUtil}
 import org.hammerlab.guacamole.reads.ReadsUtil
-import org.hammerlab.guacamole.reference.{ContigName, Locus}
-import org.hammerlab.guacamole.util.{Bases, GuacFunSuite, TestUtil}
+import org.hammerlab.guacamole.reference.{ContigName, Locus, ReferenceUtil}
+import org.hammerlab.guacamole.util.{Bases, GuacFunSuite}
 
 class SomaticStandardCallerSuite
   extends GuacFunSuite
     with ReadsUtil
-    with PileupUtil {
+    with PileupUtil
+    with ReferenceUtil {
 
   override lazy val reference =
-    TestUtil.makeReference(
+    makeReference(
       sc,
       Seq(
         ("chr1", 0, "TCGATCGACG"),

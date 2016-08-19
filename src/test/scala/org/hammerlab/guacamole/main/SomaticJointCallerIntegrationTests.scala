@@ -5,7 +5,7 @@ import org.hammerlab.guacamole.commands.SomaticJoint.Arguments
 import org.hammerlab.guacamole.commands.{SomaticJoint, SparkCommand}
 import org.hammerlab.guacamole.data.{CancerWGSTestUtil, NA12878TestUtil}
 import org.hammerlab.guacamole.loci.set.LociSet
-import org.hammerlab.guacamole.util.TestUtil
+import org.hammerlab.guacamole.util.TestUtil.resourcePath
 import org.hammerlab.guacamole.variants.VariantComparisonTest
 
 /**
@@ -104,12 +104,12 @@ object SomaticJointCallerIntegrationTests extends SparkCommand[Arguments] with V
 
       if (false) {
         println("************* UNIFIED GENOTYPER *************")
-        compareToVCF(TestUtil.testDataPath(
+        compareToVCF(resourcePath(
           "illumina-platinum-na12878/unified_genotyper.vcf"),
           NA12878TestUtil.expectedCallsVCF)
 
         println("************* HaplotypeCaller *************")
-        compareToVCF(TestUtil.testDataPath(
+        compareToVCF(resourcePath(
           "illumina-platinum-na12878/haplotype_caller.vcf"),
           NA12878TestUtil.expectedCallsVCF)
       }
