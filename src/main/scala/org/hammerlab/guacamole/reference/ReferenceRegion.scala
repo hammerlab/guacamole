@@ -18,6 +18,12 @@ trait ReferenceRegion
     start - halfWindowSize <= locus && end + halfWindowSize > locus
   }
 
+  /**
+   * Does the region overlap another reference region
+   *
+   * @param other another region on the genome
+   * @return True if the the regions overlap
+   */
   def overlaps(other: ReferenceRegion): Boolean = {
     other.contigName == contigName && (overlapsLocus(other.start) || other.overlapsLocus(start))
   }

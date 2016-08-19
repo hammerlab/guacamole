@@ -50,6 +50,7 @@ object Bases {
     base == Bases.A || base == Bases.C || base == Bases.T || base == Bases.G
   }
 
+  /** Throw an error if the given base is not one of the canonical DNA bases. */
   def assertStandardBase(base: Byte) = {
     assert(isStandardBase(base), "Invalid base: %s".format(base.toChar.toString))
   }
@@ -59,6 +60,7 @@ object Bases {
     bases.forall(b => isStandardBase(b))
   }
 
+  /** Throw an error if any of the given bases are not standard. */
   def assertAllStandardBases(bases: Seq[Byte]) = {
     assert(allStandardBases(bases), "Invalid base array: %s".format(bases.map(_.toChar).mkString))
   }
