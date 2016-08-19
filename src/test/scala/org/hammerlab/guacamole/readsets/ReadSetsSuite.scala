@@ -7,9 +7,15 @@ import org.bdgenomics.adam.rdd.{ADAMContext, ADAMSaveAnyArgs}
 import org.hammerlab.guacamole.loci.set.LociParser
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.readsets.io.{BamReaderAPI, Input, InputFilters, ReadLoadingConfig}
-import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
+import org.hammerlab.guacamole.readsets.rdd.ReadsRDDUtil
+import org.hammerlab.guacamole.util.GuacFunSuite
+import org.hammerlab.guacamole.util.TestUtil.resourcePath
+import org.hammerlab.magic.test.TmpFiles
 
-class ReadSetsSuite extends GuacFunSuite {
+class ReadSetsSuite
+  extends GuacFunSuite
+    with TmpFiles
+    with ReadsRDDUtil {
 
   case class LazyMessage(msg: () => String) {
     override def toString: String = msg()
@@ -26,7 +32,7 @@ class ReadSetsSuite extends GuacFunSuite {
         val firstConfig = configs.head
 
         val standard =
-          TestUtil.loadReads(
+          loadReadsRDD(
             sc,
             paths.head,
             filter,
@@ -41,7 +47,7 @@ class ReadSetsSuite extends GuacFunSuite {
           withClue(s"file $path with config $config vs standard $firstPath with config $firstConfig:\n") {
 
             val result =
-              TestUtil.loadReads(
+              loadReadsRDD(
                 sc,
                 path,
                 filter,
@@ -84,13 +90,13 @@ class ReadSetsSuite extends GuacFunSuite {
   }
 
   test("load and test filters") {
-    val allReads = TestUtil.loadReads(sc, "mdtagissue.sam")
+    val allReads = loadReadsRDD(sc, "mdtagissue.sam")
     allReads.reads.count() should be(8)
 
-    val mdTagReads = TestUtil.loadReads(sc, "mdtagissue.sam", InputFilters(mapped = true))
+    val mdTagReads = loadReadsRDD(sc, "mdtagissue.sam", InputFilters(mapped = true))
     mdTagReads.reads.count() should be(5)
 
-    val nonDuplicateReads = TestUtil.loadReads(
+    val nonDuplicateReads = loadReadsRDD(
       sc,
       "mdtagissue.sam",
       InputFilters(mapped = true, nonDuplicate = true)
@@ -99,16 +105,16 @@ class ReadSetsSuite extends GuacFunSuite {
   }
 
   test("load RNA reads") {
-    val readSet = TestUtil.loadReads(sc, "rna_chr17_41244936.sam")
+    val readSet = loadReadsRDD(sc, "rna_chr17_41244936.sam")
     readSet.reads.count should be(23)
   }
 
   test("load read from ADAM") {
     // First load reads from SAM using ADAM and save as ADAM
     val adamContext = new ADAMContext(sc)
-    val adamRecords = adamContext.loadBam(TestUtil.testDataPath("mdtagissue.sam"))
+    val adamRecords = adamContext.loadBam(resourcePath("mdtagissue.sam"))
 
-    val adamOut = TestUtil.tmpPath(".adam")
+    val adamOut = tmpPath(suffix = ".adam")
     val args = new ADAMSaveAnyArgs {
       override var sortFastqOutput: Boolean = false
       override var asSingleFile: Boolean = true
@@ -118,7 +124,9 @@ class ReadSetsSuite extends GuacFunSuite {
       override var pageSize: Int = 1024
       override var compressionCodec: CompressionCodecName = CompressionCodecName.UNCOMPRESSED
     }
-    new AlignmentRecordRDDFunctions(adamRecords.rdd).saveAsParquet(args, adamRecords.sequences, adamRecords.recordGroups)
+
+    new AlignmentRecordRDDFunctions(adamRecords.rdd)
+      .saveAsParquet(args, adamRecords.sequences, adamRecords.recordGroups)
 
     ReadSets.load(adamOut, sc, InputFilters.empty)._1.count() should be(8)
 
@@ -126,7 +134,7 @@ class ReadSetsSuite extends GuacFunSuite {
   }
 
   test("load and serialize / deserialize reads") {
-    val reads = TestUtil.loadReads(sc, "mdtagissue.sam", InputFilters(mapped = true)).mappedReads.collect()
+    val reads = loadReadsRDD(sc, "mdtagissue.sam", InputFilters(mapped = true)).mappedReads.collect()
     val serializedReads = reads.map(serialize)
     val deserializedReads: Seq[MappedRead] = serializedReads.map(deserialize[MappedRead])
     for ((read, deserialized) <- reads.zip(deserializedReads)) {

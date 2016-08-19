@@ -1,8 +1,8 @@
 package org.hammerlab.guacamole.reads
 
 import htsjdk.samtools.TextCigarCodec
-import org.hammerlab.guacamole.util.TestUtil.Implicits._
-import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
+import org.hammerlab.guacamole.util.BasesUtil._
+import org.hammerlab.guacamole.util.GuacFunSuite
 
 class MappedReadSerializerSuite extends GuacFunSuite {
 

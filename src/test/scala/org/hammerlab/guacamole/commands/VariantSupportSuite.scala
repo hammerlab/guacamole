@@ -5,20 +5,23 @@ import org.hammerlab.guacamole.loci.set.LociParser
 import org.hammerlab.guacamole.pileup.{Pileup, Util => PileupUtil}
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.readsets.io.InputFilters
+import org.hammerlab.guacamole.readsets.rdd.ReadsRDDUtil
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
-import org.hammerlab.guacamole.util.{GuacFunSuite, TestUtil}
+import org.hammerlab.guacamole.util.GuacFunSuite
+import org.hammerlab.guacamole.util.TestUtil.resourcePath
 import org.hammerlab.guacamole.windowing.SlidingWindow
 import org.scalatest.prop.TableDrivenPropertyChecks
 
 class VariantSupportSuite
   extends GuacFunSuite
+    with TableDrivenPropertyChecks
     with PileupUtil
-    with TableDrivenPropertyChecks{
+    with ReadsRDDUtil {
 
   // Used implicitly by makePileup.
   override lazy val reference =
     ReferenceBroadcast(
-      TestUtil.testDataPath("grch37.partial.fasta"),
+      resourcePath("grch37.partial.fasta"),
       sc,
       partialFasta = true
     )
@@ -53,7 +56,7 @@ class VariantSupportSuite
   }
 
   def gatkReads(loci: String) =
-    TestUtil.loadReads(
+    loadReadsRDD(
       sc,
       "gatk_mini_bundle_extract.bam",
       InputFilters(
@@ -64,7 +67,7 @@ class VariantSupportSuite
     ).mappedReads.collect().sortBy(_.start)
 
   def nonDuplicateGatkReads(loci: String) =
-    TestUtil.loadReads(
+    loadReadsRDD(
       sc,
       "gatk_mini_bundle_extract.bam",
       InputFilters(
@@ -75,8 +78,7 @@ class VariantSupportSuite
     ).mappedReads.collect().sortBy(_.start)
 
   lazy val RnaReads =
-    TestUtil
-      .loadReads(sc, "rna_chr17_41244936.sam")
+    loadReadsRDD(sc, "rna_chr17_41244936.sam")
       .mappedReads
       .collect()
       .sortBy(_.start)

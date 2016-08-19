@@ -3,7 +3,8 @@ package org.hammerlab.guacamole.likelihood
 import org.bdgenomics.adam.util.PhredUtils
 import org.hammerlab.guacamole.pileup.{Util => PileupUtil}
 import org.hammerlab.guacamole.reads.{MappedRead, ReadsUtil}
-import org.hammerlab.guacamole.util.{Bases, GuacFunSuite, TestUtil}
+import org.hammerlab.guacamole.reference.ReferenceUtil
+import org.hammerlab.guacamole.util.{Bases, GuacFunSuite}
 import org.hammerlab.guacamole.variants.{Allele, Genotype}
 import org.scalatest.prop.TableDrivenPropertyChecks
 
@@ -11,10 +12,12 @@ class LikelihoodSuite
   extends GuacFunSuite
     with TableDrivenPropertyChecks
     with ReadsUtil
-    with PileupUtil {
+    with PileupUtil
+    with ReferenceUtil {
 
-  // Implicit reference used for creating PIleups in makePileup.
-  override lazy val reference = TestUtil.makeReference(sc, Seq(("chr1", 1, "C")))
+  val epsilon = 1e-12
+
+  override lazy val reference = makeReference(sc, Seq(("chr1", 1, "C")))
 
   val referenceBase = 'C'.toByte
 
@@ -56,8 +59,7 @@ class LikelihoodSuite
     )
 
   def testLikelihoods(actualLikelihoods: Seq[(Genotype, Double)],
-                      expectedLikelihoods: Map[Genotype, Double],
-                      acceptableError: Double = 1e-12): Unit = {
+                      expectedLikelihoods: Map[Genotype, Double]): Unit = {
 
     actualLikelihoods.size should equal(expectedLikelihoods.size)
 
@@ -69,18 +71,12 @@ class LikelihoodSuite
         expectedLikelihoods.toList: _*
       )
     ) {
-      l =>
-        TestUtil.assertAlmostEqual(
-          actualLikelihoodsMap(l._1),
-          l._2,
-          acceptableError
-        )
+      case (genotype, likelihood) =>
+        actualLikelihoodsMap(genotype) should ===(likelihood +- epsilon)
     }
   }
 
   def testGenotypeLikelihoods(reads: Seq[MappedRead], genotypesMap: ((Char, Char), Double)*): Unit = {
-
-    val referenceContigSequence = reference.getContig("chr1")
 
     val pileup = makePileup(reads, reads(0).contigName, 1)
 
@@ -90,15 +86,15 @@ class LikelihoodSuite
         genotypesMap: _*
       )
     ) {
-      pair =>
-        TestUtil.assertAlmostEqual(
+      case (alleles, expectedLikelihood) =>
+        val actualLikelihood =
           Likelihood.likelihoodOfGenotype(
             pileup.elements,
-            makeGenotype(pair._1),  // genotype
+            makeGenotype(alleles),
             Likelihood.probabilityCorrectIgnoringAlignment
-          ),
-          pair._2
-        )
+          )
+
+        actualLikelihood should ===(expectedLikelihood +- epsilon)
     }
   }
 

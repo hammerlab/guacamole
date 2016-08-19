@@ -1,11 +1,12 @@
 package org.hammerlab.guacamole.reference
 
-import org.hammerlab.guacamole.util.{AssertBases, Bases, GuacFunSuite, TestUtil}
+import org.hammerlab.guacamole.util.TestUtil.resourcePath
+import org.hammerlab.guacamole.util.{AssertBases, Bases, GuacFunSuite}
 import org.scalatest.Matchers
 
 class ReferenceBroadcastSuite extends GuacFunSuite with Matchers {
 
-  val testFastaPath = TestUtil.testDataPath("sample.fasta")
+  val testFastaPath = resourcePath("sample.fasta")
 
   test("loading and broadcasting reference") {
 

@@ -4,10 +4,11 @@ import org.apache.spark.SparkContext
 import org.hammerlab.guacamole.loci.set.LociParser
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.readsets.io.InputFilters
+import org.hammerlab.guacamole.readsets.rdd.ReadsRDDUtil
 import org.hammerlab.guacamole.reference.{ContigName, Locus, ReferenceBroadcast}
-import org.hammerlab.guacamole.util.TestUtil
 
-trait Util {
+trait Util
+  extends ReadsRDDUtil {
 
   def reference: ReferenceBroadcast
 
@@ -33,7 +34,7 @@ trait Util {
                  maybeContig: Option[ContigName] = None,
                  reference: ReferenceBroadcast = reference): Pileup = {
     val records =
-      TestUtil.loadReads(
+      loadReadsRDD(
         sc,
         filename,
         filters = InputFilters(
