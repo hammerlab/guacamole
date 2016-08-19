@@ -5,11 +5,6 @@ import java.nio.file.Files
 
 object TestUtil {
 
-  object Implicits {
-    implicit def basesToString = Bases.basesToString _
-    implicit def stringToBases = Bases.stringToBases _
-  }
-
   def tmpPath(suffix: String): String = {
     new File(Files.createTempDirectory("TestUtil").toFile, s"TestUtil$suffix").getAbsolutePath
   }
