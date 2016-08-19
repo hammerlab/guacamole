@@ -29,10 +29,6 @@ object TestUtil {
     }
   }
 
-  def assertAlmostEqual(a: Double, b: Double, epsilon: Double = 1e-12) {
-    assert(abs(a - b) < epsilon, "|%.12f - %.12f| == %.12f >= %.12f".format(a, b, abs(a - b), epsilon))
-  }
-
   /**
    * Delete a file or directory (recursively) if it exists.
    */
@@ -44,5 +40,4 @@ object TestUtil {
       case e: FileNotFoundException => {}
     }
   }
-
 }
