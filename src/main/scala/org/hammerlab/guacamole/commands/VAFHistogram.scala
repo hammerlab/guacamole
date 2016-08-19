@@ -229,6 +229,7 @@ object VAFHistogram {
   /**
    * Find all non-reference loci in the sample
    *
+   * @param numSamples number of underlying samples represented by `partitionedReads`
    * @param partitionedReads partitioned, mapped reads
    * @param reference genome
    * @param samplePercent Percent of non-reference loci to use for descriptive statistics
