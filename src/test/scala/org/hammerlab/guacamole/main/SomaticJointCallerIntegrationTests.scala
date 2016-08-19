@@ -17,7 +17,7 @@ import org.hammerlab.guacamole.variants.VariantComparisonTest
  *   mvn test-compile
  *   java \
  *     -Xmx4g \
- *     -cp target/guacamole-with-dependencies-0.0.1-SNAPSHOT.jar:target/scala-2.10.5/test-classes \
+ *     -cp "$(scripts/classpath)":target/scala-2.10.5/test-classes \
  *     org.hammerlab.guacamole.main.SomaticJointCallerIntegrationTests
  */
 object SomaticJointCallerIntegrationTests extends SparkCommand[Arguments] with VariantComparisonTest {

@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+
+# Given an argument of "guac", "deps", or "assembly", print out the path to that JAR in this repo, if it has already
+# been built, otherwise fail.
+
+set -e
+
+# Go to the repo root.
+cd "$(dirname "$(dirname "${BASH_SOURCE[@]}")")"
+
+usage() {
+  echo "Usage: $0 <guac|deps|assembly>" 1>&2
+  exit 1
+}
+
+if [ $# -ne 1 ]; then
+  usage
+fi
+
+jar="$1"
+shift
+
+jars() {
+  if [ "$jar" == "guac" ]; then
+    find target -name "guacamole-*.jar" | grep -v deps
+  elif [ "$jar" == "deps" ]; then
+    find target -name "guacamole-deps-only-*.jar"
+  elif [ "$jar" == "assembly" ]; then
+    find target -name "guacamole-with-deps-*.jar"
+  else
+    usage
+  fi
+}
+
+num_jars="$(jars | wc -l | tr -d '[[:space:]]\t')"
+
+if [ "$num_jars" == "1" ]; then
+  jar_path="$(jars)"
+  echo "$PWD/$jar_path"
+  exit 0
+elif [ "$num_jars" == "0" ]; then
+  echo "Found no $jar jars" 1>&2
+  exit 1
+else
+  echo "Found $num_jars $jar jars:" 1>&2
+  jars 1>&2
+  exit 2
+fi

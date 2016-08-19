@@ -10,14 +10,13 @@ import org.bdgenomics.utils.cli.{Args4j, Args4jBase}
  * for these to use as appropriate.
  *
  * If you add a new command, you should also update the commands list in Guacamole.scala to include it.
- *
  */
 abstract class Command[T <: Args4jBase: Manifest] extends Serializable with Logging {
   /** The name of the command, as it will be specified on the command line. */
-  val name: String
+  def name: String
 
   /** A short description of the command, for display in the usage info on the command line. */
-  val description: String
+  def description: String
 
   /**
    * Run the command.
