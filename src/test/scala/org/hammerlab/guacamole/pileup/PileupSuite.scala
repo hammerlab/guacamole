@@ -2,8 +2,8 @@ package org.hammerlab.guacamole.pileup
 
 import org.hammerlab.guacamole.reads.{MappedRead, ReadsUtil}
 import org.hammerlab.guacamole.reference.{Locus, ReferenceUtil}
-import org.hammerlab.guacamole.util.TestUtil.Implicits._
-import org.hammerlab.guacamole.util.{AssertBases, Bases, GuacFunSuite, TestUtil}
+import org.hammerlab.guacamole.util.BasesUtil._
+import org.hammerlab.guacamole.util.{AssertBases, Bases, GuacFunSuite}
 import org.hammerlab.guacamole.variants.Allele
 import org.scalatest.prop.TableDrivenPropertyChecks
 

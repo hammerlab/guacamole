@@ -3,7 +3,7 @@ package org.hammerlab.guacamole.assembly
 import org.hammerlab.guacamole.reads.ReadsUtil
 import org.hammerlab.guacamole.readsets.rdd.ReadsRDDUtil
 import org.hammerlab.guacamole.reference.ReferenceUtil
-import org.hammerlab.guacamole.util.TestUtil.Implicits._
+import org.hammerlab.guacamole.util.BasesUtil._
 import org.hammerlab.guacamole.util.{AssertBases, Bases, GuacFunSuite}
 
 class DeBruijnGraphSuite

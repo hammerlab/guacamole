@@ -1,7 +1,7 @@
 package org.hammerlab.guacamole.reads
 
+import org.hammerlab.guacamole.util.BasesUtil._
 import org.hammerlab.guacamole.util.GuacFunSuite
-import org.hammerlab.guacamole.util.TestUtil.Implicits._
 
 class UnmappedReadSuite extends GuacFunSuite {
 
