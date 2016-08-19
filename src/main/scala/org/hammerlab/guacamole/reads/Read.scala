@@ -28,6 +28,7 @@ trait Read {
 
   def asMappedRead: Option[MappedRead]
 
+  /** The sample (e.g. "tumor" or "patient3636") name. */
   def sampleName: SampleName
 
   /** Whether the read failed predefined vendor checks for quality */
