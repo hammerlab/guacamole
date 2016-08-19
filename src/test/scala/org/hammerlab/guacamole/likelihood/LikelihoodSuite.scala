@@ -17,7 +17,6 @@ class LikelihoodSuite
 
   val epsilon = 1e-12
 
-  // Implicit reference used for creating PIleups in makePileup.
   override lazy val reference = makeReference(sc, Seq(("chr1", 1, "C")))
 
   val referenceBase = 'C'.toByte
@@ -78,8 +77,6 @@ class LikelihoodSuite
   }
 
   def testGenotypeLikelihoods(reads: Seq[MappedRead], genotypesMap: ((Char, Char), Double)*): Unit = {
-
-    val referenceContigSequence = reference.getContig("chr1")
 
     val pileup = makePileup(reads, reads(0).contigName, 1)
 
