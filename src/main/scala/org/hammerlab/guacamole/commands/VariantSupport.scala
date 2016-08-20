@@ -73,7 +73,7 @@ object VariantSupport {
 
       val partitionedReads =
         PartitionedRegions(
-          readsets.mappedReadsRDDs,
+          readsets.allMappedReads,
           loci,
           args,
           halfWindowSize = 0
@@ -81,6 +81,7 @@ object VariantSupport {
 
       val alleleCounts =
         pileupFlatMapMultipleSamples[AlleleCount](
+          readsets.numSamples,
           partitionedReads,
           skipEmpty = true,
           pileupsToAlleleCounts,

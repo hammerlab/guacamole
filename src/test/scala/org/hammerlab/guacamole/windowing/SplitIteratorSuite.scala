@@ -23,9 +23,9 @@ class SplitIteratorSuite extends FunSuite with Matchers {
 
   test("test split iterator elements") {
     val iterator = data1.iterator
-    val splitIterators = SplitIterator.split[String](4, iterator)
+    val splitIterators = SplitIterator.split[(Int, String)](4, iterator, _._1)
     assert(iterator.hasNext)
-    val split = splitIterators.map(_.toList)
+    val split = splitIterators.map(_.toList.map(_._2))
     assert(!iterator.hasNext)
 
     split(0) should equal(Seq("a", "b", "f", "m", "n", "o"))
@@ -36,19 +36,19 @@ class SplitIteratorSuite extends FunSuite with Matchers {
   }
 
   test("test split iterator head") {
-    val split = SplitIterator.split[String](4, data1.iterator).map(_.head)
+    val split = SplitIterator.split[(Int, String)](4, data1.iterator, _._1).map(_.head._2)
     split should equal(Seq("a", "g", "d", "c"))
   }
 
   test("test split iterator hasNext") {
     val iterator = data1.iterator
-    val iterators = SplitIterator.split[String](5, iterator)
+    val iterators = SplitIterator.split[(Int, String)](5, iterator, _._1)
     assert(iterator.hasNext)
     val nexts = iterators.map(_.hasNext)
     nexts should equal(Seq(true, true, true, true, false))
 
     assert(!iterator.hasNext) // should have forced a buffering of all elements.
-    val split = iterators.map(_.toList)
+    val split = iterators.map(_.toList.map(_._2))
     split(0) should equal(Seq("a", "b", "f", "m", "n", "o"))
     split(1) should equal(Seq("g", "h", "l"))
     split(2) should equal(Seq("d", "j"))

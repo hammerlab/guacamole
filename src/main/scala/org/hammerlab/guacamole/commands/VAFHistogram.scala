@@ -14,7 +14,7 @@ import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.readsets.args.{Arguments => ReadSetsArguments}
 import org.hammerlab.guacamole.readsets.io.{Input, InputFilters, ReadLoadingConfig}
 import org.hammerlab.guacamole.readsets.rdd.PartitionedRegions
-import org.hammerlab.guacamole.readsets.{PartitionedReads, ReadSets, SampleId}
+import org.hammerlab.guacamole.readsets.{NumSamples, PartitionedReads, ReadSets, SampleId}
 import org.hammerlab.guacamole.reference.{ContigName, Locus, NumLoci, ReferenceBroadcast, ReferenceGenome}
 import org.hammerlab.magic.rdd.SplitByKeyRDD._
 import org.kohsuke.args4j.{Option => Args4jOption}
@@ -128,7 +128,7 @@ object VAFHistogram {
 
       val partitionedReads =
         PartitionedRegions(
-          readsets.mappedReadsRDDs,
+          readsets.allMappedReads,
           loci.result(contigLengths),
           args,
           halfWindowSize = 0
@@ -141,6 +141,7 @@ object VAFHistogram {
 
       val (variantLoci, numVariantsPerSample) =
         variantLociFromReads(
+          readsets.numSamples,
           partitionedReads,
           reference,
           samplePercent,
@@ -159,7 +160,7 @@ object VAFHistogram {
 
       val histogramOutput =
         for {
-          (Input(sampleName, filename), sampleId) <- args.inputs.zipWithIndex
+          Input(sampleId, sampleName, filename) <- args.inputs
           histogram = variantAlleleHistograms(sampleId)
           (bin, numLoci) <- histogram
         } yield
@@ -228,6 +229,7 @@ object VAFHistogram {
   /**
    * Find all non-reference loci in the sample
    *
+   * @param numSamples number of underlying samples represented by `partitionedReads`
    * @param partitionedReads partitioned, mapped reads
    * @param reference genome
    * @param samplePercent Percent of non-reference loci to use for descriptive statistics
@@ -236,7 +238,8 @@ object VAFHistogram {
    * @param printStats Print descriptive statistics for the variant allele frequency distribution
    * @return RDD of VariantLocus, which contain the locus and non-zero variant allele frequency
    */
-  def variantLociFromReads(partitionedReads: PartitionedReads,
+  def variantLociFromReads(numSamples: NumSamples,
+                           partitionedReads: PartitionedReads,
                            reference: ReferenceGenome,
                            samplePercent: Int = 100,
                            minReadDepth: Int = 0,
@@ -245,6 +248,7 @@ object VAFHistogram {
 
     val variantLoci =
       pileupFlatMapMultipleSamples[VariantLocus](
+        numSamples,
         partitionedReads,
         skipEmpty = true,
         pileups =>
@@ -276,8 +280,6 @@ object VAFHistogram {
           s"$sampleId:\t$num"
         ).mkString("\n")
       )
-
-      val numSamples = partitionedReads.numSamples
 
       // Sample variant loci to compute descriptive statistics
       val sampledVAFs =
