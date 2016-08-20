@@ -63,7 +63,7 @@ class PileupFlatMapUtilsSuite
   def dummyPartitionedReads(lociStr: String, numPartitionsOpt: Option[Int] = None): PartitionedReads = {
     val readsRDD = dummyReadsRDD
     partitionReads(
-      Vector(readsRDD),
+      readsRDD,
       UniformPartitioner(
         numPartitionsOpt
           .getOrElse(
@@ -135,6 +135,7 @@ class PileupFlatMapUtilsSuite
   test("test pileup flatmap two rdds; skip empty pileups") {
     val reads1 =
       makeReadsRDD(
+        sampleId = 0,
         ("TCGATCGA", "8M", 1),
         ("TCGATCGA", "8M", 1),
         ("TCGATCGA", "8M", 1),
@@ -145,6 +146,7 @@ class PileupFlatMapUtilsSuite
 
     val reads2 =
       makeReadsRDD(
+        sampleId = 1,
         ("AAAAAAAA", "8M", 1),
         ("CCCCCCCC", "8M", 1),
         ("TTTTTTTT", "8M", 1),
@@ -153,7 +155,7 @@ class PileupFlatMapUtilsSuite
 
     val partitionedReads =
       partitionReads(
-        Vector(reads1, reads2),
+        reads1 ++ reads2,
         UniformPartitioner(1).partition(LociSet("chr0:0-1000,chr1:1-500,chr2:10-20"))
       )
 
@@ -171,6 +173,7 @@ class PileupFlatMapUtilsSuite
   test("test pileup flatmap multiple rdds; skip empty pileups") {
     val reads1 =
       makeReadsRDD(
+        sampleId = 0,
         ("TCGATCGA", "8M", 1),
         ("TCGATCGA", "8M", 1),
         ("TCGATCGA", "8M", 1),
@@ -181,6 +184,7 @@ class PileupFlatMapUtilsSuite
 
     val reads2 =
       makeReadsRDD(
+        sampleId = 1,
         ("AAAAAAAA", "8M", 1),
         ("CCCCCCCC", "8M", 1),
         ("TTTTTTTT", "8M", 1),
@@ -189,6 +193,7 @@ class PileupFlatMapUtilsSuite
 
     val reads3 =
       makeReadsRDD(
+        sampleId = 2,
         ("AAGGCCTT", "8M", 1),
         ("GGAATTCC", "8M", 1),
         ("GGGGGGGG", "8M", 1),
@@ -197,11 +202,12 @@ class PileupFlatMapUtilsSuite
 
     val loci = LociSet("chr1:1-500,chr2:10-20")
 
-    val readsRDDs = Vector(reads1, reads2, reads3)
+    val reads = reads1 ++ reads2 ++ reads3
 
     val resultPlain =
       pileupFlatMapMultipleSamples[PerSample[Iterable[String]]](
-        partitionReads(readsRDDs, UniformPartitioner(1).partition(loci)),
+        numSamples = 3,
+        partitionReads(reads, UniformPartitioner(1).partition(loci)),
         skipEmpty = true,
         pileupsToElementStrings,
         reference = reference
@@ -209,7 +215,8 @@ class PileupFlatMapUtilsSuite
 
     val resultParallelized =
       pileupFlatMapMultipleSamples[PerSample[Iterable[String]]](
-        partitionReads(readsRDDs, UniformPartitioner(800).partition(loci)),
+        numSamples = 3,
+        partitionReads(reads, UniformPartitioner(800).partition(loci)),
         skipEmpty = true,
         pileupsToElementStrings,
         reference = reference
@@ -217,7 +224,8 @@ class PileupFlatMapUtilsSuite
 
     val resultWithEmpty =
       pileupFlatMapMultipleSamples[PerSample[Iterable[String]]](
-        partitionReads(readsRDDs, UniformPartitioner(5).partition(loci)),
+        numSamples = 3,
+        partitionReads(reads, UniformPartitioner(5).partition(loci)),
         skipEmpty = false,
         pileupsToElementStrings,
         reference = makeReference(sc, Seq(("chr1", 0, "ATCGATCGA"), ("chr2", 0, "")))
@@ -260,6 +268,7 @@ class PileupFlatMapUtilsSuite
   test("test two-rdd pileup flatmap; create pileup elements") {
     val reads1 =
       makeReadsRDD(
+        sampleId = 0,
         ("TCGATCGA", "8M", 1),
         ("TCGATCGA", "8M", 1),
         ("TCGATCGA", "8M", 1),
@@ -270,6 +279,7 @@ class PileupFlatMapUtilsSuite
 
     val reads2 =
       makeReadsRDD(
+        sampleId = 1,
         ("TCGATCGA", "8M", 1),
         ("TCGATCGA", "8M", 1),
         ("TCGATCGA", "8M", 1),
@@ -278,7 +288,7 @@ class PileupFlatMapUtilsSuite
 
     val partitionedReads =
       partitionReads(
-        Vector(reads1, reads2),
+        reads1 ++ reads2,
         UniformPartitioner(1000).partition(LociSet("chr1:1-500"))
       )
 
@@ -309,7 +319,7 @@ class PileupFlatMapUtilsSuite
     val pileups =
       pileupFlatMapOneSample[PileupElement](
         partitionReads(
-          Vector(reads),
+          reads,
           UniformPartitioner(5).partition(LociSet("chr1:1-12"))
         ),
         skipEmpty = false,

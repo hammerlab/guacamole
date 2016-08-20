@@ -21,7 +21,7 @@ case class Input(index: SampleId,
                  override val path: String,
                  tissueType: TissueType.Value,
                  analyte: Analyte.Value)
-  extends RSInput(sampleName, path) {
+  extends RSInput(index, sampleName, path) {
 
   override def toString: String = {
     "<Input #%d '%s' of %s %s at %s >".format(index, sampleName, tissueType, analyte, path)

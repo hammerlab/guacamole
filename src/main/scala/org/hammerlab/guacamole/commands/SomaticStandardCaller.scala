@@ -81,7 +81,7 @@ object SomaticStandard {
 
       val partitionedReads =
         PartitionedRegions(
-          Vector(tumorReads.mappedReads, normalReads.mappedReads),
+          tumorReads.mappedReads ++ normalReads.mappedReads,
           loci.result(contigLengths),
           args,
           halfWindowSize = 0

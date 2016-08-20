@@ -12,6 +12,7 @@ class PairedReadSuite extends FunSuite with Matchers {
       "TCGACCCTCGA",
       Array[Byte]((10 to 20).map(_.toByte): _*),
       isDuplicate = true,
+      123,
       "some sample name",
       failedVendorQualityChecks = false,
       isPaired = true)
@@ -44,6 +45,7 @@ class PairedReadSuite extends FunSuite with Matchers {
         "TCGACCCTCGA",
         Array[Byte]((10 to 20).map(_.toByte): _*),
         isDuplicate = true,
+        123,
         "some sample name",
         failedVendorQualityChecks = false,
         isPaired = true),
@@ -65,6 +67,7 @@ class PairedReadSuite extends FunSuite with Matchers {
           "TCGACCCTCGA",
           Array[Byte]((10 to 20).map(_.toByte): _*),
           isDuplicate = true,
+          sampleId = 123,
           sampleName = "some sample name",
           contigName = "chr5",
           alignmentQuality = 50,
