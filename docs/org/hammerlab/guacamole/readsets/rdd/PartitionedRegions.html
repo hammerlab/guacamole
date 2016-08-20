@@ -41,9 +41,9 @@
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Groups a <span class="extype" name="LociPartitioning">LociPartitioning</span> with an <span class="extype" name="RDD[ReferenceRegion">RDD[ReferenceRegion</span>] that has already been partitioned according to that
 partitioning.</p><p>This means some regions will occur multiple times in the RDD (due to regions straddling partition boundaries), so
-it's important not to confuse this with a regular <span class="extype" name="RDD[ReferenceRegion">RDD[ReferenceRegion</span>].</p><p>The main API exposed here is <a href="#mapPartitions[V](f:(Iterator[(org.hammerlab.guacamole.readsets.SampleId,R)],org.hammerlab.guacamole.loci.set.LociSet)=&gt;Iterator[V])(implicitevidence$2:scala.reflect.ClassTag[V]):org.apache.spark.rdd.RDD[V]" class="extmbr" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions#mapPartitions">mapPartitions</a>, which lets the caller apply a function to a <span class="extype" name="LociSet">LociSet</span> as well as
+it's important not to confuse this with a regular <span class="extype" name="RDD[ReferenceRegion">RDD[ReferenceRegion</span>].</p><p>The main API exposed here is <a href="#mapPartitions[V](f:(Iterator[R],org.hammerlab.guacamole.loci.set.LociSet)=&gt;Iterator[V])(implicitevidence$2:scala.reflect.ClassTag[V]):org.apache.spark.rdd.RDD[V]" class="extmbr" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions#mapPartitions">mapPartitions</a>, which lets the caller apply a function to a <span class="extype" name="LociSet">LociSet</span> as well as
 all region copies that overlap those loci.</p><p>Note: the containing <a href="" class="extype" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions">PartitionedRegions</a> gets picked up by the closure-cleaner and serialized when
-<a href="#mapPartitions[V](f:(Iterator[(org.hammerlab.guacamole.readsets.SampleId,R)],org.hammerlab.guacamole.loci.set.LociSet)=&gt;Iterator[V])(implicitevidence$2:scala.reflect.ClassTag[V]):org.apache.spark.rdd.RDD[V]" class="extmbr" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions#mapPartitions">mapPartitions</a> is called.
+<a href="#mapPartitions[V](f:(Iterator[R],org.hammerlab.guacamole.loci.set.LociSet)=&gt;Iterator[V])(implicitevidence$2:scala.reflect.ClassTag[V]):org.apache.spark.rdd.RDD[V]" class="extmbr" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions#mapPartitions">mapPartitions</a> is called.
 </p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
@@ -85,7 +85,7 @@ all region copies that overlap those loci.</p><p>Note: the containing <a href=""
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(numSamples:org.hammerlab.guacamole.readsets.NumSamples,keyedRegions:org.apache.spark.rdd.RDD[(org.hammerlab.guacamole.readsets.SampleId,R)],partitioning:org.hammerlab.guacamole.loci.partitioning.LociPartitioning)(implicitevidence$1:scala.reflect.ClassTag[R]):org.hammerlab.guacamole.readsets.rdd.PartitionedRegions[R]"></a>
+      <a id="&lt;init&gt;(regions:org.apache.spark.rdd.RDD[R],partitioning:org.hammerlab.guacamole.loci.partitioning.LociPartitioning)(implicitevidence$1:scala.reflect.ClassTag[R]):org.hammerlab.guacamole.readsets.rdd.PartitionedRegions[R]"></a>
       <a id="&lt;init&gt;:PartitionedRegions[R]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -93,7 +93,7 @@ all region copies that overlap those loci.</p><p>Note: the containing <a href=""
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">PartitionedRegions</span><span class="params">(<span name="numSamples">numSamples: <a href="../package.html#NumSamples=Int" class="extmbr" name="org.hammerlab.guacamole.readsets.NumSamples">NumSamples</a></span>, <span name="keyedRegions">keyedRegions: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[(<a href="../package.html#SampleId=Int" class="extmbr" name="org.hammerlab.guacamole.readsets.SampleId">SampleId</a>, <span class="extype" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions.R">R</span>)]</span>, <span name="partitioning">partitioning: <a href="../../loci/partitioning/LociPartitioning.html" class="extype" name="org.hammerlab.guacamole.loci.partitioning.LociPartitioning">LociPartitioning</a></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.reflect.ClassTag">ClassTag</span>[<span class="extype" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions.R">R</span>]</span>)</span>
+        <span class="name">PartitionedRegions</span><span class="params">(<span name="regions">regions: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<span class="extype" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions.R">R</span>]</span>, <span name="partitioning">partitioning: <a href="../../loci/partitioning/LociPartitioning.html" class="extype" name="org.hammerlab.guacamole.loci.partitioning.LociPartitioning">LociPartitioning</a></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.reflect.ClassTag">ClassTag</span>[<span class="extype" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions.R">R</span>]</span>)</span>
       </span>
       </h4>
       
@@ -288,15 +288,15 @@ all region copies that overlap those loci.</p><p>Note: the containing <a href=""
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions#mapPartitions" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="mapPartitions[V](f:(Iterator[(org.hammerlab.guacamole.readsets.SampleId,R)],org.hammerlab.guacamole.loci.set.LociSet)=&gt;Iterator[V])(implicitevidence$2:scala.reflect.ClassTag[V]):org.apache.spark.rdd.RDD[V]"></a>
-      <a id="mapPartitions[V]((Iterator[(SampleId,R)],LociSet)⇒Iterator[V])(ClassTag[V]):RDD[V]"></a>
+      <a id="mapPartitions[V](f:(Iterator[R],org.hammerlab.guacamole.loci.set.LociSet)=&gt;Iterator[V])(implicitevidence$2:scala.reflect.ClassTag[V]):org.apache.spark.rdd.RDD[V]"></a>
+      <a id="mapPartitions[V]((Iterator[R],LociSet)⇒Iterator[V])(ClassTag[V]):RDD[V]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">mapPartitions</span><span class="tparams">[<span name="V">V</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="scala.Iterator">Iterator</span>[(<a href="../package.html#SampleId=Int" class="extmbr" name="org.hammerlab.guacamole.readsets.SampleId">SampleId</a>, <span class="extype" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions.R">R</span>)], <a href="../../loci/set/LociSet.html" class="extype" name="org.hammerlab.guacamole.loci.set.LociSet">LociSet</a>) ⇒ <span class="extype" name="scala.Iterator">Iterator</span>[<span class="extype" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions.mapPartitions.V">V</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.reflect.ClassTag">ClassTag</span>[<span class="extype" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions.mapPartitions.V">V</span>]</span>)</span><span class="result">: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<span class="extype" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions.mapPartitions.V">V</span>]</span>
+        <span class="name">mapPartitions</span><span class="tparams">[<span name="V">V</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="scala.Iterator">Iterator</span>[<span class="extype" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions.R">R</span>], <a href="../../loci/set/LociSet.html" class="extype" name="org.hammerlab.guacamole.loci.set.LociSet">LociSet</a>) ⇒ <span class="extype" name="scala.Iterator">Iterator</span>[<span class="extype" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions.mapPartitions.V">V</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.reflect.ClassTag">ClassTag</span>[<span class="extype" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions.mapPartitions.V">V</span>]</span>)</span><span class="result">: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<span class="extype" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions.mapPartitions.V">V</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">For each partition, apply a function to the set of loci assigned to that partition as well as all regions that
@@ -355,19 +355,6 @@ overlap those loci (possibly with a grace-window baked in upstream; see <a href=
       </span>
       <span class="symbol">
         <span class="name">numLoci</span><span class="result">: <span class="extype" name="org.apache.spark.Accumulator">Accumulator</span>[<span class="extype" name="scala.Long">Long</span>]</span>
-      </span>
-      </h4>
-      
-    </li><li name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegions#numSamples" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="numSamples:org.hammerlab.guacamole.readsets.NumSamples"></a>
-      <a id="numSamples:NumSamples"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">numSamples</span><span class="result">: <a href="../package.html#NumSamples=Int" class="extmbr" name="org.hammerlab.guacamole.readsets.NumSamples">NumSamples</a></span>
       </span>
       </h4>
       

@@ -35,13 +35,13 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">UnmappedRead</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="sequence">sequence: <span class="extype" name="scala.IndexedSeq">IndexedSeq</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>, <span name="baseQualities">baseQualities: <span class="extype" name="scala.IndexedSeq">IndexedSeq</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>, <span name="isDuplicate">isDuplicate: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="sampleName">sampleName: <a href="../readsets/package.html#SampleName=String" class="extmbr" name="org.hammerlab.guacamole.readsets.SampleName">SampleName</a></span>, <span name="failedVendorQualityChecks">failedVendorQualityChecks: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="isPaired">isPaired: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result"> extends <a href="Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">UnmappedRead</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="sequence">sequence: <span class="extype" name="scala.IndexedSeq">IndexedSeq</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>, <span name="baseQualities">baseQualities: <span class="extype" name="scala.IndexedSeq">IndexedSeq</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>, <span name="isDuplicate">isDuplicate: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="sampleId">sampleId: <a href="../readsets/package.html#SampleId=Int" class="extmbr" name="org.hammerlab.guacamole.readsets.SampleId">SampleId</a></span>, <span name="sampleName">sampleName: <a href="../readsets/package.html#SampleName=String" class="extmbr" name="org.hammerlab.guacamole.readsets.SampleName">SampleName</a></span>, <span name="failedVendorQualityChecks">failedVendorQualityChecks: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="isPaired">isPaired: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result"> extends <a href="Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>An unmapped read. See the <a href="Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a> trait for field descriptions.</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <a href="Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <a href="Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a>, <a href="HasSampleId.html" class="extype" name="org.hammerlab.guacamole.reads.HasSampleId">HasSampleId</a>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -59,7 +59,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="org.hammerlab.guacamole.reads.UnmappedRead"><span>UnmappedRead</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="org.hammerlab.guacamole.reads.Read"><span>Read</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="org.hammerlab.guacamole.reads.UnmappedRead"><span>UnmappedRead</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="org.hammerlab.guacamole.reads.Read"><span>Read</span></li><li class="in" name="org.hammerlab.guacamole.reads.HasSampleId"><span>HasSampleId</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -80,7 +80,7 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="org.hammerlab.guacamole.reads.UnmappedRead#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(name:String,sequence:IndexedSeq[Byte],baseQualities:IndexedSeq[Byte],isDuplicate:Boolean,sampleName:org.hammerlab.guacamole.readsets.SampleName,failedVendorQualityChecks:Boolean,isPaired:Boolean):org.hammerlab.guacamole.reads.UnmappedRead"></a>
+      <a id="&lt;init&gt;(name:String,sequence:IndexedSeq[Byte],baseQualities:IndexedSeq[Byte],isDuplicate:Boolean,sampleId:org.hammerlab.guacamole.readsets.SampleId,sampleName:org.hammerlab.guacamole.readsets.SampleName,failedVendorQualityChecks:Boolean,isPaired:Boolean):org.hammerlab.guacamole.reads.UnmappedRead"></a>
       <a id="&lt;init&gt;:UnmappedRead"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -88,7 +88,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">UnmappedRead</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="sequence">sequence: <span class="extype" name="scala.IndexedSeq">IndexedSeq</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>, <span name="baseQualities">baseQualities: <span class="extype" name="scala.IndexedSeq">IndexedSeq</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>, <span name="isDuplicate">isDuplicate: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="sampleName">sampleName: <a href="../readsets/package.html#SampleName=String" class="extmbr" name="org.hammerlab.guacamole.readsets.SampleName">SampleName</a></span>, <span name="failedVendorQualityChecks">failedVendorQualityChecks: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="isPaired">isPaired: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span>
+        <span class="name">UnmappedRead</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="sequence">sequence: <span class="extype" name="scala.IndexedSeq">IndexedSeq</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>, <span name="baseQualities">baseQualities: <span class="extype" name="scala.IndexedSeq">IndexedSeq</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>, <span name="isDuplicate">isDuplicate: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="sampleId">sampleId: <a href="../readsets/package.html#SampleId=Int" class="extmbr" name="org.hammerlab.guacamole.readsets.SampleId">SampleId</a></span>, <span name="sampleName">sampleName: <a href="../readsets/package.html#SampleName=String" class="extmbr" name="org.hammerlab.guacamole.readsets.SampleName">SampleName</a></span>, <span name="failedVendorQualityChecks">failedVendorQualityChecks: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="isPaired">isPaired: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span>
       </span>
       </h4>
       
@@ -386,6 +386,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.reads.UnmappedRead#sampleId" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="sampleId:org.hammerlab.guacamole.readsets.SampleId"></a>
+      <a id="sampleId:SampleId"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">sampleId</span><span class="result">: <a href="../readsets/package.html#SampleId=Int" class="extmbr" name="org.hammerlab.guacamole.readsets.SampleId">SampleId</a></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.reads.UnmappedRead">UnmappedRead</a> → <a href="HasSampleId.html" class="extype" name="org.hammerlab.guacamole.reads.HasSampleId">HasSampleId</a></dd></dl></div>
     </li><li name="org.hammerlab.guacamole.reads.UnmappedRead#sampleName" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="sampleName:org.hammerlab.guacamole.readsets.SampleName"></a>
       <a id="sampleName:SampleName"></a>
@@ -501,6 +514,8 @@
               <h3>Inherited from <span class="extype" name="scala.Equals">Equals</span></h3>
             </div><div class="parent" name="org.hammerlab.guacamole.reads.Read">
               <h3>Inherited from <a href="Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a></h3>
+            </div><div class="parent" name="org.hammerlab.guacamole.reads.HasSampleId">
+              <h3>Inherited from <a href="HasSampleId.html" class="extype" name="org.hammerlab.guacamole.reads.HasSampleId">HasSampleId</a></h3>
             </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
             </div><div class="parent" name="scala.Any">

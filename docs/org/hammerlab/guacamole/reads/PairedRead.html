@@ -43,7 +43,7 @@
 </p></div><dl class="paramcmts block"><dt class="tparam">T</dt><dd class="cmt"><p>UnmappedRead or MappedRead
 </p></dd><dt class="param">read</dt><dd class="cmt"><p>Unmapped or MappedRead base read</p></dd><dt class="param">isFirstInPair</dt><dd class="cmt"><p>Whether the read is earlier that the the mate read</p></dd><dt class="param">mateAlignmentProperties</dt><dd class="cmt"><p>Alignment location of the mate if it the mate is aligned</p></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <a href="Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <a href="Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a>, <a href="HasSampleId.html" class="extype" name="org.hammerlab.guacamole.reads.HasSampleId">HasSampleId</a>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -61,7 +61,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="org.hammerlab.guacamole.reads.PairedRead"><span>PairedRead</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="org.hammerlab.guacamole.reads.Read"><span>Read</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="org.hammerlab.guacamole.reads.PairedRead"><span>PairedRead</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="org.hammerlab.guacamole.reads.Read"><span>Read</span></li><li class="in" name="org.hammerlab.guacamole.reads.HasSampleId"><span>HasSampleId</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -440,6 +440,19 @@
       </span>
       </h4>
       <p class="shortcomment cmt">Unmapped or MappedRead base read</p>
+    </li><li name="org.hammerlab.guacamole.reads.PairedRead#sampleId" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="sampleId:org.hammerlab.guacamole.readsets.SampleId"></a>
+      <a id="sampleId:SampleId"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">sampleId</span><span class="result">: <a href="../readsets/package.html#SampleId=Int" class="extmbr" name="org.hammerlab.guacamole.readsets.SampleId">SampleId</a></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.reads.PairedRead">PairedRead</a> → <a href="HasSampleId.html" class="extype" name="org.hammerlab.guacamole.reads.HasSampleId">HasSampleId</a></dd></dl></div>
     </li><li name="org.hammerlab.guacamole.reads.PairedRead#sampleName" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="sampleName:org.hammerlab.guacamole.readsets.SampleName"></a>
       <a id="sampleName:SampleName"></a>
@@ -555,6 +568,8 @@
               <h3>Inherited from <span class="extype" name="scala.Equals">Equals</span></h3>
             </div><div class="parent" name="org.hammerlab.guacamole.reads.Read">
               <h3>Inherited from <a href="Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a></h3>
+            </div><div class="parent" name="org.hammerlab.guacamole.reads.HasSampleId">
+              <h3>Inherited from <a href="HasSampleId.html" class="extype" name="org.hammerlab.guacamole.reads.HasSampleId">HasSampleId</a></h3>
             </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
             </div><div class="parent" name="scala.Any">

@@ -386,15 +386,15 @@ them.
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>PartialFunction → Function1</dd></dl></div>
     </li><li name="org.hammerlab.guacamole.readsets.ReadSets#apply" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="apply(idx:Int):org.hammerlab.guacamole.readsets.rdd.ReadsRDD"></a>
-      <a id="apply(Int):ReadsRDD"></a>
+      <a id="apply(sampleId:org.hammerlab.guacamole.readsets.SampleId):org.hammerlab.guacamole.readsets.rdd.ReadsRDD"></a>
+      <a id="apply(SampleId):ReadsRDD"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">apply</span><span class="params">(<span name="idx">idx: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <a href="rdd/ReadsRDD.html" class="extype" name="org.hammerlab.guacamole.readsets.rdd.ReadsRDD">ReadsRDD</a></span>
+        <span class="name">apply</span><span class="params">(<span name="sampleId">sampleId: <a href="package.html#SampleId=Int" class="extmbr" name="org.hammerlab.guacamole.readsets.SampleId">SampleId</a></span>)</span><span class="result">: <a href="rdd/ReadsRDD.html" class="extype" name="org.hammerlab.guacamole.readsets.rdd.ReadsRDD">ReadsRDD</a></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.readsets.ReadSets">ReadSets</a> → SeqLike → GenSeqLike → Function1</dd></dl></div>
@@ -1311,15 +1311,15 @@ them.
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>TraversableLike → GenTraversableLike</dd></dl></div>
     </li><li name="org.hammerlab.guacamole.readsets.ReadSets#length" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="length:Int"></a>
-      <a id="length:Int"></a>
+      <a id="length:org.hammerlab.guacamole.readsets.NumSamples"></a>
+      <a id="length:NumSamples"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">length</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+        <span class="name">length</span><span class="result">: <a href="package.html#NumSamples=Int" class="extmbr" name="org.hammerlab.guacamole.readsets.NumSamples">NumSamples</a></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.readsets.ReadSets">ReadSets</a> → SeqLike → GenSeqLike</dd></dl></div>
@@ -1531,6 +1531,19 @@ them.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.readsets.ReadSets#numSamples" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="numSamples:org.hammerlab.guacamole.readsets.NumSamples"></a>
+      <a id="numSamples:NumSamples"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">numSamples</span><span class="result">: <a href="package.html#NumSamples=Int" class="extmbr" name="org.hammerlab.guacamole.readsets.NumSamples">NumSamples</a></span>
+      </span>
+      </h4>
+      
     </li><li name="scala.PartialFunction#orElse" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="orElse[A1&lt;:&lt;?&gt;,B1&lt;:&lt;?&gt;](that:&lt;?&gt;):PartialFunction[A1,B1]"></a>
       <a id="orElse[A1&lt;:Int,B1&gt;:ReadsRDD](PartialFunction[A1,B1]):PartialFunction[A1,B1]"></a>
@@ -1830,6 +1843,19 @@ them.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>IterableLike → GenIterableLike</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.readsets.ReadSets#sampleNames" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="sampleNames:org.hammerlab.guacamole.readsets.PerSample[String]"></a>
+      <a id="sampleNames:PerSample[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">sampleNames</span><span class="result">: <a href="package.html#PerSample[+A]=IndexedSeq[A]" class="extmbr" name="org.hammerlab.guacamole.readsets.PerSample">PerSample</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      </h4>
+      
     </li><li name="org.hammerlab.guacamole.readsets.ReadSets#sc" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="sc:org.apache.spark.SparkContext"></a>
       <a id="sc:SparkContext"></a>

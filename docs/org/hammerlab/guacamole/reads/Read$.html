@@ -151,15 +151,15 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li name="org.hammerlab.guacamole.reads.Read#apply" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="apply(alignmentRecord:org.bdgenomics.formats.avro.AlignmentRecord):org.hammerlab.guacamole.reads.Read"></a>
-      <a id="apply(AlignmentRecord):Read"></a>
+      <a id="apply(alignmentRecord:org.bdgenomics.formats.avro.AlignmentRecord,sampleId:Int):org.hammerlab.guacamole.reads.Read"></a>
+      <a id="apply(AlignmentRecord,Int):Read"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">apply</span><span class="params">(<span name="alignmentRecord">alignmentRecord: <span class="extype" name="org.bdgenomics.formats.avro.AlignmentRecord">AlignmentRecord</span></span>)</span><span class="result">: <a href="Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a></span>
+        <span class="name">apply</span><span class="params">(<span name="alignmentRecord">alignmentRecord: <span class="extype" name="org.bdgenomics.formats.avro.AlignmentRecord">AlignmentRecord</span></span>, <span name="sampleId">sampleId: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <a href="Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a></span>
       </span>
       </h4>
       <p class="shortcomment cmt">Builds a Guacamole Read from and ADAM Alignment Record
@@ -167,15 +167,15 @@
 </p></div><dl class="paramcmts block"><dt class="param">alignmentRecord</dt><dd class="cmt"><p>ADAM Alignment Record (an aligned or unaligned read)</p></dd><dt>returns</dt><dd class="cmt"><p>Mapped or Unmapped Read
 </p></dd></dl></div>
     </li><li name="org.hammerlab.guacamole.reads.Read#apply" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="apply(record:htsjdk.samtools.SAMRecord):org.hammerlab.guacamole.reads.Read"></a>
-      <a id="apply(SAMRecord):Read"></a>
+      <a id="apply(record:htsjdk.samtools.SAMRecord,sampleId:Int):org.hammerlab.guacamole.reads.Read"></a>
+      <a id="apply(SAMRecord,Int):Read"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">apply</span><span class="params">(<span name="record">record: <span class="extype" name="htsjdk.samtools.SAMRecord">SAMRecord</span></span>)</span><span class="result">: <a href="Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a></span>
+        <span class="name">apply</span><span class="params">(<span name="record">record: <span class="extype" name="htsjdk.samtools.SAMRecord">SAMRecord</span></span>, <span name="sampleId">sampleId: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <a href="Read.html" class="extype" name="org.hammerlab.guacamole.reads.Read">Read</a></span>
       </span>
       </h4>
       <p class="shortcomment cmt">Convert a SAM tools record into a Read.</p><div class="fullcomment"><div class="comment cmt"><p>Convert a SAM tools record into a Read.
