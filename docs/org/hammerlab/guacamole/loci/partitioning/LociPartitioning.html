@@ -35,14 +35,14 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">LociPartitioning</span><span class="params">(<span name="map">map: <a href="../map/LociMap.html" class="extype" name="org.hammerlab.guacamole.loci.map.LociMap">LociMap</a>[<a href="LociPartitioner$.html#PartitionIndex=Int" class="extmbr" name="org.hammerlab.guacamole.loci.partitioning.LociPartitioner.PartitionIndex">PartitionIndex</a>]</span>)</span><span class="result"> extends <span class="extype" name="org.hammerlab.magic.util.Saveable">Saveable</span> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">LociPartitioning</span><span class="params">(<span name="map">map: <a href="../map/LociMap.html" class="extype" name="org.hammerlab.guacamole.loci.map.LociMap">LociMap</a>[<a href="LociPartitioner$.html#PartitionIndex=Int" class="extmbr" name="org.hammerlab.guacamole.loci.partitioning.LociPartitioner.PartitionIndex">PartitionIndex</a>]</span>)</span><span class="result"> extends <span class="extype" name="org.hammerlab.magic.util.Saveable">Saveable</span> with <a href="../../strings/TruncatedToString.html" class="extype" name="org.hammerlab.guacamole.strings.TruncatedToString">TruncatedToString</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>A wrapper around a mapping from genomic-loci ranges to Spark partition numbers.</p><p>Includes some functionality for saving to / loading from disk.
 </p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <span class="extype" name="org.hammerlab.magic.util.Saveable">Saveable</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <a href="../../strings/TruncatedToString.html" class="extype" name="org.hammerlab.guacamole.strings.TruncatedToString">TruncatedToString</a>, <span class="extype" name="org.hammerlab.magic.util.Saveable">Saveable</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -60,7 +60,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="org.hammerlab.guacamole.loci.partitioning.LociPartitioning"><span>LociPartitioning</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="org.hammerlab.magic.util.Saveable"><span>Saveable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="org.hammerlab.guacamole.loci.partitioning.LociPartitioning"><span>LociPartitioning</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="org.hammerlab.guacamole.strings.TruncatedToString"><span>TruncatedToString</span></li><li class="in" name="org.hammerlab.magic.util.Saveable"><span>Saveable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -466,6 +466,20 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Saveable</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.loci.partitioning.LociPartitioning#stringPieces" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="stringPieces:Iterator[String]"></a>
+      <a id="stringPieces:Iterator[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">stringPieces</span><span class="result">: <span class="extype" name="scala.Iterator">Iterator</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Iterator over string representations of data comprising this object.</p><div class="fullcomment"><div class="comment cmt"><p>Iterator over string representations of data comprising this object.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.loci.partitioning.LociPartitioning">LociPartitioning</a> → <a href="../../strings/TruncatedToString.html" class="extype" name="org.hammerlab.guacamole.strings.TruncatedToString">TruncatedToString</a></dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -491,7 +505,20 @@
         <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.loci.partitioning.LociPartitioning">LociPartitioning</a> → AnyRef → Any</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.loci.partitioning.LociPartitioning">LociPartitioning</a> → <a href="../../strings/TruncatedToString.html" class="extype" name="org.hammerlab.guacamole.strings.TruncatedToString">TruncatedToString</a> → AnyRef → Any</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.strings.TruncatedToString#truncatedString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="truncatedString(maxLength:Int):String"></a>
+      <a id="truncatedString(Int):String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">truncatedString</span><span class="params">(<span name="maxLength">maxLength: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">500</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">String representation, truncated to maxLength characters.</p><div class="fullcomment"><div class="comment cmt"><p>String representation, truncated to maxLength characters.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../strings/TruncatedToString.html" class="extype" name="org.hammerlab.guacamole.strings.TruncatedToString">TruncatedToString</a></dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>
@@ -566,6 +593,8 @@
               <h3>Inherited from <span class="extype" name="scala.Product">Product</span></h3>
             </div><div class="parent" name="scala.Equals">
               <h3>Inherited from <span class="extype" name="scala.Equals">Equals</span></h3>
+            </div><div class="parent" name="org.hammerlab.guacamole.strings.TruncatedToString">
+              <h3>Inherited from <a href="../../strings/TruncatedToString.html" class="extype" name="org.hammerlab.guacamole.strings.TruncatedToString">TruncatedToString</a></h3>
             </div><div class="parent" name="org.hammerlab.magic.util.Saveable">
               <h3>Inherited from <span class="extype" name="org.hammerlab.magic.util.Saveable">Saveable</span></h3>
             </div><div class="parent" name="scala.AnyRef">
