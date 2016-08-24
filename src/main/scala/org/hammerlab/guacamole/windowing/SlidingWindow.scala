@@ -19,7 +19,7 @@ import scala.collection.mutable
  * of objects are sorted.
  *
  * @param halfWindowSize Number of nucleotide bases to either side of the specified locus to provide regions for. For
- *                       example, if [[halfWindowSize]]=5, and our [[currentLocus]]=100, then [[currentRegions]] will
+ *                       example, if [[halfWindowSize]]=5, and our current locus is 100, then [[currentRegions]] will
  *                       include regions that map to anywhere between 95 and 105, inclusive. Set to 0 to consider only
  *                       regions that overlap the exact locus being considered, with no surrounding window.
  * @param rawSortedRegions Iterator of regions, sorted by the aligned start locus.
@@ -91,7 +91,7 @@ case class SlidingWindow[R <: ReferenceRegion](contigName: ContigName,
    *
    * @return Some(locus) if such a locus exists, otherwise None
    */
-  def nextLocusWithRegions(): Option[Long] = {
+  def nextLocusWithRegions: Option[Long] = {
     if (currentRegionsPriorityQueue.exists(_.overlapsLocus(currentLocus + 1, halfWindowSize))) {
       Some(currentLocus + 1)
     } else if (sortedRegions.hasNext) {
@@ -127,7 +127,7 @@ object SlidingWindow {
                                                    skipEmpty: Boolean = true): Option[Long] = {
     if (skipEmpty) {
       while (loci.hasNext) {
-        val nextNonEmptyLocus = windows.flatMap(_.nextLocusWithRegions()).reduceOption(_ min _)
+        val nextNonEmptyLocus = windows.flatMap(_.nextLocusWithRegions).reduceOption(_ min _)
         if (nextNonEmptyLocus.isEmpty) {
           // Our windows are out of regions. We're done.
           return None
