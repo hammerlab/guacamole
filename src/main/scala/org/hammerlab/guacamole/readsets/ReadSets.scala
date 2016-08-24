@@ -23,8 +23,8 @@ import org.seqdoop.hadoop_bam.{AnySAMInputFormat, SAMRecordWritable}
 import scala.collection.JavaConversions
 
 /**
- * A `ReadSets` contains reads from multiple inputs, and SequenceDictionary / contig-length information merged from
- * them.
+ * A [[ReadSets]] contains reads from multiple inputs as well as [[SequenceDictionary]] / contig-length information
+ * merged from them.
  */
 case class ReadSets(readsRDDs: PerSample[ReadsRDD],
                     sequenceDictionary: SequenceDictionary,

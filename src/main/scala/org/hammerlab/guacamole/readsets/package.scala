@@ -1,19 +1,18 @@
 package org.hammerlab.guacamole
 
+import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole.reads.MappedRead
+import org.hammerlab.guacamole.readsets.ContigLengths
 import org.hammerlab.guacamole.readsets.rdd.PartitionedRegions
 import org.hammerlab.guacamole.reference.{ContigName, NumLoci}
 
 /**
- * Guacamole is a framework for writing variant callers on the Apache Spark platform. Several variant callers are
- * implemented in the [[org.hammerlab.guacamole.commands]] package. The remaining packages implement a library of
- * functionality used by these callers.
+ * This package contains functionality related to processing multiple "sets of reads" (e.g. BAM files) in the context of
+ * a single analysis.
  *
- * To get started, take a look at the code for [[org.hammerlab.guacamole.commands.GermlineThreshold]] for a
- * pedagogical example of a variant caller, then see [[org.hammerlab.guacamole.pileup.Pileup]] to understand how we
- * work with pileups. The [[org.hammerlab.guacamole.commands.SomaticStandard]] caller is a more
- * sophisticated caller (for the somatic setting) that gives an example of most of the functionality in the rest of the
- * library.
+ * For example, a standard somatic caller will typically load and analyze separate "normal" and "tumor" samples, each
+ * corresponding to an [[RDD[MappedRead]]], but which will also share metadata, like the [[ContigLengths]] of the
+ * reference they are mapped to.
  */
 package object readsets {
   type PerSample[+A] = IndexedSeq[A]
