@@ -16,4 +16,3 @@ case class MultiplePileupStats(inputs: InputCollection, singleSampleStats: PerSa
   val tumorlDNAPooled = PileupStats(
     inputs.tumorDNA.flatMap(input => singleSampleStats(input.index).elements), referenceSequence)
 }
-
