@@ -4,12 +4,11 @@ trait TruncatedToString {
   override def toString: String = truncatedString(Int.MaxValue)
 
   /** String representation, truncated to maxLength characters. */
-  def truncatedString(maxLength: Int = 500): String = {
+  def truncatedString(maxLength: Int = 500): String =
     TruncatedToString(stringPieces, maxLength)
-  }
 
   /**
-   * Iterator over string representations of
+   * Iterator over string representations of data comprising this object.
    */
   def stringPieces: Iterator[String]
 }
