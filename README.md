@@ -1,6 +1,7 @@
 guacamole
 =========
 [![Build Status](https://travis-ci.org/hammerlab/guacamole.svg?branch=master)](https://travis-ci.org/hammerlab/guacamole)
+[![Coverage Status](https://coveralls.io/repos/github/hammerlab/guacamole/badge.svg?branch=master)](https://coveralls.io/github/hammerlab/guacamole?branch=master)
 
 Guacamole is a framework for variant calling, i.e. identifying DNA mutations
 from [Next Generation Sequencing][seq] data. It currently includes a toy
