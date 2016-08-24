@@ -39,13 +39,10 @@
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Guacamole is a framework for writing variant callers on the Apache Spark platform. Several variant callers are
-implemented in the <a href="../commands/package.html" class="extype" name="org.hammerlab.guacamole.commands">org.hammerlab.guacamole.commands</a> package. The remaining packages implement a library of
-functionality used by these callers.</p><p>To get started, take a look at the code for <span class="extype" name="org.hammerlab.guacamole.commands.GermlineThreshold">org.hammerlab.guacamole.commands.GermlineThreshold</span> for a
-pedagogical example of a variant caller, then see <a href="../pileup/Pileup.html" class="extype" name="org.hammerlab.guacamole.pileup.Pileup">org.hammerlab.guacamole.pileup.Pileup</a> to understand how we
-work with pileups. The <a href="../commands/SomaticStandard$.html" class="extype" name="org.hammerlab.guacamole.commands.SomaticStandard">org.hammerlab.guacamole.commands.SomaticStandard</a> caller is a more
-sophisticated caller (for the somatic setting) that gives an example of most of the functionality in the rest of the
-library.
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>This package contains functionality related to processing multiple &quot;sets of reads&quot; (e.g. BAM files) in the context of
+a single analysis.</p><p>For example, a standard somatic caller will typically load and analyze separate &quot;normal&quot; and &quot;tumor&quot; samples, each
+corresponding to an <span class="extype" name="RDD[MappedRead">RDD[MappedRead</span>], but which will also share metadata, like the <a href="#ContigLengths=Map[org.hammerlab.guacamole.reference.ContigName,org.hammerlab.guacamole.reference.NumLoci]" class="extmbr" name="org.hammerlab.guacamole.readsets.ContigLengths">ContigLengths</a> of the
+reference they are mapped to.
 </p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
@@ -152,8 +149,8 @@ library.
         <a href="ReadSets.html"><span class="name">ReadSets</span></a><span class="params">(<span name="readsRDDs">readsRDDs: <a href="#PerSample[+A]=IndexedSeq[A]" class="extmbr" name="org.hammerlab.guacamole.readsets.PerSample">PerSample</a>[<a href="rdd/ReadsRDD.html" class="extype" name="org.hammerlab.guacamole.readsets.rdd.ReadsRDD">ReadsRDD</a>]</span>, <span name="sequenceDictionary">sequenceDictionary: <span class="extype" name="org.bdgenomics.adam.models.SequenceDictionary">SequenceDictionary</span></span>, <span name="contigLengths">contigLengths: <a href="#ContigLengths=Map[org.hammerlab.guacamole.reference.ContigName,org.hammerlab.guacamole.reference.NumLoci]" class="extmbr" name="org.hammerlab.guacamole.readsets.ContigLengths">ContigLengths</a></span>)</span><span class="result"> extends <a href="#PerSample[+A]=IndexedSeq[A]" class="extmbr" name="org.hammerlab.guacamole.readsets.PerSample">PerSample</a>[<a href="rdd/ReadsRDD.html" class="extype" name="org.hammerlab.guacamole.readsets.rdd.ReadsRDD">ReadsRDD</a>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
-      <p class="comment cmt">A <code>ReadSets</code> contains reads from multiple inputs, and SequenceDictionary / contig-length information merged from
-them.</p>
+      <p class="comment cmt">A <a href="ReadSets.html" class="extype" name="org.hammerlab.guacamole.readsets.ReadSets">ReadSets</a> contains reads from multiple inputs as well as <span class="extype" name="SequenceDictionary">SequenceDictionary</span> / contig-length information
+merged from them.</p>
     </li><li name="org.hammerlab.guacamole.readsets.SampleId" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="SampleId=Int"></a>
       <a id="SampleId:SampleId"></a>
