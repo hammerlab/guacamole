@@ -157,10 +157,12 @@
         <artifactId>scalatest-maven-plugin</artifactId>
         <version>1.0</version>
         <configuration>
-          <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
+          <reportsDirectory>${project.build.directory}/scalatest-reports</reportsDirectory>
           <junitxml>.</junitxml>
           <filereports>GuacamoleTestSuite.txt</filereports>
           <argLine>-Xmx4g -XX:MaxPermSize=256m</argLine>
+
+          <!-- Print full stack traces when tests fail. -->
           <stdout>F</stdout>
         </configuration>
         <executions>
