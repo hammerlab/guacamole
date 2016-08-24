@@ -25,6 +25,7 @@
     <spark.version>1.6.1</spark.version>
     <maven.release.plugin.version>2.4.1</maven.release.plugin.version>
     <shade.plugin.version>2.1</shade.plugin.version>
+    <scoverage.plugin.version>1.1.1</scoverage.plugin.version>
   </properties>
 
   <licenses>
@@ -409,23 +410,24 @@
       <build>
         <plugins>
           <plugin>
-            <groupId>net.alchim31.maven</groupId>
-            <artifactId>scala-maven-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>scala-compile-first</id>
-                <phase>process-resources</phase>
-                <goals>
-                  <goal>compile</goal>
-                </goals>
-                <configuration>
-                  <args>
-                    <arg>-g:vars</arg>
-                  </args>
-                </configuration>
-              </execution>
-            </executions>
+            <groupId>org.scoverage</groupId>
+            <artifactId>scoverage-maven-plugin</artifactId>
+            <version>${scoverage.plugin.version}</version>
             <configuration>
+              <scalaVersion>${scala.version}</scalaVersion>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.eluder.coveralls</groupId>
+            <artifactId>coveralls-maven-plugin</artifactId>
+            <version>4.2.0</version>
+            <configuration>
+              <sourceDirectories>
+                <sourceDirectory>src/main/scala</sourceDirectory>
+              </sourceDirectories>
+              <coberturaReports>
+                ${basedir}/target/cobertura.xml
+              </coberturaReports>
             </configuration>
           </plugin>
         </plugins>
@@ -496,6 +498,7 @@
         </plugins>
       </build>
     </profile>
+
     <profile>
       <!-- "uber" profile: build a JAR with Guacamole and all transitive dependencies shaded, and Guava relocated. -->
       <id>uber</id>

@@ -1,14 +1,22 @@
 language: java
 sudo: false
+
 cache:
   directories:
   - .autoconf
   - $HOME/.m2
+  - $HOME/.zinc
+
+script: mvn scoverage:report
+
 after_success:
-- .travis/publish_docs.sh
+  - .travis/publish_docs.sh
+  - mvn coveralls:report
+
 env:
   global:
     secure: ffCremJXhnrGEaP0nRgChQiaZrfDJpG8yyMckri/dcTYZsESa0qcyyu9gNXwtW3UkEZpmwFbMSUqkMHgIsYBMDMD9zZLHUpMLswN6VDl3/WrE+4o7tJq8PGDB/idPnM+vr4YPO8uopUGGIhEiAHsvBGqybYsHdGQa1TKmbH0x+k=
+
 notifications:
   slack:
     secure: MpSRYjcajUOegCpk5dzpG0lCe5YBwzlVYTo4b0MD3gu7HFHGFscf2CW1DlP3QJTdaTjxU2oA9nEOvrxq1RZ9J91hwDV5PtZXY5CdVRl9B6VrfulSGT35qeZoaiL0ETfNhfklPTEEiE7xSRG0sYsisqlCl5xN0QqBqrE0yzVHsRA=
