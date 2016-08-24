@@ -44,10 +44,11 @@ class GeneratePartialFastaArguments
  *   mvn package -DskipTests
  *   mvn test-compile
  *   java \
- *     -cp target/guacamole-with-dependencies-0.0.1-SNAPSHOT.jar:target/scala-2.10.5/test-classes \
+ *     -cp "$(scripts/classpath)":target/scala-2.10.5/test-classes \
  *     org.hammerlab.guacamole.main.GeneratePartialFasta \
- *     -o <output path> \
  *     --reference-fasta <fasta path> \
+ *     [--loci <str>|--loci-file <file>] \
+ *     -o <output path> \
  *     <bam path> [bam path...]
  */
 object GeneratePartialFasta extends SparkCommand[GeneratePartialFastaArguments] {
@@ -69,6 +70,8 @@ object GeneratePartialFasta extends SparkCommand[GeneratePartialFastaArguments] 
         config = ReadLoadingConfig(args)
       )
 
+    val contigLengths = readsets.contigLengths
+
     val reads = readsets.allMappedReads
 
     val regions = reads.map(read => (read.contigName, read.start, read.end))
@@ -76,7 +79,7 @@ object GeneratePartialFasta extends SparkCommand[GeneratePartialFastaArguments] 
       parsedLoci.put(triple._1, triple._2, triple._3)
     })
 
-    val loci = parsedLoci.result
+    val loci = parsedLoci.result(contigLengths)
 
     val fd = new File(args.output)
     val writer = new BufferedWriter(new FileWriter(fd))
@@ -90,7 +93,7 @@ object GeneratePartialFasta extends SparkCommand[GeneratePartialFastaArguments] 
         val paddedStart = start.toInt - padding
         val paddedEnd = end.toInt + padding
         val sequence = Bases.basesToString(reference.getContig(contig.name).slice(paddedStart, paddedEnd))
-        writer.write(">%s:%d-%d/%d\n".format(contig.name, paddedStart, paddedEnd, readsets.contigLengths(contig.name)))
+        writer.write(">%s:%d-%d/%d\n".format(contig.name, paddedStart, paddedEnd, contigLengths(contig.name)))
         writer.write(sequence)
         writer.write("\n")
       } catch {

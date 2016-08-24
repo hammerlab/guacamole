@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+# Print path to a built transitive-dependencies JAR in this repo, if one exists, else exit unsuccessfully.
+
+set -e
+
+# Go to the repo root.
+cd "$(dirname "$(dirname "${BASH_SOURCE[@]}")")"
+
+scripts/find-jar deps
