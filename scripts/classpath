@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+
+# Print out a classpath that includes guacamole and all of its transitive dependencies, for use by downstream scripts.
+#
+# First, check for an already-built assembly JAR; if one exists, print its path and exit.
+#
+# Otherwise, see if a Guacamole JAR (including shaded guava but no other dependencies) exists.
+#
+#   if so: pair it with either a "deps-only" JAR, if one exists, or a classpath built by the Maven dependency plugin
+#          otherwise.
+#   if not: fail.
+
+# Go to the repo root.
+cd "$(dirname "$(dirname "${BASH_SOURCE[@]}")")"
+
+assembly_jar="$(scripts/assembly-jar 2> /dev/null)"
+
+if [ -n "$assembly_jar" ]; then
+  echo "$assembly_jar"
+  exit 0
+fi
+
+guac_jar="$(scripts/guac-jar)"
+
+if [ -n "$guac_jar" ]; then
+
+  deps_jar="$(scripts/deps-jar 2> /dev/null)"
+
+  if [ -f "$deps_jar" ]; then
+    echo "$guac_jar:$deps_jar"
+    exit 0
+  fi
+
+  tmp_cp_file="$(mktemp)"
+
+  finish() {
+    rm -f "$tmp_cp_file"
+  }
+  trap finish EXIT
+
+  mvn dependency:build-classpath -Dmdep.outputFile="$tmp_cp_file" &> /dev/null
+  echo "$guac_jar:$(cat "$tmp_cp_file")"
+  exit 0
+fi
+
+exit 1
