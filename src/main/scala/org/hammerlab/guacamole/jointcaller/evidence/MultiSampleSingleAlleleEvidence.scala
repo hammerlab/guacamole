@@ -305,7 +305,7 @@ case class MultiSampleSingleAlleleEvidence(parameters: Parameters,
         tumorDNAPooledEvidence
           .withAnnotations(
             SingleSampleAnnotations(
-              multipleStats.tumorlDNAPooled,
+              multipleStats.tumorDNAPooled,
               tumorDNAPooledEvidence,
               parameters
             )
@@ -382,7 +382,7 @@ object MultiSampleSingleAlleleEvidence {
     val tumorDNAPooledCharacterization =
       TumorDNASingleSampleSingleAlleleEvidence(
         allele,
-        stats.tumorlDNAPooled,
+        stats.tumorDNAPooled,
         parameters
       )
 
