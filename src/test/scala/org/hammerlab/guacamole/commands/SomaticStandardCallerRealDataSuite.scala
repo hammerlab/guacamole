@@ -3,7 +3,7 @@ package org.hammerlab.guacamole.commands
 import org.hammerlab.guacamole.filters.somatic.SomaticGenotypeFilter
 import org.hammerlab.guacamole.pileup.{Util => PileupUtil}
 import org.hammerlab.guacamole.reads.MappedRead
-import org.hammerlab.guacamole.reference.{Locus, ReferenceBroadcast}
+import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.util.GuacFunSuite
 import org.hammerlab.guacamole.util.TestUtil.resourcePath
 import org.scalatest.prop.TableDrivenPropertyChecks
@@ -44,16 +44,17 @@ class SomaticStandardCallerRealDataSuite
                    normalReads: Seq[MappedRead],
                    positions: Array[Long],
                    shouldFindVariant: Boolean = false) = {
-    positions.foreach((locus: Locus) => {
-      val (tumorPileup, normalPileup) =
-        loadTumorNormalPileup(
-          tumorReads,
-          normalReads,
-          locus
-        )
+    val positionsTable = Table("locus", positions: _*)
+    forAll(positionsTable) {
+      (locus: Long) =>
+        val (tumorPileup, normalPileup) =
+          loadTumorNormalPileup(
+            tumorReads,
+            normalReads,
+            locus
+          )
 
-      val calledGenotypes =
-        SomaticStandard.Caller.findPotentialVariantAtLocus(
+        val calledGenotypes = SomaticStandard.Caller.findPotentialVariantAtLocus(
           tumorPileup,
           normalPileup,
           logOddsThreshold,
@@ -61,20 +62,20 @@ class SomaticStandardCallerRealDataSuite
           filterMultiAllelic
         )
 
-      val foundVariant =
-        SomaticGenotypeFilter(
-          calledGenotypes,
-          minTumorReadDepth,
-          maxTumorReadDepth,
-          minNormalReadDepth,
-          minTumorAlternateReadDepth,
-          logOddsThreshold,
-          minVAF = minVAF,
-          minLikelihood
-        ).nonEmpty
+        val foundVariant =
+          SomaticGenotypeFilter(
+            calledGenotypes,
+            minTumorReadDepth,
+            maxTumorReadDepth,
+            minNormalReadDepth,
+            minTumorAlternateReadDepth,
+            logOddsThreshold,
+            minVAF = minVAF,
+            minLikelihood
+          ).nonEmpty
 
-      foundVariant should be(shouldFindVariant)
-    })
+        foundVariant should be(shouldFindVariant)
+    }
   }
 
   test("testing simple positive variants") {
