@@ -261,11 +261,6 @@
       <version>0.0.1</version>
     </dependency>
     <dependency>
-      <groupId>colt</groupId>
-      <artifactId>colt</artifactId>
-      <version>1.2.0</version>
-    </dependency>
-    <dependency>
       <groupId>org.spire-math</groupId>
       <artifactId>spire_${scala.version.prefix}</artifactId>
       <version>0.11.0</version>
@@ -314,11 +309,6 @@
       <groupId>org.spire-math</groupId>
       <artifactId>debox_${scala.version.prefix}</artifactId>
       <version>0.6.0</version>
-    </dependency>
-    <dependency>
-      <groupId>com.assembla.scala-incubator</groupId>
-      <artifactId>graph-core_${scala.version.prefix}</artifactId>
-      <version>1.9.1</version>
     </dependency>
     <dependency>
       <groupId>org.hammerlab</groupId>
