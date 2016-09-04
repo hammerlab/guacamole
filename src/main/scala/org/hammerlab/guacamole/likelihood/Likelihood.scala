@@ -1,10 +1,10 @@
 package org.hammerlab.guacamole.likelihood
 
-import breeze.linalg.{ DenseVector, logNormalize, sum, DenseMatrix }
+import breeze.linalg.{DenseMatrix, DenseVector, logNormalize, sum}
+import breeze.numerics.{exp, log}
 import org.bdgenomics.adam.util.PhredUtils
-import org.hammerlab.guacamole.pileup.{ PileupElement, Pileup }
-import org.hammerlab.guacamole.variants.{ Allele, Genotype }
-import breeze.numerics.{ exp, log }
+import org.hammerlab.guacamole.pileup.{Pileup, PileupElement}
+import org.hammerlab.guacamole.variants.{Allele, Genotype}
 
 /**
  * Functions for calculating the likelihood of a genotype given some read evidence (pileup elements).
