@@ -21,6 +21,37 @@ class ReadSetsSuite
     override def toString: String = msg()
   }
 
+  test("test BAM filtering by loci") {
+
+    def checkFilteredReadCount(loci: String, expectedCount: Int): Unit = {
+      withClue("filtering to loci %s: ".format(loci)) {
+        val reads = loadReadsRDD(
+          sc,
+          "gatk_mini_bundle_extract.bam",
+          filters = InputFilters(overlapsLoci = LociParser(loci))
+        ).reads.collect
+
+        reads.length should be(expectedCount)
+      }
+    }
+
+    val lociAndExpectedCounts = Seq(
+      ("20:9999900", 0),
+      ("20:9999901", 1),
+      ("20:9999912", 2),
+      ("20:0-10000000", 9),
+      ("20:10270532", 1),
+      ("20:10270533", 0)
+    )
+
+    for {
+      (loci, expectedCount) <- lociAndExpectedCounts
+    } {
+      checkFilteredReadCount(loci, expectedCount)
+    }
+  }
+
+
   test("using different bam reading APIs on sam/bam files should give identical results") {
     def check(paths: Seq[String], filter: InputFilters): Unit = {
       withClue("using filter %s: ".format(filter)) {
