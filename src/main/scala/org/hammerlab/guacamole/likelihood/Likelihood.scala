@@ -4,6 +4,7 @@ import breeze.linalg.{DenseMatrix, DenseVector, logNormalize, sum}
 import breeze.numerics.{exp, log}
 import org.bdgenomics.adam.util.PhredUtils
 import org.hammerlab.guacamole.pileup.{Pileup, PileupElement}
+import org.hammerlab.guacamole.util.Bases
 import org.hammerlab.guacamole.variants.{Allele, Genotype}
 
 /**
@@ -84,13 +85,14 @@ object Likelihood {
     logSpace: Boolean = false,
     normalize: Boolean = false): Seq[(Genotype, Double)] = {
 
-    val alleles = pileup.distinctAlleles
+    val alleles = pileup.distinctAlleles.filter(allele => allele.altBases.forall((Bases.isStandardBase _)))
+
     val genotypes = (for {
       i <- 0 until alleles.size
       j <- i until alleles.size
     } yield Genotype(alleles(i), alleles(j))).toArray
     val likelihoods = likelihoodsOfGenotypes(pileup.elements, genotypes, probabilityCorrect, prior, logSpace, normalize)
-    genotypes.zip(likelihoods.toArray)
+    genotypes.zip(likelihoods.data)
   }
 
   /**
