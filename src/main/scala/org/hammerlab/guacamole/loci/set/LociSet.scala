@@ -3,6 +3,7 @@ package org.hammerlab.guacamole.loci.set
 import java.lang.{Long => JLong}
 
 import com.google.common.collect.{Range => JRange}
+import htsjdk.samtools.util.Interval
 import org.hammerlab.guacamole.readsets.ContigLengths
 import org.hammerlab.guacamole.reference.{ContigName, Locus, NumLoci, ReferenceRegion}
 import org.hammerlab.guacamole.strings.TruncatedToString
@@ -84,6 +85,31 @@ case class LociSet(private val map: SortedMap[ContigName, Contig]) extends Trunc
       (firstSet, secondSet)
     }
   }
+
+
+  /**
+   * Build a collection of HTSJDK Intervals which are closed [start, end], 1-based intervals
+   */
+  def toHtsJDKIntervals: List[Interval] = {
+    map
+      .keys
+      .flatMap(
+        contig => {
+          this.onContig(contig)
+            .ranges
+            // We add 1 to the start to move to 1-based coordinates
+            // Since the `Interval` end is inclusive, we are adding and subtracting 1, no-op
+            .map(interval => new Interval(contig, interval.start.toInt + 1, interval.end.toInt))
+        }).toList
+  }
+
+  /**
+   * String representation of HTSJDK intervals which are closed [start, end], 1-based intervals
+   */
+  def toHtsJDKIntervalString: String = {
+    toHtsJDKIntervals.map(_.toString).mkString(",")
+  }
+
 }
 
 object LociSet {
