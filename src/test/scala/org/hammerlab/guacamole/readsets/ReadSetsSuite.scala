@@ -6,7 +6,7 @@ import org.bdgenomics.adam.rdd.read.AlignmentRecordRDDFunctions
 import org.bdgenomics.adam.rdd.{ADAMContext, ADAMSaveAnyArgs}
 import org.hammerlab.guacamole.loci.set.LociParser
 import org.hammerlab.guacamole.reads.MappedRead
-import org.hammerlab.guacamole.readsets.io.{Input, InputFilters, ReadLoadingConfig}
+import org.hammerlab.guacamole.readsets.io.{Input, InputFilters}
 import org.hammerlab.guacamole.readsets.rdd.ReadsRDDUtil
 import org.hammerlab.guacamole.util.GuacFunSuite
 import org.hammerlab.guacamole.util.TestUtil.resourcePath
@@ -27,31 +27,24 @@ class ReadSetsSuite
 
         val firstPath = paths.head
 
-        val configs = BamReaderAPI.values.map(ReadLoadingConfig(_))
-
-        val firstConfig = configs.head
-
         val standard =
           loadReadsRDD(
             sc,
             paths.head,
-            filter,
-            config = configs.head
+            filter
           ).reads.collect
 
         for {
-          config <- configs
           path <- paths
-          if config != firstConfig || path != firstPath
+          if path != firstPath
         } {
-          withClue(s"file $path with config $config vs standard $firstPath with config $firstConfig:\n") {
+          withClue(s"file $path vs standard $firstPath\n") {
 
             val result =
               loadReadsRDD(
                 sc,
                 path,
-                filter,
-                config = config
+                filter
               ).reads.collect
 
             assert(

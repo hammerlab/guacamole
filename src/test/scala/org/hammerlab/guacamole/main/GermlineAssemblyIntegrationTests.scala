@@ -37,7 +37,6 @@ object GermlineAssemblyIntegrationTests extends SparkCommand[Arguments] with Var
 
 
     // Read loading config
-    args.bamReaderAPI = "hadoopbam"
     args.partitioningAccuracy = 0
     args.parallelism = 0
 
