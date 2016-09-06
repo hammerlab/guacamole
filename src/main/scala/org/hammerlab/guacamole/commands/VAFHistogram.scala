@@ -12,7 +12,7 @@ import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMapMulti
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.readsets.args.{Arguments => ReadSetsArguments}
-import org.hammerlab.guacamole.readsets.io.{Input, InputFilters, ReadLoadingConfig}
+import org.hammerlab.guacamole.readsets.io.{Input, InputFilters}
 import org.hammerlab.guacamole.readsets.rdd.PartitionedRegions
 import org.hammerlab.guacamole.readsets.{NumSamples, PartitionedReads, ReadSets, SampleId}
 import org.hammerlab.guacamole.reference.{ContigName, Locus, NumLoci, ReferenceBroadcast, ReferenceGenome}
@@ -118,8 +118,7 @@ object VAFHistogram {
           sc,
           args.inputs,
           filters,
-          contigLengthsFromDictionary = true,
-          config = ReadLoadingConfig(args)
+          contigLengthsFromDictionary = true
         )
 
       val ReadSets(_, _, contigLengths) = readsets

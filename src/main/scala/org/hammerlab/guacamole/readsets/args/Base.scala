@@ -6,8 +6,7 @@ import org.hammerlab.guacamole.readsets.rdd.PartitionedRegionsArgs
 
 trait Base
   extends PartitionedRegionsArgs
-    with NoSequenceDictionaryArgs
-    with ReadLoadingConfigArgs {
+    with NoSequenceDictionaryArgs {
 
   def paths: Array[String]
   def sampleNames: Array[String]
