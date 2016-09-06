@@ -1,7 +1,7 @@
 package org.hammerlab.guacamole.readsets.args
 
 import org.hammerlab.guacamole.readsets.PerSample
-import org.hammerlab.guacamole.readsets.io.{Input, ReadLoadingConfigArgs}
+import org.hammerlab.guacamole.readsets.io.Input
 import org.hammerlab.guacamole.readsets.rdd.PartitionedRegionsArgs
 
 trait Base
