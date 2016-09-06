@@ -226,6 +226,9 @@ object ReadSets extends Logging {
       } else {
         throw new IllegalArgumentException(s"File $filename is not a BAM or SAM file")
       }
+    } else {
+      // Ensure that we clear any stale intervals
+      conf.unset(BAMInputFormat.INTERVALS_PROPERTY)
     }
 
     val reads: RDD[Read] =
