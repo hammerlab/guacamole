@@ -5,8 +5,8 @@ import java.io.File
 import htsjdk.samtools.ValidationStringency
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.io.LongWritable
-import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
+import org.apache.spark.{Logging, SparkContext}
 import org.bdgenomics.adam.models.SequenceDictionary
 import org.bdgenomics.adam.rdd.{ADAMContext, ADAMSpecificRecordSequenceDictionaryRDDAggregator}
 import org.bdgenomics.formats.avro.AlignmentRecord
@@ -18,7 +18,10 @@ import org.hammerlab.guacamole.readsets.io.{Input, InputFilters}
 import org.hammerlab.guacamole.readsets.rdd.ReadsRDD
 import org.hammerlab.guacamole.reference.{ContigName, Locus}
 import org.seqdoop.hadoop_bam.util.SAMHeaderReader
-import org.seqdoop.hadoop_bam.{AnySAMInputFormat, SAMRecordWritable}
+import org.seqdoop.hadoop_bam.{AnySAMInputFormat, BAMInputFormat, SAMRecordWritable}
+
+import scala.collection.JavaConversions._
+
 
 /**
  * A [[ReadSets]] contains reads from multiple inputs as well as [[SequenceDictionary]] / contig-length information
@@ -42,7 +45,7 @@ case class ReadSets(readsRDDs: PerSample[ReadsRDD],
   lazy val allMappedReads = sc.union(mappedReadsRDDs).setName("unioned reads")
 }
 
-object ReadSets {
+object ReadSets extends Logging {
 
   /**
    * Load one read-set from an input file.
@@ -185,13 +188,23 @@ object ReadSets {
 
     val path = new Path(filename)
 
-    // Load with hadoop bam
-    progress(s"Using hadoop bam to read: $filename")
-    val samHeader = SAMHeaderReader.readSAMHeaderFrom(path, sc.hadoopConfiguration)
-    val sequenceDictionary = SequenceDictionary.fromSAMHeader(samHeader)
-
     val basename = new File(filename).getName
     val shortName = basename.substring(0, math.min(basename.length, 100))
+
+    val conf = sc.hadoopConfiguration
+    val samHeader = SAMHeaderReader.readSAMHeaderFrom(path, conf)
+    val sequenceDictionary = SequenceDictionary.fromSAMHeader(samHeader)
+
+    if (filters.overlapsLoci.nonEmpty)  {
+      if (filename.endsWith(".bam")) {
+        val bamIndexIntervals = filters.overlapsLoci.map(_.result(contigLengths(sequenceDictionary)).toHtsJDKIntervals)
+        bamIndexIntervals.foreach(BAMInputFormat.setIntervals(conf, _))
+      } else if (filename.endsWith(".sam")) {
+        log.warn(s"Loading SAM file: $filename with intervals specified. This requires parsing the entire file.")
+      } else {
+        throw new IllegalArgumentException(s"File $filename is not a BAM or SAM file")
+      }
+    }
 
     val reads: RDD[Read] =
       sc
@@ -203,6 +216,7 @@ object ReadSets {
         .setName(s"Guac reads: $shortName")
 
     (reads, sequenceDictionary)
+
   }
 
   /** Returns an RDD of Reads and SequenceDictionary from reads in ADAM format **/
