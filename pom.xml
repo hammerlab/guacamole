@@ -325,6 +325,11 @@
       <artifactId>magic-rdds</artifactId>
       <version>1.0.0</version>
     </dependency>
+    <dependency>
+      <groupId>org.clapper</groupId>
+      <artifactId>grizzled-slf4j_${scala.version.prefix}</artifactId>
+      <version>1.0.3</version>
+    </dependency>
 
     <!-- Test deps -->
     <dependency>
