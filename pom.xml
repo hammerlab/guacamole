@@ -330,7 +330,7 @@
     <dependency>
       <groupId>com.holdenkarau</groupId>
       <artifactId>spark-testing-base_${scala.version.prefix}</artifactId>
-      <version>${spark.version}_0.3.3</version>
+      <version>${spark.version}_0.4.4</version>
       <scope>test</scope>
     </dependency>
     <dependency>
