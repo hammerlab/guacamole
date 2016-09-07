@@ -1,6 +1,5 @@
 package org.hammerlab.guacamole.windowing
 
-import org.apache.spark.Logging
 import org.hammerlab.guacamole.loci.set.LociIterator
 import org.hammerlab.guacamole.readsets.PerSample
 import org.hammerlab.guacamole.reference.{ContigName, Interval, Locus, ReferenceRegion}
@@ -26,7 +25,7 @@ import scala.collection.mutable
  */
 case class SlidingWindow[R <: ReferenceRegion](contigName: ContigName,
                                                halfWindowSize: Int,
-                                               rawSortedRegions: Iterator[R]) extends Logging {
+                                               rawSortedRegions: Iterator[R]) {
   /** The locus currently under consideration. */
   var currentLocus = -1L
   /** The new regions that were added to currentRegions as a result of the most recent call to setCurrentLocus. */

@@ -1,6 +1,6 @@
 package org.hammerlab.guacamole.commands
 
-import org.apache.spark.Logging
+import grizzled.slf4j.Logging
 import org.bdgenomics.utils.cli.{Args4j, Args4jBase}
 
 /**

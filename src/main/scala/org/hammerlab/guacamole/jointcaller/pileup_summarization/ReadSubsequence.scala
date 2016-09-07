@@ -1,6 +1,6 @@
 package org.hammerlab.guacamole.jointcaller.pileup_summarization
 
-import org.apache.spark.Logging
+import grizzled.slf4j.Logging
 import org.hammerlab.guacamole.pileup.PileupElement
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.reference.{ContigSequence, Locus}

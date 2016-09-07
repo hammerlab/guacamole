@@ -97,7 +97,7 @@ object GeneratePartialFasta extends SparkCommand[GeneratePartialFastaArguments] 
         writer.write(sequence)
         writer.write("\n")
       } catch {
-        case e: ContigNotFound => log.warn("No such contig in reference: %s: %s".format(contig, e.toString))
+        case e: ContigNotFound => warn("No such contig in reference: %s: %s".format(contig, e.toString))
       }
     }
     writer.close()
