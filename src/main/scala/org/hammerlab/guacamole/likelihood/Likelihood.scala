@@ -181,7 +181,7 @@ object Likelihood {
     //    probability(element, allele).
     //
     // where the probability is defined as in the header comment.
-    val alleleElementProbabilities = new DenseMatrix[Double](alleles.size, depth)
+    val alleleElementProbabilities = new DenseMatrix[Double](alleles.length, depth)
     for {
       (allele, alleleIndex) <- alleles.zipWithIndex
       (element, elementIndex) <- elements.zipWithIndex
