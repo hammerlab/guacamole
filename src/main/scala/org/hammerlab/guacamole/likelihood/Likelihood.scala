@@ -24,7 +24,7 @@ object Likelihood {
    *
    * This considers only the base quality scores.
    *
-   * @param element the [org.hammerlab.guacamole.pileup.PileupElement]] to consider
+   * @param element the [[org.hammerlab.guacamole.pileup.PileupElement]] to consider
    * @return the unnormalized likelihood the sequenced bases are correct. Plain probability, NOT a log prob.
    */
   def probabilityCorrectIgnoringAlignment(element: PileupElement): Double = {
