@@ -85,7 +85,8 @@ object Likelihood {
     logSpace: Boolean = false,
     normalize: Boolean = false): Seq[(Genotype, Double)] = {
 
-    val alleles = pileup.distinctAlleles.filter(allele => allele.altBases.forall((Bases.isStandardBase _)))
+
+    val alleles = pileup.distinctAlleles.filter(allele => allele.altBases.forall(Bases.isStandardBase))
     val genotypes = (for {
       i <- alleles.indices
       j <- i until alleles.size
