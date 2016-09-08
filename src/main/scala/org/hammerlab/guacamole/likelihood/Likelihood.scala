@@ -135,11 +135,11 @@ object Likelihood {
                              logSpace: Boolean = false,
                              normalize: Boolean = false): DenseVector[Double] = {
 
-    val alleles = genotypes.flatMap(_.alleles).distinct.toIndexedSeq.sorted // the distinct alleles in our genotypes
+    val alleles = genotypes.flatMap(_.alleles).distinct.sorted.array // the distinct alleles in our genotypes
     val alleleToIndex = alleles.zipWithIndex.toMap // map from allele -> allele index in our alleles sequence.
     val depth = elements.size
 
-    val alleleElementProbabilities = computeAlleleElementProbabilities(elements, alleles.toArray, probabilityCorrect)
+    val alleleElementProbabilities = computeAlleleElementProbabilities(elements, alleles, probabilityCorrect)
 
     // Calculate likelihoods in log-space. For each genotype, we compute:
     //   sum over elements {
