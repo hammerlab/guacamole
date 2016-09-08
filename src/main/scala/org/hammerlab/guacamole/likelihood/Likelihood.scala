@@ -121,7 +121,7 @@ object Likelihood {
    * @param normalize if true, the probabilities returned are normalized to sum to 1.
    * @return A sequence of probabilities corresponding to each genotype in the genotypes argument
    */
-  private def likelihoodsOfGenotypes(elements: Seq[PileupElement],
+  def likelihoodsOfGenotypes(elements: Seq[PileupElement],
                                      genotypes: Array[Genotype],
                                      includeAlignment: Boolean,
                                      prior: Genotype => Double,

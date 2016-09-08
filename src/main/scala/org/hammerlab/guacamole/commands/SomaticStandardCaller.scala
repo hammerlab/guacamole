@@ -7,13 +7,14 @@ import org.bdgenomics.formats.avro.DatabaseVariantAnnotation
 import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMapTwoSamples
 import org.hammerlab.guacamole.filters.somatic.SomaticGenotypeFilter.SomaticGenotypeFilterArguments
 import org.hammerlab.guacamole.filters.somatic.{SomaticAlternateReadDepthFilter, SomaticGenotypeFilter, SomaticReadDepthFilter}
-import org.hammerlab.guacamole.likelihood.Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup
+import org.hammerlab.guacamole.likelihood.Likelihood
+import org.hammerlab.guacamole.likelihood.Likelihood.likelihoodsOfGenotypes
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.readsets.ReadSets
 import org.hammerlab.guacamole.readsets.args.{ReferenceArgs, TumorNormalReadsArgs}
 import org.hammerlab.guacamole.readsets.rdd.{PartitionedRegions, PartitionedRegionsArgs}
-import org.hammerlab.guacamole.variants.{Allele, AlleleEvidence, CalledSomaticAllele, GenotypeOutputArgs, GenotypeOutputCaller}
+import org.hammerlab.guacamole.variants.{Allele, AlleleEvidence, CalledSomaticAllele, Genotype, GenotypeOutputArgs, GenotypeOutputCaller}
 import org.kohsuke.args4j.{Option => Args4jOption}
 
 /**
@@ -125,7 +126,7 @@ object SomaticStandard {
     def findPotentialVariantAtLocus(tumorPileup: Pileup,
                                     normalPileup: Pileup,
                                     oddsThreshold: Int,
-                                    maxReadDepth: Int = Int.MaxValue): Seq[CalledSomaticAllele] = {
+                                    maxReadDepth: Int = Int.MaxValue): Option[CalledSomaticAllele] = {
 
       // For now, we skip loci that have no reads mapped. We may instead want to emit NoCall in this case.
       if (tumorPileup.elements.isEmpty
@@ -134,58 +135,76 @@ object SomaticStandard {
         || normalPileup.depth > maxReadDepth
         || tumorPileup.referenceDepth == tumorPileup.depth // skip computation if no alternate reads
         )
-        return Seq.empty
+        return None
 
-      /**
-       * Find the most likely genotype in the tumor sample
-       * This is either the reference genotype or an heterozygous genotype with some alternate base
-       */
-      val genotypesAndLikelihoods =
-        likelihoodsOfAllPossibleGenotypesFromPileup(
-          tumorPileup,
-          includeAlignment = true,
-          normalize = true
+      val referenceAllele = Allele(tumorPileup.referenceBase, tumorPileup.referenceBase)
+      val referenceGenotype = Genotype(Map(referenceAllele -> 1.0))
+
+      val tumorDepth = tumorPileup.depth
+      val variantAlleleFractions: Map[Allele, Double] =
+        tumorPileup
+          .elements
+          .withFilter(_.allele.isVariant)
+          .map(_.allele)
+          .groupBy(identity)
+          .map(kv => kv._1 -> kv._2.size / tumorDepth.toDouble )
+
+
+      val mostFrequentVariantAllele = variantAlleleFractions.maxBy(_._2)
+      val empiricalVariantAlleleFrequency =  mostFrequentVariantAllele._2
+      val somaticVariantGenotype =
+        Genotype(
+          Map(
+            referenceAllele -> (1.0 - empiricalVariantAlleleFrequency),
+            mostFrequentVariantAllele._1 -> empiricalVariantAlleleFrequency
+          )
+        )
+      val tumorLikelihoods = likelihoodsOfGenotypes(
+        tumorPileup.elements,
+        Array(referenceGenotype, somaticVariantGenotype),
+        prior = Likelihood.uniformPrior,
+        includeAlignment = false,
+        logSpace = true,
+        normalize = false
+      )
+      val tumorLOD: Double = tumorLikelihoods(1) - tumorLikelihoods(0)
+
+      val germlineVariantGenotype =
+        Genotype(
+          Map(
+            referenceAllele -> 0.5,
+            mostFrequentVariantAllele._1 -> 0.5
+          )
         )
 
-      if (genotypesAndLikelihoods.isEmpty)
-        return Seq.empty
+      val normalLikelihoods = likelihoodsOfGenotypes(
+        normalPileup.elements,
+        Array(referenceGenotype, germlineVariantGenotype),
+        prior = Likelihood.uniformPrior,
+        includeAlignment = false,
+        logSpace = true,
+        normalize = false
+      )
 
-      val (mostLikelyTumorGenotype, mostLikelyTumorGenotypeLikelihood) = genotypesAndLikelihoods.maxBy(_._2)
-
-      // The following lazy vals are only evaluated if mostLikelyTumorGenotype.hasVariantAllele
-      lazy val normalLikelihoods =
-        likelihoodsOfAllPossibleGenotypesFromPileup(
-          normalPileup,
-          includeAlignment = false,
-          normalize = true
-        ).toMap
-
-      lazy val normalVariantGenotypes = normalLikelihoods.filter(_._1.hasVariantAllele)
-
-      lazy val normalVariantsTotalLikelihood = normalVariantGenotypes.values.sum
-      lazy val somaticOdds = mostLikelyTumorGenotypeLikelihood / normalVariantsTotalLikelihood
-
-      if (mostLikelyTumorGenotype.hasVariantAllele && somaticOdds * 100 >= oddsThreshold)
-        for {
-          allele <- mostLikelyTumorGenotype.getNonReferenceAlleles.find(_.altBases.nonEmpty).toSeq
-
-          tumorVariantEvidence = AlleleEvidence(mostLikelyTumorGenotypeLikelihood, allele, tumorPileup)
-
-          refAllele = Allele(allele.refBases, allele.refBases)
-
-          normalReferenceEvidence = AlleleEvidence(1 - normalVariantsTotalLikelihood, refAllele, normalPileup)
-        } yield
+      val normalLOD: Double = normalLikelihoods(0) - normalLikelihoods(1)
+      if (tumorLOD > oddsThreshold && normalLOD > oddsThreshold) {
+        val allele = mostFrequentVariantAllele._1
+        val tumorVariantEvidence = AlleleEvidence(tumorLikelihoods(1), allele, tumorPileup)
+        val normalReferenceEvidence = AlleleEvidence(1 - normalLikelihoods(0), referenceAllele, tumorPileup)
+        Some(
           CalledSomaticAllele(
             tumorPileup.sampleName,
             tumorPileup.contigName,
             tumorPileup.locus,
             allele,
-            math.log(somaticOdds),
+            math.log(tumorLOD),
             tumorVariantEvidence,
             normalReferenceEvidence
           )
-      else
-        Seq()
+        )
+      } else {
+        None
+      }
     }
   }
 }

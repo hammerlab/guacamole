@@ -62,7 +62,7 @@ class SomaticStandardCallerSuite
 
     val tumorPileup = makeTumorPileup(tumorReads, "chr1", 2)
 
-    val alleles = findPotentialVariantAtLocus(tumorPileup, normalPileup, oddsThreshold = 2)
+    val alleles = findPotentialVariantAtLocus(tumorPileup, normalPileup, oddsThreshold = 2).toSeq
     alleles.size should be(1)
 
     val allele = alleles(0).allele
@@ -91,7 +91,7 @@ class SomaticStandardCallerSuite
 
     val tumorPileup = makeTumorPileup(tumorReads, "chr4", 4)
 
-    val alleles = findPotentialVariantAtLocus(tumorPileup, normalPileup, oddsThreshold = 2)
+    val alleles = findPotentialVariantAtLocus(tumorPileup, normalPileup, oddsThreshold = 2).toSeq
     alleles.size should be(1)
 
     val allele = alleles(0).allele
@@ -117,8 +117,12 @@ class SomaticStandardCallerSuite
       )
 
     val tumorPileup = makeTumorPileup(tumorReads, "chr1", 3)
+    val alleles = findPotentialVariantAtLocus(
+      makePileup(tumorReads, "chr1", 3),
+      makePileup(normalReads, "chr1", 3),
+      oddsThreshold = 2
+    ).toSeq
 
-    val alleles = findPotentialVariantAtLocus(tumorPileup, normalPileup, oddsThreshold = 2)
     alleles.size should be(1)
 
     val allele = alleles(0).allele
@@ -145,7 +149,7 @@ class SomaticStandardCallerSuite
       makeTumorPileup(tumorReads, "chr1", 3),
       makeNormalPileup(normalReads, "chr1", 3),
       oddsThreshold = 2
-    )
+    ).toSeq
     alleles.size should be(1)
 
     val allele = alleles(0).allele
@@ -181,7 +185,7 @@ class SomaticStandardCallerSuite
         makeTumorPileup(tumorReads, contigName, locus),
         makeNormalPileup(normalReads, contigName, locus),
         oddsThreshold = 2
-      )
+      ).toSeq
       alleles.size should be(1)
 
       val allele = alleles(0).allele

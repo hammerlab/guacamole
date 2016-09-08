@@ -27,17 +27,15 @@ class SomaticStandardCallerRealDataSuite
   /**
    * Common algorithm parameters - fixed for all tests
    */
-  val logOddsThreshold = 120
+  val logOddsThreshold = 7
   val minTumorReadDepth = 8
   val minNormalReadDepth = 4
   val maxTumorReadDepth = 200
   val minTumorAlternateReadDepth = 3
-  val maxMappingComplexity = 20
-  val minAlignmentForComplexity = 1
 
   val filterMultiAllelic = false
 
-  val minLikelihood = 70
+  val minLikelihood = 0
   val minVAF = 5
 
   def testVariants(tumorReads: Seq[MappedRead],
@@ -58,6 +56,13 @@ class SomaticStandardCallerRealDataSuite
           tumorPileup,
           normalPileup,
           logOddsThreshold
+        ).toSeq
+
+        calledGenotypes.foreach(
+          g => {
+            println(g.tumorVariantEvidence)
+            println(g.normalReferenceEvidence)
+          }
         )
 
         val foundVariant =
