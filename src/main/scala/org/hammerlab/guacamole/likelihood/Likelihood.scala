@@ -86,7 +86,6 @@ object Likelihood {
     normalize: Boolean = false): Seq[(Genotype, Double)] = {
 
     val alleles = pileup.distinctAlleles.filter(allele => allele.altBases.forall((Bases.isStandardBase _)))
-
     val genotypes = (for {
       i <- 0 until alleles.size
       j <- i until alleles.size
@@ -151,10 +150,9 @@ object Likelihood {
       assume(genotype.alleles.size == 2, "Non-diploid genotype not supported")
       val alleleRow1 = alleleElementProbabilities(alleleToIndex(genotype.alleles(0)), ::)
       val alleleRow2 = alleleElementProbabilities(alleleToIndex(genotype.alleles(1)), ::)
-      ( //alleleRow1.aggregate(alleleRow2, Functions.plus, Functions.chain(Functions.log, Functions.plus))
-        sum(log(alleleRow1 + alleleRow2))
+      sum(log(alleleRow1 + alleleRow2))
         + math.log(prior(genotype))
-        - math.log(2) * depth)
+        - math.log(2) * depth
     }))
 
     // Normalize and/or convert log probs to plain probabilities.
@@ -195,5 +193,4 @@ object Likelihood {
 
     alleleElementProbabilities
   }
-
 }
