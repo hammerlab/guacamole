@@ -21,24 +21,27 @@ class LikelihoodSuite
 
   val referenceBase = 'C'.toByte
 
-  def makeGenotype(alleles: String*): Genotype =
+  def makeGenotype(alleles: String*): Genotype = {
+    val alleleFraction = 1.0 / alleles.length
     Genotype(
-      alleles
-        .map(
-          allele =>
-            Allele(
-              Seq(referenceBase),
-              Bases.stringToBases(allele)
-            )
-        ): _*
+      (for {
+        allele <- alleles
+      }
+        yield Allele(
+          Seq(referenceBase),
+          Bases.stringToBases(allele))
+          -> alleleFraction).toMap
     )
+  }
 
   def makeGenotype(alleles: (Char, Char)): Genotype =
     makeGenotype(
       alleles
         .productIterator
         .map(_.toString)
-        .toList: _*
+        .toList
+        .distinct
+        : _*
     )
 
   val errorPhred30 = PhredUtils.phredToErrorProbability(30)
@@ -72,7 +75,7 @@ class LikelihoodSuite
       )
     ) {
       case (genotype, likelihood) =>
-        actualLikelihoodsMap(genotype) should ===(likelihood +- epsilon)
+        actualLikelihoodsMap(genotype) should === (likelihood +- epsilon)
     }
   }
 

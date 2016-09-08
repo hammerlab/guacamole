@@ -85,13 +85,18 @@ object Likelihood {
     logSpace: Boolean = false,
     normalize: Boolean = false): Seq[(Genotype, Double)] = {
 
-
     val alleles = pileup.distinctAlleles.filter(allele => allele.altBases.forall(Bases.isStandardBase))
-    val genotypes = (for {
-      i <- alleles.indices
-      j <- i until alleles.size
-    } yield Genotype(alleles(i), alleles(j))).toArray
-    val likelihoods = likelihoodsOfGenotypes(pileup.elements, genotypes, probabilityCorrect, prior, logSpace, normalize)
+
+    // Assume the alleles are equivalent fractions in the genotype
+    val genotypes =
+      for {
+        i <- alleles.indices
+        j <- i until alleles.size
+        mixture = if (i == j) Map(alleles(i) -> 1.0) else Map(alleles(i) -> 0.5, alleles(j) -> 0.5)
+      } yield
+        Genotype(mixture)
+
+    val likelihoods = likelihoodsOfGenotypes(pileup.elements, genotypes.toArray, probabilityCorrect, prior, logSpace, normalize)
     genotypes.zip(likelihoods.data)
   }
 
@@ -102,9 +107,9 @@ object Likelihood {
    *
    * For each genotype this calculates:
    *
-   *  prior(genotype) / pow(2, depth) * product over all elements of {
+   *  prior(genotype) * product over all elements of {
    *    sum over the two alleles in the genotype {
-   *      probability(element, allele)
+   *      probability(element, allele) * f_allele
    *    }
    *  }
    *
@@ -113,7 +118,9 @@ object Likelihood {
    *  probability(element, allele) = probabilityCorrect(element)     if element.allele = allele
    *                                 1 - probabilityCorrect(element) otherwise
    *
-   * and probabilityCorrect(element) is a user supplied function that maps pileup elements to the probability that the
+   * f_allele is the allele fraction in the genotype
+   *
+   * probabilityCorrect(element) is a user supplied function that maps pileup elements to the probability that the
    * sequenced bases for that element are correct, for example by considering the base qualities and/or alignment
    * quality.
    *
@@ -144,17 +151,17 @@ object Likelihood {
 
     // Calculate likelihoods in log-space. For each genotype, we compute:
     //   sum over elements {
-    //      log(probability(allele1, element) + probability(allele2, element))
+    //      log(probability(allele1, element) * f1 + probability(allele2, element) * f2)
     //   } + log(prior) - log(ploidy) * depth
-    //
-    val logLikelihoods: DenseVector[Double] = DenseVector(genotypes.map(genotype => {
-      assume(genotype.alleles.size == 2, "Non-diploid genotype not supported")
-      val alleleRow1 = alleleElementProbabilities(alleleToIndex(genotype.alleles(0)), ::)
-      val alleleRow2 = alleleElementProbabilities(alleleToIndex(genotype.alleles(1)), ::)
-      sum(log(alleleRow1 + alleleRow2))
-        + math.log(prior(genotype))
-        - math.log(2) * depth
-    }))
+    // where f_i is the allele fraction
+    val logLikelihoods: DenseVector[Double] = DenseVector(
+      genotypes.map(genotype => {
+        val alleleRows = genotype.alleleMixture.map({
+          case (allele, alleleFraction) => alleleElementProbabilities(alleleToIndex(allele), ::) * alleleFraction
+        })
+        sum( log( sum(alleleRows) )) + math.log(prior(genotype)) * depth
+      })
+    )
 
     // Normalize and/or convert log probs to plain probabilities.
     val possiblyNormalizedLogLikelihoods =
