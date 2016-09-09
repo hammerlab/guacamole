@@ -187,7 +187,7 @@ object SomaticStandard {
       )
 
       val normalLOD: Double = normalLikelihoods(0) - normalLikelihoods(1)
-      if (tumorLOD > oddsThreshold && normalLOD > oddsThreshold) {
+      if (tumorLOD > oddsThreshold && normalLOD > oddsThreshold && mostFrequentVariantAllele._1.altBases.nonEmpty) {
         val allele = mostFrequentVariantAllele._1
         val tumorVariantEvidence = AlleleEvidence(tumorLikelihoods(1), allele, tumorPileup)
         val normalReferenceEvidence = AlleleEvidence(1 - normalLikelihoods(0), referenceAllele, tumorPileup)
