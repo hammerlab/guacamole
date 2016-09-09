@@ -9,7 +9,8 @@ package org.hammerlab.guacamole.variants
  */
 case class Genotype(alleleMixture: Map[Allele, Double]) {
 
-  assume(alleleMixture.values.sum <= 1, "Allele fractions are larger than 1")
+  // The allele fractions should sum up to approximately one
+  assume(alleleMixture.values.sum == 1, s"Allele should sum to 1, but sum to ${alleleMixture.values.sum}")
 
   val alleles = alleleMixture.keySet
 
