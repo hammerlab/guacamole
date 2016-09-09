@@ -1,6 +1,5 @@
 package org.hammerlab.guacamole.jointcaller.pileup_summarization
 
-import org.apache.spark.Logging
 import org.hammerlab.guacamole.pileup.PileupElement
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.reference.{ContigSequence, Locus}
@@ -19,7 +18,7 @@ case class ReadSubsequence(read: MappedRead,
                            startLocus: Locus,
                            endLocus: Locus,
                            startReadPosition: Int,
-                           endReadPosition: Int) extends Logging {
+                           endReadPosition: Int) {
 
   assume(endLocus > startLocus)
 
@@ -55,6 +54,7 @@ case class ReadSubsequence(read: MappedRead,
     Bases.basesToString(contigReferenceSequence.slice(startLocus.toInt, endLocus.toInt))
   }
 }
+
 object ReadSubsequence {
   /**
    * Extract a sub-sequence of a particular length starting at a certain reference locus from a MappedRead.
@@ -104,7 +104,6 @@ object ReadSubsequence {
    * @return ReadSubsequence for the alt allele, if one exists
    */
   def ofNextAltAllele(element: PileupElement): Option[ReadSubsequence] = {
-    val contigSequence = element.contigSequence
 
     def isVariantOrFollowedByDeletion(e: PileupElement): Boolean = {
       e.allele.isVariant || (
