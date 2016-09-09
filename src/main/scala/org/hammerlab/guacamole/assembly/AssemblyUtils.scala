@@ -1,7 +1,7 @@
 package org.hammerlab.guacamole.assembly
 
+import grizzled.slf4j.Logging
 import htsjdk.samtools.CigarOperator
-import org.apache.spark.Logging
 import org.hammerlab.guacamole.alignment.{AffineGapPenaltyAlignment, ReadAlignment}
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.reference.{ContigSequence, ReferenceGenome}
@@ -83,7 +83,7 @@ object AssemblyUtils extends Logging {
 
     // Score up to the maximum number of paths
     if (paths.isEmpty) {
-      log.warn(s"In window $contigName:$referenceStart-$referenceEnd assembly failed")
+      warn(s"In window $contigName:$referenceStart-$referenceEnd assembly failed")
       List.empty
     } else if (paths.size <= expectedPloidy) {
       paths
@@ -101,7 +101,7 @@ object AssemblyUtils extends Logging {
         .map(_._2)
 
     } else {
-      log.warn(s"In window $contigName:$referenceStart-$referenceEnd " +
+      warn(s"In window $contigName:$referenceStart-$referenceEnd " +
         s"there were ${paths.size} paths found, all variants skipped")
       List.empty
     }
@@ -126,7 +126,7 @@ object AssemblyUtils extends Logging {
                                                    allowReferenceVariant: Boolean = false): Seq[T] = {
 
     val alignment = alignPath(path)
-    log.warn(s"Building variants from ${alignment.toCigarString} alignment")
+    warn(s"Building variants from ${alignment.toCigarString} alignment")
 
     var referenceIndex = alignment.refStartIdx
     var pathIndex = 0

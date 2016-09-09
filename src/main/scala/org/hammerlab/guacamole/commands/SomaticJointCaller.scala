@@ -64,7 +64,7 @@ object SomaticJoint {
 
       val (readsets, loci) = ReadSets(sc, args)
 
-      log.info(
+      info(
         (s"Running on ${inputs.items.length} inputs:" :: inputs.items.toList).mkString("\n")
       )
 
