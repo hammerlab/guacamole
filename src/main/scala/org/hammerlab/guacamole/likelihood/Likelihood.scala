@@ -2,7 +2,6 @@ package org.hammerlab.guacamole.likelihood
 
 import breeze.linalg.{DenseMatrix, DenseVector, logNormalize, sum}
 import breeze.numerics.{exp, log}
-import org.bdgenomics.adam.util.PhredUtils
 import org.hammerlab.guacamole.pileup.{Pileup, PileupElement}
 import org.hammerlab.guacamole.util.Bases
 import org.hammerlab.guacamole.variants.{Allele, Genotype}
@@ -20,30 +19,6 @@ object Likelihood {
   def uniformPrior(genotype: Genotype) = 1.0
 
   /**
-   * One way of defining the likelihood that the sequenced bases in a pileup element are correct.
-   *
-   * This considers only the base quality scores.
-   *
-   * @param element the [[org.hammerlab.guacamole.pileup.PileupElement]] to consider
-   * @return the unnormalized likelihood the sequenced bases are correct. Plain probability, NOT a log prob.
-   */
-  def probabilityCorrectIgnoringAlignment(element: PileupElement): Double = {
-    PhredUtils.phredToSuccessProbability(element.qualityScore)
-  }
-
-  /**
-   * Another way of defining the likelihood that the sequenced bases in a pileup element are correct.
-   *
-   * This considers both the base quality scores and alignment quality of the corresponding read.
-   *
-   * @param element the [[org.hammerlab.guacamole.pileup.PileupElement]] to consider
-   * @return the unnormalized likelihood the sequenced bases are correct. Plain probability, NOT a log prob.
-   */
-  def probabilityCorrectIncludingAlignment(element: PileupElement): Double = {
-    PhredUtils.phredToSuccessProbability(element.qualityScore) * element.read.alignmentLikelihood
-  }
-
-  /**
    * Calculate the likelihood of a single genotype.
    *
    * @see [[likelihoodsOfGenotypes]] for argument descriptions.
@@ -53,17 +28,20 @@ object Likelihood {
   def likelihoodOfGenotype(
     elements: Seq[PileupElement],
     genotype: Genotype,
-    probabilityCorrect: PileupElement => Double = probabilityCorrectIgnoringAlignment,
+    includeAlignment: Boolean = false,
     prior: Genotype => Double = uniformPrior,
     logSpace: Boolean = false): Double = {
 
-    val result = likelihoodsOfGenotypes(
-      elements,
-      Array(genotype),
-      probabilityCorrect,
-      prior,
-      logSpace,
-      normalize = false)
+    val result =
+      likelihoodsOfGenotypes(
+        elements,
+        Array(genotype),
+        includeAlignment,
+        prior,
+        logSpace,
+        normalize = false
+      )
+
     assert(result.size == 1)
     result(0)
   }
@@ -80,7 +58,7 @@ object Likelihood {
    */
   def likelihoodsOfAllPossibleGenotypesFromPileup(
     pileup: Pileup,
-    probabilityCorrect: PileupElement => Double = probabilityCorrectIgnoringAlignment,
+    includeAlignment: Boolean = false,
     prior: Genotype => Double = uniformPrior,
     logSpace: Boolean = false,
     normalize: Boolean = false): Seq[(Genotype, Double)] = {
@@ -96,7 +74,16 @@ object Likelihood {
       } yield
         Genotype(mixture)
 
-    val likelihoods = likelihoodsOfGenotypes(pileup.elements, genotypes.toArray, probabilityCorrect, prior, logSpace, normalize)
+    val likelihoods =
+      likelihoodsOfGenotypes(
+        pileup.elements,
+        genotypes.toArray,
+        includeAlignment,
+        prior,
+        logSpace,
+        normalize
+      )
+
     genotypes.zip(likelihoods.data)
   }
 
@@ -126,50 +113,61 @@ object Likelihood {
    *
    * @param elements the [[org.hammerlab.guacamole.pileup.PileupElement]] instances across which the likelihoods are calculated.
    * @param genotypes the genotypes to calculate likelihoods for.
-   * @param probabilityCorrect a function of a pileup element that gives the probability that the bases sequenced are
-   *                           correct. See [[probabilityCorrectIgnoringAlignment]] and
-   *                           [[probabilityCorrectIncludingAlignment]] for two reasonable functions to use here.
-   *                           This function should return a plain probability, not a log prob.
+   * @param includeAlignment whether to factor in each element's read's alignment-likelihood to its likelihood of being
+   *                         a sequencing error or not.
    * @param prior a function on genotypes that gives the prior probability that genotype is correct. This function should
    *             return a plain probability, not a log prob.
    * @param logSpace if true, the probabilities are returned as log probs.
    * @param normalize if true, the probabilities returned are normalized to sum to 1.
    * @return A sequence of probabilities corresponding to each genotype in the genotypes argument
    */
-  def likelihoodsOfGenotypes(elements: Seq[PileupElement],
-                             genotypes: Array[Genotype],
-                             probabilityCorrect: PileupElement => Double = probabilityCorrectIgnoringAlignment,
-                             prior: Genotype => Double = uniformPrior,
-                             logSpace: Boolean = false,
-                             normalize: Boolean = false): DenseVector[Double] = {
+  private def likelihoodsOfGenotypes(elements: Seq[PileupElement],
+                                     genotypes: Array[Genotype],
+                                     includeAlignment: Boolean,
+                                     prior: Genotype => Double,
+                                     logSpace: Boolean,
+                                     normalize: Boolean): DenseVector[Double] = {
 
-    val alleles = genotypes.flatMap(_.alleles).distinct.sorted.array // the distinct alleles in our genotypes
-    val alleleToIndex = alleles.zipWithIndex.toMap // map from allele -> allele index in our alleles sequence.
+    // the distinct alleles in our genotypes
+    val alleles =
+      genotypes
+        .flatMap(_.alleles)
+        .distinct
+        .sorted
+        .array
+
+    // map from allele -> allele index in our alleles sequence.
+    val alleleToIndex =
+      alleles
+        .zipWithIndex
+        .toMap
+
     val depth = elements.size
 
-    val alleleElementProbabilities = computeAlleleElementProbabilities(elements, alleles, probabilityCorrect)
+    val alleleElementProbabilities = computeAlleleElementProbabilities(elements, alleles, includeAlignment)
 
     // Calculate likelihoods in log-space. For each genotype, we compute:
     //   sum over elements {
     //      log(probability(allele1, element) * f1 + probability(allele2, element) * f2)
     //   } + log(prior) - log(ploidy) * depth
     // where f_i is the allele fraction
-    val logLikelihoods: DenseVector[Double] = DenseVector(
-      genotypes.map(genotype => {
-        val alleleRows = genotype.alleleMixture.map({
-          case (allele, alleleFraction) => alleleElementProbabilities(alleleToIndex(allele), ::) * alleleFraction
+    val logLikelihoods: DenseVector[Double] =
+      DenseVector(
+        genotypes.map(genotype => {
+          val alleleRows = genotype.alleleMixture.map {
+            case (allele, alleleFraction) =>
+              alleleElementProbabilities(alleleToIndex(allele), ::) * alleleFraction
+          }
+          sum( log( sum(alleleRows) )) + math.log(prior(genotype)) * depth
         })
-        sum( log( sum(alleleRows) )) + math.log(prior(genotype)) * depth
-      })
-    )
+      )
 
     // Normalize and/or convert log probs to plain probabilities.
     val possiblyNormalizedLogLikelihoods =
-      if (normalize) {
+      if (normalize)
         logNormalize(logLikelihoods)
-      } else {
+      else
         logLikelihoods
-      }
 
     if (logSpace)
       possiblyNormalizedLogLikelihoods
@@ -177,9 +175,9 @@ object Likelihood {
       exp(possiblyNormalizedLogLikelihoods)
   }
 
-  def computeAlleleElementProbabilities(elements: Seq[PileupElement],
-                                        alleles: Array[Allele],
-                                        probabilityCorrect: PileupElement => Double = probabilityCorrectIgnoringAlignment): DenseMatrix[Double] = {
+  private def computeAlleleElementProbabilities(elements: Seq[PileupElement],
+                                                alleles: Array[Allele],
+                                                includeAlignment: Boolean): DenseMatrix[Double] = {
 
     val depth = elements.size
 
@@ -190,12 +188,23 @@ object Likelihood {
     //
     // where the probability is defined as in the header comment.
     val alleleElementProbabilities = new DenseMatrix[Double](alleles.length, depth)
+
     for {
       (allele, alleleIndex) <- alleles.zipWithIndex
       (element, elementIndex) <- elements.zipWithIndex
     } {
-      val successProbability = probabilityCorrect(element)
-      val probability = if (allele == element.allele) successProbability else 1 - successProbability
+      val successProbability =
+        if (includeAlignment)
+          element.probabilityCorrectIncludingAlignment
+        else
+          element.probabilityCorrectIgnoringAlignment
+
+      val probability =
+        if (allele == element.allele)
+          successProbability
+        else
+          1 - successProbability
+
       alleleElementProbabilities(alleleIndex, elementIndex) = probability
     }
 

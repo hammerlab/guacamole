@@ -1,6 +1,7 @@
 package org.hammerlab.guacamole.pileup
 
 import htsjdk.samtools.{CigarElement, CigarOperator}
+import org.bdgenomics.adam.util.PhredUtils
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.reference.{ContigSequence, Locus}
 import org.hammerlab.guacamole.util.CigarUtils
@@ -151,6 +152,12 @@ case class PileupElement(
     case MatchOrMisMatch(_, qs)   => qs
     case Insertion(_, qss)        => qss.min
   }
+
+  def probabilityCorrectIgnoringAlignment: Double =
+    PhredUtils.phredToSuccessProbability(qualityScore)
+
+  def probabilityCorrectIncludingAlignment: Double =
+    PhredUtils.phredToSuccessProbability(qualityScore) * read.alignmentLikelihood
 
   /**
    * Returns a new [[PileupElement]] of the same read, advanced by one cigar element.
