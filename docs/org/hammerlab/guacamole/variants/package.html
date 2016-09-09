@@ -159,10 +159,10 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="Genotype.html"><span class="name">Genotype</span></a><span class="params">(<span name="alleles">alleles: <a href="Allele.html" class="extype" name="org.hammerlab.guacamole.variants.Allele">Allele</a>*</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="Genotype.html"><span class="name">Genotype</span></a><span class="params">(<span name="alleleMixture">alleleMixture: <span class="extype" name="scala.Predef.Map">Map</span>[<a href="Allele.html" class="extype" name="org.hammerlab.guacamole.variants.Allele">Allele</a>, <span class="extype" name="scala.Double">Double</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
-      <p class="comment cmt">A Genotype is a sequence of alleles of length equal to the ploidy of the organism.</p>
+      <p class="comment cmt">A Genotype is a map of alleles to their allele frequency</p>
     </li><li name="org.hammerlab.guacamole.variants.GenotypeOutputArgs" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="GenotypeOutputArgsextendsArgs4jBasewithDebugLogArgs"></a>
       <a id="GenotypeOutputArgs:GenotypeOutputArgs"></a>
@@ -176,19 +176,6 @@
       </span>
       </h4>
       <p class="comment cmt">Argument for writing output genotypes.</p>
-    </li><li name="org.hammerlab.guacamole.variants.GenotypeSerializer" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="GenotypeSerializerextendsSerializer[org.hammerlab.guacamole.variants.Genotype]withHasAlleleSerializer"></a>
-      <a id="GenotypeSerializer:GenotypeSerializer"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">class</span>
-      </span>
-      <span class="symbol">
-        <a href="GenotypeSerializer.html"><span class="name">GenotypeSerializer</span></a><span class="result"> extends <span class="extype" name="com.esotericsoftware.kryo.Serializer">Serializer</span>[<a href="Genotype.html" class="extype" name="org.hammerlab.guacamole.variants.Genotype">Genotype</a>] with <a href="HasAlleleSerializer.html" class="extype" name="org.hammerlab.guacamole.variants.HasAlleleSerializer">HasAlleleSerializer</a></span>
-      </span>
-      </h4>
-      
     </li><li name="org.hammerlab.guacamole.variants.HasAlleleSerializer" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="HasAlleleSerializerextendsAnyRef"></a>
       <a id="HasAlleleSerializer:HasAlleleSerializer"></a>

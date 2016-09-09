@@ -35,13 +35,12 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">Genotype</span><span class="params">(<span name="alleles">alleles: <a href="Allele.html" class="extype" name="org.hammerlab.guacamole.variants.Allele">Allele</a>*</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">Genotype</span><span class="params">(<span name="alleleMixture">alleleMixture: <span class="extype" name="scala.Predef.Map">Map</span>[<a href="Allele.html" class="extype" name="org.hammerlab.guacamole.variants.Allele">Allele</a>, <span class="extype" name="scala.Double">Double</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>A Genotype is a sequence of alleles of length equal to the ploidy of the organism.</p><p>A Genotype is for a particular reference locus. Each allele gives the base(s) present on a chromosome at that
-locus.</p><p>For example, the possible single-base diploid genotypes are Seq('A', 'A'), Seq('A', 'T') ... Seq('T', 'T').
-Alleles can also be multiple bases as well, e.g. Seq(&quot;AAA&quot;, &quot;T&quot;)</p></div><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>A Genotype is a map of alleles to their allele frequency</p><p>A Genotype is for a particular reference locus. Each allele gives the base(s) present on a chromosome at that
+locus.</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
@@ -82,7 +81,7 @@ Alleles can also be multiple bases as well, e.g. Seq(&quot;AAA&quot;, &quot;T&qu
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="org.hammerlab.guacamole.variants.Genotype#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(alleles:org.hammerlab.guacamole.variants.Allele*):org.hammerlab.guacamole.variants.Genotype"></a>
+      <a id="&lt;init&gt;(alleleMixture:Map[org.hammerlab.guacamole.variants.Allele,Double]):org.hammerlab.guacamole.variants.Genotype"></a>
       <a id="&lt;init&gt;:Genotype"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -90,7 +89,7 @@ Alleles can also be multiple bases as well, e.g. Seq(&quot;AAA&quot;, &quot;T&qu
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">Genotype</span><span class="params">(<span name="alleles">alleles: <a href="Allele.html" class="extype" name="org.hammerlab.guacamole.variants.Allele">Allele</a>*</span>)</span>
+        <span class="name">Genotype</span><span class="params">(<span name="alleleMixture">alleleMixture: <span class="extype" name="scala.Predef.Map">Map</span>[<a href="Allele.html" class="extype" name="org.hammerlab.guacamole.variants.Allele">Allele</a>, <span class="extype" name="scala.Double">Double</span>]</span>)</span>
       </span>
       </h4>
       
@@ -168,16 +167,29 @@ Alleles can also be multiple bases as well, e.g. Seq(&quot;AAA&quot;, &quot;T&qu
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.variants.Genotype#alleles" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="alleles:org.hammerlab.guacamole.variants.Allele*"></a>
-      <a id="alleles:Allele*"></a>
+    </li><li name="org.hammerlab.guacamole.variants.Genotype#alleleMixture" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="alleleMixture:Map[org.hammerlab.guacamole.variants.Allele,Double]"></a>
+      <a id="alleleMixture:Map[Allele,Double]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">alleles</span><span class="result">: <a href="Allele.html" class="extype" name="org.hammerlab.guacamole.variants.Allele">Allele</a>*</span>
+        <span class="name">alleleMixture</span><span class="result">: <span class="extype" name="scala.Predef.Map">Map</span>[<a href="Allele.html" class="extype" name="org.hammerlab.guacamole.variants.Allele">Allele</a>, <span class="extype" name="scala.Double">Double</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.variants.Genotype#alleles" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="alleles:scala.collection.immutable.Set[org.hammerlab.guacamole.variants.Allele]"></a>
+      <a id="alleles:Set[Allele]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">alleles</span><span class="result">: <span class="extype" name="scala.collection.immutable.Set">Set</span>[<a href="Allele.html" class="extype" name="org.hammerlab.guacamole.variants.Allele">Allele</a>]</span>
       </span>
       </h4>
       
@@ -258,32 +270,16 @@ Alleles can also be multiple bases as well, e.g. Seq(&quot;AAA&quot;, &quot;T&qu
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.variants.Genotype#getGenotypeAlleles" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="getGenotypeAlleles:Seq[org.bdgenomics.formats.avro.GenotypeAllele]"></a>
-      <a id="getGenotypeAlleles:Seq[GenotypeAllele]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">lazy val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">getGenotypeAlleles</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="org.bdgenomics.formats.avro.GenotypeAllele">GenotypeAllele</span>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Transform the alleles in this genotype to the ADAM allele enumeration.</p><div class="fullcomment"><div class="comment cmt"><p>Transform the alleles in this genotype to the ADAM allele enumeration.
-Classifies alleles as Reference or Alternate.
-</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>Sequence of Genotype which are Ref, Alt or OtherAlt.
-</p></dd></dl></div>
     </li><li name="org.hammerlab.guacamole.variants.Genotype#getNonReferenceAlleles" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="getNonReferenceAlleles:Seq[org.hammerlab.guacamole.variants.Allele]"></a>
-      <a id="getNonReferenceAlleles:Seq[Allele]"></a>
+      <a id="getNonReferenceAlleles:Set[org.hammerlab.guacamole.variants.Allele]"></a>
+      <a id="getNonReferenceAlleles:Set[Allele]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">lazy val</span>
       </span>
       <span class="symbol">
-        <span class="name">getNonReferenceAlleles</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<a href="Allele.html" class="extype" name="org.hammerlab.guacamole.variants.Allele">Allele</a>]</span>
+        <span class="name">getNonReferenceAlleles</span><span class="result">: <span class="extype" name="scala.Predef.Set">Set</span>[<a href="Allele.html" class="extype" name="org.hammerlab.guacamole.variants.Allele">Allele</a>]</span>
       </span>
       </h4>
       
@@ -369,19 +365,6 @@ Classifies alleles as Reference or Alternate.
       <p class="shortcomment cmt">Counts alleles in this genotype that are not the same as the specified reference allele.</p><div class="fullcomment"><div class="comment cmt"><p>Counts alleles in this genotype that are not the same as the specified reference allele.
 </p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>Count of non reference alleles
 </p></dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.variants.Genotype#ploidy" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="ploidy:Int"></a>
-      <a id="ploidy:Int"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">ploidy</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">The ploidy of the organism is the number of alleles in the genotype.</p>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -408,19 +391,6 @@ Classifies alleles as Reference or Alternate.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.variants.Genotype">Genotype</a> → AnyRef → Any</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.variants.Genotype#uniqueAllelesCount" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="uniqueAllelesCount:Int"></a>
-      <a id="uniqueAllelesCount:Int"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">lazy val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">uniqueAllelesCount</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
-      </span>
-      </h4>
-      
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>

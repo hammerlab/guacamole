@@ -183,19 +183,6 @@
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.likelihood.Likelihood#computeAlleleElementProbabilities" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="computeAlleleElementProbabilities(elements:Seq[org.hammerlab.guacamole.pileup.PileupElement],alleles:Array[org.hammerlab.guacamole.variants.Allele],probabilityCorrect:org.hammerlab.guacamole.pileup.PileupElement=&gt;Double):breeze.linalg.DenseMatrix[Double]"></a>
-      <a id="computeAlleleElementProbabilities(Seq[PileupElement],Array[Allele],(PileupElement)⇒Double):DenseMatrix[Double]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">computeAlleleElementProbabilities</span><span class="params">(<span name="elements">elements: <span class="extype" name="scala.Seq">Seq</span>[<a href="../pileup/PileupElement.html" class="extype" name="org.hammerlab.guacamole.pileup.PileupElement">PileupElement</a>]</span>, <span name="alleles">alleles: <span class="extype" name="scala.Array">Array</span>[<a href="../variants/Allele.html" class="extype" name="org.hammerlab.guacamole.variants.Allele">Allele</a>]</span>, <span name="probabilityCorrect">probabilityCorrect: (<a href="../pileup/PileupElement.html" class="extype" name="org.hammerlab.guacamole.pileup.PileupElement">PileupElement</a>) ⇒ <span class="extype" name="scala.Double">Double</span> = <span class="symbol"><span class="name"><a href="#probabilityCorrectIgnoringAlignment(element:org.hammerlab.guacamole.pileup.PileupElement):Double">probabilityCorrectIgnoringAlignment</a></span></span></span>)</span><span class="result">: <span class="extype" name="breeze.linalg.DenseMatrix">DenseMatrix</span>[<span class="extype" name="scala.Double">Double</span>]</span>
-      </span>
-      </h4>
-      
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -281,62 +268,36 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li name="org.hammerlab.guacamole.likelihood.Likelihood#likelihoodOfGenotype" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="likelihoodOfGenotype(elements:Seq[org.hammerlab.guacamole.pileup.PileupElement],genotype:org.hammerlab.guacamole.variants.Genotype,probabilityCorrect:org.hammerlab.guacamole.pileup.PileupElement=&gt;Double,prior:org.hammerlab.guacamole.variants.Genotype=&gt;Double,logSpace:Boolean):Double"></a>
-      <a id="likelihoodOfGenotype(Seq[PileupElement],Genotype,(PileupElement)⇒Double,(Genotype)⇒Double,Boolean):Double"></a>
+      <a id="likelihoodOfGenotype(elements:Seq[org.hammerlab.guacamole.pileup.PileupElement],genotype:org.hammerlab.guacamole.variants.Genotype,includeAlignment:Boolean,prior:org.hammerlab.guacamole.variants.Genotype=&gt;Double,logSpace:Boolean):Double"></a>
+      <a id="likelihoodOfGenotype(Seq[PileupElement],Genotype,Boolean,(Genotype)⇒Double,Boolean):Double"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">likelihoodOfGenotype</span><span class="params">(<span name="elements">elements: <span class="extype" name="scala.Seq">Seq</span>[<a href="../pileup/PileupElement.html" class="extype" name="org.hammerlab.guacamole.pileup.PileupElement">PileupElement</a>]</span>, <span name="genotype">genotype: <a href="../variants/Genotype.html" class="extype" name="org.hammerlab.guacamole.variants.Genotype">Genotype</a></span>, <span name="probabilityCorrect">probabilityCorrect: (<a href="../pileup/PileupElement.html" class="extype" name="org.hammerlab.guacamole.pileup.PileupElement">PileupElement</a>) ⇒ <span class="extype" name="scala.Double">Double</span> = <span class="symbol"><span class="name"><a href="#probabilityCorrectIgnoringAlignment(element:org.hammerlab.guacamole.pileup.PileupElement):Double">probabilityCorrectIgnoringAlignment</a></span></span></span>, <span name="prior">prior: (<a href="../variants/Genotype.html" class="extype" name="org.hammerlab.guacamole.variants.Genotype">Genotype</a>) ⇒ <span class="extype" name="scala.Double">Double</span> = <span class="symbol"><span class="name"><a href="#uniformPrior(genotype:org.hammerlab.guacamole.variants.Genotype):Double">uniformPrior</a></span></span></span>, <span name="logSpace">logSpace: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="result">: <span class="extype" name="scala.Double">Double</span></span>
+        <span class="name">likelihoodOfGenotype</span><span class="params">(<span name="elements">elements: <span class="extype" name="scala.Seq">Seq</span>[<a href="../pileup/PileupElement.html" class="extype" name="org.hammerlab.guacamole.pileup.PileupElement">PileupElement</a>]</span>, <span name="genotype">genotype: <a href="../variants/Genotype.html" class="extype" name="org.hammerlab.guacamole.variants.Genotype">Genotype</a></span>, <span name="includeAlignment">includeAlignment: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>, <span name="prior">prior: (<a href="../variants/Genotype.html" class="extype" name="org.hammerlab.guacamole.variants.Genotype">Genotype</a>) ⇒ <span class="extype" name="scala.Double">Double</span> = <span class="symbol"><span class="name"><a href="#uniformPrior(genotype:org.hammerlab.guacamole.variants.Genotype):Double">uniformPrior</a></span></span></span>, <span name="logSpace">logSpace: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="result">: <span class="extype" name="scala.Double">Double</span></span>
       </span>
       </h4>
       <p class="shortcomment cmt">Calculate the likelihood of a single genotype.</p><div class="fullcomment"><div class="comment cmt"><p>Calculate the likelihood of a single genotype.
 </p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>The likelihood for the given genotype.
-</p></dd></dl><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p><a href="#likelihoodsOfGenotypes(elements:Seq[org.hammerlab.guacamole.pileup.PileupElement],genotypes:Array[org.hammerlab.guacamole.variants.Genotype],probabilityCorrect:org.hammerlab.guacamole.pileup.PileupElement=&gt;Double,prior:org.hammerlab.guacamole.variants.Genotype=&gt;Double,logSpace:Boolean,normalize:Boolean):breeze.linalg.DenseVector[Double]" class="extmbr" name="org.hammerlab.guacamole.likelihood.Likelihood#likelihoodsOfGenotypes">likelihoodsOfGenotypes</a> for argument descriptions.
+</p></dd></dl><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p><span class="extype" name="likelihoodsOfGenotypes">likelihoodsOfGenotypes</span> for argument descriptions.
 </p></span></dd></dl></div>
     </li><li name="org.hammerlab.guacamole.likelihood.Likelihood#likelihoodsOfAllPossibleGenotypesFromPileup" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="likelihoodsOfAllPossibleGenotypesFromPileup(pileup:org.hammerlab.guacamole.pileup.Pileup,probabilityCorrect:org.hammerlab.guacamole.pileup.PileupElement=&gt;Double,prior:org.hammerlab.guacamole.variants.Genotype=&gt;Double,logSpace:Boolean,normalize:Boolean):Seq[(org.hammerlab.guacamole.variants.Genotype,Double)]"></a>
-      <a id="likelihoodsOfAllPossibleGenotypesFromPileup(Pileup,(PileupElement)⇒Double,(Genotype)⇒Double,Boolean,Boolean):Seq[(Genotype,Double)]"></a>
+      <a id="likelihoodsOfAllPossibleGenotypesFromPileup(pileup:org.hammerlab.guacamole.pileup.Pileup,includeAlignment:Boolean,prior:org.hammerlab.guacamole.variants.Genotype=&gt;Double,logSpace:Boolean,normalize:Boolean):Seq[(org.hammerlab.guacamole.variants.Genotype,Double)]"></a>
+      <a id="likelihoodsOfAllPossibleGenotypesFromPileup(Pileup,Boolean,(Genotype)⇒Double,Boolean,Boolean):Seq[(Genotype,Double)]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">likelihoodsOfAllPossibleGenotypesFromPileup</span><span class="params">(<span name="pileup">pileup: <a href="../pileup/Pileup.html" class="extype" name="org.hammerlab.guacamole.pileup.Pileup">Pileup</a></span>, <span name="probabilityCorrect">probabilityCorrect: (<a href="../pileup/PileupElement.html" class="extype" name="org.hammerlab.guacamole.pileup.PileupElement">PileupElement</a>) ⇒ <span class="extype" name="scala.Double">Double</span> = <span class="symbol"><span class="name"><a href="#probabilityCorrectIgnoringAlignment(element:org.hammerlab.guacamole.pileup.PileupElement):Double">probabilityCorrectIgnoringAlignment</a></span></span></span>, <span name="prior">prior: (<a href="../variants/Genotype.html" class="extype" name="org.hammerlab.guacamole.variants.Genotype">Genotype</a>) ⇒ <span class="extype" name="scala.Double">Double</span> = <span class="symbol"><span class="name"><a href="#uniformPrior(genotype:org.hammerlab.guacamole.variants.Genotype):Double">uniformPrior</a></span></span></span>, <span name="logSpace">logSpace: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>, <span name="normalize">normalize: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[(<a href="../variants/Genotype.html" class="extype" name="org.hammerlab.guacamole.variants.Genotype">Genotype</a>, <span class="extype" name="scala.Double">Double</span>)]</span>
+        <span class="name">likelihoodsOfAllPossibleGenotypesFromPileup</span><span class="params">(<span name="pileup">pileup: <a href="../pileup/Pileup.html" class="extype" name="org.hammerlab.guacamole.pileup.Pileup">Pileup</a></span>, <span name="includeAlignment">includeAlignment: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>, <span name="prior">prior: (<a href="../variants/Genotype.html" class="extype" name="org.hammerlab.guacamole.variants.Genotype">Genotype</a>) ⇒ <span class="extype" name="scala.Double">Double</span> = <span class="symbol"><span class="name"><a href="#uniformPrior(genotype:org.hammerlab.guacamole.variants.Genotype):Double">uniformPrior</a></span></span></span>, <span name="logSpace">logSpace: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>, <span name="normalize">normalize: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[(<a href="../variants/Genotype.html" class="extype" name="org.hammerlab.guacamole.variants.Genotype">Genotype</a>, <span class="extype" name="scala.Double">Double</span>)]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Calculate likelihoods for all genotypes with any evidence in a <a href="../pileup/Pileup.html" class="extype" name="org.hammerlab.guacamole.pileup.Pileup">org.hammerlab.guacamole.pileup.Pileup</a>.</p><div class="fullcomment"><div class="comment cmt"><p>Calculate likelihoods for all genotypes with any evidence in a <a href="../pileup/Pileup.html" class="extype" name="org.hammerlab.guacamole.pileup.Pileup">org.hammerlab.guacamole.pileup.Pileup</a>.</p><p>By &quot;possible genotypes&quot; we mean any genotype where both alleles in the genotype match the sequenced bases of at
-least one element in the Pileup.</p><p>See <a href="#likelihoodsOfGenotypes(elements:Seq[org.hammerlab.guacamole.pileup.PileupElement],genotypes:Array[org.hammerlab.guacamole.variants.Genotype],probabilityCorrect:org.hammerlab.guacamole.pileup.PileupElement=&gt;Double,prior:org.hammerlab.guacamole.variants.Genotype=&gt;Double,logSpace:Boolean,normalize:Boolean):breeze.linalg.DenseVector[Double]" class="extmbr" name="org.hammerlab.guacamole.likelihood.Likelihood#likelihoodsOfGenotypes">likelihoodsOfGenotypes</a> for argument descriptions.
+least one element in the Pileup.</p><p>See <span class="extype" name="likelihoodsOfGenotypes">likelihoodsOfGenotypes</span> for argument descriptions.
 </p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>A sequence of (genotype, likelihood) pairs.
-</p></dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.likelihood.Likelihood#likelihoodsOfGenotypes" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="likelihoodsOfGenotypes(elements:Seq[org.hammerlab.guacamole.pileup.PileupElement],genotypes:Array[org.hammerlab.guacamole.variants.Genotype],probabilityCorrect:org.hammerlab.guacamole.pileup.PileupElement=&gt;Double,prior:org.hammerlab.guacamole.variants.Genotype=&gt;Double,logSpace:Boolean,normalize:Boolean):breeze.linalg.DenseVector[Double]"></a>
-      <a id="likelihoodsOfGenotypes(Seq[PileupElement],Array[Genotype],(PileupElement)⇒Double,(Genotype)⇒Double,Boolean,Boolean):DenseVector[Double]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">likelihoodsOfGenotypes</span><span class="params">(<span name="elements">elements: <span class="extype" name="scala.Seq">Seq</span>[<a href="../pileup/PileupElement.html" class="extype" name="org.hammerlab.guacamole.pileup.PileupElement">PileupElement</a>]</span>, <span name="genotypes">genotypes: <span class="extype" name="scala.Array">Array</span>[<a href="../variants/Genotype.html" class="extype" name="org.hammerlab.guacamole.variants.Genotype">Genotype</a>]</span>, <span name="probabilityCorrect">probabilityCorrect: (<a href="../pileup/PileupElement.html" class="extype" name="org.hammerlab.guacamole.pileup.PileupElement">PileupElement</a>) ⇒ <span class="extype" name="scala.Double">Double</span> = <span class="symbol"><span class="name"><a href="#probabilityCorrectIgnoringAlignment(element:org.hammerlab.guacamole.pileup.PileupElement):Double">probabilityCorrectIgnoringAlignment</a></span></span></span>, <span name="prior">prior: (<a href="../variants/Genotype.html" class="extype" name="org.hammerlab.guacamole.variants.Genotype">Genotype</a>) ⇒ <span class="extype" name="scala.Double">Double</span> = <span class="symbol"><span class="name"><a href="#uniformPrior(genotype:org.hammerlab.guacamole.variants.Genotype):Double">uniformPrior</a></span></span></span>, <span name="logSpace">logSpace: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>, <span name="normalize">normalize: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="result">: <span class="extype" name="breeze.linalg.DenseVector">DenseVector</span>[<span class="extype" name="scala.Double">Double</span>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Calculate likelihoods for a collection of diploid genotypes.</p><div class="fullcomment"><div class="comment cmt"><p>Calculate likelihoods for a collection of diploid genotypes.</p><p>We work with multiple genotypes at once to enable an efficient implementation.</p><p>For each genotype this calculates:</p><p> prior(genotype) / pow(2, depth) * product over all elements of {
-   sum over the two alleles in the genotype {
-     probability(element, allele)
-   }
- }</p><p>where</p><p> probability(element, allele) = probabilityCorrect(element)     if element.allele = allele
-                                1 - probabilityCorrect(element) otherwise</p><p>and probabilityCorrect(element) is a user supplied function that maps pileup elements to the probability that the
-sequenced bases for that element are correct, for example by considering the base qualities and/or alignment
-quality.
-</p></div><dl class="paramcmts block"><dt class="param">elements</dt><dd class="cmt"><p>the <a href="../pileup/PileupElement.html" class="extype" name="org.hammerlab.guacamole.pileup.PileupElement">org.hammerlab.guacamole.pileup.PileupElement</a> instances across which the likelihoods are calculated.</p></dd><dt class="param">genotypes</dt><dd class="cmt"><p>the genotypes to calculate likelihoods for.</p></dd><dt class="param">probabilityCorrect</dt><dd class="cmt"><p>a function of a pileup element that gives the probability that the bases sequenced are
-                          correct. See <a href="#probabilityCorrectIgnoringAlignment(element:org.hammerlab.guacamole.pileup.PileupElement):Double" class="extmbr" name="org.hammerlab.guacamole.likelihood.Likelihood#probabilityCorrectIgnoringAlignment">probabilityCorrectIgnoringAlignment</a> and
-                          <a href="#probabilityCorrectIncludingAlignment(element:org.hammerlab.guacamole.pileup.PileupElement):Double" class="extmbr" name="org.hammerlab.guacamole.likelihood.Likelihood#probabilityCorrectIncludingAlignment">probabilityCorrectIncludingAlignment</a> for two reasonable functions to use here.
-                          This function should return a plain probability, not a log prob.</p></dd><dt class="param">prior</dt><dd class="cmt"><p>a function on genotypes that gives the prior probability that genotype is correct. This function should
-            return a plain probability, not a log prob.</p></dd><dt class="param">logSpace</dt><dd class="cmt"><p>if true, the probabilities are returned as log probs.</p></dd><dt class="param">normalize</dt><dd class="cmt"><p>if true, the probabilities returned are normalized to sum to 1.</p></dd><dt>returns</dt><dd class="cmt"><p>A sequence of probabilities corresponding to each genotype in the genotypes argument
 </p></dd></dl></div>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
@@ -377,36 +338,6 @@ quality.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.likelihood.Likelihood#probabilityCorrectIgnoringAlignment" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="probabilityCorrectIgnoringAlignment(element:org.hammerlab.guacamole.pileup.PileupElement):Double"></a>
-      <a id="probabilityCorrectIgnoringAlignment(PileupElement):Double"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">probabilityCorrectIgnoringAlignment</span><span class="params">(<span name="element">element: <a href="../pileup/PileupElement.html" class="extype" name="org.hammerlab.guacamole.pileup.PileupElement">PileupElement</a></span>)</span><span class="result">: <span class="extype" name="scala.Double">Double</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">One way of defining the likelihood that the sequenced bases in a pileup element are correct.</p><div class="fullcomment"><div class="comment cmt"><p>One way of defining the likelihood that the sequenced bases in a pileup element are correct.</p><p>This considers only the base quality scores.
-</p></div><dl class="paramcmts block"><dt class="param">element</dt><dd class="cmt"><p>the [org.hammerlab.guacamole.pileup.PileupElement]] to consider</p></dd><dt>returns</dt><dd class="cmt"><p>the unnormalized likelihood the sequenced bases are correct. Plain probability, NOT a log prob.
-</p></dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.likelihood.Likelihood#probabilityCorrectIncludingAlignment" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="probabilityCorrectIncludingAlignment(element:org.hammerlab.guacamole.pileup.PileupElement):Double"></a>
-      <a id="probabilityCorrectIncludingAlignment(PileupElement):Double"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">probabilityCorrectIncludingAlignment</span><span class="params">(<span name="element">element: <a href="../pileup/PileupElement.html" class="extype" name="org.hammerlab.guacamole.pileup.PileupElement">PileupElement</a></span>)</span><span class="result">: <span class="extype" name="scala.Double">Double</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Another way of defining the likelihood that the sequenced bases in a pileup element are correct.</p><div class="fullcomment"><div class="comment cmt"><p>Another way of defining the likelihood that the sequenced bases in a pileup element are correct.</p><p>This considers both the base quality scores and alignment quality of the corresponding read.
-</p></div><dl class="paramcmts block"><dt class="param">element</dt><dd class="cmt"><p>the <a href="../pileup/PileupElement.html" class="extype" name="org.hammerlab.guacamole.pileup.PileupElement">org.hammerlab.guacamole.pileup.PileupElement</a> to consider</p></dd><dt>returns</dt><dd class="cmt"><p>the unnormalized likelihood the sequenced bases are correct. Plain probability, NOT a log prob.
-</p></dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
