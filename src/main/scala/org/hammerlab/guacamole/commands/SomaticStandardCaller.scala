@@ -5,11 +5,11 @@ import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.rdd.ADAMContext
 import org.bdgenomics.formats.avro.DatabaseVariantAnnotation
 import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMapTwoSamples
+import org.hammerlab.guacamole.filters.pileup.PileupFilter
 import org.hammerlab.guacamole.filters.pileup.PileupFilter.PileupFilterArguments
 import org.hammerlab.guacamole.filters.somatic.SomaticGenotypeFilter.SomaticGenotypeFilterArguments
-import org.hammerlab.guacamole.filters.pileup.PileupFilter
 import org.hammerlab.guacamole.filters.somatic.{SomaticAlternateReadDepthFilter, SomaticGenotypeFilter, SomaticReadDepthFilter}
-import org.hammerlab.guacamole.likelihood.Likelihood
+import org.hammerlab.guacamole.likelihood.Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup
 import org.hammerlab.guacamole.logging.DelayedMessages
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.pileup.Pileup
@@ -178,10 +178,13 @@ object SomaticStandard {
        * Find the most likely genotype in the tumor sample
        * This is either the reference genotype or an heterozygous genotype with some alternate base
        */
-      val genotypesAndLikelihoods = Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(
-        filteredTumorPileup,
-        Likelihood.probabilityCorrectIncludingAlignment,
-        normalize = true)
+      val genotypesAndLikelihoods =
+        likelihoodsOfAllPossibleGenotypesFromPileup(
+          filteredTumorPileup,
+          includeAlignment = true,
+          normalize = true
+        )
+
       if (genotypesAndLikelihoods.isEmpty)
         return Seq.empty
 
@@ -189,10 +192,12 @@ object SomaticStandard {
 
       // The following lazy vals are only evaluated if mostLikelyTumorGenotype.hasVariantAllele
       lazy val normalLikelihoods =
-        Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(
+        likelihoodsOfAllPossibleGenotypesFromPileup(
           filteredNormalPileup,
-          Likelihood.probabilityCorrectIgnoringAlignment,
-          normalize = true).toMap
+          includeAlignment = false,
+          normalize = true
+        ).toMap
+
       lazy val normalVariantGenotypes = normalLikelihoods.filter(_._1.hasVariantAllele)
 
       // NOTE(ryan): for now, compare non-reference alleles found in tumor to the sum of all likelihoods of variant
