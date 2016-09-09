@@ -66,7 +66,7 @@ object SomaticStandard {
 
       val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
 
-      val (tumorReads, normalReads, contigLengths) =
+      val (normalReads, tumorReads, contigLengths) =
         ReadSets.loadTumorNormalReads(
           args,
           sc,
@@ -91,7 +91,7 @@ object SomaticStandard {
         pileupFlatMapTwoSamples[CalledSomaticAllele](
           partitionedReads,
           skipEmpty = true, // skip empty pileups
-          function = (pileupTumor, pileupNormal) =>
+          function = (pileupNormal, pileupTumor) =>
             findPotentialVariantAtLocus(
               pileupTumor,
               pileupNormal,
