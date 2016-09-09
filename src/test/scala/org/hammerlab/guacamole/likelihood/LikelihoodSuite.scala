@@ -1,10 +1,12 @@
 package org.hammerlab.guacamole.likelihood
 
 import org.bdgenomics.adam.util.PhredUtils
+import org.hammerlab.guacamole.likelihood.Likelihood.{likelihoodOfGenotype, likelihoodsOfAllPossibleGenotypesFromPileup}
 import org.hammerlab.guacamole.pileup.{Util => PileupUtil}
 import org.hammerlab.guacamole.reads.{MappedRead, ReadsUtil}
 import org.hammerlab.guacamole.reference.ReferenceUtil
-import org.hammerlab.guacamole.util.{Bases, GuacFunSuite}
+import org.hammerlab.guacamole.util.Bases.stringToBases
+import org.hammerlab.guacamole.util.GuacFunSuite
 import org.hammerlab.guacamole.variants.{Allele, Genotype}
 import org.scalatest.prop.TableDrivenPropertyChecks
 
@@ -25,12 +27,11 @@ class LikelihoodSuite
     val alleleFraction = 1.0 / alleles.length
     Genotype(
       (for {
-        allele <- alleles
-      }
-        yield Allele(
-          Seq(referenceBase),
-          Bases.stringToBases(allele))
-          -> alleleFraction).toMap
+        alleleStr <- alleles
+        allele = Allele(Seq(referenceBase), stringToBases(alleleStr))
+      } yield
+        allele -> alleleFraction
+      ).toMap
     )
   }
 
@@ -91,10 +92,9 @@ class LikelihoodSuite
     ) {
       case (alleles, expectedLikelihood) =>
         val actualLikelihood =
-          Likelihood.likelihoodOfGenotype(
+          likelihoodOfGenotype(
             pileup.elements,
-            makeGenotype(alleles),
-            Likelihood.probabilityCorrectIgnoringAlignment
+            makeGenotype(alleles)
           )
 
         actualLikelihood should ===(expectedLikelihood +- epsilon)
@@ -158,7 +158,7 @@ class LikelihoodSuite
     val pileup = makePileup(reads, "chr1", 1)
 
     testLikelihoods(
-      Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(pileup, Likelihood.probabilityCorrectIgnoringAlignment),
+      likelihoodsOfAllPossibleGenotypesFromPileup(pileup),
       ('C', 'C') -> (1 - errorPhred30) * (1 - errorPhred40) * (1 - errorPhred30)
     )
   }
@@ -173,7 +173,7 @@ class LikelihoodSuite
     val pileup = makePileup(reads, "chr1", 1)
 
     testLikelihoods(
-      Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(pileup, Likelihood.probabilityCorrectIgnoringAlignment),
+      likelihoodsOfAllPossibleGenotypesFromPileup(pileup),
       ('C', 'C') -> (1 - errorPhred30) * (1 - errorPhred40) * errorPhred30,
       ('A', 'C') -> 1 / 8.0,
       ('A', 'A') -> errorPhred30 * errorPhred40 * (1 - errorPhred30)
@@ -190,7 +190,7 @@ class LikelihoodSuite
     val pileup = makePileup(reads, "chr1", 1)
 
     testLikelihoods(
-      Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(pileup, Likelihood.probabilityCorrectIgnoringAlignment),
+      likelihoodsOfAllPossibleGenotypesFromPileup(pileup),
       ('A', 'A') -> (1 - errorPhred30) * (1 - errorPhred40) * (1 - errorPhred30)
     )
   }
@@ -205,10 +205,10 @@ class LikelihoodSuite
     val pileup = makePileup(reads, "chr1", 1)
 
     testLikelihoods(
-      Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(
+      likelihoodsOfAllPossibleGenotypesFromPileup(
         pileup,
-        Likelihood.probabilityCorrectIgnoringAlignment,
-        logSpace = true),
+        logSpace = true
+      ),
       ('C', 'C') -> (math.log(1 - errorPhred30) + math.log(1 - errorPhred40) + math.log(1 - errorPhred30))
     )
   }
@@ -223,10 +223,10 @@ class LikelihoodSuite
     val pileup = makePileup(reads, "chr1", 1)
 
     testLikelihoods(
-      Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(
+      likelihoodsOfAllPossibleGenotypesFromPileup(
         pileup,
-        Likelihood.probabilityCorrectIgnoringAlignment,
-        logSpace = true),
+        logSpace = true
+      ),
       ('C', 'C') -> (math.log(1 - errorPhred30) + math.log(1 - errorPhred40) + math.log(errorPhred30)),
       ('A', 'C') -> math.log(1.0 / 8),
       ('A', 'A') -> (math.log(errorPhred30) + math.log(errorPhred40) + math.log(1 - errorPhred30))
@@ -243,10 +243,10 @@ class LikelihoodSuite
     val pileup = makePileup(reads, "chr1", 1)
 
     testLikelihoods(
-      Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(
+      likelihoodsOfAllPossibleGenotypesFromPileup(
         pileup,
-        Likelihood.probabilityCorrectIgnoringAlignment,
-        logSpace = true),
+        logSpace = true
+      ),
       ('A', 'A') -> (math.log(1 - errorPhred30) + math.log(1 - errorPhred40) + math.log(1 - errorPhred30))
     )
   }
