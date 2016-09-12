@@ -37,8 +37,11 @@ object SomaticStandard {
       with GenotypeOutputArgs
       with ReferenceArgs {
 
-    @Args4jOption(name = "--odds", usage = "Minimum log odds threshold for possible variant candidates")
-    var oddsThreshold: Int = 20
+    @Args4jOption(name = "--normal-odds", usage = "Minimum log odds threshold for possible variant candidates")
+    var normalOddsThreshold: Int = 20
+
+    @Args4jOption(name = "--tumor-odds", usage = "Minimum log odds threshold for possible variant candidates")
+    var tumorOddsThreshold: Int = 20
 
     @Args4jOption(name = "--dbsnp-vcf", required = false, usage = "VCF file to identify DBSNP variants")
     var dbSnpVcf: String = ""
@@ -61,7 +64,9 @@ object SomaticStandard {
         )
 
       // Destructure `args`' fields here to avoid serializing `args` itself.
-      val oddsThreshold = args.oddsThreshold
+      val normalOddsThreshold = args.normalOddsThreshold
+      val tumorOddsThreshold = args.tumorOddsThreshold
+
       val maxTumorReadDepth = args.maxTumorReadDepth
 
       val normalSampleName = args.normalSampleName
@@ -77,7 +82,8 @@ object SomaticStandard {
             findPotentialVariantAtLocus(
               pileupTumor,
               pileupNormal,
-              oddsThreshold,
+              normalOddsThreshold,
+              tumorOddsThreshold,
               maxTumorReadDepth
             ).iterator,
           reference = reference
@@ -125,7 +131,8 @@ object SomaticStandard {
 
     def findPotentialVariantAtLocus(tumorPileup: Pileup,
                                     normalPileup: Pileup,
-                                    oddsThreshold: Int,
+                                    normalOddsThreshold: Int,
+                                    tumorOddsThreshold: Int,
                                     maxReadDepth: Int = Int.MaxValue): Option[CalledSomaticAllele] = {
 
       // For now, we skip loci that have no reads mapped. We may instead want to emit NoCall in this case.
@@ -187,7 +194,10 @@ object SomaticStandard {
       )
 
       val normalLOD: Double = normalLikelihoods(0) - normalLikelihoods(1)
-      if (tumorLOD > oddsThreshold && normalLOD > oddsThreshold && mostFrequentVariantAllele._1.altBases.nonEmpty) {
+
+      if (tumorLOD > tumorOddsThreshold && normalLOD > normalOddsThreshold)
+       println(s"${tumorPileup.locus}\t$tumorLOD\t$normalLOD")
+      if (tumorLOD > tumorOddsThreshold && normalLOD > normalOddsThreshold && mostFrequentVariantAllele._1.altBases.nonEmpty) {
         val allele = mostFrequentVariantAllele._1
         val tumorVariantEvidence = AlleleEvidence(tumorLikelihoods(1), allele, tumorPileup)
         val normalReferenceEvidence = AlleleEvidence(1 - normalLikelihoods(0), referenceAllele, tumorPileup)
@@ -197,7 +207,7 @@ object SomaticStandard {
             tumorPileup.contigName,
             tumorPileup.locus,
             allele,
-            math.log(tumorLOD),
+            tumorLOD,
             tumorVariantEvidence,
             normalReferenceEvidence
           )

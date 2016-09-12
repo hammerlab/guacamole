@@ -55,6 +55,7 @@ class SomaticStandardCallerRealDataSuite
         val calledGenotypes = findPotentialVariantAtLocus(
           tumorPileup,
           normalPileup,
+          logOddsThreshold,
           logOddsThreshold
         ).toSeq
 

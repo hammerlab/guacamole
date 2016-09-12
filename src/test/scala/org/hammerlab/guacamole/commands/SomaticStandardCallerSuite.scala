@@ -39,8 +39,7 @@ class SomaticStandardCallerSuite
       )
 
     val tumorPileup = makeTumorPileup(tumorReads, "chr1", 2)
-
-    findPotentialVariantAtLocus(tumorPileup, normalPileup, oddsThreshold = 2).size should be(0)
+    findPotentialVariantAtLocus(tumorPileup, normalPileup, normalOddsThreshold = 2, tumorOddsThreshold = 2).size should be(0)
   }
 
   test("single-base deletion") {
@@ -62,7 +61,7 @@ class SomaticStandardCallerSuite
 
     val tumorPileup = makeTumorPileup(tumorReads, "chr1", 2)
 
-    val alleles = findPotentialVariantAtLocus(tumorPileup, normalPileup, oddsThreshold = 2).toSeq
+    val alleles = findPotentialVariantAtLocus(tumorPileup, normalPileup, normalOddsThreshold = 2, tumorOddsThreshold = 2).toSeq
     alleles.size should be(1)
 
     val allele = alleles(0).allele
@@ -91,7 +90,7 @@ class SomaticStandardCallerSuite
 
     val tumorPileup = makeTumorPileup(tumorReads, "chr4", 4)
 
-    val alleles = findPotentialVariantAtLocus(tumorPileup, normalPileup, oddsThreshold = 2).toSeq
+    val alleles = findPotentialVariantAtLocus(tumorPileup, normalPileup, normalOddsThreshold = 2, tumorOddsThreshold = 2).toSeq
     alleles.size should be(1)
 
     val allele = alleles(0).allele
@@ -120,7 +119,7 @@ class SomaticStandardCallerSuite
     val alleles = findPotentialVariantAtLocus(
       makePileup(tumorReads, "chr1", 3),
       makePileup(normalReads, "chr1", 3),
-      oddsThreshold = 2
+      normalOddsThreshold = 2, tumorOddsThreshold = 2
     ).toSeq
 
     alleles.size should be(1)
@@ -148,7 +147,7 @@ class SomaticStandardCallerSuite
     val alleles = findPotentialVariantAtLocus(
       makeTumorPileup(tumorReads, "chr1", 3),
       makeNormalPileup(normalReads, "chr1", 3),
-      oddsThreshold = 2
+      normalOddsThreshold = 2, tumorOddsThreshold = 2
     ).toSeq
     alleles.size should be(1)
 
@@ -184,7 +183,7 @@ class SomaticStandardCallerSuite
       val alleles = findPotentialVariantAtLocus(
         makeTumorPileup(tumorReads, contigName, locus),
         makeNormalPileup(normalReads, contigName, locus),
-        oddsThreshold = 2
+        normalOddsThreshold = 2, tumorOddsThreshold = 2
       ).toSeq
       alleles.size should be(1)
 
