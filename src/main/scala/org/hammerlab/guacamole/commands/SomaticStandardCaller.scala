@@ -10,7 +10,6 @@ import org.hammerlab.guacamole.filters.pileup.PileupFilter.PileupFilterArguments
 import org.hammerlab.guacamole.filters.somatic.SomaticGenotypeFilter.SomaticGenotypeFilterArguments
 import org.hammerlab.guacamole.filters.somatic.{SomaticAlternateReadDepthFilter, SomaticGenotypeFilter, SomaticReadDepthFilter}
 import org.hammerlab.guacamole.likelihood.Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup
-import org.hammerlab.guacamole.logging.DelayedMessages
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.readsets.ReadSets
@@ -18,7 +17,7 @@ import org.hammerlab.guacamole.readsets.args.SomaticCallerArgs
 import org.hammerlab.guacamole.readsets.io.InputFilters
 import org.hammerlab.guacamole.readsets.rdd.PartitionedRegions
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
-import org.hammerlab.guacamole.variants.{Allele, AlleleConversions, AlleleEvidence, CalledSomaticAllele, GenotypeOutputArgs, VariantUtils}
+import org.hammerlab.guacamole.variants.{Allele, AlleleEvidence, CalledSomaticAllele, GenotypeOutputArgs, GenotypeOutputCaller}
 import org.kohsuke.args4j.{Option => Args4jOption}
 
 /**
@@ -50,12 +49,11 @@ object SomaticStandard {
 
   }
 
-  object Caller extends SparkCommand[Arguments] {
+  object Caller extends GenotypeOutputCaller[Arguments, CalledSomaticAllele] {
     override val name = "somatic-standard"
     override val description = "call somatic variants using independent callers on tumor and normal"
 
-    override def run(args: Arguments, sc: SparkContext): Unit = {
-      VariantUtils.validateArguments(args)
+    override def computeGenotypes(args: Arguments, sc: SparkContext): RDD[CalledSomaticAllele] = {
       val loci = args.parseLoci(sc.hadoopConfiguration)
       val filters =
         InputFilters(
@@ -124,24 +122,17 @@ object SomaticStandard {
       if (args.dbSnpVcf != "") {
         val adamContext = new ADAMContext(sc)
         val dbSnpVariants = adamContext.loadVariantAnnotations(args.dbSnpVcf)
-        potentialGenotypes = potentialGenotypes
-          .keyBy(_.adamVariant)
-          .leftOuterJoin(dbSnpVariants.keyBy(_.getVariant))
-          .map(_._2).map({
-            case (calledAllele: CalledSomaticAllele, dbSnpVariant: Option[DatabaseVariantAnnotation]) =>
-              calledAllele.copy(rsID = dbSnpVariant.map(_.getDbSnpId))
-          })
+        potentialGenotypes =
+          potentialGenotypes
+            .keyBy(_.bdgVariant)
+            .leftOuterJoin(dbSnpVariants.keyBy(_.getVariant))
+            .map(_._2).map({
+              case (calledAllele: CalledSomaticAllele, dbSnpVariant: Option[DatabaseVariantAnnotation]) =>
+                calledAllele.copy(rsID = dbSnpVariant.map(_.getDbSnpId))
+            })
       }
 
-      val filteredGenotypes: RDD[CalledSomaticAllele] = SomaticGenotypeFilter(potentialGenotypes, args)
-      progress("Computed %,d genotypes after basic filtering".format(filteredGenotypes.count))
-
-      VariantUtils.writeVariantsFromArguments(
-        args,
-        filteredGenotypes.flatMap(AlleleConversions.calledSomaticAlleleToADAMGenotype)
-      )
-
-      DelayedMessages.default.print()
+      SomaticGenotypeFilter(potentialGenotypes, args)
     }
 
     def findPotentialVariantAtLocus(tumorPileup: Pileup,
