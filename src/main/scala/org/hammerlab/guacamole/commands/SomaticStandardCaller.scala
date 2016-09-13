@@ -13,7 +13,7 @@ import org.hammerlab.guacamole.likelihood.Likelihood.likelihoodsOfAllPossibleGen
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.readsets.ReadSets
-import org.hammerlab.guacamole.readsets.args.SomaticCallerArgs
+import org.hammerlab.guacamole.readsets.args.{ReferenceFastaArgs, TumorNormalReadsArgs}
 import org.hammerlab.guacamole.readsets.io.InputFilters
 import org.hammerlab.guacamole.readsets.rdd.PartitionedRegions
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
@@ -32,21 +32,18 @@ import org.kohsuke.args4j.{Option => Args4jOption}
  */
 object SomaticStandard {
 
-  protected class Arguments
-    extends SomaticCallerArgs
+  class Arguments
+    extends TumorNormalReadsArgs
       with PileupFilterArguments
       with SomaticGenotypeFilterArguments
-      with GenotypeOutputArgs {
+      with GenotypeOutputArgs
+      with ReferenceFastaArgs {
 
     @Args4jOption(name = "--odds", usage = "Minimum log odds threshold for possible variant candidates")
     var oddsThreshold: Int = 20
 
     @Args4jOption(name = "--dbsnp-vcf", required = false, usage = "VCF file to identify DBSNP variants")
     var dbSnpVcf: String = ""
-
-    @Args4jOption(name = "--reference-fasta", required = true, usage = "Local path to a reference FASTA file")
-    var referenceFastaPath: String = ""
-
   }
 
   object Caller extends GenotypeOutputCaller[Arguments, CalledSomaticAllele] {
@@ -62,7 +59,8 @@ object SomaticStandard {
           passedVendorQualityChecks = true
         )
 
-      val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
+      val reference = args.reference(sc)
+
 
       val (normalReads, tumorReads, contigLengths) =
         ReadSets.loadTumorNormalReads(

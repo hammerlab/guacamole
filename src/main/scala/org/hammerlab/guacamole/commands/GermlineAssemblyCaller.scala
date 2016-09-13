@@ -10,7 +10,7 @@ import org.hammerlab.guacamole.distributed.WindowFlatMapUtils.windowFlatMapWithS
 import org.hammerlab.guacamole.likelihood.Likelihood
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.MappedRead
-import org.hammerlab.guacamole.readsets.args.GermlineCallerArgs
+import org.hammerlab.guacamole.readsets.args.{GermlineCallerArgs, ReferenceFastaArgs}
 import org.hammerlab.guacamole.readsets.io.InputFilters
 import org.hammerlab.guacamole.readsets.rdd.PartitionedRegions
 import org.hammerlab.guacamole.readsets.{PartitionedReads, ReadSets, SampleName}
@@ -30,7 +30,10 @@ import org.kohsuke.args4j.{Option => Args4jOption}
  */
 object GermlineAssemblyCaller {
 
-  class Arguments extends AssemblyArgs with GermlineCallerArgs {
+  class Arguments
+    extends AssemblyArgs
+      with GermlineCallerArgs
+      with ReferenceFastaArgs {
 
     @Args4jOption(name = "--min-average-base-quality", usage = "Minimum average of base qualities in the read")
     var minAverageBaseQuality: Int = 20
@@ -38,12 +41,8 @@ object GermlineAssemblyCaller {
     @Args4jOption(name = "--min-alignment-quality", usage = "Minimum alignment qualities of the read")
     var minAlignmentQuality: Int = 30
 
-    @Args4jOption(name = "--reference-fasta", required = true, usage = "Local path to a reference FASTA file")
-    var referenceFastaPath: String = null
-
     @Args4jOption(name = "--min-likelihood", usage = "Minimum Phred-scaled likelihood. Default: 0 (off)")
     var minLikelihood: Int = 0
-
   }
 
   object Caller extends GenotypeOutputCaller[Arguments, CalledAllele] {
@@ -51,7 +50,7 @@ object GermlineAssemblyCaller {
     override val description = "call germline variants by assembling the surrounding region of reads"
 
     override def computeGenotypes(args: Arguments, sc: SparkContext) = {
-      val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
+      val reference = args.reference(sc)
       val loci = args.parseLoci(sc.hadoopConfiguration)
       val (mappedReads, contigLengths) =
         ReadSets.loadMappedReads(
