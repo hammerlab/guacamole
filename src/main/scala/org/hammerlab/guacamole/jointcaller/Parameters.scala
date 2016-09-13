@@ -45,7 +45,7 @@ object Parameters {
   }
 
   /** Commandline arguments to specify each parameter. */
-  trait CommandlineArguments extends DebugLogArgs {
+  trait CommandlineArguments {
     @Args4jOption(name = "--max-alleles-per-site",
       usage = "maximum number of alt alleles to consider at a site")
     var maxAllelesPerSite: Int = 4
