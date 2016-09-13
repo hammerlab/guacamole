@@ -13,7 +13,7 @@ import org.bdgenomics.formats.avro.AlignmentRecord
 import org.hammerlab.guacamole.loci.set.{LociParser, LociSet}
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.reads.{MappedRead, Read}
-import org.hammerlab.guacamole.readsets.args.{Arguments, SingleSampleArgs, TumorNormalReadsArgs}
+import org.hammerlab.guacamole.readsets.args.{SingleSampleArgs, TumorNormalReadsArgs, Base => BaseArgs}
 import org.hammerlab.guacamole.readsets.io.{BamReaderAPI, Input, InputFilters, ReadLoadingConfig}
 import org.hammerlab.guacamole.readsets.rdd.ReadsRDD
 import org.hammerlab.guacamole.reference.{ContigName, Locus}
@@ -113,7 +113,7 @@ object ReadSets {
     )
   }
 
-  def apply(sc: SparkContext, args: Arguments): (ReadSets, LociSet) = {
+  def apply(sc: SparkContext, args: BaseArgs): (ReadSets, LociSet) = {
     val loci = args.parseLoci(sc.hadoopConfiguration)
 
     val readsets = apply(sc, args.inputs, loci, !args.noSequenceDictionary)
