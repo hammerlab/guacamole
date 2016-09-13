@@ -1,6 +1,6 @@
 package org.hammerlab.guacamole.variants
 
-import org.bdgenomics.formats.avro.{Contig, DatabaseVariantAnnotation, Variant}
+import org.bdgenomics.formats.avro.{Contig, DatabaseVariantAnnotation, Variant, Genotype => BDGGenotype}
 import org.hammerlab.guacamole.readsets.SampleName
 import org.hammerlab.guacamole.reference.ReferenceRegion
 import org.hammerlab.guacamole.util.Bases
@@ -16,8 +16,9 @@ trait ReferenceVariant extends ReferenceRegion {
   def allele: Allele
 
   /** Conversion to ADAMVariant */
-  def adamVariant =
-    Variant.newBuilder
+  def bdgVariant: Variant =
+    Variant
+      .newBuilder
       .setStart(start)
       .setEnd(end)
       .setReferenceAllele(Bases.basesToString(allele.refBases))
@@ -27,9 +28,11 @@ trait ReferenceVariant extends ReferenceRegion {
 
   def rsID: Option[Int]
 
-  def adamVariantDatabase = {
+  def bdgVariantDatabase: DatabaseVariantAnnotation = {
     val builder = DatabaseVariantAnnotation.newBuilder
     rsID.foreach(builder.setDbSnpId(_))
     builder.build
   }
+
+  def toBDGGenotype: BDGGenotype
 }

@@ -8,8 +8,6 @@ import org.hammerlab.guacamole.alignment.AffineGapPenaltyAlignment
 import org.hammerlab.guacamole.assembly.{AssemblyArgs, AssemblyUtils}
 import org.hammerlab.guacamole.distributed.WindowFlatMapUtils.windowFlatMapWithState
 import org.hammerlab.guacamole.likelihood.Likelihood
-import org.hammerlab.guacamole.logging.DelayedMessages
-import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.readsets.args.GermlineCallerArgs
@@ -17,7 +15,7 @@ import org.hammerlab.guacamole.readsets.io.InputFilters
 import org.hammerlab.guacamole.readsets.rdd.PartitionedRegions
 import org.hammerlab.guacamole.readsets.{PartitionedReads, ReadSets, SampleName}
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
-import org.hammerlab.guacamole.variants.{Allele, AlleleConversions, AlleleEvidence, CalledAllele, VariantUtils}
+import org.hammerlab.guacamole.variants.{Allele, AlleleEvidence, CalledAllele, GenotypeOutputCaller}
 import org.kohsuke.args4j.{Option => Args4jOption}
 
 /**
@@ -48,11 +46,11 @@ object GermlineAssemblyCaller {
 
   }
 
-  object Caller extends SparkCommand[Arguments] {
+  object Caller extends GenotypeOutputCaller[Arguments, CalledAllele] {
     override val name = "germline-assembly"
     override val description = "call germline variants by assembling the surrounding region of reads"
 
-    override def run(args: Arguments, sc: SparkContext): Unit = {
+    override def computeGenotypes(args: Arguments, sc: SparkContext) = {
       val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
       val loci = args.parseLoci(sc.hadoopConfiguration)
       val (mappedReads, contigLengths) =
@@ -77,29 +75,18 @@ object GermlineAssemblyCaller {
           args.assemblyWindowRange
         )
 
-      val genotypes: RDD[CalledAllele] =
-        discoverGermlineVariants(
-          partitionedReads,
-          args.sampleName,
-          kmerSize = args.kmerSize,
-          assemblyWindowRange = args.assemblyWindowRange,
-          minOccurrence = args.minOccurrence,
-          minAreaVaf = args.minAreaVaf / 100.0f,
-          reference = reference,
-          minMeanKmerQuality = args.minMeanKmerQuality,
-          minPhredScaledLikelihood = args.minLikelihood,
-          shortcutAssembly = args.shortcutAssembly
-        )
-
-      genotypes.persist()
-
-      progress(s"Found ${genotypes.count} variants")
-
-      val outputGenotypes =
-        genotypes.flatMap(AlleleConversions.calledAlleleToADAMGenotype)
-
-      VariantUtils.writeVariantsFromArguments(args, outputGenotypes)
-      DelayedMessages.default.print()
+      discoverGermlineVariants(
+        partitionedReads,
+        args.sampleName,
+        kmerSize = args.kmerSize,
+        assemblyWindowRange = args.assemblyWindowRange,
+        minOccurrence = args.minOccurrence,
+        minAreaVaf = args.minAreaVaf / 100.0f,
+        reference = reference,
+        minMeanKmerQuality = args.minMeanKmerQuality,
+        minPhredScaledLikelihood = args.minLikelihood,
+        shortcutAssembly = args.shortcutAssembly
+      )
     }
 
     def discoverGermlineVariants(partitionedReads: PartitionedReads,
