@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+#
+# Script that verifies that "$SPARK_HOME" is set and computes a path to a Spark properties file.
+
+if [ -z "$SPARK_HOME" ]; then
+  echo "Set \$SPARK_HOME" 1>&2
+  exit 1
+fi
+
+# Log a message to help debug unexpected-HDFS-default-filesystem situations.
+if [ -n "$HADOOP_CONF_DIR" -o -n "$YARN_CONF_DIR" ]; then
+  echo "Using HDFS by default"
+fi
+
+# Store the path to a spark properties file in the variable $conf_file.
+#
+# If the $GUAC_SPARK_CONFS variable is set, use that path; if it contains more than one comma-delimited path,
+# concatenate all such files into a temporary file and use that, as a work-around to Spark not allowing cascading
+# properties files.
+#
+# If it's not set, use conf/spark.conf.
+
+if [ -n "$GUAC_SPARK_CONFS" ]; then
+  if [[ "$GUAC_SPARK_CONFS" =~ , ]]; then
+    conf_file="$(mktemp)"
+
+    finish() {
+      echo "Cleaning up temporary config file: $conf_file"
+      rm -f "$conf_file"
+    }
+    trap finish EXIT
+
+    echo "$GUAC_SPARK_CONFS" | tr ',' '\n' | xargs cat | sort > "$conf_file"
+
+    echo "Created temporary, concatenated config file: $conf_file"
+  else
+    conf_file="$GUAC_SPARK_CONFS"
+    echo "Using Spark config file: $conf_file"
+  fi
+else
+  scripts_dir="$(dirname "${BASH_SOURCE[0]}")"
+  repo_root="$(dirname "$scripts_dir")"
+  conf_file="$repo_root"/conf/local.conf
+  echo "Using default local Spark config file: $conf_file"
+fi
+
+cat "$conf_file"
