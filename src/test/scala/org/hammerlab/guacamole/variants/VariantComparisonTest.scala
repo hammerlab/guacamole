@@ -203,7 +203,5 @@ trait VariantComparisonTest {
     printSamplePairs(comparisonFullIndels.partialMatch.filter(
       pair => !pair._2.getGenotype(0).isHomRef))
     println()
-
   }
-
 }
