@@ -1,0 +1,2 @@
+spark.master  local[1]
+spark.driver.memory 4g

@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+#
+# Script that verifies that "$SPARK_HOME" is set and computes a path to a Spark properties file.
+
+if [ -z "$SPARK_HOME" ]; then
+  echo "Set \$SPARK_HOME" 1>&2
+  exit 1
+fi
+
+# Log a message to help debug unexpected-HDFS-default-filesystem situations.
+if [ -n "$HADOOP_CONF_DIR" -o -n "$YARN_CONF_DIR" ]; then
+  echo "Using HDFS by default"
+fi
+
+# We'll build a spark properties file in a temporay file called $conf_file, seeded with some configs for initializing
+# Kryo serialization.
+conf_file="$(mktemp)"
+
+# Clean up $conf_file on EXIT.
+finish() {
+  rm -f "$conf_file"
+}
+trap finish EXIT
+
+scripts_dir="$(dirname "${BASH_SOURCE[0]}")"
+repo_root="$(dirname "$scripts_dir")"
+
+conf_dir="$repo_root/conf"
+
+kryo_confs="$conf_dir/kryo"
+cat "$kryo_confs" > "$conf_file"
+
+# If the $GUAC_SPARK_CONFS variable is set, append the configs in that path to $conf_file.
+if [ -n "$GUAC_SPARK_CONFS" ]; then
+  if [[ "$GUAC_SPARK_CONFS" =~ , ]]; then
+    # If it contains more than one comma-delimited path, append all such files' contents to $conf_file, as a work-around
+    # to Spark not directly allowing multiple/cascading properties files.
+    echo "Using Spark properties files: $GUAC_SPARK_CONFS"
+    echo "$GUAC_SPARK_CONFS" | tr ',' '\n' | xargs cat | sort > "$conf_file"
+  else
+    echo "Using Spark config file: $GUAC_SPARK_CONFS"
+    cat "$GUAC_SPARK_CONFS" >> "$conf_file"
+  fi
+else
+  # If it's not set, add configs from conf/local.
+  echo "Using default {local,kryo} Spark config files"
+  cat "$conf_dir/local" >> "$conf_file"
+fi
+
+cat "$conf_file"

@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+# Wrapper around spark-shell that puts Guacamole JAR(s) on the classpath.
+
+dir="$(dirname "${BASH_SOURCE[0]}")"
+
+# Set uber_jar xor {guac_jar,deps_jar}
+source "$dir/.jars-rc"
+
+jars=
+if [ -n "$uber_jar" ]; then
+  jars="$uber_jar"
+else
+  jars="$guac_jar,$deps_jar"
+fi
+
+source "$dir/.spark-rc"
+
+rm -rf metastore_db derby.log
+
+"$SPARK_HOME"/bin/spark-shell --jars "$jars" --properties-file "$conf_file" "$@"
