@@ -32,8 +32,8 @@ abstract class SparkCommand[T <: Args: Manifest] extends Command[T] {
     val config: SparkConf = new SparkConf()
 
     config.getOption("spark.app.name") match {
-      case Some(cmdLineName) => config.setAppName(s"guacamole: $name ($cmdLineName)")
-      case _                 => config.setAppName("guacamole: $name")
+      case Some(cmdLineName) => config.setAppName(s"$cmdLineName: $name")
+      case _                 => config.setAppName(s"guacamole: $name")
     }
 
     if (config.getOption("spark.master").isEmpty) {
