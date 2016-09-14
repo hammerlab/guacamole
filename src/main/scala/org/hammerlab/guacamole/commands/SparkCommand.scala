@@ -37,7 +37,9 @@ abstract class SparkCommand[T <: Args: Manifest] extends Command[T] {
     }
 
     if (config.getOption("spark.master").isEmpty) {
-      config.setMaster("local[%d]".format(Runtime.getRuntime.availableProcessors()))
+      val numProcessors = Runtime.getRuntime.availableProcessors()
+      config.setMaster(s"local[$numProcessors]")
+      info(s"Running in local mode with $numProcessors 'executors'")
     }
 
     if (config.getOption("spark.serializer").isEmpty) {
