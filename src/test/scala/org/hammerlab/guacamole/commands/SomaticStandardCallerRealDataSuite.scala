@@ -78,45 +78,6 @@ class SomaticStandardCallerRealDataSuite
     }
   }
 
-  test("testing simple positive variants") {
-    val (tumorReads, normalReads) =
-      loadTumorNormalReads(
-        sc,
-        "tumor.chr20.tough.sam",
-        "normal.chr20.tough.sam"
-      )
-
-    val positivePositions = Array[Long](
-        755754,
-       1843813,
-       3555766,
-       3868620,
-       7087895,
-       9896926,
-      14017900,
-      17054263,
-      19772181,
-      25031215,
-      30430960,
-      32150541,
-      35951019,
-      42186626,
-      42999694,
-      44061033,
-      44973412,
-      45175149,
-      46814443,
-      50472935,
-      51858471,
-      52311925,
-      53774355,
-      57280858,
-      58201903
-    )
-
-    testVariants(tumorReads, normalReads, positivePositions, shouldFindVariant = true)
-  }
-
   test("testing simple negative variants on syn1") {
     val (tumorReads, normalReads) =
       loadTumorNormalReads(

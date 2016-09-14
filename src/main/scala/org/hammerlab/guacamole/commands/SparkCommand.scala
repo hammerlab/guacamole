@@ -1,14 +1,14 @@
 package org.hammerlab.guacamole.commands
 
 import org.apache.spark.{SparkConf, SparkContext}
-import org.bdgenomics.utils.cli.Args4jBase
 
 import scala.collection.mutable
 
-abstract class SparkCommand[T <: Args4jBase: Manifest] extends Command[T] {
+abstract class SparkCommand[T <: Args: Manifest] extends Command[T] {
   override def run(args: T): Unit = {
     val sc = createSparkContext()
     try {
+      args.validate(sc)
       run(args, sc)
     } finally {
       sc.stop()
@@ -18,7 +18,7 @@ abstract class SparkCommand[T <: Args4jBase: Manifest] extends Command[T] {
   def run(args: T, sc: SparkContext): Unit
 
   private val defaultConfs = mutable.HashMap[String, String]()
-  protected def setDefaultConf(key: String, value: String): Unit = {
+  def setDefaultConf(key: String, value: String): Unit = {
     defaultConfs.update(key, value)
   }
 

@@ -19,7 +19,6 @@
 package org.hammerlab.guacamole.filters.somatic
 
 import org.apache.spark.rdd.RDD
-import org.hammerlab.guacamole.logging.DebugLogArgs
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.variants.CalledSomaticAllele
 import org.kohsuke.args4j.{Option => Args4jOption}
@@ -31,7 +30,7 @@ object SomaticGenotypeFilter {
     progress(s"Filtered genotypes down to ${filteredGenotypes.count} genotypes")
   }
 
-  trait SomaticGenotypeFilterArguments extends DebugLogArgs {
+  trait SomaticGenotypeFilterArguments {
 
     @Args4jOption(name = "--min-likelihood", usage = "Minimum likelihood (Phred-scaled)")
     var minLikelihood: Int = 0
@@ -65,7 +64,6 @@ object SomaticGenotypeFilter {
 
     @Args4jOption(name = "--debug-genotype-filters", usage = "Print count of genotypes after each filtering step")
     var debugGenotypeFilters = false
-
   }
 
   /**
@@ -122,5 +120,4 @@ object SomaticGenotypeFilter {
 
     filteredGenotypes
   }
-
 }

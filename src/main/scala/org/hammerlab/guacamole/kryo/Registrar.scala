@@ -2,7 +2,8 @@ package org.hammerlab.guacamole.kryo
 
 import com.esotericsoftware.kryo.Kryo
 import org.apache.spark.serializer.KryoRegistrator
-import org.bdgenomics.adam.models.{SequenceDictionary, SequenceRecord}
+import org.bdgenomics.adam.models.{SequenceDictionary, SequenceRecord, VariantContext}
+import org.bdgenomics.adam.rich.RichVariant
 import org.bdgenomics.adam.serialization.ADAMKryoRegistrator
 import org.hammerlab.guacamole.jointcaller.kryo.{Registrar => JointCallerRegistrar}
 import org.hammerlab.guacamole.loci.Coverage
@@ -78,5 +79,9 @@ class Registrar extends KryoRegistrator {
     // https://mail-archives.apache.org/mod_mbox/spark-user/201504.mbox/%3CCAC95X6JgXQ3neXF6otj6a+F_MwJ9jbj9P-Ssw3Oqkf518_eT1w@mail.gmail.com%3E
     kryo.register(Class.forName("scala.reflect.ClassTag$$anon$1"))
     kryo.register(classOf[java.lang.Class[_]])
+
+    kryo.register(classOf[RichVariant])
+    kryo.register(classOf[VariantContext])
+    kryo.register(classOf[Array[String]])
   }
 }

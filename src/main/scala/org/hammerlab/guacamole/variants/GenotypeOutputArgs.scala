@@ -1,20 +1,162 @@
 package org.hammerlab.guacamole.variants
 
-import org.hammerlab.guacamole.logging.DebugLogArgs
+import java.io.OutputStream
+
+import org.apache.avro.generic.GenericDatumWriter
+import org.apache.avro.io.EncoderFactory
+import org.apache.hadoop.conf.Configuration
+import org.apache.hadoop.fs.{FileSystem, Path}
+import org.apache.hadoop.mapred.FileAlreadyExistsException
+import org.apache.spark.{HashPartitioner, SparkContext}
+import org.apache.spark.rdd.RDD
+import org.bdgenomics.adam.rdd.ADAMContext._
+import org.bdgenomics.formats.avro.{Genotype => BDGGenotype}
+import org.bdgenomics.utils.cli.ParquetArgs
+import org.codehaus.jackson.JsonFactory
+import org.hammerlab.guacamole.commands.Args
+import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.kohsuke.args4j.{Option => Args4jOption}
 
-/** Argument for writing output genotypes. */
-trait GenotypeOutputArgs extends DebugLogArgs {
-  @Args4jOption(name = "--out", metaVar = "VARIANTS_OUT", required = false,
-    usage = "Variant output path. If not specified, print to screen.")
+/**
+ * Arguments for writing output genotypes.
+ *
+ * Supports writing VCF, JSON, and Parquet formats.
+ */
+trait GenotypeOutputArgs extends Args with ParquetArgs {
+  @Args4jOption(
+    name = "--out",
+    metaVar = "VARIANTS_OUT",
+    required = false,
+    usage = "Variant output path. If not specified, print to screen."
+  )
   var variantOutput: String = ""
 
-  @Args4jOption(name = "--out-chunks", metaVar = "X", required = false,
-    usage = "When writing out to json format, number of chunks to coalesce the genotypes RDD into.")
+  lazy val outputPath = variantOutput.stripMargin
+
+  @Args4jOption(
+    name = "--out-chunks",
+    required = false,
+    usage = "When writing out to json format, number of chunks to coalesce the genotypes RDD into."
+  )
   var outChunks: Int = 1
 
-  @Args4jOption(name = "--max-genotypes", metaVar = "X", required = false,
-    usage = "Maximum number of genotypes to output. 0 (default) means output all genotypes.")
+  @Args4jOption(
+    name = "--max-genotypes",
+    required = false,
+    usage = "Maximum number of genotypes to output. 0 (default) means output all genotypes."
+  )
   var maxGenotypes: Int = 0
+
+  /**
+   * Perform validation of command line arguments at startup.
+   * This allows some late failures (e.g. output file already exists) to be surfaced more quickly.
+   */
+  override def validate(sc: SparkContext): Unit = {
+    val outputPathStr = variantOutput.stripMargin
+    if (outputPathStr.toLowerCase.endsWith(".vcf")) {
+      val outputPath = new Path(outputPathStr)
+      val filesystem = outputPath.getFileSystem(sc.hadoopConfiguration)
+      if (filesystem.exists(outputPath)) {
+        throw new FileAlreadyExistsException("Output directory " + outputPath + " already exists")
+      }
+    }
+  }
+
+  /**
+   * Write out an RDD of Genotype instances to a file.
+   *
+   * @param genotypes ADAM genotypes (i.e. the variants)
+   */
+  def writeVariants(genotypes: RDD[BDGGenotype]): Unit = {
+
+    val subsetGenotypes =
+      if (maxGenotypes > 0) {
+        progress(s"Subsetting to ${maxGenotypes} genotypes.")
+        genotypes.sample(withReplacement = false, maxGenotypes, 0)
+      } else {
+        genotypes
+      }
+
+    writeSortedSampledVariants(subsetGenotypes)
+  }
+
+  private def writeSortedSampledVariants(genotypes: RDD[BDGGenotype]): Unit = {
+
+    if (outputPath.isEmpty || outputPath.toLowerCase.endsWith(".json")) {
+      writeJSONVariants(genotypes)
+    } else if (outputPath.toLowerCase.endsWith(".vcf")) {
+      progress(s"Writing genotypes to VCF file: $outputPath")
+      genotypes
+        .toVariantContext
+        .map(v => (v.variant.getStart, v.variant.getEnd) -> v)
+        .repartitionAndSortWithinPartitions(new HashPartitioner(1))
+        .values
+        .saveAsVcf(outputPath)
+    } else {
+      progress(s"Writing genotypes to: $outputPath.")
+      genotypes.adamParquetSave(
+        outputPath,
+        blockSize,
+        pageSize,
+        compressionCodec,
+        disableDictionaryEncoding
+      )
+    }
+  }
+
+  def writeJSONVariants(genotypes: RDD[BDGGenotype]): Unit = {
+    val out: OutputStream =
+      if (outputPath.isEmpty) {
+        progress("Writing genotypes to stdout.")
+        System.out
+      } else {
+        progress(s"Writing genotypes as JSON to: $outputPath")
+        val filesystem = FileSystem.get(new Configuration())
+        val path = new Path(outputPath)
+        filesystem.create(path, true)
+      }
+
+    val coalescedGenotypes =
+      if (outChunks > 0)
+        genotypes.coalesce(outChunks)
+      else
+        genotypes
+
+    coalescedGenotypes.persist()
+
+    // Write each Genotype with a JsonEncoder.
+    val schema = BDGGenotype.getClassSchema
+    val writer = new GenericDatumWriter[Object](schema)
+    val encoder = EncoderFactory.get.jsonEncoder(schema, out)
+    val generator = new JsonFactory().createJsonGenerator(out)
+    generator.useDefaultPrettyPrinter()
+    encoder.configure(generator)
+    var partitionNum = 0
+    val numPartitions = coalescedGenotypes.partitions.length
+    while (partitionNum < numPartitions) {
+      progress(s"Collecting partition ${partitionNum + 1} of $numPartitions")
+
+      val chunk =
+        coalescedGenotypes
+          .mapPartitionsWithIndex((num, genotypes) => {
+            if (num == partitionNum)
+              genotypes
+            else
+              Iterator.empty
+          })
+          .collect
+
+      chunk.foreach(genotype => {
+        writer.write(genotype, encoder)
+        encoder.flush()
+      })
+
+      partitionNum += 1
+    }
+
+    out.write("\n".getBytes())
+    generator.close()
+    coalescedGenotypes.unpersist()
+  }
 }
 

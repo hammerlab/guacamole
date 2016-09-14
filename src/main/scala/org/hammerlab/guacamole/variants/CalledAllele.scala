@@ -1,7 +1,9 @@
 package org.hammerlab.guacamole.variants
 
 import org.hammerlab.guacamole.readsets.SampleName
+import scala.collection.JavaConversions.seqAsJavaList
 import org.hammerlab.guacamole.reference.{ContigName, Locus, NumLoci}
+import org.bdgenomics.formats.avro.{ GenotypeAllele, Genotype => BDGGenotype }
 
 /**
  *
@@ -22,4 +24,19 @@ case class CalledAllele(sampleName: SampleName,
                         rsID: Option[Int] = None,
                         override val length: NumLoci = 1) extends ReferenceVariant {
   val end: Locus = start + 1L
+
+  def toBDGGenotype: BDGGenotype =
+    BDGGenotype
+      .newBuilder
+      .setAlleles(seqAsJavaList(Seq(GenotypeAllele.Ref, GenotypeAllele.Alt)))
+      .setSampleId(sampleName)
+      .setGenotypeQuality(evidence.phredScaledLikelihood)
+      .setReadDepth(evidence.readDepth)
+      .setExpectedAlleleDosage(
+        evidence.alleleReadDepth.toFloat / evidence.readDepth
+      )
+      .setReferenceReadDepth(evidence.readDepth - evidence.alleleReadDepth)
+      .setAlternateReadDepth(evidence.alleleReadDepth)
+      .setVariant(bdgVariant)
+      .build
 }
