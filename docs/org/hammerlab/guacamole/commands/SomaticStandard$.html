@@ -83,8 +83,8 @@ on a sample identifier when joining the genotypes</p></div><div class="toggleCon
 
         <div id="types" class="types members">
               <h3>Type Members</h3>
-              <ol><li name="org.hammerlab.guacamole.commands.SomaticStandard.Arguments" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="ArgumentsextendsArgs4jBasewithSomaticCallerArgswithPileupFilter.PileupFilterArgumentswithSomaticGenotypeFilter.SomaticGenotypeFilterArgumentswithGenotypeOutputArgs"></a>
+              <ol><li name="org.hammerlab.guacamole.commands.SomaticStandard.Arguments" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ArgumentsextendsArgs4jBasewithTumorNormalReadsArgswithPileupFilter.PileupFilterArgumentswithSomaticGenotypeFilter.SomaticGenotypeFilterArgumentswithGenotypeOutputArgswithReferenceFastaArgs"></a>
       <a id="Arguments:Arguments"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -92,10 +92,10 @@ on a sample identifier when joining the genotypes</p></div><div class="toggleCon
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a href="SomaticStandard$$Arguments.html"><span class="name">Arguments</span></a><span class="result"> extends <span class="extype" name="org.bdgenomics.utils.cli.Args4jBase">Args4jBase</span> with <a href="../readsets/args/SomaticCallerArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.args.SomaticCallerArgs">SomaticCallerArgs</a> with <a href="../filters/pileup/PileupFilter$$PileupFilterArguments.html" class="extype" name="org.hammerlab.guacamole.filters.pileup.PileupFilter.PileupFilterArguments">PileupFilterArguments</a> with <a href="../filters/somatic/SomaticGenotypeFilter$$SomaticGenotypeFilterArguments.html" class="extype" name="org.hammerlab.guacamole.filters.somatic.SomaticGenotypeFilter.SomaticGenotypeFilterArguments">SomaticGenotypeFilterArguments</a> with <a href="../variants/GenotypeOutputArgs.html" class="extype" name="org.hammerlab.guacamole.variants.GenotypeOutputArgs">GenotypeOutputArgs</a></span>
+        <a href="SomaticStandard$$Arguments.html"><span class="name">Arguments</span></a><span class="result"> extends <span class="extype" name="org.bdgenomics.utils.cli.Args4jBase">Args4jBase</span> with <a href="../readsets/args/TumorNormalReadsArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.args.TumorNormalReadsArgs">TumorNormalReadsArgs</a> with <a href="../filters/pileup/PileupFilter$$PileupFilterArguments.html" class="extype" name="org.hammerlab.guacamole.filters.pileup.PileupFilter.PileupFilterArguments">PileupFilterArguments</a> with <a href="../filters/somatic/SomaticGenotypeFilter$$SomaticGenotypeFilterArguments.html" class="extype" name="org.hammerlab.guacamole.filters.somatic.SomaticGenotypeFilter.SomaticGenotypeFilterArguments">SomaticGenotypeFilterArguments</a> with <a href="../variants/GenotypeOutputArgs.html" class="extype" name="org.hammerlab.guacamole.variants.GenotypeOutputArgs">GenotypeOutputArgs</a> with <a href="../readsets/args/ReferenceFastaArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.args.ReferenceFastaArgs">ReferenceFastaArgs</a></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
+      
     </li></ol>
             </div>
 
@@ -177,7 +177,7 @@ on a sample identifier when joining the genotypes</p></div><div class="toggleCon
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a href="SomaticStandard$$Caller$.html"><span class="name">Caller</span></a><span class="result"> extends <a href="SparkCommand.html" class="extype" name="org.hammerlab.guacamole.commands.SparkCommand">SparkCommand</a>[<a href="SomaticStandard$$Arguments.html" class="extype" name="org.hammerlab.guacamole.commands.SomaticStandard.Arguments">Arguments</a>]</span>
+        <a href="SomaticStandard$$Caller$.html"><span class="name">Caller</span></a><span class="result"> extends <a href="SparkCommand.html" class="extype" name="org.hammerlab.guacamole.commands.SparkCommand">SparkCommand</a>[<a href="SomaticStandard$$Arguments.html" class="extype" name="org.hammerlab.guacamole.commands.SomaticStandard.Arguments">Arguments</a>] with <a href="../variants/GenotypeOutputCaller.html" class="extype" name="org.hammerlab.guacamole.variants.GenotypeOutputCaller">GenotypeOutputCaller</a>[<a href="SomaticStandard$$Arguments.html" class="extype" name="org.hammerlab.guacamole.commands.SomaticStandard.Arguments">Arguments</a>, <a href="../variants/CalledSomaticAllele.html" class="extype" name="org.hammerlab.guacamole.variants.CalledSomaticAllele">CalledSomaticAllele</a>]</span>
       </span>
       </h4>
       

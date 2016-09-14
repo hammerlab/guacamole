@@ -190,15 +190,15 @@
       </h4>
       <p class="shortcomment cmt">Load reads from multiple files, merging their sequence dictionaries and verifying that they are consistent.</p>
     </li><li name="org.hammerlab.guacamole.readsets.ReadSets#apply" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="apply(sc:org.apache.spark.SparkContext,args:org.hammerlab.guacamole.readsets.args.Arguments):(org.hammerlab.guacamole.readsets.ReadSets,org.hammerlab.guacamole.loci.set.LociSet)"></a>
-      <a id="apply(SparkContext,Arguments):(ReadSets,LociSet)"></a>
+      <a id="apply(sc:org.apache.spark.SparkContext,args:org.hammerlab.guacamole.readsets.args.Base):(org.hammerlab.guacamole.readsets.ReadSets,org.hammerlab.guacamole.loci.set.LociSet)"></a>
+      <a id="apply(SparkContext,Base):(ReadSets,LociSet)"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">apply</span><span class="params">(<span name="sc">sc: <span class="extype" name="org.apache.spark.SparkContext">SparkContext</span></span>, <span name="args">args: <a href="args/Arguments.html" class="extype" name="org.hammerlab.guacamole.readsets.args.Arguments">Arguments</a></span>)</span><span class="result">: (<a href="ReadSets.html" class="extype" name="org.hammerlab.guacamole.readsets.ReadSets">ReadSets</a>, <a href="../loci/set/LociSet.html" class="extype" name="org.hammerlab.guacamole.loci.set.LociSet">LociSet</a>)</span>
+        <span class="name">apply</span><span class="params">(<span name="sc">sc: <span class="extype" name="org.apache.spark.SparkContext">SparkContext</span></span>, <span name="args">args: <a href="args/Base.html" class="extype" name="org.hammerlab.guacamole.readsets.args.Base">Base</a></span>)</span><span class="result">: (<a href="ReadSets.html" class="extype" name="org.hammerlab.guacamole.readsets.ReadSets">ReadSets</a>, <a href="../loci/set/LociSet.html" class="extype" name="org.hammerlab.guacamole.loci.set.LociSet">LociSet</a>)</span>
       </span>
       </h4>
       
@@ -344,34 +344,6 @@
       </span>
       </h4>
       <p class="shortcomment cmt">Load just the mapped reads from an input ReadSet.</p>
-    </li><li name="org.hammerlab.guacamole.readsets.ReadSets#loadReads" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="loadReads(args:org.hammerlab.guacamole.readsets.args.SingleSampleArgs,sc:org.apache.spark.SparkContext,filters:org.hammerlab.guacamole.readsets.io.InputFilters):(org.hammerlab.guacamole.readsets.rdd.ReadsRDD,org.hammerlab.guacamole.readsets.ContigLengths)"></a>
-      <a id="loadReads(SingleSampleArgs,SparkContext,InputFilters):(ReadsRDD,ContigLengths)"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">loadReads</span><span class="params">(<span name="args">args: <a href="args/SingleSampleArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.args.SingleSampleArgs">SingleSampleArgs</a></span>, <span name="sc">sc: <span class="extype" name="org.apache.spark.SparkContext">SparkContext</span></span>, <span name="filters">filters: <a href="io/InputFilters.html" class="extype" name="org.hammerlab.guacamole.readsets.io.InputFilters">InputFilters</a></span>)</span><span class="result">: (<a href="rdd/ReadsRDD.html" class="extype" name="org.hammerlab.guacamole.readsets.rdd.ReadsRDD">ReadsRDD</a>, <a href="package.html#ContigLengths=Map[org.hammerlab.guacamole.reference.ContigName,org.hammerlab.guacamole.reference.NumLoci]" class="extmbr" name="org.hammerlab.guacamole.readsets.ContigLengths">ContigLengths</a>)</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Load one read-set from an input file.</p>
-    </li><li name="org.hammerlab.guacamole.readsets.ReadSets#loadTumorNormalReads" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="loadTumorNormalReads(args:org.hammerlab.guacamole.readsets.args.TumorNormalReadsArgs,sc:org.apache.spark.SparkContext,filters:org.hammerlab.guacamole.readsets.io.InputFilters):(org.hammerlab.guacamole.readsets.rdd.ReadsRDD,org.hammerlab.guacamole.readsets.rdd.ReadsRDD,org.hammerlab.guacamole.readsets.ContigLengths)"></a>
-      <a id="loadTumorNormalReads(TumorNormalReadsArgs,SparkContext,InputFilters):(ReadsRDD,ReadsRDD,ContigLengths)"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">loadTumorNormalReads</span><span class="params">(<span name="args">args: <a href="args/TumorNormalReadsArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.args.TumorNormalReadsArgs">TumorNormalReadsArgs</a></span>, <span name="sc">sc: <span class="extype" name="org.apache.spark.SparkContext">SparkContext</span></span>, <span name="filters">filters: <a href="io/InputFilters.html" class="extype" name="org.hammerlab.guacamole.readsets.io.InputFilters">InputFilters</a></span>)</span><span class="result">: (<a href="rdd/ReadsRDD.html" class="extype" name="org.hammerlab.guacamole.readsets.rdd.ReadsRDD">ReadsRDD</a>, <a href="rdd/ReadsRDD.html" class="extype" name="org.hammerlab.guacamole.readsets.rdd.ReadsRDD">ReadsRDD</a>, <a href="package.html#ContigLengths=Map[org.hammerlab.guacamole.reference.ContigName,org.hammerlab.guacamole.reference.NumLoci]" class="extmbr" name="org.hammerlab.guacamole.readsets.ContigLengths">ContigLengths</a>)</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Given arguments for two sets of reads (tumor and normal), return a pair of (tumor, normal) read sets.</p><div class="fullcomment"><div class="comment cmt"><p>Given arguments for two sets of reads (tumor and normal), return a pair of (tumor, normal) read sets.
-</p></div><dl class="paramcmts block"><dt class="param">args</dt><dd class="cmt"><p>parsed arguments</p></dd><dt class="param">sc</dt><dd class="cmt"><p>spark context</p></dd><dt class="param">filters</dt><dd class="cmt"><p>input filters to apply
-</p></dd></dl></div>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>

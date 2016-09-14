@@ -35,7 +35,7 @@
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">Command</span><span class="tparams">[<span name="T">T &lt;: <span class="extype" name="org.bdgenomics.utils.cli.Args4jBase">Args4jBase</span></span>]</span><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span> with <span class="extype" name="grizzled.slf4j.Logging">Logging</span></span>
+        <span class="name">Command</span><span class="tparams">[<span name="T">T &lt;: <a href="Args.html" class="extype" name="org.hammerlab.guacamole.commands.Args">Args</a></span>]</span><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span> with <span class="extype" name="grizzled.slf4j.Logging">Logging</span></span>
       </span>
       </h4>
       
@@ -46,7 +46,7 @@ for these to use as appropriate.</p><p>If you add a new command, you should also
           <div class="superTypes hiddenContent"><span class="extype" name="grizzled.slf4j.Logging">Logging</span>, <span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div><div class="toggleContainer block">
           <span class="toggle">Known Subclasses</span>
-          <div class="subClasses hiddenContent"><a href="VariantSupport$$Caller$.html" class="extype" name="org.hammerlab.guacamole.commands.VariantSupport.Caller">Caller</a>, <a href="VAFHistogram$$Caller$.html" class="extype" name="org.hammerlab.guacamole.commands.VAFHistogram.Caller">Caller</a>, <a href="SomaticStandard$$Caller$.html" class="extype" name="org.hammerlab.guacamole.commands.SomaticStandard.Caller">Caller</a>, <a href="SomaticJoint$$Caller$.html" class="extype" name="org.hammerlab.guacamole.commands.SomaticJoint.Caller">Caller</a>, <a href="GermlineAssemblyCaller$$Caller$.html" class="extype" name="org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Caller">Caller</a>, <a href="SparkCommand.html" class="extype" name="org.hammerlab.guacamole.commands.SparkCommand">SparkCommand</a></div>
+          <div class="subClasses hiddenContent"><a href="VariantSupport$$Caller$.html" class="extype" name="org.hammerlab.guacamole.commands.VariantSupport.Caller">Caller</a>, <a href="VAFHistogram$$Caller$.html" class="extype" name="org.hammerlab.guacamole.commands.VAFHistogram.Caller">Caller</a>, <a href="SomaticStandard$$Caller$.html" class="extype" name="org.hammerlab.guacamole.commands.SomaticStandard.Caller">Caller</a>, <a href="SomaticJoint$$Caller$.html" class="extype" name="org.hammerlab.guacamole.commands.SomaticJoint.Caller">Caller</a>, <a href="GermlineAssemblyCaller$$Caller$.html" class="extype" name="org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Caller">Caller</a>, <a href="../variants/GenotypeOutputCaller.html" class="extype" name="org.hammerlab.guacamole.variants.GenotypeOutputCaller">GenotypeOutputCaller</a>, <a href="SparkCommand.html" class="extype" name="org.hammerlab.guacamole.commands.SparkCommand">SparkCommand</a></div>
         </div></div>
         
 
@@ -537,6 +537,19 @@ for these to use as appropriate.</p><p>If you add a new command, you should also
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.commands.Command#run" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="run(args:String*):Unit"></a>
+      <a id="run(String*):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">run</span><span class="params">(<span name="args">args: <span class="extype" name="scala.Predef.String">String</span>*</span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      
     </li><li name="org.hammerlab.guacamole.commands.Command#run" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="run(args:Array[String]):Unit"></a>
       <a id="run(Array[String]):Unit"></a>

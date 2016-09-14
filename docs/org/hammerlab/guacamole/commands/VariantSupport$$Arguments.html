@@ -35,13 +35,13 @@
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">Arguments</span><span class="result"> extends <span class="extype" name="org.bdgenomics.utils.cli.Args4jBase">Args4jBase</span> with <a href="../readsets/args/Arguments.html" class="extype" name="org.hammerlab.guacamole.readsets.args.Arguments">readsets.args.Arguments</a></span>
+        <span class="name">Arguments</span><span class="result"> extends <span class="extype" name="org.bdgenomics.utils.cli.Args4jBase">Args4jBase</span> with <a href="../readsets/args/Arguments.html" class="extype" name="org.hammerlab.guacamole.readsets.args.Arguments">readsets.args.Arguments</a> with <a href="../readsets/args/ReferenceFastaArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.args.ReferenceFastaArgs">ReferenceFastaArgs</a></span>
       </span>
       </h4>
       
           <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><a href="../readsets/args/Arguments.html" class="extype" name="org.hammerlab.guacamole.readsets.args.Arguments">readsets.args.Arguments</a>, <a href="../readsets/args/Base.html" class="extype" name="org.hammerlab.guacamole.readsets.args.Base">Base</a>, <a href="../readsets/io/ReadLoadingConfigArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.io.ReadLoadingConfigArgs">ReadLoadingConfigArgs</a>, <a href="../readsets/args/NoSequenceDictionaryArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.args.NoSequenceDictionaryArgs">NoSequenceDictionaryArgs</a>, <a href="../readsets/rdd/PartitionedRegionsArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegionsArgs">PartitionedRegionsArgs</a>, <a href="../loci/partitioning/LociPartitionerArgs.html" class="extype" name="org.hammerlab.guacamole.loci.partitioning.LociPartitionerArgs">LociPartitionerArgs</a>, <a href="../loci/partitioning/CappedRegionsPartitionerArgs.html" class="extype" name="org.hammerlab.guacamole.loci.partitioning.CappedRegionsPartitionerArgs">CappedRegionsPartitionerArgs</a>, <a href="../loci/partitioning/MicroRegionPartitionerArgs.html" class="extype" name="org.hammerlab.guacamole.loci.partitioning.MicroRegionPartitionerArgs">MicroRegionPartitionerArgs</a>, <a href="../loci/partitioning/UniformPartitionerArgs.html" class="extype" name="org.hammerlab.guacamole.loci.partitioning.UniformPartitionerArgs">UniformPartitionerArgs</a>, <a href="../loci/LociArgs.html" class="extype" name="org.hammerlab.guacamole.loci.LociArgs">LociArgs</a>, <a href="../logging/DebugLogArgs.html" class="extype" name="org.hammerlab.guacamole.logging.DebugLogArgs">DebugLogArgs</a>, <span class="extype" name="org.bdgenomics.utils.cli.ParquetArgs">ParquetArgs</span>, <span class="extype" name="org.bdgenomics.utils.cli.ParquetRDDArgs">ParquetRDDArgs</span>, <span class="extype" name="org.bdgenomics.utils.cli.Args4jBase">Args4jBase</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><a href="../readsets/args/ReferenceFastaArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.args.ReferenceFastaArgs">ReferenceFastaArgs</a>, <a href="../readsets/args/Arguments.html" class="extype" name="org.hammerlab.guacamole.readsets.args.Arguments">readsets.args.Arguments</a>, <a href="../readsets/args/Base.html" class="extype" name="org.hammerlab.guacamole.readsets.args.Base">Base</a>, <a href="../readsets/io/ReadLoadingConfigArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.io.ReadLoadingConfigArgs">ReadLoadingConfigArgs</a>, <a href="../readsets/args/NoSequenceDictionaryArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.args.NoSequenceDictionaryArgs">NoSequenceDictionaryArgs</a>, <a href="../readsets/rdd/PartitionedRegionsArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegionsArgs">PartitionedRegionsArgs</a>, <a href="../loci/partitioning/LociPartitionerArgs.html" class="extype" name="org.hammerlab.guacamole.loci.partitioning.LociPartitionerArgs">LociPartitionerArgs</a>, <a href="../loci/partitioning/CappedRegionsPartitionerArgs.html" class="extype" name="org.hammerlab.guacamole.loci.partitioning.CappedRegionsPartitionerArgs">CappedRegionsPartitionerArgs</a>, <a href="../loci/partitioning/MicroRegionPartitionerArgs.html" class="extype" name="org.hammerlab.guacamole.loci.partitioning.MicroRegionPartitionerArgs">MicroRegionPartitionerArgs</a>, <a href="../loci/partitioning/UniformPartitionerArgs.html" class="extype" name="org.hammerlab.guacamole.loci.partitioning.UniformPartitionerArgs">UniformPartitionerArgs</a>, <a href="../loci/LociArgs.html" class="extype" name="org.hammerlab.guacamole.loci.LociArgs">LociArgs</a>, <a href="../logging/DebugLogArgs.html" class="extype" name="org.hammerlab.guacamole.logging.DebugLogArgs">DebugLogArgs</a>, <a href="Args.html" class="extype" name="org.hammerlab.guacamole.commands.Args">Args</a>, <span class="extype" name="org.bdgenomics.utils.cli.Args4jBase">Args4jBase</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -59,7 +59,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="org.hammerlab.guacamole.commands.VariantSupport.Arguments"><span>Arguments</span></li><li class="in" name="org.hammerlab.guacamole.readsets.args.Arguments"><span>Arguments</span></li><li class="in" name="org.hammerlab.guacamole.readsets.args.Base"><span>Base</span></li><li class="in" name="org.hammerlab.guacamole.readsets.io.ReadLoadingConfigArgs"><span>ReadLoadingConfigArgs</span></li><li class="in" name="org.hammerlab.guacamole.readsets.args.NoSequenceDictionaryArgs"><span>NoSequenceDictionaryArgs</span></li><li class="in" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegionsArgs"><span>PartitionedRegionsArgs</span></li><li class="in" name="org.hammerlab.guacamole.loci.partitioning.LociPartitionerArgs"><span>LociPartitionerArgs</span></li><li class="in" name="org.hammerlab.guacamole.loci.partitioning.CappedRegionsPartitionerArgs"><span>CappedRegionsPartitionerArgs</span></li><li class="in" name="org.hammerlab.guacamole.loci.partitioning.MicroRegionPartitionerArgs"><span>MicroRegionPartitionerArgs</span></li><li class="in" name="org.hammerlab.guacamole.loci.partitioning.UniformPartitionerArgs"><span>UniformPartitionerArgs</span></li><li class="in" name="org.hammerlab.guacamole.loci.LociArgs"><span>LociArgs</span></li><li class="in" name="org.hammerlab.guacamole.logging.DebugLogArgs"><span>DebugLogArgs</span></li><li class="in" name="org.bdgenomics.utils.cli.ParquetArgs"><span>ParquetArgs</span></li><li class="in" name="org.bdgenomics.utils.cli.ParquetRDDArgs"><span>ParquetRDDArgs</span></li><li class="in" name="org.bdgenomics.utils.cli.Args4jBase"><span>Args4jBase</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="org.hammerlab.guacamole.commands.VariantSupport.Arguments"><span>Arguments</span></li><li class="in" name="org.hammerlab.guacamole.readsets.args.ReferenceFastaArgs"><span>ReferenceFastaArgs</span></li><li class="in" name="org.hammerlab.guacamole.readsets.args.Arguments"><span>Arguments</span></li><li class="in" name="org.hammerlab.guacamole.readsets.args.Base"><span>Base</span></li><li class="in" name="org.hammerlab.guacamole.readsets.io.ReadLoadingConfigArgs"><span>ReadLoadingConfigArgs</span></li><li class="in" name="org.hammerlab.guacamole.readsets.args.NoSequenceDictionaryArgs"><span>NoSequenceDictionaryArgs</span></li><li class="in" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegionsArgs"><span>PartitionedRegionsArgs</span></li><li class="in" name="org.hammerlab.guacamole.loci.partitioning.LociPartitionerArgs"><span>LociPartitionerArgs</span></li><li class="in" name="org.hammerlab.guacamole.loci.partitioning.CappedRegionsPartitionerArgs"><span>CappedRegionsPartitionerArgs</span></li><li class="in" name="org.hammerlab.guacamole.loci.partitioning.MicroRegionPartitionerArgs"><span>MicroRegionPartitionerArgs</span></li><li class="in" name="org.hammerlab.guacamole.loci.partitioning.UniformPartitionerArgs"><span>UniformPartitionerArgs</span></li><li class="in" name="org.hammerlab.guacamole.loci.LociArgs"><span>LociArgs</span></li><li class="in" name="org.hammerlab.guacamole.logging.DebugLogArgs"><span>DebugLogArgs</span></li><li class="in" name="org.hammerlab.guacamole.commands.Args"><span>Args</span></li><li class="in" name="org.bdgenomics.utils.cli.Args4jBase"><span>Args4jBase</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -205,19 +205,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../readsets/io/ReadLoadingConfigArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.io.ReadLoadingConfigArgs">ReadLoadingConfigArgs</a></dd></dl></div>
-    </li><li name="org.bdgenomics.utils.cli.ParquetArgs#blockSize" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="blockSize:Int"></a>
-      <a id="blockSize:Int"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">var</span>
-      </span>
-      <span class="symbol">
-        <span class="name">blockSize</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>ParquetArgs → ParquetRDDArgs</dd></dl></div>
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>
       <a id="clone():AnyRef"></a>
@@ -250,19 +237,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../readsets/rdd/PartitionedRegionsArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegionsArgs">PartitionedRegionsArgs</a></dd></dl></div>
-    </li><li name="org.bdgenomics.utils.cli.ParquetArgs#compressionCodec" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="compressionCodec:org.apache.parquet.hadoop.metadata.CompressionCodecName"></a>
-      <a id="compressionCodec:CompressionCodecName"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">var</span>
-      </span>
-      <span class="symbol">
-        <span class="name">compressionCodec</span><span class="result">: <span class="extype" name="org.apache.parquet.hadoop.metadata.CompressionCodecName">CompressionCodecName</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>ParquetArgs → ParquetRDDArgs</dd></dl></div>
     </li><li name="org.hammerlab.guacamole.logging.DebugLogArgs#debug" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="debug:Boolean"></a>
       <a id="debug:Boolean"></a>
@@ -276,19 +250,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../logging/DebugLogArgs.html" class="extype" name="org.hammerlab.guacamole.logging.DebugLogArgs">DebugLogArgs</a></dd></dl></div>
-    </li><li name="org.bdgenomics.utils.cli.ParquetArgs#disableDictionaryEncoding" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="disableDictionaryEncoding:Boolean"></a>
-      <a id="disableDictionaryEncoding:Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">var</span>
-      </span>
-      <span class="symbol">
-        <span class="name">disableDictionaryEncoding</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>ParquetArgs → ParquetRDDArgs</dd></dl></div>
     </li><li name="org.bdgenomics.utils.cli.Args4jBase#doPrintUsage" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="doPrintUsage:Boolean"></a>
       <a id="doPrintUsage:Boolean"></a>
@@ -466,19 +427,6 @@
       <p class="shortcomment cmt">Simple getter interface here supports overriding behavior here to support different resolution logic, cf.</p><div class="fullcomment"><div class="comment cmt"><p>Simple getter interface here supports overriding behavior here to support different resolution logic, cf.
 <span class="extype" name="PartitionedRegionsArgs">PartitionedRegionsArgs</span>.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../readsets/rdd/PartitionedRegionsArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegionsArgs">PartitionedRegionsArgs</a> → <a href="../loci/partitioning/LociPartitionerArgs.html" class="extype" name="org.hammerlab.guacamole.loci.partitioning.LociPartitionerArgs">LociPartitionerArgs</a></dd></dl></div>
-    </li><li name="org.bdgenomics.utils.cli.ParquetArgs#logLevel" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="logLevel:String"></a>
-      <a id="logLevel:String"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">var</span>
-      </span>
-      <span class="symbol">
-        <span class="name">logLevel</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>ParquetArgs</dd></dl></div>
     </li><li name="org.hammerlab.guacamole.loci.partitioning.CappedRegionsPartitionerArgs#maxReadsPerPartition" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="maxReadsPerPartition:Int"></a>
       <a id="maxReadsPerPartition:Int"></a>
@@ -557,19 +505,6 @@
       </span>
       </h4>
       
-    </li><li name="org.bdgenomics.utils.cli.ParquetArgs#pageSize" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="pageSize:Int"></a>
-      <a id="pageSize:Int"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">var</span>
-      </span>
-      <span class="symbol">
-        <span class="name">pageSize</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>ParquetArgs → ParquetRDDArgs</dd></dl></div>
     </li><li name="org.hammerlab.guacamole.loci.partitioning.UniformPartitionerArgs#parallelism" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="parallelism:org.hammerlab.guacamole.loci.partitioning.LociPartitioner.NumPartitions"></a>
       <a id="parallelism:NumPartitions"></a>
@@ -665,7 +600,33 @@ calculation.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../loci/partitioning/LociPartitionerArgs.html" class="extype" name="org.hammerlab.guacamole.loci.partitioning.LociPartitionerArgs">LociPartitionerArgs</a></dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.commands.VariantSupport.Arguments#referenceFastaPath" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="org.hammerlab.guacamole.readsets.args.ReferenceFastaArgs#reference" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="reference(sc:org.apache.spark.SparkContext):org.hammerlab.guacamole.reference.ReferenceBroadcast"></a>
+      <a id="reference(SparkContext):ReferenceBroadcast"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">reference</span><span class="params">(<span name="sc">sc: <span class="extype" name="org.apache.spark.SparkContext">SparkContext</span></span>)</span><span class="result">: <a href="../reference/ReferenceBroadcast.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceBroadcast">ReferenceBroadcast</a></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../readsets/args/ReferenceFastaArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.args.ReferenceFastaArgs">ReferenceFastaArgs</a></dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.readsets.args.ReferenceFastaArgs#referenceFastaIsPartial" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="referenceFastaIsPartial:Boolean"></a>
+      <a id="referenceFastaIsPartial:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">var</span>
+      </span>
+      <span class="symbol">
+        <span class="name">referenceFastaIsPartial</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../readsets/args/ReferenceFastaArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.args.ReferenceFastaArgs">ReferenceFastaArgs</a></dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.readsets.args.ReferenceFastaArgs#referenceFastaPath" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="referenceFastaPath:String"></a>
       <a id="referenceFastaPath:String"></a>
       <h4 class="signature">
@@ -677,7 +638,7 @@ calculation.
         <span class="name">referenceFastaPath</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
       </h4>
-      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../readsets/args/ReferenceFastaArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.args.ReferenceFastaArgs">ReferenceFastaArgs</a></dd></dl></div>
     </li><li name="org.hammerlab.guacamole.readsets.args.Arguments#sampleNames" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="sampleNames:Array[String]"></a>
       <a id="sampleNames:Array[String]"></a>
@@ -717,6 +678,19 @@ calculation.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.commands.Args#validate" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="validate(sc:org.apache.spark.SparkContext):Unit"></a>
+      <a id="validate(SparkContext):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">validate</span><span class="params">(<span name="sc">sc: <span class="extype" name="org.apache.spark.SparkContext">SparkContext</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Args.html" class="extype" name="org.hammerlab.guacamole.commands.Args">Args</a></dd></dl></div>
     </li><li name="org.hammerlab.guacamole.commands.VariantSupport.Arguments#variants" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="variants:String"></a>
       <a id="variants:String"></a>
@@ -796,7 +770,9 @@ calculation.
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="org.hammerlab.guacamole.readsets.args.Arguments">
+        <div class="parent" name="org.hammerlab.guacamole.readsets.args.ReferenceFastaArgs">
+              <h3>Inherited from <a href="../readsets/args/ReferenceFastaArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.args.ReferenceFastaArgs">ReferenceFastaArgs</a></h3>
+            </div><div class="parent" name="org.hammerlab.guacamole.readsets.args.Arguments">
               <h3>Inherited from <a href="../readsets/args/Arguments.html" class="extype" name="org.hammerlab.guacamole.readsets.args.Arguments">readsets.args.Arguments</a></h3>
             </div><div class="parent" name="org.hammerlab.guacamole.readsets.args.Base">
               <h3>Inherited from <a href="../readsets/args/Base.html" class="extype" name="org.hammerlab.guacamole.readsets.args.Base">Base</a></h3>
@@ -818,10 +794,8 @@ calculation.
               <h3>Inherited from <a href="../loci/LociArgs.html" class="extype" name="org.hammerlab.guacamole.loci.LociArgs">LociArgs</a></h3>
             </div><div class="parent" name="org.hammerlab.guacamole.logging.DebugLogArgs">
               <h3>Inherited from <a href="../logging/DebugLogArgs.html" class="extype" name="org.hammerlab.guacamole.logging.DebugLogArgs">DebugLogArgs</a></h3>
-            </div><div class="parent" name="org.bdgenomics.utils.cli.ParquetArgs">
-              <h3>Inherited from <span class="extype" name="org.bdgenomics.utils.cli.ParquetArgs">ParquetArgs</span></h3>
-            </div><div class="parent" name="org.bdgenomics.utils.cli.ParquetRDDArgs">
-              <h3>Inherited from <span class="extype" name="org.bdgenomics.utils.cli.ParquetRDDArgs">ParquetRDDArgs</span></h3>
+            </div><div class="parent" name="org.hammerlab.guacamole.commands.Args">
+              <h3>Inherited from <a href="Args.html" class="extype" name="org.hammerlab.guacamole.commands.Args">Args</a></h3>
             </div><div class="parent" name="org.bdgenomics.utils.cli.Args4jBase">
               <h3>Inherited from <span class="extype" name="org.bdgenomics.utils.cli.Args4jBase">Args4jBase</span></h3>
             </div><div class="parent" name="scala.AnyRef">

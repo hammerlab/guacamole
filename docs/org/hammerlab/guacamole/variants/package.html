@@ -164,7 +164,7 @@
       </h4>
       <p class="comment cmt">A Genotype is a map of alleles to their allele frequency</p>
     </li><li name="org.hammerlab.guacamole.variants.GenotypeOutputArgs" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="GenotypeOutputArgsextendsArgs4jBasewithDebugLogArgs"></a>
+      <a id="GenotypeOutputArgsextendsArgs4jBasewithArgswithParquetArgs"></a>
       <a id="GenotypeOutputArgs:GenotypeOutputArgs"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -172,10 +172,23 @@
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="GenotypeOutputArgs.html"><span class="name">GenotypeOutputArgs</span></a><span class="result"> extends <span class="extype" name="org.bdgenomics.utils.cli.Args4jBase">Args4jBase</span> with <a href="../logging/DebugLogArgs.html" class="extype" name="org.hammerlab.guacamole.logging.DebugLogArgs">DebugLogArgs</a></span>
+        <a href="GenotypeOutputArgs.html"><span class="name">GenotypeOutputArgs</span></a><span class="result"> extends <span class="extype" name="org.bdgenomics.utils.cli.Args4jBase">Args4jBase</span> with <a href="../commands/Args.html" class="extype" name="org.hammerlab.guacamole.commands.Args">Args</a> with <span class="extype" name="org.bdgenomics.utils.cli.ParquetArgs">ParquetArgs</span></span>
       </span>
       </h4>
-      <p class="comment cmt">Argument for writing output genotypes.</p>
+      <p class="comment cmt">Arguments for writing output genotypes.</p>
+    </li><li name="org.hammerlab.guacamole.variants.GenotypeOutputCaller" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="GenotypeOutputCaller[Args&lt;:org.hammerlab.guacamole.variants.GenotypeOutputArgs,V&lt;:org.hammerlab.guacamole.variants.ReferenceVariant]extendsSparkCommand[Args]"></a>
+      <a id="GenotypeOutputCaller[Args&lt;:GenotypeOutputArgs,V&lt;:ReferenceVariant]:GenotypeOutputCaller[Args,V]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="GenotypeOutputCaller.html"><span class="name">GenotypeOutputCaller</span></a><span class="tparams">[<span name="Args">Args &lt;: <a href="GenotypeOutputArgs.html" class="extype" name="org.hammerlab.guacamole.variants.GenotypeOutputArgs">GenotypeOutputArgs</a></span>, <span name="V">V &lt;: <a href="ReferenceVariant.html" class="extype" name="org.hammerlab.guacamole.variants.ReferenceVariant">ReferenceVariant</a></span>]</span><span class="result"> extends <a href="../commands/SparkCommand.html" class="extype" name="org.hammerlab.guacamole.commands.SparkCommand">SparkCommand</a>[<span class="extype" name="org.hammerlab.guacamole.variants.GenotypeOutputCaller.Args">Args</span>]</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Caller-interface that writes computed variants to disk according to a <a href="GenotypeOutputArgs.html" class="extype" name="org.hammerlab.guacamole.variants.GenotypeOutputArgs">GenotypeOutputArgs</a>.</p>
     </li><li name="org.hammerlab.guacamole.variants.HasAlleleSerializer" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="HasAlleleSerializerextendsAnyRef"></a>
       <a id="HasAlleleSerializer:HasAlleleSerializer"></a>
@@ -223,19 +236,6 @@
       </span>
       </h4>
       
-    </li><li name="org.hammerlab.guacamole.variants.AlleleConversions" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="AlleleConversions"></a>
-      <a id="AlleleConversions:AlleleConversions"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a href="AlleleConversions$.html"><span class="name">AlleleConversions</span></a>
-      </span>
-      </h4>
-      <p class="comment cmt">Note: ADAM Genotypes really map more to our concept of an &quot;allele&quot;, hence some naming dissonance here.</p>
     </li><li name="org.hammerlab.guacamole.variants.AlleleEvidence" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="AlleleEvidence"></a>
       <a id="AlleleEvidence:AlleleEvidence"></a>
@@ -263,19 +263,6 @@
       </h4>
       <p class="comment cmt">As a convenience to users experimenting with different callers, some variant callers include functionality to compare
 the called variants to a gold standard VCF after they are computed, in the same job.</p>
-    </li><li name="org.hammerlab.guacamole.variants.VariantUtils" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="VariantUtils"></a>
-      <a id="VariantUtils:VariantUtils"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a href="VariantUtils$.html"><span class="name">VariantUtils</span></a>
-      </span>
-      </h4>
-      
     </li></ol>
             </div>
 

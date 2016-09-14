@@ -35,7 +35,7 @@
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">SparkCommand</span><span class="tparams">[<span name="T">T &lt;: <span class="extype" name="org.bdgenomics.utils.cli.Args4jBase">Args4jBase</span></span>]</span><span class="result"> extends <a href="Command.html" class="extype" name="org.hammerlab.guacamole.commands.Command">Command</a>[<span class="extype" name="org.hammerlab.guacamole.commands.SparkCommand.T">T</span>]</span>
+        <span class="name">SparkCommand</span><span class="tparams">[<span name="T">T &lt;: <a href="Args.html" class="extype" name="org.hammerlab.guacamole.commands.Args">Args</a></span>]</span><span class="result"> extends <a href="Command.html" class="extype" name="org.hammerlab.guacamole.commands.Command">Command</a>[<span class="extype" name="org.hammerlab.guacamole.commands.SparkCommand.T">T</span>]</span>
       </span>
       </h4>
       
@@ -44,7 +44,7 @@
           <div class="superTypes hiddenContent"><a href="Command.html" class="extype" name="org.hammerlab.guacamole.commands.Command">Command</a>[<span class="extype" name="org.hammerlab.guacamole.commands.SparkCommand.T">T</span>], <span class="extype" name="grizzled.slf4j.Logging">Logging</span>, <span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div><div class="toggleContainer block">
           <span class="toggle">Known Subclasses</span>
-          <div class="subClasses hiddenContent"><a href="VariantSupport$$Caller$.html" class="extype" name="org.hammerlab.guacamole.commands.VariantSupport.Caller">Caller</a>, <a href="VAFHistogram$$Caller$.html" class="extype" name="org.hammerlab.guacamole.commands.VAFHistogram.Caller">Caller</a>, <a href="SomaticStandard$$Caller$.html" class="extype" name="org.hammerlab.guacamole.commands.SomaticStandard.Caller">Caller</a>, <a href="SomaticJoint$$Caller$.html" class="extype" name="org.hammerlab.guacamole.commands.SomaticJoint.Caller">Caller</a>, <a href="GermlineAssemblyCaller$$Caller$.html" class="extype" name="org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Caller">Caller</a></div>
+          <div class="subClasses hiddenContent"><a href="VariantSupport$$Caller$.html" class="extype" name="org.hammerlab.guacamole.commands.VariantSupport.Caller">Caller</a>, <a href="VAFHistogram$$Caller$.html" class="extype" name="org.hammerlab.guacamole.commands.VAFHistogram.Caller">Caller</a>, <a href="SomaticStandard$$Caller$.html" class="extype" name="org.hammerlab.guacamole.commands.SomaticStandard.Caller">Caller</a>, <a href="SomaticJoint$$Caller$.html" class="extype" name="org.hammerlab.guacamole.commands.SomaticJoint.Caller">Caller</a>, <a href="GermlineAssemblyCaller$$Caller$.html" class="extype" name="org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Caller">Caller</a>, <a href="../variants/GenotypeOutputCaller.html" class="extype" name="org.hammerlab.guacamole.variants.GenotypeOutputCaller">GenotypeOutputCaller</a></div>
         </div></div>
         
 
@@ -563,6 +563,19 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.commands.SparkCommand">SparkCommand</a> → <a href="Command.html" class="extype" name="org.hammerlab.guacamole.commands.Command">Command</a></dd></dl></div>
     </li><li name="org.hammerlab.guacamole.commands.Command#run" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="run(args:String*):Unit"></a>
+      <a id="run(String*):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">run</span><span class="params">(<span name="args">args: <span class="extype" name="scala.Predef.String">String</span>*</span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Command.html" class="extype" name="org.hammerlab.guacamole.commands.Command">Command</a></dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.commands.Command#run" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="run(args:Array[String]):Unit"></a>
       <a id="run(Array[String]):Unit"></a>
       <h4 class="signature">
@@ -578,7 +591,7 @@
 </p></div><dl class="paramcmts block"><dt class="param">args</dt><dd class="cmt"><p>the command line arguments, with the first one chopped off. The first argument specifies which
             command to run, and is therefore already consumed by Guacamole.
 </p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Command.html" class="extype" name="org.hammerlab.guacamole.commands.Command">Command</a></dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.commands.SparkCommand#setDefaultConf" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="org.hammerlab.guacamole.commands.SparkCommand#setDefaultConf" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="setDefaultConf(key:String,value:String):Unit"></a>
       <a id="setDefaultConf(String,String):Unit"></a>
       <h4 class="signature">
@@ -590,7 +603,7 @@
         <span class="name">setDefaultConf</span><span class="params">(<span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="value">value: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
+      
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>

@@ -221,32 +221,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Ordered</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.variants.ReferenceVariant#adamVariant" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="adamVariant:org.bdgenomics.formats.avro.Variant"></a>
-      <a id="adamVariant:Variant"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">adamVariant</span><span class="result">: <span class="extype" name="org.bdgenomics.formats.avro.Variant">Variant</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Conversion to ADAMVariant</p><div class="fullcomment"><div class="comment cmt"><p>Conversion to ADAMVariant</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ReferenceVariant.html" class="extype" name="org.hammerlab.guacamole.variants.ReferenceVariant">ReferenceVariant</a></dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.variants.ReferenceVariant#adamVariantDatabase" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="adamVariantDatabase:org.bdgenomics.formats.avro.DatabaseVariantAnnotation"></a>
-      <a id="adamVariantDatabase:DatabaseVariantAnnotation"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">adamVariantDatabase</span><span class="result">: <span class="extype" name="org.bdgenomics.formats.avro.DatabaseVariantAnnotation">DatabaseVariantAnnotation</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ReferenceVariant.html" class="extype" name="org.hammerlab.guacamole.variants.ReferenceVariant">ReferenceVariant</a></dd></dl></div>
     </li><li name="org.hammerlab.guacamole.variants.CalledSomaticAllele#allele" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="allele:org.hammerlab.guacamole.variants.Allele"></a>
       <a id="allele:Allele"></a>
@@ -273,6 +247,32 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.variants.ReferenceVariant#bdgVariant" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="bdgVariant:org.bdgenomics.formats.avro.Variant"></a>
+      <a id="bdgVariant:Variant"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">bdgVariant</span><span class="result">: <span class="extype" name="org.bdgenomics.formats.avro.Variant">Variant</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Conversion to ADAMVariant</p><div class="fullcomment"><div class="comment cmt"><p>Conversion to ADAMVariant</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ReferenceVariant.html" class="extype" name="org.hammerlab.guacamole.variants.ReferenceVariant">ReferenceVariant</a></dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.variants.ReferenceVariant#bdgVariantDatabase" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="bdgVariantDatabase:org.bdgenomics.formats.avro.DatabaseVariantAnnotation"></a>
+      <a id="bdgVariantDatabase:DatabaseVariantAnnotation"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">bdgVariantDatabase</span><span class="result">: <span class="extype" name="org.bdgenomics.formats.avro.DatabaseVariantAnnotation">DatabaseVariantAnnotation</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="ReferenceVariant.html" class="extype" name="org.hammerlab.guacamole.variants.ReferenceVariant">ReferenceVariant</a></dd></dl></div>
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>
       <a id="clone():AnyRef"></a>
@@ -617,6 +617,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.variants.CalledSomaticAllele#toBDGGenotype" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="toBDGGenotype:org.bdgenomics.formats.avro.Genotype"></a>
+      <a id="toBDGGenotype:bdgenomics.formats.avro.Genotype"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">toBDGGenotype</span><span class="result">: <span class="extype" name="org.bdgenomics.formats.avro.Genotype">bdgenomics.formats.avro.Genotype</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.variants.CalledSomaticAllele">CalledSomaticAllele</a> → <a href="ReferenceVariant.html" class="extype" name="org.hammerlab.guacamole.variants.ReferenceVariant">ReferenceVariant</a></dd></dl></div>
     </li><li name="org.hammerlab.guacamole.reference.Interval#toJavaRange" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toJavaRange:com.google.common.collect.Range[Long]"></a>
       <a id="toJavaRange:Range[Long]"></a>

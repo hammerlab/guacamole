@@ -35,13 +35,13 @@
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <span class="name">Caller</span><span class="result"> extends <a href="SparkCommand.html" class="extype" name="org.hammerlab.guacamole.commands.SparkCommand">SparkCommand</a>[<a href="GermlineAssemblyCaller$$Arguments.html" class="extype" name="org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Arguments">Arguments</a>]</span>
+        <span class="name">Caller</span><span class="result"> extends <a href="SparkCommand.html" class="extype" name="org.hammerlab.guacamole.commands.SparkCommand">SparkCommand</a>[<a href="GermlineAssemblyCaller$$Arguments.html" class="extype" name="org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Arguments">Arguments</a>] with <a href="../variants/GenotypeOutputCaller.html" class="extype" name="org.hammerlab.guacamole.variants.GenotypeOutputCaller">GenotypeOutputCaller</a>[<a href="GermlineAssemblyCaller$$Arguments.html" class="extype" name="org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Arguments">Arguments</a>, <a href="../variants/CalledAllele.html" class="extype" name="org.hammerlab.guacamole.variants.CalledAllele">CalledAllele</a>]</span>
       </span>
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><a href="SparkCommand.html" class="extype" name="org.hammerlab.guacamole.commands.SparkCommand">SparkCommand</a>[<a href="GermlineAssemblyCaller$$Arguments.html" class="extype" name="org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Arguments">Arguments</a>], <a href="Command.html" class="extype" name="org.hammerlab.guacamole.commands.Command">Command</a>[<a href="GermlineAssemblyCaller$$Arguments.html" class="extype" name="org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Arguments">Arguments</a>], <span class="extype" name="grizzled.slf4j.Logging">Logging</span>, <span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><a href="../variants/GenotypeOutputCaller.html" class="extype" name="org.hammerlab.guacamole.variants.GenotypeOutputCaller">GenotypeOutputCaller</a>[<a href="GermlineAssemblyCaller$$Arguments.html" class="extype" name="org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Arguments">Arguments</a>, <a href="../variants/CalledAllele.html" class="extype" name="org.hammerlab.guacamole.variants.CalledAllele">CalledAllele</a>], <a href="SparkCommand.html" class="extype" name="org.hammerlab.guacamole.commands.SparkCommand">SparkCommand</a>[<a href="GermlineAssemblyCaller$$Arguments.html" class="extype" name="org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Arguments">Arguments</a>], <a href="Command.html" class="extype" name="org.hammerlab.guacamole.commands.Command">Command</a>[<a href="GermlineAssemblyCaller$$Arguments.html" class="extype" name="org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Arguments">Arguments</a>], <span class="extype" name="grizzled.slf4j.Logging">Logging</span>, <span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -59,7 +59,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Caller"><span>Caller</span></li><li class="in" name="org.hammerlab.guacamole.commands.SparkCommand"><span>SparkCommand</span></li><li class="in" name="org.hammerlab.guacamole.commands.Command"><span>Command</span></li><li class="in" name="grizzled.slf4j.Logging"><span>Logging</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Caller"><span>Caller</span></li><li class="in" name="org.hammerlab.guacamole.variants.GenotypeOutputCaller"><span>GenotypeOutputCaller</span></li><li class="in" name="org.hammerlab.guacamole.commands.SparkCommand"><span>SparkCommand</span></li><li class="in" name="org.hammerlab.guacamole.commands.Command"><span>Command</span></li><li class="in" name="grizzled.slf4j.Logging"><span>Logging</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -182,6 +182,19 @@
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Caller#computeGenotypes" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="computeGenotypes(args:org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Arguments,sc:org.apache.spark.SparkContext):org.apache.spark.rdd.RDD[org.hammerlab.guacamole.variants.CalledAllele]"></a>
+      <a id="computeGenotypes(Arguments,SparkContext):RDD[CalledAllele]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">computeGenotypes</span><span class="params">(<span name="args">args: <a href="GermlineAssemblyCaller$$Arguments.html" class="extype" name="org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Arguments">Arguments</a></span>, <span name="sc">sc: <span class="extype" name="org.apache.spark.SparkContext">SparkContext</span></span>)</span><span class="result">: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<a href="../variants/CalledAllele.html" class="extype" name="org.hammerlab.guacamole.variants.CalledAllele">CalledAllele</a>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Caller">Caller</a> → <a href="../variants/GenotypeOutputCaller.html" class="extype" name="org.hammerlab.guacamole.variants.GenotypeOutputCaller">GenotypeOutputCaller</a></dd></dl></div>
     </li><li name="org.hammerlab.guacamole.commands.SparkCommand#createSparkContext" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="createSparkContext():org.apache.spark.SparkContext"></a>
       <a id="createSparkContext():SparkContext"></a>
@@ -527,8 +540,8 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Caller#run" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="run(args:org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Arguments,sc:org.apache.spark.SparkContext):Unit"></a>
+    </li><li name="org.hammerlab.guacamole.variants.GenotypeOutputCaller#run" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="run(args:Args,sc:org.apache.spark.SparkContext):Unit"></a>
       <a id="run(Arguments,SparkContext):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -539,7 +552,7 @@
         <span class="name">run</span><span class="params">(<span name="args">args: <a href="GermlineAssemblyCaller$$Arguments.html" class="extype" name="org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Arguments">Arguments</a></span>, <span name="sc">sc: <span class="extype" name="org.apache.spark.SparkContext">SparkContext</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Caller">Caller</a> → <a href="SparkCommand.html" class="extype" name="org.hammerlab.guacamole.commands.SparkCommand">SparkCommand</a></dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../variants/GenotypeOutputCaller.html" class="extype" name="org.hammerlab.guacamole.variants.GenotypeOutputCaller">GenotypeOutputCaller</a> → <a href="SparkCommand.html" class="extype" name="org.hammerlab.guacamole.commands.SparkCommand">SparkCommand</a></dd></dl></div>
     </li><li name="org.hammerlab.guacamole.commands.SparkCommand#run" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="run(args:T):Unit"></a>
       <a id="run(Arguments):Unit"></a>
@@ -553,6 +566,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="SparkCommand.html" class="extype" name="org.hammerlab.guacamole.commands.SparkCommand">SparkCommand</a> → <a href="Command.html" class="extype" name="org.hammerlab.guacamole.commands.Command">Command</a></dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.commands.Command#run" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="run(args:String*):Unit"></a>
+      <a id="run(String*):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">run</span><span class="params">(<span name="args">args: <span class="extype" name="scala.Predef.String">String</span>*</span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Command.html" class="extype" name="org.hammerlab.guacamole.commands.Command">Command</a></dd></dl></div>
     </li><li name="org.hammerlab.guacamole.commands.Command#run" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="run(args:Array[String]):Unit"></a>
       <a id="run(Array[String]):Unit"></a>
@@ -569,7 +595,7 @@
 </p></div><dl class="paramcmts block"><dt class="param">args</dt><dd class="cmt"><p>the command line arguments, with the first one chopped off. The first argument specifies which
             command to run, and is therefore already consumed by Guacamole.
 </p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Command.html" class="extype" name="org.hammerlab.guacamole.commands.Command">Command</a></dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.commands.SparkCommand#setDefaultConf" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="org.hammerlab.guacamole.commands.SparkCommand#setDefaultConf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="setDefaultConf(key:String,value:String):Unit"></a>
       <a id="setDefaultConf(String,String):Unit"></a>
       <h4 class="signature">
@@ -581,7 +607,7 @@
         <span class="name">setDefaultConf</span><span class="params">(<span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="value">value: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="SparkCommand.html" class="extype" name="org.hammerlab.guacamole.commands.SparkCommand">SparkCommand</a></dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="SparkCommand.html" class="extype" name="org.hammerlab.guacamole.commands.SparkCommand">SparkCommand</a></dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -726,7 +752,9 @@
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="org.hammerlab.guacamole.commands.SparkCommand">
+        <div class="parent" name="org.hammerlab.guacamole.variants.GenotypeOutputCaller">
+              <h3>Inherited from <a href="../variants/GenotypeOutputCaller.html" class="extype" name="org.hammerlab.guacamole.variants.GenotypeOutputCaller">GenotypeOutputCaller</a>[<a href="GermlineAssemblyCaller$$Arguments.html" class="extype" name="org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Arguments">Arguments</a>, <a href="../variants/CalledAllele.html" class="extype" name="org.hammerlab.guacamole.variants.CalledAllele">CalledAllele</a>]</h3>
+            </div><div class="parent" name="org.hammerlab.guacamole.commands.SparkCommand">
               <h3>Inherited from <a href="SparkCommand.html" class="extype" name="org.hammerlab.guacamole.commands.SparkCommand">SparkCommand</a>[<a href="GermlineAssemblyCaller$$Arguments.html" class="extype" name="org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Arguments">Arguments</a>]</h3>
             </div><div class="parent" name="org.hammerlab.guacamole.commands.Command">
               <h3>Inherited from <a href="Command.html" class="extype" name="org.hammerlab.guacamole.commands.Command">Command</a>[<a href="GermlineAssemblyCaller$$Arguments.html" class="extype" name="org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Arguments">Arguments</a>]</h3>
