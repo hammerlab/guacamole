@@ -5,20 +5,17 @@ import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.rdd.ADAMContext
 import org.bdgenomics.formats.avro.DatabaseVariantAnnotation
 import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMapTwoSamples
+import org.hammerlab.guacamole.filters.pileup.PileupFilter
 import org.hammerlab.guacamole.filters.pileup.PileupFilter.PileupFilterArguments
 import org.hammerlab.guacamole.filters.somatic.SomaticGenotypeFilter.SomaticGenotypeFilterArguments
-import org.hammerlab.guacamole.filters.pileup.PileupFilter
 import org.hammerlab.guacamole.filters.somatic.{SomaticAlternateReadDepthFilter, SomaticGenotypeFilter, SomaticReadDepthFilter}
-import org.hammerlab.guacamole.likelihood.Likelihood
-import org.hammerlab.guacamole.logging.DelayedMessages
+import org.hammerlab.guacamole.likelihood.Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.readsets.ReadSets
-import org.hammerlab.guacamole.readsets.args.SomaticCallerArgs
-import org.hammerlab.guacamole.readsets.io.InputFilters
+import org.hammerlab.guacamole.readsets.args.{ReferenceFastaArgs, TumorNormalReadsArgs}
 import org.hammerlab.guacamole.readsets.rdd.PartitionedRegions
-import org.hammerlab.guacamole.reference.ReferenceBroadcast
-import org.hammerlab.guacamole.variants.{Allele, AlleleConversions, AlleleEvidence, CalledSomaticAllele, GenotypeOutputArgs, VariantUtils}
+import org.hammerlab.guacamole.variants.{Allele, AlleleEvidence, CalledSomaticAllele, GenotypeOutputArgs, GenotypeOutputCaller}
 import org.kohsuke.args4j.{Option => Args4jOption}
 
 /**
@@ -33,72 +30,55 @@ import org.kohsuke.args4j.{Option => Args4jOption}
  */
 object SomaticStandard {
 
-  protected class Arguments
-    extends SomaticCallerArgs
+  class Arguments
+    extends TumorNormalReadsArgs
       with PileupFilterArguments
       with SomaticGenotypeFilterArguments
-      with GenotypeOutputArgs {
+      with GenotypeOutputArgs
+      with ReferenceFastaArgs {
 
     @Args4jOption(name = "--odds", usage = "Minimum log odds threshold for possible variant candidates")
     var oddsThreshold: Int = 20
 
     @Args4jOption(name = "--dbsnp-vcf", required = false, usage = "VCF file to identify DBSNP variants")
     var dbSnpVcf: String = ""
-
-    @Args4jOption(name = "--reference-fasta", required = true, usage = "Local path to a reference FASTA file")
-    var referenceFastaPath: String = ""
-
   }
 
-  object Caller extends SparkCommand[Arguments] {
+  object Caller extends GenotypeOutputCaller[Arguments, CalledSomaticAllele] {
     override val name = "somatic-standard"
     override val description = "call somatic variants using independent callers on tumor and normal"
 
-    override def run(args: Arguments, sc: SparkContext): Unit = {
-      VariantUtils.validateArguments(args)
-      val loci = args.parseLoci(sc.hadoopConfiguration)
-      val filters =
-        InputFilters(
-          overlapsLoci = loci,
-          nonDuplicate = true,
-          passedVendorQualityChecks = true
-        )
+    override def computeGenotypes(args: Arguments, sc: SparkContext): RDD[CalledSomaticAllele] = {
+      val reference = args.reference(sc)
 
-      val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
-
-      val (tumorReads, normalReads, contigLengths) =
-        ReadSets.loadTumorNormalReads(
-          args,
-          sc,
-          filters
-        )
-
-      val filterMultiAllelic = args.filterMultiAllelic
-      val minAlignmentQuality = args.minAlignmentQuality
-      val maxReadDepth = args.maxTumorReadDepth
-
-      val oddsThreshold = args.oddsThreshold
+      val (readsets, loci) = ReadSets(sc, args)
 
       val partitionedReads =
         PartitionedRegions(
-          tumorReads.mappedReads ++ normalReads.mappedReads,
-          loci.result(contigLengths),
+          readsets.allMappedReads,
+          loci,
           args,
           halfWindowSize = 0
         )
 
+      // Destructure `args`' fields here to avoid serializing `args` itself.
+      val oddsThreshold = args.oddsThreshold
+      val minAlignmentQuality = args.minAlignmentQuality
+      val filterMultiAllelic = args.filterMultiAllelic
+      val maxTumorReadDepth = args.maxTumorReadDepth
+
       var potentialGenotypes: RDD[CalledSomaticAllele] =
         pileupFlatMapTwoSamples[CalledSomaticAllele](
           partitionedReads,
-          skipEmpty = true, // skip empty pileups
-          function = (pileupTumor, pileupNormal) =>
+          skipEmpty = true,  // skip empty pileups
+          function = (pileupNormal, pileupTumor) =>
             findPotentialVariantAtLocus(
               pileupTumor,
               pileupNormal,
               oddsThreshold,
               minAlignmentQuality,
               filterMultiAllelic,
-              maxReadDepth
+              maxTumorReadDepth
             ).iterator,
           reference = reference
         )
@@ -124,24 +104,19 @@ object SomaticStandard {
       if (args.dbSnpVcf != "") {
         val adamContext = new ADAMContext(sc)
         val dbSnpVariants = adamContext.loadVariantAnnotations(args.dbSnpVcf)
-        potentialGenotypes = potentialGenotypes
-          .keyBy(_.adamVariant)
-          .leftOuterJoin(dbSnpVariants.keyBy(_.getVariant))
-          .map(_._2).map({
-            case (calledAllele: CalledSomaticAllele, dbSnpVariant: Option[DatabaseVariantAnnotation]) =>
-              calledAllele.copy(rsID = dbSnpVariant.map(_.getDbSnpId))
-          })
+
+        potentialGenotypes =
+          potentialGenotypes
+            .keyBy(_.bdgVariant)
+            .leftOuterJoin(dbSnpVariants.keyBy(_.getVariant))
+            .values
+            .map {
+              case (calledAllele: CalledSomaticAllele, dbSnpVariantOpt: Option[DatabaseVariantAnnotation]) =>
+                calledAllele.copy(rsID = dbSnpVariantOpt.map(_.getDbSnpId))
+            }
       }
 
-      val filteredGenotypes: RDD[CalledSomaticAllele] = SomaticGenotypeFilter(potentialGenotypes, args)
-      progress("Computed %,d genotypes after basic filtering".format(filteredGenotypes.count))
-
-      VariantUtils.writeVariantsFromArguments(
-        args,
-        filteredGenotypes.flatMap(AlleleConversions.calledSomaticAlleleToADAMGenotype)
-      )
-
-      DelayedMessages.default.print()
+      SomaticGenotypeFilter(potentialGenotypes, args)
     }
 
     def findPotentialVariantAtLocus(tumorPileup: Pileup,
@@ -178,10 +153,13 @@ object SomaticStandard {
        * Find the most likely genotype in the tumor sample
        * This is either the reference genotype or an heterozygous genotype with some alternate base
        */
-      val genotypesAndLikelihoods = Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(
-        filteredTumorPileup,
-        Likelihood.probabilityCorrectIncludingAlignment,
-        normalize = true)
+      val genotypesAndLikelihoods =
+        likelihoodsOfAllPossibleGenotypesFromPileup(
+          filteredTumorPileup,
+          includeAlignment = true,
+          normalize = true
+        )
+
       if (genotypesAndLikelihoods.isEmpty)
         return Seq.empty
 
@@ -189,10 +167,12 @@ object SomaticStandard {
 
       // The following lazy vals are only evaluated if mostLikelyTumorGenotype.hasVariantAllele
       lazy val normalLikelihoods =
-        Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(
+        likelihoodsOfAllPossibleGenotypesFromPileup(
           filteredNormalPileup,
-          Likelihood.probabilityCorrectIgnoringAlignment,
-          normalize = true).toMap
+          includeAlignment = false,
+          normalize = true
+        ).toMap
+
       lazy val normalVariantGenotypes = normalLikelihoods.filter(_._1.hasVariantAllele)
 
       // NOTE(ryan): for now, compare non-reference alleles found in tumor to the sum of all likelihoods of variant
@@ -203,16 +183,20 @@ object SomaticStandard {
       lazy val somaticOdds = mostLikelyTumorGenotypeLikelihood / normalVariantsTotalLikelihood
 
       if (mostLikelyTumorGenotype.hasVariantAllele
-        && somaticOdds * 100 >= oddsThreshold) {
+        && somaticOdds * 100 >= oddsThreshold)
         for {
           // NOTE(ryan): currently only look at the first non-ref allele in the most likely tumor genotype.
           // removeCorrelatedGenotypes depends on there only being one variant per locus.
           // TODO(ryan): if we want to handle the possibility of two non-reference alleles at a locus, iterate over all
           // non-reference alleles here and rework downstream assumptions accordingly.
           allele <- mostLikelyTumorGenotype.getNonReferenceAlleles.find(_.altBases.nonEmpty).toSeq
+
           tumorVariantEvidence = AlleleEvidence(mostLikelyTumorGenotypeLikelihood, allele, filteredTumorPileup)
-          normalReferenceEvidence = AlleleEvidence(1 - normalVariantsTotalLikelihood, Allele(allele.refBases, allele.refBases), filteredNormalPileup)
-        } yield {
+
+          refAllele = Allele(allele.refBases, allele.refBases)
+
+          normalReferenceEvidence = AlleleEvidence(1 - normalVariantsTotalLikelihood, refAllele, filteredNormalPileup)
+        } yield
           CalledSomaticAllele(
             tumorPileup.sampleName,
             tumorPileup.contigName,
@@ -222,11 +206,8 @@ object SomaticStandard {
             tumorVariantEvidence,
             normalReferenceEvidence
           )
-        }
-      } else {
+      else
         Seq()
-      }
-
     }
   }
 }

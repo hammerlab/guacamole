@@ -10,16 +10,20 @@ import org.hammerlab.guacamole.loci.LociArgs
 import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.pileup.Pileup
+import org.hammerlab.guacamole.readsets.args.ReferenceFastaArgs
 import org.hammerlab.guacamole.readsets.rdd.PartitionedRegions
 import org.hammerlab.guacamole.readsets.{PerSample, ReadSets}
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.kohsuke.args4j.spi.StringArrayOptionHandler
 import org.kohsuke.args4j.{Option => Args4jOption}
+import org.hammerlab.guacamole.readsets.args.{Arguments => ReadSetsArguments}
 
 object SomaticJoint {
   class Arguments
-    extends Parameters.CommandlineArguments
-      with InputCollection.Arguments {
+    extends ReadSetsArguments
+      with Parameters.CommandlineArguments
+      with InputCollection.Arguments
+      with ReferenceFastaArgs {
 
     @Args4jOption(name = "--out", usage = "Output path for all variants in VCF. Default: no output")
     var out: String = ""
@@ -28,12 +32,6 @@ object SomaticJoint {
       name = "--out-dir",
       usage = "Output dir for all variants, split into separate files for somatic/germline")
     var outDir: String = ""
-
-    @Args4jOption(name = "--reference-fasta", required = true, usage = "Local path to a reference FASTA file")
-    var referenceFastaPath: String = null
-
-    @Args4jOption(name = "--reference-fasta-is-partial", usage = "Treat the reference fasta as a partial reference")
-    var referenceFastaIsPartial: Boolean = false
 
     @Args4jOption(name = "--force-call-loci-file", usage = "Always call the given sites")
     var forceCallLociFile: String = ""
@@ -64,7 +62,7 @@ object SomaticJoint {
 
       val (readsets, loci) = ReadSets(sc, args)
 
-      log.info(
+      info(
         (s"Running on ${inputs.items.length} inputs:" :: inputs.items.toList).mkString("\n")
       )
 
@@ -88,7 +86,7 @@ object SomaticJoint {
 
       val parameters = Parameters(args)
 
-      val reference = ReferenceBroadcast(args.referenceFastaPath, sc, partialFasta = args.referenceFastaIsPartial)
+      val reference = args.reference(sc)
 
       val calls = makeCalls(
         sc,

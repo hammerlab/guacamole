@@ -11,11 +11,11 @@ import org.apache.spark.storage.StorageLevel
 import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMapMultipleSamples
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.readsets.args.{Arguments => ReadSetsArguments}
+import org.hammerlab.guacamole.readsets.args.{ReferenceFastaArgs, Arguments => ReadSetsArguments}
 import org.hammerlab.guacamole.readsets.io.{Input, InputFilters}
 import org.hammerlab.guacamole.readsets.rdd.PartitionedRegions
 import org.hammerlab.guacamole.readsets.{NumSamples, PartitionedReads, ReadSets, SampleId}
-import org.hammerlab.guacamole.reference.{ContigName, Locus, NumLoci, ReferenceBroadcast, ReferenceGenome}
+import org.hammerlab.guacamole.reference.{ContigName, Locus, NumLoci, ReferenceGenome}
 import org.hammerlab.magic.rdd.SplitByKeyRDD._
 import org.kohsuke.args4j.{Option => Args4jOption}
 
@@ -57,7 +57,9 @@ object VariantLocus {
 
 object VAFHistogram {
 
-  protected class Arguments extends ReadSetsArguments {
+  protected class Arguments
+    extends ReadSetsArguments
+      with ReferenceFastaArgs {
 
     @Args4jOption(name = "--out", required = false, forbids = Array("--local-out"),
       usage = "HDFS file path to save the variant allele frequency histogram")
@@ -91,9 +93,6 @@ object VAFHistogram {
     @Args4jOption(name = "--sample-percent", depends = Array("--print-stats"),
       usage = "Percent of variant to use for the calculations (Default: 25)")
     var samplePercent: Int = 25
-
-    @Args4jOption(name = "--reference-fasta", required = true, usage = "Local path to a reference FASTA file")
-    var referenceFastaPath: String = ""
   }
 
   object Caller extends SparkCommand[Arguments] {
@@ -136,7 +135,7 @@ object VAFHistogram {
       val minReadDepth = args.minReadDepth
       val minVariantAlleleFrequency = args.minVAF
 
-      val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
+      val reference = args.reference(sc)
 
       val (variantLoci, numVariantsPerSample) =
         variantLociFromReads(

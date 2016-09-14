@@ -1,7 +1,7 @@
 package org.hammerlab.guacamole.reads
 
+import grizzled.slf4j.Logging
 import htsjdk.samtools._
-import org.apache.spark.Logging
 import org.bdgenomics.formats.avro.AlignmentRecord
 import org.hammerlab.guacamole.readsets.SampleName
 import org.hammerlab.guacamole.util.Bases
@@ -101,7 +101,7 @@ object Read extends Logging {
 
         // We subtract 1 from start, since samtools is 1-based and we're 0-based.
         if (result.unclippedStart != record.getUnclippedStart - 1)
-          log.warn(
+          warn(
             "Computed read 'unclippedStart' %d != samtools read end %d.".format(
               result.unclippedStart, record.getUnclippedStart - 1
             )

@@ -2,19 +2,18 @@ package org.hammerlab.guacamole.jointcaller
 
 import org.hammerlab.guacamole.commands.SomaticJoint
 import org.hammerlab.guacamole.util.TestUtil.resourcePath
+import org.hammerlab.guacamole.variants.VCFCmpTest
 import org.hammerlab.magic.test.TmpFiles
 import org.scalatest.{FunSuite, Matchers}
 
 class SomaticJointCallerEndToEndSuite
   extends FunSuite
     with Matchers
-    with TmpFiles {
+    with TmpFiles
+    with VCFCmpTest {
 
   val cancerWGS1Bams = Vector("normal.tiny.bam", "primary.tiny.bam", "recurrence.tiny.bam").map(
     name => resourcePath("cancer-wgs1/" + name))
-
-  def vcfContentsIgnoringHeaders(path: String): String =
-    scala.io.Source.fromFile(path).getLines().filterNot(_.startsWith("##")).mkString("\n")
 
   val outDir = tmpPath()
 
@@ -33,10 +32,6 @@ class SomaticJointCallerEndToEndSuite
       ) ++ cancerWGS1Bams
     )
 
-    vcfContentsIgnoringHeaders(s"$outDir/all.vcf") should be(
-      vcfContentsIgnoringHeaders(
-        resourcePath("tiny-sjc-output/all.vcf")
-      )
-    )
+    checkVCFs(s"$outDir/all.vcf", resourcePath("tiny-sjc-output/all.vcf"))
   }
 }

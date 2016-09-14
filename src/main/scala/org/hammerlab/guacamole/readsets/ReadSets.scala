@@ -13,7 +13,7 @@ import org.bdgenomics.formats.avro.AlignmentRecord
 import org.hammerlab.guacamole.loci.set.{LociParser, LociSet}
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.reads.{MappedRead, Read}
-import org.hammerlab.guacamole.readsets.args.{Arguments, SingleSampleArgs, TumorNormalReadsArgs}
+import org.hammerlab.guacamole.readsets.args.{SingleSampleArgs, TumorNormalReadsArgs, Base => BaseArgs}
 import org.hammerlab.guacamole.readsets.io.{Input, InputFilters}
 import org.hammerlab.guacamole.readsets.rdd.ReadsRDD
 import org.hammerlab.guacamole.reference.{ContigName, Locus}
@@ -21,7 +21,6 @@ import org.seqdoop.hadoop_bam.util.SAMHeaderReader
 import org.seqdoop.hadoop_bam.{AnySAMInputFormat, BAMInputFormat, SAMRecordWritable}
 
 import scala.collection.JavaConversions._
-
 
 /**
  * A [[ReadSets]] contains reads from multiple inputs as well as [[SequenceDictionary]] / contig-length information
@@ -50,9 +49,9 @@ object ReadSets extends Logging {
   /**
    * Load one read-set from an input file.
    */
-  def loadReads(args: SingleSampleArgs,
-                sc: SparkContext,
-                filters: InputFilters): (ReadsRDD, ContigLengths) = {
+  private[readsets] def loadReads(args: SingleSampleArgs,
+                                  sc: SparkContext,
+                                  filters: InputFilters): (ReadsRDD, ContigLengths) = {
 
     val ReadSets(reads, _, contigLengths) =
       ReadSets(
@@ -76,6 +75,7 @@ object ReadSets extends Logging {
   }
 
   /**
+<<<<<<< HEAD
    * Given arguments for two sets of reads (tumor and normal), return a pair of (tumor, normal) read sets.
    *
    * @param args parsed arguments
@@ -98,6 +98,8 @@ object ReadSets extends Logging {
   }
 
   /**
+=======
+>>>>>>> master
    * Load ReadSet instances from user-specified BAMs (specified as an InputCollection).
    */
   def apply(sc: SparkContext,
@@ -112,7 +114,7 @@ object ReadSets extends Logging {
     )
   }
 
-  def apply(sc: SparkContext, args: Arguments): (ReadSets, LociSet) = {
+  def apply(sc: SparkContext, args: BaseArgs): (ReadSets, LociSet) = {
     val loci = args.parseLoci(sc.hadoopConfiguration)
 
     val readsets = apply(sc, args.inputs, loci, !args.noSequenceDictionary)
@@ -141,7 +143,7 @@ object ReadSets extends Logging {
 
     val (readsRDDs, sequenceDictionaries) =
       (for {
-        (Input(sampleId, sampleName, filename), filters) <- inputsAndFilters
+        (Input(sampleId, _, filename), filters) <- inputsAndFilters
       } yield
         load(filename, sc, sampleId, filters)
       ).unzip

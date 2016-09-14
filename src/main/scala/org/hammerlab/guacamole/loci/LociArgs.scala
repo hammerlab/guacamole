@@ -2,13 +2,14 @@ package org.hammerlab.guacamole.loci
 
 import java.io.File
 
-import breeze.io.TextReader.InputStreamReader
 import htsjdk.variant.vcf.VCFFileReader
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.Path
 import org.hammerlab.guacamole.loci.set.LociParser
 import org.hammerlab.guacamole.logging.DebugLogArgs
 import org.kohsuke.args4j.{Option => Args4jOption}
+
+import scala.io.Source
 
 /** Argument for accepting a set of loci. */
 trait LociArgs extends DebugLogArgs {
@@ -78,7 +79,7 @@ object LociArgs {
       val is = filesystem.open(path)
       val loci =
         LociParser(
-          new InputStreamReader(is).readRemaining()
+          Source.fromInputStream(is).getLines().mkString
         )
       is.close()
       loci
