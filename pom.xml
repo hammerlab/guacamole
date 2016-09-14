@@ -249,6 +249,16 @@
       <groupId>org.bdgenomics.adam</groupId>
       <artifactId>adam-core_${scala.version.prefix}</artifactId>
       <version>${adam.version}</version>
+      <exclusions>
+        <!--
+          ADAM brings in version 1.3.2, but Hadoop and the other deps want 2.4.0, and in particular need
+          org.apache.commons.io.Charsets which didn't show up until 2.3.
+        -->
+        <exclusion>
+          <groupId>commons-io</groupId>
+          <artifactId>commons-io</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.bdgenomics.bdg-formats</groupId>
@@ -320,11 +330,6 @@
       <artifactId>grizzled-slf4j_${scala.version.prefix}</artifactId>
       <version>1.0.3</version>
     </dependency>
-    <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-      <version>2.5</version>
-    </dependency>
 
     <!-- Test deps -->
     <dependency>
@@ -346,7 +351,6 @@
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
-
   </dependencies>
 
   <profiles>
