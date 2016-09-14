@@ -21,7 +21,7 @@ trait GenotypeOutputCaller[Args <: GenotypeOutputArgs, V <: ReferenceVariant] ex
 
     val adamGenotypes = genotypes.map(_.toBDGGenotype)
 
-    args.writeVariantsFromArguments(adamGenotypes)
+    args.writeVariants(adamGenotypes)
 
     DelayedMessages.default.print()
   }
