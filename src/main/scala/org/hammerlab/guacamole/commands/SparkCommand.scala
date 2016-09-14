@@ -18,7 +18,7 @@ abstract class SparkCommand[T <: Args: Manifest] extends Command[T] {
   def run(args: T, sc: SparkContext): Unit
 
   private val defaultConfs = mutable.HashMap[String, String]()
-  protected def setDefaultConf(key: String, value: String): Unit = {
+  def setDefaultConf(key: String, value: String): Unit = {
     defaultConfs.update(key, value)
   }
 

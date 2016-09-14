@@ -25,6 +25,7 @@ abstract class Command[T <: Args: Manifest] extends Serializable with Logging {
    *             command to run, and is therefore already consumed by Guacamole.
    */
   def run(args: Array[String]): Unit = run(Args4j[T](args))
+  def run(args: String*): Unit = run(args.toArray)
 
   def run(args: T): Unit
 }
