@@ -7,17 +7,20 @@ import org.bdgenomics.formats.avro.Variant
 import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMapMultipleSamples
 import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.readsets.args.{Arguments => ReadSetsArguments}
+import org.hammerlab.guacamole.readsets.args.{ReferenceFastaArgs, Arguments => ReadSetsArguments}
 import org.hammerlab.guacamole.readsets.io.{InputFilters, ReadLoadingConfig}
 import org.hammerlab.guacamole.readsets.rdd.PartitionedRegions
 import org.hammerlab.guacamole.readsets.{PerSample, ReadSets, SampleName}
-import org.hammerlab.guacamole.reference.{ContigName, Locus, ReferenceBroadcast}
+import org.hammerlab.guacamole.reference.{ContigName, Locus}
 import org.hammerlab.guacamole.util.Bases
 import org.kohsuke.args4j.{Option => Args4jOption}
 
 object VariantSupport {
 
-  protected class Arguments extends ReadSetsArguments {
+  protected class Arguments
+    extends ReadSetsArguments
+      with ReferenceFastaArgs {
+
     @Args4jOption(name = "--input-variant", required = true, aliases = Array("-v"),
       usage = "")
     var variants: String = ""
@@ -25,10 +28,6 @@ object VariantSupport {
     @Args4jOption(name = "--output", metaVar = "OUT", required = true, aliases = Array("-o"),
       usage = "Output path for CSV")
     var output: String = ""
-
-    @Args4jOption(name = "--reference-fasta", required = true, usage = "Local path to a reference FASTA file")
-    var referenceFastaPath: String = ""
-
   }
 
   object Caller extends SparkCommand[Arguments] {
@@ -49,7 +48,7 @@ object VariantSupport {
 
     override def run(args: Arguments, sc: SparkContext): Unit = {
 
-      val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
+      val reference = args.reference(sc)
 
       val adamContext = new ADAMContext(sc)
 

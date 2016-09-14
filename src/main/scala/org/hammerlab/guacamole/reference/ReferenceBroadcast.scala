@@ -10,7 +10,10 @@ import org.hammerlab.guacamole.util.Bases
 
 import scala.collection.mutable
 
-case class ReferenceBroadcast(broadcastedContigs: Map[String, ContigSequence], source: Option[String]) extends ReferenceGenome {
+case class ReferenceBroadcast(broadcastedContigs: Map[String, ContigSequence],
+                              source: Option[String])
+  extends ReferenceGenome {
+
   override def getContig(contigName: String): ContigSequence = {
     try {
       broadcastedContigs(contigName)

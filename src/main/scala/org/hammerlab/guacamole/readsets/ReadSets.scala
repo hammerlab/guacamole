@@ -13,7 +13,7 @@ import org.bdgenomics.formats.avro.AlignmentRecord
 import org.hammerlab.guacamole.loci.set.{LociParser, LociSet}
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.reads.{MappedRead, Read}
-import org.hammerlab.guacamole.readsets.args.{Arguments, SingleSampleArgs, TumorNormalReadsArgs}
+import org.hammerlab.guacamole.readsets.args.{SingleSampleArgs, Base => BaseArgs}
 import org.hammerlab.guacamole.readsets.io.{BamReaderAPI, Input, InputFilters, ReadLoadingConfig}
 import org.hammerlab.guacamole.readsets.rdd.ReadsRDD
 import org.hammerlab.guacamole.reference.{ContigName, Locus}
@@ -49,9 +49,9 @@ object ReadSets {
   /**
    * Load one read-set from an input file.
    */
-  def loadReads(args: SingleSampleArgs,
-                sc: SparkContext,
-                filters: InputFilters): (ReadsRDD, ContigLengths) = {
+  private[readsets] def loadReads(args: SingleSampleArgs,
+                                  sc: SparkContext,
+                                  filters: InputFilters): (ReadsRDD, ContigLengths) = {
 
     val ReadSets(reads, _, contigLengths) =
       ReadSets(
@@ -76,29 +76,6 @@ object ReadSets {
   }
 
   /**
-   * Given arguments for two sets of reads (tumor and normal), return a pair of (tumor, normal) read sets.
-   *
-   * @param args parsed arguments
-   * @param sc spark context
-   * @param filters input filters to apply
-   */
-  def loadTumorNormalReads(args: TumorNormalReadsArgs,
-                           sc: SparkContext,
-                           filters: InputFilters): (ReadsRDD, ReadsRDD, ContigLengths) = {
-
-    val ReadSets(readsets, _, contigLengths) =
-      ReadSets(
-        sc,
-        args.inputs,
-        filters,
-        !args.noSequenceDictionary,
-        ReadLoadingConfig(args)
-      )
-
-    (readsets(0), readsets(1), contigLengths)
-  }
-
-  /**
    * Load ReadSet instances from user-specified BAMs (specified as an InputCollection).
    */
   def apply(sc: SparkContext,
@@ -113,7 +90,7 @@ object ReadSets {
     )
   }
 
-  def apply(sc: SparkContext, args: Arguments): (ReadSets, LociSet) = {
+  def apply(sc: SparkContext, args: BaseArgs): (ReadSets, LociSet) = {
     val loci = args.parseLoci(sc.hadoopConfiguration)
 
     val readsets = apply(sc, args.inputs, loci, !args.noSequenceDictionary)

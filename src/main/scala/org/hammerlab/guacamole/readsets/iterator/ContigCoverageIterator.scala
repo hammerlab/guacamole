@@ -61,4 +61,4 @@ case class ContigCoverageIterator(halfWindowSize: Int,
   }
 }
 
-case class RegionsNotSortedException(msg: String) extends Exception
+case class RegionsNotSortedException(msg: String) extends Exception(msg)
