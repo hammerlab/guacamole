@@ -1,0 +1,6 @@
+# Ignore anything not whitelisted in this directory, so that custom config files can be kept here.
+*
+!local
+!gc
+!cluster
+!logs4j.properties

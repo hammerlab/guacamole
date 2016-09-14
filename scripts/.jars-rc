@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+#
+# Script that can be sourced to populate $uber_jar xor {$guac_jar,$deps_jar} variables.
+
+scripts_dir="$(dirname "${BASH_SOURCE[0]}")"
+
+uber_jar="$("$scripts_dir"/assembly-jar 2> /dev/null)"
+guac_jar="$("$scripts_dir"/guac-jar 2> /dev/null)"
+deps_jar="$("$scripts_dir"/deps-jar 2> /dev/null)"
+
+if [ -n "$uber_jar" ]; then
+  if [ -n "$guac_jar" -a -n "$deps_jar" ]; then
+
+    # If all 3 JARs are found, choose the more recent of {uber, guac+deps}.
+
+    uber_mod_time="$(stat -c %Y "$uber_jar")"
+    guac_mod_time="$(stat -c %Y "$guac_jar")"
+    deps_mod_time="$(stat -c %Y "$deps_jar")"
+
+    if [ "$uber_mod_time" -gt "$guac_mod_time" -a "$uber_mod_time" -gt "$deps_mod_time" ]; then
+      guac_jar=
+      deps_jar=
+    elif [ "$uber_mod_time" -lt "$guac_mod_time" -a "$uber_mod_time" -lt "$deps_mod_time" ]; then
+      uber_jar=
+    else
+      if [ "$deps_mod_time" -lt "$guac_mod_time" ]; then
+        younger=deps
+        older=guac
+      else
+        younger=guac
+        older=deps
+      fi
+      echo "Warning: found $younger and $older JARs that are younger and older, respectively, than assembly JAR $uber_jar" 1>&2
+      guac_jar=
+      deps_jar=
+    fi
+  else
+    guac_jar=
+    deps_jar=
+  fi
+else
+  if [ -z "$guac_jar" ]; then
+    echo "Couldn't find a guacamole or assembly jar" 1>&2
+    exit 2
+  fi
+
+  if [ -z "$deps_jar" ]; then
+    echo "Couldn't find a guacamole dependencies or assembly jar" 1>&2
+    exit 3
+  fi
+fi

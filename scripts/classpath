@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 # Print out a classpath that includes guacamole and all of its transitive dependencies, for use by downstream scripts.
 #
 # First, check for an already-built assembly JAR; if one exists, print its path and exit.
@@ -13,22 +15,16 @@
 # Go to the repo root.
 cd "$(dirname "$(dirname "${BASH_SOURCE[@]}")")"
 
-assembly_jar="$(scripts/assembly-jar 2> /dev/null)"
-
-if [ -n "$assembly_jar" ]; then
-  echo "$assembly_jar"
-  exit 0
-fi
-
-guac_jar="$(scripts/guac-jar)"
-
-if [ -n "$guac_jar" ]; then
-
-  deps_jar="$(scripts/deps-jar 2> /dev/null)"
-
-  if [ -f "$deps_jar" ]; then
+if source "scripts/.jars-rc"; then
+  if [ -n "$uber_jar" ]; then
+    echo "$uber_jar"
+  else
     echo "$guac_jar:$deps_jar"
-    exit 0
+  fi
+else
+  guac_jar="$(scripts/guac-jar)"
+  if [ -z "$guac_jar" ]; then
+    exit 1
   fi
 
   tmp_cp_file="$(mktemp)"
@@ -40,7 +36,4 @@ if [ -n "$guac_jar" ]; then
 
   mvn dependency:build-classpath -Dmdep.outputFile="$tmp_cp_file" &> /dev/null
   echo "$guac_jar:$(cat "$tmp_cp_file")"
-  exit 0
 fi
-
-exit 1
