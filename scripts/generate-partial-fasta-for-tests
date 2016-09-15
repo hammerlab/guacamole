@@ -39,7 +39,7 @@ full_jar="$jar:target/scala-2.10.5/test-classes"
 
 # HG19 reference
 time java -Xmx6g -XX:MaxPermSize=512m "-Dspark.master=local[1]" -cp "$full_jar" "$MAIN_CLASS" \
-    --reference-fasta "$HG19_FULL_FASTA_PATH" \
+    --reference "$HG19_FULL_FASTA_PATH" \
     --output src/test/resources/hg19.partial.fasta \
     --bam-reader-api hadoopbam \
     --padding 180 \
@@ -48,7 +48,7 @@ time java -Xmx6g -XX:MaxPermSize=512m "-Dspark.master=local[1]" -cp "$full_jar" 
 
 # b37 reference
 time java -Xmx6g -XX:MaxPermSize=512m "-Dspark.master=local[1]" -cp "$full_jar" "$MAIN_CLASS" \
-    --reference-fasta "$GRCH37_FULL_FASTA_PATH" \
+    --reference "$GRCH37_FULL_FASTA_PATH" \
     --output src/test/resources/grch37.partial.fasta \
     src/test/resources/synthetic.challenge.set1.*.sam \
     src/test/resources/tumor.chr20.tough.sam \

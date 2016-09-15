@@ -31,7 +31,7 @@ trait GenotypeOutputArgs extends Args with ParquetArgs {
   )
   var variantOutput: String = ""
 
-  lazy val outputPath = variantOutput.stripMargin
+  lazy val outputPathStr = variantOutput.stripMargin
 
   @Args4jOption(
     name = "--out-chunks",
@@ -52,7 +52,6 @@ trait GenotypeOutputArgs extends Args with ParquetArgs {
    * This allows some late failures (e.g. output file already exists) to be surfaced more quickly.
    */
   override def validate(sc: SparkContext): Unit = {
-    val outputPathStr = variantOutput.stripMargin
     if (outputPathStr.toLowerCase.endsWith(".vcf")) {
       val outputPath = new Path(outputPathStr)
       val filesystem = outputPath.getFileSystem(sc.hadoopConfiguration)
@@ -82,20 +81,20 @@ trait GenotypeOutputArgs extends Args with ParquetArgs {
 
   private def writeSortedSampledVariants(genotypes: RDD[BDGGenotype]): Unit = {
 
-    if (outputPath.isEmpty || outputPath.toLowerCase.endsWith(".json")) {
+    if (outputPathStr.isEmpty || outputPathStr.toLowerCase.endsWith(".json")) {
       writeJSONVariants(genotypes)
-    } else if (outputPath.toLowerCase.endsWith(".vcf")) {
-      progress(s"Writing genotypes to VCF file: $outputPath")
+    } else if (outputPathStr.toLowerCase.endsWith(".vcf")) {
+      progress(s"Writing genotypes to VCF file: $outputPathStr")
       genotypes
         .toVariantContext
         .map(v => (v.variant.getStart, v.variant.getEnd) -> v)
         .repartitionAndSortWithinPartitions(new HashPartitioner(1))
         .values
-        .saveAsVcf(outputPath)
+        .saveAsVcf(outputPathStr)
     } else {
-      progress(s"Writing genotypes to: $outputPath.")
+      progress(s"Writing genotypes to: $outputPathStr.")
       genotypes.adamParquetSave(
-        outputPath,
+        outputPathStr,
         blockSize,
         pageSize,
         compressionCodec,
@@ -106,13 +105,13 @@ trait GenotypeOutputArgs extends Args with ParquetArgs {
 
   private def writeJSONVariants(genotypes: RDD[BDGGenotype]): Unit = {
     val out: OutputStream =
-      if (outputPath.isEmpty) {
+      if (outputPathStr.isEmpty) {
         progress("Writing genotypes to stdout.")
         System.out
       } else {
-        progress(s"Writing genotypes as JSON to: $outputPath")
+        progress(s"Writing genotypes as JSON to: $outputPathStr")
         val filesystem = FileSystem.get(new Configuration())
-        val path = new Path(outputPath)
+        val path = new Path(outputPathStr)
         filesystem.create(path, true)
       }
 
