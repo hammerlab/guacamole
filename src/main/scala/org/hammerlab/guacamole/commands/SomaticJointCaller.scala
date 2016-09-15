@@ -193,7 +193,7 @@ object SomaticJoint {
     }
 
     pileupFlatMapMultipleSamples(
-      readsets.numSamples,
+      readsets.sampleNames,
       partitionedReads,
       skipEmpty = true,  // TODO: shouldn't skip empty positions if we might force call them. Need an efficient way to handle this.
       callPileups,

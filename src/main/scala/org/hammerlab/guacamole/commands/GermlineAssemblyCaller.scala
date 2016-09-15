@@ -133,6 +133,7 @@ object GermlineAssemblyCaller {
             val pileup =
               Pileup(
                 currentLocusReads,
+                sampleName,
                 contigName,
                 window.currentLocus,
                 referenceContig

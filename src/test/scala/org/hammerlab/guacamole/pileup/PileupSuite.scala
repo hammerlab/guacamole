@@ -234,15 +234,15 @@ class PileupSuite
     val read = makeRead("AATTGAATTG", "5M1D5M", 1, "chr4")
 
     intercept[AssertionError] {
-      Pileup(Seq(read), "chr4", 0, reference.getContig("chr4"))
+      Pileup(Seq(read), "sample", "chr4", 0, reference.getContig("chr4"))
     }
 
     intercept[AssertionError] {
-      Pileup(Seq(read), "chr4", 12, reference.getContig("chr4"))
+      Pileup(Seq(read), "sample", "chr4", 12, reference.getContig("chr4"))
     }
 
     intercept[AssertionError] {
-      Pileup(Seq(read), "chr5", 1, reference.getContig("chr4"))
+      Pileup(Seq(read), "sample", "chr5", 1, reference.getContig("chr4"))
     }
   }
 
