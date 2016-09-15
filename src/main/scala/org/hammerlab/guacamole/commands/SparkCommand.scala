@@ -28,7 +28,7 @@ abstract class SparkCommand[T <: Args: Manifest] extends Command[T] {
    * Typically, most properties are set through config file / cmd-line.
    * @return
    */
-  def createSparkContext(): SparkContext = {
+  private def createSparkContext(): SparkContext = {
     val config: SparkConf = new SparkConf()
 
     config.getOption("spark.app.name") match {
