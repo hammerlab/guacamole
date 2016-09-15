@@ -140,7 +140,7 @@ object Read extends Logging {
     val sequence = Bases.stringToBases(alignmentRecord.getSequence)
     val baseQualities = baseQualityStringToArray(alignmentRecord.getQual, sequence.length)
 
-    val referenceContig = alignmentRecord.getContig.getContigName.intern
+    val referenceContig = alignmentRecord.getContigName.intern
     val cigar = TextCigarCodec.decode(alignmentRecord.getCigar)
 
     val read =
@@ -175,7 +175,7 @@ object Read extends Logging {
     if (alignmentRecord.getReadPaired) {
       val mateAlignment = if (alignmentRecord.getMateMapped) Some(
         MateAlignmentProperties(
-          contigName = alignmentRecord.getMateContig.getContigName.intern(),
+          contigName = alignmentRecord.getMateContigName.intern(),
           start = alignmentRecord.getMateAlignmentStart,
           inferredInsertSize = if (alignmentRecord.getInferredInsertSize != 0 && alignmentRecord.getInferredInsertSize != null) Some(alignmentRecord.getInferredInsertSize.toInt) else None,
           isPositiveStrand = !alignmentRecord.getMateNegativeStrand

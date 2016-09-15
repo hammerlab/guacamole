@@ -9,7 +9,7 @@ import org.apache.hadoop.fs.{FileSystem, Path}
 import org.apache.hadoop.mapred.FileAlreadyExistsException
 import org.apache.spark.{HashPartitioner, SparkContext}
 import org.apache.spark.rdd.RDD
-import org.bdgenomics.adam.rdd.ADAMContext._
+import org.bdgenomics.adam.rdd.variation.GenotypeRDD
 import org.bdgenomics.formats.avro.{Genotype => BDGGenotype}
 import org.bdgenomics.utils.cli.ParquetArgs
 import org.codehaus.jackson.JsonFactory
@@ -22,7 +22,10 @@ import org.kohsuke.args4j.{Option => Args4jOption}
  *
  * Supports writing VCF, JSON, and Parquet formats.
  */
-trait GenotypeOutputArgs extends Args with ParquetArgs {
+trait GenotypeOutputArgs
+  extends Args
+    with ParquetArgs {
+
   @Args4jOption(
     name = "--out",
     metaVar = "VARIANTS_OUT",
@@ -67,12 +70,13 @@ trait GenotypeOutputArgs extends Args with ParquetArgs {
    *
    * @param genotypes ADAM genotypes (i.e. the variants)
    */
-  def writeVariants(genotypes: RDD[BDGGenotype]): Unit = {
+  def writeVariants(genotypes: GenotypeRDD): Unit = {
 
     val subsetGenotypes =
       if (maxGenotypes > 0) {
         progress(s"Subsetting to ${maxGenotypes} genotypes.")
-        genotypes.sample(withReplacement = false, maxGenotypes, 0)
+        val GenotypeRDD(rdd, sequences, samples) = genotypes
+        GenotypeRDD(rdd.sample(withReplacement = false, maxGenotypes, 0), sequences, samples)
       } else {
         genotypes
       }
@@ -80,21 +84,26 @@ trait GenotypeOutputArgs extends Args with ParquetArgs {
     writeSortedSampledVariants(subsetGenotypes)
   }
 
-  private def writeSortedSampledVariants(genotypes: RDD[BDGGenotype]): Unit = {
+  private def writeSortedSampledVariants(genotypes: GenotypeRDD): Unit = {
 
     if (outputPath.isEmpty || outputPath.toLowerCase.endsWith(".json")) {
-      writeJSONVariants(genotypes)
+      writeJSONVariants(genotypes.rdd)
     } else if (outputPath.toLowerCase.endsWith(".vcf")) {
       progress(s"Writing genotypes to VCF file: $outputPath")
-      genotypes
-        .toVariantContext
-        .map(v => (v.variant.getStart, v.variant.getEnd) -> v)
-        .repartitionAndSortWithinPartitions(new HashPartitioner(1))
-        .values
+      val variantsRDD = genotypes.toVariantContextRDD
+      val sortedCoalescedRDD =
+        variantsRDD
+          .rdd
+          .keyBy(v => (v.variant.getStart, v.variant.getEnd))
+          .repartitionAndSortWithinPartitions(new HashPartitioner(1))
+          .values
+
+      variantsRDD
+        .copy(rdd = sortedCoalescedRDD)
         .saveAsVcf(outputPath)
     } else {
       progress(s"Writing genotypes to: $outputPath.")
-      genotypes.adamParquetSave(
+      genotypes.saveAsParquet(
         outputPath,
         blockSize,
         pageSize,

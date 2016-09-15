@@ -46,10 +46,10 @@ class GermlineAssemblyCallerSuite
 
     val lociParser = LociParser(s"$contig:$windowStart-$windowEnd")
 
-    val (mappedReads, contigLengths) =
-      ReadSets.loadMappedReads(
-        args,
+    val readsets =
+      ReadSets(
         sc,
+        args.inputs,
         InputFilters(
           mapped = true,
           nonDuplicate = true,
@@ -57,9 +57,9 @@ class GermlineAssemblyCallerSuite
         )
       )
 
-    val lociPartitioning = new UniformPartitioner(args.parallelism).partition(lociParser.result(contigLengths))
+    val lociPartitioning = new UniformPartitioner(args.parallelism).partition(lociParser.result(readsets.contigLengths))
 
-    val partitionedReads = partitionReads(mappedReads, lociPartitioning)
+    val partitionedReads = partitionReads(readsets.allMappedReads, lociPartitioning)
 
     val variants =
       GermlineAssemblyCaller.Caller.discoverGermlineVariants(
@@ -86,31 +86,26 @@ class GermlineAssemblyCallerSuite
     actualVariants should be(expectedVariants)
   }
 
-  test (
-    "test assembly caller: illumina platinum tests; homozygous snp") {
+  test("test assembly caller: illumina platinum tests; homozygous snp") {
     verifyVariantsAtLocus(772754) (
       ("chr1", 772754, "A", "C")
     )
   }
 
-
-  test (
-    "test assembly caller: illumina platinum tests; homozygous snp; shortcut assembly") {
+  test("test assembly caller: illumina platinum tests; homozygous snp; shortcut assembly") {
     verifyVariantsAtLocus(772754, shortcutAssembly = true) (
       ("chr1", 772754, "A", "C")
     )
   }
 
-  test (
-    "test assembly caller: illumina platinum tests; nearby homozygous snps") {
+  test("test assembly caller: illumina platinum tests; nearby homozygous snps") {
     verifyVariantsAtLocus(1297212) (
       ("chr1", 1297212, "G", "C"),
       ("chr1", 1297215, "A", "G")
     )
   }
 
-  test (
-    "test assembly caller: illumina platinum tests; 2 nearby homozygous snps") {
+  test("test assembly caller: illumina platinum tests; 2 nearby homozygous snps") {
     verifyVariantsAtLocus(1316669) (
       ("chr1", 1316647, "C", "T"),
       ("chr1", 1316669, "C", "G"),
@@ -118,8 +113,7 @@ class GermlineAssemblyCallerSuite
     )
   }
 
-  test (
-    "test assembly caller: illumina platinum tests; 2 nearby homozygous snps; shortcut assembly") {
+  test("test assembly caller: illumina platinum tests; 2 nearby homozygous snps; shortcut assembly") {
     verifyVariantsAtLocus(1316669, shortcutAssembly = true) (
       ("chr1", 1316647, "C", "T"),
       ("chr1", 1316669, "C", "G"),
@@ -127,72 +121,62 @@ class GermlineAssemblyCallerSuite
     )
   }
 
-  test (
-    "test assembly caller: illumina platinum tests; het snp") {
+  test("test assembly caller: illumina platinum tests; het snp") {
     verifyVariantsAtLocus(1342611) (
       ("chr1", 1342611, "G", "C")
     )
   }
 
-  test (
-    "test assembly caller: illumina platinum tests; homozygous deletion") {
+  test("test assembly caller: illumina platinum tests; homozygous deletion") {
     verifyVariantsAtLocus(1296368) (
       ("chr1", 1296368, "GAC", "G")
     )
   }
 
-  test (
-    "test assembly caller: illumina platinum tests; homozygous deletion; shortcut assembly") {
+  test("test assembly caller: illumina platinum tests; homozygous deletion; shortcut assembly") {
     verifyVariantsAtLocus(1296368, shortcutAssembly = true) (
       ("chr1", 1296368, "GAC", "G")
     )
   }
 
-  test (
-    "test assembly caller: illumina platinum tests; homozygous deletion 2") {
+  test("test assembly caller: illumina platinum tests; homozygous deletion 2") {
     verifyVariantsAtLocus(1303426) (
       ("chr1", 1303426, "ACT", "A")
     )
   }
 
-  test (
-    "test assembly caller: illumina platinum tests; homozygous insertion") {
+  test("test assembly caller: illumina platinum tests; homozygous insertion") {
     verifyVariantsAtLocus(1321298) (
       ("chr1", 1321298, "A", "AG")
     )
   }
 
-  test (
-    "test assembly caller: illumina platinum tests; homozygous insertion 2") {
+  test("test assembly caller: illumina platinum tests; homozygous insertion 2") {
     verifyVariantsAtLocus(1302671) (
       ("chr1", 1302554, "C", "T"),
       ("chr1", 1302671, "A", "AGT")
     )
   }
 
-  test (
-    "test assembly caller: empty region") {
+  test("test assembly caller: empty region") {
     verifyVariantsAtLocus(1303917)()
   }
 
-  test (
-    "test assembly caller: homozygous snp in a repeat region") {
+  test("test assembly caller: homozygous snp in a repeat region") {
     verifyVariantsAtLocus(789255) (
       ("chr1", 789192, "C", "G"),
       ("chr1", 789255, "T", "C")
     )
   }
 
-  test (
-      "test assembly caller: het variant near homozygous variant") {
+  test("test assembly caller: het variant near homozygous variant") {
       verifyVariantsAtLocus(743020) (
         ("chr1", 743020, "T", "C"),
         ("chr1", 743071, "C", "A")
       )
   }
 
-  test (
-    "test assembly caller: het variant in between two homozygous variants") {
+  test("test assembly caller: het variant in between two homozygous variants") {
     verifyVariantsAtLocus(821925) (
       ("chr1", 821886, "A", "G"),
       ("chr1", 821925, "C", "G"),

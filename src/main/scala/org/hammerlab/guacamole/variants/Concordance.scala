@@ -7,7 +7,7 @@ import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.rdd.ADAMContext._
 import org.bdgenomics.adam.rich.RichVariant
 import org.bdgenomics.formats.avro.{GenotypeType, Genotype => BDGGenotype}
-import org.bdgenomics.qc.rdd.variation.{ConcordanceTable, GenotypeConcordanceRDDFunctions}
+import org.bdgenomics.quinine.rdd.variation.{ConcordanceTable, GenotypeConcordanceRDDFunctions}
 import org.hammerlab.guacamole.logging.DebugLogArgs
 import org.kohsuke.args4j.{Option => Args4jOption}
 
@@ -61,7 +61,7 @@ object Concordance {
 
     def chromosomeFilter(genotype: BDGGenotype): Boolean =
       chromosome == "" ||
-        genotype.getVariant.getContig.getContigName == chromosome
+        genotype.getVariant.getContigName == chromosome
 
     def variantTypeFilter(genotype: BDGGenotype): Boolean = {
       val variant = new RichVariant(genotype.getVariant)
@@ -146,7 +146,7 @@ object Concordance {
    */
   def loadGenotypes(path: String, sc: SparkContext): RDD[BDGGenotype] = {
     if (path.endsWith(".vcf")) {
-      sc.loadGenotypes(path)
+      sc.loadGenotypes(path).rdd
     } else {
       sc.loadParquet(path)
     }

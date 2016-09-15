@@ -48,7 +48,7 @@ object SomaticStandard {
     override val name = "somatic-standard"
     override val description = "call somatic variants using independent callers on tumor and normal"
 
-    override def computeGenotypes(args: Arguments, sc: SparkContext): RDD[CalledSomaticAllele] = {
+    override def computeVariants(args: Arguments, sc: SparkContext) = {
       val reference = args.reference(sc)
 
       val (readsets, loci) = ReadSets(sc, args)
@@ -113,7 +113,7 @@ object SomaticStandard {
         potentialGenotypes =
           potentialGenotypes
             .keyBy(_.bdgVariant)
-            .leftOuterJoin(dbSnpVariants.keyBy(_.getVariant))
+            .leftOuterJoin(dbSnpVariants.rdd.keyBy(_.getVariant))
             .values
             .map {
               case (calledAllele: CalledSomaticAllele, dbSnpVariantOpt: Option[DatabaseVariantAnnotation]) =>
@@ -121,7 +121,11 @@ object SomaticStandard {
             }
       }
 
-      SomaticGenotypeFilter(potentialGenotypes, args)
+      (
+        SomaticGenotypeFilter(potentialGenotypes, args),
+        readsets.sequenceDictionary,
+        Vector(args.tumorSampleName)
+      )
     }
 
     def findPotentialVariantAtLocus(tumorPileup: Pileup,
