@@ -12,7 +12,6 @@ class UnmappedReadSerializerSuite extends GuacFunSuite {
       Array[Byte]((10 to 20).map(_.toByte): _*),
       isDuplicate = true,
       123,
-      "some sample name",
       failedVendorQualityChecks = false,
       isPaired = true
     )
@@ -30,9 +29,7 @@ class UnmappedReadSerializerSuite extends GuacFunSuite {
     deserialized.sequence should equal(read.sequence)
     deserialized.baseQualities should equal(read.baseQualities)
     deserialized.isDuplicate should equal(read.isDuplicate)
-    deserialized.sampleName should equal(read.sampleName)
     deserialized.failedVendorQualityChecks should equal(read.failedVendorQualityChecks)
     deserialized.isPaired should equal(read.isPaired)
   }
-
 }

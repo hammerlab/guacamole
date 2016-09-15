@@ -3,7 +3,6 @@ package org.hammerlab.guacamole.reads
 import grizzled.slf4j.Logging
 import htsjdk.samtools._
 import org.bdgenomics.formats.avro.AlignmentRecord
-import org.hammerlab.guacamole.readsets.SampleName
 import org.hammerlab.guacamole.util.Bases
 
 /**
@@ -27,9 +26,6 @@ trait Read extends HasSampleId {
   def isMapped: Boolean
 
   def asMappedRead: Option[MappedRead]
-
-  /** The sample (e.g. "tumor" or "patient3636") name. */
-  def sampleName: SampleName
 
   /** Whether the read failed predefined vendor checks for quality */
   def failedVendorQualityChecks: Boolean
@@ -73,13 +69,6 @@ object Read extends Logging {
       record.getAlignmentStart >= 0 &&
       record.getUnclippedStart >= 0)
 
-    val sampleName =
-      (if (record.getReadGroup != null && record.getReadGroup.getSample != null)
-        record.getReadGroup.getSample
-      else
-        "default"
-      ).intern
-
     val read =
       if (isMapped) {
         val result =
@@ -89,7 +78,6 @@ object Read extends Logging {
             record.getBaseQualities,
             record.getDuplicateReadFlag,
             sampleId,
-            sampleName.intern,
             record.getReferenceName.intern,
             record.getMappingQuality,
             record.getAlignmentStart - 1,
@@ -115,7 +103,6 @@ object Read extends Logging {
           record.getBaseQualities,
           record.getDuplicateReadFlag,
           sampleId,
-          sampleName,
           record.getReadFailsVendorQualityCheckFlag,
           record.getReadPairedFlag
         )
@@ -151,7 +138,6 @@ object Read extends Logging {
           baseQualities = baseQualities,
           isDuplicate = alignmentRecord.getDuplicateRead,
           sampleId = sampleId,
-          sampleName = alignmentRecord.getRecordGroupSample.intern(),
           contigName = referenceContig,
           alignmentQuality = alignmentRecord.getMapq,
           start = alignmentRecord.getStart,
@@ -167,7 +153,6 @@ object Read extends Logging {
           baseQualities = baseQualities,
           isDuplicate = alignmentRecord.getDuplicateRead,
           sampleId = sampleId,
-          sampleName = alignmentRecord.getRecordGroupSample.intern(),
           failedVendorQualityChecks = alignmentRecord.getFailedVendorQualityChecks,
           alignmentRecord.getReadPaired
         )

@@ -13,7 +13,6 @@ class MappedReadSerializerSuite extends GuacFunSuite {
       Array[Byte]((10 to 20).map(_.toByte): _*),
       true,
       123,
-      "some sample name",
       "chr5",
       50,
       325352323,
@@ -36,7 +35,6 @@ class MappedReadSerializerSuite extends GuacFunSuite {
     deserialized.sequence should equal(read.sequence)
     deserialized.baseQualities should equal(read.baseQualities)
     deserialized.isDuplicate should equal(read.isDuplicate)
-    deserialized.sampleName should equal(read.sampleName)
     deserialized.contigName should equal(read.contigName)
     deserialized.alignmentQuality should equal(read.alignmentQuality)
     deserialized.start should equal(read.start)
@@ -53,7 +51,6 @@ class MappedReadSerializerSuite extends GuacFunSuite {
       Array[Byte]((10 to 20).map(_.toByte): _*),
       true,
       123,
-      "some sample name",
       "chr5",
       50,
       325352323,
@@ -76,7 +73,6 @@ class MappedReadSerializerSuite extends GuacFunSuite {
     deserialized.sequence should equal(read.sequence)
     deserialized.baseQualities should equal(read.baseQualities)
     deserialized.isDuplicate should equal(read.isDuplicate)
-    deserialized.sampleName should equal(read.sampleName)
     deserialized.contigName should equal(read.contigName)
     deserialized.alignmentQuality should equal(read.alignmentQuality)
     deserialized.start should equal(read.start)
@@ -93,7 +89,6 @@ class MappedReadSerializerSuite extends GuacFunSuite {
       Array[Byte]((10 to 20).map(_.toByte): _*),
       true,
       123,
-      "some sample name",
       "chr5",
       50,
       325352323,
@@ -116,7 +111,6 @@ class MappedReadSerializerSuite extends GuacFunSuite {
     deserialized.sequence should equal(read.sequence)
     deserialized.baseQualities should equal(read.baseQualities)
     deserialized.isDuplicate should equal(read.isDuplicate)
-    deserialized.sampleName should equal(read.sampleName)
     deserialized.contigName should equal(read.contigName)
     deserialized.alignmentQuality should equal(read.alignmentQuality)
     deserialized.start should equal(read.start)
