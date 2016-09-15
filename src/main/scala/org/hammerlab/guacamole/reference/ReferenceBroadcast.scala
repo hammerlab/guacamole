@@ -1,6 +1,7 @@
 package org.hammerlab.guacamole.reference
 
 import java.io.File
+import java.util.NoSuchElementException
 
 import htsjdk.samtools.reference.FastaSequenceFile
 import org.apache.spark.SparkContext
@@ -14,21 +15,19 @@ case class ReferenceBroadcast(broadcastedContigs: Map[String, ContigSequence],
                               source: Option[String])
   extends ReferenceGenome {
 
-  override def getContig(contigName: String): ContigSequence = {
+  override def getContig(contigName: String): ContigSequence =
     try {
       broadcastedContigs(contigName)
     } catch {
-      case e: NoSuchElementException => throw new ContigNotFound(contigName, broadcastedContigs.keys)
+      case _: NoSuchElementException =>
+        throw ContigNotFound(contigName, broadcastedContigs.keys)
     }
-  }
 
-  override def getReferenceBase(contigName: String, locus: Int): Byte = {
+  override def getReferenceBase(contigName: String, locus: Int): Byte =
     getContig(contigName)(locus)
-  }
 
-  override def getReferenceSequence(contigName: String, startLocus: Int, endLocus: Int): Array[Byte] = {
+  override def getReferenceSequence(contigName: String, startLocus: Int, endLocus: Int): Array[Byte] =
     getContig(contigName).slice(startLocus, endLocus)
-  }
 }
 
 object ReferenceBroadcast {
@@ -42,11 +41,11 @@ object ReferenceBroadcast {
     def slice(start: Int, end: Int): Array[Byte] = wrapped.value.slice(start, end)
     def length: Int = wrapped.value.length
   }
+
   object ArrayBackedReferenceSequence {
     /** Create an ArrayBackedReferenceSequence from a string. This is a convenience method intended for tests. */
-    def apply(sc: SparkContext, sequence: String): ArrayBackedReferenceSequence = {
+    def apply(sc: SparkContext, sequence: String): ArrayBackedReferenceSequence =
       ArrayBackedReferenceSequence(sc.broadcast(Bases.stringToBases(sequence).toArray))
-    }
   }
 
   /**
@@ -101,51 +100,69 @@ object ReferenceBroadcast {
     val result = mutable.HashMap[ContigName, mutable.HashMap[Int, Byte]]()
     val contigLengths = mutable.HashMap[ContigName, Int]()
 
-    raw.broadcastedContigs.foreach {
-      case (regionDescription, broadcastSequence) => {
-        val sequence = broadcastSequence.slice(0, broadcastSequence.length)
+    for {
+      (regionDescription, broadcastSequence) <- raw.broadcastedContigs
+      sequence = broadcastSequence.slice(0, broadcastSequence.length)
+    } {
+      regionDescription.split("/").map(_.trim).toList match {
+        case lociStr :: contigLengthStr :: Nil =>
+          val contigLength = contigLengthStr.toInt
+          val region = LociSet(lociStr)
+          if (region.contigs.length != 1) {
+            throw new IllegalArgumentException(s"Region must have 1 contig for partial fasta: $lociStr")
+          }
 
-        val pieces = regionDescription.split("/").map(_.trim)
-        if (pieces.length != 2) {
+          val contig = region.contigs.head
+          val regionLength = contig.count
+          if (regionLength != sequence.length) {
+            throw new IllegalArgumentException(
+              "In partial fasta, region %s is length %,d but its sequence is length %,d".format(
+                lociStr, regionLength, sequence.length
+              )
+            )
+          }
+
+          val maxRegion = contig.ranges.map(_.end).max
+          if (maxRegion > contigLength) {
+            throw new IllegalArgumentException(
+              "In partial fasta, region %s (max=%,d) exceeds contig length %,d".format(
+                lociStr, maxRegion, contigLength
+              )
+            )
+          }
+
+          if (contigLengths.getOrElseUpdate(contig.name, contigLength) != contigLength) {
+            throw new IllegalArgumentException(
+              "In partial fasta, contig lengths for %s are inconsistent (%d vs %d)".format(
+                contig, contigLength, contigLengths(contig.name)
+              )
+            )
+          }
+
+          val sequenceMap = result.getOrElseUpdate(contig.name, mutable.HashMap[Int, Byte]())
+          for {
+            (locus, base) <- contig.iterator.zip(sequence.iterator)
+          } {
+            sequenceMap.update(locus.toInt, base)
+          }
+
+        case _ =>
           throw new IllegalArgumentException(
-            "Invalid sequence name for partial fasta: %s. Are you sure this is a partial fasta, not a regular fasta?"
-              .format(regionDescription))
-        }
-
-        val contigLength = pieces(1).toInt
-        val region = LociSet(pieces(0))
-        if (region.contigs.length != 1) {
-          throw new IllegalArgumentException("Region must have 1 contig for partial fasta: %s".format(pieces(0)))
-        }
-
-        val contig = region.contigs.head
-        val regionLength = contig.count
-        if (regionLength != sequence.length) {
-          throw new IllegalArgumentException("In partial fasta, region %s is length %,d but its sequence is length %,d".format(
-            pieces(0), regionLength, sequence.length))
-        }
-
-        val maxRegion = contig.ranges.map(_.end).max
-        if (maxRegion > contigLength) {
-          throw new IllegalArgumentException("In partial fasta, region %s (max=%,d) exceeds contig length %,d".format(
-            pieces(0), maxRegion, contigLength))
-        }
-
-        if (contigLengths.getOrElseUpdate(contig.name, contigLength) != contigLength) {
-          throw new IllegalArgumentException("In partial fasta, contig lengths for %s are inconsistent (%d vs %d)".format(
-            contig, contigLength, contigLengths(contig.name)))
-        }
-
-        val sequenceMap = result.getOrElseUpdate(contig.name, mutable.HashMap[Int, Byte]())
-        contig.iterator.zip(sequence.iterator).foreach(pair => {
-          sequenceMap.update(pair._1.toInt, pair._2)
-        })
+            s"Invalid sequence name for partial fasta: $regionDescription. Are you sure this is a partial fasta, not a regular fasta?"
+          )
       }
     }
+
     new ReferenceBroadcast(
-      result.map(
-        pair => pair._1 -> MapBackedReferenceSequence(contigLengths(pair._1), sc.broadcast(pair._2.toMap))).toMap,
-      Some(fastaPath))
+      (for {
+        (contigName, baseMap) <- result
+        contigLength = contigLengths(contigName)
+        baseMapBroadcast = sc.broadcast(baseMap.toMap)
+      } yield
+        contigName -> MapBackedReferenceSequence(contigLength, baseMapBroadcast)
+      ).toMap,
+      Some(fastaPath)
+    )
   }
 
   /**
@@ -170,11 +187,12 @@ object ReferenceBroadcast {
     }
   }
 
-  def apply(broadcastedContigs: Map[String, ContigSequence]): ReferenceBroadcast = {
+  def apply(broadcastedContigs: Map[String, ContigSequence]): ReferenceBroadcast =
     ReferenceBroadcast(broadcastedContigs, source = None)
-  }
 }
 
 case class ContigNotFound(contigName: String, availableContigs: Iterable[String])
-  extends Exception(s"Contig $contigName does not exist in the current reference. Available contigs are ${availableContigs.mkString(",")}")
+  extends Exception(
+    s"Contig $contigName does not exist in the current reference. Available contigs are ${availableContigs.mkString(",")}"
+  )
 

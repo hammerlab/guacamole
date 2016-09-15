@@ -4,7 +4,7 @@
 #
 # Example:
 #
-#   $ scripts/guacamole somatic-joint normal.bam tumor.bam --reference-fasta hg19.fasta --out out.vcf
+#   $ scripts/guacamole somatic-joint normal.bam tumor.bam --reference hg19.fasta --out out.vcf
 #
 # Default Spark-properties file is at conf/spark-defaults.conf, and configures a 4gb, 1-worker, local Spark master. To
 # specify other Spark properties, set the $GUAC_CONF_PATH environment variable.

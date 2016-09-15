@@ -110,8 +110,10 @@ class SomaticJointCallerSuite
     val inputs = InputCollection(cancerWGS1Bams)
     val loci = LociParser("chr12:65857030-65857080")
     val readSets = makeReadSets(inputs, loci)
-    val emptyPartialReference = ReferenceBroadcast(
-      Map("chr12" -> MapBackedReferenceSequence(500000000, sc.broadcast(Map.empty))))
+    val emptyPartialReference =
+      ReferenceBroadcast(
+        Map("chr12" -> MapBackedReferenceSequence(500000000, sc.broadcast(Map.empty)))
+      )
     val calls = SomaticJoint.makeCalls(
       sc, inputs, readSets, Parameters.defaults, emptyPartialReference, loci.result, loci.result)
 

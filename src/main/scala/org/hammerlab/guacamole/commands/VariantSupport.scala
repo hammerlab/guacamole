@@ -7,7 +7,7 @@ import org.bdgenomics.formats.avro.Variant
 import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMapMultipleSamples
 import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.readsets.args.{ReferenceFastaArgs, Arguments => ReadSetsArguments}
+import org.hammerlab.guacamole.readsets.args.{ReferenceArgs, Arguments => ReadSetsArguments}
 import org.hammerlab.guacamole.readsets.io.InputFilters
 import org.hammerlab.guacamole.readsets.rdd.PartitionedRegions
 import org.hammerlab.guacamole.readsets.{PerSample, ReadSets, SampleName}
@@ -19,7 +19,7 @@ object VariantSupport {
 
   protected class Arguments
     extends ReadSetsArguments
-      with ReferenceFastaArgs {
+      with ReferenceArgs {
 
     @Args4jOption(name = "--input-variant", required = true, aliases = Array("-v"),
       usage = "")

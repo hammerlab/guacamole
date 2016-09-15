@@ -2,7 +2,7 @@ package org.hammerlab.guacamole.main
 
 import org.apache.spark.SparkContext
 import org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Arguments
-import org.hammerlab.guacamole.commands.{GermlineAssemblyCaller, SparkCommand}
+import org.hammerlab.guacamole.commands.SparkCommand
 import org.hammerlab.guacamole.data.NA12878TestUtil
 import org.hammerlab.guacamole.util.TestUtil.resourcePath
 import org.hammerlab.guacamole.variants.VariantComparisonTest
@@ -23,32 +23,26 @@ object GermlineAssemblyIntegrationTests extends SparkCommand[Arguments] with Var
   override val name: String = "germline-assembly-integration-test"
   override val description: String = "output various statistics to stdout"
 
-  def main(args: Array[String]): Unit = run(args)
+  def main(args: Array[String]): Unit =
+    run(
+      "--reads", NA12878TestUtil.subsetBam,
+      "--reference", NA12878TestUtil.chr1PrefixFasta,
+      "--loci", "chr1:0-6700000",
+      "--out", "/tmp/germline-assembly-na12878-guacamole-tests.vcf",
+      "--bam-reader-api", "hadoopbam",
+      "--partition-accuracy", "0",
+      "--parallelism", "0",
+      "--kmer-size", "31",
+      "--assembly-window-range", "41",
+      "--min-area-vaf", "40",
+      "--shortcut-assembly",
+      "--min-likelihood", "70",
+      "--min-occurrence", "3"
+    )
 
   override def run(args: Arguments, sc: SparkContext): Unit = {
 
     println("Germline assembly calling on subset of illumina platinum NA12878")
-    val args = new Arguments()
-    // Input/output config
-    args.reads = NA12878TestUtil.subsetBam
-    args.referenceFastaPath = NA12878TestUtil.chr1PrefixFasta
-    args.loci = "chr1:0-6700000"
-    args.variantOutput = "/tmp/germline-assembly-na12878-guacamole-tests.vcf"
-
-
-    // Read loading config
-    args.partitioningAccuracy = 0
-    args.parallelism = 0
-
-    // Germline assembly config
-    args.kmerSize = 31
-    args.assemblyWindowRange = 41
-    args.minAreaVaf = 40
-    args.shortcutAssembly = true
-    args.minLikelihood = 70
-    args.minOccurrence = 3
-
-    GermlineAssemblyCaller.Caller.run(args, sc)
 
     val resultFile = args.variantOutput + "/part-r-00000"
     println("************* GUACAMOLE GermlineAssembly *************")
