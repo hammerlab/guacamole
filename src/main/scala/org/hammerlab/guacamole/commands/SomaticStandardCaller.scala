@@ -67,9 +67,14 @@ object SomaticStandard {
       val filterMultiAllelic = args.filterMultiAllelic
       val maxTumorReadDepth = args.maxTumorReadDepth
 
+      val normalSampleName = args.normalSampleName
+      val tumorSampleName = args.tumorSampleName
+
       var potentialGenotypes: RDD[CalledSomaticAllele] =
         pileupFlatMapTwoSamples[CalledSomaticAllele](
           partitionedReads,
+          sample1Name = normalSampleName,
+          sample2Name = tumorSampleName,
           skipEmpty = true,  // skip empty pileups
           function = (pileupNormal, pileupTumor) =>
             findPotentialVariantAtLocus(
@@ -182,8 +187,7 @@ object SomaticStandard {
       lazy val normalVariantsTotalLikelihood = normalVariantGenotypes.values.sum
       lazy val somaticOdds = mostLikelyTumorGenotypeLikelihood / normalVariantsTotalLikelihood
 
-      if (mostLikelyTumorGenotype.hasVariantAllele
-        && somaticOdds * 100 >= oddsThreshold)
+      if (mostLikelyTumorGenotype.hasVariantAllele && somaticOdds * 100 >= oddsThreshold)
         for {
           // NOTE(ryan): currently only look at the first non-ref allele in the most likely tumor genotype.
           // removeCorrelatedGenotypes depends on there only being one variant per locus.

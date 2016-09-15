@@ -79,7 +79,7 @@ object VariantSupport {
 
       val alleleCounts =
         pileupFlatMapMultipleSamples[AlleleCount](
-          readsets.numSamples,
+          readsets.sampleNames,
           partitionedReads,
           skipEmpty = true,
           pileupsToAlleleCounts,
