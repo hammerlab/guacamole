@@ -2,11 +2,12 @@ package org.hammerlab.guacamole.readsets
 
 import java.io.File
 
+import grizzled.slf4j.Logging
 import htsjdk.samtools.ValidationStringency
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.io.LongWritable
+import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
-import org.apache.spark.{Logging, SparkContext}
 import org.bdgenomics.adam.models.SequenceDictionary
 import org.bdgenomics.adam.rdd.{ADAMContext, ADAMSpecificRecordSequenceDictionaryRDDAggregator}
 import org.bdgenomics.formats.avro.AlignmentRecord
@@ -152,7 +153,7 @@ object ReadSets extends Logging {
     ReadSets(
       readsRDDs,
       sequenceDictionary,
-      contigLengths(sequenceDictionary)
+      getContigLengths(sequenceDictionary)
     )
 
   /**
@@ -195,18 +196,25 @@ object ReadSets extends Logging {
     val samHeader = SAMHeaderReader.readSAMHeaderFrom(path, conf)
     val sequenceDictionary = SequenceDictionary.fromSAMHeader(samHeader)
 
-    if (filters.overlapsLoci.nonEmpty)  {
-      if (filename.endsWith(".bam")) {
-        val bamIndexIntervals = filters.overlapsLoci.map(_.result(contigLengths(sequenceDictionary)).toHtsJDKIntervals)
-        bamIndexIntervals.foreach(BAMInputFormat.setIntervals(conf, _))
-      } else if (filename.endsWith(".sam")) {
-        log.warn(s"Loading SAM file: $filename with intervals specified. This requires parsing the entire file.")
-      } else {
-        throw new IllegalArgumentException(s"File $filename is not a BAM or SAM file")
-      }
-    } else {
-      // Ensure that we clear any stale intervals
-      conf.unset(BAMInputFormat.INTERVALS_PROPERTY)
+    filters.overlapsLociOpt match {
+      case Some(overlapsLoci) =>
+        if (filename.endsWith(".bam")) {
+          val contigLengths = getContigLengths(sequenceDictionary)
+
+          val bamIndexIntervals =
+            overlapsLoci
+              .result(contigLengths)
+              .toHtsJDKIntervals
+
+          BAMInputFormat.setIntervals(conf, bamIndexIntervals)
+        } else if (filename.endsWith(".sam")) {
+          warn(s"Loading SAM file: $filename with intervals specified. This requires parsing the entire file.")
+        } else {
+          throw new IllegalArgumentException(s"File $filename is not a BAM or SAM file")
+        }
+      case None =>
+        // Ensure that we clear any stale intervals
+        conf.unset(BAMInputFormat.INTERVALS_PROPERTY)
     }
 
     val reads: RDD[Read] =
@@ -219,7 +227,6 @@ object ReadSets extends Logging {
         .setName(s"Guac reads: $shortName")
 
     (reads, sequenceDictionary)
-
   }
 
   /** Returns an RDD of Reads and SequenceDictionary from reads in ADAM format **/
@@ -243,7 +250,7 @@ object ReadSets extends Logging {
 
 
   /** Extract the length of each contig from a sequence dictionary */
-  private def contigLengths(sequenceDictionary: SequenceDictionary): ContigLengths = {
+  private def getContigLengths(sequenceDictionary: SequenceDictionary): ContigLengths = {
     val builder = Map.newBuilder[ContigName, Locus]
     sequenceDictionary.records.foreach(record => builder += ((record.name.toString, record.length)))
     builder.result
@@ -314,8 +321,11 @@ object ReadSets extends Logging {
      * attribute cannot be serialized.
      */
     var result = reads
-    if (filters.overlapsLoci.nonEmpty) {
-      val loci = filters.overlapsLoci.get.result(contigLengths(sequenceDictionary))
+    for {
+      overlapsLoci <- filters.overlapsLociOpt
+    } {
+      val contigLengths = getContigLengths(sequenceDictionary)
+      val loci = overlapsLoci.result(contigLengths)
       val broadcastLoci = reads.sparkContext.broadcast(loci)
       result = result.filter(_.asMappedRead.exists(broadcastLoci.value.intersects))
     }
@@ -337,5 +347,4 @@ object ReadSets extends Logging {
     }
     builder.result
   }
-
 }

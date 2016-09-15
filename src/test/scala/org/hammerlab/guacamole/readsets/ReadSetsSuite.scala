@@ -5,43 +5,43 @@ import org.bdgenomics.adam.models.{SequenceDictionary, SequenceRecord}
 import org.bdgenomics.adam.rdd.read.AlignmentRecordRDDFunctions
 import org.bdgenomics.adam.rdd.{ADAMContext, ADAMSaveAnyArgs}
 import org.hammerlab.guacamole.loci.set.LociParser
-import org.hammerlab.guacamole.reads.MappedRead
+import org.hammerlab.guacamole.reads.{MappedRead, Read}
 import org.hammerlab.guacamole.readsets.io.{Input, InputFilters}
 import org.hammerlab.guacamole.readsets.rdd.ReadsRDDUtil
 import org.hammerlab.guacamole.util.GuacFunSuite
 import org.hammerlab.guacamole.util.TestUtil.resourcePath
-import org.hammerlab.magic.test.TmpFiles
+import org.hammerlab.magic.test.{LazyAssert, TmpFiles}
 
 class ReadSetsSuite
   extends GuacFunSuite
     with TmpFiles
+    with LazyAssert
     with ReadsRDDUtil {
-
-  case class LazyMessage(msg: () => String) {
-    override def toString: String = msg()
-  }
 
   test("test BAM filtering by loci") {
 
     def checkFilteredReadCount(loci: String, expectedCount: Int): Unit = {
-      withClue("filtering to loci %s: ".format(loci)) {
-        val reads = loadReadsRDD(
-          sc,
-          "gatk_mini_bundle_extract.bam",
-          filters = InputFilters(overlapsLoci = LociParser(loci))
-        ).reads.collect
+      withClue(s"filtering to loci: $loci: ") {
+        val reads: Array[Read] =
+          loadReadsRDD(
+            sc,
+            "gatk_mini_bundle_extract.bam",
+            filters = InputFilters(overlapsLoci = LociParser(loci))
+          )
+          .reads
+          .collect
 
         reads.length should be(expectedCount)
       }
     }
 
     val lociAndExpectedCounts = Seq(
-      ("20:9999900", 0),
-      ("20:9999901", 1),
-      ("20:9999912", 2),
-      ("20:0-10000000", 9),
-      ("20:10270532", 1),
-      ("20:10270533", 0)
+      "20:9999900"    -> 0,
+      "20:9999901"    -> 1,
+      "20:9999912"    -> 2,
+      "20:0-10000000" -> 9,
+      "20:10270532"   -> 1,
+      "20:10270533"   -> 0
     )
 
     for {
@@ -51,66 +51,55 @@ class ReadSetsSuite
     }
   }
 
+  test("reading sam and corresponding bam files should give identical results") {
+    def check(bamPath: String, samPath: String, filters: InputFilters): Unit =
+      withClue(s"using filter $filters: ") {
 
-  test("using different bam reading APIs on sam/bam files should give identical results") {
-    def check(paths: Seq[String], filter: InputFilters): Unit = {
-      withClue("using filter %s: ".format(filter)) {
-
-        val firstPath = paths.head
-
-        val standard =
+        val bamReads =
           loadReadsRDD(
             sc,
-            paths.head,
-            filter
+            bamPath,
+            filters
           ).reads.collect
 
-        for {
-          path <- paths
-          if path != firstPath
-        } {
-          withClue(s"file $path vs standard $firstPath\n") {
+        withClue(s"file $samPath vs $bamPath\n") {
 
-            val result =
-              loadReadsRDD(
-                sc,
-                path,
-                filter
-              ).reads.collect
+          val samReads =
+            loadReadsRDD(
+              sc,
+              samPath,
+              filters
+            ).reads.collect
 
-            assert(
-              result.sameElements(standard),
-              LazyMessage(
-                () => {
-                  val missing = standard.filter(!result.contains(_))
-                  val extra = result.filter(!standard.contains(_))
-                  List(
-                    "Missing reads:",
-                    missing.mkString("\t", "\n\t", "\n"),
-                    "Extra reads:",
-                    extra.mkString("\t", "\n\t", "\n")
-                  ).mkString("\n")
-                }
-              )
-            )
-          }
+          lazyAssert(
+            samReads.sameElements(bamReads),
+            {
+              val missing = bamReads.filter(!samReads.contains(_))
+              val extra = samReads.filter(!bamReads.contains(_))
+              List(
+                "Missing reads:",
+                missing.mkString("\t", "\n\t", "\n"),
+                "Extra reads:",
+                extra.mkString("\t", "\n\t", "\n")
+              ).mkString("\n")
+            }
+          )
         }
       }
-    }
 
     Seq(
       InputFilters(),
       InputFilters(mapped = true, nonDuplicate = true),
       InputFilters(overlapsLoci = LociParser("20:10220390-10220490"))
     ).foreach(filter => {
-      check(Seq("gatk_mini_bundle_extract.bam", "gatk_mini_bundle_extract.sam"), filter)
+      check("gatk_mini_bundle_extract.bam", "gatk_mini_bundle_extract.sam", filter)
     })
 
-    Seq(
+    check(
+      "synth1.normal.100k-200k.withmd.bam",
+      "synth1.normal.100k-200k.withmd.sam",
       InputFilters(overlapsLoci = LociParser("19:147033"))
-    ).foreach(filter => {
-      check(Seq("synth1.normal.100k-200k.withmd.bam", "synth1.normal.100k-200k.withmd.sam"), filter)
-    })
+    )
   }
 
   test("load and test filters") {

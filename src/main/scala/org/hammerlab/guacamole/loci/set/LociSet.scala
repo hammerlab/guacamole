@@ -90,7 +90,7 @@ case class LociSet(private val map: SortedMap[ContigName, Contig]) extends Trunc
   /**
    * Build a collection of HTSJDK Intervals which are closed [start, end], 1-based intervals
    */
-  def toHtsJDKIntervals: List[Interval] = {
+  def toHtsJDKIntervals: List[Interval] =
     map
       .keys
       .flatMap(
@@ -101,15 +101,6 @@ case class LociSet(private val map: SortedMap[ContigName, Contig]) extends Trunc
             // Since the `Interval` end is inclusive, we are adding and subtracting 1, no-op
             .map(interval => new Interval(contig, interval.start.toInt + 1, interval.end.toInt))
         }).toList
-  }
-
-  /**
-   * String representation of HTSJDK intervals which are closed [start, end], 1-based intervals
-   */
-  def toHtsJDKIntervalString: String = {
-    toHtsJDKIntervals.map(_.toString).mkString(",")
-  }
-
 }
 
 object LociSet {
