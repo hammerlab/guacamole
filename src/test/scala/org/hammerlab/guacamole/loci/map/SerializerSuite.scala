@@ -30,27 +30,27 @@ class SerializerSuite extends GuacFunSuite {
     }
   }
 
-  testSerde("empty")()(10, 0, 0)
+  testSerde("empty")()(11, 0, 0)
 
   testSerde("1")(
     ("chr1", 100L, 200L, "A")
-  )(43, 1, 100)
+  )(44, 1, 100)
 
   testSerde("2")(
     ("chr1", 100L, 200L, "A"),
     ("chr1", 400L, 500L, "B")
-  )(63, 2, 200)
+  )(64, 2, 200)
 
   testSerde("3")(
     ("chr1", 100L, 200L, "A"),
     ("chr1", 400L, 500L, "B"),
     ("chr1", 600L, 700L, "C")
-  )(83, 3, 300)
+  )(84, 3, 300)
 
   testSerde("4")(
     ("chr1", 100L, 200L, "A"),
     ("chr1", 400L, 500L, "B"),
     ("chr1", 600L, 700L, "C"),
     ("chr1", 700L, 800L, "A")
-  )(101, 4, 400)
+  )(102, 4, 400)
 }

@@ -2,7 +2,6 @@ package org.hammerlab.guacamole.readsets
 
 import org.apache.parquet.hadoop.metadata.CompressionCodecName
 import org.bdgenomics.adam.models.{SequenceDictionary, SequenceRecord}
-import org.bdgenomics.adam.rdd.read.AlignmentRecordRDDFunctions
 import org.bdgenomics.adam.rdd.{ADAMContext, ADAMSaveAnyArgs}
 import org.hammerlab.guacamole.loci.set.LociParser
 import org.hammerlab.guacamole.reads.{MappedRead, Read}
@@ -138,8 +137,7 @@ class ReadSetsSuite
       override var compressionCodec: CompressionCodecName = CompressionCodecName.UNCOMPRESSED
     }
 
-    new AlignmentRecordRDDFunctions(adamRecords.rdd)
-      .saveAsParquet(args, adamRecords.sequences, adamRecords.recordGroups)
+    adamRecords.saveAsParquet(args)
 
     ReadSets.load(adamOut, sc, 0, InputFilters.empty)._1.count() should be(8)
 
