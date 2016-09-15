@@ -10,7 +10,7 @@ import org.hammerlab.guacamole.loci.LociArgs
 import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.readsets.args.ReferenceFastaArgs
+import org.hammerlab.guacamole.readsets.args.ReferenceArgs
 import org.hammerlab.guacamole.readsets.rdd.PartitionedRegions
 import org.hammerlab.guacamole.readsets.{PerSample, ReadSets}
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
@@ -23,7 +23,7 @@ object SomaticJoint {
     extends ReadSetsArguments
       with Parameters.CommandlineArguments
       with InputCollection.Arguments
-      with ReferenceFastaArgs {
+      with ReferenceArgs {
 
     @Args4jOption(name = "--out", usage = "Output path for all variants in VCF. Default: no output")
     var out: String = ""

@@ -61,7 +61,7 @@ mvn package -Pguac,deps -DskipTests
 scripts/guacamole somatic-joint \
     src/test/resources/synth1.normal.100k-200k.withmd.bam \
     src/test/resources/synth1.tumor.100k-200k.withmd.bam \
-    --reference-fasta /path/to/your/b37.fasta \
+    --reference /path/to/your/b37.fasta \
     --out /tmp/out.vcf 
 ```
 
@@ -118,11 +118,11 @@ scripts/guacamole \
   somatic-standard \
     --normal-reads /hdfs/path/to/normal.bam \
     --tumor-reads /hdfs/path/to/tumor.bam \
-    --reference-fasta /local/path/to/reference.fasta \
+    --reference /local/path/to/reference.fasta \
     --out /tmp/out.vcf
 ```
 
-Note that `--reference-fasta` must be a local path, while the normal/tumor BAMs and output-VCF paths above point into HDFS.
+Note that `--reference` must be a local path, while the normal/tumor BAMs and output-VCF paths above point into HDFS.
 
 # Running the test suite
 Guacamole contains many small BAMs for testing. The full test suite can be run with:

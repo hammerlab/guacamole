@@ -20,7 +20,9 @@ import org.hammerlab.guacamole.variants.VariantComparisonTest
  *     -cp "$(scripts/classpath)":target/scala-2.10.5/test-classes \
  *     org.hammerlab.guacamole.main.SomaticJointCallerIntegrationTests
  */
-object SomaticJointCallerIntegrationTests extends SparkCommand[Arguments] with VariantComparisonTest {
+object SomaticJointCallerIntegrationTests
+  extends SparkCommand[Arguments]
+    with VariantComparisonTest {
 
   var tempFileNum = 0
 
@@ -41,12 +43,12 @@ object SomaticJointCallerIntegrationTests extends SparkCommand[Arguments] with V
   def main(args: Array[String]): Unit = {
     val args = new Arguments()
     args.outDir = outDir
-    args.referenceFastaPath = CancerWGSTestUtil.referenceFastaPath
-    args.referenceFastaIsPartial = true
+    args.referencePath = CancerWGSTestUtil.referencePath
+    args.referenceIsPartial = true
     args.somaticGenotypePolicy = "trigger"
     args.loci = ((1).until(22).map(i => "chr%d".format(i)) ++ Seq("chrX", "chrY")).mkString(",")
 
-    args.paths = CancerWGSTestUtil.bams.toArray
+    args.paths = CancerWGSTestUtil.bams
     run(args)
   }
 
@@ -79,7 +81,7 @@ object SomaticJointCallerIntegrationTests extends SparkCommand[Arguments] with V
       compareToCSV(
         outDir + "/somatic.all_samples.vcf",
         CancerWGSTestUtil.expectedSomaticCallsCSV,
-        CancerWGSTestUtil.referenceBroadcast(sc),
+        CancerWGSTestUtil.reference(sc),
         Set("primary", "recurrence")
       )
     }
@@ -95,7 +97,7 @@ object SomaticJointCallerIntegrationTests extends SparkCommand[Arguments] with V
         args.paths = Seq(NA12878TestUtil.subsetBam).toArray
         args.loci = "chr1:0-6700000"
         args.forceCallLociFile = NA12878TestUtil.expectedCallsVCF
-        args.referenceFastaPath = NA12878TestUtil.chr1PrefixFasta
+        args.referencePath = NA12878TestUtil.chr1PrefixFasta
         SomaticJoint.Caller.run(args, sc)
       }
 
