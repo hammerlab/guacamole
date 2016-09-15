@@ -13,6 +13,9 @@ cache:
   # Local builds of zinc (Scala incremental compiler).
   - $HOME/.zinc
 
+  # Experimental: cache built classes / incremental-compile analysis
+  - target
+
 # Run the tests and generate coverage reports in one go.
 script: mvn scoverage:report
 
