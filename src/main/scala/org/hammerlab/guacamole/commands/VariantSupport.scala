@@ -52,7 +52,7 @@ object VariantSupport {
 
       val adamContext = new ADAMContext(sc)
 
-      val variants: RDD[Variant] = adamContext.loadVariants(args.variants)
+      val variants: RDD[Variant] = adamContext.loadVariants(args.variants).rdd
 
       val readsets =
         ReadSets(
@@ -66,7 +66,7 @@ object VariantSupport {
       val loci =
         LociSet(
           variants
-            .map(variant => (variant.getContig.getContigName, variant.getStart: Long, variant.getEnd: Long))
+            .map(variant => (variant.getContigName, variant.getStart: Long, variant.getEnd: Long))
             .collect()
         )
 

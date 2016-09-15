@@ -41,6 +41,9 @@ case class CalledSomaticAllele(sampleName: SampleName,
       .newBuilder
       .setAlleles(seqAsJavaList(Seq(GenotypeAllele.Ref, GenotypeAllele.Alt)))
       .setSampleId(sampleName)
+      .setContigName(contigName)
+      .setStart(start)
+      .setEnd(end)
       .setGenotypeQuality(phredScaledSomaticLikelihood)
       .setReadDepth(tumorVariantEvidence.readDepth)
       .setExpectedAlleleDosage(

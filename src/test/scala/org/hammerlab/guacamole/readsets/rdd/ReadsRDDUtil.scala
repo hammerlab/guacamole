@@ -43,6 +43,16 @@ trait ReadsRDDUtil
     assert(sc.hadoopConfiguration != null)
     val args = new SingleSampleArgs {}
     args.reads = path
-    ReadSets.loadReads(args, sc, filters)._1
+
+    val ReadSets(reads, _, _) =
+      ReadSets(
+        sc,
+        args.inputs,
+        filters,
+        contigLengthsFromDictionary = !args.noSequenceDictionary,
+        config = ReadLoadingConfig(args)
+      )
+
+    reads(0)
   }
 }
