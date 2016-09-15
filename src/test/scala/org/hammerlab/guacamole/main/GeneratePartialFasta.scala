@@ -6,9 +6,9 @@ import org.apache.spark.SparkContext
 import org.hammerlab.guacamole.commands.SparkCommand
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.readsets.ReadSets
-import org.hammerlab.guacamole.readsets.args.{Arguments => ReadSetsArguments}
+import org.hammerlab.guacamole.readsets.args.{ReferenceArgs, Arguments => ReadSetsArguments}
 import org.hammerlab.guacamole.readsets.io.{InputFilters, ReadLoadingConfig}
-import org.hammerlab.guacamole.reference.{ContigNotFound, Interval, ReferenceArgs, ReferenceBroadcast}
+import org.hammerlab.guacamole.reference.{ContigNotFound, Interval}
 import org.hammerlab.guacamole.util.Bases
 import org.kohsuke.args4j.{Option => Args4jOption}
 
@@ -16,12 +16,9 @@ class GeneratePartialFastaArguments
   extends ReadSetsArguments
     with ReferenceArgs {
 
-  @Args4jOption(name = "--output", metaVar = "OUT", required = true, aliases = Array("-o"),
+  @Args4jOption(name = "--out", metaVar = "OUT", required = true, aliases = Array("-o"),
     usage = "Output path for partial fasta")
   var output: String = ""
-
-  @Args4jOption(name = "--reference-fasta", required = true, usage = "Local path to a reference FASTA file")
-  var referenceFastaPath: String = null
 
   @Args4jOption(name = "--padding", required = false, usage = "Number of bases to pad the reference around the loci")
   var padding: Int = 0
@@ -46,7 +43,7 @@ class GeneratePartialFastaArguments
  *   java \
  *     -cp "$(scripts/classpath)":target/scala-2.10.5/test-classes \
  *     org.hammerlab.guacamole.main.GeneratePartialFasta \
- *     --reference-fasta <fasta path> \
+ *     --reference <fasta path> \
  *     [--loci <str>|--loci-file <file>] \
  *     -o <output path> \
  *     <bam path> [bam path...]
@@ -60,7 +57,7 @@ object GeneratePartialFasta extends SparkCommand[GeneratePartialFastaArguments] 
 
   override def run(args: GeneratePartialFastaArguments, sc: SparkContext): Unit = {
 
-    val reference = ReferenceBroadcast(args.referenceFastaPath, sc)
+    val reference = args.reference(sc)
     val parsedLoci = args.parseLoci(sc.hadoopConfiguration, fallback = "none")
     val readsets =
       ReadSets(

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Executes the most recently modified guacamole jar. Run this from the guacamole root directory.
 #
-# If $GUACAMOLE_JAR is defined, then will execute that jar. 
+# If $GUACAMOLE_JAR is defined, then will execute that jar.
 #
 echo "$@" >> ~/.guacamole.invocations.log
 

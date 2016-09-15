@@ -24,9 +24,9 @@ class SomaticStandardEndToEndSuite
       resourcePath("normal.chr20.tough.sam"),
       "--tumor-reads",
       resourcePath("tumor.chr20.tough.sam"),
-      "--reference-fasta",
+      "--reference",
       resourcePath("grch37.partial.fasta"),
-      "--reference-fasta-is-partial",
+      "--partial-reference",
       "--out",
       tmpOutputPath
     )
