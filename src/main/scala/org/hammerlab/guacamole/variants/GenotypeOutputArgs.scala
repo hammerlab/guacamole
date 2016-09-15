@@ -113,7 +113,7 @@ trait GenotypeOutputArgs
     }
   }
 
-  def writeJSONVariants(genotypes: RDD[BDGGenotype]): Unit = {
+  private def writeJSONVariants(genotypes: RDD[BDGGenotype]): Unit = {
     val out: OutputStream =
       if (outputPath.isEmpty) {
         progress("Writing genotypes to stdout.")
