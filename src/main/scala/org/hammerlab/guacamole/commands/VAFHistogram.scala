@@ -16,7 +16,7 @@ import org.hammerlab.guacamole.readsets.io.{Input, InputFilters}
 import org.hammerlab.guacamole.readsets.rdd.PartitionedRegions
 import org.hammerlab.guacamole.readsets.{NumSamples, PartitionedReads, ReadSets, SampleId}
 import org.hammerlab.guacamole.reference.{ContigName, Locus, NumLoci, ReferenceGenome}
-import org.hammerlab.magic.rdd.SplitByKeyRDD._
+import org.hammerlab.magic.rdd.keyed.SplitByKeyRDD._
 import org.kohsuke.args4j.{Option => Args4jOption}
 
 /**

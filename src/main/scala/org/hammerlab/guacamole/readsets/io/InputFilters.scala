@@ -8,12 +8,12 @@ import org.hammerlab.guacamole.loci.set.LociParser
  * These fields are commonly used filters. For boolean fields, setting a field to true will result in filtering on
  * that field. The result is the intersection of the filters (i.e. reads must satisfy ALL filters).
  *
- * @param overlapsLoci if not None, include only mapped reads that overlap the given loci
+ * @param overlapsLociOpt if set, include only mapped reads that overlap the given loci
  * @param nonDuplicate include only reads that do not have the duplicate bit set
  * @param passedVendorQualityChecks include only reads that do not have the failedVendorQualityChecks bit set
  * @param isPaired include only reads are paired-end reads
  */
-case class InputFilters(overlapsLoci: Option[LociParser],
+case class InputFilters(overlapsLociOpt: Option[LociParser],
                         nonDuplicate: Boolean,
                         passedVendorQualityChecks: Boolean,
                         isPaired: Boolean)
@@ -33,7 +33,7 @@ object InputFilters {
             passedVendorQualityChecks: Boolean = false,
             isPaired: Boolean = false): InputFilters = {
     new InputFilters(
-      overlapsLoci =
+      overlapsLociOpt =
         if (overlapsLoci == null && mapped)
           Some(LociParser.all)
         else
