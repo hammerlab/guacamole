@@ -18,7 +18,6 @@ case class PairedRead[+T <: Read](read: T,
   override val name: String = read.name
   override val failedVendorQualityChecks: Boolean = read.failedVendorQualityChecks
   override val sampleId: SampleId = read.sampleId
-  override val sampleName: SampleName = read.sampleName
   override val baseQualities: IndexedSeq[Byte] = read.baseQualities
   override val isDuplicate: Boolean = read.isDuplicate
   override val sequence: IndexedSeq[Byte] = read.sequence

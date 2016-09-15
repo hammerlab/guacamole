@@ -17,7 +17,6 @@ class MappedReadSuite
       Array[Byte]((10 to 20).map(_.toByte): _*),
       isDuplicate = true,
       sampleId = 123,
-      "some sample name",
       "chr5",
       50,
       325352323,
@@ -38,7 +37,6 @@ class MappedReadSuite
       Array[Byte]((10 to 20).map(_.toByte): _*),
       isDuplicate = true,
       123,
-      "some sample name",
       failedVendorQualityChecks = false,
       isPaired = true
     )
@@ -49,7 +47,6 @@ class MappedReadSuite
       Array[Byte]((10 to 20).map(_.toByte): _*),
       isDuplicate = true,
       123,
-      "some sample name",
       "chr5",
       50,
       325352323,
