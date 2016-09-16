@@ -23,7 +23,6 @@ import org.seqdoop.hadoop_bam.{AnySAMInputFormat, BAMInputFormat, SAMRecordWrita
 
 import scala.collection.JavaConversions._
 
-
 /**
  * A [[ReadSets]] contains reads from multiple inputs as well as [[SequenceDictionary]] / contig-length information
  * merged from them.
@@ -120,7 +119,7 @@ object ReadSets extends Logging {
 
     val (readsRDDs, sequenceDictionaries) =
       (for {
-        (Input(sampleId, sampleName, filename), filters) <- inputsAndFilters
+        (Input(sampleId, _, filename), filters) <- inputsAndFilters
       } yield
         load(filename, sc, sampleId, filters)
       ).unzip
@@ -320,15 +319,14 @@ object ReadSets extends Logging {
      * attribute cannot be serialized.
      */
     var result = reads
-    filters
-      .overlapsLociOpt
-      .foreach(overlapsLoci => {
-        val contigLengths = getContigLengths(sequenceDictionary)
-        val loci = overlapsLoci.result(contigLengths)
-        val broadcastLoci = reads.sparkContext.broadcast(loci)
-        result = result.filter(_.asMappedRead.exists(broadcastLoci.value.intersects))
-      })
-
+    for {
+      overlapsLoci <- filters.overlapsLociOpt
+    } {
+      val contigLengths = getContigLengths(sequenceDictionary)
+      val loci = overlapsLoci.result(contigLengths)
+      val broadcastLoci = reads.sparkContext.broadcast(loci)
+      result = result.filter(_.asMappedRead.exists(broadcastLoci.value.intersects))
+    }
     if (filters.nonDuplicate) result = result.filter(!_.isDuplicate)
     if (filters.passedVendorQualityChecks) result = result.filter(!_.failedVendorQualityChecks)
     if (filters.isPaired) result = result.filter(_.isPaired)
