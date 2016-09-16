@@ -8,7 +8,7 @@ import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMapMulti
 import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.readsets.args.{ReferenceFastaArgs, Arguments => ReadSetsArguments}
-import org.hammerlab.guacamole.readsets.io.{InputFilters, ReadLoadingConfig}
+import org.hammerlab.guacamole.readsets.io.InputFilters
 import org.hammerlab.guacamole.readsets.rdd.PartitionedRegions
 import org.hammerlab.guacamole.readsets.{PerSample, ReadSets, SampleName}
 import org.hammerlab.guacamole.reference.{ContigName, Locus}
@@ -58,8 +58,7 @@ object VariantSupport {
         ReadSets(
           sc,
           args.inputs,
-          InputFilters.empty,
-          config = ReadLoadingConfig(args)
+          InputFilters.empty
         )
 
       // Build a loci set from the variant positions
