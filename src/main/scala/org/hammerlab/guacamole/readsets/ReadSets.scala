@@ -196,26 +196,25 @@ object ReadSets extends Logging {
     val samHeader = SAMHeaderReader.readSAMHeaderFrom(path, conf)
     val sequenceDictionary = SequenceDictionary.fromSAMHeader(samHeader)
 
-    filters.overlapsLociOpt match {
-      case Some(overlapsLoci) =>
-        if (filename.endsWith(".bam")) {
-          val contigLengths = getContigLengths(sequenceDictionary)
+    filters
+      .overlapsLociOpt
+      .fold(conf.unset(BAMInputFormat.INTERVALS_PROPERTY)) (
+        overlapsLoci =>
+          if (filename.endsWith(".bam")) {
+            val contigLengths = getContigLengths(sequenceDictionary)
 
-          val bamIndexIntervals =
-            overlapsLoci
-              .result(contigLengths)
-              .toHtsJDKIntervals
+            val bamIndexIntervals =
+              overlapsLoci
+                .result(contigLengths)
+                .toHtsJDKIntervals
 
-          BAMInputFormat.setIntervals(conf, bamIndexIntervals)
-        } else if (filename.endsWith(".sam")) {
-          warn(s"Loading SAM file: $filename with intervals specified. This requires parsing the entire file.")
-        } else {
-          throw new IllegalArgumentException(s"File $filename is not a BAM or SAM file")
-        }
-      case None =>
-        // Ensure that we clear any stale intervals
-        conf.unset(BAMInputFormat.INTERVALS_PROPERTY)
-    }
+            BAMInputFormat.setIntervals(conf, bamIndexIntervals)
+          } else if (filename.endsWith(".sam")) {
+            warn(s"Loading SAM file: $filename with intervals specified. This requires parsing the entire file.")
+          } else {
+            throw new IllegalArgumentException(s"File $filename is not a BAM or SAM file")
+          }
+      )
 
     val reads: RDD[Read] =
       sc
@@ -321,14 +320,15 @@ object ReadSets extends Logging {
      * attribute cannot be serialized.
      */
     var result = reads
-    for {
-      overlapsLoci <- filters.overlapsLociOpt
-    } {
-      val contigLengths = getContigLengths(sequenceDictionary)
-      val loci = overlapsLoci.result(contigLengths)
-      val broadcastLoci = reads.sparkContext.broadcast(loci)
-      result = result.filter(_.asMappedRead.exists(broadcastLoci.value.intersects))
-    }
+    filters
+      .overlapsLociOpt
+      .foreach(overlapsLoci => {
+        val contigLengths = getContigLengths(sequenceDictionary)
+        val loci = overlapsLoci.result(contigLengths)
+        val broadcastLoci = reads.sparkContext.broadcast(loci)
+        result = result.filter(_.asMappedRead.exists(broadcastLoci.value.intersects))
+      })
+
     if (filters.nonDuplicate) result = result.filter(!_.isDuplicate)
     if (filters.passedVendorQualityChecks) result = result.filter(!_.failedVendorQualityChecks)
     if (filters.isPaired) result = result.filter(_.isPaired)
