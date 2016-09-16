@@ -35,13 +35,13 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">InputFilters</span><span class="params">(<span name="overlapsLoci">overlapsLoci: <span class="extype" name="scala.Option">Option</span>[<a href="../../loci/set/LociParser.html" class="extype" name="org.hammerlab.guacamole.loci.set.LociParser">LociParser</a>]</span>, <span name="nonDuplicate">nonDuplicate: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="passedVendorQualityChecks">passedVendorQualityChecks: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="isPaired">isPaired: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">InputFilters</span><span class="params">(<span name="overlapsLociOpt">overlapsLociOpt: <span class="extype" name="scala.Option">Option</span>[<a href="../../loci/set/LociParser.html" class="extype" name="org.hammerlab.guacamole.loci.set.LociParser">LociParser</a>]</span>, <span name="nonDuplicate">nonDuplicate: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="passedVendorQualityChecks">passedVendorQualityChecks: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="isPaired">isPaired: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Filtering reads while they are loaded can be an important optimization.</p><p>These fields are commonly used filters. For boolean fields, setting a field to true will result in filtering on
 that field. The result is the intersection of the filters (i.e. reads must satisfy ALL filters).
-</p></div><dl class="paramcmts block"><dt class="param">overlapsLoci</dt><dd class="cmt"><p>if not None, include only mapped reads that overlap the given loci</p></dd><dt class="param">nonDuplicate</dt><dd class="cmt"><p>include only reads that do not have the duplicate bit set</p></dd><dt class="param">passedVendorQualityChecks</dt><dd class="cmt"><p>include only reads that do not have the failedVendorQualityChecks bit set</p></dd><dt class="param">isPaired</dt><dd class="cmt"><p>include only reads are paired-end reads
+</p></div><dl class="paramcmts block"><dt class="param">overlapsLociOpt</dt><dd class="cmt"><p>if set, include only mapped reads that overlap the given loci</p></dd><dt class="param">nonDuplicate</dt><dd class="cmt"><p>include only reads that do not have the duplicate bit set</p></dd><dt class="param">passedVendorQualityChecks</dt><dd class="cmt"><p>include only reads that do not have the failedVendorQualityChecks bit set</p></dd><dt class="param">isPaired</dt><dd class="cmt"><p>include only reads are paired-end reads
 </p></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
@@ -83,7 +83,7 @@ that field. The result is the intersection of the filters (i.e. reads must satis
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="org.hammerlab.guacamole.readsets.io.InputFilters#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="&lt;init&gt;(overlapsLoci:Option[org.hammerlab.guacamole.loci.set.LociParser],nonDuplicate:Boolean,passedVendorQualityChecks:Boolean,isPaired:Boolean):org.hammerlab.guacamole.readsets.io.InputFilters"></a>
+      <a id="&lt;init&gt;(overlapsLociOpt:Option[org.hammerlab.guacamole.loci.set.LociParser],nonDuplicate:Boolean,passedVendorQualityChecks:Boolean,isPaired:Boolean):org.hammerlab.guacamole.readsets.io.InputFilters"></a>
       <a id="&lt;init&gt;:InputFilters"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -91,10 +91,10 @@ that field. The result is the intersection of the filters (i.e. reads must satis
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">InputFilters</span><span class="params">(<span name="overlapsLoci">overlapsLoci: <span class="extype" name="scala.Option">Option</span>[<a href="../../loci/set/LociParser.html" class="extype" name="org.hammerlab.guacamole.loci.set.LociParser">LociParser</a>]</span>, <span name="nonDuplicate">nonDuplicate: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="passedVendorQualityChecks">passedVendorQualityChecks: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="isPaired">isPaired: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span>
+        <span class="name">InputFilters</span><span class="params">(<span name="overlapsLociOpt">overlapsLociOpt: <span class="extype" name="scala.Option">Option</span>[<a href="../../loci/set/LociParser.html" class="extype" name="org.hammerlab.guacamole.loci.set.LociParser">LociParser</a>]</span>, <span name="nonDuplicate">nonDuplicate: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="passedVendorQualityChecks">passedVendorQualityChecks: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="isPaired">isPaired: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">overlapsLoci</dt><dd class="cmt"><p>if not None, include only mapped reads that overlap the given loci</p></dd><dt class="param">nonDuplicate</dt><dd class="cmt"><p>include only reads that do not have the duplicate bit set</p></dd><dt class="param">passedVendorQualityChecks</dt><dd class="cmt"><p>include only reads that do not have the failedVendorQualityChecks bit set</p></dd><dt class="param">isPaired</dt><dd class="cmt"><p>include only reads are paired-end reads
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">overlapsLociOpt</dt><dd class="cmt"><p>if set, include only mapped reads that overlap the given loci</p></dd><dt class="param">nonDuplicate</dt><dd class="cmt"><p>include only reads that do not have the duplicate bit set</p></dd><dt class="param">passedVendorQualityChecks</dt><dd class="cmt"><p>include only reads that do not have the failedVendorQualityChecks bit set</p></dd><dt class="param">isPaired</dt><dd class="cmt"><p>include only reads are paired-end reads
 </p></dd></dl></div>
     </li></ol>
             </div>
@@ -326,19 +326,19 @@ that field. The result is the intersection of the filters (i.e. reads must satis
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.readsets.io.InputFilters#overlapsLoci" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="overlapsLoci:Option[org.hammerlab.guacamole.loci.set.LociParser]"></a>
-      <a id="overlapsLoci:Option[LociParser]"></a>
+    </li><li name="org.hammerlab.guacamole.readsets.io.InputFilters#overlapsLociOpt" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="overlapsLociOpt:Option[org.hammerlab.guacamole.loci.set.LociParser]"></a>
+      <a id="overlapsLociOpt:Option[LociParser]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">overlapsLoci</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<a href="../../loci/set/LociParser.html" class="extype" name="org.hammerlab.guacamole.loci.set.LociParser">LociParser</a>]</span>
+        <span class="name">overlapsLociOpt</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<a href="../../loci/set/LociParser.html" class="extype" name="org.hammerlab.guacamole.loci.set.LociParser">LociParser</a>]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">if not None, include only mapped reads that overlap the given loci</p>
+      <p class="shortcomment cmt">if set, include only mapped reads that overlap the given loci</p>
     </li><li name="org.hammerlab.guacamole.readsets.io.InputFilters#passedVendorQualityChecks" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="passedVendorQualityChecks:Boolean"></a>
       <a id="passedVendorQualityChecks:Boolean"></a>
