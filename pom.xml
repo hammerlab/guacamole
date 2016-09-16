@@ -281,14 +281,14 @@
       <version>0.12</version>
     </dependency>
     <dependency>
-      <groupId>org.seqdoop</groupId>
+      <groupId>com.github.samtools</groupId>
       <artifactId>htsjdk</artifactId>
-      <version>1.118</version>
+      <version>2.6.1</version>
     </dependency>
     <dependency>
       <groupId>org.seqdoop</groupId>
       <artifactId>hadoop-bam</artifactId>
-      <version>7.0.0</version>
+      <version>7.6.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -312,8 +312,8 @@
     </dependency>
     <dependency>
       <groupId>org.hammerlab</groupId>
-      <artifactId>magic-rdds</artifactId>
-      <version>1.0.0</version>
+      <artifactId>magic-rdds_${scala.version.prefix}</artifactId>
+      <version>1.2.2</version>
     </dependency>
     <dependency>
       <groupId>org.clapper</groupId>
@@ -336,7 +336,7 @@
     <dependency>
       <groupId>org.scalatest</groupId>
       <artifactId>scalatest_${scala.version.prefix}</artifactId>
-      <version>2.2.1</version>
+      <version>3.0.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>

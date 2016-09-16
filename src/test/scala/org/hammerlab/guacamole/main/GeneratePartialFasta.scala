@@ -7,7 +7,7 @@ import org.hammerlab.guacamole.commands.SparkCommand
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.readsets.ReadSets
 import org.hammerlab.guacamole.readsets.args.{Arguments => ReadSetsArguments}
-import org.hammerlab.guacamole.readsets.io.{InputFilters, ReadLoadingConfig}
+import org.hammerlab.guacamole.readsets.io.{InputFilters}
 import org.hammerlab.guacamole.reference.{ContigNotFound, Interval, ReferenceArgs, ReferenceBroadcast}
 import org.hammerlab.guacamole.util.Bases
 import org.kohsuke.args4j.{Option => Args4jOption}
@@ -66,8 +66,7 @@ object GeneratePartialFasta extends SparkCommand[GeneratePartialFastaArguments] 
       ReadSets(
         sc,
         args.inputs,
-        InputFilters.empty,
-        config = ReadLoadingConfig(args)
+        InputFilters.empty
       )
 
     val contigLengths = readsets.contigLengths

@@ -10,7 +10,7 @@ import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.reference.ReferenceRegion
 import org.hammerlab.magic.accumulables.{HistogramParam, HashMap => MagicHashMap}
 import org.hammerlab.magic.rdd.KeyPartitioner
-import org.hammerlab.magic.rdd.SequenceFileSerializableRDD._
+import org.hammerlab.magic.rdd.serde.SequenceFileSerializableRDD._
 import org.hammerlab.magic.stats.Stats
 
 import scala.reflect.ClassTag
