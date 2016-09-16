@@ -1050,15 +1050,15 @@ This allows some late failures (e.g. output file already exists) to be surfaced 
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../variants/GenotypeOutputArgs.html" class="extype" name="org.hammerlab.guacamole.variants.GenotypeOutputArgs">GenotypeOutputArgs</a></dd></dl></div>
     </li><li name="org.hammerlab.guacamole.variants.GenotypeOutputArgs#writeVariants" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="writeVariants(genotypes:org.apache.spark.rdd.RDD[org.bdgenomics.formats.avro.Genotype]):Unit"></a>
-      <a id="writeVariants(RDD[Genotype]):Unit"></a>
+      <a id="writeVariants(genotypes:org.bdgenomics.adam.rdd.variation.GenotypeRDD):Unit"></a>
+      <a id="writeVariants(GenotypeRDD):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">writeVariants</span><span class="params">(<span name="genotypes">genotypes: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<span class="extype" name="org.bdgenomics.formats.avro.Genotype">Genotype</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">writeVariants</span><span class="params">(<span name="genotypes">genotypes: <span class="extype" name="org.bdgenomics.adam.rdd.variation.GenotypeRDD">GenotypeRDD</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
       <p class="shortcomment cmt">Write out an RDD of Genotype instances to a file.</p><div class="fullcomment"><div class="comment cmt"><p>Write out an RDD of Genotype instances to a file.
