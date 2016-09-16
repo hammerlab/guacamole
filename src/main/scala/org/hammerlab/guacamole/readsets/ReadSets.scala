@@ -9,12 +9,11 @@ import org.apache.hadoop.io.LongWritable
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.models.SequenceDictionary
-import org.bdgenomics.adam.rdd.{ADAMContext, ADAMSpecificRecordSequenceDictionaryRDDAggregator}
-import org.bdgenomics.formats.avro.AlignmentRecord
+import org.bdgenomics.adam.rdd.ADAMContext
 import org.hammerlab.guacamole.loci.set.{LociParser, LociSet}
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
-import org.hammerlab.guacamole.reads.{MappedRead, Read}
-import org.hammerlab.guacamole.readsets.args.{SingleSampleArgs, Base => BaseArgs}
+import org.hammerlab.guacamole.reads.Read
+import org.hammerlab.guacamole.readsets.args.{Base => BaseArgs}
 import org.hammerlab.guacamole.readsets.io.{Input, InputFilters}
 import org.hammerlab.guacamole.readsets.rdd.ReadsRDD
 import org.hammerlab.guacamole.reference.{ContigName, Locus}
@@ -33,8 +32,10 @@ case class ReadSets(readsRDDs: PerSample[ReadsRDD],
                     contigLengths: ContigLengths)
   extends PerSample[ReadsRDD] {
 
+  def inputs: PerSample[Input] = readsRDDs.map(_.input)
+
   def numSamples: NumSamples = readsRDDs.length
-  def sampleNames: PerSample[String] = readsRDDs.map(_.input.sampleName)
+  def sampleNames: PerSample[String] = inputs.map(_.sampleName)
 
   override def length: NumSamples = readsRDDs.length
   override def apply(sampleId: SampleId): ReadsRDD = readsRDDs(sampleId)
@@ -47,34 +48,6 @@ case class ReadSets(readsRDDs: PerSample[ReadsRDD],
 }
 
 object ReadSets extends Logging {
-
-  /**
-   * Load one read-set from an input file.
-   */
-  private[readsets] def loadReads(args: SingleSampleArgs,
-                                  sc: SparkContext,
-                                  filters: InputFilters): (ReadsRDD, ContigLengths) = {
-
-    val ReadSets(reads, _, contigLengths) =
-      ReadSets(
-        sc,
-        args.inputs,
-        filters,
-        contigLengthsFromDictionary = !args.noSequenceDictionary
-      )
-
-    (reads(0), contigLengths)
-  }
-
-  /**
-   * Load just the mapped reads from an input ReadSet.
-   */
-  def loadMappedReads(args: SingleSampleArgs,
-                      sc: SparkContext,
-                      filters: InputFilters): (RDD[MappedRead], ContigLengths) = {
-    val (reads, contigLengths) = loadReads(args, sc, filters)
-    (reads.mappedReads, contigLengths)
-  }
 
   /**
    * Load ReadSet instances from user-specified BAMs (specified as an InputCollection).
@@ -120,7 +93,7 @@ object ReadSets extends Logging {
 
     val (readsRDDs, sequenceDictionaries) =
       (for {
-        (Input(sampleId, sampleName, filename), filters) <- inputsAndFilters
+        (Input(sampleId, _, filename), filters) <- inputsAndFilters
       } yield
         load(filename, sc, sampleId, filters)
       ).unzip
@@ -238,13 +211,12 @@ object ReadSets extends Logging {
 
     val adamContext = new ADAMContext(sc)
 
-    val adamRecords: RDD[AlignmentRecord] = adamContext.loadAlignments(
-      filename, projection = None, stringency = ValidationStringency.LENIENT).rdd
+    val alignmentRDD =
+      adamContext.loadAlignments(filename, projection = None, stringency = ValidationStringency.LENIENT)
 
-    val sequenceDictionary =
-      new ADAMSpecificRecordSequenceDictionaryRDDAggregator(adamRecords).adamGetSequenceDictionary()
+    val sequenceDictionary = alignmentRDD.sequences
 
-    (adamRecords.map(Read(_, sampleId)), sequenceDictionary)
+    (alignmentRDD.rdd.map(Read(_, sampleId)), sequenceDictionary)
   }
 
 

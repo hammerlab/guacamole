@@ -1,7 +1,7 @@
 package org.hammerlab.guacamole.reads
 
 import htsjdk.samtools.TextCigarCodec
-import org.hammerlab.guacamole.readsets.{SampleId, SampleName}
+import org.hammerlab.guacamole.readsets.SampleId
 import org.hammerlab.guacamole.reference.{ContigName, Locus}
 
 trait ReadsUtil {
@@ -13,7 +13,6 @@ trait ReadsUtil {
                    baseQualities: String = "",
                    isDuplicate: Boolean = false,
                    sampleId: SampleId = 0,
-                   sampleName: SampleName = "",
                    contigName: ContigName = "",
                    alignmentQuality: Int = -1,
                    start: Locus = -1L,
@@ -32,7 +31,6 @@ trait ReadsUtil {
       qualityScoresArray,
       isDuplicate,
       sampleId,
-      sampleName.intern,
       contigName,
       alignmentQuality,
       start,
@@ -73,7 +71,7 @@ trait ReadsUtil {
       if (qualityScores.isDefined)
         qualityScores.get.map(q => q + 33).map(_.toChar).mkString
       else
-        sequence.map(x => '@').mkString
+        "@" * sequence.length
 
     read(
       sequence,
@@ -99,7 +97,7 @@ trait ReadsUtil {
                      cigar: String = "12M",
                      inferredInsertSize: Option[Int]): PairedRead[MappedRead] = {
 
-    val qualityScoreString = sequence.map(x => '@').mkString
+    val qualityScoreString = "@" * sequence.length
 
     PairedRead(
       read(

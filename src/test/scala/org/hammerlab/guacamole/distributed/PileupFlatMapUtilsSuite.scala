@@ -82,6 +82,7 @@ class PileupFlatMapUtilsSuite
     val pileups =
       pileupFlatMapOneSample(
         partitionedReads,
+        sampleName = "sampleName",
         skipEmpty = false,
         pileup => Iterator(pileup),
         reference = reference
@@ -105,6 +106,7 @@ class PileupFlatMapUtilsSuite
     val pileups =
       pileupFlatMapOneSample(
         partitionedReads,
+        sampleName = "sampleName",
         skipEmpty = false,
         pileup => Iterator(pileup),
         reference = reference
@@ -124,6 +126,7 @@ class PileupFlatMapUtilsSuite
     val loci =
       pileupFlatMapOneSample(
         partitionedReads,
+        sampleName = "sampleName",
         skipEmpty = true,
         pileup => Iterator(pileup.locus),
         reference = reference
@@ -162,6 +165,8 @@ class PileupFlatMapUtilsSuite
     val loci =
       pileupFlatMapTwoSamples(
         partitionedReads,
+        sample1Name = "sample1",
+        sample2Name = "sample2",
         skipEmpty = true,
         (pileup1, _) => Iterator(pileup1.locus),
         reference = reference
@@ -206,7 +211,7 @@ class PileupFlatMapUtilsSuite
 
     val resultPlain =
       pileupFlatMapMultipleSamples[PerSample[Iterable[String]]](
-        numSamples = 3,
+        sampleNames = Vector("a", "b", "c"),
         partitionReads(reads, UniformPartitioner(1).partition(loci)),
         skipEmpty = true,
         pileupsToElementStrings,
@@ -215,7 +220,7 @@ class PileupFlatMapUtilsSuite
 
     val resultParallelized =
       pileupFlatMapMultipleSamples[PerSample[Iterable[String]]](
-        numSamples = 3,
+        sampleNames = Vector("a", "b", "c"),
         partitionReads(reads, UniformPartitioner(800).partition(loci)),
         skipEmpty = true,
         pileupsToElementStrings,
@@ -224,7 +229,7 @@ class PileupFlatMapUtilsSuite
 
     val resultWithEmpty =
       pileupFlatMapMultipleSamples[PerSample[Iterable[String]]](
-        numSamples = 3,
+        sampleNames = Vector("a", "b", "c"),
         partitionReads(reads, UniformPartitioner(5).partition(loci)),
         skipEmpty = false,
         pileupsToElementStrings,
@@ -256,6 +261,7 @@ class PileupFlatMapUtilsSuite
     val pileups =
       pileupFlatMapOneSample[PileupElement](
         partitionedReads,
+        sampleName = "sampleName",
         skipEmpty = false,
         _.elements.toIterator,
         reference = makeReference(sc, Seq(("chr1", 1, "TCGATCGA")))
@@ -295,6 +301,8 @@ class PileupFlatMapUtilsSuite
     val elements =
       pileupFlatMapTwoSamples[PileupElement](
         partitionedReads,
+        sample1Name = "sample1",
+        sample2Name = "sample2",
         skipEmpty = false,
         (pileup1, pileup2) => (pileup1.elements ++ pileup2.elements).toIterator,
         reference = makeReference(sc, Seq(("chr1", 0, "ATCGATCGA" + "N" * 90 + "AGGGGGGGGGG")))
@@ -322,6 +330,7 @@ class PileupFlatMapUtilsSuite
           reads,
           UniformPartitioner(5).partition(LociSet("chr1:1-12"))
         ),
+        sampleName = "sampleName",
         skipEmpty = false,
         _.elements.toIterator,
         reference = makeReference(sc, Seq(("chr1", 0, "ATCGATCGA")))

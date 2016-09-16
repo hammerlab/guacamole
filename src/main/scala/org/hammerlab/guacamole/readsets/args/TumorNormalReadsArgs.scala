@@ -13,5 +13,8 @@ trait TumorNormalReadsArgs extends Base {
 
   override def paths = Array(normalReads, tumorReads)
 
-  override def sampleNames = Array("normal", "tumor")
+  val normalSampleName = "normal"
+  val tumorSampleName = "tumor"
+
+  override def sampleNames = Array(normalSampleName, tumorSampleName)
 }

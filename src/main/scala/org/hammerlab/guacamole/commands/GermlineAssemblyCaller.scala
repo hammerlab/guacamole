@@ -49,13 +49,13 @@ object GermlineAssemblyCaller {
     override val name = "germline-assembly"
     override val description = "call germline variants by assembling the surrounding region of reads"
 
-    override def computeGenotypes(args: Arguments, sc: SparkContext) = {
+    override def computeVariants(args: Arguments, sc: SparkContext) = {
       val reference = args.reference(sc)
       val loci = args.parseLoci(sc.hadoopConfiguration)
-      val (mappedReads, contigLengths) =
-        ReadSets.loadMappedReads(
-          args,
+      val readsets =
+        ReadSets(
           sc,
+          args.inputs,
           InputFilters(
             overlapsLoci = loci,
             mapped = true,
@@ -64,27 +64,34 @@ object GermlineAssemblyCaller {
         )
 
       val minAlignmentQuality = args.minAlignmentQuality
-      val qualityReads = mappedReads.filter(_.alignmentQuality > minAlignmentQuality)
+      val qualityReads = readsets.allMappedReads.filter(_.alignmentQuality > minAlignmentQuality)
 
       val partitionedReads =
         PartitionedRegions(
           qualityReads,
-          loci.result(contigLengths),
+          loci.result(readsets.contigLengths),
           args,
           args.assemblyWindowRange
         )
 
-      discoverGermlineVariants(
-        partitionedReads,
-        args.sampleName,
-        kmerSize = args.kmerSize,
-        assemblyWindowRange = args.assemblyWindowRange,
-        minOccurrence = args.minOccurrence,
-        minAreaVaf = args.minAreaVaf / 100.0f,
-        reference = reference,
-        minMeanKmerQuality = args.minMeanKmerQuality,
-        minPhredScaledLikelihood = args.minLikelihood,
-        shortcutAssembly = args.shortcutAssembly
+      val calledAlleles =
+        discoverGermlineVariants(
+          partitionedReads,
+          args.sampleName,
+          kmerSize = args.kmerSize,
+          assemblyWindowRange = args.assemblyWindowRange,
+          minOccurrence = args.minOccurrence,
+          minAreaVaf = args.minAreaVaf / 100.0f,
+          reference = reference,
+          minMeanKmerQuality = args.minMeanKmerQuality,
+          minPhredScaledLikelihood = args.minLikelihood,
+          shortcutAssembly = args.shortcutAssembly
+        )
+
+      (
+        calledAlleles,
+        readsets.sequenceDictionary,
+        Vector(args.sampleName)
       )
     }
 
@@ -133,6 +140,7 @@ object GermlineAssemblyCaller {
             val pileup =
               Pileup(
                 currentLocusReads,
+                sampleName,
                 contigName,
                 window.currentLocus,
                 referenceContig

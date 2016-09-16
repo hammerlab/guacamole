@@ -72,12 +72,13 @@ object AlleleEvidence {
         meanBaseQuality = mean(baseQualityScores),
         medianBaseQuality = median(baseQualityScores),
         medianMismatchesPerRead = median(
-          DenseVector(alleleElements.map(_.read.countOfMismatches(pileup.contigSequence)).toArray)))
+          DenseVector(alleleElements.map(_.read.countOfMismatches(pileup.contigSequence)).toArray)
+        )
+      )
   }
 
   def apply(likelihood: Double, allele: Allele, pileup: Pileup): AlleleEvidence = {
     val (alleleReadDepth, allelePositiveReadDepth) = pileup.alleleReadDepthAndPositiveDepth(allele)
     AlleleEvidence(likelihood, allele, alleleReadDepth, allelePositiveReadDepth, pileup)
-
   }
 }

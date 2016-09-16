@@ -1,9 +1,9 @@
 package org.hammerlab.guacamole.variants
 
-import org.bdgenomics.formats.avro.{Contig, DatabaseVariantAnnotation, Variant, Genotype => BDGGenotype}
+import org.bdgenomics.formats.avro.{DatabaseVariantAnnotation, Variant, Genotype => BDGGenotype}
 import org.hammerlab.guacamole.readsets.SampleName
 import org.hammerlab.guacamole.reference.ReferenceRegion
-import org.hammerlab.guacamole.util.Bases
+import org.hammerlab.guacamole.util.Bases.basesToString
 
 /**
  * Base properties of a genomic change in a sequence sample from a reference genome
@@ -21,9 +21,9 @@ trait ReferenceVariant extends ReferenceRegion {
       .newBuilder
       .setStart(start)
       .setEnd(end)
-      .setReferenceAllele(Bases.basesToString(allele.refBases))
-      .setAlternateAllele(Bases.basesToString(allele.altBases))
-      .setContig(Contig.newBuilder.setContigName(contigName).build)
+      .setReferenceAllele(basesToString(allele.refBases))
+      .setAlternateAllele(basesToString(allele.altBases))
+      .setContigName(contigName)
       .build
 
   def rsID: Option[Int]

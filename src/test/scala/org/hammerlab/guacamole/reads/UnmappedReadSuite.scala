@@ -12,7 +12,6 @@ class UnmappedReadSuite extends GuacFunSuite {
       Array[Byte]((10 to 20).map(_.toByte): _*),
       isDuplicate = true,
       123,
-      "some sample name",
       failedVendorQualityChecks = false,
       isPaired = false
     )
@@ -23,5 +22,4 @@ class UnmappedReadSuite extends GuacFunSuite {
     val collectionMappedReads: Seq[Read] = Seq(read)
     collectionMappedReads(0).isMapped should be(false)
   }
-
 }

@@ -44,6 +44,6 @@ object PileupFilter {
       elements = EdgeBaseFilter(elements, minEdgeDistance)
     }
 
-    Pileup(pileup.contigName, pileup.locus, pileup.contigSequence, elements)
+    pileup.copy(elements = elements)
   }
 }

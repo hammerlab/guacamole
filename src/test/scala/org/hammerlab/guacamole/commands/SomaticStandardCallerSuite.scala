@@ -30,7 +30,7 @@ class SomaticStandardCallerSuite
         ("TCGATCGA", "8M", 0)
       )
 
-    val normalPileup = makePileup(normalReads, "chr1", 2)
+    val normalPileup = makeNormalPileup(normalReads, "chr1", 2)
 
     val tumorReads =
       makeReads(
@@ -39,7 +39,7 @@ class SomaticStandardCallerSuite
         ("TCGGTCGA", "8M", 0)
       )
 
-    val tumorPileup = makePileup(tumorReads, "chr1", 2)
+    val tumorPileup = makeTumorPileup(tumorReads, "chr1", 2)
 
     SomaticStandard.Caller.findPotentialVariantAtLocus(tumorPileup, normalPileup, oddsThreshold = 2).size should be(0)
   }
@@ -52,7 +52,7 @@ class SomaticStandardCallerSuite
         ("TCGATCGA", "8M", 0)
       )
 
-    val normalPileup = makePileup(normalReads, "chr1", 2)
+    val normalPileup = makeNormalPileup(normalReads, "chr1", 2)
 
     val tumorReads =
       makeReads(
@@ -61,7 +61,7 @@ class SomaticStandardCallerSuite
         ("TCGTCGA", "3M1D4M", 0)
       )
 
-    val tumorPileup = makePileup(tumorReads, "chr1", 2)
+    val tumorPileup = makeTumorPileup(tumorReads, "chr1", 2)
 
     val alleles = SomaticStandard.Caller.findPotentialVariantAtLocus(tumorPileup, normalPileup, oddsThreshold = 2)
     alleles.size should be(1)
@@ -80,7 +80,7 @@ class SomaticStandardCallerSuite
         ("TCGAAGCTTCGAAGCT", "16M", 0)
       )
 
-    val normalPileup = makePileup(normalReads, "chr4", 4)
+    val normalPileup = makeNormalPileup(normalReads, "chr4", 4)
 
     val tumorReads =
       makeReads(
@@ -90,7 +90,7 @@ class SomaticStandardCallerSuite
         ("TCGAAAAGCT", "5M6D5M", 0)
       )
 
-    val tumorPileup = makePileup(tumorReads, "chr4", 4)
+    val tumorPileup = makeTumorPileup(tumorReads, "chr4", 4)
 
     val alleles = SomaticStandard.Caller.findPotentialVariantAtLocus(tumorPileup, normalPileup, oddsThreshold = 2)
     alleles.size should be(1)
@@ -108,7 +108,7 @@ class SomaticStandardCallerSuite
         ("TCGATCGA", "8M", 0)
       )
 
-    val normalPileup = makePileup(normalReads, "chr1", 2)
+    val normalPileup = makeNormalPileup(normalReads, "chr1", 2)
 
     val tumorReads =
       makeReads(
@@ -117,7 +117,7 @@ class SomaticStandardCallerSuite
         ("TCGAGTCGA", "4M1I4M", 0)
       )
 
-    val tumorPileup = makePileup(tumorReads, "chr1", 3)
+    val tumorPileup = makeTumorPileup(tumorReads, "chr1", 3)
 
     val alleles = SomaticStandard.Caller.findPotentialVariantAtLocus(tumorPileup, normalPileup, oddsThreshold = 2)
     alleles.size should be(1)
@@ -143,8 +143,8 @@ class SomaticStandardCallerSuite
       )
 
     val alleles = SomaticStandard.Caller.findPotentialVariantAtLocus(
-      makePileup(tumorReads, "chr1", 3),
-      makePileup(normalReads, "chr1", 3),
+      makeTumorPileup(tumorReads, "chr1", 3),
+      makeNormalPileup(normalReads, "chr1", 3),
       oddsThreshold = 2
     )
     alleles.size should be(1)
@@ -179,8 +179,8 @@ class SomaticStandardCallerSuite
 
     def testLocus(contigName: ContigName, locus: Locus, refBases: String, altBases: String) = {
       val alleles = SomaticStandard.Caller.findPotentialVariantAtLocus(
-        makePileup(tumorReads, contigName, locus),
-        makePileup(normalReads, contigName, locus),
+        makeTumorPileup(tumorReads, contigName, locus),
+        makeNormalPileup(normalReads, contigName, locus),
         oddsThreshold = 2
       )
       alleles.size should be(1)
