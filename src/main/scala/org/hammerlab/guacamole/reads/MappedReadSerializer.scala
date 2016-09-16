@@ -15,7 +15,6 @@ class MappedReadSerializer extends Serializer[MappedRead] {
     output.writeBytes(obj.baseQualities.toArray)
     output.writeBoolean(obj.isDuplicate)
     output.writeInt(obj.sampleId)
-    output.writeString(obj.sampleName)
     output.writeString(obj.contigName)
     output.writeInt(obj.alignmentQuality, true)
     output.writeLong(obj.start, true)
@@ -32,7 +31,6 @@ class MappedReadSerializer extends Serializer[MappedRead] {
     val qualityScoresArray: IndexedSeq[Byte] = input.readBytes(count).toVector
     val isDuplicate = input.readBoolean()
     val sampleId = input.readInt()
-    val sampleName = input.readString().intern()
     val referenceContig = input.readString().intern()
     val alignmentQuality = input.readInt(true)
     val start = input.readLong(true)
@@ -49,7 +47,6 @@ class MappedReadSerializer extends Serializer[MappedRead] {
       qualityScoresArray,
       isDuplicate,
       sampleId,
-      sampleName.intern,
       referenceContig,
       alignmentQuality,
       start,

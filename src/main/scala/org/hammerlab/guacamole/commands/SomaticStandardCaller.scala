@@ -48,7 +48,7 @@ object SomaticStandard {
     override val name = "somatic-standard"
     override val description = "call somatic variants using independent callers on tumor and normal"
 
-    override def computeGenotypes(args: Arguments, sc: SparkContext): RDD[CalledSomaticAllele] = {
+    override def computeVariants(args: Arguments, sc: SparkContext) = {
       val reference = args.reference(sc)
 
       val (readsets, loci) = ReadSets(sc, args)
@@ -67,9 +67,14 @@ object SomaticStandard {
       val filterMultiAllelic = args.filterMultiAllelic
       val maxTumorReadDepth = args.maxTumorReadDepth
 
+      val normalSampleName = args.normalSampleName
+      val tumorSampleName = args.tumorSampleName
+
       var potentialGenotypes: RDD[CalledSomaticAllele] =
         pileupFlatMapTwoSamples[CalledSomaticAllele](
           partitionedReads,
+          sample1Name = normalSampleName,
+          sample2Name = tumorSampleName,
           skipEmpty = true,  // skip empty pileups
           function = (pileupNormal, pileupTumor) =>
             findPotentialVariantAtLocus(
@@ -108,7 +113,7 @@ object SomaticStandard {
         potentialGenotypes =
           potentialGenotypes
             .keyBy(_.bdgVariant)
-            .leftOuterJoin(dbSnpVariants.keyBy(_.getVariant))
+            .leftOuterJoin(dbSnpVariants.rdd.keyBy(_.getVariant))
             .values
             .map {
               case (calledAllele: CalledSomaticAllele, dbSnpVariantOpt: Option[DatabaseVariantAnnotation]) =>
@@ -116,7 +121,11 @@ object SomaticStandard {
             }
       }
 
-      SomaticGenotypeFilter(potentialGenotypes, args)
+      (
+        SomaticGenotypeFilter(potentialGenotypes, args),
+        readsets.sequenceDictionary,
+        Vector(args.tumorSampleName)
+      )
     }
 
     def findPotentialVariantAtLocus(tumorPileup: Pileup,
@@ -182,8 +191,7 @@ object SomaticStandard {
       lazy val normalVariantsTotalLikelihood = normalVariantGenotypes.values.sum
       lazy val somaticOdds = mostLikelyTumorGenotypeLikelihood / normalVariantsTotalLikelihood
 
-      if (mostLikelyTumorGenotype.hasVariantAllele
-        && somaticOdds * 100 >= oddsThreshold)
+      if (mostLikelyTumorGenotype.hasVariantAllele && somaticOdds * 100 >= oddsThreshold)
         for {
           // NOTE(ryan): currently only look at the first non-ref allele in the most likely tumor genotype.
           // removeCorrelatedGenotypes depends on there only being one variant per locus.
