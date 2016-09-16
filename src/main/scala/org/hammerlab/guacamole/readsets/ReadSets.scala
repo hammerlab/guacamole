@@ -14,7 +14,7 @@ import org.bdgenomics.formats.avro.AlignmentRecord
 import org.hammerlab.guacamole.loci.set.{LociParser, LociSet}
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.reads.{MappedRead, Read}
-import org.hammerlab.guacamole.readsets.args.{SingleSampleArgs, TumorNormalReadsArgs, Base => BaseArgs}
+import org.hammerlab.guacamole.readsets.args.{SingleSampleArgs, Base => BaseArgs}
 import org.hammerlab.guacamole.readsets.io.{Input, InputFilters}
 import org.hammerlab.guacamole.readsets.rdd.ReadsRDD
 import org.hammerlab.guacamole.reference.{ContigName, Locus}
@@ -76,31 +76,6 @@ object ReadSets extends Logging {
   }
 
   /**
-<<<<<<< HEAD
-   * Given arguments for two sets of reads (tumor and normal), return a pair of (tumor, normal) read sets.
-   *
-   * @param args parsed arguments
-   * @param sc spark context
-   * @param filters input filters to apply
-   */
-  def loadTumorNormalReads(args: TumorNormalReadsArgs,
-                           sc: SparkContext,
-                           filters: InputFilters): (ReadsRDD, ReadsRDD, ContigLengths) = {
-
-    val ReadSets(readsets, _, contigLengths) =
-      ReadSets(
-        sc,
-        args.inputs,
-        filters,
-        !args.noSequenceDictionary
-      )
-
-    (readsets(0), readsets(1), contigLengths)
-  }
-
-  /**
-=======
->>>>>>> master
    * Load ReadSet instances from user-specified BAMs (specified as an InputCollection).
    */
   def apply(sc: SparkContext,
@@ -220,26 +195,25 @@ object ReadSets extends Logging {
     val samHeader = SAMHeaderReader.readSAMHeaderFrom(path, conf)
     val sequenceDictionary = SequenceDictionary.fromSAMHeader(samHeader)
 
-    filters.overlapsLociOpt match {
-      case Some(overlapsLoci) =>
-        if (filename.endsWith(".bam")) {
-          val contigLengths = getContigLengths(sequenceDictionary)
+    filters
+      .overlapsLociOpt
+      .fold(conf.unset(BAMInputFormat.INTERVALS_PROPERTY)) (
+        overlapsLoci =>
+          if (filename.endsWith(".bam")) {
+            val contigLengths = getContigLengths(sequenceDictionary)
 
-          val bamIndexIntervals =
-            overlapsLoci
-              .result(contigLengths)
-              .toHtsJDKIntervals
+            val bamIndexIntervals =
+              overlapsLoci
+                .result(contigLengths)
+                .toHtsJDKIntervals
 
-          BAMInputFormat.setIntervals(conf, bamIndexIntervals)
-        } else if (filename.endsWith(".sam")) {
-          warn(s"Loading SAM file: $filename with intervals specified. This requires parsing the entire file.")
-        } else {
-          throw new IllegalArgumentException(s"File $filename is not a BAM or SAM file")
-        }
-      case None =>
-        // Ensure that we clear any stale intervals
-        conf.unset(BAMInputFormat.INTERVALS_PROPERTY)
-    }
+            BAMInputFormat.setIntervals(conf, bamIndexIntervals)
+          } else if (filename.endsWith(".sam")) {
+            warn(s"Loading SAM file: $filename with intervals specified. This requires parsing the entire file.")
+          } else {
+            throw new IllegalArgumentException(s"File $filename is not a BAM or SAM file")
+          }
+      )
 
     val reads: RDD[Read] =
       sc
