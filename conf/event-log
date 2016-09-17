@@ -1,0 +1,2 @@
+spark.eventLog.enabled                        true
+spark.eventLog.dir                            hdfs://demeter-nn1.demeter.hpc.mssm.edu:/user/spark/applicationHistory

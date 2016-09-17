@@ -28,16 +28,18 @@ abstract class SparkCommand[T <: Args: Manifest] extends Command[T] {
    * Typically, most properties are set through config file / cmd-line.
    * @return
    */
-  def createSparkContext(): SparkContext = {
+  private def createSparkContext(): SparkContext = {
     val config: SparkConf = new SparkConf()
 
     config.getOption("spark.app.name") match {
-      case Some(cmdLineName) => config.setAppName(s"guacamole: $name ($cmdLineName)")
-      case _                 => config.setAppName("guacamole: $name")
+      case Some(cmdLineName) => config.setAppName(s"$cmdLineName: $name")
+      case _                 => config.setAppName(s"guacamole: $name")
     }
 
     if (config.getOption("spark.master").isEmpty) {
-      config.setMaster("local[%d]".format(Runtime.getRuntime.availableProcessors()))
+      val numProcessors = Runtime.getRuntime.availableProcessors()
+      config.setMaster(s"local[$numProcessors]")
+      info(s"Running in local mode with $numProcessors 'executors'")
     }
 
     if (config.getOption("spark.serializer").isEmpty) {
