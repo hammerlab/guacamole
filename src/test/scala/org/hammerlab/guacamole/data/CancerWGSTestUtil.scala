@@ -1,18 +1,16 @@
 package org.hammerlab.guacamole.data
 
-import org.apache.spark.SparkContext
-import org.hammerlab.guacamole.reference.ReferenceBroadcast
+import org.hammerlab.guacamole.readsets.args.HasReference
 import org.hammerlab.guacamole.util.TestUtil.resourcePath
 
-object CancerWGSTestUtil {
+object CancerWGSTestUtil extends HasReference {
 
-  val bams =
-    Seq("normal.bam", "primary.bam", "recurrence.bam")
+  val bams: Array[String] =
+    Array("normal.bam", "primary.bam", "recurrence.bam")
       .map(name => resourcePath(s"cancer-wgs1/$name"))
 
   val expectedSomaticCallsCSV = resourcePath("cancer-wgs1/variants.csv")
 
-  val referenceFastaPath = resourcePath("hg19.partial.fasta")
-  def referenceBroadcast(sc: SparkContext) = ReferenceBroadcast(referenceFastaPath, sc, partialFasta = true)
-
+  override def referencePath: String = resourcePath("hg19.partial.fasta")
+  override def referenceIsPartial: Boolean = true
 }

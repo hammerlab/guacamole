@@ -1,40 +1,28 @@
 #!/usr/bin/env bash
-# Executes the most recently modified guacamole jar. Run this from the guacamole root directory.
-#
-# If $GUACAMOLE_JAR is defined, then will execute that jar. 
-#
-echo "$@" >> ~/.guacamole.invocations.log
 
-if [ -z "${GUACAMOLE_JAR}" ]; then
-    GUACAMOLE_JAR="$(ls -tc target/guacamole-*.jar | grep -v deps | head -n 1)"
-    if [ -z "$GUACAMOLE_JAR" ]; then
-        cat 1>&2 << EOF
-Couldn't find a Guacamole jar in the target/ directory.
-Are you in the root directory of the Guacamole repo, and have you built Guacamole?
-To build, run:
-    mvn package -DskipTests=true"
-EOF
-        exit 1
-    fi
-    echo "Found guac jar: $GUACAMOLE_JAR"
+# Wrapper script for spark-submit that finds Guacamole JARs and a Spark properties file.
+#
+# Example:
+#
+#   $ scripts/guacamole somatic-joint normal.bam tumor.bam --reference hg19.fasta --out out.vcf
+#
+# Default Spark-properties file is at conf/spark-defaults.conf, and configures a 4gb, 1-worker, local Spark master. To
+# specify other Spark properties, set the $GUAC_CONF_PATH environment variable.
+
+dir="$(dirname "${BASH_SOURCE[0]}")"
+
+# Set uber_jar xor {guac_jar,deps_jar} and $conf_file
+source "$dir/.jars-rc"
+
+# Make jars_args an array that will be passed to spark-submit below.
+jars_args=()
+if [ -n "$uber_jar" ]; then
+  jars_args=("$uber_jar")
 else
-    echo "Using GUACAMOLE_JAR=$GUACAMOLE_JAR"
+  jars_args=("--jars" "$deps_jar" "$guac_jar")
 fi
 
-if [ -z "$GUACAMOLE_DEPS_JAR" ]; then
-  GUACAMOLE_DEPS_JAR="$(ls -tc target/guacamole-deps-only-*.jar | head -n 1)"
-  if [ -z "$GUACAMOLE_DEPS_JAR" ]; then
-        cat 1>&2 << EOF
-Couldn't find a Guacamole deps jar in the target/ directory.
-Are you in the root directory of the Guacamole repo, and have you built Guacamole?
-To build, run:
-    mvn package -DskipTests=true"
-EOF
-        exit 1
-  fi
-else
-  echo "Using GUACAMOLE_DEPS_JAR=$GUACAMOLE_DEPS_JAR"
-fi
+source "$dir/.spark-rc"
 
-exec time java -Xmx4g -XX:MaxPermSize=512m "-Dspark.master=local[1]" -cp "$GUACAMOLE_JAR:$GUACAMOLE_DEPS_JAR" org.hammerlab.guacamole.Main "$@"
-
+# Run Spark!
+time "$SPARK_HOME"/bin/spark-submit --properties-file "$conf_file" "${jars_args[@]}" "$@"

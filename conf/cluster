@@ -1,0 +1,13 @@
+spark.master                                  yarn
+spark.submit.deployMode                       cluster
+spark.executor.memory                         12g
+spark.driver.memory                           10g
+spark.executor.cores                          1
+spark.shuffle.service.enabled                 true
+spark.dynamicAllocation.enabled               true
+spark.dynamicAllocation.executorIdleTimeout   300
+spark.dynamicAllocation.minExecutors          1
+spark.speculation                             true
+spark.speculation.interval                    1000
+spark.speculation.multiplier                  2
+spark.yarn.maxAppAttempts                     1

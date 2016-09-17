@@ -321,11 +321,6 @@
       <artifactId>grizzled-slf4j_${scala.version.prefix}</artifactId>
       <version>1.0.3</version>
     </dependency>
-    <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-      <version>2.5</version>
-    </dependency>
 
     <!-- Test deps -->
     <dependency>
@@ -347,7 +342,6 @@
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
-
   </dependencies>
 
   <profiles>

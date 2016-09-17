@@ -15,7 +15,6 @@ class ReferenceBroadcastSuite extends GuacFunSuite with Matchers {
 
     reference.broadcastedContigs.keys should contain("1")
     reference.broadcastedContigs.keys should contain("2")
-
   }
 
   test("retrieving reference sequences") {
@@ -43,7 +42,5 @@ class ReferenceBroadcastSuite extends GuacFunSuite with Matchers {
     AssertBases(
       reference.getReferenceSequence("2", 720, 800),
       "CTGATGATCGCACCTGCATAACTGCTACCAGACCTGCTAAGGGGGAGCCTGGCCCAGCCATCTCTTCTTTGTGGTCACAA")
-
   }
-
 }

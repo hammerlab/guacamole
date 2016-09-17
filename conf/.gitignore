@@ -1,0 +1,11 @@
+# Ignore anything not whitelisted in this directory, so that custom config files can be kept here.
+*
+
+# Whitelist example config files.
+!local
+!gc
+!cluster
+!kryo
+
+# Also sample logs4j.properties file.
+!logs4j.properties

@@ -23,8 +23,8 @@ class SomaticJointCallerEndToEndSuite
       Array(
         "--loci-file", resourcePath("tiny.vcf"),
         "--force-call-loci-file", resourcePath("tiny.vcf"),
-        "--reference-fasta", resourcePath("hg19.partial.fasta"),
-        "--reference-fasta-is-partial",
+        "--reference", resourcePath("hg19.partial.fasta"),
+        "--partial-reference",
         "--analytes", "dna", "dna", "dna",
         "--tissue-types", "normal", "tumor", "tumor",
         "--sample-names", "normal", "primary", "recurrence",

@@ -26,10 +26,10 @@ class GermlineAssemblyCallerSuite
 
   override def beforeAll() {
     super.beforeAll()
-    reference = ReferenceBroadcast(referenceFastaPath, sc)
+    reference = ReferenceBroadcast(referencePath, sc)
   }
 
-  val referenceFastaPath = NA12878TestUtil.chr1PrefixFasta
+  val referencePath = NA12878TestUtil.chr1PrefixFasta
 
   def verifyVariantsAtLocus(locus: Int,
                             contig: String = "chr1",

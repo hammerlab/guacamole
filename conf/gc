@@ -1,0 +1,2 @@
+spark.executor.extraJavaOptions   -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -verbose:gc
+spark.driver.extraJavaOptions     -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -verbose:gc

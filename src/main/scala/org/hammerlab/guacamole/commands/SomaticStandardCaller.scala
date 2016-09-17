@@ -13,7 +13,7 @@ import org.hammerlab.guacamole.likelihood.Likelihood.likelihoodsOfAllPossibleGen
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.readsets.ReadSets
-import org.hammerlab.guacamole.readsets.args.{ReferenceFastaArgs, TumorNormalReadsArgs}
+import org.hammerlab.guacamole.readsets.args.{ReferenceArgs, TumorNormalReadsArgs}
 import org.hammerlab.guacamole.readsets.rdd.PartitionedRegions
 import org.hammerlab.guacamole.variants.{Allele, AlleleEvidence, CalledSomaticAllele, GenotypeOutputArgs, GenotypeOutputCaller}
 import org.kohsuke.args4j.{Option => Args4jOption}
@@ -35,7 +35,7 @@ object SomaticStandard {
       with PileupFilterArguments
       with SomaticGenotypeFilterArguments
       with GenotypeOutputArgs
-      with ReferenceFastaArgs {
+      with ReferenceArgs {
 
     @Args4jOption(name = "--odds", usage = "Minimum log odds threshold for possible variant candidates")
     var oddsThreshold: Int = 20
