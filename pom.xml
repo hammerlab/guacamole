@@ -2,46 +2,36 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <parent>
-    <groupId>org.sonatype.oss</groupId>
-    <artifactId>oss-parent</artifactId>
-    <version>7</version>
+    <groupId>org.hammerlab</groupId>
+    <artifactId>scala-parent-pom</artifactId>
+    <version>1.0.3</version>
     <relativePath />
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.hammerlab.guacamole</groupId>
   <artifactId>guacamole</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>guacamole: variant caller</name>
 
   <properties>
+    <github.repo>hammerlab/guacamole</github.repo>
     <java.version>1.8</java.version>
-    <scala.version>2.10.5</scala.version>
+    <scala.version>2.10.6</scala.version>
     <scala.version.prefix>2.10</scala.version.prefix>
     <hadoop.version>2.7.0</hadoop.version>
     <spark.version>1.6.1</spark.version>
   </properties>
 
-  <licenses>
-    <license>
-      <name>Apache License</name>
-      <url>https://raw.github.com/hammerlab/guacamole/master/LICENSE</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
-
-  <scm>
-    <connection>scm:git:git@github.com:hammerlab/guacamole.git</connection>
-    <developerConnection>scm:git:git@github.com:hammerlab/guacamole.git</developerConnection>
-    <url>scm:git:git@github.com:hammerlab/guacamole.git</url>
-    <tag>HEAD</tag>
-  </scm>
-
   <build>
-    <outputDirectory>target/scala-${scala.version}/classes</outputDirectory>
-    <testOutputDirectory>target/scala-${scala.version}/test-classes</testOutputDirectory>
     <plugins>
+      <plugin>
+        <groupId>org.scalatest</groupId>
+        <artifactId>scalatest-maven-plugin</artifactId>
+        <configuration>
+          <argLine>-Xmx4g -XX:MaxPermSize=256m</argLine>
+        </configuration>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
@@ -82,152 +72,8 @@
           </artifactSet>
         </configuration>
       </plugin>
-      <plugin>
-        <groupId>net.alchim31.maven</groupId>
-        <artifactId>scala-maven-plugin</artifactId>
-        <version>3.1.5</version>
-        <executions>
-          <execution>
-            <id>scala-compile-first</id>
-            <phase>process-resources</phase>
-            <goals>
-              <goal>add-source</goal>
-              <goal>compile</goal>
-            </goals>
-            <configuration>
-              <args>
-                <arg>-g:vars</arg>
-              </args>
-            </configuration>
-          </execution>
-          <execution>
-            <id>scala-test-compile-first</id>
-            <phase>process-test-resources</phase>
-            <goals>
-              <goal>testCompile</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>attach-scaladocs</id>
-            <phase>verify</phase>
-            <goals>
-              <goal>doc-jar</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <scalaVersion>${scala.version}</scalaVersion>
-          <recompileMode>incremental</recompileMode>
-          <useZincServer>false</useZincServer>
-          <args>
-            <arg>-unchecked</arg>
-            <arg>-optimise</arg>
-            <arg>-deprecation</arg>
-          </args>
-          <jvmArgs>
-            <jvmArg>-Xms64m</jvmArg>
-            <jvmArg>-Xms1024m</jvmArg>
-            <jvmArg>-Xmx1024m</jvmArg>
-          </jvmArgs>
-          <javacArgs>
-            <javacArg>-source</javacArg>
-            <javacArg>${java.version}</javacArg>
-            <javacArg>-target</javacArg>
-            <javacArg>${java.version}</javacArg>
-          </javacArgs>
-        </configuration>
-      </plugin>
-      <!-- disable surefire -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.7</version>
-        <configuration>
-          <skipTests>true</skipTests>
-        </configuration>
-      </plugin>
-      <!-- enable scalatest -->
-      <plugin>
-        <groupId>org.scalatest</groupId>
-        <artifactId>scalatest-maven-plugin</artifactId>
-        <version>1.0</version>
-        <configuration>
-          <reportsDirectory>${project.build.directory}/scalatest-reports</reportsDirectory>
-          <junitxml>.</junitxml>
-          <filereports>GuacamoleTestSuite.txt</filereports>
-          <argLine>-Xmx2g -XX:MaxPermSize=256m</argLine>
-
-          <!-- Print full stack traces when tests fail. -->
-          <stdout>F</stdout>
-        </configuration>
-        <executions>
-          <execution>
-            <id>test</id>
-            <goals>
-              <goal>test</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-release-plugin</artifactId>
-        <version>2.4.1</version>
-        <configuration>
-          <branchName>branch-@{project.version}</branchName>
-          <goals>deploy</goals>
-          <tagNameFormat>guacamole-@{project.version}</tagNameFormat>
-        </configuration>
-        <dependencies>
-          <dependency>
-            <groupId>org.apache.maven.scm</groupId>
-            <artifactId>maven-scm-provider-gitexe</artifactId>
-            <version>1.8.1</version>
-          </dependency>
-        </dependencies>
-      </plugin>
     </plugins>
-
   </build>
-
-  <distributionManagement>
-    <snapshotRepository>
-      <id>sonatype-nexus-snapshots</id>
-      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-    </snapshotRepository>
-    <repository>
-      <id>sonatype-nexus-staging</id>
-      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-    </repository>
-  </distributionManagement>
-
-  <repositories>
-    <repository>
-      <id>sonatype-nexus-snapshots</id>
-      <name>Sonatype Nexus Snapshots</name>
-      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-      <id>central</id>
-      <url>http://repo1.maven.org/maven2</url>
-    </repository>
-    <repository>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-      <id>spire</id>
-      <url>http://dl.bintray.com/non/maven</url>
-    </repository>
-  </repositories>
 
   <dependencies>
     <dependency>
@@ -307,11 +153,6 @@
       <version>18.0</version>
     </dependency>
     <dependency>
-      <groupId>org.spire-math</groupId>
-      <artifactId>debox_${scala.version.prefix}</artifactId>
-      <version>0.6.0</version>
-    </dependency>
-    <dependency>
       <groupId>org.hammerlab</groupId>
       <artifactId>magic-rdds_${scala.version.prefix}</artifactId>
       <version>1.2.2</version>
@@ -327,12 +168,6 @@
       <groupId>com.holdenkarau</groupId>
       <artifactId>spark-testing-base_${scala.version.prefix}</artifactId>
       <version>${spark.version}_0.4.4</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.scalatest</groupId>
-      <artifactId>scalatest_${scala.version.prefix}</artifactId>
-      <version>3.0.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -387,44 +222,6 @@
         </plugins>
       </build>
     </profile>
-
-    <!-- Only build coverage in when we want to run coverage -->
-    <profile>
-      <id>coverage</id>
-
-      <!-- Activate when being built by travis CI. -->
-      <activation>
-        <property>
-          <name>env.TRAVIS</name>
-          <value>true</value>
-        </property>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.scoverage</groupId>
-            <artifactId>scoverage-maven-plugin</artifactId>
-            <version>1.1.1</version>
-            <configuration>
-              <scalaVersion>${scala.version}</scalaVersion>
-            </configuration>
-          </plugin>
-          <plugin>
-            <groupId>org.eluder.coveralls</groupId>
-            <artifactId>coveralls-maven-plugin</artifactId>
-            <version>4.2.0</version>
-            <configuration>
-              <sourceDirectories>
-                <sourceDirectory>src/main/scala</sourceDirectory>
-              </sourceDirectories>
-              <coberturaReports>
-                <coberturaReport>${basedir}/target/cobertura.xml</coberturaReport>
-              </coberturaReports>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
     <profile>
       <id>cluster</id>
       <dependencies>
@@ -442,55 +239,6 @@
         </dependency>
       </dependencies>
     </profile>
-    <profile>
-      <id>release</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-source-plugin</artifactId>
-            <version>2.1.2</version>
-            <executions>
-              <execution>
-                <id>attach-sources</id>
-                <phase>verify</phase>
-                <goals>
-                  <goal>jar-no-fork</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <version>2.9.1</version>
-            <executions>
-              <execution>
-                <id>attach-javadocs</id>
-                <goals>
-                  <goal>jar</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-gpg-plugin</artifactId>
-            <version>1.5</version>
-            <executions>
-              <execution>
-                <id>sign-artifacts</id>
-                <phase>verify</phase>
-                <goals>
-                  <goal>sign</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-
     <profile>
       <!-- "uber" profile: build a JAR with Guacamole and all transitive dependencies shaded, and Guava relocated. -->
       <id>uber</id>
