@@ -17,6 +17,16 @@ trait CappedRegionsPartitionerArgs {
     usage = "Maximum number of reads to allow any one partition to have. Loci that have more depth than this will be dropped."
   )
   var maxReadsPerPartition: Int = 100000
+
+  @Args4JOption(
+    name = "--explode-coverage",
+    usage =
+      "When present, compute coverage-depths by \"exploding\" reads into per-locus, depth-1 tuples before (map-side) " +
+        "reduction. Otherwise / By default, coverage depth is accumulated by a traversal of (assumedly " +
+        "start-pos-sorted) reads, emitting (locus,depth) pairs that have already \"reduced\" contributions to each " +
+        "locus within each partition"
+  )
+  var explodeCoverage: Boolean = false
 }
 
 /**
@@ -34,16 +44,19 @@ trait CappedRegionsPartitionerArgs {
 class CappedRegionsPartitioner[R <: ReferenceRegion: ClassTag](regions: RDD[R],
                                                                halfWindowSize: Int,
                                                                maxRegionsPerPartition: Int,
-                                                               printPartitioningStats: Boolean)
+                                                               printPartitioningStats: Boolean,
+                                                               explodeCoverage: Boolean)
   extends LociPartitioner {
 
   def partition(loci: LociSet): LociPartitioning = {
 
     val coverageRDD = new CoverageRDD(regions)
 
+    val lociBroadcast = regions.sparkContext.broadcast(loci)
+
     if (printPartitioningStats) {
       val (depthRunsRDD, validLoci, invalidLoci) =
-        coverageRDD.validLociCounts(halfWindowSize, loci, maxRegionsPerPartition)
+        coverageRDD.validLociCounts(halfWindowSize, lociBroadcast, maxRegionsPerPartition)
 
       val numDepthRuns = depthRunsRDD.count
       val numDepthRunsToTake = 1000
@@ -109,7 +122,8 @@ class CappedRegionsPartitioner[R <: ReferenceRegion: ClassTag](regions: RDD[R],
         .makeCappedLociSets(
           halfWindowSize,
           loci,
-          maxRegionsPerPartition
+          maxRegionsPerPartition,
+          explodeCoverage
         )
         .collect()
 
