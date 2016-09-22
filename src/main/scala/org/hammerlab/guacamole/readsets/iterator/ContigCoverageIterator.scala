@@ -23,27 +23,26 @@ case class ContigCoverageIterator(halfWindowSize: Int,
   // Record the last-seen interval-start, to verify that the intervals are sorted by `start`.
   private var lastStart: Locus = 0
 
-  override def _advance: Option[(Locus, Coverage)] = {
-    var lowerLimit = math.max(0, locus - halfWindowSize)
-    var upperLimit = locus + halfWindowSize
+  /**
+   * If `skipTo` is called on this iterator, leaving it mid-way through some reads whose "starts" were neve
+   * counted/emitted, we record that here, so that the total number of "read starts" emitted matches the total number of
+   * reads that contribute any depth to a (potentially scattered/sparse) set of loci that are evaluated / skipped
+   * across by callers.
+   */
+  private var pendingStarts: Int = 0
 
-    while (ends.headOption.exists(_ <= lowerLimit)) {
+  override def _advance: Option[(Locus, Coverage)] = {
+    val endLowerBound = math.max(0, locus - halfWindowSize)
+
+    while (ends.headOption.exists(_ <= endLowerBound)) {
       ends.dequeue()
     }
 
-    if (ends.isEmpty) {
-      if (intervals.isEmpty)
-        return None
+    val startUpperBound = locus + halfWindowSize
 
-      val nextReadWindowStart = intervals.head.start - halfWindowSize
-      if (nextReadWindowStart > locus) {
-        skipTo(nextReadWindowStart)
-        upperLimit = locus + halfWindowSize
-      }
-    }
+    var numAdded = pendingStarts
 
-    var numAdded = 0
-    while (intervals.nonEmpty && intervals.head.start <= upperLimit) {
+    while (intervals.nonEmpty && intervals.head.start <= startUpperBound) {
       val Interval(start, end) = intervals.next()
 
       if (start < lastStart)
@@ -53,11 +52,28 @@ case class ContigCoverageIterator(halfWindowSize: Int,
       else
         lastStart = start
 
-      ends.enqueue(end)
-      numAdded += 1
+      if (end + halfWindowSize > locus) {
+        ends.enqueue(end)
+        numAdded += 1
+      }
     }
 
-    Some(locus -> Coverage(ends.size, numAdded))
+    pendingStarts = numAdded
+
+    if (ends.isEmpty)
+      if (intervals.isEmpty)
+        None
+      else {
+        skipTo(intervals.head.start - halfWindowSize)
+        _advance
+      }
+    else
+      Some(locus -> Coverage(ends.size, numAdded))
+  }
+
+  override def postNext(): Unit = {
+    super.postNext()
+    pendingStarts = 0
   }
 }
 
