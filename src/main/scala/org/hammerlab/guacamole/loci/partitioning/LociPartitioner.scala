@@ -51,7 +51,8 @@ trait LociPartitionerArgs
           regions,
           halfWindowSize,
           maxReadsPerPartition,
-          printPartitioningStats
+          printPartitioningStats,
+          explodeCoverage
         )
       case "approximate" =>
         new MicroRegionPartitioner(regions, halfWindowSize, numPartitions, partitioningAccuracy)
