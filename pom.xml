@@ -201,6 +201,11 @@
                 <configuration>
                   <finalName>guacamole-${project.version}</finalName>
                   <relocations>
+
+                    <!--
+                      Spark depends on Guava 14.0.1 and we need 18.0; we can get away with just relocating the classes
+                      under com.google.common.
+                    -->
                     <relocation>
                       <pattern>com.google.common</pattern>
                       <shadedPattern>org.hammerlab.guavarelocated</shadedPattern>
@@ -208,11 +213,24 @@
                         <include>com.google.common.**</include>
                       </includes>
                     </relocation>
+
+                    <!--
+                      Spark (MLLib) depends on Breeze 0.11.2 and we depend on 0.12. By Spark 2.0.1 we should be able to
+                      remove this.
+                    -->
+                    <relocation>
+                      <pattern>breeze</pattern>
+                      <shadedPattern>org.hammerlab.breeze</shadedPattern>
+                      <includes>
+                        <include>breeze.**</include>
+                      </includes>
+                    </relocation>
                   </relocations>
                   <artifactSet>
                     <includes>
                       <include>org.hammerlab.guacamole:*</include>
                       <include>com.google.guava:*</include>
+                      <include>org.scalanlp:breeze_${scala.version.prefix}</include>
                     </includes>
                   </artifactSet>
                 </configuration>
@@ -257,11 +275,28 @@
                 <configuration>
                   <finalName>guacamole-with-deps-${project.version}</finalName>
                   <relocations>
+
+                    <!--
+                      Spark depends on Guava 14.0.1 and we need 18.0; we can get away with just relocating the classes
+                      under com.google.common.
+                    -->
                     <relocation>
                       <pattern>com.google.common</pattern>
                       <shadedPattern>org.hammerlab.guavarelocated</shadedPattern>
                       <includes>
                         <include>com.google.common.**</include>
+                      </includes>
+                    </relocation>
+
+                    <!--
+                      Spark (MLLib) depends on Breeze 0.11.2 and we depend on 0.12. By Spark 2.0.1 we should be able to
+                      remove this.
+                    -->
+                    <relocation>
+                      <pattern>breeze</pattern>
+                      <shadedPattern>org.hammerlab.breeze</shadedPattern>
+                      <includes>
+                        <include>breeze.**</include>
                       </includes>
                     </relocation>
                   </relocations>
@@ -292,6 +327,10 @@
                   <artifactSet>
                     <excludes>
                       <exclude>org.hammerlab.guacamole:*</exclude>
+
+                      <!-- These are shaded into the "guac"-profile JAR. -->
+                      <exclude>com.google.guava:</exclude>
+                      <exclude>org.scalanlp:breeze_${scala.version.prefix}</exclude>
                     </excludes>
                   </artifactSet>
                 </configuration>
