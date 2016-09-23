@@ -84,12 +84,7 @@ class LikelihoodSuite
 
     val pileup = makePileup(reads, reads(0).contigName, 1)
 
-    forAll(
-      Table(
-        "genotype",
-        genotypesMap: _*
-      )
-    ) {
+    forAll(Table("genotype", genotypesMap: _*)) {
       case (alleles, expectedLikelihood) =>
         val actualLikelihood =
           likelihoodOfGenotype(

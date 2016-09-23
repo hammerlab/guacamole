@@ -36,6 +36,7 @@ trait Read extends HasSampleId {
 }
 
 object Read extends Logging {
+
   /**
    * Converts the ascii-string encoded base qualities into an array of integers
    * quality scores in Phred-scale
@@ -62,12 +63,12 @@ object Read extends Logging {
    */
   def apply(record: SAMRecord, sampleId: Int): Read = {
 
-    val isMapped = (
+    val isMapped =
       !record.getReadUnmappedFlag &&
       record.getReferenceName != null &&
       record.getReferenceIndex >= SAMRecord.NO_ALIGNMENT_REFERENCE_INDEX &&
       record.getAlignmentStart >= 0 &&
-      record.getUnclippedStart >= 0)
+      record.getUnclippedStart >= 0
 
     val read =
       if (isMapped) {
@@ -107,12 +108,14 @@ object Read extends Logging {
           record.getReadPairedFlag
         )
 
-    if (record.getReadPairedFlag) {
-      val mateAlignment = MateAlignmentProperties(record)
-      PairedRead(read, isFirstInPair = record.getFirstOfPairFlag, mateAlignment)
-    } else {
+    if (record.getReadPairedFlag)
+      PairedRead(
+        read,
+        isFirstInPair = record.getFirstOfPairFlag,
+        MateAlignmentProperties(record)
+      )
+    else
       read
-    }
   }
 
   /**
@@ -158,20 +161,29 @@ object Read extends Logging {
         )
 
     if (alignmentRecord.getReadPaired) {
-      val mateAlignment = if (alignmentRecord.getMateMapped) Some(
-        MateAlignmentProperties(
-          contigName = alignmentRecord.getMateContigName.intern(),
-          start = alignmentRecord.getMateAlignmentStart,
-          inferredInsertSize = if (alignmentRecord.getInferredInsertSize != 0 && alignmentRecord.getInferredInsertSize != null) Some(alignmentRecord.getInferredInsertSize.toInt) else None,
-          isPositiveStrand = !alignmentRecord.getMateNegativeStrand
-        )
-      )
-      else
-        None
-      PairedRead(read, isFirstInPair = alignmentRecord.getReadInFragment == 1, mateAlignment)
-    } else {
-      read
-    }
-  }
+      val mateAlignment =
+        if (alignmentRecord.getMateMapped)
+          Some(
+            MateAlignmentProperties(
+              contigName = alignmentRecord.getMateContigName.intern(),
+              start = alignmentRecord.getMateAlignmentStart,
+              inferredInsertSize =
+                if (alignmentRecord.getInferredInsertSize != 0 && alignmentRecord.getInferredInsertSize != null)
+                  Some(alignmentRecord.getInferredInsertSize.toInt)
+                else
+                  None,
+              isPositiveStrand = !alignmentRecord.getMateNegativeStrand
+            )
+          )
+        else
+          None
 
+      PairedRead(
+        read,
+        isFirstInPair = alignmentRecord.getReadInFragment == 1,
+        mateAlignment
+      )
+    } else
+      read
+  }
 }

@@ -146,8 +146,11 @@ class SomaticJointCallerSuite
       b37Chromosome22Reference,
       loci.result).collect.filter(_.bestAllele.isCall)
 
-    Map("with rna" -> callsWithRNA, "without rna" -> callsWithoutRNA).foreach({
-      case (description, calls) => {
+    Map(
+      "with rna" -> callsWithRNA,
+      "without rna" -> callsWithoutRNA
+    ).foreach {
+      case (description, calls) =>
         withClue("germline variant %s".format(description)) {
           // There should be a germline homozygous call at 22:46931077 in one based, which is 22:46931076 in zero based.
           val filtered46931076 = calls.filter(call => call.start == 46931076 && call.end == 46931077)
@@ -157,8 +160,7 @@ class SomaticJointCallerSuite
           filtered46931076.head.bestAllele.allele.alt should equal("C")
           filtered46931076.head.bestAllele.germlineAlleles should equal("C", "C")
         }
-      }
-    })
+    }
 
     // RNA should enable a call G->A call at 22:46931062 in one based, which is 22:46931061 in zero based.
     callsWithoutRNA.exists(call => call.start == 46931061 && call.end == 46931062) should be(false)
