@@ -3,6 +3,7 @@ package org.hammerlab.guacamole.reference
 import java.io.File
 import java.util.NoSuchElementException
 
+import grizzled.slf4j.Logging
 import htsjdk.samtools.reference.FastaSequenceFile
 import org.apache.spark.SparkContext
 import org.apache.spark.broadcast.Broadcast
@@ -30,7 +31,7 @@ case class ReferenceBroadcast(broadcastedContigs: Map[String, ContigSequence],
     getContig(contigName).slice(startLocus, endLocus)
 }
 
-object ReferenceBroadcast {
+object ReferenceBroadcast extends Logging {
   /**
    * The standard ContigSequence implementation, which is an Array of bases.
    *
@@ -75,6 +76,7 @@ object ReferenceBroadcast {
       val sequenceName = nextSequence.getName
       val sequence = nextSequence.getBases
       Bases.unmaskBases(sequence)
+      info(s"Broadcasting contig: $sequenceName")
       val broadcastedSequence = ArrayBackedReferenceSequence(sc.broadcast(sequence))
       broadcastedSequences += ((sequenceName, broadcastedSequence))
       nextSequence = referenceFasta.nextSequence()
