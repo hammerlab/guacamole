@@ -94,8 +94,10 @@ This variable is interpreted as a comma-separated list of [Spark properties file
 In all cases, it will be seeded with the contents of [conf/kryo](conf/kryo):
 
 ```
-spark.serializer          org.apache.spark.serializer.KryoSerializer
-spark.kryo.registrator    org.hammerlab.guacamole.kryo.Registrar
+spark.serializer                  org.apache.spark.serializer.KryoSerializer
+spark.kryo.registrator            org.hammerlab.guacamole.kryo.Registrar
+spark.kryo.registrationRequired   true
+spark.kryoserializer.buffer       4mb
 ```
 
 Additionally, if `$GUAC_SPARK_CONFS` is not set, [conf/local](conf/local) will be used:

@@ -2,10 +2,12 @@
 *
 
 # Whitelist example config files.
-!local
-!gc
 !cluster
+!driver-10g
+!gc
 !kryo
+!local
+!local-multi
 
 # Also sample logs4j.properties file.
 !logs4j.properties
