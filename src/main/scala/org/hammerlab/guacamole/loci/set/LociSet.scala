@@ -3,9 +3,9 @@ package org.hammerlab.guacamole.loci.set
 import java.lang.{Long => JLong}
 
 import com.google.common.collect.{Range => JRange}
-import htsjdk.samtools.util.Interval
+import htsjdk.samtools.util.{Interval => HTSJDKInterval}
 import org.hammerlab.guacamole.readsets.ContigLengths
-import org.hammerlab.guacamole.reference.{ContigName, Locus, NumLoci, ReferenceRegion}
+import org.hammerlab.guacamole.reference.{ContigName, Interval, Locus, NumLoci, ReferenceRegion}
 import org.hammerlab.guacamole.strings.TruncatedToString
 
 import scala.collection.SortedMap
@@ -90,7 +90,7 @@ case class LociSet(private val map: SortedMap[ContigName, Contig]) extends Trunc
   /**
    * Build a collection of HTSJDK Intervals which are closed [start, end], 1-based intervals
    */
-  def toHtsJDKIntervals: List[Interval] =
+  def toHtsJDKIntervals: List[HTSJDKInterval] =
     map
       .keys
       .flatMap(
@@ -99,7 +99,7 @@ case class LociSet(private val map: SortedMap[ContigName, Contig]) extends Trunc
             .ranges
             // We add 1 to the start to move to 1-based coordinates
             // Since the `Interval` end is inclusive, we are adding and subtracting 1, no-op
-            .map(interval => new Interval(contig, interval.start.toInt + 1, interval.end.toInt))
+            .map(interval => new HTSJDKInterval(contig, interval.start.toInt + 1, interval.end.toInt))
         }).toList
 }
 
@@ -128,16 +128,16 @@ object LociSet {
     )
 
   def apply(contigs: Iterable[(ContigName, Locus, Locus)]): LociSet =
-    LociSet.fromContigs({
+    LociSet.fromContigs(
       (for {
         (name, start, end) <- contigs
-        range = JRange.closedOpen[JLong](start, end)
-        if !range.isEmpty
+        if start != end
+        range = Interval(start, end)
       } yield {
         name -> range
       })
       .groupBy(_._1)
       .mapValues(_.map(_._2))
       .map(Contig(_))
-    })
+    )
 }

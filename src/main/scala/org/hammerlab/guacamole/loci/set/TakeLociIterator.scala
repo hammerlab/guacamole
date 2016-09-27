@@ -119,7 +119,7 @@ class TakeLociIterator(it: BufferedIterator[(Position, Coverage)],
         curNumRegions ->
           Contig(
             it.contigName,
-            intervals.map(_.toJavaRange)
+            intervals
           )
       )
 
