@@ -1,2 +1,4 @@
-spark.serializer          org.apache.spark.serializer.KryoSerializer
-spark.kryo.registrator    org.hammerlab.guacamole.kryo.Registrar
+spark.serializer                  org.apache.spark.serializer.KryoSerializer
+spark.kryo.registrator            org.hammerlab.guacamole.kryo.Registrar
+spark.kryo.registrationRequired   true
+spark.kryoserializer.buffer       4mb
