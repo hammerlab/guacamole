@@ -3,49 +3,67 @@
 # Script that can be sourced to populate $uber_jar xor {$guac_jar,$deps_jar} variables.
 
 scripts_dir="$(dirname "${BASH_SOURCE[0]}")"
+target_dir="$(dirname "$scripts_dir")"/target
 
-uber_jar="$("$scripts_dir"/assembly-jar 2> /dev/null)"
-guac_jar="$("$scripts_dir"/guac-jar 2> /dev/null)"
-deps_jar="$("$scripts_dir"/deps-jar 2> /dev/null)"
+mod_time() {
+  stat -c %Y "$1"
+}
 
-if [ -n "$uber_jar" ]; then
-  if [ -n "$guac_jar" -a -n "$deps_jar" ]; then
-
-    # If all 3 JARs are found, choose the more recent of {uber, guac+deps}.
-
-    uber_mod_time="$(stat -c %Y "$uber_jar")"
-    guac_mod_time="$(stat -c %Y "$guac_jar")"
-    deps_mod_time="$(stat -c %Y "$deps_jar")"
-
-    if [ "$uber_mod_time" -gt "$guac_mod_time" -a "$uber_mod_time" -gt "$deps_mod_time" ]; then
-      guac_jar=
-      deps_jar=
-    elif [ "$uber_mod_time" -lt "$guac_mod_time" -a "$uber_mod_time" -lt "$deps_mod_time" ]; then
-      uber_jar=
-    else
-      if [ "$deps_mod_time" -lt "$guac_mod_time" ]; then
-        younger=deps
-        older=guac
-      else
-        younger=guac
-        older=deps
-      fi
-      echo "Warning: found $younger and $older JARs that are younger and older, respectively, than assembly JAR $uber_jar" 1>&2
-      guac_jar=
-      deps_jar=
-    fi
+min() {
+  if [ "$1" -lt "$2" ]; then
+    echo "$1"
   else
-    guac_jar=
-    deps_jar=
+    echo "$2"
   fi
-else
-  if [ -z "$guac_jar" ]; then
-    echo "Couldn't find a guacamole or assembly jar" 1>&2
-    exit 2
+}
+
+find_jars() {
+
+  # Load in paths to relevant JARs (including the classpath file's contents, if it exists).
+  local uber_jar="$("$scripts_dir"/assembly-jar 2> /dev/null)"
+  local guac_jar="$("$scripts_dir"/guac-jar 2> /dev/null)"
+  local deps_jar="$("$scripts_dir"/deps-jar 2> /dev/null)"
+
+  main_jar=
+  deps=
+
+  # Minimum last-modified-time of the components comprising a full guacamole+dependencies classpath.
+  # Used for choosing between multiple available ways of obtaining a full classpath, e.g. uber jar vs. guac+deps jars.
+  local mod_time=
+
+  if [ -n "$uber_jar" ]; then
+    main_jar="$uber_jar"
+    deps=
+    mod_time="$(stat -c %Y "$uber_jar")"
   fi
 
-  if [ -z "$deps_jar" ]; then
-    echo "Couldn't find a guacamole dependencies or assembly jar" 1>&2
-    exit 3
+  if [ -n "$guac_jar" ]; then
+    guac_mod_time="$(stat -c %Y "$guac_jar")"
+
+    if [ -n "$deps_jar" ]; then
+      deps_jar_mod_time="$(min "$(stat -c %Y "$deps_jar")" "$guac_mod_time")"
+      if [ -z "$mod_time" ] || [ "$deps_jar_mod_time" -gt "$mod_time" ]; then
+        main_jar="$guac_jar"
+        deps="$deps_jar"
+        mod_time="$deps_jar_mod_time"
+      fi
+    fi
   fi
-fi
+
+  if [ -z "$uber_jar" ]; then
+    if [ -z "$guac_jar" ]; then
+      echo "Couldn't find a guacamole or assembly jar." 1>&2
+      return 1
+    fi
+
+    if [ -z "$deps_jar" ]; then
+      echo "Couldn't find a guacamole dependencies jar or assembly jar." 1>&2
+      return 2
+    fi
+  fi
+
+  echo "Main JAR: $main_jar"
+  if [ -n "$deps" ]; then
+    echo "Deps JARs: $deps"
+  fi
+}

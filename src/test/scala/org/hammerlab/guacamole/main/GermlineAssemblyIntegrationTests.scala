@@ -15,7 +15,7 @@ import org.hammerlab.guacamole.variants.VariantComparisonTest
  *   mvn package -DskipTests
  *   mvn test-compile
  *   java \
- *     -cp "$(scripts/classpath)":target/scala-2.10.6/test-classes \
+ *     -cp "$(scripts/classpath -t)" \
  *     org.hammerlab.guacamole.main.GermlineAssemblyIntegrationTests
  */
 object GermlineAssemblyIntegrationTests extends SparkCommand[Arguments] with VariantComparisonTest {
