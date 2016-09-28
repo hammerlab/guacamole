@@ -17,7 +17,7 @@ class SerializerSuiteRegistrar extends KryoTestRegistrar {
 
 class SerializerSuite extends GuacFunSuite {
 
-  override def registrar = "org.hammerlab.guacamole.loci.set.SerializerSuiteRegistrar"
+  override def registrar = classOf[SerializerSuiteRegistrar].getCanonicalName
 
   test("make an RDD[LociSet]") {
 

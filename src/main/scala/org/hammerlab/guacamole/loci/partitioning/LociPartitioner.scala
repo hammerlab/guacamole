@@ -32,9 +32,9 @@ trait LociPartitionerArgs
 
   @Args4JOption(
     name = "--loci-partitioner",
-    usage = "Loci partitioner to use: 'exact', 'approximate', or 'uniform' (default: 'exact')."
+    usage = "Loci partitioner to use: 'capped', 'micro-regions', or 'uniform' (default: 'capped')."
   )
-  var lociPartitionerName: String = "exact"
+  var lociPartitionerName: String = "capped"
 
   def getPartitioner[R <: ReferenceRegion: ClassTag](regions: RDD[R], halfWindowSize: Int = 0): LociPartitioner = {
     val sc = regions.sparkContext
@@ -46,14 +46,16 @@ trait LociPartitionerArgs
         parallelism
 
     lociPartitionerName match {
-      case "exact" =>
+      case "capped" =>
         new CappedRegionsPartitioner(
           regions,
           halfWindowSize,
           maxReadsPerPartition,
-          printPartitioningStats
+          printPartitioningStats,
+          explodeCoverage
         )
-      case "approximate" =>
+
+      case "micro-regions" =>
         new MicroRegionPartitioner(regions, halfWindowSize, numPartitions, partitioningAccuracy)
       case "uniform" =>
         UniformPartitioner(numPartitions)
