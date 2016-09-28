@@ -112,10 +112,10 @@ See [the conf/ directory](conf/) for more example configuration blocks that can 
 ### Running on a Hadoop Cluster
 Guacamole currently builds against Spark 1.6.1 and Hadoop 2.7.0, though it will likely run fine with versions close to those.
 
-For example, you could run with cluster- and GC-logging configs from the [conf/](conf/) directory like so:
+For example, you could run with [cluster-](conf/cluster) and [GC-logging](conf/gc) configs from the [conf/](conf/) directory like so:
 
 ```bash
-export GUAC_SPARK_CONFS=conf/cluster,conf/gc
+export GUAC_SPARK_CONFS=cluster,gc
 scripts/guacamole \
   somatic-standard \
     --normal-reads /hdfs/path/to/normal.bam \
