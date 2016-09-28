@@ -149,6 +149,16 @@
       <groupId>com.github.samtools</groupId>
       <artifactId>htsjdk</artifactId>
       <version>2.6.1</version>
+      <exclusions>
+        <!--
+          htsjdk:2.6.1 brings in snappy-java:1.0.3-rc3, but running tests on OSX requires ≥ 1.0.5, per
+          http://stackoverflow.com/a/31482848/544236.
+        -->
+        <exclusion>
+          <groupId>org.xerial.snappy</groupId>
+          <artifactId>snappy-java</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.seqdoop</groupId>
@@ -181,6 +191,17 @@
       <artifactId>hadoop-client</artifactId>
       <version>${hadoop.version}</version>
       <scope>${spark.hadoop.scope}</scope>
+      <exclusions>
+        <!--
+          hadoop-client's javax.servlet:servlet-api dependency includes classes that conflict with spark-core's
+          org.eclipse.jetty.orbit:javax.servlet dependency; excluding the former resolves this, cf.
+          https://issues.apache.org/jira/browse/SPARK-1693.
+        -->
+        <exclusion>
+          <groupId>javax.servlet</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.spark</groupId>
