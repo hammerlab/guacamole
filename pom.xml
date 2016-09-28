@@ -21,6 +21,7 @@
     <scala.version.prefix>2.10</scala.version.prefix>
     <hadoop.version>2.7.0</hadoop.version>
     <spark.version>1.6.1</spark.version>
+    <spark.hadoop.scope>provided</spark.hadoop.scope>
   </properties>
 
   <build>
@@ -42,15 +43,6 @@
             <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
               <mainClass>org.hammerlab.guacamole.Main</mainClass>
             </transformer>
-
-            <!-- Akka (which Spark depends on) needs this reference.conf munging in order to work correctly in -->
-            <!-- shaded JARs, cf. http://stackoverflow.com/questions/31011243/#31011315 -->
-            <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
-              <resource>reference.conf</resource>
-            </transformer>
-
-            <!-- Necessary for Hadoop to load local files correctly, cf. http://stackoverflow.com/a/27532248/544236 -->
-            <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
           </transformers>
           <filters>
             <!-- Exclude signature files that we don't validate. -->
@@ -137,16 +129,6 @@
       <version>0.11.0</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.spark</groupId>
-      <artifactId>spark-core_${scala.version.prefix}</artifactId>
-      <version>${spark.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.spark</groupId>
-      <artifactId>spark-mllib_${scala.version.prefix}</artifactId>
-      <version>${spark.version}</version>
-    </dependency>
-    <dependency>
       <groupId>org.scalanlp</groupId>
       <artifactId>breeze_${scala.version.prefix}</artifactId>
       <version>0.12</version>
@@ -167,11 +149,6 @@
       <version>3.0</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.hadoop</groupId>
-      <artifactId>hadoop-client</artifactId>
-      <version>${hadoop.version}</version>
-    </dependency>
-    <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
       <version>18.0</version>
@@ -185,6 +162,25 @@
       <groupId>org.clapper</groupId>
       <artifactId>grizzled-slf4j_${scala.version.prefix}</artifactId>
       <version>1.0.3</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.hadoop</groupId>
+      <artifactId>hadoop-client</artifactId>
+      <version>${hadoop.version}</version>
+      <scope>${spark.hadoop.scope}</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.spark</groupId>
+      <artifactId>spark-core_${scala.version.prefix}</artifactId>
+      <version>${spark.version}</version>
+      <scope>${spark.hadoop.scope}</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.spark</groupId>
+      <artifactId>spark-mllib_${scala.version.prefix}</artifactId>
+      <version>${spark.version}</version>
+      <scope>${spark.hadoop.scope}</scope>
     </dependency>
 
     <!-- Test deps -->
@@ -237,23 +233,6 @@
           </plugin>
         </plugins>
       </build>
-    </profile>
-    <profile>
-      <id>cluster</id>
-      <dependencies>
-        <dependency>
-          <groupId>org.apache.hadoop</groupId>
-          <artifactId>hadoop-client</artifactId>
-          <version>${hadoop.version}</version>
-          <scope>provided</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.apache.spark</groupId>
-          <artifactId>spark-core_${scala.version.prefix}</artifactId>
-          <version>${spark.version}</version>
-          <scope>provided</scope>
-        </dependency>
-      </dependencies>
     </profile>
     <profile>
       <!-- "uber" profile: build a JAR with Guacamole and all transitive dependencies shaded, and Guava relocated. -->
@@ -313,5 +292,37 @@
         </plugins>
       </build>
     </profile>
+
+    <profile>
+      <!--
+        "local" profile puts Spark and Hadoop into "compile" scope (rather than "provided"); generally not desirable,
+        unless intending to run Guacamole directly from the command-line using the `java` executable, instead of
+        spark-{submit,shell}.
+      -->
+      <id>local</id>
+      <properties>
+        <spark.hadoop.scope>compile</spark.hadoop.scope>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-shade-plugin</artifactId>
+            <configuration>
+              <transformers combine.children="append">
+                <!-- Akka (which Spark depends on) needs this reference.conf munging in order to work correctly in -->
+                <!-- shaded JARs, cf. http://stackoverflow.com/questions/31011243/#31011315 -->
+                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                  <resource>reference.conf</resource>
+                </transformer>
+
+                <!-- Necessary for Hadoop to load local files correctly, cf. http://stackoverflow.com/a/27532248/544236 -->
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+              </transformers>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
   </profiles>
 </project>
