@@ -35,7 +35,7 @@ fi
 set -e
 set -x
 
-full_jar="$jar:target/scala-2.10.5/test-classes"
+full_jar="$jar:target/scala-2.10.6/test-classes"
 
 # HG19 reference
 time java -Xmx6g -XX:MaxPermSize=512m "-Dspark.master=local[1]" -cp "$full_jar" "$MAIN_CLASS" \

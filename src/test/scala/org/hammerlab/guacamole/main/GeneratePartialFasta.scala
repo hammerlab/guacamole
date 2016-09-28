@@ -41,7 +41,7 @@ class GeneratePartialFastaArguments
  *   mvn package -DskipTests
  *   mvn test-compile
  *   java \
- *     -cp "$(scripts/classpath)":target/scala-2.10.5/test-classes \
+ *     -cp "$(scripts/classpath)":target/scala-2.10.6/test-classes \
  *     org.hammerlab.guacamole.main.GeneratePartialFasta \
  *     --reference <fasta path> \
  *     [--loci <str>|--loci-file <file>] \

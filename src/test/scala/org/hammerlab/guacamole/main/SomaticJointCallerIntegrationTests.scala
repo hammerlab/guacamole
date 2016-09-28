@@ -17,7 +17,7 @@ import org.hammerlab.guacamole.variants.VariantComparisonTest
  *   mvn test-compile
  *   java \
  *     -Xmx4g \
- *     -cp "$(scripts/classpath)":target/scala-2.10.5/test-classes \
+ *     -cp "$(scripts/classpath)":target/scala-2.10.6/test-classes \
  *     org.hammerlab.guacamole.main.SomaticJointCallerIntegrationTests
  */
 object SomaticJointCallerIntegrationTests
