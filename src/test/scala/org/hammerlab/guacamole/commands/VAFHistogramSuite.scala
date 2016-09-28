@@ -12,7 +12,7 @@ class VAFHistogramSuiteRegistrar extends KryoTestRegistrar {
 
 class VAFHistogramSuite extends GuacFunSuite {
 
-  override def registrar = "org.hammerlab.guacamole.commands.VAFHistogramSuiteRegistrar"
+  override def registrar = classOf[VAFHistogramSuiteRegistrar].getCanonicalName
 
   test("generating the histogram") {
 

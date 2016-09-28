@@ -117,6 +117,14 @@ class ContigCoverageIteratorSuite
     it.next() should be(21 -> Coverage(2, 2))
   }
 
+  test("load read then skip over it") {
+    val it = ContigCoverageIterator(halfWindowSize = 1, reads)
+
+    it.hasNext
+    it.skipTo(21)
+    it.next() should be(21 -> Coverage(2, 2))
+  }
+
   test("skip completely over reads") {
     val it = ContigCoverageIterator(halfWindowSize = 1, reads)
 

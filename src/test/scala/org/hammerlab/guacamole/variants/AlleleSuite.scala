@@ -12,7 +12,7 @@ class AlleleSuiteRegistrar extends KryoTestRegistrar {
 
 class AlleleSuite extends GuacFunSuite with Matchers {
 
-  override def registrar = "org.hammerlab.guacamole.variants.AlleleSuiteRegistrar"
+  override def registrar = classOf[AlleleSuiteRegistrar].getCanonicalName
 
   test("isVariant") {
     val mismatch = Allele(Seq(Bases.T), Seq(Bases.A))
