@@ -7,11 +7,6 @@ if [ -z "$SPARK_HOME" ]; then
   exit 1
 fi
 
-# Log a message to help debug unexpected-HDFS-default-filesystem situations.
-if [ -n "$HADOOP_CONF_DIR" -o -n "$YARN_CONF_DIR" ]; then
-  echo "Using HDFS by default"
-fi
-
 # We'll build a spark properties file in a temporay file called $conf_file, seeded with some configs for initializing
 # Kryo serialization.
 conf_file="$(mktemp)"
@@ -45,6 +40,17 @@ else
   # If it's not set, add configs from conf/local.
   echo "Using default {local,kryo} Spark config files"
   cat "$conf_dir/local" >> "$conf_file"
+fi
+
+# Log a message to help debug unexpected-HDFS-default-filesystem situations.
+if [ -n "$HADOOP_CONF_DIR" -o -n "$YARN_CONF_DIR" ]; then
+  if grep -q "^spark.master.*local" "$conf_file" && [ -z "$GUAC_USE_HDFS" ]; then
+    echo "Un-setting \$HADOOP_CONF_DIR and \$YARN_CONF_DIR for local-mode run; set \$GUAC_USE_HDFS=1 to override."
+    HADOOP_CONF_DIR=
+    YARN_CONF_DIR=
+  else
+    echo "Using HDFS as default filesystem."
+  fi
 fi
 
 cat "$conf_file"
