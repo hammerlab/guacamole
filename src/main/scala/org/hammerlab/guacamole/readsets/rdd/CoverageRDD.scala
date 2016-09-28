@@ -3,10 +3,9 @@ package org.hammerlab.guacamole.readsets.rdd
 import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole.loci.Coverage
-import org.hammerlab.guacamole.loci.set.{LociSet, TakeLociIterator}
-import org.hammerlab.guacamole.readsets.ContigLengths
+import org.hammerlab.guacamole.loci.set.{LociIterator, LociSet, TakeLociIterator}
 import org.hammerlab.guacamole.readsets.iterator.{ContigCoverageIterator, ContigsIterator}
-import org.hammerlab.guacamole.reference.{ContigName, NumLoci, Position, ReferenceRegion}
+import org.hammerlab.guacamole.reference.{ContigName, Interval, NumLoci, Position, ReferenceRegion}
 import org.hammerlab.magic.rdd.RunLengthRDD._
 
 import scala.collection.mutable
@@ -20,19 +19,106 @@ class CoverageRDD[R <: ReferenceRegion: ClassTag](@transient rdd: RDD[R])
 
   @transient val sc = rdd.sparkContext
 
+  // Cache of [[coverage]]s computed below.
+  private val _coveragesCache = mutable.HashMap[(Int, LociSet), RDD[(Position, Coverage)]]()
+
   /**
    * Compute a PositionCoverage for every position in @loci, allowing a half-window of @halfWindowSize.
+   *
+   * @param halfWindowSize count bases as contributing coverage to a window that extends this many loci in either
+   *                       direction.
+   * @param lociBroadcast Spark Broadcast of a set of loci to compute depths for.
+   * @param explode If true, emit (locus, 1) tuples for every region-base before letting Spark do map-side, then
+   *                reduce-side, reductions. Otherwise, traverse regions, emitting (locus, depth) tuples for all regions
+   *                in a partition that overlap a current locus, effectively folding the map-side-reduction into
+   *                application code, as an optimization.
+   * @return RDD of (Position, Coverage) tuples giving the total coverage, and number of region-starts, at each
+   *         genomic position in `lociBroadcast`.
    */
-  def coverage(halfWindowSize: Int, loci: LociSet): RDD[(Position, Coverage)] =
-    coverage(halfWindowSize, sc.broadcast(loci))
-
-  private val _coveragesCache = mutable.HashMap[(Int, LociSet), RDD[(Position, Coverage)]]()
   def coverage(halfWindowSize: Int,
-               lociBroadcast: Broadcast[LociSet]): RDD[(Position, Coverage)] =
-    _coveragesCache.getOrElseUpdate(
-      (halfWindowSize, lociBroadcast.value),
-      rdd
-        .mapPartitions(it =>
+               lociBroadcast: Broadcast[LociSet],
+               explode: Boolean = false): RDD[(Position, Coverage)] =
+    _coveragesCache
+      .getOrElseUpdate(
+        (halfWindowSize, lociBroadcast.value),
+        if (explode)
+          explodedCoverage(halfWindowSize, lociBroadcast)
+        else
+          traversalCoverage(halfWindowSize, lociBroadcast)
+      )
+
+  /**
+   * Break the input @loci into smaller LociSets such that the number of regions (with a @halfWindowSize grace-window)
+   * overlapping each set is ≤ @maxRegionsPerPartition.
+   *
+   * First obtains the "coverage" RDD, then takes regions greedily, meaning the end of each partition of the coverage-RDD
+   * will tend to have a "remainder" LociSet that has ≈half the maximum regions per partition.
+   */
+  def makeCappedLociSets(halfWindowSize: Int,
+                         loci: LociSet,
+                         maxRegionsPerPartition: Int,
+                         explode: Boolean): RDD[LociSet] =
+    coverage(
+      halfWindowSize,
+      sc.broadcast(loci),
+      explode
+    )
+    .mapPartitionsWithIndex(
+      (idx, it) =>
+        new TakeLociIterator(it.buffered, maxRegionsPerPartition)
+    )
+
+  /**
+   * Compute the depth at each locus in @rdd, then group loci into runs that are uniformly below (true) or above (false)
+   * `depthCutoff`.
+   *
+   * Useful for getting a sense of which parts of the genome have exceedingly high coverage.
+   *
+   * @param halfWindowSize see [[coverage]].
+   * @param lociBroadcast see [[coverage]].
+   * @param depthCutoff separate runs of loci that are uniformly below (or equal to) vs. above (>) this cutoff.
+   * @return [[RDD]] whose elements have:
+   *        - a key consisting of a contig name and a boolean indicating whether loci represented by this element have
+   *          coverage depth ≤ `depthCutoff`, and
+   *        - a value indicating the length of a run of loci with depth above or below `depthCutoff`, as described
+   *          above.
+   */
+  def partitionDepths(halfWindowSize: Int,
+                      lociBroadcast: Broadcast[LociSet],
+                      depthCutoff: Int): RDD[((ContigName, Boolean), Long)] =
+    (for {
+      (Position(contig, _), Coverage(depth, _)) <- coverage(halfWindowSize, lociBroadcast)
+    } yield
+      contig -> (depth <= depthCutoff)
+    ).runLengthEncode
+
+  /**
+   * Compute the coverage-depth at each locus, then aggregate loci into runs that are all above or below `depthCutoff`.
+   *
+   * @return tuple containing an [[RDD]] returned by [[partitionDepths]] as well as the total numbers of loci with depth
+   *         below (or equal to) `depthCutoff` (resp. above `depthCutoff`).
+   */
+  def validLociCounts(halfWindowSize: Int,
+                      lociBroadcast: Broadcast[LociSet],
+                      depthCutoff: Int): (RDD[((ContigName, Boolean), NumLoci)], NumLoci, NumLoci) = {
+    val depthRuns = partitionDepths(halfWindowSize, lociBroadcast, depthCutoff)
+    val map =
+      (for {
+        ((_, validDepth), numLoci) <- depthRuns
+      } yield
+        validDepth -> numLoci.toLong
+        )
+      .reduceByKey(_ + _)
+      .collectAsMap
+
+    (depthRuns, map.getOrElse(true, 0), map.getOrElse(false, 0))
+  }
+
+  private[rdd] def traversalCoverage(halfWindowSize: Int,
+                                     lociBroadcast: Broadcast[LociSet]): RDD[(Position, Coverage)] =
+    rdd
+      .mapPartitions(
+        it =>
           for {
 
             // For each contig, and only the regions that lie on it…
@@ -49,95 +135,34 @@ class CoverageRDD[R <: ReferenceRegion: ClassTag](@transient rdd: RDD[R])
 
           } yield
             Position(contigName, locus) -> coverage
-        )
-        .reduceByKey(_ + _)
-        .sortByKey()
-    )
-
-  /**
-   * Break the input @loci into smaller LociSets such that the number of reads (with a @halfWindowSize grace-window)
-   * overlapping each set is ≤ @maxRegionsPerPartition.
-   *
-   * First obtains the "coverage" RDD, then takes reads greedily, meaning the end of each partition of the coverage-RDD
-   * will tend to have a "remainder" LociSet that has ≈half the maximum regions per partition.
-   */
-  def makeCappedLociSets(halfWindowSize: Int,
-                         loci: LociSet,
-                         maxRegionsPerPartition: Int): RDD[LociSet] =
-    coverage(
-      halfWindowSize,
-      sc.broadcast(loci)
-    )
-    .mapPartitionsWithIndex(
-      (idx, it) =>
-        new TakeLociIterator(it.buffered, maxRegionsPerPartition)
-    )
-
-  /**
-   * Compute the depth at each locus in @rdd, then group loci into runs that are uniformly below (true) or above (false)
-   * `depthCutoff`.
-   *
-   * Useful for getting a sense of which parts of the genome have exceedingly high coverage.
-   *
-   * @param halfWindowSize see [[coverage]].
-   * @param loci see [[coverage]].
-   * @param depthCutoff separate runs of loci that are uniformly below (or equal to) vs. above (>) this cutoff.
-   * @return [[RDD]] whose elements have:
-   *        - a key consisting of a contig name and a boolean indicating whether loci represented by this element have
-   *          coverage depth ≤ `depthCutoff`, and
-   *        - a value indicating the length of a run of loci with depth above or below `depthCutoff`, as described
-   *          above.
-   */
-  def partitionDepths(halfWindowSize: Int,
-                      loci: LociSet,
-                      depthCutoff: Int): RDD[((ContigName, Boolean), Long)] = {
-    (for {
-      (Position(contig, _), Coverage(depth, _)) <- coverage(halfWindowSize, loci)
-    } yield
-      contig -> (depth <= depthCutoff)
-    ).runLengthEncode
-  }
-
-  /**
-   * Compute the coverage-depth at each locus, then aggregate loci into runs that are all above or below `depthCutoff`.
-   *
-   * @return tuple containing an [[RDD]] returned by [[partitionDepths]] as well as the total numbers of loci with depth
-   *         below (or equal to) `depthCutoff` (resp. above `depthCutoff`).
-   */
-  def validLociCounts(halfWindowSize: Int,
-                      loci: LociSet,
-                      depthCutoff: Int): (RDD[((ContigName, Boolean), NumLoci)], NumLoci, NumLoci) = {
-    val depthRuns = partitionDepths(halfWindowSize, loci, depthCutoff)
-    val map =
-      (for {
-        ((_, validDepth), numLoci) <- depthRuns
-      } yield
-        validDepth -> numLoci.toLong
-        )
+      )
       .reduceByKey(_ + _)
-      .collectAsMap
+      .sortByKey()
 
-    (depthRuns, map.getOrElse(true, 0), map.getOrElse(false, 0))
-  }
+  private def coveragesForRegion(region: ReferenceRegion,
+                                 halfWindowSize: Int,
+                                 loci: LociSet): Iterator[(Position, Coverage)] = {
 
-  /**
-   * Alternative implementation of this.coverage; will generally perform significantly worse on sorted inputs. Useful as
-   * a sanity check.
-   */
-  def shuffleCoverage(halfWindowSize: Int,
-                      contigLengthsBroadcast: Broadcast[ContigLengths]): RDD[(Position, Coverage)] =
-    (for {
+    val ReferenceRegion(contigName, start, end) = region
 
-      // For each region…
-      ReferenceRegion(contigName, start, end) <- rdd
+    // Compute the bounds of loci that this region should contribute 1 unit of coverage-depth to.
+    val lowerBound = math.max(0, start - halfWindowSize)
+    val upperBound = end + halfWindowSize
 
-      // Compute the bounds of loci that this region should contribute 1 unit of coverage-depth to.
-      contigLength = contigLengthsBroadcast.value(contigName)
-      lowerBound = math.max(0, start - halfWindowSize)
-      upperBound = math.min(contigLength, end + halfWindowSize)
+    // Iterator over loci spanned by the current region, including the half-window buffer on each end.
+    val regionLociIterator = new LociIterator(Iterator(Interval(lowerBound, upperBound)).buffered)
 
-      // For each such locus…
-      locus <- lowerBound until upperBound
+    // Eligible loci on this region's contig.
+    val lociContig = loci.onContig(contigName).iterator
+
+    // Intersect the eligible loci with the region's loci.
+    val lociIterator = lociContig.intersect(regionLociIterator)
+
+    var regionStart = true
+
+    for {
+      // Each resulting locus is covered by the region (±halfWindowSize), and is part of the valid LociSet.
+      locus <- lociIterator
 
       position = Position(contigName, locus)
 
@@ -145,11 +170,12 @@ class CoverageRDD[R <: ReferenceRegion: ClassTag](@transient rdd: RDD[R])
       depthCoverage = Coverage(depth = 1)
 
       // The first locus should also record one unit of "region-start depth", which is also recorded by `Coverage`
-      // objects, and read downstream by code computing the number of regions straddling partition boundaries.
+      // objects, and region downstream by code computing the number of regions straddling partition boundaries.
       coverages =
-        if (locus == lowerBound)
+        if (regionStart) {
+          regionStart = false
           List(Coverage(starts = 1), depthCoverage)
-        else
+        } else
           List(depthCoverage)
 
       // For each of the (1 or 2) Coverages above…
@@ -158,7 +184,16 @@ class CoverageRDD[R <: ReferenceRegion: ClassTag](@transient rdd: RDD[R])
     } yield
       // Emit the Coverage, keyed by the current genomic position.
       position -> coverage
-    )
-    .reduceByKey(_ + _)  // sum all Coverages for each Position
-    .sortByKey()  // sort by Position
+  }
+
+  /**
+   * Alternative implementation of this.coverage; will generally perform significantly worse on sorted inputs. Useful as
+   * a sanity check.
+   */
+  private[rdd] def explodedCoverage(halfWindowSize: Int,
+                                    lociBroadcast: Broadcast[LociSet]): RDD[(Position, Coverage)] =
+    rdd
+      .flatMap(coveragesForRegion(_, halfWindowSize, lociBroadcast.value))
+      .reduceByKey(_ + _)  // sum all Coverages for each Position
+      .sortByKey()  // sort by Position
 }

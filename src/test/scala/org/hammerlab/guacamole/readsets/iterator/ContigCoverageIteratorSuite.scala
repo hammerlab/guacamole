@@ -1,9 +1,10 @@
 package org.hammerlab.guacamole.readsets.iterator
 
 import org.hammerlab.guacamole.loci.Coverage
+import org.hammerlab.guacamole.loci.set.LociIterator
 import org.hammerlab.guacamole.reads.TestRegion
 import org.hammerlab.guacamole.readsets.{ContigLengths, ContigLengthsUtil}
-import org.hammerlab.guacamole.reference.ContigIterator
+import org.hammerlab.guacamole.reference.{ContigIterator, Interval}
 import org.scalatest.{FunSuite, Matchers}
 
 class ContigCoverageIteratorSuite
@@ -71,17 +72,17 @@ class ContigCoverageIteratorSuite
     )
   }
 
-  test("skips") {
-    val reads =
-      ContigIterator(
-        Iterator(
-          TestRegion("chr1", 10, 20),
-          TestRegion("chr1", 11, 21),
-          TestRegion("chr1", 11, 21),
-          TestRegion("chr1", 30, 40)
-        ).buffered
-      )
+  def reads =
+    ContigIterator(
+      Iterator(
+        TestRegion("chr1", 10, 20),
+        TestRegion("chr1", 11, 21),
+        TestRegion("chr1", 11, 21),
+        TestRegion("chr1", 30, 40)
+      ).buffered
+    )
 
+  test("skips") {
     val it = ContigCoverageIterator(halfWindowSize = 1, reads)
 
     it.next() should be( 9 -> Coverage(1, 1))
@@ -98,6 +99,50 @@ class ContigCoverageIteratorSuite
     it.next() should be(39 -> Coverage(1, 0))
     it.skipTo(45)
     it.hasNext should be(false)
+  }
+
+  test("skips+starts") {
+    val it = ContigCoverageIterator(halfWindowSize = 1, reads)
+
+    it.skipTo(15)
+    it.next() should be(15 -> Coverage(3, 3))
+    it.skipTo(35)
+    it.next() should be(35 -> Coverage(1, 1))
+  }
+
+  test("skip completely over read") {
+    val it = ContigCoverageIterator(halfWindowSize = 1, reads)
+
+    it.skipTo(21)
+    it.next() should be(21 -> Coverage(2, 2))
+  }
+
+  test("load read then skip over it") {
+    val it = ContigCoverageIterator(halfWindowSize = 1, reads)
+
+    it.hasNext
+    it.skipTo(21)
+    it.next() should be(21 -> Coverage(2, 2))
+  }
+
+  test("skip completely over reads") {
+    val it = ContigCoverageIterator(halfWindowSize = 1, reads)
+
+    it.skipTo(25)
+    it.next() should be(29 -> Coverage(1, 1))
+  }
+
+  test("intersection") {
+    val lociIterator = new LociIterator(Iterator(Interval(12, 15)).buffered)
+    val it = ContigCoverageIterator(halfWindowSize = 1, reads).intersect(lociIterator)
+
+    it.toList should be(
+      List(
+        12 -> Coverage(3, 3),
+        13 -> Coverage(3, 0),
+        14 -> Coverage(3, 0)
+      )
+    )
   }
 
   test("throw on unsorted regions") {

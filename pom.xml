@@ -155,7 +155,7 @@
     <dependency>
       <groupId>org.hammerlab</groupId>
       <artifactId>magic-rdds_${scala.version.prefix}</artifactId>
-      <version>1.2.2</version>
+      <version>1.2.4</version>
     </dependency>
     <dependency>
       <groupId>org.clapper</groupId>
