@@ -64,4 +64,5 @@ if [ -n "$HADOOP_CONF_DIR" -o -n "$YARN_CONF_DIR" ]; then
   fi
 fi
 
-cat "$conf_file"
+echo "Spark configs:"
+cat "$conf_file" | perl -pe 's/^/\t/'
