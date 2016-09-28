@@ -31,7 +31,18 @@ if [ -n "$GUAC_SPARK_CONFS" ]; then
     # If it contains more than one comma-delimited path, append all such files' contents to $conf_file, as a work-around
     # to Spark not directly allowing multiple/cascading properties files.
     echo "Using Spark properties files: $GUAC_SPARK_CONFS"
-    echo "$GUAC_SPARK_CONFS" | tr ',' '\n' | xargs cat | sort > "$conf_file"
+    OLD_IFS="$IFS"
+    IFS=$'\n'
+    for file in $(echo "$GUAC_SPARK_CONFS" | tr ',' '\n'); do
+      if [ -z "$file" ]; then
+        continue
+      elif [ -e "$file" ]; then
+        cat "$file" >> "$conf_file"
+      else
+        cat "$conf_dir/$file" >> "$conf_file"
+      fi
+    done
+    IFS="$OLD_IFS"
   else
     echo "Using Spark config file: $GUAC_SPARK_CONFS"
     cat "$GUAC_SPARK_CONFS" >> "$conf_file"
