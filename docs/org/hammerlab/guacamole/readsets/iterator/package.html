@@ -70,8 +70,8 @@
         <a href="ContigCoverageIterator.html"><span class="name">ContigCoverageIterator</span></a><span class="params">(<span name="halfWindowSize">halfWindowSize: <span class="extype" name="scala.Int">Int</span></span>, <span name="intervals">intervals: <a href="../../reference/ContigIterator.html" class="extype" name="org.hammerlab.guacamole.reference.ContigIterator">ContigIterator</a>[<a href="../../reference/Interval.html" class="extype" name="org.hammerlab.guacamole.reference.Interval">Interval</a>]</span>)</span><span class="result"> extends <a href="../../loci/iterator/SkippableLocusKeyedIterator.html" class="extype" name="org.hammerlab.guacamole.loci.iterator.SkippableLocusKeyedIterator">SkippableLocusKeyedIterator</a>[<a href="../../loci/Coverage.html" class="extype" name="org.hammerlab.guacamole.loci.Coverage">Coverage</a>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
-      <p class="comment cmt"><span class="extype" name="SkippableLociIterator">SkippableLociIterator</span> that consumes reference regions (sorted by start-position, and all on the same contig) and
-emits a <span class="extype" name="Coverage">Coverage</span> at each covered locus, indicating how many reads overlap (and start at) that locus.</p>
+      <p class="comment cmt"><span class="extype" name="SkippableLociIterator">SkippableLociIterator</span> that consumes <span class="extype" name="Interval">Interval</span>s (sorted by start-position) and emits a <span class="extype" name="Coverage">Coverage</span> at each
+covered locus, indicating how many intervals overlap (and start at) that locus.</p>
     </li><li name="org.hammerlab.guacamole.readsets.iterator.ContigsIterator" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="ContigsIterator[T]extendsSimpleBufferedIterator[(org.hammerlab.guacamole.reference.ContigName,org.hammerlab.guacamole.reference.ContigIterator[T])]"></a>
       <a id="ContigsIterator[T]:ContigsIterator[T]"></a>
