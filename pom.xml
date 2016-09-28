@@ -29,7 +29,8 @@
         <groupId>org.scalatest</groupId>
         <artifactId>scalatest-maven-plugin</artifactId>
         <configuration>
-          <argLine>-Xmx4g -XX:MaxPermSize=256m</argLine>
+          <!-- Bump the memory used by scalatest. -->
+          <argLine>-Xmx4g</argLine>
         </configuration>
       </plugin>
       <plugin>
