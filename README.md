@@ -32,30 +32,49 @@ For hacking Guacamole, see our [code docs][].
 
 Building Guacamole requires [Apache Maven][maven] (version 3.0.4 or higher).
 
-You'll need Guacamole and its dependencies on your classpath to run, which you can do by building one assembly JAR:
+You'll need Guacamole and its dependencies on your classpath to run, which you can get in a few ways, described below; all of them are compatible with the options for running Guacamole detailed in the [Running](#running) section.
+
+### Guacamole JAR + Dependencies File
+The simplest (and fastest) option builds a Guacamole JAR as well as a file with paths to dependencies' JARs (in your local Maven cache):
 
 ```bash
-mvn package -Puber -DskipTests
+mvn package -DskipTests
 ```
 
-or building one JAR containing just Guacamole's classes and another second containing all transitive dependencies:
+The JAR and dependencies file will be at `target/guacamole-0.0.1-SNAPSHOT.jar` and `target/dependencies`, respectively.
+
+This uses the `guac` Maven profile, which is active by default, and so is equivalent to:
 
 ```bash
-# Build a JAR with just Guacamole classes (and one necessary shaded dependency).
-mvn package -DskipTests
+mvn package -DskipTests -Pguac
+```
 
-# Same as above.
-mvn package -Pguac -DskipTests
+### Assembly JAR
+Another option is to build one assembly ("uber") JAR containing Guacamole and all its dependencies:
 
-# Build a shaded JAR with all the rest of Guacamole's transitive dependencies.
-mvn package -Pdeps -DskipTests
+```bash
+mvn package -DskipTests -Puber
+```
+
+This has the advantage that there is just one file to ship around, e.g. to a remote server you may want to run on, but copying all the dependency-JARs (62MB total at last count) into one can add a minute or so to the run-time.
+
+### Guacamole + Dependencies JARs
+Finally, you can build the Guacamole JAR as well as a "dependencies JAR"; the latter is like the aforementioned assembly JAR, but without any of the guacamole classes:
+
+```bash
+# Build a shaded JAR with all of Guacamole's transitive dependencies (excepting the two aforementioned shaded ones).
+mvn package -DskipTests -Pdeps
 
 # Build both "guac" and "deps" JARs at once.
-mvn package -Pguac,deps -DskipTests
+mvn package -DskipTests -Pguac,deps
 ```
 
+This approach combines some advantages of the previous two: the Guacamole JAR is small and can be built and rebuilt quickly (e.g. while developing), but there are just two files that need be copied in order to run in any remote environment.
+
 ## Running
-`scripts/guacamole` is a wrapper around `spark-submit` and makes it easy to run locally or on a cluster:
+
+### `scripts/guacamole`
+Having built Guacamole in any of the ways described above, you can run it using [`scripts/guacamole`](scripts/guacamole), a thin wrapper around `spark-submit` that makes it easy to run locally or on a cluster:
 
 ```bash
 scripts/guacamole somatic-joint \
@@ -65,14 +84,12 @@ scripts/guacamole somatic-joint \
     --out /tmp/out.vcf 
 ```
 
-Change the reference fasta above to point to a local copy of the B37 human
-reference.
-
 This calls germline and somatic variants from some small test BAMs using the
 *somatic-joint* variant caller, which works with any number of tumor/normal
-samples from the same patient. It takes around 2 minutes to run on my 3.1 GHz,
+samples from the same patient. We've observed it to run in around 2 minutes on a 3.1 GHz,
 16gb memory Macbook.
 
+#### Usage
 Try:
 
 ```bash
@@ -89,13 +106,13 @@ for help on a particular variant caller.
 ### Spark Configuration
 All Spark configuration, including whether to run in local- or cluster-mode, comes from the Spark properties file(s) provided via the `$GUAC_SPARK_CONFS` environment variable.
 
-This variable is interpreted as a comma-separated list of [Spark properties files](http://spark.apache.org/docs/1.6.1/configuration.html#dynamically-loading-spark-properties).
+This variable is interpreted as a comma-separated list of [Spark properties files](http://spark.apache.org/docs/1.6.1/configuration.html#dynamically-loading-spark-properties), which are taken to be relative to the current directory, of the [`conf/`](conf) directory if a path is not found in the former.
 
 In all cases, it will be seeded with the contents of [conf/kryo](conf/kryo):
 
 ```
-spark.serializer                  org.apache.spark.serializer.KryoSerializer
-spark.kryo.registrator            org.hammerlab.guacamole.kryo.Registrar
+spark.serializer          org.apache.spark.serializer.KryoSerializer
+spark.kryo.registrator    org.hammerlab.guacamole.kryo.Registrar
 spark.kryo.registrationRequired   true
 spark.kryoserializer.buffer       4mb
 ```
@@ -107,7 +124,9 @@ spark.master  local[1]
 spark.driver.memory 4g
 ```
 
-See [the conf/ directory](conf/) for more example configuration blocks that can be mixed in.
+This configures a local Spark run using 1 executor/core and 4GB of memory.
+
+[The conf/ directory](conf/) contains further example configuration blocks that can be mixed in; see below for more examples. Files in [`conf/`](conf) are `.gitignore`d by default, so feel free to keep your own custom configs there.
 
 ### Running on a Hadoop Cluster
 Guacamole currently builds against Spark 1.6.1 and Hadoop 2.7.0, though it will likely run fine with versions close to those.
@@ -124,10 +143,51 @@ scripts/guacamole \
     --out /tmp/out.vcf
 ```
 
-Note that `--reference` must be a local path, while the normal/tumor BAMs and output-VCF paths above point into HDFS.
+Note that, even when running with HDFS as the default filesystem, `--reference` must be a local path.
+
+### `scripts/guacamole-shell`
+The [`scripts/guacamole-shell`](scripts/guacamole-shell) command wraps `spark-shell`, putting Guacamole and all its dependencies on the classpath, and parsing Spark configuration from the `$GUAC_SPARK_CONFS` arg as described above.
+
+```
+$ GUAC_SPARK_CONFS=local-multi,driver-10g scripts/guacamole-shell
+Using Spark properties files: local-multi,driver-10g
+Spark configs:
+	spark.serializer                  org.apache.spark.serializer.KryoSerializer
+	spark.kryo.registrator            org.hammerlab.guacamole.kryo.Registrar
+	spark.kryo.registrationRequired   true
+	spark.kryoserializer.buffer       4mb
+	spark.master    local[*]
+	spark.driver.memory 10g
+2016-09-23 02:41:27 WARN  NativeCodeLoader:62 - Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Welcome to
+      ____              __
+     / __/__  ___ _____/ /__
+    _\ \/ _ \/ _ `/ __/  '_/
+   /___/ .__/\_,_/_/ /_/\_\   version 1.6.1
+      /_/
+…
+scala> :paste
+// Entering paste mode (ctrl-D to finish)
+
+import org.hammerlab.guacamole.commands.SomaticStandard.{Arguments, Caller}
+
+val args = new Arguments
+args.normalReads = "src/test/resources/cancer-wgs1/normal.tiny.bam"
+args.tumorReads = "src/test/resources/cancer-wgs1/recurrence.tiny.bam"
+args.referencePath = "/path/to/chr12.fasta"
+args.loci = "chr12"
+
+val variants = Caller.computeVariants(args, sc)._1
+vs.count
+// Exiting paste mode, now interpreting.
+…
+res0: Long = 2
+```
+
+Both `scripts/guacamole-shell` and `scripts/guacamole` will work if any of the "[Building](#building)" options above have been executed.
 
 # Running the test suite
-Guacamole contains many small BAMs for testing. The full test suite can be run with:
+The full test suite can be run with:
 
 ```
 mvn test
