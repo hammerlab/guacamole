@@ -48,11 +48,14 @@
         <artifactId>maven-shade-plugin</artifactId>
         <version>2.4.3</version>
         <configuration>
+
           <transformers>
+            <!-- Set "main" class. -->
             <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
               <mainClass>org.hammerlab.guacamole.Main</mainClass>
             </transformer>
           </transformers>
+
           <filters>
             <!-- Exclude signature files that we don't validate. -->
             <filter>
@@ -66,8 +69,8 @@
               </excludes>
             </filter>
           </filters>
-          <relocations>
 
+          <relocations>
             <!--
               We use some Guava classes and APIs that didn't show up until Guava 14.0.1, but Hadoop gives us Guava
               11.0.2 at runtime, so we shade and rename the classes we care about (com.google.common.collect.**) here,
@@ -224,8 +227,7 @@
             <artifactId>maven-shade-plugin</artifactId>
             <executions>
               <execution>
-                <id>default</id>
-                <phase>package</phase>
+                <id>guac</id>
                 <goals>
                   <goal>shade</goal>
                 </goals>
@@ -282,8 +284,7 @@
             <artifactId>maven-shade-plugin</artifactId>
             <executions>
               <execution>
-                <id>deps</id>
-                <phase>package</phase>
+                <id>assembly</id>
                 <goals>
                   <goal>shade</goal>
                 </goals>
@@ -298,7 +299,10 @@
     </profile>
 
     <profile>
-      <!-- "deps" profile: build a JAR with just Guacamole's transitive dependencies. -->
+      <!--
+        "deps" profile: build a JAR with just Guacamole's transitive dependencies, excluding those that are shaded into
+        the Guacamole JAR itself.
+      -->
       <id>deps</id>
       <build>
         <plugins>
@@ -312,6 +316,9 @@
                 </goals>
                 <configuration>
                   <finalName>guacamole-deps-${project.version}</finalName>
+                  <transformers combine.children="append">
+                    <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer" />
+                  </transformers>
                   <artifactSet>
                     <excludes>
                       <!-- The "deps" JAR is everything *but* the guacamole classes. -->
