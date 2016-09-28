@@ -270,7 +270,7 @@
                   <goal>shade</goal>
                 </goals>
                 <configuration>
-                  <finalName>guacamole-with-deps-${project.version}</finalName>
+                  <finalName>guacamole-assembly-${project.version}</finalName>
                 </configuration>
               </execution>
             </executions>
@@ -294,7 +294,7 @@
                   <goal>shade</goal>
                 </goals>
                 <configuration>
-                  <finalName>guacamole-deps-only-${project.version}</finalName>
+                  <finalName>guacamole-deps-${project.version}</finalName>
                   <artifactSet>
                     <excludes>
                       <!-- The "deps" JAR is everything *but* the guacamole classes. -->
