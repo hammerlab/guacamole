@@ -28,11 +28,11 @@ class CoverageRDD[R <: ReferenceRegion: ClassTag](@transient rdd: RDD[R])
    * @param halfWindowSize count bases as contributing coverage to a window that extends this many loci in either
    *                       direction.
    * @param lociBroadcast Spark Broadcast of a set of loci to compute depths for.
-   * @param explode If true, emit (locus, 1) tuples for every read-base before letting Spark do map-side, then
-   *                reduce-side, reductions. Otherwise, traverse reads, emitting (locus, depth) tuples for all reads
+   * @param explode If true, emit (locus, 1) tuples for every region-base before letting Spark do map-side, then
+   *                reduce-side, reductions. Otherwise, traverse regions, emitting (locus, depth) tuples for all regions
    *                in a partition that overlap a current locus, effectively folding the map-side-reduction into
    *                application code, as an optimization.
-   * @return RDD of (Position, Coverage) tuples giving the total read coverage, and number of read-starts, at each
+   * @return RDD of (Position, Coverage) tuples giving the total coverage, and number of region-starts, at each
    *         genomic position in `lociBroadcast`.
    */
   def coverage(halfWindowSize: Int,
@@ -48,10 +48,10 @@ class CoverageRDD[R <: ReferenceRegion: ClassTag](@transient rdd: RDD[R])
       )
 
   /**
-   * Break the input @loci into smaller LociSets such that the number of reads (with a @halfWindowSize grace-window)
+   * Break the input @loci into smaller LociSets such that the number of regions (with a @halfWindowSize grace-window)
    * overlapping each set is ≤ @maxRegionsPerPartition.
    *
-   * First obtains the "coverage" RDD, then takes reads greedily, meaning the end of each partition of the coverage-RDD
+   * First obtains the "coverage" RDD, then takes regions greedily, meaning the end of each partition of the coverage-RDD
    * will tend to have a "remainder" LociSet that has ≈half the maximum regions per partition.
    */
   def makeCappedLociSets(halfWindowSize: Int,
@@ -150,18 +150,18 @@ class CoverageRDD[R <: ReferenceRegion: ClassTag](@transient rdd: RDD[R])
     val upperBound = end + halfWindowSize
 
     // Iterator over loci spanned by the current region, including the half-window buffer on each end.
-    val readLocusIterator = new LociIterator(Iterator(Interval(lowerBound, upperBound)).buffered)
+    val regionLociIterator = new LociIterator(Iterator(Interval(lowerBound, upperBound)).buffered)
 
     // Eligible loci on this region's contig.
     val lociContig = loci.onContig(contigName).iterator
 
-    // Intersect the eligible loci with the read's loci.
-    val lociIterator = lociContig.intersect(readLocusIterator)
+    // Intersect the eligible loci with the region's loci.
+    val lociIterator = lociContig.intersect(regionLociIterator)
 
-    var readStart = true
+    var regionStart = true
 
     for {
-      // Each resulting locus is covered by the read (±halfWindowSize), and is part of the valid LociSet.
+      // Each resulting locus is covered by the region (±halfWindowSize), and is part of the valid LociSet.
       locus <- lociIterator
 
       position = Position(contigName, locus)
@@ -170,10 +170,10 @@ class CoverageRDD[R <: ReferenceRegion: ClassTag](@transient rdd: RDD[R])
       depthCoverage = Coverage(depth = 1)
 
       // The first locus should also record one unit of "region-start depth", which is also recorded by `Coverage`
-      // objects, and read downstream by code computing the number of regions straddling partition boundaries.
+      // objects, and region downstream by code computing the number of regions straddling partition boundaries.
       coverages =
-        if (readStart) {
-          readStart = false
+        if (regionStart) {
+          regionStart = false
           List(Coverage(starts = 1), depthCoverage)
         } else
           List(depthCoverage)

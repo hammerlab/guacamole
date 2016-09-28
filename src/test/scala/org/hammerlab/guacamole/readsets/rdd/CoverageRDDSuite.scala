@@ -29,7 +29,7 @@ class CoverageRDDSuite
     with RegionsRDDUtil
     with ContigLengthsUtil {
 
-  override def registrar = "org.hammerlab.guacamole.readsets.rdd.CoverageRDDSuiteRegistrar"
+  override def registrar = classOf[CoverageRDDSuiteRegistrar].getCanonicalName
 
   lazy val readsRDD =
     makeRegionsRDD(

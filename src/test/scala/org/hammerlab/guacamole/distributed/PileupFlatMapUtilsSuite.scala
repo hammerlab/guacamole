@@ -46,7 +46,7 @@ class PileupFlatMapUtilsSuite
     with PartitionedRegionsUtil
     with ReferenceUtil {
 
-  override def registrar: String = "org.hammerlab.guacamole.distributed.PileupFlatMapUtilsSuiteRegistrar"
+  override def registrar = classOf[PileupFlatMapUtilsSuiteRegistrar].getCanonicalName
 
   lazy val reference = makeReference(sc, Seq(("chr1", 0, "ATCGATCGA")))
 
