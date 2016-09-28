@@ -25,6 +25,15 @@
   </properties>
 
   <build>
+    <!--
+      The Guacamole JAR output by maven-jar-plugin, at the path configured here, can't run on its own; it needs some
+      dependency-classes shaded in, as configured elsewhere in this file. However, the shade plugin requires it to be
+      present in order to work.
+
+      As such, we write it to a non-default path here, and treat the minimum-viable Guacamole+shaded-deps JAR (built by
+      the default "guac" profile below) as the primary deliverable.
+     -->
+    <finalName>guacamole-plain-${project.version}</finalName>
     <plugins>
       <plugin>
         <groupId>org.scalatest</groupId>
