@@ -221,7 +221,6 @@
       <build>
         <plugins>
           <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-shade-plugin</artifactId>
             <executions>
               <execution>
@@ -271,13 +270,15 @@
         </plugins>
       </build>
     </profile>
+
+    <!--
+      "uber" profile: build a JAR with Guacamole and all transitive dependencies shaded, and Guava and Breeze relocated.
+    -->
     <profile>
-      <!-- "uber" profile: build a JAR with Guacamole and all transitive dependencies shaded, and Guava relocated. -->
       <id>uber</id>
       <build>
         <plugins>
           <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-shade-plugin</artifactId>
             <executions>
               <execution>
@@ -295,18 +296,17 @@
         </plugins>
       </build>
     </profile>
+
     <profile>
       <!-- "deps" profile: build a JAR with just Guacamole's transitive dependencies. -->
       <id>deps</id>
       <build>
         <plugins>
           <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-shade-plugin</artifactId>
             <executions>
               <execution>
                 <id>deps</id>
-                <phase>package</phase>
                 <goals>
                   <goal>shade</goal>
                 </goals>
