@@ -8,7 +8,7 @@ set -e
 #
 # Otherwise, see if a Guacamole JAR (including shaded guava but no other dependencies) exists.
 #
-#   if so: pair it with either a "deps-only" JAR, if one exists, or a classpath built by the Maven dependency plugin
+#   if so: pair it with either a "deps" JAR, if one exists, or a classpath built by the Maven dependency plugin
 #          otherwise.
 #   if not: fail.
 

@@ -22,11 +22,11 @@ shift
 
 jars() {
   if [ "$jar" == "guac" ]; then
-    find target -name "guacamole-*.jar" | grep -v deps
+    find target -name "guacamole-*.jar" | grep -v -e deps -e assembly
   elif [ "$jar" == "deps" ]; then
-    find target -name "guacamole-deps-only-*.jar"
+    find target -name "guacamole-deps-*.jar"
   elif [ "$jar" == "assembly" ]; then
-    find target -name "guacamole-with-deps-*.jar"
+    find target -name "guacamole-assembly-*.jar"
   else
     usage
   fi
