@@ -319,13 +319,19 @@
                   <transformers combine.children="append">
                     <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer" />
                   </transformers>
+                  <filters combine.children="append">
+                    <!-- Leave all Guacamole classes out of this JAR. -->
+                    <filter>
+                      <artifact>*:guacamole</artifact>
+                      <excludes>
+                        <exclude>org/hammerlab/guacamole/**</exclude>
+                      </excludes>
+                    </filter>
+                  </filters>
                   <artifactSet>
                     <excludes>
-                      <!-- The "deps" JAR is everything *but* the guacamole classes. -->
-                      <exclude>org.hammerlab.guacamole:*</exclude>
-
                       <!-- These are shaded into the "guac"-profile JAR. -->
-                      <exclude>com.google.guava:</exclude>
+                      <exclude>com.google.guava:*</exclude>
                       <exclude>org.scalanlp:breeze_${scala.version.prefix}</exclude>
                     </excludes>
                   </artifactSet>
