@@ -23,6 +23,10 @@ find_jars() {
   local uber_jar="$("$scripts_dir"/assembly-jar 2> /dev/null)"
   local guac_jar="$("$scripts_dir"/guac-jar 2> /dev/null)"
   local deps_jar="$("$scripts_dir"/deps-jar 2> /dev/null)"
+  local classpath_file="$target_dir/dependencies"
+  if [ -s "$classpath_file" ]; then
+    local deps_jars="$(cat "$classpath_file")"
+  fi
 
   main_jar=
   deps=
@@ -48,6 +52,15 @@ find_jars() {
         mod_time="$deps_jar_mod_time"
       fi
     fi
+
+    if [ -n "$deps_jars" ]; then
+      deps_jars_mod_time="$(min "$(stat -c %Y "$classpath_file")" "$guac_mod_time")"
+      if [ -z "$mod_time" ] || [ "$deps_jars_mod_time" -gt "$mod_time" ]; then
+        main_jar="$guac_jar"
+        deps="$deps_jars"
+        mod_time="$deps_jars_mod_time"
+      fi
+    fi
   fi
 
   if [ -z "$uber_jar" ]; then
@@ -56,8 +69,8 @@ find_jars() {
       return 1
     fi
 
-    if [ -z "$deps_jar" ]; then
-      echo "Couldn't find a guacamole dependencies jar or assembly jar." 1>&2
+    if [ -z "$deps_jar" -a -z "$deps_jars" ]; then
+      echo "Couldn't find a guacamole dependencies jar, assembly jar, or dependencies classpath file." 1>&2
       return 2
     fi
   fi

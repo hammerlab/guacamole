@@ -210,7 +210,10 @@
 
   <profiles>
     <profile>
-      <!-- Default profile: build Guacamole jar with shaded Guava. -->
+      <!--
+        Default profile: build a Guacamole jar with shaded Guava and Breeze, and write transitive-dependency-JAR paths
+        to target/dependencies (comma-delimited to serve the common case of passing the values to Spark's "jars" flag).
+      -->
       <id>guac</id>
       <activation>
         <activeByDefault>true</activeByDefault>
@@ -236,6 +239,31 @@
                       <include>org.scalanlp:breeze_${scala.version.prefix}</include>
                     </includes>
                   </artifactSet>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+
+          <!-- Write a file with paths to all transitive-dependencies to target/dependencies. -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <version>2.10</version>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>build-classpath</goal>
+                </goals>
+                <configuration>
+                  <outputFile>${target.dir}/dependencies</outputFile>
+
+                  <!-- Use commas for ease of passing to spark-{submit,shell}'s "jars" flag. -->
+                  <pathSeparator>,</pathSeparator>
+
+                  <!-- Leave Guava and Breeze out, as they are included in the Guacamole JAR defined above. -->
+                  <excludeArtifactIds>
+                    guava,breeze_${scala.version.prefix}
+                  </excludeArtifactIds>
                 </configuration>
               </execution>
             </executions>
