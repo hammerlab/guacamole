@@ -114,21 +114,21 @@ object LociPartitioning {
 
     progress(s"Partitioning loci")
 
-    val lociPartitioner =
+    val lociPartitioning =
       args
         .getPartitioner(regions, halfWindowSize)
         .partition(loci)
 
     for (lociPartitioningPath <- args.lociPartitioningPathOpt) {
       progress(s"Saving loci partitioning to $lociPartitioningPath")
-      lociPartitioner.save(
+      lociPartitioning.save(
         FileSystem
           .get(regions.sparkContext.hadoopConfiguration)
           .create(new Path(lociPartitioningPath))
       )
     }
 
-    lociPartitioner
+    lociPartitioning
   }
 
   implicit def lociMapToLociPartitioning(map: LociMap[PartitionIndex]): LociPartitioning = LociPartitioning(map)
