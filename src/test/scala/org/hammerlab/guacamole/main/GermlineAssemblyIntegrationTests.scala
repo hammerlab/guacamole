@@ -12,11 +12,8 @@ import org.hammerlab.guacamole.variants.VariantComparisonTest
  *
  * To run:
  *
- *   mvn package -DskipTests
- *   mvn test-compile
- *   java \
- *     -cp "$(scripts/classpath -t)" \
- *     org.hammerlab.guacamole.main.GermlineAssemblyIntegrationTests
+ *   mvn package -DskipTests -Pguac,test
+ *   scripts/guacamole-test GermlineAssemblyIntegrationTests
  */
 object GermlineAssemblyIntegrationTests extends SparkCommand[Arguments] with VariantComparisonTest {
 

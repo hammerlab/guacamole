@@ -74,9 +74,4 @@ find_jars() {
       return 2
     fi
   fi
-
-  echo "Main JAR: $main_jar"
-  if [ -n "$deps" ]; then
-    echo "Deps JARs: $deps"
-  fi
 }

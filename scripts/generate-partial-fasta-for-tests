@@ -14,17 +14,13 @@ fi
 
 HG19_FULL_FASTA_PATH="$1"
 GRCH37_FULL_FASTA_PATH="$2"
-MAIN_CLASS=org.hammerlab.guacamole.main.GeneratePartialFasta
 
 set -ex
 
-classpath="$("$scripts_dir/classpath" -t)"
-if [ -z "$classpath" ]; then
-  exit 1
-fi
+export GUAC_SPARK_CONFS=driver-6g
 
 # HG19 reference
-time java -Xmx6g -XX:MaxPermSize=512m "-Dspark.master=local[1]" -cp "$classpath" "$MAIN_CLASS" \
+time scripts/guacamole-test GeneratePartialFasta \
     --reference "$HG19_FULL_FASTA_PATH" \
     --output src/test/resources/hg19.partial.fasta \
     --padding 180 \
@@ -32,7 +28,7 @@ time java -Xmx6g -XX:MaxPermSize=512m "-Dspark.master=local[1]" -cp "$classpath"
     src/test/resources/rna_chr17_41244936.sam
 
 # b37 reference
-time java -Xmx6g -XX:MaxPermSize=512m "-Dspark.master=local[1]" -cp "$classpath" "$MAIN_CLASS" \
+time scripts/guacamole-test GeneratePartialFasta \
     --reference "$GRCH37_FULL_FASTA_PATH" \
     --output src/test/resources/grch37.partial.fasta \
     src/test/resources/synthetic.challenge.set1.*.sam \
@@ -41,4 +37,3 @@ time java -Xmx6g -XX:MaxPermSize=512m "-Dspark.master=local[1]" -cp "$classpath"
     src/test/resources/tumor.chr20.simplefp.sam \
     src/test/resources/normal.chr20.simplefp.sam \
     src/test/resources/gatk_mini_bundle_extract.bam
-
