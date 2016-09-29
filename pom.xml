@@ -21,15 +21,26 @@
     <scala.version.prefix>2.10</scala.version.prefix>
     <hadoop.version>2.7.0</hadoop.version>
     <spark.version>1.6.1</spark.version>
+    <spark.hadoop.scope>provided</spark.hadoop.scope>
   </properties>
 
   <build>
+    <!--
+      The Guacamole JAR output by maven-jar-plugin, at the path configured here, can't run on its own; it needs some
+      dependency-classes shaded in, as configured elsewhere in this file. However, the shade plugin requires it to be
+      present in order to work.
+
+      As such, we write it to a non-default path here, and treat the minimum-viable Guacamole+shaded-deps JAR (built by
+      the default "guac" profile below) as the primary deliverable.
+     -->
+    <finalName>guacamole-plain-${project.version}</finalName>
     <plugins>
       <plugin>
         <groupId>org.scalatest</groupId>
         <artifactId>scalatest-maven-plugin</artifactId>
         <configuration>
-          <argLine>-Xmx4g -XX:MaxPermSize=256m</argLine>
+          <!-- Bump the memory used by scalatest. -->
+          <argLine>-Xmx4g</argLine>
         </configuration>
       </plugin>
       <plugin>
@@ -37,21 +48,16 @@
         <artifactId>maven-shade-plugin</artifactId>
         <version>2.4.3</version>
         <configuration>
+
           <transformers>
+            <!-- Set "main" class. -->
             <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
               <mainClass>org.hammerlab.guacamole.Main</mainClass>
             </transformer>
-
-            <!-- Akka (which Spark depends on) needs this reference.conf munging in order to work correctly in -->
-            <!-- shaded JARs, cf. http://stackoverflow.com/questions/31011243/#31011315 -->
-            <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
-              <resource>reference.conf</resource>
-            </transformer>
-
-            <!-- Necessary for Hadoop to load local files correctly, cf. http://stackoverflow.com/a/27532248/544236 -->
-            <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
           </transformers>
+
           <filters>
+            <!-- Exclude signature files that we don't validate. -->
             <filter>
               <artifact>*:*</artifact>
               <excludes>
@@ -63,13 +69,35 @@
               </excludes>
             </filter>
           </filters>
-          <artifactSet>
-            <excludes>
-              <exclude>org.eclipse.jdt:*</exclude>
-              <exclude>org.scalatest:*</exclude>
-              <exclude>org.apache.maven:lib:tests</exclude>
-            </excludes>
-          </artifactSet>
+
+          <relocations>
+            <!--
+              We use some Guava classes and APIs that didn't show up until Guava 14.0.1, but Hadoop gives us Guava
+              11.0.2 at runtime, so we shade and rename the classes we care about (com.google.common.collect.**) here,
+              along with two other packages that its APIs reference (…base.** and …primitives.**).
+            -->
+            <relocation>
+              <pattern>com.google.common</pattern>
+              <shadedPattern>org.hammerlab.guava</shadedPattern>
+              <includes>
+                <include>com.google.common.collect.**</include>
+                <include>com.google.common.base.**</include>
+                <include>com.google.common.primitives.**</include>
+              </includes>
+            </relocation>
+
+            <!--
+              Spark (MLLib) depends on Breeze 0.11.2 and we depend on 0.12. By Spark 2.0.1 we should be able to
+              remove this.
+            -->
+            <relocation>
+              <pattern>breeze</pattern>
+              <shadedPattern>org.hammerlab.breeze</shadedPattern>
+              <includes>
+                <include>breeze.**</include>
+              </includes>
+            </relocation>
+          </relocations>
         </configuration>
       </plugin>
     </plugins>
@@ -113,16 +141,6 @@
       <version>0.11.0</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.spark</groupId>
-      <artifactId>spark-core_${scala.version.prefix}</artifactId>
-      <version>${spark.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.spark</groupId>
-      <artifactId>spark-mllib_${scala.version.prefix}</artifactId>
-      <version>${spark.version}</version>
-    </dependency>
-    <dependency>
       <groupId>org.scalanlp</groupId>
       <artifactId>breeze_${scala.version.prefix}</artifactId>
       <version>0.12</version>
@@ -131,6 +149,16 @@
       <groupId>com.github.samtools</groupId>
       <artifactId>htsjdk</artifactId>
       <version>2.6.1</version>
+      <exclusions>
+        <!--
+          htsjdk:2.6.1 brings in snappy-java:1.0.3-rc3, but running tests on OSX requires ≥ 1.0.5, per
+          http://stackoverflow.com/a/31482848/544236.
+        -->
+        <exclusion>
+          <groupId>org.xerial.snappy</groupId>
+          <artifactId>snappy-java</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.seqdoop</groupId>
@@ -141,11 +169,6 @@
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-math3</artifactId>
       <version>3.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.hadoop</groupId>
-      <artifactId>hadoop-client</artifactId>
-      <version>${hadoop.version}</version>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
@@ -161,6 +184,36 @@
       <groupId>org.clapper</groupId>
       <artifactId>grizzled-slf4j_${scala.version.prefix}</artifactId>
       <version>1.0.3</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.hadoop</groupId>
+      <artifactId>hadoop-client</artifactId>
+      <version>${hadoop.version}</version>
+      <scope>${spark.hadoop.scope}</scope>
+      <exclusions>
+        <!--
+          hadoop-client's javax.servlet:servlet-api dependency includes classes that conflict with spark-core's
+          org.eclipse.jetty.orbit:javax.servlet dependency; excluding the former resolves this, cf.
+          https://issues.apache.org/jira/browse/SPARK-1693.
+        -->
+        <exclusion>
+          <groupId>javax.servlet</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.spark</groupId>
+      <artifactId>spark-core_${scala.version.prefix}</artifactId>
+      <version>${spark.version}</version>
+      <scope>${spark.hadoop.scope}</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.spark</groupId>
+      <artifactId>spark-mllib_${scala.version.prefix}</artifactId>
+      <version>${spark.version}</version>
+      <scope>${spark.hadoop.scope}</scope>
     </dependency>
 
     <!-- Test deps -->
@@ -181,7 +234,10 @@
 
   <profiles>
     <profile>
-      <!-- Default profile: build Guacamole jar with shaded Guava. -->
+      <!--
+        Default profile: build a Guacamole jar with shaded Guava and Breeze, and write transitive-dependency-JAR paths
+        to target/dependencies (comma-delimited to serve the common case of passing the values to Spark's "jars" flag).
+      -->
       <id>guac</id>
       <activation>
         <activeByDefault>true</activeByDefault>
@@ -189,43 +245,15 @@
       <build>
         <plugins>
           <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-shade-plugin</artifactId>
             <executions>
               <execution>
-                <id>default</id>
-                <phase>package</phase>
+                <id>guac</id>
                 <goals>
                   <goal>shade</goal>
                 </goals>
                 <configuration>
                   <finalName>guacamole-${project.version}</finalName>
-                  <relocations>
-
-                    <!--
-                      Spark depends on Guava 14.0.1 and we need 18.0; we can get away with just relocating the classes
-                      under com.google.common.
-                    -->
-                    <relocation>
-                      <pattern>com.google.common</pattern>
-                      <shadedPattern>org.hammerlab.guavarelocated</shadedPattern>
-                      <includes>
-                        <include>com.google.common.**</include>
-                      </includes>
-                    </relocation>
-
-                    <!--
-                      Spark (MLLib) depends on Breeze 0.11.2 and we depend on 0.12. By Spark 2.0.1 we should be able to
-                      remove this.
-                    -->
-                    <relocation>
-                      <pattern>breeze</pattern>
-                      <shadedPattern>org.hammerlab.breeze</shadedPattern>
-                      <includes>
-                        <include>breeze.**</include>
-                      </includes>
-                    </relocation>
-                  </relocations>
                   <artifactSet>
                     <includes>
                       <include>org.hammerlab.guacamole:*</include>
@@ -237,69 +265,27 @@
               </execution>
             </executions>
           </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
-      <id>cluster</id>
-      <dependencies>
-        <dependency>
-          <groupId>org.apache.hadoop</groupId>
-          <artifactId>hadoop-client</artifactId>
-          <version>${hadoop.version}</version>
-          <scope>provided</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.apache.spark</groupId>
-          <artifactId>spark-core_${scala.version.prefix}</artifactId>
-          <version>${spark.version}</version>
-          <scope>provided</scope>
-        </dependency>
-      </dependencies>
-    </profile>
-    <profile>
-      <!-- "uber" profile: build a JAR with Guacamole and all transitive dependencies shaded, and Guava relocated. -->
-      <id>uber</id>
-      <build>
-        <plugins>
+
+          <!-- Write a file with paths to all transitive-dependencies to target/dependencies. -->
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-shade-plugin</artifactId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <version>2.10</version>
             <executions>
               <execution>
-                <id>deps</id>
-                <phase>package</phase>
                 <goals>
-                  <goal>shade</goal>
+                  <goal>build-classpath</goal>
                 </goals>
                 <configuration>
-                  <finalName>guacamole-with-deps-${project.version}</finalName>
-                  <relocations>
+                  <outputFile>${target.dir}/dependencies</outputFile>
 
-                    <!--
-                      Spark depends on Guava 14.0.1 and we need 18.0; we can get away with just relocating the classes
-                      under com.google.common.
-                    -->
-                    <relocation>
-                      <pattern>com.google.common</pattern>
-                      <shadedPattern>org.hammerlab.guavarelocated</shadedPattern>
-                      <includes>
-                        <include>com.google.common.**</include>
-                      </includes>
-                    </relocation>
+                  <!-- Use commas for ease of passing to spark-{submit,shell}'s "jars" flag. -->
+                  <pathSeparator>,</pathSeparator>
 
-                    <!--
-                      Spark (MLLib) depends on Breeze 0.11.2 and we depend on 0.12. By Spark 2.0.1 we should be able to
-                      remove this.
-                    -->
-                    <relocation>
-                      <pattern>breeze</pattern>
-                      <shadedPattern>org.hammerlab.breeze</shadedPattern>
-                      <includes>
-                        <include>breeze.**</include>
-                      </includes>
-                    </relocation>
-                  </relocations>
+                  <!-- Leave Guava and Breeze out, as they are included in the Guacamole JAR defined above. -->
+                  <excludeArtifactIds>
+                    guava,breeze_${scala.version.prefix}
+                  </excludeArtifactIds>
                 </configuration>
               </execution>
             </executions>
@@ -307,29 +293,66 @@
         </plugins>
       </build>
     </profile>
+
+    <!--
+      "uber" profile: build a JAR with Guacamole and all transitive dependencies shaded, and Guava and Breeze relocated.
+    -->
     <profile>
-      <!-- "deps" profile: build a JAR with just Guacamole's transitive dependencies. -->
-      <id>deps</id>
+      <id>uber</id>
       <build>
         <plugins>
           <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-shade-plugin</artifactId>
             <executions>
               <execution>
-                <id>deps</id>
-                <phase>package</phase>
+                <id>assembly</id>
                 <goals>
                   <goal>shade</goal>
                 </goals>
                 <configuration>
-                  <finalName>guacamole-deps-only-${project.version}</finalName>
+                  <finalName>guacamole-assembly-${project.version}</finalName>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <!--
+        "deps" profile: build a JAR with just Guacamole's transitive dependencies, excluding those that are shaded into
+        the Guacamole JAR itself.
+      -->
+      <id>deps</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-shade-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>deps</id>
+                <goals>
+                  <goal>shade</goal>
+                </goals>
+                <configuration>
+                  <finalName>guacamole-deps-${project.version}</finalName>
+                  <transformers combine.children="append">
+                    <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer" />
+                  </transformers>
+                  <filters combine.children="append">
+                    <!-- Leave all Guacamole classes out of this JAR. -->
+                    <filter>
+                      <artifact>*:guacamole</artifact>
+                      <excludes>
+                        <exclude>org/hammerlab/guacamole/**</exclude>
+                      </excludes>
+                    </filter>
+                  </filters>
                   <artifactSet>
                     <excludes>
-                      <exclude>org.hammerlab.guacamole:*</exclude>
-
                       <!-- These are shaded into the "guac"-profile JAR. -->
-                      <exclude>com.google.guava:</exclude>
+                      <exclude>com.google.guava:*</exclude>
                       <exclude>org.scalanlp:breeze_${scala.version.prefix}</exclude>
                     </excludes>
                   </artifactSet>
@@ -340,5 +363,37 @@
         </plugins>
       </build>
     </profile>
+
+    <profile>
+      <!--
+        "local" profile puts Spark and Hadoop into "compile" scope (rather than "provided"); generally not desirable,
+        unless intending to run Guacamole directly from the command-line using the `java` executable, instead of
+        spark-{submit,shell}.
+      -->
+      <id>local</id>
+      <properties>
+        <spark.hadoop.scope>compile</spark.hadoop.scope>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-shade-plugin</artifactId>
+            <configuration>
+              <transformers combine.children="append">
+                <!-- Akka (which Spark depends on) needs this reference.conf munging in order to work correctly in -->
+                <!-- shaded JARs, cf. http://stackoverflow.com/questions/31011243/#31011315 -->
+                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                  <resource>reference.conf</resource>
+                </transformer>
+
+                <!-- Necessary for Hadoop to load local files correctly, cf. http://stackoverflow.com/a/27532248/544236 -->
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+              </transformers>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
   </profiles>
 </project>

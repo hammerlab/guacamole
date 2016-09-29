@@ -6,34 +6,41 @@ set -e
 #
 # First, check for an already-built assembly JAR; if one exists, print its path and exit.
 #
-# Otherwise, see if a Guacamole JAR (including shaded guava but no other dependencies) exists.
+# Otherwise, see if a Guacamole JAR (including shaded guava+breeze but no other dependencies) exists.
 #
-#   if so: pair it with either a "deps-only" JAR, if one exists, or a classpath built by the Maven dependency plugin
+#   if so: pair it with either a "deps" JAR, if one exists, or a classpath built by the Maven dependency plugin
 #          otherwise.
 #   if not: fail.
+#
+# If the "-t" argument is provided, test-classes will be included on the classpath as well.
 
-# Go to the repo root.
-cd "$(dirname "$(dirname "${BASH_SOURCE[@]}")")"
+scripts_dir="$(dirname "${BASH_SOURCE[@]}")"
 
-if source "scripts/.jars-rc"; then
-  if [ -n "$uber_jar" ]; then
-    echo "$uber_jar"
-  else
-    echo "$guac_jar:$deps_jar"
-  fi
-else
-  guac_jar="$(scripts/guac-jar)"
-  if [ -z "$guac_jar" ]; then
-    exit 1
-  fi
+# Classpath path-separator
+sep=":"
 
-  tmp_cp_file="$(mktemp)"
-
-  finish() {
-    rm -f "$tmp_cp_file"
-  }
-  trap finish EXIT
-
-  mvn dependency:build-classpath -Dmdep.outputFile="$tmp_cp_file" &> /dev/null
-  echo "$guac_jar:$(cat "$tmp_cp_file")"
+include_tests=
+if [ $# -eq 1 -a "$1" == "-t" ]; then
+  include_tests=1
+elif [ $# -gt 0 ]; then
+  echo "Usage: $0 [-t]" >&2
+  exit 1
 fi
+
+# Load `find_jars` function.
+source "$scripts_dir/.jars-rc"
+find_jars
+
+cp=
+if [ -z "$deps" ]; then
+  cp="$main_jar"
+else
+  # Likewise, "guac" and "deps" jars.
+  cp="$main_jar,$deps"
+fi
+
+if [ -n "$include_tests" ]; then
+  cp="$cp,target/scala-2.10.6/test-classes"
+fi
+
+echo "$cp" | tr , "$sep"

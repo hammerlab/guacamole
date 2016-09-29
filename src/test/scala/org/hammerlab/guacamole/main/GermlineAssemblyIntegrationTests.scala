@@ -15,7 +15,7 @@ import org.hammerlab.guacamole.variants.VariantComparisonTest
  *   mvn package -DskipTests
  *   mvn test-compile
  *   java \
- *     -cp "$(scripts/classpath)":target/scala-2.10.5/test-classes \
+ *     -cp "$(scripts/classpath -t)" \
  *     org.hammerlab.guacamole.main.GermlineAssemblyIntegrationTests
  */
 object GermlineAssemblyIntegrationTests extends SparkCommand[Arguments] with VariantComparisonTest {
@@ -29,7 +29,6 @@ object GermlineAssemblyIntegrationTests extends SparkCommand[Arguments] with Var
       "--reference", NA12878TestUtil.chr1PrefixFasta,
       "--loci", "chr1:0-6700000",
       "--out", "/tmp/germline-assembly-na12878-guacamole-tests.vcf",
-      "--bam-reader-api", "hadoopbam",
       "--partition-accuracy", "0",
       "--parallelism", "0",
       "--kmer-size", "31",
