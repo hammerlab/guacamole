@@ -55,14 +55,13 @@ object ReadSets extends Logging {
   def apply(sc: SparkContext,
             inputs: PerSample[Input],
             loci: LociParser,
-            contigLengthsFromDictionary: Boolean): ReadSets = {
+            contigLengthsFromDictionary: Boolean): ReadSets =
     ReadSets(
       sc,
       inputs,
       InputFilters(overlapsLoci = loci),
       contigLengthsFromDictionary = contigLengthsFromDictionary
     )
-  }
 
   def apply(sc: SparkContext, args: BaseArgs): (ReadSets, LociSet) = {
     val loci = args.parseLoci(sc.hadoopConfiguration)
@@ -78,9 +77,8 @@ object ReadSets extends Logging {
   def apply(sc: SparkContext,
             inputs: PerSample[Input],
             filters: InputFilters = InputFilters.empty,
-            contigLengthsFromDictionary: Boolean = true): ReadSets = {
+            contigLengthsFromDictionary: Boolean = true): ReadSets =
     apply(sc, inputs.map((_, filters)), contigLengthsFromDictionary)
-  }
 
   /**
    * Load reads from multiple files, allowing different filters to be applied to each file.

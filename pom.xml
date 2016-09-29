@@ -33,7 +33,7 @@
       As such, we write it to a non-default path here, and treat the minimum-viable Guacamole+shaded-deps JAR (built by
       the default "guac" profile below) as the primary deliverable.
      -->
-    <finalName>guacamole-plain-${project.version}</finalName>
+    <finalName>guacamole-unshaded-${project.version}</finalName>
     <plugins>
       <plugin>
         <groupId>org.scalatest</groupId>
@@ -48,7 +48,6 @@
         <artifactId>maven-shade-plugin</artifactId>
         <version>2.4.3</version>
         <configuration>
-
           <transformers>
             <!-- Set "main" class. -->
             <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
@@ -243,6 +242,13 @@
         <activeByDefault>true</activeByDefault>
       </activation>
       <build>
+        <!--
+          `mvn install` will look for a JAR with this name, which is taken to be the main deliverable JAR of this
+          project.
+
+          We name it here in a manner that matches what we tell the shade-plugin to output below.
+        -->
+        <finalName>guacamole-${project.version}</finalName>
         <plugins>
           <plugin>
             <artifactId>maven-shade-plugin</artifactId>
@@ -254,6 +260,11 @@
                 </goals>
                 <configuration>
                   <finalName>guacamole-${project.version}</finalName>
+                  <!--
+                    Don't "attach" this shaded JAR to the project (in addition to the default unshaded JAR that would be
+                    produced by the jar-plugin; this JAR *is* the deliverable of the project.
+                  -->
+                  <shadedArtifactAttached>false</shadedArtifactAttached>
                   <artifactSet>
                     <includes>
                       <include>org.hammerlab.guacamole:*</include>
