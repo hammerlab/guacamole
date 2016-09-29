@@ -134,7 +134,6 @@ object Likelihood {
         .flatMap(_.alleles)
         .distinct
         .sorted
-        .array
 
     // map from allele -> allele index in our alleles sequence.
     val alleleToIndex =
