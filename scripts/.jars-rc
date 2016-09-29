@@ -65,12 +65,12 @@ find_jars() {
 
   if [ -z "$uber_jar" ]; then
     if [ -z "$guac_jar" ]; then
-      echo "Couldn't find a guacamole or assembly jar." 1>&2
+      echo "Couldn't find a guacamole or assembly jar." >&2
       return 1
     fi
 
     if [ -z "$deps_jar" -a -z "$deps_jars" ]; then
-      echo "Couldn't find a guacamole dependencies jar, assembly jar, or dependencies classpath file." 1>&2
+      echo "Couldn't find a guacamole dependencies jar, assembly jar, or dependencies classpath file." >&2
       return 2
     fi
   fi

@@ -4,7 +4,7 @@
 # subset test data. Run this from the root of the guacamole repository.
 
 if [ -z "$GATK_JAR" -o -z "$REFERENCE" ]; then
-  echo "Set \$GATK_JAR and \$REFERENCE" 1>&2
+  echo "Set \$GATK_JAR and \$REFERENCE" >&2
   exit 1
 fi
 
