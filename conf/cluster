@@ -1,8 +1,8 @@
 spark.master                                  yarn
 spark.submit.deployMode                       cluster
-spark.executor.memory                         12g
 spark.driver.memory                           10g
-spark.executor.cores                          1
+spark.executor.memory                         12g
+spark.executor.cores                          4
 spark.shuffle.service.enabled                 true
 spark.dynamicAllocation.enabled               true
 spark.dynamicAllocation.executorIdleTimeout   300

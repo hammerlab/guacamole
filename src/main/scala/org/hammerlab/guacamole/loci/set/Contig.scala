@@ -47,7 +47,7 @@ case class Contig(var name: ContigName, private var rangeSet: RangeSet[JLong]) e
   lazy val ranges: Vector[Interval] = {
     rangeSet
       .asRanges()
-      .map(Interval(_))
+      .map(range => Interval(range.lowerEndpoint(), range.upperEndpoint()))
       .toVector
       .sortBy(x => x)
   }
@@ -72,8 +72,8 @@ case class Contig(var name: ContigName, private var rangeSet: RangeSet[JLong]) e
    * Used by LociSet.take.
    */
   private[set] def take(numToTake: Long): (Contig, Contig) = {
-    val firstRanges = ArrayBuffer[JRange[JLong]]()
-    val secondRanges = ArrayBuffer[JRange[JLong]]()
+    val firstRanges = ArrayBuffer[Interval]()
+    val secondRanges = ArrayBuffer[Interval]()
 
     var remaining = numToTake
     var doneTaking = false
@@ -81,13 +81,13 @@ case class Contig(var name: ContigName, private var rangeSet: RangeSet[JLong]) e
       range <- ranges
     } {
       if (doneTaking) {
-        secondRanges.append(range.toJavaRange)
+        secondRanges.append(range)
       } else if (range.length < numToTake) {
-        firstRanges.append(range.toJavaRange)
+        firstRanges.append(range)
         remaining -= range.length
       } else {
-        firstRanges.append(JRange.closedOpen(range.start, range.start + remaining))
-        secondRanges.append(JRange.closedOpen(range.start + remaining, range.end))
+        firstRanges.append(Interval(range.start, range.start + remaining))
+        secondRanges.append(Interval(range.start + remaining, range.end))
         doneTaking = true
       }
     }
@@ -111,13 +111,17 @@ private[loci] object Contig {
   def apply(name: ContigName): Contig = Contig(name, TreeRangeSet.create[JLong]())
 
   // Constructors that make a Contig from its name and some ranges.
-  def apply(tuple: (ContigName, Iterable[JRange[JLong]])): Contig = Contig(tuple._1, tuple._2)
-  def apply(name: ContigName, ranges: Iterable[JRange[JLong]]): Contig =
+  def apply(tuple: (ContigName, Iterable[Interval])): Contig = Contig(tuple._1, tuple._2)
+  def apply(name: ContigName, ranges: Iterable[Interval]): Contig =
     Contig(
       name,
       {
         val rangeSet = TreeRangeSet.create[JLong]()
-        ranges.foreach(rangeSet.add)
+        for {
+          Interval(start, end) <- ranges
+        } {
+          rangeSet.add(JRange.closedOpen(start, end))
+        }
         rangeSet
       }
     )

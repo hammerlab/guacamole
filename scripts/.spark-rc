@@ -7,11 +7,6 @@ if [ -z "$SPARK_HOME" ]; then
   exit 1
 fi
 
-# Log a message to help debug unexpected-HDFS-default-filesystem situations.
-if [ -n "$HADOOP_CONF_DIR" -o -n "$YARN_CONF_DIR" ]; then
-  echo "Using HDFS by default"
-fi
-
 # We'll build a spark properties file in a temporay file called $conf_file, seeded with some configs for initializing
 # Kryo serialization.
 conf_file="$(mktemp)"
@@ -36,7 +31,18 @@ if [ -n "$GUAC_SPARK_CONFS" ]; then
     # If it contains more than one comma-delimited path, append all such files' contents to $conf_file, as a work-around
     # to Spark not directly allowing multiple/cascading properties files.
     echo "Using Spark properties files: $GUAC_SPARK_CONFS"
-    echo "$GUAC_SPARK_CONFS" | tr ',' '\n' | xargs cat | sort > "$conf_file"
+    OLD_IFS="$IFS"
+    IFS=$'\n'
+    for file in $(echo "$GUAC_SPARK_CONFS" | tr ',' '\n'); do
+      if [ -z "$file" ]; then
+        continue
+      elif [ -e "$file" ]; then
+        cat "$file" >> "$conf_file"
+      else
+        cat "$conf_dir/$file" >> "$conf_file"
+      fi
+    done
+    IFS="$OLD_IFS"
   else
     echo "Using Spark config file: $GUAC_SPARK_CONFS"
     cat "$GUAC_SPARK_CONFS" >> "$conf_file"
@@ -47,4 +53,16 @@ else
   cat "$conf_dir/local" >> "$conf_file"
 fi
 
-cat "$conf_file"
+# Log a message to help debug unexpected-HDFS-default-filesystem situations.
+if [ -n "$HADOOP_CONF_DIR" -o -n "$YARN_CONF_DIR" ]; then
+  if grep -q "^spark.master.*local" "$conf_file" && [ -z "$GUAC_USE_HDFS" ]; then
+    echo "Un-setting \$HADOOP_CONF_DIR and \$YARN_CONF_DIR for local-mode run; set \$GUAC_USE_HDFS=1 to override."
+    HADOOP_CONF_DIR=
+    YARN_CONF_DIR=
+  else
+    echo "Using HDFS as default filesystem."
+  fi
+fi
+
+echo "Spark configs:"
+cat "$conf_file" | perl -pe 's/^/\t/'

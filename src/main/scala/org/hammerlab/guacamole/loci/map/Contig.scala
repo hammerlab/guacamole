@@ -42,7 +42,7 @@ case class Contig[T](name: ContigName, private val rangeMap: RangeMap[JLong, T])
       (for {
         (range, value) <- rangeMap.asMapOfRanges.toSeq
       } yield {
-        Interval(range) -> value
+        Interval(range.lowerEndpoint(), range.upperEndpoint()) -> value
       }): _*
     )
   }
@@ -51,13 +51,13 @@ case class Contig[T](name: ContigName, private val rangeMap: RangeMap[JLong, T])
    * Map from each value found in this Contig to a LociSet Contig representing the loci that map to that value.
    */
   lazy val inverse: Map[T, LociSetContig] = {
-    val map = mutable.HashMap[T, ArrayBuffer[JRange[JLong]]]()
+    val map = mutable.HashMap[T, ArrayBuffer[Interval]]()
     for {
       (range, value) <- asMap
     } {
       map
         .getOrElseUpdate(value, ArrayBuffer())
-        .append(range.toJavaRange)
+        .append(range)
     }
     map.mapValues(ranges => LociSetContig(name, ranges)).toMap
   }

@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 # Wrapper script for spark-submit that finds Guacamole JARs and a Spark properties file.
 #
 # Example:
@@ -9,20 +11,13 @@
 # Default Spark-properties file is at conf/spark-defaults.conf, and configures a 4gb, 1-worker, local Spark master. To
 # specify other Spark properties, set the $GUAC_CONF_PATH environment variable.
 
-dir="$(dirname "${BASH_SOURCE[0]}")"
+scripts_dir="$(dirname "${BASH_SOURCE[0]}")"
 
-# Set uber_jar xor {guac_jar,deps_jar} and $conf_file
-source "$dir/.jars-rc"
+source "$scripts_dir/.jars-rc"
+find_jars
 
-# Make jars_args an array that will be passed to spark-submit below.
-jars_args=()
-if [ -n "$uber_jar" ]; then
-  jars_args=("$uber_jar")
-else
-  jars_args=("--jars" "$deps_jar" "$guac_jar")
-fi
-
-source "$dir/.spark-rc"
+# Build a spark properties file and set the variable $conf_file to its path.
+source "$scripts_dir/.spark-rc"
 
 # Run Spark!
-time "$SPARK_HOME"/bin/spark-submit --properties-file "$conf_file" "${jars_args[@]}" "$@"
+time "$SPARK_HOME"/bin/spark-submit --properties-file "$conf_file" --jars "$deps" "$main_jar" "$@"

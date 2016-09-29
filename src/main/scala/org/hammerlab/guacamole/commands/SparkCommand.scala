@@ -58,6 +58,10 @@ abstract class SparkCommand[T <: Args: Manifest] extends Command[T] {
       config.set("spark.kryo.referenceTracking", "true")
     }
 
+    if (config.getOption("spark.kryo.registrationRequired").isEmpty) {
+      config.set("spark.kryo.registrationRequired", "true")
+    }
+
     for {
       (k, v) <- defaultConfs
     } {

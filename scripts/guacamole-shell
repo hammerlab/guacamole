@@ -1,21 +1,18 @@
 #!/usr/bin/env bash
 
+set -e
+
 # Wrapper around spark-shell that puts Guacamole JAR(s) on the classpath.
 
-dir="$(dirname "${BASH_SOURCE[0]}")"
+scripts_dir="$(dirname "${BASH_SOURCE[0]}")"
 
-# Set uber_jar xor {guac_jar,deps_jar}
-source "$dir/.jars-rc"
+source "$scripts_dir/.jars-rc"
+find_jars
 
-jars=
-if [ -n "$uber_jar" ]; then
-  jars="$uber_jar"
-else
-  jars="$guac_jar,$deps_jar"
-fi
+# Build a spark properties file and set the variable $conf_file to its path.
+source "$scripts_dir/.spark-rc"
 
-source "$dir/.spark-rc"
-
+# spark-shell leaves these laying around and they often cause problems during shell-boot.
 rm -rf metastore_db derby.log
 
-"$SPARK_HOME"/bin/spark-shell --jars "$jars" --properties-file "$conf_file" "$@"
+"$SPARK_HOME"/bin/spark-shell --jars "$main_jar,$deps" --properties-file "$conf_file" "$@"
