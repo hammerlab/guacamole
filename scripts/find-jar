@@ -27,6 +27,8 @@ jars() {
     find target -name "guacamole-deps-*.jar"
   elif [ "$jar" == "assembly" ]; then
     find target -name "guacamole-assembly-*.jar"
+  elif [ "$jar" == "test" ]; then
+    find target -name "guacamole-plain-*-tests.jar"
   else
     usage
   fi

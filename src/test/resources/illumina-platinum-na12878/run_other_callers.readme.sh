@@ -35,7 +35,7 @@ time java -jar "$GATK_JAR" \
     -o src/test/resources/illumina-platinum-na12878/haplotype_caller.vcf
 
 # germline-standard
-time scripts/guacamole germline-standard \
+time scripts/guacamole germline-assembly \
     --reads src/test/resources/illumina-platinum-na12878/NA12878.10k_variants.plus_chr1_3M-3.1M.bam \
     --loci chr1:0-6700000 \
     --out src/test/resources/illumina-platinum-na12878/germline_standrd.dir.vcf
