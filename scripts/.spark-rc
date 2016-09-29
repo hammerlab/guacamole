@@ -3,7 +3,7 @@
 # Script that verifies that "$SPARK_HOME" is set and computes a path to a Spark properties file.
 
 if [ -z "$SPARK_HOME" ]; then
-  echo "Set \$SPARK_HOME" 1>&2
+  echo "Set \$SPARK_HOME" >&2
   exit 1
 fi
 

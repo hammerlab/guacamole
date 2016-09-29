@@ -9,7 +9,7 @@ set -e
 cd "$(dirname "$(dirname "${BASH_SOURCE[@]}")")"
 
 usage() {
-  echo "Usage: $0 <guac|deps|assembly>" 1>&2
+  echo "Usage: $0 <guac|deps|assembly|test>" >&2
   exit 1
 }
 
@@ -39,10 +39,10 @@ if [ "$num_jars" == "1" ]; then
   echo "$PWD/$jar_path"
   exit 0
 elif [ "$num_jars" == "0" ]; then
-  echo "Found no $jar jars" 1>&2
+  echo "Found no $jar jars" >&2
   exit 1
 else
-  echo "Found $num_jars $jar jars:" 1>&2
-  jars 1>&2
+  echo "Found $num_jars $jar jars:" >&2
+  jars >&2
   exit 2
 fi

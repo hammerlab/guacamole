@@ -8,7 +8,7 @@
 # genomes.
 
 if [ "$#" -ne 2 ]; then
-    echo "Usage: $0 /path/to/ucsc.hg19.fasta /path/to/human_g1k_v37.fasta"
+    echo "Usage: $0 /path/to/ucsc.hg19.fasta /path/to/human_g1k_v37.fasta" >&2
     exit 1
 fi
 
