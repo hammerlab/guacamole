@@ -58,8 +58,7 @@ object SomaticStandard {
         PartitionedRegions(
           readsets.allMappedReads,
           loci,
-          args,
-          halfWindowSize = 0
+          args
         )
 
       // Destructure `args`' fields here to avoid serializing `args` itself.
