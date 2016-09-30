@@ -28,8 +28,8 @@ import scala.reflect.ClassTag
  * Note: the containing [[PartitionedRegions]] gets picked up by the closure-cleaner and serialized when
  * [[mapPartitions]] is called.
  */
-class PartitionedRegions[R <: ReferenceRegion: ClassTag](@transient regions: RDD[R],
-                                                         @transient partitioning: LociPartitioning)
+class PartitionedRegions[R <: ReferenceRegion: ClassTag] private(@transient regions: RDD[R],
+                                                                 @transient partitioning: LociPartitioning)
   extends Serializable {
 
   assert(
