@@ -60,34 +60,6 @@ case class LociPartitioning(map: LociMap[PartitionIndex])
 
 object LociPartitioning {
 
-  /**
-   * Load a LociMap output by [[LociMap.prettyPrint]].
-   * @param is [[InputStream]] reading from e.g. a file.
-   */
-  def load(is: InputStream): LociPartitioning = {
-    fromLines(LinesIterator(is))
-  }
-
-  /**
-   * Read in a [[LociPartitioning]] of partition indices from some strings, each one representing a genomic range.
-   * @param lines string representations of genomic ranges.
-   */
-  def fromLines(lines: TraversableOnce[String]): LociPartitioning = {
-    val builder = LociMap.newBuilder[PartitionIndex]
-    val re = """([^:]+):(\d+)-(\d+)=(\d+)""".r
-    for {
-      line <- lines
-      m <- re.findFirstMatchIn(line)
-      contig = m.group(1)
-      start = m.group(2).toLong
-      end = m.group(3).toLong
-      partition = m.group(4).toInt
-    } {
-      builder.put(contig, start, end, partition)
-    }
-    builder.result()
-  }
-
   // Build a LociPartitioning with each partition's loci mapped to the partition index.
   def apply(lociSets: Iterable[LociSet]): LociPartitioning = {
     val lociMapBuilder = LociMap.newBuilder[PartitionIndex]
@@ -144,6 +116,32 @@ object LociPartitioning {
     )
 
     lociPartitioning
+  }
+
+  /**
+   * Load a LociMap output by [[LociMap.prettyPrint]].
+   * @param is [[InputStream]] reading from e.g. a file.
+   */
+  private def load(is: InputStream): LociPartitioning = fromLines(LinesIterator(is))
+
+  /**
+   * Read in a [[LociPartitioning]] of partition indices from some strings, each one representing a genomic range.
+   * @param lines string representations of genomic ranges.
+   */
+  private def fromLines(lines: TraversableOnce[String]): LociPartitioning = {
+    val builder = LociMap.newBuilder[PartitionIndex]
+    val re = """([^:]+):(\d+)-(\d+)=(\d+)""".r
+    for {
+      line <- lines
+      m <- re.findFirstMatchIn(line)
+      contig = m.group(1)
+      start = m.group(2).toLong
+      end = m.group(3).toLong
+      partition = m.group(4).toInt
+    } {
+      builder.put(contig, start, end, partition)
+    }
+    builder.result()
   }
 
   implicit def lociMapToLociPartitioning(map: LociMap[PartitionIndex]): LociPartitioning = LociPartitioning(map)
