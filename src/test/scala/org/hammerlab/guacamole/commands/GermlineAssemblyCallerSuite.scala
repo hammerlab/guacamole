@@ -2,6 +2,7 @@ package org.hammerlab.guacamole.commands
 
 import org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Arguments
 import org.hammerlab.guacamole.data.NA12878TestUtil
+import org.hammerlab.guacamole.loci.partitioning.LociPartitioning
 import org.hammerlab.guacamole.loci.set.LociParser
 import org.hammerlab.guacamole.readsets.ReadSets
 import org.hammerlab.guacamole.readsets.io.InputFilters
@@ -60,10 +61,7 @@ class GermlineAssemblyCallerSuite
 
     val loci = lociParser.result(readsets.contigLengths)
 
-    val lociPartitioning =
-      args
-        .getPartitioner(readsets.allMappedReads)
-        .partition(loci)
+    val lociPartitioning = LociPartitioning(readsets.allMappedReads, loci, args)
 
     val partitionedReads = partitionReads(readsets.allMappedReads, lociPartitioning)
 
