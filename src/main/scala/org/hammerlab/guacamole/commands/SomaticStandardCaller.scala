@@ -38,10 +38,10 @@ object SomaticStandard {
       with ReferenceArgs {
 
     @Args4jOption(name = "--normal-odds", usage = "Minimum log odds threshold for possible variant candidates")
-    var normalOddsThreshold: Int = 20
+    var normalOddsThreshold: Int = 4
 
     @Args4jOption(name = "--tumor-odds", usage = "Minimum log odds threshold for possible variant candidates")
-    var tumorOddsThreshold: Int = 20
+    var tumorOddsThreshold: Int = 15
 
     @Args4jOption(name = "--dbsnp-vcf", required = false, usage = "VCF file to identify DBSNP variants")
     var dbSnpVcf: String = ""
@@ -172,7 +172,7 @@ object SomaticStandard {
         prior = Likelihood.uniformPrior,
         includeAlignment = false,
         logSpace = true,
-        normalize = false
+        normalize = true
       )
       val tumorLOD: Double = tumorLikelihoods(1) - tumorLikelihoods(0)
 
@@ -190,17 +190,15 @@ object SomaticStandard {
         prior = Likelihood.uniformPrior,
         includeAlignment = false,
         logSpace = true,
-        normalize = false
+        normalize = true
       )
 
       val normalLOD: Double = normalLikelihoods(0) - normalLikelihoods(1)
-
-      if (tumorLOD > tumorOddsThreshold && normalLOD > normalOddsThreshold)
-       println(s"${tumorPileup.locus}\t$tumorLOD\t$normalLOD")
       if (tumorLOD > tumorOddsThreshold && normalLOD > normalOddsThreshold && mostFrequentVariantAllele._1.altBases.nonEmpty) {
         val allele = mostFrequentVariantAllele._1
-        val tumorVariantEvidence = AlleleEvidence(tumorLikelihoods(1), allele, tumorPileup)
-        val normalReferenceEvidence = AlleleEvidence(1 - normalLikelihoods(0), referenceAllele, tumorPileup)
+
+        val tumorVariantEvidence = AlleleEvidence(math.exp(-tumorLikelihoods(1)), allele, tumorPileup)
+        val normalReferenceEvidence = AlleleEvidence(math.exp(-normalLikelihoods(0)), referenceAllele, normalPileup)
         Some(
           CalledSomaticAllele(
             tumorPileup.sampleName,

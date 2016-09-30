@@ -34,7 +34,7 @@ case class CalledSomaticAllele(sampleName: SampleName,
 
   // P ( variant in tumor AND no variant in normal) = P(variant in tumor) * P(reference in normal)
   lazy val phredScaledSomaticLikelihood =
-    successProbabilityToPhred(tumorVariantEvidence.likelihood * normalReferenceEvidence.likelihood - 1e-10)
+    successProbabilityToPhred(math.min(1.0, tumorVariantEvidence.likelihood * normalReferenceEvidence.likelihood) - 1e-10)
 
   def toBDGGenotype: BDGGenotype =
     BDGGenotype
