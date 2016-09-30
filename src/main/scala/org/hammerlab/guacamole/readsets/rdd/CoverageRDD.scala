@@ -197,3 +197,7 @@ class CoverageRDD[R <: ReferenceRegion: ClassTag](@transient rdd: RDD[R])
       .reduceByKey(_ + _)  // sum all Coverages for each Position
       .sortByKey()  // sort by Position
 }
+
+object CoverageRDD {
+  implicit def toCoverageRDD[R <: ReferenceRegion: ClassTag](rdd: RDD[R]): CoverageRDD[R] = new CoverageRDD(rdd)
+}
