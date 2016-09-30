@@ -6,13 +6,12 @@ import htsjdk.variant.vcf.VCFFileReader
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.Path
 import org.hammerlab.guacamole.loci.set.LociParser
-import org.hammerlab.guacamole.logging.DebugLogArgs
 import org.kohsuke.args4j.{Option => Args4jOption}
 
 import scala.io.Source
 
 /** Argument for accepting a set of loci. */
-trait LociArgs extends DebugLogArgs {
+trait LociArgs {
   @Args4jOption(
     name = "--loci",
     usage = "Loci at which to call variants. Either 'all' or contig:start-end,contig:start-end,...",

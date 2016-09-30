@@ -8,7 +8,6 @@ import org.bdgenomics.adam.rdd.ADAMContext._
 import org.bdgenomics.adam.rich.RichVariant
 import org.bdgenomics.formats.avro.{GenotypeType, Genotype => BDGGenotype}
 import org.bdgenomics.quinine.rdd.variation.{ConcordanceTable, GenotypeConcordanceRDDFunctions}
-import org.hammerlab.guacamole.logging.DebugLogArgs
 import org.kohsuke.args4j.{Option => Args4jOption}
 
 /**
@@ -21,7 +20,7 @@ object Concordance {
   /**
    * Arguments that callers can include to support concordance calculations.
    */
-  trait ConcordanceArgs extends DebugLogArgs {
+  trait ConcordanceArgs {
     @Args4jOption(name = "--truth", metaVar = "truth", usage = "The truth ADAM or VCF genotypes file")
     var truthGenotypesFile: String = ""
 

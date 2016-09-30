@@ -1,6 +1,5 @@
 package org.hammerlab.guacamole.jointcaller
 
-import org.hammerlab.guacamole.logging.DebugLogArgs
 import org.kohsuke.args4j.{Option => Args4jOption}
 
 /**
