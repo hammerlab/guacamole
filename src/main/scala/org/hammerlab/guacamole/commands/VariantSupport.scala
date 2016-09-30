@@ -18,7 +18,8 @@ import org.kohsuke.args4j.{Option => Args4jOption}
 object VariantSupport {
 
   protected class Arguments
-    extends ReadSetsArguments
+    extends Args
+      with ReadSetsArguments
       with ReferenceArgs {
 
     @Args4jOption(name = "--input-variant", required = true, aliases = Array("-v"),
