@@ -22,7 +22,7 @@ shift
 
 jars() {
   if [ "$jar" == "guac" ]; then
-    find target -name "guacamole-*.jar" | grep -v -e deps -e plain -e assembly
+    find target -name "guacamole-*.jar" | grep -v -e deps -e plain -e assembly -e javadoc -e sources
   elif [ "$jar" == "deps" ]; then
     find target -name "guacamole-deps-*.jar"
   elif [ "$jar" == "assembly" ]; then
