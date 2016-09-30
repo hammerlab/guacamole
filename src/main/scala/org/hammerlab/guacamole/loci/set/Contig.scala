@@ -99,11 +99,10 @@ case class Contig(var name: ContigName, private var rangeSet: RangeSet[JLong]) e
    * Iterator over string representations of each range in the map, used to assemble (possibly truncated) .toString()
    * output.
    */
-  def stringPieces = {
+  def stringPieces =
     ranges.iterator.map(pair =>
       "%s:%d-%d".format(name, pair.start, pair.end)
     )
-  }
 }
 
 private[loci] object Contig {

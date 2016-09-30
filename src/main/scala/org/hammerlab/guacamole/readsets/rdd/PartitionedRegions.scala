@@ -140,7 +140,13 @@ object PartitionedRegions {
       lociPartitioning.partitionSizeStats.toString(),
       "",
       "Contigs-spanned-per-partition stats:",
-      lociPartitioning.partitionContigStats.toString()
+      lociPartitioning.partitionContigStats.toString(),
+      "",
+      "Range-size stats:",
+      lociPartitioning.rangeSizeStats.toString(),
+      "",
+      "Ranges-per-partition stats:",
+      lociPartitioning.partitionRangesStats.toString()
     )
 
     apply(
