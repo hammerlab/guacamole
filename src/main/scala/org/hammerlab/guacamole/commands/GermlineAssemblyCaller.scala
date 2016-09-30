@@ -31,8 +31,8 @@ import org.kohsuke.args4j.{Option => Args4jOption}
 object GermlineAssemblyCaller {
 
   class Arguments
-    extends AssemblyArgs
-      with GermlineCallerArgs
+    extends GermlineCallerArgs
+      with AssemblyArgs
       with ReferenceArgs {
 
     @Args4jOption(name = "--min-average-base-quality", usage = "Minimum average of base qualities in the read")
