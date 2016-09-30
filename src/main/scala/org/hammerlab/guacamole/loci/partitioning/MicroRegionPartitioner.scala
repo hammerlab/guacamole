@@ -145,6 +145,7 @@ class MicroRegionPartitioner[R <: ReferenceRegion: ClassTag](regions: RDD[R],
           // If we've allocated all regions for this partition, move on to the next partition.
           if (regionsRemainingForThisPartition() == 0)
             partition += 1
+
           assert(regionsRemainingForThisPartition() > 0)
           assert(partition < numPartitions)
 
