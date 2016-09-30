@@ -2,7 +2,7 @@ package org.hammerlab.guacamole.loci.partitioning
 
 import java.io.{InputStream, OutputStream}
 
-import org.apache.hadoop.fs.{FileSystem, Path}
+import org.apache.hadoop.fs.Path
 import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole.loci.map.LociMap
 import org.hammerlab.guacamole.loci.partitioning.LociPartitioner.PartitionIndex
@@ -103,30 +103,45 @@ object LociPartitioning {
                                             loci: LociSet,
                                             args: LociPartitionerArgs,
                                             halfWindowSize: Int = 0): LociPartitioning = {
-    for (lociPartitioningPath <- args.lociPartitioningPathOpt) {
-      val path = new Path(lociPartitioningPath)
-      val fs = path.getFileSystem(regions.sparkContext.hadoopConfiguration)
-      if (fs.exists(path)) {
+
+    val hadoopConfiguration = regions.sparkContext.hadoopConfiguration
+
+    val lociPartitioning: LociPartitioning =
+      (for {
+        lociPartitioningPath <- args.lociPartitioningPathOpt
+        path = new Path(lociPartitioningPath)
+        fs = path.getFileSystem(hadoopConfiguration)
+        // Load LociPartitioning from disk, if it exists…
+        if (fs.exists(path))
+      } yield {
         progress(s"Loading loci partitioning from $lociPartitioningPath")
-        return load(fs.open(path))
-      }
-    }
-
-    progress(s"Partitioning loci")
-
-    val lociPartitioning =
-      args
-        .getPartitioner(regions, halfWindowSize)
-        .partition(loci)
+        load(fs.open(path))
+      })
+      .getOrElse({
+        // Otherwise, compute it.
+        progress(s"Partitioning loci")
+        args
+          .getPartitioner(regions)
+          .partition(loci)
+      })
 
     for (lociPartitioningPath <- args.lociPartitioningPathOpt) {
       progress(s"Saving loci partitioning to $lociPartitioningPath")
+      val path = new Path(lociPartitioningPath)
+      val fs = path.getFileSystem(hadoopConfiguration)
       lociPartitioning.save(
-        FileSystem
-          .get(regions.sparkContext.hadoopConfiguration)
-          .create(new Path(lociPartitioningPath))
+        fs.create(path)
       )
     }
+
+    progress(
+      s"Partitioned loci: ${lociPartitioning.numPartitions} partitions.",
+      "Partition-size stats:",
+      lociPartitioning.partitionSizeStats.toString(),
+      "",
+      "Contigs-spanned-per-partition stats:",
+      lociPartitioning.partitionContigStats.toString()
+    )
 
     lociPartitioning
   }
