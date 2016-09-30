@@ -2,7 +2,6 @@ package org.hammerlab.guacamole.commands
 
 import org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Arguments
 import org.hammerlab.guacamole.data.NA12878TestUtil
-import org.hammerlab.guacamole.loci.partitioning.UniformPartitioner
 import org.hammerlab.guacamole.loci.set.LociParser
 import org.hammerlab.guacamole.readsets.ReadSets
 import org.hammerlab.guacamole.readsets.io.InputFilters
@@ -17,10 +16,12 @@ class GermlineAssemblyCallerSuite
     with BeforeAndAfterAll
     with PartitionedRegionsUtil {
 
-  val args = new Arguments
-
-  args.reads = NA12878TestUtil.subsetBam
-  args.parallelism = 1
+  val args =
+    new Arguments {
+      reads = NA12878TestUtil.subsetBam
+      parallelism = 1
+      lociPartitionerName = "uniform"
+    }
 
   var reference: ReferenceBroadcast = _
 
@@ -57,7 +58,12 @@ class GermlineAssemblyCallerSuite
         )
       )
 
-    val lociPartitioning = new UniformPartitioner(args.parallelism).partition(lociParser.result(readsets.contigLengths))
+    val loci = lociParser.result(readsets.contigLengths)
+
+    val lociPartitioning =
+      args
+        .getPartitioner(readsets.allMappedReads)
+        .partition(loci)
 
     val partitionedReads = partitionReads(readsets.allMappedReads, lociPartitioning)
 
