@@ -2,14 +2,20 @@
 
 set -e
 
-# Wrapper script for spark-submit that finds Guacamole JARs and a Spark properties file.
+# Wrapper script for spark-submit that loads Guacamole JARs onto Spark's classpath and handles Spark configuration from
+# user-supplied properties files and command-line arguments.
 #
 # Example:
 #
-#   $ scripts/guacamole somatic-joint normal.bam tumor.bam --reference hg19.fasta --out out.vcf
+#   $ scripts/guacamole \
+#       --conf spark.driver.memory=12g \
+#       somatic-joint \
+#       normal.bam tumor.bam \
+#       --reference hg19.fasta \
+#       --out out.vcf
 #
-# Default Spark-properties file is at conf/spark-defaults.conf, and configures a 4gb, 1-worker, local Spark master. To
-# specify other Spark properties, set the $GUAC_CONF_PATH environment variable.
+# Default Spark-properties file is at conf/local, and configures a 4gb, 1-worker, local Spark master. To specify other
+# Spark properties, set the $GUAC_CONF_PATH environment variable or pass them in "--conf spark.…" format.
 
 scripts_dir="$(dirname "${BASH_SOURCE[0]}")"
 
@@ -19,5 +25,35 @@ find_jars
 # Build a spark properties file and set the variable $conf_file to its path.
 source "$scripts_dir/.spark-rc"
 
+# Look for pairs of arguments starting with "--conf spark.…", and pass them to `spark-submit`; other arguments are sent
+# to guacamole.
+#
+# All Spark configs can be set with "--conf spark.…" syntax, though some also have shorthands (e.g. "--driver-memory",
+# "--num-executors", etc.); rather than hard-code the latter here, we just force all Spark configs to conform to the
+# former.
+spark_args=()
+guac_args=()
+while [ $# -gt 0 ]; do
+  arg="$1"
+  shift
+  if [ "$arg" == "--conf" ]; then
+    spark_args+=("$arg")
+    value="$1"
+    shift
+    if ! [[ "$value" =~ ^spark\. ]]; then
+      echo "Suspicious arguments: '--conf $value'; expect '--conf' values to begin with 'spark.'" >&2
+    fi
+    spark_args+=("$value")
+  else
+    guac_args+=("$arg")
+  fi
+done
+
 # Run Spark!
-time "$SPARK_HOME"/bin/spark-submit --properties-file "$conf_file" --jars "$deps" "$main_jar" "$@"
+time \
+  "$SPARK_HOME"/bin/spark-submit \
+    --properties-file "$conf_file" \
+    "${spark_args[@]}" \
+    --jars "$deps" \
+    "$main_jar" \
+    "${guac_args[@]}"
