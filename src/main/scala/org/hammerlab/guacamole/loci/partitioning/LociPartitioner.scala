@@ -56,7 +56,7 @@ trait LociPartitionerArgs
         )
 
       case "micro-regions" =>
-        new MicroRegionPartitioner(regions, halfWindowSize, numPartitions, partitioningAccuracy)
+        new MicroRegionPartitioner(regions, numPartitions, partitioningAccuracy)
       case "uniform" =>
         UniformPartitioner(numPartitions)
       case _ =>
