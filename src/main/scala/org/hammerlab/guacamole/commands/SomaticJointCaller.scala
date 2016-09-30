@@ -10,13 +10,12 @@ import org.hammerlab.guacamole.loci.LociArgs
 import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.readsets.args.ReferenceArgs
+import org.hammerlab.guacamole.readsets.args.{ReferenceArgs, Arguments => ReadSetsArguments}
 import org.hammerlab.guacamole.readsets.rdd.PartitionedRegions
 import org.hammerlab.guacamole.readsets.{PerSample, ReadSets}
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.kohsuke.args4j.spi.StringArrayOptionHandler
 import org.kohsuke.args4j.{Option => Args4jOption}
-import org.hammerlab.guacamole.readsets.args.{Arguments => ReadSetsArguments}
 
 object SomaticJoint {
   class Arguments
@@ -167,8 +166,7 @@ object SomaticJoint {
       PartitionedRegions(
         readsets.allMappedReads,
         lociSetMinusOne(loci),
-        args,
-        halfWindowSize = 0
+        args
       )
 
     val broadcastForceCallLoci = sc.broadcast(forceCallLoci)

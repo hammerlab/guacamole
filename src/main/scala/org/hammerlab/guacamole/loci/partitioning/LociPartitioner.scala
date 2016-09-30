@@ -36,7 +36,7 @@ trait LociPartitionerArgs
   )
   var lociPartitionerName: String = "capped"
 
-  def getPartitioner[R <: ReferenceRegion: ClassTag](regions: RDD[R], halfWindowSize: Int = 0): LociPartitioner = {
+  def getPartitioner[R <: ReferenceRegion: ClassTag](regions: RDD[R]): LociPartitioner = {
     val sc = regions.sparkContext
 
     val numPartitions =

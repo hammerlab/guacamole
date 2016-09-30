@@ -74,8 +74,7 @@ object VariantSupport {
         PartitionedRegions(
           readsets.allMappedReads,
           loci,
-          args,
-          halfWindowSize = 0
+          args
         )
 
       val alleleCounts =

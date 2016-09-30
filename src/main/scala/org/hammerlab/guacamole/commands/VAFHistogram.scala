@@ -129,8 +129,7 @@ object VAFHistogram {
         PartitionedRegions(
           readsets.allMappedReads,
           loci.result(contigLengths),
-          args,
-          halfWindowSize = 0
+          args
         )
 
       val minReadDepth = args.minReadDepth

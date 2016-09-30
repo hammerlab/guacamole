@@ -11,7 +11,9 @@ import org.kohsuke.args4j.{Option => Args4JOption}
 
 import scala.reflect.ClassTag
 
-trait CappedRegionsPartitionerArgs {
+trait CappedRegionsPartitionerArgs
+  extends HalfWindowConfig {
+
   @Args4JOption(
     name = "--max-reads-per-partition",
     usage = "Maximum number of reads to allow any one partition to have. Loci that have more depth than this will be dropped."
