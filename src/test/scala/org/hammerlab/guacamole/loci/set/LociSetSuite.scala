@@ -1,7 +1,6 @@
 package org.hammerlab.guacamole.loci.set
 
 import org.hammerlab.guacamole.loci.LociArgs
-import org.hammerlab.guacamole.logging.DebugLogArgs
 import org.hammerlab.guacamole.util.GuacFunSuite
 import org.hammerlab.guacamole.util.TestUtil.resourcePath
 
@@ -100,7 +99,7 @@ class LociSetSuite extends GuacFunSuite {
   }
 
   test("loci argument parsing in Common") {
-    class TestArgs extends DebugLogArgs with LociArgs {}
+    class TestArgs extends LociArgs {}
 
     // Test -loci argument
     val args1 = new TestArgs()

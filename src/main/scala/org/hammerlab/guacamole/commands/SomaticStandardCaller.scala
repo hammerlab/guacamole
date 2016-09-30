@@ -31,7 +31,8 @@ import org.kohsuke.args4j.{Option => Args4jOption}
 object SomaticStandard {
 
   class Arguments
-    extends TumorNormalReadsArgs
+    extends Args
+      with TumorNormalReadsArgs
       with PileupFilterArguments
       with SomaticGenotypeFilterArguments
       with GenotypeOutputArgs
