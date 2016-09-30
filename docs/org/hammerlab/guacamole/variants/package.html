@@ -164,7 +164,7 @@
       </h4>
       <p class="comment cmt">A Genotype is a map of alleles to their allele frequency</p>
     </li><li name="org.hammerlab.guacamole.variants.GenotypeOutputArgs" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="GenotypeOutputArgsextendsArgs4jBasewithArgswithParquetArgs"></a>
+      <a id="GenotypeOutputArgsextendsArgs4jBasewithParquetArgs"></a>
       <a id="GenotypeOutputArgs:GenotypeOutputArgs"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -172,20 +172,20 @@
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="GenotypeOutputArgs.html"><span class="name">GenotypeOutputArgs</span></a><span class="result"> extends <span class="extype" name="org.bdgenomics.utils.cli.Args4jBase">Args4jBase</span> with <a href="../commands/Args.html" class="extype" name="org.hammerlab.guacamole.commands.Args">Args</a> with <span class="extype" name="org.bdgenomics.utils.cli.ParquetArgs">ParquetArgs</span></span>
+        <a href="GenotypeOutputArgs.html"><span class="name">GenotypeOutputArgs</span></a><span class="result"> extends <span class="extype" name="org.bdgenomics.utils.cli.Args4jBase">Args4jBase</span> with <span class="extype" name="org.bdgenomics.utils.cli.ParquetArgs">ParquetArgs</span></span>
       </span>
       </h4>
       <p class="comment cmt">Arguments for writing output genotypes.</p>
     </li><li name="org.hammerlab.guacamole.variants.GenotypeOutputCaller" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="GenotypeOutputCaller[Args&lt;:org.hammerlab.guacamole.variants.GenotypeOutputArgs,V&lt;:org.hammerlab.guacamole.variants.ReferenceVariant]extendsSparkCommand[Args]"></a>
-      <a id="GenotypeOutputCaller[Args&lt;:GenotypeOutputArgs,V&lt;:ReferenceVariant]:GenotypeOutputCaller[Args,V]"></a>
+      <a id="GenotypeOutputCaller[ArgsT&lt;:org.hammerlab.guacamole.commands.Argswithorg.hammerlab.guacamole.variants.GenotypeOutputArgs,V&lt;:org.hammerlab.guacamole.variants.ReferenceVariant]extendsSparkCommand[ArgsT]"></a>
+      <a id="GenotypeOutputCaller[ArgsT&lt;:ArgswithGenotypeOutputArgs,V&lt;:ReferenceVariant]:GenotypeOutputCaller[ArgsT,V]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="GenotypeOutputCaller.html"><span class="name">GenotypeOutputCaller</span></a><span class="tparams">[<span name="Args">Args &lt;: <a href="GenotypeOutputArgs.html" class="extype" name="org.hammerlab.guacamole.variants.GenotypeOutputArgs">GenotypeOutputArgs</a></span>, <span name="V">V &lt;: <a href="ReferenceVariant.html" class="extype" name="org.hammerlab.guacamole.variants.ReferenceVariant">ReferenceVariant</a></span>]</span><span class="result"> extends <a href="../commands/SparkCommand.html" class="extype" name="org.hammerlab.guacamole.commands.SparkCommand">SparkCommand</a>[<span class="extype" name="org.hammerlab.guacamole.variants.GenotypeOutputCaller.Args">Args</span>]</span>
+        <a href="GenotypeOutputCaller.html"><span class="name">GenotypeOutputCaller</span></a><span class="tparams">[<span name="ArgsT">ArgsT &lt;: <a href="../commands/Args.html" class="extype" name="org.hammerlab.guacamole.commands.Args">Args</a> with <a href="GenotypeOutputArgs.html" class="extype" name="org.hammerlab.guacamole.variants.GenotypeOutputArgs">GenotypeOutputArgs</a></span>, <span name="V">V &lt;: <a href="ReferenceVariant.html" class="extype" name="org.hammerlab.guacamole.variants.ReferenceVariant">ReferenceVariant</a></span>]</span><span class="result"> extends <a href="../commands/SparkCommand.html" class="extype" name="org.hammerlab.guacamole.commands.SparkCommand">SparkCommand</a>[<span class="extype" name="org.hammerlab.guacamole.variants.GenotypeOutputCaller.ArgsT">ArgsT</span>]</span>
       </span>
       </h4>
       <p class="comment cmt">Caller-interface that writes computed variants to disk according to a <a href="GenotypeOutputArgs.html" class="extype" name="org.hammerlab.guacamole.variants.GenotypeOutputArgs">GenotypeOutputArgs</a>.</p>
