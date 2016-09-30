@@ -20,7 +20,8 @@ import org.hammerlab.guacamole.readsets.args.{Arguments => ReadSetsArguments}
 
 object SomaticJoint {
   class Arguments
-    extends ReadSetsArguments
+    extends Args
+      with ReadSetsArguments
       with Parameters.CommandlineArguments
       with InputCollection.Arguments
       with ReferenceArgs {

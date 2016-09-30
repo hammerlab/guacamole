@@ -23,8 +23,9 @@ import org.kohsuke.args4j.{Option => Args4jOption}
  * Supports writing VCF, JSON, and Parquet formats.
  */
 trait GenotypeOutputArgs
-  extends Args
-    with ParquetArgs {
+  extends ParquetArgs {
+
+  self: Args =>
 
   @Args4jOption(
     name = "--out",
@@ -167,4 +168,3 @@ trait GenotypeOutputArgs
     coalescedGenotypes.unpersist()
   }
 }
-

@@ -58,7 +58,8 @@ object VariantLocus {
 object VAFHistogram {
 
   protected class Arguments
-    extends ReadSetsArguments
+    extends Args
+      with ReadSetsArguments
       with ReferenceArgs {
 
     @Args4jOption(name = "--out", required = false, forbids = Array("--local-out"),

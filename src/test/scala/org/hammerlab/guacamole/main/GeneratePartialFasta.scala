@@ -3,7 +3,7 @@ package org.hammerlab.guacamole.main
 import java.io.{BufferedWriter, File, FileWriter}
 
 import org.apache.spark.SparkContext
-import org.hammerlab.guacamole.commands.SparkCommand
+import org.hammerlab.guacamole.commands.{Args, SparkCommand}
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.readsets.ReadSets
 import org.hammerlab.guacamole.readsets.args.{ReferenceArgs, Arguments => ReadSetsArguments}
@@ -13,7 +13,8 @@ import org.hammerlab.guacamole.util.Bases
 import org.kohsuke.args4j.{Option => Args4jOption}
 
 class GeneratePartialFastaArguments
-  extends ReadSetsArguments
+  extends Args
+    with ReadSetsArguments
     with ReferenceArgs {
 
   @Args4jOption(name = "--out", metaVar = "OUT", required = true, aliases = Array("-o"),
