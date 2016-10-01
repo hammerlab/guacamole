@@ -49,8 +49,7 @@ trait LociPartitionerArgs
 
   import LociPartitionerType._
 
-  private[partitioning] def getPartitioner[R <: ReferenceRegion: ClassTag](regions: RDD[R],
-                                                                           halfWindowSize: Int = 0): LociPartitioner = {
+  private[partitioning] def getPartitioner[R <: ReferenceRegion: ClassTag](regions: RDD[R]): LociPartitioner = {
     val sc = regions.sparkContext
 
     lociPartitionerType match {
@@ -64,7 +63,7 @@ trait LociPartitionerArgs
         )
 
       case Micro =>
-        new MicroRegionPartitioner(regions, halfWindowSize, numPartitions(sc), partitioningAccuracy)
+        new MicroRegionPartitioner(regions, numPartitions(sc), partitioningAccuracy)
 
       case Uniform =>
         UniformPartitioner(numPartitions(sc))
