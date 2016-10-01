@@ -167,8 +167,7 @@ object SomaticJoint {
       PartitionedRegions(
         readsets.allMappedReads,
         lociSetMinusOne(loci),
-        args,
-        halfWindowSize = 0
+        args
       )
 
     val broadcastForceCallLoci = sc.broadcast(forceCallLoci)
