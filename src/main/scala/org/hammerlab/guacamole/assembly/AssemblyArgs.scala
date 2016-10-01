@@ -1,12 +1,10 @@
 package org.hammerlab.guacamole.assembly
 
-import org.hammerlab.guacamole.commands.Args
 import org.hammerlab.guacamole.loci.partitioning.HalfWindowConfig
 import org.kohsuke.args4j.{Option => Args4jOption}
 
 trait AssemblyArgs
-  extends Args
-    with HalfWindowConfig {
+  extends HalfWindowConfig {
 
   @Args4jOption(
     name = "--kmer-size",

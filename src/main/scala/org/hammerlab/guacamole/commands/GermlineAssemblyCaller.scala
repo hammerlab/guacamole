@@ -12,7 +12,7 @@ import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.readsets.args.{GermlineCallerArgs, ReferenceArgs}
 import org.hammerlab.guacamole.readsets.io.InputFilters
-import org.hammerlab.guacamole.readsets.rdd.PartitionedRegions
+import org.hammerlab.guacamole.readsets.rdd.{PartitionedRegions, PartitionedRegionsArgs}
 import org.hammerlab.guacamole.readsets.{PartitionedReads, ReadSets, SampleName}
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.variants.{Allele, AlleleEvidence, CalledAllele, GenotypeOutputCaller}
@@ -31,8 +31,9 @@ import org.kohsuke.args4j.{Option => Args4jOption}
 object GermlineAssemblyCaller {
 
   class Arguments
-    extends AssemblyArgs
-      with GermlineCallerArgs
+    extends GermlineCallerArgs
+      with AssemblyArgs
+      with PartitionedRegionsArgs
       with ReferenceArgs {
 
     @Args4jOption(name = "--min-average-base-quality", usage = "Minimum average of base qualities in the read")
