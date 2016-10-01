@@ -71,8 +71,7 @@ object GermlineAssemblyCaller {
         PartitionedRegions(
           qualityReads,
           loci.result(readsets.contigLengths),
-          args,
-          args.assemblyWindowRange
+          args
         )
 
       val calledAlleles =
