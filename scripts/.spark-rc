@@ -25,6 +25,18 @@ conf_dir="$repo_root/conf"
 kryo_confs="$conf_dir/kryo"
 cat "$kryo_confs" > "$conf_file"
 
+concat_file() {
+  file="$1"
+  if [ -e "$file" ]; then
+    cat "$file" >> "$conf_file"
+  elif [ -e "$conf_dir/$file" ]; then
+    cat "$conf_dir/$file" >> "$conf_file"
+  else
+    echo "Config file not found: $file" >&2
+    exit 2
+  fi
+}
+
 # If the $GUAC_SPARK_CONFS variable is set, append the configs in that path to $conf_file.
 if [ -n "$GUAC_SPARK_CONFS" ]; then
   if [[ "$GUAC_SPARK_CONFS" =~ , ]]; then
@@ -36,16 +48,15 @@ if [ -n "$GUAC_SPARK_CONFS" ]; then
     for file in $(echo "$GUAC_SPARK_CONFS" | tr ',' '\n'); do
       if [ -z "$file" ]; then
         continue
-      elif [ -e "$file" ]; then
-        cat "$file" >> "$conf_file"
       else
-        cat "$conf_dir/$file" >> "$conf_file"
+        concat_file "$file"
       fi
     done
     IFS="$OLD_IFS"
   else
-    echo "Using Spark config file: $GUAC_SPARK_CONFS"
-    cat "$GUAC_SPARK_CONFS" >> "$conf_file"
+    file="$GUAC_SPARK_CONFS"
+    echo "Using Spark config file: $file"
+    concat_file "$file"
   fi
 else
   # If it's not set, add configs from conf/local.
