@@ -4,9 +4,7 @@ import org.hammerlab.guacamole.readsets.PerSample
 import org.hammerlab.guacamole.readsets.io.Input
 import org.hammerlab.guacamole.readsets.rdd.PartitionedRegionsArgs
 
-trait Base
-  extends PartitionedRegionsArgs
-    with NoSequenceDictionaryArgs {
+trait Base extends NoSequenceDictionaryArgs {
 
   def paths: Array[String]
   def sampleNames: Array[String]
