@@ -61,7 +61,6 @@ trait MicroRegionPartitionerArgs extends UniformPartitionerArgs {
  * @return LociMap of locus -> partition assignments.
  */
 class MicroRegionPartitioner[R <: ReferenceRegion: ClassTag](regions: RDD[R],
-                                                             halfWindowSize: Int,
                                                              numPartitions: NumPartitions,
                                                              microPartitionsPerPartition: NumMicroPartitions)
   extends LociPartitioner {
@@ -127,7 +126,10 @@ class MicroRegionPartitioner[R <: ReferenceRegion: ClassTag](regions: RDD[R],
 
     var totalRegionsAssigned = 0.0
     var partition = 0
-    def regionsRemainingForThisPartition() = math.round(((partition + 1) * regionsPerPartition) - totalRegionsAssigned)
+    def regionsRemainingForThisPartition =
+      math.round(
+        ((partition + 1) * regionsPerPartition) - totalRegionsAssigned
+      )
 
     val builder = LociMap.newBuilder[PartitionIndex]
 
@@ -143,10 +145,10 @@ class MicroRegionPartitioner[R <: ReferenceRegion: ClassTag](regions: RDD[R],
         } else {
 
           // If we've allocated all regions for this partition, move on to the next partition.
-          if (regionsRemainingForThisPartition() == 0)
+          if (regionsRemainingForThisPartition == 0)
             partition += 1
 
-          assert(regionsRemainingForThisPartition() > 0)
+          assert(regionsRemainingForThisPartition > 0)
           assert(partition < numPartitions)
 
           /**
@@ -162,7 +164,7 @@ class MicroRegionPartitioner[R <: ReferenceRegion: ClassTag](regions: RDD[R],
            * current partition.
            *
            */
-          val fractionToTake = math.min(1.0, regionsRemainingForThisPartition().toDouble / regionsInSet.toDouble)
+          val fractionToTake = math.min(1.0, regionsRemainingForThisPartition.toDouble / regionsInSet.toDouble)
 
           /**
            * Based on fractionToTake, we set the number of loci and regions to assign.

@@ -73,8 +73,7 @@ object LociPartitioning {
 
   def apply[R <: ReferenceRegion: ClassTag](regions: RDD[R],
                                             loci: LociSet,
-                                            args: LociPartitionerArgs,
-                                            halfWindowSize: Int = 0): LociPartitioning = {
+                                            args: LociPartitionerArgs): LociPartitioning = {
 
     val hadoopConfiguration = regions.sparkContext.hadoopConfiguration
 
