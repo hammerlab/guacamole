@@ -1,6 +1,7 @@
 package org.hammerlab.guacamole.commands
 
 import org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Arguments
+import org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Caller.discoverGermlineVariants
 import org.hammerlab.guacamole.data.NA12878TestUtil
 import org.hammerlab.guacamole.loci.partitioning.UniformPartitioner
 import org.hammerlab.guacamole.loci.set.LociParser
@@ -63,7 +64,7 @@ class GermlineAssemblyCallerSuite
     val partitionedReads = partitionReads(readsets.allMappedReads, lociPartitioning)
 
     val variants =
-      GermlineAssemblyCaller.Caller.discoverGermlineVariants(
+      discoverGermlineVariants(
         partitionedReads,
         sampleName = "test",
         kmerSize = kmerSize,
