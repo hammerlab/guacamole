@@ -2,7 +2,7 @@ package org.hammerlab.guacamole.reference
 
 import org.apache.spark.SparkContext
 import org.hammerlab.guacamole.reference.ReferenceBroadcast.MapBackedReferenceSequence
-import org.hammerlab.guacamole.util.Bases
+import org.hammerlab.guacamole.util.Bases.stringToBases
 
 import scala.collection.mutable
 
@@ -26,7 +26,7 @@ trait ReferenceUtil {
     } {
       val locusToBase: Map[Int, Byte] =
         (for {
-          (base, locus) <- Bases.stringToBases(sequence).zipWithIndex
+          (base, locus) <- stringToBases(sequence).zipWithIndex
         } yield
           (locus + start) -> base
         ).toMap
