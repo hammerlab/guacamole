@@ -2,7 +2,7 @@ package org.hammerlab.guacamole.reference
 
 import org.apache.spark.SparkContext
 import org.hammerlab.guacamole.reference.ReferenceBroadcast.MapBackedReferenceSequence
-import org.hammerlab.guacamole.util.Bases
+import org.hammerlab.guacamole.util.Bases.stringToBases
 
 import scala.collection.mutable
 
@@ -10,7 +10,6 @@ trait ReferenceUtil {
   /**
    * Make a ReferenceBroadcast containing the specified sequences to be used in tests.
    *
-   * @param sc
    * @param contigStartSequences tuples of (contig name, start, reference sequence) giving the desired sequences
    * @param contigLengths total length of each contigs (for simplicity all contigs are assumed to have the same length)
    * @return a map acked ReferenceBroadcast containing the desired sequences
@@ -19,21 +18,30 @@ trait ReferenceUtil {
                     contigStartSequences: Seq[(ContigName, Int, String)],
                     contigLengths: Int = 1000): ReferenceBroadcast = {
 
-    val map = mutable.HashMap[String, ContigSequence]()
+    val basesMap = mutable.HashMap[String, mutable.Map[Int, Byte]]()
 
     for {
-      (contig, start, sequence) <- contigStartSequences
+      (contigName, start, sequence) <- contigStartSequences
     } {
-      val locusToBase: Map[Int, Byte] =
-        (for {
-          (base, locus) <- Bases.stringToBases(sequence).zipWithIndex
-        } yield
-          (locus + start) -> base
-        ).toMap
-
-      map(contig) = MapBackedReferenceSequence(contigLengths, sc.broadcast(locusToBase))
+      val contigBasesMap = basesMap.getOrElseUpdate(contigName, mutable.Map())
+      for {
+        (base, offset) <- stringToBases(sequence).zipWithIndex
+        locus = start + offset
+      } {
+        contigBasesMap(locus) = base
+      }
     }
 
-    new ReferenceBroadcast(map.toMap, source=Some("test_values"))
+    val contigsMap =
+      for {
+        (contigName, contigBasesMap) <- basesMap.toMap
+      } yield
+        contigName ->
+          MapBackedReferenceSequence(
+            contigLengths,
+            sc.broadcast(contigBasesMap.toMap)
+          )
+
+    new ReferenceBroadcast(contigsMap, source = Some("test_values"))
   }
 }
