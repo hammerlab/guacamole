@@ -1,7 +1,7 @@
 package org.hammerlab.guacamole.alignment
 
 import breeze.linalg.DenseVector
-import org.hammerlab.guacamole.alignment.AlignmentState.{ AlignmentState, isGapAlignment }
+import org.hammerlab.guacamole.alignment.AlignmentState.{AlignmentState, Deletion, Insertion, Match, Mismatch, isGapAlignment}
 
 object AffineGapPenaltyAlignment {
 
@@ -75,7 +75,7 @@ object AffineGapPenaltyAlignment {
       val openGap = !previousStateOpt.exists(_ == nextState) && isGapAlignment(nextState)
       val closeGap = previousStateOpt.exists(previousState => nextState != previousState && isGapAlignment(previousState))
       val continueGap = previousStateOpt.exists(_ == nextState) && isGapAlignment(nextState)
-      val mismatch = nextState == AlignmentState.Mismatch
+      val mismatch = nextState == Mismatch
 
       (if (openGap) logOpenGapPenalty else 0) +
         (if (closeGap) logCloseGapPenalty else 0) +
@@ -94,13 +94,13 @@ object AffineGapPenaltyAlignment {
         // Given the change in position, is the transition a gap or match/mismatch
         def classifyTransition(prevSeqPos: Int, prevRefPos: Int): AlignmentState = {
           if (sequenceIdx == prevSeqPos) {
-            AlignmentState.Deletion
+            Deletion
           } else if (referenceIdx == prevRefPos) {
-            AlignmentState.Insertion
+            Insertion
           } else if (sequence(sequenceIdx) != reference(referenceIdx)) {
-            AlignmentState.Mismatch
+            Mismatch
           } else {
-            AlignmentState.Match
+            Match
           }
         }
 
@@ -120,8 +120,8 @@ object AffineGapPenaltyAlignment {
 
             val (prevRefStartIdx, prevPath, prevScore) =
               nextState match {
-                case AlignmentState.Deletion  => currentSequenceAlignment(referenceIdx + 1)
-                case AlignmentState.Insertion => lastSequenceAlignment(referenceIdx)
+                case Deletion  => currentSequenceAlignment(referenceIdx + 1)
+                case Insertion => lastSequenceAlignment(referenceIdx)
                 case _ => {
                   lastSequenceAlignment(referenceIdx + 1)
                 }
