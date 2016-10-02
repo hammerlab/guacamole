@@ -8,7 +8,7 @@ import htsjdk.samtools.reference.FastaSequenceFile
 import org.apache.spark.SparkContext
 import org.apache.spark.broadcast.Broadcast
 import org.hammerlab.guacamole.loci.set.LociSet
-import org.hammerlab.guacamole.util.Bases
+import org.hammerlab.guacamole.util.Bases.{N, stringToBases, unmaskBases}
 
 import scala.collection.mutable
 
@@ -46,7 +46,7 @@ object ReferenceBroadcast extends Logging {
   object ArrayBackedReferenceSequence {
     /** Create an ArrayBackedReferenceSequence from a string. This is a convenience method intended for tests. */
     def apply(sc: SparkContext, sequence: String): ArrayBackedReferenceSequence =
-      ArrayBackedReferenceSequence(sc.broadcast(Bases.stringToBases(sequence).toArray))
+      ArrayBackedReferenceSequence(sc.broadcast(stringToBases(sequence).toArray))
   }
 
   /**
@@ -56,7 +56,7 @@ object ReferenceBroadcast extends Logging {
    * @param wrapped
    */
   case class MapBackedReferenceSequence(length: Int, wrapped: Broadcast[Map[Int, Byte]]) extends ContigSequence {
-    def apply(index: Int): Byte = wrapped.value.getOrElse(index, Bases.N)
+    def apply(index: Int): Byte = wrapped.value.getOrElse(index, N)
     def slice(start: Int, end: Int): Array[Byte] = (start until end).map(apply).toArray
   }
 
@@ -75,7 +75,7 @@ object ReferenceBroadcast extends Logging {
     while (nextSequence != null) {
       val sequenceName = nextSequence.getName
       val sequence = nextSequence.getBases
-      Bases.unmaskBases(sequence)
+      unmaskBases(sequence)
       info(s"Broadcasting contig: $sequenceName")
       val broadcastedSequence = ArrayBackedReferenceSequence(sc.broadcast(sequence))
       broadcastedSequences += ((sequenceName, broadcastedSequence))
