@@ -32,6 +32,8 @@ class PartitionedRegions[R <: ReferenceRegion: ClassTag](@transient regions: RDD
                                                          @transient partitioning: LociPartitioning)
   extends Serializable {
 
+  @transient lazy val lociSetsRDD = partitioning.lociSetsRDD(sc)
+
   assert(
     regions.getNumPartitions == lociSetsRDD.getNumPartitions,
     s"reads partitions: ${regions.getNumPartitions}, loci partitions: ${lociSetsRDD.getNumPartitions}"
@@ -68,19 +70,6 @@ class PartitionedRegions[R <: ReferenceRegion: ClassTag](@transient regions: RDD
           f(regionsIter, loci)
         }
       )
-
-  // An RDD[LociSet] with one LociSet per partition.
-  @transient private lazy val lociSetsRDD: RDD[LociSet] =
-    sc
-      .parallelize(partitionLociSets, partitionLociSets.length)
-      .setName("lociSetsRDD")
-
-  @transient private lazy val partitionLociSets: Array[LociSet] =
-    partitioning
-      .inverse
-      .toArray
-      .sortBy(_._1)
-      .map(_._2)
 
   /**
    * Write the partitioned regions RDD to a file.
