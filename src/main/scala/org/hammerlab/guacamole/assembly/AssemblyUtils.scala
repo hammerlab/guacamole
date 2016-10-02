@@ -2,7 +2,7 @@ package org.hammerlab.guacamole.assembly
 
 import grizzled.slf4j.Logging
 import htsjdk.samtools.CigarOperator
-import org.hammerlab.guacamole.alignment.{AffineGapPenaltyAlignment, ReadAlignment}
+import org.hammerlab.guacamole.alignment.ReadAlignment
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.reference.{ContigSequence, ReferenceGenome}
 import org.hammerlab.guacamole.util.CigarUtils
@@ -91,10 +91,12 @@ object AssemblyUtils extends Logging {
       (for {
         path <- paths
       } yield {
-        reads.map(
-          read =>
-            -AffineGapPenaltyAlignment.align(read.sequence, path).alignmentScore
-        ).sum -> path
+        reads
+          .map(
+            read =>
+              -ReadAlignment(read.sequence, path).alignmentScore
+          )
+          .sum -> path
       })
         .sortBy(-_._1)
         .take(expectedPloidy)
