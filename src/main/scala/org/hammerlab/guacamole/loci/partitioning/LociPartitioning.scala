@@ -3,6 +3,7 @@ package org.hammerlab.guacamole.loci.partitioning
 import java.io.{InputStream, OutputStream}
 
 import org.apache.hadoop.fs.Path
+import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole.loci.map.LociMap
 import org.hammerlab.guacamole.loci.partitioning.LociPartitioner.PartitionIndex
@@ -24,6 +25,19 @@ import scala.reflect.ClassTag
 case class LociPartitioning(map: LociMap[PartitionIndex])
   extends Saveable
     with TruncatedToString {
+
+  // An RDD[LociSet] with one LociSet per partition.
+  def lociSetsRDD(sc: SparkContext): RDD[LociSet] =
+    sc
+      .parallelize(partitionLociSets, partitionLociSets.length)
+      .setName("lociSetsRDD")
+
+  @transient private lazy val partitionLociSets: Array[LociSet] =
+    map
+      .inverse
+      .toArray
+      .sortBy(_._1)
+      .map(_._2)
 
   @transient lazy val numPartitions = partitionsMap.size
 
