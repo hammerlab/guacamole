@@ -15,15 +15,18 @@ class PileupSuite
     with ReferenceUtil {
 
   // This must only be accessed from inside a spark test where SparkContext has been initialized
-  override lazy val reference = makeReference(sc,
-    Seq(
-      ("chr1", 0, "NTCGATCGACG"),
-      ("1", 229538779, "A" * 1000),
-      ("artificial", 0, "A" * 34 + "G" * 10 + "A" * 5 + "G" * 15 + "A" * 15 + "ACGT" * 10),
-      ("chr2", 0, "AATTG"),
-      ("chr3", 0, "AAATTT"),
-      ("chr4", 0, "AATTGCAATTG")
-    ))
+  override lazy val reference =
+    makeReference(
+      sc,
+      Seq(
+        ("chr1", 0, "CTCGATCGACG"),
+        ("1", 229538778, "A" * 191135),
+        ("artificial", 0, "A" * 34 + "G" * 10 + "A" * 5 + "G" * 15 + "A" * 15 + "ACGT" * 10),
+        ("chr2", 0, "AATTG"),
+        ("chr3", 0, "AAATTT"),
+        ("chr4", 0, "AATTGCAATTG")
+      )
+    )
 
   def testAdamRecords = loadReadsRDD(sc, "different_start_reads.sam").mappedReads.collect()
 
@@ -379,27 +382,28 @@ class PileupSuite
   }
 
   test("create and advance pileup element from RNA read") {
+    val start = 229538779
     val rnaRead =
       makeRead(
-        sequence = "CCCCAGCCTAGGCCTTCGACACTGGGGGGCTGAGGGAAGGGGCACCTGCC",
-        cigar = "7M191084N43M",
-        start = 229538779,
+        sequence = "ACGTAGCCTAGGCCTTCGACACTGGGGGGCTGAGGGAAGGGGCACCTGTC",
+        cigar = "7M" + "1000N" + "43M",  // spans 1050 bases of reference
+        start = start,
         chr = "1"
       )
 
-    val rnaPileupElement = PileupElement(rnaRead, 229538779L, reference.getContig("1"))
+    val rnaPileupElement = PileupElement(rnaRead, start, reference.getContig("1"))
 
     // Second base
-    AssertBases(rnaPileupElement.advanceToLocus(229538780L).sequencedBases, "C")
+    AssertBases(rnaPileupElement.advanceToLocus(start + 1).sequencedBases, "C")
 
     // Third base
-    AssertBases(rnaPileupElement.advanceToLocus(229538781L).sequencedBases, "C")
+    AssertBases(rnaPileupElement.advanceToLocus(start + 2).sequencedBases, "G")
 
     // In intron
-    AssertBases(rnaPileupElement.advanceToLocus(229539779L).sequencedBases, "")
+    AssertBases(rnaPileupElement.advanceToLocus(start + 100).sequencedBases, "")
 
     // Last base
-    AssertBases(rnaPileupElement.advanceToLocus(229729912L).sequencedBases, "C")
+    AssertBases(rnaPileupElement.advanceToLocus(start + 1049).sequencedBases, "C")
 
   }
 

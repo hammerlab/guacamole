@@ -8,7 +8,7 @@ import htsjdk.samtools.reference.FastaSequenceFile
 import org.apache.spark.SparkContext
 import org.apache.spark.broadcast.Broadcast
 import org.hammerlab.guacamole.loci.set.LociSet
-import org.hammerlab.guacamole.util.Bases
+import org.hammerlab.guacamole.util.Bases.unmaskBases
 
 import scala.collection.mutable
 
@@ -35,12 +35,26 @@ object ReferenceBroadcast extends Logging {
   /**
    * The standard ContigSequence implementation, which is an Array of bases.
    *
-   * TODO: Array's can't be more than 2^32 long, use 2bit instead?
+   * TODO: Arrays can't be more than 2³² long, use 2bit instead?
    */
-  case class ArrayBackedReferenceSequence(wrapped: Broadcast[Array[Byte]]) extends ContigSequence {
-    def apply(locus: Locus): Byte = wrapped.value(locus.toInt)
-    def slice(start: Locus, end: Locus): Array[Byte] = wrapped.value.slice(start.toInt, end.toInt)
-    def length: NumLoci = wrapped.value.length
+  case class ArrayBackedReferenceSequence(contigName: ContigName, wrapped: Broadcast[Array[Byte]]) extends ContigSequence {
+    val length: NumLoci = wrapped.value.length
+
+    def apply(locus: Locus): Byte =
+      try {
+        wrapped.value(locus.toInt)
+      } catch {
+        case e: NoSuchElementException =>
+          throw new Exception(s"Position $contigName:$locus missing from reference", e)
+      }
+
+    def slice(start: Locus, end: Locus): Array[Byte] =
+      if (start < 0 || end > length)
+        throw new Exception(
+          s"Illegal reference slice: $contigName:[$start,$end) (valid range: [0,$length)"
+        )
+      else
+        wrapped.value.slice(start.toInt, end.toInt)
   }
 
   /**
@@ -48,8 +62,17 @@ object ReferenceBroadcast extends Logging {
    * a "partial fasta". This is used in tests.
    * @param wrapped
    */
-  case class MapBackedReferenceSequence(length: NumLoci, wrapped: Broadcast[Map[Int, Byte]]) extends ContigSequence {
-    def apply(locus: Locus): Byte = wrapped.value.getOrElse(locus.toInt, Bases.N)
+  case class MapBackedReferenceSequence(contigName: ContigName,
+                                        length: NumLoci,
+                                        wrapped: Broadcast[Map[Int, Byte]]) extends ContigSequence {
+    def apply(locus: Locus): Byte =
+      try {
+        wrapped.value(locus.toInt)
+      } catch {
+        case e: NoSuchElementException =>
+          throw new Exception(s"Position $contigName:$locus missing from reference", e)
+      }
+
     def slice(start: Locus, end: Locus): Array[Byte] = (start until end).map(apply).toArray
   }
 
@@ -64,12 +87,12 @@ object ReferenceBroadcast extends Logging {
     var nextSequence = referenceFasta.nextSequence()
     val broadcastedSequences = Map.newBuilder[String, ContigSequence]
     while (nextSequence != null) {
-      val sequenceName = nextSequence.getName
+      val contigName = nextSequence.getName
       val sequence = nextSequence.getBases
-      Bases.unmaskBases(sequence)
-      info(s"Broadcasting contig: $sequenceName")
-      val broadcastedSequence = ArrayBackedReferenceSequence(sc.broadcast(sequence))
-      broadcastedSequences += ((sequenceName, broadcastedSequence))
+      unmaskBases(sequence)
+      info(s"Broadcasting contig: $contigName")
+      val broadcastedSequence = ArrayBackedReferenceSequence(contigName, sc.broadcast(sequence))
+      broadcastedSequences += ((contigName, broadcastedSequence))
       nextSequence = referenceFasta.nextSequence()
     }
     ReferenceBroadcast(broadcastedSequences.result, Some(fastaPath))
@@ -90,7 +113,9 @@ object ReferenceBroadcast extends Logging {
    */
   def readPartialFasta(fastaPath: String, sc: SparkContext): ReferenceBroadcast = {
     val raw = readFasta(fastaPath, sc)
+
     val result = mutable.HashMap[ContigName, mutable.HashMap[Int, Byte]]()
+
     val contigLengths = mutable.HashMap[ContigName, Int]()
 
     for {
@@ -100,12 +125,12 @@ object ReferenceBroadcast extends Logging {
       regionDescription.split("/").map(_.trim).toList match {
         case lociStr :: contigLengthStr :: Nil =>
           val contigLength = contigLengthStr.toInt
-          val region = LociSet(lociStr)
-          if (region.contigs.length != 1) {
+          val loci = LociSet(lociStr)
+          if (loci.contigs.length != 1) {
             throw new IllegalArgumentException(s"Region must have 1 contig for partial fasta: $lociStr")
           }
 
-          val contig = region.contigs.head
+          val contig = loci.contigs.head
           val regionLength = contig.count
           if (regionLength != sequence.length) {
             throw new IllegalArgumentException(
@@ -152,7 +177,7 @@ object ReferenceBroadcast extends Logging {
         contigLength = contigLengths(contigName)
         baseMapBroadcast = sc.broadcast(baseMap.toMap)
       } yield
-        contigName -> MapBackedReferenceSequence(contigLength, baseMapBroadcast)
+        contigName -> MapBackedReferenceSequence(contigName, contigLength, baseMapBroadcast)
       ).toMap,
       Some(fastaPath)
     )
