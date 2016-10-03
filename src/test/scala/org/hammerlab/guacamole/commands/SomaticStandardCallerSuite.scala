@@ -14,12 +14,10 @@ class SomaticStandardCallerSuite
   override lazy val reference =
     makeReference(
       sc,
-      Seq(
-        ("chr1", 0, "TCGATCGACG"),
-        ("chr2", 0, "TCGAAGCTTCG"),
-        ("chr3", 10, "TCGAATCGATCGATCGA"),
-        ("chr4", 0, "TCGAAGCTTCGAAGCT")
-      )
+      ("chr1", 0, "TCGATCGACG"),
+      ("chr2", 0, "TCGAAGCTTCG"),
+      ("chr3", 10, "TCGAATCGATCGATCGA"),
+      ("chr4", 0, "TCGAAGCTTCGAAGCT")
     )
 
   test("no indels") {
