@@ -90,7 +90,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="ReferenceBroadcast$$ArrayBackedReferenceSequence.html"><span class="name">ArrayBackedReferenceSequence</span></a><span class="params">(<span name="wrapped">wrapped: <span class="extype" name="org.apache.spark.broadcast.Broadcast">Broadcast</span>[<span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Byte">Byte</span>]]</span>)</span><span class="result"> extends <a href="ContigSequence.html" class="extype" name="org.hammerlab.guacamole.reference.ContigSequence">ContigSequence</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="ReferenceBroadcast$$ArrayBackedReferenceSequence.html"><span class="name">ArrayBackedReferenceSequence</span></a><span class="params">(<span name="contigName">contigName: <a href="package.html#ContigName=String" class="extmbr" name="org.hammerlab.guacamole.reference.ContigName">ContigName</a></span>, <span name="wrapped">wrapped: <span class="extype" name="org.apache.spark.broadcast.Broadcast">Broadcast</span>[<span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Byte">Byte</span>]]</span>)</span><span class="result"> extends <a href="ContigSequence.html" class="extype" name="org.hammerlab.guacamole.reference.ContigSequence">ContigSequence</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       <p class="comment cmt">The standard ContigSequence implementation, which is an Array of bases.</p>
@@ -103,7 +103,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="ReferenceBroadcast$$MapBackedReferenceSequence.html"><span class="name">MapBackedReferenceSequence</span></a><span class="params">(<span name="length">length: <span class="extype" name="scala.Int">Int</span></span>, <span name="wrapped">wrapped: <span class="extype" name="org.apache.spark.broadcast.Broadcast">Broadcast</span>[<span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Int">Int</span>, <span class="extype" name="scala.Byte">Byte</span>]]</span>)</span><span class="result"> extends <a href="ContigSequence.html" class="extype" name="org.hammerlab.guacamole.reference.ContigSequence">ContigSequence</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="ReferenceBroadcast$$MapBackedReferenceSequence.html"><span class="name">MapBackedReferenceSequence</span></a><span class="params">(<span name="contigName">contigName: <a href="package.html#ContigName=String" class="extmbr" name="org.hammerlab.guacamole.reference.ContigName">ContigName</a></span>, <span name="length">length: <a href="package.html#NumLoci=Long" class="extmbr" name="org.hammerlab.guacamole.reference.NumLoci">NumLoci</a></span>, <span name="wrapped">wrapped: <span class="extype" name="org.apache.spark.broadcast.Broadcast">Broadcast</span>[<span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Int">Int</span>, <span class="extype" name="scala.Byte">Byte</span>]]</span>)</span><span class="result"> extends <a href="ContigSequence.html" class="extype" name="org.hammerlab.guacamole.reference.ContigSequence">ContigSequence</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       <p class="comment cmt">A ContigSequence implementation that uses a Map to store only a subset of bases.</p>
@@ -179,19 +179,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.reference.ReferenceBroadcast.ArrayBackedReferenceSequence" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="ArrayBackedReferenceSequence"></a>
-      <a id="ArrayBackedReferenceSequence:ArrayBackedReferenceSequence"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a href="ReferenceBroadcast$$ArrayBackedReferenceSequence$.html"><span class="name">ArrayBackedReferenceSequence</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
-      </span>
-      </h4>
-      
     </li><li name="org.hammerlab.guacamole.reference.ReferenceBroadcast#apply" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="apply(broadcastedContigs:Map[String,org.hammerlab.guacamole.reference.ContigSequence]):org.hammerlab.guacamole.reference.ReferenceBroadcast"></a>
       <a id="apply(Map[String,ContigSequence]):ReferenceBroadcast"></a>
@@ -234,19 +221,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.reference.ReferenceBroadcast#cache" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="cache:scala.collection.mutable.HashMap[String,(org.apache.spark.SparkContext,org.hammerlab.guacamole.reference.ReferenceBroadcast)]"></a>
-      <a id="cache:HashMap[String,(SparkContext,ReferenceBroadcast)]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">cache</span><span class="result">: <span class="extype" name="scala.collection.mutable.HashMap">HashMap</span>[<span class="extype" name="scala.Predef.String">String</span>, (<span class="extype" name="org.apache.spark.SparkContext">SparkContext</span>, <a href="ReferenceBroadcast.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceBroadcast">ReferenceBroadcast</a>)]</span>
-      </span>
-      </h4>
-      
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>
       <a id="clone():AnyRef"></a>

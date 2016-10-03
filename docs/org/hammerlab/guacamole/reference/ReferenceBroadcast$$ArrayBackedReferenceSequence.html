@@ -24,9 +24,9 @@
         </head>
         <body class="type">
       <div id="definition">
-        <a href="ReferenceBroadcast$$ArrayBackedReferenceSequence$.html" title="Go to companion"><img src="../../../../lib/class_to_object_big.png" /></a>
+        <img src="../../../../lib/class_big.png" />
         <p id="owner"><a href="../../../package.html" class="extype" name="org">org</a>.<a href="../../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="../package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole.reference">reference</a>.<a href="ReferenceBroadcast$.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceBroadcast">ReferenceBroadcast</a></p>
-        <h1><a href="ReferenceBroadcast$$ArrayBackedReferenceSequence$.html" title="Go to companion">ArrayBackedReferenceSequence</a></h1>
+        <h1>ArrayBackedReferenceSequence</h1>
       </div>
 
       <h4 id="signature" class="signature">
@@ -35,11 +35,11 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">ArrayBackedReferenceSequence</span><span class="params">(<span name="wrapped">wrapped: <span class="extype" name="org.apache.spark.broadcast.Broadcast">Broadcast</span>[<span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Byte">Byte</span>]]</span>)</span><span class="result"> extends <a href="ContigSequence.html" class="extype" name="org.hammerlab.guacamole.reference.ContigSequence">ContigSequence</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">ArrayBackedReferenceSequence</span><span class="params">(<span name="contigName">contigName: <a href="package.html#ContigName=String" class="extmbr" name="org.hammerlab.guacamole.reference.ContigName">ContigName</a></span>, <span name="wrapped">wrapped: <span class="extype" name="org.apache.spark.broadcast.Broadcast">Broadcast</span>[<span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Byte">Byte</span>]]</span>)</span><span class="result"> extends <a href="ContigSequence.html" class="extype" name="org.hammerlab.guacamole.reference.ContigSequence">ContigSequence</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>The standard ContigSequence implementation, which is an Array of bases.</p><p>TODO: Array's can't be more than 2^32 long, use 2bit instead?
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>The standard ContigSequence implementation, which is an Array of bases.</p><p>TODO: Arrays can't be more than 2³² long, use 2bit instead?
 </p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <a href="ContigSequence.html" class="extype" name="org.hammerlab.guacamole.reference.ContigSequence">ContigSequence</a>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
@@ -81,7 +81,7 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="org.hammerlab.guacamole.reference.ReferenceBroadcast.ArrayBackedReferenceSequence#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(wrapped:org.apache.spark.broadcast.Broadcast[Array[Byte]]):org.hammerlab.guacamole.reference.ReferenceBroadcast.ArrayBackedReferenceSequence"></a>
+      <a id="&lt;init&gt;(contigName:org.hammerlab.guacamole.reference.ContigName,wrapped:org.apache.spark.broadcast.Broadcast[Array[Byte]]):org.hammerlab.guacamole.reference.ReferenceBroadcast.ArrayBackedReferenceSequence"></a>
       <a id="&lt;init&gt;:ArrayBackedReferenceSequence"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -89,7 +89,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">ArrayBackedReferenceSequence</span><span class="params">(<span name="wrapped">wrapped: <span class="extype" name="org.apache.spark.broadcast.Broadcast">Broadcast</span>[<span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Byte">Byte</span>]]</span>)</span>
+        <span class="name">ArrayBackedReferenceSequence</span><span class="params">(<span name="contigName">contigName: <a href="package.html#ContigName=String" class="extmbr" name="org.hammerlab.guacamole.reference.ContigName">ContigName</a></span>, <span name="wrapped">wrapped: <span class="extype" name="org.apache.spark.broadcast.Broadcast">Broadcast</span>[<span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Byte">Byte</span>]]</span>)</span>
       </span>
       </h4>
       
@@ -168,15 +168,15 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li name="org.hammerlab.guacamole.reference.ReferenceBroadcast.ArrayBackedReferenceSequence#apply" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="apply(index:Int):Byte"></a>
-      <a id="apply(Int):Byte"></a>
+      <a id="apply(locus:org.hammerlab.guacamole.reference.Locus):Byte"></a>
+      <a id="apply(Locus):Byte"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">apply</span><span class="params">(<span name="index">index: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Byte">Byte</span></span>
+        <span class="name">apply</span><span class="params">(<span name="locus">locus: <a href="package.html#Locus=Long" class="extmbr" name="org.hammerlab.guacamole.reference.Locus">Locus</a></span>)</span><span class="result">: <span class="extype" name="scala.Byte">Byte</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.reference.ReferenceBroadcast.ArrayBackedReferenceSequence">ArrayBackedReferenceSequence</a> → <a href="ContigSequence.html" class="extype" name="org.hammerlab.guacamole.reference.ContigSequence">ContigSequence</a></dd></dl></div>
@@ -212,6 +212,19 @@
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.reference.ReferenceBroadcast.ArrayBackedReferenceSequence#contigName" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="contigName:org.hammerlab.guacamole.reference.ContigName"></a>
+      <a id="contigName:ContigName"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">contigName</span><span class="result">: <a href="package.html#ContigName=String" class="extmbr" name="org.hammerlab.guacamole.reference.ContigName">ContigName</a></span>
+      </span>
+      </h4>
+      
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -271,15 +284,15 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li name="org.hammerlab.guacamole.reference.ReferenceBroadcast.ArrayBackedReferenceSequence#length" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="length:Int"></a>
-      <a id="length:Int"></a>
+      <a id="length:org.hammerlab.guacamole.reference.NumLoci"></a>
+      <a id="length:NumLoci"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">def</span>
+        <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">length</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+        <span class="name">length</span><span class="result">: <a href="package.html#NumLoci=Long" class="extmbr" name="org.hammerlab.guacamole.reference.NumLoci">NumLoci</a></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.reference.ReferenceBroadcast.ArrayBackedReferenceSequence">ArrayBackedReferenceSequence</a> → <a href="ContigSequence.html" class="extype" name="org.hammerlab.guacamole.reference.ContigSequence">ContigSequence</a></dd></dl></div>
@@ -323,15 +336,15 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="org.hammerlab.guacamole.reference.ReferenceBroadcast.ArrayBackedReferenceSequence#slice" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="slice(start:Int,end:Int):Array[Byte]"></a>
-      <a id="slice(Int,Int):Array[Byte]"></a>
+      <a id="slice(start:org.hammerlab.guacamole.reference.Locus,end:org.hammerlab.guacamole.reference.Locus):Array[Byte]"></a>
+      <a id="slice(Locus,Locus):Array[Byte]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">slice</span><span class="params">(<span name="start">start: <span class="extype" name="scala.Int">Int</span></span>, <span name="end">end: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>
+        <span class="name">slice</span><span class="params">(<span name="start">start: <a href="package.html#Locus=Long" class="extmbr" name="org.hammerlab.guacamole.reference.Locus">Locus</a></span>, <span name="end">end: <a href="package.html#Locus=Long" class="extmbr" name="org.hammerlab.guacamole.reference.Locus">Locus</a></span>)</span><span class="result">: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.hammerlab.guacamole.reference.ReferenceBroadcast.ArrayBackedReferenceSequence">ArrayBackedReferenceSequence</a> → <a href="ContigSequence.html" class="extype" name="org.hammerlab.guacamole.reference.ContigSequence">ContigSequence</a></dd></dl></div>
