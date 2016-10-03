@@ -38,6 +38,7 @@ trait ReferenceUtil {
       } yield
         contigName ->
           MapBackedReferenceSequence(
+            contigName,
             contigLengths,
             sc.broadcast(contigBasesMap.toMap)
           )
