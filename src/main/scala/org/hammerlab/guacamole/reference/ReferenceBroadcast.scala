@@ -43,12 +43,6 @@ object ReferenceBroadcast extends Logging {
     def length: NumLoci = wrapped.value.length
   }
 
-  object ArrayBackedReferenceSequence {
-    /** Create an ArrayBackedReferenceSequence from a string. This is a convenience method intended for tests. */
-    def apply(sc: SparkContext, sequence: String): ArrayBackedReferenceSequence =
-      ArrayBackedReferenceSequence(sc.broadcast(Bases.stringToBases(sequence).toArray))
-  }
-
   /**
    * A ContigSequence implementation that uses a Map to store only a subset of bases. This is what you get if you load
    * a "partial fasta". This is used in tests.
