@@ -3,14 +3,14 @@ package org.hammerlab.guacamole.jointcaller
 import org.hammerlab.guacamole.commands.SomaticJoint.makeCalls
 import org.hammerlab.guacamole.loci.set.{LociParser, LociSet}
 import org.hammerlab.guacamole.readsets.ReadSetsUtil
-import org.hammerlab.guacamole.reference.ReferenceBroadcast
-import org.hammerlab.guacamole.reference.ReferenceBroadcast.MapBackedReferenceSequence
+import org.hammerlab.guacamole.reference.{ReferenceBroadcast, ReferenceUtil}
 import org.hammerlab.guacamole.util.GuacFunSuite
 import org.hammerlab.guacamole.util.TestUtil.resourcePath
 
 class SomaticJointCallerSuite
   extends GuacFunSuite
-    with ReadSetsUtil {
+    with ReadSetsUtil
+    with ReferenceUtil {
 
   val cancerWGS1Bams = Vector("normal.bam", "primary.bam", "recurrence.bam").map(
     name => resourcePath("cancer-wgs1/" + name))
@@ -122,16 +122,7 @@ class SomaticJointCallerSuite
     val inputs = InputCollection(cancerWGS1Bams)
     val loci = LociParser("chr12:65857030-65857080")
     val readSets = makeReadSets(inputs, loci)
-    val emptyPartialReference =
-      ReferenceBroadcast(
-        Map(
-          "chr12" ->
-            MapBackedReferenceSequence(
-              500000000,
-              sc.broadcast(Map.empty)
-            )
-        )
-      )
+    val emptyPartialReference = makeReference(sc, 70000000, ("chr12", 65856930, "N" * 250))
 
     val calls =
       makeCalls(
