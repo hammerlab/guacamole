@@ -18,14 +18,12 @@ class PileupSuite
   override lazy val reference =
     makeReference(
       sc,
-      Seq(
-        ("chr1", 0, "CTCGATCGACG"),
-        ("1", 229538778, "A" * 191135),
-        ("artificial", 0, "A" * 34 + "G" * 10 + "A" * 5 + "G" * 15 + "A" * 15 + "ACGT" * 10),
-        ("chr2", 0, "AATTG"),
-        ("chr3", 0, "AAATTT"),
-        ("chr4", 0, "AATTGCAATTG")
-      )
+      ("chr1", 0, "CTCGATCGACG"),
+      ("1", 229538778, "A" * 191135),
+      ("artificial", 0, "A" * 34 + "G" * 10 + "A" * 5 + "G" * 15 + "A" * 15 + "ACGT" * 10),
+      ("chr2", 0, "AATTG"),
+      ("chr3", 0, "AAATTT"),
+      ("chr4", 0, "AATTGCAATTG")
     )
 
   def testAdamRecords = loadReadsRDD(sc, "different_start_reads.sam").mappedReads.collect()

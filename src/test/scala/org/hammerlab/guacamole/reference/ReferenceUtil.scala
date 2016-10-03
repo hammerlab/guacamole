@@ -7,6 +7,7 @@ import org.hammerlab.guacamole.util.Bases.stringToBases
 import scala.collection.mutable
 
 trait ReferenceUtil {
+
   /**
    * Make a ReferenceBroadcast containing the specified sequences to be used in tests.
    *
@@ -15,8 +16,8 @@ trait ReferenceUtil {
    * @return a map acked ReferenceBroadcast containing the desired sequences
    */
   def makeReference(sc: SparkContext,
-                    contigStartSequences: Seq[(ContigName, Int, String)],
-                    contigLengths: Int = 1000): ReferenceBroadcast = {
+                    contigLengths: Int,
+                    contigStartSequences: (ContigName, Int, String)*): ReferenceBroadcast = {
 
     val basesMap = mutable.HashMap[String, mutable.Map[Int, Byte]]()
 
@@ -45,4 +46,10 @@ trait ReferenceUtil {
 
     new ReferenceBroadcast(contigsMap, source = Some("test_values"))
   }
+
+  def makeReference(sc: SparkContext, contigStartSequences: (ContigName, Int, String)*): ReferenceBroadcast =
+    makeReference(sc, 1000, contigStartSequences: _*)
+
+  def makeReference(sc: SparkContext, contigName: ContigName, start: Int, sequence: String): ReferenceBroadcast =
+    makeReference(sc, (contigName, start, sequence))
 }
