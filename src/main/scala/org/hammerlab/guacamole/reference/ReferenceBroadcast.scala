@@ -38,9 +38,9 @@ object ReferenceBroadcast extends Logging {
    * TODO: Array's can't be more than 2^32 long, use 2bit instead?
    */
   case class ArrayBackedReferenceSequence(wrapped: Broadcast[Array[Byte]]) extends ContigSequence {
-    def apply(index: Int): Byte = wrapped.value(index)
-    def slice(start: Int, end: Int): Array[Byte] = wrapped.value.slice(start, end)
-    def length: Int = wrapped.value.length
+    def apply(locus: Locus): Byte = wrapped.value(locus.toInt)
+    def slice(start: Locus, end: Locus): Array[Byte] = wrapped.value.slice(start.toInt, end.toInt)
+    def length: NumLoci = wrapped.value.length
   }
 
   object ArrayBackedReferenceSequence {
@@ -52,12 +52,11 @@ object ReferenceBroadcast extends Logging {
   /**
    * A ContigSequence implementation that uses a Map to store only a subset of bases. This is what you get if you load
    * a "partial fasta". This is used in tests.
-   * @param length
    * @param wrapped
    */
-  case class MapBackedReferenceSequence(length: Int, wrapped: Broadcast[Map[Int, Byte]]) extends ContigSequence {
-    def apply(index: Int): Byte = wrapped.value.getOrElse(index, Bases.N)
-    def slice(start: Int, end: Int): Array[Byte] = (start until end).map(apply).toArray
+  case class MapBackedReferenceSequence(length: NumLoci, wrapped: Broadcast[Map[Int, Byte]]) extends ContigSequence {
+    def apply(locus: Locus): Byte = wrapped.value.getOrElse(locus.toInt, Bases.N)
+    def slice(start: Locus, end: Locus): Array[Byte] = (start until end).map(apply).toArray
   }
 
   val cache = mutable.HashMap.empty[String, (SparkContext, ReferenceBroadcast)]
