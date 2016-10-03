@@ -19,7 +19,7 @@ class LikelihoodSuite
 
   val epsilon = 1e-12
 
-  override lazy val reference = makeReference(sc, Seq(("chr1", 1, "C")))
+  override lazy val reference = makeReference(sc, "chr1", 1, "C")
 
   val referenceBase = 'C'.toByte
 
