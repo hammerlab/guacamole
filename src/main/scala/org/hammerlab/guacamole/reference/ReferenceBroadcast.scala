@@ -59,8 +59,6 @@ object ReferenceBroadcast extends Logging {
     def slice(start: Locus, end: Locus): Array[Byte] = (start until end).map(apply).toArray
   }
 
-  val cache = mutable.HashMap.empty[String, (SparkContext, ReferenceBroadcast)]
-
   /**
    * Read a regular fasta file
    * @param fastaPath local path to fasta
@@ -175,18 +173,11 @@ object ReferenceBroadcast extends Logging {
    *                     reference. In production runs this will usually be false.
    * @return ReferenceBroadcast which maps contig/chromosome names to broadcasted sequences
    */
-  def apply(fastaPath: String, sc: SparkContext, partialFasta: Boolean = false): ReferenceBroadcast = {
-    val lookup = cache.get(fastaPath)
-    if (lookup.exists(_._1 == sc)) {
-      lookup.get._2
-    } else {
-      val result = if (partialFasta) readPartialFasta(fastaPath, sc) else readFasta(fastaPath, sc)
-      // Currently we keep only one item in the cache at a time.
-      cache.clear()
-      cache.put(fastaPath, (sc, result))
-      result
-    }
-  }
+  def apply(fastaPath: String, sc: SparkContext, partialFasta: Boolean = false): ReferenceBroadcast =
+    if (partialFasta)
+      readPartialFasta(fastaPath, sc)
+    else
+      readFasta(fastaPath, sc)
 
   def apply(broadcastedContigs: Map[String, ContigSequence]): ReferenceBroadcast =
     ReferenceBroadcast(broadcastedContigs, source = None)
