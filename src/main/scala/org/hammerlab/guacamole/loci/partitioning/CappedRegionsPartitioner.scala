@@ -74,7 +74,7 @@ class CappedRegionsPartitioner[R <: ReferenceRegion: ClassTag](regions: RDD[R],
     LociPartitioning(lociSets)
   }
 
-  def printStats(coverageRDD: CoverageRDD[R], lociBroadcast: Broadcast[LociSet]): Unit = {
+  private def printStats(coverageRDD: CoverageRDD[R], lociBroadcast: Broadcast[LociSet]): Unit = {
     val (depthRunsRDD, validLoci, invalidLoci) =
       coverageRDD.validLociCounts(halfWindowSize, lociBroadcast, maxRegionsPerPartition)
 
