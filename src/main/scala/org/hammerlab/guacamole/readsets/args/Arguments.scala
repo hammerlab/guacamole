@@ -1,12 +1,13 @@
 package org.hammerlab.guacamole.readsets.args
 
+import org.hammerlab.guacamole.readsets.io.ReadFilterArgs
 import org.kohsuke.args4j.{Argument, Option => Args4JOption}
 import org.kohsuke.args4j.spi.StringArrayOptionHandler
 
 /**
  * Common command-line arguments for loading in one or more sets of reads, and associating a sample-name with each.
  */
-trait Arguments extends Base {
+trait Arguments extends Base with ReadFilterArgs {
 
   @Argument(required = true, multiValued = true, usage = "FILE1 FILE2 FILE3")
   var paths: Array[String] = Array()
