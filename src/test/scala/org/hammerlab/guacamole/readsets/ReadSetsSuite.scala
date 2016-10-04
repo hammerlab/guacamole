@@ -87,8 +87,8 @@ class ReadSetsSuite
       }
 
     Seq(
-      InputFilters(),
-      InputFilters(mapped = true, nonDuplicate = true),
+      InputFilters.empty,
+      InputFilters.mapped(nonDuplicate = true),
       InputFilters(overlapsLoci = LociParser("20:10220390-10220490"))
     ).foreach(filter => {
       check("gatk_mini_bundle_extract.bam", "gatk_mini_bundle_extract.sam", filter)
@@ -105,13 +105,13 @@ class ReadSetsSuite
     val allReads = loadReadsRDD(sc, "mdtagissue.sam")
     allReads.reads.count() should be(8)
 
-    val mdTagReads = loadReadsRDD(sc, "mdtagissue.sam", InputFilters(mapped = true))
+    val mdTagReads = loadReadsRDD(sc, "mdtagissue.sam", InputFilters.mapped())
     mdTagReads.reads.count() should be(5)
 
     val nonDuplicateReads = loadReadsRDD(
       sc,
       "mdtagissue.sam",
-      InputFilters(mapped = true, nonDuplicate = true)
+      InputFilters.mapped(nonDuplicate = true)
     )
     nonDuplicateReads.reads.count() should be(3)
   }
@@ -141,11 +141,11 @@ class ReadSetsSuite
 
     ReadSets.load(adamOut, sc, 0, InputFilters.empty)._1.count() should be(8)
 
-    ReadSets.load(adamOut, sc, 0, InputFilters(mapped = true, nonDuplicate = true))._1.count() should be(3)
+    ReadSets.load(adamOut, sc, 0, InputFilters.mapped(nonDuplicate = true))._1.count() should be(3)
   }
 
   test("load and serialize / deserialize reads") {
-    val reads = loadReadsRDD(sc, "mdtagissue.sam", InputFilters(mapped = true)).mappedReads.collect()
+    val reads = loadReadsRDD(sc, "mdtagissue.sam", InputFilters.mapped()).mappedReads.collect()
     val serializedReads = reads.map(serialize)
     val deserializedReads: Seq[MappedRead] = serializedReads.map(deserialize[MappedRead])
     for ((read, deserialized) <- reads.zip(deserializedReads)) {

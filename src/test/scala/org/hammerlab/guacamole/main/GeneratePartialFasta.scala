@@ -61,7 +61,7 @@ object GeneratePartialFasta extends SparkCommand[GeneratePartialFastaArguments] 
   override def run(args: GeneratePartialFastaArguments, sc: SparkContext): Unit = {
 
     val reference = args.reference(sc)
-    val parsedLoci = args.parseLoci(sc.hadoopConfiguration, fallback = "none")
+    val parsedLoci = args.parseFilters(sc.hadoopConfiguration).loci
     val readsets =
       ReadSets(
         sc,

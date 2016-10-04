@@ -53,7 +53,6 @@ class GermlineAssemblyCallerSuite
         sc,
         args.inputs,
         InputFilters(
-          mapped = true,
           nonDuplicate = true,
           overlapsLoci = lociParser
         )
