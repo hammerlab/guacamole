@@ -60,7 +60,6 @@ class VariantSupportSuite
       sc,
       "gatk_mini_bundle_extract.bam",
       InputFilters(
-        mapped = true,
         nonDuplicate = false,
         overlapsLoci = LociParser(loci)
       )
@@ -71,7 +70,6 @@ class VariantSupportSuite
       sc,
       "gatk_mini_bundle_extract.bam",
       InputFilters(
-        mapped = true,
         nonDuplicate = true,
         overlapsLoci = LociParser(loci)
       )

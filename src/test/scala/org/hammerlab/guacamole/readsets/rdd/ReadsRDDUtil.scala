@@ -26,7 +26,7 @@ trait ReadsRDDUtil
   def loadTumorNormalReads(sc: SparkContext,
                            tumorFile: String,
                            normalFile: String): (Seq[MappedRead], Seq[MappedRead]) = {
-    val filters = InputFilters(mapped = true, nonDuplicate = true, passedVendorQualityChecks = true)
+    val filters = InputFilters.mapped(nonDuplicate = true, passedVendorQualityChecks = true)
     (
       loadReadsRDD(sc, tumorFile, filters = filters).mappedReads.collect(),
       loadReadsRDD(sc, normalFile, filters = filters).mappedReads.collect()

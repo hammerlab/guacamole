@@ -12,7 +12,6 @@ import org.hammerlab.guacamole.likelihood.Likelihood
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.readsets.args.{GermlineCallerArgs, ReferenceArgs}
-import org.hammerlab.guacamole.readsets.io.InputFilters
 import org.hammerlab.guacamole.readsets.rdd.{PartitionedRegions, PartitionedRegionsArgs}
 import org.hammerlab.guacamole.readsets.{PartitionedReads, ReadSets, SampleName}
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
@@ -40,9 +39,6 @@ object GermlineAssemblyCaller {
     @Args4jOption(name = "--min-average-base-quality", usage = "Minimum average of base qualities in the read")
     var minAverageBaseQuality: Int = 20
 
-    @Args4jOption(name = "--min-alignment-quality", usage = "Minimum alignment qualities of the read")
-    var minAlignmentQuality: Int = 30
-
     @Args4jOption(name = "--min-likelihood", usage = "Minimum Phred-scaled likelihood. Default: 0 (off)")
     var minLikelihood: Int = 0
   }
@@ -53,25 +49,20 @@ object GermlineAssemblyCaller {
 
     override def computeVariants(args: Arguments, sc: SparkContext) = {
       val reference = args.reference(sc)
-      val loci = args.parseLoci(sc.hadoopConfiguration)
+      val filters = args.parseFilters(sc.hadoopConfiguration)
       val readsets =
         ReadSets(
           sc,
           args.inputs,
-          InputFilters(
-            overlapsLoci = loci,
-            mapped = true,
-            nonDuplicate = true
-          )
+          filters
         )
 
-      val minAlignmentQuality = args.minAlignmentQuality
-      val qualityReads = readsets.allMappedReads.filter(_.alignmentQuality > minAlignmentQuality)
+      val qualityReads = readsets.allMappedReads
 
       val partitionedReads =
         PartitionedRegions(
           qualityReads,
-          loci.result(readsets.contigLengths),
+          filters.loci.result(readsets.contigLengths),
           args
         )
 
