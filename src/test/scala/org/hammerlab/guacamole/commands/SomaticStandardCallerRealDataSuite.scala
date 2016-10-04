@@ -112,7 +112,7 @@ class SomaticStandardCallerRealDataSuite
       )
 
     val negativePositions = Array[Long](
-      148487667,
+//      148487667,
       134307261,
        90376213,
         3638733,
