@@ -7,6 +7,6 @@ class LociArgsSuite extends GuacFunSuite {
   test("vcf loading") {
     val args = new LociArgs {}
     args.lociFile = "src/test/resources/truth.chr20.vcf"
-    args.parseLoci(sc.hadoopConfiguration).result.count should be(743606)
+    args.parseLoci(sc.hadoopConfiguration).get.result.count should be(743606)
   }
 }
