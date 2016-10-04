@@ -5,7 +5,8 @@ import java.io.File
 import htsjdk.variant.variantcontext.{GenotypeBuilder, VariantContext, VariantContextBuilder, Allele => HTSJDKAllele}
 import htsjdk.variant.vcf.VCFFileReader
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
-import org.hammerlab.guacamole.util.{Bases, VCFComparison}
+import org.hammerlab.guacamole.util.Bases.basesToString
+import org.hammerlab.guacamole.util.VCFComparison
 
 import scala.collection.JavaConversions
 import scala.collection.mutable.ArrayBuffer
@@ -29,9 +30,15 @@ case class VariantFromVarlensCSV(
       (interbaseStart, ref, alt)
     } else {
       // Deletion.
-      val refSequence = Bases.basesToString(
-        reference.getReferenceSequence(
-          uncanonicalizedContig, interbaseStart.toInt - 1, interbaseEnd.toInt)).toUpperCase
+      val refSequence =
+        basesToString(
+          reference
+            .getReferenceSequence(
+              uncanonicalizedContig,
+              interbaseStart.toInt - 1, interbaseEnd.toInt
+            )
+        ).toUpperCase
+
       (interbaseStart - 1, refSequence, refSequence(0) + alt)
     }
 
