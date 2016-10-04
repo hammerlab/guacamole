@@ -12,7 +12,7 @@ import org.hammerlab.guacamole.readsets.io.InputFilters
 import org.hammerlab.guacamole.readsets.rdd.{PartitionedRegions, PartitionedRegionsArgs}
 import org.hammerlab.guacamole.readsets.{PerSample, ReadSets, SampleName}
 import org.hammerlab.guacamole.reference.{ContigName, Locus}
-import org.hammerlab.guacamole.util.Bases
+import org.hammerlab.guacamole.util.Bases.basesToString
 import org.kohsuke.args4j.{Option => Args4jOption}
 
 object VariantSupport {
@@ -105,8 +105,8 @@ object VariantSupport {
           pileup.sampleName,
           pileup.contigName,
           pileup.locus,
-          Bases.basesToString(allele.refBases),
-          Bases.basesToString(allele.altBases),
+          basesToString(allele.refBases),
+          basesToString(allele.altBases),
           elements.size
         )
   }

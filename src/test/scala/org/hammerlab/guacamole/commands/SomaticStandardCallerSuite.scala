@@ -1,9 +1,10 @@
 package org.hammerlab.guacamole.commands
 
+import org.hammerlab.guacamole.commands.SomaticStandard.Caller.findPotentialVariantAtLocus
 import org.hammerlab.guacamole.pileup.{Util => PileupUtil}
 import org.hammerlab.guacamole.reads.ReadsUtil
 import org.hammerlab.guacamole.reference.{ContigName, Locus, ReferenceUtil}
-import org.hammerlab.guacamole.util.{Bases, GuacFunSuite}
+import org.hammerlab.guacamole.util.{AssertBases, GuacFunSuite}
 
 class SomaticStandardCallerSuite
   extends GuacFunSuite
@@ -39,7 +40,7 @@ class SomaticStandardCallerSuite
 
     val tumorPileup = makeTumorPileup(tumorReads, "chr1", 2)
 
-    SomaticStandard.Caller.findPotentialVariantAtLocus(tumorPileup, normalPileup, oddsThreshold = 2).size should be(0)
+    findPotentialVariantAtLocus(tumorPileup, normalPileup, oddsThreshold = 2).size should be(0)
   }
 
   test("single-base deletion") {
@@ -61,12 +62,12 @@ class SomaticStandardCallerSuite
 
     val tumorPileup = makeTumorPileup(tumorReads, "chr1", 2)
 
-    val alleles = SomaticStandard.Caller.findPotentialVariantAtLocus(tumorPileup, normalPileup, oddsThreshold = 2)
+    val alleles = findPotentialVariantAtLocus(tumorPileup, normalPileup, oddsThreshold = 2)
     alleles.size should be(1)
 
     val allele = alleles(0).allele
-    Bases.basesToString(allele.refBases) should be("GA")
-    Bases.basesToString(allele.altBases) should be("G")
+    AssertBases(allele.refBases, "GA")
+    AssertBases(allele.altBases, "G")
   }
 
   test("multiple-base deletion") {
@@ -90,12 +91,12 @@ class SomaticStandardCallerSuite
 
     val tumorPileup = makeTumorPileup(tumorReads, "chr4", 4)
 
-    val alleles = SomaticStandard.Caller.findPotentialVariantAtLocus(tumorPileup, normalPileup, oddsThreshold = 2)
+    val alleles = findPotentialVariantAtLocus(tumorPileup, normalPileup, oddsThreshold = 2)
     alleles.size should be(1)
 
     val allele = alleles(0).allele
-    Bases.basesToString(allele.refBases) should be("AGCTTCG")
-    Bases.basesToString(allele.altBases) should be("A")
+    AssertBases(allele.refBases, "AGCTTCG")
+    AssertBases(allele.altBases, "A")
   }
 
   test("single-base insertion") {
@@ -117,12 +118,12 @@ class SomaticStandardCallerSuite
 
     val tumorPileup = makeTumorPileup(tumorReads, "chr1", 3)
 
-    val alleles = SomaticStandard.Caller.findPotentialVariantAtLocus(tumorPileup, normalPileup, oddsThreshold = 2)
+    val alleles = findPotentialVariantAtLocus(tumorPileup, normalPileup, oddsThreshold = 2)
     alleles.size should be(1)
 
     val allele = alleles(0).allele
-    Bases.basesToString(allele.refBases) should be("A")
-    Bases.basesToString(allele.altBases) should be("AG")
+    AssertBases(allele.refBases, "A")
+    AssertBases(allele.altBases, "AG")
   }
 
   test("multiple-base insertion") {
@@ -140,7 +141,7 @@ class SomaticStandardCallerSuite
         ("TCGAGGTCTCGA", "4M4I4M", 0)
       )
 
-    val alleles = SomaticStandard.Caller.findPotentialVariantAtLocus(
+    val alleles = findPotentialVariantAtLocus(
       makeTumorPileup(tumorReads, "chr1", 3),
       makeNormalPileup(normalReads, "chr1", 3),
       oddsThreshold = 2
@@ -148,8 +149,8 @@ class SomaticStandardCallerSuite
     alleles.size should be(1)
 
     val allele = alleles(0).allele
-    Bases.basesToString(allele.refBases) should be("A")
-    Bases.basesToString(allele.altBases) should be("AGGTC")
+    AssertBases(allele.refBases, "A")
+    AssertBases(allele.altBases, "AGGTC")
   }
 
   test("insertions and deletions") {
@@ -176,7 +177,7 @@ class SomaticStandardCallerSuite
       )
 
     def testLocus(contigName: ContigName, locus: Locus, refBases: String, altBases: String) = {
-      val alleles = SomaticStandard.Caller.findPotentialVariantAtLocus(
+      val alleles = findPotentialVariantAtLocus(
         makeTumorPileup(tumorReads, contigName, locus),
         makeNormalPileup(normalReads, contigName, locus),
         oddsThreshold = 2
@@ -184,8 +185,8 @@ class SomaticStandardCallerSuite
       alleles.size should be(1)
 
       val allele = alleles(0).allele
-      Bases.basesToString(allele.refBases) should be(refBases)
-      Bases.basesToString(allele.altBases) should be(altBases)
+      AssertBases(allele.refBases, refBases)
+      AssertBases(allele.altBases, altBases)
     }
 
     testLocus("chr3", 11, "CGA", "C")

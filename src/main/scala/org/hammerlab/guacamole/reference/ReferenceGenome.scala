@@ -2,7 +2,7 @@ package org.hammerlab.guacamole.reference
 
 import htsjdk.samtools.Cigar
 import org.bdgenomics.adam.util.MdTag
-import org.hammerlab.guacamole.util.Bases
+import org.hammerlab.guacamole.util.Bases.basesToString
 
 trait ReferenceGenome {
 
@@ -52,7 +52,7 @@ trait ReferenceGenome {
    */
   def buildMdTag(readSequence: String, referenceContig: String, referenceStart: Int, cigar: Cigar): String = {
     val referenceSequence =
-      Bases.basesToString(
+      basesToString(
         getReferenceSequence(referenceContig, referenceStart, referenceStart + cigar.getReferenceLength)
       )
     MdTag(readSequence, referenceSequence, cigar, referenceStart).toString
