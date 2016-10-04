@@ -28,7 +28,6 @@ class SomaticStandardCallerRealDataSuite
    * Common algorithm parameters - fixed for all tests
    */
   val logOddsThreshold = 120
-  val minAlignmentQuality = 1
   val minTumorReadDepth = 8
   val minNormalReadDepth = 4
   val maxTumorReadDepth = 200
@@ -55,14 +54,11 @@ class SomaticStandardCallerRealDataSuite
             locus
           )
 
-        val calledGenotypes =
-          findPotentialVariantAtLocus(
-            tumorPileup,
-            normalPileup,
-            logOddsThreshold,
-            minAlignmentQuality,
-            filterMultiAllelic
-          )
+        val calledGenotypes = findPotentialVariantAtLocus(
+          tumorPileup,
+          normalPileup,
+          logOddsThreshold
+        )
 
         val foundVariant =
           SomaticGenotypeFilter(
