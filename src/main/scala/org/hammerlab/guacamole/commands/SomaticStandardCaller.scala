@@ -5,7 +5,6 @@ import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.rdd.ADAMContext
 import org.bdgenomics.formats.avro.DatabaseVariantAnnotation
 import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMapTwoSamples
-import org.hammerlab.guacamole.filters.pileup.PileupFilter.PileupFilterArguments
 import org.hammerlab.guacamole.filters.somatic.SomaticGenotypeFilter.SomaticGenotypeFilterArguments
 import org.hammerlab.guacamole.filters.somatic.{SomaticAlternateReadDepthFilter, SomaticGenotypeFilter, SomaticReadDepthFilter}
 import org.hammerlab.guacamole.likelihood.Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup
@@ -33,7 +32,6 @@ object SomaticStandard {
     extends Args
       with TumorNormalReadsArgs
       with PartitionedRegionsArgs
-      with PileupFilterArguments
       with SomaticGenotypeFilterArguments
       with GenotypeOutputArgs
       with ReferenceArgs {
@@ -63,8 +61,6 @@ object SomaticStandard {
 
       // Destructure `args`' fields here to avoid serializing `args` itself.
       val oddsThreshold = args.oddsThreshold
-      val minAlignmentQuality = args.minAlignmentQuality
-      val filterMultiAllelic = args.filterMultiAllelic
       val maxTumorReadDepth = args.maxTumorReadDepth
 
       val normalSampleName = args.normalSampleName
@@ -81,8 +77,6 @@ object SomaticStandard {
               pileupTumor,
               pileupNormal,
               oddsThreshold,
-              minAlignmentQuality,
-              filterMultiAllelic,
               maxTumorReadDepth
             ).iterator,
           reference = reference
@@ -131,8 +125,6 @@ object SomaticStandard {
     def findPotentialVariantAtLocus(tumorPileup: Pileup,
                                     normalPileup: Pileup,
                                     oddsThreshold: Int,
-                                    minAlignmentQuality: Int = 1,
-                                    filterMultiAllelic: Boolean = false,
                                     maxReadDepth: Int = Int.MaxValue): Seq[CalledSomaticAllele] = {
 
       // For now, we skip loci that have no reads mapped. We may instead want to emit NoCall in this case.
