@@ -108,7 +108,8 @@ class SomaticStandardCallerRealDataSuite
       )
 
     val negativePositions = Array[Long](
-//      148487667,
+      // 148487667, This is a negative variant, though we can't determine that from the pileup
+      //            Instead, we could examine the reads containing the variant bases and see they are misaligned
       134307261,
        90376213,
         3638733,
