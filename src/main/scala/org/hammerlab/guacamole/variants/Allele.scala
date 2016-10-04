@@ -2,13 +2,12 @@ package org.hammerlab.guacamole.variants
 
 import com.esotericsoftware.kryo.io.{Input, Output}
 import com.esotericsoftware.kryo.{Kryo, Serializer}
-import org.hammerlab.guacamole.util.Bases
-import org.hammerlab.guacamole.util.Bases.BasesOrdering
+import org.hammerlab.guacamole.util.Bases.{BasesOrdering, basesToString, stringToBases}
 
 case class Allele(refBases: Seq[Byte], altBases: Seq[Byte]) extends Ordered[Allele] {
   val isVariant = refBases != altBases
 
-  override def toString: String = "Allele(%s,%s)".format(Bases.basesToString(refBases), Bases.basesToString(altBases))
+  override def toString: String = "Allele(%s,%s)".format(basesToString(refBases), basesToString(altBases))
 
   override def compare(that: Allele): Int = {
     BasesOrdering.compare(refBases, that.refBases) match {
@@ -20,7 +19,7 @@ case class Allele(refBases: Seq[Byte], altBases: Seq[Byte]) extends Ordered[Alle
 
 object Allele {
   def apply(refBases: String, altBases: String): Allele = {
-    Allele(Bases.stringToBases(refBases), Bases.stringToBases(altBases))
+    Allele(stringToBases(refBases), stringToBases(altBases))
   }
 }
 

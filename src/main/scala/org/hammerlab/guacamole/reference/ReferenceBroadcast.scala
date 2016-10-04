@@ -37,7 +37,10 @@ object ReferenceBroadcast extends Logging {
    *
    * TODO: Arrays can't be more than 2³² long, use 2bit instead?
    */
-  case class ArrayBackedReferenceSequence(contigName: ContigName, wrapped: Broadcast[Array[Byte]]) extends ContigSequence {
+  case class ArrayBackedReferenceSequence(contigName: ContigName,
+                                          wrapped: Broadcast[Array[Byte]])
+    extends ContigSequence {
+
     val length: NumLoci = wrapped.value.length
 
     def apply(locus: Locus): Byte =
