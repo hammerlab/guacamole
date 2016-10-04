@@ -8,13 +8,15 @@ import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.readsets.ReadSets
 import org.hammerlab.guacamole.readsets.args.{ReferenceArgs, Arguments => ReadSetsArguments}
 import org.hammerlab.guacamole.readsets.io.InputFilters
+import org.hammerlab.guacamole.readsets.rdd.PartitionedRegionsArgs
 import org.hammerlab.guacamole.reference.{ContigNotFound, Interval}
-import org.hammerlab.guacamole.util.Bases
+import org.hammerlab.guacamole.util.Bases.basesToString
 import org.kohsuke.args4j.{Option => Args4jOption}
 
 class GeneratePartialFastaArguments
   extends Args
     with ReadSetsArguments
+    with PartitionedRegionsArgs
     with ReferenceArgs {
 
   @Args4jOption(name = "--out", metaVar = "OUT", required = true, aliases = Array("-o"),
@@ -89,7 +91,7 @@ object GeneratePartialFasta extends SparkCommand[GeneratePartialFastaArguments] 
       try {
         val paddedStart = start.toInt - padding
         val paddedEnd = end.toInt + padding
-        val sequence = Bases.basesToString(reference.getContig(contig.name).slice(paddedStart, paddedEnd))
+        val sequence = basesToString(reference.getContig(contig.name).slice(paddedStart, paddedEnd))
         writer.write(">%s:%d-%d/%d\n".format(contig.name, paddedStart, paddedEnd, contigLengths(contig.name)))
         writer.write(sequence)
         writer.write("\n")

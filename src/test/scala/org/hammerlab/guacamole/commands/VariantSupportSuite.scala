@@ -102,7 +102,7 @@ class VariantSupportSuite
   test("read evidence for simple snvs no filters") {
     val loci =
       Seq(
-        ("20", 9999900, Nil), // empty
+        ("20", 9999900, Nil),  // empty
         ("20", 9999995, Seq(("A", "ACT", 9))),
         ("20", 10007174, Seq(("C", "T", 5), ("C", "C", 3))),
         ("20", 10007175, Seq(("T", "T", 8)))
@@ -110,7 +110,6 @@ class VariantSupportSuite
 
     val window = SlidingWindow[MappedRead]("20", 0, gatkReads("20:9999900-10007175").toIterator)
     testAlleleCounts(window, loci: _*)
-
   }
 
   test("read evidence for simple snvs duplicate filtering") {

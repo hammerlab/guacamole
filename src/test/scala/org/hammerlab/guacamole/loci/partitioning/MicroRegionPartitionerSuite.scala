@@ -38,7 +38,6 @@ class MicroRegionPartitionerSuite
     val result =
       new MicroRegionPartitioner(
         reads,
-        halfWindowSize = 0,
         numPartitions = 2,
         microPartitionsPerPartition = 100
       ).partition(loci)
