@@ -1,10 +1,8 @@
 package org.hammerlab.guacamole.alignment
 
 import breeze.linalg.DenseVector
-import htsjdk.samtools.{ Cigar, TextCigarCodec }
-import org.hammerlab.guacamole.alignment.AlignmentState.{AlignmentState, isGapAlignment}
-
-
+import htsjdk.samtools.{Cigar, TextCigarCodec}
+import org.hammerlab.guacamole.alignment.AlignmentState.{AlignmentState, cigarKey, isGapAlignment}
 
 /**
  *
@@ -41,7 +39,7 @@ case class ReadAlignment private[alignment](alignments: Seq[AlignmentState],
       rle.toString
     }
 
-    runLengthEncode(alignments.map(alignment => AlignmentState.cigarKey(alignment)))
+    runLengthEncode(alignments.map(alignment => cigarKey(alignment)))
   }
 
   def toCigar: Cigar = {

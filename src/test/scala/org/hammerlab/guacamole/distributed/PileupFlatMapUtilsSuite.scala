@@ -11,7 +11,8 @@ import org.hammerlab.guacamole.readsets.rdd.{PartitionedRegionsUtil, ReadsRDDUti
 import org.hammerlab.guacamole.readsets.{PartitionedReads, PerSample}
 import org.hammerlab.guacamole.reference.ReferenceBroadcast.MapBackedReferenceSequence
 import org.hammerlab.guacamole.reference.ReferenceUtil
-import org.hammerlab.guacamole.util.{AssertBases, Bases, GuacFunSuite, KryoTestRegistrar}
+import org.hammerlab.guacamole.util.{AssertBases, GuacFunSuite, KryoTestRegistrar}
+import org.hammerlab.guacamole.util.Bases.{basesToString, T}
 
 class PileupFlatMapUtilsSuiteRegistrar extends KryoTestRegistrar {
   override def registerTestClasses(kryo: Kryo): Unit = {
@@ -37,7 +38,7 @@ private object Util {
   // This helper function is in its own object here to avoid serializing `PileupFlatMapUtilsSuite`, which is not
   // serializable due to mixing in `Matchers`.
   def pileupsToElementStrings(pileups: PerSample[Pileup]): Iterator[PerSample[Iterable[String]]] =
-    Iterator(pileups.map(_.elements.map(p => Bases.basesToString(p.sequencedBases))))
+    Iterator(pileups.map(_.elements.map(p => basesToString(p.sequencedBases))))
 }
 
 class PileupFlatMapUtilsSuite
@@ -48,7 +49,13 @@ class PileupFlatMapUtilsSuite
 
   override def registrar = classOf[PileupFlatMapUtilsSuiteRegistrar].getCanonicalName
 
-  lazy val reference = makeReference(sc, Seq(("chr1", 0, "ATCGATCGA")))
+  lazy val reference =
+    makeReference(
+      sc,
+      ("chr1",  0, "ATCGATCGA" + "N"*90),
+      ("chr1", 99, "ACGTACGTACGT" + "N"*500),
+      ("chr2", 10, "N"*10)
+    )
 
   def dummyReadsRDD =
     makeReadsRDD(
@@ -91,7 +98,7 @@ class PileupFlatMapUtilsSuite
     pileups.length should be(8)
     val firstPileup = pileups.head
     firstPileup.locus should be(1L)
-    firstPileup.referenceBase should be(Bases.T)
+    firstPileup.referenceBase should be(T)
 
     firstPileup.elements.forall(_.readPosition == 0L) should be(true)
     firstPileup.elements.forall(_.isMatch) should be(true)
@@ -114,7 +121,7 @@ class PileupFlatMapUtilsSuite
 
     val firstPileup = pileups.head
     firstPileup.locus should be(1L)
-    firstPileup.referenceBase should be(Bases.T)
+    firstPileup.referenceBase should be(T)
 
     pileups.forall(_.elements.head.isMatch) should be(true)
   }
@@ -233,7 +240,7 @@ class PileupFlatMapUtilsSuite
         partitionReads(reads, UniformPartitioner(5).partition(loci)),
         skipEmpty = false,
         pileupsToElementStrings,
-        reference = makeReference(sc, Seq(("chr1", 0, "ATCGATCGA"), ("chr2", 0, "")))
+        reference = reference
       ).collect.map(_.toList)
 
     resultPlain should equal(resultParallelized)
@@ -264,7 +271,7 @@ class PileupFlatMapUtilsSuite
         sampleName = "sampleName",
         skipEmpty = false,
         _.elements.toIterator,
-        reference = makeReference(sc, Seq(("chr1", 1, "TCGATCGA")))
+        reference = makeReference(sc, "chr1", 1, "TCGATCGA")
       ).collect()
 
     pileups.length should be(24)
@@ -305,7 +312,7 @@ class PileupFlatMapUtilsSuite
         sample2Name = "sample2",
         skipEmpty = false,
         (pileup1, pileup2) => (pileup1.elements ++ pileup2.elements).toIterator,
-        reference = makeReference(sc, Seq(("chr1", 0, "ATCGATCGA" + "N" * 90 + "AGGGGGGGGGG")))
+        reference = makeReference(sc, "chr1", 0, "ATCGATCGA" + "N"*90 + "AGGGGGGGGGG" + "N"*500)
       ).collect()
 
     elements.map(_.isMatch) should equal(List.fill(elements.length)(true))
@@ -333,7 +340,7 @@ class PileupFlatMapUtilsSuite
         sampleName = "sampleName",
         skipEmpty = false,
         _.elements.toIterator,
-        reference = makeReference(sc, Seq(("chr1", 0, "ATCGATCGA")))
+        reference = makeReference(sc, "chr1", 1, "ATCGATCGATC")
       ).collect()
 
     pileups.length should be(24)

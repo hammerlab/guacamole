@@ -4,9 +4,9 @@ import org.hammerlab.guacamole.jointcaller.pileup_summarization.PileupStats
 import org.hammerlab.guacamole.pileup.{Util => PileupUtil}
 import org.hammerlab.guacamole.reads.ReadsUtil
 import org.hammerlab.guacamole.reference.{ReferenceBroadcast, ReferenceUtil}
+import org.hammerlab.guacamole.util.Bases.stringToBases
+import org.hammerlab.guacamole.util.GuacFunSuite
 import org.hammerlab.guacamole.util.TestUtil.resourcePath
-import org.hammerlab.guacamole.util.{Bases, GuacFunSuite}
-
 
 class PileupStatsSuite
   extends GuacFunSuite
@@ -23,7 +23,7 @@ class PileupStatsSuite
   }
 
   val refString = "NTCGATCGA"
-  override lazy val reference = makeReference(sc, Seq(("chr1", 0, refString)))
+  override lazy val reference = makeReference(sc, "chr1", 0, refString)
 
   test("pileupstats likelihood computation") {
 
@@ -39,7 +39,7 @@ class PileupStatsSuite
 
     val pileups = (1 until refString.length).map(locus => makePileup(reads, "chr1", locus))
 
-    val stats1 = PileupStats.apply(pileups(1).elements, Bases.stringToBases("G"))
+    val stats1 = PileupStats.apply(pileups(1).elements, stringToBases("G"))
     stats1.totalDepthIncludingReadsContributingNoAlleles should equal(6)
     stats1.allelicDepths should equal(Map("G" -> 6))
     stats1.nonRefAlleles should equal(Seq.empty)
@@ -47,7 +47,7 @@ class PileupStatsSuite
     assert(stats1.logLikelihoodPileup(Map("G" -> 1.0)) > stats1.logLikelihoodPileup(Map("G" -> .99, "C" -> .01)))
     assert(stats1.logLikelihoodPileup(Map("T" -> 1.0)) < stats1.logLikelihoodPileup(Map("G" -> .99, "C" -> .01)))
 
-    val stats2 = PileupStats.apply(pileups(2).elements, Bases.stringToBases("A"))
+    val stats2 = PileupStats.apply(pileups(2).elements, stringToBases("A"))
     stats2.allelicDepths should equal(Map("A" -> 2, "C" -> 3, "ACCC" -> 1))
     stats2.nonRefAlleles should equal(Seq("C", "ACCC"))
     assert(stats2.logLikelihoodPileup(Map("A" -> 0.5, "C" -> 0.5)) > stats2.logLikelihoodPileup(Map("A" -> 1.0)))
@@ -55,7 +55,7 @@ class PileupStatsSuite
     // True because of the higher base qualities on the C allele:
     assert(stats2.logLikelihoodPileup(Map("C" -> 1.0)) > stats2.logLikelihoodPileup(Map("A" -> 1.0)))
 
-    val stats3 = PileupStats.apply(pileups(3).elements, Bases.stringToBases("T"))
+    val stats3 = PileupStats.apply(pileups(3).elements, stringToBases("T"))
     stats3.totalDepthIncludingReadsContributingNoAlleles should equal(6)
     stats3.allelicDepths should equal(Map("T" -> 2)) // reads with an SNV at position 4 don't count
   }

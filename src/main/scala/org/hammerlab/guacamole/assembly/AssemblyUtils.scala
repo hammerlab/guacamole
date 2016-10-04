@@ -3,6 +3,7 @@ package org.hammerlab.guacamole.assembly
 import grizzled.slf4j.Logging
 import htsjdk.samtools.CigarOperator
 import org.hammerlab.guacamole.alignment.ReadAlignment
+import org.hammerlab.guacamole.assembly.DeBruijnGraph.{discoverPathsFromReads, mergeOverlappingSequences}
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.reference.{ContigSequence, ReferenceGenome}
 import org.hammerlab.guacamole.util.CigarUtils
@@ -68,17 +69,19 @@ object AssemblyUtils extends Logging {
       referenceEnd
     )
 
-    val paths = DeBruijnGraph.discoverPathsFromReads(
-      reads,
-      referenceStart,
-      referenceEnd,
-      currentReference,
-      kmerSize = kmerSize,
-      minOccurrence = minOccurrence,
-      maxPaths = maxPathsToScore + 1,
-      minMeanKmerBaseQuality = minMeanKmerQuality,
-      debugPrint)
-      .map(DeBruijnGraph.mergeOverlappingSequences(_, kmerSize))
+    val paths =
+      discoverPathsFromReads(
+        reads,
+        referenceStart,
+        referenceEnd,
+        currentReference,
+        kmerSize = kmerSize,
+        minOccurrence = minOccurrence,
+        maxPaths = maxPathsToScore + 1,
+        minMeanKmerBaseQuality = minMeanKmerQuality,
+        debugPrint
+      )
+      .map(mergeOverlappingSequences(_, kmerSize))
       .toVector
 
     // Score up to the maximum number of paths
@@ -98,9 +101,9 @@ object AssemblyUtils extends Logging {
           )
           .sum -> path
       })
-        .sortBy(-_._1)
-        .take(expectedPloidy)
-        .map(_._2)
+      .sortBy(-_._1)
+      .take(expectedPloidy)
+      .map(_._2)
 
     } else {
       warn(s"In window $contigName:$referenceStart-$referenceEnd " +

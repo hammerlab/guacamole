@@ -1,6 +1,7 @@
 package org.hammerlab.guacamole.commands
 
 import org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Arguments
+import org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Caller.discoverGermlineVariants
 import org.hammerlab.guacamole.data.NA12878TestUtil
 import org.hammerlab.guacamole.loci.partitioning.UniformPartitioner
 import org.hammerlab.guacamole.loci.set.LociParser
@@ -8,7 +9,8 @@ import org.hammerlab.guacamole.readsets.ReadSets
 import org.hammerlab.guacamole.readsets.io.InputFilters
 import org.hammerlab.guacamole.readsets.rdd.PartitionedRegionsUtil
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
-import org.hammerlab.guacamole.util.{Bases, GuacFunSuite}
+import org.hammerlab.guacamole.util.Bases.basesToString
+import org.hammerlab.guacamole.util.GuacFunSuite
 import org.hammerlab.guacamole.variants.CalledAllele
 import org.scalatest.BeforeAndAfterAll
 
@@ -62,7 +64,7 @@ class GermlineAssemblyCallerSuite
     val partitionedReads = partitionReads(readsets.allMappedReads, lociPartitioning)
 
     val variants =
-      GermlineAssemblyCaller.Caller.discoverGermlineVariants(
+      discoverGermlineVariants(
         partitionedReads,
         sampleName = "test",
         kmerSize = kmerSize,
@@ -80,7 +82,7 @@ class GermlineAssemblyCallerSuite
       for {
         CalledAllele(_, contig, start, allele, _, _, _) <- variants
       } yield {
-        (contig, start, Bases.basesToString(allele.refBases), Bases.basesToString(allele.altBases))
+        (contig, start, basesToString(allele.refBases), basesToString(allele.altBases))
       }
 
     actualVariants should be(expectedVariants)
