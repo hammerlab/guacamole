@@ -3,7 +3,7 @@ package org.hammerlab.guacamole.assembly
 import breeze.stats.mean
 import htsjdk.samtools.CigarOperator
 import org.hammerlab.guacamole.reads.{MappedRead, Read}
-import org.hammerlab.guacamole.util.Bases
+import org.hammerlab.guacamole.util.Bases.basesToString
 
 import scala.collection.mutable
 
@@ -188,8 +188,8 @@ class DeBruijnGraph(val kmerSize: Int,
                        avoidLoops: Boolean = true,
                        debugPrint: Boolean = false): List[(Path)] = {
 
-    assume(source.length == kmerSize, s"Source kmer ${Bases.basesToString(source)} has size ${source.length} != $kmerSize")
-    assume(sink.length == kmerSize, s"Sink kmer ${Bases.basesToString(sink)} has size ${sink.length} != $kmerSize")
+    assume(source.length == kmerSize, s"Source kmer ${basesToString(source)} has size ${source.length} != $kmerSize")
+    assume(sink.length == kmerSize, s"Sink kmer ${basesToString(sink)} has size ${sink.length} != $kmerSize")
 
     var paths = List.empty[(Path)]
     var visited: mutable.Set[Kmer] = mutable.Set.empty
@@ -232,9 +232,9 @@ class DeBruijnGraph(val kmerSize: Int,
 
       if (debugPrint) {
         if (currentPath.isEmpty) {
-          println(Bases.basesToString(next))
+          println(basesToString(next))
         } else {
-          println(" " * (currentPath.map(_.length).sum - kmerSize + 1) + Bases.basesToString(next))
+          println(" " * (currentPath.map(_.length).sum - kmerSize + 1) + basesToString(next))
         }
       }
 

@@ -1,54 +1,10 @@
 package org.hammerlab.guacamole.alignment
 
 import breeze.linalg.DenseVector
-import htsjdk.samtools.{Cigar, TextCigarCodec}
-import org.hammerlab.guacamole.alignment.AlignmentState.{AlignmentState, cigarKey, isGapAlignment}
+import org.hammerlab.guacamole.alignment.AlignmentState.{AlignmentState, Deletion, Insertion, Match, Mismatch, isGapAlignment}
 
-/**
- *
- * @param alignments Sequence of alignments
- * @param refStartIdx Start of the alignment in the reference sequence
- * @param refEndIdx End of the alignment (inclusive) in the reference sequence
- * @param alignmentScore Score of the alignment based on the mismatch and gap penalties
- */
-case class ReadAlignment private[alignment](alignments: Seq[AlignmentState],
-                                            refStartIdx: Int,
-                                            refEndIdx: Int,
-                                            alignmentScore: Int) {
-  /**
-   * Convert a ReadAlignment to a CIGAR string
-   * @return CIGAR String
-   */
-  def toCigarString: String = {
-    def runLengthEncode(operators: Seq[String]): String = {
-      var lastOperator = operators.head
-      var i = 1
-      val rle = new StringBuffer()
-      var currentRun = 1
-      while (i < operators.size) {
-        if (operators(i) == lastOperator) {
-          currentRun += 1
-        } else {
-          rle.append(currentRun.toString + lastOperator)
-          currentRun = 1
-        }
-        lastOperator = operators(i)
-        i += 1
-      }
-      rle.append(currentRun.toString + lastOperator)
-      rle.toString
-    }
+object AffineGapPenaltyAlignment {
 
-    runLengthEncode(alignments.map(alignment => cigarKey(alignment)))
-  }
-
-  def toCigar: Cigar = {
-    val cigarString = this.toCigarString
-    TextCigarCodec.decode(cigarString)
-  }
-}
-
-object ReadAlignment {
   type Path = (Int, List[AlignmentState], Double)
 
   /**
@@ -61,7 +17,7 @@ object ReadAlignment {
    * @param closeGapProbability Penalty to end in an insertion or deletion in the alignment
    * @return An alignment path and score
    */
-  def apply(sequence: Seq[Byte],
+  def align(sequence: Seq[Byte],
             reference: Seq[Byte],
             mismatchProbability: Double = math.exp(-4),
             openGapProbability: Double = math.exp(-6),
@@ -89,11 +45,11 @@ object ReadAlignment {
     ReadAlignment(path, refStartIdx, refEndIdx, score.toInt)
   }
 
-  private[alignment] def scoreAlignmentPaths(sequence: Seq[Byte],
-                                             reference: Seq[Byte],
-                                             mismatchProbability: Double,
-                                             openGapProbability: Double,
-                                             closeGapProbability: Double): DenseVector[Path] = {
+  def scoreAlignmentPaths(sequence: Seq[Byte],
+                          reference: Seq[Byte],
+                          mismatchProbability: Double,
+                          openGapProbability: Double,
+                          closeGapProbability: Double): DenseVector[Path] = {
 
     val logMismatchPenalty = -math.log(mismatchProbability)
 
@@ -119,7 +75,7 @@ object ReadAlignment {
       val openGap = !previousStateOpt.exists(_ == nextState) && isGapAlignment(nextState)
       val closeGap = previousStateOpt.exists(previousState => nextState != previousState && isGapAlignment(previousState))
       val continueGap = previousStateOpt.exists(_ == nextState) && isGapAlignment(nextState)
-      val mismatch = nextState == AlignmentState.Mismatch
+      val mismatch = nextState == Mismatch
 
       (if (openGap) logOpenGapPenalty else 0) +
         (if (closeGap) logCloseGapPenalty else 0) +
@@ -138,13 +94,13 @@ object ReadAlignment {
         // Given the change in position, is the transition a gap or match/mismatch
         def classifyTransition(prevSeqPos: Int, prevRefPos: Int): AlignmentState = {
           if (sequenceIdx == prevSeqPos) {
-            AlignmentState.Deletion
+            Deletion
           } else if (referenceIdx == prevRefPos) {
-            AlignmentState.Insertion
+            Insertion
           } else if (sequence(sequenceIdx) != reference(referenceIdx)) {
-            AlignmentState.Mismatch
+            Mismatch
           } else {
-            AlignmentState.Match
+            Match
           }
         }
 
@@ -154,8 +110,8 @@ object ReadAlignment {
             (sequenceIdx, referenceIdx + 1),
             (sequenceIdx + 1, referenceIdx + 1)
           ).filter {
-            case (sI, rI) => sI <= sequenceLength && rI <= referenceLength // Filter positions before the start of either sequence
-          }
+              case (sI, rI) => sI <= sequenceLength && rI <= referenceLength // Filter positions before the start of either sequence
+            }
 
         // Compute the transition costs based on the gap penalties
         val nextPaths: Seq[Path] = possiblePreviousStates.map {
@@ -164,8 +120,8 @@ object ReadAlignment {
 
             val (prevRefStartIdx, prevPath, prevScore) =
               nextState match {
-                case AlignmentState.Deletion  => currentSequenceAlignment(referenceIdx + 1)
-                case AlignmentState.Insertion => lastSequenceAlignment(referenceIdx)
+                case Deletion  => currentSequenceAlignment(referenceIdx + 1)
+                case Insertion => lastSequenceAlignment(referenceIdx)
                 case _ => {
                   lastSequenceAlignment(referenceIdx + 1)
                 }
