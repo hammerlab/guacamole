@@ -3,7 +3,7 @@ package org.hammerlab.guacamole.likelihood
 import breeze.linalg.{DenseMatrix, DenseVector, logNormalize, sum}
 import breeze.numerics.{exp, log}
 import org.hammerlab.guacamole.pileup.{Pileup, PileupElement}
-import org.hammerlab.guacamole.util.Bases
+import org.hammerlab.guacamole.util.Bases.isStandardBase
 import org.hammerlab.guacamole.variants.{Allele, Genotype}
 
 /**
@@ -63,7 +63,7 @@ object Likelihood {
     logSpace: Boolean = false,
     normalize: Boolean = false): Seq[(Genotype, Double)] = {
 
-    val alleles = pileup.distinctAlleles.filter(allele => allele.altBases.forall(Bases.isStandardBase))
+    val alleles = pileup.distinctAlleles.filter(allele => allele.altBases.forall(isStandardBase))
 
     // Assume the alleles are equivalent fractions in the genotype
     val genotypes =

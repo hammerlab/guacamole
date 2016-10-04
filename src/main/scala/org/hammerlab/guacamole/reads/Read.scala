@@ -3,7 +3,7 @@ package org.hammerlab.guacamole.reads
 import grizzled.slf4j.Logging
 import htsjdk.samtools._
 import org.bdgenomics.formats.avro.AlignmentRecord
-import org.hammerlab.guacamole.util.Bases
+import org.hammerlab.guacamole.util.Bases.stringToBases
 
 /**
  * The fields in the Read trait are common to any read, whether mapped (aligned) or not.
@@ -124,7 +124,7 @@ object Read extends Logging {
    */
   def apply(alignmentRecord: AlignmentRecord, sampleId: Int): Read = {
 
-    val sequence = Bases.stringToBases(alignmentRecord.getSequence)
+    val sequence = stringToBases(alignmentRecord.getSequence)
     val baseQualities = baseQualityStringToArray(alignmentRecord.getQual, sequence.length)
 
     val referenceContig = alignmentRecord.getContigName.intern

@@ -1,5 +1,6 @@
 package org.hammerlab.guacamole.commands
 
+import org.hammerlab.guacamole.commands.SomaticStandard.Caller.findPotentialVariantAtLocus
 import org.hammerlab.guacamole.filters.somatic.SomaticGenotypeFilter
 import org.hammerlab.guacamole.pileup.{Util => PileupUtil}
 import org.hammerlab.guacamole.reads.MappedRead
@@ -54,13 +55,14 @@ class SomaticStandardCallerRealDataSuite
             locus
           )
 
-        val calledGenotypes = SomaticStandard.Caller.findPotentialVariantAtLocus(
-          tumorPileup,
-          normalPileup,
-          logOddsThreshold,
-          minAlignmentQuality,
-          filterMultiAllelic
-        )
+        val calledGenotypes =
+          findPotentialVariantAtLocus(
+            tumorPileup,
+            normalPileup,
+            logOddsThreshold,
+            minAlignmentQuality,
+            filterMultiAllelic
+          )
 
         val foundVariant =
           SomaticGenotypeFilter(
