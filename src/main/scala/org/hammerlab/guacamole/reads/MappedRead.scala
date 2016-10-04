@@ -5,7 +5,8 @@ import org.bdgenomics.adam.util.PhredUtils
 import org.hammerlab.guacamole.pileup.PileupElement
 import org.hammerlab.guacamole.readsets.SampleId
 import org.hammerlab.guacamole.reference.{ContigName, ContigSequence, Locus, ReferenceRegion}
-import org.hammerlab.guacamole.util.{Bases, CigarUtils}
+import org.hammerlab.guacamole.util.CigarUtils
+import org.hammerlab.guacamole.util.Bases.basesToString
 
 import scala.collection.JavaConversions
 
@@ -149,6 +150,6 @@ case class MappedRead(
     "MappedRead(%s:%d, %s, %s)".format(
       contigName, start,
       cigar.toString,
-      Bases.basesToString(sequence)
+      basesToString(sequence)
     )
 }

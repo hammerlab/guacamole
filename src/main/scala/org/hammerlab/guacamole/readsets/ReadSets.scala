@@ -10,6 +10,7 @@ import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.models.SequenceDictionary
 import org.bdgenomics.adam.rdd.ADAMContext
+import org.hammerlab.guacamole.loci.partitioning.LociPartitionerArgs
 import org.hammerlab.guacamole.loci.set.{LociParser, LociSet}
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.reads.Read
@@ -64,7 +65,7 @@ object ReadSets extends Logging {
     )
   }
 
-  def apply(sc: SparkContext, args: BaseArgs): (ReadSets, LociSet) = {
+  def apply(sc: SparkContext, args: BaseArgs with LociPartitionerArgs): (ReadSets, LociSet) = {
     val loci = args.parseLoci(sc.hadoopConfiguration)
 
     val readsets = apply(sc, args.inputs, loci, !args.noSequenceDictionary)

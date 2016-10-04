@@ -5,6 +5,7 @@ import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole.loci.Coverage
 import org.hammerlab.guacamole.loci.set.{LociIterator, LociSet, TakeLociIterator}
 import org.hammerlab.guacamole.readsets.iterator.{ContigCoverageIterator, ContigsIterator}
+import org.hammerlab.guacamole.reference.Position.ordering
 import org.hammerlab.guacamole.reference.{ContigName, Interval, NumLoci, Position, ReferenceRegion}
 import org.hammerlab.magic.rdd.RunLengthRDD._
 
@@ -14,7 +15,7 @@ import scala.reflect.ClassTag
 /**
  * Augment an [[RDD[ReferenceRegion]]] with methods for computing coverage depth, .
  */
-class CoverageRDD[R <: ReferenceRegion: ClassTag](@transient rdd: RDD[R])
+class CoverageRDD[R <: ReferenceRegion: ClassTag](rdd: RDD[R])
   extends Serializable {
 
   @transient val sc = rdd.sparkContext
@@ -196,4 +197,8 @@ class CoverageRDD[R <: ReferenceRegion: ClassTag](@transient rdd: RDD[R])
       .flatMap(coveragesForRegion(_, halfWindowSize, lociBroadcast.value))
       .reduceByKey(_ + _)  // sum all Coverages for each Position
       .sortByKey()  // sort by Position
+}
+
+object CoverageRDD {
+  implicit def toCoverageRDD[R <: ReferenceRegion: ClassTag](rdd: RDD[R]): CoverageRDD[R] = new CoverageRDD(rdd)
 }
