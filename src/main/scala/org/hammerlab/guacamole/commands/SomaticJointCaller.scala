@@ -7,7 +7,7 @@ import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMapMulti
 import org.hammerlab.guacamole.jointcaller.evidence.{MultiSampleMultiAlleleEvidence, MultiSampleSingleAlleleEvidence}
 import org.hammerlab.guacamole.jointcaller.{Input, InputCollection, Parameters, VCFOutput}
 import org.hammerlab.guacamole.loci.LociArgs
-import org.hammerlab.guacamole.loci.set.LociSet
+import org.hammerlab.guacamole.loci.set.{LociParser, LociSet}
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.readsets.args.{ReferenceArgs, Arguments => ReadSetsArguments}
@@ -71,9 +71,8 @@ object SomaticJoint {
         LociArgs.parseLoci(
           args.forceCallLoci,
           args.forceCallLociFile,
-          sc.hadoopConfiguration,
-          fallback = ""
-        ).result(readsets.contigLengths)
+          sc.hadoopConfiguration
+        ).getOrElse(new LociParser()).result(readsets.contigLengths)
 
       if (forceCallLoci.nonEmpty) {
         progress(

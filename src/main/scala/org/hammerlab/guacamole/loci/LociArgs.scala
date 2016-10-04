@@ -26,7 +26,7 @@ trait LociArgs {
   )
   var lociFile: String = ""
 
-  def parseLoci(hadoopConfiguration: Configuration, fallback: String = "all"): LociParser =
+  def parseLoci(hadoopConfiguration: Configuration): Option[LociParser] =
     LociArgs.parseLoci(loci, lociFile, hadoopConfiguration)
 }
 
@@ -35,25 +35,21 @@ object LociArgs {
    * Parse string representations of loci ranges, either from the "--loci" cmdline parameter or a file specified by the
    * "--loci-file" parameter, and return a LociParser encapsulating the result. The latter can then be converted
    * into a LociSet when contig-lengths are available / have been parsed from read-sets.
-   *
-   * @param fallback If neither "--loci" nor "--loci-file" were provided, fall back to this string representation
-   *                 of the loci that should be considered.
    * @return a LociParser wrapping the appropriate loci ranges.
    */
   def parseLoci(loci: String,
                 lociFile: String,
-                hadoopConfiguration: Configuration,
-                fallback: String = "all"): LociParser = {
+                hadoopConfiguration: Configuration): Option[LociParser] = {
     if (loci.nonEmpty && lociFile.nonEmpty) {
       throw new IllegalArgumentException("Specify at most one of the 'loci' and 'loci-file' arguments")
     }
 
     if (loci.nonEmpty) {
-      LociParser(loci)
+      Some(LociParser(loci))
     } else if (lociFile.nonEmpty) {
-      loadFromFile(lociFile, hadoopConfiguration)
+      Some(loadFromFile(lociFile, hadoopConfiguration))
     } else {
-      LociParser(fallback)
+      None
     }
   }
 
