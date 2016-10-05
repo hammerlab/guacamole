@@ -48,9 +48,13 @@ trait Util
         sc,
         filename,
         filters = InputFilters(
-          overlapsLoci = maybeContig.map(
+          overlapsLociOpt = maybeContig.map(
             contig => LociParser(s"$contig:$locus-${locus + 1}")
-          ).orNull
+          ),
+          nonDuplicate = false,
+          passedVendorQualityChecks = false,
+          isPaired = false,
+          minAlignmentQuality = 0
         )
       ).mappedReads
 
