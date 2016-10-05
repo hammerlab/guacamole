@@ -21,7 +21,8 @@ object Main extends Logging {
     VariantSupport.Caller,
     VAFHistogram.Caller,
     SomaticJoint.Caller,
-    PartitionLoci
+    PartitionLoci,
+    PartitionReads
   )
 
   private def printUsage() = {
