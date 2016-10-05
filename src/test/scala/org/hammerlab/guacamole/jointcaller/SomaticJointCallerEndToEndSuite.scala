@@ -28,6 +28,8 @@ class SomaticJointCallerEndToEndSuite
         "--analytes", "dna", "dna", "dna",
         "--tissue-types", "normal", "tumor", "tumor",
         "--sample-names", "normal", "primary", "recurrence",
+        "--include-duplicates",
+        "--include-failed-quality-checks",
         "--out-dir", outDir
       ) ++ cancerWGS1Bams
     )
