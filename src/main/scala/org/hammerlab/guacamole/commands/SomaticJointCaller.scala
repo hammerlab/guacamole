@@ -6,23 +6,26 @@ import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMapMultipleSamples
 import org.hammerlab.guacamole.jointcaller.evidence.{MultiSampleMultiAlleleEvidence, MultiSampleSingleAlleleEvidence}
 import org.hammerlab.guacamole.jointcaller.{Input, InputCollection, Parameters, VCFOutput}
-import org.hammerlab.guacamole.loci.LociArgs
+import org.hammerlab.guacamole.loci.args.ForceCallLociArgs
+import org.hammerlab.guacamole.loci.parsing.ParsedLoci
 import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.readsets.args.ReferenceArgs
-import org.hammerlab.guacamole.readsets.rdd.PartitionedRegions
+import org.hammerlab.guacamole.readsets.args.{ReferenceArgs, Arguments => ReadSetsArguments}
+import org.hammerlab.guacamole.readsets.rdd.{PartitionedRegions, PartitionedRegionsArgs}
 import org.hammerlab.guacamole.readsets.{PerSample, ReadSets}
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.kohsuke.args4j.spi.StringArrayOptionHandler
 import org.kohsuke.args4j.{Option => Args4jOption}
-import org.hammerlab.guacamole.readsets.args.{Arguments => ReadSetsArguments}
 
 object SomaticJoint {
   class Arguments
-    extends ReadSetsArguments
+    extends Args
+      with ReadSetsArguments
+      with PartitionedRegionsArgs
       with Parameters.CommandlineArguments
       with InputCollection.Arguments
+      with ForceCallLociArgs
       with ReferenceArgs {
 
     @Args4jOption(name = "--out", usage = "Output path for all variants in VCF. Default: no output")
@@ -32,12 +35,6 @@ object SomaticJoint {
       name = "--out-dir",
       usage = "Output dir for all variants, split into separate files for somatic/germline")
     var outDir: String = ""
-
-    @Args4jOption(name = "--force-call-loci-file", usage = "Always call the given sites")
-    var forceCallLociFile: String = ""
-
-    @Args4jOption(name = "--force-call-loci", usage = "Always call the given sites")
-    var forceCallLoci: String = ""
 
     @Args4jOption(name = "--only-somatic", usage = "Output only somatic calls, no germline calls")
     var onlySomatic: Boolean = false
@@ -67,12 +64,14 @@ object SomaticJoint {
       )
 
       val forceCallLoci =
-        LociArgs.parseLoci(
-          args.forceCallLoci,
-          args.forceCallLociFile,
-          sc.hadoopConfiguration,
-          fallback = ""
-        ).result(readsets.contigLengths)
+        ParsedLoci
+          .fromArgs(
+            args.forceCallLociStrOpt,
+            args.forceCallLociFileOpt,
+            sc.hadoopConfiguration
+          )
+          .getOrElse(ParsedLoci.empty)
+          .result(readsets.contigLengths)
 
       if (forceCallLoci.nonEmpty) {
         progress(
@@ -166,8 +165,7 @@ object SomaticJoint {
       PartitionedRegions(
         readsets.allMappedReads,
         lociSetMinusOne(loci),
-        args,
-        halfWindowSize = 0
+        args
       )
 
     val broadcastForceCallLoci = sc.broadcast(forceCallLoci)

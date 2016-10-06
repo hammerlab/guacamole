@@ -27,6 +27,10 @@ class SomaticStandardEndToEndSuite
       "--reference",
       resourcePath("grch37.partial.fasta"),
       "--partial-reference",
+      "--min-alignment-quality",
+      "1",
+      "--include-duplicates",
+      "--include-failed-quality-checks",
       "--out",
       tmpOutputPath
     )

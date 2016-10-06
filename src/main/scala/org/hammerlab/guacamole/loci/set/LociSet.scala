@@ -1,9 +1,7 @@
 package org.hammerlab.guacamole.loci.set
 
-import java.lang.{Long => JLong}
-
-import com.google.common.collect.{Range => JRange}
 import htsjdk.samtools.util.{Interval => HTSJDKInterval}
+import org.hammerlab.guacamole.loci.parsing.ParsedLoci
 import org.hammerlab.guacamole.readsets.ContigLengths
 import org.hammerlab.guacamole.reference.{ContigName, Interval, Locus, NumLoci, ReferenceRegion}
 import org.hammerlab.guacamole.strings.TruncatedToString
@@ -107,9 +105,10 @@ object LociSet {
   /** An empty LociSet. */
   def apply(): LociSet = LociSet(TreeMap.empty[ContigName, Contig])
 
-  def all(contigLengths: ContigLengths) = LociParser.all.result(contigLengths)
+  def all(contigLengths: ContigLengths) = ParsedLoci.all.result(contigLengths)
 
-  def apply(lociStr: String): LociSet = LociParser(lociStr).result
+  // NOTE(ryan): only used in tests; TODO: move to test-specific helper.
+  def apply(lociStr: String): LociSet = ParsedLoci(lociStr).result
 
   /**
    * These constructors build a LociSet directly from Contigs.
@@ -127,14 +126,14 @@ object LociSet {
       )
     )
 
-  def apply(contigs: Iterable[(ContigName, Locus, Locus)]): LociSet =
+  def apply(regions: Iterable[(ContigName, Locus, Locus)]): LociSet =
     LociSet.fromContigs(
       (for {
-        (name, start, end) <- contigs
+        (contigName, start, end) <- regions
         if start != end
         range = Interval(start, end)
       } yield {
-        name -> range
+        contigName -> range
       })
       .groupBy(_._1)
       .mapValues(_.map(_._2))

@@ -9,16 +9,18 @@ import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.readsets.args.{ReferenceArgs, Arguments => ReadSetsArguments}
 import org.hammerlab.guacamole.readsets.io.InputFilters
-import org.hammerlab.guacamole.readsets.rdd.PartitionedRegions
+import org.hammerlab.guacamole.readsets.rdd.{PartitionedRegions, PartitionedRegionsArgs}
 import org.hammerlab.guacamole.readsets.{PerSample, ReadSets, SampleName}
 import org.hammerlab.guacamole.reference.{ContigName, Locus}
-import org.hammerlab.guacamole.util.Bases
+import org.hammerlab.guacamole.util.Bases.basesToString
 import org.kohsuke.args4j.{Option => Args4jOption}
 
 object VariantSupport {
 
   protected class Arguments
-    extends ReadSetsArguments
+    extends Args
+      with ReadSetsArguments
+      with PartitionedRegionsArgs
       with ReferenceArgs {
 
     @Args4jOption(name = "--input-variant", required = true, aliases = Array("-v"),
@@ -73,8 +75,7 @@ object VariantSupport {
         PartitionedRegions(
           readsets.allMappedReads,
           loci,
-          args,
-          halfWindowSize = 0
+          args
         )
 
       val alleleCounts =
@@ -104,8 +105,8 @@ object VariantSupport {
           pileup.sampleName,
           pileup.contigName,
           pileup.locus,
-          Bases.basesToString(allele.refBases),
-          Bases.basesToString(allele.altBases),
+          basesToString(allele.refBases),
+          basesToString(allele.altBases),
           elements.size
         )
   }

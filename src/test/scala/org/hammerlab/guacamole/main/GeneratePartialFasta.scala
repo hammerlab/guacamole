@@ -3,17 +3,21 @@ package org.hammerlab.guacamole.main
 import java.io.{BufferedWriter, File, FileWriter}
 
 import org.apache.spark.SparkContext
-import org.hammerlab.guacamole.commands.SparkCommand
+import org.hammerlab.guacamole.commands.{Args, SparkCommand}
+import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.readsets.ReadSets
 import org.hammerlab.guacamole.readsets.args.{ReferenceArgs, Arguments => ReadSetsArguments}
 import org.hammerlab.guacamole.readsets.io.InputFilters
+import org.hammerlab.guacamole.readsets.rdd.PartitionedRegionsArgs
 import org.hammerlab.guacamole.reference.{ContigNotFound, Interval}
-import org.hammerlab.guacamole.util.Bases
+import org.hammerlab.guacamole.util.Bases.basesToString
 import org.kohsuke.args4j.{Option => Args4jOption}
 
 class GeneratePartialFastaArguments
-  extends ReadSetsArguments
+  extends Args
+    with ReadSetsArguments
+    with PartitionedRegionsArgs
     with ReferenceArgs {
 
   @Args4jOption(name = "--out", metaVar = "OUT", required = true, aliases = Array("-o"),
@@ -56,7 +60,8 @@ object GeneratePartialFasta extends SparkCommand[GeneratePartialFastaArguments] 
   override def run(args: GeneratePartialFastaArguments, sc: SparkContext): Unit = {
 
     val reference = args.reference(sc)
-    val parsedLoci = args.parseLoci(sc.hadoopConfiguration, fallback = "none")
+    val parsedLoci = args.parseFilters(sc.hadoopConfiguration).loci
+
     val readsets =
       ReadSets(
         sc,
@@ -66,14 +71,13 @@ object GeneratePartialFasta extends SparkCommand[GeneratePartialFastaArguments] 
 
     val contigLengths = readsets.contigLengths
 
-    val reads = readsets.allMappedReads
-
-    val regions = reads.map(read => (read.contigName, read.start, read.end))
-    regions.collect.foreach(triple => {
-      parsedLoci.put(triple._1, triple._2, triple._3)
-    })
-
-    val loci = parsedLoci.result(contigLengths)
+    val loci =
+      LociSet(
+        readsets
+          .allMappedReads
+          .map(read => (read.contigName, read.start, read.end))
+          .collect
+      )
 
     val fd = new File(args.output)
     val writer = new BufferedWriter(new FileWriter(fd))
@@ -86,7 +90,7 @@ object GeneratePartialFasta extends SparkCommand[GeneratePartialFastaArguments] 
       try {
         val paddedStart = start.toInt - padding
         val paddedEnd = end.toInt + padding
-        val sequence = Bases.basesToString(reference.getContig(contig.name).slice(paddedStart, paddedEnd))
+        val sequence = basesToString(reference.getContig(contig.name).slice(paddedStart, paddedEnd))
         writer.write(">%s:%d-%d/%d\n".format(contig.name, paddedStart, paddedEnd, contigLengths(contig.name)))
         writer.write(sequence)
         writer.write("\n")

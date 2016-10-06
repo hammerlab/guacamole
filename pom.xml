@@ -16,7 +16,6 @@
 
   <properties>
     <github.repo>hammerlab/guacamole</github.repo>
-    <java.version>1.8</java.version>
     <scala.version>2.10.6</scala.version>
     <scala.version.prefix>2.10</scala.version.prefix>
     <hadoop.version>2.7.0</hadoop.version>

@@ -28,8 +28,8 @@ import scala.reflect.ClassTag
  * Note: the containing [[PartitionedRegions]] gets picked up by the closure-cleaner and serialized when
  * [[mapPartitions]] is called.
  */
-class PartitionedRegions[R <: ReferenceRegion: ClassTag](@transient regions: RDD[R],
-                                                         @transient partitioning: LociPartitioning)
+class PartitionedRegions[R <: ReferenceRegion: ClassTag](regions: RDD[R],
+                                                         partitioning: LociPartitioning)
   extends Serializable {
 
   assert(
@@ -122,17 +122,13 @@ object PartitionedRegions {
    * @param loci Genomic loci to operate on; these will be split among Spark partitions and coupled with all regions
    *             from `regionRDDs` that overlap them (module the half-window described below).
    * @param args Parameters dictating how `loci` should be partitioned.
-   * @param halfWindowSize A region is considered to overlap a partition's loci if it passes within this distance of any
-   *                       of them, in which case a copy of that region will be sent to that partition (possibly among
-   *                       others).
    * @tparam R ReferenceRegion type.
    */
   def apply[R <: ReferenceRegion: ClassTag](regions: RDD[R],
                                             loci: LociSet,
-                                            args: PartitionedRegionsArgs,
-                                            halfWindowSize: Int = 0): PartitionedRegions[R] = {
+                                            args: PartitionedRegionsArgs): PartitionedRegions[R] = {
 
-    val lociPartitioning = LociPartitioning(regions, loci, args, halfWindowSize)
+    val lociPartitioning = LociPartitioning(regions, loci, args)
 
     progress(
       s"Partitioned loci: ${lociPartitioning.numPartitions} partitions.",
@@ -146,7 +142,7 @@ object PartitionedRegions {
     apply(
       regions,
       lociPartitioning,
-      halfWindowSize,
+      args.halfWindowSize,
       args.partitionedReadsPathOpt,
       args.compressReadPartitions,
       args.printPartitioningStats
