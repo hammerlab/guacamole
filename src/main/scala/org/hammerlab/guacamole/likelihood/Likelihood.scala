@@ -157,7 +157,7 @@ object Likelihood {
             case (allele, alleleFraction) =>
               alleleElementProbabilities(alleleToIndex(allele), ::) * alleleFraction
           }
-          sum( log( sum(alleleRows) )) + math.log(prior(genotype)) * depth
+          sum( log( sum(alleleRows) + 1e-10 )) + math.log(prior(genotype))
         })
       )
 
