@@ -3,6 +3,7 @@
 
 # Whitelist example config files.
 !cluster
+!driver-6g
 !driver-10g
 !gc
 !kryo
