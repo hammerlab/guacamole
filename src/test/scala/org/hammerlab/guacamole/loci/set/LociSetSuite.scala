@@ -1,5 +1,6 @@
 package org.hammerlab.guacamole.loci.set
 
+import org.hammerlab.guacamole.loci.parsing.ParsedLoci
 import org.hammerlab.guacamole.readsets.io.ReadFilterArgs
 import org.hammerlab.guacamole.util.GuacFunSuite
 import org.hammerlab.guacamole.util.TestUtil.resourcePath
@@ -7,7 +8,7 @@ import org.hammerlab.guacamole.util.TestUtil.resourcePath
 class LociSetSuite extends GuacFunSuite {
 
   def makeLociSet(str: String, lengths: (String, Long)*): LociSet =
-    LociParser(str).result(lengths.toMap)
+    ParsedLoci(str).result(lengths.toMap)
 
   test("properties of empty LociSet") {
     val empty = LociSet()
@@ -98,17 +99,20 @@ class LociSetSuite extends GuacFunSuite {
     sets.foreach(checkInvariants)
   }
 
-  test("loci argument parsing in Common") {
+  test("loci argument parsing") {
     class TestArgs extends ReadFilterArgs {}
 
     // Test -loci argument
-    val args1 = new TestArgs()
-    args1.loci = "20:100-200"
+    val args1 = new TestArgs {
+      lociStr = "20:100-200"
+    }
     args1.parseFilters(sc.hadoopConfiguration).loci.result should equal(LociSet("20:100-200"))
 
     // Test --loci-file argument. The test file gives a loci set equal to 20:100-200.
-    val args2 = new TestArgs()
-    args2.lociFile = resourcePath("loci.txt")
+    val args2 = new TestArgs {
+      lociFile = resourcePath("loci.txt")
+    }
+    args2.parseFilters(sc.hadoopConfiguration).loci.result should equal(LociSet("20:100-200"))
   }
 
   test("loci set parsing with contig lengths") {

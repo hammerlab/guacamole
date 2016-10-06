@@ -103,26 +103,16 @@ object VAFHistogram {
 
     override def run(args: Arguments, sc: SparkContext): Unit = {
 
-      val filters = args.parseFilters(sc.hadoopConfiguration)
-
       val samplePercent = args.samplePercent
 
-      val readsets =
-        ReadSets(
-          sc,
-          args.inputs,
-          filters,
-          contigLengthsFromDictionary = true
-        )
-
-      val ReadSets(_, _, contigLengths) = readsets
+      val (readsets, loci) = ReadSets(sc, args)
 
       val mappedReadsRDDs = readsets.mappedReadsRDDs
 
       val partitionedReads =
         PartitionedRegions(
           readsets.allMappedReads,
-          filters.loci.result(contigLengths),
+          loci,
           args
         )
 
