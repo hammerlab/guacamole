@@ -1,6 +1,6 @@
 package org.hammerlab.guacamole.readsets.io
 
-import org.hammerlab.guacamole.loci.set.LociParser
+import org.hammerlab.guacamole.loci.parsing.ParsedLoci
 
 /**
  * Filtering reads while they are loaded can be an important optimization.
@@ -14,52 +14,22 @@ import org.hammerlab.guacamole.loci.set.LociParser
  * @param isPaired include only reads are paired-end reads
  * @param minAlignmentQuality Minimum Phred-scaled alignment score for a read
  */
-case class InputFilters(overlapsLociOpt: Option[LociParser],
+case class InputFilters(overlapsLociOpt: Option[ParsedLoci],
                         nonDuplicate: Boolean,
                         passedVendorQualityChecks: Boolean,
                         isPaired: Boolean,
                         minAlignmentQuality: Int
                        ) {
-
-  def loci = overlapsLociOpt.getOrElse(LociParser.all)
-
+  def loci = overlapsLociOpt.getOrElse(ParsedLoci.all)
 }
 
 object InputFilters {
-
-  val empty = InputFilters(
-    overlapsLociOpt = None,
-    nonDuplicate = false,
-    passedVendorQualityChecks = false,
-    isPaired = false,
-    minAlignmentQuality = 0
-  )
-
-  def mapped(nonDuplicate: Boolean = false,
-            passedVendorQualityChecks: Boolean = false,
-            isPaired: Boolean = false,
-            minAlignmentQuality: Int = 0): InputFilters = {
-    new InputFilters(
-      overlapsLociOpt = Some(LociParser.all),
-      nonDuplicate,
-      passedVendorQualityChecks,
-      isPaired,
-      minAlignmentQuality
+  val empty =
+    InputFilters(
+      overlapsLociOpt = None,
+      nonDuplicate = false,
+      passedVendorQualityChecks = false,
+      isPaired = false,
+      minAlignmentQuality = 0
     )
-  }
-
-  def apply(overlapsLoci: LociParser,
-            nonDuplicate: Boolean = false,
-            passedVendorQualityChecks: Boolean = false,
-            isPaired: Boolean = false,
-            minAlignmentQuality: Int = 0): InputFilters = {
-    new InputFilters(
-      overlapsLociOpt = Some(overlapsLoci),
-      nonDuplicate,
-      passedVendorQualityChecks,
-      isPaired,
-      minAlignmentQuality
-    )
-  }
 }
-
