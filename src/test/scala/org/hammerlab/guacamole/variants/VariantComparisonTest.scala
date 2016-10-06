@@ -2,7 +2,7 @@ package org.hammerlab.guacamole.variants
 
 import java.io.File
 
-import htsjdk.variant.variantcontext.{GenotypeBuilder, VariantContext, VariantContextBuilder, Allele => HTSJDKAllele}
+import htsjdk.variant.variantcontext.{GenotypeBuilder, VariantContext => HTSJDKVariantContext, VariantContextBuilder, Allele => HTSJDKAllele}
 import htsjdk.variant.vcf.VCFFileReader
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.util.Bases.basesToString
@@ -23,7 +23,7 @@ case class VariantFromVarlensCSV(
     normal: String,
     validation: String) {
 
-  def toHtsjdVariantContext(reference: ReferenceBroadcast): VariantContext = {
+  def toHtsjdVariantContext(reference: ReferenceBroadcast): HTSJDKVariantContext = {
     val uncanonicalizedContig = "chr" + contig
 
     val (adjustedInterbaseStart, adjustedRef, adjustedAlt) = if (alt.nonEmpty) {
@@ -62,7 +62,7 @@ case class VariantFromVarlensCSV(
 
 trait VariantComparisonTest {
 
-  def printSamplePairs(pairs: Seq[(VariantContext, VariantContext)], num: Int = 20): Unit = {
+  def printSamplePairs(pairs: Seq[(HTSJDKVariantContext, HTSJDKVariantContext)], num: Int = 20): Unit = {
     val sample = pairs.take(num)
     println("Showing %,d / %,d.".format(sample.size, pairs.size))
     sample.zipWithIndex.foreach({
@@ -77,7 +77,7 @@ trait VariantComparisonTest {
     })
   }
 
-  def printSample(items: Seq[VariantContext], num: Int = 20): Unit = {
+  def printSample(items: Seq[HTSJDKVariantContext], num: Int = 20): Unit = {
     val sample = items.take(num)
     println("Showing %,d / %,d.".format(sample.size, items.size))
     sample.zipWithIndex.foreach({
@@ -90,8 +90,8 @@ trait VariantComparisonTest {
     })
   }
 
-  def vcfRecords(reader: VCFFileReader): Seq[VariantContext] = {
-    val results = new ArrayBuffer[VariantContext]
+  def vcfRecords(reader: VCFFileReader): Seq[HTSJDKVariantContext] = {
+    val results = new ArrayBuffer[HTSJDKVariantContext]
     val iterator = reader.iterator
     while (iterator.hasNext) {
       val value = iterator.next()
@@ -169,7 +169,7 @@ trait VariantComparisonTest {
 
     println("Experimental calls: %,d. Gold calls: %,d.".format(recordsGuacamole.length, recordsExpected.length))
 
-    def onlyIndels(calls: Seq[VariantContext]): Seq[VariantContext] = {
+    def onlyIndels(calls: Seq[HTSJDKVariantContext]): Seq[HTSJDKVariantContext] = {
       calls.filter(call => call.getReference.length != 1 ||
         JavaConversions.collectionAsScalaIterable(call.getAlternateAlleles).exists(_.length != 1))
     }

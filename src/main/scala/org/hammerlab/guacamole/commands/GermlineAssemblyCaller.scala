@@ -49,20 +49,14 @@ object GermlineAssemblyCaller {
 
     override def computeVariants(args: Arguments, sc: SparkContext) = {
       val reference = args.reference(sc)
-      val filters = args.parseFilters(sc.hadoopConfiguration)
-      val readsets =
-        ReadSets(
-          sc,
-          args.inputs,
-          filters
-        )
+      val (readsets, loci) = ReadSets(sc, args)
 
       val qualityReads = readsets.allMappedReads
 
       val partitionedReads =
         PartitionedRegions(
           qualityReads,
-          filters.loci.result(readsets.contigLengths),
+          loci,
           args
         )
 
