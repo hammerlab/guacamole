@@ -186,6 +186,17 @@ res0: Long = 2
 
 Both `scripts/guacamole-shell` and `scripts/guacamole` will work if any of the "[Building](#building)" options above have been executed.
 
+#### Running on a Java 7 Cluster
+Guacamole requires Java 8 to build and run. If running on a Hadoop cluster running Java 7, you'll want to point your driver and executors at a `$JAVA_HOME` where Java 8 is installed, locally on all nodes:
+
+```bash
+cat <<EOF >conf/j8
+spark.executorEnv.JAVA_HOME       /path/to/java8
+spark.driverEnv.JAVA_HOME         /path/to/java8
+EOF
+GUAC_SPARK_CONFS=cluster,j8 scripts/guacamole …
+```
+
 # Running the test suite
 The full test suite can be run with:
 

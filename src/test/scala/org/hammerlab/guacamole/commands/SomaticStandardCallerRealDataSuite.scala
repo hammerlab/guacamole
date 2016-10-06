@@ -1,5 +1,6 @@
 package org.hammerlab.guacamole.commands
 
+import org.hammerlab.guacamole.commands.SomaticStandard.Caller.findPotentialVariantAtLocus
 import org.hammerlab.guacamole.filters.somatic.SomaticGenotypeFilter
 import org.hammerlab.guacamole.pileup.{Util => PileupUtil}
 import org.hammerlab.guacamole.reads.MappedRead
@@ -27,7 +28,6 @@ class SomaticStandardCallerRealDataSuite
    * Common algorithm parameters - fixed for all tests
    */
   val logOddsThreshold = 120
-  val minAlignmentQuality = 1
   val minTumorReadDepth = 8
   val minNormalReadDepth = 4
   val maxTumorReadDepth = 200
@@ -54,12 +54,10 @@ class SomaticStandardCallerRealDataSuite
             locus
           )
 
-        val calledGenotypes = SomaticStandard.Caller.findPotentialVariantAtLocus(
+        val calledGenotypes = findPotentialVariantAtLocus(
           tumorPileup,
           normalPileup,
-          logOddsThreshold,
-          minAlignmentQuality,
-          filterMultiAllelic
+          logOddsThreshold
         )
 
         val foundVariant =
@@ -110,7 +108,8 @@ class SomaticStandardCallerRealDataSuite
       )
 
     val negativePositions = Array[Long](
-      148487667,
+      // 148487667, This is a negative variant, though we can't determine that from the pileup
+      //            Instead, we could examine the reads containing the variant bases and see they are misaligned
       134307261,
        90376213,
         3638733,

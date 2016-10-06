@@ -5,8 +5,6 @@ import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.rdd.ADAMContext
 import org.bdgenomics.formats.avro.DatabaseVariantAnnotation
 import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMapTwoSamples
-import org.hammerlab.guacamole.filters.pileup.PileupFilter
-import org.hammerlab.guacamole.filters.pileup.PileupFilter.PileupFilterArguments
 import org.hammerlab.guacamole.filters.somatic.SomaticGenotypeFilter.SomaticGenotypeFilterArguments
 import org.hammerlab.guacamole.filters.somatic.{SomaticAlternateReadDepthFilter, SomaticGenotypeFilter, SomaticReadDepthFilter}
 import org.hammerlab.guacamole.likelihood.Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup
@@ -14,7 +12,7 @@ import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.readsets.ReadSets
 import org.hammerlab.guacamole.readsets.args.{ReferenceArgs, TumorNormalReadsArgs}
-import org.hammerlab.guacamole.readsets.rdd.PartitionedRegions
+import org.hammerlab.guacamole.readsets.rdd.{PartitionedRegions, PartitionedRegionsArgs}
 import org.hammerlab.guacamole.variants.{Allele, AlleleEvidence, CalledSomaticAllele, GenotypeOutputArgs, GenotypeOutputCaller}
 import org.kohsuke.args4j.{Option => Args4jOption}
 
@@ -31,8 +29,9 @@ import org.kohsuke.args4j.{Option => Args4jOption}
 object SomaticStandard {
 
   class Arguments
-    extends TumorNormalReadsArgs
-      with PileupFilterArguments
+    extends Args
+      with TumorNormalReadsArgs
+      with PartitionedRegionsArgs
       with SomaticGenotypeFilterArguments
       with GenotypeOutputArgs
       with ReferenceArgs {
@@ -57,14 +56,11 @@ object SomaticStandard {
         PartitionedRegions(
           readsets.allMappedReads,
           loci,
-          args,
-          halfWindowSize = 0
+          args
         )
 
       // Destructure `args`' fields here to avoid serializing `args` itself.
       val oddsThreshold = args.oddsThreshold
-      val minAlignmentQuality = args.minAlignmentQuality
-      val filterMultiAllelic = args.filterMultiAllelic
       val maxTumorReadDepth = args.maxTumorReadDepth
 
       val normalSampleName = args.normalSampleName
@@ -81,8 +77,6 @@ object SomaticStandard {
               pileupTumor,
               pileupNormal,
               oddsThreshold,
-              minAlignmentQuality,
-              filterMultiAllelic,
               maxTumorReadDepth
             ).iterator,
           reference = reference
@@ -131,30 +125,14 @@ object SomaticStandard {
     def findPotentialVariantAtLocus(tumorPileup: Pileup,
                                     normalPileup: Pileup,
                                     oddsThreshold: Int,
-                                    minAlignmentQuality: Int = 1,
-                                    filterMultiAllelic: Boolean = false,
                                     maxReadDepth: Int = Int.MaxValue): Seq[CalledSomaticAllele] = {
 
-      val filteredNormalPileup = PileupFilter(
-        normalPileup,
-        filterMultiAllelic,
-        minAlignmentQuality,
-        minEdgeDistance = 0
-      )
-
-      val filteredTumorPileup = PileupFilter(
-        tumorPileup,
-        filterMultiAllelic,
-        minAlignmentQuality,
-        minEdgeDistance = 0
-      )
-
       // For now, we skip loci that have no reads mapped. We may instead want to emit NoCall in this case.
-      if (filteredTumorPileup.elements.isEmpty
-        || filteredNormalPileup.elements.isEmpty
-        || filteredTumorPileup.depth > maxReadDepth // skip abnormally deep pileups
-        || filteredNormalPileup.depth > maxReadDepth
-        || filteredTumorPileup.referenceDepth == filteredTumorPileup.depth // skip computation if no alternate reads
+      if (tumorPileup.elements.isEmpty
+        || normalPileup.elements.isEmpty
+        || tumorPileup.depth > maxReadDepth // skip abnormally deep pileups
+        || normalPileup.depth > maxReadDepth
+        || tumorPileup.referenceDepth == tumorPileup.depth // skip computation if no alternate reads
         )
         return Seq.empty
 
@@ -164,7 +142,7 @@ object SomaticStandard {
        */
       val genotypesAndLikelihoods =
         likelihoodsOfAllPossibleGenotypesFromPileup(
-          filteredTumorPileup,
+          tumorPileup,
           includeAlignment = true,
           normalize = true
         )
@@ -177,7 +155,7 @@ object SomaticStandard {
       // The following lazy vals are only evaluated if mostLikelyTumorGenotype.hasVariantAllele
       lazy val normalLikelihoods =
         likelihoodsOfAllPossibleGenotypesFromPileup(
-          filteredNormalPileup,
+          normalPileup,
           includeAlignment = false,
           normalize = true
         ).toMap
@@ -199,11 +177,11 @@ object SomaticStandard {
           // non-reference alleles here and rework downstream assumptions accordingly.
           allele <- mostLikelyTumorGenotype.getNonReferenceAlleles.find(_.altBases.nonEmpty).toSeq
 
-          tumorVariantEvidence = AlleleEvidence(mostLikelyTumorGenotypeLikelihood, allele, filteredTumorPileup)
+          tumorVariantEvidence = AlleleEvidence(mostLikelyTumorGenotypeLikelihood, allele, tumorPileup)
 
           refAllele = Allele(allele.refBases, allele.refBases)
 
-          normalReferenceEvidence = AlleleEvidence(1 - normalVariantsTotalLikelihood, refAllele, filteredNormalPileup)
+          normalReferenceEvidence = AlleleEvidence(1 - normalVariantsTotalLikelihood, refAllele, normalPileup)
         } yield
           CalledSomaticAllele(
             tumorPileup.sampleName,

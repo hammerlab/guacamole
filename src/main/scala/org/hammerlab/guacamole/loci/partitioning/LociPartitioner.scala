@@ -1,7 +1,6 @@
 package org.hammerlab.guacamole.loci.partitioning
 
 import org.apache.spark.rdd.RDD
-import org.hammerlab.guacamole.loci.LociArgs
 import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.readsets.rdd.PartitionedRegionsArgs
 import org.hammerlab.guacamole.reference.ReferenceRegion
@@ -12,8 +11,7 @@ import org.kohsuke.args4j.{Option => Args4JOption}
 import scala.reflect.ClassTag
 
 trait LociPartitionerArgs
-  extends LociArgs
-    with MicroRegionPartitionerArgs
+  extends MicroRegionPartitionerArgs
     with CappedRegionsPartitionerArgs
     with UniformPartitionerArgs {
 
@@ -36,7 +34,7 @@ trait LociPartitionerArgs
   )
   var lociPartitionerName: String = "capped"
 
-  def getPartitioner[R <: ReferenceRegion: ClassTag](regions: RDD[R], halfWindowSize: Int = 0): LociPartitioner = {
+  def getPartitioner[R <: ReferenceRegion: ClassTag](regions: RDD[R]): LociPartitioner = {
     val sc = regions.sparkContext
 
     val numPartitions =
@@ -56,7 +54,7 @@ trait LociPartitionerArgs
         )
 
       case "micro-regions" =>
-        new MicroRegionPartitioner(regions, halfWindowSize, numPartitions, partitioningAccuracy)
+        new MicroRegionPartitioner(regions, numPartitions, partitioningAccuracy)
       case "uniform" =>
         UniformPartitioner(numPartitions)
       case _ =>
