@@ -4,6 +4,7 @@ import java.io.{BufferedWriter, File, FileWriter}
 
 import org.apache.spark.SparkContext
 import org.hammerlab.guacamole.commands.{Args, SparkCommand}
+import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.readsets.ReadSets
 import org.hammerlab.guacamole.readsets.args.{ReferenceArgs, Arguments => ReadSetsArguments}
@@ -61,7 +62,8 @@ object GeneratePartialFasta extends SparkCommand[GeneratePartialFastaArguments] 
   override def run(args: GeneratePartialFastaArguments, sc: SparkContext): Unit = {
 
     val reference = args.reference(sc)
-    val parsedLoci = args.parseLoci(sc.hadoopConfiguration, fallback = "none")
+    val parsedLoci = args.parseFilters(sc.hadoopConfiguration).loci
+
     val readsets =
       ReadSets(
         sc,
@@ -71,14 +73,13 @@ object GeneratePartialFasta extends SparkCommand[GeneratePartialFastaArguments] 
 
     val contigLengths = readsets.contigLengths
 
-    val reads = readsets.allMappedReads
-
-    val regions = reads.map(read => (read.contigName, read.start, read.end))
-    regions.collect.foreach(triple => {
-      parsedLoci.put(triple._1, triple._2, triple._3)
-    })
-
-    val loci = parsedLoci.result(contigLengths)
+    val loci =
+      LociSet(
+        readsets
+          .allMappedReads
+          .map(read => (read.contigName, read.start, read.end))
+          .collect
+      )
 
     val fd = new File(args.output)
     val writer = new BufferedWriter(new FileWriter(fd))
