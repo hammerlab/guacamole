@@ -72,7 +72,7 @@
       </h4>
       <p class="comment cmt">Common command-line arguments for loading in one or more sets of reads, and associating a sample-name with each.</p>
     </li><li name="org.hammerlab.guacamole.readsets.args.Base" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="BaseextendsNoSequenceDictionaryArgs"></a>
+      <a id="BaseextendsReadFilterArgswithNoSequenceDictionaryArgs"></a>
       <a id="Base:Base"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -80,7 +80,7 @@
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="Base.html"><span class="name">Base</span></a><span class="result"> extends <a href="NoSequenceDictionaryArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.args.NoSequenceDictionaryArgs">NoSequenceDictionaryArgs</a></span>
+        <a href="Base.html"><span class="name">Base</span></a><span class="result"> extends <a href="../io/ReadFilterArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.io.ReadFilterArgs">ReadFilterArgs</a> with <a href="NoSequenceDictionaryArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.args.NoSequenceDictionaryArgs">NoSequenceDictionaryArgs</a></span>
       </span>
       </h4>
       
@@ -137,7 +137,7 @@
       </h4>
       
     </li><li name="org.hammerlab.guacamole.readsets.args.SingleSampleArgs" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="SingleSampleArgsextendsBase"></a>
+      <a id="SingleSampleArgsextendsBasewithReadFilterArgs"></a>
       <a id="SingleSampleArgs:SingleSampleArgs"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -145,12 +145,12 @@
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="SingleSampleArgs.html"><span class="name">SingleSampleArgs</span></a><span class="result"> extends <a href="Base.html" class="extype" name="org.hammerlab.guacamole.readsets.args.Base">Base</a></span>
+        <a href="SingleSampleArgs.html"><span class="name">SingleSampleArgs</span></a><span class="result"> extends <a href="Base.html" class="extype" name="org.hammerlab.guacamole.readsets.args.Base">Base</a> with <a href="../io/ReadFilterArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.io.ReadFilterArgs">ReadFilterArgs</a></span>
       </span>
       </h4>
       <p class="comment cmt">Argument for accepting a single set of reads (for non-somatic variant calling).</p>
     </li><li name="org.hammerlab.guacamole.readsets.args.TumorNormalReadsArgs" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="TumorNormalReadsArgsextendsBase"></a>
+      <a id="TumorNormalReadsArgsextendsBasewithReadFilterArgs"></a>
       <a id="TumorNormalReadsArgs:TumorNormalReadsArgs"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -158,7 +158,7 @@
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="TumorNormalReadsArgs.html"><span class="name">TumorNormalReadsArgs</span></a><span class="result"> extends <a href="Base.html" class="extype" name="org.hammerlab.guacamole.readsets.args.Base">Base</a></span>
+        <a href="TumorNormalReadsArgs.html"><span class="name">TumorNormalReadsArgs</span></a><span class="result"> extends <a href="Base.html" class="extype" name="org.hammerlab.guacamole.readsets.args.Base">Base</a> with <a href="../io/ReadFilterArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.io.ReadFilterArgs">ReadFilterArgs</a></span>
       </span>
       </h4>
       <p class="comment cmt">Arguments for accepting two sets of reads (tumor + normal).</p>

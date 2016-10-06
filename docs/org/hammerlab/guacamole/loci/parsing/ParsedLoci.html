@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>PileupFilter - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.filters.pileup.PileupFilter</title>
-          <meta name="description" content="PileupFilter - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.filters.pileup.PileupFilter" />
-          <meta name="keywords" content="PileupFilter guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.filters.pileup.PileupFilter" />
+          <title>ParsedLoci - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.loci.parsing.ParsedLoci</title>
+          <meta name="description" content="ParsedLoci - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.loci.parsing.ParsedLoci" />
+          <meta name="keywords" content="ParsedLoci guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.loci.parsing.ParsedLoci" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -12,7 +12,7 @@
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../../index.html';
-            var hash = 'org.hammerlab.guacamole.filters.pileup.PileupFilter$';
+            var hash = 'org.hammerlab.guacamole.loci.parsing.ParsedLoci';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -22,24 +22,28 @@
    	  </script>
     
         </head>
-        <body class="value">
+        <body class="type">
       <div id="definition">
-        <img src="../../../../../lib/object_big.png" />
-        <p id="owner"><a href="../../../../package.html" class="extype" name="org">org</a>.<a href="../../../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="../../package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="../package.html" class="extype" name="org.hammerlab.guacamole.filters">filters</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole.filters.pileup">pileup</a></p>
-        <h1>PileupFilter</h1>
+        <a href="ParsedLoci$.html" title="Go to companion"><img src="../../../../../lib/class_to_object_big.png" /></a>
+        <p id="owner"><a href="../../../../package.html" class="extype" name="org">org</a>.<a href="../../../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="../../package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="../package.html" class="extype" name="org.hammerlab.guacamole.loci">loci</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole.loci.parsing">parsing</a></p>
+        <h1><a href="ParsedLoci$.html" title="Go to companion">ParsedLoci</a></h1>
       </div>
 
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">object</span>
+        <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">PileupFilter</span>
+        <span class="name">ParsedLoci</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Class representing genomic ranges that have been parsed from various supported <span class="extype" name="String">String</span>-representations.</p><p>Ranges can be a sequence of (possibly open-ended) loci-ranges on various contigs, or a special <a href="All$.html" class="extype" name="org.hammerlab.guacamole.loci.parsing.All">All</a> value denoting
+all loci on all contigs; see <a href="ParsedLociRanges.html" class="extype" name="org.hammerlab.guacamole.loci.parsing.ParsedLociRanges">ParsedLociRanges</a> for more info.</p><p>Typically, a <a href="" class="extype" name="org.hammerlab.guacamole.loci.parsing.ParsedLoci">ParsedLoci</a> is a short-lived intermediate representation between <span class="extype" name="String">String</span> representations of
+loci-ranges (that may be passed in cmdline-flags or read in from a file) and a <span class="extype" name="LociSet">LociSet</span>, which can only be
+instantiated once contig-lengths are known (e.g. read from a BAM header).</p><p><a href="" class="extype" name="org.hammerlab.guacamole.loci.parsing.ParsedLoci">ParsedLoci</a>'s <a href="#result:org.hammerlab.guacamole.loci.set.LociSet" class="extmbr" name="org.hammerlab.guacamole.loci.parsing.ParsedLoci#result">result</a> method is a common way for turning parsed loci and contig-lengths into a <span class="extype" name="LociSet">LociSet</span>.
+</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
@@ -59,7 +63,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="org.hammerlab.guacamole.filters.pileup.PileupFilter"><span>PileupFilter</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="org.hammerlab.guacamole.loci.parsing.ParsedLoci"><span>ParsedLoci</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -79,23 +83,7 @@
         <div id="allMembers">
         
 
-        <div id="types" class="types members">
-              <h3>Type Members</h3>
-              <ol><li name="org.hammerlab.guacamole.filters.pileup.PileupFilter.PileupFilterArguments" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="PileupFilterArgumentsextendsAnyRef"></a>
-      <a id="PileupFilterArguments:PileupFilterArguments"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">trait</span>
-      </span>
-      <span class="symbol">
-        <a href="PileupFilter$$PileupFilterArguments.html"><span class="name">PileupFilterArguments</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
-      </span>
-      </h4>
-      
-    </li></ol>
-            </div>
+        
 
         
 
@@ -166,32 +154,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.filters.pileup.PileupFilter#apply" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="apply(pileup:org.hammerlab.guacamole.pileup.Pileup,filterMultiAllelic:Boolean,minAlignmentQuality:Int,minEdgeDistance:Int):org.hammerlab.guacamole.pileup.Pileup"></a>
-      <a id="apply(Pileup,Boolean,Int,Int):Pileup"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">apply</span><span class="params">(<span name="pileup">pileup: <a href="../../pileup/Pileup.html" class="extype" name="org.hammerlab.guacamole.pileup.Pileup">Pileup</a></span>, <span name="filterMultiAllelic">filterMultiAllelic: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="minAlignmentQuality">minAlignmentQuality: <span class="extype" name="scala.Int">Int</span></span>, <span name="minEdgeDistance">minEdgeDistance: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <a href="../../pileup/Pileup.html" class="extype" name="org.hammerlab.guacamole.pileup.Pileup">Pileup</a></span>
-      </span>
-      </h4>
-      
-    </li><li name="org.hammerlab.guacamole.filters.pileup.PileupFilter#apply" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="apply(pileup:org.hammerlab.guacamole.pileup.Pileup,args:org.hammerlab.guacamole.filters.pileup.PileupFilter.PileupFilterArguments):org.hammerlab.guacamole.pileup.Pileup"></a>
-      <a id="apply(Pileup,PileupFilterArguments):Pileup"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">apply</span><span class="params">(<span name="pileup">pileup: <a href="../../pileup/Pileup.html" class="extype" name="org.hammerlab.guacamole.pileup.Pileup">Pileup</a></span>, <span name="args">args: <a href="PileupFilter$$PileupFilterArguments.html" class="extype" name="org.hammerlab.guacamole.filters.pileup.PileupFilter.PileupFilterArguments">PileupFilterArguments</a></span>)</span><span class="result">: <a href="../../pileup/Pileup.html" class="extype" name="org.hammerlab.guacamole.pileup.Pileup">Pileup</a></span>
-      </span>
-      </h4>
-      
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -347,6 +309,32 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.loci.parsing.ParsedLoci#result" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="result:org.hammerlab.guacamole.loci.set.LociSet"></a>
+      <a id="result:LociSet"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">result</span><span class="result">: <a href="../set/LociSet.html" class="extype" name="org.hammerlab.guacamole.loci.set.LociSet">LociSet</a></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.loci.parsing.ParsedLoci#result" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="result(contigLengths:org.hammerlab.guacamole.readsets.ContigLengths):org.hammerlab.guacamole.loci.set.LociSet"></a>
+      <a id="result(ContigLengths):LociSet"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">result</span><span class="params">(<span name="contigLengths">contigLengths: <a href="../../readsets/package.html#ContigLengths=Map[org.hammerlab.guacamole.reference.ContigName,org.hammerlab.guacamole.reference.NumLoci]" class="extmbr" name="org.hammerlab.guacamole.readsets.ContigLengths">ContigLengths</a></span>)</span><span class="result">: <a href="../set/LociSet.html" class="extype" name="org.hammerlab.guacamole.loci.set.LociSet">LociSet</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Build a LociSet from parsed loci, using contig lengths to resolve open-ended ranges.</p>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>

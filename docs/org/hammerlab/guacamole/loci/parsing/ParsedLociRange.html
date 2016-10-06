@@ -2,17 +2,17 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>LociArgs - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.loci.LociArgs</title>
-          <meta name="description" content="LociArgs - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.loci.LociArgs" />
-          <meta name="keywords" content="LociArgs guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.loci.LociArgs" />
+          <title>ParsedLociRange - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.loci.parsing.ParsedLociRange</title>
+          <meta name="description" content="ParsedLociRange - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.loci.parsing.ParsedLociRange" />
+          <meta name="keywords" content="ParsedLociRange guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.loci.parsing.ParsedLociRange" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
-      <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
-      <link href="../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
       <script type="text/javascript">
          if(top === self) {
-            var url = '../../../../index.html';
-            var hash = 'org.hammerlab.guacamole.loci.LociArgs$';
+            var url = '../../../../../index.html';
+            var hash = 'org.hammerlab.guacamole.loci.parsing.ParsedLociRange';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -22,26 +22,30 @@
    	  </script>
     
         </head>
-        <body class="value">
+        <body class="type">
       <div id="definition">
-        <a href="LociArgs.html" title="Go to companion"><img src="../../../../lib/object_to_trait_big.png" /></a>
-        <p id="owner"><a href="../../../package.html" class="extype" name="org">org</a>.<a href="../../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="../package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole.loci">loci</a></p>
-        <h1><a href="LociArgs.html" title="Go to companion">LociArgs</a></h1>
+        <a href="ParsedLociRange$.html" title="Go to companion"><img src="../../../../../lib/trait_to_object_big.png" /></a>
+        <p id="owner"><a href="../../../../package.html" class="extype" name="org">org</a>.<a href="../../../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="../../package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="../package.html" class="extype" name="org.hammerlab.guacamole.loci">loci</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole.loci.parsing">parsing</a></p>
+        <h1><a href="ParsedLociRange$.html" title="Go to companion">ParsedLociRange</a></h1>
       </div>
 
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
+        <span class="modifier">sealed </span>
+        <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <span class="name">LociArgs</span>
+        <span class="name">ParsedLociRange</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Representation of a genomic range as parsed from a cmdline-flag or file.</p><p>Example ranges:</p><ul><li>chr2:10-20</li><li>chr3</li><li>chr4:100-</li><li>all</li><li>none
+</li></ul></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+        </div><div class="toggleContainer block">
+          <span class="toggle">Known Subclasses</span>
+          <div class="subClasses hiddenContent"><a href="AllRange$.html" class="extype" name="org.hammerlab.guacamole.loci.parsing.AllRange">AllRange</a>, <a href="LociRange.html" class="extype" name="org.hammerlab.guacamole.loci.parsing.LociRange">LociRange</a></div>
         </div></div>
         
 
@@ -59,7 +63,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="org.hammerlab.guacamole.loci.LociArgs"><span>LociArgs</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="org.hammerlab.guacamole.loci.parsing.ParsedLociRange"><span>ParsedLociRange</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -175,7 +179,7 @@
         <span class="name">clone</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
       <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
@@ -220,7 +224,7 @@
         <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
       <span class="symbol">classOf[java.lang.Throwable]</span>
@@ -305,25 +309,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.loci.LociArgs#parseLoci" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="parseLoci(loci:String,lociFile:String,hadoopConfiguration:org.apache.hadoop.conf.Configuration,fallback:String):org.hammerlab.guacamole.loci.set.LociParser"></a>
-      <a id="parseLoci(String,String,Configuration,String):LociParser"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">parseLoci</span><span class="params">(<span name="loci">loci: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="lociFile">lociFile: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="hadoopConfiguration">hadoopConfiguration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>, <span name="fallback">fallback: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;all&quot;</span></span>)</span><span class="result">: <a href="set/LociParser.html" class="extype" name="org.hammerlab.guacamole.loci.set.LociParser">LociParser</a></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Parse string representations of loci ranges, either from the &quot;--loci&quot; cmdline parameter or a file specified by the
-&quot;--loci-file&quot; parameter, and return a LociParser encapsulating the result.</p><div class="fullcomment"><div class="comment cmt"><p>Parse string representations of loci ranges, either from the &quot;--loci&quot; cmdline parameter or a file specified by the
-&quot;--loci-file&quot; parameter, and return a LociParser encapsulating the result. The latter can then be converted
-into a LociSet when contig-lengths are available / have been parsed from read-sets.
-</p></div><dl class="paramcmts block"><dt class="param">fallback</dt><dd class="cmt"><p>If neither &quot;--loci&quot; nor &quot;--loci-file&quot; were provided, fall back to this string representation
-                of the loci that should be considered.</p></dd><dt>returns</dt><dd class="cmt"><p>a LociParser wrapping the appropriate loci ranges.
-</p></dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -436,6 +421,6 @@ into a LociSet when contig-lengths are available / have been parsed from read-se
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../lib/template.js"></script>
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../../lib/template.js"></script>
     </body>
       </html>

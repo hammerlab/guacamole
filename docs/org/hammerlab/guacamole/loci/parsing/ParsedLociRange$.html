@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>EdgeBaseFilter - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.filters.pileup.EdgeBaseFilter</title>
-          <meta name="description" content="EdgeBaseFilter - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.filters.pileup.EdgeBaseFilter" />
-          <meta name="keywords" content="EdgeBaseFilter guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.filters.pileup.EdgeBaseFilter" />
+          <title>ParsedLociRange - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.loci.parsing.ParsedLociRange</title>
+          <meta name="description" content="ParsedLociRange - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.loci.parsing.ParsedLociRange" />
+          <meta name="keywords" content="ParsedLociRange guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.loci.parsing.ParsedLociRange" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -12,7 +12,7 @@
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../../index.html';
-            var hash = 'org.hammerlab.guacamole.filters.pileup.EdgeBaseFilter$';
+            var hash = 'org.hammerlab.guacamole.loci.parsing.ParsedLociRange$';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -24,9 +24,9 @@
         </head>
         <body class="value">
       <div id="definition">
-        <img src="../../../../../lib/object_big.png" />
-        <p id="owner"><a href="../../../../package.html" class="extype" name="org">org</a>.<a href="../../../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="../../package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="../package.html" class="extype" name="org.hammerlab.guacamole.filters">filters</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole.filters.pileup">pileup</a></p>
-        <h1>EdgeBaseFilter</h1>
+        <a href="ParsedLociRange.html" title="Go to companion"><img src="../../../../../lib/object_to_trait_big.png" /></a>
+        <p id="owner"><a href="../../../../package.html" class="extype" name="org">org</a>.<a href="../../../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="../../package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="../package.html" class="extype" name="org.hammerlab.guacamole.loci">loci</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole.loci.parsing">parsing</a></p>
+        <h1><a href="ParsedLociRange.html" title="Go to companion">ParsedLociRange</a></h1>
       </div>
 
       <h4 id="signature" class="signature">
@@ -35,12 +35,11 @@
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <span class="name">EdgeBaseFilter</span>
+        <span class="name">ParsedLociRange</span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Filter to remove pileup elements close to edge of reads
-</p></div><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
@@ -60,7 +59,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="org.hammerlab.guacamole.filters.pileup.EdgeBaseFilter"><span>EdgeBaseFilter</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="org.hammerlab.guacamole.loci.parsing.ParsedLociRange"><span>ParsedLociRange</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -151,20 +150,25 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.filters.pileup.EdgeBaseFilter#apply" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="apply(elements:Seq[org.hammerlab.guacamole.pileup.PileupElement],minimumDistanceFromEndFromRead:Int):Seq[org.hammerlab.guacamole.pileup.PileupElement]"></a>
-      <a id="apply(Seq[PileupElement],Int):Seq[PileupElement]"></a>
+    </li><li name="org.hammerlab.guacamole.loci.parsing.ParsedLociRange#apply" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="apply(lociRangeStr:String):Option[org.hammerlab.guacamole.loci.parsing.ParsedLociRange]"></a>
+      <a id="apply(String):Option[ParsedLociRange]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">apply</span><span class="params">(<span name="elements">elements: <span class="extype" name="scala.Seq">Seq</span>[<a href="../../pileup/PileupElement.html" class="extype" name="org.hammerlab.guacamole.pileup.PileupElement">PileupElement</a>]</span>, <span name="minimumDistanceFromEndFromRead">minimumDistanceFromEndFromRead: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<a href="../../pileup/PileupElement.html" class="extype" name="org.hammerlab.guacamole.pileup.PileupElement">PileupElement</a>]</span>
+        <span class="name">apply</span><span class="params">(<span name="lociRangeStr">lociRangeStr: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<a href="ParsedLociRange.html" class="extype" name="org.hammerlab.guacamole.loci.parsing.ParsedLociRange">ParsedLociRange</a>]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">elements</dt><dd class="cmt"><p>sequence of pileup elements to filter</p></dd><dt class="param">minimumDistanceFromEndFromRead</dt><dd class="cmt"><p>Threshold of distance from base to edge of read</p></dd><dt>returns</dt><dd class="cmt"><p>filtered sequence of elements - those who were further from directional end minimumDistanceFromEndFromRead
-</p></dd></dl></div>
+      <p class="shortcomment cmt">Parse a (string) loci expression and add it to the builder.</p><div class="fullcomment"><div class="comment cmt"><p>Parse a (string) loci expression and add it to the builder. Example expressions:</p><p> &quot;all&quot;: all sites on all contigs.
+ &quot;none&quot;: no loci, used as a default in some places.
+ &quot;chr1,chr3&quot;: all sites on contigs chr1 and chr3.
+ &quot;chr1:10000-20000,chr2&quot;: sites x where 10000 &lt;= x &lt; 20000 on chr1, all sites on chr2.
+ &quot;chr1:10000&quot;: just chr1, position 10000; equivalent to &quot;chr1:10000-10001&quot;.
+ &quot;chr1:10000-&quot;: chr1, from position 10000 to the end of chr1.
+</p></div></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -197,6 +201,32 @@
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.loci.parsing.ParsedLociRange#contigAndLoci" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="contigAndLoci:scala.util.matching.Regex"></a>
+      <a id="contigAndLoci:Regex"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">contigAndLoci</span><span class="result">: <span class="extype" name="scala.util.matching.Regex">Regex</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.loci.parsing.ParsedLociRange#contigOnly" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="contigOnly:scala.util.matching.Regex"></a>
+      <a id="contigOnly:Regex"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">contigOnly</span><span class="result">: <span class="extype" name="scala.util.matching.Regex">Regex</span></span>
+      </span>
+      </h4>
+      
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>

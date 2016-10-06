@@ -35,13 +35,13 @@
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <span class="name">TumorNormalReadsArgs</span><span class="result"> extends <a href="Base.html" class="extype" name="org.hammerlab.guacamole.readsets.args.Base">Base</a></span>
+        <span class="name">TumorNormalReadsArgs</span><span class="result"> extends <a href="Base.html" class="extype" name="org.hammerlab.guacamole.readsets.args.Base">Base</a> with <a href="../io/ReadFilterArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.io.ReadFilterArgs">ReadFilterArgs</a></span>
       </span>
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Arguments for accepting two sets of reads (tumor + normal).</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><a href="Base.html" class="extype" name="org.hammerlab.guacamole.readsets.args.Base">Base</a>, <a href="NoSequenceDictionaryArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.args.NoSequenceDictionaryArgs">NoSequenceDictionaryArgs</a>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><a href="Base.html" class="extype" name="org.hammerlab.guacamole.readsets.args.Base">Base</a>, <a href="NoSequenceDictionaryArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.args.NoSequenceDictionaryArgs">NoSequenceDictionaryArgs</a>, <a href="../io/ReadFilterArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.io.ReadFilterArgs">ReadFilterArgs</a>, <a href="../../loci/args/CallLociArgs.html" class="extype" name="org.hammerlab.guacamole.loci.args.CallLociArgs">CallLociArgs</a>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div><div class="toggleContainer block">
           <span class="toggle">Known Subclasses</span>
           <div class="subClasses hiddenContent"><a href="../../commands/SomaticStandard$$Arguments.html" class="extype" name="org.hammerlab.guacamole.commands.SomaticStandard.Arguments">Arguments</a></div>
@@ -62,7 +62,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="org.hammerlab.guacamole.readsets.args.TumorNormalReadsArgs"><span>TumorNormalReadsArgs</span></li><li class="in" name="org.hammerlab.guacamole.readsets.args.Base"><span>Base</span></li><li class="in" name="org.hammerlab.guacamole.readsets.args.NoSequenceDictionaryArgs"><span>NoSequenceDictionaryArgs</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="org.hammerlab.guacamole.readsets.args.TumorNormalReadsArgs"><span>TumorNormalReadsArgs</span></li><li class="in" name="org.hammerlab.guacamole.readsets.args.Base"><span>Base</span></li><li class="in" name="org.hammerlab.guacamole.readsets.args.NoSequenceDictionaryArgs"><span>NoSequenceDictionaryArgs</span></li><li class="in" name="org.hammerlab.guacamole.readsets.io.ReadFilterArgs"><span>ReadFilterArgs</span></li><li class="in" name="org.hammerlab.guacamole.loci.args.CallLociArgs"><span>CallLociArgs</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -256,6 +256,45 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.readsets.io.ReadFilterArgs#includeDuplicates" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="includeDuplicates:Boolean"></a>
+      <a id="includeDuplicates:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">var</span>
+      </span>
+      <span class="symbol">
+        <span class="name">includeDuplicates</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../io/ReadFilterArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.io.ReadFilterArgs">ReadFilterArgs</a></dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.readsets.io.ReadFilterArgs#includeFailedQualityChecks" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="includeFailedQualityChecks:Boolean"></a>
+      <a id="includeFailedQualityChecks:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">var</span>
+      </span>
+      <span class="symbol">
+        <span class="name">includeFailedQualityChecks</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../io/ReadFilterArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.io.ReadFilterArgs">ReadFilterArgs</a></dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.readsets.io.ReadFilterArgs#includeSingleEnd" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="includeSingleEnd:Boolean"></a>
+      <a id="includeSingleEnd:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">var</span>
+      </span>
+      <span class="symbol">
+        <span class="name">includeSingleEnd</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../io/ReadFilterArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.io.ReadFilterArgs">ReadFilterArgs</a></dd></dl></div>
     </li><li name="org.hammerlab.guacamole.readsets.args.Base#inputs" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="inputs:org.hammerlab.guacamole.readsets.PerSample[org.hammerlab.guacamole.readsets.io.Input]"></a>
       <a id="inputs:PerSample[Input]"></a>
@@ -282,6 +321,71 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.loci.args.CallLociArgs#lociFile" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="lociFile:String"></a>
+      <a id="lociFile:String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">var</span>
+      </span>
+      <span class="symbol">
+        <span class="name">lociFile</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="../../loci/args/CallLociArgs.html" class="extype" name="org.hammerlab.guacamole.loci.args.CallLociArgs">CallLociArgs</a></dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.loci.args.CallLociArgs#lociFileOpt" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="lociFileOpt:Option[String]"></a>
+      <a id="lociFileOpt:Option[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">lociFileOpt</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../loci/args/CallLociArgs.html" class="extype" name="org.hammerlab.guacamole.loci.args.CallLociArgs">CallLociArgs</a></dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.loci.args.CallLociArgs#lociStr" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="lociStr:String"></a>
+      <a id="lociStr:String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">var</span>
+      </span>
+      <span class="symbol">
+        <span class="name">lociStr</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="../../loci/args/CallLociArgs.html" class="extype" name="org.hammerlab.guacamole.loci.args.CallLociArgs">CallLociArgs</a></dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.loci.args.CallLociArgs#lociStrOpt" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="lociStrOpt:Option[String]"></a>
+      <a id="lociStrOpt:Option[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">lociStrOpt</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../loci/args/CallLociArgs.html" class="extype" name="org.hammerlab.guacamole.loci.args.CallLociArgs">CallLociArgs</a></dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.readsets.io.ReadFilterArgs#minAlignmentQuality" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="minAlignmentQuality:Int"></a>
+      <a id="minAlignmentQuality:Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">var</span>
+      </span>
+      <span class="symbol">
+        <span class="name">minAlignmentQuality</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../io/ReadFilterArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.io.ReadFilterArgs">ReadFilterArgs</a></dd></dl></div>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -360,6 +464,32 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.readsets.io.ReadFilterArgs#onlyMappedReads" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="onlyMappedReads:Boolean"></a>
+      <a id="onlyMappedReads:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">var</span>
+      </span>
+      <span class="symbol">
+        <span class="name">onlyMappedReads</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../io/ReadFilterArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.io.ReadFilterArgs">ReadFilterArgs</a></dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.readsets.io.ReadFilterArgs#parseFilters" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="parseFilters(hadoopConfiguration:org.apache.hadoop.conf.Configuration):org.hammerlab.guacamole.readsets.io.InputFilters"></a>
+      <a id="parseFilters(Configuration):InputFilters"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">parseFilters</span><span class="params">(<span name="hadoopConfiguration">hadoopConfiguration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>)</span><span class="result">: <a href="../io/InputFilters.html" class="extype" name="org.hammerlab.guacamole.readsets.io.InputFilters">InputFilters</a></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../io/ReadFilterArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.io.ReadFilterArgs">ReadFilterArgs</a></dd></dl></div>
     </li><li name="org.hammerlab.guacamole.readsets.args.TumorNormalReadsArgs#paths" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="paths:Array[String]"></a>
       <a id="paths:Array[String]"></a>
@@ -508,6 +638,10 @@
               <h3>Inherited from <a href="Base.html" class="extype" name="org.hammerlab.guacamole.readsets.args.Base">Base</a></h3>
             </div><div class="parent" name="org.hammerlab.guacamole.readsets.args.NoSequenceDictionaryArgs">
               <h3>Inherited from <a href="NoSequenceDictionaryArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.args.NoSequenceDictionaryArgs">NoSequenceDictionaryArgs</a></h3>
+            </div><div class="parent" name="org.hammerlab.guacamole.readsets.io.ReadFilterArgs">
+              <h3>Inherited from <a href="../io/ReadFilterArgs.html" class="extype" name="org.hammerlab.guacamole.readsets.io.ReadFilterArgs">ReadFilterArgs</a></h3>
+            </div><div class="parent" name="org.hammerlab.guacamole.loci.args.CallLociArgs">
+              <h3>Inherited from <a href="../../loci/args/CallLociArgs.html" class="extype" name="org.hammerlab.guacamole.loci.args.CallLociArgs">CallLociArgs</a></h3>
             </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
             </div><div class="parent" name="scala.Any">

@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>LociParser - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.loci.set.LociParser</title>
-          <meta name="description" content="LociParser - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.loci.set.LociParser" />
-          <meta name="keywords" content="LociParser guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.loci.set.LociParser" />
+          <title>ParsedLoci - guacamole: variant caller 0.0.1-SNAPSHOT API - org.hammerlab.guacamole.loci.parsing.ParsedLoci</title>
+          <meta name="description" content="ParsedLoci - guacamole variant caller 0.0.1 - SNAPSHOT API - org.hammerlab.guacamole.loci.parsing.ParsedLoci" />
+          <meta name="keywords" content="ParsedLoci guacamole variant caller 0.0.1 SNAPSHOT API org.hammerlab.guacamole.loci.parsing.ParsedLoci" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -12,7 +12,7 @@
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../../index.html';
-            var hash = 'org.hammerlab.guacamole.loci.set.LociParser';
+            var hash = 'org.hammerlab.guacamole.loci.parsing.ParsedLoci$';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -22,32 +22,24 @@
    	  </script>
     
         </head>
-        <body class="type">
+        <body class="value">
       <div id="definition">
-        <a href="LociParser$.html" title="Go to companion"><img src="../../../../../lib/class_to_object_big.png" /></a>
-        <p id="owner"><a href="../../../../package.html" class="extype" name="org">org</a>.<a href="../../../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="../../package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="../package.html" class="extype" name="org.hammerlab.guacamole.loci">loci</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole.loci.set">set</a></p>
-        <h1><a href="LociParser$.html" title="Go to companion">LociParser</a></h1>
+        <a href="ParsedLoci.html" title="Go to companion"><img src="../../../../../lib/object_to_class_big.png" /></a>
+        <p id="owner"><a href="../../../../package.html" class="extype" name="org">org</a>.<a href="../../../package.html" class="extype" name="org.hammerlab">hammerlab</a>.<a href="../../package.html" class="extype" name="org.hammerlab.guacamole">guacamole</a>.<a href="../package.html" class="extype" name="org.hammerlab.guacamole.loci">loci</a>.<a href="package.html" class="extype" name="org.hammerlab.guacamole.loci.parsing">parsing</a></p>
+        <h1><a href="ParsedLoci.html" title="Go to companion">ParsedLoci</a></h1>
       </div>
 
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">class</span>
+        <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <span class="name">LociParser</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <span class="name">ParsedLoci</span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Class for constructing a LociSet from string representations of genomic ranges.</p><p>A LociSet always has an exact size, but a LociParser supports specifications of loci sets before the contigs
-and their lengths are known. For example, a caller can specify &quot;all sites on all contigs&quot;, or &quot;all sites
-on chromosomes 1 and 2&quot;. To build such an &quot;unresolved&quot; LociSet, the contigs and their lengths must be provided to
-the result method.</p><p>This comes in handy when we want to pass a specification of loci to BAM reading methods.
-We don't know the contigs and their lengths until we read in the BAM header, so we can't make a LociSet until
-we read the file header. At the same time, we want to use the BAM index to read only the loci of interest from
-the file. A LociParser is a convenient object to pass to the bam loading functions, as it is an object
-that specifies the loci of interest without requiring us to already know the contigs and their lengths.
-</p></div><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
@@ -67,7 +59,7 @@ that specifies the loci of interest without requiring us to already know the con
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="org.hammerlab.guacamole.loci.set.LociParser"><span>LociParser</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="org.hammerlab.guacamole.loci.parsing.ParsedLoci"><span>ParsedLoci</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -85,23 +77,7 @@ that specifies the loci of interest without requiring us to already know the con
 
       <div id="template">
         <div id="allMembers">
-        <div id="constructors" class="members">
-              <h3>Instance Constructors</h3>
-              <ol><li name="org.hammerlab.guacamole.loci.set.LociParser#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;():org.hammerlab.guacamole.loci.set.LociParser"></a>
-      <a id="&lt;init&gt;:LociParser"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">new</span>
-      </span>
-      <span class="symbol">
-        <span class="name">LociParser</span><span class="params">()</span>
-      </span>
-      </h4>
-      
-    </li></ol>
-            </div>
+        
 
         
 
@@ -174,6 +150,71 @@ that specifies the loci of interest without requiring us to already know the con
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.loci.parsing.ParsedLoci#all" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="all:org.hammerlab.guacamole.loci.parsing.ParsedLoci"></a>
+      <a id="all:ParsedLoci"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">all</span><span class="result">: <a href="ParsedLoci.html" class="extype" name="org.hammerlab.guacamole.loci.parsing.ParsedLoci">ParsedLoci</a></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.loci.parsing.ParsedLoci#apply" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="apply(ranges:Iterable[org.hammerlab.guacamole.loci.parsing.LociRange]):org.hammerlab.guacamole.loci.parsing.ParsedLoci"></a>
+      <a id="apply(Iterable[LociRange]):ParsedLoci"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">apply</span><span class="params">(<span name="ranges">ranges: <span class="extype" name="scala.Iterable">Iterable</span>[<a href="LociRange.html" class="extype" name="org.hammerlab.guacamole.loci.parsing.LociRange">LociRange</a>]</span>)</span><span class="result">: <a href="ParsedLoci.html" class="extype" name="org.hammerlab.guacamole.loci.parsing.ParsedLoci">ParsedLoci</a></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.loci.parsing.ParsedLoci#apply" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="apply(range:org.hammerlab.guacamole.loci.parsing.LociRange):org.hammerlab.guacamole.loci.parsing.ParsedLoci"></a>
+      <a id="apply(LociRange):ParsedLoci"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">apply</span><span class="params">(<span name="range">range: <a href="LociRange.html" class="extype" name="org.hammerlab.guacamole.loci.parsing.LociRange">LociRange</a></span>)</span><span class="result">: <a href="ParsedLoci.html" class="extype" name="org.hammerlab.guacamole.loci.parsing.ParsedLoci">ParsedLoci</a></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.loci.parsing.ParsedLoci#apply" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="apply(lociStrs:Iterator[String]):org.hammerlab.guacamole.loci.parsing.ParsedLoci"></a>
+      <a id="apply(Iterator[String]):ParsedLoci"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">apply</span><span class="params">(<span name="lociStrs">lociStrs: <span class="extype" name="scala.Iterator">Iterator</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result">: <a href="ParsedLoci.html" class="extype" name="org.hammerlab.guacamole.loci.parsing.ParsedLoci">ParsedLoci</a></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.hammerlab.guacamole.loci.parsing.ParsedLoci#apply" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="apply(lociStrs:String):org.hammerlab.guacamole.loci.parsing.ParsedLoci"></a>
+      <a id="apply(String):ParsedLoci"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">apply</span><span class="params">(<span name="lociStrs">lociStrs: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="ParsedLoci.html" class="extype" name="org.hammerlab.guacamole.loci.parsing.ParsedLoci">ParsedLoci</a></span>
+      </span>
+      </h4>
+      
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -206,6 +247,19 @@ that specifies the loci of interest without requiring us to already know the con
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.loci.parsing.ParsedLoci#empty" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="empty:org.hammerlab.guacamole.loci.parsing.ParsedLoci"></a>
+      <a id="empty:ParsedLoci"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">empty</span><span class="result">: <a href="ParsedLoci.html" class="extype" name="org.hammerlab.guacamole.loci.parsing.ParsedLoci">ParsedLoci</a></span>
+      </span>
+      </h4>
+      
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -251,6 +305,36 @@ that specifies the loci of interest without requiring us to already know the con
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.loci.parsing.ParsedLoci#fromArgs" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="fromArgs(lociStrOpt:Option[String],lociFileOpt:Option[String],hadoopConfiguration:org.apache.hadoop.conf.Configuration):Option[org.hammerlab.guacamole.loci.parsing.ParsedLoci]"></a>
+      <a id="fromArgs(Option[String],Option[String],Configuration):Option[ParsedLoci]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">fromArgs</span><span class="params">(<span name="lociStrOpt">lociStrOpt: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="lociFileOpt">lociFileOpt: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="hadoopConfiguration">hadoopConfiguration: <span class="extype" name="org.apache.hadoop.conf.Configuration">Configuration</span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<a href="ParsedLoci.html" class="extype" name="org.hammerlab.guacamole.loci.parsing.ParsedLoci">ParsedLoci</a>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Parse string representations of loci ranges, either from one string (lociOpt) or a file with one range per line
+(lociFileOpt), and return a <a href="ParsedLoci.html" class="extype" name="org.hammerlab.guacamole.loci.parsing.ParsedLoci">ParsedLoci</a> encapsulating the result.</p><div class="fullcomment"><div class="comment cmt"><p>Parse string representations of loci ranges, either from one string (lociOpt) or a file with one range per line
+(lociFileOpt), and return a <a href="ParsedLoci.html" class="extype" name="org.hammerlab.guacamole.loci.parsing.ParsedLoci">ParsedLoci</a> encapsulating the result. The latter can then be converted into a
+<a href="../set/LociSet.html" class="extype" name="org.hammerlab.guacamole.loci.set.LociSet">org.hammerlab.guacamole.loci.set.LociSet</a> when contig-lengths are available / have been parsed from read-sets.
+</p></div></div>
+    </li><li name="org.hammerlab.guacamole.loci.parsing.ParsedLoci#fromVCF" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="fromVCF(lociFile:String):org.hammerlab.guacamole.loci.parsing.ParsedLoci"></a>
+      <a id="fromVCF(String):ParsedLoci"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">fromVCF</span><span class="params">(<span name="lociFile">lociFile: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="ParsedLoci.html" class="extype" name="org.hammerlab.guacamole.loci.parsing.ParsedLoci">ParsedLoci</a></span>
+      </span>
+      </h4>
+      
     </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
       <a id="getClass():Class[_]"></a>
@@ -329,65 +413,6 @@ that specifies the loci of interest without requiring us to already know the con
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.loci.set.LociParser#put" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="put(lociStr:String):org.hammerlab.guacamole.loci.set.LociParser"></a>
-      <a id="put(String):LociParser"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">put</span><span class="params">(<span name="lociStr">lociStr: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="" class="extype" name="org.hammerlab.guacamole.loci.set.LociParser">LociParser</a></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Parse a (string) loci expression and add it to the builder.</p><div class="fullcomment"><div class="comment cmt"><p>Parse a (string) loci expression and add it to the builder. Example expressions:</p><p> &quot;all&quot;: all sites on all contigs.
- &quot;none&quot;: no loci, used as a default in some places.
- &quot;chr1,chr3&quot;: all sites on contigs chr1 and chr3.
- &quot;chr1:10000-20000,chr2&quot;: sites x where 10000 &lt;= x &lt; 20000 on chr1, all sites on chr2.
- &quot;chr1:10000&quot;: just chr1, position 10000; equivalent to &quot;chr1:10000-10001&quot;.
- &quot;chr1:10000-&quot;: chr1, from position 10000 to the end of chr1.
-</p></div></div>
-    </li><li name="org.hammerlab.guacamole.loci.set.LociParser#put" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="put(contigName:org.hammerlab.guacamole.reference.ContigName,start:org.hammerlab.guacamole.reference.Locus,end:org.hammerlab.guacamole.reference.Locus):org.hammerlab.guacamole.loci.set.LociParser"></a>
-      <a id="put(ContigName,Locus,Locus):LociParser"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">put</span><span class="params">(<span name="contigName">contigName: <a href="../../reference/package.html#ContigName=String" class="extmbr" name="org.hammerlab.guacamole.reference.ContigName">ContigName</a></span>, <span name="start">start: <a href="../../reference/package.html#Locus=Long" class="extmbr" name="org.hammerlab.guacamole.reference.Locus">Locus</a></span>, <span name="end">end: <a href="../../reference/package.html#Locus=Long" class="extmbr" name="org.hammerlab.guacamole.reference.Locus">Locus</a></span>)</span><span class="result">: <a href="" class="extype" name="org.hammerlab.guacamole.loci.set.LociParser">LociParser</a></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Add an interval to this LociParser.</p>
-    </li><li name="org.hammerlab.guacamole.loci.set.LociParser#result" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="result(contigLengths:org.hammerlab.guacamole.readsets.ContigLengths):org.hammerlab.guacamole.loci.set.LociSet"></a>
-      <a id="result(ContigLengths):LociSet"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">result</span><span class="params">(<span name="contigLengths">contigLengths: <a href="../../readsets/package.html#ContigLengths=Map[org.hammerlab.guacamole.reference.ContigName,org.hammerlab.guacamole.reference.NumLoci]" class="extmbr" name="org.hammerlab.guacamole.readsets.ContigLengths">ContigLengths</a></span>)</span><span class="result">: <a href="LociSet.html" class="extype" name="org.hammerlab.guacamole.loci.set.LociSet">LociSet</a></span>
-      </span>
-      </h4>
-      
-    </li><li name="org.hammerlab.guacamole.loci.set.LociParser#result" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="result:org.hammerlab.guacamole.loci.set.LociSet"></a>
-      <a id="result:LociSet"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">result</span><span class="result">: <a href="LociSet.html" class="extype" name="org.hammerlab.guacamole.loci.set.LociSet">LociSet</a></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Build the result.</p><div class="fullcomment"><div class="comment cmt"><p>Build the result.</p><p>The wrappers here all delegate to the private implementation that follows.
-</p></div></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
