@@ -1,6 +1,6 @@
 package org.hammerlab.guacamole.readsets.io
 
-import org.hammerlab.guacamole.loci.set.LociParser
+import org.hammerlab.guacamole.loci.parsing.ParsedLoci
 
 /**
  * Filtering reads while they are loaded can be an important optimization.
@@ -12,36 +12,24 @@ import org.hammerlab.guacamole.loci.set.LociParser
  * @param nonDuplicate include only reads that do not have the duplicate bit set
  * @param passedVendorQualityChecks include only reads that do not have the failedVendorQualityChecks bit set
  * @param isPaired include only reads are paired-end reads
+ * @param minAlignmentQuality Minimum Phred-scaled alignment score for a read
  */
-case class InputFilters(overlapsLociOpt: Option[LociParser],
+case class InputFilters(overlapsLociOpt: Option[ParsedLoci],
                         nonDuplicate: Boolean,
                         passedVendorQualityChecks: Boolean,
-                        isPaired: Boolean)
-
-object InputFilters {
-  val empty = InputFilters()
-
-  /**
-   * See InputFilters for full documentation.
-   *
-   * @param mapped include only mapped reads. Convenience argument that is equivalent to specifying all sites in
-   *               overlapsLoci.
-   */
-  def apply(mapped: Boolean = false,
-            overlapsLoci: LociParser = null,
-            nonDuplicate: Boolean = false,
-            passedVendorQualityChecks: Boolean = false,
-            isPaired: Boolean = false): InputFilters = {
-    new InputFilters(
-      overlapsLociOpt =
-        if (overlapsLoci == null && mapped)
-          Some(LociParser.all)
-        else
-          Option(overlapsLoci),
-      nonDuplicate,
-      passedVendorQualityChecks,
-      isPaired
-    )
-  }
+                        isPaired: Boolean,
+                        minAlignmentQuality: Int
+                       ) {
+  def loci = overlapsLociOpt.getOrElse(ParsedLoci.all)
 }
 
+object InputFilters {
+  val empty =
+    InputFilters(
+      overlapsLociOpt = None,
+      nonDuplicate = false,
+      passedVendorQualityChecks = false,
+      isPaired = false,
+      minAlignmentQuality = 0
+    )
+}

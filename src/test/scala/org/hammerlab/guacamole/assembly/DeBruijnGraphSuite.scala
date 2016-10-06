@@ -4,7 +4,7 @@ import org.hammerlab.guacamole.reads.ReadsUtil
 import org.hammerlab.guacamole.readsets.rdd.ReadsRDDUtil
 import org.hammerlab.guacamole.reference.ReferenceUtil
 import org.hammerlab.guacamole.util.BasesUtil._
-import org.hammerlab.guacamole.util.{AssertBases, Bases, GuacFunSuite}
+import org.hammerlab.guacamole.util.{AssertBases, GuacFunSuite}
 
 class DeBruijnGraphSuite
   extends GuacFunSuite
@@ -13,7 +13,7 @@ class DeBruijnGraphSuite
     with ReferenceUtil {
 
   test("DeBruijnGraph.mergeKmers") {
-    val kmers = Seq("TTTC", "TTCC", "TCCC", "CCCC").map(Bases.stringToBases)
+    val kmers = Seq[Seq[Byte]]("TTTC", "TTCC", "TCCC", "CCCC")
     val longerKmer = DeBruijnGraph.mergeOverlappingSequences(kmers, 4)
 
     longerKmer.length should be(7)
@@ -22,7 +22,7 @@ class DeBruijnGraphSuite
 
   test("build graph") {
 
-    val read = makeRead(Bases.stringToBases("TCATCTCAAAAGAGATCGA"))
+    val read = makeRead("TCATCTCAAAAGAGATCGA")
     val graph = DeBruijnGraph(Seq(read), kmerSize = 8)
 
     graph.kmerCounts === Map("TCATCTCA" -> 1, "CATCTCAA" -> 1, "GAGATCGA" -> 1)
@@ -138,7 +138,6 @@ class DeBruijnGraphSuite
     graph.kmerCounts.keys.size should be(sequence.length - kmerSize + 1)
 
     graph.kmerCounts.foreach(_._2 should be(1))
-
   }
 
   test("find forward unique path; full graph") {
@@ -151,7 +150,7 @@ class DeBruijnGraphSuite
     val mergeableForward = graph.mergeForward(firstKmer)
     mergeableForward.size should be(9)
 
-    DeBruijnGraph.mergeOverlappingSequences(mergeableForward, 4) should be(Bases.stringToBases(sequence))
+    AssertBases(DeBruijnGraph.mergeOverlappingSequences(mergeableForward, 4), sequence)
   }
 
   test("find backward unique path; full graph") {
@@ -429,7 +428,7 @@ class DeBruijnGraphSuite
     val kmerSize = 55
 
     val referenceString = "GAGGATCTGCCATGGCCGGGCGAGCTGGAGGAGGAGGAGGAGGAGGAGGAGGAGGAGGAGGAGGAAGAGGAGGAGGCTGCAGCGGCGGCGGCGGCGAACGTGGACGACGTAGTGGTCGTGGAGGAGGTGGAGGAAGAGGCGGGGCG"
-    val referenceBases = Bases.stringToBases(referenceString)
+    val referenceBases = stringToBases(referenceString)
 
     lazy val snpReads =
       loadReadsRDD(sc, "assemble-reads-set3-chr2-73613071.sam")

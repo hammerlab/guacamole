@@ -4,14 +4,14 @@ import breeze.linalg.DenseVector
 import breeze.stats.{mean, median}
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
-import org.hammerlab.guacamole.alignment.AffineGapPenaltyAlignment
-import org.hammerlab.guacamole.assembly.{AssemblyArgs, AssemblyUtils}
+import org.hammerlab.guacamole.alignment.AffineGapPenaltyAlignment.align
+import org.hammerlab.guacamole.assembly.AssemblyArgs
+import org.hammerlab.guacamole.assembly.AssemblyUtils.{buildVariantsFromPath, discoverHaplotypes, isActiveRegion}
 import org.hammerlab.guacamole.distributed.WindowFlatMapUtils.windowFlatMapWithState
 import org.hammerlab.guacamole.likelihood.Likelihood
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.readsets.args.{GermlineCallerArgs, ReferenceArgs}
-import org.hammerlab.guacamole.readsets.io.InputFilters
 import org.hammerlab.guacamole.readsets.rdd.{PartitionedRegions, PartitionedRegionsArgs}
 import org.hammerlab.guacamole.readsets.{PartitionedReads, ReadSets, SampleName}
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
@@ -39,9 +39,6 @@ object GermlineAssemblyCaller {
     @Args4jOption(name = "--min-average-base-quality", usage = "Minimum average of base qualities in the read")
     var minAverageBaseQuality: Int = 20
 
-    @Args4jOption(name = "--min-alignment-quality", usage = "Minimum alignment qualities of the read")
-    var minAlignmentQuality: Int = 30
-
     @Args4jOption(name = "--min-likelihood", usage = "Minimum Phred-scaled likelihood. Default: 0 (off)")
     var minLikelihood: Int = 0
   }
@@ -52,25 +49,14 @@ object GermlineAssemblyCaller {
 
     override def computeVariants(args: Arguments, sc: SparkContext) = {
       val reference = args.reference(sc)
-      val loci = args.parseLoci(sc.hadoopConfiguration)
-      val readsets =
-        ReadSets(
-          sc,
-          args.inputs,
-          InputFilters(
-            overlapsLoci = loci,
-            mapped = true,
-            nonDuplicate = true
-          )
-        )
+      val (readsets, loci) = ReadSets(sc, args)
 
-      val minAlignmentQuality = args.minAlignmentQuality
-      val qualityReads = readsets.allMappedReads.filter(_.alignmentQuality > minAlignmentQuality)
+      val qualityReads = readsets.allMappedReads
 
       val partitionedReads =
         PartitionedRegions(
           qualityReads,
-          loci.result(readsets.contigLengths),
+          loci,
           args
         )
 
@@ -150,26 +136,37 @@ object GermlineAssemblyCaller {
             val pileupAltReads = (pileup.depth - pileup.referenceDepth)
             if (currentLocusReads.isEmpty || pileupAltReads < minAltReads) {
               (lastCalledLocus, Iterator.empty)
-            } else if (shortcutAssembly && !AssemblyUtils.isActiveRegion(currentLocusReads, referenceContig, minAreaVaf)) {
-              val variants = callPileupVariant(pileup).filter(_.evidence.phredScaledLikelihood > minPhredScaledLikelihood)
-              (variants.lastOption.map(_.start).orElse(lastCalledLocus), variants.iterator)
-            } else {
-              val paths = AssemblyUtils.discoverHaplotypes(
-                window,
-                kmerSize,
-                reference,
-                minOccurrence,
-                minMeanKmerQuality
+            } else if (shortcutAssembly && !isActiveRegion(currentLocusReads, referenceContig, minAreaVaf)) {
+              val variants =
+                callPileupVariant(pileup)
+                  .filter(_.evidence.phredScaledLikelihood > minPhredScaledLikelihood)
+
+              (
+                variants
+                  .lastOption
+                  .map(_.start)
+                  .orElse(lastCalledLocus),
+                variants.iterator
               )
+            } else {
+              val paths =
+                discoverHaplotypes(
+                  window,
+                  kmerSize,
+                  reference,
+                  minOccurrence,
+                  minMeanKmerQuality
+                )
 
               if (paths.nonEmpty) {
                 def buildVariant(variantLocus: Int,
                                  referenceBases: Array[Byte],
                                  alternateBases: Array[Byte]) = {
-                  val allele = Allele(
-                    referenceBases,
-                    alternateBases
-                  )
+                  val allele =
+                    Allele(
+                      referenceBases,
+                      alternateBases
+                    )
 
                   val depth = regionReads.length
                   val mappingQualities = DenseVector(regionReads.map(_.alignmentQuality.toFloat).toArray)
@@ -195,17 +192,21 @@ object GermlineAssemblyCaller {
                 }
 
                 val variants =
-                  paths.flatMap(path =>
-                    AssemblyUtils.buildVariantsFromPath[CalledAllele](
-                      path,
-                      referenceStart,
-                      referenceContig,
-                      path => AffineGapPenaltyAlignment.align(path, currentReference),
-                      buildVariant
+                  paths
+                    .flatMap(path =>
+                      buildVariantsFromPath[CalledAllele](
+                        path,
+                        referenceStart,
+                        referenceContig,
+                        path => align(path, currentReference),
+                        buildVariant
+                      )
                     )
-                  )
                     .toSet
-                    .filter(variant => lastCalledLocus.forall(_ < variant.start)) // Filter variants before last called
+                    .filter(
+                      variant =>
+                        lastCalledLocus.forall(_ < variant.start)  // Filter variants before last called
+                    )
 
                 val lastVariantCallLocus = variants.view.map(_.start).reduceOption(_ max _).orElse(lastCalledLocus)
                 // Jump to the next region

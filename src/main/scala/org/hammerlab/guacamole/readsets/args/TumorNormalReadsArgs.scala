@@ -1,9 +1,10 @@
 package org.hammerlab.guacamole.readsets.args
 
+import org.hammerlab.guacamole.readsets.io.ReadFilterArgs
 import org.kohsuke.args4j.{Option => Args4jOption}
 
 /** Arguments for accepting two sets of reads (tumor + normal). */
-trait TumorNormalReadsArgs extends Base {
+trait TumorNormalReadsArgs extends Base with ReadFilterArgs {
 
   @Args4jOption(name = "--normal-reads", metaVar = "X", required = true, usage = "Aligned reads: normal")
   var normalReads: String = ""
