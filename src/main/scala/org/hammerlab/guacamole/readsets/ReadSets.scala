@@ -291,7 +291,7 @@ object ReadSets extends Logging {
       result =
         result.filter(
           _.asMappedRead
-                .exists(_.alignmentQuality >= filters.minAlignmentQuality)
+                .forall(_.alignmentQuality >= filters.minAlignmentQuality)
         )
 
     result
