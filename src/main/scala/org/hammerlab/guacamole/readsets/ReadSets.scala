@@ -14,7 +14,7 @@ import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.reads.Read
 import org.hammerlab.guacamole.readsets.args.{Base => BaseArgs}
-import org.hammerlab.guacamole.readsets.io.{Input, InputFilters, ReadFilterArgs}
+import org.hammerlab.guacamole.readsets.io.{Input, InputFilters}
 import org.hammerlab.guacamole.readsets.rdd.ReadsRDD
 import org.hammerlab.guacamole.reference.{ContigName, Locus}
 import org.seqdoop.hadoop_bam.util.SAMHeaderReader
@@ -61,9 +61,8 @@ object ReadSets extends Logging {
   def apply(sc: SparkContext,
             inputs: PerSample[Input],
             filters: InputFilters,
-            contigLengthsFromDictionary: Boolean = true): ReadSets = {
+            contigLengthsFromDictionary: Boolean = true): ReadSets =
     apply(sc, inputs.map((_, filters)), contigLengthsFromDictionary)
-  }
 
   /**
    * Load reads from multiple files, allowing different filters to be applied to each file.

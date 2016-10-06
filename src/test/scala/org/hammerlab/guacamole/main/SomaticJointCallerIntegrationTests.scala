@@ -13,12 +13,8 @@ import org.hammerlab.guacamole.variants.VariantComparisonTest
  *
  * To run:
  *
- *   mvn package -DskipTests
- *   mvn test-compile
- *   java \
- *     -Xmx4g \
- *     -cp "$(scripts/classpath -t)" \
- *     org.hammerlab.guacamole.main.SomaticJointCallerIntegrationTests
+ *   mvn package -DskipTests -Pguac,test
+ *   scripts/guacamole-test SomaticJointCallerIntegrationTests
  */
 object SomaticJointCallerIntegrationTests
   extends SparkCommand[Arguments]

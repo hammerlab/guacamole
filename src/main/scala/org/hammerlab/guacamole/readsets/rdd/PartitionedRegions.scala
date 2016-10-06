@@ -153,7 +153,7 @@ object PartitionedRegions {
    * Internal [[PartitionedRegions]] constructor: takes already-partitioned loci, partitions regions, and optionally
    * prints some stats.
    *
-   * If `partitionedReadsPathOpt` is provided, attempt to load loci- and region- partitionings from that path; if the
+   * If `partitionedRegionsPathOpt` is provided, attempt to load loci- and region- partitionings from that path; if the
    * path doesn't exist, compute them and save to that path.
    */
   private[rdd] def apply[R <: ReferenceRegion: ClassTag](regions: RDD[R],
@@ -161,13 +161,11 @@ object PartitionedRegions {
                                                          halfWindowSize: Int,
                                                          partitionedRegionsPathOpt: Option[String],
                                                          compress: Boolean,
-                                                         printStats: Boolean): PartitionedRegions[R] = {
-
-    val sc = regions.sparkContext
-
+                                                         printStats: Boolean): PartitionedRegions[R] =
     partitionedRegionsPathOpt match {
       case Some(partitionedRegionsPath) =>
 
+        val sc = regions.sparkContext
         val fs = FileSystem.get(sc.hadoopConfiguration)
         val path = new Path(partitionedRegionsPath)
         if (fs.exists(path))
@@ -179,7 +177,6 @@ object PartitionedRegions {
       case None =>
         compute(regions, lociPartitioning, halfWindowSize, compress, printStats)
     }
-  }
 
   /**
    * Construct a [[PartitionedRegions]] for above constructors, ignoring loading/saving considerations.

@@ -42,11 +42,9 @@ class GeneratePartialFastaArguments
  * To run this command, build the main Guacamole package, compile test-classes, and run this class with both the
  * assembly JAR and test-classes on the classpath:
  *
- *   mvn package -DskipTests
- *   mvn test-compile
- *   java \
- *     -cp "$(scripts/classpath -t)" \
- *     org.hammerlab.guacamole.main.GeneratePartialFasta \
+ *   mvn package -DskipTests -Pguac,test
+ *   scripts/guacamole-test \
+ *     GeneratePartialFasta \
  *     --reference <fasta path> \
  *     [--loci <str>|--loci-file <file>] \
  *     -o <output path> \
