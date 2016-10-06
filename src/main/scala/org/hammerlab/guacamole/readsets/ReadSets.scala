@@ -49,7 +49,7 @@ case class ReadSets(readsRDDs: PerSample[ReadsRDD],
 
 object ReadSets extends Logging {
 
-  def apply(sc: SparkContext, args: BaseArgs with ReadFilterArgs): (ReadSets, LociSet) = {
+  def apply(sc: SparkContext, args: BaseArgs): (ReadSets, LociSet) = {
     val filters = args.parseFilters(sc.hadoopConfiguration)
     val readsets = apply(sc, args.inputs, filters, !args.noSequenceDictionary)
     (readsets, filters.loci.result(readsets.contigLengths))
@@ -291,7 +291,7 @@ object ReadSets extends Logging {
       result =
         result.filter(
           _.asMappedRead
-                .forall(_.alignmentQuality >= filters.minAlignmentQuality)
+                .exists(_.alignmentQuality >= filters.minAlignmentQuality)
         )
 
     result

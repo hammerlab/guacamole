@@ -1,11 +1,11 @@
 package org.hammerlab.guacamole.readsets.io
 
 import org.apache.hadoop.conf.Configuration
-import org.hammerlab.guacamole.loci.LociArgs
-import org.hammerlab.guacamole.loci.set.LociParser
+import org.hammerlab.guacamole.loci.args.CallLociArgs
+import org.hammerlab.guacamole.loci.parsing.ParsedLoci
 import org.kohsuke.args4j.{Option => Args4jOption}
 
-trait ReadFilterArgs extends LociArgs {
+trait ReadFilterArgs extends CallLociArgs {
   @Args4jOption(name = "--min-alignment-quality",
     usage = "Minimum read mapping quality for a read (Phred-scaled)")
   var minAlignmentQuality: Int = 0
@@ -28,13 +28,12 @@ trait ReadFilterArgs extends LociArgs {
   )
   var onlyMappedReads: Boolean = false
 
-
   def parseFilters(hadoopConfiguration: Configuration): InputFilters = {
-    val loci = parseLoci(hadoopConfiguration)
+    val loci = ParsedLoci.fromArgs(lociStrOpt, lociFileOpt, hadoopConfiguration)
     InputFilters(
       overlapsLociOpt =
         if (onlyMappedReads)
-          Some(LociParser.all)
+          Some(ParsedLoci.all)
         else
           loci,
       nonDuplicate = !includeDuplicates,

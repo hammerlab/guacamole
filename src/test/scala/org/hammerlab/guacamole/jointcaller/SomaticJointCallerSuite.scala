@@ -1,7 +1,8 @@
 package org.hammerlab.guacamole.jointcaller
 
 import org.hammerlab.guacamole.commands.SomaticJoint.makeCalls
-import org.hammerlab.guacamole.loci.set.{LociParser, LociSet}
+import org.hammerlab.guacamole.loci.parsing.ParsedLoci
+import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.readsets.ReadSetsUtil
 import org.hammerlab.guacamole.reference.{ReferenceBroadcast, ReferenceUtil}
 import org.hammerlab.guacamole.util.GuacFunSuite
@@ -30,7 +31,7 @@ class SomaticJointCallerSuite
 
   test("force-call a non-variant locus") {
     val inputs = InputCollection(cancerWGS1Bams)
-    val loci = LociParser("chr12:65857040")
+    val loci = ParsedLoci("chr12:65857040")
     val readSets = makeReadSets(inputs, loci)
     val calls =
       makeCalls(
@@ -56,7 +57,7 @@ class SomaticJointCallerSuite
 
   test("call a somatic deletion") {
     val inputs = InputCollection(cancerWGS1Bams)
-    val loci = LociParser("chr5:82649006-82649009")
+    val loci = ParsedLoci("chr5:82649006-82649009")
     val readSets = makeReadSets(inputs, loci)
     val calls =
       makeCalls(
@@ -79,7 +80,7 @@ class SomaticJointCallerSuite
 
   test("call germline variants") {
     val inputs = InputCollection(cancerWGS1Bams.take(1), tissueTypes = Vector("normal"))
-    val loci = LociParser("chr1,chr2,chr3")
+    val loci = ParsedLoci("chr1,chr2,chr3")
     val readSets = makeReadSets(inputs, loci)
     val calls =
       makeCalls(
@@ -120,7 +121,7 @@ class SomaticJointCallerSuite
 
   test("don't call variants with N as the reference base") {
     val inputs = InputCollection(cancerWGS1Bams)
-    val loci = LociParser("chr12:65857030-65857080")
+    val loci = ParsedLoci("chr12:65857030-65857080")
     val readSets = makeReadSets(inputs, loci)
     val emptyPartialReference = makeReference(sc, 70000000, ("chr12", 65856930, "N" * 250))
 
@@ -142,7 +143,7 @@ class SomaticJointCallerSuite
   test("call a somatic variant using RNA evidence") {
     val parameters = Parameters.defaults.copy(somaticNegativeLog10VariantPriorWithRnaEvidence = 1)
 
-    val loci = LociParser("chr22:46931058-46931079")
+    val loci = ParsedLoci("chr22:46931058-46931079")
     val inputsWithRNA = InputCollection(celsr1BAMs, analytes = Vector("dna", "dna", "rna"))
     val callsWithRNA =
       makeCalls(

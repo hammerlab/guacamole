@@ -7,7 +7,7 @@ import grizzled.slf4j.Logging
 import htsjdk.samtools.reference.FastaSequenceFile
 import org.apache.spark.SparkContext
 import org.apache.spark.broadcast.Broadcast
-import org.hammerlab.guacamole.loci.set.LociSet
+import org.hammerlab.guacamole.loci.parsing.{LociRange, ParsedLoci, ParsedLociRange}
 import org.hammerlab.guacamole.util.Bases.unmaskBases
 
 import scala.collection.mutable
@@ -119,7 +119,7 @@ object ReferenceBroadcast extends Logging {
 
     val result = mutable.HashMap[ContigName, mutable.HashMap[Int, Byte]]()
 
-    val contigLengths = mutable.HashMap[ContigName, Int]()
+    val contigLengths = mutable.HashMap[ContigName, NumLoci]()
 
     for {
       (regionDescription, broadcastSequence) <- raw.broadcastedContigs
@@ -127,8 +127,17 @@ object ReferenceBroadcast extends Logging {
     } {
       regionDescription.split("/").map(_.trim).toList match {
         case lociStr :: contigLengthStr :: Nil =>
-          val contigLength = contigLengthStr.toInt
-          val loci = LociSet(lociStr)
+          val contigLength = contigLengthStr.toLong
+
+          val loci =
+            ParsedLociRange(lociStr) match {
+              case Some(LociRange(contigName, start, endOpt)) =>
+                val parsedLoci = ParsedLoci(LociRange(contigName, start, endOpt))
+                parsedLoci.result(Map(contigName -> contigLength))
+              case _ =>
+                throw new IllegalArgumentException(s"Bad loci range: $lociStr")
+            }
+
           if (loci.contigs.length != 1) {
             throw new IllegalArgumentException(s"Region must have 1 contig for partial fasta: $lociStr")
           }
