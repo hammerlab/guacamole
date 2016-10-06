@@ -1,10 +1,10 @@
 package org.hammerlab.guacamole.commands
 
 import org.hammerlab.guacamole.commands.VariantSupport.Caller.AlleleCount
-import org.hammerlab.guacamole.loci.set.LociParser
+import org.hammerlab.guacamole.loci.parsing.ParsedLoci
 import org.hammerlab.guacamole.pileup.{Pileup, Util => PileupUtil}
 import org.hammerlab.guacamole.reads.MappedRead
-import org.hammerlab.guacamole.readsets.io.InputFilters
+import org.hammerlab.guacamole.readsets.io.{InputFilters, TestInputFilters}
 import org.hammerlab.guacamole.readsets.rdd.ReadsRDDUtil
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.util.GuacFunSuite
@@ -59,10 +59,9 @@ class VariantSupportSuite
     loadReadsRDD(
       sc,
       "gatk_mini_bundle_extract.bam",
-      InputFilters(
-        mapped = true,
+      TestInputFilters(
         nonDuplicate = false,
-        overlapsLoci = LociParser(loci)
+        overlapsLoci = ParsedLoci(loci)
       )
     ).mappedReads.collect().sortBy(_.start)
 
@@ -70,10 +69,9 @@ class VariantSupportSuite
     loadReadsRDD(
       sc,
       "gatk_mini_bundle_extract.bam",
-      InputFilters(
-        mapped = true,
+      TestInputFilters(
         nonDuplicate = true,
-        overlapsLoci = LociParser(loci)
+        overlapsLoci = ParsedLoci(loci)
       )
     ).mappedReads.collect().sortBy(_.start)
 
@@ -102,7 +100,7 @@ class VariantSupportSuite
   test("read evidence for simple snvs no filters") {
     val loci =
       Seq(
-        ("20", 9999900, Nil), // empty
+        ("20", 9999900, Nil),  // empty
         ("20", 9999995, Seq(("A", "ACT", 9))),
         ("20", 10007174, Seq(("C", "T", 5), ("C", "C", 3))),
         ("20", 10007175, Seq(("T", "T", 8)))
@@ -110,7 +108,6 @@ class VariantSupportSuite
 
     val window = SlidingWindow[MappedRead]("20", 0, gatkReads("20:9999900-10007175").toIterator)
     testAlleleCounts(window, loci: _*)
-
   }
 
   test("read evidence for simple snvs duplicate filtering") {

@@ -61,14 +61,7 @@ class MappedReadSuite
     collectionMappedReads(1).isMapped should be(true)
   }
 
-  // This must only be accessed from inside a spark test where SparkContext has been initialized
-  def reference =
-    makeReference(
-      sc,
-      Seq(
-        ("chr1", 8, "GGTCGATCGATCAA")
-      )
-    )
+  lazy val reference = makeReference(sc, "chr1", 8, "GGTCGATCGATCAA")
 
   test("slice read matching read") {
     val chr1Contig = reference.getContig("chr1")

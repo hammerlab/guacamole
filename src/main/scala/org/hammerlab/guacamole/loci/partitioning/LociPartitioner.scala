@@ -3,7 +3,6 @@ package org.hammerlab.guacamole.loci.partitioning
 import java.util.NoSuchElementException
 
 import org.apache.spark.rdd.RDD
-import org.hammerlab.guacamole.loci.LociArgs
 import org.hammerlab.guacamole.loci.partitioning.LociPartitionerType.LociPartitionerType
 import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.readsets.rdd.PartitionedRegionsArgs
@@ -15,8 +14,7 @@ import org.kohsuke.args4j.{Option => Args4JOption}
 import scala.reflect.ClassTag
 
 trait LociPartitionerArgs
-  extends LociArgs
-    with MicroRegionPartitionerArgs
+  extends MicroRegionPartitionerArgs
     with CappedRegionsPartitionerArgs
     with UniformPartitionerArgs {
 

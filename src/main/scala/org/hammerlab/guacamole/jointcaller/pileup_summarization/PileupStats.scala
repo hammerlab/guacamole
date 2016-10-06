@@ -3,7 +3,7 @@ package org.hammerlab.guacamole.jointcaller.pileup_summarization
 import org.bdgenomics.adam.util.PhredUtils
 import org.hammerlab.guacamole.jointcaller.pileup_summarization.PileupStats.AlleleMixture
 import org.hammerlab.guacamole.pileup.PileupElement
-import org.hammerlab.guacamole.util.Bases
+import org.hammerlab.guacamole.util.Bases.basesToString
 
 /**
  * Statistics over a PileupElement instances (a pileup).
@@ -25,7 +25,7 @@ class PileupStats(val elements: Seq[PileupElement], val referenceSequence: Seq[B
   assume(elements.forall(_.locus == elements.head.locus))
 
   /** The reference sequence as a string. */
-  val ref = Bases.basesToString(referenceSequence)
+  val ref = basesToString(referenceSequence)
 
   /**
    * The sequenced alleles at this site as ReadSubsequence instances.

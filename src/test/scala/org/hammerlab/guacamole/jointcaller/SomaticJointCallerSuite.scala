@@ -1,16 +1,17 @@
 package org.hammerlab.guacamole.jointcaller
 
-import org.hammerlab.guacamole.commands.SomaticJoint
-import org.hammerlab.guacamole.loci.set.{LociParser, LociSet}
+import org.hammerlab.guacamole.commands.SomaticJoint.makeCalls
+import org.hammerlab.guacamole.loci.parsing.ParsedLoci
+import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.readsets.ReadSetsUtil
-import org.hammerlab.guacamole.reference.ReferenceBroadcast
-import org.hammerlab.guacamole.reference.ReferenceBroadcast.MapBackedReferenceSequence
+import org.hammerlab.guacamole.reference.{ReferenceBroadcast, ReferenceUtil}
 import org.hammerlab.guacamole.util.GuacFunSuite
 import org.hammerlab.guacamole.util.TestUtil.resourcePath
 
 class SomaticJointCallerSuite
   extends GuacFunSuite
-    with ReadSetsUtil {
+    with ReadSetsUtil
+    with ReferenceUtil {
 
   val cancerWGS1Bams = Vector("normal.bam", "primary.bam", "recurrence.bam").map(
     name => resourcePath("cancer-wgs1/" + name))
@@ -30,10 +31,19 @@ class SomaticJointCallerSuite
 
   test("force-call a non-variant locus") {
     val inputs = InputCollection(cancerWGS1Bams)
-    val loci = LociParser("chr12:65857040")
+    val loci = ParsedLoci("chr12:65857040")
     val readSets = makeReadSets(inputs, loci)
-    val calls = SomaticJoint.makeCalls(
-      sc, inputs, readSets, Parameters.defaults, hg19PartialReference, loci.result, loci.result).collect
+    val calls =
+      makeCalls(
+        sc,
+        inputs,
+        readSets,
+        Parameters.defaults,
+        hg19PartialReference,
+        loci.result,
+        loci.result
+      )
+      .collect
 
     calls.length should equal(1)
 
@@ -47,17 +57,20 @@ class SomaticJointCallerSuite
 
   test("call a somatic deletion") {
     val inputs = InputCollection(cancerWGS1Bams)
-    val loci = LociParser("chr5:82649006-82649009")
+    val loci = ParsedLoci("chr5:82649006-82649009")
     val readSets = makeReadSets(inputs, loci)
-    val calls = SomaticJoint.makeCalls(
-      sc,
-      inputs,
-      readSets,
-      Parameters.defaults,
-      hg19PartialReference,
-      loci.result,
-      LociSet(),
-      includeFiltered = true).collect
+    val calls =
+      makeCalls(
+        sc,
+        inputs,
+        readSets,
+        Parameters.defaults,
+        hg19PartialReference,
+        loci.result,
+        LociSet(),
+        includeFiltered = true
+      )
+      .collect
 
     calls.length should equal(1)
     calls.head.singleAlleleEvidences.length should equal(1)
@@ -67,10 +80,10 @@ class SomaticJointCallerSuite
 
   test("call germline variants") {
     val inputs = InputCollection(cancerWGS1Bams.take(1), tissueTypes = Vector("normal"))
-    val loci = LociParser("chr1,chr2,chr3")
+    val loci = ParsedLoci("chr1,chr2,chr3")
     val readSets = makeReadSets(inputs, loci)
     val calls =
-      SomaticJoint.makeCalls(
+      makeCalls(
         sc,
         inputs,
         readSets,
@@ -108,25 +121,32 @@ class SomaticJointCallerSuite
 
   test("don't call variants with N as the reference base") {
     val inputs = InputCollection(cancerWGS1Bams)
-    val loci = LociParser("chr12:65857030-65857080")
+    val loci = ParsedLoci("chr12:65857030-65857080")
     val readSets = makeReadSets(inputs, loci)
-    val emptyPartialReference =
-      ReferenceBroadcast(
-        Map("chr12" -> MapBackedReferenceSequence(500000000, sc.broadcast(Map.empty)))
-      )
-    val calls = SomaticJoint.makeCalls(
-      sc, inputs, readSets, Parameters.defaults, emptyPartialReference, loci.result, loci.result)
+    val emptyPartialReference = makeReference(sc, 70000000, ("chr12", 65856930, "N" * 250))
 
-    calls.collect.length should equal(0)
+    val calls =
+      makeCalls(
+        sc,
+        inputs,
+        readSets,
+        Parameters.defaults,
+        emptyPartialReference,
+        loci.result,
+        loci.result
+      )
+      .collect
+
+    calls.length should equal(0)
   }
 
   test("call a somatic variant using RNA evidence") {
     val parameters = Parameters.defaults.copy(somaticNegativeLog10VariantPriorWithRnaEvidence = 1)
 
-    val loci = LociParser("chr22:46931058-46931079")
+    val loci = ParsedLoci("chr22:46931058-46931079")
     val inputsWithRNA = InputCollection(celsr1BAMs, analytes = Vector("dna", "dna", "rna"))
     val callsWithRNA =
-      SomaticJoint.makeCalls(
+      makeCalls(
         sc,
         inputsWithRNA,
         makeReadSets(inputsWithRNA, loci),
@@ -138,16 +158,24 @@ class SomaticJointCallerSuite
       .filter(_.bestAllele.isCall)
 
     val inputsWithoutRNA = InputCollection(celsr1BAMs.take(2), analytes = Vector("dna", "dna"))
-    val callsWithoutRNA = SomaticJoint.makeCalls(
-      sc,
-      inputsWithoutRNA,
-      makeReadSets(inputsWithoutRNA, loci),
-      parameters,
-      b37Chromosome22Reference,
-      loci.result).collect.filter(_.bestAllele.isCall)
 
-    Map("with rna" -> callsWithRNA, "without rna" -> callsWithoutRNA).foreach({
-      case (description, calls) => {
+    val callsWithoutRNA =
+      makeCalls(
+        sc,
+        inputsWithoutRNA,
+        makeReadSets(inputsWithoutRNA, loci),
+        parameters,
+        b37Chromosome22Reference,
+        loci.result
+      )
+      .collect
+      .filter(_.bestAllele.isCall)
+
+    Map(
+      "with rna" -> callsWithRNA,
+      "without rna" -> callsWithoutRNA
+    ).foreach {
+      case (description, calls) =>
         withClue("germline variant %s".format(description)) {
           // There should be a germline homozygous call at 22:46931077 in one based, which is 22:46931076 in zero based.
           val filtered46931076 = calls.filter(call => call.start == 46931076 && call.end == 46931077)
@@ -157,8 +185,7 @@ class SomaticJointCallerSuite
           filtered46931076.head.bestAllele.allele.alt should equal("C")
           filtered46931076.head.bestAllele.germlineAlleles should equal("C", "C")
         }
-      }
-    })
+    }
 
     // RNA should enable a call G->A call at 22:46931062 in one based, which is 22:46931061 in zero based.
     callsWithoutRNA.exists(call => call.start == 46931061 && call.end == 46931062) should be(false)
