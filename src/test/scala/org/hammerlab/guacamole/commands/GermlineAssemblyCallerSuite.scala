@@ -4,9 +4,7 @@ import org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Arguments
 import org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Caller.discoverGermlineVariants
 import org.hammerlab.guacamole.data.NA12878TestUtil
 import org.hammerlab.guacamole.loci.partitioning.UniformPartitioner
-import org.hammerlab.guacamole.loci.set.LociParser
 import org.hammerlab.guacamole.readsets.ReadSets
-import org.hammerlab.guacamole.readsets.io.InputFilters
 import org.hammerlab.guacamole.readsets.rdd.PartitionedRegionsUtil
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.util.Bases.basesToString
@@ -18,11 +16,6 @@ class GermlineAssemblyCallerSuite
   extends GuacFunSuite
     with BeforeAndAfterAll
     with PartitionedRegionsUtil {
-
-  val args = new Arguments
-
-  args.reads = NA12878TestUtil.subsetBam
-  args.parallelism = 1
 
   var reference: ReferenceBroadcast = _
 
@@ -46,20 +39,16 @@ class GermlineAssemblyCallerSuite
     val windowStart = locus - assemblyWindowRange
     val windowEnd = locus + assemblyWindowRange
 
-    val lociParser = LociParser(s"$contig:$windowStart-$windowEnd")
+    val args = new Arguments {
+      reads = NA12878TestUtil.subsetBam
+      parallelism = 1
+      lociStr = s"$contig:$windowStart-$windowEnd"
+      includeDuplicates = false
+    }
 
-    val readsets =
-      ReadSets(
-        sc,
-        args.inputs,
-        InputFilters(
-          mapped = true,
-          nonDuplicate = true,
-          overlapsLoci = lociParser
-        )
-      )
+    val (readsets, loci) = ReadSets(sc, args)
 
-    val lociPartitioning = new UniformPartitioner(args.parallelism).partition(lociParser.result(readsets.contigLengths))
+    val lociPartitioning = new UniformPartitioner(args.parallelism).partition(loci)
 
     val partitionedReads = partitionReads(readsets.allMappedReads, lociPartitioning)
 

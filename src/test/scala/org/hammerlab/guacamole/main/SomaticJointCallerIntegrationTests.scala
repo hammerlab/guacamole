@@ -41,14 +41,30 @@ object SomaticJointCallerIntegrationTests
   setDefaultConf("spark.default.parallelism", "24")
 
   def main(args: Array[String]): Unit = {
-    val args = new Arguments()
-    args.outDir = outDir
-    args.referencePath = CancerWGSTestUtil.referencePath
-    args.referenceIsPartial = true
-    args.somaticGenotypePolicy = "trigger"
-    args.loci = ((1).until(22).map(i => "chr%d".format(i)) ++ Seq("chrX", "chrY")).mkString(",")
 
-    args.paths = CancerWGSTestUtil.bams
+    val forceCallLoci =
+      LociSet(
+        csvRecords(CancerWGSTestUtil.expectedSomaticCallsCSV)
+        .filterNot(_.tumor.contains("decoy"))
+        .map(record => {
+          (
+            "chr" + record.contig,
+            if (record.alt.nonEmpty) record.interbaseStart else record.interbaseStart - 1L,
+            if (record.alt.nonEmpty) record.interbaseStart + 1L else record.interbaseStart
+          )
+        })
+      )
+
+    val args = new Arguments() {
+      paths = CancerWGSTestUtil.bams
+      referencePath = CancerWGSTestUtil.referencePath
+      referenceIsPartial = true
+      somaticGenotypePolicy = "trigger"
+      lociStr = ((1).until(22).map(i => "chr%d".format(i)) ++ Seq("chrX", "chrY")).mkString(",")
+      forceCallLociFile = forceCallLoci.truncatedString(100000)
+      outDir = outDir
+    }
+
     run(args)
   }
 
@@ -58,22 +74,6 @@ object SomaticJointCallerIntegrationTests
       println("somatic calling on subset of 3-sample cancer patient 1")
 
       if (true) {
-
-        val forceCallLoci =
-          LociSet(
-            csvRecords(CancerWGSTestUtil.expectedSomaticCallsCSV)
-              .filterNot(_.tumor.contains("decoy"))
-              .map(record => {
-                (
-                  "chr" + record.contig,
-                  if (record.alt.nonEmpty) record.interbaseStart else record.interbaseStart - 1L,
-                  if (record.alt.nonEmpty) record.interbaseStart + 1L else record.interbaseStart
-                )
-              })
-          )
-
-        args.forceCallLoci = forceCallLoci.truncatedString(100000)
-
         SomaticJoint.Caller.run(args, sc)
       }
       println("************* CANCER WGS1 SOMATIC CALLS *************")
@@ -92,12 +92,14 @@ object SomaticJointCallerIntegrationTests
       println(resultFile)
 
       if (true) {
-        val args = new SomaticJoint.Arguments()
-        args.out = resultFile
-        args.paths = Seq(NA12878TestUtil.subsetBam).toArray
-        args.loci = "chr1:0-6700000"
-        args.forceCallLociFile = NA12878TestUtil.expectedCallsVCF
-        args.referencePath = NA12878TestUtil.chr1PrefixFasta
+        val args = new SomaticJoint.Arguments() {
+          out = resultFile
+          paths = Seq(NA12878TestUtil.subsetBam).toArray
+          lociStr = "chr1:0-6700000"
+          forceCallLociFile = NA12878TestUtil.expectedCallsVCF
+          referencePath = NA12878TestUtil.chr1PrefixFasta
+        }
+
         SomaticJoint.Caller.run(args, sc)
       }
 

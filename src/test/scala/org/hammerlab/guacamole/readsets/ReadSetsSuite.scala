@@ -3,9 +3,9 @@ package org.hammerlab.guacamole.readsets
 import org.apache.parquet.hadoop.metadata.CompressionCodecName
 import org.bdgenomics.adam.models.{SequenceDictionary, SequenceRecord}
 import org.bdgenomics.adam.rdd.{ADAMContext, ADAMSaveAnyArgs}
-import org.hammerlab.guacamole.loci.set.LociParser
+import org.hammerlab.guacamole.loci.parsing.ParsedLoci
 import org.hammerlab.guacamole.reads.{MappedRead, Read}
-import org.hammerlab.guacamole.readsets.io.{Input, InputFilters}
+import org.hammerlab.guacamole.readsets.io.{Input, InputFilters, TestInputFilters}
 import org.hammerlab.guacamole.readsets.rdd.ReadsRDDUtil
 import org.hammerlab.guacamole.util.GuacFunSuite
 import org.hammerlab.guacamole.util.TestUtil.resourcePath
@@ -25,7 +25,7 @@ class ReadSetsSuite
           loadReadsRDD(
             sc,
             "gatk_mini_bundle_extract.bam",
-            filters = InputFilters(overlapsLoci = LociParser(loci))
+            filters = TestInputFilters(ParsedLoci(loci))
           )
           .reads
           .collect
@@ -87,9 +87,9 @@ class ReadSetsSuite
       }
 
     Seq(
-      InputFilters(),
-      InputFilters(mapped = true, nonDuplicate = true),
-      InputFilters(overlapsLoci = LociParser("20:10220390-10220490"))
+      InputFilters.empty,
+      TestInputFilters.mapped(nonDuplicate = true),
+      TestInputFilters(ParsedLoci("20:10220390-10220490"))
     ).foreach(filter => {
       check("gatk_mini_bundle_extract.bam", "gatk_mini_bundle_extract.sam", filter)
     })
@@ -97,7 +97,7 @@ class ReadSetsSuite
     check(
       "synth1.normal.100k-200k.withmd.bam",
       "synth1.normal.100k-200k.withmd.sam",
-      InputFilters(overlapsLoci = LociParser("19:147033"))
+      TestInputFilters(ParsedLoci("19:147033"))
     )
   }
 
@@ -105,13 +105,13 @@ class ReadSetsSuite
     val allReads = loadReadsRDD(sc, "mdtagissue.sam")
     allReads.reads.count() should be(8)
 
-    val mdTagReads = loadReadsRDD(sc, "mdtagissue.sam", InputFilters(mapped = true))
+    val mdTagReads = loadReadsRDD(sc, "mdtagissue.sam", TestInputFilters.mapped())
     mdTagReads.reads.count() should be(5)
 
     val nonDuplicateReads = loadReadsRDD(
       sc,
       "mdtagissue.sam",
-      InputFilters(mapped = true, nonDuplicate = true)
+      TestInputFilters.mapped(nonDuplicate = true)
     )
     nonDuplicateReads.reads.count() should be(3)
   }
@@ -141,11 +141,11 @@ class ReadSetsSuite
 
     ReadSets.load(adamOut, sc, 0, InputFilters.empty)._1.count() should be(8)
 
-    ReadSets.load(adamOut, sc, 0, InputFilters(mapped = true, nonDuplicate = true))._1.count() should be(3)
+    ReadSets.load(adamOut, sc, 0, TestInputFilters.mapped(nonDuplicate = true))._1.count() should be(3)
   }
 
   test("load and serialize / deserialize reads") {
-    val reads = loadReadsRDD(sc, "mdtagissue.sam", InputFilters(mapped = true)).mappedReads.collect()
+    val reads = loadReadsRDD(sc, "mdtagissue.sam", TestInputFilters.mapped()).mappedReads.collect()
     val serializedReads = reads.map(serialize)
     val deserializedReads: Seq[MappedRead] = serializedReads.map(deserialize[MappedRead])
     for ((read, deserialized) <- reads.zip(deserializedReads)) {

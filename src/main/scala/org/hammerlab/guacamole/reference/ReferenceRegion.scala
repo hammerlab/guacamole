@@ -1,5 +1,7 @@
 package org.hammerlab.guacamole.reference
 
+import org.bdgenomics.formats.avro.Variant
+
 /**
  * Trait for objects that are associated with an interval on the genome. The most prominent example is a
  * [[org.hammerlab.guacamole.reads.MappedRead]], but there's also [[org.hammerlab.guacamole.variants.ReferenceVariant]].
@@ -46,6 +48,9 @@ object ReferenceRegion {
       }
     }
 
+  def apply(contigName: ContigName, start: Locus, end: Locus): ReferenceRegion =
+    ReferenceRegionImpl(contigName, start, end)
+
   def unapply(region: ReferenceRegion): Option[(ContigName, Locus, Locus)] =
     Some(
       region.contigName,
@@ -53,3 +58,5 @@ object ReferenceRegion {
       region.end
     )
 }
+
+private case class ReferenceRegionImpl(contigName: ContigName, start: Locus, end: Locus) extends ReferenceRegion
