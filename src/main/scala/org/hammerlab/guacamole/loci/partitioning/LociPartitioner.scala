@@ -8,7 +8,6 @@ import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.readsets.rdd.PartitionedRegionsArgs
 import org.hammerlab.guacamole.reference.ReferenceRegion
 import org.hammerlab.magic.args4j.StringOptionHandler
-import org.kohsuke.args4j.spi.BooleanOptionHandler
 import org.kohsuke.args4j.{Option => Args4JOption}
 
 import scala.reflect.ClassTag
@@ -72,8 +71,7 @@ trait LociPartitionerArgs
     name = "--partitioning-stats",
     usage =
       "Compute additional statistics about the partitioned loci and reads; causes additional Spark jobs to be run, " +
-        "so should be disabled in performance-critical environments. Default: false.",
-    handler = classOf[BooleanOptionHandler]
+        "so should be disabled in performance-critical environments. Default: false."
   )
   var printPartitioningStats: Boolean = false
 }
