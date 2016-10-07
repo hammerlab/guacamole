@@ -31,10 +31,13 @@ case class Contig[T](name: ContigName, private val rangeMap: RangeMap[JLong, T])
   /**
    * Given a loci interval, return the set of all values mapped to by any loci in the interval.
    */
-  def getAll(start: Long, end: Long): Set[T] = {
-    val range = JRange.closedOpen[JLong](start, end)
-    rangeMap.subRangeMap(range).asMapOfRanges.values.iterator.toSet
-  }
+  def getAll(start: Locus, end: Locus): Set[T] =
+    rangeMap
+      .subRangeMap(JRange.closedOpen(start, end))
+      .asMapOfRanges
+      .values
+      .iterator
+      .toSet
 
   /** This map as a regular scala immutable map from exclusive numeric ranges to values. */
   lazy val asMap: SortedMap[Interval, T] = {
@@ -83,6 +86,7 @@ object Contig {
 
   /** Convenience constructors for making a Contig from a name and some loci ranges. */
   def apply[T](tuple: (String, Iterable[(JLong, JLong, T)])): Contig[T] = apply(tuple._1, tuple._2)
+
   def apply[T](name: String, ranges: Iterable[(JLong, JLong, T)]): Contig[T] = {
     val mutableRangeMap = TreeRangeMap.create[JLong, T]()
     ranges.foreach(item => {

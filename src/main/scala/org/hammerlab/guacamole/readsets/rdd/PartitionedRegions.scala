@@ -32,6 +32,8 @@ class PartitionedRegions[R <: ReferenceRegion: ClassTag] private(regions: RDD[R]
                                                                  partitioning: LociPartitioning)
   extends Serializable {
 
+  @transient lazy val lociSetsRDD = partitioning.lociSetsRDD(sc)
+
   assert(
     regions.getNumPartitions == lociSetsRDD.getNumPartitions,
     s"reads partitions: ${regions.getNumPartitions}, loci partitions: ${lociSetsRDD.getNumPartitions}"
@@ -68,19 +70,6 @@ class PartitionedRegions[R <: ReferenceRegion: ClassTag] private(regions: RDD[R]
           f(regionsIter, loci)
         }
       )
-
-  // An RDD[LociSet] with one LociSet per partition.
-  @transient private lazy val lociSetsRDD: RDD[LociSet] =
-    sc
-      .parallelize(partitionLociSets, partitionLociSets.length)
-      .setName("lociSetsRDD")
-
-  @transient private lazy val partitionLociSets: Array[LociSet] =
-    partitioning
-      .inverse
-      .toArray
-      .sortBy(_._1)
-      .map(_._2)
 
   /**
    * Write the partitioned regions RDD to a file.
@@ -126,40 +115,21 @@ object PartitionedRegions {
    */
   def apply[R <: ReferenceRegion: ClassTag](regions: RDD[R],
                                             loci: LociSet,
-                                            args: PartitionedRegionsArgs): PartitionedRegions[R] = {
-
-    val lociPartitioning = LociPartitioning(regions, loci, args)
-
-    progress(
-      s"Partitioned loci: ${lociPartitioning.numPartitions} partitions.",
-      "Partition-size stats:",
-      lociPartitioning.partitionSizeStats.toString(),
-      "",
-      "Contigs-spanned-per-partition stats:",
-      lociPartitioning.partitionContigStats.toString(),
-      "",
-      "Range-size stats:",
-      lociPartitioning.rangeSizeStats.toString(),
-      "",
-      "Ranges-per-partition stats:",
-      lociPartitioning.partitionRangesStats.toString()
-    )
-
+                                            args: PartitionedRegionsArgs): PartitionedRegions[R] =
     apply(
       regions,
-      lociPartitioning,
+      LociPartitioning(regions, loci, args),
       args.halfWindowSize,
       args.partitionedReadsPathOpt,
       args.compressReadPartitions,
       args.printPartitioningStats
     )
-  }
 
   /**
    * Internal [[PartitionedRegions]] constructor: takes already-partitioned loci, partitions regions, and optionally
    * prints some stats.
    *
-   * If `partitionedReadsPathOpt` is provided, attempt to load loci- and region- partitionings from that path; if the
+   * If `partitionedRegionsPathOpt` is provided, attempt to load loci- and region- partitionings from that path; if the
    * path doesn't exist, compute them and save to that path.
    */
   private[rdd] def apply[R <: ReferenceRegion: ClassTag](regions: RDD[R],
@@ -167,13 +137,11 @@ object PartitionedRegions {
                                                          halfWindowSize: Int,
                                                          partitionedRegionsPathOpt: Option[String],
                                                          compress: Boolean,
-                                                         printStats: Boolean): PartitionedRegions[R] = {
-
-    val sc = regions.sparkContext
-
+                                                         printStats: Boolean): PartitionedRegions[R] =
     partitionedRegionsPathOpt match {
       case Some(partitionedRegionsPath) =>
 
+        val sc = regions.sparkContext
         val fs = FileSystem.get(sc.hadoopConfiguration)
         val path = new Path(partitionedRegionsPath)
         if (fs.exists(path))
@@ -185,7 +153,6 @@ object PartitionedRegions {
       case None =>
         compute(regions, lociPartitioning, halfWindowSize, compress, printStats)
     }
-  }
 
   /**
    * Construct a [[PartitionedRegions]] for above constructors, ignoring loading/saving considerations.

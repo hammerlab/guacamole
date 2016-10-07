@@ -9,7 +9,7 @@ set -e
 cd "$(dirname "$(dirname "${BASH_SOURCE[@]}")")"
 
 usage() {
-  echo "Usage: $0 <guac|deps|assembly>" 1>&2
+  echo "Usage: $0 <guac|deps|assembly|test>" >&2
   exit 1
 }
 
@@ -22,11 +22,13 @@ shift
 
 jars() {
   if [ "$jar" == "guac" ]; then
-    find target -name "guacamole-*.jar" | grep -v -e deps -e plain -e assembly
+    find target -name "guacamole-*.jar" | grep -v -e deps -e plain -e assembly -e javadoc -e sources
   elif [ "$jar" == "deps" ]; then
     find target -name "guacamole-deps-*.jar"
   elif [ "$jar" == "assembly" ]; then
     find target -name "guacamole-assembly-*.jar"
+  elif [ "$jar" == "test" ]; then
+    find target -name "guacamole-plain-*-tests.jar"
   else
     usage
   fi
@@ -39,10 +41,10 @@ if [ "$num_jars" == "1" ]; then
   echo "$PWD/$jar_path"
   exit 0
 elif [ "$num_jars" == "0" ]; then
-  echo "Found no $jar jars" 1>&2
+  echo "Found no $jar jars" >&2
   exit 1
 else
-  echo "Found $num_jars $jar jars:" 1>&2
-  jars 1>&2
+  echo "Found $num_jars $jar jars:" >&2
+  jars >&2
   exit 2
 fi

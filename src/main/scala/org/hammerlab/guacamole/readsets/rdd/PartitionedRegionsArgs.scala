@@ -4,7 +4,6 @@ import org.apache.hadoop.fs.Path
 import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole.loci.partitioning.{LociPartitionerArgs, LociPartitioning}
 import org.hammerlab.magic.args4j.StringOptionHandler
-import org.kohsuke.args4j.spi.BooleanOptionHandler
 import org.kohsuke.args4j.{Option => Args4JOption}
 
 /**
@@ -58,8 +57,7 @@ trait PartitionedRegionsArgs extends LociPartitionerArgs {
 
   @Args4JOption(
     name = "--compress",
-    usage = "Whether to compress the output partitioned reads (default: false).",
-    handler = classOf[BooleanOptionHandler]
+    usage = "Whether to compress the output partitioned reads (default: false)."
   )
   var compressReadPartitions: Boolean = false
 }
