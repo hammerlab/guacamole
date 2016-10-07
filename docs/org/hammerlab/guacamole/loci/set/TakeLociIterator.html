@@ -83,7 +83,7 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="org.hammerlab.guacamole.loci.set.TakeLociIterator#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="&lt;init&gt;(it:BufferedIterator[(org.hammerlab.guacamole.reference.Position,org.hammerlab.guacamole.loci.Coverage)],maxRegionsPerPartition:Int):org.hammerlab.guacamole.loci.set.TakeLociIterator"></a>
+      <a id="&lt;init&gt;(it:BufferedIterator[(org.hammerlab.guacamole.reference.Position,org.hammerlab.guacamole.loci.Coverage)],maxRegionsPerPartition:Int,trimRanges:Boolean):org.hammerlab.guacamole.loci.set.TakeLociIterator"></a>
       <a id="&lt;init&gt;:TakeLociIterator"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -91,10 +91,13 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">TakeLociIterator</span><span class="params">(<span name="it">it: <span class="extype" name="scala.BufferedIterator">BufferedIterator</span>[(<a href="../../reference/Position.html" class="extype" name="org.hammerlab.guacamole.reference.Position">Position</a>, <a href="../Coverage.html" class="extype" name="org.hammerlab.guacamole.loci.Coverage">Coverage</a>)]</span>, <span name="maxRegionsPerPartition">maxRegionsPerPartition: <span class="extype" name="scala.Int">Int</span></span>)</span>
+        <span class="name">TakeLociIterator</span><span class="params">(<span name="it">it: <span class="extype" name="scala.BufferedIterator">BufferedIterator</span>[(<a href="../../reference/Position.html" class="extype" name="org.hammerlab.guacamole.reference.Position">Position</a>, <a href="../Coverage.html" class="extype" name="org.hammerlab.guacamole.loci.Coverage">Coverage</a>)]</span>, <span name="maxRegionsPerPartition">maxRegionsPerPartition: <span class="extype" name="scala.Int">Int</span></span>, <span name="trimRanges">trimRanges: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">it</dt><dd class="cmt"><p>Iterator of <span class="extype" name="(Position,">Coverage)</span> tuples, e.g. a <span class="extype" name="ContigCoverageIterator">ContigCoverageIterator</span>.</p></dd><dt class="param">maxRegionsPerPartition</dt><dd class="cmt"><p>Maximum regions allowed to overlap each <a href="LociSet.html" class="extype" name="org.hammerlab.guacamole.loci.set.LociSet">LociSet</a>.
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">it</dt><dd class="cmt"><p>Iterator of <span class="extype" name="(Position,">Coverage)</span> tuples, e.g. a <span class="extype" name="ContigCoverageIterator">ContigCoverageIterator</span>.</p></dd><dt class="param">maxRegionsPerPartition</dt><dd class="cmt"><p>Maximum regions allowed to overlap each <a href="LociSet.html" class="extype" name="org.hammerlab.guacamole.loci.set.LociSet">LociSet</a>.</p></dd><dt class="param">trimRanges</dt><dd class="cmt"><p>if true: build <a href="Contig.html" class="extype" name="org.hammerlab.guacamole.loci.set.Contig">Contig</a>s from ranges that have empty loci dropped, resulting in more ranges being
+                  stored; else: each <a href="Contig.html" class="extype" name="org.hammerlab.guacamole.loci.set.Contig">Contig</a> should only include one range, spanning from the lowest to highest
+                  loci covered by its parent <a href="LociSet.html" class="extype" name="org.hammerlab.guacamole.loci.set.LociSet">LociSet</a> on that contig. The latter is more performant but the former
+                  can yield more interesting statistics about the distribution of reads and loci across partitions.
 </p></dd></dl></div>
     </li></ol>
             </div>
@@ -1319,23 +1322,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Iterator</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.loci.set.TakeLociIterator#takeLoci" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="takeLoci(it:org.hammerlab.guacamole.reference.ContigIterator[(org.hammerlab.guacamole.reference.HasLocus,org.hammerlab.guacamole.loci.Coverage)],numRegions:Int,dropAbove:Int):Option[(Int,org.hammerlab.guacamole.loci.set.Contig)]"></a>
-      <a id="takeLoci(ContigIterator[(HasLocus,Coverage)],Int,Int):Option[(Int,Contig)]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">takeLoci</span><span class="params">(<span name="it">it: <a href="../../reference/ContigIterator.html" class="extype" name="org.hammerlab.guacamole.reference.ContigIterator">ContigIterator</a>[(<a href="../../reference/HasLocus.html" class="extype" name="org.hammerlab.guacamole.reference.HasLocus">HasLocus</a>, <a href="../Coverage.html" class="extype" name="org.hammerlab.guacamole.loci.Coverage">Coverage</a>)]</span>, <span name="numRegions">numRegions: <span class="extype" name="scala.Int">Int</span></span>, <span name="dropAbove">dropAbove: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[(<span class="extype" name="scala.Int">Int</span>, <a href="Contig.html" class="extype" name="org.hammerlab.guacamole.loci.set.Contig">Contig</a>)]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Take loci from a contig-restricted iterator of loci-keyed <a href="../Coverage.html" class="extype" name="org.hammerlab.guacamole.loci.Coverage">Coverage</a> objects until a maximum number of covering
-regions has been reached (or the end of the contig).</p><div class="fullcomment"><div class="comment cmt"><p>Take loci from a contig-restricted iterator of loci-keyed <a href="../Coverage.html" class="extype" name="org.hammerlab.guacamole.loci.Coverage">Coverage</a> objects until a maximum number of covering
-regions has been reached (or the end of the contig).
-</p></div><dl class="paramcmts block"><dt class="param">it</dt><dd class="cmt"><p>Contig-restricted iterator of loci with corresponding <a href="../Coverage.html" class="extype" name="org.hammerlab.guacamole.loci.Coverage">Coverage</a> stats.</p></dd><dt class="param">numRegions</dt><dd class="cmt"><p>Take as many loci as possible without exceeding this number of covering regions.</p></dd><dt class="param">dropAbove</dt><dd class="cmt"><p>Loci with greater than this depth are skipped over.</p></dd><dt>returns</dt><dd class="cmt"><p>The number of covering regions, and a <a href="Contig.html" class="extype" name="org.hammerlab.guacamole.loci.set.Contig">Contig</a> with the taken loci ranges.
-</p></dd></dl></div>
     </li><li name="scala.collection.Iterator#takeWhile" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="takeWhile(p:A=&gt;Boolean):Iterator[A]"></a>
       <a id="takeWhile((LociSet)⇒Boolean):Iterator[LociSet]"></a>
