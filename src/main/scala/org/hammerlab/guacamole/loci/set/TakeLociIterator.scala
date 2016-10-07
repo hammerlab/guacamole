@@ -54,8 +54,7 @@ class TakeLociIterator(it: BufferedIterator[(Position, Coverage)],
       takeLoci(
         contigCoverages,
         maxRegionsPerPartition - curNumRegions,
-        maxRegionsPerPartition,
-        trimRanges
+        maxRegionsPerPartition
       ) match {
         case None =>
 
@@ -104,8 +103,7 @@ class TakeLociIterator(it: BufferedIterator[(Position, Coverage)],
    */
   def takeLoci(it: ContigIterator[(HasLocus, Coverage)],
                numRegions: Int,
-               dropAbove: Int,
-               trimRanges: Boolean): Option[(Int, Contig)] = {
+               dropAbove: Int): Option[(Int, Contig)] = {
 
     // Accumulate intervals on this contig here.
     val intervals = ArrayBuffer[Interval]()
