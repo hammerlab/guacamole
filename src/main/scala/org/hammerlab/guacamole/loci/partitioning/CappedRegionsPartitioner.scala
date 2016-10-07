@@ -30,6 +30,17 @@ trait CappedRegionsPartitionerArgs
         "locus within each partition"
   )
   var explodeCoverage: Boolean = false
+
+  @Args4JOption(
+    name = "--trim-ranges",
+    usage =
+      "When present, store which loci in each partition are actually covered, as opposed to one blanket range (per " +
+        "partition per contig) spanning from the smallest to largest loci assigned to each partition. This can " +
+        "result in more informative statistics being collected/printed about the computed loci-partitioning, but " +
+        "it can also result in a significant performance hit if many discontiguous ranges or coverage must be " +
+        "stored / collected to the driver and processed."
+  )
+  var trimRanges: Boolean = false
 }
 
 /**
@@ -48,7 +59,8 @@ class CappedRegionsPartitioner[R <: ReferenceRegion: ClassTag](regions: RDD[R],
                                                                halfWindowSize: Int,
                                                                maxRegionsPerPartition: Int,
                                                                printPartitioningStats: Boolean,
-                                                               explodeCoverage: Boolean)
+                                                               explodeCoverage: Boolean,
+                                                               trimRanges: Boolean)
   extends LociPartitioner {
 
   def partition(loci: LociSet): LociPartitioning = {
@@ -67,7 +79,8 @@ class CappedRegionsPartitioner[R <: ReferenceRegion: ClassTag](regions: RDD[R],
           halfWindowSize,
           loci,
           maxRegionsPerPartition,
-          explodeCoverage
+          explodeCoverage,
+          trimRanges
         )
         .collect()
 

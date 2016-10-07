@@ -55,8 +55,9 @@ trait LociPartitionerArgs
           regions,
           halfWindowSize,
           maxReadsPerPartition,
-          printPartitioningStats,
-          explodeCoverage
+          printPartitioningStats = printPartitioningStats,
+          explodeCoverage = explodeCoverage,
+          trimRanges = trimRanges
         )
 
       case Micro =>

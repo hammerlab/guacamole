@@ -6,7 +6,10 @@ import org.scalatest.{FunSuite, Matchers}
 
 class TakeLociIteratorSuite extends FunSuite with Matchers {
 
-  def check(input: ((String, Int), (Int, Int))*)(expectedStrs: String*) = {
+  def check(input: ((String, Int), (Int, Int))*)(expectedStrs: String*): Unit =
+    check(trimRanges = false, input: _*)(expectedStrs: _*)
+
+  def check(trimRanges: Boolean, input: ((String, Int), (Int, Int))*)(expectedStrs: String*): Unit = {
     val depths =
       for {
         ((contig, locus), (depth, starts)) <- input
@@ -15,7 +18,7 @@ class TakeLociIteratorSuite extends FunSuite with Matchers {
 
     val expected = expectedStrs.map(LociSet.apply)
 
-    new TakeLociIterator(depths.iterator.buffered, 15).toList should be(expected)
+    new TakeLociIterator(depths.iterator.buffered, 15, trimRanges).toList should be(expected)
   }
 
   test("simple") {
@@ -69,6 +72,21 @@ class TakeLociIteratorSuite extends FunSuite with Matchers {
 
   test("partition spanning several contigs") {
     check(
+      ("chr1", 10) -> ( 1,  1),
+      ("chr1", 11) -> ( 6,  5),
+      ("chr2",  1) -> ( 2,  2),
+      ("chr3",  7) -> ( 3,  3),
+      ("chr3",  9) -> ( 4,  3),
+      ("chr4", 20) -> ( 2,  2)
+    )(
+      "chr1:10-12,chr2:1-2,chr3:7-10",
+      "chr4:20-21"
+    )
+  }
+
+  test("partition spanning several contigs, trim ranges") {
+    check(
+      trimRanges = true,
       ("chr1", 10) -> ( 1,  1),
       ("chr1", 11) -> ( 6,  5),
       ("chr2",  1) -> ( 2,  2),
