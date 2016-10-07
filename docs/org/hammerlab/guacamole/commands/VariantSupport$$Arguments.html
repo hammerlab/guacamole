@@ -308,19 +308,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.loci.partitioning.LociPartitionerArgs#getPartitioner" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="getPartitioner[R&lt;:org.hammerlab.guacamole.reference.ReferenceRegion](regions:org.apache.spark.rdd.RDD[R])(implicitevidence$1:scala.reflect.ClassTag[R]):org.hammerlab.guacamole.loci.partitioning.LociPartitioner"></a>
-      <a id="getPartitioner[R&lt;:ReferenceRegion](RDD[R])(ClassTag[R]):LociPartitioner"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">getPartitioner</span><span class="tparams">[<span name="R">R &lt;: <a href="../reference/ReferenceRegion.html" class="extype" name="org.hammerlab.guacamole.reference.ReferenceRegion">ReferenceRegion</a></span>]</span><span class="params">(<span name="regions">regions: <span class="extype" name="org.apache.spark.rdd.RDD">RDD</span>[<span class="extype" name="org.hammerlab.guacamole.loci.partitioning.LociPartitionerArgs.getPartitioner.R">R</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.reflect.ClassTag">ClassTag</span>[<span class="extype" name="org.hammerlab.guacamole.loci.partitioning.LociPartitionerArgs.getPartitioner.R">R</span>]</span>)</span><span class="result">: <a href="../loci/partitioning/LociPartitioner.html" class="extype" name="org.hammerlab.guacamole.loci.partitioning.LociPartitioner">LociPartitioner</a></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../loci/partitioning/LociPartitionerArgs.html" class="extype" name="org.hammerlab.guacamole.loci.partitioning.LociPartitionerArgs">LociPartitionerArgs</a></dd></dl></div>
     </li><li name="org.hammerlab.guacamole.loci.partitioning.HalfWindowConfig#halfWindowSize" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="halfWindowSize:Int"></a>
       <a id="halfWindowSize:Int"></a>
@@ -438,7 +425,7 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../loci/args/CallLociArgs.html" class="extype" name="org.hammerlab.guacamole.loci.args.CallLociArgs">CallLociArgs</a></dd></dl></div>
-    </li><li name="org.hammerlab.guacamole.loci.partitioning.LociPartitionerArgs#lociPartitionerName" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="org.hammerlab.guacamole.loci.partitioning.LociPartitionerArgs#lociPartitionerName" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="lociPartitionerName:String"></a>
       <a id="lociPartitionerName:String"></a>
       <h4 class="signature">
@@ -450,7 +437,7 @@
         <span class="name">lociPartitionerName</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../loci/partitioning/LociPartitionerArgs.html" class="extype" name="org.hammerlab.guacamole.loci.partitioning.LociPartitionerArgs">LociPartitionerArgs</a></dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="../loci/partitioning/LociPartitionerArgs.html" class="extype" name="org.hammerlab.guacamole.loci.partitioning.LociPartitionerArgs">LociPartitionerArgs</a></dd></dl></div>
     </li><li name="org.hammerlab.guacamole.readsets.rdd.PartitionedRegionsArgs#lociPartitioningPathOpt" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="lociPartitioningPathOpt:Option[String]"></a>
       <a id="lociPartitioningPathOpt:Option[String]"></a>
@@ -570,6 +557,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="org.hammerlab.guacamole.loci.partitioning.UniformPartitionerArgs#numPartitions" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="numPartitions(sc:org.apache.spark.SparkContext):Int"></a>
+      <a id="numPartitions(SparkContext):Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">numPartitions</span><span class="params">(<span name="sc">sc: <span class="extype" name="org.apache.spark.SparkContext">SparkContext</span></span>)</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../loci/partitioning/UniformPartitionerArgs.html" class="extype" name="org.hammerlab.guacamole.loci.partitioning.UniformPartitionerArgs">UniformPartitionerArgs</a></dd></dl></div>
     </li><li name="org.hammerlab.guacamole.readsets.io.ReadFilterArgs#onlyMappedReads" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="onlyMappedReads:Boolean"></a>
       <a id="onlyMappedReads:Boolean"></a>
@@ -596,7 +596,7 @@
       </span>
       </h4>
       
-    </li><li name="org.hammerlab.guacamole.loci.partitioning.UniformPartitionerArgs#parallelism" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="org.hammerlab.guacamole.loci.partitioning.UniformPartitionerArgs#parallelism" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="parallelism:org.hammerlab.guacamole.loci.partitioning.LociPartitioner.NumPartitions"></a>
       <a id="parallelism:NumPartitions"></a>
       <h4 class="signature">
@@ -608,7 +608,7 @@
         <span class="name">parallelism</span><span class="result">: <a href="../loci/partitioning/LociPartitioner$.html#NumPartitions=Int" class="extmbr" name="org.hammerlab.guacamole.loci.partitioning.LociPartitioner.NumPartitions">NumPartitions</a></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../loci/partitioning/UniformPartitionerArgs.html" class="extype" name="org.hammerlab.guacamole.loci.partitioning.UniformPartitionerArgs">UniformPartitionerArgs</a></dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="../loci/partitioning/UniformPartitionerArgs.html" class="extype" name="org.hammerlab.guacamole.loci.partitioning.UniformPartitionerArgs">UniformPartitionerArgs</a></dd></dl></div>
     </li><li name="org.hammerlab.guacamole.readsets.io.ReadFilterArgs#parseFilters" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="parseFilters(hadoopConfiguration:org.apache.hadoop.conf.Configuration):org.hammerlab.guacamole.readsets.io.InputFilters"></a>
       <a id="parseFilters(Configuration):InputFilters"></a>
