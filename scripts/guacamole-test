@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+#
+# Run test apps that live in src/test/scala/org/hammerlab/guacamole/main.
+#
+# Example usage:
+#
+#   $ scripts/guacamole-test GeneratePartialFasta <GeneratePartialFasta args>
+
+set -e
+
+if [ $# -eq 0 ]; then
+  echo "Usage: $0 <main class> …" >&2
+  exit 1
+fi
+
+main_class="$1"
+shift
+
+if ! [[ "$main_class" =~ \. ]]; then
+  main_class="org.hammerlab.guacamole.main.$main_class"
+fi
+
+scripts_dir="$(dirname "${BASH_SOURCE[0]}")"
+
+test_jar="$("$scripts_dir"/find-jar test)"
+
+if [ -z "$test_jar" ]; then
+  echo "Couldn't find test far: $test_jar; build it with 'mvn package -DskipTests -Ptest'" >&2
+  exit 2
+fi
+
+# Build a spark properties file and set the variable $conf_file to its path.
+source "$scripts_dir/.spark-rc"
+
+"$SPARK_HOME"/bin/spark-submit \
+  --properties-file "$conf_file" \
+  --jars $(scripts/classpath) \
+  --class "$main_class" \
+  "$test_jar" \
+  "$@"

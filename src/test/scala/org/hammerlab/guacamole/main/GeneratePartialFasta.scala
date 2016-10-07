@@ -4,6 +4,7 @@ import java.io.{BufferedWriter, File, FileWriter}
 
 import org.apache.spark.SparkContext
 import org.hammerlab.guacamole.commands.{Args, SparkCommand}
+import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.readsets.ReadSets
 import org.hammerlab.guacamole.readsets.args.{ReferenceArgs, Arguments => ReadSetsArguments}
@@ -41,11 +42,9 @@ class GeneratePartialFastaArguments
  * To run this command, build the main Guacamole package, compile test-classes, and run this class with both the
  * assembly JAR and test-classes on the classpath:
  *
- *   mvn package -DskipTests
- *   mvn test-compile
- *   java \
- *     -cp "$(scripts/classpath -t)" \
- *     org.hammerlab.guacamole.main.GeneratePartialFasta \
+ *   mvn package -DskipTests -Pguac,test
+ *   scripts/guacamole-test \
+ *     GeneratePartialFasta \
  *     --reference <fasta path> \
  *     [--loci <str>|--loci-file <file>] \
  *     -o <output path> \
@@ -61,7 +60,8 @@ object GeneratePartialFasta extends SparkCommand[GeneratePartialFastaArguments] 
   override def run(args: GeneratePartialFastaArguments, sc: SparkContext): Unit = {
 
     val reference = args.reference(sc)
-    val parsedLoci = args.parseLoci(sc.hadoopConfiguration, fallback = "none")
+    val parsedLoci = args.parseFilters(sc.hadoopConfiguration).loci
+
     val readsets =
       ReadSets(
         sc,
@@ -71,14 +71,13 @@ object GeneratePartialFasta extends SparkCommand[GeneratePartialFastaArguments] 
 
     val contigLengths = readsets.contigLengths
 
-    val reads = readsets.allMappedReads
-
-    val regions = reads.map(read => (read.contigName, read.start, read.end))
-    regions.collect.foreach(triple => {
-      parsedLoci.put(triple._1, triple._2, triple._3)
-    })
-
-    val loci = parsedLoci.result(contigLengths)
+    val loci =
+      LociSet(
+        readsets
+          .allMappedReads
+          .map(read => (read.contigName, read.start, read.end))
+          .collect
+      )
 
     val fd = new File(args.output)
     val writer = new BufferedWriter(new FileWriter(fd))

@@ -16,17 +16,6 @@ set -e
 
 scripts_dir="$(dirname "${BASH_SOURCE[@]}")"
 
-# Classpath path-separator
-sep=":"
-
-include_tests=
-if [ $# -eq 1 -a "$1" == "-t" ]; then
-  include_tests=1
-elif [ $# -gt 0 ]; then
-  echo "Usage: $0 [-t]" >&2
-  exit 1
-fi
-
 # Load `find_jars` function.
 source "$scripts_dir/.jars-rc"
 find_jars
@@ -39,8 +28,4 @@ else
   cp="$main_jar,$deps"
 fi
 
-if [ -n "$include_tests" ]; then
-  cp="$cp,target/scala-2.10.6/test-classes"
-fi
-
-echo "$cp" | tr , "$sep"
+echo "$cp"

@@ -1,19 +1,19 @@
 package org.hammerlab.guacamole.loci.partitioning
 
+import java.util.NoSuchElementException
+
 import org.apache.spark.rdd.RDD
-import org.hammerlab.guacamole.loci.LociArgs
+import org.hammerlab.guacamole.loci.partitioning.LociPartitionerType.LociPartitionerType
 import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.readsets.rdd.PartitionedRegionsArgs
 import org.hammerlab.guacamole.reference.ReferenceRegion
 import org.hammerlab.magic.args4j.StringOptionHandler
-import org.kohsuke.args4j.spi.BooleanOptionHandler
 import org.kohsuke.args4j.{Option => Args4JOption}
 
 import scala.reflect.ClassTag
 
 trait LociPartitionerArgs
-  extends LociArgs
-    with MicroRegionPartitionerArgs
+  extends MicroRegionPartitionerArgs
     with CappedRegionsPartitionerArgs
     with UniformPartitionerArgs {
 
@@ -34,19 +34,23 @@ trait LociPartitionerArgs
     name = "--loci-partitioner",
     usage = "Loci partitioner to use: 'capped', 'micro-regions', or 'uniform' (default: 'capped')."
   )
-  var lociPartitionerName: String = "capped"
+  protected var lociPartitionerName: String = "capped"
 
-  def getPartitioner[R <: ReferenceRegion: ClassTag](regions: RDD[R]): LociPartitioner = {
+  private def lociPartitionerType: LociPartitionerType =
+    try {
+      LociPartitionerType.withName(lociPartitionerName)
+    } catch {
+      case _: NoSuchElementException =>
+        throw new IllegalArgumentException(s"Unrecognized --loci-partitioner: $lociPartitionerName")
+    }
+
+  import LociPartitionerType._
+
+  private[partitioning] def getPartitioner[R <: ReferenceRegion: ClassTag](regions: RDD[R]): LociPartitioner = {
     val sc = regions.sparkContext
 
-    val numPartitions =
-      if (parallelism == 0)
-        sc.defaultParallelism
-      else
-        parallelism
-
-    lociPartitionerName match {
-      case "capped" =>
+    lociPartitionerType match {
+      case Capped =>
         new CappedRegionsPartitioner(
           regions,
           halfWindowSize,
@@ -56,22 +60,28 @@ trait LociPartitionerArgs
           trimRanges = trimRanges
         )
 
-      case "micro-regions" =>
-        new MicroRegionPartitioner(regions, numPartitions, partitioningAccuracy)
-      case "uniform" =>
-        UniformPartitioner(numPartitions)
-      case _ =>
-        throw new IllegalArgumentException(s"Unrecognized --loci-partitioner: $lociPartitionerName")
+      case Micro =>
+        new MicroRegionPartitioner(regions, numPartitions(sc), partitioningAccuracy)
+
+      case Uniform =>
+        UniformPartitioner(numPartitions(sc))
     }
   }
 
   @Args4JOption(
     name = "--partitioning-stats",
-    usage = "Compute additional statistics about the partitioned loci and reads; causes additional Spark jobs to be run, " +
-      "so should be disabled in performance-critical environments. Default: false.",
-    handler = classOf[BooleanOptionHandler]
+    usage =
+      "Compute additional statistics about the partitioned loci and reads; causes additional Spark jobs to be run, " +
+        "so should be disabled in performance-critical environments. Default: false."
   )
   var printPartitioningStats: Boolean = false
+}
+
+object LociPartitionerType extends Enumeration {
+  type LociPartitionerType = Value
+  val Capped = Value("capped")
+  val Micro = Value("micro-regions")
+  val Uniform = Value("uniform")
 }
 
 trait LociPartitioner {

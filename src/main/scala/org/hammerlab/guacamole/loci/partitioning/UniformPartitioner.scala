@@ -1,5 +1,6 @@
 package org.hammerlab.guacamole.loci.partitioning
 
+import org.apache.spark.SparkContext
 import org.hammerlab.guacamole.loci.map.LociMap
 import org.hammerlab.guacamole.loci.partitioning.LociPartitioner.NumPartitions
 import org.hammerlab.guacamole.loci.partitioning.MicroRegionPartitioner.NumMicroPartitions
@@ -14,7 +15,13 @@ trait UniformPartitionerArgs {
     name = "--parallelism",
     usage = "Number of variant calling partitions. Set to 0 (default) to use the number of Spark partitions."
   )
-  var parallelism: NumPartitions = 0
+  protected var parallelism: NumPartitions = 0
+
+  def numPartitions(sc: SparkContext) =
+    if (parallelism == 0)
+      sc.defaultParallelism
+    else
+      parallelism
 }
 
 /**
@@ -93,9 +100,4 @@ case class UniformPartitioner(numPartitions: NumPartitions)
   extends UniformPartitionerBase(numPartitions)
     with LociPartitioner {
   override def partition(loci: LociSet): LociPartitioning = partitionsMap(loci)
-}
-
-object UniformPartitioner {
-  // Convenience constructor.
-  def apply(args: UniformPartitionerArgs): UniformPartitioner = UniformPartitioner(args.parallelism)
 }

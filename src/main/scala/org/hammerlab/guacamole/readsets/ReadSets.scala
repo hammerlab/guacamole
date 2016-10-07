@@ -10,8 +10,7 @@ import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.models.SequenceDictionary
 import org.bdgenomics.adam.rdd.ADAMContext
-import org.hammerlab.guacamole.loci.partitioning.LociPartitionerArgs
-import org.hammerlab.guacamole.loci.set.{LociParser, LociSet}
+import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.reads.Read
 import org.hammerlab.guacamole.readsets.args.{Base => BaseArgs}
@@ -50,27 +49,10 @@ case class ReadSets(readsRDDs: PerSample[ReadsRDD],
 
 object ReadSets extends Logging {
 
-  /**
-   * Load ReadSet instances from user-specified BAMs (specified as an InputCollection).
-   */
-  def apply(sc: SparkContext,
-            inputs: PerSample[Input],
-            loci: LociParser,
-            contigLengthsFromDictionary: Boolean): ReadSets = {
-    ReadSets(
-      sc,
-      inputs,
-      InputFilters(overlapsLoci = loci),
-      contigLengthsFromDictionary = contigLengthsFromDictionary
-    )
-  }
-
-  def apply(sc: SparkContext, args: BaseArgs with LociPartitionerArgs): (ReadSets, LociSet) = {
-    val loci = args.parseLoci(sc.hadoopConfiguration)
-
-    val readsets = apply(sc, args.inputs, loci, !args.noSequenceDictionary)
-
-    (readsets, loci.result(readsets.contigLengths))
+  def apply(sc: SparkContext, args: BaseArgs): (ReadSets, LociSet) = {
+    val filters = args.parseFilters(sc.hadoopConfiguration)
+    val readsets = apply(sc, args.inputs, filters, !args.noSequenceDictionary)
+    (readsets, filters.loci.result(readsets.contigLengths))
   }
 
   /**
@@ -78,10 +60,9 @@ object ReadSets extends Logging {
     */
   def apply(sc: SparkContext,
             inputs: PerSample[Input],
-            filters: InputFilters = InputFilters.empty,
-            contigLengthsFromDictionary: Boolean = true): ReadSets = {
+            filters: InputFilters,
+            contigLengthsFromDictionary: Boolean = true): ReadSets =
     apply(sc, inputs.map((_, filters)), contigLengthsFromDictionary)
-  }
 
   /**
    * Load reads from multiple files, allowing different filters to be applied to each file.
@@ -142,7 +123,7 @@ object ReadSets extends Logging {
   private[readsets] def load(filename: String,
                              sc: SparkContext,
                              sampleId: Int,
-                             filters: InputFilters = InputFilters.empty): (RDD[Read], SequenceDictionary) = {
+                             filters: InputFilters): (RDD[Read], SequenceDictionary) = {
 
     val (allReads, sequenceDictionary) =
       if (filename.endsWith(".bam") || filename.endsWith(".sam"))
@@ -305,6 +286,13 @@ object ReadSets extends Logging {
     if (filters.nonDuplicate) result = result.filter(!_.isDuplicate)
     if (filters.passedVendorQualityChecks) result = result.filter(!_.failedVendorQualityChecks)
     if (filters.isPaired) result = result.filter(_.isPaired)
+    if (filters.minAlignmentQuality != 0)
+      result =
+        result.filter(
+          _.asMappedRead
+                .forall(_.alignmentQuality >= filters.minAlignmentQuality)
+        )
+
     result
   }
 
