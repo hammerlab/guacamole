@@ -2,7 +2,8 @@ package org.hammerlab.guacamole.loci.partitioning
 
 import java.io.{InputStream, OutputStream}
 
-import org.apache.hadoop.fs.{FileSystem, Path}
+import org.apache.hadoop.fs.Path
+import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole.loci.map.LociMap
 import org.hammerlab.guacamole.loci.partitioning.LociPartitioner.PartitionIndex
@@ -24,6 +25,19 @@ import scala.reflect.ClassTag
 case class LociPartitioning(map: LociMap[PartitionIndex])
   extends Saveable
     with TruncatedToString {
+
+  // An RDD[LociSet] with one LociSet per partition.
+  def lociSetsRDD(sc: SparkContext): RDD[LociSet] =
+    sc
+      .parallelize(partitionLociSets, partitionLociSets.length)
+      .setName("lociSetsRDD")
+
+  @transient private lazy val partitionLociSets: Array[LociSet] =
+    map
+      .inverse
+      .toArray
+      .sortBy(_._1)
+      .map(_._2)
 
   @transient lazy val numPartitions = partitionsMap.size
 
@@ -60,34 +74,6 @@ case class LociPartitioning(map: LociMap[PartitionIndex])
 
 object LociPartitioning {
 
-  /**
-   * Load a LociMap output by [[LociMap.prettyPrint]].
-   * @param is [[InputStream]] reading from e.g. a file.
-   */
-  def load(is: InputStream): LociPartitioning = {
-    fromLines(LinesIterator(is))
-  }
-
-  /**
-   * Read in a [[LociPartitioning]] of partition indices from some strings, each one representing a genomic range.
-   * @param lines string representations of genomic ranges.
-   */
-  def fromLines(lines: TraversableOnce[String]): LociPartitioning = {
-    val builder = LociMap.newBuilder[PartitionIndex]
-    val re = """([^:]+):(\d+)-(\d+)=(\d+)""".r
-    for {
-      line <- lines
-      m <- re.findFirstMatchIn(line)
-      contig = m.group(1)
-      start = m.group(2).toLong
-      end = m.group(3).toLong
-      partition = m.group(4).toInt
-    } {
-      builder.put(contig, start, end, partition)
-    }
-    builder.result()
-  }
-
   // Build a LociPartitioning with each partition's loci mapped to the partition index.
   def apply(lociSets: Iterable[LociSet]): LociPartitioning = {
     val lociMapBuilder = LociMap.newBuilder[PartitionIndex]
@@ -102,32 +88,73 @@ object LociPartitioning {
   def apply[R <: ReferenceRegion: ClassTag](regions: RDD[R],
                                             loci: LociSet,
                                             args: LociPartitionerArgs): LociPartitioning = {
-    for (lociPartitioningPath <- args.lociPartitioningPathOpt) {
-      val path = new Path(lociPartitioningPath)
-      val fs = path.getFileSystem(regions.sparkContext.hadoopConfiguration)
-      if (fs.exists(path)) {
+
+    val hadoopConfiguration = regions.sparkContext.hadoopConfiguration
+
+    val lociPartitioning: LociPartitioning =
+      (for {
+        lociPartitioningPath <- args.lociPartitioningPathOpt
+        path = new Path(lociPartitioningPath)
+        fs = path.getFileSystem(hadoopConfiguration)
+        // Load LociPartitioning from disk, if it exists…
+        if (fs.exists(path))
+      } yield {
         progress(s"Loading loci partitioning from $lociPartitioningPath")
-        return load(fs.open(path))
-      }
-    }
-
-    progress(s"Partitioning loci")
-
-    val lociPartitioning =
-      args
-        .getPartitioner(regions)
-        .partition(loci)
+        load(fs.open(path))
+      })
+      .getOrElse({
+        // Otherwise, compute it.
+        progress(s"Partitioning loci")
+        args
+          .getPartitioner(regions)
+          .partition(loci)
+      })
 
     for (lociPartitioningPath <- args.lociPartitioningPathOpt) {
       progress(s"Saving loci partitioning to $lociPartitioningPath")
+      val path = new Path(lociPartitioningPath)
+      val fs = path.getFileSystem(hadoopConfiguration)
       lociPartitioning.save(
-        FileSystem
-          .get(regions.sparkContext.hadoopConfiguration)
-          .create(new Path(lociPartitioningPath))
+        fs.create(path)
       )
     }
 
+    progress(
+      s"Partitioned loci: ${lociPartitioning.numPartitions} partitions.",
+      "Partition-size stats:",
+      lociPartitioning.partitionSizeStats.toString(),
+      "",
+      "Contigs-spanned-per-partition stats:",
+      lociPartitioning.partitionContigStats.toString()
+    )
+
     lociPartitioning
+  }
+
+  /**
+   * Load a LociMap output by [[LociMap.prettyPrint]].
+   * @param is [[InputStream]] reading from e.g. a file.
+   */
+  private def load(is: InputStream): LociPartitioning = fromLines(LinesIterator(is))
+
+  /**
+   * Read in a [[LociPartitioning]] of partition indices from some strings, each one representing a genomic range.
+   * @param lines string representations of genomic ranges.
+   */
+  private def fromLines(lines: TraversableOnce[String]): LociPartitioning = {
+    val builder = LociMap.newBuilder[PartitionIndex]
+    val re = """([^:]+):(\d+)-(\d+)=(\d+)""".r
+    for {
+      line <- lines
+      m <- re.findFirstMatchIn(line)
+      contig = m.group(1)
+      start = m.group(2).toLong
+      end = m.group(3).toLong
+      partition = m.group(4).toInt
+    } {
+      builder.put(contig, start, end, partition)
+    }
+    builder.result()
   }
 
   implicit def lociMapToLociPartitioning(map: LociMap[PartitionIndex]): LociPartitioning = LociPartitioning(map)

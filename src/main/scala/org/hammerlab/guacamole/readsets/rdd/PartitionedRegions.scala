@@ -32,6 +32,8 @@ class PartitionedRegions[R <: ReferenceRegion: ClassTag](regions: RDD[R],
                                                          partitioning: LociPartitioning)
   extends Serializable {
 
+  @transient lazy val lociSetsRDD = partitioning.lociSetsRDD(sc)
+
   assert(
     regions.getNumPartitions == lociSetsRDD.getNumPartitions,
     s"reads partitions: ${regions.getNumPartitions}, loci partitions: ${lociSetsRDD.getNumPartitions}"
@@ -68,19 +70,6 @@ class PartitionedRegions[R <: ReferenceRegion: ClassTag](regions: RDD[R],
           f(regionsIter, loci)
         }
       )
-
-  // An RDD[LociSet] with one LociSet per partition.
-  @transient private lazy val lociSetsRDD: RDD[LociSet] =
-    sc
-      .parallelize(partitionLociSets, partitionLociSets.length)
-      .setName("lociSetsRDD")
-
-  @transient private lazy val partitionLociSets: Array[LociSet] =
-    partitioning
-      .inverse
-      .toArray
-      .sortBy(_._1)
-      .map(_._2)
 
   /**
    * Write the partitioned regions RDD to a file.
@@ -126,28 +115,15 @@ object PartitionedRegions {
    */
   def apply[R <: ReferenceRegion: ClassTag](regions: RDD[R],
                                             loci: LociSet,
-                                            args: PartitionedRegionsArgs): PartitionedRegions[R] = {
-
-    val lociPartitioning = LociPartitioning(regions, loci, args)
-
-    progress(
-      s"Partitioned loci: ${lociPartitioning.numPartitions} partitions.",
-      "Partition-size stats:",
-      lociPartitioning.partitionSizeStats.toString(),
-      "",
-      "Contigs-spanned-per-partition stats:",
-      lociPartitioning.partitionContigStats.toString()
-    )
-
+                                            args: PartitionedRegionsArgs): PartitionedRegions[R] =
     apply(
       regions,
-      lociPartitioning,
+      LociPartitioning(regions, loci, args),
       args.halfWindowSize,
       args.partitionedReadsPathOpt,
       args.compressReadPartitions,
       args.printPartitioningStats
     )
-  }
 
   /**
    * Internal [[PartitionedRegions]] constructor: takes already-partitioned loci, partitions regions, and optionally

@@ -3,7 +3,7 @@ package org.hammerlab.guacamole.commands
 import org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Arguments
 import org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Caller.discoverGermlineVariants
 import org.hammerlab.guacamole.data.NA12878TestUtil
-import org.hammerlab.guacamole.loci.partitioning.UniformPartitioner
+import org.hammerlab.guacamole.loci.partitioning.LociPartitioning
 import org.hammerlab.guacamole.readsets.ReadSets
 import org.hammerlab.guacamole.readsets.rdd.PartitionedRegionsUtil
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
@@ -42,13 +42,14 @@ class GermlineAssemblyCallerSuite
     val args = new Arguments {
       reads = NA12878TestUtil.subsetBam
       parallelism = 1
+      lociPartitionerName = "uniform"
       lociStr = s"$contig:$windowStart-$windowEnd"
       includeDuplicates = false
     }
 
     val (readsets, loci) = ReadSets(sc, args)
 
-    val lociPartitioning = new UniformPartitioner(args.parallelism).partition(loci)
+    val lociPartitioning = LociPartitioning(readsets.allMappedReads, loci, args)
 
     val partitionedReads = partitionReads(readsets.allMappedReads, lociPartitioning)
 
