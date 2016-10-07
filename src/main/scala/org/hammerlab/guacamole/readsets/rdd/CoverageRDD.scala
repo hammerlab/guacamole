@@ -58,7 +58,8 @@ class CoverageRDD[R <: ReferenceRegion: ClassTag](rdd: RDD[R])
   def makeCappedLociSets(halfWindowSize: Int,
                          loci: LociSet,
                          maxRegionsPerPartition: Int,
-                         explode: Boolean): RDD[LociSet] =
+                         explode: Boolean,
+                         trimRanges: Boolean): RDD[LociSet] =
     coverage(
       halfWindowSize,
       sc.broadcast(loci),
@@ -66,7 +67,7 @@ class CoverageRDD[R <: ReferenceRegion: ClassTag](rdd: RDD[R])
     )
     .mapPartitionsWithIndex(
       (idx, it) =>
-        new TakeLociIterator(it.buffered, maxRegionsPerPartition)
+        new TakeLociIterator(it.buffered, maxRegionsPerPartition, trimRanges)
     )
 
   /**

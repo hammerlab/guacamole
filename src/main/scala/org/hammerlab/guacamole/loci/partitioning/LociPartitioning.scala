@@ -45,6 +45,24 @@ case class LociPartitioning(map: LociMap[PartitionIndex])
 
   @transient lazy val partitionContigStats = Stats(partitionContigsMap.values)
 
+  @transient lazy val partitionSets = partitionsMap.values
+
+  @transient lazy val rangeSizeStats =
+    Stats(
+      partitionSets
+        .flatMap(_.contigs)
+        .flatMap(_.ranges)
+        .map(_.length)
+    )
+
+  @transient lazy val partitionRangesStats =
+    Stats(
+      for {
+        partitionLoci <- partitionSets
+      } yield
+        partitionLoci.contigs.map(_.ranges.length).sum
+    )
+
   @transient private lazy val partitionsMap: Map[PartitionIndex, LociSet] = map.inverse
 
   @transient private lazy val partitionSizesMap: Map[PartitionIndex, NumLoci] =
@@ -125,7 +143,13 @@ object LociPartitioning {
       lociPartitioning.partitionSizeStats.toString(),
       "",
       "Contigs-spanned-per-partition stats:",
-      lociPartitioning.partitionContigStats.toString()
+      lociPartitioning.partitionContigStats.toString(),
+      "",
+      "Range-size stats:",
+      lociPartitioning.rangeSizeStats.toString(),
+      "",
+      "Ranges-per-partition stats:",
+      lociPartitioning.partitionRangesStats.toString()
     )
 
     lociPartitioning

@@ -16,9 +16,14 @@ import scala.collection.mutable.ArrayBuffer
  *
  * @param it Iterator of [[(Position, Coverage)]] tuples, e.g. a [[ContigCoverageIterator]].
  * @param maxRegionsPerPartition Maximum regions allowed to overlap each [[LociSet]].
+ * @param trimRanges if true: build [[Contig]]s from ranges that have empty loci dropped, resulting in more ranges being
+ *                   stored; else: each [[Contig]] should only include one range, spanning from the lowest to highest
+ *                   loci covered by its parent [[LociSet]] on that contig. The latter is more performant but the former
+ *                   can yield more interesting statistics about the distribution of reads and loci across partitions.
  */
 class TakeLociIterator(it: BufferedIterator[(Position, Coverage)],
-                       maxRegionsPerPartition: Int)
+                       maxRegionsPerPartition: Int,
+                       trimRanges: Boolean = false)
   extends SimpleBufferedIterator[LociSet] {
 
   // Segment the input into per-contig Iterators.
@@ -96,9 +101,9 @@ class TakeLociIterator(it: BufferedIterator[(Position, Coverage)],
    * @param dropAbove Loci with greater than this depth are skipped over.
    * @return The number of covering regions, and a [[Contig]] with the taken loci ranges.
    */
-  def takeLoci(it: ContigIterator[(HasLocus, Coverage)],
-            numRegions: Int,
-            dropAbove: Int): Option[(Int, Contig)] = {
+  private def takeLoci(it: ContigIterator[(HasLocus, Coverage)],
+                       numRegions: Int,
+                       dropAbove: Int): Option[(Int, Contig)] = {
 
     // Accumulate intervals on this contig here.
     val intervals = ArrayBuffer[Interval]()
@@ -112,16 +117,16 @@ class TakeLociIterator(it: BufferedIterator[(Position, Coverage)],
     // If any Intervals have been found, build them into a [[Contig]] and return it, as well as the number of covering
     // regions.
     def result: Option[(Int, Contig)] =
-    if (intervals.isEmpty)
-      None
-    else
-      Some(
-        curNumRegions ->
-          Contig(
-            it.contigName,
-            intervals
-          )
-      )
+      if (intervals.isEmpty)
+        None
+      else
+        Some(
+          curNumRegions ->
+            Contig(
+              it.contigName,
+              intervals
+            )
+        )
 
     // Flush the in-progress Interval `curIntervalOpt` to the `intervals` buffer, if one exists.
     def maybeAddInterval(): Unit = {
@@ -141,13 +146,14 @@ class TakeLociIterator(it: BufferedIterator[(Position, Coverage)],
       // case iff `curNumRegions == 0`), then this locus contributes `depth` regions to the total (because regions that
       // start before and overlap `locus` must be counted); otherwise, this locus only brings in `starts` new regions.
       val newRegions =
-      if(curNumRegions == 0)
-        depth
-      else
-        starts
+        if(curNumRegions == 0)
+          depth
+        else
+          starts
 
       if (curNumRegions + newRegions > numRegions) {
-        // If the current locus pushed us over the maximum allowed `numRegions`, add the current in-progress Interval.
+        // If the current locus pushed us over the maximum allowed `numRegions`, add the current in-progress Interval
+        // (which ends just just shy of this overflow).
         maybeAddInterval()
 
         if (newRegions > dropAbove)
@@ -169,7 +175,7 @@ class TakeLociIterator(it: BufferedIterator[(Position, Coverage)],
         curIntervalOpt =
           curIntervalOpt match {
             // Extend the current interval, if possible.
-            case Some((start, end)) if locus == end =>
+            case Some((start, end)) if !trimRanges || locus == end =>
               Some(start -> (locus + 1))
 
             // Otherwise, commit the current interval if it exists, and start a new one.
@@ -177,6 +183,7 @@ class TakeLociIterator(it: BufferedIterator[(Position, Coverage)],
               maybeAddInterval()
               Some(locus -> (locus + 1))
           }
+
         it.next()
       }
     }
