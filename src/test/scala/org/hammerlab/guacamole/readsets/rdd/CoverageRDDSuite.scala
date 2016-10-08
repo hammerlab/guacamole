@@ -1,35 +1,30 @@
 package org.hammerlab.guacamole.readsets.rdd
 
-import com.esotericsoftware.kryo.Kryo
 import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole.loci.Coverage
 import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.reads.TestRegion
 import org.hammerlab.guacamole.readsets.{ContigLengths, ContigLengthsUtil}
 import org.hammerlab.guacamole.reference.Position
-import org.hammerlab.guacamole.util.{GuacFunSuite, KryoTestRegistrar}
+import org.hammerlab.guacamole.util.GuacFunSuite
 import org.hammerlab.magic.rdd.cmp.CmpStats
 import org.hammerlab.magic.rdd.cmp.EqualsRDD._
 import org.hammerlab.magic.test.SeqMatcher.seqMatch
-
-class CoverageRDDSuiteRegistrar extends KryoTestRegistrar {
-  override def registerTestClasses(kryo: Kryo): Unit = {
-    kryo.register(classOf[Array[TestRegion]])
-    kryo.register(classOf[TestRegion])
-    kryo.register(classOf[CmpStats])
-    kryo.register(Class.forName("scala.Tuple2$mcIZ$sp"))
-    kryo.register(classOf[scala.collection.mutable.Queue[_]])
-    kryo.register(classOf[scala.collection.mutable.LinkedList[_]])
-    kryo.register(classOf[Array[Int]])
-  }
-}
 
 class CoverageRDDSuite
   extends GuacFunSuite
     with RegionsRDDUtil
     with ContigLengthsUtil {
 
-  override def registrar = classOf[CoverageRDDSuiteRegistrar].getCanonicalName
+  kryoRegister(
+    classOf[Array[TestRegion]],
+    classOf[TestRegion],
+    classOf[CmpStats],
+    "scala.Tuple2$mcIZ$sp",
+    classOf[scala.collection.mutable.Queue[_]],
+    classOf[scala.collection.mutable.LinkedList[_]],
+    classOf[Array[Int]]
+  )
 
   lazy val readsRDD =
     makeRegionsRDD(

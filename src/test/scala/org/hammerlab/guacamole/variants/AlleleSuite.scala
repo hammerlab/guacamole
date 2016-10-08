@@ -1,19 +1,10 @@
 package org.hammerlab.guacamole.variants
 
-import com.esotericsoftware.kryo.Kryo
 import org.hammerlab.guacamole.util.Bases.{A, C, T}
-import org.hammerlab.guacamole.util.{GuacFunSuite, KryoTestRegistrar}
+import org.hammerlab.guacamole.util.GuacFunSuite
 import org.scalatest.Matchers
 
-class AlleleSuiteRegistrar extends KryoTestRegistrar {
-  override def registerTestClasses(kryo: Kryo): Unit = {
-    kryo.register(classOf[Allele], new AlleleSerializer)
-  }
-}
-
-class AlleleSuite extends GuacFunSuite with Matchers {
-
-  override def registrar = classOf[AlleleSuiteRegistrar].getCanonicalName
+class AlleleSuite extends GuacFunSuite {
 
   test("isVariant") {
     val mismatch = Allele(Seq(T), Seq(A))
