@@ -1,6 +1,7 @@
 package org.hammerlab.guacamole.commands
 
 import org.apache.spark.SparkContext
+import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.rdd.ADAMContext
 import org.bdgenomics.formats.avro.DatabaseVariantAnnotation
@@ -8,6 +9,8 @@ import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMapTwoSa
 import org.hammerlab.guacamole.filters.somatic.SomaticGenotypeFilter.SomaticGenotypeFilterArguments
 import org.hammerlab.guacamole.filters.somatic.{SomaticAlternateReadDepthFilter, SomaticGenotypeFilter, SomaticReadDepthFilter}
 import org.hammerlab.guacamole.likelihood.Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup
+import org.hammerlab.guacamole.loci.RegionStats
+import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.readsets.ReadSets
@@ -52,6 +55,27 @@ object SomaticStandard {
 
       val (readsets, loci) = ReadSets(sc, args)
 
+      val referenceIntervalLength = 600
+      val readsByReferenceInterval =
+        readsets
+          .allMappedReads
+          .keyBy(r => (r.contigName, r.start / referenceIntervalLength))
+
+      val referenceIntervalStats = readsByReferenceInterval
+        .mapValues(read => RegionStats(read, reference.getContig(read.contigName)))
+        .reduceByKey(_ + _)
+        .collect()
+
+
+      val referenceIntervalsLoci =
+        sc.broadcast(
+          LociSet(
+          referenceIntervalStats
+            .filter(_._2.numReads > 0)
+            .map(kv => (kv._1._1, kv._1._2, kv._1._2 + referenceIntervalLength - 1))
+        ))
+
+
       val partitionedReads =
         PartitionedRegions(
           readsets.allMappedReads,
@@ -77,7 +101,8 @@ object SomaticStandard {
               pileupTumor,
               pileupNormal,
               oddsThreshold,
-              maxTumorReadDepth
+              maxTumorReadDepth,
+              Some(referenceIntervalsLoci)
             ).iterator,
           reference = reference
         )
@@ -125,10 +150,12 @@ object SomaticStandard {
     def findPotentialVariantAtLocus(tumorPileup: Pileup,
                                     normalPileup: Pileup,
                                     oddsThreshold: Int,
-                                    maxReadDepth: Int = Int.MaxValue): Seq[CalledSomaticAllele] = {
+                                    maxReadDepth: Int = Int.MaxValue,
+                                    referenceIntervalsLoci: Option[Broadcast[LociSet]] = None): Seq[CalledSomaticAllele] = {
 
       // For now, we skip loci that have no reads mapped. We may instead want to emit NoCall in this case.
-      if (tumorPileup.elements.isEmpty
+      if ( !referenceIntervalsLoci.forall(_.value.onContig(tumorPileup.contigName).contains(tumorPileup.locus))
+        || tumorPileup.elements.isEmpty
         || normalPileup.elements.isEmpty
         || tumorPileup.depth > maxReadDepth // skip abnormally deep pileups
         || normalPileup.depth > maxReadDepth
