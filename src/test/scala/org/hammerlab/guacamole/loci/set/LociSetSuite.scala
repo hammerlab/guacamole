@@ -180,4 +180,62 @@ class LociSetSuite extends GuacFunSuite {
     iter3.next() should be(100000000000L - 1L)
     iter3.hasNext should be(false)
   }
+
+  test("loci set intersection") {
+
+    val set = LociSet("chr1:1-100,chr2:50-500")
+    val set2 = LociSet("chr1:20-30,chr2:50-55,chr3:1-100")
+
+    val intersection = set.intersect(set2)
+
+    intersection.onContig("chr1").contains(1) should be(false)
+    intersection.onContig("chr1").contains(20) should be(true)
+    intersection.onContig("chr1").contains(30) should be(false)
+    intersection.onContig("chr1").contains(50) should be(false)
+    intersection.onContig("chr1").count should be(10)
+
+    intersection.onContig("chr2").contains(50) should be(true)
+    intersection.onContig("chr2").contains(55) should be(false)
+    intersection.onContig("chr2").contains(100) should be(false)
+    intersection.onContig("chr2").count should be(5)
+
+    intersection.onContig("chr3").count should be(0)
+  }
+
+  test("loci set difference") {
+
+    val set = LociSet("chr1:1-100,chr2:50-500")
+    val set2 = LociSet("chr1:20-30,chr2:50-55,chr3:1-100")
+
+    val difference1 = set.difference(set2)
+
+    difference1.onContig("chr1").contains(1) should be(true)
+    difference1.onContig("chr1").contains(20) should be(false)
+    difference1.onContig("chr1").contains(30) should be(true)
+    difference1.onContig("chr1").contains(50) should be(true)
+    difference1.onContig("chr1").count should be(89)
+
+    difference1.onContig("chr2").contains(50) should be(false)
+    difference1.onContig("chr2").contains(55) should be(true)
+    difference1.onContig("chr2").contains(100) should be(true)
+    difference1.onContig("chr2").count should be(445)
+
+    difference1.onContig("chr3").count should be(0)
+
+    val difference2 = set2.difference(set)
+
+    difference2.onContig("chr1").contains(1) should be(false)
+    difference2.onContig("chr1").contains(20) should be(false)
+    difference2.onContig("chr1").count should be(0)
+
+    difference2.onContig("chr2").contains(50) should be(false)
+    difference2.onContig("chr2").count should be(0)
+
+    difference2.onContig("chr3").contains(50) should be(true)
+    difference2.onContig("chr3").count should be(99)
+
+
+
+
+  }
 }
