@@ -28,6 +28,9 @@ trait ReadFilterArgs extends CallLociArgs {
   )
   var onlyMappedReads: Boolean = false
 
+  @Args4jOption(name = "--split-size", usage = "Maximum HDFS split size")
+  var splitSize: Int = -1
+
   def parseFilters(hadoopConfiguration: Configuration): InputFilters = {
     val loci = ParsedLoci.fromArgs(lociStrOpt, lociFileOpt, hadoopConfiguration)
     InputFilters(
@@ -39,7 +42,8 @@ trait ReadFilterArgs extends CallLociArgs {
       nonDuplicate = !includeDuplicates,
       passedVendorQualityChecks = !includeFailedQualityChecks,
       isPaired = !includeSingleEnd,
-      minAlignmentQuality = minAlignmentQuality
+      minAlignmentQuality = minAlignmentQuality,
+      maxSplitSizeOpt = if (splitSize > 0) Some(splitSize) else None
     )
   }
 }

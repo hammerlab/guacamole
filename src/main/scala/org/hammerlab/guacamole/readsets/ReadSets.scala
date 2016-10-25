@@ -152,6 +152,13 @@ object ReadSets extends Logging {
     val sequenceDictionary = SequenceDictionary.fromSAMHeader(samHeader)
 
     filters
+      .maxSplitSizeOpt
+      .foreach(
+        maxSplitSize =>
+          conf.set("mapred.max.split.size", maxSplitSize.toString)
+      )
+
+    filters
       .overlapsLociOpt
       .fold(conf.unset(BAMInputFormat.INTERVALS_PROPERTY)) (
         overlapsLoci =>
