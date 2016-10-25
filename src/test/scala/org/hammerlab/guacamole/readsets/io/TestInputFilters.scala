@@ -12,7 +12,8 @@ object TestInputFilters {
       nonDuplicate,
       passedVendorQualityChecks,
       isPaired,
-      minAlignmentQuality
+      minAlignmentQuality,
+      maxSplitSizeOpt = None
     )
 
   def apply(overlapsLoci: ParsedLoci,
@@ -25,6 +26,7 @@ object TestInputFilters {
       nonDuplicate,
       passedVendorQualityChecks,
       isPaired,
-      minAlignmentQuality
+      minAlignmentQuality,
+      maxSplitSizeOpt = None
     )
 }

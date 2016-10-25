@@ -18,7 +18,8 @@ case class InputFilters(overlapsLociOpt: Option[ParsedLoci],
                         nonDuplicate: Boolean,
                         passedVendorQualityChecks: Boolean,
                         isPaired: Boolean,
-                        minAlignmentQuality: Int
+                        minAlignmentQuality: Int,
+                        maxSplitSizeOpt: Option[Int]
                        ) {
   def loci = overlapsLociOpt.getOrElse(ParsedLoci.all)
 }
@@ -30,6 +31,7 @@ object InputFilters {
       nonDuplicate = false,
       passedVendorQualityChecks = false,
       isPaired = false,
-      minAlignmentQuality = 0
+      minAlignmentQuality = 0,
+      maxSplitSizeOpt = None
     )
 }
