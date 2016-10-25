@@ -6,6 +6,7 @@ import grizzled.slf4j.Logging
 import htsjdk.samtools.ValidationStringency
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.io.LongWritable
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.models.SequenceDictionary
@@ -155,7 +156,7 @@ object ReadSets extends Logging {
       .maxSplitSizeOpt
       .foreach(
         maxSplitSize =>
-          conf.set("mapred.max.split.size", maxSplitSize.toString)
+          conf.set(FileInputFormat.SPLIT_MAXSIZE, maxSplitSize.toString)
       )
 
     filters
