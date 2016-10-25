@@ -84,6 +84,26 @@ case class LociSet(private val map: SortedMap[ContigName, Contig]) extends Trunc
     }
   }
 
+  /** Intersect this LociSet with another */
+  def intersect(other: LociSet): LociSet = {
+    LociSet.fromContigs(
+      for {
+        contig <- contigs
+      }
+        yield contig.intersect(other.onContig(contig.name))
+    )
+  }
+
+  /** Intersect this LociSet with another */
+  def difference(other: LociSet): LociSet = {
+    LociSet.fromContigs(
+      for {
+        contig <- contigs
+      }
+        yield contig.difference(other.onContig(contig.name))
+    )
+  }
+
 
   /**
    * Build a collection of HTSJDK Intervals which are closed [start, end], 1-based intervals

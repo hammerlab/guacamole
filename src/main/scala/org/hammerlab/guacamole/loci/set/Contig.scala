@@ -66,6 +66,32 @@ case class Contig(var name: ContigName, private var rangeSet: RangeSet[JLong]) e
   /** Returns whether a given genomic region overlaps with any loci on this contig. */
   def intersects(start: Long, end: Long): Boolean = !rangeSet.subRangeSet(JRange.closedOpen(start, end)).isEmpty
 
+  /** Intersect this Contig with another */
+  def intersect(other: Contig): Contig = {
+    val copy = TreeRangeSet.create(rangeSet)
+
+    // Remove all loci not in the other range set
+    copy.removeAll(other.rangeSet.complement())
+
+    Contig(
+      name,
+      copy
+    )
+  }
+
+  /** Remove the loci of another contig */
+  def difference(other: Contig): Contig = {
+    val copy = TreeRangeSet.create(rangeSet)
+
+    // Remove all loci not in the other range set
+    copy.removeAll(other.rangeSet)
+
+    Contig(
+      name,
+      copy
+    )
+  }
+
   /**
    * Make two new Contigs: one with the first @numToTake loci from this Contig, and the second with the rest.
    *
