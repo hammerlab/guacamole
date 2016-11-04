@@ -156,9 +156,13 @@ object SomaticStandard {
           .groupBy(identity)
           .map(kv => kv._1 -> kv._2.size / tumorDepth.toDouble )
 
-
+      // Compute emipirical frequency of alternate allele in the tumor sample
+      // for the likelihood computation
       val mostFrequentVariantAllele = variantAlleleFractions.maxBy(_._2)
       val empiricalVariantAlleleFrequency =  mostFrequentVariantAllele._2
+
+      // Build a possible genotype where the alternate allele occurs at the
+      // observed empirical VAF
       val somaticVariantGenotype =
         Genotype(
           Map(
@@ -166,6 +170,8 @@ object SomaticStandard {
             mostFrequentVariantAllele._1 -> empiricalVariantAlleleFrequency
           )
         )
+
+
       val tumorLikelihoods = likelihoodsOfGenotypes(
         tumorPileup.elements,
         Array(referenceGenotype, somaticVariantGenotype),
