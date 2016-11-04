@@ -38,20 +38,17 @@ object SomaticGenotypeFilter {
     @Args4jOption(name = "--min-vaf", usage = "Minimum variant allele frequency")
     var minVAF: Int = 0
 
-    @Args4jOption(name = "--min-lod", metaVar = "X", usage = "Removes any variants where the log odds of variant is less than this value (Phred-scaled)")
-    var minLOD: Int = 0
-
     @Args4jOption(name = "--min-average-mapping-quality", metaVar = "X", usage = "Removes any variants where the average mapping quality of reads is less than this value")
-    var minAverageMappingQuality: Int = 0
+    var minAverageMappingQuality: Int = 20
 
     @Args4jOption(name = "--min-average-base-quality", metaVar = "X", usage = "Removes any variants where the average base quality of bases in the pileup is less than this value")
-    var minAverageBaseQuality: Int = 0
+    var minAverageBaseQuality: Int = 20
 
     @Args4jOption(name = "--min-tumor-read-depth", usage = "Minimum number of reads in tumor sample for a genotype call")
-    var minTumorReadDepth: Int = 0
+    var minTumorReadDepth: Int = 5
 
     @Args4jOption(name = "--min-normal-read-depth", usage = "Minimum number of reads in normal sample for a genotype call")
-    var minNormalReadDepth: Int = 0
+    var minNormalReadDepth: Int = 5
 
     @Args4jOption(name = "--max-tumor-read-depth", usage = "Maximum number of reads in tumor sample for a genotype call")
     var maxTumorReadDepth: Int = Int.MaxValue
@@ -77,8 +74,6 @@ object SomaticGenotypeFilter {
     if (args.minTumorAlternateReadDepth > 0) {
       filteredGenotypes = SomaticAlternateReadDepthFilter(filteredGenotypes, args.minTumorAlternateReadDepth, args.debugGenotypeFilters)
     }
-
-    filteredGenotypes = SomaticLogOddsFilter(filteredGenotypes, args.minLOD, args.debugGenotypeFilters)
 
     if (args.minLikelihood > 0) filteredGenotypes = SomaticMinimumLikelihoodFilter(filteredGenotypes, args.minLikelihood, args.debugGenotypeFilters)
 

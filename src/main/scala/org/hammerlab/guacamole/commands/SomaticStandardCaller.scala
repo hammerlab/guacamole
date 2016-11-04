@@ -41,13 +41,13 @@ object SomaticStandard {
       name = "--normal-odds",
       usage = "Minimum log odds threshold for possible variant candidates"
     )
-    var normalOddsThreshold: Int = 4
+    var normalOddsThreshold: Int = 5
 
     @Args4jOption(
       name = "--tumor-odds",
       usage = "Minimum log odds threshold for possible variant candidates"
     )
-    var tumorOddsThreshold: Int = 15
+    var tumorOddsThreshold: Int = 10
 
     @Args4jOption(
       name = "--max-normal-alternate-read-depth",
@@ -59,7 +59,7 @@ object SomaticStandard {
       name = "--min-tumor-variant-allele-frequency",
       usage = "Minimum VAF at which to test somatic variants"
     )
-    var minTumorVariantAlleleFrequency: Int = 5
+    var minTumorVariantAlleleFrequency: Int = 3
 
     @Args4jOption(name = "--dbsnp-vcf", required = false, usage = "VCF file to identify DBSNP variants")
     var dbSnpVcf: String = ""
