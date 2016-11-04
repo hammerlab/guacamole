@@ -5,8 +5,8 @@ import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.rdd.ADAMContext
 import org.bdgenomics.formats.avro.DatabaseVariantAnnotation
 import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMapTwoSamples
+import org.hammerlab.guacamole.filters.somatic.SomaticGenotypeFilter
 import org.hammerlab.guacamole.filters.somatic.SomaticGenotypeFilter.SomaticGenotypeFilterArguments
-import org.hammerlab.guacamole.filters.somatic.{SomaticAlternateReadDepthFilter, SomaticGenotypeFilter, SomaticReadDepthFilter}
 import org.hammerlab.guacamole.likelihood.Likelihood
 import org.hammerlab.guacamole.likelihood.Likelihood.likelihoodsOfGenotypes
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
@@ -37,11 +37,29 @@ object SomaticStandard {
       with GenotypeOutputArgs
       with ReferenceArgs {
 
-    @Args4jOption(name = "--normal-odds", usage = "Minimum log odds threshold for possible variant candidates")
+    @Args4jOption(
+      name = "--normal-odds",
+      usage = "Minimum log odds threshold for possible variant candidates"
+    )
     var normalOddsThreshold: Int = 4
 
-    @Args4jOption(name = "--tumor-odds", usage = "Minimum log odds threshold for possible variant candidates")
+    @Args4jOption(
+      name = "--tumor-odds",
+      usage = "Minimum log odds threshold for possible variant candidates"
+    )
     var tumorOddsThreshold: Int = 15
+
+    @Args4jOption(
+      name = "--max-normal-alternate-read-depth",
+      usage = "Maximum number of alternates in the normal sample"
+    )
+    var maxNormalAlternateReadDepth: Int = 4
+
+    @Args4jOption(
+      name = "--min-tumor-variant-allele-frequency",
+      usage = "Minimum VAF at which to test somatic variants"
+    )
+    var minTumorVariantAlleleFrequency: Int = 5
 
     @Args4jOption(name = "--dbsnp-vcf", required = false, usage = "VCF file to identify DBSNP variants")
     var dbSnpVcf: String = ""
@@ -72,6 +90,9 @@ object SomaticStandard {
       val normalSampleName = args.normalSampleName
       val tumorSampleName = args.tumorSampleName
 
+      val maxNormalAlternateReadDepth = args.maxNormalAlternateReadDepth
+      val minTumorVariantAlleleFrequency = args.minTumorVariantAlleleFrequency / 100.0f
+
       var potentialGenotypes: RDD[CalledSomaticAllele] =
         pileupFlatMapTwoSamples[CalledSomaticAllele](
           partitionedReads,
@@ -84,7 +105,10 @@ object SomaticStandard {
               pileupNormal,
               normalOddsThreshold,
               tumorOddsThreshold,
-              maxTumorReadDepth
+              maxTumorReadDepth,
+              maxNormalAlternateReadDepth,
+              minTumorVariantAlleleFrequency
+
             ).iterator,
           reference = reference
         )
@@ -118,7 +142,9 @@ object SomaticStandard {
                                     normalPileup: Pileup,
                                     normalOddsThreshold: Int,
                                     tumorOddsThreshold: Int,
-                                    maxReadDepth: Int = Int.MaxValue): Option[CalledSomaticAllele] = {
+                                    maxReadDepth: Int = Int.MaxValue,
+                                    maxNormalAlternateReadDepth: Int = 5,
+                                    minTumorVariantAlleleFrequency: Float = 0.05f): Option[CalledSomaticAllele] = {
 
       // For now, we skip loci that have no reads mapped. We may instead want to emit NoCall in this case.
       if (tumorPileup.elements.isEmpty
@@ -126,6 +152,7 @@ object SomaticStandard {
         || tumorPileup.depth > maxReadDepth // skip abnormally deep pileups
         || normalPileup.depth > maxReadDepth
         || tumorPileup.referenceDepth == tumorPileup.depth // skip computation if no alternate reads
+        || normalPileup.depth - normalPileup.referenceDepth > maxNormalAlternateReadDepth
         )
         return None
 
@@ -141,10 +168,10 @@ object SomaticStandard {
           .groupBy(identity)
           .map(kv => kv._1 -> kv._2.size / tumorDepth.toDouble )
 
-      // Compute emipirical frequency of alternate allele in the tumor sample
+      // Compute empirical frequency of alternate allele in the tumor sample
       // for the likelihood computation
       val mostFrequentVariantAllele = variantAlleleFractions.maxBy(_._2)
-      val empiricalVariantAlleleFrequency =  mostFrequentVariantAllele._2
+      val empiricalVariantAlleleFrequency =  math.max(minTumorVariantAlleleFrequency, mostFrequentVariantAllele._2)
 
       // Build a possible genotype where the alternate allele occurs at the
       // observed empirical VAF
