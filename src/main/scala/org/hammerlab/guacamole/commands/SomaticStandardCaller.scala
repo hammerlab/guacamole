@@ -92,21 +92,6 @@ object SomaticStandard {
       potentialGenotypes.persist()
       progress("Computed %,d potential genotypes".format(potentialGenotypes.count))
 
-      // Filter potential genotypes to min read values
-      potentialGenotypes =
-        SomaticReadDepthFilter(
-          potentialGenotypes,
-          args.minTumorReadDepth,
-          args.maxTumorReadDepth,
-          args.minNormalReadDepth
-        )
-
-      potentialGenotypes =
-        SomaticAlternateReadDepthFilter(
-          potentialGenotypes,
-          args.minTumorAlternateReadDepth
-        )
-
       if (args.dbSnpVcf != "") {
         val adamContext = new ADAMContext(sc)
         val dbSnpVariants = adamContext.loadVariantAnnotations(args.dbSnpVcf)
