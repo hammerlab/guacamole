@@ -1,11 +1,13 @@
 package org.hammerlab.guacamole.variants
 
 import org.bdgenomics.adam.util.PhredUtils.successProbabilityToPhred
-import org.bdgenomics.formats.avro.{GenotypeAllele, Genotype => BDGGenotype}
+import org.bdgenomics.formats.avro.GenotypeAllele.{Alt, Ref}
+import org.bdgenomics.formats.avro.{Genotype => BDGGenotype}
 import org.hammerlab.guacamole.readsets.SampleName
 import org.hammerlab.guacamole.reference.{ContigName, Locus, NumLoci}
 
 import scala.collection.JavaConversions.seqAsJavaList
+import scala.math.min
 
 /**
  *
@@ -34,12 +36,17 @@ case class CalledSomaticAllele(sampleName: SampleName,
 
   // P ( variant in tumor AND no variant in normal) = P(variant in tumor) * P(reference in normal)
   lazy val phredScaledSomaticLikelihood =
-    successProbabilityToPhred(math.min(1.0, tumorVariantEvidence.likelihood * normalReferenceEvidence.likelihood) - 1e-10)
+    successProbabilityToPhred(
+      min(
+        1.0,
+        tumorVariantEvidence.likelihood * normalReferenceEvidence.likelihood
+      ) - 1e-10
+    )
 
   def toBDGGenotype: BDGGenotype =
     BDGGenotype
       .newBuilder
-      .setAlleles(seqAsJavaList(Seq(GenotypeAllele.Ref, GenotypeAllele.Alt)))
+      .setAlleles(seqAsJavaList(Seq(Ref, Alt)))
       .setSampleId(sampleName)
       .setContigName(contigName)
       .setStart(start)
