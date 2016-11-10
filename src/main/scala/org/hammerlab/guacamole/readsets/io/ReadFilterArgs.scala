@@ -46,9 +46,9 @@ trait ReadFilterArgs extends CallLociArgs {
   )
   var splitSize: Option[String] = None
 
-  def parseFilters(hadoopConfiguration: Configuration): InputFilters = {
+  def parseConfig(hadoopConfiguration: Configuration): InputConfig = {
     val loci = ParsedLoci.fromArgs(lociStrOpt, lociFileOpt, hadoopConfiguration)
-    InputFilters(
+    InputConfig(
       overlapsLociOpt =
         if (onlyMappedReads)
           Some(ParsedLoci.all)

@@ -2,12 +2,12 @@ package org.hammerlab.guacamole.readsets.io
 
 import org.hammerlab.guacamole.loci.parsing.ParsedLoci
 
-object TestInputFilters {
+object TestInputConfig {
   def mapped(nonDuplicate: Boolean = false,
              passedVendorQualityChecks: Boolean = false,
              isPaired: Boolean = false,
-             minAlignmentQuality: Int = 0): InputFilters =
-    new InputFilters(
+             minAlignmentQuality: Int = 0): InputConfig =
+    new InputConfig(
       overlapsLociOpt = Some(ParsedLoci.all),
       nonDuplicate,
       passedVendorQualityChecks,
@@ -20,8 +20,8 @@ object TestInputFilters {
             nonDuplicate: Boolean = false,
             passedVendorQualityChecks: Boolean = false,
             isPaired: Boolean = false,
-            minAlignmentQuality: Int = 0): InputFilters =
-    new InputFilters(
+            minAlignmentQuality: Int = 0): InputConfig =
+    new InputConfig(
       overlapsLociOpt = Some(overlapsLoci),
       nonDuplicate,
       passedVendorQualityChecks,

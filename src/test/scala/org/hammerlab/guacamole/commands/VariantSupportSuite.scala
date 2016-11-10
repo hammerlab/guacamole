@@ -4,7 +4,7 @@ import org.hammerlab.guacamole.commands.VariantSupport.Caller.AlleleCount
 import org.hammerlab.guacamole.loci.parsing.ParsedLoci
 import org.hammerlab.guacamole.pileup.{Pileup, Util => PileupUtil}
 import org.hammerlab.guacamole.reads.MappedRead
-import org.hammerlab.guacamole.readsets.io.{InputFilters, TestInputFilters}
+import org.hammerlab.guacamole.readsets.io.{InputConfig, TestInputConfig}
 import org.hammerlab.guacamole.readsets.rdd.ReadsRDDUtil
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.util.GuacFunSuite
@@ -59,7 +59,7 @@ class VariantSupportSuite
     loadReadsRDD(
       sc,
       "gatk_mini_bundle_extract.bam",
-      TestInputFilters(
+      TestInputConfig(
         nonDuplicate = false,
         overlapsLoci = ParsedLoci(loci)
       )
@@ -69,7 +69,7 @@ class VariantSupportSuite
     loadReadsRDD(
       sc,
       "gatk_mini_bundle_extract.bam",
-      TestInputFilters(
+      TestInputConfig(
         nonDuplicate = true,
         overlapsLoci = ParsedLoci(loci)
       )

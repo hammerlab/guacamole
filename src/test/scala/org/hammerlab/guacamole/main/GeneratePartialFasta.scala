@@ -8,7 +8,7 @@ import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.readsets.ReadSets
 import org.hammerlab.guacamole.readsets.args.{ReferenceArgs, Arguments => ReadSetsArguments}
-import org.hammerlab.guacamole.readsets.io.InputFilters
+import org.hammerlab.guacamole.readsets.io.InputConfig
 import org.hammerlab.guacamole.readsets.rdd.PartitionedRegionsArgs
 import org.hammerlab.guacamole.reference.{ContigNotFound, Interval}
 import org.hammerlab.guacamole.util.Bases.basesToString
@@ -60,13 +60,13 @@ object GeneratePartialFasta extends SparkCommand[GeneratePartialFastaArguments] 
   override def run(args: GeneratePartialFastaArguments, sc: SparkContext): Unit = {
 
     val reference = args.reference(sc)
-    val parsedLoci = args.parseFilters(sc.hadoopConfiguration).loci
+    val parsedLoci = args.parseConfig(sc.hadoopConfiguration).loci
 
     val readsets =
       ReadSets(
         sc,
         args.inputs,
-        InputFilters.empty
+        InputConfig.empty
       )
 
     val contigLengths = readsets.contigLengths

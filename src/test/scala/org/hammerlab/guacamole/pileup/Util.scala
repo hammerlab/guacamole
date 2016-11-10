@@ -3,7 +3,7 @@ package org.hammerlab.guacamole.pileup
 import org.apache.spark.SparkContext
 import org.hammerlab.guacamole.loci.parsing.ParsedLoci
 import org.hammerlab.guacamole.reads.MappedRead
-import org.hammerlab.guacamole.readsets.io.InputFilters
+import org.hammerlab.guacamole.readsets.io.InputConfig
 import org.hammerlab.guacamole.readsets.rdd.ReadsRDDUtil
 import org.hammerlab.guacamole.reference.{ContigName, Locus, ReferenceBroadcast}
 
@@ -47,7 +47,7 @@ trait Util
       loadReadsRDD(
         sc,
         filename,
-        filters = InputFilters(
+        config = InputConfig(
           overlapsLociOpt = maybeContig.map(
             contig => ParsedLoci(s"$contig:$locus-${locus + 1}")
           ),
