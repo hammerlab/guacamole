@@ -8,7 +8,7 @@ import org.hammerlab.guacamole.alignment.AffineGapPenaltyAlignment.align
 import org.hammerlab.guacamole.assembly.AssemblyArgs
 import org.hammerlab.guacamole.assembly.AssemblyUtils.{buildVariantsFromPath, discoverHaplotypes, isActiveRegion}
 import org.hammerlab.guacamole.distributed.WindowFlatMapUtils.windowFlatMapWithState
-import org.hammerlab.guacamole.likelihood.Likelihood
+import org.hammerlab.guacamole.likelihood.Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.readsets.args.{GermlineCallerArgs, ReferenceArgs}
@@ -230,7 +230,7 @@ object GermlineAssemblyCaller {
      * @return Possible set of called variants
      */
     private def callPileupVariant(pileup: Pileup): Set[CalledAllele] = {
-      val genotypeLikelihoods = Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(
+      val genotypeLikelihoods = likelihoodsOfAllPossibleGenotypesFromPileup(
         pileup,
         logSpace = true,
         normalize = true

@@ -70,7 +70,11 @@ object Likelihood {
       for {
         i <- alleles.indices
         j <- i until alleles.size
-        mixture = if (i == j) Map(alleles(i) -> 1.0) else Map(alleles(i) -> 0.5, alleles(j) -> 0.5)
+        mixture =
+          if (i == j)
+            Map(alleles(i) -> 1.0)
+          else
+            Map(alleles(i) -> 0.5, alleles(j) -> 0.5)
       } yield
         Genotype(mixture)
 
@@ -157,7 +161,7 @@ object Likelihood {
             case (allele, alleleFraction) =>
               alleleElementProbabilities(alleleToIndex(allele), ::) * alleleFraction
           }
-          sum( log( sum(alleleRows) )) + math.log(prior(genotype)) * depth
+          sum( log( sum(alleleRows) + 1e-10 )) + math.log(prior(genotype))
         })
       )
 
@@ -172,6 +176,25 @@ object Likelihood {
       possiblyNormalizedLogLikelihoods
     else
       exp(possiblyNormalizedLogLikelihoods)
+  }
+
+  def likelihoodsOfGenotypes(elements: Seq[PileupElement],
+                             genotypes: (Genotype, Genotype),
+                             includeAlignment: Boolean,
+                             prior: Genotype => Double,
+                             logSpace: Boolean,
+                             normalize: Boolean): (Double, Double) = {
+    val likelihoods =
+      likelihoodsOfGenotypes(
+        elements,
+        Array(genotypes._1, genotypes._2),
+        includeAlignment,
+        prior,
+        logSpace,
+        normalize
+      )
+
+    (likelihoods(0), likelihoods(1))
   }
 
   private def computeAlleleElementProbabilities(elements: Seq[PileupElement],

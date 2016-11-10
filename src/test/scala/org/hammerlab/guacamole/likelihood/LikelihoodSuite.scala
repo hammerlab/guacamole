@@ -17,7 +17,7 @@ class LikelihoodSuite
     with PileupUtil
     with ReferenceUtil {
 
-  val epsilon = 1e-12
+  val epsilon = 1e-5
 
   override lazy val reference = makeReference(sc, "chr1", 1, "C")
 
