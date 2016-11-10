@@ -5,7 +5,7 @@ import org.bdgenomics.adam.models.{SequenceDictionary, SequenceRecord}
 import org.bdgenomics.adam.rdd.{ADAMContext, ADAMSaveAnyArgs}
 import org.hammerlab.guacamole.loci.parsing.ParsedLoci
 import org.hammerlab.guacamole.reads.{MappedRead, Read}
-import org.hammerlab.guacamole.readsets.io.{Input, InputFilters, TestInputFilters}
+import org.hammerlab.guacamole.readsets.io.{Input, InputConfig, TestInputConfig}
 import org.hammerlab.guacamole.readsets.rdd.ReadsRDDUtil
 import org.hammerlab.guacamole.util.GuacFunSuite
 import org.hammerlab.guacamole.util.TestUtil.resourcePath
@@ -25,7 +25,7 @@ class ReadSetsSuite
           loadReadsRDD(
             sc,
             "gatk_mini_bundle_extract.bam",
-            filters = TestInputFilters(ParsedLoci(loci))
+            config = TestInputConfig(ParsedLoci(loci))
           )
           .reads
           .collect
@@ -51,14 +51,14 @@ class ReadSetsSuite
   }
 
   test("reading sam and corresponding bam files should give identical results") {
-    def check(bamPath: String, samPath: String, filters: InputFilters): Unit =
-      withClue(s"using filter $filters: ") {
+    def check(bamPath: String, samPath: String, config: InputConfig): Unit =
+      withClue(s"using config $config: ") {
 
         val bamReads =
           loadReadsRDD(
             sc,
             bamPath,
-            filters
+            config
           ).reads.collect
 
         withClue(s"file $samPath vs $bamPath\n") {
@@ -67,7 +67,7 @@ class ReadSetsSuite
             loadReadsRDD(
               sc,
               samPath,
-              filters
+              config
             ).reads.collect
 
           lazyAssert(
@@ -87,9 +87,9 @@ class ReadSetsSuite
       }
 
     Seq(
-      InputFilters.empty,
-      TestInputFilters.mapped(nonDuplicate = true),
-      TestInputFilters(ParsedLoci("20:10220390-10220490"))
+      InputConfig.empty,
+      TestInputConfig.mapped(nonDuplicate = true),
+      TestInputConfig(ParsedLoci("20:10220390-10220490"))
     ).foreach(filter => {
       check("gatk_mini_bundle_extract.bam", "gatk_mini_bundle_extract.sam", filter)
     })
@@ -97,21 +97,21 @@ class ReadSetsSuite
     check(
       "synth1.normal.100k-200k.withmd.bam",
       "synth1.normal.100k-200k.withmd.sam",
-      TestInputFilters(ParsedLoci("19:147033"))
+      TestInputConfig(ParsedLoci("19:147033"))
     )
   }
 
-  test("load and test filters") {
+  test("load and test config") {
     val allReads = loadReadsRDD(sc, "mdtagissue.sam")
     allReads.reads.count() should be(8)
 
-    val mdTagReads = loadReadsRDD(sc, "mdtagissue.sam", TestInputFilters.mapped())
+    val mdTagReads = loadReadsRDD(sc, "mdtagissue.sam", TestInputConfig.mapped())
     mdTagReads.reads.count() should be(5)
 
     val nonDuplicateReads = loadReadsRDD(
       sc,
       "mdtagissue.sam",
-      TestInputFilters.mapped(nonDuplicate = true)
+      TestInputConfig.mapped(nonDuplicate = true)
     )
     nonDuplicateReads.reads.count() should be(3)
   }
@@ -139,13 +139,13 @@ class ReadSetsSuite
 
     adamRecords.saveAsParquet(args)
 
-    ReadSets.load(adamOut, sc, 0, InputFilters.empty)._1.count() should be(8)
+    ReadSets.load(adamOut, sc, 0, InputConfig.empty)._1.count() should be(8)
 
-    ReadSets.load(adamOut, sc, 0, TestInputFilters.mapped(nonDuplicate = true))._1.count() should be(3)
+    ReadSets.load(adamOut, sc, 0, TestInputConfig.mapped(nonDuplicate = true))._1.count() should be(3)
   }
 
   test("load and serialize / deserialize reads") {
-    val reads = loadReadsRDD(sc, "mdtagissue.sam", TestInputFilters.mapped()).mappedReads.collect()
+    val reads = loadReadsRDD(sc, "mdtagissue.sam", TestInputConfig.mapped()).mappedReads.collect()
     val serializedReads = reads.map(serialize)
     val deserializedReads: Seq[MappedRead] = serializedReads.map(deserialize[MappedRead])
     for ((read, deserialized) <- reads.zip(deserializedReads)) {
