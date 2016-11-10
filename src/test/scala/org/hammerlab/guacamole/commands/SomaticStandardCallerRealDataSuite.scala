@@ -1,7 +1,7 @@
 package org.hammerlab.guacamole.commands
 
 import org.hammerlab.guacamole.commands.SomaticStandard.Caller.findPotentialVariantAtLocus
-import org.hammerlab.guacamole.filters.somatic.SomaticGenotypeFilter
+import org.hammerlab.guacamole.filters.somatic.TestSomaticGenotypeFilter
 import org.hammerlab.guacamole.pileup.{Util => PileupUtil}
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
@@ -52,22 +52,16 @@ class SomaticStandardCallerRealDataSuite
             locus
           )
 
-        val calledGenotypes = findPotentialVariantAtLocus(
-          tumorPileup,
-          normalPileup,
-          logOddsThreshold,
-          logOddsThreshold
-        ).toSeq
-
-        calledGenotypes.foreach(
-          g => {
-            println(g.tumorVariantEvidence)
-            println(g.normalReferenceEvidence)
-          }
-        )
+        val calledGenotypes =
+          findPotentialVariantAtLocus(
+            tumorPileup,
+            normalPileup,
+            normalOddsThreshold = logOddsThreshold,
+            tumorOddsThreshold = logOddsThreshold
+          ).toSeq
 
         val foundVariant =
-          SomaticGenotypeFilter(
+          TestSomaticGenotypeFilter(
             calledGenotypes,
             minTumorReadDepth,
             maxTumorReadDepth,
@@ -75,7 +69,7 @@ class SomaticStandardCallerRealDataSuite
             minTumorAlternateReadDepth,
             logOddsThreshold,
             minVAF = minVAF,
-            minLikelihood
+            minLikelihood = minLikelihood
           ).nonEmpty
 
         foundVariant should be(shouldFindVariant)

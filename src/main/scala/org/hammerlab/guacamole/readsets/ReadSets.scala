@@ -287,13 +287,14 @@ object ReadSets extends Logging {
     if (filters.passedVendorQualityChecks) result = result.filter(!_.failedVendorQualityChecks)
     if (filters.isPaired) result = result.filter(_.isPaired)
 
-    val minAlignmentQuality = filters.minAlignmentQuality
-    if (minAlignmentQuality != 0)
-      result =
-        result.filter(
-          _.asMappedRead
-                .forall(_.alignmentQuality >= minAlignmentQuality)
-        )
+    filters.minAlignmentQualityOpt.foreach(
+      minAlignmentQuality =>
+        result =
+          result.filter(
+            _.asMappedRead
+             .forall(_.alignmentQuality >= minAlignmentQuality)
+          )
+    )
 
     result
   }
