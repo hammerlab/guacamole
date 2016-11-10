@@ -12,13 +12,13 @@ import org.hammerlab.guacamole.loci.parsing.ParsedLoci
  * @param nonDuplicate include only reads that do not have the duplicate bit set
  * @param passedVendorQualityChecks include only reads that do not have the failedVendorQualityChecks bit set
  * @param isPaired include only reads are paired-end reads
- * @param minAlignmentQuality Minimum Phred-scaled alignment score for a read
+ * @param minAlignmentQualityOpt Minimum Phred-scaled alignment score for a read
  */
 case class InputFilters(overlapsLociOpt: Option[ParsedLoci],
                         nonDuplicate: Boolean,
                         passedVendorQualityChecks: Boolean,
                         isPaired: Boolean,
-                        minAlignmentQuality: Int
+                        minAlignmentQualityOpt: Option[Int]
                        ) {
   def loci = overlapsLociOpt.getOrElse(ParsedLoci.all)
 }
@@ -30,6 +30,6 @@ object InputFilters {
       nonDuplicate = false,
       passedVendorQualityChecks = false,
       isPaired = false,
-      minAlignmentQuality = 0
+      minAlignmentQualityOpt = None
     )
 }

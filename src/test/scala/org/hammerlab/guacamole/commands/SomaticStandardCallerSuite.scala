@@ -4,7 +4,8 @@ import org.hammerlab.guacamole.commands.SomaticStandard.Caller.findPotentialVari
 import org.hammerlab.guacamole.pileup.{Util => PileupUtil}
 import org.hammerlab.guacamole.reads.ReadsUtil
 import org.hammerlab.guacamole.reference.{ContigName, Locus, ReferenceUtil}
-import org.hammerlab.guacamole.util.{AssertBases, GuacFunSuite}
+import org.hammerlab.guacamole.util.GuacFunSuite
+import org.hammerlab.guacamole.variants.Allele
 
 class SomaticStandardCallerSuite
   extends GuacFunSuite
@@ -39,7 +40,13 @@ class SomaticStandardCallerSuite
       )
 
     val tumorPileup = makeTumorPileup(tumorReads, "chr1", 2)
-    findPotentialVariantAtLocus(tumorPileup, normalPileup, normalOddsThreshold = 2, tumorOddsThreshold = 2).size should be(0)
+
+    findPotentialVariantAtLocus(
+      tumorPileup,
+      normalPileup,
+      normalOddsThreshold = 2,
+      tumorOddsThreshold = 2
+    ) should be(None)
   }
 
   test("single-base deletion") {
@@ -61,12 +68,15 @@ class SomaticStandardCallerSuite
 
     val tumorPileup = makeTumorPileup(tumorReads, "chr1", 2)
 
-    val alleles = findPotentialVariantAtLocus(tumorPileup, normalPileup, normalOddsThreshold = 2, tumorOddsThreshold = 2).toSeq
-    alleles.size should be(1)
+    val alleleOpt =
+      findPotentialVariantAtLocus(
+        tumorPileup,
+        normalPileup,
+        normalOddsThreshold = 2,
+        tumorOddsThreshold = 2
+      ).map(_.allele)
 
-    val allele = alleles(0).allele
-    AssertBases(allele.refBases, "GA")
-    AssertBases(allele.altBases, "G")
+    alleleOpt should be(Some(Allele("GA", "G")))
   }
 
   test("multiple-base deletion") {
@@ -90,12 +100,15 @@ class SomaticStandardCallerSuite
 
     val tumorPileup = makeTumorPileup(tumorReads, "chr4", 4)
 
-    val alleles = findPotentialVariantAtLocus(tumorPileup, normalPileup, normalOddsThreshold = 2, tumorOddsThreshold = 2).toSeq
-    alleles.size should be(1)
+    val alleleOpt =
+      findPotentialVariantAtLocus(
+        tumorPileup,
+        normalPileup,
+        normalOddsThreshold = 2,
+        tumorOddsThreshold = 2
+      ).map(_.allele)
 
-    val allele = alleles(0).allele
-    AssertBases(allele.refBases, "AGCTTCG")
-    AssertBases(allele.altBases, "A")
+    alleleOpt should be(Some(Allele("AGCTTCG", "A")))
   }
 
   test("single-base insertion") {
@@ -106,8 +119,6 @@ class SomaticStandardCallerSuite
         ("TCGATCGA", "8M", 0)
       )
 
-    val normalPileup = makeNormalPileup(normalReads, "chr1", 2)
-
     val tumorReads =
       makeReads(
         ("TCGAGTCGA", "4M1I4M", 0),
@@ -115,18 +126,15 @@ class SomaticStandardCallerSuite
         ("TCGAGTCGA", "4M1I4M", 0)
       )
 
-    val tumorPileup = makeTumorPileup(tumorReads, "chr1", 3)
-    val alleles = findPotentialVariantAtLocus(
-      makePileup(tumorReads, "chr1", 3),
-      makePileup(normalReads, "chr1", 3),
-      normalOddsThreshold = 2, tumorOddsThreshold = 2
-    ).toSeq
+    val alleleOpt =
+      findPotentialVariantAtLocus(
+        makePileup(tumorReads, "chr1", 3),
+        makePileup(normalReads, "chr1", 3),
+        normalOddsThreshold = 2,
+        tumorOddsThreshold = 2
+      ).map(_.allele)
 
-    alleles.size should be(1)
-
-    val allele = alleles(0).allele
-    AssertBases(allele.refBases, "A")
-    AssertBases(allele.altBases, "AG")
+    alleleOpt should be(Some(Allele("A", "AG")))
   }
 
   test("multiple-base insertion") {
@@ -144,16 +152,15 @@ class SomaticStandardCallerSuite
         ("TCGAGGTCTCGA", "4M4I4M", 0)
       )
 
-    val alleles = findPotentialVariantAtLocus(
-      makeTumorPileup(tumorReads, "chr1", 3),
-      makeNormalPileup(normalReads, "chr1", 3),
-      normalOddsThreshold = 2, tumorOddsThreshold = 2
-    ).toSeq
-    alleles.size should be(1)
+    val alleleOpt =
+      findPotentialVariantAtLocus(
+        makeTumorPileup(tumorReads, "chr1", 3),
+        makeNormalPileup(normalReads, "chr1", 3),
+        normalOddsThreshold = 2,
+        tumorOddsThreshold = 2
+      ).map(_.allele)
 
-    val allele = alleles(0).allele
-    AssertBases(allele.refBases, "A")
-    AssertBases(allele.altBases, "AGGTC")
+    alleleOpt should be(Some(Allele("A", "AGGTC")))
   }
 
   test("insertions and deletions") {
@@ -180,16 +187,15 @@ class SomaticStandardCallerSuite
       )
 
     def testLocus(contigName: ContigName, locus: Locus, refBases: String, altBases: String) = {
-      val alleles = findPotentialVariantAtLocus(
-        makeTumorPileup(tumorReads, contigName, locus),
-        makeNormalPileup(normalReads, contigName, locus),
-        normalOddsThreshold = 2, tumorOddsThreshold = 2
-      ).toSeq
-      alleles.size should be(1)
+      val alleleOpt =
+        findPotentialVariantAtLocus(
+          makeTumorPileup(tumorReads, contigName, locus),
+          makeNormalPileup(normalReads, contigName, locus),
+          normalOddsThreshold = 2,
+          tumorOddsThreshold = 2
+        ).map(_.allele)
 
-      val allele = alleles(0).allele
-      AssertBases(allele.refBases, refBases)
-      AssertBases(allele.altBases, altBases)
+      alleleOpt should be(Some(Allele(refBases, altBases)))
     }
 
     testLocus("chr3", 11, "CGA", "C")

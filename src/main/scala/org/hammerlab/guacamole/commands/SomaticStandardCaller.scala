@@ -17,6 +17,8 @@ import org.hammerlab.guacamole.readsets.rdd.{PartitionedRegions, PartitionedRegi
 import org.hammerlab.guacamole.variants.{Allele, AlleleEvidence, CalledSomaticAllele, Genotype, GenotypeOutputArgs, GenotypeOutputCaller}
 import org.kohsuke.args4j.{Option => Args4jOption}
 
+import scala.math.{exp, max}
+
 /**
  * Simple subtraction based somatic variant caller
  *
@@ -39,13 +41,13 @@ object SomaticStandard {
 
     @Args4jOption(
       name = "--normal-odds",
-      usage = "Minimum log odds threshold for possible variant candidates"
+      usage = "Minimum log odds threshold for possible normal-sample variant candidates"
     )
     var normalOddsThreshold: Int = 5
 
     @Args4jOption(
       name = "--tumor-odds",
-      usage = "Minimum log odds threshold for possible variant candidates"
+      usage = "Minimum log odds threshold for possible tumor-sample variant candidates"
     )
     var tumorOddsThreshold: Int = 10
 
@@ -57,7 +59,7 @@ object SomaticStandard {
 
     @Args4jOption(
       name = "--min-tumor-variant-allele-frequency",
-      usage = "Minimum VAF at which to test somatic variants"
+      usage = "Minimum VAF at which to test somatic variants, as a percentage"
     )
     var minTumorVariantAlleleFrequency: Int = 3
 
@@ -149,7 +151,8 @@ object SomaticStandard {
       // For now, we skip loci that have no reads mapped. We may instead want to emit NoCall in this case.
       if (tumorPileup.elements.isEmpty
         || normalPileup.elements.isEmpty
-        || tumorPileup.depth > maxReadDepth // skip abnormally deep pileups
+        // skip abnormally deep pileups
+        || tumorPileup.depth > maxReadDepth
         || normalPileup.depth > maxReadDepth
         || tumorPileup.referenceDepth == tumorPileup.depth // skip computation if no alternate reads
         || normalPileup.depth - normalPileup.referenceDepth > maxNormalAlternateReadDepth
@@ -166,12 +169,12 @@ object SomaticStandard {
           .withFilter(_.allele.isVariant)
           .map(_.allele)
           .groupBy(identity)
-          .map(kv => kv._1 -> kv._2.size / tumorDepth.toDouble )
+          .map{ case(k, v) => k -> v.size / tumorDepth.toDouble }
 
       // Compute empirical frequency of alternate allele in the tumor sample
       // for the likelihood computation
-      val mostFrequentVariantAllele = variantAlleleFractions.maxBy(_._2)
-      val empiricalVariantAlleleFrequency =  math.max(minTumorVariantAlleleFrequency, mostFrequentVariantAllele._2)
+      val (mostFrequentVariantAllele, highestFrequency) = variantAlleleFractions.maxBy(_._2)
+      val empiricalVariantAlleleFrequency =  max(minTumorVariantAlleleFrequency, highestFrequency)
 
       // Build a possible genotype where the alternate allele occurs at the
       // observed empirical VAF
@@ -179,58 +182,64 @@ object SomaticStandard {
         Genotype(
           Map(
             referenceAllele -> (1.0 - empiricalVariantAlleleFrequency),
-            mostFrequentVariantAllele._1 -> empiricalVariantAlleleFrequency
+            mostFrequentVariantAllele -> empiricalVariantAlleleFrequency
           )
         )
 
+      val (tumorRefLikelihood, tumorAltLikelihood) =
+        likelihoodsOfGenotypes(
+          tumorPileup.elements,
+          (referenceGenotype, somaticVariantGenotype),
+          prior = Likelihood.uniformPrior,
+          includeAlignment = false,
+          logSpace = true,
+          normalize = true
+        )
 
-      val tumorLikelihoods = likelihoodsOfGenotypes(
-        tumorPileup.elements,
-        Array(referenceGenotype, somaticVariantGenotype),
-        prior = Likelihood.uniformPrior,
-        includeAlignment = false,
-        logSpace = true,
-        normalize = true
-      )
-      val tumorLOD: Double = tumorLikelihoods(1) - tumorLikelihoods(0)
+      val tumorAltLOD: Double = tumorAltLikelihood - tumorRefLikelihood
 
       val germlineVariantGenotype =
         Genotype(
           Map(
             referenceAllele -> 0.5,
-            mostFrequentVariantAllele._1 -> 0.5
+            mostFrequentVariantAllele -> 0.5
           )
         )
 
-      val normalLikelihoods = likelihoodsOfGenotypes(
-        normalPileup.elements,
-        Array(referenceGenotype, germlineVariantGenotype),
-        prior = Likelihood.uniformPrior,
-        includeAlignment = false,
-        logSpace = true,
-        normalize = true
-      )
+      val (normalRefLikelihood, normalAltLikelihood) =
+        likelihoodsOfGenotypes(
+          normalPileup.elements,
+          (referenceGenotype, germlineVariantGenotype),
+          prior = Likelihood.uniformPrior,
+          includeAlignment = false,
+          logSpace = true,
+          normalize = true
+        )
 
-      val normalLOD: Double = normalLikelihoods(0) - normalLikelihoods(1)
-      if (tumorLOD > tumorOddsThreshold && normalLOD > normalOddsThreshold && mostFrequentVariantAllele._1.altBases.nonEmpty) {
-        val allele = mostFrequentVariantAllele._1
+      val normalRefLOD: Double = normalRefLikelihood - normalAltLikelihood
 
-        val tumorVariantEvidence = AlleleEvidence(math.exp(-tumorLikelihoods(1)), allele, tumorPileup)
-        val normalReferenceEvidence = AlleleEvidence(math.exp(-normalLikelihoods(0)), referenceAllele, normalPileup)
+      if (tumorAltLOD > tumorOddsThreshold &&
+          normalRefLOD > normalOddsThreshold &&
+          mostFrequentVariantAllele.altBases.nonEmpty) {
+
+        val allele = mostFrequentVariantAllele
+
+        val tumorVariantEvidence = AlleleEvidence(exp(-tumorAltLikelihood), allele, tumorPileup)
+        val normalReferenceEvidence = AlleleEvidence(exp(-normalRefLikelihood), referenceAllele, normalPileup)
+
         Some(
           CalledSomaticAllele(
             tumorPileup.sampleName,
             tumorPileup.contigName,
             tumorPileup.locus,
             allele,
-            tumorLOD,
+            tumorAltLOD,
             tumorVariantEvidence,
             normalReferenceEvidence
           )
         )
-      } else {
+      } else
         None
-      }
     }
   }
 }

@@ -3,12 +3,16 @@ package org.hammerlab.guacamole.readsets.io
 import org.apache.hadoop.conf.Configuration
 import org.hammerlab.guacamole.loci.args.CallLociArgs
 import org.hammerlab.guacamole.loci.parsing.ParsedLoci
+import org.hammerlab.guacamole.util.IntOptionHandler
 import org.kohsuke.args4j.{Option => Args4jOption}
 
 trait ReadFilterArgs extends CallLociArgs {
-  @Args4jOption(name = "--min-alignment-quality",
-    usage = "Minimum read mapping quality for a read (Phred-scaled)")
-  var minAlignmentQuality: Int = 0
+  @Args4jOption(
+    name = "--min-alignment-quality",
+    usage = "Minimum read mapping quality for a read (Phred-scaled)",
+    handler = classOf[IntOptionHandler]
+  )
+  var minAlignmentQualityOpt: Option[Int] = None
 
   @Args4jOption(name = "--include-duplicates",
     usage = "Include reads marked as duplicates")
@@ -39,7 +43,7 @@ trait ReadFilterArgs extends CallLociArgs {
       nonDuplicate = !includeDuplicates,
       passedVendorQualityChecks = !includeFailedQualityChecks,
       isPaired = !includeSingleEnd,
-      minAlignmentQuality = minAlignmentQuality
+      minAlignmentQualityOpt = minAlignmentQualityOpt
     )
   }
 }
