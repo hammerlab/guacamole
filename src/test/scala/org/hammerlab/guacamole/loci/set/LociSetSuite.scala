@@ -109,13 +109,13 @@ class LociSetSuite extends GuacFunSuite {
     val args1 = new TestArgs {
       lociStr = "20:100-200"
     }
-    args1.parseFilters(sc.hadoopConfiguration).loci.result should equal(LociSet("20:100-200"))
+    args1.parseConfig(sc.hadoopConfiguration).loci.result should equal(LociSet("20:100-200"))
 
     // Test --loci-file argument. The test file gives a loci set equal to 20:100-200.
     val args2 = new TestArgs {
       lociFile = resourcePath("loci.txt")
     }
-    args2.parseFilters(sc.hadoopConfiguration).loci.result should equal(LociSet("20:100-200"))
+    args2.parseConfig(sc.hadoopConfiguration).loci.result should equal(LociSet("20:100-200"))
   }
 
   test("loci set parsing with contig lengths") {

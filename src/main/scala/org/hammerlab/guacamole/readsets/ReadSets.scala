@@ -6,6 +6,7 @@ import grizzled.slf4j.Logging
 import htsjdk.samtools.ValidationStringency
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.io.LongWritable
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.models.SequenceDictionary
@@ -14,7 +15,7 @@ import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.reads.Read
 import org.hammerlab.guacamole.readsets.args.{Base => BaseArgs}
-import org.hammerlab.guacamole.readsets.io.{Input, InputFilters}
+import org.hammerlab.guacamole.readsets.io.{Input, InputConfig}
 import org.hammerlab.guacamole.readsets.rdd.ReadsRDD
 import org.hammerlab.guacamole.reference.{ContigName, Locus}
 import org.seqdoop.hadoop_bam.util.SAMHeaderReader
@@ -50,9 +51,9 @@ case class ReadSets(readsRDDs: PerSample[ReadsRDD],
 object ReadSets extends Logging {
 
   def apply(sc: SparkContext, args: BaseArgs): (ReadSets, LociSet) = {
-    val filters = args.parseFilters(sc.hadoopConfiguration)
-    val readsets = apply(sc, args.inputs, filters, !args.noSequenceDictionary)
-    (readsets, filters.loci.result(readsets.contigLengths))
+    val config = args.parseConfig(sc.hadoopConfiguration)
+    val readsets = apply(sc, args.inputs, config, !args.noSequenceDictionary)
+    (readsets, config.loci.result(readsets.contigLengths))
   }
 
   /**
@@ -60,24 +61,24 @@ object ReadSets extends Logging {
     */
   def apply(sc: SparkContext,
             inputs: PerSample[Input],
-            filters: InputFilters,
+            config: InputConfig,
             contigLengthsFromDictionary: Boolean = true): ReadSets =
-    apply(sc, inputs.map((_, filters)), contigLengthsFromDictionary)
+    apply(sc, inputs.map((_, config)), contigLengthsFromDictionary)
 
   /**
    * Load reads from multiple files, allowing different filters to be applied to each file.
    */
   def apply(sc: SparkContext,
-            inputsAndFilters: PerSample[(Input, InputFilters)],
+            inputsAndFilters: PerSample[(Input, InputConfig)],
             contigLengthsFromDictionary: Boolean): ReadSets = {
 
     val (inputs, _) = inputsAndFilters.unzip
 
     val (readsRDDs, sequenceDictionaries) =
       (for {
-        (Input(sampleId, _, filename), filters) <- inputsAndFilters
+        (Input(sampleId, _, filename), config) <- inputsAndFilters
       } yield
-        load(filename, sc, sampleId, filters)
+        load(filename, sc, sampleId, config)
       ).unzip
 
     val sequenceDictionary = mergeSequenceDictionaries(inputs, sequenceDictionaries)
@@ -117,21 +118,21 @@ object ReadSets extends Logging {
    *
    * @param filename name of file containing reads
    * @param sc spark context
-   * @param filters filters to apply
+   * @param config config to apply
    * @return
    */
   private[readsets] def load(filename: String,
                              sc: SparkContext,
                              sampleId: Int,
-                             filters: InputFilters): (RDD[Read], SequenceDictionary) = {
+                             config: InputConfig): (RDD[Read], SequenceDictionary) = {
 
     val (allReads, sequenceDictionary) =
       if (filename.endsWith(".bam") || filename.endsWith(".sam"))
-        loadFromBAM(filename, sc, sampleId, filters)
+        loadFromBAM(filename, sc, sampleId, config)
       else
-        loadFromADAM(filename, sc, sampleId, filters)
+        loadFromADAM(filename, sc, sampleId, config)
 
-    val reads = filterRDD(allReads, filters, sequenceDictionary)
+    val reads = filterRDD(allReads, config, sequenceDictionary)
 
     (reads, sequenceDictionary)
   }
@@ -140,7 +141,7 @@ object ReadSets extends Logging {
   private def loadFromBAM(filename: String,
                           sc: SparkContext,
                           sampleId: Int,
-                          filters: InputFilters): (RDD[Read], SequenceDictionary) = {
+                          config: InputConfig): (RDD[Read], SequenceDictionary) = {
 
     val path = new Path(filename)
 
@@ -151,7 +152,14 @@ object ReadSets extends Logging {
     val samHeader = SAMHeaderReader.readSAMHeaderFrom(path, conf)
     val sequenceDictionary = SequenceDictionary.fromSAMHeader(samHeader)
 
-    filters
+    config
+      .maxSplitSizeOpt
+      .foreach(
+        maxSplitSize =>
+          conf.set(FileInputFormat.SPLIT_MAXSIZE, maxSplitSize.toString)
+      )
+
+    config
       .overlapsLociOpt
       .fold(conf.unset(BAMInputFormat.INTERVALS_PROPERTY)) (
         overlapsLoci =>
@@ -187,7 +195,7 @@ object ReadSets extends Logging {
   private def loadFromADAM(filename: String,
                            sc: SparkContext,
                            sampleId: Int,
-                           filters: InputFilters): (RDD[Read], SequenceDictionary) = {
+                           config: InputConfig): (RDD[Read], SequenceDictionary) = {
 
     progress(s"Using ADAM to read: $filename")
 
@@ -265,16 +273,16 @@ object ReadSets extends Logging {
    * @param sequenceDictionary
    * @return filtered RDD
    */
-  private def filterRDD(reads: RDD[Read], filters: InputFilters, sequenceDictionary: SequenceDictionary): RDD[Read] = {
+  private def filterRDD(reads: RDD[Read], config: InputConfig, sequenceDictionary: SequenceDictionary): RDD[Read] = {
     /* Note that the InputFilter properties are public, and some loaders directly apply
      * the filters as the reads are loaded, instead of filtering an existing RDD as we do here. If more filters
      * are added, be sure to update those implementations.
      *
-     * This is implemented as a static function instead of a method in InputFilters because the overlapsLoci
+     * This is implemented as a static function instead of a method in InputConfig because the overlapsLoci
      * attribute cannot be serialized.
      */
     var result = reads
-    filters
+    config
       .overlapsLociOpt
       .foreach(overlapsLoci => {
         val contigLengths = getContigLengths(sequenceDictionary)
@@ -283,14 +291,14 @@ object ReadSets extends Logging {
         result = result.filter(_.asMappedRead.exists(broadcastLoci.value.intersects))
       })
 
-    if (filters.nonDuplicate) result = result.filter(!_.isDuplicate)
-    if (filters.passedVendorQualityChecks) result = result.filter(!_.failedVendorQualityChecks)
-    if (filters.isPaired) result = result.filter(_.isPaired)
-    if (filters.minAlignmentQuality != 0)
+    if (config.nonDuplicate) result = result.filter(!_.isDuplicate)
+    if (config.passedVendorQualityChecks) result = result.filter(!_.failedVendorQualityChecks)
+    if (config.isPaired) result = result.filter(_.isPaired)
+    if (config.minAlignmentQuality != 0)
       result =
         result.filter(
           _.asMappedRead
-                .forall(_.alignmentQuality >= filters.minAlignmentQuality)
+                .forall(_.alignmentQuality >= config.minAlignmentQuality)
         )
 
     result

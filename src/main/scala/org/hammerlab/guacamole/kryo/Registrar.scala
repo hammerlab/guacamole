@@ -47,7 +47,7 @@ class Registrar extends KryoRegistrator {
     kryo.register(classOf[PairedRead[_]])
     kryo.register(classOf[scala.collection.mutable.WrappedArray.ofByte])  // PairedRead
 
-    // LociSet is serialized when broadcast in InputFilters.filterRDD. Serde'ing a LociSet delegates to an Array of
+    // LociSet is serialized when broadcast in InputConfig.filterRDD. Serde'ing a LociSet delegates to an Array of
     // Contigs.
     kryo.register(classOf[LociSet], new LociSetSerializer)
     kryo.register(classOf[Array[LociSet]])
