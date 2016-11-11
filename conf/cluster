@@ -1,5 +1,4 @@
 spark.master                                  yarn
-spark.submit.deployMode                       cluster
 spark.driver.memory                           10g
 spark.executor.memory                         12g
 spark.executor.cores                          4
