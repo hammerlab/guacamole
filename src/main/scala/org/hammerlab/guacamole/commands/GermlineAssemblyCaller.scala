@@ -4,7 +4,7 @@ import breeze.linalg.DenseVector
 import breeze.stats.{mean, median}
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
-import org.hammerlab.guacamole.alignment.AffineGapPenaltyAlignment.align
+import org.hammerlab.guacamole.alignment.ReadAlignment
 import org.hammerlab.guacamole.assembly.AssemblyArgs
 import org.hammerlab.guacamole.assembly.AssemblyUtils.{buildVariantsFromPath, discoverHaplotypes, isActiveRegion}
 import org.hammerlab.guacamole.distributed.WindowFlatMapUtils.windowFlatMapWithState
@@ -198,7 +198,7 @@ object GermlineAssemblyCaller {
                         path,
                         referenceStart,
                         referenceContig,
-                        path => align(path, currentReference),
+                        ReadAlignment(_, currentReference),
                         buildVariant
                       )
                     )
