@@ -1,18 +1,13 @@
 package org.hammerlab.guacamole.commands
 
-import com.esotericsoftware.kryo.Kryo
-import org.hammerlab.guacamole.util.{GuacFunSuite, KryoTestRegistrar}
-
-class VAFHistogramSuiteRegistrar extends KryoTestRegistrar {
-  override def registerTestClasses(kryo: Kryo): Unit = {
-    kryo.register(classOf[Array[VariantLocus]])
-    kryo.register(classOf[VariantLocus])
-  }
-}
+import org.hammerlab.guacamole.util.GuacFunSuite
 
 class VAFHistogramSuite extends GuacFunSuite {
 
-  override def registrar = classOf[VAFHistogramSuiteRegistrar].getCanonicalName
+  kryoRegister(
+    classOf[Array[VariantLocus]],
+    classOf[VariantLocus]
+  )
 
   test("generating the histogram") {
 

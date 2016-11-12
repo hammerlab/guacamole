@@ -2,22 +2,17 @@ package org.hammerlab.guacamole.loci.set
 
 import java.io.{ByteArrayInputStream, ByteArrayOutputStream, ObjectInputStream, ObjectOutputStream}
 
-import com.esotericsoftware.kryo.Kryo
-import org.hammerlab.guacamole.util.{GuacFunSuite, KryoTestRegistrar}
-
-class SerializerSuiteRegistrar extends KryoTestRegistrar {
-  override def registerTestClasses(kryo: Kryo): Unit = {
-    // "a closure that includes a LociSet" parallelizes some Range[Long]s.
-    kryo.register(Class.forName("scala.math.Numeric$LongIsIntegral$"))
-
-    // "make an RDD[LociSet] and an RDD[Contig]" collects some Strings.
-    kryo.register(classOf[Array[String]])
-  }
-}
+import org.hammerlab.guacamole.util.GuacFunSuite
 
 class SerializerSuite extends GuacFunSuite {
 
-  override def registrar = classOf[SerializerSuiteRegistrar].getCanonicalName
+  kryoRegister(
+    // "a closure that includes a LociSet" parallelizes some Range[Long]s.
+    "scala.math.Numeric$LongIsIntegral$",
+
+    // "make an RDD[LociSet] and an RDD[Contig]" collects some Strings.
+    classOf[Array[String]]
+  )
 
   test("make an RDD[LociSet]") {
 

@@ -1,6 +1,5 @@
 package org.hammerlab.guacamole.distributed
 
-import com.esotericsoftware.kryo.Kryo
 import org.apache.spark.storage.BroadcastBlockId
 import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.{pileupFlatMapMultipleSamples, pileupFlatMapOneSample, pileupFlatMapTwoSamples}
 import org.hammerlab.guacamole.distributed.Util.pileupsToElementStrings
@@ -11,28 +10,8 @@ import org.hammerlab.guacamole.readsets.rdd.{PartitionedRegionsUtil, ReadsRDDUti
 import org.hammerlab.guacamole.readsets.{PartitionedReads, PerSample}
 import org.hammerlab.guacamole.reference.ReferenceBroadcast.MapBackedReferenceSequence
 import org.hammerlab.guacamole.reference.ReferenceUtil
-import org.hammerlab.guacamole.util.{AssertBases, GuacFunSuite, KryoTestRegistrar}
-import org.hammerlab.guacamole.util.Bases.{basesToString, T}
-
-class PileupFlatMapUtilsSuiteRegistrar extends KryoTestRegistrar {
-  override def registerTestClasses(kryo: Kryo): Unit = {
-    // In some test cases below, we serialize Pileups, which requires PileupElements and MapBackedReferenceSequences.
-    kryo.register(classOf[Pileup])
-    kryo.register(classOf[Array[Pileup]])
-
-    kryo.register(classOf[PileupElement])
-    kryo.register(classOf[Array[PileupElement]])
-
-    // Closed over by PileupElement
-    kryo.register(classOf[MapBackedReferenceSequence])
-    kryo.register(Class.forName("org.apache.spark.broadcast.TorrentBroadcast"))
-    kryo.register(classOf[BroadcastBlockId])
-    kryo.register(classOf[Map[_, _]])
-
-    // "test pileup flatmap multiple rdds; skip empty pileups" collects an RDD of Arrays
-    kryo.register(classOf[Array[PerSample[_]]])
-  }
-}
+import org.hammerlab.guacamole.util.Bases.{T, basesToString}
+import org.hammerlab.guacamole.util.{AssertBases, GuacFunSuite}
 
 private object Util {
   // This helper function is in its own object here to avoid serializing `PileupFlatMapUtilsSuite`, which is not
@@ -47,7 +26,23 @@ class PileupFlatMapUtilsSuite
     with PartitionedRegionsUtil
     with ReferenceUtil {
 
-  override def registrar = classOf[PileupFlatMapUtilsSuiteRegistrar].getCanonicalName
+  kryoRegister(
+    // In some test cases below, we serialize Pileups, which requires PileupElements and MapBackedReferenceSequences.
+    classOf[Pileup],
+    classOf[Array[Pileup]],
+
+    classOf[PileupElement],
+    classOf[Array[PileupElement]],
+
+    // Closed over by PileupElement
+    classOf[MapBackedReferenceSequence],
+    "org.apache.spark.broadcast.TorrentBroadcast",
+    classOf[BroadcastBlockId],
+    classOf[Map[_, _]],
+
+    // "test pileup flatmap multiple rdds; skip empty pileups" collects an RDD of Arrays
+    classOf[Array[PerSample[_]]]
+  )
 
   lazy val reference =
     makeReference(

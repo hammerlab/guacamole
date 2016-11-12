@@ -8,7 +8,7 @@ import org.apache.spark.SparkEnv
 trait SparkSerializerSuite {
   self: SharedSparkContext =>
 
-  def serializer = SparkEnv.get.serializer.newInstance()
+  private def serializer = SparkEnv.get.serializer.newInstance()
 
   def serialize(item: Any): ByteBuffer = serializer.serialize(item)
   def deserialize[T](bytes: ByteBuffer): T = serializer.deserialize(bytes)
