@@ -4,15 +4,17 @@ import org.apache.hadoop.conf.Configuration
 import org.apache.spark.network.util.JavaUtils
 import org.hammerlab.guacamole.loci.args.CallLociArgs
 import org.hammerlab.guacamole.loci.parsing.ParsedLoci
+import org.hammerlab.guacamole.util.IntOptionHandler
 import org.hammerlab.magic.args4j.StringOptionHandler
 import org.kohsuke.args4j.{Option => Args4jOption}
 
 trait ReadFilterArgs extends CallLociArgs {
   @Args4jOption(
     name = "--min-alignment-quality",
-    usage = "Minimum read mapping quality for a read (Phred-scaled)"
+    usage = "Minimum read mapping quality for a read (Phred-scaled)",
+    handler = classOf[IntOptionHandler]
   )
-  var minAlignmentQuality: Int = 0
+  var minAlignmentQualityOpt: Option[Int] = None
 
   @Args4jOption(
     name = "--include-duplicates",
@@ -57,7 +59,7 @@ trait ReadFilterArgs extends CallLociArgs {
       nonDuplicate = !includeDuplicates,
       passedVendorQualityChecks = !includeFailedQualityChecks,
       isPaired = !includeSingleEnd,
-      minAlignmentQuality = minAlignmentQuality,
+      minAlignmentQualityOpt = minAlignmentQualityOpt,
       maxSplitSizeOpt = splitSize.map(JavaUtils.byteStringAsBytes)
     )
   }
