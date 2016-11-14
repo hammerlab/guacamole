@@ -1,7 +1,7 @@
 package org.hammerlab.guacamole.readsets.iterator
 
 import org.hammerlab.guacamole.reference.{ContigIterator, ContigName, HasContig}
-import org.hammerlab.magic.iterator.SimpleBufferedIterator
+import org.hammerlab.iterator.SimpleBufferedIterator
 
 import scala.collection.mutable
 

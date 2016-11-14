@@ -9,7 +9,7 @@ import org.hammerlab.guacamole.reference.Position
 import org.hammerlab.guacamole.util.GuacFunSuite
 import org.hammerlab.magic.rdd.cmp.CmpStats
 import org.hammerlab.magic.rdd.cmp.EqualsRDD._
-import org.hammerlab.magic.test.SeqMatcher.seqMatch
+import org.hammerlab.spark.test.SeqMatcher.seqMatch
 
 class CoverageRDDSuite
   extends GuacFunSuite
