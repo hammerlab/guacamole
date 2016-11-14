@@ -6,7 +6,7 @@ import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.readsets.rdd.CoverageRDD
 import org.hammerlab.guacamole.reference.{ContigName, NumLoci, ReferenceRegion}
-import org.hammerlab.magic.iterator.GroupRunsIterator
+import org.hammerlab.iterator.GroupRunsIterator
 import org.hammerlab.magic.util.KeyOrdering
 import org.kohsuke.args4j.{Option => Args4JOption}
 

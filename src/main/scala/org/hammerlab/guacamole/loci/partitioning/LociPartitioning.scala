@@ -11,8 +11,8 @@ import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.reference.{NumLoci, ReferenceRegion}
 import org.hammerlab.guacamole.strings.TruncatedToString
-import org.hammerlab.magic.iterator.LinesIterator
-import org.hammerlab.magic.stats.Stats
+import org.hammerlab.iterator.LinesIterator
+import org.hammerlab.stats.Stats
 import org.hammerlab.magic.util.Saveable
 
 import scala.reflect.ClassTag

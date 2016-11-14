@@ -9,7 +9,7 @@ import org.hammerlab.guacamole.readsets.io.{Input, InputConfig, TestInputConfig}
 import org.hammerlab.guacamole.readsets.rdd.ReadsRDDUtil
 import org.hammerlab.guacamole.util.GuacFunSuite
 import org.hammerlab.guacamole.util.TestUtil.resourcePath
-import org.hammerlab.magic.test.{LazyAssert, TmpFiles}
+import org.hammerlab.spark.test.{LazyAssert, TmpFiles}
 
 class ReadSetsSuite
   extends GuacFunSuite

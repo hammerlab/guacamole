@@ -2,7 +2,7 @@ package org.hammerlab.guacamole.loci.iterator
 
 import org.hammerlab.guacamole.loci.set.LociIterator
 import org.hammerlab.guacamole.reference.Locus
-import org.hammerlab.magic.iterator.SimpleBufferedIterator
+import org.hammerlab.iterator.SimpleBufferedIterator
 
 abstract class SkippableLociIterator[T] extends SimpleBufferedIterator[T] {
 
