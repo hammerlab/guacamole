@@ -294,12 +294,15 @@ object ReadSets extends Logging {
     if (config.nonDuplicate) result = result.filter(!_.isDuplicate)
     if (config.passedVendorQualityChecks) result = result.filter(!_.failedVendorQualityChecks)
     if (config.isPaired) result = result.filter(_.isPaired)
-    if (config.minAlignmentQuality != 0)
-      result =
-        result.filter(
-          _.asMappedRead
-                .forall(_.alignmentQuality >= config.minAlignmentQuality)
-        )
+
+    config.minAlignmentQualityOpt.foreach(
+      minAlignmentQuality =>
+        result =
+          result.filter(
+            _.asMappedRead
+             .forall(_.alignmentQuality >= minAlignmentQuality)
+          )
+    )
 
     result
   }

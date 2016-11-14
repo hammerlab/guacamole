@@ -12,7 +12,7 @@ object TestInputConfig {
       nonDuplicate,
       passedVendorQualityChecks,
       isPaired,
-      minAlignmentQuality,
+      if (minAlignmentQuality > 0) Some(minAlignmentQuality) else None,
       maxSplitSizeOpt = None
     )
 
@@ -26,7 +26,7 @@ object TestInputConfig {
       nonDuplicate,
       passedVendorQualityChecks,
       isPaired,
-      minAlignmentQuality,
+      if (minAlignmentQuality > 0) Some(minAlignmentQuality) else None,
       maxSplitSizeOpt = None
     )
 }

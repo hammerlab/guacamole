@@ -54,7 +54,7 @@ trait Util
           nonDuplicate = false,
           passedVendorQualityChecks = false,
           isPaired = false,
-          minAlignmentQuality = 0,
+          minAlignmentQualityOpt = None,
           maxSplitSizeOpt = None
         )
       ).mappedReads

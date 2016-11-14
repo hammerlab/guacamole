@@ -1,15 +1,17 @@
 package org.hammerlab.guacamole.variants
 
 import breeze.linalg.DenseVector
-import breeze.stats.{ mean, median }
-import org.bdgenomics.adam.util.PhredUtils
+import breeze.stats.{mean, median}
 import org.hammerlab.guacamole.pileup.Pileup
+import org.hammerlab.guacamole.util.PhredUtils.successProbabilityToPhred
+
+import scala.math.min
 
 /**
  *
  * Sample specific pileup and read statistics in support of a given variant
  *
- * @param likelihood probability of the genotype
+ * @param probability probability of the genotype
  * @param readDepth total reads at the genotype position
  * @param alleleReadDepth total reads with allele base at the genotype position
  * @param forwardDepth total reads on the forward strand at the genotype position
@@ -20,7 +22,7 @@ import org.hammerlab.guacamole.pileup.Pileup
  * @param medianBaseQuality median base quality of bases covering this position
  * @param medianMismatchesPerRead median number of mismatches on reads supporting this variant
  */
-case class AlleleEvidence(likelihood: Double,
+case class AlleleEvidence(probability: Double,
                           readDepth: Int,
                           alleleReadDepth: Int,
                           forwardDepth: Int,
@@ -31,7 +33,7 @@ case class AlleleEvidence(likelihood: Double,
                           medianBaseQuality: Double,
                           medianMismatchesPerRead: Double) {
 
-  lazy val phredScaledLikelihood = PhredUtils.successProbabilityToPhred(likelihood - 1e-10) //subtract small delta to prevent p = 1
+  lazy val phredScaledLikelihood = successProbabilityToPhred(probability)
   lazy val variantAlleleFrequency = alleleReadDepth.toFloat / readDepth
 }
 
