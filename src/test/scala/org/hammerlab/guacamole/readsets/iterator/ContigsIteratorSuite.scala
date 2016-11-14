@@ -1,8 +1,8 @@
 package org.hammerlab.guacamole.readsets.iterator
 
-import org.hammerlab.guacamole.reads.{ReadsUtil, TestRegion}
+import org.hammerlab.genomics.reference.test.TestRegion
+import org.hammerlab.guacamole.reads.ReadsUtil
 import org.scalatest.{FunSuite, Matchers}
-import org.hammerlab.guacamole.reads.TestRegion._
 
 class ContigsIteratorSuite extends FunSuite with Matchers with ReadsUtil {
   test("simple") {

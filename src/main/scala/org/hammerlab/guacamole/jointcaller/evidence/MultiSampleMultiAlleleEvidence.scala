@@ -1,11 +1,11 @@
 package org.hammerlab.guacamole.jointcaller.evidence
 
+import org.hammerlab.genomics.reference.{ContigName, Locus, Region}
 import org.hammerlab.guacamole.jointcaller.pileup_summarization.{MultiplePileupStats, PileupStats}
 import org.hammerlab.guacamole.jointcaller.{AlleleAtLocus, InputCollection, Parameters}
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.readsets.PerSample
-import org.hammerlab.guacamole.reference.Locus
-import org.hammerlab.guacamole.reference.{ContigName, ReferenceBroadcast, ReferenceRegion}
+import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.util.Bases.isStandardBase
 
 /**
@@ -19,7 +19,7 @@ import org.hammerlab.guacamole.util.Bases.isStandardBase
 case class MultiSampleMultiAlleleEvidence(contigName: ContigName,
                                           start: Locus,
                                           singleAlleleEvidences: Seq[MultiSampleSingleAlleleEvidence])
-    extends ReferenceRegion {
+    extends Region {
 
   assume(singleAlleleEvidences.forall(_.allele.contigName == contigName))
   assume(singleAlleleEvidences.forall(_.allele.start == start))

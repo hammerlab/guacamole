@@ -1,11 +1,12 @@
 package org.hammerlab.guacamole.distributed
 
 import org.apache.spark.rdd.RDD
+import org.hammerlab.genomics.reference.ContigSequence
 import org.hammerlab.guacamole.distributed.WindowFlatMapUtils.windowFlatMapWithState
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.readsets.{PartitionedReads, PerSample, SampleName}
-import org.hammerlab.guacamole.reference.{ContigSequence, ReferenceGenome}
+import org.hammerlab.guacamole.reference.ReferenceGenome
 import org.hammerlab.guacamole.windowing.SlidingWindow
 
 import scala.reflect.ClassTag

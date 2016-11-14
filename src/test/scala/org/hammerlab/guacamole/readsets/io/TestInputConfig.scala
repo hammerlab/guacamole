@@ -1,6 +1,6 @@
 package org.hammerlab.guacamole.readsets.io
 
-import org.hammerlab.guacamole.loci.parsing.ParsedLoci
+import org.hammerlab.genomics.loci.parsing.{All, ParsedLoci}
 
 object TestInputConfig {
   def mapped(nonDuplicate: Boolean = false,
@@ -8,7 +8,7 @@ object TestInputConfig {
              isPaired: Boolean = false,
              minAlignmentQuality: Int = 0): InputConfig =
     new InputConfig(
-      overlapsLociOpt = Some(ParsedLoci.all),
+      overlapsLociOpt = Some(All),
       nonDuplicate,
       passedVendorQualityChecks,
       isPaired,

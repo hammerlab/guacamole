@@ -1,8 +1,8 @@
 package org.hammerlab.guacamole.jointcaller
 
+import org.hammerlab.genomics.loci.parsing.ParsedLoci
+import org.hammerlab.genomics.loci.set.LociSet
 import org.hammerlab.guacamole.commands.SomaticJoint.makeCalls
-import org.hammerlab.guacamole.loci.parsing.ParsedLoci
-import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.readsets.ReadSetsUtil
 import org.hammerlab.guacamole.reference.{ReferenceBroadcast, ReferenceUtil}
 import org.hammerlab.guacamole.util.GuacFunSuite
@@ -31,8 +31,7 @@ class SomaticJointCallerSuite
 
   test("force-call a non-variant locus") {
     val inputs = InputCollection(cancerWGS1Bams)
-    val loci = ParsedLoci("chr12:65857040")
-    val readSets = makeReadSets(inputs, loci)
+    val (readSets, loci) = makeReadSets(inputs, "chr12:65857040")
     val calls =
       makeCalls(
         sc,
@@ -40,8 +39,8 @@ class SomaticJointCallerSuite
         readSets,
         Parameters.defaults,
         hg19PartialReference,
-        loci.result,
-        loci.result
+        loci,
+        loci
       )
       .collect
 
@@ -57,16 +56,15 @@ class SomaticJointCallerSuite
 
   test("call a somatic deletion") {
     val inputs = InputCollection(cancerWGS1Bams)
-    val loci = ParsedLoci("chr5:82649006-82649009")
-    val readSets = makeReadSets(inputs, loci)
+    val (readsets, loci) = makeReadSets(inputs, "chr5:82649006-82649009")
     val calls =
       makeCalls(
         sc,
         inputs,
-        readSets,
+        readsets,
         Parameters.defaults,
         hg19PartialReference,
-        loci.result,
+        loci,
         LociSet(),
         includeFiltered = true
       )
@@ -80,8 +78,7 @@ class SomaticJointCallerSuite
 
   test("call germline variants") {
     val inputs = InputCollection(cancerWGS1Bams.take(1), tissueTypes = Vector("normal"))
-    val loci = ParsedLoci("chr1,chr2,chr3")
-    val readSets = makeReadSets(inputs, loci)
+    val (readSets, loci) = makeReadSets(inputs, "chr1,chr2,chr3")
     val calls =
       makeCalls(
         sc,
@@ -90,7 +87,7 @@ class SomaticJointCallerSuite
         includeFiltered = true,
         parameters = Parameters.defaults.copy(filterStrandBiasPhred = 20),
         reference = hg19PartialReference,
-        loci = loci.result(readSets.contigLengths)
+        loci = loci
       )
       .collect
       .map(call => (call.contigName, call.start) -> call)
@@ -121,19 +118,18 @@ class SomaticJointCallerSuite
 
   test("don't call variants with N as the reference base") {
     val inputs = InputCollection(cancerWGS1Bams)
-    val loci = ParsedLoci("chr12:65857030-65857080")
-    val readSets = makeReadSets(inputs, loci)
+    val (readsets, loci) = makeReadSets(inputs, "chr12:65857030-65857080")
     val emptyPartialReference = makeReference(sc, 70000000, ("chr12", 65856930, "N" * 250))
 
     val calls =
       makeCalls(
         sc,
         inputs,
-        readSets,
+        readsets,
         Parameters.defaults,
         emptyPartialReference,
-        loci.result,
-        loci.result
+        loci,
+        loci
       )
       .collect
 
@@ -142,35 +138,39 @@ class SomaticJointCallerSuite
 
   test("call a somatic variant using RNA evidence") {
     val parameters = Parameters.defaults.copy(somaticNegativeLog10VariantPriorWithRnaEvidence = 1)
+    val lociStr = "chr22:46931058-46931079"
 
-    val loci = ParsedLoci("chr22:46931058-46931079")
     val inputsWithRNA = InputCollection(celsr1BAMs, analytes = Vector("dna", "dna", "rna"))
-    val callsWithRNA =
+
+    val callsWithRNA = {
+      val (readsets, loci) = makeReadSets(inputsWithRNA, lociStr)
       makeCalls(
         sc,
         inputsWithRNA,
-        makeReadSets(inputsWithRNA, loci),
+        readsets,
         parameters,
         b37Chromosome22Reference,
-        loci.result
+        loci
       )
       .collect
       .filter(_.bestAllele.isCall)
+    }
 
     val inputsWithoutRNA = InputCollection(celsr1BAMs.take(2), analytes = Vector("dna", "dna"))
 
-    val callsWithoutRNA =
+    val callsWithoutRNA = {
+      val (readsets, loci) = makeReadSets(inputsWithoutRNA, lociStr)
       makeCalls(
         sc,
         inputsWithoutRNA,
-        makeReadSets(inputsWithoutRNA, loci),
+        readsets,
         parameters,
         b37Chromosome22Reference,
-        loci.result
+        loci
       )
       .collect
       .filter(_.bestAllele.isCall)
-
+    }
     Map(
       "with rna" -> callsWithRNA,
       "without rna" -> callsWithoutRNA

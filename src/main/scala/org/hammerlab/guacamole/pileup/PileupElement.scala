@@ -2,8 +2,8 @@ package org.hammerlab.guacamole.pileup
 
 import htsjdk.samtools.{CigarElement, CigarOperator}
 import org.bdgenomics.adam.util.PhredUtils.phredToSuccessProbability
+import org.hammerlab.genomics.reference.{ContigSequence, Locus}
 import org.hammerlab.guacamole.reads.MappedRead
-import org.hammerlab.guacamole.reference.{ContigSequence, Locus}
 import org.hammerlab.guacamole.util.CigarUtils
 import org.hammerlab.guacamole.variants.Allele
 
@@ -89,7 +89,7 @@ case class PileupElement(
         makeInsertion(cigarElement)
 
       // In general, a PileupElement pointing at an Insertion cigar-element is an error.
-      case (CigarOperator.I, _) => throw new InvalidCigarElementException(this)
+      case (CigarOperator.I, _) => throw InvalidCigarElementException(this)
 
       case (CigarOperator.M | CigarOperator.EQ | CigarOperator.X, Some(CigarOperator.D)) =>
         val deletedBases = contigSequence.slice(locus.toInt, locus.toInt + nextCigarElement.get.getLength + 1)

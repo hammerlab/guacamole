@@ -218,6 +218,7 @@ object GermlineAssemblyCaller {
             }
           }
         )
+
       genotypes
     }
 

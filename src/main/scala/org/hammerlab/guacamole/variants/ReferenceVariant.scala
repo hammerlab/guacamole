@@ -1,14 +1,14 @@
 package org.hammerlab.guacamole.variants
 
 import org.bdgenomics.formats.avro.{DatabaseVariantAnnotation, Variant, Genotype => BDGGenotype}
+import org.hammerlab.genomics.reference.Region
 import org.hammerlab.guacamole.readsets.SampleName
-import org.hammerlab.guacamole.reference.ReferenceRegion
 import org.hammerlab.guacamole.util.Bases.basesToString
 
 /**
  * Base properties of a genomic change in a sequence sample from a reference genome
  */
-trait ReferenceVariant extends ReferenceRegion {
+trait ReferenceVariant extends Region {
 
   def sampleName: SampleName
 

@@ -1,7 +1,7 @@
 package org.hammerlab.guacamole.reads
 
 import htsjdk.samtools.SAMRecord
-import org.hammerlab.guacamole.reference.{ContigName, Locus}
+import org.hammerlab.genomics.reference.{ContigName, Locus}
 
 /**
  * Details of the mate read alignment

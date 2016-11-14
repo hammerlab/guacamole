@@ -1,11 +1,12 @@
 package org.hammerlab.guacamole.distributed
 
 import org.apache.spark.rdd.RDD
-import org.hammerlab.guacamole.loci.set.{LociIterator, LociSet}
+import org.hammerlab.genomics.loci.iterator.LociIterator
+import org.hammerlab.genomics.loci.set.LociSet
+import org.hammerlab.genomics.reference.Region
 import org.hammerlab.guacamole.reads.SampleRegion
 import org.hammerlab.guacamole.readsets.rdd.PartitionedRegions
 import org.hammerlab.guacamole.readsets.{NumSamples, PerSample}
-import org.hammerlab.guacamole.reference.ReferenceRegion
 import org.hammerlab.guacamole.windowing.{SlidingWindow, SplitIterator}
 
 import scala.reflect.ClassTag
@@ -115,7 +116,7 @@ object WindowFlatMapUtils {
    * @tparam T result data type
    * @return Iterator[T] collected from each contig
    */
-  def splitPartitionByContigAndMap[R <: ReferenceRegion: ClassTag, T: ClassTag](
+  def splitPartitionByContigAndMap[R <: Region: ClassTag, T: ClassTag](
     perSampleTaskRegions: PerSample[Iterator[R]],
     partitionLoci: LociSet,
     halfWindowSize: Int,
