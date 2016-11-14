@@ -3,33 +3,33 @@ package org.hammerlab.guacamole.readsets.rdd
 import org.apache.hadoop.fs.{FileSystem, Path}
 import org.apache.spark.rdd.RDD
 import org.apache.spark.{Accumulable, SparkContext}
-import org.hammerlab.guacamole.loci.partitioning.LociPartitioner.PartitionIndex
+import org.hammerlab.genomics.loci.set.LociSet
+import org.hammerlab.genomics.reference.Region
 import org.hammerlab.guacamole.loci.partitioning.LociPartitioning
-import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
-import org.hammerlab.guacamole.reference.ReferenceRegion
 import org.hammerlab.magic.accumulables.{HistogramParam, HashMap => MagicHashMap}
 import org.hammerlab.magic.rdd.serde.SequenceFileSerializableRDD._
+import org.hammerlab.spark.PartitionIndex
 import org.hammerlab.spark.util.KeyPartitioner
 import org.hammerlab.stats.Stats
 
 import scala.reflect.ClassTag
 
 /**
- * Groups a [[LociPartitioning]] with an [[RDD[ReferenceRegion]]] that has already been partitioned according to that
+ * Groups a [[LociPartitioning]] with an [[RDD[Region]]] that has already been partitioned according to that
  * partitioning.
  *
  * This means some regions will occur multiple times in the RDD (due to regions straddling partition boundaries), so
- * it's important not to confuse this with a regular [[RDD[ReferenceRegion]]].
+ * it's important not to confuse this with a regular [[RDD[Region]]].
  *
- * The main API exposed here is [[mapPartitions]], which lets the caller apply a function to a [[LociSet]] as well as
+ * The main API exposed here is [[mapPartitions]], which lets the caller apply a function to a [[org.hammerlab.genomics.loci.set.LociSet]] as well as
  * all region copies that overlap those loci.
  *
  * Note: the containing [[PartitionedRegions]] gets picked up by the closure-cleaner and serialized when
  * [[mapPartitions]] is called.
  */
-class PartitionedRegions[R <: ReferenceRegion: ClassTag] private(regions: RDD[R],
-                                                                 partitioning: LociPartitioning)
+class PartitionedRegions[R <: Region: ClassTag] private(regions: RDD[R],
+                                                        partitioning: LociPartitioning)
   extends Serializable {
 
   @transient lazy val lociSetsRDD = partitioning.lociSetsRDD(sc)
@@ -93,9 +93,9 @@ object PartitionedRegions {
   /**
    * Load an [[RDD]] of partitioned regions from a file.
    */
-  def load[R <: ReferenceRegion: ClassTag](sc: SparkContext,
-                                           filename: String,
-                                           partitioning: LociPartitioning): PartitionedRegions[R] = {
+  def load[R <: Region: ClassTag](sc: SparkContext,
+                                  filename: String,
+                                  partitioning: LociPartitioning): PartitionedRegions[R] = {
     progress(s"Loading partitioned reads from $filename")
     val regions = sc.fromSequenceFile[R](filename, splittable = false)
     new PartitionedRegions(regions, partitioning)
@@ -111,11 +111,11 @@ object PartitionedRegions {
    * @param loci Genomic loci to operate on; these will be split among Spark partitions and coupled with all regions
    *             from `regionRDDs` that overlap them (module the half-window described below).
    * @param args Parameters dictating how `loci` should be partitioned.
-   * @tparam R ReferenceRegion type.
+   * @tparam R Region type.
    */
-  def apply[R <: ReferenceRegion: ClassTag](regions: RDD[R],
-                                            loci: LociSet,
-                                            args: PartitionedRegionsArgs): PartitionedRegions[R] =
+  def apply[R <: Region: ClassTag](regions: RDD[R],
+                                   loci: LociSet,
+                                   args: PartitionedRegionsArgs): PartitionedRegions[R] =
     apply(
       regions,
       LociPartitioning(regions, loci, args),
@@ -132,12 +132,12 @@ object PartitionedRegions {
    * If `partitionedRegionsPathOpt` is provided, attempt to load loci- and region- partitionings from that path; if the
    * path doesn't exist, compute them and save to that path.
    */
-  private[rdd] def apply[R <: ReferenceRegion: ClassTag](regions: RDD[R],
-                                                         lociPartitioning: LociPartitioning,
-                                                         halfWindowSize: Int,
-                                                         partitionedRegionsPathOpt: Option[String],
-                                                         compress: Boolean,
-                                                         printStats: Boolean): PartitionedRegions[R] =
+  private[rdd] def apply[R <: Region: ClassTag](regions: RDD[R],
+                                                lociPartitioning: LociPartitioning,
+                                                halfWindowSize: Int,
+                                                partitionedRegionsPathOpt: Option[String],
+                                                compress: Boolean,
+                                                printStats: Boolean): PartitionedRegions[R] =
     partitionedRegionsPathOpt match {
       case Some(partitionedRegionsPath) =>
 
@@ -157,11 +157,11 @@ object PartitionedRegions {
   /**
    * Construct a [[PartitionedRegions]] for above constructors, ignoring loading/saving considerations.
    */
-  private def compute[R <: ReferenceRegion: ClassTag](regions: RDD[R],
-                                                      lociPartitioning: LociPartitioning,
-                                                      halfWindowSize: Int,
-                                                      compress: Boolean,
-                                                      printStats: Boolean): PartitionedRegions[R] = {
+  private def compute[R <: Region: ClassTag](regions: RDD[R],
+                                             lociPartitioning: LociPartitioning,
+                                             halfWindowSize: Int,
+                                             compress: Boolean,
+                                             printStats: Boolean): PartitionedRegions[R] = {
 
     val sc = regions.sparkContext
 

@@ -1,10 +1,10 @@
 package org.hammerlab.guacamole.main
 
 import org.apache.spark.SparkContext
+import org.hammerlab.genomics.loci.set.LociSet
 import org.hammerlab.guacamole.commands.SomaticJoint.Arguments
 import org.hammerlab.guacamole.commands.{SomaticJoint, SparkCommand}
 import org.hammerlab.guacamole.data.{CancerWGSTestUtil, NA12878TestUtil}
-import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.util.TestUtil.resourcePath
 import org.hammerlab.guacamole.variants.VariantComparisonTest
 

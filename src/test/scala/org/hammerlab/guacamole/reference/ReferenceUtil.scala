@@ -1,6 +1,7 @@
 package org.hammerlab.guacamole.reference
 
 import org.apache.spark.SparkContext
+import org.hammerlab.genomics.reference.ContigName
 import org.hammerlab.guacamole.reference.ReferenceBroadcast.MapBackedReferenceSequence
 import org.hammerlab.guacamole.util.Bases.stringToBases
 

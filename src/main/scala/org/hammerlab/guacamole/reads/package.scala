@@ -1,10 +1,10 @@
 package org.hammerlab.guacamole
 
-import org.hammerlab.guacamole.reference.ReferenceRegion
+import org.hammerlab.genomics.reference.Region
 
 /**
  * Classes for representing sequenced reads, mapped or unmapped.
  */
 package object reads {
-  type SampleRegion = ReferenceRegion with HasSampleId
+  type SampleRegion = Region with HasSampleId
 }

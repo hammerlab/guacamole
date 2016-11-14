@@ -7,7 +7,9 @@ import grizzled.slf4j.Logging
 import htsjdk.samtools.reference.FastaSequenceFile
 import org.apache.spark.SparkContext
 import org.apache.spark.broadcast.Broadcast
-import org.hammerlab.guacamole.loci.parsing.{LociRange, ParsedLoci, ParsedLociRange}
+import org.hammerlab.genomics.loci.parsing.{LociRange, LociRanges, ParsedLociRange}
+import org.hammerlab.genomics.loci.set.LociSet
+import org.hammerlab.genomics.reference.{ContigName, ContigSequence, Locus, NumLoci}
 import org.hammerlab.guacamole.util.Bases.unmaskBases
 
 import scala.collection.mutable
@@ -132,8 +134,8 @@ object ReferenceBroadcast extends Logging {
           val loci =
             ParsedLociRange(lociStr) match {
               case Some(LociRange(contigName, start, endOpt)) =>
-                val parsedLoci = ParsedLoci(LociRange(contigName, start, endOpt))
-                parsedLoci.result(Map(contigName -> contigLength))
+                val parsedLoci = LociRanges(LociRange(contigName, start, endOpt))
+                LociSet(parsedLoci, Map(contigName -> contigLength))
               case _ =>
                 throw new IllegalArgumentException(s"Bad loci range: $lociStr")
             }

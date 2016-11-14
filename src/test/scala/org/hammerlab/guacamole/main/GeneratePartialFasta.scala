@@ -3,14 +3,15 @@ package org.hammerlab.guacamole.main
 import java.io.{BufferedWriter, File, FileWriter}
 
 import org.apache.spark.SparkContext
+import org.hammerlab.genomics.loci.set.LociSet
+import org.hammerlab.genomics.reference.Interval
 import org.hammerlab.guacamole.commands.{Args, SparkCommand}
-import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.readsets.ReadSets
 import org.hammerlab.guacamole.readsets.args.{ReferenceArgs, Arguments => ReadSetsArguments}
 import org.hammerlab.guacamole.readsets.io.InputConfig
 import org.hammerlab.guacamole.readsets.rdd.PartitionedRegionsArgs
-import org.hammerlab.guacamole.reference.{ContigNotFound, Interval}
+import org.hammerlab.guacamole.reference.ContigNotFound
 import org.hammerlab.guacamole.util.Bases.basesToString
 import org.kohsuke.args4j.{Option => Args4jOption}
 

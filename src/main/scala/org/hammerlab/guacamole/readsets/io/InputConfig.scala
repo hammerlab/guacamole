@@ -1,6 +1,6 @@
 package org.hammerlab.guacamole.readsets.io
 
-import org.hammerlab.guacamole.loci.parsing.ParsedLoci
+import org.hammerlab.genomics.loci.parsing.{All, ParsedLoci}
 
 /**
  * Configuring how/which reads are loaded can be an important optimization.
@@ -24,7 +24,7 @@ case class InputConfig(overlapsLociOpt: Option[ParsedLoci],
                        minAlignmentQualityOpt: Option[Int],
                        maxSplitSizeOpt: Option[Long]
                        ) {
-  def loci = overlapsLociOpt.getOrElse(ParsedLoci.all)
+  def loci = overlapsLociOpt.getOrElse(All)
 }
 
 object InputConfig {

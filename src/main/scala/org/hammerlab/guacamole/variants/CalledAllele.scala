@@ -1,9 +1,10 @@
 package org.hammerlab.guacamole.variants
 
+import org.bdgenomics.formats.avro.{GenotypeAllele, Genotype => BDGGenotype}
+import org.hammerlab.genomics.reference.{ContigName, Locus, NumLoci}
 import org.hammerlab.guacamole.readsets.SampleName
+
 import scala.collection.JavaConversions.seqAsJavaList
-import org.hammerlab.guacamole.reference.{ContigName, Locus, NumLoci}
-import org.bdgenomics.formats.avro.{ GenotypeAllele, Genotype => BDGGenotype }
 
 /**
  *

@@ -3,8 +3,8 @@ package org.hammerlab.guacamole.readsets.io
 import org.apache.hadoop.conf.Configuration
 import org.apache.spark.network.util.JavaUtils
 import org.hammerlab.args4s.{IntOptionHandler, StringOptionHandler}
+import org.hammerlab.genomics.loci.parsing.{All, ParsedLoci}
 import org.hammerlab.guacamole.loci.args.CallLociArgs
-import org.hammerlab.guacamole.loci.parsing.ParsedLoci
 import org.kohsuke.args4j.{Option => Args4jOption}
 
 trait ReadFilterArgs extends CallLociArgs {
@@ -52,7 +52,7 @@ trait ReadFilterArgs extends CallLociArgs {
     InputConfig(
       overlapsLociOpt =
         if (onlyMappedReads)
-          Some(ParsedLoci.all)
+          Some(All)
         else
           loci,
       nonDuplicate = !includeDuplicates,
