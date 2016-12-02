@@ -5,17 +5,17 @@ import java.io.OutputStream
 import org.apache.avro.generic.GenericDatumWriter
 import org.apache.avro.io.EncoderFactory
 import org.apache.hadoop.conf.Configuration
-import org.apache.hadoop.fs.{FileSystem, Path}
+import org.apache.hadoop.fs.{ FileSystem, Path }
 import org.apache.hadoop.mapred.FileAlreadyExistsException
 import org.apache.spark.rdd.RDD
-import org.apache.spark.{HashPartitioner, SparkContext}
-import org.bdgenomics.adam.rdd.variation.GenotypeRDD
-import org.bdgenomics.formats.avro.{Genotype => BDGGenotype}
+import org.apache.spark.{ HashPartitioner, SparkContext }
+import org.bdgenomics.adam.rdd.variant.GenotypeRDD
+import org.bdgenomics.formats.avro.{ Genotype => BDGGenotype }
 import org.bdgenomics.utils.cli.ParquetArgs
 import org.codehaus.jackson.JsonFactory
 import org.hammerlab.guacamole.commands.Args
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
-import org.kohsuke.args4j.{Option => Args4jOption}
+import org.kohsuke.args4j.{ Option => Args4jOption }
 
 /**
  * Arguments for writing output genotypes.
@@ -75,8 +75,7 @@ trait GenotypeOutputArgs
     val subsetGenotypes =
       if (maxGenotypes > 0) {
         progress(s"Subsetting to ${maxGenotypes} genotypes.")
-        val GenotypeRDD(rdd, sequences, samples) = genotypes
-        GenotypeRDD(rdd.sample(withReplacement = false, maxGenotypes, 0), sequences, samples)
+        genotypes.copy(rdd = genotypes.rdd.sample(withReplacement = false, maxGenotypes, 0))
       } else {
         genotypes
       }
@@ -94,7 +93,7 @@ trait GenotypeOutputArgs
       val sortedCoalescedRDD =
         variantsRDD
           .rdd
-          .keyBy(v => (v.variant.getStart, v.variant.getEnd))
+          .keyBy(v => (v.variant.variant.getStart, v.variant.variant.getEnd))
           .repartitionAndSortWithinPartitions(new HashPartitioner(1))
           .values
 

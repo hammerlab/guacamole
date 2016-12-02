@@ -1,7 +1,8 @@
 package org.hammerlab.guacamole.variants
 
-import org.bdgenomics.formats.avro.{GenotypeAllele, Genotype => BDGGenotype}
-import org.hammerlab.genomics.reference.{ContigName, Locus, NumLoci}
+import org.bdgenomics.formats.avro.GenotypeAllele.{ ALT, REF }
+import org.bdgenomics.formats.avro.{ Genotype => BDGGenotype }
+import org.hammerlab.genomics.reference.{ ContigName, Locus, NumLoci }
 import org.hammerlab.guacamole.readsets.SampleName
 
 import scala.collection.JavaConversions.seqAsJavaList
@@ -29,7 +30,7 @@ case class CalledAllele(sampleName: SampleName,
   def toBDGGenotype: BDGGenotype =
     BDGGenotype
       .newBuilder
-      .setAlleles(seqAsJavaList(Seq(GenotypeAllele.Ref, GenotypeAllele.Alt)))
+      .setAlleles(seqAsJavaList(Seq(REF, ALT)))
       .setSampleId(sampleName)
       .setGenotypeQuality(evidence.phredScaledLikelihood)
       .setReadDepth(evidence.readDepth)

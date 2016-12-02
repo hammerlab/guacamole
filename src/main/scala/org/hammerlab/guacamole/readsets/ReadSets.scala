@@ -150,7 +150,7 @@ object ReadSets extends Logging {
 
     val conf = sc.hadoopConfiguration
     val samHeader = SAMHeaderReader.readSAMHeaderFrom(path, conf)
-    val sequenceDictionary = SequenceDictionary.fromSAMHeader(samHeader)
+    val sequenceDictionary = SequenceDictionary(samHeader)
 
     config
       .maxSplitSizeOpt
@@ -200,7 +200,7 @@ object ReadSets extends Logging {
 
     progress(s"Using ADAM to read: $filename")
 
-    val adamContext = new ADAMContext(sc)
+    val adamContext: ADAMContext = sc
 
     val alignmentRDD =
       adamContext.loadAlignments(filename, projection = None, stringency = ValidationStringency.LENIENT)

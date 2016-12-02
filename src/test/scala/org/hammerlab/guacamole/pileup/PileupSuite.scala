@@ -403,7 +403,6 @@ class PileupSuite
 
     // Last base
     AssertBases(rnaPileupElement.advanceToLocus(start + 1049).sequencedBases, "C")
-
   }
 
   test("create pileup from RNA reads") {
