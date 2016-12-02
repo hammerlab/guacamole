@@ -12,6 +12,8 @@ providedDeps ++= Seq(
 
 libraryDependencies ++= Seq(
   "org.hammerlab.adam" %% "adam-core" % "0.20.3",
+  "org.hammerlab" %% "spark-commands" % "1.0.0",
+  "org.bdgenomics.utils" %% "utils-cli" % "0.2.10",
   libraries.value('hadoop_bam),
   "org.bdgenomics.quinine" %% "quinine-core" % "0.0.2" exclude("org.bdgenomics.adam", "adam-core"),
   "org.hammerlab" %% "magic-rdds" % "1.3.1",
