@@ -1,6 +1,6 @@
 package org.hammerlab.guacamole.variants
 
-import org.bdgenomics.formats.avro.GenotypeAllele.{Alt, Ref}
+import org.bdgenomics.formats.avro.GenotypeAllele.{ ALT, REF }
 import org.bdgenomics.formats.avro.{Genotype => BDGGenotype}
 import org.hammerlab.genomics.reference.{ContigName, Locus, NumLoci}
 import org.hammerlab.guacamole.readsets.SampleName
@@ -42,7 +42,7 @@ case class CalledSomaticAllele(sampleName: SampleName,
   def toBDGGenotype: BDGGenotype =
     BDGGenotype
       .newBuilder
-      .setAlleles(seqAsJavaList(Seq(Ref, Alt)))
+      .setAlleles(seqAsJavaList(Seq(REF, ALT)))
       .setSampleId(sampleName)
       .setContigName(contigName)
       .setStart(start)

@@ -52,7 +52,7 @@ object VariantSupport {
 
       val reference = args.reference(sc)
 
-      val adamContext = new ADAMContext(sc)
+      val adamContext: ADAMContext = sc
 
       val variants: RDD[Variant] = adamContext.loadVariants(args.variants).rdd
 

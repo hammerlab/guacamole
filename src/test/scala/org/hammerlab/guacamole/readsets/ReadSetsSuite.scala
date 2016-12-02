@@ -123,7 +123,7 @@ class ReadSetsSuite
 
   test("load read from ADAM") {
     // First load reads from SAM using ADAM and save as ADAM
-    val adamContext = new ADAMContext(sc)
+    val adamContext: ADAMContext = sc
     val adamRecords = adamContext.loadBam(resourcePath("mdtagissue.sam"))
 
     val adamOut = tmpPath(suffix = ".adam")
@@ -135,6 +135,7 @@ class ReadSetsSuite
       override var blockSize: Int = 1024
       override var pageSize: Int = 1024
       override var compressionCodec: CompressionCodecName = CompressionCodecName.UNCOMPRESSED
+      override var deferMerging: Boolean = false
     }
 
     adamRecords.saveAsParquet(args)

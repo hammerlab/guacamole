@@ -3,7 +3,7 @@ package org.hammerlab.guacamole.commands
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.rdd.ADAMContext
-import org.bdgenomics.formats.avro.DatabaseVariantAnnotation
+import org.bdgenomics.formats.avro.VariantAnnotation
 import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMapTwoSamples
 import org.hammerlab.guacamole.filters.somatic.SomaticGenotypeFilter
 import org.hammerlab.guacamole.filters.somatic.SomaticGenotypeFilter.SomaticGenotypeFilterArguments
@@ -119,7 +119,7 @@ object SomaticStandard {
       progress("Computed %,d potential genotypes".format(potentialGenotypes.count))
 
       if (args.dbSnpVcf != "") {
-        val adamContext = new ADAMContext(sc)
+        val adamContext: ADAMContext = sc
         val dbSnpVariants = adamContext.loadVariantAnnotations(args.dbSnpVcf)
 
         potentialGenotypes =
@@ -128,8 +128,19 @@ object SomaticStandard {
             .leftOuterJoin(dbSnpVariants.rdd.keyBy(_.getVariant))
             .values
             .map {
-              case (calledAllele: CalledSomaticAllele, dbSnpVariantOpt: Option[DatabaseVariantAnnotation]) =>
-                calledAllele.copy(rsID = dbSnpVariantOpt.map(_.getDbSnpId))
+              case (calledAllele: CalledSomaticAllele, dbSnpVariantOpt: Option[VariantAnnotation]) =>
+                calledAllele.copy(
+                  rsID =
+                    dbSnpVariantOpt.flatMap(
+                      v =>
+                        if (v.getDbSnp)
+                          Some(
+                            v.getVariant.getNames.get(0).toInt
+                          )
+                        else
+                          None
+                    )
+                )
             }
       }
 
