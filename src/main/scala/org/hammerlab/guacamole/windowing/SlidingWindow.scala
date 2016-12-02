@@ -1,8 +1,8 @@
 package org.hammerlab.guacamole.windowing
 
-import org.hammerlab.guacamole.loci.set.LociIterator
+import org.hammerlab.genomics.loci.iterator.LociIterator
+import org.hammerlab.genomics.reference.{ContigName, Interval, Locus, Region}
 import org.hammerlab.guacamole.readsets.PerSample
-import org.hammerlab.guacamole.reference.{ContigName, Interval, Locus, ReferenceRegion}
 
 import scala.collection.mutable
 
@@ -23,9 +23,9 @@ import scala.collection.mutable
  *                       regions that overlap the exact locus being considered, with no surrounding window.
  * @param rawSortedRegions Iterator of regions, sorted by the aligned start locus.
  */
-case class SlidingWindow[R <: ReferenceRegion](contigName: ContigName,
-                                               halfWindowSize: Int,
-                                               rawSortedRegions: Iterator[R]) {
+case class SlidingWindow[R <: Region](contigName: ContigName,
+                                      halfWindowSize: Int,
+                                      rawSortedRegions: Iterator[R]) {
   /** The locus currently under consideration. */
   var currentLocus = -1L
   /** The new regions that were added to currentRegions as a result of the most recent call to setCurrentLocus. */
@@ -121,9 +121,9 @@ object SlidingWindow {
    * @param skipEmpty whether to skip over loci for which no window has any regions
    * @return Some(locus) if there was another locus left to process, otherwise None
    */
-  def advanceMultipleWindows[R <: ReferenceRegion](windows: PerSample[SlidingWindow[R]],
-                                                   loci: LociIterator,
-                                                   skipEmpty: Boolean = true): Option[Long] = {
+  def advanceMultipleWindows[R <: Region](windows: PerSample[SlidingWindow[R]],
+                                          loci: LociIterator,
+                                          skipEmpty: Boolean = true): Option[Long] = {
     if (skipEmpty) {
       while (loci.hasNext) {
         val nextNonEmptyLocus = windows.flatMap(_.nextLocusWithRegions).reduceOption(_ min _)

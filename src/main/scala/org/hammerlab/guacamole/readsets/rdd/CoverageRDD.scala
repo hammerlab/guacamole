@@ -2,20 +2,21 @@ package org.hammerlab.guacamole.readsets.rdd
 
 import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.rdd.RDD
+import org.hammerlab.genomics.loci.iterator.LociIterator
+import org.hammerlab.genomics.loci.set.LociSet
+import org.hammerlab.genomics.reference.{ContigName, Interval, NumLoci, Position, Region}
 import org.hammerlab.guacamole.loci.Coverage
-import org.hammerlab.guacamole.loci.set.{LociIterator, LociSet, TakeLociIterator}
+import org.hammerlab.guacamole.loci.set.TakeLociIterator
 import org.hammerlab.guacamole.readsets.iterator.{ContigCoverageIterator, ContigsIterator}
-import org.hammerlab.guacamole.reference.Position.ordering
-import org.hammerlab.guacamole.reference.{ContigName, Interval, NumLoci, Position, ReferenceRegion}
 import org.hammerlab.magic.rdd.RunLengthRDD._
 
 import scala.collection.mutable
 import scala.reflect.ClassTag
 
 /**
- * Augment an [[RDD[ReferenceRegion]]] with methods for computing coverage depth, .
+ * Augment an [[RDD[Region]]] with methods for computing coverage depth, .
  */
-class CoverageRDD[R <: ReferenceRegion: ClassTag](rdd: RDD[R])
+class CoverageRDD[R <: Region: ClassTag](rdd: RDD[R])
   extends Serializable {
 
   @transient val sc = rdd.sparkContext
@@ -141,11 +142,11 @@ class CoverageRDD[R <: ReferenceRegion: ClassTag](rdd: RDD[R])
       .reduceByKey(_ + _)
       .sortByKey()
 
-  private def coveragesForRegion(region: ReferenceRegion,
+  private def coveragesForRegion(region: Region,
                                  halfWindowSize: Int,
                                  loci: LociSet): Iterator[(Position, Coverage)] = {
 
-    val ReferenceRegion(contigName, start, end) = region
+    val Region(contigName, start, end) = region
 
     // Compute the bounds of loci that this region should contribute 1 unit of coverage-depth to.
     val lowerBound = math.max(0, start - halfWindowSize)
@@ -201,5 +202,5 @@ class CoverageRDD[R <: ReferenceRegion: ClassTag](rdd: RDD[R])
 }
 
 object CoverageRDD {
-  implicit def toCoverageRDD[R <: ReferenceRegion: ClassTag](rdd: RDD[R]): CoverageRDD[R] = new CoverageRDD(rdd)
+  implicit def toCoverageRDD[R <: Region: ClassTag](rdd: RDD[R]): CoverageRDD[R] = new CoverageRDD(rdd)
 }

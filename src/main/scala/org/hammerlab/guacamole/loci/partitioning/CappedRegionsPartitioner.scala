@@ -2,11 +2,11 @@ package org.hammerlab.guacamole.loci.partitioning
 
 import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.rdd.RDD
-import org.hammerlab.guacamole.loci.set.LociSet
+import org.hammerlab.genomics.loci.set.LociSet
+import org.hammerlab.genomics.reference.{ContigName, NumLoci, Region}
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.readsets.rdd.CoverageRDD
-import org.hammerlab.guacamole.reference.{ContigName, NumLoci, ReferenceRegion}
-import org.hammerlab.magic.iterator.GroupRunsIterator
+import org.hammerlab.iterator.GroupRunsIterator
 import org.hammerlab.magic.util.KeyOrdering
 import org.kohsuke.args4j.{Option => Args4JOption}
 
@@ -55,12 +55,12 @@ trait CappedRegionsPartitionerArgs
  * @param printPartitioningStats print some statistics about the computed partitioning; adds several Spark stages so should be
  *                   skipped for performance-critical runs.
  */
-class CappedRegionsPartitioner[R <: ReferenceRegion: ClassTag](regions: RDD[R],
-                                                               halfWindowSize: Int,
-                                                               maxRegionsPerPartition: Int,
-                                                               printPartitioningStats: Boolean,
-                                                               explodeCoverage: Boolean,
-                                                               trimRanges: Boolean)
+class CappedRegionsPartitioner[R <: Region: ClassTag](regions: RDD[R],
+                                                      halfWindowSize: Int,
+                                                      maxRegionsPerPartition: Int,
+                                                      printPartitioningStats: Boolean,
+                                                      explodeCoverage: Boolean,
+                                                      trimRanges: Boolean)
   extends LociPartitioner {
 
   def partition(loci: LociSet): LociPartitioning = {

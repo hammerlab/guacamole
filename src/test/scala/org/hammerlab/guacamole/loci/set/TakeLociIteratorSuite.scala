@@ -1,7 +1,8 @@
 package org.hammerlab.guacamole.loci.set
 
+import org.hammerlab.genomics.loci.set.test.TestLociSet
+import org.hammerlab.genomics.reference.Position
 import org.hammerlab.guacamole.loci.Coverage
-import org.hammerlab.guacamole.reference.Position
 import org.scalatest.{FunSuite, Matchers}
 
 class TakeLociIteratorSuite extends FunSuite with Matchers {
@@ -16,7 +17,7 @@ class TakeLociIteratorSuite extends FunSuite with Matchers {
       } yield
         (Position(contig, locus) -> Coverage(depth, starts))
 
-    val expected = expectedStrs.map(LociSet.apply)
+    val expected = expectedStrs.map(TestLociSet.apply)
 
     new TakeLociIterator(depths.iterator.buffered, 15, trimRanges).toList should be(expected)
   }

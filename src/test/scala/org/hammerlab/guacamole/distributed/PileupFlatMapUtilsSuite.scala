@@ -1,10 +1,10 @@
 package org.hammerlab.guacamole.distributed
 
 import org.apache.spark.storage.BroadcastBlockId
+import org.hammerlab.genomics.loci.set.test.TestLociSet
 import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.{pileupFlatMapMultipleSamples, pileupFlatMapOneSample, pileupFlatMapTwoSamples}
 import org.hammerlab.guacamole.distributed.Util.pileupsToElementStrings
 import org.hammerlab.guacamole.loci.partitioning.UniformPartitioner
-import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.pileup.{Pileup, PileupElement}
 import org.hammerlab.guacamole.readsets.rdd.{PartitionedRegionsUtil, ReadsRDDUtil}
 import org.hammerlab.guacamole.readsets.{PartitionedReads, PerSample}
@@ -72,7 +72,7 @@ class PileupFlatMapUtilsSuite
             readsRDD.getNumPartitions
           )
       ).partition(
-        LociSet(lociStr)
+        TestLociSet(lociStr)
       )
     )
   }
@@ -161,7 +161,7 @@ class PileupFlatMapUtilsSuite
     val partitionedReads =
       partitionReads(
         reads1 ++ reads2,
-        UniformPartitioner(1).partition(LociSet("chr0:0-1000,chr1:1-500,chr2:10-20"))
+        UniformPartitioner(1).partition(TestLociSet("chr0:0-1000,chr1:1-500,chr2:10-20"))
       )
 
     val loci =
@@ -207,7 +207,7 @@ class PileupFlatMapUtilsSuite
         ("XZX", "3M", 99)
       )
 
-    val loci = LociSet("chr1:1-500,chr2:10-20")
+    val loci = TestLociSet("chr1:1-500,chr2:10-20")
 
     val reads = reads1 ++ reads2 ++ reads3
 
@@ -297,7 +297,7 @@ class PileupFlatMapUtilsSuite
     val partitionedReads =
       partitionReads(
         reads1 ++ reads2,
-        UniformPartitioner(1000).partition(LociSet("chr1:1-500"))
+        UniformPartitioner(1000).partition(TestLociSet("chr1:1-500"))
       )
 
     val elements =
@@ -330,7 +330,7 @@ class PileupFlatMapUtilsSuite
       pileupFlatMapOneSample[PileupElement](
         partitionReads(
           reads,
-          UniformPartitioner(5).partition(LociSet("chr1:1-12"))
+          UniformPartitioner(5).partition(TestLociSet("chr1:1-12"))
         ),
         sampleName = "sampleName",
         skipEmpty = false,

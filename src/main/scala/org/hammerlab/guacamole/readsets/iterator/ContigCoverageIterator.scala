@@ -1,8 +1,8 @@
 package org.hammerlab.guacamole.readsets.iterator
 
+import org.hammerlab.genomics.loci.iterator.{SkippableLociIterator, SkippableLocusKeyedIterator}
+import org.hammerlab.genomics.reference.{ContigIterator, Interval, Locus}
 import org.hammerlab.guacamole.loci.Coverage
-import org.hammerlab.guacamole.loci.iterator.{SkippableLociIterator, SkippableLocusKeyedIterator}
-import org.hammerlab.guacamole.reference.{ContigIterator, Interval, Locus}
 
 import scala.collection.mutable
 

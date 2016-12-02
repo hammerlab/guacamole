@@ -2,8 +2,8 @@ package org.hammerlab.guacamole.readsets.rdd
 
 import org.apache.hadoop.fs.Path
 import org.apache.spark.rdd.RDD
+import org.hammerlab.args4s.StringOptionHandler
 import org.hammerlab.guacamole.loci.partitioning.{LociPartitionerArgs, LociPartitioning}
-import org.hammerlab.magic.args4j.StringOptionHandler
 import org.kohsuke.args4j.{Option => Args4JOption}
 
 /**

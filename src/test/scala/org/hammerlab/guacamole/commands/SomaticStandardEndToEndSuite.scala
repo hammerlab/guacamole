@@ -2,7 +2,7 @@ package org.hammerlab.guacamole.commands
 
 import org.hammerlab.guacamole.util.TestUtil.resourcePath
 import org.hammerlab.guacamole.variants.VCFCmpTest
-import org.hammerlab.magic.test.TmpFiles
+import org.hammerlab.spark.test.TmpFiles
 import org.scalatest.FunSuite
 
 class SomaticStandardEndToEndSuite
@@ -29,8 +29,6 @@ class SomaticStandardEndToEndSuite
       "--partial-reference",
       "--min-alignment-quality",
       "1",
-      "--include-duplicates",
-      "--include-failed-quality-checks",
       "--out",
       tmpOutputPath
     )

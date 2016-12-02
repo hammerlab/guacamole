@@ -11,17 +11,17 @@ import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.models.SequenceDictionary
 import org.bdgenomics.adam.rdd.ADAMContext
-import org.hammerlab.guacamole.loci.set.LociSet
+import org.hammerlab.genomics.loci.set.LociSet
+import org.hammerlab.genomics.reference.{ContigName, Locus}
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.reads.Read
 import org.hammerlab.guacamole.readsets.args.{Base => BaseArgs}
 import org.hammerlab.guacamole.readsets.io.{Input, InputConfig}
 import org.hammerlab.guacamole.readsets.rdd.ReadsRDD
-import org.hammerlab.guacamole.reference.{ContigName, Locus}
 import org.seqdoop.hadoop_bam.util.SAMHeaderReader
 import org.seqdoop.hadoop_bam.{AnySAMInputFormat, BAMInputFormat, SAMRecordWritable}
 
-import scala.collection.JavaConversions._
+import scala.collection.JavaConversions.seqAsJavaList
 
 
 /**
@@ -53,7 +53,7 @@ object ReadSets extends Logging {
   def apply(sc: SparkContext, args: BaseArgs): (ReadSets, LociSet) = {
     val config = args.parseConfig(sc.hadoopConfiguration)
     val readsets = apply(sc, args.inputs, config, !args.noSequenceDictionary)
-    (readsets, config.loci.result(readsets.contigLengths))
+    (readsets, LociSet(config.loci, readsets.contigLengths))
   }
 
   /**
@@ -167,9 +167,10 @@ object ReadSets extends Logging {
             val contigLengths = getContigLengths(sequenceDictionary)
 
             val bamIndexIntervals =
-              overlapsLoci
-                .result(contigLengths)
-                .toHtsJDKIntervals
+              LociSet(
+                overlapsLoci,
+                contigLengths
+              ).toHtsJDKIntervals
 
             BAMInputFormat.setIntervals(conf, bamIndexIntervals)
           } else if (filename.endsWith(".sam")) {
@@ -267,11 +268,6 @@ object ReadSets extends Logging {
 
   /**
    * Apply filters to an RDD of reads.
-   *
-   * @param filters
-   * @param reads
-   * @param sequenceDictionary
-   * @return filtered RDD
    */
   private def filterRDD(reads: RDD[Read], config: InputConfig, sequenceDictionary: SequenceDictionary): RDD[Read] = {
     /* Note that the InputFilter properties are public, and some loaders directly apply
@@ -286,7 +282,7 @@ object ReadSets extends Logging {
       .overlapsLociOpt
       .foreach(overlapsLoci => {
         val contigLengths = getContigLengths(sequenceDictionary)
-        val loci = overlapsLoci.result(contigLengths)
+        val loci = LociSet(overlapsLoci, contigLengths)
         val broadcastLoci = reads.sparkContext.broadcast(loci)
         result = result.filter(_.asMappedRead.exists(broadcastLoci.value.intersects))
       })
@@ -294,12 +290,15 @@ object ReadSets extends Logging {
     if (config.nonDuplicate) result = result.filter(!_.isDuplicate)
     if (config.passedVendorQualityChecks) result = result.filter(!_.failedVendorQualityChecks)
     if (config.isPaired) result = result.filter(_.isPaired)
-    if (config.minAlignmentQuality != 0)
-      result =
-        result.filter(
-          _.asMappedRead
-                .forall(_.alignmentQuality >= config.minAlignmentQuality)
-        )
+
+    config.minAlignmentQualityOpt.foreach(
+      minAlignmentQuality =>
+        result =
+          result.filter(
+            _.asMappedRead
+             .forall(_.alignmentQuality >= minAlignmentQuality)
+          )
+    )
 
     result
   }

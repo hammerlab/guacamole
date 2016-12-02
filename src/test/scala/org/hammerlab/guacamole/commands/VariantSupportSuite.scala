@@ -1,10 +1,10 @@
 package org.hammerlab.guacamole.commands
 
+import org.hammerlab.genomics.loci.parsing.ParsedLoci
 import org.hammerlab.guacamole.commands.VariantSupport.Caller.AlleleCount
-import org.hammerlab.guacamole.loci.parsing.ParsedLoci
 import org.hammerlab.guacamole.pileup.{Pileup, Util => PileupUtil}
 import org.hammerlab.guacamole.reads.MappedRead
-import org.hammerlab.guacamole.readsets.io.{InputConfig, TestInputConfig}
+import org.hammerlab.guacamole.readsets.io.TestInputConfig
 import org.hammerlab.guacamole.readsets.rdd.ReadsRDDUtil
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.util.GuacFunSuite
