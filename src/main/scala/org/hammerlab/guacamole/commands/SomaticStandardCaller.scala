@@ -4,6 +4,7 @@ import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.rdd.ADAMContext
 import org.bdgenomics.formats.avro.VariantAnnotation
+import org.hammerlab.commands.Args
 import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMapTwoSamples
 import org.hammerlab.guacamole.filters.somatic.SomaticGenotypeFilter
 import org.hammerlab.guacamole.filters.somatic.SomaticGenotypeFilter.SomaticGenotypeFilterArguments
@@ -12,12 +13,12 @@ import org.hammerlab.guacamole.likelihood.Likelihood.probabilitiesOfGenotypes
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.readsets.ReadSets
-import org.hammerlab.guacamole.readsets.args.{ReferenceArgs, TumorNormalReadsArgs}
-import org.hammerlab.guacamole.readsets.rdd.{PartitionedRegions, PartitionedRegionsArgs}
-import org.hammerlab.guacamole.variants.{Allele, AlleleEvidence, CalledSomaticAllele, Genotype, GenotypeOutputArgs, GenotypeOutputCaller}
-import org.kohsuke.args4j.{Option => Args4jOption}
+import org.hammerlab.guacamole.readsets.args.{ ReferenceArgs, TumorNormalReadsArgs }
+import org.hammerlab.guacamole.readsets.rdd.{ PartitionedRegions, PartitionedRegionsArgs }
+import org.hammerlab.guacamole.variants.{ Allele, AlleleEvidence, CalledSomaticAllele, Genotype, GenotypeOutputArgs, GenotypeOutputCaller }
+import org.kohsuke.args4j.{ Option => Args4jOption }
 
-import scala.math.{exp, max}
+import scala.math.{ exp, max }
 
 /**
  * Simple subtraction based somatic variant caller

@@ -1,10 +1,11 @@
 package org.hammerlab.guacamole.commands
 
 import org.apache.spark.SparkContext
+import org.hammerlab.commands.{ Args, SparkCommand }
 import org.hammerlab.guacamole.loci.partitioning.HalfWindowArgs
 import org.hammerlab.guacamole.readsets.ReadSets
-import org.hammerlab.guacamole.readsets.args.{Arguments => ReadSetsArgs}
-import org.hammerlab.guacamole.readsets.rdd.{PartitionedRegions, PartitionedRegionsArgs}
+import org.hammerlab.guacamole.readsets.args.{ Arguments => ReadSetsArgs }
+import org.hammerlab.guacamole.readsets.rdd.{ PartitionedRegions, PartitionedRegionsArgs }
 
 class PartitionReadsArgs
   extends Args

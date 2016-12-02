@@ -1,8 +1,8 @@
 package org.hammerlab.guacamole.main
 
 import org.apache.spark.SparkContext
+import org.hammerlab.commands.SparkCommand
 import org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Arguments
-import org.hammerlab.guacamole.commands.SparkCommand
 import org.hammerlab.guacamole.data.NA12878TestUtil
 import org.hammerlab.guacamole.util.TestUtil.resourcePath
 import org.hammerlab.guacamole.variants.VariantComparisonTest

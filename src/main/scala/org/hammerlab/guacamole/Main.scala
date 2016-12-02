@@ -4,6 +4,7 @@ import java.util.logging.Level
 
 import grizzled.slf4j.Logging
 import org.bdgenomics.adam.util.ParquetLogger
+import org.hammerlab.commands.Command
 import org.hammerlab.guacamole.commands._
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 

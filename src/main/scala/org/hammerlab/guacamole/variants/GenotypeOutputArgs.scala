@@ -13,7 +13,7 @@ import org.bdgenomics.adam.rdd.variant.GenotypeRDD
 import org.bdgenomics.formats.avro.{ Genotype => BDGGenotype }
 import org.bdgenomics.utils.cli.ParquetArgs
 import org.codehaus.jackson.JsonFactory
-import org.hammerlab.guacamole.commands.Args
+import org.hammerlab.commands.Args
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.kohsuke.args4j.{ Option => Args4jOption }
 

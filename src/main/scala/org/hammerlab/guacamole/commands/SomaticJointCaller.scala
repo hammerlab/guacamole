@@ -3,20 +3,21 @@ package org.hammerlab.guacamole.commands
 import htsjdk.samtools.SAMSequenceDictionary
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
+import org.hammerlab.commands.{ Args, SparkCommand }
 import org.hammerlab.genomics.loci.parsing.ParsedLoci
 import org.hammerlab.genomics.loci.set.LociSet
 import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMapMultipleSamples
-import org.hammerlab.guacamole.jointcaller.evidence.{MultiSampleMultiAlleleEvidence, MultiSampleSingleAlleleEvidence}
-import org.hammerlab.guacamole.jointcaller.{Input, InputCollection, Parameters, VCFOutput}
+import org.hammerlab.guacamole.jointcaller.evidence.{ MultiSampleMultiAlleleEvidence, MultiSampleSingleAlleleEvidence }
+import org.hammerlab.guacamole.jointcaller.{ Input, InputCollection, Parameters, VCFOutput }
 import org.hammerlab.guacamole.loci.args.ForceCallLociArgs
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.readsets.args.{ReferenceArgs, Arguments => ReadSetsArguments}
-import org.hammerlab.guacamole.readsets.rdd.{PartitionedRegions, PartitionedRegionsArgs}
-import org.hammerlab.guacamole.readsets.{PerSample, ReadSets}
+import org.hammerlab.guacamole.readsets.args.{ ReferenceArgs, Arguments => ReadSetsArguments }
+import org.hammerlab.guacamole.readsets.rdd.{ PartitionedRegions, PartitionedRegionsArgs }
+import org.hammerlab.guacamole.readsets.{ PerSample, ReadSets }
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.kohsuke.args4j.spi.StringArrayOptionHandler
-import org.kohsuke.args4j.{Option => Args4jOption}
+import org.kohsuke.args4j.{ Option => Args4jOption }
 
 object SomaticJoint {
   class Arguments
