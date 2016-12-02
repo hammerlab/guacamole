@@ -5,15 +5,15 @@ import java.io.{InputStream, OutputStream}
 import org.apache.hadoop.fs.Path
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
-import org.hammerlab.guacamole.loci.map.LociMap
-import org.hammerlab.guacamole.loci.partitioning.LociPartitioner.PartitionIndex
-import org.hammerlab.guacamole.loci.set.LociSet
+import org.hammerlab.genomics.loci.map.LociMap
+import org.hammerlab.genomics.loci.set.LociSet
+import org.hammerlab.genomics.reference.{NumLoci, Region}
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
-import org.hammerlab.guacamole.reference.{NumLoci, ReferenceRegion}
 import org.hammerlab.guacamole.strings.TruncatedToString
-import org.hammerlab.magic.iterator.LinesIterator
-import org.hammerlab.magic.stats.Stats
+import org.hammerlab.iterator.LinesIterator
 import org.hammerlab.magic.util.Saveable
+import org.hammerlab.spark.PartitionIndex
+import org.hammerlab.stats.Stats
 
 import scala.reflect.ClassTag
 
@@ -103,9 +103,9 @@ object LociPartitioning {
     lociMapBuilder.result()
   }
 
-  def apply[R <: ReferenceRegion: ClassTag](regions: RDD[R],
-                                            loci: LociSet,
-                                            args: LociPartitionerArgs): LociPartitioning = {
+  def apply[R <: Region: ClassTag](regions: RDD[R],
+                                   loci: LociSet,
+                                   args: LociPartitionerArgs): LociPartitioning = {
 
     val hadoopConfiguration = regions.sparkContext.hadoopConfiguration
 

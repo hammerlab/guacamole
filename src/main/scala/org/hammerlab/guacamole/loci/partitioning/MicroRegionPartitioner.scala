@@ -1,12 +1,12 @@
 package org.hammerlab.guacamole.loci.partitioning
 
 import org.apache.spark.rdd.RDD
-import org.hammerlab.guacamole.loci.map.LociMap
-import org.hammerlab.guacamole.loci.partitioning.LociPartitioner.{NumPartitions, PartitionIndex}
+import org.hammerlab.genomics.loci.map.LociMap
+import org.hammerlab.genomics.loci.set.LociSet
+import org.hammerlab.genomics.reference.Region
 import org.hammerlab.guacamole.loci.partitioning.MicroRegionPartitioner.{MicroPartitionIndex, NumMicroPartitions}
-import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
-import org.hammerlab.guacamole.reference.ReferenceRegion
+import org.hammerlab.spark.{NumPartitions, PartitionIndex}
 import org.kohsuke.args4j.{Option => Args4jOption}
 
 import scala.collection.Map
@@ -60,9 +60,9 @@ trait MicroRegionPartitionerArgs extends UniformPartitionerArgs {
  *                                    will result in an exact calculation.
  * @return LociMap of locus -> partition assignments.
  */
-class MicroRegionPartitioner[R <: ReferenceRegion: ClassTag](regions: RDD[R],
-                                                             numPartitions: NumPartitions,
-                                                             microPartitionsPerPartition: NumMicroPartitions)
+class MicroRegionPartitioner[R <: Region: ClassTag](regions: RDD[R],
+                                                    numPartitions: NumPartitions,
+                                                    microPartitionsPerPartition: NumMicroPartitions)
   extends LociPartitioner {
 
   def partition(loci: LociSet): LociPartitioning = {

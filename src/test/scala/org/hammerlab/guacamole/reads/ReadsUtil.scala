@@ -1,8 +1,8 @@
 package org.hammerlab.guacamole.reads
 
 import htsjdk.samtools.TextCigarCodec
+import org.hammerlab.genomics.reference.{ContigName, Locus}
 import org.hammerlab.guacamole.readsets.SampleId
-import org.hammerlab.guacamole.reference.{ContigName, Locus}
 
 trait ReadsUtil {
   /**

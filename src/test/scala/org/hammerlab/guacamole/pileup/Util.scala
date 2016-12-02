@@ -1,11 +1,12 @@
 package org.hammerlab.guacamole.pileup
 
 import org.apache.spark.SparkContext
-import org.hammerlab.guacamole.loci.parsing.ParsedLoci
+import org.hammerlab.genomics.loci.parsing.ParsedLoci
+import org.hammerlab.genomics.reference.{ContigName, Locus}
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.readsets.io.InputConfig
 import org.hammerlab.guacamole.readsets.rdd.ReadsRDDUtil
-import org.hammerlab.guacamole.reference.{ContigName, Locus, ReferenceBroadcast}
+import org.hammerlab.guacamole.reference.ReferenceBroadcast
 
 trait Util
   extends ReadsRDDUtil {
@@ -54,7 +55,7 @@ trait Util
           nonDuplicate = false,
           passedVendorQualityChecks = false,
           isPaired = false,
-          minAlignmentQuality = 0,
+          minAlignmentQualityOpt = None,
           maxSplitSizeOpt = None
         )
       ).mappedReads

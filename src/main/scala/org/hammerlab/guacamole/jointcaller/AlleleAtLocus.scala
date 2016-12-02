@@ -1,9 +1,9 @@
 package org.hammerlab.guacamole.jointcaller
 
+import org.hammerlab.genomics.reference.{ContigName, Locus}
 import org.hammerlab.guacamole.jointcaller.pileup_summarization.ReadSubsequence
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.readsets.PerSample
-import org.hammerlab.guacamole.reference.{ContigName, Locus}
 import org.hammerlab.guacamole.util.Bases
 
 /**

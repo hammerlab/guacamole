@@ -8,7 +8,7 @@ import org.hammerlab.guacamole.alignment.ReadAlignment
 import org.hammerlab.guacamole.assembly.AssemblyArgs
 import org.hammerlab.guacamole.assembly.AssemblyUtils.{buildVariantsFromPath, discoverHaplotypes, isActiveRegion}
 import org.hammerlab.guacamole.distributed.WindowFlatMapUtils.windowFlatMapWithState
-import org.hammerlab.guacamole.likelihood.Likelihood
+import org.hammerlab.guacamole.likelihood.Likelihood.probabilitiesOfAllPossibleGenotypesFromPileup
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.readsets.args.{GermlineCallerArgs, ReferenceArgs}
@@ -177,7 +177,7 @@ object GermlineAssemblyCaller {
                     variantLocus,
                     allele,
                     AlleleEvidence(
-                      likelihood = 1,
+                      probability = 1,
                       readDepth = depth,
                       alleleReadDepth = depth,
                       forwardDepth = depth,
@@ -218,6 +218,7 @@ object GermlineAssemblyCaller {
             }
           }
         )
+
       genotypes
     }
 
@@ -230,33 +231,32 @@ object GermlineAssemblyCaller {
      * @return Possible set of called variants
      */
     private def callPileupVariant(pileup: Pileup): Set[CalledAllele] = {
-      val genotypeLikelihoods = Likelihood.likelihoodsOfAllPossibleGenotypesFromPileup(
-        pileup,
-        logSpace = true,
-        normalize = true
-      )
+      val genotypeProbabilities =
+        probabilitiesOfAllPossibleGenotypesFromPileup(
+          pileup,
+          logSpace = true
+        )
 
       // If we did not have any valid genotypes to evaluate
       // we do not return any variants
-      if (genotypeLikelihoods.isEmpty) {
+      if (genotypeProbabilities.isEmpty) {
         Set.empty
       } else {
-        val mostLikelyGenotypeAndProbability = genotypeLikelihoods.maxBy(_._2)
+        val (genotype, logProbability) = genotypeProbabilities.maxBy(_._2)
 
-        val genotype = mostLikelyGenotypeAndProbability._1
-        val probability = math.exp(mostLikelyGenotypeAndProbability._2)
+        val probability = math.exp(logProbability)
         genotype
           .getNonReferenceAlleles
           .toSet // Collapse homozygous genotypes
           .filter(_.altBases.nonEmpty)
-          .map(allele => {
+          .map(allele =>
             CalledAllele(
               pileup.sampleName,
               pileup.contigName,
               pileup.locus,
               allele,
               AlleleEvidence(probability, allele, pileup))
-          })
+          )
       }
     }
   }

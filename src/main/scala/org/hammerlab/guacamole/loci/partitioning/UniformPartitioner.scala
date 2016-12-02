@@ -1,11 +1,11 @@
 package org.hammerlab.guacamole.loci.partitioning
 
 import org.apache.spark.SparkContext
-import org.hammerlab.guacamole.loci.map.LociMap
-import org.hammerlab.guacamole.loci.partitioning.LociPartitioner.NumPartitions
+import org.hammerlab.genomics.loci.map.LociMap
+import org.hammerlab.genomics.loci.set.LociSet
 import org.hammerlab.guacamole.loci.partitioning.MicroRegionPartitioner.NumMicroPartitions
-import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
+import org.hammerlab.spark.NumPartitions
 import org.kohsuke.args4j.{Option => Args4jOption}
 import spire.implicits._
 import spire.math.Integral

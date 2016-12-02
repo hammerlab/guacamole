@@ -1,7 +1,7 @@
 package org.hammerlab.guacamole.readsets.iterator
 
-import org.hammerlab.guacamole.reference.{ContigIterator, ContigName, HasContig}
-import org.hammerlab.magic.iterator.SimpleBufferedIterator
+import org.hammerlab.genomics.reference.{ContigIterator, ContigName, HasContig}
+import org.hammerlab.iterator.SimpleBufferedIterator
 
 import scala.collection.mutable
 
@@ -49,7 +49,7 @@ class ContigsIterator[T] private(it: BufferedIterator[T],
 }
 
 /**
- * Public [[ContigsIterator]] constructors infer the [[ContigName]]-function from a [[HasContig]] or a
+ * Public [[ContigsIterator]] constructors infer the [[org.hammerlab.genomics.reference.ContigName]]-function from a [[HasContig]] or a
  * [[(HasContig, T)]].
  */
 object ContigsIterator {

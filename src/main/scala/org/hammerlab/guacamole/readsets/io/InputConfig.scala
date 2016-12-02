@@ -1,6 +1,6 @@
 package org.hammerlab.guacamole.readsets.io
 
-import org.hammerlab.guacamole.loci.parsing.ParsedLoci
+import org.hammerlab.genomics.loci.parsing.{All, ParsedLoci}
 
 /**
  * Configuring how/which reads are loaded can be an important optimization.
@@ -12,7 +12,7 @@ import org.hammerlab.guacamole.loci.parsing.ParsedLoci
  * @param nonDuplicate include only reads that do not have the duplicate bit set
  * @param passedVendorQualityChecks include only reads that do not have the failedVendorQualityChecks bit set
  * @param isPaired include only reads are paired-end reads
- * @param minAlignmentQuality Minimum Phred-scaled alignment score for a read
+ * @param minAlignmentQualityOpt Minimum Phred-scaled alignment score for a read
  * @param maxSplitSizeOpt Maximum on-disk size to allow Hadoop splits to be; useful to set below the on-disk block-size
  *                        for BAMs where the reads compress extra-well, resulting in unwieldy numbers of reads per
  *                        fixed-disk-size partition.
@@ -21,10 +21,10 @@ case class InputConfig(overlapsLociOpt: Option[ParsedLoci],
                        nonDuplicate: Boolean,
                        passedVendorQualityChecks: Boolean,
                        isPaired: Boolean,
-                       minAlignmentQuality: Int,
+                       minAlignmentQualityOpt: Option[Int],
                        maxSplitSizeOpt: Option[Long]
                        ) {
-  def loci = overlapsLociOpt.getOrElse(ParsedLoci.all)
+  def loci = overlapsLociOpt.getOrElse(All)
 }
 
 object InputConfig {
@@ -34,7 +34,7 @@ object InputConfig {
       nonDuplicate = false,
       passedVendorQualityChecks = false,
       isPaired = false,
-      minAlignmentQuality = 0,
+      minAlignmentQualityOpt = None,
       maxSplitSizeOpt = None
     )
 }

@@ -1,7 +1,7 @@
 package org.hammerlab.guacamole.util
 
 import htsjdk.variant.variantcontext.VariantContext
-import org.hammerlab.guacamole.loci.map.LociMap
+import org.hammerlab.genomics.loci.map.LociMap
 
 import scala.collection.JavaConversions
 import scala.collection.mutable.ArrayBuffer

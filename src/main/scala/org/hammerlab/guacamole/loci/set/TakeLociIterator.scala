@@ -1,9 +1,10 @@
 package org.hammerlab.guacamole.loci.set
 
+import org.hammerlab.genomics.loci.set.{Contig, LociSet}
+import org.hammerlab.genomics.reference.{ContigIterator, HasLocus, Interval, Locus, Position}
 import org.hammerlab.guacamole.loci.Coverage
 import org.hammerlab.guacamole.readsets.iterator.{ContigCoverageIterator, ContigsIterator}
-import org.hammerlab.guacamole.reference.{ContigIterator, HasLocus, Interval, Locus, Position}
-import org.hammerlab.magic.iterator.SimpleBufferedIterator
+import org.hammerlab.iterator.SimpleBufferedIterator
 
 import scala.collection.mutable.ArrayBuffer
 

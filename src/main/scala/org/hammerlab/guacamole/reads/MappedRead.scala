@@ -1,12 +1,12 @@
 package org.hammerlab.guacamole.reads
 
 import htsjdk.samtools.{Cigar, CigarElement}
-import org.bdgenomics.adam.util.PhredUtils
+import org.bdgenomics.adam.util.PhredUtils.phredToSuccessProbability
+import org.hammerlab.genomics.reference.{ContigName, ContigSequence, Locus, Region}
 import org.hammerlab.guacamole.pileup.PileupElement
 import org.hammerlab.guacamole.readsets.SampleId
-import org.hammerlab.guacamole.reference.{ContigName, ContigSequence, Locus, ReferenceRegion}
-import org.hammerlab.guacamole.util.CigarUtils
 import org.hammerlab.guacamole.util.Bases.basesToString
+import org.hammerlab.guacamole.util.CigarUtils
 
 import scala.collection.JavaConversions
 
@@ -33,7 +33,7 @@ case class MappedRead(
     isPaired: Boolean)
   extends Read
 
-    with ReferenceRegion {
+    with Region {
 
   assert(baseQualities.length == sequence.length,
     "Base qualities have length %d but sequence has length %d".format(baseQualities.length, sequence.length))
@@ -63,7 +63,7 @@ case class MappedRead(
     cachedCountOfMismatches
   }
 
-  lazy val alignmentLikelihood = PhredUtils.phredToSuccessProbability(alignmentQuality)
+  lazy val alignmentLikelihood = phredToSuccessProbability(alignmentQuality)
 
   /** Individual components of the CIGAR string (e.g. "10M"), parsed, and as a Scala buffer. */
   val cigarElements = JavaConversions.asScalaBuffer(cigar.getCigarElements)

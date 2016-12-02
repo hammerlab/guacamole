@@ -4,14 +4,14 @@ import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.rdd.ADAMContext
 import org.bdgenomics.formats.avro.Variant
+import org.hammerlab.genomics.loci.set.LociSet
+import org.hammerlab.genomics.reference.{ContigName, Locus}
 import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMapMultipleSamples
-import org.hammerlab.guacamole.loci.set.LociSet
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.readsets.args.{ReferenceArgs, Arguments => ReadSetsArguments}
 import org.hammerlab.guacamole.readsets.io.InputConfig
 import org.hammerlab.guacamole.readsets.rdd.{PartitionedRegions, PartitionedRegionsArgs}
 import org.hammerlab.guacamole.readsets.{PerSample, ReadSets, SampleName}
-import org.hammerlab.guacamole.reference.{ContigName, Locus}
 import org.hammerlab.guacamole.util.Bases.basesToString
 import org.kohsuke.args4j.{Option => Args4jOption}
 
