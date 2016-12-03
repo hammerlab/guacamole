@@ -5,6 +5,7 @@ import org.apache.spark.rdd.RDD
 import org.hammerlab.genomics.loci.iterator.LociIterator
 import org.hammerlab.genomics.loci.set.LociSet
 import org.hammerlab.genomics.reference.{ContigName, Interval, NumLoci, Position, Region}
+import org.hammerlab.genomics.reference.Position.ordering
 import org.hammerlab.guacamole.loci.Coverage
 import org.hammerlab.guacamole.loci.set.TakeLociIterator
 import org.hammerlab.guacamole.readsets.iterator.{ContigCoverageIterator, ContigsIterator}
@@ -66,9 +67,8 @@ class CoverageRDD[R <: Region: ClassTag](rdd: RDD[R])
       sc.broadcast(loci),
       explode
     )
-    .mapPartitionsWithIndex(
-      (idx, it) =>
-        new TakeLociIterator(it.buffered, maxRegionsPerPartition, trimRanges)
+    .mapPartitions(
+      it => new TakeLociIterator(it.buffered, maxRegionsPerPartition, trimRanges)
     )
 
   /**

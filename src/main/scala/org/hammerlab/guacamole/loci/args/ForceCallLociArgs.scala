@@ -1,21 +1,20 @@
 package org.hammerlab.guacamole.loci.args
 
-import org.kohsuke.args4j.{Option => Args4jOption}
+import org.hammerlab.args4s.StringOptionHandler
+import org.kohsuke.args4j.{ Option => Args4jOption }
 
 trait ForceCallLociArgs {
   @Args4jOption(
     name = "--force-call-loci",
-    usage = "Always call the given sites"
+    usage = "Always call the given sites",
+    handler = classOf[StringOptionHandler]
   )
-  protected var forceCallLociStr: String = null
-
-  def forceCallLociStrOpt: Option[String] = Option(forceCallLociStr)
+  var forceCallLociStrOpt: Option[String] = None
 
   @Args4jOption(
     name = "--force-call-loci-file",
-    usage = "Always call the given sites"
+    usage = "Always call the given sites",
+    handler = classOf[StringOptionHandler]
   )
-  protected var forceCallLociFile: String = null
-
-  def forceCallLociFileOpt: Option[String] = Option(forceCallLociFile)
+  var forceCallLociFileOpt: Option[String] = None
 }

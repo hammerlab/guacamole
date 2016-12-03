@@ -3,8 +3,8 @@ package org.hammerlab.guacamole.main
 import org.apache.spark.SparkContext
 import org.hammerlab.genomics.loci.set.LociSet
 import org.hammerlab.guacamole.commands.SomaticJoint.Arguments
-import org.hammerlab.guacamole.commands.{SomaticJoint, SparkCommand}
-import org.hammerlab.guacamole.data.{CancerWGSTestUtil, NA12878TestUtil}
+import org.hammerlab.guacamole.commands.{ GuacCommand, SomaticJoint }
+import org.hammerlab.guacamole.data.{ CancerWGSTestUtil, NA12878TestUtil }
 import org.hammerlab.guacamole.util.TestUtil.resourcePath
 import org.hammerlab.guacamole.variants.VariantComparisonTest
 
@@ -17,7 +17,7 @@ import org.hammerlab.guacamole.variants.VariantComparisonTest
  *   scripts/guacamole-test SomaticJointCallerIntegrationTests
  */
 object SomaticJointCallerIntegrationTests
-  extends SparkCommand[Arguments]
+  extends GuacCommand[Arguments]
     with VariantComparisonTest {
 
   var tempFileNum = 0
@@ -56,8 +56,8 @@ object SomaticJointCallerIntegrationTests
       referencePath = CancerWGSTestUtil.referencePath
       referenceIsPartial = true
       somaticGenotypePolicy = "trigger"
-      lociStr = ((1).until(22).map(i => "chr%d".format(i)) ++ Seq("chrX", "chrY")).mkString(",")
-      forceCallLociFile = forceCallLoci.truncatedString(100000)
+      lociStrOpt = Some(((1).until(22).map(i => "chr%d".format(i)) ++ Seq("chrX", "chrY")).mkString(","))
+      forceCallLociFileOpt = Some(forceCallLoci.truncatedString(100000))
       outDir = outDir
     }
 
@@ -91,8 +91,8 @@ object SomaticJointCallerIntegrationTests
         val args = new SomaticJoint.Arguments() {
           out = resultFile
           paths = Seq(NA12878TestUtil.subsetBam).toArray
-          lociStr = "chr1:0-6700000"
-          forceCallLociFile = NA12878TestUtil.expectedCallsVCF
+          lociStrOpt = Some("chr1:0-6700000")
+          forceCallLociFileOpt = Some(NA12878TestUtil.expectedCallsVCF)
           referencePath = NA12878TestUtil.chr1PrefixFasta
         }
 

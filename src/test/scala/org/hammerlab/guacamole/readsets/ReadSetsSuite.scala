@@ -1,15 +1,16 @@
 package org.hammerlab.guacamole.readsets
 
 import org.apache.parquet.hadoop.metadata.CompressionCodecName
-import org.bdgenomics.adam.models.{SequenceDictionary, SequenceRecord}
-import org.bdgenomics.adam.rdd.{ADAMContext, ADAMSaveAnyArgs}
+import org.bdgenomics.adam.models.{ SequenceDictionary, SequenceRecord }
+import org.bdgenomics.adam.rdd.{ ADAMContext, ADAMSaveAnyArgs }
 import org.hammerlab.genomics.loci.parsing.ParsedLoci
-import org.hammerlab.guacamole.reads.{MappedRead, Read}
-import org.hammerlab.guacamole.readsets.io.{Input, InputConfig, TestInputConfig}
+import org.hammerlab.guacamole.reads.{ MappedRead, Read }
+import org.hammerlab.guacamole.readsets.io.{ Input, InputConfig, TestInputConfig }
 import org.hammerlab.guacamole.readsets.rdd.ReadsRDDUtil
 import org.hammerlab.guacamole.util.GuacFunSuite
 import org.hammerlab.guacamole.util.TestUtil.resourcePath
-import org.hammerlab.spark.test.{LazyAssert, TmpFiles}
+import org.hammerlab.test.LazyAssert
+import org.hammerlab.test.files.TmpFiles
 
 class ReadSetsSuite
   extends GuacFunSuite
@@ -123,7 +124,7 @@ class ReadSetsSuite
 
   test("load read from ADAM") {
     // First load reads from SAM using ADAM and save as ADAM
-    val adamContext = new ADAMContext(sc)
+    val adamContext: ADAMContext = sc
     val adamRecords = adamContext.loadBam(resourcePath("mdtagissue.sam"))
 
     val adamOut = tmpPath(suffix = ".adam")
@@ -135,6 +136,7 @@ class ReadSetsSuite
       override var blockSize: Int = 1024
       override var pageSize: Int = 1024
       override var compressionCodec: CompressionCodecName = CompressionCodecName.UNCOMPRESSED
+      override var deferMerging: Boolean = false
     }
 
     adamRecords.saveAsParquet(args)

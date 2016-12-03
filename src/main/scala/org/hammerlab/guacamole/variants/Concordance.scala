@@ -66,11 +66,11 @@ object Concordance {
       val variant = new RichVariant(genotype.getVariant)
       (
         !excludeSNVs &&
-        variant.isSingleNucleotideVariant()
+        variant.isSingleNucleotideVariant
       ) ||
       (
         !excludeIndels &&
-        (variant.isInsertion() || variant.isDeletion())
+          (variant.isInsertion || variant.isDeletion)
       )
     }
 

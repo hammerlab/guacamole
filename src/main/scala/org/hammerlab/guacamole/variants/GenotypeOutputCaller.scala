@@ -3,19 +3,20 @@ package org.hammerlab.guacamole.variants
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.models.SequenceDictionary
-import org.bdgenomics.adam.rdd.variation.GenotypeRDD
+import org.bdgenomics.adam.rdd.variant.GenotypeRDD
 import org.bdgenomics.formats.avro.Sample
-import org.hammerlab.guacamole.commands.{Args, SparkCommand}
+import org.hammerlab.commands.Args
+import org.hammerlab.guacamole.commands.GuacCommand
 import org.hammerlab.guacamole.logging.DelayedMessages
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
-import org.hammerlab.guacamole.readsets.{PerSample, SampleName}
+import org.hammerlab.guacamole.readsets.{ PerSample, SampleName }
 
 /**
  * Caller-interface that writes computed variants to disk according to a [[GenotypeOutputArgs]].
- * @tparam ArgsT [[org.hammerlab.guacamole.commands.Args]] type.
+ * @tparam ArgsT [[org.hammerlab.commands.Args]] type.
  * @tparam V [[ReferenceVariant]] type.
  */
-trait GenotypeOutputCaller[ArgsT <: Args with GenotypeOutputArgs, V <: ReferenceVariant] extends SparkCommand[ArgsT] {
+trait GenotypeOutputCaller[ArgsT <: Args with GenotypeOutputArgs, V <: ReferenceVariant] extends GuacCommand[ArgsT] {
   override def run(args: ArgsT, sc: SparkContext): Unit = {
     val (variants, sequenceDictionary, sampleNames) = computeVariants(args, sc)
 

@@ -1,24 +1,25 @@
 package org.hammerlab.guacamole.commands
 
-import java.io.{BufferedWriter, FileWriter}
+import java.io.{ BufferedWriter, FileWriter }
 
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics
 import org.apache.spark.SparkContext
-import org.apache.spark.mllib.clustering.{GaussianMixture, GaussianMixtureModel}
+import org.apache.spark.mllib.clustering.{ GaussianMixture, GaussianMixtureModel }
 import org.apache.spark.mllib.linalg.Vectors
 import org.apache.spark.rdd.RDD
 import org.apache.spark.storage.StorageLevel
-import org.hammerlab.genomics.reference.{ContigName, Locus, NumLoci}
+import org.hammerlab.commands.Args
+import org.hammerlab.genomics.reference.{ ContigName, Locus, NumLoci }
 import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMapMultipleSamples
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.readsets.args.{ReferenceArgs, Arguments => ReadSetsArguments}
+import org.hammerlab.guacamole.readsets.args.{ ReferenceArgs, Arguments ⇒ ReadSetsArguments }
 import org.hammerlab.guacamole.readsets.io.Input
-import org.hammerlab.guacamole.readsets.rdd.{PartitionedRegions, PartitionedRegionsArgs}
-import org.hammerlab.guacamole.readsets.{PartitionedReads, PerSample, ReadSets, SampleId, SampleName}
+import org.hammerlab.guacamole.readsets.rdd.{ PartitionedRegions, PartitionedRegionsArgs }
+import org.hammerlab.guacamole.readsets.{ PartitionedReads, PerSample, ReadSets, SampleId, SampleName }
 import org.hammerlab.guacamole.reference.ReferenceGenome
 import org.hammerlab.magic.rdd.keyed.SplitByKeyRDD._
-import org.kohsuke.args4j.{Option => Args4jOption}
+import org.kohsuke.args4j.{ Option ⇒ Args4jOption }
 
 /**
  * VariantLocus is a locus and the variant allele frequency at that locus
@@ -98,7 +99,7 @@ object VAFHistogram {
     var samplePercent: Int = 25
   }
 
-  object Caller extends SparkCommand[Arguments] {
+  object Caller extends GuacCommand[Arguments] {
     override val name = "vaf-histogram"
     override val description = "Compute and cluster the variant allele frequencies"
 

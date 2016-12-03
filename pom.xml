@@ -70,21 +70,6 @@
 
           <relocations>
             <!--
-              We use some Guava classes and APIs that didn't show up until Guava 14.0.1, but Hadoop gives us Guava
-              11.0.2 at runtime, so we shade and rename the classes we care about (com.google.common.collect.**) here,
-              along with two other packages that its APIs reference (…base.** and …primitives.**).
-            -->
-            <relocation>
-              <pattern>com.google.common</pattern>
-              <shadedPattern>org.hammerlab.guava</shadedPattern>
-              <includes>
-                <include>com.google.common.collect.**</include>
-                <include>com.google.common.base.**</include>
-                <include>com.google.common.primitives.**</include>
-              </includes>
-            </relocation>
-
-            <!--
               Spark (MLLib) depends on Breeze 0.11.2 and we depend on 0.12. By Spark 2.0.1 we should be able to
               remove this.
             -->
@@ -115,12 +100,12 @@
     <dependency>
       <groupId>org.hammerlab.adam</groupId>
       <artifactId>adam-core_${scala.version.prefix}</artifactId>
-      <version>0.20.0</version>
+      <version>0.20.3</version>
     </dependency>
     <dependency>
       <groupId>org.bdgenomics.bdg-formats</groupId>
       <artifactId>bdg-formats</artifactId>
-      <version>0.9.0</version>
+      <version>0.10.0</version>
     </dependency>
     <dependency>
       <groupId>org.bdgenomics.quinine</groupId>
@@ -169,11 +154,6 @@
       <version>3.0</version>
     </dependency>
     <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-      <version>18.0</version>
-    </dependency>
-    <dependency>
       <groupId>org.hammerlab</groupId>
       <artifactId>args4s_${scala.version.prefix}</artifactId>
       <version>1.0.0</version>
@@ -182,6 +162,11 @@
       <groupId>org.hammerlab</groupId>
       <artifactId>magic-rdds_${scala.version.prefix}</artifactId>
       <version>1.3.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.hammerlab</groupId>
+      <artifactId>spark-commands_${scala.version.prefix}</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.clapper</groupId>
@@ -226,7 +211,7 @@
     <dependency>
       <groupId>org.hammerlab</groupId>
       <artifactId>genomic-loci_${scala.version.prefix}</artifactId>
-      <version>1.3.0</version>
+      <version>1.4.1</version>
     </dependency>
 
     <!-- Test deps -->
@@ -253,7 +238,7 @@
   <profiles>
     <profile>
       <!--
-        Default profile: build a Guacamole jar with shaded Guava and Breeze, and write transitive-dependency-JAR paths
+        Default profile: build a Guacamole jar with shaded Breeze, and write transitive-dependency-JAR paths
         to target/dependencies (comma-delimited to serve the common case of passing the values to Spark's "jars" flag).
       -->
       <id>guac</id>
@@ -287,7 +272,6 @@
                   <artifactSet>
                     <includes>
                       <include>org.hammerlab.guacamole:*</include>
-                      <include>com.google.guava:*</include>
                       <include>org.scalanlp:breeze_${scala.version.prefix}</include>
                     </includes>
                   </artifactSet>
@@ -312,9 +296,9 @@
                   <!-- Use commas for ease of passing to spark-{submit,shell}'s "jars" flag. -->
                   <pathSeparator>,</pathSeparator>
 
-                  <!-- Leave Guava and Breeze out, as they are included in the Guacamole JAR defined above. -->
+                  <!-- Leave Breeze out, as they are included in the Guacamole JAR defined above. -->
                   <excludeArtifactIds>
-                    guava,breeze_${scala.version.prefix}
+                    breeze_${scala.version.prefix}
                   </excludeArtifactIds>
                 </configuration>
               </execution>
@@ -325,7 +309,7 @@
     </profile>
 
     <!--
-      "uber" profile: build a JAR with Guacamole and all transitive dependencies shaded, and Guava and Breeze relocated.
+      "uber" profile: build a JAR with Guacamole and all transitive dependencies shaded, and Breeze relocated.
     -->
     <profile>
       <id>uber</id>
@@ -382,7 +366,6 @@
                   <artifactSet>
                     <excludes>
                       <!-- These are shaded into the "guac"-profile JAR. -->
-                      <exclude>com.google.guava:*</exclude>
                       <exclude>org.scalanlp:breeze_${scala.version.prefix}</exclude>
                     </excludes>
                   </artifactSet>
