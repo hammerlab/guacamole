@@ -43,7 +43,7 @@ class GermlineAssemblyCallerSuite
       reads = NA12878TestUtil.subsetBam
       parallelism = 1
       lociPartitionerName = "uniform"
-      lociStr = s"$contig:$windowStart-$windowEnd"
+      lociStrOpt = Some(s"$contig:$windowStart-$windowEnd")
       includeDuplicates = false
     }
 

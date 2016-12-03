@@ -10,7 +10,7 @@ import org.hammerlab.guacamole.readsets.{ContigLengths, ContigLengthsUtil}
 import org.hammerlab.guacamole.util.GuacFunSuite
 import org.hammerlab.magic.rdd.cmp.CmpStats
 import org.hammerlab.magic.rdd.cmp.EqualsRDD._
-import org.hammerlab.spark.test.SeqMatcher.seqMatch
+import org.hammerlab.test.SeqMatcher.seqMatch
 
 class CoverageRDDSuite
   extends GuacFunSuite
