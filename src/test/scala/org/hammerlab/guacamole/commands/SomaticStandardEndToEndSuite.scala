@@ -2,7 +2,7 @@ package org.hammerlab.guacamole.commands
 
 import org.hammerlab.guacamole.util.TestUtil.resourcePath
 import org.hammerlab.guacamole.variants.VCFCmpTest
-import org.hammerlab.spark.test.TmpFiles
+import org.hammerlab.test.files.TmpFiles
 import org.scalatest.FunSuite
 
 class SomaticStandardEndToEndSuite

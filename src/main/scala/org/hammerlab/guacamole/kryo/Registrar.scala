@@ -76,5 +76,7 @@ class Registrar extends KryoRegistrator {
 
     kryo.register(classOf[Array[CalledSomaticAllele]])
     kryo.register(classOf[CalledSomaticAllele])
+
+    new org.hammerlab.genomics.kryo.Registrar().registerClasses(kryo)
   }
 }

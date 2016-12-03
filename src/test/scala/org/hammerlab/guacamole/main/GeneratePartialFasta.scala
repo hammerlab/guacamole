@@ -3,17 +3,18 @@ package org.hammerlab.guacamole.main
 import java.io.{ BufferedWriter, File, FileWriter }
 
 import org.apache.spark.SparkContext
-import org.hammerlab.commands.{ Args, SparkCommand }
+import org.hammerlab.commands.Args
 import org.hammerlab.genomics.loci.set.LociSet
 import org.hammerlab.genomics.reference.Interval
+import org.hammerlab.guacamole.commands.GuacCommand
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.readsets.ReadSets
-import org.hammerlab.guacamole.readsets.args.{ ReferenceArgs, Arguments => ReadSetsArguments }
+import org.hammerlab.guacamole.readsets.args.{ ReferenceArgs, Arguments ⇒ ReadSetsArguments }
 import org.hammerlab.guacamole.readsets.io.InputConfig
 import org.hammerlab.guacamole.readsets.rdd.PartitionedRegionsArgs
 import org.hammerlab.guacamole.reference.ContigNotFound
 import org.hammerlab.guacamole.util.Bases.basesToString
-import org.kohsuke.args4j.{ Option => Args4jOption }
+import org.kohsuke.args4j.{ Option ⇒ Args4jOption }
 
 class GeneratePartialFastaArguments
   extends Args
@@ -51,7 +52,7 @@ class GeneratePartialFastaArguments
  *     -o <output path> \
  *     <bam path> [bam path...]
  */
-object GeneratePartialFasta extends SparkCommand[GeneratePartialFastaArguments] {
+object GeneratePartialFasta extends GuacCommand[GeneratePartialFastaArguments] {
 
   override val name: String = "generate-partial-fasta"
   override val description: String = "generate \"partial fasta\"s for use in our tests of variant callers"

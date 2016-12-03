@@ -1,8 +1,8 @@
 package org.hammerlab.guacamole.main
 
 import org.apache.spark.SparkContext
-import org.hammerlab.commands.SparkCommand
 import org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Arguments
+import org.hammerlab.guacamole.commands.GuacCommand
 import org.hammerlab.guacamole.data.NA12878TestUtil
 import org.hammerlab.guacamole.util.TestUtil.resourcePath
 import org.hammerlab.guacamole.variants.VariantComparisonTest
@@ -15,7 +15,7 @@ import org.hammerlab.guacamole.variants.VariantComparisonTest
  *   mvn package -DskipTests -Pguac,test
  *   scripts/guacamole-test GermlineAssemblyIntegrationTests
  */
-object GermlineAssemblyIntegrationTests extends SparkCommand[Arguments] with VariantComparisonTest {
+object GermlineAssemblyIntegrationTests extends GuacCommand[Arguments] with VariantComparisonTest {
 
   override val name: String = "germline-assembly-integration-test"
   override val description: String = "output various statistics to stdout"

@@ -2,12 +2,12 @@ package org.hammerlab.guacamole.readsets.io
 
 import org.apache.hadoop.conf.Configuration
 import org.apache.spark.network.util.JavaUtils
-import org.hammerlab.args4s.{IntOptionHandler, StringOptionHandler}
-import org.hammerlab.genomics.loci.parsing.{All, ParsedLoci}
-import org.hammerlab.guacamole.loci.args.CallLociArgs
-import org.kohsuke.args4j.{Option => Args4jOption}
+import org.hammerlab.args4s.{ IntOptionHandler, StringOptionHandler }
+import org.hammerlab.genomics.loci.args.LociArgs
+import org.hammerlab.genomics.loci.parsing.{ All, ParsedLoci }
+import org.kohsuke.args4j.{ Option => Args4jOption }
 
-trait ReadFilterArgs extends CallLociArgs {
+trait ReadFilterArgs extends LociArgs {
   @Args4jOption(
     name = "--min-alignment-quality",
     usage = "Minimum read mapping quality for a read (Phred-scaled)",

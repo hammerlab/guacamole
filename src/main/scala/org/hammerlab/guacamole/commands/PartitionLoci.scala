@@ -1,10 +1,10 @@
 package org.hammerlab.guacamole.commands
 
 import org.apache.spark.SparkContext
-import org.hammerlab.commands.{ Args, SparkCommand }
+import org.hammerlab.commands.Args
 import org.hammerlab.guacamole.loci.partitioning.{ HalfWindowArgs, LociPartitionerArgs, LociPartitioning }
 import org.hammerlab.guacamole.readsets.ReadSets
-import org.hammerlab.guacamole.readsets.args.{ Arguments => ReadSetsArgs }
+import org.hammerlab.guacamole.readsets.args.{ Arguments ⇒ ReadSetsArgs }
 
 class PartitionLociArgs
   extends Args
@@ -12,7 +12,7 @@ class PartitionLociArgs
     with HalfWindowArgs
     with ReadSetsArgs
 
-object PartitionLoci extends SparkCommand[PartitionLociArgs] {
+object PartitionLoci extends GuacCommand[PartitionLociArgs] {
 
   override def name: String = "partition-loci"
   override def description: String = "Partition loci according to various paramters."
