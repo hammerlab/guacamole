@@ -5,7 +5,7 @@ jdk:
   - oraclejdk8
 
 scala:
-  - 2.10.6
+  # Testing Scala 2.10.6 disabled due to coverage causing a compiler crash: https://github.com/scoverage/scalac-scoverage-plugin/issues/91#issuecomment-264647539
   - 2.11.8
 
 script: sbt ++$TRAVIS_SCALA_VERSION clean coverage test
