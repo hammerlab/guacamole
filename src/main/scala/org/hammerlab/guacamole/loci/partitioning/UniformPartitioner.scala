@@ -97,7 +97,7 @@ case class UniformMicroPartitioner(numPartitions: NumMicroPartitions)
  * [[UniformPartitionerBase]] implementation of [[LociPartitioner]] that computes Spark partitions directly.
  */
 case class UniformPartitioner(numPartitions: NumPartitions)
-  extends UniformPartitionerBase(numPartitions)
+  extends UniformPartitionerBase[NumPartitions](numPartitions)
     with LociPartitioner {
   override def partition(loci: LociSet): LociPartitioning = partitionsMap(loci)
 }
