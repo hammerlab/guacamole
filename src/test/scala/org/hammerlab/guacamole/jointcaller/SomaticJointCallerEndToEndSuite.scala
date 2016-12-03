@@ -3,8 +3,8 @@ package org.hammerlab.guacamole.jointcaller
 import org.hammerlab.guacamole.commands.SomaticJoint
 import org.hammerlab.guacamole.util.TestUtil.resourcePath
 import org.hammerlab.guacamole.variants.VCFCmpTest
-import org.hammerlab.spark.test.TmpFiles
-import org.scalatest.{FunSuite, Matchers}
+import org.hammerlab.test.files.TmpFiles
+import org.scalatest.{ FunSuite, Matchers }
 
 class SomaticJointCallerEndToEndSuite
   extends FunSuite
