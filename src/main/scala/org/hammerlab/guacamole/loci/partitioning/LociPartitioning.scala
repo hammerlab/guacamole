@@ -1,19 +1,19 @@
 package org.hammerlab.guacamole.loci.partitioning
 
-import java.io.{InputStream, OutputStream}
+import java.io.{ InputStream, OutputStream }
 
 import org.apache.hadoop.fs.Path
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.hammerlab.genomics.loci.map.LociMap
 import org.hammerlab.genomics.loci.set.LociSet
-import org.hammerlab.genomics.reference.{NumLoci, Region}
+import org.hammerlab.genomics.reference.{ NumLoci, Region }
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
-import org.hammerlab.guacamole.strings.TruncatedToString
 import org.hammerlab.iterator.LinesIterator
 import org.hammerlab.magic.util.Saveable
 import org.hammerlab.spark.PartitionIndex
 import org.hammerlab.stats.Stats
+import org.hammerlab.strings.TruncatedToString
 
 import scala.reflect.ClassTag
 
