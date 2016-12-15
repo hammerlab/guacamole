@@ -24,21 +24,14 @@ trait CappedRegionsPartitionerArgs
   @Args4JOption(
     name = "--explode-coverage",
     usage =
-      "When present, compute coverage-depths by \"exploding\" reads into per-locus, depth-1 tuples before (map-side) " +
-        "reduction. Otherwise / By default, coverage depth is accumulated by a traversal of (assumedly " +
-        "start-pos-sorted) reads, emitting (locus,depth) pairs that have already \"reduced\" contributions to each " +
-        "locus within each partition"
+      "When present, compute coverage-depths by \"exploding\" reads into per-locus, depth-1 tuples before (map-side) reduction. Otherwise / By default, coverage depth is accumulated by a traversal of (assumedly start-pos-sorted) reads, emitting (locus,depth) pairs that have already \"reduced\" contributions to each locus within each partition"
   )
   var explodeCoverage: Boolean = false
 
   @Args4JOption(
     name = "--trim-ranges",
     usage =
-      "When present, store which loci in each partition are actually covered, as opposed to one blanket range (per " +
-        "partition per contig) spanning from the smallest to largest loci assigned to each partition. This can " +
-        "result in more informative statistics being collected/printed about the computed loci-partitioning, but " +
-        "it can also result in a significant performance hit if many discontiguous ranges or coverage must be " +
-        "stored / collected to the driver and processed."
+      "When present, store which loci in each partition are actually covered, as opposed to one blanket range (per partition per contig) spanning from the smallest to largest loci assigned to each partition. This can result in more informative statistics being collected/printed about the computed loci-partitioning, but it can also result in a significant performance hit if many discontiguous ranges or coverage must be stored / collected to the driver and processed."
   )
   var trimRanges: Boolean = false
 }

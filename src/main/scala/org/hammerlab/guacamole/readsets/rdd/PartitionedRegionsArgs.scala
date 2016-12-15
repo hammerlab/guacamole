@@ -19,9 +19,7 @@ trait PartitionedRegionsArgs extends LociPartitionerArgs {
   @Args4JOption(
     name = "--partitioning-dir",
     usage =
-      "Directory from which to read an existing partition-reads RDD (and accompanying LociPartitioning), if the " +
-        "directory exists; otherwise, save them here. If set, precludes use of --partitioned-reads and " +
-        "--loci-partitioning",
+      "Directory from which to read an existing partition-reads RDD (and accompanying LociPartitioning), if the directory exists; otherwise, save them here. If set, precludes use of --partitioned-reads and --loci-partitioning",
     forbids = Array("--partitioned-reads-path", "--loci-partitioning-path"),
     handler = classOf[StringOptionHandler]
   )
