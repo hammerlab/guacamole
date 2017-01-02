@@ -40,6 +40,8 @@ assemblyMergeStrategy in assembly := {
   case x => (assemblyMergeStrategy in assembly).value(x)
 }
 
+mainClass := Some("org.hammerlab.guacamole.Main")
+
 shadedDeps += "org.scalanlp" %% "breeze" % "0.12"
 shadeRenames += "breeze.**" -> "org.hammerlab.breeze.@1"
 
