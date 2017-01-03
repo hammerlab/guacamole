@@ -16,7 +16,6 @@ libraryDependencies ++= Seq(
   libraries.value('bdg_formats),
   libraries.value('hadoop_bam),
   libraries.value('kryo),
-  libraries.value('quinine_core),
   libraries.value('spark_commands),
   libraries.value('spark_util),
   libraries.value('spire),
