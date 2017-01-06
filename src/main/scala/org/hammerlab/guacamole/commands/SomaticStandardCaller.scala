@@ -234,8 +234,8 @@ object SomaticStandard {
 
         val allele = mostFrequentVariantAllele
 
-        val tumorVariantEvidence = AlleleEvidence(exp(-tumorAltLogProb), allele, tumorPileup)
-        val normalReferenceEvidence = AlleleEvidence(exp(-normalRefLogProb), referenceAllele, normalPileup)
+        val tumorVariantEvidence = AlleleEvidence(exp(tumorAltLogProb), allele, tumorPileup)
+        val normalReferenceEvidence = AlleleEvidence(exp(normalRefLogProb), referenceAllele, normalPileup)
 
         Some(
           CalledSomaticAllele(
