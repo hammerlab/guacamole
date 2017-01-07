@@ -1,6 +1,6 @@
 package org.hammerlab.guacamole.util
 
-import htsjdk.samtools.{CigarElement, CigarOperator}
+import htsjdk.samtools.{ CigarElement, CigarOperator }
 
 object CigarUtils {
   /**

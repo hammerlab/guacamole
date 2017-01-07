@@ -2,16 +2,16 @@ package org.hammerlab.guacamole.distributed
 
 import org.apache.spark.storage.BroadcastBlockId
 import org.hammerlab.genomics.loci.set.test.TestLociSet
-import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.{pileupFlatMapMultipleSamples, pileupFlatMapOneSample, pileupFlatMapTwoSamples}
+import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.{ pileupFlatMapMultipleSamples, pileupFlatMapOneSample, pileupFlatMapTwoSamples }
 import org.hammerlab.guacamole.distributed.Util.pileupsToElementStrings
 import org.hammerlab.guacamole.loci.partitioning.UniformPartitioner
-import org.hammerlab.guacamole.pileup.{Pileup, PileupElement}
-import org.hammerlab.guacamole.readsets.rdd.{PartitionedRegionsUtil, ReadsRDDUtil}
-import org.hammerlab.guacamole.readsets.{PartitionedReads, PerSample}
+import org.hammerlab.guacamole.pileup.{ Pileup, PileupElement }
+import org.hammerlab.guacamole.readsets.rdd.{ PartitionedRegionsUtil, ReadsRDDUtil }
+import org.hammerlab.guacamole.readsets.{ PartitionedReads, PerSample }
 import org.hammerlab.guacamole.reference.ReferenceBroadcast.MapBackedReferenceSequence
 import org.hammerlab.guacamole.reference.ReferenceUtil
-import org.hammerlab.guacamole.util.Bases.{T, basesToString}
-import org.hammerlab.guacamole.util.{AssertBases, GuacFunSuite}
+import org.hammerlab.guacamole.util.Bases.{ T, basesToString }
+import org.hammerlab.guacamole.util.{ AssertBases, GuacFunSuite }
 
 private object Util {
   // This helper function is in its own object here to avoid serializing `PileupFlatMapUtilsSuite`, which is not

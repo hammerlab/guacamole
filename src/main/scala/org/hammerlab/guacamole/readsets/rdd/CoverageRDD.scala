@@ -4,11 +4,11 @@ import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.rdd.RDD
 import org.hammerlab.genomics.loci.iterator.LociIterator
 import org.hammerlab.genomics.loci.set.LociSet
-import org.hammerlab.genomics.reference.{ContigName, Interval, NumLoci, Position, Region}
+import org.hammerlab.genomics.reference.{ ContigName, Interval, NumLoci, Position, Region }
 import org.hammerlab.genomics.reference.Position.ordering
 import org.hammerlab.guacamole.loci.Coverage
 import org.hammerlab.guacamole.loci.set.TakeLociIterator
-import org.hammerlab.guacamole.readsets.iterator.{ContigCoverageIterator, ContigsIterator}
+import org.hammerlab.guacamole.readsets.iterator.{ ContigCoverageIterator, ContigsIterator }
 import org.hammerlab.magic.rdd.RunLengthRDD._
 
 import scala.collection.mutable

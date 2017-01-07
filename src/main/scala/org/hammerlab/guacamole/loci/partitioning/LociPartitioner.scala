@@ -8,7 +8,7 @@ import org.hammerlab.genomics.loci.set.LociSet
 import org.hammerlab.genomics.reference.Region
 import org.hammerlab.guacamole.loci.partitioning.LociPartitionerType.LociPartitionerType
 import org.hammerlab.guacamole.readsets.rdd.PartitionedRegionsArgs
-import org.kohsuke.args4j.{Option => Args4JOption}
+import org.kohsuke.args4j.{ Option => Args4JOption }
 
 import scala.reflect.ClassTag
 

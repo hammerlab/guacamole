@@ -4,7 +4,7 @@ import org.hammerlab.genomics.loci.map.LociMap
 import org.hammerlab.genomics.loci.set.LociSet
 import org.hammerlab.genomics.loci.set.test.TestLociSet
 import org.hammerlab.guacamole.util.GuacFunSuite
-import org.hammerlab.spark.{NumPartitions, PartitionIndex}
+import org.hammerlab.spark.{ NumPartitions, PartitionIndex }
 
 class UniformPartitionerSuite extends GuacFunSuite {
 

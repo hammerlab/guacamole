@@ -1,7 +1,7 @@
 package org.hammerlab.guacamole
 
 import org.apache.spark.rdd.RDD
-import org.hammerlab.genomics.reference.{ContigName, NumLoci}
+import org.hammerlab.genomics.reference.{ ContigName, NumLoci }
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.readsets.ContigLengths
 import org.hammerlab.guacamole.readsets.rdd.PartitionedRegions

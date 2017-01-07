@@ -2,7 +2,7 @@ package org.hammerlab.guacamole.assembly
 
 import breeze.stats.mean
 import htsjdk.samtools.CigarOperator
-import org.hammerlab.guacamole.reads.{MappedRead, Read}
+import org.hammerlab.guacamole.reads.{ MappedRead, Read }
 import org.hammerlab.guacamole.util.Bases.basesToString
 
 import scala.collection.mutable

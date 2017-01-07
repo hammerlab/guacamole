@@ -1,16 +1,16 @@
 package org.hammerlab.guacamole.likelihood
 
 import org.bdgenomics.adam.util.PhredUtils.phredToErrorProbability
-import org.hammerlab.guacamole.likelihood.Likelihood.{uniformPrior, likelihoodsOfGenotypes, probabilitiesOfAllPossibleGenotypesFromPileup}
-import org.hammerlab.guacamole.pileup.{PileupElement, Util => PileupUtil}
-import org.hammerlab.guacamole.reads.{MappedRead, ReadsUtil}
+import org.hammerlab.guacamole.likelihood.Likelihood.{ uniformPrior, likelihoodsOfGenotypes, probabilitiesOfAllPossibleGenotypesFromPileup }
+import org.hammerlab.guacamole.pileup.{ PileupElement, Util => PileupUtil }
+import org.hammerlab.guacamole.reads.{ MappedRead, ReadsUtil }
 import org.hammerlab.guacamole.reference.ReferenceUtil
 import org.hammerlab.guacamole.util.Bases.stringToBases
 import org.hammerlab.guacamole.util.GuacFunSuite
-import org.hammerlab.guacamole.variants.{Allele, Genotype}
+import org.hammerlab.guacamole.variants.{ Allele, Genotype }
 import org.scalatest.prop.TableDrivenPropertyChecks
 
-import scala.math.{exp, log}
+import scala.math.{ exp, log }
 
 class LikelihoodSuite
   extends GuacFunSuite

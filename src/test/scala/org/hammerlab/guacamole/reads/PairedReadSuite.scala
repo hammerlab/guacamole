@@ -2,7 +2,7 @@ package org.hammerlab.guacamole.reads
 
 import htsjdk.samtools.TextCigarCodec
 import org.hammerlab.guacamole.util.BasesUtil._
-import org.scalatest.{FunSuite, Matchers}
+import org.scalatest.{ FunSuite, Matchers }
 
 class PairedReadSuite extends FunSuite with Matchers {
 

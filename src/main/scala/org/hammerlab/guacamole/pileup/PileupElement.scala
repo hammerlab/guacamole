@@ -1,8 +1,8 @@
 package org.hammerlab.guacamole.pileup
 
-import htsjdk.samtools.{CigarElement, CigarOperator}
+import htsjdk.samtools.{ CigarElement, CigarOperator }
 import org.bdgenomics.adam.util.PhredUtils.phredToSuccessProbability
-import org.hammerlab.genomics.reference.{ContigSequence, Locus}
+import org.hammerlab.genomics.reference.{ ContigSequence, Locus }
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.util.CigarUtils
 import org.hammerlab.guacamole.variants.Allele

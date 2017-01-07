@@ -7,9 +7,9 @@ import grizzled.slf4j.Logging
 import htsjdk.samtools.reference.FastaSequenceFile
 import org.apache.spark.SparkContext
 import org.apache.spark.broadcast.Broadcast
-import org.hammerlab.genomics.loci.parsing.{LociRange, LociRanges, ParsedLociRange}
+import org.hammerlab.genomics.loci.parsing.{ LociRange, LociRanges, ParsedLociRange }
 import org.hammerlab.genomics.loci.set.LociSet
-import org.hammerlab.genomics.reference.{ContigName, ContigSequence, Locus, NumLoci}
+import org.hammerlab.genomics.reference.{ ContigName, ContigSequence, Locus, NumLoci }
 import org.hammerlab.guacamole.util.Bases.unmaskBases
 
 import scala.collection.mutable

@@ -6,7 +6,7 @@ import org.hammerlab.genomics.loci.set.test.TestLociSet
 import org.hammerlab.genomics.reference.Position
 import org.hammerlab.genomics.reference.test.TestRegion
 import org.hammerlab.guacamole.loci.Coverage
-import org.hammerlab.guacamole.readsets.{ContigLengths, ContigLengthsUtil}
+import org.hammerlab.guacamole.readsets.{ ContigLengths, ContigLengthsUtil }
 import org.hammerlab.guacamole.util.GuacFunSuite
 import org.hammerlab.magic.rdd.cmp.CmpStats
 import org.hammerlab.magic.rdd.cmp.EqualsRDD._

@@ -1,7 +1,7 @@
 package org.hammerlab.guacamole.readsets.args
 
 import org.kohsuke.args4j.spi.StringArrayOptionHandler
-import org.kohsuke.args4j.{Argument, Option => Args4JOption}
+import org.kohsuke.args4j.{ Argument, Option => Args4JOption }
 
 /**
  * Common command-line arguments for loading in one or more sets of reads, and associating a sample-name with each.

@@ -1,6 +1,6 @@
 package org.hammerlab.guacamole.readsets.io
 
-import org.hammerlab.genomics.loci.parsing.{All, ParsedLoci}
+import org.hammerlab.genomics.loci.parsing.{ All, ParsedLoci }
 
 object TestInputConfig {
   def mapped(nonDuplicate: Boolean = false,

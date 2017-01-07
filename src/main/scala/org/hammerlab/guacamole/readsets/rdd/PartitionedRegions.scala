@@ -1,13 +1,13 @@
 package org.hammerlab.guacamole.readsets.rdd
 
-import org.apache.hadoop.fs.{FileSystem, Path}
+import org.apache.hadoop.fs.{ FileSystem, Path }
 import org.apache.spark.rdd.RDD
-import org.apache.spark.{Accumulable, SparkContext}
+import org.apache.spark.{ Accumulable, SparkContext }
 import org.hammerlab.genomics.loci.set.LociSet
 import org.hammerlab.genomics.reference.Region
 import org.hammerlab.guacamole.loci.partitioning.LociPartitioning
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
-import org.hammerlab.magic.accumulables.{HistogramParam, HashMap => MagicHashMap}
+import org.hammerlab.magic.accumulables.{ HistogramParam, HashMap => MagicHashMap }
 import org.hammerlab.magic.rdd.serde.SequenceFileSerializableRDD._
 import org.hammerlab.spark.PartitionIndex
 import org.hammerlab.spark.util.KeyPartitioner

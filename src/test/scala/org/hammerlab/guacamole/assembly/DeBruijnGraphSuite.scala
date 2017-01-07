@@ -4,7 +4,7 @@ import org.hammerlab.guacamole.reads.ReadsUtil
 import org.hammerlab.guacamole.readsets.rdd.ReadsRDDUtil
 import org.hammerlab.guacamole.reference.ReferenceUtil
 import org.hammerlab.guacamole.util.BasesUtil._
-import org.hammerlab.guacamole.util.{AssertBases, GuacFunSuite}
+import org.hammerlab.guacamole.util.{ AssertBases, GuacFunSuite }
 
 class DeBruijnGraphSuite
   extends GuacFunSuite

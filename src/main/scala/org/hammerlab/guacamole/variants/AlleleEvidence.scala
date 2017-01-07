@@ -1,7 +1,7 @@
 package org.hammerlab.guacamole.variants
 
 import breeze.linalg.DenseVector
-import breeze.stats.{mean, median}
+import breeze.stats.{ mean, median }
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.util.PhredUtils.successProbabilityToPhred
 

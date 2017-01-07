@@ -22,7 +22,7 @@ import org.apache.spark.rdd.RDD
 import org.hammerlab.args4s.IntOptionHandler
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.variants.CalledSomaticAllele
-import org.kohsuke.args4j.{Option => Args4jOption}
+import org.kohsuke.args4j.{ Option => Args4jOption }
 
 object SomaticGenotypeFilter {
 

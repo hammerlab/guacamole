@@ -1,22 +1,22 @@
 package org.hammerlab.guacamole.commands
 
 import breeze.linalg.DenseVector
-import breeze.stats.{mean, median}
+import breeze.stats.{ mean, median }
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.hammerlab.guacamole.alignment.ReadAlignment
 import org.hammerlab.guacamole.assembly.AssemblyArgs
-import org.hammerlab.guacamole.assembly.AssemblyUtils.{buildVariantsFromPath, discoverHaplotypes, isActiveRegion}
+import org.hammerlab.guacamole.assembly.AssemblyUtils.{ buildVariantsFromPath, discoverHaplotypes, isActiveRegion }
 import org.hammerlab.guacamole.distributed.WindowFlatMapUtils.windowFlatMapWithState
 import org.hammerlab.guacamole.likelihood.Likelihood.probabilitiesOfAllPossibleGenotypesFromPileup
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.MappedRead
-import org.hammerlab.guacamole.readsets.args.{GermlineCallerArgs, ReferenceArgs}
-import org.hammerlab.guacamole.readsets.rdd.{PartitionedRegions, PartitionedRegionsArgs}
-import org.hammerlab.guacamole.readsets.{PartitionedReads, ReadSets, SampleName}
+import org.hammerlab.guacamole.readsets.args.{ GermlineCallerArgs, ReferenceArgs }
+import org.hammerlab.guacamole.readsets.rdd.{ PartitionedRegions, PartitionedRegionsArgs }
+import org.hammerlab.guacamole.readsets.{ PartitionedReads, ReadSets, SampleName }
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
-import org.hammerlab.guacamole.variants.{Allele, AlleleEvidence, CalledAllele, GenotypeOutputCaller}
-import org.kohsuke.args4j.{Option => Args4jOption}
+import org.hammerlab.guacamole.variants.{ Allele, AlleleEvidence, CalledAllele, GenotypeOutputCaller }
+import org.kohsuke.args4j.{ Option => Args4jOption }
 
 /**
  * Simple assembly based germline variant caller

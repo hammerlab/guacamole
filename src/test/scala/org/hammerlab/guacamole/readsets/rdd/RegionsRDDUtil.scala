@@ -2,7 +2,7 @@ package org.hammerlab.guacamole.readsets.rdd
 
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
-import org.hammerlab.genomics.reference.test.{RegionsUtil, TestRegion}
+import org.hammerlab.genomics.reference.test.{ RegionsUtil, TestRegion }
 
 trait RegionsRDDUtil
   extends RegionsUtil {

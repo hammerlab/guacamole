@@ -1,9 +1,9 @@
 package org.hammerlab.guacamole.jointcaller
 
 import org.hammerlab.guacamole.jointcaller.pileup_summarization.ReadSubsequence
-import org.hammerlab.guacamole.pileup.{Util => PileupUtil}
+import org.hammerlab.guacamole.pileup.{ Util => PileupUtil }
 import org.hammerlab.guacamole.reads.ReadsUtil
-import org.hammerlab.guacamole.reference.{ReferenceBroadcast, ReferenceUtil}
+import org.hammerlab.guacamole.reference.{ ReferenceBroadcast, ReferenceUtil }
 import org.hammerlab.guacamole.util.GuacFunSuite
 import org.hammerlab.guacamole.util.TestUtil.resourcePath
 

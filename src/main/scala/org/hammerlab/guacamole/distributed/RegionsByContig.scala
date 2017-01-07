@@ -1,6 +1,6 @@
 package org.hammerlab.guacamole.distributed
 
-import org.hammerlab.genomics.reference.{ContigName, Region}
+import org.hammerlab.genomics.reference.{ ContigName, Region }
 
 /**
  * Using an iterator of regions sorted by (contig, start locus), this class exposes a way to get separate iterators

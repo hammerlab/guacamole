@@ -1,7 +1,7 @@
 package org.hammerlab.guacamole.windowing
 
 import org.hammerlab.genomics.loci.iterator.LociIterator
-import org.hammerlab.genomics.reference.{ContigName, Interval, Locus, Region}
+import org.hammerlab.genomics.reference.{ ContigName, Interval, Locus, Region }
 import org.hammerlab.guacamole.readsets.PerSample
 
 import scala.collection.mutable

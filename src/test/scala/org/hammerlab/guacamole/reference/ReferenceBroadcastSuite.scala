@@ -1,9 +1,9 @@
 package org.hammerlab.guacamole.reference
 
 import org.hammerlab.guacamole.util.TestUtil.resourcePath
-import org.hammerlab.guacamole.util.{AssertBases, GuacFunSuite}
+import org.hammerlab.guacamole.util.{ AssertBases, GuacFunSuite }
 import org.scalatest.Matchers
-import org.hammerlab.guacamole.util.Bases.{A, C, G, N, T}
+import org.hammerlab.guacamole.util.Bases.{ A, C, G, N, T }
 
 class ReferenceBroadcastSuite extends GuacFunSuite with Matchers {
 

@@ -2,7 +2,7 @@ package org.hammerlab.guacamole.readsets.args
 
 import org.apache.spark.SparkContext
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
-import org.kohsuke.args4j.{Option => Args4jOption}
+import org.kohsuke.args4j.{ Option => Args4jOption }
 
 trait HasReference {
   def referencePath: String

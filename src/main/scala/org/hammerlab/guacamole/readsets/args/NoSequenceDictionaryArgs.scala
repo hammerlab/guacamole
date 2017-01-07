@@ -1,6 +1,6 @@
 package org.hammerlab.guacamole.readsets.args
 
-import org.kohsuke.args4j.{Option => Args4jOption}
+import org.kohsuke.args4j.{ Option => Args4jOption }
 
 /** Argument for using / not using sequence dictionaries to get contigs and lengths. */
 trait NoSequenceDictionaryArgs {

@@ -1,6 +1,6 @@
 package org.hammerlab.guacamole.reads
 
-import org.hammerlab.guacamole.readsets.{SampleId, SampleName}
+import org.hammerlab.guacamole.readsets.{ SampleId, SampleName }
 
 /**
  * An unmapped read. See the [[Read]] trait for field descriptions.

@@ -4,7 +4,7 @@ import grizzled.slf4j.Logging
 import htsjdk.samtools.CigarOperator
 import org.hammerlab.genomics.reference.ContigSequence
 import org.hammerlab.guacamole.alignment.ReadAlignment
-import org.hammerlab.guacamole.assembly.DeBruijnGraph.{discoverPathsFromReads, mergeOverlappingSequences}
+import org.hammerlab.guacamole.assembly.DeBruijnGraph.{ discoverPathsFromReads, mergeOverlappingSequences }
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.reference.ReferenceGenome
 import org.hammerlab.guacamole.util.CigarUtils

@@ -2,10 +2,10 @@ package org.hammerlab.guacamole.readsets.rdd
 
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
-import org.hammerlab.guacamole.reads.{MappedRead, ReadsUtil}
+import org.hammerlab.guacamole.reads.{ MappedRead, ReadsUtil }
 import org.hammerlab.guacamole.readsets.args.SingleSampleArgs
-import org.hammerlab.guacamole.readsets.io.{InputConfig, TestInputConfig}
-import org.hammerlab.guacamole.readsets.{ReadSets, SampleId}
+import org.hammerlab.guacamole.readsets.io.{ InputConfig, TestInputConfig }
+import org.hammerlab.guacamole.readsets.{ ReadSets, SampleId }
 import org.hammerlab.guacamole.util.TestUtil.resourcePath
 
 trait ReadsRDDUtil

@@ -5,7 +5,7 @@ import org.hammerlab.genomics.reference.ContigSequence
 import org.hammerlab.guacamole.distributed.WindowFlatMapUtils.windowFlatMapWithState
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.reads.MappedRead
-import org.hammerlab.guacamole.readsets.{PartitionedReads, PerSample, SampleName}
+import org.hammerlab.guacamole.readsets.{ PartitionedReads, PerSample, SampleName }
 import org.hammerlab.guacamole.reference.ReferenceGenome
 import org.hammerlab.guacamole.windowing.SlidingWindow
 

@@ -1,8 +1,8 @@
 package org.hammerlab.guacamole.alignment
 
 import breeze.linalg.DenseVector
-import htsjdk.samtools.{Cigar, TextCigarCodec}
-import org.hammerlab.guacamole.alignment.AlignmentState.{AlignmentState, cigarKey, isGapAlignment}
+import htsjdk.samtools.{ Cigar, TextCigarCodec }
+import org.hammerlab.guacamole.alignment.AlignmentState.{ AlignmentState, cigarKey, isGapAlignment }
 
 /**
  *

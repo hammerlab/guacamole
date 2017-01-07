@@ -1,7 +1,7 @@
 package org.hammerlab.guacamole.readsets.args
 
 import org.hammerlab.guacamole.readsets.PerSample
-import org.hammerlab.guacamole.readsets.io.{Input, ReadFilterArgs}
+import org.hammerlab.guacamole.readsets.io.{ Input, ReadFilterArgs }
 
 trait Base
   extends ReadFilterArgs

@@ -2,7 +2,7 @@ package org.hammerlab.guacamole.variants
 
 import java.io.File
 
-import htsjdk.variant.variantcontext.{GenotypeBuilder, VariantContext => HTSJDKVariantContext, VariantContextBuilder, Allele => HTSJDKAllele}
+import htsjdk.variant.variantcontext.{ GenotypeBuilder, VariantContext => HTSJDKVariantContext, VariantContextBuilder, Allele => HTSJDKAllele }
 import htsjdk.variant.vcf.VCFFileReader
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.util.Bases.basesToString

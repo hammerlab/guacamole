@@ -1,8 +1,8 @@
 package org.hammerlab.guacamole.reads
 
-import htsjdk.samtools.{Cigar, CigarElement}
+import htsjdk.samtools.{ Cigar, CigarElement }
 import org.bdgenomics.adam.util.PhredUtils.phredToSuccessProbability
-import org.hammerlab.genomics.reference.{ContigName, ContigSequence, Locus, Region}
+import org.hammerlab.genomics.reference.{ ContigName, ContigSequence, Locus, Region }
 import org.hammerlab.guacamole.pileup.PileupElement
 import org.hammerlab.guacamole.readsets.SampleId
 import org.hammerlab.guacamole.util.Bases.basesToString

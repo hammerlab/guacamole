@@ -1,8 +1,8 @@
 package org.hammerlab.guacamole.variants
 
 import org.bdgenomics.formats.avro.GenotypeAllele.{ ALT, REF }
-import org.bdgenomics.formats.avro.{Genotype => BDGGenotype}
-import org.hammerlab.genomics.reference.{ContigName, Locus, NumLoci}
+import org.bdgenomics.formats.avro.{ Genotype => BDGGenotype }
+import org.hammerlab.genomics.reference.{ ContigName, Locus, NumLoci }
 import org.hammerlab.guacamole.readsets.SampleName
 import org.hammerlab.guacamole.util.PhredUtils.successProbabilityToPhred
 

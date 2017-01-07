@@ -12,14 +12,14 @@ import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.models.SequenceDictionary
 import org.bdgenomics.adam.rdd.ADAMContext
 import org.hammerlab.genomics.loci.set.LociSet
-import org.hammerlab.genomics.reference.{ContigName, Locus}
+import org.hammerlab.genomics.reference.{ ContigName, Locus }
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.reads.Read
-import org.hammerlab.guacamole.readsets.args.{Base => BaseArgs}
-import org.hammerlab.guacamole.readsets.io.{Input, InputConfig}
+import org.hammerlab.guacamole.readsets.args.{ Base => BaseArgs }
+import org.hammerlab.guacamole.readsets.io.{ Input, InputConfig }
 import org.hammerlab.guacamole.readsets.rdd.ReadsRDD
 import org.seqdoop.hadoop_bam.util.SAMHeaderReader
-import org.seqdoop.hadoop_bam.{AnySAMInputFormat, BAMInputFormat, SAMRecordWritable}
+import org.seqdoop.hadoop_bam.{ AnySAMInputFormat, BAMInputFormat, SAMRecordWritable }
 
 import scala.collection.JavaConversions.seqAsJavaList
 

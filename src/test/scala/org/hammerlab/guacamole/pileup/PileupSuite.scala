@@ -1,10 +1,10 @@
 package org.hammerlab.guacamole.pileup
 
 import org.hammerlab.genomics.reference.Locus
-import org.hammerlab.guacamole.reads.{MappedRead, ReadsUtil}
+import org.hammerlab.guacamole.reads.{ MappedRead, ReadsUtil }
 import org.hammerlab.guacamole.reference.ReferenceUtil
 import org.hammerlab.guacamole.util.BasesUtil._
-import org.hammerlab.guacamole.util.{AssertBases, Bases, GuacFunSuite}
+import org.hammerlab.guacamole.util.{ AssertBases, Bases, GuacFunSuite }
 import org.hammerlab.guacamole.variants.Allele
 import org.scalatest.prop.TableDrivenPropertyChecks
 

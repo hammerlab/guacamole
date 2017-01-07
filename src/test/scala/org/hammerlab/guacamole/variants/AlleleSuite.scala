@@ -1,6 +1,6 @@
 package org.hammerlab.guacamole.variants
 
-import org.hammerlab.guacamole.util.Bases.{A, C, T}
+import org.hammerlab.guacamole.util.Bases.{ A, C, T }
 import org.hammerlab.guacamole.util.GuacFunSuite
 import org.scalatest.Matchers
 

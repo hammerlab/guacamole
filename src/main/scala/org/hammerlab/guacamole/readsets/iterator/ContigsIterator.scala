@@ -1,6 +1,6 @@
 package org.hammerlab.guacamole.readsets.iterator
 
-import org.hammerlab.genomics.reference.{ContigIterator, ContigName, HasContig}
+import org.hammerlab.genomics.reference.{ ContigIterator, ContigName, HasContig }
 import org.hammerlab.iterator.SimpleBufferedIterator
 
 import scala.collection.mutable

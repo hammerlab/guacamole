@@ -169,7 +169,7 @@ Welcome to
 scala> :paste
 // Entering paste mode (ctrl-D to finish)
 
-import org.hammerlab.guacamole.commands.SomaticStandard.{Arguments, Caller}
+import org.hammerlab.guacamole.commands.SomaticStandard.{ Arguments, Caller }
 
 val args = new Arguments
 args.normalReads = "src/test/resources/cancer-wgs1/normal.tiny.bam"

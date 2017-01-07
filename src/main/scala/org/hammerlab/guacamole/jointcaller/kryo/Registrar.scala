@@ -3,9 +3,9 @@ package org.hammerlab.guacamole.jointcaller.kryo
 import com.esotericsoftware.kryo.Kryo
 import org.apache.spark.serializer.KryoRegistrator
 import org.hammerlab.guacamole.jointcaller.Parameters.SomaticGenotypePolicy
-import org.hammerlab.guacamole.jointcaller.annotation.{InsufficientNormal, MultiSampleAnnotations, SingleSampleAnnotations, StrandBias}
-import org.hammerlab.guacamole.jointcaller.evidence.{MultiSampleMultiAlleleEvidence, MultiSampleSingleAlleleEvidence, NormalDNASingleSampleSingleAlleleEvidence, TumorDNASingleSampleSingleAlleleEvidence, TumorRNASingleSampleSingleAlleleEvidence}
-import org.hammerlab.guacamole.jointcaller.{AlleleAtLocus, Input, InputCollection, Parameters}
+import org.hammerlab.guacamole.jointcaller.annotation.{ InsufficientNormal, MultiSampleAnnotations, SingleSampleAnnotations, StrandBias }
+import org.hammerlab.guacamole.jointcaller.evidence.{ MultiSampleMultiAlleleEvidence, MultiSampleSingleAlleleEvidence, NormalDNASingleSampleSingleAlleleEvidence, TumorDNASingleSampleSingleAlleleEvidence, TumorRNASingleSampleSingleAlleleEvidence }
+import org.hammerlab.guacamole.jointcaller.{ AlleleAtLocus, Input, InputCollection, Parameters }
 
 class Registrar extends KryoRegistrator {
   override def registerClasses(kryo: Kryo): Unit = {

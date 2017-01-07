@@ -1,6 +1,6 @@
 package org.hammerlab.guacamole.readsets.io
 
-import org.hammerlab.guacamole.readsets.{SampleId, SampleName}
+import org.hammerlab.guacamole.readsets.{ SampleId, SampleName }
 
 class Input(val id: SampleId, val sampleName: SampleName, val path: String) extends Serializable
 

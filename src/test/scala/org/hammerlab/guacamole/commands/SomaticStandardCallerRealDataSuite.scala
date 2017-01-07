@@ -2,7 +2,7 @@ package org.hammerlab.guacamole.commands
 
 import org.hammerlab.guacamole.commands.SomaticStandard.Caller.findPotentialVariantAtLocus
 import org.hammerlab.guacamole.filters.somatic.TestSomaticGenotypeFilter
-import org.hammerlab.guacamole.pileup.{Util => PileupUtil}
+import org.hammerlab.guacamole.pileup.{ Util => PileupUtil }
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.util.GuacFunSuite

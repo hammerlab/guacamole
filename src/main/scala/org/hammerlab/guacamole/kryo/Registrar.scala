@@ -2,20 +2,20 @@ package org.hammerlab.guacamole.kryo
 
 import com.esotericsoftware.kryo.Kryo
 import org.apache.spark.serializer.KryoRegistrator
-import org.bdgenomics.adam.models.{SequenceDictionary, SequenceRecord, VariantContext}
+import org.bdgenomics.adam.models.{ SequenceDictionary, SequenceRecord, VariantContext }
 import org.bdgenomics.adam.rich.RichVariant
 import org.bdgenomics.adam.serialization.ADAMKryoRegistrator
-import org.hammerlab.genomics.kryo.{Registrar => LociSetRegistrar}
-import org.hammerlab.genomics.loci.map.{Contig, ContigSerializer, LociMap, Serializer}
-import org.hammerlab.guacamole.jointcaller.kryo.{Registrar => JointCallerRegistrar}
+import org.hammerlab.genomics.kryo.{ Registrar => LociSetRegistrar }
+import org.hammerlab.genomics.loci.map.{ Contig, ContigSerializer, LociMap, Serializer }
+import org.hammerlab.guacamole.jointcaller.kryo.{ Registrar => JointCallerRegistrar }
 import org.hammerlab.guacamole.loci.Coverage
 import org.hammerlab.guacamole.loci.partitioning.LociPartitioning
 import org.hammerlab.guacamole.loci.partitioning.MicroRegionPartitioner.MicroPartitionIndex
-import org.hammerlab.guacamole.reads.{MappedRead, MappedReadSerializer, MateAlignmentProperties, PairedRead, Read, UnmappedRead, UnmappedReadSerializer}
+import org.hammerlab.guacamole.reads.{ MappedRead, MappedReadSerializer, MateAlignmentProperties, PairedRead, Read, UnmappedRead, UnmappedReadSerializer }
 import org.hammerlab.guacamole.readsets.ContigLengths
-import org.hammerlab.guacamole.variants.{Allele, AlleleEvidence, AlleleSerializer, CalledAllele, CalledSomaticAllele, Genotype}
-import org.hammerlab.magic.accumulables.{HashMap => MagicHashMap}
-import org.hammerlab.magic.kryo.{Registrar => MagicRDDRegistrar}
+import org.hammerlab.guacamole.variants.{ Allele, AlleleEvidence, AlleleSerializer, CalledAllele, CalledSomaticAllele, Genotype }
+import org.hammerlab.magic.accumulables.{ HashMap => MagicHashMap }
+import org.hammerlab.magic.kryo.{ Registrar => MagicRDDRegistrar }
 
 class Registrar extends KryoRegistrator {
   override def registerClasses(kryo: Kryo) {

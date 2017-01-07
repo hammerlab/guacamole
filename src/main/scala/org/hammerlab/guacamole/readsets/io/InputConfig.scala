@@ -1,6 +1,6 @@
 package org.hammerlab.guacamole.readsets.io
 
-import org.hammerlab.genomics.loci.parsing.{All, ParsedLoci}
+import org.hammerlab.genomics.loci.parsing.{ All, ParsedLoci }
 
 /**
  * Configuring how/which reads are loaded can be an important optimization.

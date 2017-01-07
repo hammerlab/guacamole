@@ -1,6 +1,6 @@
 package org.hammerlab.guacamole.distributed
 
-import org.hammerlab.genomics.reference.{ContigName, Region}
+import org.hammerlab.genomics.reference.{ ContigName, Region }
 
 /**
  * Wraps an iterator of regions sorted by contig name. Implements an iterator that gives regions only for the specified

@@ -2,9 +2,9 @@ package org.hammerlab.guacamole.readsets.iterator
 
 import org.hammerlab.genomics.loci.iterator.LociIterator
 import org.hammerlab.genomics.reference.test.TestRegion
-import org.hammerlab.genomics.reference.{ContigIterator, Interval}
+import org.hammerlab.genomics.reference.{ ContigIterator, Interval }
 import org.hammerlab.guacamole.loci.Coverage
-import org.scalatest.{FunSuite, Matchers}
+import org.scalatest.{ FunSuite, Matchers }
 
 class ContigCoverageIteratorSuite
   extends FunSuite

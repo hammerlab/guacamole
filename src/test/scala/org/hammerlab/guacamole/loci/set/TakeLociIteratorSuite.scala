@@ -3,7 +3,7 @@ package org.hammerlab.guacamole.loci.set
 import org.hammerlab.genomics.loci.set.test.TestLociSet
 import org.hammerlab.genomics.reference.Position
 import org.hammerlab.guacamole.loci.Coverage
-import org.scalatest.{FunSuite, Matchers}
+import org.scalatest.{ FunSuite, Matchers }
 
 class TakeLociIteratorSuite extends FunSuite with Matchers {
 

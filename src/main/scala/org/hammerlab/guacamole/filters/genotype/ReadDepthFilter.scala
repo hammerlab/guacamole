@@ -19,7 +19,7 @@
 package org.hammerlab.guacamole.filters.genotype
 
 import org.apache.spark.rdd.RDD
-import org.hammerlab.guacamole.variants.{AlleleEvidence, CalledAllele}
+import org.hammerlab.guacamole.variants.{ AlleleEvidence, CalledAllele }
 
 /**
  * Filter to remove genotypes where the number of reads at the locus is too low or too high

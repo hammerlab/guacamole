@@ -6,13 +6,13 @@ import htsjdk.samtools.SAMSequenceDictionary
 import htsjdk.variant.variantcontext._
 import htsjdk.variant.variantcontext.writer.VariantContextWriterBuilder
 import htsjdk.variant.vcf._
-import org.hammerlab.guacamole.jointcaller.Input.{Analyte, TissueType}
-import org.hammerlab.guacamole.jointcaller.annotation.{MultiSampleAnnotations, SingleSampleAnnotations}
+import org.hammerlab.guacamole.jointcaller.Input.{ Analyte, TissueType }
+import org.hammerlab.guacamole.jointcaller.annotation.{ MultiSampleAnnotations, SingleSampleAnnotations }
 import org.hammerlab.guacamole.jointcaller.evidence._
 import org.hammerlab.guacamole.jointcaller.pileup_summarization.PileupStats.AlleleMixture
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 
-import scala.collection.{JavaConversions, mutable}
+import scala.collection.{ JavaConversions, mutable }
 
 object VCFOutput {
   /**

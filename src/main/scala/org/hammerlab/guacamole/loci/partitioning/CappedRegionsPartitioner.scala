@@ -3,12 +3,12 @@ package org.hammerlab.guacamole.loci.partitioning
 import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.rdd.RDD
 import org.hammerlab.genomics.loci.set.LociSet
-import org.hammerlab.genomics.reference.{ContigName, NumLoci, Region}
+import org.hammerlab.genomics.reference.{ ContigName, NumLoci, Region }
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.readsets.rdd.CoverageRDD
 import org.hammerlab.iterator.GroupRunsIterator
 import org.hammerlab.magic.util.KeyOrdering
-import org.kohsuke.args4j.{Option => Args4JOption}
+import org.kohsuke.args4j.{ Option => Args4JOption }
 
 import scala.reflect.ClassTag
 

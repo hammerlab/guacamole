@@ -6,8 +6,8 @@ import org.hammerlab.genomics.loci.set.LociSet
 import org.hammerlab.genomics.reference.Region
 import org.hammerlab.guacamole.reads.SampleRegion
 import org.hammerlab.guacamole.readsets.rdd.PartitionedRegions
-import org.hammerlab.guacamole.readsets.{NumSamples, PerSample}
-import org.hammerlab.guacamole.windowing.{SlidingWindow, SplitIterator}
+import org.hammerlab.guacamole.readsets.{ NumSamples, PerSample }
+import org.hammerlab.guacamole.windowing.{ SlidingWindow, SplitIterator }
 
 import scala.reflect.ClassTag
 
