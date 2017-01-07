@@ -12,6 +12,7 @@ deps ++= Seq(
   "org.hammerlab" %% "args4s" % "1.0.0",
   libs.value('bdg_formats),
   libs.value('bdg_utils_cli),
+  libs.value('breeze),
   libs.value('commons_math),
   "org.hammerlab" %% "genomic-loci" % "1.4.3",
   libs.value('hadoop_bam),
