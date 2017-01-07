@@ -7,7 +7,6 @@ import org.bdgenomics.adam.rdd.variant.GenotypeRDD
 import org.bdgenomics.formats.avro.Sample
 import org.hammerlab.commands.Args
 import org.hammerlab.guacamole.commands.GuacCommand
-import org.hammerlab.guacamole.logging.DelayedMessages
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.readsets.{ PerSample, SampleName }
 
@@ -41,8 +40,6 @@ trait GenotypeOutputCaller[ArgsT <: Args with GenotypeOutputArgs, V <: Reference
     val genotypesRDD = GenotypeRDD(genotypes, sequenceDictionary, bdgSamples)
 
     args.writeVariants(genotypesRDD)
-
-    DelayedMessages.default.print()
   }
 
   def computeVariants(args: ArgsT, sc: SparkContext): (RDD[V], SequenceDictionary, PerSample[SampleName])
