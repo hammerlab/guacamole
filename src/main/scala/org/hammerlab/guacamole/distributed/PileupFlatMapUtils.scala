@@ -53,7 +53,7 @@ object PileupFlatMapUtils {
                                           sampleName: SampleName,
                                           skipEmpty: Boolean,
                                           function: Pileup => Iterator[T],
-                                          reference: ReferenceGenome): RDD[T] = {
+                                          reference: ReferenceGenome): RDD[T] =
     windowFlatMapWithState(
       numSamples = 1,
       partitionedReads,
@@ -66,7 +66,6 @@ object PileupFlatMapUtils {
         (Some(pileup), function(pileup))
       }
     )
-  }
 
   /**
    * Flatmap across loci on two RDDs of MappedReads. At each locus the provided function is passed two Pileup instances,
@@ -81,7 +80,7 @@ object PileupFlatMapUtils {
                                            sample2Name: SampleName,
                                            skipEmpty: Boolean,
                                            function: (Pileup, Pileup) => Iterator[T],
-                                           reference: ReferenceGenome): RDD[T] = {
+                                           reference: ReferenceGenome): RDD[T] =
     windowFlatMapWithState(
       numSamples = 2,
       partitionedReads,
@@ -94,8 +93,8 @@ object PileupFlatMapUtils {
         val pileup1 = initOrMovePileup(maybePileups.map(_._1), sample1Name, windows(0), contigSequence)
         val pileup2 = initOrMovePileup(maybePileups.map(_._2), sample2Name, windows(1), contigSequence)
         (Some((pileup1, pileup2)), function(pileup1, pileup2))
-      })
-  }
+      }
+    )
 
   /**
    * Flatmap across loci and any number of RDDs of MappedReads.
@@ -106,7 +105,7 @@ object PileupFlatMapUtils {
                                                 partitionedReads: PartitionedReads,
                                                 skipEmpty: Boolean,
                                                 function: PerSample[Pileup] => Iterator[T],
-                                                reference: ReferenceGenome): RDD[T] = {
+                                                reference: ReferenceGenome): RDD[T] =
     windowFlatMapWithState(
       sampleNames.length,
       partitionedReads,
@@ -137,7 +136,8 @@ object PileupFlatMapUtils {
                   reference.getContig(contigName)
                 )
         }
+
         (Some(advancedPileups), function(advancedPileups))
-      })
-  }
+      }
+    )
 }

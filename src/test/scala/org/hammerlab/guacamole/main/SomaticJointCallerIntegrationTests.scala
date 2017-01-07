@@ -41,14 +41,14 @@ object SomaticJointCallerIntegrationTests
     val forceCallLoci =
       LociSet(
         csvRecords(CancerWGSTestUtil.expectedSomaticCallsCSV)
-        .filterNot(_.tumor.contains("decoy"))
-        .map(record => {
-          (
-            "chr" + record.contig,
-            if (record.alt.nonEmpty) record.interbaseStart else record.interbaseStart - 1L,
-            if (record.alt.nonEmpty) record.interbaseStart + 1L else record.interbaseStart
-          )
-        })
+          .filterNot(_.tumor.contains("decoy"))
+          .map { record =>
+            (
+              "chr" + record.contig,
+              if (record.alt.nonEmpty) record.interbaseStart else record.interbaseStart - 1L,
+              if (record.alt.nonEmpty) record.interbaseStart + 1L else record.interbaseStart
+            )
+          }
       )
 
     val args = new Arguments() {
