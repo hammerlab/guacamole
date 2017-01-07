@@ -196,7 +196,7 @@ class SomaticJointCallerSuite
     bestAllele.isSomaticCall should be(true)
     bestAllele.allele.ref should equal("G")
     bestAllele.allele.alt should equal("A")
-    bestAllele.tumorDNAPooledEvidence.allelicDepths.toSet should equal(Set("G" -> 90, "A" -> 2))
-    bestAllele.normalDNAPooledEvidence.allelicDepths.toSet should equal(Set("G" -> 51))
+    bestAllele.tumorDNAPooledEvidence.allelicDepths should equal(AllelicDepths("G" → 90, "A" → 2))
+    bestAllele.normalDNAPooledEvidence.allelicDepths should equal(AllelicDepths("G" → 51))
   }
 }

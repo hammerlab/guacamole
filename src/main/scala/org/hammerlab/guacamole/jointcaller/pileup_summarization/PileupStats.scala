@@ -1,6 +1,7 @@
 package org.hammerlab.guacamole.jointcaller.pileup_summarization
 
 import org.bdgenomics.adam.util.PhredUtils.phredToSuccessProbability
+import org.hammerlab.guacamole.jointcaller.AllelicDepths
 import org.hammerlab.guacamole.jointcaller.pileup_summarization.PileupStats.AlleleMixture
 import org.hammerlab.guacamole.pileup.PileupElement
 import org.hammerlab.guacamole.util.Bases.basesToString
@@ -50,7 +51,7 @@ class PileupStats(val elements: Seq[PileupElement], val referenceSequence: Seq[B
       .mapValues(_.size)
       .withDefaultValue(0)
 
-  def takeAllelicDepths(max: Int): Map[String, Int] =
+  def takeAllelicDepths(max: Int): AllelicDepths =
     allelicDepths
       .toVector
       .sortBy(-_._2)
@@ -61,7 +62,7 @@ class PileupStats(val elements: Seq[PileupElement], val referenceSequence: Seq[B
   val totalDepthIncludingReadsContributingNoAlleles = elements.size
 
   /** All sequenced alleles that are not the ref allele, sorted by decreasing allelic depth. */
-  val nonRefAlleles: Seq[String] =
+  val nonRefAlleles =
     allelicDepths
       .filterKeys(_ != ref)
       .toVector

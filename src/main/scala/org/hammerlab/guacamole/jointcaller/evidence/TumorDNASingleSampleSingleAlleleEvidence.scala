@@ -16,7 +16,7 @@ import math.max
  * @param logLikelihoods Map from allelic mixtures to log10 likelihoods
  */
 case class TumorDNASingleSampleSingleAlleleEvidence(allele: AlleleAtLocus,
-                                                    allelicDepths: Map[String, Int],
+                                                    allelicDepths: AllelicDepths,
                                                     logLikelihoods: Map[AlleleMixture, Double],
                                                     annotations: Option[SingleSampleAnnotations] = None)
     extends SingleSampleSingleAlleleEvidence {

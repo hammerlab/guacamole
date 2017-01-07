@@ -1,9 +1,10 @@
 package org.hammerlab.guacamole.jointcaller.evidence
 
-import org.hammerlab.guacamole.jointcaller._
+
 import org.hammerlab.guacamole.jointcaller.annotation.SingleSampleAnnotations
 import org.hammerlab.guacamole.jointcaller.pileup_summarization.PileupStats
 import org.hammerlab.guacamole.jointcaller.pileup_summarization.PileupStats.AlleleMixture
+import org.hammerlab.guacamole.jointcaller.{ AlleleAtLocus, AllelicDepths, Parameters }
 
 /**
  * Summary of evidence for a particular germline allele in a single normal DNA sample.
@@ -13,7 +14,7 @@ import org.hammerlab.guacamole.jointcaller.pileup_summarization.PileupStats.Alle
  * @param logLikelihoods Map from germline genotypes to log10 likelihoods
  */
 case class NormalDNASingleSampleSingleAlleleEvidence(allele: AlleleAtLocus,
-                                                     allelicDepths: Map[String, Int],
+                                                     allelicDepths: AllelicDepths,
                                                      logLikelihoods: Map[(String, String), Double],
                                                      annotations: Option[SingleSampleAnnotations] = None)
     extends SingleSampleSingleAlleleEvidence {

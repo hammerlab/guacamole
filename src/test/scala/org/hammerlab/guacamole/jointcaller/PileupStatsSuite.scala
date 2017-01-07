@@ -43,14 +43,14 @@ class PileupStatsSuite
 
     val stats1 = PileupStats(pileups(1).elements, stringToBases("G"))
     stats1.totalDepthIncludingReadsContributingNoAlleles should be(6)
-    stats1.allelicDepths should be(Map("G" → 6))
+    stats1.allelicDepths should be(AllelicDepths("G" → 6))
     stats1.nonRefAlleles should be(Nil)
     stats1.topAlt should be("N")
     assert(stats1.logLikelihoodPileup(Map("G" → 1.0)) > stats1.logLikelihoodPileup(Map("G" → .99, "C" → .01)))
     assert(stats1.logLikelihoodPileup(Map("T" → 1.0)) < stats1.logLikelihoodPileup(Map("G" → .99, "C" → .01)))
 
     val stats2 = PileupStats(pileups(2).elements, stringToBases("A"))
-    stats2.allelicDepths should be(Map("A" → 2, "C" → 3, "ACCC" → 1))
+    stats2.allelicDepths should be(AllelicDepths("A" → 2, "C" → 3, "ACCC" → 1))
     stats2.nonRefAlleles should be(Seq("C", "ACCC"))
     assert(stats2.logLikelihoodPileup(Map("A" → 0.5, "C" → 0.5)) > stats2.logLikelihoodPileup(Map("A" → 1.0)))
 
@@ -59,6 +59,6 @@ class PileupStatsSuite
 
     val stats3 = PileupStats(pileups(3).elements, stringToBases("T"))
     stats3.totalDepthIncludingReadsContributingNoAlleles should be(6)
-    stats3.allelicDepths should be(Map("T" → 2))  // reads with an SNV at position 4 don't count
+    stats3.allelicDepths should be(AllelicDepths("T" → 2))  // reads with an SNV at position 4 don't count
   }
 }

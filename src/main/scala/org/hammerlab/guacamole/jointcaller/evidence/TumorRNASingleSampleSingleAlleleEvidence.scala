@@ -5,7 +5,7 @@ import org.hammerlab.guacamole.jointcaller.annotation.SingleSampleAnnotations
 import org.hammerlab.guacamole.jointcaller.pileup_summarization.PileupStats
 import org.hammerlab.guacamole.jointcaller.pileup_summarization.PileupStats.AlleleMixture
 
-import math.max
+import scala.math.max
 
 /**
  *
@@ -16,7 +16,7 @@ import math.max
  * @param logLikelihoods Map from allelic mixtures to log10 likelihoods
  */
 case class TumorRNASingleSampleSingleAlleleEvidence(allele: AlleleAtLocus,
-                                                    allelicDepths: Map[String, Int],
+                                                    allelicDepths: AllelicDepths,
                                                     logLikelihoods: Map[AlleleMixture, Double],
                                                     annotations: Option[SingleSampleAnnotations] = None)
     extends SingleSampleSingleAlleleEvidence {

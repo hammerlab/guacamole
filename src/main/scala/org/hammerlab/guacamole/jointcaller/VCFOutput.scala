@@ -140,7 +140,7 @@ object VCFOutput {
     def makeHtsjdkAllele(someAllele: String): Allele =
       Allele.create(someAllele, someAllele == allele.ref)
 
-    def allelicDepthString(depths: Map[String, Int]): String = {
+    def allelicDepthString(depths: AllelicDepths): String = {
       val allAlleles = (Seq(allele.ref, allele.alt) ++ depths.keys.toSeq).distinct
       allAlleles.map(
         allele =>
