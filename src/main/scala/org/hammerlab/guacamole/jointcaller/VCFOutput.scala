@@ -3,13 +3,13 @@ package org.hammerlab.guacamole.jointcaller
 import java.util
 
 import htsjdk.samtools.SAMSequenceDictionary
-import htsjdk.variant.variantcontext._
 import htsjdk.variant.variantcontext.writer.VariantContextWriterBuilder
-import htsjdk.variant.vcf._
+import htsjdk.variant.variantcontext.{ Allele, GenotypeBuilder, VariantContext, VariantContextBuilder }
+import htsjdk.variant.vcf.{ VCFFormatHeaderLine, VCFHeader, VCFHeaderLine, VCFHeaderLineCount, VCFHeaderLineType, VCFInfoHeaderLine }
 import org.hammerlab.guacamole.jointcaller.Input.{ Analyte, TissueType }
 import org.hammerlab.guacamole.jointcaller.annotation.{ MultiSampleAnnotations, SingleSampleAnnotations }
-import org.hammerlab.guacamole.jointcaller.evidence._
-import org.hammerlab.guacamole.jointcaller.pileup_summarization.PileupStats.AlleleMixture
+import org.hammerlab.guacamole.jointcaller.evidence.{ MultiSampleMultiAlleleEvidence, MultiSampleSingleAlleleEvidence, NormalDNASingleSampleSingleAlleleEvidence, TumorDNASingleSampleSingleAlleleEvidence, TumorRNASingleSampleSingleAlleleEvidence }
+import org.hammerlab.guacamole.jointcaller.pileup_summarization.AlleleMixture
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 
 import scala.collection.JavaConversions.{ asJavaCollection, seqAsJavaList }
@@ -104,7 +104,7 @@ object VCFOutput {
 
     sortedEvidences.foreach(evidence => {
       val variantContext =
-        makeHtsjdVariantContext(
+        makeHtsjdkVariantContext(
           evidence,
           inputs,
           includePooledNormal,
@@ -127,11 +127,11 @@ object VCFOutput {
    * @param includePooledTumor whether to include the pooled tumor data as a sample in the result
    * @param reference reference genome
    */
-  def makeHtsjdVariantContext(samplesEvidence: MultiSampleSingleAlleleEvidence,
-                              subInputs: InputCollection,
-                              includePooledNormal: Boolean,
-                              includePooledTumor: Boolean,
-                              reference: ReferenceBroadcast): VariantContext = {
+  def makeHtsjdkVariantContext(samplesEvidence: MultiSampleSingleAlleleEvidence,
+                               subInputs: InputCollection,
+                               includePooledNormal: Boolean,
+                               includePooledTumor: Boolean,
+                               reference: ReferenceBroadcast): VariantContext = {
 
     val allele = samplesEvidence.allele
 
@@ -203,7 +203,6 @@ object VCFOutput {
             probability
           )
         ).mkString(",")
-
 
       val evidence = samplesEvidence.allEvidences(input.index)
 
@@ -357,7 +356,7 @@ object VCFOutput {
             .DP(tumorEvidence.depth)
 
         case (tissueType, analyte) =>
-          throw new NotImplementedError("Not supported: $tissueType $analyte")
+          throw new NotImplementedError(s"Not supported: $tissueType $analyte")
       }
 
       evidence.annotations.get.addInfoToVCF(genotypeBuilder)

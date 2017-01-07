@@ -1,9 +1,7 @@
 package org.hammerlab.guacamole.jointcaller.evidence
 
-
 import org.hammerlab.guacamole.jointcaller.annotation.SingleSampleAnnotations
-import org.hammerlab.guacamole.jointcaller.pileup_summarization.PileupStats
-import org.hammerlab.guacamole.jointcaller.pileup_summarization.PileupStats.AlleleMixture
+import org.hammerlab.guacamole.jointcaller.pileup_summarization.{ AlleleMixture, PileupStats }
 import org.hammerlab.guacamole.jointcaller.{ AlleleAtLocus, AllelicDepths, Parameters }
 
 /**
@@ -25,20 +23,18 @@ case class NormalDNASingleSampleSingleAlleleEvidence(allele: AlleleAtLocus,
   /** Fraction of reads supporting this allele (variant allele frequency). */
   def vaf = allelicDepths.getOrElse(allele.alt, 0).toDouble / depth
 
-  override def withAnnotations(newAnnotations: SingleSampleAnnotations): NormalDNASingleSampleSingleAlleleEvidence = {
+  override def withAnnotations(newAnnotations: SingleSampleAnnotations): NormalDNASingleSampleSingleAlleleEvidence =
     copy(annotations = Some(newAnnotations))
-  }
 }
 
 object NormalDNASingleSampleSingleAlleleEvidence {
 
   /** Given a pair of alleles describing a (germline) genotype, return the equivalent allele mixture. */
-  def allelesToMixture(alleles: (String, String)): AlleleMixture = {
+  def allelesToMixture(alleles: (String, String)): AlleleMixture =
     if (alleles._1 == alleles._2)
       Map(alleles._1 -> 1.0)
     else
       Map(alleles._1 -> 0.5, alleles._2 -> 0.5)
-  }
 
   /** Create a (serializable) NormalDNASampleAlleleEvidence instance from (non-serializable) pileup statistics. */
   def apply(allele: AlleleAtLocus,

@@ -2,7 +2,6 @@ package org.hammerlab.guacamole.jointcaller.pileup_summarization
 
 import org.bdgenomics.adam.util.PhredUtils.phredToSuccessProbability
 import org.hammerlab.guacamole.jointcaller.AllelicDepths
-import org.hammerlab.guacamole.jointcaller.pileup_summarization.PileupStats.AlleleMixture
 import org.hammerlab.guacamole.pileup.PileupElement
 import org.hammerlab.guacamole.util.Bases.basesToString
 
@@ -120,11 +119,7 @@ class PileupStats(val elements: Seq[PileupElement], val referenceSequence: Seq[B
       .sum
 }
 object PileupStats {
-  /** Map from sequenced allele -> variant allelic fraction. The allelic fractions should sum to 1. */
-  type AlleleMixture = Map[String, Double]
-
   /** Create a PileupStats instance. */
-  def apply(elements: Seq[PileupElement], refSequence: Seq[Byte]): PileupStats = {
+  def apply(elements: Seq[PileupElement], refSequence: Seq[Byte]): PileupStats =
     new PileupStats(elements, refSequence)
-  }
 }

@@ -2,8 +2,7 @@ package org.hammerlab.guacamole.jointcaller.evidence
 
 import org.hammerlab.guacamole.jointcaller._
 import org.hammerlab.guacamole.jointcaller.annotation.SingleSampleAnnotations
-import org.hammerlab.guacamole.jointcaller.pileup_summarization.PileupStats
-import org.hammerlab.guacamole.jointcaller.pileup_summarization.PileupStats.AlleleMixture
+import org.hammerlab.guacamole.jointcaller.pileup_summarization.{ AlleleMixture, PileupStats }
 
 import scala.math.max
 
