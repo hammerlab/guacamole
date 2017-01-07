@@ -57,7 +57,7 @@ object GeneratePartialFasta extends GuacCommand[GeneratePartialFastaArguments] {
   override val name: String = "generate-partial-fasta"
   override val description: String = "generate \"partial fasta\"s for use in our tests of variant callers"
 
-  def main(args: Array[String]): Unit = run(args)
+  override def main(args: Array[String]): Unit = run(args)
 
   override def run(args: GeneratePartialFastaArguments, sc: SparkContext): Unit = {
 

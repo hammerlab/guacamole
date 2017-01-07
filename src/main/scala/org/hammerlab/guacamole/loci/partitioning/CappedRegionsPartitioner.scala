@@ -7,7 +7,6 @@ import org.hammerlab.genomics.reference.{ ContigName, NumLoci, Region }
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.readsets.rdd.CoverageRDD
 import org.hammerlab.iterator.GroupRunsIterator
-import org.hammerlab.magic.util.KeyOrdering
 import org.kohsuke.args4j.{ Option => Args4JOption }
 
 import scala.reflect.ClassTag
@@ -95,6 +94,8 @@ class CappedRegionsPartitioner[R <: Region: ClassTag](regions: RDD[R],
     val avgRunLength =
       (for {(_, num) <- depthRuns} yield num.toLong * num).sum.toDouble / validLoci
 
+    implicit def ord[T]: Ordering[(ContigName, T)] = Ordering.by(_._1)
+
     val depthRunsByContig =
       depthRuns
       .groupBy(_._1._1)
@@ -102,7 +103,7 @@ class CappedRegionsPartitioner[R <: Region: ClassTag](regions: RDD[R],
         case ((_, valid), num) => num -> valid
       })
       .toArray
-      .sorted(new KeyOrdering[ContigName, Array[(NumLoci, Boolean)]](ContigName.ordering))
+      .sorted
 
     val overflowMsg =
       if (numDepthRuns > numDepthRunsToTake)

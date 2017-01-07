@@ -36,7 +36,7 @@ object SomaticJointCallerIntegrationTests
   // increase the parallelism.
   setDefaultConf("spark.default.parallelism", "24")
 
-  def main(args: Array[String]): Unit = {
+  override def main(args: Array[String]): Unit = {
 
     val forceCallLoci =
       LociSet(

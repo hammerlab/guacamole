@@ -20,7 +20,7 @@ object GermlineAssemblyIntegrationTests extends GuacCommand[Arguments] with Vari
   override val name: String = "germline-assembly-integration-test"
   override val description: String = "output various statistics to stdout"
 
-  def main(args: Array[String]): Unit =
+  override def main(args: Array[String]): Unit =
     run(
       "--reads", NA12878TestUtil.subsetBam,
       "--reference", NA12878TestUtil.chr1PrefixFasta,
