@@ -81,7 +81,7 @@ object SomaticJoint {
           "Force calling %,d loci across %,d contig(s): %s".format(
             forceCallLoci.count,
             forceCallLoci.contigs.length,
-            forceCallLoci.truncatedString()
+            forceCallLoci.toString(10000)
           )
         )
       }

@@ -14,14 +14,15 @@ deps ++= Seq(
   libs.value('bdg_utils_cli),
   libs.value('breeze),
   libs.value('commons_math),
-  "org.hammerlab" %% "genomic-loci" % "1.4.3",
   libs.value('hadoop_bam),
   libs.value('htsjdk),
+  "org.hammerlab" %% "genomic-loci" % "1.4.4",
   libs.value('magic_rdds),
   libs.value('slf4j),
   libs.value('spark_commands),
   libs.value('spark_util),
-  libs.value('spire)
+  libs.value('spire),
+  libs.value('string_utils)
 )
 
 providedDeps += libs.value('mllib)
