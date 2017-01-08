@@ -6,6 +6,7 @@ import org.hammerlab.guacamole.readsets.rdd.ReadsRDDUtil
 import org.hammerlab.guacamole.reference.ReferenceUtil
 import org.hammerlab.guacamole.util.BasesUtil._
 import org.hammerlab.guacamole.util.{ AssertBases, GuacFunSuite }
+import org.hammerlab.test.matchers.seqs.MapMatcher.mapMatch
 
 import scala.collection.mutable.{ Map ⇒ MMap }
 
@@ -33,7 +34,7 @@ class DeBruijnGraphSuite
     val read = makeRead("TCATCTCAAAAGAGATCGA")
     val graph = DeBruijnGraph(Seq(read), kmerSize = 8)
 
-    graph.kmerCounts should be(
+    graph.kmerCounts should mapMatch(
       Counts(
         "TCATCTCA" → 1,
         "CATCTCAA" → 1,
@@ -71,7 +72,7 @@ class DeBruijnGraphSuite
     val read = makeRead("TCATCTTAAAAGACATAAA")
     val graph = DeBruijnGraph(Seq(read), kmerSize = 3)
 
-    graph.kmerCounts.toMap should be(
+    graph.kmerCounts.toMap should mapMatch(
       Counts(
         "TCA" → 1,
         "CAT" → 2,
@@ -108,7 +109,7 @@ class DeBruijnGraphSuite
       minMeanKmerBaseQuality = 15
     )
 
-    graph.kmerCounts should be(
+    graph.kmerCounts should mapMatch(
       Counts(
         "TCA" -> 1,
         "CAT" -> 2,
@@ -148,7 +149,7 @@ class DeBruijnGraphSuite
         minMeanKmerBaseQuality = 15
       )
 
-    lowThresholdGraph.kmerCounts should be(
+    lowThresholdGraph.kmerCounts should mapMatch(
       Counts(
         "TCA" -> 2,
         "CAT" -> 3,
@@ -173,7 +174,7 @@ class DeBruijnGraphSuite
         minMeanKmerBaseQuality = 25
       )
 
-    highThresholdGraph.kmerCounts should === (
+    highThresholdGraph.kmerCounts should mapMatch(
       Counts(
         "TCA" -> 2,
         "CAT" -> 3,
@@ -347,7 +348,6 @@ class DeBruijnGraphSuite
     graph.mergeNodes()
     graph.kmerCounts.keys.size should be(1)
     AssertBases(graph.kmerCounts.keys.head, "AAATCCCTGGGT")
-
   }
 
   test("test merge nodes; with variant") {
@@ -362,7 +362,7 @@ class DeBruijnGraphSuite
     graph.mergeNodes()
     graph.kmerCounts.keys.size should be(3)
 
-    graph.kmerCounts should === (
+    graph.kmerCounts should mapMatch(
       Counts(
         "AAATCCCTGG" -> 1,
         "TGGGT" -> 1,
@@ -435,7 +435,6 @@ class DeBruijnGraphSuite
     val pathsAfterMerging = graph.depthFirstSearch(referenceKmerSource, referenceKmerSink)
     pathsAfterMerging.length should be(1)
     AssertBases(mergeOverlappingSequences(pathsAfterMerging(0), kmerSize), reference)
-
   }
 
   test("find single unique path in sequence with diverging sequence") {
@@ -520,7 +519,6 @@ class DeBruijnGraphSuite
     val pathsAfterMerging = graph.depthFirstSearch(referenceKmerSource, referenceKmerSink)
     pathsAfterMerging.length should be(1)
     AssertBases(mergeOverlappingSequences(pathsAfterMerging(0), kmerSize), reference)
-
   }
 
   test("real reads data test") {
