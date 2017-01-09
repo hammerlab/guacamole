@@ -76,9 +76,7 @@ object AlleleEvidence {
             DenseVector(
               alleleElements
                 .map(
-                  _
-                    .read
-                    .countOfMismatches(pileup.contigSequence)
+                  _.countOfMismatches
                 )
                 .toArray
             )

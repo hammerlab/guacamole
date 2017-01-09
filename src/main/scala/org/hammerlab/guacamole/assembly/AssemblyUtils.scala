@@ -5,6 +5,7 @@ import htsjdk.samtools.CigarOperator
 import org.hammerlab.genomics.reference.ContigSequence
 import org.hammerlab.guacamole.alignment.ReadAlignment
 import org.hammerlab.guacamole.assembly.DeBruijnGraph.{ Sequence, discoverPathsFromReads, mergeOverlappingSequences }
+import org.hammerlab.guacamole.pileup.PileupElement
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.reference.ReferenceGenome
 import org.hammerlab.guacamole.util.CigarUtils
@@ -31,7 +32,8 @@ object AssemblyUtils extends Logging {
     // Count reads with more than one mismatch or possible insertion/deletions
     val numReadsWithMismatches =
       reads.count(r =>
-        r.countOfMismatches(referenceContig) > 1 || r.cigar.numCigarElements() > 1
+        PileupElement(r, referenceContig).countOfMismatches > 1 ||
+          r.cigar.numCigarElements() > 1
       )
 
     numReadsWithMismatches / reads.size.toFloat > minAreaVaf

@@ -32,7 +32,6 @@ case class MappedRead(
     isPositiveStrand: Boolean,
     isPaired: Boolean)
   extends Read
-
     with Region {
 
   assert(baseQualities.length == sequence.length,
@@ -40,28 +39,6 @@ case class MappedRead(
 
   override val isMapped = true
   override def asMappedRead = Some(this)
-
-
-  /**
-   * Number of mismatching bases in this read. Does *not* include indels: only looks at read bases that align to a
-   * single base in the reference and do not match it.
-   *
-   * @param contigSequence the reference sequence for this read's contig
-   * @return count of mismatching bases
-   */
-  private var cachedCountOfMismatches = -1
-  def countOfMismatches(contigSequence: ContigSequence): Int = {
-    if (cachedCountOfMismatches == -1) {
-      var element = PileupElement(this, start, contigSequence)
-      var count = (if (element.isMismatch) 1 else 0)
-      while (element.locus < end - 1) {
-        element = element.advanceToLocus(element.locus + 1)
-        count += (if (element.isMismatch) 1 else 0)
-      }
-      cachedCountOfMismatches = count
-    }
-    cachedCountOfMismatches
-  }
 
   lazy val alignmentLikelihood = phredToSuccessProbability(alignmentQuality)
 

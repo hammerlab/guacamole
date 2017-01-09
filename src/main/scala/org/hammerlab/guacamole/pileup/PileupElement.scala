@@ -51,6 +51,23 @@ case class PileupElement(
   def cigarElementReferenceLength = CigarUtils.getReferenceLength(cigarElement)
   def cigarElementEndLocus = cigarElementLocus + cigarElementReferenceLength
 
+  /**
+   * Number of mismatching bases in this read. Does *not* include indels: only looks at read bases that align to a
+   * single base in the reference and do not match it.
+   *
+   * @return count of mismatching bases
+   */
+  lazy val countOfMismatches: Int =
+    (
+      if (isMismatch) 1 else 0
+    ) +
+      (
+        if (locus + 1 < read.end)
+          advanceToLocus(locus + 1).countOfMismatches
+        else
+          0
+      )
+
   /*
    * True if this is the last base of the current cigar element.
    */
