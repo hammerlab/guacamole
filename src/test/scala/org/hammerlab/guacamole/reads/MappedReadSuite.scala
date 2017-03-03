@@ -82,16 +82,16 @@ class MappedReadSuite
     sliceNone should be (None)
 
     val sliceFirstFive = simpleRead.slice(10L, 15L, chr1Contig).get
-    sliceFirstFive.start should be (10L)
+    sliceFirstFive.start should === (10L)
     AssertBases(sliceFirstFive.sequence, "TCGAT")
     sliceFirstFive.cigar.toString should be ("5M")
-    sliceFirstFive.end should be (15L)
+    sliceFirstFive.end should === (15L)
 
     val sliceLastFive = simpleRead.slice(15L, 20L, chr1Contig).get
-    sliceLastFive.start should be (15L)
+    sliceLastFive.start should === (15L)
     AssertBases(sliceLastFive.sequence, "CGATC")
     sliceLastFive.cigar.toString should be ("5M")
-    sliceLastFive.end should be (20L)
+    sliceLastFive.end should === (20L)
   }
 
   test("slice read with deletion") {
@@ -107,16 +107,16 @@ class MappedReadSuite
     )
 
     val sliceBeforeDeletion = deletionRead.slice(11L, 20L, chr1Contig).get
-    sliceBeforeDeletion.start should be(11L)
+    sliceBeforeDeletion.start should === (11L)
     AssertBases(sliceBeforeDeletion.sequence, "CGATC")
     sliceBeforeDeletion.cigar.toString should be ("3M4D2M")
-    sliceBeforeDeletion.end should be (20L)
+    sliceBeforeDeletion.end should === (20L)
 
     val sliceInDeletion = deletionRead.slice(16L, 20L, chr1Contig).get
-    sliceInDeletion.start should be(16L)
+    sliceInDeletion.start should === (16L)
     AssertBases(sliceInDeletion.sequence, "TC")
     sliceInDeletion.cigar.toString should be ("2D2M")
-    sliceInDeletion.end should be (20L)
+    sliceInDeletion.end should === (20L)
   }
 
   test("slice read with insertion") {
@@ -132,16 +132,16 @@ class MappedReadSuite
     )
 
     val sliceBeforeInsertion = insertionRead.slice(12L, 18L, chr1Contig).get
-    sliceBeforeInsertion.start should be(12L)
+    sliceBeforeInsertion.start should === (12L)
     AssertBases(sliceBeforeInsertion.sequence, "GACCCCCTCGA")
     sliceBeforeInsertion.cigar.toString should be ("2M5I4M")
-    sliceBeforeInsertion.end should be (18L)
+    sliceBeforeInsertion.end should === (18L)
 
     val sliceAfterInsertion = insertionRead.slice(14L, 18L, chr1Contig).get
-    sliceAfterInsertion.start should be(14L)
+    sliceAfterInsertion.start should === (14L)
     AssertBases(sliceAfterInsertion.sequence, "TCGA")
     sliceAfterInsertion.cigar.toString should be ("4M")
-    sliceAfterInsertion.end should be (18L)
+    sliceAfterInsertion.end should === (18L)
   }
 
 }

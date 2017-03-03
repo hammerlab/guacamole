@@ -4,11 +4,11 @@ import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.rdd.RDD
 import org.hammerlab.genomics.loci.iterator.LociIterator
 import org.hammerlab.genomics.loci.set.LociSet
-import org.hammerlab.genomics.reference.{ ContigName, Interval, NumLoci, Position, Region }
-import org.hammerlab.genomics.reference.Position.ordering
+import org.hammerlab.genomics.reference.Position.totalOrdering
+import org.hammerlab.genomics.reference.{ ContigName, ContigsIterator, Interval, NumLoci, Position, Region }
 import org.hammerlab.guacamole.loci.Coverage
 import org.hammerlab.guacamole.loci.set.TakeLociIterator
-import org.hammerlab.guacamole.readsets.iterator.{ ContigCoverageIterator, ContigsIterator }
+import org.hammerlab.guacamole.readsets.iterator.ContigCoverageIterator
 import org.hammerlab.magic.rdd.RunLengthRDD._
 
 import scala.collection.mutable
@@ -76,6 +76,10 @@ class CoverageRDD[R <: Region: ClassTag](rdd: RDD[R])
         )
     )
 
+  private implicit val contigNameBoolOrdering = Ordering.by[(ContigName, Boolean), ContigName](_._1)
+
+  private implicit val positionOrdering = totalOrdering
+
   /**
    * Compute the depth at each locus in @rdd, then group loci into runs that are uniformly below (true) or above (false)
    * `depthCutoff`.
@@ -93,7 +97,7 @@ class CoverageRDD[R <: Region: ClassTag](rdd: RDD[R])
    */
   def partitionDepths(halfWindowSize: Int,
                       lociBroadcast: Broadcast[LociSet],
-                      depthCutoff: Int): RDD[((ContigName, Boolean), Long)] =
+                      depthCutoff: Int): RDD[((ContigName, Boolean), NumLoci)] =
     (
       for {
         (Position(contig, _), Coverage(depth, _)) <- coverage(halfWindowSize, lociBroadcast)
@@ -101,6 +105,7 @@ class CoverageRDD[R <: Region: ClassTag](rdd: RDD[R])
         contig -> (depth <= depthCutoff)
     )
     .runLengthEncode
+    .mapValues(NumLoci(_))
 
   /**
    * Compute the coverage-depth at each locus, then aggregate loci into runs that are all above or below `depthCutoff`.
@@ -116,35 +121,39 @@ class CoverageRDD[R <: Region: ClassTag](rdd: RDD[R])
       (for {
         ((_, validDepth), numLoci) <- depthRuns
       } yield
-        validDepth -> numLoci.toLong
-        )
+        validDepth -> numLoci
+      )
       .reduceByKey(_ + _)
       .collectAsMap
 
-    (depthRuns, map.getOrElse(true, 0), map.getOrElse(false, 0))
+    (
+      depthRuns,
+      map.getOrElse(true, NumLoci(0)),
+      map.getOrElse(false, NumLoci(0))
+    )
   }
 
   private[rdd] def traversalCoverage(halfWindowSize: Int,
                                      lociBroadcast: Broadcast[LociSet]): RDD[(Position, Coverage)] =
     rdd
       .mapPartitions(
-        it =>
+        it ⇒
           for {
 
             // For each contig, and only the regions that lie on it…
-            (contigName, contigRegions) <- ContigsIterator(it.buffered)
+            (contigName, contigRegions) ← ContigsIterator(it.buffered)
 
             // Iterator over loci overlapped, each with a Coverage recording coverage-depth data.
             contigCoverages = ContigCoverageIterator(halfWindowSize, contigRegions)
 
             // Iterator of eligible loci on this contig.
-            lociContig = lociBroadcast.value.onContig(contigName).iterator
+            lociContig = lociBroadcast.value(contigName).iterator
 
             // Filter (locus, coverage) iterator by eligible loci for this contig.
-            (locus, coverage) <- contigCoverages.intersect(lociContig)
+            (locus, coverage) ← contigCoverages.intersect(lociContig)
 
           } yield
-            Position(contigName, locus) -> coverage
+            Position(contigName, locus) → coverage
       )
       .reduceByKey(_ + _)
       .sortByKey()
@@ -156,14 +165,14 @@ class CoverageRDD[R <: Region: ClassTag](rdd: RDD[R])
     val Region(contigName, start, end) = region
 
     // Compute the bounds of loci that this region should contribute 1 unit of coverage-depth to.
-    val lowerBound = math.max(0, start - halfWindowSize)
+    val lowerBound = start - halfWindowSize
     val upperBound = end + halfWindowSize
 
     // Iterator over loci spanned by the current region, including the half-window buffer on each end.
     val regionLociIterator = new LociIterator(Iterator(Interval(lowerBound, upperBound)).buffered)
 
     // Eligible loci on this region's contig.
-    val lociContig = loci.onContig(contigName).iterator
+    val lociContig = loci(contigName).iterator
 
     // Intersect the eligible loci with the region's loci.
     val lociIterator = lociContig.intersect(regionLociIterator)

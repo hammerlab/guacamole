@@ -5,10 +5,12 @@ import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.util.GuacFunSuite
 import org.hammerlab.guacamole.util.TestUtil.resourcePath
 import AlleleAtLocus.variantAlleles
+import org.hammerlab.genomics.reference.test.LocusUtil
 
 class AlleleAtLocusSuite
   extends GuacFunSuite
-    with PileupUtil {
+    with PileupUtil
+    with LocusUtil {
 
   val celsr1BAMs =
     Vector("normal_0.bam", "tumor_wes_2.bam", "tumor_rna_11.bam")

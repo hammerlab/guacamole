@@ -23,7 +23,9 @@ case class CalledAllele(sampleName: SampleName,
                         allele: Allele,
                         evidence: AlleleEvidence,
                         rsID: Option[Int] = None,
-                        override val length: NumLoci = 1) extends ReferenceVariant {
+                        override val length: NumLoci = NumLoci(1))
+  extends ReferenceVariant {
+
   val end: Locus = start + length
 
   def toBDGGenotype: BDGGenotype =

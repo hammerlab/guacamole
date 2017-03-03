@@ -1,6 +1,6 @@
 package org.hammerlab.guacamole.reads
 
-import org.hammerlab.guacamole.util.BasesUtil._
+import org.hammerlab.genomics.bases.BasesUtil._
 import org.hammerlab.guacamole.util.GuacFunSuite
 
 class UnmappedReadSerializerSuite extends GuacFunSuite {

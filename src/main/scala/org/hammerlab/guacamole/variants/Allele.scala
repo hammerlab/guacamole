@@ -1,11 +1,15 @@
 package org.hammerlab.guacamole.variants
 
-import org.hammerlab.guacamole.util.Bases.{ BasesOrdering, basesToString, stringToBases }
+import org.hammerlab.genomics.bases.Bases.BasesOrdering
+import org.hammerlab.genomics.bases.{ Base, Bases }
 
-case class Allele(refBases: Seq[Byte], altBases: Seq[Byte]) extends Ordered[Allele] {
+case class Allele(refBases: Bases,
+                  altBases: Bases)
+  extends Ordered[Allele] {
+
   val isVariant = refBases != altBases
 
-  override def toString: String = "Allele(%s,%s)".format(basesToString(refBases), basesToString(altBases))
+  override def toString: String = s"Allele($refBases,$altBases)"
 
   override def compare(that: Allele): Int =
     BasesOrdering.compare(refBases, that.refBases) match {
@@ -15,9 +19,6 @@ case class Allele(refBases: Seq[Byte], altBases: Seq[Byte]) extends Ordered[Alle
 }
 
 object Allele {
-  def apply(refBases: String, altBases: String): Allele =
-    Allele(stringToBases(refBases), stringToBases(altBases))
-
-  def apply(refBase: Byte, altBase: Byte): Allele =
-    Allele(Array(refBase), Array(altBase))
+  def apply(refBase: Base, altBase: Base): Allele =
+    Allele(Bases(refBase), Bases(altBase))
 }

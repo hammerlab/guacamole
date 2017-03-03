@@ -288,7 +288,7 @@ case class MultiSampleSingleAlleleEvidence(parameters: Parameters,
     assume(
       multipleStats
         .singleSampleStats
-        .forall(_.referenceSequence.length == allele.end - allele.start)
+        .forall(allele.start + _.referenceSequence.length == allele.end)
     )
 
     copy(

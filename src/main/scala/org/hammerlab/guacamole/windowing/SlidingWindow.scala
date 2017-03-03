@@ -27,11 +27,11 @@ case class SlidingWindow[R <: Region](contigName: ContigName,
                                       halfWindowSize: Int,
                                       rawSortedRegions: Iterator[R]) {
   /** The locus currently under consideration. */
-  var currentLocus = -1L
+  var currentLocus = Locus(-1)
   /** The new regions that were added to currentRegions as a result of the most recent call to setCurrentLocus. */
   var newRegions: Seq[R] = Seq.empty
 
-  private var mostRecentRegionStart: Long = 0
+  private var mostRecentRegionStart = Locus(0)
   private val sortedRegions: BufferedIterator[R] =
     rawSortedRegions
       .map {
@@ -100,7 +100,7 @@ case class SlidingWindow[R <: Region](contigName: ContigName,
     if (currentRegionsPriorityQueue.exists(_.overlapsLocus(currentLocus + 1, halfWindowSize)))
       Some(currentLocus + 1)
     else if (sortedRegions.hasNext) {
-      val result = math.max(0, sortedRegions.head.start - halfWindowSize)
+      val result = sortedRegions.head.start - halfWindowSize
       assert(result > currentLocus)
       Some(result)
     } else
@@ -127,12 +127,12 @@ object SlidingWindow {
    */
   def advanceMultipleWindows[R <: Region](windows: PerSample[SlidingWindow[R]],
                                           loci: LociIterator,
-                                          skipEmpty: Boolean = true): Option[Long] = {
+                                          skipEmpty: Boolean = true): Option[Locus] = {
     if (skipEmpty) {
       while (loci.hasNext) {
         val nextNonEmptyLocus =
           windows
-            .flatMap(_.nextLocusWithRegions)
+            .flatMap(_.nextLocusWithRegions())
             .reduceOption(_ min _)
 
         if (nextNonEmptyLocus.isEmpty) {
@@ -147,7 +147,7 @@ object SlidingWindow {
           // Windows may still be empty here, because the next locus with regions may have been before the next locus,
           // and now we just fast-forwarded past the regions into an empty area of the genome.
           // If any window is nonempty, we're done. If not, we continue looping.
-          if (windows.exists(_.currentRegions.nonEmpty)) {
+          if (windows.exists(_.currentRegions().nonEmpty)) {
             return Some(nextLocus)
           }
         } else {

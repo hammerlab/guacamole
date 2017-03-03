@@ -2,6 +2,7 @@ package org.hammerlab.guacamole.alignment
 
 import breeze.linalg.DenseVector
 import htsjdk.samtools.{ Cigar, TextCigarCodec }
+import org.hammerlab.genomics.bases.Bases
 import org.hammerlab.guacamole.alignment.AlignmentState.{ AlignmentState, cigarKey, isGapAlignment }
 
 import scala.math.{ exp, log }
@@ -63,8 +64,8 @@ object ReadAlignment {
    * @param closeGapProbability Penalty to end in an insertion or deletion in the alignment
    * @return An alignment path and score
    */
-  def apply(sequence: Seq[Byte],
-            reference: Seq[Byte],
+  def apply(sequence: Bases,
+            reference: Bases,
             mismatchProbability: Double = exp(-4),
             openGapProbability: Double = exp(-6),
             closeGapProbability: Double = 1 - exp(-1)): ReadAlignment = {
@@ -94,8 +95,8 @@ object ReadAlignment {
     ReadAlignment(path, refStartIdx, refEndIdx, score.toInt)
   }
 
-  private[alignment] def scoreAlignmentPaths(sequence: Seq[Byte],
-                                             reference: Seq[Byte],
+  private[alignment] def scoreAlignmentPaths(sequence: Bases,
+                                             reference: Bases,
                                              mismatchProbability: Double,
                                              openGapProbability: Double,
                                              closeGapProbability: Double): DenseVector[Path] = {
@@ -121,9 +122,9 @@ object ReadAlignment {
 
     def transitionPenalty(nextState: AlignmentState, previousStateOpt: Option[AlignmentState], isEndState: Boolean) = {
 
-      val openGap = !previousStateOpt.exists(_ == nextState) && isGapAlignment(nextState)
+      val openGap = !previousStateOpt.contains(nextState) && isGapAlignment(nextState)
       val closeGap = previousStateOpt.exists(previousState => nextState != previousState && isGapAlignment(previousState))
-      val continueGap = previousStateOpt.exists(_ == nextState) && isGapAlignment(nextState)
+      val continueGap = previousStateOpt.contains(nextState) && isGapAlignment(nextState)
       val mismatch = nextState == AlignmentState.Mismatch
 
       (if (openGap) logOpenGapPenalty else 0) +
@@ -164,16 +165,14 @@ object ReadAlignment {
 
         // Compute the transition costs based on the gap penalties
         val nextPaths: Seq[Path] = possiblePreviousStates.map {
-          case (prevSeqPos, prevRefPos) => {
+          case (prevSeqPos, prevRefPos) =>
             val nextState = classifyTransition(prevSeqPos, prevRefPos)
 
             val (prevRefStartIdx, prevPath, prevScore) =
               nextState match {
                 case AlignmentState.Deletion  => currentSequenceAlignment(referenceIdx + 1)
                 case AlignmentState.Insertion => lastSequenceAlignment(referenceIdx)
-                case _ => {
-                  lastSequenceAlignment(referenceIdx + 1)
-                }
+                case _ => lastSequenceAlignment(referenceIdx + 1)
               }
 
             val prevStateOpt = prevPath.headOption
@@ -182,7 +181,6 @@ object ReadAlignment {
 
             val transitionCost = transitionPenalty(nextState, prevStateOpt, isEndState = isEndState)
             (prevRefStartIdx, nextState :: prevPath, prevScore + transitionCost)
-          }
         }
 
         currentSequenceAlignment(referenceIdx) = nextPaths.minBy(_._3)

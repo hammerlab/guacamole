@@ -3,7 +3,7 @@ package org.hammerlab.guacamole.loci.partitioning
 import org.apache.spark.rdd.RDD
 import org.hammerlab.genomics.loci.map.LociMap
 import org.hammerlab.genomics.loci.set.LociSet
-import org.hammerlab.genomics.reference.Region
+import org.hammerlab.genomics.reference.{ Locus, NumLoci, Region }
 import org.hammerlab.guacamole.loci.partitioning.MicroRegionPartitioner.{ MicroPartitionIndex, NumMicroPartitions }
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.spark.{ NumPartitions, PartitionIndex }
@@ -69,7 +69,7 @@ class MicroRegionPartitioner[R <: Region: ClassTag](regions: RDD[R],
   def partition(loci: LociSet): LociPartitioning = {
 
     assume(numPartitions >= 1)
-    assume(loci.count > 0)
+    assume(loci.count > Locus(0))
 
     val sc = regions.sparkContext
 
@@ -97,8 +97,7 @@ class MicroRegionPartitioner[R <: Region: ClassTag](regions: RDD[R],
       regions
         .flatMap(region =>
           broadcastMicroPartitions
-            .value
-            .onContig(region.contigName)
+            .value(region.contigName)
             .getAll(region.start, region.end)
         )
         .countByValue()
@@ -172,20 +171,20 @@ class MicroRegionPartitioner[R <: Region: ClassTag](regions: RDD[R],
            *
            * We always take at least 1 locus to ensure we continue to make progress.
            */
-          val lociToTake = max(1, (fractionToTake * set.count).toLong)
+          val lociToTake = NumLoci(max(1, (fractionToTake * set.count).toLong))
           val regionsToTake = (fractionToTake * regionsInSet).toLong
 
           // Add the new partition assignment to the builder, and update bookkeeping info.
           val (currentSet, remainingSet) = set.take(lociToTake)
           builder.put(currentSet, partition)
-          totalRegionsAssigned += round(regionsToTake).toLong
-          regionsInSet -= round(regionsToTake).toLong
+          totalRegionsAssigned += round(regionsToTake)
+          regionsInSet -= round(regionsToTake)
           set = remainingSet
         }
       }
       microPartition += 1
     }
-    val result = builder.result()
+    val result = builder.result
     assert(result.count == loci.count, s"Expected ${loci.count} loci, got ${result.count}")
     result
   }

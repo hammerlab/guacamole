@@ -1,15 +1,14 @@
 name := "guacamole"
 version := "0.1.0-SNAPSHOT"
 
-sparkVersion := "1.6.1"
 hadoopVersion := "2.7.2"
 
 addSparkDeps
 
 deps ++= Seq(
-  "org.hammerlab.adam" %% "adam-core" % "0.20.3",
+  libs.value('adam_core),
   libs.value('args4j),
-  "org.hammerlab" %% "args4s" % "1.0.0",
+  libs.value('args4s),
   libs.value('bdg_formats),
   libs.value('bdg_utils_cli),
   libs.value('breeze),
@@ -17,13 +16,19 @@ deps ++= Seq(
   libs.value('hadoop_bam),
   libs.value('htsjdk),
   libs.value('iterators),
-  "org.hammerlab" %% "genomic-loci" % "1.4.4",
   libs.value('magic_rdds),
+  libs.value('scalautils),
   libs.value('slf4j),
   libs.value('spark_commands),
   libs.value('spark_util),
   libs.value('spire),
   libs.value('string_utils)
+)
+
+compileAndTestDeps ++= Seq(
+  libs.value('genomic_utils),
+  libs.value('loci),
+  libs.value('reference)
 )
 
 providedDeps += libs.value('mllib)

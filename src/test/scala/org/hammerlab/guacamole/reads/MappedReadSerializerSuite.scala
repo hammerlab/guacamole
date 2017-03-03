@@ -1,10 +1,12 @@
 package org.hammerlab.guacamole.reads
 
 import htsjdk.samtools.TextCigarCodec
-import org.hammerlab.guacamole.util.BasesUtil._
+import org.hammerlab.genomics.bases.BasesUtil._
+import org.hammerlab.genomics.reference.test.LocusUtil._
 import org.hammerlab.guacamole.util.GuacFunSuite
 
-class MappedReadSerializerSuite extends GuacFunSuite {
+class MappedReadSerializerSuite
+  extends GuacFunSuite {
 
   test("mapped read") {
     val read = MappedRead(

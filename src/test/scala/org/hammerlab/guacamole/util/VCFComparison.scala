@@ -2,6 +2,7 @@ package org.hammerlab.guacamole.util
 
 import htsjdk.variant.variantcontext.VariantContext
 import org.hammerlab.genomics.loci.map.LociMap
+import org.hammerlab.genomics.reference.Locus
 
 import scala.collection.JavaConversions
 import scala.collection.mutable.ArrayBuffer
@@ -49,18 +50,18 @@ object VCFComparison {
     exactMatch: ArrayBuffer[(VariantContext, VariantContext)],
     partialMatch: ArrayBuffer[(VariantContext, VariantContext)],
     unique: ArrayBuffer[VariantContext]): Unit = {
-    records.foreach(record1 => {
-      map.onContig(record1.getContig).get(record1.getStart) match {
-        case Some(record2) => {
-          if (variantToString(record1) == variantToString(record2)) {
-            exactMatch += ((record1, record2))
-          } else {
-            partialMatch += ((record1, record2))
-          }
+    records.foreach {
+      record1 ⇒
+        map(record1.getContig).get(Locus(record1.getStart)) match {
+          case Some(record2) ⇒
+            if (variantToString(record1) == variantToString(record2))
+              exactMatch += ((record1, record2))
+            else
+              partialMatch += ((record1, record2))
+          case None =>
+            unique += record1
         }
-        case None => unique += record1
-      }
-    })
+    }
   }
 
   private def makeLociMap(records: Seq[VariantContext]): LociMap[VariantContext] = {
@@ -70,8 +71,8 @@ object VCFComparison {
         // Switch from zero based inclusive to interbase coordinates.
         builder.put(
           record.getContig,
-          record.getStart,
-          record.getEnd + 1,
+          Locus(record.getStart),
+          Locus(record.getEnd + 1),
           record
         )
     }
@@ -81,8 +82,8 @@ object VCFComparison {
 
   def variantToString(variant: VariantContext, verbose: Boolean = false): String = {
     // We always use the non-hom-ref genotype when there is one.
-    val genotypes = (0 until variant.getGenotypes.size).map(variant.getGenotype _)
-    val genotype = genotypes.sortBy(_.getType.toString == "HOM_REF").head
+    val genotypes = (0 until variant.getGenotypes.size).map(variant.getGenotype)
+    val genotype = genotypes.minBy(_.getType.toString == "HOM_REF")
     val trigger = Option(variant.getAttribute("TRIGGER"))
     val calledString = if (trigger.isEmpty) {
       // If there is no TRIGGER field (e.g. a VCF from a non-guacamole caller) then we use the genotype.

@@ -1,8 +1,9 @@
 package org.hammerlab.guacamole.commands
 
+import org.hammerlab.genomics.reference.Locus
 import org.hammerlab.guacamole.commands.SomaticStandard.Caller.findPotentialVariantAtLocus
 import org.hammerlab.guacamole.filters.somatic.TestSomaticGenotypeFilter
-import org.hammerlab.guacamole.pileup.{ Util => PileupUtil }
+import org.hammerlab.guacamole.pileup.{ Util ⇒ PileupUtil }
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.util.GuacFunSuite
@@ -40,7 +41,7 @@ class SomaticStandardCallerRealDataSuite
 
   def testVariants(tumorReads: Seq[MappedRead],
                    normalReads: Seq[MappedRead],
-                   positions: Array[Int],
+                   positions: Array[Locus],
                    shouldFindVariant: Boolean = false) = {
     val positionsTable = Table("locus", positions: _*)
     forAll(positionsTable) {

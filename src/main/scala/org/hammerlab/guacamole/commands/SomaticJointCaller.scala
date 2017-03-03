@@ -6,6 +6,7 @@ import org.apache.spark.rdd.RDD
 import org.hammerlab.commands.Args
 import org.hammerlab.genomics.loci.parsing.ParsedLoci
 import org.hammerlab.genomics.loci.set.LociSet
+import org.hammerlab.genomics.reference.{ Locus, Region }
 import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMapMultipleSamples
 import org.hammerlab.guacamole.jointcaller.VCFOutput.writeVcf
 import org.hammerlab.guacamole.jointcaller.evidence.{ MultiSampleMultiAlleleEvidence, MultiSampleSingleAlleleEvidence }
@@ -80,7 +81,7 @@ object SomaticJoint {
       if (forceCallLoci.nonEmpty) {
         progress(
           "Force calling %,d loci across %,d contig(s): %s".format(
-            forceCallLoci.count,
+            forceCallLoci.count.num,
             forceCallLoci.contigs.length,
             forceCallLoci.toString(10000)
           )
@@ -141,16 +142,14 @@ object SomaticJoint {
   }
 
   /** Subtract 1 from all loci in a LociSet. */
-  def lociSetMinusOne(loci: LociSet): LociSet = {
+  def lociSetMinusOne(loci: LociSet): LociSet =
     LociSet(
       for {
         contig <- loci.contigs
         range <- contig.ranges
-      } yield {
-        (contig.name, math.max(0, range.start - 1), range.end - 1)
-      }
+      } yield
+        Region(contig.name, range.start.prev, range.end.prev)
     )
-  }
 
   def makeCalls(sc: SparkContext,
                 inputs: InputCollection,
@@ -177,9 +176,8 @@ object SomaticJoint {
     def callPileups(pileups: PerSample[Pileup]): Iterator[MultiSampleMultiAlleleEvidence] = {
       val forceCall =
         broadcastForceCallLoci
-          .value
-          .onContig(pileups.head.contigName)
-          .contains(pileups.head.locus + 1)
+          .value(pileups.head.contigName)
+          .contains(pileups.head.locus.next)
 
       MultiSampleMultiAlleleEvidence(
         pileups,
@@ -254,10 +252,9 @@ object SomaticJoint {
     }
     if (outDir.nonEmpty) {
       def path(filename: String) = outDir + "/" + filename + ".vcf"
-      def anyForced(evidence: MultiSampleSingleAlleleEvidence): Boolean = {
-        forceCallLoci.onContig(evidence.allele.contigName)
-          .intersects(evidence.allele.start, evidence.allele.end)
-      }
+
+      def anyForced(evidence: MultiSampleSingleAlleleEvidence): Boolean =
+        forceCallLoci.intersects(evidence.allele)
 
       val dir = new java.io.File(outDir)
       val dirCreated = dir.mkdir()

@@ -12,10 +12,10 @@ import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.models.SequenceDictionary
 import org.bdgenomics.adam.rdd.ADAMContext
 import org.hammerlab.genomics.loci.set.LociSet
-import org.hammerlab.genomics.reference.{ ContigName, Locus }
+import org.hammerlab.genomics.reference.{ ContigName, Locus, NumLoci }
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.reads.Read
-import org.hammerlab.guacamole.readsets.args.{ Base => BaseArgs }
+import org.hammerlab.guacamole.readsets.args.{ Base ⇒ BaseArgs }
 import org.hammerlab.guacamole.readsets.io.{ Input, InputConfig }
 import org.hammerlab.guacamole.readsets.rdd.ReadsRDD
 import org.seqdoop.hadoop_bam.util.SAMHeaderReader
@@ -89,8 +89,8 @@ object ReadSets extends Logging {
       else
         sc.union(readsRDDs)
           .flatMap(_.asMappedRead)
-          .map(read => read.contigName -> read.end)
-          .reduceByKey(math.max)
+          .map(read => read.contigName -> NumLoci(read.end))
+          .reduceByKey(_ max _)
           .collectAsMap()
           .toMap
 

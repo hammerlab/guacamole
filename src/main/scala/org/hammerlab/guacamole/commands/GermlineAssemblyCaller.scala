@@ -4,6 +4,7 @@ import breeze.linalg.DenseVector
 import breeze.stats.{ mean, median }
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
+import org.hammerlab.genomics.bases.Bases
 import org.hammerlab.genomics.reference.Locus
 import org.hammerlab.guacamole.alignment.ReadAlignment
 import org.hammerlab.guacamole.assembly.AssemblyArgs
@@ -97,7 +98,7 @@ object GermlineAssemblyCaller {
                                  shortcutAssembly: Boolean = false): RDD[CalledAllele] = {
 
       val genotypes: RDD[CalledAllele] =
-        windowFlatMapWithState[MappedRead, CalledAllele, Option[Long]](
+        windowFlatMapWithState[MappedRead, CalledAllele, Option[Locus]](
           numSamples = 1,
           partitionedReads,
           skipEmpty = true,
@@ -108,14 +109,14 @@ object GermlineAssemblyCaller {
             val contigName = window.contigName
             val locus = window.currentLocus
 
-            val referenceStart = (locus - window.halfWindowSize).toInt
-            val referenceEnd = (locus + window.halfWindowSize).toInt
+            val start = locus - window.halfWindowSize
+            val length = 2 * window.halfWindowSize
 
             val currentReference =
               reference.getReferenceSequence(
                 window.contigName,
-                referenceStart,
-                referenceEnd
+                start,
+                length
               )
 
             val referenceContig = reference.getContig(contigName)
@@ -162,9 +163,9 @@ object GermlineAssemblyCaller {
                 )
 
               if (paths.nonEmpty) {
-                def buildVariant(variantLocus: Int,
-                                 referenceBases: Array[Byte],
-                                 alternateBases: Array[Byte]) = {
+                def buildVariant(variantLocus: Locus,
+                                 referenceBases: Bases,
+                                 alternateBases: Bases) = {
                   val allele =
                     Allele(
                       referenceBases,
@@ -199,7 +200,7 @@ object GermlineAssemblyCaller {
                     .flatMap(path =>
                       buildVariantsFromPath[CalledAllele](
                         path,
-                        referenceStart,
+                        start,
                         referenceContig,
                         ReadAlignment(_, currentReference),
                         buildVariant

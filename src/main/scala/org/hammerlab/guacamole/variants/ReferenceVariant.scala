@@ -1,9 +1,8 @@
 package org.hammerlab.guacamole.variants
 
-import org.bdgenomics.formats.avro.{ Variant, Genotype => BDGGenotype }
+import org.bdgenomics.formats.avro.{ Variant, Genotype ⇒ BDGGenotype }
 import org.hammerlab.genomics.reference.Region
 import org.hammerlab.guacamole.readsets.SampleName
-import org.hammerlab.guacamole.util.Bases.basesToString
 
 /**
  * Base properties of a genomic change in a sequence sample from a reference genome
@@ -19,11 +18,11 @@ trait ReferenceVariant extends Region {
   def bdgVariant: Variant =
     Variant
       .newBuilder
-      .setStart(start)
-      .setEnd(end)
-      .setReferenceAllele(basesToString(allele.refBases))
-      .setAlternateAllele(basesToString(allele.altBases))
-      .setContigName(contigName)
+      .setStart(start.locus)
+      .setEnd(end.locus)
+      .setReferenceAllele(allele.refBases.toString)
+      .setAlternateAllele(allele.altBases.toString)
+      .setContigName(contigName.name)
       .build
 
   def rsID: Option[Int]

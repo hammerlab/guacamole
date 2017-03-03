@@ -2,6 +2,7 @@ package org.hammerlab.guacamole.main
 
 import org.apache.spark.SparkContext
 import org.hammerlab.genomics.loci.set.LociSet
+import org.hammerlab.genomics.reference.{ Locus, Region }
 import org.hammerlab.guacamole.commands.SomaticJoint.Arguments
 import org.hammerlab.guacamole.commands.{ GuacCommand, SomaticJoint }
 import org.hammerlab.guacamole.data.{ CancerWGSTestUtil, NA12878TestUtil }
@@ -42,12 +43,13 @@ object SomaticJointCallerIntegrationTests
       LociSet(
         csvRecords(CancerWGSTestUtil.expectedSomaticCallsCSV)
           .filterNot(_.tumor.contains("decoy"))
-          .map { record =>
-            (
-              "chr" + record.contig,
-              if (record.alt.nonEmpty) record.interbaseStart else record.interbaseStart - 1L,
-              if (record.alt.nonEmpty) record.interbaseStart + 1L else record.interbaseStart
-            )
+          .map {
+            record ⇒
+              Region(
+                "chr" + record.contig,
+                Locus(if (record.alt.nonEmpty) record.interbaseStart else record.interbaseStart - 1L),
+                Locus(if (record.alt.nonEmpty) record.interbaseStart + 1L else record.interbaseStart)
+              )
           }
       )
 

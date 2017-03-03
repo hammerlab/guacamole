@@ -2,13 +2,14 @@ package org.hammerlab.guacamole.assembly
 
 import grizzled.slf4j.Logging
 import htsjdk.samtools.CigarOperator
-import org.hammerlab.genomics.reference.ContigSequence
+import org.hammerlab.genomics.bases.Bases
+import org.hammerlab.genomics.cigar.Element
+import org.hammerlab.genomics.reference.{ ContigSequence, KmerLength, Locus, NumLoci }
 import org.hammerlab.guacamole.alignment.ReadAlignment
 import org.hammerlab.guacamole.assembly.DeBruijnGraph.{ Sequence, discoverPathsFromReads, mergeOverlappingSequences }
 import org.hammerlab.guacamole.pileup.PileupElement
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.reference.ReferenceGenome
-import org.hammerlab.guacamole.util.CigarUtils
 import org.hammerlab.guacamole.variants.ReferenceVariant
 import org.hammerlab.guacamole.windowing.SlidingWindow
 
@@ -49,7 +50,7 @@ object AssemblyUtils extends Logging {
    * @return Collection of paths through the reads
    */
   def discoverHaplotypes(currentWindow: SlidingWindow[MappedRead],
-                         kmerSize: Int,
+                         kmerSize: KmerLength,
                          reference: ReferenceGenome,
                          minOccurrence: Int,
                          minMeanKmerQuality: Int,
@@ -63,14 +64,15 @@ object AssemblyUtils extends Logging {
     // TODO(ryan): normalize contigName reference
     val contigName = reads.head.contigName
 
-    val start = (locus - currentWindow.halfWindowSize).toInt
-    val end = (locus + currentWindow.halfWindowSize).toInt
+    val start = locus - currentWindow.halfWindowSize
+    val length = 2 * currentWindow.halfWindowSize
+    val end = start + length
 
-    val currentReference: Array[Byte] =
+    val currentReference: Bases =
       reference.getReferenceSequence(
         currentWindow.contigName,
         start,
-        end
+        length
       )
 
     val paths =
@@ -127,10 +129,10 @@ object AssemblyUtils extends Logging {
    * @return Possible sequence of called variants
    */
   def buildVariantsFromPath[T <: ReferenceVariant](path: Sequence,
-                                                   start: Int,
+                                                   start: Locus,
                                                    referenceContig: ContigSequence,
                                                    alignPath: Sequence => ReadAlignment,
-                                                   buildVariant: (Int, Array[Byte], Array[Byte]) => T,
+                                                   buildVariant: (Locus, Bases, Bases) => T,
                                                    allowReferenceVariant: Boolean = false): Seq[T] = {
 
     val alignment = alignPath(path)
@@ -148,33 +150,33 @@ object AssemblyUtils extends Logging {
       .flatMap {
         case (cigarElement, cigarIdx) ⇒
           val cigarOperator = cigarElement.getOperator
-          val referenceLength = CigarUtils.getReferenceLength(cigarElement)
-          val pathLength = CigarUtils.getReadLength(cigarElement)
-          val locus = start + referenceIndex
+          val referenceLength: Int = cigarElement.getReferenceLength
+          val pathLength = cigarElement.getReadLength
+          val locus = start + NumLoci(referenceIndex)
 
           // Yield a resulting variant when there is a mismatch, insertion or deletion
           val possibleVariant =
             cigarOperator match {
               case CigarOperator.X =>
-                val referenceAllele = referenceContig.slice(locus, locus + referenceLength)
-                val alternateAllele = path.slice(pathIndex, pathIndex + pathLength)
+                val referenceAllele = referenceContig.slice(locus, referenceLength)
+                val alternateAllele: Bases = path.slice(pathIndex, pathIndex + pathLength)
 
                 if (referenceAllele.nonEmpty &&
                     alternateAllele.nonEmpty &&
-                    (allowReferenceVariant || !referenceAllele.sameElements(alternateAllele)))
-                  Some(buildVariant(locus, referenceAllele, alternateAllele.toArray))
+                    (allowReferenceVariant || referenceAllele != alternateAllele))
+                  Some(buildVariant(locus, referenceAllele, alternateAllele))
                 else
                   None
 
               case (CigarOperator.I | CigarOperator.D) if cigarIdx != 0 && cigarIdx != (numCigarElements - 1) =>
                 // For insertions and deletions, report the variant with the last reference base attached
-                val referenceAllele = referenceContig.slice(locus - 1, locus + referenceLength)
-                val alternateAllele = path.slice(pathIndex - 1, pathIndex + pathLength)
+                val referenceAllele = referenceContig.slice(locus.prev, referenceLength + 1)
+                val alternateAllele: Bases = path.slice(pathIndex - 1, pathIndex + pathLength)
 
                 if (referenceAllele.nonEmpty &&
                     alternateAllele.nonEmpty &&
-                    (allowReferenceVariant || !referenceAllele.sameElements(alternateAllele)))
-                  Some(buildVariant(locus - 1, referenceAllele, alternateAllele.toArray))
+                    (allowReferenceVariant || referenceAllele != alternateAllele))
+                  Some(buildVariant(locus.prev, referenceAllele, alternateAllele))
                 else
                   None
 

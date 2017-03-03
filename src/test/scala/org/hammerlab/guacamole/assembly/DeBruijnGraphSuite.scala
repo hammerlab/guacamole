@@ -1,10 +1,11 @@
 package org.hammerlab.guacamole.assembly
 
+import org.hammerlab.genomics.bases.Bases
+import org.hammerlab.genomics.reference.Locus
 import org.hammerlab.guacamole.assembly.DeBruijnGraph.{ Kmer, Sequence, mergeOverlappingSequences }
 import org.hammerlab.guacamole.reads.ReadsUtil
 import org.hammerlab.guacamole.readsets.rdd.ReadsRDDUtil
 import org.hammerlab.guacamole.reference.ReferenceUtil
-import org.hammerlab.guacamole.util.BasesUtil._
 import org.hammerlab.guacamole.util.{ AssertBases, GuacFunSuite }
 import org.hammerlab.test.matchers.seqs.MapMatcher.mapMatch
 
@@ -24,10 +25,7 @@ class DeBruijnGraphSuite
     AssertBases(longerKmer, "TTTCCCC")
   }
 
-  implicit val iterableByteOrd = Ordering.Iterable[Byte]
-  implicit val kmerOrd: Ordering[Kmer] = Ordering.by(x ⇒ x: Seq[Byte])
-
-  def Counts(counts: (String, Int)*): MMap[Kmer, Int] = MMap(counts.map(t ⇒ stringToBases(t._1) → t._2): _*)
+  def Counts(counts: (String, Int)*): MMap[Kmer, Int] = MMap(counts.map(t ⇒ Bases(t._1) → t._2): _*)
 
   test("build graph") {
 
@@ -389,13 +387,11 @@ class DeBruijnGraphSuite
       .sequence
       .sliding(kmerSize)
       .zipWithIndex.foreach {
-        case (kmer, idx) => {
+        case (kmer, idx) =>
           val mergedNode = graph.mergeIndex(kmer)
           mergedNode._1 should be(longRead.sequence)
           mergedNode._2 should be(idx)
-        }
-      }
-
+    }
   }
 
   test("find single unique path in sequence") {
@@ -521,11 +517,13 @@ class DeBruijnGraphSuite
     AssertBases(mergeOverlappingSequences(pathsAfterMerging(0), kmerSize), reference)
   }
 
+  // Used when sorting by MappedRead.start below.
+  kryoRegister(classOf[Array[Locus]])
+
   test("real reads data test") {
     val kmerSize = 55
 
-    val referenceString = "GAGGATCTGCCATGGCCGGGCGAGCTGGAGGAGGAGGAGGAGGAGGAGGAGGAGGAGGAGGAGGAAGAGGAGGAGGCTGCAGCGGCGGCGGCGGCGAACGTGGACGACGTAGTGGTCGTGGAGGAGGTGGAGGAAGAGGCGGGGCG"
-    val referenceBases = stringToBases(referenceString)
+    val referenceBases: Bases = "GAGGATCTGCCATGGCCGGGCGAGCTGGAGGAGGAGGAGGAGGAGGAGGAGGAGGAGGAGGAGGAAGAGGAGGAGGCTGCAGCGGCGGCGGCGGCGAACGTGGACGACGTAGTGGTCGTGGAGGAGGTGGAGGAAGAGGCGGGGCG"
 
     lazy val snpReads =
       loadReadsRDD(sc, "assemble-reads-set3-chr2-73613071.sam")

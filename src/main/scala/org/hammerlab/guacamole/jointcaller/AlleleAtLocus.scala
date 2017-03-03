@@ -1,6 +1,6 @@
 package org.hammerlab.guacamole.jointcaller
 
-import org.hammerlab.genomics.reference.{ ContigName, Locus }
+import org.hammerlab.genomics.reference.{ ContigName, Locus, Region }
 import org.hammerlab.guacamole.jointcaller.pileup_summarization.ReadSubsequence
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.readsets.PerSample
@@ -27,20 +27,19 @@ import scala.math.max
  * @param ref reference allele, must be nonempty
  * @param alt alternate allele, may be equal to reference
  */
-case class AlleleAtLocus(contigName: ContigName, start: Locus, ref: String, alt: String) {
+case class AlleleAtLocus(contigName: ContigName,
+                         start: Locus,
+                         ref: String,
+                         alt: String)
+  extends Region {
 
   assume(ref.nonEmpty)
   assume(alt.nonEmpty)
 
-  lazy val id = "%s:%d-%d %s>%s".format(
-    contigName,
-    start,
-    end,
-    ref,
-    alt)
+  lazy val id = s"${super.toString} $ref>$alt"
 
   /** Zero-based exclusive end site on the reference genome. */
-  lazy val end = start + ref.length
+  @transient lazy val end = start + ref.length
 }
 
 object AlleleAtLocus {
@@ -124,7 +123,7 @@ object AlleleAtLocus {
           AlleleAtLocus(
             contig,
             variantStart,
-            Bases.baseToString(contigSequence.apply(variantStart.toInt)),
+            Bases.baseToString(contigSequence(variantStart)),
             "N"
           )
         )

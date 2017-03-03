@@ -3,6 +3,7 @@ package org.hammerlab.guacamole.readsets
 import org.apache.spark.SparkContext
 import org.hammerlab.genomics.loci.parsing.ParsedLoci
 import org.hammerlab.genomics.loci.set.LociSet
+import org.hammerlab.genomics.reference.test.ContigLengthsUtil
 import org.hammerlab.guacamole.jointcaller.InputCollection
 import org.hammerlab.guacamole.reads.ReadsUtil
 import org.hammerlab.guacamole.readsets.io.TestInputConfig

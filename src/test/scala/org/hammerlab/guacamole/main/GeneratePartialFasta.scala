@@ -13,7 +13,6 @@ import org.hammerlab.guacamole.readsets.args.{ ReferenceArgs, Arguments ⇒ Read
 import org.hammerlab.guacamole.readsets.io.InputConfig
 import org.hammerlab.guacamole.readsets.rdd.PartitionedRegionsArgs
 import org.hammerlab.guacamole.reference.ContigNotFound
-import org.hammerlab.guacamole.util.Bases.basesToString
 import org.kohsuke.args4j.{ Option ⇒ Args4jOption }
 
 class GeneratePartialFastaArguments
@@ -74,7 +73,6 @@ object GeneratePartialFasta extends GuacCommand[GeneratePartialFastaArguments] {
       LociSet(
         readsets
           .allMappedReads
-          .map(read => (read.contigName, read.start, read.end))
           .collect
       )
 
@@ -84,14 +82,16 @@ object GeneratePartialFasta extends GuacCommand[GeneratePartialFastaArguments] {
     val padding = args.padding
     for {
       contig <- loci.contigs
-      Interval(start, end) <- contig.ranges
+      interval <- contig.ranges
+      Interval(start, end) = interval
+      length = interval.length.toInt + 2 * padding
     } {
       try {
-        val paddedStart = start.toInt - padding
-        val paddedEnd = end.toInt + padding
-        val sequence = basesToString(reference.getContig(contig.name).slice(paddedStart, paddedEnd))
-        writer.write(">%s:%d-%d/%d\n".format(contig.name, paddedStart, paddedEnd, contigLengths(contig.name)))
-        writer.write(sequence)
+        val paddedStart = start - padding
+        val paddedEnd = end + padding
+        val sequence = reference.getContig(contig.name).slice(paddedStart, length)
+        writer.write(">%s:%s-%s/%s\n".format(contig.name, paddedStart, paddedEnd, contigLengths(contig.name)))
+        writer.write(sequence.toString())
         writer.write("\n")
       } catch {
         case e: ContigNotFound => warn(s"No such contig in reference: $contig: $e")

@@ -2,6 +2,7 @@ package org.hammerlab.guacamole.pileup
 
 import htsjdk.samtools.{ CigarElement, CigarOperator }
 import org.bdgenomics.adam.util.PhredUtils.phredToSuccessProbability
+import org.hammerlab.genomics.bases.Bases
 import org.hammerlab.genomics.reference.{ ContigSequence, Locus }
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.util.CigarUtils
@@ -33,7 +34,7 @@ case class PileupElement(
   assume(locus >= read.start)
   assume(locus < read.end)
 
-  val referenceBase: Byte = contigSequence(locus.toInt)
+  val referenceBase: Byte = contigSequence(locus)
 
   def cigarElement = read.cigarElements(cigarElementIndex)
 
@@ -63,7 +64,7 @@ case class PileupElement(
     ) +
       (
         if (locus + 1 < read.end)
-          advanceToLocus(locus + 1).countOfMismatches
+          advanceToLocus(locus.next).countOfMismatches
         else
           0
       )
@@ -80,7 +81,7 @@ case class PileupElement(
 
     def makeInsertion(cigarElem: CigarElement) =
       Insertion(
-        read.sequence.view(
+        read.sequence.slice(
           readPosition,
           readPosition + CigarUtils.getReadLength(cigarElem) + 1
         ),
@@ -102,22 +103,21 @@ case class PileupElement(
       // The exception to the above is insertion at the start of a contig, where there is no preceding reference base to
       // anchor to; in this case, the spec calls for including the reference base immediately after the insertion (the
       // first reference base of the contig).
-      case (CigarOperator.I, Some(_)) if cigarElementLocus == 0 =>
+      case (CigarOperator.I, Some(_)) if cigarElementLocus == Locus(0) =>
         makeInsertion(cigarElement)
 
       // In general, a PileupElement pointing at an Insertion cigar-element is an error.
       case (CigarOperator.I, _) => throw InvalidCigarElementException(this)
 
       case (CigarOperator.M | CigarOperator.EQ | CigarOperator.X, Some(CigarOperator.D)) =>
-        val deletedBases = contigSequence.slice(locus.toInt, locus.toInt + nextCigarElement.get.getLength + 1)
+        val deletedBases = contigSequence.slice(locus, nextCigarElement.get.getLength + 1)
         val anchorBaseSequenceQuality = read.baseQualities(readPosition)
         Deletion(deletedBases, anchorBaseSequenceQuality)
       case (CigarOperator.D, _) =>
         MidDeletion(referenceBase)
       case (op, Some(CigarOperator.D)) =>
         throw new AssertionError(
-          "Found deletion preceded by cigar operator %s at PileupElement for read %s at locus %d".format(
-            op, read.toString, locus)
+          s"Found deletion preceded by cigar operator $op at PileupElement for read $read at locus $locus"
         )
       case (CigarOperator.M, _) | (CigarOperator.EQ, _) | (CigarOperator.X, _) =>
         val base: Byte = read.sequence(readPosition)
@@ -150,8 +150,8 @@ case class PileupElement(
    * the inserted sequence starting at the current locus. Otherwise, this is
    * an array of length 1.
    */
-  def sequencedBases: Seq[Byte] = alignment.sequencedBases
-  def referenceBases: Seq[Byte] = alignment.referenceBases
+  def sequencedBases: Bases = alignment.sequencedBases
+  def referenceBases: Bases = alignment.referenceBases
 
   lazy val allele: Allele = Allele(referenceBases, sequencedBases)
 
@@ -223,7 +223,7 @@ case class PileupElement(
   @tailrec
   final def advanceToLocus(newLocus: Locus): PileupElement = {
     assume(newLocus >= locus, s"Can't rewind to locus $newLocus from $locus. Pileups only advance. $read")
-    assume(newLocus < read.end, "This read stops at position %d. Can't advance to %d".format(read.end, newLocus))
+    assume(newLocus < read.end, s"This read stops at position ${read.end}. Can't advance to $newLocus")
     if (currentCigarElementContainsLocus(newLocus)) {
       // Aside: the current cigar element must consume reference bases if we've gotten here.
       val readPositionOffset =
@@ -238,7 +238,7 @@ case class PileupElement(
         readPosition = readPosition + readPositionOffset,
         indexWithinCigarElement = (newLocus - cigarElementLocus).toInt
       )
-    } else if (newLocus == 0 && cigarElement.getOperator == CigarOperator.I)
+    } else if (newLocus == Locus(0) && cigarElement.getOperator == CigarOperator.I)
       // NOTE(ryan): this is the rare case where we allow a [[PileupElement]] to exist at a non-reference-consuming
       // CigarElement (namely, an Insertion at the start of a contig). It is correct for us to emit an Insertion
       // alignment in such a case, where typically an Insertion [[CigarElement]] would get skipped over by subsequent
@@ -284,7 +284,7 @@ object PileupElement {
 case class InvalidCigarElementException(elem: PileupElement)
   extends Exception(
     "Should not have a PileupElement at non-reference-consuming cigar-operator I. " +
-      "Locus: %d, readPosition: %d, cigar: %s (elem idx %d)".format(
+      "Locus: %s, readPosition: %d, cigar: %s (elem idx %d)".format(
         elem.locus,
         elem.readPosition,
         elem.read.cigar.toString,

@@ -1,11 +1,12 @@
 package org.hammerlab.guacamole.likelihood
 
 import org.bdgenomics.adam.util.PhredUtils.phredToErrorProbability
-import org.hammerlab.guacamole.likelihood.Likelihood.{ uniformPrior, likelihoodsOfGenotypes, probabilitiesOfAllPossibleGenotypesFromPileup }
-import org.hammerlab.guacamole.pileup.{ PileupElement, Util => PileupUtil }
+import org.hammerlab.genomics.bases.Base.C
+import org.hammerlab.genomics.bases.Bases
+import org.hammerlab.guacamole.likelihood.Likelihood.{ likelihoodsOfGenotypes, probabilitiesOfAllPossibleGenotypesFromPileup, uniformPrior }
+import org.hammerlab.guacamole.pileup.{ PileupElement, Util ⇒ PileupUtil }
 import org.hammerlab.guacamole.reads.{ MappedRead, ReadsUtil }
 import org.hammerlab.guacamole.reference.ReferenceUtil
-import org.hammerlab.guacamole.util.Bases.stringToBases
 import org.hammerlab.guacamole.util.GuacFunSuite
 import org.hammerlab.guacamole.variants.{ Allele, Genotype }
 import org.scalatest.prop.TableDrivenPropertyChecks
@@ -23,14 +24,14 @@ class LikelihoodSuite
 
   override lazy val reference = makeReference(sc, "chr1", 1, "C")
 
-  val referenceBase = 'C'.toByte
+  val referenceBase = C
 
   def makeGenotype(alleles: String*): Genotype = {
     val alleleFraction = 1.0 / alleles.length
     Genotype(
       (for {
         alleleStr <- alleles
-        allele = Allele(Seq(referenceBase), stringToBases(alleleStr))
+        allele = Allele(Bases(referenceBase), alleleStr)
       } yield
         allele -> alleleFraction
       ).toMap

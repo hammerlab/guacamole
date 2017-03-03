@@ -50,8 +50,9 @@ case class ReadSubsequence(read: MappedRead,
   }
 
   /** The reference sequence at this locus. */
-  def refSequence(contigReferenceSequence: ContigSequence): String =
-    Bases.basesToString(contigReferenceSequence.slice(startLocus.toInt, endLocus.toInt))
+  def refSequence(contigReferenceSequence: ContigSequence): String = {
+    Bases.basesToString(contigReferenceSequence.slice(startLocus, referenceLength))
+  }
 }
 
 object ReadSubsequence {
@@ -67,27 +68,32 @@ object ReadSubsequence {
   def ofFixedReferenceLength(element: PileupElement, length: Int): Option[ReadSubsequence] = {
     assume(length > 0)
 
-    if (element.allele.isVariant || element.locus >= element.read.end - 1) {
+    if (element.allele.isVariant || element.locus.next >= element.read.end) {
       None
     } else {
       val firstElement = element.advanceToLocus(element.locus + 1)
       var currentElement = firstElement
       var refOffset = 1
-      while (currentElement.locus < currentElement.read.end - 1 && refOffset < length) {
-        currentElement = currentElement.advanceToLocus(currentElement.locus + 1)
+      while (currentElement.locus.next < currentElement.read.end && refOffset < length) {
+        currentElement = currentElement.advanceToLocus(currentElement.locus.next)
         refOffset += 1
       }
-      if (currentElement.locus >= currentElement.read.end - 1) {
+
+      val next = currentElement.locus.next
+      if (next >= currentElement.read.end)
         None
-      } else {
-        val result = ReadSubsequence(
-          element.read,
-          firstElement.locus,
-          currentElement.locus + 1,
-          firstElement.readPosition,
-          currentElement.advanceToLocus(currentElement.locus + 1).readPosition)
-        Some(result)
-      }
+      else
+        Some(
+          ReadSubsequence(
+            element.read,
+            firstElement.locus,
+            next,
+            firstElement.readPosition,
+            currentElement
+              .advanceToLocus(next)
+              .readPosition
+          )
+        )
     }
   }
 

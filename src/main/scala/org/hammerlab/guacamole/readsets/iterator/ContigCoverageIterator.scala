@@ -40,17 +40,17 @@ case class ContigCoverageIterator(halfWindowSize: Int,
    * counted towards [[Coverage.starts]] on the first locus where it contributes to [[Coverage.depth]] (that this
    * iterator is evaluated at, as opposed to skipped over), and only that locus.
    */
-  private val startEnds = mutable.PriorityQueue[Long]()(implicitly[Ordering[Long]].reverse)
-  private val depthEnds = mutable.PriorityQueue[Long]()(implicitly[Ordering[Long]].reverse)
+  private val startEnds = mutable.PriorityQueue[Locus]()(implicitly[Ordering[Locus]].reverse)
+  private val depthEnds = mutable.PriorityQueue[Locus]()(implicitly[Ordering[Locus]].reverse)
 
   /**
    * Record the last-seen interval-start, to verify that the intervals are sorted by `start`.
    */
-  private var lastStart: Locus = 0
+  private var lastStart = Locus(0)
 
   override def _advance: Option[(Locus, Coverage)] = {
     // Intervals whose ends are below (or equal to) this bound will be paged out of the queues.
-    val endLowerBound = math.max(0, locus - halfWindowSize)
+    val endLowerBound = locus - halfWindowSize
 
     while (depthEnds.headOption.exists(_ <= endLowerBound)) {
       depthEnds.dequeue()

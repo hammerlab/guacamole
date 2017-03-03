@@ -1,14 +1,15 @@
 package org.hammerlab.guacamole.assembly
 
 import breeze.stats.mean
-import htsjdk.samtools.CigarOperator.M
+import org.hammerlab.genomics.bases.Bases
+import org.hammerlab.genomics.reference.{ KmerLength, Locus }
 import org.hammerlab.guacamole.assembly.DeBruijnGraph.{ Kmer, Path, Sequence, SubKmer, mergeOverlappingSequences }
 import org.hammerlab.guacamole.reads.{ MappedRead, Read }
 import org.hammerlab.guacamole.util.Bases.basesToString
 
 import scala.collection.mutable.{ HashSet ⇒ MHashSet, Map ⇒ MMap, Set ⇒ MSet, Stack ⇒ MStack }
 
-class DeBruijnGraph(val kmerSize: Int,
+class DeBruijnGraph(val kmerSize: KmerLength,
                     val kmerCounts: MMap[Kmer, Int]) {
 
   // Table to store prefix to kmers that share that prefix
@@ -307,7 +308,7 @@ class DeBruijnGraph(val kmerSize: Int,
     kmerCounts
       .keys
       .filter(parents(_).isEmpty)
-      .map(_.take(kmerSize))
+      .map(_.take(kmerSize): Bases)
 
   /**
    * Find all nodes that have out-degree = 0
@@ -316,7 +317,7 @@ class DeBruijnGraph(val kmerSize: Int,
     kmerCounts
       .keys
       .filter(children(_).isEmpty)
-      .map(_.takeRight(kmerSize))
+      .map(_.takeRight(kmerSize): Bases)
 
   /**
    * Find all children of a given node
@@ -346,9 +347,9 @@ class DeBruijnGraph(val kmerSize: Int,
 }
 
 object DeBruijnGraph {
-  type Kmer = Seq[Byte] // Sequence of length `kmerSize`
-  type SubKmer = Seq[Byte] // Sequence of bases < `kmerSize`
-  type Sequence = Seq[Byte]
+  type Kmer = Bases // Sequence of length `kmerSize`
+  type SubKmer = Bases // Sequence of bases < `kmerSize`
+  type Sequence = Bases
   type Path = List[Kmer]
 
   def apply(reads: Seq[Read],
@@ -397,48 +398,13 @@ object DeBruijnGraph {
    * @return A single merged sequence
    */
   def mergeOverlappingSequences(sequences: Seq[Sequence], overlapSize: Int): Sequence = {
-    val head = sequences.headOption.getOrElse(Seq.empty)
+    val head: Bases = sequences.headOption.getOrElse(Bases.empty)
     val rest =
       sequences
         .tail
         .flatMap(_.drop(overlapSize - 1))
 
     head ++ rest
-  }
-
-  /**
-   * For a given set of reads identify all kmers that appear in the specified reference region
-   *
-   * TODO(ryan): unused?
-   *
-   * @param reads  Set of reads to extract sequence from
-   * @param startLocus Start (inclusive) locus on the reference
-   * @param endLocus End (exclusive) locus on the reference
-   * @param minOccurrence Minimum number of times a subsequence needs to appear to be included
-   * @return List of subsequences overlapping [startLocus, endLocus) that appear at least `minOccurrence` time
-   */
-  private def getConsensusKmer(reads: Seq[MappedRead],
-                               startLocus: Int,
-                               endLocus: Int,
-                               minOccurrence: Int): Iterable[Vector[Byte]] = {
-
-    // Filter to reads that entirely cover the region.
-    // Exclude reads that have any non-M Cigars (these don't have a 1-to-1 base mapping to the region).
-    val sequences =
-      for {
-        read <- reads
-        if !read.cigarElements.exists(_.getOperator != M)
-        if read.overlapsLocus(startLocus) && read.overlapsLocus(endLocus - 1)
-        unclippedStart = read.unclippedStart.toInt
-      } yield
-        read.sequence.slice(startLocus - unclippedStart, endLocus - unclippedStart)
-
-    // Filter to sequences that appear at least `minOccurrence` times
-    sequences
-      .groupBy(identity)
-      .mapValues(_.size)
-      .filter(_._2 >= minOccurrence)
-      .map(_._1.toVector)
   }
 
   /**
@@ -454,9 +420,9 @@ object DeBruijnGraph {
    * @return List of paths that traverse the region
    */
   def discoverPathsFromReads(reads: Seq[MappedRead],
-                             referenceStart: Int,
-                             referenceSequence: Array[Byte],
-                             kmerSize: Int,
+                             referenceStart: Locus,
+                             referenceSequence: Bases,
+                             kmerSize: KmerLength,
                              minOccurrence: Int,
                              maxPaths: Int,
                              minMeanKmerBaseQuality: Int,

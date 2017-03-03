@@ -1,18 +1,22 @@
 package org.hammerlab.guacamole.loci.partitioning
 
 import org.apache.spark.rdd.RDD
-import org.hammerlab.genomics.loci.set.LociSet
-import org.hammerlab.genomics.loci.set.test.TestLociSet
+import org.hammerlab.genomics.bases.BasesUtil
+import org.hammerlab.genomics.loci.set.test.LociSetUtil
+import org.hammerlab.genomics.reference.test.LocusUtil
 import org.hammerlab.guacamole.reads.{ MappedRead, ReadsUtil }
 import org.hammerlab.guacamole.util.GuacFunSuite
 
 class MicroRegionPartitionerSuite
   extends GuacFunSuite
-    with ReadsUtil {
+    with ReadsUtil
+    with BasesUtil
+    with LocusUtil
+    with LociSetUtil {
 
   test("partition") {
 
-    def pairsToReads(pairs: Seq[(Long, Long)]): RDD[MappedRead] =
+    def pairsToReads(pairs: Seq[(Int, Int)]): RDD[MappedRead] =
       sc.parallelize(
         for {
           (start, length) <- pairs
@@ -27,14 +31,14 @@ class MicroRegionPartitionerSuite
     val reads =
       pairsToReads(
         Seq(
-          (5L, 1L),
-          (6L, 1L),
-          (7L, 1L),
-          (8L, 1L)
+          (5, 1),
+          (6, 1),
+          (7, 1),
+          (8, 1)
         )
       )
 
-    val loci = TestLociSet("chr1:0-100")
+    val loci = lociSet("chr1:0-100")
 
     val result =
       new MicroRegionPartitioner(

@@ -1,14 +1,19 @@
 package org.hammerlab.guacamole.reads
 
 import htsjdk.samtools.TextCigarCodec
+import org.hammerlab.genomics.bases.{ Bases, BasesUtil }
+import org.hammerlab.genomics.reference.test.LocusUtil
 import org.hammerlab.genomics.reference.{ ContigName, Locus }
 import org.hammerlab.guacamole.readsets.SampleId
 
-trait ReadsUtil {
+trait ReadsUtil
+  extends BasesUtil
+    with LocusUtil {
+
   /**
    * Convenience function to construct a Read from unparsed values.
    */
-  private def read(sequence: String,
+  private def read(sequence: Bases,
                    name: String,
                    baseQualities: String = "",
                    isDuplicate: Boolean = false,
@@ -21,13 +26,12 @@ trait ReadsUtil {
                    isPositiveStrand: Boolean = true,
                    isPaired: Boolean = true) = {
 
-    val sequenceArray = sequence.map(_.toByte).toArray
-    val qualityScoresArray = Read.baseQualityStringToArray(baseQualities, sequenceArray.length)
+    val qualityScoresArray = Read.baseQualityStringToArray(baseQualities, sequence.length)
 
     val cigar = TextCigarCodec.decode(cigarString)
     MappedRead(
       name,
-      sequenceArray,
+      sequence,
       qualityScoresArray,
       isDuplicate,
       sampleId,
@@ -41,12 +45,12 @@ trait ReadsUtil {
     )
   }
 
-  def makeRead(sequence: String,
+  def makeRead(sequence: Bases,
                cigar: String,
                qualityScores: Seq[Int]): MappedRead =
     makeRead(sequence, cigar, qualityScores = Some(qualityScores))
 
-  def makeRead(sequence: String,
+  def makeRead(sequence: Bases,
                cigar: String,
                start: Locus,
                chr: ContigName,
@@ -59,7 +63,7 @@ trait ReadsUtil {
       qualityScores = Some(qualityScores)
     )
 
-  def makeRead(sequence: String,
+  def makeRead(sequence: Bases,
                cigar: String = "",
                start: Locus = 1,
                chr: ContigName = "chr1",
@@ -68,10 +72,10 @@ trait ReadsUtil {
                alignmentQuality: Int = 30): MappedRead = {
 
     val qualityScoreString =
-      if (qualityScores.isDefined)
-        qualityScores.get.map(q => q + 33).map(_.toChar).mkString
-      else
-        "@" * sequence.length
+      qualityScores match {
+        case Some(qualityScores) ⇒ qualityScores.map(q => q + 33).map(_.toChar).mkString
+        case _ ⇒ "@" * sequence.length
+      }
 
     read(
       sequence,
@@ -93,7 +97,7 @@ trait ReadsUtil {
                      mateReferenceContig: Option[String] = None,
                      mateStart: Option[Long] = None,
                      isMatePositiveStrand: Boolean = false,
-                     sequence: String = "ACTGACTGACTG",
+                     sequence: Bases = "ACTGACTGACTG",
                      cigar: String = "12M",
                      inferredInsertSize: Option[Int]): PairedRead[MappedRead] = {
 

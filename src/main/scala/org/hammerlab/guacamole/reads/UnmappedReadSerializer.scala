@@ -2,6 +2,7 @@ package org.hammerlab.guacamole.reads
 
 import com.esotericsoftware.kryo.io.{ Input, Output }
 import com.esotericsoftware.kryo.{ Kryo, Serializer }
+import org.hammerlab.genomics.bases.Bases
 
 // Serialization: UnmappedRead
 class UnmappedReadSerializer extends Serializer[UnmappedRead] {
@@ -19,9 +20,9 @@ class UnmappedReadSerializer extends Serializer[UnmappedRead] {
   }
 
   def read(kryo: Kryo, input: Input, klass: Class[UnmappedRead]): UnmappedRead = {
-    val name: String = input.readString()
+    val name = input.readString()
     val count: Int = input.readInt(true)
-    val sequenceArray: Vector[Byte] = input.readBytes(count).toVector
+    val sequenceArray: Bases = input.readBytes(count).toVector
     val qualityScoresArray = input.readBytes(count).toVector
     val isDuplicate = input.readBoolean()
     val sampleId = input.readInt()

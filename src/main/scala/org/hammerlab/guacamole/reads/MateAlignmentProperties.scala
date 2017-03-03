@@ -13,16 +13,16 @@ import org.hammerlab.genomics.reference.{ ContigName, Locus }
 case class MateAlignmentProperties(contigName: ContigName,
                                    start: Locus,
                                    inferredInsertSize: Option[Int],
-                                   isPositiveStrand: Boolean) {
-}
+                                   isPositiveStrand: Boolean)
 
 object MateAlignmentProperties {
-  def apply(record: SAMRecord): Option[MateAlignmentProperties] = {
+  def apply(record: SAMRecord): Option[MateAlignmentProperties] =
     if (!record.getMateUnmappedFlag)
       Some(
         MateAlignmentProperties(
           contigName = record.getMateReferenceName,
-          start = record.getMateAlignmentStart - 1, //subtract 1 from start, since samtools is 1-based and we're 0-based.
+          //subtract 1 from start, since samtools is 1-based and we're 0-based.
+          start = Locus(record.getMateAlignmentStart - 1),
           inferredInsertSize =
             if (record.getInferredInsertSize != 0)
               Some(record.getInferredInsertSize)
@@ -33,5 +33,4 @@ object MateAlignmentProperties {
       )
     else
       None
-  }
 }

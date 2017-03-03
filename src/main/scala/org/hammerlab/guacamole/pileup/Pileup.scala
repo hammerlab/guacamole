@@ -1,5 +1,6 @@
 package org.hammerlab.guacamole.pileup
 
+import org.hammerlab.genomics.bases.Base
 import org.hammerlab.genomics.reference.{ ContigName, ContigSequence, Locus }
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.readsets.SampleName
@@ -22,7 +23,7 @@ case class Pileup(sampleName: SampleName,
                   contigSequence: ContigSequence,
                   elements: Seq[PileupElement]) {
 
-  val referenceBase: Byte = contigSequence(locus.toInt)
+  val referenceBase: Base = contigSequence(locus)
 
   assume(elements.forall(_.read.contigName == contigName),
     "Pileup reference name '%s' does not match read reference name(s): %s".format(

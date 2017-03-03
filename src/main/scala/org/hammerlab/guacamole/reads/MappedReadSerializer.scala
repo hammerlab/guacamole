@@ -3,6 +3,8 @@ package org.hammerlab.guacamole.reads
 import com.esotericsoftware.kryo.io.{ Input, Output }
 import com.esotericsoftware.kryo.{ Kryo, Serializer }
 import htsjdk.samtools.TextCigarCodec
+import org.hammerlab.genomics.bases.Bases
+import org.hammerlab.genomics.reference.Locus
 
 // Serialization: MappedRead
 class MappedReadSerializer extends Serializer[MappedRead] {
@@ -15,7 +17,7 @@ class MappedReadSerializer extends Serializer[MappedRead] {
     output.writeBytes(obj.baseQualities.toArray)
     output.writeBoolean(obj.isDuplicate)
     output.writeInt(obj.sampleId)
-    output.writeString(obj.contigName)
+    output.writeString(obj.contigName.name)
     output.writeInt(obj.alignmentQuality, true)
     output.writeLong(obj.start, true)
     output.writeString(obj.cigar.toString)
@@ -27,13 +29,13 @@ class MappedReadSerializer extends Serializer[MappedRead] {
   def read(kryo: Kryo, input: Input, klass: Class[MappedRead]): MappedRead = {
     val name = input.readString()
     val count: Int = input.readInt(true)
-    val sequenceArray: IndexedSeq[Byte] = input.readBytes(count).toVector
+    val sequenceArray = Bases(input.readBytes(count).toVector)
     val qualityScoresArray: IndexedSeq[Byte] = input.readBytes(count).toVector
     val isDuplicate = input.readBoolean()
     val sampleId = input.readInt()
     val referenceContig = input.readString().intern()
     val alignmentQuality = input.readInt(true)
-    val start = input.readLong(true)
+    val start = Locus(input.readLong(true))
     val cigarString = input.readString()
     val failedVendorQualityChecks = input.readBoolean()
     val isPositiveStrand = input.readBoolean()

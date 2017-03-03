@@ -1,10 +1,13 @@
 package org.hammerlab.guacamole.reads
 
 import htsjdk.samtools.TextCigarCodec
-import org.hammerlab.guacamole.util.BasesUtil._
+import org.hammerlab.genomics.bases.BasesUtil._
+import org.hammerlab.genomics.reference.test.LocusUtil._
 import org.scalatest.{ FunSuite, Matchers }
 
-class PairedReadSuite extends FunSuite with Matchers {
+class PairedReadSuite
+  extends FunSuite
+    with Matchers {
 
   test("unmappedread paired read is not mapped") {
     val unmappedRead = UnmappedRead(
@@ -24,7 +27,7 @@ class PairedReadSuite extends FunSuite with Matchers {
           MateAlignmentProperties(
             inferredInsertSize = Some(300),
             contigName = "chr5",
-            start = 100L,
+            start = 100,
             isPositiveStrand = false
           )
         )
@@ -52,7 +55,7 @@ class PairedReadSuite extends FunSuite with Matchers {
         MateAlignmentProperties(
           inferredInsertSize = Some(300),
           contigName = "chr5",
-          start = 100L,
+          start = 100,
           isPositiveStrand = false
         )
       )
@@ -79,7 +82,7 @@ class PairedReadSuite extends FunSuite with Matchers {
           MateAlignmentProperties(
             inferredInsertSize = Some(300),
             contigName = "chr5",
-            start = 100L,
+            start = 100,
             isPositiveStrand = false
           )
         )

@@ -1,5 +1,8 @@
 package org.hammerlab.guacamole.commands
 
+import org.hammerlab.genomics.bases.{ Bases, BasesUtil }
+import org.hammerlab.genomics.reference.test.LocusUtil
+import org.hammerlab.genomics.reference.{ ContigName, Locus }
 import org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Arguments
 import org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Caller.discoverGermlineVariants
 import org.hammerlab.guacamole.data.NA12878TestUtil
@@ -7,7 +10,6 @@ import org.hammerlab.guacamole.loci.partitioning.LociPartitioning
 import org.hammerlab.guacamole.readsets.ReadSets
 import org.hammerlab.guacamole.readsets.rdd.PartitionedRegionsUtil
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
-import org.hammerlab.guacamole.util.Bases.basesToString
 import org.hammerlab.guacamole.util.GuacFunSuite
 import org.hammerlab.guacamole.variants.CalledAllele
 import org.scalatest.BeforeAndAfterAll
@@ -15,7 +17,9 @@ import org.scalatest.BeforeAndAfterAll
 class GermlineAssemblyCallerSuite
   extends GuacFunSuite
     with BeforeAndAfterAll
-    with PartitionedRegionsUtil {
+    with PartitionedRegionsUtil
+    with LocusUtil
+    with BasesUtil {
 
   var reference: ReferenceBroadcast = _
 
@@ -26,14 +30,23 @@ class GermlineAssemblyCallerSuite
 
   val referencePath = NA12878TestUtil.chr1PrefixFasta
 
-  def verifyVariantsAtLocus(locus: Int,
+  case class TestVariant(contigName: ContigName,
+                         locus: Locus,
+                         ref: Bases,
+                         alt: Bases)
+
+  object TestVariant {
+    implicit def fromTuple(t: (String, Int, String, String)): TestVariant = TestVariant(t._1, t._2, t._3, t._4)
+  }
+
+  def verifyVariantsAtLocus(locus: Locus,
                             contig: String = "chr1",
                             kmerSize: Int = 47,
                             assemblyWindowRange: Int = 120,
                             minOccurrence: Int = 5,
                             minVaf: Float = 0.1f,
                             shortcutAssembly: Boolean = false)(
-                             expectedVariants: (String, Int, String, String)*
+                            expectedVariants: TestVariant*
                            ) = {
 
     val windowStart = locus - assemblyWindowRange
@@ -72,9 +85,8 @@ class GermlineAssemblyCallerSuite
     val actualVariants =
       for {
         CalledAllele(_, contig, start, allele, _, _, _) <- variants
-      } yield {
-        (contig, start, basesToString(allele.refBases), basesToString(allele.altBases))
-      }
+      } yield
+        TestVariant(contig, start, allele.refBases, allele.altBases)
 
     actualVariants should be(expectedVariants)
   }

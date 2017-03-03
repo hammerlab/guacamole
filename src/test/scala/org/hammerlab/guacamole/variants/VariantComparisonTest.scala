@@ -2,8 +2,9 @@ package org.hammerlab.guacamole.variants
 
 import java.io.File
 
-import htsjdk.variant.variantcontext.{ GenotypeBuilder, VariantContext => HTSJDKVariantContext, VariantContextBuilder, Allele => HTSJDKAllele }
+import htsjdk.variant.variantcontext.{ GenotypeBuilder, VariantContextBuilder, Allele ⇒ HTSJDKAllele, VariantContext ⇒ HTSJDKVariantContext }
 import htsjdk.variant.vcf.VCFFileReader
+import org.hammerlab.genomics.reference.Locus
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.util.Bases.basesToString
 import org.hammerlab.guacamole.util.VCFComparison
@@ -28,21 +29,25 @@ case class VariantFromVarlensCSV(
   def toHtsjdVariantContext(reference: ReferenceBroadcast): HTSJDKVariantContext = {
     val uncanonicalizedContig = "chr" + contig
 
-    val (adjustedInterbaseStart, adjustedRef, adjustedAlt) = if (alt.nonEmpty) {
-      (interbaseStart, ref, alt)
-    } else {
-      // Deletion.
-      val refSequence =
-        basesToString(
-          reference
+    val (adjustedInterbaseStart, adjustedRef, adjustedAlt) =
+      if (alt.nonEmpty) {
+        (interbaseStart, ref, alt)
+      } else {
+        val start = Locus(interbaseStart - 1)
+        val length = ref.length
+        // Deletion.
+        val refSequence =
+          basesToString(
+            reference
             .getReferenceSequence(
               uncanonicalizedContig,
-              interbaseStart.toInt - 1, interbaseEnd.toInt
+              start,
+              length
             )
-        ).toUpperCase
+          ).toUpperCase
 
-      (interbaseStart - 1, refSequence, refSequence(0) + alt)
-    }
+        (interbaseStart - 1, refSequence, refSequence(0) + alt)
+      }
 
     val alleles = Seq(adjustedRef, adjustedAlt).distinct
 
@@ -76,27 +81,27 @@ trait VariantComparisonTest {
   def printSamplePairs(pairs: Seq[(HTSJDKVariantContext, HTSJDKVariantContext)], num: Int = 20): Unit = {
     val sample = pairs.take(num)
     println("Showing %,d / %,d.".format(sample.size, pairs.size))
-    sample.zipWithIndex.foreach({
-      case (pair, num) =>
+    sample.zipWithIndex.foreach {
+      case (pair, num) ⇒
         println("(%4d) %20s vs %20s \tDETAILS: %20s vs %20s".format(
           num + 1,
           VCFComparison.variantToString(pair._1, verbose = false),
           VCFComparison.variantToString(pair._2, verbose = false),
           VCFComparison.variantToString(pair._1, verbose = true),
           VCFComparison.variantToString(pair._2, verbose = true)))
-    })
+    }
   }
 
   def printSample(items: Seq[HTSJDKVariantContext], num: Int = 20): Unit = {
     val sample = items.take(num)
     println("Showing %,d / %,d.".format(sample.size, items.size))
-    sample.zipWithIndex.foreach({
+    sample.zipWithIndex.foreach {
       case (item, num) =>
         println("(%4d) %20s \tDETAILS: %29s".format(
           num + 1,
           VCFComparison.variantToString(item, verbose = false),
           VCFComparison.variantToString(item, verbose = true)))
-    })
+    }
   }
 
   def vcfRecords(reader: VCFFileReader): Seq[HTSJDKVariantContext] = {
@@ -110,24 +115,28 @@ trait VariantComparisonTest {
   }
 
   def csvRecords(filename: String): Seq[VariantFromVarlensCSV] =
-    Source.fromFile(filename).getLines.map(_.split(",").map(_.trim).toSeq).toList match {
-      case header :: records =>
-        records.map {
-          record ⇒
-            val fields = header.zip(record).toMap
-            VariantFromVarlensCSV(
-              fields("genome"),
-              fields("contig"),
-              fields("interbase_start").toInt,
-              fields("interbase_end").toInt,
-              fields("ref"),
-              fields("alt"),
-              fields("tumor"),
-              fields("normal"),
-              fields("validation"))
-        }
-      case Nil ⇒
-        throw new IllegalArgumentException("Empty file")
+    Source
+      .fromFile(filename)
+      .getLines
+      .map(_.split(",").map(_.trim).toSeq)
+      .toList match {
+        case header :: records ⇒
+          records.map {
+            record ⇒
+              val fields = header.zip(record).toMap
+              VariantFromVarlensCSV(
+                fields("genome"),
+                fields("contig"),
+                fields("interbase_start").toInt,
+                fields("interbase_end").toInt,
+                fields("ref"),
+                fields("alt"),
+                fields("tumor"),
+                fields("normal"),
+                fields("validation"))
+          }
+        case Nil ⇒
+          throw new IllegalArgumentException("Empty file")
     }
 
   /**
@@ -144,9 +153,10 @@ trait VariantComparisonTest {
     val readerExperimental = new VCFFileReader(new File(experimentalFile), false)
     val recordsExperimental = vcfRecords(readerExperimental)
     val csvRecordsExpectedWithDecoys = csvRecords(expectedFile)
-    val recordsExpected = csvRecordsExpectedWithDecoys
-      .filter(record => samplesToCompare.contains(record.tumor))
-      .map(_.toHtsjdVariantContext(referenceBroadcast))
+    val recordsExpected =
+      csvRecordsExpectedWithDecoys
+        .filter(record ⇒ samplesToCompare.contains(record.tumor))
+        .map(_.toHtsjdVariantContext(referenceBroadcast))
 
     println("Experimental calls: %,d. Gold calls: %,d.".format(recordsExperimental.length, recordsExpected.length))
 

@@ -38,15 +38,24 @@ case class MultiSampleMultiAlleleEvidence(contigName: ContigName,
   def bestAllele: MultiSampleSingleAlleleEvidence =
     // We rank germline calls first, then somatic calls, then break ties with the sum of the best posteriors.
     singleAlleleEvidences
-      .maxBy {
-        evidence ⇒
-          (evidence.isGermlineCall,
+      .maxBy(
+        evidence =>
+          (
+            evidence.isGermlineCall,
             evidence.isSomaticCall,
             if (evidence.isGermlineCall)
-              evidence.pooledGermlinePosteriors.maxBy(_._2)._2
+              evidence
+                .pooledGermlinePosteriors
+                .maxBy(_._2)
+                ._2
             else
-              evidence.perTumorDnaSampleSomaticPosteriors.values.map(x => x.maxBy(_._2)._2).max)
-      }
+              evidence
+                .perTumorDnaSampleSomaticPosteriors
+                .values
+                .map(_.maxBy(_._2)._2)
+                .max
+          )
+      )
 
   /**
    * Return a new instance containing only the calls that pass filters.
@@ -91,7 +100,7 @@ object MultiSampleMultiAlleleEvidence {
     val locus = normalPileups.head.locus
 
     // We only call variants at a site if the reference base is a standard base (i.e. not N).
-    if (!isStandardBase(reference.getReferenceBase(contig, locus.toInt + 1))) {
+    if (!isStandardBase(reference.getReferenceBase(contig, locus.next))) {
       return None
     }
 
@@ -105,8 +114,9 @@ object MultiSampleMultiAlleleEvidence {
       anyAlleleMinSupportingReads = parameters.anyAlleleMinSupportingReads,
       anyAlleleMinSupportingPercent = parameters.anyAlleleMinSupportingPercent,
       maxAlleles = Some(parameters.maxAllelesPerSite),
-      atLeastOneAllele = forceCall, // if force calling this site, always get at least one allele
-      onlyStandardBases = true)
+      atLeastOneAllele = forceCall,  // if force calling this site, always get at least one allele
+      onlyStandardBases = true
+    )
 
     // If we have no possible alternate alleles, don't call anything at this site.
     if (possibleAlleles.isEmpty) {
@@ -119,12 +129,26 @@ object MultiSampleMultiAlleleEvidence {
     // MultiplePileupStats per allele (start, end) position.
     val multiplePileupStatsPerPossibleAlleleLocus =
       possibleAlleles
-        .map(allele => (allele.start.toInt, allele.end.toInt))
+        .map(allele => (allele.start, allele.end))
         .distinct
         .map {
           case (start, end) ⇒
-            val referenceSequence = filteredPileups.head.contigSequence.slice(start, end)
-            val stats = filteredPileups.map(pileup => PileupStats(pileup.elements, refSequence = referenceSequence))
+            val referenceSequence =
+              filteredPileups
+              .head
+              .contigSequence
+              .slice(
+                start,
+                (end - start).toInt
+              )
+
+            val stats =
+              filteredPileups
+                .map(
+                  pileup =>
+                    PileupStats(pileup.elements, refSequence = referenceSequence)
+                )
+
             start → end → MultiplePileupStats(inputs, stats)
         }
         .toMap
@@ -134,7 +158,7 @@ object MultiSampleMultiAlleleEvidence {
       MultiSampleSingleAlleleEvidence(
         parameters,
         allele,
-        multiplePileupStatsPerPossibleAlleleLocus((allele.start.toInt, allele.end.toInt)))
+        multiplePileupStatsPerPossibleAlleleLocus((allele.start, allele.end)))
     })
 
     val evidencesCalled = allEvidences.filter(_.isCall)
@@ -163,7 +187,7 @@ object MultiSampleMultiAlleleEvidence {
       val allele = evidence.allele
       evidence.annotate(
         calls,
-        multiplePileupStatsPerPossibleAlleleLocus((allele.start.toInt, allele.end.toInt)))
+        multiplePileupStatsPerPossibleAlleleLocus((allele.start, allele.end)))
     })
     val annotatedCalls = calls.copy(singleAlleleEvidences = annotatedEvidences)
 

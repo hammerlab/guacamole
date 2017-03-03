@@ -3,7 +3,10 @@ package org.hammerlab.guacamole.reads
 import grizzled.slf4j.Logging
 import htsjdk.samtools._
 import org.bdgenomics.formats.avro.AlignmentRecord
+import org.hammerlab.genomics.bases.Bases
+import org.hammerlab.genomics.reference.{ ContigName, Locus }
 import org.hammerlab.guacamole.util.Bases.stringToBases
+import org.scalautils.ConversionCheckedTripleEquals._
 
 /**
  * The fields in the Read trait are common to any read, whether mapped (aligned) or not.
@@ -14,7 +17,7 @@ trait Read extends HasSampleId {
   def name: String
 
   /** The nucleotide sequence. */
-  def sequence: IndexedSeq[Byte]
+  def sequence: Bases
 
   /** The base qualities, phred scaled.  These are numbers, and are NOT character encoded. */
   def baseQualities: IndexedSeq[Byte]
@@ -32,7 +35,6 @@ trait Read extends HasSampleId {
 
   /** Whether read is from a paired-end library */
   def isPaired: Boolean
-
 }
 
 object Read extends Logging {
@@ -56,18 +58,15 @@ object Read extends Logging {
 
   /**
    * Convert a SAM tools record into a Read.
-   *
-   * @param record
-   * @return
    */
   def apply(record: SAMRecord, sampleId: Int): Read = {
 
-    val isMapped = (
+    val isMapped =
       !record.getReadUnmappedFlag &&
       record.getReferenceName != null &&
       record.getReferenceIndex >= SAMRecord.NO_ALIGNMENT_REFERENCE_INDEX &&
       record.getAlignmentStart >= 0 &&
-      record.getUnclippedStart >= 0)
+      record.getUnclippedStart >= 0
 
     val read =
       if (isMapped) {
@@ -80,7 +79,7 @@ object Read extends Logging {
             sampleId,
             record.getReferenceName.intern,
             record.getMappingQuality,
-            record.getAlignmentStart - 1,
+            Locus(record.getAlignmentStart - 1),
             cigar = record.getCigar,
             failedVendorQualityChecks = record.getReadFailsVendorQualityCheckFlag,
             isPositiveStrand = !record.getReadNegativeStrandFlag,
@@ -88,9 +87,9 @@ object Read extends Logging {
           )
 
         // We subtract 1 from start, since samtools is 1-based and we're 0-based.
-        if (result.unclippedStart != record.getUnclippedStart - 1)
+        if (result.unclippedStart !== Locus(record.getUnclippedStart - 1))
           warn(
-            "Computed read 'unclippedStart' %d != samtools read end %d.".format(
+            "Computed read 'unclippedStart' %s != samtools read end %d.".format(
               result.unclippedStart, record.getUnclippedStart - 1
             )
           )
@@ -124,7 +123,7 @@ object Read extends Logging {
    */
   def apply(alignmentRecord: AlignmentRecord, sampleId: Int): Read = {
 
-    val sequence = stringToBases(alignmentRecord.getSequence)
+    val sequence: Bases = Bases(stringToBases(alignmentRecord.getSequence): _*)
     val baseQualities = baseQualityStringToArray(alignmentRecord.getQual, sequence.length)
 
     val referenceContig = alignmentRecord.getContigName.intern
@@ -140,7 +139,7 @@ object Read extends Logging {
           sampleId = sampleId,
           contigName = referenceContig,
           alignmentQuality = alignmentRecord.getMapq,
-          start = alignmentRecord.getStart,
+          start = Locus(alignmentRecord.getStart),
           cigar = cigar,
           failedVendorQualityChecks = alignmentRecord.getFailedVendorQualityChecks,
           isPositiveStrand = !alignmentRecord.getReadNegativeStrand,
@@ -161,7 +160,7 @@ object Read extends Logging {
       val mateAlignment = if (alignmentRecord.getMateMapped) Some(
         MateAlignmentProperties(
           contigName = alignmentRecord.getMateContigName.intern(),
-          start = alignmentRecord.getMateAlignmentStart,
+          start = Locus(alignmentRecord.getMateAlignmentStart),
           inferredInsertSize = if (alignmentRecord.getInferredInsertSize != 0 && alignmentRecord.getInferredInsertSize != null) Some(alignmentRecord.getInferredInsertSize.toInt) else None,
           isPositiveStrand = !alignmentRecord.getMateNegativeStrand
         )

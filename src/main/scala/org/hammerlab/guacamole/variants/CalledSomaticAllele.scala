@@ -31,9 +31,9 @@ case class CalledSomaticAllele(sampleName: SampleName,
                                tumorVariantEvidence: AlleleEvidence,
                                normalReferenceEvidence: AlleleEvidence,
                                rsID: Option[Int] = None,
-                               override val length: NumLoci = 1)
+                               override val length: NumLoci = NumLoci(1))
   extends ReferenceVariant {
-  val end: Locus = start + 1L
+  val end: Locus = start + length
 
   // P ( variant in tumor AND no variant in normal) = P(variant in tumor) * P(reference in normal)
   lazy val phredScaledSomaticLikelihood =
@@ -46,9 +46,9 @@ case class CalledSomaticAllele(sampleName: SampleName,
       .newBuilder
       .setAlleles(alleles)
       .setSampleId(sampleName)
-      .setContigName(contigName)
-      .setStart(start)
-      .setEnd(end)
+      .setContigName(contigName.name)
+      .setStart(start.locus)
+      .setEnd(end.locus)
       .setGenotypeQuality(phredScaledSomaticLikelihood)
       .setReadDepth(tumorVariantEvidence.readDepth)
       .setExpectedAlleleDosage(

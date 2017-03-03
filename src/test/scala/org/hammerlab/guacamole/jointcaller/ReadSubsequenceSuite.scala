@@ -20,7 +20,7 @@ class ReadSubsequenceSuite
         name => s"cancer-wgs1/$name"
       )
 
-  override lazy val reference = makeReference(sc, "chr1", 0, "NTCGATCGACG")
+  override lazy val reference = makeReference(sc, ("chr1", 0, "NTCGATCGACG"))
 
   val partialFasta = resourcePath("hg19.partial.fasta")
   def partialReference =

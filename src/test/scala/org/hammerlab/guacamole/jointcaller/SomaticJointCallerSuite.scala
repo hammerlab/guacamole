@@ -49,7 +49,7 @@ class SomaticJointCallerSuite
     evidences.length should equal(1)
 
     val allele = evidences.head.allele
-    allele.start should be(65857040)
+    allele.start should ===(65857040)
     allele.ref should be("G")
   }
 
@@ -177,7 +177,7 @@ class SomaticJointCallerSuite
       case (description, calls) =>
         withClue("germline variant %s".format(description)) {
           // There should be a germline homozygous call at 22:46931077 in one based, which is 22:46931076 in zero based.
-          val filtered46931076 = calls.filter(call => call.start == 46931076 && call.end == 46931077)
+          val filtered46931076 = calls.filter(call => call.start === 46931076 && call.end === 46931077)
           filtered46931076.length should be(1)
           filtered46931076.head.bestAllele.isGermlineCall should be(true)
           filtered46931076.head.bestAllele.allele.ref should equal("G")
@@ -187,8 +187,8 @@ class SomaticJointCallerSuite
     }
 
     // RNA should enable a call G→A call at 22:46931062 in one based, which is 22:46931061 in zero based.
-    callsWithoutRNA.exists(call ⇒ call.start == 46931061 && call.end == 46931062) should be(false)
-    val filtered46931061 = callsWithRNA.filter(call ⇒ call.start == 46931061 && call.end == 46931062)
+    callsWithoutRNA.exists(call ⇒ call.start === 46931061 && call.end === 46931062) should be(false)
+    val filtered46931061 = callsWithRNA.filter(call ⇒ call.start === 46931061 && call.end === 46931062)
     filtered46931061.length should be(1)
 
     val bestAllele = filtered46931061.head.bestAllele

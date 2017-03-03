@@ -1,9 +1,9 @@
 package org.hammerlab.guacamole.loci.set
 
 import org.hammerlab.genomics.loci.set.{ Contig, LociSet }
-import org.hammerlab.genomics.reference.{ ContigIterator, HasLocus, Interval, Locus, Position }
+import org.hammerlab.genomics.reference.{ ContigIterator, ContigsIterator, HasLocus, Interval, Locus, Position }
 import org.hammerlab.guacamole.loci.Coverage
-import org.hammerlab.guacamole.readsets.iterator.{ ContigCoverageIterator, ContigsIterator }
+import org.hammerlab.guacamole.readsets.iterator.ContigCoverageIterator
 import org.hammerlab.iterator.SimpleBufferedIterator
 
 import scala.collection.mutable.ArrayBuffer
@@ -177,12 +177,12 @@ class TakeLociIterator(it: BufferedIterator[(Position, Coverage)],
           curIntervalOpt match {
             // Extend the current interval, if possible.
             case Some((start, end)) if !trimRanges || locus == end =>
-              Some(start -> (locus + 1))
+              Some(start -> locus.next)
 
             // Otherwise, commit the current interval if it exists, and start a new one.
             case _ =>
               maybeAddInterval()
-              Some(locus -> (locus + 1))
+              Some(locus -> locus.next)
           }
 
         it.next()
