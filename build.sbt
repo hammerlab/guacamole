@@ -16,6 +16,7 @@ deps ++= Seq(
   libs.value('commons_math),
   libs.value('hadoop_bam),
   libs.value('htsjdk),
+  libs.value('iterators),
   "org.hammerlab" %% "genomic-loci" % "1.4.4",
   libs.value('magic_rdds),
   libs.value('slf4j),
