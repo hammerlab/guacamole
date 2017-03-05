@@ -1,22 +1,19 @@
 package org.hammerlab.guacamole.assembly
 
 import breeze.stats.mean
-import htsjdk.samtools.CigarOperator
+import htsjdk.samtools.CigarOperator.M
+import org.hammerlab.guacamole.assembly.DeBruijnGraph.{ Kmer, Path, Sequence, SubKmer, mergeOverlappingSequences }
 import org.hammerlab.guacamole.reads.{ MappedRead, Read }
 import org.hammerlab.guacamole.util.Bases.basesToString
 
-import scala.collection.mutable
+import scala.collection.mutable.{ HashSet ⇒ MHashSet, Map ⇒ MMap, Set ⇒ MSet, Stack ⇒ MStack }
 
 class DeBruijnGraph(val kmerSize: Int,
-                    val kmerCounts: mutable.Map[DeBruijnGraph#Kmer, Int]) {
-
-  type Kmer = Seq[Byte] // Sequence of length `kmerSize`
-  type SubKmer = Seq[Byte] // Sequence of bases < `kmerSize`
-  type Sequence = Seq[Byte]
+                    val kmerCounts: MMap[Kmer, Int]) {
 
   // Table to store prefix to kmers that share that prefix
-  val prefixTable: mutable.Map[SubKmer, List[Kmer]] =
-    mutable.Map(
+  val prefixTable: MMap[SubKmer, List[Kmer]] =
+    MMap(
       kmerCounts
         .keys
         .groupBy(kmerPrefix)
@@ -25,29 +22,27 @@ class DeBruijnGraph(val kmerSize: Int,
     )
 
   // Table to store suffix to kmers that share that suffix
-  val suffixTable: mutable.Map[SubKmer, List[Kmer]] =
-    mutable.Map(
+  val suffixTable: MMap[SubKmer, List[Kmer]] =
+    MMap(
       kmerCounts
         .keys
         .groupBy(kmerSuffix)
-        .map(kv => (kv._1, kv._2.toList))
+        .mapValues(_.toList)
         .toSeq: _*
     )
 
   //  Map from kmers to the sequence they were merged in to.
   //  The value is the merged sequence and the index in that sequence 
   // at which the "key" kmer occurs.
-  val mergeIndex: mutable.Map[Kmer, (Sequence, Int)] = mutable.Map.empty
+  val mergeIndex: MMap[Kmer, (Sequence, Int)] = MMap.empty
 
   @inline
-  private[assembly] def kmerPrefix(seq: Kmer): SubKmer = {
+  private[assembly] def kmerPrefix(seq: Kmer): SubKmer =
     seq.take(kmerSize - 1)
-  }
 
   @inline
-  private[assembly] def kmerSuffix(seq: Kmer): SubKmer = {
+  private[assembly] def kmerSuffix(seq: Kmer): SubKmer =
     seq.takeRight(kmerSize - 1)
-  }
 
   /**
    * Remove a kmer from the graph
@@ -58,7 +53,7 @@ class DeBruijnGraph(val kmerSize: Int,
   private[assembly] def removeKmer(kmer: Kmer) = {
     kmerCounts.remove(kmer)
     def removeFromTable(kmer: Kmer,
-                        table: mutable.Map[Kmer, List[Kmer]],
+                        table: MMap[Kmer, List[Kmer]],
                         keyFunc: Kmer => SubKmer) = {
       val key = keyFunc(kmer)
       val otherNodes = table(key).filterNot(_ == kmer)
@@ -71,7 +66,6 @@ class DeBruijnGraph(val kmerSize: Int,
 
     removeFromTable(kmer, prefixTable, kmerPrefix)
     removeFromTable(kmer, suffixTable, kmerSuffix)
-
   }
 
   /**
@@ -79,17 +73,16 @@ class DeBruijnGraph(val kmerSize: Int,
    *
    * @param minSupport minimum of reads a kmer should appear in
    */
-  private[assembly] def pruneKmers(minSupport: Int) = {
+  private[assembly] def pruneKmers(minSupport: Int) =
     kmerCounts
-      .filter(_._2 < minSupport)
-      .foreach({ case (kmer, count) => removeKmer(kmer) })
-  }
+      .filter { _._2 < minSupport }
+      .foreach { case (kmer, _) => removeKmer(kmer) }
 
   /**
    * Merge existing kmers in unique path
    */
   private[assembly] def mergeNodes(): Unit = {
-    val allNodes: mutable.Set[Kmer] = mutable.HashSet[Kmer](kmerCounts.keys.toSeq: _*)
+    val allNodes: MSet[Kmer] = MHashSet[Kmer](kmerCounts.keys.toSeq: _*)
 
     while (allNodes.nonEmpty) {
       val node = allNodes.head
@@ -99,18 +92,21 @@ class DeBruijnGraph(val kmerSize: Int,
 
       if (fullMergeablePath.length > 1) {
         // Remove everything in the merged path from the prefix/suffix tables
-        fullMergeablePath.foreach(k => {
+        fullMergeablePath.foreach { k ⇒
           allNodes.remove(k)
           if (kmerCounts.contains(k)) removeKmer(k)
-        })
+        }
 
         // Get full node from non-branch path
-        val mergedNode = DeBruijnGraph.mergeOverlappingSequences(fullMergeablePath, kmerSize)
+        val mergedNode = mergeOverlappingSequences(fullMergeablePath, kmerSize)
 
         // Save each node that was merged
-        fullMergeablePath.zipWithIndex.foreach({
-          case (nodeElement, index) => mergeIndex.update(nodeElement, (mergedNode, index))
-        })
+        fullMergeablePath
+          .zipWithIndex
+          .foreach {
+            case (nodeElement, index) =>
+              mergeIndex.update(nodeElement, (mergedNode, index))
+          }
 
         // Update the prefix and suffix tables
         val mergedNodePrefix = kmerPrefix(mergedNode)
@@ -118,11 +114,9 @@ class DeBruijnGraph(val kmerSize: Int,
         prefixTable(mergedNodePrefix) = mergedNode :: prefixTable.getOrElse(mergedNodePrefix, List.empty)
         suffixTable(mergedNodeSuffix) = mergedNode :: suffixTable.getOrElse(mergedNodeSuffix, List.empty)
         kmerCounts.put(mergedNode, kmerCounts.getOrElse(mergedNode, 0) + 1)
-      } else {
+      } else
         allNodes.remove(node)
-      }
     }
-
   }
 
   /**
@@ -141,7 +135,7 @@ class DeBruijnGraph(val kmerSize: Int,
     val prevFunc: Kmer => Seq[Kmer] = if (searchForward) parents else children
 
     var current = kmer
-    var visited: mutable.Set[Kmer] = mutable.Set(current)
+    var visited: MSet[Kmer] = MSet(current)
 
     // Kmer next in the path
     def nextNodes(currentNode: Kmer) =
@@ -167,8 +161,6 @@ class DeBruijnGraph(val kmerSize: Int,
   private[assembly] def mergeForward(kmer: Kmer) = findMergeable(kmer, searchForward = true).reverse
   private[assembly] def mergeBackward(kmer: Kmer) = findMergeable(kmer, searchForward = false)
 
-  type Path = List[Kmer]
-
   /**
    * Find a path from source to sink in the graph
    *
@@ -186,22 +178,27 @@ class DeBruijnGraph(val kmerSize: Int,
                        maxPathLength: Int = Int.MaxValue,
                        maxPaths: Int = 10,
                        avoidLoops: Boolean = true,
-                       debugPrint: Boolean = false): List[(Path)] = {
+                       debugPrint: Boolean = false): List[Path] = {
 
     assume(source.length == kmerSize, s"Source kmer ${basesToString(source)} has size ${source.length} != $kmerSize")
     assume(sink.length == kmerSize, s"Sink kmer ${basesToString(sink)} has size ${sink.length} != $kmerSize")
 
-    var paths = List.empty[(Path)]
-    var visited: mutable.Set[Kmer] = mutable.Set.empty
+    var paths = List.empty[Path]
+    var visited: MSet[Kmer] = MSet.empty
 
     // Add the source node to the frontier
-    val frontier: mutable.Stack[Kmer] =
+    val frontier: MStack[Kmer] =
       if (mergeIndex.contains(source)) {
         val (mergedNode, pathIndex) = mergeIndex(source)
 
         // Check if merged node contains the sink, if so shortcut the search as this is the only path
         val mergedSink = mergeIndex.get(sink)
-        if (mergedSink.exists(node => node._1 == mergedNode && node._2 > pathIndex)) {
+        if (
+          mergedSink.exists {
+            case (sequence, index) ⇒
+              sequence == mergedNode && index > pathIndex
+          }
+        ) {
           val path: Path = List(mergedNode.slice(pathIndex, mergedSink.get._2 + kmerSize))
           return List(path)
         }
@@ -209,9 +206,9 @@ class DeBruijnGraph(val kmerSize: Int,
         visited += mergedNode
 
         // Add the merged node to the frontier, removing any preceding bases
-        mutable.Stack(mergedNode.drop(pathIndex))
+        MStack(mergedNode.drop(pathIndex))
       } else {
-        mutable.Stack(source)
+        MStack(source)
       }
 
     // Initialize an empty path
@@ -221,8 +218,8 @@ class DeBruijnGraph(val kmerSize: Int,
 
     // Track if we branch in the path if we need to return to this point
     // Keep track of the branch and number of children
-    val lastBranchIndex = mutable.Stack[Int]()
-    val lastBranchChildren = mutable.Stack[Int]()
+    val lastBranchIndex = MStack[Int]()
+    val lastBranchChildren = MStack[Int]()
     var numBacktracks = 0
 
     // explore branches until we find the sink
@@ -231,11 +228,10 @@ class DeBruijnGraph(val kmerSize: Int,
       val next = frontier.pop()
 
       if (debugPrint) {
-        if (currentPath.isEmpty) {
+        if (currentPath.isEmpty)
           println(basesToString(next))
-        } else {
+        else
           println(" " * (currentPath.map(_.length).sum - kmerSize + 1) + basesToString(next))
-        }
       }
 
       // add the node on to the path
@@ -243,9 +239,14 @@ class DeBruijnGraph(val kmerSize: Int,
 
       // Check if the source node was merged into the current one
       lazy val foundMergedSink = nodeContainingSink.exists(_._1 == next)
-      val foundSink = (next == sink || foundMergedSink)
+      val foundSink = next == sink || foundMergedSink
       val nextNodes = children(next)
-      val filteredNextNodes = (if (avoidLoops) nextNodes.filterNot(visited.contains) else nextNodes)
+      val filteredNextNodes =
+        if (avoidLoops)
+          nextNodes.filterNot(visited.contains)
+        else
+          nextNodes
+
       if (!foundSink && filteredNextNodes.nonEmpty && currentPath.size < maxPathLength) {
 
         // Track if this is a branching node
@@ -302,16 +303,20 @@ class DeBruijnGraph(val kmerSize: Int,
   /**
    * Find all nodes that have in-degree = 0
    */
-  def sources: Iterable[Kmer] = {
-    kmerCounts.keys.filter(parents(_).isEmpty).map(_.take(kmerSize))
-  }
+  def sources: Iterable[Kmer] =
+    kmerCounts
+      .keys
+      .filter(parents(_).isEmpty)
+      .map(_.take(kmerSize))
 
   /**
    * Find all nodes that have out-degree = 0
    */
-  def sinks: Iterable[Kmer] = {
-    kmerCounts.keys.filter(children(_).isEmpty).map(_.takeRight(kmerSize))
-  }
+  def sinks: Iterable[Kmer] =
+    kmerCounts
+      .keys
+      .filter(children(_).isEmpty)
+      .map(_.takeRight(kmerSize))
 
   /**
    * Find all children of a given node
@@ -319,9 +324,12 @@ class DeBruijnGraph(val kmerSize: Int,
    * @param node Kmer to find parents of
    * @return  List of Kmers where their prefix matches this node's suffix
    */
-  def children(node: Kmer): List[Kmer] = {
-    prefixTable.getOrElse(kmerSuffix(node), List.empty)
-  }
+  def children(node: Kmer): List[Kmer] =
+    prefixTable
+      .getOrElse(
+        kmerSuffix(node),
+        Nil
+      )
 
   /**
    * Find all parents of a given node
@@ -329,15 +337,19 @@ class DeBruijnGraph(val kmerSize: Int,
    * @param node Kmer to find parents of
    * @return List of Kmers where their suffix matches this nodes prefix
    */
-  def parents(node: Kmer): List[Kmer] = {
-    suffixTable.getOrElse(kmerPrefix(node), List.empty)
-  }
-
+  def parents(node: Kmer): List[Kmer] =
+    suffixTable
+      .getOrElse(
+        kmerPrefix(node),
+        Nil
+      )
 }
 
 object DeBruijnGraph {
-  type Sequence = DeBruijnGraph#Sequence
-  type Kmer = DeBruijnGraph#Kmer
+  type Kmer = Seq[Byte] // Sequence of length `kmerSize`
+  type SubKmer = Seq[Byte] // Sequence of bases < `kmerSize`
+  type Sequence = Seq[Byte]
+  type Path = List[Kmer]
 
   def apply(reads: Seq[Read],
             kmerSize: Int,
@@ -345,27 +357,30 @@ object DeBruijnGraph {
             minMeanKmerBaseQuality: Int = 0,
             mergeNodes: Boolean = false): DeBruijnGraph = {
 
-    val kmerCounts = mutable.Map.empty[DeBruijnGraph#Kmer, Int]
+    val kmerCounts = MMap.empty[Kmer, Int]
 
-    reads.foreach(
-      read => {
-        read.sequence
+    reads.foreach {
+      read ⇒
+        read
+          .sequence
           .sliding(kmerSize)
           .zipWithIndex
-          .foreach(
-            { case (seq, index) =>
+          .foreach {
+            case (seq, index) ⇒
               val baseQualities = read.baseQualities.slice(index, index + kmerSize).map(_.toFloat)
               val meanBaseQuality = mean(baseQualities)
               if (meanBaseQuality > minMeanKmerBaseQuality) {
                 val count = kmerCounts.getOrElse(seq, 0)
                 kmerCounts.update(seq, count + 1)
               }
-            }
-          )
-      }
-    )
+          }
+    }
 
-    val graph = new DeBruijnGraph(kmerSize, kmerCounts.filter(_._2 >= minOccurrence))
+    val graph =
+      new DeBruijnGraph(
+        kmerSize,
+        kmerCounts.filter(_._2 >= minOccurrence)
+      )
 
     if (mergeNodes) graph.mergeNodes()
 
@@ -383,12 +398,18 @@ object DeBruijnGraph {
    */
   def mergeOverlappingSequences(sequences: Seq[Sequence], overlapSize: Int): Sequence = {
     val head = sequences.headOption.getOrElse(Seq.empty)
-    val rest = sequences.tail.flatMap(sequence => sequence.takeRight(sequence.length - overlapSize + 1))
+    val rest =
+      sequences
+        .tail
+        .flatMap(_.drop(overlapSize - 1))
+
     head ++ rest
   }
 
   /**
    * For a given set of reads identify all kmers that appear in the specified reference region
+   *
+   * TODO(ryan): unused?
    *
    * @param reads  Set of reads to extract sequence from
    * @param startLocus Start (inclusive) locus on the reference
@@ -406,17 +427,16 @@ object DeBruijnGraph {
     val sequences =
       for {
         read <- reads
-        if !read.cigarElements.exists(_.getOperator != CigarOperator.M)
+        if !read.cigarElements.exists(_.getOperator != M)
         if read.overlapsLocus(startLocus) && read.overlapsLocus(endLocus - 1)
         unclippedStart = read.unclippedStart.toInt
-      } yield {
+      } yield
         read.sequence.slice(startLocus - unclippedStart, endLocus - unclippedStart)
-      }
 
     // Filter to sequences that appear at least `minOccurrence` times
     sequences
       .groupBy(identity)
-      .map(kv => (kv._1, kv._2.length))
+      .mapValues(_.size)
       .filter(_._2 >= minOccurrence)
       .map(_._1.toVector)
   }
@@ -426,7 +446,6 @@ object DeBruijnGraph {
    *
    * @param reads Reads to use to build the graph
    * @param referenceStart Start of the reference region corresponding to the reads
-   * @param referenceEnd End of the reference region corresponding to the reads
    * @param referenceSequence Reference sequence overlapping [referenceStart, referenceEnd)
    * @param kmerSize Length of kmers to use to traverse the paths
    * @param minOccurrence Minimum number of occurrences of the each kmer
@@ -436,24 +455,24 @@ object DeBruijnGraph {
    */
   def discoverPathsFromReads(reads: Seq[MappedRead],
                              referenceStart: Int,
-                             referenceEnd: Int,
                              referenceSequence: Array[Byte],
                              kmerSize: Int,
                              minOccurrence: Int,
                              maxPaths: Int,
                              minMeanKmerBaseQuality: Int,
-                             debugPrint: Boolean = false) = {
+                             debugPrint: Boolean = false): List[Path] = {
+
     val referenceKmerSource = referenceSequence.take(kmerSize)
     val referenceKmerSink = referenceSequence.takeRight(kmerSize)
 
-
-    val currentGraph: DeBruijnGraph = DeBruijnGraph(
-      reads,
-      kmerSize,
-      minOccurrence,
-      minMeanKmerBaseQuality,
-      mergeNodes = true
-    )
+    val currentGraph =
+      DeBruijnGraph(
+        reads,
+        kmerSize,
+        minOccurrence,
+        minMeanKmerBaseQuality,
+        mergeNodes = true
+      )
 
     currentGraph.depthFirstSearch(
       referenceKmerSource,

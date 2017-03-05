@@ -29,7 +29,7 @@ case class VCFComparison(expected: Seq[VariantContext], experimental: Seq[Varian
   def sensitivity = exactMatch.size * 100.0 / expected.size
   def specificity = exactMatch.size * 100.0 / experimental.size
 
-  def summary(): String = {
+  def summary: String =
     Seq(
       "exact match: %,d".format(exactMatch.size),
       "partial match: %,d".format(partialMatch.size),
@@ -37,10 +37,11 @@ case class VCFComparison(expected: Seq[VariantContext], experimental: Seq[Varian
       "unique to experimental: %,d".format(uniqueToExperimental.size),
       "sensitivity: %1.2f%%".format(sensitivity),
       "specificity: %1.2f%%".format(specificity)
-    ).mkString("\n")
-  }
+    )
+    .mkString("\n")
 
 }
+
 object VCFComparison {
   private def accumulate(
     records: Seq[VariantContext],
@@ -64,10 +65,17 @@ object VCFComparison {
 
   private def makeLociMap(records: Seq[VariantContext]): LociMap[VariantContext] = {
     val builder = LociMap.newBuilder[VariantContext]
-    records.foreach(record => {
-      // Switch from zero based inclusive to interbase coordinates.
-      builder.put(record.getContig, record.getStart, record.getEnd + 1, record)
-    })
+    records.foreach {
+      record =>
+        // Switch from zero based inclusive to interbase coordinates.
+        builder.put(
+          record.getContig,
+          record.getStart,
+          record.getEnd + 1,
+          record
+        )
+    }
+
     builder.result
   }
 

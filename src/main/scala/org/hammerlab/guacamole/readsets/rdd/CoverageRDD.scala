@@ -15,7 +15,7 @@ import scala.collection.mutable
 import scala.reflect.ClassTag
 
 /**
- * Augment an [[RDD[Region]]] with methods for computing coverage depth, .
+ * Augment an [[RDD[Region]]] with methods for computing coverage depth.
  */
 class CoverageRDD[R <: Region: ClassTag](rdd: RDD[R])
   extends Serializable {
@@ -68,7 +68,12 @@ class CoverageRDD[R <: Region: ClassTag](rdd: RDD[R])
       explode
     )
     .mapPartitions(
-      it => new TakeLociIterator(it.buffered, maxRegionsPerPartition, trimRanges)
+      it =>
+        new TakeLociIterator(
+          it.buffered,
+          maxRegionsPerPartition,
+          trimRanges
+        )
     )
 
   /**
@@ -89,11 +94,13 @@ class CoverageRDD[R <: Region: ClassTag](rdd: RDD[R])
   def partitionDepths(halfWindowSize: Int,
                       lociBroadcast: Broadcast[LociSet],
                       depthCutoff: Int): RDD[((ContigName, Boolean), Long)] =
-    (for {
-      (Position(contig, _), Coverage(depth, _)) <- coverage(halfWindowSize, lociBroadcast)
-    } yield
-      contig -> (depth <= depthCutoff)
-    ).runLengthEncode
+    (
+      for {
+        (Position(contig, _), Coverage(depth, _)) <- coverage(halfWindowSize, lociBroadcast)
+      } yield
+        contig -> (depth <= depthCutoff)
+    )
+    .runLengthEncode
 
   /**
    * Compute the coverage-depth at each locus, then aggregate loci into runs that are all above or below `depthCutoff`.

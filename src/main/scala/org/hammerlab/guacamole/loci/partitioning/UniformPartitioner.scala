@@ -6,9 +6,11 @@ import org.hammerlab.genomics.loci.set.LociSet
 import org.hammerlab.guacamole.loci.partitioning.MicroRegionPartitioner.NumMicroPartitions
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.spark.NumPartitions
-import org.kohsuke.args4j.{ Option => Args4jOption }
+import org.kohsuke.args4j.{ Option ⇒ Args4jOption }
 import spire.implicits._
 import spire.math.Integral
+
+import scala.math.{ max, round }
 
 trait UniformPartitionerArgs {
   @Args4jOption(
@@ -49,7 +51,7 @@ private[partitioning] sealed abstract class UniformPartitionerBase[N: Integral](
 
     assume(numPartitions >= 1, "`numPartitions` (--parallelism) should be >= 1")
 
-    val lociPerPartition = math.max(1, loci.count.toDouble / numPartitions.toDouble())
+    val lociPerPartition = max(1, loci.count.toDouble / numPartitions.toDouble)
 
     progress(
       "Splitting loci evenly among %,d numPartitions = ~%,.0f loci per partition"
@@ -60,7 +62,7 @@ private[partitioning] sealed abstract class UniformPartitionerBase[N: Integral](
 
     var partition = Integral[N].zero
 
-    def remainingForThisPartition = math.round(((partition + 1).toDouble * lociPerPartition) - lociAssigned)
+    def remainingForThisPartition = round(((partition + 1).toDouble * lociPerPartition) - lociAssigned)
 
     val builder = LociMap.newBuilder[N]
 

@@ -39,13 +39,14 @@ class GermlineAssemblyCallerSuite
     val windowStart = locus - assemblyWindowRange
     val windowEnd = locus + assemblyWindowRange
 
-    val args = new Arguments {
-      reads = NA12878TestUtil.subsetBam
-      parallelism = 1
-      lociPartitionerName = "uniform"
-      lociStrOpt = Some(s"$contig:$windowStart-$windowEnd")
-      includeDuplicates = false
-    }
+    val args =
+      new Arguments {
+        reads = NA12878TestUtil.subsetBam
+        parallelism = 1
+        lociPartitionerName = "uniform"
+        lociStrOpt = Some(s"$contig:$windowStart-$windowEnd")
+        includeDuplicates = false
+      }
 
     val (readsets, loci) = ReadSets(sc, args)
 

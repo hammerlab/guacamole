@@ -4,7 +4,7 @@ import org.hammerlab.guacamole.jointcaller.Input.{ Analyte, TissueType }
 import org.hammerlab.guacamole.readsets.args.{ Base => ReadSetsArgsBase }
 import org.hammerlab.guacamole.readsets.{ PerSample, SampleName }
 import org.kohsuke.args4j.spi.StringArrayOptionHandler
-import org.kohsuke.args4j.{ Option => Args4jOption }
+import org.kohsuke.args4j.{ Option ⇒ Args4jOption }
 
 /**
  * Convenience container for zero or more Input instances.

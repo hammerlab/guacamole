@@ -7,7 +7,7 @@ import org.hammerlab.genomics.loci.set.LociSet
 import org.hammerlab.genomics.reference.Region
 import org.hammerlab.guacamole.loci.partitioning.LociPartitioning
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
-import org.hammerlab.magic.accumulables.{ HistogramParam, HashMap => MagicHashMap }
+import org.hammerlab.magic.accumulables.{ HistogramParam, HashMap ⇒ MagicHashMap }
 import org.hammerlab.magic.rdd.serde.SequenceFileSerializableRDD._
 import org.hammerlab.spark.PartitionIndex
 import org.hammerlab.spark.util.KeyPartitioner

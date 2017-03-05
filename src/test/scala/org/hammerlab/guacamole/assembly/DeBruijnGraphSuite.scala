@@ -377,12 +377,13 @@ class DeBruijnGraphSuite
         "TGCATGGTGCTGTGAGATCAGCGTGTGTGTGTGTGCAGTGCATGGTGCTGTGTGAGATCAGCATGTGTGTGTGTGCAGTGCATGGTGCTGTGAGATCAGCGTGTGTGTGCAGCGCATGGTGCTGTGTGAGA"
       )
     val kmerSize = 45
-    val graph: DeBruijnGraph = DeBruijnGraph(
-      Seq(longRead),
-      kmerSize,
-      minOccurrence = 1,
-      mergeNodes = true
-    )
+    val graph =
+      DeBruijnGraph(
+        Seq(longRead),
+        kmerSize,
+        minOccurrence = 1,
+        mergeNodes = true
+      )
 
     longRead
       .sequence
@@ -415,12 +416,13 @@ class DeBruijnGraphSuite
       )
 
     val kmerSize = 15
-    val graph: DeBruijnGraph = DeBruijnGraph(
-      reads.map(makeRead(_)),
-      kmerSize,
-      minOccurrence = 1,
-      mergeNodes = false
-    )
+    val graph =
+      DeBruijnGraph(
+        reads.map(makeRead(_)),
+        kmerSize,
+        minOccurrence = 1,
+        mergeNodes = false
+      )
 
     val referenceKmerSource = reference.take(kmerSize)
     val referenceKmerSink = reference.takeRight(kmerSize)
@@ -456,12 +458,13 @@ class DeBruijnGraphSuite
       )
 
     val kmerSize = 15
-    val graph: DeBruijnGraph = DeBruijnGraph(
-      reads.map(makeRead(_)),
-      kmerSize,
-      minOccurrence = 1,
-      mergeNodes = false
-    )
+    val graph =
+      DeBruijnGraph(
+        reads.map(makeRead(_)),
+        kmerSize,
+        minOccurrence = 1,
+        mergeNodes = false
+      )
 
     val referenceKmerSource = reference.take(kmerSize)
     val referenceKmerSink = reference.takeRight(kmerSize)
@@ -498,12 +501,13 @@ class DeBruijnGraphSuite
       )
 
     val kmerSize = 15
-    val graph: DeBruijnGraph = DeBruijnGraph(
-      reads.map(makeRead(_)),
-      kmerSize,
-      minOccurrence = 1,
-      mergeNodes = false
-    )
+    val graph =
+      DeBruijnGraph(
+        reads.map(makeRead(_)),
+        kmerSize,
+        minOccurrence = 1,
+        mergeNodes = false
+      )
 
     val referenceKmerSource = reference.take(kmerSize)
     val referenceKmerSink = reference.takeRight(kmerSize)
@@ -534,7 +538,7 @@ class DeBruijnGraphSuite
     val referenceKmerSource = referenceBases.take(kmerSize)
     val referenceKmerSink = referenceBases.takeRight(kmerSize)
 
-    val currentGraph: DeBruijnGraph =
+    val currentGraph =
       DeBruijnGraph(
         snpReads,
         kmerSize,

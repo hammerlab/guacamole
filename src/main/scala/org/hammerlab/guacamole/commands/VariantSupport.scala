@@ -44,9 +44,8 @@ object VariantSupport {
                            reference: String,
                            alternate: String,
                            count: Int) {
-      override def toString: String = {
+      override def toString: String =
         s"$sampleName, $contigName, $locus, $reference, $alternate, $count"
-      }
     }
 
     override def run(args: Arguments, sc: SparkContext): Unit = {

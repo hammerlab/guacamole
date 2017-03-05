@@ -1,9 +1,10 @@
 package org.hammerlab.guacamole.jointcaller
 
-import org.hammerlab.guacamole.pileup.{ Util => PileupUtil }
+import org.hammerlab.guacamole.pileup.{ Util ⇒ PileupUtil }
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.util.GuacFunSuite
 import org.hammerlab.guacamole.util.TestUtil.resourcePath
+import AlleleAtLocus.variantAlleles
 
 class AlleleAtLocusSuite
   extends GuacFunSuite
@@ -18,7 +19,7 @@ class AlleleAtLocusSuite
   override lazy val reference =
     ReferenceBroadcast(b37Chromosome22Fasta, sc, partialFasta = false)
 
-  test("AlleleAtLocus.variantAlleles for low vaf variant allele") {
+  test("variantAlleles for low vaf variant allele") {
     val inputs = InputCollection(celsr1BAMs, analytes = Vector("dna", "dna", "rna"))
 
     val pileups =
@@ -28,7 +29,7 @@ class AlleleAtLocusSuite
       )
 
     val possibleAlleles =
-      AlleleAtLocus.variantAlleles(
+      variantAlleles(
         pileups,
         anyAlleleMinSupportingReads = 2,
         anyAlleleMinSupportingPercent = 2,

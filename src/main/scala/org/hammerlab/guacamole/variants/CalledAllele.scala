@@ -1,14 +1,13 @@
 package org.hammerlab.guacamole.variants
 
 import org.bdgenomics.formats.avro.GenotypeAllele.{ ALT, REF }
-import org.bdgenomics.formats.avro.{ Genotype => BDGGenotype }
+import org.bdgenomics.formats.avro.{ Genotype ⇒ BDGGenotype }
 import org.hammerlab.genomics.reference.{ ContigName, Locus, NumLoci }
 import org.hammerlab.guacamole.readsets.SampleName
 
 import scala.collection.JavaConversions.seqAsJavaList
 
 /**
- *
  * A variant that exists in the sample; includes supporting read statistics
  *
  * @param sampleName sample the variant was called on
@@ -25,7 +24,7 @@ case class CalledAllele(sampleName: SampleName,
                         evidence: AlleleEvidence,
                         rsID: Option[Int] = None,
                         override val length: NumLoci = 1) extends ReferenceVariant {
-  val end: Locus = start + 1L
+  val end: Locus = start + length
 
   def toBDGGenotype: BDGGenotype =
     BDGGenotype

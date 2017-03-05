@@ -1,6 +1,5 @@
 package org.hammerlab.guacamole.jointcaller
 
-import org.hammerlab.genomics.loci.parsing.ParsedLoci
 import org.hammerlab.genomics.loci.set.LociSet
 import org.hammerlab.guacamole.commands.SomaticJoint.makeCalls
 import org.hammerlab.guacamole.readsets.ReadSetsUtil
@@ -90,12 +89,12 @@ class SomaticJointCallerSuite
         loci = loci
       )
       .collect
-      .map(call => (call.contigName, call.start) -> call)
+      .map(call ⇒ call.contigName → call.start → call)
       .toMap
 
     calls(("chr1", 179895860)).singleAlleleEvidences.length should equal(1)
 
-    val bestAllele = calls(("chr1", 179895860)).bestAllele()
+    val bestAllele = calls(("chr1", 179895860)).bestAllele
 
     bestAllele.isSomaticCall should be(false)
     bestAllele.isGermlineCall should be(true)
@@ -172,8 +171,8 @@ class SomaticJointCallerSuite
       .filter(_.bestAllele.isCall)
     }
     Map(
-      "with rna" -> callsWithRNA,
-      "without rna" -> callsWithoutRNA
+      "with rna" → callsWithRNA,
+      "without rna" → callsWithoutRNA
     ).foreach {
       case (description, calls) =>
         withClue("germline variant %s".format(description)) {
@@ -187,9 +186,9 @@ class SomaticJointCallerSuite
         }
     }
 
-    // RNA should enable a call G->A call at 22:46931062 in one based, which is 22:46931061 in zero based.
-    callsWithoutRNA.exists(call => call.start == 46931061 && call.end == 46931062) should be(false)
-    val filtered46931061 = callsWithRNA.filter(call => call.start == 46931061 && call.end == 46931062)
+    // RNA should enable a call G→A call at 22:46931062 in one based, which is 22:46931061 in zero based.
+    callsWithoutRNA.exists(call ⇒ call.start == 46931061 && call.end == 46931062) should be(false)
+    val filtered46931061 = callsWithRNA.filter(call ⇒ call.start == 46931061 && call.end == 46931062)
     filtered46931061.length should be(1)
 
     val bestAllele = filtered46931061.head.bestAllele

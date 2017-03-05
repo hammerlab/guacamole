@@ -68,9 +68,9 @@ case class MultiSampleSingleAlleleEvidence(parameters: Parameters,
       alleles._1,
       alleles._2
     ).count(_ == allele.ref) match {
-      case 2                               => 0  // hom ref
-      case 1                               => parameters.germlineNegativeLog10HeterozygousPrior  // het
-      case 0 if (alleles._1 == alleles._2) => parameters.germlineNegativeLog10HomozygousAlternatePrior  // hom alt
+      case 2                             => 0  // hom ref
+      case 1                             => parameters.germlineNegativeLog10HeterozygousPrior  // het
+      case 0 if alleles._1 == alleles._2 => parameters.germlineNegativeLog10HomozygousAlternatePrior  // hom alt
 
       // Compound alt, which we should not hit in the current version of the caller (we currently only consider mixtures
       // involving a reference allele and a single alt allele)
@@ -92,8 +92,9 @@ case class MultiSampleSingleAlleleEvidence(parameters: Parameters,
         .filter(_.normalDNA)
         .map(_.index) ++
         Seq(normalDNAPooledIndex)
-    ).map(
-      index => {
+    )
+    .map(
+      index ⇒ {
 
         val likelihoods =
           allEvidences(index)
@@ -102,7 +103,7 @@ case class MultiSampleSingleAlleleEvidence(parameters: Parameters,
 
         // These are not true posterior probabilities, but are proportional to posteriors.
         // Map from alleles to log probs.
-        index ->
+        index →
           (
             for {
               (alleles, likelihood) <- likelihoods
@@ -110,8 +111,10 @@ case class MultiSampleSingleAlleleEvidence(parameters: Parameters,
               alleles -> (likelihood - germlinePrior(alleles))
           )
       }
-    ).toMap
+    )
+    .toMap
   }
+
   val pooledGermlinePosteriors = perNormalSampleGermlinePosteriors(normalDNAPooledIndex)
 
   /**
@@ -123,7 +126,7 @@ case class MultiSampleSingleAlleleEvidence(parameters: Parameters,
   val isGermlineCall = germlineAlleles != (allele.ref, allele.ref)
 
   /** Negative log10 prior probability for the given mixture in RNA. */
-  private def somaticPriorRna(mixture: Map[String, Double]): Double = {
+  private def somaticPriorRna(mixture: AlleleMixture): Double = {
     val contents = mixture.filter(_._2 > 0).keys.toSet
     if (contents == Set(allele.ref))
       0
@@ -169,7 +172,7 @@ case class MultiSampleSingleAlleleEvidence(parameters: Parameters,
   /**
    * Negative log10 prior probability for a somatic call on a given mixture. See germlinePrior.
    */
-  private def somaticPriorDna(mixture: Map[String, Double]): Double = {
+  private def somaticPriorDna(mixture: AlleleMixture): Double = {
     val contents = mixture.filter(_._2 > 0).keys.toSet
     if (contents == Set(allele.ref))
       0
@@ -318,7 +321,7 @@ case class MultiSampleSingleAlleleEvidence(parameters: Parameters,
           .zip(multipleStats.singleSampleStats)
           .zip(sampleEvidences)
           .map {
-            case ((input, stats), evidence) =>
+            case ((_, stats), evidence) =>
               evidence
                 .withAnnotations(
                   SingleSampleAnnotations(

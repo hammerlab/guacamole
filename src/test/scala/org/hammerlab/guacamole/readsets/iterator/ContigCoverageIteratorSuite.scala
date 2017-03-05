@@ -20,7 +20,9 @@ class ContigCoverageIteratorSuite
         (start, end) <- intervals
       } yield
         TestRegion("foo", start, end)
-      ).iterator.buffered
+      )
+      .iterator
+      .buffered
 
     val expected =
       for {
@@ -28,7 +30,7 @@ class ContigCoverageIteratorSuite
       } yield
         locus -> Coverage(depth, starts)
 
-    ContigCoverageIterator(halfWindowSize, ContigIterator(reads)).toList should be(expected)
+    ContigCoverageIterator(halfWindowSize, ContigIterator(reads)).toSeq should be(expected)
   }
 
   test("simple") {
@@ -135,8 +137,8 @@ class ContigCoverageIteratorSuite
     val lociIterator = new LociIterator(Iterator(Interval(12, 15)).buffered)
     val it = ContigCoverageIterator(halfWindowSize = 1, reads).intersect(lociIterator)
 
-    it.toList should be(
-      List(
+    it.toSeq should be(
+      Seq(
         12 -> Coverage(3, 3),
         13 -> Coverage(3, 0),
         14 -> Coverage(3, 0)

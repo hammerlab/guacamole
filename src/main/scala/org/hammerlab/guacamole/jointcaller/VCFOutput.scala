@@ -12,7 +12,8 @@ import org.hammerlab.guacamole.jointcaller.evidence._
 import org.hammerlab.guacamole.jointcaller.pileup_summarization.PileupStats.AlleleMixture
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 
-import scala.collection.{ JavaConversions, mutable }
+import scala.collection.JavaConversions.{ asJavaCollection, seqAsJavaList }
+import scala.collection.mutable
 
 object VCFOutput {
   /**
@@ -38,10 +39,12 @@ object VCFOutput {
                reference: ReferenceBroadcast,
                extraHeaderMetadata: Seq[(String, String)] = Seq.empty): Unit = {
 
-    val writer = new VariantContextWriterBuilder()
-      .setOutputFile(path)
-      .setReferenceDictionary(sequenceDictionary)
-      .build
+    val writer =
+      new VariantContextWriterBuilder()
+        .setOutputFile(path)
+        .setReferenceDictionary(sequenceDictionary)
+        .build
+
     val headerLines = new util.HashSet[VCFHeaderLine]()
     headerLines.add(new VCFFormatHeaderLine("GT", 1, VCFHeaderLineType.String, "Genotype"))
     headerLines.add(new VCFFormatHeaderLine("AD", VCFHeaderLineCount.UNBOUNDED, VCFHeaderLineType.Integer,
@@ -68,7 +71,7 @@ object VCFOutput {
     val header =
       new VCFHeader(
         headerLines,
-        JavaConversions.seqAsJavaList(
+        seqAsJavaList(
           inputs.items.map(_.sampleName)
             ++ (if (includePooledNormal) Seq("pooled_normal") else Seq.empty)
             ++ (if (includePooledTumor) Seq("pooled_tumor") else Seq.empty)
@@ -80,13 +83,13 @@ object VCFOutput {
     header.setWriteEngineHeaders(true)
     header.addMetaDataLine(new VCFHeaderLine("Caller", "Guacamole"))
 
-    parameters.asStringPairs.foreach(kv => {
-      header.addMetaDataLine(new VCFHeaderLine("parameter." + kv._1, kv._2))
-    })
+    parameters.asStringPairs().foreach { case (k, v) ⇒
+      header.addMetaDataLine(new VCFHeaderLine(s"parameter.$k", v))
+    }
 
-    extraHeaderMetadata.foreach(kv => {
-      header.addMetaDataLine(new VCFHeaderLine(kv._1, kv._2))
-    })
+    extraHeaderMetadata.foreach { case (k, v) ⇒
+      header.addMetaDataLine(new VCFHeaderLine(k, v))
+    }
 
     if (reference.source.isDefined) {
       header.addMetaDataLine(new VCFHeaderLine("reference", reference.source.get))
@@ -181,14 +184,15 @@ object VCFOutput {
           Seq.empty
       )
 
-    val genotypes = effectiveInputs.map(input => {
+    val genotypes = effectiveInputs.map { input =>
 
       def mixtureToString(mixture: AlleleMixture) =
         (for {
           (allele, vaf) <- mixture
         } yield
           "%s->%.2f".format(alleleToString(allele), vaf)
-        ).mkString("|")
+        )
+        .mkString("|")
 
       def mixturesToString(posteriors: Map[AlleleMixture, Double]): String =
         (for {
@@ -219,7 +223,7 @@ object VCFOutput {
           val alleleGenotype = posteriors.maxBy(_._2)._1
 
           genotypeBuilder.alleles(
-            JavaConversions.seqAsJavaList(
+            seqAsJavaList(
               Seq(
                 makeHtsjdkAllele(alleleGenotype._1),
                 makeHtsjdkAllele(alleleGenotype._2)
@@ -259,44 +263,45 @@ object VCFOutput {
 
           val thisSampleTriggered = samplesEvidence.tumorDnaSampleIndicesTriggered.contains(input.index)
 
-          val sampleGenotype = samplesEvidence.parameters.somaticGenotypePolicy match {
-            case Parameters.SomaticGenotypePolicy.Presence =>
-              // Call an alt if there is any variant evidence in this sample and no other alt allele has more evidence.
-              val topTwoAlleles =
-                tumorEvidence
-                  .allelicDepths
-                  .filter(_._2 > 0)
-                  .toSeq
-                  .sortBy(-1 * _._2)
-                  .map(_._1)
-                  .take(2)
-                  .toSet
+          val sampleGenotype =
+            samplesEvidence
+              .parameters
+              .somaticGenotypePolicy match {
+              case Parameters.SomaticGenotypePolicy.Presence =>
+                // Call an alt if there is any variant evidence in this sample and no other alt allele has more evidence.
+                val topTwoAlleles =
+                  tumorEvidence
+                    .allelicDepths
+                    .filter(_._2 > 0)
+                    .toSeq
+                    .sortBy(-1 * _._2)
+                    .map(_._1)
+                    .take(2)
+                    .toSet
 
-              topTwoAlleles match {
-                case x if x == Set(allele.ref, allele.alt) =>
+                topTwoAlleles match {
+                  case x if x == Set(allele.ref, allele.alt) =>
+                    Seq(allele.ref, allele.alt)
+
+                  case x if x == Set(allele.ref) || x == Set(allele.alt) =>
+                    Seq(x.head, x.head)
+
+                  case _ =>
+                    Seq(allele.ref, allele.ref) // fall back on hom ref
+                }
+
+              case Parameters.SomaticGenotypePolicy.Trigger =>
+                // Call an alt if this sample triggered a call.
+                if (thisSampleTriggered)
                   Seq(allele.ref, allele.alt)
+                else
+                  Seq(allele.ref, allele.ref)
 
-                case x if x == Set(allele.ref) || x == Set(allele.alt) =>
-                  Seq(x.head, x.head)
-
-                case _ =>
-                  Seq(allele.ref, allele.ref) // fall back on hom ref
-              }
-
-            case Parameters.SomaticGenotypePolicy.Trigger =>
-              // Call an alt if this sample triggered a call.
-              if (thisSampleTriggered)
-                Seq(allele.ref, allele.alt)
-              else
-                Seq(allele.ref, allele.ref)
-
-          }
+            }
 
           genotypeBuilder.alleles(
-            JavaConversions.seqAsJavaList(
-              sampleGenotype.map(
-                makeHtsjdkAllele _
-              )
+            seqAsJavaList(
+              sampleGenotype.map(makeHtsjdkAllele)
             )
           )
 
@@ -336,10 +341,8 @@ object VCFOutput {
 
           genotypeBuilder
             .alleles(
-              JavaConversions.seqAsJavaList(
-                sampleGenotype.map(
-                  makeHtsjdkAllele _
-                )
+              seqAsJavaList(
+                sampleGenotype.map(makeHtsjdkAllele)
               )
             )
 
@@ -362,7 +365,7 @@ object VCFOutput {
       if (evidence.annotations.get.annotationsFailingFilters.nonEmpty) {
         genotypeBuilder.attribute(
           "FF",
-          JavaConversions.asJavaCollection(
+          asJavaCollection(
             evidence
               .annotations
               .get
@@ -373,7 +376,7 @@ object VCFOutput {
       }
 
       genotypeBuilder.make
-    })
+    }
 
     val triggersBuilder = mutable.ArrayBuffer.newBuilder[String]
     if (samplesEvidence.isGermlineCall) {
@@ -394,8 +397,8 @@ object VCFOutput {
         .chr(allele.contigName)
         .start(allele.start + 1)  // +1 for one based based (inclusive)
         .stop(allele.end)  // +1 for one-based and -1 for inclusive
-        .genotypes(JavaConversions.seqAsJavaList(genotypes))
-        .alleles(JavaConversions.seqAsJavaList(variantGenotypeAlleles.distinct.map(makeHtsjdkAllele _)))
+        .genotypes(seqAsJavaList(genotypes))
+        .alleles(seqAsJavaList(variantGenotypeAlleles.distinct.map(makeHtsjdkAllele)))
         .attribute("TRIGGER", if (triggers.nonEmpty) triggers.mkString(",") else "NONE")
         .attribute("TUMOR_EXPRESSION", if (samplesEvidence.tumorRnaSampleExpressed.nonEmpty) "YES" else "NO")
 
@@ -406,7 +409,7 @@ object VCFOutput {
         variantContextBuilder.passFilters()
       }
     } else {
-      variantContextBuilder.filters(new util.HashSet[String](JavaConversions.asJavaCollection(failingFilterNames)))
+      variantContextBuilder.filters(new util.HashSet[String](asJavaCollection(failingFilterNames)))
     }
 
     variantContextBuilder.make

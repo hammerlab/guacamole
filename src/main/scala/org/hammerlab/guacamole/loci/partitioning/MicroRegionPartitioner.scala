@@ -7,7 +7,7 @@ import org.hammerlab.genomics.reference.Region
 import org.hammerlab.guacamole.loci.partitioning.MicroRegionPartitioner.{ MicroPartitionIndex, NumMicroPartitions }
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.spark.{ NumPartitions, PartitionIndex }
-import org.kohsuke.args4j.{ Option => Args4jOption }
+import org.kohsuke.args4j.{ Option ⇒ Args4jOption }
 
 import scala.collection.Map
 import scala.math.{ max, min, round }
@@ -105,7 +105,7 @@ class MicroRegionPartitioner[R <: Region: ClassTag](regions: RDD[R],
 
     // Step 3: assign loci to partitions, taking into account region depth in each micro partition.
     val totalRegions = regionsPerMicroPartition.values.sum
-    val regionsPerPartition = math.max(1, totalRegions / numPartitions.toDouble)
+    val regionsPerPartition = max(1, totalRegions / numPartitions.toDouble)
 
     progress(
       "Done collecting region counts. Total regions with micro partition overlaps: %,d = ~%,.0f regions per partition."
@@ -128,7 +128,7 @@ class MicroRegionPartitioner[R <: Region: ClassTag](regions: RDD[R],
     var totalRegionsAssigned = 0.0
     var partition = 0
     def regionsRemainingForThisPartition =
-      math.round(
+      round(
         ((partition + 1) * regionsPerPartition) - totalRegionsAssigned
       )
 
@@ -165,7 +165,7 @@ class MicroRegionPartitioner[R <: Region: ClassTag](regions: RDD[R],
            * current partition.
            *
            */
-          val fractionToTake = math.min(1.0, regionsRemainingForThisPartition.toDouble / regionsInSet.toDouble)
+          val fractionToTake = min(1.0, regionsRemainingForThisPartition.toDouble / regionsInSet.toDouble)
 
           /**
            * Based on fractionToTake, we set the number of loci and regions to assign.
@@ -178,8 +178,8 @@ class MicroRegionPartitioner[R <: Region: ClassTag](regions: RDD[R],
           // Add the new partition assignment to the builder, and update bookkeeping info.
           val (currentSet, remainingSet) = set.take(lociToTake)
           builder.put(currentSet, partition)
-          totalRegionsAssigned += math.round(regionsToTake).toLong
-          regionsInSet -= math.round(regionsToTake).toLong
+          totalRegionsAssigned += round(regionsToTake).toLong
+          regionsInSet -= round(regionsToTake).toLong
           set = remainingSet
         }
       }

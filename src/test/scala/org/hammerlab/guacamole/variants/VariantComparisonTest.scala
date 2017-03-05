@@ -8,9 +8,11 @@ import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.util.Bases.basesToString
 import org.hammerlab.guacamole.util.VCFComparison
 
-import scala.collection.JavaConversions
+import scala.collection.JavaConversions.{ collectionAsScalaIterable, seqAsJavaList }
 import scala.collection.mutable.ArrayBuffer
 import scala.io.Source
+
+import scala.math.max
 
 case class VariantFromVarlensCSV(
     genome: String,
@@ -46,16 +48,25 @@ case class VariantFromVarlensCSV(
 
     def makeHtsjdkAllele(allele: String): HTSJDKAllele = HTSJDKAllele.create(allele, allele == adjustedRef)
 
-    val genotype = new GenotypeBuilder(tumor)
-      .alleles(JavaConversions.seqAsJavaList(Seq(adjustedRef, adjustedAlt).map(makeHtsjdkAllele _)))
-      .make
+    val genotype =
+      new GenotypeBuilder(tumor)
+        .alleles(
+          seqAsJavaList(
+            Seq(
+              adjustedRef,
+              adjustedAlt
+            )
+            .map(makeHtsjdkAllele)
+          )
+        )
+        .make
 
     new VariantContextBuilder()
       .chr(uncanonicalizedContig)
       .start(adjustedInterbaseStart + 1) // one based based inclusive
-      .stop(adjustedInterbaseStart + 1 + math.max(adjustedRef.length - 1, 0))
-      .genotypes(JavaConversions.seqAsJavaList(Seq(genotype)))
-      .alleles(JavaConversions.seqAsJavaList(alleles.map(makeHtsjdkAllele _)))
+      .stop(adjustedInterbaseStart + 1 + max(adjustedRef.length - 1, 0))
+      .genotypes(seqAsJavaList(Seq(genotype)))
+      .alleles(seqAsJavaList(alleles.map(makeHtsjdkAllele)))
       .make
   }
 }
@@ -66,14 +77,13 @@ trait VariantComparisonTest {
     val sample = pairs.take(num)
     println("Showing %,d / %,d.".format(sample.size, pairs.size))
     sample.zipWithIndex.foreach({
-      case (pair, num) => {
+      case (pair, num) =>
         println("(%4d) %20s vs %20s \tDETAILS: %20s vs %20s".format(
           num + 1,
           VCFComparison.variantToString(pair._1, verbose = false),
           VCFComparison.variantToString(pair._2, verbose = false),
           VCFComparison.variantToString(pair._1, verbose = true),
           VCFComparison.variantToString(pair._2, verbose = true)))
-      }
     })
   }
 
@@ -81,12 +91,11 @@ trait VariantComparisonTest {
     val sample = items.take(num)
     println("Showing %,d / %,d.".format(sample.size, items.size))
     sample.zipWithIndex.foreach({
-      case (item, num) => {
+      case (item, num) =>
         println("(%4d) %20s \tDETAILS: %29s".format(
           num + 1,
           VCFComparison.variantToString(item, verbose = false),
           VCFComparison.variantToString(item, verbose = true)))
-      }
     })
   }
 
@@ -100,26 +109,26 @@ trait VariantComparisonTest {
     results
   }
 
-  def csvRecords(filename: String): Seq[VariantFromVarlensCSV] = {
+  def csvRecords(filename: String): Seq[VariantFromVarlensCSV] =
     Source.fromFile(filename).getLines.map(_.split(",").map(_.trim).toSeq).toList match {
-      case header :: records => {
-        records.map(record => {
-          val fields = header.zip(record).toMap
-          VariantFromVarlensCSV(
-            fields("genome"),
-            fields("contig"),
-            fields("interbase_start").toInt,
-            fields("interbase_end").toInt,
-            fields("ref"),
-            fields("alt"),
-            fields("tumor"),
-            fields("normal"),
-            fields("validation"))
-        })
-      }
-      case Nil => throw new IllegalArgumentException("Empty file")
+      case header :: records =>
+        records.map {
+          record ⇒
+            val fields = header.zip(record).toMap
+            VariantFromVarlensCSV(
+              fields("genome"),
+              fields("contig"),
+              fields("interbase_start").toInt,
+              fields("interbase_end").toInt,
+              fields("ref"),
+              fields("alt"),
+              fields("tumor"),
+              fields("normal"),
+              fields("validation"))
+        }
+      case Nil ⇒
+        throw new IllegalArgumentException("Empty file")
     }
-  }
 
   /**
    * Compute specificity and sensitivity of an experimental call set when compared against a CSV of known variants
@@ -157,7 +166,6 @@ trait VariantComparisonTest {
 
     println("EXACT MATCHES")
     printSamplePairs(comparisonFull.exactMatch, 400)
-
   }
 
   def compareToVCF(experimentalFile: String, expectedFile: String): Unit = {
@@ -170,8 +178,11 @@ trait VariantComparisonTest {
     println("Experimental calls: %,d. Gold calls: %,d.".format(recordsGuacamole.length, recordsExpected.length))
 
     def onlyIndels(calls: Seq[HTSJDKVariantContext]): Seq[HTSJDKVariantContext] = {
-      calls.filter(call => call.getReference.length != 1 ||
-        JavaConversions.collectionAsScalaIterable(call.getAlternateAlleles).exists(_.length != 1))
+      calls.filter(
+        call =>
+          call.getReference.length != 1 ||
+            collectionAsScalaIterable(call.getAlternateAlleles).exists(_.length != 1)
+      )
     }
 
     val comparisonFull = VCFComparison(recordsExpected, recordsGuacamole)

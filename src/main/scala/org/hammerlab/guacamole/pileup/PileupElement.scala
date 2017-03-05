@@ -36,12 +36,12 @@ case class PileupElement(
   val referenceBase: Byte = contigSequence(locus.toInt)
 
   def cigarElement = read.cigarElements(cigarElementIndex)
+
   def nextCigarElement =
-    if (cigarElementIndex + 1 < read.cigarElements.size) {
+    if (cigarElementIndex + 1 < read.cigarElements.size)
       Some(read.cigarElements(cigarElementIndex + 1))
-    } else {
+    else
       None
-    }
 
   def referenceStringIndex =
     (cigarElementLocus - read.start).toInt +
@@ -105,11 +105,10 @@ case class PileupElement(
       case (CigarOperator.M, _) | (CigarOperator.EQ, _) | (CigarOperator.X, _) =>
         val base: Byte = read.sequence(readPosition)
         val quality = read.baseQualities(readPosition)
-        if (base == referenceBase) {
+        if (base == referenceBase)
           Match(base, quality)
-        } else {
+        else
           Mismatch(base, quality, referenceBase)
-        }
       case (CigarOperator.S, _) | (CigarOperator.N, _) | (CigarOperator.H, _) => Clipped
       case (CigarOperator.P, _) =>
         throw new AssertionError("`P` CIGAR-ops should have been ignored earlier in `findNextCigarElement`")
@@ -164,16 +163,15 @@ case class PileupElement(
    */
   def advanceToNextCigarElement: PileupElement = {
     val readPositionOffset =
-      if (cigarElement.getOperator.consumesReadBases()) {
+      if (cigarElement.getOperator.consumesReadBases())
         // If this [[CigarElement]] consumes read bases then [[readPosition]] will advance by the rest of this
         // [[CigarElement]].
         cigarElement.getLength - indexWithinCigarElement
-      } else {
+      else
         // Otherwise, [[readPosition]] will stay the same.
         0
-      }
 
-    val nextLocus = locus + (cigarElementReferenceLength - indexWithinCigarElement)
+    val nextLocus = locus + cigarElementReferenceLength - indexWithinCigarElement
 
     PileupElement(
       read,
@@ -212,25 +210,24 @@ case class PileupElement(
     if (currentCigarElementContainsLocus(newLocus)) {
       // Aside: the current cigar element must consume reference bases if we've gotten here.
       val readPositionOffset =
-        if (cigarElement.getOperator.consumesReadBases()) {
+        if (cigarElement.getOperator.consumesReadBases())
           (newLocus - cigarElementLocus - indexWithinCigarElement).toInt
-        } else {
+        else
           // If this cigar doesn't consume read bases, then advancing within it will not consume [[readPosition]]
           0
-        }
 
       this.copy(
         locus = newLocus,
         readPosition = readPosition + readPositionOffset,
         indexWithinCigarElement = (newLocus - cigarElementLocus).toInt
       )
-    } else if (newLocus == 0 && cigarElement.getOperator == CigarOperator.I) {
+    } else if (newLocus == 0 && cigarElement.getOperator == CigarOperator.I)
       // NOTE(ryan): this is the rare case where we allow a [[PileupElement]] to exist at a non-reference-consuming
       // CigarElement (namely, an Insertion at the start of a contig). It is correct for us to emit an Insertion
       // alignment in such a case, where typically an Insertion [[CigarElement]] would get skipped over by subsequent
       // [[advanceToLocus]] calls, since it represents a zero-width interval of reference bases.
       this
-    } else
+    else
       advanceToNextCigarElement.advanceToLocus(newLocus)
   }
 
@@ -247,6 +244,13 @@ object PileupElement {
   /**
    * Create a new [[PileupElement]] backed by the given read at the specified locus. The read must overlap the locus.
    */
+  def apply(read: MappedRead, contigSequence: ContigSequence): PileupElement =
+    apply(
+      read,
+      read.start,
+      contigSequence
+    )
+
   def apply(read: MappedRead, locus: Locus, contigSequence: ContigSequence): PileupElement =
     PileupElement(
       read = read,
@@ -256,7 +260,8 @@ object PileupElement {
       cigarElementLocus = read.start,
       indexWithinCigarElement = 0,
       contigSequence
-    ).advanceToLocus(locus)
+    )
+    .advanceToLocus(locus)
 }
 
 case class InvalidCigarElementException(elem: PileupElement)
@@ -265,6 +270,7 @@ case class InvalidCigarElementException(elem: PileupElement)
       "Locus: %d, readPosition: %d, cigar: %s (elem idx %d)".format(
         elem.locus,
         elem.readPosition,
-        elem.read.cigar.toString, elem.cigarElementIndex
+        elem.read.cigar.toString,
+        elem.cigarElementIndex
       )
   )

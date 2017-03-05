@@ -4,6 +4,7 @@ import breeze.linalg.DenseVector
 import breeze.stats.{ mean, median }
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
+import org.hammerlab.genomics.reference.Locus
 import org.hammerlab.guacamole.alignment.ReadAlignment
 import org.hammerlab.guacamole.assembly.AssemblyArgs
 import org.hammerlab.guacamole.assembly.AssemblyUtils.{ buildVariantsFromPath, discoverHaplotypes, isActiveRegion }
@@ -16,7 +17,9 @@ import org.hammerlab.guacamole.readsets.rdd.{ PartitionedRegions, PartitionedReg
 import org.hammerlab.guacamole.readsets.{ PartitionedReads, ReadSets, SampleName }
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.variants.{ Allele, AlleleEvidence, CalledAllele, GenotypeOutputCaller }
-import org.kohsuke.args4j.{ Option => Args4jOption }
+import org.kohsuke.args4j.{ Option ⇒ Args4jOption }
+
+import scala.math.exp
 
 /**
  * Simple assembly based germline variant caller
@@ -133,10 +136,10 @@ object GermlineAssemblyCaller {
               )
 
             // Compute the number reads with variant bases from the reads overlapping the currentLocus
-            val pileupAltReads = (pileup.depth - pileup.referenceDepth)
-            if (currentLocusReads.isEmpty || pileupAltReads < minAltReads) {
+            val pileupAltReads = pileup.depth - pileup.referenceDepth
+            if (currentLocusReads.isEmpty || pileupAltReads < minAltReads)
               (lastCalledLocus, Iterator.empty)
-            } else if (shortcutAssembly && !isActiveRegion(currentLocusReads, referenceContig, minAreaVaf)) {
+            else if (shortcutAssembly && !isActiveRegion(currentLocusReads, referenceContig, minAreaVaf)) {
               val variants =
                 callPileupVariant(pileup)
                   .filter(_.evidence.phredScaledLikelihood > minPhredScaledLikelihood)
@@ -208,13 +211,18 @@ object GermlineAssemblyCaller {
                         lastCalledLocus.forall(_ < variant.start)  // Filter variants before last called
                     )
 
-                val lastVariantCallLocus = variants.view.map(_.start).reduceOption(_ max _).orElse(lastCalledLocus)
+                val lastVariantCallLocus: Option[Locus] =
+                  variants
+                    .view
+                    .map(_.start)
+                    .reduceOption(_ max _)
+                    .orElse(lastCalledLocus)
+
                 // Jump to the next region
                 window.setCurrentLocus(window.currentLocus + assemblyWindowRange - kmerSize)
                 (lastVariantCallLocus, variants.iterator)
-              } else {
+              } else
                 (lastCalledLocus, Iterator.empty)
-              }
             }
           }
         )
@@ -244,10 +252,9 @@ object GermlineAssemblyCaller {
       } else {
         val (genotype, logProbability) = genotypeProbabilities.maxBy(_._2)
 
-        val probability = math.exp(logProbability)
+        val probability = exp(logProbability)
         genotype
           .getNonReferenceAlleles
-          .toSet // Collapse homozygous genotypes
           .filter(_.altBases.nonEmpty)
           .map(allele =>
             CalledAllele(

@@ -7,6 +7,7 @@ import org.hammerlab.genomics.reference.Region
 import org.hammerlab.guacamole.reads.SampleRegion
 import org.hammerlab.guacamole.readsets.rdd.PartitionedRegions
 import org.hammerlab.guacamole.readsets.{ NumSamples, PerSample }
+import org.hammerlab.guacamole.windowing.SlidingWindow.advanceMultipleWindows
 import org.hammerlab.guacamole.windowing.{ SlidingWindow, SplitIterator }
 
 import scala.reflect.ClassTag
@@ -62,7 +63,7 @@ object WindowFlatMapUtils {
             // probably worth revisiting.
             val builder = Vector.newBuilder[T]
 
-            while (SlidingWindow.advanceMultipleWindows(perSampleWindows, contigLoci, skipEmpty).isDefined) {
+            while (advanceMultipleWindows(perSampleWindows, contigLoci, skipEmpty).isDefined) {
               val (state, elements) = function(lastState, perSampleWindows)
               lastState = state
               builder ++= elements

@@ -2,6 +2,7 @@ package org.hammerlab.guacamole.windowing
 
 import org.hammerlab.genomics.loci.set.test.TestLociSet
 import org.hammerlab.guacamole.reads.ReadsUtil
+import org.hammerlab.guacamole.windowing.SlidingWindow.advanceMultipleWindows
 import org.scalatest.{ FunSuite, Matchers }
 
 class SlidingWindowSuite
@@ -21,7 +22,6 @@ class SlidingWindowSuite
     val window = SlidingWindow("chr1", 2, reads.iterator)
     window.setCurrentLocus(0)
     assert(window.currentRegions.size === 3)
-
   }
 
   test("test sliding read window, diff contigs") {
@@ -36,7 +36,6 @@ class SlidingWindowSuite
     val window = SlidingWindow("chr1", 2, reads.iterator)
     val caught = the[IllegalArgumentException] thrownBy { window.setCurrentLocus(0) }
     caught.getMessage should include("must have the same reference name")
-
   }
 
   test("test sliding read window, offset reads") {
@@ -55,7 +54,6 @@ class SlidingWindowSuite
 
     window.setCurrentLocus(4)
     assert(window.currentRegions.size === 2)
-
   }
 
   test("test sliding read window, reads are not sorted") {
@@ -70,7 +68,6 @@ class SlidingWindowSuite
     val window = SlidingWindow("chr1", 8, reads.iterator)
     val caught = the[IllegalArgumentException] thrownBy { window.setCurrentLocus(0) }
     caught.getMessage should include("Regions must be sorted by start locus")
-
   }
 
   test("test sliding read window, slow walk with halfWindowSize=0") {
@@ -199,14 +196,14 @@ class SlidingWindowSuite
     val loci = TestLociSet("chr1:0-3,chr1:20-30").onContig("chr1").iterator
     val windows = Vector(window1, window2)
 
-    SlidingWindow.advanceMultipleWindows(windows, loci, skipEmpty = false) should be(Some(0))
+    advanceMultipleWindows(windows, loci, skipEmpty = false) should be(Some(0))
     windows.map(_.currentLocus) should equal(Seq(0, 0))
     windows.map(_.nextLocusWithRegions) should equal(Seq(Some(2), Some(2)))
 
-    SlidingWindow.advanceMultipleWindows(windows, loci, skipEmpty = true) should be(Some(2))
+    advanceMultipleWindows(windows, loci, skipEmpty = true) should be(Some(2))
     windows.map(_.currentLocus) should equal(Seq(2, 2))
 
-    SlidingWindow.advanceMultipleWindows(windows, loci, skipEmpty = true) should be(None)
+    advanceMultipleWindows(windows, loci, skipEmpty = true) should be(None)
   }
 
   test("test sliding window advance multiple windows trivial 2") {
@@ -231,17 +228,17 @@ class SlidingWindowSuite
     val loci = TestLociSet("chr1:0-3,chr1:20-30").onContig("chr1").iterator
     val windows = Vector(window1, window2)
 
-    SlidingWindow.advanceMultipleWindows(windows, loci, skipEmpty = true) should be(Some(0))
+    advanceMultipleWindows(windows, loci, skipEmpty = true) should be(Some(0))
     windows.map(_.currentLocus) should equal(Seq(0, 0))
     windows.map(_.nextLocusWithRegions) should equal(Seq(Some(1), Some(2)))
 
-    SlidingWindow.advanceMultipleWindows(windows, loci, skipEmpty = true) should be(Some(1))
+    advanceMultipleWindows(windows, loci, skipEmpty = true) should be(Some(1))
     windows.map(_.currentLocus) should equal(Seq(1, 1))
 
-    SlidingWindow.advanceMultipleWindows(windows, loci, skipEmpty = true) should be(Some(2))
+    advanceMultipleWindows(windows, loci, skipEmpty = true) should be(Some(2))
     windows.map(_.currentLocus) should equal(Seq(2, 2))
 
-    SlidingWindow.advanceMultipleWindows(windows, loci, skipEmpty = true) should be(None)
+    advanceMultipleWindows(windows, loci, skipEmpty = true) should be(None)
   }
 
   test("test sliding window advance multiple windows basic") {
@@ -266,40 +263,40 @@ class SlidingWindowSuite
     val loci = TestLociSet("chr1:0-3,chr1:60-101").onContig("chr1").iterator
     val windows = Vector(window1, window2)
 
-    SlidingWindow.advanceMultipleWindows(windows, loci, skipEmpty = false) should be(Some(0))
+    advanceMultipleWindows(windows, loci, skipEmpty = false) should be(Some(0))
     windows.map(_.currentLocus) should equal(Seq(0, 0))
     windows.map(_.nextLocusWithRegions) should equal(Seq(Some(2), Some(5)))
 
-    SlidingWindow.advanceMultipleWindows(windows, loci, skipEmpty = true) should be(Some(2))
+    advanceMultipleWindows(windows, loci, skipEmpty = true) should be(Some(2))
     windows.map(_.currentLocus) should equal(Seq(2, 2))
     windows(0).currentRegions.isEmpty should be(false)
     windows(1).currentRegions.isEmpty should be(true)
 
-    SlidingWindow.advanceMultipleWindows(windows, loci, skipEmpty = true) should be(Some(80))
+    advanceMultipleWindows(windows, loci, skipEmpty = true) should be(Some(80))
     windows.map(_.currentLocus) should equal(Seq(80, 80))
     windows(0).currentRegions.isEmpty should be(true)
     windows(1).currentRegions.isEmpty should be(false)
 
-    SlidingWindow.advanceMultipleWindows(windows, loci, skipEmpty = true) should be(Some(81))
+    advanceMultipleWindows(windows, loci, skipEmpty = true) should be(Some(81))
     windows.map(_.currentLocus) should equal(Seq(81, 81))
     windows(0).currentRegions.isEmpty should be(true)
     windows(1).currentRegions.isEmpty should be(false)
 
-    SlidingWindow.advanceMultipleWindows(windows, loci, skipEmpty = true) should be(Some(82))
-    SlidingWindow.advanceMultipleWindows(windows, loci, skipEmpty = true) should be(Some(83))
-    SlidingWindow.advanceMultipleWindows(windows, loci, skipEmpty = true) should be(Some(84))
-    SlidingWindow.advanceMultipleWindows(windows, loci, skipEmpty = true) should be(Some(85))
-    SlidingWindow.advanceMultipleWindows(windows, loci, skipEmpty = true) should be(Some(86))
-    SlidingWindow.advanceMultipleWindows(windows, loci, skipEmpty = true) should be(Some(87))
+    advanceMultipleWindows(windows, loci, skipEmpty = true) should be(Some(82))
+    advanceMultipleWindows(windows, loci, skipEmpty = true) should be(Some(83))
+    advanceMultipleWindows(windows, loci, skipEmpty = true) should be(Some(84))
+    advanceMultipleWindows(windows, loci, skipEmpty = true) should be(Some(85))
+    advanceMultipleWindows(windows, loci, skipEmpty = true) should be(Some(86))
+    advanceMultipleWindows(windows, loci, skipEmpty = true) should be(Some(87))
     windows.map(_.currentLocus) should equal(Seq(87, 87))
     windows(0).currentRegions.isEmpty should be(true)
     windows(1).currentRegions.isEmpty should be(false)
 
-    SlidingWindow.advanceMultipleWindows(windows, loci, skipEmpty = true) should be(Some(100))
+    advanceMultipleWindows(windows, loci, skipEmpty = true) should be(Some(100))
     windows.map(_.currentLocus) should equal(Seq(100, 100))
     windows(0).currentRegions.isEmpty should be(true)
     windows(1).currentRegions.isEmpty should be(false)
 
-    SlidingWindow.advanceMultipleWindows(windows, loci, skipEmpty = true) should be(None)
+    advanceMultipleWindows(windows, loci, skipEmpty = true) should be(None)
   }
 }

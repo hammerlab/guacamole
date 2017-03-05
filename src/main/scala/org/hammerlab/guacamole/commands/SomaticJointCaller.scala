@@ -7,8 +7,9 @@ import org.hammerlab.commands.Args
 import org.hammerlab.genomics.loci.parsing.ParsedLoci
 import org.hammerlab.genomics.loci.set.LociSet
 import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMapMultipleSamples
+import org.hammerlab.guacamole.jointcaller.VCFOutput.writeVcf
 import org.hammerlab.guacamole.jointcaller.evidence.{ MultiSampleMultiAlleleEvidence, MultiSampleSingleAlleleEvidence }
-import org.hammerlab.guacamole.jointcaller.{ Input, InputCollection, Parameters, VCFOutput }
+import org.hammerlab.guacamole.jointcaller.{ Input, InputCollection, Parameters }
 import org.hammerlab.guacamole.loci.args.ForceCallLociArgs
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.pileup.Pileup
@@ -180,17 +181,16 @@ object SomaticJoint {
           .onContig(pileups.head.contigName)
           .contains(pileups.head.locus + 1)
 
-      MultiSampleMultiAlleleEvidence
-        .make(
-          pileups,
-          inputs,
-          parameters,
-          reference,
-          forceCall,
-          onlySomatic,
-          includeFiltered
-        )
-        .iterator
+      MultiSampleMultiAlleleEvidence(
+        pileups,
+        inputs,
+        parameters,
+        reference,
+        forceCall,
+        onlySomatic,
+        includeFiltered
+      )
+      .iterator
     }
 
     pileupFlatMapMultipleSamples(
@@ -235,7 +235,7 @@ object SomaticJoint {
         )
       )
 
-      VCFOutput.writeVcf(
+      writeVcf(
         path = out,
         calls = filteredCalls,
         inputs = InputCollection(filteredInputs),

@@ -21,6 +21,8 @@ import org.hammerlab.guacamole.reference.ReferenceGenome
 import org.hammerlab.magic.rdd.keyed.SplitByKeyRDD._
 import org.kohsuke.args4j.{ Option ⇒ Args4jOption }
 
+import scala.math.min
+
 /**
  * VariantLocus is a locus and the variant allele frequency at that locus
  *
@@ -140,7 +142,7 @@ object VAFHistogram {
       val binSize = 100 / bins
 
       def histogramEntryString(bin: Int, numLoci: NumLoci): String =
-        s"$bin, ${math.min(bin * binSize, 100)}, $numLoci"
+        s"$bin, ${min(bin * binSize, 100)}, $numLoci"
 
       val histogramOutput =
         for {

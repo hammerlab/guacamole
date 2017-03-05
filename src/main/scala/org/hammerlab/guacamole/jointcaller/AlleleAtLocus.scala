@@ -6,6 +6,8 @@ import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.readsets.PerSample
 import org.hammerlab.guacamole.util.Bases
 
+import scala.math.max
+
 /**
  * An allele (alt) at a site in the genome. We also keep track of the reference allele (ref) at this site.
  *
@@ -39,27 +41,8 @@ case class AlleleAtLocus(contigName: ContigName, start: Locus, ref: String, alt:
 
   /** Zero-based exclusive end site on the reference genome. */
   lazy val end = start + ref.length
-
-  /**
-   * Apply a transformation function to the alleles (ref and alt) and also the start and end coordinates, returning
-   * a new AlleleAtLocus.
-   *
-   * This is used when we need to change the number of bases of reference context used, e.g. to change the variant
-   * "A>C" to "GA>GC", as part of harmonizing it with other variants of different lengths at the same site.
-   *
-   * @param alleleTransform transformation function on alleles
-   * @param startEndTransform transformation function on (start, end) pairs.
-   * @return a new AlleleAtLocus instance
-   */
-  def transform(alleleTransform: String => String, startEndTransform: (Locus, Locus) => (Locus, Locus)): AlleleAtLocus = {
-    val newRef = alleleTransform(ref)
-    val newAlt = alleleTransform(alt)
-    val (newStart, newEnd) = startEndTransform(start, end)
-    val result = copy(start = newStart, ref = newRef, alt = newAlt)
-    assert(result.end == newEnd)
-    result
-  }
 }
+
 object AlleleAtLocus {
 
   /**
@@ -97,15 +80,17 @@ object AlleleAtLocus {
     val contig = pileups.head.contigName
     val variantStart = pileups.head.locus + 1
     val alleleRequiredReadsActualReads = pileups.flatMap(pileup => {
-      val requiredReads = math.max(
-        anyAlleleMinSupportingReads,
-        pileup.elements.size * anyAlleleMinSupportingPercent / 100.0)
+      val requiredReads =
+        max(
+          anyAlleleMinSupportingReads,
+          pileup.elements.size * anyAlleleMinSupportingPercent / 100.0
+        )
 
       val subsequenceCounts =
         ReadSubsequence.nextAlts(pileup.elements)
-          .filter(subsequence => !onlyStandardBases || subsequence.sequenceIsAllStandardBases)
-          .groupBy(x => (x.endLocus, x.sequence))
-          .map(pair => (pair._2.head -> pair._2.length))
+          .filter(subsequence => !onlyStandardBases || subsequence.allStandardBases)
+          .groupBy(x ⇒ (x.endLocus, x.sequence))
+          .map(pair ⇒ pair._2.head → pair._2.length)
           .toVector
           .sortBy(-1 * _._2)
 
@@ -125,26 +110,28 @@ object AlleleAtLocus {
         .toVector
 
     if (atLeastOneAllele && result.isEmpty) {
-      val allelesSortedByTotal = alleleRequiredReadsActualReads
-        .groupBy(_._1)
-        .toSeq
-        .sortBy(-1 * _._2.map(_._3).sum)
-        .map(_._1)
+      val allelesSortedByTotal =
+        alleleRequiredReadsActualReads
+          .groupBy(_._1)
+          .toVector
+          .sortBy(-1 * _._2.map(_._3).sum)
+          .map(_._1)
 
-      if (allelesSortedByTotal.nonEmpty) {
-        Vector(allelesSortedByTotal.head)
-      } else {
-        Vector(AlleleAtLocus(
-          contig,
-          variantStart,
-          Bases.baseToString(contigSequence.apply(variantStart.toInt)),
-          "N"))
-      }
+      if (allelesSortedByTotal.nonEmpty)
+        allelesSortedByTotal.take(1)
+      else
+        Vector(
+          AlleleAtLocus(
+            contig,
+            variantStart,
+            Bases.baseToString(contigSequence.apply(variantStart.toInt)),
+            "N"
+          )
+        )
     } else if (maxAlleles.isDefined) {
       assume(maxAlleles.get > 0)
       result.take(maxAlleles.get)
-    } else {
+    } else
       result
-    }
   }
 }

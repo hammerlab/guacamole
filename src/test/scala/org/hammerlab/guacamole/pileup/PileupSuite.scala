@@ -29,9 +29,8 @@ class PileupSuite
 
   def testAdamRecords = loadReadsRDD(sc, "different_start_reads.sam").mappedReads.collect()
 
-  def pileupElementFromRead(read: MappedRead, locus: Locus): PileupElement = {
+  def pileupElementFromRead(read: MappedRead, locus: Locus): PileupElement =
     PileupElement(read, locus, reference.getContig(read.contigName))
-  }
 
   test("create pileup from long insert reads") {
     val reads =
@@ -211,11 +210,10 @@ class PileupSuite
     val deletionPileup = pileup.atGreaterLocus(9, Seq.empty.iterator)
 
     deletionPileup.elements.map(_.alignment).count {
-      case Deletion(bases, _) => {
+      case Deletion(bases, _) ⇒
         Bases.basesToString(bases) should equal("AAAAAAAAAAA")
         true
-      }
-      case _ => false
+      case _ ⇒ false
     } should be(5)
 
     for (i <- 10 to 19) {

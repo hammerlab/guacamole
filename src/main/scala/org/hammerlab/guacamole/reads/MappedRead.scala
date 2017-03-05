@@ -137,19 +137,22 @@ case class MappedRead(
               Seq(new CigarElement(endIndexWithinCigarElement + 1, endCigarElement.getOperator)))
           )
 
-      Some(this.copy(
-        sequence = slicedSequence,
-        baseQualities = slicedBaseQualities,
-        start = referenceStart,
-        cigar = slicedCigar
-      ))
+      Some(
+        this.copy(
+          sequence = slicedSequence,
+          baseQualities = slicedBaseQualities,
+          start = referenceStart,
+          cigar = slicedCigar
+        )
+      )
     }
   }
 
   override def toString: String =
     "MappedRead(%s:%d, %s, %s)".format(
-      contigName, start,
-      cigar.toString,
+      contigName,
+      start,
+      cigar,
       basesToString(sequence)
     )
 }

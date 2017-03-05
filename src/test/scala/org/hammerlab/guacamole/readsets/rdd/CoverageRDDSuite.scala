@@ -43,9 +43,9 @@ class CoverageRDDSuite
 
   val contigLengths: ContigLengths =
     makeContigLengths(
-      "chr1" -> 1000,
-      "chr2" -> 1000,
-      "chr5" -> 1000
+      "chr1" → 1000,
+      "chr2" → 1000,
+      "chr5" → 1000
     )
 
   test("all loci") {
@@ -58,20 +58,20 @@ class CoverageRDDSuite
 
     val expected =
       List(
-        "chr1:100" -> ( 1,  1),
-        "chr1:101" -> ( 2,  1),
-        "chr1:102" -> ( 2,  0),
-        "chr1:103" -> ( 2,  0),
-        "chr1:104" -> ( 2,  0),
-        "chr1:105" -> ( 1,  0),
-        "chr2:8"   -> ( 1,  1),
-        "chr2:9"   -> ( 1,  1),
-        "chr2:10"  -> ( 1,  0),
-        "chr2:102" -> ( 1,  1),
-        "chr2:103" -> (11, 10),
-        "chr2:104" -> (11,  0),
-        "chr2:105" -> (10,  0),
-        "chr5:90"  -> (10, 10)
+        "chr1:100" → ( 1,  1),
+        "chr1:101" → ( 2,  1),
+        "chr1:102" → ( 2,  0),
+        "chr1:103" → ( 2,  0),
+        "chr1:104" → ( 2,  0),
+        "chr1:105" → ( 1,  0),
+        "chr2:8"   → ( 1,  1),
+        "chr2:9"   → ( 1,  1),
+        "chr2:10"  → ( 1,  0),
+        "chr2:102" → ( 1,  1),
+        "chr2:103" → (11, 10),
+        "chr2:104" → (11,  0),
+        "chr2:105" → (10,  0),
+        "chr5:90"  → (10, 10)
       )
 
     checkCoverage(traversalCoverage, expected)

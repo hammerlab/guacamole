@@ -7,7 +7,7 @@ import org.hammerlab.genomics.reference.{ ContigName, NumLoci, Region }
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.readsets.rdd.CoverageRDD
 import org.hammerlab.iterator.GroupRunsIterator
-import org.kohsuke.args4j.{ Option => Args4JOption }
+import org.kohsuke.args4j.{ Option ⇒ Args4JOption }
 
 import scala.reflect.ClassTag
 
@@ -80,6 +80,7 @@ class CappedRegionsPartitioner[R <: Region: ClassTag](regions: RDD[R],
   }
 
   private def printStats(coverageRDD: CoverageRDD[R], lociBroadcast: Broadcast[LociSet]): Unit = {
+
     val (depthRunsRDD, validLoci, invalidLoci) =
       coverageRDD.validLociCounts(halfWindowSize, lociBroadcast, maxRegionsPerPartition)
 
@@ -92,18 +93,18 @@ class CappedRegionsPartitioner[R <: Region: ClassTag](regions: RDD[R],
         depthRunsRDD.take(numDepthRunsToTake)
 
     val avgRunLength =
-      (for {(_, num) <- depthRuns} yield num.toLong * num).sum.toDouble / validLoci
+      (for { (_, num) <- depthRuns } yield num.toLong * num).sum.toDouble / validLoci
 
     implicit def ord[T]: Ordering[(ContigName, T)] = Ordering.by(_._1)
 
     val depthRunsByContig =
       depthRuns
-      .groupBy(_._1._1)
-      .mapValues(_.map {
-        case ((_, valid), num) => num -> valid
-      })
-      .toArray
-      .sorted
+        .groupBy(_._1._1)
+        .mapValues(_.map {
+          case ((_, valid), num) => num -> valid
+        })
+        .toArray
+        .sorted
 
     val overflowMsg =
       if (numDepthRuns > numDepthRunsToTake)

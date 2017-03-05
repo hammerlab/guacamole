@@ -1,12 +1,14 @@
 package org.hammerlab.guacamole.jointcaller
 
 import org.hammerlab.guacamole.jointcaller.pileup_summarization.PileupStats
-import org.hammerlab.guacamole.pileup.{ Util => PileupUtil }
+import org.hammerlab.guacamole.pileup.{ Util ⇒ PileupUtil }
 import org.hammerlab.guacamole.reads.ReadsUtil
 import org.hammerlab.guacamole.reference.{ ReferenceBroadcast, ReferenceUtil }
 import org.hammerlab.guacamole.util.Bases.stringToBases
 import org.hammerlab.guacamole.util.GuacFunSuite
 import org.hammerlab.guacamole.util.TestUtil.resourcePath
+
+import scala.Seq.fill
 
 class PileupStatsSuite
   extends GuacFunSuite
@@ -29,34 +31,34 @@ class PileupStatsSuite
 
     val reads =
       Seq(
-        makeRead(   "TCGATCGA",     "8M", qualityScores = Seq.fill( 8)(10)),
-        makeRead(   "TCGATCGA",     "8M", qualityScores = Seq.fill( 8)(20)),
-        makeRead(   "TCGCTCGA",     "8M", qualityScores = Seq.fill( 8)(50)),
-        makeRead(   "TCGCTCGA",     "8M", qualityScores = Seq.fill( 8)(50)),
-        makeRead(   "TCGCTCGA",     "8M", qualityScores = Seq.fill( 8)(50)),
-        makeRead("TCGACCCTCGA", "4M3I4M", qualityScores = Seq.fill(11)(30))
+        makeRead(   "TCGATCGA",     "8M", qualityScores = fill( 8)(10)),
+        makeRead(   "TCGATCGA",     "8M", qualityScores = fill( 8)(20)),
+        makeRead(   "TCGCTCGA",     "8M", qualityScores = fill( 8)(50)),
+        makeRead(   "TCGCTCGA",     "8M", qualityScores = fill( 8)(50)),
+        makeRead(   "TCGCTCGA",     "8M", qualityScores = fill( 8)(50)),
+        makeRead("TCGACCCTCGA", "4M3I4M", qualityScores = fill(11)(30))
       )
 
     val pileups = (1 until refString.length).map(locus => makePileup(reads, "chr1", locus))
 
-    val stats1 = PileupStats.apply(pileups(1).elements, stringToBases("G"))
-    stats1.totalDepthIncludingReadsContributingNoAlleles should equal(6)
-    stats1.allelicDepths should equal(Map("G" -> 6))
-    stats1.nonRefAlleles should equal(Seq.empty)
-    stats1.topAlt should equal("N")
-    assert(stats1.logLikelihoodPileup(Map("G" -> 1.0)) > stats1.logLikelihoodPileup(Map("G" -> .99, "C" -> .01)))
-    assert(stats1.logLikelihoodPileup(Map("T" -> 1.0)) < stats1.logLikelihoodPileup(Map("G" -> .99, "C" -> .01)))
+    val stats1 = PileupStats(pileups(1).elements, stringToBases("G"))
+    stats1.totalDepthIncludingReadsContributingNoAlleles should be(6)
+    stats1.allelicDepths should be(Map("G" → 6))
+    stats1.nonRefAlleles should be(Nil)
+    stats1.topAlt should be("N")
+    assert(stats1.logLikelihoodPileup(Map("G" → 1.0)) > stats1.logLikelihoodPileup(Map("G" → .99, "C" → .01)))
+    assert(stats1.logLikelihoodPileup(Map("T" → 1.0)) < stats1.logLikelihoodPileup(Map("G" → .99, "C" → .01)))
 
-    val stats2 = PileupStats.apply(pileups(2).elements, stringToBases("A"))
-    stats2.allelicDepths should equal(Map("A" -> 2, "C" -> 3, "ACCC" -> 1))
-    stats2.nonRefAlleles should equal(Seq("C", "ACCC"))
-    assert(stats2.logLikelihoodPileup(Map("A" -> 0.5, "C" -> 0.5)) > stats2.logLikelihoodPileup(Map("A" -> 1.0)))
+    val stats2 = PileupStats(pileups(2).elements, stringToBases("A"))
+    stats2.allelicDepths should be(Map("A" → 2, "C" → 3, "ACCC" → 1))
+    stats2.nonRefAlleles should be(Seq("C", "ACCC"))
+    assert(stats2.logLikelihoodPileup(Map("A" → 0.5, "C" → 0.5)) > stats2.logLikelihoodPileup(Map("A" → 1.0)))
 
     // True because of the higher base qualities on the C allele:
     assert(stats2.logLikelihoodPileup(Map("C" -> 1.0)) > stats2.logLikelihoodPileup(Map("A" -> 1.0)))
 
-    val stats3 = PileupStats.apply(pileups(3).elements, stringToBases("T"))
-    stats3.totalDepthIncludingReadsContributingNoAlleles should equal(6)
-    stats3.allelicDepths should equal(Map("T" -> 2)) // reads with an SNV at position 4 don't count
+    val stats3 = PileupStats(pileups(3).elements, stringToBases("T"))
+    stats3.totalDepthIncludingReadsContributingNoAlleles should be(6)
+    stats3.allelicDepths should be(Map("T" → 2))  // reads with an SNV at position 4 don't count
   }
 }
