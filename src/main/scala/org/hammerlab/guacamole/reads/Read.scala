@@ -5,7 +5,6 @@ import htsjdk.samtools._
 import org.bdgenomics.formats.avro.AlignmentRecord
 import org.hammerlab.genomics.bases.Bases
 import org.hammerlab.genomics.reference.{ ContigName, Locus }
-import org.hammerlab.guacamole.util.Bases.stringToBases
 import org.scalautils.ConversionCheckedTripleEquals._
 
 /**
@@ -123,7 +122,7 @@ object Read extends Logging {
    */
   def apply(alignmentRecord: AlignmentRecord, sampleId: Int): Read = {
 
-    val sequence: Bases = Bases(stringToBases(alignmentRecord.getSequence): _*)
+    val sequence: Bases = Bases(alignmentRecord.getSequence)
     val baseQualities = baseQualityStringToArray(alignmentRecord.getQual, sequence.length)
 
     val referenceContig = alignmentRecord.getContigName.intern

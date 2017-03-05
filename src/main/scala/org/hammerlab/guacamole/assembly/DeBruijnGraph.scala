@@ -5,7 +5,6 @@ import org.hammerlab.genomics.bases.Bases
 import org.hammerlab.genomics.reference.{ KmerLength, Locus }
 import org.hammerlab.guacamole.assembly.DeBruijnGraph.{ Kmer, Path, Sequence, SubKmer, mergeOverlappingSequences }
 import org.hammerlab.guacamole.reads.{ MappedRead, Read }
-import org.hammerlab.guacamole.util.Bases.basesToString
 
 import scala.collection.mutable.{ HashSet ⇒ MHashSet, Map ⇒ MMap, Set ⇒ MSet, Stack ⇒ MStack }
 
@@ -181,8 +180,8 @@ class DeBruijnGraph(val kmerSize: KmerLength,
                        avoidLoops: Boolean = true,
                        debugPrint: Boolean = false): List[Path] = {
 
-    assume(source.length == kmerSize, s"Source kmer ${basesToString(source)} has size ${source.length} != $kmerSize")
-    assume(sink.length == kmerSize, s"Sink kmer ${basesToString(sink)} has size ${sink.length} != $kmerSize")
+    assume(source.length == kmerSize, s"Source kmer $source has size ${source.length} != $kmerSize")
+    assume(sink.length == kmerSize, s"Sink kmer $sink has size ${sink.length} != $kmerSize")
 
     var paths = List.empty[Path]
     var visited: MSet[Kmer] = MSet.empty
@@ -230,9 +229,9 @@ class DeBruijnGraph(val kmerSize: KmerLength,
 
       if (debugPrint) {
         if (currentPath.isEmpty)
-          println(basesToString(next))
+          println(next)
         else
-          println(" " * (currentPath.map(_.length).sum - kmerSize + 1) + basesToString(next))
+          println(" " * (currentPath.map(_.length).sum - kmerSize + 1) + next)
       }
 
       // add the node on to the path

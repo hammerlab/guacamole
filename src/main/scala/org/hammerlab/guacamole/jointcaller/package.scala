@@ -1,9 +1,11 @@
 package org.hammerlab.guacamole
 
+import org.hammerlab.genomics.bases.Bases
+
 package object jointcaller {
-  type AllelicDepths = Map[String, Int]
+  type AllelicDepths = Map[Bases, Int]
 
   object AllelicDepths {
-    def apply(entries: (String, Int)*): AllelicDepths = entries.toMap
+    def apply(entries: (Bases, Int)*): AllelicDepths = entries.toMap
   }
 }

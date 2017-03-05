@@ -1,7 +1,7 @@
 package org.hammerlab.guacamole.reference
 
 import org.apache.spark.SparkContext
-import org.hammerlab.genomics.bases.{ Base, Bases, BasesUtil }
+import org.hammerlab.genomics.bases.{ Base, Bases }
 import org.hammerlab.genomics.reference.test.LocusUtil
 import org.hammerlab.genomics.reference.{ ContigName, Locus, NumLoci }
 import org.hammerlab.spark.test.suite.KryoSparkSuite

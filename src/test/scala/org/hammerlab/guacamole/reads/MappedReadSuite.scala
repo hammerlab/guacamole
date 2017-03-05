@@ -2,8 +2,7 @@ package org.hammerlab.guacamole.reads
 
 import htsjdk.samtools.TextCigarCodec
 import org.hammerlab.guacamole.reference.ReferenceUtil
-import org.hammerlab.guacamole.util.BasesUtil._
-import org.hammerlab.guacamole.util.{ AssertBases, GuacFunSuite }
+import org.hammerlab.guacamole.util.GuacFunSuite
 
 class MappedReadSuite
   extends GuacFunSuite
@@ -83,13 +82,13 @@ class MappedReadSuite
 
     val sliceFirstFive = simpleRead.slice(10L, 15L, chr1Contig).get
     sliceFirstFive.start should === (10L)
-    AssertBases(sliceFirstFive.sequence, "TCGAT")
+    assert(sliceFirstFive.sequence === "TCGAT")
     sliceFirstFive.cigar.toString should be ("5M")
     sliceFirstFive.end should === (15L)
 
     val sliceLastFive = simpleRead.slice(15L, 20L, chr1Contig).get
     sliceLastFive.start should === (15L)
-    AssertBases(sliceLastFive.sequence, "CGATC")
+    assert(sliceLastFive.sequence === "CGATC")
     sliceLastFive.cigar.toString should be ("5M")
     sliceLastFive.end should === (20L)
   }
@@ -108,13 +107,13 @@ class MappedReadSuite
 
     val sliceBeforeDeletion = deletionRead.slice(11L, 20L, chr1Contig).get
     sliceBeforeDeletion.start should === (11L)
-    AssertBases(sliceBeforeDeletion.sequence, "CGATC")
+    assert(sliceBeforeDeletion.sequence === "CGATC")
     sliceBeforeDeletion.cigar.toString should be ("3M4D2M")
     sliceBeforeDeletion.end should === (20L)
 
     val sliceInDeletion = deletionRead.slice(16L, 20L, chr1Contig).get
     sliceInDeletion.start should === (16L)
-    AssertBases(sliceInDeletion.sequence, "TC")
+    assert(sliceInDeletion.sequence === "TC")
     sliceInDeletion.cigar.toString should be ("2D2M")
     sliceInDeletion.end should === (20L)
   }
@@ -133,13 +132,13 @@ class MappedReadSuite
 
     val sliceBeforeInsertion = insertionRead.slice(12L, 18L, chr1Contig).get
     sliceBeforeInsertion.start should === (12L)
-    AssertBases(sliceBeforeInsertion.sequence, "GACCCCCTCGA")
+    assert(sliceBeforeInsertion.sequence === "GACCCCCTCGA")
     sliceBeforeInsertion.cigar.toString should be ("2M5I4M")
     sliceBeforeInsertion.end should === (18L)
 
     val sliceAfterInsertion = insertionRead.slice(14L, 18L, chr1Contig).get
     sliceAfterInsertion.start should === (14L)
-    AssertBases(sliceAfterInsertion.sequence, "TCGA")
+    assert(sliceAfterInsertion.sequence === "TCGA")
     sliceAfterInsertion.cigar.toString should be ("4M")
     sliceAfterInsertion.end should === (18L)
   }

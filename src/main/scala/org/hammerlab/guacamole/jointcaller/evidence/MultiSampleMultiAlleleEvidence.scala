@@ -6,7 +6,6 @@ import org.hammerlab.guacamole.jointcaller.{ AlleleAtLocus, InputCollection, Par
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.readsets.PerSample
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
-import org.hammerlab.guacamole.util.Bases.isStandardBase
 
 /**
  * A grouping of AlleleEvidenceAcrossSamples instances (one for each allele) at the same site.
@@ -100,7 +99,7 @@ object MultiSampleMultiAlleleEvidence {
     val locus = normalPileups.head.locus
 
     // We only call variants at a site if the reference base is a standard base (i.e. not N).
-    if (!isStandardBase(reference.getReferenceBase(contig, locus.next))) {
+    if (!reference.getReferenceBase(contig, locus.next).isStandardBase) {
       return None
     }
 

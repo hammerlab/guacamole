@@ -1,6 +1,6 @@
 package org.hammerlab.guacamole.commands
 
-import org.hammerlab.genomics.bases.Bases
+import org.hammerlab.genomics.bases.{ Bases, BasesUtil }
 import org.hammerlab.genomics.loci.parsing.ParsedLoci
 import org.hammerlab.genomics.reference.test.LocusUtil
 import org.hammerlab.genomics.reference.{ ContigName, Locus }
@@ -21,7 +21,8 @@ class VariantSupportSuite
     with TableDrivenPropertyChecks
     with PileupUtil
     with ReadsRDDUtil
-    with LocusUtil {
+    with LocusUtil
+    with BasesUtil {
 
   override lazy val reference =
     ReferenceBroadcast(

@@ -4,9 +4,9 @@ import java.io.File
 
 import htsjdk.variant.variantcontext.{ GenotypeBuilder, VariantContextBuilder, Allele ⇒ HTSJDKAllele, VariantContext ⇒ HTSJDKVariantContext }
 import htsjdk.variant.vcf.VCFFileReader
+import org.hammerlab.genomics.bases.Bases
 import org.hammerlab.genomics.reference.Locus
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
-import org.hammerlab.guacamole.util.Bases.basesToString
 import org.hammerlab.guacamole.util.VCFComparison
 
 import scala.collection.JavaConversions.{ collectionAsScalaIterable, seqAsJavaList }
@@ -20,8 +20,8 @@ case class VariantFromVarlensCSV(
     contig: String,
     interbaseStart: Int,
     interbaseEnd: Int,
-    ref: String,
-    alt: String,
+    ref: Bases,
+    alt: Bases,
     tumor: String,
     normal: String,
     validation: String) {
@@ -37,21 +37,19 @@ case class VariantFromVarlensCSV(
         val length = ref.length
         // Deletion.
         val refSequence =
-          basesToString(
-            reference
+          reference
             .getReferenceSequence(
               uncanonicalizedContig,
               start,
               length
             )
-          ).toUpperCase
 
-        (interbaseStart - 1, refSequence, refSequence(0) + alt)
+        (interbaseStart - 1, refSequence, refSequence.head +: alt: Bases)
       }
 
     val alleles = Seq(adjustedRef, adjustedAlt).distinct
 
-    def makeHtsjdkAllele(allele: String): HTSJDKAllele = HTSJDKAllele.create(allele, allele == adjustedRef)
+    def makeHtsjdkAllele(allele: Bases): HTSJDKAllele = HTSJDKAllele.create(allele.toString(), allele == adjustedRef)
 
     val genotype =
       new GenotypeBuilder(tumor)
@@ -129,8 +127,8 @@ trait VariantComparisonTest {
                 fields("contig"),
                 fields("interbase_start").toInt,
                 fields("interbase_end").toInt,
-                fields("ref"),
-                fields("alt"),
+                Bases(fields("ref")),
+                Bases(fields("alt")),
                 fields("tumor"),
                 fields("normal"),
                 fields("validation"))

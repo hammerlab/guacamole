@@ -2,6 +2,7 @@ package org.hammerlab.guacamole.jointcaller.kryo
 
 import com.esotericsoftware.kryo.Kryo
 import org.apache.spark.serializer.KryoRegistrator
+import org.hammerlab.genomics.bases
 import org.hammerlab.guacamole.jointcaller.Parameters.SomaticGenotypePolicy
 import org.hammerlab.guacamole.jointcaller.annotation.{ InsufficientNormal, MultiSampleAnnotations, SingleSampleAnnotations, StrandBias }
 import org.hammerlab.guacamole.jointcaller.evidence.{ MultiSampleMultiAlleleEvidence, MultiSampleSingleAlleleEvidence, NormalDNASingleSampleSingleAlleleEvidence, TumorDNASingleSampleSingleAlleleEvidence, TumorRNASingleSampleSingleAlleleEvidence }
@@ -38,5 +39,7 @@ class Registrar extends KryoRegistrator {
     kryo.register(classOf[MultiSampleSingleAlleleEvidence])
     kryo.register(classOf[MultiSampleMultiAlleleEvidence])
     kryo.register(classOf[Array[MultiSampleMultiAlleleEvidence]])
+
+    new bases.Registrar().registerClasses(kryo)
   }
 }

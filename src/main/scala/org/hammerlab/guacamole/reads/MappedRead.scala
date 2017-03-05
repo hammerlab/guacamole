@@ -6,7 +6,6 @@ import org.hammerlab.genomics.bases.Bases
 import org.hammerlab.genomics.reference.{ ContigName, ContigSequence, Locus, Region }
 import org.hammerlab.guacamole.pileup.PileupElement
 import org.hammerlab.guacamole.readsets.SampleId
-import org.hammerlab.guacamole.util.Bases.basesToString
 import org.hammerlab.guacamole.util.CigarUtils
 
 import scala.collection.JavaConversions
@@ -131,6 +130,6 @@ case class MappedRead(
       contigName,
       start,
       cigar,
-      basesToString(sequence)
+      sequence
     )
 }

@@ -5,7 +5,7 @@ import org.hammerlab.genomics.bases.BasesUtil
 import org.hammerlab.genomics.reference.Locus
 import org.hammerlab.guacamole.reads.{ MappedRead, ReadsUtil }
 import org.hammerlab.guacamole.reference.ReferenceUtil
-import org.hammerlab.guacamole.util.{ AssertBases, Bases, GuacFunSuite }
+import org.hammerlab.guacamole.util.GuacFunSuite
 import org.hammerlab.guacamole.variants.Allele
 import org.scalatest.prop.TableDrivenPropertyChecks
 
@@ -214,7 +214,7 @@ class PileupSuite
 
     deletionPileup.elements.map(_.alignment).count {
       case Deletion(bases, _) ⇒
-        Bases.basesToString(bases) should equal("AAAAAAAAAAA")
+        bases should ===("AAAAAAAAAAA")
         true
       case _ ⇒ false
     } should be(5)
@@ -399,7 +399,7 @@ class PileupSuite
     assert(rnaPileupElement.advanceToLocus(start + 2).sequencedBases === G)
 
     // In intron
-    AssertBases(rnaPileupElement.advanceToLocus(start + 100).sequencedBases, "")
+    assert(rnaPileupElement.advanceToLocus(start + 100).sequencedBases === "")
 
     // Last base
     assert(rnaPileupElement.advanceToLocus(start + 1049).sequencedBases === C)

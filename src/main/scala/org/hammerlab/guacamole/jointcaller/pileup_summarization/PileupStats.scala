@@ -1,9 +1,10 @@
 package org.hammerlab.guacamole.jointcaller.pileup_summarization
 
+import org.hammerlab.genomics.bases.Base.N
 import org.bdgenomics.adam.util.PhredUtils.phredToSuccessProbability
+import org.hammerlab.genomics.bases.Bases
 import org.hammerlab.guacamole.jointcaller.AllelicDepths
 import org.hammerlab.guacamole.pileup.PileupElement
-import org.hammerlab.guacamole.util.Bases.basesToString
 
 import scala.math.log10
 
@@ -22,12 +23,13 @@ import scala.math.log10
  * @param referenceSequence reference bases. The length determines the size of alleles to consider. The first element should
  *                    be the reference base at locus elements.head.locus + 1.
  */
-class PileupStats(val elements: Seq[PileupElement], val referenceSequence: Seq[Byte]) {
+class PileupStats(val elements: Seq[PileupElement],
+                  val referenceSequence: Bases) {
   assume(referenceSequence.nonEmpty)
   assume(elements.forall(_.locus == elements.head.locus))
 
   /** The reference sequence as a string. */
-  val ref = basesToString(referenceSequence)
+  val ref = referenceSequence
 
   /**
    * The sequenced alleles at this site as ReadSubsequence instances.
@@ -42,7 +44,7 @@ class PileupStats(val elements: Seq[PileupElement], val referenceSequence: Seq[B
     )
 
   /** Map from sequenced allele -> the ReadSubsequence instances for that allele. */
-  val alleleToSubsequences: Map[String, Seq[ReadSubsequence]] = subsequences.groupBy(_.sequence)
+  val alleleToSubsequences: Map[Bases, Seq[ReadSubsequence]] = subsequences.groupBy(_.sequence)
 
   /** Map from sequenced allele -> number of reads supporting that allele. */
   val allelicDepths =
@@ -69,7 +71,7 @@ class PileupStats(val elements: Seq[PileupElement], val referenceSequence: Seq[B
       .map(_._1)
 
   /** Alt allele with most reads. */
-  val topAlt = nonRefAlleles.headOption.getOrElse("N")
+  val topAlt = nonRefAlleles.headOption.getOrElse(Bases(N))
 
   /** Alt allele with second-most reads. */
   val secondAlt =
@@ -79,7 +81,7 @@ class PileupStats(val elements: Seq[PileupElement], val referenceSequence: Seq[B
       "N"
 
   /** Fraction of reads supporting the given allele. */
-  def vaf(allele: String): Double = allelicDepths(allele).toDouble / totalDepthIncludingReadsContributingNoAlleles
+  def vaf(allele: Bases): Double = allelicDepths(allele).toDouble / totalDepthIncludingReadsContributingNoAlleles
 
   /** Map from allele to read names supporting that allele. */
   lazy val readNamesByAllele =
@@ -120,6 +122,6 @@ class PileupStats(val elements: Seq[PileupElement], val referenceSequence: Seq[B
 }
 object PileupStats {
   /** Create a PileupStats instance. */
-  def apply(elements: Seq[PileupElement], refSequence: Seq[Byte]): PileupStats =
+  def apply(elements: Seq[PileupElement], refSequence: Bases): PileupStats =
     new PileupStats(elements, refSequence)
 }

@@ -1,5 +1,6 @@
 package org.hammerlab.guacamole.jointcaller.evidence
 
+import org.hammerlab.genomics.bases.Bases
 import org.hammerlab.guacamole.jointcaller.Input.{ Analyte, TissueType }
 import org.hammerlab.guacamole.jointcaller._
 import org.hammerlab.guacamole.jointcaller.annotation.{ MultiSampleAnnotations, SingleSampleAnnotations }
@@ -62,7 +63,7 @@ case class MultiSampleSingleAlleleEvidence(parameters: Parameters,
    * @return negative log-base 10 prior probability for that allele. Since log probs are negative, this number will
    *         be *positive* (it's the negative of a negative).
    */
-  def germlinePrior(alleles: (String, String)): Double =
+  def germlinePrior(alleles: (Bases, Bases)): Double =
     Seq(
       alleles._1,
       alleles._2
@@ -84,7 +85,7 @@ case class MultiSampleSingleAlleleEvidence(parameters: Parameters,
    * The posteriors are plain log10 logprobs. They are negative. The maximum a posteriori estimate is the greatest
    * (i.e. least negative, closest to 0) posterior.
    */
-  val perNormalSampleGermlinePosteriors: Map[SampleId, Map[(String, String), Double]] = {
+  val perNormalSampleGermlinePosteriors: Map[SampleId, Map[(Bases, Bases), Double]] = {
     (
       inputs
         .items
@@ -119,7 +120,7 @@ case class MultiSampleSingleAlleleEvidence(parameters: Parameters,
   /**
    * Called germline genotype. We currently just use the maximum posterior from the pooled normal data.
    */
-  val germlineAlleles: (String, String) = pooledGermlinePosteriors.maxBy(_._2)._1
+  val germlineAlleles: (Bases, Bases) = pooledGermlinePosteriors.maxBy(_._2)._1
 
   /** Are we making a germline call here? */
   val isGermlineCall = germlineAlleles != (allele.ref, allele.ref)

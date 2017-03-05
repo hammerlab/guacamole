@@ -1,5 +1,6 @@
 package org.hammerlab.guacamole.jointcaller.evidence
 
+import org.hammerlab.genomics.bases.Bases
 import org.hammerlab.guacamole.jointcaller.annotation.SingleSampleAnnotations
 import org.hammerlab.guacamole.jointcaller.pileup_summarization.{ AlleleMixture, PileupStats }
 import org.hammerlab.guacamole.jointcaller.{ AlleleAtLocus, AllelicDepths, Parameters }
@@ -13,7 +14,7 @@ import org.hammerlab.guacamole.jointcaller.{ AlleleAtLocus, AllelicDepths, Param
  */
 case class NormalDNASingleSampleSingleAlleleEvidence(allele: AlleleAtLocus,
                                                      allelicDepths: AllelicDepths,
-                                                     logLikelihoods: Map[(String, String), Double],
+                                                     logLikelihoods: Map[(Bases, Bases), Double],
                                                      annotations: Option[SingleSampleAnnotations] = None)
     extends SingleSampleSingleAlleleEvidence {
 
@@ -30,7 +31,7 @@ case class NormalDNASingleSampleSingleAlleleEvidence(allele: AlleleAtLocus,
 object NormalDNASingleSampleSingleAlleleEvidence {
 
   /** Given a pair of alleles describing a (germline) genotype, return the equivalent allele mixture. */
-  def allelesToMixture(alleles: (String, String)): AlleleMixture =
+  def allelesToMixture(alleles: (Bases, Bases)): AlleleMixture =
     if (alleles._1 == alleles._2)
       Map(alleles._1 -> 1.0)
     else

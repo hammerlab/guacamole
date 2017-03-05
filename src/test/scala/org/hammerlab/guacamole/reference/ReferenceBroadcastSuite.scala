@@ -1,14 +1,15 @@
 package org.hammerlab.guacamole.reference
 
+import org.hammerlab.genomics.bases.Base.{ A, C, G, N, T }
 import org.hammerlab.genomics.reference.ContigName
 import org.hammerlab.genomics.reference.test.LocusUtil
-import org.hammerlab.guacamole.util.Bases.{ A, C, G, N, T }
+import org.hammerlab.guacamole.util.GuacFunSuite
 import org.hammerlab.guacamole.util.TestUtil.resourcePath
-import org.hammerlab.guacamole.util.{ AssertBases, GuacFunSuite }
 
 class ReferenceBroadcastSuite
   extends GuacFunSuite
-    with LocusUtil {
+    with LocusUtil
+    with BasesUtil {
 
   val testFastaPath = resourcePath("sample.fasta")
 
@@ -35,16 +36,19 @@ class ReferenceBroadcastSuite
     reference.getReferenceBase("2", 160) should ===(C)
     reference.getReferenceBase("2", 240) should ===(G)
 
-    AssertBases(
-      reference.getReferenceSequence("1", 80, 80),
-      "CATCAAAATACCACCATCATTCTTCACAGAACTAGAAAAAACAAGGCTAAAATTCACATGGAACCAAAAAAGAGCCCACA")
+    assert(
+      reference.getReferenceSequence("1", 80, 80) ===
+        "CATCAAAATACCACCATCATTCTTCACAGAACTAGAAAAAACAAGGCTAAAATTCACATGGAACCAAAAAAGAGCCCACA"
+    )
 
-    AssertBases(
-      reference.getReferenceSequence("2", 240, 80),
-      "GACGTTCATTCAGAATGCCACCTAACTAGGCCAGTTTTTGGACTGTATGCCAGCCTCTTTCTGCGGGATGTAATCTCAAT")
+    assert(
+      reference.getReferenceSequence("2", 240, 80) ===
+        "GACGTTCATTCAGAATGCCACCTAACTAGGCCAGTTTTTGGACTGTATGCCAGCCTCTTTCTGCGGGATGTAATCTCAAT"
+    )
 
-    AssertBases(
-      reference.getReferenceSequence("2", 720, 80),
-      "CTGATGATCGCACCTGCATAACTGCTACCAGACCTGCTAAGGGGGAGCCTGGCCCAGCCATCTCTTCTTTGTGGTCACAA")
+    assert(
+      reference.getReferenceSequence("2", 720, 80) ===
+        "CTGATGATCGCACCTGCATAACTGCTACCAGACCTGCTAAGGGGGAGCCTGGCCCAGCCATCTCTTCTTTGTGGTCACAA"
+    )
   }
 }

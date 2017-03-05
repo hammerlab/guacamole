@@ -1,10 +1,11 @@
 package org.hammerlab.guacamole.jointcaller
 
+import org.hammerlab.genomics.bases.Base.N
+import org.hammerlab.genomics.bases.Bases
 import org.hammerlab.genomics.reference.{ ContigName, Locus, Region }
 import org.hammerlab.guacamole.jointcaller.pileup_summarization.ReadSubsequence
 import org.hammerlab.guacamole.pileup.Pileup
 import org.hammerlab.guacamole.readsets.PerSample
-import org.hammerlab.guacamole.util.Bases
 
 import scala.math.max
 
@@ -29,8 +30,8 @@ import scala.math.max
  */
 case class AlleleAtLocus(contigName: ContigName,
                          start: Locus,
-                         ref: String,
-                         alt: String)
+                         ref: Bases,
+                         alt: Bases)
   extends Region {
 
   assume(ref.nonEmpty)
@@ -123,8 +124,8 @@ object AlleleAtLocus {
           AlleleAtLocus(
             contig,
             variantStart,
-            Bases.baseToString(contigSequence(variantStart)),
-            "N"
+            Bases(contigSequence(variantStart)),
+            Bases(N)
           )
         )
     } else if (maxAlleles.isDefined) {

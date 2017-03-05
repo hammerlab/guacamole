@@ -6,6 +6,7 @@ import htsjdk.samtools.SAMSequenceDictionary
 import htsjdk.variant.variantcontext.writer.VariantContextWriterBuilder
 import htsjdk.variant.variantcontext.{ Allele, GenotypeBuilder, VariantContext, VariantContextBuilder }
 import htsjdk.variant.vcf.{ VCFFormatHeaderLine, VCFHeader, VCFHeaderLine, VCFHeaderLineCount, VCFHeaderLineType, VCFInfoHeaderLine }
+import org.hammerlab.genomics.bases.Bases
 import org.hammerlab.guacamole.jointcaller.Input.{ Analyte, TissueType }
 import org.hammerlab.guacamole.jointcaller.annotation.{ MultiSampleAnnotations, SingleSampleAnnotations }
 import org.hammerlab.guacamole.jointcaller.evidence.{ MultiSampleMultiAlleleEvidence, MultiSampleSingleAlleleEvidence, NormalDNASingleSampleSingleAlleleEvidence, TumorDNASingleSampleSingleAlleleEvidence, TumorRNASingleSampleSingleAlleleEvidence }
@@ -135,10 +136,10 @@ object VCFOutput {
 
     val allele = samplesEvidence.allele
 
-    def alleleToString(x: String) = if (x.isEmpty) "." else x
+    def alleleToString(allele: Bases) = if (allele.isEmpty) "." else allele
 
-    def makeHtsjdkAllele(someAllele: String): Allele =
-      Allele.create(someAllele, someAllele == allele.ref)
+    def makeHtsjdkAllele(someAllele: Bases): Allele =
+      Allele.create(someAllele.toString(), someAllele == allele.ref)
 
     def allelicDepthString(depths: AllelicDepths): String = {
       val allAlleles = (Seq(allele.ref, allele.alt) ++ depths.keys.toSeq).distinct
