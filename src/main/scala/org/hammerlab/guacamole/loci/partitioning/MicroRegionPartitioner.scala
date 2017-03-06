@@ -10,6 +10,7 @@ import org.hammerlab.spark.{ NumPartitions, PartitionIndex }
 import org.kohsuke.args4j.{ Option => Args4jOption }
 
 import scala.collection.Map
+import scala.math.{ max, min, round }
 import scala.reflect.ClassTag
 
 trait MicroRegionPartitionerArgs extends UniformPartitionerArgs {
@@ -171,7 +172,7 @@ class MicroRegionPartitioner[R <: Region: ClassTag](regions: RDD[R],
            *
            * We always take at least 1 locus to ensure we continue to make progress.
            */
-          val lociToTake = math.max(1, (fractionToTake * set.count).toLong)
+          val lociToTake = max(1, (fractionToTake * set.count).toLong)
           val regionsToTake = (fractionToTake * regionsInSet).toLong
 
           // Add the new partition assignment to the builder, and update bookkeeping info.

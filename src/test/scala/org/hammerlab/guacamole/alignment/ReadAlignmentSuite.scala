@@ -5,6 +5,8 @@ import org.hammerlab.guacamole.alignment.ReadAlignment.scoreAlignmentPaths
 import org.hammerlab.guacamole.util.BasesUtil._
 import org.scalatest.{ FunSuite, Matchers }
 
+import scala.math.round
+
 class ReadAlignmentSuite extends FunSuite with Matchers {
 
   test("test cigar string: all match") {
@@ -98,7 +100,7 @@ class ReadAlignmentSuite extends FunSuite with Matchers {
         closeGapProbability = 1e-2
       )
 
-    math.round(alignments(0)._3) should be(5)
+    round(alignments(0)._3) should be(5)
   }
 
   test("align exact match") {
