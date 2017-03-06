@@ -119,7 +119,7 @@ class SomaticJointCallerSuite
   test("don't call variants with N as the reference base") {
     val inputs = InputCollection(cancerWGS1Bams)
     val (readsets, loci) = makeReadSets(inputs, "chr12:65857030-65857080")
-    val emptyPartialReference = makeReference(sc, 70000000, ("chr12", 65856930, "N" * 250))
+    val emptyPartialReference = makeReference(70000000, ("chr12", 65856930, "N" * 250))
 
     val calls =
       makeCalls(

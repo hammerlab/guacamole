@@ -16,7 +16,6 @@ class SomaticStandardCallerSuite
 
   override lazy val reference =
     makeReference(
-      sc,
       ("chr1", 0, "TCGATCGACG"),
       ("chr2", 0, "TCGAAGCTTCG"),
       ("chr3", 10, "TCGAATCGATCGATCGA"),

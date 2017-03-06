@@ -60,7 +60,7 @@ class MappedReadSuite
     collectionMappedReads(1).isMapped should be(true)
   }
 
-  lazy val reference = makeReference(sc, "chr1", 8, "GGTCGATCGATCAA")
+  lazy val reference = makeReference("chr1", 8, "GGTCGATCGATCAA")
 
   test("slice read matching read") {
     val chr1Contig = reference.getContig("chr1")

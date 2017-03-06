@@ -17,10 +17,8 @@ class PileupSuite
     with Util
     with ReferenceUtil {
 
-  // This must only be accessed from inside a spark test where SparkContext has been initialized
   override lazy val reference =
     makeReference(
-      sc,
       ("chr1", 0, "CTCGATCGACG"),
       ("1", 229538778, "A" * 191135),
       ("artificial", 0, "A" * 34 + "G" * 10 + "A" * 5 + "G" * 15 + "A" * 15 + "ACGT" * 10),

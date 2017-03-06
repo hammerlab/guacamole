@@ -4,7 +4,6 @@ import org.apache.spark.SparkContext
 import org.hammerlab.genomics.bases.{ Base, Bases }
 import org.hammerlab.genomics.reference.test.LocusUtil
 import org.hammerlab.genomics.reference.{ ContigName, Locus, NumLoci }
-import org.hammerlab.spark.test.suite.KryoSparkSuite
 
 import scala.collection.mutable
 
@@ -12,7 +11,7 @@ trait ReferenceUtil
   extends BasesUtil
     with LocusUtil {
 
-  self: KryoSparkSuite[_] ⇒
+  def sc: SparkContext
 
   /**
    * Make a ReferenceBroadcast containing the specified sequences to be used in tests.
@@ -21,8 +20,7 @@ trait ReferenceUtil
    * @param contigLengths total length of each contigs (for simplicity all contigs are assumed to have the same length)
    * @return a map acked ReferenceBroadcast containing the desired sequences
    */
-  def makeReference(sc: SparkContext,
-                    contigLengths: Int,
+  def makeReference(contigLengths: Int,
                     contigStartSequences: (ContigName, Locus, Bases)*): ReferenceBroadcast = {
 
     val basesMap = mutable.HashMap[ContigName, mutable.Map[Locus, Base]]()
@@ -55,9 +53,9 @@ trait ReferenceUtil
 
   implicit def convertTuple(t: (String, Int, String)): (ContigName, Locus, Bases) = (t._1, t._2, t._3)
 
-  def makeReference(sc: SparkContext, contigStartSequences: (ContigName, Locus, Bases)*): ReferenceBroadcast =
-    makeReference(sc, 1000, contigStartSequences: _*)
+  def makeReference(contigStartSequences: (ContigName, Locus, Bases)*): ReferenceBroadcast =
+    makeReference(1000, contigStartSequences: _*)
 
-  def makeReference(sc: SparkContext, contigName: ContigName, start: Locus, sequence: Bases): ReferenceBroadcast =
-    makeReference(sc, (contigName, start, sequence))
+  def makeReference(contigName: ContigName, start: Locus, sequence: Bases): ReferenceBroadcast =
+    makeReference((contigName, start, sequence))
 }

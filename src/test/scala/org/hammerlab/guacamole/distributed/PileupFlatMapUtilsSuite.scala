@@ -46,7 +46,6 @@ class PileupFlatMapUtilsSuite
 
   lazy val reference =
     makeReference(
-      sc,
       ("chr1",  0, "ATCGATCGA" + "N"*90),
 
       ("chr1", 99, "ACGTACGTACGT" + "N"*500),
@@ -277,7 +276,7 @@ class PileupFlatMapUtilsSuite
         sampleName = "sampleName",
         skipEmpty = false,
         _.elements.toIterator,
-        reference = makeReference(sc, "chr1", 1, "TCGATCGA")
+        reference = makeReference("chr1", 1, "TCGATCGA")
       ).collect()
 
     pileups.length should be(24)
@@ -318,7 +317,7 @@ class PileupFlatMapUtilsSuite
         sample2Name = "sample2",
         skipEmpty = false,
         (pileup1, pileup2) ⇒ (pileup1.elements ++ pileup2.elements).toIterator,
-        reference = makeReference(sc, "chr1", 0, "ATCGATCGA" + "N"*90 + "AGGGGGGGGGG" + "N"*500)
+        reference = makeReference("chr1", 0, "ATCGATCGA" + "N"*90 + "AGGGGGGGGGG" + "N"*500)
       )
       .collect()
       .toVector
@@ -348,7 +347,7 @@ class PileupFlatMapUtilsSuite
         sampleName = "sampleName",
         skipEmpty = false,
         _.elements.toIterator,
-        reference = makeReference(sc, "chr1", 1, "ATCGATCGATC")
+        reference = makeReference("chr1", 1, "ATCGATCGATC")
       ).collect()
 
     pileups.length should be(24)

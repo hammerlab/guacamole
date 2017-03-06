@@ -11,7 +11,7 @@ class AlleleEvidenceSuite
     with PileupUtil
     with ReferenceUtil {
 
-  override lazy val reference = makeReference(sc, "chr1", 0, "NTAGATCGA")
+  override lazy val reference = makeReference("chr1", 0, "NTAGATCGA")
 
   test("allele evidence from pileup, all reads support") {
     val reads =
