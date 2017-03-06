@@ -6,7 +6,7 @@ import org.hammerlab.guacamole.commands.SomaticJoint.makeCalls
 import org.hammerlab.guacamole.readsets.ReadSetsUtil
 import org.hammerlab.guacamole.reference.{ ReferenceBroadcast, ReferenceUtil }
 import org.hammerlab.guacamole.util.GuacFunSuite
-import org.hammerlab.guacamole.util.TestUtil.resourcePath
+import org.hammerlab.test.resources.File
 
 class SomaticJointCallerSuite
   extends GuacFunSuite
@@ -14,17 +14,17 @@ class SomaticJointCallerSuite
     with ReferenceUtil {
 
   val cancerWGS1Bams = Vector("normal.bam", "primary.bam", "recurrence.bam").map(
-    name ⇒ resourcePath("cancer-wgs1/" + name))
+    name ⇒ File("cancer-wgs1/" + name))
 
   val celsr1BAMs = Vector("normal_0.bam", "tumor_wes_2.bam", "tumor_rna_11.bam").map(
-    name ⇒ resourcePath("cancer-wes-and-rna-celsr1/" + name))
+    name ⇒ File("cancer-wes-and-rna-celsr1/" + name))
 
-  val hg19PartialFasta = resourcePath("hg19.partial.fasta")
+  val hg19PartialFasta = File("hg19.partial.fasta")
 
   def hg19PartialReference =
     ReferenceBroadcast(hg19PartialFasta, sc, partialFasta = true)
 
-  val b37Chromosome22Fasta = resourcePath("chr22.fa.gz")
+  val b37Chromosome22Fasta = File("chr22.fa.gz")
 
   def b37Chromosome22Reference =
     ReferenceBroadcast(b37Chromosome22Fasta, sc, partialFasta = false)

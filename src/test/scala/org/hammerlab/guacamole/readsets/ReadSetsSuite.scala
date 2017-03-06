@@ -8,9 +8,9 @@ import org.hammerlab.guacamole.reads.{ MappedRead, Read }
 import org.hammerlab.guacamole.readsets.io.{ Input, InputConfig, TestInputConfig }
 import org.hammerlab.guacamole.readsets.rdd.ReadsRDDUtil
 import org.hammerlab.guacamole.util.GuacFunSuite
-import org.hammerlab.guacamole.util.TestUtil.resourcePath
 import org.hammerlab.test.files.TmpFiles
 import org.hammerlab.test.matchers.LazyAssert
+import org.hammerlab.test.resources.File
 
 class ReadSetsSuite
   extends GuacFunSuite
@@ -125,7 +125,7 @@ class ReadSetsSuite
   test("load read from ADAM") {
     // First load reads from SAM using ADAM and save as ADAM
     val adamContext: ADAMContext = sc
-    val adamRecords = adamContext.loadBam(resourcePath("mdtagissue.sam"))
+    val adamRecords = adamContext.loadBam(File("mdtagissue.sam"))
 
     val adamOut = tmpPath(suffix = ".adam")
     val args = new ADAMSaveAnyArgs {

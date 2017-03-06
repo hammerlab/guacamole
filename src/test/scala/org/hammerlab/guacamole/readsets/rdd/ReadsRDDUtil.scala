@@ -6,7 +6,7 @@ import org.hammerlab.guacamole.reads.{ MappedRead, ReadsUtil }
 import org.hammerlab.guacamole.readsets.args.SingleSampleArgs
 import org.hammerlab.guacamole.readsets.io.{ InputConfig, TestInputConfig }
 import org.hammerlab.guacamole.readsets.{ ReadSets, SampleId }
-import org.hammerlab.guacamole.util.TestUtil.resourcePath
+import org.hammerlab.test.resources.File
 
 trait ReadsRDDUtil
   extends ReadsUtil {
@@ -37,7 +37,7 @@ trait ReadsRDDUtil
                    filename: String,
                    config: InputConfig = InputConfig.empty): ReadsRDD = {
     // Grab the path to the SAM file in the resources subdirectory.
-    val path = resourcePath(filename)
+    val path = File(filename)
     assert(sc != null)
     assert(sc.hadoopConfiguration != null)
     val args = new SingleSampleArgs {}

@@ -1,11 +1,11 @@
 package org.hammerlab.guacamole.jointcaller
 
+import org.hammerlab.genomics.reference.test.LocusUtil
+import org.hammerlab.guacamole.jointcaller.AlleleAtLocus.variantAlleles
 import org.hammerlab.guacamole.pileup.{ Util ⇒ PileupUtil }
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.util.GuacFunSuite
-import org.hammerlab.guacamole.util.TestUtil.resourcePath
-import AlleleAtLocus.variantAlleles
-import org.hammerlab.genomics.reference.test.LocusUtil
+import org.hammerlab.test.resources.File
 
 class AlleleAtLocusSuite
   extends GuacFunSuite
@@ -16,7 +16,7 @@ class AlleleAtLocusSuite
     Vector("normal_0.bam", "tumor_wes_2.bam", "tumor_rna_11.bam")
       .map(name ⇒ s"cancer-wes-and-rna-celsr1/$name")
 
-  val b37Chromosome22Fasta = resourcePath("chr22.fa.gz")
+  val b37Chromosome22Fasta = File("chr22.fa.gz")
 
   override lazy val reference =
     ReferenceBroadcast(b37Chromosome22Fasta, sc, partialFasta = false)

@@ -7,7 +7,7 @@ import org.hammerlab.guacamole.pileup.{ Util ⇒ PileupUtil }
 import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.util.GuacFunSuite
-import org.hammerlab.guacamole.util.TestUtil.resourcePath
+import org.hammerlab.test.resources.File
 import org.scalatest.prop.TableDrivenPropertyChecks
 
 /**
@@ -20,7 +20,7 @@ class SomaticStandardCallerRealDataSuite
 
   lazy val reference =
     ReferenceBroadcast(
-      resourcePath("grch37.partial.fasta"),
+      File("grch37.partial.fasta"),
       sc,
       partialFasta = true
     )

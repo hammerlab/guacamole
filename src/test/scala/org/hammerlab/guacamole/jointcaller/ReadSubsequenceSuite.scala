@@ -7,7 +7,7 @@ import org.hammerlab.guacamole.pileup.{ Util ⇒ PileupUtil }
 import org.hammerlab.guacamole.reads.ReadsUtil
 import org.hammerlab.guacamole.reference.{ ReferenceBroadcast, ReferenceUtil }
 import org.hammerlab.guacamole.util.GuacFunSuite
-import org.hammerlab.guacamole.util.TestUtil.resourcePath
+import org.hammerlab.test.resources.File
 
 class ReadSubsequenceSuite
   extends GuacFunSuite
@@ -23,7 +23,7 @@ class ReadSubsequenceSuite
 
   override lazy val reference = makeReference(sc, ("chr1", 0, "NTCGATCGACG"))
 
-  val partialFasta = resourcePath("hg19.partial.fasta")
+  val partialFasta = File("hg19.partial.fasta")
   def partialReference =
     ReferenceBroadcast(partialFasta, sc, partialFasta = true)
 

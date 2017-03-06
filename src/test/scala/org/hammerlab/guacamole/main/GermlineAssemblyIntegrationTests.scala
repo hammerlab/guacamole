@@ -4,8 +4,8 @@ import org.apache.spark.SparkContext
 import org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Arguments
 import org.hammerlab.guacamole.commands.GuacCommand
 import org.hammerlab.guacamole.data.NA12878TestUtil
-import org.hammerlab.guacamole.util.TestUtil.resourcePath
 import org.hammerlab.guacamole.variants.VariantComparisonTest
+import org.hammerlab.test.resources.File
 
 /**
  * Germline assembly caller integration "tests" that output various statistics to stdout.
@@ -45,13 +45,15 @@ object GermlineAssemblyIntegrationTests extends GuacCommand[Arguments] with Vari
     compareToVCF(resultFile, NA12878TestUtil.expectedCallsVCF)
 
     println("************* UNIFIED GENOTYPER *************")
-    compareToVCF(resourcePath(
-      "illumina-platinum-na12878/unified_genotyper.vcf"),
-      NA12878TestUtil.expectedCallsVCF)
+    compareToVCF(
+      File("illumina-platinum-na12878/unified_genotyper.vcf"),
+      NA12878TestUtil.expectedCallsVCF
+    )
 
     println("************* HaplotypeCaller *************")
-    compareToVCF(resourcePath(
-      "illumina-platinum-na12878/haplotype_caller.vcf"),
-      NA12878TestUtil.expectedCallsVCF)
+    compareToVCF(
+      File("illumina-platinum-na12878/haplotype_caller.vcf"),
+      NA12878TestUtil.expectedCallsVCF
+    )
   }
 }

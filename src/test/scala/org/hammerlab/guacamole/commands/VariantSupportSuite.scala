@@ -11,9 +11,9 @@ import org.hammerlab.guacamole.readsets.io.TestInputConfig
 import org.hammerlab.guacamole.readsets.rdd.ReadsRDDUtil
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.util.GuacFunSuite
-import org.hammerlab.guacamole.util.TestUtil.resourcePath
 import org.hammerlab.guacamole.windowing.SlidingWindow
 import org.hammerlab.test.matchers.seqs.SetMatcher.setMatch
+import org.hammerlab.test.resources.File
 import org.scalatest.prop.TableDrivenPropertyChecks
 
 class VariantSupportSuite
@@ -26,7 +26,7 @@ class VariantSupportSuite
 
   override lazy val reference =
     ReferenceBroadcast(
-      resourcePath("grch37.partial.fasta"),
+      File("grch37.partial.fasta"),
       sc,
       partialFasta = true
     )

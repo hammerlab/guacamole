@@ -6,7 +6,7 @@ import org.hammerlab.guacamole.pileup.{ Util ⇒ PileupUtil }
 import org.hammerlab.guacamole.reads.ReadsUtil
 import org.hammerlab.guacamole.reference.{ ReferenceBroadcast, ReferenceUtil }
 import org.hammerlab.guacamole.util.GuacFunSuite
-import org.hammerlab.guacamole.util.TestUtil.resourcePath
+import org.hammerlab.test.resources.File
 
 import scala.Seq.fill
 
@@ -17,9 +17,9 @@ class PileupStatsSuite
     with ReferenceUtil {
 
   val cancerWGS1Bams = Seq("normal.bam", "primary.bam", "recurrence.bam").map(
-    name ⇒ resourcePath("cancer-wgs1/" + name))
+    name ⇒ File("cancer-wgs1/" + name))
 
-  val partialFasta = resourcePath("hg19.partial.fasta")
+  val partialFasta = File("hg19.partial.fasta")
   def partialReference = {
     ReferenceBroadcast(partialFasta, sc, partialFasta = true)
   }

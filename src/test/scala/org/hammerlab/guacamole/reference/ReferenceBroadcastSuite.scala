@@ -4,14 +4,14 @@ import org.hammerlab.genomics.bases.Base.{ A, C, G, N, T }
 import org.hammerlab.genomics.reference.ContigName
 import org.hammerlab.genomics.reference.test.LocusUtil
 import org.hammerlab.guacamole.util.GuacFunSuite
-import org.hammerlab.guacamole.util.TestUtil.resourcePath
+import org.hammerlab.test.resources.File
 
 class ReferenceBroadcastSuite
   extends GuacFunSuite
     with LocusUtil
     with BasesUtil {
 
-  val testFastaPath = resourcePath("sample.fasta")
+  val testFastaPath = File("sample.fasta")
 
   test("loading and broadcasting reference") {
 

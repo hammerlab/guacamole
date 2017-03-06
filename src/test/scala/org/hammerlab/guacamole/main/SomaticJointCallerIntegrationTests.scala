@@ -6,8 +6,8 @@ import org.hammerlab.genomics.reference.{ Locus, Region }
 import org.hammerlab.guacamole.commands.SomaticJoint.Arguments
 import org.hammerlab.guacamole.commands.{ GuacCommand, SomaticJoint }
 import org.hammerlab.guacamole.data.{ CancerWGSTestUtil, NA12878TestUtil }
-import org.hammerlab.guacamole.util.TestUtil.resourcePath
 import org.hammerlab.guacamole.variants.VariantComparisonTest
+import org.hammerlab.test.resources.File
 
 /**
  * Somatic joint-caller integration "tests" that output various statistics to stdout.
@@ -58,7 +58,14 @@ object SomaticJointCallerIntegrationTests
       referencePath = CancerWGSTestUtil.referencePath
       referenceIsPartial = true
       somaticGenotypePolicy = "trigger"
-      lociStrOpt = Some(((1).until(22).map(i ⇒ "chr%d".format(i)) ++ Seq("chrX", "chrY")).mkString(","))
+      lociStrOpt =
+        Some(
+          (
+            (1 until 22).map(i ⇒ s"chr$i")
+              ++ Seq("chrX", "chrY")
+          )
+          .mkString(",")
+        )
       forceCallLociFileOpt = Some(forceCallLoci.toString(100000))
       outDir = outDir
     }
@@ -92,7 +99,7 @@ object SomaticJointCallerIntegrationTests
       if (true) {
         val args = new SomaticJoint.Arguments() {
           out = resultFile
-          paths = Seq(NA12878TestUtil.subsetBam).toArray
+          paths = Seq(NA12878TestUtil.subsetBam.path).toArray
           lociStrOpt = Some("chr1:0-6700000")
           forceCallLociFileOpt = Some(NA12878TestUtil.expectedCallsVCF)
           referencePath = NA12878TestUtil.chr1PrefixFasta
@@ -106,14 +113,16 @@ object SomaticJointCallerIntegrationTests
 
       if (false) {
         println("************* UNIFIED GENOTYPER *************")
-        compareToVCF(resourcePath(
-          "illumina-platinum-na12878/unified_genotyper.vcf"),
-          NA12878TestUtil.expectedCallsVCF)
+        compareToVCF(
+          File("illumina-platinum-na12878/unified_genotyper.vcf"),
+          NA12878TestUtil.expectedCallsVCF
+        )
 
         println("************* HaplotypeCaller *************")
-        compareToVCF(resourcePath(
-          "illumina-platinum-na12878/haplotype_caller.vcf"),
-          NA12878TestUtil.expectedCallsVCF)
+        compareToVCF(
+          File("illumina-platinum-na12878/haplotype_caller.vcf"),
+          NA12878TestUtil.expectedCallsVCF
+        )
       }
     }
   }

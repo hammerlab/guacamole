@@ -1,8 +1,8 @@
 package org.hammerlab.guacamole.commands
 
-import org.hammerlab.guacamole.util.TestUtil.resourcePath
 import org.hammerlab.guacamole.variants.VCFCmpTest
 import org.hammerlab.test.files.TmpFiles
+import org.hammerlab.test.resources.File
 import org.scalatest.FunSuite
 
 class SomaticStandardEndToEndSuite
@@ -21,11 +21,11 @@ class SomaticStandardEndToEndSuite
 
     caller.run(
       "--normal-reads",
-      resourcePath("normal.chr20.tough.sam"),
+      File("normal.chr20.tough.sam"),
       "--tumor-reads",
-      resourcePath("tumor.chr20.tough.sam"),
+      File("tumor.chr20.tough.sam"),
       "--reference",
-      resourcePath("grch37.partial.fasta"),
+      File("grch37.partial.fasta"),
       "--partial-reference",
       "--min-alignment-quality",
       "1",
@@ -33,6 +33,6 @@ class SomaticStandardEndToEndSuite
       tmpOutputPath
     )
 
-    checkVCFs(s"$tmpOutputPath/part-r-00000", resourcePath("tough.golden.vcf"))
+    checkVCFs(s"$tmpOutputPath/part-r-00000", File("tough.golden.vcf"))
   }
 }
