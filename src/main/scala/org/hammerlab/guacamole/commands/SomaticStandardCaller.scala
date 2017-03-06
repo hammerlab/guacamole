@@ -172,7 +172,7 @@ object SomaticStandard {
         return None
 
       val referenceAllele = Allele(tumorPileup.referenceBase, tumorPileup.referenceBase)
-      val referenceGenotype = Genotype(Map(referenceAllele -> 1.0))
+      val referenceGenotype = Genotype(Map(referenceAllele → 1.0))
 
       val tumorDepth = tumorPileup.depth
       val variantAlleleFractions: Map[Allele, Double] =
@@ -181,7 +181,7 @@ object SomaticStandard {
           .withFilter(_.allele.isVariant)
           .map(_.allele)
           .groupBy(identity)
-          .map{ case(k, v) ⇒ k -> v.size / tumorDepth.toDouble }
+          .map{ case(k, v) ⇒ k → (v.size / tumorDepth.toDouble) }
 
       // Compute empirical frequency of alternate allele in the tumor sample
       // for the likelihood computation
@@ -193,8 +193,8 @@ object SomaticStandard {
       val somaticVariantGenotype =
         Genotype(
           Map(
-            referenceAllele -> (1.0 - empiricalVariantAlleleFrequency),
-            mostFrequentVariantAllele -> empiricalVariantAlleleFrequency
+            referenceAllele → (1.0 - empiricalVariantAlleleFrequency),
+            mostFrequentVariantAllele → empiricalVariantAlleleFrequency
           )
         )
 
@@ -212,8 +212,8 @@ object SomaticStandard {
       val germlineVariantGenotype =
         Genotype(
           Map(
-            referenceAllele -> 0.5,
-            mostFrequentVariantAllele -> 0.5
+            referenceAllele → 0.5,
+            mostFrequentVariantAllele → 0.5
           )
         )
 

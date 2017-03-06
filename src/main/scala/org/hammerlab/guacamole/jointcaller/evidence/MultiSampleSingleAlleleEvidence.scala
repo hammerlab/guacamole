@@ -108,7 +108,7 @@ case class MultiSampleSingleAlleleEvidence(parameters: Parameters,
             for {
               (alleles, likelihood) <- likelihoods
             } yield
-              alleles -> (likelihood - germlinePrior(alleles))
+              alleles → (likelihood - germlinePrior(alleles))
           )
       }
     )
@@ -148,12 +148,12 @@ case class MultiSampleSingleAlleleEvidence(parameters: Parameters,
               .asInstanceOf[TumorRNASingleSampleSingleAlleleEvidence]
               .logLikelihoods
 
-          input.index ->
+          input.index →
             (
               for {
                 (alleles, likelihood) <- likelihoods
               } yield
-                alleles -> (likelihood - somaticPriorRna(alleles))
+                alleles → (likelihood - somaticPriorRna(alleles))
             )
         }
       ).toMap
@@ -188,7 +188,7 @@ case class MultiSampleSingleAlleleEvidence(parameters: Parameters,
   /**
    * Log10 posterior probabilities for a somatic variant in each tumor DNA sample. See perNormalSampleGermlinePosteriors.
    *
-   * @return Map {input index -> {{Allele -> Frequency} -> Posterior probability}
+   * @return Map {input index → {{Allele → Frequency} → Posterior probability}
    */
   val perTumorDnaSampleSomaticPosteriors: Map[SampleId, Map[AlleleMixture, Double]] = {
     (
@@ -205,12 +205,12 @@ case class MultiSampleSingleAlleleEvidence(parameters: Parameters,
             .asInstanceOf[TumorDNASingleSampleSingleAlleleEvidence]
             .logLikelihoods
 
-        index ->
+        index →
           (
             for {
               (alleles, likelihood) <- likelihoods
             } yield
-              alleles -> (likelihood - somaticPriorDna(alleles))
+              alleles → (likelihood - somaticPriorDna(alleles))
           )
       }
     ).toMap

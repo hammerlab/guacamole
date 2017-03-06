@@ -45,9 +45,9 @@ object Likelihood {
         j <- i until alleles.size
         mixture =
           if (i == j)
-            Map(alleles(i) -> 1.0)
+            Map(alleles(i) → 1.0)
           else
-            Map(alleles(i) -> 0.5, alleles(j) -> 0.5)
+            Map(alleles(i) → 0.5, alleles(j) → 0.5)
       } yield
         Genotype(mixture)
 
@@ -112,7 +112,7 @@ object Likelihood {
         .distinct
         .sorted
 
-    // map from allele -> allele index in our alleles sequence.
+    // map from allele → allele index in our alleles sequence.
     val alleleToIndex =
       alleles
         .zipWithIndex

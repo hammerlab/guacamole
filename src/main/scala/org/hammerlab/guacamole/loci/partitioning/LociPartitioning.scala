@@ -69,13 +69,13 @@ case class LociPartitioning(map: LociMap[PartitionIndex])
     for {
       (partition, loci) <- partitionsMap
     } yield
-      partition -> loci.count
+      partition → loci.count
 
   @transient private lazy val partitionContigsMap: Map[PartitionIndex, Int] =
     for {
       (partition, loci) <- partitionsMap
     } yield
-      partition -> loci.contigs.length
+      partition → loci.contigs.length
 
   /**
    * Write the wrapped [[map]] to the provided [[OutputStream]].

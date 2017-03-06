@@ -59,7 +59,7 @@ trait MicroRegionPartitionerArgs extends UniformPartitionerArgs {
  *                                    more exact but more expensive computation.
  *                                    In the extreme, setting this to greater than the number of loci (per partition)
  *                                    will result in an exact calculation.
- * @return LociMap of locus -> partition assignments.
+ * @return LociMap of locus → partition assignments.
  */
 class MicroRegionPartitioner[R <: Region: ClassTag](regions: RDD[R],
                                                     numPartitions: NumPartitions,

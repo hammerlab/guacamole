@@ -89,7 +89,7 @@ object ReadSets extends Logging {
       else
         sc.union(readsRDDs)
           .flatMap(_.asMappedRead)
-          .map(read ⇒ read.contigName -> NumLoci(read.end))
+          .map(read ⇒ read.contigName → NumLoci(read.end))
           .reduceByKey(_ max _)
           .collectAsMap()
           .toMap
@@ -240,7 +240,7 @@ object ReadSets extends Logging {
         (input, dict) <- inputs.zip(dicts)
         record <- dict.records
       } yield {
-        input -> record
+        input → record
       })
       .groupBy(_._2.name)
       .values
@@ -304,7 +304,7 @@ object ReadSets extends Logging {
   }
 
   /**
-    * Construct a map from contig name -> length of contig, using a SequenceDictionary.
+    * Construct a map from contig name → length of contig, using a SequenceDictionary.
     */
   private def getContigLengthsFromSequenceDictionary(sequenceDictionary: SequenceDictionary): ContigLengths = {
     val builder = Map.newBuilder[ContigName, Locus]

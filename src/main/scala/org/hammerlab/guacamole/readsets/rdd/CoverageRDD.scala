@@ -102,7 +102,7 @@ class CoverageRDD[R <: Region: ClassTag](rdd: RDD[R])
       for {
         (Position(contig, _), Coverage(depth, _)) <- coverage(halfWindowSize, lociBroadcast)
       } yield
-        contig -> (depth <= depthCutoff)
+        contig → (depth <= depthCutoff)
     )
     .runLengthEncode
     .mapValues(NumLoci(_))
@@ -121,7 +121,7 @@ class CoverageRDD[R <: Region: ClassTag](rdd: RDD[R])
       (for {
         ((_, validDepth), numLoci) <- depthRuns
       } yield
-        validDepth -> numLoci
+        validDepth → numLoci
       )
       .reduceByKey(_ + _)
       .collectAsMap
@@ -202,7 +202,7 @@ class CoverageRDD[R <: Region: ClassTag](rdd: RDD[R])
 
     } yield
       // Emit the Coverage, keyed by the current genomic position.
-      position -> coverage
+      position → coverage
   }
 
   /**

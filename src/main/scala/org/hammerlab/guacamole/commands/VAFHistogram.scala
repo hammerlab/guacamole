@@ -203,9 +203,9 @@ object VAFHistogram {
     }
 
     variantAlleleFrequencies
-      .map(vaf ⇒ (vaf.sampleId, roundToBin(vaf.variantAlleleFrequency)) -> 1L)
+      .map(vaf ⇒ (vaf.sampleId, roundToBin(vaf.variantAlleleFrequency)) → 1L)
       .reduceByKey(_ + _)
-      .map { case ((sampleId, bin), numLoci) ⇒ sampleId -> Map(bin -> numLoci) }
+      .map { case ((sampleId, bin), numLoci) ⇒ sampleId → Map(bin → numLoci) }
       .reduceByKey(_ ++ _)
       .mapValues(_.toVector.sortBy(_._1))
       .collectAsMap
@@ -276,7 +276,7 @@ object VAFHistogram {
             .keyBy(_.sampleId)
             .sampleByKey(
               withReplacement = false,
-              fractions = (0 until numSamples).map(_ -> (samplePercent / 100.0)).toMap
+              fractions = (0 until numSamples).map(_ → (samplePercent / 100.0)).toMap
             )
             .groupByKey()
             .collect()

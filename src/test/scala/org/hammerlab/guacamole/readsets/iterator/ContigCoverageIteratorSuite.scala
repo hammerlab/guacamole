@@ -28,7 +28,7 @@ class ContigCoverageIteratorSuite
       for {
         (locus, (depth, starts)) <- expectedStrs
       } yield
-        locus -> Coverage(depth, starts)
+        locus → Coverage(depth, starts)
 
     ContigCoverageIterator(halfWindowSize, ContigIterator(reads)).toSeq should ===(expected)
   }
@@ -38,16 +38,16 @@ class ContigCoverageIteratorSuite
       halfWindowSize = 0,
       (10, 20)
     )(
-      10 -> (1, 1),
-      11 -> (1, 0),
-      12 -> (1, 0),
-      13 -> (1, 0),
-      14 -> (1, 0),
-      15 -> (1, 0),
-      16 -> (1, 0),
-      17 -> (1, 0),
-      18 -> (1, 0),
-      19 -> (1, 0)
+      10 → (1, 1),
+      11 → (1, 0),
+      12 → (1, 0),
+      13 → (1, 0),
+      14 → (1, 0),
+      15 → (1, 0),
+      16 → (1, 0),
+      17 → (1, 0),
+      18 → (1, 0),
+      19 → (1, 0)
     )
   }
 
@@ -59,17 +59,17 @@ class ContigCoverageIteratorSuite
       (2,  8),
       (3, 11)
     )(
-       0 -> (1, 1),
-       1 -> (2, 1),
-       2 -> (3, 1),
-       3 -> (4, 1),
-       4 -> (4, 0),
-       5 -> (4, 0),
-       6 -> (4, 0),
-       7 -> (4, 0),
-       8 -> (3, 0),
-       9 -> (2, 0),
-      10 -> (1, 0)
+       0 → (1, 1),
+       1 → (2, 1),
+       2 → (3, 1),
+       3 → (4, 1),
+       4 → (4, 0),
+       5 → (4, 0),
+       6 → (4, 0),
+       7 → (4, 0),
+       8 → (3, 0),
+       9 → (2, 0),
+      10 → (1, 0)
     )
   }
 
@@ -86,18 +86,18 @@ class ContigCoverageIteratorSuite
   test("skips") {
     val it = ContigCoverageIterator(halfWindowSize = 1, reads)
 
-    it.next() should ===( 9 -> Coverage(1, 1))
-    it.next() should ===(10 -> Coverage(3, 2))
+    it.next() should ===( 9 → Coverage(1, 1))
+    it.next() should ===(10 → Coverage(3, 2))
     it.skipTo(15)
-    it.next() should ===(15 -> Coverage(3, 0))
-    it.next() should ===(16 -> Coverage(3, 0))
+    it.next() should ===(15 → Coverage(3, 0))
+    it.next() should ===(16 → Coverage(3, 0))
     it.skipTo(21)
-    it.next() should ===(21 -> Coverage(2, 0))
+    it.next() should ===(21 → Coverage(2, 0))
     it.skipTo(25)
-    it.next() should ===(29 -> Coverage(1, 1))
-    it.next() should ===(30 -> Coverage(1, 0))
+    it.next() should ===(29 → Coverage(1, 1))
+    it.next() should ===(30 → Coverage(1, 0))
     it.skipTo(39)
-    it.next() should ===(39 -> Coverage(1, 0))
+    it.next() should ===(39 → Coverage(1, 0))
     it.skipTo(45)
     it.hasNext should be(false)
   }
@@ -106,16 +106,16 @@ class ContigCoverageIteratorSuite
     val it = ContigCoverageIterator(halfWindowSize = 1, reads)
 
     it.skipTo(15)
-    it.next() should ===(15 -> Coverage(3, 3))
+    it.next() should ===(15 → Coverage(3, 3))
     it.skipTo(35)
-    it.next() should ===(35 -> Coverage(1, 1))
+    it.next() should ===(35 → Coverage(1, 1))
   }
 
   test("skip completely over read") {
     val it = ContigCoverageIterator(halfWindowSize = 1, reads)
 
     it.skipTo(21)
-    it.next() should ===(21 -> Coverage(2, 2))
+    it.next() should ===(21 → Coverage(2, 2))
   }
 
   test("load read then skip over it") {
@@ -123,14 +123,14 @@ class ContigCoverageIteratorSuite
 
     it.hasNext
     it.skipTo(21)
-    it.next() should ===(21 -> Coverage(2, 2))
+    it.next() should ===(21 → Coverage(2, 2))
   }
 
   test("skip completely over reads") {
     val it = ContigCoverageIterator(halfWindowSize = 1, reads)
 
     it.skipTo(25)
-    it.next() should ===(29 -> Coverage(1, 1))
+    it.next() should ===(29 → Coverage(1, 1))
   }
 
   test("intersection") {
@@ -139,9 +139,9 @@ class ContigCoverageIteratorSuite
 
     it.toSeq should ===(
       Seq(
-        12 -> Coverage(3, 3),
-        13 -> Coverage(3, 0),
-        14 -> Coverage(3, 0)
+        12 → Coverage(3, 3),
+        13 → Coverage(3, 0),
+        14 → Coverage(3, 0)
       )
     )
   }
@@ -158,8 +158,8 @@ class ContigCoverageIteratorSuite
       )
 
     val it = ContigCoverageIterator(halfWindowSize = 0, reads)
-    it.next() should ===( 0 -> Coverage(1, 1))
-    it.next() should ===( 1 -> Coverage(2, 1))
+    it.next() should ===( 0 → Coverage(1, 1))
+    it.next() should ===( 1 → Coverage(2, 1))
     intercept[RegionsNotSortedException] {
       it.next()
     }

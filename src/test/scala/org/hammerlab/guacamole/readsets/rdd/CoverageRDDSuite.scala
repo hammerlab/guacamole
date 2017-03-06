@@ -87,16 +87,16 @@ class CoverageRDDSuite
 
     val expected =
       List(
-        "chr1:102" -> ( 2,  2),
-        "chr1:103" -> ( 2,  0),
-        "chr1:104" -> ( 2,  0),
-        "chr1:105" -> ( 2,  0),
-        "chr1:106" -> ( 1,  0),
-        "chr2:7"   -> ( 1,  1),
-        "chr2:8"   -> ( 2,  1),
-        "chr2:9"   -> ( 2,  0),
-        "chr2:10"  -> ( 1,  0),
-        "chr2:11"  -> ( 1,  0)
+        "chr1:102" → ( 2,  2),
+        "chr1:103" → ( 2,  0),
+        "chr1:104" → ( 2,  0),
+        "chr1:105" → ( 2,  0),
+        "chr1:106" → ( 1,  0),
+        "chr2:7"   → ( 1,  1),
+        "chr2:8"   → ( 2,  1),
+        "chr2:9"   → ( 2,  0),
+        "chr2:10"  → ( 1,  0),
+        "chr2:11"  → ( 1,  0)
       )
 
     checkCoverage(traversalCoverage, expected)
@@ -111,7 +111,7 @@ class CoverageRDDSuite
       for {
         (pos, Coverage(depth, starts)) <- actual
       } yield {
-        pos.toString -> (depth, starts)
+        pos.toString → (depth, starts)
       }
 
     actualStrs.toList should pairsMatch[String, (Int, Int)](expected)

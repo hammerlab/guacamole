@@ -33,7 +33,7 @@ class LikelihoodSuite
         alleleStr <- alleles
         allele = Allele(Bases(referenceBase), alleleStr)
       } yield
-        allele -> alleleFraction
+        allele → alleleFraction
       ).toMap
     )
   }
@@ -98,7 +98,7 @@ class LikelihoodSuite
         (alleles, likelihood) <- expectedLikelihoods.toList
       } yield {
         totalExpectedLikelihood += (if (logSpace) exp(likelihood) else likelihood)
-        makeGenotype(alleles) -> likelihood
+        makeGenotype(alleles) → likelihood
       }).toMap
 
     val expectedProbabilities =

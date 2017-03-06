@@ -88,7 +88,7 @@ object ReferenceBroadcast extends Logging {
             ParsedLociRange(lociStr) match {
               case Some(LociRange(contigName, start, endOpt)) ⇒
                 val parsedLoci = LociRanges(LociRange(contigName, start, endOpt))
-                LociSet(parsedLoci, Map(contigName -> contigLength))
+                LociSet(parsedLoci, Map(contigName → contigLength))
               case _ ⇒
                 throw new IllegalArgumentException(s"Bad loci range: $lociStr")
             }
@@ -142,7 +142,7 @@ object ReferenceBroadcast extends Logging {
         contigLength = contigLengths(contigName)
         baseMapBroadcast = sc.broadcast(baseMap.toMap)
       } yield
-        contigName -> MapBackedReferenceSequence(contigName, contigLength, baseMapBroadcast)
+        contigName → MapBackedReferenceSequence(contigName, contigLength, baseMapBroadcast)
       ).toMap,
       Some(fastaPath)
     )

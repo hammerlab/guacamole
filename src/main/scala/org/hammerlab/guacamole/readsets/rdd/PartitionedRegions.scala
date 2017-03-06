@@ -205,7 +205,7 @@ object PartitionedRegions {
 
         // Key this region with its destination partition, plus secondary and tertiary fields for intra-partition
         // sorting.
-        (partition, r.contigName, r.start) -> r
+        (partition, r.contigName, r.start) → r
       })
       .repartitionAndSortWithinPartitions(KeyPartitioner(numPartitions))  // Shuffle all region copies
       .values  // Drop keys, leaving just regions.
@@ -219,13 +219,13 @@ object PartitionedRegions {
       // Number of reads before partitioning / selective copying.
       val originalReads = regions.count
 
-      // Sorted array of [number of read copies "K"] -> [number of reads that were copied "K" times].
+      // Sorted array of [number of read copies "K"] → [number of reads that were copied "K" times].
       val regionCopies: Array[(Int, Long)] = regionCopiesHistogram.value.toArray.sortBy(_._1)
 
       // Number of distinct reads that were sent to at least one partition.
       val readsPlaced = regionCopies.filter(_._1 > 0).map(_._2).sum
 
-      // Sorted array: [partition index "K"] -> [number of reads assigned to partition "K"].
+      // Sorted array: [partition index "K"] → [number of reads assigned to partition "K"].
       val regionsPerPartition: Array[(PartitionIndex, Long)] = partitionRegionsHistogram.value.toArray.sortBy(_._1)
 
       progress(

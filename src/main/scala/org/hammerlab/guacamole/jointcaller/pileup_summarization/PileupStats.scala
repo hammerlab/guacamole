@@ -43,10 +43,10 @@ class PileupStats(val elements: Seq[PileupElement],
         ReadSubsequence.ofFixedReferenceLength(element, referenceSequence.length)
     )
 
-  /** Map from sequenced allele -> the ReadSubsequence instances for that allele. */
+  /** Map from sequenced allele → the ReadSubsequence instances for that allele. */
   val alleleToSubsequences: Map[Bases, Seq[ReadSubsequence]] = subsequences.groupBy(_.sequence)
 
-  /** Map from sequenced allele -> number of reads supporting that allele. */
+  /** Map from sequenced allele → number of reads supporting that allele. */
   val allelicDepths =
     alleleToSubsequences
       .mapValues(_.size)
@@ -99,7 +99,7 @@ class PileupStats(val elements: Seq[PileupElement],
    *
    * Reads with mapping quality 0 are ignored.
    *
-   * @param mixture Map from sequenced allele -> variant allele fraction
+   * @param mixture Map from sequenced allele → variant allele fraction
    * @return log10 likelihood probability, always non-positive
    */
   def logLikelihoodPileup(mixture: AlleleMixture): Double =

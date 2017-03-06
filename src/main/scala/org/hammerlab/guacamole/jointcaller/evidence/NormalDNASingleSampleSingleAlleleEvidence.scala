@@ -9,7 +9,7 @@ import org.hammerlab.guacamole.jointcaller.{ AlleleAtLocus, AllelicDepths, Param
  * Summary of evidence for a particular germline allele in a single normal DNA sample.
  *
  * @param allele allele under consideration
- * @param allelicDepths Map from sequenced bases -> number of reads supporting that allele
+ * @param allelicDepths Map from sequenced bases → number of reads supporting that allele
  * @param logLikelihoods Map from germline genotypes to log10 likelihoods
  */
 case class NormalDNASingleSampleSingleAlleleEvidence(allele: AlleleAtLocus,
@@ -33,9 +33,9 @@ object NormalDNASingleSampleSingleAlleleEvidence {
   /** Given a pair of alleles describing a (germline) genotype, return the equivalent allele mixture. */
   def allelesToMixture(alleles: (Bases, Bases)): AlleleMixture =
     if (alleles._1 == alleles._2)
-      Map(alleles._1 -> 1.0)
+      Map(alleles._1 → 1.0)
     else
-      Map(alleles._1 -> 0.5, alleles._2 -> 0.5)
+      Map(alleles._1 → 0.5, alleles._2 → 0.5)
 
   /** Create a (serializable) NormalDNASampleAlleleEvidence instance from (non-serializable) pileup statistics. */
   def apply(allele: AlleleAtLocus,
@@ -49,7 +49,7 @@ object NormalDNASingleSampleSingleAlleleEvidence {
       possibleAllelePairs
         .map(
           allelePair ⇒
-            allelePair ->
+            allelePair →
               stats.logLikelihoodPileup(allelesToMixture(allelePair))
         )
         .toMap

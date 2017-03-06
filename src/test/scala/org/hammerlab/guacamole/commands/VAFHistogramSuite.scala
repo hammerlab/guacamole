@@ -28,48 +28,48 @@ class VAFHistogramSuite
 
     generateVAFHistograms(loci, 10) should be(
       Map(
-        0 ->
+        0 →
           Vector(
-            20 -> 1,
-            40 -> 1,
-            50 -> 1
+            20 → 1,
+            40 → 1,
+            50 → 1
           ),
-        1 ->
+        1 →
           Vector(
-            30 -> 1,
-            50 -> 1
+            30 → 1,
+            50 → 1
           )
       )
     )
 
     generateVAFHistograms(loci, 20) should be(
       Map(
-        0 ->
+        0 →
           Vector(
-            25 -> 1,
-            40 -> 1,
-            55 -> 1
+            25 → 1,
+            40 → 1,
+            55 → 1
           ),
-        1 ->
+        1 →
           Vector(
-            35 -> 1,
-            50 -> 1
+            35 → 1,
+            50 → 1
           )
       )
     )
 
     generateVAFHistograms(loci, 100) should be(
       Map(
-        0 ->
+        0 →
           Vector(
-            25 -> 1,
-            40 -> 1,
-            55 -> 1
+            25 → 1,
+            40 → 1,
+            55 → 1
           ),
-        1 ->
+        1 →
           Vector(
-            35 -> 1,
-            50 -> 1
+            35 → 1,
+            50 → 1
           )
       )
     )

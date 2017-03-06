@@ -122,7 +122,7 @@ class TakeLociIterator(it: BufferedIterator[(Position, Coverage)],
         None
       else
         Some(
-          curNumRegions ->
+          curNumRegions →
             Contig(
               it.contigName,
               intervals
@@ -177,12 +177,12 @@ class TakeLociIterator(it: BufferedIterator[(Position, Coverage)],
           curIntervalOpt match {
             // Extend the current interval, if possible.
             case Some((start, end)) if !trimRanges || locus == end ⇒
-              Some(start -> locus.next)
+              Some(start → locus.next)
 
             // Otherwise, commit the current interval if it exists, and start a new one.
             case _ ⇒
               maybeAddInterval()
-              Some(locus -> locus.next)
+              Some(locus → locus.next)
           }
 
         it.next()

@@ -47,7 +47,7 @@ private[partitioning] sealed abstract class UniformPartitionerBase[N: Integral](
    *
    * Loci are assigned uniformly, i.e. each partition gets about the same number of loci.
    *
-   * @return LociMap of locus -> partition indices.
+   * @return LociMap of locus → partition indices.
    */
   def partitionsMap(loci: LociSet): LociMap[N] = {
 

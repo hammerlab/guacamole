@@ -109,19 +109,19 @@ class DeBruijnGraphSuite
 
     graph.kmerCounts should mapMatch(
       Counts(
-        "TCA" -> 1,
-        "CAT" -> 2,
-        "ATC" -> 1,
-        "TCT" -> 1,
-        "CTT" -> 1,
-        "TTA" -> 1,
-        "TAA" -> 2,
-        "AAA" -> 3,
-        "AAG" -> 1,
-        "AGA" -> 1,
-        "GAC" -> 1,
-        "ACA" -> 1,
-        "ATA" -> 1
+        "TCA" → 1,
+        "CAT" → 2,
+        "ATC" → 1,
+        "TCT" → 1,
+        "CTT" → 1,
+        "TTA" → 1,
+        "TAA" → 2,
+        "AAA" → 3,
+        "AAG" → 1,
+        "AGA" → 1,
+        "GAC" → 1,
+        "ACA" → 1,
+        "ATA" → 1
       )
     )
   }
@@ -149,19 +149,19 @@ class DeBruijnGraphSuite
 
     lowThresholdGraph.kmerCounts should mapMatch(
       Counts(
-        "TCA" -> 2,
-        "CAT" -> 3,
-        "ATC" -> 2,
-        "TCT" -> 2,
-        "CTT" -> 2,
-        "TTA" -> 2,
-        "TAA" -> 4,
-        "AAA" -> 5,
-        "AAG" -> 1,
-        "AGA" -> 1,
-        "GAC" -> 1,
-        "ACA" -> 1,
-        "ATA" -> 2
+        "TCA" → 2,
+        "CAT" → 3,
+        "ATC" → 2,
+        "TCT" → 2,
+        "CTT" → 2,
+        "TTA" → 2,
+        "TAA" → 4,
+        "AAA" → 5,
+        "AAG" → 1,
+        "AGA" → 1,
+        "GAC" → 1,
+        "ACA" → 1,
+        "ATA" → 2
       )
     )
 
@@ -174,19 +174,19 @@ class DeBruijnGraphSuite
 
     highThresholdGraph.kmerCounts should mapMatch(
       Counts(
-        "TCA" -> 2,
-        "CAT" -> 3,
-        "ATC" -> 2,
-        "TCT" -> 2,
-        "CTT" -> 2,
-        "TTA" -> 2,
-        "TAA" -> 4,
-        "AAA" -> 4,
-        "AAG" -> 1,
-        "AGA" -> 1,
-        "GAC" -> 1,
-        "ACA" -> 1,
-        "ATA" -> 1
+        "TCA" → 2,
+        "CAT" → 3,
+        "ATC" → 2,
+        "TCT" → 2,
+        "CTT" → 2,
+        "TTA" → 2,
+        "TAA" → 4,
+        "AAA" → 4,
+        "AAG" → 1,
+        "AGA" → 1,
+        "GAC" → 1,
+        "ACA" → 1,
+        "ATA" → 1
       )
     )
   }
@@ -362,9 +362,9 @@ class DeBruijnGraphSuite
 
     graph.kmerCounts should mapMatch(
       Counts(
-        "AAATCCCTGG" -> 1,
-        "TGGGT" -> 1,
-        "TGGAT" -> 1
+        "AAATCCCTGG" → 1,
+        "TGGGT" → 1,
+        "TGGAT" → 1
       )
     )
   }

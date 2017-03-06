@@ -110,7 +110,7 @@ case class ContigCoverageIterator(halfWindowSize: Int,
        * Return a valid ([[Locus]], [[Coverage]]) tuple, indicating the number of intervals covering (and starting at /
        * covering for the first time) the current [[locus]].
        */
-      Some(locus -> Coverage(depthEnds.size, startEnds.size))
+      Some(locus → Coverage(depthEnds.size, startEnds.size))
   }
 
   override def postNext(): Unit = {

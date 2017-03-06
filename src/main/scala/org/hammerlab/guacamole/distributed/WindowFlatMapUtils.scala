@@ -32,7 +32,7 @@ object WindowFlatMapUtils {
    * @param halfWindowSize if another region overlaps a halfWindowSize to either side of a locus under consideration,
    *                       then it is included.
    * @param initialState initial state to use for each task and each contig analyzed within a task.
-   * @param function function to flatmap, of type (state, sliding windows) -> (new state, result data)
+   * @param function function to flatmap, of type (state, sliding windows) → (new state, result data)
    * @tparam R region data type (e.g. MappedRead)
    * @tparam T result data type
    * @tparam S state type
@@ -87,7 +87,7 @@ object WindowFlatMapUtils {
    * @param partitionedReads partitioned reads; reads that straddle partition boundaries will occur more than once
    *                         herein.
    * @param function function to apply: (loci, iterators of regions that overlap a window around these loci (one
-   *                 region-iterator per sample)) -> [[Iterator[T]]]
+   *                 region-iterator per sample)) → [[Iterator[T]]]
    * @tparam T type of returned [[RDD]]
    * @return [[RDD[T]]]
    */

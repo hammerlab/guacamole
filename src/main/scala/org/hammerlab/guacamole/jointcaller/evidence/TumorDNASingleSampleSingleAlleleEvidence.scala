@@ -11,7 +11,7 @@ import scala.math.max
  * Summary of evidence for a particular somatic allele in a single tumor DNA sample.
  *
  * @param allele allele under consideration
- * @param allelicDepths Map from sequenced bases -> number of reads supporting that allele
+ * @param allelicDepths Map from sequenced bases → number of reads supporting that allele
  * @param logLikelihoods Map from allelic mixtures to log10 likelihoods
  */
 case class TumorDNASingleSampleSingleAlleleEvidence(allele: AlleleAtLocus,
@@ -44,15 +44,15 @@ object TumorDNASingleSampleSingleAlleleEvidence {
       )
 
     val possibleMixtures =
-      Seq(Map(allele.ref -> 1.0)) ++
+      Seq(Map(allele.ref → 1.0)) ++
       (
         if (allele.ref != allele.alt)
-          Seq(Map(allele.alt -> altVaf, allele.ref -> (1.0 - altVaf)))
+          Seq(Map(allele.alt → altVaf, allele.ref → (1.0 - altVaf)))
         else
           Seq.empty
       )
 
-    val logLikelihoods = possibleMixtures.map(mixture ⇒ mixture -> stats.logLikelihoodPileup(mixture)).toMap
+    val logLikelihoods = possibleMixtures.map(mixture ⇒ mixture → stats.logLikelihoodPileup(mixture)).toMap
     val truncatedAllelicDepths = stats.takeAllelicDepths(parameters.maxAllelesPerSite + 1)  // +1 for ref allele
     TumorDNASingleSampleSingleAlleleEvidence(allele, truncatedAllelicDepths, logLikelihoods)
   }

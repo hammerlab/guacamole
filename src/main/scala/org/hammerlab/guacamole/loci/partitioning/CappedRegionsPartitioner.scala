@@ -101,7 +101,7 @@ class CappedRegionsPartitioner[R <: Region: ClassTag](regions: RDD[R],
       depthRuns
         .groupBy(_._1._1)
         .mapValues(_.map {
-          case ((_, valid), num) ⇒ num -> valid
+          case ((_, valid), num) ⇒ num → valid
         })
         .toArray
         .sorted

@@ -16,7 +16,7 @@ import scala.math.max
  * alt == ref.
  *
  * Indels are supported in the usual VCF style, in which ref.length != alt.length. ref.length and alt.length are > 0
- * (e.g. an insertion is represented as A -> ACC) and therefore end > start. The length of the
+ * (e.g. an insertion is represented as A → ACC) and therefore end > start. The length of the
  * reference allele determines the size of the region.
  *
  * NOTE: We currently evaluate only a single alternate at each site at a time, i.e. the mixtures whose likelihoods we compute
