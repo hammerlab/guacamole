@@ -142,6 +142,15 @@ case class PileupElement(
   def isMismatch = alignment match { case Mismatch(_, _, _) ⇒ true; case _ ⇒ false }
   def isMatch = alignment match { case Match(_, _) ⇒ true; case _ ⇒ false }
 
+  def isVariantOrFollowedByDeletion: Boolean =
+    allele.isVariant || (
+      isFinalCigarBase && nextCigarElement.exists(
+        cigar ⇒
+          !cigar.getOperator.consumesReadBases &&
+            cigar.getOperator.consumesReferenceBases
+      )
+    )
+
   /**
    * The sequenced nucleotides at this element.
    *

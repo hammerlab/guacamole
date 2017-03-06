@@ -111,20 +111,14 @@ object ReadSubsequence {
    */
   def ofNextAltAllele(element: PileupElement): Option[ReadSubsequence] = {
 
-    def isVariantOrFollowedByDeletion(e: PileupElement): Boolean = {
-      e.allele.isVariant || (
-        e.isFinalCigarBase && e.nextCigarElement.exists(
-          cigar ⇒ !cigar.getOperator.consumesReadBases && cigar.getOperator.consumesReferenceBases))
-    }
-
-    if (isVariantOrFollowedByDeletion(element) || element.locus.next >= element.read.end)
+    if (element.isVariantOrFollowedByDeletion || element.locus.next >= element.read.end)
       None
     else {
       val firstElement = element.advanceToLocus(element.locus.next)
       var currentElement = firstElement
       var refLength = 0
 
-      while (currentElement.locus.next < currentElement.read.end && isVariantOrFollowedByDeletion(currentElement)) {
+      while (currentElement.locus.next < currentElement.read.end && currentElement.isVariantOrFollowedByDeletion) {
         currentElement = currentElement.advanceToLocus(currentElement.locus.next)
         refLength += 1
       }
