@@ -1,11 +1,11 @@
 package org.hammerlab.guacamole.jointcaller.evidence
 
+import org.hammerlab.genomics.readsets.PerSample
 import org.hammerlab.genomics.reference.{ ContigName, Locus, Region }
 import org.hammerlab.guacamole.jointcaller.AlleleAtLocus.variantAlleles
 import org.hammerlab.guacamole.jointcaller.pileup_summarization.{ MultiplePileupStats, PileupStats }
-import org.hammerlab.guacamole.jointcaller.{ AlleleAtLocus, InputCollection, Parameters }
+import org.hammerlab.guacamole.jointcaller.{ InputCollection, Parameters }
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.readsets.PerSample
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 
 /**

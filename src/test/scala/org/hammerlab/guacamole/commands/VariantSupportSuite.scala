@@ -2,12 +2,12 @@ package org.hammerlab.guacamole.commands
 
 import org.hammerlab.genomics.bases.Bases
 import org.hammerlab.genomics.loci.parsing.ParsedLoci
+import org.hammerlab.genomics.reads.MappedRead
+import org.hammerlab.genomics.readsets.io.TestInputConfig
+import org.hammerlab.genomics.readsets.rdd.ReadsRDDUtil
 import org.hammerlab.genomics.reference.{ ContigName, Locus }
 import org.hammerlab.guacamole.commands.VariantSupport.Caller.{ GenotypeCount, pileupsToAlleleCounts }
 import org.hammerlab.guacamole.pileup.{ Pileup, Util ⇒ PileupUtil }
-import org.hammerlab.guacamole.reads.MappedRead
-import org.hammerlab.guacamole.readsets.io.TestInputConfig
-import org.hammerlab.guacamole.readsets.rdd.ReadsRDDUtil
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.util.GuacFunSuite
 import org.hammerlab.guacamole.windowing.SlidingWindow

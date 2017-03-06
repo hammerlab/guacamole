@@ -2,7 +2,7 @@ package org.hammerlab.guacamole.loci.partitioning
 
 import org.apache.spark.rdd.RDD
 import org.hammerlab.genomics.loci.set.test.LociSetUtil
-import org.hammerlab.guacamole.reads.{ MappedRead, ReadsUtil }
+import org.hammerlab.genomics.reads.{ MappedRead, ReadsUtil }
 import org.hammerlab.guacamole.util.GuacFunSuite
 
 class MicroRegionPartitionerSuite

@@ -4,14 +4,16 @@ import org.apache.spark.storage.BroadcastBlockId
 import org.hammerlab.genomics.bases.Base.{ A, C, G, N, T }
 import org.hammerlab.genomics.bases.{ Base, Bases }
 import org.hammerlab.genomics.loci.set.test.LociSetUtil
+import org.hammerlab.genomics.readsets.PerSample
+import org.hammerlab.genomics.readsets.rdd.ReadsRDDUtil
 import org.hammerlab.genomics.reference.Locus
 import org.hammerlab.genomics.reference.test.LocusUtil
 import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.{ pileupFlatMapMultipleSamples, pileupFlatMapOneSample, pileupFlatMapTwoSamples }
 import org.hammerlab.guacamole.distributed.Util.pileupsToElementStrings
 import org.hammerlab.guacamole.loci.partitioning.UniformPartitioner
 import org.hammerlab.guacamole.pileup.{ Pileup, PileupElement }
-import org.hammerlab.guacamole.readsets.rdd.{ PartitionedRegionsUtil, ReadsRDDUtil }
-import org.hammerlab.guacamole.readsets.{ PartitionedReads, PerSample }
+import org.hammerlab.guacamole.readsets.PartitionedReads
+import org.hammerlab.guacamole.readsets.rdd.PartitionedRegionsUtil
 import org.hammerlab.guacamole.reference.{ MapBackedReferenceSequence, ReferenceUtil }
 import org.hammerlab.guacamole.util.GuacFunSuite
 

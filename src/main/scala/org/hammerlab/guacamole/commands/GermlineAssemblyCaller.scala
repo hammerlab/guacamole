@@ -5,6 +5,9 @@ import breeze.stats.{ mean, median }
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.hammerlab.genomics.bases.Bases
+import org.hammerlab.genomics.reads.MappedRead
+import org.hammerlab.genomics.readsets.args.ReferenceArgs
+import org.hammerlab.genomics.readsets.{ ReadSets, SampleName, SampleRead }
 import org.hammerlab.genomics.reference.Locus
 import org.hammerlab.guacamole.alignment.ReadAlignment
 import org.hammerlab.guacamole.assembly.AssemblyArgs
@@ -12,10 +15,9 @@ import org.hammerlab.guacamole.assembly.AssemblyUtils.{ buildVariantsFromPath, d
 import org.hammerlab.guacamole.distributed.WindowFlatMapUtils.windowFlatMapWithState
 import org.hammerlab.guacamole.likelihood.Likelihood.probabilitiesOfAllPossibleGenotypesFromPileup
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.reads.MappedRead
-import org.hammerlab.guacamole.readsets.args.{ GermlineCallerArgs, ReferenceArgs }
+import org.hammerlab.guacamole.readsets.PartitionedReads
+import org.hammerlab.guacamole.readsets.args.GermlineCallerArgs
 import org.hammerlab.guacamole.readsets.rdd.{ PartitionedRegions, PartitionedRegionsArgs }
-import org.hammerlab.guacamole.readsets.{ PartitionedReads, ReadSets, SampleName }
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.variants.{ Allele, AlleleEvidence, CalledAllele, GenotypeOutputCaller }
 import org.kohsuke.args4j.{ Option ⇒ Args4jOption }
@@ -52,14 +54,12 @@ object GermlineAssemblyCaller {
     override val description = "call germline variants by assembling the surrounding region of reads"
 
     override def computeVariants(args: Arguments, sc: SparkContext) = {
-      val reference = args.reference(sc)
+      val reference = ReferenceBroadcast(args, sc)
       val (readsets, loci) = ReadSets(sc, args)
 
-      val qualityReads = readsets.allMappedReads
-
-      val partitionedReads =
-        PartitionedRegions(
-          qualityReads,
+      val partitionedReads: PartitionedReads =
+        PartitionedRegions[SampleRead, MappedRead](
+          readsets.sampleIdxKeyedMappedReads,
           loci,
           args
         )
@@ -98,7 +98,7 @@ object GermlineAssemblyCaller {
                                  shortcutAssembly: Boolean = false): RDD[CalledAllele] = {
 
       val genotypes: RDD[CalledAllele] =
-        windowFlatMapWithState[MappedRead, CalledAllele, Option[Locus]](
+        windowFlatMapWithState[SampleRead, MappedRead, CalledAllele, Option[Locus]](
           numSamples = 1,
           partitionedReads,
           skipEmpty = true,

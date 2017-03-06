@@ -2,9 +2,9 @@ package org.hammerlab.guacamole.assembly
 
 import breeze.stats.mean
 import org.hammerlab.genomics.bases.Bases
+import org.hammerlab.genomics.reads.{ MappedRead, Read }
 import org.hammerlab.genomics.reference.{ KmerLength, Locus }
 import org.hammerlab.guacamole.assembly.DeBruijnGraph.{ Kmer, Path, Sequence, SubKmer, mergeOverlappingSequences }
-import org.hammerlab.guacamole.reads.{ MappedRead, Read }
 
 import scala.collection.mutable.{ HashSet ⇒ MHashSet, Map ⇒ MMap, Set ⇒ MSet, Stack ⇒ MStack }
 

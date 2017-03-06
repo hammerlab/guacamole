@@ -2,9 +2,9 @@ package org.hammerlab.guacamole.jointcaller.pileup_summarization
 
 import org.hammerlab.genomics.bases.Bases
 import org.hammerlab.genomics.bases.Bases._
+import org.hammerlab.genomics.reads.MappedRead
 import org.hammerlab.genomics.reference.{ ContigSequence, Locus }
 import org.hammerlab.guacamole.pileup.PileupElement
-import org.hammerlab.guacamole.reads.MappedRead
 
 /**
  * A sub-sequence of the bases sequenced by a MappedRead.

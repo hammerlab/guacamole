@@ -1,8 +1,8 @@
 package org.hammerlab.guacamole.windowing
 
 import org.hammerlab.genomics.loci.set.test.LociSetUtil
+import org.hammerlab.genomics.reads.ReadsUtil
 import org.hammerlab.guacamole.loci.LocusUtil
-import org.hammerlab.guacamole.reads.ReadsUtil
 import org.hammerlab.guacamole.windowing.SlidingWindow.advanceMultipleWindows
 import org.hammerlab.test.Suite
 

@@ -2,9 +2,9 @@ package org.hammerlab.guacamole.jointcaller
 
 import org.hammerlab.genomics.bases.Base.{ A, C, G, N, T }
 import org.hammerlab.genomics.bases.{ Base, Bases }
+import org.hammerlab.genomics.reads.ReadsUtil
 import org.hammerlab.guacamole.jointcaller.pileup_summarization.{ AlleleMixture, PileupStats }
 import org.hammerlab.guacamole.pileup.{ Util ⇒ PileupUtil }
-import org.hammerlab.guacamole.reads.ReadsUtil
 import org.hammerlab.guacamole.reference.{ ReferenceBroadcast, ReferenceUtil }
 import org.hammerlab.guacamole.util.GuacFunSuite
 import org.hammerlab.test.resources.File

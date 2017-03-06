@@ -6,6 +6,7 @@ import org.hammerlab.genomics.reference.{ Locus, Region }
 import org.hammerlab.guacamole.commands.SomaticJoint.Arguments
 import org.hammerlab.guacamole.commands.{ GuacCommand, SomaticJoint }
 import org.hammerlab.guacamole.data.{ CancerWGSTestUtil, NA12878TestUtil }
+import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.variants.VariantComparisonTest
 import org.hammerlab.test.resources.File
 
@@ -86,7 +87,7 @@ object SomaticJointCallerIntegrationTests
       compareToCSV(
         outDir + "/somatic.all_samples.vcf",
         CancerWGSTestUtil.expectedSomaticCallsCSV,
-        CancerWGSTestUtil.reference(sc),
+        ReferenceBroadcast(CancerWGSTestUtil, sc),
         Set("primary", "recurrence")
       )
     }

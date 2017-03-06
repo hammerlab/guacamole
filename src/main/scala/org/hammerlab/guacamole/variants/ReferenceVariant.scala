@@ -1,8 +1,8 @@
 package org.hammerlab.guacamole.variants
 
 import org.bdgenomics.formats.avro.{ Variant, Genotype ⇒ BDGGenotype }
+import org.hammerlab.genomics.readsets.SampleName
 import org.hammerlab.genomics.reference.Region
-import org.hammerlab.guacamole.readsets.SampleName
 
 /**
  * Base properties of a genomic change in a sequence sample from a reference genome

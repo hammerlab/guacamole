@@ -1,8 +1,8 @@
 package org.hammerlab.guacamole.jointcaller
 
+import org.hammerlab.genomics.readsets.args.{ Base ⇒ ReadSetsArgsBase }
+import org.hammerlab.genomics.readsets.{ PerSample, SampleName }
 import org.hammerlab.guacamole.jointcaller.Input.{ Analyte, TissueType }
-import org.hammerlab.guacamole.readsets.args.{ Base ⇒ ReadSetsArgsBase }
-import org.hammerlab.guacamole.readsets.{ PerSample, SampleName }
 import org.kohsuke.args4j.spi.StringArrayOptionHandler
 import org.kohsuke.args4j.{ Option ⇒ Args4jOption }
 
@@ -17,6 +17,9 @@ case class InputCollection(items: PerSample[Input]) {
 }
 
 object InputCollection {
+
+  implicit def unpackInputs(inputCollection: InputCollection): PerSample[Input] = inputCollection.items
+
   trait Arguments extends ReadSetsArgsBase {
     @Args4jOption(name = "--tissue-types", handler = classOf[StringArrayOptionHandler],
       usage = "[normal|tumor] ... [normal|tumor]")

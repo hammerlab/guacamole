@@ -1,9 +1,8 @@
 package org.hammerlab.guacamole.pileup
 
 import org.hammerlab.genomics.bases.Base.{ A, C, G, T }
-import org.hammerlab.genomics.bases.BasesUtil
+import org.hammerlab.genomics.reads.{ MappedRead, ReadsUtil }
 import org.hammerlab.genomics.reference.Locus
-import org.hammerlab.guacamole.reads.{ MappedRead, ReadsUtil }
 import org.hammerlab.guacamole.reference.ReferenceUtil
 import org.hammerlab.guacamole.util.GuacFunSuite
 import org.hammerlab.guacamole.variants.Allele
@@ -12,7 +11,6 @@ import org.scalatest.prop.TableDrivenPropertyChecks
 class PileupSuite
   extends GuacFunSuite
     with TableDrivenPropertyChecks
-    with BasesUtil
     with ReadsUtil
     with Util
     with ReferenceUtil {

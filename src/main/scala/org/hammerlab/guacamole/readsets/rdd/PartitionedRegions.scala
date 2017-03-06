@@ -28,8 +28,8 @@ import scala.reflect.ClassTag
  * Note: the containing [[PartitionedRegions]] gets picked up by the closure-cleaner and serialized when
  * [[mapPartitions]] is called.
  */
-class PartitionedRegions[R <: Region: ClassTag] private(regions: RDD[R],
-                                                        partitioning: LociPartitioning)
+class PartitionedRegions[T: ClassTag, R <: Region: ClassTag] private(regions: RDD[T],
+                                                                     partitioning: LociPartitioning)(implicit toR: T ⇒ R)
   extends Serializable {
 
   @transient lazy val lociSetsRDD = partitioning.lociSetsRDD(sc)
@@ -53,7 +53,7 @@ class PartitionedRegions[R <: Region: ClassTag] private(regions: RDD[R],
    * @return [[RDD[V]]], with partitions comprised of the [[Iterator[V]]]'s returned by application of `f` to each
    *        partition.
    */
-  def mapPartitions[V: ClassTag](f: (Iterator[R], LociSet) ⇒ Iterator[V]): RDD[V] =
+  def mapPartitions[V: ClassTag](f: (Iterator[T], LociSet) ⇒ Iterator[V]): RDD[V] =
     regions
       .zipPartitions(
         lociSetsRDD,
@@ -93,11 +93,11 @@ object PartitionedRegions {
   /**
    * Load an [[RDD]] of partitioned regions from a file.
    */
-  def load[R <: Region: ClassTag](sc: SparkContext,
-                                  filename: String,
-                                  partitioning: LociPartitioning): PartitionedRegions[R] = {
+  def load[T: ClassTag, R <: Region: ClassTag](sc: SparkContext,
+                                               filename: String,
+                                               partitioning: LociPartitioning)(implicit toR: T ⇒ R): PartitionedRegions[T, R] = {
     progress(s"Loading partitioned reads from $filename")
-    val regions = sc.fromSequenceFile[R](filename, splittable = false)
+    val regions = sc.fromSequenceFile[T](filename, splittable = false)
     new PartitionedRegions(regions, partitioning)
   }
 
@@ -113,12 +113,12 @@ object PartitionedRegions {
    * @param args Parameters dictating how `loci` should be partitioned.
    * @tparam R Region type.
    */
-  def apply[R <: Region: ClassTag](regions: RDD[R],
-                                   loci: LociSet,
-                                   args: PartitionedRegionsArgs): PartitionedRegions[R] =
+  def apply[T: ClassTag, R <: Region: ClassTag](regions: RDD[T],
+                                                loci: LociSet,
+                                                args: PartitionedRegionsArgs)(implicit toR: T ⇒ R): PartitionedRegions[T, R] =
     apply(
       regions,
-      LociPartitioning(regions, loci, args),
+      LociPartitioning(regions.map(toR), loci, args),
       args.halfWindowSize,
       args.partitionedReadsPathOpt,
       args.compressReadPartitions,
@@ -132,12 +132,12 @@ object PartitionedRegions {
    * If `partitionedRegionsPathOpt` is provided, attempt to load loci- and region- partitionings from that path; if the
    * path doesn't exist, compute them and save to that path.
    */
-  private[rdd] def apply[R <: Region: ClassTag](regions: RDD[R],
-                                                lociPartitioning: LociPartitioning,
-                                                halfWindowSize: Int,
-                                                partitionedRegionsPathOpt: Option[String],
-                                                compress: Boolean,
-                                                printStats: Boolean): PartitionedRegions[R] =
+  private[rdd] def apply[T: ClassTag, R <: Region: ClassTag](regions: RDD[T],
+                                                             lociPartitioning: LociPartitioning,
+                                                             halfWindowSize: Int,
+                                                             partitionedRegionsPathOpt: Option[String],
+                                                             compress: Boolean,
+                                                             printStats: Boolean)(implicit toR: T ⇒ R): PartitionedRegions[T, R] =
     partitionedRegionsPathOpt match {
       case Some(partitionedRegionsPath) ⇒
 
@@ -157,11 +157,11 @@ object PartitionedRegions {
   /**
    * Construct a [[PartitionedRegions]] for above constructors, ignoring loading/saving considerations.
    */
-  private def compute[R <: Region: ClassTag](regions: RDD[R],
-                                             lociPartitioning: LociPartitioning,
-                                             halfWindowSize: Int,
-                                             compress: Boolean,
-                                             printStats: Boolean): PartitionedRegions[R] = {
+  private def compute[T: ClassTag, R <: Region: ClassTag](regions: RDD[T],
+                                                          lociPartitioning: LociPartitioning,
+                                                          halfWindowSize: Int,
+                                                          compress: Boolean,
+                                                          printStats: Boolean)(implicit toR: T ⇒ R): PartitionedRegions[T, R] = {
 
     val sc = regions.sparkContext
 

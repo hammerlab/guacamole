@@ -9,6 +9,7 @@ import org.apache.spark.SparkContext
 import org.hammerlab.genomics.bases.{ Base, Bases }
 import org.hammerlab.genomics.loci.parsing.{ LociRange, LociRanges, ParsedLociRange }
 import org.hammerlab.genomics.loci.set.LociSet
+import org.hammerlab.genomics.readsets.args.HasReference
 import org.hammerlab.genomics.reference.{ ContigName, ContigSequence, Locus, NumLoci }
 
 import scala.collection.mutable
@@ -33,6 +34,13 @@ case class ReferenceBroadcast(broadcastedContigs: Map[ContigName, ContigSequence
 }
 
 object ReferenceBroadcast extends Logging {
+
+  def apply(args: HasReference, sc: SparkContext): ReferenceBroadcast =
+    ReferenceBroadcast(
+      args.referencePath,
+      sc,
+      partialFasta = args.referenceIsPartial
+    )
 
   /**
    * Read a regular fasta file

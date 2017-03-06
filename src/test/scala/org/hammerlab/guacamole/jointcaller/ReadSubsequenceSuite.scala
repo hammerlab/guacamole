@@ -1,10 +1,10 @@
 package org.hammerlab.guacamole.jointcaller
 
 import org.hammerlab.genomics.bases.Base.{ C, G }
+import org.hammerlab.genomics.reads.ReadsUtil
 import org.hammerlab.guacamole.jointcaller.AlleleAtLocus.variantAlleles
 import org.hammerlab.guacamole.jointcaller.pileup_summarization.ReadSubsequence.{ nextAlts, ofFixedReferenceLength, ofNextAltAllele }
 import org.hammerlab.guacamole.pileup.{ Util ⇒ PileupUtil }
-import org.hammerlab.guacamole.reads.ReadsUtil
 import org.hammerlab.guacamole.reference.{ ReferenceBroadcast, ReferenceUtil }
 import org.hammerlab.guacamole.util.GuacFunSuite
 import org.hammerlab.test.resources.File

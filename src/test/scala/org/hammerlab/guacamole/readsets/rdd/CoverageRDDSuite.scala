@@ -3,10 +3,10 @@ package org.hammerlab.guacamole.readsets.rdd
 import org.apache.spark.rdd.RDD
 import org.hammerlab.genomics.loci.set.LociSet
 import org.hammerlab.genomics.loci.set.test.LociSetUtil
+import org.hammerlab.genomics.readsets.rdd.RegionsRDDUtil
 import org.hammerlab.genomics.reference.test.ContigLengthsUtil
-import org.hammerlab.genomics.reference.{ Position, Region }
+import org.hammerlab.genomics.reference.{ ContigLengths, Position, Region }
 import org.hammerlab.guacamole.loci.Coverage
-import org.hammerlab.guacamole.readsets.ContigLengths
 import org.hammerlab.guacamole.util.GuacFunSuite
 import org.hammerlab.magic.rdd.cmp.CmpStats
 import org.hammerlab.magic.rdd.cmp.EqualsRDD._

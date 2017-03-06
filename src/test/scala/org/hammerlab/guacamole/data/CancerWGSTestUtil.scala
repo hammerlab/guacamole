@@ -1,6 +1,6 @@
 package org.hammerlab.guacamole.data
 
-import org.hammerlab.guacamole.readsets.args.HasReference
+import org.hammerlab.genomics.readsets.args.HasReference
 import org.hammerlab.test.resources.File
 
 object CancerWGSTestUtil extends HasReference {

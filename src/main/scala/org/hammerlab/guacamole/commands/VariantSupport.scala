@@ -7,13 +7,14 @@ import org.bdgenomics.formats.avro.Variant
 import org.hammerlab.commands.Args
 import org.hammerlab.genomics.bases.Bases
 import org.hammerlab.genomics.loci.set.LociSet
+import org.hammerlab.genomics.readsets.{ PerSample, ReadSets, SampleName }
 import org.hammerlab.genomics.reference.{ ContigName, Locus, Region }
 import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.pileupFlatMapMultipleSamples
 import org.hammerlab.guacamole.pileup.Pileup
-import org.hammerlab.guacamole.readsets.args.{ ReferenceArgs, Arguments ⇒ ReadSetsArguments }
-import org.hammerlab.guacamole.readsets.io.InputConfig
+import org.hammerlab.genomics.readsets.args.{ ReferenceArgs, Arguments ⇒ ReadSetsArguments }
+import org.hammerlab.genomics.readsets.io.InputConfig
 import org.hammerlab.guacamole.readsets.rdd.{ PartitionedRegions, PartitionedRegionsArgs }
-import org.hammerlab.guacamole.readsets.{ PerSample, ReadSets, SampleName }
+import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.kohsuke.args4j.{ Option ⇒ Args4jOption }
 
 object VariantSupport {
@@ -50,7 +51,7 @@ object VariantSupport {
 
     override def run(args: Arguments, sc: SparkContext): Unit = {
 
-      val reference = args.reference(sc)
+      val reference = ReferenceBroadcast(args, sc)
 
       val adamContext: ADAMContext = sc
 
@@ -79,7 +80,7 @@ object VariantSupport {
 
       val partitionedReads =
         PartitionedRegions(
-          readsets.allMappedReads,
+          readsets.sampleIdxKeyedMappedReads,
           loci,
           args
         )

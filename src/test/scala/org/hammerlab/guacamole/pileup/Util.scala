@@ -2,10 +2,10 @@ package org.hammerlab.guacamole.pileup
 
 import org.apache.spark.SparkContext
 import org.hammerlab.genomics.loci.parsing.ParsedLoci
+import org.hammerlab.genomics.reads.MappedRead
+import org.hammerlab.genomics.readsets.io.InputConfig
+import org.hammerlab.genomics.readsets.rdd.ReadsRDDUtil
 import org.hammerlab.genomics.reference.{ ContigName, Locus }
-import org.hammerlab.guacamole.reads.MappedRead
-import org.hammerlab.guacamole.readsets.io.InputConfig
-import org.hammerlab.guacamole.readsets.rdd.ReadsRDDUtil
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 
 trait Util
@@ -41,7 +41,7 @@ trait Util
 
   def loadPileup(sc: SparkContext,
                  filename: String,
-                 locus: Locus = 0,
+                 locus: Locus = Locus(0),
                  maybeContig: Option[ContigName] = None,
                  reference: ReferenceBroadcast = reference): Pileup = {
     val records =

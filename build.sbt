@@ -28,6 +28,8 @@ deps ++= Seq(
 compileAndTestDeps ++= Seq(
   libs.value('genomic_utils),
   libs.value('loci),
+  libs.value('reads),
+  libs.value('readsets),
   libs.value('reference)
 )
 

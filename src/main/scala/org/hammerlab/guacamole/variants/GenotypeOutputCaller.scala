@@ -6,9 +6,9 @@ import org.bdgenomics.adam.models.SequenceDictionary
 import org.bdgenomics.adam.rdd.variant.GenotypeRDD
 import org.bdgenomics.formats.avro.Sample
 import org.hammerlab.commands.Args
+import org.hammerlab.genomics.readsets.{ PerSample, SampleName }
 import org.hammerlab.guacamole.commands.GuacCommand
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
-import org.hammerlab.guacamole.readsets.{ PerSample, SampleName }
 
 /**
  * Caller-interface that writes computed variants to disk according to a [[GenotypeOutputArgs]].

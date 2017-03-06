@@ -1,12 +1,12 @@
 package org.hammerlab.guacamole.commands
 
 import org.hammerlab.genomics.bases.Bases
+import org.hammerlab.genomics.readsets.ReadSets
 import org.hammerlab.genomics.reference.{ ContigName, Locus }
 import org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Arguments
 import org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Caller.discoverGermlineVariants
 import org.hammerlab.guacamole.data.NA12878TestUtil
 import org.hammerlab.guacamole.loci.partitioning.LociPartitioning
-import org.hammerlab.guacamole.readsets.ReadSets
 import org.hammerlab.guacamole.readsets.rdd.PartitionedRegionsUtil
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
 import org.hammerlab.guacamole.util.GuacFunSuite
@@ -62,7 +62,7 @@ class GermlineAssemblyCallerSuite
 
     val lociPartitioning = LociPartitioning(readsets.allMappedReads, loci, args)
 
-    val partitionedReads = partitionReads(readsets.allMappedReads, lociPartitioning)
+    val partitionedReads = partitionReads(readsets.sampleIdxKeyedMappedReads, lociPartitioning)
 
     val variants =
       discoverGermlineVariants(

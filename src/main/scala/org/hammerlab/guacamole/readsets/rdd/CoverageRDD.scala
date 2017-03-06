@@ -82,6 +82,7 @@ class CoverageRDD[R <: Region: ClassTag](rdd: RDD[R])
         )
     )
 
+  // Necessary for the `.mapValues` below; see https://issues.scala-lang.org/browse/SI-10222.
   private implicit val contigNameBoolOrdering = Ordering.by[(ContigName, Boolean), ContigName](_._1)
 
   /**

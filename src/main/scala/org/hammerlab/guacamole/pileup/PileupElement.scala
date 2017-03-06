@@ -3,8 +3,8 @@ package org.hammerlab.guacamole.pileup
 import htsjdk.samtools.{ CigarElement, CigarOperator }
 import org.bdgenomics.adam.util.PhredUtils.phredToSuccessProbability
 import org.hammerlab.genomics.bases.Bases
+import org.hammerlab.genomics.reads.MappedRead
 import org.hammerlab.genomics.reference.{ ContigSequence, Locus }
-import org.hammerlab.guacamole.reads.MappedRead
 import org.hammerlab.guacamole.util.CigarUtils
 import org.hammerlab.guacamole.variants.Allele
 
@@ -16,7 +16,7 @@ import scala.annotation.tailrec
  * @param read The read this [[PileupElement]] is coming from.
  * @param locus The reference locus.
  * @param readPosition The offset into the sequence of bases in the read that this element corresponds to.
- * @param cigarElementIndex The index in the read's sequence of cigar elements ([[org.hammerlab.guacamole.reads.MappedRead.cigarElements]])
+ * @param cigarElementIndex The index in the read's sequence of cigar elements ([[org.hammerlab.genomics.reads.MappedRead.cigarElements]])
  *                          of the element that contains the current readPosition.
  * @param cigarElementLocus The reference START position of the current cigar element.
  *                          If the element is an INSERTION this the PRECEDING reference base
@@ -34,7 +34,7 @@ case class PileupElement(
   assume(locus >= read.start)
   assume(locus < read.end)
 
-  val referenceBase: Byte = contigSequence(locus)
+  val referenceBase = contigSequence(locus)
 
   def cigarElement = read.cigarElements(cigarElementIndex)
 
@@ -120,7 +120,7 @@ case class PileupElement(
           s"Found deletion preceded by cigar operator $op at PileupElement for read $read at locus $locus"
         )
       case (CigarOperator.M, _) | (CigarOperator.EQ, _) | (CigarOperator.X, _) ⇒
-        val base: Byte = read.sequence(readPosition)
+        val base = read.sequence(readPosition)
         val quality = read.baseQualities(readPosition)
         if (base == referenceBase)
           Match(base, quality)
@@ -212,7 +212,7 @@ case class PileupElement(
   }
 
   /**
-   * Returns whether the current cigar element of this [[org.hammerlab.guacamole.reads.MappedRead]] contains the given reference locus.
+   * Returns whether the current cigar element of this [[org.hammerlab.genomics.reads.MappedRead]] contains the given reference locus.
    *
    * Can only return true if the cigar element consumes reference bases.
    */

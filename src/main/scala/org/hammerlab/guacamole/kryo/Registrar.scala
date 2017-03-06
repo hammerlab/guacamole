@@ -7,15 +7,12 @@ import org.bdgenomics.adam.rich.RichVariant
 import org.bdgenomics.adam.serialization.ADAMKryoRegistrator
 import org.hammerlab.genomics.bases.Base
 import org.hammerlab.genomics.loci.map.{ Contig, ContigSerializer, LociMap, Serializer }
-import org.hammerlab.genomics.loci.set.{ Registrar ⇒ LociSetRegistrar }
-import org.hammerlab.genomics.reference.Position
-import org.hammerlab.genomics.{ bases, reference }
+import org.hammerlab.genomics.reference.{ ContigLengths, Position }
+import org.hammerlab.genomics.{ bases, readsets, reference }
 import org.hammerlab.guacamole.jointcaller.kryo.{ Registrar ⇒ JointCallerRegistrar }
 import org.hammerlab.guacamole.loci.Coverage
 import org.hammerlab.guacamole.loci.partitioning.LociPartitioning
 import org.hammerlab.guacamole.loci.partitioning.MicroRegionPartitioner.MicroPartitionIndex
-import org.hammerlab.guacamole.reads.{ MappedRead, MappedReadSerializer, MateAlignmentProperties, PairedRead, Read, UnmappedRead, UnmappedReadSerializer }
-import org.hammerlab.guacamole.readsets.ContigLengths
 import org.hammerlab.guacamole.variants.{ Allele, AlleleEvidence, CalledAllele, CalledSomaticAllele, Genotype }
 import org.hammerlab.magic.accumulables.{ HashMap ⇒ MagicHashMap }
 import org.hammerlab.magic.kryo.{ Registrar ⇒ MagicRDDRegistrar }
@@ -38,17 +35,8 @@ class Registrar extends KryoRegistrator {
 
     kryo.register(classOf[ContigLengths])
 
-    // Reads
-    kryo.register(classOf[MappedRead], new MappedReadSerializer)
-    kryo.register(classOf[Array[MappedRead]])
-    kryo.register(classOf[MateAlignmentProperties])
-    kryo.register(classOf[Array[Read]])
-    kryo.register(classOf[UnmappedRead], new UnmappedReadSerializer)
-
-    kryo.register(classOf[PairedRead[_]])
+    new readsets.Registrar().registerClasses(kryo)
     kryo.register(classOf[scala.collection.mutable.WrappedArray.ofByte])  // PairedRead
-
-    new LociSetRegistrar().registerClasses(kryo)
 
     // LociMap[Long]s is serialized when broadcast in MicroRegionPartitioner.
     kryo.register(classOf[LociPartitioning])

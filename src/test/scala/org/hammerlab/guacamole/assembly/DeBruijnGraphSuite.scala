@@ -1,10 +1,10 @@
 package org.hammerlab.guacamole.assembly
 
 import org.hammerlab.genomics.bases.Bases
+import org.hammerlab.genomics.reads.ReadsUtil
+import org.hammerlab.genomics.readsets.rdd.ReadsRDDUtil
 import org.hammerlab.genomics.reference.Locus
 import org.hammerlab.guacamole.assembly.DeBruijnGraph.{ Kmer, Sequence, mergeOverlappingSequences }
-import org.hammerlab.guacamole.reads.ReadsUtil
-import org.hammerlab.guacamole.readsets.rdd.ReadsRDDUtil
 import org.hammerlab.guacamole.reference.ReferenceUtil
 import org.hammerlab.guacamole.util.GuacFunSuite
 import org.hammerlab.test.matchers.seqs.MapMatcher.mapMatch

@@ -1,8 +1,8 @@
 package org.hammerlab.guacamole.util
 
+import org.hammerlab.genomics.readsets.PerSample
 import org.hammerlab.guacamole.kryo.Registrar
 import org.hammerlab.guacamole.loci.LocusUtil
-import org.hammerlab.guacamole.readsets.PerSample
 import org.hammerlab.guacamole.reference.BasesUtil
 import org.hammerlab.spark.test.suite.{ KryoSparkSuite, SparkSerialization }
 import org.hammerlab.test.resources.File

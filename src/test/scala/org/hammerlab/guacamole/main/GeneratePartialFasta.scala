@@ -5,14 +5,14 @@ import java.io.{ BufferedWriter, File, FileWriter }
 import org.apache.spark.SparkContext
 import org.hammerlab.commands.Args
 import org.hammerlab.genomics.loci.set.LociSet
+import org.hammerlab.genomics.readsets.ReadSets
+import org.hammerlab.genomics.readsets.args.{ ReferenceArgs, Arguments ⇒ ReadSetsArguments }
+import org.hammerlab.genomics.readsets.io.InputConfig
 import org.hammerlab.genomics.reference.Interval
 import org.hammerlab.guacamole.commands.GuacCommand
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
-import org.hammerlab.guacamole.readsets.ReadSets
-import org.hammerlab.guacamole.readsets.args.{ ReferenceArgs, Arguments ⇒ ReadSetsArguments }
-import org.hammerlab.guacamole.readsets.io.InputConfig
 import org.hammerlab.guacamole.readsets.rdd.PartitionedRegionsArgs
-import org.hammerlab.guacamole.reference.ContigNotFound
+import org.hammerlab.guacamole.reference.{ ContigNotFound, ReferenceBroadcast }
 import org.kohsuke.args4j.{ Option ⇒ Args4jOption }
 
 class GeneratePartialFastaArguments
@@ -58,7 +58,7 @@ object GeneratePartialFasta extends GuacCommand[GeneratePartialFastaArguments] {
 
   override def run(args: GeneratePartialFastaArguments, sc: SparkContext): Unit = {
 
-    val reference = args.reference(sc)
+    val reference = ReferenceBroadcast(args, sc)
 
     val readsets =
       ReadSets(

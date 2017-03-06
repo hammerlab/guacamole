@@ -1,5 +1,6 @@
 package org.hammerlab.guacamole
 
+import org.hammerlab.genomics.readsets.HasSampleId
 import org.hammerlab.genomics.reference.Region
 
 /**

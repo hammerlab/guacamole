@@ -3,9 +3,9 @@ package org.hammerlab.guacamole.likelihood
 import org.bdgenomics.adam.util.PhredUtils.phredToErrorProbability
 import org.hammerlab.genomics.bases.Base.C
 import org.hammerlab.genomics.bases.Bases
+import org.hammerlab.genomics.reads.{ MappedRead, ReadsUtil }
 import org.hammerlab.guacamole.likelihood.Likelihood.{ likelihoodsOfGenotypes, probabilitiesOfAllPossibleGenotypesFromPileup, uniformPrior }
 import org.hammerlab.guacamole.pileup.{ PileupElement, Util ⇒ PileupUtil }
-import org.hammerlab.guacamole.reads.{ MappedRead, ReadsUtil }
 import org.hammerlab.guacamole.reference.ReferenceUtil
 import org.hammerlab.guacamole.util.GuacFunSuite
 import org.hammerlab.guacamole.variants.{ Allele, Genotype }
