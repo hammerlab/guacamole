@@ -26,7 +26,7 @@ object PileupFlatMapUtils {
     existing match {
       case None ⇒
         Pileup(
-          window.currentRegions(),
+          window.currentRegions,
           sampleName,
           window.contigName,
           window.currentLocus,
@@ -128,7 +128,7 @@ object PileupFlatMapUtils {
                 contigName = window.contigName
               } yield
                 Pileup(
-                  window.currentRegions(),
+                  window.currentRegions,
                   sampleName,
                   contigName,
                   window.currentLocus,

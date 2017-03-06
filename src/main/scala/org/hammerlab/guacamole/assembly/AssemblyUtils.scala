@@ -59,7 +59,7 @@ object AssemblyUtils extends Logging {
                          debugPrint: Boolean = false): Seq[Sequence] = {
 
     val locus = currentWindow.currentLocus
-    val reads = currentWindow.currentRegions()
+    val reads = currentWindow.currentRegions
 
     // TODO(ryan): normalize contigName reference
     val contigName = reads.head.contigName

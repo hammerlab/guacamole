@@ -55,7 +55,7 @@ class VariantSupportSuite
 
         window.setCurrentLocus(locus)
 
-        val pileup = makePileup(window.currentRegions(), contig, locus)
+        val pileup = makePileup(window.currentRegions, contig, locus)
 
         checkPileup(pileup, alleleCounts: _*)
       }

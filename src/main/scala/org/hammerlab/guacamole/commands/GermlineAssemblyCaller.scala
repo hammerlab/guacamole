@@ -121,7 +121,7 @@ object GermlineAssemblyCaller {
 
             val referenceContig = reference.getContig(contigName)
 
-            val regionReads = window.currentRegions()
+            val regionReads = window.currentRegions
             // Find the reads the overlap the center locus/ current locus
             val currentLocusReads =
               regionReads

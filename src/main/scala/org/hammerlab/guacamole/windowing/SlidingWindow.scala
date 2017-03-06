@@ -47,9 +47,7 @@ case class SlidingWindow[R <: Region](contigName: ContigName,
   private val currentRegionsPriorityQueue = new mutable.PriorityQueue[R]()(Interval.orderByEndDesc)
 
   /** The regions that overlap the window surrounding [[currentLocus]]. */
-  def currentRegions(): Vector[R] = {
-    currentRegionsPriorityQueue.toVector
-  }
+  def currentRegions: Vector[R] = currentRegionsPriorityQueue.toVector
 
   /**
    * Advance to the specified locus, which must be greater than the current locus. After calling this, the
@@ -96,7 +94,7 @@ case class SlidingWindow[R <: Region](contigName: ContigName,
    *
    * @return Some(locus) if such a locus exists, otherwise None
    */
-  def nextLocusWithRegions(): Option[Locus] =
+  def nextLocusWithRegions: Option[Locus] =
     if (currentRegionsPriorityQueue.exists(_.overlapsLocus(currentLocus + 1, halfWindowSize)))
       Some(currentLocus + 1)
     else if (sortedRegions.hasNext) {
@@ -132,7 +130,7 @@ object SlidingWindow {
       while (loci.hasNext) {
         val nextNonEmptyLocus =
           windows
-            .flatMap(_.nextLocusWithRegions())
+            .flatMap(_.nextLocusWithRegions)
             .reduceOption(_ min _)
 
         if (nextNonEmptyLocus.isEmpty) {
@@ -147,7 +145,7 @@ object SlidingWindow {
           // Windows may still be empty here, because the next locus with regions may have been before the next locus,
           // and now we just fast-forwarded past the regions into an empty area of the genome.
           // If any window is nonempty, we're done. If not, we continue looping.
-          if (windows.exists(_.currentRegions().nonEmpty)) {
+          if (windows.exists(_.currentRegions.nonEmpty)) {
             return Some(nextLocus)
           }
         } else {
