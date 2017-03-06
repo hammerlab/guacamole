@@ -89,7 +89,7 @@ object AlleleAtLocus {
       val subsequenceCounts =
         ReadSubsequence.nextAlts(pileup.elements)
           .filter(subsequence ⇒ !onlyStandardBases || subsequence.allStandardBases)
-          .groupBy(x ⇒ (x.endLocus, x.sequence))
+          .groupBy(x ⇒ (x.end, x.sequence))
           .map(pair ⇒ pair._2.head → pair._2.length)
           .toVector
           .sortBy(-1 * _._2)

@@ -10,21 +10,20 @@ import org.hammerlab.guacamole.reads.MappedRead
  * A sub-sequence of the bases sequenced by a MappedRead.
  *
  * @param read the mapped read
- * @param startLocus reference locus of the first base in the sub-sequence
- * @param endLocus one past the reference locus of the last base in the sub-sequence
+ * @param start reference locus of the first base in the sub-sequence
+ * @param end one past the reference locus of the last base in the sub-sequence
+ * @param length reference distance spanned by this subsequence, i.e. (end - start)
  * @param startReadPosition offset into the read of the first base in the sub-sequence
  * @param endReadPosition one past the offset into the read of last base in the sub-sequence
  */
 case class ReadSubsequence(read: MappedRead,
-                           startLocus: Locus,
-                           endLocus: Locus,
+                           start: Locus,
+                           end: Locus,
+                           length: Int,
                            startReadPosition: Int,
                            endReadPosition: Int) {
 
-  assume(endLocus > startLocus)
-
-  /** Number of reference bases spanned */
-  def referenceLength: Int = (endLocus - startLocus).toInt
+  assume(end > start)
 
   /** The sequenced bases as a string */
   def sequence: Bases = read.sequence.slice(startReadPosition, endReadPosition)
@@ -51,7 +50,7 @@ case class ReadSubsequence(read: MappedRead,
 
   /** The reference sequence at this locus. */
   def refSequence(contigReferenceSequence: ContigSequence): Bases =
-    contigReferenceSequence.slice(startLocus, referenceLength)
+    contigReferenceSequence.slice(start, length)
 }
 
 object ReadSubsequence {
@@ -72,10 +71,10 @@ object ReadSubsequence {
     } else {
       val firstElement = element.advanceToLocus(element.locus + 1)
       var currentElement = firstElement
-      var refOffset = 1
-      while (currentElement.locus.next < currentElement.read.end && refOffset < length) {
+      var refLength = 1
+      while (currentElement.locus.next < currentElement.read.end && refLength < length) {
         currentElement = currentElement.advanceToLocus(currentElement.locus.next)
-        refOffset += 1
+        refLength += 1
       }
 
       val next = currentElement.locus.next
@@ -87,6 +86,7 @@ object ReadSubsequence {
             element.read,
             firstElement.locus,
             next,
+            refLength,
             firstElement.readPosition,
             currentElement
               .advanceToLocus(next)
@@ -120,21 +120,27 @@ object ReadSubsequence {
     } else {
       val firstElement = element.advanceToLocus(element.locus + 1)
       var currentElement = firstElement
+      var refLength = 0
+
       while (currentElement.locus < currentElement.read.end - 1 && isVariantOrFollowedByDeletion(currentElement)) {
         currentElement = currentElement.advanceToLocus(currentElement.locus + 1)
+        refLength += 1
       }
-      if (currentElement.locus == firstElement.locus || currentElement.locus == currentElement.read.end) {
+
+      if (currentElement.locus == firstElement.locus || currentElement.locus == currentElement.read.end)
         // We either have no variant here, or we hit the end of the read.
         None
-      } else {
-        val result = ReadSubsequence(
-          element.read,
-          firstElement.locus,
-          currentElement.locus,
-          firstElement.readPosition,
-          currentElement.readPosition)
-        Some(result)
-      }
+      else
+        Some(
+          ReadSubsequence(
+            element.read,
+            firstElement.locus,
+            currentElement.locus,
+            refLength,
+            firstElement.readPosition,
+            currentElement.readPosition
+          )
+        )
     }
   }
 
