@@ -28,8 +28,8 @@ case class ReferenceBroadcast(broadcastedContigs: Map[ContigName, ContigSequence
   override def getReferenceBase(contigName: ContigName, locus: Locus): Base =
     getContig(contigName)(locus)
 
-  override def getReferenceSequence(contigName: ContigName, startLocus: Locus, length: Int): Bases =
-    getContig(contigName).slice(startLocus, length)
+  override def getReferenceSequence(contigName: ContigName, start: Locus, length: Int): Bases =
+    getContig(contigName).slice(start, length)
 }
 
 object ReferenceBroadcast extends Logging {

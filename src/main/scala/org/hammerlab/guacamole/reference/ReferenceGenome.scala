@@ -34,10 +34,10 @@ trait ReferenceGenome {
    * Get the reference base at the given reference location
    *
    * @param contigName contig/chromosome to retrieve reference sequence from
-   * @param startLocus 0-based inclusive start of the subsequence
+   * @param start 0-based inclusive start of the subsequence
    * @param length number of bases to take, starting from startLocus. Integer; strictly intended for
    *               k-mer/assembly-window-type calculations.
    * @return Array of bases for the reference sequence
    */
-  def getReferenceSequence(contigName: ContigName, startLocus: Locus, length: Int): Bases
+  def getReferenceSequence(contigName: ContigName, start: Locus, length: Int): Bases
 }
