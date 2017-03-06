@@ -14,7 +14,7 @@ class AlleleAtLocusSuite
 
   val celsr1BAMs =
     Vector("normal_0.bam", "tumor_wes_2.bam", "tumor_rna_11.bam")
-      .map(name => s"cancer-wes-and-rna-celsr1/$name")
+      .map(name ⇒ s"cancer-wes-and-rna-celsr1/$name")
 
   val b37Chromosome22Fasta = resourcePath("chr22.fa.gz")
 
@@ -26,7 +26,7 @@ class AlleleAtLocusSuite
 
     val pileups =
       (inputs.normalDNA ++ inputs.tumorDNA).map(
-        input =>
+        input ⇒
           loadPileup(sc, input.path, 46931060, Some("chr22"))
       )
 

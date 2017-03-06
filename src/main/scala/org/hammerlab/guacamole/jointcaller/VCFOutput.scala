@@ -101,9 +101,9 @@ object VCFOutput {
     val sortedEvidences =
       calls
         .flatMap(_.singleAlleleEvidences)
-        .sortBy(e => (e.allele.contigName, e.allele.start))
+        .sortBy(e ⇒ (e.allele.contigName, e.allele.start))
 
-    sortedEvidences.foreach(evidence => {
+    sortedEvidences.foreach(evidence ⇒ {
       val variantContext =
         makeHtsjdkVariantContext(
           evidence,
@@ -144,7 +144,7 @@ object VCFOutput {
     def allelicDepthString(depths: AllelicDepths): String = {
       val allAlleles = (Seq(allele.ref, allele.alt) ++ depths.keys.toSeq).distinct
       allAlleles.map(
-        allele =>
+        allele ⇒
           "%s=%d".format(
             alleleToString(allele),
             depths.getOrElse(allele, 0)
@@ -185,7 +185,7 @@ object VCFOutput {
           Seq.empty
       )
 
-    val genotypes = effectiveInputs.map { input =>
+    val genotypes = effectiveInputs.map { input ⇒
 
       def mixtureToString(mixture: AlleleMixture) =
         (for {
@@ -212,7 +212,7 @@ object VCFOutput {
       genotypeBuilder.name(input.sampleName)
 
       (input.tissueType, input.analyte) match {
-        case (TissueType.Normal, Analyte.DNA) =>
+        case (TissueType.Normal, Analyte.DNA) ⇒
           val germlineEvidence =
             samplesEvidence
               .allEvidences(input.index)
@@ -246,14 +246,14 @@ object VCFOutput {
                 allele.ref,
                 allele.alt
               )
-              .map(allele => germlineEvidence.allelicDepths.getOrElse(allele, 0))
+              .map(allele ⇒ germlineEvidence.allelicDepths.getOrElse(allele, 0))
               .toArray
             )
             .DP(germlineEvidence.depth)
             .attribute("ADP", allelicDepthString(germlineEvidence.allelicDepths))
             .attribute("VAF", germlineEvidence.vaf)
 
-        case (TissueType.Tumor, Analyte.DNA) =>
+        case (TissueType.Tumor, Analyte.DNA) ⇒
           val tumorEvidence =
             samplesEvidence
               .allEvidences(input.index)
@@ -267,7 +267,7 @@ object VCFOutput {
             samplesEvidence
               .parameters
               .somaticGenotypePolicy match {
-              case Parameters.SomaticGenotypePolicy.Presence =>
+              case Parameters.SomaticGenotypePolicy.Presence ⇒
                 // Call an alt if there is any variant evidence in this sample and no other alt allele has more evidence.
                 val topTwoAlleles =
                   tumorEvidence
@@ -280,17 +280,17 @@ object VCFOutput {
                     .toSet
 
                 topTwoAlleles match {
-                  case x if x == Set(allele.ref, allele.alt) =>
+                  case x if x == Set(allele.ref, allele.alt) ⇒
                     Seq(allele.ref, allele.alt)
 
-                  case x if x == Set(allele.ref) || x == Set(allele.alt) =>
+                  case x if x == Set(allele.ref) || x == Set(allele.alt) ⇒
                     Seq(x.head, x.head)
 
-                  case _ =>
+                  case _ ⇒
                     Seq(allele.ref, allele.ref) // fall back on hom ref
                 }
 
-              case Parameters.SomaticGenotypePolicy.Trigger =>
+              case Parameters.SomaticGenotypePolicy.Trigger ⇒
                 // Call an alt if this sample triggered a call.
                 if (thisSampleTriggered)
                   Seq(allele.ref, allele.alt)
@@ -317,12 +317,12 @@ object VCFOutput {
                 allele.ref,
                 allele.alt
               )
-              .map(allele => tumorEvidence.allelicDepths.getOrElse(allele, 0))
+              .map(allele ⇒ tumorEvidence.allelicDepths.getOrElse(allele, 0))
               .toArray
             )
             .DP(tumorEvidence.depth)
 
-        case (TissueType.Tumor, Analyte.RNA) =>
+        case (TissueType.Tumor, Analyte.RNA) ⇒
 
           val tumorEvidence =
             samplesEvidence
@@ -353,10 +353,10 @@ object VCFOutput {
           genotypeBuilder
             .attribute("ADP", allelicDepthString(tumorEvidence.allelicDepths))
             .attribute("VAF", tumorEvidence.vaf)
-            .AD(Seq(allele.ref, allele.alt).map(allele => tumorEvidence.allelicDepths.getOrElse(allele, 0)).toArray)
+            .AD(Seq(allele.ref, allele.alt).map(allele ⇒ tumorEvidence.allelicDepths.getOrElse(allele, 0)).toArray)
             .DP(tumorEvidence.depth)
 
-        case (tissueType, analyte) =>
+        case (tissueType, analyte) ⇒
           throw new NotImplementedError(s"Not supported: $tissueType $analyte")
       }
 

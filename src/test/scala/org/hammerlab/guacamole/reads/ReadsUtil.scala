@@ -73,7 +73,7 @@ trait ReadsUtil
 
     val qualityScoreString =
       qualityScores match {
-        case Some(qualityScores) ⇒ qualityScores.map(q => q + 33).map(_.toChar).mkString
+        case Some(qualityScores) ⇒ qualityScores.map(q ⇒ q + 33).map(_.toChar).mkString
         case _ ⇒ "@" * sequence.length
       }
 

@@ -58,7 +58,7 @@ object SomaticJointCallerIntegrationTests
       referencePath = CancerWGSTestUtil.referencePath
       referenceIsPartial = true
       somaticGenotypePolicy = "trigger"
-      lociStrOpt = Some(((1).until(22).map(i => "chr%d".format(i)) ++ Seq("chrX", "chrY")).mkString(","))
+      lociStrOpt = Some(((1).until(22).map(i ⇒ "chr%d".format(i)) ++ Seq("chrX", "chrY")).mkString(","))
       forceCallLociFileOpt = Some(forceCallLoci.toString(100000))
       outDir = outDir
     }

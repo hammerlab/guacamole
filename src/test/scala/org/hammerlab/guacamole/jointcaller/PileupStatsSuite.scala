@@ -17,7 +17,7 @@ class PileupStatsSuite
     with ReferenceUtil {
 
   val cancerWGS1Bams = Seq("normal.bam", "primary.bam", "recurrence.bam").map(
-    name => resourcePath("cancer-wgs1/" + name))
+    name ⇒ resourcePath("cancer-wgs1/" + name))
 
   val partialFasta = resourcePath("hg19.partial.fasta")
   def partialReference = {
@@ -39,7 +39,7 @@ class PileupStatsSuite
         makeRead("TCGACCCTCGA", "4M3I4M", qualityScores = fill(11)(30))
       )
 
-    val pileups = (1 until refString.length).map(locus => makePileup(reads, "chr1", locus))
+    val pileups = (1 until refString.length).map(locus ⇒ makePileup(reads, "chr1", locus))
 
     val stats1 = PileupStats(pileups(1).elements, G)
     stats1.totalDepthIncludingReadsContributingNoAlleles should equal(6)

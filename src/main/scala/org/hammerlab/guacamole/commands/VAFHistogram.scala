@@ -156,7 +156,7 @@ object VAFHistogram {
         val writer = new BufferedWriter(new FileWriter(args.localOutputPath))
         writer.write("Filename, SampleName, BinStart, BinEnd, Size")
         writer.newLine()
-        histogramOutput.foreach(line => {
+        histogramOutput.foreach(line ⇒ {
           writer.write(line)
           writer.newLine()
         })
@@ -203,9 +203,9 @@ object VAFHistogram {
     }
 
     variantAlleleFrequencies
-      .map(vaf => (vaf.sampleId, roundToBin(vaf.variantAlleleFrequency)) -> 1L)
+      .map(vaf ⇒ (vaf.sampleId, roundToBin(vaf.variantAlleleFrequency)) -> 1L)
       .reduceByKey(_ + _)
-      .map { case ((sampleId, bin), numLoci) => sampleId -> Map(bin -> numLoci) }
+      .map { case ((sampleId, bin), numLoci) ⇒ sampleId -> Map(bin -> numLoci) }
       .reduceByKey(_ ++ _)
       .mapValues(_.toVector.sortBy(_._1))
       .collectAsMap
@@ -237,7 +237,7 @@ object VAFHistogram {
         sampleNames,
         partitionedReads,
         skipEmpty = true,
-        pileups =>
+        pileups ⇒
           for {
             (pileup, sampleId) <- pileups.iterator.zipWithIndex
             if pileup.depth >= minReadDepth
@@ -289,7 +289,7 @@ object VAFHistogram {
         (sampleId, variants) <- sampledVAFs
       } {
         val stats = new DescriptiveStatistics()
-        variants.foreach(v => stats.addValue(v.variantAlleleFrequency))
+        variants.foreach(v ⇒ stats.addValue(v.variantAlleleFrequency))
 
         // Print out descriptive statistics for the variant allele frequency distribution
         progress(
@@ -325,7 +325,7 @@ object VAFHistogram {
 
     val vafVectors =
       variantLoci.map(
-        variant =>
+        variant ⇒
           Vectors.dense(variant.variantAlleleFrequency)
       )
 

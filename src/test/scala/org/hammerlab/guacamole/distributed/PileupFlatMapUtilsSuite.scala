@@ -86,7 +86,7 @@ class PileupFlatMapUtilsSuite
         partitionedReads,
         sampleName = "sampleName",
         skipEmpty = false,
-        pileup => Iterator(pileup),
+        pileup ⇒ Iterator(pileup),
         reference = reference
       ).collect()
 
@@ -110,7 +110,7 @@ class PileupFlatMapUtilsSuite
         partitionedReads,
         sampleName = "sampleName",
         skipEmpty = false,
-        pileup => Iterator(pileup),
+        pileup ⇒ Iterator(pileup),
         reference = reference
       ).collect()
 
@@ -130,7 +130,7 @@ class PileupFlatMapUtilsSuite
         partitionedReads,
         sampleName = "sampleName",
         skipEmpty = true,
-        pileup => Iterator(pileup.locus),
+        pileup ⇒ Iterator(pileup.locus),
         reference = reference
       )
       .collect
@@ -171,7 +171,7 @@ class PileupFlatMapUtilsSuite
         sample1Name = "sample1",
         sample2Name = "sample2",
         skipEmpty = true,
-        (pileup1, _) => Iterator(pileup1.locus),
+        (pileup1, _) ⇒ Iterator(pileup1.locus),
         reference = reference
       )
       .collect
@@ -317,7 +317,7 @@ class PileupFlatMapUtilsSuite
         sample1Name = "sample1",
         sample2Name = "sample2",
         skipEmpty = false,
-        (pileup1, pileup2) => (pileup1.elements ++ pileup2.elements).toIterator,
+        (pileup1, pileup2) ⇒ (pileup1.elements ++ pileup2.elements).toIterator,
         reference = makeReference(sc, "chr1", 0, "ATCGATCGA" + "N"*90 + "AGGGGGGGGGG" + "N"*500)
       )
       .collect()

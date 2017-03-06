@@ -62,12 +62,11 @@ case class Deletion(override val referenceBases: Bases,
   extends Alignment {
   override def equals(other: Any): Boolean =
     other match {
-      case Deletion(otherBases, _) =>
+      case Deletion(otherBases, _) ⇒
         referenceBases == otherBases
-      case _ =>
+      case _ ⇒
         false
     }
-
 
   override val sequencedBases = Bases(referenceBases.headOption.toVector)
 }

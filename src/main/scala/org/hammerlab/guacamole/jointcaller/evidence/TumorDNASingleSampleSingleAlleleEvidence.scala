@@ -52,7 +52,7 @@ object TumorDNASingleSampleSingleAlleleEvidence {
           Seq.empty
       )
 
-    val logLikelihoods = possibleMixtures.map(mixture => mixture -> stats.logLikelihoodPileup(mixture)).toMap
+    val logLikelihoods = possibleMixtures.map(mixture ⇒ mixture -> stats.logLikelihoodPileup(mixture)).toMap
     val truncatedAllelicDepths = stats.takeAllelicDepths(parameters.maxAllelesPerSite + 1)  // +1 for ref allele
     TumorDNASingleSampleSingleAlleleEvidence(allele, truncatedAllelicDepths, logLikelihoods)
   }

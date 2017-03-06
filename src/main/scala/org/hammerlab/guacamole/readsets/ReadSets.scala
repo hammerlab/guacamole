@@ -89,7 +89,7 @@ object ReadSets extends Logging {
       else
         sc.union(readsRDDs)
           .flatMap(_.asMappedRead)
-          .map(read => read.contigName -> NumLoci(read.end))
+          .map(read ⇒ read.contigName -> NumLoci(read.end))
           .reduceByKey(_ max _)
           .collectAsMap()
           .toMap
@@ -155,14 +155,14 @@ object ReadSets extends Logging {
     config
       .maxSplitSizeOpt
       .foreach(
-        maxSplitSize =>
+        maxSplitSize ⇒
           conf.set(FileInputFormat.SPLIT_MAXSIZE, maxSplitSize.toString)
       )
 
     config
       .overlapsLociOpt
       .fold(conf.unset(BAMInputFormat.INTERVALS_PROPERTY)) (
-        overlapsLoci =>
+        overlapsLoci ⇒
           if (filename.endsWith(".bam")) {
             val contigLengths = getContigLengths(sequenceDictionary)
 
@@ -186,7 +186,7 @@ object ReadSets extends Logging {
         .setName(s"Hadoop file: $shortName")
         .values
         .setName(s"Hadoop reads: $shortName")
-        .map(r => Read(r.get, sampleId))
+        .map(r ⇒ Read(r.get, sampleId))
         .setName(s"Guac reads: $shortName")
 
     (reads, sequenceDictionary)
@@ -214,7 +214,7 @@ object ReadSets extends Logging {
   /** Extract the length of each contig from a sequence dictionary */
   private def getContigLengths(sequenceDictionary: SequenceDictionary): ContigLengths = {
     val builder = Map.newBuilder[ContigName, Locus]
-    sequenceDictionary.records.foreach(record => builder += ((record.name.toString, record.length)))
+    sequenceDictionary.records.foreach(record ⇒ builder += ((record.name.toString, record.length)))
     builder.result
   }
 
@@ -244,18 +244,18 @@ object ReadSets extends Logging {
       })
       .groupBy(_._2.name)
       .values
-      .map(values => {
+      .map(values ⇒ {
         val (input, record) = values.head
 
         // Verify that all records for a given contig are equal.
         values.tail.toList.filter(_._2 != record) match {
-          case Nil =>
-          case mismatched =>
+          case Nil ⇒
+          case mismatched ⇒
             throw new IllegalArgumentException(
               (
                 s"Conflicting sequence records for ${record.name}:" ::
                 s"${input.path}: $record" ::
-                mismatched.map { case (otherFile, otherRecord) => s"$otherFile: $otherRecord" }
+                mismatched.map { case (otherFile, otherRecord) ⇒ s"$otherFile: $otherRecord" }
               ).mkString("\n\t")
             )
         }
@@ -280,7 +280,7 @@ object ReadSets extends Logging {
     var result = reads
     config
       .overlapsLociOpt
-      .foreach(overlapsLoci => {
+      .foreach(overlapsLoci ⇒ {
         val contigLengths = getContigLengths(sequenceDictionary)
         val loci = LociSet(overlapsLoci, contigLengths)
         val broadcastLoci = reads.sparkContext.broadcast(loci)
@@ -292,7 +292,7 @@ object ReadSets extends Logging {
     if (config.isPaired) result = result.filter(_.isPaired)
 
     config.minAlignmentQualityOpt.foreach(
-      minAlignmentQuality =>
+      minAlignmentQuality ⇒
         result =
           result.filter(
             _.asMappedRead

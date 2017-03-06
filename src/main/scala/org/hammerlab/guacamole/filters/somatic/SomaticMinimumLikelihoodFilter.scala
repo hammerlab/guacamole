@@ -25,7 +25,7 @@ object SomaticMinimumLikelihoodFilter {
   def apply(genotypes: RDD[CalledSomaticAllele],
             minLikelihood: Int,
             debug: Boolean = false): RDD[CalledSomaticAllele] = {
-    val filteredGenotypes = genotypes.filter(gt => hasMinimumLikelihood(gt, minLikelihood))
+    val filteredGenotypes = genotypes.filter(gt ⇒ hasMinimumLikelihood(gt, minLikelihood))
     if (debug) SomaticGenotypeFilter.printFilterProgress(filteredGenotypes)
     filteredGenotypes
   }

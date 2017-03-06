@@ -93,12 +93,12 @@ class DeBruijnGraphSuite
 
     val highQualityRead = makeRead(
       "TCATCTTAAAAGACATAAA",
-      qualityScores = Some((0 until 19).map(_ => 30))  // All base qualities are 30
+      qualityScores = Some((0 until 19).map(_ ⇒ 30))  // All base qualities are 30
     )
 
     val lowQualityRead = makeRead(
       "TCATCTTAAAAGACATAAA",
-      qualityScores = Some((0 until 19).map(_ => 10))  // All base qualities are 10
+      qualityScores = Some((0 until 19).map(_ ⇒ 10))  // All base qualities are 10
     )
 
     val graph = DeBruijnGraph(
@@ -130,14 +130,14 @@ class DeBruijnGraphSuite
 
     val highQualityRead = makeRead(
       "TCATCTTAAAAGACATAAA",
-      qualityScores = Some((0 until 19).map(_ => 30))  // All base qualities are 30
+      qualityScores = Some((0 until 19).map(_ ⇒ 30))  // All base qualities are 30
     )
 
     val mixedQualityRead = makeRead(
           "TCATCTTAA" + // Base quality 30
           "AAGACA" +    // Base quality 5
           "TAAA",       // Base quality 30
-      qualityScores = Some((0 until 9).map(_ => 30) ++ (9 until 15).map(_ => 5) ++  (15 until 19).map(_ => 30))
+      qualityScores = Some((0 until 9).map(_ ⇒ 30) ++ (9 until 15).map(_ ⇒ 5) ++  (15 until 19).map(_ ⇒ 30))
     )
 
     val lowThresholdGraph =
@@ -387,7 +387,7 @@ class DeBruijnGraphSuite
       .sequence
       .sliding(kmerSize)
       .zipWithIndex.foreach {
-        case (kmer, idx) =>
+        case (kmer, idx) ⇒
           val mergedNode = graph.mergeIndex(kmer)
           mergedNode._1 should be(longRead.sequence)
           mergedNode._2 should be(idx)

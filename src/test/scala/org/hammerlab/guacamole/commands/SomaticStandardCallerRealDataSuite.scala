@@ -45,7 +45,7 @@ class SomaticStandardCallerRealDataSuite
                    shouldFindVariant: Boolean = false) = {
     val positionsTable = Table("locus", positions: _*)
     forAll(positionsTable) {
-      locus =>
+      locus ⇒
         val (tumorPileup, normalPileup) =
           loadTumorNormalPileup(
             tumorReads,

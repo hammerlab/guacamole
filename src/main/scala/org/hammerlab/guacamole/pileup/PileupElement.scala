@@ -97,37 +97,37 @@ case class PileupElement(
       // them to the preceding or following locus. Here we attach them to the preceding base, since that seems to be the
       // conventional choice. That is, if we have a match followed by an insertion, the final base of the match will
       // get combined with the insertion into one Alignment, at the match's reference locus.
-      case (CigarOperator.M, Some(CigarOperator.I)) | (CigarOperator.EQ, Some(CigarOperator.I)) =>
+      case (CigarOperator.M, Some(CigarOperator.I)) | (CigarOperator.EQ, Some(CigarOperator.I)) ⇒
         makeInsertion(nextCigarElement.get)
 
       // The exception to the above is insertion at the start of a contig, where there is no preceding reference base to
       // anchor to; in this case, the spec calls for including the reference base immediately after the insertion (the
       // first reference base of the contig).
-      case (CigarOperator.I, Some(_)) if cigarElementLocus == Locus(0) =>
+      case (CigarOperator.I, Some(_)) if cigarElementLocus == Locus(0) ⇒
         makeInsertion(cigarElement)
 
       // In general, a PileupElement pointing at an Insertion cigar-element is an error.
-      case (CigarOperator.I, _) => throw InvalidCigarElementException(this)
+      case (CigarOperator.I, _) ⇒ throw InvalidCigarElementException(this)
 
-      case (CigarOperator.M | CigarOperator.EQ | CigarOperator.X, Some(CigarOperator.D)) =>
+      case (CigarOperator.M | CigarOperator.EQ | CigarOperator.X, Some(CigarOperator.D)) ⇒
         val deletedBases = contigSequence.slice(locus, nextCigarElement.get.getLength + 1)
         val anchorBaseSequenceQuality = read.baseQualities(readPosition)
         Deletion(deletedBases, anchorBaseSequenceQuality)
-      case (CigarOperator.D, _) =>
+      case (CigarOperator.D, _) ⇒
         MidDeletion(referenceBase)
-      case (op, Some(CigarOperator.D)) =>
+      case (op, Some(CigarOperator.D)) ⇒
         throw new AssertionError(
           s"Found deletion preceded by cigar operator $op at PileupElement for read $read at locus $locus"
         )
-      case (CigarOperator.M, _) | (CigarOperator.EQ, _) | (CigarOperator.X, _) =>
+      case (CigarOperator.M, _) | (CigarOperator.EQ, _) | (CigarOperator.X, _) ⇒
         val base: Byte = read.sequence(readPosition)
         val quality = read.baseQualities(readPosition)
         if (base == referenceBase)
           Match(base, quality)
         else
           Mismatch(base, quality, referenceBase)
-      case (CigarOperator.S, _) | (CigarOperator.N, _) | (CigarOperator.H, _) => Clipped
-      case (CigarOperator.P, _) =>
+      case (CigarOperator.S, _) | (CigarOperator.N, _) | (CigarOperator.H, _) ⇒ Clipped
+      case (CigarOperator.P, _) ⇒
         throw new AssertionError("`P` CIGAR-ops should have been ignored earlier in `findNextCigarElement`")
     }
   }
@@ -135,12 +135,12 @@ case class PileupElement(
   /* If you only care about what kind of CigarOperator is at this position, but not its associated sequence, then you
    * can use these state variables.
    */
-  def isInsertion = alignment match { case Insertion(_, _) => true; case _ => false }
-  def isDeletion = alignment match { case Deletion(_, _) => true; case _ => false }
-  def isClipped = alignment match { case Clipped => true; case _ => false }
-  def isMidDeletion = alignment match { case MidDeletion(_) => true; case _ => false }
-  def isMismatch = alignment match { case Mismatch(_, _, _) => true; case _ => false }
-  def isMatch = alignment match { case Match(_, _) => true; case _ => false }
+  def isInsertion = alignment match { case Insertion(_, _) ⇒ true; case _ ⇒ false }
+  def isDeletion = alignment match { case Deletion(_, _) ⇒ true; case _ ⇒ false }
+  def isClipped = alignment match { case Clipped ⇒ true; case _ ⇒ false }
+  def isMidDeletion = alignment match { case MidDeletion(_) ⇒ true; case _ ⇒ false }
+  def isMismatch = alignment match { case Mismatch(_, _, _) ⇒ true; case _ ⇒ false }
+  def isMatch = alignment match { case Match(_, _) ⇒ true; case _ ⇒ false }
 
   /**
    * The sequenced nucleotides at this element.
@@ -163,10 +163,10 @@ case class PileupElement(
    * For deletions this is the mapping quality as there are no base quality scores available.
    */
   def qualityScore: Int = alignment match {
-    case Clipped | MidDeletion(_) => read.alignmentQuality
-    case Deletion(_, qs)          => qs
-    case MatchOrMisMatch(_, qs)   => qs
-    case Insertion(_, qss)        => qss.min
+    case Clipped | MidDeletion(_) ⇒ read.alignmentQuality
+    case Deletion(_, qs)          ⇒ qs
+    case MatchOrMisMatch(_, qs)   ⇒ qs
+    case Insertion(_, qss)        ⇒ qss.min
   }
 
   def probabilityCorrectIgnoringAlignment: Double =

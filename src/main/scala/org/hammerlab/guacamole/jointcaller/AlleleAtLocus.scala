@@ -79,7 +79,7 @@ object AlleleAtLocus {
 
     val contig = pileups.head.contigName
     val variantStart = pileups.head.locus + 1
-    val alleleRequiredReadsActualReads = pileups.flatMap(pileup => {
+    val alleleRequiredReadsActualReads = pileups.flatMap(pileup ⇒ {
       val requiredReads =
         max(
           anyAlleleMinSupportingReads,
@@ -88,7 +88,7 @@ object AlleleAtLocus {
 
       val subsequenceCounts =
         ReadSubsequence.nextAlts(pileup.elements)
-          .filter(subsequence => !onlyStandardBases || subsequence.allStandardBases)
+          .filter(subsequence ⇒ !onlyStandardBases || subsequence.allStandardBases)
           .groupBy(x ⇒ (x.endLocus, x.sequence))
           .map(pair ⇒ pair._2.head → pair._2.length)
           .toVector
@@ -99,12 +99,12 @@ object AlleleAtLocus {
           contig, variantStart, subsequence.refSequence(contigSequence), subsequence.sequence)
       }
 
-      subsequenceCounts.map(pair => (subsequenceToAllele(pair._1), requiredReads, pair._2))
+      subsequenceCounts.map(pair ⇒ (subsequenceToAllele(pair._1), requiredReads, pair._2))
     })
 
     val result =
       alleleRequiredReadsActualReads
-        .filter(tpl => tpl._3 >= tpl._2)
+        .filter(tpl ⇒ tpl._3 >= tpl._2)
         .map(_._1)
         .distinct  // Reduce to distinct alleles
         .toVector

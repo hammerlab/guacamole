@@ -56,14 +56,14 @@ case class MappedRead(
    * read's alignment, including any initial clipped bases.
    */
   val unclippedStart = cigarElements.takeWhile(CigarUtils.isClipped).foldLeft(start)({
-    (pos, element) => pos - element.getLength
+    (pos, element) ⇒ pos - element.getLength
   })
 
   /**
    * The end of the read's alignment, including any final clipped bases, exclusive.
    */
   val unclippedEnd = cigarElements.reverse.takeWhile(CigarUtils.isClipped).foldLeft(end)({
-    (pos, element) => pos + element.getLength
+    (pos, element) ⇒ pos + element.getLength
   })
 
   /**

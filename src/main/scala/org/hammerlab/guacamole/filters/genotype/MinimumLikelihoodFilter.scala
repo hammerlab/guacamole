@@ -25,7 +25,7 @@ object MinimumLikelihoodFilter {
   def apply(genotypes: RDD[CalledAllele],
             minLikelihood: Int,
             debug: Boolean = false): RDD[CalledAllele] = {
-    val filteredGenotypes = genotypes.filter(gt => hasMinimumLikelihood(gt.evidence, minLikelihood))
+    val filteredGenotypes = genotypes.filter(gt ⇒ hasMinimumLikelihood(gt.evidence, minLikelihood))
     if (debug) GenotypeFilter.printFilterProgress(filteredGenotypes)
     filteredGenotypes
   }

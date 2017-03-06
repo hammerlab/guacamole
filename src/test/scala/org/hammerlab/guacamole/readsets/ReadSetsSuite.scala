@@ -91,7 +91,7 @@ class ReadSetsSuite
       InputConfig.empty,
       TestInputConfig.mapped(nonDuplicate = true),
       TestInputConfig(ParsedLoci("20:10220390-10220490"))
-    ).foreach(filter => {
+    ).foreach(filter ⇒ {
       check("gatk_mini_bundle_extract.bam", "gatk_mini_bundle_extract.sam", filter)
     })
 

@@ -1,7 +1,7 @@
 package org.hammerlab.guacamole.jointcaller
 
 import org.hammerlab.guacamole.jointcaller.Input.{ Analyte, TissueType }
-import org.hammerlab.guacamole.readsets.io.{ Input => RSInput }
+import org.hammerlab.guacamole.readsets.io.{ Input ⇒ RSInput }
 import org.hammerlab.guacamole.readsets.{ SampleId, SampleName }
 
 /**

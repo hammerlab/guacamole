@@ -94,7 +94,7 @@ object GeneratePartialFasta extends GuacCommand[GeneratePartialFastaArguments] {
         writer.write(sequence.toString())
         writer.write("\n")
       } catch {
-        case e: ContigNotFound => warn(s"No such contig in reference: $contig: $e")
+        case e: ContigNotFound ⇒ warn(s"No such contig in reference: $contig: $e")
       }
     }
     writer.close()

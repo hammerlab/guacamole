@@ -1,6 +1,6 @@
 package org.hammerlab.guacamole.variants
 
-import htsjdk.variant.variantcontext.{ VariantContext => HTSJDKVariantContext }
+import htsjdk.variant.variantcontext.{ VariantContext ⇒ HTSJDKVariantContext }
 import org.hammerlab.genomics.reference.{ ContigName, Locus }
 
 object VariantContext {

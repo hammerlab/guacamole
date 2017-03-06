@@ -1,7 +1,7 @@
 package org.hammerlab.guacamole.jointcaller
 
 import org.hammerlab.guacamole.jointcaller.Input.{ Analyte, TissueType }
-import org.hammerlab.guacamole.readsets.args.{ Base => ReadSetsArgsBase }
+import org.hammerlab.guacamole.readsets.args.{ Base ⇒ ReadSetsArgsBase }
 import org.hammerlab.guacamole.readsets.{ PerSample, SampleName }
 import org.kohsuke.args4j.spi.StringArrayOptionHandler
 import org.kohsuke.args4j.{ Option ⇒ Args4jOption }
@@ -69,25 +69,25 @@ object InputCollection {
     }
 
     val defaultedTissueTypes: Seq[String] = tissueTypes match {
-      case Seq() => Seq("normal").padTo(paths.length, "tumor")
-      case other => other
+      case Seq() ⇒ Seq("normal").padTo(paths.length, "tumor")
+      case other ⇒ other
     }
     checkLength("tissue types", defaultedTissueTypes)
 
     val defaultedAnalytes: Seq[String] = analytes match {
-      case Seq() => Seq.fill(paths.length)("dna")
-      case other => other
+      case Seq() ⇒ Seq.fill(paths.length)("dna")
+      case other ⇒ other
     }
     checkLength("analytes", defaultedAnalytes)
 
     val defaultedSampleNames: PerSample[SampleName] = sampleNames match {
-      case Seq() => paths.map(filepath => filepath.split('/').last.stripSuffix(".bam"))
-      case other => other
+      case Seq() ⇒ paths.map(filepath ⇒ filepath.split('/').last.stripSuffix(".bam"))
+      case other ⇒ other
     }
     checkLength("sample names", defaultedSampleNames)
 
     val inputs =
-      paths.indices.map(index => {
+      paths.indices.map(index ⇒ {
         Input(
           index = index,
           sampleName = defaultedSampleNames(index),

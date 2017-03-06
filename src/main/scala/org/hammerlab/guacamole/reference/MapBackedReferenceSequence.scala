@@ -21,7 +21,7 @@ case class MapBackedReferenceSequence(contigName: ContigName,
     try {
       wrapped.value(locus)
     } catch {
-      case e: NoSuchElementException =>
+      case e: NoSuchElementException ⇒
         throw new Exception(s"Position $contigName:$locus missing from reference", e)
     }
 

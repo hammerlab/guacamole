@@ -65,7 +65,7 @@ class MappedReadSuite
   test("slice read matching read") {
     val chr1Contig = reference.getContig("chr1")
     val readLength = 10
-    val qualityScores = (0 until readLength).map( _ => 30)
+    val qualityScores = (0 until readLength).map( _ ⇒ 30)
 
     val simpleRead = makeRead(
       "TCGATCGATC",
@@ -96,7 +96,7 @@ class MappedReadSuite
   test("slice read with deletion") {
     val chr1Contig = reference.getContig("chr1")
     val readLength = 10
-    val qualityScores = (0 until readLength).map( _ => 30)
+    val qualityScores = (0 until readLength).map( _ ⇒ 30)
 
     val deletionRead = makeRead(
       "GGTCGATCAA",
@@ -121,7 +121,7 @@ class MappedReadSuite
   test("slice read with insertion") {
     val chr1Contig = reference.getContig("chr1")
     val readLength = 15
-    val qualityScores = (0 until readLength).map( _ => 30)
+    val qualityScores = (0 until readLength).map( _ ⇒ 30)
 
     val insertionRead = makeRead(
       "TCGACCCCCTCGATC",

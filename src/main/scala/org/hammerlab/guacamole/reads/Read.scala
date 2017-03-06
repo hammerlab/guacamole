@@ -49,9 +49,9 @@ object Read extends Logging {
 
     // If no base qualities are set, we set them all to 0.
     if (baseQualities.isEmpty)
-      (0 until length).map(_ => 0.toByte).toArray
+      (0 until length).map(_ ⇒ 0.toByte).toArray
     else
-      baseQualities.map(q => (q - 33).toByte).toArray
+      baseQualities.map(q ⇒ (q - 33).toByte).toArray
 
   }
 

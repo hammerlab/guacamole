@@ -112,7 +112,7 @@ object ReadSubsequence {
     def isVariantOrFollowedByDeletion(e: PileupElement): Boolean = {
       e.allele.isVariant || (
         e.isFinalCigarBase && e.nextCigarElement.exists(
-          cigar => !cigar.getOperator.consumesReadBases && cigar.getOperator.consumesReferenceBases))
+          cigar ⇒ !cigar.getOperator.consumesReadBases && cigar.getOperator.consumesReferenceBases))
     }
 
     if (isVariantOrFollowedByDeletion(element) || element.locus >= element.read.end - 1) {
@@ -147,6 +147,6 @@ object ReadSubsequence {
   def nextAlts(elements: Seq[PileupElement]): Seq[ReadSubsequence] = {
     val startLocus = elements.headOption.map(_.locus)
     assume(elements.forall(_.locus == startLocus.get))
-    elements.flatMap(element => ofNextAltAllele(element))
+    elements.flatMap(element ⇒ ofNextAltAllele(element))
   }
 }

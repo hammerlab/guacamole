@@ -102,7 +102,7 @@ object SomaticStandard {
           sample1Name = normalSampleName,
           sample2Name = tumorSampleName,
           skipEmpty = true,  // skip empty pileups
-          function = (pileupNormal, pileupTumor) =>
+          function = (pileupNormal, pileupTumor) ⇒
             findPotentialVariantAtLocus(
               pileupTumor,
               pileupNormal,
@@ -129,11 +129,11 @@ object SomaticStandard {
             .leftOuterJoin(dbSnpVariants.rdd.keyBy(_.getVariant))
             .values
             .map {
-              case (calledAllele: CalledSomaticAllele, dbSnpVariantOpt: Option[VariantAnnotation]) =>
+              case (calledAllele: CalledSomaticAllele, dbSnpVariantOpt: Option[VariantAnnotation]) ⇒
                 calledAllele.copy(
                   rsID =
                     dbSnpVariantOpt.flatMap(
-                      v =>
+                      v ⇒
                         if (v.getDbSnp)
                           Some(
                             v.getVariant.getNames.get(0).toInt
@@ -181,7 +181,7 @@ object SomaticStandard {
           .withFilter(_.allele.isVariant)
           .map(_.allele)
           .groupBy(identity)
-          .map{ case(k, v) => k -> v.size / tumorDepth.toDouble }
+          .map{ case(k, v) ⇒ k -> v.size / tumorDepth.toDouble }
 
       // Compute empirical frequency of alternate allele in the tumor sample
       // for the likelihood computation

@@ -95,7 +95,7 @@ class MicroRegionPartitioner[R <: Region: ClassTag](regions: RDD[R],
     // Step 2: total up regions overlapping each micro partition. We keep the totals as an array of Longs.
     val regionsPerMicroPartition: Map[MicroPartitionIndex, Long] =
       regions
-        .flatMap(region =>
+        .flatMap(region ⇒
           broadcastMicroPartitions
             .value(region.contigName)
             .getAll(region.start, region.end)
@@ -113,7 +113,7 @@ class MicroRegionPartitioner[R <: Region: ClassTag](regions: RDD[R],
 
     val maxIndex = regionsPerMicroPartition.maxBy(_._2)._1.toInt
 
-    val counts: Seq[Long] = (0L until numMicroPartitions).map(i => regionsPerMicroPartition.getOrElse(i, 0L))
+    val counts: Seq[Long] = (0L until numMicroPartitions).map(i ⇒ regionsPerMicroPartition.getOrElse(i, 0L))
 
     progress(
       "Regions per micro partition: min=%,d mean=%,.0f max=%,d at %s.".format(

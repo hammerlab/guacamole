@@ -44,17 +44,17 @@ object WindowFlatMapUtils {
     skipEmpty: Boolean,
     halfWindowSize: Int,
     initialState: S,
-    function: (S, PerSample[SlidingWindow[R]]) => (S, Iterator[T])): RDD[T] = {
+    function: (S, PerSample[SlidingWindow[R]]) ⇒ (S, Iterator[T])): RDD[T] = {
 
     splitSamplesAndMap(
       numSamples,
       partitionedReads,
-      (partitionLoci, taskRegionsPerSample: PerSample[Iterator[R]]) => {
+      (partitionLoci, taskRegionsPerSample: PerSample[Iterator[R]]) ⇒ {
         splitPartitionByContigAndMap[R, T](
           taskRegionsPerSample,
           partitionLoci,
           halfWindowSize,
-          (contigLoci, perSampleWindows) => {
+          (contigLoci, perSampleWindows) ⇒ {
 
             var lastState: S = initialState
 
@@ -94,11 +94,11 @@ object WindowFlatMapUtils {
   private[distributed] def splitSamplesAndMap[R <: SampleRegion: ClassTag, T: ClassTag](
     numSamples: NumSamples,
     partitionedReads: PartitionedRegions[R],
-    function: (LociSet, PerSample[Iterator[R]]) => Iterator[T]): RDD[T] = {
+    function: (LociSet, PerSample[Iterator[R]]) ⇒ Iterator[T]): RDD[T] = {
 
     partitionedReads
       .mapPartitions(
-        (reads, loci) =>
+        (reads, loci) ⇒
           function(
             loci,
             SplitIterator.split[R](numSamples, reads, _.sampleId)
@@ -121,7 +121,7 @@ object WindowFlatMapUtils {
     perSampleTaskRegions: PerSample[Iterator[R]],
     partitionLoci: LociSet,
     halfWindowSize: Int,
-    generateFromWindows: (LociIterator, PerSample[SlidingWindow[R]]) => Iterator[T]): Iterator[T] = {
+    generateFromWindows: (LociIterator, PerSample[SlidingWindow[R]]) ⇒ Iterator[T]): Iterator[T] = {
 
     val perSampleRegionsByContig: PerSample[RegionsByContig[R]] =
       perSampleTaskRegions.map(new RegionsByContig(_))

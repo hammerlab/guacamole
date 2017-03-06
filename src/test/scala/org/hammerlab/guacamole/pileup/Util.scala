@@ -50,7 +50,7 @@ trait Util
         filename,
         config = InputConfig(
           overlapsLociOpt = maybeContig.map(
-            contig => ParsedLoci(s"$contig:$locus-${locus + 1}")
+            contig ⇒ ParsedLoci(s"$contig:$locus-${locus + 1}")
           ),
           nonDuplicate = false,
           passedVendorQualityChecks = false,

@@ -58,7 +58,7 @@ object VCFComparison {
               exactMatch += ((record1, record2))
             else
               partialMatch += ((record1, record2))
-          case None =>
+          case None ⇒
             unique += record1
         }
     }

@@ -38,7 +38,7 @@ case class MultiSampleMultiAlleleEvidence(contigName: ContigName,
     // We rank germline calls first, then somatic calls, then break ties with the sum of the best posteriors.
     singleAlleleEvidences
       .maxBy(
-        evidence =>
+        evidence ⇒
           (
             evidence.isGermlineCall,
             evidence.isSomaticCall,
@@ -92,8 +92,8 @@ object MultiSampleMultiAlleleEvidence {
 
     // We ignore clipped reads. Clipped reads include introns (cigar operator N) in RNA-seq.
     val filteredPileups: Vector[Pileup] = pileups.map(
-      pileup => pileup.copy(elements = pileup.elements.filter(!_.isClipped))).toVector
-    val normalPileups = inputs.normalDNA.map(input => filteredPileups(input.index))
+      pileup ⇒ pileup.copy(elements = pileup.elements.filter(!_.isClipped))).toVector
+    val normalPileups = inputs.normalDNA.map(input ⇒ filteredPileups(input.index))
 
     val contig = normalPileups.head.contigName
     val locus = normalPileups.head.locus
@@ -109,7 +109,7 @@ object MultiSampleMultiAlleleEvidence {
     // we require that we always get back at least one allele (which will be N if there are no alternate alleles
     // at all).
     val possibleAlleles = AlleleAtLocus.variantAlleles(
-      (inputs.normalDNA ++ inputs.tumorDNA).map(input => filteredPileups(input.index)),
+      (inputs.normalDNA ++ inputs.tumorDNA).map(input ⇒ filteredPileups(input.index)),
       anyAlleleMinSupportingReads = parameters.anyAlleleMinSupportingReads,
       anyAlleleMinSupportingPercent = parameters.anyAlleleMinSupportingPercent,
       maxAlleles = Some(parameters.maxAllelesPerSite),
@@ -128,7 +128,7 @@ object MultiSampleMultiAlleleEvidence {
     // MultiplePileupStats per allele (start, end) position.
     val multiplePileupStatsPerPossibleAlleleLocus =
       possibleAlleles
-        .map(allele => (allele.start, allele.end))
+        .map(allele ⇒ (allele.start, allele.end))
         .distinct
         .map {
           case (start, end) ⇒
@@ -144,7 +144,7 @@ object MultiSampleMultiAlleleEvidence {
             val stats =
               filteredPileups
                 .map(
-                  pileup =>
+                  pileup ⇒
                     PileupStats(pileup.elements, refSequence = referenceSequence)
                 )
 
@@ -153,7 +153,7 @@ object MultiSampleMultiAlleleEvidence {
         .toMap
 
     // Create a MultiSampleSingleAlleleEvidence for each alternate allele.
-    val allEvidences = possibleAlleles.map(allele => {
+    val allEvidences = possibleAlleles.map(allele ⇒ {
       MultiSampleSingleAlleleEvidence(
         parameters,
         allele,
@@ -182,7 +182,7 @@ object MultiSampleMultiAlleleEvidence {
       singleAlleleEvidences = evidences)
 
     // Run annotations (e.g. filters).
-    val annotatedEvidences = evidences.map(evidence => {
+    val annotatedEvidences = evidences.map(evidence ⇒ {
       val allele = evidence.allele
       evidence.annotate(
         calls,

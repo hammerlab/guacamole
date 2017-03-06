@@ -57,7 +57,7 @@ class TakeLociIterator(it: BufferedIterator[(Position, Coverage)],
         maxRegionsPerPartition - curNumRegions,
         maxRegionsPerPartition
       ) match {
-        case None =>
+        case None ⇒
 
           /**
            * If we failed to get a Contig from `takeLoci` then one or both of the following are true:
@@ -76,7 +76,7 @@ class TakeLociIterator(it: BufferedIterator[(Position, Coverage)],
           else
             contigsCoverages.next()
 
-        case Some((numRegions, contig)) =>
+        case Some((numRegions, contig)) ⇒
           /**
            * If we successfully obtained some loci from this contig, add them to our buffer.
            *
@@ -176,11 +176,11 @@ class TakeLociIterator(it: BufferedIterator[(Position, Coverage)],
         curIntervalOpt =
           curIntervalOpt match {
             // Extend the current interval, if possible.
-            case Some((start, end)) if !trimRanges || locus == end =>
+            case Some((start, end)) if !trimRanges || locus == end ⇒
               Some(start -> locus.next)
 
             // Otherwise, commit the current interval if it exists, and start a new one.
-            case _ =>
+            case _ ⇒
               maybeAddInterval()
               Some(locus -> locus.next)
           }

@@ -22,7 +22,7 @@ import org.apache.spark.rdd.RDD
 import org.hammerlab.args4s.IntOptionHandler
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
 import org.hammerlab.guacamole.variants.CalledSomaticAllele
-import org.kohsuke.args4j.{ Option => Args4jOption }
+import org.kohsuke.args4j.{ Option ⇒ Args4jOption }
 
 object SomaticGenotypeFilter {
 
@@ -92,7 +92,7 @@ object SomaticGenotypeFilter {
       )
 
     args.minTumorAlternateReadDepthOpt.foreach(
-      minTumorAlternateReadDepthOpt =>
+      minTumorAlternateReadDepthOpt ⇒
         filteredGenotypes =
           SomaticAlternateReadDepthFilter(
             filteredGenotypes,
@@ -102,7 +102,7 @@ object SomaticGenotypeFilter {
     )
 
     args.minLikelihoodOpt.foreach(
-      minLikelihood =>
+      minLikelihood ⇒
         filteredGenotypes =
           SomaticMinimumLikelihoodFilter(
             filteredGenotypes,
@@ -121,7 +121,7 @@ object SomaticGenotypeFilter {
       SomaticAverageBaseQualityFilter(filteredGenotypes, args.minAverageBaseQuality, args.debugGenotypeFilters)
 
     args.maximumMedianMismatchesOpt.foreach(
-      maximumMedianMismatches =>
+      maximumMedianMismatches ⇒
         filteredGenotypes =
           SomaticMedianMismatchFilter(filteredGenotypes, maximumMedianMismatches, args.debugGenotypeFilters)
     )

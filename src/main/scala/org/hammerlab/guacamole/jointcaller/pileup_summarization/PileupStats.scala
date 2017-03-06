@@ -39,7 +39,7 @@ class PileupStats(val elements: Seq[PileupElement],
    */
   val subsequences: Seq[ReadSubsequence] =
     elements.flatMap(
-      element =>
+      element ⇒
         ReadSubsequence.ofFixedReferenceLength(element, referenceSequence.length)
     )
 

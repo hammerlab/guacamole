@@ -14,10 +14,10 @@ class SomaticJointCallerSuite
     with ReferenceUtil {
 
   val cancerWGS1Bams = Vector("normal.bam", "primary.bam", "recurrence.bam").map(
-    name => resourcePath("cancer-wgs1/" + name))
+    name ⇒ resourcePath("cancer-wgs1/" + name))
 
   val celsr1BAMs = Vector("normal_0.bam", "tumor_wes_2.bam", "tumor_rna_11.bam").map(
-    name => resourcePath("cancer-wes-and-rna-celsr1/" + name))
+    name ⇒ resourcePath("cancer-wes-and-rna-celsr1/" + name))
 
   val hg19PartialFasta = resourcePath("hg19.partial.fasta")
 
@@ -175,10 +175,10 @@ class SomaticJointCallerSuite
       "with rna" → callsWithRNA,
       "without rna" → callsWithoutRNA
     ).foreach {
-      case (description, calls) =>
+      case (description, calls) ⇒
         withClue("germline variant %s".format(description)) {
           // There should be a germline homozygous call at 22:46931077 in one based, which is 22:46931076 in zero based.
-          val filtered46931076 = calls.filter(call => call.start === 46931076 && call.end === 46931077)
+          val filtered46931076 = calls.filter(call ⇒ call.start === 46931076 && call.end === 46931077)
           filtered46931076.length should be(1)
           filtered46931076.head.bestAllele.isGermlineCall should be(true)
           filtered46931076.head.bestAllele.allele.ref should ===(G)

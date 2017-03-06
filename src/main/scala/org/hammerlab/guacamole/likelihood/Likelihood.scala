@@ -30,7 +30,7 @@ object Likelihood {
   def probabilitiesOfAllPossibleGenotypesFromPileup(
     pileup: Pileup,
     includeAlignment: Boolean = false,
-    prior: Genotype => Double = uniformPrior,
+    prior: Genotype ⇒ Double = uniformPrior,
     logSpace: Boolean = false): Seq[(Genotype, Double)] = {
 
     val alleles =
@@ -101,7 +101,7 @@ object Likelihood {
   private[likelihood] def likelihoodsOfGenotypes(elements: Seq[PileupElement],
                                                  genotypes: Array[Genotype],
                                                  includeAlignment: Boolean,
-                                                 prior: Genotype => Double,
+                                                 prior: Genotype ⇒ Double,
                                                  logSpace: Boolean,
                                                  normalize: Boolean): DenseVector[Double] = {
 
@@ -127,11 +127,11 @@ object Likelihood {
     // where f_i is the allele fraction
     val logLikelihoods: DenseVector[Double] =
       DenseVector(
-        genotypes.map(genotype => {
+        genotypes.map(genotype ⇒ {
           // For each allele, all elements' probabilities of matching that allele, weighted by that allele's VAF.
           val alleleRows =
             genotype.alleleMixture.map {
-              case (allele, alleleFraction) =>
+              case (allele, alleleFraction) ⇒
                 alleleElementProbabilities(alleleToIndex(allele), ::) * alleleFraction
             }
 
@@ -158,7 +158,7 @@ object Likelihood {
   def probabilitiesOfGenotypes(elements: Seq[PileupElement],
                                genotypes: (Genotype, Genotype),
                                includeAlignment: Boolean,
-                               prior: Genotype => Double,
+                               prior: Genotype ⇒ Double,
                                logSpace: Boolean): (Double, Double) = {
     val likelihoods =
       likelihoodsOfGenotypes(

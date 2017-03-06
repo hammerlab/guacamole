@@ -32,7 +32,7 @@ object AssemblyUtils extends Logging {
 
     // Count reads with more than one mismatch or possible insertion/deletions
     val numReadsWithMismatches =
-      reads.count(r =>
+      reads.count(r ⇒
         PileupElement(r, referenceContig).countOfMismatches > 1 ||
           r.cigar.numCigarElements() > 1
       )
@@ -131,8 +131,8 @@ object AssemblyUtils extends Logging {
   def buildVariantsFromPath[T <: ReferenceVariant](path: Sequence,
                                                    start: Locus,
                                                    referenceContig: ContigSequence,
-                                                   alignPath: Sequence => ReadAlignment,
-                                                   buildVariant: (Locus, Bases, Bases) => T,
+                                                   alignPath: Sequence ⇒ ReadAlignment,
+                                                   buildVariant: (Locus, Bases, Bases) ⇒ T,
                                                    allowReferenceVariant: Boolean = false): Seq[T] = {
 
     val alignment = alignPath(path)
@@ -157,7 +157,7 @@ object AssemblyUtils extends Logging {
           // Yield a resulting variant when there is a mismatch, insertion or deletion
           val possibleVariant =
             cigarOperator match {
-              case CigarOperator.X =>
+              case CigarOperator.X ⇒
                 val referenceAllele = referenceContig.slice(locus, referenceLength)
                 val alternateAllele: Bases = path.slice(pathIndex, pathIndex + pathLength)
 
@@ -168,7 +168,7 @@ object AssemblyUtils extends Logging {
                 else
                   None
 
-              case (CigarOperator.I | CigarOperator.D) if cigarIdx != 0 && cigarIdx != (numCigarElements - 1) =>
+              case (CigarOperator.I | CigarOperator.D) if cigarIdx != 0 && cigarIdx != (numCigarElements - 1) ⇒
                 // For insertions and deletions, report the variant with the last reference base attached
                 val referenceAllele = referenceContig.slice(locus.prev, referenceLength + 1)
                 val alternateAllele: Bases = path.slice(pathIndex - 1, pathIndex + pathLength)
@@ -180,7 +180,7 @@ object AssemblyUtils extends Logging {
                 else
                   None
 
-              case _ => None
+              case _ ⇒ None
             }
 
           referenceIndex += referenceLength

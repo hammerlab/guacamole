@@ -21,7 +21,7 @@ case class ReferenceBroadcast(broadcastedContigs: Map[ContigName, ContigSequence
     try {
       broadcastedContigs(contigName)
     } catch {
-      case _: NoSuchElementException =>
+      case _: NoSuchElementException ⇒
         throw ContigNotFound(contigName, broadcastedContigs.keys)
     }
 
@@ -81,15 +81,15 @@ object ReferenceBroadcast extends Logging {
       sequence = broadcastSequence.slice(Locus(0), length.toInt)
     } {
       regionDescription.name.split("/").map(_.trim).toList match {
-        case lociStr :: contigLengthStr :: Nil =>
+        case lociStr :: contigLengthStr :: Nil ⇒
           val contigLength: NumLoci = contigLengthStr.toLong
 
           val loci =
             ParsedLociRange(lociStr) match {
-              case Some(LociRange(contigName, start, endOpt)) =>
+              case Some(LociRange(contigName, start, endOpt)) ⇒
                 val parsedLoci = LociRanges(LociRange(contigName, start, endOpt))
                 LociSet(parsedLoci, Map(contigName -> contigLength))
-              case _ =>
+              case _ ⇒
                 throw new IllegalArgumentException(s"Bad loci range: $lociStr")
             }
 
@@ -129,7 +129,7 @@ object ReferenceBroadcast extends Logging {
             sequenceMap.update(locus, base)
           }
 
-        case _ =>
+        case _ ⇒
           throw new IllegalArgumentException(
             s"Invalid sequence name for partial fasta: $regionDescription. Are you sure this is a partial fasta, not a regular fasta?"
           )

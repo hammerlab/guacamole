@@ -48,7 +48,7 @@ object NormalDNASingleSampleSingleAlleleEvidence {
     val logLikelihoods =
       possibleAllelePairs
         .map(
-          allelePair =>
+          allelePair ⇒
             allelePair ->
               stats.logLikelihoodPileup(allelesToMixture(allelePair))
         )

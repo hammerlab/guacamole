@@ -17,7 +17,7 @@ class DeBruijnGraph(val kmerSize: KmerLength,
       kmerCounts
         .keys
         .groupBy(kmerPrefix)
-        .map(kv => (kv._1, kv._2.toList))
+        .map(kv ⇒ (kv._1, kv._2.toList))
         .toSeq: _*
     )
 
@@ -54,7 +54,7 @@ class DeBruijnGraph(val kmerSize: KmerLength,
     kmerCounts.remove(kmer)
     def removeFromTable(kmer: Kmer,
                         table: MMap[Kmer, List[Kmer]],
-                        keyFunc: Kmer => SubKmer) = {
+                        keyFunc: Kmer ⇒ SubKmer) = {
       val key = keyFunc(kmer)
       val otherNodes = table(key).filterNot(_ == kmer)
       if (otherNodes.nonEmpty) {
@@ -76,7 +76,7 @@ class DeBruijnGraph(val kmerSize: KmerLength,
   private[assembly] def pruneKmers(minSupport: Int) =
     kmerCounts
       .filter { _._2 < minSupport }
-      .foreach { case (kmer, _) => removeKmer(kmer) }
+      .foreach { case (kmer, _) ⇒ removeKmer(kmer) }
 
   /**
    * Merge existing kmers in unique path
@@ -104,7 +104,7 @@ class DeBruijnGraph(val kmerSize: KmerLength,
         fullMergeablePath
           .zipWithIndex
           .foreach {
-            case (nodeElement, index) =>
+            case (nodeElement, index) ⇒
               mergeIndex.update(nodeElement, (mergedNode, index))
           }
 
@@ -131,8 +131,8 @@ class DeBruijnGraph(val kmerSize: KmerLength,
                                       searchForward: Boolean,
                                       avoidLoops: Boolean = true): Seq[Kmer] = {
 
-    val nextFunc: Kmer => Seq[Kmer] = if (searchForward) children else parents
-    val prevFunc: Kmer => Seq[Kmer] = if (searchForward) parents else children
+    val nextFunc: Kmer ⇒ Seq[Kmer] = if (searchForward) children else parents
+    val prevFunc: Kmer ⇒ Seq[Kmer] = if (searchForward) parents else children
 
     var current = kmer
     var visited: MSet[Kmer] = MSet(current)

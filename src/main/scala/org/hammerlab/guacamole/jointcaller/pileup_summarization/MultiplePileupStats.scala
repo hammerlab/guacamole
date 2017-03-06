@@ -12,7 +12,7 @@ import org.hammerlab.guacamole.readsets.PerSample
 case class MultiplePileupStats(inputs: InputCollection, singleSampleStats: PerSample[PileupStats]) {
   val referenceSequence = singleSampleStats.head.referenceSequence
   val normalDNAPooled = PileupStats(
-    inputs.normalDNA.flatMap(input => singleSampleStats(input.index).elements), referenceSequence)
+    inputs.normalDNA.flatMap(input ⇒ singleSampleStats(input.index).elements), referenceSequence)
   val tumorDNAPooled = PileupStats(
-    inputs.tumorDNA.flatMap(input => singleSampleStats(input.index).elements), referenceSequence)
+    inputs.tumorDNA.flatMap(input ⇒ singleSampleStats(input.index).elements), referenceSequence)
 }

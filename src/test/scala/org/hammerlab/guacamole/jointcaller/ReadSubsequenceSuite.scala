@@ -18,7 +18,7 @@ class ReadSubsequenceSuite
   val cancerWGS1Bams =
     Vector("normal.bam", "primary.bam", "recurrence.bam")
       .map(
-        name => s"cancer-wgs1/$name"
+        name ⇒ s"cancer-wgs1/$name"
       )
 
   override lazy val reference = makeReference(sc, ("chr1", 0, "NTCGATCGACG"))
@@ -36,7 +36,7 @@ class ReadSubsequenceSuite
         ("TNGAGCGA", "8M", 1)  // contains N base
       )
 
-    val pileups = reads.map(read => makePileup(Seq(read), "chr1", 1))
+    val pileups = reads.map(read ⇒ makePileup(Seq(read), "chr1", 1))
 
     ofFixedReferenceLength(pileups(0).elements.head, 1).get.sequence should ===("C")
     ofFixedReferenceLength(pileups(0).elements.head, 2).get.sequence should ===("CG")
@@ -55,7 +55,7 @@ class ReadSubsequenceSuite
         ("TNGAGCGA", "8M", 1)  // contains N
       )
 
-    val pileups = reads.map(read => makePileup(Seq(read), "chr1", 1))
+    val pileups = reads.map(read ⇒ makePileup(Seq(read), "chr1", 1))
 
     ofNextAltAllele(pileups(0).elements(0)) should equal(None)
 
@@ -78,7 +78,7 @@ class ReadSubsequenceSuite
     val inputs = InputCollection(cancerWGS1Bams)
     val parameters = Parameters.defaults
     val pileups = cancerWGS1Bams.map(
-      path =>
+      path ⇒
         loadPileup(
           sc,
           path,
@@ -93,7 +93,7 @@ class ReadSubsequenceSuite
 
     val alleles =
       variantAlleles(
-        (inputs.normalDNA ++ inputs.tumorDNA).map(input => pileups(input.index)),
+        (inputs.normalDNA ++ inputs.tumorDNA).map(input ⇒ pileups(input.index)),
         anyAlleleMinSupportingReads = parameters.anyAlleleMinSupportingReads,
         anyAlleleMinSupportingPercent = parameters.anyAlleleMinSupportingPercent
       )

@@ -46,7 +46,7 @@ object ReadDepthFilter {
             minReadDepth: Int,
             maxReadDepth: Int,
             debug: Boolean = false): RDD[CalledAllele] = {
-    val filteredGenotypes = genotypes.filter(gt => withinReadDepthRange(gt.evidence, minReadDepth, maxReadDepth))
+    val filteredGenotypes = genotypes.filter(gt ⇒ withinReadDepthRange(gt.evidence, minReadDepth, maxReadDepth))
     if (debug) GenotypeFilter.printFilterProgress(filteredGenotypes)
     filteredGenotypes
   }

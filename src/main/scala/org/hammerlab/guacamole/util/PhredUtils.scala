@@ -1,6 +1,6 @@
 package org.hammerlab.guacamole.util
 
-import org.bdgenomics.adam.util.{ PhredUtils => BDGPhredUtils }
+import org.bdgenomics.adam.util.{ PhredUtils ⇒ BDGPhredUtils }
 
 object PhredUtils {
   // Helps avoid singularities in phred/log computations.

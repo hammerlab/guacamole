@@ -94,7 +94,7 @@ trait VariantComparisonTest {
     val sample = items.take(num)
     println("Showing %,d / %,d.".format(sample.size, items.size))
     sample.zipWithIndex.foreach {
-      case (item, num) =>
+      case (item, num) ⇒
         println("(%4d) %20s \tDETAILS: %29s".format(
           num + 1,
           VCFComparison.variantToString(item, verbose = false),
@@ -165,7 +165,7 @@ trait VariantComparisonTest {
     println(comparisonFull.summary)
 
     println("MISSED CALLS")
-    printSamplePairs(comparisonFull.partialMatch.filter(pair => pair._2.getAttribute("TRIGGER") == "NONE"))
+    printSamplePairs(comparisonFull.partialMatch.filter(pair ⇒ pair._2.getAttribute("TRIGGER") == "NONE"))
     println()
 
     println("BAD CALLS")
@@ -187,7 +187,7 @@ trait VariantComparisonTest {
 
     def onlyIndels(calls: Seq[HTSJDKVariantContext]): Seq[HTSJDKVariantContext] = {
       calls.filter(
-        call =>
+        call ⇒
           call.getReference.length != 1 ||
             collectionAsScalaIterable(call.getAlternateAlleles).exists(_.length != 1)
       )
@@ -206,12 +206,12 @@ trait VariantComparisonTest {
 
     println("MISSED CALLS IN PLATINUM WITH DEPTH")
     printSamplePairs(comparisonPlatinumOnly.partialMatch.filter(
-      pair => pair._2.getGenotype(0).isHomRef && pair._2.getGenotype(0).getDP > 5))
+      pair ⇒ pair._2.getGenotype(0).isHomRef && pair._2.getGenotype(0).getDP > 5))
     println()
 
     println("BAD CALLS")
     printSamplePairs(comparisonFull.partialMatch.filter(
-      pair => !pair._2.getGenotype(0).isHomRef))
+      pair ⇒ !pair._2.getGenotype(0).isHomRef))
     println()
 
     println("INDEL PERFORMANCE")
@@ -222,12 +222,12 @@ trait VariantComparisonTest {
 
     println("INDEL MISSED CALLS WITH DEPTH")
     printSamplePairs(comparisonFullIndels.partialMatch.filter(
-      pair => pair._2.getGenotype(0).isHomRef && pair._2.getGenotype(0).getDP > 5))
+      pair ⇒ pair._2.getGenotype(0).isHomRef && pair._2.getGenotype(0).getDP > 5))
     println()
 
     println("INDEL BAD CALLS")
     printSamplePairs(comparisonFullIndels.partialMatch.filter(
-      pair => !pair._2.getGenotype(0).isHomRef))
+      pair ⇒ !pair._2.getGenotype(0).isHomRef))
     println()
   }
 }

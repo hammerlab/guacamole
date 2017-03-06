@@ -24,7 +24,7 @@ object PileupFlatMapUtils {
                                contigSequence: ContigSequence): Pileup = {
     assume(window.halfWindowSize == 0)
     existing match {
-      case None =>
+      case None ⇒
         Pileup(
           window.currentRegions(),
           sampleName,
@@ -32,7 +32,7 @@ object PileupFlatMapUtils {
           window.currentLocus,
           contigSequence
         )
-      case Some(pileup) =>
+      case Some(pileup) ⇒
         pileup.atGreaterLocus(window.currentLocus, window.newRegions.iterator)
     }
   }
@@ -51,7 +51,7 @@ object PileupFlatMapUtils {
   def pileupFlatMapOneSample[T: ClassTag](partitionedReads: PartitionedReads,
                                           sampleName: SampleName,
                                           skipEmpty: Boolean,
-                                          function: Pileup => Iterator[T],
+                                          function: Pileup ⇒ Iterator[T],
                                           reference: ReferenceGenome): RDD[T] =
     windowFlatMapWithState(
       numSamples = 1,
@@ -59,7 +59,7 @@ object PileupFlatMapUtils {
       skipEmpty,
       halfWindowSize = 0,
       initialState = None,
-      (maybePileup: Option[Pileup], windows: PerSample[SlidingWindow[MappedRead]]) => {
+      (maybePileup: Option[Pileup], windows: PerSample[SlidingWindow[MappedRead]]) ⇒ {
         assert(windows.length == 1)
         val pileup = initOrMovePileup(maybePileup, sampleName, windows(0), reference.getContig(windows(0).contigName))
         (Some(pileup), function(pileup))
@@ -78,7 +78,7 @@ object PileupFlatMapUtils {
                                            sample1Name: SampleName,
                                            sample2Name: SampleName,
                                            skipEmpty: Boolean,
-                                           function: (Pileup, Pileup) => Iterator[T],
+                                           function: (Pileup, Pileup) ⇒ Iterator[T],
                                            reference: ReferenceGenome): RDD[T] =
     windowFlatMapWithState(
       numSamples = 2,
@@ -86,7 +86,7 @@ object PileupFlatMapUtils {
       skipEmpty,
       halfWindowSize = 0,
       initialState = None,
-      function = (maybePileups: Option[(Pileup, Pileup)], windows: PerSample[SlidingWindow[MappedRead]]) => {
+      function = (maybePileups: Option[(Pileup, Pileup)], windows: PerSample[SlidingWindow[MappedRead]]) ⇒ {
         assert(windows.length == 2)
         val contigSequence = reference.getContig(windows(0).contigName)
         val pileup1 = initOrMovePileup(maybePileups.map(_._1), sample1Name, windows(0), contigSequence)
@@ -103,7 +103,7 @@ object PileupFlatMapUtils {
   def pileupFlatMapMultipleSamples[T: ClassTag](sampleNames: PerSample[SampleName],
                                                 partitionedReads: PartitionedReads,
                                                 skipEmpty: Boolean,
-                                                function: PerSample[Pileup] => Iterator[T],
+                                                function: PerSample[Pileup] ⇒ Iterator[T],
                                                 reference: ReferenceGenome): RDD[T] =
     windowFlatMapWithState(
       sampleNames.length,
@@ -111,17 +111,17 @@ object PileupFlatMapUtils {
       skipEmpty,
       halfWindowSize = 0,
       initialState = None,
-      (maybePileups: Option[PerSample[Pileup]], windows: PerSample[SlidingWindow[MappedRead]]) => {
+      (maybePileups: Option[PerSample[Pileup]], windows: PerSample[SlidingWindow[MappedRead]]) ⇒ {
         val advancedPileups =
           maybePileups match {
 
-            case Some(existingPileups) =>
+            case Some(existingPileups) ⇒
               for {
                 (pileup, window) <- existingPileups.zip(windows)
               } yield
                 pileup.atGreaterLocus(window.currentLocus, window.newRegions.iterator)
 
-            case None =>
+            case None ⇒
               for {
                 (window, sampleIdx) <- windows.zipWithIndex
                 sampleName = sampleNames(sampleIdx)

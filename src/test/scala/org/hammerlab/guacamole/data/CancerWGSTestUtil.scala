@@ -7,7 +7,7 @@ object CancerWGSTestUtil extends HasReference {
 
   val bams: Array[String] =
     Array("normal.bam", "primary.bam", "recurrence.bam")
-      .map(name => resourcePath(s"cancer-wgs1/$name"))
+      .map(name ⇒ resourcePath(s"cancer-wgs1/$name"))
 
   val expectedSomaticCallsCSV = resourcePath("cancer-wgs1/variants.csv")
 

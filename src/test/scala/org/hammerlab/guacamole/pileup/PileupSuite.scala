@@ -69,9 +69,9 @@ class PileupSuite
 
     insertPileup.elements.foreach(
       _.alignment match {
-        case Match(_, quality)       => quality should be(25)
-        case Insertion(_, qualities) => qualities should be(Seq(25, 5, 5, 5))
-        case a                       => fail(s"Unexpected Alignment: $a")
+        case Match(_, quality)       ⇒ quality should be(25)
+        case Insertion(_, qualities) ⇒ qualities should be(Seq(25, 5, 5, 5))
+        case a                       ⇒ fail(s"Unexpected Alignment: $a")
       }
     )
   }
@@ -292,7 +292,7 @@ class PileupSuite
 
     // advanceToLocus is a no-op on the same locus,
     // and fails in lower loci
-    forAll(Table("locus", List(5, 33, 34, 43, 44, 74): _*)) { locus =>
+    forAll(Table("locus", List(5, 33, 34, 43, 44, 74): _*)) { locus ⇒
       val elt = pileupElementFromRead(decadentRead1, locus)
       assert(elt.advanceToLocus(locus) === elt)
       intercept[AssertionError] {

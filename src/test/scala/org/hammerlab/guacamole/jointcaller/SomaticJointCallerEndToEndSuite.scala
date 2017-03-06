@@ -13,7 +13,7 @@ class SomaticJointCallerEndToEndSuite
     with VCFCmpTest {
 
   val cancerWGS1Bams = Vector("normal.tiny.bam", "primary.tiny.bam", "recurrence.tiny.bam").map(
-    name => resourcePath("cancer-wgs1/" + name))
+    name ⇒ resourcePath("cancer-wgs1/" + name))
 
   val outDir = tmpPath()
 

@@ -42,7 +42,7 @@ case class ReadAlignment private[alignment](alignments: Seq[AlignmentState],
       rle.toString
     }
 
-    runLengthEncode(alignments.map(alignment => cigarKey(alignment)))
+    runLengthEncode(alignments.map(alignment ⇒ cigarKey(alignment)))
   }
 
   def toCigar: Cigar = {
@@ -123,7 +123,7 @@ object ReadAlignment {
     def transitionPenalty(nextState: AlignmentState, previousStateOpt: Option[AlignmentState], isEndState: Boolean) = {
 
       val openGap = !previousStateOpt.contains(nextState) && isGapAlignment(nextState)
-      val closeGap = previousStateOpt.exists(previousState => nextState != previousState && isGapAlignment(previousState))
+      val closeGap = previousStateOpt.exists(previousState ⇒ nextState != previousState && isGapAlignment(previousState))
       val continueGap = previousStateOpt.contains(nextState) && isGapAlignment(nextState)
       val mismatch = nextState == AlignmentState.Mismatch
 
@@ -160,19 +160,19 @@ object ReadAlignment {
             (sequenceIdx, referenceIdx + 1),
             (sequenceIdx + 1, referenceIdx + 1)
           ).filter {
-            case (sI, rI) => sI <= sequenceLength && rI <= referenceLength // Filter positions before the start of either sequence
+            case (sI, rI) ⇒ sI <= sequenceLength && rI <= referenceLength // Filter positions before the start of either sequence
           }
 
         // Compute the transition costs based on the gap penalties
         val nextPaths: Seq[Path] = possiblePreviousStates.map {
-          case (prevSeqPos, prevRefPos) =>
+          case (prevSeqPos, prevRefPos) ⇒
             val nextState = classifyTransition(prevSeqPos, prevRefPos)
 
             val (prevRefStartIdx, prevPath, prevScore) =
               nextState match {
-                case AlignmentState.Deletion  => currentSequenceAlignment(referenceIdx + 1)
-                case AlignmentState.Insertion => lastSequenceAlignment(referenceIdx)
-                case _ => lastSequenceAlignment(referenceIdx + 1)
+                case AlignmentState.Deletion  ⇒ currentSequenceAlignment(referenceIdx + 1)
+                case AlignmentState.Insertion ⇒ lastSequenceAlignment(referenceIdx)
+                case _ ⇒ lastSequenceAlignment(referenceIdx + 1)
               }
 
             val prevStateOpt = prevPath.headOption

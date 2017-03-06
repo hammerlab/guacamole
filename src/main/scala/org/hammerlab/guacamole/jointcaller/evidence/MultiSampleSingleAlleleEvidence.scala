@@ -68,13 +68,13 @@ case class MultiSampleSingleAlleleEvidence(parameters: Parameters,
       alleles._1,
       alleles._2
     ).count(_ == allele.ref) match {
-      case 2                             => 0  // hom ref
-      case 1                             => parameters.germlineNegativeLog10HeterozygousPrior  // het
-      case 0 if alleles._1 == alleles._2 => parameters.germlineNegativeLog10HomozygousAlternatePrior  // hom alt
+      case 2                             ⇒ 0  // hom ref
+      case 1                             ⇒ parameters.germlineNegativeLog10HeterozygousPrior  // het
+      case 0 if alleles._1 == alleles._2 ⇒ parameters.germlineNegativeLog10HomozygousAlternatePrior  // hom alt
 
       // Compound alt, which we should not hit in the current version of the caller (we currently only consider mixtures
       // involving a reference allele and a single alt allele)
-      case 0                               => throw new AssertionError("Compound alts not supported")
+      case 0                               ⇒ throw new AssertionError("Compound alts not supported")
     }
 
   /**
@@ -142,7 +142,7 @@ case class MultiSampleSingleAlleleEvidence(parameters: Parameters,
       .items
       .filter(_.tumorRNA)
       .map(
-        input => {
+        input ⇒ {
           val likelihoods =
             allEvidences(input.index)
               .asInstanceOf[TumorRNASingleSampleSingleAlleleEvidence]
@@ -165,7 +165,7 @@ case class MultiSampleSingleAlleleEvidence(parameters: Parameters,
   /** Indices of tumor rna samples with expression */
   val tumorRnaSampleExpressed: PerSample[SampleId] =
     perTumorRnaSampleTopMixtures
-      .filter(pair => pair._2.keys.toSet != Set(germlineAlleles._1, germlineAlleles._2))
+      .filter(pair ⇒ pair._2.keys.toSet != Set(germlineAlleles._1, germlineAlleles._2))
       .keys
       .toVector
 
@@ -198,7 +198,7 @@ case class MultiSampleSingleAlleleEvidence(parameters: Parameters,
         .map(_.index) ++
         Seq(tumorDNAPooledIndex)
     ).map(
-      index => {
+      index ⇒ {
 
         val likelihoods =
           allEvidences(index)
@@ -222,7 +222,7 @@ case class MultiSampleSingleAlleleEvidence(parameters: Parameters,
   /** Indices of tumor samples that triggered a call. */
   val tumorDnaSampleIndicesTriggered: PerSample[SampleId] =
     perTumorDnaSampleTopMixtures
-      .filter(pair => pair._2.keys.toSet != Set(germlineAlleles._1, germlineAlleles._2))
+      .filter(pair ⇒ pair._2.keys.toSet != Set(germlineAlleles._1, germlineAlleles._2))
       .keys
       .toVector
 
@@ -256,7 +256,7 @@ case class MultiSampleSingleAlleleEvidence(parameters: Parameters,
       if (isGermlineCall)
         Seq(normalDNAPooledEvidence)
       else if (isSomaticCall)
-        tumorDnaSampleIndicesTriggered.map(index => allEvidences(index))
+        tumorDnaSampleIndicesTriggered.map(index ⇒ allEvidences(index))
       else
       Seq.empty
 
@@ -321,7 +321,7 @@ case class MultiSampleSingleAlleleEvidence(parameters: Parameters,
           .zip(multipleStats.singleSampleStats)
           .zip(sampleEvidences)
           .map {
-            case ((_, stats), evidence) =>
+            case ((_, stats), evidence) ⇒
               evidence
                 .withAnnotations(
                   SingleSampleAnnotations(
@@ -366,12 +366,12 @@ object MultiSampleSingleAlleleEvidence {
         .items
         .zip(stats.singleSampleStats)
         .map {
-          case (input, stats) =>
+          case (input, stats) ⇒
             (input.tissueType, input.analyte) match {
-              case (TissueType.Normal, Analyte.DNA) => NormalDNASingleSampleSingleAlleleEvidence(allele, stats, parameters)
-              case (TissueType.Normal, Analyte.RNA) => throw new IllegalArgumentException("Normal RNA not supported")
-              case (TissueType.Tumor, Analyte.DNA)  => TumorDNASingleSampleSingleAlleleEvidence(allele, stats, parameters)
-              case (TissueType.Tumor, Analyte.RNA)  => TumorRNASingleSampleSingleAlleleEvidence(allele, stats, parameters)
+              case (TissueType.Normal, Analyte.DNA) ⇒ NormalDNASingleSampleSingleAlleleEvidence(allele, stats, parameters)
+              case (TissueType.Normal, Analyte.RNA) ⇒ throw new IllegalArgumentException("Normal RNA not supported")
+              case (TissueType.Tumor, Analyte.DNA)  ⇒ TumorDNASingleSampleSingleAlleleEvidence(allele, stats, parameters)
+              case (TissueType.Tumor, Analyte.RNA)  ⇒ TumorRNASingleSampleSingleAlleleEvidence(allele, stats, parameters)
             }
         }
 

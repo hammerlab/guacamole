@@ -10,12 +10,12 @@ import org.apache.hadoop.mapred.FileAlreadyExistsException
 import org.apache.spark.rdd.RDD
 import org.apache.spark.{ HashPartitioner, SparkContext }
 import org.bdgenomics.adam.rdd.variant.GenotypeRDD
-import org.bdgenomics.formats.avro.{ Genotype => BDGGenotype }
+import org.bdgenomics.formats.avro.{ Genotype ⇒ BDGGenotype }
 import org.bdgenomics.utils.cli.ParquetArgs
 import org.codehaus.jackson.JsonFactory
 import org.hammerlab.commands.Args
 import org.hammerlab.guacamole.logging.LoggingUtils.progress
-import org.kohsuke.args4j.{ Option => Args4jOption }
+import org.kohsuke.args4j.{ Option ⇒ Args4jOption }
 
 /**
  * Arguments for writing output genotypes.
@@ -25,7 +25,7 @@ import org.kohsuke.args4j.{ Option => Args4jOption }
 trait GenotypeOutputArgs
   extends ParquetArgs {
 
-  self: Args =>
+  self: Args ⇒
 
   @Args4jOption(
     name = "--out",
@@ -93,7 +93,7 @@ trait GenotypeOutputArgs
       val sortedCoalescedRDD =
         variantsRDD
           .rdd
-          .keyBy(v => (v.variant.variant.getStart, v.variant.variant.getEnd))
+          .keyBy(v ⇒ (v.variant.variant.getStart, v.variant.variant.getEnd))
           .repartitionAndSortWithinPartitions(new HashPartitioner(1))
           .values
 
@@ -146,7 +146,7 @@ trait GenotypeOutputArgs
 
       val chunk =
         coalescedGenotypes
-          .mapPartitionsWithIndex((num, genotypes) => {
+          .mapPartitionsWithIndex((num, genotypes) ⇒ {
             if (num == partitionNum)
               genotypes
             else
@@ -154,7 +154,7 @@ trait GenotypeOutputArgs
           })
           .collect
 
-      chunk.foreach(genotype => {
+      chunk.foreach(genotype ⇒ {
         writer.write(genotype, encoder)
         encoder.flush()
       })

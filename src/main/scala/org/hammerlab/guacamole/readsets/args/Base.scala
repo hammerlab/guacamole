@@ -11,7 +11,7 @@ trait Base
   def sampleNames: Array[String]
 
   lazy val inputs: PerSample[Input] = {
-    paths.indices.map(i =>
+    paths.indices.map(i ⇒
       Input(
         i,
         if (i < sampleNames.length)

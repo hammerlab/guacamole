@@ -16,14 +16,14 @@ case class ReadsRDD(reads: RDD[Read], input: Input) {
 
   lazy val mappedReads =
     reads.flatMap({
-      case r: MappedRead                   => Some(r)
-      case PairedRead(r: MappedRead, _, _) => Some(r)
-      case _                               => None
+      case r: MappedRead                   ⇒ Some(r)
+      case PairedRead(r: MappedRead, _, _) ⇒ Some(r)
+      case _                               ⇒ None
     }).setName(s"Mapped reads: $shortName")
 
   lazy val mappedPairedReads: RDD[PairedRead[MappedRead]] =
     reads.flatMap({
-      case rp: PairedRead[_] if rp.isMapped => Some(rp.asInstanceOf[PairedRead[MappedRead]])
-      case _                                => None
+      case rp: PairedRead[_] if rp.isMapped ⇒ Some(rp.asInstanceOf[PairedRead[MappedRead]])
+      case _                                ⇒ None
     }).setName(s"Mapped reads: $shortName")
 }

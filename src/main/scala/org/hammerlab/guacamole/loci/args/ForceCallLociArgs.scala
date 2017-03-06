@@ -1,7 +1,7 @@
 package org.hammerlab.guacamole.loci.args
 
 import org.hammerlab.args4s.StringOptionHandler
-import org.kohsuke.args4j.{ Option => Args4jOption }
+import org.kohsuke.args4j.{ Option ⇒ Args4jOption }
 
 trait ForceCallLociArgs {
   @Args4jOption(

@@ -53,13 +53,13 @@ class PartitionedRegions[R <: Region: ClassTag] private(regions: RDD[R],
    * @return [[RDD[V]]], with partitions comprised of the [[Iterator[V]]]'s returned by application of `f` to each
    *        partition.
    */
-  def mapPartitions[V: ClassTag](f: (Iterator[R], LociSet) => Iterator[V]): RDD[V] =
+  def mapPartitions[V: ClassTag](f: (Iterator[R], LociSet) ⇒ Iterator[V]): RDD[V] =
     regions
       .zipPartitions(
         lociSetsRDD,
         preservesPartitioning = true
       )(
-        (regionsIter, lociIter) => {
+        (regionsIter, lociIter) ⇒ {
           val loci = lociIter.next()
           if (lociIter.hasNext) {
             throw new Exception(s"Expected 1 LociSet, found ${1 + lociIter.size}.\n$loci")
@@ -139,7 +139,7 @@ object PartitionedRegions {
                                                 compress: Boolean,
                                                 printStats: Boolean): PartitionedRegions[R] =
     partitionedRegionsPathOpt match {
-      case Some(partitionedRegionsPath) =>
+      case Some(partitionedRegionsPath) ⇒
 
         val sc = regions.sparkContext
         val fs = FileSystem.get(sc.hadoopConfiguration)
@@ -150,7 +150,7 @@ object PartitionedRegions {
           compute(regions, lociPartitioning, halfWindowSize, compress, printStats)
             .save(partitionedRegionsPath, compressed = compress)
 
-      case None =>
+      case None ⇒
         compute(regions, lociPartitioning, halfWindowSize, compress, printStats)
     }
 

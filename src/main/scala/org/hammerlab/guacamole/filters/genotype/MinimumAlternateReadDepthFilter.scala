@@ -20,7 +20,7 @@ object MinimumAlternateReadDepthFilter {
   def apply(genotypes: RDD[CalledAllele],
             minAlternateReadDepth: Int,
             debug: Boolean = false): RDD[CalledAllele] = {
-    val filteredGenotypes = genotypes.filter(gt => hasMinimumAlternateReadDepth(gt.evidence, minAlternateReadDepth))
+    val filteredGenotypes = genotypes.filter(gt ⇒ hasMinimumAlternateReadDepth(gt.evidence, minAlternateReadDepth))
     if (debug) GenotypeFilter.printFilterProgress(filteredGenotypes)
     filteredGenotypes
   }

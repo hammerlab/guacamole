@@ -104,7 +104,7 @@ object GermlineAssemblyCaller {
           skipEmpty = true,
           halfWindowSize = assemblyWindowRange,
           initialState = None,
-          (lastCalledLocus, windows) => {
+          (lastCalledLocus, windows) ⇒ {
             val window = windows.head
             val contigName = window.contigName
             val locus = window.currentLocus
@@ -197,7 +197,7 @@ object GermlineAssemblyCaller {
 
                 val variants =
                   paths
-                    .flatMap(path =>
+                    .flatMap(path ⇒
                       buildVariantsFromPath[CalledAllele](
                         path,
                         start,
@@ -208,7 +208,7 @@ object GermlineAssemblyCaller {
                     )
                     .toSet
                     .filter(
-                      variant =>
+                      variant ⇒
                         lastCalledLocus.forall(_ < variant.start)  // Filter variants before last called
                     )
 
@@ -257,7 +257,7 @@ object GermlineAssemblyCaller {
         genotype
           .getNonReferenceAlleles
           .filter(_.altBases.nonEmpty)
-          .map(allele =>
+          .map(allele ⇒
             CalledAllele(
               pileup.sampleName,
               pileup.contigName,

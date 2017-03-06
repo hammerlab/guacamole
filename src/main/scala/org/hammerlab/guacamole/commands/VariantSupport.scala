@@ -67,7 +67,7 @@ object VariantSupport {
       val loci =
         LociSet(
           variants
-            .map(variant =>
+            .map(variant ⇒
               Region(
                 variant.getContigName,
                 Locus(variant.getStart),

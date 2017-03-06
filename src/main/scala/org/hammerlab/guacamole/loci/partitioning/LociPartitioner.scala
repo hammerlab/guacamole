@@ -8,7 +8,7 @@ import org.hammerlab.genomics.loci.set.LociSet
 import org.hammerlab.genomics.reference.Region
 import org.hammerlab.guacamole.loci.partitioning.LociPartitionerType.LociPartitionerType
 import org.hammerlab.guacamole.readsets.rdd.PartitionedRegionsArgs
-import org.kohsuke.args4j.{ Option => Args4JOption }
+import org.kohsuke.args4j.{ Option ⇒ Args4JOption }
 
 import scala.reflect.ClassTag
 
@@ -40,7 +40,7 @@ trait LociPartitionerArgs
     try {
       LociPartitionerType.withName(lociPartitionerName)
     } catch {
-      case _: NoSuchElementException =>
+      case _: NoSuchElementException ⇒
         throw new IllegalArgumentException(s"Unrecognized --loci-partitioner: $lociPartitionerName")
     }
 
@@ -50,7 +50,7 @@ trait LociPartitionerArgs
     val sc = regions.sparkContext
 
     lociPartitionerType match {
-      case Capped =>
+      case Capped ⇒
         new CappedRegionsPartitioner(
           regions,
           halfWindowSize,
@@ -60,10 +60,10 @@ trait LociPartitionerArgs
           trimRanges = trimRanges
         )
 
-      case Micro =>
+      case Micro ⇒
         new MicroRegionPartitioner(regions, numPartitions(sc), partitioningAccuracy)
 
-      case Uniform =>
+      case Uniform ⇒
         UniformPartitioner(numPartitions(sc))
     }
   }

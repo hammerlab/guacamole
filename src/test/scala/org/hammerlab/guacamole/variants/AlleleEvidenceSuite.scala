@@ -1,6 +1,6 @@
 package org.hammerlab.guacamole.variants
 
-import org.hammerlab.guacamole.pileup.{ Util => PileupUtil }
+import org.hammerlab.guacamole.pileup.{ Util ⇒ PileupUtil }
 import org.hammerlab.guacamole.reads.ReadsUtil
 import org.hammerlab.guacamole.reference.ReferenceUtil
 import org.hammerlab.guacamole.util.GuacFunSuite

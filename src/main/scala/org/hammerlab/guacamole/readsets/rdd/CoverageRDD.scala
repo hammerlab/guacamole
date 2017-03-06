@@ -68,7 +68,7 @@ class CoverageRDD[R <: Region: ClassTag](rdd: RDD[R])
       explode
     )
     .mapPartitions(
-      it =>
+      it ⇒
         new TakeLociIterator(
           it.buffered,
           maxRegionsPerPartition,

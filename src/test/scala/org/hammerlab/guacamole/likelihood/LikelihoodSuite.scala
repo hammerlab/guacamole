@@ -103,7 +103,7 @@ class LikelihoodSuite
 
     val expectedProbabilities =
       expectedGenotypeLikelihoods.mapValues(
-        likelihood =>
+        likelihood ⇒
           if (logSpace)
             likelihood - log(totalExpectedLikelihood)
           else
@@ -120,7 +120,7 @@ class LikelihoodSuite
         expectedProbabilities.toList: _*
       )
     ) {
-      case (genotype, expectedProbability) =>
+      case (genotype, expectedProbability) ⇒
         actualProbabilitiesMap(genotype) should === (expectedProbability +- epsilon)
     }
   }
@@ -142,7 +142,7 @@ class LikelihoodSuite
         genotypesMap: _*
       )
     ) {
-      case (alleles, expectedLikelihood) =>
+      case (alleles, expectedLikelihood) ⇒
         val actualLikelihood =
           likelihoodOfGenotype(
             pileup.elements,
