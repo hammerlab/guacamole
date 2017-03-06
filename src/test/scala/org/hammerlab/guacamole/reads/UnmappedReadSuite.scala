@@ -1,9 +1,9 @@
 package org.hammerlab.guacamole.reads
 
-import org.hammerlab.genomics.bases.BasesUtil._
 import org.hammerlab.guacamole.util.GuacFunSuite
 
-class UnmappedReadSuite extends GuacFunSuite {
+class UnmappedReadSuite
+  extends GuacFunSuite {
 
   test("unmappedread is not mapped") {
     val read = UnmappedRead(

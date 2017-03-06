@@ -1,8 +1,7 @@
 package org.hammerlab.guacamole.commands
 
-import org.hammerlab.genomics.bases.{ Bases, BasesUtil }
+import org.hammerlab.genomics.bases.Bases
 import org.hammerlab.genomics.loci.parsing.ParsedLoci
-import org.hammerlab.genomics.reference.test.LocusUtil
 import org.hammerlab.genomics.reference.{ ContigName, Locus }
 import org.hammerlab.guacamole.commands.VariantSupport.Caller.{ GenotypeCount, pileupsToAlleleCounts }
 import org.hammerlab.guacamole.pileup.{ Pileup, Util ⇒ PileupUtil }
@@ -20,9 +19,7 @@ class VariantSupportSuite
   extends GuacFunSuite
     with TableDrivenPropertyChecks
     with PileupUtil
-    with ReadsRDDUtil
-    with LocusUtil
-    with BasesUtil {
+    with ReadsRDDUtil {
 
   override lazy val reference =
     ReferenceBroadcast(

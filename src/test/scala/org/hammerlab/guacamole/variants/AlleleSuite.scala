@@ -1,12 +1,11 @@
 package org.hammerlab.guacamole.variants
 
 import org.hammerlab.genomics.bases.Base.{ A, C, T }
-import org.hammerlab.genomics.bases.{ Bases, BasesUtil }
+import org.hammerlab.genomics.bases.Bases
 import org.hammerlab.guacamole.util.GuacFunSuite
 
 class AlleleSuite
-  extends GuacFunSuite
-    with BasesUtil {
+  extends GuacFunSuite {
 
   implicit def baseToBases(base: Byte): Bases = Bases(base)
 

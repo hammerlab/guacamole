@@ -1,7 +1,6 @@
 package org.hammerlab.guacamole.commands
 
-import org.hammerlab.genomics.bases.{ Bases, BasesUtil }
-import org.hammerlab.genomics.reference.test.LocusUtil
+import org.hammerlab.genomics.bases.Bases
 import org.hammerlab.genomics.reference.{ ContigName, Locus }
 import org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Arguments
 import org.hammerlab.guacamole.commands.GermlineAssemblyCaller.Caller.discoverGermlineVariants
@@ -17,9 +16,7 @@ import org.scalatest.BeforeAndAfterAll
 class GermlineAssemblyCallerSuite
   extends GuacFunSuite
     with BeforeAndAfterAll
-    with PartitionedRegionsUtil
-    with LocusUtil
-    with BasesUtil {
+    with PartitionedRegionsUtil {
 
   var reference: ReferenceBroadcast = _
 

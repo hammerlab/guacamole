@@ -1,9 +1,9 @@
 package org.hammerlab.guacamole.reads
 
-import org.hammerlab.genomics.bases.BasesUtil._
 import org.hammerlab.guacamole.util.GuacFunSuite
 
-class UnmappedReadSerializerSuite extends GuacFunSuite {
+class UnmappedReadSerializerSuite
+  extends GuacFunSuite {
 
   test("serialize / deserialize unmapped read") {
     val read = UnmappedRead(

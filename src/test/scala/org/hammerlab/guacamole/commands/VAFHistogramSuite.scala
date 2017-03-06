@@ -1,12 +1,10 @@
 package org.hammerlab.guacamole.commands
 
+import org.hammerlab.guacamole.commands.VAFHistogram.generateVAFHistograms
 import org.hammerlab.guacamole.util.GuacFunSuite
-import VAFHistogram.generateVAFHistograms
-import org.hammerlab.genomics.reference.test.LocusUtil
 
 class VAFHistogramSuite
-  extends GuacFunSuite
-    with LocusUtil {
+  extends GuacFunSuite {
 
   kryoRegister(
     classOf[Array[VariantLocus]],

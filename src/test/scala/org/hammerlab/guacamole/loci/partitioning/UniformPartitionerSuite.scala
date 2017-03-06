@@ -3,11 +3,11 @@ package org.hammerlab.guacamole.loci.partitioning
 import org.hammerlab.genomics.loci.map.LociMap
 import org.hammerlab.genomics.loci.set.LociSet
 import org.hammerlab.genomics.loci.set.test.LociSetUtil._
-import org.hammerlab.genomics.reference.test.LocusUtil._
 import org.hammerlab.guacamole.util.GuacFunSuite
 import org.hammerlab.spark.{ NumPartitions, PartitionIndex }
 
-class UniformPartitionerSuite extends GuacFunSuite {
+class UniformPartitionerSuite
+  extends GuacFunSuite {
 
   def partition(numPartitions: NumPartitions, loci: LociSet): LociPartitioning =
     UniformPartitioner(numPartitions).partition(loci)

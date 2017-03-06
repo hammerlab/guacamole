@@ -1,6 +1,5 @@
 package org.hammerlab.guacamole.jointcaller
 
-import org.hammerlab.genomics.reference.test.LocusUtil
 import org.hammerlab.guacamole.jointcaller.AlleleAtLocus.variantAlleles
 import org.hammerlab.guacamole.pileup.{ Util ⇒ PileupUtil }
 import org.hammerlab.guacamole.reference.ReferenceBroadcast
@@ -9,8 +8,7 @@ import org.hammerlab.test.resources.File
 
 class AlleleAtLocusSuite
   extends GuacFunSuite
-    with PileupUtil
-    with LocusUtil {
+    with PileupUtil {
 
   val celsr1BAMs =
     Vector("normal_0.bam", "tumor_wes_2.bam", "tumor_rna_11.bam")
