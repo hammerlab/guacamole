@@ -1,6 +1,7 @@
 package org.hammerlab.guacamole.jointcaller
 
 import org.hammerlab.genomics.bases.Base.{ A, C, G, N, T }
+import org.hammerlab.genomics.bases.{ Base, Bases }
 import org.hammerlab.guacamole.jointcaller.pileup_summarization.{ AlleleMixture, PileupStats }
 import org.hammerlab.guacamole.pileup.{ Util ⇒ PileupUtil }
 import org.hammerlab.guacamole.reads.ReadsUtil
@@ -26,6 +27,10 @@ class PileupStatsSuite
 
   val refString = "NTCGATCGA"
   override lazy val reference = makeReference("chr1", 0, refString)
+
+  implicit def makeAlleleMixture(m: Map[Base, Double]): AlleleMixture = m.map(t ⇒ Bases(t._1) → t._2)
+  implicit def makeAllelicDepthsFromBaseMap(m: Map[Base, Int]): AllelicDepths = m.map(t ⇒ Bases(t._1) → t._2)
+  implicit def makeAllelicDepthsFromStringMap(m: Map[String, Int]): AllelicDepths = m.map(t ⇒ (t._1: Bases) → t._2)
 
   test("pileupstats likelihood computation") {
 

@@ -51,12 +51,7 @@ class PileupStats(val elements: Seq[PileupElement],
       .mapValues(_.size)
       .withDefaultValue(0)
 
-  def takeAllelicDepths(max: Int): AllelicDepths =
-    allelicDepths
-      .toVector
-      .sortBy(-_._2)
-      .take(max)
-      .toMap
+  def takeAllelicDepths(max: Int): AllelicDepths = allelicDepths.take(max)
 
   /** Total depth, including reads that are NOT "anchored" by matching, non-variant bases. */
   val totalDepthIncludingReadsContributingNoAlleles = elements.size

@@ -6,6 +6,7 @@ import org.hammerlab.genomics.bases
 import org.hammerlab.guacamole.jointcaller.Parameters.SomaticGenotypePolicy
 import org.hammerlab.guacamole.jointcaller.annotation.{ InsufficientNormal, MultiSampleAnnotations, SingleSampleAnnotations, StrandBias }
 import org.hammerlab.guacamole.jointcaller.evidence.{ MultiSampleMultiAlleleEvidence, MultiSampleSingleAlleleEvidence, NormalDNASingleSampleSingleAlleleEvidence, TumorDNASingleSampleSingleAlleleEvidence, TumorRNASingleSampleSingleAlleleEvidence }
+import org.hammerlab.guacamole.jointcaller.pileup_summarization.AlleleMixture
 import org.hammerlab.guacamole.jointcaller.{ AlleleAtLocus, Input, InputCollection, Parameters }
 
 class Registrar extends KryoRegistrator {
@@ -36,6 +37,7 @@ class Registrar extends KryoRegistrator {
     kryo.register(classOf[MultiSampleSingleAlleleEvidence])
     kryo.register(classOf[MultiSampleMultiAlleleEvidence])
     kryo.register(classOf[Array[MultiSampleMultiAlleleEvidence]])
+    kryo.register(classOf[AlleleMixture])
 
     new bases.Registrar().registerClasses(kryo)
   }
