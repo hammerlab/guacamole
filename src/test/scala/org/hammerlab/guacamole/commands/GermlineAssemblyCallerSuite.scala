@@ -84,7 +84,7 @@ class GermlineAssemblyCallerSuite
 
     val actualVariants =
       for {
-        CalledAllele(_, contig, start, allele, _, _, _) <- variants
+        CalledAllele(_, contig, start, allele, _, _, _) ← variants
       } yield
         TestVariant(contig, start, allele.refBases, allele.altBases)
 

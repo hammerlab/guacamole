@@ -31,7 +31,7 @@ case class Parameters(
     // We use reflection to avoid re-specifying all the parameters.
     // See: http://stackoverflow.com/questions/7457972/getting-public-fields-and-their-respective-values-of-an-instance-in-scala-java
     val fields = this.getClass.getDeclaredFields
-    for (field <- fields) yield {
+    for (field ← fields) yield {
       field.setAccessible(true)
       (field.getName, field.get(this).toString)
     }

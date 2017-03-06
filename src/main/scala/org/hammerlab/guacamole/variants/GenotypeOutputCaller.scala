@@ -27,7 +27,7 @@ trait GenotypeOutputCaller[ArgsT <: Args with GenotypeOutputArgs, V <: Reference
 
     val bdgSamples =
       for {
-        sampleName <- sampleNames
+        sampleName ← sampleNames
       } yield
         Sample
           .newBuilder

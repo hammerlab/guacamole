@@ -145,8 +145,8 @@ object SomaticJoint {
   def lociSetMinusOne(loci: LociSet): LociSet =
     LociSet(
       for {
-        contig <- loci.contigs
-        range <- contig.ranges
+        contig ← loci.contigs
+        range ← contig.ranges
       } yield
         Region(contig.name, range.start.prev, range.end.prev)
     )

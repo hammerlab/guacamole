@@ -30,7 +30,7 @@ class LikelihoodSuite
     val alleleFraction = 1.0 / alleles.length
     Genotype(
       (for {
-        alleleStr <- alleles
+        alleleStr ← alleles
         allele = Allele(Bases(referenceBase), alleleStr)
       } yield
         allele → alleleFraction
@@ -95,7 +95,7 @@ class LikelihoodSuite
     var totalExpectedLikelihood = 0.0
     val expectedGenotypeLikelihoods =
       (for {
-        (alleles, likelihood) <- expectedLikelihoods.toList
+        (alleles, likelihood) ← expectedLikelihoods.toList
       } yield {
         totalExpectedLikelihood += (if (logSpace) exp(likelihood) else likelihood)
         makeGenotype(alleles) → likelihood

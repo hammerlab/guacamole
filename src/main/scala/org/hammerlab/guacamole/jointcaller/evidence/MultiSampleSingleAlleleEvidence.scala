@@ -106,7 +106,7 @@ case class MultiSampleSingleAlleleEvidence(parameters: Parameters,
         index →
           (
             for {
-              (alleles, likelihood) <- likelihoods
+              (alleles, likelihood) ← likelihoods
             } yield
               alleles → (likelihood - germlinePrior(alleles))
           )
@@ -151,7 +151,7 @@ case class MultiSampleSingleAlleleEvidence(parameters: Parameters,
           input.index →
             (
               for {
-                (alleles, likelihood) <- likelihoods
+                (alleles, likelihood) ← likelihoods
               } yield
                 alleles → (likelihood - somaticPriorRna(alleles))
             )
@@ -208,7 +208,7 @@ case class MultiSampleSingleAlleleEvidence(parameters: Parameters,
         index →
           (
             for {
-              (alleles, likelihood) <- likelihoods
+              (alleles, likelihood) ← likelihoods
             } yield
               alleles → (likelihood - somaticPriorDna(alleles))
           )

@@ -58,7 +58,7 @@ case class LociPartitioning(map: LociMap[PartitionIndex])
   @transient lazy val partitionRangesStats =
     Stats(
       for {
-        partitionLoci <- partitionSets
+        partitionLoci ← partitionSets
       } yield
         partitionLoci.contigs.map(_.ranges.length).sum
     )
@@ -67,13 +67,13 @@ case class LociPartitioning(map: LociMap[PartitionIndex])
 
   @transient private lazy val partitionSizesMap: Map[PartitionIndex, NumLoci] =
     for {
-      (partition, loci) <- partitionsMap
+      (partition, loci) ← partitionsMap
     } yield
       partition → loci.count
 
   @transient private lazy val partitionContigsMap: Map[PartitionIndex, Int] =
     for {
-      (partition, loci) <- partitionsMap
+      (partition, loci) ← partitionsMap
     } yield
       partition → loci.contigs.length
 
@@ -96,7 +96,7 @@ object LociPartitioning {
   def apply(lociSets: Iterable[LociSet]): LociPartitioning = {
     val lociMapBuilder = LociMap.newBuilder[PartitionIndex]
     for {
-      (loci, idx) <- lociSets.zipWithIndex
+      (loci, idx) ← lociSets.zipWithIndex
     } {
       lociMapBuilder.put(loci, idx)
     }
@@ -111,7 +111,7 @@ object LociPartitioning {
 
     val lociPartitioning: LociPartitioning =
       (for {
-        lociPartitioningPath <- args.lociPartitioningPathOpt
+        lociPartitioningPath ← args.lociPartitioningPathOpt
         path = new Path(lociPartitioningPath)
         fs = path.getFileSystem(hadoopConfiguration)
         // Load LociPartitioning from disk, if it exists…
@@ -128,7 +128,7 @@ object LociPartitioning {
           .partition(loci)
       })
 
-    for (lociPartitioningPath <- args.lociPartitioningPathOpt) {
+    for (lociPartitioningPath ← args.lociPartitioningPathOpt) {
       progress(s"Saving loci partitioning to $lociPartitioningPath")
       val path = new Path(lociPartitioningPath)
       val fs = path.getFileSystem(hadoopConfiguration)
@@ -169,8 +169,8 @@ object LociPartitioning {
     val builder = LociMap.newBuilder[PartitionIndex]
     val re = """([^:]+):(\d+)-(\d+)=(\d+)""".r
     for {
-      line <- lines
-      m <- re.findFirstMatchIn(line)
+      line ← lines
+      m ← re.findFirstMatchIn(line)
       contig = m.group(1)
       start = Locus(m.group(2).toLong)
       end = Locus(m.group(3).toLong)

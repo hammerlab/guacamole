@@ -189,7 +189,7 @@ object VCFOutput {
 
       def mixtureToString(mixture: AlleleMixture) =
         (for {
-          (allele, vaf) <- mixture
+          (allele, vaf) ← mixture
         } yield
           "%s->%.2f".format(alleleToString(allele), vaf)
         )
@@ -197,7 +197,7 @@ object VCFOutput {
 
       def mixturesToString(posteriors: Map[AlleleMixture, Double]): String =
         (for {
-          (mixture, probability) <- posteriors
+          (mixture, probability) ← posteriors
         } yield
           "[%s]=%.8g".format(
             mixtureToString(mixture),
@@ -234,7 +234,7 @@ object VCFOutput {
           genotypeBuilder.attribute(
             "RL",
             (for {
-              ((allele1, allele2), probability) <- posteriors
+              ((allele1, allele2), probability) ← posteriors
             } yield
               "[%s/%s]=%.8g".format(allele1, allele2, probability)
             ).mkString(",")

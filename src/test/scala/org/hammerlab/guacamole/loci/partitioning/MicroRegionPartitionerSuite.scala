@@ -19,7 +19,7 @@ class MicroRegionPartitionerSuite
     def pairsToReads(pairs: Seq[(Int, Int)]): RDD[MappedRead] =
       sc.parallelize(
         for {
-          (start, length) <- pairs
+          (start, length) ← pairs
         } yield
           makeRead(
             sequence = "A" * length.toInt,

@@ -86,7 +86,7 @@ object ReadAlignment {
 
     val ((refEndIdx, path, score), refStartIdx) =
       (for {
-        i <- 0 to reference.length
+        i ← 0 to reference.length
       } yield
         alignment(i) → i
       )
@@ -114,7 +114,7 @@ object ReadAlignment {
 
     var lastSequenceAlignment = new DenseVector[Path](referenceLength + 1)
     for {
-      refIdx <- 0 to referenceLength
+      refIdx ← 0 to referenceLength
     } {
       lastSequenceAlignment(refIdx) = (refIdx, List.empty, 0)
     }

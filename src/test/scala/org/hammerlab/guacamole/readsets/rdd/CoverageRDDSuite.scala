@@ -109,7 +109,7 @@ class CoverageRDDSuite
     val actual = rdd.collect()
     val actualStrs =
       for {
-        (pos, Coverage(depth, starts)) <- actual
+        (pos, Coverage(depth, starts)) ← actual
       } yield {
         pos.toString → (depth, starts)
       }

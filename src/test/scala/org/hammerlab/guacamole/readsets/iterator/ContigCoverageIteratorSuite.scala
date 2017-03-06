@@ -17,7 +17,7 @@ class ContigCoverageIteratorSuite
 
     val reads =
       (for {
-        (start, end) <- intervals
+        (start, end) ← intervals
       } yield
         Region("foo", start, end)
       )
@@ -26,7 +26,7 @@ class ContigCoverageIteratorSuite
 
     val expected =
       for {
-        (locus, (depth, starts)) <- expectedStrs
+        (locus, (depth, starts)) ← expectedStrs
       } yield
         locus → Coverage(depth, starts)
 

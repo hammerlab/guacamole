@@ -130,7 +130,7 @@ object WindowFlatMapUtils {
     // repartitionAndSortWithinPartitions above, and also in LociSet.contigs.
     for {
       // For each contig…
-      contigLoci <- partitionLoci.contigs.iterator
+      contigLoci ← partitionLoci.contigs.iterator
 
       // For each sample, an iterator of regions on this contig.
       perSampleContigRegions: PerSample[Iterator[R]] = perSampleRegionsByContig.map(_.next(contigLoci.name))
@@ -140,7 +140,7 @@ object WindowFlatMapUtils {
       windows: PerSample[SlidingWindow[R]] = perSampleContigRegions.map(SlidingWindow(contigLoci.name, halfWindowSize, _))
 
       // Pass this contig's loci and per-sample "windows" to the supplied closure, and emit each resulting object.
-      t <- generateFromWindows(contigLoci.iterator, windows)
+      t ← generateFromWindows(contigLoci.iterator, windows)
     } yield
       t
   }

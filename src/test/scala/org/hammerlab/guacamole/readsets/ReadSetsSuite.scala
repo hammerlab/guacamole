@@ -45,7 +45,7 @@ class ReadSetsSuite
     )
 
     for {
-      (loci, expectedCount) <- lociAndExpectedCounts
+      (loci, expectedCount) ← lociAndExpectedCounts
     } {
       checkFilteredReadCount(loci, expectedCount)
     }
@@ -150,7 +150,7 @@ class ReadSetsSuite
     val reads = loadReadsRDD(sc, "mdtagissue.sam", TestInputConfig.mapped()).mappedReads.collect()
     val serializedReads = reads.map(serialize)
     val deserializedReads: Seq[MappedRead] = serializedReads.map(deserialize[MappedRead])
-    for ((read, deserialized) <- reads.zip(deserializedReads)) {
+    for ((read, deserialized) ← reads.zip(deserializedReads)) {
       deserialized.contigName should equal(read.contigName)
       deserialized.alignmentQuality should equal(read.alignmentQuality)
       deserialized.start should equal(read.start)
@@ -164,7 +164,7 @@ class ReadSetsSuite
   def sequenceDictionary(records: (String, Int, String)*): SequenceDictionary =
     new SequenceDictionary(
       for {
-        (name, length, md5) <- records.toVector
+        (name, length, md5) ← records.toVector
       } yield {
         SequenceRecord(name, length, md5)
       }

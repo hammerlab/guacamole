@@ -93,7 +93,7 @@ class CappedRegionsPartitioner[R <: Region: ClassTag](regions: RDD[R],
         depthRunsRDD.take(numDepthRunsToTake)
 
     val avgRunLength =
-      (for { (_, num) <- depthRuns } yield num.toLong * num).sum.toDouble / validLoci
+      (for { (_, num) ← depthRuns } yield num.toLong * num).sum.toDouble / validLoci
 
     implicit def ord[T]: Ordering[(ContigName, T)] = Ordering.by(_._1)
 
@@ -115,7 +115,7 @@ class CappedRegionsPartitioner[R <: Region: ClassTag](regions: RDD[R],
     def runsStr(runsIter: Iterator[(NumLoci, Boolean)]): String = {
       val runs = runsIter.toVector
       val rs =
-        (for ((num, valid) <- runs) yield {
+        (for ((num, valid) ← runs) yield {
           s"$num${if (valid) "↓" else "↑"}"
         }).mkString(" ")
       if (runs.length == 1)
@@ -134,7 +134,7 @@ class CappedRegionsPartitioner[R <: Region: ClassTag](regions: RDD[R],
       s"$validLoci (%.1f%%) loci with depth ≤$maxRegionsPerPartition, $invalidLoci other; $totalLoci total of ${loci.count} eligible)$overflowMsg"
       .format(100.0 * validLoci / totalLoci),
       (for {
-        (contig, runs) <- depthRunsByContig
+        (contig, runs) ← depthRunsByContig
       } yield {
 
         val str =

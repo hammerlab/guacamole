@@ -18,7 +18,7 @@ trait ReadsRDDUtil
   def makeReadsRDD(sampleId: SampleId, reads: (String, String, Int)*): RDD[MappedRead] =
     sc.parallelize(
       for {
-        (sequence, cigar, start) <- reads
+        (sequence, cigar, start) ← reads
       } yield
         makeRead(sequence, cigar, start, sampleId = sampleId)
     )

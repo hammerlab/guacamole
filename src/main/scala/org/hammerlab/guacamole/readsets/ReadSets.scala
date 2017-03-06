@@ -76,7 +76,7 @@ object ReadSets extends Logging {
 
     val (readsRDDs, sequenceDictionaries) =
       (for {
-        (Input(sampleId, _, filename), config) <- inputsAndFilters
+        (Input(sampleId, _, filename), config) ← inputsAndFilters
       } yield
         load(filename, sc, sampleId, config)
       ).unzip
@@ -96,7 +96,7 @@ object ReadSets extends Logging {
 
     ReadSets(
       (for {
-        (reads, input) <- readsRDDs.zip(inputs)
+        (reads, input) ← readsRDDs.zip(inputs)
       } yield
        ReadsRDD(reads, input)
       ).toVector,
@@ -237,8 +237,8 @@ object ReadSets extends Logging {
                                                   dicts: Seq[SequenceDictionary]): SequenceDictionary = {
     val records =
       (for {
-        (input, dict) <- inputs.zip(dicts)
-        record <- dict.records
+        (input, dict) ← inputs.zip(dicts)
+        record ← dict.records
       } yield {
         input → record
       })
@@ -309,7 +309,7 @@ object ReadSets extends Logging {
   private def getContigLengthsFromSequenceDictionary(sequenceDictionary: SequenceDictionary): ContigLengths = {
     val builder = Map.newBuilder[ContigName, Locus]
     for {
-      record <- sequenceDictionary.records
+      record ← sequenceDictionary.records
     } {
       builder += ((record.name.toString, record.length))
     }

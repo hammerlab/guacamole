@@ -146,9 +146,9 @@ object VAFHistogram {
 
       val histogramOutput =
         for {
-          Input(sampleId, sampleName, filename) <- args.inputs
+          Input(sampleId, sampleName, filename) ← args.inputs
           histogram = variantAlleleHistograms(sampleId)
-          (bin, numLoci) <- histogram
+          (bin, numLoci) ← histogram
         } yield
           s"$filename, $sampleName, ${histogramEntryString(bin, numLoci)}"
 
@@ -168,8 +168,8 @@ object VAFHistogram {
       } else {
         // Print histograms to standard out
         for {
-          (sampleId, histogram) <- variantAlleleHistograms
-          (bin, numLoci) <- histogram
+          (sampleId, histogram) ← variantAlleleHistograms
+          (bin, numLoci) ← histogram
         } {
           println(histogramEntryString(bin, numLoci))
         }
@@ -178,7 +178,7 @@ object VAFHistogram {
       if (args.cluster) {
         val variantsPerSample = variantLoci.keyBy(_.sampleId).splitByKey(numVariantsPerSample)
         for {
-          (sampleId, variants) <- variantsPerSample
+          (sampleId, variants) ← variantsPerSample
         } {
           buildMixtureModel(variants, args.numClusters)
         }
@@ -239,9 +239,9 @@ object VAFHistogram {
         skipEmpty = true,
         pileups ⇒
           for {
-            (pileup, sampleId) <- pileups.iterator.zipWithIndex
+            (pileup, sampleId) ← pileups.iterator.zipWithIndex
             if pileup.depth >= minReadDepth
-            variant <- VariantLocus(pileup, sampleId)
+            variant ← VariantLocus(pileup, sampleId)
             if variant.variantAlleleFrequency >= (minVariantAlleleFrequency / 100.0)
           } yield
             variant
@@ -261,7 +261,7 @@ object VAFHistogram {
       progress(
         "variant loci per sample:",
         (for {
-          (sampleId, num) <- numVariantsBySample.toVector.sorted
+          (sampleId, num) ← numVariantsBySample.toVector.sorted
         } yield
           s"$sampleId:\t$num"
         ).mkString("\n")
@@ -286,7 +286,7 @@ object VAFHistogram {
             .collect()
 
       for {
-        (sampleId, variants) <- sampledVAFs
+        (sampleId, variants) ← sampledVAFs
       } {
         val stats = new DescriptiveStatistics()
         variants.foreach(v ⇒ stats.addValue(v.variantAlleleFrequency))
@@ -336,7 +336,7 @@ object VAFHistogram {
         .setMaxIterations(maxIterations)
         .run(vafVectors)
 
-    for (i <- 0 until model.k) {
+    for (i ← 0 until model.k) {
       println(s"Cluster $i: mean=${model.gaussians(i).mu(0)}, std. deviation=${model.gaussians(i).sigma}, weight=${model.weights(i)}")
     }
 

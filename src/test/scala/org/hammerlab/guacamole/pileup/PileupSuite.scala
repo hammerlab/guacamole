@@ -126,7 +126,7 @@ class PileupSuite
 
   test("First 60 loci should have all 10 reads") {
     val pileup = loadPileup(sc, "same_start_reads.sam", locus = 0)
-    for (i <- 1 to 59) {
+    for (i ← 1 to 59) {
       val nextPileup = pileup.atGreaterLocus(i, Seq.empty.iterator)
       nextPileup.elements.length should be(10)
     }
@@ -219,7 +219,7 @@ class PileupSuite
       case _ ⇒ false
     } should be(5)
 
-    for (i <- 10 to 19) {
+    for (i ← 10 to 19) {
       val nextPileup = pileup.atGreaterLocus(i, Seq.empty.iterator)
       nextPileup.elements.count(_.isMidDeletion) should be(5)
     }
@@ -227,7 +227,7 @@ class PileupSuite
 
   test("Loci 60-69 have 5 reads") {
     val pileup = loadPileup(sc, "same_start_reads.sam", locus = 0)
-    for (i <- 60 to 69) {
+    for (i ← 60 to 69) {
       val nextPileup = pileup.atGreaterLocus(i, Seq.empty.iterator)
       nextPileup.elements.length should be(5)
     }
@@ -317,7 +317,7 @@ class PileupSuite
     val decadentRead4 = testAdamRecords(3)
     val read4At20 = pileupElementFromRead(decadentRead4, 20)
     assert(read4At20 != null)
-    for (i <- 0 until 2) {
+    for (i ← 0 until 2) {
       assert(read4At20.advanceToLocus(20 + i * 4 + 0).sequencedBases(0) === A)
       assert(read4At20.advanceToLocus(20 + i * 4 + 1).sequencedBases(0) === C)
       assert(read4At20.advanceToLocus(20 + i * 4 + 2).sequencedBases(0) === G)

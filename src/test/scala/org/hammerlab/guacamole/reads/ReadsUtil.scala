@@ -133,13 +133,13 @@ trait ReadsUtil
 
   def makeReads(contigName: ContigName, reads: (String, String, Int)*): Seq[MappedRead] =
     for {
-      (sequence, cigar, start) <- reads
+      (sequence, cigar, start) ← reads
     } yield
       makeRead(sequence, cigar, start, chr = contigName)
 
   def makeReads(reads: (String, String, Int)*): Seq[MappedRead] =
     for {
-      (sequence, cigar, start) <- reads
+      (sequence, cigar, start) ← reads
     } yield
       makeRead(sequence, cigar, start)
 }

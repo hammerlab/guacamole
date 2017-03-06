@@ -100,7 +100,7 @@ class CoverageRDD[R <: Region: ClassTag](rdd: RDD[R])
                       depthCutoff: Int): RDD[((ContigName, Boolean), NumLoci)] =
     (
       for {
-        (Position(contig, _), Coverage(depth, _)) <- coverage(halfWindowSize, lociBroadcast)
+        (Position(contig, _), Coverage(depth, _)) ← coverage(halfWindowSize, lociBroadcast)
       } yield
         contig → (depth <= depthCutoff)
     )
@@ -119,7 +119,7 @@ class CoverageRDD[R <: Region: ClassTag](rdd: RDD[R])
     val depthRuns = partitionDepths(halfWindowSize, lociBroadcast, depthCutoff)
     val map =
       (for {
-        ((_, validDepth), numLoci) <- depthRuns
+        ((_, validDepth), numLoci) ← depthRuns
       } yield
         validDepth → numLoci
       )
@@ -181,7 +181,7 @@ class CoverageRDD[R <: Region: ClassTag](rdd: RDD[R])
 
     for {
       // Each resulting locus is covered by the region (±halfWindowSize), and is part of the valid LociSet.
-      locus <- lociIterator
+      locus ← lociIterator
 
       position = Position(contigName, locus)
 
@@ -198,7 +198,7 @@ class CoverageRDD[R <: Region: ClassTag](rdd: RDD[R])
           List(depthCoverage)
 
       // For each of the (1 or 2) Coverages above…
-      coverage <- coverages
+      coverage ← coverages
 
     } yield
       // Emit the Coverage, keyed by the current genomic position.

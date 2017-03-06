@@ -104,8 +104,8 @@ object VariantSupport {
      */
     def pileupsToAlleleCounts(pileups: PerSample[Pileup]): Iterator[GenotypeCount] =
       for {
-        pileup <- pileups.iterator
-        (allele, elements) <- pileup.elements.groupBy(_.allele)
+        pileup ← pileups.iterator
+        (allele, elements) ← pileup.elements.groupBy(_.allele)
       } yield
         GenotypeCount(
           pileup.sampleName,

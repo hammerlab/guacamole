@@ -81,8 +81,8 @@ object GeneratePartialFasta extends GuacCommand[GeneratePartialFastaArguments] {
 
     val padding = args.padding
     for {
-      contig <- loci.contigs
-      interval <- contig.ranges
+      contig ← loci.contigs
+      interval ← contig.ranges
       Interval(start, end) = interval
       length = interval.length.toInt + 2 * padding
     } {

@@ -49,7 +49,7 @@ class VariantSupportSuite
   def checkAlleleCounts(window: SlidingWindow[MappedRead],
                         positions: Position*): Unit =
     for {
-      Position(contig, locus, alleleCounts) <- positions
+      Position(contig, locus, alleleCounts) ← positions
     } {
       withClue(s"$contig:$locus") {
 

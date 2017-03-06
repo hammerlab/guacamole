@@ -41,8 +41,8 @@ object Likelihood {
     // Assume the alleles are equivalent fractions in the genotype
     val genotypes =
       for {
-        i <- alleles.indices
-        j <- i until alleles.size
+        i ← alleles.indices
+        j ← i until alleles.size
         mixture =
           if (i == j)
             Map(alleles(i) → 1.0)
@@ -190,8 +190,8 @@ object Likelihood {
     val alleleElementProbabilities = new DenseMatrix[Double](alleles.length, depth)
 
     for {
-      (allele, alleleIndex) <- alleles.zipWithIndex
-      (element, elementIndex) <- elements.zipWithIndex
+      (allele, alleleIndex) ← alleles.zipWithIndex
+      (element, elementIndex) ← elements.zipWithIndex
     } {
       val successProbability =
         if (includeAlignment)

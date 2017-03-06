@@ -27,7 +27,7 @@ class UniformPartitionerSuite extends GuacFunSuite {
 
     val result4 = partition(100, lociSet("chrM:1000-1100"))
     val expectedBuilder4 = LociMap.newBuilder[PartitionIndex]
-    for (i <- 0 until 100) {
+    for (i ← 0 until 100) {
       expectedBuilder4.put("chrM", i + 1000, i + 1001, i)
     }
     result4.map should equal(expectedBuilder4.result)

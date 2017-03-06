@@ -198,7 +198,7 @@ object PartitionedRegions {
         _ = regionCopiesHistogram += partitions.size
 
         // For each partition/copy…
-        partition <- partitions
+        partition ← partitions
       } yield {
         // Update "regions-per-partition" accumulator.
         partitionRegionsHistogram += partition

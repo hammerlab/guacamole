@@ -69,8 +69,8 @@ private[partitioning] sealed abstract class UniformPartitionerBase[N: Integral](
     val builder = LociMap.newBuilder[N]
 
     for {
-      contig <- loci.contigs
-      range <- contig.ranges
+      contig ← loci.contigs
+      range ← contig.ranges
     } {
       var start = range.start
       val end = range.end

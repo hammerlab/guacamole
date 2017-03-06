@@ -76,7 +76,7 @@ object ReferenceBroadcast extends Logging {
     val contigLengths = mutable.HashMap[ContigName, NumLoci]()
 
     for {
-      (regionDescription, broadcastSequence) <- raw.broadcastedContigs
+      (regionDescription, broadcastSequence) ← raw.broadcastedContigs
       length = broadcastSequence.length
       sequence = broadcastSequence.slice(Locus(0), length.toInt)
     } {
@@ -124,7 +124,7 @@ object ReferenceBroadcast extends Logging {
 
           val sequenceMap = result.getOrElseUpdate(contig.name, mutable.HashMap[Locus, Base]())
           for {
-            (locus, base) <- contig.iterator.zip(sequence.iterator)
+            (locus, base) ← contig.iterator.zip(sequence.iterator)
           } {
             sequenceMap.update(locus, base)
           }
@@ -138,7 +138,7 @@ object ReferenceBroadcast extends Logging {
 
     new ReferenceBroadcast(
       (for {
-        (contigName, baseMap) <- result
+        (contigName, baseMap) ← result
         contigLength = contigLengths(contigName)
         baseMapBroadcast = sc.broadcast(baseMap.toMap)
       } yield

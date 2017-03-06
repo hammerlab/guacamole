@@ -117,13 +117,13 @@ object PileupFlatMapUtils {
 
             case Some(existingPileups) ⇒
               for {
-                (pileup, window) <- existingPileups.zip(windows)
+                (pileup, window) ← existingPileups.zip(windows)
               } yield
                 pileup.atGreaterLocus(window.currentLocus, window.newRegions.iterator)
 
             case None ⇒
               for {
-                (window, sampleIdx) <- windows.zipWithIndex
+                (window, sampleIdx) ← windows.zipWithIndex
                 sampleName = sampleNames(sampleIdx)
                 contigName = window.contigName
               } yield
