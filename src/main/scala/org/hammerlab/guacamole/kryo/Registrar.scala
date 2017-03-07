@@ -13,7 +13,7 @@ import org.hammerlab.guacamole.loci.partitioning.LociPartitioning
 import org.hammerlab.guacamole.loci.partitioning.MicroRegionPartitioner.MicroPartitionIndex
 import org.hammerlab.guacamole.reads.{ MappedRead, MappedReadSerializer, MateAlignmentProperties, PairedRead, Read, UnmappedRead, UnmappedReadSerializer }
 import org.hammerlab.guacamole.readsets.ContigLengths
-import org.hammerlab.guacamole.variants.{ Allele, AlleleEvidence, AlleleSerializer, CalledAllele, CalledSomaticAllele, Genotype }
+import org.hammerlab.guacamole.variants.{ Allele, AlleleEvidence, CalledAllele, CalledSomaticAllele, Genotype }
 import org.hammerlab.magic.accumulables.{ HashMap => MagicHashMap }
 import org.hammerlab.magic.kryo.{ Registrar => MagicRDDRegistrar }
 
@@ -60,7 +60,7 @@ class Registrar extends KryoRegistrator {
     kryo.register(classOf[Array[CalledAllele]])
     kryo.register(classOf[CalledAllele])
     kryo.register(classOf[Genotype])
-    kryo.register(classOf[Allele], new AlleleSerializer)
+    kryo.register(classOf[Allele])
     kryo.register(classOf[AlleleEvidence])
 
     // Seems to be used when collecting RDDs of Objects of various kinds.

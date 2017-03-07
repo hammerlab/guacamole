@@ -1,7 +1,5 @@
 package org.hammerlab.guacamole.variants
 
-import com.esotericsoftware.kryo.io.{ Input, Output }
-import com.esotericsoftware.kryo.{ Kryo, Serializer }
 import org.hammerlab.guacamole.util.Bases.{ BasesOrdering, basesToString, stringToBases }
 
 case class Allele(refBases: Seq[Byte], altBases: Seq[Byte]) extends Ordered[Allele] {
@@ -22,25 +20,4 @@ object Allele {
 
   def apply(refBase: Byte, altBase: Byte): Allele =
     Allele(Array(refBase), Array(altBase))
-}
-
-class AlleleSerializer extends Serializer[Allele] {
-  def write(kryo: Kryo, output: Output, obj: Allele) = {
-    output.writeInt(obj.refBases.length, true)
-    output.writeBytes(obj.refBases.toArray)
-    output.writeInt(obj.altBases.length, true)
-    output.writeBytes(obj.altBases.toArray)
-  }
-
-  def read(kryo: Kryo, input: Input, klass: Class[Allele]): Allele = {
-    val referenceBasesLength = input.readInt(true)
-    val referenceBases: IndexedSeq[Byte] = input.readBytes(referenceBasesLength)
-    val alternateLength = input.readInt(true)
-    val alternateBases: IndexedSeq[Byte] = input.readBytes(alternateLength)
-    Allele(referenceBases, alternateBases)
-  }
-}
-
-trait HasAlleleSerializer {
-  lazy val alleleSerializer: AlleleSerializer = new AlleleSerializer
 }
