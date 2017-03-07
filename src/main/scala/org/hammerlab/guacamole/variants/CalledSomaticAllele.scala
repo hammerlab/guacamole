@@ -1,10 +1,10 @@
 package org.hammerlab.guacamole.variants
 
+import org.bdgenomics.adam.util.PhredUtils.successProbabilityToPhred
 import org.bdgenomics.formats.avro.GenotypeAllele.{ ALT, REF }
 import org.bdgenomics.formats.avro.{ Genotype ⇒ BDGGenotype }
 import org.hammerlab.genomics.readsets.SampleName
 import org.hammerlab.genomics.reference.{ ContigName, Locus, NumLoci }
-import org.hammerlab.guacamole.util.PhredUtils.successProbabilityToPhred
 import org.hammerlab.guacamole.variants.CalledSomaticAllele.alleles
 
 import scala.collection.JavaConversions.seqAsJavaList
