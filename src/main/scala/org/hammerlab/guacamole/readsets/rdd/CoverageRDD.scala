@@ -25,6 +25,8 @@ class CoverageRDD[R <: Region: ClassTag](rdd: RDD[R])
   // Cache of [[coverage]]s computed below.
   private val _coveragesCache = mutable.HashMap[(Int, LociSet), RDD[(Position, Coverage)]]()
 
+  implicit val positionOrdering = totalOrdering
+
   /**
    * Compute a PositionCoverage for every position in @loci, allowing a half-window of @halfWindowSize.
    *
@@ -44,10 +46,14 @@ class CoverageRDD[R <: Region: ClassTag](rdd: RDD[R])
     _coveragesCache
       .getOrElseUpdate(
         (halfWindowSize, lociBroadcast.value),
-        if (explode)
-          explodedCoverage(halfWindowSize, lociBroadcast)
-        else
-          traversalCoverage(halfWindowSize, lociBroadcast)
+        (
+          if (explode)
+            explodedCoverageRaw(halfWindowSize, lociBroadcast)
+          else
+            traversalCoverageRaw(halfWindowSize, lociBroadcast)
+        )
+        .reduceByKey(_ + _)  // sum all Coverages for each Position
+        .sortByKey()  // sort by Position
       )
 
   /**
@@ -77,8 +83,6 @@ class CoverageRDD[R <: Region: ClassTag](rdd: RDD[R])
     )
 
   private implicit val contigNameBoolOrdering = Ordering.by[(ContigName, Boolean), ContigName](_._1)
-
-  private implicit val positionOrdering = totalOrdering
 
   /**
    * Compute the depth at each locus in @rdd, then group loci into runs that are uniformly below (true) or above (false)
@@ -133,8 +137,14 @@ class CoverageRDD[R <: Region: ClassTag](rdd: RDD[R])
     )
   }
 
-  private[rdd] def traversalCoverage(halfWindowSize: Int,
-                                     lociBroadcast: Broadcast[LociSet]): RDD[(Position, Coverage)] =
+  def traversalCoverage(halfWindowSize: Int,
+                           lociBroadcast: Broadcast[LociSet]): RDD[(Position, Coverage)] =
+    traversalCoverageRaw(halfWindowSize, lociBroadcast)
+      .reduceByKey(_ + _)  // sum all Coverages for each Position
+      .sortByKey()         // sort by Position
+
+  def traversalCoverageRaw(halfWindowSize: Int,
+                           lociBroadcast: Broadcast[LociSet]): RDD[(Position, Coverage)] =
     rdd
       .mapPartitions(
         it ⇒
@@ -155,9 +165,26 @@ class CoverageRDD[R <: Region: ClassTag](rdd: RDD[R])
           } yield
             Position(contigName, locus) → coverage
       )
-      .reduceByKey(_ + _)
-      .sortByKey()
 
+  def explodedCoverage(halfWindowSize: Int,
+                          lociBroadcast: Broadcast[LociSet]): RDD[(Position, Coverage)] =
+    explodedCoverageRaw(halfWindowSize, lociBroadcast)
+      .reduceByKey(_ + _)  // sum all Coverages for each Position
+      .sortByKey()  // sort by Position
+
+  /**
+   * Alternative implementation of this.coverage; will generally perform significantly worse on sorted inputs. Useful as
+   * a sanity check.
+   */
+  def explodedCoverageRaw(halfWindowSize: Int,
+                          lociBroadcast: Broadcast[LociSet]): RDD[(Position, Coverage)] =
+    rdd
+      .flatMap(coveragesForRegion(_, halfWindowSize, lociBroadcast.value))
+
+  /**
+   * Given a [[Region]], `halfWindowSize`, and [[LociSet]], emit ([[Position]], [[Coverage]]) tuples at each valid locus
+   * that the [[Region]] can be considered to contribute `1` depth to.
+   */
   private def coveragesForRegion(region: Region,
                                  halfWindowSize: Int,
                                  loci: LociSet): Iterator[(Position, Coverage)] = {
@@ -204,17 +231,6 @@ class CoverageRDD[R <: Region: ClassTag](rdd: RDD[R])
       // Emit the Coverage, keyed by the current genomic position.
       position → coverage
   }
-
-  /**
-   * Alternative implementation of this.coverage; will generally perform significantly worse on sorted inputs. Useful as
-   * a sanity check.
-   */
-  private[rdd] def explodedCoverage(halfWindowSize: Int,
-                                    lociBroadcast: Broadcast[LociSet]): RDD[(Position, Coverage)] =
-    rdd
-      .flatMap(coveragesForRegion(_, halfWindowSize, lociBroadcast.value))
-      .reduceByKey(_ + _)  // sum all Coverages for each Position
-      .sortByKey()  // sort by Position
 }
 
 object CoverageRDD {
