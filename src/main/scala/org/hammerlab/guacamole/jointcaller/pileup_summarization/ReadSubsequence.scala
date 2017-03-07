@@ -66,18 +66,20 @@ object ReadSubsequence {
   def ofFixedReferenceLength(element: PileupElement, length: Int): Option[ReadSubsequence] = {
     assume(length > 0)
 
-    if (element.allele.isVariant || element.locus.next >= element.read.end) {
+    if (element.allele.isVariant || element.locus.next >= element.read.end)
       None
-    } else {
-      val firstElement = element.advanceToLocus(element.locus + 1)
+    else {
+      val firstElement = element.advanceToLocus(element.locus.next)
       var currentElement = firstElement
       var refLength = 1
-      while (currentElement.locus.next < currentElement.read.end && refLength < length) {
+      var next = currentElement.locus.next
+
+      while (next < currentElement.read.end && refLength < length) {
         currentElement = currentElement.advanceToLocus(currentElement.locus.next)
+        next = currentElement.locus.next
         refLength += 1
       }
 
-      val next = currentElement.locus.next
       if (next >= currentElement.read.end)
         None
       else
@@ -115,15 +117,15 @@ object ReadSubsequence {
           cigar ⇒ !cigar.getOperator.consumesReadBases && cigar.getOperator.consumesReferenceBases))
     }
 
-    if (isVariantOrFollowedByDeletion(element) || element.locus >= element.read.end - 1) {
+    if (isVariantOrFollowedByDeletion(element) || element.locus.next >= element.read.end)
       None
-    } else {
-      val firstElement = element.advanceToLocus(element.locus + 1)
+    else {
+      val firstElement = element.advanceToLocus(element.locus.next)
       var currentElement = firstElement
       var refLength = 0
 
-      while (currentElement.locus < currentElement.read.end - 1 && isVariantOrFollowedByDeletion(currentElement)) {
-        currentElement = currentElement.advanceToLocus(currentElement.locus + 1)
+      while (currentElement.locus.next < currentElement.read.end && isVariantOrFollowedByDeletion(currentElement)) {
+        currentElement = currentElement.advanceToLocus(currentElement.locus.next)
         refLength += 1
       }
 

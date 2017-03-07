@@ -19,9 +19,6 @@ class Registrar extends KryoRegistrator {
     kryo.register(Class.forName("org.hammerlab.guacamole.jointcaller.evidence.MultiSampleSingleAlleleEvidence$$anonfun$10"))
     kryo.register(Map.empty.getClass)
 
-    kryo.register(classOf[Map[_, _]])
-    //kryo.register(Class.forName("scala.collection.immutable.Map$WithDefault"))
-
     kryo.register(classOf[Parameters])
     kryo.register(Class.forName("scala.Enumeration$Val"))
     kryo.register(SomaticGenotypePolicy.getClass)

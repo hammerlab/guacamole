@@ -171,6 +171,7 @@ class SomaticJointCallerSuite
       .collect
       .filter(_.bestAllele.isCall)
     }
+
     Map(
       "with rna" → callsWithRNA,
       "without rna" → callsWithoutRNA

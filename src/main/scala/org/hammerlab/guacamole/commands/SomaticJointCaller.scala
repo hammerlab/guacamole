@@ -148,7 +148,11 @@ object SomaticJoint {
         contig ← loci.contigs
         range ← contig.ranges
       } yield
-        Region(contig.name, range.start.prev, range.end.prev)
+        Region(
+          contig.name,
+          range.start.prev,
+          range.end.prev
+        )
     )
 
   def makeCalls(sc: SparkContext,

@@ -26,29 +26,52 @@ case class TumorRNASingleSampleSingleAlleleEvidence(allele: AlleleAtLocus,
   /** Fraction of reads supporting this allele (variant allele frequency). */
   def vaf = allelicDepths.getOrElse(allele.alt, 0).toDouble / depth
 
-  override def withAnnotations(newAnnotations: SingleSampleAnnotations): TumorRNASingleSampleSingleAlleleEvidence = {
+  override def withAnnotations(newAnnotations: SingleSampleAnnotations): TumorRNASingleSampleSingleAlleleEvidence =
     copy(annotations = Some(newAnnotations))
-  }
 }
 
 object TumorRNASingleSampleSingleAlleleEvidence {
-
   /** Create a (serializable) TumorRNASampleAlleleEvidence instance from (non-serializable) pileup statistics. */
-  def apply(allele: AlleleAtLocus, stats: PileupStats, parameters: Parameters): TumorRNASingleSampleSingleAlleleEvidence = {
+  def apply(allele: AlleleAtLocus,
+            stats: PileupStats,
+            parameters: Parameters): TumorRNASingleSampleSingleAlleleEvidence = {
+
     assume(allele.ref == stats.ref, "%s != %s".format(allele.ref, stats.ref))
 
-    val altVaf = max(parameters.somaticVafFloor, stats.vaf(allele.alt))
+    val altVaf =
+      max(
+        parameters.somaticVafFloor,
+        stats.vaf(allele.alt)
+      )
+
     val possibleMixtures =
-      Seq(Map(allele.ref → 1.0)) ++
+      Seq(AlleleMixture(allele.ref → 1.0)) ++
         (
           if (allele.ref != allele.alt)
-            Seq(Map(allele.alt → altVaf, allele.ref → (1.0 - altVaf)))
+            Seq(
+              AlleleMixture(
+                allele.alt → altVaf,
+                allele.ref → (1.0 - altVaf)
+              )
+            )
           else
-            Seq.empty
+            Nil
         )
 
-    val logLikelihoods = possibleMixtures.map(mixture ⇒ mixture → stats.logLikelihoodPileup(mixture)).toMap
+    val logLikelihoods =
+      possibleMixtures
+        .map(
+          mixture ⇒
+            mixture → stats.logLikelihoodPileup(mixture)
+        )
+        .toMap
+
     val truncatedAllelicDepths = stats.takeAllelicDepths(parameters.maxAllelesPerSite + 1)  // +1 for ref allele
-    TumorRNASingleSampleSingleAlleleEvidence(allele, truncatedAllelicDepths, logLikelihoods)
+
+    TumorRNASingleSampleSingleAlleleEvidence(
+      allele,
+      truncatedAllelicDepths,
+      logLikelihoods
+    )
   }
 }

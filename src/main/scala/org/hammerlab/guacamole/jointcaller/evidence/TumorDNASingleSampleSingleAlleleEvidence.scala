@@ -26,15 +26,16 @@ case class TumorDNASingleSampleSingleAlleleEvidence(allele: AlleleAtLocus,
   /** Fraction of reads supporting this allele (variant allele frequency). */
   def vaf = allelicDepths.getOrElse(allele.alt, 0).toDouble / depth
 
-  override def withAnnotations(newAnnotations: SingleSampleAnnotations): TumorDNASingleSampleSingleAlleleEvidence = {
+  override def withAnnotations(newAnnotations: SingleSampleAnnotations): TumorDNASingleSampleSingleAlleleEvidence =
     copy(annotations = Some(newAnnotations))
-  }
 }
 
 object TumorDNASingleSampleSingleAlleleEvidence {
-
   /** Create a (serializable) TumorDNASampleAlleleEvidence instance from (non-serializable) pileup statistics. */
-  def apply(allele: AlleleAtLocus, stats: PileupStats, parameters: Parameters): TumorDNASingleSampleSingleAlleleEvidence = {
+  def apply(allele: AlleleAtLocus,
+            stats: PileupStats,
+            parameters: Parameters): TumorDNASingleSampleSingleAlleleEvidence = {
+
     assume(allele.ref == stats.ref, "%s != %s".format(allele.ref, stats.ref))
 
     val altVaf =
@@ -44,16 +45,29 @@ object TumorDNASingleSampleSingleAlleleEvidence {
       )
 
     val possibleMixtures =
-      Seq(Map(allele.ref → 1.0)) ++
+      Seq(AlleleMixture(allele.ref → 1.0)) ++
       (
         if (allele.ref != allele.alt)
-          Seq(Map(allele.alt → altVaf, allele.ref → (1.0 - altVaf)))
+          Seq(
+            AlleleMixture(
+              allele.alt → altVaf,
+              allele.ref → (1.0 - altVaf)
+            )
+          )
         else
-          Seq.empty
+          Nil
       )
 
-    val logLikelihoods = possibleMixtures.map(mixture ⇒ mixture → stats.logLikelihoodPileup(mixture)).toMap
+    val logLikelihoods =
+      possibleMixtures
+        .map(
+          mixture ⇒
+            mixture → stats.logLikelihoodPileup(mixture)
+        )
+        .toMap
+
     val truncatedAllelicDepths = stats.takeAllelicDepths(parameters.maxAllelesPerSite + 1)  // +1 for ref allele
+
     TumorDNASingleSampleSingleAlleleEvidence(allele, truncatedAllelicDepths, logLikelihoods)
   }
 }

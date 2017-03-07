@@ -3,9 +3,9 @@ package org.hammerlab.guacamole.jointcaller
 import java.util
 
 import htsjdk.samtools.SAMSequenceDictionary
-import htsjdk.variant.variantcontext.writer.VariantContextWriterBuilder
 import htsjdk.variant.variantcontext.{ Allele, GenotypeBuilder, VariantContext, VariantContextBuilder }
 import htsjdk.variant.vcf.{ VCFFormatHeaderLine, VCFHeader, VCFHeaderLine, VCFHeaderLineCount, VCFHeaderLineType, VCFInfoHeaderLine }
+import htsjdk.variant.variantcontext.writer.VariantContextWriterBuilder
 import org.hammerlab.genomics.bases.Bases
 import org.hammerlab.guacamole.jointcaller.Input.{ Analyte, TissueType }
 import org.hammerlab.guacamole.jointcaller.annotation.{ MultiSampleAnnotations, SingleSampleAnnotations }
@@ -139,7 +139,7 @@ object VCFOutput {
     def alleleToString(allele: Bases) = if (allele.isEmpty) "." else allele
 
     def makeHtsjdkAllele(someAllele: Bases): Allele =
-      Allele.create(someAllele.toString(), someAllele == allele.ref)
+      Allele.create(someAllele.toString, someAllele == allele.ref)
 
     def allelicDepthString(depths: AllelicDepths): String = {
       val allAlleles = (Seq(allele.ref, allele.alt) ++ depths.keys.toSeq).distinct
@@ -203,7 +203,8 @@ object VCFOutput {
             mixtureToString(mixture),
             probability
           )
-        ).mkString(",")
+        )
+        .mkString(",")
 
       val evidence = samplesEvidence.allEvidences(input.index)
 

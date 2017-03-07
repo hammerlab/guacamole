@@ -1,7 +1,7 @@
 package org.hammerlab.guacamole.jointcaller.pileup_summarization
 
-import org.hammerlab.genomics.bases.Base.N
 import org.bdgenomics.adam.util.PhredUtils.phredToSuccessProbability
+import org.hammerlab.genomics.bases.Base.N
 import org.hammerlab.genomics.bases.Bases
 import org.hammerlab.guacamole.jointcaller.AllelicDepths
 import org.hammerlab.guacamole.pileup.PileupElement
@@ -28,8 +28,7 @@ class PileupStats(val elements: Seq[PileupElement],
   assume(referenceSequence.nonEmpty)
   assume(elements.forall(_.locus == elements.head.locus))
 
-  /** The reference sequence as a string. */
-  val ref = referenceSequence
+  def ref = referenceSequence
 
   /**
    * The sequenced alleles at this site as ReadSubsequence instances.
@@ -47,7 +46,7 @@ class PileupStats(val elements: Seq[PileupElement],
   val alleleToSubsequences: Map[Bases, Seq[ReadSubsequence]] = subsequences.groupBy(_.sequence)
 
   /** Map from sequenced allele → number of reads supporting that allele. */
-  val allelicDepths =
+  val allelicDepths: AllelicDepths =
     alleleToSubsequences
       .mapValues(_.size)
       .withDefaultValue(0)
@@ -63,7 +62,7 @@ class PileupStats(val elements: Seq[PileupElement],
   val totalDepthIncludingReadsContributingNoAlleles = elements.size
 
   /** All sequenced alleles that are not the ref allele, sorted by decreasing allelic depth. */
-  val nonRefAlleles =
+  val nonRefAlleles: Seq[Bases] =
     allelicDepths
       .filterKeys(_ != ref)
       .toVector
@@ -71,14 +70,14 @@ class PileupStats(val elements: Seq[PileupElement],
       .map(_._1)
 
   /** Alt allele with most reads. */
-  val topAlt = nonRefAlleles.headOption.getOrElse(Bases(N))
+  val topAlt = nonRefAlleles.headOption.getOrElse(N)
 
   /** Alt allele with second-most reads. */
   val secondAlt =
     if (nonRefAlleles.size > 1)
       nonRefAlleles(1)
     else
-      "N"
+      N
 
   /** Fraction of reads supporting the given allele. */
   def vaf(allele: Bases): Double = allelicDepths(allele).toDouble / totalDepthIncludingReadsContributingNoAlleles
