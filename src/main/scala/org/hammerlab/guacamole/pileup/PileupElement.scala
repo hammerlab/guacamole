@@ -3,9 +3,9 @@ package org.hammerlab.guacamole.pileup
 import htsjdk.samtools.{ CigarElement, CigarOperator }
 import org.bdgenomics.adam.util.PhredUtils.phredToSuccessProbability
 import org.hammerlab.genomics.bases.Bases
+import org.hammerlab.genomics.cigar.Element
 import org.hammerlab.genomics.reads.MappedRead
 import org.hammerlab.genomics.reference.{ ContigSequence, Locus }
-import org.hammerlab.guacamole.util.CigarUtils
 import org.hammerlab.guacamole.variants.Allele
 
 import scala.annotation.tailrec
@@ -44,13 +44,11 @@ case class PileupElement(
     else
       None
 
-  def referenceStringIndex =
-    (cigarElementLocus - read.start).toInt +
-      (if (cigarElement.getOperator.consumesReferenceBases()) indexWithinCigarElement else 0)
+  def referenceStringIndex = (cigarElementLocus - read.start).toInt + cigarElement.getReferenceLength
 
-  def cigarElementReadLength = CigarUtils.getReadLength(cigarElement)
-  def cigarElementReferenceLength = CigarUtils.getReferenceLength(cigarElement)
-  def cigarElementEndLocus = cigarElementLocus + cigarElementReferenceLength
+  def cigarElementReadLength = cigarElement.getReadLength
+  def cigarElementReferenceLength = cigarElement.getReferenceLength
+  def cigarElementEndLocus = cigarElementLocus + cigarElement.getReferenceLength
 
   /**
    * Number of mismatching bases in this read. Does *not* include indels: only looks at read bases that align to a
@@ -83,11 +81,11 @@ case class PileupElement(
       Insertion(
         read.sequence.slice(
           readPosition,
-          readPosition + CigarUtils.getReadLength(cigarElem) + 1
+          readPosition + cigarElem.getReadLength + 1
         ),
         read.baseQualities.view(
           readPosition,
-          readPosition + CigarUtils.getReadLength(cigarElem) + 1
+          readPosition + cigarElem.getReadLength + 1
         )
       )
 
