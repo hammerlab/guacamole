@@ -1,15 +1,14 @@
 package org.hammerlab.guacamole.reference
 
 import org.apache.spark.SparkContext
-import org.hammerlab.genomics.bases.{ Base, Bases }
-import org.hammerlab.genomics.reference.test.LocusUtil
+import org.hammerlab.genomics.bases.{ Base, Bases, BasesUtil }
 import org.hammerlab.genomics.reference.{ ContigName, Locus, NumLoci }
+import org.hammerlab.genomics.reference.test.LociConversions.intToLocus
 
 import scala.collection.mutable
 
 trait ReferenceUtil
-  extends BasesUtil
-    with LocusUtil {
+  extends BasesUtil {
 
   def sc: SparkContext
 
@@ -51,7 +50,8 @@ trait ReferenceUtil
     new ReferenceBroadcast(contigsMap, source = Some("test_values"))
   }
 
-  implicit def convertTuple(t: (String, Int, String)): (ContigName, Locus, Bases) = (t._1, t._2, t._3)
+  implicit def makeContigLocusBases(t: (String, Int, String))(implicit cf: ContigName.Factory): (ContigName, Locus, Bases) =
+    (t._1, t._2, t._3)
 
   def makeReference(contigStartSequences: (ContigName, Locus, Bases)*): ReferenceBroadcast =
     makeReference(1000, contigStartSequences: _*)

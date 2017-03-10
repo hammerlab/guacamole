@@ -7,7 +7,6 @@ import org.hammerlab.genomics.loci.set.test.LociSetUtil
 import org.hammerlab.genomics.readsets.PerSample
 import org.hammerlab.genomics.readsets.rdd.ReadsRDDUtil
 import org.hammerlab.genomics.reference.Locus
-import org.hammerlab.genomics.reference.test.LocusUtil
 import org.hammerlab.guacamole.distributed.PileupFlatMapUtils.{ pileupFlatMapMultipleSamples, pileupFlatMapOneSample, pileupFlatMapTwoSamples }
 import org.hammerlab.guacamole.distributed.Util.pileupsToElementStrings
 import org.hammerlab.guacamole.loci.partitioning.UniformPartitioner
@@ -22,10 +21,9 @@ class PileupFlatMapUtilsSuite
     with ReadsRDDUtil
     with PartitionedRegionsUtil
     with LociSetUtil
-    with LocusUtil
     with ReferenceUtil {
 
-  kryoRegister(
+  register(
     // In some test cases below, we serialize Pileups, which requires PileupElements and MapBackedReferenceSequences.
     classOf[Pileup],
     classOf[Array[Pileup]],

@@ -195,7 +195,7 @@ object VAFHistogram {
    * @return Map of rounded variant allele frequency to number of loci with that value
    */
   def generateVAFHistograms(variantAlleleFrequencies: RDD[VariantLocus],
-                            bins: Int): Map[SampleId, Vector[(Int, Long)]] = {
+                            bins: Int): Map[SampleId, Vector[(Int, NumLoci)]] = {
     assume(bins <= 100 && bins >= 1, "Bins should be between 1 and 100")
 
     def roundToBin(variantAlleleFrequency: Float) = {
@@ -204,7 +204,7 @@ object VAFHistogram {
     }
 
     variantAlleleFrequencies
-      .map(vaf ⇒ (vaf.sampleId, roundToBin(vaf.variantAlleleFrequency)) → 1L)
+      .map(vaf ⇒ (vaf.sampleId, roundToBin(vaf.variantAlleleFrequency)) → NumLoci(1L))
       .reduceByKey(_ + _)
       .map { case ((sampleId, bin), numLoci) ⇒ sampleId → Map(bin → numLoci) }
       .reduceByKey(_ ++ _)

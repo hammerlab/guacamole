@@ -1,15 +1,20 @@
 package org.hammerlab.guacamole.commands
 
+import org.hammerlab.genomics.readsets.SampleId
+import org.hammerlab.genomics.reference.NumLoci
 import org.hammerlab.guacamole.commands.VAFHistogram.generateVAFHistograms
 import org.hammerlab.guacamole.util.GuacFunSuite
 
 class VAFHistogramSuite
   extends GuacFunSuite {
 
-  kryoRegister(
+  register(
     classOf[Array[VariantLocus]],
     classOf[VariantLocus]
   )
+
+  implicit def convertMap(m: Map[Int, Vector[(Int, Int)]]): Map[SampleId, Vector[(Int, NumLoci)]] =
+    m.mapValues(_.map(t ⇒ (t._1, NumLoci(t._2))))
 
   test("generating the histogram") {
 
@@ -24,7 +29,7 @@ class VAFHistogramSuite
         )
       )
 
-    generateVAFHistograms(loci, 10) should be(
+    generateVAFHistograms(loci, 10) should ===(
       Map(
         0 →
           Vector(
@@ -40,7 +45,7 @@ class VAFHistogramSuite
       )
     )
 
-    generateVAFHistograms(loci, 20) should be(
+    generateVAFHistograms(loci, 20) should ===(
       Map(
         0 →
           Vector(
@@ -56,7 +61,7 @@ class VAFHistogramSuite
       )
     )
 
-    generateVAFHistograms(loci, 100) should be(
+    generateVAFHistograms(loci, 100) should ===(
       Map(
         0 →
           Vector(

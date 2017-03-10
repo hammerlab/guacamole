@@ -39,6 +39,6 @@ case class ArrayBackedReferenceSequence(contigName: ContigName,
         s"Illegal reference slice: $contigName:[$start,$end) (valid range: [0,$length)"
       )
     else
-      wrapped.value.slice(start, end)
+      wrapped.value.slice(start, end).map[Base, Bases](b ⇒ b: Base)
   }
 }

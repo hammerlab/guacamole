@@ -2,13 +2,14 @@ package org.hammerlab.guacamole.loci.set
 
 import org.hammerlab.genomics.loci.set.test.LociSetUtil
 import org.hammerlab.genomics.reference.Position
-import org.hammerlab.genomics.reference.test.LocusUtil
+import org.hammerlab.genomics.reference.test.{ ClearContigNames, LociConversions }
 import org.hammerlab.guacamole.loci.Coverage
 import org.hammerlab.test.Suite
 
 class TakeLociIteratorSuite
   extends Suite
-    with LocusUtil
+    with ClearContigNames
+    with LociConversions
     with LociSetUtil {
 
   def check(input: ((String, Int), (Int, Int))*)(expectedStrs: String*): Unit =

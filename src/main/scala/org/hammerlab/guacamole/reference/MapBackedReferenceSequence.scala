@@ -9,8 +9,6 @@ import org.hammerlab.genomics.reference.{ ContigName, ContigSequence, Locus, Num
 /**
  * A ContigSequence implementation that uses a Map to store only a subset of bases. This is what you get if you load
  * a "partial fasta". This is used in tests.
- *
- * @param wrapped
  */
 case class MapBackedReferenceSequence(contigName: ContigName,
                                       length: NumLoci,
@@ -26,7 +24,9 @@ case class MapBackedReferenceSequence(contigName: ContigName,
     }
 
   override def slice(start: Locus, length: Int): Bases =
-    (0 until length)
-      .map(idx ⇒ apply(start + idx): Byte)
-      .toVector
+    Bases(
+      (0 until length)
+        .map(idx ⇒ apply(start + idx))
+        .toVector
+    )
 }

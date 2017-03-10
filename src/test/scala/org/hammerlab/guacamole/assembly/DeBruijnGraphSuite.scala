@@ -397,18 +397,18 @@ class DeBruijnGraphSuite
   test("find single unique path in sequence") {
 
     val reference =
-      "GAGGATCTGCCATGGCCGGGCGAGCTGGAGGAGCGAGGAGGAGGCAGGAGGA"
+      Bases("GAGGATCTGCCATGGCCGGGCGAGCTGGAGGAGCGAGGAGGAGGCAGGAGGA")
 
     val reads =
       Seq(
-        reference.substring(0, 25),
-        reference.substring(5, 30),
-        reference.substring(7, 32),
-        reference.substring(10, 35),
-        reference.substring(19, 41),
-        reference.substring(22, 44),
-        reference.substring(25, 47),
-        reference.substring(31, 52) + "TTT"
+        reference.slice(0, 25),
+        reference.slice(5, 30),
+        reference.slice(7, 32),
+        reference.slice(10, 35),
+        reference.slice(19, 41),
+        reference.slice(22, 44),
+        reference.slice(25, 47),
+        reference.slice(31, 52) + "TTT"
       )
 
     val kmerSize = 15
@@ -420,15 +420,15 @@ class DeBruijnGraphSuite
         mergeNodes = false
       )
 
-    val referenceKmerSource = reference.take(kmerSize)
-    val referenceKmerSink = reference.takeRight(kmerSize)
-    val paths = graph.depthFirstSearch(referenceKmerSource, referenceKmerSink)
+    val source = reference.take(kmerSize)
+    val sink = reference.takeRight(kmerSize)
+    val paths = graph.depthFirstSearch(source, sink)
 
     paths.length should be(1)
     assert(mergeOverlappingSequences(paths(0), kmerSize) === reference)
 
     graph.mergeNodes()
-    val pathsAfterMerging = graph.depthFirstSearch(referenceKmerSource, referenceKmerSink)
+    val pathsAfterMerging = graph.depthFirstSearch(source, sink)
     pathsAfterMerging.length should be(1)
     assert(mergeOverlappingSequences(pathsAfterMerging(0), kmerSize) === reference)
   }
@@ -436,20 +436,20 @@ class DeBruijnGraphSuite
   test("find single unique path in sequence with diverging sequence") {
 
     val reference =
-      "GAGGATCTGCCATGGCCGGGCGAGCTGGAGGAGCGAGGAGGAGGCAGGAGGA"
+      Bases("GAGGATCTGCCATGGCCGGGCGAGCTGGAGGAGCGAGGAGGAGGCAGGAGGA")
 
     val reads =
       Seq(
-        reference.substring(0, 25),
-        reference.substring(5, 30),
-        reference.substring(7, 32),
-        reference.substring(10, 35),
-        reference.substring(19, 41),
+        reference.slice(0, 25),
+        reference.slice(5, 30),
+        reference.slice(7, 32),
+        reference.slice(10, 35),
+        reference.slice(19, 41),
         // This is an errant read with a sequence that will lead to a dead-end
-        reference.substring(19, 41) + "TCGAA",
-        reference.substring(22, 44),
-        reference.substring(25, 47),
-        reference.substring(31, 52) + "TTT"
+        reference.slice(19, 41) + "TCGAA",
+        reference.slice(22, 44),
+        reference.slice(25, 47),
+        reference.slice(31, 52) + "TTT"
       )
 
     val kmerSize = 15
@@ -461,15 +461,15 @@ class DeBruijnGraphSuite
         mergeNodes = false
       )
 
-    val referenceKmerSource = reference.take(kmerSize)
-    val referenceKmerSink = reference.takeRight(kmerSize)
-    val paths = graph.depthFirstSearch(referenceKmerSource, referenceKmerSink)
+    val source = reference.take(kmerSize)
+    val sink = reference.takeRight(kmerSize)
+    val paths = graph.depthFirstSearch(source, sink)
 
     paths.length should be(1)
     assert(mergeOverlappingSequences(paths(0), kmerSize) === reference)
 
     graph.mergeNodes()
-    val pathsAfterMerging = graph.depthFirstSearch(referenceKmerSource, referenceKmerSink)
+    val pathsAfterMerging = graph.depthFirstSearch(source, sink)
     pathsAfterMerging.length should be(1)
     assert(mergeOverlappingSequences(pathsAfterMerging(0), kmerSize) === reference)
   }
@@ -477,22 +477,22 @@ class DeBruijnGraphSuite
   test("find single unique path; with multiple dead end paths/splits") {
 
     val reference =
-      "GAGGATCTGCCATGGCCGGGCGAGCTGGAGGAGCGAGGAGGAGGCAGGAGGA"
+     Bases("GAGGATCTGCCATGGCCGGGCGAGCTGGAGGAGCGAGGAGGAGGCAGGAGGA")
 
     val reads =
       Seq(
-        reference.substring(0, 25),
-        reference.substring(5, 30),
-        reference.substring(7, 32),
-        reference.substring(10, 35),
-        reference.substring(19, 41),
+        reference.slice(0, 25),
+        reference.slice(5, 30),
+        reference.slice(7, 32),
+        reference.slice(10, 35),
+        reference.slice(19, 41),
         // This is an errant read with a sequence that will lead to a dead-end
-        reference.substring(19, 41) + "TCGAA",
+        reference.slice(19, 41) + "TCGAA",
         // This is a second, slightly different read that will lead to a dead-end
-        reference.substring(19, 41) + "TCGTA",
-        reference.substring(22, 44),
-        reference.substring(25, 47),
-        reference.substring(31, 52) + "TTT"
+        reference.slice(19, 41) + "TCGTA",
+        reference.slice(22, 44),
+        reference.slice(25, 47),
+        reference.slice(31, 52) + "TTT"
       )
 
     val kmerSize = 15
@@ -504,26 +504,31 @@ class DeBruijnGraphSuite
         mergeNodes = false
       )
 
-    val referenceKmerSource = reference.take(kmerSize)
-    val referenceKmerSink = reference.takeRight(kmerSize)
-    val paths = graph.depthFirstSearch(referenceKmerSource, referenceKmerSink)
+    val source = reference.take(kmerSize)
+    val sink = reference.takeRight(kmerSize)
+    val paths = graph.depthFirstSearch(source, sink)
 
     paths.length should be(1)
     assert(mergeOverlappingSequences(paths(0), kmerSize) === reference)
 
     graph.mergeNodes()
-    val pathsAfterMerging = graph.depthFirstSearch(referenceKmerSource, referenceKmerSink)
+    val pathsAfterMerging = graph.depthFirstSearch(source, sink)
     pathsAfterMerging.length should be(1)
     assert(mergeOverlappingSequences(pathsAfterMerging(0), kmerSize) === reference)
   }
 
   // Used when sorting by MappedRead.start below.
-  kryoRegister(classOf[Array[Locus]])
+  register(classOf[Array[Locus]])
 
   test("real reads data test") {
     val kmerSize = 55
 
-    val referenceBases: Bases = "GAGGATCTGCCATGGCCGGGCGAGCTGGAGGAGGAGGAGGAGGAGGAGGAGGAGGAGGAGGAGGAAGAGGAGGAGGCTGCAGCGGCGGCGGCGGCGAACGTGGACGACGTAGTGGTCGTGGAGGAGGTGGAGGAAGAGGCGGGGCG"
+    val reference =
+      Bases(
+        "GAGGATCTGCCATGGCCGGGCGAGCTGGAGGAGGAGGAGGAGGAGGAGGA" +
+        "GGAGGAGGAGGAGGAAGAGGAGGAGGCTGCAGCGGCGGCGGCGGCGAACG" +
+        "TGGACGACGTAGTGGTCGTGGAGGAGGTGGAGGAAGAGGCGGGGCG"
+      )
 
     lazy val snpReads =
       loadReadsRDD(sc, "assemble-reads-set3-chr2-73613071.sam")
@@ -531,8 +536,8 @@ class DeBruijnGraphSuite
         .sortBy(_.start)
         .collect
 
-    val referenceKmerSource = referenceBases.take(kmerSize)
-    val referenceKmerSink = referenceBases.takeRight(kmerSize)
+    val source = reference.take(kmerSize)
+    val sink = reference.takeRight(kmerSize)
 
     val currentGraph =
       DeBruijnGraph(
@@ -544,8 +549,8 @@ class DeBruijnGraphSuite
 
     val paths =
       currentGraph.depthFirstSearch(
-        referenceKmerSource,
-        referenceKmerSink
+        source,
+        sink
       )
 
     paths.length should be(1)

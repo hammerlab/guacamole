@@ -397,8 +397,8 @@ object DeBruijnGraph {
    * @return A single merged sequence
    */
   def mergeOverlappingSequences(sequences: Seq[Sequence], overlapSize: Int): Sequence = {
-    val head: Bases = sequences.headOption.getOrElse(Bases.empty)
-    val rest =
+    val head = sequences.headOption.getOrElse(Bases.empty)
+    val rest: Bases =
       sequences
         .tail
         .flatMap(_.drop(overlapSize - 1))

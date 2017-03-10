@@ -37,7 +37,7 @@ providedDeps += libs.value('mllib)
 
 takeFirstLog4JProperties
 
-mainClass := Some("org.hammerlab.guacamole.Main")
+main := "org.hammerlab.guacamole.Main"
 
 shadedDeps += "org.scalanlp" %% "breeze" % "0.12"
 shadeRenames += "breeze.**" -> "org.hammerlab.breeze.@1"

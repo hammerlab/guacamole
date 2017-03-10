@@ -28,15 +28,12 @@ class VariantSupportSuite
       partialFasta = true
     )
 
-  // TODO(ryan): move to BasesUtil
-  implicit def convertStringStringT[T] = convertTuple3[String, String, T, Bases, Bases, T] _
-
   case class AllelesCount(ref: Bases, alt: Bases, count: Int)
   object AllelesCount {
     implicit def make(t: (String, String, Int)): AllelesCount = AllelesCount(t._1, t._2, t._3)
   }
 
-  implicit def convertBasesLocusT[T] = convertTuple3[String, Int, T, ContigName, Locus, T] _
+  implicit def convertBasesLocusT[T](t: (String, Int, T)): (ContigName, Locus, T) = (t._1, t._2, t._3)
   case class Position(contigName: ContigName, locus: Locus, allelesCounts: Seq[AllelesCount])
   object Position {
     implicit def make[T](t: (String, Int, Seq[T]))(implicit fn: T => AllelesCount): Position =

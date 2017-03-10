@@ -1,5 +1,6 @@
 package org.hammerlab.guacamole.jointcaller
 
+import org.hammerlab.genomics.reference.test.ClearContigNames
 import org.hammerlab.guacamole.commands.SomaticJoint
 import org.hammerlab.guacamole.variants.VCFCmpTest
 import org.hammerlab.test.Suite
@@ -8,7 +9,7 @@ import org.hammerlab.test.resources.File
 
 class SomaticJointCallerEndToEndSuite
   extends Suite
-    with TmpFiles
+    with ClearContigNames
     with VCFCmpTest {
 
   val cancerWGS1Bams =

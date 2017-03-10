@@ -18,7 +18,7 @@ class CoverageRDDSuite
     with ContigLengthsUtil
     with LociSetUtil {
 
-  kryoRegister(
+  register(
     classOf[CmpStats],
     "org.hammerlab.genomics.reference.RegionImpl",
     classOf[Array[Region]]

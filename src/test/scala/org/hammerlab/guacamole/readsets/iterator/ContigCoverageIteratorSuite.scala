@@ -1,14 +1,15 @@
 package org.hammerlab.guacamole.readsets.iterator
 
 import org.hammerlab.genomics.loci.iterator.LociIterator
-import org.hammerlab.genomics.reference.test.LocusUtil
 import org.hammerlab.genomics.reference.{ ContigIterator, Interval, Region }
 import org.hammerlab.guacamole.loci.Coverage
 import org.hammerlab.test.Suite
+import org.hammerlab.genomics.reference.test.{ ClearContigNames, LociConversions }
 
 class ContigCoverageIteratorSuite
   extends Suite
-    with LocusUtil {
+    with ClearContigNames
+    with LociConversions {
 
   def check(halfWindowSize: Int,
             intervals: (Int, Int)*)(

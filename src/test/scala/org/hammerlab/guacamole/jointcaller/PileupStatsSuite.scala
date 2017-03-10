@@ -48,6 +48,7 @@ class PileupStatsSuite
 
     val stats1 = PileupStats(pileups(1).elements, G)
     stats1.totalDepthIncludingReadsContributingNoAlleles should equal(6)
+
     stats1.allelicDepths should be(AllelicDepths(G → 6))
     stats1.nonRefAlleles should be(Nil)
     stats1.topAlt should ===(N)

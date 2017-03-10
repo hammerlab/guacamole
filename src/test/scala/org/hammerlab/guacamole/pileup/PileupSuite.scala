@@ -2,7 +2,8 @@ package org.hammerlab.guacamole.pileup
 
 import org.hammerlab.genomics.bases.Base.{ A, C, G, T }
 import org.hammerlab.genomics.reads.{ MappedRead, ReadsUtil }
-import org.hammerlab.genomics.reference.Locus
+import org.hammerlab.genomics.reference.test.LenientContigNameConversions
+import org.hammerlab.genomics.reference.{ ContigName, Locus, PermissiveRegistrar }
 import org.hammerlab.guacamole.reference.ReferenceUtil
 import org.hammerlab.guacamole.util.GuacFunSuite
 import org.hammerlab.guacamole.variants.Allele
@@ -13,7 +14,12 @@ class PileupSuite
     with TableDrivenPropertyChecks
     with ReadsUtil
     with Util
+    with LenientContigNameConversions
     with ReferenceUtil {
+
+  register(PermissiveRegistrar)
+
+  override implicit def contigNameFactory = ContigName.Normalization.Lenient
 
   override lazy val reference =
     makeReference(
@@ -67,7 +73,7 @@ class PileupSuite
       _.alignment match {
         case Match(_, quality)       ⇒ quality should be(25)
         case Insertion(_, qualities) ⇒ qualities should be(Seq(25, 5, 5, 5))
-        case a                       ⇒ fail(s"Unexpected Alignment: $a")
+        case alignment               ⇒ fail(s"Unexpected Alignment: $alignment")
       }
     )
   }
@@ -135,13 +141,13 @@ class PileupSuite
     firstElement.isMatch should be(true)
     firstElement.indexWithinCigarElement should be(0L)
 
-    val secondElement = firstElement.advanceToLocus(1L)
+    val secondElement = firstElement.advanceToLocus(1)
     secondElement.isMatch should be(true)
-    secondElement.indexWithinCigarElement should be(1L)
+    secondElement.indexWithinCigarElement should be(1)
 
-    val thirdElement = secondElement.advanceToLocus(2L)
+    val thirdElement = secondElement.advanceToLocus(2)
     thirdElement.isMatch should be(true)
-    thirdElement.indexWithinCigarElement should be(2L)
+    thirdElement.indexWithinCigarElement should be(2)
 
   }
 
@@ -185,22 +191,22 @@ class PileupSuite
     firstElement.isMatch should be(true)
     firstElement.indexWithinCigarElement should be(0L)
 
-    val deletionElement = firstElement.advanceToLocus(4L)
+    val deletionElement = firstElement.advanceToLocus(4)
     deletionElement.alignment should be(Deletion("GC", 1))
     deletionElement.isDeletion should be(true)
-    deletionElement.indexWithinCigarElement should be(4L)
+    deletionElement.indexWithinCigarElement should be(4)
 
-    val midDeletionElement = deletionElement.advanceToLocus(5L)
+    val midDeletionElement = deletionElement.advanceToLocus(5)
     midDeletionElement.isMidDeletion should be(true)
-    midDeletionElement.indexWithinCigarElement should be(0L)
+    midDeletionElement.indexWithinCigarElement should be(0)
 
-    val pastDeletionElement = midDeletionElement.advanceToLocus(6L)
+    val pastDeletionElement = midDeletionElement.advanceToLocus(6)
     pastDeletionElement.isMatch should be(true)
-    pastDeletionElement.indexWithinCigarElement should be(0L)
+    pastDeletionElement.indexWithinCigarElement should be(0)
 
-    val continuePastDeletionElement = pastDeletionElement.advanceToLocus(9L)
+    val continuePastDeletionElement = pastDeletionElement.advanceToLocus(9)
     continuePastDeletionElement.isMatch should be(true)
-    continuePastDeletionElement.indexWithinCigarElement should be(3L)
+    continuePastDeletionElement.indexWithinCigarElement should be(3)
 
   }
 
@@ -376,7 +382,7 @@ class PileupSuite
     }
   }
 
-  test("create and advance pileup element from RNA read") {
+  test("create2 and advance pileup element from RNA read") {
     val start = 229538779
     val rnaRead =
       makeRead(
@@ -401,7 +407,7 @@ class PileupSuite
     assert(rnaPileupElement.advanceToLocus(start + 1049).sequencedBases === C)
   }
 
-  test("create pileup from RNA reads") {
+  test("create2 pileup from RNA reads") {
     val rnaReadsPileup = loadPileup(sc, "testrna.sam", locus = 229580594)
 
     // 94 reads in the testrna.sam

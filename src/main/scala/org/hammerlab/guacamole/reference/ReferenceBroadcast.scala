@@ -90,7 +90,7 @@ object ReferenceBroadcast extends Logging {
     } {
       regionDescription.name.split("/").map(_.trim).toList match {
         case lociStr :: contigLengthStr :: Nil ⇒
-          val contigLength: NumLoci = contigLengthStr.toLong
+          val contigLength = NumLoci(contigLengthStr.toLong)
 
           val loci =
             ParsedLociRange(lociStr) match {
@@ -151,7 +151,8 @@ object ReferenceBroadcast extends Logging {
         baseMapBroadcast = sc.broadcast(baseMap.toMap)
       } yield
         contigName → MapBackedReferenceSequence(contigName, contigLength, baseMapBroadcast)
-      ).toMap,
+      )
+      .toMap,
       Some(fastaPath)
     )
   }
@@ -170,9 +171,6 @@ object ReferenceBroadcast extends Logging {
       readPartialFasta(fastaPath, sc)
     else
       readFasta(fastaPath, sc)
-
-  def apply(broadcastedContigs: Map[ContigName, ContigSequence]): ReferenceBroadcast =
-    ReferenceBroadcast(broadcastedContigs, source = None)
 }
 
 case class ContigNotFound(contigName: ContigName, availableContigs: Iterable[ContigName])

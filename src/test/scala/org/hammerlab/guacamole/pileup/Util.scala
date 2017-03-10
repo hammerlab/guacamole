@@ -58,7 +58,8 @@ trait Util
           minAlignmentQualityOpt = None,
           maxSplitSizeOpt = None
         )
-      ).mappedReads
+      )
+      .mappedReads
 
     val localReads = records.collect
 

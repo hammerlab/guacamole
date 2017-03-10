@@ -7,8 +7,6 @@ import org.hammerlab.guacamole.util.GuacFunSuite
 class AlleleSuite
   extends GuacFunSuite {
 
-  implicit def baseToBases(base: Byte): Bases = Bases(base)
-
   test("isVariant") {
     val mismatch = Allele(T, A)
     mismatch.isVariant should be(true)
@@ -21,7 +19,6 @@ class AlleleSuite
 
     val insertion = Allele(T, Bases(T, A, A))
     insertion.isVariant should be(true)
-
   }
 
   test("serializing allele") {

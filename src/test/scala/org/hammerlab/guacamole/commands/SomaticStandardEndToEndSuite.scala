@@ -1,13 +1,13 @@
 package org.hammerlab.guacamole.commands
 
+import org.hammerlab.genomics.reference.test.ClearContigNames
 import org.hammerlab.guacamole.variants.VCFCmpTest
-import org.hammerlab.test.files.TmpFiles
+import org.hammerlab.test.Suite
 import org.hammerlab.test.resources.File
-import org.scalatest.FunSuite
 
 class SomaticStandardEndToEndSuite
-  extends FunSuite
-    with TmpFiles
+  extends Suite
+    with ClearContigNames
     with VCFCmpTest {
 
   test("simple variants, end to end") {

@@ -3,7 +3,7 @@ package org.hammerlab.guacamole.commands
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.bdgenomics.adam.rdd.ADAMContext
-import org.bdgenomics.formats.avro.VariantAnnotation
+import org.bdgenomics.formats.avro.Variant
 import org.hammerlab.commands.Args
 import org.hammerlab.genomics.readsets.ReadSets
 import org.hammerlab.genomics.readsets.args.{ ReferenceArgs, TumorNormalReadsArgs }
@@ -123,26 +123,17 @@ object SomaticStandard {
 
       if (args.dbSnpVcf != "") {
         val adamContext: ADAMContext = sc
-        val dbSnpVariants = adamContext.loadVariantAnnotations(args.dbSnpVcf)
+        val dbSnpVariants = adamContext.loadVariants(args.dbSnpVcf)
 
         potentialGenotypes =
           potentialGenotypes
             .keyBy(_.bdgVariant)
-            .leftOuterJoin(dbSnpVariants.rdd.keyBy(_.getVariant))
+            .leftOuterJoin(dbSnpVariants.rdd.keyBy(x ⇒ x))
             .values
             .map {
-              case (calledAllele: CalledSomaticAllele, dbSnpVariantOpt: Option[VariantAnnotation]) ⇒
+              case (calledAllele: CalledSomaticAllele, dbSnpVariantOpt: Option[Variant]) ⇒
                 calledAllele.copy(
-                  rsID =
-                    dbSnpVariantOpt.flatMap(
-                      v ⇒
-                        if (v.getDbSnp)
-                          Some(
-                            v.getVariant.getNames.get(0).toInt
-                          )
-                        else
-                          None
-                    )
+                  rsID = dbSnpVariantOpt.map(_.getNames.get(0).toInt)
                 )
             }
       }
